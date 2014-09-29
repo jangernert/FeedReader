@@ -546,6 +546,7 @@ public class ttrss_interface : GLib.Object {
 		
 			var message_updateAricle = new Soup.Message ("POST", ttrss_url);
 			string updateAricle = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"updateArticle\",\"article_ids\":" + articleID.to_string() + ",\"mode\":" + int_unread.to_string() + ",\"field\":2}";
+			//stdout.printf("update Article message: %s\n", updateAricle);
 			message_updateAricle.set_request(m_contenttype, Soup.MemoryUse.COPY, updateAricle.data);
 			m_session.send_message (message_updateAricle);
 

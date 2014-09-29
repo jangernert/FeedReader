@@ -30,6 +30,7 @@ interface FeedDaemon : Object {
     public abstract void updateBadge() throws IOError;
     public signal void syncStarted();
     public signal void syncFinished();
+    public signal void loginDialog();
 }
 
 
@@ -77,7 +78,9 @@ public class rssReaderApp : Gtk.Application {
 		
 		Notify.init("RSS Reader");
 		m_firstTime = true;
+		updateBadge();
 		tryLogin();
+		//getContent();
 	}
 
 	public void tryLogin()
@@ -111,13 +114,7 @@ public class rssReaderApp : Gtk.Application {
 		m_window.createFeedlist();
 		m_window.createHeadlineList();
 		
-		dataBase.updateBadge.connect(() => {
-			try{
-				m_feedDaemon_interface.updateBadge();
-			}catch (IOError e) {
-    			stderr.printf ("%s\n", e.message);
-			}
-		});
+		dataBase.updateBadge.connect(updateBadge);
 		
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 300, () => {
 			sync.begin((obj, res) => {
@@ -125,6 +122,15 @@ public class rssReaderApp : Gtk.Application {
 			});
 			return true;
 		});
+	}
+	
+	private void updateBadge()
+	{
+		try{
+			m_feedDaemon_interface.updateBadge();
+		}catch (IOError e) {
+    		stderr.printf ("%s\n", e.message);
+		}
 	}
 
 
@@ -138,7 +144,7 @@ public class rssReaderApp : Gtk.Application {
 	}
 
 	public rssReaderApp () {
-		Object (application_id: "org.gnome.ttrss");
+		Object (application_id: "org.gnome.FeedReader", flags: ApplicationFlags.FLAGS_NONE);
 	}
 }
 

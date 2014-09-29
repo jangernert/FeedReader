@@ -20,6 +20,7 @@
 public class dbManager : GLib.Object {
 
 	private SQLHeavy.Database db;
+	private SQLHeavy.Transaction transaction;
 	public signal void updateBadge();
 
 	public dbManager () {
@@ -157,12 +158,14 @@ public class dbManager : GLib.Object {
 	{
 		try
 		{
-			var insert_login = db.prepare(
+			transaction = db.begin_transaction();
+			var insert_login = transaction.prepare(
 			                                      "INSERT OR REPLACE INTO \"main\".\"login\" (\"data\", \"value\") VALUES (:type, :login_value)"
 			                                      );
 
 			insert_login.execute(":type", typeof(string), type,
 			                     ":login_value", typeof(string), login_value);
+			transaction.commit();
 		}
 		catch(SQLHeavy.Error e){ error(e.message); }
 	}
@@ -172,7 +175,7 @@ public class dbManager : GLib.Object {
 	{
 		try
 		{
-
+			transaction = db.begin_transaction();
 			string change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = \"unread\" ";
 			if(increase){
 				change_feed_query = change_feed_query + "+ 1";
@@ -180,14 +183,17 @@ public class dbManager : GLib.Object {
 				change_feed_query = change_feed_query + "- 1";
 			} 
 			change_feed_query = change_feed_query + " WHERE \"feed_id\" = " + feedID.to_string();
-			db.execute(change_feed_query);
+			transaction.execute(change_feed_query);
+			transaction.commit();
 			
 
+			
 			var catID_query = db.prepare("""SELECT "category_id" FROM "main"."feeds" WHERE "feed_id" = :feedID""");
 			var catID_result = catID_query.execute(":feedID", typeof(int), feedID);
 			int catID = catID_result.fetch_int(0);
 
 
+			transaction = db.begin_transaction();
 			string change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" ";
 			if(increase){
 				change_catID_query = change_catID_query + "+ 1";
@@ -195,10 +201,12 @@ public class dbManager : GLib.Object {
 				change_catID_query = change_catID_query + "- 1";
 			}
 			change_catID_query = change_catID_query + " WHERE \"categorieID\" = " + catID.to_string();
-			db.execute(change_catID_query);
+			transaction.execute(change_catID_query);
+			transaction.commit();
 			
 
-		
+			
+			transaction = db.begin_transaction();
 			string change_unread_query = "UPDATE \"main\".\"properties\" SET \"value\" = \"value\" ";
 			if(increase){
 				change_unread_query = change_unread_query + "+ 1";
@@ -206,7 +214,8 @@ public class dbManager : GLib.Object {
 				change_unread_query = change_unread_query + "- 1";
 			}
 			change_unread_query = change_unread_query + " WHERE \"propertie\" = \"unread_articles\"";
-			db.execute(change_unread_query);
+			transaction.execute(change_unread_query);
+			transaction.commit();
 			updateBadge();
 		}
 		catch(SQLHeavy.Error e){ error(e.message); }
@@ -217,12 +226,14 @@ public class dbManager : GLib.Object {
 	{
 		try
 		{
-			var insert_propertie = db.prepare(
+			transaction = db.begin_transaction();
+			var insert_propertie = transaction.prepare(
 			                                      "INSERT OR REPLACE INTO \"main\".\"properties\" (\"propertie\", \"value\") VALUES (:propertie_name, :propertie_value)"
 			                                      );
 
 			insert_propertie.execute(":propertie_name", typeof(string), propertie_name,
-			                            ":propertie_value", typeof(int), propertie_value);
+			                         ":propertie_value", typeof(int), propertie_value);
+			transaction.commit();
 		}
 		catch(SQLHeavy.Error e){ error(e.message); }
 	}
@@ -244,8 +255,9 @@ public class dbManager : GLib.Object {
 			int int_has_icon = 0;
 			if(has_icon) int_has_icon = 1;
 			
-			var insert_feed = db.prepare("""INSERT OR REPLACE INTO "main"."feeds" ("feed_id","name","url","has_icon","unread", "category_id", "subscribed") 
-										  VALUES (:feed_id, :name, :url, :has_icon, :unread, :cat_id, 1)""");
+			transaction = db.begin_transaction();
+			var insert_feed = transaction.prepare("""INSERT OR REPLACE INTO "main"."feeds" ("feed_id","name","url","has_icon","unread", "category_id", "subscribed") 
+													VALUES (:feed_id, :name, :url, :has_icon, :unread, :cat_id, 1)""");
 			insert_feed.set_int(":feed_id", feed_id);
 			insert_feed.set_string(":name", feed_name);
 			insert_feed.set_string(":url", feed_url);
@@ -253,6 +265,7 @@ public class dbManager : GLib.Object {
 			insert_feed.set_int(":unread", unread_count);
 			insert_feed.set_int(":cat_id", cat_id);
 			insert_feed.execute();
+			transaction.commit();
 
 		}catch(SQLHeavy.Error e){
 			 error(e.message); 
@@ -263,7 +276,8 @@ public class dbManager : GLib.Object {
 	public void write_categorie(int categorieID, string categorie_name, int unread_count, int orderID, int parent, int level)
 	{
 		try{
-			var insert_categorie = db.prepare("""INSERT OR REPLACE INTO "main"."categories" ("categorieID","title","unread","orderID", "exists", "Parent", "Level", "expanded") 
+			transaction = db.begin_transaction();
+			var insert_categorie = transaction.prepare("""INSERT OR REPLACE INTO "main"."categories" ("categorieID","title","unread","orderID", "exists", "Parent", "Level", "expanded") 
 												VALUES (:categorieID, :categorie_name, :unread_count, :orderID, 1, :parent, :level, (SELECT "expanded" FROM "main"."categories" WHERE "categorieID" = :categorieID))""");
 			insert_categorie.set_int(":categorieID", categorieID);
 			insert_categorie.set_string(":categorie_name", categorie_name);
@@ -272,6 +286,7 @@ public class dbManager : GLib.Object {
 			insert_categorie.set_int(":parent", parent);
 			insert_categorie.set_int(":level", level);
 			insert_categorie.execute();
+			transaction.commit();
 
 		}catch(SQLHeavy.Error e){
 			 error(e.message); 
@@ -287,8 +302,9 @@ public class dbManager : GLib.Object {
 			if(unread) int_unread = 1;
 			if(marked) int_marked = 1;
 
-			var insert_headline = db.prepare("""INSERT INTO "main"."headlines" ("articleID","title","url","feedID","unread", "marked") 
-											VALUES (:articleID, :title, :url, :feedID, :unread, :marked)""");
+			transaction = db.begin_transaction();
+			var insert_headline = transaction.prepare("""INSERT INTO "main"."headlines" ("articleID","title","url","feedID","unread", "marked") 
+														VALUES (:articleID, :title, :url, :feedID, :unread, :marked)""");
 		
 			insert_headline.execute(":articleID", typeof(int), articleID,
 			                       ":title", typeof(string), title,
@@ -296,6 +312,7 @@ public class dbManager : GLib.Object {
 			                       ":feedID", typeof(int), feed_ID,
 			                       ":unread", typeof(int), int_unread,
 			                       ":marked", typeof(int), int_marked);
+			transaction.commit();
 		}
 		catch(SQLHeavy.Error e){ error(e.message); }
 	}
@@ -364,9 +381,9 @@ public class dbManager : GLib.Object {
             
 			
 		
-			
-			var insert_article = db.prepare("""INSERT OR REPLACE INTO "main"."articles" ("articleID","feedID","title","author","url","html","preview") 
-											VALUES (:articleID, :feedID, :title, :author, :url, :html, :preview)""");
+			transaction = db.begin_transaction();
+			var insert_article = transaction.prepare("""INSERT OR REPLACE INTO "main"."articles" ("articleID","feedID","title","author","url","html","preview") 
+														VALUES (:articleID, :feedID, :title, :author, :url, :html, :preview)""");
 		
 			insert_article.execute(":articleID", typeof(int), articleID,
 			                       ":feedID", typeof(int), feedID,
@@ -375,6 +392,7 @@ public class dbManager : GLib.Object {
 			                       ":url", typeof(string), url,
 			                       ":html", typeof(string), html,
 			                       ":preview", typeof(string), output);
+			transaction.commit();
 		}
 		catch(SQLHeavy.Error e){error(e.message);}
 	}
@@ -402,9 +420,11 @@ public class dbManager : GLib.Object {
 		if(field_value) int_field_value = 1;
 
 		try{
-			var update_query = db.prepare("UPDATE \"main\".\"headlines\" SET \"" + field + "\"=:value WHERE \"articleID\"=:articleID");
+			transaction = db.begin_transaction();
+			var update_query = transaction.prepare("UPDATE \"main\".\"headlines\" SET \"" + field + "\"=:value WHERE \"articleID\"=:articleID");
 			update_query.execute(":value", typeof(int), int_field_value,
 			                     ":articleID", typeof(int), articleID);
+			transaction.commit();
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
@@ -453,14 +473,18 @@ public class dbManager : GLib.Object {
 	public void reset_subscribed_flag()
 	{
 		try{
-			db.execute("UPDATE \"main\".\"feeds\" SET \"subscribed\" = 0");
+			transaction = db.begin_transaction();
+			transaction.execute("UPDATE \"main\".\"feeds\" SET \"subscribed\" = 0");
+			transaction.commit();
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
 	public void reset_exists_flag()
 	{
 		try{
-			db.execute("UPDATE \"main\".\"categories\" SET \"exists\" = 0");
+			transaction = db.begin_transaction();
+			transaction.execute("UPDATE \"main\".\"categories\" SET \"exists\" = 0");
+			transaction.commit();
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
@@ -475,8 +499,10 @@ public class dbManager : GLib.Object {
 				int delete_feed = to_delete.fetch_int(0);
 				stdout.printf("Delete: %i\n", delete_feed);
 				delete_headlines(delete_feed);
-				var delete_query = db.prepare("DELETE FROM \"main\".\"feeds\" WHERE \"feed_id\" = :delte_feed");
+				transaction = db.begin_transaction();
+				var delete_query = transaction.prepare("DELETE FROM \"main\".\"feeds\" WHERE \"feed_id\" = :delte_feed");
 				delete_query.execute(":delte_feed", typeof(int), delete_feed);
+				transaction.commit();
 			}
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
@@ -485,27 +511,36 @@ public class dbManager : GLib.Object {
 	public void delete_nonexisting_categories()
 	{
 		try{
-				db.execute("DELETE FROM \"main\".\"categories\" WHERE \"exists\" = 0");
+				transaction = db.begin_transaction();
+				transaction.execute("DELETE FROM \"main\".\"categories\" WHERE \"exists\" = 0");
+				transaction.commit();
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
 	public void mark_categorie_expanded(int catID, int expanded)
 	{
 		try{
-			var query = db.prepare("UPDATE \"main\".\"categories\" SET \"expanded\" = :expanded WHERE \"categorieID\" = :catID");
+			transaction = db.begin_transaction();
+			var query = transaction.prepare("UPDATE \"main\".\"categories\" SET \"expanded\" = :expanded WHERE \"categorieID\" = :catID");
 			query.set_int(":expanded", expanded);
 			query.set_int(":catID", catID);
 			query.execute();
+			transaction.commit();
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
 	public void delete_headlines(int feedID)
 	{
 		try{
-			var delete_headlines_query = db.prepare("DELETE FROM \"main\".\"headlines\" WHERE \"feedID\" = :delte_feed");
+			transaction = db.begin_transaction();
+			var delete_headlines_query = transaction.prepare("DELETE FROM \"main\".\"headlines\" WHERE \"feedID\" = :delte_feed");
 			delete_headlines_query.execute(":delte_feed", typeof(int), feedID);
-			var delete_articles_query = db.prepare("DELETE FROM \"main\".\"articles\" WHERE \"feedID\" = :delte_feed");
+			transaction.commit();
+			
+			transaction = db.begin_transaction();
+			var delete_articles_query = transaction.prepare("DELETE FROM \"main\".\"articles\" WHERE \"feedID\" = :delte_feed");
 			delete_articles_query.execute(":delte_feed", typeof(int), feedID);
+			transaction.commit();
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
@@ -554,9 +589,11 @@ public class dbManager : GLib.Object {
 	public void updateCategorie(int catID, int unread)
 	{
 		try{
-			var query = db.prepare("UPDATE main.categories SET unread = :unread WHERE categorieID = :catID");
+			transaction = db.begin_transaction();
+			var query = transaction.prepare("UPDATE main.categories SET unread = :unread WHERE categorieID = :catID");
 			query.execute(":unread", typeof(int), unread,
 			              ":catID", typeof(int), catID);
+			transaction.commit();
 		}catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
@@ -580,14 +617,22 @@ public class dbManager : GLib.Object {
 
 	public void markReadAllArticles()
 	{
-		try{db.execute ("UPDATE \"main\".\"headlines\" SET \"unread\"=0");}
+		try{
+			transaction = db.begin_transaction();
+			transaction.execute ("UPDATE \"main\".\"headlines\" SET \"unread\"=0");
+			transaction.commit();
+		}
 		catch(SQLHeavy.Error e){ error(e.message); }
 	}
 
 
 	public void unmarkAllArticles()
 	{
-		try{db.execute ("UPDATE \"main\".\"headlines\" SET \"marked\"=0");}
+		try{
+			transaction = db.begin_transaction();
+			transaction.execute ("UPDATE \"main\".\"headlines\" SET \"marked\"=0");
+			transaction.commit();
+		}
 		catch(SQLHeavy.Error e){ error(e.message); }
 	}
 

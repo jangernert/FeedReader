@@ -24,6 +24,7 @@ public class FeedDaemonServer : Object {
 
     public signal void syncStarted();
     public signal void syncFinished();
+    public signal void loginDialog();
     
     private async void sync()
 	{
@@ -58,6 +59,7 @@ void on_bus_aquired (DBusConnection conn) {
         conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer ());
     } catch (IOError e) {
         stderr.printf ("Could not register service\n");
+        exit(-1);
     }
 }
 
@@ -86,6 +88,7 @@ void main () {
 	else
 	{
 		stdout.printf("error loggin in\n");
+		exit(-1);
 	}
     new MainLoop ().run ();
 }

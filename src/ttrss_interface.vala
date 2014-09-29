@@ -406,7 +406,12 @@ public class ttrss_interface : GLib.Object {
 
 				if(headline_count > 0){
 					try{
-						Notify.Notification notification = new Notify.Notification("New Articles", "There are " + headline_count.to_string() + " new articles", "internet-news-reader");
+						string verb = "";
+						if(headline_count == 1)
+							verb = " is "
+						else
+							verb = " are ";
+						Notify.Notification notification = new Notify.Notification("New Articles", "There" + verb + headline_count.to_string() + " new articles", "internet-news-reader");
 						notification.show ();
 					}catch (GLib.Error e) {
 						error("Error: %s", e.message);

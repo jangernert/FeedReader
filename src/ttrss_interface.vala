@@ -408,7 +408,7 @@ public class ttrss_interface : GLib.Object {
 					try{
 						string verb = "";
 						if(headline_count == 1)
-							verb = " is "
+							verb = " is ";
 						else
 							verb = " are ";
 						Notify.Notification notification = new Notify.Notification("New Articles", "There" + verb + headline_count.to_string() + " new articles", "internet-news-reader");

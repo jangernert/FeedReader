@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=RSS Reader
+GenericName=RSS Client
+Comment=
+Categories=GTK;Utility;
+Exec=rss-reader
+Icon=internet-news-reader
+Terminal=false
+Type=Application
+X-GNOME-Gettext-Domain=tt-rss
+X-GNOME-Keywords=

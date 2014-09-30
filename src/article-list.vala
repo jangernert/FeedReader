@@ -31,6 +31,8 @@ public class articleList : Gtk.Stack {
 	private int m_current_feed_selected;
 	private bool m_only_unread;
 	private bool m_only_marked;
+	private string m_searchTerm;
+	private int m_limit;
 	public bool id_is_feedID;
 	public signal void row_activated(articleRow? row);
 	public signal void load_more();
@@ -42,6 +44,9 @@ public class articleList : Gtk.Stack {
 		m_displayed_articles = 0;
 		m_current_feed_selected = 0;
 		id_is_feedID = true;
+		m_searchTerm = "";
+		m_limit = 15;
+		
 		
 		m_List1 = new Gtk.ListBox();
 		m_List1.set_selection_mode(Gtk.SelectionMode.SINGLE);
@@ -123,6 +128,11 @@ public class articleList : Gtk.Stack {
 	{
 		m_only_marked = only_marked;
 	}
+	
+	public void setSearchTerm(string searchTerm)
+	{
+		m_searchTerm = searchTerm;
+	}
 
 	public void setSelectedFeed(int feedID)
 	{
@@ -133,9 +143,9 @@ public class articleList : Gtk.Stack {
 	public void createHeadlineList()
 	{
 		//FIXME: limit should depend on headline layout
-		var limit = 20;
-
-		SQLHeavy.QueryResult headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, limit, m_displayed_articles);
+		m_limit = 15;
+		
+		SQLHeavy.QueryResult headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
 		try{
 			for (int row = 1 ; !headlines.finished ; row++, headlines.next () )
 			{
@@ -190,16 +200,15 @@ public class articleList : Gtk.Stack {
 
 	public void updateHeadlineList()
 	{
-		int limit = 20;
 		var articleChildList = m_currentList.get_children();
 		if(articleChildList != null)
 		{
 			var first_row = articleChildList.first().data as articleRow;
 			int new_articles = dataBase.getRowNumberHeadline(first_row.m_articleID) -1;
-			limit = m_displayed_articles + new_articles;
+			m_limit = m_displayed_articles + new_articles;
 		}
 
-		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, limit);
+		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit);
 		
 		bool found;
 

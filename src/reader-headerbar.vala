@@ -22,11 +22,13 @@ public class readerHeaderbar : Gtk.HeaderBar {
 	private Gtk.ToggleButton m_only_unread_button;
 	private Gtk.ToggleButton m_only_marked_button;
 	private UpdateButton m_refresh_button;
+	private Gtk.SearchEntry m_search;
 	public bool m_only_unread { get; private set; }
 	public bool m_only_marked { get; private set; }
 	public signal void refresh();
 	public signal void change_unread(bool only_unread);
 	public signal void change_marked(bool only_marked);
+	public signal void search_term(string searchTerm);
 
 
 	public readerHeaderbar () {
@@ -73,6 +75,12 @@ public class readerHeaderbar : Gtk.HeaderBar {
 			refresh();
 		});
 		
+		m_search = new Gtk.SearchEntry();
+		m_search.placeholder_text = "Search Aritlces...";
+		m_search.search_changed.connect(() => {
+			search_term(m_search.text);
+		});
+		
 		
 		var menu = new Gtk.Menu();
 		var item_login = new Gtk.MenuItem.with_label("Change Login");
@@ -93,6 +101,7 @@ public class readerHeaderbar : Gtk.HeaderBar {
 		menubutton.set_menu_model(menumodel);
 		this.show_close_button = true;
 		this.pack_end(menubutton);
+		this.pack_end(m_search);
 		this.pack_start(m_only_unread_button);
 		this.pack_start(m_only_marked_button);
 		this.pack_start(m_refresh_button);

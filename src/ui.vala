@@ -48,6 +48,11 @@ public class readerUI : Gtk.ApplicationWindow
 			m_articleList.newHeadlineList(); 
 		});
 		
+		m_headerbar.search_term.connect((searchTerm) => {
+			m_articleList.setSearchTerm(searchTerm);
+			m_articleList.newHeadlineList();
+		});
+		
 		
 		var about_action = new SimpleAction (_("about"), null);
 		about_action.activate.connect (this.about);

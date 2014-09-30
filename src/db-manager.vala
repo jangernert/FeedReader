@@ -545,24 +545,38 @@ public class dbManager : GLib.Object {
 	}
 
 	
-	public SQLHeavy.QueryResult read_headlines(int ID, bool ID_is_feedID, bool only_unread, bool only_marked, int limit = 100, int offset = 0)
+	public SQLHeavy.QueryResult read_headlines(int ID, bool ID_is_feedID, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
 	{
 		SQLHeavy.QueryResult articles = null;
 		try{
+			string and = "";
 			string query = "SELECT * FROM \"main\".\"headlines\"";
-			if(ID != 0 || only_unread || only_marked) query = query + " WHERE ";
+			if(ID != 0 || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
 			if(ID_is_feedID)
 			{
-				if(ID != 0) query = query + "\"feedID\" = " + ID.to_string();
+				if(ID != 0){
+					query = query + "\"feedID\" = " + ID.to_string();
+					and = " AND ";
+				}
 			}
 			else
 			{
-				if(ID != 0) query = query + getFeedIDofCategorie(ID);
+				if(ID != 0){
+					query = query + getFeedIDofCategorie(ID);
+					and = " AND ";
+				}
 			}
-			if((ID != 0 && only_unread) || (ID != 0 && only_marked) || (only_unread && only_marked && ID != 0)) query = query + " AND ";
-			if(only_unread) query = query + "\"unread\" = 1";
-			if(only_unread && only_marked) query = query + " AND ";
-			if(only_marked) query = query + "\"marked\" = 1";
+			if(only_unread){
+				query = query + and + "\"unread\" = 1";
+				and = " AND ";
+			}
+			if(only_marked){
+				query = query + and + "\"marked\" = 1";
+				and = " AND ";
+			}
+			if(searchTerm != ""){
+				query = query + and + "instr(\"title\", \"" + searchTerm + "\") > 0";
+			}
 			query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 
 			//stdout.printf("%s\n", query);

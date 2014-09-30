@@ -1,0 +1,61 @@
+
+GtkListBox.feed-list {
+	background: rgb(80,80,80);
+}
+
+.feed-list .scrollbar {
+	background: rgb(80,80,80);
+}
+
+.feed-list .slider {
+	background: rgb(180,180,180);
+}
+
+
+GtkListBoxRow.feed-list-row:selected {
+	background: rgb(125,125,125);
+}
+
+GtkListBoxRow.feed-list-row:selected GtkBox.feed-row{
+	background: rgb(125,125,125);
+}
+
+GtkBox.feed-row {
+	background: rgb(90,90,90);
+}
+
+GtkListBox.article-list {
+}
+
+GtkListBox.feed-list GtkLabel{
+	color: rgb(220,220,220);
+	font-weight: bold;
+}
+
+GtkLabel.headline-read-label {
+	font-weight: normal;
+	font-style: normal;
+	font-size: large;
+	color: black;
+ }
+
+GtkLabel.headline-unread-label {
+	font-weight: bold;
+	font-style: normal;
+	font-size: large;
+	color: black;
+}
+
+GtkLabel.emptyView {
+	font-weight: normal;
+	font-style: normal;
+	font-size: x-large;
+	color: black;
+}
+
+GtkListBoxRow GtkLabel.grey-label {
+	font-weight: normal;
+	font-style: normal;
+	font-size: small;
+	color: rgb(150,150,150);
+}

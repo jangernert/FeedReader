@@ -31,10 +31,12 @@ public class feedList : Gtk.Stack {
 		m_spinner = new Gtk.Spinner();
 		m_list = new Gtk.ListBox();
 		m_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
+		m_list.get_style_context().add_class("feed-list");
 
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.set_size_request(200, 500);
 		m_scroll.add(m_list);
+		this.get_style_context().add_class("feed-list");
 
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(50);
@@ -144,16 +146,20 @@ public class feedList : Gtk.Stack {
 
 	public void createFeedlist()
 	{
+		var row_spacer = new FeedRow("", "", false, "", -1, 0);
+		row_spacer.set_size_request(0, 8);
+		m_list.add(row_spacer);
+		
 		var unread = dataBase.read_propertie("unread_articles");
 		var row_all = new FeedRow("All Articles",unread.to_string(), false, "0", -1, 0);
-		m_list.insert(row_all, 0);
+		m_list.add(row_all);
 		row_all.reveal(true);
 
 		var row_seperator = new FeedRow("", "", false, "", -1, 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.set_size_request(0, 20);
 		row_seperator.add(separator);
-		m_list.insert(row_seperator, 1);
+		m_list.add(row_seperator);
 
 		//-------------------------------------------------------------------
 
@@ -220,7 +226,7 @@ public class feedList : Gtk.Stack {
 					{
 						pos++;
 						var tmpRow = existing_row as categorieRow;
-						if((tmpRow != null && tmpRow.getID() == categories.fetch_int(5)) || (categories.fetch_int(5) == -99 && pos > 1))
+						if((tmpRow != null && tmpRow.getID() == categories.fetch_int(5)) || (categories.fetch_int(5) == -99 && pos > 2))
 						{
 							var categorierow = new categorieRow(
 					                                categories.fetch_string(1),

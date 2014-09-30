@@ -33,6 +33,8 @@ public class categorieRow : baseRow {
 	public signal void collapse(bool collapse, int catID);
 
 	public categorieRow (string name, int categorieID, int orderID, string unread_count, int parentID, int level, int expanded) {
+	
+		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
 		m_parentID = parentID;
 		if(expanded == 0)

@@ -50,8 +50,10 @@ public class articleList : Gtk.Stack {
 		
 		m_List1 = new Gtk.ListBox();
 		m_List1.set_selection_mode(Gtk.SelectionMode.SINGLE);
+		m_List1.get_style_context().add_class("article-list");
 		m_List2 = new Gtk.ListBox();
 		m_List2.set_selection_mode(Gtk.SelectionMode.SINGLE);
+		m_List2.get_style_context().add_class("article-list");
 		
 		
 		m_scroll1 = new Gtk.ScrolledWindow(null, null);

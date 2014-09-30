@@ -28,6 +28,7 @@ public class FeedRow : baseRow {
 
 	public FeedRow (string text, string unread_count, bool has_icon, string iconname, int catID, int level)
 	{
+		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
 		m_catID = catID;
 		m_subscribed = true;
@@ -74,10 +75,7 @@ public class FeedRow : baseRow {
 
 			if(m_catID != -1)
 			{
-				var colour = Gdk.RGBA();
-				colour.parse("#838B8B");
-				colour.alpha = 0.15;
-				m_box.override_background_color(Gtk.StateFlags.NORMAL, colour);
+				m_box.get_style_context().add_class("feed-row");
 				m_box.pack_start(m_spacer, false, false, 0);
 			}
 			m_box.pack_start(m_icon, false, false, 8);

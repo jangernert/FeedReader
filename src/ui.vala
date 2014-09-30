@@ -139,37 +139,8 @@ public class readerUI : Gtk.ApplicationWindow
 	{
 		try {
     		Gtk.CssProvider provider = new Gtk.CssProvider ();
-    		provider.load_from_data ("""
-			
-        		GtkListBoxRow GtkLabel.grey-label {
-            		font-weight: normal;
-            		font-style: normal;
-					font-size: small;
-            		color: rgb(150,150,150);
-        		}
-
-				GtkLabel.headline-read-label {
-            		font-weight: normal;
-            		font-style: normal;
-					font-size: large;
-					color: black;
-        		}
-				
-				GtkLabel.headline-unread-label {
-            		font-weight: bold;
-            		font-style: normal;
-					font-size: large;
-            		color: black;
-        		}
-
-				GtkLabel.emptyView {
-            		font-weight: normal;
-            		font-style: normal;
-					font-size: x-large;
-					color: black;
-        		}
-				
-                """, -1);
+    		provider.load_from_file(GLib.File.new_for_path("/usr/share/RSSReader/FeedReader.css"));
+                
 
 			weak Gdk.Display display = Gdk.Display.get_default ();
             weak Gdk.Screen screen = display.get_default_screen ();

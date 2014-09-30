@@ -111,10 +111,11 @@ public class articleRow : baseRow {
 			
 			var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 			icon_box.set_size_request(24, 0);
-			m_marked_icon = new Gtk.Image.from_file("/usr/share/RSSReader/stared.png");
-			m_unread_icon = new Gtk.Image.from_file("/usr/share/RSSReader/unread.png");
-			m_unmarked_icon = new Gtk.Image.from_file("/usr/share/RSSReader/unstared.png");
-			m_read_icon = new Gtk.Image.from_file("/usr/share/RSSReader/read.png");
+			
+			m_marked_icon = new Gtk.Image.from_icon_name("starred", Gtk.IconSize.SMALL_TOOLBAR);
+			m_unread_icon = new Gtk.Image.from_icon_name("mail-unread", Gtk.IconSize.SMALL_TOOLBAR);
+			m_unmarked_icon = new Gtk.Image.from_icon_name("non-starred", Gtk.IconSize.SMALL_TOOLBAR);
+			m_read_icon = new Gtk.Image.from_icon_name("user-offline", Gtk.IconSize.SMALL_TOOLBAR);
 			
 
 			m_unread_eventbox = new Gtk.EventBox();

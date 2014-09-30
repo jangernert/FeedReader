@@ -37,7 +37,7 @@ GtkLabel.headline-read-label {
 	font-style: normal;
 	font-size: large;
 	color: black;
- }
+}
 
 GtkLabel.headline-unread-label {
 	font-weight: bold;

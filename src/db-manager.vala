@@ -579,7 +579,7 @@ public class dbManager : GLib.Object {
 			}
 			query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 
-			stdout.printf("%s\n", query);
+			//stdout.printf("%s\n", query);
 
 			articles = db.execute (query);
 		}

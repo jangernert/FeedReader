@@ -42,12 +42,7 @@ public class rssReaderApp : Gtk.Application {
 	 
 	protected override void activate () {
 	
-		string[] spawn_args = {"rss-reader-daemon"};
-		try{
-			GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-		}catch(GLib.SpawnError e){
-			stdout.printf("error spawning command line: %s\n", e.message);
-		}
+		startDaemon();
 		
 		dataBase = new dbManager();
 		dataBase.init();
@@ -80,7 +75,6 @@ public class rssReaderApp : Gtk.Application {
 		m_firstTime = true;
 		updateBadge();
 		tryLogin();
-		//getContent();
 	}
 
 	public void tryLogin()
@@ -101,8 +95,10 @@ public class rssReaderApp : Gtk.Application {
 			dialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
 				tryLogin();
-				sync.begin((obj, res) => {
-					sync.end(res);
+				startDaemon();
+				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 2, () => {
+					sync();
+					return false;
 				});
 			});
 			dialog.show_all();
@@ -117,9 +113,7 @@ public class rssReaderApp : Gtk.Application {
 		dataBase.updateBadge.connect(updateBadge);
 		
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 300, () => {
-			sync.begin((obj, res) => {
-				sync.end(res);
-			});
+			sync();
 			return true;
 		});
 	}
@@ -134,12 +128,22 @@ public class rssReaderApp : Gtk.Application {
 	}
 
 
-	public async void sync()
+	public void sync()
 	{
 		try{
 			m_feedDaemon_interface.startSync();
 		}catch (IOError e) {
     		stderr.printf ("%s\n", e.message);
+		}
+	}
+	
+	public void startDaemon()
+	{
+		string[] spawn_args = {"rss-reader-daemon"};
+		try{
+			GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+		}catch(GLib.SpawnError e){
+			stdout.printf("error spawning command line: %s\n", e.message);
 		}
 	}
 

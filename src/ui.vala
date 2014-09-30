@@ -63,9 +63,7 @@ public class readerUI : Gtk.ApplicationWindow
 			m_loginDialog = new loginDialog();
 			m_loginDialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
-				app.sync.begin((obj, res) => {
-					app.sync.end(res);
-				});
+				app.sync();
 			});
 			m_loginDialog.show_all();
 		});

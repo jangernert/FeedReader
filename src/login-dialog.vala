@@ -25,9 +25,10 @@ public class loginDialog : Gtk.Dialog {
 	private Gtk.Entry m_password_entry;
 	public signal void submit_data();
 
-	public loginDialog (string error_message = "") {	
+	public loginDialog (Gtk.Window window, string error_message = "") {	
 		this.title = "Login Data";
 		this.border_width = 5;
+		this.set_transient_for(window);
 		set_default_size (500, 300);
 
 		var error_bar = new Gtk.InfoBar();

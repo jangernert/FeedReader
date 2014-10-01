@@ -91,7 +91,7 @@ public class rssReaderApp : Gtk.Application {
 				m_firstTime = false;
 			}
 			
-			var dialog = new loginDialog(error_message);
+			var dialog = new loginDialog(m_window, error_message);
 			dialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
 				tryLogin();

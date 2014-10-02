@@ -12,7 +12,7 @@ libwebkit2gtk-3.0-dev
 libsqlite3-dev
 libsecret-1-dev
 libnotify-dev
-libunity-dev (libunity-api* ?)
+libunity-dev
 
 
 Building:

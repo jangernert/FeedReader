@@ -28,6 +28,7 @@ public class dbManager : GLib.Object {
 		if (rc != Sqlite.OK) {
 			error("Can't open database: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
+		sqlite_db.busy_timeout (1000);
 	}
 
 	public void init()
@@ -704,8 +705,6 @@ public class dbManager : GLib.Object {
 		}
 		query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 
-		stdout.printf("%s\n", query);
-
 		headline tmpHeadline;
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -716,11 +715,6 @@ public class dbManager : GLib.Object {
 			tmpHeadline = new headline(stmt.column_int(0), stmt.column_text(1), stmt.column_text(2), stmt.column_int(3), stmt.column_int(4), stmt.column_int(5));
 			tmp.append(tmpHeadline);
 		}
-		
-		/*foreach(var item in tmp)
-		{
-			stdout.printf("%s\n", item.m_title);
-		}*/
 		
 		return tmp;
 	}

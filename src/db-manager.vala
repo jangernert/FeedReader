@@ -300,13 +300,27 @@ public class dbManager : GLib.Object {
 		if(unread) int_unread = 1;
 		if(marked) int_marked = 1;
 		string query = "INSERT INTO \"main\".\"headlines\" (\"articleID\",\"title\",\"url\",\"feedID\",\"unread\", \"marked\") 
-						VALUES (\"" + articleID.to_string() + "\", \"" + title + "\", \"" + url + "\", \"" + feed_ID.to_string() + "\", \"" + int_unread.to_string() + "\", \"" + int_marked.to_string() + "\")";
-		string errmsg;
+						VALUES (\"" + articleID.to_string() + "\", $TITLE, \"" + url + "\", \"" + feed_ID.to_string() + "\", \"" + int_unread.to_string() + "\", \"" + int_marked.to_string() + "\")";
+		/*string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
 			warning("error writing headline\nquery: %s\n", query);
 			error("Error: %s\n", errmsg);
+		}*/
+		
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			warning("error writing article\nquery: %s\ntitle: %s\n", query, title);
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
+		int param_position = stmt.bind_parameter_index ("$TITLE");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, title);
+		while (stmt.step () == Sqlite.ROW) {
+			
+		}
+		stmt.reset ();
 	}
 
 
@@ -368,7 +382,7 @@ public class dbManager : GLib.Object {
 		
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"articles\" (\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\") 
-						VALUES (\"" + articleID.to_string() + "\", \"" + feedID.to_string() + "\", \"" + title + "\", \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW)";
+						VALUES (\"" + articleID.to_string() + "\", \"" + feedID.to_string() + "\", $TITLE, \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW)";
 						
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -376,7 +390,10 @@ public class dbManager : GLib.Object {
 			warning("error writing article\nquery: %s\nhtml: %s\n", query, output);
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
-		int param_position = stmt.bind_parameter_index ("$HTML");
+		int param_position = stmt.bind_parameter_index ("$TITLE");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, title);
+		param_position = stmt.bind_parameter_index ("$HTML");
 		assert (param_position > 0);
 		stmt.bind_text (param_position, html);
 		param_position = stmt.bind_parameter_index ("$PREVIEW");
@@ -687,7 +704,7 @@ public class dbManager : GLib.Object {
 		}
 		query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 
-		//stdout.printf("%s\n", query);
+		stdout.printf("%s\n", query);
 
 		headline tmpHeadline;
 		Sqlite.Statement stmt;
@@ -699,6 +716,11 @@ public class dbManager : GLib.Object {
 			tmpHeadline = new headline(stmt.column_int(0), stmt.column_text(1), stmt.column_text(2), stmt.column_int(3), stmt.column_int(4), stmt.column_int(5));
 			tmp.append(tmpHeadline);
 		}
+		
+		/*foreach(var item in tmp)
+		{
+			stdout.printf("%s\n", item.m_title);
+		}*/
 		
 		return tmp;
 	}

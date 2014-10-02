@@ -1,4 +1,14 @@
-Needed Packages:
+//+++++++++++++++++++++++++++++++++++++++
+// TT-RSS
+//+++++++++++++++++++++++++++++++++++++++
+
+1. Install the plugin "api_newsplus" for tt-rss.
+2. Check "Enable API access" in tt-rss preferences.
+
+
+//+++++++++++++++++++++++++++++++++++++++
+// Needed Packages
+//+++++++++++++++++++++++++++++++++++++++
 
 html2text
 build-essential
@@ -15,7 +25,9 @@ libnotify-dev
 libunity-dev
 
 
-Building:
+//+++++++++++++++++++++++++++++++++++++++
+// Compiling
+//+++++++++++++++++++++++++++++++++++++++
 
 mkdir build
 cd build
@@ -24,4 +36,5 @@ make -j(threads)
 sudo make install
 
 
-Install the plugin "api_newsplus" for tt-rss.
+
+

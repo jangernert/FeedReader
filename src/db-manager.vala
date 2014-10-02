@@ -29,7 +29,7 @@ public class dbManager : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			error("Can't create directory for database!\n ErrorMessage: %s\n", e.message);
+			warning("Can't create directory for database!\n ErrorMessage: %s\n", e.message);
 		}
 		int rc = Sqlite.Database.open_v2 (db_path + "feedreader-01.db", out sqlite_db);
 		if (rc != Sqlite.OK) {

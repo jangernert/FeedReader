@@ -18,7 +18,7 @@ find_package(PkgConfig)
 add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
 
-pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 libsoup-2.4 webkit2gtk-3.0 sqlheavy-0.1 libsecret-1 libnotify unity)
+pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify unity)
 
 add_definitions(${DEPS_CFLAGS})
 link_libraries(${DEPS_LIBRARIES})
@@ -32,7 +32,7 @@ ensure_vala_version("0.24" MINIMUM)
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
     src/rss_reader.vala
-    src/article.vala
+    src/types.vala
     src/article-list.vala
     src/articlerow.vala
     src/article-view.vala
@@ -54,7 +54,7 @@ PACKAGES
     gtk+-3.0
     json-glib-1.0
     libsoup-2.4
-    sqlheavy-0.1
+    sqlite3
     WebKit2-3.0
     libsecret-1
     libnotify
@@ -69,11 +69,12 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/daemon.vala
     src/ttrss_interface.vala
     src/db-manager.vala
+    src/types.vala
 
 PACKAGES
     glib-2.0>=2.32
     gio-2.0
-    sqlheavy-0.1
+    sqlite3
     libsoup-2.4
     json-glib-1.0
     libnotify

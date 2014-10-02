@@ -46,6 +46,7 @@ public class rssReaderApp : Gtk.Application {
 		
 		dataBase = new dbManager();
 		dataBase.init();
+		dataBase.isTableEmpty("feeds");
 		
 		m_window = new readerUI (this);
 		m_window.set_icon_name ("internet-news-reader");

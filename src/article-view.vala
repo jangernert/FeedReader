@@ -77,8 +77,6 @@ public class articleView : Gtk.Stack {
 
 	public void clearContent()
 	{
-		m_title.set_text("");
-		m_view.load_html("", "");
 		this.set_visible_child_name("empty");
 	}
 

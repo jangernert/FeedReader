@@ -189,45 +189,44 @@ public class ttrss_interface : GLib.Object {
 				int all_unread_count = 0;
 
 				var categories = dataBase.read_categories();
-				try{
-					for(int row = 1; !categories.finished; row++, categories.next() )
+
+				foreach(var item in categories)
+				{
+					var message_getFeeds = new Soup.Message("POST", ttrss_url);
+					string getFeeds = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getFeeds\", \"cat_id\":" + item.m_categorieID.to_string() + "}";
+					message_getFeeds.set_request(m_contenttype, Soup.MemoryUse.COPY, getFeeds.data);
+					m_session.send_message(message_getFeeds);
+
+					try{
+						m_parser.load_from_data((string) message_getFeeds.response_body.flatten ().data, -1);
+					}
+					catch (Error e) {
+						stderr.printf("I guess something is not working...\n");
+					}
+
+					var root_object = m_parser.get_root().get_object();
+					var response = root_object.get_array_member ("content");
+					var feed_count = response.get_length();
+				
+				
+					string icon_url = ttrss_url.replace("api/", getIconDir());
+				
+					for(uint i = 0; i < feed_count; i++)
 					{
-						var message_getFeeds = new Soup.Message("POST", ttrss_url);
-						string getFeeds = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getFeeds\", \"cat_id\":" + categories.fetch_int(0).to_string() + "}";
-						message_getFeeds.set_request(m_contenttype, Soup.MemoryUse.COPY, getFeeds.data);
-						m_session.send_message(message_getFeeds);
-
-						try{
-							m_parser.load_from_data((string) message_getFeeds.response_body.flatten ().data, -1);
-						}
-						catch (Error e) {
-							stderr.printf("I guess something is not working...\n");
-						}
-
-						var root_object = m_parser.get_root().get_object();
-						var response = root_object.get_array_member ("content");
-						var feed_count = response.get_length();
-				
-				
-						string icon_url = ttrss_url.replace("api/", getIconDir());
-				
-						for(uint i = 0; i < feed_count; i++)
-						{
-							var feed_node = response.get_object_element(i);
-							string feed_id = feed_node.get_int_member("id").to_string();
-							downloadIcon(feed_id, icon_url);
+						var feed_node = response.get_object_element(i);
+						string feed_id = feed_node.get_int_member("id").to_string();
+						downloadIcon(feed_id, icon_url);
 					
-							all_unread_count += int.parse(feed_node.get_int_member("unread").to_string());
+						all_unread_count += int.parse(feed_node.get_int_member("unread").to_string());
 					
-							dataBase.write_feed(int.parse(feed_id),
+						dataBase.write_feed(int.parse(feed_id),
 										  feed_node.get_string_member("title"),
 										  feed_node.get_string_member("feed_url"),
 										  feed_node.get_boolean_member("has_icon"),
 										  int.parse(feed_node.get_int_member("unread").to_string()),
 									      int.parse(feed_node.get_int_member("cat_id").to_string()));
-						}
 					}
-				}catch(SQLHeavy.Error e){}
+				}
 				
 				
 				dataBase.write_propertie("unread_articles", all_unread_count);

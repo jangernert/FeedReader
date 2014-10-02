@@ -32,15 +32,12 @@ public class categorieRow : baseRow {
 	private bool m_collapsed;
 	public signal void collapse(bool collapse, int catID);
 
-	public categorieRow (string name, int categorieID, int orderID, string unread_count, int parentID, int level, int expanded) {
+	public categorieRow (string name, int categorieID, int orderID, string unread_count, int parentID, int level, bool expanded) {
 	
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
 		m_parentID = parentID;
-		if(expanded == 0)
-			m_collapsed = true;
-		else
-			m_collapsed = false;
+		m_collapsed = !expanded;
 		m_name = name;
 		m_exists = true;
 		m_categorieID = categorieID;

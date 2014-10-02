@@ -147,36 +147,32 @@ public class articleList : Gtk.Stack {
 		//FIXME: limit should depend on headline layout
 		m_limit = 15;
 		
-		SQLHeavy.QueryResult headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
-		try{
-			for (int row = 1 ; !headlines.finished ; row++, headlines.next () )
-			{
-				m_displayed_articles++;
-				var unread = false;
-				if(headlines.fetch_int(4) == 1)
-					unread = true;
+		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
 
-				var showIcon = false;
-				if(m_current_feed_selected == 0)
-					showIcon = true;
-				else if(!id_is_feedID)
-					showIcon = true;
+		foreach(var item in headlines)
+		{
+			m_displayed_articles++;
+
+			var showIcon = false;
+			if(m_current_feed_selected == 0)
+				showIcon = true;
+			else if(!id_is_feedID)
+				showIcon = true;
 			
-				articleRow* tmpRow = new articleRow(
-					                             headlines.fetch_string(1),
-					                             unread,
-					                             headlines.fetch_int(3).to_string(),
-					                             headlines.fetch_string(2),
-					                             headlines.fetch_int(3),
-					                             headlines.fetch_int(0),
-					                             headlines.fetch_int(5),
+			articleRow* tmpRow = new articleRow(
+					                             item.m_title,
+					                             item.m_unread,
+					                             item.m_feedID.to_string(),
+					                             item.m_url,
+					                             item.m_feedID,
+					                             item.m_articleID,
+					                             item.m_marked,
 					                             showIcon
 					                            );
-				tmpRow->updateFeedList.connect(() => {updateFeedList();});
-				m_currentList.add(tmpRow);
-				tmpRow->reveal(true);
-			}
-		}catch(SQLHeavy.Error e){}
+			tmpRow->updateFeedList.connect(() => {updateFeedList();});
+			m_currentList.add(tmpRow);
+			tmpRow->reveal(true);
+		}
 		m_currentList.show_all();
 		if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
 		else if(m_currentList == m_List2)   this.set_visible_child_name("list2");
@@ -214,47 +210,42 @@ public class articleList : Gtk.Stack {
 		
 		bool found;
 
-		try{
-			for (int atRow = 1 ; !headlines.finished ; atRow++, headlines.next () )
+		foreach(var item in headlines)
+		{
+			found = false;
+			
+			foreach(Gtk.Widget row in articleChildList)
 			{
-				found = false;
-				var unread = false;
-				if(headlines.fetch_int(4) == 1)
-					unread = true;
-			
-				foreach(Gtk.Widget row in articleChildList)
+				var tmpRow = (articleRow)row;
+				if(item.m_articleID == tmpRow.m_articleID)
 				{
-					var tmpRow = (articleRow)row;
-					if(headlines.fetch_int(0) == tmpRow.m_articleID)
-					{
-						tmpRow.updateUnread(unread);
-						found = true;
-						break;
-					}
-				}
-
-				if(!found)
-				{
-					var showIcon = false;
-					if(m_current_feed_selected == 0)
-						showIcon = true;
-			
-					articleRow* tmpRow = new articleRow(
-							                         headlines.fetch_string(1),
-							                         unread,
-							                         headlines.fetch_int(3).to_string(),
-							                         headlines.fetch_string(2),
-							                         headlines.fetch_int(3),
-							                         headlines.fetch_int(0),
-						                             headlines.fetch_int(5),
-							                         showIcon
-							                        );
-					tmpRow->updateFeedList.connect(() => {updateFeedList();});
-					m_currentList.insert(tmpRow, 0);
-					tmpRow->reveal(true);
+					tmpRow.updateUnread(item.m_unread);
+					found = true;
+					break;
 				}
 			}
-		}catch(SQLHeavy.Error e){}
+
+			if(!found)
+			{
+				var showIcon = false;
+				if(m_current_feed_selected == 0)
+					showIcon = true;
+			
+				articleRow* tmpRow = new articleRow(
+					                             item.m_title,
+					                             item.m_unread,
+					                             item.m_feedID.to_string(),
+					                             item.m_url,
+					                             item.m_feedID,
+					                             item.m_articleID,
+					                             item.m_marked,
+					                             showIcon
+					                            );
+				tmpRow->updateFeedList.connect(() => {updateFeedList();});
+				m_currentList.insert(tmpRow, 0);
+				tmpRow->reveal(true);
+			}
+		}
 	}
 
 	 

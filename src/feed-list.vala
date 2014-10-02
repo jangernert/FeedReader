@@ -165,41 +165,35 @@ public class feedList : Gtk.Stack {
 
 		createCategories();
 
-		try{
-			var feeds = dataBase.read_feeds();
-			for(int categorie = 1; !feeds.finished; categorie++, feeds.next() )
+		var feeds = dataBase.read_feeds();
+		foreach(var item in feeds)
+		{
+			var FeedChildList = m_list.get_children();
+			int pos = 0;
+			foreach(Gtk.Widget row in FeedChildList)
 			{
-				var FeedChildList = m_list.get_children();
-				int pos = 0;
-				foreach(Gtk.Widget row in FeedChildList)
+				pos++;
+				var tmpRow = row as categorieRow;
+
+				if(tmpRow != null)
 				{
-					pos++;
-					var tmpRow = row as categorieRow;
-
-					if(tmpRow != null)
+					if(tmpRow.getID() == item.m_categorieID)
 					{
-						if(tmpRow.getID() == feeds.fetch_int(5))
-						{
-							var has_icon = false;
-							if(feeds.fetch_int(3) == 1)
-								has_icon = true;
-
-							var feedrow = new FeedRow(
-											           feeds.fetch_string(1),
-											           feeds.fetch_int(4).to_string(),
-											           has_icon,
-											           feeds.fetch_int(0).to_string(),
-							                           feeds.fetch_int(5),
-							                           tmpRow.getLevel()
-											          );
-							m_list.insert(feedrow, pos);
-							feedrow.reveal(true);
-							break;
-						}
+						var feedrow = new FeedRow(
+											       item.m_title,
+											       item.m_unread.to_string(),
+											       item.m_hasIcon,
+											       item.m_feedID.to_string(),
+							                       item.m_categorieID,
+							                       tmpRow.getLevel()
+											      );
+						m_list.insert(feedrow, pos);
+						feedrow.reveal(true);
+						break;
 					}
 				}
 			}
-		}catch(SQLHeavy.Error e){}
+		}
 		if(m_selected == null)
 		{
 			m_selected = row_all;
@@ -214,123 +208,120 @@ public class feedList : Gtk.Stack {
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
 
-		try{
-			for(int i = 1; i <= maxCatLevel; i++)
+		for(int i = 1; i <= maxCatLevel; i++)
+		{
+			var categories = dataBase.read_categories_level(i);
+			foreach(var item in categories)
 			{
-				var categories = dataBase.read_categories_level(i);
-				for(int row = 1; !categories.finished; row++, categories.next() )
+				var FeedChildList = m_list.get_children();
+				int pos = 0;
+				foreach(Gtk.Widget existing_row in FeedChildList)
 				{
-					var FeedChildList = m_list.get_children();
-					int pos = 0;
-					foreach(Gtk.Widget existing_row in FeedChildList)
+					pos++;
+					var tmpRow = existing_row as categorieRow;
+					if((tmpRow != null && tmpRow.getID() == item.m_parent) || (item.m_parent == -99 && pos > 2))
 					{
-						pos++;
-						var tmpRow = existing_row as categorieRow;
-						if((tmpRow != null && tmpRow.getID() == categories.fetch_int(5)) || (categories.fetch_int(5) == -99 && pos > 2))
-						{
-							var categorierow = new categorieRow(
-					                                categories.fetch_string(1),
-					                                categories.fetch_int(0),
-					                                categories.fetch_int(3),
-					                                categories.fetch_int(2).to_string(),
-					                                categories.fetch_int(5),
-							                        categories.fetch_int(6),
-							                        categories.fetch_int(7)
+						var categorierow = new categorieRow(
+					                                item.m_title,
+					                                item.m_categorieID,
+					                                item.m_orderID,
+					                                item.m_unread_count.to_string(),
+					                                item.m_parent,
+							                        item.m_level,
+							                        item.m_expanded
 					                                );
-							categorierow.collapse.connect((collapse, catID) => {
-								if(collapse)
-									collapseCategorie(catID);
-								else
-									expandCategorie(catID);
-							});
-							m_list.insert(categorierow, pos);
-							categorierow.reveal(true);
-							break;
-						}
+						categorierow.collapse.connect((collapse, catID) => {
+							if(collapse)
+								collapseCategorie(catID);
+							else
+								expandCategorie(catID);
+						});
+						m_list.insert(categorierow, pos);
+						categorierow.reveal(true);
+						break;
 					}
 				}
 			}
-		}catch(SQLHeavy.Error e){}
+		}
 	}
 
 
 	private void updateCategories()
 	{
-		try{
-			var categories = dataBase.read_categories();
-			bool found, inserted;
-			var FeedChildList = m_list.get_children();
+
+		var categories = dataBase.read_categories();
+		bool found, inserted;
+		var FeedChildList = m_list.get_children();
 		
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as categorieRow;
+			if(tmpRow != null)
+			{
+				tmpRow.setExist(false);
+			}
+		}
+		
+		foreach(var item in categories)
+		{
+			found = false;
 			foreach(Gtk.Widget row in FeedChildList)
 			{
 				var tmpRow = row as categorieRow;
 				if(tmpRow != null)
 				{
-					tmpRow.setExist(false);
+					if(tmpRow.getID() == item.m_categorieID)
+					{
+						found = true;
+						tmpRow.setExist(true);
+						tmpRow.set_unread_count(item.m_unread_count.to_string());
+						break;
+					}
 				}
 			}
-		
-			for(int atRow = 1; !categories.finished; atRow++, categories.next() )
+				
+			if(!found)
 			{
-				found = false;
+				var categorierow = new categorieRow(
+					                                item.m_title,
+					                                item.m_categorieID,
+					                                item.m_orderID,
+					                                item.m_unread_count.to_string(),
+					                                item.m_parent,
+							                        item.m_level,
+							                        true
+					                                );
+					
+				categorierow.collapse.connect((collapse, catID) => {
+					if(collapse)
+						collapseCategorie(catID);
+					else
+						expandCategorie(catID);
+				});
+
+				int pos = 0;
+				inserted = false;
 				foreach(Gtk.Widget row in FeedChildList)
 				{
 					var tmpRow = row as categorieRow;
-					if(tmpRow != null)
+					pos++;
+					if(tmpRow != null && tmpRow.getID() == categorierow.getParent()+1)
 					{
-						if(tmpRow.getID() == categories.fetch_int(0))
-						{
-							found = true;
-							tmpRow.setExist(true);
-							tmpRow.set_unread_count(categories.fetch_int(2).to_string());
-							break;
-						}
-					}
-				}
-				
-				if(!found)
-				{
-					var categorierow = new categorieRow(
-							                            categories.fetch_string(1),
-							                            categories.fetch_int(0),
-							                            categories.fetch_int(3),
-							                            categories.fetch_int(2).to_string(),
-					                                    categories.fetch_int(5),
-					                                    categories.fetch_int(6),
-					                                    1
-							                            );
-					
-					categorierow.collapse.connect((collapse, catID) => {
-						if(collapse)
-							collapseCategorie(catID);
-						else
-							expandCategorie(catID);
-					});
-
-					int pos = 0;
-					inserted = false;
-					foreach(Gtk.Widget row in FeedChildList)
-					{
-						var tmpRow = row as categorieRow;
-						pos++;
-						if(tmpRow != null && tmpRow.getID() == categorierow.getParent()+1)
-						{
-							m_list.insert(categorierow, pos-1);
-							categorierow.reveal(true);
-							inserted = true;
-						}
-					}
-					if(!inserted)
-					{
-						m_list.add(categorierow);
+						m_list.insert(categorierow, pos-1);
 						categorierow.reveal(true);
+						inserted = true;
 					}
-					
 				}
+				if(!inserted)
+				{
+					m_list.add(categorierow);
+					categorierow.reveal(true);
+				}
+					
 			}
+		}
 		
-			this.show_all();
-		}catch(SQLHeavy.Error e){}
+		this.show_all();
 	}
 
 
@@ -350,66 +341,59 @@ public class feedList : Gtk.Stack {
 			}
 		}
 
-		try{
-			var feeds = dataBase.read_feeds();
-			for (int atRow = 1 ; !feeds.finished ; atRow++, feeds.next () )
+		var feeds = dataBase.read_feeds();
+		foreach(var item in feeds)
+		{
+			found = false;
+			foreach(Gtk.Widget row in FeedChildList)
 			{
-				found = false;
-				foreach(Gtk.Widget row in FeedChildList)
+				var tmpRow = row as FeedRow;
+				if(tmpRow != null)
 				{
-					var tmpRow = row as FeedRow;
-					if(tmpRow != null)
+					if(item.m_feedID == tmpRow.m_ID && item.m_categorieID == tmpRow.getCategorie())
 					{
-						if(feeds.fetch_int(0) == tmpRow.m_ID && feeds.fetch_int(5) == tmpRow.getCategorie())
-						{
-							tmpRow.setSubscribed(true);
-							tmpRow.update(feeds.fetch_string(1), feeds.fetch_int(4).to_string());
-							found = true;
-							break;
-						}
-						else if(feeds.fetch_int(0) == tmpRow.m_ID && feeds.fetch_int(5) != tmpRow.getCategorie())
-						{
-							m_list.remove(tmpRow);
-							break;
-						}
+						tmpRow.setSubscribed(true);
+						tmpRow.update(item.m_title, item.m_unread.to_string());
+						found = true;
+						break;
 					}
-				}
-
-				if(!found)
-				{
-					FeedChildList = m_list.get_children();
-					int pos = 0;
-					foreach(Gtk.Widget row in FeedChildList)
+					else if(item.m_feedID == tmpRow.m_ID && item.m_categorieID != tmpRow.getCategorie())
 					{
-						pos++;
-						var tmpRow = row as categorieRow;
-
-						if(tmpRow != null)
-						{
-							if(tmpRow.getID() == feeds.fetch_int(5))
-							{
-								var has_icon = false;
-								if(feeds.fetch_int(3) == 1)
-									has_icon = true;
-
-								var feedrow = new FeedRow(
-													       feeds.fetch_string(1),
-													       feeds.fetch_int(4).to_string(),
-													       has_icon,
-													       feeds.fetch_int(0).to_string(),
-									                       feeds.fetch_int(5),
-								                           tmpRow.getLevel()
-													      );
-								m_list.insert(feedrow, pos);
-								feedrow.reveal(true);
-								break;
-							}
-						}
+						m_list.remove(tmpRow);
+						break;
 					}
-					
 				}
 			}
-		}catch(SQLHeavy.Error e){}
+
+			if(!found)
+			{
+				FeedChildList = m_list.get_children();
+				int pos = 0;
+				foreach(Gtk.Widget row in FeedChildList)
+				{
+					pos++;
+					var tmpRow = row as categorieRow;
+
+					if(tmpRow != null)
+					{
+						if(tmpRow.getID() == item.m_categorieID)
+						{
+							var feedrow = new FeedRow(
+											           item.m_title,
+											           item.m_unread.to_string(),
+											           item.m_hasIcon,
+											           item.m_feedID.to_string(),
+							                           item.m_categorieID,
+							                           tmpRow.getLevel()
+											          );
+							m_list.insert(feedrow, pos);
+							feedrow.reveal(true);
+							break;
+						}
+					}
+				}	
+			}
+		}
 
 		// update "All Articles" row
 		// delete non subscribed rows

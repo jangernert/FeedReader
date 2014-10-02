@@ -34,14 +34,12 @@ public class articleRow : baseRow {
 	public int m_feedID { get; private set; }
 	public signal void updateFeedList();
 
-	public articleRow (string aritcleName, bool unread, string iconname, string url, int feedID, int articleID, int marked, bool showIcon = false)
+	public articleRow (string aritcleName, bool unread, string iconname, string url, int feedID, int articleID, bool marked, bool showIcon = false)
 	{
 		bool layout = true;
 
 		
-		m_marked = false;
-		if(marked == 1) m_marked = true;
-		
+		m_marked = marked;
 		m_name = aritcleName;
 		m_articleID = articleID;
 		m_feedID = feedID;

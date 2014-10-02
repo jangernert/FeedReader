@@ -24,6 +24,13 @@ public class dbManager : GLib.Object {
 
 	public dbManager () {
 		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";
+		var path = GLib.File.new_for_path(db_path);
+		try{
+			path.make_directory_with_parents();
+		}
+		catch(GLib.Error e){
+			error("Can't create directory for database!\n ErrorMessage: %s\n", e.message);
+		}
 		int rc = Sqlite.Database.open_v2 (db_path + "feedreader-01.db", out sqlite_db);
 		if (rc != Sqlite.OK) {
 			error("Can't open database: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());

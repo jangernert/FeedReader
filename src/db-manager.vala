@@ -304,6 +304,7 @@ public class dbManager : GLib.Object {
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
+			warning("error writing headline\nquery: %s\n", query);
 			error("Error: %s\n", errmsg);
 		}
 	}
@@ -367,12 +368,24 @@ public class dbManager : GLib.Object {
 		
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"articles\" (\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\") 
-						VALUES (\"" + articleID.to_string() + "\", \"" + feedID.to_string() + "\", \"" + title + "\", \"" + author + "\", \"" + url + "\", \"" + html + "\", \"" + output + "\")";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
+						VALUES (\"" + articleID.to_string() + "\", \"" + feedID.to_string() + "\", \"" + title + "\", \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW)";
+						
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
+			warning("error writing article\nquery: %s\nhtml: %s\n", query, output);
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
+		int param_position = stmt.bind_parameter_index ("$HTML");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, html);
+		param_position = stmt.bind_parameter_index ("$PREVIEW");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, output);
+		while (stmt.step () == Sqlite.ROW) {
+			
+		}
+		stmt.reset ();
 	}
 
 

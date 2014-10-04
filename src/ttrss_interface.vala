@@ -243,7 +243,6 @@ public class ttrss_interface : GLib.Object {
 				}
 				
 				
-				dataBase.write_propertie("unread_articles", all_unread_count);
 				dataBase.delete_unsubscribed_feeds();
 				Idle.add((owned) callback);
 			}

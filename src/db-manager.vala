@@ -82,12 +82,6 @@ public class dbManager : GLib.Object {
 												"Parent" INTEGER,
 												"Level" INTEGER
 												)""";
-
-			string properties =			"""CREATE  TABLE  IF NOT EXISTS "main"."properties" 
-										(
-											"propertie" VARCHAR PRIMARY KEY  NOT NULL ,
-											"value" INTEGER NOT NULL
-										)""";
 	
 			string errmsg;
 			int ec = sqlite_db.exec (feeds, null, out errmsg);
@@ -103,10 +97,6 @@ public class dbManager : GLib.Object {
 				error("Error: %s\n", errmsg);
 			}
 			ec = sqlite_db.exec (categories, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
-			ec = sqlite_db.exec (properties, null, out errmsg);
 			if (ec != Sqlite.OK) {
 				error("Error: %s\n", errmsg);
 			}
@@ -183,52 +173,24 @@ public class dbManager : GLib.Object {
 		if (ec != Sqlite.OK) {
 			error("Error: %s\n", errmsg);
 		}
-			
 
-			
-		string change_unread_query = "UPDATE \"main\".\"properties\" SET \"value\" = \"value\" ";
-		if(increase){
-			change_unread_query = change_unread_query + "+ 1";
-		}else{
-			change_unread_query = change_unread_query + "- 1";
-		}
-		change_unread_query = change_unread_query + " WHERE \"propertie\" = \"unread_articles\"";
-		ec = sqlite_db.exec (change_unread_query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
 		updateBadge();
 	}
-
-
-	public void write_propertie(string propertie_name, int propertie_value)
+	
+	public int get_unread_total()
 	{
-		string query = "INSERT OR REPLACE INTO \"main\".\"properties\" (\"propertie\", \"value\") VALUES (\"" + propertie_name + "\", \"" + propertie_value.to_string() + "\")";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
-	}
-
-
-	public int read_propertie(string propertie_name)
-	{
-		string query = "SELECT value FROM \"main\".\"properties\" WHERE propertie = \"" + propertie_name + "\"";
+		string query = "SELECT unread FROM \"main\".\"categories\" WHERE NOT \"categorieID\" = -1";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
-		int propertie = -999;
-		int cols = stmt.column_count ();
+		int unread = 0;
 		while (stmt.step () == Sqlite.ROW) {
-			for (int i = 0; i < cols; i++) {
-				propertie = stmt.column_int(i);
-			}
+			unread += stmt.column_int(0);
 		}
 		stmt.reset ();
-		return propertie;
+		return unread;
 	}
 
 	public void write_feed(int feed_id, string feed_name, string feed_url, bool has_icon, int unread_count, int cat_id)

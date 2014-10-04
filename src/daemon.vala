@@ -40,7 +40,7 @@ public class FeedDaemonServer : Object {
 	
 	public void updateBadge()
 	{
-		var count = dataBase.read_propertie("unread_articles");
+		var count = dataBase.get_unread_total();
 		m_launcher.count = count;
 		if(count > 0)
 			m_launcher.count_visible = true;

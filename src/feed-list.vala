@@ -150,7 +150,7 @@ public class feedList : Gtk.Stack {
 		row_spacer.set_size_request(0, 8);
 		m_list.add(row_spacer);
 		
-		var unread = dataBase.read_propertie("unread_articles");
+		var unread = dataBase.get_unread_total();
 		var row_all = new FeedRow("All Articles",unread.to_string(), false, "0", -1, 0);
 		m_list.add(row_all);
 		row_all.reveal(true);
@@ -335,7 +335,7 @@ public class feedList : Gtk.Stack {
 
 	public async void updateFeedList()
 	{
-		var unread = dataBase.read_propertie("unread_articles");
+		var unread = dataBase.get_unread_total();
 		bool found;
 		var FeedChildList = m_list.get_children();
 		updateCategories();

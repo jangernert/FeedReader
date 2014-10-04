@@ -49,10 +49,10 @@ public class articleList : Gtk.Stack {
 		
 		
 		m_List1 = new Gtk.ListBox();
-		m_List1.set_selection_mode(Gtk.SelectionMode.SINGLE);
+		m_List1.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		m_List1.get_style_context().add_class("article-list");
 		m_List2 = new Gtk.ListBox();
-		m_List2.set_selection_mode(Gtk.SelectionMode.SINGLE);
+		m_List2.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		m_List2.get_style_context().add_class("article-list");
 		
 		
@@ -115,9 +115,12 @@ public class articleList : Gtk.Stack {
 		int current = ArticleListChildren.index(selected_row);
 
 		current++;
-		articleRow current_article = ArticleListChildren.nth_data(current) as articleRow;
-		m_currentList.select_row(current_article);
-		row_activated(current_article);
+		if(current < ArticleListChildren.length())
+		{
+			articleRow current_article = ArticleListChildren.nth_data(current) as articleRow;
+			m_currentList.select_row(current_article);
+			row_activated(current_article);
+		}
 	}
 
 

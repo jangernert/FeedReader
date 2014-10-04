@@ -47,18 +47,14 @@ public class category : GLib.Object {
 	public int m_orderID { get; private set; }
 	public int m_parent { get; private set; }
 	public int m_level { get; private set; }
-	public bool m_expanded { get; private set; }
 
-	public category (int categorieID, string title, int unread_count, int orderID, int parent, int level, int expanded) {
+	public category (int categorieID, string title, int unread_count, int orderID, int parent, int level) {
 		m_categorieID = categorieID;
 		m_title = title;
 		m_unread_count = unread_count;
 		m_orderID = orderID;
 		m_parent = parent;
 		m_level = level;
-		
-		if(expanded == 0)			m_expanded = false;
-		else if(expanded == 1)		m_expanded = true;
 	}
 }
 

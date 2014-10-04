@@ -146,7 +146,6 @@ public class articleList : Gtk.Stack {
 	{
 		//FIXME: limit should depend on headline layout
 		m_limit = 15;
-		
 		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
 
 		foreach(var item in headlines)

@@ -207,6 +207,8 @@ public class feedList : Gtk.Stack {
 	private void createCategories()
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
+		string[] exp = feedreader_settings.get_strv("expanded-categories");
+		bool expand = false;
 
 		for(int i = 1; i <= maxCatLevel; i++)
 		{
@@ -221,6 +223,11 @@ public class feedList : Gtk.Stack {
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.m_parent) || (item.m_parent == -99 && pos > 2))
 					{
+						foreach(string str in exp)
+						{
+							if(item.m_title == str)
+								expand = true;
+						}
 						var categorierow = new categorieRow(
 					                                item.m_title,
 					                                item.m_categorieID,
@@ -228,8 +235,9 @@ public class feedList : Gtk.Stack {
 					                                item.m_unread_count.to_string(),
 					                                item.m_parent,
 							                        item.m_level,
-							                        item.m_expanded
+							                        expand
 					                                );
+					    expand = false;
 						categorierow.collapse.connect((collapse, catID) => {
 							if(collapse)
 								collapseCategorie(catID);
@@ -289,7 +297,7 @@ public class feedList : Gtk.Stack {
 					                                item.m_unread_count.to_string(),
 					                                item.m_parent,
 							                        item.m_level,
-							                        true
+							                        false
 					                                );
 					
 				categorierow.collapse.connect((collapse, catID) => {
@@ -495,6 +503,26 @@ public class feedList : Gtk.Stack {
 	{
 		FeedRow selected_row = (FeedRow)m_list.get_selected_row();
 		return selected_row.m_ID;
+	}
+	
+	public string[] getExpandedCategories()
+	{
+		var FeedChildList = m_list.get_children();
+		string[] e = {};
+		
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpCatRow = row as categorieRow;
+			if(tmpCatRow != null)
+			{
+				if(tmpCatRow.isExpanded())
+				{
+					e += tmpCatRow.getName();
+					stdout.printf("%s\n", tmpCatRow.getName());
+				}
+			}
+		}
+		return e;
 	}
 
 }

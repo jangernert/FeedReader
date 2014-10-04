@@ -100,7 +100,6 @@ public class categorieRow : baseRow {
 			m_eventbox.remove(m_icon_collapsed);
 			m_eventbox.add(m_icon_expanded);
 			collapse(false, m_categorieID);
-			dataBase.mark_categorie_expanded(m_categorieID, 1);
 		}
 		else
 		{
@@ -108,7 +107,6 @@ public class categorieRow : baseRow {
 			m_eventbox.remove(m_icon_expanded);
 			m_eventbox.add(m_icon_collapsed);
 			collapse(true, m_categorieID);
-			dataBase.mark_categorie_expanded(m_categorieID, 0);
 		}
 		
 		this.show_all();
@@ -117,6 +115,11 @@ public class categorieRow : baseRow {
 	public int getID()
 	{
 		return m_categorieID;
+	}
+	
+	public string getName()
+	{
+		return m_name;
 	}
 
 	public int getParent()

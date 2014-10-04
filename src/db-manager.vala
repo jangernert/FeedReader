@@ -80,20 +80,13 @@ public class dbManager : GLib.Object {
 												"orderID" INTEGER,
 												"exists" INTEGER,
 												"Parent" INTEGER,
-												"Level" INTEGER,
-												"expanded" INTEGER DEFAULT 0
+												"Level" INTEGER
 												)""";
 
 			string properties =			"""CREATE  TABLE  IF NOT EXISTS "main"."properties" 
 										(
 											"propertie" VARCHAR PRIMARY KEY  NOT NULL ,
 											"value" INTEGER NOT NULL
-										)""";
-
-			string login =				"""CREATE  TABLE  IF NOT EXISTS "main"."login" 
-										(
-											"data" VARCHAR PRIMARY KEY  NOT NULL,
-											"value" VARCHAR NOT NULL
 										)""";
 	
 			string errmsg;
@@ -114,10 +107,6 @@ public class dbManager : GLib.Object {
 				error("Error: %s\n", errmsg);
 			}
 			ec = sqlite_db.exec (properties, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
-			ec = sqlite_db.exec (login, null, out errmsg);
 			if (ec != Sqlite.OK) {
 				error("Error: %s\n", errmsg);
 			}
@@ -148,37 +137,6 @@ public class dbManager : GLib.Object {
 			return true;
 	}
 
-
-	public string read_login(string type)
-	{
-		string result = "";
-		string query = "SELECT value FROM \"main\".\"login\" WHERE data = \"" + type + "\"";
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		
-		int cols = stmt.column_count ();
-		while (stmt.step () == Sqlite.ROW) {
-			for (int i = 0; i < cols; i++) {
-				result = stmt.column_text(i);
-			}
-		}
-		stmt.reset ();
-		return result;
-	}
-
-
-	public void write_login(string type, string login_value)
-	{
-		string query = "INSERT OR REPLACE INTO \"main\".\"login\" (\"data\", \"value\") VALUES (\"" + type + "\", \"" + login_value + "\")";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
-	}
 
 
 	public void change_unread(int feedID, bool increase)
@@ -290,9 +248,8 @@ public class dbManager : GLib.Object {
 
 	public void write_categorie(int categorieID, string categorie_name, int unread_count, int orderID, int parent, int level)
 	{
-		string query = "INSERT OR REPLACE INTO \"main\".\"categories\" (\"categorieID\",\"title\",\"unread\",\"orderID\", \"exists\", \"Parent\", \"Level\", \"expanded\") 
-						VALUES (\"" + categorieID.to_string() + "\", \"" + categorie_name + "\", \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent.to_string() + "\", \"" + level.to_string() + "\", 
-						(SELECT \"expanded\" FROM \"main\".\"categories\" WHERE \"categorieID\" = \"" + categorieID.to_string() + "\"))";
+		string query = "INSERT OR REPLACE INTO \"main\".\"categories\" (\"categorieID\",\"title\",\"unread\",\"orderID\", \"exists\", \"Parent\", \"Level\") 
+						VALUES (\"" + categorieID.to_string() + "\", \"" + categorie_name + "\", \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent.to_string() + "\", \"" + level.to_string() + "\")";
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
@@ -514,16 +471,6 @@ public class dbManager : GLib.Object {
 		}
 	}
 
-	public void mark_categorie_expanded(int catID, int expanded)
-	{
-		string query = "UPDATE \"main\".\"categories\" SET \"expanded\" = \"" + expanded.to_string() + "\" WHERE \"categorieID\" = \"" + catID.to_string() + "\"";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
-	}
-
 	public void delete_headlines(int feedID)
 	{
 		string query = "DELETE FROM \"main\".\"headlines\" WHERE \"feedID\" = \"" + feedID.to_string() + "\"";
@@ -653,7 +600,7 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpcategory = new category(stmt.column_int(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_int(5), stmt.column_int(6), stmt.column_int(7));
+			tmpcategory = new category(stmt.column_int(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_int(5), stmt.column_int(6));
 			tmp.append(tmpcategory);
 		}
 		
@@ -672,7 +619,7 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpcategory = new category(stmt.column_int(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_int(5), stmt.column_int(6), stmt.column_int(7));
+			tmpcategory = new category(stmt.column_int(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_int(5), stmt.column_int(6));
 			tmp.append(tmpcategory);
 		}
 
@@ -711,7 +658,8 @@ public class dbManager : GLib.Object {
 			query = query + and + "instr(UPPER(\"title\"), UPPER(\"" + searchTerm + "\")) > 0";
 		}
 		query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
-
+		
+		//stdout.printf("%s\n", query);
 		headline tmpHeadline;
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);

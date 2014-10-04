@@ -35,11 +35,15 @@ public class readerHeaderbar : Gtk.HeaderBar {
 		var only_unread_icon = new Gtk.Image.from_icon_name("object-inverse", Gtk.IconSize.LARGE_TOOLBAR);
 		var only_marked_icon = new Gtk.Image.from_icon_name("help-about", Gtk.IconSize.LARGE_TOOLBAR);
 
-		if(dataBase.read_propertie("only_unread") == 1)	{m_only_unread = true;}
-		else											{m_only_unread = false; }
+		//if(dataBase.read_propertie("only_unread") == 1)	{m_only_unread = true;}
+		//else											{m_only_unread = false; }
+		
+		m_only_unread = feedreader_settings.get_boolean("only-unread");
 
-		if(dataBase.read_propertie("only_marked") == 1)	{m_only_marked = true;}
-		else											{m_only_marked = false; }
+		//if(dataBase.read_propertie("only_marked") == 1)	{m_only_marked = true;}
+		//else											{m_only_marked = false; }
+	
+		m_only_marked = feedreader_settings.get_boolean("only-marked");
 		
 		m_only_unread_button = new Gtk.ToggleButton();
 		m_only_unread_button.add(only_unread_icon);

@@ -102,18 +102,20 @@ public class readerUI : Gtk.ApplicationWindow
 		
 			int feed_row_width = m_pane_feedlist.get_position();
 			int article_row_width = m_pane_articlelist.get_position();
-
-			dataBase.write_propertie("feed_row_width", feed_row_width);
-			dataBase.write_propertie("article_row_width", article_row_width);
-			dataBase.write_propertie("only_unread", only_unread);
-			dataBase.write_propertie("only_marked", only_marked);
+			
+			
+			feedreader_settings.set_strv("expanded-categories", m_feedList.getExpandedCategories());
+			
+			feedreader_settings.set_int("feed-row-width", feed_row_width);
+			feedreader_settings.set_int("article-row-width", article_row_width);
+			feedreader_settings.set_boolean("only-unread", m_headerbar.m_only_unread);
+			feedreader_settings.set_boolean("only-marked", m_headerbar.m_only_marked);
 		});
 	}
 
 	private void setupFeedlist()
 	{
-		int feed_row_width = dataBase.read_propertie("feed_row_width");
-		//m_pane_feedlist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+		int feed_row_width = feedreader_settings.get_int("feed-row-width");
 		m_pane_feedlist = new ThinPaned(Gtk.Orientation.HORIZONTAL);
 		m_pane_feedlist.set_position(feed_row_width);
 		m_feedList = new feedList();
@@ -150,8 +152,7 @@ public class readerUI : Gtk.ApplicationWindow
 		}
 
 		
-		int article_row_width = dataBase.read_propertie("article_row_width");
-		//m_pane_articlelist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+		int article_row_width = feedreader_settings.get_int("feed-row-width");
 		m_pane_articlelist = new ThinPaned(Gtk.Orientation.HORIZONTAL);
 		m_pane_articlelist.set_size_request(500, 500);
 		m_pane_articlelist.set_position(article_row_width);

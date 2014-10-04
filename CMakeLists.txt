@@ -17,6 +17,7 @@ set (VERSION_INFO "whats up world")
 find_package(PkgConfig)
 add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
+add_subdirectory (schemas)
 
 pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify unity)
 

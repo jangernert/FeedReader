@@ -1,0 +1,69 @@
+<schemalist>
+  <schema id="org.gnome.feedreader" path="/org/gnome/feedreader/" gettext-domain="feedreader">
+
+    <key name="url" type="s">
+      <default>""</default>
+      <summary>Link to your tt-rss instance</summary>
+      <description>
+        Link to your tt-rss instance
+      </description>
+    </key>
+
+    <key name="username" type="s">
+      <default>""</default>
+      <summary>Username to log into tt-rss</summary>
+      <description>
+        Username to log into tt-rss
+      </description>
+    </key>
+    
+    <key name="feed-row-width" type="i">
+      <default>200</default>
+      <summary>FeedRow width</summary>
+      <description>
+        Width of the first paned, the feed-row
+      </description>
+    </key>
+    
+    <key name="article-row-width" type="i">
+      <default>400</default>
+      <summary>ArticleRow width</summary>
+      <description>
+        Width of the second paned, the article-row
+      </description>
+    </key>
+    
+    <key name="only-unread" type="b">
+      <default>false</default>
+      <summary>Only unread</summary>
+      <description>
+        Show only unread articles
+      </description>
+    </key>
+    
+    <key name="only-marked" type="b">
+      <default>false</default>
+      <summary>Only makred</summary>
+      <description>
+        Show only marked articles
+      </description>
+    </key>
+    
+    <key name="expanded-categories" type="as">
+      <default>[]</default>
+      <summary>expaneded categories</summary>
+      <description>
+        all the categories that are expanded, showing their feeds and subcategories
+      </description>
+    </key>
+    
+    <key name="sync" type="i">
+      <default>300</default>
+      <summary>sync rate</summary>
+      <description>
+        Seconds between each refresh
+      </description>
+    </key>
+
+  </schema>
+</schemalist>

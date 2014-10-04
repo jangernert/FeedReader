@@ -66,9 +66,23 @@ public class loginDialog : Gtk.Dialog {
 		m_user_entry.activate.connect(on_enter);
 		m_password_entry.activate.connect(on_enter);
 
-		m_url_entry.set_text(dataBase.read_login("url"));
-		m_user_entry.set_text(dataBase.read_login("user"));
-		m_password_entry.set_text(dataBase.read_login("password"));
+		string url = feedreader_settings.get_string("url");
+		string username = feedreader_settings.get_string("username");
+		m_url_entry.set_text(url);
+		m_user_entry.set_text(username);
+		
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+		                                  "URL", Secret.SchemaAttributeType.STRING,
+		                                  "Username", Secret.SchemaAttributeType.STRING);
+
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["URL"] = url;
+		attributes["Username"] = username;
+
+		string passwd = "";
+		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
+		
+		m_password_entry.set_text(passwd);
 		m_password_entry.set_invisible_char('*');
 		m_password_entry.set_visibility(false);
 		
@@ -117,22 +131,9 @@ public class loginDialog : Gtk.Dialog {
 	private void write_login_data()
 	{
 		string url = m_url_entry.get_text();
-		if(url != ""){
-			if(!url.has_suffix("/"))
-				url = url + "/";
 
-			if(!url.has_suffix("/api/"))
-				url = url + "api/";
-
-			if(!url.has_prefix("http://"))
-					url = "http://" + url;
-		}
-
-
-		//stdout.printf("%s\n%s\n%s\n", url, m_user_entry.get_text(), m_password_entry.get_text());
-		dataBase.write_login("url",url);
-		dataBase.write_login("user",  m_user_entry.get_text());
-		//db.write_login("password", m_password_entry.get_text());
+		feedreader_settings.set_string("url", url);
+		feedreader_settings.set_string("username", m_user_entry.get_text());
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 		                                  "URL", Secret.SchemaAttributeType.STRING,

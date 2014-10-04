@@ -39,8 +39,22 @@ public class ttrss_interface : GLib.Object {
 	public bool login(out string error_message)
 	{
 		error_message = "no errors";
-		ttrss_url = dataBase.read_login("url");
-		string username = dataBase.read_login("user");
+		
+		string url = feedreader_settings.get_string("url");
+		string username = feedreader_settings.get_string ("username");
+		
+		if(url != ""){
+			if(!url.has_suffix("/"))
+				url = url + "/";
+
+			if(!url.has_suffix("/api/"))
+				url = url + "api/";
+
+			if(!url.has_prefix("http://"))
+					url = "http://" + url;
+		}
+		
+		ttrss_url = url;
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 		                                  "URL", Secret.SchemaAttributeType.STRING,

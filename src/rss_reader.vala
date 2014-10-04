@@ -22,6 +22,7 @@ using Gtk;
 
 dbManager dataBase;
 ttrss_interface ttrss;
+GLib.Settings feedreader_settings;
 
 
 [DBus (name = "org.gnome.feedreader")]
@@ -46,6 +47,7 @@ public class rssReaderApp : Gtk.Application {
 		
 		dataBase = new dbManager();
 		dataBase.init();
+		feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
 		
 		m_window = new readerUI (this);
 		m_window.set_icon_name ("internet-news-reader");

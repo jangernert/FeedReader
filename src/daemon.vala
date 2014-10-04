@@ -6,9 +6,10 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		stdout.printf("init\n");
+		int sync_timeout = feedreader_settings.get_int("sync");
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("rss-reader.desktop");
 		updateBadge();
-		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 300, () => {
+		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
         	stdout.printf ("Timeout!\n");
 			startSync();
 			return true;
@@ -65,6 +66,7 @@ void on_bus_aquired (DBusConnection conn) {
 
 
 dbManager dataBase;
+GLib.Settings feedreader_settings;
 ttrss_interface ttrss;
 extern void exit(int exit_code);
 
@@ -72,6 +74,7 @@ void main () {
 	ttrss = new ttrss_interface();
 	dataBase = new dbManager();
 	dataBase.init();
+	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
 	Notify.init("RSS Reader");
 	
 	if(ttrss.login(null))

@@ -47,7 +47,7 @@ public class categorieRow : baseRow {
 		m_eventbox = new Gtk.EventBox();
 		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 
-		string path = "/usr/share/RSSReader/categorie_expander.png";
+		string path = "/usr/share/FeedReader/categorie_expander.png";
 		try{m_state_collapsed = new Gdk.Pixbuf.from_file(path);}catch(GLib.Error e){ warning(e.message);}
 		m_state_expanded = m_state_collapsed.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
 		m_icon_expanded = new Gtk.Image.from_pixbuf(m_state_expanded);

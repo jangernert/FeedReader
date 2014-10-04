@@ -69,7 +69,7 @@ public class articleRow : baseRow {
 				}
 				else
 				{
-					tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/RSSReader/rss24.png");
+					tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/rss24.png");
 				}
 				scale_pixbuf(ref tmp_icon, 24);
 				m_icon = new Gtk.Image.from_pixbuf(tmp_icon);

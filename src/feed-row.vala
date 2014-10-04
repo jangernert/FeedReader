@@ -50,7 +50,7 @@ public class FeedRow : baseRow {
 			}
 			else
 			{
-				m_icon = new Gtk.Image.from_file("/usr/share/RSSReader/rss24.png");
+				m_icon = new Gtk.Image.from_file("/usr/share/FeedReader/rss24.png");
 			}
 
 			m_revealer = new Gtk.Revealer();

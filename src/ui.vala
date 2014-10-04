@@ -32,7 +32,7 @@ public class readerUI : Gtk.ApplicationWindow
 	
 	public readerUI(rssReaderApp app)
 	{
-		Object (application: app, title: _("tt-rss Reader"));
+		Object (application: app, title: _("FeedReader"));
 		this.window_position = WindowPosition.CENTER;
 		
 
@@ -81,7 +81,7 @@ public class readerUI : Gtk.ApplicationWindow
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		this.add(m_pane_feedlist);
 		this.set_titlebar(m_headerbar);
-		this.set_title ("tt-rss Reader");
+		this.set_title ("FeedReader");
 		this.set_default_size(1600, 900);
 		this.show_all();
 	}
@@ -141,7 +141,7 @@ public class readerUI : Gtk.ApplicationWindow
 	{
 		try {
     		Gtk.CssProvider provider = new Gtk.CssProvider ();
-    		provider.load_from_file(GLib.File.new_for_path("/usr/share/RSSReader/FeedReader.css"));
+    		provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
                 
 
 			weak Gdk.Display display = Gdk.Display.get_default ();

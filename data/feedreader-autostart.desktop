@@ -1,9 +1,9 @@
 [Desktop Entry]
-Name=RSS Reader
+Name=FeedReader Autostart
 GenericName=RSS Client
 Comment=
 Categories=GTK;Utility;
-Exec=rss-reader
+Exec=feedreader-daemon
 Icon=internet-news-reader
 Terminal=false
 Type=Application

@@ -6,12 +6,12 @@ list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
-set (PKGDATADIR "${DATADIR}/RSSReader")
+set (PKGDATADIR "${DATADIR}/FeedReader")
 set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
-set (EXEC_NAME "rss-reader")
+set (EXEC_NAME "feedreader")
 set (DAEMON_NAME ${EXEC_NAME}-daemon)
 set (RELEASE_NAME "RSS Client")
-set (VERSION "0.1")
+set (VERSION "0.01")
 set (VERSION_INFO "whats up world")
 
 find_package(PkgConfig)
@@ -32,7 +32,7 @@ ensure_vala_version("0.24" MINIMUM)
 # files we want to compile
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
-    src/rss_reader.vala
+    src/feedreader.vala
     src/types.vala
     src/article-list.vala
     src/articlerow.vala
@@ -98,8 +98,8 @@ install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
 
 # install our .desktop file so the Applications menu will see it
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/rss-reader.desktop DESTINATION ${DATADIR}/applications/)
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/rss-reader-autostart.desktop DESTINATION $ENV{HOME}/.config/autostart/)
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION $ENV{HOME}/.config/autostart/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader.css DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/categorie_expander.png DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/rss24.png DESTINATION ${PKGDATADIR})

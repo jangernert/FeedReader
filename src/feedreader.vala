@@ -141,7 +141,7 @@ public class rssReaderApp : Gtk.Application {
 	
 	public void startDaemon()
 	{
-		string[] spawn_args = {"rss-reader-daemon"};
+		string[] spawn_args = {"feedreader-daemon"};
 		try{
 			GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 		}catch(GLib.SpawnError e){

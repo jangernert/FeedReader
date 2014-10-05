@@ -617,7 +617,7 @@ public class dbManager : GLib.Object {
 		GLib.List<headline> tmp = new GLib.List<headline>();
 		string and = "";
 		string query = "SELECT * FROM \"main\".\"headlines\"";
-		if(ID != 0 || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
+		if(ID != 0 || !ID_is_feedID || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
 		if(ID_is_feedID)
 		{
 			if(ID != 0){
@@ -627,10 +627,8 @@ public class dbManager : GLib.Object {
 		}
 		else
 		{
-			if(ID != 0){
 				query = query + getFeedIDofCategorie(ID);
 				and = " AND ";
-			}
 		}
 		if(only_unread){
 			query = query + and + "\"unread\" = 1";
@@ -645,7 +643,7 @@ public class dbManager : GLib.Object {
 		}
 		query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 		
-		//stdout.printf("%s\n", query);
+		stdout.printf("%s\n", query);
 		headline tmpHeadline;
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);

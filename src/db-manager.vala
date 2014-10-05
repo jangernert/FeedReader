@@ -202,7 +202,7 @@ public class dbManager : GLib.Object {
 		if(has_icon) int_has_icon = 1;
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"feeds\" (\"feed_id\",\"name\",\"url\",\"has_icon\",\"unread\", \"category_id\", \"subscribed\") 
-						VALUES (\"" + feed_id.to_string() + "\", \"" + feed_name + "\", \"" + feed_url + "\", \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id.to_string() + "\", 1)";
+						VALUES (\"" + feed_id.to_string() + "\", \"" + feed_name.replace("\"","\\\"") + "\", \"" + feed_url + "\", \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id.to_string() + "\", 1)";
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {

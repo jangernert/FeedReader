@@ -100,7 +100,6 @@ public class readerHeaderbar : Gtk.HeaderBar {
 		var menubutton = new Gtk.MenuButton();
 		menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
 		menubutton.set_size_request(32, 32);
-		//menubutton.image.margin = menubutton.image.margin + 1;
 		menubutton.set_use_popover(true);
 		menubutton.set_menu_model(menumodel);
 		this.show_close_button = true;

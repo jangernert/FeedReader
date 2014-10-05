@@ -182,7 +182,7 @@ public class dbManager : GLib.Object {
 	
 	public int get_unread_total()
 	{
-		string query = "SELECT unread FROM \"main\".\"categories\" WHERE NOT \"categorieID\" = -1";
+		string query = "SELECT unread FROM \"main\".\"categories\" WHERE \"level\" = 1 AND NOT \"categorieID\" = -1";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {

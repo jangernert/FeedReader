@@ -75,8 +75,8 @@ public class rssReaderApp : Gtk.Application {
 		
 		Notify.init("RSS Reader");
 		m_firstTime = true;
-		updateBadge();
 		tryLogin();
+		updateBadge();
 	}
 
 	public void tryLogin()

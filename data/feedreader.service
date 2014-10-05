@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.feedreader
+Exec=/usr/bin/feedreader-daemon

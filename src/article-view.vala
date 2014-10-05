@@ -64,7 +64,8 @@ public class articleView : Gtk.Stack {
 		int feedID = 0;
 		
 		dataBase.read_article(articleID, out feedID, out title, out author, out url, out html, null);
-		m_title.set_text("<big><b><a href=\"" + url.replace("&","&amp;") + "\" title=\"" + author.replace("&","&amp;") + "\">" + title.replace("&","&amp;") + "</a></b></big>");
+		if(author == "") author = "not available";
+		m_title.set_text("<big><b><a href=\"" + url.replace("&","&amp;") + "\" title=\"Author: " + author.replace("&","&amp;") + "\">" + title.replace("&","&amp;") + "</a></b></big>");
 		m_title.set_use_markup (true);
 		this.show_all();
 

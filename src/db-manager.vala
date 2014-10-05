@@ -202,24 +202,45 @@ public class dbManager : GLib.Object {
 		if(has_icon) int_has_icon = 1;
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"feeds\" (\"feed_id\",\"name\",\"url\",\"has_icon\",\"unread\", \"category_id\", \"subscribed\") 
-						VALUES (\"" + feed_id.to_string() + "\", \"" + feed_name.replace("\"","\\\"") + "\", \"" + feed_url + "\", \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id.to_string() + "\", 1)";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
+						VALUES (\"" + feed_id.to_string() + "\", $FEEDNAME, $FEEDURL, \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id.to_string() + "\", 1)";
+		
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
+			warning("error writing feed\nquery: %s\nfeed_name: %s\n", query, feed_name);
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
+		int param_position = stmt.bind_parameter_index ("$FEEDNAME");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, feed_name);
+		param_position = stmt.bind_parameter_index ("$FEEDURL");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, feed_url);
+		while (stmt.step () == Sqlite.ROW) {
+			
+		}
+		stmt.reset ();
 	}
 
 
 	public void write_categorie(int categorieID, string categorie_name, int unread_count, int orderID, int parent, int level)
 	{
 		string query = "INSERT OR REPLACE INTO \"main\".\"categories\" (\"categorieID\",\"title\",\"unread\",\"orderID\", \"exists\", \"Parent\", \"Level\") 
-						VALUES (\"" + categorieID.to_string() + "\", \"" + categorie_name + "\", \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent.to_string() + "\", \"" + level.to_string() + "\")";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
+						VALUES (\"" + categorieID.to_string() + "\", $FEEDNAME, \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent.to_string() + "\", \"" + level.to_string() + "\")";
+		
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
+			warning("error writing category\nquery: %s\ncategory_name: %s\n", query, categorie_name);
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
+		int param_position = stmt.bind_parameter_index ("$FEEDNAME");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, categorie_name);
+		while (stmt.step () == Sqlite.ROW) {
+			
+		}
+		stmt.reset ();
 	}
 
 

@@ -19,7 +19,7 @@ add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
 add_subdirectory (schemas)
 
-pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 libsoup-2.4 webkit2gtk-4.0 sqlite3 libsecret-1 libnotify unity)
+pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify unity)
 
 add_definitions(${DEPS_CFLAGS})
 link_libraries(${DEPS_LIBRARIES})
@@ -56,7 +56,7 @@ PACKAGES
     json-glib-1.0
     libsoup-2.4
     sqlite3
-    WebKit2-4.0
+    WebKit2-3.0
     libsecret-1
     libnotify
     unity

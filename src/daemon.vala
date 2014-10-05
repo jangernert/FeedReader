@@ -7,7 +7,7 @@ public class FeedDaemonServer : Object {
 	{
 		stdout.printf("init\n");
 		int sync_timeout = feedreader_settings.get_int("sync");
-		m_launcher = Unity.LauncherEntry.get_for_desktop_id("rss-reader.desktop");
+		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 		updateBadge();
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
         	stdout.printf ("Timeout!\n");

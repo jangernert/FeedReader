@@ -24,6 +24,7 @@ public class articleView : Gtk.Stack {
 	private Gtk.ScrolledWindow m_scroll;
 	private Gtk.Box m_box;
 	private Gtk.Spinner m_spinner;
+	private bool m_open_external;
 
 	public articleView () {
 		m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -33,8 +34,9 @@ public class articleView : Gtk.Stack {
 		m_title.set_line_wrap(true);
 		m_title.set_line_wrap_mode(Pango.WrapMode.WORD);
 		
-
+		
 		m_view = new WebKit.WebView();
+		m_view.load_changed.connect(open_link);
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.set_size_request(400, 500);
 		m_scroll.add(m_view);
@@ -68,11 +70,8 @@ public class articleView : Gtk.Stack {
 		m_title.set_text("<big><b><a href=\"" + url.replace("&","&amp;") + "\" title=\"Author: " + author.replace("&","&amp;") + "\">" + title.replace("&","&amp;") + "</a></b></big>");
 		m_title.set_use_markup (true);
 		this.show_all();
-
-		m_view.load_changed.disconnect(external_link);
+		m_open_external = false;
 		m_view.load_html(html, null);
-		m_view.load_changed.connect(open_link);
-
 		this.set_visible_child_name("view");
 	}
 
@@ -81,25 +80,21 @@ public class articleView : Gtk.Stack {
 		this.set_visible_child_name("empty");
 	}
 
-	public void external_link(WebKit.LoadEvent load_event)
-	{
-		switch (load_event)
-		{
-			case WebKit.LoadEvent.STARTED:
-				try{Gtk.show_uri(Gdk.Screen.get_default(), m_view.get_uri(), Gdk.CURRENT_TIME);}
-				catch(GLib.Error e){}
-				m_view.stop_loading();
-				break;
-		}
-	}
-
 	public void open_link(WebKit.LoadEvent load_event)
 	{
 		switch (load_event)
 		{
+			case WebKit.LoadEvent.STARTED:
+				if(m_open_external)
+				{
+					try{Gtk.show_uri(Gdk.Screen.get_default(), m_view.get_uri(), Gdk.CURRENT_TIME);}
+					catch(GLib.Error e){ warning("could not open the link in an external browser\n%s\n", e.message); }
+					m_view.stop_loading();
+				}
+				break;
+				
 			case WebKit.LoadEvent.FINISHED:
-				m_view.load_changed.disconnect(open_link);
-				m_view.load_changed.connect(external_link);
+				m_open_external = true;
 				break;
 		}
 	}

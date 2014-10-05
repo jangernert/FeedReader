@@ -153,7 +153,6 @@ public class readerUI : Gtk.ApplicationWindow
 
 		
 		int article_row_width = feedreader_settings.get_int("article-row-width");
-		stdout.printf("feedrow width: %i\n", article_row_width);
 		m_pane_articlelist = new ThinPaned(Gtk.Orientation.HORIZONTAL);
 		m_pane_articlelist.set_size_request(500, 500);
 		m_pane_articlelist.set_position(article_row_width);

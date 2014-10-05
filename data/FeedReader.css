@@ -11,6 +11,9 @@ GtkListBox.feed-list {
 	background: rgb(180,180,180);
 }
 
+GtkBox {
+	margin: 0em 0em 0em;
+}
 
 GtkListBoxRow.feed-list-row:selected {
 	background: rgb(125,125,125);
@@ -32,18 +35,32 @@ GtkListBox.feed-list GtkLabel{
 	font-weight: bold;
 }
 
-GtkLabel.headline-read-label {
+GtkListBoxRow GtkLabel.headline-read-label {
 	font-weight: normal;
 	font-style: normal;
 	font-size: large;
 	color: black;
 }
 
-GtkLabel.headline-unread-label {
+GtkListBoxRow:selected GtkLabel.headline-read-label {
+	font-weight: normal;
+	font-style: normal;
+	font-size: large;
+	color: white;
+}
+
+GtkListBoxRow GtkLabel.headline-unread-label {
 	font-weight: bold;
 	font-style: normal;
 	font-size: large;
 	color: black;
+}
+
+GtkListBoxRow:selected GtkLabel.headline-unread-label {
+	font-weight: bold;
+	font-style: normal;
+	font-size: large;
+	color: white;
 }
 
 GtkLabel.emptyView {
@@ -58,4 +75,11 @@ GtkListBoxRow GtkLabel.grey-label {
 	font-style: normal;
 	font-size: small;
 	color: rgb(150,150,150);
+}
+
+GtkListBoxRow:selected GtkLabel.grey-label {
+	font-weight: normal;
+	font-style: normal;
+	font-size: small;
+	color: rgb(180,180,180);
 }

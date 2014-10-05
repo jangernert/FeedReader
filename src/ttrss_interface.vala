@@ -348,12 +348,57 @@ public class ttrss_interface : GLib.Object {
 				int unread_count = int.parse(categorie_node.get_int_member("unread").to_string());
 				string catID = categorie_node.get_string_member("id");
 				int categorieID = int.parse(catID.slice(4, catID.length));
+				
+				if(title == "Uncategorized")
+				{
+					unread_count = getUncategorizedUnread();
+				}
 
 				dataBase.write_categorie(categorieID, title, unread_count, orderID, parent, level);
 				getSubCategories(categorie_node, level, categorieID);
 			}
 		}
 	}
+	
+	
+	// FIXME: workaround for possible bug in tt-rss api -----------------------------------------------------------------------------
+	private int getUncategorizedUnread()
+	{
+		var message_getUncategorizedUnread = new Soup.Message("POST", ttrss_url);
+		string getUncategorizedUnread = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getCounters\",\"output_mode\":\"c\"}";
+		
+		message_getUncategorizedUnread.set_request(m_contenttype, Soup.MemoryUse.COPY, getUncategorizedUnread.data);
+		m_session.send_message(message_getUncategorizedUnread);
+		
+		try{
+			m_parser.load_from_data((string)message_getUncategorizedUnread.response_body.flatten().data, -1);
+		}
+		catch (Error e) {
+			stderr.printf("I guess something is not working...\n");
+		}
+
+		var root_object = m_parser.get_root().get_object();
+		var response = root_object.get_array_member("content");
+		var categorie_count = response.get_length();
+		
+		for(int i = 0; i < categorie_count; i++)
+		{
+			var categorie_node = response.get_object_element(i);
+			if(categorie_node.get_int_member("id") == 0)
+			{
+				if(categorie_node.has_member("kind"))
+				{
+					if(categorie_node.get_string_member("kind") == "cat")
+					{
+						return int.parse(categorie_node.get_int_member("counter").to_string());
+					}
+				}
+			}
+		}
+		
+		return 0;
+	}
+	//--------------------------------------------------------------------------------------------------------------------------------
 
 
 	private void updateCategorieUnread()
@@ -395,7 +440,7 @@ public class ttrss_interface : GLib.Object {
 				if(dataBase.isTableEmpty("headlines"))
 				{
 					getHeadlines =
-					"{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\"}";
+					"{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\", \"limit\":300}";
 				}
 				else
 				{

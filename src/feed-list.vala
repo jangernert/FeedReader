@@ -151,7 +151,7 @@ public class feedList : Gtk.Stack {
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles",unread.to_string(), false, "0", -1, 0);
+		var row_all = new FeedRow("All Articles",unread.to_string(), false, "ALL", -1, 0);
 		m_list.add(row_all);
 		row_all.reveal(true);
 

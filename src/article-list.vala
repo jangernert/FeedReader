@@ -42,7 +42,7 @@ public class articleList : Gtk.Stack {
 	public articleList () {
 		m_lmit = 0.8;
 		m_displayed_articles = 0;
-		m_current_feed_selected = 0;
+		m_current_feed_selected = -3;
 		id_is_feedID = true;
 		m_searchTerm = "";
 		m_limit = 15;

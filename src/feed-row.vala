@@ -35,7 +35,12 @@ public class FeedRow : baseRow {
 		m_name = text.replace("&","&amp;");
 		if(text != "")
 		{
-			m_ID = int.parse(iconname);
+			if(iconname != "ALL")
+				m_ID = int.parse(iconname);
+			else
+				m_ID = -3;
+				
+			
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 			string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";

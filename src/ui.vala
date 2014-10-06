@@ -198,7 +198,7 @@ public class readerUI : Gtk.ApplicationWindow
 		});
 	}
 
-	public void createHeadlineList(int feedID = 0)
+	public void createHeadlineList()
 	{
 		m_articleList.createHeadlineList();
 	}

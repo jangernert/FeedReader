@@ -90,6 +90,11 @@ public class readerUI : Gtk.ApplicationWindow
 	{
 		m_headerbar.setRefreshButton(refreshing);
 	}
+	
+	public bool currentlyUpdating()
+	{
+		return m_headerbar.currentlyUpdating();
+	}
 
 
 	private void onClose()

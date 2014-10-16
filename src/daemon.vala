@@ -10,8 +10,11 @@ public class FeedDaemonServer : Object {
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 		updateBadge();
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
-        	stdout.printf ("Timeout!\n");
-			startSync();
+			if(!feedreader_settings.get_boolean("currently-updating"))
+			{
+        		stdout.printf ("Timeout!\n");
+				startSync();
+			}
 			return true;
 		});
 	}
@@ -30,11 +33,13 @@ public class FeedDaemonServer : Object {
     private async void sync()
 	{
 		syncStarted();
+		feedreader_settings.set_boolean("currently-updating", true);
 		yield ttrss.getCategories();
 		yield ttrss.getFeeds();
 		yield ttrss.getHeadlines();
 		yield ttrss.updateHeadlines(300);
 		updateBadge();
+		feedreader_settings.set_boolean("currently-updating", false);
 		syncFinished();
 	}
 	

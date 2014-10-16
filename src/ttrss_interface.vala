@@ -427,73 +427,14 @@ public class ttrss_interface : GLib.Object {
 	}
 
 
-	public async void getHeadlines(int64 feedID = -4)
+	public async void getHeadlines(int64 feedID = -4, int skip = 0, int newestArticle = -1)
 	{
 		SourceFunc callback = getHeadlines.callback;
 		//stdout.printf("getHeadlines\n");
 		ThreadFunc<void*> run = () => {
 			if(isloggedin())
 			{
-				var message_getHeadlines = new Soup.Message("POST", ttrss_url);
-
-				string getHeadlines;
-				if(dataBase.isTableEmpty("headlines"))
-				{
-					getHeadlines =
-					"{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\", \"limit\":300}";
-				}
-				else
-				{
-					getHeadlines = 
-					"{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\"" + ", \"since_id\":" + dataBase.getNewestArticle().to_string() + "}";
-				}
-				message_getHeadlines.set_request(m_contenttype, Soup.MemoryUse.COPY, getHeadlines.data);
-				m_session.send_message(message_getHeadlines);
-			
-				try{
-					m_parser.load_from_data((string) message_getHeadlines.response_body.flatten ().data, -1);
-				} catch (Error e) {}
-
-				var root_object = m_parser.get_root().get_object();
-				var response = root_object.get_array_member ("content");
-
-				var headline_count = response.get_length();
-				string title, author, url, html;
-				stdout.printf("Number of New Articles: %u\n", headline_count);
-
-				if(headline_count > 0){
-					try{
-						Notify.Notification notification;
-						if(headline_count == 1)
-							notification = new Notify.Notification("New Articles", "There is 1 new article", "internet-news-reader");
-						else
-							notification = new Notify.Notification("New Articles", "There are " + headline_count.to_string() + " new articles", "internet-news-reader");
-						
-						notification.show ();
-					}catch (GLib.Error e) {
-						error("Error: %s", e.message);
-					}
-				}
-			
-				
-				for(uint i = 0; i < headline_count; i++)
-				{
-					var headline_node = response.get_object_element(i);
-				
-					dataBase.write_headline(int.parse(headline_node.get_int_member("id").to_string()),
-						             headline_node.get_string_member("title").replace("&",""),
-						             headline_node.get_string_member("link"),
-						             int.parse(headline_node.get_string_member("feed_id")),
-						             headline_node.get_boolean_member("unread"),
-						             headline_node.get_boolean_member("marked")
-						             );
-					
-					getArticle(int.parse(headline_node.get_int_member("id").to_string()),
-					           out title, out author, out url, out html);
-					dataBase.write_article(int.parse(headline_node.get_int_member("id").to_string()),
-					                 int.parse(headline_node.get_string_member("feed_id")),
-					                 title, author, url, html);
-				}
+				sync_getHeadlines(feedID, skip, newestArticle);
 				Idle.add((owned) callback);
 			}
 			return null;
@@ -501,7 +442,103 @@ public class ttrss_interface : GLib.Object {
 		new GLib.Thread<void*>("getHeadlines", run);
 		yield;
 	}
+	
+	
+	private void sync_getHeadlines(int64 feedID, int skip, int newestArticle)
+	{
+		var message_getHeadlines = new Soup.Message("POST", ttrss_url);
+		
+		if(dataBase.isTableEmpty("headlines"))
+			newestArticle = -2;
+		
+		string skip_message = ", \"skip\":" + skip.to_string();
 
+		string getHeadlines;
+		if(newestArticle == -2)
+		{
+			getHeadlines = "{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\"";
+			if(skip > 0)
+				getHeadlines = getHeadlines + skip_message;
+			getHeadlines = getHeadlines + "}";
+		}
+		else
+		{
+			newestArticle = dataBase.getNewestArticle();
+			getHeadlines = 
+			"{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\"" + ", \"since_id\":" + newestArticle.to_string();
+			if(skip > 0)
+				getHeadlines = getHeadlines + skip_message;
+			getHeadlines = getHeadlines + "}";
+		}
+		
+		stdout.printf("message: %s\n", getHeadlines);
+		message_getHeadlines.set_request(m_contenttype, Soup.MemoryUse.COPY, getHeadlines.data);
+		m_session.send_message(message_getHeadlines);
+		
+		try{
+			m_parser.load_from_data((string) message_getHeadlines.response_body.flatten ().data, -1);
+		} catch (Error e) {}
+
+		var root_object = m_parser.get_root().get_object();
+		var response = root_object.get_array_member ("content");
+
+		var headline_count = response.get_length();
+		stdout.printf("Number of New Articles: %u\n", headline_count);
+			
+
+		if(headline_count > 0 && skip == 0){
+			try{
+				Notify.Notification notification;
+				string message;
+						
+				if(headline_count == 1)
+					message = "There is 1 new article";
+				else if(headline_count == 200)
+					message = "There are >200 new articles";
+				else
+					message = "There are " + headline_count.to_string() + " new articles";
+							
+				notification = new Notify.Notification("New Articles", message, "internet-news-reader");
+				notification.show ();
+			}catch (GLib.Error e) {
+				error("Error: %s", e.message);
+			}
+		}
+			
+				
+		string title, author, url, html;
+		
+		stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
+		for(uint i = 0; i < headline_count; i++)
+		{
+			var headline_node = response.get_object_element(i);
+		
+			dataBase.write_headline(int.parse(headline_node.get_int_member("id").to_string()),
+				             headline_node.get_string_member("title").replace("&",""),
+				             headline_node.get_string_member("link"),
+				             int.parse(headline_node.get_string_member("feed_id")),
+				             headline_node.get_boolean_member("unread"),
+				             headline_node.get_boolean_member("marked")
+				             );
+					
+			getArticle(int.parse(headline_node.get_int_member("id").to_string()),
+			           out title, out author, out url, out html);
+			dataBase.write_article(int.parse(headline_node.get_int_member("id").to_string()),
+			                 int.parse(headline_node.get_string_member("feed_id")),
+			                 title, author, url, html);
+		}
+				
+		stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
+		int maxArticles = feedreader_settings.get_int("max-articles");
+		if(headline_count == 200 && skip < maxArticles)
+		{
+			stdout.printf("get more headlines\n");
+			if(maxArticles - skip < 200)
+				// FIXME: only load as much as maxArticles, not full 200 again
+			
+			sync_getHeadlines(feedID, skip + 200, newestArticle);
+		}
+	}
 
 	public async void updateHeadlines(int limit, int64 feedID = -4)
 	{

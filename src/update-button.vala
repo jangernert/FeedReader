@@ -21,6 +21,7 @@ public class UpdateButton : Gtk.Button {
 
 	private Gtk.Image m_icon;
 	private Gtk.Spinner m_spinner;
+	private bool m_status;
 
 	public UpdateButton (string iconname) {
 
@@ -33,6 +34,7 @@ public class UpdateButton : Gtk.Button {
 
 	public void updating(bool status)
 	{
+		m_status = status;
 		if(status)
 		{
 			this.remove(m_icon);
@@ -48,6 +50,11 @@ public class UpdateButton : Gtk.Button {
 			m_spinner.stop();
 		}
 		this.show_all();
+	}
+	
+	public bool getStatus()
+	{
+		return m_status;
 	}
 
 }

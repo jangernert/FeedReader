@@ -313,7 +313,7 @@ public class feedList : Gtk.Stack {
 				{
 					var tmpRow = row as categorieRow;
 					pos++;
-					if(tmpRow != null && tmpRow.getID() == categorierow.getParent()+1)
+					if(tmpRow != null && tmpRow.getOrder() < categorierow.getOrder() && (tmpRow.getID() == categorierow.getParent()+1 || tmpRow.getLevel() == 1))
 					{
 						m_list.insert(categorierow, pos-1);
 						categorierow.reveal(true);
@@ -325,7 +325,7 @@ public class feedList : Gtk.Stack {
 					m_list.add(categorierow);
 					categorierow.reveal(true);
 				}
-					
+				FeedChildList = m_list.get_children();
 			}
 		}
 		

@@ -25,6 +25,7 @@ public class categorieRow : baseRow {
 	private Gdk.Pixbuf m_state_expanded;
 	private int m_categorieID;
 	private int m_parentID;
+	private int m_orderID;
 	private int m_level;
 	private bool m_exists;
 	private Gtk.Image m_icon_expanded;
@@ -37,6 +38,7 @@ public class categorieRow : baseRow {
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
 		m_parentID = parentID;
+		m_orderID = orderID;
 		m_collapsed = !expanded;
 		m_name = name;
 		m_exists = true;
@@ -125,6 +127,11 @@ public class categorieRow : baseRow {
 	public int getParent()
 	{
 		return m_parentID;
+	}
+	
+	public int getOrder()
+	{
+		return m_orderID;
 	}
 
 	public int getLevel()

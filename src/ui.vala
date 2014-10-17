@@ -182,8 +182,9 @@ public class readerUI : Gtk.ApplicationWindow
 				});
 				dataBase.change_unread.begin(row.m_feedID, false, (obj, res) => {
 					dataBase.change_unread.end(res);
+					updateFeedList();
 				});
-				updateFeedList();
+				//updateFeedList();
 			}
 			m_article_view.fillContent(row.m_articleID);
 		});

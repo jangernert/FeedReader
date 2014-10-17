@@ -533,7 +533,7 @@ public class ttrss_interface : GLib.Object {
 		if(headline_count == 200 && skip < maxArticles)
 		{
 			stdout.printf("get more headlines\n");
-			if(maxArticles - skip < 200)
+			//if(maxArticles - skip < 200)
 				// FIXME: only load as much as maxArticles, not full 200 again
 			
 			sync_getHeadlines(feedID, skip + 200, newestArticle);

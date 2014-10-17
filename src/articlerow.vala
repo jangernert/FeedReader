@@ -203,9 +203,14 @@ public class articleRow : baseRow {
 		ttrss.updateArticleUnread.begin(m_articleID, m_is_unread, (obj, res) => {
 			ttrss.updateArticleUnread.end(res);
 		});
-		dataBase.update_headline(m_articleID, "unread", m_is_unread);
-		dataBase.change_unread(m_feedID, m_is_unread);
-		updateFeedList();
+		
+		dataBase.update_headline.begin(m_articleID, "unread", m_is_unread, (obj, res) => {
+			dataBase.update_headline.end(res);
+		});
+		dataBase.change_unread.begin(m_feedID, m_is_unread, (obj, res) => {
+			dataBase.change_unread.end(res);
+			updateFeedList();
+		});
 	}
 
 	private void unreadIconEnter()

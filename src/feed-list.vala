@@ -313,11 +313,12 @@ public class feedList : Gtk.Stack {
 				{
 					var tmpRow = row as categorieRow;
 					pos++;
-					if(tmpRow != null && tmpRow.getOrder() < categorierow.getOrder() && (tmpRow.getID() == categorierow.getParent()+1 || tmpRow.getLevel() == 1))
+					if(tmpRow != null && tmpRow.getOrder() > categorierow.getOrder() && (tmpRow.getID() == categorierow.getParent()+1 || tmpRow.getLevel() == 1))
 					{
 						m_list.insert(categorierow, pos-1);
 						categorierow.reveal(true);
 						inserted = true;
+						break;
 					}
 				}
 				if(!inserted)

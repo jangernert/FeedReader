@@ -161,7 +161,7 @@ public class articleList : Gtk.Stack {
 			else if(!id_is_feedID)
 				showIcon = true;
 			
-			articleRow* tmpRow = new articleRow(
+			articleRow tmpRow = new articleRow(
 					                             item.m_title,
 					                             item.m_unread,
 					                             item.m_feedID.to_string(),
@@ -171,9 +171,9 @@ public class articleList : Gtk.Stack {
 					                             item.m_marked,
 					                             showIcon
 					                            );
-			tmpRow->updateFeedList.connect(() => {updateFeedList();});
+			tmpRow.updateFeedList.connect(() => {updateFeedList();});
 			m_currentList.add(tmpRow);
-			tmpRow->reveal(true);
+			tmpRow.reveal(true);
 		}
 		m_currentList.show_all();
 		if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
@@ -187,11 +187,10 @@ public class articleList : Gtk.Stack {
 		
 		m_displayed_articles = 0;
 		var articleChildList = m_currentList.get_children();
-		foreach(Gtk.Widget* row in articleChildList)
+		foreach(Gtk.Widget row in articleChildList)
 		{
 			m_currentList.remove(row);
-			row->destroy();
-			delete row;
+			row.destroy();
 		}
 
 		createHeadlineList();
@@ -233,7 +232,7 @@ public class articleList : Gtk.Stack {
 				if(m_current_feed_selected == 0)
 					showIcon = true;
 			
-				articleRow* tmpRow = new articleRow(
+				articleRow newRow = new articleRow(
 					                             item.m_title,
 					                             item.m_unread,
 					                             item.m_feedID.to_string(),
@@ -243,9 +242,34 @@ public class articleList : Gtk.Stack {
 					                             item.m_marked,
 					                             showIcon
 					                            );
-				tmpRow->updateFeedList.connect(() => {updateFeedList();});
-				m_currentList.insert(tmpRow, 0);
-				tmpRow->reveal(true);
+				newRow.updateFeedList.connect(() => {updateFeedList();});
+				int pos = 0;
+				bool added = false;
+				if(articleChildList == null)
+				{
+					m_currentList.insert(newRow, 0);
+					added = true;
+				}
+				foreach(Gtk.Widget row in articleChildList)
+				{
+					pos++;
+					var tmpRow = row as articleRow;
+					if(tmpRow != null && newRow.m_articleID > tmpRow.m_articleID)
+					{
+						m_currentList.insert(newRow, pos-1);
+						m_displayed_articles++;
+						added = true;
+						break;
+					}
+				}
+				
+				if(!added)
+				{
+					m_currentList.add(newRow);
+					m_displayed_articles++;
+				}
+				newRow.reveal(true);
+				articleChildList = m_currentList.get_children();
 			}
 		}
 	}

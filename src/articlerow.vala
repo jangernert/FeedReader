@@ -321,6 +321,11 @@ public class articleRow : baseRow {
 	{
 		return m_is_unread;
 	}
+	
+	public string getName()
+	{
+		return m_name;
+	}
 
  	 
 }

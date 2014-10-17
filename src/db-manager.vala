@@ -132,52 +132,61 @@ public class dbManager : GLib.Object {
 
 
 
-	public void change_unread(int feedID, bool increase)
+	public async void change_unread(int feedID, bool increase)
 	{
-		string change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = \"unread\" ";
-		if(increase){
-			change_feed_query = change_feed_query + "+ 1";
-		}else{
-			change_feed_query = change_feed_query + "- 1";
-		} 
-		change_feed_query = change_feed_query + " WHERE \"feed_id\" = " + feedID.to_string();
-		string errmsg;
-		int ec = sqlite_db.exec (change_feed_query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
-			
+		SourceFunc callback = change_unread.callback;
+		
+		ThreadFunc<void*> run = () => {
 
-			
-		string get_feed_id_query = "SELECT \"category_id\" FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID.to_string() + "\"";
-		Sqlite.Statement stmt;
-		ec = sqlite_db.prepare_v2 (get_feed_id_query, get_feed_id_query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		int catID = -99;
-		int cols = stmt.column_count ();
-		while (stmt.step () == Sqlite.ROW) {
-			for (int i = 0; i < cols; i++) {
-				catID = stmt.column_int(i);
+			string change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = \"unread\" ";
+			if(increase){
+				change_feed_query = change_feed_query + "+ 1";
+			}else{
+				change_feed_query = change_feed_query + "- 1";
+			} 
+			change_feed_query = change_feed_query + " WHERE \"feed_id\" = " + feedID.to_string();
+			string errmsg;
+			int ec = sqlite_db.exec (change_feed_query, null, out errmsg);
+			if (ec != Sqlite.OK) {
+				error("Error: %s\n", errmsg);
 			}
-		}
-		stmt.reset ();
+			
+
+			
+			string get_feed_id_query = "SELECT \"category_id\" FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID.to_string() + "\"";
+			Sqlite.Statement stmt;
+			ec = sqlite_db.prepare_v2 (get_feed_id_query, get_feed_id_query.length, out stmt);
+			if (ec != Sqlite.OK) {
+				error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+			}
+			int catID = -99;
+			int cols = stmt.column_count ();
+			while (stmt.step () == Sqlite.ROW) {
+				for (int i = 0; i < cols; i++) {
+					catID = stmt.column_int(i);
+				}
+			}
+			stmt.reset ();
 
 
-		string change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" ";
-		if(increase){
-			change_catID_query = change_catID_query + "+ 1";
-		}else{
-			change_catID_query = change_catID_query + "- 1";
-		}
-		change_catID_query = change_catID_query + " WHERE \"categorieID\" = " + catID.to_string();
-		ec = sqlite_db.exec (change_catID_query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+			string change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" ";
+			if(increase){
+				change_catID_query = change_catID_query + "+ 1";
+			}else{
+				change_catID_query = change_catID_query + "- 1";
+			}
+			change_catID_query = change_catID_query + " WHERE \"categorieID\" = " + catID.to_string();
+			ec = sqlite_db.exec (change_catID_query, null, out errmsg);
+			if (ec != Sqlite.OK) {
+				error("Error: %s\n", errmsg);
+			}
 
-		updateBadge();
+			updateBadge();
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("updateHeadlines", run);
+		yield;
 	}
 	
 	public int get_unread_total()
@@ -374,17 +383,25 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public void update_headline(int articleID, string field, bool field_value)
+	public async void update_headline(int articleID, string field, bool field_value)
 	{
-		int int_field_value = 0;
-		if(field_value) int_field_value = 1;
+		SourceFunc callback = update_headline.callback;
 		
-		string query = "UPDATE \"main\".\"headlines\" SET \"" + field + "\" = \"" + int_field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID.to_string() + "\"";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		ThreadFunc<void*> run = () => {
+			int int_field_value = 0;
+			if(field_value) int_field_value = 1;
+		
+			string query = "UPDATE \"main\".\"headlines\" SET \"" + field + "\" = \"" + int_field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID.to_string() + "\"";
+			string errmsg;
+			int ec = sqlite_db.exec (query, null, out errmsg);
+			if (ec != Sqlite.OK) {
+				error("Error: %s\n", errmsg);
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("updateHeadlines", run);
+		yield;
 	}
 
 

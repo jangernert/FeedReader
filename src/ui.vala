@@ -174,8 +174,15 @@ public class readerUI : Gtk.ApplicationWindow
 				});
 				row.updateUnread(false);
 				row.removeUnreadIcon();
-				dataBase.update_headline(row.m_articleID, "unread", false);
-				dataBase.change_unread(row.m_feedID, false);
+				//dataBase.update_headline(row.m_articleID, "unread", false);
+				//dataBase.change_unread(row.m_feedID, false);
+				
+				dataBase.update_headline.begin(row.m_articleID, "unread", false, (obj, res) => {
+					dataBase.update_headline.end(res);
+				});
+				dataBase.change_unread.begin(row.m_feedID, false, (obj, res) => {
+					dataBase.change_unread.end(res);
+				});
 				updateFeedList();
 			}
 			m_article_view.fillContent(row.m_articleID);

@@ -11,8 +11,12 @@ GtkListBox.feed-list {
 	background: rgb(180,180,180);
 }
 
-GtkBox {
-	margin: 0em 0em 0em;
+FeedRow
+{
+	padding-bottom: 0px;
+	padding-top: 0px;
+	padding-right: 0px;
+	padding-left: 0px;
 }
 
 GtkListBoxRow.feed-list-row:selected {

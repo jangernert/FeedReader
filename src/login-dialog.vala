@@ -28,6 +28,8 @@ public class loginDialog : Gtk.Dialog {
 	public loginDialog (Gtk.Window window, string error_message = "") {	
 		this.title = "Login Data";
 		this.border_width = 5;
+		GLib.Object (use_header_bar: 1);
+		this.set_modal(true);
 		this.set_transient_for(window);
 		set_default_size (500, 300);
 
@@ -106,7 +108,7 @@ public class loginDialog : Gtk.Dialog {
 		content.add(error_box);
 
 		add_button("Cancel", Gtk.ResponseType.CANCEL);
-		m_okay_button = add_button("OK", Gtk.ResponseType.APPLY);
+		m_okay_button = add_button("Login", Gtk.ResponseType.APPLY);
 		this.response.connect(on_response);
 	}
 

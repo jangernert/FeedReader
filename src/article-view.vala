@@ -82,11 +82,19 @@ public class articleView : Gtk.Stack {
 
 	public void open_link(WebKit.LoadEvent load_event)
 	{
+		string debug = "open_external: ";
+		if(m_open_external)
+			debug = debug + "true\n";
+		else
+			debug = debug + "false\n";
+		stdout.printf(debug);	
+		
 		switch (load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
 				if(m_open_external)
 				{
+					stdout.printf("open link in browser\n");
 					try{Gtk.show_uri(Gdk.Screen.get_default(), m_view.get_uri(), Gdk.CURRENT_TIME);}
 					catch(GLib.Error e){ warning("could not open the link in an external browser\n%s\n", e.message); }
 					m_view.stop_loading();

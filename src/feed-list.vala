@@ -148,6 +148,8 @@ public class feedList : Gtk.Stack {
 	{
 		var row_spacer = new FeedRow("", "", false, "", -1, 0);
 		row_spacer.set_size_request(0, 8);
+		row_spacer.sensitive = false;
+		row_spacer.set_selectable(false);
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
@@ -159,6 +161,8 @@ public class feedList : Gtk.Stack {
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.set_size_request(0, 20);
 		row_seperator.add(separator);
+		row_seperator.sensitive = false;
+		row_seperator.set_selectable(false);
 		m_list.add(row_seperator);
 
 		//-------------------------------------------------------------------

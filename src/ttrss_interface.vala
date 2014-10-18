@@ -568,7 +568,9 @@ public class ttrss_interface : GLib.Object {
 				for(uint i = 0; i < headline_count; i++)
 				{
 					var headline_node = response.get_object_element(i);
-					dataBase.update_headline(int.parse(headline_node.get_int_member("id").to_string()), "unread", true);
+					dataBase.update_headline.begin(int.parse(headline_node.get_int_member("id").to_string()), "unread", true, (obj, res) => {
+						dataBase.update_headline.end(res);
+					});
 				}
 
 				// update marked
@@ -591,7 +593,9 @@ public class ttrss_interface : GLib.Object {
 				for(uint i = 0; i < headline_count; i++)
 				{
 					var headline_node = response.get_object_element(i);
-					dataBase.update_headline(int.parse(headline_node.get_int_member("id").to_string()), "marked", true);
+					dataBase.update_headline.begin(int.parse(headline_node.get_int_member("id").to_string()), "marked", true, (obj, res) => {
+						dataBase.update_headline.end(res);
+					});
 				}
 				
 				Idle.add((owned) callback);

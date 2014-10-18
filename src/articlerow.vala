@@ -276,7 +276,9 @@ public class articleRow : baseRow {
 		ttrss.updateArticleMarked.begin(m_articleID, m_marked, (obj, res) => {
 			ttrss.updateArticleMarked.end(res);
 		});
-		dataBase.update_headline(m_articleID, "marked", m_marked);
+		dataBase.update_headline.begin(m_articleID, "marked", m_marked, (obj, res) => {
+			dataBase.update_headline.end(res);
+		});
 	}
 
 	private void markedIconEnter()

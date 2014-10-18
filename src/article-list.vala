@@ -84,13 +84,13 @@ public class articleList : Gtk.Stack {
 			row_activated((articleRow)row);
 		});
 
-		m_currentList.key_press_event.connect((event) => {
-			
-			if(event.keyval == Gdk.Key.Down)
-				move(true);
-			else if(event.keyval == Gdk.Key.Up)
-				move(false);
-			
+		m_List1.key_press_event.connect((event) => {
+			key_pressed(event);
+			return true;
+		});
+		
+		m_List2.key_press_event.connect((event) => {
+			key_pressed(event);
 			return true;
 		});
 
@@ -98,6 +98,14 @@ public class articleList : Gtk.Stack {
 		this.set_transition_duration(100);
 		this.add_named(m_scroll1, "list1");
 		this.add_named(m_scroll2, "list2");
+	}
+	
+	private void key_pressed(Gdk.EventKey event)
+	{
+		if(event.keyval == Gdk.Key.Down)
+			move(true);
+		else if(event.keyval == Gdk.Key.Up)
+			move(false);
 	}
 
 

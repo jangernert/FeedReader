@@ -25,8 +25,10 @@ public class articleView : Gtk.Stack {
 	private Gtk.Box m_box;
 	private Gtk.Spinner m_spinner;
 	private bool m_open_external;
+	private int m_load_ongoing;
 
 	public articleView () {
+		m_load_ongoing = 0;
 		m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 
 		m_title = new Gtk.Label("");
@@ -71,6 +73,7 @@ public class articleView : Gtk.Stack {
 		m_title.set_use_markup (true);
 		this.show_all();
 		m_open_external = false;
+		m_load_ongoing = 0;
 		m_view.load_html(html, null);
 		this.set_visible_child_name("view");
 	}
@@ -82,27 +85,24 @@ public class articleView : Gtk.Stack {
 
 	public void open_link(WebKit.LoadEvent load_event)
 	{
-		string debug = "open_external: ";
-		if(m_open_external)
-			debug = debug + "true\n";
-		else
-			debug = debug + "false\n";
-		stdout.printf(debug);	
+		m_load_ongoing++;
 		
 		switch (load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
 				if(m_open_external)
 				{
-					stdout.printf("open link in browser\n");
 					try{Gtk.show_uri(Gdk.Screen.get_default(), m_view.get_uri(), Gdk.CURRENT_TIME);}
 					catch(GLib.Error e){ warning("could not open the link in an external browser\n%s\n", e.message); }
 					m_view.stop_loading();
 				}
 				break;
-				
+			case WebKit.LoadEvent.COMMITTED:
+				break;	
 			case WebKit.LoadEvent.FINISHED:
-				m_open_external = true;
+				if(m_load_ongoing >= 3){
+					m_open_external = true;
+				}
 				break;
 		}
 	}

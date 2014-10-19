@@ -164,7 +164,7 @@ public class articleRow : baseRow {
 			body_label.set_ellipsize (Pango.EllipsizeMode.END);
 			body_label.set_line_wrap_mode(Pango.WrapMode.WORD);
 			body_label.set_line_wrap(true);
-			body_label.set_lines(4);
+			body_label.set_lines(3);
 
 			m_spacer = new Gtk.Label("");
 			m_spacer.set_size_request(15, 0);
@@ -172,8 +172,8 @@ public class articleRow : baseRow {
 			
 			
 			var text_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-			text_box.pack_start(m_label, false, false, 6);
-			text_box.pack_start(body_label, true, true, 6);
+			text_box.pack_start(m_label, true, true, 6);
+			text_box.pack_end(body_label, true, true, 6);
 			
 			m_box.pack_start(icon_box, false, false, 8);
 			m_box.pack_start(text_box, true, true, 0);

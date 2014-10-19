@@ -41,20 +41,14 @@ public class rssReaderApp : Gtk.Application {
 	private bool m_firstTime;
 	FeedDaemon m_feedDaemon_interface;
 	 
-	protected override void activate () {
-	
+	protected override void startup () {
 		startDaemon();
 		
 		dataBase = new dbManager();
 		dataBase.init();
+		
 		feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
-		
-		m_window = new readerUI (this);
-		m_window.set_icon_name ("internet-news-reader");
-		m_window.show_all ();
-
 		ttrss = new ttrss_interface();
-		
 		
 		try{
 			m_feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
@@ -75,7 +69,19 @@ public class rssReaderApp : Gtk.Application {
 		
 		Notify.init("RSS Reader");
 		m_firstTime = true;
-		tryLogin();
+		base.startup ();
+	}
+	
+	protected override void activate ()
+	{
+		if (m_window == null)
+		{
+			m_window = new readerUI (this);
+			m_window.set_icon_name ("internet-news-reader");
+			tryLogin();
+		}
+		
+		m_window.show_all();
 		updateBadge();
 	}
 
@@ -150,12 +156,15 @@ public class rssReaderApp : Gtk.Application {
 	}
 
 	public rssReaderApp () {
-		Object (application_id: "org.gnome.FeedReader", flags: ApplicationFlags.FLAGS_NONE);
+		GLib.Object (application_id: "org.gnome.FeedReader", flags: ApplicationFlags.FLAGS_NONE);
 	}
 }
 
 
-public int main (string[] args) {
-	return new rssReaderApp ().run (args);
+public static int main (string[] args) {
+	var app = new rssReaderApp();
+	app.run(args);
+
+	return 0;
 }
 

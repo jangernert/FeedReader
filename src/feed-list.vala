@@ -478,6 +478,23 @@ public class feedList : Gtk.Stack {
 				collapseCategorie(tmpCatRow.getID());
 			}
 		}
+		
+		var selected_feed = m_list.get_selected_row() as FeedRow;
+		var selected_cat = m_list.get_selected_row() as categorieRow;
+		
+		if( (selected_feed != null && !selected_feed.isRevealed()) || (selected_cat != null && !selected_cat.isRevealed()) )
+		{
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpCatRow = row as categorieRow;
+				if(tmpCatRow != null && tmpCatRow.getID() == catID)
+				{
+					m_list.select_row(tmpCatRow);
+					m_selected = tmpCatRow;
+					newCategorieSelected(catID);
+				}
+			}
+		}
 	}
 
 
@@ -506,8 +523,11 @@ public class feedList : Gtk.Stack {
 
 	public int getSelectedFeed()
 	{
-		FeedRow selected_row = (FeedRow)m_list.get_selected_row();
-		return selected_row.m_ID;
+		FeedRow selected_row = m_list.get_selected_row() as FeedRow;
+		if(selected_row != null)
+			return selected_row.m_ID;
+		
+		return 0;
 	}
 	
 	public string[] getExpandedCategories()

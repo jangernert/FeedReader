@@ -488,7 +488,6 @@ public class ttrss_interface : GLib.Object {
 
 		if(headline_count > 0 && skip == 0){
 			try{
-				Notify.Notification notification;
 				string message;
 						
 				if(headline_count == 1)
@@ -498,7 +497,21 @@ public class ttrss_interface : GLib.Object {
 				else
 					message = "There are " + headline_count.to_string() + " new articles";
 							
-				notification = new Notify.Notification("New Articles", message, "internet-news-reader");
+				var notification = new Notify.Notification("New Articles", message, "internet-news-reader");
+				notification.add_action ("default", "show", (notification, action) => {
+					stdout.puts ("Bye!\n");
+					string[] spawn_args = {"feedreader"};
+					try{
+						GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+					}catch(GLib.SpawnError e){
+						stdout.printf("error spawning command line: %s\n", e.message);
+					}
+					try {
+						notification.close ();
+					} catch (Error e) {
+						debug ("Error: %s", e.message);
+					}
+				});
 				notification.show ();
 			}catch (GLib.Error e) {
 				error("Error: %s", e.message);

@@ -25,7 +25,8 @@ public class articleList : Gtk.Stack {
 	private Gtk.ListBox m_currentList;
 	private Gtk.ListBox m_List1;
 	private Gtk.ListBox m_List2;
-	private Gtk.Adjustment m_currentScroll_adjustment;
+	private Gtk.Adjustment m_scroll1_adjustment;
+	private Gtk.Adjustment m_scroll2_adjustment;
 	private double m_lmit;
 	private int m_displayed_articles;
 	private int m_current_feed_selected;
@@ -66,16 +67,28 @@ public class articleList : Gtk.Stack {
 		m_currentList = m_List1;
 		m_currentScroll = m_scroll1;
 
-		m_currentScroll_adjustment = m_currentScroll.get_vadjustment();
-		m_currentScroll_adjustment.value_changed.connect(() => {
-			var current = m_currentScroll_adjustment.get_value();
-			var page = m_currentScroll_adjustment.get_page_size();
-			var max = m_currentScroll_adjustment.get_upper();
+		m_scroll1_adjustment = m_scroll1.get_vadjustment();
+		m_scroll1_adjustment.value_changed.connect(() => {
+			var current = m_scroll1_adjustment.get_value();
+			var page = m_scroll1_adjustment.get_page_size();
+			var max = m_scroll1_adjustment.get_upper();
 			if((current + page)/max > m_lmit)
 			{
 				load_more();
 			}
 		});
+		
+		m_scroll2_adjustment = m_scroll2.get_vadjustment();
+		m_scroll2_adjustment.value_changed.connect(() => {
+			var current = m_scroll2_adjustment.get_value();
+			var page = m_scroll2_adjustment.get_page_size();
+			var max = m_scroll2_adjustment.get_upper();
+			if((current + page)/max > m_lmit)
+			{
+				load_more();
+			}
+		});
+		
 
 		m_List1.row_activated.connect((row) => {
 			row_activated((articleRow)row);

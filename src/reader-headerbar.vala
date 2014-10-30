@@ -74,15 +74,15 @@ public class readerHeaderbar : Gtk.HeaderBar {
 		});
 		
 		m_search = new Gtk.SearchEntry();
-		m_search.placeholder_text = "Search Aritlces...";
+		m_search.placeholder_text = _("Search Aritlces...");
 		m_search.search_changed.connect(() => {
 			search_term(m_search.text);
 		});
 		
 		
 		var menu = new Gtk.Menu();
-		var item_login = new Gtk.MenuItem.with_label("Change Login");
-		var item_about = new Gtk.MenuItem.with_label("About");
+		var item_login = new Gtk.MenuItem.with_label(_("Change Login"));
+		var item_about = new Gtk.MenuItem.with_label(_("About"));
 		menu.add(item_login);
 		menu.add(item_about);
 		var menumodel = new GLib.Menu ();

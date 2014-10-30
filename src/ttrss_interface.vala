@@ -491,13 +491,13 @@ public class ttrss_interface : GLib.Object {
 				string message;
 						
 				if(headline_count == 1)
-					message = "There is 1 new article";
+					message = _("There is 1 new article");
 				else if(headline_count == 200)
-					message = "There are >200 new articles";
+					message = _("There are >200 new articles");
 				else
-					message = "There are " + headline_count.to_string() + " new articles";
+					message = _("There are ") + headline_count.to_string() + _(" new articles");
 							
-				var notification = new Notify.Notification("New Articles", message, "internet-news-reader");
+				var notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
 				notification.add_action ("default", "show", (notification, action) => {
 					stdout.puts ("Bye!\n");
 					string[] spawn_args = {"feedreader"};

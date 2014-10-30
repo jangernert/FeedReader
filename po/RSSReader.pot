@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-30 23:07+0100\n"
+"POT-Creation-Date: 2014-10-30 23:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,8 +17,40 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: ../src/ttrss_interface.vala:494
+msgid "There is 1 new article"
+msgstr ""
+
+#: ../src/ttrss_interface.vala:496
+msgid "There are >200 new articles"
+msgstr ""
+
+#: ../src/ttrss_interface.vala:498
+msgid "There are "
+msgstr ""
+
+#: ../src/ttrss_interface.vala:498
+msgid " new articles"
+msgstr ""
+
+#: ../src/ttrss_interface.vala:500
+msgid "New Articles"
+msgstr ""
+
 #: ../src/article-view.vala:49
 msgid "No Article selected."
+msgstr ""
+
+#: ../src/reader-headerbar.vala:77
+msgid "Search Aritlces..."
+msgstr ""
+
+#: ../src/reader-headerbar.vala:84
+msgid "Change Login"
+msgstr ""
+
+#: ../src/reader-headerbar.vala:85
+msgid "About"
 msgstr ""
 
 #: ../src/login-dialog.vala:55
@@ -31,6 +63,10 @@ msgstr ""
 
 #: ../src/login-dialog.vala:57
 msgid "Password:"
+msgstr ""
+
+#: ../src/login-dialog.vala:110
+msgid "Cancel"
 msgstr ""
 
 #: ../src/ui.vala:35

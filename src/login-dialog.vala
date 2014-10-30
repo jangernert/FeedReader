@@ -107,7 +107,7 @@ public class loginDialog : Gtk.Dialog {
 		error_box.pack_start(center, true, true, 0);
 		content.add(error_box);
 
-		add_button("Cancel", Gtk.ResponseType.CANCEL);
+		add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
 		m_okay_button = add_button("Login", Gtk.ResponseType.APPLY);
 		this.response.connect(on_response);
 	}

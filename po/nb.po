@@ -1,4 +1,82 @@
+# Norwegian Bokmal translation for feedreader
+# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
+# This file is distributed under the same license as the feedreader package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: feedreader\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-10-30 23:30+0100\n"
+"PO-Revision-Date: 2014-10-31 07:16+0000\n"
+"Last-Translator: ProsjektX <Unknown>\n"
+"Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2014-10-31 07:52+0000\n"
+"X-Generator: Launchpad (build 17211)\n"
+
+#: ../src/ttrss_interface.vala:494
+msgid "There is 1 new article"
+msgstr "Det er 1 ny artikkel"
+
+#: ../src/ttrss_interface.vala:496
+msgid "There are >200 new articles"
+msgstr "Det er mer enn 200 nye artikler"
+
+#: ../src/ttrss_interface.vala:498
+msgid "There are "
+msgstr "Det er "
+
+#: ../src/ttrss_interface.vala:498
+msgid " new articles"
+msgstr " nye artikler"
+
+#: ../src/ttrss_interface.vala:500
+msgid "New Articles"
+msgstr "Nye artikler"
+
+#: ../src/article-view.vala:49
+msgid "No Article selected."
+msgstr "Ingen artikkel valgt."
+
+#: ../src/reader-headerbar.vala:77
+msgid "Search Aritlces..."
+msgstr "Søk artikler..."
+
+#: ../src/reader-headerbar.vala:84
+msgid "Change Login"
+msgstr "Endre login"
+
+#: ../src/reader-headerbar.vala:85
+msgid "About"
+msgstr "Om"
+
+#: ../src/login-dialog.vala:55
+msgid "tt-rss URL:"
+msgstr "tt-rss URL:"
+
+#: ../src/login-dialog.vala:56
+msgid "Username:"
+msgstr "Brukernavn:"
+
+#: ../src/login-dialog.vala:57
+msgid "Password:"
+msgstr "Passord:"
+
+#: ../src/login-dialog.vala:110
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: ../src/ui.vala:35
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: ../src/ui.vala:57
+msgid "about"
+msgstr "om"
+
+#: ../src/ui.vala:61
+msgid "login"
+msgstr "logg inn"

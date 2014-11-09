@@ -109,6 +109,7 @@ public class loginDialog : Gtk.Dialog {
 
 		add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
 		m_okay_button = add_button("Login", Gtk.ResponseType.APPLY);
+		m_okay_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		this.response.connect(on_response);
 	}
 

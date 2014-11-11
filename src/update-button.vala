@@ -23,7 +23,7 @@ public class UpdateButton : Gtk.Button {
 	private Gtk.Spinner m_spinner;
 	private bool m_status;
 
-	public UpdateButton (string iconname, bool active = false) {
+	public UpdateButton (string iconname) {
 
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(24,24);
@@ -31,7 +31,8 @@ public class UpdateButton : Gtk.Button {
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.LARGE_TOOLBAR);
 		this.add(m_icon);
 		
-		updating(active);
+		if(feedreader_settings.get_boolean("currently-updating"))
+			updating(true);
 	}
 
 	public void updating(bool status)

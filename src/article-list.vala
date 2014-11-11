@@ -170,7 +170,13 @@ public class articleList : Gtk.Stack {
 	{
 		//FIXME: limit should depend on headline layout
 		m_limit = 15;
-		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
+		
+		
+		// when the daemon is updating in the background and writing new articles in the db
+		// the most recent article could incomplete, so just add an offset of 1
+		// the missing article will get added as soon as the update finishes anyway
+		int active_in_db = feedreader_settings.get_boolean("currently-updating") ? 1 : 0;
+		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
 
 		foreach(var item in headlines)
 		{

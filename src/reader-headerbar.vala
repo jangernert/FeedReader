@@ -68,7 +68,7 @@ public class readerHeaderbar : Gtk.HeaderBar {
 			change_marked(m_only_marked);
 		});
 		
-		m_refresh_button = new UpdateButton("view-refresh", feedreader_settings.get_boolean("currently-updating"));
+		m_refresh_button = new UpdateButton("view-refresh");
 		m_refresh_button.clicked.connect(() => {
 			refresh();
 		});

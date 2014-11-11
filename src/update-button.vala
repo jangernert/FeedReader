@@ -23,13 +23,15 @@ public class UpdateButton : Gtk.Button {
 	private Gtk.Spinner m_spinner;
 	private bool m_status;
 
-	public UpdateButton (string iconname) {
+	public UpdateButton (string iconname, bool active = false) {
 
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(24,24);
 
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.LARGE_TOOLBAR);
 		this.add(m_icon);
+		
+		updating(active);
 	}
 
 	public void updating(bool status)

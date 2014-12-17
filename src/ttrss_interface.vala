@@ -61,12 +61,22 @@ public class ttrss_interface : GLib.Object {
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = ttrss_url;
+		attributes["URL"] = feedreader_settings.get_string("url");
 		attributes["Username"] = username;
 
 		string passwd = "";
-		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
-		
+		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
+			stdout.printf ("Error: %s\n", e.message);
+		}
+		if(passwd == null)
+		{
+			error_message = "password not set";
+			return false;
+		}
+		//stdout.printf ("URL: %s\n", feedreader_settings.get_string("url"));
+		//stdout.printf ("Password: %s\n", passwd);
+		//passwd = "wissen";
+		//stdout.printf ("URL: %s\nUsername: %s\nPassword: %s\n", url, username, passwd);
 		
 		if(ttrss_url == "" && username == "" && passwd == ""){
 			ttrss_url = "example-host/tt-rss";

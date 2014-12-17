@@ -63,6 +63,10 @@ public class rssReaderApp : Gtk.Application {
 				m_window.updateHeadlineList();
 		        m_window.setRefreshButton(false);
 		    });
+		    m_feedDaemon_interface.loginDialog.connect(() => {
+		        stdout.printf ("show login dialog\n");
+		        tryLogin();
+		    });
 		}catch (IOError e) {
     		stderr.printf ("%s\n", e.message);
 		}

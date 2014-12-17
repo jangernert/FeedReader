@@ -5,6 +5,14 @@ public class FeedDaemonServer : Object {
 	
 	public FeedDaemonServer()
 	{
+		string tmp = "";
+		if(!ttrss.login(out tmp))
+		{
+			if(tmp == "password not set")
+				loginDialog();
+			else
+				exit(-1);
+		}
 		stdout.printf("init\n");
 		int sync_timeout = feedreader_settings.get_int("sync");
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
@@ -82,22 +90,14 @@ void main () {
 	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
 	Notify.init("RSS Reader");
 	
-	if(ttrss.login(null))
-	{
-		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
-		              on_bus_aquired,
-		              () => {},
-		              () => {
-		              			stderr.printf ("Could not aquire name\n"); 
-		              			exit(-1);
-		              		}
-		              );
-	}
-	else
-	{
-		stdout.printf("error loggin in\n");
-		exit(-1);
-	}
+	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
+		          on_bus_aquired,
+		          () => {},
+		          () => {
+		          			stderr.printf ("Could not aquire name\n"); 
+		              		exit(-1);
+		              	}
+		          );
     new MainLoop ().run ();
 }
 

@@ -66,7 +66,7 @@
     </key>
     
     <key name="max-articles" type="i">
-      <default>2000</default>
+      <default>400</default>
       <summary>Maximum of new Articles</summary>
       <description>
         The maximum of articles that are fetched from the server.

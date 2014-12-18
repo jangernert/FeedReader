@@ -107,7 +107,6 @@ public class rssReaderApp : Gtk.Application {
 			dialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
 				tryLogin();
-				startDaemon();
 				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 2, () => {
 					sync();
 					return false;

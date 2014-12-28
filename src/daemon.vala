@@ -7,17 +7,11 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		m_loggedin = false;
-		//stdout.printf("daemon: constructor\n");
+		stdout.printf("daemon: constructor\n");
 		string tmp = "";
 		if(!ttrss.login(out tmp))
 		{
-			if(tmp == "password not set")
-			{
-				stdout.printf("daemon: password not set\n");
-				loginDialog();
-			}
-			else
-				exit(-1);
+			loginDialog();
 		}
 		else
 			m_loggedin = true;
@@ -26,7 +20,7 @@ public class FeedDaemonServer : Object {
 		int sync_timeout = feedreader_settings.get_int("sync");
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 		updateBadge();
-		//stdout.printf("daemon: add timeout\n");
+		stdout.printf("daemon: add timeout\n");
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
 			if(!feedreader_settings.get_boolean("currently-updating"))
 			{

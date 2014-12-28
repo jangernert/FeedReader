@@ -78,7 +78,6 @@ public class rssReaderApp : Gtk.Application {
 	
 	protected override void activate ()
 	{
-		stdout.printf("activate window\n");
 		if (m_window == null)
 		{
 			m_window = new readerUI (this);

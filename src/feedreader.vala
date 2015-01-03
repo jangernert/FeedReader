@@ -71,7 +71,7 @@ public class rssReaderApp : Gtk.Application {
     		stderr.printf ("%s\n", e.message);
 		}
 		
-		Notify.init("RSS Reader");
+		Notify.init("FeedReader");
 		m_firstTime = true;
 		base.startup ();
 	}

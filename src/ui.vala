@@ -169,9 +169,7 @@ public class readerUI : Gtk.ApplicationWindow
 
 		m_articleList.row_activated.connect((row) => {
 			if(row.isUnread()){
-				ttrss.updateArticleUnread.begin(row.m_articleID, false, (obj, res) => {
-					ttrss.updateArticleUnread.end(res);
-				});
+				feedDaemon_interface.changeUnread(row.m_articleID, false);
 				row.updateUnread(false);
 				row.removeUnreadIcon();
 				

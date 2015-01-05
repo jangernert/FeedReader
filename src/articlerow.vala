@@ -48,7 +48,7 @@ public class articleRow : baseRow {
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.set_transition_duration(500);
-	
+		
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		if(!layout)
 			m_box.set_size_request(0, 30);
@@ -200,9 +200,7 @@ public class articleRow : baseRow {
 			unreadIconEnter();
 		m_just_clicked = true;
 		updateUnread(!m_is_unread);
-		ttrss.updateArticleUnread.begin(m_articleID, m_is_unread, (obj, res) => {
-			ttrss.updateArticleUnread.end(res);
-		});
+		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
 		
 		dataBase.update_headline.begin(m_articleID, "unread", m_is_unread, (obj, res) => {
 			dataBase.update_headline.end(res);
@@ -273,9 +271,8 @@ public class articleRow : baseRow {
 	{
 		m_just_clicked = true;
 		updateMarked(!m_marked);
-		ttrss.updateArticleMarked.begin(m_articleID, m_marked, (obj, res) => {
-			ttrss.updateArticleMarked.end(res);
-		});
+		feedDaemon_interface.changeMarked(m_articleID, m_marked);
+		
 		dataBase.update_headline.begin(m_articleID, "marked", m_marked, (obj, res) => {
 			dataBase.update_headline.end(res);
 		});

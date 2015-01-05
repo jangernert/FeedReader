@@ -8,8 +8,7 @@ public class FeedDaemonServer : Object {
 	{
 		m_loggedin = false;
 		stdout.printf("daemon: constructor\n");
-		string tmp = "";
-		if(!ttrss.login(out tmp))
+		if(!server.login())
 		{
 			loginDialog();
 		}
@@ -46,24 +45,34 @@ public class FeedDaemonServer : Object {
 	{
 		if(!m_loggedin)
 		{
-			if(ttrss.login(null))
+			if(server.login())
 				m_loggedin = true;
 		}
 		
 		//stdout.printf("daemon: sync started\n");
 		syncStarted();
 		feedreader_settings.set_boolean("currently-updating", true);
-		yield ttrss.getCategories();
-		//stdout.printf("daemon: got categories\n");
-		yield ttrss.getFeeds();
-		//stdout.printf("daemon: got feeds\n");
-		yield ttrss.getHeadlines();
-		//stdout.printf("daemon: got headlines\n");
-		yield ttrss.updateHeadlines(300);
+		yield server.sync_content();
 		updateBadge();
 		feedreader_settings.set_boolean("currently-updating", false);
 		syncFinished();
 		//stdout.printf("daemon: sync finished\n");
+	}
+	
+	public bool login()
+	{
+		stdout.printf("daemon: login\n");
+		return server.login();
+	}
+	
+	public void changeUnread(int articleID, bool read)
+	{
+		server.setArticleIsRead(articleID, read);
+	}
+	
+	public void changeMarked(int articleID, bool marked)
+	{
+		server.setArticleIsMarked(articleID, marked);
 	}
 	
 	public void updateBadge()
@@ -97,11 +106,11 @@ void on_bus_aquired (DBusConnection conn) {
 
 dbManager dataBase;
 GLib.Settings feedreader_settings;
-ttrss_interface ttrss;
+feed_server server;
 extern void exit(int exit_code);
 
 void main () {
-	ttrss = new ttrss_interface();
+	server = new feed_server(TYPE_TTRSS);
 	dataBase = new dbManager();
 	dataBase.init();
 	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");

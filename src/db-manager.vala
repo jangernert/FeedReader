@@ -366,9 +366,11 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public void debug_write_allArticles(ttrss_interface ttrss)
+	/*public void debug_write_allArticles()
 	{
 		string title, author, url, html;
+		ttrss_interface ttrss = new ttrss_interface();
+		ttrss.login(null);
 		
 		string query = """SELECT "articleID","feedID" FROM "main"."headlines" """;
 		Sqlite.Statement stmt;
@@ -380,7 +382,7 @@ public class dbManager : GLib.Object {
 			ttrss.getArticle(stmt.column_int(0), out title, out author, out url, out html);
 			write_article(stmt.column_int(0), stmt.column_int(1), title, author, url, html);
 		}
-	}
+	}*/
 
 
 	public async void update_headline(int articleID, string field, bool field_value)

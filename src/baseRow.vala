@@ -1,6 +1,6 @@
 /* -*- Mode: vala; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- * ttrssrow.vala
+ * baserow.vala
  * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
  *
  * tt-rss is free software: you can redistribute it and/or modify it

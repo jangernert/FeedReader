@@ -21,13 +21,16 @@ using GLib;
 using Gtk;
 
 dbManager dataBase;
-ttrss_interface ttrss;
 GLib.Settings feedreader_settings;
+FeedDaemon feedDaemon_interface;
 
 
 [DBus (name = "org.gnome.feedreader")]
 interface FeedDaemon : Object {
     public abstract void startSync() throws IOError;
+    public abstract bool login() throws IOError;
+    public abstract void changeUnread(int articleID, bool read) throws IOError;
+    public abstract void changeMarked(int articleID, bool marked) throws IOError;
     public abstract void updateBadge() throws IOError;
     public signal void syncStarted();
     public signal void syncFinished();
@@ -39,7 +42,7 @@ public class rssReaderApp : Gtk.Application {
 
 	private readerUI m_window;
 	private bool m_firstTime;
-	FeedDaemon m_feedDaemon_interface;
+	
 	 
 	protected override void startup () {
 		startDaemon();
@@ -48,22 +51,23 @@ public class rssReaderApp : Gtk.Application {
 		dataBase.init();
 		
 		feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
-		ttrss = new ttrss_interface();
 		
 		try{
-			m_feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
-			m_feedDaemon_interface.syncStarted.connect(() => {
+			feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
+			
+			feedDaemon_interface.syncStarted.connect(() => {
 		        stdout.printf ("sync started\n");
 		        m_window.setRefreshButton(true);
 		    });
 		    
-		    m_feedDaemon_interface.syncFinished.connect(() => {
+		    feedDaemon_interface.syncFinished.connect(() => {
 		        stdout.printf ("sync finished\n");
 				m_window.updateFeedList();
 				m_window.updateHeadlineList();
 		        m_window.setRefreshButton(false);
 		    });
-		    m_feedDaemon_interface.loginDialog.connect(() => {
+		    
+		    feedDaemon_interface.loginDialog.connect(() => {
 		        stdout.printf ("show login dialog\n");
 		        tryLogin();
 		    });
@@ -71,7 +75,7 @@ public class rssReaderApp : Gtk.Application {
     		stderr.printf ("%s\n", e.message);
 		}
 		
-		Notify.init("RSS Reader");
+		Notify.init("FeedReader");
 		m_firstTime = true;
 		base.startup ();
 	}
@@ -92,7 +96,8 @@ public class rssReaderApp : Gtk.Application {
 	public void tryLogin()
 	{
 		string error_message = "";
-		if(ttrss.login(out error_message))
+		stdout.printf("feedreader: trylogin\n");
+		if(feedDaemon_interface.login())
 		{
 			getContent();
 		}
@@ -132,7 +137,7 @@ public class rssReaderApp : Gtk.Application {
 	private void updateBadge()
 	{
 		try{
-			m_feedDaemon_interface.updateBadge();
+			feedDaemon_interface.updateBadge();
 		}catch (IOError e) {
     		stderr.printf ("%s\n", e.message);
 		}
@@ -142,7 +147,7 @@ public class rssReaderApp : Gtk.Application {
 	public void sync()
 	{
 		try{
-			m_feedDaemon_interface.startSync();
+			feedDaemon_interface.startSync();
 		}catch (IOError e) {
     		stderr.printf ("%s\n", e.message);
 		}

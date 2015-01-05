@@ -19,7 +19,7 @@ add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
 add_subdirectory (schemas)
 
-pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify unity)
+pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify unity)
 
 add_definitions(${DEPS_CFLAGS})
 link_libraries(${DEPS_LIBRARIES})
@@ -45,7 +45,11 @@ vala_precompile(UI ${EXEC_NAME}
     src/login-dialog.vala
     src/reader-headerbar.vala
     src/ThinPaned.vala
-    src/ttrss_interface.vala
+    
+    
+    
+    
+    
     src/ui.vala
     src/update-button.vala
 
@@ -68,14 +72,29 @@ OPTIONS
 
 vala_precompile(daemon ${DAEMON_NAME}
     src/daemon.vala
-    src/ttrss_interface.vala
     src/db-manager.vala
     src/types.vala
+    src/Constants.vala
+    
+    src/backends/feed_server.vala
+    src/backends/tt-rss/ttrss_interface.vala
+    src/backends/feedly/feedly_interface.vala
+    src/backends/feedly/Model/Subscription.vala
+    src/backends/feedly/Model/Profile.vala
+    src/backends/feedly/Model/Entry.vala
+    src/backends/feedly/Model/Category.vala
+    src/backends/feedly/Cloud/Category.vala
+    src/backends/feedly/Cloud/Entry.vala
+    src/backends/feedly/Cloud/FeedlyAPI.vala
+    src/backends/feedly/Cloud/FeedlyConnection.vala
+    src/backends/feedly/Cloud/Profile.vala
+    src/backends/feedly/Cloud/Subscription.vala
 
 PACKAGES
     glib-2.0>=2.32
     gio-2.0
     sqlite3
+    gee-0.8
     libsoup-2.4
     json-glib-1.0
     libnotify

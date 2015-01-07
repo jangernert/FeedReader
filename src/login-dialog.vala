@@ -23,6 +23,7 @@ public class loginDialog : Gtk.Dialog {
 	private Gtk.Entry m_url_entry;
 	private Gtk.Entry m_user_entry;
 	private Gtk.Entry m_password_entry;
+	private Gtk.ComboBox m_comboBox;
 	public signal void submit_data();
 
 	public loginDialog (Gtk.Window window, string error_message = "") {	
@@ -51,11 +52,15 @@ public class loginDialog : Gtk.Dialog {
 				break;
 		}
 		});
-
+		
+		
+		
+		var comboBox_label = new Gtk.Label(_("RSS Type:"));
 		var url_label = new Gtk.Label(_("tt-rss URL:"));
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
 
+		comboBox_label.set_alignment(0.0f, 0.5f);
 		url_label.set_alignment(1.0f, 0.5f);
 		user_label.set_alignment(1.0f, 0.5f);
 		password_label.set_alignment(1.0f, 0.5f);
@@ -93,18 +98,44 @@ public class loginDialog : Gtk.Dialog {
 		grid.set_column_spacing(10);
 		grid.set_row_spacing(10);
 		
+		Gdk.Pixbuf tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/feedly.png");
+		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
+		var logo = new Gtk.Image.from_pixbuf(tmp_logo);
+		
 		grid.attach(url_label, 0, 0, 1, 1);
 		grid.attach(m_url_entry, 1, 0, 1, 1);
 		grid.attach(user_label, 0, 1, 1, 1);
 		grid.attach(m_user_entry, 1, 1, 1, 1);
 		grid.attach(password_label, 0, 2, 1, 1);
 		grid.attach(m_password_entry, 1, 2, 1, 1);
-
-		var content = get_content_area ();
+		
+		var liststore = new Gtk.ListStore(1, typeof (string));
+		Gtk.TreeIter ttrss;
+		liststore.append(out ttrss);
+		liststore.set(ttrss, 0, "Tiny Tiny RSS");
+		Gtk.TreeIter feedly;
+		liststore.append(out feedly);
+		liststore.set(feedly, 0, "Feedly");
+		m_comboBox = new Gtk.ComboBox.with_model(liststore);
+		
+		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
+		m_comboBox.pack_start (renderer, false);
+		m_comboBox.add_attribute(renderer, "text", 0);
+		m_comboBox.active = 0;
+		
+		
+		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+		var hbox = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 10);
+		hbox.pack_start(comboBox_label, false, false);
+		hbox.pack_start(m_comboBox, true, true);
+		vbox.pack_start(hbox);
+		vbox.pack_start(logo, false, false, 20);
+		vbox.pack_start(grid);
 		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
 		center.set_padding(20, 20, 20, 20);
-		center.add(grid);
+		center.add(vbox);
 		error_box.pack_start(center, true, true, 0);
+		var content = get_content_area ();
 		content.add(error_box);
 
 		add_button(_("Cancel"), Gtk.ResponseType.CANCEL);

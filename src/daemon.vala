@@ -118,6 +118,7 @@ void main () {
 	
 	var feedly = FeedlyAPI.get_api_with_token();
 	feedly.getCategories();
+	feedly.getFeeds();
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 		          on_bus_aquired,

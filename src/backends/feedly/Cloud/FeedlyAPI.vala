@@ -9,7 +9,7 @@ public class FeedlyAPI : Object {
     public Gee.HashMap<string,int> markers { get; private set; }
 
     FeedlyAPI() {
-    	string devel_token = "AgC3A157ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODA4ODYxOTIwNSwiaSI6IjliN2ZkYjg3LTljYWUtNGIyNy05NGQyLTEwMGExMTM4YTg2OSIsInAiOjYsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTQuMjciLCJ4Ijoic3RhbmRhcmQifQ:feedlydev";
+    	string devel_token = "AhHjs057ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODM3Njc2MDUwMSwiaSI6IjliN2ZkYjg3LTljYWUtNGIyNy05NGQyLTEwMGExMTM4YTg2OSIsInAiOjYsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTQuMjciLCJ4Ijoic3RhbmRhcmQifQ:feedlydev";
         this.connection = new FeedlyConnection (devel_token);
         this.token = devel_token;  
         this.user_id = get_profile ().id;     
@@ -79,9 +79,60 @@ public class FeedlyAPI : Object {
             
             stdout.printf("%s | %s %i\n", categorieID, title, unreadCount);
             
-            //dataBase.write_categorie(int.parse(categorieID), title, unreadCount, i+1, -99, 1);
+            //dataBase.write_categorie(categorieID, title, unreadCount, i+1, -99, 1);
         } 
     }
+    
+    public void getFeeds() throws Error {
+        string response = connection.send_get_request_to_feedly ("/v3/subscriptions/");
+
+        var parser = new Json.Parser ();
+        parser.load_from_data (response, -1);
+        Json.Array array = parser.get_root ().get_array ();
+
+        for (int i = 0; i < array.get_length (); i++) {
+            Json.Object object = array.get_object_element (i);
+            
+            string feedID = object.get_string_member ("id");
+            string title = object.get_string_member ("title");
+            string icon_url = object.has_member ("visualUrl") ? object.get_string_member ("visualUrl") : "";
+            string url = object.has_member ("website") ? object.get_string_member ("website") : "";
+            
+            var categories = object.get_array_member("categories");
+            var category = categories.get_object_element(0);
+            string categorieID = category.get_string_member("id");
+            int unreadCount = get_count_of_unread_articles (feedID);
+            
+            stdout.printf("%s | %s %i\n", category.get_string_member("label"), title, unreadCount);
+            //downloadIcon(feedID, icon_url);
+            /*dataBase.write_feed(feedID,
+								title,
+								url,
+								if(icon_url == "") ? 0 : 1,
+								unreadCount,
+								unreadCount;*/
+        }
+    }
+    
+    
+    private void downloadIcon(string feed_id, string icon_url)
+	{
+		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+		var path = GLib.File.new_for_path(icon_path);
+		try{path.make_directory_with_parents();}catch(GLib.Error e){}
+		string local_filename = icon_path + feed_id + ".ico";
+					
+		if(!FileUtils.test (local_filename, GLib.FileTest.EXISTS))
+		{
+			Soup.Message message_dlIcon;
+			message_dlIcon = new Soup.Message ("GET", icon_url);
+			var session = new Soup.Session ();
+			var status = session.send_message(message_dlIcon);
+			if (status == 200)
+				try{FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);}
+				catch(GLib.FileError e){}
+		}
+	}
 
     /** Returns all subscriptions */
     public Gee.ArrayList<Subscription> get_subscriptions () throws Error {
@@ -98,6 +149,8 @@ public class FeedlyAPI : Object {
         }
         return subscriptions;
     }
+    
+    
 
     public Gee.TreeMap<feedlyCategory,Gee.TreeSet<Subscription>> get_sorted_category_subscription_map_with_unread_count () throws Error{
        

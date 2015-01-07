@@ -205,13 +205,13 @@ public class dbManager : GLib.Object {
 		return unread;
 	}
 
-	public void write_feed(int feed_id, string feed_name, string feed_url, bool has_icon, int unread_count, int cat_id)
+	public void write_feed(string feed_id, string feed_name, string feed_url, bool has_icon, int unread_count, int cat_id)
 	{
 		int int_has_icon = 0;
 		if(has_icon) int_has_icon = 1;
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"feeds\" (\"feed_id\",\"name\",\"url\",\"has_icon\",\"unread\", \"category_id\", \"subscribed\") 
-						VALUES (\"" + feed_id.to_string() + "\", $FEEDNAME, $FEEDURL, \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id.to_string() + "\", 1)";
+						VALUES (\"" + feed_id + "\", $FEEDNAME, $FEEDURL, \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id.to_string() + "\", 1)";
 		
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -232,10 +232,10 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public void write_categorie(int categorieID, string categorie_name, int unread_count, int orderID, int parent, int level)
+	public void write_categorie(string categorieID, string categorie_name, int unread_count, int orderID, int parent, int level)
 	{
 		string query = "INSERT OR REPLACE INTO \"main\".\"categories\" (\"categorieID\",\"title\",\"unread\",\"orderID\", \"exists\", \"Parent\", \"Level\") 
-						VALUES (\"" + categorieID.to_string() + "\", $FEEDNAME, \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent.to_string() + "\", \"" + level.to_string() + "\")";
+						VALUES (\"" + categorieID + "\", $FEEDNAME, \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent.to_string() + "\", \"" + level.to_string() + "\")";
 		
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);

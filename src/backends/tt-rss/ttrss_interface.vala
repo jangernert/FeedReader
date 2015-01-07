@@ -243,7 +243,7 @@ public class ttrss_interface : GLib.Object {
 					
 						all_unread_count += int.parse(feed_node.get_int_member("unread").to_string());
 					
-						dataBase.write_feed(int.parse(feed_id),
+						dataBase.write_feed(feed_id,
 										  feed_node.get_string_member("title"),
 										  feed_node.get_string_member("feed_url"),
 										  feed_node.get_boolean_member("has_icon"),
@@ -357,7 +357,7 @@ public class ttrss_interface : GLib.Object {
 				string title = categorie_node.get_string_member("name");
 				int unread_count = int.parse(categorie_node.get_int_member("unread").to_string());
 				string catID = categorie_node.get_string_member("id");
-				int categorieID = int.parse(catID.slice(4, catID.length));
+				string categorieID = catID.slice(4, catID.length);
 				
 				if(title == "Uncategorized")
 				{
@@ -365,7 +365,7 @@ public class ttrss_interface : GLib.Object {
 				}
 
 				dataBase.write_categorie(categorieID, title, unread_count, orderID, parent, level);
-				getSubCategories(categorie_node, level, categorieID);
+				getSubCategories(categorie_node, level, int.parse(categorieID));
 			}
 		}
 	}

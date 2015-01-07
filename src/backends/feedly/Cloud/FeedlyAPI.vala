@@ -8,9 +8,10 @@ public class FeedlyAPI : Object {
     private static FeedlyAPI instance;
     public Gee.HashMap<string,int> markers { get; private set; }
 
-    FeedlyAPI(string token) {
-        this.connection = new FeedlyConnection (token);
-        this.token = token;  
+    FeedlyAPI() {
+    	string devel_token = "AgC3A157ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODA4ODYxOTIwNSwiaSI6IjliN2ZkYjg3LTljYWUtNGIyNy05NGQyLTEwMGExMTM4YTg2OSIsInAiOjYsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTQuMjciLCJ4Ijoic3RhbmRhcmQifQ:feedlydev";
+        this.connection = new FeedlyConnection (devel_token);
+        this.token = devel_token;  
         this.user_id = get_profile ().id;     
     }
 
@@ -19,10 +20,10 @@ public class FeedlyAPI : Object {
         return instance;
     }
 
-    public static FeedlyAPI get_api_with_token (string token) {
+    public static FeedlyAPI get_api_with_token() {
         if (instance == null) {
             try {
-                instance = new FeedlyAPI (token);
+                instance = new FeedlyAPI ();
             } catch (Error e) {
                 error ("Failed to connect to Feedly!");
             }
@@ -59,6 +60,27 @@ public class FeedlyAPI : Object {
             categories.add (feedlyCategory.from_json_object (object));
         }
         return categories;   
+    }
+    
+    public void getCategories() throws Error {
+        string response = connection.send_get_request_to_feedly ("/v3/categories/");
+
+        var parser = new Json.Parser ();
+        parser.load_from_data (response, -1);
+        Json.Array array = parser.get_root ().get_array ();
+        
+
+        for (int i = 0; i < array.get_length (); i++) {
+            Json.Object object = array.get_object_element (i);
+            
+            string categorieID = object.get_string_member("id");
+            int unreadCount = get_count_of_unread_articles (categorieID);
+            string title = object.get_string_member("label");
+            
+            stdout.printf("%s | %s %i\n", categorieID, title, unreadCount);
+            
+            //dataBase.write_categorie(int.parse(categorieID), title, unreadCount, i+1, -99, 1);
+        } 
     }
 
     /** Returns all subscriptions */
@@ -224,11 +246,6 @@ public class FeedlyAPI : Object {
     public void mark_as_read_subscription (Subscription subscription) {
         this.mark_as_read (subscription.id, "feeds");
     }
-
-    /** Mark a feed as read */
-    //public void mark_as_read_feed (Feed feed) {
-    //    this.mark_as_read(feed.id, "feeds");
-    //}
 
     private void mark_as_read(string id, string type) {
         Json.Object object = new Json.Object();

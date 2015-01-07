@@ -19,6 +19,7 @@
 
 public class feed_server : GLib.Object {
 	ttrss_interface m_ttrss;
+	FeedlyAPI m_feedly;
 	int m_type;
 
 	public feed_server(int type)
@@ -32,7 +33,7 @@ public class feed_server : GLib.Object {
 				break;
 				
 			case TYPE_FEEDLY:
-				
+				m_feedly = FeedlyAPI.get_api_with_token();
 				break;
 		}
 	}
@@ -46,7 +47,7 @@ public class feed_server : GLib.Object {
 				break;
 				
 			case TYPE_FEEDLY:
-				break;
+				return true;
 		}
 		return false;
 	}

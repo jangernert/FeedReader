@@ -45,7 +45,7 @@ public class dbManager : GLib.Object {
 	{
 			string feeds =					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds" 
 											(
-												"feed_id" INTEGER PRIMARY KEY  NOT NULL UNIQUE ,
+												"feed_id" TEXT PRIMARY KEY  NOT NULL UNIQUE ,
 												"name" VARCHAR NOT NULL ,
 												"url" VARCHAR NOT NULL  UNIQUE ,
 												"has_icon" INTEGER NOT NULL ,
@@ -56,7 +56,7 @@ public class dbManager : GLib.Object {
 
 			string headlines =				"""CREATE  TABLE  IF NOT EXISTS "main"."headlines" 
 											(
-												"articleID" INTEGER PRIMARY KEY  NOT NULL  UNIQUE ,
+												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" VARCHAR NOT NULL , 
 												"url" VARCHAR NOT NULL ,
 												"feedID" INTEGER NOT NULL , 
@@ -66,7 +66,7 @@ public class dbManager : GLib.Object {
 		
 			string articles =				"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
 											(
-												"articleID" INTEGER PRIMARY KEY  NOT NULL  UNIQUE ,
+												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"feedID" INTEGER NOT NULL ,
 												"title" VARCHAR NOT NULL ,
 												"author" VARCHAR NOT NULL ,
@@ -77,7 +77,7 @@ public class dbManager : GLib.Object {
 
 			string categories =				"""CREATE  TABLE  IF NOT EXISTS "main"."categories" 
 											(
-												"categorieID" INTEGER PRIMARY KEY  NOT NULL  UNIQUE ,
+												"categorieID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" VARCHAR NOT NULL ,
 												"unread" INTEGER,
 												"orderID" INTEGER,
@@ -364,25 +364,6 @@ public class dbManager : GLib.Object {
 		}
 		stmt.reset ();
 	}
-
-
-	/*public void debug_write_allArticles()
-	{
-		string title, author, url, html;
-		ttrss_interface ttrss = new ttrss_interface();
-		ttrss.login(null);
-		
-		string query = """SELECT "articleID","feedID" FROM "main"."headlines" """;
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		while (stmt.step () == Sqlite.ROW) {
-			ttrss.getArticle(stmt.column_int(0), out title, out author, out url, out html);
-			write_article(stmt.column_int(0), stmt.column_int(1), title, author, url, html);
-		}
-	}*/
 
 
 	public async void update_headline(int articleID, string field, bool field_value)

@@ -78,7 +78,6 @@ vala_precompile(daemon ${DAEMON_NAME}
     
     src/backends/feed_server.vala
     src/backends/tt-rss/ttrss_interface.vala
-    src/backends/feedly/feedly_interface.vala
     src/backends/feedly/Model/Subscription.vala
     src/backends/feedly/Model/Profile.vala
     src/backends/feedly/Model/Entry.vala

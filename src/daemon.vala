@@ -114,7 +114,10 @@ void main () {
 	dataBase = new dbManager();
 	dataBase.init();
 	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
-	Notify.init("RSS Reader");
+	Notify.init("FeedReader");
+	
+	var feedly = FeedlyAPI.get_api_with_token();
+	feedly.getCategories();
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 		          on_bus_aquired,

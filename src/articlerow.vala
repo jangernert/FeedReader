@@ -60,7 +60,7 @@ public class articleRow : baseRow {
 
 		if(showIcon || layout)
 		{
-			string feed_icon_name = icon_path + iconname + ".ico";
+			string feed_icon_name = icon_path + iconname.replace("/", "_").replace(".", "_") + ".ico";
 			Gdk.Pixbuf tmp_icon;
 			try{
 				if(FileUtils.test(feed_icon_name, GLib.FileTest.EXISTS))

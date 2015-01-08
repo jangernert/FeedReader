@@ -504,7 +504,7 @@ public class dbManager : GLib.Object {
 	private string getFeedIDofCategorie(string categorieID)
 	{
 		string query = "\"feedID\" = ";
-		string query2 = "SELECT feed_id FROM \"main\".\"feeds\" WHERE \"category_id\" = " + categorieID;
+		string query2 = "SELECT feed_id FROM \"main\".\"feeds\" WHERE \"category_id\" = " + "\"" + categorieID + "\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query2, query2.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -621,7 +621,7 @@ public class dbManager : GLib.Object {
 		if(ID_is_feedID)
 		{
 			if(ID != "-3"){
-				query = query + "\"feedID\" = " + ID;
+				query = query + "\"feedID\" = " + "\"" + ID + "\"";
 				and = " AND ";
 			}
 		}

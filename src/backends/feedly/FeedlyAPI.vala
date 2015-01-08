@@ -8,7 +8,8 @@ public class FeedlyAPI : Object {
 	public Gee.HashMap<string,int> markers { get; private set; }
 
 	FeedlyAPI() {
-		string devel_token = "AhTSaW97ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODQyNTk1OTEyNiwiaSI6IjY3YjdmNTRjLWU0M2MtNDM3Yi05ZmQ0LWM0MTdkNGVjMzFhMCIsInAiOjgsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTUuMiIsIngiOiJzdGFuZGFyZCJ9:feedlydev";
+		//string devel_token = "AhTSaW97ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODQyNTk1OTEyNiwiaSI6IjY3YjdmNTRjLWU0M2MtNDM3Yi05ZmQ0LWM0MTdkNGVjMzFhMCIsInAiOjgsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTUuMiIsIngiOiJzdGFuZGFyZCJ9:feedlydev";
+		string devel_token = "AhHjs057ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODM3Njc2MDUwMSwiaSI6IjliN2ZkYjg3LTljYWUtNGIyNy05NGQyLTEwMGExMTM4YTg2OSIsInAiOjYsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTQuMjciLCJ4Ijoic3RhbmRhcmQifQ:feedlydev";
 		this.connection = new FeedlyConnection (devel_token);
 		this.token = devel_token;    
 	}
@@ -51,6 +52,7 @@ public class FeedlyAPI : Object {
 				getArticles(categorieID);
 				
 				dataBase.write_categorie(categorieID, title, unreadCount, i+1, -99, 1);
+				getArticles(categorieID);
 			}
 			
 			Idle.add((owned) callback);
@@ -151,7 +153,9 @@ public class FeedlyAPI : Object {
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
-		string local_filename = icon_path + feed_id + ".ico";
+		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
+		
+		print("feed id: " + feed_id.replace("/", "_").replace(".", "_") + "\nicon url: " + icon_url + "\n");
 		
 		if(!FileUtils.test (local_filename, GLib.FileTest.EXISTS))
 		{

@@ -64,8 +64,11 @@ public class feed_server : GLib.Object {
 				break;
 				
 			case TYPE_FEEDLY:
+				print("get categories\n");
 				yield m_feedly.getCategories();
+				print("get feeds\n");
 				yield m_feedly.getFeeds();
+				print("finished\n");
 				break;
 		}
 	}

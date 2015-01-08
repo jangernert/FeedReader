@@ -48,7 +48,7 @@ public class FeedRow : baseRow {
 			if(has_icon)
 			{
 				try{
-					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + feedID + ".ico");
+					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + feedID.replace("/", "_").replace(".", "_") + ".ico");
 					scale_pixbuf(ref tmp_icon, 24);
 					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 				}catch(GLib.Error e){}

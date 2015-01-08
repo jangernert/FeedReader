@@ -110,7 +110,8 @@ feed_server server;
 extern void exit(int exit_code);
 
 void main () {
-	server = new feed_server(TYPE_TTRSS);
+	//server = new feed_server(TYPE_TTRSS);
+	server = new feed_server(TYPE_FEEDLY);
 	dataBase = new dbManager();
 	dataBase.init();
 	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");

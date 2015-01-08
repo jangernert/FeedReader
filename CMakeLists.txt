@@ -45,11 +45,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/login-dialog.vala
     src/reader-headerbar.vala
     src/ThinPaned.vala
-    
-    
-    
-    
-    
+    src/Constants.vala
     src/ui.vala
     src/update-button.vala
 
@@ -75,7 +71,6 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/db-manager.vala
     src/types.vala
     src/Constants.vala
-    
     src/backends/feed_server.vala
     src/backends/tt-rss/ttrss_interface.vala
     src/backends/feedly/FeedlyAPI.vala

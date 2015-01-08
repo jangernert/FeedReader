@@ -1,4 +1,11 @@
 <schemalist>
+	<enum id="org.gnome.feedreader.accounttypes">
+		<value nick="TTRSS" value="1"/>
+		<value nick="FEEDLY" value="2"/>
+		<value nick="OWNCLOUD" value="3"/>
+	</enum>
+
+
   <schema id="org.gnome.feedreader" path="/org/gnome/feedreader/" gettext-domain="feedreader">
 
     <key name="url" type="s">
@@ -80,6 +87,10 @@
       	If the FeedReader is currently updating.
       </description>
     </key>
+	
+	<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
+		<default>'TTRSS'</default>
+	</key>
 
   </schema>
 </schemalist>

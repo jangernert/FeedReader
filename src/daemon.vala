@@ -110,16 +110,13 @@ feed_server server;
 extern void exit(int exit_code);
 
 void main () {
-	//server = new feed_server(TYPE_TTRSS);
-	server = new feed_server(TYPE_FEEDLY);
+	
 	dataBase = new dbManager();
 	dataBase.init();
 	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
 	Notify.init("FeedReader");
 	
-	//var feedly = FeedlyAPI.get_api_with_token();
-	//feedly.getCategories();
-	//feedly.getFeeds();
+	server = new feed_server(feedreader_settings.get_enum("account-type"));
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 		          on_bus_aquired,

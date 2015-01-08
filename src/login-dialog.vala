@@ -171,16 +171,19 @@ public class loginDialog : Gtk.Dialog {
 		m_comboBox.changed.connect(() => {
 			if(m_comboBox.get_active() != -1) {
 				print ("You chose " + account_types[m_comboBox.get_active()] +"\n");
-				switch(m_comboBox.get_active())
+				switch(m_comboBox.get_active()+1)
 				{
-					case 0:
+					case TYPE_TTRSS:
 						login_details.set_visible_child_name("ttrss");
+						feedreader_settings.set_enum("account-type", TYPE_TTRSS);
 						break;
-					case 1:
+					case TYPE_FEEDLY:
 						login_details.set_visible_child_name("feedly");
+						feedreader_settings.set_enum("account-type", TYPE_FEEDLY);
 						break;
-					case 2:
+					case TYPE_OWNCLOUD:
 						login_details.set_visible_child_name("owncloud");
+						feedreader_settings.set_enum("account-type", TYPE_OWNCLOUD);
 						break;
 				}
 			}

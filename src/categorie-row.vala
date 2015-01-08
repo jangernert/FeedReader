@@ -23,17 +23,17 @@ public class categorieRow : baseRow {
 	private Gtk.EventBox m_eventbox;
 	private Gdk.Pixbuf m_state_collapsed;
 	private Gdk.Pixbuf m_state_expanded;
-	private int m_categorieID;
-	private int m_parentID;
+	private string m_categorieID;
+	private string m_parentID;
 	private int m_orderID;
 	private int m_level;
 	private bool m_exists;
 	private Gtk.Image m_icon_expanded;
 	private Gtk.Image m_icon_collapsed;
 	private bool m_collapsed;
-	public signal void collapse(bool collapse, int catID);
+	public signal void collapse(bool collapse, string catID);
 
-	public categorieRow (string name, int categorieID, int orderID, string unread_count, int parentID, int level, bool expanded) {
+	public categorieRow (string name, string categorieID, int orderID, string unread_count, string parentID, int level, bool expanded) {
 	
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
@@ -114,7 +114,7 @@ public class categorieRow : baseRow {
 		this.show_all();
 	}
 
-	public int getID()
+	public string getID()
 	{
 		return m_categorieID;
 	}
@@ -124,7 +124,7 @@ public class categorieRow : baseRow {
 		return m_name;
 	}
 
-	public int getParent()
+	public string getParent()
 	{
 		return m_parentID;
 	}

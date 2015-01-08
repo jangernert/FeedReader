@@ -19,14 +19,14 @@
 
 public class feed : GLib.Object {
 
-	public int m_feedID { get; private set; }
+	public string m_feedID { get; private set; }
 	public string m_title { get; private set; }
 	public string m_url { get; private set; }
 	public bool m_hasIcon { get; private set; }
 	public int m_unread { get; private set; }
-	public int m_categorieID { get; private set; }
+	public string m_categorieID { get; private set; }
 	
-	public feed (int feedID, string title, string url, int hasIcon, int unread, int categorieID) {
+	public feed (string feedID, string title, string url, int hasIcon, int unread, string categorieID) {
 		m_feedID = feedID;
 		m_title = title;
 		m_url = url;
@@ -41,14 +41,14 @@ public class feed : GLib.Object {
 
 public class category : GLib.Object {
 
-	public int m_categorieID { get; private set; }
+	public string m_categorieID { get; private set; }
 	public string m_title { get; private set; }
 	public int m_unread_count { get; private set; }
 	public int m_orderID { get; private set; }
-	public int m_parent { get; private set; }
+	public string m_parent { get; private set; }
 	public int m_level { get; private set; }
 
-	public category (int categorieID, string title, int unread_count, int orderID, int parent, int level) {
+	public category (string categorieID, string title, int unread_count, int orderID, string parent, int level) {
 		m_categorieID = categorieID;
 		m_title = title;
 		m_unread_count = unread_count;
@@ -61,16 +61,16 @@ public class category : GLib.Object {
 
 public class headline : GLib.Object {
 
-	public int m_articleID { get; private set; }
+	public string m_articleID { get; private set; }
 	public string m_title { get; private set; }
 	public string m_url { get; private set; }
-	public int m_feedID { get; private set; }
+	public string m_feedID { get; private set; }
 	public bool m_unread { get; private set; }
 	public bool m_marked { get; private set; }
 	
 
 	
-	public headline (int articleID, string title, string url, int feedID, int unread, int marked) {
+	public headline (string articleID, string title, string url, string feedID, int unread, int marked) {
 		m_articleID = articleID;
 		m_title = title;
 		m_url = url;

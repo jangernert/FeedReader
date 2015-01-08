@@ -65,12 +65,12 @@ public class FeedDaemonServer : Object {
 		return server.login();
 	}
 	
-	public void changeUnread(int articleID, bool read)
+	public void changeUnread(string articleID, bool read)
 	{
 		server.setArticleIsRead(articleID, read);
 	}
 	
-	public void changeMarked(int articleID, bool marked)
+	public void changeMarked(string articleID, bool marked)
 	{
 		server.setArticleIsMarked(articleID, marked);
 	}
@@ -116,9 +116,9 @@ void main () {
 	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
 	Notify.init("FeedReader");
 	
-	var feedly = FeedlyAPI.get_api_with_token();
-	feedly.getCategories();
-	feedly.getFeeds();
+	//var feedly = FeedlyAPI.get_api_with_token();
+	//feedly.getCategories();
+	//feedly.getFeeds();
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 		          on_bus_aquired,

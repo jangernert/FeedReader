@@ -50,7 +50,7 @@ public class dbManager : GLib.Object {
 												"url" VARCHAR NOT NULL  UNIQUE ,
 												"has_icon" INTEGER NOT NULL ,
 												"unread" INTEGER NOT NULL,
-												"category_id" INTEGER,
+												"category_id" TEXT,
 												"subscribed" INTEGER DEFAULT 1
 											)""";
 
@@ -67,7 +67,7 @@ public class dbManager : GLib.Object {
 			string articles =				"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
 											(
 												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
-												"feedID" INTEGER NOT NULL ,
+												"feedID" TEXT NOT NULL ,
 												"title" VARCHAR NOT NULL ,
 												"author" VARCHAR NOT NULL ,
 												"url" VARCHAR NOT NULL ,
@@ -82,7 +82,7 @@ public class dbManager : GLib.Object {
 												"unread" INTEGER,
 												"orderID" INTEGER,
 												"exists" INTEGER,
-												"Parent" INTEGER,
+												"Parent" TEXT,
 												"Level" INTEGER
 												)""";
 	
@@ -132,7 +132,7 @@ public class dbManager : GLib.Object {
 
 
 
-	public async void change_unread(int feedID, bool increase)
+	public async void change_unread(string feedID, bool increase)
 	{
 		SourceFunc callback = change_unread.callback;
 		
@@ -144,7 +144,7 @@ public class dbManager : GLib.Object {
 			}else{
 				change_feed_query = change_feed_query + "- 1";
 			} 
-			change_feed_query = change_feed_query + " WHERE \"feed_id\" = " + feedID.to_string();
+			change_feed_query = change_feed_query + " WHERE \"feed_id\" = " + feedID;
 			string errmsg;
 			int ec = sqlite_db.exec (change_feed_query, null, out errmsg);
 			if (ec != Sqlite.OK) {
@@ -205,13 +205,13 @@ public class dbManager : GLib.Object {
 		return unread;
 	}
 
-	public void write_feed(string feed_id, string feed_name, string feed_url, bool has_icon, int unread_count, int cat_id)
+	public void write_feed(string feed_id, string feed_name, string feed_url, bool has_icon, int unread_count, string cat_id)
 	{
 		int int_has_icon = 0;
 		if(has_icon) int_has_icon = 1;
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"feeds\" (\"feed_id\",\"name\",\"url\",\"has_icon\",\"unread\", \"category_id\", \"subscribed\") 
-						VALUES (\"" + feed_id + "\", $FEEDNAME, $FEEDURL, \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id.to_string() + "\", 1)";
+						VALUES (\"" + feed_id + "\", $FEEDNAME, $FEEDURL, \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id + "\", 1)";
 		
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -284,18 +284,18 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public void read_article(int articleID, out int feedID, out string title, out string author, out string url, out string html, out string preview)
+	public void read_article(string articleID, out string feedID, out string title, out string author, out string url, out string html, out string preview)
 	{
-		feedID = 0;
+		feedID = "0";
 		title = author = url = html = preview = "";
-		string query = "SELECT * FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID.to_string() + "\"";
+		string query = "SELECT * FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			feedID = stmt.column_int(1);
+			feedID = stmt.column_text(1);
 			title = stmt.column_text(2);
 			author = stmt.column_text(3);
 			url = stmt.column_text(4);
@@ -366,7 +366,7 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public async void update_headline(int articleID, string field, bool field_value)
+	public async void update_headline(string articleID, string field, bool field_value)
 	{
 		SourceFunc callback = update_headline.callback;
 		
@@ -374,7 +374,7 @@ public class dbManager : GLib.Object {
 			int int_field_value = 0;
 			if(field_value) int_field_value = 1;
 		
-			string query = "UPDATE \"main\".\"headlines\" SET \"" + field + "\" = \"" + int_field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID.to_string() + "\"";
+			string query = "UPDATE \"main\".\"headlines\" SET \"" + field + "\" = \"" + int_field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID + "\"";
 			string errmsg;
 			int ec = sqlite_db.exec (query, null, out errmsg);
 			if (ec != Sqlite.OK) {
@@ -474,10 +474,10 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public int getRowNumberHeadline(int articleID)
+	public int getRowNumberHeadline(string articleID)
 	{
 		int result = 0;
-		string query = "SELECT count(*) FROM main.headlines WHERE articleID >= \"" + articleID.to_string() + "\" ORDER BY articleID DESC";
+		string query = "SELECT count(*) FROM main.headlines WHERE articleID >= \"" + articleID + "\" ORDER BY articleID DESC";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -501,10 +501,10 @@ public class dbManager : GLib.Object {
 	}
 
 
-	private string getFeedIDofCategorie(int categorieID)
+	private string getFeedIDofCategorie(string categorieID)
 	{
 		string query = "\"feedID\" = ";
-		string query2 = "SELECT feed_id FROM \"main\".\"feeds\" WHERE \"category_id\" = " + categorieID.to_string();
+		string query2 = "SELECT feed_id FROM \"main\".\"feeds\" WHERE \"category_id\" = " + categorieID;
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query2, query2.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -567,7 +567,7 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpfeed = new feed(stmt.column_int(0), stmt.column_text(1), stmt.column_text(2), stmt.column_int(3), stmt.column_int(4), stmt.column_int(5));
+			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), stmt.column_int(3), stmt.column_int(4), stmt.column_text(5));
 			tmp.append(tmpfeed);
 		}
 		
@@ -586,7 +586,7 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpcategory = new category(stmt.column_int(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_int(5), stmt.column_int(6));
+			tmpcategory = new category(stmt.column_text(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_text(5), stmt.column_int(6));
 			tmp.append(tmpcategory);
 		}
 		
@@ -605,23 +605,23 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpcategory = new category(stmt.column_int(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_int(5), stmt.column_int(6));
+			tmpcategory = new category(stmt.column_text(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_text(5), stmt.column_int(6));
 			tmp.append(tmpcategory);
 		}
 
 		return tmp;
 	}
 
-	public GLib.List<headline> read_headlines(int ID, bool ID_is_feedID, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
+	public GLib.List<headline> read_headlines(string ID, bool ID_is_feedID, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
 	{
 		GLib.List<headline> tmp = new GLib.List<headline>();
 		string and = "";
 		string query = "SELECT * FROM \"main\".\"headlines\"";
-		if(ID != -3 || !ID_is_feedID || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
+		if(ID != "-3" || !ID_is_feedID || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
 		if(ID_is_feedID)
 		{
-			if(ID != -3){
-				query = query + "\"feedID\" = " + ID.to_string();
+			if(ID != "-3"){
+				query = query + "\"feedID\" = " + ID;
 				and = " AND ";
 			}
 		}
@@ -651,7 +651,7 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpHeadline = new headline(stmt.column_int(0), stmt.column_text(1), stmt.column_text(2), stmt.column_int(3), stmt.column_int(4), stmt.column_int(5));
+			tmpHeadline = new headline(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), stmt.column_text(3), stmt.column_int(4), stmt.column_int(5));
 			tmp.append(tmpHeadline);
 		}
 		

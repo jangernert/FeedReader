@@ -29,8 +29,8 @@ FeedDaemon feedDaemon_interface;
 interface FeedDaemon : Object {
     public abstract void startSync() throws IOError;
     public abstract bool login() throws IOError;
-    public abstract void changeUnread(int articleID, bool read) throws IOError;
-    public abstract void changeMarked(int articleID, bool marked) throws IOError;
+    public abstract void changeUnread(string articleID, bool read) throws IOError;
+    public abstract void changeMarked(string articleID, bool marked) throws IOError;
     public abstract void updateBadge() throws IOError;
     public signal void syncStarted();
     public signal void syncFinished();

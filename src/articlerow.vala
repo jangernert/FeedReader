@@ -30,11 +30,11 @@ public class articleRow : baseRow {
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private bool m_just_clicked;
-	public int m_articleID { get; private set; }
-	public int m_feedID { get; private set; }
+	public string m_articleID { get; private set; }
+	public string m_feedID { get; private set; }
 	public signal void updateFeedList();
 
-	public articleRow (string aritcleName, bool unread, string iconname, string url, int feedID, int articleID, bool marked, bool showIcon = false)
+	public articleRow (string aritcleName, bool unread, string iconname, string url, string feedID, string articleID, bool marked, bool showIcon = false)
 	{
 		bool layout = true;
 

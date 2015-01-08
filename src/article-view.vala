@@ -60,12 +60,12 @@ public class articleView : Gtk.Stack {
 	}
 
 
-	public void fillContent(int articleID)
+	public void fillContent(string articleID)
 	{
 		this.set_visible_child_name("spinner");
 		m_spinner.start();
 		string html = "", title = "", author = "", url = "";
-		int feedID = 0;
+		string feedID = "0";
 		
 		dataBase.read_article(articleID, out feedID, out title, out author, out url, out html, null);
 		if(author == "") author = "not available";

@@ -114,4 +114,7 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION $
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION $ENV{HOME}/.config/autostart/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader.css DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/categorie_expander.png DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedly.png DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/owncloud.png DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/ttrss.png DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/rss24.png DESTINATION ${PKGDATADIR})

@@ -20,13 +20,13 @@
 public class FeedRow : baseRow {
 
 	private bool m_subscribed;
-	private int m_catID;
+	private string m_catID;
 	private int m_level;
 	public string m_name { get; private set; }
-	public int m_ID { get; private set; }
+	public string m_ID { get; private set; }
 	
 
-	public FeedRow (string text, string unread_count, bool has_icon, string iconname, int catID, int level)
+	public FeedRow (string text, string unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
@@ -35,10 +35,10 @@ public class FeedRow : baseRow {
 		m_name = text.replace("&","&amp;");
 		if(text != "")
 		{
-			if(iconname != "ALL")
-				m_ID = int.parse(iconname);
+			if(feedID != "ALL")
+				m_ID = feedID;
 			else
-				m_ID = -3;
+				m_ID = "-3";
 				
 			
 			var rowhight = 30;
@@ -48,7 +48,7 @@ public class FeedRow : baseRow {
 			if(has_icon)
 			{
 				try{
-					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + iconname + ".ico");
+					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + feedID + ".ico");
 					scale_pixbuf(ref tmp_icon, 24);
 					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 				}catch(GLib.Error e){}
@@ -78,7 +78,7 @@ public class FeedRow : baseRow {
 			m_spacer = new Gtk.Label("");
 			m_spacer.set_size_request(level * 24, rowhight);
 
-			if(m_catID != -1)
+			if(m_catID != "-1")
 			{
 				var colour = Gdk.RGBA();
 				var grey = 100;
@@ -113,7 +113,7 @@ public class FeedRow : baseRow {
 		m_subscribed = subscribed;
 	}
 
-	public int getCategorie()
+	public string getCategorie()
 	{
 		return m_catID;
 	}

@@ -248,7 +248,7 @@ public class ttrss_interface : GLib.Object {
 										  feed_node.get_string_member("feed_url"),
 										  feed_node.get_boolean_member("has_icon"),
 										  int.parse(feed_node.get_int_member("unread").to_string()),
-									      int.parse(feed_node.get_int_member("cat_id").to_string()));
+									      feed_node.get_int_member("cat_id").to_string());
 					}
 				}
 				
@@ -591,7 +591,7 @@ public class ttrss_interface : GLib.Object {
 				for(uint i = 0; i < headline_count; i++)
 				{
 					var headline_node = response.get_object_element(i);
-					dataBase.update_headline.begin(int.parse(headline_node.get_int_member("id").to_string()), "unread", true, (obj, res) => {
+					dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "unread", true, (obj, res) => {
 						dataBase.update_headline.end(res);
 					});
 				}
@@ -616,7 +616,7 @@ public class ttrss_interface : GLib.Object {
 				for(uint i = 0; i < headline_count; i++)
 				{
 					var headline_node = response.get_object_element(i);
-					dataBase.update_headline.begin(int.parse(headline_node.get_int_member("id").to_string()), "marked", true, (obj, res) => {
+					dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "marked", true, (obj, res) => {
 						dataBase.update_headline.end(res);
 					});
 				}
@@ -659,7 +659,7 @@ public class ttrss_interface : GLib.Object {
 	}
 
 
-	public async bool updateArticleUnread(int articleID, bool unread)
+	public async bool updateArticleUnread(string articleID, bool unread)
 	{
 		SourceFunc callback = updateArticleUnread.callback;
 		bool return_value = false;
@@ -671,7 +671,7 @@ public class ttrss_interface : GLib.Object {
 				int_unread = 1;
 		
 			var message_updateAricle = new Soup.Message ("POST", ttrss_url);
-			string updateAricle = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"updateArticle\",\"article_ids\":" + articleID.to_string() + ",\"mode\":" + int_unread.to_string() + ",\"field\":2}";
+			string updateAricle = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"updateArticle\",\"article_ids\":" + articleID + ",\"mode\":" + int_unread.to_string() + ",\"field\":2}";
 			//stdout.printf("update Article message: %s\n", updateAricle);
 			message_updateAricle.set_request(m_contenttype, Soup.MemoryUse.COPY, updateAricle.data);
 			m_session.send_message (message_updateAricle);
@@ -697,7 +697,7 @@ public class ttrss_interface : GLib.Object {
 	}
 
 
-	public async bool updateArticleMarked(int articleID, bool marked)
+	public async bool updateArticleMarked(string articleID, bool marked)
 	{
 		SourceFunc callback = updateArticleMarked.callback;
 		bool return_value = false;
@@ -709,7 +709,7 @@ public class ttrss_interface : GLib.Object {
 				int_marked = 1;
 		
 			var message_updateAricle = new Soup.Message ("POST", ttrss_url);
-			string updateAricle = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"updateArticle\",\"article_ids\":" + articleID.to_string() + ",\"mode\":" + int_marked.to_string() + ",\"field\":0}";
+			string updateAricle = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"updateArticle\",\"article_ids\":" + articleID + ",\"mode\":" + int_marked.to_string() + ",\"field\":0}";
 			message_updateAricle.set_request(m_contenttype, Soup.MemoryUse.COPY, updateAricle.data);
 			m_session.send_message (message_updateAricle);
 

@@ -23,8 +23,8 @@ public class feedList : Gtk.Stack {
 	private Gtk.ListBox m_list;
 	private baseRow m_selected;
 	private Gtk.Spinner m_spinner;
-	public signal void newFeedSelected(int feedID);
-	public signal void newCategorieSelected(int categorieID);
+	public signal void newFeedSelected(string feedID);
+	public signal void newCategorieSelected(string categorieID);
 
 	public feedList () {
 		m_selected = null;
@@ -146,18 +146,18 @@ public class feedList : Gtk.Stack {
 
 	public void createFeedlist()
 	{
-		var row_spacer = new FeedRow("", "", false, "", -1, 0);
+		var row_spacer = new FeedRow("", "", false, "", "-1", 0);
 		row_spacer.set_size_request(0, 8);
 		row_spacer.sensitive = false;
 		//row_spacer.set_selectable(false);
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles",unread.to_string(), false, "ALL", -1, 0);
+		var row_all = new FeedRow("All Articles",unread.to_string(), false, "ALL", "-1", 0);
 		m_list.add(row_all);
 		row_all.reveal(true);
 
-		var row_seperator = new FeedRow("", "", false, "", -1, 0);
+		var row_seperator = new FeedRow("", "", false, "", "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.set_size_request(0, 20);
 		row_seperator.add(separator);
@@ -225,7 +225,7 @@ public class feedList : Gtk.Stack {
 				{
 					pos++;
 					var tmpRow = existing_row as categorieRow;
-					if((tmpRow != null && tmpRow.getID() == item.m_parent) || (item.m_parent == -99 && pos > 2))
+					if((tmpRow != null && tmpRow.getID() == item.m_parent) || (item.m_parent == "-99" && pos > 2))
 					{
 						foreach(string str in exp)
 						{
@@ -317,7 +317,7 @@ public class feedList : Gtk.Stack {
 				{
 					var tmpRow = row as categorieRow;
 					pos++;
-					if(tmpRow != null && tmpRow.getOrder() > categorierow.getOrder() && (tmpRow.getID() == categorierow.getParent()+1 || categorierow.getLevel() == 1))
+					if(tmpRow != null && tmpRow.getOrder() > categorierow.getOrder() && (tmpRow.getID() == (int.parse(categorierow.getParent())+1).to_string() || categorierow.getLevel() == 1))
 					{
 						m_list.insert(categorierow, pos-1);
 						categorierow.reveal(true);
@@ -460,7 +460,7 @@ public class feedList : Gtk.Stack {
 		}
 	}
 
-	private void collapseCategorie(int catID)
+	private void collapseCategorie(string catID)
 	{
 		var FeedChildList = m_list.get_children();
 
@@ -498,7 +498,7 @@ public class feedList : Gtk.Stack {
 	}
 
 
-	private void expandCategorie(int catID)
+	private void expandCategorie(string catID)
 	{
 		var FeedChildList = m_list.get_children();
 
@@ -521,13 +521,13 @@ public class feedList : Gtk.Stack {
 
 
 
-	public int getSelectedFeed()
+	public string getSelectedFeed()
 	{
 		FeedRow selected_row = m_list.get_selected_row() as FeedRow;
 		if(selected_row != null)
 			return selected_row.m_ID;
 		
-		return 0;
+		return "0";
 	}
 	
 	public string[] getExpandedCategories()

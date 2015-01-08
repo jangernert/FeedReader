@@ -29,7 +29,7 @@ public class articleList : Gtk.Stack {
 	private Gtk.Adjustment m_scroll2_adjustment;
 	private double m_lmit;
 	private int m_displayed_articles;
-	private int m_current_feed_selected;
+	private string m_current_feed_selected;
 	private bool m_only_unread;
 	private bool m_only_marked;
 	private string m_searchTerm;
@@ -43,7 +43,7 @@ public class articleList : Gtk.Stack {
 	public articleList () {
 		m_lmit = 0.8;
 		m_displayed_articles = 0;
-		m_current_feed_selected = -3;
+		m_current_feed_selected = "-3";
 		id_is_feedID = true;
 		m_searchTerm = "";
 		m_limit = 15;
@@ -160,7 +160,7 @@ public class articleList : Gtk.Stack {
 		m_searchTerm = searchTerm;
 	}
 
-	public void setSelectedFeed(int feedID)
+	public void setSelectedFeed(string feedID)
 	{
 		m_current_feed_selected = feedID;
 	}
@@ -184,7 +184,7 @@ public class articleList : Gtk.Stack {
 			m_displayed_articles++;
 
 			var showIcon = false;
-			if(m_current_feed_selected == 0)
+			if(m_current_feed_selected == "0")
 				showIcon = true;
 			else if(!id_is_feedID)
 				showIcon = true;
@@ -257,7 +257,7 @@ public class articleList : Gtk.Stack {
 			if(!found)
 			{
 				var showIcon = false;
-				if(m_current_feed_selected == 0)
+				if(m_current_feed_selected == "0")
 					showIcon = true;
 			
 				articleRow newRow = new articleRow(

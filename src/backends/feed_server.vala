@@ -64,12 +64,13 @@ public class feed_server : GLib.Object {
 				break;
 				
 			case TYPE_FEEDLY:
-				
+				yield m_feedly.getCategories();
+				yield m_feedly.getFeeds();
 				break;
 		}
 	}
 	
-	public void setArticleIsRead(int articleID, bool read)
+	public void setArticleIsRead(string articleID, bool read)
 	{
 		switch(m_type)
 		{
@@ -85,7 +86,7 @@ public class feed_server : GLib.Object {
 		}
 	}
 	
-	public void setArticleIsMarked(int articleID, bool marked)
+	public void setArticleIsMarked(string articleID, bool marked)
 	{
 		switch(m_type)
 		{

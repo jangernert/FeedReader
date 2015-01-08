@@ -101,15 +101,15 @@ public class loginDialog : Gtk.Dialog {
 		grid.set_column_spacing(10);
 		grid.set_row_spacing(10);
 		
-		Gdk.Pixbuf tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/ttrss.png");
+		Gdk.Pixbuf tmp_logo = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/ttrss.png");
 		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
 		var ttrss_logo = new Gtk.Image.from_pixbuf(tmp_logo);
 		
-		tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/feedly.png");
+		tmp_logo = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/feedly.png");
 		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
 		var feedly_logo = new Gtk.Image.from_pixbuf(tmp_logo);
 		
-		tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/owncloud.png");
+		tmp_logo = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/owncloud.png");
 		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
 		var owncloud_logo = new Gtk.Image.from_pixbuf(tmp_logo);
 		

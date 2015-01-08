@@ -24,6 +24,7 @@ public class loginDialog : Gtk.Dialog {
 	private Gtk.Entry m_user_entry;
 	private Gtk.Entry m_password_entry;
 	private Gtk.ComboBox m_comboBox;
+	private string[] account_types;
 	public signal void submit_data();
 
 	public loginDialog (Gtk.Window window, string error_message = "") {	
@@ -33,6 +34,8 @@ public class loginDialog : Gtk.Dialog {
 		this.set_modal(true);
 		this.set_transient_for(window);
 		set_default_size (500, 300);
+		
+		account_types = {"Tiny Tiny RSS", "Feedly", "OwnCloud"};
 
 		var error_bar = new Gtk.InfoBar();
 		error_bar.set_message_type(Gtk.MessageType.ERROR);		
@@ -98,9 +101,17 @@ public class loginDialog : Gtk.Dialog {
 		grid.set_column_spacing(10);
 		grid.set_row_spacing(10);
 		
-		Gdk.Pixbuf tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/feedly.png");
+		Gdk.Pixbuf tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/ttrss.png");
 		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
-		var logo = new Gtk.Image.from_pixbuf(tmp_logo);
+		var ttrss_logo = new Gtk.Image.from_pixbuf(tmp_logo);
+		
+		tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/feedly.png");
+		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
+		var feedly_logo = new Gtk.Image.from_pixbuf(tmp_logo);
+		
+		tmp_logo = new Gdk.Pixbuf.from_file("/home/jeanluc/Projects/RSSReader/feedly/data/owncloud.png");
+		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
+		var owncloud_logo = new Gtk.Image.from_pixbuf(tmp_logo);
 		
 		grid.attach(url_label, 0, 0, 1, 1);
 		grid.attach(m_url_entry, 1, 0, 1, 1);
@@ -112,10 +123,13 @@ public class loginDialog : Gtk.Dialog {
 		var liststore = new Gtk.ListStore(1, typeof (string));
 		Gtk.TreeIter ttrss;
 		liststore.append(out ttrss);
-		liststore.set(ttrss, 0, "Tiny Tiny RSS");
+		liststore.set(ttrss, 0, account_types[0]);
 		Gtk.TreeIter feedly;
 		liststore.append(out feedly);
-		liststore.set(feedly, 0, "Feedly");
+		liststore.set(feedly, 0, account_types[1]);
+		Gtk.TreeIter ownCloud;
+		liststore.append(out ownCloud);
+		liststore.set(ownCloud, 0, account_types[2]);
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 		
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
@@ -123,20 +137,54 @@ public class loginDialog : Gtk.Dialog {
 		m_comboBox.add_attribute(renderer, "text", 0);
 		m_comboBox.active = 0;
 		
+		var login_details = new Gtk.Stack();
+		login_details.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		login_details.set_transition_duration(100);
+		
+		var ttrss_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+		ttrss_box.pack_start(ttrss_logo, false, false, 20);
+		ttrss_box.pack_start(grid);
+		
+		var feedly_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+		feedly_box.pack_start(feedly_logo, false, false, 20);
+		
+		var owncloud_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+		owncloud_box.pack_start(owncloud_logo, false, false, 20);
+		
+		login_details.add_named(ttrss_box, "ttrss");
+		login_details.add_named(feedly_box, "feedly");
+		login_details.add_named(owncloud_box, "owncloud");
 		
 		var vbox = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		var hbox = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 10);
 		hbox.pack_start(comboBox_label, false, false);
 		hbox.pack_start(m_comboBox, true, true);
 		vbox.pack_start(hbox);
-		vbox.pack_start(logo, false, false, 20);
-		vbox.pack_start(grid);
+		vbox.pack_start(login_details);
 		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
 		center.set_padding(20, 20, 20, 20);
 		center.add(vbox);
 		error_box.pack_start(center, true, true, 0);
 		var content = get_content_area ();
 		content.add(error_box);
+		
+		m_comboBox.changed.connect(() => {
+			if(m_comboBox.get_active() != -1) {
+				print ("You chose " + account_types[m_comboBox.get_active()] +"\n");
+				switch(m_comboBox.get_active())
+				{
+					case 0:
+						login_details.set_visible_child_name("ttrss");
+						break;
+					case 1:
+						login_details.set_visible_child_name("feedly");
+						break;
+					case 2:
+						login_details.set_visible_child_name("owncloud");
+						break;
+				}
+			}
+		});
 
 		add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
 		m_okay_button = add_button("Login", Gtk.ResponseType.APPLY);

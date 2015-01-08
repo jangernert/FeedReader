@@ -78,16 +78,9 @@ vala_precompile(daemon ${DAEMON_NAME}
     
     src/backends/feed_server.vala
     src/backends/tt-rss/ttrss_interface.vala
-    src/backends/feedly/Model/Subscription.vala
-    src/backends/feedly/Model/Profile.vala
-    src/backends/feedly/Model/Entry.vala
-    src/backends/feedly/Model/Category.vala
-    src/backends/feedly/Cloud/Category.vala
-    src/backends/feedly/Cloud/Entry.vala
-    src/backends/feedly/Cloud/FeedlyAPI.vala
-    src/backends/feedly/Cloud/FeedlyConnection.vala
-    src/backends/feedly/Cloud/Profile.vala
-    src/backends/feedly/Cloud/Subscription.vala
+    src/backends/feedly/FeedlyAPI.vala
+    src/backends/feedly/FeedlyConnection.vala
+
 
 PACKAGES
     glib-2.0>=2.32

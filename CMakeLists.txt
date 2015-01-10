@@ -32,22 +32,24 @@ ensure_vala_version("0.24" MINIMUM)
 # files we want to compile
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
-    src/feedreader.vala
-    src/types.vala
-    src/article-list.vala
-    src/articlerow.vala
-    src/article-view.vala
-    src/baseRow.vala
-    src/categorie-row.vala
-    src/db-manager.vala
-    src/feed-list.vala
-    src/feed-row.vala
-    src/login-dialog.vala
-    src/reader-headerbar.vala
-    src/ThinPaned.vala
+    src/FeedReader.vala
+    src/Model/Feed.vala
+    src/Model/Category.vala
+    src/Model/Headline.vala
     src/Constants.vala
-    src/ui.vala
-    src/update-button.vala
+    src/DB_Manager.vala
+    src/Widgets/ArticleList.vala
+    src/Widgets/ArticleRow.vala
+    src/Widgets/ArticleView.vala
+    src/Widgets/BaseRow.vala
+    src/Widgets/CategorieRow.vala
+    src/Widgets/FeedList.vala
+    src/Widgets/FeedRow.vala
+    src/Widgets/LoginDialog.vala
+    src/Widgets/MainWindow.vala
+    src/Widgets/ReaderHeaderbar.vala
+    src/Widgets/ThinPaned.vala
+    src/Widgets/UpdateButton.vala
 
 # tell what libraries to use when compiling
 PACKAGES
@@ -67,16 +69,18 @@ OPTIONS
 )
 
 vala_precompile(daemon ${DAEMON_NAME}
-    src/daemon.vala
-    src/db-manager.vala
-    src/types.vala
+    src/Daemon.vala
+    src/DB_Manager.vala
+    src/Model/Feed.vala
+    src/Model/Category.vala
+    src/Model/Headline.vala
     src/Constants.vala
-    src/backends/feed_server.vala
-    src/backends/tt-rss/ttrss_interface.vala
-    src/backends/tt-rss/ttrss_utils.vala
-    src/backends/tt-rss/ttrss_message.vala
-    src/backends/feedly/FeedlyAPI.vala
-    src/backends/feedly/FeedlyConnection.vala
+    src/Backends/FeedServer.vala
+    src/Backends/ttrss/TTRSS_API.vala
+    src/Backends/ttrss/TTRSS_Utils.vala
+    src/Backends/ttrss/TTRSS_Message.vala
+    src/Backends/feedly/FeedlyAPI.vala
+    src/Backends/feedly/FeedlyConnection.vala
 
 
 PACKAGES

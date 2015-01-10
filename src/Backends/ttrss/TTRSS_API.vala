@@ -23,15 +23,11 @@ public class ttrss_interface : GLib.Object {
 
 	private string m_ttrss_sessionid;
 	private uint64 m_ttrss_apilevel;
-	private Soup.Session m_session;
-	private string m_contenttype;
 	private Json.Parser m_parser;
 
 	
 	public ttrss_interface ()
 	{
-		m_session = new Soup.Session ();
-		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser ();
 	}
 

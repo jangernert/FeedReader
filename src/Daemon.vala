@@ -2,18 +2,16 @@
 public class FeedDaemonServer : Object {
 
 	private Unity.LauncherEntry m_launcher;
-	private bool m_loggedin;
+	private int m_loggedin;
 	
 	public FeedDaemonServer()
 	{
-		m_loggedin = false;
 		stdout.printf("daemon: constructor\n");
-		if(!server.login())
+		m_loggedin = server.login();
+		if(m_loggedin != LOGIN_SUCCESS)
 		{
-			loginDialog();
+			loginDialog(m_loggedin);
 		}
-		else
-			m_loggedin = true;
 
 		stdout.printf("init\n");
 		int sync_timeout = feedreader_settings.get_int("sync");
@@ -39,14 +37,13 @@ public class FeedDaemonServer : Object {
 
     public signal void syncStarted();
     public signal void syncFinished();
-    public signal void loginDialog();
+    public signal void loginDialog(int ErrorCode);
     
     private async void sync()
 	{
-		if(!m_loggedin)
+		if(m_loggedin != LOGIN_SUCCESS)
 		{
-			if(server.login())
-				m_loggedin = true;
+			m_loggedin = server.login();
 		}
 		
 		//stdout.printf("daemon: sync started\n");
@@ -59,7 +56,7 @@ public class FeedDaemonServer : Object {
 		//stdout.printf("daemon: sync finished\n");
 	}
 	
-	public bool login()
+	public int login()
 	{
 		stdout.printf("daemon: login\n");
 		return server.login();

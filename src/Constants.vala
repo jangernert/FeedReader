@@ -27,3 +27,14 @@ const int STATUS_UNREAD = 1;
 const int STATUS_UNMARKED = 0;
 const int STATUS_MARKED = 1;
 const int STATUS_TOGGLE = 2;
+
+
+// Login Errors
+const int LOGIN_SUCCESS = 0;
+const int LOGIN_MISSING_USER = 1;
+const int LOGIN_MISSING_PASSWD = 2;
+const int LOGIN_MISSING_URL = 3;
+const int LOGIN_ALL_EMPTY = 4;
+const int LOGIN_UNKNOWN_ERROR = 5;
+const int LOGIN_FIRST_TRY = 6;
+

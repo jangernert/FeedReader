@@ -60,7 +60,7 @@ public class readerUI : Gtk.ApplicationWindow
 
 		var login_action = new SimpleAction (_("login"), null);
 		login_action.activate.connect (() => {
-			m_loginDialog = new loginDialog(this);
+			m_loginDialog = new loginDialog(this, LOGIN_FIRST_TRY);
 			m_loginDialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
 				app.sync();

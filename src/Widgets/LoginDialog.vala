@@ -31,7 +31,7 @@ public class loginDialog : Gtk.Dialog {
 	private string[] account_types;
 	public signal void submit_data();
 
-	public loginDialog (Gtk.Window window, string error_message = "") {	
+	public loginDialog(Gtk.Window window, int ErrorCode) {	
 		this.title = "Login Data";
 		this.border_width = 5;
 		GLib.Object (use_header_bar: 1);
@@ -40,25 +40,46 @@ public class loginDialog : Gtk.Dialog {
 		set_default_size (500, 300);
 		
 		account_types = {"Tiny Tiny RSS", "Feedly", "OwnCloud"};
-
+		
 		var error_bar = new Gtk.InfoBar();
+		var error_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		var error_content = error_bar.get_content_area();
 		error_bar.set_message_type(Gtk.MessageType.ERROR);		
 		error_bar.set_show_close_button(true);
-		var error_content = error_bar.get_content_area();
-		error_content.add(new Gtk.Label(error_message));		
-		var error_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		
+		error_bar.response.connect((response_id) => {
+			if(response_id == Gtk.ResponseType.CLOSE) {
+					error_bar.set_visible(false);
+			}
+		});
+		
+		switch(ErrorCode)
+		{
+			case LOGIN_SUCCESS:
+			case LOGIN_FIRST_TRY:
+				break;
+			case LOGIN_MISSING_USER:
+				error_content.add(new Gtk.Label(_("Please enter a valid username")));
+				break;
+			case LOGIN_MISSING_PASSWD:
+				error_content.add(new Gtk.Label(_("Please enter a valid password")));
+				break;
+			case LOGIN_MISSING_URL:
+				error_content.add(new Gtk.Label(_("Please enter a valid URL")));
+				break;
+			case LOGIN_ALL_EMPTY:
+				error_content.add(new Gtk.Label(_("Please enter your Login details")));
+				break;
+			case LOGIN_UNKNOWN_ERROR:
+				error_content.add(new Gtk.Label(_("Sorry, something went wrong.")));
+				break;
+		}
 
-		if(error_message != "")
+		if(ErrorCode != LOGIN_SUCCESS || ErrorCode != LOGIN_FIRST_TRY)
 			error_box.pack_start(error_bar, false, false, 0);
 		
 
-		error_bar.response.connect((response_id) => {
-			switch (response_id) {
-			case Gtk.ResponseType.CLOSE:
-				error_bar.set_visible(false);
-				break;
-		}
-		});
+		
 		
 		var comboBox_label = new Gtk.Label(_("RSS Type:"));
 		comboBox_label.set_alignment(0.0f, 0.5f);

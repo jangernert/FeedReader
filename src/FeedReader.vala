@@ -28,20 +28,19 @@ FeedDaemon feedDaemon_interface;
 [DBus (name = "org.gnome.feedreader")]
 interface FeedDaemon : Object {
     public abstract void startSync() throws IOError;
-    public abstract bool login() throws IOError;
+    public abstract int login() throws IOError;
     public abstract void changeUnread(string articleID, int read) throws IOError;
     public abstract void changeMarked(string articleID, int marked) throws IOError;
     public abstract void updateBadge() throws IOError;
     public signal void syncStarted();
     public signal void syncFinished();
-    public signal void loginDialog();
+    public signal void loginDialog(int ErrorCode);
 }
 
 
 public class rssReaderApp : Gtk.Application {
 
 	private readerUI m_window;
-	private bool m_firstTime;
 	
 	 
 	protected override void startup () {
@@ -67,14 +66,13 @@ public class rssReaderApp : Gtk.Application {
 		        m_window.setRefreshButton(false);
 		    });
 		    
-		    feedDaemon_interface.loginDialog.connect(() => {
+		    feedDaemon_interface.loginDialog.connect((ErrorCode) => {
 		        stdout.printf ("show login dialog\n");
-		        tryLogin();
+		        tryLogin(ErrorCode);
 		    });
 		}catch (IOError e) {
     		stderr.printf ("%s\n", e.message);
 		}
-		m_firstTime = true;
 		base.startup ();
 	}
 	
@@ -84,32 +82,27 @@ public class rssReaderApp : Gtk.Application {
 		{
 			m_window = new readerUI (this);
 			m_window.set_icon_name ("internet-news-reader");
-			tryLogin();
+			tryLogin(LOGIN_FIRST_TRY);
 		}
 		
 		m_window.show_all();
 		updateBadge();
 	}
 
-	public void tryLogin()
+	public void tryLogin(int ErrorCode)
 	{
-		string error_message = "";
 		stdout.printf("feedreader: trylogin\n");
-		if(feedDaemon_interface.login())
+		var status = feedDaemon_interface.login();
+		if(status == LOGIN_SUCCESS)
 		{
 			getContent();
 		}
 		else
 		{
-			if(m_firstTime){
-				error_message = "";
-				m_firstTime = false;
-			}
-			
-			var dialog = new loginDialog(m_window, error_message);
+			var dialog = new loginDialog(m_window, ErrorCode);
 			dialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
-				tryLogin();
+				tryLogin(status);
 				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 2, () => {
 					sync();
 					return false;

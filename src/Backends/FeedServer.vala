@@ -38,18 +38,18 @@ public class feed_server : GLib.Object {
 		}
 	}
 	
-	public bool login()
+	public int login()
 	{
 		switch(m_type)
 		{
 			case TYPE_TTRSS:
-				return m_ttrss.login(null);
+				return m_ttrss.login();
 				break;
 				
 			case TYPE_FEEDLY:
-				return true;
+				return LOGIN_SUCCESS;
 		}
-		return false;
+		return LOGIN_UNKNOWN_ERROR;
 	}
 	
 	public async void sync_content()

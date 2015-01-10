@@ -32,30 +32,24 @@ public class ttrss_interface : GLib.Object {
 	}
 
 	
-	public bool login(out string error_message)
+	public int login()
 	{
-		error_message = "no errors";
-		
 		string username = ttrss_utils.getUser();
 		string passwd = ttrss_utils.getPasswd();
 		m_ttrss_url = ttrss_utils.getURL();
 		
 		if(m_ttrss_url == "" && username == "" && passwd == ""){
 			m_ttrss_url = "example-host/tt-rss";
-			error_message = "";
-			return false;
+			return LOGIN_ALL_EMPTY;
 		}
 		if(m_ttrss_url == ""){
-			error_message = "No URL entered";
-			return false;
+			return LOGIN_MISSING_URL;
 		}
 		if(username == ""){
-			error_message = "No username entered";
-			return false;
+			return LOGIN_MISSING_USER;
 		}
 		if(passwd == ""){
-			error_message = "No password entered";
-			return false;
+			return LOGIN_MISSING_PASSWD;
 		}
 
 		
@@ -72,10 +66,10 @@ public class ttrss_interface : GLib.Object {
 			m_ttrss_apilevel = response.get_int_member("api_level");
 		}
 		
-		
 		stdout.printf ("Session ID: %s\n", m_ttrss_sessionid);
 		stdout.printf ("API Level: %lld\n", m_ttrss_apilevel);
-		return true;
+		
+		return LOGIN_SUCCESS;
 	}
 
 

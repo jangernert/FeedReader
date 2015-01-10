@@ -60,25 +60,22 @@ public class feed_server : GLib.Object {
 				yield m_ttrss.getCategories();
 				yield m_ttrss.getFeeds();
 				yield m_ttrss.getHeadlines();
-				yield m_ttrss.updateHeadlines(300);
+				yield m_ttrss.updateHeadlines();
 				break;
 				
 			case TYPE_FEEDLY:
-				print("get categories\n");
 				yield m_feedly.getCategories();
-				print("get feeds\n");
 				yield m_feedly.getFeeds();
-				print("finished\n");
 				break;
 		}
 	}
 	
-	public void setArticleIsRead(string articleID, bool read)
+	public void setArticleIsRead(string articleID, int read)
 	{
 		switch(m_type)
 		{
 			case TYPE_TTRSS:
-				m_ttrss.updateArticleUnread.begin(articleID, read, (obj, res) => {
+				m_ttrss.updateArticleUnread.begin(int.parse(articleID), read, (obj, res) => {
 					m_ttrss.updateArticleUnread.end(res);
 				});
 				break;
@@ -89,12 +86,12 @@ public class feed_server : GLib.Object {
 		}
 	}
 	
-	public void setArticleIsMarked(string articleID, bool marked)
+	public void setArticleIsMarked(string articleID, int marked)
 	{
 		switch(m_type)
 		{
 			case TYPE_TTRSS:
-				m_ttrss.updateArticleMarked.begin(articleID, marked, (obj, res) => {
+				m_ttrss.updateArticleMarked.begin(int.parse(articleID), marked, (obj, res) => {
 					m_ttrss.updateArticleMarked.end(res);
 				});
 				break;

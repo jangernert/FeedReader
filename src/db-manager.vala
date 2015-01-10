@@ -132,16 +132,17 @@ public class dbManager : GLib.Object {
 
 
 
-	public async void change_unread(string feedID, bool increase)
+	public async void change_unread(string feedID, int increase)
 	{
 		SourceFunc callback = change_unread.callback;
 		
 		ThreadFunc<void*> run = () => {
 
 			string change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = \"unread\" ";
-			if(increase){
+			if(increase == STATUS_UNREAD){
 				change_feed_query = change_feed_query + "+ 1";
-			}else{
+			}
+			else if(increase == STATUS_READ){
 				change_feed_query = change_feed_query + "- 1";
 			} 
 			change_feed_query = change_feed_query + " WHERE \"feed_id\" = " + feedID;
@@ -170,9 +171,10 @@ public class dbManager : GLib.Object {
 
 
 			string change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" ";
-			if(increase){
+			if(increase == STATUS_UNREAD){
 				change_catID_query = change_catID_query + "+ 1";
-			}else{
+			}
+			else if(increase == STATUS_READ){
 				change_catID_query = change_catID_query + "- 1";
 			}
 			change_catID_query = change_catID_query + " WHERE \"categorieID\" = " + catID.to_string();
@@ -261,12 +263,6 @@ public class dbManager : GLib.Object {
 		if(marked) int_marked = 1;
 		string query = "INSERT INTO \"main\".\"headlines\" (\"articleID\",\"title\",\"url\",\"feedID\",\"unread\", \"marked\") 
 						VALUES (\"" + articleID.to_string() + "\", $TITLE, \"" + url + "\", \"" + feed_ID.to_string() + "\", \"" + int_unread.to_string() + "\", \"" + int_marked.to_string() + "\")";
-		/*string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			warning("error writing headline\nquery: %s\n", query);
-			error("Error: %s\n", errmsg);
-		}*/
 		
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -305,49 +301,55 @@ public class dbManager : GLib.Object {
 		stmt.reset ();
 	}
 
-	public void write_article(int articleID, int feedID, string title, string author, string url, string html)
+	public void write_article(string articleID, string feedID, string title, string author, string url, string html, string preview = "")
 	{
 		string output = "";
-		string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
-		int outputfd = GLib.FileUtils.mkstemp(filename);
-		try{
-			GLib.FileUtils.set_contents(filename, html);
-		}catch(GLib.FileError e){
-			stderr.printf("error writing html to tmp file: %s\n", e.message);
-		}
-		GLib.FileUtils.close(outputfd);
-
-		string[] spawn_args = {"html2text", "-utf8", "-nobs", filename};
-		try{
-			GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-		}catch(GLib.SpawnError e){
-			stdout.printf("error spawning command line: %s\n", e.message);
-		}
-
-			
-		string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
-		if(output.has_prefix(prefix))
-		{
-			output = output.slice(prefix.length, output.length);
-		}
-
-		int length = 300;
-		if(output.length < 300)
-			length = output.length;
-
-		output = output.replace("\n"," ");
-		output = output.slice(0, length);
-		output = output.slice(0, output.last_index_of(" "));
-		output = output.chug();
 		
+		if(preview == "")
+		{
+			string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
+			int outputfd = GLib.FileUtils.mkstemp(filename);
+			try{
+				GLib.FileUtils.set_contents(filename, html);
+			}catch(GLib.FileError e){
+				stderr.printf("error writing html to tmp file: %s\n", e.message);
+			}
+			GLib.FileUtils.close(outputfd);
+
+			string[] spawn_args = {"html2text", "-utf8", "-nobs", filename};
+			try{
+				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+			}catch(GLib.SpawnError e){
+				stdout.printf("error spawning command line: %s\n", e.message);
+			}
+
+			string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
+			if(output.has_prefix(prefix))
+			{
+				output = output.slice(prefix.length, output.length);
+			}
+
+			int length = 300;
+			if(output.length < 300)
+				length = output.length;
+
+			output = output.replace("\n"," ");
+			output = output.slice(0, length);
+			output = output.slice(0, output.last_index_of(" "));
+			output = output.chug();
+		}
+		else
+		{
+			output = preview;
+		}
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"articles\" (\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\") 
-						VALUES (\"" + articleID.to_string() + "\", \"" + feedID.to_string() + "\", $TITLE, \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW)";
+						VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW)";
 						
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			warning("error writing article\nquery: %s\nhtml: %s\n", query, output);
+			warning("error writing article\nquery: %s\nhtml: %s\n", query, preview);
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		int param_position = stmt.bind_parameter_index ("$TITLE");
@@ -366,15 +368,12 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public async void update_headline(string articleID, string field, bool field_value)
+	public async void update_headline(string articleID, string field, int field_value)
 	{
 		SourceFunc callback = update_headline.callback;
 		
 		ThreadFunc<void*> run = () => {
-			int int_field_value = 0;
-			if(field_value) int_field_value = 1;
-		
-			string query = "UPDATE \"main\".\"headlines\" SET \"" + field + "\" = \"" + int_field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID + "\"";
+			string query = "UPDATE \"main\".\"headlines\" SET \"" + field + "\" = \"" + field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID + "\"";
 			string errmsg;
 			int ec = sqlite_db.exec (query, null, out errmsg);
 			if (ec != Sqlite.OK) {
@@ -428,21 +427,11 @@ public class dbManager : GLib.Object {
 
 	public void delete_unsubscribed_feeds()
 	{
-		string query = "SELECT \"feed_id\" FROM \"main\".\"feeds\" WHERE \"subscribed\" = 0";
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		string query = "DELETE FROM \"main\".\"feeds\" WHERE \"subscribed\" = 0";
+		string errmsg;
+		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		while (stmt.step () == Sqlite.ROW) {
-			int delete_feed = stmt.column_int(0);
-			delete_headlines(delete_feed);
-			string query2 = "DELETE FROM \"main\".\"feeds\" WHERE \"feed_id\" = :delte_feed";
-			string errmsg;
-			ec = sqlite_db.exec (query2, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
+			error("Error: %s\n", errmsg);
 		}
 	}
 

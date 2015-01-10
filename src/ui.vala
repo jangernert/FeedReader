@@ -169,14 +169,14 @@ public class readerUI : Gtk.ApplicationWindow
 
 		m_articleList.row_activated.connect((row) => {
 			if(row.isUnread()){
-				feedDaemon_interface.changeUnread(row.m_articleID, false);
-				row.updateUnread(false);
+				feedDaemon_interface.changeUnread(row.m_articleID, STATUS_READ);
+				row.updateUnread(STATUS_READ);
 				row.removeUnreadIcon();
 				
-				dataBase.update_headline.begin(row.m_articleID, "unread", false, (obj, res) => {
+				dataBase.update_headline.begin(row.m_articleID, "unread", STATUS_READ, (obj, res) => {
 					dataBase.update_headline.end(res);
 				});
-				dataBase.change_unread.begin(row.m_feedID, false, (obj, res) => {
+				dataBase.change_unread.begin(row.m_feedID, STATUS_READ, (obj, res) => {
 					dataBase.change_unread.end(res);
 					updateFeedList();
 				});

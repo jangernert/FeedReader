@@ -65,8 +65,8 @@ public class headline : GLib.Object {
 	public string m_title { get; private set; }
 	public string m_url { get; private set; }
 	public string m_feedID { get; private set; }
-	public bool m_unread { get; private set; }
-	public bool m_marked { get; private set; }
+	public int m_unread { get; private set; }
+	public int m_marked { get; private set; }
 	
 
 	
@@ -75,12 +75,8 @@ public class headline : GLib.Object {
 		m_title = title;
 		m_url = url;
 		m_feedID = feedID;
-		
-		if(unread == 0)				m_unread = false;
-		else if(unread == 1)		m_unread = true;
-		
-		if(marked == 0)				m_marked = false;
-		else if(marked == 1)		m_marked = true;
+		m_unread = unread;
+		m_marked = marked;
 	}
 }
 

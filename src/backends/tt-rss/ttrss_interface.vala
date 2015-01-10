@@ -19,7 +19,7 @@
 
 public class ttrss_interface : GLib.Object {
 
-	public string ttrss_url { get; private set; }
+	public string m_ttrss_url { get; private set; }
 
 	private string m_ttrss_sessionid;
 	private uint64 m_ttrss_apilevel;
@@ -40,50 +40,16 @@ public class ttrss_interface : GLib.Object {
 	{
 		error_message = "no errors";
 		
-		string url = feedreader_settings.get_string("url");
-		string username = feedreader_settings.get_string ("username");
+		string username = ttrss_utils.getUser();
+		string passwd = ttrss_utils.getPasswd();
+		m_ttrss_url = ttrss_utils.getURL();
 		
-		if(url != ""){
-			if(!url.has_suffix("/"))
-				url = url + "/";
-
-			if(!url.has_suffix("/api/"))
-				url = url + "api/";
-
-			if(!url.has_prefix("http://"))
-					url = "http://" + url;
-		}
-		
-		ttrss_url = url;
-
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = feedreader_settings.get_string("url");
-		attributes["Username"] = username;
-
-		string passwd = "";
-		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
-			stdout.printf ("Error: %s\n", e.message);
-		}
-		if(passwd == null)
-		{
-			error_message = "password not set";
-			return false;
-		}
-		//stdout.printf ("URL: %s\n", feedreader_settings.get_string("url"));
-		//stdout.printf ("Password: %s\n", passwd);
-		//passwd = "wissen";
-		//stdout.printf ("URL: %s\nUsername: %s\nPassword: %s\n", url, username, passwd);
-		
-		if(ttrss_url == "" && username == "" && passwd == ""){
-			ttrss_url = "example-host/tt-rss";
+		if(m_ttrss_url == "" && username == "" && passwd == ""){
+			m_ttrss_url = "example-host/tt-rss";
 			error_message = "";
 			return false;
 		}
-		if(ttrss_url == ""){
+		if(m_ttrss_url == ""){
 			error_message = "No URL entered";
 			return false;
 		}
@@ -97,45 +63,20 @@ public class ttrss_interface : GLib.Object {
 		}
 
 		
-		var message_login = new Soup.Message ("POST", ttrss_url);
-		string login = "{\"op\":\"login\",\"user\":\"" + username + "\",\"password\":\"" + passwd + "\"}";
-		message_login.set_request(m_contenttype, Soup.MemoryUse.COPY, login.data);
-
-		if(m_session.send_message (message_login) != 200){
-			error_message = "Sorry, could not reach the given URL.";
-			return false;
-		}
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("op", "login");
+		message.add_string("user", username);
+		message.add_string("password", passwd);
+		int error = message.send();
 		
-		try{
-			if(!m_parser.load_from_data ((string) message_login.response_body.flatten ().data, -1)){
-				error_message = "The given URL seems not to point to a valid instance of tt-rss";
-				return false;
-			}
-		}
-		catch (Error e) {
-			error_message = "The given URL seems not to point to a valid instance of tt-rss.";
-			return false;
-		}
-
-		var root_object = m_parser.get_root ().get_object ();
-		var response = root_object.get_object_member ("content");
-
-		if(response.has_member("session_id"))
+		if(error == NO_ERROR)
 		{
+			var response = message.get_response_object();
 			m_ttrss_sessionid = response.get_string_member("session_id");
 			m_ttrss_apilevel = response.get_int_member("api_level");
 		}
-		else if(response.has_member("error"))
-		{
-			string login_error = response.get_string_member("error");
-			if(login_error == "LOGIN_ERROR"){
-				error_message = "The given username or password are not correct.";			
-				return false;
-			}
-		}
-
 		
-
+		
 		stdout.printf ("Session ID: %s\n", m_ttrss_sessionid);
 		stdout.printf ("API Level: %lld\n", m_ttrss_apilevel);
 		return true;
@@ -144,24 +85,18 @@ public class ttrss_interface : GLib.Object {
 
 	private bool isloggedin()
 	{
-		var message_isloggedin = new Soup.Message ("POST", ttrss_url);
-		string isloggedin = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"isLoggedIn\"}";
-		message_isloggedin.set_request(m_contenttype, Soup.MemoryUse.COPY, isloggedin.data);
-		m_session.send_message (message_isloggedin);
-
-		try{
-			m_parser.load_from_data ((string) message_isloggedin.response_body.flatten().data, -1);
-		}
-		catch (Error e) {
-			stderr.printf ("I guess something is not working...\n");
-			return false;
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "isLoggedIn");
+		int error = message.send();
+		
+		if(error == NO_ERROR)
+		{
+			var response = message.get_response_object();
+			return response.get_boolean_member("status");
 		}
 
-		var root_object = m_parser.get_root ().get_object ();
-		var response = root_object.get_object_member ("content");
-		bool loggedin = response.get_boolean_member("status");
-
-		return loggedin;
+		return false;
 	}
 
 	 
@@ -170,24 +105,18 @@ public class ttrss_interface : GLib.Object {
 		SourceFunc callback = getUnreadCount.callback;
 		int unread = 0;
 		ThreadFunc<void*> run = () => {
+		
 			if(isloggedin()) {
-				var message_unread = new Soup.Message ("POST", ttrss_url);
-				string getunread = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getUnread\"}";
-				message_unread.set_request(m_contenttype, Soup.MemoryUse.COPY, getunread.data);
-				m_session.send_message (message_unread);
-
-				try{
-					m_parser.load_from_data ((string) message_unread.response_body.flatten ().data, -1);
+				var message = new ttrss_message(m_ttrss_url);
+				message.add_string("sid", m_ttrss_sessionid);
+				message.add_string("op", "getUnread");
+				int error = message.send();
+		
+				if(error == NO_ERROR)
+				{
+					var response = message.get_response_object();
+					unread = int.parse(response.get_string_member("unread"));
 				}
-				catch (Error e) {
-					stderr.printf ("I guess something is not working...\n");
-				}
-
-				var root_object = m_parser.get_root ().get_object ();
-				var response = root_object.get_object_member ("content");
-				var unreadcount = response.get_string_member("unread");
-
-				unread = int.parse(unreadcount);
 				stdout.printf("There are %i unread Feeds\n", unread);
 				
 				Idle.add((owned) callback);
@@ -210,48 +139,37 @@ public class ttrss_interface : GLib.Object {
 			if(isloggedin())
 			{
 				dataBase.reset_subscribed_flag();
-				int all_unread_count = 0;
-
 				var categories = dataBase.read_categories();
 
 				foreach(var item in categories)
 				{
-					var message_getFeeds = new Soup.Message("POST", ttrss_url);
-					string getFeeds = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getFeeds\", \"cat_id\":" + item.m_categorieID.to_string() + "}";
-					message_getFeeds.set_request(m_contenttype, Soup.MemoryUse.COPY, getFeeds.data);
-					m_session.send_message(message_getFeeds);
-
-					try{
-						m_parser.load_from_data((string) message_getFeeds.response_body.flatten ().data, -1);
-					}
-					catch (Error e) {
-						stderr.printf("I guess something is not working...\n");
-					}
-
-					var root_object = m_parser.get_root().get_object();
-					var response = root_object.get_array_member ("content");
-					var feed_count = response.get_length();
-				
-				
-					string icon_url = ttrss_url.replace("api/", getIconDir());
-				
-					for(uint i = 0; i < feed_count; i++)
+					var message = new ttrss_message(m_ttrss_url);
+					message.add_string("sid", m_ttrss_sessionid);
+					message.add_string("op", "getFeeds");
+					message.add_int("cat_id", int.parse(item.m_categorieID));
+					int error = message.send();
+		
+					if(error == NO_ERROR)
 					{
-						var feed_node = response.get_object_element(i);
-						string feed_id = feed_node.get_int_member("id").to_string();
-						downloadIcon(feed_id, icon_url);
+						var response = message.get_response_array();
+						var feed_count = response.get_length();
+						string icon_url = m_ttrss_url.replace("api/", getIconDir());
+						
+						for(uint i = 0; i < feed_count; i++)
+						{
+							var feed_node = response.get_object_element(i);
+							string feed_id = feed_node.get_int_member("id").to_string();
+							ttrss_utils.downloadIcon(feed_id, icon_url);
 					
-						all_unread_count += int.parse(feed_node.get_int_member("unread").to_string());
-					
-						dataBase.write_feed(feed_id,
-										  feed_node.get_string_member("title"),
-										  feed_node.get_string_member("feed_url"),
-										  feed_node.get_boolean_member("has_icon"),
-										  int.parse(feed_node.get_int_member("unread").to_string()),
-									      feed_node.get_int_member("cat_id").to_string());
-					}
+							dataBase.write_feed(feed_id,
+											  feed_node.get_string_member("title"),
+											  feed_node.get_string_member("feed_url"),
+											  feed_node.get_boolean_member("has_icon"),
+											  int.parse(feed_node.get_int_member("unread").to_string()),
+											  feed_node.get_int_member("cat_id").to_string());
+						}
+					}	
 				}
-				
 				
 				dataBase.delete_unsubscribed_feeds();
 				Idle.add((owned) callback);
@@ -261,46 +179,22 @@ public class ttrss_interface : GLib.Object {
 		new GLib.Thread<void*>("getFeeds", run);
 		yield;
 	}
-
-
-	private void downloadIcon(string feed_id, string icon_url)
-	{
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		var path = GLib.File.new_for_path(icon_path);
-		try{path.make_directory_with_parents();}catch(GLib.Error e){}
-		
-		string remote_filename = icon_url + feed_id + ".ico";
-		string local_filename = icon_path + feed_id + ".ico";
-					
-			
-		if(!FileUtils.test (local_filename, GLib.FileTest.EXISTS))
-		{
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message ("GET", remote_filename);
-			var status = m_session.send_message(message_dlIcon);
-			if (status == 200)
-				try{FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);}
-				catch(GLib.FileError e){}
-		}
-	}
-
+	
 
 	public string getIconDir()
 	{
-		var message_getIconDir = new Soup.Message("POST", ttrss_url);
-		string getIconDir = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getConfig\"}";
-		message_getIconDir.set_request(m_contenttype, Soup.MemoryUse.COPY, getIconDir.data);
-		m_session.send_message(message_getIconDir);
-
-		try{
-			m_parser.load_from_data((string) message_getIconDir.response_body.flatten ().data, -1);
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getConfig");
+		int error = message.send();
+		
+		if(error == NO_ERROR)
+		{
+			var response = message.get_response_object();
+			return response.get_string_member("icons_url") + "/";
 		}
-		catch (Error e){}
 
-		var root_object = m_parser.get_root().get_object();
-		var response = root_object.get_object_member("content");
-
-		return response.get_string_member("icons_url") + "/";
+		return null;
 	}
 
 
@@ -312,26 +206,22 @@ public class ttrss_interface : GLib.Object {
 			if(isloggedin())
 			{
 				dataBase.reset_exists_flag();
-				var message_getCategories = new Soup.Message("POST", ttrss_url);
-				string getCategories = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getFeedTree\",\"include_empty\":false}";
 				
-				message_getCategories.set_request(m_contenttype, Soup.MemoryUse.COPY, getCategories.data);
-				m_session.send_message(message_getCategories);
-
-				try{
-					m_parser.load_from_data((string)message_getCategories.response_body.flatten().data, -1);
+				var message = new ttrss_message(m_ttrss_url);
+				message.add_string("sid", m_ttrss_sessionid);
+				message.add_string("op", "getFeedTree");
+				message.add_bool("include_empty", false);
+				int error = message.send();
+		
+				if(error == NO_ERROR)
+				{
+					var response = message.get_response_object();
+					var category_object = response.get_object_member("categories");
+					getSubCategories(category_object, 0, -99);
+					dataBase.delete_nonexisting_categories();
+					updateCategorieUnread();
 				}
-				catch (Error e) {
-					stderr.printf("I guess something is not working...\n");
-				}
-
-				var root_object = m_parser.get_root().get_object();
-				var response = root_object.get_object_member("content");
-				var category_object = response.get_object_member("categories");
-
-				getSubCategories(category_object, 0, -99);
-				dataBase.delete_nonexisting_categories();
-				updateCategorieUnread();
+				
 				Idle.add((owned) callback);
 			}
 			return null;
@@ -374,33 +264,28 @@ public class ttrss_interface : GLib.Object {
 	// FIXME: workaround for possible bug in tt-rss api -----------------------------------------------------------------------------
 	private int getUncategorizedUnread()
 	{
-		var message_getUncategorizedUnread = new Soup.Message("POST", ttrss_url);
-		string getUncategorizedUnread = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getCounters\",\"output_mode\":\"c\"}";
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getCounters");
+		message.add_string("output_mode", "c");
+		int error = message.send();
 		
-		message_getUncategorizedUnread.set_request(m_contenttype, Soup.MemoryUse.COPY, getUncategorizedUnread.data);
-		m_session.send_message(message_getUncategorizedUnread);
-		
-		try{
-			m_parser.load_from_data((string)message_getUncategorizedUnread.response_body.flatten().data, -1);
-		}
-		catch (Error e) {
-			stderr.printf("I guess something is not working...\n");
-		}
-
-		var root_object = m_parser.get_root().get_object();
-		var response = root_object.get_array_member("content");
-		var categorie_count = response.get_length();
-		
-		for(int i = 0; i < categorie_count; i++)
+		if(error == NO_ERROR)
 		{
-			var categorie_node = response.get_object_element(i);
-			if(categorie_node.get_int_member("id") == 0)
+			var response = message.get_response_array();
+			var categorie_count = response.get_length();
+			
+			for(int i = 0; i < categorie_count; i++)
 			{
-				if(categorie_node.has_member("kind"))
+				var categorie_node = response.get_object_element(i);
+				if(categorie_node.get_int_member("id") == 0)
 				{
-					if(categorie_node.get_string_member("kind") == "cat")
+					if(categorie_node.has_member("kind"))
 					{
-						return int.parse(categorie_node.get_int_member("counter").to_string());
+						if(categorie_node.get_string_member("kind") == "cat")
+						{
+							return int.parse(categorie_node.get_int_member("counter").to_string());
+						}
 					}
 				}
 			}
@@ -413,38 +298,35 @@ public class ttrss_interface : GLib.Object {
 
 	private void updateCategorieUnread()
 	{
-		var message_getCategories = new Soup.Message("POST", ttrss_url);
-		string getCategories = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getCategories\",\"include_empty\":false}";
-
-		message_getCategories.set_request(m_contenttype, Soup.MemoryUse.COPY, getCategories.data);
-		m_session.send_message(message_getCategories);
-
-		try{
-			m_parser.load_from_data((string)message_getCategories.response_body.flatten().data, -1);
-		}
-		catch (Error e) {}
-
-		var root_object = m_parser.get_root().get_object();
-		var response = root_object.get_array_member("content");
-		var categorie_count = response.get_length();
-
-		for(int i = 0; i < categorie_count; i++)
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getCategories");
+		message.add_bool("include_empty", false);
+		int error = message.send();
+		
+		if(error == NO_ERROR)
 		{
-			var categorie_node = response.get_object_element(i);
-			if(categorie_node.get_string_member("id") != null)
-				dataBase.updateCategorie(int.parse(categorie_node.get_string_member("id")), int.parse(categorie_node.get_int_member("unread").to_string()));
+			var response = message.get_response_array();
+			var categorie_count = response.get_length();
+			
+			for(int i = 0; i < categorie_count; i++)
+			{
+				var categorie_node = response.get_object_element(i);
+				if(categorie_node.get_string_member("id") != null)
+					dataBase.updateCategorie(int.parse(categorie_node.get_string_member("id")), int.parse(categorie_node.get_int_member("unread").to_string()));
+			}
 		}
 	}
 
 
-	public async void getHeadlines(int64 feedID = -4, int skip = 0, int newestArticle = -1)
+	public async void getHeadlines(int feedID = TTRSS_ID_ALL, int skip = 0)
 	{
 		SourceFunc callback = getHeadlines.callback;
 		//stdout.printf("getHeadlines\n");
 		ThreadFunc<void*> run = () => {
 			if(isloggedin())
 			{
-				sync_getHeadlines(feedID, skip, newestArticle);
+				sync_getHeadlines(feedID, skip);
 				Idle.add((owned) callback);
 			}
 			return null;
@@ -454,171 +336,131 @@ public class ttrss_interface : GLib.Object {
 	}
 	
 	
-	private void sync_getHeadlines(int64 feedID, int skip, int newestArticle)
+	private void sync_getHeadlines(int feedID, int skip, int limit = 200)
 	{
-		var message_getHeadlines = new Soup.Message("POST", ttrss_url);
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getHeadlines");
+		message.add_int("feed_id", feedID);
 		
-		if(dataBase.isTableEmpty("headlines"))
-			newestArticle = -2;
-		
-		string skip_message = ", \"skip\":" + skip.to_string();
-
-		string getHeadlines;
-		if(newestArticle == -2)
-		{
-			getHeadlines = "{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\"";
-			if(skip > 0)
-				getHeadlines = getHeadlines + skip_message;
-			getHeadlines = getHeadlines + "}";
-		}
-		else
-		{
-			newestArticle = dataBase.getNewestArticle();
-			getHeadlines = 
-			"{\"sid\":\"" + m_ttrss_sessionid + "\", \"op\":\"getHeadlines\"" + ", \"feed_id\":\"" + feedID.to_string() + "\"" + ", \"since_id\":" + newestArticle.to_string();
-			if(skip > 0)
-				getHeadlines = getHeadlines + skip_message;
-			getHeadlines = getHeadlines + "}";
-		}
-		
-		stdout.printf("message: %s\n", getHeadlines);
-		message_getHeadlines.set_request(m_contenttype, Soup.MemoryUse.COPY, getHeadlines.data);
-		m_session.send_message(message_getHeadlines);
-		
-		try{
-			m_parser.load_from_data((string) message_getHeadlines.response_body.flatten ().data, -1);
-		} catch (Error e) {}
-
-		var root_object = m_parser.get_root().get_object();
-		var response = root_object.get_array_member ("content");
-
-		var headline_count = response.get_length();
-		stdout.printf("Number of New Articles: %u\n", headline_count);
+		if(!dataBase.isTableEmpty("headlines"))
+			message.add_int("since_id", dataBase.getNewestArticle());
 			
-
-		if(headline_count > 0 && skip == 0){
-			try{
-				string message;
-						
-				if(headline_count == 1)
-					message = _("There is 1 new article");
-				else if(headline_count == 200)
-					message = _("There are >200 new articles");
+		message.add_int("limit", limit);
+		message.add_int("skip", skip);
+		
+		
+		int error = message.send();
+		
+		if(error == NO_ERROR)
+		{
+			var response = message.get_response_array();
+			var headline_count = response.get_length();
+			stdout.printf("Number of New Articles: %u\n", headline_count);
+			
+			if(headline_count > 0 && skip == 0){
+				ttrss_utils.sendNotification(headline_count);
+			}
+				
+			string title, author, url, html;
+			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
+			
+			for(uint i = 0; i < headline_count; i++)
+			{
+				var headline_node = response.get_object_element(i);
+		
+				dataBase.write_headline(int.parse(headline_node.get_int_member("id").to_string()),
+						         headline_node.get_string_member("title").replace("&",""),
+						         headline_node.get_string_member("link"),
+						         int.parse(headline_node.get_string_member("feed_id")),
+						         headline_node.get_boolean_member("unread"),
+						         headline_node.get_boolean_member("marked")
+						         );
+					
+				getArticle(int.parse(headline_node.get_int_member("id").to_string()),
+					       out title, out author, out url, out html);
+				dataBase.write_article( headline_node.get_int_member("id").to_string(),
+										headline_node.get_string_member("feed_id"),
+										title, author, url, html);
+			}
+				
+			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
+			int maxArticles = feedreader_settings.get_int("max-articles");
+			if(headline_count == 200 && (skip+200) < maxArticles)
+			{
+				stdout.printf("get more headlines\n");
+				if(maxArticles - skip < 200)
+				{
+					sync_getHeadlines(feedID, skip + 200, maxArticles - skip);
+				}
 				else
-					message = _("There are ") + headline_count.to_string() + _(" new articles");
-							
-				var notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
-				notification.add_action ("default", "show", (notification, action) => {
-					stdout.puts ("Bye!\n");
-					string[] spawn_args = {"feedreader"};
-					try{
-						GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-					}catch(GLib.SpawnError e){
-						stdout.printf("error spawning command line: %s\n", e.message);
-					}
-					try {
-						notification.close ();
-					} catch (Error e) {
-						debug ("Error: %s", e.message);
-					}
-				});
-				notification.show ();
-			}catch (GLib.Error e) {
-				error("Error: %s", e.message);
+				{
+					sync_getHeadlines(feedID, skip + 200);
+				}
 			}
 		}
-			
-				
-		string title, author, url, html;
-		
-		stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
-		for(uint i = 0; i < headline_count; i++)
-		{
-			var headline_node = response.get_object_element(i);
-		
-			dataBase.write_headline(int.parse(headline_node.get_int_member("id").to_string()),
-				             headline_node.get_string_member("title").replace("&",""),
-				             headline_node.get_string_member("link"),
-				             int.parse(headline_node.get_string_member("feed_id")),
-				             headline_node.get_boolean_member("unread"),
-				             headline_node.get_boolean_member("marked")
-				             );
-					
-			getArticle(int.parse(headline_node.get_int_member("id").to_string()),
-			           out title, out author, out url, out html);
-			dataBase.write_article(int.parse(headline_node.get_int_member("id").to_string()),
-			                 int.parse(headline_node.get_string_member("feed_id")),
-			                 title, author, url, html);
-		}
-				
-		stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
-		int maxArticles = feedreader_settings.get_int("max-articles");
-		if(headline_count == 200 && skip < maxArticles)
-		{
-			stdout.printf("get more headlines\n");
-			//if(maxArticles - skip < 200)
-				// FIXME: only load as much as maxArticles, not full 200 again
-			
-			sync_getHeadlines(feedID, skip + 200, newestArticle);
-		}
 	}
+	
 
-	public async void updateHeadlines(int limit, int64 feedID = -4)
+	public async void updateHeadlines(int feedID = TTRSS_ID_ALL)
 	{
 		SourceFunc callback = updateHeadlines.callback;
 
 		ThreadFunc<void*> run = () => {
 			if(isloggedin())
 			{
+				int limit = 2 * feedreader_settings.get_int("max-articles");
+				uint headline_count;
+				
 				// update unread
-				dataBase.markReadAllArticles();
-				var message_updateHeadlines = new Soup.Message("POST", ttrss_url);
-				string updateHeadlines = 
-					"{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getCompactHeadlines\", \"feed_id\":" + feedID.to_string() + ", \"limit\":" + limit.to_string() + ", \"view_mode\":\"unread\"}";
-				message_updateHeadlines.set_request(m_contenttype, Soup.MemoryUse.COPY, updateHeadlines.data);
-				m_session.send_message(message_updateHeadlines);
-			
-				try{
-					m_parser.load_from_data((string) message_updateHeadlines.response_body.flatten ().data, -1);
-				} catch (Error e) {}
-
-				var root_object = m_parser.get_root().get_object();
-				var response = root_object.get_array_member ("content");
-				var headline_count = response.get_length();
-				stdout.printf("About to update %u Articles to unread\n", headline_count);
-			
-	
-				for(uint i = 0; i < headline_count; i++)
+				var message = new ttrss_message(m_ttrss_url);
+				message.add_string("sid", m_ttrss_sessionid);
+				message.add_string("op", "getCompactHeadlines");
+				message.add_int("feed_id", feedID);
+				message.add_int("limit", limit);
+				message.add_string("view_mode", "unread");
+				int error = message.send();
+		
+				if(error == NO_ERROR)
 				{
-					var headline_node = response.get_object_element(i);
-					dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "unread", true, (obj, res) => {
-						dataBase.update_headline.end(res);
-					});
+					dataBase.markReadAllArticles();
+					var response = message.get_response_array();
+					headline_count = response.get_length();
+					stdout.printf("About to update %u Articles to unread\n", headline_count);
+					
+					for(uint i = 0; i < headline_count; i++)
+					{
+						var headline_node = response.get_object_element(i);
+						dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "unread", STATUS_UNREAD, (obj, res) => {
+							dataBase.update_headline.end(res);
+						});
+					}
 				}
+				
 
 				// update marked
-				dataBase.unmarkAllArticles();
-				message_updateHeadlines = new Soup.Message("POST", ttrss_url);
-				updateHeadlines = 
-					"{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getCompactHeadlines\", \"feed_id\":" + feedID.to_string() + ", \"limit\":" + limit.to_string() + ", \"view_mode\":\"marked\"}";
-				message_updateHeadlines.set_request(m_contenttype, Soup.MemoryUse.COPY, updateHeadlines.data);
-				m_session.send_message(message_updateHeadlines);
-
-				try{
-					m_parser.load_from_data((string) message_updateHeadlines.response_body.flatten ().data, -1);
-				} catch (Error e) {}
-
-				root_object = m_parser.get_root().get_object();
-				response = root_object.get_array_member ("content");
-				headline_count = response.get_length();
-				stdout.printf("About to update %u Articles to marked\n", headline_count);
-
-				for(uint i = 0; i < headline_count; i++)
+				var message2 = new ttrss_message(m_ttrss_url);
+				message2.add_string("sid", m_ttrss_sessionid);
+				message2.add_string("op", "getCompactHeadlines");
+				message2.add_int("feed_id", feedID);
+				message2.add_int("limit", limit);
+				message2.add_string("view_mode", "marked");
+				error = message2.send();
+		
+				if(error == NO_ERROR)
 				{
-					var headline_node = response.get_object_element(i);
-					dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "marked", true, (obj, res) => {
-						dataBase.update_headline.end(res);
-					});
+					dataBase.unmarkAllArticles();
+					var response2 = message2.get_response_array();
+					headline_count = response2.get_length();
+					stdout.printf("About to update %u Articles to marked\n", headline_count);
+					
+					for(uint i = 0; i < headline_count; i++)
+					{
+						var headline_node = response2.get_object_element(i);
+						dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "marked", STATUS_MARKED, (obj, res) => {
+							dataBase.update_headline.end(res);
+						});
+					}
 				}
 				
 				Idle.add((owned) callback);
@@ -636,58 +478,49 @@ public class ttrss_interface : GLib.Object {
 		
 		if(isloggedin())
 		{
-			var message_getArticle = new Soup.Message("POST", ttrss_url);
-			string getArticle = 
-				"{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"getArticle\", \"article_id\":" + articleID.to_string() + "}";
-			message_getArticle.set_request(m_contenttype, Soup.MemoryUse.COPY, getArticle.data);
-			m_session.send_message(message_getArticle);
-
-				
-			try{
-				m_parser.load_from_data ((string)message_getArticle.response_body.flatten().data, -1);
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "getArticle");
+			message.add_int("article_id", articleID);
+			int error = message.send();
+		
+			if(error == NO_ERROR)
+			{
+				var response = message.get_response_array();
+				var article_node = response.get_object_element(0);
+			
+				title = article_node.get_string_member("title");
+				url = article_node.get_string_member("link");
+				author = article_node.get_string_member("author");
+				html = article_node.get_string_member("content");
 			}
-			catch(Error e){}
-
-			var root_object = m_parser.get_root().get_object();
-			var response = root_object.get_array_member("content");
-			var article_node = response.get_object_element(0);
-			title = article_node.get_string_member("title");
-			url = article_node.get_string_member("link");
-			author = article_node.get_string_member("author");
-			html = article_node.get_string_member("content");
 		}
 	}
 
 
-	public async bool updateArticleUnread(string articleID, bool unread)
+	public async bool updateArticleUnread(int articleID, int unread)
 	{
 		SourceFunc callback = updateArticleUnread.callback;
 		bool return_value = false;
 
 		ThreadFunc<void*> run = () => {
 			Idle.add((owned) callback);
-			int int_unread = 0;
-			if(unread)
-				int_unread = 1;
-		
-			var message_updateAricle = new Soup.Message ("POST", ttrss_url);
-			string updateAricle = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"updateArticle\",\"article_ids\":" + articleID + ",\"mode\":" + int_unread.to_string() + ",\"field\":2}";
-			//stdout.printf("update Article message: %s\n", updateAricle);
-			message_updateAricle.set_request(m_contenttype, Soup.MemoryUse.COPY, updateAricle.data);
-			m_session.send_message (message_updateAricle);
-
-			try{
-				m_parser.load_from_data ((string) message_updateAricle.response_body.flatten().data, -1);
-			}
-			catch (Error e) {
-				stderr.printf ("I guess something is not working...\n");
-			}
-
-			var root_object = m_parser.get_root ().get_object ();
-			var response = root_object.get_object_member ("content");
-			if(response.get_string_member("status") == "OK")
-				return_value = true;
 			
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "updateArticle");
+			message.add_int("article_ids", articleID);
+			message.add_int("mode", unread);
+			message.add_int("field", 2);
+			int error = message.send();
+		
+			if(error == NO_ERROR)
+			{
+				var response = message.get_response_object();
+				if(response.get_string_member("status") == "OK")
+					return_value = true;
+			}
+				
 			return null;
 		};
 		new GLib.Thread<void*>("updateAricle", run);
@@ -697,33 +530,28 @@ public class ttrss_interface : GLib.Object {
 	}
 
 
-	public async bool updateArticleMarked(string articleID, bool marked)
+	public async bool updateArticleMarked(int articleID, int marked)
 	{
 		SourceFunc callback = updateArticleMarked.callback;
 		bool return_value = false;
 
 		ThreadFunc<void*> run = () => {
 			Idle.add((owned) callback);
-			int int_marked = 0;
-			if(marked)
-				int_marked = 1;
+			
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "updateArticle");
+			message.add_int("article_ids", articleID);
+			message.add_int("mode", marked);
+			message.add_int("field", 0);
+			int error = message.send();
 		
-			var message_updateAricle = new Soup.Message ("POST", ttrss_url);
-			string updateAricle = "{\"sid\":\"" + m_ttrss_sessionid + "\",\"op\":\"updateArticle\",\"article_ids\":" + articleID + ",\"mode\":" + int_marked.to_string() + ",\"field\":0}";
-			message_updateAricle.set_request(m_contenttype, Soup.MemoryUse.COPY, updateAricle.data);
-			m_session.send_message (message_updateAricle);
-
-			try{
-				m_parser.load_from_data ((string) message_updateAricle.response_body.flatten().data, -1);
+			if(error == NO_ERROR)
+			{
+				var response = message.get_response_object();
+				if(response.get_string_member("status") == "OK")
+					return_value = true;
 			}
-			catch (Error e) {
-				stderr.printf ("I guess something is not working...\n");
-			}
-
-			var root_object = m_parser.get_root ().get_object ();
-			var response = root_object.get_object_member ("content");
-			if(response.get_string_member("status") == "OK")
-				return_value = true;
 			
 			return null;
 		};

@@ -65,12 +65,12 @@ public class FeedDaemonServer : Object {
 		return server.login();
 	}
 	
-	public void changeUnread(string articleID, bool read)
+	public void changeUnread(string articleID, int read)
 	{
 		server.setArticleIsRead(articleID, read);
 	}
 	
-	public void changeMarked(string articleID, bool marked)
+	public void changeMarked(string articleID, int marked)
 	{
 		server.setArticleIsMarked(articleID, marked);
 	}

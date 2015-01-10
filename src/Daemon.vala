@@ -7,7 +7,7 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		stdout.printf("daemon: constructor\n");
-		m_loggedin = server.login();
+		m_loggedin = login();
 		if(m_loggedin != LOGIN_SUCCESS)
 		{
 			loginDialog(m_loggedin);
@@ -43,23 +43,31 @@ public class FeedDaemonServer : Object {
 	{
 		if(m_loggedin != LOGIN_SUCCESS)
 		{
-			m_loggedin = server.login();
+			m_loggedin = login();
 		}
 		
-		//stdout.printf("daemon: sync started\n");
-		syncStarted();
-		feedreader_settings.set_boolean("currently-updating", true);
-		yield server.sync_content();
-		updateBadge();
-		feedreader_settings.set_boolean("currently-updating", false);
-		syncFinished();
-		//stdout.printf("daemon: sync finished\n");
+		if(m_loggedin == LOGIN_SUCCESS)
+		{
+			syncStarted();
+			feedreader_settings.set_boolean("currently-updating", true);
+			yield server.sync_content();
+			updateBadge();
+			feedreader_settings.set_boolean("currently-updating", false);
+			syncFinished();
+		}
+		else
+			print("Cant sync because login failed\n");
 	}
 	
 	public int login()
 	{
 		stdout.printf("daemon: login\n");
 		return server.login();
+	}
+	
+	public int isLoggedIn()
+	{
+		return m_loggedin;
 	}
 	
 	public void changeUnread(string articleID, int read)

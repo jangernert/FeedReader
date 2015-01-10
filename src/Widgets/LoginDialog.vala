@@ -75,7 +75,7 @@ public class loginDialog : Gtk.Dialog {
 				break;
 		}
 
-		if(ErrorCode != LOGIN_SUCCESS || ErrorCode != LOGIN_FIRST_TRY)
+		if(ErrorCode != LOGIN_SUCCESS && ErrorCode != LOGIN_FIRST_TRY)
 			error_box.pack_start(error_bar, false, false, 0);
 		
 

@@ -29,6 +29,7 @@ FeedDaemon feedDaemon_interface;
 interface FeedDaemon : Object {
     public abstract void startSync() throws IOError;
     public abstract int login() throws IOError;
+    public abstract int isLoggedIn() throws IOError;
     public abstract void changeUnread(string articleID, int read) throws IOError;
     public abstract void changeMarked(string articleID, int marked) throws IOError;
     public abstract void updateBadge() throws IOError;
@@ -92,8 +93,7 @@ public class rssReaderApp : Gtk.Application {
 	public void tryLogin(int ErrorCode)
 	{
 		stdout.printf("feedreader: trylogin\n");
-		var status = feedDaemon_interface.login();
-		if(status == LOGIN_SUCCESS)
+		if(feedDaemon_interface.isLoggedIn() == LOGIN_SUCCESS)
 		{
 			getContent();
 		}
@@ -102,6 +102,7 @@ public class rssReaderApp : Gtk.Application {
 			var dialog = new loginDialog(m_window, ErrorCode);
 			dialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
+				var status = feedDaemon_interface.login();
 				tryLogin(status);
 				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 2, () => {
 					sync();

@@ -1,5 +1,6 @@
 <schemalist>
 	<enum id="org.gnome.feedreader.accounttypes">
+		<value nick="NONE" value="-1"/>
 		<value nick="TTRSS" value="0"/>
 		<value nick="FEEDLY" value="1"/>
 		<value nick="OWNCLOUD" value="2"/>

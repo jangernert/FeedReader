@@ -1,5 +1,6 @@
 
 // Backends
+const int TYPE_NONE = -1;
 const int TYPE_TTRSS = 0;
 const int TYPE_FEEDLY = 1;
 const int TYPE_OWNCLOUD = 2;
@@ -37,4 +38,5 @@ const int LOGIN_MISSING_URL = 3;
 const int LOGIN_ALL_EMPTY = 4;
 const int LOGIN_UNKNOWN_ERROR = 5;
 const int LOGIN_FIRST_TRY = 6;
+const int LOGIN_NO_BACKEND = 7;
 

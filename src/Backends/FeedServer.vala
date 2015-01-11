@@ -42,6 +42,10 @@ public class feed_server : GLib.Object {
 	{
 		switch(m_type)
 		{
+			case TYPE_NONE:
+				return LOGIN_NO_BACKEND;
+				break;
+				
 			case TYPE_TTRSS:
 				return m_ttrss.login();
 				break;
@@ -66,6 +70,7 @@ public class feed_server : GLib.Object {
 			case TYPE_FEEDLY:
 				yield m_feedly.getCategories();
 				yield m_feedly.getFeeds();
+				//yield m_feedly.getArticles();
 				break;
 		}
 	}
@@ -81,7 +86,7 @@ public class feed_server : GLib.Object {
 				break;
 				
 			case TYPE_FEEDLY:
-				
+				m_feedly.mark_as_read(articleID, "entries", read);
 				break;
 		}
 	}

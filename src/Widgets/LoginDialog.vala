@@ -39,7 +39,7 @@ public class loginDialog : Gtk.Dialog {
 		this.set_transient_for(window);
 		set_default_size (500, 300);
 		
-		account_types = {"Tiny Tiny RSS", "Feedly", "OwnCloud"};
+		account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud")};
 		
 		var error_bar = new Gtk.InfoBar();
 		var error_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -57,6 +57,9 @@ public class loginDialog : Gtk.Dialog {
 		{
 			case LOGIN_SUCCESS:
 			case LOGIN_FIRST_TRY:
+				break;
+			case LOGIN_NO_BACKEND:
+				error_content.add(new Gtk.Label(_("Please select a service first")));
 				break;
 			case LOGIN_MISSING_USER:
 				error_content.add(new Gtk.Label(_("Please enter a valid username")));
@@ -86,15 +89,18 @@ public class loginDialog : Gtk.Dialog {
 		
 		
 		var liststore = new Gtk.ListStore(1, typeof (string));
+		//Gtk.TreeIter none;
+		//liststore.append(out none);
+		//liststore.set(none, 0, account_types[TYPE_NONE]);
 		Gtk.TreeIter ttrss;
 		liststore.append(out ttrss);
-		liststore.set(ttrss, 0, account_types[0]);
+		liststore.set(ttrss, 0, account_types[TYPE_TTRSS]);
 		Gtk.TreeIter feedly;
 		liststore.append(out feedly);
-		liststore.set(feedly, 0, account_types[1]);
+		liststore.set(feedly, 0, account_types[TYPE_FEEDLY]);
 		Gtk.TreeIter ownCloud;
 		liststore.append(out ownCloud);
-		liststore.set(ownCloud, 0, account_types[2]);
+		liststore.set(ownCloud, 0, account_types[TYPE_OWNCLOUD]);
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 		
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
@@ -122,6 +128,9 @@ public class loginDialog : Gtk.Dialog {
 			if(m_comboBox.get_active() != -1) {
 				switch(m_comboBox.get_active())
 				{
+					case TYPE_NONE:
+						m_login_details.set_visible_child_name("none");
+						break;
 					case TYPE_TTRSS:
 						m_login_details.set_visible_child_name("ttrss");
 						break;
@@ -134,6 +143,9 @@ public class loginDialog : Gtk.Dialog {
 				}
 			}
 		});
+		
+		var nothing_selected = new Gtk.Label(_("Please tell us where your feeds are stored"));
+		m_login_details.add_named(nothing_selected, "none");
 		
 		setup_ttrss_login();
 		setup_feedly_login();
@@ -150,6 +162,10 @@ public class loginDialog : Gtk.Dialog {
 		
 		switch(feedreader_settings.get_enum("account-type"))
 		{
+			case TYPE_NONE:
+				m_comboBox.set_active(TYPE_NONE);
+				m_login_details.set_visible_child_name("none");
+				break;
 			case TYPE_TTRSS:
 				m_comboBox.set_active(TYPE_TTRSS);
 				m_login_details.set_visible_child_name("ttrss");

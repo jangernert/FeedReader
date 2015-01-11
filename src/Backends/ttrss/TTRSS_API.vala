@@ -359,10 +359,10 @@ public class ttrss_interface : GLib.Object {
 			{
 				var headline_node = response.get_object_element(i);
 		
-				dataBase.write_headline(int.parse(headline_node.get_int_member("id").to_string()),
+				dataBase.write_headline(headline_node.get_int_member("id").to_string(),
 						         headline_node.get_string_member("title").replace("&",""),
 						         headline_node.get_string_member("link"),
-						         int.parse(headline_node.get_string_member("feed_id")),
+						         headline_node.get_string_member("feed_id"),
 						         headline_node.get_boolean_member("unread"),
 						         headline_node.get_boolean_member("marked")
 						         );

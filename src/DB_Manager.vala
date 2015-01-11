@@ -255,14 +255,14 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public void write_headline(int articleID, string title, string url, int feed_ID, bool unread, bool marked)
+	public void write_headline(string articleID, string title, string url, string feed_ID, bool unread, bool marked)
 	{		
 		int int_unread = 0;
 		int int_marked = 0;
 		if(unread) int_unread = 1;
 		if(marked) int_marked = 1;
 		string query = "INSERT INTO \"main\".\"headlines\" (\"articleID\",\"title\",\"url\",\"feedID\",\"unread\", \"marked\") 
-						VALUES (\"" + articleID.to_string() + "\", $TITLE, \"" + url + "\", \"" + feed_ID.to_string() + "\", \"" + int_unread.to_string() + "\", \"" + int_marked.to_string() + "\")";
+						VALUES (\"" + articleID + "\", $TITLE, \"" + url + "\", \"" + feed_ID + "\", \"" + int_unread.to_string() + "\", \"" + int_marked.to_string() + "\")";
 		
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -303,45 +303,42 @@ public class dbManager : GLib.Object {
 
 	public void write_article(string articleID, string feedID, string title, string author, string url, string html, string preview = "")
 	{
-		string output = "";
 		
-		if(preview == "")
-		{
-			string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
-			int outputfd = GLib.FileUtils.mkstemp(filename);
-			try{
+		
+		string output = "";
+		string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
+		int outputfd = GLib.FileUtils.mkstemp(filename);
+		try{
+			if(preview == "")
 				GLib.FileUtils.set_contents(filename, html);
-			}catch(GLib.FileError e){
-				stderr.printf("error writing html to tmp file: %s\n", e.message);
-			}
-			GLib.FileUtils.close(outputfd);
-
-			string[] spawn_args = {"html2text", "-utf8", "-nobs", filename};
-			try{
-				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-			}catch(GLib.SpawnError e){
-				stdout.printf("error spawning command line: %s\n", e.message);
-			}
-
-			string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
-			if(output.has_prefix(prefix))
-			{
-				output = output.slice(prefix.length, output.length);
-			}
-
-			int length = 300;
-			if(output.length < 300)
-				length = output.length;
-
-			output = output.replace("\n"," ");
-			output = output.slice(0, length);
-			output = output.slice(0, output.last_index_of(" "));
-			output = output.chug();
+			else
+				GLib.FileUtils.set_contents(filename, preview);
+		}catch(GLib.FileError e){
+			stderr.printf("error writing html to tmp file: %s\n", e.message);
 		}
-		else
+		GLib.FileUtils.close(outputfd);
+
+		string[] spawn_args = {"html2text", "-utf8", "-nobs", filename};
+		try{
+			GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+		}catch(GLib.SpawnError e){
+			stdout.printf("error spawning command line: %s\n", e.message);
+		}
+
+		string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
+		if(output.has_prefix(prefix))
 		{
-			output = preview;
+			output = output.slice(prefix.length, output.length);
 		}
+
+		int length = 300;
+		if(output.length < 300)
+			length = output.length;
+
+		output = output.replace("\n"," ");
+		output = output.slice(0, length);
+		output = output.slice(0, output.last_index_of(" "));
+		output = output.chug();
 		
 		string query = "INSERT OR REPLACE INTO \"main\".\"articles\" (\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\") 
 						VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW)";

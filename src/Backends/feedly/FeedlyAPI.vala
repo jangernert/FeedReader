@@ -8,7 +8,7 @@ public class FeedlyAPI : Object {
 	public Gee.HashMap<string,int> markers { get; private set; }
 
 	FeedlyAPI() {
-		//string devel_token = "AhTSaW97ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODQyNTk1OTEyNiwiaSI6IjY3YjdmNTRjLWU0M2MtNDM3Yi05ZmQ0LWM0MTdkNGVjMzFhMCIsInAiOjgsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTUuMiIsIngiOiJzdGFuZGFyZCJ9:feedlydev";
+		//string devel_token = "AhHjs057ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODM3Njc2MDUwMSwiaSI6IjliN2ZkYjg3LTljYWUtNGIyNy05NGQyLTEwMGExMTM4YTg2OSIsInAiOjYsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTQuMjciLCJ4Ijoic3RhbmRhcmQifQ:feedlydev";
 		string devel_token = "AhHjs057ImEiOiJGZWVkbHkgRGV2ZWxvcGVyIiwiZSI6MTQyODM3Njc2MDUwMSwiaSI6IjliN2ZkYjg3LTljYWUtNGIyNy05NGQyLTEwMGExMTM4YTg2OSIsInAiOjYsInQiOjEsInYiOiJwcm9kdWN0aW9uIiwidyI6IjIwMTQuMjciLCJ4Ijoic3RhbmRhcmQifQ:feedlydev";
 		this.connection = new FeedlyConnection (devel_token);
 		this.token = devel_token;    
@@ -37,20 +37,18 @@ public class FeedlyAPI : Object {
 		ThreadFunc<void*> run = () => {
 			string response = connection.send_get_request_to_feedly ("/v3/categories/");
 
-			var parser = new Json.Parser ();
+			var parser = new Json.Parser();
 			parser.load_from_data (response, -1);
 			Json.Array array = parser.get_root ().get_array ();
 			
 			for (int i = 0; i < array.get_length (); i++) {
-				Json.Object object = array.get_object_element (i);
+				Json.Object object = array.get_object_element(i);
 				
 				string categorieID = object.get_string_member("id");
-				int unreadCount = get_count_of_unread_articles (categorieID);
+				int unreadCount = get_count_of_unread_articles(categorieID);
 				string title = object.get_string_member("label");
 				
 				stdout.printf("%s | %s %i\n", categorieID, title, unreadCount);
-				getArticles(categorieID);
-				
 				dataBase.write_categorie(categorieID, title, unreadCount, i+1, -99, 1);
 				getArticles(categorieID);
 			}
@@ -111,8 +109,9 @@ public class FeedlyAPI : Object {
 		SourceFunc callback = getArticles.callback;
 		
 		ThreadFunc<void*> run = () => {
-			int number = 20;
-			string entry_id_response = connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=oldest".printf(categorieID, number));
+			//int maxArticles = feedreader_settings.get_int("max-articles");
+			int maxArticles = 20;
+			string entry_id_response = connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=oldest".printf(categorieID, maxArticles));
 			string response = connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
 
 			var parser = new Json.Parser();
@@ -125,18 +124,28 @@ public class FeedlyAPI : Object {
 				string id = object.get_string_member("id");
 				string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
 				string author = object.has_member("author") ? object.get_string_member("author") : "None";
+				string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
+				string Content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
+				bool unread = object.get_boolean_member("unread");
+				string url = object.has_member("canonical") ? object.get_object_member("canonical").get_string_member("href") : "";
+				string feedID = object.get_object_member("origin").get_string_member("streamId");
 			
-				string summaryContent = "";
-				if(object.has_member("summary")){
-					summaryContent = object.get_object_member("summary").get_string_member("content");
-				}
-			
-				string Content = "";
-				if(object.has_member("content")){
-					Content = object.get_object_member("content").get_string_member("content");
-				}
-			
-				stdout.printf("%s | %s %s\n", id, title, author); 
+				stdout.printf("%s | %s %s\n", id, title, author);
+				
+				dataBase.write_headline(id,
+										title,
+										url,
+										feedID,
+										unread,
+										false);
+				
+				dataBase.write_article(	id,
+										feedID,
+										title,
+										author,
+										url,
+										Content,
+										summaryContent);
 			}
 			
 			Idle.add((owned) callback);
@@ -200,11 +209,13 @@ public class FeedlyAPI : Object {
 		return unread_count;
 	}
 
-	private void mark_as_read(string id, string type) {
+	public void mark_as_read(string id, string type, int read) {
 		Json.Object object = new Json.Object();
 		
-		object.set_string_member ("action", "markAsRead");
-		
+		if(read == STATUS_READ)
+			object.set_string_member ("action", "markAsRead");
+		else if(read == STATUS_UNREAD)
+			object.set_string_member ("action", "undoMarkAsRead");
 		object.set_string_member ("type", type);
 		
 		Json.Array ids = new Json.Array();

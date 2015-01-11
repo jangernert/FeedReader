@@ -59,7 +59,7 @@ public class dbManager : GLib.Object {
 												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" VARCHAR NOT NULL , 
 												"url" VARCHAR NOT NULL ,
-												"feedID" INTEGER NOT NULL , 
+												"feedID" TEXT NOT NULL , 
 												"unread" INTEGER NOT NULL ,
 												"marked" INTEGER NOT NULL
 											)""";

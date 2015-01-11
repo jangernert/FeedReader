@@ -22,10 +22,12 @@ using Gtk;
 
 public class readerUI : Gtk.ApplicationWindow 
 {
-	private  readerHeaderbar m_headerbar;
+	private readerHeaderbar m_headerbar;
 	private Gtk.Paned m_pane_feedlist;
 	private Gtk.Paned m_pane_articlelist;
-	private  loginDialog m_loginDialog;
+	private Gtk.Stack m_stack;
+	private Gtk.Box m_welcome;
+	private loginDialog m_loginDialog;
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
@@ -74,16 +76,25 @@ public class readerUI : Gtk.ApplicationWindow
 
 		setupArticlelist();
 		setupFeedlist();
+		setupWelcome();
 		onClose();
 		m_pane_articlelist.pack2(m_article_view, true, false);
-
 		
+		m_stack = new Gtk.Stack();
+		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_stack.set_transition_duration(100);
+		m_stack.add_named(m_pane_feedlist, "content");
+		m_stack.add_named(m_welcome, "welcome");
+		
+		
+		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
-		this.add(m_pane_feedlist);
 		this.set_titlebar(m_headerbar);
 		this.set_title ("FeedReader");
 		this.set_default_size(1600, 900);
 		this.show_all();
+		
+		m_stack.set_visible_child_name("content");
 	}
 
 	public void setRefreshButton(bool refreshing)
@@ -116,6 +127,15 @@ public class readerUI : Gtk.ApplicationWindow
 			feedreader_settings.set_boolean("only-unread", m_headerbar.m_only_unread);
 			feedreader_settings.set_boolean("only-marked", m_headerbar.m_only_marked);
 		});
+	}
+	
+	private void setupWelcome()
+	{
+		m_welcome = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		m_welcome.set_homogeneous(false);
+		var text = new Gtk.Label ("Welcome to FeedReader");
+		
+		m_welcome.pack_start(text, true, true, 0);
 	}
 
 	private void setupFeedlist()

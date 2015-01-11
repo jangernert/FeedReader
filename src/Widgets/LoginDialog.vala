@@ -100,7 +100,6 @@ public class loginDialog : Gtk.Dialog {
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
 		m_comboBox.pack_start (renderer, false);
 		m_comboBox.add_attribute(renderer, "text", 0);
-		m_comboBox.active = 0;
 		
 		m_login_details = new Gtk.Stack();
 		m_login_details.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
@@ -139,11 +138,32 @@ public class loginDialog : Gtk.Dialog {
 		setup_ttrss_login();
 		setup_feedly_login();
 		setup_owncloud_login();
+		
+		
+		
 
 		add_button(_("Cancel"), Gtk.ResponseType.CANCEL);
 		m_okay_button = add_button("Login", Gtk.ResponseType.APPLY);
 		m_okay_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		this.response.connect(on_response);
+		this.show_all();
+		
+		switch(feedreader_settings.get_enum("account-type"))
+		{
+			case TYPE_TTRSS:
+				m_comboBox.set_active(TYPE_TTRSS);
+				m_login_details.set_visible_child_name("ttrss");
+				break;
+			case TYPE_FEEDLY:
+				m_comboBox.set_active(TYPE_FEEDLY);
+				m_login_details.set_visible_child_name("feedly");
+				break;
+			case TYPE_OWNCLOUD:
+				m_comboBox.set_active(TYPE_OWNCLOUD);
+				m_login_details.set_visible_child_name("owncloud");
+				break;
+		}
+		
 	}
 	
 	private void setup_ttrss_login()

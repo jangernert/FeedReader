@@ -28,10 +28,11 @@ public class loginDialog : Gtk.Dialog {
 	private Gtk.Entry m_owncloud_password_entry;
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
-	private string[] account_types;
+	private string m_feedly_api_code;
+	private string[] m_account_types;
 	public signal void submit_data();
 
-	public loginDialog(Gtk.Window window, int ErrorCode) {	
+	public loginDialog(Gtk.Window window, int ErrorCode) {
 		this.title = "Login Data";
 		this.border_width = 5;
 		GLib.Object (use_header_bar: 1);
@@ -39,7 +40,7 @@ public class loginDialog : Gtk.Dialog {
 		this.set_transient_for(window);
 		set_default_size (500, 300);
 		
-		account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud")};
+		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud")};
 		
 		var error_bar = new Gtk.InfoBar();
 		var error_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -89,18 +90,15 @@ public class loginDialog : Gtk.Dialog {
 		
 		
 		var liststore = new Gtk.ListStore(1, typeof (string));
-		//Gtk.TreeIter none;
-		//liststore.append(out none);
-		//liststore.set(none, 0, account_types[TYPE_NONE]);
 		Gtk.TreeIter ttrss;
 		liststore.append(out ttrss);
-		liststore.set(ttrss, 0, account_types[TYPE_TTRSS]);
+		liststore.set(ttrss, 0, m_account_types[TYPE_TTRSS]);
 		Gtk.TreeIter feedly;
 		liststore.append(out feedly);
-		liststore.set(feedly, 0, account_types[TYPE_FEEDLY]);
+		liststore.set(feedly, 0, m_account_types[TYPE_FEEDLY]);
 		Gtk.TreeIter ownCloud;
 		liststore.append(out ownCloud);
-		liststore.set(ownCloud, 0, account_types[TYPE_OWNCLOUD]);
+		liststore.set(ownCloud, 0, m_account_types[TYPE_OWNCLOUD]);
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 		
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
@@ -121,7 +119,7 @@ public class loginDialog : Gtk.Dialog {
 		center.set_padding(20, 20, 20, 20);
 		center.add(vbox);
 		error_box.pack_start(center, true, true, 0);
-		var content = get_content_area ();
+		var content = get_content_area();
 		content.add(error_box);
 		
 		m_comboBox.changed.connect(() => {
@@ -256,9 +254,23 @@ public class loginDialog : Gtk.Dialog {
 		tmp_logo = tmp_logo.scale_simple(64, 64, Gdk.InterpType.BILINEAR);
 		var feedly_logo = new Gtk.Image.from_pixbuf(tmp_logo);
 		
+		var login_button =  new Gtk.Button.with_label("Login");
+		var alignment = new Gtk.Alignment (0.50f, 0.25f, 1.0f, 0.5f);
+		alignment.right_padding = 20;
+		alignment.left_padding = 20;
+		alignment.add (login_button);
+		
+		login_button.clicked.connect(() => {
+			var dialog = new WebLogin(this, m_account_types[TYPE_FEEDLY], TYPE_FEEDLY);
+			dialog.auth_code.connect((code) => {
+				m_feedly_api_code = code;
+				on_enter();
+			});
+		});
+		
 		var feedly_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		feedly_box.pack_start(feedly_logo, false, false, 20);
-		
+		feedly_box.pack_start(alignment, true, true, 0);
 		m_login_details.add_named(feedly_box, "feedly");
 	}
 	
@@ -351,35 +363,34 @@ public class loginDialog : Gtk.Dialog {
 	private void write_login_data()
 	{
 		if(m_comboBox.get_active() != -1) {
-			switch(m_comboBox.get_active()+1)
+			switch(m_comboBox.get_active())
 			{
 				case TYPE_TTRSS:
 					feedreader_settings.set_enum("account-type", TYPE_TTRSS);
+					string url = m_ttrss_url_entry.get_text();
+					feedreader_settings.set_string("url", url);
+					feedreader_settings.set_string("username", m_ttrss_user_entry.get_text());
+					var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+								                      "URL", Secret.SchemaAttributeType.STRING,
+								                      "Username", Secret.SchemaAttributeType.STRING);
+					var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+					attributes["URL"] = url;
+					attributes["Username"] = m_ttrss_user_entry.get_text();
+					try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
+					catch(GLib.Error e){}
 					break;
+					
 				case TYPE_FEEDLY:
 					feedreader_settings.set_enum("account-type", TYPE_FEEDLY);
+					feedreader_settings.set_string("feedly-api-code", m_feedly_api_code);
 					break;
+					
 				case TYPE_OWNCLOUD:
 					feedreader_settings.set_enum("account-type", TYPE_OWNCLOUD);
 					break;
 			}
 		}
-	
-		string url = m_ttrss_url_entry.get_text();
-
-		feedreader_settings.set_string("url", url);
-		feedreader_settings.set_string("username", m_ttrss_user_entry.get_text());
-
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = url;
-		attributes["Username"] = m_ttrss_user_entry.get_text();
-
-		try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
-		catch(GLib.Error e){}
+		
 		submit_data();
 	}
 

@@ -50,6 +50,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/ThinPaned.vala
     src/Widgets/UpdateButton.vala
+    src/Widgets/WebLogin.vala
 
 # tell what libraries to use when compiling
 PACKAGES

@@ -62,6 +62,7 @@ public class FeedDaemonServer : Object {
 	public int login()
 	{
 		stdout.printf("daemon: login\n");
+		server = new feed_server(feedreader_settings.get_enum("account-type"));
 		return server.login();
 	}
 	
@@ -120,8 +121,6 @@ void main () {
 	dataBase.init();
 	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
 	Notify.init("FeedReader");
-	
-	server = new feed_server(feedreader_settings.get_enum("account-type"));
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 		          on_bus_aquired,

@@ -40,3 +40,10 @@ const int LOGIN_UNKNOWN_ERROR = 5;
 const int LOGIN_FIRST_TRY = 6;
 const int LOGIN_NO_BACKEND = 7;
 
+
+// Feedly Login Secrets
+const string base_uri = "http://cloud.feedly.com";
+const string apiClientId = "boutroue";
+const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
+const string apiRedirectUri = "http://localhost";
+const string apiAuthScope = "https://cloud.feedly.com/subscriptions";

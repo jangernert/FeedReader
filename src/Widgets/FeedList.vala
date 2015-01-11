@@ -543,7 +543,6 @@ public class feedList : Gtk.Stack {
 				if(tmpCatRow.isExpanded())
 				{
 					e += tmpCatRow.getName();
-					stdout.printf("%s\n", tmpCatRow.getName());
 				}
 			}
 		}

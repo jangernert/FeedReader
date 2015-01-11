@@ -33,7 +33,7 @@ public class feed_server : GLib.Object {
 				break;
 				
 			case TYPE_FEEDLY:
-				m_feedly = FeedlyAPI.get_api_with_token();
+				m_feedly =new  FeedlyAPI();
 				break;
 		}
 	}
@@ -44,14 +44,12 @@ public class feed_server : GLib.Object {
 		{
 			case TYPE_NONE:
 				return LOGIN_NO_BACKEND;
-				break;
 				
 			case TYPE_TTRSS:
 				return m_ttrss.login();
-				break;
 				
 			case TYPE_FEEDLY:
-				return LOGIN_SUCCESS;
+				return m_feedly.login();
 		}
 		return LOGIN_UNKNOWN_ERROR;
 	}
@@ -70,7 +68,7 @@ public class feed_server : GLib.Object {
 			case TYPE_FEEDLY:
 				yield m_feedly.getCategories();
 				yield m_feedly.getFeeds();
-				//yield m_feedly.getArticles();
+				yield m_feedly.getArticles();
 				break;
 		}
 	}

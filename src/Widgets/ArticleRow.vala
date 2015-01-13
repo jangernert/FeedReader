@@ -131,12 +131,10 @@ public class articleRow : baseRow {
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
 		icon_box.pack_end(m_marked_eventbox, false, false, 0);
 			
-		string author = "";
-		string preview = "";
-		dataBase.read_article(m_articleID, null, null, out author, null, null, out preview);
+		var Article = dataBase.read_article(m_articleID);
 
 
-		var body_label = new Gtk.Label(preview);
+		var body_label = new Gtk.Label(Article.m_preview);
 		body_label.get_style_context().add_class("grey-label");
 		body_label.set_alignment(0, 0);
 		body_label.set_ellipsize (Pango.EllipsizeMode.END);
@@ -187,8 +185,8 @@ public class articleRow : baseRow {
 		}
 		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
 		
-		dataBase.update_headline.begin(m_articleID, "unread", m_is_unread, (obj, res) => {
-			dataBase.update_headline.end(res);
+		dataBase.update_article.begin(m_articleID, "unread", m_is_unread, (obj, res) => {
+			dataBase.update_article.end(res);
 		});
 		dataBase.change_unread.begin(m_feedID, m_is_unread, (obj, res) => {
 			dataBase.change_unread.end(res);
@@ -268,8 +266,8 @@ public class articleRow : baseRow {
 		
 		feedDaemon_interface.changeMarked(m_articleID, m_marked);
 		
-		dataBase.update_headline.begin(m_articleID, "marked", m_marked, (obj, res) => {
-			dataBase.update_headline.end(res);
+		dataBase.update_article.begin(m_articleID, "marked", m_marked, (obj, res) => {
+			dataBase.update_article.end(res);
 		});
 	}
 

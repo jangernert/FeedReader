@@ -123,6 +123,8 @@ public class FeedlyAPI : Object {
 			parser.load_from_data(response, -1);
 
 			var array = parser.get_root().get_array();
+			
+			GLib.List<article> articles = new GLib.List<article>();
 
 			for(int i = 0; i < array.get_length(); i++) {
 				Json.Object object = array.get_object_element(i);
@@ -135,20 +137,39 @@ public class FeedlyAPI : Object {
 				string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 				string feedID = object.get_object_member("origin").get_string_member("streamId");
 				
-				dataBase.write_headline(id,
-										title,
-										url,
-										feedID,
-										unread,
-										false);
-				
-				dataBase.write_article(	id,
-										feedID,
-										title,
-										author,
-										url,
-										Content,
-										summaryContent);
+				articles.append(new article(id, title, url, feedID, (unread) ? STATUS_UNREAD : STATUS_READ, STATUS_UNMARKED, Content, summaryContent, author));
+			}
+			articles.reverse();
+			
+			// first write all new articles
+			foreach(article item in articles)
+			{
+				dataBase.write_article(	item.m_articleID,
+										item.m_feedID,
+										item.m_title,
+										item.m_author,
+										item.m_url,
+										item.m_unread,
+										item.m_marked,
+										DB_INSERT_OR_IGNORE,
+										item.m_html,
+										item.m_preview);
+			}
+			
+			
+			// then only update marked and unread for all others
+			foreach(article item in articles)
+			{
+				dataBase.write_article(	item.m_articleID,
+										item.m_feedID,
+										item.m_title,
+										item.m_author,
+										item.m_url,
+										item.m_unread,
+										item.m_marked,
+										DB_INSERT_OR_REPLACE,
+										item.m_html,
+										item.m_preview);
 			}
 			
 			Idle.add((owned) callback);

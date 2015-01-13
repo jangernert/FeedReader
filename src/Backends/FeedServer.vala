@@ -61,8 +61,8 @@ public class feed_server : GLib.Object {
 			case TYPE_TTRSS:
 				yield m_ttrss.getCategories();
 				yield m_ttrss.getFeeds();
-				yield m_ttrss.getHeadlines();
-				yield m_ttrss.updateHeadlines();
+				yield m_ttrss.getArticles();
+				yield m_ttrss.updateArticles();
 				break;
 				
 			case TYPE_FEEDLY:

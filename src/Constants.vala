@@ -47,3 +47,7 @@ const string apiClientId = "boutroue";
 const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
 const string apiRedirectUri = "http://localhost";
 const string apiAuthScope = "https://cloud.feedly.com/subscriptions";
+
+// database
+const int DB_INSERT_OR_IGNORE = 0;
+const int DB_INSERT_OR_REPLACE = 1;

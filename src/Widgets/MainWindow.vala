@@ -193,8 +193,8 @@ public class readerUI : Gtk.ApplicationWindow
 				row.updateUnread(STATUS_READ);
 				row.removeUnreadIcon();
 				
-				dataBase.update_headline.begin(row.m_articleID, "unread", STATUS_READ, (obj, res) => {
-					dataBase.update_headline.end(res);
+				dataBase.update_article.begin(row.m_articleID, "unread", STATUS_READ, (obj, res) => {
+					dataBase.update_article.end(res);
 				});
 				dataBase.change_unread.begin(row.m_feedID, STATUS_READ, (obj, res) => {
 					dataBase.change_unread.end(res);

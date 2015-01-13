@@ -64,17 +64,16 @@ public class articleView : Gtk.Stack {
 	{
 		this.set_visible_child_name("spinner");
 		m_spinner.start();
-		string html = "", title = "", author = "", url = "";
-		string feedID = "0";
 		
-		dataBase.read_article(articleID, out feedID, out title, out author, out url, out html, null);
-		if(author == "") author = "not available";
-		m_title.set_text("<big><b><a href=\"" + url.replace("&","&amp;") + "\" title=\"Author: " + author.replace("&","&amp;") + "\">" + title.replace("&","&amp;") + "</a></b></big>");
+		var Article = dataBase.read_article(articleID);
+		string author;
+		(Article.m_author == "") ? author = "not available" : author = Article.m_author;
+		m_title.set_text("<big><b><a href=\"" + Article.m_url.replace("&","&amp;") + "\" title=\"Author: " + author.replace("&","&amp;") + "\">" + Article.m_title.replace("&","&amp;") + "</a></b></big>");
 		m_title.set_use_markup (true);
 		this.show_all();
 		m_open_external = false;
 		m_load_ongoing = 0;
-		m_view.load_html(html, null);
+		m_view.load_html(Article.m_html, null);
 		this.set_visible_child_name("view");
 	}
 

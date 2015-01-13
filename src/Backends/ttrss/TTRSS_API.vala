@@ -309,31 +309,31 @@ public class ttrss_interface : GLib.Object {
 	}
 
 
-	public async void getHeadlines(int feedID = TTRSS_ID_ALL, int skip = 0)
+	public async void getArticles(int feedID = TTRSS_ID_ALL, int skip = 0)
 	{
-		SourceFunc callback = getHeadlines.callback;
+		SourceFunc callback = getArticles.callback;
 		//stdout.printf("getHeadlines\n");
 		ThreadFunc<void*> run = () => {
 			if(isloggedin())
 			{
-				sync_getHeadlines(feedID, skip);
+				sync_getArticles(feedID, skip);
 				Idle.add((owned) callback);
 			}
 			return null;
 		};
-		new GLib.Thread<void*>("getHeadlines", run);
+		new GLib.Thread<void*>("getArticles", run);
 		yield;
 	}
 	
 	
-	private void sync_getHeadlines(int feedID, int skip, int limit = 200)
+	private void sync_getArticles(int feedID, int skip, int limit = 200)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
 		
-		if(!dataBase.isTableEmpty("headlines"))
+		if(!dataBase.isTableEmpty("articles"))
 			message.add_int("since_id", dataBase.getNewestArticle());
 			
 		message.add_int("limit", limit);
@@ -351,27 +351,64 @@ public class ttrss_interface : GLib.Object {
 			if(headline_count > 0 && skip == 0){
 				ttrss_utils.sendNotification(headline_count);
 			}
-				
+			
+			GLib.List<article> articles = new GLib.List<article>();
 			string title, author, url, html;
 			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
+			
+			
 			
 			for(uint i = 0; i < headline_count; i++)
 			{
 				var headline_node = response.get_object_element(i);
-		
-				dataBase.write_headline(headline_node.get_int_member("id").to_string(),
-						         headline_node.get_string_member("title").replace("&",""),
-						         headline_node.get_string_member("link"),
-						         headline_node.get_string_member("feed_id"),
-						         headline_node.get_boolean_member("unread"),
-						         headline_node.get_boolean_member("marked")
-						         );
-					
-				getArticle(int.parse(headline_node.get_int_member("id").to_string()),
-					       out title, out author, out url, out html);
-				dataBase.write_article( headline_node.get_int_member("id").to_string(),
+				getArticle( int.parse(headline_node.get_int_member("id").to_string()),
+							out title, out author, out url, out html);
+				
+				articles.append(new article(
+										headline_node.get_int_member("id").to_string(),
+										headline_node.get_string_member("title").replace("&",""),
+										headline_node.get_string_member("link"),
 										headline_node.get_string_member("feed_id"),
-										title, author, url, html);
+										(headline_node.get_boolean_member("unread")) ? STATUS_UNREAD : STATUS_READ,
+										(headline_node.get_boolean_member("marked")) ? STATUS_MARKED : STATUS_UNMARKED,
+										html,
+										"",
+										author
+								));
+				
+			}
+			
+			articles.reverse();
+			
+			// first write all new articles
+			foreach(article item in articles)
+			{
+				dataBase.write_article(	item.m_articleID,
+										item.m_feedID,
+										item.m_title,
+										item.m_author,
+										item.m_url,
+										item.m_unread,
+										item.m_marked,
+										DB_INSERT_OR_IGNORE,
+										item.m_html,
+										item.m_preview);
+			}
+			
+			
+			// then only update marked and unread for all others
+			foreach(article item in articles)
+			{
+				dataBase.write_article(	item.m_articleID,
+										item.m_feedID,
+										item.m_title,
+										item.m_author,
+										item.m_url,
+										item.m_unread,
+										item.m_marked,
+										DB_INSERT_OR_REPLACE,
+										item.m_html,
+										item.m_preview);
 			}
 				
 			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
@@ -381,20 +418,20 @@ public class ttrss_interface : GLib.Object {
 				stdout.printf("get more headlines\n");
 				if(maxArticles - skip < 200)
 				{
-					sync_getHeadlines(feedID, skip + 200, maxArticles - skip);
+					sync_getArticles(feedID, skip + 200, maxArticles - skip);
 				}
 				else
 				{
-					sync_getHeadlines(feedID, skip + 200);
+					sync_getArticles(feedID, skip + 200);
 				}
 			}
 		}
 	}
 	
 
-	public async void updateHeadlines(int feedID = TTRSS_ID_ALL)
+	public async void updateArticles(int feedID = TTRSS_ID_ALL)
 	{
-		SourceFunc callback = updateHeadlines.callback;
+		SourceFunc callback = updateArticles.callback;
 
 		ThreadFunc<void*> run = () => {
 			if(isloggedin())
@@ -421,8 +458,8 @@ public class ttrss_interface : GLib.Object {
 					for(uint i = 0; i < headline_count; i++)
 					{
 						var headline_node = response.get_object_element(i);
-						dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "unread", STATUS_UNREAD, (obj, res) => {
-							dataBase.update_headline.end(res);
+						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "unread", STATUS_UNREAD, (obj, res) => {
+							dataBase.update_article.end(res);
 						});
 					}
 				}
@@ -447,8 +484,8 @@ public class ttrss_interface : GLib.Object {
 					for(uint i = 0; i < headline_count; i++)
 					{
 						var headline_node = response2.get_object_element(i);
-						dataBase.update_headline.begin(headline_node.get_int_member("id").to_string(), "marked", STATUS_MARKED, (obj, res) => {
-							dataBase.update_headline.end(res);
+						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "marked", STATUS_MARKED, (obj, res) => {
+							dataBase.update_article.end(res);
 						});
 					}
 				}
@@ -457,7 +494,7 @@ public class ttrss_interface : GLib.Object {
 			}
 			return null;
 		};
-		new GLib.Thread<void*>("updateHeadlines", run);
+		new GLib.Thread<void*>("updateArticles", run);
 		yield;
 	}
 

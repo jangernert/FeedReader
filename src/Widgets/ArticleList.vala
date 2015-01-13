@@ -176,9 +176,9 @@ public class articleList : Gtk.Stack {
 		// the missing article will get added as soon as the update finishes anyway
 		int active_in_db = feedreader_settings.get_boolean("currently-updating") ? 1 : 0;
 		
-		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
+		var articles = dataBase.read_articles(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
 
-		foreach(var item in headlines)
+		foreach(var item in articles)
 		{
 			m_displayed_articles++;
 			
@@ -227,11 +227,11 @@ public class articleList : Gtk.Stack {
 			m_limit = m_displayed_articles + new_articles;
 		}
 
-		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+		var articles = dataBase.read_articles(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit);
 		
 		bool found;
 
-		foreach(var item in headlines)
+		foreach(var item in articles)
 		{
 			found = false;
 			

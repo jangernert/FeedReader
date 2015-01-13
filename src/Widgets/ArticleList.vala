@@ -168,7 +168,6 @@ public class articleList : Gtk.Stack {
 
 	public void createHeadlineList()
 	{
-		//FIXME: limit should depend on headline layout
 		m_limit = 15;
 		
 		
@@ -182,12 +181,6 @@ public class articleList : Gtk.Stack {
 		foreach(var item in headlines)
 		{
 			m_displayed_articles++;
-
-			var showIcon = false;
-			if(m_current_feed_selected == "0")
-				showIcon = true;
-			else if(!id_is_feedID)
-				showIcon = true;
 			
 			articleRow tmpRow = new articleRow(
 					                             item.m_title,
@@ -196,8 +189,7 @@ public class articleList : Gtk.Stack {
 					                             item.m_url,
 					                             item.m_feedID,
 					                             item.m_articleID,
-					                             item.m_marked,
-					                             showIcon
+					                             item.m_marked
 					                            );
 			tmpRow.updateFeedList.connect(() => {updateFeedList();});
 			m_currentList.add(tmpRow);
@@ -256,10 +248,6 @@ public class articleList : Gtk.Stack {
 
 			if(!found)
 			{
-				var showIcon = false;
-				if(m_current_feed_selected == "0")
-					showIcon = true;
-			
 				articleRow newRow = new articleRow(
 					                             item.m_title,
 					                             item.m_unread,
@@ -267,8 +255,7 @@ public class articleList : Gtk.Stack {
 					                             item.m_url,
 					                             item.m_feedID,
 					                             item.m_articleID,
-					                             item.m_marked,
-					                             showIcon
+					                             item.m_marked
 					                            );
 				newRow.updateFeedList.connect(() => {updateFeedList();});
 				int pos = 0;

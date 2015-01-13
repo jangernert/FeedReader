@@ -34,11 +34,8 @@ public class articleRow : baseRow {
 	public string m_feedID { get; private set; }
 	public signal void updateFeedList();
 
-	public articleRow (string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, bool showIcon = false)
+	public articleRow (string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked)
 	{
-		bool layout = true;
-
-		
 		m_marked = marked;
 		m_name = aritcleName;
 		m_articleID = articleID;
@@ -50,32 +47,26 @@ public class articleRow : baseRow {
 		m_revealer.set_transition_duration(500);
 		
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		if(!layout)
-			m_box.set_size_request(0, 30);
-		else
-			m_box.set_size_request(0, 100);
+		m_box.set_size_request(0, 100);
 
 		int spacing = 8;
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 
-		if(showIcon || layout)
-		{
-			string feed_icon_name = icon_path + iconname.replace("/", "_").replace(".", "_") + ".ico";
-			Gdk.Pixbuf tmp_icon;
-			try{
-				if(FileUtils.test(feed_icon_name, GLib.FileTest.EXISTS))
-				{
-					tmp_icon = new Gdk.Pixbuf.from_file(feed_icon_name);
-				}
-				else
-				{
-					tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/rss24.png");
-				}
-				scale_pixbuf(ref tmp_icon, 24);
-				m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
-				spacing = 0;
-			}catch(GLib.Error e){}
-		}
+		string feed_icon_name = icon_path + iconname.replace("/", "_").replace(".", "_") + ".ico";
+		Gdk.Pixbuf tmp_icon;
+		try{
+			if(FileUtils.test(feed_icon_name, GLib.FileTest.EXISTS))
+			{
+				tmp_icon = new Gdk.Pixbuf.from_file(feed_icon_name);
+			}
+			else
+			{
+				tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/rss24.png");
+			}
+			scale_pixbuf(ref tmp_icon, 24);
+			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
+			spacing = 0;
+		}catch(GLib.Error e){}
 
 
 		this.enter_notify_event.connect(() => {
@@ -94,98 +85,84 @@ public class articleRow : baseRow {
 			m_label.get_style_context().add_class("headline-read-label");
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
 		m_label.set_alignment(0, 0.5f);
-			
 
-		if(!layout)
-		{
+		m_just_clicked = false;
 			
-			m_box.pack_start(m_icon, false, false, 8);
-			m_box.pack_start(m_label, true, true, spacing);
-			m_revealer.add(m_box);
-		}
+		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		icon_box.set_size_request(24, 0);
+			
+		m_marked_icon = new Gtk.Image.from_icon_name("starred", Gtk.IconSize.SMALL_TOOLBAR);
+		m_unread_icon = new Gtk.Image.from_icon_name("mail-unread", Gtk.IconSize.SMALL_TOOLBAR);
+		m_unmarked_icon = new Gtk.Image.from_icon_name("non-starred", Gtk.IconSize.SMALL_TOOLBAR);
+		m_read_icon = new Gtk.Image.from_icon_name("user-offline", Gtk.IconSize.SMALL_TOOLBAR);	
+
+		m_unread_eventbox = new Gtk.EventBox();
+		m_unread_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_unread_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_unread_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_unread_eventbox.set_size_request(16, 16);
+		if(m_is_unread == STATUS_UNREAD)
+			m_unread_eventbox.add(m_unread_icon);
 		else
-		{
-			m_just_clicked = false;
-			
-			var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-			icon_box.set_size_request(24, 0);
-			
-			m_marked_icon = new Gtk.Image.from_icon_name("starred", Gtk.IconSize.SMALL_TOOLBAR);
-			m_unread_icon = new Gtk.Image.from_icon_name("mail-unread", Gtk.IconSize.SMALL_TOOLBAR);
-			m_unmarked_icon = new Gtk.Image.from_icon_name("non-starred", Gtk.IconSize.SMALL_TOOLBAR);
-			m_read_icon = new Gtk.Image.from_icon_name("user-offline", Gtk.IconSize.SMALL_TOOLBAR);
-			
+			m_unread_eventbox.add(m_read_icon);
 
-			m_unread_eventbox = new Gtk.EventBox();
-			m_unread_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-			m_unread_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
-			m_unread_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-			m_unread_eventbox.set_size_request(16, 16);
-			if(m_is_unread == STATUS_UNREAD)
-				m_unread_eventbox.add(m_unread_icon);
-			else
-				m_unread_eventbox.add(m_read_icon);
-
-			m_unread_eventbox.enter_notify_event.connect(() => {unreadIconEnter(); return true;});
-			m_unread_eventbox.leave_notify_event.connect(() => {unreadIconLeave(); return true;});
-			m_unread_eventbox.button_press_event.connect(() => {unreadIconCliced(); return true;});
+		m_unread_eventbox.enter_notify_event.connect(() => {unreadIconEnter(); return true;});
+		m_unread_eventbox.leave_notify_event.connect(() => {unreadIconLeave(); return true;});
+		m_unread_eventbox.button_press_event.connect(() => {unreadIconCliced(); return true;});
 
 			
-			m_marked_eventbox = new Gtk.EventBox();
-			m_marked_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-			m_marked_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
-			m_marked_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-			m_marked_eventbox.set_size_request(16, 16);
-			if(m_marked == STATUS_MARKED)
-				m_marked_eventbox.add(m_marked_icon);
-			else
-				m_marked_eventbox.add(m_unmarked_icon);
+		m_marked_eventbox = new Gtk.EventBox();
+		m_marked_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_marked_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_marked_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_marked_eventbox.set_size_request(16, 16);
+		if(m_marked == STATUS_MARKED)
+			m_marked_eventbox.add(m_marked_icon);
+		else
+			m_marked_eventbox.add(m_unmarked_icon);
 			
-			m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
-			m_marked_eventbox.leave_notify_event.connect(() => {markedIconLeave(); return true;});
-			m_marked_eventbox.button_press_event.connect(() => {markedIconCliced(); return true;});
+		m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
+		m_marked_eventbox.leave_notify_event.connect(() => {markedIconLeave(); return true;});
+		m_marked_eventbox.button_press_event.connect(() => {markedIconCliced(); return true;});
 
 			
 
-			icon_box.pack_start(m_icon, true, true, 0);
-			icon_box.pack_end(m_unread_eventbox, false, false, 10);
-			icon_box.pack_end(m_marked_eventbox, false, false, 0);
+		icon_box.pack_start(m_icon, true, true, 0);
+		icon_box.pack_end(m_unread_eventbox, false, false, 10);
+		icon_box.pack_end(m_marked_eventbox, false, false, 0);
 			
-			string author = "";
-			string preview = "";
-			dataBase.read_article(m_articleID, null, null, out author, null, null, out preview);
-			
-			
+		string author = "";
+		string preview = "";
+		dataBase.read_article(m_articleID, null, null, out author, null, null, out preview);
 
 
-			var body_label = new Gtk.Label(preview);
-			body_label.get_style_context().add_class("grey-label");
-			body_label.set_alignment(0, 0);
-			body_label.set_ellipsize (Pango.EllipsizeMode.END);
-			body_label.set_line_wrap_mode(Pango.WrapMode.WORD);
-			body_label.set_line_wrap(true);
-			body_label.set_lines(3);
+		var body_label = new Gtk.Label(preview);
+		body_label.get_style_context().add_class("grey-label");
+		body_label.set_alignment(0, 0);
+		body_label.set_ellipsize (Pango.EllipsizeMode.END);
+		body_label.set_line_wrap_mode(Pango.WrapMode.WORD);
+		body_label.set_line_wrap(true);
+		body_label.set_lines(3);
 
-			m_spacer = new Gtk.Label("");
-			m_spacer.set_size_request(15, 0);
+		m_spacer = new Gtk.Label("");
+		m_spacer.set_size_request(15, 0);
 			
 			
 			
-			var text_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-			text_box.pack_start(m_label, true, true, 6);
-			text_box.pack_end(body_label, true, true, 6);
+		var text_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		text_box.pack_start(m_label, true, true, 6);
+		text_box.pack_end(body_label, true, true, 6);
 			
-			m_box.pack_start(icon_box, false, false, 8);
-			m_box.pack_start(text_box, true, true, 0);
-			m_box.pack_start(m_spacer, true, true, 0);
+		m_box.pack_start(icon_box, false, false, 8);
+		m_box.pack_start(text_box, true, true, 0);
+		m_box.pack_start(m_spacer, true, true, 0);
 
-			var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-			var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-			separator.set_size_request(0, 2);
-			seperator_box.pack_start(m_box, true, true, 0);
-			seperator_box.pack_start(separator, false, false, 0);
-			m_revealer.add(seperator_box);
-		}
+		var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+		separator.set_size_request(0, 2);
+		seperator_box.pack_start(m_box, true, true, 0);
+		seperator_box.pack_start(separator, false, false, 0);
+		m_revealer.add(seperator_box);
 		
 		m_revealer.set_reveal_child(false);
 		m_isRevealed = false;

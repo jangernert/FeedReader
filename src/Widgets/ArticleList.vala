@@ -189,7 +189,8 @@ public class articleList : Gtk.Stack {
 					                             item.m_url,
 					                             item.m_feedID,
 					                             item.m_articleID,
-					                             item.m_marked
+					                             item.m_marked,
+					                             item.m_sortID
 					                            );
 			tmpRow.updateFeedList.connect(() => {updateFeedList();});
 			m_currentList.add(tmpRow);
@@ -217,7 +218,7 @@ public class articleList : Gtk.Stack {
 	}
 
 
-	public void updateHeadlineList()
+	public void updateArticleList()
 	{
 		var articleChildList = m_currentList.get_children();
 		if(articleChildList != null)
@@ -255,7 +256,8 @@ public class articleList : Gtk.Stack {
 					                             item.m_url,
 					                             item.m_feedID,
 					                             item.m_articleID,
-					                             item.m_marked
+					                             item.m_marked,
+					                             item.m_sortID
 					                            );
 				newRow.updateFeedList.connect(() => {updateFeedList();});
 				int pos = 0;
@@ -269,7 +271,7 @@ public class articleList : Gtk.Stack {
 				{
 					pos++;
 					var tmpRow = row as articleRow;
-					if(tmpRow != null && newRow.m_articleID > tmpRow.m_articleID)
+					if(tmpRow != null && newRow.m_sortID > tmpRow.m_sortID)
 					{
 						m_currentList.insert(newRow, pos-1);
 						m_displayed_articles++;

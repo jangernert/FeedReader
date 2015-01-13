@@ -231,9 +231,9 @@ public class readerUI : Gtk.ApplicationWindow
 		m_articleList.createHeadlineList();
 	}
 
-	public void updateHeadlineList()
+	public void updateArticleList()
 	{
-		m_articleList.updateHeadlineList();
+		m_articleList.updateArticleList();
 	}
 
 

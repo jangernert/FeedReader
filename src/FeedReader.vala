@@ -63,7 +63,7 @@ public class rssReaderApp : Gtk.Application {
 		    feedDaemon_interface.syncFinished.connect(() => {
 		        stdout.printf ("sync finished\n");
 				m_window.updateFeedList();
-				m_window.updateHeadlineList();
+				m_window.updateArticleList();
 		        m_window.setRefreshButton(false);
 		    });
 		    

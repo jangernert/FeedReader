@@ -373,7 +373,8 @@ public class ttrss_interface : GLib.Object {
 										(headline_node.get_boolean_member("marked")) ? STATUS_MARKED : STATUS_UNMARKED,
 										html,
 										"",
-										author
+										author,
+										-1
 								));
 				
 			}

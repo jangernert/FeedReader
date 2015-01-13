@@ -347,7 +347,8 @@ public class dbManager : GLib.Object {
 								stmt.column_int(8),
 								stmt.column_text(5),
 								stmt.column_text(6),
-								stmt.column_text(3)
+								stmt.column_text(3),
+								stmt.column_int(9)
 							);
 		}
 		stmt.reset ();
@@ -646,7 +647,8 @@ public class dbManager : GLib.Object {
 								stmt.column_int(8),
 								stmt.column_text(5),
 								stmt.column_text(6),
-								stmt.column_text(3)
+								stmt.column_text(3),
+								stmt.column_int(9)
 							);
 			tmp.append(tmpArticle);
 		}

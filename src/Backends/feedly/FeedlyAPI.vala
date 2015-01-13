@@ -137,7 +137,7 @@ public class FeedlyAPI : Object {
 				string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 				string feedID = object.get_object_member("origin").get_string_member("streamId");
 				
-				articles.append(new article(id, title, url, feedID, (unread) ? STATUS_UNREAD : STATUS_READ, STATUS_UNMARKED, Content, summaryContent, author));
+				articles.append(new article(id, title, url, feedID, (unread) ? STATUS_UNREAD : STATUS_READ, STATUS_UNMARKED, Content, summaryContent, author, -1));
 			}
 			articles.reverse();
 			

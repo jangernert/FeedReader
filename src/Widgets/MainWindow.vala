@@ -242,10 +242,10 @@ public class readerUI : Gtk.ApplicationWindow
 		string[] authors = { "Jan Lukas Gernert", null };
 		string[] documenters = { "nobody", null };
 		Gtk.show_about_dialog (this,
-                               "program-name", ("tt-rss Reader"),
+                               "program-name", ("FeedReader"),
                                "copyright", ("Copyright © 2014 Jan Lukas Gernert"),
                                "authors", authors,
-		                       "comments", "Desktop Client for tiny tiny rss",
+		                       "comments", "Desktop Client for various RSS Services",
                                "documenters", documenters,
 		                       "license_type", Gtk.License.GPL_3_0,
 		                       "logo_icon_name", "internet-news-reader",

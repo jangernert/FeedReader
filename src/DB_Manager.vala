@@ -34,11 +34,11 @@ public class dbManager : GLib.Object {
 				warning("Can't create directory for database!\n ErrorMessage: %s\n", e.message);
 			}
 		}
-		int rc = Sqlite.Database.open_v2 (db_path + "feedreader-01.db", out sqlite_db);
+		int rc = Sqlite.Database.open_v2(db_path + "feedreader-01.db", out sqlite_db);
 		if (rc != Sqlite.OK) {
 			error("Can't open database: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
-		sqlite_db.busy_timeout (1000);
+		sqlite_db.busy_timeout(1000);
 	}
 
 	public void init()
@@ -46,8 +46,8 @@ public class dbManager : GLib.Object {
 			string feeds =					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds" 
 											(
 												"feed_id" TEXT PRIMARY KEY  NOT NULL UNIQUE ,
-												"name" VARCHAR NOT NULL ,
-												"url" VARCHAR NOT NULL  UNIQUE ,
+												"name" TEXT NOT NULL ,
+												"url" TEXT NOT NULL  UNIQUE ,
 												"has_icon" INTEGER NOT NULL ,
 												"unread" INTEGER NOT NULL,
 												"category_id" TEXT,
@@ -57,8 +57,8 @@ public class dbManager : GLib.Object {
 			string headlines =				"""CREATE  TABLE  IF NOT EXISTS "main"."headlines" 
 											(
 												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
-												"title" VARCHAR NOT NULL , 
-												"url" VARCHAR NOT NULL ,
+												"title" TEXT NOT NULL , 
+												"url" TEXT NOT NULL ,
 												"feedID" TEXT NOT NULL , 
 												"unread" INTEGER NOT NULL ,
 												"marked" INTEGER NOT NULL
@@ -68,17 +68,17 @@ public class dbManager : GLib.Object {
 											(
 												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"feedID" TEXT NOT NULL ,
-												"title" VARCHAR NOT NULL ,
-												"author" VARCHAR NOT NULL ,
-												"url" VARCHAR NOT NULL ,
-												"html" VARCHAR,
-												"preview" VARCHAR
+												"title" TEXT NOT NULL ,
+												"author" TEXT NOT NULL ,
+												"url" TEXT NOT NULL ,
+												"html" TEXT,
+												"preview" TEXT
 											)""";
 
 			string categories =				"""CREATE  TABLE  IF NOT EXISTS "main"."categories" 
 											(
 												"categorieID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
-												"title" VARCHAR NOT NULL ,
+												"title" TEXT NOT NULL ,
 												"unread" INTEGER,
 												"orderID" INTEGER,
 												"exists" INTEGER,
@@ -145,7 +145,7 @@ public class dbManager : GLib.Object {
 			else if(increase == STATUS_READ){
 				change_feed_query = change_feed_query + "- 1";
 			} 
-			change_feed_query = change_feed_query + " WHERE \"feed_id\" = " + feedID;
+			change_feed_query = change_feed_query + " WHERE \"feed_id\" = \"" + feedID + "\"";
 			string errmsg;
 			int ec = sqlite_db.exec (change_feed_query, null, out errmsg);
 			if (ec != Sqlite.OK) {
@@ -154,17 +154,17 @@ public class dbManager : GLib.Object {
 			
 
 			
-			string get_feed_id_query = "SELECT \"category_id\" FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID.to_string() + "\"";
+			string get_feed_id_query = "SELECT \"category_id\" FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID + "\"";
 			Sqlite.Statement stmt;
 			ec = sqlite_db.prepare_v2 (get_feed_id_query, get_feed_id_query.length, out stmt);
 			if (ec != Sqlite.OK) {
 				error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 			}
-			int catID = -99;
+			string catID = "-99";
 			int cols = stmt.column_count ();
 			while (stmt.step () == Sqlite.ROW) {
 				for (int i = 0; i < cols; i++) {
-					catID = stmt.column_int(i);
+					catID = stmt.column_text(i);
 				}
 			}
 			stmt.reset ();
@@ -177,7 +177,7 @@ public class dbManager : GLib.Object {
 			else if(increase == STATUS_READ){
 				change_catID_query = change_catID_query + "- 1";
 			}
-			change_catID_query = change_catID_query + " WHERE \"categorieID\" = " + catID.to_string();
+			change_catID_query = change_catID_query + " WHERE \"categorieID\" = \"" + catID + "\"";
 			ec = sqlite_db.exec (change_catID_query, null, out errmsg);
 			if (ec != Sqlite.OK) {
 				error("Error: %s\n", errmsg);
@@ -227,8 +227,9 @@ public class dbManager : GLib.Object {
 		param_position = stmt.bind_parameter_index ("$FEEDURL");
 		assert (param_position > 0);
 		stmt.bind_text (param_position, feed_url);
+		
 		while (stmt.step () == Sqlite.ROW) {
-			
+		
 		}
 		stmt.reset ();
 	}
@@ -463,7 +464,7 @@ public class dbManager : GLib.Object {
 	public int getRowNumberHeadline(string articleID)
 	{
 		int result = 0;
-		string query = "SELECT count(*) FROM main.headlines WHERE articleID >= \"" + articleID + "\" ORDER BY articleID DESC";
+		string query = "SELECT count(*) FROM main.headlines WHERE articleID >= \"" + articleID + "\" ORDER BY rowid DESC";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -497,7 +498,7 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			query = query + stmt.column_int(0).to_string() + " OR \"feedID\" = ";
+			query = query + "\"" + stmt.column_text(0) + "\"" + " OR \"feedID\" = ";
 		}
 		return "(" + query.slice(0, query.length-15) + ")";
 	}
@@ -627,9 +628,10 @@ public class dbManager : GLib.Object {
 		if(searchTerm != ""){
 			query = query + and + "instr(UPPER(\"title\"), UPPER(\"" + searchTerm + "\")) > 0";
 		}
-		query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
+		//query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
+		query = query + " ORDER BY rowid DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 		
-		//stdout.printf("%s\n", query);
+		stdout.printf("%s\n", query);
 		headline tmpHeadline;
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);

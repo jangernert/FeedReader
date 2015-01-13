@@ -33,7 +33,7 @@ public class feed_server : GLib.Object {
 				break;
 				
 			case TYPE_FEEDLY:
-				m_feedly =new  FeedlyAPI();
+				m_feedly = new FeedlyAPI();
 				break;
 		}
 	}
@@ -73,18 +73,16 @@ public class feed_server : GLib.Object {
 		}
 	}
 	
-	public void setArticleIsRead(string articleID, int read)
+	public async void setArticleIsRead(string articleID, int read)
 	{
 		switch(m_type)
 		{
 			case TYPE_TTRSS:
-				m_ttrss.updateArticleUnread.begin(int.parse(articleID), read, (obj, res) => {
-					m_ttrss.updateArticleUnread.end(res);
-				});
+				yield m_ttrss.updateArticleUnread(int.parse(articleID), read);
 				break;
 				
 			case TYPE_FEEDLY:
-				m_feedly.mark_as_read(articleID, "entries", read);
+				yield m_feedly.mark_as_read(articleID, "entries", read);
 				break;
 		}
 	}

@@ -3,7 +3,7 @@ public class FeedlyAPI : Object {
 	private FeedlyConnection m_connection;
 	private string m_token;
 	private string m_refresh_token;
-	private string user_id;
+	private string m_userID;
 	private Gee.HashMap<string,int> markers;
 
 	public FeedlyAPI() {
@@ -16,7 +16,18 @@ public class FeedlyAPI : Object {
 		{
 			m_connection.getToken();
 		}
+		getUserID();
 		return LOGIN_SUCCESS;
+	}
+	
+	private void getUserID()
+	{
+		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+		var parser = new Json.Parser ();
+		parser.load_from_data (response, -1);
+		var root = parser.get_root().get_object();
+		m_userID = root.get_string_member("id");
+		print(m_userID + "\n");
 	}
 
 
@@ -36,7 +47,7 @@ public class FeedlyAPI : Object {
 				int unreadCount = get_count_of_unread_articles(categorieID);
 				string title = object.get_string_member("label");
 				
-				stdout.printf("%s %i\n", title, unreadCount);
+				//stdout.printf("%s %i\n", title, unreadCount);
 				dataBase.write_categorie(categorieID, title, unreadCount, i+1, -99, 1);
 				//getArticles(categorieID);
 			}
@@ -53,7 +64,8 @@ public class FeedlyAPI : Object {
 		SourceFunc callback = getFeeds.callback;
 		ThreadFunc<void*> run = () => {
 			string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
-
+			//stdout.printf("%s\n", response);
+			
 			var parser = new Json.Parser();
 			parser.load_from_data(response, -1);
 			Json.Array array = parser.get_root().get_array ();
@@ -63,16 +75,25 @@ public class FeedlyAPI : Object {
 				
 				string feedID = object.get_string_member("id");
 				string title = object.get_string_member("title");
-				string icon_url = object.has_member("visualUrl") ? object.get_string_member("visualUrl") : "";
-				string url = object.has_member("website") ? object.get_string_member("website") : "";
 				
+				string icon_url = "";
+				if(object.has_member("iconUrl"))
+				{
+					icon_url = object.get_string_member("iconUrl");
+					downloadIcon(feedID, icon_url);
+				}
+				else if(object.has_member("visualUrl"))
+				{
+					icon_url = object.get_string_member("visualUrl");
+					downloadIcon(feedID, icon_url);
+				}
+				
+				string url = object.has_member("website") ? object.get_string_member("website") : "";
 				var categories = object.get_array_member("categories");
 				var category = categories.get_object_element(0);
 				string categorieID = category.get_string_member("id");
 				int unreadCount = get_count_of_unread_articles(feedID);
-				
-				stdout.printf("%s %i\n", title, unreadCount);
-	 			downloadIcon(feedID, icon_url);
+	 			
 				dataBase.write_feed(feedID,
 									title,
 									url,
@@ -93,12 +114,11 @@ public class FeedlyAPI : Object {
 	public async void getArticles() throws Error {
 		SourceFunc callback = getArticles.callback;
 		ThreadFunc<void*> run = () => {
-			//int maxArticles = feedreader_settings.get_int("max-articles");
-			int maxArticles = 20;
-			//string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=oldest".printf(categorieID, maxArticles));
-			string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=global.all&unreadOnly=false&count=%i&ranked=oldest".printf(maxArticles));
+			int maxArticles = feedreader_settings.get_int("max-articles");
+			string allArticles = "user/" + m_userID + "/category/global.all";
+			string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=newest".printf(allArticles, maxArticles));
 			string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
-
+			
 			var parser = new Json.Parser();
 			parser.load_from_data(response, -1);
 
@@ -112,10 +132,8 @@ public class FeedlyAPI : Object {
 				string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
 				string Content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
 				bool unread = object.get_boolean_member("unread");
-				string url = object.has_member("canonical") ? object.get_object_member("canonical").get_string_member("href") : "";
+				string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 				string feedID = object.get_object_member("origin").get_string_member("streamId");
-			
-				stdout.printf("%s | %s %s\n", id, title, author);
 				
 				dataBase.write_headline(id,
 										title,
@@ -190,36 +208,44 @@ public class FeedlyAPI : Object {
 		
 		return unread_count;
 	}
-
-	public void mark_as_read(string id, string type, int read) {
-		Json.Object object = new Json.Object();
+	
+	
+	public async void mark_as_read(string id, string type, int read) {
+		SourceFunc callback = mark_as_read.callback;
+		ThreadFunc<void*> run = () => {
+			Json.Object object = new Json.Object();
 		
-		if(read == STATUS_READ)
-			object.set_string_member ("action", "markAsRead");
-		else if(read == STATUS_UNREAD)
-			object.set_string_member ("action", "undoMarkAsRead");
-		object.set_string_member ("type", type);
+			if(read == STATUS_READ)
+				object.set_string_member ("action", "markAsRead");
+			else if(read == STATUS_UNREAD)
+				object.set_string_member ("action", "undoMarkAsRead");
+			object.set_string_member ("type", type);
 		
-		Json.Array ids = new Json.Array();
-		ids.add_string_element (id);
+			Json.Array ids = new Json.Array();
+			ids.add_string_element (id);
 		
-		string* type_id_identificator = null;
+			string* type_id_identificator = null;
 		
-		if(type == "entries") {
-			type_id_identificator = "entryIds";
-		} else if(type == "feeds") {
-			type_id_identificator = "feedIds";
-		} else if(type == "categories") {
-			type_id_identificator = "categoryIds";
-		} else {
-			error ("Unknown type: " + type + " don't know what to do with this.");
-		}
+			if(type == "entries") {
+				type_id_identificator = "entryIds";
+			} else if(type == "feeds") {
+				type_id_identificator = "feedIds";
+			} else if(type == "categories") {
+				type_id_identificator = "categoryIds";
+			} else {
+				error ("Unknown type: " + type + " don't know what to do with this.");
+			}
 		
-		object.set_array_member (type_id_identificator, ids);
+			object.set_array_member (type_id_identificator, ids);
 		
-		var root = new Json.Node(Json.NodeType.OBJECT);
-		root.set_object (object);
+			var root = new Json.Node(Json.NodeType.OBJECT);
+			root.set_object (object);
 		
-		m_connection.send_post_request_to_feedly ("/v3/markers", root);
+			m_connection.send_post_request_to_feedly ("/v3/markers", root);
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("mark_as_read", run);
+		yield;
 	}
 }

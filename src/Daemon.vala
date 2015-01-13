@@ -7,6 +7,7 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		stdout.printf("daemon: constructor\n");
+		feedreader_settings.set_boolean("currently-updating", false);
 		m_loggedin = login();
 		if(m_loggedin != LOGIN_SUCCESS)
 		{
@@ -73,7 +74,9 @@ public class FeedDaemonServer : Object {
 	
 	public void changeUnread(string articleID, int read)
 	{
-		server.setArticleIsRead(articleID, read);
+		server.setArticleIsRead.begin(articleID, read, (obj, res) => {
+			server.setArticleIsRead.end(res);
+		});
 	}
 	
 	public void changeMarked(string articleID, int marked)

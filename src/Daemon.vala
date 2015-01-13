@@ -7,14 +7,11 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		stdout.printf("daemon: constructor\n");
-		feedreader_settings.set_boolean("currently-updating", false);
-		m_loggedin = login();
+		m_loggedin = login(feedreader_settings.get_enum("account-type"));
+		
 		if(m_loggedin != LOGIN_SUCCESS)
-		{
-			loginDialog(m_loggedin);
-		}
-
-		stdout.printf("init\n");
+			stdout.printf("not logged in\n");
+		
 		int sync_timeout = feedreader_settings.get_int("sync");
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 		updateBadge();
@@ -38,13 +35,12 @@ public class FeedDaemonServer : Object {
 
     public signal void syncStarted();
     public signal void syncFinished();
-    public signal void loginDialog(int ErrorCode);
     
     private async void sync()
 	{
 		if(m_loggedin != LOGIN_SUCCESS)
 		{
-			m_loggedin = login();
+			m_loggedin = login(feedreader_settings.get_enum("account-type"));
 		}
 		
 		if(m_loggedin == LOGIN_SUCCESS)
@@ -60,11 +56,12 @@ public class FeedDaemonServer : Object {
 			print("Cant sync because login failed\n");
 	}
 	
-	public int login()
+	public int login(int type)
 	{
-		stdout.printf("daemon: login\n");
-		server = new feed_server(feedreader_settings.get_enum("account-type"));
-		return server.login();
+		server = new feed_server(type);
+		m_loggedin = server.login();
+		
+		return m_loggedin;
 	}
 	
 	public int isLoggedIn()
@@ -133,7 +130,6 @@ void main () {
 		              		exit(-1);
 		              	}
 		          );
-	//stdout.printf("daemon: mainloop\n");
     new MainLoop ().run ();
 }
 

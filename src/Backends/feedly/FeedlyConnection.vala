@@ -20,10 +20,8 @@ public class FeedlyConnection {
 		
 		string message_string = "code=" + m_apiCode + "&client_id=" + apiClientId + "&client_secret=" + apiClientSecret + "&redirect_uri=" + apiRedirectUri + "&grant_type=authorization_code&state=getting_token";
 		
-		//print(message_string + "\n");
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
-		//print((string)message.response_body.flatten().data + "\n");
 		
 		try{
 			parser.load_from_data ((string)message.response_body.flatten().data);
@@ -45,20 +43,49 @@ public class FeedlyConnection {
 		else if(root.has_member("errorCode"))
 		{
 			print(root.get_string_member("errorMessage") + "\n");
+			refreshToken();
 			return LOGIN_UNKNOWN_ERROR;
 		}
 		return LOGIN_UNKNOWN_ERROR;
 	}
 	
-	public void refreshToken()
+	
+	public int refreshToken()
 	{
+		var parser = new Json.Parser();
+		var session = new Soup.Session();
+		var message = new Soup.Message("POST", base_uri+"/v3/auth/token");
 		
+		m_refresh_token = feedreader_settings.get_string("feedly-refresh-token");
+		string message_string = "refresh_token=" + m_refresh_token + "&client_id=" + apiClientId + "&client_secret=" + apiClientSecret + "&grant_type=refresh_token";
+		
+		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+		session.send_message(message);
+		
+		try{
+			parser.load_from_data ((string)message.response_body.flatten().data);
+		}
+		catch (Error e) {
+			error("Could not load response to Message to ttrss\n" + e.message + "\n");
+		}
+		var root = parser.get_root().get_object();
+		
+		if(root.has_member("access_token"))
+		{
+			m_access_token = root.get_string_member("access_token");
+			m_refresh_token = root.get_string_member("refresh_token");
+			feedreader_settings.set_string("feedly-access-token", m_access_token);
+			feedreader_settings.set_string("feedly-refresh-token", m_refresh_token);
+			return LOGIN_SUCCESS;
+		}
+		else if(root.has_member("errorCode"))
+		{
+			print(root.get_string_member("errorMessage") + "\n");
+			return LOGIN_UNKNOWN_ERROR;
+		}
+		return LOGIN_UNKNOWN_ERROR;
 	}
 	
-	public bool TokenStillValid()
-	{
-		return false;
-	}
 
 	public string send_get_request_to_feedly(string path) {
 		return send_request(path, "GET");
@@ -89,6 +116,7 @@ public class FeedlyConnection {
 
 		message.request_body.append(Soup.MemoryUse.COPY, input.data);
 		session.send_message(message);
+		
 		return (string)message.response_body.flatten().data;
     }
 

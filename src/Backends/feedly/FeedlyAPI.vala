@@ -12,11 +12,20 @@ public class FeedlyAPI : Object {
 	
 	public int login()
 	{
+		print("feedly backend: login\n");
 		if(feedreader_settings.get_string("feedly-refresh-token") == "")
 		{
 			m_connection.getToken();
 		}
+		
+		if(tokenStillValid() == ERR_INVALID_SESSIONID)
+		{
+			print("refresh token\n");
+			m_connection.refreshToken();
+		}
+		
 		getUserID();
+		print("login success\n");
 		return LOGIN_SUCCESS;
 	}
 	
@@ -26,8 +35,26 @@ public class FeedlyAPI : Object {
 		var parser = new Json.Parser ();
 		parser.load_from_data (response, -1);
 		var root = parser.get_root().get_object();
-		m_userID = root.get_string_member("id");
-		print(m_userID + "\n");
+		
+		if(root.has_member("id"))
+		{
+			m_userID = root.get_string_member("id");
+			print(m_userID + "\n");
+		}
+	}
+	
+	private int tokenStillValid()
+	{
+		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+		var parser = new Json.Parser ();
+		parser.load_from_data (response, -1);
+		var root = parser.get_root().get_object();
+		
+		if(root.has_member("errorId"))
+		{
+			return ERR_INVALID_SESSIONID;
+		}
+		return NO_ERROR;
 	}
 
 
@@ -46,10 +73,7 @@ public class FeedlyAPI : Object {
 				string categorieID = object.get_string_member("id");
 				int unreadCount = get_count_of_unread_articles(categorieID);
 				string title = object.get_string_member("label");
-				
-				//stdout.printf("%s %i\n", title, unreadCount);
 				dataBase.write_categorie(categorieID, title, unreadCount, i+1, -99, 1);
-				//getArticles(categorieID);
 			}
 			
 			Idle.add((owned) callback);

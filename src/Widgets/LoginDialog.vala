@@ -362,6 +362,7 @@ public class loginDialog : Gtk.Dialog {
 
 	private void write_login_data()
 	{
+		print("write login data\n");
 		if(m_comboBox.get_active() != -1) {
 			switch(m_comboBox.get_active())
 			{
@@ -381,6 +382,7 @@ public class loginDialog : Gtk.Dialog {
 					break;
 					
 				case TYPE_FEEDLY:
+					print("write type feedly\n");
 					feedreader_settings.set_enum("account-type", TYPE_FEEDLY);
 					feedreader_settings.set_string("feedly-api-code", m_feedly_api_code);
 					break;

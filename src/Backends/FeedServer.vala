@@ -18,9 +18,9 @@
  */
 
 public class feed_server : GLib.Object {
-	ttrss_interface m_ttrss;
-	FeedlyAPI m_feedly;
-	int m_type;
+	private ttrss_interface m_ttrss;
+	private FeedlyAPI m_feedly;
+	private int m_type;
 
 	public feed_server(int type)
 	{
@@ -37,6 +37,11 @@ public class feed_server : GLib.Object {
 				break;
 		}
 	}
+	
+	public int getType()
+	{
+		return m_type;
+	} 
 	
 	public int login()
 	{

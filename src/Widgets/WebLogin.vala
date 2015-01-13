@@ -53,6 +53,7 @@ public class WebLogin : Gtk.Dialog {
 				string url = m_view.get_uri();
 				if(url.has_prefix(apiRedirectUri))
 				{
+					print("google login\n");
 					int start = url.index_of("=")+1;
 					int end = url.index_of("&");
 					string code = url.substring(start, end-start);

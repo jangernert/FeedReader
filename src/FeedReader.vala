@@ -28,14 +28,13 @@ FeedDaemon feedDaemon_interface;
 [DBus (name = "org.gnome.feedreader")]
 interface FeedDaemon : Object {
     public abstract void startSync() throws IOError;
-    public abstract int login() throws IOError;
+    public abstract int login(int type) throws IOError;
     public abstract int isLoggedIn() throws IOError;
     public abstract void changeUnread(string articleID, int read) throws IOError;
     public abstract void changeMarked(string articleID, int marked) throws IOError;
     public abstract void updateBadge() throws IOError;
     public signal void syncStarted();
     public signal void syncFinished();
-    public signal void loginDialog(int ErrorCode);
 }
 
 
@@ -66,43 +65,57 @@ public class rssReaderApp : Gtk.Application {
 				m_window.updateArticleList();
 		        m_window.setRefreshButton(false);
 		    });
-		    
-		    feedDaemon_interface.loginDialog.connect((ErrorCode) => {
-		        stdout.printf ("show login dialog\n");
-		        tryLogin(ErrorCode);
-		    });
 		}catch (IOError e) {
     		stderr.printf ("%s\n", e.message);
 		}
-		base.startup ();
+		base.startup();
 	}
 	
 	protected override void activate ()
 	{
 		if (m_window == null)
 		{
-			m_window = new readerUI (this);
+			m_window = new readerUI(this);
 			m_window.set_icon_name ("internet-news-reader");
-			tryLogin(LOGIN_FIRST_TRY);
+			stdout.printf("first try login on activate\n");
+			tryLogin();
 		}
 		
 		m_window.show_all();
 		updateBadge();
 	}
 
-	public void tryLogin(int ErrorCode)
+	public void tryLogin(int login_code = LOGIN_FIRST_TRY)
 	{
-		stdout.printf("feedreader: trylogin\n");
 		if(feedDaemon_interface.isLoggedIn() == LOGIN_SUCCESS)
 		{
 			getContent();
+			return;
 		}
 		else
 		{
-			var dialog = new loginDialog(m_window, ErrorCode);
+			var dialog = new loginDialog(m_window, login_code);
 			dialog.submit_data.connect(() => {
 				stdout.printf("initial sync\n");
-				var status = feedDaemon_interface.login();
+				
+				int type = feedreader_settings.get_enum("account-type");
+				switch(type)
+				{
+					case TYPE_NONE:
+						print("no backend right now :(\n");
+						break;
+					case TYPE_TTRSS:
+						print("ttrss backend\n");
+						break;
+					case TYPE_FEEDLY:
+						print("feedly backend\n");
+						break;
+					case TYPE_OWNCLOUD:
+						print("owncloud backend\n");
+						break;
+				}
+				
+				var status = feedDaemon_interface.login(type);
 				tryLogin(status);
 				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 2, () => {
 					sync();

@@ -37,6 +37,7 @@ public class articleRow : baseRow {
 
 	public articleRow (string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID)
 	{
+		m_sortID = sortID;
 		m_marked = marked;
 		m_name = aritcleName;
 		m_articleID = articleID;

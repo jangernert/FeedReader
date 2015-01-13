@@ -271,8 +271,10 @@ public class articleList : Gtk.Stack {
 				{
 					pos++;
 					var tmpRow = row as articleRow;
+					stdout.printf("NewRow: %i > tmpRow: %i\n", newRow.m_sortID, tmpRow.m_sortID);
 					if(tmpRow != null && newRow.m_sortID > tmpRow.m_sortID)
 					{
+						print("inserted\n");
 						m_currentList.insert(newRow, pos-1);
 						m_displayed_articles++;
 						added = true;

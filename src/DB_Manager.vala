@@ -627,8 +627,7 @@ public class dbManager : GLib.Object {
 		if(searchTerm != ""){
 			query = query + and + "instr(UPPER(\"title\"), UPPER(\"" + searchTerm + "\")) > 0";
 		}
-		//query = query + " ORDER BY articleID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
-		query = query + " ORDER BY rowid DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
+		query = query + " ORDER BY sortID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 		
 		stdout.printf("%s\n", query);
 		article tmpArticle;

@@ -243,6 +243,7 @@ public class readerUI : Gtk.ApplicationWindow
 		string[] documenters = { "nobody", null };
 		Gtk.show_about_dialog (this,
                                "program-name", ("FeedReader"),
+                               "version", "0.2",
                                "copyright", ("Copyright © 2014 Jan Lukas Gernert"),
                                "authors", authors,
 		                       "comments", "Desktop Client for various RSS Services",

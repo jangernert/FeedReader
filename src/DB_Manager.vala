@@ -34,7 +34,7 @@ public class dbManager : GLib.Object {
 				warning("Can't create directory for database!\n ErrorMessage: %s\n", e.message);
 			}
 		}
-		int rc = Sqlite.Database.open_v2(db_path + "feedreader-01.db", out sqlite_db);
+		int rc = Sqlite.Database.open_v2(db_path + "feedreader-02.db", out sqlite_db);
 		if (rc != Sqlite.OK) {
 			error("Can't open database: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}

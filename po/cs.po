@@ -1,4 +1,82 @@
+# Czech translation for feedreader
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the feedreader package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: feedreader\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-10-30 23:30+0100\n"
+"PO-Revision-Date: 2015-01-14 04:28+0000\n"
+"Last-Translator: Petr Šimáček <petr.simacek@gmail.com>\n"
+"Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-01-14 06:53+0000\n"
+"X-Generator: Launchpad (build 17298)\n"
+
+#: ../src/ttrss_interface.vala:494
+msgid "There is 1 new article"
+msgstr "1 nový článek"
+
+#: ../src/ttrss_interface.vala:496
+msgid "There are >200 new articles"
+msgstr "Více než 200 nových článků"
+
+#: ../src/ttrss_interface.vala:498
+msgid "There are "
+msgstr "K dispozici "
+
+#: ../src/ttrss_interface.vala:498
+msgid " new articles"
+msgstr " nové články"
+
+#: ../src/ttrss_interface.vala:500
+msgid "New Articles"
+msgstr "Nové články"
+
+#: ../src/article-view.vala:49
+msgid "No Article selected."
+msgstr "Nebyl vybrán článek"
+
+#: ../src/reader-headerbar.vala:77
+msgid "Search Aritlces..."
+msgstr "Prohledat články..."
+
+#: ../src/reader-headerbar.vala:84
+msgid "Change Login"
+msgstr "Změnit přihlašovací informace"
+
+#: ../src/reader-headerbar.vala:85
+msgid "About"
+msgstr "O aplikaci"
+
+#: ../src/login-dialog.vala:55
+msgid "tt-rss URL:"
+msgstr "tt-rss URL:"
+
+#: ../src/login-dialog.vala:56
+msgid "Username:"
+msgstr "Uživatelské jméno:"
+
+#: ../src/login-dialog.vala:57
+msgid "Password:"
+msgstr "Heslo:"
+
+#: ../src/login-dialog.vala:110
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: ../src/ui.vala:35
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: ../src/ui.vala:57
+msgid "about"
+msgstr "o aplikaci"
+
+#: ../src/ui.vala:61
+msgid "login"
+msgstr "přihlásit se"

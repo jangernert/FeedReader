@@ -45,6 +45,7 @@ public class ttrss_message : GLib.Object {
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 		m_session.send_message(m_message_soup);
 		
+		
 		try{
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}

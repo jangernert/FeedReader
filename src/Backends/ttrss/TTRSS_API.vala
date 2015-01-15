@@ -207,7 +207,7 @@ public class ttrss_interface : GLib.Object {
 				{
 					var response = message.get_response_object();
 					var category_object = response.get_object_member("categories");
-					getSubCategories(category_object, 0, -99);
+					getSubCategories(category_object, 0, CAT_ID_NONE);
 					dataBase.delete_nonexisting_categories();
 					updateCategorieUnread();
 				}
@@ -221,7 +221,7 @@ public class ttrss_interface : GLib.Object {
 	}
 
 
-	private void getSubCategories(Json.Object categorie, int level, int parent)
+	private void getSubCategories(Json.Object categorie, int level, string parent)
 	{
 		level++;
 		int orderID = 0;
@@ -245,7 +245,7 @@ public class ttrss_interface : GLib.Object {
 				}
 
 				dataBase.write_categorie(categorieID, title, unread_count, orderID, parent, level);
-				getSubCategories(categorie_node, level, int.parse(categorieID));
+				getSubCategories(categorie_node, level, categorieID);
 			}
 		}
 	}
@@ -538,7 +538,10 @@ public class ttrss_interface : GLib.Object {
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "updateArticle");
 			message.add_int("article_ids", articleID);
-			message.add_int("mode", unread);
+			if(unread == STATUS_UNREAD)
+				message.add_int("mode", 1);
+			else if(unread == STATUS_READ)
+				message.add_int("mode", 0);
 			message.add_int("field", 2);
 			int error = message.send();
 		
@@ -570,7 +573,10 @@ public class ttrss_interface : GLib.Object {
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "updateArticle");
 			message.add_int("article_ids", articleID);
-			message.add_int("mode", marked);
+			if(marked == STATUS_MARKED)
+				message.add_int("mode", 1);
+			else if(marked == STATUS_UNMARKED)
+				message.add_int("mode", 0);
 			message.add_int("field", 0);
 			int error = message.send();
 		

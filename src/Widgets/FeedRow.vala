@@ -35,11 +35,7 @@ public class FeedRow : baseRow {
 		m_name = text.replace("&","&amp;");
 		if(text != "")
 		{
-			if(feedID != "ALL")
-				m_ID = feedID;
-			else
-				m_ID = "-3";
-				
+			m_ID = feedID;	
 			
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);

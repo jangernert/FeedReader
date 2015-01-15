@@ -153,7 +153,7 @@ public class feedList : Gtk.Stack {
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles",unread.to_string(), false, "ALL", "-1", 0);
+		var row_all = new FeedRow("All Articles",unread.to_string(), false, FEEDID_ALL_FEEDS, "-1", 0);
 		m_list.add(row_all);
 		row_all.reveal(true);
 
@@ -183,13 +183,17 @@ public class feedList : Gtk.Stack {
 				{
 					if(tmpRow.getID() == item.m_categorieID)
 					{
+						int level = tmpRow.getLevel();
+						if(feedreader_settings.get_enum("account-type") == TYPE_FEEDLY)
+							level++;
+							
 						var feedrow = new FeedRow(
 											       item.m_title,
 											       item.m_unread.to_string(),
 											       item.m_hasIcon,
 											       item.m_feedID.to_string(),
 							                       item.m_categorieID,
-							                       tmpRow.getLevel()
+							                       level
 											      );
 						m_list.insert(feedrow, pos);
 						feedrow.reveal(true);
@@ -211,8 +215,36 @@ public class feedList : Gtk.Stack {
 	private void createCategories()
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
+		int feed_type = feedreader_settings.get_enum("account-type");
 		string[] exp = feedreader_settings.get_strv("expanded-categories");
 		bool expand = false;
+		
+		if(feed_type == TYPE_FEEDLY)
+		{
+			foreach(string str in exp)
+			{
+				if("Categories" == str)
+					expand = true;
+			}
+			var categorierow = new categorieRow(
+					                                "Categories",
+					                                CAT_ID_MASTER,
+					                                0,
+					                                "",
+					                                CAT_ID_NONE,
+							                        1,
+							                        expand
+					                                );
+			categorierow.collapse.connect((collapse, catID) => {
+				if(collapse)
+					collapseCategorie(catID);
+				else
+					expandCategorie(catID);
+			});
+			m_list.insert(categorierow, 3);
+			categorierow.reveal(true);
+			expand = false;
+		}
 
 		for(int i = 1; i <= maxCatLevel; i++)
 		{
@@ -225,20 +257,31 @@ public class feedList : Gtk.Stack {
 				{
 					pos++;
 					var tmpRow = existing_row as categorieRow;
-					if((tmpRow != null && tmpRow.getID() == item.m_parent) || (item.m_parent == "-99" && pos > 2))
+					if((tmpRow != null && tmpRow.getID() == item.m_parent) ||
+						(item.m_parent == CAT_ID_NONE && pos > 2) && (feed_type != TYPE_FEEDLY) ||
+						(item.m_parent == CAT_ID_NONE && pos > 3) && (feed_type == TYPE_FEEDLY))
 					{
 						foreach(string str in exp)
 						{
 							if(item.m_title == str)
 								expand = true;
 						}
+						
+						int level = item.m_level;
+						string parent = item.m_parent;
+						if(feed_type == TYPE_FEEDLY)
+						{
+							level++;
+							parent = CAT_ID_MASTER;
+						}
+						
 						var categorierow = new categorieRow(
 					                                item.m_title,
 					                                item.m_categorieID,
 					                                item.m_orderID,
 					                                item.m_unread_count.to_string(),
-					                                item.m_parent,
-							                        item.m_level,
+					                                parent,
+							                        level,
 							                        expand
 					                                );
 					    expand = false;
@@ -455,6 +498,7 @@ public class feedList : Gtk.Stack {
 			var tmpCatRow = row as categorieRow;
 			if(tmpCatRow != null && !tmpCatRow.isExpanded())
 			{
+				print(tmpCatRow.getID() + "\n");
 				collapseCategorie(tmpCatRow.getID());
 			}
 		}

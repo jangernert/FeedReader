@@ -73,7 +73,7 @@ public class FeedlyAPI : Object {
 				string categorieID = object.get_string_member("id");
 				int unreadCount = get_count_of_unread_articles(categorieID);
 				string title = object.get_string_member("label");
-				dataBase.write_categorie(categorieID, title, unreadCount, i+1, -99, 1);
+				dataBase.write_categorie(categorieID, title, unreadCount, i+1, CAT_ID_NONE, 1);
 			}
 			
 			Idle.add((owned) callback);

@@ -149,7 +149,7 @@ public class dbManager : GLib.Object {
 			if (ec != Sqlite.OK) {
 				error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 			}
-			string catID = "-99";
+			string catID = CAT_ID_NONE;
 			int cols = stmt.column_count ();
 			while (stmt.step () == Sqlite.ROW) {
 				for (int i = 0; i < cols; i++) {
@@ -224,10 +224,10 @@ public class dbManager : GLib.Object {
 	}
 
 
-	public void write_categorie(string categorieID, string categorie_name, int unread_count, int orderID, int parent, int level)
+	public void write_categorie(string categorieID, string categorie_name, int unread_count, int orderID, string parent, int level)
 	{
 		string query = "INSERT OR REPLACE INTO \"main\".\"categories\" (\"categorieID\",\"title\",\"unread\",\"orderID\", \"exists\", \"Parent\", \"Level\") 
-						VALUES (\"" + categorieID + "\", $FEEDNAME, \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent.to_string() + "\", \"" + level.to_string() + "\")";
+						VALUES (\"" + categorieID + "\", $FEEDNAME, \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent + "\", \"" + level.to_string() + "\")";
 		
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -603,15 +603,16 @@ public class dbManager : GLib.Object {
 		GLib.List<article> tmp = new GLib.List<article>();
 		string and = "";
 		string query = "SELECT * FROM \"main\".\"articles\"";
-		if(ID != "-3" || !ID_is_feedID || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
+		
+		if( (ID != FEEDID_ALL_FEEDS && ID_is_feedID) || (!ID_is_feedID && ID != CAT_ID_MASTER) || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
 		if(ID_is_feedID)
 		{
-			if(ID != "-3"){
+			if(ID != FEEDID_ALL_FEEDS){
 				query = query + "\"feedID\" = " + "\"" + ID + "\"";
 				and = " AND ";
 			}
 		}
-		else
+		else if(ID != CAT_ID_MASTER)
 		{
 				query = query + getFeedIDofCategorie(ID);
 				and = " AND ";

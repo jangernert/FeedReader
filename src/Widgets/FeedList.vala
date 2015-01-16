@@ -498,7 +498,6 @@ public class feedList : Gtk.Stack {
 			var tmpCatRow = row as categorieRow;
 			if(tmpCatRow != null && !tmpCatRow.isExpanded())
 			{
-				print(tmpCatRow.getID() + "\n");
 				collapseCategorie(tmpCatRow.getID());
 			}
 		}

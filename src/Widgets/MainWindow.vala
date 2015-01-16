@@ -141,7 +141,7 @@ public class readerUI : Gtk.ApplicationWindow
 	private void setupFeedlist()
 	{
 		int feed_row_width = feedreader_settings.get_int("feed-row-width");
-		m_pane_feedlist = new ThinPaned(Gtk.Orientation.HORIZONTAL);
+		m_pane_feedlist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane_feedlist.set_position(feed_row_width);
 		m_feedList = new feedList();
 		m_pane_feedlist.pack1(m_feedList, false, false);
@@ -178,7 +178,7 @@ public class readerUI : Gtk.ApplicationWindow
 
 		
 		int article_row_width = feedreader_settings.get_int("article-row-width");
-		m_pane_articlelist = new ThinPaned(Gtk.Orientation.HORIZONTAL);
+		m_pane_articlelist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane_articlelist.set_size_request(500, 500);
 		m_pane_articlelist.set_position(article_row_width);
 		m_articleList = new articleList();

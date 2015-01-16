@@ -312,7 +312,6 @@ public class ttrss_interface : GLib.Object {
 	public async void getArticles(int feedID = TTRSS_ID_ALL, int skip = 0)
 	{
 		SourceFunc callback = getArticles.callback;
-		//stdout.printf("getHeadlines\n");
 		ThreadFunc<void*> run = () => {
 			if(isloggedin())
 			{

@@ -50,9 +50,13 @@ public class articleView : Gtk.Stack {
 		emptyView.get_style_context().add_class("emptyView");
 
 		m_spinner = new Gtk.Spinner();
+		m_spinner.set_size_request(40, 40);
+		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
+		center.set_padding(20, 20, 20, 20);
+		center.add(m_spinner);
 		this.add_named(emptyView, "empty");
 		this.add_named(m_box, "view");
-		this.add_named(m_spinner, "spinner");
+		this.add_named(center, "spinner");
 		
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);

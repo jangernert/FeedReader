@@ -35,7 +35,7 @@ public class articleRow : baseRow {
 	public int m_sortID { get; private set; }
 	public signal void updateFeedList();
 
-	public articleRow (string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID)
+	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID)
 	{
 		m_sortID = sortID;
 		m_marked = marked;
@@ -105,7 +105,7 @@ public class articleRow : baseRow {
 		m_unread_eventbox.set_size_request(16, 16);
 		if(m_is_unread == STATUS_UNREAD)
 			m_unread_eventbox.add(m_unread_icon);
-		else
+		else if(m_is_unread == STATUS_READ)
 			m_unread_eventbox.add(m_read_icon);
 
 		m_unread_eventbox.enter_notify_event.connect(() => {unreadIconEnter(); return true;});
@@ -120,7 +120,7 @@ public class articleRow : baseRow {
 		m_marked_eventbox.set_size_request(16, 16);
 		if(m_marked == STATUS_MARKED)
 			m_marked_eventbox.add(m_marked_icon);
-		else
+		else if(m_marked == STATUS_UNMARKED)
 			m_marked_eventbox.add(m_unmarked_icon);
 			
 		m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
@@ -202,7 +202,7 @@ public class articleRow : baseRow {
 			m_unread_eventbox.remove(m_read_icon);
 			m_unread_eventbox.add(m_unread_icon);
 		}
-		else{
+		else if(m_is_unread == STATUS_UNREAD){
 			m_unread_eventbox.remove(m_unread_icon);
 			m_unread_eventbox.add(m_read_icon);
 		}

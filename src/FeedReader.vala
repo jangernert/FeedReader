@@ -96,8 +96,6 @@ public class rssReaderApp : Gtk.Application {
 		{
 			var dialog = new loginDialog(m_window, login_code);
 			dialog.submit_data.connect(() => {
-				stdout.printf("initial sync\n");
-				
 				int type = feedreader_settings.get_enum("account-type");
 				switch(type)
 				{

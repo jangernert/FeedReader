@@ -48,6 +48,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/LoginDialog.vala
     src/Widgets/MainWindow.vala
     src/Widgets/ReaderHeaderbar.vala
+    src/Widgets/TagRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLogin.vala
 

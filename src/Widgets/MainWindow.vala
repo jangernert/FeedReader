@@ -148,14 +148,21 @@ public class readerUI : Gtk.ApplicationWindow
 		m_pane_feedlist.pack2(m_pane_articlelist, true, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
-			m_articleList.m_id_is_feedID = true;
+			m_articleList.setSelectedType(FEEDLIST_FEED);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
 			m_articleList.newHeadlineList();
 		});
+		
+		m_feedList.newTagSelected.connect((tagID) => {
+			m_articleList.setSelectedType(FEEDLIST_TAG);
+			m_article_view.clearContent();
+			m_articleList.setSelectedFeed(tagID);
+			m_articleList.newHeadlineList();
+		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
-			m_articleList.m_id_is_feedID = false;
+			m_articleList.setSelectedType(FEEDLIST_CATEGORY);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
 			m_articleList.newHeadlineList();

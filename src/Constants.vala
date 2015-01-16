@@ -66,4 +66,5 @@ const int FEEDLIST_TAG = 30;
 const string CAT_ID_NONE = "-99";
 const string CAT_ID_TTRSS_SPECIAL = "-1";
 const string CAT_ID_MASTER = "-2";
-const string FEEDID_ALL_FEEDS = "-3";
+const string CAT_TAGS = "-3";
+const string FEEDID_ALL_FEEDS = "-4";

@@ -34,7 +34,7 @@ public class articleList : Gtk.Stack {
 	private bool m_only_marked;
 	private string m_searchTerm;
 	private int m_limit;
-	public bool m_id_is_feedID;
+	private int m_IDtype;
 	public signal void row_activated(articleRow? row);
 	public signal void load_more();
 	public signal void updateFeedList();
@@ -44,7 +44,7 @@ public class articleList : Gtk.Stack {
 		m_lmit = 0.8;
 		m_displayed_articles = 0;
 		m_current_feed_selected = FEEDID_ALL_FEEDS;
-		m_id_is_feedID = true;
+		m_IDtype = FEEDLIST_FEED;
 		m_searchTerm = "";
 		m_limit = 15;
 		
@@ -164,6 +164,11 @@ public class articleList : Gtk.Stack {
 	{
 		m_current_feed_selected = feedID;
 	}
+	
+	public void setSelectedType(int type)
+	{
+		m_IDtype = type;
+	}
 
 
 	public void createHeadlineList()
@@ -176,7 +181,7 @@ public class articleList : Gtk.Stack {
 		// the missing article will get added as soon as the update finishes anyway
 		int active_in_db = feedreader_settings.get_boolean("currently-updating") ? 1 : 0;
 		
-		var articles = dataBase.read_articles(m_current_feed_selected, m_id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
+		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
 
 		foreach(var item in articles)
 		{
@@ -228,7 +233,7 @@ public class articleList : Gtk.Stack {
 			m_limit = m_displayed_articles + new_articles;
 		}
 
-		var articles = dataBase.read_articles(m_current_feed_selected, m_id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
 		
 		bool found;
 

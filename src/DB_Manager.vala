@@ -76,8 +76,17 @@ public class dbManager : GLib.Object {
 												"preview" TEXT NOT NULL,
 												"unread" INTEGER NOT NULL,
 												"marked" INTEGER NOT NULL,
-												"sortID" INTEGER NOT NULL
+												"sortID" INTEGER NOT NULL,
+												"tags" TEXT
 											)""";
+			
+			string tags =				   """CREATE  TABLE  IF NOT EXISTS "main"."tags" 
+											(
+												"tagID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
+												"title" TEXT NOT NULL,
+												"unread" INTEGER,
+												"exists" INTEGER
+												)""";
 	
 			string errmsg;
 			int ec = sqlite_db.exec (feeds, null, out errmsg);
@@ -89,6 +98,10 @@ public class dbManager : GLib.Object {
 				error("Error: %s\n", errmsg);
 			}
 			ec = sqlite_db.exec (categories, null, out errmsg);
+			if (ec != Sqlite.OK) {
+				error("Error: %s\n", errmsg);
+			}
+			ec = sqlite_db.exec (tags, null, out errmsg);
 			if (ec != Sqlite.OK) {
 				error("Error: %s\n", errmsg);
 			}
@@ -594,24 +607,40 @@ public class dbManager : GLib.Object {
 		return tmp;
 	}
 
-	public GLib.List<article> read_articles(string ID, bool ID_is_feedID, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
+	public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
 	{
 		GLib.List<article> tmp = new GLib.List<article>();
 		string and = "";
 		string query = "SELECT * FROM \"main\".\"articles\"";
 		
-		if( (ID != FEEDID_ALL_FEEDS && ID_is_feedID) || (!ID_is_feedID && ID != CAT_ID_MASTER) || only_unread || only_marked || searchTerm != "") query = query + " WHERE ";
-		if(ID_is_feedID)
+		if( (ID != FEEDID_ALL_FEEDS && selectedType == FEEDLIST_FEED)
+		|| (selectedType == FEEDLIST_CATEGORY && ID != CAT_ID_MASTER)
+		|| (selectedType == FEEDLIST_TAG)
+		|| only_unread
+		|| only_marked
+		|| searchTerm != "")
+			query = query + " WHERE ";
+		
+		
+		if(selectedType == FEEDLIST_FEED)
 		{
 			if(ID != FEEDID_ALL_FEEDS){
 				query = query + "\"feedID\" = " + "\"" + ID + "\"";
 				and = " AND ";
 			}
 		}
-		else if(ID != CAT_ID_MASTER)
+		else if(selectedType == FEEDLIST_CATEGORY && ID != CAT_ID_MASTER && ID != CAT_TAGS)
 		{
 				query = query + getFeedIDofCategorie(ID);
 				and = " AND ";
+		}
+		else if(ID == CAT_TAGS)
+		{
+			query = query + "\"tags\" IS NOT NULL";
+		}
+		else if(selectedType == FEEDLIST_TAG)
+		{
+			query = query + "instr(\"tags\", \"" + ID + "\") > 0";
 		}
 		if(only_unread){
 			query = query + and + "\"unread\" = " + STATUS_UNREAD.to_string();

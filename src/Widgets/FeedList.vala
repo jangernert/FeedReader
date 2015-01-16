@@ -24,6 +24,7 @@ public class feedList : Gtk.Stack {
 	private baseRow m_selected;
 	private Gtk.Spinner m_spinner;
 	public signal void newFeedSelected(string feedID);
+	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
 
 	public feedList () {
@@ -67,6 +68,12 @@ public class feedList : Gtk.Stack {
 			{
 				m_selected = selected_categorie;
 				newCategorieSelected(selected_categorie.getID());
+			}
+			TagRow selected_tag = m_list.get_selected_row() as TagRow;
+			if(selected_tag != null)
+			{
+				m_selected = selected_tag;
+				newTagSelected(selected_tag.getID());
 			}
 		});
 
@@ -149,7 +156,6 @@ public class feedList : Gtk.Stack {
 		var row_spacer = new FeedRow("", "", false, "", "-1", 0);
 		row_spacer.set_size_request(0, 8);
 		row_spacer.sensitive = false;
-		//row_spacer.set_selectable(false);
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
@@ -162,12 +168,12 @@ public class feedList : Gtk.Stack {
 		separator.set_size_request(0, 20);
 		row_seperator.add(separator);
 		row_seperator.sensitive = false;
-		//row_seperator.set_selectable(false);
 		m_list.add(row_seperator);
 
 		//-------------------------------------------------------------------
 
 		createCategories();
+		createTags();
 
 		var feeds = dataBase.read_feeds();
 		foreach(var item in feeds)
@@ -240,6 +246,29 @@ public class feedList : Gtk.Stack {
 			m_list.insert(categorierow, 3);
 			categorierow.reveal(true);
 			expand = false;
+			foreach(string str in exp)
+			{
+				if("Tags" == str)
+					expand = true;
+			}
+			var tagrow = new categorieRow(
+					                                "Tags",
+					                                CAT_TAGS,
+					                                0,
+					                                "",
+					                                CAT_ID_NONE,
+							                        1,
+							                        expand
+					                                );
+			tagrow.collapse.connect((collapse, catID) => {
+				if(collapse)
+					collapseCategorie(catID);
+				else
+					expandCategorie(catID);
+			});
+			m_list.insert(tagrow, 4);
+			tagrow.reveal(true);
+			expand = false;
 		}
 
 		for(int i = 1; i <= maxCatLevel; i++)
@@ -295,6 +324,32 @@ public class feedList : Gtk.Stack {
 			}
 		}
 	}
+	
+	
+	private void createTags()
+	{
+		var FeedChildList = m_list.get_children();
+		int pos = 0;
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			pos++;
+			var tmpRow = row as categorieRow;
+
+			if(tmpRow != null)
+			{
+				if(tmpRow.getID() == CAT_TAGS)
+				{
+					print("insert tagrow");
+					var tagrow = new TagRow ("DemoTag", "123", "5");
+					m_list.insert(tagrow, pos);
+					tagrow.reveal(true);
+					break;
+				}
+			}
+			
+			
+		}
+	}
 
 
 	private void updateCategories()
@@ -318,7 +373,7 @@ public class feedList : Gtk.Stack {
 			foreach(Gtk.Widget row in FeedChildList)
 			{
 				var tmpRow = row as categorieRow;
-				if(tmpRow != null && tmpRow.getID() == CAT_ID_MASTER)
+				if(tmpRow != null && (tmpRow.getID() == CAT_ID_MASTER || tmpRow.getID() == CAT_TAGS))
 				{
 					tmpRow.setExist(true);
 				}
@@ -354,14 +409,14 @@ public class feedList : Gtk.Stack {
 				}
 				
 				var categorierow = new categorieRow(
-					                                item.m_title,
-					                                item.m_categorieID,
-					                                item.m_orderID,
-					                                item.m_unread_count.to_string(),
-					                                parent,
-							                        level,
-							                        false
-					                                );
+													item.m_title,
+													item.m_categorieID,
+													item.m_orderID,
+													item.m_unread_count.to_string(),
+													parent,
+													level,
+													false
+													);
 				
 				categorierow.collapse.connect((collapse, catID) => {
 					if(collapse)
@@ -376,7 +431,8 @@ public class feedList : Gtk.Stack {
 				{
 					var tmpRow = row as categorieRow;
 					pos++;
-					if(tmpRow != null && tmpRow.getOrder() > categorierow.getOrder() && (tmpRow.getID() == (int.parse(categorierow.getParent())+1).to_string() || categorierow.getLevel() == 1))
+					if(tmpRow != null && tmpRow.getOrder() > categorierow.getOrder() && (tmpRow.getID() == (int.parse(categorierow.getParent())+1).to_string() 
+					|| categorierow.getLevel() == 1) || tmpRow.getID() == CAT_TAGS)
 					{
 						m_list.insert(categorierow, pos-1);
 						categorierow.reveal(true);
@@ -527,6 +583,7 @@ public class feedList : Gtk.Stack {
 		{
 			var tmpFeedRow = row as FeedRow;
 			var tmpCatRow = row as categorieRow;
+			var tmpTagRow = row as TagRow;
 			if(tmpFeedRow != null && tmpFeedRow.getCategorie() == catID)
 			{
 				tmpFeedRow.reveal(false);
@@ -536,12 +593,17 @@ public class feedList : Gtk.Stack {
 				tmpCatRow.reveal(false);
 				collapseCategorie(tmpCatRow.getID());
 			}
+			if(tmpTagRow != null && catID == CAT_TAGS)
+			{
+				tmpTagRow.reveal(false);
+			}
 		}
 		
 		var selected_feed = m_list.get_selected_row() as FeedRow;
 		var selected_cat = m_list.get_selected_row() as categorieRow;
+		var selected_tag = m_list.get_selected_row() as TagRow;
 		
-		if( (selected_feed != null && !selected_feed.isRevealed()) || (selected_cat != null && !selected_cat.isRevealed()) )
+		if( (selected_feed != null && !selected_feed.isRevealed()) || (selected_cat != null && !selected_cat.isRevealed()) || (selected_tag != null && !selected_tag.isRevealed()) )
 		{
 			foreach(Gtk.Widget row in FeedChildList)
 			{
@@ -565,6 +627,7 @@ public class feedList : Gtk.Stack {
 		{
 			var tmpFeedRow = row as FeedRow;
 			var tmpCatRow = row as categorieRow;
+			var tmpTagRow = row as TagRow;
 			if(tmpFeedRow != null && tmpFeedRow.getCategorie() == catID)
 			{
 				tmpFeedRow.reveal(true);
@@ -574,6 +637,10 @@ public class feedList : Gtk.Stack {
 				tmpCatRow.reveal(true);
 				if(tmpCatRow.isExpanded())
 					expandCategorie(tmpCatRow.getID());
+			}
+			if(tmpTagRow != null && catID == CAT_TAGS)
+			{
+				tmpTagRow.reveal(true);
 			}
 		}
 	}

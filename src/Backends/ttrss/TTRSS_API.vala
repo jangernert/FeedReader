@@ -347,8 +347,8 @@ public class ttrss_interface : GLib.Object {
 			var headline_count = response.get_length();
 			stdout.printf("Number of New Articles: %u\n", headline_count);
 			
-			if(headline_count > 0 && skip == 0){
-				ttrss_utils.sendNotification(headline_count);
+			if(skip == 0){
+				feed_server.sendNotification(headline_count);
 			}
 			
 			GLib.List<article> articles = new GLib.List<article>();

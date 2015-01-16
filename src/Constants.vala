@@ -51,15 +51,16 @@ const string apiAuthScope = "https://cloud.feedly.com/subscriptions";
 // database
 const int DB_INSERT_OR_IGNORE = 21;
 const int DB_INSERT_OR_REPLACE = 22;
+const int DB_UPDATE_ROW = 23;
 
 // feed list
-const int FEEDLIST_ALL_FEEDS = 23;
-const int FEEDLIST_SPACER = 24;
-const int FEEDLIST_SEPERATOR = 25;
-const int FEEDLIST_CATEGORY = 26;
-const int FEEDLIST_FEED = 27;
-const int FEEDLIST_HEADLINE = 28;
-const int FEEDLIST_TAG = 29;
+const int FEEDLIST_ALL_FEEDS = 24;
+const int FEEDLIST_SPACER = 25;
+const int FEEDLIST_SEPERATOR = 26;
+const int FEEDLIST_CATEGORY = 27;
+const int FEEDLIST_FEED = 28;
+const int FEEDLIST_HEADLINE = 29;
+const int FEEDLIST_TAG = 30;
 
 // special category ID's
 const string CAT_ID_NONE = "-99";

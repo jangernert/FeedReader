@@ -63,6 +63,8 @@ public class FeedlyAPI : Object {
 		ThreadFunc<void*> run = () => {
 			string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
+			dataBase.reset_exists_flag();
+			
 			var parser = new Json.Parser();
 			parser.load_from_data (response, -1);
 			Json.Array array = parser.get_root ().get_array ();
@@ -76,6 +78,8 @@ public class FeedlyAPI : Object {
 				dataBase.write_categorie(categorieID, title, unreadCount, i+1, CAT_ID_NONE, 1);
 			}
 			
+			dataBase.delete_nonexisting_categories();
+			
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -88,7 +92,8 @@ public class FeedlyAPI : Object {
 		SourceFunc callback = getFeeds.callback;
 		ThreadFunc<void*> run = () => {
 			string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
-			//stdout.printf("%s\n", response);
+			
+			dataBase.reset_subscribed_flag();
 			
 			var parser = new Json.Parser();
 			parser.load_from_data(response, -1);
@@ -126,6 +131,8 @@ public class FeedlyAPI : Object {
 									categorieID);
 			}
 			
+			dataBase.delete_unsubscribed_feeds();
+			
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -145,6 +152,8 @@ public class FeedlyAPI : Object {
 			
 			var parser = new Json.Parser();
 			parser.load_from_data(response, -1);
+			dataBase.markReadAllArticles();
+			int before = dataBase.getHighestSortID();
 
 			var array = parser.get_root().get_array();
 			
@@ -191,10 +200,13 @@ public class FeedlyAPI : Object {
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
-										DB_INSERT_OR_REPLACE,
+										DB_UPDATE_ROW,
 										item.m_html,
 										item.m_preview);
 			}
+			
+			int after = dataBase.getHighestSortID();
+			feed_server.sendNotification(after-before);
 			
 			Idle.add((owned) callback);
 			return null;

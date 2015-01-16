@@ -107,6 +107,42 @@ public class feed_server : GLib.Object {
 				break;
 		}
 	}
+	
+	
+	public static void sendNotification(uint headline_count)
+	{
+		try{
+			string message;
+			
+			if(headline_count > 0)
+			{			
+				if(headline_count == 1)
+					message = _("There is 1 new article");
+				else if(headline_count == 200)
+					message = _("There are >200 new articles");
+				else
+					message = _("There are ") + headline_count.to_string() + _(" new articles");
+							
+				var notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
+				notification.add_action ("default", "show", (notification, action) => {
+					string[] spawn_args = {"feedreader"};
+					try{
+						GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+					}catch(GLib.SpawnError e){
+						stdout.printf("error spawning command line: %s\n", e.message);
+					}
+					try {
+						notification.close ();
+					} catch (Error e) {
+						debug ("Error: %s", e.message);
+					}
+				});
+				notification.show ();
+			}
+		}catch (GLib.Error e) {
+			error("Error: %s", e.message);
+		}
+	}
 
 }
 

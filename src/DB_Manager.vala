@@ -292,13 +292,9 @@ public class dbManager : GLib.Object {
 			
 			query = command + fields + values;
 		}
-		else if(insert_replace == DB_INSERT_OR_REPLACE)
+		else if(insert_replace == DB_UPDATE_ROW)
 		{
-			string command = "INSERT OR REPLACE INTO \"main\".\"articles\" ";
-			string fields = "(\"articleID\", \"unread\", \"marked\") ";
-			string values = "VALUES (\"" + articleID + "\", " + unread.to_string() + ", " + marked.to_string() + ")";
-			
-			query = command + fields + values;
+			query = "UPDATE \"main\".\"articles\" SET \"unread\" = " + unread.to_string() + ", \"marked\" = " + marked.to_string() + " WHERE \"articleID\"= \"" + articleID + "\"";
 		}
 						
 		Sqlite.Statement stmt;

@@ -638,24 +638,13 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-		
-		int unread = stmt.column_int(7);
-		int unread_const = STATUS_READ;
-		int marked = stmt.column_int(8);
-		int marked_const = STATUS_UNMARKED;
-		
-		if(unread == 1)
-			unread_const = STATUS_UNREAD;
-		if(marked == 1)
-			marked_const = STATUS_MARKED;
-		
 			tmpArticle = new article(
 								stmt.column_text(0),
 								stmt.column_text(2),
 								stmt.column_text(4),
 								stmt.column_text(1),
-								unread_const,
-								marked_const,
+								stmt.column_int(7),
+								stmt.column_int(8),
 								stmt.column_text(5),
 								stmt.column_text(6),
 								stmt.column_text(3),

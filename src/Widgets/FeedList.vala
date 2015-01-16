@@ -211,11 +211,11 @@ public class feedList : Gtk.Stack {
 	private void createCategories()
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
-		int feed_type = feedreader_settings.get_enum("account-type");
+		int account_type = feedreader_settings.get_enum("account-type");
 		string[] exp = feedreader_settings.get_strv("expanded-categories");
 		bool expand = false;
 		
-		if(feed_type == TYPE_FEEDLY)
+		if(account_type == TYPE_FEEDLY)
 		{
 			foreach(string str in exp)
 			{
@@ -254,8 +254,8 @@ public class feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.m_parent) ||
-						(item.m_parent == CAT_ID_NONE && pos > 2) && (feed_type != TYPE_FEEDLY) ||
-						(item.m_parent == CAT_ID_NONE && pos > 3) && (feed_type == TYPE_FEEDLY))
+						(item.m_parent == CAT_ID_NONE && pos > 2) && (account_type != TYPE_FEEDLY) ||
+						(item.m_parent == CAT_ID_NONE && pos > 3) && (account_type == TYPE_FEEDLY))
 					{
 						foreach(string str in exp)
 						{
@@ -265,7 +265,7 @@ public class feedList : Gtk.Stack {
 						
 						int level = item.m_level;
 						string parent = item.m_parent;
-						if(feed_type == TYPE_FEEDLY)
+						if(account_type == TYPE_FEEDLY)
 						{
 							level++;
 							parent = CAT_ID_MASTER;
@@ -299,9 +299,9 @@ public class feedList : Gtk.Stack {
 
 	private void updateCategories()
 	{
-
 		var categories = dataBase.read_categories();
 		bool found, inserted;
+		int account_type = feedreader_settings.get_enum("account-type");
 		var FeedChildList = m_list.get_children();
 		
 		foreach(Gtk.Widget row in FeedChildList)
@@ -313,6 +313,18 @@ public class feedList : Gtk.Stack {
 			}
 		}
 		
+		if(account_type == TYPE_FEEDLY)
+		{
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as categorieRow;
+				if(tmpRow != null && tmpRow.getID() == CAT_ID_MASTER)
+				{
+					tmpRow.setExist(true);
+				}
+			}
+		}
+		
 		foreach(var item in categories)
 		{
 			found = false;
@@ -321,7 +333,7 @@ public class feedList : Gtk.Stack {
 				var tmpRow = row as categorieRow;
 				if(tmpRow != null)
 				{
-					if(tmpRow.getID() == item.m_categorieID)
+					if((tmpRow.getID() == item.m_categorieID))
 					{
 						found = true;
 						tmpRow.setExist(true);
@@ -333,13 +345,21 @@ public class feedList : Gtk.Stack {
 				
 			if(!found)
 			{
+				int level = item.m_level;
+				string parent = item.m_parent;
+				if(account_type == TYPE_FEEDLY)
+				{
+					level++;
+					parent = CAT_ID_MASTER;
+				}
+				
 				var categorierow = new categorieRow(
 					                                item.m_title,
 					                                item.m_categorieID,
 					                                item.m_orderID,
 					                                item.m_unread_count.to_string(),
-					                                item.m_parent,
-							                        item.m_level,
+					                                parent,
+							                        level,
 							                        false
 					                                );
 				

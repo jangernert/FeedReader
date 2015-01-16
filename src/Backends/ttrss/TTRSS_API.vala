@@ -397,7 +397,7 @@ public class ttrss_interface : GLib.Object {
 			
 			
 			// then only update marked and unread for all others
-			foreach(article item in articles)
+			/*foreach(article item in articles)
 			{
 				dataBase.write_article(	item.m_articleID,
 										item.m_feedID,
@@ -409,7 +409,7 @@ public class ttrss_interface : GLib.Object {
 										DB_INSERT_OR_REPLACE,
 										item.m_html,
 										item.m_preview);
-			}
+			}*/
 				
 			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
 			int maxArticles = feedreader_settings.get_int("max-articles");

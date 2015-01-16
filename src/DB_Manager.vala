@@ -47,7 +47,7 @@ public class dbManager : GLib.Object {
 											(
 												"feed_id" TEXT PRIMARY KEY  NOT NULL UNIQUE ,
 												"name" TEXT NOT NULL,
-												"url" TEXT NOT NULL  UNIQUE,
+												"url" TEXT NOT NULL,
 												"has_icon" INTEGER NOT NULL,
 												"unread" INTEGER NOT NULL,
 												"category_id" TEXT,
@@ -490,7 +490,7 @@ public class dbManager : GLib.Object {
 
 	public void markReadAllArticles()
 	{
-		string query = "UPDATE \"main\".\"articles\" SET \"unread\"=0";
+		string query = "UPDATE \"main\".\"articles\" SET \"unread\"=" + STATUS_READ.to_string();
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
@@ -501,7 +501,7 @@ public class dbManager : GLib.Object {
 
 	public void unmarkAllArticles()
 	{
-		string query = "UPDATE \"main\".\"articles\" SET \"marked\"=0";
+		string query = "UPDATE \"main\".\"articles\" SET \"marked\"=" + STATUS_UNMARKED.to_string();
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
@@ -618,11 +618,11 @@ public class dbManager : GLib.Object {
 				and = " AND ";
 		}
 		if(only_unread){
-			query = query + and + "\"unread\" = 1";
+			query = query + and + "\"unread\" = " + STATUS_UNREAD.to_string();
 			and = " AND ";
 		}
 		if(only_marked){
-			query = query + and + "\"marked\" = 1";
+			query = query + and + "\"marked\" = " + STATUS_MARKED.to_string();
 			and = " AND ";
 		}
 		if(searchTerm != ""){

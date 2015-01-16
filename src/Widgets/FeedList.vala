@@ -184,8 +184,8 @@ public class feedList : Gtk.Stack {
 					if(tmpRow.getID() == item.m_categorieID)
 					{
 						int level = tmpRow.getLevel();
-						if(feedreader_settings.get_enum("account-type") == TYPE_FEEDLY)
-							level++;
+						//if(feedreader_settings.get_enum("account-type") == TYPE_FEEDLY)
+						//	level++;
 							
 						var feedrow = new FeedRow(
 											       item.m_title,

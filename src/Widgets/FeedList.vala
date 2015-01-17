@@ -377,7 +377,9 @@ public class feedList : Gtk.Stack {
 				{
 					if(tmpRow.getID() == Tag.m_tagID)
 					{
-						tmpRow.update(Tag.m_title, Tag.m_unread.to_string());
+						print("found\n");
+						tmpRow.update(Tag.m_title);
+						tmpRow.setExits(true);
 						found = true;
 						break;
 					}
@@ -391,10 +393,11 @@ public class feedList : Gtk.Stack {
 				foreach(Gtk.Widget row in FeedChildList)
 				{
 					pos++;
-					var tmpRow = row as TagRow;
+					var tmpRow = row as categorieRow;
 					if(tmpRow != null && tmpRow.getID() == CAT_TAGS)
 					{
 						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_color);
+						tagrow.setExits(true);
 						m_list.insert(tagrow, pos);
 						tagrow.reveal(true);
 						break;
@@ -522,6 +525,7 @@ public class feedList : Gtk.Stack {
 		bool found;
 		var FeedChildList = m_list.get_children();
 		updateCategories();
+		updateTags();
 
 		foreach(Gtk.Widget row in FeedChildList)
 		{

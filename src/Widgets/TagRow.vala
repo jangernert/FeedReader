@@ -69,11 +69,10 @@ public class TagRow : baseRow {
 		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);
 	}
 
-	public void update(string name, string unread_count)
+	public void update(string name)
 	{
 		m_label.set_text(name.replace("&","&amp;"));
 		m_label.set_use_markup (true);
-		set_unread_count(unread_count);
 	}
 	
 	public string getID()

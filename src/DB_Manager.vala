@@ -236,6 +236,26 @@ public class dbManager : GLib.Object {
 		}
 		stmt.reset ();
 	}
+	
+	public void write_tag(string tagID, string label, string color)
+	{
+		string query = "INSERT OR REPLACE INTO \"main\".\"tags\" (\"tagID\",\"title\",\"exists\",\"color\") VALUES (\"" + tagID + "\", $LABEL, 1, $COLOR)";
+		
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		int param_position = stmt.bind_parameter_index ("$LABEL");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, label);
+		param_position = stmt.bind_parameter_index ("$COLOR");
+		assert (param_position > 0);
+		stmt.bind_text (param_position, color);
+		
+		while (stmt.step () == Sqlite.ROW) {}
+		stmt.reset ();
+	}
 
 
 	public void write_categorie(string categorieID, string categorie_name, int unread_count, int orderID, string parent, int level)
@@ -260,7 +280,7 @@ public class dbManager : GLib.Object {
 
 
 	
-	public void write_article(string articleID, string feedID, string title, string author, string url, int unread, int marked, int insert_replace, string html, string preview = "")
+	public void write_article(string articleID, string feedID, string title, string author, string url, int unread, int marked, int insert_replace, string html, string tags, string preview = "")
 	{
 		string output = "";
 		string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
@@ -308,7 +328,7 @@ public class dbManager : GLib.Object {
 		}
 		else if(insert_replace == DB_UPDATE_ROW)
 		{
-			query = "UPDATE \"main\".\"articles\" SET \"unread\" = " + unread.to_string() + ", \"marked\" = " + marked.to_string() + " WHERE \"articleID\"= \"" + articleID + "\"";
+			query = "UPDATE \"main\".\"articles\" SET \"unread\" = " + unread.to_string() + ", \"marked\" = " + marked.to_string() + ", \"tags\" = \"" + tags + "\" WHERE \"articleID\"= \"" + articleID + "\"";
 		}
 						
 		Sqlite.Statement stmt;
@@ -358,7 +378,8 @@ public class dbManager : GLib.Object {
 								stmt.column_text(5),
 								stmt.column_text(6),
 								stmt.column_text(3),
-								stmt.column_int(9)
+								stmt.column_int(9),
+								stmt.column_text(10)
 							);
 		}
 		stmt.reset ();
@@ -410,6 +431,16 @@ public class dbManager : GLib.Object {
 			error("Error: %s\n", errmsg);
 		}
 	}
+	
+	public void reset_exists_tag()
+	{
+		string query = "UPDATE \"main\".\"tags\" SET \"exists\" = 0";
+		string errmsg;
+		int ec = sqlite_db.exec (query, null, out errmsg);
+		if (ec != Sqlite.OK) {
+			error("Error: %s\n", errmsg);
+		}
+	}
 
 	public void reset_exists_flag()
 	{
@@ -437,6 +468,16 @@ public class dbManager : GLib.Object {
 	public void delete_nonexisting_categories()
 	{
 		string query = "DELETE FROM \"main\".\"categories\" WHERE \"exists\" = 0";
+		string errmsg;
+		int ec = sqlite_db.exec (query, null, out errmsg);
+		if (ec != Sqlite.OK) {
+			error("Error: %s\n", errmsg);
+		}
+	}
+	
+	public void delete_nonexisting_tags()
+	{
+		string query = "DELETE FROM \"main\".\"tags\" WHERE \"exists\" = 0";
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
@@ -595,14 +636,15 @@ public class dbManager : GLib.Object {
 		GLib.List<tag> tmp = new GLib.List<tag>();
 		tag tmpTag;
 		
-		string query = "SELECT * FROM \"main\".\"tags\"";
+		string query = "SELECT * FROM \"main\".\"tags\" WHERE instr(\"tagID\", \"global.\") = 0";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(2), stmt.column_text(4));
+			//print(stmt.column_text(0) + " " + stmt.column_text(1)
+			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_text(3));
 			tmp.append(tmpTag);
 		}
 		
@@ -657,7 +699,7 @@ public class dbManager : GLib.Object {
 		}
 		else if(ID == CAT_TAGS)
 		{
-			query = query + "\"tags\" IS NOT NULL";
+			query = query + "\"tags\" IS NOT \"\"";
 		}
 		else if(selectedType == FEEDLIST_TAG)
 		{
@@ -694,7 +736,8 @@ public class dbManager : GLib.Object {
 								stmt.column_text(5),
 								stmt.column_text(6),
 								stmt.column_text(3),
-								stmt.column_int(9)
+								stmt.column_int(9),
+								stmt.column_text(10)
 							);
 			tmp.append(tmpArticle);
 		}

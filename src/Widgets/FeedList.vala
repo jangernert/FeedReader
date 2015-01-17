@@ -343,7 +343,7 @@ public class feedList : Gtk.Stack {
 				{
 					if(tmpRow.getID() == CAT_TAGS)
 					{
-						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_unread.to_string(), Tag.m_color);
+						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_color);
 						m_list.insert(tagrow, pos);
 						tagrow.reveal(true);
 						break;
@@ -394,7 +394,7 @@ public class feedList : Gtk.Stack {
 					var tmpRow = row as TagRow;
 					if(tmpRow != null && tmpRow.getID() == CAT_TAGS)
 					{
-						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_unread.to_string(), Tag.m_color);
+						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_color);
 						m_list.insert(tagrow, pos);
 						tagrow.reveal(true);
 						break;
@@ -406,7 +406,7 @@ public class feedList : Gtk.Stack {
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpRow = row as TagRow;
-			if(tmpRow != null && tmpRow.stillExits())
+			if(tmpRow != null && !tmpRow.stillExits())
 			{
 				m_list.remove(tmpRow);
 				tmpRow.destroy();

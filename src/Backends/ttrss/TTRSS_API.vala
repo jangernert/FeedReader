@@ -373,7 +373,8 @@ public class ttrss_interface : GLib.Object {
 										html,
 										"",
 										author,
-										-1
+										-1,
+										""
 								));
 				
 			}
@@ -392,6 +393,7 @@ public class ttrss_interface : GLib.Object {
 										item.m_marked,
 										DB_INSERT_OR_IGNORE,
 										item.m_html,
+										item.m_tags,
 										item.m_preview);
 			}
 			
@@ -408,6 +410,7 @@ public class ttrss_interface : GLib.Object {
 										item.m_marked,
 										DB_INSERT_OR_REPLACE,
 										item.m_html,
+										item.m_tags,
 										item.m_preview);
 			}*/
 				

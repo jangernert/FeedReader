@@ -73,6 +73,7 @@ public class feed_server : GLib.Object {
 			case TYPE_FEEDLY:
 				yield m_feedly.getCategories();
 				yield m_feedly.getFeeds();
+				yield m_feedly.getTags();
 				yield m_feedly.getArticles();
 				break;
 		}

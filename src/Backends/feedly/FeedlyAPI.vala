@@ -98,8 +98,9 @@ public class FeedlyAPI : Object {
 			var parser = new Json.Parser();
 			parser.load_from_data(response, -1);
 			Json.Array array = parser.get_root().get_array ();
+			uint length = array.get_length();
 
-			for (int i = 0; i < array.get_length(); i++) {
+			for (uint i = 0; i < length; i++) {
 				Json.Object object = array.get_object_element(i);
 				
 				string feedID = object.get_string_member("id");
@@ -139,6 +140,37 @@ public class FeedlyAPI : Object {
 		new GLib.Thread<void*>("getFeeds", run);
 		yield;
 	}
+	
+	
+	public async void getTags() throws Error {
+		SourceFunc callback = getTags.callback;
+		ThreadFunc<void*> run = () => {
+			string response = m_connection.send_get_request_to_feedly("/v3/tags/");
+			
+			dataBase.reset_exists_tag();
+			
+			var parser = new Json.Parser();
+			parser.load_from_data(response, -1);
+			Json.Array array = parser.get_root().get_array ();
+			uint length = array.get_length();
+
+			for (uint i = 0; i < length; i++) {
+				Json.Object object = array.get_object_element(i);
+				
+				string tagID = object.get_string_member("id");
+				string title = object.has_member("label") ? object.get_string_member("label") : "";
+	 			
+				dataBase.write_tag(tagID, title, "0.5,0.5,0,0.6,0.6,0");
+			}
+			
+			dataBase.delete_nonexisting_tags();
+			
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("getTags", run);
+		yield;
+	}
 
 
 
@@ -169,8 +201,20 @@ public class FeedlyAPI : Object {
 				bool unread = object.get_boolean_member("unread");
 				string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 				string feedID = object.get_object_member("origin").get_string_member("streamId");
+				string tagString = "";
 				
-				articles.append(new article(id, title, url, feedID, (unread) ? STATUS_UNREAD : STATUS_READ, STATUS_UNMARKED, Content, summaryContent, author, -1));
+				if(object.has_member("tags"))
+				{
+					var tags = object.get_array_member("tags");
+					uint tagCount = tags.get_length();
+					
+					for(int j = 0; j < tagCount; ++j)
+					{
+						tagString = tagString + tags.get_object_element(j).get_string_member("id") + ",";
+					}
+				}
+				
+				articles.append(new article(id, title, url, feedID, (unread) ? STATUS_UNREAD : STATUS_READ, STATUS_UNMARKED, Content, summaryContent, author, -1, tagString));
 			}
 			articles.reverse();
 			
@@ -186,6 +230,7 @@ public class FeedlyAPI : Object {
 										item.m_marked,
 										DB_INSERT_OR_IGNORE,
 										item.m_html,
+										item.m_tags,
 										item.m_preview);
 			}
 			
@@ -202,6 +247,7 @@ public class FeedlyAPI : Object {
 										item.m_marked,
 										DB_UPDATE_ROW,
 										item.m_html,
+										item.m_tags,
 										item.m_preview);
 			}
 			
@@ -244,7 +290,7 @@ public class FeedlyAPI : Object {
 
 		var object = parser.get_root ().get_object ();
 
-		var unreadcounts = object.get_array_member ("unreadcounts");
+		var unreadcounts = object.get_array_member("unreadcounts");
 
 		int unread_count = -1;
 

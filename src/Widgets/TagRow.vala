@@ -8,7 +8,7 @@ public class TagRow : baseRow {
 	public string m_tagID { get; private set; }
 	
 
-	public TagRow (string name, string tagID, string unread_count, string color)
+	public TagRow (string name, string tagID, string color)
 	{
 		this.get_style_context().add_class("feed-list-row");
 		m_exits = true;
@@ -29,26 +29,18 @@ public class TagRow : baseRow {
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.set_transition_duration(500);
 		
-		m_unread_count = unread_count;
 		m_label = new Gtk.Label(m_name);
 		m_label.set_use_markup (true);
 		m_label.set_size_request (0, rowhight);
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
 		m_label.set_alignment(0, 0.5f);
-			
-		m_unread = new Gtk.Label(null);
-		set_unread_count(unread_count);
-		m_unread.set_use_markup (true);
-		m_unread.set_size_request (0, rowhight);
-		m_unread.set_alignment(0.8f, 0.5f);
-		
+	
 		m_spacer = new Gtk.Label("");
 		m_spacer.set_size_request(24, rowhight);
 
 		m_box.pack_start(m_spacer, false, false, 0);
 		m_box.pack_start(m_icon, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
-		m_box.pack_end (m_unread, false, false, 8);
 		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
 		m_isRevealed = false;

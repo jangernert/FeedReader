@@ -160,7 +160,7 @@ public class FeedlyAPI : Object {
 				string tagID = object.get_string_member("id");
 				string title = object.has_member("label") ? object.get_string_member("label") : "";
 	 			
-				dataBase.write_tag(tagID, title, "0.5,0.5,0,0.6,0.6,0");
+				dataBase.write_tag(tagID, title);
 			}
 			
 			dataBase.delete_nonexisting_tags();

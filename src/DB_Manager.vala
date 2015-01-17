@@ -86,7 +86,7 @@ public class dbManager : GLib.Object {
 												"title" TEXT NOT NULL,
 												"unread" INTEGER,
 												"exists" INTEGER,
-												"color" TEXT
+												"color" INTEGER
 												)""";
 	
 			string errmsg;
@@ -237,21 +237,33 @@ public class dbManager : GLib.Object {
 		stmt.reset ();
 	}
 	
-	public void write_tag(string tagID, string label, string color)
+	public void write_tag(string tagID, string label)
 	{
-		string query = "INSERT OR REPLACE INTO \"main\".\"tags\" (\"tagID\",\"title\",\"exists\",\"color\") VALUES (\"" + tagID + "\", $LABEL, 1, $COLOR)";
+		string query1 = "SELECT count(*) FROM \"main\".\"tags\" WHERE instr(\"tagID\", \"global.\") = 0";
+		Sqlite.Statement stmt1;
+		int ec = sqlite_db.prepare_v2 (query1, query1.length, out stmt1);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		int tagCount = 0;
+		while (stmt1.step () == Sqlite.ROW) {
+			tagCount = stmt1.column_int(0);
+		}
+		stmt1.reset ();
+		
+		int colorCount = COLORS.length;
+		int colorNumber = (tagCount%colorCount)+1;
+		
+		string query = "INSERT OR REPLACE INTO \"main\".\"tags\" (\"tagID\",\"title\",\"exists\",\"color\") VALUES (\"" + tagID + "\", $LABEL, 1, " + colorNumber.to_string() + ")";
 		
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		int param_position = stmt.bind_parameter_index ("$LABEL");
 		assert (param_position > 0);
 		stmt.bind_text (param_position, label);
-		param_position = stmt.bind_parameter_index ("$COLOR");
-		assert (param_position > 0);
-		stmt.bind_text (param_position, color);
 		
 		while (stmt.step () == Sqlite.ROW) {}
 		stmt.reset ();
@@ -644,7 +656,7 @@ public class dbManager : GLib.Object {
 		}
 		while (stmt.step () == Sqlite.ROW) {
 			//print(stmt.column_text(0) + " " + stmt.column_text(1)
-			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_text(3));
+			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
 			tmp.append(tmpTag);
 		}
 		

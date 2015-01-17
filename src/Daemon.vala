@@ -7,6 +7,7 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		stdout.printf("daemon: constructor\n");
+		feedreader_settings.set_boolean("currently-updating", false);
 		m_loggedin = login(feedreader_settings.get_enum("account-type"));
 		
 		if(m_loggedin != LOGIN_SUCCESS)

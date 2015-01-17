@@ -51,6 +51,7 @@ public class TagRow : baseRow {
 	private Gdk.Pixbuf drawIcon()
 	{
 		int size = 64;
+		print(COLORS[m_color] + "\n");
 		string[] color = COLORS[m_color].split (",");
 		Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, size, size);
 		Cairo.Context context = new Cairo.Context (surface);

@@ -252,9 +252,9 @@ public class dbManager : GLib.Object {
 		stmt1.reset ();
 		
 		int colorCount = COLORS.length;
-		int colorNumber = (tagCount%colorCount)+1;
+		int colorNumber = (tagCount%colorCount);
 		
-		string query = "INSERT OR REPLACE INTO \"main\".\"tags\" (\"tagID\",\"title\",\"exists\",\"color\") VALUES (\"" + tagID + "\", $LABEL, 1, " + colorNumber.to_string() + ")";
+		string query = "INSERT OR IGNORE INTO \"main\".\"tags\" (\"tagID\",\"title\",\"exists\",\"color\") VALUES (\"" + tagID + "\", $LABEL, 1, " + colorNumber.to_string() + ")";
 		
 		Sqlite.Statement stmt;
 		ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -264,6 +264,19 @@ public class dbManager : GLib.Object {
 		int param_position = stmt.bind_parameter_index ("$LABEL");
 		assert (param_position > 0);
 		stmt.bind_text (param_position, label);
+		
+		while (stmt.step () == Sqlite.ROW) {}
+		stmt.reset ();
+	}
+	
+	public void update_tag(string tagID)
+	{
+		string query = "UPDATE \"main\".\"tags\" SET \"exists\" = 1";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
 		
 		while (stmt.step () == Sqlite.ROW) {}
 		stmt.reset ();

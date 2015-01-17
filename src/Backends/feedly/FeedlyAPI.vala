@@ -161,6 +161,7 @@ public class FeedlyAPI : Object {
 				string title = object.has_member("label") ? object.get_string_member("label") : "";
 	 			
 				dataBase.write_tag(tagID, title);
+				dataBase.update_tag(tagID);
 			}
 			
 			dataBase.delete_nonexisting_tags();

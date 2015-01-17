@@ -330,24 +330,87 @@ public class feedList : Gtk.Stack {
 	{
 		var FeedChildList = m_list.get_children();
 		int pos = 0;
+		var tags = dataBase.read_tags();
+		foreach(var Tag in tags)
+		{
+			pos = 0;
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				pos++;
+				var tmpRow = row as categorieRow;
+
+				if(tmpRow != null)
+				{
+					if(tmpRow.getID() == CAT_TAGS)
+					{
+						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_unread.to_string(), Tag.m_color);
+						m_list.insert(tagrow, pos);
+						tagrow.reveal(true);
+						break;
+					}
+				}
+			}
+		}
+	}
+	
+	private void updateTags()
+	{
+		var FeedChildList = m_list.get_children();
+		bool found = false;
+		int pos = 0;
+		var tags = dataBase.read_tags();
+		
 		foreach(Gtk.Widget row in FeedChildList)
 		{
-			pos++;
-			var tmpRow = row as categorieRow;
-
+			var tmpRow = row as TagRow;
 			if(tmpRow != null)
+				tmpRow.setExits(false);
+		}
+		
+		foreach(var Tag in tags)
+		{
+			found = false;
+			foreach(Gtk.Widget row in FeedChildList)
 			{
-				if(tmpRow.getID() == CAT_TAGS)
+				var tmpRow = row as TagRow;
+				if(tmpRow != null)
 				{
-					print("insert tagrow");
-					var tagrow = new TagRow ("DemoTag", "123", "5");
-					m_list.insert(tagrow, pos);
-					tagrow.reveal(true);
-					break;
+					if(tmpRow.getID() == Tag.m_tagID)
+					{
+						tmpRow.update(Tag.m_title, Tag.m_unread.to_string());
+						found = true;
+						break;
+					}
 				}
 			}
 			
-			
+			if(!found)
+			{
+				pos = 0;
+				FeedChildList = m_list.get_children();
+				foreach(Gtk.Widget row in FeedChildList)
+				{
+					pos++;
+					var tmpRow = row as TagRow;
+					if(tmpRow != null && tmpRow.getID() == CAT_TAGS)
+					{
+						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_unread.to_string(), Tag.m_color);
+						m_list.insert(tagrow, pos);
+						tagrow.reveal(true);
+						break;
+					}
+				}
+			}
+		}
+		
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as TagRow;
+			if(tmpRow != null && tmpRow.stillExits())
+			{
+				m_list.remove(tmpRow);
+				tmpRow.destroy();
+			}
 		}
 	}
 

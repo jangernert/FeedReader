@@ -36,6 +36,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
+    src/Model/Tag.vala
     src/Constants.vala
     src/DB_Manager.vala
     src/Widgets/ArticleList.vala
@@ -75,6 +76,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
+    src/Model/Tag.vala
     src/Constants.vala
     src/Backends/FeedServer.vala
     src/Backends/ttrss/TTRSS_API.vala

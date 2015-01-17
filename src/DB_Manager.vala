@@ -85,7 +85,8 @@ public class dbManager : GLib.Object {
 												"tagID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" TEXT NOT NULL,
 												"unread" INTEGER,
-												"exists" INTEGER
+												"exists" INTEGER,
+												"color" TEXT
 												)""";
 	
 			string errmsg;
@@ -583,6 +584,26 @@ public class dbManager : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			tmpcategory = new category(stmt.column_text(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_text(5), stmt.column_int(6));
 			tmp.append(tmpcategory);
+		}
+		
+		return tmp;
+	}
+	
+	
+	public GLib.List<tag> read_tags()
+	{
+		GLib.List<tag> tmp = new GLib.List<tag>();
+		tag tmpTag;
+		
+		string query = "SELECT * FROM \"main\".\"tags\"";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		while (stmt.step () == Sqlite.ROW) {
+			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(2), stmt.column_text(4));
+			tmp.append(tmpTag);
 		}
 		
 		return tmp;

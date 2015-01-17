@@ -3,14 +3,16 @@ public class TagRow : baseRow {
 
 	private bool m_exits;
 	private string m_catID;
+	private string m_color;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
 	
 
-	public TagRow (string name, string tagID, string unread_count)
+	public TagRow (string name, string tagID, string unread_count, string color)
 	{
 		this.get_style_context().add_class("feed-list-row");
 		m_exits = true;
+		m_color = color;
 		m_name = name.replace("&","&amp;");
 		m_tagID = tagID;
 		m_catID = CAT_TAGS;	
@@ -57,6 +59,7 @@ public class TagRow : baseRow {
 	private Gdk.Pixbuf drawIcon()
 	{
 		int size = 64;
+		string[] color = m_color.split (",");
 		Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, size, size);
 		Cairo.Context context = new Cairo.Context (surface);
 
@@ -64,11 +67,11 @@ public class TagRow : baseRow {
 		context.arc (size/2, size/2, 28, 0, 2*Math.PI);
 
 		context.set_fill_rule (Cairo.FillRule.EVEN_ODD);
-		context.set_source_rgb (0.9, 0.0, 0.0);
+		context.set_source_rgb (double.parse(color[0]), double.parse(color[1]), double.parse(color[2]));
 		context.fill_preserve ();
 	
 		context.arc (size/2, size/2, 22, 0, 2*Math.PI);
-		context.set_source_rgb (1, 0.0, 0.0);
+		context.set_source_rgb (double.parse(color[3]), double.parse(color[4]), double.parse(color[5]));
 		context.fill_preserve ();
 	
 		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);

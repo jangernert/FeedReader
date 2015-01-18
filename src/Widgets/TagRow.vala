@@ -62,11 +62,11 @@ public class TagRow : baseRow {
 		context.arc(size/2, size/2, 32, 0, 2*Math.PI);
 
 		context.set_fill_rule(Cairo.FillRule.EVEN_ODD);
-		context.set_source_rgba(color.red, color.blue, color.green, 0.6);
+		context.set_source_rgba(color.red, color.green, color.blue, 0.6);
 		context.fill_preserve();
 	
 		context.arc(size/2, size/2, 26, 0, 2*Math.PI);
-		context.set_source_rgb(color.red, color.blue, color.green);
+		context.set_source_rgb(color.red, color.green, color.blue);
 		context.fill_preserve();
 	
 		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);

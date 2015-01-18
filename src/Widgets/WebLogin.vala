@@ -5,7 +5,6 @@ public class WebLogin : Gtk.Dialog {
 	private WebKit.WebView m_view;
 	private Gtk.ScrolledWindow m_scroll;
 	private string m_url;
-	private string m_redirect_url;
 	public signal void auth_code(string code);
 	
 

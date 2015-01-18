@@ -675,6 +675,19 @@ public class dbManager : GLib.Object {
 		
 		return tmp;
 	}
+	
+	private string getAllTagsQuery()
+	{
+		var tags = read_tags();
+		string query = "";
+		foreach(var Tag in tags)
+		{
+			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(Tag.m_tagID);
+		}
+		
+		int or = query.char_count()-4;
+		return query.substring(0, or);
+	}
 
 	public GLib.List<category> read_categories_level(int level)
 	{
@@ -724,7 +737,7 @@ public class dbManager : GLib.Object {
 		}
 		else if(ID == CAT_TAGS)
 		{
-			query = query + "\"tags\" IS NOT \"\"";
+			query = query + getAllTagsQuery();
 		}
 		else if(selectedType == FEEDLIST_TAG)
 		{

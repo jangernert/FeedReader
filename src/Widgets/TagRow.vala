@@ -21,7 +21,7 @@ public class TagRow : baseRow {
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		try{
 			Gdk.Pixbuf tmp_icon = drawIcon();
-			scale_pixbuf(ref tmp_icon, 24);
+			scale_pixbuf(ref tmp_icon, 16);
 			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 		}catch(GLib.Error e){}
 
@@ -57,13 +57,13 @@ public class TagRow : baseRow {
 		Cairo.Context context = new Cairo.Context (surface);
 
 		context.set_line_width (0);
-		context.arc (size/2, size/2, 28, 0, 2*Math.PI);
+		context.arc (size/2, size/2, 32, 0, 2*Math.PI);
 
 		context.set_fill_rule (Cairo.FillRule.EVEN_ODD);
 		context.set_source_rgba (double.parse(color[0]), double.parse(color[1]), double.parse(color[2]), 0.6);
 		context.fill_preserve ();
 	
-		context.arc (size/2, size/2, 22, 0, 2*Math.PI);
+		context.arc (size/2, size/2, 26, 0, 2*Math.PI);
 		context.set_source_rgb (double.parse(color[0]), double.parse(color[1]), double.parse(color[2]));
 		context.fill_preserve ();
 	

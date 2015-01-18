@@ -68,14 +68,35 @@ const string CAT_ID_TTRSS_SPECIAL = "-1";
 const string CAT_ID_MASTER = "-2";
 const string CAT_TAGS = "-3";
 const string FEEDID_ALL_FEEDS = "-4";
-
-
-// rgb-colors
+					
+// tango colors
 const string[] COLORS = {
-							"0.6902,0.0902,0.12157",	//
-							"0,0.78039,0.54902",		//
-							"0.19608,0.80392,0.19608"	// Lime Green
+							"#edd400", // butter medium
+							"#f57900", // orange medium
+							"#c17d11", // chocolate medium
+							"#73d216", // chameleon medium
+							"#3465a4", // sky blue medium
+							"#75507b", // plum medium
+							"#cc0000", // scarlet red medium
+							"#d3d7cf", // aluminium medium
+														
+							"#fce94f", // butter light
+							"#fcaf3e", // orange light
+							"#e9b96e", // chocolate light
+							"#8ae234", // chameleon light
+							"#729fcf", // sky blue light
+							"#ad7fa8", // plum light
+							"#ef2929", // scarlet red light
+							"#eeeeec", // aluminium light
+							
+							"#c4a000", // butter dark
+							"#ce5c00", // orange dark
+							"#8f5902", // chocolate dark
+							"#4e9a06", // chameleon dark
+							"#204a87", // sky blue dark
+							"#5c3566", // plum dark
+							"#a40000", // scarlet red dark
+							"#babdb6"  // aluminium dark
 						};
-
 
 

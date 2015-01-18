@@ -51,21 +51,23 @@ public class TagRow : baseRow {
 	private Gdk.Pixbuf drawIcon()
 	{
 		int size = 64;
+		var color = Gdk.RGBA();
+		print(m_color.to_string() + "\n");
 		print(COLORS[m_color] + "\n");
-		string[] color = COLORS[m_color].split (",");
-		Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, size, size);
-		Cairo.Context context = new Cairo.Context (surface);
+		color.parse(COLORS[m_color]);
+		Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, size, size);
+		Cairo.Context context = new Cairo.Context(surface);
 
-		context.set_line_width (0);
-		context.arc (size/2, size/2, 32, 0, 2*Math.PI);
+		context.set_line_width(0);
+		context.arc(size/2, size/2, 32, 0, 2*Math.PI);
 
-		context.set_fill_rule (Cairo.FillRule.EVEN_ODD);
-		context.set_source_rgba (double.parse(color[0]), double.parse(color[1]), double.parse(color[2]), 0.6);
-		context.fill_preserve ();
+		context.set_fill_rule(Cairo.FillRule.EVEN_ODD);
+		context.set_source_rgba(color.red, color.blue, color.green, 0.6);
+		context.fill_preserve();
 	
-		context.arc (size/2, size/2, 26, 0, 2*Math.PI);
-		context.set_source_rgb (double.parse(color[0]), double.parse(color[1]), double.parse(color[2]));
-		context.fill_preserve ();
+		context.arc(size/2, size/2, 26, 0, 2*Math.PI);
+		context.set_source_rgb(color.red, color.blue, color.green);
+		context.fill_preserve();
 	
 		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);
 	}

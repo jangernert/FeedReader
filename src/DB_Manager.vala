@@ -269,9 +269,22 @@ public class dbManager : GLib.Object {
 		stmt.reset ();
 	}
 	
+	public void update_tag_color(string tagID, int color)
+	{
+		string query = "UPDATE \"main\".\"tags\" SET \"color\" = " + color.to_string() + " WHERE \"tagID\" = \"" + tagID + "\"";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		
+		while (stmt.step () == Sqlite.ROW) {}
+		stmt.reset ();
+	}
+	
 	public void update_tag(string tagID)
 	{
-		string query = "UPDATE \"main\".\"tags\" SET \"exists\" = 1";
+		string query = "UPDATE \"main\".\"tags\" SET \"exists\" = 1 WHERE \"tagID\" = \"" + tagID + "\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {

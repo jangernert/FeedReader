@@ -31,6 +31,7 @@ public class TagRow : baseRow {
 		
 		m_pop.newColorSelected.connect((color) => {
 			m_circle.newColor(color);
+			dataBase.update_tag_color(m_tagID, color);
 		});
 
 		m_revealer = new Gtk.Revealer();

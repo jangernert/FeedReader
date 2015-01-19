@@ -4,6 +4,8 @@ public class TagRow : baseRow {
 	private bool m_exits;
 	private string m_catID;
 	private int m_color;
+	private ColorCircle m_circle;
+	private ColorPopover m_pop;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
 	
@@ -19,11 +21,17 @@ public class TagRow : baseRow {
 			
 		var rowhight = 30;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		try{
-			Gdk.Pixbuf tmp_icon = drawIcon();
-			scale_pixbuf(ref tmp_icon, 16);
-			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
-		}catch(GLib.Error e){}
+		
+		m_circle = new ColorCircle(m_color);
+		m_pop = new ColorPopover(m_circle);
+		
+		m_circle.clicked.connect((color) => {
+			m_pop.show_all();
+		});
+		
+		m_pop.newColorSelected.connect((color) => {
+			m_circle.newColor(color);
+		});
 
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -39,37 +47,13 @@ public class TagRow : baseRow {
 		m_spacer.set_size_request(24, rowhight);
 
 		m_box.pack_start(m_spacer, false, false, 0);
-		m_box.pack_start(m_icon, false, false, 8);
+		m_box.pack_start(m_circle, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
 		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
 		m_isRevealed = false;
 		this.add(m_revealer);
 		this.show_all();
-	}
-	
-	private Gdk.Pixbuf drawIcon()
-	{
-		int size = 64;
-		var color = Gdk.RGBA();
-		print(m_color.to_string() + "\n");
-		print(COLORS[m_color] + "\n");
-		color.parse(COLORS[m_color]);
-		Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, size, size);
-		Cairo.Context context = new Cairo.Context(surface);
-
-		context.set_line_width(0);
-		context.arc(size/2, size/2, 32, 0, 2*Math.PI);
-
-		context.set_fill_rule(Cairo.FillRule.EVEN_ODD);
-		context.set_source_rgba(color.red, color.green, color.blue, 0.6);
-		context.fill_preserve();
-	
-		context.arc(size/2, size/2, 26, 0, 2*Math.PI);
-		context.set_source_rgb(color.red, color.green, color.blue);
-		context.fill_preserve();
-	
-		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);
 	}
 
 	public void update(string name)

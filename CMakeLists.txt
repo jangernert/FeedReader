@@ -44,6 +44,8 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ArticleView.vala
     src/Widgets/BaseRow.vala
     src/Widgets/CategorieRow.vala
+    src/Widgets/ColorCircle.vala
+    src/Widgets/ColorPopover.vala
     src/Widgets/FeedList.vala
     src/Widgets/FeedRow.vala
     src/Widgets/LoginDialog.vala

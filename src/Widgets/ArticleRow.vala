@@ -110,7 +110,7 @@ public class articleRow : baseRow {
 
 		m_unread_eventbox.enter_notify_event.connect(() => {unreadIconEnter(); return true;});
 		m_unread_eventbox.leave_notify_event.connect(() => {unreadIconLeave(); return true;});
-		m_unread_eventbox.button_press_event.connect(() => {unreadIconCliced(); return true;});
+		m_unread_eventbox.button_press_event.connect(() => {unreadIconClicked(); return true;});
 
 			
 		m_marked_eventbox = new Gtk.EventBox();
@@ -125,7 +125,7 @@ public class articleRow : baseRow {
 			
 		m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
 		m_marked_eventbox.leave_notify_event.connect(() => {markedIconLeave(); return true;});
-		m_marked_eventbox.button_press_event.connect(() => {markedIconCliced(); return true;});
+		m_marked_eventbox.button_press_event.connect(() => {markedIconClicked(); return true;});
 
 			
 
@@ -171,7 +171,7 @@ public class articleRow : baseRow {
 	}
 
 
-	private void unreadIconCliced()
+	private void unreadIconClicked()
 	{
 		if(m_just_clicked)
 			unreadIconEnter();
@@ -252,7 +252,7 @@ public class articleRow : baseRow {
 	}
 
 
-	private void markedIconCliced()
+	private void markedIconClicked()
 	{
 		m_just_clicked = true;
 		switch(m_marked)

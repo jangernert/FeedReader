@@ -13,8 +13,6 @@ public class ColorCircle : Gtk.EventBox {
 		try{
 			Gdk.Pixbuf tmp_icon = drawIcon();
 			Gdk.Pixbuf tmp_icon_light = drawIcon(true);
-			//scale_pixbuf(ref tmp_icon, 16);
-			//scale_pixbuf(ref tmp_icon_light, 16);
 			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 			m_icon_light = new Gtk.Image.from_pixbuf(tmp_icon_light);
 		}
@@ -78,26 +76,24 @@ public class ColorCircle : Gtk.EventBox {
 	{
 		int size = 16;
 		var color = Gdk.RGBA();
+		color.parse(COLORS[m_color]);
+		double lighten = 1.0;
 		if(light)
-		{
-			color.parse(COLORS_LIGHT[m_color]);
-		}
-		else
-		{
-			color.parse(COLORS[m_color]);
-		}
+			lighten = 0.7;
+		
+		
 		Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, size, size);
 		Cairo.Context context = new Cairo.Context(surface);
 
-		context.set_line_width(0);
-		context.arc(size/2, size/2, size/2, 0, 2*Math.PI);
-
+		context.set_line_width(2);
 		context.set_fill_rule(Cairo.FillRule.EVEN_ODD);
-		context.set_source_rgba(color.red, color.green, color.blue, 0.6);
+		
+		context.set_source_rgba(color.red, color.green, color.blue, 0.6*lighten);
+		context.arc(size/2, size/2, (size/2), 0, 2*Math.PI);
 		context.fill_preserve();
-	
+		
 		context.arc(size/2, size/2, (size/2)-(size/8), 0, 2*Math.PI);
-		context.set_source_rgb(color.red, color.green, color.blue);
+		context.set_source_rgba(color.red, color.green, color.blue, 0.6*lighten);
 		context.fill_preserve();
 	
 		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);

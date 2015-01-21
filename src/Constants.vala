@@ -79,6 +79,15 @@ const string[] COLORS = {
 							"#75507b", // plum medium
 							"#cc0000", // scarlet red medium
 							"#d3d7cf", // aluminium medium
+														
+							"#fce94f", // butter light
+							"#fcaf3e", // orange light
+							"#e9b96e", // chocolate light
+							"#8ae234", // chameleon light
+							"#729fcf", // sky blue light
+							"#ad7fa8", // plum light
+							"#ef2929", // scarlet red light
+							"#eeeeec", // aluminium light
 							
 							"#c4a000", // butter dark
 							"#ce5c00", // orange dark
@@ -89,26 +98,6 @@ const string[] COLORS = {
 							"#a40000", // scarlet red dark
 							"#babdb6"  // aluminium dark
 						};
-						
-						
-const string[] COLORS_LIGHT = {						
-							"#fce94f", // butter light
-							"#fcaf3e", // orange light
-							"#e9b96e", // chocolate light
-							"#8ae234", // chameleon light
-							"#729fcf", // sky blue light
-							"#ad7fa8", // plum light
-							"#ef2929", // scarlet red light
-							"#eeeeec", // aluminium light
-							
-							"#edd400", // butter medium
-							"#f57900", // orange medium
-							"#c17d11", // chocolate medium
-							"#73d216", // chameleon medium
-							"#3465a4", // sky blue medium
-							"#75507b", // plum medium
-							"#cc0000", // scarlet red medium
-							"#d3d7cf"  // aluminium medium
-						};
+
 
 

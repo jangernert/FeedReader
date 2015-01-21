@@ -84,7 +84,6 @@ public class dbManager : GLib.Object {
 											(
 												"tagID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" TEXT NOT NULL,
-												"unread" INTEGER,
 												"exists" INTEGER,
 												"color" INTEGER
 												)""";
@@ -315,52 +314,82 @@ public class dbManager : GLib.Object {
 		}
 		stmt.reset ();
 	}
+	
+	
+	public int preview_empty(string articleID)
+	{
+		string query = "SELECT count(*) FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\" AND NOT preview = \"\"";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		
+		int result = 1;
+		
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+		
+		return result;
+	}
 
 
 	
 	public void write_article(string articleID, string feedID, string title, string author, string url, int unread, int marked, int insert_replace, string html, string tags, string preview = "")
 	{
+		// FIXME check if preview already exists and dont generate it again
+		// SELECT count(*) FROM main.articles WHERE articleID = "34134" AND preview = ""
 		string output = "";
-		string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
-		int outputfd = GLib.FileUtils.mkstemp(filename);
-		try{
-			if(preview == "")
-				GLib.FileUtils.set_contents(filename, html);
-			else
-				GLib.FileUtils.set_contents(filename, preview);
-		}catch(GLib.FileError e){
-			stderr.printf("error writing html to tmp file: %s\n", e.message);
-		}
-		GLib.FileUtils.close(outputfd);
-
-		string[] spawn_args = {"html2text", "-utf8", "-nobs", filename};
-		try{
-			GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-		}catch(GLib.SpawnError e){
-			stdout.printf("error spawning command line: %s\n", e.message);
-		}
-
-		string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
-		if(output.has_prefix(prefix))
+		int preview_exists = preview_empty(articleID);
+		
+		//print(title + " " + unread.to_string() + "\n");
+		
+		if(preview_exists == 0)
 		{
-			output = output.slice(prefix.length, output.length);
+			
+			string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
+			int outputfd = GLib.FileUtils.mkstemp(filename);
+			try{
+				if(preview == "")
+					GLib.FileUtils.set_contents(filename, html);
+				else
+					GLib.FileUtils.set_contents(filename, preview);
+			}catch(GLib.FileError e){
+				stderr.printf("error writing html to tmp file: %s\n", e.message);
+			}
+			GLib.FileUtils.close(outputfd);
+
+			string[] spawn_args = {"html2text", "-utf8", "-nobs", filename};
+			try{
+				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+			}catch(GLib.SpawnError e){
+				stdout.printf("error spawning command line: %s\n", e.message);
+			}
+
+			string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
+			if(output.has_prefix(prefix))
+			{
+				output = output.slice(prefix.length, output.length);
+			}
+
+			int length = 300;
+			if(output.length < 300)
+				length = output.length;
+
+			output = output.replace("\n"," ");
+			output = output.slice(0, length);
+			output = output.slice(0, output.last_index_of(" "));
+			output = output.chug();
 		}
-
-		int length = 300;
-		if(output.length < 300)
-			length = output.length;
-
-		output = output.replace("\n"," ");
-		output = output.slice(0, length);
-		output = output.slice(0, output.last_index_of(" "));
-		output = output.chug();
+		
 		
 		string query = "";
 		if(insert_replace == DB_INSERT_OR_IGNORE)
 		{
 			string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
-			string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"sortID\") ";
-			string values = "VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW, " + unread.to_string() + ", " + marked.to_string() + ", " + (getHighestSortID()+1).to_string() + ")";
+			string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"sortID\", \"tags\") ";
+			string values = "VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW, " + unread.to_string() + ", " + marked.to_string() + ", " + (getHighestSortID()+1).to_string() + ", \"" + tags + "\")";
 			
 			query = command + fields + values;
 		}

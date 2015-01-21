@@ -170,6 +170,44 @@ public class ttrss_interface : GLib.Object {
 		yield;
 	}
 	
+	
+	public async void getTags()
+	{
+		SourceFunc callback = getTags.callback;
+		
+		ThreadFunc<void*> run = () => {
+			if(isloggedin())
+			{
+				dataBase.reset_exists_tag();
+				var message = new ttrss_message(m_ttrss_url);
+				message.add_string("sid", m_ttrss_sessionid);
+				message.add_string("op", "getLabels");
+				int error = message.send();
+		
+				if(error == NO_ERROR)
+				{
+					var response = message.get_response_array();
+					var tag_count = response.get_length();
+						
+					for(uint i = 0; i < tag_count; ++i)
+					{
+						var tag_node = response.get_object_element(i);
+						string tagID = tag_node.get_int_member("id").to_string();
+						string title = tag_node.get_string_member("caption");
+						dataBase.write_tag(tagID, title);
+						dataBase.update_tag(tagID);
+					}
+				}
+				
+				dataBase.delete_nonexisting_tags();
+				Idle.add((owned) callback);
+			}
+			return null;
+		};
+		new GLib.Thread<void*>("getTags", run);
+		yield;
+	}
+	
 
 	public string getIconDir()
 	{
@@ -331,9 +369,6 @@ public class ttrss_interface : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
-		
-		if(!dataBase.isTableEmpty("articles"))
-			message.add_int("since_id", dataBase.getNewestArticle());
 			
 		message.add_int("limit", limit);
 		message.add_int("skip", skip);
@@ -346,10 +381,9 @@ public class ttrss_interface : GLib.Object {
 			var response = message.get_response_array();
 			var headline_count = response.get_length();
 			stdout.printf("Number of New Articles: %u\n", headline_count);
-			
-			if(skip == 0){
-				feed_server.sendNotification(headline_count);
-			}
+
+			dataBase.markReadAllArticles();
+			int before = dataBase.getHighestSortID();
 			
 			GLib.List<article> articles = new GLib.List<article>();
 			string title, author, url, html;
@@ -362,6 +396,18 @@ public class ttrss_interface : GLib.Object {
 				var headline_node = response.get_object_element(i);
 				getArticle( int.parse(headline_node.get_int_member("id").to_string()),
 							out title, out author, out url, out html);
+				string tagString = "";
+				
+				if(headline_node.has_member("labels"))
+				{
+					var tags = headline_node.get_array_member("labels");
+					uint tagCount = tags.get_length();
+					
+					for(int j = 0; j < tagCount; ++j)
+					{
+						tagString = tagString + tags.get_array_element(j).get_int_element(0).to_string() + ",";
+					}
+				}
 				
 				articles.append(new article(
 										headline_node.get_int_member("id").to_string(),
@@ -374,7 +420,7 @@ public class ttrss_interface : GLib.Object {
 										"",
 										author,
 										-1,
-										""
+										tagString
 								));
 				
 			}
@@ -399,7 +445,7 @@ public class ttrss_interface : GLib.Object {
 			
 			
 			// then only update marked and unread for all others
-			/*foreach(article item in articles)
+			foreach(article item in articles)
 			{
 				dataBase.write_article(	item.m_articleID,
 										item.m_feedID,
@@ -408,12 +454,17 @@ public class ttrss_interface : GLib.Object {
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
-										DB_INSERT_OR_REPLACE,
+										DB_UPDATE_ROW,
 										item.m_html,
 										item.m_tags,
 										item.m_preview);
-			}*/
-				
+			}
+			
+			if(skip == 0){
+				int after = dataBase.getHighestSortID();
+				feed_server.sendNotification(after-before);
+			}
+			
 			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
 			int maxArticles = feedreader_settings.get_int("max-articles");
 			if(headline_count == 200 && (skip+200) < maxArticles)

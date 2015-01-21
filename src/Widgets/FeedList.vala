@@ -221,7 +221,7 @@ public class feedList : Gtk.Stack {
 		string[] exp = feedreader_settings.get_strv("expanded-categories");
 		bool expand = false;
 		
-		if(account_type == TYPE_FEEDLY)
+		if(account_type != TYPE_OWNCLOUD)
 		{
 			foreach(string str in exp)
 			{
@@ -246,13 +246,17 @@ public class feedList : Gtk.Stack {
 			m_list.insert(categorierow, 3);
 			categorierow.reveal(true);
 			expand = false;
+			string name = "Tags";
+			if(account_type == TYPE_TTRSS)
+				name = "Labels";
+			
 			foreach(string str in exp)
 			{
-				if("Tags" == str)
+				if(str == name)
 					expand = true;
 			}
 			var tagrow = new categorieRow(
-					                                "Tags",
+					                                name,
 					                                CAT_TAGS,
 					                                0,
 					                                "",
@@ -283,8 +287,8 @@ public class feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.m_parent) ||
-						(item.m_parent == CAT_ID_NONE && pos > 2) && (account_type != TYPE_FEEDLY) ||
-						(item.m_parent == CAT_ID_NONE && pos > 3) && (account_type == TYPE_FEEDLY))
+						(item.m_parent == CAT_ID_NONE && pos > 2) && (account_type == TYPE_OWNCLOUD) ||
+						(item.m_parent == CAT_ID_NONE && pos > 3) && (account_type != TYPE_OWNCLOUD))
 					{
 						foreach(string str in exp)
 						{
@@ -294,7 +298,7 @@ public class feedList : Gtk.Stack {
 						
 						int level = item.m_level;
 						string parent = item.m_parent;
-						if(account_type == TYPE_FEEDLY)
+						if(account_type != TYPE_OWNCLOUD)
 						{
 							level++;
 							parent = CAT_ID_MASTER;
@@ -434,7 +438,7 @@ public class feedList : Gtk.Stack {
 			}
 		}
 		
-		if(account_type == TYPE_FEEDLY)
+		if(account_type != TYPE_OWNCLOUD)
 		{
 			foreach(Gtk.Widget row in FeedChildList)
 			{
@@ -468,7 +472,7 @@ public class feedList : Gtk.Stack {
 			{
 				int level = item.m_level;
 				string parent = item.m_parent;
-				if(account_type == TYPE_FEEDLY)
+				if(account_type != TYPE_OWNCLOUD)
 				{
 					level++;
 					parent = CAT_ID_MASTER;

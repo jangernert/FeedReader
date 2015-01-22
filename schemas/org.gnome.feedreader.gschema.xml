@@ -5,117 +5,131 @@
 		<value nick="FEEDLY" value="1"/>
 		<value nick="OWNCLOUD" value="2"/>
 	</enum>
-
-
-  <schema id="org.gnome.feedreader" path="/org/gnome/feedreader/" gettext-domain="feedreader">
-
-    <key name="feedly-access-token" type="s">
-      <default>""</default>
-      <summary>Acces key to Feedly-API</summary>
-      <description>
-        Acces key to Feedly-API. Will time out at some point.
-      </description>
-    </key>
-    
-    <key name="feedly-refresh-token" type="s">
-      <default>""</default>
-      <summary>Refresh token</summary>
-      <description>
-        Token to generate new access key to feedly-API.
-      </description>
-    </key>
-    
-    <key name="feedly-api-code" type="s">
-      <default>""</default>
-      <summary>apiCode</summary>
-      <description>
-        Code to get access token for the first time. Gets returned after logging in via google/facebook.
-      </description>
-    </key>
-    
-    <key name="url" type="s">
-      <default>""</default>
-      <summary>Link to your tt-rss instance</summary>
-      <description>
-        Link to your tt-rss instance
-      </description>
-    </key>
-
-    <key name="username" type="s">
-      <default>""</default>
-      <summary>Username to log into tt-rss</summary>
-      <description>
-        Username to log into tt-rss
-      </description>
-    </key>
-    
-    <key name="feed-row-width" type="i">
-      <default>200</default>
-      <summary>FeedRow width</summary>
-      <description>
-        Width of the first paned, the feed-row
-      </description>
-    </key>
-    
-    <key name="article-row-width" type="i">
-      <default>400</default>
-      <summary>ArticleRow width</summary>
-      <description>
-        Width of the second paned, the article-row
-      </description>
-    </key>
-    
-    <key name="only-unread" type="b">
-      <default>false</default>
-      <summary>Only unread</summary>
-      <description>
-        Show only unread articles
-      </description>
-    </key>
-    
-    <key name="only-marked" type="b">
-      <default>false</default>
-      <summary>Only makred</summary>
-      <description>
-        Show only marked articles
-      </description>
-    </key>
-    
-    <key name="expanded-categories" type="as">
-      <default>[]</default>
-      <summary>expaneded categories</summary>
-      <description>
-        all the categories that are expanded, showing their feeds and subcategories
-      </description>
-    </key>
-    
-    <key name="sync" type="i">
-      <default>300</default>
-      <summary>sync rate</summary>
-      <description>
-        Seconds between each refresh
-      </description>
-    </key>
-    
-    <key name="max-articles" type="i">
-      <default>400</default>
-      <summary>Maximum of new Articles</summary>
-      <description>
-        The maximum of articles that are fetched from the server.
-      </description>
-    </key>
-    
-    <key name="currently-updating" type="b">
-      <default>false</default>
-      <summary>currently updating</summary>
-      <description>
-      	If the FeedReader is currently updating.
-      </description>
-    </key>
 	
-	<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
-		<default>'TTRSS'</default>
-	</key>
+	<schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
+		<key name="feed-row-width" type="i">
+			<default>200</default>
+			<summary>FeedRow width</summary>
+			<description>
+				Width of the first paned, the feed-row
+			</description>
+		</key>
+		
+		<key name="feed-row-scrollpos" type="d">
+			<default>0</default>
+			<summary>FeedRow Scroll Position</summary>
+			<description>
+				The position the user scrolled to at the time the app closes
+			</description>
+		</key>
+		
+		<key name="article-row-width" type="i">
+			<default>400</default>
+			<summary>ArticleRow width</summary>
+			<description>
+				Width of the second paned, the article-row
+			</description>
+		</key>
+		
+		<key name="only-unread" type="b">
+			<default>false</default>
+			<summary>Only unread</summary>
+			<description>
+				Show only unread articles
+			</description>
+		</key>
+    
+		<key name="only-marked" type="b">
+			<default>false</default>
+			<summary>Only makred</summary>
+			<description>
+				Show only marked articles
+			</description>
+		</key>
+    
+		<key name="expanded-categories" type="as">
+			<default>[]</default>
+			<summary>expaneded categories</summary>
+			<description>
+				all the categories that are expanded, showing their feeds and subcategories
+			</description>
+		</key>
+		
+		<key name="currently-updating" type="b">
+			<default>false</default>
+			<summary>currently updating</summary>
+			<description>
+				If the FeedReader is currently updating.
+			</description>
+		</key>
+	</schema>
+	
+	
+	<schema id="org.gnome.feedreader.feedly" path="/org/gnome/feedreader/feedly/" gettext-domain="feedreader">
+		<key name="feedly-access-token" type="s">
+			<default>""</default>
+			<summary>Acces key to Feedly-API</summary>
+			<description>
+				Acces key to Feedly-API. Will time out at some point.
+			</description>
+		</key>
+    
+		<key name="feedly-refresh-token" type="s">
+			<default>""</default>
+			<summary>Refresh token</summary>
+			<description>
+				Token to generate new access key to feedly-API.
+			</description>
+		</key>
+    
+		<key name="feedly-api-code" type="s">
+			<default>""</default>
+			<summary>apiCode</summary>
+			<description>
+				Code to get access token for the first time. Gets returned after logging in via google/facebook.
+			</description>
+		</key>
+	</schema>
+	
+	
+	<schema id="org.gnome.feedreader.ttrss" path="/org/gnome/feedreader/ttrss/" gettext-domain="feedreader">
+		<key name="url" type="s">
+			<default>""</default>
+			<summary>Link to your tt-rss instance</summary>
+			<description>
+				Link to your tt-rss instance
+			</description>
+		</key>
 
-  </schema>
+		<key name="username" type="s">
+			<default>""</default>
+			<summary>Username to log into tt-rss</summary>
+			<description>
+				Username to log into tt-rss
+			</description>
+		</key>
+	</schema>
+
+
+	<schema id="org.gnome.feedreader" path="/org/gnome/feedreader/" gettext-domain="feedreader">
+		<key name="sync" type="i">
+			<default>300</default>
+			<summary>sync rate</summary>
+			<description>
+				Seconds between each refresh
+			</description>
+		</key>
+		
+		<key name="max-articles" type="i">
+			<default>400</default>
+			<summary>Maximum of new Articles</summary>
+			<description>
+				The maximum of articles that are fetched from the server.
+			</description>
+		</key>
+		
+		<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
+			<default>'TTRSS'</default>
+		</key>
+	</schema>
 </schemalist>

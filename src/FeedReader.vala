@@ -21,7 +21,10 @@ using GLib;
 using Gtk;
 
 dbManager dataBase;
-GLib.Settings feedreader_settings;
+GLib.Settings settings_general;
+GLib.Settings settings_state;
+GLib.Settings settings_feedly;
+GLib.Settings settings_ttrss;
 FeedDaemon feedDaemon_interface;
 
 
@@ -49,7 +52,10 @@ public class rssReaderApp : Gtk.Application {
 		dataBase = new dbManager();
 		dataBase.init();
 		
-		feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
+		settings_general = new GLib.Settings ("org.gnome.feedreader");
+		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
+		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
+		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		
 		try{
 			feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
@@ -96,7 +102,7 @@ public class rssReaderApp : Gtk.Application {
 		{
 			var dialog = new loginDialog(m_window, login_code);
 			dialog.submit_data.connect(() => {
-				int type = feedreader_settings.get_enum("account-type");
+				int type = settings_general.get_enum("account-type");
 				switch(type)
 				{
 					case TYPE_NONE:

@@ -466,7 +466,7 @@ public class ttrss_interface : GLib.Object {
 			}
 			
 			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
-			int maxArticles = feedreader_settings.get_int("max-articles");
+			int maxArticles = settings_general.get_int("max-articles");
 			if(headline_count == 200 && (skip+200) < maxArticles)
 			{
 				stdout.printf("get more headlines\n");
@@ -490,7 +490,7 @@ public class ttrss_interface : GLib.Object {
 		ThreadFunc<void*> run = () => {
 			if(isloggedin())
 			{
-				int limit = 2 * feedreader_settings.get_int("max-articles");
+				int limit = 2 * settings_general.get_int("max-articles");
 				uint headline_count;
 				
 				// update unread

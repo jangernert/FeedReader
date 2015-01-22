@@ -36,8 +36,8 @@ public class readerHeaderbar : Gtk.HeaderBar {
 		var only_marked_icon = new Gtk.Image.from_icon_name("help-about", Gtk.IconSize.LARGE_TOOLBAR);
 
 
-		m_only_unread = feedreader_settings.get_boolean("only-unread");
-		m_only_marked = feedreader_settings.get_boolean("only-marked");
+		m_only_unread = settings_state.get_boolean("only-unread");
+		m_only_marked = settings_state.get_boolean("only-marked");
 		
 		m_only_unread_button = new Gtk.ToggleButton();
 		m_only_unread_button.add(only_unread_icon);

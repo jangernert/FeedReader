@@ -13,7 +13,7 @@ public class FeedlyAPI : Object {
 	public int login()
 	{
 		print("feedly backend: login\n");
-		if(feedreader_settings.get_string("feedly-refresh-token") == "")
+		if(settings_feedly.get_string("feedly-refresh-token") == "")
 		{
 			m_connection.getToken();
 		}
@@ -178,7 +178,7 @@ public class FeedlyAPI : Object {
 	public async void getArticles() throws Error {
 		SourceFunc callback = getArticles.callback;
 		ThreadFunc<void*> run = () => {
-			int maxArticles = feedreader_settings.get_int("max-articles");
+			int maxArticles = settings_general.get_int("max-articles");
 			string allArticles = "user/" + m_userID + "/category/global.all";
 			string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=newest".printf(allArticles, maxArticles));
 			string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");

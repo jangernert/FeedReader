@@ -115,17 +115,14 @@ public class readerUI : Gtk.ApplicationWindow
 			if(m_headerbar.m_only_unread) only_unread = 1;
 			int only_marked = 0;
 			if(m_headerbar.m_only_marked) only_marked = 1;
-		
-			int feed_row_width = m_pane_feedlist.get_position();
-			int article_row_width = m_pane_articlelist.get_position();
 			
 			
-			feedreader_settings.set_strv("expanded-categories", m_feedList.getExpandedCategories());
-			
-			feedreader_settings.set_int("feed-row-width", feed_row_width);
-			feedreader_settings.set_int("article-row-width", article_row_width);
-			feedreader_settings.set_boolean("only-unread", m_headerbar.m_only_unread);
-			feedreader_settings.set_boolean("only-marked", m_headerbar.m_only_marked);
+			settings_state.set_strv("expanded-categories", m_feedList.getExpandedCategories());
+			settings_state.set_double("feed-row-scrollpos",  m_feedList.getScrollPos());
+			settings_state.set_int("feed-row-width", m_pane_feedlist.get_position());
+			settings_state.set_int("article-row-width", m_pane_articlelist.get_position());
+			settings_state.set_boolean("only-unread", m_headerbar.m_only_unread);
+			settings_state.set_boolean("only-marked", m_headerbar.m_only_marked);
 		});
 	}
 	
@@ -140,7 +137,7 @@ public class readerUI : Gtk.ApplicationWindow
 
 	private void setupFeedlist()
 	{
-		int feed_row_width = feedreader_settings.get_int("feed-row-width");
+		int feed_row_width = settings_state.get_int("feed-row-width");
 		m_pane_feedlist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane_feedlist.set_position(feed_row_width);
 		m_feedList = new feedList();
@@ -184,7 +181,7 @@ public class readerUI : Gtk.ApplicationWindow
 		}
 
 		
-		int article_row_width = feedreader_settings.get_int("article-row-width");
+		int article_row_width = settings_state.get_int("article-row-width");
 		m_pane_articlelist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane_articlelist.set_size_request(500, 500);
 		m_pane_articlelist.set_position(article_row_width);
@@ -223,6 +220,7 @@ public class readerUI : Gtk.ApplicationWindow
 	public void createFeedlist()
 	{
 		m_feedList.createFeedlist();
+		m_feedList.setScrollPos(settings_state.get_double("feed-row-scrollpos"));
 	}
 
 

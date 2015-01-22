@@ -2,7 +2,7 @@ public class ttrss_utils : GLib.Object {
 	
 	public static string getURL()
 	{
-		string tmp_url = feedreader_settings.get_string("url");
+		string tmp_url = settings_ttrss.get_string("url");
 		if(tmp_url != ""){
 			if(!tmp_url.has_suffix("/"))
 				tmp_url = tmp_url + "/";
@@ -19,7 +19,7 @@ public class ttrss_utils : GLib.Object {
 	
 	public static string getUser()
 	{
-		return feedreader_settings.get_string ("username");
+		return settings_ttrss.get_string ("username");
 	}
 	
 	public static string getPasswd()
@@ -29,7 +29,7 @@ public class ttrss_utils : GLib.Object {
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = feedreader_settings.get_string("url");
+		attributes["URL"] = settings_ttrss.get_string("url");
 		attributes["Username"] = getUser();
 
 		string passwd = "";

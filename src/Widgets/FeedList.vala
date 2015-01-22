@@ -23,6 +23,8 @@ public class feedList : Gtk.Stack {
 	private Gtk.ListBox m_list;
 	private baseRow m_selected;
 	private Gtk.Spinner m_spinner;
+	private double m_scrollPos;
+	private Gtk.Adjustment m_scroll_adjustment;
 	public signal void newFeedSelected(string feedID);
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
@@ -37,6 +39,12 @@ public class feedList : Gtk.Stack {
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.set_size_request(200, 500);
 		m_scroll.add(m_list);
+		
+		m_scroll_adjustment = m_scroll.get_vadjustment();
+		m_scroll_adjustment.value_changed.connect(() => {
+			m_scrollPos = m_scroll_adjustment.get_value();
+		});
+		
 		this.get_style_context().add_class("feed-list");
 
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
@@ -212,13 +220,22 @@ public class feedList : Gtk.Stack {
 		initCollapseCategories();
 		this.show_all();
 	}
+	
+	
+	public void setScrollPos(double pos)
+	{
+		print("set feedlist scroll: " + pos.to_string() + "\n");
+		m_scroll_adjustment = m_scroll.get_vadjustment();
+		m_scroll_adjustment.set_value(pos);
+		m_scroll.set_vadjustment(m_scroll_adjustment);
+	}
 
 
 	private void createCategories()
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
-		int account_type = feedreader_settings.get_enum("account-type");
-		string[] exp = feedreader_settings.get_strv("expanded-categories");
+		int account_type = settings_general.get_enum("account-type");
+		string[] exp = settings_state.get_strv("expanded-categories");
 		bool expand = false;
 		
 		if(account_type != TYPE_OWNCLOUD)
@@ -426,7 +443,7 @@ public class feedList : Gtk.Stack {
 	{
 		var categories = dataBase.read_categories();
 		bool found, inserted;
-		int account_type = feedreader_settings.get_enum("account-type");
+		int account_type = settings_general.get_enum("account-type");
 		var FeedChildList = m_list.get_children();
 		
 		foreach(Gtk.Widget row in FeedChildList)
@@ -744,6 +761,12 @@ public class feedList : Gtk.Stack {
 			}
 		}
 		return e;
+	}
+	
+	
+	public double getScrollPos()
+	{
+		return m_scrollPos;
 	}
 
 }

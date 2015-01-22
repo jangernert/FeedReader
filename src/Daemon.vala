@@ -7,18 +7,18 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		stdout.printf("daemon: constructor\n");
-		feedreader_settings.set_boolean("currently-updating", false);
-		m_loggedin = login(feedreader_settings.get_enum("account-type"));
+		settings_state.set_boolean("currently-updating", false);
+		m_loggedin = login(settings_general.get_enum("account-type"));
 		
 		if(m_loggedin != LOGIN_SUCCESS)
 			stdout.printf("not logged in\n");
 		
-		int sync_timeout = feedreader_settings.get_int("sync");
+		int sync_timeout = settings_general.get_int("sync");
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 		updateBadge();
 		stdout.printf("daemon: add timeout\n");
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
-			if(!feedreader_settings.get_boolean("currently-updating"))
+			if(!settings_state.get_boolean("currently-updating"))
 			{
 		   		stdout.printf ("Timeout!\n");
 				startSync();
@@ -41,16 +41,16 @@ public class FeedDaemonServer : Object {
 	{
 		if(m_loggedin != LOGIN_SUCCESS)
 		{
-			m_loggedin = login(feedreader_settings.get_enum("account-type"));
+			m_loggedin = login(settings_general.get_enum("account-type"));
 		}
 		
 		if(m_loggedin == LOGIN_SUCCESS)
 		{
 			syncStarted();
-			feedreader_settings.set_boolean("currently-updating", true);
+			settings_state.set_boolean("currently-updating", true);
 			yield server.sync_content();
 			updateBadge();
-			feedreader_settings.set_boolean("currently-updating", false);
+			settings_state.set_boolean("currently-updating", false);
 			syncFinished();
 		}
 		else
@@ -112,7 +112,10 @@ void on_bus_aquired (DBusConnection conn) {
 
 
 dbManager dataBase;
-GLib.Settings feedreader_settings;
+GLib.Settings settings_general;
+GLib.Settings settings_state;
+GLib.Settings settings_feedly;
+GLib.Settings settings_ttrss;
 feed_server server;
 extern void exit(int exit_code);
 
@@ -120,7 +123,10 @@ void main () {
 	
 	dataBase = new dbManager();
 	dataBase.init();
-	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
+	settings_general = new GLib.Settings ("org.gnome.feedreader");
+	settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
+	settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
+	settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 	Notify.init("FeedReader");
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,

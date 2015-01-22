@@ -158,7 +158,7 @@ public class loginDialog : Gtk.Dialog {
 		this.response.connect(on_response);
 		this.show_all();
 		
-		switch(feedreader_settings.get_enum("account-type"))
+		switch(settings_general.get_enum("account-type"))
 		{
 			case TYPE_NONE:
 				m_comboBox.set_active(TYPE_NONE);
@@ -202,10 +202,10 @@ public class loginDialog : Gtk.Dialog {
 		m_ttrss_user_entry.activate.connect(on_enter);
 		m_ttrss_password_entry.activate.connect(on_enter);
 		
-		if(feedreader_settings.get_enum("account-type") == TYPE_TTRSS)
+		if(settings_general.get_enum("account-type") == TYPE_TTRSS)
 		{
-			string url = feedreader_settings.get_string("url");
-			string username = feedreader_settings.get_string("username");
+			string url = settings_ttrss.get_string("url");
+			string username = settings_ttrss.get_string("username");
 			m_ttrss_url_entry.set_text(url);
 			m_ttrss_user_entry.set_text(username);
 		
@@ -297,10 +297,10 @@ public class loginDialog : Gtk.Dialog {
 		m_owncloud_user_entry.activate.connect(on_enter);
 		m_owncloud_password_entry.activate.connect(on_enter);
 		
-		if(feedreader_settings.get_enum("account-type") == TYPE_OWNCLOUD)
+		if(settings_general.get_enum("account-type") == TYPE_OWNCLOUD)
 		{
-			string url = feedreader_settings.get_string("url");
-			string username = feedreader_settings.get_string("username");
+			string url = ""; //FIXME feedreader_settings.get_string("url");
+			string username = ""; //FIXME feedreader_settings.get_string("username");
 			m_owncloud_url_entry.set_text(url);
 			m_owncloud_user_entry.set_text(username);
 		
@@ -367,10 +367,10 @@ public class loginDialog : Gtk.Dialog {
 			switch(m_comboBox.get_active())
 			{
 				case TYPE_TTRSS:
-					feedreader_settings.set_enum("account-type", TYPE_TTRSS);
+					settings_general.set_enum("account-type", TYPE_TTRSS);
 					string url = m_ttrss_url_entry.get_text();
-					feedreader_settings.set_string("url", url);
-					feedreader_settings.set_string("username", m_ttrss_user_entry.get_text());
+					settings_ttrss.set_string("url", url);
+					settings_ttrss.set_string("username", m_ttrss_user_entry.get_text());
 					var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 								                      "URL", Secret.SchemaAttributeType.STRING,
 								                      "Username", Secret.SchemaAttributeType.STRING);
@@ -383,12 +383,12 @@ public class loginDialog : Gtk.Dialog {
 					
 				case TYPE_FEEDLY:
 					print("write type feedly\n");
-					feedreader_settings.set_enum("account-type", TYPE_FEEDLY);
-					feedreader_settings.set_string("feedly-api-code", m_feedly_api_code);
+					settings_general.set_enum("account-type", TYPE_FEEDLY);
+					settings_feedly.set_string("feedly-api-code", m_feedly_api_code);
 					break;
 					
 				case TYPE_OWNCLOUD:
-					feedreader_settings.set_enum("account-type", TYPE_OWNCLOUD);
+					settings_general.set_enum("account-type", TYPE_OWNCLOUD);
 					break;
 			}
 		}

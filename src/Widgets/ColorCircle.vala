@@ -11,10 +11,8 @@ public class ColorCircle : Gtk.EventBox {
 		m_color = color;
 		
 		try{
-			Gdk.Pixbuf tmp_icon = drawIcon();
-			Gdk.Pixbuf tmp_icon_light = drawIcon(true);
-			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
-			m_icon_light = new Gtk.Image.from_pixbuf(tmp_icon_light);
+			m_icon = new Gtk.Image.from_pixbuf(drawIcon());
+			m_icon_light = new Gtk.Image.from_pixbuf(drawIcon(true));
 		}
 		catch(GLib.Error e)
 		{

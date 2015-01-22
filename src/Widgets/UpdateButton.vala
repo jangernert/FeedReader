@@ -31,7 +31,7 @@ public class UpdateButton : Gtk.Button {
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.LARGE_TOOLBAR);
 		this.add(m_icon);
 		
-		if(feedreader_settings.get_boolean("currently-updating"))
+		if(settings_state.get_boolean("currently-updating"))
 			updating(true);
 	}
 

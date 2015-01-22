@@ -179,7 +179,7 @@ public class articleList : Gtk.Stack {
 		// when the daemon is updating in the background and writing new articles in the db
 		// the most recent article could incomplete, so just add an offset of 1
 		// the missing article will get added as soon as the update finishes anyway
-		int active_in_db = feedreader_settings.get_boolean("currently-updating") ? 1 : 0;
+		int active_in_db = settings_state.get_boolean("currently-updating") ? 1 : 0;
 		
 		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
 

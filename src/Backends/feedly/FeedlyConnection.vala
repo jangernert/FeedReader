@@ -7,7 +7,7 @@ public class FeedlyConnection {
 	private string m_apiCode;
 
 	public FeedlyConnection () {
-		m_access_token = feedreader_settings.get_string("feedly-access-token");
+		m_access_token = settings_feedly.get_string("feedly-access-token");
 	}
     
 	public int getToken()
@@ -16,7 +16,7 @@ public class FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", base_uri+"/v3/auth/token");
 		
-		m_apiCode = feedreader_settings.get_string("feedly-api-code");
+		m_apiCode = settings_feedly.get_string("feedly-api-code");
 		
 		string message_string = "code=" + m_apiCode + "&client_id=" + apiClientId + "&client_secret=" + apiClientSecret + "&redirect_uri=" + apiRedirectUri + "&grant_type=authorization_code&state=getting_token";
 		
@@ -36,8 +36,8 @@ public class FeedlyConnection {
 		{
 			m_access_token = root.get_string_member("access_token");
 			m_refresh_token = root.get_string_member("refresh_token");
-			feedreader_settings.set_string("feedly-access-token", m_access_token);
-			feedreader_settings.set_string("feedly-refresh-token", m_refresh_token);
+			settings_feedly.set_string("feedly-access-token", m_access_token);
+			settings_feedly.set_string("feedly-refresh-token", m_refresh_token);
 			return LOGIN_SUCCESS;
 		}
 		else if(root.has_member("errorCode"))
@@ -56,7 +56,7 @@ public class FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", base_uri+"/v3/auth/token");
 		
-		m_refresh_token = feedreader_settings.get_string("feedly-refresh-token");
+		m_refresh_token = settings_feedly.get_string("feedly-refresh-token");
 		string message_string = "refresh_token=" + m_refresh_token + "&client_id=" + apiClientId + "&client_secret=" + apiClientSecret + "&grant_type=refresh_token";
 		
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
@@ -74,8 +74,8 @@ public class FeedlyConnection {
 		{
 			m_access_token = root.get_string_member("access_token");
 			m_refresh_token = root.get_string_member("refresh_token");
-			feedreader_settings.set_string("feedly-access-token", m_access_token);
-			feedreader_settings.set_string("feedly-refresh-token", m_refresh_token);
+			settings_feedly.set_string("feedly-access-token", m_access_token);
+			settings_feedly.set_string("feedly-refresh-token", m_refresh_token);
 			return LOGIN_SUCCESS;
 		}
 		else if(root.has_member("errorCode"))

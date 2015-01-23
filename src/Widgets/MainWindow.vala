@@ -1,22 +1,3 @@
-/* -*- Mode: vala; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * ui.vala
- * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
- *
- * tt-rss is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * tt-rss is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 using GLib;
 using Gtk;
 
@@ -26,11 +7,11 @@ public class readerUI : Gtk.ApplicationWindow
 	private Gtk.Paned m_pane_feedlist;
 	private Gtk.Paned m_pane_articlelist;
 	private Gtk.Stack m_stack;
-	private Gtk.Box m_welcome;
-	private loginDialog m_loginDialog;
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
+	private Gtk.Label m_ErrorMessage;
+	private Gtk.InfoBar m_error_bar;
 	
 	public readerUI(rssReaderApp app)
 	{
@@ -62,30 +43,23 @@ public class readerUI : Gtk.ApplicationWindow
 
 		var login_action = new SimpleAction (_("login"), null);
 		login_action.activate.connect (() => {
-			m_loginDialog = new loginDialog(this, LOGIN_FIRST_TRY);
-			m_loginDialog.submit_data.connect(() => {
-				stdout.printf("initial sync\n");
-				app.sync();
-			});
-			m_loginDialog.show_all();
+			m_stack.set_visible_child_full("login", Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		add_action(login_action);
 
-		
-		m_article_view = new articleView();
-
-		setupArticlelist();
-		setupFeedlist();
-		setupWelcome();
-		onClose();
-		m_pane_articlelist.pack2(m_article_view, true, false);
-		
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.set_transition_duration(100);
-		m_stack.add_named(m_pane_feedlist, "content");
-		m_stack.add_named(m_welcome, "welcome");
 		
+
+		setupLoginPage();
+		setupArticlelist();
+		setupFeedlist();
+		onClose();
+		
+		m_stack.add_named(m_pane_feedlist, "content");
+		m_article_view = new articleView();
+		m_pane_articlelist.pack2(m_article_view, true, false);
 		
 		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
@@ -94,7 +68,25 @@ public class readerUI : Gtk.ApplicationWindow
 		this.set_default_size(1600, 900);
 		this.show_all();
 		
-		m_stack.set_visible_child_name("content");
+		if(feedDaemon_interface.isLoggedIn() == LOGIN_SUCCESS)
+		{
+			m_stack.set_visible_child_name("content");
+			loadContent();
+		}
+		else
+		{
+			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LOGIN_SUCCESS)
+			{
+				m_stack.set_visible_child_name("content");
+				loadContent();
+			}
+			else
+			{
+				m_stack.set_visible_child_name("login");
+			}
+		}
+		
+		m_error_bar.hide();
 	}
 
 	public void setRefreshButton(bool refreshing)
@@ -106,8 +98,7 @@ public class readerUI : Gtk.ApplicationWindow
 	{
 		return m_headerbar.currentlyUpdating();
 	}
-
-
+	
 	private void onClose()
 	{
 		this.destroy.connect(() => {
@@ -126,15 +117,73 @@ public class readerUI : Gtk.ApplicationWindow
 		});
 	}
 	
-	private void setupWelcome()
+	private void setupLoginPage()
 	{
-		m_welcome = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-		m_welcome.set_homogeneous(false);
-		var text = new Gtk.Label ("Welcome to FeedReader");
+		m_error_bar = new Gtk.InfoBar();
+		var error_content = m_error_bar.get_content_area();
+		m_ErrorMessage = new Gtk.Label("");
+		error_content.add(m_ErrorMessage);
+		m_error_bar.set_message_type(Gtk.MessageType.WARNING);		
+		m_error_bar.set_show_close_button(true);
 		
-		m_welcome.pack_start(text, true, true, 0);
+		m_error_bar.response.connect((response_id) => {
+			if(response_id == Gtk.ResponseType.CLOSE) {
+					m_error_bar.set_visible(false);
+			}
+		});
+		
+		var login = new LoginPage();
+		var WebLogin = new WebLoginPage();
+		login.loadLoginPage.connect((type) => {
+			WebLogin.loadPage(type);
+			m_stack.set_visible_child_full("WebLogin", Gtk.StackTransitionType.SLIDE_LEFT);
+		});
+		
+		var loginBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		
+		loginBox.pack_start(m_error_bar, false, false, 0);
+		loginBox.pack_start(login, true, true, 0);
+		
+		login.submit_data.connect(loadContent);
+		login.loginError.connect((errorCode) => {
+			showErrorBar(errorCode);
+		});
+		WebLogin.success.connect(loadContent);
+		m_stack.add_named(loginBox, "login");
+		m_stack.add_named(WebLogin, "WebLogin");
 	}
-
+	
+	private void showErrorBar(int ErrorCode)
+	{
+		switch(ErrorCode)
+		{
+			case LOGIN_SUCCESS:
+			case LOGIN_FIRST_TRY:
+				break;
+			case LOGIN_NO_BACKEND:
+				m_ErrorMessage.set_label(_("Please select a service first"));
+				break;
+			case LOGIN_MISSING_USER:
+				m_ErrorMessage.set_label(_("Please enter a valid username"));
+				break;
+			case LOGIN_MISSING_PASSWD:
+				m_ErrorMessage.set_label(_("Please enter a valid password"));
+				break;
+			case LOGIN_MISSING_URL:
+				m_ErrorMessage.set_label(_("Please enter a valid URL"));
+				break;
+			case LOGIN_ALL_EMPTY:
+				m_ErrorMessage.set_label(_("Please enter your Login details"));
+				break;
+			case LOGIN_UNKNOWN_ERROR:
+				m_ErrorMessage.set_label(_("Sorry, something went wrong."));
+				break;
+		}
+		
+		m_error_bar.show();
+	}
+	
+	
 	private void setupFeedlist()
 	{
 		int feed_row_width = settings_state.get_int("feed-row-width");
@@ -216,11 +265,17 @@ public class readerUI : Gtk.ApplicationWindow
 				m_articleList.createHeadlineList();
 		});
 	}
-
-	public void createFeedlist()
+	
+	private void loadContent()
 	{
-		m_feedList.createFeedlist();
-		m_feedList.setScrollPos(settings_state.get_double("feed-row-scrollpos"));
+		print("load content\n");
+		m_feedList.newFeedlist();
+		m_articleList.newHeadlineList();
+		dataBase.updateBadge.connect(() => {
+			feedDaemon_interface.updateBadge();
+		});
+		
+		m_stack.set_visible_child_full("content", Gtk.StackTransitionType.SLIDE_LEFT);
 	}
 
 
@@ -231,10 +286,6 @@ public class readerUI : Gtk.ApplicationWindow
 		});
 	}
 
-	public void createHeadlineList()
-	{
-		m_articleList.createHeadlineList();
-	}
 
 	public void updateArticleList()
 	{

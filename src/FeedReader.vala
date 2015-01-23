@@ -1,22 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * main.c
- * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
- * 
- * tt-rss is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * tt-rss is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 using GLib;
 using Gtk;
 
@@ -83,75 +64,11 @@ public class rssReaderApp : Gtk.Application {
 		{
 			m_window = new readerUI(this);
 			m_window.set_icon_name ("internet-news-reader");
-			stdout.printf("first try login on activate\n");
-			tryLogin();
 		}
 		
 		m_window.show_all();
-		updateBadge();
+		feedDaemon_interface.updateBadge();
 	}
-
-	public void tryLogin(int login_code = LOGIN_FIRST_TRY)
-	{
-		if(feedDaemon_interface.isLoggedIn() == LOGIN_SUCCESS)
-		{
-			getContent();
-			return;
-		}
-		else
-		{
-			var dialog = new loginDialog(m_window, login_code);
-			dialog.submit_data.connect(() => {
-				int type = settings_general.get_enum("account-type");
-				switch(type)
-				{
-					case TYPE_NONE:
-						print("no backend right now :(\n");
-						break;
-					case TYPE_TTRSS:
-						print("ttrss backend\n");
-						break;
-					case TYPE_FEEDLY:
-						print("feedly backend\n");
-						break;
-					case TYPE_OWNCLOUD:
-						print("owncloud backend\n");
-						break;
-				}
-				
-				var status = feedDaemon_interface.login(type);
-				tryLogin(status);
-				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 2, () => {
-					sync();
-					return false;
-				});
-			});
-			dialog.show_all();
-		}
-	}
-
-	private void getContent()
-	{
-		m_window.createFeedlist();
-		m_window.createHeadlineList();
-		
-		dataBase.updateBadge.connect(updateBadge);
-		
-		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 300, () => {
-			sync();
-			return true;
-		});
-	}
-	
-	private void updateBadge()
-	{
-		try{
-			feedDaemon_interface.updateBadge();
-		}catch (IOError e) {
-    		stderr.printf ("%s\n", e.message);
-		}
-	}
-
 
 	public void sync()
 	{

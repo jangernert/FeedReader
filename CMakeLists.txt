@@ -48,12 +48,12 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ColorPopover.vala
     src/Widgets/FeedList.vala
     src/Widgets/FeedRow.vala
-    src/Widgets/LoginDialog.vala
+    src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/TagRow.vala
     src/Widgets/UpdateButton.vala
-    src/Widgets/WebLogin.vala
+    src/Widgets/WebLoginPage.vala
 
 # tell what libraries to use when compiling
 PACKAGES

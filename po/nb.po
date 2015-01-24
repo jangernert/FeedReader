@@ -7,76 +7,124 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2014-10-30 23:30+0100\n"
+"POT-Creation-Date: 2015-01-16 06:18+0100\n"
 "PO-Revision-Date: 2014-11-02 21:12+0000\n"
 "Last-Translator: JeanLuc <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-01-11 06:50+0000\n"
-"X-Generator: Launchpad (build 17298)\n"
+"X-Launchpad-Export-Date: 2015-01-24 06:27+0000\n"
+"X-Generator: Launchpad (build 17306)\n"
 
-#: ../src/ttrss_interface.vala:494
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:88
 msgid "There is 1 new article"
 msgstr "Ein neuer Artikel"
 
-#: ../src/ttrss_interface.vala:496
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:90
 msgid "There are >200 new articles"
 msgstr ">200 neue Artikel"
 
-#: ../src/ttrss_interface.vala:498
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:92
 msgid "There are "
 msgstr "Es gibt "
 
-#: ../src/ttrss_interface.vala:498
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:92
 msgid " new articles"
 msgstr " neue Artikel"
 
-#: ../src/ttrss_interface.vala:500
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:94
 msgid "New Articles"
 msgstr "Neue Artikel"
 
-#: ../src/article-view.vala:49
+#: ../src/Widgets/ArticleView.vala:49
 msgid "No Article selected."
 msgstr "Kein Artikel ausgewählt"
 
-#: ../src/reader-headerbar.vala:77
+#: ../src/Widgets/ReaderHeaderbar.vala:77
 msgid "Search Aritlces..."
 msgstr "Artikel durchsuchen"
 
-#: ../src/reader-headerbar.vala:84
+#: ../src/Widgets/ReaderHeaderbar.vala:84
 msgid "Change Login"
 msgstr "Login ändern"
 
-#: ../src/reader-headerbar.vala:85
+#: ../src/Widgets/ReaderHeaderbar.vala:85
 msgid "About"
 msgstr "Über"
 
-#: ../src/login-dialog.vala:55
-msgid "tt-rss URL:"
-msgstr "tt-rss URL"
+#: ../src/Widgets/LoginDialog.vala:43
+msgid "Tiny Tiny RSS"
+msgstr ""
 
-#: ../src/login-dialog.vala:56
-msgid "Username:"
-msgstr "Brukernavn:"
+#: ../src/Widgets/LoginDialog.vala:43
+msgid "Feedly"
+msgstr ""
 
-#: ../src/login-dialog.vala:57
-msgid "Password:"
-msgstr "Passord:"
+#: ../src/Widgets/LoginDialog.vala:43
+msgid "OwnCloud"
+msgstr ""
 
-#: ../src/login-dialog.vala:110
+#: ../src/Widgets/LoginDialog.vala:63
+msgid "Please select a service first"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:66
+msgid "Please enter a valid username"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:69
+msgid "Please enter a valid password"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:72
+msgid "Please enter a valid URL"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:75
+msgid "Please enter your Login details"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:78
+msgid "Sorry, something went wrong."
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:88
+msgid "RSS Type:"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:145
+msgid "Please tell us where your feeds are stored"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:155
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: ../src/ui.vala:35
+#: ../src/Widgets/LoginDialog.vala:185
+msgid "tt-rss URL:"
+msgstr "tt-rss URL"
+
+#: ../src/Widgets/LoginDialog.vala:186 ../src/Widgets/LoginDialog.vala:281
+msgid "Username:"
+msgstr "Brukernavn:"
+
+#: ../src/Widgets/LoginDialog.vala:187 ../src/Widgets/LoginDialog.vala:282
+msgid "Password:"
+msgstr "Passord:"
+
+#: ../src/Widgets/LoginDialog.vala:280
+msgid "OwnCloud URL:"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:37
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/ui.vala:57
+#: ../src/Widgets/MainWindow.vala:59
 msgid "about"
 msgstr "om"
 
-#: ../src/ui.vala:61
+#: ../src/Widgets/MainWindow.vala:63
 msgid "login"
 msgstr "logg inn"

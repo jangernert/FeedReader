@@ -7,5 +7,6 @@ Exec=feedreader
 Icon=internet-news-reader
 Terminal=false
 Type=Application
-X-GNOME-Gettext-Domain=tt-rss
+X-GNOME-UsesNotifications=true
+X-GNOME-Gettext-Domain=FeedReader
 X-GNOME-Keywords=

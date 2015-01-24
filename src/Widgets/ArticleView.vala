@@ -1,22 +1,3 @@
-/* -*- Mode: vala; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * article-view.vala
- * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
- *
- * tt-rss is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * tt-rss is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 public class articleView : Gtk.Stack {
 
 	private Gtk.Label m_title;
@@ -50,9 +31,13 @@ public class articleView : Gtk.Stack {
 		emptyView.get_style_context().add_class("emptyView");
 
 		m_spinner = new Gtk.Spinner();
+		m_spinner.set_size_request(40, 40);
+		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
+		center.set_padding(20, 20, 20, 20);
+		center.add(m_spinner);
 		this.add_named(emptyView, "empty");
 		this.add_named(m_box, "view");
-		this.add_named(m_spinner, "spinner");
+		this.add_named(center, "spinner");
 		
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
@@ -60,21 +45,20 @@ public class articleView : Gtk.Stack {
 	}
 
 
-	public void fillContent(int articleID)
+	public void fillContent(string articleID)
 	{
 		this.set_visible_child_name("spinner");
 		m_spinner.start();
-		string html = "", title = "", author = "", url = "";
-		int feedID = 0;
 		
-		dataBase.read_article(articleID, out feedID, out title, out author, out url, out html, null);
-		if(author == "") author = "not available";
-		m_title.set_text("<big><b><a href=\"" + url.replace("&","&amp;") + "\" title=\"Author: " + author.replace("&","&amp;") + "\">" + title.replace("&","&amp;") + "</a></b></big>");
+		var Article = dataBase.read_article(articleID);
+		string author;
+		(Article.m_author == "") ? author = "not available" : author = Article.m_author;
+		m_title.set_text("<big><b><a href=\"" + Article.m_url.replace("&","&amp;") + "\" title=\"Author: " + author.replace("&","&amp;") + "\">" + Article.m_title.replace("&","&amp;") + "</a></b></big>");
 		m_title.set_use_markup (true);
 		this.show_all();
 		m_open_external = false;
 		m_load_ongoing = 0;
-		m_view.load_html(html, null);
+		m_view.load_html(Article.m_html, null);
 		this.set_visible_child_name("view");
 	}
 

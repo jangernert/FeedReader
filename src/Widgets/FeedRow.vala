@@ -1,32 +1,13 @@
-/* -*- Mode: vala; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * feed-row.vala
- * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
- *
- * tt-rss is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * tt-rss is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 public class FeedRow : baseRow {
 
 	private bool m_subscribed;
-	private int m_catID;
+	private string m_catID;
 	private int m_level;
 	public string m_name { get; private set; }
-	public int m_ID { get; private set; }
+	public string m_ID { get; private set; }
 	
 
-	public FeedRow (string text, string unread_count, bool has_icon, string iconname, int catID, int level)
+	public FeedRow (string text, string unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
@@ -35,11 +16,7 @@ public class FeedRow : baseRow {
 		m_name = text.replace("&","&amp;");
 		if(text != "")
 		{
-			if(iconname != "ALL")
-				m_ID = int.parse(iconname);
-			else
-				m_ID = -3;
-				
+			m_ID = feedID;	
 			
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -48,14 +25,14 @@ public class FeedRow : baseRow {
 			if(has_icon)
 			{
 				try{
-					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + iconname + ".ico");
+					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + feedID.replace("/", "_").replace(".", "_") + ".ico");
 					scale_pixbuf(ref tmp_icon, 24);
 					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 				}catch(GLib.Error e){}
 			}
 			else
 			{
-				m_icon = new Gtk.Image.from_file("/usr/share/FeedReader/rss24.png");
+				m_icon = new Gtk.Image.from_file("/usr/share/FeedReader/rss24.svg");
 			}
 
 			m_revealer = new Gtk.Revealer();
@@ -78,7 +55,7 @@ public class FeedRow : baseRow {
 			m_spacer = new Gtk.Label("");
 			m_spacer.set_size_request(level * 24, rowhight);
 
-			if(m_catID != -1)
+			if(m_catID != "-1")
 			{
 				var colour = Gdk.RGBA();
 				var grey = 100;
@@ -113,7 +90,7 @@ public class FeedRow : baseRow {
 		m_subscribed = subscribed;
 	}
 
-	public int getCategorie()
+	public string getCategorie()
 	{
 		return m_catID;
 	}

@@ -1,22 +1,3 @@
-/* -*- Mode: vala; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * reader-headerbar.vala
- * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
- *
- * tt-rss is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * tt-rss is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 public class readerHeaderbar : Gtk.HeaderBar {
 	
 	private Gtk.ToggleButton m_only_unread_button;
@@ -36,8 +17,8 @@ public class readerHeaderbar : Gtk.HeaderBar {
 		var only_marked_icon = new Gtk.Image.from_icon_name("help-about", Gtk.IconSize.LARGE_TOOLBAR);
 
 
-		m_only_unread = feedreader_settings.get_boolean("only-unread");
-		m_only_marked = feedreader_settings.get_boolean("only-marked");
+		m_only_unread = settings_state.get_boolean("only-unread");
+		m_only_marked = settings_state.get_boolean("only-marked");
 		
 		m_only_unread_button = new Gtk.ToggleButton();
 		m_only_unread_button.add(only_unread_icon);

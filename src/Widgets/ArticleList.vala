@@ -1,22 +1,3 @@
-/* -*- Mode: vala; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * article-list.vala
- * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
- *
- * tt-rss is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * tt-rss is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 public class articleList : Gtk.Stack {
 
 	private Gtk.ScrolledWindow m_currentScroll;
@@ -29,12 +10,12 @@ public class articleList : Gtk.Stack {
 	private Gtk.Adjustment m_scroll2_adjustment;
 	private double m_lmit;
 	private int m_displayed_articles;
-	private int m_current_feed_selected;
+	private string m_current_feed_selected;
 	private bool m_only_unread;
 	private bool m_only_marked;
 	private string m_searchTerm;
 	private int m_limit;
-	public bool id_is_feedID;
+	private int m_IDtype;
 	public signal void row_activated(articleRow? row);
 	public signal void load_more();
 	public signal void updateFeedList();
@@ -43,8 +24,8 @@ public class articleList : Gtk.Stack {
 	public articleList () {
 		m_lmit = 0.8;
 		m_displayed_articles = 0;
-		m_current_feed_selected = -3;
-		id_is_feedID = true;
+		m_current_feed_selected = FEEDID_ALL_FEEDS;
+		m_IDtype = FEEDLIST_FEED;
 		m_searchTerm = "";
 		m_limit = 15;
 		
@@ -160,34 +141,32 @@ public class articleList : Gtk.Stack {
 		m_searchTerm = searchTerm;
 	}
 
-	public void setSelectedFeed(int feedID)
+	public void setSelectedFeed(string feedID)
 	{
 		m_current_feed_selected = feedID;
+	}
+	
+	public void setSelectedType(int type)
+	{
+		m_IDtype = type;
 	}
 
 
 	public void createHeadlineList()
 	{
-		//FIXME: limit should depend on headline layout
 		m_limit = 15;
 		
 		
 		// when the daemon is updating in the background and writing new articles in the db
 		// the most recent article could incomplete, so just add an offset of 1
 		// the missing article will get added as soon as the update finishes anyway
-		int active_in_db = feedreader_settings.get_boolean("currently-updating") ? 1 : 0;
+		int active_in_db = settings_state.get_boolean("currently-updating") ? 1 : 0;
 		
-		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
+		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles + active_in_db);
 
-		foreach(var item in headlines)
+		foreach(var item in articles)
 		{
 			m_displayed_articles++;
-
-			var showIcon = false;
-			if(m_current_feed_selected == 0)
-				showIcon = true;
-			else if(!id_is_feedID)
-				showIcon = true;
 			
 			articleRow tmpRow = new articleRow(
 					                             item.m_title,
@@ -197,7 +176,7 @@ public class articleList : Gtk.Stack {
 					                             item.m_feedID,
 					                             item.m_articleID,
 					                             item.m_marked,
-					                             showIcon
+					                             item.m_sortID
 					                            );
 			tmpRow.updateFeedList.connect(() => {updateFeedList();});
 			m_currentList.add(tmpRow);
@@ -224,8 +203,7 @@ public class articleList : Gtk.Stack {
 		createHeadlineList();
 	}
 
-
-	public void updateHeadlineList()
+	public void updateArticleList()
 	{
 		var articleChildList = m_currentList.get_children();
 		if(articleChildList != null)
@@ -235,11 +213,11 @@ public class articleList : Gtk.Stack {
 			m_limit = m_displayed_articles + new_articles;
 		}
 
-		var headlines = dataBase.read_headlines(m_current_feed_selected, id_is_feedID, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
 		
 		bool found;
 
-		foreach(var item in headlines)
+		foreach(var item in articles)
 		{
 			found = false;
 			
@@ -256,10 +234,6 @@ public class articleList : Gtk.Stack {
 
 			if(!found)
 			{
-				var showIcon = false;
-				if(m_current_feed_selected == 0)
-					showIcon = true;
-			
 				articleRow newRow = new articleRow(
 					                             item.m_title,
 					                             item.m_unread,
@@ -268,7 +242,7 @@ public class articleList : Gtk.Stack {
 					                             item.m_feedID,
 					                             item.m_articleID,
 					                             item.m_marked,
-					                             showIcon
+					                             item.m_sortID
 					                            );
 				newRow.updateFeedList.connect(() => {updateFeedList();});
 				int pos = 0;
@@ -282,7 +256,7 @@ public class articleList : Gtk.Stack {
 				{
 					pos++;
 					var tmpRow = row as articleRow;
-					if(tmpRow != null && newRow.m_articleID > tmpRow.m_articleID)
+					if(tmpRow != null && newRow.m_sortID > tmpRow.m_sortID)
 					{
 						m_currentList.insert(newRow, pos-1);
 						m_displayed_articles++;

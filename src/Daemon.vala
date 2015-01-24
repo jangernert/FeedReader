@@ -2,27 +2,23 @@
 public class FeedDaemonServer : Object {
 
 	private Unity.LauncherEntry m_launcher;
-	private bool m_loggedin;
+	private int m_loggedin;
 	
 	public FeedDaemonServer()
 	{
-		m_loggedin = false;
 		stdout.printf("daemon: constructor\n");
-		string tmp = "";
-		if(!ttrss.login(out tmp))
-		{
-			loginDialog();
-		}
-		else
-			m_loggedin = true;
-
-		stdout.printf("init\n");
-		int sync_timeout = feedreader_settings.get_int("sync");
+		settings_state.set_boolean("currently-updating", false);
+		m_loggedin = login(settings_general.get_enum("account-type"));
+		
+		if(m_loggedin != LOGIN_SUCCESS)
+			stdout.printf("not logged in\n");
+		
+		int sync_timeout = settings_general.get_int("sync");
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 		updateBadge();
 		stdout.printf("daemon: add timeout\n");
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
-			if(!feedreader_settings.get_boolean("currently-updating"))
+			if(!settings_state.get_boolean("currently-updating"))
 			{
 		   		stdout.printf ("Timeout!\n");
 				startSync();
@@ -40,30 +36,50 @@ public class FeedDaemonServer : Object {
 
     public signal void syncStarted();
     public signal void syncFinished();
-    public signal void loginDialog();
     
     private async void sync()
 	{
-		if(!m_loggedin)
+		if(m_loggedin != LOGIN_SUCCESS)
 		{
-			if(ttrss.login(null))
-				m_loggedin = true;
+			m_loggedin = login(settings_general.get_enum("account-type"));
 		}
 		
-		//stdout.printf("daemon: sync started\n");
-		syncStarted();
-		feedreader_settings.set_boolean("currently-updating", true);
-		yield ttrss.getCategories();
-		//stdout.printf("daemon: got categories\n");
-		yield ttrss.getFeeds();
-		//stdout.printf("daemon: got feeds\n");
-		yield ttrss.getHeadlines();
-		//stdout.printf("daemon: got headlines\n");
-		yield ttrss.updateHeadlines(300);
-		updateBadge();
-		feedreader_settings.set_boolean("currently-updating", false);
-		syncFinished();
-		//stdout.printf("daemon: sync finished\n");
+		if(m_loggedin == LOGIN_SUCCESS)
+		{
+			syncStarted();
+			settings_state.set_boolean("currently-updating", true);
+			yield server.sync_content();
+			updateBadge();
+			settings_state.set_boolean("currently-updating", false);
+			syncFinished();
+		}
+		else
+			print("Cant sync because login failed\n");
+	}
+	
+	public int login(int type)
+	{
+		server = new feed_server(type);
+		m_loggedin = server.login();
+		
+		return m_loggedin;
+	}
+	
+	public int isLoggedIn()
+	{
+		return m_loggedin;
+	}
+	
+	public void changeUnread(string articleID, int read)
+	{
+		server.setArticleIsRead.begin(articleID, read, (obj, res) => {
+			server.setArticleIsRead.end(res);
+		});
+	}
+	
+	public void changeMarked(string articleID, int marked)
+	{
+		server.setArticleIsMarked(articleID, marked);
 	}
 	
 	public void updateBadge()
@@ -96,16 +112,22 @@ void on_bus_aquired (DBusConnection conn) {
 
 
 dbManager dataBase;
-GLib.Settings feedreader_settings;
-ttrss_interface ttrss;
+GLib.Settings settings_general;
+GLib.Settings settings_state;
+GLib.Settings settings_feedly;
+GLib.Settings settings_ttrss;
+feed_server server;
 extern void exit(int exit_code);
 
 void main () {
-	ttrss = new ttrss_interface();
+	
 	dataBase = new dbManager();
 	dataBase.init();
-	feedreader_settings = new GLib.Settings ("org.gnome.feedreader");
-	Notify.init("RSS Reader");
+	settings_general = new GLib.Settings ("org.gnome.feedreader");
+	settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
+	settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
+	settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
+	Notify.init("FeedReader");
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 		          on_bus_aquired,
@@ -115,7 +137,6 @@ void main () {
 		              		exit(-1);
 		              	}
 		          );
-	//stdout.printf("daemon: mainloop\n");
     new MainLoop ().run ();
 }
 

@@ -1,39 +1,20 @@
-/* -*- Mode: vala; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * categorie-row.vala
- * Copyright (C) 2014 JeanLuc <jeanluc@jeanluc-desktop>
- *
- * tt-rss is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * tt-rss is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 public class categorieRow : baseRow {
 
 	private string m_name;
 	private Gtk.EventBox m_eventbox;
 	private Gdk.Pixbuf m_state_collapsed;
 	private Gdk.Pixbuf m_state_expanded;
-	private int m_categorieID;
-	private int m_parentID;
+	private string m_categorieID;
+	private string m_parentID;
 	private int m_orderID;
 	private int m_level;
 	private bool m_exists;
 	private Gtk.Image m_icon_expanded;
 	private Gtk.Image m_icon_collapsed;
 	private bool m_collapsed;
-	public signal void collapse(bool collapse, int catID);
+	public signal void collapse(bool collapse, string catID);
 
-	public categorieRow (string name, int categorieID, int orderID, string unread_count, int parentID, int level, bool expanded) {
+	public categorieRow (string name, string categorieID, int orderID, string unread_count, string parentID, int level, bool expanded) {
 	
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
@@ -49,11 +30,8 @@ public class categorieRow : baseRow {
 		m_eventbox = new Gtk.EventBox();
 		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 
-		string path = "/usr/share/FeedReader/categorie_expander.png";
-		try{m_state_collapsed = new Gdk.Pixbuf.from_file(path);}catch(GLib.Error e){ warning(e.message);}
-		m_state_expanded = m_state_collapsed.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
-		m_icon_expanded = new Gtk.Image.from_pixbuf(m_state_expanded);
-		m_icon_collapsed = new Gtk.Image.from_pixbuf(m_state_collapsed);
+		m_icon_expanded = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down.svg");
+		m_icon_collapsed = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left.svg");
 
 		m_label = new Gtk.Label(m_name);
 		m_label.set_use_markup (true);
@@ -114,7 +92,7 @@ public class categorieRow : baseRow {
 		this.show_all();
 	}
 
-	public int getID()
+	public string getID()
 	{
 		return m_categorieID;
 	}
@@ -124,7 +102,7 @@ public class categorieRow : baseRow {
 		return m_name;
 	}
 
-	public int getParent()
+	public string getParent()
 	{
 		return m_parentID;
 	}

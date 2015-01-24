@@ -24,6 +24,13 @@ GtkListBoxRow.feed-list-row:selected {
 	background: rgb(125,125,125);
 }
 
+.list-row {
+	padding-bottom: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+}
+
 GtkListBoxRow.feed-list-row:selected GtkBox.feed-row{
 	background: rgb(125,125,125);
 }
@@ -86,5 +93,5 @@ GtkListBoxRow:selected GtkLabel.grey-label {
 	font-weight: normal;
 	font-style: normal;
 	font-size: small;
-	color: rgb(180,180,180);
+	color: rgb(210,210,210);
 }

@@ -35,7 +35,7 @@ public class FeedDaemonServer : Object {
 
     public signal void syncStarted();
     public signal void syncFinished();
-    public signal void updateFeedlist();
+    public signal void updateFeedlistUnreadCount(string feedID, bool increase);
     
     private async void sync()
 	{
@@ -72,6 +72,10 @@ public class FeedDaemonServer : Object {
 	
 	public void changeUnread(string articleID, int read)
 	{
+		bool increase = true;
+		if(read == STATUS_READ)
+			increase = false;
+		
 		server.setArticleIsRead.begin(articleID, read, (obj, res) => {
 			server.setArticleIsRead.end(res);
 		});
@@ -82,6 +86,7 @@ public class FeedDaemonServer : Object {
 		
 		dataBase.change_unread.begin(dataBase.getFeedIDofArticle(articleID), read, (obj, res) => {
 			dataBase.change_unread.end(res);
+			updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleID), increase);
 			updateBadge();
 		});
 		

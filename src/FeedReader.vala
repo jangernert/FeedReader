@@ -19,7 +19,7 @@ interface FeedDaemon : Object {
     public abstract void updateBadge() throws IOError;
     public signal void syncStarted();
     public signal void syncFinished();
-    public signal void updateFeedlist();
+    public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 }
 
 
@@ -42,8 +42,8 @@ public class rssReaderApp : Gtk.Application {
 		try{
 			feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
 			
-			feedDaemon_interface.updateFeedlist.connect(() => {
-		        m_window.updateFeedList();
+			feedDaemon_interface.updateFeedlistUnreadCount.connect((feedID, increase) => {
+		        m_window.updateFeedListCountUnread(feedID, increase);
 		    });
 			
 			feedDaemon_interface.syncStarted.connect(() => {

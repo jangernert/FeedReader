@@ -642,7 +642,7 @@ public class feedList : Gtk.Stack {
 	}
 	
 	
-	public void updateCounters(string feedID)
+	public void updateCounters(string feedID, bool increase)
 	{
 		var FeedChildList = m_list.get_children();
 		string catID = "";
@@ -653,7 +653,10 @@ public class feedList : Gtk.Stack {
 			var tmpFeedRow = row as FeedRow;
 			if(tmpFeedRow != null && tmpFeedRow.getName() == "All Articles")
 			{
-				tmpFeedRow.downUnread();
+				if(increase)
+					tmpFeedRow.upUnread();
+				else
+					tmpFeedRow.downUnread();
 				break;
 			}
 		}
@@ -664,7 +667,10 @@ public class feedList : Gtk.Stack {
 			var tmpFeedRow = row as FeedRow;
 			if(tmpFeedRow != null && tmpFeedRow.getID() == feedID)
 			{
-				tmpFeedRow.downUnread();
+				if(increase)
+					tmpFeedRow.upUnread();
+				else
+					tmpFeedRow.downUnread();
 				catID = tmpFeedRow.getCategorie();
 				break;
 			}
@@ -676,7 +682,10 @@ public class feedList : Gtk.Stack {
 			var tmpCatRow = row as categorieRow;
 			if(tmpCatRow != null && tmpCatRow.getID() == catID)
 			{
-				tmpCatRow.downUnread();
+				if(increase)
+					tmpCatRow.upUnread();
+				else
+					tmpCatRow.downUnread();
 				break;
 			}
 		}

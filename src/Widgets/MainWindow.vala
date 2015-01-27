@@ -245,15 +245,9 @@ public class readerUI : Gtk.ApplicationWindow
 				feedDaemon_interface.changeUnread(row.m_articleID, STATUS_READ);
 				row.updateUnread(STATUS_READ);
 				row.removeUnreadIcon();
-				
-				dataBase.update_article.begin(row.m_articleID, "unread", STATUS_READ, (obj, res) => {
-					dataBase.update_article.end(res);
-				});
-				dataBase.change_unread.begin(row.m_feedID, STATUS_READ, (obj, res) => {
-					dataBase.change_unread.end(res);
-					updateFeedList();
-				});
+				m_feedList.updateCounters(row.m_feedID);
 			}
+			
 			m_article_view.fillContent(row.m_articleID);
 		});
 
@@ -281,9 +275,7 @@ public class readerUI : Gtk.ApplicationWindow
 
 	public void updateFeedList()
 	{
-		m_feedList.updateFeedList.begin((obj, res) => {
-			m_feedList.updateFeedList.end(res);
-		});
+		m_feedList.updateFeedList();
 	}
 
 

@@ -324,8 +324,6 @@ public class dbManager : GLib.Object {
 		string output = "";
 		int preview_exists = preview_empty(articleID);
 		
-		//print(title + " " + unread.to_string() + "\n");
-		
 		if(preview_exists == 0)
 		{
 			
@@ -584,6 +582,22 @@ public class dbManager : GLib.Object {
 			query = query + "\"" + stmt.column_text(0) + "\"" + " OR \"feedID\" = ";
 		}
 		return "(" + query.slice(0, query.length-15) + ")";
+	}
+	
+	
+	public string getFeedIDofArticle(string articleID)
+	{
+		string query = "SELECT feedID FROM \"main\".\"articles\" WHERE \"articleID\" = " + "\"" + articleID + "\"";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		string id = "";
+		while (stmt.step () == Sqlite.ROW) {
+			id = stmt.column_text(0);
+		}
+		return id;
 	}
 
 

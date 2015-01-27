@@ -167,14 +167,6 @@ public class articleRow : baseRow {
 				break;
 		}
 		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
-		
-		dataBase.update_article.begin(m_articleID, "unread", m_is_unread, (obj, res) => {
-			dataBase.update_article.end(res);
-		});
-		dataBase.change_unread.begin(m_feedID, m_is_unread, (obj, res) => {
-			dataBase.change_unread.end(res);
-			updateFeedList();
-		});
 	}
 
 	private void unreadIconEnter()
@@ -248,10 +240,6 @@ public class articleRow : baseRow {
 		}
 		
 		feedDaemon_interface.changeMarked(m_articleID, m_marked);
-		
-		dataBase.update_article.begin(m_articleID, "marked", m_marked, (obj, res) => {
-			dataBase.update_article.end(res);
-		});
 	}
 
 	private void markedIconEnter()

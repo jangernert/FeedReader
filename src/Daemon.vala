@@ -7,7 +7,6 @@ public class FeedDaemonServer : Object {
 	public FeedDaemonServer()
 	{
 		stdout.printf("daemon: constructor\n");
-		settings_state.set_boolean("currently-updating", false);
 		m_loggedin = login(settings_general.get_enum("account-type"));
 		
 		if(m_loggedin != LOGIN_SUCCESS)
@@ -36,6 +35,7 @@ public class FeedDaemonServer : Object {
 
     public signal void syncStarted();
     public signal void syncFinished();
+    public signal void updateFeedlist();
     
     private async void sync()
 	{
@@ -75,11 +75,25 @@ public class FeedDaemonServer : Object {
 		server.setArticleIsRead.begin(articleID, read, (obj, res) => {
 			server.setArticleIsRead.end(res);
 		});
+		
+		dataBase.update_article.begin(articleID, "unread", read, (obj, res) => {
+			dataBase.update_article.end(res);
+		});
+		
+		dataBase.change_unread.begin(dataBase.getFeedIDofArticle(articleID), read, (obj, res) => {
+			dataBase.change_unread.end(res);
+			updateBadge();
+		});
+		
 	}
 	
 	public void changeMarked(string articleID, int marked)
 	{
 		server.setArticleIsMarked(articleID, marked);
+		
+		dataBase.update_article.begin(articleID, "marked", marked, (obj, res) => {
+			dataBase.update_article.end(res);
+		});
 	}
 	
 	public void updateBadge()
@@ -107,6 +121,7 @@ void on_bus_aquired (DBusConnection conn) {
         stderr.printf("%s\n", e.message);
         exit(-1);
     }
+    settings_state.set_boolean("currently-updating", false);
     stdout.printf("daemon: bus aquired\n");
 }
 

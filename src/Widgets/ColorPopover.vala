@@ -16,7 +16,6 @@ public class ColorPopover : Gtk.Popover {
 		m_grid.set_row_homogeneous(true);
 		int columns = 4;
 		int rows = COLORS.length/4;
-		Gdk.Pixbuf tmpIcon;
 		int color = 0;
 		ColorCircle tmpCircle;
 		

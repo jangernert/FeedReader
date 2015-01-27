@@ -43,8 +43,7 @@ public class articleView : Gtk.Stack {
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(100);
 	}
-
-
+	
 	public void fillContent(string articleID)
 	{
 		this.set_visible_child_name("spinner");

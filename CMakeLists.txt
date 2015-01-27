@@ -62,6 +62,7 @@ PACKAGES
     json-glib-1.0
     libsoup-2.4
     sqlite3
+    gee-0.8
     WebKit2-3.0
     libsecret-1
     libnotify

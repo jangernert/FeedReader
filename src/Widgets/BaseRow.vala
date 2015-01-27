@@ -38,6 +38,18 @@ public class baseRow : Gtk.ListBoxRow {
 
 		icon = icon.scale_simple(width, height, Gdk.InterpType.BILINEAR);
 	}
+	
+	public void upUnread()
+	{
+		set_unread_count((int.parse(m_unread_count)+1).to_string());
+	}
+	
+	public void downUnread()
+	{
+		int urnead = int.parse(m_unread_count);
+		if(urnead > 0)
+			set_unread_count((urnead-1).to_string());
+	}
 
 	public void set_unread_count(string unread_count)
 	{

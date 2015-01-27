@@ -18,6 +18,7 @@ public class LoginPage : Gtk.Alignment {
 
 	public LoginPage()
 	{
+		
 		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		

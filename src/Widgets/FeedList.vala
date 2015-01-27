@@ -40,7 +40,7 @@ public class feedList : Gtk.Stack {
 			FeedRow selected_row = m_list.get_selected_row() as FeedRow;
 			if(selected_row != null)
 			{
-				if(selected_row.m_name == "")
+				if(selected_row.getName() == "")
 				{
 					// don't select seperator
 					m_list.select_row(m_selected);
@@ -49,7 +49,7 @@ public class feedList : Gtk.Stack {
 				if(selected_row != m_selected)
 				{
 					m_selected = selected_row;
-					newFeedSelected(selected_row.m_ID);
+					newFeedSelected(selected_row.getID());
 				}
 			}
 			categorieRow selected_categorie = m_list.get_selected_row() as categorieRow;
@@ -117,10 +117,10 @@ public class feedList : Gtk.Stack {
 
 			if(current_feed != null)
 			{
-				if(current_feed.isRevealed() && current_feed.m_name != "")
+				if(current_feed.isRevealed() && current_feed.getName() != "")
 				{
 					m_list.select_row(current_feed);
-					newFeedSelected(current_feed.m_ID);
+					newFeedSelected(current_feed.getID());
 					break;
 				}
 			}
@@ -160,7 +160,7 @@ public class feedList : Gtk.Stack {
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles",unread.to_string(), false, FEEDID_ALL_FEEDS, "-1", 0);
+		var row_all = new FeedRow("All Articles", unread.to_string(), false, FEEDID_ALL_FEEDS.to_string(), "-1", 0);
 		m_list.add(row_all);
 		row_all.reveal(true);
 
@@ -391,7 +391,6 @@ public class feedList : Gtk.Stack {
 				{
 					if(tmpRow.getID() == Tag.m_tagID)
 					{
-						print("found\n");
 						tmpRow.update(Tag.m_title);
 						tmpRow.setExits(true);
 						found = true;
@@ -533,7 +532,7 @@ public class feedList : Gtk.Stack {
 	}
 
 
-	public async void updateFeedList()
+	public void updateFeedList()
 	{
 		var unread = dataBase.get_unread_total();
 		bool found;
@@ -559,14 +558,14 @@ public class feedList : Gtk.Stack {
 				var tmpRow = row as FeedRow;
 				if(tmpRow != null)
 				{
-					if(item.m_feedID == tmpRow.m_ID && item.m_categorieID == tmpRow.getCategorie())
+					if(item.m_feedID == tmpRow.getID() && item.m_categorieID == tmpRow.getCategorie())
 					{
 						tmpRow.setSubscribed(true);
 						tmpRow.update(item.m_title, item.m_unread.to_string());
 						found = true;
 						break;
 					}
-					else if(item.m_feedID == tmpRow.m_ID && item.m_categorieID != tmpRow.getCategorie())
+					else if(item.m_feedID == tmpRow.getID() && item.m_categorieID != tmpRow.getCategorie())
 					{
 						m_list.remove(tmpRow);
 						break;
@@ -611,12 +610,12 @@ public class feedList : Gtk.Stack {
 			var tmpRow = row as FeedRow;
 			if(tmpRow != null)
 			{
-				if(tmpRow.m_name == "All Articles")
+				if(tmpRow.getName() == "All Articles")
 				{
 					tmpRow.setSubscribed(true);
 					tmpRow.update("All Articles", unread.to_string());
 				}
-				else if(tmpRow.m_name == "")
+				else if(tmpRow.getName() == "")
 				{
 					tmpRow.setSubscribed(true);
 				}
@@ -641,6 +640,49 @@ public class feedList : Gtk.Stack {
 		initCollapseCategories();
 		this.show_all();
 	}
+	
+	
+	public void updateCounters(string feedID)
+	{
+		var FeedChildList = m_list.get_children();
+		string catID = "";
+		
+		// decrease "All Articles"
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpFeedRow = row as FeedRow;
+			if(tmpFeedRow != null && tmpFeedRow.getName() == "All Articles")
+			{
+				tmpFeedRow.downUnread();
+				break;
+			}
+		}
+		
+		// decrease feedrow
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpFeedRow = row as FeedRow;
+			if(tmpFeedRow != null && tmpFeedRow.getID() == feedID)
+			{
+				tmpFeedRow.downUnread();
+				catID = tmpFeedRow.getCategorie();
+				break;
+			}
+		}
+		
+		// decrease categorierow
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpCatRow = row as categorieRow;
+			if(tmpCatRow != null && tmpCatRow.getID() == catID)
+			{
+				tmpCatRow.downUnread();
+				break;
+			}
+		}
+	}
+
+
 
 	private void initCollapseCategories()
 	{
@@ -732,7 +774,7 @@ public class feedList : Gtk.Stack {
 	{
 		FeedRow selected_row = m_list.get_selected_row() as FeedRow;
 		if(selected_row != null)
-			return selected_row.m_ID;
+			return selected_row.getID();
 		
 		return "0";
 	}

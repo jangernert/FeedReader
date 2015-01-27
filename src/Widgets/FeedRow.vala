@@ -3,8 +3,8 @@ public class FeedRow : baseRow {
 	private bool m_subscribed;
 	private string m_catID;
 	private int m_level;
-	public string m_name { get; private set; }
-	public string m_ID { get; private set; }
+	private string m_name { get; private set; }
+	private string m_feedID { get; private set; }
 	
 
 	public FeedRow (string text, string unread_count, bool has_icon, string feedID, string catID, int level)
@@ -16,7 +16,7 @@ public class FeedRow : baseRow {
 		m_name = text.replace("&","&amp;");
 		if(text != "")
 		{
-			m_ID = feedID;	
+			m_feedID = feedID;	
 			
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -93,6 +93,16 @@ public class FeedRow : baseRow {
 	public string getCategorie()
 	{
 		return m_catID;
+	}
+	
+	public string getID()
+	{
+		return m_feedID;
+	}
+	
+	public string getName()
+	{
+		return m_name;
 	}
 
 	public bool isSubscribed()

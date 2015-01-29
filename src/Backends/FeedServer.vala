@@ -126,6 +126,7 @@ public class feed_server : GLib.Object {
 			error("Error: %s", e.message);
 		}
 	}
+	
 
 }
 

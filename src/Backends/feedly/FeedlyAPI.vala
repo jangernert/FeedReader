@@ -105,13 +105,6 @@ public class FeedlyAPI : Object {
 				
 				string feedID = object.get_string_member("id");
 				
-				// FIXME: if no title available, use url and cut out "http://www."
-				string title = "No Title";
-				if(object.has_member("title"))
-				{
-					title = object.get_string_member("title");
-				}
-				
 				string icon_url = "";
 				if(object.has_member("iconUrl"))
 				{
@@ -129,6 +122,16 @@ public class FeedlyAPI : Object {
 				var category = categories.get_object_element(0);
 				string categorieID = category.get_string_member("id");
 				int unreadCount = get_count_of_unread_articles(feedID);
+				
+				string title = "No Title";
+				if(object.has_member("title"))
+				{
+					title = object.get_string_member("title");
+				}
+				else
+				{
+					title = ttrss_utils.URLtoFeedName(url);
+				}
 	 			
 				dataBase.write_feed(feedID,
 									title,

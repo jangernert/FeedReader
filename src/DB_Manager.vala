@@ -321,12 +321,11 @@ public class dbManager : GLib.Object {
 	{
 		// FIXME check if preview already exists and dont generate it again
 		// SELECT count(*) FROM main.articles WHERE articleID = "34134" AND preview = ""
-		string output = "";
+		string output = _("No Preview Available");
 		int preview_exists = preview_empty(articleID);
 		
-		if(preview_exists == 0)
+		if(preview_exists == 0 && html != "")
 		{
-			
 			string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
 			int outputfd = GLib.FileUtils.mkstemp(filename);
 			try{
@@ -360,6 +359,11 @@ public class dbManager : GLib.Object {
 			output = output.slice(0, length);
 			output = output.slice(0, output.last_index_of(" "));
 			output = output.chug();
+		}
+		
+		if(html == "")
+		{
+			html = _("No Text available for this article :(");
 		}
 		
 		

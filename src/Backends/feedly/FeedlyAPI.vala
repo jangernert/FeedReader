@@ -104,7 +104,13 @@ public class FeedlyAPI : Object {
 				Json.Object object = array.get_object_element(i);
 				
 				string feedID = object.get_string_member("id");
-				string title = object.get_string_member("title");
+				
+				// FIXME: if no title available, use url and cut out "http://www."
+				string title = "No Title";
+				if(object.has_member("title"))
+				{
+					title = object.get_string_member("title");
+				}
 				
 				string icon_url = "";
 				if(object.has_member("iconUrl"))

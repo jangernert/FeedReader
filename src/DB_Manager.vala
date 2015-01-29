@@ -368,7 +368,7 @@ public class dbManager : GLib.Object {
 		{
 			string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
 			string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"sortID\", \"tags\") ";
-			string values = "VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, \"" + author + "\", \"" + url + "\", $HTML, $PREVIEW, " + unread.to_string() + ", " + marked.to_string() + ", " + (getHighestSortID()+1).to_string() + ", \"" + tags + "\")";
+			string values = "VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, $AUTHOR, \"" + url + "\", $HTML, $PREVIEW, " + unread.to_string() + ", " + marked.to_string() + ", " + (getHighestSortID()+1).to_string() + ", \"" + tags + "\")";
 			
 			query = command + fields + values;
 		}
@@ -395,6 +395,9 @@ public class dbManager : GLib.Object {
 			param_position = stmt.bind_parameter_index ("$PREVIEW");
 			assert (param_position > 0);
 			stmt.bind_text (param_position, output);
+			param_position = stmt.bind_parameter_index ("$AUTHOR");
+			assert (param_position > 0);
+			stmt.bind_text (param_position, author);
 		}
 		
 		while (stmt.step () == Sqlite.ROW) {

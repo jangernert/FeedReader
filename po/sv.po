@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-01-16 06:18+0100\n"
-"PO-Revision-Date: 2015-01-01 13:29+0000\n"
+"PO-Revision-Date: 2015-01-28 10:31+0000\n"
 "Last-Translator: Mikael Nyberg <mikanybe@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-01-25 06:11+0000\n"
+"X-Launchpad-Export-Date: 2015-01-29 06:06+0000\n"
 "X-Generator: Launchpad (build 17306)\n"
 
 #: ../src/Backends/ttrss/TTRSS_Utils.vala:88
@@ -55,47 +55,47 @@ msgstr "Om"
 
 #: ../src/Widgets/LoginDialog.vala:43
 msgid "Tiny Tiny RSS"
-msgstr ""
+msgstr "Tiny Tiny RSS"
 
 #: ../src/Widgets/LoginDialog.vala:43
 msgid "Feedly"
-msgstr ""
+msgstr "Feedly"
 
 #: ../src/Widgets/LoginDialog.vala:43
 msgid "OwnCloud"
-msgstr ""
+msgstr "OwnCloud"
 
 #: ../src/Widgets/LoginDialog.vala:63
 msgid "Please select a service first"
-msgstr ""
+msgstr "Välj en tjänst först"
 
 #: ../src/Widgets/LoginDialog.vala:66
 msgid "Please enter a valid username"
-msgstr ""
+msgstr "Ange ett giltigt användarnamn"
 
 #: ../src/Widgets/LoginDialog.vala:69
 msgid "Please enter a valid password"
-msgstr ""
+msgstr "Ange ett giltigt lösenord"
 
 #: ../src/Widgets/LoginDialog.vala:72
 msgid "Please enter a valid URL"
-msgstr ""
+msgstr "Ange en giltig URL"
 
 #: ../src/Widgets/LoginDialog.vala:75
 msgid "Please enter your Login details"
-msgstr ""
+msgstr "Ange dina inloggningsuppgifter"
 
 #: ../src/Widgets/LoginDialog.vala:78
 msgid "Sorry, something went wrong."
-msgstr ""
+msgstr "Tyvärr gick något fel."
 
 #: ../src/Widgets/LoginDialog.vala:88
 msgid "RSS Type:"
-msgstr ""
+msgstr "RSS typ:"
 
 #: ../src/Widgets/LoginDialog.vala:145
 msgid "Please tell us where your feeds are stored"
-msgstr ""
+msgstr "Tala om för oss var dina flöden lagras"
 
 #: ../src/Widgets/LoginDialog.vala:155
 msgid "Cancel"
@@ -115,7 +115,7 @@ msgstr "Lösenord:"
 
 #: ../src/Widgets/LoginDialog.vala:280
 msgid "OwnCloud URL:"
-msgstr ""
+msgstr "OwnCloud URL:"
 
 #: ../src/Widgets/MainWindow.vala:37
 msgid "FeedReader"

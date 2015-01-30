@@ -43,8 +43,8 @@ public class LoginPage : Gtk.Alignment {
 		liststore.append(out feedly);
 		liststore.set(feedly, 0, m_account_types[TYPE_FEEDLY]);
 		Gtk.TreeIter ownCloud;
-		liststore.append(out ownCloud);
-		liststore.set(ownCloud, 0, m_account_types[TYPE_OWNCLOUD]);
+		//liststore.append(out ownCloud);
+		//liststore.set(ownCloud, 0, m_account_types[TYPE_OWNCLOUD]);
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 		
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();

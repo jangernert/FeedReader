@@ -92,7 +92,6 @@ public class ColorCircle : Gtk.EventBox {
 		context.set_source_rgba(color.red, color.green, color.blue, 0.6*lighten);
 		context.fill_preserve();
 		
-		//int scale = this.get_root_window().get_scale_factor();
 		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);
 	}
 }

@@ -68,7 +68,6 @@ public class feedList : Gtk.Stack {
 
 
 		m_list.key_press_event.connect((event) => {
-			
 			if(event.keyval == Gdk.Key.Down)
 				move(true);
 			else if(event.keyval == Gdk.Key.Up)
@@ -79,7 +78,6 @@ public class feedList : Gtk.Stack {
 				if(selected_categorie != null)
 					selected_categorie.expand_collapse();
 			}
-			
 			return true;
 		});
 	}
@@ -212,6 +210,9 @@ public class feedList : Gtk.Stack {
 		}
 		initCollapseCategories();
 		this.show_all();
+		
+		
+		setScrollPos(settings_state.get_double("feed-row-scrollpos"));
 	}
 	
 	
@@ -219,8 +220,10 @@ public class feedList : Gtk.Stack {
 	{
 		print("set feedlist scroll: " + pos.to_string() + "\n");
 		m_scroll_adjustment = m_scroll.get_vadjustment();
+		print("max: " + m_scroll_adjustment.get_upper().to_string() + "\n");
 		m_scroll_adjustment.set_value(pos);
 		m_scroll.set_vadjustment(m_scroll_adjustment);
+		this.show_all();
 	}
 
 

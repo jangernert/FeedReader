@@ -1,6 +1,5 @@
 public class articleList : Gtk.Stack {
 
-	private Gtk.ScrolledWindow m_currentScroll;
 	private Gtk.ScrolledWindow m_scroll1;
 	private Gtk.ScrolledWindow m_scroll2;
 	private Gtk.ListBox m_currentList;
@@ -46,7 +45,6 @@ public class articleList : Gtk.Stack {
 		m_scroll2.add(m_List2);
 
 		m_currentList = m_List1;
-		m_currentScroll = m_scroll1;
 
 		m_scroll1_adjustment = m_scroll1.get_vadjustment();
 		m_scroll1_adjustment.value_changed.connect(() => {
@@ -122,6 +120,38 @@ public class articleList : Gtk.Stack {
 			articleRow current_article = ArticleListChildren.nth_data(current) as articleRow;
 			m_currentList.select_row(current_article);
 			row_activated(current_article);
+			
+			
+			
+			Gtk.ScrolledWindow activeScroll = null;
+			Gtk.Adjustment activeAdjustment = null;
+			
+			if(this.get_visible_child_name() == "list1")
+			{
+				activeScroll = m_scroll1;
+				activeAdjustment = m_scroll1_adjustment;
+			}
+			else if(this.get_visible_child_name() == "list2")
+			{
+				activeScroll = m_scroll2;
+				activeAdjustment = m_scroll2_adjustment;
+			}
+			
+			var currentPos = activeAdjustment.get_value();
+			var max = activeAdjustment.get_upper();
+			var offset = (max)/ArticleListChildren.length();
+			
+			if(down)
+			{
+				activeAdjustment.set_value(currentPos + offset);
+			}
+			else
+			{
+				activeAdjustment.set_value(currentPos - offset);
+			}
+			
+			activeScroll.set_vadjustment(activeAdjustment);
+			current_article.activate();
 		}
 	}
 

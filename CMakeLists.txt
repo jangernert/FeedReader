@@ -73,7 +73,6 @@ PACKAGES
     WebKit2-3.0
     libsecret-1
     libnotify
-    unity
 
 OPTIONS
     --target-glib=2.32
@@ -82,8 +81,20 @@ OPTIONS
 
 
 set(DAEMON_OPTIONS --target-glib=2.32)
+set(DAEMON_PACKAGES
+	glib-2.0>=2.32
+    gio-2.0
+    sqlite3
+    gee-0.8
+    libsoup-2.4
+    json-glib-1.0
+    libnotify
+    libsecret-1
+    unity)
+    
 if(WITH_LIBUNITY)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
+	list(APPEND DAEMON_PACKAGES unity)
 endif(WITH_LIBUNITY)
 
 vala_precompile(daemon ${DAEMON_NAME}
@@ -103,15 +114,7 @@ vala_precompile(daemon ${DAEMON_NAME}
 
 
 PACKAGES
-    glib-2.0>=2.32
-    gio-2.0
-    sqlite3
-    gee-0.8
-    libsoup-2.4
-    json-glib-1.0
-    libnotify
-    libsecret-1
-    unity
+    ${DAEMON_PACKAGES}
 
 OPTIONS
     ${DAEMON_OPTIONS}

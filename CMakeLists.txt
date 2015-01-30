@@ -3,6 +3,7 @@ cmake_minimum_required (VERSION 2.6)
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+option(WITH_LIBUNITY "Adds a Badge with the count of the unread articles to the dockitem" ON)
 
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
@@ -19,7 +20,13 @@ add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
 add_subdirectory (schemas)
 
-pkg_check_modules(DEPS REQUIRED gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify unity)
+
+set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify)
+if(WITH_LIBUNITY)
+	list(APPEND MODULES unity)
+endif(WITH_LIBUNITY)
+
+pkg_check_modules(DEPS REQUIRED ${MODULES})
 
 add_definitions(${DEPS_CFLAGS})
 link_libraries(${DEPS_LIBRARIES})
@@ -73,6 +80,12 @@ OPTIONS
 
 )
 
+
+set(DAEMON_OPTIONS --target-glib=2.32)
+if(WITH_LIBUNITY)
+	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
+endif(WITH_LIBUNITY)
+
 vala_precompile(daemon ${DAEMON_NAME}
     src/Daemon.vala
     src/DB_Manager.vala
@@ -101,8 +114,7 @@ PACKAGES
     unity
 
 OPTIONS
-    --target-glib=2.32
-    -g
+    ${DAEMON_OPTIONS}
 )
 
 

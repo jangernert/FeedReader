@@ -1,7 +1,9 @@
 [DBus (name = "org.gnome.feedreader")]
 public class FeedDaemonServer : Object {
 
+#if WITH_LIBUNITY
 	private Unity.LauncherEntry m_launcher;
+#endif
 	private int m_loggedin;
 	
 	public FeedDaemonServer()
@@ -13,8 +15,10 @@ public class FeedDaemonServer : Object {
 			stdout.printf("not logged in\n");
 		
 		int sync_timeout = settings_general.get_int("sync");
+#if WITH_LIBUNITY
 		m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 		updateBadge();
+#endif
 		stdout.printf("daemon: add timeout\n");
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
 			if(!settings_state.get_boolean("currently-updating"))
@@ -103,12 +107,14 @@ public class FeedDaemonServer : Object {
 	
 	public void updateBadge()
 	{
+#if WITH_LIBUNITY
 		var count = dataBase.get_unread_total();
 		m_launcher.count = count;
 		if(count > 0)
 			m_launcher.count_visible = true;
 		else
 			m_launcher.count_visible = false;
+#endif
 	}
 }
 

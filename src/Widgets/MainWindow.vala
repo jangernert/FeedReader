@@ -110,6 +110,7 @@ public class readerUI : Gtk.ApplicationWindow
 			
 			settings_state.set_strv("expanded-categories", m_feedList.getExpandedCategories());
 			settings_state.set_double("feed-row-scrollpos",  m_feedList.getScrollPos());
+			settings_state.set_string("feedlist-selected-row", m_feedList.getSelectedRow());
 			settings_state.set_int("feed-row-width", m_pane_feedlist.get_position());
 			settings_state.set_int("article-row-width", m_pane_articlelist.get_position());
 			settings_state.set_boolean("only-unread", m_headerbar.m_only_unread);

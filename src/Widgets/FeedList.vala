@@ -209,32 +209,78 @@ public class feedList : Gtk.Stack {
 			m_list.select_row(row_all);
 		}
 		initCollapseCategories();
+		restoreSelectedRow();
 		this.show_all();
 		
 		
-		savedState.begin(row_all , (obj, res) => {
-			savedState.end(res);
+		restoreScrollPos.begin(row_all , (obj, res) => {
+			restoreScrollPos.end(res);
 		});
 	}
 	
-	private async void savedState(FeedRow row)
+	private void restoreSelectedRow()
 	{
-		print("restore saved state\n");
-		SourceFunc callback = savedState.callback;
+		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
+		
+		var FeedChildList = m_list.get_children();
+		
+		if(selectedRow[0] == "feed")
+		{
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as FeedRow;
+				if(tmpRow != null && tmpRow.getID() == selectedRow[1])
+				{
+					m_list.select_row(tmpRow);
+					tmpRow.activate();
+					break;
+				}
+			}
+		}
+		
+		if(selectedRow[0] == "cat")
+		{
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as categorieRow;
+				if(tmpRow != null && tmpRow.getID() == selectedRow[1])
+				{
+					m_list.select_row(tmpRow);
+					tmpRow.activate();
+					break;
+				}
+			}
+		}
+		
+		if(selectedRow[0] == "tag")
+		{
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as TagRow;
+				if(tmpRow != null && tmpRow.getID() == selectedRow[1])
+				{
+					m_list.select_row(tmpRow);
+					tmpRow.activate();
+					break;
+				}
+			}
+		}
+	}
+	
+	private async void restoreScrollPos(FeedRow row)
+	{
+		SourceFunc callback = restoreScrollPos.callback;
 		ThreadFunc<void*> run = () => {
 			
 			if(!row.AnimationFinished())
-			{
-				print("row is not fully revealed\n");
 				GLib.Thread.usleep(row.transitionDuration()*1000);
-			}
 				
 			setScrollPos(settings_state.get_double("feed-row-scrollpos"));
 			
 			Idle.add((owned) callback);
 			return null;
 		};
-		new GLib.Thread<void*>("savedState", run);
+		new GLib.Thread<void*>("restoreScrollPos", run);
 		yield;
 	}
 		
@@ -831,6 +877,28 @@ public class feedList : Gtk.Stack {
 			}
 		}
 		return e;
+	}
+	
+	public string getSelectedRow()
+	{
+		var feedrow = m_list.get_selected_row() as FeedRow;
+		var catrow = m_list.get_selected_row() as categorieRow;
+		var tagrow = m_list.get_selected_row() as TagRow;
+		
+		if(feedrow != null)
+		{
+			return "feed " + feedrow.getID();
+		}
+		else if(catrow != null)
+		{
+			return "cat " + catrow.getID();
+		}
+		else if(tagrow != null)
+		{
+			return "tag " + tagrow.getID();
+		}
+		
+		return "";
 	}
 	
 	

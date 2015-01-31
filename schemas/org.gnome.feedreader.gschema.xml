@@ -23,6 +23,14 @@
 			</description>
 		</key>
 		
+		<key name="feedlist-selected-row" type="s">
+			<default>""</default>
+			<summary>FeedList selected row</summary>
+			<description>
+				The feedrow selected when the app closes so it can be restored on open.
+			</description>
+		</key>
+		
 		<key name="article-row-width" type="i">
 			<default>400</default>
 			<summary>ArticleRow width</summary>

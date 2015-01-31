@@ -7,7 +7,6 @@ public class baseRow : Gtk.ListBoxRow {
 	protected string m_unread_count;
 	protected Gtk.Label m_unread;
 	protected Gtk.Revealer m_revealer;
-	protected bool m_isRevealed;
 
 	
 	public baseRow () {
@@ -69,12 +68,22 @@ public class baseRow : Gtk.ListBoxRow {
 	public void reveal(bool reveal)
 	{
 		m_revealer.set_reveal_child(reveal);
-		m_isRevealed = reveal;
 	}
 
 	public bool isRevealed()
 	{
-		return m_isRevealed;
+		//return m_revealer.get_child_revealed();
+		return m_revealer.get_reveal_child();
+	}
+	
+	public bool AnimationFinished()
+	{
+		return m_revealer.get_child_revealed();
+	}
+	
+	public uint transitionDuration()
+	{
+		return m_revealer.get_transition_duration();
 	}
 
 }

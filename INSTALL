@@ -1,12 +1,4 @@
 //+++++++++++++++++++++++++++++++++++++++
-// TT-RSS
-//+++++++++++++++++++++++++++++++++++++++
-
-1. Install the plugin "api_newsplus" for tt-rss.
-2. Check "Enable API access" in tt-rss preferences.
-
-
-//+++++++++++++++++++++++++++++++++++++++
 // Needed Packages
 //+++++++++++++++++++++++++++++++++++++++
 
@@ -22,7 +14,7 @@ libwebkit2gtk-3.0-dev
 libsqlite3-dev
 libsecret-1-dev
 libnotify-dev
-libunity-dev
+libunity-dev (optional: disable with -DWITH_LIBUNITY=OFF)
 
 
 //+++++++++++++++++++++++++++++++++++++++
@@ -34,7 +26,3 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make -j(threads)
 sudo make install
-
-
-
-

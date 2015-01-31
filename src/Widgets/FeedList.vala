@@ -212,11 +212,34 @@ public class feedList : Gtk.Stack {
 		this.show_all();
 		
 		
-		setScrollPos(settings_state.get_double("feed-row-scrollpos"));
+		savedState.begin(row_all , (obj, res) => {
+			savedState.end(res);
+		});
 	}
 	
+	private async void savedState(FeedRow row)
+	{
+		print("restore saved state\n");
+		SourceFunc callback = savedState.callback;
+		ThreadFunc<void*> run = () => {
+			
+			if(!row.AnimationFinished())
+			{
+				print("row is not fully revealed\n");
+				GLib.Thread.usleep(row.transitionDuration()*1000);
+			}
+				
+			setScrollPos(settings_state.get_double("feed-row-scrollpos"));
+			
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("savedState", run);
+		yield;
+	}
+		
 	
-	public void setScrollPos(double pos)
+	private void setScrollPos(double pos)
 	{
 		print("set feedlist scroll: " + pos.to_string() + "\n");
 		m_scroll_adjustment = m_scroll.get_vadjustment();

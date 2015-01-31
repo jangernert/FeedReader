@@ -146,7 +146,6 @@ public class articleRow : baseRow {
 		m_revealer.add(seperator_box);
 		
 		m_revealer.set_reveal_child(false);
-		m_isRevealed = false;
 		this.add(m_revealer);
 		this.show_all();
 	}

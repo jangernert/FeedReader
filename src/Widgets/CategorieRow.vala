@@ -67,7 +67,6 @@ public class categorieRow : baseRow {
 		m_box.pack_end(m_unread, false, false, 8);
 		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
-		m_isRevealed = false;
 		this.add(m_revealer);
 		this.show_all();
 	}

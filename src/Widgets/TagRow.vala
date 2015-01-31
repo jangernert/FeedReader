@@ -52,7 +52,6 @@ public class TagRow : baseRow {
 		m_box.pack_start(m_label, true, true, 0);
 		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
-		m_isRevealed = false;
 		this.add(m_revealer);
 		this.show_all();
 	}

@@ -1,4 +1,130 @@
+# French translation for feedreader
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the feedreader package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: feedreader\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-01-16 06:18+0100\n"
+"PO-Revision-Date: 2015-01-31 23:58+0000\n"
+"Last-Translator: Rémi Patrizio <remi.patrizio@me.com>\n"
+"Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-02-01 06:38+0000\n"
+"X-Generator: Launchpad (build 17306)\n"
+
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:88
+msgid "There is 1 new article"
+msgstr "Il y a un nouvel article"
+
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:90
+msgid "There are >200 new articles"
+msgstr "Il y a + de 200 nouveaux articles"
+
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:92
+msgid "There are "
+msgstr "Il y a "
+
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:92
+msgid " new articles"
+msgstr " nouveaux articles"
+
+#: ../src/Backends/ttrss/TTRSS_Utils.vala:94
+msgid "New Articles"
+msgstr "Nouveaux articles"
+
+#: ../src/Widgets/ArticleView.vala:49
+msgid "No Article selected."
+msgstr "Aucun article sélectionné."
+
+#: ../src/Widgets/ReaderHeaderbar.vala:77
+msgid "Search Aritlces..."
+msgstr "Rechercher des articles..."
+
+#: ../src/Widgets/ReaderHeaderbar.vala:84
+msgid "Change Login"
+msgstr "Changer de Login"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:85
+msgid "About"
+msgstr "À propos"
+
+#: ../src/Widgets/LoginDialog.vala:43
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS"
+
+#: ../src/Widgets/LoginDialog.vala:43
+msgid "Feedly"
+msgstr "Feedly"
+
+#: ../src/Widgets/LoginDialog.vala:43
+msgid "OwnCloud"
+msgstr "OwnCloud"
+
+#: ../src/Widgets/LoginDialog.vala:63
+msgid "Please select a service first"
+msgstr "Veuillez d'abord sélectionner un service"
+
+#: ../src/Widgets/LoginDialog.vala:66
+msgid "Please enter a valid username"
+msgstr "Veuillez entrer un nom d'utilisateur valide"
+
+#: ../src/Widgets/LoginDialog.vala:69
+msgid "Please enter a valid password"
+msgstr "Veuillez entrer un mot de passe valide"
+
+#: ../src/Widgets/LoginDialog.vala:72
+msgid "Please enter a valid URL"
+msgstr "Veuillez entrer une URL valide"
+
+#: ../src/Widgets/LoginDialog.vala:75
+msgid "Please enter your Login details"
+msgstr "Veuillez entrer vos informations de connexion"
+
+#: ../src/Widgets/LoginDialog.vala:78
+msgid "Sorry, something went wrong."
+msgstr "Désolé, il y a eu un problème."
+
+#: ../src/Widgets/LoginDialog.vala:88
+msgid "RSS Type:"
+msgstr "Type de RSS :"
+
+#: ../src/Widgets/LoginDialog.vala:145
+msgid "Please tell us where your feeds are stored"
+msgstr "Veuillez nous indiquer où sont stockés vos flux"
+
+#: ../src/Widgets/LoginDialog.vala:155
+msgid "Cancel"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:185
+msgid "tt-rss URL:"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:186 ../src/Widgets/LoginDialog.vala:281
+msgid "Username:"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:187 ../src/Widgets/LoginDialog.vala:282
+msgid "Password:"
+msgstr ""
+
+#: ../src/Widgets/LoginDialog.vala:280
+msgid "OwnCloud URL:"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:37
+msgid "FeedReader"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:59
+msgid "about"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:63
+msgid "login"
+msgstr ""

@@ -362,10 +362,6 @@ public class ttrss_interface : GLib.Object {
 			var response = message.get_response_array();
 			var headline_count = response.get_length();
 			stdout.printf("Number of New Articles: %u\n", headline_count);
-
-			dataBase.markReadAllArticles();
-			int before = dataBase.getHighestSortID();
-			
 			GLib.List<article> articles = new GLib.List<article>();
 			string title, author, url, html;
 			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
@@ -439,11 +435,6 @@ public class ttrss_interface : GLib.Object {
 										item.m_html,
 										item.m_tags,
 										item.m_preview);
-			}
-			
-			if(skip == 0){
-				int after = dataBase.getHighestSortID();
-				feed_server.sendNotification(after-before);
 			}
 			
 			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);

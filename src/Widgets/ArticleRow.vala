@@ -11,7 +11,7 @@ public class articleRow : baseRow {
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private bool m_just_clicked;
-	public string m_articleID { get; private set; }
+	private string m_articleID { get; private set; }
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 	public signal void updateFeedList();
@@ -287,6 +287,11 @@ public class articleRow : baseRow {
 	public string getName()
 	{
 		return m_name;
+	}
+	
+	public string getID()
+	{
+		return m_articleID;
 	}
 
  	 

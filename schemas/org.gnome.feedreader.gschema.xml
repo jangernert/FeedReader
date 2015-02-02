@@ -17,9 +17,9 @@
 		
 		<key name="feed-row-scrollpos" type="d">
 			<default>0</default>
-			<summary>FeedRow Scroll Position</summary>
+			<summary>FeedList Scroll Position</summary>
 			<description>
-				The position the user scrolled to at the time the app closes
+				The position of the FeedList the user scrolled to at the time the app closes
 			</description>
 		</key>
 		
@@ -36,6 +36,38 @@
 			<summary>ArticleRow width</summary>
 			<description>
 				Width of the second paned, the article-row
+			</description>
+		</key>
+		
+		<key name="articlelist-scrollpos" type="d">
+			<default>0</default>
+			<summary>ArticleList Scroll Position</summary>
+			<description>
+				The position of the ArticleList the user scrolled to at the time the app closes
+			</description>
+		</key>
+		
+		<key name="articlelist-selected-row" type="s">
+			<default>""</default>
+			<summary>ArticleList selected row</summary>
+			<description>
+				The artcile selected when the app closes so it can be restored on open.
+			</description>
+		</key>
+		
+		<key name="articlelist-row-amount" type="i">
+			<default>15</default>
+			<summary>ArticleList number of rows</summary>
+			<description>
+				How much articles to load on startup
+			</description>
+		</key>
+		
+		<key name="articlelist-new-rows" type="i">
+			<default>0</default>
+			<summary>ArticleList number of new rows added during close</summary>
+			<description>
+				How much articles got added to the db while the app was closed
 			</description>
 		</key>
 		

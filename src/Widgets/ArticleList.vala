@@ -154,6 +154,115 @@ public class articleList : Gtk.Stack {
 			current_article.activate();
 		}
 	}
+	
+	
+	public int getAmountOfRowsToLoad()
+	{
+		return (int)m_currentList.get_children().length();
+	}
+	
+	
+	private void restoreSelectedRow()
+	{
+		string selectedRow = settings_state.get_string("articlelist-selected-row");
+		
+		if(selectedRow != "")
+		{
+			var FeedChildList = m_currentList.get_children();	
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as articleRow;
+				if(tmpRow != null && tmpRow.getID() == selectedRow)
+				{
+					m_currentList.select_row(tmpRow);
+					tmpRow.activate();
+					settings_state.set_string("articlelist-selected-row", "");
+					return;
+				}
+			}
+		}
+	}
+	
+	
+	private async void restoreScrollPos()
+	{
+		SourceFunc callback = restoreScrollPos.callback;
+		ThreadFunc<void*> run = () => {
+			
+			var row = m_currentList.get_row_at_index(0) as articleRow;
+			GLib.Thread.usleep(row.transitionDuration()*1000);
+			setScrollPos(settings_state.get_double("articlelist-scrollpos"));
+			
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("restoreScrollPos", run);
+		yield;
+		
+		settings_state.set_int("articlelist-new-rows", 0);
+		settings_state.set_int("articlelist-row-amount", 15);
+	}
+		
+	
+	private void setScrollPos(double pos)
+	{
+		Gtk.ScrolledWindow activeScroll = null;
+		Gtk.Adjustment activeAdjustment = null;
+		
+		if(this.get_visible_child_name() == "list1")
+		{
+			activeScroll = m_scroll1;
+			activeAdjustment = m_scroll1_adjustment;
+		}
+		else if(this.get_visible_child_name() == "list2")
+		{
+			activeScroll = m_scroll2;
+			activeAdjustment = m_scroll2_adjustment;
+		}
+		
+		double RowVSpace = 100;
+		print("row v space: " + RowVSpace.to_string() + "\n");
+		double additionalScroll = RowVSpace * settings_state.get_int("articlelist-new-rows");
+		print("additional scroll: " + additionalScroll.to_string() + "\n");
+		double newPos = pos + additionalScroll;
+			
+		
+		activeAdjustment = activeScroll.get_vadjustment();
+		activeAdjustment.set_value(newPos);
+		activeScroll.set_vadjustment(activeAdjustment);
+		this.show_all();
+		settings_state.set_double("articlelist-scrollpos",  0);
+	}
+	
+	
+	public double getScrollPos()
+	{
+		Gtk.Adjustment activeAdjustment = null;
+			
+		if(this.get_visible_child_name() == "list1")
+		{
+			activeAdjustment = m_scroll1_adjustment;
+		}
+		else if(this.get_visible_child_name() == "list2")
+		{
+			activeAdjustment = m_scroll2_adjustment;
+		}
+		
+		return activeAdjustment.get_value();
+	}
+	
+	private int shortenArticleList()
+	{
+		double RowVSpace = 100;
+		int stillInViewport = (int)((settings_state.get_double("articlelist-scrollpos")+900)/RowVSpace);
+		
+		if(stillInViewport < settings_state.get_int("articlelist-row-amount"))
+		{
+			return stillInViewport+15;
+		}
+		
+		return settings_state.get_int("articlelist-row-amount");
+	}
 
 
 	public void setOnlyUnread(bool only_unread)
@@ -180,12 +289,21 @@ public class articleList : Gtk.Stack {
 	{
 		m_IDtype = type;
 	}
-
-
-	public void createHeadlineList()
+	
+	public string getSelectedArticle()
 	{
-		m_limit = 15;
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+		if(selected_row != null)
+			return selected_row.getID();
 		
+		return "";
+	}
+
+
+	public void createHeadlineList(bool add = false)
+	{
+		// FIXME: dont load articles if they are below the current view and not selected
+		m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
 		
 		// when the daemon is updating in the background and writing new articles in the db
 		// the most recent article could incomplete, so just add an offset of 1
@@ -215,6 +333,12 @@ public class articleList : Gtk.Stack {
 		m_currentList.show_all();
 		if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
 		else if(m_currentList == m_List2)   this.set_visible_child_name("list2");
+		
+		if(!add)
+		{
+			restoreScrollPos();
+			restoreSelectedRow();
+		}
 	}
 
 	public void newHeadlineList()
@@ -239,7 +363,7 @@ public class articleList : Gtk.Stack {
 		if(articleChildList != null)
 		{
 			var first_row = articleChildList.first().data as articleRow;
-			int new_articles = dataBase.getRowNumberHeadline(first_row.m_articleID) -1;
+			int new_articles = dataBase.getRowNumberHeadline(first_row.getID()) -1;
 			m_limit = m_displayed_articles + new_articles;
 		}
 
@@ -254,7 +378,7 @@ public class articleList : Gtk.Stack {
 			foreach(Gtk.Widget row in articleChildList)
 			{
 				var tmpRow = (articleRow)row;
-				if(item.m_articleID == tmpRow.m_articleID)
+				if(item.m_articleID == tmpRow.getID())
 				{
 					tmpRow.updateUnread(item.m_unread);
 					found = true;

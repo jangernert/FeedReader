@@ -2,8 +2,6 @@ public class categorieRow : baseRow {
 
 	private string m_name;
 	private Gtk.EventBox m_eventbox;
-	private Gdk.Pixbuf m_state_collapsed;
-	private Gdk.Pixbuf m_state_expanded;
 	private string m_categorieID;
 	private string m_parentID;
 	private int m_orderID;

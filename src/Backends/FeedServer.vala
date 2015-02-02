@@ -42,6 +42,9 @@ public class feed_server : GLib.Object {
 	
 	public async void sync_content()
 	{
+		int before = dataBase.getHighestSortID();
+		dataBase.markReadAllArticles();
+		
 		switch(m_type)
 		{
 			case TYPE_TTRSS:
@@ -49,7 +52,6 @@ public class feed_server : GLib.Object {
 				yield m_ttrss.getFeeds();
 				yield m_ttrss.getTags();
 				yield m_ttrss.getArticles();
-				//yield m_ttrss.updateArticles();
 				break;
 				
 			case TYPE_FEEDLY:
@@ -58,6 +60,15 @@ public class feed_server : GLib.Object {
 				yield m_feedly.getTags();
 				yield m_feedly.getArticles();
 				break;
+		}
+		
+		int after = dataBase.getHighestSortID();
+		int newArticles = after-before;
+		if(newArticles > 0)
+		{
+			sendNotification(newArticles);
+			int newCount = settings_state.get_int("articlelist-new-rows") + newArticles;
+			settings_state.set_int("articlelist-new-rows", newCount);
 		}
 	}
 	
@@ -92,7 +103,7 @@ public class feed_server : GLib.Object {
 	}
 	
 	
-	public static void sendNotification(uint headline_count)
+	private static void sendNotification(uint headline_count)
 	{
 		try{
 			string message;

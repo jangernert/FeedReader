@@ -194,8 +194,6 @@ public class FeedlyAPI : Object {
 			
 			var parser = new Json.Parser();
 			parser.load_from_data(response, -1);
-			dataBase.markReadAllArticles();
-			int before = dataBase.getHighestSortID();
 
 			var array = parser.get_root().get_array();
 			
@@ -260,9 +258,6 @@ public class FeedlyAPI : Object {
 										item.m_tags,
 										item.m_preview);
 			}
-			
-			int after = dataBase.getHighestSortID();
-			feed_server.sendNotification(after-before);
 			
 			Idle.add((owned) callback);
 			return null;

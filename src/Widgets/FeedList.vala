@@ -4,7 +4,6 @@ public class feedList : Gtk.Stack {
 	private Gtk.ListBox m_list;
 	private baseRow m_selected;
 	private Gtk.Spinner m_spinner;
-	private double m_scrollPos;
 	private Gtk.Adjustment m_scroll_adjustment;
 	public signal void newFeedSelected(string feedID);
 	public signal void newTagSelected(string tagID);
@@ -20,11 +19,8 @@ public class feedList : Gtk.Stack {
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.set_size_request(200, 500);
 		m_scroll.add(m_list);
-		
 		m_scroll_adjustment = m_scroll.get_vadjustment();
-		m_scroll_adjustment.value_changed.connect(() => {
-			m_scrollPos = m_scroll_adjustment.get_value();
-		});
+
 		
 		this.get_style_context().add_class("feed-list");
 
@@ -203,11 +199,7 @@ public class feedList : Gtk.Stack {
 				}
 			}
 		}
-		if(m_selected == null)
-		{
-			m_selected = row_all;
-			m_list.select_row(row_all);
-		}
+		
 		initCollapseCategories();
 		restoreSelectedRow();
 		this.show_all();
@@ -233,7 +225,7 @@ public class feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
-					break;
+					return;
 				}
 			}
 		}
@@ -247,7 +239,7 @@ public class feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
-					break;
+					return;
 				}
 			}
 		}
@@ -261,7 +253,7 @@ public class feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
-					break;
+					return;
 				}
 			}
 		}
@@ -287,9 +279,7 @@ public class feedList : Gtk.Stack {
 	
 	private void setScrollPos(double pos)
 	{
-		print("set feedlist scroll: " + pos.to_string() + "\n");
 		m_scroll_adjustment = m_scroll.get_vadjustment();
-		print("max: " + m_scroll_adjustment.get_upper().to_string() + "\n");
 		m_scroll_adjustment.set_value(pos);
 		m_scroll.set_vadjustment(m_scroll_adjustment);
 		this.show_all();
@@ -904,7 +894,7 @@ public class feedList : Gtk.Stack {
 	
 	public double getScrollPos()
 	{
-		return m_scrollPos;
+		return m_scroll_adjustment.get_value();
 	}
 
 }

@@ -113,6 +113,10 @@ public class readerUI : Gtk.ApplicationWindow
 			settings_state.set_string("feedlist-selected-row", m_feedList.getSelectedRow());
 			settings_state.set_int("feed-row-width", m_pane_feedlist.get_position());
 			settings_state.set_int("article-row-width", m_pane_articlelist.get_position());
+			settings_state.set_int("articlelist-row-amount", m_articleList.getAmountOfRowsToLoad());
+			settings_state.set_double("articlelist-scrollpos",  m_articleList.getScrollPos());
+			settings_state.set_string("articlelist-selected-row", m_articleList.getSelectedArticle());
+			settings_state.set_int("articlelist-new-rows", 0);
 			settings_state.set_boolean("only-unread", m_headerbar.m_only_unread);
 			settings_state.set_boolean("only-marked", m_headerbar.m_only_marked);
 		});
@@ -243,13 +247,12 @@ public class readerUI : Gtk.ApplicationWindow
 
 		m_articleList.row_activated.connect((row) => {
 			if(row.isUnread()){
-				feedDaemon_interface.changeUnread(row.m_articleID, STATUS_READ);
+				feedDaemon_interface.changeUnread(row.getID(), STATUS_READ);
 				row.updateUnread(STATUS_READ);
 				row.removeUnreadIcon();
-				//m_feedList.updateCounters(row.m_feedID);
 			}
 			
-			m_article_view.fillContent(row.m_articleID);
+			m_article_view.fillContent(row.getID());
 		});
 
 		m_articleList.updateFeedList.connect(() =>{
@@ -257,7 +260,7 @@ public class readerUI : Gtk.ApplicationWindow
 		});
 
 		m_articleList.load_more.connect(() => {
-				m_articleList.createHeadlineList();
+				m_articleList.createHeadlineList(true);
 		});
 	}
 	
@@ -265,7 +268,6 @@ public class readerUI : Gtk.ApplicationWindow
 	{
 		print("load content\n");
 		m_feedList.newFeedlist();
-		m_articleList.newHeadlineList();
 		dataBase.updateBadge.connect(() => {
 			feedDaemon_interface.updateBadge();
 		});

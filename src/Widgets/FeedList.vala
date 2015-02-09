@@ -203,11 +203,7 @@ public class feedList : Gtk.Stack {
 		initCollapseCategories();
 		restoreSelectedRow();
 		this.show_all();
-		
-		
-		restoreScrollPos.begin(row_all , (obj, res) => {
-			restoreScrollPos.end(res);
-		});
+		m_scroll_adjustment.notify["upper"].connect(restoreScrollPos);
 	}
 	
 	private void restoreSelectedRow()
@@ -259,21 +255,11 @@ public class feedList : Gtk.Stack {
 		}
 	}
 	
-	private async void restoreScrollPos(FeedRow row)
+
+	void restoreScrollPos(Object sender, ParamSpec property)
 	{
-		SourceFunc callback = restoreScrollPos.callback;
-		ThreadFunc<void*> run = () => {
-			
-			if(!row.AnimationFinished())
-				GLib.Thread.usleep(row.transitionDuration()*1000);
-				
-			setScrollPos(settings_state.get_double("feed-row-scrollpos"));
-			
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("restoreScrollPos", run);
-		yield;
+		m_scroll_adjustment.notify["upper"].disconnect(restoreScrollPos);
+		setScrollPos(settings_state.get_double("feed-row-scrollpos"));
 	}
 		
 	

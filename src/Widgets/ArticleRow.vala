@@ -25,9 +25,6 @@ public class articleRow : baseRow {
 		m_feedID = feedID;
 		m_url = url;
 		m_is_unread = unread;
-		m_revealer = new Gtk.Revealer();
-		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.set_transition_duration(500);
 		
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 100);

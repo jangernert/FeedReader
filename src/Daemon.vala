@@ -132,7 +132,6 @@ void on_bus_aquired (DBusConnection conn) {
         stderr.printf("%s\n", e.message);
         exit(-1);
     }
-    settings_state.set_boolean("currently-updating", false);
     stdout.printf("daemon: bus aquired\n");
 }
 
@@ -157,7 +156,9 @@ void main () {
 	
 	Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 		          on_bus_aquired,
-		          () => {},
+		          () => {
+		          			settings_state.set_boolean("currently-updating", false);
+		          },
 		          () => {
 		          			stderr.printf ("Could not aquire name\n"); 
 		              		exit(-1);

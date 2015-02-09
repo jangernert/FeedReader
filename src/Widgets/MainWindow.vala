@@ -119,6 +119,7 @@ public class readerUI : Gtk.ApplicationWindow
 			settings_state.set_int("articlelist-new-rows", 0);
 			settings_state.set_boolean("only-unread", m_headerbar.m_only_unread);
 			settings_state.set_boolean("only-marked", m_headerbar.m_only_marked);
+			settings_state.set_boolean("no-animations", true);
 		});
 	}
 	
@@ -257,10 +258,6 @@ public class readerUI : Gtk.ApplicationWindow
 
 		m_articleList.updateFeedList.connect(() =>{
 			updateFeedList();
-		});
-
-		m_articleList.load_more.connect(() => {
-				m_articleList.createHeadlineList(true);
 		});
 	}
 	

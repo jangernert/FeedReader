@@ -33,10 +33,6 @@ public class TagRow : baseRow {
 			m_circle.newColor(color);
 			dataBase.update_tag_color(m_tagID, color);
 		});
-
-		m_revealer = new Gtk.Revealer();
-		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.set_transition_duration(500);
 		
 		m_label = new Gtk.Label(m_name);
 		m_label.set_use_markup (true);

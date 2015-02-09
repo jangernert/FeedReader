@@ -10,7 +10,9 @@ public class baseRow : Gtk.ListBoxRow {
 
 	
 	public baseRow () {
-		
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+		m_revealer.set_transition_duration(500);
 	}
 
 	protected void scale_pixbuf(ref Gdk.Pixbuf icon, int size)
@@ -67,7 +69,18 @@ public class baseRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal)
 	{
-		m_revealer.set_reveal_child(reveal);
+		if(settings_state.get_boolean("no-animations"))
+		{
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
+			m_revealer.set_transition_duration(0);
+			m_revealer.set_reveal_child(reveal);
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+			m_revealer.set_transition_duration(500);
+		}
+		else
+		{
+			m_revealer.set_reveal_child(reveal);
+		}
 	}
 
 	public bool isRevealed()

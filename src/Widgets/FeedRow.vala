@@ -34,10 +34,6 @@ public class FeedRow : baseRow {
 			{
 				m_icon = new Gtk.Image.from_file("/usr/share/FeedReader/rss24.svg");
 			}
-
-			m_revealer = new Gtk.Revealer();
-			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-			m_revealer.set_transition_duration(500);
 		
 			m_unread_count = unread_count;
 			m_label = new Gtk.Label(m_name);

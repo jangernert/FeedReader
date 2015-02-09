@@ -7,6 +7,14 @@
 	</enum>
 	
 	<schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
+		<key name="no-animations" type="b">
+			<default>false</default>
+			<summary>no animations on startup</summary>
+			<description>
+				Dont animate all inserted rows on startup so the list can instantly jump to the correct scroll-pos
+			</description>
+		</key>	
+	
 		<key name="feed-row-width" type="i">
 			<default>200</default>
 			<summary>FeedRow width</summary>

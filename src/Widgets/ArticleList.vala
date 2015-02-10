@@ -17,6 +17,7 @@ public class articleList : Gtk.Stack {
 	private string m_searchTerm;
 	private int m_limit;
 	private int m_IDtype;
+	private bool m_limitScroll;
 	public signal void row_activated(articleRow? row);
 	public signal void updateFeedList();
 	
@@ -28,6 +29,7 @@ public class articleList : Gtk.Stack {
 		m_IDtype = FEEDLIST_FEED;
 		m_searchTerm = "";
 		m_limit = 15;
+		m_limitScroll = false;
 		
 		
 		m_List1 = new Gtk.ListBox();
@@ -51,7 +53,7 @@ public class articleList : Gtk.Stack {
 			var current = m_scroll1_adjustment.get_value();
 			var page = m_scroll1_adjustment.get_page_size();
 			var max = m_scroll1_adjustment.get_upper();
-			if((current + page)/max > m_lmit)
+			if((current + page)/max > m_lmit && !m_limitScroll)
 			{
 				createHeadlineList(true);
 			}
@@ -62,7 +64,7 @@ public class articleList : Gtk.Stack {
 			var current = m_scroll2_adjustment.get_value();
 			var page = m_scroll2_adjustment.get_page_size();
 			var max = m_scroll2_adjustment.get_upper();
-			if((current + page)/max > m_lmit)
+			if((current + page)/max > m_lmit && !m_limitScroll)
 			{
 				createHeadlineList(true);
 			}
@@ -254,6 +256,11 @@ public class articleList : Gtk.Stack {
 
 	public void createHeadlineList(bool add = false)
 	{
+		// dont allow new articles being created due to scrolling for 0.5s
+		limitScroll.begin((obj, res) => {
+			limitScroll.end(res);
+		});
+		
 		m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
 		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
 
@@ -387,6 +394,22 @@ public class articleList : Gtk.Stack {
 				articleChildList = m_currentList.get_children();
 			}
 		}
+	}
+	
+	
+	private async void limitScroll()
+	{
+		SourceFunc callback = limitScroll.callback;
+		
+		ThreadFunc<void*> run = () => {
+			m_limitScroll = true;
+			GLib.Thread.usleep(500000);
+			m_limitScroll = false;
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("limitScroll", run);
+		yield;
 	}
 
 	 

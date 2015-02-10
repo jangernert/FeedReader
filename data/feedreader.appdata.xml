@@ -1,0 +1,52 @@
+​<?xml version="1.0" encoding="UTF-8"?>
+<component type="application">
+	<id>feedreader.desktop</id>
+	<metadata_license>CC0</metadata_license>
+	<project_license>GPL-3.0+</project_license>
+	<name>FeedReader</name>
+	<summary>RSS client for various webservices</summary>
+​
+	<description>
+		<p>
+			FeedReader is a program designed to complement an already existing web-based
+			RSS reader account.
+		</p>
+		<p>Currently supported services:</p>
+		<ul>
+			<li>Tiny Tiny RSS</li>
+			<li>Feedly</li>
+		</ul>
+	​	<p>
+	​		It combines all the advantages of web based services like synchronisation across all your devices
+			with everything you expect from a modern desktop application. Desktop notifications, fast search
+			and filters and a databse that keeps all your old feeds as long as you like.
+	​    </p>
+	</description>
+​
+	<screenshots>
+		<screenshot type="default">
+			<caption>The main window</caption>
+			<image width="800" height="600">http://www.something.something/feedreader/main.png</image>
+		</screenshot>
+		<screenshot>
+			<image width="800" height="600">http://www.something.something/feedreader/preferences.png</image>
+		</screenshot>
+	</screenshots>
+​
+	<url type="homepage">http://www.something.something/feedreader</url>
+	<project_group>elementaryOS</project_group>
+​
+	<provides>
+		<binary>feedreader</binary>
+		<binary>feedreader-daemon</binary>
+	</provides>
+​
+	<releases>
+		<release version="0.2" timestamp="1365768000">
+			<description>
+				<p>First release</p>
+			</description>
+		</release>
+	</releases>
+​</component>
+

@@ -56,6 +56,7 @@ public class readerHeaderbar : Gtk.HeaderBar {
 		
 		m_search = new Gtk.SearchEntry();
 		m_search.placeholder_text = _("Search Aritlces...");
+		m_search.text = settings_state.get_string("search-term");
 		m_search.search_changed.connect(() => {
 			search_term(m_search.text);
 		});
@@ -93,6 +94,11 @@ public class readerHeaderbar : Gtk.HeaderBar {
 	public bool currentlyUpdating()
 	{
 		return m_refresh_button.getStatus();
+	}
+	
+	public string getSearchTerm()
+	{
+		return m_search.text;
 	}
 
 }

@@ -110,6 +110,14 @@
 				If the FeedReader is currently updating.
 			</description>
 		</key>
+		
+		<key name="search-term" type="s">
+			<default>""</default>
+			<summary>search term</summary>
+			<description>
+				String the user filtered the articles by.
+			</description>
+		</key>
 	</schema>
 	
 	

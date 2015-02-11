@@ -120,6 +120,7 @@ public class readerUI : Gtk.ApplicationWindow
 			settings_state.set_boolean("only-unread", m_headerbar.m_only_unread);
 			settings_state.set_boolean("only-marked", m_headerbar.m_only_marked);
 			settings_state.set_boolean("no-animations", true);
+			settings_state.set_string("search-term", m_headerbar.getSearchTerm());
 		});
 	}
 	

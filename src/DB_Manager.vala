@@ -411,7 +411,7 @@ public class dbManager : GLib.Object {
 	}
 
 	
-	public article read_article(string articleID)
+	[Profile] public article read_article(string articleID)
 	{
 		article tmp = null;
 		string query = "SELECT * FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\"";
@@ -578,7 +578,7 @@ public class dbManager : GLib.Object {
 
 	private string getFeedIDofCategorie(string categorieID)
 	{
-		string query = "\"feedID\" = ";
+		string query = "\"feedID\" IN (";
 		string query2 = "SELECT feed_id FROM \"main\".\"feeds\" WHERE \"category_id\" = " + "\"" + categorieID + "\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query2, query2.length, out stmt);
@@ -586,9 +586,9 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			query = query + "\"" + stmt.column_text(0) + "\"" + " OR \"feedID\" = ";
+			query = query + "\"" + stmt.column_text(0) + "\", ";
 		}
-		return "(" + query.slice(0, query.length-15) + ")";
+		return query.slice(0, query.length-2) + ")";
 	}
 	
 	

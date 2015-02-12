@@ -254,7 +254,7 @@ public class articleList : Gtk.Stack {
 	}
 
 
-	public void createHeadlineList(bool add = false)
+	[Profile] public void createHeadlineList(bool add = false)
 	{
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll.begin((obj, res) => {

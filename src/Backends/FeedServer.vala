@@ -42,7 +42,7 @@ public class feed_server : GLib.Object {
 	
 	public async void sync_content()
 	{
-		int before = dataBase.getHighestSortID();
+		int before = dataBase.getHighestRowID();
 		dataBase.markReadAllArticles();
 		
 		switch(m_type)
@@ -62,7 +62,7 @@ public class feed_server : GLib.Object {
 				break;
 		}
 		
-		int after = dataBase.getHighestSortID();
+		int after = dataBase.getHighestRowID();
 		int newArticles = after-before;
 		if(newArticles > 0)
 		{

@@ -57,7 +57,6 @@ public class dbManager : GLib.Object {
 												"preview" TEXT NOT NULL,
 												"unread" INTEGER NOT NULL,
 												"marked" INTEGER NOT NULL,
-												"sortID" INTEGER NOT NULL,
 												"tags" TEXT
 											)""";
 			
@@ -371,8 +370,8 @@ public class dbManager : GLib.Object {
 		if(insert_replace == DB_INSERT_OR_IGNORE)
 		{
 			string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
-			string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"sortID\", \"tags\") ";
-			string values = "VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, $AUTHOR, \"" + url + "\", $HTML, $PREVIEW, " + unread.to_string() + ", " + marked.to_string() + ", " + (getHighestSortID()+1).to_string() + ", \"" + tags + "\")";
+			string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"tags\") ";
+			string values = "VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, $AUTHOR, \"" + url + "\", $HTML, $PREVIEW, " + unread.to_string() + ", " + marked.to_string() + ", \"" + tags + "\")";
 			
 			query = command + fields + values;
 		}
@@ -414,7 +413,7 @@ public class dbManager : GLib.Object {
 	[Profile] public article read_article(string articleID)
 	{
 		article tmp = null;
-		string query = "SELECT * FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\"";
+		string query = "SELECT ROWID, * FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -423,15 +422,15 @@ public class dbManager : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			tmp = new article(
 								articleID,
-								stmt.column_text(2),
-								stmt.column_text(4),
-								stmt.column_text(1),
-								stmt.column_int(7),
-								stmt.column_int(8),
-								stmt.column_text(5),
-								stmt.column_text(6),
 								stmt.column_text(3),
+								stmt.column_text(5),
+								stmt.column_text(2),
+								stmt.column_int(8),
 								stmt.column_int(9),
+								stmt.column_text(6),
+								stmt.column_text(7),
+								stmt.column_text(4),
+								stmt.column_int(0),
 								stmt.column_text(10)
 							);
 		}
@@ -552,7 +551,7 @@ public class dbManager : GLib.Object {
 	public int getRowNumberHeadline(string articleID)
 	{
 		int result = 0;
-		string query = "SELECT count(*) FROM main.articles WHERE articleID >= \"" + articleID + "\" ORDER BY rowid DESC";
+		string query = "SELECT count(*) FROM main.articles WHERE articleID >= \"" + articleID + "\" ORDER BY ROWID DESC";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -633,7 +632,7 @@ public class dbManager : GLib.Object {
 	public int getNewestArticle()
 	{
 		int result = 0;
-		string query = "SELECT \"articleID\" FROM \"main\".\"articles\" WHERE \"sortID\" = " + getHighestSortID().to_string();
+		string query = "SELECT \"articleID\" FROM \"main\".\"articles\" WHERE \"ROWID\" = " + getHighestRowID().to_string();
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -645,10 +644,10 @@ public class dbManager : GLib.Object {
 		return result;
 	}
 	
-	public int getHighestSortID()
+	public int getHighestRowID()
 	{
 		int result = 0;
-		string query = "SELECT max(\"sortID\") FROM \"main\".\"articles\"";
+		string query = "SELECT max(\"ROWID\") FROM \"main\".\"articles\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
@@ -752,11 +751,11 @@ public class dbManager : GLib.Object {
 		return tmp;
 	}
 
-	public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
+	[Profile] public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
 	{
 		GLib.List<article> tmp = new GLib.List<article>();
 		string and = "";
-		string query = "SELECT * FROM \"main\".\"articles\"";
+		string query = "SELECT ROWID, feedID, articleID, title, author, url, preview, unread, marked, tags FROM \"main\".\"articles\"";
 		
 		if( (ID != FEEDID_ALL_FEEDS && selectedType == FEEDLIST_FEED)
 		|| (selectedType == FEEDLIST_CATEGORY && ID != CAT_ID_MASTER)
@@ -798,7 +797,7 @@ public class dbManager : GLib.Object {
 		if(searchTerm != ""){
 			query = query + and + "instr(UPPER(\"title\"), UPPER(\"" + searchTerm + "\")) > 0";
 		}
-		query = query + " ORDER BY sortID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
+		query = query + " ORDER BY ROWID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 		
 		stdout.printf("%s\n", query);
 		article tmpArticle;
@@ -809,17 +808,17 @@ public class dbManager : GLib.Object {
 		}
 		while (stmt.step () == Sqlite.ROW) {
 			tmpArticle = new article(
-								stmt.column_text(0),
-								stmt.column_text(2),
-								stmt.column_text(4),
-								stmt.column_text(1),
-								stmt.column_int(7),
-								stmt.column_int(8),
-								stmt.column_text(5),
-								stmt.column_text(6),
-								stmt.column_text(3),
-								stmt.column_int(9),
-								stmt.column_text(10)
+								stmt.column_text(2),	// articleID
+								stmt.column_text(3),	// title
+								stmt.column_text(5),	// url
+								stmt.column_text(1),	// feedID
+								stmt.column_int(7),		// unread
+								stmt.column_int(8),		// marked
+								"",						// html
+								stmt.column_text(6),	// preview
+								stmt.column_text(4),	// author
+								stmt.column_int(0),		// sortID
+								stmt.column_text(9)		// tags
 							);
 			tmp.append(tmpArticle);
 		}

@@ -16,7 +16,7 @@ public class articleRow : baseRow {
 	public int m_sortID { get; private set; }
 	public signal void updateFeedList();
 
-	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID)
+	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview)
 	{
 		m_sortID = sortID;
 		m_marked = marked;
@@ -110,11 +110,9 @@ public class articleRow : baseRow {
 		icon_box.pack_start(m_icon, true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
 		icon_box.pack_end(m_marked_eventbox, false, false, 0);
-			
-		var Article = dataBase.read_article(m_articleID);
 
 
-		var body_label = new Gtk.Label(Article.m_preview);
+		var body_label = new Gtk.Label(preview);
 		body_label.get_style_context().add_class("grey-label");
 		body_label.set_alignment(0, 0);
 		body_label.set_ellipsize (Pango.EllipsizeMode.END);

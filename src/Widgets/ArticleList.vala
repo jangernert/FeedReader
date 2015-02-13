@@ -254,7 +254,7 @@ public class articleList : Gtk.Stack {
 	}
 
 
-	[Profile] public void createHeadlineList(bool add = false)
+	public void createHeadlineList(bool add = false)
 	{
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll.begin((obj, res) => {
@@ -276,7 +276,8 @@ public class articleList : Gtk.Stack {
 					                             item.m_feedID,
 					                             item.m_articleID,
 					                             item.m_marked,
-					                             item.m_sortID
+					                             item.m_sortID,
+					                             item.m_preview
 					                            );
 			tmpRow.updateFeedList.connect(() => {updateFeedList();});
 			m_currentList.add(tmpRow);
@@ -362,7 +363,8 @@ public class articleList : Gtk.Stack {
 					                             item.m_feedID,
 					                             item.m_articleID,
 					                             item.m_marked,
-					                             item.m_sortID
+					                             item.m_sortID,
+					                             item.m_preview
 					                            );
 				newRow.updateFeedList.connect(() => {updateFeedList();});
 				int pos = 0;

@@ -1,4 +1,4 @@
-public class LoginPage : Gtk.Alignment {
+public class FeedReader.LoginPage : Gtk.Alignment {
 	
 	private Gtk.Entry m_ttrss_url_entry;
 	private Gtk.Entry m_ttrss_user_entry;
@@ -38,13 +38,13 @@ public class LoginPage : Gtk.Alignment {
 		var liststore = new Gtk.ListStore(1, typeof (string));
 		Gtk.TreeIter ttrss;
 		liststore.append(out ttrss);
-		liststore.set(ttrss, 0, m_account_types[TYPE_TTRSS]);
+		liststore.set(ttrss, 0, m_account_types[Backend.TTRSS]);
 		Gtk.TreeIter feedly;
 		liststore.append(out feedly);
-		liststore.set(feedly, 0, m_account_types[TYPE_FEEDLY]);
+		liststore.set(feedly, 0, m_account_types[Backend.FEEDLY]);
 		Gtk.TreeIter ownCloud;
 		//liststore.append(out ownCloud);
-		//liststore.set(ownCloud, 0, m_account_types[TYPE_OWNCLOUD]);
+		//liststore.set(ownCloud, 0, m_account_types[Backend.OWNCLOUD]);
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 		
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
@@ -74,16 +74,16 @@ public class LoginPage : Gtk.Alignment {
 			if(m_comboBox.get_active() != -1) {
 				switch(m_comboBox.get_active())
 				{
-					case TYPE_NONE:
+					case Backend.NONE:
 						m_login_details.set_visible_child_name("none");
 						break;
-					case TYPE_TTRSS:
+					case Backend.TTRSS:
 						m_login_details.set_visible_child_name("ttrss");
 						break;
-					case TYPE_FEEDLY:
+					case Backend.FEEDLY:
 						m_login_details.set_visible_child_name("feedly");
 						break;
-					case TYPE_OWNCLOUD:
+					case Backend.OWNCLOUD:
 						m_login_details.set_visible_child_name("owncloud");
 						break;
 				}
@@ -104,20 +104,20 @@ public class LoginPage : Gtk.Alignment {
 		
 		switch(settings_general.get_enum("account-type"))
 		{
-			case TYPE_NONE:
-				m_comboBox.set_active(TYPE_NONE);
+			case Backend.NONE:
+				m_comboBox.set_active(Backend.NONE);
 				m_login_details.set_visible_child_name("none");
 				break;
-			case TYPE_TTRSS:
-				m_comboBox.set_active(TYPE_TTRSS);
+			case Backend.TTRSS:
+				m_comboBox.set_active(Backend.TTRSS);
 				m_login_details.set_visible_child_name("ttrss");
 				break;
-			case TYPE_FEEDLY:
-				m_comboBox.set_active(TYPE_FEEDLY);
+			case Backend.FEEDLY:
+				m_comboBox.set_active(Backend.FEEDLY);
 				m_login_details.set_visible_child_name("feedly");
 				break;
-			case TYPE_OWNCLOUD:
-				m_comboBox.set_active(TYPE_OWNCLOUD);
+			case Backend.OWNCLOUD:
+				m_comboBox.set_active(Backend.OWNCLOUD);
 				m_login_details.set_visible_child_name("owncloud");
 				break;
 		}
@@ -146,7 +146,7 @@ public class LoginPage : Gtk.Alignment {
 		m_ttrss_user_entry.activate.connect(write_login_data);
 		m_ttrss_password_entry.activate.connect(write_login_data);
 		
-		if(settings_general.get_enum("account-type") == TYPE_TTRSS)
+		if(settings_general.get_enum("account-type") == Backend.TTRSS)
 		{
 			string url = settings_ttrss.get_string("url");
 			string username = settings_ttrss.get_string("username");
@@ -239,7 +239,7 @@ public class LoginPage : Gtk.Alignment {
 		m_owncloud_user_entry.activate.connect(write_login_data);
 		m_owncloud_password_entry.activate.connect(write_login_data);
 		
-		if(settings_general.get_enum("account-type") == TYPE_OWNCLOUD)
+		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
 		{
 			string url = ""; //FIXME feedreader_settings.get_string("url");
 			string username = ""; //FIXME feedreader_settings.get_string("username");
@@ -293,8 +293,8 @@ public class LoginPage : Gtk.Alignment {
 		if(m_comboBox.get_active() != -1) {
 			switch(m_comboBox.get_active())
 			{
-				case TYPE_TTRSS:
-					settings_general.set_enum("account-type", TYPE_TTRSS);
+				case Backend.TTRSS:
+					settings_general.set_enum("account-type", Backend.TTRSS);
 					string url = m_ttrss_url_entry.get_text();
 					settings_ttrss.set_string("url", url);
 					settings_ttrss.set_string("username", m_ttrss_user_entry.get_text());
@@ -308,21 +308,21 @@ public class LoginPage : Gtk.Alignment {
 					catch(GLib.Error e){}
 					break;
 					
-				case TYPE_FEEDLY:
+				case Backend.FEEDLY:
 					print("write type feedly\n");
-					settings_general.set_enum("account-type", TYPE_FEEDLY);
+					settings_general.set_enum("account-type", Backend.FEEDLY);
 					settings_feedly.set_string("feedly-api-code", m_feedly_api_code);
-					loadLoginPage(TYPE_FEEDLY);
+					loadLoginPage(Backend.FEEDLY);
 					return;
 					
-				case TYPE_OWNCLOUD:
-					settings_general.set_enum("account-type", TYPE_OWNCLOUD);
+				case Backend.OWNCLOUD:
+					settings_general.set_enum("account-type", Backend.OWNCLOUD);
 					submit_data();
 					break;
 			}
 			
 			var status = feedDaemon_interface.login(m_comboBox.get_active());
-			if(status == LOGIN_SUCCESS)
+			if(status == LoginResponse.SUCCESS)
 			{
 				submit_data();
 				return;

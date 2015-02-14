@@ -1,4 +1,4 @@
-public class category : GLib.Object {
+public class FeedReader.category : GLib.Object {
 
 	public string m_categorieID { get; private set; }
 	public string m_title { get; private set; }

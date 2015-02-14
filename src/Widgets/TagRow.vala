@@ -1,5 +1,5 @@
 
-public class TagRow : baseRow {
+public class FeedReader.TagRow : baseRow {
 
 	private bool m_exits;
 	private string m_catID;
@@ -17,7 +17,7 @@ public class TagRow : baseRow {
 		m_color = color;
 		m_name = name.replace("&","&amp;");
 		m_tagID = tagID;
-		m_catID = CAT_TAGS;	
+		m_catID = CategoryID.TAGS;	
 			
 		var rowhight = 30;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);

@@ -1,4 +1,4 @@
-public class categorieRow : baseRow {
+public class FeedReader.categorieRow : baseRow {
 
 	private string m_name;
 	private Gtk.EventBox m_eventbox;

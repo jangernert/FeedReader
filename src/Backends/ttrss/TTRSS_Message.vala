@@ -1,4 +1,4 @@
-public class ttrss_message : GLib.Object {
+public class FeedReader.ttrss_message : GLib.Object {
 
 	private Soup.Session m_session;
 	private Soup.Message m_message_soup;
@@ -52,7 +52,7 @@ public class ttrss_message : GLib.Object {
 		catch (Error e) {
 			error("Could not load response to Message to ttrss\n");
 			error(e.message);
-			return ERR_NO_RESPONSE;
+			return ConnectionError.NO_RESPONSE;
 		}
 		
 		m_root_object = m_parser.get_root().get_object();
@@ -62,7 +62,7 @@ public class ttrss_message : GLib.Object {
 			if(m_root_object.get_string_member("error") == "NOT_LOGGED_IN")
 			{
 				error("invalid ttrss session id\n");
-				return ERR_INVALID_SESSIONID;
+				return ConnectionError.INVALID_SESSIONID;
 			}
 		}
 		
@@ -71,16 +71,16 @@ public class ttrss_message : GLib.Object {
 			if(m_root_object.get_int_member("status") == 1)
 			{
 				error("ttrss api error\n");
-				return ERR_TTRSS_API;
+				return ConnectionError.TTRSS_API;
 			}
 			else if(m_root_object.get_int_member("status") == 0)
 			{
-				return NO_ERROR;
+				return ConnectionError.SUCCESS;
 			}
 		}
 		
 		error("unknown error while sending ttrss message\n");
-		return ERR_UNKNOWN;
+		return ConnectionError.UNKNOWN;
 	}
 	
 	public Json.Object get_response_object()

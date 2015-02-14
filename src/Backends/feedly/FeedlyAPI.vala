@@ -1,4 +1,4 @@
-public class FeedlyAPI : Object {
+public class FeedReader.FeedlyAPI : Object {
 
 	private FeedlyConnection m_connection;
 	private string m_token;
@@ -18,7 +18,7 @@ public class FeedlyAPI : Object {
 			m_connection.getToken();
 		}
 		
-		if(tokenStillValid() == ERR_INVALID_SESSIONID)
+		if(tokenStillValid() == ConnectionError.INVALID_SESSIONID)
 		{
 			print("refresh token\n");
 			m_connection.refreshToken();
@@ -26,7 +26,7 @@ public class FeedlyAPI : Object {
 		
 		getUserID();
 		print("login success\n");
-		return LOGIN_SUCCESS;
+		return LoginResponse.SUCCESS;
 	}
 	
 	private void getUserID()
@@ -52,9 +52,9 @@ public class FeedlyAPI : Object {
 		
 		if(root.has_member("errorId"))
 		{
-			return ERR_INVALID_SESSIONID;
+			return ConnectionError.INVALID_SESSIONID;
 		}
-		return NO_ERROR;
+		return ConnectionError.SUCCESS;
 	}
 
 
@@ -75,7 +75,7 @@ public class FeedlyAPI : Object {
 				string categorieID = object.get_string_member("id");
 				int unreadCount = get_count_of_unread_articles(categorieID);
 				string title = object.get_string_member("label");
-				dataBase.write_categorie(categorieID, title, unreadCount, i+1, CAT_ID_NONE, 1);
+				dataBase.write_categorie(categorieID, title, unreadCount, i+1, CategoryID.NONE, 1);
 			}
 			
 			dataBase.delete_nonexisting_categories();
@@ -222,7 +222,7 @@ public class FeedlyAPI : Object {
 					}
 				}
 				
-				articles.append(new article(id, title, url, feedID, (unread) ? STATUS_UNREAD : STATUS_READ, STATUS_UNMARKED, Content, summaryContent, author, -1, tagString));
+				articles.append(new article(id, title, url, feedID, (unread) ? ArticleStatus.UNREAD : ArticleStatus.READ, ArticleStatus.UNMARKED, Content, summaryContent, author, -1, tagString));
 			}
 			articles.reverse();
 			
@@ -236,7 +236,7 @@ public class FeedlyAPI : Object {
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
-										DB_INSERT_OR_IGNORE,
+										DataBase.INSERT_OR_IGNORE,
 										item.m_html,
 										item.m_tags,
 										item.m_preview);
@@ -253,7 +253,7 @@ public class FeedlyAPI : Object {
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
-										DB_UPDATE_ROW,
+										DataBase.UPDATE_ROW,
 										item.m_html,
 										item.m_tags,
 										item.m_preview);
@@ -323,9 +323,9 @@ public class FeedlyAPI : Object {
 		ThreadFunc<void*> run = () => {
 			Json.Object object = new Json.Object();
 		
-			if(read == STATUS_READ)
+			if(read == ArticleStatus.READ)
 				object.set_string_member ("action", "markAsRead");
-			else if(read == STATUS_UNREAD)
+			else if(read == ArticleStatus.UNREAD)
 				object.set_string_member ("action", "undoMarkAsRead");
 			object.set_string_member ("type", type);
 		

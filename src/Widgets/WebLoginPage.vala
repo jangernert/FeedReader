@@ -1,4 +1,4 @@
-public class WebLoginPage : Gtk.Bin {
+public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private WebKit.WebView m_view;
 	private Gtk.ScrolledWindow m_scroll;
@@ -28,7 +28,7 @@ public class WebLoginPage : Gtk.Bin {
 		m_serviceType = serviceType;
 		switch(serviceType)
 		{
-			case TYPE_FEEDLY:
+			case Backend.FEEDLY:
 				m_url = buildFeedlyURL();
 				break;
 		}
@@ -38,8 +38,8 @@ public class WebLoginPage : Gtk.Bin {
 	
 	private string buildFeedlyURL()
 	{
-		string url = base_uri + "/v3/auth/auth" + "?client_secret=" + apiClientSecret + "&client_id=" + apiClientId;
-		url = url + "&redirect_uri=" + apiRedirectUri + "&scope=" + apiAuthScope + "&response_type=code&state=getting_code";
+		string url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId;
+		url = url + "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
 		return url;
 	}
 	
@@ -50,9 +50,9 @@ public class WebLoginPage : Gtk.Bin {
 			case WebKit.LoadEvent.STARTED:
 				switch(m_serviceType)
 				{
-					case TYPE_FEEDLY:
+					case Backend.FEEDLY:
 						string url = m_view.get_uri();
-						if(url.has_prefix(apiRedirectUri))
+						if(url.has_prefix(FeedlySecret.apiRedirectUri))
 						{
 							int start = url.index_of("=")+1;
 							int end = url.index_of("&");

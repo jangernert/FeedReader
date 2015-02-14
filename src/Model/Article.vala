@@ -1,4 +1,4 @@
-public class article : GLib.Object {
+public class FeedReader.article : GLib.Object {
 
 	public string m_articleID { get; private set; }
 	public string m_title { get; private set; }

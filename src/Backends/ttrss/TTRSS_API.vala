@@ -1,4 +1,4 @@
-public class ttrss_interface : GLib.Object {
+public class FeedReader.ttrss_interface : GLib.Object {
 
 	public string m_ttrss_url { get; private set; }
 
@@ -21,16 +21,16 @@ public class ttrss_interface : GLib.Object {
 		
 		if(m_ttrss_url == "" && username == "" && passwd == ""){
 			m_ttrss_url = "example-host/tt-rss";
-			return LOGIN_ALL_EMPTY;
+			return LoginResponse.ALL_EMPTY;
 		}
 		if(m_ttrss_url == ""){
-			return LOGIN_MISSING_URL;
+			return LoginResponse.MISSING_URL;
 		}
 		if(username == ""){
-			return LOGIN_MISSING_USER;
+			return LoginResponse.MISSING_USER;
 		}
 		if(passwd == ""){
-			return LOGIN_MISSING_PASSWD;
+			return LoginResponse.MISSING_PASSWD;
 		}
 
 		
@@ -40,7 +40,7 @@ public class ttrss_interface : GLib.Object {
 		message.add_string("password", passwd);
 		int error = message.send();
 		
-		if(error == NO_ERROR)
+		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
 			m_ttrss_sessionid = response.get_string_member("session_id");
@@ -50,7 +50,7 @@ public class ttrss_interface : GLib.Object {
 		stdout.printf ("Session ID: %s\n", m_ttrss_sessionid);
 		stdout.printf ("API Level: %lld\n", m_ttrss_apilevel);
 		
-		return LOGIN_SUCCESS;
+		return LoginResponse.SUCCESS;
 	}
 
 
@@ -61,7 +61,7 @@ public class ttrss_interface : GLib.Object {
 		message.add_string("op", "isLoggedIn");
 		int error = message.send();
 		
-		if(error == NO_ERROR)
+		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
 			return response.get_boolean_member("status");
@@ -83,7 +83,7 @@ public class ttrss_interface : GLib.Object {
 				message.add_string("op", "getUnread");
 				int error = message.send();
 		
-				if(error == NO_ERROR)
+				if(error == ConnectionError.SUCCESS)
 				{
 					var response = message.get_response_object();
 					unread = int.parse(response.get_string_member("unread"));
@@ -120,7 +120,7 @@ public class ttrss_interface : GLib.Object {
 					message.add_int("cat_id", int.parse(item.m_categorieID));
 					int error = message.send();
 		
-					if(error == NO_ERROR)
+					if(error == ConnectionError.SUCCESS)
 					{
 						var response = message.get_response_array();
 						var feed_count = response.get_length();
@@ -165,7 +165,7 @@ public class ttrss_interface : GLib.Object {
 				message.add_string("op", "getLabels");
 				int error = message.send();
 		
-				if(error == NO_ERROR)
+				if(error == ConnectionError.SUCCESS)
 				{
 					var response = message.get_response_array();
 					var tag_count = response.get_length();
@@ -197,7 +197,7 @@ public class ttrss_interface : GLib.Object {
 		message.add_string("op", "getConfig");
 		int error = message.send();
 		
-		if(error == NO_ERROR)
+		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
 			return response.get_string_member("icons_url") + "/";
@@ -222,11 +222,11 @@ public class ttrss_interface : GLib.Object {
 				message.add_bool("include_empty", false);
 				int error = message.send();
 		
-				if(error == NO_ERROR)
+				if(error == ConnectionError.SUCCESS)
 				{
 					var response = message.get_response_object();
 					var category_object = response.get_object_member("categories");
-					getSubCategories(category_object, 0, CAT_ID_NONE);
+					getSubCategories(category_object, 0, CategoryID.NONE);
 					dataBase.delete_nonexisting_categories();
 					updateCategorieUnread();
 				}
@@ -279,7 +279,7 @@ public class ttrss_interface : GLib.Object {
 		message.add_string("output_mode", "c");
 		int error = message.send();
 		
-		if(error == NO_ERROR)
+		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var categorie_count = response.get_length();
@@ -313,7 +313,7 @@ public class ttrss_interface : GLib.Object {
 		message.add_bool("include_empty", false);
 		int error = message.send();
 		
-		if(error == NO_ERROR)
+		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var categorie_count = response.get_length();
@@ -328,7 +328,7 @@ public class ttrss_interface : GLib.Object {
 	}
 
 
-	public async void getArticles(int feedID = TTRSS_ID_ALL, int skip = 0)
+	public async void getArticles(int feedID = TTRSSSpecialID.ALL, int skip = 0)
 	{
 		SourceFunc callback = getArticles.callback;
 		ThreadFunc<void*> run = () => {
@@ -357,7 +357,7 @@ public class ttrss_interface : GLib.Object {
 		
 		int error = message.send();
 		
-		if(error == NO_ERROR)
+		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var headline_count = response.get_length();
@@ -391,8 +391,8 @@ public class ttrss_interface : GLib.Object {
 										headline_node.get_string_member("title").replace("&",""),
 										headline_node.get_string_member("link"),
 										headline_node.get_string_member("feed_id"),
-										(headline_node.get_boolean_member("unread")) ? STATUS_UNREAD : STATUS_READ,
-										(headline_node.get_boolean_member("marked")) ? STATUS_MARKED : STATUS_UNMARKED,
+										(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+										(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 										html,
 										"",
 										author,
@@ -414,7 +414,7 @@ public class ttrss_interface : GLib.Object {
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
-										DB_INSERT_OR_IGNORE,
+										DataBase.INSERT_OR_IGNORE,
 										item.m_html,
 										item.m_tags,
 										item.m_preview);
@@ -431,7 +431,7 @@ public class ttrss_interface : GLib.Object {
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
-										DB_UPDATE_ROW,
+										DataBase.UPDATE_ROW,
 										item.m_html,
 										item.m_tags,
 										item.m_preview);
@@ -455,7 +455,7 @@ public class ttrss_interface : GLib.Object {
 	}
 	
 
-	public async void updateArticles(int feedID = TTRSS_ID_ALL)
+	public async void updateArticles(int feedID = TTRSSSpecialID.ALL)
 	{
 		SourceFunc callback = updateArticles.callback;
 
@@ -474,7 +474,7 @@ public class ttrss_interface : GLib.Object {
 				message.add_string("view_mode", "unread");
 				int error = message.send();
 		
-				if(error == NO_ERROR)
+				if(error == ConnectionError.SUCCESS)
 				{
 					dataBase.markReadAllArticles();
 					var response = message.get_response_array();
@@ -484,7 +484,7 @@ public class ttrss_interface : GLib.Object {
 					for(uint i = 0; i < headline_count; i++)
 					{
 						var headline_node = response.get_object_element(i);
-						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "unread", STATUS_UNREAD, (obj, res) => {
+						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "unread", ArticleStatus.UNREAD, (obj, res) => {
 							dataBase.update_article.end(res);
 						});
 					}
@@ -500,7 +500,7 @@ public class ttrss_interface : GLib.Object {
 				message2.add_string("view_mode", "marked");
 				error = message2.send();
 		
-				if(error == NO_ERROR)
+				if(error == ConnectionError.SUCCESS)
 				{
 					dataBase.unmarkAllArticles();
 					var response2 = message2.get_response_array();
@@ -510,7 +510,7 @@ public class ttrss_interface : GLib.Object {
 					for(uint i = 0; i < headline_count; i++)
 					{
 						var headline_node = response2.get_object_element(i);
-						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "marked", STATUS_MARKED, (obj, res) => {
+						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "marked", ArticleStatus.MARKED, (obj, res) => {
 							dataBase.update_article.end(res);
 						});
 					}
@@ -537,7 +537,7 @@ public class ttrss_interface : GLib.Object {
 			message.add_int("article_id", articleID);
 			int error = message.send();
 		
-			if(error == NO_ERROR)
+			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_array();
 				var article_node = response.get_object_element(0);
@@ -563,14 +563,14 @@ public class ttrss_interface : GLib.Object {
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "updateArticle");
 			message.add_int("article_ids", articleID);
-			if(unread == STATUS_UNREAD)
+			if(unread == ArticleStatus.UNREAD)
 				message.add_int("mode", 1);
-			else if(unread == STATUS_READ)
+			else if(unread == ArticleStatus.READ)
 				message.add_int("mode", 0);
 			message.add_int("field", 2);
 			int error = message.send();
 		
-			if(error == NO_ERROR)
+			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_object();
 				if(response.get_string_member("status") == "OK")
@@ -598,14 +598,14 @@ public class ttrss_interface : GLib.Object {
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "updateArticle");
 			message.add_int("article_ids", articleID);
-			if(marked == STATUS_MARKED)
+			if(marked == ArticleStatus.MARKED)
 				message.add_int("mode", 1);
-			else if(marked == STATUS_UNMARKED)
+			else if(marked == ArticleStatus.UNMARKED)
 				message.add_int("mode", 0);
 			message.add_int("field", 0);
 			int error = message.send();
 		
-			if(error == NO_ERROR)
+			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_object();
 				if(response.get_string_member("status") == "OK")

@@ -1,4 +1,4 @@
-public class articleRow : baseRow {
+public class FeedReader.articleRow : baseRow {
 
 	private int m_is_unread;
 	private int m_marked;
@@ -59,7 +59,7 @@ public class articleRow : baseRow {
 		m_label.set_line_wrap_mode(Pango.WrapMode.WORD);
 		m_label.set_line_wrap(true);
 		m_label.set_lines(2);
-		if(m_is_unread == STATUS_UNREAD)
+		if(m_is_unread == ArticleStatus.UNREAD)
 			m_label.get_style_context().add_class("headline-unread-label");
 		else
 			m_label.get_style_context().add_class("headline-read-label");
@@ -81,9 +81,9 @@ public class articleRow : baseRow {
 		m_unread_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_unread_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_unread_eventbox.set_size_request(16, 16);
-		if(m_is_unread == STATUS_UNREAD)
+		if(m_is_unread == ArticleStatus.UNREAD)
 			m_unread_eventbox.add(m_unread_icon);
-		else if(m_is_unread == STATUS_READ)
+		else if(m_is_unread == ArticleStatus.READ)
 			m_unread_eventbox.add(m_read_icon);
 
 		m_unread_eventbox.enter_notify_event.connect(() => {unreadIconEnter(); return true;});
@@ -96,9 +96,9 @@ public class articleRow : baseRow {
 		m_marked_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_marked_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_marked_eventbox.set_size_request(16, 16);
-		if(m_marked == STATUS_MARKED)
+		if(m_marked == ArticleStatus.MARKED)
 			m_marked_eventbox.add(m_marked_icon);
-		else if(m_marked == STATUS_UNMARKED)
+		else if(m_marked == ArticleStatus.UNMARKED)
 			m_marked_eventbox.add(m_unmarked_icon);
 			
 		m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
@@ -153,11 +153,11 @@ public class articleRow : baseRow {
 		m_just_clicked = true;
 		switch(m_is_unread)
 		{
-			case STATUS_READ:
-				updateUnread(STATUS_UNREAD);
+			case ArticleStatus.READ:
+				updateUnread(ArticleStatus.UNREAD);
 				break;
-			case STATUS_UNREAD:
-				updateUnread(STATUS_READ);
+			case ArticleStatus.UNREAD:
+				updateUnread(ArticleStatus.READ);
 				break;
 		}
 		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
@@ -165,11 +165,11 @@ public class articleRow : baseRow {
 
 	private void unreadIconEnter()
 	{
-		if(m_is_unread == STATUS_READ){
+		if(m_is_unread == ArticleStatus.READ){
 			m_unread_eventbox.remove(m_read_icon);
 			m_unread_eventbox.add(m_unread_icon);
 		}
-		else if(m_is_unread == STATUS_UNREAD){
+		else if(m_is_unread == ArticleStatus.UNREAD){
 			m_unread_eventbox.remove(m_unread_icon);
 			m_unread_eventbox.add(m_read_icon);
 		}
@@ -180,7 +180,7 @@ public class articleRow : baseRow {
 	private void unreadIconLeave()
 	{
 		if(!m_just_clicked){
-			if(m_is_unread == STATUS_READ){
+			if(m_is_unread == ArticleStatus.READ){
 				m_unread_eventbox.remove(m_unread_icon);
 				m_unread_eventbox.add(m_read_icon);
 			}
@@ -198,7 +198,7 @@ public class articleRow : baseRow {
 		if(m_is_unread != unread)
 		{
 			m_is_unread = unread;
-			if(m_is_unread == STATUS_UNREAD)
+			if(m_is_unread == ArticleStatus.UNREAD)
 			{
 				m_label.get_style_context().remove_class("headline-read-label");
 				m_label.get_style_context().add_class("headline-unread-label");
@@ -224,12 +224,12 @@ public class articleRow : baseRow {
 		m_just_clicked = true;
 		switch(m_marked)
 		{
-			case STATUS_MARKED:
-				updateMarked(STATUS_UNMARKED);
+			case ArticleStatus.MARKED:
+				updateMarked(ArticleStatus.UNMARKED);
 				break;
 			
-			case STATUS_UNMARKED:
-				updateMarked(STATUS_MARKED);
+			case ArticleStatus.UNMARKED:
+				updateMarked(ArticleStatus.MARKED);
 				break;
 		}
 		
@@ -238,11 +238,11 @@ public class articleRow : baseRow {
 
 	private void markedIconEnter()
 	{
-		if(m_marked == STATUS_UNMARKED){
+		if(m_marked == ArticleStatus.UNMARKED){
 			m_marked_eventbox.remove(m_unmarked_icon);
 			m_marked_eventbox.add(m_marked_icon);
 		}
-		else if (m_marked == STATUS_MARKED){
+		else if (m_marked == ArticleStatus.MARKED){
 			m_marked_eventbox.remove(m_marked_icon);
 			m_marked_eventbox.add(m_unmarked_icon);
 		}
@@ -253,11 +253,11 @@ public class articleRow : baseRow {
 	private void markedIconLeave()
 	{
 		if(!m_just_clicked){
-			if(m_marked == STATUS_UNMARKED){
+			if(m_marked == ArticleStatus.UNMARKED){
 				m_marked_eventbox.remove(m_marked_icon);
 				m_marked_eventbox.add(m_unmarked_icon);
 			}
-			else if(m_marked == STATUS_MARKED){
+			else if(m_marked == ArticleStatus.MARKED){
 				m_marked_eventbox.remove(m_unmarked_icon);
 				m_marked_eventbox.add(m_marked_icon);
 			}
@@ -273,7 +273,7 @@ public class articleRow : baseRow {
 
 	public bool isUnread()
 	{
-		if(m_is_unread == STATUS_UNREAD)
+		if(m_is_unread == ArticleStatus.UNREAD)
 			return true;
 			
 		return false;

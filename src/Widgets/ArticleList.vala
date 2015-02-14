@@ -1,4 +1,4 @@
-public class articleList : Gtk.Stack {
+public class FeedReader.articleList : Gtk.Stack {
 
 	private Gtk.ScrolledWindow m_currentScroll;
 	private Gtk.ScrolledWindow m_scroll1;
@@ -25,8 +25,8 @@ public class articleList : Gtk.Stack {
 	public articleList () {
 		m_lmit = 0.8;
 		m_displayed_articles = 0;
-		m_current_feed_selected = FEEDID_ALL_FEEDS;
-		m_IDtype = FEEDLIST_FEED;
+		m_current_feed_selected = FeedID.ALL;
+		m_IDtype = FeedList.FEED;
 		m_searchTerm = "";
 		m_limit = 15;
 		m_limitScroll = false;

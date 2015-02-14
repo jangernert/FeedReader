@@ -1,4 +1,4 @@
-public class dbManager : GLib.Object {
+public class FeedReader.dbManager : GLib.Object {
 
 	private Sqlite.Database sqlite_db;
 	public signal void updateBadge();
@@ -121,10 +121,10 @@ public class dbManager : GLib.Object {
 		ThreadFunc<void*> run = () => {
 
 			string change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = \"unread\" ";
-			if(increase == STATUS_UNREAD){
+			if(increase == ArticleStatus.UNREAD){
 				change_feed_query = change_feed_query + "+ 1";
 			}
-			else if(increase == STATUS_READ){
+			else if(increase == ArticleStatus.READ){
 				change_feed_query = change_feed_query + "- 1";
 			} 
 			change_feed_query = change_feed_query + " WHERE \"feed_id\" = \"" + feedID + "\"";
@@ -142,7 +142,7 @@ public class dbManager : GLib.Object {
 			if (ec != Sqlite.OK) {
 				error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 			}
-			string catID = CAT_ID_NONE;
+			string catID = CategoryID.NONE;
 			int cols = stmt.column_count ();
 			while (stmt.step () == Sqlite.ROW) {
 				for (int i = 0; i < cols; i++) {
@@ -153,10 +153,10 @@ public class dbManager : GLib.Object {
 
 
 			string change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" ";
-			if(increase == STATUS_UNREAD){
+			if(increase == ArticleStatus.UNREAD){
 				change_catID_query = change_catID_query + "+ 1";
 			}
-			else if(increase == STATUS_READ){
+			else if(increase == ArticleStatus.READ){
 				change_catID_query = change_catID_query + "- 1";
 			}
 			change_catID_query = change_catID_query + " WHERE \"categorieID\" = \"" + catID + "\"";
@@ -367,7 +367,7 @@ public class dbManager : GLib.Object {
 		
 		
 		string query = "";
-		if(insert_replace == DB_INSERT_OR_IGNORE)
+		if(insert_replace == DataBase.INSERT_OR_IGNORE)
 		{
 			string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
 			string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"tags\") ";
@@ -375,7 +375,7 @@ public class dbManager : GLib.Object {
 			
 			query = command + fields + values;
 		}
-		else if(insert_replace == DB_UPDATE_ROW)
+		else if(insert_replace == DataBase.UPDATE_ROW)
 		{
 			query = "UPDATE \"main\".\"articles\" SET \"unread\" = " + unread.to_string() + ", \"marked\" = " + marked.to_string() + ", \"tags\" = \"" + tags + "\" WHERE \"articleID\"= \"" + articleID + "\"";
 		}
@@ -387,7 +387,7 @@ public class dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		
-		if(insert_replace == DB_INSERT_OR_IGNORE)
+		if(insert_replace == DataBase.INSERT_OR_IGNORE)
 		{
 			int param_position = stmt.bind_parameter_index ("$TITLE");
 			assert (param_position > 0);
@@ -609,7 +609,7 @@ public class dbManager : GLib.Object {
 
 	public void markReadAllArticles()
 	{
-		string query = "UPDATE \"main\".\"articles\" SET \"unread\"=" + STATUS_READ.to_string();
+		string query = "UPDATE \"main\".\"articles\" SET \"unread\"=" + ArticleStatus.READ.to_string();
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
@@ -620,7 +620,7 @@ public class dbManager : GLib.Object {
 
 	public void unmarkAllArticles()
 	{
-		string query = "UPDATE \"main\".\"articles\" SET \"marked\"=" + STATUS_UNMARKED.to_string();
+		string query = "UPDATE \"main\".\"articles\" SET \"marked\"=" + ArticleStatus.UNMARKED.to_string();
 		string errmsg;
 		int ec = sqlite_db.exec (query, null, out errmsg);
 		if (ec != Sqlite.OK) {
@@ -757,41 +757,41 @@ public class dbManager : GLib.Object {
 		string and = "";
 		string query = "SELECT ROWID, feedID, articleID, title, author, url, preview, unread, marked, tags FROM \"main\".\"articles\"";
 		
-		if( (ID != FEEDID_ALL_FEEDS && selectedType == FEEDLIST_FEED)
-		|| (selectedType == FEEDLIST_CATEGORY && ID != CAT_ID_MASTER)
-		|| (selectedType == FEEDLIST_TAG)
+		if( (ID != FeedID.ALL && selectedType == FeedList.FEED)
+		|| (selectedType == FeedList.CATEGORY && ID != CategoryID.MASTER)
+		|| (selectedType == FeedList.TAG)
 		|| only_unread
 		|| only_marked
 		|| searchTerm != "")
 			query = query + " WHERE ";
 		
 		
-		if(selectedType == FEEDLIST_FEED)
+		if(selectedType == FeedList.FEED)
 		{
-			if(ID != FEEDID_ALL_FEEDS){
+			if(ID != FeedID.ALL){
 				query = query + "\"feedID\" = " + "\"" + ID + "\"";
 				and = " AND ";
 			}
 		}
-		else if(selectedType == FEEDLIST_CATEGORY && ID != CAT_ID_MASTER && ID != CAT_TAGS)
+		else if(selectedType == FeedList.CATEGORY && ID != CategoryID.MASTER && ID != CategoryID.TAGS)
 		{
 				query = query + getFeedIDofCategorie(ID);
 				and = " AND ";
 		}
-		else if(ID == CAT_TAGS)
+		else if(ID == CategoryID.TAGS)
 		{
 			query = query + getAllTagsQuery();
 		}
-		else if(selectedType == FEEDLIST_TAG)
+		else if(selectedType == FeedList.TAG)
 		{
 			query = query + "instr(\"tags\", \"" + ID + "\") > 0";
 		}
 		if(only_unread){
-			query = query + and + "\"unread\" = " + STATUS_UNREAD.to_string();
+			query = query + and + "\"unread\" = " + ArticleStatus.UNREAD.to_string();
 			and = " AND ";
 		}
 		if(only_marked){
-			query = query + and + "\"marked\" = " + STATUS_MARKED.to_string();
+			query = query + and + "\"marked\" = " + ArticleStatus.MARKED.to_string();
 			and = " AND ";
 		}
 		if(searchTerm != ""){

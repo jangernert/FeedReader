@@ -1,4 +1,4 @@
-public class articleView : Gtk.Stack {
+public class FeedReader.articleView : Gtk.Stack {
 
 	private Gtk.Label m_title;
 	private WebKit.WebView m_view;

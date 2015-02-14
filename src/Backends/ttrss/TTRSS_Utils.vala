@@ -1,4 +1,4 @@
-public class ttrss_utils : GLib.Object {
+public class FeedReader.ttrss_utils : GLib.Object {
 	
 	public static string getURL()
 	{

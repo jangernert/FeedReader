@@ -1,7 +1,7 @@
 using GLib;
 using Gtk;
 
-public class readerUI : Gtk.ApplicationWindow 
+public class FeedReader.readerUI : Gtk.ApplicationWindow 
 {
 	private readerHeaderbar m_headerbar;
 	private Gtk.Paned m_pane_feedlist;
@@ -68,14 +68,14 @@ public class readerUI : Gtk.ApplicationWindow
 		this.set_default_size(1600, 900);
 		this.show_all();
 		
-		if(feedDaemon_interface.isLoggedIn() == LOGIN_SUCCESS)
+		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS)
 		{
 			m_stack.set_visible_child_name("content");
 			loadContent();
 		}
 		else
 		{
-			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LOGIN_SUCCESS)
+			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LoginResponse.SUCCESS)
 			{
 				m_stack.set_visible_child_name("content");
 				loadContent();
@@ -164,25 +164,25 @@ public class readerUI : Gtk.ApplicationWindow
 	{
 		switch(ErrorCode)
 		{
-			case LOGIN_SUCCESS:
-			case LOGIN_FIRST_TRY:
+			case LoginResponse.SUCCESS:
+			case LoginResponse.FIRST_TRY:
 				break;
-			case LOGIN_NO_BACKEND:
+			case LoginResponse.NO_BACKEND:
 				m_ErrorMessage.set_label(_("Please select a service first"));
 				break;
-			case LOGIN_MISSING_USER:
+			case LoginResponse.MISSING_USER:
 				m_ErrorMessage.set_label(_("Please enter a valid username"));
 				break;
-			case LOGIN_MISSING_PASSWD:
+			case LoginResponse.MISSING_PASSWD:
 				m_ErrorMessage.set_label(_("Please enter a valid password"));
 				break;
-			case LOGIN_MISSING_URL:
+			case LoginResponse.MISSING_URL:
 				m_ErrorMessage.set_label(_("Please enter a valid URL"));
 				break;
-			case LOGIN_ALL_EMPTY:
+			case LoginResponse.ALL_EMPTY:
 				m_ErrorMessage.set_label(_("Please enter your Login details"));
 				break;
-			case LOGIN_UNKNOWN_ERROR:
+			case LoginResponse.UNKNOWN_ERROR:
 				m_ErrorMessage.set_label(_("Sorry, something went wrong."));
 				break;
 		}
@@ -201,21 +201,21 @@ public class readerUI : Gtk.ApplicationWindow
 		m_pane_feedlist.pack2(m_pane_articlelist, true, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
-			m_articleList.setSelectedType(FEEDLIST_FEED);
+			m_articleList.setSelectedType(FeedList.FEED);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
 			m_articleList.newHeadlineList();
 		});
 		
 		m_feedList.newTagSelected.connect((tagID) => {
-			m_articleList.setSelectedType(FEEDLIST_TAG);
+			m_articleList.setSelectedType(FeedList.TAG);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
 			m_articleList.newHeadlineList();
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
-			m_articleList.setSelectedType(FEEDLIST_CATEGORY);
+			m_articleList.setSelectedType(FeedList.CATEGORY);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
 			m_articleList.newHeadlineList();
@@ -249,8 +249,8 @@ public class readerUI : Gtk.ApplicationWindow
 
 		m_articleList.row_activated.connect((row) => {
 			if(row.isUnread()){
-				feedDaemon_interface.changeUnread(row.getID(), STATUS_READ);
-				row.updateUnread(STATUS_READ);
+				feedDaemon_interface.changeUnread(row.getID(), ArticleStatus.READ);
+				row.updateUnread(ArticleStatus.READ);
 				row.removeUnreadIcon();
 			}
 			

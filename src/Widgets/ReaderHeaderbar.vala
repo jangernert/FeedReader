@@ -1,4 +1,4 @@
-public class readerHeaderbar : Gtk.HeaderBar {
+public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 	
 	private Gtk.ToggleButton m_only_unread_button;
 	private Gtk.ToggleButton m_only_marked_button;

@@ -1,4 +1,4 @@
-public class baseRow : Gtk.ListBoxRow {
+public class FeedReader.baseRow : Gtk.ListBoxRow {
 
 	protected Gtk.Label m_spacer;
 	protected Gtk.Label m_label;

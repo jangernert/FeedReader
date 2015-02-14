@@ -1,4 +1,4 @@
-public class ColorCircle : Gtk.EventBox {
+public class FeedReader.ColorCircle : Gtk.EventBox {
 	
 	private Gtk.Image m_icon;
 	private Gtk.Image m_icon_light;

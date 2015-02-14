@@ -1,4 +1,4 @@
-public class FeedRow : baseRow {
+public class FeedReader.FeedRow : baseRow {
 
 	private bool m_subscribed;
 	private string m_catID;

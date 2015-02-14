@@ -1,5 +1,5 @@
 
-public class ColorPopover : Gtk.Popover {
+public class FeedReader.ColorPopover : Gtk.Popover {
 	private Gtk.Grid m_grid;
 	private Gtk.Alignment m_align;
 	public signal void newColorSelected(int color);

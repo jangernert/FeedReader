@@ -1,7 +1,7 @@
 /**
  * Representation of a connection to Feedly
  */
-public class FeedlyConnection {
+public class FeedReader.FeedlyConnection {
 	private string m_access_token;
 	private string m_refresh_token;
 	private string m_apiCode;
@@ -14,11 +14,11 @@ public class FeedlyConnection {
 	{
 		var parser = new Json.Parser();
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", base_uri+"/v3/auth/token");
+		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 		
 		m_apiCode = settings_feedly.get_string("feedly-api-code");
 		
-		string message_string = "code=" + m_apiCode + "&client_id=" + apiClientId + "&client_secret=" + apiClientSecret + "&redirect_uri=" + apiRedirectUri + "&grant_type=authorization_code&state=getting_token";
+		string message_string = "code=" + m_apiCode + "&client_id=" + FeedlySecret.apiClientId + "&client_secret=" + FeedlySecret.apiClientSecret + "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&grant_type=authorization_code&state=getting_token";
 		
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
@@ -38,15 +38,15 @@ public class FeedlyConnection {
 			m_refresh_token = root.get_string_member("refresh_token");
 			settings_feedly.set_string("feedly-access-token", m_access_token);
 			settings_feedly.set_string("feedly-refresh-token", m_refresh_token);
-			return LOGIN_SUCCESS;
+			return LoginResponse.SUCCESS;
 		}
 		else if(root.has_member("errorCode"))
 		{
 			print(root.get_string_member("errorMessage") + "\n");
 			refreshToken();
-			return LOGIN_UNKNOWN_ERROR;
+			return LoginResponse.UNKNOWN_ERROR;
 		}
-		return LOGIN_UNKNOWN_ERROR;
+		return LoginResponse.UNKNOWN_ERROR;
 	}
 	
 	
@@ -54,10 +54,10 @@ public class FeedlyConnection {
 	{
 		var parser = new Json.Parser();
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", base_uri+"/v3/auth/token");
+		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 		
 		m_refresh_token = settings_feedly.get_string("feedly-refresh-token");
-		string message_string = "refresh_token=" + m_refresh_token + "&client_id=" + apiClientId + "&client_secret=" + apiClientSecret + "&grant_type=refresh_token";
+		string message_string = "refresh_token=" + m_refresh_token + "&client_id=" + FeedlySecret.apiClientId + "&client_secret=" + FeedlySecret.apiClientSecret + "&grant_type=refresh_token";
 		
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
@@ -76,14 +76,14 @@ public class FeedlyConnection {
 			m_refresh_token = root.get_string_member("refresh_token");
 			settings_feedly.set_string("feedly-access-token", m_access_token);
 			settings_feedly.set_string("feedly-refresh-token", m_refresh_token);
-			return LOGIN_SUCCESS;
+			return LoginResponse.SUCCESS;
 		}
 		else if(root.has_member("errorCode"))
 		{
 			print(root.get_string_member("errorMessage") + "\n");
-			return LOGIN_UNKNOWN_ERROR;
+			return LoginResponse.UNKNOWN_ERROR;
 		}
-		return LOGIN_UNKNOWN_ERROR;
+		return LoginResponse.UNKNOWN_ERROR;
 	}
 	
 
@@ -93,7 +93,7 @@ public class FeedlyConnection {
 
 	public string send_post_request_to_feedly(string path, Json.Node root) {
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", base_uri+path);
+		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 		
 		var gen = new Json.Generator();
 		gen.set_root(root);
@@ -109,7 +109,7 @@ public class FeedlyConnection {
     
 	public string send_post_string_request_to_feedly(string path, string input, string type){
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", base_uri+path);
+		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
         
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
 		message.request_headers.append("Content-Type", type);
@@ -126,7 +126,7 @@ public class FeedlyConnection {
 
 	private string send_request(string path, string type) {
 		var session = new Soup.Session();
-		var message = new Soup.Message(type, base_uri+path);
+		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
 		session.send_message(message);
 		return (string)message.response_body.data;

@@ -1,4 +1,4 @@
-public class feedList : Gtk.Stack {
+public class FeedReader.feedList : Gtk.Stack {
 
 	private Gtk.ScrolledWindow m_scroll;
 	private Gtk.ListBox m_list;
@@ -154,7 +154,7 @@ public class feedList : Gtk.Stack {
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles", unread.to_string(), false, FEEDID_ALL_FEEDS.to_string(), "-1", 0);
+		var row_all = new FeedRow("All Articles", unread.to_string(), false, FeedID.ALL.to_string(), "-1", 0);
 		m_list.add(row_all);
 		row_all.reveal(true);
 
@@ -279,7 +279,7 @@ public class feedList : Gtk.Stack {
 		string[] exp = settings_state.get_strv("expanded-categories");
 		bool expand = false;
 		
-		if(account_type != TYPE_OWNCLOUD)
+		if(account_type != Backend.OWNCLOUD)
 		{
 			foreach(string str in exp)
 			{
@@ -288,10 +288,10 @@ public class feedList : Gtk.Stack {
 			}
 			var categorierow = new categorieRow(
 					                                "Categories",
-					                                CAT_ID_MASTER,
+					                                CategoryID.MASTER,
 					                                0,
 					                                "",
-					                                CAT_ID_NONE,
+					                                CategoryID.NONE,
 							                        1,
 							                        expand
 					                                );
@@ -305,7 +305,7 @@ public class feedList : Gtk.Stack {
 			categorierow.reveal(true);
 			expand = false;
 			string name = "Tags";
-			if(account_type == TYPE_TTRSS)
+			if(account_type == Backend.TTRSS)
 				name = "Labels";
 			
 			foreach(string str in exp)
@@ -315,10 +315,10 @@ public class feedList : Gtk.Stack {
 			}
 			var tagrow = new categorieRow(
 					                                name,
-					                                CAT_TAGS,
+					                                CategoryID.TAGS,
 					                                0,
 					                                "",
-					                                CAT_ID_NONE,
+					                                CategoryID.NONE,
 							                        1,
 							                        expand
 					                                );
@@ -345,8 +345,8 @@ public class feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.m_parent) ||
-						(item.m_parent == CAT_ID_NONE && pos > 2) && (account_type == TYPE_OWNCLOUD) ||
-						(item.m_parent == CAT_ID_NONE && pos > 3) && (account_type != TYPE_OWNCLOUD))
+						(item.m_parent == CategoryID.NONE && pos > 2) && (account_type == Backend.OWNCLOUD) ||
+						(item.m_parent == CategoryID.NONE && pos > 3) && (account_type != Backend.OWNCLOUD))
 					{
 						foreach(string str in exp)
 						{
@@ -356,10 +356,10 @@ public class feedList : Gtk.Stack {
 						
 						int level = item.m_level;
 						string parent = item.m_parent;
-						if(account_type != TYPE_OWNCLOUD)
+						if(account_type != Backend.OWNCLOUD)
 						{
 							level++;
-							parent = CAT_ID_MASTER;
+							parent = CategoryID.MASTER;
 						}
 						
 						var categorierow = new categorieRow(
@@ -403,7 +403,7 @@ public class feedList : Gtk.Stack {
 
 				if(tmpRow != null)
 				{
-					if(tmpRow.getID() == CAT_TAGS)
+					if(tmpRow.getID() == CategoryID.TAGS)
 					{
 						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_color);
 						m_list.insert(tagrow, pos);
@@ -455,7 +455,7 @@ public class feedList : Gtk.Stack {
 				{
 					pos++;
 					var tmpRow = row as categorieRow;
-					if(tmpRow != null && tmpRow.getID() == CAT_TAGS)
+					if(tmpRow != null && tmpRow.getID() == CategoryID.TAGS)
 					{
 						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_color);
 						tagrow.setExits(true);
@@ -495,12 +495,12 @@ public class feedList : Gtk.Stack {
 			}
 		}
 		
-		if(account_type != TYPE_OWNCLOUD)
+		if(account_type != Backend.OWNCLOUD)
 		{
 			foreach(Gtk.Widget row in FeedChildList)
 			{
 				var tmpRow = row as categorieRow;
-				if(tmpRow != null && (tmpRow.getID() == CAT_ID_MASTER || tmpRow.getID() == CAT_TAGS))
+				if(tmpRow != null && (tmpRow.getID() == CategoryID.MASTER || tmpRow.getID() == CategoryID.TAGS))
 				{
 					tmpRow.setExist(true);
 				}
@@ -529,10 +529,10 @@ public class feedList : Gtk.Stack {
 			{
 				int level = item.m_level;
 				string parent = item.m_parent;
-				if(account_type != TYPE_OWNCLOUD)
+				if(account_type != Backend.OWNCLOUD)
 				{
 					level++;
-					parent = CAT_ID_MASTER;
+					parent = CategoryID.MASTER;
 				}
 				
 				var categorierow = new categorieRow(
@@ -559,7 +559,7 @@ public class feedList : Gtk.Stack {
 					var tmpRow = row as categorieRow;
 					pos++;
 					if(tmpRow != null && tmpRow.getOrder() > categorierow.getOrder() && (tmpRow.getID() == (int.parse(categorierow.getParent())+1).to_string() 
-					|| categorierow.getLevel() == 1) || tmpRow.getID() == CAT_TAGS)
+					|| categorierow.getLevel() == 1) || tmpRow.getID() == CategoryID.TAGS)
 					{
 						m_list.insert(categorierow, pos-1);
 						categorierow.reveal(true);
@@ -773,7 +773,7 @@ public class feedList : Gtk.Stack {
 				tmpCatRow.reveal(false);
 				collapseCategorie(tmpCatRow.getID());
 			}
-			if(tmpTagRow != null && catID == CAT_TAGS)
+			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
 				tmpTagRow.reveal(false);
 			}
@@ -818,7 +818,7 @@ public class feedList : Gtk.Stack {
 				if(tmpCatRow.isExpanded())
 					expandCategorie(tmpCatRow.getID());
 			}
-			if(tmpTagRow != null && catID == CAT_TAGS)
+			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
 				tmpTagRow.reveal(true);
 			}

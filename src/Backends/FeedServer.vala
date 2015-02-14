@@ -1,4 +1,4 @@
-public class feed_server : GLib.Object {
+public class FeedReader.feed_server : GLib.Object {
 	private ttrss_interface m_ttrss;
 	private FeedlyAPI m_feedly;
 	private int m_type;
@@ -9,11 +9,11 @@ public class feed_server : GLib.Object {
 		
 		switch(m_type)
 		{
-			case TYPE_TTRSS:
+			case Backend.TTRSS:
 				m_ttrss = new ttrss_interface();
 				break;
 				
-			case TYPE_FEEDLY:
+			case Backend.FEEDLY:
 				m_feedly = new FeedlyAPI();
 				break;
 		}
@@ -28,16 +28,16 @@ public class feed_server : GLib.Object {
 	{
 		switch(m_type)
 		{
-			case TYPE_NONE:
-				return LOGIN_NO_BACKEND;
+			case Backend.NONE:
+				return LoginResponse.NO_BACKEND;
 				
-			case TYPE_TTRSS:
+			case Backend.TTRSS:
 				return m_ttrss.login();
 				
-			case TYPE_FEEDLY:
+			case Backend.FEEDLY:
 				return m_feedly.login();
 		}
-		return LOGIN_UNKNOWN_ERROR;
+		return LoginResponse.UNKNOWN_ERROR;
 	}
 	
 	public async void sync_content()
@@ -47,14 +47,14 @@ public class feed_server : GLib.Object {
 		
 		switch(m_type)
 		{
-			case TYPE_TTRSS:
+			case Backend.TTRSS:
 				yield m_ttrss.getCategories();
 				yield m_ttrss.getFeeds();
 				yield m_ttrss.getTags();
 				yield m_ttrss.getArticles();
 				break;
 				
-			case TYPE_FEEDLY:
+			case Backend.FEEDLY:
 				yield m_feedly.getCategories();
 				yield m_feedly.getFeeds();
 				yield m_feedly.getTags();
@@ -76,11 +76,11 @@ public class feed_server : GLib.Object {
 	{
 		switch(m_type)
 		{
-			case TYPE_TTRSS:
+			case Backend.TTRSS:
 				yield m_ttrss.updateArticleUnread(int.parse(articleID), read);
 				break;
 				
-			case TYPE_FEEDLY:
+			case Backend.FEEDLY:
 				yield m_feedly.mark_as_read(articleID, "entries", read);
 				break;
 		}
@@ -90,13 +90,13 @@ public class feed_server : GLib.Object {
 	{
 		switch(m_type)
 		{
-			case TYPE_TTRSS:
+			case Backend.TTRSS:
 				m_ttrss.updateArticleMarked.begin(int.parse(articleID), marked, (obj, res) => {
 					m_ttrss.updateArticleMarked.end(res);
 				});
 				break;
 				
-			case TYPE_FEEDLY:
+			case Backend.FEEDLY:
 				
 				break;
 		}

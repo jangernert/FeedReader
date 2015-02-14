@@ -1,4 +1,4 @@
-public class tag : GLib.Object {
+public class FeedReader.tag : GLib.Object {
 
 	public string m_tagID { get; private set; }
 	public string m_title { get; private set; }

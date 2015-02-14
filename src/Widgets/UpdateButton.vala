@@ -1,4 +1,4 @@
-public class UpdateButton : Gtk.Button {
+public class FeedReader.UpdateButton : Gtk.Button {
 
 	private Gtk.Image m_icon;
 	private Gtk.Spinner m_spinner;

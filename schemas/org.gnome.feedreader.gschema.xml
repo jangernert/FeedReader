@@ -6,6 +6,13 @@
 		<value nick="OWNCLOUD" value="2"/>
 	</enum>
 	
+	<enum id="org.gnome.feedreader.loglevel">
+		<value nick="OFF" value="0"/>
+		<value nick="ERROR" value="1"/>
+		<value nick="MORE" value="2"/>
+		<value nick="DEBUG" value="3"/>
+	</enum>
+	
 	<schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
 		<key name="no-animations" type="b">
 			<default>false</default>
@@ -186,6 +193,10 @@
 		
 		<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
 			<default>'TTRSS'</default>
+		</key>
+		
+		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
+			<default>'ERROR'</default>
 		</key>
 	</schema>
 </schemalist>

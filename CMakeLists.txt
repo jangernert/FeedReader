@@ -39,7 +39,8 @@ ensure_vala_version("0.24" MINIMUM)
 # files we want to compile
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
-    src/FeedReader.vala
+    src/FeedReader.vala#
+    src/Logger.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
@@ -100,6 +101,7 @@ endif(WITH_LIBUNITY)
 vala_precompile(daemon ${DAEMON_NAME}
     src/Daemon.vala
     src/DB_Manager.vala
+    src/Logger.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala

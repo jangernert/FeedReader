@@ -9,6 +9,7 @@ namespace FeedReader {
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
 	FeedDaemon feedDaemon_interface;
+	Logger logger;
 
 
 	[DBus (name = "org.gnome.feedreader")]
@@ -32,7 +33,7 @@ namespace FeedReader {
 		 
 		protected override void startup () {
 			startDaemon();
-		
+			
 			dataBase = new dbManager();
 			dataBase.init();
 		
@@ -40,6 +41,7 @@ namespace FeedReader {
 			settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 			settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 			settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
+			logger = new Logger();
 		
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");

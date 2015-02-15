@@ -6,6 +6,31 @@ namespace FeedReader {
 		const int FEEDLY = 1;
 		const int OWNCLOUD = 2;
 	}
+	
+	public enum LogLevel {
+		OFF,
+		ERROR,
+		MORE,
+		DEBUG
+	}
+	
+	public enum ConsoleColor {
+        BLACK,
+        RED,
+        GREEN,
+        YELLOW,
+        BLUE,
+        MAGENTA,
+        CYAN,
+        WHITE,
+    }
+	
+	public enum LogMessage {
+		ERROR,
+		WARNING,
+		INFO,
+		DEBUG
+	}
 
 	namespace ConnectionError {
 		const int SUCCESS = 3;

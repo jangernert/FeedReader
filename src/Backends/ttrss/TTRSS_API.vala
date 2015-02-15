@@ -47,8 +47,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			m_ttrss_apilevel = response.get_int_member("api_level");
 		}
 		
-		stdout.printf ("Session ID: %s\n", m_ttrss_sessionid);
-		stdout.printf ("API Level: %lld\n", m_ttrss_apilevel);
+		logger.print(LogMessage.INFO, "Session ID: %s".printf(m_ttrss_sessionid));
+		logger.print(LogMessage.INFO, "API Level: %lld".printf(m_ttrss_apilevel));
 		
 		return LoginResponse.SUCCESS;
 	}
@@ -88,7 +88,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					var response = message.get_response_object();
 					unread = int.parse(response.get_string_member("unread"));
 				}
-				stdout.printf("There are %i unread Feeds\n", unread);
+				logger.print(LogMessage.INFO, "There are %i unread Feeds".printf(unread));
 				
 				Idle.add((owned) callback);
 			}

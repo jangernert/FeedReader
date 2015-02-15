@@ -12,22 +12,22 @@ namespace FeedReader {
 	
 		public FeedDaemonServer()
 		{
-			stdout.printf("daemon: constructor\n");
+			logger.print(LogMessage.DEBUG, "daemon: constructor");
 			m_loggedin = login(settings_general.get_enum("account-type"));
 		
 			if(m_loggedin != LoginResponse.SUCCESS)
-				stdout.printf("not logged in\n");
+				logger.print(LogMessage.WARNING, "daemon: not logged in");
 		
 			int sync_timeout = settings_general.get_int("sync");
 #if WITH_LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 			updateBadge();
 #endif
-			stdout.printf("daemon: add timeout\n");
+			logger.print(LogMessage.DEBUG, "daemon: add timeout");
 			GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
 				if(!settings_state.get_boolean("currently-updating"))
 				{
-			   		stdout.printf ("Timeout!\n");
+			   		logger.print(LogMessage.DEBUG, "daemon: Timeout!");
 					startSync();
 				}
 				return true;
@@ -62,7 +62,7 @@ namespace FeedReader {
 				syncFinished();
 			}
 			else
-				print("Cant sync because login failed\n");
+				logger.print(LogMessage.DEBUG, "Cant sync because login failed");
 		}
 	
 		public int login(int type)
@@ -132,11 +132,11 @@ namespace FeedReader {
 		try {
 		    conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer ());
 		} catch (IOError e) {
-		    stderr.printf ("Could not register service\n");
-		    stderr.printf("%s\n", e.message);
+		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
+		    logger.print(LogMessage.WARNING, e.message);
 		    exit(-1);
 		}
-		stdout.printf("daemon: bus aquired\n");
+		logger.print(LogMessage.DEBUG, "daemon: bus aquired");
 	}
 
 
@@ -146,6 +146,7 @@ namespace FeedReader {
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
 	feed_server server;
+	Logger logger;
 	
 
 	void main () {
@@ -156,6 +157,7 @@ namespace FeedReader {
 		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
+		logger = new Logger();
 		Notify.init("FeedReader");
 	
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
@@ -164,7 +166,7 @@ namespace FeedReader {
 				      			settings_state.set_boolean("currently-updating", false);
 				      },
 				      () => {
-				      			stderr.printf ("Could not aquire name\n"); 
+				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name. Will shut down!"); 
 				          		exit(-1);
 				          	}
 				      );

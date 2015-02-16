@@ -55,11 +55,13 @@ namespace FeedReader {
 			if(m_loggedin == LoginResponse.SUCCESS)
 			{
 				syncStarted();
+				logger.print(LogMessage.INFO, "daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
 				yield server.sync_content();
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
+				logger.print(LogMessage.INFO, "daemon: sync finished");
 			}
 			else
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed");

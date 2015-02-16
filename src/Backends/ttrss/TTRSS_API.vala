@@ -47,8 +47,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			m_ttrss_apilevel = response.get_int_member("api_level");
 		}
 		
-		logger.print(LogMessage.INFO, "Session ID: %s".printf(m_ttrss_sessionid));
-		logger.print(LogMessage.INFO, "API Level: %lld".printf(m_ttrss_apilevel));
+		logger.print(LogMessage.INFO, "TTRSS Session ID: %s".printf(m_ttrss_sessionid));
+		logger.print(LogMessage.INFO, "TTRSS API Level: %lld".printf(m_ttrss_apilevel));
 		
 		return LoginResponse.SUCCESS;
 	}
@@ -361,10 +361,11 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			var response = message.get_response_array();
 			var headline_count = response.get_length();
-			stdout.printf("Number of New Articles: %u\n", headline_count);
+			logger.print(LogMessage.DEBUG, "TTRSS sync: headline count: %u".printf(headline_count));
+			logger.print(LogMessage.DEBUG, "TTRSS sync: skip: %i".printf(skip));
 			GLib.List<article> articles = new GLib.List<article>();
 			string title, author, url, html;
-			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
+			
 			
 			
 			
@@ -401,9 +402,11 @@ public class FeedReader.ttrss_interface : GLib.Object {
 								));
 				
 			}
+			logger.print(LogMessage.DEBUG, "Finished fetching articles");
 			
 			articles.reverse();
 			
+			logger.print(LogMessage.DEBUG, "Write articles to db");
 			// first write all new articles
 			foreach(article item in articles)
 			{
@@ -436,12 +439,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										item.m_tags,
 										item.m_preview);
 			}
+			logger.print(LogMessage.DEBUG, "Finished writing articles to db");
 			
-			stdout.printf("headline count: %u\nskip: %i\n", headline_count, skip);
 			int maxArticles = settings_general.get_int("max-articles");
 			if(headline_count == 200 && (skip+200) < maxArticles)
 			{
-				stdout.printf("get more headlines\n");
+				logger.print(LogMessage.DEBUG, "TTRSS sync: get more headlines");
 				if(maxArticles - skip < 200)
 				{
 					sync_getArticles(feedID, skip + 200, maxArticles - skip);
@@ -479,7 +482,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					dataBase.markReadAllArticles();
 					var response = message.get_response_array();
 					headline_count = response.get_length();
-					stdout.printf("About to update %u Articles to unread\n", headline_count);
+					logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to unread".printf(headline_count));
 					
 					for(uint i = 0; i < headline_count; i++)
 					{
@@ -505,7 +508,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					dataBase.unmarkAllArticles();
 					var response2 = message2.get_response_array();
 					headline_count = response2.get_length();
-					stdout.printf("About to update %u Articles to marked\n", headline_count);
+					logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to marked".printf(headline_count));
 					
 					for(uint i = 0; i < headline_count; i++)
 					{

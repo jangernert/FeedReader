@@ -123,7 +123,7 @@ public class FeedReader.feed_server : GLib.Object {
 					try{
 						GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 					}catch(GLib.SpawnError e){
-						stdout.printf("error spawning command line: %s\n", e.message);
+						logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
 					}
 					try {
 						notification.close ();

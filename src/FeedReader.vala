@@ -29,13 +29,13 @@ namespace FeedReader {
 	public class rssReaderApp : Gtk.Application {
 
 		private readerUI m_window;
-	
 		 
 		protected override void startup () {
 			startDaemon();
 			
 			dataBase = new dbManager();
 			dataBase.init();
+
 		
 			settings_general = new GLib.Settings ("org.gnome.feedreader");
 			settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
@@ -51,18 +51,17 @@ namespace FeedReader {
 				});
 			
 				feedDaemon_interface.syncStarted.connect(() => {
-				    stdout.printf ("sync started\n");
 				    m_window.setRefreshButton(true);
 				});
 				
 				feedDaemon_interface.syncFinished.connect(() => {
-				    stdout.printf ("sync finished\n");
+				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
 					m_window.updateFeedList();
 					m_window.updateArticleList();
 				    m_window.setRefreshButton(false);
 				});
 			}catch (IOError e) {
-				stderr.printf ("%s\n", e.message);
+				logger.print(LogMessage.ERROR, e.message);
 			}
 			base.startup();
 		}
@@ -84,7 +83,7 @@ namespace FeedReader {
 			try{
 				feedDaemon_interface.startSync();
 			}catch (IOError e) {
-				stderr.printf ("%s\n", e.message);
+				logger.print(LogMessage.ERROR, e.message);
 			}
 		}
 	
@@ -94,7 +93,7 @@ namespace FeedReader {
 			try{
 				GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 			}catch(GLib.SpawnError e){
-				stdout.printf("error spawning command line: %s\n", e.message);
+				logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
 			}
 		}
 

@@ -85,7 +85,6 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 
 	public bool isRevealed()
 	{
-		//return m_revealer.get_child_revealed();
 		return m_revealer.get_reveal_child();
 	}
 	

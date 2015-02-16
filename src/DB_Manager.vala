@@ -24,7 +24,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public void init()
 	{
-			string feeds =					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds" 
+			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds" 
 											(
 												"feed_id" TEXT PRIMARY KEY  NOT NULL UNIQUE ,
 												"name" TEXT NOT NULL,
@@ -33,9 +33,9 @@ public class FeedReader.dbManager : GLib.Object {
 												"unread" INTEGER NOT NULL,
 												"category_id" TEXT,
 												"subscribed" INTEGER DEFAULT 1
-											)""";
+											)""");
 
-			string categories =				"""CREATE  TABLE  IF NOT EXISTS "main"."categories" 
+			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories" 
 											(
 												"categorieID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" TEXT NOT NULL,
@@ -44,9 +44,9 @@ public class FeedReader.dbManager : GLib.Object {
 												"exists" INTEGER,
 												"Parent" TEXT,
 												"Level" INTEGER
-												)""";
+												)""");
 												
-			string articles =				"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
+			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
 											(
 												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"feedID" TEXT NOT NULL,
@@ -58,33 +58,27 @@ public class FeedReader.dbManager : GLib.Object {
 												"unread" INTEGER NOT NULL,
 												"marked" INTEGER NOT NULL,
 												"tags" TEXT
-											)""";
+											)""");
 			
-			string tags =				   """CREATE  TABLE  IF NOT EXISTS "main"."tags" 
+			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags" 
 											(
 												"tagID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" TEXT NOT NULL,
 												"exists" INTEGER,
 												"color" INTEGER
-												)""";
+												)""");
+												
+			executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
+	}
 	
-			string errmsg;
-			int ec = sqlite_db.exec (feeds, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
-			ec = sqlite_db.exec (articles, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
-			ec = sqlite_db.exec (categories, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
-			ec = sqlite_db.exec (tags, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
+	
+	private void executeSQL(string sql)
+	{
+		string errmsg;
+		int ec = sqlite_db.exec (sql, null, out errmsg);
+		if (ec != Sqlite.OK) {
+			logger.print(LogMessage.ERROR, errmsg);
+		}
 	}
 
 
@@ -333,7 +327,7 @@ public class FeedReader.dbManager : GLib.Object {
 				else
 					GLib.FileUtils.set_contents(filename, preview);
 			}catch(GLib.FileError e){
-				stderr.printf("error writing html to tmp file: %s\n", e.message);
+				logger.print(LogMessage.ERROR, "error writing html to tmp file - %s".printf(e.message));
 			}
 			GLib.FileUtils.close(outputfd);
 
@@ -341,7 +335,7 @@ public class FeedReader.dbManager : GLib.Object {
 			try{
 				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 			}catch(GLib.SpawnError e){
-				stdout.printf("error spawning command line: %s\n", e.message);
+				logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
 			}
 
 			string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
@@ -711,7 +705,6 @@ public class FeedReader.dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			//print(stmt.column_text(0) + " " + stmt.column_text(1)
 			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
 			tmp.append(tmpTag);
 		}
@@ -799,7 +792,7 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 		query = query + " ORDER BY ROWID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 		
-		stdout.printf("%s\n", query);
+		logger.print(LogMessage.DEBUG, query);
 		article tmpArticle;
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);

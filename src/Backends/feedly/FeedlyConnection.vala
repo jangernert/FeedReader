@@ -42,7 +42,7 @@ public class FeedReader.FeedlyConnection {
 		}
 		else if(root.has_member("errorCode"))
 		{
-			print(root.get_string_member("errorMessage") + "\n");
+			logger.print(LogMessage.ERROR, "Feedly: getToken response - " + root.get_string_member("errorMessage"));
 			refreshToken();
 			return LoginResponse.UNKNOWN_ERROR;
 		}
@@ -80,7 +80,7 @@ public class FeedReader.FeedlyConnection {
 		}
 		else if(root.has_member("errorCode"))
 		{
-			print(root.get_string_member("errorMessage") + "\n");
+			logger.print(LogMessage.ERROR, "Feedly: refreshToken response - " + root.get_string_member("errorMessage"));
 			return LoginResponse.UNKNOWN_ERROR;
 		}
 		return LoginResponse.UNKNOWN_ERROR;

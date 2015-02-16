@@ -34,7 +34,7 @@ public class FeedReader.ttrss_utils : GLib.Object {
 
 		string passwd = "";
 		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
-			stdout.printf ("Error: %s\n", e.message);
+			logger.print(LogMessage.ERROR, e.message);
 		}
 		if(passwd == null)
 		{

@@ -9,6 +9,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	private Gtk.Adjustment m_current_adjustment;
 	private Gtk.Adjustment m_scroll1_adjustment;
 	private Gtk.Adjustment m_scroll2_adjustment;
+	private Gtk.Spinner m_spinner;
 	private double m_lmit;
 	private int m_displayed_articles;
 	private string m_current_feed_selected;
@@ -18,6 +19,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	private int m_limit;
 	private int m_IDtype;
 	private bool m_limitScroll;
+	private int m_threadCount;
 	public signal void row_activated(articleRow? row);
 	public signal void updateFeedList();
 	
@@ -30,6 +32,14 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_searchTerm = "";
 		m_limit = 15;
 		m_limitScroll = false;
+		m_threadCount = 0;
+		
+		
+		m_spinner = new Gtk.Spinner();
+		m_spinner.set_size_request(40, 40);
+		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
+		center.set_padding(20, 20, 20, 20);
+		center.add(m_spinner);
 		
 		
 		m_List1 = new Gtk.ListBox();
@@ -96,6 +106,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		this.set_transition_duration(100);
 		this.add_named(m_scroll1, "list1");
 		this.add_named(m_scroll2, "list2");
+		this.add_named(center, "spinner");
 	}
 	
 	private void key_pressed(Gdk.EventKey event)
@@ -176,7 +187,7 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	void restoreScrollPos(Object sender, ParamSpec property)
 	{
-		print("restoreScrollPos\n");
+		logger.print(LogMessage.DEBUG, "restoreScrollPos");
 		m_current_adjustment.notify["upper"].disconnect(restoreScrollPos);
 		setScrollPos(settings_state.get_double("articlelist-scrollpos"));
 		
@@ -188,8 +199,6 @@ public class FeedReader.articleList : Gtk.Stack {
 	
 	private void setScrollPos(double pos)
 	{
-		print("max scroll: " + m_current_adjustment.get_upper().to_string() + "\n");
-		
 		double RowVSpace = 102;
 		double additionalScroll = RowVSpace * settings_state.get_int("articlelist-new-rows");
 		double newPos = pos + additionalScroll;
@@ -254,48 +263,84 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 
 
-	public void createHeadlineList(bool add = false)
+	public async void createHeadlineList(bool add = false)
 	{
-		// dont allow new articles being created due to scrolling for 0.5s
-		limitScroll.begin((obj, res) => {
-			limitScroll.end(res);
-		});
+		SourceFunc callback = createHeadlineList.callback;
+		GLib.List<articleRow> rows = new GLib.List<articleRow>();
 		
-		m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
-		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
-
-		foreach(var item in articles)
-		{
-			m_displayed_articles++;
-			
-			articleRow tmpRow = new articleRow(
-					                             item.m_title,
-					                             item.m_unread,
-					                             item.m_feedID.to_string(),
-					                             item.m_url,
-					                             item.m_feedID,
-					                             item.m_articleID,
-					                             item.m_marked,
-					                             item.m_sortID,
-					                             item.m_preview
-					                            );
-			tmpRow.updateFeedList.connect(() => {updateFeedList();});
-			m_currentList.add(tmpRow);
-			tmpRow.reveal(true);
-			
-		}
-		m_currentList.show_all();
-		if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
-		else if(m_currentList == m_List2)   this.set_visible_child_name("list2");
+		logger.print(LogMessage.DEBUG, "create new HeadlineList");
+		m_threadCount++;
+		int threadID = m_threadCount;
 		
 		if(!add)
 		{
-			m_current_adjustment.notify["upper"].connect(restoreScrollPos);
-			restoreSelectedRow();
+			this.set_visible_child_name("spinner");
+			m_spinner.start();
 		}
 		
-		if(settings_state.get_boolean("no-animations"))
-			settings_state.set_boolean("no-animations", false);
+		// dont allow new articles being created due to scrolling for 0.5s
+		yield limitScroll();
+		
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
+		ThreadFunc<void*> run = () => {
+			m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
+			logger.print(LogMessage.DEBUG, "limit: " + m_limit.to_string());
+		
+			logger.print(LogMessage.DEBUG, "load articles from db");
+			var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
+		
+			logger.print(LogMessage.DEBUG, "create article rows");
+			foreach(var item in articles)
+			{
+				m_displayed_articles++;
+			
+				articleRow tmpRow = new articleRow(
+							                         item.m_title,
+							                         item.m_unread,
+							                         item.m_feedID.to_string(),
+							                         item.m_url,
+							                         item.m_feedID,
+							                         item.m_articleID,
+							                         item.m_marked,
+							                         item.m_sortID,
+							                         item.m_preview
+							                        );
+				tmpRow.updateFeedList.connect(() => {updateFeedList();});
+				
+				if(!(threadID < m_threadCount))
+					rows.append(tmpRow);
+				else
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
+		
+		new GLib.Thread<void*>("createHeadlineList", run);
+		yield;
+		
+		if(!(threadID < m_threadCount))
+		{
+			foreach(articleRow row in rows)
+			{
+				m_currentList.add(row);
+				row.show();
+				row.reveal(true);
+			}
+
+			if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
+			else if(m_currentList == m_List2)   this.set_visible_child_name("list2");
+		
+			if(!add)
+			{
+				m_current_adjustment.notify["upper"].connect(restoreScrollPos);
+				restoreSelectedRow();
+			}
+		
+			if(settings_state.get_boolean("no-animations"))
+				settings_state.set_boolean("no-animations", false);
+		}
 	}
 
 	public void newHeadlineList()

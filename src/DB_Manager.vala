@@ -105,6 +105,28 @@ public class FeedReader.dbManager : GLib.Object {
 		else
 			return true;
 	}
+	
+	
+	public int getArticelCount()
+	{
+		int count = -1;
+		string query = "SELECT count(*) FROM \"main\".\"articles\"";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+			
+		int cols = stmt.column_count ();
+		while (stmt.step () == Sqlite.ROW) {
+			for (int i = 0; i < cols; i++) {
+				count = stmt.column_int(i);
+			}
+		}
+		stmt.reset ();
+
+		return count;
+	}
 
 
 

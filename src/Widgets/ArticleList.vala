@@ -10,6 +10,8 @@ public class FeedReader.articleList : Gtk.Stack {
 	private Gtk.Adjustment m_scroll1_adjustment;
 	private Gtk.Adjustment m_scroll2_adjustment;
 	private Gtk.Spinner m_spinner;
+	private Gtk.Label m_emtpyList;
+	private string m_emtyListString;
 	private double m_lmit;
 	private int m_displayed_articles;
 	private string m_current_feed_selected;
@@ -41,6 +43,15 @@ public class FeedReader.articleList : Gtk.Stack {
 		center.set_padding(20, 20, 20, 20);
 		center.add(m_spinner);
 		
+		m_emtyListString = _("None of the %i Articles in the database fit the current filters.");
+		m_emtpyList = new Gtk.Label(m_emtyListString.printf(dataBase.getArticelCount()));
+		m_emtpyList.get_style_context().add_class("emptyView");
+		m_emtpyList.set_ellipsize (Pango.EllipsizeMode.END);
+		m_emtpyList.set_line_wrap_mode(Pango.WrapMode.WORD);
+		m_emtpyList.set_line_wrap(true);
+		m_emtpyList.set_lines(3);
+		m_emtpyList.set_margin_left(30);
+		m_emtpyList.set_margin_right(30);
 		
 		m_List1 = new Gtk.ListBox();
 		m_List1.set_selection_mode(Gtk.SelectionMode.BROWSE);
@@ -107,6 +118,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		this.add_named(m_scroll1, "list1");
 		this.add_named(m_scroll2, "list2");
 		this.add_named(center, "spinner");
+		this.add_named(m_emtpyList, "empty");
 	}
 	
 	private void key_pressed(Gdk.EventKey event)
@@ -223,6 +235,8 @@ public class FeedReader.articleList : Gtk.Stack {
 		{
 			return stillInViewport+15;
 		}
+		else if(settings_state.get_int("articlelist-row-amount") == 0)
+			return 15;
 		
 		return settings_state.get_int("articlelist-row-amount");
 	}
@@ -271,6 +285,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		logger.print(LogMessage.DEBUG, "create new HeadlineList");
 		m_threadCount++;
 		int threadID = m_threadCount;
+		bool hasContent = true;
 		
 		if(!add)
 		{
@@ -288,7 +303,12 @@ public class FeedReader.articleList : Gtk.Stack {
 		
 			logger.print(LogMessage.DEBUG, "load articles from db");
 			var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
-		
+			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.length().to_string());
+			if(articles.length() == 0)
+			{
+				hasContent = false;
+			}
+			
 			logger.print(LogMessage.DEBUG, "create article rows");
 			foreach(var item in articles)
 			{
@@ -322,24 +342,32 @@ public class FeedReader.articleList : Gtk.Stack {
 		
 		if(!(threadID < m_threadCount))
 		{
-			foreach(articleRow row in rows)
+			if(hasContent)
 			{
-				m_currentList.add(row);
-				row.show();
-				row.reveal(true);
-			}
+				foreach(articleRow row in rows)
+				{
+					m_currentList.add(row);
+					row.show();
+					row.reveal(true);
+				}
 
-			if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
-			else if(m_currentList == m_List2)   this.set_visible_child_name("list2");
+				if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
+				else if(m_currentList == m_List2)   this.set_visible_child_name("list2");
 		
-			if(!add)
-			{
-				m_current_adjustment.notify["upper"].connect(restoreScrollPos);
-				restoreSelectedRow();
+				if(!add)
+				{
+					m_current_adjustment.notify["upper"].connect(restoreScrollPos);
+					restoreSelectedRow();
+				}
+		
+				if(settings_state.get_boolean("no-animations"))
+					settings_state.set_boolean("no-animations", false);
 			}
-		
-			if(settings_state.get_boolean("no-animations"))
-				settings_state.set_boolean("no-animations", false);
+			else
+			{
+				m_emtpyList.set_text(m_emtyListString.printf(dataBase.getArticelCount()));
+				this.set_visible_child_name("empty");
+			}
 		}
 	}
 

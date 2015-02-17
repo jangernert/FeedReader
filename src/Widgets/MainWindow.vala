@@ -233,7 +233,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
             weak Gdk.Screen screen = display.get_default_screen ();
 			Gtk.StyleContext.add_provider_for_screen (screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 		} catch (Error e) {
-			warning ("Error: %s", e.message);
+			logger.print(LogMessage.WARNING, e.message);
 		}
 
 		
@@ -264,7 +264,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	private void loadContent()
 	{
-		print("load content\n");
+		logger.print(LogMessage.DEBUG, "MainWindow: load content");
 		m_feedList.newFeedlist();
 		dataBase.updateBadge.connect(() => {
 			feedDaemon_interface.updateBadge();

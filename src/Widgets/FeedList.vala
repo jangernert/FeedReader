@@ -83,7 +83,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		FeedRow selected_feed = m_list.get_selected_row() as FeedRow;
 		categorieRow selected_categorie = m_list.get_selected_row() as categorieRow;
-		
+		TagRow selected_tag = m_list.get_selected_row() as TagRow;
 
 		var FeedListChildren = m_list.get_children();
 
@@ -102,12 +102,17 @@ public class FeedReader.feedList : Gtk.Stack {
 		{
 			current = FeedListChildren.index(selected_categorie);
 		}
+		else if(selected_tag != null)
+		{
+			current = FeedListChildren.index(selected_tag);
+		}
 
 		current++;
 		while(current < FeedListChildren.length())
 		{
 			FeedRow current_feed = FeedListChildren.nth_data(current) as FeedRow;
 			categorieRow current_categorie = FeedListChildren.nth_data(current) as categorieRow;
+			TagRow current_tag = FeedListChildren.nth_data(current) as TagRow;
 
 			if(current_feed != null)
 			{
@@ -125,6 +130,16 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_list.select_row(current_categorie);
 					newCategorieSelected(current_categorie.getID());
+					break;
+				}
+			}
+			
+			if(current_tag != null)
+			{
+				if(current_tag.isRevealed())
+				{
+					m_list.select_row(current_tag);
+					newTagSelected(current_tag.getID());
 					break;
 				}
 			}

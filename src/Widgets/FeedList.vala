@@ -151,6 +151,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	
 	public void newFeedlist()
 	{
+		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{

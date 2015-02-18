@@ -21,6 +21,7 @@ public class FeedReader.LoginPage : Gtk.Alignment {
 		
 		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		m_layout.set_size_request(700, 410);
 		
 		var welcomeText = new Gtk.Label(_("Where are your feeds?"));
 		welcomeText.get_style_context().add_class("h1");
@@ -29,6 +30,7 @@ public class FeedReader.LoginPage : Gtk.Alignment {
 		var welcomeText2 = new Gtk.Label(_("Please select the RSS service you are using and log in to get going."));
 		welcomeText2.get_style_context().add_class("h2");
 		welcomeText2.set_justify(Gtk.Justification.CENTER);
+		welcomeText2.set_lines(3);
 		
 		
 		m_layout.pack_start(welcomeText, false, true, 0);

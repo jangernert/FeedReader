@@ -43,6 +43,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Logger.vala
     src/Model/Feed.vala
     src/Model/Category.vala
+    src/Widgets/ContentPage.vala
     src/Model/Article.vala
     src/Model/Tag.vala
     src/Constants.vala
@@ -59,6 +60,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
     src/Widgets/ReaderHeaderbar.vala
+    src/Widgets/ResetPage.vala
     src/Widgets/TagRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala

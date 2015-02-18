@@ -80,6 +80,36 @@ public class FeedReader.dbManager : GLib.Object {
 			logger.print(LogMessage.ERROR, errmsg);
 		}
 	}
+	
+	
+	public bool resetDB()
+	{
+		executeSQL("DROP TABLE \"main\".\"feeds\"");
+		executeSQL("DROP TABLE \"main\".\"categories\"");
+		executeSQL("DROP TABLE \"main\".\"articles\"");
+		executeSQL("DROP TABLE \"main\".\"tags\"");
+		executeSQL("VACUUM");
+		
+		string query = "PRAGMA INTEGRITY_CHECK";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
+		}
+			
+		int cols = stmt.column_count ();
+		while (stmt.step () == Sqlite.ROW) {
+			for (int i = 0; i < cols; i++) {
+				if(stmt.column_text(i) != "ok")
+				{
+					logger.print(LogMessage.ERROR, "resetting the database failed");
+					return false;
+				}
+			}
+		}
+		stmt.reset ();
+		return true;
+	}
 
 
 	public bool isTableEmpty(string table)
@@ -89,7 +119,7 @@ public class FeedReader.dbManager : GLib.Object {
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
 		}
 			
 		int cols = stmt.column_count ();
@@ -114,7 +144,7 @@ public class FeedReader.dbManager : GLib.Object {
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
 		}
 			
 		int cols = stmt.column_count ();
@@ -144,17 +174,13 @@ public class FeedReader.dbManager : GLib.Object {
 				change_feed_query = change_feed_query + "- 1";
 			} 
 			change_feed_query = change_feed_query + " WHERE \"feed_id\" = \"" + feedID + "\"";
-			string errmsg;
-			int ec = sqlite_db.exec (change_feed_query, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
+			executeSQL(change_feed_query);
 			
 
 			
 			string get_feed_id_query = "SELECT \"category_id\" FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID + "\"";
 			Sqlite.Statement stmt;
-			ec = sqlite_db.prepare_v2 (get_feed_id_query, get_feed_id_query.length, out stmt);
+			int ec = sqlite_db.prepare_v2 (get_feed_id_query, get_feed_id_query.length, out stmt);
 			if (ec != Sqlite.OK) {
 				error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 			}
@@ -176,10 +202,7 @@ public class FeedReader.dbManager : GLib.Object {
 				change_catID_query = change_catID_query + "- 1";
 			}
 			change_catID_query = change_catID_query + " WHERE \"categorieID\" = \"" + catID + "\"";
-			ec = sqlite_db.exec (change_catID_query, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
+			executeSQL(change_catID_query);
 
 			updateBadge();
 			Idle.add((owned) callback);

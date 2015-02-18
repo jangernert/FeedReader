@@ -10,8 +10,8 @@ public class FeedReader.articleList : Gtk.Stack {
 	private Gtk.Adjustment m_scroll1_adjustment;
 	private Gtk.Adjustment m_scroll2_adjustment;
 	private Gtk.Spinner m_spinner;
-	private Gtk.Label m_emtpyList;
-	private string m_emtyListString;
+	private Gtk.Label m_emptyList;
+	private string m_emptyListString;
 	private double m_lmit;
 	private int m_displayed_articles;
 	private string m_current_feed_selected;
@@ -43,15 +43,16 @@ public class FeedReader.articleList : Gtk.Stack {
 		center.set_padding(20, 20, 20, 20);
 		center.add(m_spinner);
 		
-		m_emtyListString = _("None of the %i Articles in the database fit the current filters.");
-		m_emtpyList = new Gtk.Label(m_emtyListString.printf(dataBase.getArticelCount()));
-		m_emtpyList.get_style_context().add_class("emptyView");
-		m_emtpyList.set_ellipsize (Pango.EllipsizeMode.END);
-		m_emtpyList.set_line_wrap_mode(Pango.WrapMode.WORD);
-		m_emtpyList.set_line_wrap(true);
-		m_emtpyList.set_lines(3);
-		m_emtpyList.set_margin_left(30);
-		m_emtpyList.set_margin_right(30);
+		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
+		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
+		m_emptyList.get_style_context().add_class("emptyView");
+		m_emptyList.set_ellipsize (Pango.EllipsizeMode.END);
+		m_emptyList.set_line_wrap_mode(Pango.WrapMode.WORD);
+		m_emptyList.set_line_wrap(true);
+		m_emptyList.set_lines(3);
+		m_emptyList.set_margin_left(30);
+		m_emptyList.set_margin_right(30);
+		m_emptyList.set_justify(Gtk.Justification.CENTER);
 		
 		m_List1 = new Gtk.ListBox();
 		m_List1.set_selection_mode(Gtk.SelectionMode.BROWSE);
@@ -118,7 +119,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		this.add_named(m_scroll1, "list1");
 		this.add_named(m_scroll2, "list2");
 		this.add_named(center, "spinner");
-		this.add_named(m_emtpyList, "empty");
+		this.add_named(m_emptyList, "empty");
 	}
 	
 	private void key_pressed(Gdk.EventKey event)
@@ -365,7 +366,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			}
 			else
 			{
-				m_emtpyList.set_text(m_emtyListString.printf(dataBase.getArticelCount()));
+				m_emptyList.set_text(m_emptyListString.printf(dataBase.getArticelCount()));
 				this.set_visible_child_name("empty");
 			}
 		}

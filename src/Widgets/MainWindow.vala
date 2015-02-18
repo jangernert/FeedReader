@@ -4,36 +4,41 @@ using Gtk;
 public class FeedReader.readerUI : Gtk.ApplicationWindow 
 {
 	private readerHeaderbar m_headerbar;
-	private Gtk.Paned m_pane_feedlist;
-	private Gtk.Paned m_pane_articlelist;
 	private Gtk.Stack m_stack;
-	private articleView m_article_view;
-	private articleList m_articleList;
-	private feedList m_feedList;
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
+	private ContentPage m_content;
 	
 	public readerUI(rssReaderApp app)
 	{
 		Object (application: app, title: _("FeedReader"));
 		this.window_position = WindowPosition.CENTER;
 		
-
+		m_stack = new Gtk.Stack();
+		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_stack.set_transition_duration(100);
+		
+		
+		setupLoginPage();
+		setupResetPage();
+		setupContentPage();
+		onClose();
+		
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(app.sync);
 		m_headerbar.change_unread.connect((only_unread) => {
-			m_articleList.setOnlyUnread(only_unread);
-			m_articleList.newHeadlineList(); 
+			m_content.setOnlyUnread(only_unread);
+			m_content.newHeadlineList();
 		});
 
 		m_headerbar.change_marked.connect((only_marked) => {
-			m_articleList.setOnlyMarked(only_marked);
-			m_articleList.newHeadlineList(); 
+			m_content.setOnlyMarked(only_marked);
+			m_content.newHeadlineList(); 
 		});
 		
 		m_headerbar.search_term.connect((searchTerm) => {
-			m_articleList.setSearchTerm(searchTerm);
-			m_articleList.newHeadlineList();
+			m_content.setSearchTerm(searchTerm);
+			m_content.newHeadlineList();
 		});
 		
 		
@@ -41,25 +46,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		about_action.activate.connect (this.about);
 		add_action(about_action);
 
-		var login_action = new SimpleAction (_("login"), null);
+		var login_action = new SimpleAction (_("reset"), null);
 		login_action.activate.connect (() => {
-			m_stack.set_visible_child_full("login", Gtk.StackTransitionType.SLIDE_RIGHT);
+			m_stack.set_visible_child_full("reset", Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		add_action(login_action);
-
-		m_stack = new Gtk.Stack();
-		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_stack.set_transition_duration(100);
 		
-
-		setupLoginPage();
-		setupArticlelist();
-		setupFeedlist();
-		onClose();
-		
-		m_stack.add_named(m_pane_feedlist, "content");
-		m_article_view = new articleView();
-		m_pane_articlelist.pack2(m_article_view, true, false);
 		
 		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
@@ -103,22 +95,22 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		this.destroy.connect(() => {
 			int only_unread = 0;
-			if(m_headerbar.m_only_unread) only_unread = 1;
+			if(m_headerbar.getOnlyUnread()) only_unread = 1;
 			int only_marked = 0;
-			if(m_headerbar.m_only_marked) only_marked = 1;
+			if(m_headerbar.getOnlyMarked()) only_marked = 1;
 			
 			
-			settings_state.set_strv("expanded-categories", m_feedList.getExpandedCategories());
-			settings_state.set_double("feed-row-scrollpos",  m_feedList.getScrollPos());
-			settings_state.set_string("feedlist-selected-row", m_feedList.getSelectedRow());
-			settings_state.set_int("feed-row-width", m_pane_feedlist.get_position());
-			settings_state.set_int("article-row-width", m_pane_articlelist.get_position());
-			settings_state.set_int("articlelist-row-amount", m_articleList.getAmountOfRowsToLoad());
-			settings_state.set_double("articlelist-scrollpos",  m_articleList.getScrollPos());
-			settings_state.set_string("articlelist-selected-row", m_articleList.getSelectedArticle());
+			settings_state.set_strv("expanded-categories", m_content.getExpandedCategories());
+			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
+			settings_state.set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
+			settings_state.set_int("feed-row-width", m_content.getFeedListWidth());
+			settings_state.set_int("article-row-width", m_content.getArticleListWidth());
+			settings_state.set_int("articlelist-row-amount", m_content.getArticlesToLoad());
+			settings_state.set_double("articlelist-scrollpos",  m_content.getArticleListScrollPos());
+			settings_state.set_string("articlelist-selected-row", m_content.getSelectedArticle());
 			settings_state.set_int("articlelist-new-rows", 0);
-			settings_state.set_boolean("only-unread", m_headerbar.m_only_unread);
-			settings_state.set_boolean("only-marked", m_headerbar.m_only_marked);
+			settings_state.set_boolean("only-unread", m_headerbar.getOnlyUnread());
+			settings_state.set_boolean("only-marked", m_headerbar.getOnlyMarked());
 			settings_state.set_boolean("no-animations", true);
 			settings_state.set_string("search-term", m_headerbar.getSearchTerm());
 		});
@@ -160,6 +152,25 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_stack.add_named(WebLogin, "WebLogin");
 	}
 	
+	
+	private void setupResetPage()
+	{
+		var reset = new ResetPage();
+		m_stack.add_named(reset, "reset");
+		reset.cancel.connect(() => {
+			m_stack.set_visible_child_full("content", Gtk.StackTransitionType.SLIDE_RIGHT);
+		});
+		reset.reset.connect(() => {
+			m_stack.set_visible_child_full("login", Gtk.StackTransitionType.SLIDE_LEFT);
+		});
+	}
+	
+	private void setupContentPage()
+	{
+		m_content = new ContentPage();
+		m_stack.add_named(m_content, "content");
+	}
+	
 	private void showErrorBar(int ErrorCode)
 	{
 		switch(ErrorCode)
@@ -190,82 +201,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_error_bar.show();
 	}
 	
-	
-	private void setupFeedlist()
-	{
-		int feed_row_width = settings_state.get_int("feed-row-width");
-		m_pane_feedlist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
-		m_pane_feedlist.set_position(feed_row_width);
-		m_feedList = new feedList();
-		m_pane_feedlist.pack1(m_feedList, false, false);
-		m_pane_feedlist.pack2(m_pane_articlelist, true, false);
-
-		m_feedList.newFeedSelected.connect((feedID) => {
-			m_articleList.setSelectedType(FeedList.FEED);
-			m_article_view.clearContent();
-			m_articleList.setSelectedFeed(feedID);
-			m_articleList.newHeadlineList();
-		});
-		
-		m_feedList.newTagSelected.connect((tagID) => {
-			m_articleList.setSelectedType(FeedList.TAG);
-			m_article_view.clearContent();
-			m_articleList.setSelectedFeed(tagID);
-			m_articleList.newHeadlineList();
-		});
-
-		m_feedList.newCategorieSelected.connect((categorieID) => {
-			m_articleList.setSelectedType(FeedList.CATEGORY);
-			m_article_view.clearContent();
-			m_articleList.setSelectedFeed(categorieID);
-			m_articleList.newHeadlineList();
-		});
-	}
-
-	private void setupArticlelist()
-	{
-		try {
-    		Gtk.CssProvider provider = new Gtk.CssProvider ();
-    		provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
-                
-
-			weak Gdk.Display display = Gdk.Display.get_default ();
-            weak Gdk.Screen screen = display.get_default_screen ();
-			Gtk.StyleContext.add_provider_for_screen (screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-		} catch (Error e) {
-			logger.print(LogMessage.WARNING, e.message);
-		}
-
-		
-		int article_row_width = settings_state.get_int("article-row-width");
-		m_pane_articlelist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
-		m_pane_articlelist.set_size_request(500, 500);
-		m_pane_articlelist.set_position(article_row_width);
-		m_articleList = new articleList();
-		m_pane_articlelist.pack1(m_articleList, false, false);
-		m_articleList.setOnlyUnread(m_headerbar.m_only_unread);
-		m_articleList.setOnlyMarked(m_headerbar.m_only_marked);
-		
-
-		m_articleList.row_activated.connect((row) => {
-			if(row.isUnread()){
-				feedDaemon_interface.changeUnread(row.getID(), ArticleStatus.READ);
-				row.updateUnread(ArticleStatus.READ);
-				row.removeUnreadIcon();
-			}
-			
-			m_article_view.fillContent(row.getID());
-		});
-
-		m_articleList.updateFeedList.connect(() =>{
-			updateFeedList();
-		});
-	}
-	
 	private void loadContent()
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: load content");
-		m_feedList.newFeedlist();
+		m_content.newFeedList();
 		dataBase.updateBadge.connect(() => {
 			feedDaemon_interface.updateBadge();
 		});
@@ -276,20 +215,17 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	public void updateFeedList()
 	{
-		m_feedList.updateFeedList();
+		m_content.updateFeedList();
 	}
-	
 	
 	public void updateFeedListCountUnread(string feedID, bool increase)
 	{
-		m_feedList.updateCounters(feedID, increase);
+		m_content.updateFeedListCountUnread(feedID, increase);
 	}
-	
-
 
 	public void updateArticleList()
 	{
-		m_articleList.updateArticleList();
+		m_content.updateArticleList();
 	}
 
 

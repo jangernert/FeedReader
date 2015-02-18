@@ -4,8 +4,8 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 	private Gtk.ToggleButton m_only_marked_button;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
-	public bool m_only_unread { get; private set; }
-	public bool m_only_marked { get; private set; }
+	private bool m_only_unread { get; private set; }
+	private bool m_only_marked { get; private set; }
 	public signal void refresh();
 	public signal void change_unread(bool only_unread);
 	public signal void change_marked(bool only_marked);
@@ -63,12 +63,12 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 		
 		
 		var menu = new Gtk.Menu();
-		var item_login = new Gtk.MenuItem.with_label(_("Change Login"));
+		var item_login = new Gtk.MenuItem.with_label(_("Change Account"));
 		var item_about = new Gtk.MenuItem.with_label(_("About"));
 		menu.add(item_login);
 		menu.add(item_about);
 		var menumodel = new GLib.Menu ();
-		menumodel.append ("Change Login", "win.login");
+		menumodel.append ("Change Account", "win.reset");
 		menumodel.append ("About", "win.about");
 
 		
@@ -99,6 +99,16 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 	public string getSearchTerm()
 	{
 		return m_search.text;
+	}
+	
+	public bool getOnlyUnread()
+	{
+		return m_only_unread;
+	}
+	
+	public bool getOnlyMarked()
+	{
+		return m_only_marked;
 	}
 
 }

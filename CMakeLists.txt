@@ -43,7 +43,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/Logger.vala
     src/Model/Feed.vala
     src/Model/Category.vala
-    src/Widgets/ContentPage.vala
     src/Model/Article.vala
     src/Model/Tag.vala
     src/Constants.vala
@@ -55,6 +54,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/CategorieRow.vala
     src/Widgets/ColorCircle.vala
     src/Widgets/ColorPopover.vala
+    src/Widgets/ContentPage.vala
     src/Widgets/FeedList.vala
     src/Widgets/FeedRow.vala
     src/Widgets/LoginPage.vala

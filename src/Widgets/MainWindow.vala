@@ -8,6 +8,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
 	private ContentPage m_content;
+	private SimpleAction m_login_action;
 	
 	public readerUI(rssReaderApp app)
 	{
@@ -23,6 +24,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		setupResetPage();
 		setupContentPage();
 		onClose();
+		
+		m_stack.notify["visible_child_name"].connect(() => {
+			logger.print(LogMessage.DEBUG, "MainWindow: visible child changed");
+		});
 		
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(app.sync);
@@ -46,11 +51,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		about_action.activate.connect (this.about);
 		add_action(about_action);
 
-		var login_action = new SimpleAction (_("reset"), null);
-		login_action.activate.connect (() => {
-			m_stack.set_visible_child_full("reset", Gtk.StackTransitionType.SLIDE_RIGHT);
+		m_login_action = new SimpleAction (_("reset"), null);
+		m_login_action.activate.connect (() => {
+			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
-		add_action(login_action);
+		add_action(m_login_action);
 		
 		
 		this.add(m_stack);
@@ -62,19 +67,19 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		
 		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS)
 		{
-			m_stack.set_visible_child_name("content");
+			showContent();
 			loadContent();
 		}
 		else
 		{
 			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LoginResponse.SUCCESS)
 			{
-				m_stack.set_visible_child_name("content");
+				showContent();
 				loadContent();
 			}
 			else
 			{
-				m_stack.set_visible_child_name("login");
+				showLogin();
 			}
 		}
 		
@@ -89,6 +94,34 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	public bool currentlyUpdating()
 	{
 		return m_headerbar.currentlyUpdating();
+	}
+	
+	private void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	{
+		m_stack.set_visible_child_full("content", transition);
+		m_headerbar.setButtonsSensitive(true);
+		m_login_action.set_enabled(true);
+	}
+	
+	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	{
+		m_stack.set_visible_child_full("login", transition);
+		m_headerbar.setButtonsSensitive(false);
+		m_login_action.set_enabled(false);
+	}
+	
+	private void showReset(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	{
+		m_stack.set_visible_child_full("reset", transition);
+		m_headerbar.setButtonsSensitive(false);
+		m_login_action.set_enabled(false);
+	}
+	
+	private void showWebLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	{
+		m_stack.set_visible_child_full("WebLogin", transition);
+		m_headerbar.setButtonsSensitive(false);
+		m_login_action.set_enabled(false);
 	}
 	
 	private void onClose()
@@ -135,7 +168,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		var WebLogin = new WebLoginPage();
 		login.loadLoginPage.connect((type) => {
 			WebLogin.loadPage(type);
-			m_stack.set_visible_child_full("WebLogin", Gtk.StackTransitionType.SLIDE_LEFT);
+			showWebLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 		});
 		
 		var loginBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -158,10 +191,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		var reset = new ResetPage();
 		m_stack.add_named(reset, "reset");
 		reset.cancel.connect(() => {
-			m_stack.set_visible_child_full("content", Gtk.StackTransitionType.SLIDE_RIGHT);
+			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		reset.reset.connect(() => {
-			m_stack.set_visible_child_full("login", Gtk.StackTransitionType.SLIDE_LEFT);
+			showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 		});
 	}
 	
@@ -209,7 +242,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			feedDaemon_interface.updateBadge();
 		});
 		
-		m_stack.set_visible_child_full("content", Gtk.StackTransitionType.SLIDE_LEFT);
+		showContent(Gtk.StackTransitionType.SLIDE_LEFT);
 	}
 
 

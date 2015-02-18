@@ -40,6 +40,11 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	{
 		return m_status;
 	}
+	
+	public void setSensitive(bool sensitive)
+	{
+		this.sensitive = sensitive;
+	}
 
 }
 

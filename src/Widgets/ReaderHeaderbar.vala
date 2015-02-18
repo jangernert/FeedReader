@@ -61,23 +61,18 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 			search_term(m_search.text);
 		});
 		
-		
-		var menu = new Gtk.Menu();
-		var item_login = new Gtk.MenuItem.with_label(_("Change Account"));
-		var item_about = new Gtk.MenuItem.with_label(_("About"));
-		menu.add(item_login);
-		menu.add(item_about);
 		var menumodel = new GLib.Menu ();
-		menumodel.append ("Change Account", "win.reset");
-		menumodel.append ("About", "win.about");
-
-		
+		var changeAccount = new MenuItem ("Change Account", "win.reset");
+		menumodel.insert_item(0, changeAccount);
+		var about = new MenuItem ("About", "win.about");
+		menumodel.insert_item(1, about);
 
 		var menubutton = new Gtk.MenuButton();
 		menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
 		menubutton.set_size_request(32, 32);
 		menubutton.set_use_popover(true);
 		menubutton.set_menu_model(menumodel);
+		
 		this.show_close_button = true;
 		this.pack_end(menubutton);
 		this.pack_end(m_search);
@@ -89,6 +84,14 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 	public void setRefreshButton(bool status)
 	{
 		m_refresh_button.updating(status);
+	}
+	
+	public void setButtonsSensitive(bool sensitive)
+	{
+		m_only_unread_button.sensitive = sensitive;
+		m_only_marked_button.sensitive = sensitive;
+		m_refresh_button.setSensitive(sensitive);
+		m_search.sensitive = sensitive;
 	}
 	
 	public bool currentlyUpdating()

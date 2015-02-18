@@ -819,10 +819,12 @@ public class FeedReader.dbManager : GLib.Object {
 		else if(ID == CategoryID.TAGS)
 		{
 			query = query + getAllTagsQuery();
+			and = " AND ";
 		}
 		else if(selectedType == FeedList.TAG)
 		{
 			query = query + "instr(\"tags\", \"" + ID + "\") > 0";
+			and = " AND ";
 		}
 		if(only_unread){
 			query = query + and + "\"unread\" = " + ArticleStatus.UNREAD.to_string();

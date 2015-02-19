@@ -33,16 +33,19 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_headerbar.refresh.connect(app.sync);
 		m_headerbar.change_unread.connect((only_unread) => {
 			m_content.setOnlyUnread(only_unread);
+			m_content.clearArticleView();
 			m_content.newHeadlineList();
 		});
 
 		m_headerbar.change_marked.connect((only_marked) => {
 			m_content.setOnlyMarked(only_marked);
+			m_content.clearArticleView();
 			m_content.newHeadlineList(); 
 		});
 		
 		m_headerbar.search_term.connect((searchTerm) => {
 			m_content.setSearchTerm(searchTerm);
+			m_content.clearArticleView();
 			m_content.newHeadlineList();
 		});
 		
@@ -141,6 +144,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_int("articlelist-row-amount", m_content.getArticlesToLoad());
 			settings_state.set_double("articlelist-scrollpos",  m_content.getArticleListScrollPos());
 			settings_state.set_string("articlelist-selected-row", m_content.getSelectedArticle());
+			settings_state.set_double("articleview-scrollpos",  m_content.getArticleViewScrollPos());
 			settings_state.set_int("articlelist-new-rows", 0);
 			settings_state.set_boolean("only-unread", m_headerbar.getOnlyUnread());
 			settings_state.set_boolean("only-marked", m_headerbar.getOnlyMarked());

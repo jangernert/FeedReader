@@ -128,6 +128,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_articleList.setSearchTerm(searchTerm);
 	}
 	
+	public void clearArticleView()
+	{
+		m_article_view.clearContent();
+	}
+	
 	public string[] getExpandedCategories()
 	{
 		return m_feedList.getExpandedCategories();
@@ -161,6 +166,12 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public double getArticleListScrollPos()
 	{
 		return m_articleList.getScrollPos();
+	}
+	
+	public double getArticleViewScrollPos()
+	{
+		//return m_article_view.getScrollPos();
+		return 0.0;
 	}
 	
 	public string getSelectedArticle()

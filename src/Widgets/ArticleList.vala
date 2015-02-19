@@ -200,7 +200,7 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	void restoreScrollPos(Object sender, ParamSpec property)
 	{
-		logger.print(LogMessage.DEBUG, "restoreScrollPos");
+		logger.print(LogMessage.DEBUG, "ArticleList: restore ScrollPos");
 		m_current_adjustment.notify["upper"].disconnect(restoreScrollPos);
 		setScrollPos(settings_state.get_double("articlelist-scrollpos"));
 		
@@ -374,6 +374,9 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	public void newHeadlineList()
 	{
+		string selectedArticle = getSelectedArticle();
+		if(selectedArticle != "")
+			settings_state.set_string("articlelist-selected-row", selectedArticle);
 		if(m_currentList == m_List1)
 		{
 			m_currentList = m_List2;

@@ -2,8 +2,6 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	private Gtk.Label m_title;
 	private WebKit.WebView m_view;
-	private Gtk.ScrolledWindow m_scroll;
-	//private Gtk.Adjustment m_adjustment;
 	private Gtk.Box m_box;
 	private Gtk.Spinner m_spinner;
 	private bool m_open_external;
@@ -20,18 +18,10 @@ public class FeedReader.articleView : Gtk.Stack {
 		
 		
 		m_view = new WebKit.WebView();
-		//m_view.self-scrolling = false;
-		//m_view.set_size_request(400, 500);
 		m_view.load_changed.connect(open_link);
-		m_scroll = new Gtk.ScrolledWindow(null, null);
-		m_scroll.set_size_request(400, 500);
-		m_scroll.add(m_view);
-		
-		//m_adjustment = m_scroll.get_vadjustment();
 
 		m_box.pack_start(m_title, false, false, 0);
-		m_box.pack_start(m_scroll, true, true, 0);
-		//m_box.pack_start(m_view, true, true, 0);
+		m_box.pack_start(m_view, true, true, 0);
 
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("emptyView");
@@ -50,21 +40,35 @@ public class FeedReader.articleView : Gtk.Stack {
 		this.set_transition_duration(100);
 	}
 	
-	public void fillContent(string articleID)
+	public async void fillContent(string articleID)
 	{
+		SourceFunc callback = fillContent.callback;
+		
+		article Article = null;
 		this.set_visible_child_name("spinner");
 		m_spinner.start();
 		
-		var Article = dataBase.read_article(articleID);
-		string author;
-		(Article.m_author == "") ? author = "not available" : author = Article.m_author;
-		m_title.set_text("<big><b><a href=\"" + Article.m_url.replace("&","&amp;") + "\" title=\"Author: " + author.replace("&","&amp;") + "\">" + Article.m_title.replace("&","&amp;") + "</a></b></big>");
+		ThreadFunc<void*> run = () => {
+			Article = dataBase.read_article(articleID);
+			if(Article.getAuthor() == "")
+				Article.setAuthor(_("not available"));
+			
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("fillContent", run);
+		yield;
+		
+		m_title.set_text(
+			"<big><b><a href=\"" + Article.m_url.replace("&","&amp;") + 
+			"\" title=\"Author: " + Article.getAuthor().replace("&","&amp;") + "\">" + 
+			Article.m_title.replace("&","&amp;") + "</a></b></big>"
+		);
 		m_title.set_use_markup (true);
-		this.show_all();
 		m_open_external = false;
 		m_load_ongoing = 0;
 		m_view.load_html(Article.m_html, null);
-		//restoreScrollPos();
+		this.show_all();
 		this.set_visible_child_name("view");
 	}
 
@@ -96,17 +100,4 @@ public class FeedReader.articleView : Gtk.Stack {
 				break;
 		}
 	}
-	
-	/*private void restoreScrollPos()
-	{
-		//m_adjustment = m_scroll.get_vadjustment();
-		m_adjustment.set_value(settings_state.get_double("articleview-scrollpos"));
-		//m_scroll.set_vadjustment(m_adjustment);
-		settings_state.set_double("articleview-scrollpos", 0.0);
-	}
-	
-	public double getScrollPos()
-	{
-		return m_adjustment.get_value();
-	}*/
 }

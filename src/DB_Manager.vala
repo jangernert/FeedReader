@@ -483,12 +483,7 @@ public class FeedReader.dbManager : GLib.Object {
 		SourceFunc callback = update_article.callback;
 		
 		ThreadFunc<void*> run = () => {
-			string query = "UPDATE \"main\".\"articles\" SET \"" + field + "\" = \"" + field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID + "\"";
-			string errmsg;
-			int ec = sqlite_db.exec (query, null, out errmsg);
-			if (ec != Sqlite.OK) {
-				error("Error: %s\n", errmsg);
-			}
+			executeSQL("UPDATE \"main\".\"articles\" SET \"" + field + "\" = \"" + field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID + "\"");
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -515,75 +510,59 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public void reset_subscribed_flag()
 	{
-		string query = "UPDATE \"main\".\"feeds\" SET \"subscribed\" = 0";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("UPDATE \"main\".\"feeds\" SET \"subscribed\" = 0");
 	}
 	
 	public void reset_exists_tag()
 	{
-		string query = "UPDATE \"main\".\"tags\" SET \"exists\" = 0";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("UPDATE \"main\".\"tags\" SET \"exists\" = 0");
 	}
 
 	public void reset_exists_flag()
 	{
-		string query = "UPDATE \"main\".\"categories\" SET \"exists\" = 0";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("UPDATE \"main\".\"categories\" SET \"exists\" = 0");
 	}
 
 
 
 	public void delete_unsubscribed_feeds()
 	{
-		string query = "DELETE FROM \"main\".\"feeds\" WHERE \"subscribed\" = 0";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("DELETE FROM \"main\".\"feeds\" WHERE \"subscribed\" = 0");
 	}
 
 
 	public void delete_nonexisting_categories()
 	{
-		string query = "DELETE FROM \"main\".\"categories\" WHERE \"exists\" = 0";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("DELETE FROM \"main\".\"categories\" WHERE \"exists\" = 0");
 	}
 	
 	public void delete_nonexisting_tags()
 	{
-		string query = "DELETE FROM \"main\".\"tags\" WHERE \"exists\" = 0";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("DELETE FROM \"main\".\"tags\" WHERE \"exists\" = 0");
 	}
 
 	public void delete_articles(int feedID)
 	{
-		string query = "DELETE FROM \"main\".\"articles\" WHERE \"feedID\" = \"" + feedID.to_string() + "\"";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
+		executeSQL("DELETE FROM \"main\".\"articles\" WHERE \"feedID\" = \"" + feedID.to_string() + "\"");
+	}
+	
+	
+	public bool article_exists(string articleID)
+	{
+		int result = 0;
+		string query = "SELECT EXISTS(SELECT 1 FROM \"main\".\"articles\" WHERE articleID = \"" + articleID + "\" LIMIT 1)";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+		if(result == 1)
+			return true;
+			
+		return false;
 	}
 
 
@@ -605,12 +584,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public void updateCategorie(int catID, int unread)
 	{
-		string query = "UPDATE main.categories SET unread = \"" + unread.to_string() + "\" WHERE categorieID = \"" + catID.to_string() + "\"";
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("UPDATE main.categories SET unread = \"" + unread.to_string() + "\" WHERE categorieID = \"" + catID.to_string() + "\"");
 	}
 
 
@@ -648,23 +622,13 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public void markReadAllArticles()
 	{
-		string query = "UPDATE \"main\".\"articles\" SET \"unread\"=" + ArticleStatus.READ.to_string();
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("UPDATE \"main\".\"articles\" SET \"unread\"=" + ArticleStatus.READ.to_string());
 	}
 
 
 	public void unmarkAllArticles()
 	{
-		string query = "UPDATE \"main\".\"articles\" SET \"marked\"=" + ArticleStatus.UNMARKED.to_string();
-		string errmsg;
-		int ec = sqlite_db.exec (query, null, out errmsg);
-		if (ec != Sqlite.OK) {
-			error("Error: %s\n", errmsg);
-		}
+		executeSQL("UPDATE \"main\".\"articles\" SET \"marked\"=" + ArticleStatus.UNMARKED.to_string());
 	}
 
 

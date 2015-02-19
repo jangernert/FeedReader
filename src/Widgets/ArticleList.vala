@@ -323,7 +323,7 @@ public class FeedReader.articleList : Gtk.Stack {
 							                         item.m_feedID,
 							                         item.m_articleID,
 							                         item.m_marked,
-							                         item.m_sortID,
+							                         item.getSortID(),
 							                         item.m_preview
 							                        );
 				tmpRow.updateFeedList.connect(() => {updateFeedList();});
@@ -440,7 +440,7 @@ public class FeedReader.articleList : Gtk.Stack {
 					                             item.m_feedID,
 					                             item.m_articleID,
 					                             item.m_marked,
-					                             item.m_sortID,
+					                             item.getSortID(),
 					                             item.m_preview
 					                            );
 				newRow.updateFeedList.connect(() => {updateFeedList();});

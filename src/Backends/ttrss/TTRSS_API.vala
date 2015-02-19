@@ -372,14 +372,27 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			for(uint i = 0; i < headline_count; i++)
 			{
 				var headline_node = response.get_object_element(i);
-				getArticle( int.parse(headline_node.get_int_member("id").to_string()),
-							out title, out author, out url, out html);
+				
+				if(!dataBase.article_exists(headline_node.get_int_member("id").to_string()))
+				{
+					getArticle( int.parse(headline_node.get_int_member("id").to_string()),
+								out title, out author, out url, out html);
+				}
+				else
+				{
+					title = author = url = html = "";
+				}
+					
+				
 				string tagString = "";
 				
 				if(headline_node.has_member("labels"))
 				{
 					var tags = headline_node.get_array_member("labels");
-					uint tagCount = tags.get_length();
+					
+					uint tagCount = 0;
+					if(tags != null)
+						tagCount = tags.get_length();
 					
 					for(int j = 0; j < tagCount; ++j)
 					{
@@ -457,8 +470,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 	}
 	
-
-	public async void updateArticles(int feedID = TTRSSSpecialID.ALL)
+	// currently not used - tt-rss server needs newsplusplus extention
+	/*public async void updateArticles(int feedID = TTRSSSpecialID.ALL)
 	{
 		SourceFunc callback = updateArticles.callback;
 
@@ -525,7 +538,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		};
 		new GLib.Thread<void*>("updateArticles", run);
 		yield;
-	}
+	}*/
 
 	
 	public void getArticle(int articleID, out string title, out string author, out string url, out string html)

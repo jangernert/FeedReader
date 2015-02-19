@@ -10,7 +10,7 @@ public class FeedReader.article : GLib.Object {
 	public string m_author { get; private set; }
 	public int m_unread { get; private set; }
 	public int m_marked { get; private set; }
-	public int m_sortID { get; private set; }
+	private int m_sortID { get; private set; }
 	
 
 	
@@ -26,5 +26,20 @@ public class FeedReader.article : GLib.Object {
 		m_marked = marked;
 		m_sortID = sortID;
 		m_tags = tags;
+	}
+	
+	public string getAuthor()
+	{
+		return m_author;
+	}
+	
+	public int getSortID()
+	{
+		return m_sortID;
+	}
+	
+	public void setAuthor(string author)
+	{
+		m_author = author;
 	}
 }

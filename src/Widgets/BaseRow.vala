@@ -66,6 +66,11 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 			m_unread.set_text ("");
 		}
 	}
+	
+	public int getUnreadCount()
+	{
+		return int.parse(m_unread_count);
+	}
 
 	public void reveal(bool reveal)
 	{

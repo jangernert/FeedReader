@@ -7,10 +7,10 @@ public class FeedReader.article : GLib.Object {
 	public string m_preview { get; private set; }
 	public string m_feedID { get; private set; }
 	public string m_tags { get; private set; }
-	public string m_author { get; private set; }
+	private string m_author;
 	public int m_unread { get; private set; }
 	public int m_marked { get; private set; }
-	private int m_sortID { get; private set; }
+	private int m_sortID;
 	
 
 	

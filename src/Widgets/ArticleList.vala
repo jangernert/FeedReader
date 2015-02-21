@@ -23,7 +23,6 @@ public class FeedReader.articleList : Gtk.Stack {
 	private bool m_limitScroll;
 	private int m_threadCount;
 	public signal void row_activated(articleRow? row);
-	public signal void updateFeedList();
 	
 
 	public articleList () {
@@ -326,7 +325,6 @@ public class FeedReader.articleList : Gtk.Stack {
 							                         item.getSortID(),
 							                         item.m_preview
 							                        );
-				tmpRow.updateFeedList.connect(() => {updateFeedList();});
 				
 				if(!(threadID < m_threadCount))
 					rows.append(tmpRow);
@@ -443,7 +441,6 @@ public class FeedReader.articleList : Gtk.Stack {
 					                             item.getSortID(),
 					                             item.m_preview
 					                            );
-				newRow.updateFeedList.connect(() => {updateFeedList();});
 				int pos = 0;
 				bool added = false;
 				if(articleChildList == null)

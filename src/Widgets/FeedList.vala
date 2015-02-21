@@ -182,37 +182,59 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_list.add(row_seperator);
 
 		//-------------------------------------------------------------------
-
-		createCategories();
-		createTags();
+		
+		if(!settings_general.get_boolean("only-feeds"))
+		{
+			createCategories();
+			createTags();
+		}
 
 		var feeds = dataBase.read_feeds();
 		foreach(var item in feeds)
 		{
-			var FeedChildList = m_list.get_children();
-			int pos = 0;
-			foreach(Gtk.Widget row in FeedChildList)
+			
+			if(!settings_general.get_boolean("only-feeds"))
 			{
-				pos++;
-				var tmpRow = row as categorieRow;
-
-				if(tmpRow != null)
+				var FeedChildList = m_list.get_children();
+				int pos = 0;
+				foreach(Gtk.Widget row in FeedChildList)
 				{
-					if(tmpRow.getID() == item.m_categorieID)
-					{	
-						var feedrow = new FeedRow(
-											       item.m_title,
-											       item.m_unread.to_string(),
-											       item.m_hasIcon,
-											       item.m_feedID.to_string(),
-							                       item.m_categorieID,
-							                       tmpRow.getLevel()
-											      );
-						m_list.insert(feedrow, pos);
-						feedrow.reveal(true);
-						break;
+					pos++;
+					var tmpRow = row as categorieRow;
+
+					if(tmpRow != null)
+					{
+						if(tmpRow.getID() == item.m_categorieID)
+						{	
+							var feedrow = new FeedRow(
+													   item.m_title,
+													   item.m_unread.to_string(),
+													   item.m_hasIcon,
+													   item.m_feedID.to_string(),
+									                   item.m_categorieID,
+									                   tmpRow.getLevel()
+													  );
+							m_list.insert(feedrow, pos);
+							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread != 0)
+								feedrow.reveal(true);
+							break;
+						}
 					}
 				}
+			}
+			else
+			{
+				var feedrow = new FeedRow	(
+												item.m_title,
+												item.m_unread.to_string(),
+												item.m_hasIcon,
+												item.m_feedID.to_string(),
+												item.m_categorieID,
+												0
+											);
+				m_list.insert(feedrow, -1);
+				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread != 0)
+					feedrow.reveal(true);
 			}
 		}
 		
@@ -395,7 +417,8 @@ public class FeedReader.feedList : Gtk.Stack {
 								expandCategorie(catID);
 						});
 						m_list.insert(categorierow, pos);
-						categorierow.reveal(true);
+						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread_count != 0)
+							categorierow.reveal(true);
 						break;
 					}
 				}
@@ -536,6 +559,17 @@ public class FeedReader.feedList : Gtk.Stack {
 						found = true;
 						tmpRow.setExist(true);
 						tmpRow.set_unread_count(item.m_unread_count.to_string());
+						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread_count != 0)
+						{
+							if(isCategorieExpanded(item.m_parent))
+							{
+								tmpRow.reveal(true);
+							}
+						}
+						else if(settings_general.get_boolean("feedlist-only-show-unread") && item.m_unread_count == 0)
+						{
+							tmpRow.reveal(false);
+						}
 						break;
 					}
 				}
@@ -578,7 +612,17 @@ public class FeedReader.feedList : Gtk.Stack {
 					|| categorierow.getLevel() == 1) || tmpRow.getID() == CategoryID.TAGS)
 					{
 						m_list.insert(categorierow, pos-1);
-						categorierow.reveal(true);
+						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread_count != 0)
+						{
+							if(isCategorieExpanded(item.m_parent))
+							{
+								tmpRow.reveal(true);
+							}
+						}
+						else if(settings_general.get_boolean("feedlist-only-show-unread") && item.m_unread_count == 0)
+						{
+							tmpRow.reveal(false);
+						}
 						inserted = true;
 						break;
 					}
@@ -598,11 +642,16 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void updateFeedList()
 	{
+		logger.print(LogMessage.DEBUG, "updateFeedList");
 		var unread = dataBase.get_unread_total();
 		bool found;
 		var FeedChildList = m_list.get_children();
-		updateCategories();
-		updateTags();
+		
+		if(!settings_general.get_boolean("only-feeds"))
+		{
+			updateCategories();
+			updateTags();
+		}
 
 		foreach(Gtk.Widget row in FeedChildList)
 		{
@@ -627,6 +676,17 @@ public class FeedReader.feedList : Gtk.Stack {
 						tmpRow.setSubscribed(true);
 						tmpRow.update(item.m_title, item.m_unread.to_string());
 						found = true;
+						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread != 0)
+						{
+							if(isCategorieExpanded(item.m_categorieID))
+							{
+								tmpRow.reveal(true);
+							}
+						}
+						else if(settings_general.get_boolean("feedlist-only-show-unread") && item.m_unread == 0)
+						{
+							tmpRow.reveal(false);
+						}
 						break;
 					}
 					else if(item.m_feedID == tmpRow.getID() && item.m_categorieID != tmpRow.getCategorie())
@@ -646,22 +706,43 @@ public class FeedReader.feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = row as categorieRow;
 
-					if(tmpRow != null)
+					if((tmpRow != null && tmpRow.getID() == item.m_categorieID))
 					{
-						if(tmpRow.getID() == item.m_categorieID)
+						var feedrow = new FeedRow(
+													item.m_title,
+													item.m_unread.to_string(),
+													item.m_hasIcon,
+													item.m_feedID.to_string(),
+													item.m_categorieID,
+													tmpRow.getLevel()
+												);
+						m_list.insert(feedrow, pos);
+						feedrow.reveal(true);
+						break;
+					}
+					else if(settings_general.get_boolean("only-feeds"))
+					{
+						var feedrow = new FeedRow(
+													item.m_title,
+													item.m_unread.to_string(),
+													item.m_hasIcon,
+													item.m_feedID.to_string(),
+													item.m_categorieID,
+													0
+												);
+						m_list.insert(feedrow, -1);
+						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread != 0)
 						{
-							var feedrow = new FeedRow(
-											           item.m_title,
-											           item.m_unread.to_string(),
-											           item.m_hasIcon,
-											           item.m_feedID.to_string(),
-							                           item.m_categorieID,
-							                           tmpRow.getLevel()
-											          );
-							m_list.insert(feedrow, pos);
-							feedrow.reveal(true);
-							break;
+							if(isCategorieExpanded(item.m_categorieID))
+							{
+								tmpRow.reveal(true);
+							}
 						}
+						else if(settings_general.get_boolean("feedlist-only-show-unread") && item.m_unread == 0)
+						{
+							tmpRow.reveal(false);
+						}
+						break;
 					}
 				}	
 			}
@@ -708,6 +789,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	
 	public void updateCounters(string feedID, bool increase)
 	{
+		logger.print(LogMessage.DEBUG, "FeedList: updateCounters");
 		var FeedChildList = m_list.get_children();
 		string catID = "";
 		
@@ -732,9 +814,17 @@ public class FeedReader.feedList : Gtk.Stack {
 			if(tmpFeedRow != null && tmpFeedRow.getID() == feedID)
 			{
 				if(increase)
+				{
 					tmpFeedRow.upUnread();
+					if(settings_general.get_boolean("feedlist-only-show-unread") && tmpFeedRow.getUnreadCount() != 0)
+						tmpFeedRow.reveal(true);
+				}
 				else
+				{
 					tmpFeedRow.downUnread();
+					if(settings_general.get_boolean("feedlist-only-show-unread") && tmpFeedRow.getUnreadCount() == 0)
+						tmpFeedRow.reveal(false);
+				}
 				catID = tmpFeedRow.getCategorie();
 				break;
 			}
@@ -747,9 +837,17 @@ public class FeedReader.feedList : Gtk.Stack {
 			if(tmpCatRow != null && tmpCatRow.getID() == catID)
 			{
 				if(increase)
+				{
 					tmpCatRow.upUnread();
+					if(settings_general.get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
+						tmpCatRow.reveal(true);
+				}
 				else
+				{
 					tmpCatRow.downUnread();
+					if(settings_general.get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() == 0)
+						tmpCatRow.reveal(false);
+				}
 				break;
 			}
 		}
@@ -826,19 +924,39 @@ public class FeedReader.feedList : Gtk.Stack {
 			var tmpTagRow = row as TagRow;
 			if(tmpFeedRow != null && tmpFeedRow.getCategorie() == catID)
 			{
-				tmpFeedRow.reveal(true);
+				if(!settings_general.get_boolean("feedlist-only-show-unread") || tmpFeedRow.getUnreadCount() != 0)
+					tmpFeedRow.reveal(true);
 			}
 			if(tmpCatRow != null && tmpCatRow.getParent() == catID)
 			{
-				tmpCatRow.reveal(true);
-				if(tmpCatRow.isExpanded())
-					expandCategorie(tmpCatRow.getID());
+				if(!settings_general.get_boolean("feedlist-only-show-unread") || tmpCatRow.getUnreadCount() != 0)
+				{
+					tmpCatRow.reveal(true);
+					if(tmpCatRow.isExpanded())
+						expandCategorie(tmpCatRow.getID());
+				}
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
-				tmpTagRow.reveal(true);
+				if(!settings_general.get_boolean("feedlist-only-show-unread") || tmpTagRow.getUnreadCount() != 0)
+					tmpTagRow.reveal(true);
 			}
 		}
+	}
+	
+	
+	private bool isCategorieExpanded(string catID)
+	{
+		var FeedChildList = m_list.get_children();
+		
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpCatRow = row as categorieRow;
+			if(tmpCatRow != null && tmpCatRow.getID() == catID && tmpCatRow.isExpanded())
+				return true;
+		}
+		
+		return false;
 	}
 
 

@@ -75,7 +75,7 @@ public class FeedReader.FeedlyAPI : Object {
 				string categorieID = object.get_string_member("id");
 				int unreadCount = get_count_of_unread_articles(categorieID);
 				string title = object.get_string_member("label");
-				dataBase.write_categorie(categorieID, title, unreadCount, i+1, CategoryID.NONE, 1);
+				dataBase.write_categorie(categorieID, title, unreadCount, i+1, CategoryID.MASTER, 1);
 			}
 			
 			dataBase.delete_nonexisting_categories();
@@ -232,7 +232,7 @@ public class FeedReader.FeedlyAPI : Object {
 				dataBase.write_article(	item.m_articleID,
 										item.m_feedID,
 										item.m_title,
-										item.m_author,
+										item.getAuthor(),
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
@@ -249,7 +249,7 @@ public class FeedReader.FeedlyAPI : Object {
 				dataBase.write_article(	item.m_articleID,
 										item.m_feedID,
 										item.m_title,
-										item.m_author,
+										item.getAuthor(),
 										item.m_url,
 										item.m_unread,
 										item.m_marked,

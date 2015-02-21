@@ -206,5 +206,22 @@
 		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
 			<default>'ERROR'</default>
 		</key>
+		
+		<key name="only-feeds" type="b">
+			<default>false</default>
+			<summary>Show only FeedRows</summary>
+			<description>
+				Don't show cateogires or tags but only feeds in the leftmost pane.
+			</description>
+		</key>
+		
+		<key name="feedlist-only-show-unread" type="b">
+			<default>false</default>
+			<summary>Show only FeedRows with unread items</summary>
+			<description>
+				Hide all Feeds that have no unread items.
+			</description>
+		</key>
+		
 	</schema>
 </schemalist>

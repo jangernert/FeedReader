@@ -59,8 +59,10 @@ public class FeedReader.FeedRow : baseRow {
 				colour.green = grey;
 				colour.blue = grey;
 				colour.alpha = 0.1;
-				m_box.override_background_color(Gtk.StateFlags.NORMAL, colour);
-				//m_box.get_style_context().add_class("feed-row");
+				if(!settings_general.get_boolean("only-feeds"))
+				{
+					m_box.get_style_context().add_class("feed-row");
+				}
 				m_box.pack_start(m_spacer, false, false, 0);
 			}
 			m_box.pack_start(m_icon, false, false, 8);

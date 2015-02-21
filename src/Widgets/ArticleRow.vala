@@ -14,7 +14,6 @@ public class FeedReader.articleRow : baseRow {
 	private string m_articleID { get; private set; }
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
-	public signal void updateFeedList();
 
 	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview)
 	{

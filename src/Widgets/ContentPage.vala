@@ -82,10 +82,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			
 			m_article_view.fillContent(row.getID());
 		});
-
-		m_articleList.updateFeedList.connect(() =>{
-			updateFeedList();
-		});
 	}
 	
 	public void newHeadlineList()

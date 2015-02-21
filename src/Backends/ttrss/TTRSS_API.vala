@@ -226,7 +226,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				{
 					var response = message.get_response_object();
 					var category_object = response.get_object_member("categories");
-					getSubCategories(category_object, 0, CategoryID.NONE);
+					getSubCategories(category_object, 0, CategoryID.MASTER);
 					dataBase.delete_nonexisting_categories();
 					updateCategorieUnread();
 				}
@@ -426,7 +426,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				dataBase.write_article(	item.m_articleID,
 										item.m_feedID,
 										item.m_title,
-										item.m_author,
+										item.getAuthor(),
 										item.m_url,
 										item.m_unread,
 										item.m_marked,
@@ -443,7 +443,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				dataBase.write_article(	item.m_articleID,
 										item.m_feedID,
 										item.m_title,
-										item.m_author,
+										item.getAuthor(),
 										item.m_url,
 										item.m_unread,
 										item.m_marked,

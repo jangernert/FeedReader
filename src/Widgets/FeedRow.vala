@@ -53,12 +53,6 @@ public class FeedReader.FeedRow : baseRow {
 
 			if(m_catID != "-1")
 			{
-				var colour = Gdk.RGBA();
-				var grey = 100;
-				colour.red = grey;
-				colour.green = grey;
-				colour.blue = grey;
-				colour.alpha = 0.1;
 				if(!settings_general.get_boolean("only-feeds"))
 				{
 					m_box.get_style_context().add_class("feed-row");

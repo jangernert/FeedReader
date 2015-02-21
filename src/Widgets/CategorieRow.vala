@@ -15,6 +15,7 @@ public class FeedReader.categorieRow : baseRow {
 	public categorieRow (string name, string categorieID, int orderID, string unread_count, string parentID, int level, bool expanded) {
 	
 		this.get_style_context().add_class("feed-list-row");
+		this.get_style_context().remove_class("button");
 		m_level = level;
 		m_parentID = parentID;
 		m_orderID = orderID;

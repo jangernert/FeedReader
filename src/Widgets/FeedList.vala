@@ -938,8 +938,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
-				if(!settings_general.get_boolean("feedlist-only-show-unread") || tmpTagRow.getUnreadCount() != 0)
-					tmpTagRow.reveal(true);
+				tmpTagRow.reveal(true);
 			}
 		}
 	}

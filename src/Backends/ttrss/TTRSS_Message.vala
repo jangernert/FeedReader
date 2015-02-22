@@ -50,8 +50,8 @@ public class FeedReader.ttrss_message : GLib.Object {
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
 		catch (Error e) {
-			error("Could not load response to Message to ttrss\n");
-			error(e.message);
+			logger.print(LogMessage.ERROR, "Could not load response to Message to ttrss");
+			logger.print(LogMessage.ERROR, e.message);
 			return ConnectionError.NO_RESPONSE;
 		}
 		
@@ -61,7 +61,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		{
 			if(m_root_object.get_string_member("error") == "NOT_LOGGED_IN")
 			{
-				error("invalid ttrss session id\n");
+				logger.print(LogMessage.ERROR, "invalid ttrss session id");
 				return ConnectionError.INVALID_SESSIONID;
 			}
 		}
@@ -70,7 +70,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		{
 			if(m_root_object.get_int_member("status") == 1)
 			{
-				error("ttrss api error\n");
+				logger.print(LogMessage.ERROR, "ttrss api error");
 				return ConnectionError.TTRSS_API;
 			}
 			else if(m_root_object.get_int_member("status") == 0)

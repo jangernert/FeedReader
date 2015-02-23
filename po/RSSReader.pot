@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-16 06:18+0100\n"
+"POT-Creation-Date: 2015-02-23 16:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,114 +17,150 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/Backends/ttrss/TTRSS_Utils.vala:88
+#: ../src/Backends/FeedServer.vala:120
 msgid "There is 1 new article"
 msgstr ""
 
-#: ../src/Backends/ttrss/TTRSS_Utils.vala:90
+#: ../src/Backends/FeedServer.vala:122
 msgid "There are >200 new articles"
 msgstr ""
 
-#: ../src/Backends/ttrss/TTRSS_Utils.vala:92
-msgid "There are "
+#: ../src/Backends/FeedServer.vala:124
+msgid "There are %u new articles"
 msgstr ""
 
-#: ../src/Backends/ttrss/TTRSS_Utils.vala:92
-msgid " new articles"
-msgstr ""
-
-#: ../src/Backends/ttrss/TTRSS_Utils.vala:94
+#: ../src/Backends/FeedServer.vala:126
 msgid "New Articles"
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:49
+#: ../src/DB_Manager.vala:362
+msgid "No Preview Available"
+msgstr ""
+
+#: ../src/DB_Manager.vala:404
+msgid "No Text available for this article :("
+msgstr ""
+
+#: ../src/Widgets/ArticleView.vala:26
 msgid "No Article selected."
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:77
-msgid "Search Aritlces..."
+#: ../src/Widgets/ArticleView.vala:54
+msgid "not available"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:84
-msgid "Change Login"
-msgstr ""
-
-#: ../src/Widgets/ReaderHeaderbar.vala:85
-msgid "About"
-msgstr ""
-
-#: ../src/Widgets/LoginDialog.vala:43
+#: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:43
+#: ../src/Widgets/LoginPage.vala:22
 msgid "Feedly"
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:43
+#: ../src/Widgets/LoginPage.vala:22
 msgid "OwnCloud"
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:63
-msgid "Please select a service first"
+#: ../src/Widgets/LoginPage.vala:26
+msgid "Where are your feeds?"
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:66
-msgid "Please enter a valid username"
+#: ../src/Widgets/LoginPage.vala:30
+msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:69
-msgid "Please enter a valid password"
+#: ../src/Widgets/LoginPage.vala:95
+msgid "No service selected."
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:72
-msgid "Please enter a valid URL"
+#: ../src/Widgets/LoginPage.vala:131
+msgid "TinyTinyRSS URL:"
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:75
-msgid "Please enter your Login details"
-msgstr ""
-
-#: ../src/Widgets/LoginDialog.vala:78
-msgid "Sorry, something went wrong."
-msgstr ""
-
-#: ../src/Widgets/LoginDialog.vala:88
-msgid "RSS Type:"
-msgstr ""
-
-#: ../src/Widgets/LoginDialog.vala:145
-msgid "Please tell us where your feeds are stored"
-msgstr ""
-
-#: ../src/Widgets/LoginDialog.vala:155
-msgid "Cancel"
-msgstr ""
-
-#: ../src/Widgets/LoginDialog.vala:185
-msgid "tt-rss URL:"
-msgstr ""
-
-#: ../src/Widgets/LoginDialog.vala:186 ../src/Widgets/LoginDialog.vala:281
+#: ../src/Widgets/LoginPage.vala:132 ../src/Widgets/LoginPage.vala:225
 msgid "Username:"
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:187 ../src/Widgets/LoginDialog.vala:282
+#: ../src/Widgets/LoginPage.vala:133 ../src/Widgets/LoginPage.vala:226
 msgid "Password:"
 msgstr ""
 
-#: ../src/Widgets/LoginDialog.vala:280
+#: ../src/Widgets/LoginPage.vala:205
+msgid ""
+"You will be redirected to the feedly website where you can use your "
+"Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr ""
+
+#: ../src/Widgets/LoginPage.vala:224
 msgid "OwnCloud URL:"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:37
+#: ../src/Widgets/ReaderHeaderbar.vala:58
+msgid "Search Aritlces..."
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:12
+msgid "Change Account?"
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:16
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:45
+msgid "None of the %i Articles in the database fit the current filters."
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:16
 msgid "FeedReader"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:59
+#: ../src/Widgets/MainWindow.vala:51
 msgid "about"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:63
-msgid "login"
+#: ../src/Widgets/MainWindow.vala:55
+msgid "reset"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:244
+msgid "Please select a service first"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:247
+msgid "Please enter a valid username"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:250
+msgid "Please enter a valid password"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:253
+msgid "Please enter a valid URL"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:256
+msgid "Please enter your Login details"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:259
+msgid "Sorry, something went wrong."
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:262
+msgid "Either your username or the password are not correct."
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:265
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+
+#: ../src/Widgets/InitSyncPage.vala:14
+msgid ""
+"FeedReader is now getting the first batch of articles.\n"
+"Depending on your connection and settings this can take some time."
 msgstr ""

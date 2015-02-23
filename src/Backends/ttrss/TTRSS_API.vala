@@ -45,12 +45,20 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			var response = message.get_response_object();
 			m_ttrss_sessionid = response.get_string_member("session_id");
 			m_ttrss_apilevel = response.get_int_member("api_level");
+			logger.print(LogMessage.INFO, "TTRSS Session ID: %s".printf(m_ttrss_sessionid));
+			logger.print(LogMessage.INFO, "TTRSS API Level: %lld".printf(m_ttrss_apilevel));
+			return LoginResponse.SUCCESS;
+		}
+		else if(error == ConnectionError.TTRSS_API)
+		{
+			return LoginResponse.WRONG_LOGIN;
+		}
+		else if(error == ConnectionError.NO_RESPONSE)
+		{
+			return LoginResponse.NO_CONNECTION;
 		}
 		
-		logger.print(LogMessage.INFO, "TTRSS Session ID: %s".printf(m_ttrss_sessionid));
-		logger.print(LogMessage.INFO, "TTRSS API Level: %lld".printf(m_ttrss_apilevel));
-		
-		return LoginResponse.SUCCESS;
+		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 

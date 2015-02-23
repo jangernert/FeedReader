@@ -52,7 +52,7 @@ namespace FeedReader {
 				m_loggedin = login(settings_general.get_enum("account-type"));
 			}
 		
-			if(m_loggedin == LoginResponse.SUCCESS)
+			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: sync started");
@@ -64,14 +64,16 @@ namespace FeedReader {
 				logger.print(LogMessage.INFO, "daemon: sync finished");
 			}
 			else
-				logger.print(LogMessage.DEBUG, "Cant sync because login failed");
+				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
 		}
 	
 		public int login(int type)
 		{
+			logger.print(LogMessage.DEBUG, "daemon: new feed_server and login");
 			server = new feed_server(type);
 			m_loggedin = server.login();
-		
+			
+			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
 			return m_loggedin;
 		}
 	
@@ -160,7 +162,7 @@ namespace FeedReader {
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		logger = new Logger();
-		Notify.init("FeedReader");
+		Notify.init("org.gnome.feedreader");
 	
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,

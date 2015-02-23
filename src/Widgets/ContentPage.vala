@@ -134,6 +134,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		return m_feedList.getExpandedCategories();
 	}
 	
+	public string[] getDefaultExpandedCategories()
+	{
+		return m_feedList.getDefaultExpandedCategories();
+	}
+	
 	public double getFeedListScrollPos()
 	{
 		return m_feedList.getScrollPos();

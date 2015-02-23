@@ -291,7 +291,7 @@ public class FeedReader.LoginPage : Gtk.Alignment {
 
 	private void write_login_data()
 	{
-		print("write login data\n");
+		logger.print(LogMessage.DEBUG, "write login data");
 		if(m_comboBox.get_active() != -1) {
 			switch(m_comboBox.get_active())
 			{
@@ -324,6 +324,7 @@ public class FeedReader.LoginPage : Gtk.Alignment {
 			}
 			
 			var status = feedDaemon_interface.login(m_comboBox.get_active());
+			logger.print(LogMessage.DEBUG, "LoginPage: status = %i".printf(status));
 			if(status == LoginResponse.SUCCESS)
 			{
 				submit_data();

@@ -1,10 +1,10 @@
 namespace FeedReader {
 
-	namespace Backend {
-		const int NONE = -1;
-		const int TTRSS = 0;
-		const int FEEDLY = 1;
-		const int OWNCLOUD = 2;
+	public enum Backend {
+		NONE = -1,
+		TTRSS = 0,
+		FEEDLY,
+		OWNCLOUD
 	}
 	
 	public enum LogLevel {
@@ -32,12 +32,12 @@ namespace FeedReader {
 		DEBUG
 	}
 
-	namespace ConnectionError {
-		const int SUCCESS = 3;
-		const int NO_RESPONSE = 4;
-		const int INVALID_SESSIONID = 5;
-		const int TTRSS_API = 6;
-		const int UNKNOWN = 7;
+	public enum ConnectionError {
+		SUCCESS,
+		NO_RESPONSE,
+		INVALID_SESSIONID,
+		TTRSS_API,
+		UNKNOWN
 	}
 
 	namespace TTRSSSpecialID {
@@ -57,15 +57,17 @@ namespace FeedReader {
 		const int TOGGLE = 12;
 	}
 
-	namespace LoginResponse {
-		const int SUCCESS = 13;
-		const int MISSING_USER = 14;
-		const int MISSING_PASSWD = 15;
-		const int MISSING_URL = 16;
-		const int ALL_EMPTY = 17;
-		const int UNKNOWN_ERROR = 18;
-		const int FIRST_TRY = 19;
-		const int NO_BACKEND = 20;
+	public enum LoginResponse {
+		SUCCESS,
+		MISSING_USER,
+		MISSING_PASSWD,
+		MISSING_URL,
+		ALL_EMPTY,
+		UNKNOWN_ERROR,
+		FIRST_TRY,
+		NO_BACKEND,
+		WRONG_LOGIN,
+		NO_CONNECTION
 	}
 
 
@@ -77,10 +79,10 @@ namespace FeedReader {
 		const string apiAuthScope = "https://cloud.feedly.com/subscriptions";
 	}
 
-	namespace DataBase {
-		const int INSERT_OR_IGNORE = 21;
-		const int INSERT_OR_REPLACE = 22;
-		const int UPDATE_ROW = 23;
+	public enum DataBase {
+		INSERT_OR_IGNORE,
+		INSERT_OR_REPLACE,
+		UPDATE_ROW
 	}
 
 	namespace FeedList {

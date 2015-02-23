@@ -8,6 +8,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
 	private ContentPage m_content;
+	private InitSyncPage m_InitSync;
 	private SimpleAction m_login_action;
 	
 	public readerUI(rssReaderApp app)
@@ -21,13 +22,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		
 		
 		setupLoginPage();
+		setupInitSyncPage();
 		setupResetPage();
 		setupContentPage();
 		onClose();
-		
-		m_stack.notify["visible_child_name"].connect(() => {
-			logger.print(LogMessage.DEBUG, "MainWindow: visible child changed");
-		});
 		
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(app.sync);
@@ -70,14 +68,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		
 		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS)
 		{
-			showContent();
 			loadContent();
 		}
 		else
 		{
 			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LoginResponse.SUCCESS)
 			{
-				showContent();
 				loadContent();
 			}
 			else
@@ -85,8 +81,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				showLogin();
 			}
 		}
-		
-		m_error_bar.hide();
 	}
 
 	public void setRefreshButton(bool refreshing)
@@ -99,8 +93,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		return m_headerbar.currentlyUpdating();
 	}
 	
-	private void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_stack.set_visible_child_full("content", transition);
 		m_headerbar.setButtonsSensitive(true);
 		m_login_action.set_enabled(true);
@@ -108,6 +103,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show login");
+		showErrorBar(LoginResponse.FIRST_TRY);
 		m_stack.set_visible_child_full("login", transition);
 		m_headerbar.setButtonsSensitive(false);
 		m_login_action.set_enabled(false);
@@ -115,6 +112,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	private void showReset(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show reset");
 		m_stack.set_visible_child_full("reset", transition);
 		m_headerbar.setButtonsSensitive(false);
 		m_login_action.set_enabled(false);
@@ -122,9 +120,19 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	private void showWebLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show weblogin");
 		m_stack.set_visible_child_full("WebLogin", transition);
 		m_headerbar.setButtonsSensitive(false);
 		m_login_action.set_enabled(false);
+	}
+	
+	private void showInitSync(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show initsync");
+		m_stack.set_visible_child_full("initsync", transition);
+		m_headerbar.setButtonsSensitive(false);
+		m_login_action.set_enabled(false);
+		m_InitSync.start();
 	}
 	
 	private void onClose()
@@ -156,6 +164,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void setupLoginPage()
 	{
 		m_error_bar = new Gtk.InfoBar();
+		m_error_bar.set_visible(false);
 		var error_content = m_error_bar.get_content_area();
 		m_ErrorMessage = new Gtk.Label("");
 		error_content.add(m_ErrorMessage);
@@ -180,13 +189,18 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		loginBox.pack_start(m_error_bar, false, false, 0);
 		loginBox.pack_start(login, true, true, 0);
 		
-		login.submit_data.connect(loadContent);
+		login.submit_data.connect(() => {
+			settings_state.set_strv("expanded-categories", m_content.getDefaultExpandedCategories());
+			settings_state.set_string("feedlist-selected-row", "feed -4");
+			showInitSync();
+		});
 		login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});
 		WebLogin.success.connect(loadContent);
 		m_stack.add_named(loginBox, "login");
 		m_stack.add_named(WebLogin, "WebLogin");
+		m_error_bar.set_visible(false);
 	}
 	
 	
@@ -202,6 +216,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 	}
 	
+	private void setupInitSyncPage()
+	{
+		m_InitSync = new InitSyncPage();
+		m_stack.add_named(m_InitSync, "initsync");
+	}
+	
 	private void setupContentPage()
 	{
 		m_content = new ContentPage();
@@ -210,11 +230,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	private void showErrorBar(int ErrorCode)
 	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show error bar - errorCode = %i".printf(ErrorCode));
 		switch(ErrorCode)
 		{
-			case LoginResponse.SUCCESS:
-			case LoginResponse.FIRST_TRY:
-				break;
 			case LoginResponse.NO_BACKEND:
 				m_ErrorMessage.set_label(_("Please select a service first"));
 				break;
@@ -233,9 +251,22 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case LoginResponse.UNKNOWN_ERROR:
 				m_ErrorMessage.set_label(_("Sorry, something went wrong."));
 				break;
+			case LoginResponse.WRONG_LOGIN:
+				m_ErrorMessage.set_label(_("Either your username or the password are not correct."));
+				break;
+			case LoginResponse.NO_CONNECTION:
+				m_ErrorMessage.set_label(_("No connection to the server. Check your internet connection and the server URL!"));
+				break;
+			case LoginResponse.SUCCESS:
+			case LoginResponse.FIRST_TRY:
+			default:
+				logger.print(LogMessage.DEBUG, "MainWindow: dont show error bar");
+				m_error_bar.set_visible(false);
+				return;
 		}
 		
-		m_error_bar.show();
+		logger.print(LogMessage.DEBUG, "MainWindow: show error bar");
+		m_error_bar.set_visible(true);
 	}
 	
 	private void loadContent()

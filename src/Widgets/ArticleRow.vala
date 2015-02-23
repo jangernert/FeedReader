@@ -115,7 +115,7 @@ public class FeedReader.articleRow : baseRow {
 		body_label.get_style_context().add_class("grey-label");
 		body_label.set_alignment(0, 0);
 		body_label.set_ellipsize (Pango.EllipsizeMode.END);
-		body_label.set_line_wrap_mode(Pango.WrapMode.WORD);
+		body_label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR);
 		body_label.set_line_wrap(true);
 		body_label.set_lines(3);
 

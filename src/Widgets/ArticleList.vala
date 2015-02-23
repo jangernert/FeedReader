@@ -336,7 +336,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		
-		new GLib.Thread<void*>("createHeadlineList", run);
+		var thread = new GLib.Thread<void*>("createHeadlineList", run);
 		yield;
 		
 		if(!(threadID < m_threadCount))

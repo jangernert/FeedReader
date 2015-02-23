@@ -59,6 +59,7 @@ namespace FeedReader {
 					m_window.updateFeedList();
 					m_window.updateArticleList();
 				    m_window.setRefreshButton(false);
+				    m_window.showContent();
 				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);

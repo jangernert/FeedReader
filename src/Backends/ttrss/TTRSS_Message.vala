@@ -79,7 +79,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 			}
 		}
 		
-		error("unknown error while sending ttrss message\n");
+		logger.print(LogMessage.ERROR, "unknown error while sending ttrss message");
 		return ConnectionError.UNKNOWN;
 	}
 	

@@ -108,6 +108,12 @@ public class FeedReader.feed_server : GLib.Object {
 		try{
 			string message;
 			
+			if(!Notify.is_initted())
+			{
+				logger.print(LogMessage.ERROR, "notification: libnotifiy not initialized");
+				return;
+			}
+			
 			if(headline_count > 0)
 			{			
 				if(headline_count == 1)
@@ -115,26 +121,36 @@ public class FeedReader.feed_server : GLib.Object {
 				else if(headline_count == 200)
 					message = _("There are >200 new articles");
 				else
-					message = _("There are ") + headline_count.to_string() + _(" new articles");
+					message = _("There are %d new articles").printf(headline_count.to_string());
 							
 				var notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
-				notification.add_action ("default", "show", (notification, action) => {
+				notification.set_urgency(Notify.Urgency.NORMAL);
+				
+				notification.add_action ("default", "Show FeedReader", (notification, action) => {
+					
+					logger.print(LogMessage.DEBUG, "notification: default action");
+					try {
+						notification.close ();
+					} catch (Error e) {
+						logger.print(LogMessage.ERROR, e.message);
+					}
+					
 					string[] spawn_args = {"feedreader"};
 					try{
 						GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 					}catch(GLib.SpawnError e){
 						logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
 					}
-					try {
-						notification.close ();
-					} catch (Error e) {
-						debug ("Error: %s", e.message);
-					}
 				});
-				notification.show ();
+				
+				try {
+					notification.show ();
+				} catch (GLib.Error e) {
+					logger.print(LogMessage.ERROR, e.message);
+				}
 			}
 		}catch (GLib.Error e) {
-			error("Error: %s", e.message);
+			logger.print(LogMessage.ERROR, e.message);
 		}
 	}
 	

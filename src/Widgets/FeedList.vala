@@ -988,6 +988,18 @@ public class FeedReader.feedList : Gtk.Stack {
 		return e;
 	}
 	
+	public string[] getDefaultExpandedCategories()
+	{
+		string[] e = {};
+		e += "Categories";
+		if(settings_general.get_enum("account-type") == Backend.TTRSS)
+			e += "Labels";
+		else
+			e += "Tags";
+			
+		return e;
+	}
+	
 	public string getSelectedRow()
 	{
 		var feedrow = m_list.get_selected_row() as FeedRow;

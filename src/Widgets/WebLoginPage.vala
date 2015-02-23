@@ -1,7 +1,6 @@
 public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private WebKit.WebView m_view;
-	private Gtk.ScrolledWindow m_scroll;
 	private string m_url;
 	private int m_serviceType;
 	public signal void success();
@@ -13,12 +12,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		
 		m_view = new WebKit.WebView();
 		m_view.load_changed.connect(redirection);
-		m_scroll = new Gtk.ScrolledWindow(null, null);
-		m_scroll.add(m_view);
-		m_scroll.expand = true;
-
-		
-		this.add(m_scroll);
+		this.add(m_view);
 		this.show_all();
 	}
 	

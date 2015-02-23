@@ -174,7 +174,8 @@ namespace FeedReader {
 				          		exit(-1);
 				          	}
 				      );
-		new MainLoop ().run ();
+		GLib.MainLoop loop = new GLib.MainLoop();
+		loop.run();
 	}
 	
 }

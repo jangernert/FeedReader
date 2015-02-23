@@ -352,7 +352,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 	
 	
-	private void sync_getArticles(int feedID, int skip, int limit = 200)
+	public void sync_getArticles(int feedID, int skip, int limit = 200)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);

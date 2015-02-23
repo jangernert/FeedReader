@@ -20,7 +20,23 @@
 			<description>
 				Dont animate all inserted rows on startup so the list can instantly jump to the correct scroll-pos
 			</description>
-		</key>	
+		</key>
+		
+		<key name="window-width" type="i">
+			<default>1600</default>
+			<summary>window width</summary>
+			<description>
+				saved with of the window
+			</description>
+		</key>
+		
+		<key name="window-height" type="i">
+			<default>900</default>
+			<summary>window height</summary>
+			<description>
+				saved height of the window
+			</description>
+		</key>
 	
 		<key name="feed-row-width" type="i">
 			<default>200</default>

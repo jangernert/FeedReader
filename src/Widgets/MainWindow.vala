@@ -63,7 +63,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		this.set_titlebar(m_headerbar);
 		this.set_title ("FeedReader");
-		this.set_default_size(1600, 900);
+		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
 		this.show_all();
 		
 		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS)
@@ -143,6 +143,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			int only_marked = 0;
 			if(m_headerbar.getOnlyMarked()) only_marked = 1;
 			
+			int windowWidth = 0;
+			int windowHeight = 0;
+			this.get_size(out windowWidth, out windowHeight);
+			logger.print(LogMessage.DEBUG, "width: %i".printf(windowWidth));
+			logger.print(LogMessage.DEBUG, "height: %i".printf(windowHeight));
+			settings_state.set_int("window-width", windowWidth);
+			settings_state.set_int("window-height", windowHeight);
 			
 			settings_state.set_strv("expanded-categories", m_content.getExpandedCategories());
 			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());

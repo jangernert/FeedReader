@@ -103,7 +103,7 @@ public class FeedReader.feed_server : GLib.Object {
 	}
 	
 	
-	private static void sendNotification(uint headline_count)
+	public static void sendNotification(uint headline_count)
 	{
 		try{
 			string message;
@@ -113,7 +113,7 @@ public class FeedReader.feed_server : GLib.Object {
 				logger.print(LogMessage.ERROR, "notification: libnotifiy not initialized");
 				return;
 			}
-			
+			GLib.MainLoop loop = new GLib.MainLoop();
 			if(headline_count > 0)
 			{			
 				if(headline_count == 1)
@@ -121,13 +121,12 @@ public class FeedReader.feed_server : GLib.Object {
 				else if(headline_count == 200)
 					message = _("There are >200 new articles");
 				else
-					message = _("There are %d new articles").printf(headline_count.to_string());
+					message = _("There are %u new articles").printf(headline_count);
 							
 				var notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
 				notification.set_urgency(Notify.Urgency.NORMAL);
 				
 				notification.add_action ("default", "Show FeedReader", (notification, action) => {
-					
 					logger.print(LogMessage.DEBUG, "notification: default action");
 					try {
 						notification.close ();
@@ -141,10 +140,17 @@ public class FeedReader.feed_server : GLib.Object {
 					}catch(GLib.SpawnError e){
 						logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
 					}
+					loop.quit();
+				});
+				
+				notification.closed.connect(() => {
+					logger.print(LogMessage.DEBUG, "notification: closed");
+					loop.quit();
 				});
 				
 				try {
 					notification.show ();
+					loop.run();
 				} catch (GLib.Error e) {
 					logger.print(LogMessage.ERROR, e.message);
 				}

@@ -68,7 +68,7 @@ public class FeedReader.ttrss_utils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.DEBUG, e.message);
+			//logger.print(LogMessage.DEBUG, e.message);
 		}
 		
 		string remote_filename = icon_url + feed_id + ".ico";

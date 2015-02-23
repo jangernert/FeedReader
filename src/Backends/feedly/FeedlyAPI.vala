@@ -12,7 +12,7 @@ public class FeedReader.FeedlyAPI : Object {
 	
 	public int login()
 	{
-		print("feedly backend: login\n");
+		logger.print(LogMessage.DEBUG, "feedly backend: login");
 		if(settings_feedly.get_string("feedly-refresh-token") == "")
 		{
 			m_connection.getToken();
@@ -20,12 +20,12 @@ public class FeedReader.FeedlyAPI : Object {
 		
 		if(tokenStillValid() == ConnectionError.INVALID_SESSIONID)
 		{
-			print("refresh token\n");
+			logger.print(LogMessage.DEBUG, "refresh token");
 			m_connection.refreshToken();
 		}
 		
 		getUserID();
-		print("login success\n");
+		logger.print(LogMessage.DEBUG, "feedly: login success");
 		return LoginResponse.SUCCESS;
 	}
 	
@@ -311,7 +311,7 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 		
 		if(unread_count == -1) {
-			error("Unkown id: " + id);
+			logger.print(LogMessage.ERROR, "Unkown id: %s".printf(id));
 		}
 		
 		return unread_count;

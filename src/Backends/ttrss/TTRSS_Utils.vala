@@ -68,7 +68,7 @@ public class FeedReader.ttrss_utils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			debug(e.message);
+			logger.print(LogMessage.DEBUG, e.message);
 		}
 		
 		string remote_filename = icon_url + feed_id + ".ico";
@@ -89,7 +89,7 @@ public class FeedReader.ttrss_utils : GLib.Object {
 											(long)message_dlIcon.response_body.length);
 				}
 				catch(GLib.FileError e){
-					error(e.message);
+					logger.print(LogMessage.ERROR, e.message);
 				}
 		}
 	}

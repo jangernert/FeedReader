@@ -311,7 +311,7 @@ public class FeedReader.LoginPage : Gtk.Alignment {
 					break;
 					
 				case Backend.FEEDLY:
-					print("write type feedly\n");
+					logger.print(LogMessage.DEBUG, "write type feedly");
 					settings_general.set_enum("account-type", Backend.FEEDLY);
 					settings_feedly.set_string("feedly-api-code", m_feedly_api_code);
 					loadLoginPage(Backend.FEEDLY);

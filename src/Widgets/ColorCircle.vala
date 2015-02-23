@@ -15,7 +15,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		}
 		catch(GLib.Error e)
 		{
-			print(e.message);
+			logger.print(LogMessage.DEBUG, e.message);
 		}
 		
 		this.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
@@ -41,7 +41,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		}
 		catch(GLib.Error e)
 		{
-			print(e.message);
+			logger.print(LogMessage.DEBUG, e.message);
 		}
 	}
 	
@@ -62,7 +62,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 	
 	private void IconClicked()
 	{
-		print("click\n");
+		logger.print(LogMessage.DEBUG, "ColorCircle: click");
 		clicked(m_color);
 	}
 	

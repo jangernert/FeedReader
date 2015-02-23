@@ -277,7 +277,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			feedDaemon_interface.updateBadge();
 		});
 		
-		showContent(Gtk.StackTransitionType.SLIDE_LEFT);
+		showContent(Gtk.StackTransitionType.NONE);
 	}
 
 

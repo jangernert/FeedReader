@@ -27,7 +27,7 @@ public class FeedReader.FeedlyConnection {
 			parser.load_from_data ((string)message.response_body.flatten().data);
 		}
 		catch (Error e) {
-			error("Could not load response to Message to ttrss\n" + e.message + "\n");
+			logger.print(LogMessage.ERROR, "Could not load response to Message from feedly - %s".printf(e.message));
 		}
 		
 		var root = parser.get_root().get_object();
@@ -66,7 +66,7 @@ public class FeedReader.FeedlyConnection {
 			parser.load_from_data ((string)message.response_body.flatten().data);
 		}
 		catch (Error e) {
-			error("Could not load response to Message to ttrss\n" + e.message + "\n");
+			logger.print(LogMessage.ERROR, "Could not load response to Message from feedly - %s".printf(e.message));
 		}
 		var root = parser.get_root().get_object();
 		

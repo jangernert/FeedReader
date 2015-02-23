@@ -35,7 +35,6 @@ namespace FeedReader {
 		}
 
 		public void startSync () {
-			notification.show();
 			sync.begin((obj, res) => {
 				sync.end(res);
 			});

@@ -52,34 +52,6 @@ GtkListBox.feed-list GtkLabel{
 	font-weight: bold;
 }
 
-GtkListBoxRow GtkLabel.headline-read-label {
-	font-weight: normal;
-	font-style: normal;
-	font-size: large;
-	color: black;
-}
-
-GtkListBoxRow:selected GtkLabel.headline-read-label {
-	font-weight: normal;
-	font-style: normal;
-	font-size: large;
-	color: white;
-}
-
-GtkListBoxRow GtkLabel.headline-unread-label {
-	font-weight: bold;
-	font-style: normal;
-	font-size: large;
-	color: black;
-}
-
-GtkListBoxRow:selected GtkLabel.headline-unread-label {
-	font-weight: bold;
-	font-style: normal;
-	font-size: large;
-	color: white;
-}
-
 GtkLabel.emptyView {
 	font-weight: normal;
 	font-style: normal;
@@ -94,13 +66,14 @@ GtkListBoxRow GtkLabel.grey-label {
 	color: rgb(150,150,150);
 }
 
-GtkListBoxRow:selected GtkLabel.grey-label {
+GtkListBoxRow:focused GtkLabel.grey-label {
 	font-weight: normal;
 	font-style: normal;
 	font-size: small;
 	color: rgb(230,230,230);
 }
 
+*:selected GtkLabel.grey-label,
 GtkListBoxRow:selected GtkLabel.grey-label:backdrop {
 	font-weight: normal;
 	font-style: normal;
@@ -108,6 +81,35 @@ GtkListBoxRow:selected GtkLabel.grey-label:backdrop {
 	color: rgb(100,100,100);
 }
 
+GtkListBoxRow GtkLabel.headline-read-label {
+	font-weight: normal;
+	font-style: normal;
+	font-size: large;
+	color: black;
+}
+
+GtkListBoxRow:focused GtkLabel.headline-read-label {
+	font-weight: normal;
+	font-style: normal;
+	font-size: large;
+	color: white;
+}
+
+GtkListBoxRow GtkLabel.headline-unread-label {
+	font-weight: bold;
+	font-style: normal;
+	font-size: large;
+	color: black;
+}
+
+GtkListBoxRow:focused GtkLabel.headline-unread-label {
+	font-weight: bold;
+	font-style: normal;
+	font-size: large;
+	color: white;
+}
+
+*:selected GtkLabel.headline-unread-label,
 GtkListBoxRow:selected GtkLabel.headline-unread-label:backdrop {
 	font-weight: bold;
 	font-style: normal;
@@ -115,6 +117,7 @@ GtkListBoxRow:selected GtkLabel.headline-unread-label:backdrop {
 	color: rgb(70,70,70);
 }
 
+*:selected GtkLabel.headline-read-label,
 GtkListBoxRow:selected GtkLabel.headline-read-label:backdrop {
 	font-weight: normal;
 	font-style: normal;

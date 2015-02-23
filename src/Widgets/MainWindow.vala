@@ -59,6 +59,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		add_action(m_login_action);
 		
 		
+		if(settings_state.get_boolean("window-maximized"))
+		{
+			logger.print(LogMessage.DEBUG, "MainWindow: maximize");
+			this.maximize();
+		}
+		
+		
 		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		this.set_titlebar(m_headerbar);
@@ -137,12 +144,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	private void onClose()
 	{
-		this.destroy.connect(() => {
-			int only_unread = 0;
-			if(m_headerbar.getOnlyUnread()) only_unread = 1;
-			int only_marked = 0;
-			if(m_headerbar.getOnlyMarked()) only_marked = 1;
-			
+		
+		
+		this.delete_event.connect(() => {
 			int windowWidth = 0;
 			int windowHeight = 0;
 			this.get_size(out windowWidth, out windowHeight);
@@ -150,6 +154,18 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			logger.print(LogMessage.DEBUG, "height: %i".printf(windowHeight));
 			settings_state.set_int("window-width", windowWidth);
 			settings_state.set_int("window-height", windowHeight);
+			settings_state.set_boolean("window-maximized", this.is_maximized);
+			
+			return false;
+		});
+		
+		
+		this.destroy.connect(() => {
+			int only_unread = 0;
+			if(m_headerbar.getOnlyUnread()) only_unread = 1;
+			int only_marked = 0;
+			if(m_headerbar.getOnlyMarked()) only_marked = 1;
+			
 			
 			settings_state.set_strv("expanded-categories", m_content.getExpandedCategories());
 			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());

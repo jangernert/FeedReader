@@ -37,6 +37,14 @@
 				saved height of the window
 			</description>
 		</key>
+		
+		<key name="window-maximized" type="b">
+			<default>false</default>
+			<summary>if window is maximized</summary>
+			<description>
+				Weather the window was maximized on close so it can be restored in the same way on startup.
+			</description>
+		</key>
 	
 		<key name="feed-row-width" type="i">
 			<default>200</default>

@@ -35,6 +35,12 @@ namespace FeedReader {
 		}
 
 		public void startSync () {
+			notification = new Notify.Notification("Fuck you", "bla bla bla", "internet-news-reader");
+			notification.add_action("default", "Show FeedReader", (notification, action) => {
+				logger.print(LogMessage.DEBUG, "notification: default action");
+				notification.close();
+			});
+			notification.show();
 			sync.begin((obj, res) => {
 				sync.end(res);
 			});
@@ -57,7 +63,7 @@ namespace FeedReader {
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
-				yield server.sync_content();
+				yield server.syncContent();
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
@@ -69,8 +75,8 @@ namespace FeedReader {
 	
 		public int login(int type)
 		{
-			logger.print(LogMessage.DEBUG, "daemon: new feed_server and login");
-			server = new feed_server(type);
+			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
+			server = new FeedServer(type);
 			m_loggedin = server.login();
 			
 			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
@@ -134,7 +140,7 @@ namespace FeedReader {
 
 	void on_bus_aquired (DBusConnection conn) {
 		try {
-		    conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer ());
+		    conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer());
 		} catch (IOError e) {
 		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
 		    logger.print(LogMessage.WARNING, e.message);
@@ -149,8 +155,9 @@ namespace FeedReader {
 	GLib.Settings settings_state;
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
-	feed_server server;
+	FeedServer server;
 	Logger logger;
+	Notify.Notification notification;
 	
 
 	void main () {
@@ -174,8 +181,8 @@ namespace FeedReader {
 				          		exit(-1);
 				          	}
 				      );
-		GLib.MainLoop loop = new GLib.MainLoop();
-		loop.run();
+		var mainloop = new GLib.MainLoop();
+		mainloop.run();
 	}
 	
 }

@@ -1,9 +1,9 @@
-public class FeedReader.feed_server : GLib.Object {
+public class FeedReader.FeedServer : GLib.Object {
 	private ttrss_interface m_ttrss;
 	private FeedlyAPI m_feedly;
 	private int m_type;
 
-	public feed_server(int type)
+	public FeedServer(int type)
 	{
 		m_type = type;
 		
@@ -40,7 +40,7 @@ public class FeedReader.feed_server : GLib.Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 	
-	public async void sync_content()
+	public async void syncContent()
 	{
 		int before = dataBase.getHighestRowID();
 		dataBase.markReadAllArticles();
@@ -113,7 +113,7 @@ public class FeedReader.feed_server : GLib.Object {
 				logger.print(LogMessage.ERROR, "notification: libnotifiy not initialized");
 				return;
 			}
-			GLib.MainLoop loop = new GLib.MainLoop();
+			
 			if(headline_count > 0)
 			{			
 				if(headline_count == 1)
@@ -123,13 +123,13 @@ public class FeedReader.feed_server : GLib.Object {
 				else
 					message = _("There are %u new articles").printf(headline_count);
 							
-				var notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
+				notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
 				notification.set_urgency(Notify.Urgency.NORMAL);
 				
 				notification.add_action ("default", "Show FeedReader", (notification, action) => {
 					logger.print(LogMessage.DEBUG, "notification: default action");
 					try {
-						notification.close ();
+						notification.close();
 					} catch (Error e) {
 						logger.print(LogMessage.ERROR, e.message);
 					}
@@ -140,17 +140,14 @@ public class FeedReader.feed_server : GLib.Object {
 					}catch(GLib.SpawnError e){
 						logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
 					}
-					loop.quit();
 				});
 				
 				notification.closed.connect(() => {
 					logger.print(LogMessage.DEBUG, "notification: closed");
-					loop.quit();
 				});
 				
 				try {
-					notification.show ();
-					loop.run();
+					notification.show();
 				} catch (GLib.Error e) {
 					logger.print(LogMessage.ERROR, e.message);
 				}

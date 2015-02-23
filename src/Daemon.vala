@@ -35,11 +35,6 @@ namespace FeedReader {
 		}
 
 		public void startSync () {
-			notification = new Notify.Notification("Fuck you", "bla bla bla", "internet-news-reader");
-			notification.add_action("default", "Show FeedReader", (notification, action) => {
-				logger.print(LogMessage.DEBUG, "notification: default action");
-				notification.close();
-			});
 			notification.show();
 			sync.begin((obj, res) => {
 				sync.end(res);

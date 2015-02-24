@@ -8,8 +8,11 @@ public class FeedReader.categorieRow : baseRow {
 	private int m_level;
 	private bool m_exists;
 	private Gtk.Image m_icon_expanded;
+	private Gtk.Image m_icon_expanded_hover;
 	private Gtk.Image m_icon_collapsed;
+	private Gtk.Image m_icon_collapsed_hover;
 	private bool m_collapsed;
+	private bool m_hovered;
 	public signal void collapse(bool collapse, string catID);
 
 	public categorieRow (string name, string categorieID, int orderID, string unread_count, string parentID, int level, bool expanded) {
@@ -24,13 +27,18 @@ public class FeedReader.categorieRow : baseRow {
 		m_exists = true;
 		m_categorieID = categorieID;
 		m_unread_count = unread_count;
+		m_hovered = false;
 		var rowhight = 30;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_eventbox = new Gtk.EventBox();
 		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 
 		m_icon_expanded = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down.svg");
+		m_icon_expanded_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down-hover.svg");
 		m_icon_collapsed = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left.svg");
+		m_icon_collapsed_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left-hover.svg");
 
 		m_label = new Gtk.Label(m_name);
 		m_label.set_use_markup (true);
@@ -42,6 +50,9 @@ public class FeedReader.categorieRow : baseRow {
 			expand_collapse();
 			return true;
 		});
+		
+		m_eventbox.enter_notify_event.connect(onEnter);
+		m_eventbox.leave_notify_event.connect(onLeave);
 
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -75,19 +86,69 @@ public class FeedReader.categorieRow : baseRow {
 		if(m_collapsed)
 		{
 			m_collapsed = false;
-			m_eventbox.remove(m_icon_collapsed);
-			m_eventbox.add(m_icon_expanded);
+			if(m_hovered)
+			{
+				m_eventbox.remove(m_icon_collapsed_hover);
+				m_eventbox.add(m_icon_expanded_hover);
+			}
+			else
+			{
+				m_eventbox.remove(m_icon_collapsed);
+				m_eventbox.add(m_icon_expanded);
+			}
 			collapse(false, m_categorieID);
 		}
 		else
 		{
 			m_collapsed = true;
-			m_eventbox.remove(m_icon_expanded);
-			m_eventbox.add(m_icon_collapsed);
+			if(m_hovered)
+			{
+				m_eventbox.remove(m_icon_expanded_hover);
+				m_eventbox.add(m_icon_collapsed_hover);
+			}
+			else
+			{
+				m_eventbox.remove(m_icon_expanded);
+				m_eventbox.add(m_icon_collapsed);
+			}
 			collapse(true, m_categorieID);
 		}
 		
 		this.show_all();
+	}
+	
+	private bool onEnter()
+	{
+		m_hovered = true;
+		if(m_collapsed)
+		{
+			m_eventbox.remove(m_icon_collapsed);
+			m_eventbox.add(m_icon_collapsed_hover);
+		}
+		else
+		{
+			m_eventbox.remove(m_icon_expanded);
+			m_eventbox.add(m_icon_expanded_hover);
+		}
+		this.show_all();
+		return true;
+	}
+	
+	private bool onLeave()
+	{
+		m_hovered = false;
+		if(m_collapsed)
+		{
+			m_eventbox.remove(m_icon_collapsed_hover);
+			m_eventbox.add(m_icon_collapsed);
+		}
+		else
+		{
+			m_eventbox.remove(m_icon_expanded_hover);
+			m_eventbox.add(m_icon_expanded);
+		}
+		this.show_all();
+		return true;
 	}
 
 	public string getID()

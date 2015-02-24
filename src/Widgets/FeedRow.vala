@@ -7,7 +7,7 @@ public class FeedReader.FeedRow : baseRow {
 	private string m_feedID { get; private set; }
 	
 
-	public FeedRow (string text, string unread_count, bool has_icon, string feedID, string catID, int level)
+	public FeedRow (string text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
@@ -43,7 +43,7 @@ public class FeedReader.FeedRow : baseRow {
 			m_label.set_alignment(0, 0.5f);
 			
 			m_unread = new Gtk.Label(null);
-			set_unread_count(unread_count);
+			set_unread_count(m_unread_count);
 			m_unread.set_use_markup (true);
 			m_unread.set_size_request (0, rowhight);
 			m_unread.set_alignment(0.8f, 0.5f);
@@ -69,7 +69,7 @@ public class FeedReader.FeedRow : baseRow {
 		}
 	}
 
-	public void update(string text, string unread_count)
+	public void update(string text, uint unread_count)
 	{
 		m_label.set_text(text.replace("&","&amp;"));
 		m_label.set_use_markup (true);

@@ -15,7 +15,7 @@ public class FeedReader.categorieRow : baseRow {
 	private bool m_hovered;
 	public signal void collapse(bool collapse, string catID);
 
-	public categorieRow (string name, string categorieID, int orderID, string unread_count, string parentID, int level, bool expanded) {
+	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
 	
 		this.get_style_context().add_class("feed-list-row");
 		this.get_style_context().remove_class("button");

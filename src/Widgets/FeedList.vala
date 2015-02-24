@@ -164,17 +164,17 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void createFeedlist()
 	{
-		var row_spacer = new FeedRow("", "", false, "", "-1", 0);
+		var row_spacer = new FeedRow("", 0, false, "", "-1", 0);
 		row_spacer.set_size_request(0, 8);
 		row_spacer.sensitive = false;
 		m_list.add(row_spacer);
 		
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles", unread.to_string(), false, FeedID.ALL.to_string(), "-1", 0);
+		var row_all = new FeedRow("All Articles", unread, false, FeedID.ALL.to_string(), "-1", 0);
 		m_list.add(row_all);
 		row_all.reveal(true);
 
-		var row_seperator = new FeedRow("", "", false, "", "-1", 0);
+		var row_seperator = new FeedRow("", 0, false, "", "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.set_size_request(0, 20);
 		row_seperator.add(separator);
@@ -208,9 +208,9 @@ public class FeedReader.feedList : Gtk.Stack {
 						{	
 							var feedrow = new FeedRow(
 													   item.m_title,
-													   item.m_unread.to_string(),
+													   item.m_unread,
 													   item.m_hasIcon,
-													   item.m_feedID.to_string(),
+													   item.m_feedID,
 									                   item.m_categorieID,
 									                   tmpRow.getLevel()
 													  );
@@ -226,9 +226,9 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				var feedrow = new FeedRow	(
 												item.m_title,
-												item.m_unread.to_string(),
+												item.m_unread,
 												item.m_hasIcon,
-												item.m_feedID.to_string(),
+												item.m_feedID,
 												item.m_categorieID,
 												0
 											);
@@ -328,7 +328,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                "Categories",
 					                                CategoryID.MASTER,
 					                                0,
-					                                "",
+					                                0,
 					                                CategoryID.NONE,
 							                        1,
 							                        expand
@@ -355,7 +355,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                name,
 					                                CategoryID.TAGS,
 					                                0,
-					                                "",
+					                                0,
 					                                CategoryID.NONE,
 							                        1,
 							                        expand
@@ -404,7 +404,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                item.m_title,
 					                                item.m_categorieID,
 					                                item.m_orderID,
-					                                item.m_unread_count.to_string(),
+					                                item.m_unread_count,
 					                                parent,
 							                        level,
 							                        expand
@@ -558,7 +558,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					{
 						found = true;
 						tmpRow.setExist(true);
-						tmpRow.set_unread_count(item.m_unread_count.to_string());
+						tmpRow.set_unread_count(item.m_unread_count);
 						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread_count != 0)
 						{
 							if(isCategorieExpanded(item.m_parent))
@@ -589,7 +589,7 @@ public class FeedReader.feedList : Gtk.Stack {
 													item.m_title,
 													item.m_categorieID,
 													item.m_orderID,
-													item.m_unread_count.to_string(),
+													item.m_unread_count,
 													parent,
 													level,
 													false
@@ -674,7 +674,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					if(item.m_feedID == tmpRow.getID() && item.m_categorieID == tmpRow.getCategorie())
 					{
 						tmpRow.setSubscribed(true);
-						tmpRow.update(item.m_title, item.m_unread.to_string());
+						tmpRow.update(item.m_title, item.m_unread);
 						found = true;
 						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread != 0)
 						{
@@ -710,9 +710,9 @@ public class FeedReader.feedList : Gtk.Stack {
 					{
 						var feedrow = new FeedRow(
 													item.m_title,
-													item.m_unread.to_string(),
+													item.m_unread,
 													item.m_hasIcon,
-													item.m_feedID.to_string(),
+													item.m_feedID,
 													item.m_categorieID,
 													tmpRow.getLevel()
 												);
@@ -724,9 +724,9 @@ public class FeedReader.feedList : Gtk.Stack {
 					{
 						var feedrow = new FeedRow(
 													item.m_title,
-													item.m_unread.to_string(),
+													item.m_unread,
 													item.m_hasIcon,
-													item.m_feedID.to_string(),
+													item.m_feedID,
 													item.m_categorieID,
 													0
 												);
@@ -758,7 +758,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				if(tmpRow.getName() == "All Articles")
 				{
 					tmpRow.setSubscribed(true);
-					tmpRow.update("All Articles", unread.to_string());
+					tmpRow.update("All Articles", unread);
 				}
 				else if(tmpRow.getName() == "")
 				{

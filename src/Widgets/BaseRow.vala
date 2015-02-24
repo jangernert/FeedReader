@@ -4,7 +4,7 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 	protected Gtk.Label m_label;
 	protected Gtk.Box m_box;
 	protected Gtk.Image m_icon;
-	protected string m_unread_count;
+	protected uint m_unread_count;
 	protected Gtk.Label m_unread;
 	protected Gtk.Revealer m_revealer;
 
@@ -42,23 +42,22 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 	
 	public void upUnread()
 	{
-		set_unread_count((int.parse(m_unread_count)+1).to_string());
+		set_unread_count(m_unread_count+1);
 	}
 	
 	public void downUnread()
 	{
-		int urnead = int.parse(m_unread_count);
-		if(urnead > 0)
-			set_unread_count((urnead-1).to_string());
+		if(m_unread_count > 0)
+			set_unread_count(m_unread_count-1);
 	}
 
-	public void set_unread_count(string unread_count)
+	public void set_unread_count(uint unread_count)
 	{
 		m_unread_count = unread_count;
 
-		if(int.parse(m_unread_count) > 0)
+		if(m_unread_count > 0)
 		{
-			m_unread.set_text ("<span font_weight=\"ultrabold\" >" + m_unread_count.to_string () + "</span>");
+			m_unread.set_text ("<span font_weight=\"ultrabold\" >%u</span>".printf(m_unread_count));
 			m_unread.set_use_markup (true);
 		}
 		else
@@ -67,9 +66,9 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 		}
 	}
 	
-	public int getUnreadCount()
+	public uint getUnreadCount()
 	{
-		return int.parse(m_unread_count);
+		return m_unread_count;
 	}
 
 	public void reveal(bool reveal)

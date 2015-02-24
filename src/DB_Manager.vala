@@ -212,7 +212,7 @@ public class FeedReader.dbManager : GLib.Object {
 		yield;
 	}
 	
-	public int get_unread_total()
+	public uint get_unread_total()
 	{
 		string query = "SELECT unread FROM \"main\".\"categories\" WHERE \"level\" = 1 AND NOT \"categorieID\" = -1";
 		Sqlite.Statement stmt;

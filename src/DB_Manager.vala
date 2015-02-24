@@ -376,7 +376,7 @@ public class FeedReader.dbManager : GLib.Object {
 			}
 			GLib.FileUtils.close(outputfd);
 
-			string[] spawn_args = {"html2text", "-utf8", "-nobs", filename};
+			string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", filename};
 			try{
 				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 			}catch(GLib.SpawnError e){

@@ -102,6 +102,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
+		if(m_stack.get_visible_child_name() == "initsync")
+			m_content.newFeedList();
+		
 		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_stack.set_visible_child_full("content", transition);
 		m_headerbar.setButtonsSensitive(true);

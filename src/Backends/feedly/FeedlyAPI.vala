@@ -58,212 +58,184 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public async void getCategories() throws Error {
-		SourceFunc callback = getCategories.callback;
-		ThreadFunc<void*> run = () => {
-			string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
+	public void getCategories()
+	{
+		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
-			dataBase.reset_exists_flag();
+		dataBase.reset_exists_flag();
+		
+		var parser = new Json.Parser();
+		parser.load_from_data (response, -1);
+		Json.Array array = parser.get_root ().get_array ();
 			
-			var parser = new Json.Parser();
-			parser.load_from_data (response, -1);
-			Json.Array array = parser.get_root ().get_array ();
+		for (int i = 0; i < array.get_length (); i++) {
+			Json.Object object = array.get_object_element(i);
 			
-			for (int i = 0; i < array.get_length (); i++) {
-				Json.Object object = array.get_object_element(i);
-				
-				string categorieID = object.get_string_member("id");
-				int unreadCount = get_count_of_unread_articles(categorieID);
-				string title = object.get_string_member("label");
-				dataBase.write_categorie(categorieID, title, unreadCount, i+1, CategoryID.MASTER, 1);
-			}
-			
-			dataBase.delete_nonexisting_categories();
-			
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("getCategories", run);
-		yield;
+			string categorieID = object.get_string_member("id");
+			int unreadCount = get_count_of_unread_articles(categorieID);
+			string title = object.get_string_member("label");
+			dataBase.write_categorie(categorieID, title, unreadCount, i+1, CategoryID.MASTER, 1);
+		}
+		
+		dataBase.delete_nonexisting_categories();
 	}
 
 
-	public async void getFeeds() throws Error {
-		SourceFunc callback = getFeeds.callback;
-		ThreadFunc<void*> run = () => {
-			string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
+	public void getFeeds()
+	{
+		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
 			
-			dataBase.reset_subscribed_flag();
+		dataBase.reset_subscribed_flag();
 			
-			var parser = new Json.Parser();
-			parser.load_from_data(response, -1);
-			Json.Array array = parser.get_root().get_array ();
-			uint length = array.get_length();
+		var parser = new Json.Parser();
+		parser.load_from_data(response, -1);
+		Json.Array array = parser.get_root().get_array ();
+		uint length = array.get_length();
 
-			for (uint i = 0; i < length; i++) {
-				Json.Object object = array.get_object_element(i);
+		for (uint i = 0; i < length; i++) {
+			Json.Object object = array.get_object_element(i);
 				
-				string feedID = object.get_string_member("id");
+			string feedID = object.get_string_member("id");
 				
-				string icon_url = "";
-				if(object.has_member("iconUrl"))
-				{
-					icon_url = object.get_string_member("iconUrl");
-					downloadIcon(feedID, icon_url);
-				}
-				else if(object.has_member("visualUrl"))
-				{
-					icon_url = object.get_string_member("visualUrl");
-					downloadIcon(feedID, icon_url);
-				}
-				
-				string url = object.has_member("website") ? object.get_string_member("website") : "";
-				var categories = object.get_array_member("categories");
-				var category = categories.get_object_element(0);
-				string categorieID = category.get_string_member("id");
-				int unreadCount = get_count_of_unread_articles(feedID);
-				
-				string title = "No Title";
-				if(object.has_member("title"))
-				{
-					title = object.get_string_member("title");
-				}
-				else
-				{
-					title = ttrss_utils.URLtoFeedName(url);
-				}
-	 			
-				dataBase.write_feed(feedID,
-									title,
-									url,
-									(icon_url == "") ? false : true,
-									unreadCount,
-									categorieID);
+			string icon_url = "";
+			if(object.has_member("iconUrl"))
+			{
+				icon_url = object.get_string_member("iconUrl");
+				downloadIcon(feedID, icon_url);
 			}
+			else if(object.has_member("visualUrl"))
+			{
+				icon_url = object.get_string_member("visualUrl");
+				downloadIcon(feedID, icon_url);
+			}
+				
+			string url = object.has_member("website") ? object.get_string_member("website") : "";
+			var categories = object.get_array_member("categories");
+			var category = categories.get_object_element(0);
+			string categorieID = category.get_string_member("id");
+			int unreadCount = get_count_of_unread_articles(feedID);
+				
+			string title = "No Title";
+			if(object.has_member("title"))
+			{
+				title = object.get_string_member("title");
+			}
+			else
+			{
+				title = ttrss_utils.URLtoFeedName(url);
+			}
+	 			
+			dataBase.write_feed(feedID,
+								title,
+								url,
+								(icon_url == "") ? false : true,
+								unreadCount,
+								categorieID);
+		}
 			
-			dataBase.delete_unsubscribed_feeds();
-			
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("getFeeds", run);
-		yield;
+		dataBase.delete_unsubscribed_feeds();
 	}
 	
 	
-	public async void getTags() throws Error {
-		SourceFunc callback = getTags.callback;
-		ThreadFunc<void*> run = () => {
-			string response = m_connection.send_get_request_to_feedly("/v3/tags/");
+	public void getTags()
+	{
+		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
 			
-			dataBase.reset_exists_tag();
+		dataBase.reset_exists_tag();
 			
-			var parser = new Json.Parser();
-			parser.load_from_data(response, -1);
-			Json.Array array = parser.get_root().get_array ();
-			uint length = array.get_length();
+		var parser = new Json.Parser();
+		parser.load_from_data(response, -1);
+		Json.Array array = parser.get_root().get_array ();
+		uint length = array.get_length();
 
-			for (uint i = 0; i < length; i++) {
-				Json.Object object = array.get_object_element(i);
+		for (uint i = 0; i < length; i++) {
+			Json.Object object = array.get_object_element(i);
 				
-				string tagID = object.get_string_member("id");
-				string title = object.has_member("label") ? object.get_string_member("label") : "";
+			string tagID = object.get_string_member("id");
+			string title = object.has_member("label") ? object.get_string_member("label") : "";
 	 			
-				dataBase.write_tag(tagID, title);
-				dataBase.update_tag(tagID);
-			}
+			dataBase.write_tag(tagID, title);
+			dataBase.update_tag(tagID);
+		}
 			
-			dataBase.delete_nonexisting_tags();
-			
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("getTags", run);
-		yield;
+		dataBase.delete_nonexisting_tags();
 	}
 
 
 
-	public async void getArticles() throws Error {
-		SourceFunc callback = getArticles.callback;
-		ThreadFunc<void*> run = () => {
-			int maxArticles = settings_general.get_int("max-articles");
-			string allArticles = "user/" + m_userID + "/category/global.all";
-			string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=newest".printf(allArticles, maxArticles));
-			string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
+	public void getArticles()
+	{
+		int maxArticles = settings_general.get_int("max-articles");
+		string allArticles = "user/" + m_userID + "/category/global.all";
+		string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=newest".printf(allArticles, maxArticles));
+		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
 			
-			var parser = new Json.Parser();
-			parser.load_from_data(response, -1);
+		var parser = new Json.Parser();
+		parser.load_from_data(response, -1);
 
-			var array = parser.get_root().get_array();
+		var array = parser.get_root().get_array();
 			
-			GLib.List<article> articles = new GLib.List<article>();
+		GLib.List<article> articles = new GLib.List<article>();
 
-			for(int i = 0; i < array.get_length(); i++) {
-				Json.Object object = array.get_object_element(i);
-				string id = object.get_string_member("id");
-				string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
-				string author = object.has_member("author") ? object.get_string_member("author") : "None";
-				string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
-				string Content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
-				bool unread = object.get_boolean_member("unread");
-				string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
-				string feedID = object.get_object_member("origin").get_string_member("streamId");
-				string tagString = "";
+		for(int i = 0; i < array.get_length(); i++) {
+			Json.Object object = array.get_object_element(i);
+			string id = object.get_string_member("id");
+			string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
+			string author = object.has_member("author") ? object.get_string_member("author") : "None";
+			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
+			string Content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
+			bool unread = object.get_boolean_member("unread");
+			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
+			string feedID = object.get_object_member("origin").get_string_member("streamId");
+			string tagString = "";
 				
-				if(object.has_member("tags"))
-				{
-					var tags = object.get_array_member("tags");
-					uint tagCount = tags.get_length();
+			if(object.has_member("tags"))
+			{
+				var tags = object.get_array_member("tags");
+				uint tagCount = tags.get_length();
 					
-					for(int j = 0; j < tagCount; ++j)
-					{
-						tagString = tagString + tags.get_object_element(j).get_string_member("id") + ",";
-					}
+				for(int j = 0; j < tagCount; ++j)
+				{
+					tagString = tagString + tags.get_object_element(j).get_string_member("id") + ",";
 				}
+			}
 				
-				articles.append(new article(id, title, url, feedID, (unread) ? ArticleStatus.UNREAD : ArticleStatus.READ, ArticleStatus.UNMARKED, Content, summaryContent, author, -1, tagString));
-			}
-			articles.reverse();
+			articles.append(new article(id, title, url, feedID, (unread) ? ArticleStatus.UNREAD : ArticleStatus.READ, ArticleStatus.UNMARKED, Content, summaryContent, author, -1, tagString));
+		}
+		articles.reverse();
 			
-			// first write all new articles
-			foreach(article item in articles)
-			{
-				dataBase.write_article(	item.m_articleID,
-										item.m_feedID,
-										item.m_title,
-										item.getAuthor(),
-										item.m_url,
-										item.m_unread,
-										item.m_marked,
-										DataBase.INSERT_OR_IGNORE,
-										item.m_html,
-										item.m_tags,
-										item.m_preview);
-			}
+		// first write all new articles
+		foreach(article item in articles)
+		{
+			dataBase.write_article(	item.m_articleID,
+									item.m_feedID,
+									item.m_title,
+									item.getAuthor(),
+									item.m_url,
+									item.m_unread,
+									item.m_marked,
+									DataBase.INSERT_OR_IGNORE,
+									item.m_html,
+									item.m_tags,
+									item.m_preview);
+		}
 			
 			
-			// then only update marked and unread for all others
-			foreach(article item in articles)
-			{
-				dataBase.write_article(	item.m_articleID,
-										item.m_feedID,
-										item.m_title,
-										item.getAuthor(),
-										item.m_url,
-										item.m_unread,
-										item.m_marked,
-										DataBase.UPDATE_ROW,
-										item.m_html,
-										item.m_tags,
-										item.m_preview);
-			}
-			
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("getArticles", run);
-		yield;
+		// then only update marked and unread for all others
+		foreach(article item in articles)
+		{
+			dataBase.write_article(	item.m_articleID,
+									item.m_feedID,
+									item.m_title,
+									item.getAuthor(),
+									item.m_url,
+									item.m_unread,
+									item.m_marked,
+									DataBase.UPDATE_ROW,
+									item.m_html,
+									item.m_tags,
+									item.m_preview);
+		}
 	}
 
 
@@ -287,7 +259,8 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 	/** Returns the number of unread articles for an ID (may be a feed, subscription, category or tag */
-	public unowned int get_count_of_unread_articles (string id) throws Error {
+	public unowned int get_count_of_unread_articles (string id)
+	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
 
 		var parser = new Json.Parser ();
@@ -318,42 +291,36 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 	
 	
-	public async void mark_as_read(string id, string type, int read) {
-		SourceFunc callback = mark_as_read.callback;
-		ThreadFunc<void*> run = () => {
-			Json.Object object = new Json.Object();
+	public void mark_as_read(string id, string type, int read)
+	{
+		Json.Object object = new Json.Object();
 		
-			if(read == ArticleStatus.READ)
-				object.set_string_member ("action", "markAsRead");
-			else if(read == ArticleStatus.UNREAD)
-				object.set_string_member ("action", "undoMarkAsRead");
-			object.set_string_member ("type", type);
+		if(read == ArticleStatus.READ)
+			object.set_string_member ("action", "markAsRead");
+		else if(read == ArticleStatus.UNREAD)
+			object.set_string_member ("action", "undoMarkAsRead");
+		object.set_string_member ("type", type);
 		
-			Json.Array ids = new Json.Array();
-			ids.add_string_element (id);
+		Json.Array ids = new Json.Array();
+		ids.add_string_element (id);
 		
-			string* type_id_identificator = null;
+		string* type_id_identificator = null;
 		
-			if(type == "entries") {
-				type_id_identificator = "entryIds";
-			} else if(type == "feeds") {
-				type_id_identificator = "feedIds";
-			} else if(type == "categories") {
-				type_id_identificator = "categoryIds";
-			} else {
-				error ("Unknown type: " + type + " don't know what to do with this.");
-			}
+		if(type == "entries") {
+			type_id_identificator = "entryIds";
+		} else if(type == "feeds") {
+			type_id_identificator = "feedIds";
+		} else if(type == "categories") {
+			type_id_identificator = "categoryIds";
+		} else {
+			error ("Unknown type: " + type + " don't know what to do with this.");
+		}
 		
-			object.set_array_member (type_id_identificator, ids);
+		object.set_array_member (type_id_identificator, ids);
 		
-			var root = new Json.Node(Json.NodeType.OBJECT);
-			root.set_object (object);
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object (object);
 		
-			m_connection.send_post_request_to_feedly ("/v3/markers", root);
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("mark_as_read", run);
-		yield;
+		m_connection.send_post_request_to_feedly ("/v3/markers", root);
 	}
 }

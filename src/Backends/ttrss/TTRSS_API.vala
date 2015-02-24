@@ -79,122 +79,96 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 	 
-	public async int getUnreadCount()
+	public int getUnreadCount()
 	{
-		SourceFunc callback = getUnreadCount.callback;
 		int unread = 0;
-		ThreadFunc<void*> run = () => {
+		if(isloggedin()) {
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "getUnread");
+			int error = message.send();
 		
-			if(isloggedin()) {
-				var message = new ttrss_message(m_ttrss_url);
-				message.add_string("sid", m_ttrss_sessionid);
-				message.add_string("op", "getUnread");
-				int error = message.send();
-		
-				if(error == ConnectionError.SUCCESS)
-				{
-					var response = message.get_response_object();
-					unread = int.parse(response.get_string_member("unread"));
-				}
-				logger.print(LogMessage.INFO, "There are %i unread Feeds".printf(unread));
-				
-				Idle.add((owned) callback);
+			if(error == ConnectionError.SUCCESS)
+			{
+				var response = message.get_response_object();
+				unread = int.parse(response.get_string_member("unread"));
 			}
-			return null;
-		};
-		new GLib.Thread<void*>("getUnreadCount", run);
-		
-		yield;
+			logger.print(LogMessage.INFO, "There are %i unread Feeds".printf(unread));
+		}
 		
 		return unread;
 	}
 
 
-	public async void getFeeds()
+	public void getFeeds()
 	{
-		SourceFunc callback = getFeeds.callback;
-		
-		ThreadFunc<void*> run = () => {
-			if(isloggedin())
-			{
-				dataBase.reset_subscribed_flag();
-				var categories = dataBase.read_categories();
+		if(isloggedin())
+		{
+			dataBase.reset_subscribed_flag();
+			var categories = dataBase.read_categories();
 
-				foreach(var item in categories)
-				{
-					var message = new ttrss_message(m_ttrss_url);
-					message.add_string("sid", m_ttrss_sessionid);
-					message.add_string("op", "getFeeds");
-					message.add_int("cat_id", int.parse(item.m_categorieID));
-					int error = message.send();
-		
-					if(error == ConnectionError.SUCCESS)
-					{
-						var response = message.get_response_array();
-						var feed_count = response.get_length();
-						string icon_url = m_ttrss_url.replace("api/", getIconDir());
-						
-						for(uint i = 0; i < feed_count; i++)
-						{
-							var feed_node = response.get_object_element(i);
-							string feed_id = feed_node.get_int_member("id").to_string();
-							ttrss_utils.downloadIcon(feed_id, icon_url);
-					
-							dataBase.write_feed(feed_id,
-											  feed_node.get_string_member("title"),
-											  feed_node.get_string_member("feed_url"),
-											  feed_node.get_boolean_member("has_icon"),
-											  int.parse(feed_node.get_int_member("unread").to_string()),
-											  feed_node.get_int_member("cat_id").to_string());
-						}
-					}	
-				}
-				
-				dataBase.delete_unsubscribed_feeds();
-				Idle.add((owned) callback);
-			}
-			return null;
-		};
-		new GLib.Thread<void*>("getFeeds", run);
-		yield;
-	}
-	
-	
-	public async void getTags()
-	{
-		SourceFunc callback = getTags.callback;
-		
-		ThreadFunc<void*> run = () => {
-			if(isloggedin())
+			foreach(var item in categories)
 			{
-				dataBase.reset_exists_tag();
 				var message = new ttrss_message(m_ttrss_url);
 				message.add_string("sid", m_ttrss_sessionid);
-				message.add_string("op", "getLabels");
+				message.add_string("op", "getFeeds");
+				message.add_int("cat_id", int.parse(item.m_categorieID));
 				int error = message.send();
 		
 				if(error == ConnectionError.SUCCESS)
 				{
 					var response = message.get_response_array();
-					var tag_count = response.get_length();
-						
-					for(uint i = 0; i < tag_count; ++i)
+					var feed_count = response.get_length();
+					string icon_url = m_ttrss_url.replace("api/", getIconDir());
+					
+					for(uint i = 0; i < feed_count; i++)
 					{
-						var tag_node = response.get_object_element(i);
-						string tagID = tag_node.get_int_member("id").to_string();
-						string title = tag_node.get_string_member("caption");
-						dataBase.write_tag(tagID, title);
-						dataBase.update_tag(tagID);
-					}
-				}
+						var feed_node = response.get_object_element(i);
+						string feed_id = feed_node.get_int_member("id").to_string();
+						ttrss_utils.downloadIcon(feed_id, icon_url);
 				
-				dataBase.delete_nonexisting_tags();
-				Idle.add((owned) callback);
+						dataBase.write_feed(feed_id,
+										  feed_node.get_string_member("title"),
+										  feed_node.get_string_member("feed_url"),
+										  feed_node.get_boolean_member("has_icon"),
+										  int.parse(feed_node.get_int_member("unread").to_string()),
+										  feed_node.get_int_member("cat_id").to_string());
+					}
+				}	
 			}
-			return null;
-		};
-		new GLib.Thread<void*>("getTags", run);
-		yield;
+				
+			dataBase.delete_unsubscribed_feeds();
+		}
+	}
+	
+	
+	public void getTags()
+	{
+		if(isloggedin())
+		{
+			dataBase.reset_exists_tag();
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "getLabels");
+			int error = message.send();
+		
+			if(error == ConnectionError.SUCCESS)
+			{
+				var response = message.get_response_array();
+				var tag_count = response.get_length();
+				
+				for(uint i = 0; i < tag_count; ++i)
+				{
+					var tag_node = response.get_object_element(i);
+					string tagID = tag_node.get_int_member("id").to_string();
+					string title = tag_node.get_string_member("caption");
+					dataBase.write_tag(tagID, title);
+					dataBase.update_tag(tagID);
+				}
+			}
+				
+			dataBase.delete_nonexisting_tags();
+		}
 	}
 	
 
@@ -215,36 +189,27 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public async void getCategories()
+	public void getCategories()
 	{
-		SourceFunc callback = getCategories.callback;
+		if(isloggedin())
+		{
+			dataBase.reset_exists_flag();
+				
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "getFeedTree");
+			message.add_bool("include_empty", false);
+			int error = message.send();
 		
-		ThreadFunc<void*> run = () => {
-			if(isloggedin())
+			if(error == ConnectionError.SUCCESS)
 			{
-				dataBase.reset_exists_flag();
-				
-				var message = new ttrss_message(m_ttrss_url);
-				message.add_string("sid", m_ttrss_sessionid);
-				message.add_string("op", "getFeedTree");
-				message.add_bool("include_empty", false);
-				int error = message.send();
-		
-				if(error == ConnectionError.SUCCESS)
-				{
-					var response = message.get_response_object();
-					var category_object = response.get_object_member("categories");
-					getSubCategories(category_object, 0, CategoryID.MASTER);
-					dataBase.delete_nonexisting_categories();
-					updateCategorieUnread();
-				}
-				
-				Idle.add((owned) callback);
+				var response = message.get_response_object();
+				var category_object = response.get_object_member("categories");
+				getSubCategories(category_object, 0, CategoryID.MASTER);
+				dataBase.delete_nonexisting_categories();
+				updateCategorieUnread();
 			}
-			return null;
-		};
-		new GLib.Thread<void*>("getCategories", run);
-		yield;
+		}
 	}
 
 
@@ -334,25 +299,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			}
 		}
 	}
-
-
-	public async void getArticles(int feedID = TTRSSSpecialID.ALL, int skip = 0)
-	{
-		SourceFunc callback = getArticles.callback;
-		ThreadFunc<void*> run = () => {
-			if(isloggedin())
-			{
-				sync_getArticles(feedID, skip);
-				Idle.add((owned) callback);
-			}
-			return null;
-		};
-		new GLib.Thread<void*>("getArticles", run);
-		yield;
-	}
 	
 	
-	public void sync_getArticles(int feedID, int skip, int limit = 200)
+	public void getArticles(int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -468,84 +417,75 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				logger.print(LogMessage.DEBUG, "TTRSS sync: get more headlines");
 				if(maxArticles - skip < 200)
 				{
-					sync_getArticles(feedID, skip + 200, maxArticles - skip);
+					getArticles(feedID, skip + 200, maxArticles - skip);
 				}
 				else
 				{
-					sync_getArticles(feedID, skip + 200);
+					getArticles(feedID, skip + 200);
 				}
 			}
 		}
 	}
 	
 	// currently not used - tt-rss server needs newsplusplus extention
-	/*public async void updateArticles(int feedID = TTRSSSpecialID.ALL)
+	/*public void updateArticles(int feedID = TTRSSSpecialID.ALL)
 	{
-		SourceFunc callback = updateArticles.callback;
-
-		ThreadFunc<void*> run = () => {
-			if(isloggedin())
+		if(isloggedin())
+		{
+			int limit = 2 * settings_general.get_int("max-articles");
+			uint headline_count;
+				
+			// update unread
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "getCompactHeadlines");
+			message.add_int("feed_id", feedID);
+			message.add_int("limit", limit);
+			message.add_string("view_mode", "unread");
+			int error = message.send();
+		
+			if(error == ConnectionError.SUCCESS)
 			{
-				int limit = 2 * settings_general.get_int("max-articles");
-				uint headline_count;
-				
-				// update unread
-				var message = new ttrss_message(m_ttrss_url);
-				message.add_string("sid", m_ttrss_sessionid);
-				message.add_string("op", "getCompactHeadlines");
-				message.add_int("feed_id", feedID);
-				message.add_int("limit", limit);
-				message.add_string("view_mode", "unread");
-				int error = message.send();
-		
-				if(error == ConnectionError.SUCCESS)
-				{
-					dataBase.markReadAllArticles();
-					var response = message.get_response_array();
-					headline_count = response.get_length();
-					logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to unread".printf(headline_count));
+				dataBase.markReadAllArticles();
+				var response = message.get_response_array();
+				headline_count = response.get_length();
+				logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to unread".printf(headline_count));
 					
-					for(uint i = 0; i < headline_count; i++)
-					{
-						var headline_node = response.get_object_element(i);
-						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "unread", ArticleStatus.UNREAD, (obj, res) => {
-							dataBase.update_article.end(res);
-						});
-					}
+				for(uint i = 0; i < headline_count; i++)
+				{
+					var headline_node = response.get_object_element(i);
+					dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "unread", ArticleStatus.UNREAD, (obj, res) => {
+						dataBase.update_article.end(res);
+					});
 				}
+			}
 				
 
-				// update marked
-				var message2 = new ttrss_message(m_ttrss_url);
-				message2.add_string("sid", m_ttrss_sessionid);
-				message2.add_string("op", "getCompactHeadlines");
-				message2.add_int("feed_id", feedID);
-				message2.add_int("limit", limit);
-				message2.add_string("view_mode", "marked");
-				error = message2.send();
+			// update marked
+			var message2 = new ttrss_message(m_ttrss_url);
+			message2.add_string("sid", m_ttrss_sessionid);
+			message2.add_string("op", "getCompactHeadlines");
+			message2.add_int("feed_id", feedID);
+			message2.add_int("limit", limit);
+			message2.add_string("view_mode", "marked");
+			error = message2.send();
 		
-				if(error == ConnectionError.SUCCESS)
-				{
-					dataBase.unmarkAllArticles();
-					var response2 = message2.get_response_array();
-					headline_count = response2.get_length();
-					logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to marked".printf(headline_count));
+			if(error == ConnectionError.SUCCESS)
+			{
+				dataBase.unmarkAllArticles();
+				var response2 = message2.get_response_array();
+				headline_count = response2.get_length();
+				logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to marked".printf(headline_count));
 					
-					for(uint i = 0; i < headline_count; i++)
-					{
-						var headline_node = response2.get_object_element(i);
-						dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "marked", ArticleStatus.MARKED, (obj, res) => {
-							dataBase.update_article.end(res);
-						});
-					}
+				for(uint i = 0; i < headline_count; i++)
+				{
+					var headline_node = response2.get_object_element(i);
+					dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "marked", ArticleStatus.MARKED, (obj, res) => {
+						dataBase.update_article.end(res);
+					});
 				}
-				
-				Idle.add((owned) callback);
 			}
-			return null;
-		};
-		new GLib.Thread<void*>("updateArticles", run);
-		yield;
+		}
 	}*/
 
 	
@@ -575,71 +515,51 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public async bool updateArticleUnread(int articleID, int unread)
+	public bool updateArticleUnread(int articleID, int unread)
 	{
-		SourceFunc callback = updateArticleUnread.callback;
 		bool return_value = false;
-
-		ThreadFunc<void*> run = () => {
-			Idle.add((owned) callback);
-			
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "updateArticle");
-			message.add_int("article_ids", articleID);
-			if(unread == ArticleStatus.UNREAD)
-				message.add_int("mode", 1);
-			else if(unread == ArticleStatus.READ)
-				message.add_int("mode", 0);
-			message.add_int("field", 2);
-			int error = message.send();
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "updateArticle");
+		message.add_int("article_ids", articleID);
+		if(unread == ArticleStatus.UNREAD)
+			message.add_int("mode", 1);
+		else if(unread == ArticleStatus.READ)
+			message.add_int("mode", 0);
+		message.add_int("field", 2);
+		int error = message.send();
 		
-			if(error == ConnectionError.SUCCESS)
-			{
-				var response = message.get_response_object();
-				if(response.get_string_member("status") == "OK")
-					return_value = true;
-			}
-				
-			return null;
-		};
-		new GLib.Thread<void*>("updateAricle", run);
-		yield;
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_object();
+			if(response.get_string_member("status") == "OK")
+				return_value = true;
+		}
 
 		return return_value;
 	}
 
 
-	public async bool updateArticleMarked(int articleID, int marked)
+	public bool updateArticleMarked(int articleID, int marked)
 	{
-		SourceFunc callback = updateArticleMarked.callback;
 		bool return_value = false;
-
-		ThreadFunc<void*> run = () => {
-			Idle.add((owned) callback);
-			
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "updateArticle");
-			message.add_int("article_ids", articleID);
-			if(marked == ArticleStatus.MARKED)
-				message.add_int("mode", 1);
-			else if(marked == ArticleStatus.UNMARKED)
-				message.add_int("mode", 0);
-			message.add_int("field", 0);
-			int error = message.send();
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "updateArticle");
+		message.add_int("article_ids", articleID);
+		if(marked == ArticleStatus.MARKED)
+			message.add_int("mode", 1);
+		else if(marked == ArticleStatus.UNMARKED)
+			message.add_int("mode", 0);
+		message.add_int("field", 0);
+		int error = message.send();
 		
-			if(error == ConnectionError.SUCCESS)
-			{
-				var response = message.get_response_object();
-				if(response.get_string_member("status") == "OK")
-					return_value = true;
-			}
-			
-			return null;
-		};
-		new GLib.Thread<void*>("updateAricle", run);
-		yield;
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_object();
+			if(response.get_string_member("status") == "OK")
+				return_value = true;
+		}
 
 		return return_value;
 	}

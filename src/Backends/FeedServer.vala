@@ -42,64 +42,91 @@ public class FeedReader.FeedServer : GLib.Object {
 	
 	public async void syncContent()
 	{
-		int before = dataBase.getHighestRowID();
-		dataBase.markReadAllArticles();
+		SourceFunc callback = syncContent.callback;
 		
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				yield m_ttrss.getCategories();
-				yield m_ttrss.getFeeds();
-				yield m_ttrss.getTags();
-				yield m_ttrss.getArticles();
-				break;
+		ThreadFunc<void*> run = () => {
+			int before = dataBase.getHighestRowID();
+			dataBase.markReadAllArticles();
+		
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.getCategories();
+					m_ttrss.getFeeds();
+					m_ttrss.getTags();
+					m_ttrss.getArticles();
+					break;
 				
-			case Backend.FEEDLY:
-				yield m_feedly.getCategories();
-				yield m_feedly.getFeeds();
-				yield m_feedly.getTags();
-				yield m_feedly.getArticles();
-				break;
-		}
+				case Backend.FEEDLY:
+					m_feedly.getCategories();
+					m_feedly.getFeeds();
+					m_feedly.getTags();
+					m_feedly.getArticles();
+					break;
+			}
 		
-		int after = dataBase.getHighestRowID();
-		int newArticles = after-before;
-		if(newArticles > 0)
-		{
-			sendNotification(newArticles);
-			int newCount = settings_state.get_int("articlelist-new-rows") + newArticles;
-			settings_state.set_int("articlelist-new-rows", newCount);
-		}
+			int after = dataBase.getHighestRowID();
+			int newArticles = after-before;
+			if(newArticles > 0)
+			{
+				sendNotification(newArticles);
+				int newCount = settings_state.get_int("articlelist-new-rows") + newArticles;
+				settings_state.set_int("articlelist-new-rows", newCount);
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+		
+		new GLib.Thread<void*>("syncContent", run);
+		yield;
+		
+		return;
 	}
 	
 	public async void setArticleIsRead(string articleID, int read)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				yield m_ttrss.updateArticleUnread(int.parse(articleID), read);
-				break;
+		SourceFunc callback = setArticleIsRead.callback;
+		
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.updateArticleUnread(int.parse(articleID), read);
+					break;
 				
-			case Backend.FEEDLY:
-				yield m_feedly.mark_as_read(articleID, "entries", read);
-				break;
-		}
+				case Backend.FEEDLY:
+					m_feedly.mark_as_read(articleID, "entries", read);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+		
+		new GLib.Thread<void*>("setArticleIsRead", run);
+		yield;
 	}
 	
-	public void setArticleIsMarked(string articleID, int marked)
+	public async void setArticleIsMarked(string articleID, int marked)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.updateArticleMarked.begin(int.parse(articleID), marked, (obj, res) => {
-					m_ttrss.updateArticleMarked.end(res);
-				});
-				break;
+		SourceFunc callback = setArticleIsMarked.callback;
+		
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.updateArticleMarked(int.parse(articleID), marked);
+					break;
 				
-			case Backend.FEEDLY:
-				
-				break;
-		}
+				case Backend.FEEDLY:
+					
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+		
+		new GLib.Thread<void*>("setArticleIsMarked", run);
+		yield;
 	}
 	
 	

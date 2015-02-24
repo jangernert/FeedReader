@@ -80,7 +80,8 @@ public class FeedReader.ContentPage : Gtk.Paned {
 				row.removeUnreadIcon();
 			}
 			
-			m_article_view.fillContent(row.getID());
+			if(m_article_view.getCurrentArticle() != row.getID())
+				m_article_view.fillContent(row.getID());
 		});
 	}
 	

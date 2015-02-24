@@ -6,6 +6,7 @@ public class FeedReader.articleView : Gtk.Stack {
 	private Gtk.Spinner m_spinner;
 	private bool m_open_external;
 	private int m_load_ongoing;
+	private string m_currentArticle;
 
 	public articleView () {
 		m_load_ongoing = 0;
@@ -43,6 +44,7 @@ public class FeedReader.articleView : Gtk.Stack {
 	public async void fillContent(string articleID)
 	{
 		SourceFunc callback = fillContent.callback;
+		m_currentArticle = articleID;
 		
 		article Article = null;
 		this.set_visible_child_name("spinner");
@@ -75,6 +77,11 @@ public class FeedReader.articleView : Gtk.Stack {
 	public void clearContent()
 	{
 		this.set_visible_child_name("empty");
+	}
+	
+	public string getCurrentArticle()
+	{
+		return m_currentArticle;
 	}
 
 	public void open_link(WebKit.LoadEvent load_event)

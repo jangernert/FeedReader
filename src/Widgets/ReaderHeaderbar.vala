@@ -88,6 +88,7 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 	
 	public void setButtonsSensitive(bool sensitive)
 	{
+		logger.print(LogMessage.DEBUG, "HeaderBar: updatebutton status %s".printf(sensitive ? "true" : "false"));
 		m_only_unread_button.sensitive = sensitive;
 		m_only_marked_button.sensitive = sensitive;
 		m_refresh_button.setSensitive(sensitive);

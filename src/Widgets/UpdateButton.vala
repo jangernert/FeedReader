@@ -5,7 +5,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private bool m_status;
 
 	public UpdateButton (string iconname) {
-
+		
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(24,24);
 
@@ -18,19 +18,20 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 	public void updating(bool status)
 	{
+		logger.print(LogMessage.DEBUG, "UpdateButton: update status");
 		m_status = status;
 		if(status)
 		{
 			this.remove(m_icon);
 			this.add(m_spinner);
-			this.sensitive = false;
+			this.setSensitive(false);
 			m_spinner.start();
 		}
 		else
 		{
 			this.remove(m_spinner);
 			this.add(m_icon);
-			this.sensitive = true;
+			this.setSensitive(true);
 			m_spinner.stop();
 		}
 		this.show_all();
@@ -43,6 +44,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	
 	public void setSensitive(bool sensitive)
 	{
+		logger.print(LogMessage.DEBUG, "UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
 		this.sensitive = sensitive;
 	}
 

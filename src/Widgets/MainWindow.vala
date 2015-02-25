@@ -107,7 +107,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		
 		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_stack.set_visible_child_full("content", transition);
-		m_headerbar.setButtonsSensitive(true);
+		
+		if(!settings_state.get_boolean("currently-updating"))
+			m_headerbar.setButtonsSensitive(true);
+			
 		m_login_action.set_enabled(true);
 	}
 	

@@ -273,6 +273,9 @@ public class FeedReader.articleList : Gtk.Stack {
 		if(selected_row != null)
 			return selected_row.getID();
 		
+		if(m_currentList.get_children().length() == 0)
+			return "empty";
+		
 		return "";
 	}
 
@@ -377,7 +380,9 @@ public class FeedReader.articleList : Gtk.Stack {
 	public void newHeadlineList()
 	{
 		string selectedArticle = getSelectedArticle();
-		settings_state.set_string("articlelist-selected-row", selectedArticle);
+		
+		if(selectedArticle != "empty")
+			settings_state.set_string("articlelist-selected-row", selectedArticle);
 		
 		if(m_currentList == m_List1)
 		{

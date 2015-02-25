@@ -5,12 +5,14 @@ public class FeedReader.feedList : Gtk.Stack {
 	private baseRow m_selected;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Adjustment m_scroll_adjustment;
+	private uint m_expand_collapse_time;
 	public signal void newFeedSelected(string feedID);
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
 
 	public feedList () {
 		m_selected = null;
+		m_expand_collapse_time = 150;
 		m_spinner = new Gtk.Spinner();
 		m_list = new Gtk.ListBox();
 		m_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
@@ -883,16 +885,16 @@ public class FeedReader.feedList : Gtk.Stack {
 			var tmpTagRow = row as TagRow;
 			if(tmpFeedRow != null && tmpFeedRow.getCategorie() == catID)
 			{
-				tmpFeedRow.reveal(false);
+				tmpFeedRow.reveal(false, m_expand_collapse_time);
 			}
 			if(tmpCatRow != null && tmpCatRow.getParent() == catID)
 			{
-				tmpCatRow.reveal(false);
+				tmpCatRow.reveal(false, m_expand_collapse_time);
 				collapseCategorie(tmpCatRow.getID());
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
-				tmpTagRow.reveal(false);
+				tmpTagRow.reveal(false, m_expand_collapse_time);
 			}
 		}
 		
@@ -928,20 +930,20 @@ public class FeedReader.feedList : Gtk.Stack {
 			if(tmpFeedRow != null && tmpFeedRow.getCategorie() == catID)
 			{
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || tmpFeedRow.getUnreadCount() != 0)
-					tmpFeedRow.reveal(true);
+					tmpFeedRow.reveal(true, m_expand_collapse_time);
 			}
 			if(tmpCatRow != null && tmpCatRow.getParent() == catID)
 			{
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || tmpCatRow.getUnreadCount() != 0)
 				{
-					tmpCatRow.reveal(true);
+					tmpCatRow.reveal(true, m_expand_collapse_time);
 					if(tmpCatRow.isExpanded())
 						expandCategorie(tmpCatRow.getID());
 				}
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
-				tmpTagRow.reveal(true);
+				tmpTagRow.reveal(true, m_expand_collapse_time);
 			}
 		}
 	}

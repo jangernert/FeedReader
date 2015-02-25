@@ -357,7 +357,7 @@ public class FeedReader.articleList : Gtk.Stack {
 					if(add)
 						row.reveal(true);
 					else
-						row.reveal(true, 100);
+						row.reveal(true, 150);
 				}
 		
 				if(!add)

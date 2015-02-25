@@ -96,7 +96,6 @@ public class FeedReader.categorieRow : baseRow {
 				m_eventbox.remove(m_icon_collapsed);
 				m_eventbox.add(m_icon_expanded);
 			}
-			collapse(false, m_categorieID);
 		}
 		else
 		{
@@ -111,9 +110,9 @@ public class FeedReader.categorieRow : baseRow {
 				m_eventbox.remove(m_icon_expanded);
 				m_eventbox.add(m_icon_collapsed);
 			}
-			collapse(true, m_categorieID);
 		}
 		
+		collapse(m_collapsed, m_categorieID);
 		this.show_all();
 	}
 	

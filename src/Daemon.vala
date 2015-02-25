@@ -117,6 +117,7 @@ namespace FeedReader {
 		{
 #if WITH_LIBUNITY
 			var count = dataBase.get_unread_total();
+			logger.print(LogMessage.DEBUG, "daemon: update badge count %u".printf(count));
 			m_launcher.count = count;
 			if(count > 0)
 				m_launcher.count_visible = true;

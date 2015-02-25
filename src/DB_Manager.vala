@@ -394,6 +394,7 @@ public class FeedReader.dbManager : GLib.Object {
 				length = output.length;
 
 			output = output.replace("\n"," ");
+			output = output.replace("_"," ");
 			output = output.slice(0, length);
 			output = output.slice(0, output.last_index_of(" "));
 			output = output.chug();

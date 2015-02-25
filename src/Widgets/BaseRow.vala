@@ -12,7 +12,7 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 	public baseRow () {
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.set_transition_duration(500);
+		//m_revealer.set_transition_duration(500);
 	}
 
 	protected void scale_pixbuf(ref Gdk.Pixbuf icon, int size)
@@ -71,7 +71,7 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 		return m_unread_count;
 	}
 
-	public void reveal(bool reveal)
+	public void reveal(bool reveal, uint duration = 500)
 	{
 		if(settings_state.get_boolean("no-animations"))
 		{
@@ -83,6 +83,7 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 		}
 		else
 		{
+			m_revealer.set_transition_duration(duration);
 			m_revealer.set_reveal_child(reveal);
 		}
 	}

@@ -78,6 +78,15 @@ namespace FeedReader {
 		const string apiRedirectUri = "http://localhost";
 		const string apiAuthScope = "https://cloud.feedly.com/subscriptions";
 	}
+	
+	namespace AboutInfo {
+		const string programmName = _("FeedReader");
+		const string copyright = "Copyright © 2014 Jan Lukas Gernert";
+		const string version = "0.2";
+		const string comments = _("Desktop Client for various RSS Services");
+		const string[] authors = { "Jan Lukas Gernert", null };
+		const string[] documenters = { "nobody", null };
+	}
 
 	public enum DataBase {
 		INSERT_OR_IGNORE,

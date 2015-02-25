@@ -287,14 +287,8 @@ public class FeedReader.articleList : Gtk.Stack {
 		int threadID = m_threadCount;
 		bool hasContent = true;
 		
-		if(!add)
-		{
-			this.set_visible_child_name("spinner");
-			m_spinner.start();
-		}
-		
 		// dont allow new articles being created due to scrolling for 0.5s
-		yield limitScroll();
+		limitScroll();
 		
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -309,7 +303,7 @@ public class FeedReader.articleList : Gtk.Stack {
 				hasContent = false;
 			}
 			
-			logger.print(LogMessage.DEBUG, "create article rows");
+			
 			foreach(var item in articles)
 			{
 				m_displayed_articles++;
@@ -339,19 +333,29 @@ public class FeedReader.articleList : Gtk.Stack {
 		var thread = new GLib.Thread<void*>("createHeadlineList", run);
 		yield;
 		
+		
 		if(!(threadID < m_threadCount))
 		{
 			if(hasContent)
 			{
+				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", Gtk.StackTransitionType.CROSSFADE);
+				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
+				
 				foreach(articleRow row in rows)
 				{
+					while (Gtk.events_pending()) 
+					{
+						Gtk.main_iteration();
+					}
+					
+					
 					m_currentList.add(row);
-					row.show();
-					row.reveal(true);
+					
+					if(add)
+						row.reveal(true);
+					else
+						row.reveal(true, 100);
 				}
-
-				if(m_currentList == m_List1)		 this.set_visible_child_name("list1");
-				else if(m_currentList == m_List2)   this.set_visible_child_name("list2");
 		
 				if(!add)
 				{
@@ -373,8 +377,8 @@ public class FeedReader.articleList : Gtk.Stack {
 	public void newHeadlineList()
 	{
 		string selectedArticle = getSelectedArticle();
-		if(selectedArticle != "")
-			settings_state.set_string("articlelist-selected-row", selectedArticle);
+		settings_state.set_string("articlelist-selected-row", selectedArticle);
+		
 		if(m_currentList == m_List1)
 		{
 			m_currentList = m_List2;
@@ -473,19 +477,19 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 	
 	
-	private async void limitScroll()
+	private void limitScroll()
 	{
-		SourceFunc callback = limitScroll.callback;
-		
 		ThreadFunc<void*> run = () => {
+			
+			if(m_limitScroll == true)
+				return null;
+			
 			m_limitScroll = true;
 			GLib.Thread.usleep(500000);
 			m_limitScroll = false;
-			Idle.add((owned) callback);
 			return null;
 		};
 		new GLib.Thread<void*>("limitScroll", run);
-		yield;
 	}
 
 	 

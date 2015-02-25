@@ -46,19 +46,22 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_selected = selected_row;
 					newFeedSelected(selected_row.getID());
+					return;
 				}
 			}
 			categorieRow selected_categorie = m_list.get_selected_row() as categorieRow;
-			if(selected_categorie != null)
+			if(selected_categorie != null && selected_categorie != m_selected)
 			{
 				m_selected = selected_categorie;
 				newCategorieSelected(selected_categorie.getID());
+				return;
 			}
 			TagRow selected_tag = m_list.get_selected_row() as TagRow;
-			if(selected_tag != null)
+			if(selected_tag != null && selected_tag != m_selected)
 			{
 				m_selected = selected_tag;
 				newTagSelected(selected_tag.getID());
+				return;
 			}
 		});
 

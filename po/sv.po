@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-02-23 16:42+0100\n"
-"PO-Revision-Date: 2015-01-28 10:31+0000\n"
+"PO-Revision-Date: 2015-02-25 13:20+0000\n"
 "Last-Translator: Mikael Nyberg <mikanybe@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-02-24 05:51+0000\n"
-"X-Generator: Launchpad (build 17355)\n"
+"X-Launchpad-Export-Date: 2015-02-26 06:04+0000\n"
+"X-Generator: Launchpad (build 17361)\n"
 
 #: ../src/Backends/FeedServer.vala:120
 msgid "There is 1 new article"
@@ -27,7 +27,7 @@ msgstr "Det finns >200 nya artiklar"
 
 #: ../src/Backends/FeedServer.vala:124
 msgid "There are %u new articles"
-msgstr ""
+msgstr "Det finns %u nya artiklar"
 
 #: ../src/Backends/FeedServer.vala:126
 msgid "New Articles"
@@ -35,11 +35,11 @@ msgstr "Nya artiklar"
 
 #: ../src/DB_Manager.vala:362
 msgid "No Preview Available"
-msgstr ""
+msgstr "Ingen förhandsvisning tillgänglig"
 
 #: ../src/DB_Manager.vala:404
 msgid "No Text available for this article :("
-msgstr ""
+msgstr "Ingen text tillgänglig för den här artikeln :("
 
 #: ../src/Widgets/ArticleView.vala:26
 msgid "No Article selected."
@@ -47,7 +47,7 @@ msgstr "Ingen artikel vald"
 
 #: ../src/Widgets/ArticleView.vala:54
 msgid "not available"
-msgstr ""
+msgstr "inte tillgänglig"
 
 #: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
@@ -63,19 +63,19 @@ msgstr "OwnCloud"
 
 #: ../src/Widgets/LoginPage.vala:26
 msgid "Where are your feeds?"
-msgstr ""
+msgstr "Var är dina nyhetsflöden?"
 
 #: ../src/Widgets/LoginPage.vala:30
 msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
+msgstr "Välj den RSS-tjänst du använder och logga in för att komma igång."
 
 #: ../src/Widgets/LoginPage.vala:95
 msgid "No service selected."
-msgstr ""
+msgstr "Ingen tjänst vald."
 
 #: ../src/Widgets/LoginPage.vala:131
 msgid "TinyTinyRSS URL:"
-msgstr ""
+msgstr "TinyTinyRSS URL:"
 
 #: ../src/Widgets/LoginPage.vala:132 ../src/Widgets/LoginPage.vala:225
 msgid "Username:"
@@ -90,6 +90,9 @@ msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
 msgstr ""
+"Du kommer att bli omdirigerad till webbplatsen för Feedly där du kan använda "
+"ditt Facebook-, Google-, Twitter-, Microsoft- eller Evernote-konto för att "
+"logga in."
 
 #: ../src/Widgets/LoginPage.vala:224
 msgid "OwnCloud URL:"
@@ -101,17 +104,19 @@ msgstr "Sök artiklar..."
 
 #: ../src/Widgets/ResetPage.vala:12
 msgid "Change Account?"
-msgstr ""
+msgstr "Ändra konto?"
 
 #: ../src/Widgets/ResetPage.vala:16
 msgid ""
 "You are about to change the account you want FeedReader to use.\n"
 " This means deleting all local data of your old account."
 msgstr ""
+"Du håller på att ändra kontot som FeedReader ska använda.\n"
+" Detta innebär att all lokal data från ditt gamla konto kommer att tas bort."
 
 #: ../src/Widgets/ArticleList.vala:45
 msgid "None of the %i Articles in the database fit the current filters."
-msgstr ""
+msgstr "Ingen av de %i artiklarna i databasen matchar de aktuella filtren."
 
 #: ../src/Widgets/MainWindow.vala:16
 msgid "FeedReader"
@@ -123,7 +128,7 @@ msgstr "om"
 
 #: ../src/Widgets/MainWindow.vala:55
 msgid "reset"
-msgstr ""
+msgstr "återställ"
 
 #: ../src/Widgets/MainWindow.vala:244
 msgid "Please select a service first"
@@ -151,16 +156,20 @@ msgstr "Tyvärr gick något fel."
 
 #: ../src/Widgets/MainWindow.vala:262
 msgid "Either your username or the password are not correct."
-msgstr ""
+msgstr "Antingen är ditt användarnamn eller lösenord fel."
 
 #: ../src/Widgets/MainWindow.vala:265
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
+"Ingen anslutning till servern. Kontrollera din internetanslutning och "
+"serverns URL!"
 
 #: ../src/Widgets/InitSyncPage.vala:14
 msgid ""
 "FeedReader is now getting the first batch of articles.\n"
 "Depending on your connection and settings this can take some time."
 msgstr ""
+"FeedReader hämtar nu den första hopen av artiklar.\n"
+"Detta kan ta en stund beroende på din anslutning och inställningar."

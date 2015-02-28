@@ -283,7 +283,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	public async void createHeadlineList(bool add = false)
 	{
 		SourceFunc callback = createHeadlineList.callback;
-		GLib.List<articleRow> rows = new GLib.List<articleRow>();
+		GLib.List<article> articles = new GLib.List<article>();
 		
 		logger.print(LogMessage.DEBUG, "create new HeadlineList");
 		m_threadCount++;
@@ -299,35 +299,13 @@ public class FeedReader.articleList : Gtk.Stack {
 			logger.print(LogMessage.DEBUG, "limit: " + m_limit.to_string());
 		
 			logger.print(LogMessage.DEBUG, "load articles from db");
-			var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
+			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
 			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.length().to_string());
 			if(articles.length() == 0)
 			{
 				hasContent = false;
 			}
 			
-			
-			foreach(var item in articles)
-			{
-				m_displayed_articles++;
-			
-				articleRow tmpRow = new articleRow(
-							                         item.m_title,
-							                         item.m_unread,
-							                         item.m_feedID.to_string(),
-							                         item.m_url,
-							                         item.m_feedID,
-							                         item.m_articleID,
-							                         item.m_marked,
-							                         item.getSortID(),
-							                         item.m_preview
-							                        );
-				
-				if(!(threadID < m_threadCount))
-					rows.append(tmpRow);
-				else
-					break;
-			}
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -344,20 +322,43 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", Gtk.StackTransitionType.CROSSFADE);
 				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
 				
-				foreach(articleRow row in rows)
+				//foreach(articleRow row in rows)
+				foreach(var item in articles)
 				{
 					while (Gtk.events_pending()) 
 					{
 						Gtk.main_iteration();
 					}
 					
+					if(threadID < m_threadCount)
+						break;
 					
-					m_currentList.add(row);
+					var tmpRow = new articleRow(
+							                         item.m_title,
+							                         item.m_unread,
+							                         item.m_feedID.to_string(),
+							                         item.m_url,
+							                         item.m_feedID,
+							                         item.m_articleID,
+							                         item.m_marked,
+							                         item.getSortID(),
+							                         item.m_preview
+							                        );
+					
+					while (Gtk.events_pending()) 
+					{
+						Gtk.main_iteration();
+					}
+					
+					if(threadID < m_threadCount)
+						break;
+					
+					m_currentList.add(tmpRow);
 					
 					if(add)
-						row.reveal(true);
+						tmpRow.reveal(true);
 					else
-						row.reveal(true, 150);
+						tmpRow.reveal(true, 150);
 				}
 		
 				if(!add)

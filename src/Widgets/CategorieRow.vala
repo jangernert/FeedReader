@@ -11,6 +11,7 @@ public class FeedReader.categorieRow : baseRow {
 	private Gtk.Image m_icon_expanded_hover;
 	private Gtk.Image m_icon_collapsed;
 	private Gtk.Image m_icon_collapsed_hover;
+	private Gtk.Stack m_stack;
 	private bool m_collapsed;
 	private bool m_hovered;
 	public signal void collapse(bool collapse, string catID);
@@ -34,17 +35,30 @@ public class FeedReader.categorieRow : baseRow {
 		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		
+		m_stack = new Gtk.Stack();
+		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
+		m_stack.set_transition_duration(0);
 
 		m_icon_expanded = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down.svg");
 		m_icon_expanded_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down-hover.svg");
 		m_icon_collapsed = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left.svg");
 		m_icon_collapsed_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left-hover.svg");
+		
+		m_stack.add_named(m_icon_expanded, "expanded");
+		m_stack.add_named(m_icon_expanded_hover, "expanded_hover");
+		m_stack.add_named(m_icon_collapsed, "collapsed");
+		m_stack.add_named(m_icon_collapsed_hover, "collapsed_hover");
+		
+		m_eventbox.add(m_stack);
 
 		m_label = new Gtk.Label(m_name);
 		m_label.set_use_markup (true);
 		m_label.set_size_request (0, rowhight);
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
 		m_label.set_alignment(0, 0.5f);
+		
+		int count = 0;
 
 		m_eventbox.button_press_event.connect(() => {
 			expand_collapse();
@@ -66,11 +80,7 @@ public class FeedReader.categorieRow : baseRow {
 		m_unread.set_size_request (0, rowhight);
 		m_unread.set_alignment(0.8f, 0.5f);
 		set_unread_count(m_unread_count);
-
-		if(m_collapsed)
-			m_eventbox.add(m_icon_collapsed);
-		else
-			m_eventbox.add(m_icon_expanded);
+		
 		m_box.pack_start(m_spacer, false, false, 0);
 		m_box.pack_start(m_eventbox, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
@@ -79,6 +89,11 @@ public class FeedReader.categorieRow : baseRow {
 		m_revealer.set_reveal_child(false);
 		this.add(m_revealer);
 		this.show_all();
+		
+		if(m_collapsed)
+			m_stack.set_visible_child_name("collapsed");
+		else
+			m_stack.set_visible_child_name("expanded");
 	}
 
 	public void expand_collapse()
@@ -88,13 +103,11 @@ public class FeedReader.categorieRow : baseRow {
 			m_collapsed = false;
 			if(m_hovered)
 			{
-				m_eventbox.remove(m_icon_collapsed_hover);
-				m_eventbox.add(m_icon_expanded_hover);
+				m_stack.set_visible_child_name("expanded_hover");
 			}
 			else
 			{
-				m_eventbox.remove(m_icon_collapsed);
-				m_eventbox.add(m_icon_expanded);
+				m_stack.set_visible_child_name("expanded");
 			}
 		}
 		else
@@ -102,32 +115,28 @@ public class FeedReader.categorieRow : baseRow {
 			m_collapsed = true;
 			if(m_hovered)
 			{
-				m_eventbox.remove(m_icon_expanded_hover);
-				m_eventbox.add(m_icon_collapsed_hover);
+				m_stack.set_visible_child_name("collapsed_hover");
 			}
 			else
 			{
-				m_eventbox.remove(m_icon_expanded);
-				m_eventbox.add(m_icon_collapsed);
+				m_stack.set_visible_child_name("collapsed");
 			}
 		}
 		
 		collapse(m_collapsed, m_categorieID);
-		this.show_all();
 	}
 	
 	private bool onEnter()
 	{
+		print("enter\n");
 		m_hovered = true;
 		if(m_collapsed)
 		{
-			m_eventbox.remove(m_icon_collapsed);
-			m_eventbox.add(m_icon_collapsed_hover);
+			m_stack.set_visible_child_name("collapsed_hover");
 		}
 		else
 		{
-			m_eventbox.remove(m_icon_expanded);
-			m_eventbox.add(m_icon_expanded_hover);
+			m_stack.set_visible_child_name("expanded_hover");
 		}
 		this.show_all();
 		return true;
@@ -135,16 +144,15 @@ public class FeedReader.categorieRow : baseRow {
 	
 	private bool onLeave()
 	{
+		print("leave\n");
 		m_hovered = false;
 		if(m_collapsed)
 		{
-			m_eventbox.remove(m_icon_collapsed_hover);
-			m_eventbox.add(m_icon_collapsed);
+			m_stack.set_visible_child_name("collapsed");
 		}
 		else
 		{
-			m_eventbox.remove(m_icon_expanded_hover);
-			m_eventbox.add(m_icon_expanded);
+			m_stack.set_visible_child_name("expanded");
 		}
 		this.show_all();
 		return true;

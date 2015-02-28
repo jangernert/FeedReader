@@ -20,7 +20,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.set_transition_duration(100);
 		
-		
+		setupCSS();
 		setupLoginPage();
 		setupInitSyncPage();
 		setupResetPage();
@@ -46,6 +46,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_content.clearArticleView();
 			m_content.newHeadlineList();
 		});
+		
+		m_headerbar.notify["position"].connect(() => {
+        	logger.print(LogMessage.DEBUG, "MainWindow: move headerbar paned");
+        	m_content.set_position(m_headerbar.get_position());
+        });
 		
 		
 		var about_action = new SimpleAction (_("about"), null);
@@ -150,8 +155,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	
 	private void onClose()
 	{
-		
-		
 		this.delete_event.connect(() => {
 			int windowWidth = 0;
 			int windowHeight = 0;
@@ -177,7 +180,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
 			settings_state.set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
 			settings_state.set_int("feed-row-width", m_content.getFeedListWidth());
-			settings_state.set_int("article-row-width", m_content.getArticleListWidth());
+			settings_state.set_int("feeds-and-articles-width", m_content.getArticlePlusFeedListWidth());
 			settings_state.set_int("articlelist-row-amount", m_content.getArticlesToLoad());
 			settings_state.set_double("articlelist-scrollpos",  m_content.getArticleListScrollPos());
 			settings_state.set_string("articlelist-selected-row", m_content.getSelectedArticle());
@@ -188,6 +191,21 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_boolean("no-animations", true);
 			settings_state.set_string("search-term", m_headerbar.getSearchTerm());
 		});
+	}
+	
+	private void setupCSS()
+	{
+		try {
+    		Gtk.CssProvider provider = new Gtk.CssProvider ();
+    		provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
+                
+
+			weak Gdk.Display display = Gdk.Display.get_default ();
+            weak Gdk.Screen screen = display.get_default_screen ();
+			Gtk.StyleContext.add_provider_for_screen (screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		} catch (Error e) {
+			logger.print(LogMessage.WARNING, e.message);
+		}
 	}
 	
 	private void setupLoginPage()
@@ -255,6 +273,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		m_content = new ContentPage();
 		m_stack.add_named(m_content, "content");
+		
+		m_content.notify["position"].connect(() => {
+        	m_headerbar.set_position(m_content.get_position());
+        });
 	}
 	
 	private void showErrorBar(int ErrorCode)

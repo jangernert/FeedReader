@@ -56,6 +56,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(100);
+		this.set_size_request(600, 0);
 	}
 	
 	public async void fillContent(string articleID)

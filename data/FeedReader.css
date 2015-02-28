@@ -1,4 +1,17 @@
 
+.headerbar_pane.pane-separator {
+	border-radius: 0;
+	border-width: 0 1px 1px 0;
+}
+
+.header_right {
+	border-top-right-radius: 0;
+}
+
+.header_left {
+	border-top-left-radius: 0;
+}
+
 GtkListBox.feed-list {
 	background: rgb(80,80,80);
 }

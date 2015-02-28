@@ -1,4 +1,4 @@
-public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
+public class FeedReader.readerHeaderbar : Gtk.Paned {
 	
 	private Gtk.ToggleButton m_only_unread_button;
 	private Gtk.ToggleButton m_only_marked_button;
@@ -6,6 +6,8 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 	private Gtk.SearchEntry m_search;
 	private bool m_only_unread { get; private set; }
 	private bool m_only_marked { get; private set; }
+	private Gtk.HeaderBar m_header_left;
+    private Gtk.HeaderBar m_header_right;
 	public signal void refresh();
 	public signal void change_unread(bool only_unread);
 	public signal void change_marked(bool only_marked);
@@ -15,6 +17,22 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 	public readerHeaderbar () {
 		var only_unread_icon = new Gtk.Image.from_icon_name("object-inverse", Gtk.IconSize.LARGE_TOOLBAR);
 		var only_marked_icon = new Gtk.Image.from_icon_name("help-about", Gtk.IconSize.LARGE_TOOLBAR);
+		
+		m_header_left = new Gtk.HeaderBar ();
+        m_header_left.show_close_button = true;
+        m_header_left.set_decoration_layout("close:");
+        m_header_left.get_style_context().add_class("header_right");
+        m_header_left.get_style_context().add_class("titlebar");
+        m_header_left.set_size_request(601, 0);
+        
+        
+        m_header_right = new Gtk.HeaderBar ();
+        m_header_right.show_close_button = true;
+        m_header_right.set_decoration_layout(":maximize");
+        m_header_right.get_style_context().add_class("header_left");
+        m_header_right.get_style_context().add_class("titlebar");
+        m_header_right.set_title ("FeedReader");
+		m_header_right.set_size_request(600, 0);
 
 
 		m_only_unread = settings_state.get_boolean("only-unread");
@@ -23,10 +41,12 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 		m_only_unread_button = new Gtk.ToggleButton();
 		m_only_unread_button.add(only_unread_icon);
 		m_only_unread_button.set_active(m_only_unread);
+		m_only_unread_button.set_focus_on_click(false);
 
 		m_only_marked_button = new Gtk.ToggleButton();
 		m_only_marked_button.add(only_marked_icon);
 		m_only_marked_button.set_active(m_only_marked);
+		m_only_marked_button.set_focus_on_click(false);
 
 		
 		m_only_unread_button.toggled.connect (() => {
@@ -73,12 +93,16 @@ public class FeedReader.readerHeaderbar : Gtk.HeaderBar {
 		menubutton.set_use_popover(true);
 		menubutton.set_menu_model(menumodel);
 		
-		this.show_close_button = true;
-		this.pack_end(menubutton);
-		this.pack_end(m_search);
-		this.pack_start(m_only_unread_button);
-		this.pack_start(m_only_marked_button);
-		this.pack_start(m_refresh_button);
+		m_header_left.pack_end(menubutton);
+		m_header_left.pack_end(m_search);
+		m_header_left.pack_start(m_only_unread_button);
+		m_header_left.pack_start(m_only_marked_button);
+		m_header_left.pack_start(m_refresh_button);
+		
+		this.pack1(m_header_left, true, false);
+		this.pack2(m_header_right, true, false);
+		this.get_style_context().add_class("headerbar_pane");
+		this.set_position(settings_state.get_int("feeds-and-articles-width"));
 	}
 
 	public void setRefreshButton(bool status)

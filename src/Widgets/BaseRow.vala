@@ -12,7 +12,6 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 	public baseRow () {
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		//m_revealer.set_transition_duration(500);
 	}
 
 	protected void scale_pixbuf(ref Gdk.Pixbuf icon, int size)

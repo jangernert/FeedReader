@@ -70,11 +70,11 @@
 			</description>
 		</key>
 		
-		<key name="article-row-width" type="i">
+		<key name="feeds-and-articles-width" type="i">
 			<default>400</default>
-			<summary>ArticleRow width</summary>
+			<summary>Width of Feeds and Articles</summary>
 			<description>
-				Width of the second paned, the article-row
+				Width of the two first panes, feed-row + article-row
 			</description>
 		</key>
 		

@@ -1,6 +1,6 @@
 public class FeedReader.ContentPage : Gtk.Paned {
 	
-	private Gtk.Paned m_pane_articlelist;
+	private Gtk.Paned m_pane;
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
@@ -8,19 +8,18 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	
 	public ContentPage()
 	{
-		setupArticlelist();
-		setupFeedlist();
-	}
-	
-	private void setupFeedlist()
-	{
 		logger.print(LogMessage.DEBUG, "ContentPage: setup FeedList");
-		int feed_row_width = settings_state.get_int("feed-row-width");
 		this.orientation = Gtk.Orientation.HORIZONTAL;
-		this.set_position(feed_row_width);
+		
+		this.set_position(settings_state.get_int("feeds-and-articles-width"));
+		m_pane.set_position(settings_state.get_int("feed-row-width"));
+		
 		m_feedList = new feedList();
-		this.pack1(m_feedList, false, false);
-		this.pack2(m_pane_articlelist, true, false);
+		
+		m_pane = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+		m_pane.set_size_request(500, 500);
+		
+		m_pane.pack1(m_feedList, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
 			m_articleList.setSelectedType(FeedList.FEED);
@@ -42,35 +41,12 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			m_articleList.setSelectedFeed(categorieID);
 			m_articleList.newHeadlineList();
 		});
-	}
-
-	private void setupArticlelist()
-	{
-		try {
-    		Gtk.CssProvider provider = new Gtk.CssProvider ();
-    		provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
-                
-
-			weak Gdk.Display display = Gdk.Display.get_default ();
-            weak Gdk.Screen screen = display.get_default_screen ();
-			Gtk.StyleContext.add_provider_for_screen (screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-		} catch (Error e) {
-			logger.print(LogMessage.WARNING, e.message);
-		}
-
 		
-		int article_row_width = settings_state.get_int("article-row-width");
-		m_pane_articlelist = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
-		m_pane_articlelist.set_size_request(500, 500);
-		m_pane_articlelist.set_position(article_row_width);
 		
 		m_articleList = new articleList();
-		m_article_view = new articleView();
-		m_pane_articlelist.pack1(m_articleList, false, false);
-		m_pane_articlelist.pack2(m_article_view, true, false);
-		
 		m_articleList.setOnlyUnread(settings_state.get_boolean("only-unread"));
 		m_articleList.setOnlyMarked(settings_state.get_boolean("only-marked"));
+		m_pane.pack2(m_articleList, false, false);
 		
 
 		m_articleList.row_activated.connect((row) => {
@@ -83,6 +59,12 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			if(m_article_view.getCurrentArticle() != row.getID())
 				m_article_view.fillContent(row.getID());
 		});
+		
+		m_article_view = new articleView();
+		
+		
+		this.pack1(m_pane, false, false);
+		this.pack2(m_article_view, true, false);
 	}
 	
 	public void newHeadlineList()
@@ -152,12 +134,12 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	
 	public int getFeedListWidth()
 	{
-		return this.get_position();
+		return m_pane.get_position();
 	}
 	
-	public int getArticleListWidth()
+	public int getArticlePlusFeedListWidth()
 	{
-		return m_pane_articlelist.get_position();
+		return this.get_position();
 	}
 	
 	public int getArticlesToLoad()

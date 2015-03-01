@@ -96,7 +96,11 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_currentTitle.set_use_markup (true);
 		m_open_external = false;
 		m_load_ongoing = 0;
-		m_currentView.load_html(Article.m_html, null);
+		
+		
+		string css;
+		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView-default.css", out css);
+		m_currentView.load_html("<style>" + css + "</style>" + Article.m_html, null);
 		this.show_all();
 		
 		if(m_currentView == m_view1)		 this.set_visible_child_full("view1", Gtk.StackTransitionType.CROSSFADE);

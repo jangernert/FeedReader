@@ -400,9 +400,10 @@ public class FeedReader.dbManager : GLib.Object {
 			output = output.chug();
 		}
 		
-		if(html == "")
+		string modified_html = _("No Text available for this article :(");
+		if(html != "")
 		{
-			html = _("No Text available for this article :(");
+			modified_html = html.replace("src=\"//","src=\"http://");
 		}
 		
 		
@@ -434,7 +435,7 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text (param_position, title);
 			param_position = stmt.bind_parameter_index ("$HTML");
 			assert (param_position > 0);
-			stmt.bind_text (param_position, html);
+			stmt.bind_text (param_position, modified_html);
 			param_position = stmt.bind_parameter_index ("$PREVIEW");
 			assert (param_position > 0);
 			stmt.bind_text (param_position, output);

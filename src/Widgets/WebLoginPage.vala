@@ -27,6 +27,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				break;
 		}
 		
+		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + m_url);
 		m_view.load_uri(m_url);
 	}
 	
@@ -39,13 +40,16 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	
 	public void redirection(WebKit.LoadEvent load_event)
 	{
+		logger.print(LogMessage.DEBUG, "WebLoginPage: webView redirection");
 		switch(load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
+				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent STARTED");
 				switch(m_serviceType)
 				{
 					case Backend.FEEDLY:
 						string url = m_view.get_uri();
+						logger.print(LogMessage.DEBUG, "WebLoginPage: redirection url: " + url);
 						if(url.has_prefix(FeedlySecret.apiRedirectUri))
 						{
 							int start = url.index_of("=")+1;
@@ -58,8 +62,10 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
+				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent COMMITED");
 				break;	
 			case WebKit.LoadEvent.FINISHED:
+				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent FINISHED");
 				break;
 		}
 	}

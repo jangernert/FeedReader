@@ -31,7 +31,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
         m_header_right.set_decoration_layout(":maximize");
         m_header_right.get_style_context().add_class("header_left");
         m_header_right.get_style_context().add_class("titlebar");
-        m_header_right.set_title ("FeedReader");
+        m_header_right.set_title("FeedReader");
 		m_header_right.set_size_request(600, 0);
 
 
@@ -84,8 +84,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		var menumodel = new GLib.Menu ();
 		var changeAccount = new MenuItem ("Change Account", "win.reset");
 		menumodel.insert_item(0, changeAccount);
-		var about = new MenuItem ("About", "win.about");
-		menumodel.insert_item(1, about);
 
 		var menubutton = new Gtk.MenuButton();
 		menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);

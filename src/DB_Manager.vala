@@ -450,7 +450,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 	
-	[Profile] public article read_article(string articleID)
+	public article read_article(string articleID)
 	{
 		article tmp = null;
 		string query = "SELECT ROWID, * FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\"";
@@ -754,7 +754,8 @@ public class FeedReader.dbManager : GLib.Object {
 		return tmp;
 	}
 
-	[Profile] public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
+	//[Profile] 
+	public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
 	{
 		GLib.List<article> tmp = new GLib.List<article>();
 		string and = "";

@@ -86,6 +86,11 @@ namespace FeedReader {
 		const string comments = _("Desktop Client for various RSS Services");
 		const string[] authors = { "Jan Lukas Gernert", null };
 		const string[] documenters = { "nobody", null };
+		const string[] artists = {"Jan Lukas Gernert", "Jorge Marques"};
+		const string iconName = "internet-news-reader";
+		const string translators = null;
+		const string website = null;
+		const string websiteLabel = null;
 	}
 
 	public enum DataBase {

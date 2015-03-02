@@ -1,27 +1,27 @@
 html,
 body {
-margin: 1em;
-background-color: #fff;
-font-size: 16px;
-font-family: "Open Sans", "Droid Sans", Helvetica, sans-serif;
-font-weight: 400;
-color: #333;
+	margin: 1em;
+	background-color: #fff;
+	font-size: 16px;
+	font-family: "Open Sans", "Droid Sans", Helvetica, sans-serif;
+	font-weight: 400;
+	color: #333;
 }
 body * {
-max-width: 800px;
-margin-left: auto;
-margin-right: auto;
+	max-width: 800px;
+	margin-left: auto;
+	margin-right: auto;
 }
 /**************
 * Text Styles *
 **************/
 a{
-color: #08c;
-text-decoration: none;
+	color: #08c;
+	text-decoration: none;
 }
 a:focus{
-outline: none;
-text-decoration: underline;
+	outline: none;
+	text-decoration: underline;
 }
 h1,
 h2,
@@ -29,93 +29,93 @@ h3,
 h4,
 h5,
 h6{
-margin: 1.5em 0 0.25em;
-padding: 0;
-text-align: left;
+	margin: 1.5em 0 0.25em;
+	padding: 0;
+	text-align: left;
 }
 h4,
 h5,
 h6{
-margin-top: 2em;
-margin-bottom: 0;
+	margin-top: 2em;
+	margin-bottom: 0;
 }
 h1{
-margin-top: 0;
-font-family: "Raleway", "Open Sans", "Droid Sans", Helvetica, sans-serif;
-font-size: 3rem;
-font-weight: 100;
-text-align: center;
+	margin-top: 0;
+	font-family: "Raleway", "Open Sans", "Droid Sans", Helvetica, sans-serif;
+	font-size: 3rem;
+	font-weight: 100;
+	text-align: center;
 }
 h2 {
-font-size: 2rem;
-font-weight: 600;
+	font-size: 2rem;
+	font-weight: 600;
 }
 h3{
-font-size: 1.5rem;
-font-weight: 600;
-opacity: 0.8;
+	font-size: 1.5rem;
+	font-weight: 600;
+	opacity: 0.8;
 }
 h4{
-font-size: 1.125rem;
-font-weight: 300;
+	font-size: 1.125rem;
+	font-weight: 300;
 }
 h5{
-font-size: 1rem;
-font-weight: 600;
+	font-size: 1rem;
+	font-weight: 600;
 }
 p {
-text-align: left;
+	text-align: left;
 }
 /*******
 * Code *
 *******/
 code{
-display: inline-block;
-padding: 0 0.25em;
-background-color: #f3f3f3;
-border: 1px solid #ddd;
-border-radius: 3px;
-font-family: "Droid Sans Mono","DejaVu Mono",mono;
-font-weight: normal;
-color: #403a36;
+	display: inline-block;
+	padding: 0 0.25em;
+	background-color: #f3f3f3;
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	font-family: "Droid Sans Mono","DejaVu Mono",mono;
+	font-weight: normal;
+	color: #403a36;
 }
 pre code{
-display: block;
-margin: 1em auto;
-overflow-x: scroll;
+	display: block;
+	margin: 1em auto;
+	overflow-x: scroll;
 }
 /***********
 * Keyboard *
 ***********/
 kbd{
-padding: 2px 4px;
-margin: 3px;
-background-color: #eee;
-background-image: linear-gradient(to bottom, #eee, #fff);
-border: 1px solid #a5a5a5;
-border-radius: 3px;
-box-shadow: inset 0 1px 0 0 #fff,
-inset 0 -2px 0px 0 #d9d9d9,
-0 1px 2px 0 rgba(0,0,0,0.1);
-font-family: inherit;
-font-size: inherit;
-font-weight: 500;
-color: #4d4d4d;
+	padding: 2px 4px;
+	margin: 3px;
+	background-color: #eee;
+	background-image: linear-gradient(to bottom, #eee, #fff);
+	border: 1px solid #a5a5a5;
+	border-radius: 3px;
+	box-shadow: inset 0 1px 0 0 #fff,
+	inset 0 -2px 0px 0 #d9d9d9,
+	0 1px 2px 0 rgba(0,0,0,0.1);
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: 500;
+	color: #4d4d4d;
 }
 /*********
 * Images *
 *********/
 img{
-display: block;
-margin: 1em auto;
-max-width: 100%;
+	display: block;
+	margin: 1em auto;
+	max-width: 100%;
 }
 /******************
 * Horizontal Rule *
 ******************/
 hr{
-margin: 2em;
-height: 1px;
-background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,0));
-border: 0;
+	margin: 2em;
+	height: 1px;
+	background-image: -webkit-linear-gradient(left, rgba(0,0,0,0), rgba(0,0,0,0.5), rgba(0,0,0,0));
+	border: 0;
 }

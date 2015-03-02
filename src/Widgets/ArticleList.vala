@@ -354,6 +354,7 @@ public class FeedReader.articleList : Gtk.Stack {
 						break;
 					
 					m_currentList.add(tmpRow);
+					m_displayed_articles++;
 					
 					if(add)
 						tmpRow.reveal(true);

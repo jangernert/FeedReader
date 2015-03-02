@@ -166,14 +166,13 @@ public class FeedReader.dbManager : GLib.Object {
 		
 		ThreadFunc<void*> run = () => {
 
-			string change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = \"unread\" ";
+			string change_feed_query = "";
 			if(increase == ArticleStatus.UNREAD){
-				change_feed_query = change_feed_query + "+ 1";
+				change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = \"unread\" + 1 WHERE \"feed_id\" = \"" + feedID + "\"";
 			}
 			else if(increase == ArticleStatus.READ){
-				change_feed_query = change_feed_query + "- 1";
+				change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = (CASE WHEN (\"unread\" > 0) THEN (\"unread\" - 1) ELSE \"unread\" END) WHERE \"feed_id\" = \"" + feedID + "\"";
 			} 
-			change_feed_query = change_feed_query + " WHERE \"feed_id\" = \"" + feedID + "\"";
 			executeSQL(change_feed_query);
 			
 
@@ -194,14 +193,13 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.reset ();
 
 
-			string change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" ";
+			string change_catID_query = "";
 			if(increase == ArticleStatus.UNREAD){
-				change_catID_query = change_catID_query + "+ 1";
+				change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" + 1 WHERE \"categorieID\" = \"" + catID + "\"";
 			}
 			else if(increase == ArticleStatus.READ){
-				change_catID_query = change_catID_query + "- 1";
+				change_catID_query = "UPDATE \"main\".\"categories\" SET \"unread\" = (CASE WHEN (\"unread\" > 0) THEN (\"unread\" - 1) ELSE \"unread\" END) WHERE \"categorieID\" = \"" + catID + "\"";
 			}
-			change_catID_query = change_catID_query + " WHERE \"categorieID\" = \"" + catID + "\"";
 			executeSQL(change_catID_query);
 
 			updateBadge();

@@ -331,15 +331,33 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 		stmt.reset ();
 	}
+
+	public string read_preview(string articleID)
+	{
+		string query = "SELECT preview FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\"";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK) {
+			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
+		}
+		
+		string result = "";
+		
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_text(0);
+		}
+		
+		return result;
+	}
 	
 	
-	public int preview_empty(string articleID)
+	public bool preview_empty(string articleID)
 	{
 		string query = "SELECT count(*) FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\" AND NOT preview = \"\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+			logger.print(LogMessage.ERROR, "checking for empty preview - %s".printf(sqlite_db.errmsg()));
 		}
 		
 		int result = 1;
@@ -348,104 +366,102 @@ public class FeedReader.dbManager : GLib.Object {
 			result = stmt.column_int(0);
 		}
 		
-		return result;
+		if(result == 1)
+			return false;
+		if(result == 0)
+			return true;
+
+		return true;
 	}
 
 
 	
-	public void write_article(string articleID, string feedID, string title, string author, string url, int unread, int marked, int insert_replace, string html, string tags, string preview = "")
+	public void write_articles(ref GLib.List<article> articles)
 	{
-		// FIXME check if preview already exists and dont generate it again
-		// SELECT count(*) FROM main.articles WHERE articleID = "34134" AND preview = ""
-		string output = _("No Preview Available");
-		int preview_exists = preview_empty(articleID);
 		
-		if(preview_exists == 0 && html != "")
-		{
-			string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
-			int outputfd = GLib.FileUtils.mkstemp(filename);
-			try{
-				if(preview == "")
-					GLib.FileUtils.set_contents(filename, html);
-				else
-					GLib.FileUtils.set_contents(filename, preview);
-			}catch(GLib.FileError e){
-				logger.print(LogMessage.ERROR, "error writing html to tmp file - %s".printf(e.message));
-			}
-			GLib.FileUtils.close(outputfd);
+		FeedReader.Utils.generatePreviews(ref articles);
+		FeedReader.Utils.checkHTML(ref articles);
 
-			string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", filename};
-			try{
-				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-			}catch(GLib.SpawnError e){
-				logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
-			}
+		executeSQL("BEGIN TRANSACTION");
 
-			string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
-			if(output.has_prefix(prefix))
-			{
-				output = output.slice(prefix.length, output.length);
-			}
 
-			int length = 300;
-			if(output.length < 300)
-				length = output.length;
+		string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
+		string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"tags\") ";
+		string values = "VALUES ($ARTICLEID, $FEEDID, $TITLE, $AUTHOR, $URL, $HTML, $PREVIEW, $UNREAD, $MARKED, $TAGS)";
+		string query = command + fields + values;
 
-			output = output.replace("\n"," ");
-			output = output.replace("_"," ");
-			output = output.slice(0, length);
-			output = output.slice(0, output.last_index_of(" "));
-			output = output.chug();
-		}
-		
-		string modified_html = _("No Text available for this article :(");
-		if(html != "")
-		{
-			modified_html = html.replace("src=\"//","src=\"http://");
-		}
-		
-		
-		string query = "";
-		if(insert_replace == DataBase.INSERT_OR_IGNORE)
-		{
-			string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
-			string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"tags\") ";
-			string values = "VALUES (\"" + articleID + "\", \"" + feedID + "\", $TITLE, $AUTHOR, \"" + url + "\", $HTML, $PREVIEW, " + unread.to_string() + ", " + marked.to_string() + ", \"" + tags + "\")";
-			
-			query = command + fields + values;
-		}
-		else if(insert_replace == DataBase.UPDATE_ROW)
-		{
-			query = "UPDATE \"main\".\"articles\" SET \"unread\" = " + unread.to_string() + ", \"marked\" = " + marked.to_string() + ", \"tags\" = \"" + tags + "\" WHERE \"articleID\"= \"" + articleID + "\"";
-		}
-						
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			warning("error writing article\nquery: %s\nhtml: %s\n", query, preview);
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		
-		if(insert_replace == DataBase.INSERT_OR_IGNORE)
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
+		int feedID_position = stmt.bind_parameter_index("$FEEDID");
+		int url_position = stmt.bind_parameter_index("$URL");
+		int unread_position = stmt.bind_parameter_index("$UNREAD");
+		int marked_position = stmt.bind_parameter_index("$MARKED");
+		int tags_position = stmt.bind_parameter_index("$TAGS");
+		int title_position = stmt.bind_parameter_index("$TITLE");
+		int html_position = stmt.bind_parameter_index("$HTML");
+		int preview_position = stmt.bind_parameter_index("$PREVIEW");
+		int author_position = stmt.bind_parameter_index("$AUTHOR");
+		assert (articleID_position > 0);
+		assert (feedID_position > 0);
+		assert (url_position > 0);
+		assert (unread_position > 0);
+		assert (marked_position > 0);
+		assert (tags_position > 0);
+		assert (title_position > 0);
+		assert (html_position > 0);
+		assert (preview_position > 0);
+		assert (author_position > 0);
+
+
+		foreach(var article in articles)
 		{
-			int param_position = stmt.bind_parameter_index ("$TITLE");
-			assert (param_position > 0);
-			stmt.bind_text (param_position, title);
-			param_position = stmt.bind_parameter_index ("$HTML");
-			assert (param_position > 0);
-			stmt.bind_text (param_position, modified_html);
-			param_position = stmt.bind_parameter_index ("$PREVIEW");
-			assert (param_position > 0);
-			stmt.bind_text (param_position, output);
-			param_position = stmt.bind_parameter_index ("$AUTHOR");
-			assert (param_position > 0);
-			stmt.bind_text (param_position, author);
+			stmt.bind_text(articleID_position, article.getArticleID());
+			stmt.bind_text(feedID_position, article.m_feedID);
+			stmt.bind_text(url_position, article.m_url);
+			stmt.bind_text(unread_position, article.m_unread.to_string());
+			stmt.bind_text(marked_position, article.m_marked.to_string());
+			stmt.bind_text(tags_position, article.m_tags);
+			stmt.bind_text(title_position, article.m_title);
+			stmt.bind_text(html_position, article.getHTML());
+			stmt.bind_text(preview_position, article.getPreview());
+			stmt.bind_text(author_position, article.getAuthor());
+
+			while(stmt.step () == Sqlite.ROW) {}
+			stmt.reset();
 		}
 		
-		while (stmt.step () == Sqlite.ROW) {
-			
+		
+
+		query = "UPDATE \"main\".\"articles\" SET \"unread\" = $UNREAD, \"marked\" = $MARKED, \"tags\" = $TAGS WHERE \"articleID\"= $ARTICLEID";
+		ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		unread_position = stmt.bind_parameter_index("$UNREAD");
+		marked_position = stmt.bind_parameter_index("$MARKED");
+		tags_position = stmt.bind_parameter_index("$TAGS");
+		articleID_position = stmt.bind_parameter_index("$ARTICLEID");
+		assert (unread_position > 0);
+		assert (marked_position > 0);
+		assert (tags_position > 0);
+		assert (articleID_position > 0);
+
+		foreach(var article in articles)
+		{
+			stmt.bind_text(unread_position, article.m_unread.to_string());
+			stmt.bind_text(marked_position, article.m_marked.to_string());
+			stmt.bind_text(tags_position, article.m_tags);
+			stmt.bind_text(articleID_position, article.getArticleID());
+
+			while(stmt.step () == Sqlite.ROW) {}
+			stmt.reset();
 		}
-		stmt.reset ();
+
+		executeSQL("COMMIT TRANSACTION");
 	}
 
 	

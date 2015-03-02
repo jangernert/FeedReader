@@ -339,10 +339,10 @@ public class FeedReader.articleList : Gtk.Stack {
 							                         item.m_feedID.to_string(),
 							                         item.m_url,
 							                         item.m_feedID,
-							                         item.m_articleID,
+							                         item.getArticleID(),
 							                         item.m_marked,
 							                         item.getSortID(),
-							                         item.m_preview
+							                         item.getPreview()
 							                        );
 					
 					while (Gtk.events_pending()) 
@@ -431,7 +431,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			foreach(Gtk.Widget row in articleChildList)
 			{
 				var tmpRow = (articleRow)row;
-				if(item.m_articleID == tmpRow.getID())
+				if(item.getArticleID() == tmpRow.getID())
 				{
 					tmpRow.updateUnread(item.m_unread);
 					found = true;
@@ -447,10 +447,10 @@ public class FeedReader.articleList : Gtk.Stack {
 					                             item.m_feedID.to_string(),
 					                             item.m_url,
 					                             item.m_feedID,
-					                             item.m_articleID,
+					                             item.getArticleID(),
 					                             item.m_marked,
 					                             item.getSortID(),
-					                             item.m_preview
+					                             item.getPreview()
 					                            );
 				int pos = 0;
 				bool added = false;

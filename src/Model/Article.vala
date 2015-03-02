@@ -1,10 +1,10 @@
 public class FeedReader.article : GLib.Object {
 
-	public string m_articleID { get; private set; }
+	private string m_articleID;
 	public string m_title { get; private set; }
 	public string m_url { get; private set; }
-	public string m_html { get; private set; }
-	public string m_preview { get; private set; }
+	private string m_html;
+	private string m_preview;
 	public string m_feedID { get; private set; }
 	public string m_tags { get; private set; }
 	private string m_author;
@@ -26,6 +26,31 @@ public class FeedReader.article : GLib.Object {
 		m_marked = marked;
 		m_sortID = sortID;
 		m_tags = tags;
+	}
+
+	public string getArticleID()
+	{
+		return m_articleID;
+	}
+
+	public string getHTML()
+	{
+		return m_html;
+	}
+
+	public void setHTML(string html)
+	{
+		m_html = html;
+	}
+
+	public string getPreview()
+	{
+		return m_preview;
+	}
+
+	public void setPreview(string preview)
+	{
+		m_preview = preview;
 	}
 	
 	public string getAuthor()

@@ -47,6 +47,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Model/Tag.vala
     src/Constants.vala
     src/DB_Manager.vala
+    src/Utils.vala
     src/Widgets/ArticleList.vala
     src/Widgets/ArticleRow.vala
     src/Widgets/ArticleView.vala
@@ -105,6 +106,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Daemon.vala
     src/DB_Manager.vala
     src/Logger.vala
+    src/Utils.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala

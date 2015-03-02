@@ -204,38 +204,9 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 		articles.reverse();
 			
-		// first write all new articles
-		foreach(article item in articles)
-		{
-			dataBase.write_article(	item.m_articleID,
-									item.m_feedID,
-									item.m_title,
-									item.getAuthor(),
-									item.m_url,
-									item.m_unread,
-									item.m_marked,
-									DataBase.INSERT_OR_IGNORE,
-									item.m_html,
-									item.m_tags,
-									item.m_preview);
-		}
-			
-			
-		// then only update marked and unread for all others
-		foreach(article item in articles)
-		{
-			dataBase.write_article(	item.m_articleID,
-									item.m_feedID,
-									item.m_title,
-									item.getAuthor(),
-									item.m_url,
-									item.m_unread,
-									item.m_marked,
-									DataBase.UPDATE_ROW,
-									item.m_html,
-									item.m_tags,
-									item.m_preview);
-		}
+		logger.print(LogMessage.DEBUG, "Write articles to db");
+		dataBase.write_articles(ref articles);
+		logger.print(LogMessage.DEBUG, "Finished writing articles to db");
 	}
 
 

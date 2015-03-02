@@ -100,7 +100,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		
 		string css;
 		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView-default.css", out css);
-		m_currentView.load_html("<style>" + css + "</style>" + Article.m_html, null);
+		m_currentView.load_html("<style>" + css + "</style>" + Article.getHTML(), null);
 		this.show_all();
 		
 		if(m_currentView == m_view1)		 this.set_visible_child_full("view1", Gtk.StackTransitionType.CROSSFADE);

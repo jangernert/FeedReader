@@ -1,7 +1,7 @@
 using GLib;
 using Gtk;
 
-public class FeedReader.readerUI : Gtk.ApplicationWindow 
+public class FeedReader.readerUI : Gtk.ApplicationWindow
 {
 	private readerHeaderbar m_headerbar;
 	private Gtk.HeaderBar m_simpleHeader;
@@ -11,23 +11,28 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private ContentPage m_content;
 	private InitSyncPage m_InitSync;
 	private SimpleAction m_login_action;
-	
+	private int m_width;
+	private int m_height;
+
 	public readerUI(rssReaderApp app)
 	{
 		Object (application: app, title: _("FeedReader"));
 		this.window_position = WindowPosition.CENTER;
-		
+
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.set_transition_duration(100);
-		
+
+		m_width = 0;
+		m_height = 0;
+
 		setupCSS();
 		setupLoginPage();
 		setupInitSyncPage();
 		setupResetPage();
 		setupContentPage();
 		onClose();
-		
+
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(app.sync);
 		m_headerbar.change_unread.connect((only_unread) => {
@@ -39,46 +44,84 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_headerbar.change_marked.connect((only_marked) => {
 			m_content.setOnlyMarked(only_marked);
 			m_content.clearArticleView();
-			m_content.newHeadlineList(); 
+			m_content.newHeadlineList();
 		});
-		
+
 		m_headerbar.search_term.connect((searchTerm) => {
 			m_content.setSearchTerm(searchTerm);
 			m_content.clearArticleView();
 			m_content.newHeadlineList();
 		});
-		
+
 		m_headerbar.notify["position"].connect(() => {
         	m_content.set_position(m_headerbar.get_position());
         });
-        
+
 		m_simpleHeader = new Gtk.HeaderBar ();
 		m_simpleHeader.show_close_button = true;
 		m_simpleHeader.set_title("FeedReader");
-		
+
 
 		m_login_action = new SimpleAction (_("reset"), null);
 		m_login_action.activate.connect (() => {
 			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		add_action(m_login_action);
-		
-		
+
+
 		if(settings_state.get_boolean("window-maximized"))
 		{
 			logger.print(LogMessage.DEBUG, "MainWindow: maximize");
 			this.maximize();
 		}
-		
-		
+
+		/*this.window_state_event.connect((event) => {
+
+			if(event.type == Gdk.EventType.WINDOW_STATE)
+			{
+				int windowWidth = event.window.get_width();
+				int windowHeight = event.window.get_height();
+
+				logger.print(LogMessage.DEBUG, "width: %i".printf(windowWidth));
+				logger.print(LogMessage.DEBUG, "height: %i".printf(windowHeight));
+
+				logger.print(LogMessage.DEBUG, "feedlist: %i".printf(m_content.getFeedListWidth()));
+				logger.print(LogMessage.DEBUG, "both: %i".printf(m_content.getArticlePlusFeedListWidth()));
+			}
+
+			return false;
+		});*/
+
+
+		/*this.configure_event.connect((event) => {
+
+			if(event.height != m_height || event.width != m_width)
+			{
+				logger.print(LogMessage.DEBUG, "configure event");
+				logger.print(LogMessage.DEBUG, "width: %i".printf(m_width));
+				logger.print(LogMessage.DEBUG, "height: %i".printf(m_height));
+
+				logger.print(LogMessage.DEBUG, "feedlist: %i".printf(m_content.getFeedListWidth()));
+				logger.print(LogMessage.DEBUG, "both: %i".printf(m_content.getArticlePlusFeedListWidth()));
+
+				m_content.setFeedListWidth(settings_state.get_int("feed-row-width"));
+				m_content.setArticlePlusFeedListWidth(settings_state.get_int("feeds-and-articles-width"));
+
+				m_width = event.window.get_width();
+				m_height = event.window.get_height();
+			}
+
+			return false;
+		});*/
+
+
 		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
-		//this.set_titlebar(m_headerbar);
 		this.set_titlebar(m_simpleHeader);
 		this.set_title ("FeedReader");
 		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
 		this.show_all();
-		
+
 		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS)
 		{
 			loadContent();
@@ -100,27 +143,34 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		m_headerbar.setRefreshButton(refreshing);
 	}
-	
+
 	public bool currentlyUpdating()
 	{
 		return m_headerbar.currentlyUpdating();
 	}
-	
+
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		if(m_stack.get_visible_child_name() == "initsync")
 			m_content.newFeedList();
-		
+		else
+			m_content.updateFeedList();
+
+
+		m_content.updateArticleList();
+
 		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_stack.set_visible_child_full("content", transition);
-		
+
 		if(!settings_state.get_boolean("currently-updating"))
 			m_headerbar.setButtonsSensitive(true);
-			
+
 		m_login_action.set_enabled(true);
+		m_headerbar.show_all();
 		this.set_titlebar(m_headerbar);
 	}
-	
+
 	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show login");
@@ -130,7 +180,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 	}
-	
+
 	private void showReset(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show reset");
@@ -139,7 +189,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 	}
-	
+
 	private void showWebLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show weblogin");
@@ -148,7 +198,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 	}
-	
+
 	private void showInitSync(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show initsync");
@@ -158,30 +208,27 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_titlebar(m_simpleHeader);
 		m_InitSync.start();
 	}
-	
+
 	private void onClose()
 	{
 		this.delete_event.connect(() => {
 			int windowWidth = 0;
 			int windowHeight = 0;
 			this.get_size(out windowWidth, out windowHeight);
-			logger.print(LogMessage.DEBUG, "width: %i".printf(windowWidth));
-			logger.print(LogMessage.DEBUG, "height: %i".printf(windowHeight));
 			settings_state.set_int("window-width", windowWidth);
 			settings_state.set_int("window-height", windowHeight);
 			settings_state.set_boolean("window-maximized", this.is_maximized);
-			
+
 			return false;
 		});
-		
-		
+
 		this.destroy.connect(() => {
 			int only_unread = 0;
 			if(m_headerbar.getOnlyUnread()) only_unread = 1;
 			int only_marked = 0;
 			if(m_headerbar.getOnlyMarked()) only_marked = 1;
-			
-			
+
+
 			settings_state.set_strv("expanded-categories", m_content.getExpandedCategories());
 			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
 			settings_state.set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
@@ -198,13 +245,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_string("search-term", m_headerbar.getSearchTerm());
 		});
 	}
-	
+
 	private void setupCSS()
 	{
 		try {
     		Gtk.CssProvider provider = new Gtk.CssProvider ();
     		provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
-                
+
 
 			weak Gdk.Display display = Gdk.Display.get_default ();
             weak Gdk.Screen screen = display.get_default_screen ();
@@ -213,7 +260,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			logger.print(LogMessage.WARNING, e.message);
 		}
 	}
-	
+
 	private void setupLoginPage()
 	{
 		m_error_bar = new Gtk.InfoBar();
@@ -221,27 +268,27 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		var error_content = m_error_bar.get_content_area();
 		m_ErrorMessage = new Gtk.Label("");
 		error_content.add(m_ErrorMessage);
-		m_error_bar.set_message_type(Gtk.MessageType.WARNING);		
+		m_error_bar.set_message_type(Gtk.MessageType.WARNING);
 		m_error_bar.set_show_close_button(true);
-		
+
 		m_error_bar.response.connect((response_id) => {
 			if(response_id == Gtk.ResponseType.CLOSE) {
 					m_error_bar.set_visible(false);
 			}
 		});
-		
+
 		var login = new LoginPage();
 		var WebLogin = new WebLoginPage();
 		login.loadLoginPage.connect((type) => {
 			WebLogin.loadPage(type);
 			showWebLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 		});
-		
+
 		var loginBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-		
+
 		loginBox.pack_start(m_error_bar, false, false, 0);
 		loginBox.pack_start(login, true, true, 0);
-		
+
 		login.submit_data.connect(() => {
 			settings_state.set_strv("expanded-categories", m_content.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
@@ -250,13 +297,18 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});
-		WebLogin.success.connect(loadContent);
+		WebLogin.success.connect(() => {
+			logger.print(LogMessage.DEBUG, "WebLogin: success");
+			settings_state.set_strv("expanded-categories", m_content.getDefaultExpandedCategories());
+			settings_state.set_string("feedlist-selected-row", "feed -4");
+			showInitSync();
+		});
 		m_stack.add_named(loginBox, "login");
 		m_stack.add_named(WebLogin, "WebLogin");
 		m_error_bar.set_visible(false);
 	}
-	
-	
+
+
 	private void setupResetPage()
 	{
 		var reset = new ResetPage();
@@ -268,23 +320,23 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 		});
 	}
-	
+
 	private void setupInitSyncPage()
 	{
 		m_InitSync = new InitSyncPage();
 		m_stack.add_named(m_InitSync, "initsync");
 	}
-	
+
 	private void setupContentPage()
 	{
 		m_content = new ContentPage();
 		m_stack.add_named(m_content, "content");
-		
+
 		m_content.notify["position"].connect(() => {
         	m_headerbar.set_position(m_content.get_position());
         });
 	}
-	
+
 	private void showErrorBar(int ErrorCode)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show error bar - errorCode = %i".printf(ErrorCode));
@@ -321,11 +373,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				m_error_bar.set_visible(false);
 				return;
 		}
-		
+
 		logger.print(LogMessage.DEBUG, "MainWindow: show error bar");
 		m_error_bar.set_visible(true);
 	}
-	
+
 	private void loadContent()
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: load content");
@@ -333,7 +385,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		dataBase.updateBadge.connect(() => {
 			feedDaemon_interface.updateBadge();
 		});
-		
+
 		showContent(Gtk.StackTransitionType.NONE);
 	}
 
@@ -342,7 +394,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		m_content.updateFeedList();
 	}
-	
+
 	public void updateFeedListCountUnread(string feedID, bool increase)
 	{
 		m_content.updateFeedListCountUnread(feedID, increase);
@@ -354,5 +406,5 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	}
 
 
-	 
+
 }

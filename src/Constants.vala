@@ -6,14 +6,14 @@ namespace FeedReader {
 		FEEDLY,
 		OWNCLOUD
 	}
-	
+
 	public enum LogLevel {
 		OFF,
 		ERROR,
 		MORE,
 		DEBUG
 	}
-	
+
 	public enum ConsoleColor {
         BLACK,
         RED,
@@ -24,7 +24,7 @@ namespace FeedReader {
         CYAN,
         WHITE,
     }
-	
+
 	public enum LogMessage {
 		ERROR,
 		WARNING,
@@ -41,20 +41,20 @@ namespace FeedReader {
 	}
 
 	namespace TTRSSSpecialID {
-		const int ARCHIVED = 0;
-		const int STARRED = -1;
-		const int PUBLISHED = -2;
-		const int FRESH = -3;
-		const int ALL = -4;
-		const int RECENTLY_READ = -6;
+		 const int ARCHIVED      = 0;
+		 const int STARRED       = -1;
+		 const int PUBLISHED     = -2;
+		 const int FRESH         = -3;
+		 const int ALL           = -4;
+		 const int RECENTLY_READ = -6;
 	}
 
 	namespace ArticleStatus {
-		const int READ = 8;
-		const int UNREAD = 9;
-		const int UNMARKED = 10;
-		const int MARKED = 11;
-		const int TOGGLE = 12;
+		 const int READ     = 8;
+		 const int UNREAD   = 9;
+		 const int UNMARKED = 10;
+		 const int MARKED   = 11;
+		 const int TOGGLE   = 12;
 	}
 
 	public enum LoginResponse {
@@ -72,25 +72,25 @@ namespace FeedReader {
 
 
 	namespace FeedlySecret {
-		const string base_uri = "http://cloud.feedly.com";
-		const string apiClientId = "boutroue";
-		const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
-		const string apiRedirectUri = "http://localhost";
-		const string apiAuthScope = "https://cloud.feedly.com/subscriptions";
+		 const string base_uri        = "http://cloud.feedly.com";
+		 const string apiClientId     = "boutroue";
+		 const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
+		 const string apiRedirectUri  = "http://localhost";
+		 const string apiAuthScope    = "https://cloud.feedly.com/subscriptions";
 	}
-	
+
 	namespace AboutInfo {
-		const string programmName = _("FeedReader");
-		const string copyright = "Copyright © 2014 Jan Lukas Gernert";
-		const string version = "0.2";
-		const string comments = _("Desktop Client for various RSS Services");
-		const string[] authors = { "Jan Lukas Gernert", null };
-		const string[] documenters = { "nobody", null };
-		const string[] artists = {"Jan Lukas Gernert", "Jorge Marques"};
-		const string iconName = "internet-news-reader";
-		const string translators = null;
-		const string website = null;
-		const string websiteLabel = null;
+		 const string programmName  = _("FeedReader");
+		 const string copyright     = "Copyright © 2014 Jan Lukas Gernert";
+		 const string version       = "0.2";
+		 const string comments      = _("Desktop Client for various RSS Services");
+		 const string[] authors     = { "Jan Lukas Gernert", null };
+		 const string[] documenters = { "nobody", null };
+		 const string[] artists     = {"Jan Lukas Gernert", "Jorge Marques"};
+		 const string iconName      = "internet-news-reader";
+		 const string translators   = null;
+		 const string website       = null;
+		 const string websiteLabel  = null;
 	}
 
 	public enum DataBase {
@@ -100,26 +100,26 @@ namespace FeedReader {
 	}
 
 	namespace FeedList {
-		const int ALL_FEEDS = 24;
-		const int SPACER = 25;
-		const int SEPERATOR = 26;
-		const int CATEGORY = 27;
-		const int FEED = 28;
-		const int HEADLINE = 29;
-		const int TAG = 30;
+		 const int ALL_FEEDS = 24;
+		 const int SPACER    = 25;
+		 const int SEPERATOR = 26;
+		 const int CATEGORY  = 27;
+		 const int FEED      = 28;
+		 const int HEADLINE  = 29;
+		 const int TAG       = 30;
 	}
 
 	namespace CategoryID {
-		const string NONE = "-99";
-		const string TTRSS_SPECIAL = "-1";
-		const string MASTER = "-2";
-		const string TAGS = "-3";
+		 const string NONE          = "-99";
+		 const string TTRSS_SPECIAL = "-1";
+		 const string MASTER        = "-2";
+		 const string TAGS          = "-3";
 	}
-	
+
 	namespace FeedID {
 		const string ALL = "-4";
 	}
-					
+
 	// tango colors
 	const string[] COLORS = {
 								"#edd400", // butter medium
@@ -130,7 +130,7 @@ namespace FeedReader {
 								"#75507b", // plum medium
 								"#cc0000", // scarlet red medium
 								"#d3d7cf", // aluminium medium
-														
+
 								"#fce94f", // butter light
 								"#fcaf3e", // orange light
 								"#e9b96e", // chocolate light
@@ -139,7 +139,7 @@ namespace FeedReader {
 								"#ad7fa8", // plum light
 								"#ef2929", // scarlet red light
 								"#eeeeec", // aluminium light
-							
+
 								"#c4a000", // butter dark
 								"#ce5c00", // orange dark
 								"#8f5902", // chocolate dark
@@ -150,5 +150,3 @@ namespace FeedReader {
 								"#babdb6"  // aluminium dark
 							};
 }
-
-

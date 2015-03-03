@@ -17,7 +17,7 @@ public class FeedReader.categorieRow : baseRow {
 	public signal void collapse(bool collapse, string catID);
 
 	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
-	
+
 		this.get_style_context().add_class("feed-list-row");
 		this.get_style_context().remove_class("button");
 		m_level = level;
@@ -35,7 +35,7 @@ public class FeedReader.categorieRow : baseRow {
 		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		
+
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
 		m_stack.set_transition_duration(0);
@@ -44,12 +44,12 @@ public class FeedReader.categorieRow : baseRow {
 		m_icon_expanded_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down-hover.svg");
 		m_icon_collapsed = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left.svg");
 		m_icon_collapsed_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left-hover.svg");
-		
+
 		m_stack.add_named(m_icon_expanded, "expanded");
 		m_stack.add_named(m_icon_expanded_hover, "expanded_hover");
 		m_stack.add_named(m_icon_collapsed, "collapsed");
 		m_stack.add_named(m_icon_collapsed_hover, "collapsed_hover");
-		
+
 		m_eventbox.add(m_stack);
 
 		m_label = new Gtk.Label(m_name);
@@ -57,14 +57,14 @@ public class FeedReader.categorieRow : baseRow {
 		m_label.set_size_request (0, rowhight);
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
 		m_label.set_alignment(0, 0.5f);
-		
+
 		int count = 0;
 
 		m_eventbox.button_press_event.connect(() => {
 			expand_collapse();
 			return true;
 		});
-		
+
 		m_eventbox.enter_notify_event.connect(onEnter);
 		m_eventbox.leave_notify_event.connect(onLeave);
 
@@ -80,7 +80,7 @@ public class FeedReader.categorieRow : baseRow {
 		m_unread.set_size_request (0, rowhight);
 		m_unread.set_alignment(0.8f, 0.5f);
 		set_unread_count(m_unread_count);
-		
+
 		m_box.pack_start(m_spacer, false, false, 0);
 		m_box.pack_start(m_eventbox, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
@@ -89,7 +89,7 @@ public class FeedReader.categorieRow : baseRow {
 		m_revealer.set_reveal_child(false);
 		this.add(m_revealer);
 		this.show_all();
-		
+
 		if(m_collapsed)
 			m_stack.set_visible_child_name("collapsed");
 		else
@@ -122,13 +122,12 @@ public class FeedReader.categorieRow : baseRow {
 				m_stack.set_visible_child_name("collapsed");
 			}
 		}
-		
+
 		collapse(m_collapsed, m_categorieID);
 	}
-	
+
 	private bool onEnter()
 	{
-		print("enter\n");
 		m_hovered = true;
 		if(m_collapsed)
 		{
@@ -141,10 +140,9 @@ public class FeedReader.categorieRow : baseRow {
 		this.show_all();
 		return true;
 	}
-	
+
 	private bool onLeave()
 	{
-		print("leave\n");
 		m_hovered = false;
 		if(m_collapsed)
 		{
@@ -162,7 +160,7 @@ public class FeedReader.categorieRow : baseRow {
 	{
 		return m_categorieID;
 	}
-	
+
 	public string getName()
 	{
 		return m_name;
@@ -172,7 +170,7 @@ public class FeedReader.categorieRow : baseRow {
 	{
 		return m_parentID;
 	}
-	
+
 	public int getOrder()
 	{
 		return m_orderID;
@@ -199,4 +197,3 @@ public class FeedReader.categorieRow : baseRow {
 	}
 
 }
-

@@ -29,45 +29,43 @@ namespace FeedReader {
 	public class rssReaderApp : Gtk.Application {
 
 		private readerUI m_window;
-		 
+
 		protected override void startup () {
 			startDaemon();
-			
+
 			dataBase = new dbManager();
 			dataBase.init();
 
-		
+
 			settings_general = new GLib.Settings ("org.gnome.feedreader");
 			settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 			settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 			settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
-			
+
 			logger = new Logger();
-		
+
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
-			
+
 				feedDaemon_interface.updateFeedlistUnreadCount.connect((feedID, increase) => {
 				    m_window.updateFeedListCountUnread(feedID, increase);
 				});
-			
+
 				feedDaemon_interface.syncStarted.connect(() => {
 				    m_window.setRefreshButton(true);
 				});
-				
+
 				feedDaemon_interface.syncFinished.connect(() => {
 				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
-					m_window.updateFeedList();
-					m_window.updateArticleList();
-				    m_window.setRefreshButton(false);
 				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT);
+					m_window.setRefreshButton(false);
 				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);
 			}
 			base.startup();
 		}
-	
+
 		protected override void activate ()
 		{
 			if (m_window == null)
@@ -75,7 +73,7 @@ namespace FeedReader {
 				m_window = new readerUI(this);
 				m_window.set_icon_name ("internet-news-reader");
 			}
-		
+
 			m_window.show_all();
 			feedDaemon_interface.updateBadge();
 		}
@@ -88,7 +86,7 @@ namespace FeedReader {
 				logger.print(LogMessage.ERROR, e.message);
 			}
 		}
-	
+
 		public void startDaemon()
 		{
 			string[] spawn_args = {"feedreader-daemon"};
@@ -115,49 +113,49 @@ namespace FeedReader {
 			print(e.message + "\n");
 			return 0;
 		}
-		
+
 		if(version)
 		{
 			stdout.printf("Version: %s\n", AboutInfo.version);
 			return 0;
 		}
-		
+
 		if(about)
 		{
 			show_about(args);
 			return 0;
 		}
-	
+
 		var app = new rssReaderApp();
 		app.run(args);
 
 		return 0;
 	}
-	
+
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
 		{ null }
 	};
-	
+
 	private static bool version = false;
 	private static bool about = false;
-	
+
 	static void show_about(string[] args)
 	{
-		Gtk.init(ref args);                      
+		Gtk.init(ref args);
         Gtk.AboutDialog dialog = new Gtk.AboutDialog();
-        
+
         dialog.response.connect ((response_id) => {
 			if(response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
 				Gtk.main_quit();
 		});
-		
+
 		dialog.artists = AboutInfo.artists;
 		dialog.authors = AboutInfo.authors;
 		dialog.documenters = null;
 		dialog.translator_credits = AboutInfo.translators;
-		
+
 		dialog.program_name = AboutInfo.programmName;
 		dialog.comments = AboutInfo.comments;
 		dialog.copyright = AboutInfo.copyright;
@@ -169,9 +167,8 @@ namespace FeedReader {
 		dialog.website = AboutInfo.website;
 		dialog.website_label = AboutInfo.websiteLabel;
 		dialog.present ();
-         
+
 		Gtk.main();
 	}
 
 }
-

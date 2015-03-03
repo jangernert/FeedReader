@@ -6,19 +6,20 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	private uint64 m_ttrss_apilevel;
 	private Json.Parser m_parser;
 
-	
+
 	public ttrss_interface ()
 	{
 		m_parser = new Json.Parser ();
 	}
 
-	
+
 	public int login()
 	{
+		logger.print(LogMessage.DEBUG, "TTRSS: login");
 		string username = ttrss_utils.getUser();
 		string passwd = ttrss_utils.getPasswd();
 		m_ttrss_url = ttrss_utils.getURL();
-		
+
 		if(m_ttrss_url == "" && username == "" && passwd == ""){
 			m_ttrss_url = "example-host/tt-rss";
 			return LoginResponse.ALL_EMPTY;
@@ -33,13 +34,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			return LoginResponse.MISSING_PASSWD;
 		}
 
-		
+
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("op", "login");
 		message.add_string("user", username);
 		message.add_string("password", passwd);
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -57,7 +58,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			return LoginResponse.NO_CONNECTION;
 		}
-		
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
@@ -68,7 +69,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "isLoggedIn");
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -78,7 +79,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
-	 
+
 	public int getUnreadCount()
 	{
 		int unread = 0;
@@ -87,7 +88,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getUnread");
 			int error = message.send();
-		
+
 			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_object();
@@ -95,7 +96,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			}
 			logger.print(LogMessage.INFO, "There are %i unread Feeds".printf(unread));
 		}
-		
+
 		return unread;
 	}
 
@@ -114,19 +115,19 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				message.add_string("op", "getFeeds");
 				message.add_int("cat_id", int.parse(item.m_categorieID));
 				int error = message.send();
-		
+
 				if(error == ConnectionError.SUCCESS)
 				{
 					var response = message.get_response_array();
 					var feed_count = response.get_length();
 					string icon_url = m_ttrss_url.replace("api/", getIconDir());
-					
+
 					for(uint i = 0; i < feed_count; i++)
 					{
 						var feed_node = response.get_object_element(i);
 						string feed_id = feed_node.get_int_member("id").to_string();
 						ttrss_utils.downloadIcon(feed_id, icon_url);
-				
+
 						dataBase.write_feed(feed_id,
 										  feed_node.get_string_member("title"),
 										  feed_node.get_string_member("feed_url"),
@@ -134,14 +135,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										  int.parse(feed_node.get_int_member("unread").to_string()),
 										  feed_node.get_int_member("cat_id").to_string());
 					}
-				}	
+				}
 			}
-				
+
 			dataBase.delete_unsubscribed_feeds();
 		}
 	}
-	
-	
+
+
 	public void getTags()
 	{
 		if(isloggedin())
@@ -151,12 +152,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getLabels");
 			int error = message.send();
-		
+
 			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_array();
 				var tag_count = response.get_length();
-				
+
 				for(uint i = 0; i < tag_count; ++i)
 				{
 					var tag_node = response.get_object_element(i);
@@ -166,11 +167,11 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					dataBase.update_tag(tagID);
 				}
 			}
-				
+
 			dataBase.delete_nonexisting_tags();
 		}
 	}
-	
+
 
 	public string getIconDir()
 	{
@@ -178,7 +179,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getConfig");
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -194,13 +195,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		if(isloggedin())
 		{
 			dataBase.reset_exists_flag();
-				
+
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getFeedTree");
 			message.add_bool("include_empty", false);
 			int error = message.send();
-		
+
 			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_object();
@@ -230,7 +231,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				int unread_count = int.parse(categorie_node.get_int_member("unread").to_string());
 				string catID = categorie_node.get_string_member("id");
 				string categorieID = catID.slice(4, catID.length);
-				
+
 				if(title == "Uncategorized")
 				{
 					unread_count = getUncategorizedUnread();
@@ -241,8 +242,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			}
 		}
 	}
-	
-	
+
+
 	// FIXME: workaround for possible bug in tt-rss api -----------------------------------------------------------------------------
 	private int getUncategorizedUnread()
 	{
@@ -251,12 +252,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("op", "getCounters");
 		message.add_string("output_mode", "c");
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var categorie_count = response.get_length();
-			
+
 			for(int i = 0; i < categorie_count; i++)
 			{
 				var categorie_node = response.get_object_element(i);
@@ -272,7 +273,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				}
 			}
 		}
-		
+
 		return 0;
 	}
 	//--------------------------------------------------------------------------------------------------------------------------------
@@ -285,12 +286,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("op", "getCategories");
 		message.add_bool("include_empty", false);
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
 			var categorie_count = response.get_length();
-			
+
 			for(int i = 0; i < categorie_count; i++)
 			{
 				var categorie_node = response.get_object_element(i);
@@ -299,21 +300,21 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			}
 		}
 	}
-	
-	
+
+
 	public void getArticles(int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
-			
+
 		message.add_int("limit", limit);
 		message.add_int("skip", skip);
-		
-		
+
+
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_array();
@@ -322,14 +323,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			logger.print(LogMessage.DEBUG, "TTRSS sync: skip: %i".printf(skip));
 			GLib.List<article> articles = new GLib.List<article>();
 			string title, author, url, html;
-			
-			
-			
-			
+
+
+
+
 			for(uint i = 0; i < headline_count; i++)
 			{
 				var headline_node = response.get_object_element(i);
-				
+
 				if(!dataBase.article_exists(headline_node.get_int_member("id").to_string()))
 				{
 					getArticle( int.parse(headline_node.get_int_member("id").to_string()),
@@ -339,24 +340,24 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				{
 					title = author = url = html = "";
 				}
-					
-				
+
+
 				string tagString = "";
-				
+
 				if(headline_node.has_member("labels"))
 				{
 					var tags = headline_node.get_array_member("labels");
-					
+
 					uint tagCount = 0;
 					if(tags != null)
 						tagCount = tags.get_length();
-					
+
 					for(int j = 0; j < tagCount; ++j)
 					{
 						tagString = tagString + tags.get_array_element(j).get_int_element(0).to_string() + ",";
 					}
 				}
-				
+
 				articles.append(new article(
 										headline_node.get_int_member("id").to_string(),
 										headline_node.get_string_member("title").replace("&",""),
@@ -370,16 +371,16 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										-1,
 										tagString
 								));
-				
+
 			}
 			logger.print(LogMessage.DEBUG, "Finished fetching articles");
-			
+
 			articles.reverse();
-			
+
 			logger.print(LogMessage.DEBUG, "Write articles to db");
 			dataBase.write_articles(ref articles);
 			logger.print(LogMessage.DEBUG, "Finished writing articles to db");
-			
+
 			int maxArticles = settings_general.get_int("max-articles");
 			if(headline_count == 200 && (skip+200) < maxArticles)
 			{
@@ -395,7 +396,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			}
 		}
 	}
-	
+
 	// currently not used - tt-rss server needs newsplusplus extention
 	/*public void updateArticles(int feedID = TTRSSSpecialID.ALL)
 	{
@@ -403,7 +404,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			int limit = 2 * settings_general.get_int("max-articles");
 			uint headline_count;
-				
+
 			// update unread
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
@@ -412,14 +413,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			message.add_int("limit", limit);
 			message.add_string("view_mode", "unread");
 			int error = message.send();
-		
+
 			if(error == ConnectionError.SUCCESS)
 			{
 				dataBase.markReadAllArticles();
 				var response = message.get_response_array();
 				headline_count = response.get_length();
 				logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to unread".printf(headline_count));
-					
+
 				for(uint i = 0; i < headline_count; i++)
 				{
 					var headline_node = response.get_object_element(i);
@@ -428,7 +429,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					});
 				}
 			}
-				
+
 
 			// update marked
 			var message2 = new ttrss_message(m_ttrss_url);
@@ -438,14 +439,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			message2.add_int("limit", limit);
 			message2.add_string("view_mode", "marked");
 			error = message2.send();
-		
+
 			if(error == ConnectionError.SUCCESS)
 			{
 				dataBase.unmarkAllArticles();
 				var response2 = message2.get_response_array();
 				headline_count = response2.get_length();
 				logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to marked".printf(headline_count));
-					
+
 				for(uint i = 0; i < headline_count; i++)
 				{
 					var headline_node = response2.get_object_element(i);
@@ -457,11 +458,11 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 	}*/
 
-	
+
 	public void getArticle(int articleID, out string title, out string author, out string url, out string html)
 	{
 		title = author = url = html = "error";
-		
+
 		if(isloggedin())
 		{
 			var message = new ttrss_message(m_ttrss_url);
@@ -469,12 +470,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			message.add_string("op", "getArticle");
 			message.add_int("article_id", articleID);
 			int error = message.send();
-		
+
 			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_array();
 				var article_node = response.get_object_element(0);
-			
+
 				title = article_node.get_string_member("title");
 				url = article_node.get_string_member("link");
 				author = article_node.get_string_member("author");
@@ -497,7 +498,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			message.add_int("mode", 0);
 		message.add_int("field", 2);
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -522,7 +523,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			message.add_int("mode", 0);
 		message.add_int("field", 0);
 		int error = message.send();
-		
+
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
@@ -533,4 +534,3 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return return_value;
 	}
 }
-

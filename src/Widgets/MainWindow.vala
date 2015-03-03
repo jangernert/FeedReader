@@ -11,8 +11,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private ContentPage m_content;
 	private InitSyncPage m_InitSync;
 	private SimpleAction m_login_action;
-	private int m_width;
-	private int m_height;
 
 	public readerUI(rssReaderApp app)
 	{
@@ -22,9 +20,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.set_transition_duration(100);
-
-		m_width = 0;
-		m_height = 0;
 
 		setupCSS();
 		setupLoginPage();
@@ -74,45 +69,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			logger.print(LogMessage.DEBUG, "MainWindow: maximize");
 			this.maximize();
 		}
-
-		/*this.window_state_event.connect((event) => {
-
-			if(event.type == Gdk.EventType.WINDOW_STATE)
-			{
-				int windowWidth = event.window.get_width();
-				int windowHeight = event.window.get_height();
-
-				logger.print(LogMessage.DEBUG, "width: %i".printf(windowWidth));
-				logger.print(LogMessage.DEBUG, "height: %i".printf(windowHeight));
-
-				logger.print(LogMessage.DEBUG, "feedlist: %i".printf(m_content.getFeedListWidth()));
-				logger.print(LogMessage.DEBUG, "both: %i".printf(m_content.getArticlePlusFeedListWidth()));
-			}
-
-			return false;
-		});*/
-
-
-		/*this.configure_event.connect((event) => {
-
-			if(event.height != m_height || event.width != m_width)
-			{
-				logger.print(LogMessage.DEBUG, "configure event");
-				logger.print(LogMessage.DEBUG, "width: %i".printf(m_width));
-				logger.print(LogMessage.DEBUG, "height: %i".printf(m_height));
-
-				logger.print(LogMessage.DEBUG, "feedlist: %i".printf(m_content.getFeedListWidth()));
-				logger.print(LogMessage.DEBUG, "both: %i".printf(m_content.getArticlePlusFeedListWidth()));
-
-				m_content.setFeedListWidth(settings_state.get_int("feed-row-width"));
-				m_content.setArticlePlusFeedListWidth(settings_state.get_int("feeds-and-articles-width"));
-
-				m_width = event.window.get_width();
-				m_height = event.window.get_height();
-			}
-
-			return false;
-		});*/
 
 
 		this.add(m_stack);
@@ -264,7 +220,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void setupLoginPage()
 	{
 		m_error_bar = new Gtk.InfoBar();
-		m_error_bar.set_visible(false);
 		var error_content = m_error_bar.get_content_area();
 		m_ErrorMessage = new Gtk.Label("");
 		error_content.add(m_ErrorMessage);

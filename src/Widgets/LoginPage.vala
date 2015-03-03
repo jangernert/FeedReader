@@ -292,46 +292,47 @@ public class FeedReader.LoginPage : Gtk.Alignment {
 	private void write_login_data()
 	{
 		logger.print(LogMessage.DEBUG, "write login data");
-		if(m_comboBox.get_active() != -1) {
-			switch(m_comboBox.get_active())
-			{
-				case Backend.TTRSS:
-					settings_general.set_enum("account-type", Backend.TTRSS);
-					string url = m_ttrss_url_entry.get_text();
-					settings_ttrss.set_string("url", url);
-					settings_ttrss.set_string("username", m_ttrss_user_entry.get_text());
-					var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-								                      "URL", Secret.SchemaAttributeType.STRING,
-								                      "Username", Secret.SchemaAttributeType.STRING);
-					var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-					attributes["URL"] = url;
-					attributes["Username"] = m_ttrss_user_entry.get_text();
-					try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
-					catch(GLib.Error e){}
-					break;
+		switch(m_comboBox.get_active())
+		{
+			case Backend.TTRSS:
+				settings_general.set_enum("account-type", Backend.TTRSS);
+				string url = m_ttrss_url_entry.get_text();
+				settings_ttrss.set_string("url", url);
+				settings_ttrss.set_string("username", m_ttrss_user_entry.get_text());
+				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+							                      "URL", Secret.SchemaAttributeType.STRING,
+							                      "Username", Secret.SchemaAttributeType.STRING);
+				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["URL"] = url;
+				attributes["Username"] = m_ttrss_user_entry.get_text();
+				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
+				catch(GLib.Error e){}
+				break;
 
-				case Backend.FEEDLY:
-					logger.print(LogMessage.DEBUG, "write type feedly");
-					settings_general.set_enum("account-type", Backend.FEEDLY);
-					//settings_feedly.set_string("feedly-api-code", m_feedly_api_code);
-					loadLoginPage(Backend.FEEDLY);
-					return;
-
-				case Backend.OWNCLOUD:
-					settings_general.set_enum("account-type", Backend.OWNCLOUD);
-					submit_data();
-					break;
-			}
-
-			var status = feedDaemon_interface.login(m_comboBox.get_active());
-			logger.print(LogMessage.DEBUG, "LoginPage: status = %i".printf(status));
-			if(status == LoginResponse.SUCCESS)
-			{
-				submit_data();
+			case Backend.FEEDLY:
+				logger.print(LogMessage.DEBUG, "write type feedly");
+				settings_general.set_enum("account-type", Backend.FEEDLY);
+				//settings_feedly.set_string("feedly-api-code", m_feedly_api_code);
+				loadLoginPage(Backend.FEEDLY);
 				return;
-			}
 
-			loginError(status);
+			case Backend.OWNCLOUD:
+				settings_general.set_enum("account-type", Backend.OWNCLOUD);
+				break;
+
+			case Backend.NONE:
+				settings_general.set_enum("account-type", Backend.NONE);
+				break;
 		}
+
+		var status = feedDaemon_interface.login(m_comboBox.get_active());
+		logger.print(LogMessage.DEBUG, "LoginPage: status = %i".printf(status));
+		if(status == LoginResponse.SUCCESS)
+		{
+			submit_data();
+			return;
+		}
+
+		loginError(status);
 	}
 }

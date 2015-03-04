@@ -130,6 +130,52 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
+	public async void setFeedRead(string feedID)
+	{
+		SourceFunc callback = setFeedRead.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.markFeedRead(feedID, false);
+					break;
+
+				case Backend.FEEDLY:
+					m_feedly.mark_as_read(feedID, "feeds", ArticleStatus.READ);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("setFeedRead", run);
+		yield;
+	}
+
+	public async void setCategorieRead(string catID)
+	{
+		SourceFunc callback = setCategorieRead.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.markFeedRead(catID, true);
+					break;
+
+				case Backend.FEEDLY:
+					m_feedly.mark_as_read(catID, "categories", ArticleStatus.READ);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("setCategorieRead", run);
+		yield;
+	}
+
 
 	public static void sendNotification(uint headline_count)
 	{

@@ -113,4 +113,9 @@ public class FeedReader.ttrss_message : GLib.Object {
 	{
 		return m_message_string.str;
 	}
+
+	public void printResponse()
+	{
+		logger.print(LogMessage.DEBUG, (string)m_message_soup.response_body.flatten().data);
+	}
 }

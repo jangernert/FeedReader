@@ -455,7 +455,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}*/
 
 
-	public void getArticle(int articleID, out string title, out string author, out string url, out string html)
+	private void getArticle(int articleID, out string title, out string author, out string url, out string html)
 	{
 		title = author = url = html = "error";
 

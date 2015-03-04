@@ -23,7 +23,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	private bool m_limitScroll;
 	private int m_threadCount;
 	public signal void row_activated(articleRow? row);
-	
+
 
 	public articleList () {
 		m_lmit = 0.8;
@@ -34,14 +34,14 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_limit = 15;
 		m_limitScroll = false;
 		m_threadCount = 0;
-		
-		
+
+
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(40, 40);
 		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
 		center.set_padding(20, 20, 20, 20);
 		center.add(m_spinner);
-		
+
 		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
 		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
 		m_emptyList.get_style_context().add_class("emptyView");
@@ -52,22 +52,22 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_emptyList.set_margin_left(30);
 		m_emptyList.set_margin_right(30);
 		m_emptyList.set_justify(Gtk.Justification.CENTER);
-		
+
 		m_List1 = new Gtk.ListBox();
 		m_List1.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		m_List1.get_style_context().add_class("article-list");
 		m_List2 = new Gtk.ListBox();
 		m_List2.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		m_List2.get_style_context().add_class("article-list");
-		
-		
+
+
 		m_scroll1 = new Gtk.ScrolledWindow(null, null);
 		m_scroll1.set_size_request(400, 500);
 		m_scroll1.add(m_List1);
 		m_scroll2 = new Gtk.ScrolledWindow(null, null);
 		m_scroll2.set_size_request(400, 500);
 		m_scroll2.add(m_List2);
-		
+
 
 		m_scroll1_adjustment = m_scroll1.get_vadjustment();
 		m_scroll1_adjustment.value_changed.connect(() => {
@@ -79,7 +79,7 @@ public class FeedReader.articleList : Gtk.Stack {
 				createHeadlineList(true);
 			}
 		});
-		
+
 		m_scroll2_adjustment = m_scroll2.get_vadjustment();
 		m_scroll2_adjustment.value_changed.connect(() => {
 			var current = m_scroll2_adjustment.get_value();
@@ -90,7 +90,7 @@ public class FeedReader.articleList : Gtk.Stack {
 				createHeadlineList(true);
 			}
 		});
-		
+
 
 		m_List1.row_activated.connect((row) => {
 			row_activated((articleRow)row);
@@ -103,12 +103,12 @@ public class FeedReader.articleList : Gtk.Stack {
 			key_pressed(event);
 			return true;
 		});
-		
+
 		m_List2.key_press_event.connect((event) => {
 			key_pressed(event);
 			return true;
 		});
-		
+
 		m_currentList = m_List1;
 		m_currentScroll = m_scroll1;
 		m_current_adjustment = m_scroll1_adjustment;
@@ -120,7 +120,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		this.add_named(center, "spinner");
 		this.add_named(m_emptyList, "empty");
 	}
-	
+
 	private void key_pressed(Gdk.EventKey event)
 	{
 		if(event.keyval == Gdk.Key.Down)
@@ -133,7 +133,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	private void move(bool down)
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
-		
+
 
 		var ArticleListChildren = m_currentList.get_children();
 
@@ -149,11 +149,11 @@ public class FeedReader.articleList : Gtk.Stack {
 			articleRow current_article = ArticleListChildren.nth_data(current) as articleRow;
 			m_currentList.select_row(current_article);
 			row_activated(current_article);
-			
+
 			var currentPos = m_current_adjustment.get_value();
 			var max = m_current_adjustment.get_upper();
 			var offset = (max)/ArticleListChildren.length();
-			
+
 			if(down)
 			{
 				m_current_adjustment.set_value(currentPos + offset);
@@ -162,26 +162,26 @@ public class FeedReader.articleList : Gtk.Stack {
 			{
 				m_current_adjustment.set_value(currentPos - offset);
 			}
-			
+
 			m_currentScroll.set_vadjustment(m_current_adjustment);
 			current_article.activate();
 		}
 	}
-	
-	
+
+
 	public int getAmountOfRowsToLoad()
 	{
 		return (int)m_currentList.get_children().length();
 	}
-	
-	
+
+
 	private void restoreSelectedRow()
 	{
 		string selectedRow = settings_state.get_string("articlelist-selected-row");
-		
+
 		if(selectedRow != "")
 		{
-			var FeedChildList = m_currentList.get_children();	
+			var FeedChildList = m_currentList.get_children();
 			foreach(Gtk.Widget row in FeedChildList)
 			{
 				var tmpRow = row as articleRow;
@@ -195,37 +195,37 @@ public class FeedReader.articleList : Gtk.Stack {
 			}
 		}
 	}
-	
+
 
 	void restoreScrollPos(Object sender, ParamSpec property)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: restore ScrollPos");
 		m_current_adjustment.notify["upper"].disconnect(restoreScrollPos);
 		setScrollPos(settings_state.get_double("articlelist-scrollpos"));
-		
+
 		settings_state.set_int("articlelist-new-rows", 0);
 		settings_state.set_int("articlelist-row-amount", 15);
 		settings_state.set_double("articlelist-scrollpos",  0);
 	}
-		
-	
+
+
 	private void setScrollPos(double pos)
 	{
 		double RowVSpace = 102;
 		double additionalScroll = RowVSpace * settings_state.get_int("articlelist-new-rows");
 		double newPos = pos + additionalScroll;
-		
+
 		m_current_adjustment = m_currentScroll.get_vadjustment();
 		m_current_adjustment.set_value(newPos);
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 	}
-	
-	
+
+
 	public double getScrollPos()
 	{
 		return m_current_adjustment.get_value();
 	}
-	
+
 	private int shortenArticleList()
 	{
 		double RowVSpace = 102;
@@ -237,7 +237,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 		else if(settings_state.get_int("articlelist-row-amount") == 0)
 			return 15;
-		
+
 		return settings_state.get_int("articlelist-row-amount");
 	}
 
@@ -251,7 +251,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	{
 		m_only_marked = only_marked;
 	}
-	
+
 	public void setSearchTerm(string searchTerm)
 	{
 		m_searchTerm = searchTerm;
@@ -261,21 +261,21 @@ public class FeedReader.articleList : Gtk.Stack {
 	{
 		m_current_feed_selected = feedID;
 	}
-	
+
 	public void setSelectedType(int type)
 	{
 		m_IDtype = type;
 	}
-	
+
 	public string getSelectedArticle()
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 		if(selected_row != null)
 			return selected_row.getID();
-		
+
 		if(m_currentList.get_children().length() == 0)
 			return "empty";
-		
+
 		return "";
 	}
 
@@ -284,20 +284,20 @@ public class FeedReader.articleList : Gtk.Stack {
 	{
 		SourceFunc callback = createHeadlineList.callback;
 		GLib.List<article> articles = new GLib.List<article>();
-		
+
 		logger.print(LogMessage.DEBUG, "create new HeadlineList");
 		m_threadCount++;
 		int threadID = m_threadCount;
 		bool hasContent = true;
-		
+
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll();
-		
+
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
 			logger.print(LogMessage.DEBUG, "limit: " + m_limit.to_string());
-		
+
 			logger.print(LogMessage.DEBUG, "load articles from db");
 			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
 			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.length().to_string());
@@ -305,34 +305,34 @@ public class FeedReader.articleList : Gtk.Stack {
 			{
 				hasContent = false;
 			}
-			
+
 			Idle.add((owned) callback);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
-		
+
 		var thread = new GLib.Thread<void*>("createHeadlineList", run);
 		yield;
-		
-		
+
+
 		if(!(threadID < m_threadCount))
 		{
 			if(hasContent)
 			{
 				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", Gtk.StackTransitionType.CROSSFADE);
 				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
-				
+
 				//foreach(articleRow row in rows)
 				foreach(var item in articles)
 				{
-					while (Gtk.events_pending()) 
+					while (Gtk.events_pending())
 					{
 						Gtk.main_iteration();
 					}
-					
+
 					if(threadID < m_threadCount)
 						break;
-					
+
 					var tmpRow = new articleRow(
 							                         item.m_title,
 							                         item.m_unread,
@@ -344,34 +344,34 @@ public class FeedReader.articleList : Gtk.Stack {
 							                         item.getSortID(),
 							                         item.getPreview()
 							                        );
-					
-					while (Gtk.events_pending()) 
+
+					while (Gtk.events_pending())
 					{
 						Gtk.main_iteration();
 					}
-					
+
 					if(threadID < m_threadCount)
 						break;
-					
+
 					m_currentList.add(tmpRow);
 					m_displayed_articles++;
-					
+
 					if(add)
 						tmpRow.reveal(true);
 					else
 						tmpRow.reveal(true, 150);
 				}
-		
+
 				if(!add)
 				{
 					m_current_adjustment.notify["upper"].connect(restoreScrollPos);
 					restoreSelectedRow();
 				}
-		
+
 				if(settings_state.get_boolean("no-animations"))
 					settings_state.set_boolean("no-animations", false);
 			}
-			else
+			else if(!add)
 			{
 				m_emptyList.set_text(m_emptyListString.printf(dataBase.getArticelCount()));
 				this.set_visible_child_name("empty");
@@ -382,10 +382,10 @@ public class FeedReader.articleList : Gtk.Stack {
 	public void newHeadlineList()
 	{
 		string selectedArticle = getSelectedArticle();
-		
+
 		if(selectedArticle != "empty")
 			settings_state.set_string("articlelist-selected-row", selectedArticle);
-		
+
 		if(m_currentList == m_List1)
 		{
 			m_currentList = m_List2;
@@ -398,7 +398,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			m_currentScroll = m_scroll1;
 			m_current_adjustment = m_scroll1_adjustment;
 		}
-		
+
 		m_displayed_articles = 0;
 		var articleChildList = m_currentList.get_children();
 		foreach(Gtk.Widget row in articleChildList)
@@ -421,13 +421,13 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 
 		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
-		
+
 		bool found;
 
 		foreach(var item in articles)
 		{
 			found = false;
-			
+
 			foreach(Gtk.Widget row in articleChildList)
 			{
 				var tmpRow = (articleRow)row;
@@ -471,7 +471,7 @@ public class FeedReader.articleList : Gtk.Stack {
 						break;
 					}
 				}
-				
+
 				if(!added)
 				{
 					m_currentList.add(newRow);
@@ -482,15 +482,15 @@ public class FeedReader.articleList : Gtk.Stack {
 			}
 		}
 	}
-	
-	
+
+
 	private void limitScroll()
 	{
 		ThreadFunc<void*> run = () => {
-			
+
 			if(m_limitScroll == true)
 				return null;
-			
+
 			m_limitScroll = true;
 			GLib.Thread.usleep(500000);
 			m_limitScroll = false;
@@ -499,5 +499,5 @@ public class FeedReader.articleList : Gtk.Stack {
 		new GLib.Thread<void*>("limitScroll", run);
 	}
 
-	 
+
 }

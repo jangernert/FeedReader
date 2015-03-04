@@ -101,13 +101,11 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getFeeds()
+	public void getFeeds(ref GLib.List<feed> feeds)
 	{
 		if(isloggedin())
 		{
-			dataBase.reset_subscribed_flag();
 			var categories = dataBase.read_categories();
-			GLib.List<feed> feeds = new GLib.List<feed>();
 
 			foreach(var item in categories)
 			{
@@ -142,21 +140,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					}
 				}
 			}
-
-			dataBase.write_feeds(ref feeds);
-
-			dataBase.delete_unsubscribed_feeds();
 		}
 	}
 
 
-	public void getTags()
+	public void getTags(ref GLib.List<tag> tags)
 	{
 		if(isloggedin())
 		{
-			dataBase.reset_exists_tag();
-			GLib.List<tag> tags = new GLib.List<tag>();
-
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getLabels");
@@ -179,14 +170,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					);
 				}
 			}
-
-			dataBase.write_tags(ref tags);
-			foreach(var tag_item in tags)
-			{
-				dataBase.update_tag(tag_item.m_tagID);
-			}
-
-			dataBase.delete_nonexisting_tags();
 		}
 	}
 
@@ -208,13 +191,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getCategories()
+	public void getCategories(ref GLib.List<category> categories)
 	{
 		if(isloggedin())
 		{
-			dataBase.reset_exists_flag();
-			GLib.List<category> categories = new GLib.List<category>();
-
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getFeedTree");
@@ -227,10 +207,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				var category_object = response.get_object_member("categories");
 
 				getSubCategories(ref categories, category_object, 0, CategoryID.MASTER);
-
-				dataBase.write_categories(ref categories);
-				dataBase.delete_nonexisting_categories();
-				updateCategorieUnread();
 			}
 		}
 	}
@@ -311,7 +287,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	//--------------------------------------------------------------------------------------------------------------------------------
 
 
-	private void updateCategorieUnread()
+	public void updateCategorieUnread()
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -334,7 +310,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getArticles(int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
+	public void getArticles(ref GLib.List<article> articles, int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -353,11 +329,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			var headline_count = response.get_length();
 			logger.print(LogMessage.DEBUG, "TTRSS sync: headline count: %u".printf(headline_count));
 			logger.print(LogMessage.DEBUG, "TTRSS sync: skip: %i".printf(skip));
-			GLib.List<article> articles = new GLib.List<article>();
 			string title, author, url, html;
-
-
-
 
 			for(uint i = 0; i < headline_count; i++)
 			{
@@ -373,9 +345,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					title = author = url = html = "";
 				}
 
-
 				string tagString = "";
-
 				if(headline_node.has_member("labels"))
 				{
 					var tags = headline_node.get_array_member("labels");
@@ -407,23 +377,17 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			}
 			logger.print(LogMessage.DEBUG, "Finished fetching articles");
 
-			articles.reverse();
-
-			logger.print(LogMessage.DEBUG, "Write articles to db");
-			dataBase.write_articles(ref articles);
-			logger.print(LogMessage.DEBUG, "Finished writing articles to db");
-
 			int maxArticles = settings_general.get_int("max-articles");
 			if(headline_count == 200 && (skip+200) < maxArticles)
 			{
 				logger.print(LogMessage.DEBUG, "TTRSS sync: get more headlines");
 				if(maxArticles - skip < 200)
 				{
-					getArticles(feedID, skip + 200, maxArticles - skip);
+					getArticles(ref articles, feedID, skip + 200, maxArticles - skip);
 				}
 				else
 				{
-					getArticles(feedID, skip + 200);
+					getArticles(ref articles, feedID, skip + 200);
 				}
 			}
 		}

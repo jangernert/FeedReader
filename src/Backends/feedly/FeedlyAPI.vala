@@ -59,13 +59,10 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getCategories()
+	public void getCategories(ref GLib.List<category> categories)
 	{
 		get_count_of_unread_articles();
 		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
-		GLib.List<category> categories = new GLib.List<category>();
-
-		dataBase.reset_exists_flag();
 
 		var parser = new Json.Parser();
 		parser.load_from_data (response, -1);
@@ -86,17 +83,12 @@ public class FeedReader.FeedlyAPI : Object {
 				)
 			);
 		}
-
-		dataBase.write_categories(ref categories);
-		dataBase.delete_nonexisting_categories();
 	}
 
 
-	public void getFeeds()
+	public void getFeeds(ref GLib.List<feed> feeds)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
-		GLib.List<feed> feeds = new GLib.List<feed>();
-		dataBase.reset_subscribed_flag();
 
 		var parser = new Json.Parser();
 		parser.load_from_data(response, -1);
@@ -142,17 +134,12 @@ public class FeedReader.FeedlyAPI : Object {
 					)
 			);
 		}
-
-		dataBase.write_feeds(ref feeds);
-		dataBase.delete_unsubscribed_feeds();
 	}
 
 
-	public void getTags()
+	public void getTags(ref GLib.List<tag> tags)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
-		GLib.List<tag> tags = new GLib.List<tag>();
-		dataBase.reset_exists_tag();
 
 		var parser = new Json.Parser();
 		parser.load_from_data(response, -1);
@@ -169,21 +156,12 @@ public class FeedReader.FeedlyAPI : Object {
 					dataBase.getTagColor()
 				)
 			);
-
 		}
-
-		dataBase.write_tags(ref tags);
-		foreach(var tag_item in tags)
-		{
-			dataBase.update_tag(tag_item.m_tagID);
-		}
-
-		dataBase.delete_nonexisting_tags();
 	}
 
 
 
-	public void getArticles()
+	public void getArticles(ref GLib.List<article> articles)
 	{
 		int maxArticles = settings_general.get_int("max-articles");
 		string allArticles = "user/" + m_userID + "/category/global.all";
@@ -194,8 +172,6 @@ public class FeedReader.FeedlyAPI : Object {
 		parser.load_from_data(response, -1);
 
 		var array = parser.get_root().get_array();
-
-		GLib.List<article> articles = new GLib.List<article>();
 
 		for(int i = 0; i < array.get_length(); i++) {
 			Json.Object object = array.get_object_element(i);
@@ -222,11 +198,6 @@ public class FeedReader.FeedlyAPI : Object {
 
 			articles.append(new article(id, title, url, feedID, (unread) ? ArticleStatus.UNREAD : ArticleStatus.READ, ArticleStatus.UNMARKED, Content, summaryContent, author, -1, tagString));
 		}
-		articles.reverse();
-
-		logger.print(LogMessage.DEBUG, "Write articles to db");
-		dataBase.write_articles(ref articles);
-		logger.print(LogMessage.DEBUG, "Finished writing articles to db");
 	}
 
 

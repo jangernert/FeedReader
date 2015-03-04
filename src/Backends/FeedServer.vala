@@ -49,22 +49,54 @@ public class FeedReader.FeedServer : GLib.Object {
 			int before = dataBase.getHighestRowID();
 			dataBase.markReadAllArticles();
 
+			var categories = new GLib.List<category>();
+			var feeds      = new GLib.List<feed>();
+			var tags       = new GLib.List<tag>();
+			var articles   = new GLib.List<article>();
+
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.getCategories();
-					m_ttrss.getFeeds();
-					m_ttrss.getTags();
-					m_ttrss.getArticles();
+					m_ttrss.getCategories(ref categories);
+					m_ttrss.getFeeds(ref feeds);
+					m_ttrss.getTags(ref tags);
+					m_ttrss.getArticles(ref articles);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.getCategories();
-					m_feedly.getFeeds();
-					m_feedly.getTags();
-					m_feedly.getArticles();
+					m_feedly.getCategories(ref categories);
+					m_feedly.getFeeds(ref feeds);
+					m_feedly.getTags(ref tags);
+					m_feedly.getArticles(ref articles);
 					break;
 			}
+
+			// write categories
+			dataBase.reset_exists_flag();
+			dataBase.write_categories(ref categories);
+			dataBase.delete_nonexisting_categories();
+			if(m_type == Backend.TTRSS)
+				m_ttrss.updateCategorieUnread();
+
+			// write feeds
+			dataBase.reset_subscribed_flag();
+			dataBase.write_feeds(ref feeds);
+			dataBase.delete_unsubscribed_feeds();
+
+			// write tags
+			dataBase.reset_exists_tag();
+			dataBase.write_tags(ref tags);
+			foreach(var tag_item in tags)
+			{
+				dataBase.update_tag(tag_item.m_tagID);
+			}
+			dataBase.delete_nonexisting_tags();
+
+			// write articles
+			articles.reverse();
+			dataBase.write_articles(ref articles);
+
+
 
 			int after = dataBase.getHighestRowID();
 			int newArticles = after-before;

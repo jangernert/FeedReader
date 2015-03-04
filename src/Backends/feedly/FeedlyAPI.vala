@@ -63,6 +63,7 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		get_count_of_unread_articles();
 		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
+		GLib.List<category> categories = new GLib.List<category>();
 
 		dataBase.reset_exists_flag();
 
@@ -72,13 +73,21 @@ public class FeedReader.FeedlyAPI : Object {
 
 		for (int i = 0; i < array.get_length (); i++) {
 			Json.Object object = array.get_object_element(i);
-
 			string categorieID = object.get_string_member("id");
-			int unreadCount = getUnreadCount(categorieID);
-			string title = object.get_string_member("label");
-			dataBase.write_categorie(categorieID, title, unreadCount, i+1, CategoryID.MASTER, 1);
+
+			categories.append(
+				new category (
+					categorieID,
+					object.get_string_member("label"),
+					getUnreadCount(categorieID),
+					i+1,
+					CategoryID.MASTER,
+					1
+				)
+			);
 		}
 
+		dataBase.write_categories(ref categories);
 		dataBase.delete_nonexisting_categories();
 	}
 
@@ -86,7 +95,7 @@ public class FeedReader.FeedlyAPI : Object {
 	public void getFeeds()
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
-
+		GLib.List<feed> feeds = new GLib.List<feed>();
 		dataBase.reset_subscribed_flag();
 
 		var parser = new Json.Parser();
@@ -97,8 +106,9 @@ public class FeedReader.FeedlyAPI : Object {
 		for (uint i = 0; i < length; i++) {
 			Json.Object object = array.get_object_element(i);
 
-			string feedID = object.get_string_member("id");
 
+			string feedID = object.get_string_member("id");
+			string url = object.has_member("website") ? object.get_string_member("website") : "";
 			string icon_url = "";
 			if(object.has_member("iconUrl"))
 			{
@@ -111,12 +121,6 @@ public class FeedReader.FeedlyAPI : Object {
 				downloadIcon(feedID, icon_url);
 			}
 
-			string url = object.has_member("website") ? object.get_string_member("website") : "";
-			var categories = object.get_array_member("categories");
-			var category = categories.get_object_element(0);
-			string categorieID = category.get_string_member("id");
-			int unreadCount = getUnreadCount(feedID);
-
 			string title = "No Title";
 			if(object.has_member("title"))
 			{
@@ -127,14 +131,19 @@ public class FeedReader.FeedlyAPI : Object {
 				title = ttrss_utils.URLtoFeedName(url);
 			}
 
-			dataBase.write_feed(feedID,
-								title,
-								url,
-								(icon_url == "") ? false : true,
-								unreadCount,
-								categorieID);
+			feeds.append(
+				new feed (
+						feedID,
+						title,
+						url,
+						(icon_url == "") ? false : true,
+						getUnreadCount(object.get_string_member("id")),
+						object.get_array_member("categories").get_object_element(0).get_string_member("id")
+					)
+			);
 		}
 
+		dataBase.write_feeds(ref feeds);
 		dataBase.delete_unsubscribed_feeds();
 	}
 
@@ -142,7 +151,7 @@ public class FeedReader.FeedlyAPI : Object {
 	public void getTags()
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
-
+		GLib.List<tag> tags = new GLib.List<tag>();
 		dataBase.reset_exists_tag();
 
 		var parser = new Json.Parser();
@@ -153,11 +162,20 @@ public class FeedReader.FeedlyAPI : Object {
 		for (uint i = 0; i < length; i++) {
 			Json.Object object = array.get_object_element(i);
 
-			string tagID = object.get_string_member("id");
-			string title = object.has_member("label") ? object.get_string_member("label") : "";
+			tags.append(
+				new tag(
+					object.get_string_member("id"),
+					object.has_member("label") ? object.get_string_member("label") : "",
+					dataBase.getTagColor()
+				)
+			);
 
-			dataBase.write_tag(tagID, title);
-			dataBase.update_tag(tagID);
+		}
+
+		dataBase.write_tags(ref tags);
+		foreach(var tag_item in tags)
+		{
+			dataBase.update_tag(tag_item.m_tagID);
 		}
 
 		dataBase.delete_nonexisting_tags();

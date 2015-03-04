@@ -107,6 +107,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			dataBase.reset_subscribed_flag();
 			var categories = dataBase.read_categories();
+			GLib.List<feed> feeds = new GLib.List<feed>();
 
 			foreach(var item in categories)
 			{
@@ -128,15 +129,21 @@ public class FeedReader.ttrss_interface : GLib.Object {
 						string feed_id = feed_node.get_int_member("id").to_string();
 						ttrss_utils.downloadIcon(feed_id, icon_url);
 
-						dataBase.write_feed(feed_id,
-										  feed_node.get_string_member("title"),
-										  feed_node.get_string_member("feed_url"),
-										  feed_node.get_boolean_member("has_icon"),
-										  int.parse(feed_node.get_int_member("unread").to_string()),
-										  feed_node.get_int_member("cat_id").to_string());
+						feeds.append(
+							new feed (
+									feed_id,
+									feed_node.get_string_member("title"),
+									feed_node.get_string_member("feed_url"),
+									feed_node.get_boolean_member("has_icon"),
+									int.parse(feed_node.get_int_member("unread").to_string()),
+									feed_node.get_int_member("cat_id").to_string()
+								)
+						);
 					}
 				}
 			}
+
+			dataBase.write_feeds(ref feeds);
 
 			dataBase.delete_unsubscribed_feeds();
 		}
@@ -148,6 +155,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		if(isloggedin())
 		{
 			dataBase.reset_exists_tag();
+			GLib.List<tag> tags = new GLib.List<tag>();
+
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getLabels");
@@ -161,11 +170,20 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				for(uint i = 0; i < tag_count; ++i)
 				{
 					var tag_node = response.get_object_element(i);
-					string tagID = tag_node.get_int_member("id").to_string();
-					string title = tag_node.get_string_member("caption");
-					dataBase.write_tag(tagID, title);
-					dataBase.update_tag(tagID);
+					tags.append(
+						new tag(
+							tag_node.get_int_member("id").to_string(),
+							tag_node.get_string_member("caption"),
+							dataBase.getTagColor()
+						)
+					);
 				}
+			}
+
+			dataBase.write_tags(ref tags);
+			foreach(var tag_item in tags)
+			{
+				dataBase.update_tag(tag_item.m_tagID);
 			}
 
 			dataBase.delete_nonexisting_tags();
@@ -195,6 +213,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		if(isloggedin())
 		{
 			dataBase.reset_exists_flag();
+			GLib.List<category> categories = new GLib.List<category>();
 
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
@@ -206,7 +225,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			{
 				var response = message.get_response_object();
 				var category_object = response.get_object_member("categories");
-				getSubCategories(category_object, 0, CategoryID.MASTER);
+
+				getSubCategories(ref categories, category_object, 0, CategoryID.MASTER);
+
+				dataBase.write_categories(ref categories);
 				dataBase.delete_nonexisting_categories();
 				updateCategorieUnread();
 			}
@@ -214,7 +236,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	private void getSubCategories(Json.Object categorie, int level, string parent)
+	private void getSubCategories(ref GLib.List<category> categories, Json.Object categorie, int level, string parent)
 	{
 		level++;
 		int orderID = 0;
@@ -237,8 +259,18 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					unread_count = getUncategorizedUnread();
 				}
 
-				dataBase.write_categorie(categorieID, title, unread_count, orderID, parent, level);
-				getSubCategories(categorie_node, level, categorieID);
+				categories.append(
+					new category (
+						categorieID,
+						title,
+						unread_count,
+						orderID,
+						parent,
+						level
+					)
+				);
+
+				getSubCategories(ref categories, categorie_node, level, categorieID);
 			}
 		}
 	}

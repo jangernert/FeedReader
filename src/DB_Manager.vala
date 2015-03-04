@@ -24,7 +24,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public void init()
 	{
-			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds" 
+			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds"
 											(
 												"feed_id" TEXT PRIMARY KEY  NOT NULL UNIQUE ,
 												"name" TEXT NOT NULL,
@@ -35,7 +35,7 @@ public class FeedReader.dbManager : GLib.Object {
 												"subscribed" INTEGER DEFAULT 1
 											)""");
 
-			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories" 
+			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
 											(
 												"categorieID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" TEXT NOT NULL,
@@ -45,7 +45,7 @@ public class FeedReader.dbManager : GLib.Object {
 												"Parent" TEXT,
 												"Level" INTEGER
 												)""");
-												
+
 			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
 											(
 												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
@@ -59,19 +59,19 @@ public class FeedReader.dbManager : GLib.Object {
 												"marked" INTEGER NOT NULL,
 												"tags" TEXT
 											)""");
-			
-			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags" 
+
+			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
 											(
 												"tagID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
 												"title" TEXT NOT NULL,
 												"exists" INTEGER,
 												"color" INTEGER
 												)""");
-												
+
 			executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
 	}
-	
-	
+
+
 	private void executeSQL(string sql)
 	{
 		string errmsg;
@@ -80,8 +80,8 @@ public class FeedReader.dbManager : GLib.Object {
 			logger.print(LogMessage.ERROR, errmsg);
 		}
 	}
-	
-	
+
+
 	public bool resetDB()
 	{
 		executeSQL("DROP TABLE \"main\".\"feeds\"");
@@ -89,14 +89,14 @@ public class FeedReader.dbManager : GLib.Object {
 		executeSQL("DROP TABLE \"main\".\"articles\"");
 		executeSQL("DROP TABLE \"main\".\"tags\"");
 		executeSQL("VACUUM");
-		
+
 		string query = "PRAGMA INTEGRITY_CHECK";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK) {
 			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
 		}
-			
+
 		int cols = stmt.column_count ();
 		while (stmt.step () == Sqlite.ROW) {
 			for (int i = 0; i < cols; i++) {
@@ -121,7 +121,7 @@ public class FeedReader.dbManager : GLib.Object {
 		if (ec != Sqlite.OK) {
 			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
 		}
-			
+
 		int cols = stmt.column_count ();
 		while (stmt.step () == Sqlite.ROW) {
 			for (int i = 0; i < cols; i++) {
@@ -135,8 +135,8 @@ public class FeedReader.dbManager : GLib.Object {
 		else
 			return true;
 	}
-	
-	
+
+
 	public int getArticelCount()
 	{
 		int count = -1;
@@ -146,7 +146,7 @@ public class FeedReader.dbManager : GLib.Object {
 		if (ec != Sqlite.OK) {
 			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
 		}
-			
+
 		int cols = stmt.column_count ();
 		while (stmt.step () == Sqlite.ROW) {
 			for (int i = 0; i < cols; i++) {
@@ -163,7 +163,7 @@ public class FeedReader.dbManager : GLib.Object {
 	public async void change_unread(string feedID, int increase)
 	{
 		SourceFunc callback = change_unread.callback;
-		
+
 		ThreadFunc<void*> run = () => {
 
 			string change_feed_query = "";
@@ -172,11 +172,11 @@ public class FeedReader.dbManager : GLib.Object {
 			}
 			else if(increase == ArticleStatus.READ){
 				change_feed_query = "UPDATE \"main\".\"feeds\" SET \"unread\" = (CASE WHEN (\"unread\" > 0) THEN (\"unread\" - 1) ELSE \"unread\" END) WHERE \"feed_id\" = \"" + feedID + "\"";
-			} 
+			}
 			executeSQL(change_feed_query);
-			
 
-			
+
+
 			string get_feed_id_query = "SELECT \"category_id\" FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID + "\"";
 			Sqlite.Statement stmt;
 			int ec = sqlite_db.prepare_v2 (get_feed_id_query, get_feed_id_query.length, out stmt);
@@ -209,7 +209,7 @@ public class FeedReader.dbManager : GLib.Object {
 		new GLib.Thread<void*>("change_unread", run);
 		yield;
 	}
-	
+
 	public uint get_unread_total()
 	{
 		string query = "SELECT unread FROM \"main\".\"categories\" WHERE \"level\" = 1 AND NOT \"categorieID\" = -1";
@@ -226,110 +226,149 @@ public class FeedReader.dbManager : GLib.Object {
 		return unread;
 	}
 
-	public void write_feed(string feed_id, string feed_name, string feed_url, bool has_icon, int unread_count, string cat_id)
+	public void write_feeds(ref GLib.List<feed> feeds)
 	{
-		int int_has_icon = 0;
-		if(has_icon) int_has_icon = 1;
-		
-		string query = "INSERT OR REPLACE INTO \"main\".\"feeds\" (\"feed_id\",\"name\",\"url\",\"has_icon\",\"unread\", \"category_id\", \"subscribed\") 
-						VALUES (\"" + feed_id + "\", $FEEDNAME, $FEEDURL, \"" + int_has_icon.to_string() + "\", \"" + unread_count.to_string() + "\", \"" + cat_id + "\", 1)";
-		
+		executeSQL("BEGIN TRANSACTION");
+
+		string query = "INSERT OR REPLACE INTO \"main\".\"feeds\" (\"feed_id\",\"name\",\"url\",\"has_icon\",\"unread\", \"category_id\", \"subscribed\")
+						VALUES ($FEEDID, $FEEDNAME, $FEEDURL, $HASICON, $UNREAD, $CATID, 1)";
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2(query, query.length, out stmt);
+		if(ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+
+		int feedID_pos   = stmt.bind_parameter_index("$FEEDID");
+		int feedName_pos = stmt.bind_parameter_index("$FEEDNAME");
+		int feedURL_pos  = stmt.bind_parameter_index("$FEEDURL");
+		int hasIcon_pos  = stmt.bind_parameter_index("$HASICON");
+		int unread_pos   = stmt.bind_parameter_index("$UNREAD");
+		int catID_pos    = stmt.bind_parameter_index("$CATID");
+		assert (feedID_pos > 0);
+		assert (feedName_pos > 0);
+		assert (feedURL_pos > 0);
+		assert (hasIcon_pos > 0);
+		assert (unread_pos > 0);
+		assert (catID_pos > 0);
+
+		foreach(var feed_item in feeds)
+		{
+			stmt.bind_text(feedID_pos, feed_item.m_feedID);
+			stmt.bind_text(feedName_pos, feed_item.m_title);
+			stmt.bind_text(feedURL_pos, feed_item.m_url);
+			stmt.bind_int (hasIcon_pos, feed_item.m_hasIcon ? 1 : 0);
+			stmt.bind_text(unread_pos, feed_item.m_unread.to_string());
+			stmt.bind_text(catID_pos, feed_item.m_categorieID);
+
+			while (stmt.step () == Sqlite.ROW) {}
+			stmt.reset ();
+		}
+
+		executeSQL("COMMIT TRANSACTION");
+	}
+
+	public void write_tags(ref GLib.List<tag> tags)
+	{
+		executeSQL("BEGIN TRANSACTION");
+
+		string query = "INSERT OR IGNORE INTO \"main\".\"tags\" (\"tagID\",\"title\",\"exists\",\"color\") VALUES ($TAGID, $LABEL, 1, $COLOR)";
+
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			warning("error writing feed\nquery: %s\nfeed_name: %s\n", query, feed_name);
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+
+		int tagID_position = stmt.bind_parameter_index("$TAGID");
+		int label_position = stmt.bind_parameter_index("$LABEL");
+		int color_position = stmt.bind_parameter_index("$COLOR");
+		assert (tagID_position > 0);
+		assert (label_position > 0);
+		assert (color_position > 0);
+
+		foreach(var tag_item in tags)
+		{
+			stmt.bind_text(tagID_position, tag_item.m_tagID);
+			stmt.bind_text(label_position, tag_item.m_title);
+			stmt.bind_int (color_position, tag_item.m_color);
+
+			while (stmt.step () == Sqlite.ROW) {}
+			stmt.reset ();
 		}
-		int param_position = stmt.bind_parameter_index ("$FEEDNAME");
-		assert (param_position > 0);
-		stmt.bind_text (param_position, feed_name);
-		param_position = stmt.bind_parameter_index ("$FEEDURL");
-		assert (param_position > 0);
-		stmt.bind_text (param_position, feed_url);
-		
-		while (stmt.step () == Sqlite.ROW) {
-		
-		}
-		stmt.reset ();
+
+		executeSQL("COMMIT TRANSACTION");
 	}
-	
-	public void write_tag(string tagID, string label)
+
+
+	public int getTagColor()
 	{
-		string query1 = "SELECT count(*) FROM \"main\".\"tags\" WHERE instr(\"tagID\", \"global.\") = 0";
-		Sqlite.Statement stmt1;
-		int ec = sqlite_db.prepare_v2 (query1, query1.length, out stmt1);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		int tagCount = 0;
-		while (stmt1.step () == Sqlite.ROW) {
-			tagCount = stmt1.column_int(0);
-		}
-		stmt1.reset ();
-		
-		int colorCount = COLORS.length;
-		int colorNumber = (tagCount%colorCount);
-		
-		string query = "INSERT OR IGNORE INTO \"main\".\"tags\" (\"tagID\",\"title\",\"exists\",\"color\") VALUES (\"" + tagID + "\", $LABEL, 1, " + colorNumber.to_string() + ")";
-		
+		string query = "SELECT count(*) FROM \"main\".\"tags\" WHERE instr(\"tagID\", \"global.\") = 0";
 		Sqlite.Statement stmt;
-		ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		int tagCount = 0;
+		while (stmt.step () == Sqlite.ROW) {
+			tagCount = stmt.column_int(0);
 		}
-		int param_position = stmt.bind_parameter_index ("$LABEL");
-		assert (param_position > 0);
-		stmt.bind_text (param_position, label);
-		
-		while (stmt.step () == Sqlite.ROW) {}
 		stmt.reset ();
+
+		return (tagCount % COLORS.length);
 	}
-	
+
 	public void update_tag_color(string tagID, int color)
 	{
-		string query = "UPDATE \"main\".\"tags\" SET \"color\" = " + color.to_string() + " WHERE \"tagID\" = \"" + tagID + "\"";
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		
-		while (stmt.step () == Sqlite.ROW) {}
-		stmt.reset ();
+		executeSQL("UPDATE \"main\".\"tags\" SET \"color\" = " + color.to_string() + " WHERE \"tagID\" = \"" + tagID + "\"");
 	}
-	
+
 	public void update_tag(string tagID)
 	{
-		string query = "UPDATE \"main\".\"tags\" SET \"exists\" = 1 WHERE \"tagID\" = \"" + tagID + "\"";
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-		
-		while (stmt.step () == Sqlite.ROW) {}
-		stmt.reset ();
+		executeSQL("UPDATE \"main\".\"tags\" SET \"exists\" = 1 WHERE \"tagID\" = \"" + tagID + "\"");
 	}
 
 
-	public void write_categorie(string categorieID, string categorie_name, int unread_count, int orderID, string parent, int level)
+	public void write_categories(ref GLib.List<category> categories)
 	{
-		string query = "INSERT OR REPLACE INTO \"main\".\"categories\" (\"categorieID\",\"title\",\"unread\",\"orderID\", \"exists\", \"Parent\", \"Level\") 
-						VALUES (\"" + categorieID + "\", $FEEDNAME, \"" + unread_count.to_string() + "\", \"" + orderID.to_string() + "\", 1, \"" + parent + "\", \"" + level.to_string() + "\")";
-		
+		executeSQL("BEGIN TRANSACTION");
+
+		string query = "INSERT OR REPLACE INTO \"main\".\"categories\" (\"categorieID\",\"title\",\"unread\",\"orderID\", \"exists\", \"Parent\", \"Level\")
+						VALUES ($CATID, $FEEDNAME, $UNREADCOUNT, $ORDERID, 1, $PARENT, $LEVEL)";
+
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			warning("error writing category\nquery: %s\ncategory_name: %s\n", query, categorie_name);
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+
+		int catID_position       = stmt.bind_parameter_index("$CATID");
+		int feedName_position    = stmt.bind_parameter_index("$FEEDNAME");
+		int unreadCount_position = stmt.bind_parameter_index("$UNREADCOUNT");
+		int orderID_position     = stmt.bind_parameter_index("$ORDERID");
+		int parent_position      = stmt.bind_parameter_index("$PARENT");
+		int level_position       = stmt.bind_parameter_index("$LEVEL");
+		assert (catID_position > 0);
+		assert (feedName_position > 0);
+		assert (unreadCount_position > 0);
+		assert (orderID_position > 0);
+		assert (parent_position > 0);
+		assert (level_position > 0);
+
+		foreach(var cat_item in categories)
+		{
+			stmt.bind_text(catID_position, cat_item.m_categorieID);
+			stmt.bind_text(feedName_position, cat_item.m_title);
+			stmt.bind_int (unreadCount_position, cat_item.m_unread_count);
+			stmt.bind_int (orderID_position, cat_item.m_orderID);
+			stmt.bind_text(parent_position, cat_item.m_parent);
+			stmt.bind_int (level_position, cat_item.m_level);
+
+			while (stmt.step () == Sqlite.ROW) {}
+			stmt.reset ();
 		}
-		int param_position = stmt.bind_parameter_index ("$FEEDNAME");
-		assert (param_position > 0);
-		stmt.bind_text (param_position, categorie_name);
-		while (stmt.step () == Sqlite.ROW) {
-			
-		}
-		stmt.reset ();
+
+		executeSQL("COMMIT TRANSACTION");
 	}
 
 	public string read_preview(string articleID)
@@ -340,17 +379,17 @@ public class FeedReader.dbManager : GLib.Object {
 		if (ec != Sqlite.OK) {
 			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
 		}
-		
+
 		string result = "";
-		
+
 		while (stmt.step () == Sqlite.ROW) {
 			result = stmt.column_text(0);
 		}
-		
+
 		return result;
 	}
-	
-	
+
+
 	public bool preview_empty(string articleID)
 	{
 		string query = "SELECT count(*) FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\" AND NOT preview = \"\"";
@@ -359,13 +398,13 @@ public class FeedReader.dbManager : GLib.Object {
 		if (ec != Sqlite.OK) {
 			logger.print(LogMessage.ERROR, "checking for empty preview - %s".printf(sqlite_db.errmsg()));
 		}
-		
+
 		int result = 1;
-		
+
 		while (stmt.step () == Sqlite.ROW) {
 			result = stmt.column_int(0);
 		}
-		
+
 		if(result == 1)
 			return false;
 		if(result == 0)
@@ -375,10 +414,10 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	
+
 	public void write_articles(ref GLib.List<article> articles)
 	{
-		
+
 		FeedReader.Utils.generatePreviews(ref articles);
 		FeedReader.Utils.checkHTML(ref articles);
 
@@ -422,8 +461,8 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text(articleID_position, article.getArticleID());
 			stmt.bind_text(feedID_position, article.m_feedID);
 			stmt.bind_text(url_position, article.m_url);
-			stmt.bind_text(unread_position, article.m_unread.to_string());
-			stmt.bind_text(marked_position, article.m_marked.to_string());
+			stmt.bind_int (unread_position, article.m_unread);
+			stmt.bind_int (marked_position, article.m_marked);
 			stmt.bind_text(tags_position, article.m_tags);
 			stmt.bind_text(title_position, article.m_title);
 			stmt.bind_text(html_position, article.getHTML());
@@ -433,8 +472,8 @@ public class FeedReader.dbManager : GLib.Object {
 			while(stmt.step () == Sqlite.ROW) {}
 			stmt.reset();
 		}
-		
-		
+
+
 
 		query = "UPDATE \"main\".\"articles\" SET \"unread\" = $UNREAD, \"marked\" = $MARKED, \"tags\" = $TAGS WHERE \"articleID\"= $ARTICLEID";
 		ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -464,7 +503,7 @@ public class FeedReader.dbManager : GLib.Object {
 		executeSQL("COMMIT TRANSACTION");
 	}
 
-	
+
 	public article read_article(string articleID)
 	{
 		article tmp = null;
@@ -492,14 +531,14 @@ public class FeedReader.dbManager : GLib.Object {
 		stmt.reset ();
 		return tmp;
 	}
-	
 
-	public async void update_article(string articleID, string field, int field_value)
+
+	public async void update_article(string articleIDs, string field, int field_value)
 	{
 		SourceFunc callback = update_article.callback;
-		
+
 		ThreadFunc<void*> run = () => {
-			executeSQL("UPDATE \"main\".\"articles\" SET \"" + field + "\" = \"" + field_value.to_string() + "\" WHERE \"articleID\"= \"" + articleID + "\"");
+			executeSQL("UPDATE \"main\".\"articles\" SET \"" + field + "\" = \"" + field_value.to_string() + "\" WHERE \"articleID\" IN (" + articleIDs + ")");
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -507,6 +546,31 @@ public class FeedReader.dbManager : GLib.Object {
 		yield;
 	}
 
+	public async void markFeedRead(string feedIDs)
+	{
+		SourceFunc callback = markFeedRead.callback;
+
+		ThreadFunc<void*> run = () => {
+			executeSQL("UPDATE \"main\".\"articles\" SET \"unread\" = 8 WHERE \"feedID\" IN (" + feedIDs + ")");
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("markFeedRead", run);
+		yield;
+	}
+
+	public async void markCategorieRead(string catID)
+	{
+		SourceFunc callback = markCategorieRead.callback;
+
+		ThreadFunc<void*> run = () => {
+			executeSQL("UPDATE \"main\".\"articles\" SET \"unread\" = 8 WHERE " + getFeedIDofCategorie(catID));
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("markCategorieRead", run);
+		yield;
+	}
 
 	public int getMaxCatLevel()
 	{
@@ -528,7 +592,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		executeSQL("UPDATE \"main\".\"feeds\" SET \"subscribed\" = 0");
 	}
-	
+
 	public void reset_exists_tag()
 	{
 		executeSQL("UPDATE \"main\".\"tags\" SET \"exists\" = 0");
@@ -551,7 +615,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		executeSQL("DELETE FROM \"main\".\"categories\" WHERE \"exists\" = 0");
 	}
-	
+
 	public void delete_nonexisting_tags()
 	{
 		executeSQL("DELETE FROM \"main\".\"tags\" WHERE \"exists\" = 0");
@@ -561,8 +625,8 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		executeSQL("DELETE FROM \"main\".\"articles\" WHERE \"feedID\" = \"" + feedID.to_string() + "\"");
 	}
-	
-	
+
+
 	public bool article_exists(string articleID)
 	{
 		int result = 0;
@@ -577,7 +641,7 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 		if(result == 1)
 			return true;
-			
+
 		return false;
 	}
 
@@ -618,8 +682,8 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 		return query.slice(0, query.length-2) + ")";
 	}
-	
-	
+
+
 	public string getFeedIDofArticle(string articleID)
 	{
 		string query = "SELECT feedID FROM \"main\".\"articles\" WHERE \"articleID\" = " + "\"" + articleID + "\"";
@@ -662,7 +726,7 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 		return result;
 	}
-	
+
 	public int getHighestRowID()
 	{
 		int result = 0;
@@ -678,12 +742,12 @@ public class FeedReader.dbManager : GLib.Object {
 		return result;
 	}
 
-	
+
 	public GLib.List<feed> read_feeds()
 	{
 		GLib.List<feed> tmp = new GLib.List<feed>();
 		feed tmpfeed;
-		
+
 		string query = "SELECT * FROM \"main\".\"feeds\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -691,10 +755,10 @@ public class FeedReader.dbManager : GLib.Object {
 			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
 		}
 		while (stmt.step () == Sqlite.ROW) {
-			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), stmt.column_int(3), stmt.column_int(4), stmt.column_text(5));
+			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), stmt.column_int(4), stmt.column_text(5));
 			tmp.append(tmpfeed);
 		}
-		
+
 		return tmp;
 	}
 
@@ -702,7 +766,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		GLib.List<category> tmp = new GLib.List<category>();
 		category tmpcategory;
-		
+
 		string query = "SELECT * FROM \"main\".\"categories\" WHERE categorieID >= 0 ORDER BY orderID DESC";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -713,16 +777,16 @@ public class FeedReader.dbManager : GLib.Object {
 			tmpcategory = new category(stmt.column_text(0), stmt.column_text(1), stmt.column_int(2), stmt.column_int(3), stmt.column_text(5), stmt.column_int(6));
 			tmp.append(tmpcategory);
 		}
-		
+
 		return tmp;
 	}
-	
-	
+
+
 	public GLib.List<tag> read_tags()
 	{
 		GLib.List<tag> tmp = new GLib.List<tag>();
 		tag tmpTag;
-		
+
 		string query = "SELECT * FROM \"main\".\"tags\" WHERE instr(\"tagID\", \"global.\") = 0";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -733,10 +797,10 @@ public class FeedReader.dbManager : GLib.Object {
 			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
 			tmp.append(tmpTag);
 		}
-		
+
 		return tmp;
 	}
-	
+
 	private string getAllTagsQuery()
 	{
 		var tags = read_tags();
@@ -745,7 +809,7 @@ public class FeedReader.dbManager : GLib.Object {
 		{
 			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(Tag.m_tagID);
 		}
-		
+
 		int or = query.char_count()-4;
 		return query.substring(0, or);
 	}
@@ -754,7 +818,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		GLib.List<category> tmp = new GLib.List<category>();
 		category tmpcategory;
-		
+
 		string query = "SELECT * FROM \"main\".\"categories\" WHERE categorieID >= 0 AND \"level\" = \"" + level.to_string() + "\" ORDER BY orderID DESC";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
@@ -769,13 +833,13 @@ public class FeedReader.dbManager : GLib.Object {
 		return tmp;
 	}
 
-	//[Profile] 
+	//[Profile]
 	public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, int limit = 100, int offset = 0)
 	{
 		GLib.List<article> tmp = new GLib.List<article>();
 		string and = "";
 		string query = "SELECT ROWID, feedID, articleID, title, author, url, preview, unread, marked, tags FROM \"main\".\"articles\"";
-		
+
 		if( (ID != FeedID.ALL && selectedType == FeedList.FEED)
 		|| (selectedType == FeedList.CATEGORY && ID != CategoryID.MASTER)
 		|| (selectedType == FeedList.TAG)
@@ -783,8 +847,8 @@ public class FeedReader.dbManager : GLib.Object {
 		|| only_marked
 		|| searchTerm != "")
 			query = query + " WHERE ";
-		
-		
+
+
 		if(selectedType == FeedList.FEED)
 		{
 			if(ID != FeedID.ALL){
@@ -819,7 +883,7 @@ public class FeedReader.dbManager : GLib.Object {
 			query = query + and + "instr(UPPER(\"title\"), UPPER(\"" + searchTerm + "\")) > 0";
 		}
 		query = query + " ORDER BY ROWID DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
-		
+
 		logger.print(LogMessage.DEBUG, query);
 		article tmpArticle;
 		Sqlite.Statement stmt;
@@ -843,9 +907,9 @@ public class FeedReader.dbManager : GLib.Object {
 							);
 			tmp.append(tmpArticle);
 		}
-		
+
 		return tmp;
 	}
 
-	 
+
 }

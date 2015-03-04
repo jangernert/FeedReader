@@ -24,7 +24,7 @@ public class FeedReader.articleRow : baseRow {
 		m_feedID = feedID;
 		m_url = url;
 		m_is_unread = unread;
-		
+
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 100);
 
@@ -53,7 +53,7 @@ public class FeedReader.articleRow : baseRow {
 			return false;
 		});
 
-		
+
 		m_label = new Gtk.Label(aritcleName);
 		m_label.set_line_wrap_mode(Pango.WrapMode.WORD);
 		m_label.set_line_wrap(true);
@@ -66,14 +66,14 @@ public class FeedReader.articleRow : baseRow {
 		m_label.set_alignment(0, 0.5f);
 
 		m_just_clicked = false;
-			
+
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);
-			
+
 		m_marked_icon = new Gtk.Image.from_icon_name("starred", Gtk.IconSize.SMALL_TOOLBAR);
 		m_unread_icon = new Gtk.Image.from_icon_name("mail-unread", Gtk.IconSize.SMALL_TOOLBAR);
 		m_unmarked_icon = new Gtk.Image.from_icon_name("non-starred", Gtk.IconSize.SMALL_TOOLBAR);
-		m_read_icon = new Gtk.Image.from_icon_name("user-offline", Gtk.IconSize.SMALL_TOOLBAR);	
+		m_read_icon = new Gtk.Image.from_icon_name("user-offline", Gtk.IconSize.SMALL_TOOLBAR);
 
 		m_unread_eventbox = new Gtk.EventBox();
 		m_unread_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
@@ -89,7 +89,7 @@ public class FeedReader.articleRow : baseRow {
 		m_unread_eventbox.leave_notify_event.connect(() => {unreadIconLeave(); return true;});
 		m_unread_eventbox.button_press_event.connect(() => {unreadIconClicked(); return true;});
 
-			
+
 		m_marked_eventbox = new Gtk.EventBox();
 		m_marked_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_marked_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
@@ -99,12 +99,12 @@ public class FeedReader.articleRow : baseRow {
 			m_marked_eventbox.add(m_marked_icon);
 		else if(m_marked == ArticleStatus.UNMARKED)
 			m_marked_eventbox.add(m_unmarked_icon);
-			
+
 		m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
 		m_marked_eventbox.leave_notify_event.connect(() => {markedIconLeave(); return true;});
 		m_marked_eventbox.button_press_event.connect(() => {markedIconClicked(); return true;});
 
-			
+
 
 		icon_box.pack_start(m_icon, true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
@@ -121,13 +121,13 @@ public class FeedReader.articleRow : baseRow {
 
 		m_spacer = new Gtk.Label("");
 		m_spacer.set_size_request(15, 0);
-			
-			
-			
+
+
+
 		var text_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		text_box.pack_start(m_label, true, true, 6);
 		text_box.pack_end(body_label, true, true, 6);
-			
+
 		m_box.pack_start(icon_box, false, false, 8);
 		m_box.pack_start(text_box, true, true, 0);
 		m_box.pack_start(m_spacer, true, true, 0);
@@ -138,7 +138,7 @@ public class FeedReader.articleRow : baseRow {
 		seperator_box.pack_start(m_box, true, true, 0);
 		seperator_box.pack_start(separator, false, false, 0);
 		m_revealer.add(seperator_box);
-		
+
 		m_revealer.set_reveal_child(false);
 		this.add(m_revealer);
 		this.show_all();
@@ -226,12 +226,12 @@ public class FeedReader.articleRow : baseRow {
 			case ArticleStatus.MARKED:
 				updateMarked(ArticleStatus.UNMARKED);
 				break;
-			
+
 			case ArticleStatus.UNMARKED:
 				updateMarked(ArticleStatus.MARKED);
 				break;
 		}
-		
+
 		feedDaemon_interface.changeMarked(m_articleID, m_marked);
 	}
 
@@ -267,26 +267,26 @@ public class FeedReader.articleRow : baseRow {
 
 	public void updateMarked(int marked)
 	{
-		m_marked = marked;	
+		m_marked = marked;
 	}
 
 	public bool isUnread()
 	{
 		if(m_is_unread == ArticleStatus.UNREAD)
 			return true;
-			
+
 		return false;
 	}
-	
+
 	public string getName()
 	{
 		return m_name;
 	}
-	
+
 	public string getID()
 	{
 		return m_articleID;
 	}
 
- 	 
+
 }

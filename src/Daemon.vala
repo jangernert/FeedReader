@@ -9,15 +9,15 @@ namespace FeedReader {
 		private Unity.LauncherEntry m_launcher;
 #endif
 		private int m_loggedin;
-	
+
 		public FeedDaemonServer()
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
 			m_loggedin = login(settings_general.get_enum("account-type"));
-		
+
 			if(m_loggedin != LoginResponse.SUCCESS)
 				logger.print(LogMessage.WARNING, "daemon: not logged in");
-		
+
 			int sync_timeout = settings_general.get_int("sync");
 #if WITH_LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
@@ -39,19 +39,19 @@ namespace FeedReader {
 				sync.end(res);
 			});
 		}
-		
+
 
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
-		
+
 		private async void sync()
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				m_loggedin = login(settings_general.get_enum("account-type"));
 			}
-		
+
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
 				syncStarted();
@@ -66,53 +66,52 @@ namespace FeedReader {
 			else
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
 		}
-	
+
 		public int login(int type)
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 			server = new FeedServer(type);
 			m_loggedin = server.login();
-			
+
 			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
 			return m_loggedin;
 		}
-	
+
 		public int isLoggedIn()
 		{
 			return m_loggedin;
 		}
-	
-		public void changeUnread(string articleID, int read)
+
+		public void changeUnread(string articleIDs, int read)
 		{
 			bool increase = true;
 			if(read == ArticleStatus.READ)
 				increase = false;
-		
-			server.setArticleIsRead.begin(articleID, read, (obj, res) => {
+
+			server.setArticleIsRead.begin(articleIDs, read, (obj, res) => {
 				server.setArticleIsRead.end(res);
 			});
-		
-			dataBase.update_article.begin(articleID, "unread", read, (obj, res) => {
+
+			dataBase.update_article.begin(articleIDs, "unread", read, (obj, res) => {
 				dataBase.update_article.end(res);
 			});
-		
-			dataBase.change_unread.begin(dataBase.getFeedIDofArticle(articleID), read, (obj, res) => {
+
+			dataBase.change_unread.begin(dataBase.getFeedIDofArticle(articleIDs), read, (obj, res) => {
 				dataBase.change_unread.end(res);
-				updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleID), increase);
+				updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleIDs), increase);
 				updateBadge();
 			});
-		
 		}
-	
+
 		public void changeMarked(string articleID, int marked)
 		{
 			server.setArticleIsMarked(articleID, marked);
-		
+
 			dataBase.update_article.begin(articleID, "marked", marked, (obj, res) => {
 				dataBase.update_article.end(res);
 			});
 		}
-	
+
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY
@@ -153,10 +152,10 @@ namespace FeedReader {
 	FeedServer server;
 	Logger logger;
 	Notify.Notification notification;
-	
+
 
 	void main () {
-	
+
 		dataBase = new dbManager();
 		dataBase.init();
 		settings_general = new GLib.Settings ("org.gnome.feedreader");
@@ -165,20 +164,19 @@ namespace FeedReader {
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		logger = new Logger();
 		Notify.init("org.gnome.feedreader");
-	
+
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,
 				      () => {
 				      			settings_state.set_boolean("currently-updating", false);
 				      },
 				      () => {
-				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name. Will shut down!"); 
+				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name. Will shut down!");
 				          		exit(-1);
 				          	}
 				      );
 		var mainloop = new GLib.MainLoop();
 		mainloop.run();
 	}
-	
-}
 
+}

@@ -12,12 +12,13 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		this.orientation = Gtk.Orientation.HORIZONTAL;
 
 		this.set_position(settings_state.get_int("feeds-and-articles-width"));
-		m_pane.set_position(settings_state.get_int("feed-row-width"));
+
 
 		m_feedList = new feedList();
 
 		m_pane = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane.set_size_request(500, 500);
+		m_pane.set_position(settings_state.get_int("feed-row-width"));
 
 		m_pane.pack1(m_feedList, false, false);
 

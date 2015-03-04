@@ -485,13 +485,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public bool updateArticleUnread(int articleID, int unread)
+	public bool updateArticleUnread(string articleIDs, int unread)
 	{
 		bool return_value = false;
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "updateArticle");
-		message.add_int("article_ids", articleID);
+		message.add_int_array("article_ids", articleIDs);
 		if(unread == ArticleStatus.UNREAD)
 			message.add_int("mode", 1);
 		else if(unread == ArticleStatus.READ)

@@ -25,6 +25,11 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_message_string.append(",\"" + type + "\":" + val.to_string());
 	}
 
+	public void add_int_array(string type, string values)
+	{
+		m_message_string.append(",\"" + type + "\":" + values);
+	}
+
 	public void add_bool(string type, bool val)
 	{
 		m_message_string.append(",\"" + type + "\":");
@@ -102,5 +107,10 @@ public class FeedReader.ttrss_message : GLib.Object {
 			return m_root_object.get_array_member("content");
 		}
 		return null;
+	}
+
+	public string getMessage()
+	{
+		return m_message_string.str;
 	}
 }

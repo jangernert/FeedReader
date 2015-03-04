@@ -84,7 +84,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	public async void setArticleIsRead(string articleID, int read)
+	public async void setArticleIsRead(string articleIDs, int read)
 	{
 		SourceFunc callback = setArticleIsRead.callback;
 
@@ -92,11 +92,11 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.updateArticleUnread(int.parse(articleID), read);
+					m_ttrss.updateArticleUnread(articleIDs, read);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.mark_as_read(articleID, "entries", read);
+					m_feedly.mark_as_read(articleIDs, "entries", read);
 					break;
 			}
 			Idle.add((owned) callback);

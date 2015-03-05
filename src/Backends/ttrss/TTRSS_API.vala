@@ -92,7 +92,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_object();
-				unread = int.parse(response.get_string_member("unread"));
+				unread = (int)response.get_string_member("unread");
 			}
 			logger.print(LogMessage.INFO, "There are %i unread Feeds".printf(unread));
 		}
@@ -133,7 +133,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("feed_url"),
 									feed_node.get_boolean_member("has_icon"),
-									int.parse(feed_node.get_int_member("unread").to_string()),
+									(int)feed_node.get_int_member("unread").to_string(),
 									feed_node.get_int_member("cat_id").to_string()
 								)
 						);
@@ -226,7 +226,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				orderID++;
 
 				string title = categorie_node.get_string_member("name");
-				int unread_count = int.parse(categorie_node.get_int_member("unread").to_string());
+				int unread_count = (int)categorie_node.get_int_member("unread");
 				string catID = categorie_node.get_string_member("id");
 				string categorieID = catID.slice(4, catID.length);
 
@@ -275,7 +275,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					{
 						if(categorie_node.get_string_member("kind") == "cat")
 						{
-							return int.parse(categorie_node.get_int_member("counter").to_string());
+							return (int)categorie_node.get_int_member("counter");
 						}
 					}
 				}
@@ -304,7 +304,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			{
 				var categorie_node = response.get_object_element(i);
 				if(categorie_node.get_string_member("id") != null)
-					dataBase.updateCategorie(int.parse(categorie_node.get_string_member("id")), int.parse(categorie_node.get_int_member("unread").to_string()));
+					dataBase.updateCategorie(int.parse(categorie_node.get_string_member("id")), (int)categorie_node.get_int_member("unread"));
 			}
 		}
 	}

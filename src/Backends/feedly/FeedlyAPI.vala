@@ -206,7 +206,7 @@ public class FeedReader.FeedlyAPI : Object {
 					Content,
 					summaryContent,
 					author,
-					int.parse(object.get_int_member("updated").to_string())/1000, // timestamp includes msecs so divide by 1000 to get rid of them
+					((int)object.get_int_member("updated"))/1000, // timestamp includes msecs so divide by 1000 to get rid of them
 					-1,
 					tagString
 				)
@@ -264,6 +264,18 @@ public class FeedReader.FeedlyAPI : Object {
 
 		if(unread_count == -1) {
 			logger.print(LogMessage.ERROR, "Unkown id: %s".printf(id));
+		}
+
+		return unread_count;
+	}
+
+	public int getTotalUnread()
+	{
+		int unread_count = 0;
+
+		for (int i = 0; i < m_unreadcounts.get_length (); i++) {
+			var unread = m_unreadcounts.get_object_element (i);
+			unread_count += (int)unread.get_int_member ("count");
 		}
 
 		return unread_count;

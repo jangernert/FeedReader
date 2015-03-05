@@ -64,6 +64,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDLY:
+					m_feedly.getUnreadCounts();
 					m_feedly.getCategories(ref categories);
 					m_feedly.getFeeds(ref feeds);
 					m_feedly.getTags(ref tags);

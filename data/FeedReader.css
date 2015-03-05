@@ -1,3 +1,10 @@
+.destructive-action GtkSpinner {
+	color: white;
+}
+
+FeedReaderUpdateButton GtkSpinner {
+	color: black;
+}
 
 .headerbar_pane.pane-separator {
 	border-radius: 0;

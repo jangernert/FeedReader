@@ -61,7 +61,6 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public void getCategories(ref GLib.List<category> categories)
 	{
-		get_count_of_unread_articles();
 		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
 		var parser = new Json.Parser();
@@ -76,7 +75,7 @@ public class FeedReader.FeedlyAPI : Object {
 				new category (
 					categorieID,
 					object.get_string_member("label"),
-					getUnreadCount(categorieID),
+					getUnreadCountforID(categorieID),
 					i+1,
 					CategoryID.MASTER,
 					1
@@ -129,7 +128,7 @@ public class FeedReader.FeedlyAPI : Object {
 						title,
 						url,
 						(icon_url == "") ? false : true,
-						getUnreadCount(object.get_string_member("id")),
+						getUnreadCountforID(object.get_string_member("id")),
 						object.get_array_member("categories").get_object_element(0).get_string_member("id")
 					)
 			);
@@ -236,7 +235,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 	/** Returns the number of unread articles for an ID (may be a feed, subscription, category or tag */
-	private void get_count_of_unread_articles()
+	public void getUnreadCounts()
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
 
@@ -248,7 +247,7 @@ public class FeedReader.FeedlyAPI : Object {
 		m_unreadcounts = object.get_array_member("unreadcounts");
 	}
 
-	private int getUnreadCount(string id)
+	private int getUnreadCountforID(string id)
 	{
 		int unread_count = -1;
 

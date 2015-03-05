@@ -322,10 +322,9 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", Gtk.StackTransitionType.CROSSFADE);
 				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
 
-				//foreach(articleRow row in rows)
 				foreach(var item in articles)
 				{
-					while (Gtk.events_pending())
+					while(Gtk.events_pending())
 					{
 						Gtk.main_iteration();
 					}
@@ -345,7 +344,7 @@ public class FeedReader.articleList : Gtk.Stack {
 							                         item.getPreview()
 							                        );
 
-					while (Gtk.events_pending())
+					while(Gtk.events_pending())
 					{
 						Gtk.main_iteration();
 					}

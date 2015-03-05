@@ -160,11 +160,25 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public void getArticles(ref GLib.List<article> articles)
+	public void getArticles(ref GLib.List<article> articles, int maxArticles, int whatToGet = ArticleStatus.ALL, string tagID = "")
 	{
-		int maxArticles = settings_general.get_int("max-articles");
-		string allArticles = "user/" + m_userID + "/category/global.all";
-		string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=false&count=%i&ranked=newest".printf(allArticles, maxArticles));
+		string steamID = "";
+		string onlyUnread = "false";
+
+		if(whatToGet == ArticleStatus.ALL)
+			steamID = "user/" + m_userID + "/category/global.all";
+		else if(whatToGet == ArticleStatus.MARKED)
+			steamID = "user/" + m_userID + "/tag/global.saved";
+		else if(whatToGet == ArticleStatus.UNREAD)
+			onlyUnread = "true";
+
+
+		if(tagID != "" && whatToGet == ArticleStatus.ALL)
+			steamID = "user/" + m_userID + "/tag/" + tagID;
+
+
+
+		string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest".printf(steamID, onlyUnread, maxArticles));
 		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
 
 		var parser = new Json.Parser();

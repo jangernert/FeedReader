@@ -41,20 +41,21 @@ namespace FeedReader {
 	}
 
 	namespace TTRSSSpecialID {
-		 const int ARCHIVED      = 0;
-		 const int STARRED       = -1;
-		 const int PUBLISHED     = -2;
-		 const int FRESH         = -3;
-		 const int ALL           = -4;
-		 const int RECENTLY_READ = -6;
+		const int ARCHIVED      = 0;
+		const int STARRED       = -1;
+		const int PUBLISHED     = -2;
+		const int FRESH         = -3;
+		const int ALL           = -4;
+		const int RECENTLY_READ = -6;
 	}
 
 	namespace ArticleStatus {
-		 const int READ     = 8;
-		 const int UNREAD   = 9;
-		 const int UNMARKED = 10;
-		 const int MARKED   = 11;
-		 const int TOGGLE   = 12;
+		const int READ		= 8;
+		const int UNREAD	= 9;
+		const int UNMARKED	= 10;
+		const int MARKED	= 11;
+		const int TOGGLE	= 12;
+		const int ALL		= 13;
 	}
 
 	public enum LoginResponse {

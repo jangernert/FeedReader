@@ -60,7 +60,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_ttrss.getCategories(ref categories);
 					m_ttrss.getFeeds(ref feeds);
 					m_ttrss.getTags(ref tags);
-					m_ttrss.getArticles(ref articles);
+					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"));
 					break;
 
 				case Backend.FEEDLY:
@@ -68,7 +68,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_feedly.getCategories(ref categories);
 					m_feedly.getFeeds(ref feeds);
 					m_feedly.getTags(ref tags);
-					m_feedly.getArticles(ref articles);
+					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"));
 					break;
 			}
 
@@ -115,6 +115,96 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		return;
 	}
+
+	public async void InitSyncContent()
+	{
+		SourceFunc callback = InitSyncContent.callback;
+
+		ThreadFunc<void*> run = () => {
+			var categories = new GLib.List<category>();
+			var feeds      = new GLib.List<feed>();
+			var tags       = new GLib.List<tag>();
+			var articles   = new GLib.List<article>();
+
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.getCategories(ref categories);
+					m_ttrss.getFeeds(ref feeds);
+					m_ttrss.getTags(ref tags);
+
+					// get ALL unread articles
+					m_ttrss.getArticles(ref articles, m_ttrss.getUnreadCount(), ArticleStatus.UNREAD);
+
+					// get max-articles-count of marked articles
+					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+
+					// get max-articles-count of articles for each tag
+					foreach(var tag_item in tags)
+					{
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(tag_item.m_tagID));
+					}
+
+					// last but not least a normal sync
+					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"));
+					break;
+
+				case Backend.FEEDLY:
+					m_feedly.getUnreadCounts();
+					m_feedly.getCategories(ref categories);
+					m_feedly.getFeeds(ref feeds);
+					m_feedly.getTags(ref tags);
+
+					// get ALL unread articles
+					m_feedly.getArticles(ref articles, m_feedly.getTotalUnread(), ArticleStatus.UNREAD);
+
+					// get max-articles-count of marked articles
+					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+
+					// get max-articles-count of articles for each tag
+					foreach(var tag_item in tags)
+					{
+						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, tag_item.m_tagID);
+					}
+
+					// last but not least a normal sync
+					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"));
+					break;
+			}
+
+			// write categories
+			dataBase.reset_exists_flag();
+			dataBase.write_categories(ref categories);
+			dataBase.delete_nonexisting_categories();
+			if(m_type == Backend.TTRSS)
+				m_ttrss.updateCategorieUnread();
+
+			// write feeds
+			dataBase.reset_subscribed_flag();
+			dataBase.write_feeds(ref feeds);
+			dataBase.delete_unsubscribed_feeds();
+
+			// write tags
+			dataBase.reset_exists_tag();
+			dataBase.write_tags(ref tags);
+			foreach(var tag_item in tags)
+				dataBase.update_tag(tag_item.m_tagID);
+			dataBase.delete_nonexisting_tags();
+
+			// write articles
+			articles.reverse();
+			dataBase.write_articles(ref articles);
+
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("InitSyncContent", run);
+		yield;
+
+		return;
+	}
+
 
 	public async void setArticleIsRead(string articleIDs, int read)
 	{

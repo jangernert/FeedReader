@@ -40,6 +40,12 @@ namespace FeedReader {
 			});
 		}
 
+		public void startInitSync () {
+			initSync.begin((obj, res) => {
+				initSync.end(res);
+			});
+		}
+
 
 		public signal void syncStarted();
 		public signal void syncFinished();
@@ -62,6 +68,29 @@ namespace FeedReader {
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
 				logger.print(LogMessage.INFO, "daemon: sync finished");
+			}
+			else
+				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
+		}
+
+
+		private async void initSync()
+		{
+			if(m_loggedin != LoginResponse.SUCCESS)
+			{
+				m_loggedin = login(settings_general.get_enum("account-type"));
+			}
+
+			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
+			{
+				syncStarted();
+				logger.print(LogMessage.INFO, "daemon: initSync started");
+				settings_state.set_boolean("currently-updating", true);
+				yield server.InitSyncContent();
+				updateBadge();
+				settings_state.set_boolean("currently-updating", false);
+				syncFinished();
+				logger.print(LogMessage.INFO, "daemon: initSync finished");
 			}
 			else
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");

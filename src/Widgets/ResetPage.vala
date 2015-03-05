@@ -71,13 +71,13 @@ public class FeedReader.ResetPage : Gtk.Alignment {
 		if(!m_reset)
 			return;
 
-		dataBase.resetDB();
-		dataBase.init();
+		//dataBase.resetDB();
+		//dataBase.init();
 
-		resetSettings(settings_general);
-		resetSettings(settings_state);
-		resetSettings(settings_feedly);
-		resetSettings(settings_ttrss);
+		//resetSettings(settings_general);
+		//resetSettings(settings_state);
+		//resetSettings(settings_feedly);
+		//resetSettings(settings_ttrss);
 
 		reset();
 	}

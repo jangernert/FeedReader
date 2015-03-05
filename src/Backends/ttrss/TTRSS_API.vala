@@ -310,18 +310,33 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getArticles(ref GLib.List<article> articles, int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
+	public void getArticles(ref GLib.List<article> articles, int maxArticles, int whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
-
+		//message.add_bool("show_content", true);
 		message.add_int("limit", limit);
 		message.add_int("skip", skip);
 
+		switch(whatToGet)
+		{
+			case ArticleStatus.ALL:
+				message.add_string("view_mode", "all_articles");
+				break;
+
+			case ArticleStatus.UNREAD:
+				message.add_string("view_mode", "unread");
+				break;
+
+			case ArticleStatus.MARKED:
+				message.add_string("view_mode", "marked");
+				break;
+		}
 
 		int error = message.send();
+		//message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{
@@ -336,14 +351,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				var headline_node = response.get_object_element(i);
 
 				if(!dataBase.article_exists(headline_node.get_int_member("id").to_string()))
-				{
-					getArticle( int.parse(headline_node.get_int_member("id").to_string()),
-								out title, out author, out url, out html);
-				}
+					getArticle( (int)headline_node.get_int_member("id"), out title, out author, out url, out html);
 				else
-				{
 					title = author = url = html = "";
-				}
 
 				string tagString = "";
 				if(headline_node.has_member("labels"))
@@ -376,19 +386,17 @@ public class FeedReader.ttrss_interface : GLib.Object {
 								));
 
 			}
-			logger.print(LogMessage.DEBUG, "Finished fetching articles");
 
-			int maxArticles = settings_general.get_int("max-articles");
 			if(headline_count == 200 && (skip+200) < maxArticles)
 			{
 				logger.print(LogMessage.DEBUG, "TTRSS sync: get more headlines");
 				if(maxArticles - skip < 200)
 				{
-					getArticles(ref articles, feedID, skip + 200, maxArticles - skip);
+					getArticles(ref articles, maxArticles, whatToGet, feedID, skip + 200, maxArticles - skip);
 				}
 				else
 				{
-					getArticles(ref articles, feedID, skip + 200);
+					getArticles(ref articles, maxArticles, whatToGet, feedID, skip + 200);
 				}
 			}
 		}

@@ -196,7 +196,22 @@ public class FeedReader.FeedlyAPI : Object {
 				}
 			}
 
-			articles.append(new article(id, title, url, feedID, (unread) ? ArticleStatus.UNREAD : ArticleStatus.READ, ArticleStatus.UNMARKED, Content, summaryContent, author, -1, tagString));
+			articles.append(
+				new article(
+					id,
+					title,
+					url,
+					feedID,
+					(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+					ArticleStatus.UNMARKED,
+					Content,
+					summaryContent,
+					author,
+					int.parse(object.get_int_member("updated").to_string())/1000, // timestamp includes msecs so divide by 1000 to get rid of them
+					-1,
+					tagString
+				)
+			);
 		}
 	}
 

@@ -370,6 +370,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										html,
 										"",
 										author,
+										int.parse(headline_node.get_int_member("updated").to_string()),
 										-1,
 										tagString
 								));

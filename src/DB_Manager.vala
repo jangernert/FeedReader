@@ -57,7 +57,8 @@ public class FeedReader.dbManager : GLib.Object {
 												"preview" TEXT NOT NULL,
 												"unread" INTEGER NOT NULL,
 												"marked" INTEGER NOT NULL,
-												"tags" TEXT
+												"tags" TEXT,
+												"date" DATETIME NOT NULL
 											)""");
 
 			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
@@ -425,8 +426,8 @@ public class FeedReader.dbManager : GLib.Object {
 
 
 		string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
-		string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"tags\") ";
-		string values = "VALUES ($ARTICLEID, $FEEDID, $TITLE, $AUTHOR, $URL, $HTML, $PREVIEW, $UNREAD, $MARKED, $TAGS)";
+		string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"tags\", \"date\") ";
+		string values = "VALUES ($ARTICLEID, $FEEDID, $TITLE, $AUTHOR, $URL, $HTML, $PREVIEW, $UNREAD, $MARKED, $TAGS, datetime($DATE, 'unixepoch'))";
 		string query = command + fields + values;
 
 		Sqlite.Statement stmt;
@@ -444,6 +445,7 @@ public class FeedReader.dbManager : GLib.Object {
 		int html_position = stmt.bind_parameter_index("$HTML");
 		int preview_position = stmt.bind_parameter_index("$PREVIEW");
 		int author_position = stmt.bind_parameter_index("$AUTHOR");
+		int date_position = stmt.bind_parameter_index("$DATE");
 		assert (articleID_position > 0);
 		assert (feedID_position > 0);
 		assert (url_position > 0);
@@ -454,6 +456,7 @@ public class FeedReader.dbManager : GLib.Object {
 		assert (html_position > 0);
 		assert (preview_position > 0);
 		assert (author_position > 0);
+		assert (date_position > 0);
 
 
 		foreach(var article in articles)
@@ -468,6 +471,7 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text(html_position, article.getHTML());
 			stmt.bind_text(preview_position, article.getPreview());
 			stmt.bind_text(author_position, article.getAuthor());
+			stmt.bind_int (date_position, article.getDate());
 
 			while(stmt.step () == Sqlite.ROW) {}
 			stmt.reset();
@@ -524,6 +528,7 @@ public class FeedReader.dbManager : GLib.Object {
 								stmt.column_text(6),
 								stmt.column_text(7),
 								stmt.column_text(4),
+								stmt.column_int(11),
 								stmt.column_int(0),
 								stmt.column_text(10)
 							);
@@ -902,6 +907,7 @@ public class FeedReader.dbManager : GLib.Object {
 								"",						// html
 								stmt.column_text(6),	// preview
 								stmt.column_text(4),	// author
+								stmt.column_int(10),		// date
 								stmt.column_int(0),		// sortID
 								stmt.column_text(9)		// tags
 							);

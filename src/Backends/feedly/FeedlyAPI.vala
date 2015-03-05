@@ -164,11 +164,12 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		string steamID = "";
 		string onlyUnread = "false";
+		string marked_tag = "user/" + m_userID + "/tag/global.saved";
 
 		if(whatToGet == ArticleStatus.ALL)
 			steamID = "user/" + m_userID + "/category/global.all";
 		else if(whatToGet == ArticleStatus.MARKED)
-			steamID = "user/" + m_userID + "/tag/global.saved";
+			steamID = marked_tag;
 		else if(whatToGet == ArticleStatus.UNREAD)
 			onlyUnread = "true";
 
@@ -197,6 +198,8 @@ public class FeedReader.FeedlyAPI : Object {
 			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 			string feedID = object.get_object_member("origin").get_string_member("streamId");
 			string tagString = "";
+			string tmpTag = "";
+			int marked = ArticleStatus.UNMARKED;
 
 			if(object.has_member("tags"))
 			{
@@ -205,7 +208,11 @@ public class FeedReader.FeedlyAPI : Object {
 
 				for(int j = 0; j < tagCount; ++j)
 				{
-					tagString = tagString + tags.get_object_element(j).get_string_member("id") + ",";
+					tmpTag = tags.get_object_element(j).get_string_member("id");
+					if(tmpTag == marked_tag)
+						marked = ArticleStatus.MARKED;
+					else
+						tagString = tagString + tmpTag + ",";
 				}
 			}
 
@@ -216,7 +223,7 @@ public class FeedReader.FeedlyAPI : Object {
 					url,
 					feedID,
 					(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-					ArticleStatus.UNMARKED,
+					marked,
 					Content,
 					summaryContent,
 					author,

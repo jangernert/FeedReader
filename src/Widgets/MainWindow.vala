@@ -113,9 +113,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		else
 			m_content.updateFeedList();
 
-
-		m_content.updateArticleList();
-
 		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_stack.set_visible_child_full("content", transition);
 

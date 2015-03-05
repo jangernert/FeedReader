@@ -282,10 +282,9 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	public async void createHeadlineList(bool add = false)
 	{
-		SourceFunc callback = createHeadlineList.callback;
+		logger.print(LogMessage.DEBUG, "ArticleList: create HeadlineList");
 		GLib.List<article> articles = new GLib.List<article>();
 
-		logger.print(LogMessage.DEBUG, "create new HeadlineList");
 		m_threadCount++;
 		int threadID = m_threadCount;
 		bool hasContent = true;
@@ -293,6 +292,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll();
 
+		SourceFunc callback = createHeadlineList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
@@ -380,6 +380,7 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	public void newHeadlineList()
 	{
+		logger.print(LogMessage.DEBUG, "ArticleList: delete HeadlineList");
 		string selectedArticle = getSelectedArticle();
 
 		if(selectedArticle != "empty")
@@ -411,6 +412,8 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	public void updateArticleList()
 	{
+		logger.print(LogMessage.DEBUG, "ArticleList: update HeadlineList");
+
 		var articleChildList = m_currentList.get_children();
 		if(articleChildList != null)
 		{

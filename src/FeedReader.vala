@@ -58,6 +58,7 @@ namespace FeedReader {
 				feedDaemon_interface.syncFinished.connect(() => {
 				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
 				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT);
+					m_window.updateArticleList();
 					m_window.setRefreshButton(false);
 				});
 			}catch (IOError e) {

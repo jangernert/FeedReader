@@ -133,7 +133,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("feed_url"),
 									feed_node.get_boolean_member("has_icon"),
-									(int)feed_node.get_int_member("unread").to_string(),
+									(int)feed_node.get_int_member("unread"),
 									feed_node.get_int_member("cat_id").to_string()
 								)
 						);

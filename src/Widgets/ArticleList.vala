@@ -333,15 +333,16 @@ public class FeedReader.articleList : Gtk.Stack {
 						break;
 
 					var tmpRow = new articleRow(
-							                         item.m_title,
-							                         item.m_unread,
-							                         item.m_feedID.to_string(),
-							                         item.m_url,
-							                         item.m_feedID,
-							                         item.getArticleID(),
-							                         item.m_marked,
-							                         item.getSortID(),
-							                         item.getPreview()
+							                        item.m_title,
+							                        item.m_unread,
+							                        item.m_feedID.to_string(),
+							                        item.m_url,
+							                        item.m_feedID,
+							                        item.getArticleID(),
+							                        item.m_marked,
+							                        item.getSortID(),
+							                        item.getPreview(),
+													item.getDate()
 							                        );
 
 					while(Gtk.events_pending())
@@ -418,7 +419,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		if(articleChildList != null)
 		{
 			var first_row = articleChildList.first().data as articleRow;
-			int new_articles = dataBase.getRowNumberHeadline(first_row.getID()) -1;
+			int new_articles = dataBase.getRowNumberHeadline(first_row.getDate()) -1;
 			m_limit = m_displayed_articles + new_articles;
 		}
 
@@ -444,15 +445,16 @@ public class FeedReader.articleList : Gtk.Stack {
 			if(!found)
 			{
 				articleRow newRow = new articleRow(
-					                             item.m_title,
-					                             item.m_unread,
-					                             item.m_feedID.to_string(),
-					                             item.m_url,
-					                             item.m_feedID,
-					                             item.getArticleID(),
-					                             item.m_marked,
-					                             item.getSortID(),
-					                             item.getPreview()
+					                            item.m_title,
+					                            item.m_unread,
+					                            item.m_feedID.to_string(),
+					                            item.m_url,
+					                            item.m_feedID,
+					                            item.getArticleID(),
+					                            item.m_marked,
+					                            item.getSortID(),
+					                            item.getPreview(),
+												item.getDate()
 					                            );
 				int pos = 0;
 				bool added = false;

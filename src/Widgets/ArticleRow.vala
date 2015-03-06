@@ -4,6 +4,7 @@ public class FeedReader.articleRow : baseRow {
 	private int m_marked;
 	private string m_url;
 	private string m_name;
+	private string m_date;
 	private Gtk.Image m_marked_icon;
 	private Gtk.Image m_unmarked_icon;
 	private Gtk.Image m_unread_icon;
@@ -15,7 +16,7 @@ public class FeedReader.articleRow : baseRow {
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 
-	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview)
+	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview, string date)
 	{
 		m_sortID = sortID;
 		m_marked = marked;
@@ -24,6 +25,7 @@ public class FeedReader.articleRow : baseRow {
 		m_feedID = feedID;
 		m_url = url;
 		m_is_unread = unread;
+		m_date = date;
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 100);
@@ -286,6 +288,11 @@ public class FeedReader.articleRow : baseRow {
 	public string getID()
 	{
 		return m_articleID;
+	}
+
+	public string getDate()
+	{
+		return m_date;
 	}
 
 

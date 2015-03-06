@@ -11,11 +11,11 @@ public class FeedReader.article : GLib.Object {
 	public int m_unread { get; private set; }
 	public int m_marked { get; private set; }
 	private int m_sortID;
-	private int m_date;
+	private string m_date;
 
 
 
-	public article (string articleID, string title, string url, string feedID, int unread, int marked, string html, string preview, string author, int date, int sortID, string tags) {
+	public article (string articleID, string title, string url, string feedID, int unread, int marked, string html, string preview, string author, string date, int sortID, string tags) {
 		m_articleID = articleID;
 		m_title = title;
 		m_url = url;
@@ -70,7 +70,7 @@ public class FeedReader.article : GLib.Object {
 		m_author = author;
 	}
 
-	public int getDate()
+	public string getDate()
 	{
 		return m_date;
 	}

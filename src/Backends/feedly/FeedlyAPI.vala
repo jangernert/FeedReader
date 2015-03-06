@@ -160,7 +160,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public void getArticles(ref GLib.List<article> articles, int maxArticles, int whatToGet = ArticleStatus.ALL, string tagID = "")
+	public void getArticles(ref GLib.List<article> articles, int maxArticles, int whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "";
 		string onlyUnread = "false";
@@ -175,7 +175,10 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 		if(tagID != "" && whatToGet == ArticleStatus.ALL)
-			steamID = "user/" + m_userID + "/tag/" + tagID;
+			steamID = tagID;
+
+		if(feed_id != "" && whatToGet == ArticleStatus.ALL)
+			steamID = feed_id;
 
 
 
@@ -227,7 +230,7 @@ public class FeedReader.FeedlyAPI : Object {
 					Content,
 					summaryContent,
 					author,
-					((int)object.get_int_member("updated"))/1000, // timestamp includes msecs so divide by 1000 to get rid of them
+					(((int)object.get_int_member("updated"))/1000).to_string(), // timestamp includes msecs so divide by 1000 to get rid of them
 					-1,
 					tagString
 				)

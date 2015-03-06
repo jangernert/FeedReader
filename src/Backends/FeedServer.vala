@@ -58,44 +58,53 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				case Backend.TTRSS:
 					m_ttrss.getCategories(ref categories);
+					dataBase.reset_exists_flag();
+					dataBase.write_categories(ref categories);
+					dataBase.delete_nonexisting_categories();
+					m_ttrss.updateCategorieUnread();
+
 					m_ttrss.getFeeds(ref feeds);
+					dataBase.reset_subscribed_flag();
+					dataBase.write_feeds(ref feeds);
+					dataBase.delete_unsubscribed_feeds();
+
 					m_ttrss.getTags(ref tags);
+					dataBase.reset_exists_tag();
+					dataBase.write_tags(ref tags);
+					foreach(var tag_item in tags)
+						dataBase.update_tag(tag_item.m_tagID);
+					dataBase.delete_nonexisting_tags();
+
 					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"));
+					articles.reverse();
+					dataBase.write_articles(ref articles);
 					break;
 
 				case Backend.FEEDLY:
 					m_feedly.getUnreadCounts();
+
 					m_feedly.getCategories(ref categories);
+					dataBase.reset_exists_flag();
+					dataBase.write_categories(ref categories);
+					dataBase.delete_nonexisting_categories();
+
 					m_feedly.getFeeds(ref feeds);
+					dataBase.reset_subscribed_flag();
+					dataBase.write_feeds(ref feeds);
+					dataBase.delete_unsubscribed_feeds();
+
 					m_feedly.getTags(ref tags);
+					dataBase.reset_exists_tag();
+					dataBase.write_tags(ref tags);
+					foreach(var tag_item in tags)
+						dataBase.update_tag(tag_item.m_tagID);
+					dataBase.delete_nonexisting_tags();
+
 					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"));
+					articles.reverse();
+					dataBase.write_articles(ref articles);
 					break;
 			}
-
-			// write categories
-			dataBase.reset_exists_flag();
-			dataBase.write_categories(ref categories);
-			dataBase.delete_nonexisting_categories();
-			if(m_type == Backend.TTRSS)
-				m_ttrss.updateCategorieUnread();
-
-			// write feeds
-			dataBase.reset_subscribed_flag();
-			dataBase.write_feeds(ref feeds);
-			dataBase.delete_unsubscribed_feeds();
-
-			// write tags
-			dataBase.reset_exists_tag();
-			dataBase.write_tags(ref tags);
-			foreach(var tag_item in tags)
-				dataBase.update_tag(tag_item.m_tagID);
-			dataBase.delete_nonexisting_tags();
-
-			// write articles
-			articles.reverse();
-			dataBase.write_articles(ref articles);
-
-
 
 			int after = dataBase.getHighestRowID();
 			int newArticles = after-before;
@@ -121,6 +130,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		SourceFunc callback = InitSyncContent.callback;
 
 		ThreadFunc<void*> run = () => {
+			logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
+
 			var categories = new GLib.List<category>();
 			var feeds      = new GLib.List<feed>();
 			var tags       = new GLib.List<tag>();
@@ -129,31 +140,55 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
+					logger.print(LogMessage.DEBUG, "FeedServer: backend ttrss");
+
 					m_ttrss.getCategories(ref categories);
+					dataBase.write_categories(ref categories);
+					m_ttrss.updateCategorieUnread();
+
 					m_ttrss.getFeeds(ref feeds);
+					dataBase.write_feeds(ref feeds);
+
 					m_ttrss.getTags(ref tags);
+					dataBase.write_tags(ref tags);
 
 					// get ALL unread articles
+					logger.print(LogMessage.DEBUG, "FeedServer: get unread articles");
 					m_ttrss.getArticles(ref articles, m_ttrss.getUnreadCount(), ArticleStatus.UNREAD);
 
 					// get max-articles-count of marked articles
+					logger.print(LogMessage.DEBUG, "FeedServer: get marked");
 					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.MARKED);
 
 					// get max-articles-count of articles for each tag
 					foreach(var tag_item in tags)
 					{
+						logger.print(LogMessage.DEBUG, "FeedServer: get articles of tag %s".printf(tag_item.m_title));
 						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(tag_item.m_tagID));
 					}
 
-					// last but not least a normal sync
-					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"));
+					// get max-articles-count of articles for each feed
+					foreach(var feed_item in feeds)
+					{
+						logger.print(LogMessage.DEBUG, "FeedServer: get articles of feed %s".printf(feed_item.m_title));
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(feed_item.m_feedID));
+					}
+
+					articles.reverse();
+					dataBase.write_articles(ref articles);
 					break;
 
 				case Backend.FEEDLY:
 					m_feedly.getUnreadCounts();
+
 					m_feedly.getCategories(ref categories);
+					dataBase.write_categories(ref categories);
+
 					m_feedly.getFeeds(ref feeds);
+					dataBase.write_feeds(ref feeds);
+
 					m_feedly.getTags(ref tags);
+					dataBase.write_tags(ref tags);
 
 					// get ALL unread articles
 					m_feedly.getArticles(ref articles, m_feedly.getTotalUnread(), ArticleStatus.UNREAD);
@@ -167,33 +202,17 @@ public class FeedReader.FeedServer : GLib.Object {
 						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, tag_item.m_tagID);
 					}
 
-					// last but not least a normal sync
-					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"));
+					// get max-articles-count of articles for each feed
+					foreach(var feed_item in feeds)
+					{
+						// FIXME
+						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, feed_item.m_feedID);
+					}
+
+					articles.reverse();
+					dataBase.write_articles(ref articles);
 					break;
 			}
-
-			// write categories
-			dataBase.reset_exists_flag();
-			dataBase.write_categories(ref categories);
-			dataBase.delete_nonexisting_categories();
-			if(m_type == Backend.TTRSS)
-				m_ttrss.updateCategorieUnread();
-
-			// write feeds
-			dataBase.reset_subscribed_flag();
-			dataBase.write_feeds(ref feeds);
-			dataBase.delete_unsubscribed_feeds();
-
-			// write tags
-			dataBase.reset_exists_tag();
-			dataBase.write_tags(ref tags);
-			foreach(var tag_item in tags)
-				dataBase.update_tag(tag_item.m_tagID);
-			dataBase.delete_nonexisting_tags();
-
-			// write articles
-			articles.reverse();
-			dataBase.write_articles(ref articles);
 
 			Idle.add((owned) callback);
 			return null;

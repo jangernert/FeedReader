@@ -92,7 +92,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_object();
-				unread = (int)response.get_string_member("unread");
+				unread = int.parse(response.get_string_member("unread"));
 			}
 			logger.print(LogMessage.INFO, "There are %i unread Feeds".printf(unread));
 		}
@@ -316,8 +316,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
-		//message.add_bool("show_content", true);
-		message.add_int("limit", limit);
+
+		if(maxArticles < limit)
+			message.add_int("limit", maxArticles);
+		else
+			message.add_int("limit", limit);
+
+
 		message.add_int("skip", skip);
 
 		switch(whatToGet)
@@ -380,7 +385,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										html,
 										"",
 										author,
-										int.parse(headline_node.get_int_member("updated").to_string()),
+										headline_node.get_int_member("updated").to_string(),
 										-1,
 										tagString
 								));

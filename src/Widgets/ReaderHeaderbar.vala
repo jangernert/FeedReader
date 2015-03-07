@@ -2,6 +2,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	private Gtk.ToggleButton m_only_unread_button;
 	private Gtk.ToggleButton m_only_marked_button;
+	private Gtk.Button m_mark_read_button;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
 	private bool m_only_unread { get; private set; }
@@ -12,11 +13,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public signal void change_unread(bool only_unread);
 	public signal void change_marked(bool only_marked);
 	public signal void search_term(string searchTerm);
+	public signal void mark_selected_read();
 
 
 	public readerHeaderbar () {
 		var only_unread_icon = new Gtk.Image.from_icon_name("object-inverse", Gtk.IconSize.LARGE_TOOLBAR);
 		var only_marked_icon = new Gtk.Image.from_icon_name("help-about", Gtk.IconSize.LARGE_TOOLBAR);
+		var mark_read_icon = new Gtk.Image.from_icon_name("selection-remove", Gtk.IconSize.LARGE_TOOLBAR);
 
 		m_header_left = new Gtk.HeaderBar ();
         m_header_left.show_close_button = true;
@@ -50,6 +53,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_only_marked_button.set_focus_on_click(false);
 		m_only_marked_button.set_tooltip_text(_("only show marked articles"));
 
+		m_mark_read_button = new Gtk.Button();
+		m_mark_read_button.add(mark_read_icon);
+		m_mark_read_button.set_focus_on_click(false);
+		m_mark_read_button.set_tooltip_text(_("mark selected feed/category as read"));
+
 
 		m_only_unread_button.toggled.connect (() => {
 			if (m_only_unread_button.active) {
@@ -69,6 +77,10 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 				m_only_marked = false;
 			}
 			change_marked(m_only_marked);
+		});
+
+		m_mark_read_button.clicked.connect(() => {
+			mark_selected_read();
 		});
 
 		m_refresh_button = new UpdateButton("view-refresh");
@@ -97,6 +109,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_left.pack_end(m_search);
 		m_header_left.pack_start(m_only_unread_button);
 		m_header_left.pack_start(m_only_marked_button);
+		m_header_left.pack_start(m_mark_read_button);
 		m_header_left.pack_start(m_refresh_button);
 
 		this.pack1(m_header_left, true, false);
@@ -137,6 +150,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public bool getOnlyMarked()
 	{
 		return m_only_marked;
+	}
+
+	public void setMarkReadButtonSensitive(bool sensitive)
+	{
+		m_mark_read_button.set_sensitive(sensitive);
 	}
 
 }

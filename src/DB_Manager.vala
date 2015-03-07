@@ -377,9 +377,8 @@ public class FeedReader.dbManager : GLib.Object {
 		string query = "SELECT preview FROM \"main\".\"articles\" WHERE \"articleID\" = \"" + articleID + "\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
+		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
-		}
 
 		string result = "";
 
@@ -551,12 +550,27 @@ public class FeedReader.dbManager : GLib.Object {
 		yield;
 	}
 
-	public async void markFeedRead(string feedIDs)
+	public async void markFeedRead(string feedID)
 	{
 		SourceFunc callback = markFeedRead.callback;
 
 		ThreadFunc<void*> run = () => {
-			executeSQL("UPDATE \"main\".\"articles\" SET \"unread\" = 8 WHERE \"feedID\" IN (" + feedIDs + ")");
+			string query = "SELECT unread, category_id FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID + "\"";
+			Sqlite.Statement stmt;
+			int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+			if (ec != Sqlite.OK)
+				logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
+
+			int unread = 0;
+			string catID = "";
+			while (stmt.step () == Sqlite.ROW) {
+				unread = stmt.column_int(0);
+				catID = stmt.column_text(1);
+			}
+
+			executeSQL("UPDATE \"main\".\"articles\" SET \"unread\" = 8 WHERE \"feedID\" = \"" + feedID + "\"");
+			executeSQL("UPDATE \"main\".\"feeds\" SET \"unread\" = 0 WHERE \"feed_id\" = \"" + feedID + "\"");
+			executeSQL("UPDATE \"main\".\"categories\" SET \"unread\" = \"unread\" - " + unread.to_string() + " WHERE categorieID = \"" + catID + "\"");
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -569,7 +583,9 @@ public class FeedReader.dbManager : GLib.Object {
 		SourceFunc callback = markCategorieRead.callback;
 
 		ThreadFunc<void*> run = () => {
-			executeSQL("UPDATE \"main\".\"articles\" SET \"unread\" = 8 WHERE " + getFeedIDofCategorie(catID));
+			executeSQL("UPDATE \"main\".\"articles\" SET \"unread\" = 8 WHERE " + "\"feedID\" IN" + getFeedIDofCategorie(catID));
+			executeSQL("UPDATE \"main\".\"feeds\" SET \"unread\" = 0 WHERE " + "\"feed_id\" IN" + getFeedIDofCategorie(catID));
+			executeSQL("UPDATE \"main\".\"categories\" SET \"unread\" = 0 WHERE categorieID = \"" + catID + "\"");
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -676,7 +692,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 	private string getFeedIDofCategorie(string categorieID)
 	{
-		string query = "\"feedID\" IN (";
+		string query = "(";
 		string query2 = "SELECT feed_id FROM \"main\".\"feeds\" WHERE \"category_id\" = " + "\"" + categorieID + "\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query2, query2.length, out stmt);
@@ -864,7 +880,7 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 		else if(selectedType == FeedList.CATEGORY && ID != CategoryID.MASTER && ID != CategoryID.TAGS)
 		{
-				query = query + getFeedIDofCategorie(ID);
+				query = query + "\"feedID\" IN" + getFeedIDofCategorie(ID);
 				and = " AND ";
 		}
 		else if(ID == CategoryID.TAGS)

@@ -4,6 +4,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
+	public signal void setMarkReadButtonActive(bool active);
 
 
 	public ContentPage()
@@ -23,6 +24,12 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_pane.pack1(m_feedList, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
+			logger.print(LogMessage.DEBUG, "selected feed: %s".printf(feedID));
+			if(feedID == FeedID.ALL)
+				setMarkReadButtonActive(false);
+			else
+				setMarkReadButtonActive(true);
+
 			m_articleList.setSelectedType(FeedList.FEED);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
@@ -30,6 +37,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		});
 
 		m_feedList.newTagSelected.connect((tagID) => {
+			setMarkReadButtonActive(false);
 			m_articleList.setSelectedType(FeedList.TAG);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
@@ -37,6 +45,12 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
+			logger.print(LogMessage.DEBUG, "selected feed: %s".printf(categorieID));
+			if(categorieID == CategoryID.MASTER || categorieID == CategoryID.TAGS)
+				setMarkReadButtonActive(false);
+			else
+				setMarkReadButtonActive(true);
+
 			m_articleList.setSelectedType(FeedList.CATEGORY);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
@@ -167,6 +181,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public string getSelectedArticle()
 	{
 		return m_articleList.getSelectedArticle();
+	}
+
+	public void markAllArticlesAsRead()
+	{
+		m_articleList.markAllAsRead();
 	}
 
 }

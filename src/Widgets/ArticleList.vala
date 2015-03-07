@@ -433,8 +433,8 @@ public class FeedReader.articleList : Gtk.Stack {
 
 			foreach(Gtk.Widget row in articleChildList)
 			{
-				var tmpRow = (articleRow)row;
-				if(item.getArticleID() == tmpRow.getID())
+				var tmpRow = row as articleRow;
+				if(tmpRow != null && item.getArticleID() == tmpRow.getID())
 				{
 					tmpRow.updateUnread(item.m_unread);
 					found = true;
@@ -501,6 +501,22 @@ public class FeedReader.articleList : Gtk.Stack {
 			return null;
 		};
 		new GLib.Thread<void*>("limitScroll", run);
+	}
+
+
+	public void markAllAsRead()
+	{
+		var articleChildList = m_currentList.get_children();
+
+		foreach(Gtk.Widget row in articleChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null)
+			{
+				tmpRow.updateUnread(ArticleStatus.READ);
+				tmpRow.unreadIconLeave();
+			}
+		}
 	}
 
 

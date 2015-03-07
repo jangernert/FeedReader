@@ -48,6 +48,21 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_content.newHeadlineList();
 		});
 
+		m_headerbar.mark_selected_read.connect(() => {
+			string[] selectedRow = m_content.getSelectedFeedListRow().split(" ", 2);
+
+			if(selectedRow[0] == "feed")
+			{
+				feedDaemon_interface.markFeedAsRead(selectedRow[1], false);
+				m_content.markAllArticlesAsRead();
+			}
+			else if(selectedRow[0] == "cat")
+			{
+				feedDaemon_interface.markFeedAsRead(selectedRow[1], true);
+				m_content.markAllArticlesAsRead();
+			}
+		});
+
 		m_headerbar.notify["position"].connect(() => {
         	m_content.set_position(m_headerbar.get_position());
         });
@@ -62,6 +77,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		add_action(m_login_action);
+
+
+		m_content.setMarkReadButtonActive.connect((active) => {
+			m_headerbar.setMarkReadButtonSensitive(active);
+		});
 
 
 		if(settings_state.get_boolean("window-maximized"))
@@ -346,6 +366,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	public void updateArticleList()
 	{
 		m_content.updateArticleList();
+	}
+
+	public void newFeedList()
+	{
+		m_content.newFeedList();
 	}
 
 

@@ -20,10 +20,12 @@ namespace FeedReader {
 		public abstract int isLoggedIn() throws IOError;
 		public abstract void changeUnread(string articleID, int read) throws IOError;
 		public abstract void changeMarked(string articleID, int marked) throws IOError;
+		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void updateBadge() throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
+		public signal void newFeedList();
 	}
 
 
@@ -50,6 +52,10 @@ namespace FeedReader {
 
 				feedDaemon_interface.updateFeedlistUnreadCount.connect((feedID, increase) => {
 				    m_window.updateFeedListCountUnread(feedID, increase);
+				});
+
+				feedDaemon_interface.newFeedList.connect(() => {
+				    m_window.newFeedList();
 				});
 
 				feedDaemon_interface.syncStarted.connect(() => {

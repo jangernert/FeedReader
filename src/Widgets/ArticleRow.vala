@@ -178,7 +178,7 @@ public class FeedReader.articleRow : baseRow {
 	}
 
 
-	private void unreadIconLeave()
+	public void unreadIconLeave()
 	{
 		if(!m_just_clicked){
 			if(m_is_unread == ArticleStatus.READ){

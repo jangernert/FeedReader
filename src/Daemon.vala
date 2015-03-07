@@ -50,6 +50,7 @@ namespace FeedReader {
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
+		public signal void newFeedList();
 
 		private async void sync()
 		{
@@ -130,6 +131,34 @@ namespace FeedReader {
 				updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleIDs), increase);
 				updateBadge();
 			});
+		}
+
+		public void markFeedAsRead(string feedID, bool isCat)
+		{
+			if(isCat)
+			{
+				server.setCategorieRead.begin(feedID, (obj, res) => {
+					server.setCategorieRead.end(res);
+				});
+
+				dataBase.markCategorieRead.begin(feedID, (obj, res) => {
+					dataBase.markCategorieRead.end(res);
+					updateBadge();
+					newFeedList();
+				});
+			}
+			else
+			{
+				server.setFeedRead.begin(feedID, (obj, res) => {
+					server.setFeedRead.end(res);
+				});
+
+				dataBase.markFeedRead.begin(feedID, (obj, res) => {
+					dataBase.markFeedRead.end(res);
+					updateBadge();
+					newFeedList();
+				});
+			}
 		}
 
 		public void changeMarked(string articleID, int marked)

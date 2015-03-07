@@ -24,7 +24,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_pane.pack1(m_feedList, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
-			logger.print(LogMessage.DEBUG, "selected feed: %s".printf(feedID));
 			if(feedID == FeedID.ALL)
 				setMarkReadButtonActive(false);
 			else
@@ -45,7 +44,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
-			logger.print(LogMessage.DEBUG, "selected feed: %s".printf(categorieID));
 			if(categorieID == CategoryID.MASTER || categorieID == CategoryID.TAGS)
 				setMarkReadButtonActive(false);
 			else

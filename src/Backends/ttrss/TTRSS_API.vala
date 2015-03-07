@@ -101,42 +101,43 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getFeeds(ref GLib.List<feed> feeds)
+	public void getFeeds(ref GLib.List<feed> feeds, ref GLib.List<category> categories)
 	{
 		if(isloggedin())
 		{
-			var categories = dataBase.read_categories();
-
 			foreach(var item in categories)
 			{
-				var message = new ttrss_message(m_ttrss_url);
-				message.add_string("sid", m_ttrss_sessionid);
-				message.add_string("op", "getFeeds");
-				message.add_int("cat_id", int.parse(item.m_categorieID));
-				int error = message.send();
-
-				if(error == ConnectionError.SUCCESS)
+				if(int.parse(item.m_categorieID) > 0)
 				{
-					var response = message.get_response_array();
-					var feed_count = response.get_length();
-					string icon_url = m_ttrss_url.replace("api/", getIconDir());
+					var message = new ttrss_message(m_ttrss_url);
+					message.add_string("sid", m_ttrss_sessionid);
+					message.add_string("op", "getFeeds");
+					message.add_int("cat_id", int.parse(item.m_categorieID));
+					int error = message.send();
 
-					for(uint i = 0; i < feed_count; i++)
+					if(error == ConnectionError.SUCCESS)
 					{
-						var feed_node = response.get_object_element(i);
-						string feed_id = feed_node.get_int_member("id").to_string();
-						ttrss_utils.downloadIcon(feed_id, icon_url);
+						var response = message.get_response_array();
+						var feed_count = response.get_length();
+						string icon_url = m_ttrss_url.replace("api/", getIconDir());
 
-						feeds.append(
-							new feed (
-									feed_id,
-									feed_node.get_string_member("title"),
-									feed_node.get_string_member("feed_url"),
-									feed_node.get_boolean_member("has_icon"),
-									(int)feed_node.get_int_member("unread"),
-									feed_node.get_int_member("cat_id").to_string()
-								)
-						);
+						for(uint i = 0; i < feed_count; i++)
+						{
+							var feed_node = response.get_object_element(i);
+							string feed_id = feed_node.get_int_member("id").to_string();
+							ttrss_utils.downloadIcon(feed_id, icon_url);
+
+							feeds.append(
+								new feed (
+										feed_id,
+										feed_node.get_string_member("title"),
+										feed_node.get_string_member("feed_url"),
+										feed_node.get_boolean_member("has_icon"),
+										(int)feed_node.get_int_member("unread"),
+										feed_node.get_int_member("cat_id").to_string()
+									)
+							);
+						}
 					}
 				}
 			}

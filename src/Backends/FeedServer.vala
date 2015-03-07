@@ -58,53 +58,44 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				case Backend.TTRSS:
 					m_ttrss.getCategories(ref categories);
-					dataBase.reset_exists_flag();
-					dataBase.write_categories(ref categories);
-					dataBase.delete_nonexisting_categories();
-					m_ttrss.updateCategorieUnread();
-
-					m_ttrss.getFeeds(ref feeds);
-					dataBase.reset_subscribed_flag();
-					dataBase.write_feeds(ref feeds);
-					dataBase.delete_unsubscribed_feeds();
-
+					m_ttrss.getFeeds(ref feeds, ref categories);
 					m_ttrss.getTags(ref tags);
-					dataBase.reset_exists_tag();
-					dataBase.write_tags(ref tags);
-					foreach(var tag_item in tags)
-						dataBase.update_tag(tag_item.m_tagID);
-					dataBase.delete_nonexisting_tags();
-
 					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"));
-					articles.reverse();
-					dataBase.write_articles(ref articles);
 					break;
 
 				case Backend.FEEDLY:
 					m_feedly.getUnreadCounts();
-
 					m_feedly.getCategories(ref categories);
-					dataBase.reset_exists_flag();
-					dataBase.write_categories(ref categories);
-					dataBase.delete_nonexisting_categories();
-
 					m_feedly.getFeeds(ref feeds);
-					dataBase.reset_subscribed_flag();
-					dataBase.write_feeds(ref feeds);
-					dataBase.delete_unsubscribed_feeds();
-
 					m_feedly.getTags(ref tags);
-					dataBase.reset_exists_tag();
-					dataBase.write_tags(ref tags);
-					foreach(var tag_item in tags)
-						dataBase.update_tag(tag_item.m_tagID);
-					dataBase.delete_nonexisting_tags();
-
 					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"));
-					articles.reverse();
-					dataBase.write_articles(ref articles);
 					break;
 			}
+
+			// write categories
+			dataBase.reset_exists_flag();
+			dataBase.write_categories(ref categories);
+			dataBase.delete_nonexisting_categories();
+			if(m_type == Backend.TTRSS)
+				m_ttrss.updateCategorieUnread();
+
+			// write feeds
+			dataBase.reset_subscribed_flag();
+			dataBase.write_feeds(ref feeds);
+			dataBase.delete_unsubscribed_feeds();
+
+			// write tags
+			dataBase.reset_exists_tag();
+			dataBase.write_tags(ref tags);
+			foreach(var tag_item in tags)
+				dataBase.update_tag(tag_item.m_tagID);
+			dataBase.delete_nonexisting_tags();
+
+			// write articles
+			articles.reverse();
+			dataBase.write_articles(ref articles);
+
+
 
 			int after = dataBase.getHighestRowID();
 			int newArticles = after-before;
@@ -140,17 +131,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					logger.print(LogMessage.DEBUG, "FeedServer: backend ttrss");
-
 					m_ttrss.getCategories(ref categories);
-					dataBase.write_categories(ref categories);
-					m_ttrss.updateCategorieUnread();
-
-					m_ttrss.getFeeds(ref feeds);
-					dataBase.write_feeds(ref feeds);
-
+					m_ttrss.getFeeds(ref feeds, ref categories);
 					m_ttrss.getTags(ref tags);
-					dataBase.write_tags(ref tags);
 
 					// get ALL unread articles
 					logger.print(LogMessage.DEBUG, "FeedServer: get unread articles");
@@ -173,22 +156,13 @@ public class FeedReader.FeedServer : GLib.Object {
 						logger.print(LogMessage.DEBUG, "FeedServer: get articles of feed %s".printf(feed_item.m_title));
 						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(feed_item.m_feedID));
 					}
-
-					articles.reverse();
-					dataBase.write_articles(ref articles);
 					break;
 
 				case Backend.FEEDLY:
 					m_feedly.getUnreadCounts();
-
 					m_feedly.getCategories(ref categories);
-					dataBase.write_categories(ref categories);
-
 					m_feedly.getFeeds(ref feeds);
-					dataBase.write_feeds(ref feeds);
-
 					m_feedly.getTags(ref tags);
-					dataBase.write_tags(ref tags);
 
 					// get ALL unread articles
 					m_feedly.getArticles(ref articles, m_feedly.getTotalUnread(), ArticleStatus.UNREAD);
@@ -208,11 +182,25 @@ public class FeedReader.FeedServer : GLib.Object {
 						// FIXME
 						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, feed_item.m_feedID);
 					}
-
-					articles.reverse();
-					dataBase.write_articles(ref articles);
 					break;
 			}
+
+
+			// write categories
+			dataBase.write_categories(ref categories);
+			if(m_type == Backend.TTRSS)
+				m_ttrss.updateCategorieUnread();
+
+			// write feeds
+			dataBase.write_feeds(ref feeds);
+
+			// write tags
+			dataBase.write_tags(ref tags);
+
+			// write articles
+			articles.reverse();
+			dataBase.write_articles(ref articles);
+
 
 			Idle.add((owned) callback);
 			return null;

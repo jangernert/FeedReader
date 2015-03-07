@@ -5,14 +5,15 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private bool m_status;
 
 	public UpdateButton (string iconname) {
-		
+
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(24,24);
 
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.LARGE_TOOLBAR);
 		this.add(m_icon);
 		this.set_focus_on_click(false);
-		
+		this.set_tooltip_text(_("update Feeds"));
+
 		if(settings_state.get_boolean("currently-updating"))
 			updating(true);
 	}
@@ -37,12 +38,12 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		}
 		this.show_all();
 	}
-	
+
 	public bool getStatus()
 	{
 		return m_status;
 	}
-	
+
 	public void setSensitive(bool sensitive)
 	{
 		logger.print(LogMessage.DEBUG, "UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
@@ -50,4 +51,3 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	}
 
 }
-

@@ -179,6 +179,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			row.destroy();
 		}
 		createFeedlist();
+		m_update = false;
 	}
 
 

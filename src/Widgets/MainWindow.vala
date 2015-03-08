@@ -74,6 +74,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		var settings_action = new SimpleAction (_("settings"), null);
 		settings_action.activate.connect (() => {
 			var settings = new SettingsDialog(this);
+			settings.newFeedList.connect(() => {
+				m_content.newFeedList();
+			});
 		});
 		add_action(settings_action);
 
@@ -264,7 +267,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		loginBox.pack_start(login, true, true, 0);
 
 		login.submit_data.connect(() => {
-			settings_state.set_strv("expanded-categories", m_content.getDefaultExpandedCategories());
+			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
 			showInitSync();
 		});
@@ -273,7 +276,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 		WebLogin.success.connect(() => {
 			logger.print(LogMessage.DEBUG, "WebLogin: success");
-			settings_state.set_strv("expanded-categories", m_content.getDefaultExpandedCategories());
+			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
 			showInitSync();
 		});

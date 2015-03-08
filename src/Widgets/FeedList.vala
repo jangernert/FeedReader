@@ -164,7 +164,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
 		var FeedChildList = m_list.get_children();
 
-		if(FeedChildList != null)
+		if(FeedChildList != null && settings_general.get_boolean("only-feeds"))
 		{
 			settings_state.set_strv("expanded-categories", getExpandedCategories());
 			settings_state.set_double("feed-row-scrollpos",  getScrollPos());
@@ -675,18 +675,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				}
 			}
 		}
-		return e;
-	}
-
-	public string[] getDefaultExpandedCategories()
-	{
-		string[] e = {};
-		e += "Categories";
-		if(settings_general.get_enum("account-type") == Backend.TTRSS)
-			e += "Labels";
-		else
-			e += "Tags";
-
 		return e;
 	}
 

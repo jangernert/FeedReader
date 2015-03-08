@@ -154,7 +154,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					foreach(var tag_item in tags)
 					{
 						initSyncTag(tag_item.m_title);
-						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(tag_item.m_tagID));
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/4, ArticleStatus.ALL, int.parse(tag_item.m_tagID));
 					}
 					initSyncTag("");
 					initSyncStage(6);
@@ -163,7 +163,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					foreach(var feed_item in feeds)
 					{
 						initSyncFeed(feed_item.m_title);
-						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(feed_item.m_feedID));
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/4, ArticleStatus.ALL, int.parse(feed_item.m_feedID));
 					}
 					initSyncFeed("");
 					initSyncStage(7);

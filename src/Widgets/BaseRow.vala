@@ -1,6 +1,5 @@
 public class FeedReader.baseRow : Gtk.ListBoxRow {
 
-	protected Gtk.Label m_spacer;
 	protected Gtk.Label m_label;
 	protected Gtk.Box m_box;
 	protected Gtk.Image m_icon;
@@ -8,7 +7,7 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 	protected Gtk.Label m_unread;
 	protected Gtk.Revealer m_revealer;
 
-	
+
 	public baseRow () {
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -38,12 +37,12 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 
 		icon = icon.scale_simple(width, height, Gdk.InterpType.BILINEAR);
 	}
-	
+
 	public void upUnread()
 	{
 		set_unread_count(m_unread_count+1);
 	}
-	
+
 	public void downUnread()
 	{
 		if(m_unread_count > 0)
@@ -64,7 +63,7 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 			m_unread.set_text ("");
 		}
 	}
-	
+
 	public uint getUnreadCount()
 	{
 		return m_unread_count;
@@ -91,16 +90,15 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 	{
 		return m_revealer.get_reveal_child();
 	}
-	
+
 	public bool AnimationFinished()
 	{
 		return m_revealer.get_child_revealed();
 	}
-	
+
 	public uint transitionDuration()
 	{
 		return m_revealer.get_transition_duration();
 	}
 
 }
-

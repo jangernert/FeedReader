@@ -12,18 +12,21 @@ public class FeedReader.dbManager : GLib.Object {
 				path.make_directory_with_parents();
 			}
 			catch(GLib.Error e){
-				warning("Can't create directory for database!\n ErrorMessage: %s\n", e.message);
+				logger.print(LogMessage.ERROR, "Can't create directory for database: %s".printf(e.message));
 			}
 		}
 		int rc = Sqlite.Database.open_v2(db_path + "feedreader-02.db", out sqlite_db);
 		if (rc != Sqlite.OK) {
-			error("Can't open database: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+			logger.print(LogMessage.ERROR, "Can't open database: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
 		}
 		sqlite_db.busy_timeout(1000);
 	}
 
 	public void init()
 	{
+			executeSQL("PRAGMA journal_mode = WAL");
+			executeSQL("PRAGMA page_size = 4096");
+
 			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds"
 											(
 												"feed_id" TEXT PRIMARY KEY  NOT NULL UNIQUE ,
@@ -108,7 +111,7 @@ public class FeedReader.dbManager : GLib.Object {
 				}
 			}
 		}
-		stmt.reset ();
+		stmt.reset();
 		return true;
 	}
 

@@ -35,6 +35,7 @@ public class FeedReader.categorieRow : baseRow {
 		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_eventbox.margin_start = (level-1) * 24;
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
@@ -72,16 +73,12 @@ public class FeedReader.categorieRow : baseRow {
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.set_transition_duration(500);
 
-		m_spacer = new Gtk.Label("");
-		m_spacer.set_size_request((level-1) * 24, rowhight);
-
 
 		m_unread = new Gtk.Label("");
 		m_unread.set_size_request (0, rowhight);
 		m_unread.set_alignment(0.8f, 0.5f);
 		set_unread_count(m_unread_count);
 
-		m_box.pack_start(m_spacer, false, false, 0);
 		m_box.pack_start(m_eventbox, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
 		m_box.pack_end(m_unread, false, false, 8);

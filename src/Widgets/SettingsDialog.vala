@@ -58,6 +58,38 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         box2.pack_end(only_unread_switch, false, false, 0);
         content.pack_start(box2, false, true, 0);
 
+
+        var sync_settings = new Gtk.Label("Sync:");
+        sync_settings.set_alignment(0, 0.5f);
+        sync_settings.get_style_context().add_class("h4");
+        content.pack_start(sync_settings, false, true, 5);
+
+        var box3 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        var sync_count = new Gtk.Label("number of articles");
+        sync_count.set_alignment(0, 0.5f);
+        sync_count.margin_start = 15;
+        var sync_count_button = new Gtk.SpinButton.with_range(10, 1000, 10);
+        sync_count_button.set_value(settings_general.get_int("max-articles"));
+        sync_count_button.value_changed.connect(() => {
+            settings_general.set_int("max-articles", sync_count_button.get_value_as_int());
+        });
+        box3.pack_start(sync_count, true, true, 0);
+        box3.pack_end(sync_count_button, false, false, 0);
+        content.pack_start(box3, false, true, 0);
+
+        var box4 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        var sync_time = new Gtk.Label("every (seconds)");
+        sync_time.set_alignment(0, 0.5f);
+        sync_time.margin_start = 15;
+        var sync_time_button = new Gtk.SpinButton.with_range(60, 1080, 10);
+        sync_time_button.set_value(settings_general.get_int("sync"));
+        sync_time_button.value_changed.connect(() => {
+            settings_general.set_int("sync", sync_time_button.get_value_as_int());
+        });
+        box4.pack_start(sync_time, true, true, 0);
+        box4.pack_end(sync_time_button, false, false, 0);
+        content.pack_start(box4, false, true, 5);
+
         this.add_button(_("Close"), 1);
         show_all();
     }

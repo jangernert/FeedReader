@@ -72,7 +72,27 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		if(!m_reset)
 			return;
 
-		dataBase.resetDB();
+		// set "currently-updating" ourself to prevent the daemon to start sync
+		settings_state.set_boolean("currently-updating", true);
+
+		//dataBase.resetDB();
+		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feedreader-02.db";
+		string wal_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feedreader-02.db-wal";
+		string shm_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feedreader-02.db-shm";
+		var db = File.new_for_path (db_path);
+		var wal = File.new_for_path (wal_path);
+		var shm = File.new_for_path (shm_path);
+
+		try {
+			db.delete();
+			wal.delete();
+			shm.delete();
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, e.message);
+		}
+
+		dataBase = new dbManager();
 		dataBase.init();
 
 		resetSettings(settings_general);
@@ -80,6 +100,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		resetSettings(settings_feedly);
 		resetSettings(settings_ttrss);
 
+		settings_state.set_boolean("currently-updating", false);
 		reset();
 	}
 

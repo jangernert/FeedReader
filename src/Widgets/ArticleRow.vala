@@ -121,8 +121,8 @@ public class FeedReader.articleRow : baseRow {
 		body_label.set_line_wrap(true);
 		body_label.set_lines(3);
 
-		m_spacer = new Gtk.Label("");
-		m_spacer.set_size_request(15, 0);
+		var spacer = new Gtk.Label("");
+		spacer.set_size_request(15, 0);
 
 
 
@@ -132,7 +132,7 @@ public class FeedReader.articleRow : baseRow {
 
 		m_box.pack_start(icon_box, false, false, 8);
 		m_box.pack_start(text_box, true, true, 0);
-		m_box.pack_start(m_spacer, true, true, 0);
+		m_box.pack_start(spacer, true, true, 0);
 
 		var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);

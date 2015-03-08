@@ -429,7 +429,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		string command = "INSERT OR IGNORE INTO \"main\".\"articles\" ";
 		string fields = "(\"articleID\",\"feedID\",\"title\",\"author\",\"url\",\"html\",\"preview\", \"unread\", \"marked\", \"tags\", \"date\") ";
-		string values = "VALUES ($ARTICLEID, $FEEDID, $TITLE, $AUTHOR, $URL, $HTML, $PREVIEW, $UNREAD, $MARKED, $TAGS, datetime($DATE, 'unixepoch'))";
+		string values = "VALUES ($ARTICLEID, $FEEDID, $TITLE, $AUTHOR, $URL, $HTML, $PREVIEW, $UNREAD, $MARKED, $TAGS, $DATE)";
 		string query = command + fields + values;
 
 		Sqlite.Statement stmt;

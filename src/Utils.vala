@@ -58,9 +58,6 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		foreach(var article in articles)
 		{
-			if(article.getArticleID() == "43582")
-				logger.print(LogMessage.DEBUG, article.getHTML());
-
 			string modified_html = _("No Text available for this article :(");
 			if(article.getHTML() != "")
 			{

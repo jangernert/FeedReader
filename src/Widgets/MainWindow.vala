@@ -71,6 +71,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_simpleHeader.show_close_button = true;
 		m_simpleHeader.set_title("FeedReader");
 
+		var settings_action = new SimpleAction (_("settings"), null);
+		settings_action.activate.connect (() => {
+			var settings = new SettingsDialog(this);
+		});
+		add_action(settings_action);
 
 		m_login_action = new SimpleAction (_("reset"), null);
 		m_login_action.activate.connect (() => {

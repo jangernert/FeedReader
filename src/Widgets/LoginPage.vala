@@ -104,26 +104,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		this.margin = 20;
 		this.add(m_layout);
 		this.show_all();
-
-		switch(settings_general.get_enum("account-type"))
-		{
-			case Backend.NONE:
-				m_comboBox.set_active(Backend.NONE);
-				m_login_details.set_visible_child_name("none");
-				break;
-			case Backend.TTRSS:
-				m_comboBox.set_active(Backend.TTRSS);
-				m_login_details.set_visible_child_name("ttrss");
-				break;
-			case Backend.FEEDLY:
-				m_comboBox.set_active(Backend.FEEDLY);
-				m_login_details.set_visible_child_name("feedly");
-				break;
-			case Backend.OWNCLOUD:
-				m_comboBox.set_active(Backend.OWNCLOUD);
-				m_login_details.set_visible_child_name("owncloud");
-				break;
-		}
 	}
 
 
@@ -148,26 +128,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_ttrss_url_entry.activate.connect(write_login_data);
 		m_ttrss_user_entry.activate.connect(write_login_data);
 		m_ttrss_password_entry.activate.connect(write_login_data);
-
-		if(settings_general.get_enum("account-type") == Backend.TTRSS)
-		{
-			string url = settings_ttrss.get_string("url");
-			string username = settings_ttrss.get_string("username");
-			m_ttrss_url_entry.set_text(url);
-			m_ttrss_user_entry.set_text(username);
-
-			var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-				                              "URL", Secret.SchemaAttributeType.STRING,
-				                              "Username", Secret.SchemaAttributeType.STRING);
-
-			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-			attributes["URL"] = url;
-			attributes["Username"] = username;
-
-			string passwd = "";
-			try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
-			m_ttrss_password_entry.set_text(passwd);
-		}
 
 		m_ttrss_password_entry.set_invisible_char('*');
 		m_ttrss_password_entry.set_visibility(false);
@@ -242,26 +202,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_owncloud_user_entry.activate.connect(write_login_data);
 		m_owncloud_password_entry.activate.connect(write_login_data);
 
-		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
-		{
-			string url = ""; //FIXME feedreader_settings.get_string("url");
-			string username = ""; //FIXME feedreader_settings.get_string("username");
-			m_owncloud_url_entry.set_text(url);
-			m_owncloud_user_entry.set_text(username);
-
-			var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-				                              "URL", Secret.SchemaAttributeType.STRING,
-				                              "Username", Secret.SchemaAttributeType.STRING);
-
-			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-			attributes["URL"] = url;
-			attributes["Username"] = username;
-
-			string passwd = "";
-			try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
-			m_owncloud_password_entry.set_text(passwd);
-		}
-
 		m_owncloud_password_entry.set_invisible_char('*');
 		m_owncloud_password_entry.set_visibility(false);
 
@@ -287,6 +227,69 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		owncloud_box.pack_start(grid, true, true, 10);
 
 		m_login_details.add_named(owncloud_box, "owncloud");
+	}
+
+	public void loadData()
+	{
+		switch(settings_general.get_enum("account-type"))
+		{
+			case Backend.NONE:
+				m_comboBox.set_active(Backend.NONE);
+				m_login_details.set_visible_child_name("none");
+				break;
+			case Backend.TTRSS:
+				m_comboBox.set_active(Backend.TTRSS);
+				m_login_details.set_visible_child_name("ttrss");
+				break;
+			case Backend.FEEDLY:
+				m_comboBox.set_active(Backend.FEEDLY);
+				m_login_details.set_visible_child_name("feedly");
+				break;
+			case Backend.OWNCLOUD:
+				m_comboBox.set_active(Backend.OWNCLOUD);
+				m_login_details.set_visible_child_name("owncloud");
+				break;
+		}
+
+		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
+		{
+			string url = ""; //FIXME feedreader_settings.get_string("url");
+			string username = ""; //FIXME feedreader_settings.get_string("username");
+			m_owncloud_url_entry.set_text(url);
+			m_owncloud_user_entry.set_text(username);
+
+			var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+				                              "URL", Secret.SchemaAttributeType.STRING,
+				                              "Username", Secret.SchemaAttributeType.STRING);
+
+			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+			attributes["URL"] = url;
+			attributes["Username"] = username;
+
+			string passwd = "";
+			try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
+			m_owncloud_password_entry.set_text(passwd);
+		}
+
+		if(settings_general.get_enum("account-type") == Backend.TTRSS)
+		{
+			string url = settings_ttrss.get_string("url");
+			string username = settings_ttrss.get_string("username");
+			m_ttrss_url_entry.set_text(url);
+			m_ttrss_user_entry.set_text(username);
+
+			var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+											"URL", Secret.SchemaAttributeType.STRING,
+											"Username", Secret.SchemaAttributeType.STRING);
+
+			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+			attributes["URL"] = url;
+			attributes["Username"] = username;
+
+			string passwd = "";
+			try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
+			m_ttrss_password_entry.set_text(passwd);
+		}
 	}
 
 

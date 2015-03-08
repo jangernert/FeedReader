@@ -473,7 +473,7 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text(html_position, article.getHTML());
 			stmt.bind_text(preview_position, article.getPreview());
 			stmt.bind_text(author_position, article.getAuthor());
-			stmt.bind_text(date_position, article.getDate());
+			stmt.bind_text(date_position, article.getDateStr());
 
 			while(stmt.step () == Sqlite.ROW) {}
 			stmt.reset();

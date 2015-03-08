@@ -164,9 +164,11 @@ public class FeedReader.feedList : Gtk.Stack {
 		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
 		var FeedChildList = m_list.get_children();
 
-		if(FeedChildList != null && settings_general.get_boolean("only-feeds"))
+		if(FeedChildList != null)
 		{
-			settings_state.set_strv("expanded-categories", getExpandedCategories());
+			if(!settings_general.get_boolean("only-feeds"))
+				settings_state.set_strv("expanded-categories", getExpandedCategories());
+
 			settings_state.set_double("feed-row-scrollpos",  getScrollPos());
 			settings_state.set_string("feedlist-selected-row", getSelectedRow());
 			settings_state.set_boolean("no-animations", true);
@@ -262,7 +264,6 @@ public class FeedReader.feedList : Gtk.Stack {
 		initCollapseCategories();
 		restoreSelectedRow();
 		this.show_all();
-		settings_state.set_boolean("no-animations", false);
 		m_scroll_adjustment.notify["upper"].connect(restoreScrollPos);
 	}
 

@@ -224,7 +224,7 @@
 		</key>
 		
 		<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
-			<default>'TTRSS'</default>
+			<default>'NONE'</default>
 		</key>
 		
 		<key name='log-level' enum='org.gnome.feedreader.loglevel'>

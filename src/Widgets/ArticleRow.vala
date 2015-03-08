@@ -4,7 +4,7 @@ public class FeedReader.articleRow : baseRow {
 	private int m_marked;
 	private string m_url;
 	private string m_name;
-	private string m_date;
+	private GLib.DateTime m_date;
 	private Gtk.Image m_marked_icon;
 	private Gtk.Image m_unmarked_icon;
 	private Gtk.Image m_unread_icon;
@@ -16,7 +16,7 @@ public class FeedReader.articleRow : baseRow {
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 
-	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview, string date)
+	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview, GLib.DateTime date)
 	{
 		m_sortID = sortID;
 		m_marked = marked;
@@ -121,18 +121,14 @@ public class FeedReader.articleRow : baseRow {
 		body_label.set_line_wrap(true);
 		body_label.set_lines(3);
 
-		var spacer = new Gtk.Label("");
-		spacer.set_size_request(15, 0);
-
-
 
 		var text_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		text_box.margin_end = 15;
 		text_box.pack_start(m_label, true, true, 6);
 		text_box.pack_end(body_label, true, true, 6);
 
 		m_box.pack_start(icon_box, false, false, 8);
 		m_box.pack_start(text_box, true, true, 0);
-		m_box.pack_start(spacer, true, true, 0);
 
 		var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
@@ -290,9 +286,14 @@ public class FeedReader.articleRow : baseRow {
 		return m_articleID;
 	}
 
-	public string getDate()
+	public GLib.DateTime getDate()
 	{
 		return m_date;
+	}
+
+	public string getDateStr()
+	{
+		return m_date.format("%Y-%m-%d %H:%M:%S");
 	}
 
 

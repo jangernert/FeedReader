@@ -73,6 +73,7 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 		for(int i = 1; i < 8; i++)
 		{
 			m_grid.attach(new Gtk.Label("%i.".printf(i)), 0, i-1, 1, 1);
+			m_grid.attach(new Gtk.Image.from_icon_name("dialog-apply", Gtk.IconSize.MENU), 3, i-1, 1, 1);
 		}
 
 		m_grid.attach(label2, 1, 0, 1, 1);
@@ -150,9 +151,14 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 
 	private void setStage(int stage)
 	{
-		m_grid.attach(new Gtk.Image.from_icon_name("dialog-apply", Gtk.IconSize.MENU), 3, stage-1, 1, 1);
-		m_grid.show_all();
+		m_grid.get_child_at(3, stage-1).show();
 	}
 
-
+	public void hideChecks()
+	{
+		for(int i = 1; i < 8; i++)
+		{
+			m_grid.get_child_at(3, i-1).hide();
+		}
+	}
 }

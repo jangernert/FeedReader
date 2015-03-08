@@ -400,6 +400,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 
 		createHeadlineList();
+		settings_state.set_boolean("no-animations", false);
 	}
 
 	public void updateArticleList()
@@ -410,7 +411,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		if(articleChildList != null)
 		{
 			var first_row = articleChildList.first().data as articleRow;
-			int new_articles = dataBase.getRowNumberHeadline(first_row.getDate()) -1;
+			int new_articles = dataBase.getRowNumberHeadline(first_row.getDateStr()) -1;
 			m_limit = m_displayed_articles + new_articles;
 		}
 

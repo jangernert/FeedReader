@@ -10,6 +10,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private Gtk.InfoBar m_error_bar;
 	private ContentPage m_content;
 	private InitSyncPage m_InitSync;
+	private LoginPage m_login;
 	private SimpleAction m_login_action;
 
 	public readerUI(rssReaderApp app)
@@ -152,6 +153,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show login");
+		m_login.loadData();
 		showErrorBar(LoginResponse.FIRST_TRY);
 		m_stack.set_visible_child_full("login", transition);
 		m_headerbar.setButtonsSensitive(false);
@@ -180,6 +182,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void showInitSync(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show initsync");
+		m_InitSync.hideChecks();
 		m_stack.set_visible_child_full("initsync", transition);
 		m_headerbar.setButtonsSensitive(false);
 		m_login_action.set_enabled(false);
@@ -254,9 +257,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			}
 		});
 
-		var login = new LoginPage();
+		m_login = new LoginPage();
 		var WebLogin = new WebLoginPage();
-		login.loadLoginPage.connect((type) => {
+		m_login.loadLoginPage.connect((type) => {
 			WebLogin.loadPage(type);
 			showWebLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 		});
@@ -264,14 +267,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		var loginBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 
 		loginBox.pack_start(m_error_bar, false, false, 0);
-		loginBox.pack_start(login, true, true, 0);
+		loginBox.pack_start(m_login, true, true, 0);
 
-		login.submit_data.connect(() => {
+		m_login.submit_data.connect(() => {
 			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
 			showInitSync();
 		});
-		login.loginError.connect((errorCode) => {
+		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});
 		WebLogin.success.connect(() => {

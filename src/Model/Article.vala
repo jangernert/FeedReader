@@ -11,7 +11,7 @@ public class FeedReader.article : GLib.Object {
 	public int m_unread { get; private set; }
 	public int m_marked { get; private set; }
 	private int m_sortID;
-	private string m_date;
+	private GLib.DateTime m_date;
 
 
 
@@ -27,7 +27,18 @@ public class FeedReader.article : GLib.Object {
 		m_marked = marked;
 		m_sortID = sortID;
 		m_tags = tags;
-		m_date = date;
+
+
+		string year = date.substring(0, date.index_of_nth_char(4));
+		string month = date.substring(date.index_of_nth_char(5), date.index_of_nth_char(7) - date.index_of_nth_char(5));
+		string day = date.substring(date.index_of_nth_char(8), date.index_of_nth_char(10) - date.index_of_nth_char(8));
+		string hour = date.substring(date.index_of_nth_char(11), date.index_of_nth_char(13) - date.index_of_nth_char(11));
+		string min = date.substring(date.index_of_nth_char(14), date.index_of_nth_char(16) - date.index_of_nth_char(14));
+		string sec = date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17));
+
+
+
+		m_date = new GLib.DateTime(new TimeZone.local(), int.parse(year), int.parse(month), int.parse(day), int.parse(hour), int.parse(min), int.parse(sec));
 	}
 
 	public string getArticleID()
@@ -70,8 +81,13 @@ public class FeedReader.article : GLib.Object {
 		m_author = author;
 	}
 
-	public string getDate()
+	public GLib.DateTime getDate()
 	{
 		return m_date;
+	}
+
+	public string getDateStr()
+	{
+		return m_date.format("%Y-%m-%d %H:%M:%S");
 	}
 }

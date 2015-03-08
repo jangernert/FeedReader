@@ -26,6 +26,9 @@ namespace FeedReader {
 		public signal void syncFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
+		public signal void initSyncStage(int stage);
+		public signal void initSyncTag(string tagName);
+		public signal void initSyncFeed(string feedName);
 	}
 
 

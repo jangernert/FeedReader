@@ -51,6 +51,9 @@ namespace FeedReader {
 		public signal void syncFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
+		public signal void initSyncStage(int stage);
+		public signal void initSyncTag(string tagName);
+		public signal void initSyncFeed(string feedName);
 
 		private async void sync()
 		{
@@ -102,6 +105,19 @@ namespace FeedReader {
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 			server = new FeedServer(type);
 			m_loggedin = server.login();
+
+			server.initSyncStage.connect((stage) => {
+				logger.print(LogMessage.DEBUG, "daemon: stage %i".printf(stage));
+				initSyncStage(stage);
+			});
+
+			server.initSyncTag.connect((tagName) => {
+				initSyncTag(tagName);
+			});
+
+			server.initSyncFeed.connect((feedName) => {
+				initSyncFeed(feedName);
+			});
 
 			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
 			return m_loggedin;

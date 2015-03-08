@@ -1,4 +1,4 @@
-public class FeedReader.ResetPage : Gtk.Alignment {
+public class FeedReader.ResetPage : Gtk.Bin {
 
 	private Gtk.Box m_layout;
 	private Gtk.Button m_newAccountButton;
@@ -47,8 +47,9 @@ public class FeedReader.ResetPage : Gtk.Alignment {
 		m_layout.pack_end(buttonBox, false, true, 0);
 
 
-		this.@set(0.5f, 0.5f, 0.0f, 0.0f);
-		this.set_padding(20, 20, 20, 20);
+		this.set_halign(Gtk.Align.CENTER);
+		this.set_valign(Gtk.Align.CENTER);
+		this.margin = 20;
 		this.add(m_layout);
 		this.show_all();
 	}
@@ -71,13 +72,13 @@ public class FeedReader.ResetPage : Gtk.Alignment {
 		if(!m_reset)
 			return;
 
-		dataBase.resetDB();
-		dataBase.init();
+		//dataBase.resetDB();
+		//dataBase.init();
 
-		resetSettings(settings_general);
-		resetSettings(settings_state);
-		resetSettings(settings_feedly);
-		resetSettings(settings_ttrss);
+		//resetSettings(settings_general);
+		//resetSettings(settings_state);
+		//resetSettings(settings_feedly);
+		//resetSettings(settings_ttrss);
 
 		reset();
 	}

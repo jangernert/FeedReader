@@ -1,4 +1,4 @@
-public class FeedReader.LoginPage : Gtk.Alignment {
+public class FeedReader.LoginPage : Gtk.Bin {
 
 	private Gtk.Entry m_ttrss_url_entry;
 	private Gtk.Entry m_ttrss_user_entry;
@@ -99,8 +99,9 @@ public class FeedReader.LoginPage : Gtk.Alignment {
 		setup_feedly_login();
 		setup_owncloud_login();
 
-		this.@set(0.5f, 0.5f, 0.0f, 0.0f);
-		this.set_padding(20, 20, 20, 20);
+		this.set_halign(Gtk.Align.CENTER);
+		this.set_valign(Gtk.Align.CENTER);
+		this.margin = 20;
 		this.add(m_layout);
 		this.show_all();
 

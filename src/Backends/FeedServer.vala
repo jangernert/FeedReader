@@ -2,6 +2,9 @@ public class FeedReader.FeedServer : GLib.Object {
 	private ttrss_interface m_ttrss;
 	private FeedlyAPI m_feedly;
 	private int m_type;
+	public signal void initSyncStage(int stage);
+	public signal void initSyncTag(string tagName);
+	public signal void initSyncFeed(string feedName);
 
 	public FeedServer(int type)
 	{
@@ -132,56 +135,74 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				case Backend.TTRSS:
 					m_ttrss.getCategories(ref categories);
+					initSyncStage(1);
 					m_ttrss.getFeeds(ref feeds, ref categories);
+					initSyncStage(2);
 					m_ttrss.getTags(ref tags);
+					initSyncStage(3);
 
 					// get ALL unread articles
-					logger.print(LogMessage.DEBUG, "FeedServer: get unread articles");
 					m_ttrss.getArticles(ref articles, m_ttrss.getUnreadCount(), ArticleStatus.UNREAD);
+					initSyncStage(4);
 
 					// get max-articles-count of marked articles
 					logger.print(LogMessage.DEBUG, "FeedServer: get marked");
 					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+					initSyncStage(5);
 
 					// get max-articles-count of articles for each tag
 					foreach(var tag_item in tags)
 					{
-						logger.print(LogMessage.DEBUG, "FeedServer: get articles of tag %s".printf(tag_item.m_title));
+						initSyncTag(tag_item.m_title);
 						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(tag_item.m_tagID));
 					}
+					initSyncTag("");
+					initSyncStage(6);
 
 					// get max-articles-count of articles for each feed
 					foreach(var feed_item in feeds)
 					{
-						logger.print(LogMessage.DEBUG, "FeedServer: get articles of feed %s".printf(feed_item.m_title));
+						initSyncFeed(feed_item.m_title);
 						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, int.parse(feed_item.m_feedID));
 					}
+					initSyncFeed("");
+					initSyncStage(7);
 					break;
 
 				case Backend.FEEDLY:
 					m_feedly.getUnreadCounts();
 					m_feedly.getCategories(ref categories);
+					initSyncStage(1);
 					m_feedly.getFeeds(ref feeds);
+					initSyncStage(2);
 					m_feedly.getTags(ref tags);
+					initSyncStage(3);
 
 					// get ALL unread articles
 					m_feedly.getArticles(ref articles, m_feedly.getTotalUnread(), ArticleStatus.UNREAD);
+					initSyncStage(4);
 
 					// get max-articles-count of marked articles
 					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+					initSyncStage(5);
 
 					// get max-articles-count of articles for each tag
 					foreach(var tag_item in tags)
 					{
+						initSyncTag(tag_item.m_title);
 						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, tag_item.m_tagID);
 					}
+					initSyncTag("");
+					initSyncStage(6);
 
 					// get max-articles-count of articles for each feed
 					foreach(var feed_item in feeds)
 					{
-						// FIXME
+						initSyncFeed(feed_item.m_title);
 						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, feed_item.m_feedID);
 					}
+					initSyncFeed("");
+					initSyncStage(7);
 					break;
 			}
 

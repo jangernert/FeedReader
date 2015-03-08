@@ -8,7 +8,6 @@ public class FeedReader.articleView : Gtk.Stack {
 	private WebKit.WebView m_currentView;
 	private Gtk.Box m_box1;
 	private Gtk.Box m_box2;
-	private Gtk.Spinner m_spinner;
 	private bool m_open_external;
 	private int m_load_ongoing;
 	private string m_currentArticle;
@@ -43,15 +42,9 @@ public class FeedReader.articleView : Gtk.Stack {
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("emptyView");
 
-		m_spinner = new Gtk.Spinner();
-		m_spinner.set_size_request(40, 40);
-		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
-		center.set_padding(20, 20, 20, 20);
-		center.add(m_spinner);
 		this.add_named(emptyView, "empty");
 		this.add_named(m_box1, "view1");
 		this.add_named(m_box2, "view2");
-		this.add_named(center, "spinner");
 
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);

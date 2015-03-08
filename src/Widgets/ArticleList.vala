@@ -9,7 +9,6 @@ public class FeedReader.articleList : Gtk.Stack {
 	private Gtk.Adjustment m_current_adjustment;
 	private Gtk.Adjustment m_scroll1_adjustment;
 	private Gtk.Adjustment m_scroll2_adjustment;
-	private Gtk.Spinner m_spinner;
 	private Gtk.Label m_emptyList;
 	private string m_emptyListString;
 	private double m_lmit;
@@ -34,13 +33,6 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_limit = 15;
 		m_limitScroll = false;
 		m_threadCount = 0;
-
-
-		m_spinner = new Gtk.Spinner();
-		m_spinner.set_size_request(40, 40);
-		var center = new Gtk.Alignment(0.5f, 0.5f, 0.0f, 0.0f);
-		center.set_padding(20, 20, 20, 20);
-		center.add(m_spinner);
 
 		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
 		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
@@ -117,7 +109,6 @@ public class FeedReader.articleList : Gtk.Stack {
 		this.set_transition_duration(100);
 		this.add_named(m_scroll1, "list1");
 		this.add_named(m_scroll2, "list2");
-		this.add_named(center, "spinner");
 		this.add_named(m_emptyList, "empty");
 	}
 

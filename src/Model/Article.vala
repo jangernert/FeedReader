@@ -15,7 +15,7 @@ public class FeedReader.article : GLib.Object {
 
 
 
-	public article (string articleID, string title, string url, string feedID, int unread, int marked, string html, string preview, string author, string date, int sortID, string tags) {
+	public article (string articleID, string title, string url, string feedID, int unread, int marked, string html, string preview, string author, GLib.DateTime date, int sortID, string tags) {
 		m_articleID = articleID;
 		m_title = title;
 		m_url = url;
@@ -27,18 +27,7 @@ public class FeedReader.article : GLib.Object {
 		m_marked = marked;
 		m_sortID = sortID;
 		m_tags = tags;
-
-
-		string year = date.substring(0, date.index_of_nth_char(4));
-		string month = date.substring(date.index_of_nth_char(5), date.index_of_nth_char(7) - date.index_of_nth_char(5));
-		string day = date.substring(date.index_of_nth_char(8), date.index_of_nth_char(10) - date.index_of_nth_char(8));
-		string hour = date.substring(date.index_of_nth_char(11), date.index_of_nth_char(13) - date.index_of_nth_char(11));
-		string min = date.substring(date.index_of_nth_char(14), date.index_of_nth_char(16) - date.index_of_nth_char(14));
-		string sec = date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17));
-
-
-
-		m_date = new GLib.DateTime(new TimeZone.local(), int.parse(year), int.parse(month), int.parse(day), int.parse(hour), int.parse(min), int.parse(sec));
+		m_date = date;
 	}
 
 	public string getArticleID()

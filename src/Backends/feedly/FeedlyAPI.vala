@@ -230,7 +230,7 @@ public class FeedReader.FeedlyAPI : Object {
 					Content,
 					summaryContent,
 					author,
-					(((int)object.get_int_member("updated"))/1000).to_string(), // timestamp includes msecs so divide by 1000 to get rid of them
+					new DateTime.from_unix_local((object.get_int_member("updated"))/1000), // timestamp includes msecs so divide by 1000 to get rid of them
 					-1,
 					tagString
 				)

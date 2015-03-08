@@ -530,7 +530,7 @@ public class FeedReader.dbManager : GLib.Object {
 								stmt.column_text(6),
 								stmt.column_text(7),
 								stmt.column_text(4),
-								stmt.column_text(11),
+								Utils.convertStringToDate(stmt.column_text(11)),
 								stmt.column_int(0),
 								stmt.column_text(10)
 							);
@@ -927,7 +927,7 @@ public class FeedReader.dbManager : GLib.Object {
 								"",						// html
 								stmt.column_text(6),	// preview
 								stmt.column_text(4),	// author
-								stmt.column_text(10),	// date
+								Utils.convertStringToDate(stmt.column_text(10)),	// date
 								stmt.column_int(0),		// sortID
 								stmt.column_text(9)		// tags
 							);

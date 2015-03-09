@@ -103,6 +103,7 @@ public class FeedReader.articleView : Gtk.Stack {
 	public void clearContent()
 	{
 		this.set_visible_child_name("empty");
+		m_currentArticle = "";
 	}
 
 	public string getCurrentArticle()

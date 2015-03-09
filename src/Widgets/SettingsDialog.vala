@@ -1,6 +1,7 @@
 public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     public signal void newFeedList(bool defaultSettings = false);
+    public signal void newArticleList();
 
     public SettingsDialog(Gtk.Window parent)
     {
@@ -88,6 +89,47 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         box4.pack_start(sync_time, true, true, 0);
         box4.pack_end(sync_time_button, false, false, 0);
         content.pack_start(box4, false, true, 5);
+
+        var article_settings = new Gtk.Label("ArticleList:");
+        article_settings.set_alignment(0, 0.5f);
+        article_settings.get_style_context().add_class("h4");
+        content.pack_start(article_settings, false, true, 5);
+
+        var box5 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        var article_sort = new Gtk.Label("sort articles by");
+        article_sort.set_alignment(0, 0.5f);
+        article_sort.margin_start = 15;
+
+        var liststore = new Gtk.ListStore(1, typeof (string));
+		Gtk.TreeIter sort_by_date;
+		liststore.append(out sort_by_date);
+		liststore.set(sort_by_date, 0, "date");
+		Gtk.TreeIter sort_by_inserted;
+		liststore.append(out sort_by_inserted);
+		liststore.set(sort_by_inserted, 0, "order gotten from backend");
+
+        var sort_by_box = new Gtk.ComboBox.with_model(liststore);
+        var renderer = new Gtk.CellRendererText();
+        sort_by_box.pack_start (renderer, false);
+        sort_by_box.add_attribute(renderer, "text", 0);
+
+        sort_by_box.changed.connect(() => {
+            if(sort_by_box.get_active() == 0)
+                settings_general.set_boolean("articlelist-sort-by-date", true);
+            else if(sort_by_box.get_active() == 1)
+                settings_general.set_boolean("articlelist-sort-by-date", false);
+
+            newArticleList();
+        });
+
+        if(settings_general.get_boolean("articlelist-sort-by-date"))
+            sort_by_box.set_active(0);
+        else
+            sort_by_box.set_active(1);
+
+        box5.pack_start(article_sort, true, true, 0);
+        box5.pack_end(sort_by_box, false, false, 0);
+        content.pack_start(box5, false, true, 5);
 
         this.add_button(_("Close"), 1);
         show_all();

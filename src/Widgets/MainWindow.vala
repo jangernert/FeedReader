@@ -79,6 +79,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings.newFeedList.connect((defaultSettings) => {
 				m_content.newFeedList(defaultSettings);
 			});
+
+			settings.newArticleList.connect(() => {
+				m_content.newHeadlineList();
+			});
 		});
 		add_action(settings_action);
 

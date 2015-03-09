@@ -938,7 +938,16 @@ public class FeedReader.dbManager : GLib.Object {
 		if(searchTerm != ""){
 			query = query + and + "instr(UPPER(\"title\"), UPPER(\"" + searchTerm + "\")) > 0";
 		}
-		query = query + " ORDER BY date DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
+		query = query + " ORDER BY ";
+		
+		if(settings_general.get_boolean("articlelist-sort-by-date"))
+			query = query + "date";
+		else
+			query = query + "rowid";
+
+
+		query = query + " DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
+
 
 		logger.print(LogMessage.DEBUG, query);
 		article tmpArticle;

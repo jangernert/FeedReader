@@ -400,7 +400,6 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 
 		createHeadlineList();
-		settings_state.set_boolean("no-animations", false);
 	}
 
 	public void updateArticleList()

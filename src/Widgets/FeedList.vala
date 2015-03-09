@@ -159,18 +159,20 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	public void newFeedlist()
+	public void newFeedlist(bool defaultSettings)
 	{
 		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
 		var FeedChildList = m_list.get_children();
 
 		if(FeedChildList != null)
 		{
-			if(!settings_general.get_boolean("only-feeds"))
+			if(!defaultSettings)
+			{
 				settings_state.set_strv("expanded-categories", getExpandedCategories());
+				settings_state.set_string("feedlist-selected-row", getSelectedRow());
+			}
 
 			settings_state.set_double("feed-row-scrollpos",  getScrollPos());
-			settings_state.set_string("feedlist-selected-row", getSelectedRow());
 			settings_state.set_boolean("no-animations", true);
 			m_update = true;
 		}
@@ -180,12 +182,13 @@ public class FeedReader.feedList : Gtk.Stack {
 			m_list.remove(row);
 			row.destroy();
 		}
-		createFeedlist();
+		createFeedlist(defaultSettings);
+		settings_state.set_boolean("no-animations", false);
 		m_update = false;
 	}
 
 
-	public void createFeedlist()
+	public void createFeedlist(bool defaultSettings)
 	{
 		var row_spacer = new FeedRow("", 0, false, "", "-1", 0);
 		row_spacer.set_size_request(0, 8);
@@ -262,12 +265,12 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 
 		initCollapseCategories();
-		restoreSelectedRow();
+		restoreSelectedRow(defaultSettings);
 		this.show_all();
 		m_scroll_adjustment.notify["upper"].connect(restoreScrollPos);
 	}
 
-	private void restoreSelectedRow()
+	private void restoreSelectedRow(bool defaultSettings)
 	{
 		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
 
@@ -282,6 +285,8 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
+					if(defaultSettings)
+						newFeedSelected(tmpRow.getID());
 					return;
 				}
 			}
@@ -296,6 +301,8 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
+					if(defaultSettings)
+						newCategorieSelected(tmpRow.getID());
 					return;
 				}
 			}
@@ -310,6 +317,8 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
+					if(defaultSettings)
+						newTagSelected(tmpRow.getID());
 					return;
 				}
 			}

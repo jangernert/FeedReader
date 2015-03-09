@@ -1,6 +1,6 @@
 public class FeedReader.SettingsDialog : Gtk.Dialog {
 
-    public signal void newFeedList();
+    public signal void newFeedList(bool defaultSettings = false);
 
     public SettingsDialog(Gtk.Window parent)
     {
@@ -35,8 +35,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         only_feeds_switch.active = settings_general.get_boolean("only-feeds");
         only_feeds_switch.notify["active"].connect(() => {
             settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
+            settings_state.set_string("feedlist-selected-row", "feed -4");
             settings_general.set_boolean("only-feeds",  only_feeds_switch.active);
-            newFeedList();
+            newFeedList(true);
         });
         box1.pack_start(only_feeds, true, true, 0);
         box1.pack_end(only_feeds_switch, false, false, 0);

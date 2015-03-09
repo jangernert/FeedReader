@@ -85,9 +85,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_articleList.newHeadlineList();
 	}
 
-	public void newFeedList()
+	public void newFeedList(bool defaultSettings = false)
 	{
-		m_feedList.newFeedlist();
+		m_feedList.newFeedlist(defaultSettings);
 	}
 
 	public void updateFeedListCountUnread(string feedID, bool increase)
@@ -124,7 +124,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		return m_feedList.getExpandedCategories();
 	}
-	
+
 	public double getFeedListScrollPos()
 	{
 		return m_feedList.getScrollPos();

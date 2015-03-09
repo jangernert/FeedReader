@@ -75,8 +75,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		var settings_action = new SimpleAction (_("settings"), null);
 		settings_action.activate.connect (() => {
 			var settings = new SettingsDialog(this);
-			settings.newFeedList.connect(() => {
-				m_content.newFeedList();
+			settings.newFeedList.connect((defaultSettings) => {
+				m_content.newFeedList(defaultSettings);
 			});
 		});
 		add_action(settings_action);

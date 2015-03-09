@@ -20,7 +20,6 @@ public class FeedReader.articleList : Gtk.Stack {
 	private int m_limit;
 	private int m_IDtype;
 	private bool m_limitScroll;
-	private bool m_sortByDate;
 	private int m_threadCount;
 	public signal void row_activated(articleRow? row);
 
@@ -34,7 +33,6 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_limit = 15;
 		m_limitScroll = false;
 		m_threadCount = 0;
-		m_sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
 
 		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
 		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
@@ -462,8 +460,13 @@ public class FeedReader.articleList : Gtk.Stack {
 					var tmpRow = row as articleRow;
 					if(tmpRow != null)
 					{
-						if((newRow.m_sortID > tmpRow.m_sortID && !m_sortByDate)
-						|| (newRow.getDate().compare(tmpRow.getDate()) == 1 && m_sortByDate))
+						bool sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
+						bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
+
+						if((newestFirst && !sortByDate && newRow.m_sortID > tmpRow.m_sortID)
+						|| (!newestFirst && !sortByDate && newRow.m_sortID < tmpRow.m_sortID)
+						|| (newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == 1)
+						|| (!newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == -1))
 						{
 							m_currentList.insert(newRow, pos-1);
 							m_displayed_articles++;

@@ -939,14 +939,18 @@ public class FeedReader.dbManager : GLib.Object {
 			query = query + and + "instr(UPPER(\"title\"), UPPER(\"" + searchTerm + "\")) > 0";
 		}
 		query = query + " ORDER BY ";
-		
+
 		if(settings_general.get_boolean("articlelist-sort-by-date"))
 			query = query + "date";
 		else
 			query = query + "rowid";
 
+		if(settings_general.get_boolean("articlelist-newest-first"))
+			query = query + " DESC";
+		else
+			query = query + " ASC";
 
-		query = query + " DESC LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
+		query = query + " LIMIT " + limit.to_string() + " OFFSET " + offset.to_string();
 
 
 		logger.print(LogMessage.DEBUG, query);

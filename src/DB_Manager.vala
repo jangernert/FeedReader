@@ -147,9 +147,8 @@ public class FeedReader.dbManager : GLib.Object {
 		string query = "SELECT count(*) FROM \"main\".\"articles\"";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
+		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
-		}
 
 		int cols = stmt.column_count ();
 		while (stmt.step () == Sqlite.ROW) {
@@ -219,14 +218,46 @@ public class FeedReader.dbManager : GLib.Object {
 		string query = "SELECT unread FROM \"main\".\"categories\" WHERE \"level\" = 1 AND NOT \"categorieID\" = -1";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+
 		int unread = 0;
 		while (stmt.step () == Sqlite.ROW) {
 			unread += stmt.column_int(0);
 		}
 		stmt.reset ();
+		return unread;
+	}
+
+	public uint get_unread_feed(string feedID)
+	{
+		string query = "SELECT unread FROM \"main\".\"feeds\" WHERE \"feed_id\" = %s".printf(feedID);
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+
+		int unread = 0;
+		while (stmt.step() == Sqlite.ROW) {
+			unread = stmt.column_int(0);
+		}
+		stmt.reset();
+		return unread;
+	}
+
+	public uint get_unread_category(string catID)
+	{
+		string query = "SELECT unread FROM \"main\".\"categories\" WHERE \"categorieID\" = %s".printf(catID);
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+
+		int unread = 0;
+		while (stmt.step() == Sqlite.ROW) {
+			unread = stmt.column_int(0);
+		}
+		stmt.reset();
 		return unread;
 	}
 

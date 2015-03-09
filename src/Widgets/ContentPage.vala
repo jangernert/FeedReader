@@ -24,7 +24,8 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_pane.pack1(m_feedList, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
-			if(feedID == FeedID.ALL)
+			if(feedID == FeedID.ALL
+			|| dataBase.get_unread_feed(feedID) == 0)
 				setMarkReadButtonActive(false);
 			else
 				setMarkReadButtonActive(true);
@@ -44,7 +45,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
-			if(categorieID == CategoryID.MASTER || categorieID == CategoryID.TAGS)
+			if(categorieID == CategoryID.MASTER
+			|| categorieID == CategoryID.TAGS
+			|| dataBase.get_unread_category(categorieID) == 0)
 				setMarkReadButtonActive(false);
 			else
 				setMarkReadButtonActive(true);

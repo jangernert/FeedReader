@@ -62,6 +62,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				feedDaemon_interface.markFeedAsRead(selectedRow[1], true);
 				m_content.markAllArticlesAsRead();
 			}
+			m_headerbar.setMarkReadButtonSensitive(false);
 		});
 
 		m_headerbar.notify["position"].connect(() => {
@@ -371,17 +372,40 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	public void updateFeedListCountUnread(string feedID, bool increase)
 	{
+		//FIXME: update "mark all read" button
 		m_content.updateFeedListCountUnread(feedID, increase);
+		setMarkAllButtonSensitive();
 	}
 
 	public void updateArticleList()
 	{
 		m_content.updateArticleList();
+		setMarkAllButtonSensitive();
 	}
 
 	public void newFeedList()
 	{
 		m_content.newFeedList();
+	}
+
+	private void setMarkAllButtonSensitive()
+	{
+		string[] selectedRow = m_content.getSelectedFeedListRow().split(" ", 2);
+
+		if(selectedRow[0] == "feed")
+		{
+			if(dataBase.get_unread_feed(selectedRow[1]) == 0)
+				m_headerbar.setMarkReadButtonSensitive(false);
+			else
+				m_headerbar.setMarkReadButtonSensitive(true);
+		}
+		else if(selectedRow[0] == "cat")
+		{
+			if(dataBase.get_unread_category(selectedRow[1]) == 0)
+				m_headerbar.setMarkReadButtonSensitive(false);
+			else
+				m_headerbar.setMarkReadButtonSensitive(true);
+		}
 	}
 
 

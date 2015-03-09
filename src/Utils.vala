@@ -83,15 +83,15 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static GLib.DateTime convertStringToDate(string date)
 	{
-		string year = date.substring(0, date.index_of_nth_char(4));
-		string month = date.substring(date.index_of_nth_char(5), date.index_of_nth_char(7) - date.index_of_nth_char(5));
-		string day = date.substring(date.index_of_nth_char(8), date.index_of_nth_char(10) - date.index_of_nth_char(8));
-		string hour = date.substring(date.index_of_nth_char(11), date.index_of_nth_char(13) - date.index_of_nth_char(11));
-		string min = date.substring(date.index_of_nth_char(14), date.index_of_nth_char(16) - date.index_of_nth_char(14));
-		string sec = date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17));
-		var dateTime = new GLib.DateTime(new TimeZone.local(), int.parse(year), int.parse(month), int.parse(day), int.parse(hour), int.parse(min), int.parse(sec));
-
-		return dateTime;
+		return new GLib.DateTime(
+			new TimeZone.local(),
+			int.parse(date.substring(0, date.index_of_nth_char(4))),															// year
+			int.parse(date.substring(date.index_of_nth_char(5), date.index_of_nth_char(7) - date.index_of_nth_char(5))),		// month
+			int.parse(date.substring(date.index_of_nth_char(8), date.index_of_nth_char(10) - date.index_of_nth_char(8))),		// day
+			int.parse(date.substring(date.index_of_nth_char(11), date.index_of_nth_char(13) - date.index_of_nth_char(11))),		// hour
+			int.parse(date.substring(date.index_of_nth_char(14), date.index_of_nth_char(16) - date.index_of_nth_char(14))),		// min
+			int.parse(date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17)))		// sec
+		);
 	}
 
 }

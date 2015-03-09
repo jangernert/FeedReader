@@ -355,9 +355,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			for(uint i = 0; i < headline_count; i++)
 			{
 				var headline_node = response.get_object_element(i);
+				int articleID = (int)headline_node.get_int_member("id");
 
-				if(!dataBase.article_exists(headline_node.get_int_member("id").to_string()))
-					getArticle( (int)headline_node.get_int_member("id"), out title, out author, out url, out html);
+				if(!dataBase.article_exists(articleID.to_string()))
+					getArticle( articleID, out title, out author, out url, out html);
 				else
 					title = author = url = html = "";
 

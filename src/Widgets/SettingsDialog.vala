@@ -32,12 +32,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         only_feeds.set_alignment(0, 0.5f);
         only_feeds.margin_start = 15;
         var only_feeds_switch = new Gtk.Switch();
-        only_feeds_switch.set_state(settings_general.get_boolean("only-feeds"));
-        only_feeds_switch.state_set.connect((state) => {
+        only_feeds_switch.active = settings_general.get_boolean("only-feeds");
+        only_feeds_switch.notify["active"].connect(() => {
             settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
-            settings_general.set_boolean("only-feeds",  state);
+            settings_general.set_boolean("only-feeds",  only_feeds_switch.active);
             newFeedList();
-            return false;
         });
         box1.pack_start(only_feeds, true, true, 0);
         box1.pack_end(only_feeds_switch, false, false, 0);
@@ -48,11 +47,10 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         only_unread.set_alignment(0, 0.5f);
         only_unread.margin_start = 15;
         var only_unread_switch = new Gtk.Switch();
-        only_unread_switch.set_state(settings_general.get_boolean("feedlist-only-show-unread"));
-        only_unread_switch.state_set.connect((state) => {
-            settings_general.set_boolean("feedlist-only-show-unread",  state);
+        only_unread_switch.active = settings_general.get_boolean("feedlist-only-show-unread");
+        only_unread_switch.notify["active"].connect(() => {
+            settings_general.set_boolean("feedlist-only-show-unread",  only_unread_switch.active);
             newFeedList();
-            return false;
         });
         box2.pack_start(only_unread, true, true, 0);
         box2.pack_end(only_unread_switch, false, false, 0);

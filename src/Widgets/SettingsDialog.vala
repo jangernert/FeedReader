@@ -9,7 +9,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		this.border_width = 20;
         this.set_transient_for(parent);
         this.set_modal(true);
-		set_default_size (450, 500);
+		set_default_size(450, 550);
 
         this.response.connect((id) => {
             switch(id)
@@ -106,7 +106,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		liststore.set(sort_by_date, 0, _("date"));
 		Gtk.TreeIter sort_by_inserted;
 		liststore.append(out sort_by_inserted);
-		liststore.set(sort_by_inserted, 0, _("order received"));
+		liststore.set(sort_by_inserted, 0, _("received"));
 
         var sort_by_box = new Gtk.ComboBox.with_model(liststore);
         var renderer = new Gtk.CellRendererText();

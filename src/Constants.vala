@@ -94,10 +94,12 @@ namespace FeedReader {
 		 const string websiteLabel  = null;
 	}
 
-	public enum DataBase {
+	public enum QueryType {
+		INSERT,
 		INSERT_OR_IGNORE,
 		INSERT_OR_REPLACE,
-		UPDATE_ROW
+		UPDATE,
+		SELECT
 	}
 
 	namespace FeedList {

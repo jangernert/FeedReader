@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<title>FeedReader Article</title>
+	<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+	
+	<!--[if lte IE 8]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script type="text/javascript" src="js/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+
+	<div class="theme spring">
+		<header class="post">
+			<span class="source">$FEED</span>
+  			<h1>$TITLE</h1>
+  			<span class="author">$AUTHOR</span>
+		</header>
+		
+		<div class="content"><!--drop the unformatted RSS content here, and I'll style using only tag names, e.g. img, p, strong, etc-->
+			$HTML
+		</div><!-- .content -->
+	</div><!-- .theme.default -->
+</body>
+</html>

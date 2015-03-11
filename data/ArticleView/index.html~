@@ -1,0 +1,170 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<title>FeedReader Example Text</title>
+	<link rel="stylesheet" href="style.css" type="text/css" media="screen" />
+	
+	<!--[if lte IE 8]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<script type="text/javascript" src="js/respond.min.js"></script>
+	<![endif]-->
+</head>
+<body>
+
+	<div class="theme default">
+		<header class="post">
+			<span class="source">http://blog.google.com</span>
+  			<h1>Windows 10 RTM Version Coming in 4 months</h1>
+  			<span class="author">posted by $AUTHOR at $TIME</span>
+		</header>
+		
+		<div class="content"><!--drop the unformatted RSS content here, and I'll style using only tag names, e.g. img, p, strong, etc-->
+			<figure>
+				<img src="http://1.f.ix.de/scale/geometry/600/q75/imgs/18/1/4/3/9/0/4/3/samba1-d47dbcc255e48238.png">
+				<p> Eine Bildunterschrift</p>
+			</figure>
+			
+			<p><strong>In allen Versionen des Samba-Servers seit 2010 klafft eine kritische Sicherheitslücke. Admins sollten auf der Hut sein: Angreifer können diese ohne gültige Zugangsdaten ausnutzen.</strong></p>
+			
+			<p>In allen Versionen des Samba-Daemon der vergangenen fünf Jahre <a href="https://www.samba.org/samba/security/CVE-2015-0240" target="_blank" rel="external">klafft eine kritische Sicherheitslücke</a>, durch die ein Angreifer schlimmstenfalls Code als root ausführen kann. Der Angreifer sendet hierzu speziell präparierte netlogon-Pakete – er muss hierzu nicht authentifiziert sein. Betroffen ist smbd in den Versionen 3.5.0 bis einschließlich 4.2.0rc4. Abhilfe schaffen die abgesicherten Samba-Versionen 4.2.0rc5, 4.1.17, 4.0.25 und 3.6.25.</p>
+			
+			<p>Samba ist die Standard-Software, mit der Server, die nicht unter Windows laufen, Dateifreigaben für Windows-Rechner bereitstellen. Es kommt nicht nur auf Linux-Servern zum Einsatz, auch viele NAS-Systeme setzen auf Samba. Apple verzichtet seit Mac OS X Lion zugunsten einer Eigenentwicklung auf die Open Source Software.</p>
+			
+			<h2>This is a heading 2</h2>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h3>This is a heading 3</h3>
+			<p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h4>This is a heading 4</h4>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h5>This is a heading 5</h5>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h6>This is a heading 6</h6>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+
+			<img src="http://1.f.ix.de/imgs/18/1/4/3/9/0/4/3/netzwerkcheck-1-692ceddaf67b9882.png" width="200" height="200" alt="Unser Netzwerkcheck überprüft, ob unter der Internet-IP ein potenziell verwundbarer Samba-Daemon antwortet." data-zoom-src="/imgs/18/1/4/3/9/0/4/3/netzwerkcheck-1-b625307999e267fd.png">
+			
+			<p>Wer einen Samba-Daemon betreibt, sollte nicht mit dem Update zögern. Auch NAS-Betreiber sollten aufmerksam sein: Oft ist Samba ein fester Bestandteil der NAS-Firmware und lässt sich nicht manuell auf den aktuellen Stand bringen. Daher sollte man sicherstellen, dass der Samba-Daemon des NAS nicht über das Internet erreichbar ist. Das können Sie zum Beispiel <a href="http://www.four.heise.de/security/dienste/portscan/test/go.shtml?scanart=1" target="_blank" rel="external">über unseren Netzwerkcheck</a> überprüfen. Der Daemon lauscht üblicherweise auf Port 445.</p>
+
+		</div><!-- .content -->
+	</div><!-- .theme.default -->
+	
+	<div class="theme midnight">
+		<header class="post">
+			<span class="source">http://blog.google.com</span>
+			<h1>Windows 10 RTM Version Coming in 4 months</h1>
+			<span class="author">posted by $AUTHOR at $TIME</span>
+		</header>
+		
+		<div class="content"><!--drop the unformatted RSS content here, and I'll style using only tag names, e.g. img, p, strong, etc-->
+			<figure>
+				<img src="http://1.f.ix.de/scale/geometry/600/q75/imgs/18/1/4/3/9/0/4/3/samba1-d47dbcc255e48238.png">
+				<p> Eine Bildunterschrift</p>
+			</figure>
+			
+			<p><strong>In allen Versionen des Samba-Servers seit 2010 klafft eine kritische Sicherheitslücke. Admins sollten auf der Hut sein: Angreifer können diese ohne gültige Zugangsdaten ausnutzen.</strong></p>
+			
+			<p>In allen Versionen des Samba-Daemon der vergangenen fünf Jahre <a href="https://www.samba.org/samba/security/CVE-2015-0240" target="_blank" rel="external">klafft eine kritische Sicherheitslücke</a>, durch die ein Angreifer schlimmstenfalls Code als root ausführen kann. Der Angreifer sendet hierzu speziell präparierte netlogon-Pakete – er muss hierzu nicht authentifiziert sein. Betroffen ist smbd in den Versionen 3.5.0 bis einschließlich 4.2.0rc4. Abhilfe schaffen die abgesicherten Samba-Versionen 4.2.0rc5, 4.1.17, 4.0.25 und 3.6.25.</p>
+			
+			<p>Samba ist die Standard-Software, mit der Server, die nicht unter Windows laufen, Dateifreigaben für Windows-Rechner bereitstellen. Es kommt nicht nur auf Linux-Servern zum Einsatz, auch viele NAS-Systeme setzen auf Samba. Apple verzichtet seit Mac OS X Lion zugunsten einer Eigenentwicklung auf die Open Source Software.</p>
+			
+			<h2>This is a heading 2</h2>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h3>This is a heading 3</h3>
+			<p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h4>This is a heading 4</h4>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h5>This is a heading 5</h5>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h6>This is a heading 6</h6>
+			<p>Lorem Ipsum is</p>
+
+		</div><!-- .content -->
+	</div><!-- .theme.midnight -->
+	
+	<div class="theme spring">
+		<header class="post">
+			<span class="source">http://blog.google.com</span>
+			<h1>Windows 10 RTM Version Coming in 4 months</h1>
+			<span class="author">posted by $AUTHOR at $TIME</span>
+		</header>
+		
+		<div class="content"><!--drop the unformatted RSS content here, and I'll style using only tag names, e.g. img, p, strong, etc-->
+			<figure>
+				<img src="//1.f.ix.de/scale/geometry/600/q75/imgs/18/1/4/3/9/0/4/3/samba1-d47dbcc255e48238.png">
+				<p> Eine Bildunterschrift</p>
+			</figure>
+			
+			<p><strong>In allen Versionen des Samba-Servers seit 2010 klafft eine kritische Sicherheitslücke. Admins sollten auf der Hut sein: Angreifer können diese ohne gültige Zugangsdaten ausnutzen.</strong></p>
+			
+			<p>In allen Versionen des Samba-Daemon der vergangenen fünf Jahre <a href="https://www.samba.org/samba/security/CVE-2015-0240" target="_blank" rel="external">klafft eine kritische Sicherheitslücke</a>, durch die ein Angreifer schlimmstenfalls Code als root ausführen kann. Der Angreifer sendet hierzu speziell präparierte netlogon-Pakete – er muss hierzu nicht authentifiziert sein. Betroffen ist smbd in den Versionen 3.5.0 bis einschließlich 4.2.0rc4. Abhilfe schaffen die abgesicherten Samba-Versionen 4.2.0rc5, 4.1.17, 4.0.25 und 3.6.25.</p>
+			
+			<p>Samba ist die Standard-Software, mit der Server, die nicht unter Windows laufen, Dateifreigaben für Windows-Rechner bereitstellen. Es kommt nicht nur auf Linux-Servern zum Einsatz, auch viele NAS-Systeme setzen auf Samba. Apple verzichtet seit Mac OS X Lion zugunsten einer Eigenentwicklung auf die Open Source Software.</p>
+			
+			<h2>This is a heading 2</h2>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h3>This is a heading 3</h3>
+			<p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h4>This is a heading 4</h4>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h5>This is a heading 5</h5>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h6>This is a heading 6</h6>
+			<p>Lorem Ipsum is</p>
+
+		</div><!-- .content -->
+	</div><!-- .theme.midnight -->
+	
+<div class="theme parchment">
+		<header class="post">
+			<span class="source">http://blog.google.com</span>
+			<h1>Windows 10 RTM Version Coming in 4 months</h1>
+			<span class="author">posted by $AUTHOR at $TIME</span>
+		</header>
+		
+		<div class="content"><!--drop the unformatted RSS content here, and I'll style using only tag names, e.g. img, p, strong, etc-->
+			<figure>
+				<img src="//1.f.ix.de/scale/geometry/600/q75/imgs/18/1/4/3/9/0/4/3/samba1-d47dbcc255e48238.png">
+				<p> Eine Bildunterschrift</p>
+			</figure>
+			
+			<p><strong>In allen Versionen des Samba-Servers seit 2010 klafft eine kritische Sicherheitslücke. Admins sollten auf der Hut sein: Angreifer können diese ohne gültige Zugangsdaten ausnutzen.</strong></p>
+			
+			<p>In allen Versionen des Samba-Daemon der vergangenen fünf Jahre <a href="https://www.samba.org/samba/security/CVE-2015-0240" target="_blank" rel="external">klafft eine kritische Sicherheitslücke</a>, durch die ein Angreifer schlimmstenfalls Code als root ausführen kann. Der Angreifer sendet hierzu speziell präparierte netlogon-Pakete – er muss hierzu nicht authentifiziert sein. Betroffen ist smbd in den Versionen 3.5.0 bis einschließlich 4.2.0rc4. Abhilfe schaffen die abgesicherten Samba-Versionen 4.2.0rc5, 4.1.17, 4.0.25 und 3.6.25.</p>
+			
+			<p>Samba ist die Standard-Software, mit der Server, die nicht unter Windows laufen, Dateifreigaben für Windows-Rechner bereitstellen. Es kommt nicht nur auf Linux-Servern zum Einsatz, auch viele NAS-Systeme setzen auf Samba. Apple verzichtet seit Mac OS X Lion zugunsten einer Eigenentwicklung auf die Open Source Software.</p>
+			
+			<h2>This is a heading 2</h2>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h3>This is a heading 3</h3>
+			<p>It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h4>This is a heading 4</h4>
+			<p>It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+			
+			<h5>This is a heading 5</h5>
+			<p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</p>
+			
+			<h6>This is a heading 6</h6>
+			<p>Lorem Ipsum is</p>
+
+		</div><!-- .content -->
+	</div><!-- .theme.midnight -->
+
+</body>
+</html>

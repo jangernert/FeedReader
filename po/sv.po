@@ -7,45 +7,37 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-02-23 16:42+0100\n"
+"POT-Creation-Date: 2015-03-10 16:35+0100\n"
 "PO-Revision-Date: 2015-03-05 23:58+0000\n"
 "Last-Translator: Mikael Nyberg <mikanybe@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-03-08 05:44+0000\n"
-"X-Generator: Launchpad (build 17383)\n"
+"X-Launchpad-Export-Date: 2015-03-11 05:49+0000\n"
+"X-Generator: Launchpad (build 17389)\n"
 
-#: ../src/Backends/FeedServer.vala:120
+#: ../src/Backends/FeedServer.vala:344
 msgid "There is 1 new article"
 msgstr "Det finns 1 ny artikel"
 
-#: ../src/Backends/FeedServer.vala:122
+#: ../src/Backends/FeedServer.vala:346
 msgid "There are >200 new articles"
 msgstr "Det finns >200 nya artiklar"
 
-#: ../src/Backends/FeedServer.vala:124
+#: ../src/Backends/FeedServer.vala:348
 msgid "There are %u new articles"
 msgstr "Det finns %u nya artiklar"
 
-#: ../src/Backends/FeedServer.vala:126
+#: ../src/Backends/FeedServer.vala:350
 msgid "New Articles"
 msgstr "Nya artiklar"
 
-#: ../src/DB_Manager.vala:362
-msgid "No Preview Available"
-msgstr "Ingen förhandsvisning tillgänglig"
-
-#: ../src/DB_Manager.vala:404
-msgid "No Text available for this article :("
-msgstr "Ingen text tillgänglig för den här artikeln :("
-
-#: ../src/Widgets/ArticleView.vala:26
+#: ../src/Widgets/ArticleView.vala:42
 msgid "No Article selected."
 msgstr "Ingen artikel vald."
 
-#: ../src/Widgets/ArticleView.vala:54
+#: ../src/Widgets/ArticleView.vala:76
 msgid "not available"
 msgstr "inte tillgänglig"
 
@@ -73,19 +65,19 @@ msgstr "Välj den RSS-tjänst du använder och logga in för att komma igång."
 msgid "No service selected."
 msgstr "Ingen tjänst vald."
 
-#: ../src/Widgets/LoginPage.vala:131
+#: ../src/Widgets/LoginPage.vala:112
 msgid "TinyTinyRSS URL:"
 msgstr "TinyTinyRSS URL:"
 
-#: ../src/Widgets/LoginPage.vala:132 ../src/Widgets/LoginPage.vala:225
+#: ../src/Widgets/LoginPage.vala:113 ../src/Widgets/LoginPage.vala:186
 msgid "Username:"
 msgstr "Användarnamn:"
 
-#: ../src/Widgets/LoginPage.vala:133 ../src/Widgets/LoginPage.vala:226
+#: ../src/Widgets/LoginPage.vala:114 ../src/Widgets/LoginPage.vala:187
 msgid "Password:"
 msgstr "Lösenord:"
 
-#: ../src/Widgets/LoginPage.vala:205
+#: ../src/Widgets/LoginPage.vala:166
 msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
@@ -94,19 +86,31 @@ msgstr ""
 "ditt Facebook-, Google-, Twitter-, Microsoft- eller Evernote-konto för att "
 "logga in."
 
-#: ../src/Widgets/LoginPage.vala:224
+#: ../src/Widgets/LoginPage.vala:185
 msgid "OwnCloud URL:"
 msgstr "OwnCloud URL:"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:58
-msgid "Search Aritlces..."
-msgstr "Sök artiklar..."
+#: ../src/Widgets/ReaderHeaderbar.vala:48
+msgid "only show unread articles"
+msgstr ""
 
-#: ../src/Widgets/ResetPage.vala:12
+#: ../src/Widgets/ReaderHeaderbar.vala:54
+msgid "only show marked articles"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:59
+msgid "mark selected feed/category as read"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:92
+msgid "Search Aritlces"
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:18
 msgid "Change Account?"
 msgstr "Ändra konto?"
 
-#: ../src/Widgets/ResetPage.vala:16
+#: ../src/Widgets/ResetPage.vala:22
 msgid ""
 "You are about to change the account you want FeedReader to use.\n"
 " This means deleting all local data of your old account."
@@ -114,51 +118,51 @@ msgstr ""
 "Du håller på att ändra kontot som FeedReader ska använda.\n"
 " Detta innebär att all lokal data från ditt gamla konto kommer att tas bort."
 
-#: ../src/Widgets/ArticleList.vala:45
+#: ../src/Widgets/ArticleList.vala:37
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr "Ingen av de %i artiklarna i databasen matchar de aktuella filtren."
 
-#: ../src/Widgets/MainWindow.vala:16
+#: ../src/Widgets/MainWindow.vala:18 ../src/Constants.vala:84
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Widgets/MainWindow.vala:51
-msgid "about"
-msgstr "om"
+#: ../src/Widgets/MainWindow.vala:76
+msgid "settings"
+msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:55
+#: ../src/Widgets/MainWindow.vala:89
 msgid "reset"
 msgstr "återställ"
 
-#: ../src/Widgets/MainWindow.vala:244
+#: ../src/Widgets/MainWindow.vala:331
 msgid "Please select a service first"
 msgstr "Välj en tjänst först"
 
-#: ../src/Widgets/MainWindow.vala:247
+#: ../src/Widgets/MainWindow.vala:334
 msgid "Please enter a valid username"
 msgstr "Ange ett giltigt användarnamn"
 
-#: ../src/Widgets/MainWindow.vala:250
+#: ../src/Widgets/MainWindow.vala:337
 msgid "Please enter a valid password"
 msgstr "Ange ett giltigt lösenord"
 
-#: ../src/Widgets/MainWindow.vala:253
+#: ../src/Widgets/MainWindow.vala:340
 msgid "Please enter a valid URL"
 msgstr "Ange en giltig URL"
 
-#: ../src/Widgets/MainWindow.vala:256
+#: ../src/Widgets/MainWindow.vala:343
 msgid "Please enter your Login details"
 msgstr "Ange dina inloggningsuppgifter"
 
-#: ../src/Widgets/MainWindow.vala:259
+#: ../src/Widgets/MainWindow.vala:346
 msgid "Sorry, something went wrong."
 msgstr "Tyvärr gick något fel."
 
-#: ../src/Widgets/MainWindow.vala:262
+#: ../src/Widgets/MainWindow.vala:349
 msgid "Either your username or the password are not correct."
 msgstr "Antingen är ditt användarnamn eller lösenord fel."
 
-#: ../src/Widgets/MainWindow.vala:265
+#: ../src/Widgets/MainWindow.vala:352
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -166,10 +170,74 @@ msgstr ""
 "Ingen anslutning till servern. Kontrollera din internetanslutning och "
 "serverns URL!"
 
-#: ../src/Widgets/InitSyncPage.vala:14
+#: ../src/Widgets/UpdateButton.vala:15
+msgid "update Feeds"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:26
+msgid "Feed List:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:36
+msgid "only-feeds"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:48
+msgid "only show unread"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:62
+msgid "Sync:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:68
+msgid "number of articles"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:81
+msgid "every (seconds)"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "ArticleList:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:99
+msgid "sort articles by"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:106
+msgid "date"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:109
+msgid "received"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:132
+msgid "newest first"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:145
+msgid "Close"
+msgstr ""
+
+#: ../src/Widgets/InitSyncPage.vala:18
 msgid ""
 "FeedReader is now getting the first batch of articles.\n"
 "Depending on your connection and settings this can take some time."
 msgstr ""
 "FeedReader hämtar nu den första hopen av artiklar.\n"
 "Detta kan ta en stund beroende på din anslutning och inställningar."
+
+#: ../src/Utils.vala:51
+msgid "No Preview Available"
+msgstr "Ingen förhandsvisning tillgänglig"
+
+#: ../src/Utils.vala:61
+msgid "No Text available for this article :("
+msgstr "Ingen text tillgänglig för den här artikeln :("
+
+#: ../src/Constants.vala:87
+msgid "Desktop Client for various RSS Services"
+msgstr ""

@@ -200,6 +200,7 @@ public class FeedReader.FeedlyAPI : Object {
 			bool unread = object.get_boolean_member("unread");
 			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 			string feedID = object.get_object_member("origin").get_string_member("streamId");
+			int64 date = object.has_member("updated") ? (object.get_int_member("updated")/1000) : -2208988800;
 			string tagString = "";
 			string tmpTag = "";
 			int marked = ArticleStatus.UNMARKED;
@@ -230,7 +231,7 @@ public class FeedReader.FeedlyAPI : Object {
 					Content,
 					summaryContent,
 					author,
-					new DateTime.from_unix_local((object.get_int_member("updated"))/1000), // timestamp includes msecs so divide by 1000 to get rid of them
+					new DateTime.from_unix_local(date), // timestamp includes msecs so divide by 1000 to get rid of them
 					-1,
 					tagString
 				)

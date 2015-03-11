@@ -94,4 +94,75 @@ public class FeedReader.Utils : GLib.Object {
 		);
 	}
 
+	public static string buildArticle(string html, string title, string url, string author, string date, string feedID)
+	{
+		var article = new GLib.StringBuilder();
+		string author_date = "posted by %s %s".printf(author, date);
+
+        string template;
+		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/article.html", out template);
+		article.assign(template);
+
+		//int html_pos = article.str.index_of("$HTML");
+		int html_pos = 567;
+		article.erase(html_pos, 5);
+		article.insert(html_pos, html);
+
+		//int author_pos = article.str.index_of("$AUTHOR");
+		int author_pos = 508;
+		article.erase(author_pos, 7);
+		article.insert(author_pos, author_date);
+
+		//int title_pos = article.str.index_of("$TITLE");
+		int title_pos = 465;
+		article.erase(title_pos, 6);
+		article.insert(title_pos, title);
+
+		//int url_pos = article.str.index_of("$URL");
+		int url_pos = 459;
+		article.erase(url_pos, 4);
+		article.insert(url_pos, url);
+
+		//int feed_pos = article.str.index_of("$FEED");
+		int feed_pos = 427;
+		article.erase(feed_pos, 5);
+		article.insert(feed_pos, dataBase.getFeedName(feedID));
+
+
+		string theme = "theme ";
+		switch(settings_general.get_enum("article-theme"))
+		{
+			case ArticleTheme.DEFAULT:
+				theme += "default";
+				break;
+
+			case ArticleTheme.SPRING:
+				theme += "spring";
+				break;
+
+			case ArticleTheme.MIDNIGHT:
+				theme += "midnight";
+				break;
+
+			case ArticleTheme.PARCHMENT:
+				theme += "parchment";
+				break;
+		}
+
+		//int theme_pos = article.str.index_of("$THEME");
+		int theme_pos = 368;
+		article.erase(theme_pos, 6);
+		article.insert(theme_pos, theme);
+
+		string css;
+		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/style.css", out css);
+
+		//int css_pos = article.str.index_of("$CSS");
+		int css_pos = 319;
+		article.erase(css_pos, 4);
+		article.insert(css_pos, css);
+
+		return article.str;
+	}
+
 }

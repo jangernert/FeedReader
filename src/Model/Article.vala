@@ -79,4 +79,29 @@ public class FeedReader.article : GLib.Object {
 	{
 		return m_date.format("%Y-%m-%d %H:%M:%S");
 	}
+
+	public string getDateNice()
+	{
+		var now = new GLib.DateTime.now_local();
+		var now_year = now.get_year();
+		var now_day = now.get_day_of_year();
+
+		var date_year = m_date.get_year();
+		var date_day = m_date.get_day_of_year();
+
+		if(date_year == now_year)
+		{
+			if(date_day == now_day)
+			{
+				return _("Today") + m_date.format(" %H:%M");
+			}
+			else if(date_day == now_day-1)
+			{
+				return _("Yesterday") + m_date.format(" %H:%M");
+			}
+		}
+
+
+		return m_date.format("%d.%m.%Y %H:%M");
+	}
 }

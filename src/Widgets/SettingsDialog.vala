@@ -2,6 +2,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     public signal void newFeedList(bool defaultSettings = false);
     public signal void newArticleList();
+    public signal void reloadArticleView();
 
     public SettingsDialog(Gtk.Window parent)
     {
@@ -100,18 +101,18 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         article_sort.set_alignment(0, 0.5f);
         article_sort.margin_start = 15;
 
-        var liststore = new Gtk.ListStore(1, typeof (string));
+        var sort_liststore = new Gtk.ListStore(1, typeof (string));
 		Gtk.TreeIter sort_by_date;
-		liststore.append(out sort_by_date);
-		liststore.set(sort_by_date, 0, _("date"));
+        sort_liststore.append(out sort_by_date);
+        sort_liststore.set(sort_by_date, 0, _("date"));
 		Gtk.TreeIter sort_by_inserted;
-		liststore.append(out sort_by_inserted);
-		liststore.set(sort_by_inserted, 0, _("received"));
+        sort_liststore.append(out sort_by_inserted);
+        sort_liststore.set(sort_by_inserted, 0, _("received"));
 
-        var sort_by_box = new Gtk.ComboBox.with_model(liststore);
-        var renderer = new Gtk.CellRendererText();
-        sort_by_box.pack_start (renderer, false);
-        sort_by_box.add_attribute(renderer, "text", 0);
+        var sort_by_box = new Gtk.ComboBox.with_model(sort_liststore);
+        var sort_renderer = new Gtk.CellRendererText();
+        sort_by_box.pack_start (sort_renderer, false);
+        sort_by_box.add_attribute(sort_renderer, "text", 0);
         sort_by_box.changed.connect(() => {
             if(sort_by_box.get_active() == 0)
                 settings_general.set_boolean("articlelist-sort-by-date", true);
@@ -141,6 +142,65 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         box6.pack_start(newest_first, true, true, 0);
         box6.pack_end(newest_first_switch, false, false, 0);
         content.pack_start(box6, false, true, 0);
+
+
+        var articleview_settings = new Gtk.Label(_("ArticleView:"));
+        articleview_settings.set_alignment(0, 0.5f);
+        articleview_settings.get_style_context().add_class("h4");
+        content.pack_start(articleview_settings, false, true, 5);
+
+        var box7 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        var article_theme = new Gtk.Label(_("Theme"));
+        article_theme.set_alignment(0, 0.5f);
+        article_theme.margin_start = 15;
+
+        var theme_liststore = new Gtk.ListStore(1, typeof (string));
+		Gtk.TreeIter default;
+        theme_liststore.append(out default);
+        theme_liststore.set(default, 0, _("default"));
+		Gtk.TreeIter spring;
+        theme_liststore.append(out spring);
+        theme_liststore.set(spring, 0, _("spring"));
+        Gtk.TreeIter midnight;
+        theme_liststore.append(out midnight);
+        theme_liststore.set(midnight, 0, _("midnight"));
+        Gtk.TreeIter parchment;
+        theme_liststore.append(out parchment);
+        theme_liststore.set(parchment, 0, _("parchment"));
+
+        var theme_box = new Gtk.ComboBox.with_model(theme_liststore);
+        var theme_renderer = new Gtk.CellRendererText();
+        theme_box.pack_start(theme_renderer, false);
+        theme_box.add_attribute(theme_renderer, "text", 0);
+        theme_box.changed.connect(() => {
+            settings_general.set_enum("article-theme", theme_box.get_active());
+            reloadArticleView();
+        });
+
+
+        switch(settings_general.get_enum("article-theme"))
+		{
+			case ArticleTheme.DEFAULT:
+                theme_box.set_active(0);
+				break;
+
+			case ArticleTheme.SPRING:
+                theme_box.set_active(1);
+				break;
+
+			case ArticleTheme.MIDNIGHT:
+                theme_box.set_active(2);
+				break;
+
+			case ArticleTheme.PARCHMENT:
+                theme_box.set_active(3);
+				break;
+		}
+
+
+        box7.pack_start(article_theme, true, true, 0);
+        box7.pack_end(theme_box, false, false, 0);
+        content.pack_start(box7, false, true, 5);
 
         this.add_button(_("Close"), 1);
         show_all();

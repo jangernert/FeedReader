@@ -102,6 +102,13 @@ namespace FeedReader {
 		SELECT
 	}
 
+	public enum ArticleTheme {
+		DEFAULT,
+		SPRING,
+		MIDNIGHT,
+		PARCHMENT
+	}
+
 	namespace FeedList {
 		 const int ALL_FEEDS = 24;
 		 const int SPACER    = 25;

@@ -423,6 +423,23 @@ public class FeedReader.dbManager : GLib.Object {
 		return result;
 	}
 
+	public string getFeedName(string feedID)
+	{
+		string query = "SELECT name FROM \"main\".\"feeds\" WHERE \"feed_id\" = \"" + feedID + "\"";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
+
+		string result = "";
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_text(0);
+		}
+
+		return result;
+	}
+
 
 	public bool preview_empty(string articleID)
 	{

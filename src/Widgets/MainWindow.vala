@@ -83,6 +83,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings.newArticleList.connect(() => {
 				m_content.newHeadlineList();
 			});
+
+			settings.reloadArticleView.connect(() => {
+				m_content.reloadArticleView();
+			});
 		});
 		add_action(settings_action);
 

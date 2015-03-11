@@ -13,6 +13,13 @@
 		<value nick="DEBUG" value="3"/>
 	</enum>
 	
+	<enum id="org.gnome.feedreader.theme">
+		<value nick="DEFAULT" value="0"/>
+		<value nick="SPRING" value="1"/>
+		<value nick="MIDNIGHT" value="2"/>
+		<value nick="PARCHMENT" value="3"/>
+	</enum>
+	
 	<schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
 		<key name="no-animations" type="b">
 			<default>false</default>
@@ -229,6 +236,10 @@
 		
 		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
 			<default>'ERROR'</default>
+		</key>
+		
+		<key name='article-theme' enum='org.gnome.feedreader.theme'>
+			<default>'DEFAULT'</default>
 		</key>
 		
 		<key name="only-feeds" type="b">

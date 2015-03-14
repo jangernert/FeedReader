@@ -305,7 +305,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			{
 				var categorie_node = response.get_object_element(i);
 				if(categorie_node.get_string_member("id") != null)
-					dataBase.updateCategorie(int.parse(categorie_node.get_string_member("id")), (int)categorie_node.get_int_member("unread"));
+					dataBase.updateCategorie(categorie_node.get_string_member("id"), (int)categorie_node.get_int_member("unread"));
 			}
 		}
 	}

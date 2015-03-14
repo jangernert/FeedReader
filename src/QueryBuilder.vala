@@ -70,12 +70,16 @@ public class FeedReader.QueryBuilder : GLib.Object {
         return m_noError;
     }
 
-    public bool addEqualsCondition(string field, string value)
+    public bool addEqualsCondition(string field, string value, bool positive = true)
     {
         if(m_type == QueryType.UPDATE
         || m_type == QueryType.SELECT)
         {
-            m_conditions.append("%s = %s".printf(field, value));
+            string condition = "%s = %s";
+            if(!positive)
+                condition = "NOT " + condition;
+
+            m_conditions.append(condition.printf(field, value));
             return true;
         }
         logger.print(LogMessage.ERROR, "addEqualsConditionString");
@@ -259,7 +263,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
                 break;
         }
 
-        print();
+        //print();
         return m_query.str;
     }
 

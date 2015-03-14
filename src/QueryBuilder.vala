@@ -201,7 +201,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
                 if(m_type == QueryType.INSERT_OR_IGNORE)
                     m_query.append("OR IGNORE ");
-                else if(m_type == QueryType.INSERT_OR_IGNORE)
+                else if(m_type == QueryType.INSERT_OR_REPLACE)
                     m_query.append("OR REPLACE ");
 
                 m_query.append("INTO ");

@@ -287,7 +287,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		executeSQL("BEGIN TRANSACTION");
 
-		var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.feeds");
+		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.feeds");
 		query.insertValuePair("feed_id", "$FEEDID");
 		query.insertValuePair("name", "$FEEDNAME");
 		query.insertValuePair("url", "$FEEDURL");
@@ -412,7 +412,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		executeSQL("BEGIN TRANSACTION");
 
-		var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.categories");
+		var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.categories");
 		query.insertValuePair("categorieID", "$CATID");
 		query.insertValuePair("title", "$FEEDNAME");
 		query.insertValuePair("unread", "$UNREADCOUNT");

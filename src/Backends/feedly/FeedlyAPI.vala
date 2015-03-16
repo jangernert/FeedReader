@@ -104,12 +104,15 @@ public class FeedReader.FeedlyAPI : Object {
 			if(object.has_member("iconUrl"))
 			{
 				icon_url = object.get_string_member("iconUrl");
-				downloadIcon(feedID, icon_url);
 			}
 			else if(object.has_member("visualUrl"))
 			{
 				icon_url = object.get_string_member("visualUrl");
-				downloadIcon(feedID, icon_url);
+			}
+
+			if(icon_url != "" && !downloadIcon(feedID, icon_url))
+			{
+				icon_url = "";
 			}
 
 			string title = "No Title";
@@ -240,7 +243,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	private void downloadIcon(string feed_id, string icon_url)
+	private bool downloadIcon(string feed_id, string icon_url)
 	{
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
@@ -254,9 +257,21 @@ public class FeedReader.FeedlyAPI : Object {
 			var session = new Soup.Session ();
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
-				try{FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);}
-				catch(GLib.FileError e){}
+			{
+				try{
+					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
+				}
+				catch(GLib.FileError e)
+				{
+					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+				}
+				return true;
+			}
+			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			return false;
 		}
+		// file already exists
+		return true;
 	}
 
 	/** Returns the number of unread articles for an ID (may be a feed, subscription, category or tag */

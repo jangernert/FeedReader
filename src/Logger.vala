@@ -6,7 +6,7 @@ public class FeedReader.Logger : GLib.Object {
 	{
 		var logLevel = settings_general.get_enum("log-level");
 		m_LogLevel = LogLevel.DEBUG;
-		
+
 		switch(logLevel)
 		{
 			case LogLevel.OFF:

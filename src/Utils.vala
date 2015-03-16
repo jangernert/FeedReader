@@ -3,13 +3,14 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void generatePreviews(ref GLib.List<article> articles)
 	{
+		string noPreview = _("No Preview Available");
 		foreach(var article in articles)
 		{
 			if(!dataBase.preview_empty(article.getArticleID()))
 			{
 				article.setPreview(dataBase.read_preview(article.getArticleID()));
 			}
-			else if(article.getHTML() != "")
+			else if(article.getHTML() != "" && article.getHTML() != null)
 			{
 				string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
 				int outputfd = GLib.FileUtils.mkstemp(filename);
@@ -30,6 +31,12 @@ public class FeedReader.Utils : GLib.Object {
 					logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
 				}
 
+				if(output == "" || output == null)
+				{
+					article.setPreview(noPreview);
+					continue;
+				}
+
 				string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
 				if(output.has_prefix(prefix))
 					output = output.slice(prefix.length, output.length);
@@ -48,7 +55,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			else
 			{
-				article.setPreview(_("No Preview Available"));
+				article.setPreview(noPreview);
 			}
 		}
 	}

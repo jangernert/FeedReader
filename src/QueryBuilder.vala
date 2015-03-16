@@ -70,12 +70,16 @@ public class FeedReader.QueryBuilder : GLib.Object {
         return m_noError;
     }
 
-    public bool addEqualsCondition(string field, string value, bool positive = true)
+    public bool addEqualsCondition(string field, string value, bool positive = true, bool isString = false)
     {
         if(m_type == QueryType.UPDATE
         || m_type == QueryType.SELECT)
         {
             string condition = "%s = %s";
+
+            if(isString)
+                condition = "%s = \"%s\"";
+
             if(!positive)
                 condition = "NOT " + condition;
 

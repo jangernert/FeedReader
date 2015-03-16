@@ -187,7 +187,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 			var get_feed_id_query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 			get_feed_id_query.selectField("category_id");
-			get_feed_id_query.addEqualsCondition("feed_id", feedID);
+			get_feed_id_query.addEqualsCondition("feed_id", feedID, true, true);
 			get_feed_id_query.build();
 
 			Sqlite.Statement stmt;
@@ -227,7 +227,7 @@ public class FeedReader.dbManager : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("unread");
 		query.addEqualsCondition("level", "1");
-		query.addEqualsCondition("categorieID", "-1", false);
+		query.addEqualsCondition("categorieID", "-1", false, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -247,7 +247,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("unread");
-		query.addEqualsCondition("feed_id", feedID);
+		query.addEqualsCondition("feed_id", feedID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -267,7 +267,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("unread");
-		query.addEqualsCondition("categorieID", catID);
+		query.addEqualsCondition("categorieID", catID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -395,7 +395,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
 		query.updateValuePair("color", color.to_string());
-		query.addEqualsCondition("tagID", tagID);
+		query.addEqualsCondition("tagID", tagID, true, true);
 		executeSQL(query.build());
 	}
 
@@ -403,7 +403,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
 		query.updateValuePair("\"exists\"", "1");
-		query.addEqualsCondition("tagID", tagID);
+		query.addEqualsCondition("tagID", tagID, true, true);
 		executeSQL(query.build());
 	}
 
@@ -461,7 +461,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("preview");
-		query.addEqualsCondition("articleID", articleID);
+		query.addEqualsCondition("articleID", articleID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -482,7 +482,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("name");
-		query.addEqualsCondition("feed_id", feedID);
+		query.addEqualsCondition("feed_id", feedID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -504,8 +504,8 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
-		query.addEqualsCondition("articleID", articleID);
-		query.addEqualsCondition("preview", "\"\"", false);
+		query.addEqualsCondition("articleID", articleID, true, true);
+		query.addEqualsCondition("preview", "", false, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -553,7 +553,6 @@ public class FeedReader.dbManager : GLib.Object {
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		query.reset();
 
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
@@ -571,6 +570,7 @@ public class FeedReader.dbManager : GLib.Object {
 		int preview_position = stmt.bind_parameter_index("$PREVIEW");
 		int author_position = stmt.bind_parameter_index("$AUTHOR");
 		int date_position = stmt.bind_parameter_index("$DATE");
+
 		assert (articleID_position > 0);
 		assert (feedID_position > 0);
 		assert (url_position > 0);
@@ -610,7 +610,6 @@ public class FeedReader.dbManager : GLib.Object {
 		update_query.build();
 
 		ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
-		update_query.reset();
 
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
@@ -646,7 +645,7 @@ public class FeedReader.dbManager : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
 		query.selectField("*");
-		query.addEqualsCondition("articleID", articleID);
+		query.addEqualsCondition("articleID", articleID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -708,7 +707,7 @@ public class FeedReader.dbManager : GLib.Object {
 			var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 			query.selectField("unread");
 			query.selectField("category_id");
-			query.addEqualsCondition("feed_id", feedID);
+			query.addEqualsCondition("feed_id", feedID, true, true);
 			query.build();
 
 			Sqlite.Statement stmt;
@@ -751,7 +750,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 			var query3 = new QueryBuilder(QueryType.UPDATE, "main.categories");
 			query3.updateValuePair("unread", "0");
-			query3.addEqualsCondition("categorieID", "\"%s\"".printf(catID));
+			query3.addEqualsCondition("categorieID", catID, true, true);
 			executeSQL(query3.build());
 
 			Idle.add((owned) callback);
@@ -866,7 +865,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.categories");
 		query.updateValuePair("unread", "%i".printf(unread));
-		query.addEqualsCondition("categorieID", catID);
+		query.addEqualsCondition("categorieID", catID, true, true);
 		executeSQL(query.build());
 	}
 
@@ -877,7 +876,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("feed_id");
-		query.addEqualsCondition("category_id", categorieID);
+		query.addEqualsCondition("category_id", categorieID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1090,7 +1089,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		if(selectedType == FeedList.FEED && ID != FeedID.ALL)
 		{
-			query.addEqualsCondition("feedID", "\"%s\"".printf(ID));
+			query.addEqualsCondition("feedID", ID, true, true);
 		}
 		else if(selectedType == FeedList.CATEGORY && ID != CategoryID.MASTER && ID != CategoryID.TAGS)
 		{

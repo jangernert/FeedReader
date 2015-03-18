@@ -77,6 +77,7 @@ GtkLabel.emptyView {
 	font-style: normal;
 	font-size: x-large;
 	color: black;
+	background: white;
 }
 
 GtkListBoxRow GtkLabel.grey-label {

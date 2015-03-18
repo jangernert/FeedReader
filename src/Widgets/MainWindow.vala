@@ -254,6 +254,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void setupLoginPage()
 	{
 		m_error_bar = new Gtk.InfoBar();
+		m_error_bar.no_show_all = true;
 		var error_content = m_error_bar.get_content_area();
 		m_ErrorMessage = new Gtk.Label("");
 		error_content.add(m_ErrorMessage);

@@ -104,7 +104,7 @@ public class FeedReader.Utils : GLib.Object {
 	public static string buildArticle(string html, string title, string url, string author, string date, string feedID)
 	{
 		var article = new GLib.StringBuilder();
-		string author_date = "posted by %s %s".printf(author, date);
+		string author_date = "posted by: %s, %s".printf(author, date);
 
         string template;
 		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/article.html", out template);

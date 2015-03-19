@@ -366,6 +366,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		logger.print(LogMessage.DEBUG, "MainWindow: show error bar");
 		m_error_bar.set_visible(true);
+		m_ErrorMessage.show();
 	}
 
 	private void loadContent()

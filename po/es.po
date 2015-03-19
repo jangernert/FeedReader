@@ -1,4 +1,235 @@
+# Spanish translation for feedreader
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the feedreader package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: feedreader\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-03-10 16:35+0100\n"
+"PO-Revision-Date: 2015-03-19 00:35+0000\n"
+"Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
+"Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-03-19 05:57+0000\n"
+"X-Generator: Launchpad (build 17403)\n"
+
+#: ../src/Backends/FeedServer.vala:344
+msgid "There is 1 new article"
+msgstr "Hay 1 artículo nuevo"
+
+#: ../src/Backends/FeedServer.vala:346
+msgid "There are >200 new articles"
+msgstr "Hay más de 200 artículos nuevos"
+
+#: ../src/Backends/FeedServer.vala:348
+msgid "There are %u new articles"
+msgstr "Hay %u artículos nuevos"
+
+#: ../src/Backends/FeedServer.vala:350
+msgid "New Articles"
+msgstr "Artículos nuevos"
+
+#: ../src/Widgets/ArticleView.vala:42
+msgid "No Article selected."
+msgstr "Ningún artículo seleccionado."
+
+#: ../src/Widgets/ArticleView.vala:76
+msgid "not available"
+msgstr "no disponible"
+
+#: ../src/Widgets/LoginPage.vala:22
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS"
+
+#: ../src/Widgets/LoginPage.vala:22
+msgid "Feedly"
+msgstr "Feedly"
+
+#: ../src/Widgets/LoginPage.vala:22
+msgid "OwnCloud"
+msgstr "OwnCloud"
+
+#: ../src/Widgets/LoginPage.vala:26
+msgid "Where are your feeds?"
+msgstr "¿Dónde se ubican los canales?"
+
+#: ../src/Widgets/LoginPage.vala:30
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+"Seleccione el servicio RSS que utilice y acceda a este para comenzar."
+
+#: ../src/Widgets/LoginPage.vala:95
+msgid "No service selected."
+msgstr "Ningún servicio seleccionado."
+
+#: ../src/Widgets/LoginPage.vala:112
+msgid "TinyTinyRSS URL:"
+msgstr "URL de TinyTinyRSS:"
+
+#: ../src/Widgets/LoginPage.vala:113 ../src/Widgets/LoginPage.vala:186
+msgid "Username:"
+msgstr "Nombre de usuario:"
+
+#: ../src/Widgets/LoginPage.vala:114 ../src/Widgets/LoginPage.vala:187
+msgid "Password:"
+msgstr "Contraseña:"
+
+#: ../src/Widgets/LoginPage.vala:166
+msgid ""
+"You will be redirected to the feedly website where you can use your Facebook-"
+", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr ""
+
+#: ../src/Widgets/LoginPage.vala:185
+msgid "OwnCloud URL:"
+msgstr "URL de OwnCloud:"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:48
+msgid "only show unread articles"
+msgstr "mostrar solo artículos sin leer"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:54
+msgid "only show marked articles"
+msgstr "mostrar solo artículos marcados"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:59
+msgid "mark selected feed/category as read"
+msgstr "marcar categoría/canal seleccionado como leído"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:92
+msgid "Search Aritlces"
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:18
+msgid "Change Account?"
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:22
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:37
+msgid "None of the %i Articles in the database fit the current filters."
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:18 ../src/Constants.vala:84
+msgid "FeedReader"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:76
+msgid "settings"
+msgstr "configuración"
+
+#: ../src/Widgets/MainWindow.vala:89
+msgid "reset"
+msgstr "restablecer"
+
+#: ../src/Widgets/MainWindow.vala:331
+msgid "Please select a service first"
+msgstr "Seleccione un servicio primero"
+
+#: ../src/Widgets/MainWindow.vala:334
+msgid "Please enter a valid username"
+msgstr "Proporcione un nombre de usuario válido"
+
+#: ../src/Widgets/MainWindow.vala:337
+msgid "Please enter a valid password"
+msgstr "Proporcione una contraseña válida"
+
+#: ../src/Widgets/MainWindow.vala:340
+msgid "Please enter a valid URL"
+msgstr "Proporcione un URL válido"
+
+#: ../src/Widgets/MainWindow.vala:343
+msgid "Please enter your Login details"
+msgstr "Proporcione sus detalles de acceso"
+
+#: ../src/Widgets/MainWindow.vala:346
+msgid "Sorry, something went wrong."
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:349
+msgid "Either your username or the password are not correct."
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:352
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+
+#: ../src/Widgets/UpdateButton.vala:15
+msgid "update Feeds"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:26
+msgid "Feed List:"
+msgstr "Lista de canales"
+
+#: ../src/Widgets/SettingsDialog.vala:36
+msgid "only-feeds"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:48
+msgid "only show unread"
+msgstr "mostrar solo no leídos"
+
+#: ../src/Widgets/SettingsDialog.vala:62
+msgid "Sync:"
+msgstr "Sincronizar:"
+
+#: ../src/Widgets/SettingsDialog.vala:68
+msgid "number of articles"
+msgstr "cantidad de artículos"
+
+#: ../src/Widgets/SettingsDialog.vala:81
+msgid "every (seconds)"
+msgstr "cada (segundos)"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "ArticleList:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:99
+msgid "sort articles by"
+msgstr "ordenar artículos por"
+
+#: ../src/Widgets/SettingsDialog.vala:106
+msgid "date"
+msgstr "fecha"
+
+#: ../src/Widgets/SettingsDialog.vala:109
+msgid "received"
+msgstr "recepción"
+
+#: ../src/Widgets/SettingsDialog.vala:132
+msgid "newest first"
+msgstr "más recientes primero"
+
+#: ../src/Widgets/SettingsDialog.vala:145
+msgid "Close"
+msgstr "Cerrar"
+
+#: ../src/Widgets/InitSyncPage.vala:18
+msgid ""
+"FeedReader is now getting the first batch of articles.\n"
+"Depending on your connection and settings this can take some time."
+msgstr ""
+
+#: ../src/Utils.vala:51
+msgid "No Preview Available"
+msgstr ""
+
+#: ../src/Utils.vala:61
+msgid "No Text available for this article :("
+msgstr ""
+
+#: ../src/Constants.vala:87
+msgid "Desktop Client for various RSS Services"
+msgstr ""

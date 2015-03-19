@@ -125,7 +125,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 						{
 							var feed_node = response.get_object_element(i);
 							string feed_id = feed_node.get_int_member("id").to_string();
-							ttrss_utils.downloadIcon(feed_id, icon_url);
+
+							if(feed_node.get_boolean_member("has_icon"))
+								ttrss_utils.downloadIcon(feed_id, icon_url);
 
 							feeds.append(
 								new feed (

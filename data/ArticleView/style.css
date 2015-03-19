@@ -281,6 +281,7 @@ header.post h1{
 }
 
 header.post a:link {
+	outline : none;
     text-decoration: none;
 }
 

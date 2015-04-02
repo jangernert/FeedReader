@@ -237,6 +237,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			articles.reverse();
 			dataBase.write_articles(ref articles);
 
+			settings_state.set_int("initial-sync-level", 0);
+
 
 			Idle.add((owned) callback);
 			return null;

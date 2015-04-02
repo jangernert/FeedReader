@@ -165,6 +165,14 @@
 			</description>
 		</key>
 		
+		<key name="initial-sync-level" type="i">
+			<default>0</default>
+			<summary>Current Level of the InitSync</summary>
+			<description>
+				What operations of the InitSync are already done to restore the checks correctly
+			</description>
+		</key>
+		
 		<key name="search-term" type="s">
 			<default>""</default>
 			<summary>search term</summary>

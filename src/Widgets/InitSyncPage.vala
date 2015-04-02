@@ -112,6 +112,11 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 		feedDaemon_interface.initSyncFeed.connect((feedName) => {
 			setCurrentFeed(feedName);
 		});
+
+		if(settings_state.get_int("initial-sync-level") != 0)
+		{
+			setStage(settings_state.get_int("initial-sync-level"));
+		}
 	}
 
 
@@ -151,7 +156,11 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 
 	private void setStage(int stage)
 	{
-		m_grid.get_child_at(3, stage-1).show();
+		settings_state.set_int("initial-sync-level", stage);
+		for(int i = 0; i < stage; ++i)
+		{
+			m_grid.get_child_at(3, i).show();
+		}
 	}
 
 	public void hideChecks()

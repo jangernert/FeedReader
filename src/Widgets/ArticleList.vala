@@ -406,6 +406,12 @@ public class FeedReader.articleList : Gtk.Stack {
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: update HeadlineList");
 
+		if(this.get_visible_child_name() == "empty")
+		{
+			newHeadlineList();
+			return;
+		}
+
 		var articleChildList = m_currentList.get_children();
 		if(articleChildList != null)
 		{

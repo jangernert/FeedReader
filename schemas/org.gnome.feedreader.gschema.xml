@@ -157,6 +157,14 @@
 			</description>
 		</key>
 		
+		<key name="initial-sync-ongoing" type="b">
+			<default>false</default>
+			<summary>currently doing the init snyc</summary>
+			<description>
+				If the FeedReader is currently busy getting all articles after account configuration.
+			</description>
+		</key>
+		
 		<key name="search-term" type="s">
 			<default>""</default>
 			<summary>search term</summary>

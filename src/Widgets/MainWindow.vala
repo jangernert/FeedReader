@@ -116,15 +116,21 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
 		this.show_all();
 
-		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS)
+		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS
+		&& !settings_state.get_boolean("initial-sync-ongoing"))
 		{
 			loadContent();
 		}
 		else
 		{
-			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LoginResponse.SUCCESS)
+			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LoginResponse.SUCCESS
+			&& !settings_state.get_boolean("initial-sync-ongoing"))
 			{
 				loadContent();
+			}
+			else if (settings_state.get_boolean("initial-sync-ongoing"))
+			{
+				showInitSync();
 			}
 			else
 			{

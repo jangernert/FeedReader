@@ -90,9 +90,11 @@ namespace FeedReader {
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: initSync started");
 				settings_state.set_boolean("currently-updating", true);
+				settings_state.set_boolean("initial-sync-ongoing", true);
 				yield server.InitSyncContent();
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
+				settings_state.set_boolean("initial-sync-ongoing", false);
 				syncFinished();
 				logger.print(LogMessage.INFO, "daemon: initSync finished");
 			}

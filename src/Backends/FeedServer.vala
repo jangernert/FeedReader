@@ -49,6 +49,21 @@ public class FeedReader.FeedServer : GLib.Object {
 		SourceFunc callback = syncContent.callback;
 
 		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					if(!m_ttrss.isloggedin())
+					{
+						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - ttrss not logged in or unreachable");
+						return null;
+					}
+					break;
+
+				case Backend.FEEDLY:
+					// FIXME: ping feedly server or something
+					break;
+			}
+
 			int before = dataBase.getHighestRowID();
 			dataBase.markReadAllArticles();
 

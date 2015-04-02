@@ -63,7 +63,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	private bool isloggedin()
+	public bool isloggedin()
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);

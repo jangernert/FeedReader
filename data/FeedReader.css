@@ -80,6 +80,10 @@ GtkLabel.emptyView {
 	background: white;
 }
 
+FeedReaderarticleList {
+	background: white;
+}
+
 GtkListBoxRow GtkLabel.grey-label {
 	font-weight: normal;
 	font-style: normal;

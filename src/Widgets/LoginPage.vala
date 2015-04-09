@@ -9,7 +9,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
-	private string m_feedly_api_code;
 	private string[] m_account_types;
 	public signal void submit_data();
 	public signal void loginError(int errorCode);
@@ -316,7 +315,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 			case Backend.FEEDLY:
 				logger.print(LogMessage.DEBUG, "write type feedly");
 				settings_general.set_enum("account-type", Backend.FEEDLY);
-				//settings_feedly.set_string("feedly-api-code", m_feedly_api_code);
 				loadLoginPage(Backend.FEEDLY);
 				return;
 
@@ -329,7 +327,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 		}
 
-		var status = feedDaemon_interface.login(m_comboBox.get_active());
+		var status = feedDaemon_interface.login(settings_general.get_enum("account-type"));
 		logger.print(LogMessage.DEBUG, "LoginPage: status = %i".printf(status));
 		if(status == LoginResponse.SUCCESS)
 		{

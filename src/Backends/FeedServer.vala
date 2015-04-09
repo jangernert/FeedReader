@@ -120,8 +120,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			if(newArticles > 0)
 			{
 				sendNotification(newArticles);
-				// FIXME: only add articles to "articlelist-new-rows" if they appear in the current view
-				int newCount = settings_state.get_int("articlelist-new-rows") + newArticles;
+				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				//int newCount = settings_state.get_int("articlelist-new-rows") + newArticles;
 				settings_state.set_int("articlelist-new-rows", newCount);
 			}
 			Idle.add((owned) callback);

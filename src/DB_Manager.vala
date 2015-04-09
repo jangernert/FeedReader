@@ -1072,7 +1072,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 	//[Profile]
-	public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0)
+	public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
@@ -1114,6 +1114,11 @@ public class FeedReader.dbManager : GLib.Object {
 
 		if(searchTerm != ""){
 			query.addCustomCondition("instr(UPPER(title), UPPER(\"%s\")) > 0".printf(searchTerm));
+		}
+
+		if(searchRows != 0)
+		{
+			query.addCustomCondition("articleID in (SELECT articleID FROM main.articles ORDER BY rowid DESC LIMIT %i)".printf(searchRows));
 		}
 
 		string order_field = "rowid";

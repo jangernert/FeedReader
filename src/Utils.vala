@@ -101,6 +101,43 @@ public class FeedReader.Utils : GLib.Object {
 		);
 	}
 
+	public static uint getRelevantArticles(int newArticlesCount)
+	{
+		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
+
+		int IDtype = 0;
+
+		logger.print(LogMessage.DEBUG, "selectedRow 0: %s".printf(selectedRow[0]));
+		logger.print(LogMessage.DEBUG, "selectedRow 1: %s".printf(selectedRow[1]));
+
+		switch(selectedRow[0])
+		{
+			case "feed":
+				IDtype = FeedList.FEED;
+				break;
+
+			case "cat":
+				IDtype = FeedList.CATEGORY;
+				break;
+
+			case "tag":
+				IDtype = FeedList.TAG;
+				break;
+		}
+
+		var articles = dataBase.read_articles(
+			selectedRow[1],
+			IDtype,
+			settings_state.get_boolean("only-unread"),
+			settings_state.get_boolean("only-marked"),
+			settings_state.get_string("search-term"),
+			newArticlesCount,
+			0,
+			newArticlesCount);
+
+		return articles.length();
+	}
+
 	public static string buildArticle(string html, string title, string url, string author, string date, string feedID)
 	{
 		var article = new GLib.StringBuilder();

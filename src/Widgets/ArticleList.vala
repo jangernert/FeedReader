@@ -221,7 +221,6 @@ public class FeedReader.articleList : Gtk.Stack {
 	{
 		double RowVSpace = 102;
 		int stillInViewport = (int)((settings_state.get_double("articlelist-scrollpos")+900)/RowVSpace);
-		//settings_state.get_int("articlelist-new-rows")
 		if(stillInViewport < settings_state.get_int("articlelist-row-amount"))
 		{
 			return stillInViewport+15;

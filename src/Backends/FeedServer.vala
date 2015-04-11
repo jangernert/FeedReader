@@ -121,7 +121,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				sendNotification(newArticles);
 				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-				//int newCount = settings_state.get_int("articlelist-new-rows") + newArticles;
 				settings_state.set_int("articlelist-new-rows", newCount);
 			}
 			Idle.add((owned) callback);

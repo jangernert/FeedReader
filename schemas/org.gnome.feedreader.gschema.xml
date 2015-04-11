@@ -5,21 +5,28 @@
 		<value nick="FEEDLY" value="1"/>
 		<value nick="OWNCLOUD" value="2"/>
 	</enum>
-	
+
 	<enum id="org.gnome.feedreader.loglevel">
 		<value nick="OFF" value="0"/>
 		<value nick="ERROR" value="1"/>
 		<value nick="MORE" value="2"/>
 		<value nick="DEBUG" value="3"/>
 	</enum>
-	
+
 	<enum id="org.gnome.feedreader.theme">
 		<value nick="DEFAULT" value="0"/>
 		<value nick="SPRING" value="1"/>
 		<value nick="MIDNIGHT" value="2"/>
 		<value nick="PARCHMENT" value="3"/>
 	</enum>
-	
+
+	<enum id="org.gnome.feedreader.drop-articles-duration">
+		<value nick="NEVER" value="0"/>
+		<value nick="1 Week" value="1"/>
+		<value nick="1 Month" value="2"/>
+		<value nick="6 Months" value="3"/>
+	</enum>
+
 	<schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
 		<key name="no-animations" type="b">
 			<default>false</default>
@@ -28,7 +35,7 @@
 				Dont animate all inserted rows on startup so the list can instantly jump to the correct scroll-pos
 			</description>
 		</key>
-		
+
 		<key name="window-width" type="i">
 			<default>1600</default>
 			<summary>window width</summary>
@@ -36,7 +43,7 @@
 				saved with of the window
 			</description>
 		</key>
-		
+
 		<key name="window-height" type="i">
 			<default>900</default>
 			<summary>window height</summary>
@@ -44,7 +51,7 @@
 				saved height of the window
 			</description>
 		</key>
-		
+
 		<key name="window-maximized" type="b">
 			<default>false</default>
 			<summary>if window is maximized</summary>
@@ -52,7 +59,7 @@
 				Weather the window was maximized on close so it can be restored in the same way on startup.
 			</description>
 		</key>
-	
+
 		<key name="feed-row-width" type="i">
 			<default>200</default>
 			<summary>FeedRow width</summary>
@@ -60,7 +67,7 @@
 				Width of the first paned, the feed-row
 			</description>
 		</key>
-		
+
 		<key name="feed-row-scrollpos" type="d">
 			<default>0</default>
 			<summary>FeedList Scroll Position</summary>
@@ -68,7 +75,7 @@
 				The position of the FeedList the user scrolled to at the time the app closes
 			</description>
 		</key>
-		
+
 		<key name="feedlist-selected-row" type="s">
 			<default>""</default>
 			<summary>FeedList selected row</summary>
@@ -76,7 +83,7 @@
 				The feedrow selected when the app closes so it can be restored on open.
 			</description>
 		</key>
-		
+
 		<key name="feeds-and-articles-width" type="i">
 			<default>400</default>
 			<summary>Width of Feeds and Articles</summary>
@@ -84,7 +91,7 @@
 				Width of the two first panes, feed-row + article-row
 			</description>
 		</key>
-		
+
 		<key name="articlelist-scrollpos" type="d">
 			<default>0</default>
 			<summary>ArticleList Scroll Position</summary>
@@ -92,7 +99,7 @@
 				The position of the ArticleList the user scrolled to at the time the app closes
 			</description>
 		</key>
-		
+
 		<key name="articleview-scrollpos" type="d">
 			<default>0</default>
 			<summary>ArticleView Scroll Position</summary>
@@ -100,7 +107,7 @@
 				The position of the ArticleView the user scrolled to at the time the app closes
 			</description>
 		</key>
-		
+
 		<key name="articlelist-selected-row" type="s">
 			<default>""</default>
 			<summary>ArticleList selected row</summary>
@@ -108,7 +115,7 @@
 				The artcile selected when the app closes so it can be restored on open.
 			</description>
 		</key>
-		
+
 		<key name="articlelist-row-amount" type="i">
 			<default>15</default>
 			<summary>ArticleList number of rows</summary>
@@ -116,7 +123,7 @@
 				How much articles to load on startup
 			</description>
 		</key>
-		
+
 		<key name="articlelist-new-rows" type="i">
 			<default>0</default>
 			<summary>ArticleList number of new rows added during close</summary>
@@ -124,7 +131,7 @@
 				How much articles got added to the db while the app was closed
 			</description>
 		</key>
-		
+
 		<key name="only-unread" type="b">
 			<default>false</default>
 			<summary>Only unread</summary>
@@ -132,7 +139,7 @@
 				Show only unread articles
 			</description>
 		</key>
-    
+
 		<key name="only-marked" type="b">
 			<default>false</default>
 			<summary>Only makred</summary>
@@ -140,7 +147,7 @@
 				Show only marked articles
 			</description>
 		</key>
-    
+
 		<key name="expanded-categories" type="as">
 			<default>[]</default>
 			<summary>expaneded categories</summary>
@@ -148,7 +155,7 @@
 				all the categories that are expanded, showing their feeds and subcategories
 			</description>
 		</key>
-		
+
 		<key name="currently-updating" type="b">
 			<default>false</default>
 			<summary>currently updating</summary>
@@ -156,7 +163,7 @@
 				If the FeedReader is currently updating.
 			</description>
 		</key>
-		
+
 		<key name="initial-sync-ongoing" type="b">
 			<default>false</default>
 			<summary>currently doing the init snyc</summary>
@@ -164,7 +171,23 @@
 				If the FeedReader is currently busy getting all articles after account configuration.
 			</description>
 		</key>
-		
+
+		<key name="spring-cleaning" type="b">
+			<default>false</default>
+			<summary>Clean up the DB</summary>
+			<description>
+				Do a vacuum of the db. No other operation can access the db during this.
+			</description>
+		</key>
+
+		<key name="last-spring-cleaning" type="i">
+			<default>0</default>
+			<summary>timestamp of the last spring cleaning</summary>
+			<description>
+				Timestamp of the last time the db got vacuumed.
+			</description>
+		</key>
+
 		<key name="initial-sync-level" type="i">
 			<default>0</default>
 			<summary>Current Level of the InitSync</summary>
@@ -172,7 +195,7 @@
 				What operations of the InitSync are already done to restore the checks correctly
 			</description>
 		</key>
-		
+
 		<key name="search-term" type="s">
 			<default>""</default>
 			<summary>search term</summary>
@@ -181,8 +204,8 @@
 			</description>
 		</key>
 	</schema>
-	
-	
+
+
 	<schema id="org.gnome.feedreader.feedly" path="/org/gnome/feedreader/feedly/" gettext-domain="feedreader">
 		<key name="feedly-access-token" type="s">
 			<default>""</default>
@@ -191,7 +214,7 @@
 				Acces key to Feedly-API. Will time out at some point.
 			</description>
 		</key>
-    
+
 		<key name="feedly-refresh-token" type="s">
 			<default>""</default>
 			<summary>Refresh token</summary>
@@ -199,7 +222,7 @@
 				Token to generate new access key to feedly-API.
 			</description>
 		</key>
-    
+
 		<key name="feedly-api-code" type="s">
 			<default>""</default>
 			<summary>apiCode</summary>
@@ -208,8 +231,8 @@
 			</description>
 		</key>
 	</schema>
-	
-	
+
+
 	<schema id="org.gnome.feedreader.ttrss" path="/org/gnome/feedreader/ttrss/" gettext-domain="feedreader">
 		<key name="url" type="s">
 			<default>""</default>
@@ -237,7 +260,7 @@
 				Seconds between each refresh
 			</description>
 		</key>
-		
+
 		<key name="max-articles" type="i">
 			<default>400</default>
 			<summary>Maximum of new Articles</summary>
@@ -245,19 +268,23 @@
 				The maximum of articles that are fetched from the server.
 			</description>
 		</key>
-		
+
 		<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
 			<default>'NONE'</default>
 		</key>
-		
+
 		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
 			<default>'ERROR'</default>
 		</key>
-		
+
 		<key name='article-theme' enum='org.gnome.feedreader.theme'>
 			<default>'DEFAULT'</default>
 		</key>
-		
+
+		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>
+			<default>'NEVER'</default>
+		</key>
+
 		<key name="only-feeds" type="b">
 			<default>false</default>
 			<summary>Show only FeedRows</summary>
@@ -265,7 +292,7 @@
 				Don't show cateogires or tags but only feeds in the leftmost pane.
 			</description>
 		</key>
-		
+
 		<key name="feedlist-only-show-unread" type="b">
 			<default>false</default>
 			<summary>Show only FeedRows with unread items</summary>
@@ -273,7 +300,7 @@
 				Hide all Feeds that have no unread items.
 			</description>
 		</key>
-		
+
 		<key name="articlelist-sort-by-date" type="b">
 			<default>false</default>
 			<summary>sort articles by date</summary>
@@ -281,7 +308,7 @@
 				Sort articles in the ArticleList by date not by insert order.
 			</description>
 		</key>
-		
+
 		<key name="articlelist-newest-first" type="b">
 			<default>true</default>
 			<summary>newest articles first</summary>
@@ -289,6 +316,6 @@
 				Sort articles in the ArticleList from new to old (either by article date or insert order).
 			</description>
 		</key>
-		
+
 	</schema>
 </schemalist>

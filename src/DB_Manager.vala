@@ -116,6 +116,12 @@ public class FeedReader.dbManager : GLib.Object {
 		return true;
 	}
 
+	public void springCleaning()
+	{
+		executeSQL("VACUUM");
+		var now = new DateTime.now_local();
+		settings_state.set_int("last-spring-cleaning", (int)now.to_unix());
+	}
 
 	public bool isTableEmpty(string table)
 	{
@@ -144,6 +150,13 @@ public class FeedReader.dbManager : GLib.Object {
 			return true;
 	}
 
+	public void dropOldArtilces(int weeks)
+	{
+		var query = new QueryBuilder(QueryType.DELETE, "main.articles");
+		query.addCustomCondition("WHERE date <= datetime('now', '-%i months')".printf(weeks));
+		executeSQL(query.build());
+		query.print();
+	}
 
 	public int getArticelCount()
 	{

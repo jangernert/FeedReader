@@ -113,8 +113,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			articles.reverse();
 			dataBase.write_articles(ref articles);
 
-
-
 			int after = dataBase.getHighestRowID();
 			int newArticles = after-before;
 			if(newArticles > 0)
@@ -123,6 +121,25 @@ public class FeedReader.FeedServer : GLib.Object {
 				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
 				settings_state.set_int("articlelist-new-rows", newCount);
 			}
+
+			switch(settings_general.get_enum("drop-articles-after"))
+			{
+				case DropArticles.NEVER:
+	                break;
+
+				case DropArticles.ONE_WEEK:
+					dataBase.dropOldArtilces(1);
+					break;
+
+				case DropArticles.ONE_MONTH:
+					dataBase.dropOldArtilces(4);
+					break;
+
+				case DropArticles.SIX_MONTHS:
+					dataBase.dropOldArtilces(24);
+					break;
+			}
+
 			Idle.add((owned) callback);
 			return null;
 		};

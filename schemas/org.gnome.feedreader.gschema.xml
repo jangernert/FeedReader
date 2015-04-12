@@ -181,7 +181,7 @@
 		</key>
 
 		<key name="last-spring-cleaning" type="i">
-			<default>0</default>
+			<default>946684800</default>
 			<summary>timestamp of the last spring cleaning</summary>
 			<description>
 				Timestamp of the last time the db got vacuumed.
@@ -283,6 +283,14 @@
 
 		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>
 			<default>'NEVER'</default>
+		</key>
+
+		<key name='spring-clean-after' type="i">
+			<default>30</default>
+			<summary>clean db after (days)</summary>
+			<description>
+				The amount of days after which the db will be vacuumed.
+			</description>
 		</key>
 
 		<key name="only-feeds" type="b">

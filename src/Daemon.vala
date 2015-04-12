@@ -57,6 +57,14 @@ namespace FeedReader {
 
 		private async void sync()
 		{
+			if(Utils.springCleaningNecessary())
+			{
+				settings_state.set_boolean("spring-cleaning", true);
+				logger.print(LogMessage.INFO, "daemon: spring cleaning");
+				dataBase.springCleaning();
+				settings_state.set_boolean("spring-cleaning", false);
+			}
+
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				m_loggedin = login(settings_general.get_enum("account-type"));

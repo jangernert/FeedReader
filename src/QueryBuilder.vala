@@ -41,8 +41,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
                 return true;
         }
         logger.print(LogMessage.ERROR, "insertValuePair");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool selectField(string field)
@@ -53,8 +52,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "selectField");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool updateValuePair(string field, string value)
@@ -66,14 +64,15 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "updateValuePair");
-        m_noError = false;
-        return m_noError;
+
+        return false;
     }
 
     public bool addEqualsCondition(string field, string value, bool positive = true, bool isString = false)
     {
         if(m_type == QueryType.UPDATE
-        || m_type == QueryType.SELECT)
+        || m_type == QueryType.SELECT
+        || m_type == QueryType.DELETE)
         {
             string condition = "%s = %s";
 
@@ -87,27 +86,27 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "addEqualsConditionString");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool addCustomCondition(string condition)
     {
         if(m_type == QueryType.UPDATE
-        || m_type == QueryType.SELECT)
+        || m_type == QueryType.SELECT
+        || m_type == QueryType.DELETE)
         {
             m_conditions.append(condition);
             return true;
         }
         logger.print(LogMessage.ERROR, "addCustomCondition");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool addRangeConditionString(string field, GLib.List<string> values)
     {
         if(m_type == QueryType.UPDATE
-        || m_type == QueryType.SELECT)
+        || m_type == QueryType.SELECT
+        || m_type == QueryType.DELETE)
         {
             var compound_values = new GLib.StringBuilder();
             foreach(string value in values)
@@ -121,14 +120,14 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "addRangeConditionString");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool addRangeConditionInt(string field, GLib.List<int> values)
     {
         if(m_type == QueryType.UPDATE
-        || m_type == QueryType.SELECT)
+        || m_type == QueryType.SELECT
+        || m_type == QueryType.DELETE)
         {
             var compound_values = new GLib.StringBuilder();
             foreach(int value in values)
@@ -141,8 +140,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "addRangeConditionInt");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool orderBy(string field, bool desc)
@@ -160,8 +158,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "orderBy");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool limit(uint limit)
@@ -172,8 +169,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "limit");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public bool offset(uint offset)
@@ -184,8 +180,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
         logger.print(LogMessage.ERROR, "offset");
-        m_noError = false;
-        return m_noError;
+        return false;
     }
 
     public string build()
@@ -246,6 +241,13 @@ public class FeedReader.QueryBuilder : GLib.Object {
                 }
 
                 m_query.erase(m_query.len-2);
+                m_query.append(buildConditions());
+                break;
+
+
+            case QueryType.DELETE:
+                m_query.append("DELETE FROM ");
+                m_query.append(m_table);
                 m_query.append(buildConditions());
                 break;
 

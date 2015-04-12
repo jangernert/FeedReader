@@ -99,7 +99,8 @@ namespace FeedReader {
 		INSERT_OR_IGNORE,
 		INSERT_OR_REPLACE,
 		UPDATE,
-		SELECT
+		SELECT,
+		DELETE
 	}
 
 	public enum ArticleTheme {

@@ -101,6 +101,24 @@ public class FeedReader.Utils : GLib.Object {
 		);
 	}
 
+	public static bool springCleaningNecessary()
+	{
+		var lastClean = new DateTime.from_unix_local(settings_state.get_int("last-spring-cleaning"));
+		var now = new DateTime.now_local();
+
+		var difference = now.difference(lastClean);
+		bool doCleaning = false;
+
+		logger.print(LogMessage.DEBUG, "last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
+		logger.print(LogMessage.DEBUG, "now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
+		logger.print(LogMessage.DEBUG, "difference: %f".printf(difference/GLib.TimeSpan.DAY));
+
+		if((difference/GLib.TimeSpan.DAY) >= settings_general.get_int("spring-clean-after"))
+			doCleaning = true;
+
+		return doCleaning;
+	}
+
 	public static uint getRelevantArticles(int newArticlesCount)
 	{
 		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);

@@ -24,6 +24,8 @@ namespace FeedReader {
 		public abstract void updateBadge() throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
+		public signal void springCleanStarted();
+		public signal void springCleanFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
 		public signal void initSyncStage(int stage);
@@ -70,6 +72,14 @@ namespace FeedReader {
 				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT);
 					m_window.updateArticleList();
 					m_window.setRefreshButton(false);
+				});
+
+				feedDaemon_interface.springCleanStarted.connect(() => {
+				    m_window.showSpringClean();
+				});
+
+				feedDaemon_interface.springCleanFinished.connect(() => {
+				    m_window.showContent();
 				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);

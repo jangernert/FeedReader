@@ -11,6 +11,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private ContentPage m_content;
 	private InitSyncPage m_InitSync;
 	private LoginPage m_login;
+	private SpringCleanPage m_SpringClean;
 	private SimpleAction m_login_action;
 
 	public readerUI(rssReaderApp app)
@@ -27,6 +28,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		setupInitSyncPage();
 		setupResetPage();
 		setupContentPage();
+		setupSpringCleanPage();
 		onClose();
 
 		m_headerbar = new readerHeaderbar();
@@ -117,16 +119,22 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.show_all();
 
 		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS
-		&& !settings_state.get_boolean("initial-sync-ongoing"))
+		&& !settings_state.get_boolean("initial-sync-ongoing")
+		&& !settings_state.get_boolean("spring-cleaning"))
 		{
 			loadContent();
 		}
 		else
 		{
-			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) == LoginResponse.SUCCESS
-			&& !settings_state.get_boolean("initial-sync-ongoing"))
+			if(!settings_state.get_boolean("initial-sync-ongoing")
+			&& !settings_state.get_boolean("spring-cleaning")
+			&& feedDaemon_interface.login(settings_general.get_enum("account-type")) == LoginResponse.SUCCESS)
 			{
 				loadContent();
+			}
+			else if (settings_state.get_boolean("spring-cleaning"))
+			{
+				showSpringClean();
 			}
 			else if (settings_state.get_boolean("initial-sync-ongoing"))
 			{
@@ -153,8 +161,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_content.newFeedList();
-
-		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_stack.set_visible_child_full("content", transition);
 
 		if(!settings_state.get_boolean("currently-updating"))
@@ -180,6 +186,15 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show reset");
 		m_stack.set_visible_child_full("reset", transition);
+		m_headerbar.setButtonsSensitive(false);
+		m_login_action.set_enabled(false);
+		this.set_titlebar(m_simpleHeader);
+	}
+
+	public void showSpringClean(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	{
+		logger.print(LogMessage.DEBUG, "MainWindow: show springClean");
+		m_stack.set_visible_child_full("springClean", transition);
 		m_headerbar.setButtonsSensitive(false);
 		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
@@ -219,6 +234,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 
 		this.destroy.connect(() => {
+			if(settings_state.get_boolean("spring-cleaning"))
+				return;
+
 			int only_unread = 0;
 			if(m_headerbar.getOnlyUnread()) only_unread = 1;
 			int only_marked = 0;
@@ -321,6 +339,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		m_InitSync = new InitSyncPage();
 		m_stack.add_named(m_InitSync, "initsync");
+	}
+
+	private void setupSpringCleanPage()
+	{
+		m_SpringClean = new SpringCleanPage();
+		m_stack.add_named(m_SpringClean, "springClean");
 	}
 
 	private void setupContentPage()

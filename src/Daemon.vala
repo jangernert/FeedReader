@@ -49,6 +49,8 @@ namespace FeedReader {
 
 		public signal void syncStarted();
 		public signal void syncFinished();
+		public signal void springCleanStarted();
+		public signal void springCleanFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
 		public signal void initSyncStage(int stage);
@@ -59,10 +61,12 @@ namespace FeedReader {
 		{
 			if(Utils.springCleaningNecessary())
 			{
-				settings_state.set_boolean("spring-cleaning", true);
 				logger.print(LogMessage.INFO, "daemon: spring cleaning");
+				settings_state.set_boolean("spring-cleaning", true);
+				springCleanStarted();
 				dataBase.springCleaning();
 				settings_state.set_boolean("spring-cleaning", false);
+				springCleanFinished();
 			}
 
 			if(m_loggedin != LoginResponse.SUCCESS)
@@ -199,13 +203,16 @@ namespace FeedReader {
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY
-			var count = dataBase.get_unread_total();
-			logger.print(LogMessage.DEBUG, "daemon: update badge count %u".printf(count));
-			m_launcher.count = count;
-			if(count > 0)
-				m_launcher.count_visible = true;
-			else
-				m_launcher.count_visible = false;
+			if(!settings_state.get_boolean("spring-cleaning"))
+			{
+				var count = dataBase.get_unread_total();
+				logger.print(LogMessage.DEBUG, "daemon: update badge count %u".printf(count));
+				m_launcher.count = count;
+				if(count > 0)
+					m_launcher.count_visible = true;
+				else
+					m_launcher.count_visible = false;
+			}
 #endif
 		}
 	}

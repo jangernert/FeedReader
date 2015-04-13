@@ -65,6 +65,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/ResetPage.vala
     src/Widgets/SettingsDialog.vala
+    src/Widgets/SpringCleanPage.vala
     src/Widgets/TagRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala

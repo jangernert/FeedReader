@@ -89,7 +89,11 @@ public class FeedReader.article : GLib.Object {
 		var date_year = m_date.get_year();
 		var date_day = m_date.get_day_of_year();
 
-		if(date_year == now_year)
+		if(date_year == 1900)
+		{
+			return _("no date available");
+		}
+		else if(date_year == now_year)
 		{
 			if(date_day == now_day)
 			{
@@ -100,7 +104,6 @@ public class FeedReader.article : GLib.Object {
 				return _("Yesterday") + m_date.format(" %H:%M");
 			}
 		}
-
 
 		return m_date.format("%d.%m.%Y %H:%M");
 	}

@@ -68,7 +68,7 @@ public class FeedReader.Utils : GLib.Object {
 			string modified_html = _("No Text available for this article :(");
 			if(article.getHTML() != "")
 			{
-				modified_html = article.getHTML().replace("src=\"//","src=\"http://");
+				modified_html = article.getHTML().replace("src=\"//","src=\"http://").replace("target=\"_blank\"", "");
 			}
 
 			article.setHTML(modified_html);

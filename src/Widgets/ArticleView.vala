@@ -110,8 +110,8 @@ public class FeedReader.articleView : Gtk.Stack {
 				{
 					string url = m_currentView.get_uri();
 
-					if(!url.has_prefix("http://"))
-						url = "http://" + url;
+					//if(!url.has_prefix("http://"))
+					//	url = "http://" + url;
 
 					logger.print(LogMessage.DEBUG, "ArticleView: open external url: %s".printf(url));
 

@@ -6,10 +6,11 @@ public class FeedReader.articleView : Gtk.Stack {
 	private bool m_open_external;
 	private int m_load_ongoing;
 	private string m_currentArticle;
+	private bool m_firstTime;
 
 	public articleView () {
 		m_load_ongoing = 0;
-
+		m_firstTime = true;
 
 		m_view1 = new WebKit.WebView();
 		m_view1.load_changed.connect(open_link);
@@ -130,8 +131,13 @@ public class FeedReader.articleView : Gtk.Stack {
 				if(m_load_ongoing >= 3){
 					logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
 					m_open_external = true;
-					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
-					settings_state.set_int("articleview-scrollpos", 0);
+
+					if(m_firstTime)
+					{
+						this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
+						settings_state.set_int("articleview-scrollpos", 0);
+						m_firstTime = false;
+					}
 				}
 				break;
 		}

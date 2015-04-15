@@ -195,6 +195,7 @@ p:last-of-type {
 }
 a {
   color: #318c34;
+  outline : none;
 }
 a:hover {
   text-decoration: none;

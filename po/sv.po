@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-03-10 16:35+0100\n"
-"PO-Revision-Date: 2015-03-20 09:03+0000\n"
+"PO-Revision-Date: 2015-04-13 17:41+0000\n"
 "Last-Translator: Mikael Nyberg <mikanybe@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-04-03 06:07+0000\n"
-"X-Generator: Launchpad (build 17413)\n"
+"X-Launchpad-Export-Date: 2015-04-14 05:37+0000\n"
+"X-Generator: Launchpad (build 17423)\n"
 
 #: ../src/Backends/FeedServer.vala:344
 msgid "There is 1 new article"
@@ -92,15 +92,15 @@ msgstr "OwnCloud URL:"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:48
 msgid "only show unread articles"
-msgstr ""
+msgstr "visa endast olästa artiklar"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:54
 msgid "only show marked articles"
-msgstr ""
+msgstr "visa endast markerade artiklar"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:59
 msgid "mark selected feed/category as read"
-msgstr ""
+msgstr "markera vald flöde/kategori som läst"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:92
 msgid "Search Aritlces"
@@ -176,7 +176,7 @@ msgstr "Uppdatera nyhetsflöden"
 
 #: ../src/Widgets/SettingsDialog.vala:26
 msgid "Feed List:"
-msgstr ""
+msgstr "Flödeslista:"
 
 #: ../src/Widgets/SettingsDialog.vala:36
 msgid "only-feeds"
@@ -184,7 +184,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:48
 msgid "only show unread"
-msgstr ""
+msgstr "visa endast olästa"
 
 #: ../src/Widgets/SettingsDialog.vala:62
 msgid "Sync:"
@@ -192,11 +192,11 @@ msgstr "Synkronisera:"
 
 #: ../src/Widgets/SettingsDialog.vala:68
 msgid "number of articles"
-msgstr ""
+msgstr "antal artiklar"
 
 #: ../src/Widgets/SettingsDialog.vala:81
 msgid "every (seconds)"
-msgstr ""
+msgstr "varje (sekund)"
 
 #: ../src/Widgets/SettingsDialog.vala:93
 msgid "ArticleList:"
@@ -240,4 +240,4 @@ msgstr "Ingen text tillgänglig för den här artikeln :("
 
 #: ../src/Constants.vala:87
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Program för diverse rss-tjänster"

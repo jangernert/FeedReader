@@ -30,6 +30,24 @@ public class FeedReader.FeedlyAPI : Object {
 		return LoginResponse.SUCCESS;
 	}
 
+	public bool ping() {
+		var session = new Soup.Session();
+		var message = new Soup.Message("GET", FeedlySecret.base_uri+"/v3/profile");
+		session.send_message(message);
+		string response = (string)message.response_body.data;
+
+		var parser = new Json.Parser();
+		parser.load_from_data(response, -1);
+		var root = parser.get_root().get_object();
+
+		if(root.has_member("errorId"))
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private void getUserID()
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");

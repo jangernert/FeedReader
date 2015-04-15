@@ -255,7 +255,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	// FIXME: workaround for possible bug in tt-rss api -----------------------------------------------------------------------------
 	private int getUncategorizedUnread()
 	{
 		var message = new ttrss_message(m_ttrss_url);
@@ -287,7 +286,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 		return 0;
 	}
-	//--------------------------------------------------------------------------------------------------------------------------------
 
 
 	public void updateCategorieUnread()

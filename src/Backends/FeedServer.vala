@@ -60,7 +60,11 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDLY:
-					// FIXME: ping feedly server or something
+					if(!m_feedly.ping())
+					{
+						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - feedly not reachable");
+						return null;
+					}
 					break;
 			}
 

@@ -412,7 +412,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	public void updateFeedListCountUnread(string feedID, bool increase)
 	{
-		//FIXME: update "mark all read" button
 		m_content.updateFeedListCountUnread(feedID, increase);
 		setMarkAllButtonSensitive();
 	}

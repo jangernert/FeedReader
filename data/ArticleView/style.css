@@ -236,7 +236,11 @@ header.post {
 }
 header.post h1 {
   color: #000;
-  font-weight: 300;
+  font-weight: 600;
+}
+header.post a:link {
+	outline : none;
+    text-decoration: none;
 }
 header.post span.source {
   color: rgba(0, 0, 0, 0.75);

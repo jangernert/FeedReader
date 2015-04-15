@@ -100,7 +100,7 @@
 			</description>
 		</key>
 
-		<key name="articleview-scrollpos" type="d">
+		<key name="articleview-scrollpos" type="i">
 			<default>0</default>
 			<summary>ArticleView Scroll Position</summary>
 			<description>

@@ -252,7 +252,7 @@ div.content {
   padding: 2rem;
   margin-bottom: 3rem;
   border: 1px solid rgba(0, 0, 0, 0.05);
-  text-align: center;
+  text-align: left;
 }
 /* MIDNIGHT THEME -- also default dark */
 div.theme.midnight {

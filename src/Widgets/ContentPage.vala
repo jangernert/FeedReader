@@ -173,10 +173,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		return m_articleList.getScrollPos();
 	}
 
-	public double getArticleViewScrollPos()
+	public int getArticleViewScrollPos()
 	{
-		//return m_article_view.getScrollPos();
-		return 0.0;
+		return m_article_view.getScrollPos();
 	}
 
 	public string getSelectedArticle()

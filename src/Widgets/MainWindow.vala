@@ -243,6 +243,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			if(m_headerbar.getOnlyMarked()) only_marked = 1;
 
 
+
+
+
 			settings_state.set_strv("expanded-categories", m_content.getExpandedCategories());
 			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
 			settings_state.set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
@@ -251,12 +254,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_int("articlelist-row-amount", m_content.getArticlesToLoad());
 			settings_state.set_double("articlelist-scrollpos",  m_content.getArticleListScrollPos());
 			settings_state.set_string("articlelist-selected-row", m_content.getSelectedArticle());
-			settings_state.set_double("articleview-scrollpos",  m_content.getArticleViewScrollPos());
 			settings_state.set_int("articlelist-new-rows", 0);
 			settings_state.set_boolean("only-unread", m_headerbar.getOnlyUnread());
 			settings_state.set_boolean("only-marked", m_headerbar.getOnlyMarked());
 			settings_state.set_boolean("no-animations", true);
 			settings_state.set_string("search-term", m_headerbar.getSearchTerm());
+
+			settings_state.set_int("articleview-scrollpos", m_content.getArticleViewScrollPos());
 		});
 	}
 

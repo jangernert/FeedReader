@@ -128,8 +128,37 @@ public class FeedReader.articleView : Gtk.Stack {
 				if(m_load_ongoing >= 3){
 					logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
 					m_open_external = true;
+					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
+					settings_state.set_int("articleview-scrollpos", 0);
 				}
 				break;
 		}
 	}
+
+	public void setScrollPos(int pos)
+	{
+		m_currentView.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
+			m_currentView.run_javascript.end(res);
+		});
+	}
+
+	public int getScrollPos()
+	{
+		// use mainloop to prevent app from shutting down before the result can be fetched
+		// ugly but works =/
+		// better solution welcome
+
+		int scrollPos = -1;
+		var loop = new MainLoop();
+
+		m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
+			m_currentView.run_javascript.end(res);
+			scrollPos = int.parse(m_currentView.title);
+			loop.quit();
+		});
+
+		loop.run();
+		return scrollPos;
+	}
+
 }

@@ -13,8 +13,10 @@ public class FeedReader.articleView : Gtk.Stack {
 
 		m_view1 = new WebKit.WebView();
 		m_view1.load_changed.connect(open_link);
+		m_view1.context_menu.connect(() => { return true; });
 		m_view2 = new WebKit.WebView();
 		m_view2.load_changed.connect(open_link);
+		m_view2.context_menu.connect(() => { return true; });
 		m_currentView = m_view1;
 
 		var emptyView = new Gtk.Label(_("No Article selected."));

@@ -115,7 +115,7 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 
 		if(settings_state.get_int("initial-sync-level") != 0)
 		{
-			setStage(settings_state.get_int("initial-sync-level"));
+			setStage(settings_state.get_int("initial-sync-level")-1);
 		}
 	}
 

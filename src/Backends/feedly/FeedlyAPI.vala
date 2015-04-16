@@ -222,15 +222,19 @@ public class FeedReader.FeedlyAPI : Object {
 			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 			string feedID = object.get_object_member("origin").get_string_member("streamId");
 
-			DateTime date;
-			if(object.has_member("updated"))
+			DateTime date = new DateTime.now_local();
+			if(object.has_member("updated") && object.get_int_member("updated") > 0)
+			{
 				date = new DateTime.from_unix_local(object.get_int_member("updated")/1000);
-			else if(object.has_member("published"))
+			}
+			else if(object.has_member("published") && object.get_int_member("published") > 0)
+			{
 				date = new DateTime.from_unix_local(object.get_int_member("published")/1000);
-			else if(object.has_member("crawled"))
+			}
+			else if(object.has_member("crawled") && object.get_int_member("crawled") > 0)
+			{
 				date = new DateTime.from_unix_local(object.get_int_member("crawled")/1000);
-			else
-				date = new DateTime.now_local();
+			}
 
 			string tagString = "";
 			string tmpTag = "";
@@ -250,6 +254,16 @@ public class FeedReader.FeedlyAPI : Object {
 						tagString = tagString + tmpTag + ",";
 				}
 			}
+
+			/*
+			logger.print(LogMessage.DEBUG, "feedly: id = " + id);
+			logger.print(LogMessage.DEBUG, "feedly: title = " + title);
+			logger.print(LogMessage.DEBUG, "feedly: date = " + date.format("%d.%m.%Y %H:%M"));
+
+			assert(id != null);
+			assert(title != null);
+			assert(date != null);
+			*/
 
 			articles.append(
 				new article(

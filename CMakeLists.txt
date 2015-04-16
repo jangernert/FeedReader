@@ -12,7 +12,7 @@ set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
 set (EXEC_NAME "feedreader")
 set (DAEMON_NAME ${EXEC_NAME}-daemon)
 set (RELEASE_NAME "RSS Client")
-set (VERSION "0.2")
+set (VERSION "1.0")
 set (VERSION_INFO "whats up world")
 
 find_package(PkgConfig)

@@ -161,7 +161,7 @@ public class FeedReader.articleView : Gtk.Stack {
 
 		m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
 			m_currentView.run_javascript.end(res);
-			scrollPos = int.parse(m_currentView.title);
+			scrollPos = int.parse(m_currentView.get_title());
 			loop.quit();
 		});
 

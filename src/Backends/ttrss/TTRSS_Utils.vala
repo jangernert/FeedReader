@@ -10,9 +10,11 @@ public class FeedReader.ttrss_utils : GLib.Object {
 			if(!tmp_url.has_suffix("/api/"))
 				tmp_url = tmp_url + "api/";
 
-			if(!tmp_url.has_prefix("http://"))
+			if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
 					tmp_url = "http://" + tmp_url;
 		}
+
+		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
 
 		return tmp_url;
 	}

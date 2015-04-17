@@ -4,19 +4,19 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private string m_url;
 	private int m_serviceType;
 	public signal void success();
-	
+
 
 	public WebLoginPage() {
-		
-		
-		
+
+
+
 		m_view = new WebKit.WebView();
 		m_view.load_changed.connect(redirection);
 		this.add(m_view);
 		this.show_all();
 	}
-	
-	
+
+
 	public void loadPage(int serviceType)
 	{
 		m_serviceType = serviceType;
@@ -26,18 +26,18 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				m_url = buildFeedlyURL();
 				break;
 		}
-		
+
 		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + m_url);
 		m_view.load_uri(m_url);
 	}
-	
+
 	private string buildFeedlyURL()
 	{
 		string url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId;
 		url = url + "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
 		return url;
 	}
-	
+
 	public void redirection(WebKit.LoadEvent load_event)
 	{
 		logger.print(LogMessage.DEBUG, "WebLoginPage: webView redirection");
@@ -56,6 +56,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 							int end = url.index_of("&");
 							string code = url.substring(start, end-start);
 							settings_feedly.set_string("feedly-api-code", code);
+							m_view.stop_loading();
 							success();
 						}
 						break;
@@ -63,7 +64,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				break;
 			case WebKit.LoadEvent.COMMITTED:
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent COMMITED");
-				break;	
+				break;
 			case WebKit.LoadEvent.FINISHED:
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent FINISHED");
 				break;

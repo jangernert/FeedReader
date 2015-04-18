@@ -322,9 +322,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) != LoginResponse.SUCCESS)
 			{
 				logger.print(LogMessage.DEBUG, "MainWindow: login failed -> go back to login page");
-				settings_feedly.reset("feedly-access-token");
-				settings_feedly.reset("feedly-refresh-token");
-				settings_feedly.reset("feedly-api-code");
 				showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 				return;
 			}

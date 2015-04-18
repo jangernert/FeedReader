@@ -31,6 +31,10 @@ public class FeedReader.FeedlyAPI : Object {
 			return LoginResponse.SUCCESS;
 		}
 
+		settings_feedly.reset("feedly-access-token");
+		settings_feedly.reset("feedly-refresh-token");
+		settings_feedly.reset("feedly-api-code");
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
@@ -62,7 +66,7 @@ public class FeedReader.FeedlyAPI : Object {
 		if(root.has_member("id"))
 		{
 			m_userID = root.get_string_member("id");
-			print(m_userID + "\n");
+			logger.print(LogMessage.INFO, "feedly: userID = " + m_userID);
 			return true;
 		}
 

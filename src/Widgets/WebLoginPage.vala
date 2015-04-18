@@ -55,7 +55,12 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 							int start = url.index_of("=")+1;
 							int end = url.index_of("&");
 							string code = url.substring(start, end-start);
-							settings_feedly.set_string("feedly-api-code", code);
+							if(!settings_feedly.set_string("feedly-api-code", code))
+							{
+								logger.print(LogMessage.DEBUG, "WebLoginPage: could not set api code");
+							}
+							logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + settings_feedly.get_string("feedly-api-code"));
+							GLib.Thread.usleep(500000);
 							m_view.stop_loading();
 							success();
 						}

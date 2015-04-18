@@ -17,6 +17,7 @@ public class FeedReader.FeedlyConnection {
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 
 		m_apiCode = settings_feedly.get_string("feedly-api-code");
+		logger.print(LogMessage.DEBUG, "Feedly: getToken apiCode: " + settings_feedly.get_string("feedly-api-code"));
 
 		string message_string = "code=" + m_apiCode + "&client_id=" + FeedlySecret.apiClientId + "&client_secret=" + FeedlySecret.apiClientSecret + "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&grant_type=authorization_code&state=getting_token";
 

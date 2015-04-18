@@ -25,9 +25,13 @@ public class FeedReader.FeedlyAPI : Object {
 			m_connection.refreshToken();
 		}
 
-		getUserID();
-		logger.print(LogMessage.DEBUG, "feedly: login success");
-		return LoginResponse.SUCCESS;
+		if(getUserID())
+		{
+			logger.print(LogMessage.DEBUG, "feedly: login success");
+			return LoginResponse.SUCCESS;
+		}
+
+		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public bool ping() {
@@ -48,7 +52,7 @@ public class FeedReader.FeedlyAPI : Object {
 		return false;
 	}
 
-	private void getUserID()
+	private bool getUserID()
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
 		var parser = new Json.Parser ();
@@ -59,7 +63,10 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			m_userID = root.get_string_member("id");
 			print(m_userID + "\n");
+			return true;
 		}
+
+		return false;
 	}
 
 	private int tokenStillValid()

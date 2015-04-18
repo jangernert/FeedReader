@@ -319,6 +319,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			logger.print(LogMessage.DEBUG, "WebLogin: success");
 			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
+			if(feedDaemon_interface.login(settings_general.get_enum("account-type")) != LoginResponse.SUCCESS)
+			{
+				showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
+				return;
+			}
 			showInitSync();
 		});
 		m_stack.add_named(loginBox, "login");

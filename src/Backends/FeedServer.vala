@@ -39,7 +39,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				return m_ttrss.login();
 
 			case Backend.FEEDLY:
-				return m_feedly.login();
+				if(m_feedly.ping())
+				{
+					return m_feedly.login();
+				}
+				break;
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}

@@ -60,8 +60,8 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 								logger.print(LogMessage.DEBUG, "WebLoginPage: could not set api code");
 							}
 							logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + settings_feedly.get_string("feedly-api-code"));
-							GLib.Thread.usleep(500000);
 							m_view.stop_loading();
+							GLib.Thread.usleep(500000);
 							success();
 						}
 						break;

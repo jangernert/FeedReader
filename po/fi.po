@@ -1,4 +1,318 @@
+# Finnish translation for feedreader
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the feedreader package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: feedreader\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-04-18 17:37+0200\n"
+"PO-Revision-Date: 2015-04-19 10:03+0000\n"
+"Last-Translator: Jiri Grönroos <Unknown>\n"
+"Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-04-20 06:37+0000\n"
+"X-Generator: Launchpad (build 17430)\n"
+
+#: ../src/Backends/FeedServer.vala:381
+msgid "There is 1 new article"
+msgstr "1 uusi artikkeli"
+
+#: ../src/Backends/FeedServer.vala:383
+msgid "There are >200 new articles"
+msgstr "Yli 200 uutta artikkelia"
+
+#: ../src/Backends/FeedServer.vala:385
+msgid "There are %u new articles"
+msgstr "%u uutta artikkelia"
+
+#: ../src/Backends/FeedServer.vala:387
+msgid "New Articles"
+msgstr "Uudet artikkelit"
+
+#: ../src/Widgets/ArticleView.vala:23
+msgid "No Article selected."
+msgstr "Ei artikkelia valittuna"
+
+#: ../src/Widgets/ArticleView.vala:62
+msgid "not available"
+msgstr "ei käytettävissä"
+
+#: ../src/Widgets/LoginPage.vala:21
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS"
+
+#: ../src/Widgets/LoginPage.vala:21
+msgid "Feedly"
+msgstr "Feedly"
+
+#: ../src/Widgets/LoginPage.vala:21
+msgid "OwnCloud"
+msgstr "OwnCloud"
+
+#: ../src/Widgets/LoginPage.vala:25
+msgid "Where are your feeds?"
+msgstr "Missä syötteesi sijaitsevat?"
+
+#: ../src/Widgets/LoginPage.vala:29
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr "Valitse käyttämäsi RSS-palvelu ja kirjaudu sisään aloittaaksesi."
+
+#: ../src/Widgets/LoginPage.vala:94
+msgid "No service selected."
+msgstr "Palvelua ei ole valittuna."
+
+#: ../src/Widgets/LoginPage.vala:111
+msgid "TinyTinyRSS URL:"
+msgstr "TinyTinyRSS-osoite:"
+
+#: ../src/Widgets/LoginPage.vala:112 ../src/Widgets/LoginPage.vala:185
+msgid "Username:"
+msgstr "Käyttäjätunnus:"
+
+#: ../src/Widgets/LoginPage.vala:113 ../src/Widgets/LoginPage.vala:186
+msgid "Password:"
+msgstr "Salasana:"
+
+#: ../src/Widgets/LoginPage.vala:165
+msgid ""
+"You will be redirected to the feedly website where you can use your Facebook-"
+", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr ""
+"Sinut ohjataan Feedlyn verkkosivustolle, jossa voit kirjautua käyttäen "
+"Facebook-, Google-, Twitter-, Microsoft- tai Evernote-tiliäsi."
+
+#: ../src/Widgets/LoginPage.vala:184
+msgid "OwnCloud URL:"
+msgstr "OwnCloud-osoite:"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:48
+msgid "only show unread articles"
+msgstr "näytä vain lukemattomat artikkelit"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:54
+msgid "only show marked articles"
+msgstr "näytä vain merkityt artikkelit"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:59
+msgid "mark selected feed/category as read"
+msgstr "merkitse valittu syöte/luokka luetuksi"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:92
+msgid "Search Aritlces"
+msgstr ""
+
+#: ../src/Widgets/SpringCleanPage.vala:13
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr ""
+"Syötteenlukija siivoaa tietokantaa.\n"
+"Tämän ei pitäisi kestää kovin kauan."
+
+#: ../src/Widgets/ResetPage.vala:18
+msgid "Change Account?"
+msgstr "Vaihdetaanko tiliä?"
+
+#: ../src/Widgets/ResetPage.vala:22
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+"Olet aikeissa vaihtaa syötteenlukijassa käytettävää tiliä.\n"
+" Tämän myötä vanhan tilisi kaikki paikallinen data poistetaan."
+
+#: ../src/Widgets/ArticleList.vala:37
+msgid "None of the %i Articles in the database fit the current filters."
+msgstr ""
+"Mikään tietokannassa olevista %i artikkelista ei sovi nykyiseen suodatukseen."
+
+#: ../src/Widgets/MainWindow.vala:19 ../src/Constants.vala:84
+msgid "FeedReader"
+msgstr "Syötteenlukija"
+
+#: ../src/Widgets/MainWindow.vala:78
+msgid "settings"
+msgstr "asetukset"
+
+#: ../src/Widgets/MainWindow.vala:95
+msgid "reset"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:370
+msgid "Please select a service first"
+msgstr "Valitse palvelu ensin"
+
+#: ../src/Widgets/MainWindow.vala:373
+msgid "Please enter a valid username"
+msgstr "Anna kelvollinen käyttäjätunnus"
+
+#: ../src/Widgets/MainWindow.vala:376
+msgid "Please enter a valid password"
+msgstr "Anna kelvollinen salasana"
+
+#: ../src/Widgets/MainWindow.vala:379
+msgid "Please enter a valid URL"
+msgstr "Anna kelvollinen osoite"
+
+#: ../src/Widgets/MainWindow.vala:382
+msgid "Please enter your Login details"
+msgstr "Anna kirjautumistietosi"
+
+#: ../src/Widgets/MainWindow.vala:385
+msgid "Sorry, something went wrong."
+msgstr "Valitettavasti jokin meni vikaan"
+
+#: ../src/Widgets/MainWindow.vala:388
+msgid "Either your username or the password are not correct."
+msgstr "Joko käyttäjätunnus tai salasana on väärin."
+
+#: ../src/Widgets/MainWindow.vala:391
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+"Ei yhteyttä palvelimeen. Tarkista verkkoyhteytesi ja palvelimen osoite!"
+
+#: ../src/Widgets/UpdateButton.vala:15
+msgid "update Feeds"
+msgstr "päivitä syötteet"
+
+#: ../src/Widgets/SettingsDialog.vala:47
+msgid "Interface"
+msgstr "Käyttöliittymä"
+
+#: ../src/Widgets/SettingsDialog.vala:48
+msgid "Internals"
+msgstr "Sisäiset"
+
+#: ../src/Widgets/SettingsDialog.vala:56
+msgid "Close"
+msgstr "Sulje"
+
+#: ../src/Widgets/SettingsDialog.vala:63
+msgid "Feed List:"
+msgstr "Syöteluettelo:"
+
+#: ../src/Widgets/SettingsDialog.vala:74
+msgid "only-feeds"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:86
+msgid "only show unread"
+msgstr "näytä vain lukemattomat"
+
+#: ../src/Widgets/SettingsDialog.vala:103
+msgid "ArticleList:"
+msgstr "Artikkeliluettelo:"
+
+#: ../src/Widgets/SettingsDialog.vala:110
+msgid "sort articles by"
+msgstr "artikkelien järjestysperuste"
+
+#: ../src/Widgets/SettingsDialog.vala:117
+msgid "date"
+msgstr "päivä"
+
+#: ../src/Widgets/SettingsDialog.vala:120
+msgid "received"
+msgstr "vastaanotettu"
+
+#: ../src/Widgets/SettingsDialog.vala:143
+msgid "newest first"
+msgstr "uusin ensin"
+
+#: ../src/Widgets/SettingsDialog.vala:160
+msgid "ArticleView:"
+msgstr "Artikkelinäkymä:"
+
+#: ../src/Widgets/SettingsDialog.vala:167
+msgid "Theme"
+msgstr "Teema"
+
+#: ../src/Widgets/SettingsDialog.vala:174
+msgid "default"
+msgstr "oletus"
+
+#: ../src/Widgets/SettingsDialog.vala:177
+msgid "spring"
+msgstr "kevät"
+
+#: ../src/Widgets/SettingsDialog.vala:180
+msgid "midnight"
+msgstr "keskiyö"
+
+#: ../src/Widgets/SettingsDialog.vala:183
+msgid "parchment"
+msgstr "pergamentti"
+
+#: ../src/Widgets/SettingsDialog.vala:220
+msgid "Sync:"
+msgstr "Synkronoi:"
+
+#: ../src/Widgets/SettingsDialog.vala:227
+msgid "number of articles"
+msgstr "artikkeleiden lukumäärä"
+
+#: ../src/Widgets/SettingsDialog.vala:240
+msgid "every (seconds)"
+msgstr "aikaväli (sekunneissa)"
+
+#: ../src/Widgets/SettingsDialog.vala:256
+msgid "Database:"
+msgstr "Tietokanta:"
+
+#: ../src/Widgets/SettingsDialog.vala:263
+msgid "drop articles after"
+msgstr "tiputa artikkelit viiveellä"
+
+#: ../src/Widgets/SettingsDialog.vala:270
+msgid "Never"
+msgstr "Ei koskaan"
+
+#: ../src/Widgets/SettingsDialog.vala:273
+msgid "1 Week"
+msgstr "1 viikko"
+
+#: ../src/Widgets/SettingsDialog.vala:276
+msgid "1 Month"
+msgstr "1 kuukausi"
+
+#: ../src/Widgets/SettingsDialog.vala:279
+msgid "6 Months"
+msgstr "6 kuukautta"
+
+#: ../src/Widgets/InitSyncPage.vala:18
+msgid ""
+"FeedReader is now getting the first batch of articles.\n"
+"Depending on your connection and settings this can take some time."
+msgstr ""
+"Syötteenlukija noutaa nyt ensimmäistä erää artikkeleista.\n"
+"Tämä saattaa kestää hetken yhteydestä ja asetuksista riippuen."
+
+#: ../src/Utils.vala:6
+msgid "No Preview Available"
+msgstr "Esikatselua ei ole saatavilla"
+
+#: ../src/Utils.vala:68
+msgid "No Text available for this article :("
+msgstr "Tälle artikkelille ei ole tekstiä tarjolla"
+
+#: ../src/Constants.vala:87
+msgid "Desktop Client for various RSS Services"
+msgstr "Työpöytäsovellus useiden RSS-palveluiden käyttöön"
+
+#: ../src/Model/Article.vala:94
+msgid "no date available"
+msgstr "ei päivää saatavilla"
+
+#: ../src/Model/Article.vala:100
+msgid "Today"
+msgstr "Tänään"
+
+#: ../src/Model/Article.vala:104
+msgid "Yesterday"
+msgstr "Eilen"

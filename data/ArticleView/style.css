@@ -209,6 +209,7 @@ img {
   border: 1px solid rgba(0, 0, 0, 0.05);
   max-width: 100%;
   max-height: auto;
+  height: auto;
 }
 figure {
   display: inline-block;
@@ -227,6 +228,7 @@ figure img {
   border: 0;
   max-width: 100%;
   max-height: auto;
+  height: auto;
 }
 figure:first-child {
   margin-top: 0rem;

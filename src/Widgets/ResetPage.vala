@@ -23,10 +23,10 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		describtionText.get_style_context().add_class("h2");
 		describtionText.set_justify(Gtk.Justification.CENTER);
 
-		m_deleteLabel = new Gtk.Label("New account");
+		m_deleteLabel = new Gtk.Label(_("New account"));
 		m_waitingBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 2);
 		m_spinner = new Gtk.Spinner();
-		var waitingLabel = new Gtk.Label("Waiting for current sync to finish");
+		var waitingLabel = new Gtk.Label(_("Waiting for current sync to finish"));
 		m_waitingBox.pack_start(m_spinner, false, false, 0);
 		m_waitingBox.pack_start(waitingLabel, false, true, 0);
 
@@ -36,7 +36,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		m_newAccountButton.set_size_request(80, 30);
 		m_newAccountButton.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
 		m_newAccountButton.clicked.connect(resetAllData);
-		var cancelButton = new Gtk.Button.with_label("I changed my mind");
+		var cancelButton = new Gtk.Button.with_label(_("I changed my mind"));
 		cancelButton.set_size_request(80, 30);
 		cancelButton.clicked.connect(abortReset);
 		buttonBox.pack_start(cancelButton, false, false, 0);

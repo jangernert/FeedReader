@@ -96,9 +96,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		});
 
 		var menumodel = new GLib.Menu ();
-		var settings = new MenuItem ("Settings", "win.settings");
+		var settings = new MenuItem (_("Settings"), "win.settings");
 		menumodel.insert_item(0, settings);
-		var changeAccount = new MenuItem ("Change Account", "win.reset");
+		var changeAccount = new MenuItem (_("Change Account"), "win.reset");
 		menumodel.insert_item(1, changeAccount);
 
 

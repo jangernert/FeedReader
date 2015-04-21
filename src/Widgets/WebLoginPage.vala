@@ -7,9 +7,6 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 
 	public WebLoginPage() {
-
-
-
 		m_view = new WebKit.WebView();
 		m_view.context_menu.connect(() => { return true; });
 		m_view.load_changed.connect(redirection);

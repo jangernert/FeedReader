@@ -60,7 +60,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_login_details.set_transition_duration(100);
 
 		var buttonBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		var loginButton = new Gtk.Button.with_label("Login");
+		var loginButton = new Gtk.Button.with_label(_("Login"));
 		loginButton.clicked.connect(write_login_data);
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);

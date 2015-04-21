@@ -827,9 +827,26 @@ public class FeedReader.dbManager : GLib.Object {
 		executeSQL("DELETE FROM \"main\".\"tags\" WHERE \"exists\" = 0");
 	}
 
-	public void delete_articles(int feedID)
+	public void delete_articles_without_feed()
 	{
-		executeSQL("DELETE FROM \"main\".\"articles\" WHERE \"feedID\" = \"" + feedID.to_string() + "\"");
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("feed_id");
+		query.addEqualsCondition("subscribed", "0", true, false);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		while (stmt.step () == Sqlite.ROW) {
+			delete_articles(stmt.column_text(0));
+		}
+	}
+
+	public void delete_articles(string feedID)
+	{
+		executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
 	}
 
 

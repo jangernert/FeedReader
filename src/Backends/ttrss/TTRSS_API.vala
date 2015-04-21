@@ -139,13 +139,55 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										feed_node.get_int_member("cat_id").to_string()
 									)
 							);
+
+							logger.print(LogMessage.DEBUG, feed_node.get_string_member("title"));
 						}
 					}
 				}
 			}
+
+			getUncategorizedFeeds(ref feeds);
 		}
 	}
 
+
+	private void getUncategorizedFeeds(ref GLib.List<feed> feeds)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getFeeds");
+		message.add_int("cat_id", 0);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_array();
+			var feed_count = response.get_length();
+			string icon_url = m_ttrss_url.replace("api/", getIconDir());
+
+			for(uint i = 0; i < feed_count; i++)
+			{
+				var feed_node = response.get_object_element(i);
+				string feed_id = feed_node.get_int_member("id").to_string();
+
+				if(feed_node.get_boolean_member("has_icon"))
+					ttrss_utils.downloadIcon(feed_id, icon_url);
+
+				feeds.append(
+					new feed (
+							feed_id,
+							feed_node.get_string_member("title"),
+							feed_node.get_string_member("feed_url"),
+							feed_node.get_boolean_member("has_icon"),
+							(int)feed_node.get_int_member("unread"),
+							feed_node.get_int_member("cat_id").to_string()
+						)
+				);
+
+				logger.print(LogMessage.DEBUG, feed_node.get_string_member("title"));
+			}
+		}
+	}
 
 	public void getTags(ref GLib.List<tag> tags)
 	{

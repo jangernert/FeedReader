@@ -3,6 +3,8 @@ using Gtk;
 
 namespace FeedReader {
 
+	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
+
 	dbManager dataBase;
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;

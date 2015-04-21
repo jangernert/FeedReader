@@ -43,27 +43,11 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		{
 			case WebKit.LoadEvent.STARTED:
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent STARTED");
-				switch(m_serviceType)
-				{
-					case Backend.FEEDLY:
-						string url = m_view.get_uri();
-						logger.print(LogMessage.DEBUG, "WebLoginPage: redirection url: " + url);
-						if(url.has_prefix(FeedlySecret.apiRedirectUri))
-						{
-							int start = url.index_of("=")+1;
-							int end = url.index_of("&");
-							string code = url.substring(start, end-start);
-							if(!settings_feedly.set_string("feedly-api-code", code))
-							{
-								logger.print(LogMessage.DEBUG, "WebLoginPage: could not set api code");
-							}
-							logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + settings_feedly.get_string("feedly-api-code"));
-							m_view.stop_loading();
-							GLib.Thread.usleep(500000);
-							success();
-						}
-						break;
-				}
+				checkURL();
+				break;
+			case WebKit.LoadEvent.REDIRECTED:
+				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent REDIRECTED");
+				checkURL();
 				break;
 			case WebKit.LoadEvent.COMMITTED:
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent COMMITED");
@@ -72,6 +56,40 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent FINISHED");
 				break;
 		}
+	}
+
+	void checkURL()
+	{
+		switch(m_serviceType)
+		{
+			case Backend.FEEDLY:
+				string url = m_view.get_uri();
+				if(getFeedlyApiCode(url))
+				{
+					m_view.stop_loading();
+					success();
+				}
+				break;
+		}
+	}
+
+	bool getFeedlyApiCode(string url)
+	{
+		if(url.has_prefix(FeedlySecret.apiRedirectUri))
+		{
+			int start = url.index_of("=")+1;
+			int end = url.index_of("&");
+			string code = url.substring(start, end-start);
+			if(!settings_feedly.set_string("feedly-api-code", code))
+			{
+				logger.print(LogMessage.DEBUG, "WebLoginPage: could not set api code");
+			}
+			logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + settings_feedly.get_string("feedly-api-code"));
+			GLib.Thread.usleep(500000);
+			return true;
+		}
+		else
+			return false;
 	}
 
 

@@ -421,6 +421,15 @@ public class FeedReader.articleList : Gtk.Stack {
 
 		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
 
+		foreach(Gtk.Widget row in articleChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null)
+			{
+				tmpRow.setUpdated(false);
+			}
+		}
+
 		bool found;
 
 		foreach(var item in articles)
@@ -433,6 +442,7 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(tmpRow != null && item.getArticleID() == tmpRow.getID())
 				{
 					tmpRow.updateUnread(item.m_unread);
+					tmpRow.setUpdated(true);
 					found = true;
 					break;
 				}
@@ -454,6 +464,8 @@ public class FeedReader.articleList : Gtk.Stack {
 					                            );
 				int pos = 0;
 				bool added = false;
+				newRow.setUpdated(true);
+
 				if(articleChildList == null)
 				{
 					m_currentList.insert(newRow, 0);
@@ -488,6 +500,18 @@ public class FeedReader.articleList : Gtk.Stack {
 				}
 				newRow.reveal(true);
 				articleChildList = m_currentList.get_children();
+			}
+		}
+
+		// delte not all other rows
+		articleChildList = m_currentList.get_children();
+
+		foreach(Gtk.Widget row in articleChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && !tmpRow.getUpdated())
+			{
+				m_currentList.remove(tmpRow);
 			}
 		}
 	}

@@ -12,12 +12,14 @@ public class FeedReader.articleRow : baseRow {
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private bool m_just_clicked;
+	private bool m_updated;
 	private string m_articleID { get; private set; }
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 
 	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview, GLib.DateTime date)
 	{
+		m_updated = false;
 		m_sortID = sortID;
 		m_marked = marked;
 		m_name = aritcleName;
@@ -294,6 +296,16 @@ public class FeedReader.articleRow : baseRow {
 	public string getDateStr()
 	{
 		return m_date.format("%Y-%m-%d %H:%M:%S");
+	}
+
+	public bool getUpdated()
+	{
+		return m_updated;
+	}
+
+	public void setUpdated(bool updated)
+	{
+		m_updated = updated;
 	}
 
 

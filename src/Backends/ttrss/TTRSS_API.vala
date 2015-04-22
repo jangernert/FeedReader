@@ -139,8 +139,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										feed_node.get_int_member("cat_id").to_string()
 									)
 							);
-
-							logger.print(LogMessage.DEBUG, feed_node.get_string_member("title"));
 						}
 					}
 				}
@@ -183,8 +181,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 							feed_node.get_int_member("cat_id").to_string()
 						)
 				);
-
-				logger.print(LogMessage.DEBUG, feed_node.get_string_member("title"));
 			}
 		}
 	}

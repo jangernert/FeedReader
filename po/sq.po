@@ -7,29 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-04-18 17:37+0200\n"
+"POT-Creation-Date: 2015-04-21 17:39+0200\n"
 "PO-Revision-Date: 2015-04-20 11:24+0000\n"
 "Last-Translator: Indrit Bashkimi <indrit.bashkimi@gmail.com>\n"
 "Language-Team: Albanian <sq@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-04-21 05:54+0000\n"
+"X-Launchpad-Export-Date: 2015-04-22 06:14+0000\n"
 "X-Generator: Launchpad (build 17430)\n"
 
-#: ../src/Backends/FeedServer.vala:381
+#: ../src/Backends/FeedServer.vala:385
 msgid "There is 1 new article"
 msgstr "Ka 1 artikull të ri"
 
-#: ../src/Backends/FeedServer.vala:383
+#: ../src/Backends/FeedServer.vala:387
 msgid "There are >200 new articles"
 msgstr "Ka >200 artikuj të ri"
 
-#: ../src/Backends/FeedServer.vala:385
+#: ../src/Backends/FeedServer.vala:389
 msgid "There are %u new articles"
 msgstr "Ka %u artikuj të ri"
 
-#: ../src/Backends/FeedServer.vala:387
+#: ../src/Backends/FeedServer.vala:391
 msgid "New Articles"
 msgstr ""
 
@@ -59,6 +59,10 @@ msgstr ""
 
 #: ../src/Widgets/LoginPage.vala:29
 msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+
+#: ../src/Widgets/LoginPage.vala:63
+msgid "Login"
 msgstr ""
 
 #: ../src/Widgets/LoginPage.vala:94
@@ -100,8 +104,16 @@ msgid "mark selected feed/category as read"
 msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:92
-msgid "Search Aritlces"
-msgstr "Kërko Artikuj"
+msgid "Search Articles"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:99
+msgid "Settings"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:101
+msgid "Change Account"
+msgstr ""
 
 #: ../src/Widgets/SpringCleanPage.vala:13
 msgid ""
@@ -117,6 +129,18 @@ msgstr ""
 msgid ""
 "You are about to change the account you want FeedReader to use.\n"
 " This means deleting all local data of your old account."
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:26
+msgid "New account"
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:29
+msgid "Waiting for current sync to finish"
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:39
+msgid "I changed my mind"
 msgstr ""
 
 #: ../src/Widgets/ArticleList.vala:37
@@ -135,35 +159,35 @@ msgstr "parametrat"
 msgid "reset"
 msgstr "rivendos"
 
-#: ../src/Widgets/MainWindow.vala:370
+#: ../src/Widgets/MainWindow.vala:376
 msgid "Please select a service first"
 msgstr "Zgjidhni një shërbim së pari"
 
-#: ../src/Widgets/MainWindow.vala:373
+#: ../src/Widgets/MainWindow.vala:379
 msgid "Please enter a valid username"
 msgstr "Ju lutemi vendosni një emër përdoruesi të vlefshëm"
 
-#: ../src/Widgets/MainWindow.vala:376
+#: ../src/Widgets/MainWindow.vala:382
 msgid "Please enter a valid password"
 msgstr "Shkruani një fjalëkalim të vlefshëm"
 
-#: ../src/Widgets/MainWindow.vala:379
+#: ../src/Widgets/MainWindow.vala:385
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:382
+#: ../src/Widgets/MainWindow.vala:388
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:385
+#: ../src/Widgets/MainWindow.vala:391
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:388
+#: ../src/Widgets/MainWindow.vala:394
 msgid "Either your username or the password are not correct."
 msgstr "O emri juaj i përdoruesit o fjalëkalimi juaj janë të pasaktë."
 
-#: ../src/Widgets/MainWindow.vala:391
+#: ../src/Widgets/MainWindow.vala:397
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -293,6 +317,10 @@ msgstr ""
 
 #: ../src/Constants.vala:87
 msgid "Desktop Client for various RSS Services"
+msgstr ""
+
+#: ../src/FeedReader.vala:6
+msgid "About FeedReader"
 msgstr ""
 
 #: ../src/Model/Article.vala:94

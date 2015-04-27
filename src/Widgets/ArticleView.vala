@@ -43,6 +43,11 @@ public class FeedReader.articleView : Gtk.Stack {
 	public async void fillContent(string articleID)
 	{
 		SourceFunc callback = fillContent.callback;
+
+		//m_load_ongoing = 0;
+		//m_open_external = false;
+		//m_currentView.load_html("", null);
+
 		m_currentArticle = articleID;
 
 		if(m_currentView == m_view1)

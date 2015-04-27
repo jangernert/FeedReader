@@ -42,7 +42,8 @@ img {
 }
 ol,
 ul {
-  list-style: none;
+  list-style: disc outside none;
+  margin-left:30px;
 }
 /* Style stripping */
 blockquote:before,
@@ -79,6 +80,9 @@ menu,
 nav,
 section {
   display: block;
+}
+code {
+	background-color: #c3c3c3;
 }
 /* HTML5 reset */
 .cf:after,

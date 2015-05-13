@@ -388,17 +388,38 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			var headline_count = response.get_length();
 			logger.print(LogMessage.DEBUG, "TTRSS sync: headline count: %u".printf(headline_count));
 			logger.print(LogMessage.DEBUG, "TTRSS sync: skip: %i".printf(skip));
-			string title, author, url, html;
 
 			for(uint i = 0; i < headline_count; i++)
 			{
 				var headline_node = response.get_object_element(i);
+
 				int articleID = (int)headline_node.get_int_member("id");
+				string title = headline_node.get_string_member("title").replace("&","");
+				string author = headline_node.get_string_member("author");
+				string url = headline_node.get_string_member("link");
+				string html = "";
 
 				if(!dataBase.article_exists(articleID.to_string()))
-					getArticle( articleID, out title, out author, out url, out html);
-				else
-					title = author = url = html = "";
+				{
+					// if the article does not already exist in the db
+					logger.print(LogMessage.DEBUG, "TTRSS sync: get Article - link: %s".printf(headline_node.get_string_member("link")));
+					var grabber = new Grabber(headline_node.get_string_member("link"));
+
+					if(grabber.process())
+					{
+						grabber.print();
+						if(author != "" && grabber.getAuthor() != null)
+						{
+							author = grabber.getAuthor();
+						}
+						grabber.getArticle(ref html);
+					}
+					else
+					{
+						getArticle( articleID, out title, out author, out url, out html);
+					}
+
+				}
 
 				string tagString = "";
 				if(headline_node.has_member("labels"))
@@ -417,14 +438,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 				articles.append(new article(
 										headline_node.get_int_member("id").to_string(),
-										headline_node.get_string_member("title").replace("&",""),
-										headline_node.get_string_member("link"),
+										title,
+										url,
 										headline_node.get_string_member("feed_id"),
 										(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
 										(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 										html,
 										"",
-										author,
+										(author == "") ? _("not found") : author,
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
 										tagString

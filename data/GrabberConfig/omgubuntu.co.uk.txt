@@ -1,0 +1,12 @@
+tidy: no
+prune: no
+
+title: //h2[@class='entry-title']
+author: //a[@rel='author']
+
+body: //article
+
+strip: //div[@class='entry-share']
+strip: //div[@class='entry-meta']
+
+test_url: http://www.omgubuntu.co.uk/2015/04/facebook-chat-api-empathy-pidgin-stop-working

@@ -21,7 +21,7 @@ add_subdirectory (po)
 add_subdirectory (schemas)
 
 
-set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify)
+set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify libxml-2.0)
 if(WITH_LIBUNITY)
 	list(APPEND MODULES unity)
 endif(WITH_LIBUNITY)
@@ -69,6 +69,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/TagRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
+    src/ContentGrabber/stringReplace.vala
 
 # tell what libraries to use when compiling
 PACKAGES
@@ -98,7 +99,8 @@ set(DAEMON_PACKAGES
     json-glib-1.0
     libnotify
     libsecret-1
-    unity)
+    unity
+    libxml-2.0)
     
 if(WITH_LIBUNITY)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
@@ -122,6 +124,10 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backends/ttrss/TTRSS_Message.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
+    src/ContentGrabber/stringReplace.vala
+    src/ContentGrabber/grabberConfig.vala
+    src/ContentGrabber/grabber.vala
+    src/ContentGrabber/grabberUtils.vala
 
 
 PACKAGES
@@ -147,6 +153,7 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION $
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION $ENV{HOME}/.config/autostart/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader.css DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-left.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-left-hover.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-down.svg DESTINATION ${PKGDATADIR})

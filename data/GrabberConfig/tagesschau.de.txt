@@ -1,0 +1,12 @@
+body: //div[contains(@class, 'sectionArticle')]//div[contains(concat(' ',normalize-space(@class),' '),' box ')]
+
+strip_id_or_class: infokasten
+strip_id_or_class: teaserImTeaser
+strip_id_or_class: Comments
+strip_id_or_class: mediaInfo
+strip: //div[contains(@class, 'mediaCon')]//iframe
+
+prune: no
+
+test_url: http://www.tagesschau.de/inland/germanwings-trauerfeier-111.html
+test_url: http://www.tagesschau.de/xml/rss2

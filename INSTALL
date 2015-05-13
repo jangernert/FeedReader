@@ -14,6 +14,7 @@ libwebkit2gtk-3.0-dev
 libsqlite3-dev
 libsecret-1-dev
 libnotify-dev
+libxml-2.0
 libunity-dev (optional: disable with -DWITH_LIBUNITY=OFF)
 
 

@@ -1,0 +1,6 @@
+# based on the grabber rules of picofeed
+
+body: //div[@class="KonaBody"]
+test_url: http://www.phoronix.com/scan.php?page=article&item=amazon_ec2_bare&num=1
+
+next_page_link: //a[@title='Go To Next Page']

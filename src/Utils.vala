@@ -24,6 +24,7 @@ public class FeedReader.Utils : GLib.Object {
 
 				string output = "";
 				string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", filename};
+				//string[] spawn_args = {"html2text", "-nometa", "-nobs", "-style", "pretty", filename};
 				try{
 					GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 				}
@@ -37,16 +38,40 @@ public class FeedReader.Utils : GLib.Object {
 					continue;
 				}
 
-				string prefix = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
-				if(output.has_prefix(prefix))
-					output = output.slice(prefix.length, output.length);
+				string prefix1 = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
+				string prefix2 = "<?xml version=\"1.0\"?>";
+
+				if(output.has_prefix(prefix1))
+					output = output.slice(prefix1.length, output.length);
+
+				if(output.has_prefix(prefix2))
+					output = output.slice(prefix2.length, output.length);
 
 				int length = 300;
 				if(output.length < 300)
 					length = output.length;
 
-				output = output.replace("\n"," ");
-				output = output.replace("_"," ");
+				var replaceList = new GLib.List<StringReplace>();
+				replaceList.append(new StringReplace("\n", " "));
+				replaceList.append(new StringReplace("&#xD;", " "));
+				replaceList.append(new StringReplace("_", " "));
+				replaceList.append(new StringReplace("&#xE4;", "ä"));
+				replaceList.append(new StringReplace("&#xF6;", "ö"));
+				replaceList.append(new StringReplace("&#xFC;", "ü"));
+				replaceList.append(new StringReplace("&#x201E;", "„"));
+				replaceList.append(new StringReplace("&#x201D;", "”"));
+				replaceList.append(new StringReplace("&#xA0;", " "));
+
+
+				//output = output.replace("\n"," ");
+				//output = output.replace("_"," ");
+
+				foreach(var pair in replaceList)
+				{
+					output = output.replace(pair.getToReplace(),pair.getReplaceWith());
+				}
+
+
 				output = output.slice(0, length);
 				output = output.slice(0, output.last_index_of(" "));
 				output = output.chug();

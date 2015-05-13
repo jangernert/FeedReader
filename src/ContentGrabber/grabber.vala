@@ -79,6 +79,12 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        // mute stdout first
+        var old_stdout = (owned) stdout;
+        stdout = FileStream.open ("bla", "w");
+        var old_stderr = (owned) stderr;
+        stderr = FileStream.open ("bla", "w");
+
         // parse html
         var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOWARNING);
@@ -87,6 +93,10 @@ public class FeedReader.Grabber : GLib.Object {
         {
     		return false;
     	}
+
+        // unmute
+        stdout = (owned) old_stdout;
+        stderr = (owned) old_stderr;
 
 
         // get link to next page of article if there are more than one pages

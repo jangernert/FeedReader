@@ -9,7 +9,7 @@ title: //div[@class='Newsheader']/h1
 
 body: //div[@id='Newswrap']
 
-strip: //div[@class='Newscontents']
+strip: //div[@id='Newscontents']
 strip: //div[@class='Newsbanner']
 
 

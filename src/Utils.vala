@@ -61,6 +61,7 @@ public class FeedReader.Utils : GLib.Object {
 				replaceList.append(new StringReplace("&#x201E;", "„"));
 				replaceList.append(new StringReplace("&#x201D;", "”"));
 				replaceList.append(new StringReplace("&#xA0;", " "));
+				replaceList.append(new StringReplace("&#x2019;", "´"));
 
 
 				//output = output.replace("\n"," ");

@@ -89,10 +89,10 @@ public class FeedReader.Grabber : GLib.Object {
         logger.print(LogMessage.DEBUG, "Grabber: parse html");
 
         // mute stdout first
-        //var old_stdout = (owned) stdout;
-        //stdout = FileStream.open ("bla", "w");
-        //var old_stderr = (owned) stderr;
-        //stderr = FileStream.open ("bla", "w");
+        var old_stdout = (owned) stdout;
+        stdout = FileStream.open ("/dev/null", "w");
+        var old_stderr = (owned) stderr;
+        stderr = FileStream.open ("/dev/null", "w");
 
         // parse html
         var html_cntx = new Html.ParserCtxt();
@@ -104,8 +104,8 @@ public class FeedReader.Grabber : GLib.Object {
     	}
 
         // unmute
-        //stdout = (owned) old_stdout;
-        //stderr = (owned) old_stderr;
+        stdout = (owned) old_stdout;
+        stderr = (owned) old_stderr;
 
         logger.print(LogMessage.DEBUG, "Grabber: html parsed");
 

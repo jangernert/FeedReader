@@ -45,10 +45,16 @@ public class FeedReader.Grabber : GLib.Object {
         if(!m_configFound)
             return false;
 
+        logger.print(LogMessage.DEBUG, "Grabber: config found");
+
         if(!download())
             return false;
 
+        logger.print(LogMessage.DEBUG, "Grabber: download success");
+
         prepArticle();
+
+        logger.print(LogMessage.DEBUG, "Grabber: empty article preped");
 
         if(!parse())
             return false;
@@ -68,6 +74,7 @@ public class FeedReader.Grabber : GLib.Object {
     private bool parse()
     {
         m_nexPageURL = null;
+        logger.print(LogMessage.DEBUG, "Grabber: start parsing");
 
         // replace strings before parsing html
         unowned GLib.List<StringReplace> replace = m_config.getReplace();
@@ -79,15 +86,17 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        logger.print(LogMessage.DEBUG, "Grabber: parse html");
+
         // mute stdout first
-        var old_stdout = (owned) stdout;
-        stdout = FileStream.open ("bla", "w");
-        var old_stderr = (owned) stderr;
-        stderr = FileStream.open ("bla", "w");
+        //var old_stdout = (owned) stdout;
+        //stdout = FileStream.open ("bla", "w");
+        //var old_stderr = (owned) stderr;
+        //stderr = FileStream.open ("bla", "w");
 
         // parse html
         var html_cntx = new Html.ParserCtxt();
-        html_cntx.use_options(Html.ParserOption.NOWARNING);
+        html_cntx.use_options(Html.ParserOption.NOERROR);
         var doc = html_cntx.read_doc(m_rawHtml, "");
         if (doc == null)
         {
@@ -95,22 +104,27 @@ public class FeedReader.Grabber : GLib.Object {
     	}
 
         // unmute
-        stdout = (owned) old_stdout;
-        stderr = (owned) old_stderr;
+        //stdout = (owned) old_stdout;
+        //stderr = (owned) old_stderr;
+
+        logger.print(LogMessage.DEBUG, "Grabber: html parsed");
 
 
         // get link to next page of article if there are more than one pages
         if(m_config.getXPathNextPageURL() != null)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: grab next page url");
             m_nexPageURL = grabberUtils.getURL(doc, m_config.getXPathNextPageURL());
         }
 
         // get link to single-page view if it exists and download that page
         if(m_config.getXPathSinglePageURL() != null)
         {
-            m_articleURL = grabberUtils.getURL(doc, m_config.getXPathSinglePageURL());
-            if(m_articleURL != "" && m_articleURL != null)
+            logger.print(LogMessage.DEBUG, "Grabber: grab single page view");
+            string url = grabberUtils.getURL(doc, m_config.getXPathSinglePageURL());
+            if(url != "" && url != null)
             {
+                m_articleURL = url;
                 download();
                 delete doc;
                 doc = html_cntx.read_doc(m_rawHtml, "");
@@ -222,7 +236,7 @@ public class FeedReader.Grabber : GLib.Object {
                 m_nexPageURL = grabberUtils.completeURL(m_nexPageURL, m_articleURL);
             }
             m_articleURL = m_nexPageURL;
-            stdout.printf("next page url: %s\n", m_nexPageURL);
+            logger.print(LogMessage.DEBUG, "Grabber: next page url: %s".printf(m_nexPageURL));
             download();
             parse();
             return true;
@@ -248,13 +262,13 @@ public class FeedReader.Grabber : GLib.Object {
     public void print()
     {
         if(m_title != null)
-            stdout.printf("title: %s\n", m_title);
+            logger.print(LogMessage.DEBUG, "Grabber: title: %s".printf(m_title));
 
         if(m_author != null)
-            stdout.printf("author: %s\n", m_author);
+            logger.print(LogMessage.DEBUG, "Grabber: author: %s".printf(m_author));
 
         if(m_date != null)
-            stdout.printf("date: %s\n", m_date);
+            logger.print(LogMessage.DEBUG, "Grabber: date: %s".printf(m_date));
     }
 
     public string getAuthor()

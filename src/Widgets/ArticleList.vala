@@ -114,9 +114,11 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	private void key_pressed(Gdk.EventKey event)
 	{
-		if(event.keyval == Gdk.Key.Down)
+		if(event.keyval == Gdk.Key.Down
+		|| event.keyval == Gdk.Key.k)
 			move(true);
-		else if(event.keyval == Gdk.Key.Up)
+		else if(event.keyval == Gdk.Key.Up
+		|| event.keyval == Gdk.Key.j)
 			move(false);
 	}
 

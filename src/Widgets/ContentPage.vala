@@ -24,8 +24,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_pane.pack1(m_feedList, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
+
 			if(feedID == FeedID.ALL
-			|| dataBase.get_unread_feed(feedID) == 0)
+			&& dataBase.get_unread_total() > 0)
+				setMarkReadButtonActive(true);
+			else if(dataBase.get_unread_feed(feedID) == 0)
 				setMarkReadButtonActive(false);
 			else
 				setMarkReadButtonActive(true);

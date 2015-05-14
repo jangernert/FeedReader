@@ -56,8 +56,21 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 			if(selectedRow[0] == "feed")
 			{
-				feedDaemon_interface.markFeedAsRead(selectedRow[1], false);
-				m_content.markAllArticlesAsRead();
+				if(selectedRow[1] == FeedID.ALL)
+				{
+					var categories = dataBase.read_categories();
+					foreach(category cat in categories)
+					{
+						feedDaemon_interface.markFeedAsRead(cat.m_categorieID, true);
+						m_content.markAllArticlesAsRead();
+						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read: %s".printf(cat.m_categorieID));
+					}
+				}
+				else
+				{
+					feedDaemon_interface.markFeedAsRead(selectedRow[1], false);
+					m_content.markAllArticlesAsRead();
+				}
 			}
 			else if(selectedRow[0] == "cat")
 			{
@@ -91,12 +104,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			});
 		});
 		add_action(settings_action);
+		settings_action.set_enabled(true);
 
 		m_login_action = new SimpleAction (_("reset"), null);
 		m_login_action.activate.connect (() => {
 			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		add_action(m_login_action);
+		m_login_action.set_enabled(true);
 
 
 		m_content.setMarkReadButtonActive.connect((active) => {
@@ -439,11 +454,15 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void setMarkAllButtonSensitive()
 	{
+		logger.print(LogMessage.DEBUG, "MainWindow: setMarkAllButtonSensitive");
 		string[] selectedRow = m_content.getSelectedFeedListRow().split(" ", 2);
 
 		if(selectedRow[0] == "feed")
 		{
-			if(dataBase.get_unread_feed(selectedRow[1]) == 0)
+			if(selectedRow[1] == FeedID.ALL
+			&& dataBase.get_unread_total() > 0)
+				m_headerbar.setMarkReadButtonSensitive(true);
+			else if(dataBase.get_unread_feed(selectedRow[1]) == 0)
 				m_headerbar.setMarkReadButtonSensitive(false);
 			else
 				m_headerbar.setMarkReadButtonSensitive(true);

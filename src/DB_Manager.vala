@@ -752,7 +752,7 @@ public class FeedReader.dbManager : GLib.Object {
 		ThreadFunc<void*> run = () => {
 
 			var query1 = new QueryBuilder(QueryType.UPDATE, "main.articles");
-			query1.updateValuePair("unread", ArticleStatus.UNREAD.to_string());
+			query1.updateValuePair("unread", ArticleStatus.READ.to_string());
 			query1.addRangeConditionString("feedID", getFeedIDofCategorie(catID));
 			executeSQL(query1.build());
 

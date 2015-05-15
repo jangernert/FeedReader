@@ -246,7 +246,7 @@ namespace FeedReader {
 
 
 	void main () {
-
+		stderr = FileStream.open ("/dev/null", "w");
 		dataBase = new dbManager();
 		dataBase.init();
 		settings_general = new GLib.Settings ("org.gnome.feedreader");

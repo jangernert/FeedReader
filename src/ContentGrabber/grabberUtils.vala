@@ -69,6 +69,40 @@ public class FeedReader.grabberUtils : GLib.Object {
         return result;
     }
 
+    public static bool repairImg(Html.Doc* doc, string articleURL)
+    {
+        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+    	Xml.XPath.Object* res = cntx.eval_expression("//img");
+
+        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+            return false;
+
+        for(int i = 0; i < res->nodesetval->length(); i++)
+        {
+        	Xml.Node* node = res->nodesetval->item(i);
+            node->set_prop("src", completeURL(node->get_prop("src"), articleURL));
+        }
+
+        return true;
+    }
+
+    public static bool repairURL(Html.Doc* doc, string articleURL)
+    {
+        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+    	Xml.XPath.Object* res = cntx.eval_expression("//a");
+
+        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+            return false;
+
+        for(int i = 0; i < res->nodesetval->length(); i++)
+        {
+        	Xml.Node* node = res->nodesetval->item(i);
+            node->set_prop("href", completeURL(node->get_prop("href"), articleURL));
+        }
+
+        return true;
+    }
+
     public static void stripNode(Html.Doc* doc, string xpath)
     {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);

@@ -221,6 +221,10 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        // complete relative source urls of images
+        grabberUtils.repairImg(doc, m_articleURL);
+        grabberUtils.repairURL(doc, m_articleURL);
+
         // strip elements using Readability.com and Instapaper.com ignore class names
 		// .entry-unrelated and .instapaper_ignore
 		// See https://www.readability.com/publishers/guidelines/#view-plainGuidelines

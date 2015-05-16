@@ -5,14 +5,15 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     }
 
-    public static void extractBody(Html.Doc* doc, string xpath, Xml.Node* destination)
+    public static bool extractBody(Html.Doc* doc, string xpath, Xml.Node* destination)
     {
+        bool foundSomething = false;
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
         var res = cntx.eval_expression(xpath);
         //stdout.printf("xpath: %s\n", xpath);
 
         if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
-            return;
+            return false;
 
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
@@ -23,9 +24,13 @@ public class FeedReader.grabberUtils : GLib.Object {
 
             node->unlink();
             destination->add_child(node);
+
+            if(!foundSomething)
+                foundSomething = true;
         }
 
     	delete res;
+        return foundSomething;
     }
 
     public static string getURL(Html.Doc* doc, string xpath)

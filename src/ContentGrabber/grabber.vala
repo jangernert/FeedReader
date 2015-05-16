@@ -8,6 +8,7 @@ public class FeedReader.Grabber : GLib.Object {
     private Xml.Doc* m_doc;
     private Xml.Node* m_root;
     private Xml.Ns* m_ns;
+    private bool m_foundSomething;
 
 
     public string m_author;
@@ -91,6 +92,9 @@ public class FeedReader.Grabber : GLib.Object {
         logger.print(LogMessage.DEBUG, "Grabber: empty article preped");
 
         if(!parse())
+            return false;
+
+        if(!m_foundSomething)
             return false;
 
         return true;
@@ -249,7 +253,8 @@ public class FeedReader.Grabber : GLib.Object {
         {
             foreach(string bodyXPath in bodyList)
             {
-                grabberUtils.extractBody(doc, bodyXPath, m_root);
+                if(grabberUtils.extractBody(doc, bodyXPath, m_root))
+                    m_foundSomething = true;
             }
         }
 

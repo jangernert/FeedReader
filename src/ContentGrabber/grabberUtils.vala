@@ -171,10 +171,14 @@ public class FeedReader.grabberUtils : GLib.Object {
         int index = articleURL.index_of_char('.', 12);
         string baseURL = "";
 
-        if(incompleteURL.has_prefix("/"))
+        if(incompleteURL.has_prefix("/") && !incompleteURL.has_prefix("//"))
         {
             index = articleURL.index_of_char('/', index);
             baseURL = articleURL.substring(0, index);
+            if(baseURL.has_suffix("/"))
+            {
+                baseURL = baseURL.substring(0, baseURL.char_count()-1);
+            }
             return baseURL + incompleteURL;
         }
         else if(incompleteURL.has_prefix("?"))
@@ -184,7 +188,7 @@ public class FeedReader.grabberUtils : GLib.Object {
             return baseURL + incompleteURL;
         }
 
-        return "error";
+        return incompleteURL;
     }
 
     public static string buildHostName(string URL)

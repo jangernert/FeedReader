@@ -3,10 +3,14 @@ public class FeedReader.articleView : Gtk.Stack {
 	private WebKit.WebView m_view1;
 	private WebKit.WebView m_view2;
 	private WebKit.WebView m_currentView;
+	private WebKit.FindController m_search1;
+	private WebKit.FindController m_search2;
+	private WebKit.FindController m_currentSearch;
 	private bool m_open_external;
 	private int m_load_ongoing;
 	private string m_currentArticle;
 	private bool m_firstTime;
+
 
 	public articleView () {
 		m_load_ongoing = 0;
@@ -18,7 +22,11 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view2 = new WebKit.WebView();
 		m_view2.load_changed.connect(open_link);
 		m_view2.context_menu.connect(() => { return true; });
+		m_search1 = m_view1.get_find_controller();
+		m_search2 = m_view2.get_find_controller();
+
 		m_currentView = m_view1;
+		m_currentSearch = m_search1;
 
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("emptyView");
@@ -44,19 +52,17 @@ public class FeedReader.articleView : Gtk.Stack {
 	{
 		SourceFunc callback = fillContent.callback;
 
-		//m_load_ongoing = 0;
-		//m_open_external = false;
-		//m_currentView.load_html("", null);
-
 		m_currentArticle = articleID;
 
 		if(m_currentView == m_view1)
 		{
 			m_currentView = m_view2;
+			m_currentSearch = m_search2;
 		}
 		else
 		{
 			m_currentView = m_view1;
+			m_currentSearch = m_search1;
 		}
 
 		article Article = null;
@@ -132,6 +138,7 @@ public class FeedReader.articleView : Gtk.Stack {
 				if(m_load_ongoing >= 3){
 					logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
 					m_open_external = true;
+					//m_currentSearch.search("Windows", WebKit.FindOptions.NONE, 99);
 
 					if(m_firstTime)
 					{

@@ -52,6 +52,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         setup_articleview_settings();
         setup_sync_settings();
         setup_db_settings();
+        setup_service_settings();
 
         this.add_button(_("Close"), 1);
         show_all();
@@ -308,5 +309,58 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         drop_articles_box.pack_start(drop_articles, true, true, 0);
         drop_articles_box.pack_end(drop_box, false, false, 0);
         m_internalsBox.pack_start(drop_articles_box, false, true, 0);
+    }
+
+
+    private void setup_service_settings()
+    {
+        var service_settings = new Gtk.Label(_("Services:"));
+        service_settings.margin_top = 15;
+        service_settings.set_alignment(0, 0.5f);
+        service_settings.get_style_context().add_class("h4");
+        m_internalsBox.pack_start(service_settings, false, true, 0);
+
+        var grabber_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        var grabber = new Gtk.Label(_("Content Grabber"));
+        grabber.set_alignment(0, 0.5f);
+        grabber.margin_start = 15;
+
+        var grabber_liststore = new Gtk.ListStore(1, typeof(string));
+		Gtk.TreeIter none;
+        grabber_liststore.append(out none);
+        grabber_liststore.set(none, 0, _("None"));
+		Gtk.TreeIter builtin;
+        grabber_liststore.append(out builtin);
+        grabber_liststore.set(builtin, 0, _("Built in grabber"));
+        Gtk.TreeIter readability;
+        grabber_liststore.append(out readability);
+        grabber_liststore.set(readability, 0, _("Readability.com"));
+
+        var grabber_dropbox = new Gtk.ComboBox.with_model(grabber_liststore);
+        var grabber_renderer = new Gtk.CellRendererText();
+        grabber_dropbox.pack_start(grabber_renderer, false);
+        grabber_dropbox.add_attribute(grabber_renderer, "text", 0);
+        grabber_dropbox.changed.connect(() => {
+            settings_general.set_enum("content-grabber", grabber_dropbox.get_active());
+        });
+
+        switch(settings_general.get_enum("content-grabber"))
+		{
+			case ContentGrabber.NONE:
+            grabber_dropbox.set_active(0);
+				break;
+
+			case ContentGrabber.BUILTIN:
+            grabber_dropbox.set_active(1);
+				break;
+
+			case ContentGrabber.READABILITY:
+            grabber_dropbox.set_active(2);
+				break;
+		}
+
+        grabber_box.pack_start(grabber, true, true, 0);
+        grabber_box.pack_end(grabber_dropbox, false, false, 0);
+        m_internalsBox.pack_start(grabber_box, false, true, 0);
     }
 }

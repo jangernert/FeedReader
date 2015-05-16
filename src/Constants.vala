@@ -120,7 +120,7 @@ namespace FeedReader {
 	public enum ContentGrabber {
 		NONE,
 		BUILTIN,
-		READABILTITY
+		READABILITY
 	}
 
 	namespace FeedList {

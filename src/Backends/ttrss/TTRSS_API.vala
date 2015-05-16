@@ -405,7 +405,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					logger.print(LogMessage.DEBUG, "TTRSS sync: get Article - link: %s".printf(headline_node.get_string_member("link")));
 					var grabber = new Grabber(headline_node.get_string_member("link"));
 
-					if(grabber.process())
+					if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN && grabber.process())
 					{
 						grabber.print();
 						if(author != "" && grabber.getAuthor() != null)

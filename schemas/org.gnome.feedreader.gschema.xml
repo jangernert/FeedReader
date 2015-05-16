@@ -6,6 +6,12 @@
 		<value nick="OWNCLOUD" value="2"/>
 	</enum>
 
+	<enum id="org.gnome.feedreader.grabber">
+		<value nick="NONE" value="0"/>
+		<value nick="BUILTIN" value="1"/>
+		<value nick="READABILITY" value="2"/>
+	</enum>
+
 	<enum id="org.gnome.feedreader.loglevel">
 		<value nick="OFF" value="0"/>
 		<value nick="ERROR" value="1"/>
@@ -283,6 +289,14 @@
 
 		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>
 			<default>'NEVER'</default>
+		</key>
+
+		<key name='content-grabber' enum='org.gnome.feedreader.grabber'>
+			<default>'BUILTIN'</default>
+			<summary>grab full content of articles</summary>
+			<description>
+				choose which method to use to grab the whole article even if the feed only provides a small preview
+			</description>
 		</key>
 
 		<key name='spring-clean-after' type="i">

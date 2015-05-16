@@ -117,6 +117,12 @@ namespace FeedReader {
 		SIX_MONTHS
 	}
 
+	public enum ContentGrabber {
+		NONE,
+		BUILTIN,
+		READABILTITY
+	}
+
 	namespace FeedList {
 		 const int ALL_FEEDS = 24;
 		 const int SPACER    = 25;

@@ -266,6 +266,17 @@ public class FeedReader.FeedlyAPI : Object {
 				}
 			}
 
+			var grabber = new Grabber(url);
+			if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN && grabber.process())
+			{
+				grabber.print();
+				if(author != "" && grabber.getAuthor() != null)
+				{
+					author = grabber.getAuthor();
+				}
+				grabber.getArticle(ref Content);
+			}
+
 			/*
 			logger.print(LogMessage.DEBUG, "feedly: id = " + id);
 			logger.print(LogMessage.DEBUG, "feedly: title = " + title);

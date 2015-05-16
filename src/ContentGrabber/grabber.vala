@@ -5,7 +5,6 @@ public class FeedReader.Grabber : GLib.Object {
     private GrabberConfig m_config;
     private bool m_firstPage;
     private string m_hostName;
-    private bool m_configFound;
     private Xml.Doc* m_doc;
     private Xml.Node* m_root;
     private Xml.Ns* m_ns;
@@ -18,19 +17,8 @@ public class FeedReader.Grabber : GLib.Object {
 
     public Grabber(string articleURL)
     {
-        m_configFound = false;
         m_articleURL = articleURL;
         m_firstPage = true;
-        m_hostName = grabberUtils.buildHostName(articleURL);
-
-        string filename = "/usr/share/FeedReader/GrabberConfig/" + m_hostName + ".txt";
-        if(FileUtils.test(filename, GLib.FileTest.EXISTS))
-        {
-            m_config = new GrabberConfig(filename);
-            m_configFound = true;
-        }
-
-        //m_config.print();
     }
 
     ~Grabber()
@@ -40,15 +28,61 @@ public class FeedReader.Grabber : GLib.Object {
         delete m_ns;
     }
 
+    private bool checkConfigFile()
+    {
+        m_hostName = grabberUtils.buildHostName(m_articleURL);
+        string filename = "/usr/share/FeedReader/GrabberConfig/" + m_hostName + ".txt";
+        if(FileUtils.test(filename, GLib.FileTest.EXISTS))
+        {
+            m_config = new GrabberConfig(filename);
+            //m_config.print();
+            return true;
+        }
+        return false;
+    }
+
     public bool process()
     {
-        if(!m_configFound)
-            return false;
+        bool downloaded = false;
+
+        if(!checkConfigFile())
+        {
+            // check page for feedsportal
+            if(m_articleURL.contains("feedsportal.com") && download())
+            {
+                downloaded = true;
+
+                var html_cntx = new Html.ParserCtxt();
+                html_cntx.use_options(Html.ParserOption.NOERROR);
+                var doc = html_cntx.read_doc(m_rawHtml, "");
+                if (doc == null)
+                {
+            		return false;
+            	}
+
+                Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+            	Xml.XPath.Object* res = cntx.eval_expression("//meta[@property='og:url']");
+
+                if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+                    return false;
+
+                Xml.Node* node = res->nodesetval->item(0);
+                m_articleURL = node->get_prop("content");
+                logger.print(LogMessage.DEBUG, "Grabber: original url: %s".printf(m_articleURL));
+
+                // check again for config file with new url
+                if(!checkConfigFile())
+                    return false;
+            }
+            else
+                return false;
+        }
 
         logger.print(LogMessage.DEBUG, "Grabber: config found");
 
-        if(!download())
+        if(!downloaded && !download())
             return false;
+
 
         logger.print(LogMessage.DEBUG, "Grabber: download success");
 
@@ -88,12 +122,6 @@ public class FeedReader.Grabber : GLib.Object {
 
         logger.print(LogMessage.DEBUG, "Grabber: parse html");
 
-        // mute stdout first
-        //var old_stdout = (owned) stdout;
-        //stdout = FileStream.open ("/dev/null", "w");
-        //var old_stderr = (owned) stderr;
-        //stderr = FileStream.open ("/dev/null", "w");
-
         // parse html
         var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR);
@@ -102,10 +130,6 @@ public class FeedReader.Grabber : GLib.Object {
         {
     		return false;
     	}
-
-        // unmute
-        //stdout = (owned) old_stdout;
-        //stderr = (owned) old_stderr;
 
         logger.print(LogMessage.DEBUG, "Grabber: html parsed");
 

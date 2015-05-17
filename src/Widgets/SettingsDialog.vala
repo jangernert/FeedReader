@@ -332,9 +332,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		Gtk.TreeIter builtin;
         grabber_liststore.append(out builtin);
         grabber_liststore.set(builtin, 0, _("Built in grabber"));
-        Gtk.TreeIter readability;
-        grabber_liststore.append(out readability);
-        grabber_liststore.set(readability, 0, _("Readability.com"));
+        //Gtk.TreeIter readability;
+        //grabber_liststore.append(out readability);
+        //grabber_liststore.set(readability, 0, _("Readability.com"));
 
         var grabber_dropbox = new Gtk.ComboBox.with_model(grabber_liststore);
         var grabber_renderer = new Gtk.CellRendererText();
@@ -354,9 +354,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
             grabber_dropbox.set_active(1);
 				break;
 
-			case ContentGrabber.READABILITY:
-            grabber_dropbox.set_active(2);
-				break;
+			//case ContentGrabber.READABILITY:
+            //grabber_dropbox.set_active(2);
+			//	break;
 		}
 
         grabber_box.pack_start(grabber, true, true, 0);

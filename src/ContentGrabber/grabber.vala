@@ -163,6 +163,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned GLib.List<string> title = m_config.getXPathTitle();
         if(title.length() != 0 && m_firstPage)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: get title");
             foreach(string xpath in title)
             {
                 string tmptitle = grabberUtils.getValue(doc, xpath, m_firstPage);
@@ -175,6 +176,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned GLib.List<string> author = m_config.getXPathAuthor();
         if(author.length() != 0)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: get author");
             foreach(string xpath in author)
             {
                 string tmpAuthor = grabberUtils.getValue(doc, xpath);
@@ -187,6 +189,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned GLib.List<string> date = m_config.getXPathDate();
         if(date.length() != 0)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: get date");
             foreach(string xpath in date)
             {
                 string tmpDate = grabberUtils.getValue(doc, xpath);
@@ -199,6 +202,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned GLib.List<string> strip = m_config.getXPathStrip();
         if(strip.length() != 0)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: strip junk");
             foreach(string xpath in strip)
             {
                 grabberUtils.stripNode(doc, xpath);
@@ -209,6 +213,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned GLib.List<string> _stripIDorClass = m_config.getXPathStripIDorClass();
         if(_stripIDorClass.length() != 0)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: strip id's and class");
             foreach(string IDorClass in _stripIDorClass)
             {
                 grabberUtils.stripIDorClass(doc, IDorClass);
@@ -219,6 +224,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned GLib.List<string> stripImgSrc = m_config.getXPathStripImgSrc();
         if(stripImgSrc.length() != 0)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: strip img-tags");
             foreach(string ImgSrc in stripImgSrc)
             {
                 grabberUtils.stripNode(doc, "//img[contains(@src,'%s')]".printf(ImgSrc));
@@ -226,6 +232,7 @@ public class FeedReader.Grabber : GLib.Object {
         }
 
         // complete relative source urls of images
+        logger.print(LogMessage.DEBUG, "Grabber: copmplete urls");
         grabberUtils.repairImg(doc, m_articleURL);
         grabberUtils.repairURL(doc, m_articleURL);
 
@@ -233,17 +240,21 @@ public class FeedReader.Grabber : GLib.Object {
 		// .entry-unrelated and .instapaper_ignore
 		// See https://www.readability.com/publishers/guidelines/#view-plainGuidelines
 		// and http://blog.instapaper.com/post/730281947
+        logger.print(LogMessage.DEBUG, "Grabber: strip instapaper and readability");
         grabberUtils.stripNode(doc,
                 "//*[contains(concat(' ',normalize-space(@class),' '),' entry-unrelated ') or contains(concat(' ',normalize-space(@class),' '),' instapaper_ignore ')]");
 
 
         // strip elements that contain style="display: none;"
+        logger.print(LogMessage.DEBUG, "Grabber: strip invisible elements");
         grabberUtils.stripNode(doc, "//*[contains(@style,'display:none')]");
 
         // strip all scripts
+        logger.print(LogMessage.DEBUG, "Grabber: strip all scripts");
         grabberUtils.stripNode(doc, "//script");
 
         // strip all comments
+        logger.print(LogMessage.DEBUG, "Grabber: strip all comments");
         grabberUtils.stripNode(doc, "//comment()");
 
 
@@ -251,6 +262,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned GLib.List<string> bodyList = m_config.getXPathBody();
         if(bodyList.length() != 0)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: get body");
             foreach(string bodyXPath in bodyList)
             {
                 if(grabberUtils.extractBody(doc, bodyXPath, m_root))

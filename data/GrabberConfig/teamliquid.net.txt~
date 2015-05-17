@@ -8,9 +8,10 @@ title: //div[@class='Newsheader']/h1
 #author: //a[@rel='author']
 
 body: //div[@id='Newswrap']
+body: //div[@class='text']
 
-strip: //div[@id='Newscontents']
-strip: //div[@class='Newsbanner']
+#strip: //div[@id='Newscontents']
+#strip: //div[@class='Newsbanner']
 
 
 

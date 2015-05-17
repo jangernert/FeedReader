@@ -117,11 +117,14 @@ public class FeedReader.grabberUtils : GLib.Object {
         && res->type == Xml.XPath.ObjectType.NODESET
         && res->nodesetval != null)
         {
-            for(int i = 0; i < res->nodesetval->length(); i++)
+            for(int i = res->nodesetval->length(); i > 0; --i)
             {
                 Xml.Node* node = res->nodesetval->item(i);
-                node->unlink();
-                node->free_list();
+                if(node != null)
+                {
+                    node->unlink();
+                    node->free_list();
+                }
             }
         }
     }

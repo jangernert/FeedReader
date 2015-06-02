@@ -57,7 +57,6 @@ public class FeedReader.grabberUtils : GLib.Object {
     {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
-        //stdout.printf("xpath: %s\n", xpath);
 
         if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
             return null;
@@ -71,6 +70,7 @@ public class FeedReader.grabberUtils : GLib.Object {
             node->free_list();
         }
 
+        delete res;
         return result;
     }
 
@@ -88,6 +88,7 @@ public class FeedReader.grabberUtils : GLib.Object {
             node->set_prop("src", completeURL(node->get_prop("src"), articleURL));
         }
 
+        delete res;
         return true;
     }
 
@@ -105,6 +106,7 @@ public class FeedReader.grabberUtils : GLib.Object {
             node->set_prop("href", completeURL(node->get_prop("href"), articleURL));
         }
 
+        delete res;
         return true;
     }
 
@@ -117,7 +119,7 @@ public class FeedReader.grabberUtils : GLib.Object {
         && res->type == Xml.XPath.ObjectType.NODESET
         && res->nodesetval != null)
         {
-            for(int i = res->nodesetval->length(); i > 0; --i)
+            for(int i = 0; i < res->nodesetval->length(); ++i)
             {
                 Xml.Node* node = res->nodesetval->item(i);
                 if(node != null)
@@ -127,6 +129,8 @@ public class FeedReader.grabberUtils : GLib.Object {
                 }
             }
         }
+
+        delete res;
     }
 
     public static void stripIDorClass(Html.Doc* doc, string IDorClass)

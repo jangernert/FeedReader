@@ -132,6 +132,7 @@ public class FeedReader.Grabber : GLib.Object {
         var doc = html_cntx.read_doc(m_rawHtml, "");
         if (doc == null)
         {
+            logger.print(LogMessage.DEBUG, "Grabber: parsing failed");
     		return false;
     	}
 
@@ -205,6 +206,7 @@ public class FeedReader.Grabber : GLib.Object {
             logger.print(LogMessage.DEBUG, "Grabber: strip junk");
             foreach(string xpath in strip)
             {
+                logger.print(LogMessage.DEBUG, "Grabber: strip %s".printf(xpath));
                 grabberUtils.stripNode(doc, xpath);
             }
         }
@@ -247,7 +249,7 @@ public class FeedReader.Grabber : GLib.Object {
 
         // strip elements that contain style="display: none;"
         logger.print(LogMessage.DEBUG, "Grabber: strip invisible elements");
-        grabberUtils.stripNode(doc, "//*[contains(@style,'display:none')]");
+        grabberUtils.stripNode(doc, "//*[contains(@style,'display:none')][not(ancestor::*[contains(@style,'display:none')])]");
 
         // strip all scripts
         logger.print(LogMessage.DEBUG, "Grabber: strip all scripts");

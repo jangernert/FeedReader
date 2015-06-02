@@ -6,6 +6,7 @@ date: //time
 
 body: //div[@class='post-content entry-content']
 
+strip: //a[@id='dd_start']
 strip: //iframe
 strip: //div[@class='dd_outer']
 strip: //comments

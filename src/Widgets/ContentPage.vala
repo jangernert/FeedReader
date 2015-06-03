@@ -86,6 +86,16 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		this.pack2(m_article_view, true, false);
 	}
 
+	public void ArticleListNEXT()
+	{
+		m_articleList.move(false);
+	}
+
+	public void ArticleListPREV()
+	{
+		m_articleList.move(true);
+	}
+
 	public void newHeadlineList()
 	{
 		m_articleList.newHeadlineList();

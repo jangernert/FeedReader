@@ -125,7 +125,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			this.maximize();
 		}
 
-
+		this.key_press_event.connect(shortcuts);
 		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		this.set_titlebar(m_simpleHeader);
@@ -474,6 +474,24 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			else
 				m_headerbar.setMarkReadButtonSensitive(true);
 		}
+	}
+
+
+	private bool shortcuts(Gdk.EventKey event)
+	{
+		switch(event.keyval)
+		{
+			case Gdk.Key.j:
+				logger.print(LogMessage.DEBUG, "shortcut: down");
+				m_content.ArticleListPREV();
+				break;
+
+			case Gdk.Key.k:
+				logger.print(LogMessage.DEBUG, "shortcut: up");
+				m_content.ArticleListNEXT();
+				break;
+		}
+		return false;
 	}
 
 

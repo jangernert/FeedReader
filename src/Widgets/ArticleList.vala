@@ -114,16 +114,14 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	private void key_pressed(Gdk.EventKey event)
 	{
-		if(event.keyval == Gdk.Key.Down
-		|| event.keyval == Gdk.Key.j)
+		if(event.keyval == Gdk.Key.Down)
 			move(true);
-		else if(event.keyval == Gdk.Key.Up
-		|| event.keyval == Gdk.Key.k)
+		else if(event.keyval == Gdk.Key.Up)
 			move(false);
 	}
 
 
-	private void move(bool down)
+	public void move(bool down)
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 

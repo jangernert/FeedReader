@@ -24,7 +24,6 @@ public class FeedReader.Utils : GLib.Object {
 
 				string output = "";
 				string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", filename};
-				//string[] spawn_args = {"html2text", "-nometa", "-nobs", "-style", "pretty", filename};
 				try{
 					GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 				}
@@ -58,10 +57,12 @@ public class FeedReader.Utils : GLib.Object {
 				replaceList.append(new StringReplace("&#xE4;", "ä"));
 				replaceList.append(new StringReplace("&#xF6;", "ö"));
 				replaceList.append(new StringReplace("&#xFC;", "ü"));
+				replaceList.append(new StringReplace("&#xDC;", "Ü"));
 				replaceList.append(new StringReplace("&#x201E;", "„"));
 				replaceList.append(new StringReplace("&#x201D;", "”"));
 				replaceList.append(new StringReplace("&#xA0;", " "));
 				replaceList.append(new StringReplace("&#x2019;", "´"));
+				replaceList.append(new StringReplace("&#xDF;", "ß"));
 
 
 				//output = output.replace("\n"," ");

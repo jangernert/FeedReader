@@ -397,7 +397,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				string title = headline_node.get_string_member("title").replace("&","");
 				string author = headline_node.get_string_member("author");
 				string url = headline_node.get_string_member("link");
-				string html = "";
+				string html = "article already exists";
 
 				if(!dataBase.article_exists(articleID.to_string()))
 				{

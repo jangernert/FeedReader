@@ -12,13 +12,14 @@ body: //article | //div[@class='meldung_wrapper']
 # General cleanup
 strip: //time
 strip: //h4[@class='author']
+strip: //div[@class='gallery compact']/h3
 strip: //p[@class='news_datum']
 strip: //p[@class='artikel_datum']
 strip: //p[@class='news_navi']
 strip: //p[@class='printversion']
 strip: //a[contains(@href, 'mailto')]
 strip: //div[@class='gallery compact']/h2
-#strip: //div[@class='gallery compact']/h3/
+#strip: //div[@class='gallery compact']/figcaption
 strip_id_or_class: comments
 strip_id_or_class: ISI_IGNORE
 strip_id_or_class: clear
@@ -36,9 +37,6 @@ replace_string(<h5>): <h2>
 replace_string(</h5>): </h2>
 replace_string(<span class="bild_rechts"): <p
 replace_string(<div class="heisebox">): <blockquote>
-
-find_string: <h3/>
-replace_string: <p>
 
 
 next_page_link: //a[@class='next']

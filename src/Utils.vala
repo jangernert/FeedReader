@@ -33,7 +33,9 @@ public class FeedReader.Utils : GLib.Object {
 
 				if(output == "" || output == null)
 				{
+					logger.print(LogMessage.ERROR, "html2text could not generate preview text");
 					article.setPreview(noPreview);
+					logger.print(LogMessage.DEBUG, filename);
 					continue;
 				}
 
@@ -58,11 +60,13 @@ public class FeedReader.Utils : GLib.Object {
 				replaceList.append(new StringReplace("&#xF6;", "ö"));
 				replaceList.append(new StringReplace("&#xFC;", "ü"));
 				replaceList.append(new StringReplace("&#xDC;", "Ü"));
-				replaceList.append(new StringReplace("&#x201E;", "„"));
+				replaceList.append(new StringReplace("&#x201C;", "”"));
 				replaceList.append(new StringReplace("&#x201D;", "”"));
+				replaceList.append(new StringReplace("&#x201E;", "„"));
 				replaceList.append(new StringReplace("&#xA0;", " "));
 				replaceList.append(new StringReplace("&#x2019;", "´"));
 				replaceList.append(new StringReplace("&#xDF;", "ß"));
+				replaceList.append(new StringReplace("&amp;", "&"));
 
 
 				//output = output.replace("\n"," ");
@@ -82,6 +86,8 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			else
 			{
+				logger.print(LogMessage.ERROR, "no html to create preview from");
+				logger.print(LogMessage.DEBUG, article.getHTML());
 				article.setPreview(noPreview);
 			}
 		}

@@ -12,6 +12,8 @@ body: //article | //div[@class='meldung_wrapper']
 # General cleanup
 strip: //time
 strip: //h4[@class='author']
+strip: //div[@class='gallery compact']/h3
+strip: //div[@class='gallery compact']/figcaption
 strip: //p[@class='news_datum']
 strip: //p[@class='artikel_datum']
 strip: //p[@class='news_navi']

@@ -38,7 +38,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
             while((line = dis.read_line()) != null)
             {
                 line = line.chug();
-                if(!line.has_prefix("#") && line != "");
+                if(!line.has_prefix("#") && line != "")
                 {
                     if(line.has_prefix("title:"))
                     {

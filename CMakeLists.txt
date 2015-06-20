@@ -124,6 +124,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backends/ttrss/TTRSS_Message.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
+    src/ContentGrabber/ReadabilityAPI.vala
     src/ContentGrabber/stringReplace.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala

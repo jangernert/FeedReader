@@ -112,6 +112,8 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static void stripNode(Html.Doc* doc, string xpath)
     {
+        string query = "%s[not(ancestor::%s)]".printf(xpath, xpath);
+
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
 

@@ -479,6 +479,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private bool shortcuts(Gdk.EventKey event)
 	{
+		if(m_headerbar.searchFocused())
+			return false;
+
 		switch(event.keyval)
 		{
 			case Gdk.Key.j:

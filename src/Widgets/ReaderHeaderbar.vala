@@ -160,4 +160,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_mark_read_button.set_sensitive(sensitive);
 	}
 
+	public bool searchFocused()
+	{
+		return m_search.has_focus;
+	}
+
 }

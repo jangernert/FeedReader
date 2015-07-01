@@ -302,9 +302,11 @@ public class FeedReader.Grabber : GLib.Object {
         m_doc->set_root_element(m_root);
     }
 
-    public void getArticle(ref string article)
+    public string getArticle()
     {
-        m_doc->dump_memory(out article);
+        string html = "";
+        m_doc->dump_memory(out html);
+        return html;
     }
 
     public void print()

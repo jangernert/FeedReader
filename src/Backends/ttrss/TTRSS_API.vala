@@ -399,28 +399,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				string url = headline_node.get_string_member("link");
 				string html = "article already exists";
 
-				if(!dataBase.article_exists(articleID.to_string()))
-				{
-					// if the article does not already exist in the db
-					logger.print(LogMessage.DEBUG, "TTRSS sync: get Article - link: %s".printf(headline_node.get_string_member("link")));
-					var grabber = new Grabber(headline_node.get_string_member("link"));
-
-					if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN && grabber.process())
-					{
-						grabber.print();
-						if(author != "" && grabber.getAuthor() != null)
-						{
-							author = grabber.getAuthor();
-						}
-						grabber.getArticle(ref html);
-					}
-					else
-					{
-						getArticle( articleID, out title, out author, out url, out html);
-					}
-
-				}
-
 				string tagString = "";
 				if(headline_node.has_member("labels"))
 				{
@@ -436,20 +414,29 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					}
 				}
 
-				articles.append(new article(
+				var Article = new article(
 										headline_node.get_int_member("id").to_string(),
 										title,
 										url,
 										headline_node.get_string_member("feed_id"),
 										(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
 										(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-										html,
+										"",
 										"",
 										(author == "") ? _("not found") : author,
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
 										tagString
-								));
+								);
+
+				if(!dataBase.article_exists(articleID.to_string()))
+				{
+					getArticle(articleID, out title, out author, out url, out html);
+					Article.setHTML(html);
+					FeedServer.grabContent(Article);
+				}
+
+				articles.append(Article);
 
 			}
 

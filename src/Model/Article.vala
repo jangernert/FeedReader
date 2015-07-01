@@ -60,14 +60,14 @@ public class FeedReader.article : GLib.Object {
 		return m_author;
 	}
 
-	public int getSortID()
-	{
-		return m_sortID;
-	}
-
 	public void setAuthor(string author)
 	{
 		m_author = author;
+	}
+
+	public int getSortID()
+	{
+		return m_sortID;
 	}
 
 	public GLib.DateTime getDate()

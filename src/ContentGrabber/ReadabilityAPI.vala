@@ -9,7 +9,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
     public ReadabilityAPI(string url)
     {
-        m_token = "f6a11d146409b522bb08720b6c0077dc3f81f39c";
+        m_token = settings_readability.get_string("parser-api-key");
         m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser ();
@@ -39,7 +39,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 		{
             return ConnectionError.SUCCESS;
 		}
-        
+
         return ConnectionError.UNKNOWN;
     }
 

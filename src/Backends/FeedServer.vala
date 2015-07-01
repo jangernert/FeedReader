@@ -424,4 +424,32 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
+	public static void grabContent(article Article)
+	{
+		if(settings_general.get_enum("content-grabber") == ContentGrabber.NONE)
+		{
+			return;
+		}
+		else if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
+		{
+			var grabber = new Grabber(Article.m_url);
+			if(grabber.process())
+			{
+				grabber.print();
+				if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+				{
+					Article.setAuthor(grabber.getAuthor());
+				}
+				Article.setHTML(grabber.getArticle());
+			}
+		}
+		else if(settings_general.get_enum("content-grabber") == ContentGrabber.READABILITY)
+		{
+			var grabber = new ReadabilityAPI(Article.m_url);
+			grabber.process();
+			Article.setAuthor(grabber.getAuthor());
+			Article.setHTML(grabber.getContent());
+			Article.setPreview(grabber.getPreview());
+		}
+	}
 }

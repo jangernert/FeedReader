@@ -240,6 +240,7 @@ namespace FeedReader {
 	GLib.Settings settings_state;
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
+	GLib.Settings settings_readability;
 	FeedServer server;
 	Logger logger;
 	Notify.Notification notification;
@@ -253,6 +254,7 @@ namespace FeedReader {
 		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
+		settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
 		logger = new Logger();
 		Notify.init("org.gnome.feedreader");
 

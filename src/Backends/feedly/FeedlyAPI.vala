@@ -266,43 +266,27 @@ public class FeedReader.FeedlyAPI : Object {
 				}
 			}
 
-			var grabber = new Grabber(url);
-			if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN && grabber.process())
+			var Article = new article(
+								id,
+								title,
+								url,
+								feedID,
+								(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+								marked,
+								Content,
+								summaryContent,
+								author,
+								date, // timestamp includes msecs so divide by 1000 to get rid of them
+								-1,
+								tagString
+						);
+
+			if(!dataBase.article_exists(id))
 			{
-				grabber.print();
-				if(author != "" && grabber.getAuthor() != null)
-				{
-					author = grabber.getAuthor();
-				}
-				grabber.getArticle(ref Content);
+				FeedServer.grabContent(Article);
 			}
 
-			/*
-			logger.print(LogMessage.DEBUG, "feedly: id = " + id);
-			logger.print(LogMessage.DEBUG, "feedly: title = " + title);
-			logger.print(LogMessage.DEBUG, "feedly: date = " + date.format("%d.%m.%Y %H:%M"));
-
-			assert(id != null);
-			assert(title != null);
-			assert(date != null);
-			*/
-
-			articles.append(
-				new article(
-					id,
-					title,
-					url,
-					feedID,
-					(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-					marked,
-					Content,
-					summaryContent,
-					author,
-					date, // timestamp includes msecs so divide by 1000 to get rid of them
-					-1,
-					tagString
-				)
-			);
+			articles.append(Article);
 		}
 	}
 

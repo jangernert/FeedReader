@@ -6,6 +6,10 @@ public class FeedReader.Utils : GLib.Object {
 		string noPreview = _("No Preview Available");
 		foreach(var article in articles)
 		{
+			if(article.getPreview() != null && article.getPreview() != "")
+			{
+				continue;
+			}
 			if(!dataBase.preview_empty(article.getArticleID()))
 			{
 				article.setPreview(dataBase.read_preview(article.getArticleID()));
@@ -86,8 +90,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			else
 			{
-				logger.print(LogMessage.ERROR, "no html to create preview from");
-				logger.print(LogMessage.DEBUG, article.getHTML());
+				logger.print(LogMessage.DEBUG, "no html to create preview from");
 				article.setPreview(noPreview);
 			}
 		}

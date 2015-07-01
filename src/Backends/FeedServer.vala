@@ -424,7 +424,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
-	public static void grabContent(article Article)
+	public static void grabContent(ref article Article)
 	{
 		if(settings_general.get_enum("content-grabber") == ContentGrabber.NONE)
 		{

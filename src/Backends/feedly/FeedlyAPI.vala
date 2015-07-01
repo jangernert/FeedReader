@@ -283,7 +283,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 			if(!dataBase.article_exists(id))
 			{
-				FeedServer.grabContent(Article);
+				FeedServer.grabContent(ref Article);
 			}
 
 			articles.append(Article);

@@ -433,7 +433,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				{
 					getArticle(articleID, out title, out author, out url, out html);
 					Article.setHTML(html);
-					FeedServer.grabContent(Article);
+					FeedServer.grabContent(ref Article);
 				}
 
 				articles.append(Article);

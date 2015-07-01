@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-04-21 17:39+0200\n"
-"PO-Revision-Date: 2015-04-08 16:50+0000\n"
-"Last-Translator: Mathieu A. <mathieu.adamczewski@outlook.com>\n"
+"PO-Revision-Date: 2015-06-23 08:32+0000\n"
+"Last-Translator: Rémi Patrizio <remi.patrizio@me.com>\n"
 "Language-Team: French <fr@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-06-21 05:30+0000\n"
+"X-Launchpad-Export-Date: 2015-06-24 05:51+0000\n"
 "X-Generator: Launchpad (build 17572)\n"
 
 #: ../src/Backends/FeedServer.vala:385
@@ -60,10 +60,12 @@ msgstr "Ou sont vos flux ?"
 #: ../src/Widgets/LoginPage.vala:29
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
+"Sélectionner le service de flux RSS que vous utilisez et connectez-vous pour "
+"y accéder."
 
 #: ../src/Widgets/LoginPage.vala:63
 msgid "Login"
-msgstr ""
+msgstr "Se connecter"
 
 #: ../src/Widgets/LoginPage.vala:94
 msgid "No service selected."
@@ -108,21 +110,23 @@ msgstr "Marquer les flux/catégories selectionés comme lus."
 
 #: ../src/Widgets/ReaderHeaderbar.vala:92
 msgid "Search Articles"
-msgstr ""
+msgstr "Rechercher des articles"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:99
 msgid "Settings"
-msgstr ""
+msgstr "Paramètres"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:101
 msgid "Change Account"
-msgstr ""
+msgstr "Changer de compte"
 
 #: ../src/Widgets/SpringCleanPage.vala:13
 msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
 msgstr ""
+"FeedReader nettoie la base de données.\n"
+"Cela ne devrait pas durer longtemps."
 
 #: ../src/Widgets/ResetPage.vala:18
 msgid "Change Account?"
@@ -133,22 +137,27 @@ msgid ""
 "You are about to change the account you want FeedReader to use.\n"
 " This means deleting all local data of your old account."
 msgstr ""
+"Vous êtes sur le point de modifier le compte utilisé par FeedReader.\n"
+"Cela signifie que toutes les données locales de votre ancien compte vont "
+"être supprimées."
 
 #: ../src/Widgets/ResetPage.vala:26
 msgid "New account"
-msgstr ""
+msgstr "Nouveau compte"
 
 #: ../src/Widgets/ResetPage.vala:29
 msgid "Waiting for current sync to finish"
-msgstr ""
+msgstr "Synchronisation en cours"
 
 #: ../src/Widgets/ResetPage.vala:39
 msgid "I changed my mind"
-msgstr ""
+msgstr "J'ai changé d'avis"
 
 #: ../src/Widgets/ArticleList.vala:37
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr ""
+"Aucun des %i articles dans la base de données ne correspond aux filtres "
+"actuels."
 
 #: ../src/Widgets/MainWindow.vala:19 ../src/Constants.vala:84
 msgid "FeedReader"
@@ -188,13 +197,15 @@ msgstr "Désolé, il y a eu un problème."
 
 #: ../src/Widgets/MainWindow.vala:394
 msgid "Either your username or the password are not correct."
-msgstr ""
+msgstr "Votre nom d'utilisateur ou votre mot de passe est incorrect."
 
 #: ../src/Widgets/MainWindow.vala:397
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
+"Pas de connexion au serveur. Vérifiez votre connexion internet et l'URL du "
+"serveur !"
 
 #: ../src/Widgets/UpdateButton.vala:15
 msgid "update Feeds"
@@ -202,7 +213,7 @@ msgstr "Mise à jour des flux."
 
 #: ../src/Widgets/SettingsDialog.vala:47
 msgid "Interface"
-msgstr ""
+msgstr "Interface"
 
 #: ../src/Widgets/SettingsDialog.vala:48
 msgid "Internals"
@@ -250,7 +261,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:167
 msgid "Theme"
-msgstr ""
+msgstr "Thème"
 
 #: ../src/Widgets/SettingsDialog.vala:174
 msgid "default"
@@ -282,7 +293,7 @@ msgstr "Chaque (secondes)"
 
 #: ../src/Widgets/SettingsDialog.vala:256
 msgid "Database:"
-msgstr ""
+msgstr "Base de données :"
 
 #: ../src/Widgets/SettingsDialog.vala:263
 msgid "drop articles after"
@@ -290,25 +301,28 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:270
 msgid "Never"
-msgstr ""
+msgstr "Jamais"
 
 #: ../src/Widgets/SettingsDialog.vala:273
 msgid "1 Week"
-msgstr ""
+msgstr "1 Semaine"
 
 #: ../src/Widgets/SettingsDialog.vala:276
 msgid "1 Month"
-msgstr ""
+msgstr "1 mois"
 
 #: ../src/Widgets/SettingsDialog.vala:279
 msgid "6 Months"
-msgstr ""
+msgstr "6 mois"
 
 #: ../src/Widgets/InitSyncPage.vala:18
 msgid ""
 "FeedReader is now getting the first batch of articles.\n"
 "Depending on your connection and settings this can take some time."
 msgstr ""
+"FeedReader récupère la première série d'articles.\n"
+"En fonction de votre connexion et de vos réglages, cela peut prendre un peu "
+"de temps."
 
 #: ../src/Utils.vala:6
 msgid "No Preview Available"
@@ -320,20 +334,20 @@ msgstr "Aucun texte disponible pour cette article :("
 
 #: ../src/Constants.vala:87
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Client pour de multiples services RSS"
 
 #: ../src/FeedReader.vala:6
 msgid "About FeedReader"
-msgstr ""
+msgstr "À propos de FeedReader"
 
 #: ../src/Model/Article.vala:94
 msgid "no date available"
-msgstr ""
+msgstr "aucune date disponible"
 
 #: ../src/Model/Article.vala:100
 msgid "Today"
-msgstr ""
+msgstr "Aujourd'hui"
 
 #: ../src/Model/Article.vala:104
 msgid "Yesterday"
-msgstr ""
+msgstr "Hier"

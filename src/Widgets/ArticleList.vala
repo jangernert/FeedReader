@@ -580,7 +580,6 @@ public class FeedReader.articleList : Gtk.Stack {
 			if(tmpRow != null)
 			{
 				tmpRow.updateUnread(ArticleStatus.READ);
-				tmpRow.unreadIconLeave();
 			}
 		}
 	}

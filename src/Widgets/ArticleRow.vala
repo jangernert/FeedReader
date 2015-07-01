@@ -163,19 +163,9 @@ public class FeedReader.articleRow : baseRow {
 		{
 			case ArticleStatus.READ:
 				updateUnread(ArticleStatus.UNREAD);
-				if(!isHoveringUnread())
-				{
-					m_unread_eventbox.remove(m_read_icon);
-					m_unread_eventbox.add(m_unread_icon);
-				}
 				break;
 			case ArticleStatus.UNREAD:
 				updateUnread(ArticleStatus.READ);
-				if(!isHoveringUnread())
-				{
-					m_unread_eventbox.remove(m_unread_icon);
-					m_unread_eventbox.add(m_read_icon);
-				}
 				break;
 		}
 		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
@@ -222,11 +212,21 @@ public class FeedReader.articleRow : baseRow {
 			{
 				m_label.get_style_context().remove_class("headline-read-label");
 				m_label.get_style_context().add_class("headline-unread-label");
+				if(!isHoveringUnread())
+				{
+					m_unread_eventbox.remove(m_read_icon);
+					m_unread_eventbox.add(m_unread_icon);
+				}
 			}
 			else
 			{
 				m_label.get_style_context().remove_class("headline-unread-label");
 				m_label.get_style_context().add_class("headline-read-label");
+				if(!isHoveringUnread())
+				{
+					m_unread_eventbox.remove(m_unread_icon);
+					m_unread_eventbox.add(m_read_icon);
+				}
 			}
 		}
 	}

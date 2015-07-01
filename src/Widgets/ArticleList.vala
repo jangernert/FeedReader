@@ -159,6 +159,43 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 	}
 
+	public void toggleReadSelected()
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+
+		if(selected_row == null)
+			return;
+
+		selected_row.toggleUnread();
+		selected_row.show_all();
+	}
+
+	public void toggleMarkedSelected()
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+
+		if(selected_row == null)
+			return;
+
+		selected_row.toggleMarked();
+		selected_row.show_all();
+	}
+
+	public void openSelected()
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+
+		if(selected_row == null)
+			return;
+
+		try{
+			Gtk.show_uri(Gdk.Screen.get_default(), selected_row.getURL(), Gdk.CURRENT_TIME);
+		}
+		catch(GLib.Error e){
+			logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+		}
+	}
+
 
 	public int getAmountOfRowsToLoad()
 	{
@@ -220,10 +257,10 @@ public class FeedReader.articleList : Gtk.Stack {
 	private int shortenArticleList()
 	{
 		double RowVSpace = 102;
-		int stillInViewport = (int)((settings_state.get_double("articlelist-scrollpos")+900)/RowVSpace);
+		int stillInViewport = (int)((settings_state.get_double("articlelist-scrollpos")+settings_state.get_int("window-height"))/RowVSpace);
 		if(stillInViewport < settings_state.get_int("articlelist-row-amount"))
 		{
-			return stillInViewport+15;
+			return stillInViewport+(int)(settings_state.get_int("window-height")/RowVSpace);
 		}
 		else if(settings_state.get_int("articlelist-row-amount") == 0)
 			return 15;

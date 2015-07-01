@@ -493,8 +493,20 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				logger.print(LogMessage.DEBUG, "shortcut: up");
 				m_content.ArticleListNEXT();
 				break;
+			case Gdk.Key.r:
+				logger.print(LogMessage.DEBUG, "shortcut: toggle read");
+				m_content.toggleReadSelectedArticle();
+				break;
+			case Gdk.Key.m:
+				logger.print(LogMessage.DEBUG, "shortcut: toggle marked");
+				m_content.toggleMarkedSelectedArticle();
+				break;
+			case Gdk.Key.o:
+				logger.print(LogMessage.DEBUG, "shortcut: open in browser");
+				m_content.openSelectedArticle();
+				break;
 		}
-		return false;
+		return true;
 	}
 
 

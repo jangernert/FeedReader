@@ -201,4 +201,19 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_articleList.markAllAsRead();
 	}
 
+	public void toggleReadSelectedArticle()
+	{
+		m_articleList.toggleReadSelected();
+	}
+
+	public void toggleMarkedSelectedArticle()
+	{
+		m_articleList.toggleMarkedSelected();
+	}
+
+	public void openSelectedArticle()
+	{
+		m_articleList.openSelected();
+	}
+
 }

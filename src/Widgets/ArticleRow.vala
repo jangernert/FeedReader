@@ -13,12 +13,16 @@ public class FeedReader.articleRow : baseRow {
 	private Gtk.EventBox m_marked_eventbox;
 	private bool m_just_clicked;
 	private bool m_updated;
+	private bool m_hovering_unread;
+	private bool m_hovering_marked;
 	private string m_articleID { get; private set; }
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 
 	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview, GLib.DateTime date)
 	{
+		m_hovering_unread = false;
+		m_hovering_marked = false;
 		m_updated = false;
 		m_sortID = sortID;
 		m_marked = marked;
@@ -150,13 +154,28 @@ public class FeedReader.articleRow : baseRow {
 		if(m_just_clicked)
 			unreadIconEnter();
 		m_just_clicked = true;
+		toggleUnread();
+	}
+
+	public void toggleUnread()
+	{
 		switch(m_is_unread)
 		{
 			case ArticleStatus.READ:
 				updateUnread(ArticleStatus.UNREAD);
+				if(!isHoveringUnread())
+				{
+					m_unread_eventbox.remove(m_read_icon);
+					m_unread_eventbox.add(m_unread_icon);
+				}
 				break;
 			case ArticleStatus.UNREAD:
 				updateUnread(ArticleStatus.READ);
+				if(!isHoveringUnread())
+				{
+					m_unread_eventbox.remove(m_unread_icon);
+					m_unread_eventbox.add(m_read_icon);
+				}
 				break;
 		}
 		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
@@ -164,6 +183,7 @@ public class FeedReader.articleRow : baseRow {
 
 	private void unreadIconEnter()
 	{
+		m_hovering_unread = true;
 		if(m_is_unread == ArticleStatus.READ){
 			m_unread_eventbox.remove(m_read_icon);
 			m_unread_eventbox.add(m_unread_icon);
@@ -178,6 +198,7 @@ public class FeedReader.articleRow : baseRow {
 
 	public void unreadIconLeave()
 	{
+		m_hovering_unread = false;
 		if(!m_just_clicked){
 			if(m_is_unread == ArticleStatus.READ){
 				m_unread_eventbox.remove(m_unread_icon);
@@ -221,14 +242,29 @@ public class FeedReader.articleRow : baseRow {
 	private void markedIconClicked()
 	{
 		m_just_clicked = true;
+		toggleMarked();
+	}
+
+	public void toggleMarked()
+	{
 		switch(m_marked)
 		{
 			case ArticleStatus.MARKED:
 				updateMarked(ArticleStatus.UNMARKED);
+				if(!isHoveringMarked())
+				{
+					m_marked_eventbox.remove(m_marked_icon);
+					m_marked_eventbox.add(m_unmarked_icon);
+				}
 				break;
 
 			case ArticleStatus.UNMARKED:
 				updateMarked(ArticleStatus.MARKED);
+				if(!isHoveringMarked())
+				{
+					m_marked_eventbox.remove(m_unmarked_icon);
+					m_marked_eventbox.add(m_marked_icon);
+				}
 				break;
 		}
 
@@ -237,6 +273,7 @@ public class FeedReader.articleRow : baseRow {
 
 	private void markedIconEnter()
 	{
+		m_hovering_marked = true;
 		if(m_marked == ArticleStatus.UNMARKED){
 			m_marked_eventbox.remove(m_unmarked_icon);
 			m_marked_eventbox.add(m_marked_icon);
@@ -251,6 +288,7 @@ public class FeedReader.articleRow : baseRow {
 
 	private void markedIconLeave()
 	{
+		m_hovering_marked = false;
 		if(!m_just_clicked){
 			if(m_marked == ArticleStatus.UNMARKED){
 				m_marked_eventbox.remove(m_marked_icon);
@@ -308,5 +346,19 @@ public class FeedReader.articleRow : baseRow {
 		m_updated = updated;
 	}
 
+	public bool isHoveringUnread()
+	{
+		return m_hovering_unread;
+	}
+
+	public bool isHoveringMarked()
+	{
+		return m_hovering_marked;
+	}
+
+	public string getURL()
+	{
+		return m_url;
+	}
 
 }

@@ -5,12 +5,10 @@ public class FeedReader.articleRow : baseRow {
 	private string m_url;
 	private string m_name;
 	private GLib.DateTime m_date;
-	private Gtk.Image m_marked_icon;
-	private Gtk.Image m_unmarked_icon;
-	private Gtk.Image m_unread_icon;
-	private Gtk.Image m_read_icon;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
+	private Gtk.Stack m_unread_stack;
+	private Gtk.Stack m_marked_stack;
 	private bool m_just_clicked;
 	private bool m_updated;
 	private bool m_hovering_unread;
@@ -32,6 +30,9 @@ public class FeedReader.articleRow : baseRow {
 		m_url = url;
 		m_is_unread = unread;
 		m_date = date;
+
+		m_unread_stack = new Gtk.Stack();
+		m_marked_stack = new Gtk.Stack();
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 100);
@@ -78,20 +79,27 @@ public class FeedReader.articleRow : baseRow {
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);
 
-		m_marked_icon = new Gtk.Image.from_icon_name("starred", Gtk.IconSize.SMALL_TOOLBAR);
-		m_unread_icon = new Gtk.Image.from_icon_name("mail-unread", Gtk.IconSize.SMALL_TOOLBAR);
-		m_unmarked_icon = new Gtk.Image.from_icon_name("non-starred", Gtk.IconSize.SMALL_TOOLBAR);
-		m_read_icon = new Gtk.Image.from_icon_name("user-offline", Gtk.IconSize.SMALL_TOOLBAR);
+		var marked_icon = new Gtk.Image.from_icon_name("starred", Gtk.IconSize.SMALL_TOOLBAR);
+		var unread_icon = new Gtk.Image.from_icon_name("mail-unread", Gtk.IconSize.SMALL_TOOLBAR);
+		var unmarked_icon = new Gtk.Image.from_icon_name("non-starred", Gtk.IconSize.SMALL_TOOLBAR);
+		var read_icon = new Gtk.Image.from_icon_name("user-offline", Gtk.IconSize.SMALL_TOOLBAR);
+
+		m_unread_stack.add_named(unread_icon, "unread");
+		m_unread_stack.add_named(read_icon, "read");
+		m_marked_stack.add_named(marked_icon, "marked");
+		m_marked_stack.add_named(unmarked_icon, "unmarked");
 
 		m_unread_eventbox = new Gtk.EventBox();
 		m_unread_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_unread_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_unread_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_unread_eventbox.set_size_request(16, 16);
+		m_unread_eventbox.add(m_unread_stack);
+		m_unread_eventbox.show_all();
 		if(m_is_unread == ArticleStatus.UNREAD)
-			m_unread_eventbox.add(m_unread_icon);
+			m_unread_stack.set_visible_child_name("unread");
 		else if(m_is_unread == ArticleStatus.READ)
-			m_unread_eventbox.add(m_read_icon);
+			m_unread_stack.set_visible_child_name("read");
 
 		m_unread_eventbox.enter_notify_event.connect(() => {unreadIconEnter(); return true;});
 		m_unread_eventbox.leave_notify_event.connect(() => {unreadIconLeave(); return true;});
@@ -103,10 +111,12 @@ public class FeedReader.articleRow : baseRow {
 		m_marked_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_marked_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_marked_eventbox.set_size_request(16, 16);
+		m_marked_eventbox.add(m_marked_stack);
+		m_marked_eventbox.show_all();
 		if(m_marked == ArticleStatus.MARKED)
-			m_marked_eventbox.add(m_marked_icon);
+			m_marked_stack.set_visible_child_name("marked");
 		else if(m_marked == ArticleStatus.UNMARKED)
-			m_marked_eventbox.add(m_unmarked_icon);
+			m_marked_stack.set_visible_child_name("unmarked");
 
 		m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
 		m_marked_eventbox.leave_notify_event.connect(() => {markedIconLeave(); return true;});
@@ -175,12 +185,10 @@ public class FeedReader.articleRow : baseRow {
 	{
 		m_hovering_unread = true;
 		if(m_is_unread == ArticleStatus.READ){
-			m_unread_eventbox.remove(m_read_icon);
-			m_unread_eventbox.add(m_unread_icon);
+			m_unread_stack.set_visible_child_name("unread");
 		}
 		else if(m_is_unread == ArticleStatus.UNREAD){
-			m_unread_eventbox.remove(m_unread_icon);
-			m_unread_eventbox.add(m_read_icon);
+			m_unread_stack.set_visible_child_name("read");
 		}
 		this.show_all();
 	}
@@ -191,12 +199,10 @@ public class FeedReader.articleRow : baseRow {
 		m_hovering_unread = false;
 		if(!m_just_clicked){
 			if(m_is_unread == ArticleStatus.READ){
-				m_unread_eventbox.remove(m_unread_icon);
-				m_unread_eventbox.add(m_read_icon);
+				m_unread_stack.set_visible_child_name("read");
 			}
 			else{
-				m_unread_eventbox.remove(m_read_icon);
-				m_unread_eventbox.add(m_unread_icon);
+				m_unread_stack.set_visible_child_name("unread");
 			}
 		}
 		m_just_clicked = false;
@@ -214,8 +220,7 @@ public class FeedReader.articleRow : baseRow {
 				m_label.get_style_context().add_class("headline-unread-label");
 				if(!isHoveringUnread())
 				{
-					m_unread_eventbox.remove(m_read_icon);
-					m_unread_eventbox.add(m_unread_icon);
+					m_unread_stack.set_visible_child_name("unread");
 				}
 			}
 			else
@@ -224,8 +229,7 @@ public class FeedReader.articleRow : baseRow {
 				m_label.get_style_context().add_class("headline-read-label");
 				if(!isHoveringUnread())
 				{
-					m_unread_eventbox.remove(m_unread_icon);
-					m_unread_eventbox.add(m_read_icon);
+					m_unread_stack.set_visible_child_name("read");
 				}
 			}
 		}
@@ -233,8 +237,7 @@ public class FeedReader.articleRow : baseRow {
 
 	public void removeUnreadIcon()
 	{
-		m_unread_eventbox.remove(m_unread_icon);
-		m_unread_eventbox.add(m_read_icon);
+		m_unread_stack.set_visible_child_name("read");
 		this.show_all();
 	}
 
@@ -253,8 +256,7 @@ public class FeedReader.articleRow : baseRow {
 				updateMarked(ArticleStatus.UNMARKED);
 				if(!isHoveringMarked())
 				{
-					m_marked_eventbox.remove(m_marked_icon);
-					m_marked_eventbox.add(m_unmarked_icon);
+					m_marked_stack.set_visible_child_name("unmarked");
 				}
 				break;
 
@@ -262,8 +264,7 @@ public class FeedReader.articleRow : baseRow {
 				updateMarked(ArticleStatus.MARKED);
 				if(!isHoveringMarked())
 				{
-					m_marked_eventbox.remove(m_unmarked_icon);
-					m_marked_eventbox.add(m_marked_icon);
+					m_marked_stack.set_visible_child_name("marked");
 				}
 				break;
 		}
@@ -275,12 +276,10 @@ public class FeedReader.articleRow : baseRow {
 	{
 		m_hovering_marked = true;
 		if(m_marked == ArticleStatus.UNMARKED){
-			m_marked_eventbox.remove(m_unmarked_icon);
-			m_marked_eventbox.add(m_marked_icon);
+			m_marked_stack.set_visible_child_name("marked");
 		}
 		else if (m_marked == ArticleStatus.MARKED){
-			m_marked_eventbox.remove(m_marked_icon);
-			m_marked_eventbox.add(m_unmarked_icon);
+			m_marked_stack.set_visible_child_name("unmarked");
 		}
 		this.show_all();
 	}
@@ -291,12 +290,10 @@ public class FeedReader.articleRow : baseRow {
 		m_hovering_marked = false;
 		if(!m_just_clicked){
 			if(m_marked == ArticleStatus.UNMARKED){
-				m_marked_eventbox.remove(m_marked_icon);
-				m_marked_eventbox.add(m_unmarked_icon);
+				m_marked_stack.set_visible_child_name("unmarked");
 			}
 			else if(m_marked == ArticleStatus.MARKED){
-				m_marked_eventbox.remove(m_unmarked_icon);
-				m_marked_eventbox.add(m_marked_icon);
+				m_marked_stack.set_visible_child_name("marked");
 			}
 			this.show_all();
 		}

@@ -94,6 +94,8 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return ConnectionError.UNKNOWN;
     }
 
+    // thanks to
+    // http://kuikie.com/snippet/79-8/vala/strings/vala-generate-random-string/%7B$ROOT_URL%7D/terms/
     private string string_random(int length = 8, string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
     {
         string random = "";
@@ -107,7 +109,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return random;
     }
 
-
+    // https://dev.twitter.com/oauth/overview/creating-signatures
     private string generateSignature(string nonce, string timestamp, string url)
     {
         string method = "POST";

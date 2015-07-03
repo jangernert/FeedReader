@@ -445,7 +445,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 		else if(settings_general.get_enum("content-grabber") == ContentGrabber.READABILITY)
 		{
-			var grabber = new ReadabilityAPI(Article.m_url);
+			var grabber = new ReadabilityParserAPI(Article.m_url);
 			grabber.process();
 			Article.setAuthor(grabber.getAuthor());
 			Article.setHTML(grabber.getContent());

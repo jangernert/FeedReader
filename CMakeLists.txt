@@ -70,6 +70,8 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
     src/ContentGrabber/stringReplace.vala
+    src/Backends/ttrss/TTRSS_Message.vala
+    src/Share/ReadabilityAPI.vala
 
 # tell what libraries to use when compiling
 PACKAGES
@@ -124,7 +126,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backends/ttrss/TTRSS_Message.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
-    src/ContentGrabber/ReadabilityAPI.vala
+    src/ContentGrabber/ReadabilityParserAPI.vala
     src/ContentGrabber/stringReplace.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala

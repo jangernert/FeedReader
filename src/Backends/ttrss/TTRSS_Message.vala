@@ -14,9 +14,9 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded";
-		m_parser = new Json.Parser ();
+		m_parser = new Json.Parser();
 
-		m_message_soup = new Soup.Message ("POST", destination);
+		m_message_soup = new Soup.Message("POST", destination);
 	}
 
 
@@ -44,7 +44,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_message_string.append(",\"" + type + "\":\"" + val + "\"");
 	}
 
-	public int send()
+	public ConnectionError send()
 	{
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);

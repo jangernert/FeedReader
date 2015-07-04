@@ -91,9 +91,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		});
 
 		m_share_button.clicked.connect(() => {
-			var readability = new ReadabilityAPI();
+			//var readability = new ReadabilityAPI();
 			//readability.login("jangernert", "wissen12");
-			readability.bookmark("http://www.golem.de/news/bombardier-primove-eine-e-busfahrt-die-ist-lustig-1507-115003.html");
+			//readability.bookmark("http://www.golem.de/news/bombardier-primove-eine-e-busfahrt-die-ist-lustig-1507-115003.html");
 		});
 
 		m_refresh_button = new UpdateButton("view-refresh");

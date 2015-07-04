@@ -303,7 +303,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});
-		WebLogin.success.connect(() => {
+		WebLogin.success_backend.connect(() => {
 			logger.print(LogMessage.DEBUG, "WebLogin: success");
 			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");

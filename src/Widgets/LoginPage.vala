@@ -12,7 +12,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private string[] m_account_types;
 	public signal void submit_data();
 	public signal void loginError(int errorCode);
-	public signal void loadLoginPage(int type);
+	public signal void loadLoginPage(OAuth type);
 
 
 	public LoginPage()
@@ -315,7 +315,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 			case Backend.FEEDLY:
 				logger.print(LogMessage.DEBUG, "write type feedly");
 				settings_general.set_enum("account-type", Backend.FEEDLY);
-				loadLoginPage(Backend.FEEDLY);
+				loadLoginPage(OAuth.FEEDLY);
 				return;
 
 			case Backend.OWNCLOUD:

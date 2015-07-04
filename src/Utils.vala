@@ -192,6 +192,21 @@ public class FeedReader.Utils : GLib.Object {
 		return articles.length();
 	}
 
+	// thanks to
+	// http://kuikie.com/snippet/79-8/vala/strings/vala-generate-random-string/%7B$ROOT_URL%7D/terms/
+	public static string string_random(int length = 8, string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
+	{
+		string random = "";
+
+		for(int i=0;i<length;i++){
+			int random_index = Random.int_range(0,charset.length);
+			string ch = charset.get_char(charset.index_of_nth_char(random_index)).to_string();
+			random += ch;
+		}
+
+		return random;
+	}
+
 	public static string buildArticle(string html, string title, string url, string author, string date, string feedID)
 	{
 		var article = new GLib.StringBuilder();

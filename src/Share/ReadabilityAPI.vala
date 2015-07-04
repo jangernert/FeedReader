@@ -1,7 +1,6 @@
 public class FeedReader.ReadabilityAPI : GLib.Object {
 
     private Soup.Session m_session;
-	private Soup.Message m_message_soup;
     private Json.Parser m_parser;
 	private Json.Object m_root_object;
     private string m_contenttype;
@@ -17,9 +16,9 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 		m_parser = new Json.Parser();
     }
 
-    public ConnectionError login(string username, string password)
+    public ConnectionError login_XAuth(string username, string password)
 	{
-        m_message_soup = new Soup.Message("POST", "https://www.readability.com/api/rest/v1/oauth/access_token/");
+        var message_soup = new Soup.Message("POST", "https://www.readability.com/api/rest/v1/oauth/access_token/");
 
         var now = new DateTime.now_local();
         string timestamp = now.to_unix().to_string();
@@ -33,14 +32,14 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
             +   "&x_auth_password=" + password
             +   "&oauth_signature=" + m_consumer_secret + "%26";
 
-        m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
-        m_session.send_message(m_message_soup);
+        message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
+        m_session.send_message(message_soup);
 
-        if((string)m_message_soup.response_body.flatten().data == null
-		|| (string)m_message_soup.response_body.flatten().data == "")
+        if((string)message_soup.response_body.flatten().data == null
+		|| (string)message_soup.response_body.flatten().data == "")
 			return ConnectionError.NO_RESPONSE;
 
-        string response = (string)m_message_soup.response_body.flatten().data;
+        string response = (string)message_soup.response_body.flatten().data;
 
         if(response.has_prefix("oauth_token_secret="))
         {
@@ -62,58 +61,49 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return ConnectionError.UNKNOWN;
 	}
 
+    public ConnectionError login_OAuth(string username, string password)
+    {
+
+        return ConnectionError.UNKNOWN;
+    }
+
     public ConnectionError bookmark(string url)
     {
-        m_message_soup = new Soup.Message("POST", "https://www.readability.com/api/rest/v1/bookmarks");
+        var message_soup = new Soup.Message("POST", "https://www.readability.com/api/rest/v1/bookmarks");
 
         var now = new DateTime.now_local();
         string timestamp = now.to_unix().to_string();
-        string nonce = string_random(42);
+        string nonce = Utils.string_random(42);
 
         string message =
-                    "oauth_consumer_key=" + m_consumer_key
-                +   "&oauth_nonce=" + nonce
+                    "oauth_nonce=" + nonce
+                +   "&oauth_consumer_key=" + m_consumer_key
                 +   "&oauth_signature=" + generateSignature(nonce, timestamp, url)
                 +   "&oauth_signature_method=HMAC-SHA1"
                 +   "&oauth_timestamp" + timestamp
                 +   "&oauth_token" + settings_readability.get_string("oauth-token")
                 +   "oauth_version=1.0"
-                +   "&url=" + url
+                +   "&url=" + Uri.escape_string(url)
                 +   "&favorite=1";
 
-        m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
-        m_session.send_message(m_message_soup);
+        message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
+        m_session.send_message(message_soup);
 
-        if((string)m_message_soup.response_body.flatten().data == null
-		|| (string)m_message_soup.response_body.flatten().data == "")
+        if((string)message_soup.response_body.flatten().data == null
+		|| (string)message_soup.response_body.flatten().data == "")
 			return ConnectionError.NO_RESPONSE;
 
-        string response = (string)m_message_soup.response_body.flatten().data;
+        string response = (string)message_soup.response_body.flatten().data;
         logger.print(LogMessage.DEBUG, response);
 
         return ConnectionError.UNKNOWN;
-    }
-
-    // thanks to
-    // http://kuikie.com/snippet/79-8/vala/strings/vala-generate-random-string/%7B$ROOT_URL%7D/terms/
-    private string string_random(int length = 8, string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
-    {
-        string random = "";
-
-        for(int i=0;i<length;i++){
-            int random_index = Random.int_range(0,charset.length);
-            string ch = charset.get_char(charset.index_of_nth_char(random_index)).to_string();
-            random += ch;
-        }
-
-        return random;
     }
 
     // https://dev.twitter.com/oauth/overview/creating-signatures
     private string generateSignature(string nonce, string timestamp, string url)
     {
         string method = "POST";
-        string baseURL = "https://api.twitter.com/1/statuses/update.json";
+        string baseURL = "https://www.readability.com/api/rest/v1/bookmarks";
 
         string signatureBase = "";
         string parameterString = "";

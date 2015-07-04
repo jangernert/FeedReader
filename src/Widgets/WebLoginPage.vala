@@ -3,7 +3,8 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private WebKit.WebView m_view;
 	private string m_url;
 	private int m_serviceType;
-	public signal void success();
+	public signal void success_backend();
+	public signal void success_share();
 
 
 	public WebLoginPage() {
@@ -15,13 +16,16 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	}
 
 
-	public void loadPage(int serviceType)
+	public void loadPage(OAuth serviceType)
 	{
 		m_serviceType = serviceType;
 		switch(serviceType)
 		{
-			case Backend.FEEDLY:
+			case OAuth.FEEDLY:
 				m_url = buildFeedlyURL();
+				break;
+			case OAuth.READABILITY:
+				m_url = buildReadabilityURL();
 				break;
 		}
 
@@ -32,7 +36,16 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private string buildFeedlyURL()
 	{
 		string url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId;
-		url = url + "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+		url += "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+		return url;
+	}
+
+	private string buildReadabilityURL()
+	{
+		var now = new DateTime.now_local();
+		string url = ReadabilitySecrets.authorize_uri + "?oauth_consumer_key=" + ReadabilitySecrets.oauth_consumer_key + "&oauth_timestamp=" + now.to_unix().to_string();
+		url += "&oauth_nonce=" + Utils.string_random(42) + "&oauth_consumer_secret=" + ReadabilitySecrets.oauth_consumer_secret;
+		url += "&oauth_callback=" + ReadabilitySecrets.oauth_callback + "&oauth_signature=" + ReadabilitySecrets.oauth_consumer_secret + "%26";
 		return url;
 	}
 
@@ -60,14 +73,22 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	void checkURL()
 	{
+		string url = m_view.get_uri();
+
 		switch(m_serviceType)
 		{
-			case Backend.FEEDLY:
-				string url = m_view.get_uri();
+			case OAuth.FEEDLY:
 				if(getFeedlyApiCode(url))
 				{
 					m_view.stop_loading();
-					success();
+					success_backend();
+				}
+				break;
+			case OAuth.READABILITY:
+				if(getReadabilityApiCode(url))
+				{
+					m_view.stop_loading();
+					success_share();
 				}
 				break;
 		}
@@ -85,6 +106,29 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				logger.print(LogMessage.DEBUG, "WebLoginPage: could not set api code");
 			}
 			logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + settings_feedly.get_string("feedly-api-code"));
+			GLib.Thread.usleep(500000);
+			return true;
+		}
+		else
+			return false;
+	}
+
+
+	bool getReadabilityApiCode(string url)
+	{
+		if(url.has_prefix(ReadabilitySecrets.oauth_callback))
+		{
+			int verifier_start = url.index_of("=")+1;
+			int verifier_end = url.index_of("&", verifier_start);
+			string verifier = url.substring(verifier_start, verifier_end-verifier_start);
+			//settings_feedly.set_string("feedly-api-code", verifier);
+			logger.print(LogMessage.DEBUG, "WebLoginPage: verifier: " + verifier);
+
+			int token_start = url.index_of("=", verifier_end)+1;
+			int token_end = url.index_of("&",token_start);
+			string token = url.substring(token_start, token_end-token_start);
+			logger.print(LogMessage.DEBUG, "WebLoginPage: token: " + token);
+
 			GLib.Thread.usleep(500000);
 			return true;
 		}

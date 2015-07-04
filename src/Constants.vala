@@ -7,6 +7,11 @@ namespace FeedReader {
 		OWNCLOUD
 	}
 
+	public enum OAuth {
+		FEEDLY,
+		READABILITY
+	}
+
 	public enum LogLevel {
 		OFF,
 		ERROR,
@@ -78,6 +83,13 @@ namespace FeedReader {
 		 const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
 		 const string apiRedirectUri  = "http://localhost";
 		 const string apiAuthScope    = "https://cloud.feedly.com/subscriptions";
+	}
+
+	namespace ReadabilitySecrets {
+		const string authorize_uri			= "https://www.readability.com/api/rest/v1/oauth/authorize/";
+		const string oauth_consumer_key		= "jangernert";
+		const string oauth_consumer_secret	= "3NSxqNW5d6zVwvZV6tskzVrqctHZceHr";
+		const string oauth_callback			= "http://localhost/callback";
 	}
 
 	namespace AboutInfo {

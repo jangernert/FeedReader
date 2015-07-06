@@ -216,7 +216,9 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(tmpRow != null && tmpRow.getID() == selectedRow)
 				{
 					m_currentList.select_row(tmpRow);
-					tmpRow.activate();
+					var window = this.get_toplevel() as readerUI;
+					if(window != null && !window.searchFocused())
+						tmpRow.activate();
 					settings_state.set_string("articlelist-selected-row", "");
 					return;
 				}

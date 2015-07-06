@@ -10,10 +10,12 @@ public class FeedReader.articleView : Gtk.Stack {
 	private int m_load_ongoing;
 	private string m_currentArticle;
 	private bool m_firstTime;
+	private string m_searchTerm;
 
 
 	public articleView () {
 		m_load_ongoing = 0;
+		m_searchTerm = "";
 		m_firstTime = true;
 
 		m_view1 = new WebKit.WebView();
@@ -138,7 +140,7 @@ public class FeedReader.articleView : Gtk.Stack {
 				if(m_load_ongoing >= 3){
 					logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
 					m_open_external = true;
-					//m_currentSearch.search("Windows", WebKit.FindOptions.NONE, 99);
+					m_currentSearch.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
 
 					if(m_firstTime)
 					{
@@ -175,6 +177,11 @@ public class FeedReader.articleView : Gtk.Stack {
 
 		loop.run();
 		return scrollPos;
+	}
+
+	public void setSearchTerm(string searchTerm)
+	{
+		m_searchTerm = searchTerm;
 	}
 
 }

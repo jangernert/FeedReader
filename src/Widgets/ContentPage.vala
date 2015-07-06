@@ -134,6 +134,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public void setSearchTerm(string searchTerm)
 	{
 		m_articleList.setSearchTerm(searchTerm);
+		m_article_view.setSearchTerm(searchTerm);
 	}
 
 	public void clearArticleView()

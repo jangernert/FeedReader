@@ -518,5 +518,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	}
 
 
+	public bool searchFocused()
+	{
+		return m_headerbar.searchFocused();
+	}
+
+
 
 }

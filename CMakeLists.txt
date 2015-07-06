@@ -60,16 +60,18 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/FeedList.vala
     src/Widgets/FeedRow.vala
     src/Widgets/InitSyncPage.vala
+    src/Widgets/LoginDialog.vala
     src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/ResetPage.vala
+    src/Widgets/ServiceRow.vala
     src/Widgets/SettingsDialog.vala
     src/Widgets/SpringCleanPage.vala
     src/Widgets/TagRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
-    src/ContentGrabber/stringReplace.vala
+    src/ContentGrabber/stringPair.vala
     src/Backends/ttrss/TTRSS_Message.vala
     src/Share/ReadabilityAPI.vala
 
@@ -127,7 +129,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
     src/ContentGrabber/ReadabilityParserAPI.vala
-    src/ContentGrabber/stringReplace.vala
+    src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala

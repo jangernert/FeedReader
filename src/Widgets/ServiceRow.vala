@@ -1,0 +1,54 @@
+public class FeedReader.ServiceRow : baseRow {
+
+	private string m_name;
+    private OAuth m_type;
+    private Gtk.Label m_label;
+    private Gtk.Box m_box;
+	private Gtk.Stack m_stack;
+    private Gtk.Button m_login_button;
+
+	public ServiceRow(string serviceName, OAuth type)
+	{
+		m_name = serviceName;
+        m_type = type;
+		m_stack = new Gtk.Stack();
+
+        m_login_button = new Gtk.Button.with_label(_("Login"));
+        m_login_button.hexpand = false;
+        m_login_button.margin = 10;
+        m_login_button.clicked.connect(() => {
+            var dialog = new LoginDialog(type);
+			dialog.sucess.connect(() => {
+				var readability = new ReadabilityAPI();
+				readability.login_OAuth();
+				m_stack.set_visible_child_name("loggedIN");
+			});
+        });
+
+		var loggedIN = new Gtk.Image.from_icon_name("selection-remove", Gtk.IconSize.LARGE_TOOLBAR);
+
+		m_stack.add_named(m_login_button, "button");
+		m_stack.add_named(loggedIN, "loggedIN");
+
+		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		m_box.set_size_request(0, 50);
+
+        string iconPath = "/home/jeanluc/readability.svg";
+        var icon = new Gtk.Image.from_file(iconPath);
+
+		m_label = new Gtk.Label(m_name);
+		m_label.set_line_wrap_mode(Pango.WrapMode.WORD);
+		m_label.set_ellipsize(Pango.EllipsizeMode.END);
+		m_label.set_alignment(0, 0.5f);
+
+		m_box.pack_start(icon, false, false, 8);
+		m_box.pack_start(m_label, true, true, 0);
+        m_box.pack_end(m_stack, true, true, 0);
+
+		m_stack.set_visible_child_name("button");
+
+		this.add(m_box);
+		this.show_all();
+	}
+
+}

@@ -121,13 +121,12 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			int verifier_start = url.index_of("=")+1;
 			int verifier_end = url.index_of("&", verifier_start);
 			string verifier = url.substring(verifier_start, verifier_end-verifier_start);
-			//settings_feedly.set_string("feedly-api-code", verifier);
-			logger.print(LogMessage.DEBUG, "WebLoginPage: verifier: " + verifier);
+			settings_readability.set_string("oauth-verifier", verifier);
 
 			int token_start = url.index_of("=", verifier_end)+1;
 			int token_end = url.index_of("&",token_start);
 			string token = url.substring(token_start, token_end-token_start);
-			logger.print(LogMessage.DEBUG, "WebLoginPage: token: " + token);
+			settings_readability.set_string("oauth-token", token);
 
 			GLib.Thread.usleep(500000);
 			return true;

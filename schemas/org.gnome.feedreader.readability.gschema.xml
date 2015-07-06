@@ -1,0 +1,35 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.readability" path="/org/gnome/feedreader/readability/" gettext-domain="feedreader">
+        <key name="parser-api-key" type="s">
+            <default>""</default>
+            <summary>Acces key to redability parser-API</summary>
+            <description>
+                Acces key to parser-API of redability.com
+            </description>
+        </key>
+
+        <key name="oauth-token-secret" type="s">
+            <default>""</default>
+            <summary>Acces key to redability reader-API</summary>
+            <description>
+                Acces key to reader-API of redability.com
+            </description>
+        </key>
+
+        <key name="oauth-token" type="s">
+            <default>""</default>
+            <summary>Acces key to redability reader-API</summary>
+            <description>
+                Acces key to reader-API of redability.com
+            </description>
+        </key>
+
+        <key name="oauth-verifier" type="s">
+            <default>""</default>
+            <summary>Acces key to redability reader-API</summary>
+            <description>
+                Acces key to reader-API of redability.com
+            </description>
+        </key>
+    </schema>
+</schemalist>

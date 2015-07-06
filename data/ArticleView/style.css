@@ -33,6 +33,10 @@ input,
 th,
 td,
 figure {
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+  user-select: none;
   margin: 0;
   padding: 0;
   border: 0;
@@ -137,6 +141,7 @@ div.pw {
 }
 body {
   padding: 3rem;
+  cursor:default;
   font-family: 'Droid Sans', 'Open Sans';
   font-weight: 300;
 }

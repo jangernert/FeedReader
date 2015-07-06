@@ -115,12 +115,12 @@ public class FeedReader.Grabber : GLib.Object {
         logger.print(LogMessage.DEBUG, "Grabber: start parsing");
 
         // replace strings before parsing html
-        unowned GLib.List<StringReplace> replace = m_config.getReplace();
+        unowned GLib.List<StringPair> replace = m_config.getReplace();
         if(replace.length() != 0)
         {
-            foreach(StringReplace pair in replace)
+            foreach(StringPair pair in replace)
             {
-                m_rawHtml = m_rawHtml.replace(pair.getToReplace(), pair.getReplaceWith());
+                m_rawHtml = m_rawHtml.replace(pair.getString1(), pair.getString2());
             }
         }
 

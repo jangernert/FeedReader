@@ -56,21 +56,21 @@ public class FeedReader.Utils : GLib.Object {
 				if(output.length < 300)
 					length = output.length;
 
-				var replaceList = new GLib.List<StringReplace>();
-				replaceList.append(new StringReplace("\n", " "));
-				replaceList.append(new StringReplace("&#xD;", " "));
-				replaceList.append(new StringReplace("_", " "));
-				replaceList.append(new StringReplace("&#xE4;", "ä"));
-				replaceList.append(new StringReplace("&#xF6;", "ö"));
-				replaceList.append(new StringReplace("&#xFC;", "ü"));
-				replaceList.append(new StringReplace("&#xDC;", "Ü"));
-				replaceList.append(new StringReplace("&#x201C;", "”"));
-				replaceList.append(new StringReplace("&#x201D;", "”"));
-				replaceList.append(new StringReplace("&#x201E;", "„"));
-				replaceList.append(new StringReplace("&#xA0;", " "));
-				replaceList.append(new StringReplace("&#x2019;", "´"));
-				replaceList.append(new StringReplace("&#xDF;", "ß"));
-				replaceList.append(new StringReplace("&amp;", "&"));
+				var replaceList = new GLib.List<StringPair>();
+				replaceList.append(new StringPair("\n", " "));
+				replaceList.append(new StringPair("&#xD;", " "));
+				replaceList.append(new StringPair("_", " "));
+				replaceList.append(new StringPair("&#xE4;", "ä"));
+				replaceList.append(new StringPair("&#xF6;", "ö"));
+				replaceList.append(new StringPair("&#xFC;", "ü"));
+				replaceList.append(new StringPair("&#xDC;", "Ü"));
+				replaceList.append(new StringPair("&#x201C;", "”"));
+				replaceList.append(new StringPair("&#x201D;", "”"));
+				replaceList.append(new StringPair("&#x201E;", "„"));
+				replaceList.append(new StringPair("&#xA0;", " "));
+				replaceList.append(new StringPair("&#x2019;", "´"));
+				replaceList.append(new StringPair("&#xDF;", "ß"));
+				replaceList.append(new StringPair("&amp;", "&"));
 
 
 				//output = output.replace("\n"," ");
@@ -78,7 +78,7 @@ public class FeedReader.Utils : GLib.Object {
 
 				foreach(var pair in replaceList)
 				{
-					output = output.replace(pair.getToReplace(),pair.getReplaceWith());
+					output = output.replace(pair.getString1(),pair.getString2());
 				}
 
 

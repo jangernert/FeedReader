@@ -5,6 +5,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     public signal void reloadArticleView();
     private Gtk.Box m_uiBox;
     private Gtk.Box m_internalsBox;
+    private Gtk.Box m_serviceBox;
 
     public SettingsDialog(Gtk.Window parent)
     {
@@ -43,15 +44,19 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_uiBox.expand = true;
         m_internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         m_internalsBox.expand = true;
+        m_serviceBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
+        m_serviceBox.expand = true;
 
         stack.add_titled(m_uiBox, "ui", _("Interface"));
         stack.add_titled(m_internalsBox, "internal", _("Internals"));
+        stack.add_titled(m_serviceBox, "service", _("Services"));
 
         setup_feedlist_settings();
         setup_articlelist_settings();
         setup_articleview_settings();
         setup_sync_settings();
         setup_db_settings();
+        setup_addfunc_settings();
         setup_service_settings();
 
         this.add_button(_("Close"), 1);
@@ -312,9 +317,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     }
 
 
-    private void setup_service_settings()
+    private void setup_addfunc_settings()
     {
-        var service_settings = new Gtk.Label(_("Services:"));
+        var service_settings = new Gtk.Label(_("Additional Functionality:"));
         service_settings.margin_top = 15;
         service_settings.set_alignment(0, 0.5f);
         service_settings.get_style_context().add_class("h4");
@@ -362,5 +367,21 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         grabber_box.pack_start(grabber, true, true, 0);
         grabber_box.pack_end(grabber_dropbox, false, false, 0);
         m_internalsBox.pack_start(grabber_box, false, true, 0);
+    }
+
+    private void setup_service_settings()
+    {
+        var service_list = new Gtk.ListBox();
+        service_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
+
+        var service_scroll = new Gtk.ScrolledWindow(null, null);
+        service_scroll.expand = true;
+        service_scroll.margin_top = 10;
+        service_scroll.margin_bottom = 10;
+        service_scroll.add(service_list);
+
+        var demoRow = new ServiceRow("Readability.com", OAuth.READABILITY);
+        service_list.add(demoRow);
+        m_serviceBox.pack_start(service_scroll, false, true, 0);
     }
 }

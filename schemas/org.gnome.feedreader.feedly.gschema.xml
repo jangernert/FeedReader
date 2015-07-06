@@ -1,0 +1,27 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.feedly" path="/org/gnome/feedreader/feedly/" gettext-domain="feedreader">
+		<key name="feedly-access-token" type="s">
+			<default>""</default>
+			<summary>Acces key to Feedly-API</summary>
+			<description>
+				Acces key to Feedly-API. Will time out at some point.
+			</description>
+		</key>
+
+		<key name="feedly-refresh-token" type="s">
+			<default>""</default>
+			<summary>Refresh token</summary>
+			<description>
+				Token to generate new access key to feedly-API.
+			</description>
+		</key>
+
+		<key name="feedly-api-code" type="s">
+			<default>""</default>
+			<summary>apiCode</summary>
+			<description>
+				Code to get access token for the first time. Gets returned after logging in via google/facebook.
+			</description>
+		</key>
+	</schema>
+</schemalist>

@@ -24,7 +24,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         string timestamp = now.to_unix().to_string();
 
 		string message =
-                "oauth_nonce=testnonce"
+                "oauth_nonce=" + Utils.string_random(42)
             +   "&oauth_timestamp=" + timestamp
             +   "&oauth_consumer_key=" + m_consumer_key
             +   "&oauth_consumer_secret=" + m_consumer_secret
@@ -61,8 +61,43 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return ConnectionError.UNKNOWN;
 	}
 
-    public ConnectionError login_OAuth(string username, string password)
+    public ConnectionError login_OAuth()
     {
+        var message_soup = new Soup.Message("POST", "https://www.readability.com/api/rest/v1/oauth/access_token/");
+
+        var now = new DateTime.now_local();
+        string timestamp = now.to_unix().to_string();
+        string nonce = Utils.string_random(42);
+        string message = "";
+
+        var parameters = new GLib.List<StringPair>();
+        parameters.append(new StringPair("oauth_nonce", nonce));
+        parameters.append(new StringPair("oauth_timestamp", timestamp));
+        parameters.append(new StringPair("oauth_token", settings_readability.get_string("oauth-token")));
+        parameters.append(new StringPair("oauth_consumer_key", m_consumer_key));
+        parameters.append(new StringPair("oauth_verifier", settings_readability.get_string("oauth-verifier")));
+
+        string signature = generateSignature(parameters, "https://www.readability.com/api/rest/v1/oauth/access_token/");
+        parameters.append(new StringPair("oauth_signature", signature + "%26"));
+
+        foreach(StringPair par in parameters)
+        {
+            message += par.getString1() + "=" + par.getString2() + "&";
+        }
+        message = message.substring(0, message.length-1);
+        logger.print(LogMessage.DEBUG, "message: " + message);
+
+
+        message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
+        m_session.send_message(message_soup);
+
+        if((string)message_soup.response_body.flatten().data == null
+    	|| (string)message_soup.response_body.flatten().data == "")
+    		return ConnectionError.NO_RESPONSE;
+
+        string response = (string)message_soup.response_body.flatten().data;
+        logger.print(LogMessage.DEBUG, response);
+
 
         return ConnectionError.UNKNOWN;
     }
@@ -74,17 +109,28 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         var now = new DateTime.now_local();
         string timestamp = now.to_unix().to_string();
         string nonce = Utils.string_random(42);
+        string message = "";
 
-        string message =
-                    "oauth_nonce=" + nonce
-                +   "&oauth_consumer_key=" + m_consumer_key
-                +   "&oauth_signature=" + generateSignature(nonce, timestamp, url)
-                +   "&oauth_signature_method=HMAC-SHA1"
-                +   "&oauth_timestamp" + timestamp
-                +   "&oauth_token" + settings_readability.get_string("oauth-token")
-                +   "oauth_version=1.0"
-                +   "&url=" + Uri.escape_string(url)
-                +   "&favorite=1";
+        var parameters = new GLib.List<StringPair>();
+        parameters.append(new StringPair("oauth_nonce", nonce));
+        parameters.append(new StringPair("oauth_consumer_key", m_consumer_key));
+        parameters.append(new StringPair("oauth_signature_method", nonce));
+        parameters.append(new StringPair("oauth_nonce", "HMAC-SHA1"));
+        parameters.append(new StringPair("oauth_timestamp", timestamp));
+        parameters.append(new StringPair("oauth_token", settings_readability.get_string("oauth-token")));
+        parameters.append(new StringPair("oauth_version", "1.0"));
+        parameters.append(new StringPair("url", Uri.escape_string(url)));
+        parameters.append(new StringPair("favorite", "1"));
+
+        string signature = generateSignature(parameters, "https://www.readability.com/api/rest/v1/bookmarks");
+        parameters.append(new StringPair("oauth_signature", signature));
+
+        foreach(StringPair par in parameters)
+        {
+            message += par.getString1() + "=" + par.getString2() + "&";
+        }
+        message = message.substring(0, message.length-1);
+        logger.print(LogMessage.DEBUG, "message: " + message);
 
         message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
         m_session.send_message(message_soup);
@@ -100,24 +146,20 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     }
 
     // https://dev.twitter.com/oauth/overview/creating-signatures
-    private string generateSignature(string nonce, string timestamp, string url)
+    private string generateSignature(GLib.List<StringPair> parameters, string baseURL)
     {
         string method = "POST";
-        string baseURL = "https://www.readability.com/api/rest/v1/bookmarks";
 
         string signatureBase = "";
         string parameterString = "";
         string signingKey = "";
 
-        parameterString += "&" +    Uri.escape_string("favorite")               + "=" + Uri.escape_string("1");
-        parameterString +=          Uri.escape_string("oauth_consumer_key")     + "=" + Uri.escape_string(m_consumer_key);
-        parameterString += "&" +    Uri.escape_string("oauth_nonce")            + "=" + Uri.escape_string(nonce);
-        parameterString += "&" +    Uri.escape_string("oauth_signature_method") + "=" + Uri.escape_string("HMAC-SHA1");
-        parameterString += "&" +    Uri.escape_string("oauth_timestamp")        + "=" + Uri.escape_string(timestamp);
-        parameterString += "&" +    Uri.escape_string("oauth_token")            + "=" + Uri.escape_string(settings_readability.get_string("oauth-token"));
-        parameterString += "&" +    Uri.escape_string("oauth_version")          + "=" + Uri.escape_string("1.0");
-        parameterString += "&" +    Uri.escape_string("url")                    + "=" + Uri.escape_string(url);
-
+        foreach(StringPair par in parameters)
+        {
+            parameterString += Uri.escape_string(par.getString1()) + "=" + Uri.escape_string(par.getString2()) + "&";
+        }
+        parameterString = parameterString.substring(0, parameterString.length-1);
+        logger.print(LogMessage.DEBUG, "ParameterString: " + parameterString);
 
         signatureBase += method + "&" + Uri.escape_string(baseURL) + "&" + Uri.escape_string(parameterString);
         signingKey += Uri.escape_string(m_consumer_secret) + "&" + Uri.escape_string(settings_readability.get_string("oauth-token-secret"));

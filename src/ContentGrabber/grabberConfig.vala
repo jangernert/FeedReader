@@ -12,7 +12,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
     private bool m_autodetectOnFailure;
     private string m_singlePageLink;
     private string m_nextPageLink;
-    private GLib.List<StringReplace> m_replace;
+    private GLib.List<StringPair> m_replace;
     private string m_testURL;
 
     public GrabberConfig(string filename)
@@ -96,13 +96,13 @@ public class FeedReader.GrabberConfig : GLib.Object {
                         string toReplace = extractValue("find_string:", line);
                         line = dis.read_line();
                         string replaceWith = extractValue("replace_string:", line);
-                        m_replace.append(new StringReplace(toReplace, replaceWith));
+                        m_replace.append(new StringPair(toReplace, replaceWith));
                     }
                     else if(line.has_prefix("replace_string("))
                     {
                         string tmp = extractValue("replace_string(", line);
                         var values = tmp.split("): ");
-                        m_replace.append(new StringReplace(values[0], values[1]));
+                        m_replace.append(new StringPair(values[0], values[1]));
                     }
                     else if(line.has_prefix("test_url:"))
                     {
@@ -231,9 +231,9 @@ public class FeedReader.GrabberConfig : GLib.Object {
         if(m_replace.length() != 0)
         {
             stdout.printf("replace:\n");
-            foreach(StringReplace tmp in m_replace)
+            foreach(StringPair tmp in m_replace)
             {
-                stdout.printf("replace %s with %s\n", tmp.getToReplace(), tmp.getReplaceWith());
+                stdout.printf("replace %s with %s\n", tmp.getString1(), tmp.getString2());
             }
         }
 
@@ -287,7 +287,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
         return m_xpath_body;
     }
 
-    public unowned GLib.List<StringReplace> getReplace()
+    public unowned GLib.List<StringPair> getReplace()
     {
         return m_replace;
     }

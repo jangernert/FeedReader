@@ -1,0 +1,19 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.ttrss" path="/org/gnome/feedreader/ttrss/" gettext-domain="feedreader">
+		<key name="url" type="s">
+			<default>""</default>
+			<summary>Link to your tt-rss instance</summary>
+			<description>
+				Link to your tt-rss instance
+			</description>
+		</key>
+
+		<key name="username" type="s">
+			<default>""</default>
+			<summary>Username to log into tt-rss</summary>
+			<description>
+				Username to log into tt-rss
+			</description>
+		</key>
+	</schema>
+</schemalist>

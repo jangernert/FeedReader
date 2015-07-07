@@ -42,11 +42,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private string buildReadabilityURL()
 	{
-		var now = new DateTime.now_local();
-		string url = ReadabilitySecrets.authorize_uri + "?oauth_consumer_key=" + ReadabilitySecrets.oauth_consumer_key + "&oauth_timestamp=" + now.to_unix().to_string();
-		url += "&oauth_nonce=" + Utils.string_random(42) + "&oauth_consumer_secret=" + ReadabilitySecrets.oauth_consumer_secret;
-		url += "&oauth_callback=" + ReadabilitySecrets.oauth_callback + "&oauth_signature=" + ReadabilitySecrets.oauth_consumer_secret + "%26";
-		return url;
+		return ReadabilitySecrets.authorize_uri + "?oauth_token=" + settings_readability.get_string("oauth-request-token");
 	}
 
 	public void redirection(WebKit.LoadEvent load_event)

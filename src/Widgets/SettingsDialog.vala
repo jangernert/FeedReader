@@ -372,13 +372,19 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     private void setup_service_settings()
     {
         var service_list = new Gtk.ListBox();
-        service_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
+        service_list.set_selection_mode(Gtk.SelectionMode.NONE);
 
         var service_scroll = new Gtk.ScrolledWindow(null, null);
         service_scroll.expand = true;
         service_scroll.margin_top = 10;
         service_scroll.margin_bottom = 10;
-        service_scroll.add(service_list);
+        //service_scroll.add(service_list);
+        //service_scroll.get_style_context().add_class("frame");
+
+        var viewport = new Gtk.Viewport (null, null);
+        viewport.get_style_context().add_class("servicebox");
+        viewport.add(service_list);
+        service_scroll.add(viewport);
 
         var demoRow = new ServiceRow("Readability.com", OAuth.READABILITY);
         service_list.add(demoRow);

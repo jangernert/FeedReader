@@ -17,15 +17,18 @@ public class FeedReader.ServiceRow : baseRow {
         m_login_button.hexpand = false;
         m_login_button.margin = 10;
         m_login_button.clicked.connect(() => {
+			var readability = new ReadabilityAPI();
+			readability.getRequestToken();
+
             var dialog = new LoginDialog(type);
 			dialog.sucess.connect(() => {
-				var readability = new ReadabilityAPI();
-				readability.login_OAuth();
+				readability.getAccessToken();
+				readability.addBookmark("http://www.hardwareluxx.de/index.php/news/software/betriebssysteme/35990-ios-9-update-soll-maengel-in-ios-84-wie-fehlende-privatfreigabe-beseitigen.html");
 				m_stack.set_visible_child_name("loggedIN");
 			});
         });
 
-		var loggedIN = new Gtk.Image.from_icon_name("selection-remove", Gtk.IconSize.LARGE_TOOLBAR);
+		var loggedIN = new Gtk.Image.from_icon_name("dialog-apply", Gtk.IconSize.LARGE_TOOLBAR);
 
 		m_stack.add_named(m_login_button, "button");
 		m_stack.add_named(loggedIN, "loggedIN");
@@ -45,10 +48,23 @@ public class FeedReader.ServiceRow : baseRow {
 		m_box.pack_start(m_label, true, true, 0);
         m_box.pack_end(m_stack, true, true, 0);
 
-		m_stack.set_visible_child_name("button");
+		var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+		separator.set_size_request(0, 2);
+		seperator_box.pack_start(m_box, true, true, 0);
+		seperator_box.pack_start(separator, false, false, 0);
 
-		this.add(m_box);
+		this.add(seperator_box);
 		this.show_all();
+
+		if(settings_readability.get_boolean("is-logged-in"))
+		{
+			m_stack.set_visible_child_name("loggedIN");
+		}
+		else
+		{
+			m_stack.set_visible_child_name("button");
+		}
 	}
 
 }

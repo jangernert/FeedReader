@@ -21,7 +21,7 @@ add_subdirectory (po)
 add_subdirectory (schemas)
 
 
-set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify libxml-2.0)
+set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
 if(WITH_LIBUNITY)
 	list(APPEND MODULES unity)
 endif(WITH_LIBUNITY)
@@ -86,6 +86,7 @@ PACKAGES
     WebKit2-3.0
     libsecret-1
     libnotify
+    rest-0.7
 
 OPTIONS
     --target-glib=2.32
@@ -104,7 +105,8 @@ set(DAEMON_PACKAGES
     libnotify
     libsecret-1
     unity
-    libxml-2.0)
+    libxml-2.0
+    rest-0.7)
     
 if(WITH_LIBUNITY)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)

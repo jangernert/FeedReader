@@ -11,6 +11,7 @@ X-GNOME-UsesNotifications=true
 X-GNOME-Gettext-Domain=FeedReader
 X-GNOME-Keywords=
 Actions=AboutDialog;
+MimeType=x-scheme-handler/pocketapp42;
 
 [Desktop Action AboutDialog]
 Exec=feedreader --about

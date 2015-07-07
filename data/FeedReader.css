@@ -149,3 +149,7 @@ GtkListBoxRow:selected GtkLabel.headline-read-label:backdrop {
 	font-size: large;
 	color: rgb(70,70,70);
 }
+
+GtkScrolledWindow GtkViewport.servicebox {
+	border: 1px solid alpha (#000, 0.30);
+}

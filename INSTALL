@@ -16,6 +16,7 @@ libsecret-1-dev
 libnotify-dev
 libxml-2.0
 libunity-dev (optional: disable with -DWITH_LIBUNITY=OFF)
+rest-0.7
 
 
 //+++++++++++++++++++++++++++++++++++++++

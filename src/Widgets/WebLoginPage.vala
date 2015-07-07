@@ -42,7 +42,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private string buildReadabilityURL()
 	{
-		return ReadabilitySecrets.authorize_uri + "?oauth_token=" + settings_readability.get_string("oauth-request-token");
+		return ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + settings_readability.get_string("oauth-request-token");
 	}
 
 	public void redirection(WebKit.LoadEvent load_event)

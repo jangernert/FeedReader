@@ -17,13 +17,11 @@ public class FeedReader.ServiceRow : baseRow {
         m_login_button.hexpand = false;
         m_login_button.margin = 10;
         m_login_button.clicked.connect(() => {
-			var readability = new ReadabilityAPI();
-			readability.getRequestToken();
+			share.getRequestToken(OAuth.READABILITY);
 
             var dialog = new LoginDialog(type);
 			dialog.sucess.connect(() => {
-				readability.getAccessToken();
-				readability.addBookmark("http://www.hardwareluxx.de/index.php/news/software/betriebssysteme/35990-ios-9-update-soll-maengel-in-ios-84-wie-fehlende-privatfreigabe-beseitigen.html");
+				share.getAccessToken(OAuth.READABILITY);
 				m_stack.set_visible_child_name("loggedIN");
 			});
         });

@@ -5,34 +5,49 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     public ReadabilityAPI()
     {
         m_oauth = new Rest.OAuthProxy (
-			"jangernert",
-			"3NSxqNW5d6zVwvZV6tskzVrqctHZceHr",
-			"https://www.readability.com/api/rest/v1/",
+			ReadabilitySecrets.oauth_consumer_key,
+			ReadabilitySecrets.oauth_consumer_secret,
+			ReadabilitySecrets.base_uri,
 			false);
     }
 
-    public void getRequestToken()
+    public bool getRequestToken()
     {
         try {
 			m_oauth.request_token ("oauth/request_token", ReadabilitySecrets.oauth_callback);
 		} catch (Error e) {
 			logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get request token: " + e.message);
+            return false;
 		}
 
         settings_readability.set_string("oauth-request-token", m_oauth.get_token());
+        return true;
     }
 
-    public void getAccessToken()
+    public bool getAccessToken()
     {
+        if(settings_readability.get_string("oauth-verifier") == "")
+        {
+            return false;
+        }
+
         try {
 			m_oauth.access_token("oauth/access_token", settings_readability.get_string("oauth-verifier"));
 		} catch (Error e) {
 			logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get access token: " + e.message);
+            return false;
 		}
+
+        settings_readability.set_boolean("is-logged-in", true);
+
+        return true;
     }
 
-    public void addBookmark(string url)
+    public bool addBookmark(string url)
     {
+        if(!isLoggedIn())
+            return false;
+
         var call = m_oauth.new_call();
 		m_oauth.url_format = "https://www.readability.com/api/rest/v1/";
 		call.set_function ("bookmarks");
@@ -41,5 +56,11 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 		call.add_param("favorite", "1");
 
         call.run_async ((call, error, obj) => {}, null);
+        return true;
+    }
+
+    private bool isLoggedIn()
+    {
+        return settings_readability.get_boolean("is-logged-in");
     }
 }

@@ -13,6 +13,7 @@ namespace FeedReader {
 	GLib.Settings settings_readability;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
+	Share share;
 
 
 	[DBus (name = "org.gnome.feedreader")]
@@ -55,6 +56,8 @@ namespace FeedReader {
 			settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
 
 			logger = new Logger();
+			share = new Share();
+			share.init();
 
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
@@ -99,7 +102,7 @@ namespace FeedReader {
 				m_window = new readerUI(this);
 				m_window.set_icon_name ("internet-news-reader");
 			}
-			
+
 			m_window.show_all();
 			feedDaemon_interface.updateBadge();
 		}

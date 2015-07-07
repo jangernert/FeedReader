@@ -9,7 +9,9 @@ namespace FeedReader {
 
 	public enum OAuth {
 		FEEDLY,
-		READABILITY
+		READABILITY,
+		INSTAPAPER,
+		POCKET
 	}
 
 	public enum LogLevel {
@@ -86,7 +88,7 @@ namespace FeedReader {
 	}
 
 	namespace ReadabilitySecrets {
-		const string authorize_uri			= "https://www.readability.com/api/rest/v1/oauth/authorize/";
+		const string base_uri			= "https://www.readability.com/api/rest/v1/";
 		const string oauth_consumer_key		= "jangernert";
 		const string oauth_consumer_secret	= "3NSxqNW5d6zVwvZV6tskzVrqctHZceHr";
 		const string oauth_callback			= "http://localhost/callback";

@@ -22,6 +22,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	private bool m_limitScroll;
 	private int m_threadCount;
 	public signal void row_activated(articleRow? row);
+	public signal void noRowActive();
 
 
 	public articleList () {
@@ -203,7 +204,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 
 
-	private void restoreSelectedRow()
+	private bool restoreSelectedRow()
 	{
 		string selectedRow = settings_state.get_string("articlelist-selected-row");
 
@@ -220,10 +221,12 @@ public class FeedReader.articleList : Gtk.Stack {
 					if(window != null && !window.searchFocused())
 						tmpRow.activate();
 					settings_state.set_string("articlelist-selected-row", "");
-					return;
+					return true;
 				}
 			}
 		}
+
+		return false;
 	}
 
 
@@ -301,6 +304,18 @@ public class FeedReader.articleList : Gtk.Stack {
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 		if(selected_row != null)
 			return selected_row.getID();
+
+		if(m_currentList.get_children().length() == 0)
+			return "empty";
+
+		return "";
+	}
+
+	public string getSelectedURL()
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+		if(selected_row != null)
+			return selected_row.getURL();
 
 		if(m_currentList.get_children().length() == 0)
 			return "empty";
@@ -394,7 +409,8 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(!add)
 				{
 					m_current_adjustment.notify["upper"].connect(restoreScrollPos);
-					restoreSelectedRow();
+					if(!restoreSelectedRow())
+						noRowActive();
 				}
 
 				if(settings_state.get_boolean("no-animations"))
@@ -404,6 +420,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			{
 				m_emptyList.set_text(m_emptyListString.printf(dataBase.getArticelCount()));
 				this.set_visible_child_name("empty");
+				noRowActive();
 			}
 		}
 	}

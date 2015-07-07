@@ -4,11 +4,26 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
     public ReadabilityAPI()
     {
-        m_oauth = new Rest.OAuthProxy (
-			ReadabilitySecrets.oauth_consumer_key,
-			ReadabilitySecrets.oauth_consumer_secret,
-			ReadabilitySecrets.base_uri,
-			false);
+        if(settings_readability.get_string("oauth-access-token") == "")
+        {
+            m_oauth = new Rest.OAuthProxy (
+    			ReadabilitySecrets.oauth_consumer_key,
+    			ReadabilitySecrets.oauth_consumer_secret,
+    			ReadabilitySecrets.base_uri,
+    			false);
+        }
+        else
+        {
+            m_oauth = new Rest.OAuthProxy.with_token (
+    			ReadabilitySecrets.oauth_consumer_key,
+    			ReadabilitySecrets.oauth_consumer_secret,
+                settings_readability.get_string("oauth-access-token"),
+                settings_readability.get_string("oauth-access-token-secret"),
+    			ReadabilitySecrets.base_uri,
+    			false);
+
+            settings_readability.set_boolean("is-logged-in", true);
+        }
     }
 
     public bool getRequestToken()
@@ -38,6 +53,8 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
             return false;
 		}
 
+        settings_readability.set_string("oauth-access-token", m_oauth.get_token());
+        settings_readability.set_string("oauth-access-token-secret", m_oauth.get_token_secret());
         settings_readability.set_boolean("is-logged-in", true);
 
         return true;

@@ -114,6 +114,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	{
 		if(url.has_prefix(ReadabilitySecrets.oauth_callback))
 		{
+			logger.print(LogMessage.DEBUG, url);
 			int verifier_start = url.index_of("=")+1;
 			int verifier_end = url.index_of("&", verifier_start);
 			string verifier = url.substring(verifier_start, verifier_end-verifier_start);
@@ -122,7 +123,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			int token_start = url.index_of("=", verifier_end)+1;
 			int token_end = url.index_of("&",token_start);
 			string token = url.substring(token_start, token_end-token_start);
-			settings_readability.set_string("oauth-token", token);
+			//settings_readability.set_string("oauth-token", token);
 
 			GLib.Thread.usleep(500000);
 			return true;

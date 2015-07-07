@@ -7,7 +7,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     private Gtk.Box m_internalsBox;
     private Gtk.Box m_serviceBox;
 
-    public SettingsDialog(Gtk.Window parent)
+    public SettingsDialog(Gtk.Window parent, string show)
     {
         this.title = "Settings";
 		this.border_width = 20;
@@ -60,7 +60,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         setup_service_settings();
 
         this.add_button(_("Close"), 1);
-        show_all();
+        this.show_all();
+
+        stack.set_visible_child_name(show);
     }
 
 
@@ -387,7 +389,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         service_scroll.add(viewport);
 
         var demoRow = new ServiceRow("Readability.com", OAuth.READABILITY);
-        service_list.add(demoRow);
+        service_list.insert(demoRow, -1);
         m_serviceBox.pack_start(service_scroll, false, true, 0);
     }
 }

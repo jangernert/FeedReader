@@ -7,12 +7,6 @@ public class FeedReader.Share : GLib.Object {
         m_readability = new ReadabilityAPI();
     }
 
-    public void init()
-    {
-        // readability
-        m_readability.getAccessToken();
-    }
-
     public bool getRequestToken(OAuth type)
     {
         switch(type)

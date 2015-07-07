@@ -5,7 +5,7 @@
             <default>false</default>
             <summary></summary>
             <description>
-                
+
             </description>
         </key>
 
@@ -25,7 +25,7 @@
             </description>
         </key>
 
-        <key name="oauth-token-secret" type="s">
+        <key name="oauth-access-token-secret" type="s">
             <default>""</default>
             <summary>Acces key to redability reader-API</summary>
             <description>
@@ -33,7 +33,7 @@
             </description>
         </key>
 
-        <key name="oauth-token" type="s">
+        <key name="oauth-access-token" type="s">
             <default>""</default>
             <summary>Acces key to redability reader-API</summary>
             <description>

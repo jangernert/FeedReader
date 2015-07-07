@@ -57,7 +57,6 @@ namespace FeedReader {
 
 			logger = new Logger();
 			share = new Share();
-			share.init();
 
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");

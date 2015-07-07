@@ -66,7 +66,9 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/ResetPage.vala
     src/Widgets/ServiceRow.vala
+    src/Widgets/ShareRow.vala
     src/Widgets/SettingsDialog.vala
+    src/Widgets/SharePopover.vala
     src/Widgets/SpringCleanPage.vala
     src/Widgets/TagRow.vala
     src/Widgets/UpdateButton.vala
@@ -166,6 +168,9 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-left.svg DESTINATION ${PKG
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-left-hover.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-down.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-down-hover.svg DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/pocket.svg DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/instapaper.svg DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/readability.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedly.png DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/owncloud.png DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/ttrss.png DESTINATION ${PKGDATADIR})

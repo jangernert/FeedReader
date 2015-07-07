@@ -15,6 +15,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public signal void change_marked(bool only_marked);
 	public signal void search_term(string searchTerm);
 	public signal void mark_selected_read();
+	public signal void showSettings(string panel);
 
 
 	public readerHeaderbar () {
@@ -91,7 +92,10 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		});
 
 		m_share_button.clicked.connect(() => {
-			
+			var pop = new SharePopover(m_share_button);
+			pop.showSettings.connect((panel) => {
+				showSettings(panel);
+			});
 		});
 
 		m_refresh_button = new UpdateButton("view-refresh");
@@ -146,6 +150,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_only_marked_button.sensitive = sensitive;
 		m_refresh_button.setSensitive(sensitive);
 		m_search.sensitive = sensitive;
+	}
+
+	public void showArticleButtons(bool show)
+	{
+		m_share_button.sensitive = show;
 	}
 
 	public bool currentlyUpdating()

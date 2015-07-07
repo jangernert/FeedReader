@@ -34,17 +34,16 @@ public class FeedReader.ServiceRow : baseRow {
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 50);
 
-        string iconPath = "/home/jeanluc/readability.svg";
-        var icon = new Gtk.Image.from_file(iconPath);
+        var icon = new Gtk.Image.from_file("/home/jeanluc/readability.svg");
 
 		m_label = new Gtk.Label(m_name);
 		m_label.set_line_wrap_mode(Pango.WrapMode.WORD);
 		m_label.set_ellipsize(Pango.EllipsizeMode.END);
-		m_label.set_alignment(0, 0.5f);
+		m_label.set_alignment(0.5f, 0.5f);
 
 		m_box.pack_start(icon, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
-        m_box.pack_end(m_stack, true, true, 0);
+        m_box.pack_end(m_stack, false, false, 0);
 
 		var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);

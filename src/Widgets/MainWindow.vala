@@ -51,6 +51,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_content.newHeadlineList();
 		});
 
+		m_headerbar.showSettings.connect((panel) => {
+			showSettings(panel);
+		});
+
 		m_headerbar.mark_selected_read.connect(markSelectedRead);
 
 		m_headerbar.notify["position"].connect(() => {
@@ -63,18 +67,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		var settings_action = new SimpleAction (_("settings"), null);
 		settings_action.activate.connect (() => {
-			var settings = new SettingsDialog(this);
-			settings.newFeedList.connect((defaultSettings) => {
-				m_content.newFeedList(defaultSettings);
-			});
-
-			settings.newArticleList.connect(() => {
-				m_content.newHeadlineList();
-			});
-
-			settings.reloadArticleView.connect(() => {
-				m_content.reloadArticleView();
-			});
+			showSettings("ui");
 		});
 		add_action(settings_action);
 		settings_action.set_enabled(true);
@@ -89,6 +82,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		m_content.setMarkReadButtonActive.connect((active) => {
 			m_headerbar.setMarkReadButtonSensitive(active);
+		});
+
+		m_content.showArticleButtons.connect((show) => {
+			m_headerbar.showArticleButtons(show);
 		});
 
 
@@ -133,6 +130,22 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				showLogin();
 			}
 		}
+	}
+
+	private void showSettings(string panel)
+	{
+		var settings = new SettingsDialog(this, panel);
+		settings.newFeedList.connect((defaultSettings) => {
+			m_content.newFeedList(defaultSettings);
+		});
+
+		settings.newArticleList.connect(() => {
+			m_content.newHeadlineList();
+		});
+
+		settings.reloadArticleView.connect(() => {
+			m_content.reloadArticleView();
+		});
 	}
 
 	public void setRefreshButton(bool refreshing)
@@ -520,6 +533,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		return m_headerbar.searchFocused();
 	}
 
-
+	public string getSelectedURL()
+	{
+		return m_content.getSelectedURL();
+	}
 
 }

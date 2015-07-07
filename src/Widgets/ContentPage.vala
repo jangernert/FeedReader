@@ -5,6 +5,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	private articleList m_articleList;
 	private feedList m_feedList;
 	public signal void setMarkReadButtonActive(bool active);
+	public signal void showArticleButtons(bool show);
 
 
 	public ContentPage()
@@ -75,8 +76,14 @@ public class FeedReader.ContentPage : Gtk.Paned {
 				row.removeUnreadIcon();
 			}
 
+			showArticleButtons(true);
+
 			if(m_article_view.getCurrentArticle() != row.getID())
 				m_article_view.fillContent(row.getID());
+		});
+
+		m_articleList.noRowActive.connect(() => {
+			showArticleButtons(false);
 		});
 
 		m_article_view = new articleView();
@@ -195,6 +202,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public string getSelectedArticle()
 	{
 		return m_articleList.getSelectedArticle();
+	}
+
+	public string getSelectedURL()
+	{
+		return m_articleList.getSelectedURL();
 	}
 
 	public void markAllArticlesAsRead()

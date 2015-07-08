@@ -1,0 +1,36 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.pocket" path="/org/gnome/feedreader/pocket/" gettext-domain="feedreader">
+
+        <key name="is-logged-in" type="b">
+            <default>false</default>
+            <summary></summary>
+            <description>
+
+            </description>
+        </key>
+
+        <key name="oauth-request-token" type="s">
+            <default>""</default>
+            <summary>Acces key to pocket API</summary>
+            <description>
+
+            </description>
+        </key>
+
+        <key name="oauth-access-token-secret" type="s">
+            <default>""</default>
+            <summary>Acces key to pocket API</summary>
+            <description>
+
+            </description>
+        </key>
+
+        <key name="oauth-access-token" type="s">
+            <default>""</default>
+            <summary>Acces key to pocket API</summary>
+            <description>
+
+            </description>
+        </key>
+    </schema>
+</schemalist>

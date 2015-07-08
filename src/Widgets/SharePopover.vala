@@ -58,7 +58,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
             m_haveServices = true;
         }
 
-        if(false)
+        if(settings_pocket.get_boolean("is-logged-in"))
         {
             var pocketRow = new ShareRow("Pocket", OAuth.POCKET);
             m_list.add(pocketRow);

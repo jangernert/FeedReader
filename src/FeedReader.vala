@@ -11,6 +11,7 @@ namespace FeedReader {
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
 	GLib.Settings settings_readability;
+	GLib.Settings settings_pocket;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
 	Share share;
@@ -54,6 +55,7 @@ namespace FeedReader {
 			settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 			settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 			settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
+			settings_pocket = new GLib.Settings ("org.gnome.feedreader.pocket");
 
 			logger = new Logger();
 			share = new Share();

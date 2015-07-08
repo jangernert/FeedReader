@@ -1,10 +1,12 @@
 public class FeedReader.Share : GLib.Object {
 
     private ReadabilityAPI m_readability;
+    private PocketAPI m_pocket;
 
     public Share()
     {
         m_readability = new ReadabilityAPI();
+        m_pocket = new PocketAPI();
     }
 
     public bool getRequestToken(OAuth type)
@@ -13,6 +15,9 @@ public class FeedReader.Share : GLib.Object {
         {
             case OAuth.READABILITY:
                 return m_readability.getRequestToken();
+
+            case OAuth.POCKET:
+                return m_pocket.getRequestToken();
 
             default:
                 return false;
@@ -26,6 +31,9 @@ public class FeedReader.Share : GLib.Object {
             case OAuth.READABILITY:
                 return m_readability.getAccessToken();
 
+            case OAuth.POCKET:
+                return m_pocket.getAccessToken();
+
             default:
                 return false;
         }
@@ -38,11 +46,11 @@ public class FeedReader.Share : GLib.Object {
             case OAuth.READABILITY:
                 return m_readability.addBookmark(url);
 
+            case OAuth.POCKET:
+                return m_pocket.addBookmark(url);
+
             default:
                 return false;
         }
     }
-
-    //share.addBookmark(OAuth.READABILITY, "http://www.hardwareluxx.de/index.php/news/software/betriebssysteme/35990-ios-9-update-soll-maengel-in-ios-84-wie-fehlende-privatfreigabe-beseitigen.html");
-
 }

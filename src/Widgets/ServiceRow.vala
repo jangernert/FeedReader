@@ -12,16 +12,18 @@ public class FeedReader.ServiceRow : baseRow {
 		m_name = serviceName;
         m_type = type;
 		m_stack = new Gtk.Stack();
+		string iconPath = "";
+		GLib.Settings serviceSettings = settings_readability;
 
         m_login_button = new Gtk.Button.with_label(_("Login"));
         m_login_button.hexpand = false;
         m_login_button.margin = 10;
         m_login_button.clicked.connect(() => {
-			share.getRequestToken(OAuth.READABILITY);
+			share.getRequestToken(type);
 
             var dialog = new LoginDialog(type);
 			dialog.sucess.connect(() => {
-				share.getAccessToken(OAuth.READABILITY);
+				share.getAccessToken(type);
 				m_stack.set_visible_child_name("loggedIN");
 			});
         });
@@ -34,7 +36,24 @@ public class FeedReader.ServiceRow : baseRow {
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 50);
 
-        var icon = new Gtk.Image.from_file("/home/jeanluc/readability.svg");
+		switch (m_type)
+        {
+            case OAuth.READABILITY:
+                iconPath = "/usr/share/FeedReader/readability.svg";
+				serviceSettings = settings_readability;
+                break;
+
+            case OAuth.INSTAPAPER:
+                iconPath = "/usr/share/FeedReader/instapaper.svg";
+                break;
+
+            case OAuth.POCKET:
+                iconPath = "/usr/share/FeedReader/pocket.svg";
+				serviceSettings = settings_pocket;
+                break;
+        }
+
+        var icon = new Gtk.Image.from_file(iconPath);
 
 		m_label = new Gtk.Label(m_name);
 		m_label.set_line_wrap_mode(Pango.WrapMode.WORD);
@@ -54,7 +73,7 @@ public class FeedReader.ServiceRow : baseRow {
 		this.add(seperator_box);
 		this.show_all();
 
-		if(settings_readability.get_boolean("is-logged-in"))
+		if(serviceSettings.get_boolean("is-logged-in"))
 		{
 			m_stack.set_visible_child_name("loggedIN");
 		}

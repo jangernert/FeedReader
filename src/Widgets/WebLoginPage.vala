@@ -27,6 +27,9 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			case OAuth.READABILITY:
 				m_url = buildReadabilityURL();
 				break;
+			case OAuth.POCKET:
+				m_url = buildPocketURL();
+				break;
 		}
 
 		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + m_url);
@@ -43,6 +46,11 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private string buildReadabilityURL()
 	{
 		return ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + settings_readability.get_string("oauth-request-token");
+	}
+
+	private string buildPocketURL()
+	{
+		return "https://getpocket.com/auth/authorize?request_token=" + settings_pocket.get_string("oauth-request-token") + "&redirect_uri=" + PocketSecrets.oauth_callback;
 	}
 
 	public void redirection(WebKit.LoadEvent load_event)
@@ -87,6 +95,13 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 					success_share();
 				}
 				break;
+			case OAuth.POCKET:
+				if(getPocketApiCode(url))
+				{
+					m_view.stop_loading();
+					success_share();
+				}
+				break;
 		}
 	}
 
@@ -119,13 +134,22 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			int verifier_end = url.index_of("&", verifier_start);
 			string verifier = url.substring(verifier_start, verifier_end-verifier_start);
 			settings_readability.set_string("oauth-verifier", verifier);
+			return true;
+		}
+		else
+			return false;
+	}
 
-			int token_start = url.index_of("=", verifier_end)+1;
-			int token_end = url.index_of("&",token_start);
+
+	bool getPocketApiCode(string url)
+	{
+		if(url.has_prefix("https://getpocket.com/auth/approve_access?request_token="))
+		{
+			logger.print(LogMessage.DEBUG, url);
+			int token_start = url.index_of("=")+1;
+			int token_end = url.index_of("&", token_start);
 			string token = url.substring(token_start, token_end-token_start);
-			//settings_readability.set_string("oauth-token", token);
-
-			GLib.Thread.usleep(500000);
+			settings_pocket.set_string("oauth-request-token", token);
 			return true;
 		}
 		else

@@ -76,6 +76,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/ContentGrabber/stringPair.vala
     src/Backends/ttrss/TTRSS_Message.vala
     src/Share/ReadabilityAPI.vala
+    src/Share/PocketAPI.vala
     src/Share/share.vala
 
 # tell what libraries to use when compiling

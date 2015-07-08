@@ -380,16 +380,16 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         service_scroll.expand = true;
         service_scroll.margin_top = 10;
         service_scroll.margin_bottom = 10;
-        //service_scroll.add(service_list);
-        //service_scroll.get_style_context().add_class("frame");
 
         var viewport = new Gtk.Viewport (null, null);
         viewport.get_style_context().add_class("servicebox");
         viewport.add(service_list);
         service_scroll.add(viewport);
 
-        var demoRow = new ServiceRow("Readability.com", OAuth.READABILITY);
-        service_list.insert(demoRow, -1);
+        var readabilityRow = new ServiceRow("Readability.com", OAuth.READABILITY);
+        var pocketRow = new ServiceRow("Pocket", OAuth.POCKET);
+        service_list.insert(readabilityRow, -1);
+        service_list.insert(pocketRow, -1);
         m_serviceBox.pack_start(service_scroll, false, true, 0);
     }
 }

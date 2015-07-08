@@ -94,6 +94,12 @@ namespace FeedReader {
 		const string oauth_callback			= "http://localhost/callback";
 	}
 
+	namespace PocketSecrets {
+		const string base_uri			= "https://getpocket.com/v3/";
+		const string oauth_consumer_key		= "43273-30a11c29b5eeabfa905df168";
+		const string oauth_callback			= "http://localhost/callback";
+	}
+
 	namespace AboutInfo {
 		 const string programmName  = _("FeedReader");
 		 const string copyright     = "Copyright © 2014 Jan Lukas Gernert";

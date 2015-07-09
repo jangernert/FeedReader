@@ -69,7 +69,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 		m_oauth.url_format = "https://www.readability.com/api/rest/v1/";
 		call.set_function ("bookmarks");
 		call.set_method("POST");
-		call.add_param("url", url);
+		call.add_param("url", GLib.Uri.escape_string(url));
 		call.add_param("favorite", "1");
 
         call.run_async ((call, error, obj) => {}, null);

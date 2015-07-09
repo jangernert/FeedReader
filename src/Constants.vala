@@ -94,6 +94,13 @@ namespace FeedReader {
 		const string oauth_callback			= "http://localhost/callback";
 	}
 
+	namespace InstapaperSecrets {
+		const string base_uri			= "https://www.instapaper.com/api/";
+		const string oauth_consumer_key		= "b7681e07bf554b15813511217054e1b2";
+		const string oauth_consumer_secret	= "c5307cb359d54685904f6d38aaeede6f";
+		const string oauth_callback			= "http://localhost/callback";
+	}
+
 	namespace PocketSecrets {
 		const string base_uri			= "https://getpocket.com/v3/";
 		const string oauth_consumer_key		= "43273-30a11c29b5eeabfa905df168";

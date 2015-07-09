@@ -6,27 +6,55 @@ public class FeedReader.ServiceRow : baseRow {
     private Gtk.Box m_box;
 	private Gtk.Stack m_stack;
     private Gtk.Button m_login_button;
+	private Gtk.Revealer m_revealer;
+	private Gtk.Entry m_userEntry;
+	private Gtk.Entry m_passEntry;
 
 	public ServiceRow(string serviceName, OAuth type)
 	{
 		m_name = serviceName;
         m_type = type;
 		m_stack = new Gtk.Stack();
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		string iconPath = "";
 		GLib.Settings serviceSettings = settings_readability;
+
+		//------------------------------------------------
+		// XAuth revealer
+		//------------------------------------------------
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+		grid.margin_bottom = 10;
+		grid.margin_top = 5;
+
+        m_userEntry = new Gtk.Entry();
+        m_passEntry = new Gtk.Entry();
+		m_passEntry.set_invisible_char('*');
+		m_passEntry.set_visibility(false);
+
+		m_userEntry.activate.connect(() => {
+			m_passEntry.grab_focus();
+		});
+
+		m_passEntry.activate.connect(() => {
+			login();
+		});
+
+        grid.attach(new Gtk.Label(_("Username:")), 0, 0);
+        grid.attach(new Gtk.Label(_("Password:")), 0, 1);
+        grid.attach(m_userEntry, 1, 0);
+        grid.attach(m_passEntry, 1, 1);
+		m_revealer.add(grid);
+		//------------------------------------------------
 
         m_login_button = new Gtk.Button.with_label(_("Login"));
         m_login_button.hexpand = false;
         m_login_button.margin = 10;
-        m_login_button.clicked.connect(() => {
-			share.getRequestToken(type);
-
-            var dialog = new LoginDialog(type);
-			dialog.sucess.connect(() => {
-				share.getAccessToken(type);
-				m_stack.set_visible_child_name("loggedIN");
-			});
-        });
+        m_login_button.clicked.connect(login);
 
 		var loggedIN = new Gtk.Image.from_icon_name("dialog-apply", Gtk.IconSize.LARGE_TOOLBAR);
 
@@ -45,6 +73,7 @@ public class FeedReader.ServiceRow : baseRow {
 
             case OAuth.INSTAPAPER:
                 iconPath = "/usr/share/FeedReader/instapaper.svg";
+				serviceSettings = settings_instapaper;
                 break;
 
             case OAuth.POCKET:
@@ -68,6 +97,7 @@ public class FeedReader.ServiceRow : baseRow {
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.set_size_request(0, 2);
 		seperator_box.pack_start(m_box, true, true, 0);
+		seperator_box.pack_start(m_revealer, false, false, 0);
 		seperator_box.pack_start(separator, false, false, 0);
 
 		this.add(seperator_box);
@@ -80,6 +110,71 @@ public class FeedReader.ServiceRow : baseRow {
 		else
 		{
 			m_stack.set_visible_child_name("button");
+		}
+	}
+
+
+	private void login()
+	{
+		switch(m_type)
+		{
+			case OAuth.READABILITY:
+			case OAuth.POCKET:
+				doOAuth();
+				break;
+
+			case OAuth.INSTAPAPER:
+				doXAuth();
+				break;
+		}
+	}
+
+	private void doOAuth()
+	{
+		if(share.getRequestToken(m_type))
+		{
+			var dialog = new LoginDialog(m_type);
+			dialog.sucess.connect(() => {
+				if(share.getAccessToken(m_type))
+				{
+					m_stack.set_visible_child_name("loggedIN");
+				}
+			});
+		}
+	}
+
+	private void doXAuth()
+	{
+		if(m_revealer.get_child_revealed())
+		{
+			if(share.getAccessToken(OAuth.INSTAPAPER,  m_userEntry.get_text(), m_passEntry.get_text()))
+			{
+				settings_instapaper.set_string("username", m_userEntry.get_text());
+				var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
+												"Username", Secret.SchemaAttributeType.STRING);
+
+				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["Username"] = m_userEntry.get_text();
+				try{
+					Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedreader: Instapaper login", m_passEntry.get_text(), null);
+				}
+				catch(GLib.Error e){}
+
+				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+				m_revealer.set_reveal_child(false);
+				m_stack.set_visible_child_name("loggedIN");
+			}
+			else
+			{
+				//FIXME pop up infobar with error
+			}
+
+		}
+		else
+		{
+			m_revealer.set_reveal_child(true);
+			m_login_button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+			m_userEntry.grab_focus();
 		}
 	}
 

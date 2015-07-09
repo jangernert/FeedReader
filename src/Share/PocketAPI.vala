@@ -56,7 +56,7 @@ public class FeedReader.PocketAPI : GLib.Object {
 
     public bool addBookmark(string url)
     {
-        string message = "url=" + url + "&consumer_key=" + PocketSecrets.oauth_consumer_key + "&access_token=" + settings_pocket.get_string("oauth-access-token");
+        string message = "url=" + GLib.Uri.escape_string(url) + "&consumer_key=" + PocketSecrets.oauth_consumer_key + "&access_token=" + settings_pocket.get_string("oauth-access-token");
 
         m_message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);

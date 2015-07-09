@@ -17,14 +17,6 @@
             </description>
         </key>
 
-        <key name="oauth-access-token-secret" type="s">
-            <default>""</default>
-            <summary>Acces key to pocket API</summary>
-            <description>
-
-            </description>
-        </key>
-
         <key name="oauth-access-token" type="s">
             <default>""</default>
             <summary>Acces key to pocket API</summary>

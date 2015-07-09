@@ -12,6 +12,7 @@ namespace FeedReader {
 	GLib.Settings settings_ttrss;
 	GLib.Settings settings_readability;
 	GLib.Settings settings_pocket;
+	GLib.Settings settings_instapaper;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
 	Share share;
@@ -56,6 +57,7 @@ namespace FeedReader {
 			settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 			settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
 			settings_pocket = new GLib.Settings ("org.gnome.feedreader.pocket");
+			settings_instapaper = new GLib.Settings ("org.gnome.feedreader.instapaper");
 
 			logger = new Logger();
 			share = new Share();

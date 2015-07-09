@@ -2,11 +2,13 @@ public class FeedReader.Share : GLib.Object {
 
     private ReadabilityAPI m_readability;
     private PocketAPI m_pocket;
+    private InstaAPI m_instapaper;
 
     public Share()
     {
         m_readability = new ReadabilityAPI();
         m_pocket = new PocketAPI();
+        m_instapaper = new InstaAPI();
     }
 
     public bool getRequestToken(OAuth type)
@@ -19,12 +21,15 @@ public class FeedReader.Share : GLib.Object {
             case OAuth.POCKET:
                 return m_pocket.getRequestToken();
 
+            case OAuth.INSTAPAPER:
+                return true;
+
             default:
                 return false;
         }
     }
 
-    public bool getAccessToken(OAuth type)
+    public bool getAccessToken(OAuth type, string username = "", string password = "")
     {
         switch(type)
         {
@@ -33,6 +38,9 @@ public class FeedReader.Share : GLib.Object {
 
             case OAuth.POCKET:
                 return m_pocket.getAccessToken();
+
+            case OAuth.INSTAPAPER:
+                return m_instapaper.login(username, password);
 
             default:
                 return false;
@@ -48,6 +56,9 @@ public class FeedReader.Share : GLib.Object {
 
             case OAuth.POCKET:
                 return m_pocket.addBookmark(url);
+
+            case OAuth.INSTAPAPER:
+                return m_instapaper.addBookmark(url);
 
             default:
                 return false;

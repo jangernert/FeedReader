@@ -5,4 +5,4 @@ add_schema ("org.gnome.feedreader.readability.gschema.xml")
 add_schema ("org.gnome.feedreader.saved-state.gschema.xml")
 add_schema ("org.gnome.feedreader.ttrss.gschema.xml")
 add_schema ("org.gnome.feedreader.pocket.gschema.xml")
-
+add_schema ("org.gnome.feedreader.instapaper.gschema.xml")

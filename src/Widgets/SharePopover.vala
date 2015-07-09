@@ -65,7 +65,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
             m_haveServices = true;
         }
 
-        if(false)
+        if(settings_instapaper.get_boolean("is-logged-in"))
         {
             var instaRow = new ShareRow("instapaper", OAuth.INSTAPAPER);
             m_list.add(instaRow);

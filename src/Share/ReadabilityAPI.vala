@@ -116,4 +116,15 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     {
         return settings_readability.get_boolean("is-logged-in");
     }
+
+    public bool logout()
+    {
+        settings_readability.set_string("username", "");
+        settings_readability.set_string("oauth-access-token", "");
+        settings_readability.set_string("oauth-access-token-secret", "");
+        settings_readability.set_string("oauth-verifier", "");
+        settings_readability.set_string("oauth-request-token", "");
+        settings_readability.set_boolean("is-logged-in", false);
+        return true;
+    }
 }

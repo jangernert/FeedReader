@@ -8,16 +8,22 @@ public class FeedReader.ServiceRow : baseRow {
 	private Gtk.Stack m_iconStack;
 	private Gtk.Stack m_labelStack;
     private Gtk.Button m_login_button;
+	private Gtk.Button m_logout_button;
+	private Gtk.EventBox m_eventbox;
 	private Gtk.Revealer m_revealer;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passEntry;
 	private GLib.Settings m_serviceSettings;
+	private bool m_isLoggedIN;
 
 	public ServiceRow(string serviceName, OAuth type)
 	{
 		m_name = serviceName;
         m_type = type;
+		m_isLoggedIN = false;
 		m_iconStack = new Gtk.Stack();
+		m_iconStack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
+		m_iconStack.set_transition_duration(300);
 		m_labelStack = new Gtk.Stack();
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -55,15 +61,29 @@ public class FeedReader.ServiceRow : baseRow {
 		m_revealer.add(grid);
 		//------------------------------------------------
 
+		m_eventbox = new Gtk.EventBox();
+		m_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_eventbox.enter_notify_event.connect(onEnter);
+		m_eventbox.leave_notify_event.connect(onLeave);
+		m_eventbox.add(m_iconStack);
+
         m_login_button = new Gtk.Button.with_label(_("Login"));
         m_login_button.hexpand = false;
         m_login_button.margin = 10;
         m_login_button.clicked.connect(login);
 
+		m_logout_button = new Gtk.Button.with_label(_("Logout"));
+		m_logout_button.hexpand = false;
+		m_logout_button.margin = 10;
+		m_logout_button.clicked.connect(logout);
+		m_logout_button.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
+
 		var loggedIN = new Gtk.Image.from_icon_name("dialog-apply", Gtk.IconSize.LARGE_TOOLBAR);
 
 		m_iconStack.add_named(m_login_button, "button");
 		m_iconStack.add_named(loggedIN, "loggedIN");
+		m_iconStack.add_named(m_logout_button, "logOUT");
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 50);
@@ -107,7 +127,7 @@ public class FeedReader.ServiceRow : baseRow {
 
 		m_box.pack_start(icon, false, false, 8);
 		m_box.pack_start(m_labelStack, true, true, 0);
-        m_box.pack_end(m_iconStack, false, false, 0);
+        m_box.pack_end(m_eventbox, false, false, 0);
 
 		var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
@@ -121,6 +141,7 @@ public class FeedReader.ServiceRow : baseRow {
 
 		if(m_serviceSettings.get_boolean("is-logged-in"))
 		{
+			m_isLoggedIN = true;
 			m_iconStack.set_visible_child_name("loggedIN");
 			m_labelStack.set_visible_child_name("loggedIN");
 		}
@@ -129,6 +150,21 @@ public class FeedReader.ServiceRow : baseRow {
 			m_iconStack.set_visible_child_name("button");
 			m_labelStack.set_visible_child_name("loggedOUT");
 		}
+	}
+
+	private bool onEnter()
+	{
+		if(m_isLoggedIN)
+			m_iconStack.set_visible_child_full("logOUT", Gtk.StackTransitionType.SLIDE_LEFT);
+		return false;
+	}
+
+	private bool onLeave()
+	{
+		if(m_isLoggedIN)
+			m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_RIGHT);
+
+		return false;
 	}
 
 
@@ -147,6 +183,13 @@ public class FeedReader.ServiceRow : baseRow {
 		}
 	}
 
+	private void logout()
+	{
+		share.logout(m_type);
+		m_isLoggedIN = false;
+		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
+	}
+
 	private void doOAuth()
 	{
 		if(share.getRequestToken(m_type))
@@ -155,6 +198,7 @@ public class FeedReader.ServiceRow : baseRow {
 			dialog.sucess.connect(() => {
 				if(share.getAccessToken(m_type))
 				{
+					m_isLoggedIN = true;
 					m_iconStack.set_visible_child_name("loggedIN");
 					m_label.set_label(m_serviceSettings.get_string("username"));
 					m_labelStack.set_visible_child_name("loggedIN");
@@ -182,6 +226,7 @@ public class FeedReader.ServiceRow : baseRow {
 
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 				m_revealer.set_reveal_child(false);
+				m_isLoggedIN = true;
 				m_iconStack.set_visible_child_name("loggedIN");
 				m_label.set_label(m_serviceSettings.get_string("username"));
 				m_labelStack.set_visible_child_name("loggedIN");

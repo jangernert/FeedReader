@@ -64,4 +64,23 @@ public class FeedReader.Share : GLib.Object {
                 return false;
         }
     }
+
+
+    public bool logout(OAuth type)
+    {
+        switch(type)
+        {
+            case OAuth.READABILITY:
+                return m_readability.logout();
+
+            case OAuth.POCKET:
+                return m_pocket.logout();
+
+            case OAuth.INSTAPAPER:
+                return m_instapaper.logout();
+
+            default:
+                return false;
+        }
+    }
 }

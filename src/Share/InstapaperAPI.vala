@@ -71,8 +71,7 @@ public class FeedReader.InstaAPI : GLib.Object {
     private string getPassword()
     {
         string username = settings_instapaper.get_string("username");
-        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
-                                          "Username", Secret.SchemaAttributeType.STRING);
+        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "Username", Secret.SchemaAttributeType.STRING);
 
         var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
         attributes["Username"] = username;
@@ -81,6 +80,24 @@ public class FeedReader.InstaAPI : GLib.Object {
         try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
 
         return passwd;
+    }
+
+    public bool logout()
+    {
+        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "Username", Secret.SchemaAttributeType.STRING);
+
+        var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+        attributes["Username"] = settings_instapaper.get_string("username");
+
+        Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
+            bool removed = Secret.password_clearv.end(async_res);
+        });
+
+        settings_instapaper.set_string("username", "");
+        settings_instapaper.set_string("user-id", "");
+        settings_instapaper.set_boolean("is-logged-in", false);
+
+        return true;
     }
 
 }

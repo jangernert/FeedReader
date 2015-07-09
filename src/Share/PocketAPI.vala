@@ -77,4 +77,13 @@ public class FeedReader.PocketAPI : GLib.Object {
         return true;
     }
 
+    public bool logout()
+    {
+        settings_pocket.set_string("oauth-access-token", "");
+        settings_pocket.set_string("oauth-request-token", "");
+        settings_pocket.set_string("username", "");
+        settings_pocket.set_boolean("is-logged-in", false);
+        return true;
+    }
+
 }

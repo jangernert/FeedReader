@@ -48,5 +48,12 @@
                 Acces key to reader-API of redability.com
             </description>
         </key>
+
+        <key name="username" type="s">
+            <default>""</default>
+            <summary></summary>
+            <description>
+            </description>
+        </key>
     </schema>
 </schemalist>

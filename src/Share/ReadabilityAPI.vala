@@ -56,6 +56,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         settings_readability.set_string("oauth-access-token", m_oauth.get_token());
         settings_readability.set_string("oauth-access-token-secret", m_oauth.get_token_secret());
         settings_readability.set_boolean("is-logged-in", true);
+        getUsername();
 
         return true;
     }
@@ -72,8 +73,43 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 		call.add_param("url", GLib.Uri.escape_string(url));
 		call.add_param("favorite", "1");
 
-        call.run_async ((call, error, obj) => {}, null);
+        call.run_async((call, error, obj) => {}, null);
         return true;
+    }
+
+    private string getUsername()
+    {
+        var call = m_oauth.new_call();
+		m_oauth.url_format = "https://www.readability.com/api/rest/v1/";
+		call.set_function ("users/_current");
+		call.set_method("GET");
+
+        try{
+            call.run();
+        }
+        catch(Error e)
+        {
+
+        }
+
+        var parser = new Json.Parser();
+        try{
+            parser.load_from_data(call.get_payload());
+        }
+        catch (Error e) {
+            logger.print(LogMessage.ERROR, "Could not load response to Message from readability");
+            logger.print(LogMessage.ERROR, e.message);
+        }
+
+        var root_object = parser.get_root().get_object();
+        if(root_object.has_member("username"))
+        {
+            string username = root_object.get_string_member("username");
+            settings_readability.set_string("username", username);
+        }
+
+
+        return "";
     }
 
     private bool isLoggedIn()

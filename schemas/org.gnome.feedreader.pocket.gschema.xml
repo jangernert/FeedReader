@@ -24,5 +24,13 @@
 
             </description>
         </key>
+
+        <key name="username" type="s">
+            <default>""</default>
+            <summary></summary>
+            <description>
+
+            </description>
+        </key>
     </schema>
 </schemalist>

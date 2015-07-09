@@ -8,6 +8,11 @@ public class FeedReader.PocketAPI : GLib.Object {
     {
 		m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded; charset=UTF8";
+
+        if(settings_pocket.get_string("oauth-access-token") != "")
+        {
+            settings_pocket.set_boolean("is-logged-in", true);
+        }
     }
 
     public bool getRequestToken()
@@ -43,12 +48,15 @@ public class FeedReader.PocketAPI : GLib.Object {
 
         string response = (string)m_message_soup.response_body.flatten().data;
         logger.print(LogMessage.DEBUG, response);
-        int start = response.index_of_char('=')+1;
-        int end = response.index_of_char('&', start);
+        int tokenStart = response.index_of_char('=')+1;
+        int tokenEnd = response.index_of_char('&', tokenStart);
+        int userStart = response.index_of_char('=', tokenEnd)+1;
 
-        string accessToken = response.substring(start, end-start);
+        string accessToken = response.substring(tokenStart, tokenEnd-tokenStart);
+        string username = GLib.Uri.unescape_string(response.substring(userStart));
 
         settings_pocket.set_string("oauth-access-token", accessToken);
+        settings_pocket.set_string("username", username);
         settings_pocket.set_boolean("is-logged-in", true);
         return true;
     }

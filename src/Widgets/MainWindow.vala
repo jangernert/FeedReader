@@ -259,6 +259,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_int("articleview-scrollpos", m_content.getArticleViewScrollPos());
 
 			settings_readability.set_boolean("is-logged-in", false);
+			settings_instapaper.set_boolean("is-logged-in", false);
+			settings_pocket.set_boolean("is-logged-in", false);
 		});
 	}
 

@@ -538,7 +538,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				m_content.ArticlesScrollUP();
 				break;
 		}
-		return true;
+		return false;
 	}
 
 

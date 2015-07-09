@@ -1,0 +1,15 @@
+1.2:
+- add ability to share articles
+- share to readability
+- share to instapaper
+- share to pocket
+- improve article-view
+- global shortcuts
+- article grabber
+- option to use readability instead of article grabber (hidden feature)
+-
+
+
+
+1.0:
+- Initial Release

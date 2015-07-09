@@ -61,11 +61,7 @@ public class FeedReader.categorieRow : baseRow {
 
 		int count = 0;
 
-		m_eventbox.button_press_event.connect(() => {
-			expand_collapse();
-			return true;
-		});
-
+		m_eventbox.button_press_event.connect(expand_collapse);
 		m_eventbox.enter_notify_event.connect(onEnter);
 		m_eventbox.leave_notify_event.connect(onLeave);
 
@@ -93,8 +89,9 @@ public class FeedReader.categorieRow : baseRow {
 			m_stack.set_visible_child_name("expanded");
 	}
 
-	public void expand_collapse()
+	public bool expand_collapse()
 	{
+		logger.print(LogMessage.DEBUG, "expand_collapse");
 		if(m_collapsed)
 		{
 			m_collapsed = false;
@@ -121,10 +118,12 @@ public class FeedReader.categorieRow : baseRow {
 		}
 
 		collapse(m_collapsed, m_categorieID);
+		return true;
 	}
 
 	private bool onEnter()
 	{
+		logger.print(LogMessage.DEBUG, "onEnter");
 		m_hovered = true;
 		if(m_collapsed)
 		{
@@ -140,6 +139,7 @@ public class FeedReader.categorieRow : baseRow {
 
 	private bool onLeave()
 	{
+		logger.print(LogMessage.DEBUG, "onLeave");
 		m_hovered = false;
 		if(m_collapsed)
 		{

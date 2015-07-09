@@ -11,7 +11,7 @@ date: //time
 author: //a[@rel='author']
 
 # Content is here
-body: //article #dasfa
+body: //article
 
 # Fetch full multipage articles
 next_page_link: //a[@id='atoc_next']
@@ -31,6 +31,7 @@ strip_id_or_class: footer
 strip: //img[@src='']
 strip: //li[not(*)]
 strip: //div[contains(@style,'margin')]
+strip: //figure[contains(@id,'gvideo')]
 
 
 # Try yourself

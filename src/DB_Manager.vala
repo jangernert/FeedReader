@@ -501,7 +501,54 @@ public class FeedReader.dbManager : GLib.Object {
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
 		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
+			logger.print(LogMessage.ERROR, "getFeedName - %s".printf(sqlite_db.errmsg()));
+
+		string result = "";
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_text(0);
+		}
+
+		return result;
+	}
+
+
+	public string getTagName(string tagID)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
+		query.selectField("title");
+		query.addEqualsCondition("tagID", tagID, true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "getTagName - %s".printf(sqlite_db.errmsg()));
+
+		string result = "";
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_text(0);
+		}
+
+		return result;
+	}
+
+
+	public string getCategoryName(string catID)
+	{
+		if(catID == CategoryID.TAGS)
+			return "Tags";
+		
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("title");
+		query.addEqualsCondition("categorieID", catID, true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "getCategoryName - %s".printf(sqlite_db.errmsg()));
 
 		string result = "";
 
@@ -1066,14 +1113,14 @@ public class FeedReader.dbManager : GLib.Object {
 	private string getAllTagsCondition()
 	{
 		var tags = read_tags();
-		string query = "";
+		string query = "(";
 		foreach(var Tag in tags)
 		{
 			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(Tag.m_tagID);
 		}
 
 		int or = query.char_count()-4;
-		return query.substring(0, or);
+		return query.substring(0, or) + ")";
 	}
 
 	public GLib.List<category> read_categories_level(int level)
@@ -1163,6 +1210,7 @@ public class FeedReader.dbManager : GLib.Object {
 		query.limit(limit);
 		query.offset(offset);
 		query.build();
+		query.print();
 
 
 		Sqlite.Statement stmt;

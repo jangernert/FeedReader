@@ -508,22 +508,34 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				logger.print(LogMessage.DEBUG, "shortcut: up");
 				m_content.ArticleListNEXT();
 				break;
+
 			case Gdk.Key.r:
 				logger.print(LogMessage.DEBUG, "shortcut: toggle read");
 				m_content.toggleReadSelectedArticle();
 				break;
+
 			case Gdk.Key.m:
 				logger.print(LogMessage.DEBUG, "shortcut: toggle marked");
 				m_content.toggleMarkedSelectedArticle();
 				break;
+
 			case Gdk.Key.o:
 				logger.print(LogMessage.DEBUG, "shortcut: open in browser");
 				m_content.openSelectedArticle();
 				break;
+
 			case Gdk.Key.A:
 				logger.print(LogMessage.DEBUG, "shortcut: mark all as read");
 				//if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
 				markSelectedRead();
+				break;
+
+			case Gdk.Key.Page_Down:
+				m_content.ArticlesScrollDOWN();
+				break;
+
+			case Gdk.Key.Page_Up:
+				m_content.ArticlesScrollUP();
 				break;
 		}
 		return true;

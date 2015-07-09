@@ -169,6 +169,7 @@ namespace FeedReader {
 
 	namespace FeedID {
 		const string ALL = "-4";
+		const string CATEGORIES = "-2";
 	}
 
 	// tango colors

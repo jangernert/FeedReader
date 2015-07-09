@@ -254,6 +254,22 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 
 
+	public void scrollUP()
+	{
+		m_current_adjustment = m_currentScroll.get_vadjustment();
+		m_current_adjustment.set_value(0);
+		m_currentScroll.set_vadjustment(m_current_adjustment);
+	}
+
+
+	public void scrollDOWN()
+	{
+		m_current_adjustment = m_currentScroll.get_vadjustment();
+		m_current_adjustment.set_value(m_displayed_articles * 102);
+		m_currentScroll.set_vadjustment(m_current_adjustment);
+	}
+
+
 	public double getScrollPos()
 	{
 		return m_current_adjustment.get_value();
@@ -418,7 +434,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			}
 			else if(!add)
 			{
-				m_emptyList.set_text(m_emptyListString.printf(dataBase.getArticelCount()));
+				m_emptyList.set_text(buildEmptyString());
 				this.set_visible_child_name("empty");
 				noRowActive();
 			}
@@ -603,5 +619,52 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 	}
 
+	private string buildEmptyString()
+	{
+		string message = "No ";
+
+		if(m_only_unread)
+			message += "unread ";
+
+		if(m_only_marked)
+		{
+			if(m_only_unread)
+				message += "and ";
+			message += "marked ";
+		}
+
+		message += "articles ";
+
+		if(m_searchTerm != "")
+		{
+			message += "that fit \"%s\" ".printf(m_searchTerm);
+		}
+
+		string name = "";
+
+		if(m_current_feed_selected != FeedID.ALL && m_current_feed_selected != FeedID.CATEGORIES)
+		{
+			message += "in ";
+			switch(m_IDtype)
+			{
+				case FeedList.FEED:
+					message += "the feed ";
+					name = dataBase.getFeedName(m_current_feed_selected);
+					break;
+				case FeedList.TAG:
+					message += "the tag ";
+					name = dataBase.getTagName(m_current_feed_selected);
+					break;
+				case FeedList.CATEGORY:
+					message += "the category ";
+					name = dataBase.getCategoryName(m_current_feed_selected);
+					break;
+			}
+			message += "\"%s\" ".printf(name);
+		}
+		message += "could be found.";
+
+		return message;
+	}
 
 }

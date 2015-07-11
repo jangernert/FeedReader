@@ -89,7 +89,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         }
         catch(Error e)
         {
-
+            logger.print(LogMessage.ERROR, e.message);
         }
 
         var parser = new Json.Parser();
@@ -125,6 +125,13 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         settings_readability.set_string("oauth-verifier", "");
         settings_readability.set_string("oauth-request-token", "");
         settings_readability.set_boolean("is-logged-in", false);
+
+        m_oauth = new Rest.OAuthProxy (
+            ReadabilitySecrets.oauth_consumer_key,
+            ReadabilitySecrets.oauth_consumer_secret,
+            ReadabilitySecrets.base_uri,
+            false);
+        
         return true;
     }
 }

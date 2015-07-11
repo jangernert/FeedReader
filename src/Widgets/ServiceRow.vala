@@ -230,17 +230,6 @@ public class FeedReader.ServiceRow : baseRow {
 		{
 			if(share.getAccessToken(OAuth.INSTAPAPER,  m_userEntry.get_text(), m_passEntry.get_text()))
 			{
-				settings_instapaper.set_string("username", m_userEntry.get_text());
-				var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
-												"Username", Secret.SchemaAttributeType.STRING);
-
-				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-				attributes["Username"] = m_userEntry.get_text();
-				try{
-					Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedreader: Instapaper login", m_passEntry.get_text(), null);
-				}
-				catch(GLib.Error e){}
-
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 				m_revealer.set_reveal_child(false);
 				m_isLoggedIN = true;

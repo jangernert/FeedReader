@@ -11,6 +11,19 @@ public class FeedReader.Share : GLib.Object {
         m_instapaper = new InstaAPI();
     }
 
+    public async void checkAccessTokens()
+	{
+		SourceFunc callback = checkAccessTokens.callback;
+
+		ThreadFunc<void*> run = () => {
+
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("checkAccessTokens", run);
+		yield;
+	}
+
     public bool getRequestToken(OAuth type)
     {
         switch(type)

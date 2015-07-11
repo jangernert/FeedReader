@@ -24,5 +24,21 @@
 
             </description>
         </key>
+
+        <key name="oauth-token-secret" type="s">
+            <default>""</default>
+            <summary></summary>
+            <description>
+
+            </description>
+        </key>
+
+        <key name="oauth-token" type="s">
+            <default>""</default>
+            <summary></summary>
+            <description>
+
+            </description>
+        </key>
     </schema>
 </schemalist>

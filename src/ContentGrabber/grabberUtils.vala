@@ -201,7 +201,9 @@ public class FeedReader.grabberUtils : GLib.Object {
             baseURL = articleURL.substring(0, index);
             return baseURL + incompleteURL;
         }
-        else if(!incompleteURL.has_prefix("http") && !incompleteURL.has_prefix("www"))
+        else if(!incompleteURL.has_prefix("http")
+        && !incompleteURL.has_prefix("www")
+        && !incompleteURL.has_prefix("//"))
         {
             index = articleURL.index_of_char('/', index);
             baseURL = articleURL.substring(0, index);

@@ -42,7 +42,8 @@ public class FeedReader.InstaAPI : GLib.Object {
     public bool checkLogin()
     {
         bool login = false;
-        string message = "username=" + settings_instapaper.get_string("user-id") + "&password=" + getPassword();
+        string message = "username=" + settings_instapaper.get_string("username") + "&password=" + getPassword();
+        logger.print(LogMessage.DEBUG, "checkLogin: " + message);
 
         m_message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/authenticate");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
@@ -91,7 +92,7 @@ public class FeedReader.InstaAPI : GLib.Object {
         }
         catch(Error e)
         {
-            logger.print(LogMessage.DEBUG, "getAccessToken: " + e.message);
+            logger.print(LogMessage.ERROR, "getAccessToken: " + e.message);
         }
 
         string response = call.get_payload();

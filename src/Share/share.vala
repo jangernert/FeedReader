@@ -9,6 +9,10 @@ public class FeedReader.Share : GLib.Object {
         m_readability = new ReadabilityAPI();
         m_pocket = new PocketAPI();
         m_instapaper = new InstaAPI();
+
+        checkAccessTokens.begin((obj, res) => {
+            checkAccessTokens.end(res);
+        });
     }
 
     public async void checkAccessTokens()
@@ -16,6 +20,12 @@ public class FeedReader.Share : GLib.Object {
 		SourceFunc callback = checkAccessTokens.callback;
 
 		ThreadFunc<void*> run = () => {
+            m_instapaper.checkLogin();
+            m_instapaper.getUserID();
+
+            m_readability.getUsername();
+
+
 
 			Idle.add((owned) callback);
 			return null;
@@ -53,7 +63,7 @@ public class FeedReader.Share : GLib.Object {
                 return m_pocket.getAccessToken();
 
             case OAuth.INSTAPAPER:
-                return m_instapaper.login(username, password);
+                return m_instapaper.getAccessToken(username, password);
 
             default:
                 return false;

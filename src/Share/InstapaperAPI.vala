@@ -28,7 +28,7 @@ public class FeedReader.InstaAPI : GLib.Object {
     			"https://www.instapaper.com/api/1/",
     			false);
 
-            if(settings_instapaper.get_string("username") != "")
+            if(settings_instapaper.get_string("user-id") != "")
             {
                 if(getPassword() != "")
                 {
@@ -39,9 +39,10 @@ public class FeedReader.InstaAPI : GLib.Object {
 
     }
 
-    public bool login(string username, string password)
+    public bool checkLogin()
     {
-        string message = "username=" + username + "&password=" + password;
+        bool login = false;
+        string message = "username=" + settings_instapaper.get_string("user-id") + "&password=" + getPassword();
 
         m_message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/authenticate");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
@@ -55,27 +56,28 @@ public class FeedReader.InstaAPI : GLib.Object {
 
         if(response == "200")
         {
-            settings_instapaper.set_string("username", username);
-            var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
-                                            "Username", Secret.SchemaAttributeType.STRING);
-
-            var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-            attributes["Username"] = username;
-            try{
-                Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedreader: Instapaper login", password, null);
-            }
-            catch(GLib.Error e){}
-
-            settings_instapaper.set_boolean("is-logged-in", true);
-            settings_instapaper.set_string("username", username);
-            getAccessToken();
-            return true;
+            login = true;
         }
 
-        return false;
+        settings_instapaper.set_boolean("is-logged-in", login);
+        return login;
     }
 
-    private void getAccessToken()
+    private void saveLogin(string username, string password)
+    {
+        settings_instapaper.set_string("username", username);
+        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
+                                        "Username", Secret.SchemaAttributeType.STRING);
+
+        var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+        attributes["Username"] = username;
+        try{
+            Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedreader: Instapaper login", password, null);
+        }
+        catch(GLib.Error e){}
+    }
+
+    public bool getAccessToken(string username, string password)
     {
         var call = m_oauth.new_call();
 		m_oauth.url_format = "https://www.instapaper.com/api/1/";
@@ -93,6 +95,10 @@ public class FeedReader.InstaAPI : GLib.Object {
         }
 
         string response = call.get_payload();
+        int64 status = call.get_status_code();
+
+        if(status != 200)
+            return false;
 
         int secretStart = response.index_of_char('=')+1;
         int secretEnd = response.index_of_char('&', secretStart);
@@ -111,9 +117,10 @@ public class FeedReader.InstaAPI : GLib.Object {
         {
             getUserID();
         }
+        return true;
     }
 
-    private void getUserID()
+    public void getUserID()
     {
         var call = m_oauth.new_call();
 		m_oauth.url_format = "https://www.instapaper.com/api/1/";
@@ -146,11 +153,17 @@ public class FeedReader.InstaAPI : GLib.Object {
             settings_instapaper.set_string("user-id", userID.to_string());
             settings_instapaper.set_string("username", username);
         }
+        else if(root_object.has_member("error"))
+        {
+            logger.print(LogMessage.ERROR, root_object.get_int_member("error_code").to_string());
+            logger.print(LogMessage.ERROR, root_object.get_string_member("message"));
+            settings_instapaper.set_boolean("is-logged-in", false);
+        }
     }
 
     public bool addBookmark(string url)
     {
-        string message  = "username=" + settings_instapaper.get_string("username")
+        string message  = "username=" + settings_instapaper.get_string("user-id")
                         + "&password=" + getPassword()
                         + "&url=" + GLib.Uri.escape_string(url);
 

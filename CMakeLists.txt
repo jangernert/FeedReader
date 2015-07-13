@@ -29,7 +29,7 @@ endif(WITH_LIBUNITY)
 pkg_check_modules(DEPS REQUIRED ${MODULES})
 
 add_definitions(${DEPS_CFLAGS})
-link_libraries(${DEPS_LIBRARIES})
+link_libraries(${DEPS_LIBRARIES} -lm)
 link_directories(${DEPS_LIBRARY_DIRS})
 
 find_package(Vala REQUIRED)

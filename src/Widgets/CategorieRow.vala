@@ -104,7 +104,6 @@ public class FeedReader.categorieRow : baseRow {
 
 	public bool expand_collapse()
 	{
-		logger.print(LogMessage.DEBUG, "expand_collapse");
 		if(m_collapsed)
 		{
 			m_collapsed = false;

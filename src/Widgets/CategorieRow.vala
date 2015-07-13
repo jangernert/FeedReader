@@ -61,7 +61,7 @@ public class FeedReader.categorieRow : baseRow {
 
 		int count = 0;
 
-		m_eventbox.button_press_event.connect(expand_collapse);
+		m_eventbox.button_press_event.connect(onClick);
 		m_eventbox.enter_notify_event.connect(onEnter);
 		m_eventbox.leave_notify_event.connect(onLeave);
 
@@ -87,6 +87,19 @@ public class FeedReader.categorieRow : baseRow {
 			m_stack.set_visible_child_name("collapsed");
 		else
 			m_stack.set_visible_child_name("expanded");
+	}
+
+	private bool onClick(Gdk.EventButton event)
+	{
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
+		expand_collapse();
+		return true;
 	}
 
 	public bool expand_collapse()
@@ -121,9 +134,8 @@ public class FeedReader.categorieRow : baseRow {
 		return true;
 	}
 
-	private bool onEnter()
+	private bool onEnter(Gdk.EventCrossing event)
 	{
-		logger.print(LogMessage.DEBUG, "onEnter");
 		m_hovered = true;
 		if(m_collapsed)
 		{
@@ -137,9 +149,11 @@ public class FeedReader.categorieRow : baseRow {
 		return true;
 	}
 
-	private bool onLeave()
+	private bool onLeave(Gdk.EventCrossing event)
 	{
-		logger.print(LogMessage.DEBUG, "onLeave");
+		if(event.detail != Gdk.NotifyType.VIRTUAL && event.mode != Gdk.CrossingMode.NORMAL)
+			return false;
+
 		m_hovered = false;
 		if(m_collapsed)
 		{

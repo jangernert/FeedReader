@@ -10,9 +10,9 @@ public class FeedReader.Share : GLib.Object {
         m_pocket = new PocketAPI();
         m_instapaper = new InstaAPI();
 
-        checkAccessTokens.begin((obj, res) => {
-            checkAccessTokens.end(res);
-        });
+        //checkAccessTokens.begin((obj, res) => {
+        //    checkAccessTokens.end(res);
+        //});
     }
 
     public async void checkAccessTokens()

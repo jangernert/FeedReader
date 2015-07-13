@@ -14,14 +14,14 @@ public class FeedReader.SharePopover : Gtk.Popover {
         m_list.row_activated.connect(shareURL);
         m_login_button = new Gtk.Button.with_label(_("Login"));
         m_login_button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-        m_login_button.get_style_context().add_class("h3");
+        m_login_button.get_style_context().add_class("h4");
         var emptyBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         emptyBox.margin = 30;
 
         var label1 = new Gtk.Label(_("please"));
-        label1.get_style_context().add_class("h3");
+        label1.get_style_context().add_class("h4");
         var label2 = new Gtk.Label(_("to a service to share this article"));
-        label2.get_style_context().add_class("h3");
+        label2.get_style_context().add_class("h4");
 
         emptyBox.pack_start(label1);
         emptyBox.pack_start(m_login_button);

@@ -43,7 +43,6 @@ public class FeedReader.InstaAPI : GLib.Object {
     {
         bool login = false;
         string message = "username=" + settings_instapaper.get_string("username") + "&password=" + getPassword();
-        logger.print(LogMessage.DEBUG, "checkLogin: " + message);
 
         m_message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/authenticate");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);

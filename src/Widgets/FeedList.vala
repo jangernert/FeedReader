@@ -82,7 +82,10 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				categorieRow selected_categorie = m_list.get_selected_row() as categorieRow;
 				if(selected_categorie != null)
+				{
 					selected_categorie.expand_collapse();
+				}
+
 			}
 			return true;
 		});

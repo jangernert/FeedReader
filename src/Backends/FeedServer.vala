@@ -162,6 +162,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public async void InitSyncContent()
 	{
 		SourceFunc callback = InitSyncContent.callback;
+		settings_general.set_enum("content-grabber", ContentGrabber.NONE);
 
 		ThreadFunc<void*> run = () => {
 			logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
@@ -263,6 +264,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			dataBase.write_articles(ref articles);
 
 			settings_state.set_int("initial-sync-level", 0);
+			settings_general.reset("content-grabber");
 
 
 			Idle.add((owned) callback);

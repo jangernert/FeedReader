@@ -1,5 +1,11 @@
 <schemalist>
 
+    <enum id="org.gnome.feedreader.show-articles">
+        <value nick="ALL" value="0"/>
+        <value nick="UNREAD" value="1"/>
+        <value nick="MARKED" value="2"/>
+    </enum>
+
     <schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
         <key name="no-animations" type="b">
             <default>false</default>

@@ -33,12 +33,6 @@
 		<value nick="6 Months" value="3"/>
 	</enum>
 
-	<enum id="org.gnome.feedreader.show-articles">
-		<value nick="ALL" value="0"/>
-		<value nick="UNREAD" value="1"/>
-		<value nick="MARKED" value="2"/>
-	</enum>
-
 
 
 

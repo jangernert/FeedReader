@@ -110,7 +110,6 @@ set(DAEMON_PACKAGES
     json-glib-1.0
     libnotify
     libsecret-1
-    unity
     libxml-2.0
     rest-0.7)
     

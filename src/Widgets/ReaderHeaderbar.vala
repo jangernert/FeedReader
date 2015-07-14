@@ -81,10 +81,10 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			search_term(m_search.text);
 		});
 
-		var menumodel = new GLib.Menu ();
-		var settings = new MenuItem (_("Settings"), "win.settings");
+		var menumodel = new GLib.Menu();
+		var settings = new MenuItem(_("Settings"), "win.settings");
 		menumodel.insert_item(0, settings);
-		var changeAccount = new MenuItem (_("Change Account"), "win.reset");
+		var changeAccount = new MenuItem(_("Change Account"), "win.reset");
 		menumodel.insert_item(1, changeAccount);
 
 

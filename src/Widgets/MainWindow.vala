@@ -12,7 +12,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private InitSyncPage m_InitSync;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
-	private SimpleAction m_login_action;
 
 	public readerUI(rssReaderApp app)
 	{
@@ -60,19 +59,19 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_simpleHeader.show_close_button = true;
 		m_simpleHeader.set_title("FeedReader");
 
-		var settings_action = new SimpleAction (_("settings"), null);
+		var settings_action = new SimpleAction ("settings", null);
 		settings_action.activate.connect (() => {
 			showSettings("ui");
 		});
 		add_action(settings_action);
 		settings_action.set_enabled(true);
 
-		m_login_action = new SimpleAction (_("reset"), null);
-		m_login_action.activate.connect (() => {
+		var login_action = new SimpleAction ("reset", null);
+		login_action.activate.connect (() => {
 			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
-		add_action(m_login_action);
-		m_login_action.set_enabled(true);
+		add_action(login_action);
+		login_action.set_enabled(true);
 
 
 		m_content.setMarkReadButtonActive.connect((active) => {
@@ -162,7 +161,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		if(!settings_state.get_boolean("currently-updating"))
 			m_headerbar.setButtonsSensitive(true);
 
-		m_login_action.set_enabled(true);
 		m_headerbar.show_all();
 		this.set_titlebar(m_headerbar);
 	}
@@ -174,7 +172,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		showErrorBar(LoginResponse.FIRST_TRY);
 		m_stack.set_visible_child_full("login", transition);
 		m_headerbar.setButtonsSensitive(false);
-		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -183,7 +180,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		logger.print(LogMessage.DEBUG, "MainWindow: show reset");
 		m_stack.set_visible_child_full("reset", transition);
 		m_headerbar.setButtonsSensitive(false);
-		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -192,7 +188,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		logger.print(LogMessage.DEBUG, "MainWindow: show springClean");
 		m_stack.set_visible_child_full("springClean", transition);
 		m_headerbar.setButtonsSensitive(false);
-		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -201,7 +196,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		logger.print(LogMessage.DEBUG, "MainWindow: show weblogin");
 		m_stack.set_visible_child_full("WebLogin", transition);
 		m_headerbar.setButtonsSensitive(false);
-		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -211,7 +205,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_InitSync.hideChecks();
 		m_stack.set_visible_child_full("initsync", transition);
 		m_headerbar.setButtonsSensitive(false);
-		m_login_action.set_enabled(false);
 		this.set_titlebar(m_simpleHeader);
 		m_InitSync.start();
 	}

@@ -1,7 +1,7 @@
 public class FeedReader.article : GLib.Object {
 
 	private string m_articleID;
-	public string m_title { get; private set; }
+	public string m_title;
 	public string m_url { get; private set; }
 	private string m_html;
 	private string m_preview;
@@ -33,6 +33,11 @@ public class FeedReader.article : GLib.Object {
 	public string getArticleID()
 	{
 		return m_articleID;
+	}
+
+	public string getTitle()
+	{
+		return m_title;
 	}
 
 	public string getHTML()

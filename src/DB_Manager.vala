@@ -539,7 +539,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		if(catID == CategoryID.TAGS)
 			return "Tags";
-		
+
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("title");
 		query.addEqualsCondition("categorieID", catID, true, true);
@@ -1210,7 +1210,7 @@ public class FeedReader.dbManager : GLib.Object {
 		query.limit(limit);
 		query.offset(offset);
 		query.build();
-		query.print();
+		//query.print();
 
 
 		Sqlite.Statement stmt;

@@ -274,7 +274,8 @@ public class FeedReader.FeedlyAPI : Object {
 								(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
 								marked,
 								Content,
-								summaryContent,
+								//summaryContent,
+								"",
 								author,
 								date, // timestamp includes msecs so divide by 1000 to get rid of them
 								-1,

@@ -47,11 +47,11 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 		label5.get_style_context().add_class("h3");
 		label5.set_alignment(0, 0.5f);
 
-		var label6 = new Gtk.Label("%i starred Articles".printf(settings_general.get_int("max-articles")));
+		var label6 = new Gtk.Label("%i starred Articles".printf(settings_general.get_int("max-articles")/4));
 		label6.get_style_context().add_class("h3");
 		label6.set_alignment(0, 0.5f);
 
-		var label7 = new Gtk.Label("%i Articles for each Tag".printf(settings_general.get_int("max-articles")/4));
+		var label7 = new Gtk.Label("%i Articles for each Tag".printf(settings_general.get_int("max-articles")/8));
 		label7.get_style_context().add_class("h3");
 		label7.set_alignment(0, 0.5f);
 
@@ -61,7 +61,7 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 		m_tags.set_ellipsize (Pango.EllipsizeMode.MIDDLE);
 		m_tags.set_size_request(150, 0);
 
-		var label8 = new Gtk.Label("%i Articles for each Feed".printf(settings_general.get_int("max-articles")/4));
+		var label8 = new Gtk.Label("%i Articles for each Feed".printf(settings_general.get_int("max-articles")/8));
 		label8.get_style_context().add_class("h3");
 		label8.set_alignment(0, 0.5f);
 

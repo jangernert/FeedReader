@@ -93,15 +93,8 @@ public class FeedReader.articleList : Gtk.Stack {
 			row_activated((articleRow)row);
 		});
 
-		m_List1.key_press_event.connect((event) => {
-			key_pressed(event);
-			return true;
-		});
-
-		m_List2.key_press_event.connect((event) => {
-			key_pressed(event);
-			return true;
-		});
+		m_List1.key_press_event.connect(key_pressed);
+		m_List2.key_press_event.connect(key_pressed);
 
 		m_currentList = m_List1;
 		m_currentScroll = m_scroll1;
@@ -114,12 +107,27 @@ public class FeedReader.articleList : Gtk.Stack {
 		this.add_named(m_emptyList, "empty");
 	}
 
-	private void key_pressed(Gdk.EventKey event)
+	private bool key_pressed(Gdk.EventKey event)
 	{
-		if(event.keyval == Gdk.Key.Down)
-			move(true);
-		else if(event.keyval == Gdk.Key.Up)
-			move(false);
+		switch(event.keyval)
+		{
+			case Gdk.Key.Down:
+				move(true);
+				break;
+
+			case Gdk.Key.Up:
+				move(false);
+				break;
+
+			case Gdk.Key.Page_Down:
+				scrollDOWN();
+				break;
+
+			case Gdk.Key.Page_Up:
+				scrollUP();
+				break;
+		}
+		return true;
 	}
 
 
@@ -257,7 +265,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 
 
-	public void scrollUP()
+	private void scrollUP()
 	{
 		m_current_adjustment = m_currentScroll.get_vadjustment();
 		m_current_adjustment.set_value(0);
@@ -265,7 +273,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 
 
-	public void scrollDOWN()
+	private void scrollDOWN()
 	{
 		m_current_adjustment = m_currentScroll.get_vadjustment();
 		m_current_adjustment.set_value(m_displayed_articles * 102);

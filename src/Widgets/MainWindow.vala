@@ -511,14 +511,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				//if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
 				markSelectedRead();
 				break;
-
-			case Gdk.Key.Page_Down:
-				m_content.ArticlesScrollDOWN();
-				break;
-
-			case Gdk.Key.Page_Up:
-				m_content.ArticlesScrollUP();
-				break;
 		}
 		return false;
 	}

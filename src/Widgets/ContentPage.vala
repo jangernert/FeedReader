@@ -239,15 +239,4 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		m_articleList.openSelected();
 	}
-
-	public void ArticlesScrollUP()
-	{
-		m_articleList.scrollUP();
-	}
-
-	public void ArticlesScrollDOWN()
-	{
-		m_articleList.scrollDOWN();
-	}
-
 }

@@ -69,6 +69,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		m_checkButton = new Gtk.CheckButton.with_label("grab full content for every article (very slow)");
 		m_checkButton.set_halign(Gtk.Align.CENTER);
+		m_checkButton.opacity = 0.0;
 
 		m_layout.pack_start(m_comboBox, false, false, 20);
 		m_layout.pack_start(m_login_details, false, true, 10);
@@ -94,6 +95,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 						break;
 				}
 			}
+			m_checkButton.opacity = 1.0;
 		});
 
 		var nothing_selected = new Gtk.Label(_("No service selected."));

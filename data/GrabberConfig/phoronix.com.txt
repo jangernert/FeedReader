@@ -3,4 +3,6 @@
 body: //div[@class="content"]
 test_url: http://www.phoronix.com/scan.php?page=article&item=amazon_ec2_bare&num=1
 
+# replace_string(<h5>): <h2>
+
 next_page_link: //a[@title='Go To Next Page']

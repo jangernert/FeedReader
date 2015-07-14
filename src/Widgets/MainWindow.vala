@@ -30,6 +30,20 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		setupSpringCleanPage();
 		onClose();
 
+		var settings_action = new SimpleAction ("settings", null);
+		settings_action.activate.connect (() => {
+			showSettings("ui");
+		});
+		add_action(settings_action);
+		settings_action.set_enabled(true);
+
+		var login_action = new SimpleAction ("reset", null);
+		login_action.activate.connect (() => {
+			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
+		});
+		add_action(login_action);
+		login_action.set_enabled(true);
+
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(app.sync);
 
@@ -58,20 +72,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_simpleHeader = new Gtk.HeaderBar ();
 		m_simpleHeader.show_close_button = true;
 		m_simpleHeader.set_title("FeedReader");
-
-		var settings_action = new SimpleAction ("settings", null);
-		settings_action.activate.connect (() => {
-			showSettings("ui");
-		});
-		add_action(settings_action);
-		settings_action.set_enabled(true);
-
-		var login_action = new SimpleAction ("reset", null);
-		login_action.activate.connect (() => {
-			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
-		});
-		add_action(login_action);
-		login_action.set_enabled(true);
 
 
 		m_content.setMarkReadButtonActive.connect((active) => {

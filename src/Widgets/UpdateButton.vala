@@ -3,14 +3,19 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private Gtk.Image m_icon;
 	private Gtk.Spinner m_spinner;
 	private bool m_status;
+	private Gtk.Stack m_stack;
 
 	public UpdateButton (string iconname) {
 
 		m_spinner = new Gtk.Spinner();
+		m_stack = new Gtk.Stack();
 		m_spinner.set_size_request(24,24);
+		this.set_relief(Gtk.ReliefStyle.NONE);
 
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.LARGE_TOOLBAR);
-		this.add(m_icon);
+		m_stack.add_named(m_icon, "icon");
+		m_stack.add_named(m_spinner, "spinner");
+		this.add(m_stack);
 		this.set_focus_on_click(false);
 		this.set_tooltip_text(_("update Feeds"));
 
@@ -24,15 +29,13 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		m_status = status;
 		if(status)
 		{
-			this.remove(m_icon);
-			this.add(m_spinner);
+			m_stack.set_visible_child_name("spinner");
 			this.setSensitive(false);
 			m_spinner.start();
 		}
 		else
 		{
-			this.remove(m_spinner);
-			this.add(m_icon);
+			m_stack.set_visible_child_name("icon");
 			this.setSensitive(true);
 			m_spinner.stop();
 		}

@@ -105,21 +105,13 @@
             </description>
         </key>
 
-        <key name="only-unread" type="b">
-            <default>false</default>
-            <summary>Only unread</summary>
-            <description>
-                Show only unread articles
-            </description>
-        </key>
-
-        <key name="only-marked" type="b">
-            <default>false</default>
-            <summary>Only makred</summary>
-            <description>
-                Show only marked articles
-            </description>
-        </key>
+        <key name='show-articles' enum='org.gnome.feedreader.show-articles'>
+			<default>'ALL'</default>
+			<summary>what articles to show</summary>
+			<description>
+				Choose what articles are displayed. ALL, only UNREAD or only MARKED.
+			</description>
+		</key>
 
         <key name="expanded-categories" type="as">
             <default>[]</default>

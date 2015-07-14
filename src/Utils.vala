@@ -179,11 +179,27 @@ public class FeedReader.Utils : GLib.Object {
 				break;
 		}
 
+		var state = (ArticleListState)settings_state.get_boolean("show-articles");
+		bool only_unread = false;
+		bool only_marked = false;
+
+		switch(state)
+		{
+			case ArticleListState.ALL:
+				break;
+			case ArticleListState.UNREAD:
+				only_unread = true;
+				break;
+			case ArticleListState.MARKED:
+				only_marked = true;
+				break;
+		}
+
 		var articles = dataBase.read_articles(
 			selectedRow[1],
 			IDtype,
-			settings_state.get_boolean("only-unread"),
-			settings_state.get_boolean("only-marked"),
+			only_unread,
+			only_marked,
 			settings_state.get_string("search-term"),
 			newArticlesCount,
 			0,

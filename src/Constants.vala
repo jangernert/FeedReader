@@ -21,6 +21,12 @@ namespace FeedReader {
 		DEBUG
 	}
 
+	public enum ArticleListState {
+		ALL,
+		UNREAD,
+		MARKED
+	}
+
 	public enum ConsoleColor {
         BLACK,
         RED,

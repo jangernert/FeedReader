@@ -64,8 +64,8 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 
 		m_articleList = new articleList();
-		m_articleList.setOnlyUnread(settings_state.get_boolean("only-unread"));
-		m_articleList.setOnlyMarked(settings_state.get_boolean("only-marked"));
+		setArticleListState((ArticleListState)settings_state.get_enum("show-articles"));
+
 		m_pane.pack2(m_articleList, false, false);
 
 
@@ -128,14 +128,25 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_articleList.updateArticleList();
 	}
 
-	public void setOnlyUnread(bool only_unread)
+	public void setArticleListState(ArticleListState state)
 	{
-		m_articleList.setOnlyUnread(only_unread);
-	}
+		switch(state)
+		{
+			case ArticleListState.ALL:
+				m_articleList.setOnlyUnread(false);
+				m_articleList.setOnlyMarked(false);
+				break;
 
-	public void setOnlyMarked(bool only_marked)
-	{
-		m_articleList.setOnlyMarked(only_marked);
+			case ArticleListState.UNREAD:
+				m_articleList.setOnlyUnread(true);
+				m_articleList.setOnlyMarked(false);
+				break;
+
+			case ArticleListState.MARKED:
+				m_articleList.setOnlyUnread(false);
+				m_articleList.setOnlyMarked(true);
+				break;
+		}
 	}
 
 	public void setSearchTerm(string searchTerm)

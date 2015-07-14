@@ -1,28 +1,24 @@
 public class FeedReader.readerHeaderbar : Gtk.Paned {
 
-	private Gtk.ToggleButton m_only_unread_button;
-	private Gtk.ToggleButton m_only_marked_button;
 	private Gtk.Button m_mark_read_button;
 	private Gtk.Button m_share_button;
+	private Granite.Widgets.ModeButton m_modeButton;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
-	private bool m_only_unread { get; private set; }
-	private bool m_only_marked { get; private set; }
+	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
     private Gtk.HeaderBar m_header_right;
 	public signal void refresh();
-	public signal void change_unread(bool only_unread);
-	public signal void change_marked(bool only_marked);
+	public signal void change_state(ArticleListState state);
 	public signal void search_term(string searchTerm);
 	public signal void mark_selected_read();
 	public signal void showSettings(string panel);
 
 
 	public readerHeaderbar () {
-		var only_unread_icon = new Gtk.Image.from_icon_name("object-inverse", Gtk.IconSize.LARGE_TOOLBAR);
-		var only_marked_icon = new Gtk.Image.from_icon_name("help-about", Gtk.IconSize.LARGE_TOOLBAR);
 		var mark_read_icon = new Gtk.Image.from_icon_name("selection-remove", Gtk.IconSize.LARGE_TOOLBAR);
-		var share_icon = new Gtk.Image.from_icon_name("document-export-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		var share_icon = new Gtk.Image.from_icon_name("applications-internet-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		m_state = (ArticleListState)settings_state.get_enum("show-articles");
 
 		m_header_left = new Gtk.HeaderBar ();
         m_header_left.show_close_button = true;
@@ -40,21 +36,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
         m_header_right.set_title("FeedReader");
 		m_header_right.set_size_request(600, 0);
 
-
-		m_only_unread = settings_state.get_boolean("only-unread");
-		m_only_marked = settings_state.get_boolean("only-marked");
-
-		m_only_unread_button = new Gtk.ToggleButton();
-		m_only_unread_button.add(only_unread_icon);
-		m_only_unread_button.set_active(m_only_unread);
-		m_only_unread_button.set_focus_on_click(false);
-		m_only_unread_button.set_tooltip_text(_("only show unread articles"));
-
-		m_only_marked_button = new Gtk.ToggleButton();
-		m_only_marked_button.add(only_marked_icon);
-		m_only_marked_button.set_active(m_only_marked);
-		m_only_marked_button.set_focus_on_click(false);
-		m_only_marked_button.set_tooltip_text(_("only show marked articles"));
+		m_modeButton = new Granite.Widgets.ModeButton();
+		m_modeButton.append_text("All");
+		m_modeButton.append_text("Unread");
+		m_modeButton.append_text("Favorited");
+		m_modeButton.set_active(m_state);
 
 		m_mark_read_button = new Gtk.Button();
 		m_mark_read_button.add(mark_read_icon);
@@ -63,28 +49,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 		m_share_button = new Gtk.Button();
 		m_share_button.add(share_icon);
+		m_share_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_share_button.set_focus_on_click(false);
 		m_share_button.set_tooltip_text(_("share article"));
 
-
-		m_only_unread_button.toggled.connect (() => {
-			if (m_only_unread_button.active) {
-				m_only_unread = true;
-
-			} else {
-				m_only_unread = false;
-			}
-			change_unread(m_only_unread);
-		});
-
-		m_only_marked_button.toggled.connect (() => {
-			if (m_only_marked_button.active) {
-				m_only_marked = true;
-
-			} else {
-				m_only_marked = false;
-			}
-			change_marked(m_only_marked);
+		m_modeButton.mode_changed.connect(() => {
+			m_state = (ArticleListState)m_modeButton.selected;
+			change_state(m_state);
 		});
 
 		m_mark_read_button.clicked.connect(() => {
@@ -125,9 +96,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 		m_header_left.pack_end(menubutton);
 		m_header_left.pack_end(m_search);
-		m_header_left.pack_start(m_only_unread_button);
-		m_header_left.pack_start(m_only_marked_button);
-		m_header_left.pack_start(m_mark_read_button);
+		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);
 
 		m_header_right.pack_end(m_share_button);
@@ -146,8 +115,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void setButtonsSensitive(bool sensitive)
 	{
 		logger.print(LogMessage.DEBUG, "HeaderBar: updatebutton status %s".printf(sensitive ? "true" : "false"));
-		m_only_unread_button.sensitive = sensitive;
-		m_only_marked_button.sensitive = sensitive;
+		m_modeButton.sensitive = sensitive;
 		m_refresh_button.setSensitive(sensitive);
 		m_search.sensitive = sensitive;
 	}
@@ -167,14 +135,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		return m_search.text;
 	}
 
-	public bool getOnlyUnread()
+	public ArticleListState getArticleListState()
 	{
-		return m_only_unread;
-	}
-
-	public bool getOnlyMarked()
-	{
-		return m_only_marked;
+		return m_state;
 	}
 
 	public void setMarkReadButtonSensitive(bool sensitive)

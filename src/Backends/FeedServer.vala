@@ -187,14 +187,14 @@ public class FeedReader.FeedServer : GLib.Object {
 
 					// get max-articles-count of marked articles
 					logger.print(LogMessage.DEBUG, "FeedServer: get marked");
-					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+					m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/2, ArticleStatus.MARKED);
 					initSyncStage(5);
 
 					// get max-articles-count of articles for each tag
 					foreach(var tag_item in tags)
 					{
 						initSyncTag(tag_item.m_title);
-						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/4, ArticleStatus.ALL, int.parse(tag_item.m_tagID));
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, int.parse(tag_item.m_tagID));
 					}
 					initSyncTag("");
 					initSyncStage(6);
@@ -203,7 +203,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					foreach(var feed_item in feeds)
 					{
 						initSyncFeed(feed_item.m_title);
-						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/4, ArticleStatus.ALL, int.parse(feed_item.m_feedID));
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, int.parse(feed_item.m_feedID));
 					}
 					initSyncFeed("");
 					initSyncStage(7);
@@ -223,14 +223,14 @@ public class FeedReader.FeedServer : GLib.Object {
 					initSyncStage(4);
 
 					// get max-articles-count of marked articles
-					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles")/2, ArticleStatus.MARKED);
 					initSyncStage(5);
 
 					// get max-articles-count of articles for each tag
 					foreach(var tag_item in tags)
 					{
 						initSyncTag(tag_item.m_title);
-						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, tag_item.m_tagID);
+						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, tag_item.m_tagID);
 					}
 					initSyncTag("");
 					initSyncStage(6);
@@ -239,7 +239,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					foreach(var feed_item in feeds)
 					{
 						initSyncFeed(feed_item.m_title);
-						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"), ArticleStatus.ALL, feed_item.m_feedID);
+						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, feed_item.m_feedID);
 					}
 					initSyncFeed("");
 					initSyncStage(7);

@@ -228,7 +228,7 @@ public class FeedReader.ServiceRow : baseRow {
 	{
 		if(m_revealer.get_child_revealed())
 		{
-			if(share.getAccessToken(OAuth.INSTAPAPER,  m_userEntry.get_text(), m_passEntry.get_text()))
+			if(share.getAccessToken(m_type,  m_userEntry.get_text(), m_passEntry.get_text()))
 			{
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 				m_revealer.set_reveal_child(false);

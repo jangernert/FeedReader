@@ -84,21 +84,25 @@ public class FeedReader.InstaAPI : GLib.Object {
 		call.set_function ("oauth/access_token");
 		call.set_method("POST");
 		call.add_param("x_auth_mode", "client_auth");
-		call.add_param("x_auth_username", settings_instapaper.get_string("username"));
-        call.add_param("x_auth_password", getPassword());
+		call.add_param("x_auth_username", username);
+        call.add_param("x_auth_password", password);
         try{
             call.run();
         }
         catch(Error e)
         {
-            logger.print(LogMessage.ERROR, "getAccessToken: " + e.message);
+            logger.print(LogMessage.ERROR, "instapaper getAccessToken: " + e.message);
         }
 
         string response = call.get_payload();
         int64 status = call.get_status_code();
 
         if(status != 200)
+        {
+            settings_instapaper.set_boolean("is-logged-in", false);
             return false;
+        }
+
 
         int secretStart = response.index_of_char('=')+1;
         int secretEnd = response.index_of_char('&', secretStart);
@@ -117,6 +121,9 @@ public class FeedReader.InstaAPI : GLib.Object {
         {
             getUserID();
         }
+
+        saveLogin(username, password);
+        settings_instapaper.set_boolean("is-logged-in", true);
         return true;
     }
 

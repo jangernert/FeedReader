@@ -159,10 +159,11 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	public async void InitSyncContent()
+	public async void InitSyncContent(bool useGrabber)
 	{
 		SourceFunc callback = InitSyncContent.callback;
-		settings_general.set_enum("content-grabber", ContentGrabber.NONE);
+		if(!useGrabber)
+			settings_general.set_enum("content-grabber", ContentGrabber.NONE);
 
 		ThreadFunc<void*> run = () => {
 			logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
@@ -263,7 +264,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			articles.reverse();
 			dataBase.write_articles(ref articles);
 
-			settings_state.set_int("initial-sync-level", 0);
+			if(!useGrabber)
+				settings_state.set_int("initial-sync-level", 0);
 			settings_general.reset("content-grabber");
 
 

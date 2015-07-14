@@ -9,6 +9,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
+	private Gtk.CheckButton m_checkButton;
 	private string[] m_account_types;
 	public signal void submit_data();
 	public signal void loginError(int errorCode);
@@ -66,8 +67,12 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		buttonBox.pack_end(loginButton, false, false, 0);
 
+		m_checkButton = new Gtk.CheckButton.with_label("grab full content for every article (very slow)");
+		m_checkButton.set_halign(Gtk.Align.CENTER);
+
 		m_layout.pack_start(m_comboBox, false, false, 20);
 		m_layout.pack_start(m_login_details, false, true, 10);
+		m_layout.pack_start(m_checkButton, false, false, 10);
 		m_layout.pack_start(buttonBox, false, true, 0);
 
 
@@ -336,5 +341,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		}
 
 		loginError(status);
+	}
+
+	public bool useGrabber()
+	{
+		return m_checkButton.active;
 	}
 }

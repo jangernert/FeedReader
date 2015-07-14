@@ -120,11 +120,11 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 	}
 
 
-	public void start()
+	public void start(bool useGrabber)
 	{
 		GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 2, () => {
 			try{
-				feedDaemon_interface.startInitSync();
+				feedDaemon_interface.startInitSync(useGrabber);
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);
 			}

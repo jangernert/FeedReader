@@ -34,14 +34,16 @@ namespace FeedReader {
 			});
 		}
 
-		public void startSync () {
+		public void startSync()
+		{
 			sync.begin((obj, res) => {
 				sync.end(res);
 			});
 		}
 
-		public void startInitSync () {
-			initSync.begin((obj, res) => {
+		public void startInitSync(bool useGrabber)
+		{
+			initSync.begin(useGrabber, (obj, res) => {
 				initSync.end(res);
 			});
 		}
@@ -94,7 +96,7 @@ namespace FeedReader {
 		}
 
 
-		private async void initSync()
+		private async void initSync(bool useGrabber)
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
@@ -107,7 +109,7 @@ namespace FeedReader {
 				logger.print(LogMessage.INFO, "daemon: initSync started");
 				settings_state.set_boolean("currently-updating", true);
 				settings_state.set_boolean("initial-sync-ongoing", true);
-				yield server.InitSyncContent();
+				yield server.InitSyncContent(useGrabber);
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
 				settings_state.set_boolean("initial-sync-ongoing", false);

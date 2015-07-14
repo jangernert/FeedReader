@@ -206,7 +206,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_stack.set_visible_child_full("initsync", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
-		m_InitSync.start();
+		m_InitSync.start(m_login.useGrabber());
 	}
 
 	private void onClose()

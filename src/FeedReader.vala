@@ -21,7 +21,7 @@ namespace FeedReader {
 	[DBus (name = "org.gnome.feedreader")]
 	interface FeedDaemon : Object {
 		public abstract void startSync() throws IOError;
-		public abstract void startInitSync() throws IOError;
+		public abstract void startInitSync(bool useGrabber) throws IOError;
 		public abstract int login(int type) throws IOError;
 		public abstract int isLoggedIn() throws IOError;
 		public abstract void changeUnread(string articleID, int read) throws IOError;

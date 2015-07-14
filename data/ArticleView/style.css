@@ -85,9 +85,6 @@ nav,
 section {
   display: block;
 }
-code {
-	background-color: #c3c3c3;
-}
 /* HTML5 reset */
 .cf:after,
 .pw:after {
@@ -198,6 +195,18 @@ p {
   font-size: 1rem;
   line-height: 1.8em;
   text-align: left;
+}
+pre,
+code {
+  background-color:#eee;
+  overflow:auto;
+  margin:0 0 1em;
+}
+pre {
+  padding:.5em 1em;
+}
+code {
+  	padding:.3em .3em;
 }
 p:last-of-type {
   margin-bottom: 0;

@@ -11,7 +11,7 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection = new FeedlyConnection();
 	}
 
-	public int login()
+	public LoginResponse login()
 	{
 		logger.print(LogMessage.DEBUG, "feedly backend: login");
 		if(settings_feedly.get_string("feedly-refresh-token") == "")

@@ -39,7 +39,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_modeButton = new Granite.Widgets.ModeButton();
 		m_modeButton.append_text("All");
 		m_modeButton.append_text("Unread");
-		m_modeButton.append_text("Favorited");
+		m_modeButton.append_text("Starred");
 		m_modeButton.set_active(m_state);
 
 		m_mark_read_button = new Gtk.Button();

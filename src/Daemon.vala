@@ -8,7 +8,7 @@ namespace FeedReader {
 #if WITH_LIBUNITY
 		private Unity.LauncherEntry m_launcher;
 #endif
-		private int m_loggedin;
+		private LoginResponse m_loggedin;
 
 		public FeedDaemonServer()
 		{
@@ -72,6 +72,10 @@ namespace FeedReader {
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				m_loggedin = login(settings_general.get_enum("account-type"));
+				if(m_loggedin != LoginResponse.SUCCESS)
+				{
+					exit(-1);
+				}
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
@@ -114,7 +118,7 @@ namespace FeedReader {
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
 		}
 
-		public int login(int type)
+		public LoginResponse login(int type)
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 			server = new FeedServer(type);

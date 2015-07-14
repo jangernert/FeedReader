@@ -28,7 +28,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_type;
 	}
 
-	public int login()
+	public LoginResponse login()
 	{
 		switch(m_type)
 		{

@@ -13,7 +13,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public int login()
+	public LoginResponse login()
 	{
 		logger.print(LogMessage.DEBUG, "TTRSS: login");
 		string username = ttrss_utils.getUser();

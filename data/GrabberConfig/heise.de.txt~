@@ -20,7 +20,9 @@ strip: //p[@class='news_navi']
 strip: //p[@class='printversion']
 strip: //a[contains(@href, 'mailto')]
 strip: //div[@class='gallery compact']/h2
+strip: //p[@class='themen_foren']
 strip: //style
+strip: //span[@class='source']
 #strip: //div[@class='gallery compact']/figcaption
 strip_id_or_class: comments
 strip_id_or_class: ISI_IGNORE
@@ -30,6 +32,7 @@ strip_id_or_class: linkurl_grossbild
 strip_id_or_class: image-num
 strip_id_or_class: heisebox_right
 strip_id_or_class: dossier
+strip_id_or_class: latest_posting_snippet
 
 # Strip Ads
 strip_id_or_class: ad_

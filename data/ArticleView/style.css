@@ -152,7 +152,6 @@ th {
 }
 th {
     background-color: #eee;
-    color: white;
 }
 .tlblue {
 	background-color: #2295AB;
@@ -180,7 +179,7 @@ h2 {
   font-weight: 300;
 }
 h3 {
-  font-size: 2rem;
+  font-size: 1.5rem;
   margin-bottom: 0.5rem;
 }
 h4 {
@@ -208,6 +207,7 @@ strong,
 b {
   font-weight: 500;
 }
+body,
 p {
   margin-bottom: 1rem;
   color: #1d1f1c;
@@ -240,6 +240,7 @@ a:hover {
 strong {
   font-weight: 600;
 }
+footer,
 iframe,
 img {
   margin: 2rem auto;

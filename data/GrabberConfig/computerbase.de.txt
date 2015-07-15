@@ -4,6 +4,8 @@ author://span[@class="article-authornames"]/a
 
 body: //div[@class='article-view__content']
 
+replace_string("padding-bottom:): "
+
 
 strip://div[@class='article-view__share-links-top']
 

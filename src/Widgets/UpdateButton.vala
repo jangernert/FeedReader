@@ -18,6 +18,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		this.add(m_stack);
 		this.set_focus_on_click(false);
 		this.set_tooltip_text(_("update Feeds"));
+		this.show_all();
 
 		if(settings_state.get_boolean("currently-updating"))
 			updating(true);
@@ -25,6 +26,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 	public void updating(bool status)
 	{
+
 		logger.print(LogMessage.DEBUG, "UpdateButton: update status");
 		m_status = status;
 		if(status)
@@ -39,7 +41,6 @@ public class FeedReader.UpdateButton : Gtk.Button {
 			this.setSensitive(true);
 			m_spinner.stop();
 		}
-		this.show_all();
 	}
 
 	public bool getStatus()

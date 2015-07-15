@@ -1,12 +1,27 @@
 public class FeedReader.tag : GLib.Object {
 
-	public string m_tagID { get; private set; }
-	public string m_title { get; private set; }
-	public int m_color { get; private set; }
-	
+	private string m_tagID;
+	private string m_title;
+	private int m_color;
+
 	public tag (string tagID, string title, int color) {
 		m_tagID = tagID;
 		m_title = title;
 		m_color = color;
+	}
+
+	public string getTagID()
+	{
+		return m_tagID;
+	}
+
+	public string getTitle()
+	{
+		return m_title;
+	}
+
+	public int getColor()
+	{
+		return m_color;
 	}
 }

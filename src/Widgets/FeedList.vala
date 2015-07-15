@@ -233,18 +233,18 @@ public class FeedReader.feedList : Gtk.Stack {
 
 					if(tmpRow != null)
 					{
-						if(tmpRow.getID() == item.m_categorieID)
+						if(tmpRow.getID() == item.getCatID())
 						{
 							var feedrow = new FeedRow(
-													   item.m_title,
-													   item.m_unread,
-													   item.m_hasIcon,
-													   item.m_feedID,
-									                   item.m_categorieID,
+													   item.getTitle(),
+													   item.getUnread(),
+													   item.hasIcon(),
+													   item.getFeedID(),
+									                   item.getCatID(),
 									                   tmpRow.getLevel()
 													  );
 							m_list.insert(feedrow, pos);
-							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread != 0)
+							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							break;
 						}
@@ -254,15 +254,15 @@ public class FeedReader.feedList : Gtk.Stack {
 			else
 			{
 				var feedrow = new FeedRow	(
-												item.m_title,
-												item.m_unread,
-												item.m_hasIcon,
-												item.m_feedID,
-												item.m_categorieID,
+												item.getTitle(),
+												item.getUnread(),
+												item.hasIcon(),
+												item.getFeedID(),
+												item.getCatID(),
 												0
 											);
 				m_list.insert(feedrow, -1);
-				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread != 0)
+				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}
 		}
@@ -417,18 +417,18 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					pos++;
 					var tmpRow = existing_row as categorieRow;
-					if((tmpRow != null && tmpRow.getID() == item.m_parent) ||
-						(item.m_parent == CategoryID.NONE && pos > 2) && (account_type == Backend.OWNCLOUD) ||
-						(item.m_parent == CategoryID.NONE && pos > 3) && (account_type != Backend.OWNCLOUD))
+					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
+						(item.getParent() == CategoryID.NONE && pos > 2) && (account_type == Backend.OWNCLOUD) ||
+						(item.getParent() == CategoryID.NONE && pos > 3) && (account_type != Backend.OWNCLOUD))
 					{
 						foreach(string str in exp)
 						{
-							if(item.m_title == str)
+							if(item.getTitle() == str)
 								expand = true;
 						}
 
-						int level = item.m_level;
-						string parent = item.m_parent;
+						int level = item.getLevel();
+						string parent = item.getParent();
 						if(account_type != Backend.OWNCLOUD)
 						{
 							level++;
@@ -436,10 +436,10 @@ public class FeedReader.feedList : Gtk.Stack {
 						}
 
 						var categorierow = new categorieRow(
-					                                item.m_title,
-					                                item.m_categorieID,
-					                                item.m_orderID,
-					                                item.m_unread_count,
+					                                item.getTitle(),
+					                                item.getCatID(),
+					                                item.getOrderID(),
+					                                item.getUnreadCount(),
 					                                parent,
 							                        level,
 							                        expand
@@ -452,7 +452,7 @@ public class FeedReader.feedList : Gtk.Stack {
 								expandCategorie(catID);
 						});
 						m_list.insert(categorierow, pos);
-						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.m_unread_count != 0)
+						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnreadCount() != 0)
 							categorierow.reveal(true);
 						break;
 					}
@@ -479,7 +479,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					if(tmpRow.getID() == CategoryID.TAGS)
 					{
-						var tagrow = new TagRow (Tag.m_title, Tag.m_tagID, Tag.m_color);
+						var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
 						m_list.insert(tagrow, pos);
 						tagrow.reveal(true);
 						break;

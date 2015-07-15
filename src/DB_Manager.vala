@@ -331,12 +331,12 @@ public class FeedReader.dbManager : GLib.Object {
 
 		foreach(var feed_item in feeds)
 		{
-			stmt.bind_text(feedID_pos, feed_item.m_feedID);
-			stmt.bind_text(feedName_pos, feed_item.m_title);
-			stmt.bind_text(feedURL_pos, feed_item.m_url);
-			stmt.bind_int (hasIcon_pos, feed_item.m_hasIcon ? 1 : 0);
-			stmt.bind_int (unread_pos, (int)feed_item.m_unread);
-			stmt.bind_text(catID_pos, feed_item.m_categorieID);
+			stmt.bind_text(feedID_pos, feed_item.getFeedID());
+			stmt.bind_text(feedName_pos, feed_item.getTitle());
+			stmt.bind_text(feedURL_pos, feed_item.getURL());
+			stmt.bind_int (hasIcon_pos, feed_item.hasIcon() ? 1 : 0);
+			stmt.bind_int (unread_pos, (int)feed_item.getUnread());
+			stmt.bind_text(catID_pos, feed_item.getCatID());
 
 			while(stmt.step() == Sqlite.ROW){}
 			stmt.reset();
@@ -371,9 +371,9 @@ public class FeedReader.dbManager : GLib.Object {
 
 		foreach(var tag_item in tags)
 		{
-			stmt.bind_text(tagID_position, tag_item.m_tagID);
-			stmt.bind_text(label_position, tag_item.m_title);
-			stmt.bind_int (color_position, tag_item.m_color);
+			stmt.bind_text(tagID_position, tag_item.getTagID());
+			stmt.bind_text(label_position, tag_item.getTitle());
+			stmt.bind_int (color_position, tag_item.getColor());
 
 			while (stmt.step () == Sqlite.ROW) {}
 			stmt.reset ();
@@ -456,12 +456,12 @@ public class FeedReader.dbManager : GLib.Object {
 
 		foreach(var cat_item in categories)
 		{
-			stmt.bind_text(catID_position, cat_item.m_categorieID);
-			stmt.bind_text(feedName_position, cat_item.m_title);
-			stmt.bind_int (unreadCount_position, cat_item.m_unread_count);
-			stmt.bind_int (orderID_position, cat_item.m_orderID);
-			stmt.bind_text(parent_position, cat_item.m_parent);
-			stmt.bind_int (level_position, cat_item.m_level);
+			stmt.bind_text(catID_position, cat_item.getCatID());
+			stmt.bind_text(feedName_position, cat_item.getTitle());
+			stmt.bind_int (unreadCount_position, cat_item.getUnreadCount());
+			stmt.bind_int (orderID_position, cat_item.getOrderID());
+			stmt.bind_text(parent_position, cat_item.getParent());
+			stmt.bind_int (level_position, cat_item.getLevel());
 
 			while (stmt.step () == Sqlite.ROW) {}
 			stmt.reset ();
@@ -647,12 +647,12 @@ public class FeedReader.dbManager : GLib.Object {
 		foreach(var article in articles)
 		{
 			stmt.bind_text(articleID_position, article.getArticleID());
-			stmt.bind_text(feedID_position, article.m_feedID);
-			stmt.bind_text(url_position, article.m_url);
-			stmt.bind_int (unread_position, article.m_unread);
-			stmt.bind_int (marked_position, article.m_marked);
-			stmt.bind_text(tags_position, article.m_tags);
-			stmt.bind_text(title_position, article.m_title);
+			stmt.bind_text(feedID_position, article.getFeedID());
+			stmt.bind_text(url_position, article.getURL());
+			stmt.bind_int (unread_position, article.getUnread());
+			stmt.bind_int (marked_position, article.getMarked());
+			stmt.bind_text(tags_position, article.getTagString());
+			stmt.bind_text(title_position, article.getTitle());
 			stmt.bind_text(html_position, article.getHTML());
 			stmt.bind_text(preview_position, article.getPreview());
 			stmt.bind_text(author_position, article.getAuthor());
@@ -685,9 +685,9 @@ public class FeedReader.dbManager : GLib.Object {
 
 		foreach(var article in articles)
 		{
-			stmt.bind_text(unread_position, article.m_unread.to_string());
-			stmt.bind_text(marked_position, article.m_marked.to_string());
-			stmt.bind_text(tags_position, article.m_tags);
+			stmt.bind_text(unread_position, article.getUnread().to_string());
+			stmt.bind_text(marked_position, article.getMarked().to_string());
+			stmt.bind_text(tags_position, article.getTagString());
 			stmt.bind_text(articleID_position, article.getArticleID());
 
 			while(stmt.step () == Sqlite.ROW) {}
@@ -1116,7 +1116,7 @@ public class FeedReader.dbManager : GLib.Object {
 		string query = "(";
 		foreach(var Tag in tags)
 		{
-			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(Tag.m_tagID);
+			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(Tag.getTagID());
 		}
 
 		int or = query.char_count()-4;

@@ -87,11 +87,11 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_currentView.load_html(
 			Utils.buildArticle(
 					Article.getHTML(),
-					Article.m_title,
-					Article.m_url,
+					Article.getTitle(),
+					Article.getURL(),
 					Article.getAuthor(),
 					Article.getDateNice(),
-					Article.m_feedID
+					Article.getFeedID()
 				)
 			, null);
 		this.show_all();

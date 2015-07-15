@@ -115,7 +115,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			dataBase.reset_exists_tag();
 			dataBase.write_tags(ref tags);
 			foreach(var tag_item in tags)
-				dataBase.update_tag(tag_item.m_tagID);
+				dataBase.update_tag(tag_item.getTagID());
 			dataBase.delete_nonexisting_tags();
 
 			// write articles
@@ -195,8 +195,8 @@ public class FeedReader.FeedServer : GLib.Object {
 					// get max-articles-count of articles for each tag
 					foreach(var tag_item in tags)
 					{
-						initSyncTag(tag_item.m_title);
-						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, int.parse(tag_item.m_tagID));
+						initSyncTag(tag_item.getTitle());
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, int.parse(tag_item.getTagID()));
 					}
 					initSyncTag("");
 					initSyncStage(6);
@@ -204,8 +204,8 @@ public class FeedReader.FeedServer : GLib.Object {
 					// get max-articles-count of articles for each feed
 					foreach(var feed_item in feeds)
 					{
-						initSyncFeed(feed_item.m_title);
-						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, int.parse(feed_item.m_feedID));
+						initSyncFeed(feed_item.getTitle());
+						m_ttrss.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, int.parse(feed_item.getFeedID()));
 					}
 					initSyncFeed("");
 					initSyncStage(7);
@@ -231,8 +231,8 @@ public class FeedReader.FeedServer : GLib.Object {
 					// get max-articles-count of articles for each tag
 					foreach(var tag_item in tags)
 					{
-						initSyncTag(tag_item.m_title);
-						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, tag_item.m_tagID);
+						initSyncTag(tag_item.getTitle());
+						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, tag_item.getTagID());
 					}
 					initSyncTag("");
 					initSyncStage(6);
@@ -240,8 +240,8 @@ public class FeedReader.FeedServer : GLib.Object {
 					// get max-articles-count of articles for each feed
 					foreach(var feed_item in feeds)
 					{
-						initSyncFeed(feed_item.m_title);
-						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, feed_item.m_feedID);
+						initSyncFeed(feed_item.getTitle());
+						m_feedly.getArticles(ref articles, settings_general.get_int("max-articles")/8, ArticleStatus.ALL, feed_item.getFeedID());
 					}
 					initSyncFeed("");
 					initSyncStage(7);
@@ -436,7 +436,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 		else if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
 		{
-			var grabber = new Grabber(Article.m_url);
+			var grabber = new Grabber(Article.getURL());
 			if(grabber.process())
 			{
 				grabber.print();
@@ -449,7 +449,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 		else if(settings_general.get_enum("content-grabber") == ContentGrabber.READABILITY)
 		{
-			var grabber = new ReadabilityParserAPI(Article.m_url);
+			var grabber = new ReadabilityParserAPI(Article.getURL());
 			grabber.process();
 			Article.setAuthor(grabber.getAuthor());
 			Article.setHTML(grabber.getContent());

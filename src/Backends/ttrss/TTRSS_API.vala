@@ -107,12 +107,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			foreach(var item in categories)
 			{
-				if(int.parse(item.m_categorieID) > 0)
+				if(int.parse(item.getCatID()) > 0)
 				{
 					var message = new ttrss_message(m_ttrss_url);
 					message.add_string("sid", m_ttrss_sessionid);
 					message.add_string("op", "getFeeds");
-					message.add_int("cat_id", int.parse(item.m_categorieID));
+					message.add_int("cat_id", int.parse(item.getCatID()));
 					int error = message.send();
 
 					if(error == ConnectionError.SUCCESS)

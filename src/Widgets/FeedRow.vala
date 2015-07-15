@@ -39,19 +39,18 @@ public class FeedReader.FeedRow : baseRow {
 
 			m_unread_count = unread_count;
 			m_label = new Gtk.Label(m_name);
-			m_label.set_use_markup (true);
 			m_label.set_size_request (0, rowhight);
 			m_label.set_ellipsize (Pango.EllipsizeMode.END);
 			m_label.set_alignment(0, 0.5f);
 
 			m_unread = new Gtk.Label(null);
 			set_unread_count(m_unread_count);
-			m_unread.set_use_markup (true);
 			m_unread.set_size_request (0, rowhight);
 			m_unread.set_alignment(0.8f, 0.5f);
+			m_unread.get_style_context().add_class("unread-count");
 
 
-			if(m_catID != "-1")
+			if(m_catID != CategoryID.TTRSS_SPECIAL)
 			{
 				if(!settings_general.get_boolean("only-feeds"))
 				{
@@ -71,7 +70,6 @@ public class FeedReader.FeedRow : baseRow {
 	public void update(string text, uint unread_count)
 	{
 		m_label.set_text(text.replace("&","&amp;"));
-		m_label.set_use_markup (true);
 		set_unread_count(unread_count);
 	}
 

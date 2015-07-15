@@ -54,7 +54,6 @@ public class FeedReader.categorieRow : baseRow {
 		m_eventbox.add(m_stack);
 
 		m_label = new Gtk.Label(m_name);
-		m_label.set_use_markup (true);
 		m_label.set_size_request (0, rowhight);
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
 		m_label.set_alignment(0, 0.5f);
@@ -73,6 +72,7 @@ public class FeedReader.categorieRow : baseRow {
 		m_unread = new Gtk.Label("");
 		m_unread.set_size_request (0, rowhight);
 		m_unread.set_alignment(0.8f, 0.5f);
+		m_unread.get_style_context().add_class("unread-count");
 		set_unread_count(m_unread_count);
 
 		m_box.pack_start(m_eventbox, false, false, 8);

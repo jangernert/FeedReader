@@ -430,9 +430,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				var categories = dataBase.read_categories();
 				foreach(category cat in categories)
 				{
-					feedDaemon_interface.markFeedAsRead(cat.m_categorieID, true);
+					feedDaemon_interface.markFeedAsRead(cat.getCatID(), true);
 					m_content.markAllArticlesAsRead();
-					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read: %s".printf(cat.m_categorieID));
+					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read: %s".printf(cat.getCatID()));
 				}
 			}
 			else

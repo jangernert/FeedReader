@@ -13,8 +13,8 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		this.set_relief(Gtk.ReliefStyle.NONE);
 
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.LARGE_TOOLBAR);
-		m_stack.add_named(m_icon, "icon");
 		m_stack.add_named(m_spinner, "spinner");
+		m_stack.add_named(m_icon, "icon");
 		this.add(m_stack);
 		this.set_focus_on_click(false);
 		this.set_tooltip_text(_("update Feeds"));
@@ -22,6 +22,8 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 		if(settings_state.get_boolean("currently-updating"))
 			updating(true);
+		else
+			updating(false);
 	}
 
 	public void updating(bool status)

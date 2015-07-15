@@ -390,8 +390,10 @@ public class FeedReader.articleList : Gtk.Stack {
 		{
 			if(hasContent)
 			{
-				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", Gtk.StackTransitionType.CROSSFADE);
-				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
+				Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE;
+
+				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", transition);
+				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", transition);
 
 				foreach(var item in articles)
 				{
@@ -404,13 +406,13 @@ public class FeedReader.articleList : Gtk.Stack {
 						break;
 
 					var tmpRow = new articleRow(
-							                        item.m_title,
-							                        item.m_unread,
-							                        item.m_feedID.to_string(),
-							                        item.m_url,
-							                        item.m_feedID,
+							                        item.getTitle(),
+							                        item.getUnread(),
+							                        item.getFeedID(),
+							                        item.getURL(),
+							                        item.getFeedID(),
 							                        item.getArticleID(),
-							                        item.m_marked,
+							                        item.getMarked(),
 							                        item.getSortID(),
 							                        item.getPreview(),
 													item.getDate()
@@ -524,7 +526,7 @@ public class FeedReader.articleList : Gtk.Stack {
 				var tmpRow = row as articleRow;
 				if(tmpRow != null && item.getArticleID() == tmpRow.getID())
 				{
-					tmpRow.updateUnread(item.m_unread);
+					tmpRow.updateUnread(item.getUnread());
 					tmpRow.setUpdated(true);
 					found = true;
 					break;
@@ -534,13 +536,13 @@ public class FeedReader.articleList : Gtk.Stack {
 			if(!found)
 			{
 				articleRow newRow = new articleRow(
-					                            item.m_title,
-					                            item.m_unread,
-					                            item.m_feedID.to_string(),
-					                            item.m_url,
-					                            item.m_feedID,
+					                            item.getTitle(),
+					                            item.getUnread(),
+					                            item.getFeedID(),
+					                            item.getURL(),
+					                            item.getFeedID(),
 					                            item.getArticleID(),
-					                            item.m_marked,
+					                            item.getMarked(),
 					                            item.getSortID(),
 					                            item.getPreview(),
 												item.getDate()

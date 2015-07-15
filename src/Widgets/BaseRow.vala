@@ -55,8 +55,7 @@ public class FeedReader.baseRow : Gtk.ListBoxRow {
 
 		if(m_unread_count > 0)
 		{
-			m_unread.set_text ("<span font_weight=\"ultrabold\" >%u</span>".printf(m_unread_count));
-			m_unread.set_use_markup (true);
+			m_unread.set_text (m_unread_count.to_string());
 		}
 		else
 		{

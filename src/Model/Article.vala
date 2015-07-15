@@ -1,15 +1,15 @@
 public class FeedReader.article : GLib.Object {
 
 	private string m_articleID;
-	public string m_title;
-	public string m_url { get; private set; }
+	private string m_title;
+	private string m_url;
 	private string m_html;
 	private string m_preview;
-	public string m_feedID { get; private set; }
-	public string m_tags { get; private set; }
+	private string m_feedID;
+	private string m_tags;
 	private string m_author;
-	public int m_unread { get; private set; }
-	public int m_marked { get; private set; }
+	private int m_unread;
+	private int m_marked;
 	private int m_sortID;
 	private GLib.DateTime m_date;
 
@@ -70,6 +70,11 @@ public class FeedReader.article : GLib.Object {
 		m_author = author;
 	}
 
+	public string getURL()
+	{
+		return m_url;
+	}
+
 	public int getSortID()
 	{
 		return m_sortID;
@@ -111,5 +116,25 @@ public class FeedReader.article : GLib.Object {
 		}
 
 		return m_date.format("%d.%m.%Y %H:%M");
+	}
+
+	public string getFeedID()
+	{
+		return m_feedID;
+	}
+
+	public int getUnread()
+	{
+		return m_unread;
+	}
+
+	public int getMarked()
+	{
+		return m_marked;
+	}
+
+	public string getTagString()
+	{
+		return m_tags;
 	}
 }

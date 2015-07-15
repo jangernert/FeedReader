@@ -148,7 +148,7 @@ namespace FeedReader {
 			return m_loggedin;
 		}
 
-		public void changeUnread(string articleIDs, int read)
+		public void changeUnread(string articleIDs, ArticleStatus read)
 		{
 			bool increase = true;
 			if(read == ArticleStatus.READ)
@@ -197,7 +197,7 @@ namespace FeedReader {
 			}
 		}
 
-		public void changeMarked(string articleID, int marked)
+		public void changeMarked(string articleID, ArticleStatus marked)
 		{
 			server.setArticleIsMarked(articleID, marked);
 

@@ -349,7 +349,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getArticles(ref GLib.List<article> articles, int maxArticles, int whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
+	public void getArticles(ref GLib.List<article> articles, int maxArticles, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -563,7 +563,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public bool updateArticleUnread(string articleIDs, int unread)
+	public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
 		bool return_value = false;
 		var message = new ttrss_message(m_ttrss_url);
@@ -588,7 +588,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public bool updateArticleMarked(int articleID, int marked)
+	public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	{
 		bool return_value = false;
 		var message = new ttrss_message(m_ttrss_url);

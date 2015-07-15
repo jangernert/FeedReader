@@ -192,7 +192,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public void getArticles(ref GLib.List<article> articles, int maxArticles, int whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public void getArticles(ref GLib.List<article> articles, int maxArticles, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "";
 		string onlyUnread = "false";
@@ -249,7 +249,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 			string tagString = "";
 			string tmpTag = "";
-			int marked = ArticleStatus.UNMARKED;
+			var marked = ArticleStatus.UNMARKED;
 
 			if(object.has_member("tags"))
 			{
@@ -371,7 +371,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void mark_as_read(string ids_string, string type, int read)
+	public void mark_as_read(string ids_string, string type, ArticleStatus read)
 	{
 		var id_array = ids_string.split(",");
 		Json.Object object = new Json.Object();

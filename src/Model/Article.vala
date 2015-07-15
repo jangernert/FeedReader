@@ -8,14 +8,14 @@ public class FeedReader.article : GLib.Object {
 	private string m_feedID;
 	private GLib.List<string> m_tags;
 	private string m_author;
-	private int m_unread;
-	private int m_marked;
+	private ArticleStatus m_unread;
+	private ArticleStatus m_marked;
 	private int m_sortID;
 	private GLib.DateTime m_date;
 
 
 
-	public article (string articleID, string title, string url, string feedID, int unread, int marked, string html, string preview, string author, GLib.DateTime date, int sortID, string tags) {
+	public article (string articleID, string title, string url, string feedID, ArticleStatus unread, ArticleStatus marked, string html, string preview, string author, GLib.DateTime date, int sortID, string tags) {
 		m_articleID = articleID;
 		m_title = title;
 		m_url = url;
@@ -128,12 +128,12 @@ public class FeedReader.article : GLib.Object {
 		return m_feedID;
 	}
 
-	public int getUnread()
+	public ArticleStatus getUnread()
 	{
 		return m_unread;
 	}
 
-	public int getMarked()
+	public ArticleStatus getMarked()
 	{
 		return m_marked;
 	}

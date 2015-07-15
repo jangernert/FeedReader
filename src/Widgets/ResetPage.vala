@@ -75,6 +75,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		// set "currently-updating" ourself to prevent the daemon to start sync
 		settings_state.set_boolean("currently-updating", true);
 
+		deletePasswords();
 		dataBase.resetDB();
 		dataBase.init();
 
@@ -104,6 +105,28 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		m_deleteLabel.show_all();
 		m_newAccountButton.set_sensitive(true);
 		cancel();
+	}
+
+	private bool deletePasswords()
+	{
+		switch(settings_general.get_enum("account-type"))
+		{
+			case Backend.TTRSS:
+				bool removed = false;
+				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+												"URL", Secret.SchemaAttributeType.STRING,
+												"Username", Secret.SchemaAttributeType.STRING);
+				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["URL"] = settings_ttrss.get_string("url");
+				attributes["Username"] = settings_ttrss.get_string ("username");
+
+				Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
+					removed = Secret.password_clearv.end(async_res);
+				});
+				return removed;
+		}
+
+		return false;
 	}
 
 

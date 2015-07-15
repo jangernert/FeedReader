@@ -1,7 +1,7 @@
 public class FeedReader.articleRow : baseRow {
 
-	private int m_is_unread;
-	private int m_marked;
+	private ArticleStatus m_is_unread;
+	private ArticleStatus m_marked;
 	private string m_url;
 	private string m_name;
 	private GLib.DateTime m_date;
@@ -17,7 +17,7 @@ public class FeedReader.articleRow : baseRow {
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 
-	public articleRow(string aritcleName, int unread, string iconname, string url, string feedID, string articleID, int marked, int sortID, string preview, GLib.DateTime date)
+	public articleRow(string aritcleName, ArticleStatus unread, string iconname, string url, string feedID, string articleID, ArticleStatus marked, int sortID, string preview, GLib.DateTime date)
 	{
 		m_hovering_unread = false;
 		m_hovering_marked = false;
@@ -209,7 +209,7 @@ public class FeedReader.articleRow : baseRow {
 		this.show_all();
 	}
 
-	public void updateUnread(int unread)
+	public void updateUnread(ArticleStatus unread)
 	{
 		if(m_is_unread != unread)
 		{
@@ -300,7 +300,7 @@ public class FeedReader.articleRow : baseRow {
 		m_just_clicked = false;
 	}
 
-	public void updateMarked(int marked)
+	public void updateMarked(ArticleStatus marked)
 	{
 		m_marked = marked;
 	}

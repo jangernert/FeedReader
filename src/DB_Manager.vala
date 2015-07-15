@@ -719,8 +719,8 @@ public class FeedReader.dbManager : GLib.Object {
 								stmt.column_text(3),
 								stmt.column_text(5),
 								stmt.column_text(2),
-								stmt.column_int(8),
-								stmt.column_int(9),
+								(ArticleStatus)stmt.column_int(8),
+								(ArticleStatus)stmt.column_int(9),
 								stmt.column_text(6),
 								stmt.column_text(7),
 								stmt.column_text(4),
@@ -1210,7 +1210,7 @@ public class FeedReader.dbManager : GLib.Object {
 		query.limit(limit);
 		query.offset(offset);
 		query.build();
-		//query.print();
+		query.print();
 
 
 		Sqlite.Statement stmt;
@@ -1226,8 +1226,8 @@ public class FeedReader.dbManager : GLib.Object {
 								stmt.column_text(3),								// title
 								stmt.column_text(5),								// url
 								stmt.column_text(1),								// feedID
-								stmt.column_int(7),									// unread
-								stmt.column_int(8),									// marked
+								(ArticleStatus)stmt.column_int(7),					// unread
+								(ArticleStatus)stmt.column_int(8),					// marked
 								"",													// html
 								stmt.column_text(6),								// preview
 								stmt.column_text(4),								// author

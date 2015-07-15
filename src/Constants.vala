@@ -62,13 +62,23 @@ namespace FeedReader {
 		const int RECENTLY_READ = -6;
 	}
 
-	namespace ArticleStatus {
-		const int READ		= 8;
-		const int UNREAD	= 9;
-		const int UNMARKED	= 10;
-		const int MARKED	= 11;
-		const int TOGGLE	= 12;
-		const int ALL		= 13;
+	public enum ArticleStatus {
+		READ = 8,
+		UNREAD,
+		UNMARKED,
+		MARKED,
+		TOGGLE,
+		ALL;
+
+		public string to_string()
+		{
+			return ((int)this).to_string();
+		}
+
+		public int to_int()
+		{
+			return (int)this;
+		}
 	}
 
 	public enum LoginResponse {

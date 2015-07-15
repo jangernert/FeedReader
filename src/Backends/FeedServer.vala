@@ -280,7 +280,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
-	public async void setArticleIsRead(string articleIDs, int read)
+	public async void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
 		SourceFunc callback = setArticleIsRead.callback;
 
@@ -303,7 +303,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
-	public async void setArticleIsMarked(string articleID, int marked)
+	public async void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
 		SourceFunc callback = setArticleIsMarked.callback;
 

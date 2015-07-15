@@ -73,7 +73,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			}
 
 			int before = dataBase.getHighestRowID();
-			dataBase.markReadAllArticles();
+			//dataBase.markReadAllArticles();
 
 			var categories = new GLib.List<category>();
 			var feeds      = new GLib.List<feed>();

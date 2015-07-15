@@ -13,12 +13,14 @@ body: //article | //div[@class='meldung_wrapper']
 strip: //time
 strip: //h4[@class='author']
 strip: //div[@class='gallery compact']/h3
+strip: //div[@class='gallery compact']/figcaption
 strip: //p[@class='news_datum']
 strip: //p[@class='artikel_datum']
 strip: //p[@class='news_navi']
 strip: //p[@class='printversion']
 strip: //a[contains(@href, 'mailto')]
 strip: //div[@class='gallery compact']/h2
+strip: //style
 #strip: //div[@class='gallery compact']/figcaption
 strip_id_or_class: comments
 strip_id_or_class: ISI_IGNORE

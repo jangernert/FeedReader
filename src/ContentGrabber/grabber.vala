@@ -249,12 +249,15 @@ public class FeedReader.Grabber : GLib.Object {
 
         // strip elements that contain style="display: none;"
         logger.print(LogMessage.DEBUG, "Grabber: strip invisible elements");
-        //grabberUtils.stripNode(doc, "//*[contains(@style,'display:none')][not(ancestor::*[contains(@style,'display:none')])]");
         grabberUtils.stripNode(doc, "//*[contains(@style,'display:none')]");
 
         // strip all scripts
         logger.print(LogMessage.DEBUG, "Grabber: strip all scripts");
         grabberUtils.stripNode(doc, "//script");
+
+        // strip <noscript>
+        logger.print(LogMessage.DEBUG, "Grabber: strip all scripts");
+        grabberUtils.stripNode(doc, "//noscript");
 
         // strip all comments
         logger.print(LogMessage.DEBUG, "Grabber: strip all comments");

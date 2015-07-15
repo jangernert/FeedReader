@@ -20,6 +20,7 @@ strip: //p[@class='news_navi']
 strip: //p[@class='printversion']
 strip: //a[contains(@href, 'mailto')]
 strip: //div[@class='gallery compact']/h2
+strip: //style
 #strip: //div[@class='gallery compact']/figcaption
 strip_id_or_class: comments
 strip_id_or_class: ISI_IGNORE

@@ -142,6 +142,25 @@ body {
   font-family: 'Droid Sans', 'Open Sans';
   font-weight: 300;
 }
+table,
+td,
+th {
+    border: 1px solid black;
+    border-collapse: collapse;
+    vertical-align: center;
+    padding: 10px;
+}
+th {
+    background-color: #eee;
+    color: white;
+}
+.tlblue {
+	background-color: #2295AB;
+    color: white;
+}
+.tlgrey {
+	background-color: #eee;
+}
 h1,
 h2,
 h3,
@@ -219,8 +238,9 @@ a:hover {
   text-decoration: none;
 }
 strong {
-  font-weight: 500;
+  font-weight: 600;
 }
+iframe,
 img {
   margin: 2rem auto;
   padding: 1rem;
@@ -254,6 +274,9 @@ figure:first-child {
 header.post {
   padding: 2rem;
   background: rgba(0, 0, 0, 0.05);
+}
+div.introtext {
+  font-weight: 600;
 }
 header.post h1 {
   color: #000;

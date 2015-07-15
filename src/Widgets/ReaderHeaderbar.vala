@@ -9,7 +9,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private Gtk.HeaderBar m_header_left;
     private Gtk.HeaderBar m_header_right;
 	public signal void refresh();
-	public signal void change_state(ArticleListState state);
+	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
 	public signal void mark_selected_read();
 	public signal void showSettings(string panel);
@@ -54,8 +54,20 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_share_button.set_tooltip_text(_("share article"));
 
 		m_modeButton.mode_changed.connect(() => {
+			var transition = Gtk.StackTransitionType.CROSSFADE;
+			if(m_state == ArticleListState.ALL
+			|| (ArticleListState)m_modeButton.selected == ArticleListState.MARKED)
+			{
+				transition = Gtk.StackTransitionType.SLIDE_LEFT;
+			}
+			else if(m_state == ArticleListState.MARKED
+			|| (ArticleListState)m_modeButton.selected == ArticleListState.ALL)
+			{
+				transition = Gtk.StackTransitionType.SLIDE_RIGHT;
+			}
+
 			m_state = (ArticleListState)m_modeButton.selected;
-			change_state(m_state);
+			change_state(m_state, transition);
 		});
 
 		m_mark_read_button.clicked.connect(() => {

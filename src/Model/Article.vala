@@ -6,7 +6,7 @@ public class FeedReader.article : GLib.Object {
 	private string m_html;
 	private string m_preview;
 	private string m_feedID;
-	private string m_tags;
+	private GLib.List<string> m_tags;
 	private string m_author;
 	private int m_unread;
 	private int m_marked;
@@ -26,8 +26,13 @@ public class FeedReader.article : GLib.Object {
 		m_unread = unread;
 		m_marked = marked;
 		m_sortID = sortID;
-		m_tags = tags;
 		m_date = date;
+		m_tags = new GLib.List<string>();
+		var tagArray = tags.split(",");
+		foreach(string tag in tagArray)
+		{
+			m_tags.append(tag);
+		}
 	}
 
 	public string getArticleID()
@@ -135,6 +140,16 @@ public class FeedReader.article : GLib.Object {
 
 	public string getTagString()
 	{
-		return m_tags;
+		string tags = "";
+		foreach(string tag in m_tags)
+		{
+			tags += tag + ",";
+		}
+		return tags;
+	}
+
+	public void addTag(string tag)
+	{
+		m_tags.append(tag);
 	}
 }

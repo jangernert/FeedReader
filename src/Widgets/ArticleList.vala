@@ -70,7 +70,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			var max = m_scroll1_adjustment.get_upper();
 			if((current + page)/max > m_lmit && !m_limitScroll)
 			{
-				createHeadlineList(true);
+				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
 			}
 		});
 
@@ -81,7 +81,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			var max = m_scroll2_adjustment.get_upper();
 			if((current + page)/max > m_lmit && !m_limitScroll)
 			{
-				createHeadlineList(true);
+				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
 			}
 		});
 
@@ -351,7 +351,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 
 
-	public async void createHeadlineList(bool add = false)
+	private async void createHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: create HeadlineList");
 		GLib.List<article> articles = new GLib.List<article>();
@@ -385,13 +385,10 @@ public class FeedReader.articleList : Gtk.Stack {
 		new GLib.Thread<void*>("createHeadlineList", run);
 		yield;
 
-
 		if(!(threadID < m_threadCount))
 		{
 			if(hasContent)
 			{
-				Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE;
-
 				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", transition);
 				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", transition);
 
@@ -429,13 +426,21 @@ public class FeedReader.articleList : Gtk.Stack {
 					m_currentList.add(tmpRow);
 					m_displayed_articles++;
 
-					if(add)
-						tmpRow.reveal(true);
+					if(transition == Gtk.StackTransitionType.CROSSFADE)
+					{
+						if(addRows)
+							tmpRow.reveal(true);
+						else
+							tmpRow.reveal(true, 150);
+					}
 					else
-						tmpRow.reveal(true, 150);
+					{
+						tmpRow.reveal(true, 0);
+					}
+
 				}
 
-				if(!add)
+				if(!addRows)
 				{
 					m_current_adjustment.notify["upper"].connect(restoreScrollPos);
 					if(!restoreSelectedRow())
@@ -445,16 +450,16 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(settings_state.get_boolean("no-animations"))
 					settings_state.set_boolean("no-animations", false);
 			}
-			else if(!add)
+			else if(!addRows)
 			{
 				m_emptyList.set_text(buildEmptyString());
-				this.set_visible_child_name("empty");
+				this.set_visible_child_full("empty", transition);
 				noRowActive();
 			}
 		}
 	}
 
-	public void newHeadlineList()
+	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: delete HeadlineList");
 		string selectedArticle = getSelectedArticle();
@@ -483,7 +488,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			row.destroy();
 		}
 
-		createHeadlineList();
+		createHeadlineList(transition);
 	}
 
 	public void updateArticleList()

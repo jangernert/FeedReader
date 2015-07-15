@@ -306,6 +306,7 @@ div.content {
 div.theme.midnight {
   background: #233540;
 }
+div.theme.midnight div.content th,
 div.theme.midnight header.post {
   background: rgba(0, 0, 0, 0.1);
 }
@@ -324,6 +325,9 @@ div.theme.midnight div.content {
 div.theme.midnight div.content a {
   color: #2978a6;
 }
+div.theme.midnight div.content code {
+  background-color: rgba(20, 20, 20, 0.6);
+}
 div.theme.midnight div.content h1,
 div.theme.midnight div.content h2,
 div.theme.midnight div.content h3,
@@ -333,6 +337,9 @@ div.theme.midnight div.content h4 {
 div.theme.midnight div.content h2 {
   border-color: #2978a6;
 }
+div.theme.midnight div.content body,
+div.theme.midnight div.content ul,
+div.theme.midnight div.content figcaption,
 div.theme.midnight div.content h5,
 div.theme.midnight div.content h6,
 div.theme.midnight div.content p {
@@ -383,6 +390,9 @@ div.theme.parchment div.content h4 {
 div.theme.parchment div.content h2 {
   border-color: #99400f;
 }
+div.theme.parchment div.content body,
+div.theme.parchment div.content ul,
+div.theme.parchment div.content figcaption,
 div.theme.parchment div.content h5,
 div.theme.parchment div.content h6,
 div.theme.parchment div.content p {

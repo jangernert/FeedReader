@@ -47,10 +47,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(app.sync);
 
-		m_headerbar.change_state.connect((state) => {
+		m_headerbar.change_state.connect((state, transition) => {
 			m_content.setArticleListState(state);
 			m_content.clearArticleView();
-			m_content.newHeadlineList();
+			m_content.newHeadlineList(transition);
 		});
 
 		m_headerbar.search_term.connect((searchTerm) => {

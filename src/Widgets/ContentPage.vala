@@ -103,9 +103,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_articleList.move(true);
 	}
 
-	public void newHeadlineList()
+	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		m_articleList.newHeadlineList();
+		m_articleList.newHeadlineList(transition);
 	}
 
 	public void newFeedList(bool defaultSettings = false)

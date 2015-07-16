@@ -1,6 +1,5 @@
 public class FeedReader.readerHeaderbar : Gtk.Paned {
 
-	private Gtk.Button m_mark_read_button;
 	private Gtk.Button m_share_button;
 	private Granite.Widgets.ModeButton m_modeButton;
 	private UpdateButton m_refresh_button;
@@ -11,12 +10,10 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
-	public signal void mark_selected_read();
 	public signal void showSettings(string panel);
 
 
 	public readerHeaderbar () {
-		var mark_read_icon = new Gtk.Image.from_icon_name("selection-remove", Gtk.IconSize.LARGE_TOOLBAR);
 		var share_icon = new Gtk.Image.from_icon_name("applications-internet-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		m_state = (ArticleListState)settings_state.get_enum("show-articles");
 
@@ -42,11 +39,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_modeButton.append_text("Starred");
 		m_modeButton.set_active(m_state);
 
-		m_mark_read_button = new Gtk.Button();
-		m_mark_read_button.add(mark_read_icon);
-		m_mark_read_button.set_focus_on_click(false);
-		m_mark_read_button.set_tooltip_text(_("mark selected feed/category as read"));
-
 		m_share_button = new Gtk.Button();
 		m_share_button.add(share_icon);
 		m_share_button.set_relief(Gtk.ReliefStyle.NONE);
@@ -68,10 +60,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 			m_state = (ArticleListState)m_modeButton.selected;
 			change_state(m_state, transition);
-		});
-
-		m_mark_read_button.clicked.connect(() => {
-			mark_selected_read();
 		});
 
 		m_share_button.clicked.connect(() => {
@@ -150,11 +138,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public ArticleListState getArticleListState()
 	{
 		return m_state;
-	}
-
-	public void setMarkReadButtonSensitive(bool sensitive)
-	{
-		m_mark_read_button.set_sensitive(sensitive);
 	}
 
 	public bool searchFocused()

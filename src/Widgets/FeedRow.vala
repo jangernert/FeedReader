@@ -9,8 +9,12 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private Gtk.Image m_icon;
 	private Gtk.Label m_unread;
 	private uint m_unread_count;
+	private Gtk.EventBox m_unreadBox;
+	private bool m_unreadHovered;
+	private Gtk.Stack m_unreadStack;
 	private string m_name { get; private set; }
 	private string m_feedID { get; private set; }
+	public signal void setAsRead(FeedListType type, string id);
 
 
 	public FeedRow (string text, uint unread_count, bool has_icon, string feedID, string catID, int level)
@@ -50,10 +54,25 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_label.set_alignment(0, 0.5f);
 
 			m_unread = new Gtk.Label(null);
-			set_unread_count(m_unread_count);
 			m_unread.set_size_request (0, rowhight);
 			m_unread.set_alignment(0.8f, 0.5f);
 			m_unread.get_style_context().add_class("unread-count");
+
+			m_unreadStack = new Gtk.Stack();
+			m_unreadStack.set_transition_type(Gtk.StackTransitionType.NONE);
+			m_unreadStack.set_transition_duration(0);
+			m_unreadStack.add_named(m_unread, "unreadCount");
+			m_unreadStack.add_named(new Gtk.Label(""), "nothing");
+			m_unreadStack.add_named(new Gtk.Image.from_icon_name("selection-remove", Gtk.IconSize.LARGE_TOOLBAR), "mark");
+
+			m_unreadBox = new Gtk.EventBox();
+			m_unreadBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+			m_unreadBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+			m_unreadBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+			m_unreadBox.add(m_unreadStack);
+			m_unreadBox.button_press_event.connect(onUnreadClick);
+			m_unreadBox.enter_notify_event.connect(onUnreadEnter);
+			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
 
 			if(m_catID != CategoryID.TTRSS_SPECIAL)
@@ -65,7 +84,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			}
 			m_box.pack_start(m_icon, false, false, 8);
 			m_box.pack_start(m_label, true, true, 0);
-			m_box.pack_end (m_unread, false, false, 8);
+			m_box.pack_end (m_unreadBox, false, false, 8);
 
 			m_revealer = new Gtk.Revealer();
 			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -73,6 +92,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_revealer.set_reveal_child(false);
 			this.add(m_revealer);
 			this.show_all();
+
+			set_unread_count(m_unread_count);
 		}
 	}
 
@@ -80,14 +101,52 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	{
 		m_unread_count = unread_count;
 
-		if(m_unread_count > 0)
+		if(m_unread_count > 0 && !m_unreadHovered)
 		{
+			m_unreadStack.set_visible_child_name("unreadCount");
 			m_unread.set_text(m_unread_count.to_string());
+		}
+		else if(!m_unreadHovered)
+		{
+			m_unreadStack.set_visible_child_name("nothing");
 		}
 		else
 		{
-			m_unread.set_text ("");
+			m_unreadStack.set_visible_child_name("mark");
 		}
+	}
+
+	private bool onUnreadClick(Gdk.EventButton event)
+	{
+		if(m_unreadHovered && m_unread_count > 0)
+		{
+			setAsRead(FeedListType.FEED, m_feedID);
+		}
+		return true;
+	}
+
+	private bool onUnreadEnter(Gdk.EventCrossing event)
+	{
+		m_unreadHovered = true;
+		if(m_unread_count > 0)
+		{
+			m_unreadStack.set_visible_child_name("mark");
+		}
+		return true;
+	}
+
+	private bool onUnreadLeave(Gdk.EventCrossing event)
+	{
+		m_unreadHovered = false;
+		if(m_unread_count > 0)
+		{
+			m_unreadStack.set_visible_child_name("unreadCount");
+		}
+		else
+		{
+			m_unreadStack.set_visible_child_name("nothing");
+		}
+		return true;
 	}
 
 	public void upUnread()

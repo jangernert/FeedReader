@@ -63,8 +63,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			showSettings(panel);
 		});
 
-		m_headerbar.mark_selected_read.connect(markSelectedRead);
-
 		m_headerbar.notify["position"].connect(() => {
         	m_content.set_position(m_headerbar.get_position());
         });
@@ -72,11 +70,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_simpleHeader = new Gtk.HeaderBar ();
 		m_simpleHeader.show_close_button = true;
 		m_simpleHeader.set_title("FeedReader");
-
-
-		m_content.setMarkReadButtonActive.connect((active) => {
-			m_headerbar.setMarkReadButtonSensitive(active);
-		});
 
 		m_content.showArticleButtons.connect((show) => {
 			m_headerbar.showArticleButtons(show);
@@ -405,13 +398,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	public void updateFeedListCountUnread(string feedID, bool increase)
 	{
 		m_content.updateFeedListCountUnread(feedID, increase);
-		setMarkAllButtonSensitive();
 	}
 
 	public void updateArticleList()
 	{
 		m_content.updateArticleList();
-		setMarkAllButtonSensitive();
 	}
 
 	public void newFeedList()
@@ -446,32 +437,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			feedDaemon_interface.markFeedAsRead(selectedRow[1], true);
 			m_content.markAllArticlesAsRead();
 		}
-		m_headerbar.setMarkReadButtonSensitive(false);
 	}
 
-	private void setMarkAllButtonSensitive()
-	{
-		logger.print(LogMessage.DEBUG, "MainWindow: setMarkAllButtonSensitive");
-		string[] selectedRow = m_content.getSelectedFeedListRow().split(" ", 2);
-
-		if(selectedRow[0] == "feed")
-		{
-			if(selectedRow[1] == FeedID.ALL
-			&& dataBase.get_unread_total() > 0)
-				m_headerbar.setMarkReadButtonSensitive(true);
-			else if(dataBase.get_unread_feed(selectedRow[1]) == 0)
-				m_headerbar.setMarkReadButtonSensitive(false);
-			else
-				m_headerbar.setMarkReadButtonSensitive(true);
-		}
-		else if(selectedRow[0] == "cat")
-		{
-			if(dataBase.get_unread_category(selectedRow[1]) == 0)
-				m_headerbar.setMarkReadButtonSensitive(false);
-			else
-				m_headerbar.setMarkReadButtonSensitive(true);
-		}
-	}
 
 
 	private bool shortcuts(Gdk.EventKey event)

@@ -10,6 +10,8 @@ public class FeedReader.feedList : Gtk.Stack {
 	public signal void newFeedSelected(string feedID);
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
+	public signal void markAllArticlesAsRead();
+	public signal void updateArticleList();
 
 	public feedList () {
 		m_selected = null;
@@ -201,6 +203,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		var unread = dataBase.get_unread_total();
 		var row_all = new FeedRow("All Articles", unread, false, FeedID.ALL.to_string(), "-1", 0);
 		m_list.add(row_all);
+		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
 
 		var row_seperator = new FeedRow("", 0, false, "", "-1", 0);
@@ -244,6 +247,7 @@ public class FeedReader.feedList : Gtk.Stack {
 									                   tmpRow.getLevel()
 													  );
 							m_list.insert(feedrow, pos);
+							feedrow.setAsRead.connect(markSelectedRead);
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							break;
@@ -262,6 +266,7 @@ public class FeedReader.feedList : Gtk.Stack {
 												0
 											);
 				m_list.insert(feedrow, -1);
+				feedrow.setAsRead.connect(markSelectedRead);
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}
@@ -375,6 +380,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					expandCategorie(catID);
 			});
 			m_list.insert(categorierow, 3);
+			categorierow.setAsRead.connect(markSelectedRead);
 			categorierow.reveal(true);
 			expand = false;
 			string name = "Tags";
@@ -402,6 +408,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					expandCategorie(catID);
 			});
 			m_list.insert(tagrow, 4);
+			tagrow.setAsRead.connect(markSelectedRead);
 			tagrow.reveal(true);
 			expand = false;
 		}
@@ -452,6 +459,7 @@ public class FeedReader.feedList : Gtk.Stack {
 								expandCategorie(catID);
 						});
 						m_list.insert(categorierow, pos);
+						categorierow.setAsRead.connect(markSelectedRead);
 						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnreadCount() != 0)
 							categorierow.reveal(true);
 						break;
@@ -557,7 +565,6 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-
 	private void initCollapseCategories()
 	{
 		var FeedChildList = m_list.get_children();
@@ -571,6 +578,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 		}
 	}
+
 
 	private void collapseCategorie(string catID)
 	{
@@ -662,7 +670,6 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-
 	public string getSelectedFeed()
 	{
 		FeedRow selected_row = m_list.get_selected_row() as FeedRow;
@@ -671,6 +678,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		return "0";
 	}
+
 
 	public string[] getExpandedCategories()
 	{
@@ -690,6 +698,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 		return e;
 	}
+
 
 	public string getSelectedRow()
 	{
@@ -717,6 +726,40 @@ public class FeedReader.feedList : Gtk.Stack {
 	public double getScrollPos()
 	{
 		return m_scroll_adjustment.get_value();
+	}
+
+
+	private void markSelectedRead(FeedListType type, string id)
+	{
+		logger.print(LogMessage.DEBUG, "FeedList: mark all articles as read");
+
+		if(type == FeedListType.FEED)
+		{
+			if(id == FeedID.ALL)
+			{
+				var categories = dataBase.read_categories();
+				foreach(category cat in categories)
+				{
+					feedDaemon_interface.markFeedAsRead(cat.getCatID(), true);
+				}
+			}
+			else
+			{
+				feedDaemon_interface.markFeedAsRead(id, false);
+			}
+		}
+		else if(type == FeedListType.CATEGORY)
+		{
+			feedDaemon_interface.markFeedAsRead(id, true);
+		}
+
+		FeedRow selected_feed = m_list.get_selected_row() as FeedRow;
+		categorieRow selected_cat = m_list.get_selected_row() as categorieRow;
+
+		if(type == FeedListType.FEED && id == FeedID.ALL)
+			markAllArticlesAsRead();
+		else
+			updateArticleList();
 	}
 
 }

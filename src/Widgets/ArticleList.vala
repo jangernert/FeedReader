@@ -513,8 +513,6 @@ public class FeedReader.articleList : Gtk.Stack {
 		if(articleChildList != null)
 		{
 			var first_row = articleChildList.first().data as articleRow;
-			//int new_articles = dataBase.getRowCountHeadlineByDate(first_row.getDateStr()) -1;
-			//m_limit = getDisplayedArticles() + new_articles;
 
 			int new_articles = 0;
 

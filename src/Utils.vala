@@ -160,7 +160,7 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
 
-		int IDtype = 0;
+		FeedListType IDtype = FeedListType.FEED;
 
 		logger.print(LogMessage.DEBUG, "selectedRow 0: %s".printf(selectedRow[0]));
 		logger.print(LogMessage.DEBUG, "selectedRow 1: %s".printf(selectedRow[1]));
@@ -168,15 +168,15 @@ public class FeedReader.Utils : GLib.Object {
 		switch(selectedRow[0])
 		{
 			case "feed":
-				IDtype = FeedList.FEED;
+				IDtype = FeedListType.FEED;
 				break;
 
 			case "cat":
-				IDtype = FeedList.CATEGORY;
+				IDtype = FeedListType.CATEGORY;
 				break;
 
 			case "tag":
-				IDtype = FeedList.TAG;
+				IDtype = FeedListType.TAG;
 				break;
 		}
 
@@ -293,6 +293,31 @@ public class FeedReader.Utils : GLib.Object {
 		article.insert(css_pos, css);
 
 		return article.str;
+	}
+
+	public static void scale_pixbuf(ref Gdk.Pixbuf icon, int size)
+	{
+		var width = icon.get_width();
+		var height = icon.get_height();
+
+		double aspect_ratio = (double)width/(double)height;
+		if(width > height)
+		{
+			width = size;
+			height = (int)((float)size /aspect_ratio);
+		}
+		else if(height > width)
+		{
+			height = size;
+			width = (int)((float)size /aspect_ratio);
+		}
+		else
+		{
+			height = size;
+			width = size;
+		}
+
+		icon = icon.scale_simple(width, height, Gdk.InterpType.BILINEAR);
 	}
 
 }

@@ -1,4 +1,4 @@
-public class FeedReader.ShareRow : baseRow {
+public class FeedReader.ShareRow : Gtk.ListBoxRow {
 
 	private string m_name;
     private Gtk.Label m_label;

@@ -50,7 +50,9 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private string buildPocketURL()
 	{
-		return "https://getpocket.com/auth/authorize?request_token=" + settings_pocket.get_string("oauth-request-token") + "&redirect_uri=" + PocketSecrets.oauth_callback;
+		return "https://getpocket.com/auth/authorize?request_token="
+				+ settings_pocket.get_string("oauth-request-token")
+				+ "&redirect_uri=" + GLib.Uri.escape_string(PocketSecrets.oauth_callback);
 	}
 
 	public void redirection(WebKit.LoadEvent load_event)

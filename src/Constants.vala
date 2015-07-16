@@ -53,13 +53,13 @@ namespace FeedReader {
 		UNKNOWN
 	}
 
-	namespace TTRSSSpecialID {
-		const int ARCHIVED      = 0;
-		const int STARRED       = -1;
-		const int PUBLISHED     = -2;
-		const int FRESH         = -3;
-		const int ALL           = -4;
-		const int RECENTLY_READ = -6;
+	public enum TTRSSSpecialID {
+		ARCHIVED      = 0,
+		STARRED       = -1,
+		PUBLISHED     = -2,
+		FRESH         = -3,
+		ALL           = -4,
+		RECENTLY_READ = -6
 	}
 
 	public enum ArticleStatus {
@@ -166,14 +166,14 @@ namespace FeedReader {
 		READABILITY
 	}
 
-	namespace FeedList {
-		 const int ALL_FEEDS = 24;
-		 const int SPACER    = 25;
-		 const int SEPERATOR = 26;
-		 const int CATEGORY  = 27;
-		 const int FEED      = 28;
-		 const int HEADLINE  = 29;
-		 const int TAG       = 30;
+	public enum FeedListType {
+		ALL_FEEDS,
+		SPACER,
+		SEPERATOR,
+		CATEGORY,
+		FEED,
+		HEADLINE,
+		TAG
 	}
 
 	namespace CategoryID {

@@ -2,7 +2,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private Gtk.ScrolledWindow m_scroll;
 	private Gtk.ListBox m_list;
-	private baseRow m_selected;
+	private Gtk.ListBoxRow m_selected;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Adjustment m_scroll_adjustment;
 	private uint m_expand_collapse_time;

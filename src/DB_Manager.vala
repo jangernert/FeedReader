@@ -916,18 +916,54 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public int getRowNumberHeadline(string date)
+	public int getRowCountHeadlineByDate(string date)
 	{
 		int result = 0;
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
 		query.addCustomCondition("date >= \"%s\"".printf(date));
-		query.orderBy("date", true);
+		//query.orderBy("date", true);
 		query.build();
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+		return result;
+	}
+
+
+	public int getRowCountHeadlineByRowID(string date)
+	{
+		int result = 0;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("rowid");
+		query.addEqualsCondition("date", date);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+
+
+		query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addCustomCondition("rowid >= %i".printf(result));
+		//query.orderBy("rowid", true);
+		query.build();
+
+		ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
@@ -1149,7 +1185,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 	//[Profile]
-	public GLib.List<article> read_articles(string ID, int selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	public GLib.List<article> read_articles(string ID, FeedListType selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
@@ -1164,11 +1200,11 @@ public class FeedReader.dbManager : GLib.Object {
 		query.selectField("tags");
 		query.selectField("date");
 
-		if(selectedType == FeedList.FEED && ID != FeedID.ALL)
+		if(selectedType == FeedListType.FEED && ID != FeedID.ALL)
 		{
 			query.addEqualsCondition("feedID", ID, true, true);
 		}
-		else if(selectedType == FeedList.CATEGORY && ID != CategoryID.MASTER && ID != CategoryID.TAGS)
+		else if(selectedType == FeedListType.CATEGORY && ID != CategoryID.MASTER && ID != CategoryID.TAGS)
 		{
 			query.addRangeConditionString("feedID", getFeedIDofCategorie(ID));
 		}
@@ -1176,7 +1212,7 @@ public class FeedReader.dbManager : GLib.Object {
 		{
 			query.addCustomCondition(getAllTagsCondition());
 		}
-		else if(selectedType == FeedList.TAG)
+		else if(selectedType == FeedListType.TAG)
 		{
 			query.addCustomCondition("instr(tags, \"%s\") > 0".printf(ID));
 		}
@@ -1239,6 +1275,5 @@ public class FeedReader.dbManager : GLib.Object {
 
 		return tmp;
 	}
-
 
 }

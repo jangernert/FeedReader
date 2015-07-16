@@ -12,13 +12,12 @@ public class FeedReader.articleList : Gtk.Stack {
 	private Gtk.Label m_emptyList;
 	private string m_emptyListString;
 	private double m_lmit;
-	private int m_displayed_articles;
 	private string m_current_feed_selected;
 	private bool m_only_unread;
 	private bool m_only_marked;
 	private string m_searchTerm;
-	private int m_limit;
-	private int m_IDtype;
+	private uint m_limit;
+	private FeedListType m_IDtype;
 	private bool m_limitScroll;
 	private int m_threadCount;
 	private uint timeout_source_id = 0;
@@ -28,9 +27,8 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	public articleList () {
 		m_lmit = 0.8;
-		m_displayed_articles = 0;
 		m_current_feed_selected = FeedID.ALL;
-		m_IDtype = FeedList.FEED;
+		m_IDtype = FeedListType.FEED;
 		m_searchTerm = "";
 		m_limit = 15;
 		m_limitScroll = false;
@@ -275,8 +273,9 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	private void scrollDOWN()
 	{
+
 		m_current_adjustment = m_currentScroll.get_vadjustment();
-		m_current_adjustment.set_value(m_displayed_articles * 102);
+		m_current_adjustment.set_value(m_currentList.get_children().length() * 102);
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 	}
 
@@ -321,7 +320,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_current_feed_selected = feedID;
 	}
 
-	public void setSelectedType(int type)
+	public void setSelectedType(FeedListType type)
 	{
 		m_IDtype = type;
 	}
@@ -359,6 +358,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_threadCount++;
 		int threadID = m_threadCount;
 		bool hasContent = true;
+		uint displayed_artilces = getDisplayedArticles();
 
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll();
@@ -366,12 +366,16 @@ public class FeedReader.articleList : Gtk.Stack {
 		SourceFunc callback = createHeadlineList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
+
+			// wait a little so the currently selected article is updated in the db
+			GLib.Thread.usleep(50000);
 			m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
 			logger.print(LogMessage.DEBUG, "limit: " + m_limit.to_string());
 
 			logger.print(LogMessage.DEBUG, "load articles from db");
-			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, m_displayed_articles);
+			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces);
 			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.length().to_string());
+
 			if(articles.length() == 0)
 			{
 				hasContent = false;
@@ -424,9 +428,12 @@ public class FeedReader.articleList : Gtk.Stack {
 						break;
 
 					m_currentList.add(tmpRow);
-					m_displayed_articles++;
 
-					if(transition == Gtk.StackTransitionType.CROSSFADE)
+					if(settings_state.get_boolean("no-animations"))
+					{
+						tmpRow.reveal(true, 0);
+					}
+					else if(transition == Gtk.StackTransitionType.CROSSFADE)
 					{
 						if(addRows)
 							tmpRow.reveal(true);
@@ -480,7 +487,6 @@ public class FeedReader.articleList : Gtk.Stack {
 			m_current_adjustment = m_scroll1_adjustment;
 		}
 
-		m_displayed_articles = 0;
 		var articleChildList = m_currentList.get_children();
 		foreach(Gtk.Widget row in articleChildList)
 		{
@@ -493,7 +499,9 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	public void updateArticleList()
 	{
-		logger.print(LogMessage.DEBUG, "ArticleList: update HeadlineList");
+		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
+		bool sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
+		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
 
 		if(this.get_visible_child_name() == "empty")
 		{
@@ -505,8 +513,21 @@ public class FeedReader.articleList : Gtk.Stack {
 		if(articleChildList != null)
 		{
 			var first_row = articleChildList.first().data as articleRow;
-			int new_articles = dataBase.getRowNumberHeadline(first_row.getDateStr()) -1;
-			m_limit = m_displayed_articles + new_articles;
+			//int new_articles = dataBase.getRowNumberHeadline(first_row.getDateStr()) -1;
+			//m_limit = getDisplayedArticles() + new_articles;
+
+			int new_articles = 0;
+
+			if(sortByDate)
+			{
+				new_articles = dataBase.getRowCountHeadlineByDate(first_row.getDateStr()) -1;
+			}
+			else
+			{
+				new_articles = dataBase.getRowCountHeadlineByRowID(first_row.getDateStr()) -1;
+			}
+
+			m_limit = m_currentList.get_children().length() + new_articles;
 		}
 
 		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
@@ -567,16 +588,12 @@ public class FeedReader.articleList : Gtk.Stack {
 					var tmpRow = row as articleRow;
 					if(tmpRow != null)
 					{
-						bool sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
-						bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
-
 						if((newestFirst && !sortByDate && newRow.m_sortID > tmpRow.m_sortID)
 						|| (!newestFirst && !sortByDate && newRow.m_sortID < tmpRow.m_sortID)
 						|| (newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == 1)
 						|| (!newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == -1))
 						{
 							m_currentList.insert(newRow, pos-1);
-							m_displayed_articles++;
 							added = true;
 							break;
 						}
@@ -586,7 +603,6 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(!added)
 				{
 					m_currentList.add(newRow);
-					m_displayed_articles++;
 				}
 				newRow.reveal(true);
 				articleChildList = m_currentList.get_children();
@@ -665,15 +681,15 @@ public class FeedReader.articleList : Gtk.Stack {
 			message += "in ";
 			switch(m_IDtype)
 			{
-				case FeedList.FEED:
+				case FeedListType.FEED:
 					message += "the feed ";
 					name = dataBase.getFeedName(m_current_feed_selected);
 					break;
-				case FeedList.TAG:
+				case FeedListType.TAG:
 					message += "the tag ";
 					name = dataBase.getTagName(m_current_feed_selected);
 					break;
-				case FeedList.CATEGORY:
+				case FeedListType.CATEGORY:
 					message += "the category ";
 					name = dataBase.getCategoryName(m_current_feed_selected);
 					break;
@@ -728,5 +744,40 @@ public class FeedReader.articleList : Gtk.Stack {
             return true;
         });
     }
+
+	private uint getDisplayedArticles()
+	{
+		uint count = 0;
+		var articleChildList = m_currentList.get_children();
+
+		if(m_only_unread)
+		{
+			foreach(Gtk.Widget row in articleChildList)
+			{
+				var tmpRow = row as articleRow;
+				if(tmpRow != null && tmpRow.isUnread())
+				{
+					++count;
+				}
+			}
+		}
+		else if(m_only_marked)
+		{
+			foreach(Gtk.Widget row in articleChildList)
+			{
+				var tmpRow = row as articleRow;
+				if(tmpRow != null && tmpRow.isMarked())
+				{
+					++count;
+				}
+			}
+		}
+		else
+		{
+			count = articleChildList.length();
+		}
+
+		return count;
+	}
 
 }

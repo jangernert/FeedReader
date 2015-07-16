@@ -1,4 +1,4 @@
-public class FeedReader.ServiceRow : baseRow {
+public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 
 	private string m_name;
     private OAuth m_type;
@@ -10,12 +10,12 @@ public class FeedReader.ServiceRow : baseRow {
     private Gtk.Button m_login_button;
 	private Gtk.Button m_logout_button;
 	private Gtk.EventBox m_eventbox;
-	private Gtk.Revealer m_revealer;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passEntry;
 	private GLib.Settings m_serviceSettings;
 	private bool m_isLoggedIN;
 	private Gtk.InfoBar m_errorBar;
+	private Gtk.Revealer m_revealer;
 
 	public ServiceRow(string serviceName, OAuth type)
 	{
@@ -26,8 +26,6 @@ public class FeedReader.ServiceRow : baseRow {
 		m_iconStack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
 		m_iconStack.set_transition_duration(300);
 		m_labelStack = new Gtk.Stack();
-		m_revealer = new Gtk.Revealer();
-		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		string iconPath = "";
 		m_serviceSettings = settings_readability;
 
@@ -74,6 +72,9 @@ public class FeedReader.ServiceRow : baseRow {
         grid.attach(new Gtk.Label(_("Password:")), 0, 2, 1, 1);
         grid.attach(m_userEntry, 1, 1, 1, 1);
         grid.attach(m_passEntry, 1, 2, 1, 1);
+
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.add(grid);
 		//------------------------------------------------
 

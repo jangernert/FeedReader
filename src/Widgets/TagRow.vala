@@ -1,11 +1,15 @@
+public class FeedReader.TagRow : Gtk.ListBoxRow {
 
-public class FeedReader.TagRow : baseRow {
-
+	private Gtk.Box m_box;
+	private Gtk.Label m_label;
 	private bool m_exits;
 	private string m_catID;
 	private int m_color;
 	private ColorCircle m_circle;
 	private ColorPopover m_pop;
+	private Gtk.Revealer m_revealer;
+	private Gtk.Label m_unread;
+	private uint m_unread_count;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
 
@@ -43,6 +47,9 @@ public class FeedReader.TagRow : baseRow {
 
 		m_box.pack_start(m_circle, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
+
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
 		this.add(m_revealer);
@@ -68,6 +75,28 @@ public class FeedReader.TagRow : baseRow {
 	public bool stillExits()
 	{
 		return m_exits;
+	}
+
+	public bool isRevealed()
+	{
+		return m_revealer.get_reveal_child();
+	}
+
+	public void reveal(bool reveal, uint duration = 500)
+	{
+		if(settings_state.get_boolean("no-animations"))
+		{
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
+			m_revealer.set_transition_duration(0);
+			m_revealer.set_reveal_child(reveal);
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+			m_revealer.set_transition_duration(500);
+		}
+		else
+		{
+			m_revealer.set_transition_duration(duration);
+			m_revealer.set_reveal_child(reveal);
+		}
 	}
 
 }

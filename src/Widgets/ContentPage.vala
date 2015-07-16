@@ -34,7 +34,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			else
 				setMarkReadButtonActive(true);
 
-			m_articleList.setSelectedType(FeedList.FEED);
+			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
 			m_articleList.newHeadlineList();
@@ -42,7 +42,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 		m_feedList.newTagSelected.connect((tagID) => {
 			setMarkReadButtonActive(false);
-			m_articleList.setSelectedType(FeedList.TAG);
+			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
 			m_articleList.newHeadlineList();
@@ -56,7 +56,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			else
 				setMarkReadButtonActive(true);
 
-			m_articleList.setSelectedType(FeedList.CATEGORY);
+			m_articleList.setSelectedType(FeedListType.CATEGORY);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
 			m_articleList.newHeadlineList();

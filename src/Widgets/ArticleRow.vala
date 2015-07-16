@@ -1,10 +1,14 @@
-public class FeedReader.articleRow : baseRow {
+public class FeedReader.articleRow : Gtk.ListBoxRow {
 
+	private Gtk.Box m_box;
+	private Gtk.Label m_label;
 	private ArticleStatus m_is_unread;
 	private ArticleStatus m_marked;
+	private Gtk.Revealer m_revealer;
 	private string m_url;
 	private string m_name;
 	private GLib.DateTime m_date;
+	private Gtk.Image m_icon;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private Gtk.Stack m_unread_stack;
@@ -51,7 +55,7 @@ public class FeedReader.articleRow : baseRow {
 			{
 				tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/rss24.png");
 			}
-			scale_pixbuf(ref tmp_icon, 24);
+			Utils.scale_pixbuf(ref tmp_icon, 24);
 			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 			spacing = 0;
 		}catch(GLib.Error e){}
@@ -151,8 +155,10 @@ public class FeedReader.articleRow : baseRow {
 		separator.set_size_request(0, 2);
 		seperator_box.pack_start(m_box, true, true, 0);
 		seperator_box.pack_start(separator, false, false, 0);
-		m_revealer.add(seperator_box);
 
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+		m_revealer.add(seperator_box);
 		m_revealer.set_reveal_child(false);
 		this.add(m_revealer);
 		this.show_all();
@@ -178,6 +184,8 @@ public class FeedReader.articleRow : baseRow {
 				updateUnread(ArticleStatus.READ);
 				break;
 		}
+
+
 		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
 	}
 
@@ -313,6 +321,14 @@ public class FeedReader.articleRow : baseRow {
 		return false;
 	}
 
+	public bool isMarked()
+	{
+		if(m_marked == ArticleStatus.MARKED)
+			return true;
+
+		return false;
+	}
+
 	public string getName()
 	{
 		return m_name;
@@ -356,6 +372,12 @@ public class FeedReader.articleRow : baseRow {
 	public string getURL()
 	{
 		return m_url;
+	}
+
+	public void reveal(bool reveal, uint duration = 500)
+	{
+		m_revealer.set_transition_duration(duration);
+		m_revealer.set_reveal_child(reveal);
 	}
 
 }

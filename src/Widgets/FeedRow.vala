@@ -1,8 +1,14 @@
-public class FeedReader.FeedRow : baseRow {
+public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
+	private Gtk.Box m_box;
+	private Gtk.Label m_label;
 	private bool m_subscribed;
 	private string m_catID;
 	private int m_level;
+	private Gtk.Revealer m_revealer;
+	private Gtk.Image m_icon;
+	private Gtk.Label m_unread;
+	private uint m_unread_count;
 	private string m_name { get; private set; }
 	private string m_feedID { get; private set; }
 
@@ -26,7 +32,7 @@ public class FeedReader.FeedRow : baseRow {
 			{
 				try{
 					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + feedID.replace("/", "_").replace(".", "_") + ".ico");
-					scale_pixbuf(ref tmp_icon, 24);
+					Utils.scale_pixbuf(ref tmp_icon, 24);
 					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 				}catch(GLib.Error e){}
 			}
@@ -60,11 +66,39 @@ public class FeedReader.FeedRow : baseRow {
 			m_box.pack_start(m_icon, false, false, 8);
 			m_box.pack_start(m_label, true, true, 0);
 			m_box.pack_end (m_unread, false, false, 8);
+
+			m_revealer = new Gtk.Revealer();
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 			m_revealer.add(m_box);
 			m_revealer.set_reveal_child(false);
 			this.add(m_revealer);
 			this.show_all();
 		}
+	}
+
+	public void set_unread_count(uint unread_count)
+	{
+		m_unread_count = unread_count;
+
+		if(m_unread_count > 0)
+		{
+			m_unread.set_text(m_unread_count.to_string());
+		}
+		else
+		{
+			m_unread.set_text ("");
+		}
+	}
+
+	public void upUnread()
+	{
+		set_unread_count(m_unread_count+1);
+	}
+
+	public void downUnread()
+	{
+		if(m_unread_count > 0)
+			set_unread_count(m_unread_count-1);
 	}
 
 	public void update(string text, uint unread_count)
@@ -96,6 +130,33 @@ public class FeedReader.FeedRow : baseRow {
 	public bool isSubscribed()
 	{
 		return m_subscribed;
+	}
+
+	public uint getUnreadCount()
+	{
+		return m_unread_count;
+	}
+
+	public bool isRevealed()
+	{
+		return m_revealer.get_reveal_child();
+	}
+
+	public void reveal(bool reveal, uint duration = 500)
+	{
+		if(settings_state.get_boolean("no-animations"))
+		{
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
+			m_revealer.set_transition_duration(0);
+			m_revealer.set_reveal_child(reveal);
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+			m_revealer.set_transition_duration(500);
+		}
+		else
+		{
+			m_revealer.set_transition_duration(duration);
+			m_revealer.set_reveal_child(reveal);
+		}
 	}
 
 }

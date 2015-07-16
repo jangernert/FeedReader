@@ -7,37 +7,41 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-04-21 17:39+0200\n"
+"POT-Creation-Date: 2015-07-14 17:08+0200\n"
 "PO-Revision-Date: 2014-11-02 21:12+0000\n"
 "Last-Translator: JeanLuc <Unknown>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-07-14 05:42+0000\n"
+"X-Launchpad-Export-Date: 2015-07-16 05:48+0000\n"
 "X-Generator: Launchpad (build 17628)\n"
 
-#: ../src/Backends/FeedServer.vala:385
+#: ../src/Backends/FeedServer.vala:386
 msgid "There is 1 new article"
 msgstr "Ein neuer Artikel"
 
-#: ../src/Backends/FeedServer.vala:387
+#: ../src/Backends/FeedServer.vala:388
 msgid "There are >200 new articles"
 msgstr ">200 neue Artikel"
 
-#: ../src/Backends/FeedServer.vala:389
+#: ../src/Backends/FeedServer.vala:390
 msgid "There are %u new articles"
 msgstr ""
 
-#: ../src/Backends/FeedServer.vala:391
+#: ../src/Backends/FeedServer.vala:392
 msgid "New Articles"
 msgstr "Neue Artikel"
 
-#: ../src/Widgets/ArticleView.vala:23
+#: ../src/Backends/ttrss/TTRSS_API.vala:426
+msgid "not found"
+msgstr ""
+
+#: ../src/Widgets/ArticleView.vala:33
 msgid "No Article selected."
 msgstr "Kein Artikel ausgewählt"
 
-#: ../src/Widgets/ArticleView.vala:62
+#: ../src/Widgets/ArticleView.vala:75
 msgid "not available"
 msgstr ""
 
@@ -61,7 +65,8 @@ msgstr ""
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:63
+#: ../src/Widgets/LoginPage.vala:63 ../src/Widgets/SharePopover.vala:15
+#: ../src/Widgets/ServiceSettingsRow.vala:87
 msgid "Login"
 msgstr ""
 
@@ -74,10 +79,12 @@ msgid "TinyTinyRSS URL:"
 msgstr ""
 
 #: ../src/Widgets/LoginPage.vala:112 ../src/Widgets/LoginPage.vala:185
+#: ../src/Widgets/ServiceSettingsRow.vala:73
 msgid "Username:"
 msgstr "Brukernavn:"
 
 #: ../src/Widgets/LoginPage.vala:113 ../src/Widgets/LoginPage.vala:186
+#: ../src/Widgets/ServiceSettingsRow.vala:74
 msgid "Password:"
 msgstr "Passord:"
 
@@ -91,28 +98,40 @@ msgstr ""
 msgid "OwnCloud URL:"
 msgstr ""
 
+#: ../src/Widgets/SharePopover.vala:21
+msgid "please"
+msgstr ""
+
+#: ../src/Widgets/SharePopover.vala:23
+msgid "to a service to share this article"
+msgstr ""
+
 #: ../src/Widgets/ReaderHeaderbar.vala:48
-msgid "only show unread articles"
-msgstr ""
-
-#: ../src/Widgets/ReaderHeaderbar.vala:54
-msgid "only show marked articles"
-msgstr ""
-
-#: ../src/Widgets/ReaderHeaderbar.vala:59
 msgid "mark selected feed/category as read"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:92
+#: ../src/Widgets/ReaderHeaderbar.vala:54
+msgid "share article"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:78
 msgid "Search Articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:99
+#: ../src/Widgets/ReaderHeaderbar.vala:85
 msgid "Settings"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:101
+#: ../src/Widgets/ReaderHeaderbar.vala:87
 msgid "Change Account"
+msgstr ""
+
+#: ../src/Widgets/ServiceSettingsRow.vala:48
+msgid "Username or Password incorrect"
+msgstr ""
+
+#: ../src/Widgets/ServiceSettingsRow.vala:92
+msgid "Logout"
 msgstr ""
 
 #: ../src/Widgets/SpringCleanPage.vala:13
@@ -143,162 +162,174 @@ msgstr ""
 msgid "I changed my mind"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:37
+#: ../src/Widgets/ArticleList.vala:39
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:19 ../src/Constants.vala:84
+#: ../src/Widgets/MainWindow.vala:18 ../src/Constants.vala:117
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Widgets/MainWindow.vala:78
-msgid "settings"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:95
-msgid "reset"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:376
+#: ../src/Widgets/MainWindow.vala:358
 msgid "Please select a service first"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:379
+#: ../src/Widgets/MainWindow.vala:361
 msgid "Please enter a valid username"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:382
+#: ../src/Widgets/MainWindow.vala:364
 msgid "Please enter a valid password"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:385
+#: ../src/Widgets/MainWindow.vala:367
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:388
+#: ../src/Widgets/MainWindow.vala:370
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:391
+#: ../src/Widgets/MainWindow.vala:373
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:394
+#: ../src/Widgets/MainWindow.vala:376
 msgid "Either your username or the password are not correct."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:397
+#: ../src/Widgets/MainWindow.vala:379
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: ../src/Widgets/UpdateButton.vala:15
+#: ../src/Widgets/UpdateButton.vala:20
 msgid "update Feeds"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:47
+#: ../src/Widgets/SettingsDialog.vala:50
 msgid "Interface"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:48
+#: ../src/Widgets/SettingsDialog.vala:51
 msgid "Internals"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:56
+#: ../src/Widgets/SettingsDialog.vala:52
+msgid "Services"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:62
 msgid "Close"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:63
+#: ../src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:74
+#: ../src/Widgets/SettingsDialog.vala:82
 msgid "only-feeds"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:86
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "only show unread"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:103
+#: ../src/Widgets/SettingsDialog.vala:111
 msgid "ArticleList:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:110
+#: ../src/Widgets/SettingsDialog.vala:118
 msgid "sort articles by"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:117
+#: ../src/Widgets/SettingsDialog.vala:125
 msgid "date"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:120
+#: ../src/Widgets/SettingsDialog.vala:128
 msgid "received"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:143
+#: ../src/Widgets/SettingsDialog.vala:151
 msgid "newest first"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:160
+#: ../src/Widgets/SettingsDialog.vala:168
 msgid "ArticleView:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:167
+#: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:174
+#: ../src/Widgets/SettingsDialog.vala:182
 msgid "default"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:177
+#: ../src/Widgets/SettingsDialog.vala:185
 msgid "spring"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:180
+#: ../src/Widgets/SettingsDialog.vala:188
 msgid "midnight"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:183
+#: ../src/Widgets/SettingsDialog.vala:191
 msgid "parchment"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:220
+#: ../src/Widgets/SettingsDialog.vala:228
 msgid "Sync:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:227
+#: ../src/Widgets/SettingsDialog.vala:235
 msgid "number of articles"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:240
+#: ../src/Widgets/SettingsDialog.vala:248
 msgid "every (seconds)"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:256
+#: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:263
+#: ../src/Widgets/SettingsDialog.vala:271
 msgid "drop articles after"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:270
+#: ../src/Widgets/SettingsDialog.vala:278
 msgid "Never"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:273
+#: ../src/Widgets/SettingsDialog.vala:281
 msgid "1 Week"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:276
+#: ../src/Widgets/SettingsDialog.vala:284
 msgid "1 Month"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:279
+#: ../src/Widgets/SettingsDialog.vala:287
 msgid "6 Months"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:324
+msgid "Additional Functionality:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:331
+msgid "Content Grabber"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:338
+msgid "None"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:341
+msgid "Built in grabber"
 msgstr ""
 
 #: ../src/Widgets/InitSyncPage.vala:18
@@ -311,12 +342,28 @@ msgstr ""
 msgid "No Preview Available"
 msgstr ""
 
-#: ../src/Utils.vala:68
+#: ../src/Utils.vala:104
 msgid "No Text available for this article :("
 msgstr ""
 
-#: ../src/Constants.vala:87
+#: ../src/Constants.vala:120
 msgid "Desktop Client for various RSS Services"
+msgstr ""
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:54
+msgid "no Author"
+msgstr ""
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:66
+msgid "no Title"
+msgstr ""
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:78
+msgid "no Preview"
+msgstr ""
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:90
+msgid "no content"
 msgstr ""
 
 #: ../src/FeedReader.vala:6

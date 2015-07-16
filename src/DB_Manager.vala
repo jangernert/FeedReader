@@ -922,7 +922,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
-		query.addCustomCondition("date >= \"%s\"".printf(date));
+		query.addCustomCondition("date > \"%s\"".printf(date));
 		//query.orderBy("date", true);
 		query.build();
 
@@ -934,6 +934,7 @@ public class FeedReader.dbManager : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			result = stmt.column_int(0);
 		}
+
 		return result;
 	}
 
@@ -944,7 +945,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("rowid");
-		query.addEqualsCondition("date", date);
+		query.addEqualsCondition("date", "\"%s\"".printf(date));
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -959,7 +960,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
-		query.addCustomCondition("rowid >= %i".printf(result));
+		query.addCustomCondition("rowid > %i".printf(result));
 		//query.orderBy("rowid", true);
 		query.build();
 
@@ -970,6 +971,7 @@ public class FeedReader.dbManager : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			result = stmt.column_int(0);
 		}
+
 		return result;
 	}
 

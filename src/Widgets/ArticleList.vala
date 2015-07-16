@@ -513,18 +513,18 @@ public class FeedReader.articleList : Gtk.Stack {
 		if(articleChildList != null)
 		{
 			var first_row = articleChildList.first().data as articleRow;
-			//int new_articles = dataBase.getRowNumberHeadline(first_row.getDateStr()) -1;
+			//int new_articles = dataBase.getRowCountHeadlineByDate(first_row.getDateStr()) -1;
 			//m_limit = getDisplayedArticles() + new_articles;
 
 			int new_articles = 0;
 
 			if(sortByDate)
 			{
-				new_articles = dataBase.getRowCountHeadlineByDate(first_row.getDateStr()) -1;
+				new_articles = dataBase.getRowCountHeadlineByDate(first_row.getDateStr());
 			}
 			else
 			{
-				new_articles = dataBase.getRowCountHeadlineByRowID(first_row.getDateStr()) -1;
+				new_articles = dataBase.getRowCountHeadlineByRowID(first_row.getDateStr());
 			}
 
 			m_limit = m_currentList.get_children().length() + new_articles;

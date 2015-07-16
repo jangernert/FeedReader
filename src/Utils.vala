@@ -28,13 +28,15 @@ public class FeedReader.Utils : GLib.Object {
 				GLib.FileUtils.close(outputfd);
 
 				string output = "";
-				string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", filename};
+				string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
 				try{
 					GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 				}
 				catch(GLib.SpawnError e){
 					logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
 				}
+
+				output = output.strip();
 
 				if(output == "" || output == null)
 				{
@@ -85,7 +87,7 @@ public class FeedReader.Utils : GLib.Object {
 
 				output = output.slice(0, length);
 				output = output.slice(0, output.last_index_of(" "));
-				output = output.chug();
+				output = output.strip();
 
 				article.setPreview(output);
 			}

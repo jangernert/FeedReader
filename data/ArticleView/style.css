@@ -154,11 +154,11 @@ th {
     background-color: #eee;
 }
 .tlblue {
-	background-color: #2295AB;
-    color: white;
+  background-color: #2295AB;
+   color: white;
 }
 .tlgrey {
-	background-color: #eee;
+  background-color: #eee;
 }
 h1,
 h2,
@@ -167,7 +167,7 @@ h4,
 h5,
 h6 {
   color: #318c34;
-  font-weight: 500;
+ font-weight: 500;
   font-family: 'Open Sans', Arial, sans-serif, sans;
   text-align: left;
 }
@@ -175,7 +175,7 @@ h2 {
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
   border-bottom: 2px solid #318c34;
-  font-size: 2.5rem;
+ font-size: 2.5rem;
   font-weight: 300;
 }
 h3 {
@@ -190,12 +190,12 @@ h4 {
 }
 h5 {
   color: #000;
-  font-size: 1.2rem;
+ font-size: 1.2rem;
   margin-bottom: 0.25rem;
 }
 h6 {
   color: #000;
-  font-size: 1rem;
+ font-size: 1rem;
   margin-bottom: 0.25rem;
   text-transform: uppercase;
 }
@@ -211,28 +211,28 @@ body,
 p {
   margin-bottom: 1rem;
   color: #1d1f1c;
-  font-size: 1rem;
+ font-size: 1rem;
   line-height: 1.8em;
   text-align: left;
 }
 pre,
 code {
   background-color:#eee;
-  overflow:auto;
+ overflow:auto;
   margin:0 0 1em;
 }
 pre {
   padding:.5em 1em;
 }
 code {
-  	padding:.3em .3em;
+    padding:.3em .3em;
 }
 p:last-of-type {
   margin-bottom: 0;
 }
 a {
   color: #318c34;
-  outline : none;
+ outline : none;
 }
 a:hover {
   text-decoration: none;
@@ -281,10 +281,10 @@ div.introtext {
 }
 header.post h1 {
   color: #000;
-  font-weight: 600;
+ font-weight: 600;
 }
 header.post a:link {
-	outline : none;
+  outline : none;
     text-decoration: none;
 }
 header.post span.source {
@@ -304,7 +304,20 @@ div.content {
 }
 /* MIDNIGHT THEME -- also default dark */
 div.theme.midnight {
+  color:rgba(255, 255, 255, 0.6);
   background: #233540;
+}
+div.theme .midnight pre{
+  background-color:rgba(255, 255, 255, 0.6);
+  color:#233540;
+ font-family: 'Open Sans';
+  font-size: 12px;
+}
+ 
+div.theme.midnight table,
+div.theme.midnight th,
+div.theme.midnight td {
+   border: 1px solid rgba(255, 255, 255, 0.6);
 }
 div.theme.midnight div.content th,
 div.theme.midnight header.post {
@@ -344,6 +357,7 @@ div.theme.midnight div.content h5,
 div.theme.midnight div.content h6,
 div.theme.midnight div.content p {
   color: rgba(255, 255, 255, 0.6);
+  text-align: justify;
 }
 div.theme.spring {
   background: #f8fff2;

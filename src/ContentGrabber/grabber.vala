@@ -128,7 +128,7 @@ public class FeedReader.Grabber : GLib.Object {
 
         // parse html
         var html_cntx = new Html.ParserCtxt();
-        html_cntx.use_options(Html.ParserOption.NOERROR);
+        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
         var doc = html_cntx.read_doc(m_rawHtml, "");
         if (doc == null)
         {

@@ -11,19 +11,38 @@ public class FeedReader.articleView : Gtk.Stack {
 	private string m_currentArticle;
 	private bool m_firstTime;
 	private string m_searchTerm;
+	private Gdk.Cursor m_dragCursor;
+	private Gdk.Cursor m_defaultCursor;
+	private double m_dragBuffer[10];
+	private double m_posY;
+	private double m_momentum;
+	private bool m_inDrag;
 
 
 	public articleView () {
 		m_load_ongoing = 0;
 		m_searchTerm = "";
 		m_firstTime = true;
+		m_inDrag = false;
+		m_posY = 0;
+		m_momentum = 0;
 
 		m_view1 = new WebKit.WebView();
 		m_view1.load_changed.connect(open_link);
 		m_view1.context_menu.connect(() => { return true; });
+		m_view1.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
+		m_view1.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_view1.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
+		m_view1.button_press_event.connect(onClick);
+		m_view1.button_release_event.connect(onRelease);
 		m_view2 = new WebKit.WebView();
 		m_view2.load_changed.connect(open_link);
 		m_view2.context_menu.connect(() => { return true; });
+		m_view2.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
+		m_view2.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_view2.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
+		m_view2.button_press_event.connect(onClick);
+		m_view2.button_release_event.connect(onRelease);
 		m_search1 = m_view1.get_find_controller();
 		m_search2 = m_view2.get_find_controller();
 
@@ -37,10 +56,56 @@ public class FeedReader.articleView : Gtk.Stack {
 		this.add_named(m_view1, "view1");
 		this.add_named(m_view2, "view2");
 
+		m_dragCursor = new Gdk.Cursor.for_display(Gdk.Display.get_default(), Gdk.CursorType.FLEUR);
+
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(100);
 		this.set_size_request(600, 0);
+	}
+
+	private bool onClick(Gdk.EventButton event)
+	{
+		if(event.button == MouseButton.MIDDLE)
+		{
+			m_posY = event.y;
+			for(int i = 0; i < 10; ++i)
+			{
+				m_dragBuffer[i] = m_posY;
+			}
+			m_inDrag = true;
+			GLib.Timeout.add(10, updateDragMomentum);
+			m_defaultCursor = m_currentView.get_window().get_cursor();
+			m_currentView.get_window().set_cursor(m_dragCursor);
+			m_currentView.motion_notify_event.connect(mouseMotion);
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool onRelease(Gdk.EventButton event)
+	{
+		if(event.button == MouseButton.MIDDLE)
+		{
+			m_currentView.get_window().set_cursor(m_defaultCursor);
+			m_posY = 0;
+			m_currentView.motion_notify_event.disconnect(mouseMotion);
+			m_inDrag = false;
+			GLib.Timeout.add(20, ScrollDragRelease);
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool mouseMotion(Gdk.EventMotion event)
+	{
+		double scroll = m_posY - event.y;
+		m_posY = event.y;
+		setScrollPos(getScrollPos() + (int)scroll);
+
+		return true;
 	}
 
 	public void reload()
@@ -160,6 +225,30 @@ public class FeedReader.articleView : Gtk.Stack {
 		});
 	}
 
+	private int getScollUpper()
+	{
+		string javascript = """
+								document.title = Math.max	(
+																document.body.scrollHeight,
+																document.body.offsetHeight,
+																document.documentElement.clientHeight,
+																document.documentElement.scrollHeight,
+																document.documentElement.offsetHeight
+															);
+							""";
+		int upper = -1;
+		var loop = new MainLoop();
+
+		m_currentView.run_javascript.begin(javascript, null, (obj, res) => {
+			m_currentView.run_javascript.end(res);
+			upper = int.parse(m_currentView.get_title());
+			loop.quit();
+		});
+
+		loop.run();
+		return upper;
+	}
+
 	public int getScrollPos()
 	{
 		// use mainloop to prevent app from shutting down before the result can be fetched
@@ -182,6 +271,57 @@ public class FeedReader.articleView : Gtk.Stack {
 	public void setSearchTerm(string searchTerm)
 	{
 		m_searchTerm = searchTerm;
+	}
+
+	private bool updateDragMomentum()
+	{
+		if(!m_inDrag)
+			return false;
+
+		for(int i = 9; i > 0; --i)
+		{
+			m_dragBuffer[i] = m_dragBuffer[i-1];
+		}
+
+		m_dragBuffer[0] = m_posY;
+		m_momentum = m_dragBuffer[9] - m_dragBuffer[0];
+
+		return true;
+	}
+
+	private bool ScrollDragRelease()
+	{
+		double adj_value;
+		double old_adj;
+		double page_size;
+		double upper;
+		Gtk.Allocation allocation;
+
+		if(m_inDrag)
+			return true;
+
+		m_momentum /= 1.2;
+		m_currentView.get_allocation(out allocation);
+
+		page_size = m_currentView.get_allocated_height();
+		adj_value = page_size * m_momentum / allocation.height;
+
+		old_adj = getScrollPos();
+		upper = getScollUpper();
+
+		if ((old_adj + adj_value) > (upper - page_size)
+		|| (old_adj + adj_value) < 0)
+		{
+			m_momentum = 0;
+		}
+
+		double newScrollPos = double.min(old_adj + adj_value, upper - page_size);
+		setScrollPos((int)newScrollPos);
+
+		if (m_momentum < 1 && m_momentum > -1)
+			return false;
+		else
+			return true;
 	}
 
 }

@@ -137,6 +137,12 @@ namespace FeedReader {
 		 const string websiteLabel  = null;
 	}
 
+	public enum MouseButton {
+		LEFT = 1,
+		MIDDLE,
+		RIGHT,
+	}
+
 	public enum QueryType {
 		INSERT,
 		INSERT_OR_IGNORE,

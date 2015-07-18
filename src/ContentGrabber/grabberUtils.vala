@@ -118,7 +118,7 @@ public class FeedReader.grabberUtils : GLib.Object {
             ancestor = ancestor.substring(2);
         }
         string query = "%s[not(ancestor::%s)]".printf(xpath, ancestor);
-        logger.print(LogMessage.DEBUG, query);
+        //logger.print(LogMessage.DEBUG, query);
 
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(query);

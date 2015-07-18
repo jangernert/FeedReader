@@ -53,6 +53,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_List2.get_style_context().add_class("article-list");
 
 
+
 		m_scroll1 = new Gtk.ScrolledWindow(null, null);
 		m_scroll1.set_size_request(400, 500);
 		m_scroll1.add(m_List1);
@@ -63,23 +64,29 @@ public class FeedReader.articleList : Gtk.Stack {
 
 		m_scroll1_adjustment = m_scroll1.get_vadjustment();
 		m_scroll1_adjustment.value_changed.connect(() => {
-			var current = m_scroll1_adjustment.get_value();
-			var page = m_scroll1_adjustment.get_page_size();
-			var max = m_scroll1_adjustment.get_upper();
-			if((current + page)/max > m_lmit && !m_limitScroll)
+			if(!m_limitScroll)
 			{
-				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+				var current = m_scroll1_adjustment.get_value();
+				var page = m_scroll1_adjustment.get_page_size();
+				var max = m_scroll1_adjustment.get_upper();
+				if((current + page)/max > m_lmit)
+				{
+					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+				}
 			}
 		});
 
 		m_scroll2_adjustment = m_scroll2.get_vadjustment();
 		m_scroll2_adjustment.value_changed.connect(() => {
-			var current = m_scroll2_adjustment.get_value();
-			var page = m_scroll2_adjustment.get_page_size();
-			var max = m_scroll2_adjustment.get_upper();
-			if((current + page)/max > m_lmit && !m_limitScroll)
+			if(!m_limitScroll)
 			{
-				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+				var current = m_scroll2_adjustment.get_value();
+				var page = m_scroll2_adjustment.get_page_size();
+				var max = m_scroll2_adjustment.get_upper();
+				if((current + page)/max > m_lmit)
+				{
+					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+				}
 			}
 		});
 

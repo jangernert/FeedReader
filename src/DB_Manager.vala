@@ -1161,6 +1161,25 @@ public class FeedReader.dbManager : GLib.Object {
 		return query.substring(0, or) + ")";
 	}
 
+	public int getTagCount()
+	{
+		int count = 0;
+		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
+		query.selectField("count(*)");
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			count = stmt.column_int(0);
+		}
+
+		return count;
+	}
+
 	public GLib.List<category> read_categories_level(int level)
 	{
 		GLib.List<category> tmp = new GLib.List<category>();

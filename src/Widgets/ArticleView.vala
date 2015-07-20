@@ -291,31 +291,26 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	private bool ScrollDragRelease()
 	{
-		double adj_value;
-		double old_adj;
-		double page_size;
-		double upper;
-		Gtk.Allocation allocation;
-
 		if(m_inDrag)
 			return true;
 
 		m_momentum /= 1.2;
+
+		Gtk.Allocation allocation;
 		m_currentView.get_allocation(out allocation);
 
-		page_size = m_currentView.get_allocated_height();
-		adj_value = page_size * m_momentum / allocation.height;
+		double pageSize = m_currentView.get_allocated_height();
+		double adjValue = pageSize * m_momentum / allocation.height;
+		double oldAdj = getScrollPos();
+		double upper = getScollUpper();
 
-		old_adj = getScrollPos();
-		upper = getScollUpper();
-
-		if ((old_adj + adj_value) > (upper - page_size)
-		|| (old_adj + adj_value) < 0)
+		if ((oldAdj + adjValue) > (upper - pageSize)
+		|| (oldAdj + adjValue) < 0)
 		{
 			m_momentum = 0;
 		}
 
-		double newScrollPos = double.min(old_adj + adj_value, upper - page_size);
+		double newScrollPos = double.min(oldAdj + adjValue, upper - pageSize);
 		setScrollPos((int)newScrollPos);
 
 		if (m_momentum < 1 && m_momentum > -1)

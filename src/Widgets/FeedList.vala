@@ -7,6 +7,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	private Gtk.Adjustment m_scroll_adjustment;
 	private uint m_expand_collapse_time;
 	private bool m_update;
+	private bool m_TagsDisplayed;
 	public signal void newFeedSelected(string feedID);
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
@@ -16,6 +17,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	public feedList () {
 		m_selected = null;
 		m_update = false;
+		m_TagsDisplayed = false;
 		m_expand_collapse_time = 150;
 		m_spinner = new Gtk.Spinner();
 		m_list = new Gtk.ListBox();
@@ -201,7 +203,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_list.add(row_spacer);
 
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles", unread, false, FeedID.ALL.to_string(), "-1", 0);
+		var row_all = new FeedRow("All Articles", unread, false, FeedID.ALL, "-1", 0);
 		m_list.add(row_all);
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
@@ -331,6 +333,21 @@ public class FeedReader.feedList : Gtk.Stack {
 				}
 			}
 		}
+
+
+		// row not found: default select "ALL FEEDS"
+		logger.print(LogMessage.DEBUG, "FeedList: restoreSelectedRow: no selected row found, selectin default");
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as FeedRow;
+			if(tmpRow != null && tmpRow.getID() == FeedID.ALL)
+			{
+				m_list.select_row(tmpRow);
+				tmpRow.activate();
+				newFeedSelected(tmpRow.getID());
+				return;
+			}
+		}
 	}
 
 
@@ -353,17 +370,9 @@ public class FeedReader.feedList : Gtk.Stack {
 	private void createCategories()
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
-		int account_type = settings_general.get_enum("account-type");
-		string[] exp = settings_state.get_strv("expanded-categories");
-		bool expand = false;
 
-		if(account_type != Backend.OWNCLOUD)
+		if(haveTags())
 		{
-			foreach(string str in exp)
-			{
-				if("Categories" == str)
-					expand = true;
-			}
 			var categorierow = new categorieRow(
 					                                "Categories",
 					                                CategoryID.MASTER,
@@ -371,7 +380,9 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                0,
 					                                CategoryID.NONE,
 							                        1,
-							                        expand
+													// expand the category "categories" if either it is inserted for the first time (no tag before)
+													// or if it has to be done to restore the state of the feedrow
+							                        !m_TagsDisplayed || expandCat("Categories")
 					                                );
 			categorierow.collapse.connect((collapse, catID) => {
 				if(collapse)
@@ -382,16 +393,10 @@ public class FeedReader.feedList : Gtk.Stack {
 			m_list.insert(categorierow, 3);
 			categorierow.setAsRead.connect(markSelectedRead);
 			categorierow.reveal(true);
-			expand = false;
 			string name = "Tags";
-			if(account_type == Backend.TTRSS)
+			if(settings_general.get_enum("account-type") == Backend.TTRSS)
 				name = "Labels";
 
-			foreach(string str in exp)
-			{
-				if(str == name)
-					expand = true;
-			}
 			var tagrow = new categorieRow(
 					                                name,
 					                                CategoryID.TAGS,
@@ -399,7 +404,9 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                0,
 					                                CategoryID.NONE,
 							                        1,
-							                        expand
+													// expand the category "tags" if either it is inserted for the first time (no tag before)
+													// or if it has to be done to restore the state of the feedrow
+							                        !m_TagsDisplayed || expandCat(name)
 					                                );
 			tagrow.collapse.connect((collapse, catID) => {
 				if(collapse)
@@ -410,7 +417,11 @@ public class FeedReader.feedList : Gtk.Stack {
 			m_list.insert(tagrow, 4);
 			tagrow.setAsRead.connect(markSelectedRead);
 			tagrow.reveal(true);
-			expand = false;
+			m_TagsDisplayed = true;
+		}
+		else
+		{
+			m_TagsDisplayed = false;
 		}
 
 		for(int i = 1; i <= maxCatLevel; i++)
@@ -425,18 +436,12 @@ public class FeedReader.feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
-						(item.getParent() == CategoryID.NONE && pos > 2) && (account_type == Backend.OWNCLOUD) ||
-						(item.getParent() == CategoryID.NONE && pos > 3) && (account_type != Backend.OWNCLOUD))
+						(item.getParent() == CategoryID.MASTER && pos > 2) && !haveTags() ||
+						(item.getParent() == CategoryID.MASTER && pos > 3) && haveTags())
 					{
-						foreach(string str in exp)
-						{
-							if(item.getTitle() == str)
-								expand = true;
-						}
-
 						int level = item.getLevel();
 						string parent = item.getParent();
-						if(account_type != Backend.OWNCLOUD)
+						if(haveTags())
 						{
 							level++;
 							parent = CategoryID.MASTER;
@@ -449,7 +454,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                item.getUnreadCount(),
 					                                parent,
 							                        level,
-							                        expand
+							                        expandCat(item.getTitle())
 					                                );
 					    expand = false;
 						categorierow.collapse.connect((collapse, catID) => {
@@ -760,6 +765,38 @@ public class FeedReader.feedList : Gtk.Stack {
 			markAllArticlesAsRead();
 		else
 			updateArticleList();
+	}
+
+
+	private bool haveTags()
+	{
+		int backend = settings_general.get_enum("account-type");
+
+		switch(backend)
+		{
+			case Backend.OWNCLOUD:
+				return false;
+		}
+
+		if(dataBase.getTagCount() == 0)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	private bool expandCat(string name)
+	{
+		string[] list = settings_state.get_strv("expanded-categories");
+
+		foreach(string str in list)
+		{
+			if(name == str)
+				return true;
+		}
+
+		return false;
 	}
 
 }

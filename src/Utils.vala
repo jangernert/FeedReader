@@ -324,4 +324,57 @@ public class FeedReader.Utils : GLib.Object {
 		icon = icon.scale_simple(width, height, Gdk.InterpType.BILINEAR);
 	}
 
+	public static string buildURL(OAuth serviceType)
+	{
+		string url = "";
+
+		switch(serviceType)
+		{
+			case OAuth.FEEDLY:
+				url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
+					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+				break;
+
+			case OAuth.READABILITY:
+				url = ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + settings_readability.get_string("oauth-request-token");
+				break;
+
+			case OAuth.POCKET:
+				url = "https://getpocket.com/auth/authorize?request_token="
+						+ settings_pocket.get_string("oauth-request-token")
+						+ "&redirect_uri=" + GLib.Uri.escape_string(PocketSecrets.oauth_callback);
+				break;
+
+			case OAuth.INSTAPAPER:
+				break;
+		}
+
+		logger.print(LogMessage.DEBUG, url);
+		return url;
+	}
+
+
+	public static OAuth parseArg(string arg)
+	{
+		if(arg == PocketSecrets.oauth_callback)
+			return OAuth.POCKET;
+
+		if(arg == InstapaperSecrets.oauth_callback)
+			return OAuth.INSTAPAPER;
+
+		if(arg == FeedlySecret.apiRedirectUri)
+			return OAuth.FEEDLY;
+
+		if(arg.has_prefix(ReadabilitySecrets.oauth_callback))
+		{
+			int verifier_start = arg.index_of("=")+1;
+			int verifier_end = arg.index_of("&", verifier_start);
+			string verifier = arg.substring(verifier_start, verifier_end-verifier_start);
+			settings_readability.set_string("oauth-verifier", verifier);
+			return OAuth.READABILITY;
+		}
+
+		return OAuth.NONE;
+	}
+
 }

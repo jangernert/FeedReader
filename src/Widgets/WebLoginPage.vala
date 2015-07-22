@@ -3,8 +3,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private WebKit.WebView m_view;
 	private string m_url;
 	private int m_serviceType;
-	public signal void success_backend();
-	public signal void success_share();
+	public signal void success();
 
 
 	public WebLoginPage() {
@@ -22,40 +21,9 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	public void loadPage(OAuth serviceType)
 	{
 		m_serviceType = serviceType;
-		switch(serviceType)
-		{
-			case OAuth.FEEDLY:
-				m_url = buildFeedlyURL();
-				break;
-			case OAuth.READABILITY:
-				m_url = buildReadabilityURL();
-				break;
-			case OAuth.POCKET:
-				m_url = buildPocketURL();
-				break;
-		}
-
+		m_url = Utils.buildURL(serviceType);
 		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + m_url);
 		m_view.load_uri(m_url);
-	}
-
-	private string buildFeedlyURL()
-	{
-		string url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId;
-		url += "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
-		return url;
-	}
-
-	private string buildReadabilityURL()
-	{
-		return ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + settings_readability.get_string("oauth-request-token");
-	}
-
-	private string buildPocketURL()
-	{
-		return "https://getpocket.com/auth/authorize?request_token="
-				+ settings_pocket.get_string("oauth-request-token")
-				+ "&redirect_uri=" + GLib.Uri.escape_string(PocketSecrets.oauth_callback);
 	}
 
 	public void redirection(WebKit.LoadEvent load_event)
@@ -90,21 +58,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				if(getFeedlyApiCode(url))
 				{
 					m_view.stop_loading();
-					success_backend();
-				}
-				break;
-			case OAuth.READABILITY:
-				if(getReadabilityApiCode(url))
-				{
-					m_view.stop_loading();
-					success_share();
-				}
-				break;
-			case OAuth.POCKET:
-				if(getPocketApiCode(url))
-				{
-					m_view.stop_loading();
-					success_share();
+					success();
 				}
 				break;
 		}
@@ -130,7 +84,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	}
 
 
-	bool getReadabilityApiCode(string url)
+	/*bool getReadabilityApiCode(string url)
 	{
 		if(url.has_prefix(ReadabilitySecrets.oauth_callback))
 		{
@@ -159,7 +113,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		}
 		else
 			return false;
-	}
+	}*/
 
 
 }

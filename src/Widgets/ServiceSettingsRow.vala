@@ -212,14 +212,15 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 	{
 		if(share.getRequestToken(m_type))
 		{
-			var dialog = new LoginDialog(m_type);
-			dialog.sucess.connect(() => {
-				if(share.getAccessToken(m_type))
+			Gtk.show_uri(Gdk.Screen.get_default(), Utils.buildURL(m_type), Gdk.CURRENT_TIME);
+			m_login_button.set_label(_("waiting"));
+			m_login_button.set_sensitive(false);
+			((rssReaderApp)GLib.Application.get_default()).callback.connect((type) => {
+				if(share.getAccessToken(type))
 				{
-					m_isLoggedIN = true;
-					m_iconStack.set_visible_child_name("loggedIN");
+					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
 					m_label.set_label(m_serviceSettings.get_string("username"));
-					m_labelStack.set_visible_child_name("loggedIN");
+					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
 				}
 			});
 		}

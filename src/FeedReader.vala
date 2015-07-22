@@ -43,8 +43,10 @@ namespace FeedReader {
 	public class rssReaderApp : Gtk.Application {
 
 		private readerUI m_window;
+		public signal void callback(OAuth type);
 
-		protected override void startup () {
+		protected override void startup()
+		{
 			startDaemon();
 
 			dataBase = new dbManager();
@@ -97,7 +99,7 @@ namespace FeedReader {
 			base.startup();
 		}
 
-		protected override void activate ()
+		public override void activate()
 		{
 			base.activate();
 			if (m_window == null)
@@ -108,6 +110,18 @@ namespace FeedReader {
 
 			m_window.show_all();
 			feedDaemon_interface.updateBadge();
+		}
+
+		public override int command_line(ApplicationCommandLine command_line)
+		{
+			var args = command_line.get_arguments();
+			if(args.length > 1)
+				callback(Utils.parseArg(args[1]));
+
+			
+			activate();
+
+			return 0;
 		}
 
 		public void sync()
@@ -129,8 +143,9 @@ namespace FeedReader {
 			}
 		}
 
-		public rssReaderApp () {
-			GLib.Object (application_id: "org.gnome.FeedReader", flags: ApplicationFlags.FLAGS_NONE);
+		public rssReaderApp()
+		{
+			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
 	}
 

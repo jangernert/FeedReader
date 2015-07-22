@@ -8,6 +8,7 @@ namespace FeedReader {
 	}
 
 	public enum OAuth {
+		NONE,
 		FEEDLY,
 		READABILITY,
 		INSTAPAPER,
@@ -107,20 +108,20 @@ namespace FeedReader {
 		const string base_uri			= "https://www.readability.com/api/rest/v1/";
 		const string oauth_consumer_key		= "jangernert";
 		const string oauth_consumer_secret	= "3NSxqNW5d6zVwvZV6tskzVrqctHZceHr";
-		const string oauth_callback			= "http://localhost/callback";
+		const string oauth_callback			= "feedreader://readability";
 	}
 
 	namespace InstapaperSecrets {
 		const string base_uri			= "https://www.instapaper.com/api/";
 		const string oauth_consumer_key		= "b7681e07bf554b15813511217054e1b2";
 		const string oauth_consumer_secret	= "c5307cb359d54685904f6d38aaeede6f";
-		const string oauth_callback			= "http://localhost/callback";
+		const string oauth_callback			= "feedreader://instapaper";
 	}
 
 	namespace PocketSecrets {
 		const string base_uri			= "https://getpocket.com/v3/";
 		const string oauth_consumer_key		= "43273-30a11c29b5eeabfa905df168";
-		const string oauth_callback			= "http://localhost/callback";
+		const string oauth_callback			= "feedreader://pocket";
 	}
 
 	namespace AboutInfo {

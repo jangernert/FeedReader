@@ -170,11 +170,11 @@ public class FeedReader.InstaAPI : GLib.Object {
 
     public bool addBookmark(string url)
     {
-        string message  = "username=" + settings_instapaper.get_string("user-id")
+        string message  = "username=" + settings_instapaper.get_string("username")
                         + "&password=" + getPassword()
                         + "&url=" + GLib.Uri.escape_string(url);
 
-        logger.print(LogMessage.DEBUG, message);
+        //logger.print(LogMessage.DEBUG, message);
 
         m_message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/add");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);

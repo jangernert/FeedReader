@@ -21,6 +21,8 @@ public class FeedReader.articleList : Gtk.Stack {
 	private bool m_limitScroll;
 	private int m_threadCount;
 	private uint timeout_source_id = 0;
+	private double m_scrollPos = 0;
+	private bool m_scrollOngoing = false;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
 
@@ -66,13 +68,11 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_scroll1_adjustment.value_changed.connect(() => {
 			if(!m_limitScroll)
 			{
-				var current = m_scroll1_adjustment.get_value();
-				var page = m_scroll1_adjustment.get_page_size();
-				var max = m_scroll1_adjustment.get_upper();
-				if((current + page)/max > m_lmit)
-				{
+				if(!m_scrollOngoing)
+					m_scrollPos = m_scroll1_adjustment.get_value();
+
+				if((m_scroll1_adjustment.get_value() + m_scroll1_adjustment.get_page_size())/m_scroll1_adjustment.get_upper() > m_lmit)
 					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-				}
 			}
 		});
 
@@ -80,13 +80,11 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_scroll2_adjustment.value_changed.connect(() => {
 			if(!m_limitScroll)
 			{
-				var current = m_scroll2_adjustment.get_value();
-				var page = m_scroll2_adjustment.get_page_size();
-				var max = m_scroll2_adjustment.get_upper();
-				if((current + page)/max > m_lmit)
-				{
+				if(!m_scrollOngoing)
+					m_scrollPos = m_scroll2_adjustment.get_value();
+
+				if((m_scroll2_adjustment.get_value() + m_scroll2_adjustment.get_page_size())/m_scroll2_adjustment.get_upper() > m_lmit)
 					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-				}
 			}
 		});
 
@@ -158,16 +156,18 @@ public class FeedReader.articleList : Gtk.Stack {
 
 			var currentPos = m_current_adjustment.get_value();
 			var max = m_current_adjustment.get_upper();
-			var offset = (max)/ArticleListChildren.length();
+			var offset = max/ArticleListChildren.length();
 
 			if(down)
 			{
-				smooth_adjustment_to(m_current_adjustment, (int)(currentPos + offset));
+				m_scrollPos += offset;
+				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
 				//m_current_adjustment.set_value(currentPos + offset);
 			}
 			else
 			{
-				smooth_adjustment_to(m_current_adjustment, (int)(currentPos - offset));
+				m_scrollPos -= offset;
+				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
 				//m_current_adjustment.set_value(currentPos - offset);
 			}
 
@@ -476,6 +476,10 @@ public class FeedReader.articleList : Gtk.Stack {
 	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: delete HeadlineList");
+
+		if(settings_state.get_int("articlelist-row-amount") < 15)
+			settings_state.reset("articlelist-row-amount");
+
 		string selectedArticle = getSelectedArticle();
 
 		if(selectedArticle != "empty")
@@ -710,6 +714,8 @@ public class FeedReader.articleList : Gtk.Stack {
 	// thx to pantheon files developers =)
 	private void smooth_adjustment_to(Gtk.Adjustment adj, int final)
 	{
+		m_scrollOngoing = true;
+
         if (timeout_source_id > 0)
 		{
             GLib.Source.remove(timeout_source_id);
@@ -730,6 +736,7 @@ public class FeedReader.articleList : Gtk.Stack {
             /* If the user move it at the same time, just stop the animation */
             if (old_adj_value != adj.value) {
                 timeout_source_id = 0;
+				m_scrollOngoing = false;
                 return false;
             }
 
@@ -737,14 +744,13 @@ public class FeedReader.articleList : Gtk.Stack {
                 /* to be sure that there is not a little problem */
                 adj.value = final;
                 timeout_source_id = 0;
+				m_scrollOngoing = false;
                 return false;
             }
 
             newvalue += 10;
 
-            adj.value = initial + factor *
-                        GLib.Math.sin(((double)newvalue / (double)to_do) * Math.PI / 2) * to_do;
-
+            adj.value = initial + factor * GLib.Math.sin( ( (double)newvalue / (double)to_do) * Math.PI / 2) * to_do;
             old_adj_value = adj.value;
             return true;
         });

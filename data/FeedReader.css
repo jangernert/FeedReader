@@ -54,6 +54,7 @@ GtkListBoxRow.feed-list-row:selected {
 	padding-left: 0px;
 	padding-right: 0px;
 	padding-top: 0px;
+	outline: none;
 }
 
 GtkListBoxRow.feed-list-row:selected GtkBox.feed-row{

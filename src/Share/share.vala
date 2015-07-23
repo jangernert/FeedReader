@@ -110,6 +110,9 @@ public class FeedReader.Share : GLib.Object {
             case OAuth.INSTAPAPER:
                 return m_instapaper.logout();
 
+            case OAuth.EVERNOTE:
+                return m_evernote.logout();
+
             default:
                 return false;
         }

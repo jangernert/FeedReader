@@ -18,7 +18,7 @@ public class FeedReader.EvernoteAPI : GLib.Object {
     			EvernoteSecrets.oauth_consumer_key,
     			EvernoteSecrets.oauth_consumer_secret,
                 settings_evernote.get_string("oauth-access-token"),
-                settings_evernote.get_string("oauth-access-token-secret"),
+                "",
     			EvernoteSecrets.base_uri,
     			false);
 
@@ -57,7 +57,6 @@ public class FeedReader.EvernoteAPI : GLib.Object {
 		}
 
         settings_evernote.set_string("oauth-access-token", m_oauth.get_token());
-        settings_evernote.set_string("oauth-access-token-secret", m_oauth.get_token_secret());
         return true;
     }
 
@@ -80,7 +79,6 @@ public class FeedReader.EvernoteAPI : GLib.Object {
     {
         settings_evernote.set_string("username", "");
         settings_evernote.set_string("oauth-access-token", "");
-        settings_evernote.set_string("oauth-access-token-secret", "");
         settings_evernote.set_string("oauth-verifier", "");
         settings_evernote.set_string("oauth-request-token", "");
         settings_evernote.set_boolean("is-logged-in", false);

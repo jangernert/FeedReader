@@ -77,6 +77,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Share/ReadabilityAPI.vala
     src/Share/PocketAPI.vala
     src/Share/InstapaperAPI.vala
+    src/Share/EvernoteAPI.vala
     src/Share/share.vala
 
 # tell what libraries to use when compiling
@@ -180,6 +181,7 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/arrow-down-hover.svg DESTINATION
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/pocket.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/instapaper.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/readability.svg DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/evernote.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedly.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/owncloud.svg DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/ttrss.svg DESTINATION ${PKGDATADIR})

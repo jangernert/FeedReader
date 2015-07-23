@@ -27,6 +27,10 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
             case OAuth.POCKET:
                 iconPath = "/usr/share/FeedReader/pocket.svg";
                 break;
+
+			case OAuth.EVERNOTE:
+	            iconPath = "/usr/share/FeedReader/evernote.svg";
+	            break;
         }
         var icon = new Gtk.Image.from_file(iconPath);
 

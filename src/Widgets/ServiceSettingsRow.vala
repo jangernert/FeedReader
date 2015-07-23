@@ -121,6 +121,11 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
                 iconPath = "/usr/share/FeedReader/pocket.svg";
 				m_serviceSettings = settings_pocket;
                 break;
+
+			case OAuth.EVERNOTE:
+				iconPath = "/usr/share/FeedReader/evernote.svg";
+				m_serviceSettings = settings_evernote;
+				break;
         }
 
         var icon = new Gtk.Image.from_file(iconPath);
@@ -191,6 +196,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		{
 			case OAuth.READABILITY:
 			case OAuth.POCKET:
+			case OAuth.EVERNOTE:
 				doOAuth();
 				break;
 

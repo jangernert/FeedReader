@@ -332,7 +332,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 
 
-		// row not found: default select "ALL FEEDS"
+		// row not found: default select "ALL ARTICLES"
 		logger.print(LogMessage.DEBUG, "FeedList: restoreSelectedRow: no selected row found, selectin default");
 		foreach(Gtk.Widget row in FeedChildList)
 		{

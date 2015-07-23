@@ -236,6 +236,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_readability.set_boolean("is-logged-in", false);
 			settings_instapaper.set_boolean("is-logged-in", false);
 			settings_pocket.set_boolean("is-logged-in", false);
+			settings_evernote.set_boolean("is-logged-in", false);
 		});
 	}
 

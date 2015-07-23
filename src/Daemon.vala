@@ -249,6 +249,7 @@ namespace FeedReader {
 	GLib.Settings settings_readability;
 	GLib.Settings settings_pocket;
 	GLib.Settings settings_instapaper;
+	GLib.Settings settings_evernote;
 	FeedServer server;
 	Logger logger;
 	Notify.Notification notification;
@@ -265,6 +266,7 @@ namespace FeedReader {
 		settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
 		settings_pocket = new GLib.Settings ("org.gnome.feedreader.pocket");
 		settings_instapaper = new GLib.Settings ("org.gnome.feedreader.instapaper");
+		settings_evernote = new GLib.Settings ("org.gnome.feedreader.evernote");
 		logger = new Logger();
 		Notify.init("org.gnome.feedreader");
 

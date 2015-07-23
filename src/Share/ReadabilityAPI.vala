@@ -28,9 +28,12 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
     public bool getRequestToken()
     {
-        try {
-			m_oauth.request_token ("oauth/request_token", ReadabilitySecrets.oauth_callback);
-		} catch (Error e) {
+        try
+        {
+			m_oauth.request_token("oauth/request_token", ReadabilitySecrets.oauth_callback);
+		}
+        catch (Error e)
+        {
 			logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get request token: " + e.message);
             return false;
 		}

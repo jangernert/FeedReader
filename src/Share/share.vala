@@ -3,12 +3,14 @@ public class FeedReader.Share : GLib.Object {
     private ReadabilityAPI m_readability;
     private PocketAPI m_pocket;
     private InstaAPI m_instapaper;
+    private EvernoteAPI m_evernote;
 
     public Share()
     {
         m_readability = new ReadabilityAPI();
         m_pocket = new PocketAPI();
         m_instapaper = new InstaAPI();
+        m_evernote = new EvernoteAPI();
 
         //checkAccessTokens.begin((obj, res) => {
         //    checkAccessTokens.end(res);
@@ -47,6 +49,9 @@ public class FeedReader.Share : GLib.Object {
             case OAuth.INSTAPAPER:
                 return true;
 
+            case OAuth.EVERNOTE:
+                return m_evernote.getRequestToken();
+
             default:
                 return false;
         }
@@ -64,6 +69,9 @@ public class FeedReader.Share : GLib.Object {
 
             case OAuth.INSTAPAPER:
                 return m_instapaper.getAccessToken(username, password);
+
+            case OAuth.EVERNOTE:
+                return m_evernote.getAccessToken();
 
             default:
                 return false;

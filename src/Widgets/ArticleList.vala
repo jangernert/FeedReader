@@ -736,6 +736,7 @@ public class FeedReader.articleList : Gtk.Stack {
             /* If the user move it at the same time, just stop the animation */
             if (old_adj_value != adj.value) {
                 timeout_source_id = 0;
+				m_scrollPos = adj.value;
 				m_scrollOngoing = false;
                 return false;
             }

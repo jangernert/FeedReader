@@ -104,6 +104,14 @@ public class FeedReader.Grabber : GLib.Object {
     {
         var session = new Soup.Session();
         var msg = new Soup.Message("GET", m_articleURL);
+        msg.restarted.connect(() => {
+            if(msg.status_code == Soup.Status.MOVED_TEMPORARILY)
+            {
+                logger.print(LogMessage.DEBUG, "Grabber: download redirected - \"302 Moved Temporarily\"");
+                m_articleURL = msg.uri.to_string(false);
+                logger.print(LogMessage.DEBUG, "Grabber: new url is: " + m_articleURL);
+            }
+        });
         session.send_message(msg);
         m_rawHtml = (string)msg.response_body.flatten().data;
         return true;

@@ -197,20 +197,17 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void createFeedlist(bool defaultSettings)
 	{
-		var row_spacer = new FeedRow("", 0, false, "", "-1", 0);
-		row_spacer.set_size_request(0, 8);
-		row_spacer.sensitive = false;
-		m_list.add(row_spacer);
-
 		var unread = dataBase.get_unread_total();
 		var row_all = new FeedRow("All Articles", unread, false, FeedID.ALL, "-1", 0);
+		row_all.margin_top = 8;
+		row_all.margin_bottom = 8;
 		m_list.add(row_all);
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
 
 		var row_seperator = new FeedRow("", 0, false, "", "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator.set_size_request(0, 20);
+		separator.margin_bottom = 8;
 		row_seperator.add(separator);
 		row_seperator.sensitive = false;
 		m_list.add(row_seperator);
@@ -436,8 +433,8 @@ public class FeedReader.feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
-						(item.getParent() == CategoryID.MASTER && pos > 2) && !haveTags() ||
-						(item.getParent() == CategoryID.MASTER && pos > 3) && haveTags())
+						(item.getParent() == CategoryID.MASTER && pos > 1) && !haveTags() ||
+						(item.getParent() == CategoryID.MASTER && pos > 2) && haveTags())
 					{
 						int level = item.getLevel();
 						string parent = item.getParent();

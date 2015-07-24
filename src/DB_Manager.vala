@@ -1148,6 +1148,27 @@ public class FeedReader.dbManager : GLib.Object {
 		return tmp;
 	}
 
+	public tag read_tag(string tagID)
+	{
+		tag tmpTag = null;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
+		query.selectField("*");
+		query.addEqualsCondition("tagID", tagID);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
+		}
+
+		return tmpTag;
+	}
+
 	private string getAllTagsCondition()
 	{
 		var tags = read_tags();
@@ -1277,7 +1298,8 @@ public class FeedReader.dbManager : GLib.Object {
 
 
 		GLib.List<article> tmp = new GLib.List<article>();
-		while (stmt.step () == Sqlite.ROW) {
+		while (stmt.step () == Sqlite.ROW)
+		{
 			tmp.append(new article(
 								stmt.column_text(2),								// articleID
 								stmt.column_text(3),								// title

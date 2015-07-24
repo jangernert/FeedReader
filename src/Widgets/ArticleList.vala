@@ -356,6 +356,18 @@ public class FeedReader.articleList : Gtk.Stack {
 		return "";
 	}
 
+	public string getSelectedID()
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+		if(selected_row != null)
+			return selected_row.getID();
+
+		if(m_currentList.get_children().length() == 0)
+			return "empty";
+
+		return "";
+	}
+
 
 	private async void createHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
 	{

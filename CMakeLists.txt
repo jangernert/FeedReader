@@ -70,6 +70,8 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/SharePopover.vala
     src/Widgets/SpringCleanPage.vala
     src/Widgets/TagRow.vala
+    src/Widgets/TagPopover.vala
+    src/Widgets/TagPopoverRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
     src/ContentGrabber/stringPair.vala

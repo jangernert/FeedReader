@@ -31,7 +31,8 @@ public class FeedReader.article : GLib.Object {
 		var tagArray = tags.split(",");
 		foreach(string tag in tagArray)
 		{
-			m_tags.append(tag);
+			if(tag.strip() != "")
+				m_tags.append(tag);
 		}
 	}
 
@@ -136,6 +137,11 @@ public class FeedReader.article : GLib.Object {
 	public ArticleStatus getMarked()
 	{
 		return m_marked;
+	}
+
+	public unowned GLib.List<string> getTags()
+	{
+		return m_tags;
 	}
 
 	public string getTagString()

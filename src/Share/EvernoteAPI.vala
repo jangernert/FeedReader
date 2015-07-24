@@ -62,17 +62,20 @@ public class FeedReader.EvernoteAPI : GLib.Object {
 
     public bool addBookmark(string url)
     {
-        return true;
+        // FIXME: vala anyone? https://discussion.evernote.com/topic/86819-what-exactly-is-the-userstore/
+        return false;
     }
 
     public bool getUsername()
     {
-        return true;
+        // FIXME: vala anyone? https://discussion.evernote.com/topic/86819-what-exactly-is-the-userstore/
+        return false;
     }
 
     private bool isLoggedIn()
     {
-        return true;
+        // FIXME: vala anyone? https://discussion.evernote.com/topic/86819-what-exactly-is-the-userstore/
+        return false;
     }
 
     public bool logout()

@@ -145,6 +145,11 @@ namespace FeedReader {
 			}
 		}
 
+		public readerUI getWindow()
+		{
+			return m_window;
+		}
+
 		public rssReaderApp()
 		{
 			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);

@@ -1,6 +1,7 @@
 public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	private Gtk.Button m_share_button;
+	private Gtk.Button m_tag_button;
 	private Granite.Widgets.ModeButton m_modeButton;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
@@ -15,11 +16,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public readerHeaderbar () {
 		var share_icon = new Gtk.Image.from_icon_name("applications-internet-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		var tag_icon = new Gtk.Image.from_icon_name("tag-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		m_state = (ArticleListState)settings_state.get_enum("show-articles");
 
 		m_header_left = new Gtk.HeaderBar ();
         m_header_left.show_close_button = true;
-        m_header_left.set_decoration_layout("close:");
         m_header_left.get_style_context().add_class("header_right");
         m_header_left.get_style_context().add_class("titlebar");
         m_header_left.set_size_request(601, 0);
@@ -27,11 +28,14 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
         m_header_right = new Gtk.HeaderBar ();
         m_header_right.show_close_button = true;
-        m_header_right.set_decoration_layout(":maximize");
         m_header_right.get_style_context().add_class("header_left");
         m_header_right.get_style_context().add_class("titlebar");
         m_header_right.set_title("FeedReader");
 		m_header_right.set_size_request(600, 0);
+
+		Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
+		realize.connect(set_window_buttons);
+		set_window_buttons();
 
 		m_modeButton = new Granite.Widgets.ModeButton();
 		m_modeButton.append_text("All");
@@ -39,11 +43,26 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_modeButton.append_text("Starred");
 		m_modeButton.set_active(m_state);
 
+		m_tag_button = new Gtk.Button();
+		m_tag_button.add(tag_icon);
+		m_tag_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_tag_button.set_focus_on_click(false);
+		m_tag_button.set_tooltip_text(_("tag article"));
+		m_tag_button.clicked.connect(() => {
+			var pop = new TagPopover(m_tag_button);
+		});
+
 		m_share_button = new Gtk.Button();
 		m_share_button.add(share_icon);
 		m_share_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_share_button.set_focus_on_click(false);
 		m_share_button.set_tooltip_text(_("share article"));
+		m_share_button.clicked.connect(() => {
+			var pop = new SharePopover(m_share_button);
+			pop.showSettings.connect((panel) => {
+				showSettings(panel);
+			});
+		});
 
 		m_modeButton.mode_changed.connect(() => {
 			var transition = Gtk.StackTransitionType.CROSSFADE;
@@ -62,12 +81,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			change_state(m_state, transition);
 		});
 
-		m_share_button.clicked.connect(() => {
-			var pop = new SharePopover(m_share_button);
-			pop.showSettings.connect((panel) => {
-				showSettings(panel);
-			});
-		});
+
 
 		m_refresh_button = new UpdateButton("view-refresh");
 		m_refresh_button.clicked.connect(() => {
@@ -100,12 +114,28 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_left.pack_start(m_refresh_button);
 
 		m_header_right.pack_end(m_share_button);
+		m_header_right.pack_end(m_tag_button);
 
 		this.pack1(m_header_left, true, false);
 		this.pack2(m_header_right, true, false);
 		this.get_style_context().add_class("headerbar_pane");
 		this.set_position(settings_state.get_int("feeds-and-articles-width"));
 	}
+
+	private void set_window_buttons()
+	{
+        string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
+        if (buttons.length < 2) {
+			buttons = {buttons[0], ""};
+			logger.print(LogMessage.WARNING, "gtk_decoration_layout in unexpected format");
+        }
+
+		logger.print(LogMessage.DEBUG, buttons[0]);
+		logger.print(LogMessage.DEBUG, buttons[1]);
+
+		m_header_left.set_decoration_layout(buttons[0] + ":");
+		m_header_right.set_decoration_layout(":" + buttons[1]);
+    }
 
 	public void setRefreshButton(bool status)
 	{
@@ -123,6 +153,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void showArticleButtons(bool show)
 	{
 		m_share_button.sensitive = show;
+		m_tag_button.sensitive = show;
 	}
 
 	public bool currentlyUpdating()

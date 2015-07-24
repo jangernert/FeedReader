@@ -89,7 +89,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
         var window = this.get_toplevel() as readerUI;
         if(window != null)
-            url = window.getSelectedURL();
+            url = window.getContent().getSelectedURL();
 
         share.addBookmark(type, url);
         logger.print(LogMessage.DEBUG, "bookmark: " + url);

@@ -224,4 +224,20 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		m_articleList.openSelected();
 	}
+
+	public GLib.List<tag> getSelectedArticleTags()
+	{
+		string id = m_articleList.getSelectedID();
+		var article = dataBase.read_article(id);
+		unowned GLib.List<string> tagIDs = article.getTags();
+
+		var tags = new GLib.List<tag>();
+
+		foreach(string tagID in tagIDs)
+		{
+			tags.append(dataBase.read_tag(tagID));
+		}
+
+		return tags;
+	}
 }

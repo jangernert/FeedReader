@@ -489,9 +489,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		return m_headerbar.searchFocused();
 	}
 
-	public string getSelectedURL()
+	public ContentPage getContent()
 	{
-		return m_content.getSelectedURL();
+		return m_content;
 	}
 
 }

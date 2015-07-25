@@ -417,9 +417,6 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public void addArticleTag(string ids_string, string tagID)
 	{
-		logger.print(LogMessage.DEBUG, "feedly: add tag");
-		logger.print(LogMessage.DEBUG, "feedly: articleID: " + ids_string);
-		logger.print(LogMessage.DEBUG, "feedly: tagID: " + tagID);
 		var id_array = ids_string.split(",");
 		Json.Object object = new Json.Object();
 

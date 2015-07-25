@@ -122,9 +122,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		else if(m_marked == ArticleStatus.UNMARKED)
 			m_marked_stack.set_visible_child_name("unmarked");
 
-		m_marked_eventbox.enter_notify_event.connect(() => {markedIconEnter(); return true;});
-		m_marked_eventbox.leave_notify_event.connect(() => {markedIconLeave(); return true;});
-		m_marked_eventbox.button_press_event.connect(() => {markedIconClicked(); return true;});
+		m_marked_eventbox.enter_notify_event.connect(markedIconEnter);
+		m_marked_eventbox.leave_notify_event.connect(markedIconLeave);
+		m_marked_eventbox.button_press_event.connect(markedIconClicked);
 
 
 
@@ -251,10 +251,11 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	}
 
 
-	private void markedIconClicked()
+	private bool markedIconClicked()
 	{
 		m_just_clicked = true;
 		toggleMarked();
+		return true;
 	}
 
 	public void toggleMarked()
@@ -263,25 +264,17 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		{
 			case ArticleStatus.MARKED:
 				updateMarked(ArticleStatus.UNMARKED);
-				if(!isHoveringMarked())
-				{
-					m_marked_stack.set_visible_child_name("unmarked");
-				}
 				break;
 
 			case ArticleStatus.UNMARKED:
 				updateMarked(ArticleStatus.MARKED);
-				if(!isHoveringMarked())
-				{
-					m_marked_stack.set_visible_child_name("marked");
-				}
 				break;
 		}
 
 		feedDaemon_interface.changeMarked(m_articleID, m_marked);
 	}
 
-	private void markedIconEnter()
+	private bool markedIconEnter()
 	{
 		m_hovering_marked = true;
 		if(m_marked == ArticleStatus.UNMARKED){
@@ -291,10 +284,11 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			m_marked_stack.set_visible_child_name("unmarked");
 		}
 		this.show_all();
+		return true;
 	}
 
 
-	private void markedIconLeave()
+	private bool markedIconLeave()
 	{
 		m_hovering_marked = false;
 		if(!m_just_clicked){
@@ -307,11 +301,31 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			this.show_all();
 		}
 		m_just_clicked = false;
+		return true;
 	}
 
 	public void updateMarked(ArticleStatus marked)
 	{
-		m_marked = marked;
+		if(m_marked != marked)
+		{
+			m_marked = marked;
+			switch(m_marked)
+			{
+				case ArticleStatus.MARKED:
+					if(!isHoveringMarked())
+					{
+						m_marked_stack.set_visible_child_name("marked");
+					}
+					break;
+
+				case ArticleStatus.UNMARKED:
+					if(!isHoveringMarked())
+					{
+						m_marked_stack.set_visible_child_name("unmarked");
+					}
+					break;
+			}
+		}
 	}
 
 	public bool isUnread()

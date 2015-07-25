@@ -575,6 +575,7 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(tmpRow != null && item.getArticleID() == tmpRow.getID())
 				{
 					tmpRow.updateUnread(item.getUnread());
+					tmpRow.updateMarked(item.getMarked());
 					tmpRow.setUpdated(true);
 					found = true;
 					break;

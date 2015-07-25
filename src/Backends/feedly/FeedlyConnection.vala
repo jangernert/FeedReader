@@ -108,9 +108,6 @@ public class FeedReader.FeedlyConnection {
 		message.request_body.append(Soup.MemoryUse.COPY, json.data);
 		session.send_message(message);
 
-		logger.print(LogMessage.DEBUG, "feedly: send put request to " + FeedlySecret.base_uri+path);
-		logger.print(LogMessage.DEBUG, "feedly: request data:\n" + (string)json.data);
-		logger.print(LogMessage.DEBUG, "feedly: response:\n" + (string)message.response_body.flatten().data);
 		return (string)message.response_body.flatten().data;
 	}
 

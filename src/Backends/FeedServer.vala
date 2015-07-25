@@ -315,7 +315,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDLY:
-
+					m_feedly.setArticleIsMarked(articleID, marked);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -369,6 +369,54 @@ public class FeedReader.FeedServer : GLib.Object {
 		};
 
 		new GLib.Thread<void*>("setCategorieRead", run);
+		yield;
+	}
+
+
+	public async void addArticleTag(string articleID, string tagID)
+	{
+		SourceFunc callback = addArticleTag.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.addArticleTag(int.parse(articleID), int.parse(tagID), true);
+					break;
+
+				case Backend.FEEDLY:
+					m_feedly.addArticleTag(articleID, tagID);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("addArticleTag", run);
+		yield;
+	}
+
+
+	public async void removeArticleTag(string articleID, string tagID)
+	{
+		SourceFunc callback = removeArticleTag.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.addArticleTag(int.parse(articleID), int.parse(tagID), false);
+					break;
+
+				case Backend.FEEDLY:
+					m_feedly.deleteArticleTag(articleID, tagID);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("removeArticleTag", run);
 		yield;
 	}
 

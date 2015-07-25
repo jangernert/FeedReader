@@ -390,21 +390,76 @@ public class FeedReader.FeedlyAPI : Object {
 
 		string* type_id_identificator = null;
 
-		if(type == "entries") {
+		if(type == "entries")
+		{
 			type_id_identificator = "entryIds";
-		} else if(type == "feeds") {
+		}
+		else if(type == "feeds")
+		{
 			type_id_identificator = "feedIds";
-		} else if(type == "categories") {
+		}
+		else if(type == "categories")
+		{
 			type_id_identificator = "categoryIds";
-		} else {
+		}
+		else
+		{
 			error ("Unknown type: " + type + " don't know what to do with this.");
 		}
 
-		object.set_array_member (type_id_identificator, ids);
+		object.set_array_member(type_id_identificator, ids);
 
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object (object);
 
-		m_connection.send_post_request_to_feedly ("/v3/markers", root);
+		m_connection.send_post_request_to_feedly("/v3/markers", root);
 	}
+
+	public void addArticleTag(string ids_string, string tagID)
+	{
+		logger.print(LogMessage.DEBUG, "feedly: add tag");
+		logger.print(LogMessage.DEBUG, "feedly: articleID: " + ids_string);
+		logger.print(LogMessage.DEBUG, "feedly: tagID: " + tagID);
+		var id_array = ids_string.split(",");
+		Json.Object object = new Json.Object();
+
+		Json.Array ids = new Json.Array();
+		foreach(string id in id_array)
+		{
+			ids.add_string_element(id);
+		}
+
+		object.set_array_member("entryIds", ids);
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(object);
+
+		m_connection.send_put_request_to_feedly("/v3/tags/" + GLib.Uri.escape_string(tagID), root);
+	}
+
+	public void deleteArticleTag(string ids_string, string tagID)
+	{
+		string command = GLib.Uri.escape_string(tagID) + "/" + GLib.Uri.escape_string(ids_string);
+		m_connection.send_delete_request_to_feedly("/v3/tags/" + command);
+	}
+
+	public bool setArticleIsMarked(string articleID, ArticleStatus marked)
+	{
+		string marked_tag = "user/" + m_userID + "/tag/global.saved";
+
+		if(marked == ArticleStatus.MARKED)
+		{
+			addArticleTag(articleID, marked_tag);
+		}
+		else if(marked == ArticleStatus.UNMARKED)
+		{
+			deleteArticleTag(articleID, marked_tag);
+		}
+		else
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 }

@@ -611,4 +611,24 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 		return return_value;
 	}
+
+	public bool addArticleTag(int articleID, int tagID, bool add)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "setArticleLabel");
+		message.add_int("article_ids", articleID);
+		message.add_int("label_id", tagID);
+		message.add_bool("assign", add);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_object();
+			if(response.get_string_member("status") == "OK")
+			return true;
+		}
+
+		return false;
+	}
 }

@@ -160,13 +160,16 @@ public class FeedReader.articleList : Gtk.Stack {
 			{
 				m_scrollPos += offset;
 				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
-				//m_current_adjustment.set_value(currentPos + offset);
 			}
 			else
 			{
 				m_scrollPos -= offset;
 				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
-				//m_current_adjustment.set_value(currentPos - offset);
+			}
+
+			if(m_scrollPos < 0.0)
+			{
+				m_scrollPos = 0.0;
 			}
 
 			m_currentScroll.set_vadjustment(m_current_adjustment);

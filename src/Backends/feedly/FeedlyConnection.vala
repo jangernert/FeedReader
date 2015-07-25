@@ -88,11 +88,34 @@ public class FeedReader.FeedlyConnection {
 	}
 
 
-	public string send_get_request_to_feedly(string path) {
+	public string send_get_request_to_feedly(string path)
+	{
 		return send_request(path, "GET");
 	}
 
-	public string send_post_request_to_feedly(string path, Json.Node root) {
+	public string send_put_request_to_feedly(string path, Json.Node root)
+	{
+		var session = new Soup.Session();
+		var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
+
+		var gen = new Json.Generator();
+		gen.set_root(root);
+		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
+
+		size_t length;
+		string json;
+		json = gen.to_data(out length);
+		message.request_body.append(Soup.MemoryUse.COPY, json.data);
+		session.send_message(message);
+
+		logger.print(LogMessage.DEBUG, "feedly: send put request to " + FeedlySecret.base_uri+path);
+		logger.print(LogMessage.DEBUG, "feedly: request data:\n" + (string)json.data);
+		logger.print(LogMessage.DEBUG, "feedly: response:\n" + (string)message.response_body.flatten().data);
+		return (string)message.response_body.flatten().data;
+	}
+
+	public string send_post_request_to_feedly(string path, Json.Node root)
+	{
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
@@ -108,7 +131,8 @@ public class FeedReader.FeedlyConnection {
 		return (string)message.response_body.flatten().data;
 	}
 
-	public string send_post_string_request_to_feedly(string path, string input, string type){
+	public string send_post_string_request_to_feedly(string path, string input, string type)
+	{
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
@@ -121,11 +145,13 @@ public class FeedReader.FeedlyConnection {
 		return (string)message.response_body.flatten().data;
     }
 
-	public string send_delete_request_to_feedly (string path) {
+	public string send_delete_request_to_feedly(string path)
+	{
 		return send_request (path, "DELETE");
 	}
 
-	private string send_request(string path, string type) {
+	private string send_request(string path, string type)
+	{
 		var session = new Soup.Session();
 		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));

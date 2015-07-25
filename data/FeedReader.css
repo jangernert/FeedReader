@@ -19,10 +19,7 @@ FeedReaderUpdateButton GtkSpinner {
 	border-top-left-radius: 0;
 }
 
-GtkListBox.feed-list {
-	background: rgb(80,80,80);
-}
-
+GtkListBox.feed-list,
 .feed-list .scrollbar {
 	background: rgb(80,80,80);
 }
@@ -36,19 +33,6 @@ GtkListBox.feed-list {
 	icon-shadow: none;
 }
 
-FeedRow
-{
-	padding-bottom: 0px;
-	padding-top: 0px;
-	padding-right: 0px;
-	padding-left: 0px;
-	background-image: none;
-}
-
-GtkListBoxRow.feed-list-row:selected {
-	background: rgb(125,125,125);
-}
-
 .list-row {
 	padding-bottom: 0px;
 	padding-left: 0px;
@@ -57,15 +41,18 @@ GtkListBoxRow.feed-list-row:selected {
 	outline: none;
 }
 
+GtkListBoxRow {
+	border: none;
+	border-radius: 0px;
+}
+
+GtkListBoxRow.feed-list-row:selected,
 GtkListBoxRow.feed-list-row:selected GtkBox.feed-row{
 	background: rgb(125,125,125);
 }
 
 GtkBox.feed-row {
 	background: rgb(90,90,90);
-}
-
-GtkListBox.article-list {
 }
 
 GtkListBox.feed-list GtkLabel{
@@ -93,61 +80,42 @@ GtkListBoxRow GtkLabel.grey-label {
 }
 
 GtkListBoxRow:focused GtkLabel.grey-label {
-	font-weight: normal;
-	font-style: normal;
-	font-size: small;
 	color: rgb(230,230,230);
 }
 
 *:selected GtkLabel.grey-label,
 GtkListBoxRow:selected GtkLabel.grey-label:backdrop {
-	font-weight: normal;
-	font-style: normal;
-	font-size: small;
 	color: rgb(100,100,100);
+}
+
+GtkListBoxRow GtkLabel.headline-read-label,
+GtkListBoxRow GtkLabel.headline-unread-label {
+	font-style: normal;
+	font-size: large;
+	color: black;
 }
 
 GtkListBoxRow GtkLabel.headline-read-label {
 	font-weight: normal;
-	font-style: normal;
-	font-size: large;
-	color: black;
-}
-
-GtkListBoxRow:focused GtkLabel.headline-read-label {
-	font-weight: normal;
-	font-style: normal;
-	font-size: large;
-	color: white;
 }
 
 GtkListBoxRow GtkLabel.headline-unread-label {
 	font-weight: bold;
-	font-style: normal;
-	font-size: large;
-	color: black;
 }
 
+GtkListBoxRow:focused GtkLabel.headline-read-label,
 GtkListBoxRow:focused GtkLabel.headline-unread-label {
-	font-weight: bold;
-	font-style: normal;
-	font-size: large;
 	color: white;
 }
 
-*:selected GtkLabel.headline-unread-label,
-GtkListBoxRow:selected GtkLabel.headline-unread-label:backdrop {
-	font-weight: bold;
-	font-style: normal;
-	font-size: large;
-	color: rgb(70,70,70);
+GtkListBoxRow:focused GtkLabel.headline-unread-label {
+	color: white;
 }
 
 *:selected GtkLabel.headline-read-label,
-GtkListBoxRow:selected GtkLabel.headline-read-label:backdrop {
-	font-weight: normal;
-	font-style: normal;
-	font-size: large;
+*:selected GtkLabel.headline-unread-label,
+GtkListBoxRow:selected GtkLabel.headline-read-label:backdrop,
+GtkListBoxRow:selected GtkLabel.headline-unread-label:backdrop {
 	color: rgb(70,70,70);
 }
 

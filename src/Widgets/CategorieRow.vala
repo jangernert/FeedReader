@@ -29,7 +29,6 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
 
 		this.get_style_context().add_class("feed-list-row");
-		this.get_style_context().remove_class("button");
 		m_level = level;
 		m_parentID = parentID;
 		m_orderID = orderID;

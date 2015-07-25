@@ -12,16 +12,15 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private string m_parentID;
 	private int m_orderID;
 	private int m_level;
-	private bool m_exists;
 	private Gtk.Image m_icon;
 	private Gtk.Image m_icon_expanded;
-	private Gtk.Image m_icon_expanded_hover;
 	private Gtk.Image m_icon_collapsed;
-	private Gtk.Image m_icon_collapsed_hover;
 	private Gtk.Stack m_stack;
+	private double m_opacity = 0.8;
 	private bool m_collapsed;
-	private bool m_hovered;
-	private bool m_unreadHovered;
+	private bool m_exists = true;
+	private bool m_hovered = false;
+	private bool m_unreadHovered = false;
 	private Gtk.Stack m_unreadStack;
 	public signal void collapse(bool collapse, string catID);
 	public signal void setAsRead(FeedListType type, string id);
@@ -34,27 +33,26 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_orderID = orderID;
 		m_collapsed = !expanded;
 		m_name = name;
-		m_exists = true;
 		m_categorieID = categorieID;
 		m_unread_count = unread_count;
-		m_hovered = false;
-		m_unreadHovered = false;
 		var rowhight = 30;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 
+		var scaleFactor = ((rssReaderApp)GLib.Application.get_default()).getWindow().get_scale_factor();
 
-		m_icon_expanded = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down.svg");
-		m_icon_expanded_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-down-hover.svg");
-		m_icon_collapsed = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left.svg");
-		m_icon_collapsed_hover = new Gtk.Image.from_file("/usr/share/FeedReader/arrow-left-hover.svg");
+		var pixbuf = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/arrow.svg");
+		var pixbuf2 = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
+		m_icon_expanded = new Gtk.Image.from_pixbuf(pixbuf2);
+		m_icon_expanded.opacity = m_opacity;
+		m_icon_collapsed = new Gtk.Image.from_pixbuf(pixbuf);
+		m_icon_collapsed.opacity = m_opacity;
+
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
 		m_stack.set_transition_duration(0);
 		m_stack.add_named(m_icon_expanded, "expanded");
-		m_stack.add_named(m_icon_expanded_hover, "expanded_hover");
 		m_stack.add_named(m_icon_collapsed, "collapsed");
-		m_stack.add_named(m_icon_collapsed_hover, "collapsed_hover");
 
 		m_eventbox = new Gtk.EventBox();
 		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
@@ -162,26 +160,12 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		if(m_collapsed)
 		{
 			m_collapsed = false;
-			if(m_hovered)
-			{
-				m_stack.set_visible_child_name("expanded_hover");
-			}
-			else
-			{
-				m_stack.set_visible_child_name("expanded");
-			}
+			m_stack.set_visible_child_name("expanded");
 		}
 		else
 		{
 			m_collapsed = true;
-			if(m_hovered)
-			{
-				m_stack.set_visible_child_name("collapsed_hover");
-			}
-			else
-			{
-				m_stack.set_visible_child_name("collapsed");
-			}
+			m_stack.set_visible_child_name("collapsed");
 		}
 
 		collapse(m_collapsed, m_categorieID);
@@ -191,15 +175,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private bool onEnter(Gdk.EventCrossing event)
 	{
 		m_hovered = true;
-		if(m_collapsed)
-		{
-			m_stack.set_visible_child_name("collapsed_hover");
-		}
-		else
-		{
-			m_stack.set_visible_child_name("expanded_hover");
-		}
-		this.show_all();
+		m_icon_expanded.opacity = 1.0;
+		m_icon_collapsed.opacity = 1.0;
 		return true;
 	}
 
@@ -209,15 +186,9 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			return false;
 
 		m_hovered = false;
-		if(m_collapsed)
-		{
-			m_stack.set_visible_child_name("collapsed");
-		}
-		else
-		{
-			m_stack.set_visible_child_name("expanded");
-		}
-		this.show_all();
+
+		m_icon_expanded.opacity = m_opacity;
+		m_icon_collapsed.opacity = m_opacity;
 		return true;
 	}
 

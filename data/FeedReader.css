@@ -1,3 +1,10 @@
+@define-color feedlist-bg			#444;
+@define-color feedrow-bg			shade(@feedlist-bg, 1.2);
+@define-color feedlist-slider		shade(@feedlist-bg, 2.5);
+@define-color feedlist-label		shade(@feedlist-bg, 3);
+@define-color feedlist-selected		shade(@feedlist-bg, 1.6);
+
+
 .destructive-action GtkSpinner {
 	color: white;
 }
@@ -17,15 +24,6 @@ FeedReaderUpdateButton GtkSpinner {
 
 .header_left {
 	border-top-left-radius: 0;
-}
-
-GtkListBox.feed-list,
-.feed-list .scrollbar {
-	background: rgb(80,80,80);
-}
-
-.feed-list .slider {
-	background: rgb(180,180,180);
 }
 
 .feed-list-row {
@@ -52,17 +50,26 @@ GtkEventBox {
 	background: none;
 }
 
+GtkListBox.feed-list,
+.feed-list .scrollbar {
+	background: @feedlist-bg;
+}
+
+.feed-list .slider {
+	background: @feedlist-slider;
+}
+
 .feed-list-row:selected,
-.feed-list-row:selected GtkBox.feed-row{
-	background: rgb(125,125,125);
+.feed-list-row:selected GtkBox.feed-row {
+	background: @feedlist-selected;
 }
 
 GtkBox.feed-row {
-	background: rgb(90,90,90);
+	background: @feedrow-bg;
 }
 
 GtkListBox.feed-list GtkLabel{
-	color: rgb(220,220,220);
+	color: @feedlist-label;
 	font-weight: bold;
 }
 
@@ -70,12 +77,6 @@ GtkLabel.emptyView {
 	font-weight: normal;
 	font-style: normal;
 	font-size: x-large;
-	color: black;
-	background: white;
-}
-
-FeedReaderarticleList {
-	background: white;
 }
 
 .preview {

@@ -134,7 +134,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 
 		var body_label = new Gtk.Label(preview);
-		body_label.get_style_context().add_class("grey-label");
+		body_label.opacity = 0.7;
+		body_label.get_style_context().add_class("preview");
 		body_label.set_alignment(0, 0);
 		body_label.set_ellipsize (Pango.EllipsizeMode.END);
 		body_label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR);

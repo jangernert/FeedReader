@@ -34,20 +34,26 @@ GtkListBox.feed-list,
 }
 
 .list-row {
-	padding-bottom: 0px;
-	padding-left: 0px;
-	padding-right: 0px;
-	padding-top: 0px;
+	padding: 0px;
 	outline: none;
 }
 
 GtkListBoxRow {
 	border: none;
 	border-radius: 0px;
+	background-image: none;
 }
 
-GtkListBoxRow.feed-list-row:selected,
-GtkListBoxRow.feed-list-row:selected GtkBox.feed-row{
+GtkEventBox {
+	background: none;
+}
+
+.feed-list-row {
+	background: none;
+}
+
+.feed-list-row:selected,
+.feed-list-row:selected GtkBox.feed-row{
 	background: rgb(125,125,125);
 }
 
@@ -72,27 +78,15 @@ FeedReaderarticleList {
 	background: white;
 }
 
-GtkListBoxRow GtkLabel.grey-label {
-	font-weight: normal;
-	font-style: normal;
+.preview {
 	font-size: small;
-	color: rgb(150,150,150);
 }
 
-GtkListBoxRow:focused GtkLabel.grey-label {
-	color: rgb(230,230,230);
-}
-
-*:selected GtkLabel.grey-label,
-GtkListBoxRow:selected GtkLabel.grey-label:backdrop {
-	color: rgb(100,100,100);
-}
 
 GtkListBoxRow GtkLabel.headline-read-label,
 GtkListBoxRow GtkLabel.headline-unread-label {
 	font-style: normal;
 	font-size: large;
-	color: black;
 }
 
 GtkListBoxRow GtkLabel.headline-read-label {
@@ -101,22 +95,6 @@ GtkListBoxRow GtkLabel.headline-read-label {
 
 GtkListBoxRow GtkLabel.headline-unread-label {
 	font-weight: bold;
-}
-
-GtkListBoxRow:focused GtkLabel.headline-read-label,
-GtkListBoxRow:focused GtkLabel.headline-unread-label {
-	color: white;
-}
-
-GtkListBoxRow:focused GtkLabel.headline-unread-label {
-	color: white;
-}
-
-*:selected GtkLabel.headline-read-label,
-*:selected GtkLabel.headline-unread-label,
-GtkListBoxRow:selected GtkLabel.headline-read-label:backdrop,
-GtkListBoxRow:selected GtkLabel.headline-unread-label:backdrop {
-	color: rgb(70,70,70);
 }
 
 GtkScrolledWindow GtkViewport.servicebox {

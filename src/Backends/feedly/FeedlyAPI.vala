@@ -442,6 +442,11 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_delete_request_to_feedly("/v3/tags/" + command);
 	}
 
+	public void deleteTag(string tagID)
+	{
+		m_connection.send_delete_request_to_feedly("/v3/tags/" + GLib.Uri.escape_string(tagID));
+	}
+
 	public bool setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
 		string marked_tag = "user/" + m_userID + "/tag/global.saved";

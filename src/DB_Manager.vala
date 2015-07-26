@@ -248,10 +248,13 @@ public class FeedReader.dbManager : GLib.Object {
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
 
-		int unread = 0;
+		uint unread = 0;
 		while (stmt.step () == Sqlite.ROW) {
 			unread += stmt.column_int(0);
 		}
+
+		unread += get_unread_uncategorized();
+
 		stmt.reset ();
 		return unread;
 	}
@@ -291,6 +294,26 @@ public class FeedReader.dbManager : GLib.Object {
 		int unread = 0;
 		while (stmt.step() == Sqlite.ROW) {
 			unread = stmt.column_int(0);
+		}
+		stmt.reset();
+		return unread;
+	}
+
+	public uint get_unread_uncategorized()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("unread");
+		query.addEqualsCondition("category_id", "", true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+
+		int unread = 0;
+		while (stmt.step() == Sqlite.ROW) {
+			unread += stmt.column_int(0);
 		}
 		stmt.reset();
 		return unread;
@@ -841,9 +864,32 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
+	public bool haveFeedsWithoutCat()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("count(*)");
+		query.addEqualsCondition("category_id", "", true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			int count = stmt.column_int(0);
+
+			if(count > 0)
+				return true;
+		}
+		return false;
+	}
+
+
 	public void reset_subscribed_flag()
 	{
-		executeSQL("UPDATE main.feeds SET subscribed = 0");
+		executeSQL("UPDATE main.feeds SET \"subscribed\" = 0");
 	}
 
 	public void reset_exists_tag()
@@ -860,18 +906,18 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public void delete_unsubscribed_feeds()
 	{
-		executeSQL("DELETE FROM \"main\".\"feeds\" WHERE \"subscribed\" = 0");
+		executeSQL("DELETE FROM main.feeds WHERE \"subscribed\" = 0");
 	}
 
 
 	public void delete_nonexisting_categories()
 	{
-		executeSQL("DELETE FROM \"main\".\"categories\" WHERE \"exists\" = 0");
+		executeSQL("DELETE FROM main.categories WHERE \"exists\" = 0");
 	}
 
 	public void delete_nonexisting_tags()
 	{
-		executeSQL("DELETE FROM \"main\".\"tags\" WHERE \"exists\" = 0");
+		executeSQL("DELETE FROM main.tags WHERE \"exists\" = 0");
 	}
 
 	public void delete_articles_without_feed()

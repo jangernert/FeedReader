@@ -94,7 +94,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 		var parser = new Json.Parser();
 		parser.load_from_data (response, -1);
-		Json.Array array = parser.get_root ().get_array ();
+		Json.Array array = parser.get_root().get_array();
 
 		for (int i = 0; i < array.get_length (); i++) {
 			Json.Object object = array.get_object_element(i);
@@ -154,6 +154,8 @@ public class FeedReader.FeedlyAPI : Object {
 				title = ttrss_utils.URLtoFeedName(url);
 			}
 
+			logger.print(LogMessage.DEBUG, title + " " + getUnreadCountforID(object.get_string_member("id")).to_string());
+
 			feeds.append(
 				new feed (
 						feedID,
@@ -161,7 +163,7 @@ public class FeedReader.FeedlyAPI : Object {
 						url,
 						(icon_url == "") ? false : true,
 						getUnreadCountforID(object.get_string_member("id")),
-						object.get_array_member("categories").get_object_element(0).get_string_member("id")
+						(object.get_array_member("categories").get_length() > 0) ? object.get_array_member("categories").get_object_element(0).get_string_member("id") : ""
 					)
 			);
 		}
@@ -327,6 +329,7 @@ public class FeedReader.FeedlyAPI : Object {
 	public void getUnreadCounts()
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
+		logger.print(LogMessage.DEBUG, "unread counters:\n" + response);
 
 		var parser = new Json.Parser ();
 		parser.load_from_data (response, -1);

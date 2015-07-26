@@ -424,6 +424,22 @@ public class FeedReader.feedList : Gtk.Stack {
 		for(int i = 1; i <= maxCatLevel; i++)
 		{
 			var categories = dataBase.read_categories_level(i);
+
+			if(dataBase.haveFeedsWithoutCat())
+			{
+				categories.insert(
+					new category(
+						"",
+						_("Uncategorized"),
+						(int)dataBase.get_unread_uncategorized(),
+						(int)(categories.length() + 10),
+						CategoryID.MASTER,
+						1
+					),
+					0
+				);
+			}
+
 			foreach(var item in categories)
 			{
 				var FeedChildList = m_list.get_children();

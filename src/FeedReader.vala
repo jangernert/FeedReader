@@ -28,6 +28,7 @@ namespace FeedReader {
 		public abstract void changeUnread(string articleID, int read) throws IOError;
 		public abstract void changeMarked(string articleID, int marked) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
+		public abstract void tagArticle(string articleID, string tagID, bool add) throws IOError;
 		public abstract void updateBadge() throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();

@@ -169,6 +169,48 @@ namespace FeedReader {
 			});
 		}
 
+		public void tagArticle(string articleID, string tagID, bool add)
+		{
+			string tags = dataBase.read_article_tags(articleID);
+
+			if(add)
+			{
+				server.addArticleTag.begin(articleID, tagID, (obj, res) => {
+					server.setArticleIsRead.end(res);
+				});
+
+				if(!tags.contains(tagID))
+				{
+					tags = tags + tagID + ",";
+				}
+			}
+			else
+			{
+				server.removeArticleTag.begin(articleID, tagID, (obj, res) => {
+					server.setArticleIsRead.end(res);
+				});
+
+				if(tags.contains(tagID))
+				{
+					int start = tags.index_of(tagID);
+					int end = start + tagID.length + 1;
+
+					string part1 = tags.substring(0, start);
+					string part2 = tags.substring(end);
+
+					if(part2.has_prefix(","))
+					{
+						part2 = part2.substring(1);
+						logger.print(LogMessage.ERROR, "daemon: tagArticle");
+					}
+
+					tags = part1 + part2;
+				}
+			}
+
+			dataBase.set_article_tags(articleID, tagID);
+		}
+
 		public void markFeedAsRead(string feedID, bool isCat)
 		{
 			if(isCat)

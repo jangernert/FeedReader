@@ -631,4 +631,36 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 		return false;
 	}
+
+	public int64 createTag(string caption)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "addLabel");
+		message.add_string("caption", caption);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return message.get_response_int();
+		}
+
+		return 0;
+	}
+
+	public bool deleteTag(int tagID)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "removeLabel");
+		message.add_int("label_id", tagID);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
 }

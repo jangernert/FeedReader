@@ -100,6 +100,16 @@ public class FeedReader.ttrss_message : GLib.Object {
 		return null;
 	}
 
+	public int64 get_response_int()
+	{
+		if(m_root_object.has_member("content"))
+		{
+			return m_root_object.get_int_member("content");
+		}
+		return -99;
+	}
+
+
 	public Json.Array get_response_array()
 	{
 		if(m_root_object.has_member("content"))

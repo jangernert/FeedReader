@@ -1,9 +1,11 @@
 public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
 
+    private Gtk.Revealer m_revealer;
     private Gtk.Box m_box;
     private string m_tagID;
     private Gtk.Image m_clear;
     private Gtk.EventBox m_eventbox;
+    public signal void remove_tag(TagPopoverRow row);
 
     public TagPopoverRow(tag Tag)
     {
@@ -30,9 +32,16 @@ public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
         m_box.pack_start(label, true, true, 0);
         m_box.pack_end(m_eventbox, false, false, 0);
 
-        this.add(m_box);
+        m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+        m_revealer.set_transition_duration(150);
+		m_revealer.add(m_box);
+		m_revealer.set_reveal_child(true);
+
+        this.add(m_revealer);
         this.margin_top = 1;
         this.margin_bottom = 1;
+        this.show_all();
     }
 
     private bool onEnter()
@@ -49,6 +58,13 @@ public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
 
     private bool onClick()
     {
-        return true;
+        m_revealer.set_reveal_child(false);
+        remove_tag(this);
+        return false;
+    }
+
+    public string getTagID()
+    {
+        return m_tagID;
     }
 }

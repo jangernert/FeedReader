@@ -8,6 +8,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
     private Gtk.HeaderBar m_header_right;
+	private TagPopover m_pop;
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
@@ -49,7 +50,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_tag_button.set_focus_on_click(false);
 		m_tag_button.set_tooltip_text(_("tag article"));
 		m_tag_button.clicked.connect(() => {
-			var pop = new TagPopover(m_tag_button);
+			m_pop = new TagPopover(m_tag_button);
 		});
 
 		m_share_button = new Gtk.Button();
@@ -174,6 +175,14 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public bool searchFocused()
 	{
 		return m_search.has_focus;
+	}
+
+	public bool tagEntryFocused()
+	{
+		if(m_pop == null)
+			return false;
+
+		return m_pop.entryFocused();
 	}
 
 }

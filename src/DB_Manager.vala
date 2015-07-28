@@ -158,6 +158,13 @@ public class FeedReader.dbManager : GLib.Object {
 		query.print();
 	}
 
+	public void dropTag(string tagID)
+	{
+		var query = new QueryBuilder(QueryType.DELETE, "main.tags");
+		query.addEqualsCondition("tagID", tagID);
+		executeSQL(query.build());
+	}
+
 	public int getArticelCount()
 	{
 		int count = -1;
@@ -760,7 +767,6 @@ public class FeedReader.dbManager : GLib.Object {
 	public string read_article_tags(string articleID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
-		query.selectField("ROWID");
 		query.selectField("tags");
 		query.addEqualsCondition("articleID", articleID, true, true);
 		query.build();
@@ -780,9 +786,30 @@ public class FeedReader.dbManager : GLib.Object {
 	public void set_article_tags(string articleID, string tags)
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		query.updateValuePair("tags", tags);
+		query.updateValuePair("tags", "\"%s\"".printf(tags));
 		query.addEqualsCondition("articleID", articleID);
 		executeSQL(query.build());
+	}
+
+	public bool tag_still_used(string tagID)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
+		query.limit(2);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
+
+		while (stmt.step () == Sqlite.ROW) {
+			if(stmt.column_int(0) == 2)
+				return true;
+		}
+
+		return false;
 	}
 
 	public async void update_article(string articleIDs, string field, int field_value)

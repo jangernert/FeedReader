@@ -420,28 +420,19 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
-	public async string createTag(string caption)
+	public string createTag(string caption)
 	{
 		string tagID = "";
-		SourceFunc callback = createTag.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				tagID = m_ttrss.createTag(caption).to_string();
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					tagID = m_ttrss.createTag(caption).to_string();
-					break;
-
-				case Backend.FEEDLY:
-					//FIXME: add feedly backend
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("createTag", run);
-		yield;
+			case Backend.FEEDLY:
+				tagID = m_feedly.createTag(caption);
+				break;
+		}
 		return tagID;
 	}
 

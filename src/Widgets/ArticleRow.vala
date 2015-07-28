@@ -187,7 +187,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 
 
-		feedDaemon_interface.changeUnread(m_articleID, m_is_unread);
+		feedDaemon_interface.changeArticle(m_articleID, m_is_unread);
 	}
 
 	private void unreadIconEnter()
@@ -271,7 +271,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-		feedDaemon_interface.changeMarked(m_articleID, m_marked);
+		feedDaemon_interface.changeArticle(m_articleID, m_marked);
 	}
 
 	private bool markedIconEnter()

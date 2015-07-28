@@ -38,8 +38,6 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		var rowhight = 30;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 
-		var scaleFactor = ((rssReaderApp)GLib.Application.get_default()).getWindow().get_scale_factor();
-
 		var pixbuf = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/arrow.svg");
 		var pixbuf2 = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
 		m_icon_expanded = new Gtk.Image.from_pixbuf(pixbuf2);

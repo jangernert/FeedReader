@@ -148,25 +148,49 @@ namespace FeedReader {
 			return m_loggedin;
 		}
 
-		public void changeUnread(string articleIDs, ArticleStatus read)
+		public void changeArticle(string articleID, ArticleStatus status)
 		{
-			bool increase = true;
-			if(read == ArticleStatus.READ)
-				increase = false;
+			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
+			{
+				bool increase = true;
+				if(status == ArticleStatus.READ)
+					increase = false;
 
-			server.setArticleIsRead.begin(articleIDs, read, (obj, res) => {
-				server.setArticleIsRead.end(res);
-			});
+				server.setArticleIsRead.begin(articleID, status, (obj, res) => {
+					server.setArticleIsRead.end(res);
+				});
 
-			dataBase.update_article.begin(articleIDs, "unread", read, (obj, res) => {
-				dataBase.update_article.end(res);
-			});
+				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
+					dataBase.update_article.end(res);
+				});
 
-			dataBase.change_unread.begin(dataBase.getFeedIDofArticle(articleIDs), read, (obj, res) => {
-				dataBase.change_unread.end(res);
-				updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleIDs), increase);
-				updateBadge();
-			});
+				dataBase.change_unread.begin(dataBase.getFeedIDofArticle(articleID), status, (obj, res) => {
+					dataBase.change_unread.end(res);
+					updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleID), increase);
+					updateBadge();
+				});
+			}
+			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
+			{
+				server.setArticleIsMarked(articleID, status);
+
+				dataBase.update_article.begin(articleID, "marked", status, (obj, res) => {
+					dataBase.update_article.end(res);
+				});
+			}
+
+		}
+
+		public string createTag(string caption)
+		{
+			string tagID = server.createTag(caption);
+			var Tag = new tag(tagID, caption, 0);
+			var taglist = new GLib.List<tag>();
+			taglist.append(Tag);
+			dataBase.write_tags(ref taglist);
+			newFeedList();
+
+			return tagID;
 		}
 
 		public void tagArticle(string articleID, string tagID, bool add)
@@ -186,11 +210,18 @@ namespace FeedReader {
 			}
 			else
 			{
+				logger.print(LogMessage.DEBUG, "daemon: remove tag: " + tagID + " from article: " + articleID);
 				server.removeArticleTag.begin(articleID, tagID, (obj, res) => {
 					server.setArticleIsRead.end(res);
 				});
 
-				if(tags.contains(tagID))
+				logger.print(LogMessage.DEBUG, "daemon: tagstring = " + tags);
+
+				if(tags == tagID)
+				{
+					tags = "";
+				}
+				else if(tags.contains(tagID))
 				{
 					int start = tags.index_of(tagID);
 					int end = start + tagID.length + 1;
@@ -205,10 +236,22 @@ namespace FeedReader {
 					}
 
 					tags = part1 + part2;
+
+					if(!dataBase.tag_still_used(tagID))
+					{
+						logger.print(LogMessage.DEBUG, "daemon: remove tag completely");
+						server.deleteTag.begin(tagID, (obj, res) => {
+							server.deleteTag.end(res);
+						});
+
+						dataBase.dropTag(tagID);
+						newFeedList();
+					}
 				}
 			}
 
-			dataBase.set_article_tags(articleID, tagID);
+			logger.print(LogMessage.DEBUG, "daemon: set tag string: " + tags);
+			dataBase.set_article_tags(articleID, tags);
 		}
 
 		public void markFeedAsRead(string feedID, bool isCat)
@@ -237,15 +280,6 @@ namespace FeedReader {
 					newFeedList();
 				});
 			}
-		}
-
-		public void changeMarked(string articleID, ArticleStatus marked)
-		{
-			server.setArticleIsMarked(articleID, marked);
-
-			dataBase.update_article.begin(articleID, "marked", marked, (obj, res) => {
-				dataBase.update_article.end(res);
-			});
 		}
 
 		public void updateBadge()

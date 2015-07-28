@@ -442,6 +442,18 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_delete_request_to_feedly("/v3/tags/" + command);
 	}
 
+	public string createTag(string caption)
+	{
+		string tagID = "user/" + m_userID + "/tag/" + caption;
+		Json.Object object = new Json.Object();
+		object.set_string_member("entryId", "");
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(object);
+
+		m_connection.send_put_request_to_feedly("/v3/tags/" + GLib.Uri.escape_string(tagID), root);
+		return tagID;
+	}
+
 	public void deleteTag(string tagID)
 	{
 		m_connection.send_delete_request_to_feedly("/v3/tags/" + GLib.Uri.escape_string(tagID));

@@ -447,6 +447,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		if(m_headerbar.searchFocused())
 			return false;
 
+		if(m_headerbar.tagEntryFocused())
+			return false;
+
 		switch(event.keyval)
 		{
 			case Gdk.Key.j:

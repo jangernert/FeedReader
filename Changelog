@@ -1,13 +1,14 @@
 1.2:
 - add ability to share articles
-- share to readability
-- share to instapaper
-- share to pocket
+	- share to readability
+	- share to instapaper
+	- share to pocket
 - improve article-view
 - global shortcuts
 - article grabber
 - option to use readability instead of article grabber (hidden feature)
 - drag article with middle mouse click
+- tag and untag articles
 
 
 

@@ -120,6 +120,15 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			bool available = false;
 			string tagID = "";
 
+			foreach(tag Tag in m_tags)
+			{
+				if(str == Tag.getTitle())
+				{
+					logger.print(LogMessage.DEBUG, "TagPopover: article already tagged");
+					return;
+				}
+			}
+
 			foreach(tag Tag in m_availableTags)
 			{
 				if(str == Tag.getTitle())
@@ -138,6 +147,10 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			}
 
 			feedDaemon_interface.tagArticle(getActiveArticleID(), tagID, true);
+
+			var row = new TagPopoverRow(new tag(tagID, str, 0));
+			row.remove_tag.connect(removeTag);
+			m_list.add(row);
 		});
 
 		prepareCompletion();

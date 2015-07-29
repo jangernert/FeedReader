@@ -787,7 +787,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		query.updateValuePair("tags", "\"%s\"".printf(tags));
-		query.addEqualsCondition("articleID", articleID);
+		query.addEqualsCondition("articleID", "\"%s\"".printf(articleID));
 		executeSQL(query.build());
 	}
 

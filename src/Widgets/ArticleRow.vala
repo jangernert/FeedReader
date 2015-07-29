@@ -44,6 +44,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		int spacing = 8;
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 
+
 		string feed_icon_name = icon_path + iconname.replace("/", "_").replace(".", "_") + ".ico";
 		Gdk.Pixbuf tmp_icon;
 		try{
@@ -53,18 +54,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			}
 			else
 			{
-				tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/rss24.png");
+				tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/rss24.svg");
 			}
 			Utils.scale_pixbuf(ref tmp_icon, 24);
 			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 			spacing = 0;
-		}catch(GLib.Error e){}
-
-
-		this.enter_notify_event.connect(() => {
-			stdout.printf("%s\n", m_name);
-			return false;
-		});
+		}
+		catch(GLib.Error e){}
 
 
 		m_label = new Gtk.Label(aritcleName);

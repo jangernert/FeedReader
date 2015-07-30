@@ -2,14 +2,14 @@ public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
 
     private Gtk.Revealer m_revealer;
     private Gtk.Box m_box;
-    private string m_tagID;
+    private tag m_tag;
     private Gtk.Image m_clear;
     private Gtk.EventBox m_eventbox;
     public signal void remove_tag(TagPopoverRow row);
 
     public TagPopoverRow(tag Tag)
     {
-        m_tagID = Tag.getTagID();
+        m_tag = Tag;
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
         var circle = new ColorCircle(Tag.getColor(), false);
         circle.margin_start = 2;
@@ -65,6 +65,11 @@ public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
 
     public string getTagID()
     {
-        return m_tagID;
+        return m_tag.getTagID();
+    }
+
+    public tag getTag()
+    {
+        return m_tag;
     }
 }

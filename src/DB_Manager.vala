@@ -1201,6 +1201,30 @@ public class FeedReader.dbManager : GLib.Object {
 		return tmp;
 	}
 
+
+	public GLib.List<feed> read_feeds_without_cat()
+	{
+		GLib.List<feed> tmp = new GLib.List<feed>();
+		feed tmpfeed;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("*");
+		query.addEqualsCondition("category_id", "", true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(5));
+			tmp.append(tmpfeed);
+		}
+
+		return tmp;
+	}
+
 	public GLib.List<category> read_categories()
 	{
 		GLib.List<category> tmp = new GLib.List<category>();
@@ -1287,6 +1311,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		int count = 0;
 		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
+		query.addCustomCondition("instr(tagID, \"global.\") = 0");
 		query.selectField("count(*)");
 		query.build();
 

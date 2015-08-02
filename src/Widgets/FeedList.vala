@@ -279,6 +279,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void restoreSelectedRow(bool defaultSettings)
 	{
+		logger.print(LogMessage.DEBUG, "FeedList: restore selected row");
 		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
 
 		var FeedChildList = m_list.get_children();
@@ -759,6 +760,14 @@ public class FeedReader.feedList : Gtk.Stack {
 				foreach(category cat in categories)
 				{
 					feedDaemon_interface.markFeedAsRead(cat.getCatID(), true);
+					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
+				}
+
+				var feeds = dataBase.read_feeds_without_cat();
+				foreach(feed Feed in feeds)
+				{
+					feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
+					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
 				}
 			}
 			else
@@ -768,7 +777,19 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 		else if(type == FeedListType.CATEGORY)
 		{
-			feedDaemon_interface.markFeedAsRead(id, true);
+			if(id == "")
+			{
+				var feeds = dataBase.read_feeds_without_cat();
+				foreach(feed Feed in feeds)
+				{
+					feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
+					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+				}
+			}
+			else
+			{
+				feedDaemon_interface.markFeedAsRead(id, true);
+			}
 		}
 
 		FeedRow selected_feed = m_list.get_selected_row() as FeedRow;

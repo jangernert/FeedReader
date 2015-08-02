@@ -123,6 +123,7 @@ public class FeedReader.FeedlyConnection {
 		size_t length;
 		string json;
 		json = gen.to_data(out length);
+		logger.print(LogMessage.DEBUG, json);
 		message.request_body.append(Soup.MemoryUse.COPY, json.data);
 		session.send_message(message);
 		return (string)message.response_body.flatten().data;

@@ -379,13 +379,14 @@ public class FeedReader.FeedlyAPI : Object {
 		if(read == ArticleStatus.READ)
 			object.set_string_member ("action", "markAsRead");
 		else if(read == ArticleStatus.UNREAD)
-			object.set_string_member ("action", "undoMarkAsRead");
+			object.set_string_member ("action", "keepUnread");
 		object.set_string_member ("type", type);
 
 		Json.Array ids = new Json.Array();
 		foreach(string id in id_array)
 		{
-			ids.add_string_element (id);
+			//ids.add_string_element(GLib.Uri.escape_string(id));
+			ids.add_string_element(id);
 		}
 
 		string* type_id_identificator = null;

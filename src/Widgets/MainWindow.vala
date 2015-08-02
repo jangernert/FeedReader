@@ -413,6 +413,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void markSelectedRead()
 	{
+		m_content.markAllArticlesAsRead();
 		string[] selectedRow = m_content.getSelectedFeedListRow().split(" ", 2);
 
 		if(selectedRow[0] == "feed")
@@ -423,20 +424,24 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				foreach(category cat in categories)
 				{
 					feedDaemon_interface.markFeedAsRead(cat.getCatID(), true);
-					m_content.markAllArticlesAsRead();
-					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read: %s".printf(cat.getCatID()));
+					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
+				}
+
+				var feeds = dataBase.read_feeds_without_cat();
+				foreach(feed Feed in feeds)
+				{
+					feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
+					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
 				}
 			}
 			else
 			{
 				feedDaemon_interface.markFeedAsRead(selectedRow[1], false);
-				m_content.markAllArticlesAsRead();
 			}
 		}
 		else if(selectedRow[0] == "cat")
 		{
 			feedDaemon_interface.markFeedAsRead(selectedRow[1], true);
-			m_content.markAllArticlesAsRead();
 		}
 	}
 

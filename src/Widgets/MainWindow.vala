@@ -487,6 +487,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				//if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
 				markSelectedRead();
 				break;
+
+			case Gdk.Key.F5:
+				logger.print(LogMessage.DEBUG, "shortcut: sync");
+				((rssReaderApp)GLib.Application.get_default()).sync();
+				break;
 		}
 		return false;
 	}

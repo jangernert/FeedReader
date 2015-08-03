@@ -144,7 +144,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var ttrss_logo = new Gtk.Image.from_file("/usr/share/FeedReader/ttrss.svg");
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/FeedReader/icons/ttrss.svg");
 
 		grid.attach(ttrss_url_label, 0, 0, 1, 1);
 		grid.attach(m_ttrss_url_entry, 1, 0, 1, 1);
@@ -163,7 +163,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	private void setup_feedly_login()
 	{
-		var feedly_logo = new Gtk.Image.from_file("/usr/share/FeedReader/feedly.svg");
+		var feedly_logo = new Gtk.Image.from_file("/usr/share/FeedReader/icons/feedly.svg");
 
 		var text = new Gtk.Label(_("You will be redirected to the feedly website where you can use your Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."));
 		text.get_style_context().add_class("h3");
@@ -213,7 +213,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var owncloud_logo = new Gtk.Image.from_file("/usr/share/FeedReader/owncloud.svg");
+		var owncloud_logo = new Gtk.Image.from_file("/usr/share/FeedReader/icons/owncloud.svg");
 
 		grid.attach(owncloud_url_label, 0, 0, 1, 1);
 		grid.attach(m_owncloud_url_entry, 1, 0, 1, 1);

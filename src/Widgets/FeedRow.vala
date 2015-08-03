@@ -42,7 +42,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			}
 			else
 			{
-				m_icon = new Gtk.Image.from_file("/usr/share/FeedReader/rss24.svg");
+				m_icon = new Gtk.Image.from_file("/usr/share/FeedReader/icons/rss24.svg");
 			}
 
 			m_icon.margin_start = level * 24;

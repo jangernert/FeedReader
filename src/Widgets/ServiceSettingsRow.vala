@@ -108,22 +108,22 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		switch (m_type)
         {
             case OAuth.READABILITY:
-                iconPath = "/usr/share/FeedReader/readability.svg";
+                iconPath = "/usr/share/FeedReader/icons/readability.svg";
 				m_serviceSettings = settings_readability;
                 break;
 
             case OAuth.INSTAPAPER:
-                iconPath = "/usr/share/FeedReader/instapaper.svg";
+                iconPath = "/usr/share/FeedReader/icons/instapaper.svg";
 				m_serviceSettings = settings_instapaper;
                 break;
 
             case OAuth.POCKET:
-                iconPath = "/usr/share/FeedReader/pocket.svg";
+                iconPath = "/usr/share/FeedReader/icons/pocket.svg";
 				m_serviceSettings = settings_pocket;
                 break;
 
 			case OAuth.EVERNOTE:
-				iconPath = "/usr/share/FeedReader/evernote.svg";
+				iconPath = "/usr/share/FeedReader/icons/evernote.svg";
 				m_serviceSettings = settings_evernote;
 				break;
         }

@@ -54,7 +54,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			}
 			else
 			{
-				tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/rss24.svg");
+				tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/icons/rss24.svg");
 			}
 			Utils.scale_pixbuf(ref tmp_icon, 24);
 			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);

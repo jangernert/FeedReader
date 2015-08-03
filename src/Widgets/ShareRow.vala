@@ -17,19 +17,19 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
         switch (m_type)
         {
             case OAuth.READABILITY:
-                iconPath = "/usr/share/FeedReader/readability.svg";
+                iconPath = "/usr/share/FeedReader/icons/readability.svg";
                 break;
 
             case OAuth.INSTAPAPER:
-                iconPath = "/usr/share/FeedReader/instapaper.svg";
+                iconPath = "/usr/share/FeedReader/icons/instapaper.svg";
                 break;
 
             case OAuth.POCKET:
-                iconPath = "/usr/share/FeedReader/pocket.svg";
+                iconPath = "/usr/share/FeedReader/icons/pocket.svg";
                 break;
 
 			case OAuth.EVERNOTE:
-	            iconPath = "/usr/share/FeedReader/evernote.svg";
+	            iconPath = "/usr/share/FeedReader/icons/evernote.svg";
 	            break;
         }
         var icon = new Gtk.Image.from_file(iconPath);

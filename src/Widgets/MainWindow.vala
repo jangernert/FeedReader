@@ -396,21 +396,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		showContent(Gtk.StackTransitionType.NONE);
 	}
 
-	public void updateFeedListCountUnread(string feedID, bool increase)
-	{
-		m_content.updateFeedListCountUnread(feedID, increase);
-	}
-
-	public void updateArticleList()
-	{
-		m_content.updateArticleList();
-	}
-
-	public void newFeedList()
-	{
-		m_content.newFeedList();
-	}
-
 	private void markSelectedRead()
 	{
 		m_content.markAllArticlesAsRead();

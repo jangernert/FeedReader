@@ -55,6 +55,7 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
+		public signal void updateArticleList();
 		public signal void initSyncStage(int stage);
 		public signal void initSyncTag(string tagName);
 		public signal void initSyncFeed(string feedName);
@@ -266,6 +267,7 @@ namespace FeedReader {
 					dataBase.markCategorieRead.end(res);
 					updateBadge();
 					newFeedList();
+					updateArticleList();
 				});
 			}
 			else
@@ -278,6 +280,7 @@ namespace FeedReader {
 					dataBase.markFeedRead.end(res);
 					updateBadge();
 					newFeedList();
+					updateArticleList();
 				});
 			}
 		}

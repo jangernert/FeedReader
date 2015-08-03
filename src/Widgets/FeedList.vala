@@ -791,14 +791,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				feedDaemon_interface.markFeedAsRead(id, true);
 			}
 		}
-
-		FeedRow selected_feed = m_list.get_selected_row() as FeedRow;
-		categorieRow selected_cat = m_list.get_selected_row() as categorieRow;
-
-		if(type == FeedListType.FEED && id == FeedID.ALL)
-			markAllArticlesAsRead();
-		else
-			updateArticleList();
 	}
 
 

@@ -36,6 +36,7 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
+		public signal void updateArticleList();
 		public signal void initSyncStage(int stage);
 		public signal void initSyncTag(string tagName);
 		public signal void initSyncFeed(string feedName);
@@ -71,11 +72,15 @@ namespace FeedReader {
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
 
 				feedDaemon_interface.updateFeedlistUnreadCount.connect((feedID, increase) => {
-				    m_window.updateFeedListCountUnread(feedID, increase);
+				    m_window.getContent().updateFeedListCountUnread(feedID, increase);
 				});
 
 				feedDaemon_interface.newFeedList.connect(() => {
-				    m_window.newFeedList();
+				    m_window.getContent().newFeedList();
+				});
+
+				feedDaemon_interface.updateArticleList.connect(() => {
+				    m_window.getContent().updateArticleList();
 				});
 
 				feedDaemon_interface.syncStarted.connect(() => {
@@ -85,7 +90,7 @@ namespace FeedReader {
 				feedDaemon_interface.syncFinished.connect(() => {
 				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
 				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT);
-					m_window.updateArticleList();
+					m_window.getContent().updateArticleList();
 					m_window.setRefreshButton(false);
 				});
 

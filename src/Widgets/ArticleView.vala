@@ -11,8 +11,6 @@ public class FeedReader.articleView : Gtk.Stack {
 	private string m_currentArticle;
 	private bool m_firstTime;
 	private string m_searchTerm;
-	private Gdk.Cursor m_dragCursor;
-	private Gdk.Cursor m_defaultCursor;
 	private double m_dragBuffer[10];
 	private double m_posY;
 	private double m_momentum;
@@ -56,8 +54,6 @@ public class FeedReader.articleView : Gtk.Stack {
 		this.add_named(m_view1, "view1");
 		this.add_named(m_view2, "view2");
 
-		m_dragCursor = new Gdk.Cursor.for_display(Gdk.Display.get_default(), Gdk.CursorType.FLEUR);
-
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(100);
@@ -74,9 +70,22 @@ public class FeedReader.articleView : Gtk.Stack {
 				m_dragBuffer[i] = m_posY;
 			}
 			m_inDrag = true;
+
+			var display = Gdk.Display.get_default();
+			var pointer = display.get_device_manager().get_client_pointer();
+			var cursor = new Gdk.Cursor.for_display(display, Gdk.CursorType.FLEUR);
+
+			pointer.grab(
+				m_currentView.get_window(),
+				Gdk.GrabOwnership.NONE,
+				false,
+				Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK,
+				cursor,
+				Gdk.CURRENT_TIME
+			);
+
+			Gtk.device_grab_add(this, pointer, false);
 			GLib.Timeout.add(10, updateDragMomentum);
-			m_defaultCursor = m_currentView.get_window().get_cursor();
-			m_currentView.get_window().set_cursor(m_dragCursor);
 			m_currentView.motion_notify_event.connect(mouseMotion);
 			return true;
 		}
@@ -88,11 +97,15 @@ public class FeedReader.articleView : Gtk.Stack {
 	{
 		if(event.button == MouseButton.MIDDLE)
 		{
-			m_currentView.get_window().set_cursor(m_defaultCursor);
 			m_posY = 0;
 			m_currentView.motion_notify_event.disconnect(mouseMotion);
 			m_inDrag = false;
 			GLib.Timeout.add(20, ScrollDragRelease);
+
+			var pointer = Gdk.Display.get_default().get_device_manager().get_client_pointer();
+			Gtk.device_grab_remove(this, pointer);
+			pointer.ungrab(Gdk.CURRENT_TIME);
+
 			return true;
 		}
 

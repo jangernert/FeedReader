@@ -46,14 +46,14 @@ public class FeedReader.Utils : GLib.Object {
 					continue;
 				}
 
-				string prefix1 = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\"?>";
-				string prefix2 = "<?xml version=\"1.0\"?>";
+				string xml = "<?xml";
 
-				if(output.has_prefix(prefix1))
-					output = output.slice(prefix1.length, output.length);
+				if(output.has_prefix(xml))
+				{
+					int end = output.index_of_char('>');
+					output = output.slice(end+1, output.length);
+				}
 
-				if(output.has_prefix(prefix2))
-					output = output.slice(prefix2.length, output.length);
 
 				int length = 300;
 				if(output.length < length)
@@ -63,30 +63,8 @@ public class FeedReader.Utils : GLib.Object {
 				output = output.slice(0, output.last_index_of(" "));
 				output = output.strip();
 
-				var replaceList = new GLib.List<StringPair>();
-				replaceList.append(new StringPair("\n", " "));
-				replaceList.append(new StringPair("&#xD;", " "));
-				replaceList.append(new StringPair("_", " "));
-				replaceList.append(new StringPair("&#xE4;", "ä"));
-				replaceList.append(new StringPair("&#xF6;", "ö"));
-				replaceList.append(new StringPair("&#xFC;", "ü"));
-				replaceList.append(new StringPair("&#xDC;", "Ü"));
-				replaceList.append(new StringPair("&#x201C;", "”"));
-				replaceList.append(new StringPair("&#x201D;", "”"));
-				replaceList.append(new StringPair("&#x201E;", "„"));
-				replaceList.append(new StringPair("&#xA0;", " "));
-				replaceList.append(new StringPair("&#x2019;", "´"));
-				replaceList.append(new StringPair("&#xDF;", "ß"));
-				replaceList.append(new StringPair("&amp;", "&"));
-
-
-				//output = output.replace("\n"," ");
-				//output = output.replace("_"," ");
-
-				foreach(var pair in replaceList)
-				{
-					output = output.replace(pair.getString1(),pair.getString2());
-				}
+				output = output.replace("\n"," ");
+				output = output.replace("_"," ");
 
 
 

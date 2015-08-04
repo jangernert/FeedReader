@@ -316,7 +316,7 @@ public class FeedReader.Grabber : GLib.Object {
     public string getArticle()
     {
         string html = "";
-        m_doc->dump_memory(out html);
+        m_doc->dump_memory_enc(out html);
         return html;
     }
 

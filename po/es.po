@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-07-14 17:08+0200\n"
-"PO-Revision-Date: 2015-04-18 12:52+0000\n"
-"Last-Translator: German <gergarcia8@yahoo.com.ar>\n"
+"PO-Revision-Date: 2015-08-09 17:10+0000\n"
+"Last-Translator: bitseater <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-05 05:46+0000\n"
+"X-Launchpad-Export-Date: 2015-08-10 06:31+0000\n"
 "X-Generator: Launchpad (build 17656)\n"
 
 #: ../src/Backends/FeedServer.vala:386
@@ -35,7 +35,7 @@ msgstr "Artículos nuevos"
 
 #: ../src/Backends/ttrss/TTRSS_API.vala:426
 msgid "not found"
-msgstr ""
+msgstr "no encontrado"
 
 #: ../src/Widgets/ArticleView.vala:33
 msgid "No Article selected."
@@ -59,17 +59,17 @@ msgstr "OwnCloud"
 
 #: ../src/Widgets/LoginPage.vala:25
 msgid "Where are your feeds?"
-msgstr "¿Dónde se ubican los canales?"
+msgstr "¿Dónde se ubican sus canales?"
 
 #: ../src/Widgets/LoginPage.vala:29
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
-"Seleccione el servicio RSS que utilice y acceda a este para comenzar."
+"Seleccione el servicio RSS que utilice y acceda a éste para comenzar."
 
 #: ../src/Widgets/LoginPage.vala:63 ../src/Widgets/SharePopover.vala:15
 #: ../src/Widgets/ServiceSettingsRow.vala:87
 msgid "Login"
-msgstr ""
+msgstr "Conectar"
 
 #: ../src/Widgets/LoginPage.vala:94
 msgid "No service selected."
@@ -94,6 +94,8 @@ msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
 msgstr ""
+"Será redirigido al sitio web de Feedly, donde podrá identificarse con su "
+"cuenta de Facebook, Google, Twitter, Microsoft o Evernote."
 
 #: ../src/Widgets/LoginPage.vala:184
 msgid "OwnCloud URL:"
@@ -101,11 +103,11 @@ msgstr "URL de OwnCloud:"
 
 #: ../src/Widgets/SharePopover.vala:21
 msgid "please"
-msgstr ""
+msgstr "por favor"
 
 #: ../src/Widgets/SharePopover.vala:23
 msgid "to a service to share this article"
-msgstr ""
+msgstr "a un servicio para compartir este artículo"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:48
 msgid "mark selected feed/category as read"
@@ -113,33 +115,35 @@ msgstr "marcar categoría/canal seleccionado como leído"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:54
 msgid "share article"
-msgstr ""
+msgstr "compartir artículo"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:78
 msgid "Search Articles"
-msgstr ""
+msgstr "Buscar Artículos"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:85
 msgid "Settings"
-msgstr ""
+msgstr "Configuración"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:87
 msgid "Change Account"
-msgstr ""
+msgstr "Cambiar Cuenta de usuario"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:48
 msgid "Username or Password incorrect"
-msgstr ""
+msgstr "Usuario o Contraseña incorrecto"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:92
 msgid "Logout"
-msgstr ""
+msgstr "Salir"
 
 #: ../src/Widgets/SpringCleanPage.vala:13
 msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
 msgstr ""
+"FeedReader está limpiando la base de datos.\n"
+"Esto no llevará mucho tiempo."
 
 #: ../src/Widgets/ResetPage.vala:18
 msgid "Change Account?"
@@ -155,19 +159,21 @@ msgstr ""
 
 #: ../src/Widgets/ResetPage.vala:26
 msgid "New account"
-msgstr ""
+msgstr "Nueva cuenta"
 
 #: ../src/Widgets/ResetPage.vala:29
 msgid "Waiting for current sync to finish"
-msgstr ""
+msgstr "Esperando que termine la sincronización"
 
 #: ../src/Widgets/ResetPage.vala:39
 msgid "I changed my mind"
-msgstr ""
+msgstr "He cambiado de idea"
 
 #: ../src/Widgets/ArticleList.vala:39
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr ""
+"Ninguno de los %i Artículos en la base de datos concuerda con los filtros "
+"actuales."
 
 #: ../src/Widgets/MainWindow.vala:18 ../src/Constants.vala:117
 msgid "FeedReader"
@@ -175,31 +181,31 @@ msgstr "FeedReader"
 
 #: ../src/Widgets/MainWindow.vala:358
 msgid "Please select a service first"
-msgstr "Seleccione un servicio primero"
+msgstr "Seleccione primero un servicio"
 
 #: ../src/Widgets/MainWindow.vala:361
 msgid "Please enter a valid username"
-msgstr "Proporcione un nombre de usuario válido"
+msgstr "Por favor, indique un nombre de usuario válido"
 
 #: ../src/Widgets/MainWindow.vala:364
 msgid "Please enter a valid password"
-msgstr "Proporcione una contraseña válida"
+msgstr "Por favor, indique una contraseña válida"
 
 #: ../src/Widgets/MainWindow.vala:367
 msgid "Please enter a valid URL"
-msgstr "Proporcione un URL válido"
+msgstr "Por favor, indique un URL válido"
 
 #: ../src/Widgets/MainWindow.vala:370
 msgid "Please enter your Login details"
-msgstr "Proporcione sus detalles de acceso"
+msgstr "Por favor, indique sus detalles de acceso"
 
 #: ../src/Widgets/MainWindow.vala:373
 msgid "Sorry, something went wrong."
-msgstr "Ha ocurrido un error."
+msgstr "Lo siento, ha ocurrido un error."
 
 #: ../src/Widgets/MainWindow.vala:376
 msgid "Either your username or the password are not correct."
-msgstr ""
+msgstr "Su usuario o su contraseña no son correctos."
 
 #: ../src/Widgets/MainWindow.vala:379
 msgid ""
@@ -211,19 +217,19 @@ msgstr ""
 
 #: ../src/Widgets/UpdateButton.vala:20
 msgid "update Feeds"
-msgstr "Actualizar Feeds"
+msgstr "Actualizar canales"
 
 #: ../src/Widgets/SettingsDialog.vala:50
 msgid "Interface"
-msgstr ""
+msgstr "Aspecto"
 
 #: ../src/Widgets/SettingsDialog.vala:51
 msgid "Internals"
-msgstr ""
+msgstr "Internos"
 
 #: ../src/Widgets/SettingsDialog.vala:52
 msgid "Services"
-msgstr ""
+msgstr "Servicios"
 
 #: ../src/Widgets/SettingsDialog.vala:62
 msgid "Close"
@@ -235,7 +241,7 @@ msgstr "Lista de canales"
 
 #: ../src/Widgets/SettingsDialog.vala:82
 msgid "only-feeds"
-msgstr ""
+msgstr "sólo canales"
 
 #: ../src/Widgets/SettingsDialog.vala:94
 msgid "only show unread"
@@ -243,7 +249,7 @@ msgstr "mostrar solo no leídos"
 
 #: ../src/Widgets/SettingsDialog.vala:111
 msgid "ArticleList:"
-msgstr ""
+msgstr "Lista de Artículos"
 
 #: ../src/Widgets/SettingsDialog.vala:118
 msgid "sort articles by"
@@ -263,27 +269,27 @@ msgstr "más recientes primero"
 
 #: ../src/Widgets/SettingsDialog.vala:168
 msgid "ArticleView:"
-msgstr ""
+msgstr "Vista de Artículos"
 
 #: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
 #: ../src/Widgets/SettingsDialog.vala:182
 msgid "default"
-msgstr ""
+msgstr "por defecto"
 
 #: ../src/Widgets/SettingsDialog.vala:185
 msgid "spring"
-msgstr ""
+msgstr "primavera"
 
 #: ../src/Widgets/SettingsDialog.vala:188
 msgid "midnight"
-msgstr ""
+msgstr "medianoche"
 
 #: ../src/Widgets/SettingsDialog.vala:191
 msgid "parchment"
-msgstr ""
+msgstr "pergamino"
 
 #: ../src/Widgets/SettingsDialog.vala:228
 msgid "Sync:"
@@ -299,49 +305,52 @@ msgstr "cada (segundos)"
 
 #: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"
-msgstr ""
+msgstr "Base de datos:"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "drop articles after"
-msgstr ""
+msgstr "vaciar artículos después de"
 
 #: ../src/Widgets/SettingsDialog.vala:278
 msgid "Never"
-msgstr ""
+msgstr "Nunca"
 
 #: ../src/Widgets/SettingsDialog.vala:281
 msgid "1 Week"
-msgstr ""
+msgstr "1 Semana"
 
 #: ../src/Widgets/SettingsDialog.vala:284
 msgid "1 Month"
-msgstr ""
+msgstr "1 Mes"
 
 #: ../src/Widgets/SettingsDialog.vala:287
 msgid "6 Months"
-msgstr ""
+msgstr "6 Meses"
 
 #: ../src/Widgets/SettingsDialog.vala:324
 msgid "Additional Functionality:"
-msgstr ""
+msgstr "Funcionalidad adicional:"
 
 #: ../src/Widgets/SettingsDialog.vala:331
 msgid "Content Grabber"
-msgstr ""
+msgstr "Generador de contenido"
 
 #: ../src/Widgets/SettingsDialog.vala:338
 msgid "None"
-msgstr ""
+msgstr "Ninguno"
 
 #: ../src/Widgets/SettingsDialog.vala:341
 msgid "Built in grabber"
-msgstr ""
+msgstr "generador integrado"
 
 #: ../src/Widgets/InitSyncPage.vala:18
 msgid ""
 "FeedReader is now getting the first batch of articles.\n"
 "Depending on your connection and settings this can take some time."
 msgstr ""
+"FeedReader va a realizar la primera carga de artículos.\n"
+"Dependiendo de su conexión y configuración, este proceso podría llevar algún "
+"tiempo."
 
 #: ../src/Utils.vala:6
 msgid "No Preview Available"
@@ -349,7 +358,7 @@ msgstr "No hay vista previa disponible"
 
 #: ../src/Utils.vala:104
 msgid "No Text available for this article :("
-msgstr "No hay texto disponible en este artículo"
+msgstr "No hay texto disponible en este artículo :("
 
 #: ../src/Constants.vala:120
 msgid "Desktop Client for various RSS Services"
@@ -357,32 +366,32 @@ msgstr "Cliente de escritorio para varios servicios RSS"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:54
 msgid "no Author"
-msgstr ""
+msgstr "sin Autor"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:66
 msgid "no Title"
-msgstr ""
+msgstr "sin Título"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:78
 msgid "no Preview"
-msgstr ""
+msgstr "sin Vista Previa"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:90
 msgid "no content"
-msgstr ""
+msgstr "sin contenido"
 
 #: ../src/FeedReader.vala:6
 msgid "About FeedReader"
-msgstr ""
+msgstr "Acerca de FeedReader"
 
 #: ../src/Model/Article.vala:94
 msgid "no date available"
-msgstr ""
+msgstr "no hay datos disponibles"
 
 #: ../src/Model/Article.vala:100
 msgid "Today"
-msgstr ""
+msgstr "Hoy"
 
 #: ../src/Model/Article.vala:104
 msgid "Yesterday"
-msgstr ""
+msgstr "Ayer"

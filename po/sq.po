@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-07-14 17:08+0200\n"
-"PO-Revision-Date: 2015-07-30 23:38+0000\n"
+"PO-Revision-Date: 2015-08-10 09:06+0000\n"
 "Last-Translator: Indrit Bashkimi <indrit.bashkimi@gmail.com>\n"
 "Language-Team: Albanian <sq@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-05 05:46+0000\n"
-"X-Generator: Launchpad (build 17656)\n"
+"X-Launchpad-Export-Date: 2015-08-11 06:09+0000\n"
+"X-Generator: Launchpad (build 17686)\n"
 
 #: ../src/Backends/FeedServer.vala:386
 msgid "There is 1 new article"
@@ -35,7 +35,7 @@ msgstr "Artikuj të ri"
 
 #: ../src/Backends/ttrss/TTRSS_API.vala:426
 msgid "not found"
-msgstr ""
+msgstr "nuk u gjet"
 
 #: ../src/Widgets/ArticleView.vala:33
 msgid "No Article selected."
@@ -100,7 +100,7 @@ msgstr "URL i OwnCloud:"
 
 #: ../src/Widgets/SharePopover.vala:21
 msgid "please"
-msgstr ""
+msgstr "ju lutemi"
 
 #: ../src/Widgets/SharePopover.vala:23
 msgid "to a service to share this article"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:54
 msgid "share article"
-msgstr ""
+msgstr "shpërndaje artikullin"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:78
 msgid "Search Articles"
@@ -120,7 +120,7 @@ msgstr "Kërko artikuj"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:85
 msgid "Settings"
-msgstr ""
+msgstr "Parametrat"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:87
 msgid "Change Account"
@@ -139,6 +139,8 @@ msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
 msgstr ""
+"FeedReader po pastron bazën e të dhënave.\n"
+"Kjo nuk duhet të zgjasë shumë."
 
 #: ../src/Widgets/ResetPage.vala:18
 msgid "Change Account?"
@@ -218,7 +220,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:52
 msgid "Services"
-msgstr ""
+msgstr "Shërbimet"
 
 #: ../src/Widgets/SettingsDialog.vala:62
 msgid "Close"
@@ -326,7 +328,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:338
 msgid "None"
-msgstr ""
+msgstr "Asnjë"
 
 #: ../src/Widgets/SettingsDialog.vala:341
 msgid "Built in grabber"
@@ -352,11 +354,11 @@ msgstr ""
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:54
 msgid "no Author"
-msgstr ""
+msgstr "pa Autor"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:66
 msgid "no Title"
-msgstr ""
+msgstr "pa Titull"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:78
 msgid "no Preview"

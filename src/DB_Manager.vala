@@ -161,7 +161,7 @@ public class FeedReader.dbManager : GLib.Object {
 	public void dropTag(string tagID)
 	{
 		var query = new QueryBuilder(QueryType.DELETE, "main.tags");
-		query.addEqualsCondition("tagID", tagID);
+		query.addEqualsCondition("tagID", tagID, true, true);
 		executeSQL(query.build());
 	}
 
@@ -787,7 +787,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		query.updateValuePair("tags", "\"%s\"".printf(tags));
-		query.addEqualsCondition("articleID", "\"%s\"".printf(articleID));
+		query.addEqualsCondition("articleID", articleID, true, true);
 		executeSQL(query.build());
 	}
 
@@ -1046,7 +1046,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("rowid");
-		query.addEqualsCondition("date", "\"%s\"".printf(date));
+		query.addEqualsCondition("date", date, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1279,7 +1279,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
 		query.selectField("*");
-		query.addEqualsCondition("tagID", tagID);
+		query.addEqualsCondition("tagID", tagID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;

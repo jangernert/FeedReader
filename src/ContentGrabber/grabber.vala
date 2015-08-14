@@ -49,7 +49,7 @@ public class FeedReader.Grabber : GLib.Object {
         if(!checkConfigFile())
         {
             // check page for feedsportal
-            if(m_articleURL.contains("feedsportal.com") && download())
+            if( (m_articleURL.contains("feedsportal.com") || m_articleURL.contains("feeds.gawker.com")) && download())
             {
                 downloaded = true;
 
@@ -306,7 +306,7 @@ public class FeedReader.Grabber : GLib.Object {
 
     private void prepArticle()
     {
-        m_doc = new Xml.Doc("1.0");
+        m_doc = new Html.Doc("1.0");
         m_ns = new Xml.Ns(null, "", "article");
         m_ns->type = Xml.ElementType.ELEMENT_NODE;
         m_root = new Xml.Node(m_ns, "body");

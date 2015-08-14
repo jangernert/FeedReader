@@ -261,6 +261,8 @@ public class FeedReader.FeedlyAPI : Object {
 					tmpTag = tags.get_object_element(j).get_string_member("id");
 					if(tmpTag == marked_tag)
 						marked = ArticleStatus.MARKED;
+					else if(tmpTag.contains("global."))
+						continue;
 					else
 						tagString = tagString + tmpTag + ",";
 				}

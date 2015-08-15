@@ -171,7 +171,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		m_subscribed = subscribed;
 	}
 
-	public string getCategorie()
+	public string getCatID()
 	{
 		return m_catID;
 	}

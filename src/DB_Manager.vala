@@ -361,12 +361,20 @@ public class FeedReader.dbManager : GLib.Object {
 
 		foreach(var feed_item in feeds)
 		{
+			string catString = "";
+			foreach(string category in feed_item.getCatIDs())
+			{
+				catString += category + ",";
+			}
+
+			catString = catString.substring(0, catString.length-1);
+
 			stmt.bind_text(feedID_pos, feed_item.getFeedID());
 			stmt.bind_text(feedName_pos, feed_item.getTitle());
 			stmt.bind_text(feedURL_pos, feed_item.getURL());
 			stmt.bind_int (hasIcon_pos, feed_item.hasIcon() ? 1 : 0);
 			stmt.bind_int (unread_pos, (int)feed_item.getUnread());
-			stmt.bind_text(catID_pos, feed_item.getCatID());
+			stmt.bind_text(catID_pos, catString);
 
 			while(stmt.step() == Sqlite.ROW){}
 			stmt.reset();
@@ -1092,7 +1100,8 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("feed_id");
-		query.addEqualsCondition("category_id", categorieID, true, true);
+		query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(categorieID));
+		//query.addEqualsCondition("category_id", categorieID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1194,7 +1203,7 @@ public class FeedReader.dbManager : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(5));
+			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(5).split(","));
 			tmp.append(tmpfeed);
 		}
 
@@ -1218,7 +1227,7 @@ public class FeedReader.dbManager : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(5));
+			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(5).split(","));
 			tmp.append(tmpfeed);
 		}
 

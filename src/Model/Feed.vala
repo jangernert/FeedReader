@@ -5,14 +5,14 @@ public class FeedReader.feed : GLib.Object {
 	private string m_url;
 	private bool m_hasIcon;
 	private uint m_unread;
-	private string m_categorieID;
+	private string[] m_catIDs;
 
-	public feed (string feedID, string title, string url, bool hasIcon, uint unread, string categorieID) {
+	public feed (string feedID, string title, string url, bool hasIcon, uint unread, string[] catIDs) {
 		m_feedID = feedID;
 		m_title = title;
 		m_url = url;
 		m_unread = unread;
-		m_categorieID = categorieID;
+		m_catIDs = catIDs;
 		m_hasIcon = hasIcon;
 	}
 
@@ -41,8 +41,8 @@ public class FeedReader.feed : GLib.Object {
 		return m_unread;
 	}
 
-	public string getCatID()
+	public string[] getCatIDs()
 	{
-		return m_categorieID;
+		return m_catIDs;
 	}
 }

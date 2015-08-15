@@ -102,23 +102,40 @@ public class FeedReader.QueryBuilder : GLib.Object {
         return false;
     }
 
-    public bool addRangeConditionString(string field, GLib.List<string> values)
+    public bool addRangeConditionString(string field, GLib.List<string> values, bool instr = false)
     {
-        if(m_type == QueryType.UPDATE
-        || m_type == QueryType.SELECT
-        || m_type == QueryType.DELETE)
+        if(!instr)
         {
-            var compound_values = new GLib.StringBuilder();
-            foreach(string value in values)
+            if(m_type == QueryType.UPDATE
+            || m_type == QueryType.SELECT
+            || m_type == QueryType.DELETE)
             {
-                compound_values.append("\"");
-                compound_values.append(value);
-                compound_values.append("\",");
+                var compound_values = new GLib.StringBuilder();
+                foreach(string value in values)
+                {
+                    compound_values.append("\"");
+                    compound_values.append(value);
+                    compound_values.append("\",");
+                }
+                compound_values.erase(compound_values.len-1);
+                m_conditions.append("%s IN (%s)".printf(field, compound_values.str));
+                return true;
             }
-            compound_values.erase(compound_values.len-1);
-            m_conditions.append("%s IN (%s)".printf(field, compound_values.str));
+        }
+        else
+        {
+            if(m_type == QueryType.UPDATE
+            || m_type == QueryType.SELECT
+            || m_type == QueryType.DELETE)
+            {
+                foreach(string value in values)
+                {
+                    this.addCustomCondition("instr(field, \"%s\") > 0".printf(value));
+                }
+            }
             return true;
         }
+
         logger.print(LogMessage.ERROR, "addRangeConditionString");
         return false;
     }

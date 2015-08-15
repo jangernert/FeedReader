@@ -376,4 +376,15 @@ public class FeedReader.Utils : GLib.Object {
 		return OAuth.NONE;
 	}
 
+	public static bool arrayContains(string[] array, string key)
+	{
+		foreach(string s in array)
+		{
+			if(s == key)
+				return true;
+		}
+
+		return false;
+	}
+
 }

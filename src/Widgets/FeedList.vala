@@ -235,21 +235,22 @@ public class FeedReader.feedList : Gtk.Stack {
 
 					if(tmpRow != null)
 					{
-						if(tmpRow.getID() == item.getCatID())
+						if(Utils.arrayContains(item.getCatIDs(), tmpRow.getID())
+						|| tmpRow.getID() == "" && item.getCatIDs().length == 0)
 						{
 							var feedrow = new FeedRow(
 													   item.getTitle(),
 													   item.getUnread(),
 													   item.hasIcon(),
 													   item.getFeedID(),
-									                   item.getCatID(),
+									                   tmpRow.getID(),
 									                   tmpRow.getLevel()
 													  );
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
-							break;
+							pos++;
 						}
 					}
 				}
@@ -261,7 +262,7 @@ public class FeedReader.feedList : Gtk.Stack {
 												item.getUnread(),
 												item.hasIcon(),
 												item.getFeedID(),
-												item.getCatID(),
+												item.getCatIDs()[0],
 												0
 											);
 				m_list.insert(feedrow, -1);
@@ -521,7 +522,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		logger.print(LogMessage.DEBUG, "FeedList: updateCounters");
 		var FeedChildList = m_list.get_children();
-		string catID = "";
+		string[] catID = {};
 
 		// decrease "All Articles"
 		foreach(Gtk.Widget row in FeedChildList)
@@ -555,8 +556,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					if(settings_general.get_boolean("feedlist-only-show-unread") && tmpFeedRow.getUnreadCount() == 0)
 						tmpFeedRow.reveal(false);
 				}
-				catID = tmpFeedRow.getCategorie();
-				break;
+				catID += tmpFeedRow.getCatID();
 			}
 		}
 
@@ -564,7 +564,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpCatRow = row as categorieRow;
-			if(tmpCatRow != null && tmpCatRow.getID() == catID)
+			if(tmpCatRow != null && Utils.arrayContains(catID, tmpCatRow.getID()))
 			{
 				if(increase)
 				{
@@ -578,7 +578,6 @@ public class FeedReader.feedList : Gtk.Stack {
 					if(settings_general.get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() == 0)
 						tmpCatRow.reveal(false);
 				}
-				break;
 			}
 		}
 	}
@@ -608,7 +607,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			var tmpFeedRow = row as FeedRow;
 			var tmpCatRow = row as categorieRow;
 			var tmpTagRow = row as TagRow;
-			if(tmpFeedRow != null && tmpFeedRow.getCategorie() == catID)
+			if(tmpFeedRow != null && tmpFeedRow.getCatID() == catID)
 			{
 				tmpFeedRow.reveal(false, m_expand_collapse_time);
 			}
@@ -652,7 +651,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			var tmpFeedRow = row as FeedRow;
 			var tmpCatRow = row as categorieRow;
 			var tmpTagRow = row as TagRow;
-			if(tmpFeedRow != null && tmpFeedRow.getCategorie() == catID)
+			if(tmpFeedRow != null && tmpFeedRow.getCatID() == catID)
 			{
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || tmpFeedRow.getUnreadCount() != 0)
 					tmpFeedRow.reveal(true, m_expand_collapse_time);

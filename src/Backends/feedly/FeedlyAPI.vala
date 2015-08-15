@@ -154,6 +154,14 @@ public class FeedReader.FeedlyAPI : Object {
 				title = ttrss_utils.URLtoFeedName(url);
 			}
 
+			uint catCount = object.get_array_member("categories").get_length();
+			string[] categories = {};
+
+			for(uint j = 0; j < catCount; ++j)
+			{
+				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
+			}
+
 			feeds.append(
 				new feed (
 						feedID,
@@ -161,7 +169,7 @@ public class FeedReader.FeedlyAPI : Object {
 						url,
 						(icon_url == "") ? false : true,
 						getUnreadCountforID(object.get_string_member("id")),
-						(object.get_array_member("categories").get_length() > 0) ? object.get_array_member("categories").get_object_element(0).get_string_member("id") : ""
+						categories
 					)
 			);
 		}

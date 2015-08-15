@@ -228,7 +228,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public GLib.List<tag> getSelectedArticleTags()
 	{
 		string id = m_articleList.getSelectedID();
-		logger.print(LogMessage.DEBUG, id);
 		var article = dataBase.read_article(id);
 		unowned GLib.List<string> tagIDs = article.getTags();
 
@@ -236,7 +235,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 		foreach(string tagID in tagIDs)
 		{
-			logger.print(LogMessage.DEBUG, tagID);
 			tags.append(dataBase.read_tag(tagID));
 		}
 

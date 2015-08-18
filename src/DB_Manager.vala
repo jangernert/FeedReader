@@ -949,31 +949,6 @@ public class FeedReader.dbManager : GLib.Object {
 		return false;
 	}
 
-	private string getUncategorizedQuery()
-	{
-		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
-		query.selectField("categorieID");
-		query.addCustomCondition("instr(tagID, \"global.must\") > 0");
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-		}
-
-		string mustRead = "";
-		while (stmt.step () == Sqlite.ROW) {
-			mustRead = stmt.column_text(0);
-		}
-
-		string sql = "category_id = \"\"";
-
-		if(mustRead != "")
-			sql += " OR category_id = \"%s\"".printf(mustRead);
-
-		return sql;
-	}
-
 
 	public void reset_subscribed_flag()
 	{
@@ -1124,9 +1099,7 @@ public class FeedReader.dbManager : GLib.Object {
 		var feedIDs = new GLib.List<string>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
-		query.selectField("feed_id");
-		query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(categorieID));
-		//query.addEqualsCondition("category_id", categorieID, true, true);
+		query.selectField("feed_id, category_id");
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1135,9 +1108,54 @@ public class FeedReader.dbManager : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step() == Sqlite.ROW) {
-			feedIDs.append(stmt.column_text(0));
+			string catString = stmt.column_text(1);
+			string[] categories = catString.split(",");
+
+			if(categorieID == "")
+			{
+				if((categories.length == 0)
+				||(categories.length == 1 && categories[0].contains("global.must")))
+				{
+					feedIDs.append(stmt.column_text(0));
+				}
+			}
+			else
+			{
+				foreach(string cat in categories)
+				{
+					if(cat == categorieID)
+					{
+						feedIDs.append(stmt.column_text(0));
+					}
+				}
+			}
 		}
 		return feedIDs;
+	}
+
+	private string getUncategorizedQuery()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("categorieID");
+		query.addCustomCondition("instr(tagID, \"global.must\") > 0");
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+
+		string mustRead = "";
+		while (stmt.step () == Sqlite.ROW) {
+			mustRead = stmt.column_text(0);
+		}
+
+		string sql = "category_id = \"\"";
+
+		if(mustRead != "")
+			sql += " OR category_id = \"%s\"".printf(mustRead);
+
+		return sql;
 	}
 
 

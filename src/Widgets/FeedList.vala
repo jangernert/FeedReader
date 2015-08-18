@@ -236,7 +236,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					if(tmpRow != null)
 					{
 						if(Utils.arrayContains(item.getCatIDs(), tmpRow.getID())
-						|| tmpRow.getID() == "" && item.getCatIDs().length == 0)
+						|| tmpRow.getID() == "" && item.isUncategorized())
 						{
 							var feedrow = new FeedRow(
 													   item.getTitle(),

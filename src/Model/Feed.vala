@@ -45,4 +45,15 @@ public class FeedReader.feed : GLib.Object {
 	{
 		return m_catIDs;
 	}
+
+	public bool isUncategorized()
+	{
+		if(m_catIDs.length == 0)
+			return true;
+
+		if(m_catIDs.length == 1 && m_catIDs[0].contains("global.must"))
+			return true;
+
+		return false;
+	}
 }

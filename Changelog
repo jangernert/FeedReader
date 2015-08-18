@@ -5,10 +5,13 @@
 	- share to pocket
 - improve article-view
 - global shortcuts
-- article grabber
+- article grabber: grabs full articles without ads from website for known sites
 - option to use readability instead of article grabber (hidden feature)
 - drag article with middle mouse click
 - tag and untag articles
+- support feeds without category (feedly)
+- support feeds with multiple categories (feedly)
+- support for themes other than elementary
 
 
 

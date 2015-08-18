@@ -310,7 +310,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("unread");
-		query.addEqualsCondition("category_id", "", true, true);
+		query.addCustomCondition(getUncategorizedQuery());
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -931,7 +931,7 @@ public class FeedReader.dbManager : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("count(*)");
-		query.addEqualsCondition("category_id", "", true, true);
+		query.addCustomCondition(getUncategorizedQuery());
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -947,6 +947,31 @@ public class FeedReader.dbManager : GLib.Object {
 				return true;
 		}
 		return false;
+	}
+
+	private string getUncategorizedQuery()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("categorieID");
+		query.addCustomCondition("instr(tagID, \"global.must\") > 0");
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+
+		string mustRead = "";
+		while (stmt.step () == Sqlite.ROW) {
+			mustRead = stmt.column_text(0);
+		}
+
+		string sql = "category_id = \"\"";
+
+		if(mustRead != "")
+			sql += " OR category_id = \"%s\"".printf(mustRead);
+
+		return sql;
 	}
 
 
@@ -1218,7 +1243,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("*");
-		query.addEqualsCondition("category_id", "", true, true);
+		query.addCustomCondition(getUncategorizedQuery());
 		query.build();
 
 		Sqlite.Statement stmt;

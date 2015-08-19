@@ -122,6 +122,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			articles.reverse();
 			dataBase.write_articles(ref articles);
 
+			//update fulltext table
+			dataBase.updateFTS();
+
 			int after = dataBase.getHighestRowID();
 			int newArticles = after-before;
 			if(newArticles > 0)
@@ -263,6 +266,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			// write articles
 			articles.reverse();
 			dataBase.write_articles(ref articles);
+
+			//update fulltext table
+			dataBase.updateFTS();
 
 			if(!useGrabber)
 				settings_state.set_int("initial-sync-level", 0);

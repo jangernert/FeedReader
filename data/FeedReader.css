@@ -1,3 +1,4 @@
+/*@define-color colorPrimary			#b8a069;*/
 @define-color feedlist-bg			#444;
 @define-color feedrow-bg			shade(@feedlist-bg, 1.2);
 @define-color feedlist-slider		shade(@feedlist-bg, 2.5);

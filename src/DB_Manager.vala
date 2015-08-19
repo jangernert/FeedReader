@@ -73,6 +73,7 @@ public class FeedReader.dbManager : GLib.Object {
 												)""");
 
 			executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
+			executeSQL(						"""CREATE VIRTUAL TABLE fts_table USING fts4 (content='articles', articleID, html)""");
 	}
 
 
@@ -114,6 +115,11 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 		stmt.reset();
 		return true;
+	}
+
+	public void updateFTS()
+	{
+		executeSQL("INSERT INTO fts_table(fts_table) VALUES('rebuild')");
 	}
 
 	public void springCleaning()
@@ -1446,7 +1452,8 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 
 		if(searchTerm != ""){
-			query.addCustomCondition("instr(UPPER(title), UPPER(\"%s\")) > 0".printf(searchTerm));
+			//query.addCustomCondition("instr(UPPER(title), UPPER(\"%s\")) > 0".printf(searchTerm));
+			query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH \"%s\")".printf(searchTerm));
 		}
 
 		if(searchRows != 0)

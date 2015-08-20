@@ -159,7 +159,7 @@ public class FeedReader.dbManager : GLib.Object {
 	public void dropOldArtilces(int weeks)
 	{
 		var query = new QueryBuilder(QueryType.DELETE, "main.articles");
-		query.addCustomCondition("WHERE date <= datetime('now', '-%i months')".printf(weeks));
+		query.addCustomCondition("date <= datetime('now', '-%i months')".printf(weeks));
 		executeSQL(query.build());
 		query.print();
 	}
@@ -1452,7 +1452,6 @@ public class FeedReader.dbManager : GLib.Object {
 		}
 
 		if(searchTerm != ""){
-			//query.addCustomCondition("instr(UPPER(title), UPPER(\"%s\")) > 0".printf(searchTerm));
 			query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH \"%s\")".printf(searchTerm));
 		}
 

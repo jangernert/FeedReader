@@ -1,4 +1,4 @@
-​<?xml version="1.0" encoding="UTF-8"?>
+​<?xml version="1.2" encoding="UTF-8"?>
 <component type="application">
 	<id>feedreader.desktop</id>
 	<metadata_license>CC0</metadata_license>
@@ -17,9 +17,10 @@
 			<li>Feedly</li>
 		</ul>
 	​	<p>
-	​		It combines all the advantages of web based services like synchronisation across all your devices
-			with everything you expect from a modern desktop application. Desktop notifications, fast search
-			and filters and a databse that keeps all your old feeds as long as you like.
+			It combines all the advantages of web based services like synchronisation across all your devices
+			with everything you expect from a modern desktop application: Desktop notifications, fast search
+			and filters, tagging, sharing to "read-it-later" services like pocket and instapaper, handy keyboard
+			shortcuts and a databse that keeps all your old articles as long as you like.
 	​    </p>
 	</description>
 ​
@@ -49,4 +50,3 @@
 		</release>
 	</releases>
 ​</component>
-

@@ -3,6 +3,7 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 	private Gtk.Spinner m_spinner;
 	private Gtk.Box m_spinnerBox;
 	private Gtk.Box m_layout;
+	private Gtk.Label m_label;
 	private Gtk.ProgressBar m_progress;
 	public signal void finished();
 
@@ -29,9 +30,15 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 		m_progress.set_show_text(true);
 		m_progress.set_fraction(0);
 
+		m_label = new Gtk.Label("");
+		m_label.get_style_context().add_class("h4");
+		m_label.set_alignment(0.5f, 0.5f);
+		m_label.set_ellipsize (Pango.EllipsizeMode.MIDDLE);
+
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 20);
 		m_layout.pack_start(m_spinnerBox, false, true, 0);
 		m_layout.pack_start(m_progress, false, true, 0);
+		m_layout.pack_start(m_label, false, true, 0);
 
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
@@ -75,22 +82,22 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 	{
 		if(tag == "")
 		{
-			m_progress.set_text("");
+			m_label.set_text("");
 			return;
 		}
 
-		m_progress.set_text("(Getting articles for: %s)".printf(tag));
+		m_label.set_text("(Getting articles for: %s)".printf(tag));
 	}
 
 	private void setCurrentFeed(string feed)
 	{
 		if(feed == "")
 		{
-			m_progress.set_text("");
+			m_label.set_text("");
 			return;
 		}
 
-		m_progress.set_text("(Getting articles for: %s)".printf(feed));
+		m_label.set_text("(Getting articles for: %s)".printf(feed));
 	}
 
 	private void setStage(int stage)

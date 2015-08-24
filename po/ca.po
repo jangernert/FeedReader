@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-07-14 17:08+0200\n"
-"PO-Revision-Date: 2015-03-19 00:42+0000\n"
+"PO-Revision-Date: 2015-08-24 04:11+0000\n"
 "Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
 "Language-Team: Catalan <ca@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-05 05:46+0000\n"
-"X-Generator: Launchpad (build 17656)\n"
+"X-Launchpad-Export-Date: 2015-08-24 05:22+0000\n"
+"X-Generator: Launchpad (build 17690)\n"
 
 #: ../src/Backends/FeedServer.vala:386
 msgid "There is 1 new article"
@@ -73,7 +73,7 @@ msgstr ""
 
 #: ../src/Widgets/LoginPage.vala:94
 msgid "No service selected."
-msgstr ""
+msgstr "No s’ha seleccionat cap servei."
 
 #: ../src/Widgets/LoginPage.vala:111
 msgid "TinyTinyRSS URL:"
@@ -121,7 +121,7 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:85
 msgid "Settings"
-msgstr ""
+msgstr "Paràmetres"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:87
 msgid "Change Account"
@@ -153,7 +153,7 @@ msgstr ""
 
 #: ../src/Widgets/ResetPage.vala:26
 msgid "New account"
-msgstr ""
+msgstr "Compte nou"
 
 #: ../src/Widgets/ResetPage.vala:29
 msgid "Waiting for current sync to finish"
@@ -177,15 +177,15 @@ msgstr ""
 
 #: ../src/Widgets/MainWindow.vala:361
 msgid "Please enter a valid username"
-msgstr ""
+msgstr "Introduïu un nom d’usuari vàlid"
 
 #: ../src/Widgets/MainWindow.vala:364
 msgid "Please enter a valid password"
-msgstr ""
+msgstr "Introduïu una contrasenya vàlida"
 
 #: ../src/Widgets/MainWindow.vala:367
 msgid "Please enter a valid URL"
-msgstr ""
+msgstr "Introduïu un URL vàlid"
 
 #: ../src/Widgets/MainWindow.vala:370
 msgid "Please enter your Login details"
@@ -193,7 +193,7 @@ msgstr ""
 
 #: ../src/Widgets/MainWindow.vala:373
 msgid "Sorry, something went wrong."
-msgstr ""
+msgstr "S’ha produït un problema."
 
 #: ../src/Widgets/MainWindow.vala:376
 msgid "Either your username or the password are not correct."
@@ -211,7 +211,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:50
 msgid "Interface"
-msgstr ""
+msgstr "Interfície"
 
 #: ../src/Widgets/SettingsDialog.vala:51
 msgid "Internals"
@@ -219,7 +219,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:52
 msgid "Services"
-msgstr ""
+msgstr "Serveis"
 
 #: ../src/Widgets/SettingsDialog.vala:62
 msgid "Close"
@@ -263,11 +263,11 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
 #: ../src/Widgets/SettingsDialog.vala:182
 msgid "default"
-msgstr ""
+msgstr "per defecte"
 
 #: ../src/Widgets/SettingsDialog.vala:185
 msgid "spring"
@@ -275,7 +275,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:188
 msgid "midnight"
-msgstr ""
+msgstr "mitjanit"
 
 #: ../src/Widgets/SettingsDialog.vala:191
 msgid "parchment"
@@ -295,7 +295,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"
-msgstr ""
+msgstr "Base de dades:"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "drop articles after"
@@ -303,19 +303,19 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:278
 msgid "Never"
-msgstr ""
+msgstr "Mai"
 
 #: ../src/Widgets/SettingsDialog.vala:281
 msgid "1 Week"
-msgstr ""
+msgstr "1 setmana"
 
 #: ../src/Widgets/SettingsDialog.vala:284
 msgid "1 Month"
-msgstr ""
+msgstr "1 mes"
 
 #: ../src/Widgets/SettingsDialog.vala:287
 msgid "6 Months"
-msgstr ""
+msgstr "6 mesos"
 
 #: ../src/Widgets/SettingsDialog.vala:324
 msgid "Additional Functionality:"
@@ -353,23 +353,23 @@ msgstr ""
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:54
 msgid "no Author"
-msgstr ""
+msgstr "sense autor"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:66
 msgid "no Title"
-msgstr ""
+msgstr "sense títol"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:78
 msgid "no Preview"
-msgstr ""
+msgstr "sense previsualització"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:90
 msgid "no content"
-msgstr ""
+msgstr "sense contingut"
 
 #: ../src/FeedReader.vala:6
 msgid "About FeedReader"
-msgstr ""
+msgstr "Quant al FeedReader"
 
 #: ../src/Model/Article.vala:94
 msgid "no date available"

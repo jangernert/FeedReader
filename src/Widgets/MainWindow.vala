@@ -195,7 +195,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void showInitSync(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show initsync");
-		m_InitSync.hideChecks();
 		m_stack.set_visible_child_full("initsync", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);

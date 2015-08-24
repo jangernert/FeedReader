@@ -44,6 +44,7 @@ public class FeedReader.Grabber : GLib.Object {
 
     public bool process()
     {
+        logger.print(LogMessage.DEBUG, "grabber: process article: " + m_articleURL);
         bool downloaded = false;
 
         if(!checkConfigFile())

@@ -59,9 +59,9 @@ public class FeedReader.Utils : GLib.Object {
 				if(output.length < length)
 					length = output.length;
 
-				output = output.slice(0, length);
-				output = output.slice(0, output.last_index_of(" "));
-				output = output.strip();
+				//output = output.slice(0, length);
+				//output = output.slice(0, output.last_index_of(" "));
+				//output = output.strip();
 
 				output = output.replace("\n"," ");
 				output = output.replace("_"," ");

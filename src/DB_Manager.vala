@@ -73,7 +73,7 @@ public class FeedReader.dbManager : GLib.Object {
 												)""");
 
 			executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
-			executeSQL(						"""CREATE VIRTUAL TABLE fts_table USING fts4 (content='articles', articleID, html)""");
+			executeSQL(						"""CREATE VIRTUAL TABLE fts_table USING fts4 (content='articles', articleID, preview)""");
 	}
 
 

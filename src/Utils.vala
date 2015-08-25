@@ -59,10 +59,6 @@ public class FeedReader.Utils : GLib.Object {
 				if(output.length < length)
 					length = output.length;
 
-				//output = output.slice(0, length);
-				//output = output.slice(0, output.last_index_of(" "));
-				//output = output.strip();
-
 				output = output.replace("\n"," ");
 				output = output.replace("_"," ");
 
@@ -386,5 +382,27 @@ public class FeedReader.Utils : GLib.Object {
 
 		return false;
 	}
+
+	public static string parseSearchTerm(string searchTerm)
+	{
+		if(searchTerm.has_prefix("title: "))
+		{
+			return searchTerm.substring(7);
+		}
+
+		if(searchTerm.has_prefix("author: "))
+		{
+			return searchTerm.substring(8);
+		}
+
+		if(searchTerm.has_prefix("content: "))
+		{
+			return searchTerm.substring(9);
+		}
+
+		return searchTerm;
+	}
+
+
 
 }

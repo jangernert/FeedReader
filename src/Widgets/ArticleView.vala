@@ -283,7 +283,7 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	public void setSearchTerm(string searchTerm)
 	{
-		m_searchTerm = searchTerm;
+		m_searchTerm = Utils.parseSearchTerm(searchTerm);
 	}
 
 	private bool updateDragMomentum()

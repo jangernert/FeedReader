@@ -694,7 +694,7 @@ public class FeedReader.articleList : Gtk.Stack {
 
 		if(m_searchTerm != "")
 		{
-			message += "that fit \"%s\" ".printf(m_searchTerm);
+			message += "that fit \"%s\" ".printf(Utils.parseSearchTerm(m_searchTerm));
 		}
 
 		string name = "";

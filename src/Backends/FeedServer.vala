@@ -53,6 +53,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		SourceFunc callback = syncContent.callback;
 
 		ThreadFunc<void*> run = () => {
+			Idle.add((owned) callback);
+
 			switch(m_type)
 			{
 				case Backend.TTRSS:
@@ -152,7 +154,6 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 			}
 
-			Idle.add((owned) callback);
 			return null;
 		};
 

@@ -43,6 +43,7 @@ figure {
 }
 img {
   border: 0;
+  box-sizing: content-box;
 }
 ol,
 ul {

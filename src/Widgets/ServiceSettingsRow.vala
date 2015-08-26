@@ -26,7 +26,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		m_iconStack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
 		m_iconStack.set_transition_duration(300);
 		m_labelStack = new Gtk.Stack();
-		string iconPath = "";
+		string iconName = "";
 		m_serviceSettings = settings_readability;
 
 		//------------------------------------------------
@@ -96,7 +96,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		m_logout_button.clicked.connect(logout);
 		m_logout_button.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
 
-		var loggedIN = new Gtk.Image.from_icon_name("dialog-apply", Gtk.IconSize.LARGE_TOOLBAR);
+		var loggedIN = new Gtk.Image.from_icon_name("feed-status-ok", Gtk.IconSize.LARGE_TOOLBAR);
 
 		m_iconStack.add_named(m_login_button, "button");
 		m_iconStack.add_named(loggedIN, "loggedIN");
@@ -108,27 +108,27 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		switch (m_type)
         {
             case OAuth.READABILITY:
-                iconPath = "/usr/share/FeedReader/icons/readability.svg";
+                iconName = "feed-share-readability";
 				m_serviceSettings = settings_readability;
                 break;
 
             case OAuth.INSTAPAPER:
-                iconPath = "/usr/share/FeedReader/icons/instapaper.svg";
+                iconName = "feed-share-instapaper";
 				m_serviceSettings = settings_instapaper;
                 break;
 
             case OAuth.POCKET:
-                iconPath = "/usr/share/FeedReader/icons/pocket.svg";
+                iconName = "feed-share-pocket";
 				m_serviceSettings = settings_pocket;
                 break;
 
 			case OAuth.EVERNOTE:
-				iconPath = "/usr/share/FeedReader/icons/evernote.svg";
+				iconName = "feed-share-evernote";
 				m_serviceSettings = settings_evernote;
 				break;
         }
 
-        var icon = new Gtk.Image.from_file(iconPath);
+		var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
 
 		var label = new Gtk.Label(m_name);
 		label.set_alignment(0.5f, 0.5f);

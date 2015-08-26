@@ -42,7 +42,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			}
 			else
 			{
-				m_icon = new Gtk.Image.from_file("/usr/share/FeedReader/icons/rss24.svg");
+				m_icon = new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
 			}
 
 			m_icon.margin_start = level * 24;
@@ -63,7 +63,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadStack.set_transition_duration(0);
 			m_unreadStack.add_named(m_unread, "unreadCount");
 			m_unreadStack.add_named(new Gtk.Label(""), "nothing");
-			m_unreadStack.add_named(new Gtk.Image.from_icon_name("selection-remove", Gtk.IconSize.LARGE_TOOLBAR), "mark");
+			m_unreadStack.add_named(new Gtk.Image.from_icon_name("feed-mark-read", Gtk.IconSize.LARGE_TOOLBAR), "mark");
 
 			m_unreadBox = new Gtk.EventBox();
 			m_unreadBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);

@@ -53,14 +53,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		SourceFunc callback = syncContent.callback;
 
 		ThreadFunc<void*> run = () => {
-			Idle.add((owned) callback);
-
 			switch(m_type)
 			{
 				case Backend.TTRSS:
 					if(!m_ttrss.isloggedin())
 					{
 						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - ttrss not logged in or unreachable");
+						Idle.add((owned) callback);
 						return null;
 					}
 					break;
@@ -69,6 +68,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					if(!m_feedly.ping())
 					{
 						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - feedly not reachable");
+						Idle.add((owned) callback);
 						return null;
 					}
 					break;
@@ -154,6 +154,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 			}
 
+			Idle.add((owned) callback);
 			return null;
 		};
 

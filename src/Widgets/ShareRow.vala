@@ -12,27 +12,27 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         m_box.margin = 3;
-        string iconPath = "";
+        string iconName = "";
 
         switch (m_type)
         {
             case OAuth.READABILITY:
-                iconPath = "/usr/share/FeedReader/icons/readability.svg";
+                iconName = "feed-share-readability";
                 break;
 
             case OAuth.INSTAPAPER:
-                iconPath = "/usr/share/FeedReader/icons/instapaper.svg";
+                iconName = "feed-share-instapaper";
                 break;
 
             case OAuth.POCKET:
-                iconPath = "/usr/share/FeedReader/icons/pocket.svg";
+                iconName = "feed-share-pocket";
                 break;
 
 			case OAuth.EVERNOTE:
-	            iconPath = "/usr/share/FeedReader/icons/evernote.svg";
+	            iconName = "feed-share-evernote";
 	            break;
         }
-        var icon = new Gtk.Image.from_file(iconPath);
+        var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
 
         m_label = new Gtk.Label(serviceName);
         m_label.set_line_wrap_mode(Pango.WrapMode.WORD);

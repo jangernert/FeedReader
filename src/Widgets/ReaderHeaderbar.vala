@@ -16,8 +16,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 	public readerHeaderbar () {
-		var share_icon = new Gtk.Image.from_icon_name("applications-internet-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		var tag_icon = new Gtk.Image.from_icon_name("tag-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		var share_icon = new Gtk.Image.from_icon_name("feed-share-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		m_state = (ArticleListState)settings_state.get_enum("show-articles");
 
 		m_header_left = new Gtk.HeaderBar ();
@@ -84,7 +84,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 
-		m_refresh_button = new UpdateButton("view-refresh");
+		m_refresh_button = new UpdateButton("feed-refresh");
 		m_refresh_button.clicked.connect(() => {
 			refresh();
 		});

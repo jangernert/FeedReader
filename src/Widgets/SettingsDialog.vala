@@ -389,11 +389,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var readabilityRow = new ServiceRow("Readability.com", OAuth.READABILITY);
         var pocketRow = new ServiceRow("Pocket", OAuth.POCKET);
         var instaRow = new ServiceRow("Instapaper", OAuth.INSTAPAPER);
-        //var evernoteRow = new ServiceRow("Evernote", OAuth.EVERNOTE);
         service_list.insert(readabilityRow, -1);
         service_list.insert(pocketRow, -1);
         service_list.insert(instaRow, -1);
-        //service_list.insert(evernoteRow, -1);
         m_serviceBox.pack_start(service_scroll, false, true, 0);
     }
 }

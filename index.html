@@ -1,146 +1,64 @@
+---
+---
 <!DOCTYPE html>
-<html lang="en-us">
-  <head>
-    <meta charset="UTF-8">
-    <title>FeedReader by jangernert</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
-  </head>
-  <body>
-    <section class="page-header">
-      <h1 class="project-name">FeedReader</h1>
-      <h2 class="project-tagline">RSS desktop client</h2>
-      <a href="https://github.com/jangernert/feedreader" class="btn">View on GitHub</a>
-      <a href="https://github.com/jangernert/feedreader/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/jangernert/feedreader/tarball/master" class="btn">Download .tar.gz</a>
-    </section>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ site.title }}</title>
+	<meta name="keywords" content="{{ site.keywords }}">
+	<meta name="description" content="{{ site.description }}">
+  <link rel="stylesheet" href="combo.css">
+  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+  {% if site.favicon %}<link rel="shortcut icon" href="{{ site.favicon }}" type="image/x-icon">{% endif %}
+	{% if site.touch_icon %}<link rel="apple-touch-icon" href="{{ site.touch_icon }}">{% endif %}
+</head>
+<body>
+  <div id="main">
 
-    <section class="main-content">
-      <h2>
-<a id="feedreader" class="anchor" href="#feedreader" aria-hidden="true"><span class="octicon octicon-link"></span></a>FeedReader</h2>
+    <nav><ul>
+      {% for node in site.posts reversed %}
+        {% capture id %}{{ node.id | remove:'/' | downcase }}{% endcapture %}
+        <li class="p-{{id}}"><a href="#{{id}}">{{node.title}}</a></li>
+      {% endfor %}
+    </ul></nav>
 
-<p>FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.
-It combines all the advantages of web based services like synchronisation across all your devices with everything you expect from a modern desktop application:</p>
 
-<ul>
-<li>Desktop notifications</li>
-<li>fast search and filters</li>
-<li>full articles instead of previews for known sites</li>
-<li>taging</li>
-<li>sharing to "read-it-later" services like pocket and instapaper</li>
-<li>handy keyboard short-cuts</li>
-<li>database that keeps all your old articles as long as you like</li>
-<li>different themes</li>
-</ul>
+    {% for page in site.posts reversed %}
+      {% capture id %}{{ page.id | remove:'/' | downcase }}{% endcapture %}
+      <div id="{{id}}" class="section p-{{id}}">
+        {% if page.icon %}
+        <div class="subtlecircle sectiondivider imaged">
+          <img src="{{page.icon}}" alt="section icon" />
+          <h5 class="icon-title">{{ page.title }}</h5>
+        </div>
+        {% elsif page.fa-icon %}
+        <div class="subtlecircle sectiondivider faicon">
+          <span class="fa-stack">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <i class="fa fa-{{ page.fa-icon }} fa-stack-1x"></i>
+          </span>
+          <h5 class="icon-title">{{ page.title }}</h5>
+        </div>
+        {% endif %}
+        <div class="container {{ page.style }}">
+          {{ page.content }}
+        </div>
+      </div>
+    {% endfor %}
 
-<h3>
-<a id="currentyl-supported-services" class="anchor" href="#currentyl-supported-services" aria-hidden="true"><span class="octicon octicon-link"></span></a>Currentyl supported services</h3>
 
-<ul>
-<li>Tiny Tiny RSS</li>
-<li>Feedly</li>
-</ul>
+    <div id="footer" class="section text-white">
+      <div class="container">
+        {% capture foottext %} {% include footer.md %} {% endcapture %}
+        {{ foottext | markdownify }}
+      </div>
+    </div>
+  </div>
 
-<h2>
-<a id="screenshots" class="anchor" href="#screenshots" aria-hidden="true"><span class="octicon octicon-link"></span></a>Screenshots</h2>
-
-<p><img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot1.png" alt="Screenshot 1"></p>
-
-<p><img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot2.png" alt="Screenshot 2"></p>
-
-<p><img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot3.png" alt="Screenshot 3"></p>
-
-<p><img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot4.png" alt="Screenshot 4"></p>
-
-<p><img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot5.png" alt="Screenshot 5"></p>
-
-<h2>
-<a id="changelog" class="anchor" href="#changelog" aria-hidden="true"><span class="octicon octicon-link"></span></a>Changelog</h2>
-
-<h3>
-<a id="12" class="anchor" href="#12" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2</h3>
-
-<ul>
-<li>improved article-view</li>
-<li>drag article with middle mouse click</li>
-<li>updated UI and animations</li>
-<li>global short-cuts</li>
-<li>tag articles</li>
-<li>share articles to
-
-<ul>
-<li>readability</li>
-<li>instapaper</li>
-<li>pocket</li>
-</ul>
-</li>
-<li>article grabber (grabs full articles without ads from website for known sites)</li>
-<li>option to use readability instead of article grabber (hidden feature)</li>
-<li>support for themes other than elementary</li>
-<li>basic full text search</li>
-<li>support feeds without category (feedly)</li>
-<li>support feeds with multiple categories (feedly)</li>
-</ul>
-
-<h3>
-<a id="10" class="anchor" href="#10" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.0</h3>
-
-<ul>
-<li>initial Release</li>
-</ul>
-
-<h2>
-<a id="get-it" class="anchor" href="#get-it" aria-hidden="true"><span class="octicon octicon-link"></span></a>Get it</h2>
-
-<ul>
-<li>
-<p>elementary OS Freya / Ubuntu 14.04</p>
-
-<ul>
-<li>
-<p>stable</p>
-
-<pre><code>add-apt-repository ppa:eviltwin1/feedreader-stable
-apt-get update
-apt-get install feedreader
-</code></pre>
-</li>
-<li>
-<p>unstable</p>
-
-<pre><code>add-apt-repository ppa:eviltwin1/feedreader-daily
-apt-get update
-apt-get install feedreader
-</code></pre>
-</li>
-</ul>
-</li>
-<li>
-<p>Arch</p>
-
-<ul>
-<li>unstable <a href="https://aur.archlinux.org/packages/feedreader-bzr/">AUR package</a><br>
-</li>
-</ul>
-</li>
-</ul>
-
-<h2>
-<a id="support" class="anchor" href="#support" aria-hidden="true"><span class="octicon octicon-link"></span></a>Support</h2>
-
-<p>Please report bugs over at <a href="https://bugs.launchpad.net/feedreader">launchpad</a> or check out the code to fix the issue yourself <a href="https://code.launchpad.net/feedreader">here</a>. You can also support development of FeedReader over at <a href="https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038">bountysource</a> and throw a few $ at any bug you would like to be fixed or any feature you would like to see added.</p>
-
-      <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/jangernert/feedreader">FeedReader</a> is maintained by <a href="https://github.com/jangernert">jangernert</a>.</span>
-
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
-      </footer>
-
-    </section>
-
-  
-  </body>
+{% include analytics.html %}
+</body>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="site.js"></script>
 </html>

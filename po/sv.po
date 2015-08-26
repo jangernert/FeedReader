@@ -7,29 +7,29 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-07-14 17:08+0200\n"
+"POT-Creation-Date: 2015-08-25 16:51+0200\n"
 "PO-Revision-Date: 2015-08-24 16:59+0000\n"
 "Last-Translator: Mathias <Unknown>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-25 05:57+0000\n"
+"X-Launchpad-Export-Date: 2015-08-26 06:14+0000\n"
 "X-Generator: Launchpad (build 17690)\n"
 
-#: ../src/Backends/FeedServer.vala:386
+#: ../src/Backends/FeedServer.vala:483
 msgid "There is 1 new article"
 msgstr "Det finns 1 ny artikel"
 
-#: ../src/Backends/FeedServer.vala:388
+#: ../src/Backends/FeedServer.vala:485
 msgid "There are >200 new articles"
 msgstr "Det finns >200 nya artiklar"
 
-#: ../src/Backends/FeedServer.vala:390
+#: ../src/Backends/FeedServer.vala:487
 msgid "There are %u new articles"
 msgstr "Det finns %u nya artiklar"
 
-#: ../src/Backends/FeedServer.vala:392
+#: ../src/Backends/FeedServer.vala:489
 msgid "New Articles"
 msgstr "Nya artiklar"
 
@@ -37,58 +37,58 @@ msgstr "Nya artiklar"
 msgid "not found"
 msgstr "hittades inte"
 
-#: ../src/Widgets/ArticleView.vala:33
+#: ../src/Widgets/ArticleView.vala:50
 msgid "No Article selected."
 msgstr "Ingen artikel vald."
 
-#: ../src/Widgets/ArticleView.vala:75
+#: ../src/Widgets/ArticleView.vala:153
 msgid "not available"
 msgstr "inte tillgänglig"
 
-#: ../src/Widgets/LoginPage.vala:21
+#: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
 msgstr "Tiny Tiny RSS"
 
-#: ../src/Widgets/LoginPage.vala:21
+#: ../src/Widgets/LoginPage.vala:22
 msgid "Feedly"
 msgstr "Feedly"
 
-#: ../src/Widgets/LoginPage.vala:21
+#: ../src/Widgets/LoginPage.vala:22
 msgid "OwnCloud"
 msgstr "OwnCloud"
 
-#: ../src/Widgets/LoginPage.vala:25
+#: ../src/Widgets/LoginPage.vala:26
 msgid "Where are your feeds?"
 msgstr "Var är dina nyhetsflöden?"
 
-#: ../src/Widgets/LoginPage.vala:29
+#: ../src/Widgets/LoginPage.vala:30
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr "Välj den RSS-tjänst du använder och logga in för att komma igång."
 
-#: ../src/Widgets/LoginPage.vala:63 ../src/Widgets/SharePopover.vala:15
-#: ../src/Widgets/ServiceSettingsRow.vala:87
+#: ../src/Widgets/LoginPage.vala:64 ../src/Widgets/SharePopover.vala:15
+#: ../src/Widgets/ServiceSettingsRow.vala:88
 msgid "Login"
 msgstr "Logga in"
 
-#: ../src/Widgets/LoginPage.vala:94
+#: ../src/Widgets/LoginPage.vala:101
 msgid "No service selected."
 msgstr "Ingen tjänst vald."
 
-#: ../src/Widgets/LoginPage.vala:111
+#: ../src/Widgets/LoginPage.vala:118
 msgid "TinyTinyRSS URL:"
 msgstr "TinyTinyRSS URL:"
 
-#: ../src/Widgets/LoginPage.vala:112 ../src/Widgets/LoginPage.vala:185
-#: ../src/Widgets/ServiceSettingsRow.vala:73
+#: ../src/Widgets/LoginPage.vala:119 ../src/Widgets/LoginPage.vala:188
+#: ../src/Widgets/ServiceSettingsRow.vala:71
 msgid "Username:"
 msgstr "Användarnamn:"
 
-#: ../src/Widgets/LoginPage.vala:113 ../src/Widgets/LoginPage.vala:186
-#: ../src/Widgets/ServiceSettingsRow.vala:74
+#: ../src/Widgets/LoginPage.vala:120 ../src/Widgets/LoginPage.vala:189
+#: ../src/Widgets/ServiceSettingsRow.vala:72
 msgid "Password:"
 msgstr "Lösenord:"
 
-#: ../src/Widgets/LoginPage.vala:165
+#: ../src/Widgets/LoginPage.vala:168
 msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
@@ -97,7 +97,7 @@ msgstr ""
 "ditt Facebook-, Google-, Twitter-, Microsoft- eller Evernote-konto för att "
 "logga in."
 
-#: ../src/Widgets/LoginPage.vala:184
+#: ../src/Widgets/LoginPage.vala:187
 msgid "OwnCloud URL:"
 msgstr "OwnCloud URL:"
 
@@ -109,33 +109,37 @@ msgstr "Vänligen"
 msgid "to a service to share this article"
 msgstr "på en tjänst för att dela den här artikeln"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:48
-msgid "mark selected feed/category as read"
-msgstr "markera vald flöde/kategori som läst"
+#: ../src/Widgets/ReaderHeaderbar.vala:51
+msgid "tag article"
+msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:54
+#: ../src/Widgets/ReaderHeaderbar.vala:60
 msgid "share article"
 msgstr "dela artikel"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:78
+#: ../src/Widgets/ReaderHeaderbar.vala:93
 msgid "Search Articles"
 msgstr "Sök artiklar"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:85
+#: ../src/Widgets/ReaderHeaderbar.vala:100
 msgid "Settings"
 msgstr "Inställningar"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:87
+#: ../src/Widgets/ReaderHeaderbar.vala:102
 msgid "Change Account"
 msgstr "Ändra konto"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:48
+#: ../src/Widgets/ServiceSettingsRow.vala:46
 msgid "Username or Password incorrect"
 msgstr "Användarnamn eller lösenord är fel"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:92
+#: ../src/Widgets/ServiceSettingsRow.vala:93
 msgid "Logout"
 msgstr "Logga ut"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:222
+msgid "waiting"
+msgstr ""
 
 #: ../src/Widgets/SpringCleanPage.vala:13
 msgid ""
@@ -144,6 +148,10 @@ msgid ""
 msgstr ""
 "FeedReader städar upp i databasen.\n"
 "Detta bör inte ta lång tid."
+
+#: ../src/Widgets/FeedList.vala:435
+msgid "Uncategorized"
+msgstr ""
 
 #: ../src/Widgets/ResetPage.vala:18
 msgid "Change Account?"
@@ -173,39 +181,39 @@ msgstr "Jag ändrade mig"
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr "Ingen av de %i artiklarna i databasen matchar de aktuella filtren."
 
-#: ../src/Widgets/MainWindow.vala:18 ../src/Constants.vala:117
+#: ../src/Widgets/MainWindow.vala:18 ../src/Constants.vala:136
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Widgets/MainWindow.vala:358
+#: ../src/Widgets/MainWindow.vala:351
 msgid "Please select a service first"
 msgstr "Välj en tjänst först"
 
-#: ../src/Widgets/MainWindow.vala:361
+#: ../src/Widgets/MainWindow.vala:354
 msgid "Please enter a valid username"
 msgstr "Ange ett giltigt användarnamn"
 
-#: ../src/Widgets/MainWindow.vala:364
+#: ../src/Widgets/MainWindow.vala:357
 msgid "Please enter a valid password"
 msgstr "Ange ett giltigt lösenord"
 
-#: ../src/Widgets/MainWindow.vala:367
+#: ../src/Widgets/MainWindow.vala:360
 msgid "Please enter a valid URL"
 msgstr "Ange en giltig URL"
 
-#: ../src/Widgets/MainWindow.vala:370
+#: ../src/Widgets/MainWindow.vala:363
 msgid "Please enter your Login details"
 msgstr "Ange dina inloggningsuppgifter"
 
-#: ../src/Widgets/MainWindow.vala:373
+#: ../src/Widgets/MainWindow.vala:366
 msgid "Sorry, something went wrong."
 msgstr "Tyvärr gick något fel."
 
-#: ../src/Widgets/MainWindow.vala:376
+#: ../src/Widgets/MainWindow.vala:369
 msgid "Either your username or the password are not correct."
 msgstr "Antingen är ditt användarnamn eller lösenord fel."
 
-#: ../src/Widgets/MainWindow.vala:379
+#: ../src/Widgets/MainWindow.vala:372
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -216,6 +224,18 @@ msgstr ""
 #: ../src/Widgets/UpdateButton.vala:20
 msgid "update Feeds"
 msgstr "Uppdatera nyhetsflöden"
+
+#: ../src/Widgets/TagPopover.vala:25
+msgid "add Tags:"
+msgstr ""
+
+#: ../src/Widgets/TagPopover.vala:37
+msgid "Tags:"
+msgstr ""
+
+#: ../src/Widgets/TagPopover.vala:114
+msgid "add Tag"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:50
 msgid "Interface"
@@ -341,7 +361,7 @@ msgstr "Ingen"
 msgid "Built in grabber"
 msgstr "Inbyggd hämtare"
 
-#: ../src/Widgets/InitSyncPage.vala:18
+#: ../src/Widgets/InitSyncPage.vala:15
 msgid ""
 "FeedReader is now getting the first batch of articles.\n"
 "Depending on your connection and settings this can take some time."
@@ -353,11 +373,11 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Ingen förhandsvisning tillgänglig"
 
-#: ../src/Utils.vala:104
+#: ../src/Utils.vala:83
 msgid "No Text available for this article :("
 msgstr "Ingen text tillgänglig för den här artikeln :("
 
-#: ../src/Constants.vala:120
+#: ../src/Constants.vala:139
 msgid "Desktop Client for various RSS Services"
 msgstr "Program för diverse rss-tjänster"
 
@@ -381,14 +401,14 @@ msgstr "inget innehåll"
 msgid "About FeedReader"
 msgstr "Om FeedReader"
 
-#: ../src/Model/Article.vala:94
+#: ../src/Model/Article.vala:110
 msgid "no date available"
 msgstr "inget datum tillgängligt"
 
-#: ../src/Model/Article.vala:100
+#: ../src/Model/Article.vala:116
 msgid "Today"
 msgstr "Idag"
 
-#: ../src/Model/Article.vala:104
+#: ../src/Model/Article.vala:120
 msgid "Yesterday"
 msgstr "Igår"

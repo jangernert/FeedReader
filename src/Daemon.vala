@@ -348,6 +348,7 @@ namespace FeedReader {
 		settings_evernote = new GLib.Settings ("org.gnome.feedreader.evernote");
 		logger = new Logger();
 		Notify.init("org.gnome.feedreader");
+		Utils.copyAutostart();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,

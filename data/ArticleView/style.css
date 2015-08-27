@@ -197,7 +197,7 @@ h5 {
 }
 h6 {
   color: #000;
- font-size: 1rem;
+  font-size: 1rem;
   margin-bottom: 0.25rem;
   text-transform: uppercase;
 }
@@ -213,14 +213,14 @@ body,
 p {
   margin-bottom: 1rem;
   color: #1d1f1c;
- font-size: 1rem;
+  font-size: 1rem;
   line-height: 1.8em;
   text-align: left;
 }
 pre,
 code {
   background-color:#eee;
- overflow:auto;
+  overflow:auto;
   margin:0 0 1em;
 }
 pre {

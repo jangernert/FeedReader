@@ -129,7 +129,15 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		icon_box.pack_end(m_marked_eventbox, false, false, 0);
 
 
-		var body_label = new Gtk.Label(preview);
+		int length = 300;
+		if(preview.length < length)
+			length = preview.length;
+
+		string short_preview = preview.slice(0, length);
+		short_preview = short_preview.slice(0, short_preview.last_index_of(" "));
+		short_preview = short_preview.strip();
+
+		var body_label = new Gtk.Label(short_preview);
 		body_label.opacity = 0.7;
 		body_label.get_style_context().add_class("preview");
 		body_label.set_alignment(0, 0);

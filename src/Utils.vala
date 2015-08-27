@@ -54,16 +54,8 @@ public class FeedReader.Utils : GLib.Object {
 					output = output.slice(end+1, output.length);
 				}
 
-
-				int length = 300;
-				if(output.length < length)
-					length = output.length;
-
 				output = output.replace("\n"," ");
 				output = output.replace("_"," ");
-
-
-
 
 				article.setPreview(output);
 			}

@@ -2,6 +2,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private ttrss_interface m_ttrss;
 	private FeedlyAPI m_feedly;
 	private int m_type;
+	private bool m_supportTags;
 	public signal void initSyncStage(int stage);
 	public signal void initSyncTag(string tagName);
 	public signal void initSyncFeed(string feedName);
@@ -9,6 +10,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public FeedServer(int type)
 	{
 		m_type = type;
+		m_supportTags = false;
 		logger.print(LogMessage.DEBUG, "FeedServer: new with type %i".printf(type));
 
 		switch(m_type)
@@ -28,6 +30,11 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_type;
 	}
 
+	public bool supportTags()
+	{
+		return m_supportTags;
+	}
+
 	public LoginResponse login()
 	{
 		switch(m_type)
@@ -36,11 +43,14 @@ public class FeedReader.FeedServer : GLib.Object {
 				return LoginResponse.NO_BACKEND;
 
 			case Backend.TTRSS:
-				return m_ttrss.login();
+				var response = m_ttrss.login();
+				m_supportTags = m_ttrss.supportTags();
+				return response;
 
 			case Backend.FEEDLY:
 				if(m_feedly.ping())
 				{
+					m_supportTags = true;
 					return m_feedly.login();
 				}
 				break;

@@ -49,6 +49,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_tag_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_tag_button.set_focus_on_click(false);
 		m_tag_button.set_tooltip_text(_("tag article"));
+		m_tag_button.sensitive = false;
 		m_tag_button.clicked.connect(() => {
 			m_pop = new TagPopover(m_tag_button);
 		});
@@ -58,6 +59,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_share_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_share_button.set_focus_on_click(false);
 		m_share_button.set_tooltip_text(_("share article"));
+		m_share_button.sensitive = false;
 		m_share_button.clicked.connect(() => {
 			var pop = new SharePopover(m_share_button);
 			pop.showSettings.connect((panel) => {
@@ -154,7 +156,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void showArticleButtons(bool show)
 	{
 		m_share_button.sensitive = show;
-		m_tag_button.sensitive = show;
+
+		if(feedDaemon_interface.supportTags())
+		{
+			m_tag_button.sensitive = show;
+		}
 	}
 
 	public bool currentlyUpdating()

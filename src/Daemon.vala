@@ -49,6 +49,12 @@ namespace FeedReader {
 		}
 
 
+		public bool supportTags()
+		{
+			return server.supportTags();
+		}
+
+
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();

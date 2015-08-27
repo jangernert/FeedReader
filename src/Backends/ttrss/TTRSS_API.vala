@@ -79,6 +79,28 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
+	public bool supportTags()
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "removeLabel");
+		int error = message.send();
+
+		if(error == ConnectionError.TTRSS_API)
+		{
+			var response = message.get_response_object();
+			if(response.has_member("error"))
+			{
+				if(response.get_string_member("error") == "INCORRECT_USAGE")
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 
 	public int getUnreadCount()
 	{

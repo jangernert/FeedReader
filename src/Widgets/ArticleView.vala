@@ -140,6 +140,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_currentSearch = m_search2;
 			m_view1.load_changed.disconnect(open_link);
 			m_view2.load_changed.connect(open_link);
+			m_view1.stop_loading();
 			m_view1.load_html(
 				Utils.buildArticle(
 					"",
@@ -157,6 +158,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_currentSearch = m_search1;
 			m_view1.load_changed.connect(open_link);
 			m_view2.load_changed.disconnect(open_link);
+			m_view2.stop_loading();
 			m_view2.load_html(
 				Utils.buildArticle(
 					"",
@@ -237,13 +239,13 @@ public class FeedReader.articleView : Gtk.Stack {
 				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
+				m_currentSearch.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
 				break;
 			case WebKit.LoadEvent.FINISHED:
 				if(m_load_ongoing >= 3)
 				{
 					logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
 					m_open_external = true;
-					m_currentSearch.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
 
 					if(m_firstTime)
 					{

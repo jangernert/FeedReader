@@ -30,6 +30,7 @@ namespace FeedReader {
 		public abstract void tagArticle(string articleID, string tagID, bool add) throws IOError;
 		public abstract string createTag(string caption) throws IOError;
 		public abstract void updateBadge() throws IOError;
+		public abstract bool supportTags() throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();

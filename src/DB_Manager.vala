@@ -537,6 +537,8 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public string getFeedName(string feedID)
 	{
+		if(feedID == "")
+			return "unknown Feed";
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("name");
 		query.addEqualsCondition("feed_id", feedID, true, true);

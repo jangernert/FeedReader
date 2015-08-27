@@ -9,6 +9,7 @@ public class FeedReader.Grabber : GLib.Object {
     private Xml.Node* m_root;
     private Xml.Ns* m_ns;
     private bool m_foundSomething;
+    private bool m_singlePage;
 
 
     public string m_author;
@@ -20,6 +21,8 @@ public class FeedReader.Grabber : GLib.Object {
     {
         m_articleURL = articleURL;
         m_firstPage = true;
+        m_foundSomething = false;
+        m_singlePage = false;
     }
 
     ~Grabber()
@@ -162,6 +165,7 @@ public class FeedReader.Grabber : GLib.Object {
             string url = grabberUtils.getURL(doc, m_config.getXPathSinglePageURL());
             if(url != "" && url != null)
             {
+                m_singlePage = true;
                 m_articleURL = url;
                 download();
                 delete doc;
@@ -289,7 +293,7 @@ public class FeedReader.Grabber : GLib.Object {
 
         m_firstPage = false;
 
-        if(m_nexPageURL != null)
+        if(m_nexPageURL != null && !m_singlePage)
         {
             if(!m_nexPageURL.has_prefix("http"))
             {

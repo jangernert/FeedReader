@@ -245,8 +245,8 @@ strong {
 footer,
 iframe,
 img {
-  margin: 2rem auto;
-  padding: 1rem;
+  /*margin: 2rem auto;*/
+  padding: 0.2rem;
   border: 1px solid rgba(0, 0, 0, 0.05);
   max-width: 100%;
   max-height: auto;

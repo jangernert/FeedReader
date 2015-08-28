@@ -41,7 +41,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 100);
 
-		int spacing = 8;
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 
 
@@ -51,14 +50,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			if(FileUtils.test(feed_icon_name, GLib.FileTest.EXISTS))
 			{
 				tmp_icon = new Gdk.Pixbuf.from_file(feed_icon_name);
+				Utils.scale_pixbuf(ref tmp_icon, 24);
+				m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 			}
 			else
 			{
-				tmp_icon = new Gdk.Pixbuf.from_file("/usr/share/FeedReader/icons/rss24.svg");
+				m_icon = new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
 			}
-			Utils.scale_pixbuf(ref tmp_icon, 24);
-			m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
-			spacing = 0;
 		}
 		catch(GLib.Error e){}
 

@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-08-25 16:51+0200\n"
-"PO-Revision-Date: 2015-07-29 06:09+0000\n"
+"PO-Revision-Date: 2015-08-27 16:49+0000\n"
 "Last-Translator: Jiri Grönroos <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-27 05:48+0000\n"
+"X-Launchpad-Export-Date: 2015-08-28 05:52+0000\n"
 "X-Generator: Launchpad (build 17690)\n"
 
 #: ../src/Backends/FeedServer.vala:483
@@ -110,7 +110,7 @@ msgstr "palveluun jakaaksesi artikkelin"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:51
 msgid "tag article"
-msgstr ""
+msgstr "lisää tunniste artikkeliin"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:60
 msgid "share article"
@@ -138,7 +138,7 @@ msgstr "Kirjaudu ulos"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:222
 msgid "waiting"
-msgstr ""
+msgstr "odottaa"
 
 #: ../src/Widgets/SpringCleanPage.vala:13
 msgid ""
@@ -150,7 +150,7 @@ msgstr ""
 
 #: ../src/Widgets/FeedList.vala:435
 msgid "Uncategorized"
-msgstr ""
+msgstr "Luokittelematon"
 
 #: ../src/Widgets/ResetPage.vala:18
 msgid "Change Account?"
@@ -226,15 +226,15 @@ msgstr "päivitä syötteet"
 
 #: ../src/Widgets/TagPopover.vala:25
 msgid "add Tags:"
-msgstr ""
+msgstr "lisää tunnisteet:"
 
 #: ../src/Widgets/TagPopover.vala:37
 msgid "Tags:"
-msgstr ""
+msgstr "Tunnisteet:"
 
 #: ../src/Widgets/TagPopover.vala:114
 msgid "add Tag"
-msgstr ""
+msgstr "lisää tunniste"
 
 #: ../src/Widgets/SettingsDialog.vala:50
 msgid "Interface"
@@ -258,7 +258,7 @@ msgstr "Syöteluettelo:"
 
 #: ../src/Widgets/SettingsDialog.vala:82
 msgid "only-feeds"
-msgstr ""
+msgstr "vain syötteet"
 
 #: ../src/Widgets/SettingsDialog.vala:94
 msgid "only show unread"
@@ -290,7 +290,7 @@ msgstr "Artikkelinäkymä:"
 
 #: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
-msgstr "Teema"
+msgstr "teema"
 
 #: ../src/Widgets/SettingsDialog.vala:182
 msgid "default"
@@ -350,15 +350,15 @@ msgstr "Lisätoiminnot:"
 
 #: ../src/Widgets/SettingsDialog.vala:331
 msgid "Content Grabber"
-msgstr ""
+msgstr "Sisällön noutaja"
 
 #: ../src/Widgets/SettingsDialog.vala:338
 msgid "None"
-msgstr ""
+msgstr "Ei mitään"
 
 #: ../src/Widgets/SettingsDialog.vala:341
 msgid "Built in grabber"
-msgstr ""
+msgstr "Sisäänrakennettu noutaja"
 
 #: ../src/Widgets/InitSyncPage.vala:15
 msgid ""
@@ -382,15 +382,15 @@ msgstr "Työpöytäsovellus useiden RSS-palveluiden käyttöön"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:54
 msgid "no Author"
-msgstr ""
+msgstr "ei tekijää"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:66
 msgid "no Title"
-msgstr ""
+msgstr "ei otsikkoa"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:78
 msgid "no Preview"
-msgstr ""
+msgstr "ei esikatselua"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:90
 msgid "no content"

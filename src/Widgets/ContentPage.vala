@@ -58,7 +58,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			if(row.isUnread()){
 				feedDaemon_interface.changeArticle(row.getID(), ArticleStatus.READ);
 				row.updateUnread(ArticleStatus.READ);
-				row.removeUnreadIcon();
+				//row.removeUnreadIcon();
 			}
 
 			showArticleButtons(true);

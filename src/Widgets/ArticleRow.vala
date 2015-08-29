@@ -13,7 +13,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private Gtk.EventBox m_marked_eventbox;
 	private Gtk.Stack m_unread_stack;
 	private Gtk.Stack m_marked_stack;
-	private bool m_just_clicked;
+	//private bool m_just_clicked;
 	private bool m_updated;
 	private bool m_hovering_unread;
 	private bool m_hovering_marked;
@@ -72,7 +72,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
 		m_label.set_alignment(0, 0.5f);
 
-		m_just_clicked = false;
+		//m_just_clicked = false;
 
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);
@@ -84,8 +84,10 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		m_unread_stack.add_named(unread_icon, "unread");
 		m_unread_stack.add_named(read_icon, "read");
+		m_unread_stack.add_named(new Gtk.Label(""), "empty");
 		m_marked_stack.add_named(marked_icon, "marked");
 		m_marked_stack.add_named(unmarked_icon, "unmarked");
+		m_marked_stack.add_named(new Gtk.Label(""), "empty");
 
 		m_unread_eventbox = new Gtk.EventBox();
 		m_unread_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
@@ -97,11 +99,12 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_is_unread == ArticleStatus.UNREAD)
 			m_unread_stack.set_visible_child_name("unread");
 		else if(m_is_unread == ArticleStatus.READ)
-			m_unread_stack.set_visible_child_name("read");
+			//m_unread_stack.set_visible_child_name("read");
+			m_unread_stack.set_visible_child_name("empty");
 
-		m_unread_eventbox.enter_notify_event.connect(() => {unreadIconEnter(); return true;});
-		m_unread_eventbox.leave_notify_event.connect(() => {unreadIconLeave(); return true;});
-		m_unread_eventbox.button_press_event.connect(() => {unreadIconClicked(); return true;});
+		m_unread_eventbox.enter_notify_event.connect(unreadIconEnter);
+		m_unread_eventbox.leave_notify_event.connect(unreadIconLeave);
+		m_unread_eventbox.button_press_event.connect(unreadIconClicked);
 
 
 		m_marked_eventbox = new Gtk.EventBox();
@@ -114,7 +117,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_marked == ArticleStatus.MARKED)
 			m_marked_stack.set_visible_child_name("marked");
 		else if(m_marked == ArticleStatus.UNMARKED)
-			m_marked_stack.set_visible_child_name("unmarked");
+			//m_marked_stack.set_visible_child_name("unmarked");
+			m_marked_stack.set_visible_child_name("empty");
 
 		m_marked_eventbox.enter_notify_event.connect(markedIconEnter);
 		m_marked_eventbox.leave_notify_event.connect(markedIconLeave);
@@ -168,12 +172,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	}
 
 
-	private void unreadIconClicked()
+	private bool unreadIconClicked()
 	{
-		if(m_just_clicked)
+		//if(m_just_clicked)
 			unreadIconEnter();
-		m_just_clicked = true;
+		//m_just_clicked = true;
 		toggleUnread();
+		return true;
 	}
 
 	public void toggleUnread()
@@ -192,7 +197,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		feedDaemon_interface.changeArticle(m_articleID, m_is_unread);
 	}
 
-	private void unreadIconEnter()
+	private bool unreadIconEnter()
 	{
 		m_hovering_unread = true;
 		if(m_is_unread == ArticleStatus.READ){
@@ -202,22 +207,25 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			m_unread_stack.set_visible_child_name("read");
 		}
 		this.show_all();
+		return true;
 	}
 
 
-	public void unreadIconLeave()
+	public bool unreadIconLeave()
 	{
 		m_hovering_unread = false;
-		if(!m_just_clicked){
+		//if(!m_just_clicked){
 			if(m_is_unread == ArticleStatus.READ){
-				m_unread_stack.set_visible_child_name("read");
+				//m_unread_stack.set_visible_child_name("read");
+				m_unread_stack.set_visible_child_name("empty");
 			}
 			else{
 				m_unread_stack.set_visible_child_name("unread");
 			}
-		}
-		m_just_clicked = false;
+		//}
+		//m_just_clicked = false;
 		this.show_all();
+		return true;
 	}
 
 	public void updateUnread(ArticleStatus unread)
@@ -240,7 +248,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				m_label.get_style_context().add_class("headline-read-label");
 				if(!isHoveringUnread())
 				{
-					m_unread_stack.set_visible_child_name("read");
+					m_unread_stack.set_visible_child_name("empty");
 				}
 			}
 		}
@@ -255,7 +263,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	private bool markedIconClicked()
 	{
-		m_just_clicked = true;
+		//m_just_clicked = true;
 		toggleMarked();
 		return true;
 	}
@@ -293,16 +301,17 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool markedIconLeave()
 	{
 		m_hovering_marked = false;
-		if(!m_just_clicked){
+		//if(!m_just_clicked){
 			if(m_marked == ArticleStatus.UNMARKED){
-				m_marked_stack.set_visible_child_name("unmarked");
+				//m_marked_stack.set_visible_child_name("unmarked");
+				m_marked_stack.set_visible_child_name("empty");
 			}
 			else if(m_marked == ArticleStatus.MARKED){
 				m_marked_stack.set_visible_child_name("marked");
 			}
 			this.show_all();
-		}
-		m_just_clicked = false;
+		//}
+		//m_just_clicked = false;
 		return true;
 	}
 
@@ -323,7 +332,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				case ArticleStatus.UNMARKED:
 					if(!isHoveringMarked())
 					{
-						m_marked_stack.set_visible_child_name("unmarked");
+						//m_marked_stack.set_visible_child_name("unmarked");
+						m_marked_stack.set_visible_child_name("empty");
 					}
 					break;
 			}

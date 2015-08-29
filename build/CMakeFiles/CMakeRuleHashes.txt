@@ -1,8 +1,0 @@
-# Hashes of file build rules.
-f87df814b7cecefe96b5e6ba67a7e841 CMakeFiles/uninstall
-789bdbbf36889fc8fe991a72e1145eda feedreader-daemon_valac.stamp
-deabdd5f12fd1b68f7c542ddaadbbffa feedreader_valac.stamp
-07bc77e1724a7ea105a2cf7cce7604b4 po/CMakeFiles/i18n
-07bc77e1724a7ea105a2cf7cce7604b4 po/CMakeFiles/pot
-9def959b83310bf5a45a8f017b761597 src/Daemon.c
-9def959b83310bf5a45a8f017b761597 src/FeedReader.c

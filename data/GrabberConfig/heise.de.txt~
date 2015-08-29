@@ -40,7 +40,7 @@ strip_id_or_class: ad_
 # Some optimizations
 replace_string(<h5>): <h2>
 replace_string(</h5>): </h2>
-replace_string(<span class="bild_rechts"): <p
+replace_string(<span class="bild_rechts" style="width:): <p "
 replace_string(<div class="heisebox">): <blockquote>
 
 

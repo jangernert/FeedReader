@@ -2,6 +2,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	private Gtk.Button m_share_button;
 	private Gtk.Button m_tag_button;
+	private HoverButton m_mark_button;
+	private HoverButton m_read_button;
 	private Granite.Widgets.ModeButton m_modeButton;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
@@ -13,12 +15,31 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
 	public signal void showSettings(string panel);
+	public signal void toggledMarked();
+	public signal void toggledRead();
 
 
 	public readerHeaderbar () {
 		var share_icon = new Gtk.Image.from_icon_name("feed-share-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		var marked_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_state = (ArticleListState)settings_state.get_enum("show-articles");
+
+
+		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
+		m_mark_button.sensitive = false;
+		m_mark_button.clicked.connect(() => {
+			toggledMarked();
+		});
+		m_read_button = new HoverButton(read_icon, unread_icon, false);
+		m_read_button.sensitive = false;
+		m_read_button.clicked.connect(() => {
+			toggledRead();
+		});
+
 
 		m_header_left = new Gtk.HeaderBar ();
         m_header_left.show_close_button = true;
@@ -116,6 +137,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);
 
+		m_header_right.pack_start(m_mark_button);
+		m_header_right.pack_start(m_read_button);
 		m_header_right.pack_end(m_share_button);
 		m_header_right.pack_end(m_tag_button);
 
@@ -156,6 +179,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void showArticleButtons(bool show)
 	{
 		m_share_button.sensitive = show;
+		m_mark_button.sensitive = show;
+		m_read_button.sensitive = show;
 
 		if(feedDaemon_interface.supportTags())
 		{
@@ -189,6 +214,26 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			return false;
 
 		return m_pop.entryFocused();
+	}
+
+	public void setMarked(bool marked)
+	{
+		m_mark_button.setActive(marked);
+	}
+
+	public void toggleMarked()
+	{
+		m_mark_button.toggle();
+	}
+
+	public void setRead(bool read)
+	{
+		m_read_button.setActive(read);
+	}
+
+	public void toggleRead()
+	{
+		m_read_button.toggle();
 	}
 
 }

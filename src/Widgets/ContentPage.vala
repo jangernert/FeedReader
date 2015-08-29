@@ -63,6 +63,15 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 			showArticleButtons(true);
 
+			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			if(window != null)
+			{
+				var header = window.getHeaderBar();
+				logger.print(LogMessage.DEBUG, "contentPage: set headerbar");
+				header.setRead(row.isUnread());
+				header.setMarked(row.isMarked());
+			}
+
 			if(m_article_view.getCurrentArticle() != row.getID())
 				m_article_view.fillContent(row.getID());
 		});
@@ -198,6 +207,16 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public string getSelectedArticle()
 	{
 		return m_articleList.getSelectedArticle();
+	}
+
+	public ArticleStatus getSelectedArticleMarked()
+	{
+		return m_articleList.getSelectedArticleMarked();
+	}
+
+	public ArticleStatus getSelectedArticleRead()
+	{
+		return m_articleList.getSelectedArticleRead();
 	}
 
 	public string getSelectedURL()

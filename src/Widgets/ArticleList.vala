@@ -345,6 +345,24 @@ public class FeedReader.articleList : Gtk.Stack {
 		return "";
 	}
 
+	public ArticleStatus getSelectedArticleMarked()
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+		if(selected_row != null)
+			return selected_row.getMarked();
+
+		return ArticleStatus.UNMARKED;
+	}
+
+	public ArticleStatus getSelectedArticleRead()
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+		if(selected_row != null)
+			return selected_row.getUnread();
+
+		return ArticleStatus.READ;
+	}
+
 	public string getSelectedURL()
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;

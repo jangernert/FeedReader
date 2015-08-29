@@ -67,6 +67,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
         	m_content.set_position(m_headerbar.get_position());
         });
 
+		m_headerbar.toggledMarked.connect(() => {
+			m_content.toggleMarkedSelectedArticle();
+		});
+
+		m_headerbar.toggledRead.connect(() => {
+			m_content.toggleReadSelectedArticle();
+		});
+
 		m_simpleHeader = new Gtk.HeaderBar ();
 		m_simpleHeader.show_close_button = true;
 		m_simpleHeader.set_title("FeedReader");
@@ -454,11 +462,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case Gdk.Key.r:
 				logger.print(LogMessage.DEBUG, "shortcut: toggle read");
 				m_content.toggleReadSelectedArticle();
+				m_headerbar.toggleRead();
 				break;
 
 			case Gdk.Key.m:
 				logger.print(LogMessage.DEBUG, "shortcut: toggle marked");
 				m_content.toggleMarkedSelectedArticle();
+				m_headerbar.toggleMarked();
 				break;
 
 			case Gdk.Key.o:
@@ -470,6 +480,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				logger.print(LogMessage.DEBUG, "shortcut: mark all as read");
 				//if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
 				markSelectedRead();
+				m_headerbar.setRead(false);
 				break;
 
 			case Gdk.Key.F5:
@@ -489,6 +500,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	public ContentPage getContent()
 	{
 		return m_content;
+	}
+
+	public readerHeaderbar getHeaderBar()
+	{
+		return m_headerbar;
 	}
 
 }

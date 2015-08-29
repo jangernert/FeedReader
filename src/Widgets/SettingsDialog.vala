@@ -75,11 +75,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_uiBox.pack_start(feed_settings, false, true, 0);
 
         var only_feeds_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var only_feeds = new Gtk.Label("only show Feeds");
+        var only_feeds = new Gtk.Label(_("Only show feeds"));
         only_feeds.set_alignment(0, 0.5f);
         only_feeds.margin_start = 15;
         var only_feeds_switch = new Gtk.Switch();
-        only_feeds_switch.active = settings_general.get_boolean(_("only-feeds"));
+        only_feeds_switch.active = settings_general.get_boolean("only-feeds");
         only_feeds_switch.notify["active"].connect(() => {
             settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
             settings_state.set_string("feedlist-selected-row", "feed -4");
@@ -91,7 +91,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_uiBox.pack_start(only_feeds_box, false, true, 0);
 
         var only_unread_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var only_unread = new Gtk.Label(_("only show unread"));
+        var only_unread = new Gtk.Label(_("Only show unread"));
         only_unread.set_alignment(0, 0.5f);
         only_unread.margin_start = 15;
         var only_unread_switch = new Gtk.Switch();
@@ -108,24 +108,24 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private void setup_articlelist_settings()
     {
-        var article_settings = new Gtk.Label(_("ArticleList:"));
+        var article_settings = new Gtk.Label(_("Article List:"));
         article_settings.margin_top = 15;
         article_settings.set_alignment(0, 0.5f);
         article_settings.get_style_context().add_class("h4");
         m_uiBox.pack_start(article_settings, false, true, 0);
 
         var article_sort_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var article_sort = new Gtk.Label(_("sort articles by"));
+        var article_sort = new Gtk.Label(_("Sort articles by"));
         article_sort.set_alignment(0, 0.5f);
         article_sort.margin_start = 15;
 
         var sort_liststore = new Gtk.ListStore(1, typeof (string));
 		Gtk.TreeIter sort_by_date;
         sort_liststore.append(out sort_by_date);
-        sort_liststore.set(sort_by_date, 0, _("date"));
+        sort_liststore.set(sort_by_date, 0, _("Date"));
 		Gtk.TreeIter sort_by_inserted;
         sort_liststore.append(out sort_by_inserted);
-        sort_liststore.set(sort_by_inserted, 0, _("received"));
+        sort_liststore.set(sort_by_inserted, 0, _("Received"));
 
         var sort_by_box = new Gtk.ComboBox.with_model(sort_liststore);
         var sort_renderer = new Gtk.CellRendererText();
@@ -148,7 +148,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_uiBox.pack_start(article_sort_box, false, true, 0);
 
         var newest_first_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var newest_first = new Gtk.Label(_("newest first"));
+        var newest_first = new Gtk.Label(_("Newest first"));
         newest_first.set_alignment(0, 0.5f);
         newest_first.margin_start = 15;
         var newest_first_switch = new Gtk.Switch();
@@ -165,7 +165,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private void setup_articleview_settings()
     {
-        var articleview_settings = new Gtk.Label(_("ArticleView:"));
+        var articleview_settings = new Gtk.Label(_("Article View:"));
         articleview_settings.margin_top = 15;
         articleview_settings.set_alignment(0, 0.5f);
         articleview_settings.get_style_context().add_class("h4");
@@ -179,16 +179,16 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var theme_liststore = new Gtk.ListStore(1, typeof (string));
 		Gtk.TreeIter default;
         theme_liststore.append(out default);
-        theme_liststore.set(default, 0, _("default"));
+        theme_liststore.set(default, 0, _("Default"));
 		Gtk.TreeIter spring;
         theme_liststore.append(out spring);
-        theme_liststore.set(spring, 0, _("spring"));
+        theme_liststore.set(spring, 0, _("Spring"));
         Gtk.TreeIter midnight;
         theme_liststore.append(out midnight);
-        theme_liststore.set(midnight, 0, _("midnight"));
+        theme_liststore.set(midnight, 0, _("Midnight"));
         Gtk.TreeIter parchment;
         theme_liststore.append(out parchment);
-        theme_liststore.set(parchment, 0, _("parchment"));
+        theme_liststore.set(parchment, 0, _("Parchment"));
 
         var theme_box = new Gtk.ComboBox.with_model(theme_liststore);
         var theme_renderer = new Gtk.CellRendererText();
@@ -232,7 +232,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_internalsBox.pack_start(sync_settings, false, true, 0);
 
         var sync_count_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var sync_count = new Gtk.Label(_("number of articles"));
+        var sync_count = new Gtk.Label(_("Number of articles"));
         sync_count.set_alignment(0, 0.5f);
         sync_count.margin_start = 15;
         var sync_count_button = new Gtk.SpinButton.with_range(10, 1000, 10);
@@ -245,7 +245,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_internalsBox.pack_start(sync_count_box, false, true, 0);
 
         var sync_time_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var sync_time = new Gtk.Label(_("every (seconds)"));
+        var sync_time = new Gtk.Label(_("Every (seconds)"));
         sync_time.set_alignment(0, 0.5f);
         sync_time.margin_start = 15;
         var sync_time_button = new Gtk.SpinButton.with_range(60, 1080, 10);
@@ -268,7 +268,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_internalsBox.pack_start(db_settings, false, true, 0);
 
         var drop_articles_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var drop_articles = new Gtk.Label(_("drop articles after"));
+        var drop_articles = new Gtk.Label(_("Drop articles after"));
         drop_articles.set_alignment(0, 0.5f);
         drop_articles.margin_start = 15;
 

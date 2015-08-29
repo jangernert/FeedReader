@@ -18,9 +18,9 @@ public class FeedReader.SharePopover : Gtk.Popover {
         var emptyBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         emptyBox.margin = 30;
 
-        var label1 = new Gtk.Label(_("please"));
+        var label1 = new Gtk.Label(_("Please"));
         label1.get_style_context().add_class("h4");
-        var label2 = new Gtk.Label(_("to a service to share this article"));
+        var label2 = new Gtk.Label(_("to a service to share this article."));
         label2.get_style_context().add_class("h4");
 
         emptyBox.pack_start(label1);

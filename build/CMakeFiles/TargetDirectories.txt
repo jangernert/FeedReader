@@ -1,0 +1,5 @@
+/home/samthomas/Development/Vala/feedreader/build/CMakeFiles/feedreader.dir
+/home/samthomas/Development/Vala/feedreader/build/CMakeFiles/feedreader-daemon.dir
+/home/samthomas/Development/Vala/feedreader/build/po/CMakeFiles/i18n.dir
+/home/samthomas/Development/Vala/feedreader/build/po/CMakeFiles/pot.dir
+/home/samthomas/Development/Vala/feedreader/build/CMakeFiles/uninstall.dir

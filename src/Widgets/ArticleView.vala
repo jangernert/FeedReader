@@ -176,7 +176,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		ThreadFunc<void*> run = () => {
 			Article = dataBase.read_article(articleID);
 			if(Article.getAuthor() == "")
-				Article.setAuthor(_("not available"));
+				Article.setAuthor(_("Not available"));
 
 			Idle.add((owned) callback);
 			return null;

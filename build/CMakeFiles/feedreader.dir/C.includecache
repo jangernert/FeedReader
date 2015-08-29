@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/samthomas/Development/Vala/feedreader/build/src/Widgets/UpdateButton.c
+glib.h
+-
+glib-object.h
+-
+gtk/gtk.h
+-
+stdlib.h
+-
+string.h
+-
+glib/gi18n-lib.h
+-
+gio/gio.h
+-
+

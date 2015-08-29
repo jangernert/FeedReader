@@ -17,7 +17,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		m_stack.add_named(m_icon, "icon");
 		this.add(m_stack);
 		this.set_focus_on_click(false);
-		this.set_tooltip_text(_("update Feeds"));
+		this.set_tooltip_text(_("Update Feeds"));
 		this.show_all();
 
 		if(settings_state.get_boolean("currently-updating"))

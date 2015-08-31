@@ -9,6 +9,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private string m_name;
 	private GLib.DateTime m_date;
 	private Gtk.Image m_icon;
+	private Gtk.EventBox m_row_eventbox;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private Gtk.Stack m_unread_stack;
@@ -16,6 +17,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_updated;
 	private bool m_hovering_unread;
 	private bool m_hovering_marked;
+	private bool m_hovering_row;
 	private string m_articleID { get; private set; }
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
@@ -24,6 +26,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		m_hovering_unread = false;
 		m_hovering_marked = false;
+		m_hovering_row = false;
 		m_updated = false;
 		m_sortID = sortID;
 		m_marked = marked;
@@ -120,6 +123,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_marked_eventbox.button_press_event.connect(markedIconClicked);
 
 
+		m_row_eventbox = new Gtk.EventBox();
+		m_row_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_row_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_row_eventbox.enter_notify_event.connect(rowEnter);
+		m_row_eventbox.leave_notify_event.connect(rowLeave);
+
+
 
 		icon_box.pack_start(m_icon, true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
@@ -162,14 +172,74 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.add(seperator_box);
 		m_revealer.set_reveal_child(false);
-		this.add(m_revealer);
+		m_row_eventbox.add(m_revealer);
+		this.add(m_row_eventbox);
 		this.show_all();
+	}
+
+	private bool rowEnter(Gdk.EventCrossing event)
+	{
+		if(event.detail == Gdk.NotifyType.INFERIOR)
+			return true;
+
+		m_hovering_row = true;
+
+		switch(m_is_unread)
+		{
+			case ArticleStatus.READ:
+				m_unread_stack.set_visible_child_name("read");
+				break;
+			case ArticleStatus.UNREAD:
+				m_unread_stack.set_visible_child_name("unread");
+				break;
+		}
+
+		switch(m_marked)
+		{
+			case ArticleStatus.MARKED:
+				m_marked_stack.set_visible_child_name("marked");
+				break;
+			case ArticleStatus.UNMARKED:
+				m_marked_stack.set_visible_child_name("unmarked");
+				break;
+		}
+
+		return true;
+	}
+
+	private bool rowLeave(Gdk.EventCrossing event)
+	{
+		if(event.detail == Gdk.NotifyType.INFERIOR)
+			return true;
+		
+		m_hovering_row = false;
+
+		switch(m_is_unread)
+		{
+			case ArticleStatus.READ:
+				m_unread_stack.set_visible_child_name("empty");
+				break;
+			case ArticleStatus.UNREAD:
+				m_unread_stack.set_visible_child_name("unread");
+				break;
+		}
+
+		switch(m_marked)
+		{
+			case ArticleStatus.MARKED:
+				m_marked_stack.set_visible_child_name("marked");
+				break;
+			case ArticleStatus.UNMARKED:
+				m_marked_stack.set_visible_child_name("empty");
+				break;
+		}
+
+		return true;
 	}
 
 
 	private bool unreadIconClicked()
 	{
-		unreadIconEnter();
 		toggleUnread();
 		return true;
 	}
@@ -205,6 +275,33 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		feedDaemon_interface.changeArticle(m_articleID, m_is_unread);
 	}
 
+	public void updateUnread(ArticleStatus unread)
+	{
+		if(m_is_unread != unread)
+		{
+			m_is_unread = unread;
+			if(m_is_unread == ArticleStatus.UNREAD)
+			{
+				m_label.get_style_context().remove_class("headline-read-label");
+				m_label.get_style_context().add_class("headline-unread-label");
+				m_unread_stack.set_visible_child_name("unread");
+			}
+			else
+			{
+				m_label.get_style_context().remove_class("headline-unread-label");
+				m_label.get_style_context().add_class("headline-read-label");
+				if(m_hovering_row)
+				{
+					m_unread_stack.set_visible_child_name("read");
+				}
+				else
+				{
+					m_unread_stack.set_visible_child_name("empty");
+				}
+			}
+		}
+	}
+
 	private bool unreadIconEnter()
 	{
 		m_hovering_unread = true;
@@ -223,7 +320,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		m_hovering_unread = false;
 		if(m_is_unread == ArticleStatus.READ){
-			m_unread_stack.set_visible_child_name("empty");
+			m_unread_stack.set_visible_child_name("read");
 		}
 		else{
 			m_unread_stack.set_visible_child_name("unread");
@@ -232,31 +329,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	public void updateUnread(ArticleStatus unread)
-	{
-		if(m_is_unread != unread)
-		{
-			m_is_unread = unread;
-			if(m_is_unread == ArticleStatus.UNREAD)
-			{
-				m_label.get_style_context().remove_class("headline-read-label");
-				m_label.get_style_context().add_class("headline-unread-label");
-				if(!isHoveringUnread())
-				{
-					m_unread_stack.set_visible_child_name("unread");
-				}
-			}
-			else
-			{
-				m_label.get_style_context().remove_class("headline-unread-label");
-				m_label.get_style_context().add_class("headline-read-label");
-				if(!isHoveringUnread())
-				{
-					m_unread_stack.set_visible_child_name("empty");
-				}
-			}
-		}
-	}
 
 	public void removeUnreadIcon()
 	{
@@ -302,6 +374,31 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		feedDaemon_interface.changeArticle(m_articleID, m_marked);
 	}
 
+	public void updateMarked(ArticleStatus marked)
+	{
+		if(m_marked != marked)
+		{
+			m_marked = marked;
+			switch(m_marked)
+			{
+				case ArticleStatus.MARKED:
+					m_marked_stack.set_visible_child_name("marked");
+					break;
+
+				case ArticleStatus.UNMARKED:
+					if(m_hovering_row)
+					{
+						m_marked_stack.set_visible_child_name("unmarked");
+					}
+					else
+					{
+						m_marked_stack.set_visible_child_name("empty");
+					}
+					break;
+			}
+		}
+	}
+
 	private bool markedIconEnter()
 	{
 		m_hovering_marked = true;
@@ -320,37 +417,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		m_hovering_marked = false;
 		if(m_marked == ArticleStatus.UNMARKED){
-			m_marked_stack.set_visible_child_name("empty");
+			m_marked_stack.set_visible_child_name("unmarked");
 		}
 		else if(m_marked == ArticleStatus.MARKED){
 			m_marked_stack.set_visible_child_name("marked");
 		}
 		this.show_all();
 		return true;
-	}
-
-	public void updateMarked(ArticleStatus marked)
-	{
-		if(m_marked != marked)
-		{
-			m_marked = marked;
-			switch(m_marked)
-			{
-				case ArticleStatus.MARKED:
-					if(!isHoveringMarked())
-					{
-						m_marked_stack.set_visible_child_name("marked");
-					}
-					break;
-
-				case ArticleStatus.UNMARKED:
-					if(!isHoveringMarked())
-					{
-						m_marked_stack.set_visible_child_name("empty");
-					}
-					break;
-			}
-		}
 	}
 
 	public bool isUnread()

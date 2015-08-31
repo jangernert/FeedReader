@@ -1,6 +1,7 @@
 public class FeedReader.HoverButton : Gtk.EventBox {
 
     private Gtk.Button m_button;
+    private Gtk.Stack m_stack;
     private Gtk.Image m_inactive;
     private Gtk.Image m_active;
     private bool m_isActive;
@@ -12,6 +13,7 @@ public class FeedReader.HoverButton : Gtk.EventBox {
         m_inactive = inactive;
         m_active = active;
         m_isActive = isActive;
+        m_stack = new Gtk.Stack();
         m_button = new Gtk.Button();
 		m_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_button.set_focus_on_click(false);
@@ -21,10 +23,14 @@ public class FeedReader.HoverButton : Gtk.EventBox {
             clicked(m_isActive);
         });
 
+        m_stack.add_named(inactive, "inactive");
+        m_stack.add_named(active, "active");
+        m_button.add(m_stack);
+
         if(isActive)
-            m_button.add(m_active);
+            m_stack.set_visible_child_name("active");
         else
-            m_button.add(m_inactive);
+            m_stack.set_visible_child_name("inactive");
 
 
 
@@ -39,15 +45,13 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 
     private void setActiveIcon()
     {
-        m_button.remove(m_inactive);
-        m_button.add(m_active);
+        m_stack.set_visible_child_name("active");
         m_active.show();
     }
 
     private void setInactiveIcon()
     {
-        m_button.remove(m_active);
-        m_button.add(m_inactive);
+        m_stack.set_visible_child_name("inactive");
         m_inactive.show();
     }
 

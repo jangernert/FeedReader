@@ -33,6 +33,11 @@
 		<value nick="6 Months" value="3"/>
 	</enum>
 
+	<enum id="org.gnome.feedreader.feedlist-sort">
+		<value nick="RECEIVED" value="0"/>
+		<value nick="ALPHABETICAL" value="1"/>
+	</enum>
+
 
 
 
@@ -100,6 +105,10 @@
 			<description>
 				Hide all Feeds that have no unread items.
 			</description>
+		</key>
+
+		<key name='feedlist-sort-by' enum='org.gnome.feedreader.feedlist-sort'>
+			<default>'RECEIVED'</default>
 		</key>
 
 		<key name="articlelist-sort-by-date" type="b">

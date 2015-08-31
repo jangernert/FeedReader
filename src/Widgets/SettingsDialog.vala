@@ -103,6 +103,34 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         only_unread_box.pack_start(only_unread, true, true, 0);
         only_unread_box.pack_end(only_unread_switch, false, false, 0);
         m_uiBox.pack_start(only_unread_box, false, true, 0);
+
+
+        var feedlist_sort_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        var feedlist_sort = new Gtk.Label(_("Sort FeedList by"));
+        feedlist_sort.set_alignment(0, 0.5f);
+        feedlist_sort.margin_start = 15;
+
+        var sort_liststore = new Gtk.ListStore(1, typeof (string));
+		Gtk.TreeIter sort_by_received;
+        sort_liststore.append(out sort_by_received);
+        sort_liststore.set(sort_by_received, 0, _("Received"));
+		Gtk.TreeIter sort_by_alphabetical;
+        sort_liststore.append(out sort_by_alphabetical);
+        sort_liststore.set(sort_by_alphabetical, 0, _("Alphabetically"));
+
+        var sort_by_box = new Gtk.ComboBox.with_model(sort_liststore);
+        var sort_renderer = new Gtk.CellRendererText();
+        sort_by_box.pack_start(sort_renderer, false);
+        sort_by_box.add_attribute(sort_renderer, "text", 0);
+        sort_by_box.changed.connect(() => {
+            settings_general.set_enum("feedlist-sort-by", sort_by_box.get_active());
+            newFeedList();
+        });
+
+        sort_by_box.set_active(settings_general.get_enum("feedlist-sort-by"));
+        feedlist_sort_box.pack_start(feedlist_sort, true, true, 0);
+        feedlist_sort_box.pack_end(sort_by_box, false, false, 0);
+        m_uiBox.pack_start(feedlist_sort_box, false, true, 0);
     }
 
 
@@ -129,7 +157,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
         var sort_by_box = new Gtk.ComboBox.with_model(sort_liststore);
         var sort_renderer = new Gtk.CellRendererText();
-        sort_by_box.pack_start (sort_renderer, false);
+        sort_by_box.pack_start(sort_renderer, false);
         sort_by_box.add_attribute(sort_renderer, "text", 0);
         sort_by_box.changed.connect(() => {
             if(sort_by_box.get_active() == 0)

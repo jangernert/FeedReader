@@ -1246,6 +1246,10 @@ public class FeedReader.dbManager : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("*");
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("name", true);
+		}
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1270,6 +1274,10 @@ public class FeedReader.dbManager : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("*");
 		query.addCustomCondition(getUncategorizedQuery());
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("name", true);
+		}
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1396,7 +1404,15 @@ public class FeedReader.dbManager : GLib.Object {
 		query.selectField("*");
 		query.addCustomCondition("categorieID >= 0");
 		query.addEqualsCondition("level", level.to_string());
-		query.orderBy("orderID", true);
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("title", true);
+		}
+		else
+		{
+			query.orderBy("orderID", true);
+		}
+
 		query.build();
 
 		Sqlite.Statement stmt;

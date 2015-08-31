@@ -191,6 +191,11 @@ namespace FeedReader {
 		TAG
 	}
 
+	public enum FeedListSort {
+		RECEIVED,
+		ALPHABETICAL
+	}
+
 	namespace CategoryID {
 		 const string NONE          = "-99";
 		 const string TTRSS_SPECIAL = "-1";

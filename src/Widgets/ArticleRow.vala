@@ -211,7 +211,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		if(event.detail == Gdk.NotifyType.INFERIOR)
 			return true;
-		
+
 		m_hovering_row = false;
 
 		switch(m_is_unread)
@@ -238,8 +238,15 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	}
 
 
-	private bool unreadIconClicked()
+	private bool unreadIconClicked(Gdk.EventButton event)
 	{
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
 		toggleUnread();
 		return true;
 	}
@@ -337,8 +344,15 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	}
 
 
-	private bool markedIconClicked()
+	private bool markedIconClicked(Gdk.EventButton event)
 	{
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
 		toggleMarked();
 		return true;
 	}

@@ -7,33 +7,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-08-25 16:51+0200\n"
+"POT-Creation-Date: 2015-08-31 03:44+0200\n"
 "PO-Revision-Date: 2015-08-24 05:33+0000\n"
 "Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-30 05:36+0000\n"
+"X-Launchpad-Export-Date: 2015-08-31 05:29+0000\n"
 "X-Generator: Launchpad (build 17690)\n"
 
-#: ../src/Backends/FeedServer.vala:483
+#: ../src/Backends/FeedServer.vala:495
 msgid "There is 1 new article"
 msgstr "Hay 1 artículo nuevo"
 
-#: ../src/Backends/FeedServer.vala:485
+#: ../src/Backends/FeedServer.vala:497
 msgid "There are >200 new articles"
 msgstr "Hay más de 200 artículos nuevos"
 
-#: ../src/Backends/FeedServer.vala:487
+#: ../src/Backends/FeedServer.vala:499
 msgid "There are %u new articles"
 msgstr "Hay %u artículos nuevos"
 
-#: ../src/Backends/FeedServer.vala:489
+#: ../src/Backends/FeedServer.vala:501
 msgid "New Articles"
 msgstr "Artículos nuevos"
 
-#: ../src/Backends/ttrss/TTRSS_API.vala:426
+#: ../src/Backends/ttrss/TTRSS_API.vala:448
 msgid "not found"
 msgstr "no encontrado"
 
@@ -41,9 +41,9 @@ msgstr "no encontrado"
 msgid "No Article selected."
 msgstr "Ningún artículo seleccionado."
 
-#: ../src/Widgets/ArticleView.vala:153
-msgid "not available"
-msgstr "no disponible"
+#: ../src/Widgets/ArticleView.vala:179
+msgid "Not available"
+msgstr ""
 
 #: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
@@ -79,17 +79,17 @@ msgstr "Ningún servicio seleccionado."
 msgid "TinyTinyRSS URL:"
 msgstr "URL de TinyTinyRSS:"
 
-#: ../src/Widgets/LoginPage.vala:119 ../src/Widgets/LoginPage.vala:188
+#: ../src/Widgets/LoginPage.vala:119 ../src/Widgets/LoginPage.vala:190
 #: ../src/Widgets/ServiceSettingsRow.vala:71
 msgid "Username:"
 msgstr "Nombre de usuario:"
 
-#: ../src/Widgets/LoginPage.vala:120 ../src/Widgets/LoginPage.vala:189
+#: ../src/Widgets/LoginPage.vala:120 ../src/Widgets/LoginPage.vala:191
 #: ../src/Widgets/ServiceSettingsRow.vala:72
 msgid "Password:"
 msgstr "Contraseña:"
 
-#: ../src/Widgets/LoginPage.vala:168
+#: ../src/Widgets/LoginPage.vala:170
 msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
@@ -97,35 +97,35 @@ msgstr ""
 "Será redirigido al sitio web de Feedly, donde podrá identificarse con su "
 "cuenta de Facebook, Google, Twitter, Microsoft o Evernote."
 
-#: ../src/Widgets/LoginPage.vala:187
+#: ../src/Widgets/LoginPage.vala:189
 msgid "OwnCloud URL:"
 msgstr "URL de OwnCloud:"
 
 #: ../src/Widgets/SharePopover.vala:21
-msgid "please"
-msgstr "por favor"
-
-#: ../src/Widgets/SharePopover.vala:23
-msgid "to a service to share this article"
-msgstr "a un servicio para compartir este artículo"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:51
-msgid "tag article"
+msgid "Please"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:60
-msgid "share article"
-msgstr "compartir artículo"
+#: ../src/Widgets/SharePopover.vala:23
+msgid "to a service to share this article."
+msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:93
+#: ../src/Widgets/ReaderHeaderbar.vala:72
+msgid "Tag Article"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Share Article"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:116
 msgid "Search Articles"
 msgstr "Buscar artículos"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:100
+#: ../src/Widgets/ReaderHeaderbar.vala:123
 msgid "Settings"
 msgstr "Configuración"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:102
+#: ../src/Widgets/ReaderHeaderbar.vala:125
 msgid "Change Account"
 msgstr "Cambiar cuenta"
 
@@ -187,35 +187,35 @@ msgstr ""
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Widgets/MainWindow.vala:351
+#: ../src/Widgets/MainWindow.vala:359
 msgid "Please select a service first"
 msgstr "Seleccione primero un servicio"
 
-#: ../src/Widgets/MainWindow.vala:354
+#: ../src/Widgets/MainWindow.vala:362
 msgid "Please enter a valid username"
 msgstr "Por favor, indique un nombre de usuario válido"
 
-#: ../src/Widgets/MainWindow.vala:357
+#: ../src/Widgets/MainWindow.vala:365
 msgid "Please enter a valid password"
 msgstr "Por favor, indique una contraseña válida"
 
-#: ../src/Widgets/MainWindow.vala:360
+#: ../src/Widgets/MainWindow.vala:368
 msgid "Please enter a valid URL"
 msgstr "Por favor, indique un URL válido"
 
-#: ../src/Widgets/MainWindow.vala:363
+#: ../src/Widgets/MainWindow.vala:371
 msgid "Please enter your Login details"
 msgstr "Por favor, indique sus detalles de acceso"
 
-#: ../src/Widgets/MainWindow.vala:366
+#: ../src/Widgets/MainWindow.vala:374
 msgid "Sorry, something went wrong."
 msgstr "Lo siento, ha ocurrido un error."
 
-#: ../src/Widgets/MainWindow.vala:369
+#: ../src/Widgets/MainWindow.vala:377
 msgid "Either your username or the password are not correct."
 msgstr "Su usuario o su contraseña no son correctos."
 
-#: ../src/Widgets/MainWindow.vala:372
+#: ../src/Widgets/MainWindow.vala:380
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -224,8 +224,8 @@ msgstr ""
 "servidor."
 
 #: ../src/Widgets/UpdateButton.vala:20
-msgid "update Feeds"
-msgstr "Actualizar canales"
+msgid "Update Feeds"
+msgstr ""
 
 #: ../src/Widgets/TagPopover.vala:25
 msgid "add Tags:"
@@ -259,77 +259,77 @@ msgstr "Cerrar"
 msgid "Feed List:"
 msgstr "Lista de canales"
 
-#: ../src/Widgets/SettingsDialog.vala:82
-msgid "only-feeds"
-msgstr "sólo canales"
+#: ../src/Widgets/SettingsDialog.vala:78
+msgid "Only show feeds"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:94
-msgid "only show unread"
-msgstr "mostrar solo no leídos"
+msgid "Only show unread"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:111
-msgid "ArticleList:"
-msgstr "Lista de Artículos"
+msgid "Article List:"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:118
-msgid "sort articles by"
-msgstr "ordenar artículos por"
+msgid "Sort articles by"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:125
-msgid "date"
-msgstr "fecha"
+msgid "Date"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:128
-msgid "received"
-msgstr "recepción"
+msgid "Received"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:151
-msgid "newest first"
-msgstr "más recientes primero"
+msgid "Newest first"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:168
-msgid "ArticleView:"
-msgstr "Vista de Artículos"
+msgid "Article View:"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
 msgstr "Tema"
 
 #: ../src/Widgets/SettingsDialog.vala:182
-msgid "default"
-msgstr "por defecto"
+msgid "Default"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:185
-msgid "spring"
-msgstr "primavera"
+msgid "Spring"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:188
-msgid "midnight"
-msgstr "medianoche"
+msgid "Midnight"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:191
-msgid "parchment"
-msgstr "pergamino"
+msgid "Parchment"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:228
 msgid "Sync:"
 msgstr "Sincronizar:"
 
 #: ../src/Widgets/SettingsDialog.vala:235
-msgid "number of articles"
-msgstr "cantidad de artículos"
+msgid "Number of articles"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:248
-msgid "every (seconds)"
-msgstr "cada (segundos)"
+msgid "Every (seconds)"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"
 msgstr "Base de datos:"
 
 #: ../src/Widgets/SettingsDialog.vala:271
-msgid "drop articles after"
-msgstr "vaciar artículos después de"
+msgid "Drop articles after"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:278
 msgid "Never"
@@ -376,7 +376,7 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "No hay vista previa disponible"
 
-#: ../src/Utils.vala:83
+#: ../src/Utils.vala:75
 msgid "No Text available for this article :("
 msgstr "No hay texto disponible en este artículo :("
 
@@ -415,3 +415,63 @@ msgstr "Hoy"
 #: ../src/Model/Article.vala:120
 msgid "Yesterday"
 msgstr "Ayer"
+
+#~ msgid "not available"
+#~ msgstr "no disponible"
+
+#~ msgid "only show unread"
+#~ msgstr "mostrar solo no leídos"
+
+#~ msgid "newest first"
+#~ msgstr "más recientes primero"
+
+#~ msgid "received"
+#~ msgstr "recepción"
+
+#~ msgid "number of articles"
+#~ msgstr "cantidad de artículos"
+
+#~ msgid "date"
+#~ msgstr "fecha"
+
+#~ msgid "sort articles by"
+#~ msgstr "ordenar artículos por"
+
+#~ msgid "every (seconds)"
+#~ msgstr "cada (segundos)"
+
+#~ msgid "please"
+#~ msgstr "por favor"
+
+#~ msgid "to a service to share this article"
+#~ msgstr "a un servicio para compartir este artículo"
+
+#~ msgid "share article"
+#~ msgstr "compartir artículo"
+
+#~ msgid "update Feeds"
+#~ msgstr "Actualizar canales"
+
+#~ msgid "only-feeds"
+#~ msgstr "sólo canales"
+
+#~ msgid "ArticleList:"
+#~ msgstr "Lista de Artículos"
+
+#~ msgid "ArticleView:"
+#~ msgstr "Vista de Artículos"
+
+#~ msgid "default"
+#~ msgstr "por defecto"
+
+#~ msgid "spring"
+#~ msgstr "primavera"
+
+#~ msgid "midnight"
+#~ msgstr "medianoche"
+
+#~ msgid "parchment"
+#~ msgstr "pergamino"
+
+#~ msgid "drop articles after"
+#~ msgstr "vaciar artículos después de"

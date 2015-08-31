@@ -7,33 +7,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-08-25 16:51+0200\n"
+"POT-Creation-Date: 2015-08-31 03:44+0200\n"
 "PO-Revision-Date: 2015-04-13 16:45+0000\n"
 "Last-Translator: Tomáš Bubeníček <tombuben@gmail.com>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-30 05:36+0000\n"
+"X-Launchpad-Export-Date: 2015-08-31 05:29+0000\n"
 "X-Generator: Launchpad (build 17690)\n"
 
-#: ../src/Backends/FeedServer.vala:483
+#: ../src/Backends/FeedServer.vala:495
 msgid "There is 1 new article"
 msgstr "1 nový článek"
 
-#: ../src/Backends/FeedServer.vala:485
+#: ../src/Backends/FeedServer.vala:497
 msgid "There are >200 new articles"
 msgstr "Více než 200 nových článků"
 
-#: ../src/Backends/FeedServer.vala:487
+#: ../src/Backends/FeedServer.vala:499
 msgid "There are %u new articles"
 msgstr "Počet nových článků: %d"
 
-#: ../src/Backends/FeedServer.vala:489
+#: ../src/Backends/FeedServer.vala:501
 msgid "New Articles"
 msgstr "Nové články"
 
-#: ../src/Backends/ttrss/TTRSS_API.vala:426
+#: ../src/Backends/ttrss/TTRSS_API.vala:448
 msgid "not found"
 msgstr ""
 
@@ -41,9 +41,9 @@ msgstr ""
 msgid "No Article selected."
 msgstr "Nebyl vybrán článek"
 
-#: ../src/Widgets/ArticleView.vala:153
-msgid "not available"
-msgstr "není k dispozici"
+#: ../src/Widgets/ArticleView.vala:179
+msgid "Not available"
+msgstr ""
 
 #: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
@@ -78,17 +78,17 @@ msgstr "Není vybrána žádná služba"
 msgid "TinyTinyRSS URL:"
 msgstr "URL TinyTinyRSS:"
 
-#: ../src/Widgets/LoginPage.vala:119 ../src/Widgets/LoginPage.vala:188
+#: ../src/Widgets/LoginPage.vala:119 ../src/Widgets/LoginPage.vala:190
 #: ../src/Widgets/ServiceSettingsRow.vala:71
 msgid "Username:"
 msgstr "Uživatelské jméno:"
 
-#: ../src/Widgets/LoginPage.vala:120 ../src/Widgets/LoginPage.vala:189
+#: ../src/Widgets/LoginPage.vala:120 ../src/Widgets/LoginPage.vala:191
 #: ../src/Widgets/ServiceSettingsRow.vala:72
 msgid "Password:"
 msgstr "Heslo:"
 
-#: ../src/Widgets/LoginPage.vala:168
+#: ../src/Widgets/LoginPage.vala:170
 msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
@@ -96,35 +96,35 @@ msgstr ""
 "Nyní budete přesměrován/a na stránku Feedly, kde se můžete přihlásit pomocí "
 "účtu na Facebook, Google, Twitter, Microsoft či Evernote."
 
-#: ../src/Widgets/LoginPage.vala:187
+#: ../src/Widgets/LoginPage.vala:189
 msgid "OwnCloud URL:"
 msgstr "OwnCloud URL:"
 
 #: ../src/Widgets/SharePopover.vala:21
-msgid "please"
+msgid "Please"
 msgstr ""
 
 #: ../src/Widgets/SharePopover.vala:23
-msgid "to a service to share this article"
+msgid "to a service to share this article."
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:51
-msgid "tag article"
+#: ../src/Widgets/ReaderHeaderbar.vala:72
+msgid "Tag Article"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:60
-msgid "share article"
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Share Article"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:93
+#: ../src/Widgets/ReaderHeaderbar.vala:116
 msgid "Search Articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:100
+#: ../src/Widgets/ReaderHeaderbar.vala:123
 msgid "Settings"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:102
+#: ../src/Widgets/ReaderHeaderbar.vala:125
 msgid "Change Account"
 msgstr ""
 
@@ -182,35 +182,35 @@ msgstr "Žádný z %d článků v databázi nesedí současným filtrům."
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Widgets/MainWindow.vala:351
+#: ../src/Widgets/MainWindow.vala:359
 msgid "Please select a service first"
 msgstr "Nejdříve vyberte prosím službu"
 
-#: ../src/Widgets/MainWindow.vala:354
+#: ../src/Widgets/MainWindow.vala:362
 msgid "Please enter a valid username"
 msgstr "Vložte prosím správné uživatelské jméno"
 
-#: ../src/Widgets/MainWindow.vala:357
+#: ../src/Widgets/MainWindow.vala:365
 msgid "Please enter a valid password"
 msgstr "Vložte prosím správné heslo"
 
-#: ../src/Widgets/MainWindow.vala:360
+#: ../src/Widgets/MainWindow.vala:368
 msgid "Please enter a valid URL"
 msgstr "Vložte prosím správné URL"
 
-#: ../src/Widgets/MainWindow.vala:363
+#: ../src/Widgets/MainWindow.vala:371
 msgid "Please enter your Login details"
 msgstr "Vložte prosím správné přihlašovací údaje"
 
-#: ../src/Widgets/MainWindow.vala:366
+#: ../src/Widgets/MainWindow.vala:374
 msgid "Sorry, something went wrong."
 msgstr "Omlouváme se, něco se pokazilo."
 
-#: ../src/Widgets/MainWindow.vala:369
+#: ../src/Widgets/MainWindow.vala:377
 msgid "Either your username or the password are not correct."
 msgstr "Vaše jméno nebo heslo nejsou správně."
 
-#: ../src/Widgets/MainWindow.vala:372
+#: ../src/Widgets/MainWindow.vala:380
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -219,8 +219,8 @@ msgstr ""
 "serveru!"
 
 #: ../src/Widgets/UpdateButton.vala:20
-msgid "update Feeds"
-msgstr "Aktualizovat zdroje"
+msgid "Update Feeds"
+msgstr ""
 
 #: ../src/Widgets/TagPopover.vala:25
 msgid "add Tags:"
@@ -254,36 +254,36 @@ msgstr "Zavřít"
 msgid "Feed List:"
 msgstr "Seznam zdrojů"
 
-#: ../src/Widgets/SettingsDialog.vala:82
-msgid "only-feeds"
-msgstr "pouze-zdroje"
+#: ../src/Widgets/SettingsDialog.vala:78
+msgid "Only show feeds"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:94
-msgid "only show unread"
-msgstr "zobrazit pouze nepřečtené"
+msgid "Only show unread"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:111
-msgid "ArticleList:"
-msgstr "Seznam článků:"
+msgid "Article List:"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:118
-msgid "sort articles by"
-msgstr "řadit články podle"
+msgid "Sort articles by"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:125
-msgid "date"
-msgstr "data"
+msgid "Date"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:128
-msgid "received"
-msgstr "přijato"
+msgid "Received"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:151
-msgid "newest first"
-msgstr "nejnovější první"
+msgid "Newest first"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:168
-msgid "ArticleView:"
+msgid "Article View:"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:175
@@ -291,19 +291,19 @@ msgid "Theme"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:182
-msgid "default"
+msgid "Default"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:185
-msgid "spring"
+msgid "Spring"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:188
-msgid "midnight"
+msgid "Midnight"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:191
-msgid "parchment"
+msgid "Parchment"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:228
@@ -311,19 +311,19 @@ msgid "Sync:"
 msgstr "Synchronizovat:"
 
 #: ../src/Widgets/SettingsDialog.vala:235
-msgid "number of articles"
-msgstr "počet článků"
+msgid "Number of articles"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:248
-msgid "every (seconds)"
-msgstr "každých (vteřin)"
+msgid "Every (seconds)"
+msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:271
-msgid "drop articles after"
+msgid "Drop articles after"
 msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:278
@@ -370,7 +370,7 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Žádná ukázka není  dispozici"
 
-#: ../src/Utils.vala:83
+#: ../src/Utils.vala:75
 msgid "No Text available for this article :("
 msgstr "Tento článek nemá žádný dostupný text :("
 
@@ -409,3 +409,36 @@ msgstr ""
 #: ../src/Model/Article.vala:120
 msgid "Yesterday"
 msgstr ""
+
+#~ msgid "not available"
+#~ msgstr "není k dispozici"
+
+#~ msgid "update Feeds"
+#~ msgstr "Aktualizovat zdroje"
+
+#~ msgid "only show unread"
+#~ msgstr "zobrazit pouze nepřečtené"
+
+#~ msgid "only-feeds"
+#~ msgstr "pouze-zdroje"
+
+#~ msgid "newest first"
+#~ msgstr "nejnovější první"
+
+#~ msgid "received"
+#~ msgstr "přijato"
+
+#~ msgid "number of articles"
+#~ msgstr "počet článků"
+
+#~ msgid "date"
+#~ msgstr "data"
+
+#~ msgid "sort articles by"
+#~ msgstr "řadit články podle"
+
+#~ msgid "ArticleList:"
+#~ msgstr "Seznam článků:"
+
+#~ msgid "every (seconds)"
+#~ msgstr "každých (vteřin)"

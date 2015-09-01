@@ -333,14 +333,11 @@ public class FeedReader.Grabber : GLib.Object {
     	int pos2 = -1;
     	while(pos1 != -1)
     	{
-    		stdout.printf("pos1: %i\n", pos1);
     		pos2 = m_html.index_of("/>", pos1);
-    		string broken_iframe = m_html.substring(pos1, pos2-pos1);
-    		stdout.printf("%s\n", broken_iframe);
+    		string broken_iframe = m_html.substring(pos1, pos2+2-pos1);
     		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
-    		stdout.printf("%s\n", fixed_iframe);
     		m_html = m_html.replace(broken_iframe, fixed_iframe);
-    		int pos3 = m_html.index_of("<iframe", pos1);
+    		int pos3 = m_html.index_of("<iframe", pos1+7);
     		if(pos3 == pos1)
     			break;
     		else

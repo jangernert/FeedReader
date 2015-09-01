@@ -507,6 +507,14 @@ html { box-sizing: border-box; }
   
   
   
+  nav .p-help-out { border-color: MediumSeaGreen; }
+  #help-out { background-color: MediumSeaGreen !important; color: #f8f8f8; }
+  #help-out a { color: #f8f8f8; }
+  #help-out .sectiondivider { color: MediumSeaGreen; }
+
+  
+  
+  
   nav .p-support { border-color: darkslateblue; }
   #support { background-color: darkslateblue !important; color: #f8f8f8; }
   #support a { color: #f8f8f8; }
@@ -515,10 +523,10 @@ html { box-sizing: border-box; }
   
   
   
-  nav .p-get-it { border-color: ; }
-  #get-it { background-color:  !important; color: seagreen; }
-  #get-it a { color: seagreen; }
-  #get-it .sectiondivider { color: ; }
+  nav .p-get-it { border-color: SlateGray; }
+  #get-it { background-color: SlateGray !important; color: #111111; }
+  #get-it a { color: #111111; }
+  #get-it .sectiondivider { color: SlateGray; }
 
   
   

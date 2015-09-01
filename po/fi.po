@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-08-31 03:44+0200\n"
-"PO-Revision-Date: 2015-08-27 16:49+0000\n"
+"PO-Revision-Date: 2015-08-31 13:12+0000\n"
 "Last-Translator: Jiri Grönroos <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-31 05:29+0000\n"
+"X-Launchpad-Export-Date: 2015-09-01 05:38+0000\n"
 "X-Generator: Launchpad (build 17690)\n"
 
 #: ../src/Backends/FeedServer.vala:495
@@ -43,7 +43,7 @@ msgstr "Ei artikkelia valittuna"
 
 #: ../src/Widgets/ArticleView.vala:179
 msgid "Not available"
-msgstr ""
+msgstr "Ei saatavilla"
 
 #: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
@@ -102,19 +102,19 @@ msgstr "OwnCloud-osoite:"
 
 #: ../src/Widgets/SharePopover.vala:21
 msgid "Please"
-msgstr ""
+msgstr "-"
 
 #: ../src/Widgets/SharePopover.vala:23
 msgid "to a service to share this article."
-msgstr ""
+msgstr "palveluun jakaaksesi tämän artikkelin."
 
 #: ../src/Widgets/ReaderHeaderbar.vala:72
 msgid "Tag Article"
-msgstr ""
+msgstr "Lisää tunniste artikkeliin"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Share Article"
-msgstr ""
+msgstr "Jaa artikkeli"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:116
 msgid "Search Articles"
@@ -222,7 +222,7 @@ msgstr ""
 
 #: ../src/Widgets/UpdateButton.vala:20
 msgid "Update Feeds"
-msgstr ""
+msgstr "Päivitä syötteet"
 
 #: ../src/Widgets/TagPopover.vala:25
 msgid "add Tags:"
@@ -258,55 +258,55 @@ msgstr "Syöteluettelo:"
 
 #: ../src/Widgets/SettingsDialog.vala:78
 msgid "Only show feeds"
-msgstr ""
+msgstr "Näytä vain syötteet"
 
 #: ../src/Widgets/SettingsDialog.vala:94
 msgid "Only show unread"
-msgstr ""
+msgstr "Näytä vain lukemattomat"
 
 #: ../src/Widgets/SettingsDialog.vala:111
 msgid "Article List:"
-msgstr ""
+msgstr "Artikkelilista:"
 
 #: ../src/Widgets/SettingsDialog.vala:118
 msgid "Sort articles by"
-msgstr ""
+msgstr "Artikkelien järjestysperuste"
 
 #: ../src/Widgets/SettingsDialog.vala:125
 msgid "Date"
-msgstr ""
+msgstr "Päiväys"
 
 #: ../src/Widgets/SettingsDialog.vala:128
 msgid "Received"
-msgstr ""
+msgstr "Vastaanotettu"
 
 #: ../src/Widgets/SettingsDialog.vala:151
 msgid "Newest first"
-msgstr ""
+msgstr "Uusin ensin"
 
 #: ../src/Widgets/SettingsDialog.vala:168
 msgid "Article View:"
-msgstr ""
+msgstr "Artikkelinäkymä:"
 
 #: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
-msgstr "teema"
+msgstr "Teema"
 
 #: ../src/Widgets/SettingsDialog.vala:182
 msgid "Default"
-msgstr ""
+msgstr "Oletus"
 
 #: ../src/Widgets/SettingsDialog.vala:185
 msgid "Spring"
-msgstr ""
+msgstr "Kevät"
 
 #: ../src/Widgets/SettingsDialog.vala:188
 msgid "Midnight"
-msgstr ""
+msgstr "Keskiyö"
 
 #: ../src/Widgets/SettingsDialog.vala:191
 msgid "Parchment"
-msgstr ""
+msgstr "Pergamentti"
 
 #: ../src/Widgets/SettingsDialog.vala:228
 msgid "Sync:"
@@ -314,11 +314,11 @@ msgstr "Synkronoi:"
 
 #: ../src/Widgets/SettingsDialog.vala:235
 msgid "Number of articles"
-msgstr ""
+msgstr "Artikkelien lukumäärä"
 
 #: ../src/Widgets/SettingsDialog.vala:248
 msgid "Every (seconds)"
-msgstr ""
+msgstr "Vuoroväli (sekunneissa)"
 
 #: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"
@@ -326,7 +326,7 @@ msgstr "Tietokanta:"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "Drop articles after"
-msgstr ""
+msgstr "Hylkää artikkelit viiveellä"
 
 #: ../src/Widgets/SettingsDialog.vala:278
 msgid "Never"
@@ -411,66 +411,3 @@ msgstr "Tänään"
 #: ../src/Model/Article.vala:120
 msgid "Yesterday"
 msgstr "Eilen"
-
-#~ msgid "not available"
-#~ msgstr "ei käytettävissä"
-
-#~ msgid "newest first"
-#~ msgstr "uusin ensin"
-
-#~ msgid "received"
-#~ msgstr "vastaanotettu"
-
-#~ msgid "only show unread"
-#~ msgstr "näytä vain lukemattomat"
-
-#~ msgid "date"
-#~ msgstr "päivä"
-
-#~ msgid "sort articles by"
-#~ msgstr "artikkelien järjestysperuste"
-
-#~ msgid "default"
-#~ msgstr "oletus"
-
-#~ msgid "drop articles after"
-#~ msgstr "tiputa artikkelit viiveellä"
-
-#~ msgid "number of articles"
-#~ msgstr "artikkeleiden lukumäärä"
-
-#~ msgid "midnight"
-#~ msgstr "keskiyö"
-
-#~ msgid "spring"
-#~ msgstr "kevät"
-
-#~ msgid "ArticleView:"
-#~ msgstr "Artikkelinäkymä:"
-
-#~ msgid "update Feeds"
-#~ msgstr "päivitä syötteet"
-
-#~ msgid "ArticleList:"
-#~ msgstr "Artikkeliluettelo:"
-
-#~ msgid "parchment"
-#~ msgstr "pergamentti"
-
-#~ msgid "every (seconds)"
-#~ msgstr "aikaväli (sekunneissa)"
-
-#~ msgid "share article"
-#~ msgstr "jaa artikkeli"
-
-#~ msgid "to a service to share this article"
-#~ msgstr "palveluun jakaaksesi artikkelin"
-
-#~ msgid "please"
-#~ msgstr "-"
-
-#~ msgid "tag article"
-#~ msgstr "lisää tunniste artikkeliin"
-
-#~ msgid "only-feeds"
-#~ msgstr "vain syötteet"

@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-31 05:29+0000\n"
+"X-Launchpad-Export-Date: 2015-09-01 05:39+0000\n"
 "X-Generator: Launchpad (build 17690)\n"
 
 #: ../src/Backends/FeedServer.vala:495
@@ -412,66 +412,3 @@ msgstr "Idag"
 #: ../src/Model/Article.vala:120
 msgid "Yesterday"
 msgstr "Igår"
-
-#~ msgid "not available"
-#~ msgstr "inte tillgänglig"
-
-#~ msgid "update Feeds"
-#~ msgstr "Uppdatera nyhetsflöden"
-
-#~ msgid "newest first"
-#~ msgstr "nyaste först"
-
-#~ msgid "date"
-#~ msgstr "datum"
-
-#~ msgid "sort articles by"
-#~ msgstr "sortera artiklar efter"
-
-#~ msgid "number of articles"
-#~ msgstr "antal artiklar"
-
-#~ msgid "only show unread"
-#~ msgstr "visa endast olästa"
-
-#~ msgid "every (seconds)"
-#~ msgstr "varje (sekund)"
-
-#~ msgid "spring"
-#~ msgstr "vår"
-
-#~ msgid "default"
-#~ msgstr "standard"
-
-#~ msgid "midnight"
-#~ msgstr "midnatt"
-
-#~ msgid "share article"
-#~ msgstr "dela artikel"
-
-#~ msgid "to a service to share this article"
-#~ msgstr "på en tjänst för att dela den här artikeln"
-
-#~ msgid "please"
-#~ msgstr "Vänligen"
-
-#~ msgid "ArticleView:"
-#~ msgstr "Artikelvy:"
-
-#~ msgid "parchment"
-#~ msgstr "pergament"
-
-#~ msgid "drop articles after"
-#~ msgstr "ta bort artiklar efter:"
-
-#~ msgid "received"
-#~ msgstr "motagen"
-
-#~ msgid "only-feeds"
-#~ msgstr "endast-artiklar"
-
-#~ msgid "ArticleList:"
-#~ msgstr "Artikellista:"
-
-#~ msgid "tag article"
-#~ msgstr "lägg till etikett för artikel"

@@ -14,7 +14,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-08-31 05:29+0000\n"
+"X-Launchpad-Export-Date: 2015-09-01 05:39+0000\n"
 "X-Generator: Launchpad (build 17690)\n"
 
 #: ../src/Backends/FeedServer.vala:495
@@ -411,66 +411,3 @@ msgstr "Today"
 #: ../src/Model/Article.vala:120
 msgid "Yesterday"
 msgstr "Yesterday"
-
-#~ msgid "please"
-#~ msgstr "please"
-
-#~ msgid "share article"
-#~ msgstr "share article"
-
-#~ msgid "to a service to share this article"
-#~ msgstr "to a service to share this article"
-
-#~ msgid "tag article"
-#~ msgstr "tag article"
-
-#~ msgid "update Feeds"
-#~ msgstr "update Feeds"
-
-#~ msgid "only show unread"
-#~ msgstr "only show unread"
-
-#~ msgid "only-feeds"
-#~ msgstr "only-feeds"
-
-#~ msgid "date"
-#~ msgstr "date"
-
-#~ msgid "sort articles by"
-#~ msgstr "sort articles by"
-
-#~ msgid "ArticleList:"
-#~ msgstr "ArticleList:"
-
-#~ msgid "ArticleView:"
-#~ msgstr "ArticleView:"
-
-#~ msgid "default"
-#~ msgstr "default"
-
-#~ msgid "midnight"
-#~ msgstr "midnight"
-
-#~ msgid "spring"
-#~ msgstr "spring"
-
-#~ msgid "parchment"
-#~ msgstr "parchment"
-
-#~ msgid "newest first"
-#~ msgstr "newest first"
-
-#~ msgid "received"
-#~ msgstr "received"
-
-#~ msgid "number of articles"
-#~ msgstr "number of articles"
-
-#~ msgid "drop articles after"
-#~ msgstr "drop articles after"
-
-#~ msgid "every (seconds)"
-#~ msgstr "every (seconds)"
-
-#~ msgid "not available"
-#~ msgstr "not available"

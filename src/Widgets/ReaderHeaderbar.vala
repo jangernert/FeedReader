@@ -31,11 +31,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
 		m_mark_button.sensitive = false;
+		m_mark_button.set_tooltip_text(_("Mark article (un)starred"));
 		m_mark_button.clicked.connect(() => {
 			toggledMarked();
 		});
 		m_read_button = new HoverButton(read_icon, unread_icon, false);
 		m_read_button.sensitive = false;
+		m_read_button.set_tooltip_text(_("Mark article (un)read"));
 		m_read_button.clicked.connect(() => {
 			toggledRead();
 		});
@@ -64,6 +66,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_modeButton.append_text("Unread");
 		m_modeButton.append_text("Starred");
 		m_modeButton.set_active(m_state);
+		m_modeButton.set_tooltip_text(_("Switch between all, only unread or only starred articles"));
 
 		m_tag_button = new Gtk.Button();
 		m_tag_button.add(tag_icon);
@@ -131,6 +134,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		menubutton.set_size_request(32, 32);
 		menubutton.set_use_popover(true);
 		menubutton.set_menu_model(menumodel);
+		menubutton.set_tooltip_text(_("Settings"));
 
 		m_header_left.pack_end(menubutton);
 		m_header_left.pack_end(m_search);

@@ -652,11 +652,13 @@ public class FeedReader.articleList : Gtk.Stack {
 
 		// delte not all other rows
 		articleChildList = m_currentList.get_children();
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
 		foreach(Gtk.Widget row in articleChildList)
 		{
 			var tmpRow = row as articleRow;
-			if(tmpRow != null && !tmpRow.getUpdated())
+			if(tmpRow != null && !tmpRow.getUpdated()
+			&& selected_row.getID() != tmpRow.getID())
 			{
 				m_currentList.remove(tmpRow);
 			}

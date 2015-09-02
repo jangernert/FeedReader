@@ -4,6 +4,7 @@ cmake_minimum_required (VERSION 2.6)
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(WITH_LIBUNITY "Adds a Badge with the count of the unread articles to the dockitem" ON)
+option(USE_WEBKIT_4 "Compile with Webkit2Gtk 4.0 instead of 3.0" OFF)
 
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
@@ -21,10 +22,17 @@ add_subdirectory (po)
 add_subdirectory (schemas)
 
 
-set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 webkit2gtk-3.0 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
+set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
+
 if(WITH_LIBUNITY)
 	list(APPEND MODULES unity)
 endif(WITH_LIBUNITY)
+
+if(USE_WEBKIT_4)
+	list(APPEND MODULES webkit2gtk-4.0)
+else(USE_WEBKIT_4)
+	list(APPEND MODULES webkit2gtk-3.0)
+endif(USE_WEBKIT_4)
 
 pkg_check_modules(DEPS REQUIRED ${MODULES})
 
@@ -35,6 +43,24 @@ link_directories(${DEPS_LIBRARY_DIRS})
 find_package(Vala REQUIRED)
 include(ValaVersion)
 ensure_vala_version("0.24" MINIMUM)
+
+set(UI_OPTIONS --target-glib=2.32)
+set(UI_PACKAGES
+	glib-2.0>=2.32
+    gtk+-3.0
+    json-glib-1.0
+    libsoup-2.4
+    sqlite3
+    gee-0.8
+    libsecret-1
+    libnotify
+    rest-0.7)
+    
+if(USE_WEBKIT_4)
+	list(APPEND UI_PACKAGES WebKit2-4.0)
+else(USE_WEBKIT_4)
+	list(APPEND UI_PACKAGES WebKit2-3.0)
+endif(USE_WEBKIT_4)
 
 # files we want to compile
 include(ValaPrecompile)
@@ -85,19 +111,10 @@ vala_precompile(UI ${EXEC_NAME}
 
 # tell what libraries to use when compiling
 PACKAGES
-    glib-2.0>=2.32
-    gtk+-3.0
-    json-glib-1.0
-    libsoup-2.4
-    sqlite3
-    gee-0.8
-    WebKit2-3.0
-    libsecret-1
-    libnotify
-    rest-0.7
+    ${UI_PACKAGES}
 
 OPTIONS
-    --target-glib=2.32
+    ${UI_OPTIONS}
 
 )
 

@@ -20,7 +20,7 @@
  *  Boston, MA 02110-1301 USA.
  */
 
-namespace Granite.Widgets {
+namespace FeedReader {
 
     /**
      * This widget is a multiple option modal switch
@@ -80,8 +80,8 @@ namespace Granite.Widgets {
          *
          * @param pixbuf Gdk.Pixbuf to append to ModeButton
          */
-        public int append_pixbuf (Gdk.Pixbuf pixbuf) {
-            return append (new Gtk.Image.from_pixbuf (pixbuf));
+        public int append_pixbuf (Gdk.Pixbuf pixbuf, string tooltip = "") {
+            return append (new Gtk.Image.from_pixbuf (pixbuf), tooltip);
         }
 
         /**
@@ -90,8 +90,8 @@ namespace Granite.Widgets {
          * @param text text to append to ModeButton
          * @return index of new item
          */
-        public int append_text (string text) {
-            return append (new Gtk.Label(text));
+        public int append_text (string text, string tooltip = "") {
+            return append (new Gtk.Label(text), tooltip);
         }
 
         /**
@@ -101,8 +101,8 @@ namespace Granite.Widgets {
          * @param size desired size of icon
          * @return index of appended item
          */
-        public int append_icon (string icon_name, Gtk.IconSize size) {
-            return append (new Gtk.Image.from_icon_name (icon_name, size));
+        public int append_icon (string icon_name, Gtk.IconSize size, string tooltip = "") {
+            return append (new Gtk.Image.from_icon_name (icon_name, size), tooltip);
         }
 
         /**
@@ -111,10 +111,12 @@ namespace Granite.Widgets {
          * @param w widget to add to ModeButton
          * @return index of new item
          */
-        public int append (Gtk.Widget w) {
+        public int append (Gtk.Widget w, string tooltip) {
             int index;
             for (index = item_map.size; item_map.has_key (index); index++);
             assert (item_map[index] == null);
+
+            w.set_tooltip_text(tooltip);
 
             var item = new Item (index);
             item.scroll_event.connect (on_scroll_event);

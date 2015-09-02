@@ -4,7 +4,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private Gtk.Button m_tag_button;
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
-	private Granite.Widgets.ModeButton m_modeButton;
+	private ModeButton m_modeButton;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
 	private ArticleListState m_state;
@@ -61,12 +61,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		realize.connect(set_window_buttons);
 		set_window_buttons();
 
-		m_modeButton = new Granite.Widgets.ModeButton();
-		m_modeButton.append_text("All");
-		m_modeButton.append_text("Unread");
-		m_modeButton.append_text("Starred");
+		m_modeButton = new ModeButton();
+		m_modeButton.append_text("All", _("Show all articles"));
+		m_modeButton.append_text("Unread", _("Show only unread articles"));
+		m_modeButton.append_text("Starred", _("Show only starred articles"));
 		m_modeButton.set_active(m_state);
-		m_modeButton.set_tooltip_text(_("Switch between all, only unread or only starred articles"));
 
 		m_tag_button = new Gtk.Button();
 		m_tag_button.add(tag_icon);

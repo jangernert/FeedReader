@@ -94,6 +94,24 @@ public class FeedReader.articleList : Gtk.Stack {
 			row_activated((articleRow)row);
 		});
 
+		this.row_activated.connect((selected_row) => {
+			if(m_only_unread)
+			{
+				var articleChildList = m_currentList.get_children();
+				foreach(Gtk.Widget row in articleChildList)
+				{
+					var tmpRow = row as articleRow;
+					if(tmpRow != null)
+					{
+						if(!tmpRow.isUnread())
+						{
+							removeRow(tmpRow);
+						}
+					}
+				}
+			}
+		});
+
 		m_List1.key_press_event.connect(key_pressed);
 		m_List2.key_press_event.connect(key_pressed);
 
@@ -456,6 +474,7 @@ public class FeedReader.articleList : Gtk.Stack {
 							                        item.getPreview(),
 													item.getDate()
 							                        );
+					tmpRow.ArticleStateChanged.connect(rowStateChanged);
 
 					while(Gtk.events_pending())
 					{
@@ -617,6 +636,7 @@ public class FeedReader.articleList : Gtk.Stack {
 				int pos = 0;
 				bool added = false;
 				newRow.setUpdated(true);
+				newRow.ArticleStateChanged.connect(rowStateChanged);
 
 				if(articleChildList == null)
 				{
@@ -663,6 +683,49 @@ public class FeedReader.articleList : Gtk.Stack {
 				m_currentList.remove(tmpRow);
 			}
 		}
+	}
+
+
+	private void rowStateChanged(ArticleStatus status)
+	{
+		logger.print(LogMessage.DEBUG, "state changed");
+		switch(status)
+		{
+			case ArticleStatus.UNREAD:
+			case ArticleStatus.MARKED:
+				return;
+			case ArticleStatus.READ:
+			case ArticleStatus.UNMARKED:
+				articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+				var articleChildList = m_currentList.get_children();
+				foreach(Gtk.Widget row in articleChildList)
+				{
+					var tmpRow = row as articleRow;
+					if((tmpRow != null && tmpRow.getID() != selected_row.getID())
+					|| tmpRow != null && selected_row == null)
+					{
+						if((m_only_unread && !tmpRow.isUnread())
+						||(m_only_marked && !tmpRow.isMarked()))
+						{
+							removeRow(tmpRow);
+						}
+
+					}
+				}
+				break;
+		}
+	}
+
+	private void removeRow(articleRow row)
+	{
+		row.reveal(false, 700);
+
+		while(row.isRevealed())
+		{
+			Gtk.main_iteration();
+		}
+
+		m_currentList.remove(row);
 	}
 
 

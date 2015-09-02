@@ -21,6 +21,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private string m_articleID { get; private set; }
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
+	public signal void ArticleStateChanged(ArticleStatus status);
 
 	public articleRow(string aritcleName, ArticleStatus unread, string iconname, string url, string feedID, string articleID, ArticleStatus marked, int sortID, string preview, GLib.DateTime date)
 	{
@@ -287,6 +288,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_is_unread != unread)
 		{
 			m_is_unread = unread;
+			ArticleStateChanged(m_is_unread);
 			if(m_is_unread == ArticleStatus.UNREAD)
 			{
 				m_label.get_style_context().remove_class("headline-read-label");
@@ -393,6 +395,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_marked != marked)
 		{
 			m_marked = marked;
+			ArticleStateChanged(m_marked);
 			switch(m_marked)
 			{
 				case ArticleStatus.MARKED:
@@ -515,6 +518,11 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		m_revealer.set_transition_duration(duration);
 		m_revealer.set_reveal_child(reveal);
+	}
+
+	public bool isRevealed()
+	{
+		return m_revealer.get_child_revealed();
 	}
 
 }

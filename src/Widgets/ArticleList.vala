@@ -720,12 +720,17 @@ public class FeedReader.articleList : Gtk.Stack {
 	{
 		row.reveal(false, 700);
 
-		while(row.isRevealed())
-		{
-			Gtk.main_iteration();
-		}
+		ThreadFunc<void*> run = () => {
 
-		m_currentList.remove(row);
+			while(row.isRevealed())
+			{
+				GLib.Thread.usleep(50000);
+			}
+
+			m_currentList.remove(row);
+			return null;
+		};
+		new GLib.Thread<void*>("limitScroll", run);
 	}
 
 

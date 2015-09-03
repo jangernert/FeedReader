@@ -162,17 +162,18 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 
 		int current = ArticleListChildren.index(selected_row);
+		articleRow current_article = ArticleListChildren.nth_data(current) as articleRow;
 
 		current++;
 		if(current < ArticleListChildren.length())
 		{
-			articleRow current_article = ArticleListChildren.nth_data(current) as articleRow;
-			m_currentList.select_row(current_article);
-			row_activated(current_article);
+			articleRow new_article = ArticleListChildren.nth_data(current) as articleRow;
+			m_currentList.select_row(new_article);
+			row_activated(new_article);
 
 			var currentPos = m_current_adjustment.get_value();
 			var max = m_current_adjustment.get_upper();
-			var offset = max/ArticleListChildren.length();
+			var offset = current_article.get_allocated_height();
 
 			if(down)
 			{
@@ -191,7 +192,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			}
 
 			m_currentScroll.set_vadjustment(m_current_adjustment);
-			current_article.activate();
+			new_article.activate();
 		}
 	}
 
@@ -279,8 +280,24 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	private void setScrollPos(double pos)
 	{
-		double RowVSpace = 102;
-		double additionalScroll = RowVSpace * settings_state.get_int("articlelist-new-rows");
+		int new_rows = settings_state.get_int("articlelist-new-rows");
+		int i = 0;
+		int additionalScroll = 0;
+		var FeedChildList = m_currentList.get_children();
+
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			if(i < new_rows)
+			{
+				additionalScroll += row.get_allocated_height();
+				++i;
+			}
+			else
+			{
+				break;
+			}
+		}
+
 		double newPos = pos + additionalScroll;
 
 		m_current_adjustment = m_currentScroll.get_vadjustment();
@@ -299,9 +316,8 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	private void scrollDOWN()
 	{
-
 		m_current_adjustment = m_currentScroll.get_vadjustment();
-		m_current_adjustment.set_value(m_currentList.get_children().length() * 102);
+		m_current_adjustment.set_value(m_current_adjustment.get_upper());
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 	}
 

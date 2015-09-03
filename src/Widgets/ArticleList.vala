@@ -95,7 +95,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		});
 
 		this.row_activated.connect((selected_row) => {
-			if(m_only_unread)
+			if(m_only_unread || m_only_marked)
 			{
 				var articleChildList = m_currentList.get_children();
 				foreach(Gtk.Widget row in articleChildList)
@@ -103,7 +103,8 @@ public class FeedReader.articleList : Gtk.Stack {
 					var tmpRow = row as articleRow;
 					if(tmpRow != null)
 					{
-						if(!tmpRow.isUnread())
+						if((!tmpRow.isUnread() && m_only_unread)
+						|| (!tmpRow.isMarked() && m_only_marked))
 						{
 							removeRow(tmpRow);
 						}

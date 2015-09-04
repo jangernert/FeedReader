@@ -769,28 +769,21 @@ public class FeedReader.articleList : Gtk.Stack {
 		SourceFunc callback = removeRow.callback;
 		row.reveal(false, 700);
 
-		/*ThreadFunc<void*> run = () => {
-
-			while(row.isRevealed())
+		row.getRevealer().notify["child_revealed"].connect(() => {
+			if(!row.isRevealed())
 			{
-				GLib.Thread.usleep(5000);
+				m_currentList.remove(row);
+				row.destroy();
+
+
+				m_current_adjustment = m_currentScroll.get_vadjustment();
+				if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
+				{
+					logger.print(LogMessage.DEBUG, "load more");
+					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+				}
 			}
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("removeRow", run);
-		yield;*/
-
-		m_currentList.remove(row);
-		row.destroy();
-
-
-		m_current_adjustment = m_currentScroll.get_vadjustment();
-		if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
-		{
-			logger.print(LogMessage.DEBUG, "load more");
-			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-		}
+		});
 	}
 
 

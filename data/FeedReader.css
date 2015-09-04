@@ -5,6 +5,9 @@
 @define-color feedlist-label		shade(@feedlist-bg, 3);
 @define-color feedlist-selected		shade(@feedlist-bg, 1.6);
 
+#fake-example *:selected *:visited { opacity: 1; }
+
+
 
 .destructive-action GtkSpinner {
 	color: white;

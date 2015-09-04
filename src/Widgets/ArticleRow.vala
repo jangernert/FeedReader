@@ -540,4 +540,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		return m_revealer.get_child_revealed();
 	}
 
+	public weak Gtk.Revealer getRevealer()
+	{
+		return m_revealer;
+	}
+
 }

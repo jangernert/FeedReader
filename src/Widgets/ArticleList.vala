@@ -183,11 +183,11 @@ public class FeedReader.articleList : Gtk.Stack {
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
 		var ArticleListChildren = m_currentList.get_children();
-		int current = ArticleListChildren.index(selected_row);
-
 		if(!down){
 			ArticleListChildren.reverse();
 		}
+
+		int current = ArticleListChildren.index(selected_row);
 
 		current++;
 		if(current < ArticleListChildren.length())

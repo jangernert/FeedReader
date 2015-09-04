@@ -128,7 +128,7 @@ namespace FeedReader {
 			if (m_window == null)
 			{
 				m_window = new readerUI(this);
-				m_window.set_icon_name("internet-news-reader");
+				m_window.set_icon_name("feedreader");
 			}
 
 			m_window.show_all();

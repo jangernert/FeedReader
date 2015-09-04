@@ -123,14 +123,13 @@ public class FeedReader.articleList : Gtk.Stack {
 					foreach(Gtk.Widget row in articleChildList)
 					{
 						var tmpRow = row as articleRow;
-						if(tmpRow != null)
+						if(tmpRow != null && tmpRow.isBeingRevealed())
 						{
 							if((!tmpRow.isUnread() && m_only_unread)
 							|| (!tmpRow.isMarked() && m_only_marked))
 							{
-								removeRow.begin(tmpRow, (obj, res) => {
-								    removeRow.end(res);
-								});
+								removeRow(tmpRow);
+								break;
 							}
 						}
 					}
@@ -181,6 +180,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	public void move(bool down)
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+		articleRow new_article = null;
 
 		var ArticleListChildren = m_currentList.get_children();
 		if(!down){
@@ -189,41 +189,45 @@ public class FeedReader.articleList : Gtk.Stack {
 
 		int current = ArticleListChildren.index(selected_row);
 
-		current++;
-		if(current < ArticleListChildren.length())
+		do {
+			current++;
+			if(current >= ArticleListChildren.length())
+				return;
+
+			new_article = ArticleListChildren.nth_data(current) as articleRow;
+		} while(!new_article.isBeingRevealed());
+
+
+		m_currentList.select_row(new_article);
+		row_activated(new_article);
+
+		if((!m_only_unread || selected_row.isUnread())
+		&&(!m_only_marked || selected_row.isMarked()))
 		{
-			articleRow new_article = ArticleListChildren.nth_data(current) as articleRow;
-			m_currentList.select_row(new_article);
-			row_activated(new_article);
+			var currentPos = m_current_adjustment.get_value();
+			var max = m_current_adjustment.get_upper();
+			var offset = selected_row.get_allocated_height();
 
-			if((!m_only_unread || selected_row.isUnread())
-			&&(!m_only_marked || selected_row.isMarked()))
+			if(down)
 			{
-				var currentPos = m_current_adjustment.get_value();
-				var max = m_current_adjustment.get_upper();
-				var offset = selected_row.get_allocated_height();
-
-				if(down)
-				{
-					m_scrollPos += offset;
-					smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
-				}
-				else
-				{
-					m_scrollPos -= offset;
-					smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
-				}
-
-				if(m_scrollPos < 0.0)
-				{
-					m_scrollPos = 0.0;
-				}
-
-				m_currentScroll.set_vadjustment(m_current_adjustment);
+				m_scrollPos += offset;
+				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
+			}
+			else
+			{
+				m_scrollPos -= offset;
+				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
 			}
 
-			new_article.activate();
+			if(m_scrollPos < 0.0)
+			{
+				m_scrollPos = 0.0;
+			}
+
+			m_currentScroll.set_vadjustment(m_current_adjustment);
 		}
+
+		new_article.activate();
 	}
 
 	public void toggleReadSelected()
@@ -753,9 +757,8 @@ public class FeedReader.articleList : Gtk.Stack {
 						if((m_only_unread && !tmpRow.isUnread())
 						||(m_only_marked && !tmpRow.isMarked()))
 						{
-							removeRow.begin(tmpRow, (obj, res) => {
-								removeRow.end(res);
-							});
+							removeRow(tmpRow);
+							break;
 						}
 
 					}
@@ -764,26 +767,15 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 	}
 
-	private async void removeRow(articleRow row)
+	public void removeRow(articleRow row)
 	{
-		SourceFunc callback = removeRow.callback;
 		row.reveal(false, 700);
-
-		row.getRevealer().notify["child_revealed"].connect(() => {
-			if(!row.isRevealed())
-			{
-				m_currentList.remove(row);
-				row.destroy();
-
-
-				m_current_adjustment = m_currentScroll.get_vadjustment();
-				if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
-				{
-					logger.print(LogMessage.DEBUG, "load more");
-					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-				}
-			}
-		});
+		m_current_adjustment = m_currentScroll.get_vadjustment();
+		if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
+		{
+			logger.print(LogMessage.DEBUG, "load more");
+			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+		}
 	}
 
 

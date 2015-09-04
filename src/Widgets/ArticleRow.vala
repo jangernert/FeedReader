@@ -37,6 +37,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 	public signal void ArticleStateChanged(ArticleStatus status);
+	public signal void child_revealed();
 
 	public articleRow(string aritcleName, ArticleStatus unread, string iconname, string url, string feedID, string articleID, ArticleStatus marked, int sortID, string preview, GLib.DateTime date)
 	{
@@ -188,6 +189,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.add(seperator_box);
 		m_revealer.set_reveal_child(false);
+		m_revealer.notify["child_revealed"].connect(() => {
+			child_revealed();
+		});
 		m_row_eventbox.add(m_revealer);
 		this.add(m_row_eventbox);
 		this.show_all();
@@ -540,9 +544,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		return m_revealer.get_child_revealed();
 	}
 
-	public weak Gtk.Revealer getRevealer()
+	public bool isBeingRevealed()
 	{
-		return m_revealer;
+		return m_revealer.get_reveal_child();
 	}
 
 }

@@ -23,6 +23,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	private uint timeout_source_id = 0;
 	private double m_scrollPos = 0;
 	private bool m_scrollOngoing = false;
+	private string m_selected_article;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
 
@@ -35,6 +36,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_limit = 15;
 		m_limitScroll = false;
 		m_threadCount = 0;
+		m_selected_article = "";
 
 		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
 		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
@@ -95,22 +97,32 @@ public class FeedReader.articleList : Gtk.Stack {
 		});
 
 		this.row_activated.connect((selected_row) => {
-			if(m_only_unread || m_only_marked)
+
+			string selectedID = ((articleRow)selected_row).getID();
+
+			if(m_selected_article != selectedID)
 			{
-				var articleChildList = m_currentList.get_children();
-				foreach(Gtk.Widget row in articleChildList)
+				if(m_only_unread || m_only_marked)
 				{
-					var tmpRow = row as articleRow;
-					if(tmpRow != null)
+					var articleChildList = m_currentList.get_children();
+					foreach(Gtk.Widget row in articleChildList)
 					{
-						if((!tmpRow.isUnread() && m_only_unread)
-						|| (!tmpRow.isMarked() && m_only_marked))
+						var tmpRow = row as articleRow;
+						if(tmpRow != null)
 						{
-							removeRow(tmpRow);
+							if((!tmpRow.isUnread() && m_only_unread)
+							|| (!tmpRow.isMarked() && m_only_marked))
+							{
+								removeRow.begin(tmpRow, (obj, res) => {
+								    removeRow.end(res);
+								});
+							}
 						}
 					}
 				}
 			}
+
+			m_selected_article = selectedID;
 		});
 
 		m_List1.key_press_event.connect(key_pressed);
@@ -155,15 +167,12 @@ public class FeedReader.articleList : Gtk.Stack {
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
-
 		var ArticleListChildren = m_currentList.get_children();
+		int current = ArticleListChildren.index(selected_row);
 
 		if(!down){
 			ArticleListChildren.reverse();
 		}
-
-		int current = ArticleListChildren.index(selected_row);
-		articleRow current_article = ArticleListChildren.nth_data(current) as articleRow;
 
 		current++;
 		if(current < ArticleListChildren.length())
@@ -172,27 +181,32 @@ public class FeedReader.articleList : Gtk.Stack {
 			m_currentList.select_row(new_article);
 			row_activated(new_article);
 
-			var currentPos = m_current_adjustment.get_value();
-			var max = m_current_adjustment.get_upper();
-			var offset = current_article.get_allocated_height();
-
-			if(down)
+			if((!m_only_unread || selected_row.isUnread())
+			&&(!m_only_marked || selected_row.isMarked()))
 			{
-				m_scrollPos += offset;
-				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
-			}
-			else
-			{
-				m_scrollPos -= offset;
-				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
+				var currentPos = m_current_adjustment.get_value();
+				var max = m_current_adjustment.get_upper();
+				var offset = selected_row.get_allocated_height();
+
+				if(down)
+				{
+					m_scrollPos += offset;
+					smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
+				}
+				else
+				{
+					m_scrollPos -= offset;
+					smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
+				}
+
+				if(m_scrollPos < 0.0)
+				{
+					m_scrollPos = 0.0;
+				}
+
+				m_currentScroll.set_vadjustment(m_current_adjustment);
 			}
 
-			if(m_scrollPos < 0.0)
-			{
-				m_scrollPos = 0.0;
-			}
-
-			m_currentScroll.set_vadjustment(m_current_adjustment);
 			new_article.activate();
 		}
 	}
@@ -724,7 +738,9 @@ public class FeedReader.articleList : Gtk.Stack {
 						if((m_only_unread && !tmpRow.isUnread())
 						||(m_only_marked && !tmpRow.isMarked()))
 						{
-							removeRow(tmpRow);
+							removeRow.begin(tmpRow, (obj, res) => {
+								removeRow.end(res);
+							});
 						}
 
 					}
@@ -733,21 +749,33 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 	}
 
-	private void removeRow(articleRow row)
+	private async void removeRow(articleRow row)
 	{
+		SourceFunc callback = removeRow.callback;
 		row.reveal(false, 700);
 
-		ThreadFunc<void*> run = () => {
+		/*ThreadFunc<void*> run = () => {
 
 			while(row.isRevealed())
 			{
-				GLib.Thread.usleep(50000);
+				GLib.Thread.usleep(5000);
 			}
-
-			m_currentList.remove(row);
+			Idle.add((owned) callback);
 			return null;
 		};
-		new GLib.Thread<void*>("limitScroll", run);
+		new GLib.Thread<void*>("removeRow", run);
+		yield;*/
+
+		m_currentList.remove(row);
+		row.destroy();
+
+
+		m_current_adjustment = m_currentScroll.get_vadjustment();
+		if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
+		{
+			logger.print(LogMessage.DEBUG, "load more");
+			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+		}
 	}
 
 

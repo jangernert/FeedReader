@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-08-31 03:44+0200\n"
-"PO-Revision-Date: 2015-08-28 20:38+0000\n"
+"PO-Revision-Date: 2015-09-03 19:58+0000\n"
 "Last-Translator: Mikael Nyberg <mikanybe@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-02 05:53+0000\n"
+"X-Launchpad-Export-Date: 2015-09-04 05:39+0000\n"
 "X-Generator: Launchpad (build 17706)\n"
 
 #: ../src/Backends/FeedServer.vala:495
@@ -111,11 +111,11 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:72
 msgid "Tag Article"
-msgstr ""
+msgstr "Etikettera artikel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Share Article"
-msgstr ""
+msgstr "Dela artikel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:116
 msgid "Search Articles"
@@ -223,7 +223,7 @@ msgstr ""
 
 #: ../src/Widgets/UpdateButton.vala:20
 msgid "Update Feeds"
-msgstr ""
+msgstr "Uppdatera nyhetsflöden"
 
 #: ../src/Widgets/TagPopover.vala:25
 msgid "add Tags:"
@@ -259,35 +259,35 @@ msgstr "Flödeslista:"
 
 #: ../src/Widgets/SettingsDialog.vala:78
 msgid "Only show feeds"
-msgstr ""
+msgstr "Visa endast nyhetsflöden"
 
 #: ../src/Widgets/SettingsDialog.vala:94
 msgid "Only show unread"
-msgstr ""
+msgstr "Visa endast olästa"
 
 #: ../src/Widgets/SettingsDialog.vala:111
 msgid "Article List:"
-msgstr ""
+msgstr "Artikellista:"
 
 #: ../src/Widgets/SettingsDialog.vala:118
 msgid "Sort articles by"
-msgstr ""
+msgstr "Sortera artiklar efter"
 
 #: ../src/Widgets/SettingsDialog.vala:125
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: ../src/Widgets/SettingsDialog.vala:128
 msgid "Received"
-msgstr ""
+msgstr "Mottaget"
 
 #: ../src/Widgets/SettingsDialog.vala:151
 msgid "Newest first"
-msgstr ""
+msgstr "Nyaste först"
 
 #: ../src/Widgets/SettingsDialog.vala:168
 msgid "Article View:"
-msgstr ""
+msgstr "Artikelvy:"
 
 #: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
@@ -299,15 +299,15 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:185
 msgid "Spring"
-msgstr ""
+msgstr "Vår"
 
 #: ../src/Widgets/SettingsDialog.vala:188
 msgid "Midnight"
-msgstr ""
+msgstr "Midnatt"
 
 #: ../src/Widgets/SettingsDialog.vala:191
 msgid "Parchment"
-msgstr ""
+msgstr "Pergament"
 
 #: ../src/Widgets/SettingsDialog.vala:228
 msgid "Sync:"
@@ -315,7 +315,7 @@ msgstr "Synkronisera:"
 
 #: ../src/Widgets/SettingsDialog.vala:235
 msgid "Number of articles"
-msgstr ""
+msgstr "Antal artiklar"
 
 #: ../src/Widgets/SettingsDialog.vala:248
 msgid "Every (seconds)"
@@ -327,7 +327,7 @@ msgstr "Databas:"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "Drop articles after"
-msgstr ""
+msgstr "Släng artiklar efter"
 
 #: ../src/Widgets/SettingsDialog.vala:278
 msgid "Never"

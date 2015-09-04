@@ -22,7 +22,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public signal void initSyncTag(string tagName);
 	public signal void initSyncFeed(string feedName);
 
-	public FeedServer(int type)
+	public FeedServer(Backend type)
 	{
 		m_type = type;
 		m_supportTags = false;

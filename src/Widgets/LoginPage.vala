@@ -27,7 +27,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.CheckButton m_checkButton;
 	private string[] m_account_types;
 	public signal void submit_data();
-	public signal void loginError(int errorCode);
+	public signal void loginError(LoginResponse errorCode);
 	public signal void loadLoginPage(OAuth type);
 
 
@@ -59,10 +59,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		Gtk.TreeIter feedly;
 		liststore.append(out feedly);
 		liststore.set(feedly, 0, m_account_types[Backend.FEEDLY]);
-		Gtk.TreeIter ownCloud;
+		//Gtk.TreeIter ownCloud;
 		//liststore.append(out ownCloud);
 		//liststore.set(ownCloud, 0, m_account_types[Backend.OWNCLOUD]);
-		m_comboBox = new Gtk.ComboBox.with_model(liststore);
+		//m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
 		m_comboBox.pack_start (renderer, false);
@@ -159,8 +159,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		//var ttrss_logo = new Gtk.Image.from_file("/usr/share/FeedReader/icons/ttrss.svg");
-		var ttrss_logo = new Gtk.Image.from_icon_name("feed-service-ttrss", Gtk.IconSize.DIALOG);
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
 
 		grid.attach(ttrss_url_label, 0, 0, 1, 1);
 		grid.attach(m_ttrss_url_entry, 1, 0, 1, 1);
@@ -179,8 +178,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	private void setup_feedly_login()
 	{
-		//var feedly_logo = new Gtk.Image.from_file("/usr/share/FeedReader/icons/feedly.svg");
-		var feedly_logo = new Gtk.Image.from_icon_name("feed-service-feedly", Gtk.IconSize.DIALOG);
+		var feedly_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-feedly.svg");
 
 		var text = new Gtk.Label(_("You will be redirected to the feedly website where you can use your Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."));
 		text.get_style_context().add_class("h3");
@@ -230,8 +228,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		//var owncloud_logo = new Gtk.Image.from_file("/usr/share/FeedReader/icons/owncloud.svg");
-		var owncloud_logo = new Gtk.Image.from_icon_name("feed-service-owncloud", Gtk.IconSize.DIALOG);
+		var owncloud_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
 
 		grid.attach(owncloud_url_label, 0, 0, 1, 1);
 		grid.attach(m_owncloud_url_entry, 1, 0, 1, 1);
@@ -346,7 +343,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 		}
 
-		var status = feedDaemon_interface.login(settings_general.get_enum("account-type"));
+		LoginResponse status = feedDaemon_interface.login((Backend)settings_general.get_enum("account-type"));
 		logger.print(LogMessage.DEBUG, "LoginPage: status = %i".printf(status));
 		if(status == LoginResponse.SUCCESS)
 		{

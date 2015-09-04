@@ -38,7 +38,7 @@ namespace FeedReader {
 	interface FeedDaemon : Object {
 		public abstract void startSync() throws IOError;
 		public abstract void startInitSync(bool useGrabber) throws IOError;
-		public abstract int login(int type) throws IOError;
+		public abstract LoginResponse login(Backend type) throws IOError;
 		public abstract int isLoggedIn() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;

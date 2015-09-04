@@ -28,7 +28,7 @@ namespace FeedReader {
 		public FeedDaemonServer()
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
-			m_loggedin = login(settings_general.get_enum("account-type"));
+			m_loggedin = login((Backend)settings_general.get_enum("account-type"));
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 				logger.print(LogMessage.WARNING, "daemon: not logged in");
@@ -95,7 +95,7 @@ namespace FeedReader {
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				m_loggedin = login(settings_general.get_enum("account-type"));
+				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
 					exit(-1);
@@ -122,7 +122,7 @@ namespace FeedReader {
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				m_loggedin = login(settings_general.get_enum("account-type"));
+				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
@@ -142,7 +142,7 @@ namespace FeedReader {
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
 		}
 
-		public LoginResponse login(int type)
+		public LoginResponse login(Backend type)
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 			server = new FeedServer(type);

@@ -66,12 +66,6 @@ namespace FeedReader {
 
 		protected override void startup()
 		{
-			startDaemon();
-
-			dataBase = new dbManager();
-			dataBase.init();
-
-
 			settings_general = new GLib.Settings ("org.gnome.feedreader");
 			settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 			settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
@@ -83,6 +77,11 @@ namespace FeedReader {
 
 			logger = new Logger();
 			share = new Share();
+
+			startDaemon();
+
+			dataBase = new dbManager();
+			dataBase.init();
 
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");

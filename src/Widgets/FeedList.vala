@@ -38,10 +38,14 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_list = new Gtk.ListBox();
 		m_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		m_list.get_style_context().add_class("feed-list");
+		var branding = new FeedReader.ServiceInfo();
+		var feedlist_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		feedlist_box.pack_start(branding, false, false, 0);
+		feedlist_box.pack_start(m_list);
 
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.set_size_request(200, 500);
-		m_scroll.add(m_list);
+		m_scroll.add(feedlist_box);
 		m_scroll_adjustment = m_scroll.get_vadjustment();
 
 
@@ -474,8 +478,8 @@ public class FeedReader.feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
-						(item.getParent() == CategoryID.MASTER && pos > 2) && !haveTags() ||
-						(item.getParent() == CategoryID.MASTER && pos > 3) && haveTags())
+						(item.getParent() == CategoryID.MASTER && pos > length) && !haveTags() ||
+						(item.getParent() == CategoryID.MASTER && pos > length+1) && haveTags())
 					{
 						int level = item.getLevel();
 						string parent = item.getParent();

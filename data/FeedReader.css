@@ -54,7 +54,7 @@ GtkEventBox {
 	background: none;
 }
 
-GtkListBox.feed-list,
+.feed-list,
 .feed-list .scrollbar {
 	background: @feedlist-bg;
 }
@@ -72,7 +72,7 @@ GtkBox.feed-row {
 	background: @feedrow-bg;
 }
 
-GtkListBox.feed-list GtkLabel{
+.feed-list GtkLabel{
 	color: @feedlist-label;
 	font-weight: bold;
 }

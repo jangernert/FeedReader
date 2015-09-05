@@ -59,10 +59,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		Gtk.TreeIter feedly;
 		liststore.append(out feedly);
 		liststore.set(feedly, 0, m_account_types[Backend.FEEDLY]);
-		//Gtk.TreeIter ownCloud;
-		//liststore.append(out ownCloud);
-		//liststore.set(ownCloud, 0, m_account_types[Backend.OWNCLOUD]);
-		//m_comboBox = new Gtk.ComboBox.with_model(liststore);
+		Gtk.TreeIter ownCloud;
+		liststore.append(out ownCloud);
+		liststore.set(ownCloud, 0, m_account_types[Backend.OWNCLOUD]);
+		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
 		m_comboBox.pack_start (renderer, false);

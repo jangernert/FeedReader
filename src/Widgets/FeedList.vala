@@ -212,6 +212,13 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void createFeedlist(bool defaultSettings)
 	{
+		var row_seperator1 = new FeedRow("", 0, false, "", "-1", 0);
+		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+		separator1.margin_top = 8;
+		row_seperator1.add(separator1);
+		row_seperator1.sensitive = false;
+		m_list.add(row_seperator1);
+
 		var unread = dataBase.get_unread_total();
 		var row_all = new FeedRow("All Articles", unread, false, FeedID.ALL, "-1", 0);
 		row_all.margin_top = 8;
@@ -384,6 +391,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	private void createCategories()
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
+		int length = (int)m_list.get_children().length();
 
 		if(haveTags())
 		{
@@ -404,7 +412,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				else
 					expandCategorie(catID);
 			});
-			m_list.insert(categorierow, 3);
+			m_list.insert(categorierow, length+1);
 			categorierow.setAsRead.connect(markSelectedRead);
 			categorierow.reveal(true);
 			string name = "Tags";
@@ -428,7 +436,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				else
 					expandCategorie(catID);
 			});
-			m_list.insert(tagrow, 4);
+			m_list.insert(tagrow, length+2);
 			tagrow.setAsRead.connect(markSelectedRead);
 			tagrow.reveal(true);
 			m_TagsDisplayed = true;
@@ -466,8 +474,8 @@ public class FeedReader.feedList : Gtk.Stack {
 					pos++;
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
-						(item.getParent() == CategoryID.MASTER && pos > 1) && !haveTags() ||
-						(item.getParent() == CategoryID.MASTER && pos > 2) && haveTags())
+						(item.getParent() == CategoryID.MASTER && pos > 2) && !haveTags() ||
+						(item.getParent() == CategoryID.MASTER && pos > 3) && haveTags())
 					{
 						int level = item.getLevel();
 						string parent = item.getParent();

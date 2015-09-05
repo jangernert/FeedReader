@@ -17,7 +17,7 @@
    inkscape:export-filename="C:\Users\Andrew\Documents\Projects\Tiny-Tiny-RSS-for-Honeycomb\org.fox.ttrss\src\main\res\drawable-hdpi\ic_launcher.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
-   sodipodi:docname="ttrss.svg">
+   sodipodi:docname="feed-service-ttrss.svg">
   <defs
      id="defs2987">
     <filter
@@ -92,10 +92,10 @@
      borderopacity="1.0"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:zoom="8.366071"
-     inkscape:cx="28.161712"
-     inkscape:cy="22.378321"
-     inkscape:current-layer="g3814"
+     inkscape:zoom="11.831411"
+     inkscape:cx="43.310898"
+     inkscape:cy="25.782122"
+     inkscape:current-layer="g4827"
      showgrid="true"
      inkscape:document-units="px"
      inkscape:grid-bbox="true"
@@ -129,52 +129,7 @@
     <g
        id="g4827"
        style="opacity:0.5;fill:#000000;fill-opacity:1"
-       transform="matrix(1.0490184,0,0,1.0490184,46.267349,-27.154066)">
-      <ellipse
-         ry="8.3198061"
-         rx="8.3196411"
-         style="fill:#000000;fill-opacity:1;stroke:none"
-         id="circle26"
-         cy="73.467369"
-         cx="-30.012384"
-         sodipodi:cx="-30.012384"
-         sodipodi:cy="73.467369"
-         sodipodi:rx="8.3196411"
-         sodipodi:ry="8.3198061"
-         d="m -21.692743,73.467369 c 0,4.594902 -3.724831,8.319806 -8.319641,8.319806 -4.594811,0 -8.319642,-3.724904 -8.319642,-8.319806 0,-4.594902 3.724831,-8.319806 8.319642,-8.319806 4.59481,0 8.319641,3.724904 8.319641,8.319806 z" />
-      <path
-         style="fill:#000000;fill-opacity:1;stroke:none"
-         inkscape:connector-curvature="0"
-         id="path28"
-         d="m 1.879574,81.787172 -11.786158,0 A 28.425441,28.426004 0 0 0 -38.332025,53.361167 l 0,-11.786392 A 40.2116,40.212396 0 0 1 1.879574,81.787172 z" />
-      <g
-         id="g4792"
-         style="fill:#000000;fill-opacity:1">
-        <g
-           style="fill:#000000;fill-opacity:1;stroke:none"
-           id="g3773"
-           transform="matrix(0.34665172,0,0,0.34665859,-53.584701,7.948892)">
-          <g
-             id="g3793"
-             style="fill:#000000;fill-opacity:1">
-            <path
-               d="M 184,213 A 140,140 0 0 0 44,73 l 0,-35 a 175,175 0 0 1 175,175 z"
-               id="path30"
-               inkscape:connector-curvature="0"
-               style="fill:#000000;fill-opacity:1;stroke:none" />
-          </g>
-          <g
-             id="g3796"
-             style="fill:#000000;fill-opacity:1">
-            <path
-               style="fill:#000000;fill-opacity:1;stroke:none"
-               inkscape:connector-curvature="0"
-               id="path3798"
-               d="M 184,213 A 140,140 0 0 0 44,73 l 0,-35 a 175,175 0 0 1 175,175 z" />
-          </g>
-        </g>
-      </g>
-    </g>
+       transform="matrix(1.0490184,0,0,1.0490184,46.267349,-27.154066)" />
     <g
        id="g3814"
        transform="matrix(1.0490184,0,0,1.0490184,-0.25175425,-2.8155785)">

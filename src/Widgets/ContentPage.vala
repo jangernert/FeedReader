@@ -36,7 +36,15 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_pane.set_size_request(500, 500);
 		m_pane.set_position(settings_state.get_int("feed-row-width"));
 
-		m_pane.pack1(m_feedList, false, false);
+
+		var branding = new FeedReader.ServiceInfo();
+
+		var feedlist_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		feedlist_box.get_style_context().add_class("feed-list");
+		feedlist_box.pack_start(branding, false, false, 0);
+		feedlist_box.pack_start(m_feedList);
+
+		m_pane.pack1(feedlist_box, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
 			m_articleList.setSelectedType(FeedListType.FEED);

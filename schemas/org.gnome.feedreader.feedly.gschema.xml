@@ -23,5 +23,13 @@
 				Code to get access token for the first time. Gets returned after logging in via google/facebook.
 			</description>
 		</key>
+
+        <key name="email" type="s">
+			<default>""</default>
+			<summary>user-email</summary>
+			<description>
+				Email address of the current user.
+			</description>
+		</key>
 	</schema>
 </schemalist>

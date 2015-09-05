@@ -82,6 +82,11 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			m_userID = root.get_string_member("id");
 			logger.print(LogMessage.INFO, "feedly: userID = " + m_userID);
+
+			if(root.has_member("email"))
+			{
+				settings_feedly.set_string("email", root.get_string_member("email"));
+			}
 			return true;
 		}
 

@@ -15,6 +15,10 @@ public class FeedReader.ServiceInfo : Gtk.Box {
                 service_name = "feedly";
                 user_name = settings_feedly.get_string("email");
                 break;
+            case Backend.OWNCLOUD:
+                service_name = "owncloud";
+                user_name = "username@Server";
+                break;
         }
 
         var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));

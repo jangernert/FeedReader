@@ -751,8 +751,8 @@ public class FeedReader.articleList : Gtk.Stack {
 				foreach(Gtk.Widget row in articleChildList)
 				{
 					var tmpRow = row as articleRow;
-					if((tmpRow != null && tmpRow.getID() != selected_row.getID())
-					|| tmpRow != null && selected_row == null)
+					if(((tmpRow != null && tmpRow.getID() != selected_row.getID())
+					|| (tmpRow != null && selected_row == null)) && tmpRow.isBeingRevealed())
 					{
 						if((m_only_unread && !tmpRow.isUnread())
 						||(m_only_marked && !tmpRow.isMarked()))

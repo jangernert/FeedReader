@@ -379,7 +379,7 @@ namespace FeedReader {
 				      			settings_state.set_boolean("currently-updating", false);
 				      },
 				      () => {
-				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name. Will shut down!");
+				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name (already running). Will shut down!");
 				          		exit(-1);
 				          	}
 				      );

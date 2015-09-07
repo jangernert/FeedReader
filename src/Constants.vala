@@ -68,6 +68,7 @@ namespace FeedReader {
 		INVALID_SESSIONID,
 		TTRSS_API,
 		OWNCLOUD_API,
+		TTRSS_API_DISABLED,
 		UNKNOWN
 	}
 
@@ -116,7 +117,8 @@ namespace FeedReader {
 		FIRST_TRY,
 		NO_BACKEND,
 		WRONG_LOGIN,
-		NO_CONNECTION
+		NO_CONNECTION,
+		NO_API_ACCESS
 	}
 
 

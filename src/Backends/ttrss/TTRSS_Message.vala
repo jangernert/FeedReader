@@ -79,13 +79,20 @@ public class FeedReader.ttrss_message : GLib.Object {
 		}
 
 		m_root_object = m_parser.get_root().get_object();
+		printResponse();
 
 		if(m_root_object.has_member("error"))
 		{
-			if(m_root_object.get_string_member("error") == "NOT_LOGGED_IN")
+			string error = m_root_object.get_string_member("error");
+			if(error == "NOT_LOGGED_IN")
 			{
 				logger.print(LogMessage.ERROR, "invalid ttrss session id");
 				return ConnectionError.INVALID_SESSIONID;
+			}
+			else if(error == "API_DISABLED")
+			{
+				logger.print(LogMessage.ERROR, "ttrss api is disabled: please enable it first");
+				return ConnectionError.TTRSS_API_DISABLED;
 			}
 		}
 
@@ -93,6 +100,25 @@ public class FeedReader.ttrss_message : GLib.Object {
 		{
 			if(m_root_object.get_int_member("status") == 1)
 			{
+				if(m_root_object.has_member("content"))
+				{
+					var content = m_root_object.get_object_member("content");
+					if(content.has_member("error"))
+					{
+						string error = content.get_string_member("error");
+						if(error == "NOT_LOGGED_IN")
+						{
+							logger.print(LogMessage.ERROR, "invalid ttrss session id");
+							return ConnectionError.INVALID_SESSIONID;
+						}
+						else if(error == "API_DISABLED")
+						{
+							logger.print(LogMessage.ERROR, "ttrss api is disabled: please enable it first");
+							return ConnectionError.TTRSS_API_DISABLED;
+						}
+					}
+				}
+
 				logger.print(LogMessage.ERROR, "ttrss api error");
 				printResponse();
 				return ConnectionError.TTRSS_API;

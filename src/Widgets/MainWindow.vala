@@ -394,6 +394,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case LoginResponse.NO_CONNECTION:
 				m_ErrorMessage.set_label(_("No connection to the server. Check your internet connection and the server URL!"));
 				break;
+			case LoginResponse.NO_API_ACCESS:
+				m_ErrorMessage.set_label(_("API access is disabled on the server. Please enable it first!"));
+				break;
 			case LoginResponse.SUCCESS:
 			case LoginResponse.FIRST_TRY:
 			default:
@@ -410,7 +413,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void loadContent()
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: load content");
-		m_content.newFeedList();
+		//m_content.newFeedList();
 		dataBase.updateBadge.connect(() => {
 			feedDaemon_interface.updateBadge();
 		});

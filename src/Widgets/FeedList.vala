@@ -20,6 +20,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	private Gtk.ListBoxRow m_selected;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Adjustment m_scroll_adjustment;
+	private ServiceInfo m_branding;
 	private uint m_expand_collapse_time;
 	private bool m_update;
 	private bool m_TagsDisplayed;
@@ -38,9 +39,9 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_list = new Gtk.ListBox();
 		m_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		m_list.get_style_context().add_class("feed-list");
-		var branding = new FeedReader.ServiceInfo();
+		var m_branding = new ServiceInfo();
 		var feedlist_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-		feedlist_box.pack_start(branding, false, false, 0);
+		feedlist_box.pack_start(m_branding, false, false, 0);
 		feedlist_box.pack_start(m_list);
 
 		m_scroll = new Gtk.ScrolledWindow(null, null);
@@ -188,6 +189,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	public void newFeedlist(bool defaultSettings)
 	{
 		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
+		m_branding.refresh();
 		var FeedChildList = m_list.get_children();
 
 		if(FeedChildList != null)
@@ -448,6 +450,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		else
 		{
 			m_TagsDisplayed = false;
+			logger.print(LogMessage.DEBUG, "FeedList: no tags");
 		}
 
 		for(int i = 1; i <= maxCatLevel; i++)
@@ -471,19 +474,23 @@ public class FeedReader.feedList : Gtk.Stack {
 
 			foreach(var item in categories)
 			{
+				logger.print(LogMessage.DEBUG, item.getTitle());
+				logger.print(LogMessage.DEBUG, "length: %i".printf(length));
 				var FeedChildList = m_list.get_children();
 				int pos = 0;
 				foreach(Gtk.Widget existing_row in FeedChildList)
 				{
 					pos++;
+					logger.print(LogMessage.DEBUG, "pos: %i".printf(pos));
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
-						(item.getParent() == CategoryID.MASTER && pos > length) && !haveTags() ||
-						(item.getParent() == CategoryID.MASTER && pos > length+1) && haveTags())
+						(item.getParent() == CategoryID.MASTER && pos > length-1 && !m_TagsDisplayed) ||
+						(item.getParent() == CategoryID.MASTER && pos > length && m_TagsDisplayed))
 					{
+						logger.print(LogMessage.DEBUG, "insert");
 						int level = item.getLevel();
 						string parent = item.getParent();
-						if(haveTags())
+						if(m_TagsDisplayed)
 						{
 							level++;
 							parent = CategoryID.MASTER;

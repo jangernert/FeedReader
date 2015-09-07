@@ -158,6 +158,7 @@ namespace FeedReader {
 
 		public void startDaemon()
 		{
+			logger.print(LogMessage.INFO, "FeedReader: start daemon");
 			string[] spawn_args = {"feedreader-daemon"};
 			try{
 				GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);

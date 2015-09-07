@@ -67,6 +67,7 @@ namespace FeedReader {
 		NO_RESPONSE,
 		INVALID_SESSIONID,
 		TTRSS_API,
+		TTRSS_API_DISABLED,
 		UNKNOWN
 	}
 
@@ -108,7 +109,8 @@ namespace FeedReader {
 		FIRST_TRY,
 		NO_BACKEND,
 		WRONG_LOGIN,
-		NO_CONNECTION
+		NO_CONNECTION,
+		NO_API_ACCESS
 	}
 
 

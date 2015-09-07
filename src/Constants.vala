@@ -67,6 +67,7 @@ namespace FeedReader {
 		NO_RESPONSE,
 		INVALID_SESSIONID,
 		TTRSS_API,
+		OWNCLOUD_API,
 		UNKNOWN
 	}
 
@@ -77,6 +78,13 @@ namespace FeedReader {
 		FRESH         = -3,
 		ALL           = -4,
 		RECENTLY_READ = -6
+	}
+
+	public enum OwnCloudType {
+		FEED,
+		FOLDER,
+		STARRED,
+		ALL
 	}
 
 	public enum ArticleStatus {

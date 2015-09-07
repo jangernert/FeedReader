@@ -24,7 +24,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public ttrss_interface ()
 	{
-		m_parser = new Json.Parser ();
+		m_parser = new Json.Parser();
 	}
 
 

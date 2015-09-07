@@ -1,0 +1,19 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.owncloud" path="/org/gnome/feedreader/owncloud/" gettext-domain="feedreader">
+		<key name="url" type="s">
+			<default>""</default>
+			<summary>Link to your owncloud instance</summary>
+			<description>
+				Link to your owncloud instance
+			</description>
+		</key>
+
+		<key name="username" type="s">
+			<default>""</default>
+			<summary>Username to log into owncloud</summary>
+			<description>
+				Username to log into owncloud
+			</description>
+		</key>
+	</schema>
+</schemalist>

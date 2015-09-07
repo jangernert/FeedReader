@@ -73,7 +73,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "Could not load response to Message to ttrss");
+			logger.print(LogMessage.ERROR, "Could not load response from Message to ttrss");
 			logger.print(LogMessage.ERROR, e.message);
 			return ConnectionError.NO_RESPONSE;
 		}
@@ -94,6 +94,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 			if(m_root_object.get_int_member("status") == 1)
 			{
 				logger.print(LogMessage.ERROR, "ttrss api error");
+				printResponse();
 				return ConnectionError.TTRSS_API;
 			}
 			else if(m_root_object.get_int_member("status") == 0)

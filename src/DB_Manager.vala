@@ -76,7 +76,8 @@ public class FeedReader.dbManager : GLib.Object {
 												"unread" INTEGER NOT NULL,
 												"marked" INTEGER NOT NULL,
 												"tags" TEXT,
-												"date" DATETIME NOT NULL
+												"date" DATETIME NOT NULL,
+												"guidHash" TEXT
 											)""");
 
 			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
@@ -670,6 +671,7 @@ public class FeedReader.dbManager : GLib.Object {
 		query.insertValuePair("marked", "$MARKED");
 		query.insertValuePair("tags", "$TAGS");
 		query.insertValuePair("date", "$DATE");
+		query.insertValuePair("guidHash", "$GUIDHASH");
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -691,6 +693,7 @@ public class FeedReader.dbManager : GLib.Object {
 		int preview_position = stmt.bind_parameter_index("$PREVIEW");
 		int author_position = stmt.bind_parameter_index("$AUTHOR");
 		int date_position = stmt.bind_parameter_index("$DATE");
+		int guidHash_position = stmt.bind_parameter_index("$GUIDHASH");
 
 		assert (articleID_position > 0);
 		assert (feedID_position > 0);
@@ -703,6 +706,7 @@ public class FeedReader.dbManager : GLib.Object {
 		assert (preview_position > 0);
 		assert (author_position > 0);
 		assert (date_position > 0);
+		assert (guidHash_position > 0);
 
 
 		foreach(var article in articles)
@@ -718,6 +722,7 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text(preview_position, article.getPreview());
 			stmt.bind_text(author_position, article.getAuthor());
 			stmt.bind_text(date_position, article.getDateStr());
+			stmt.bind_text(guidHash_position, article.getHash());
 
 			while(stmt.step () == Sqlite.ROW) {}
 			stmt.reset();
@@ -787,7 +792,8 @@ public class FeedReader.dbManager : GLib.Object {
 								stmt.column_text(4),
 								Utils.convertStringToDate(stmt.column_text(11)),
 								stmt.column_int(0),
-								stmt.column_text(10)
+								stmt.column_text(10),
+								stmt.column_text(12)
 							);
 		}
 		stmt.reset ();
@@ -1458,6 +1464,7 @@ public class FeedReader.dbManager : GLib.Object {
 		query.selectField("marked");
 		query.selectField("tags");
 		query.selectField("date");
+		query.selectField("guidHash");
 
 		if(selectedType == FeedListType.FEED && ID != FeedID.ALL)
 		{
@@ -1544,7 +1551,8 @@ public class FeedReader.dbManager : GLib.Object {
 								stmt.column_text(4),								// author
 								Utils.convertStringToDate(stmt.column_text(10)),	// date
 								stmt.column_int(0),									// sortID
-								stmt.column_text(9)									// tags
+								stmt.column_text(9),								// tags
+								stmt.column_text(11)
 							));
 		}
 

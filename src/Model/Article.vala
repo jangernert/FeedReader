@@ -27,10 +27,24 @@ public class FeedReader.article : GLib.Object {
 	private ArticleStatus m_marked;
 	private int m_sortID;
 	private GLib.DateTime m_date;
+	private string m_guidHash;
 
 
 
-	public article (string articleID, string title, string url, string feedID, ArticleStatus unread, ArticleStatus marked, string html, string preview, string author, GLib.DateTime date, int sortID, string tags) {
+	public article (	string articleID,
+						string title,
+						string url,
+						string feedID,
+						ArticleStatus unread,
+						ArticleStatus marked,
+						string html,
+						string preview,
+						string author,
+						GLib.DateTime date,
+						int sortID,
+						string tags,
+						string guidHash = "")
+	{
 		m_articleID = articleID;
 		m_title = title;
 		m_url = url;
@@ -42,6 +56,7 @@ public class FeedReader.article : GLib.Object {
 		m_marked = marked;
 		m_sortID = sortID;
 		m_date = date;
+		m_guidHash = guidHash;
 		m_tags = new GLib.List<string>();
 		var tagArray = tags.split(",");
 		foreach(string tag in tagArray)
@@ -122,17 +137,17 @@ public class FeedReader.article : GLib.Object {
 
 		if(date_year == 1900)
 		{
-			return _("no date available");
+			//return _("no date available");
 		}
 		else if(date_year == now_year)
 		{
 			if(date_day == now_day)
 			{
-				return _("Today") + m_date.format(" %H:%M");
+				//return _("Today") + m_date.format(" %H:%M");
 			}
 			else if(date_day == now_day-1)
 			{
-				return _("Yesterday") + m_date.format(" %H:%M");
+				//return _("Yesterday") + m_date.format(" %H:%M");
 			}
 		}
 
@@ -172,5 +187,10 @@ public class FeedReader.article : GLib.Object {
 	public void addTag(string tag)
 	{
 		m_tags.append(tag);
+	}
+
+	public string getHash()
+	{
+		return m_guidHash;
 	}
 }

@@ -107,6 +107,24 @@ public class FeedReader.grabberUtils : GLib.Object {
         return true;
     }
 
+    public static bool fixLazyImg(Html.Doc* doc, string lazyload, string correctURL)
+    {
+        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+    	Xml.XPath.Object* res = cntx.eval_expression("//img[@%s]".printf(lazyload));
+
+        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+            return false;
+
+        for(int i = 0; i < res->nodesetval->length(); i++)
+        {
+        	Xml.Node* node = res->nodesetval->item(i);
+            node->set_prop("src", node->get_prop(correctURL));
+        }
+
+        delete res;
+        return true;
+    }
+
     public static bool repairURL(Html.Doc* doc, string articleURL)
     {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);

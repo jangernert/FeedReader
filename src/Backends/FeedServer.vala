@@ -59,7 +59,11 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.TTRSS:
 				var response = m_ttrss.login();
-				m_supportTags = m_ttrss.supportTags();
+				m_supportTags = false;
+				m_ttrss.supportTags.begin((obj, res) => {
+					m_supportTags = m_ttrss.supportTags.end(res);
+				});
+
 				return response;
 
 			case Backend.FEEDLY:

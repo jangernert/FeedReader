@@ -98,26 +98,37 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
-	public bool supportTags()
+	public async bool supportTags()
 	{
-		var message = new ttrss_message(m_ttrss_url);
-		message.add_string("sid", m_ttrss_sessionid);
-		message.add_string("op", "removeLabel");
-		int error = message.send();
+		SourceFunc callback = supportTags.callback;
+		bool result = false;
 
-		if(error == ConnectionError.TTRSS_API)
-		{
-			var response = message.get_response_object();
-			if(response.has_member("error"))
+		ThreadFunc<void*> run = () => {
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "removeLabel");
+			int error = message.send();
+
+			if(error == ConnectionError.TTRSS_API)
 			{
-				if(response.get_string_member("error") == "INCORRECT_USAGE")
+				var response = message.get_response_object();
+				if(response.has_member("error"))
 				{
-					return true;
+					if(response.get_string_member("error") == "INCORRECT_USAGE")
+					{
+						result = true;
+					}
 				}
 			}
-		}
 
-		return false;
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("update_article", run);
+		yield;
+
+		return result;
 	}
 
 

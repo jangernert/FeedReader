@@ -63,7 +63,13 @@ public class FeedReader.ttrss_message : GLib.Object {
 	{
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
-		m_session.send_message(m_message_soup);
+		var status = m_session.send_message(m_message_soup);
+		logger.print(LogMessage.INFO, "Message status: %u".printf(status));
+		logger.print(LogMessage.INFO, "Message status: %u".printf(m_message_soup.status_code));
+		logger.print(LogMessage.INFO, "TLS errors: %u".printf(m_message_soup.tls_errors));
+
+
+		printResponse();
 
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")
@@ -79,7 +85,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		}
 
 		m_root_object = m_parser.get_root().get_object();
-		printResponse();
+
 
 		if(m_root_object.has_member("error"))
 		{

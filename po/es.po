@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-08-31 03:44+0200\n"
-"PO-Revision-Date: 2015-08-24 05:33+0000\n"
-"Last-Translator: Adolfo Jayme <fitoschido@gmail.com>\n"
+"PO-Revision-Date: 2015-09-06 00:11+0000\n"
+"Last-Translator: German <gergarcia8@yahoo.com.ar>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-02 05:53+0000\n"
+"X-Launchpad-Export-Date: 2015-09-07 06:01+0000\n"
 "X-Generator: Launchpad (build 17706)\n"
 
 #: ../src/Backends/FeedServer.vala:495
@@ -43,7 +43,7 @@ msgstr "Ningún artículo seleccionado."
 
 #: ../src/Widgets/ArticleView.vala:179
 msgid "Not available"
-msgstr ""
+msgstr "No disponible"
 
 #: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
@@ -103,19 +103,19 @@ msgstr "URL de OwnCloud:"
 
 #: ../src/Widgets/SharePopover.vala:21
 msgid "Please"
-msgstr ""
+msgstr "Por favor"
 
 #: ../src/Widgets/SharePopover.vala:23
 msgid "to a service to share this article."
-msgstr ""
+msgstr "a un servicio para compartir este artículo"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:72
 msgid "Tag Article"
-msgstr ""
+msgstr "Etiquetar artículo"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Share Article"
-msgstr ""
+msgstr "Compartir artículo"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:116
 msgid "Search Articles"
@@ -139,7 +139,7 @@ msgstr "Salir"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:222
 msgid "waiting"
-msgstr ""
+msgstr "esperando"
 
 #: ../src/Widgets/SpringCleanPage.vala:13
 msgid ""
@@ -151,7 +151,7 @@ msgstr ""
 
 #: ../src/Widgets/FeedList.vala:435
 msgid "Uncategorized"
-msgstr ""
+msgstr "Sin categorizar"
 
 #: ../src/Widgets/ResetPage.vala:18
 msgid "Change Account?"
@@ -225,19 +225,19 @@ msgstr ""
 
 #: ../src/Widgets/UpdateButton.vala:20
 msgid "Update Feeds"
-msgstr ""
+msgstr "Actualizar feeds"
 
 #: ../src/Widgets/TagPopover.vala:25
 msgid "add Tags:"
-msgstr ""
+msgstr "Agregar etiquetas:"
 
 #: ../src/Widgets/TagPopover.vala:37
 msgid "Tags:"
-msgstr ""
+msgstr "Etiquetas:"
 
 #: ../src/Widgets/TagPopover.vala:114
 msgid "add Tag"
-msgstr ""
+msgstr "agregar etiqueta"
 
 #: ../src/Widgets/SettingsDialog.vala:50
 msgid "Interface"
@@ -265,7 +265,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:94
 msgid "Only show unread"
-msgstr ""
+msgstr "Mostrar artículos sin leer"
 
 #: ../src/Widgets/SettingsDialog.vala:111
 msgid "Article List:"
@@ -273,23 +273,23 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:118
 msgid "Sort articles by"
-msgstr ""
+msgstr "Ordenar artículos por"
 
 #: ../src/Widgets/SettingsDialog.vala:125
 msgid "Date"
-msgstr ""
+msgstr "Fecha"
 
 #: ../src/Widgets/SettingsDialog.vala:128
 msgid "Received"
-msgstr ""
+msgstr "Recibido"
 
 #: ../src/Widgets/SettingsDialog.vala:151
 msgid "Newest first"
-msgstr ""
+msgstr "Lo más reciente primero"
 
 #: ../src/Widgets/SettingsDialog.vala:168
 msgid "Article View:"
-msgstr ""
+msgstr "Vista de artículo"
 
 #: ../src/Widgets/SettingsDialog.vala:175
 msgid "Theme"
@@ -297,15 +297,15 @@ msgstr "Tema"
 
 #: ../src/Widgets/SettingsDialog.vala:182
 msgid "Default"
-msgstr ""
+msgstr "Predeterminado"
 
 #: ../src/Widgets/SettingsDialog.vala:185
 msgid "Spring"
-msgstr ""
+msgstr "Primavera"
 
 #: ../src/Widgets/SettingsDialog.vala:188
 msgid "Midnight"
-msgstr ""
+msgstr "Medianoche"
 
 #: ../src/Widgets/SettingsDialog.vala:191
 msgid "Parchment"
@@ -317,11 +317,11 @@ msgstr "Sincronizar:"
 
 #: ../src/Widgets/SettingsDialog.vala:235
 msgid "Number of articles"
-msgstr ""
+msgstr "Número de artículos"
 
 #: ../src/Widgets/SettingsDialog.vala:248
 msgid "Every (seconds)"
-msgstr ""
+msgstr "Cada (segundos)"
 
 #: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"

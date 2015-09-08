@@ -28,7 +28,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 	{
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
-		m_session.ssl_strict = false;
+		//m_session.ssl_strict = false;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
 

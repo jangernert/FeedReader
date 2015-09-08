@@ -397,6 +397,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case LoginResponse.NO_API_ACCESS:
 				m_ErrorMessage.set_label(_("API access is disabled on the server. Please enable it first!"));
 				break;
+			case LoginResponse.CA_ERROR:
+				m_ErrorMessage.set_label(_("No valid CA certificate available!"));
+				break;
 			case LoginResponse.SUCCESS:
 			case LoginResponse.FIRST_TRY:
 			default:

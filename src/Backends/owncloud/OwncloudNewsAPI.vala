@@ -66,6 +66,10 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		{
 			return LoginResponse.NO_CONNECTION;
 		}
+        else if(error == ConnectionError.CA_ERROR)
+        {
+            return LoginResponse.CA_ERROR;
+        }
 
         return LoginResponse.UNKNOWN_ERROR;
     }

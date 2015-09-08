@@ -77,6 +77,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			return LoginResponse.NO_API_ACCESS;
 		}
+		else if(error == ConnectionError.CA_ERROR)
+        {
+            return LoginResponse.CA_ERROR;
+        }
 
 		return LoginResponse.UNKNOWN_ERROR;
 	}

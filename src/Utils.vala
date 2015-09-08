@@ -447,4 +447,21 @@ public class FeedReader.Utils : GLib.Object {
 		return "blubb";
 	}
 
+	public static bool CaErrorOccoured(GLib.TlsCertificateFlags flag)
+	{
+		switch(flag)
+		{
+			case GLib.TlsCertificateFlags.UNKNOWN_CA:
+			case GLib.TlsCertificateFlags.BAD_IDENTITY:
+			case GLib.TlsCertificateFlags.NOT_ACTIVATED:
+			case GLib.TlsCertificateFlags.EXPIRED:
+			case GLib.TlsCertificateFlags.REVOKED:
+			case GLib.TlsCertificateFlags.INSECURE:
+			case GLib.TlsCertificateFlags.GENERIC_ERROR:
+				return true;
+		}
+
+		return false;
+	}
+
 }

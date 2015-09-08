@@ -65,7 +65,13 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 		var status = m_session.send_message(m_message_soup);
-		//logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
+
+		if(Utils.CaErrorOccoured(m_message_soup.tls_errors))
+		{
+			logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
+			return ConnectionError.CA_ERROR;
+		}
+
 
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")

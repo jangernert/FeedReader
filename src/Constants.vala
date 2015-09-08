@@ -69,6 +69,7 @@ namespace FeedReader {
 		TTRSS_API,
 		OWNCLOUD_API,
 		TTRSS_API_DISABLED,
+		CA_ERROR,
 		UNKNOWN
 	}
 
@@ -118,7 +119,8 @@ namespace FeedReader {
 		NO_BACKEND,
 		WRONG_LOGIN,
 		NO_CONNECTION,
-		NO_API_ACCESS
+		NO_API_ACCESS,
+		CA_ERROR
 	}
 
 

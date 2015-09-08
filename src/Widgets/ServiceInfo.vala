@@ -11,7 +11,7 @@ public class FeedReader.ServiceInfo : Gtk.Box {
         {
             case Backend.TTRSS:
                 service_name = "ttrss";
-                user_name = settings_ttrss.get_string("username") + "@" + settings_ttrss.get_string("url");
+                user_name = settings_ttrss.get_string("username") + "@" + shortenURL(settings_ttrss.get_string("url"));
                 break;
             case Backend.FEEDLY:
                 service_name = "feedly";
@@ -25,6 +25,9 @@ public class FeedReader.ServiceInfo : Gtk.Box {
 
         m_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));
         m_label = new Gtk.Label(user_name);
+        m_label.margin_start = 10;
+        m_label.margin_end = 10;
+        m_label.set_ellipsize(Pango.EllipsizeMode.END);
         m_label.opacity = 0.6;
 
         this.pack_start(m_logo, false, false, 0);
@@ -44,7 +47,7 @@ public class FeedReader.ServiceInfo : Gtk.Box {
         {
             case Backend.TTRSS:
                 service_name = "ttrss";
-                user_name = settings_ttrss.get_string("username") + "@" + settings_ttrss.get_string("url");
+                user_name = settings_ttrss.get_string("username") + "@" + shortenURL(settings_ttrss.get_string("url"));
                 break;
             case Backend.FEEDLY:
                 service_name = "feedly";
@@ -57,8 +60,32 @@ public class FeedReader.ServiceInfo : Gtk.Box {
         }
 
         m_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));
-        m_label = new Gtk.Label(user_name);
-        m_label.opacity = 0.6;
+        m_label.set_label(user_name);
         show_all();
+    }
+
+    private string shortenURL(string url)
+    {
+        string longURL = url;
+        if(longURL.has_prefix("https://"))
+        {
+            longURL = longURL.substring(8);
+        }
+        else if(longURL.has_prefix("http://"))
+        {
+            longURL = longURL.substring(8);
+        }
+
+        if(longURL.has_prefix("www."))
+        {
+            longURL = longURL.substring(4);
+        }
+
+        if(longURL.has_suffix("api/"))
+        {
+            longURL = longURL.substring(0, longURL.length - 4);
+        }
+
+        return longURL;
     }
 }

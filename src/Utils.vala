@@ -422,4 +422,29 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
+	public static string printTlsCertificateFlags(GLib.TlsCertificateFlags flag)
+	{
+		switch(flag)
+		{
+			case GLib.TlsCertificateFlags.UNKNOWN_CA:
+				return "UNKNOWN_CA";
+			case GLib.TlsCertificateFlags.BAD_IDENTITY:
+				return "BAD_IDENTITY";
+			case GLib.TlsCertificateFlags.NOT_ACTIVATED:
+				return "NOT_ACTIVATED";
+			case GLib.TlsCertificateFlags.EXPIRED:
+				return "EXPIRED";
+			case GLib.TlsCertificateFlags.REVOKED:
+				return "REVOKED";
+			case GLib.TlsCertificateFlags.INSECURE:
+				return "INSECURE";
+			case GLib.TlsCertificateFlags.GENERIC_ERROR:
+				return "GENERIC_ERROR";
+			case GLib.TlsCertificateFlags.VALIDATE_ALL:
+				return "VALIDATE_ALL";
+		}
+
+		return "blubb";
+	}
+
 }

@@ -28,6 +28,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 	{
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
+		m_session.ssl_strict = false;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
 
@@ -64,12 +65,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 		var status = m_session.send_message(m_message_soup);
-		logger.print(LogMessage.INFO, "Message status: %u".printf(status));
-		logger.print(LogMessage.INFO, "Message status: %u".printf(m_message_soup.status_code));
-		logger.print(LogMessage.INFO, "TLS errors: %u".printf(m_message_soup.tls_errors));
-
-
-		printResponse();
+		//logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")

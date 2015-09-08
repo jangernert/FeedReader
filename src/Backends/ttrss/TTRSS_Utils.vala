@@ -98,6 +98,7 @@ public class FeedReader.ttrss_utils : GLib.Object {
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", remote_filename);
 			var session = new Soup.Session();
+			session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{

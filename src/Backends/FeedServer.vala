@@ -465,6 +465,43 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
+	public async void markAllItemsRead()
+	{
+		SourceFunc callback = markAllItemsRead.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.markAllItemsRead();
+					break;
+
+				case Backend.FEEDLY:
+					var categories = dataBase.read_categories();
+					foreach(category cat in categories)
+					{
+						m_feedly.mark_as_read(cat.getCatID(), "categories", ArticleStatus.READ);
+					}
+
+					var feeds = dataBase.read_feeds_without_cat();
+					foreach(feed Feed in feeds)
+					{
+						m_feedly.mark_as_read(Feed.getFeedID(), "feeds", ArticleStatus.READ);
+					}
+					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.markAllItemsRead();
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("markAllItemsRead", run);
+		yield;
+	}
+
 
 	public async void addArticleTag(string articleID, string tagID)
 	{

@@ -43,6 +43,7 @@ namespace FeedReader {
 		public abstract int isLoggedIn() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
+		public abstract void markAllItemsRead() throws IOError;
 		public abstract void tagArticle(string articleID, string tagID, bool add) throws IOError;
 		public abstract string createTag(string caption) throws IOError;
 		public abstract void updateBadge() throws IOError;

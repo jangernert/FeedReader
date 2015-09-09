@@ -288,6 +288,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return true;
 	}
 
+    public bool markAllItemsRead()
+	{
+        string url = "items/read?newestItemId=%i".printf(dataBase.getNewestArticle());
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        int error = message.send();
+
+		return true;
+	}
+
 
     public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{

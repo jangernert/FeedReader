@@ -306,6 +306,20 @@ namespace FeedReader {
 			}
 		}
 
+		public void markAllItemsRead()
+		{
+			server.markAllItemsRead.begin((obj, res) => {
+				server.markAllItemsRead.end(res);
+			});
+
+			dataBase.markAllRead.begin((obj, res) => {
+				dataBase.markAllRead.end(res);
+				updateBadge();
+				newFeedList();
+				updateArticleList();
+			});
+		}
+
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY

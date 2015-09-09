@@ -618,6 +618,31 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return return_value;
 	}
 
+	public bool markAllItemsRead()
+	{
+		bool return_value = false;
+
+		var categories = dataBase.read_categories();
+		foreach(category cat in categories)
+		{
+			var message = new ttrss_message(m_ttrss_url);
+			message.add_string("sid", m_ttrss_sessionid);
+			message.add_string("op", "catchupFeed");
+			message.add_int_array("feed_id", cat.getCatID());
+			message.add_bool("is_cat", true);
+			int error = message.send();
+
+			if(error == ConnectionError.SUCCESS)
+			{
+				var response = message.get_response_object();
+				if(response.get_string_member("status") == "OK")
+					return_value = true;
+			}
+		}
+
+		return return_value;
+	}
+
 
 	public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{

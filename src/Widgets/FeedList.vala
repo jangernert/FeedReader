@@ -789,19 +789,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		{
 			if(id == FeedID.ALL)
 			{
-				var categories = dataBase.read_categories();
-				foreach(category cat in categories)
-				{
-					feedDaemon_interface.markFeedAsRead(cat.getCatID(), true);
-					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
-				}
-
-				var feeds = dataBase.read_feeds_without_cat();
-				foreach(feed Feed in feeds)
-				{
-					feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
-					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
-				}
+				feedDaemon_interface.markAllItemsRead();
 			}
 			else
 			{

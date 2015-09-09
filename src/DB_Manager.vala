@@ -935,6 +935,31 @@ public class FeedReader.dbManager : GLib.Object {
 		yield;
 	}
 
+	public async void markAllRead()
+	{
+		SourceFunc callback = markAllRead.callback;
+
+		ThreadFunc<void*> run = () => {
+
+			var query1 = new QueryBuilder(QueryType.UPDATE, "main.articles");
+			query1.updateValuePair("unread", ArticleStatus.READ.to_string());
+			executeSQL(query1.build());
+
+			var query2 = new QueryBuilder(QueryType.UPDATE, "main.feeds");
+			query2.updateValuePair("unread", "0");
+			executeSQL(query2.build());
+
+			var query3 = new QueryBuilder(QueryType.UPDATE, "main.categories");
+			query3.updateValuePair("unread", "0");
+			executeSQL(query3.build());
+
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("markAllRead", run);
+		yield;
+	}
+
 	public int getMaxCatLevel()
 	{
 		int maxCatLevel = 0;

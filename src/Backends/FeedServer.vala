@@ -149,7 +149,8 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.OWNCLOUD:
 					m_owncloud.getFeeds(ref feeds);
 					m_owncloud.getCategories(ref categories, ref feeds);
-					m_owncloud.getArticles(ref articles, settings_general.get_int("max-articles"));
+					//m_owncloud.getArticles(ref articles, settings_general.get_int("max-articles"));
+					m_owncloud.getNewArticles(ref articles, settings_state.get_int("last-sync"));
 					break;
 			}
 
@@ -206,6 +207,9 @@ public class FeedReader.FeedServer : GLib.Object {
 					dataBase.dropOldArtilces(24);
 					break;
 			}
+
+			var now = new DateTime.now_local();
+			settings_state.set_int("last-sync", (int)now.to_unix());
 
 			Idle.add((owned) callback);
 			return null;
@@ -345,6 +349,8 @@ public class FeedReader.FeedServer : GLib.Object {
 				settings_state.set_int("initial-sync-level", 0);
 			settings_general.reset("content-grabber");
 
+			var now = new DateTime.now_local();
+			settings_state.set_int("last-sync", (int)now.to_unix());
 
 			Idle.add((owned) callback);
 			return null;

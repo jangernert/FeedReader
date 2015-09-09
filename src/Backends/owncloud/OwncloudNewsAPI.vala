@@ -184,7 +184,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         args += "id=%i".printf(id);
 
 		var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
+        logger.print(LogMessage.DEBUG, m_OwnCloudURL + "items?" + args);
 		int error = message.send();
+        message.printResponse();
         var response = message.get_response_object();
         if(response.has_member("items"))
         {

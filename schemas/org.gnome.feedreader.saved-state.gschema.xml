@@ -159,6 +159,14 @@
             </description>
         </key>
 
+        <key name="last-sync" type="i">
+            <default>946684800</default>
+            <summary>timestamp of the last sync</summary>
+            <description>
+                Timestamp of the last time the data got updated.
+            </description>
+        </key>
+
         <key name="initial-sync-level" type="i">
             <default>0</default>
             <summary>Current Level of the InitSync</summary>

@@ -5,10 +5,12 @@ date: substring-after(substring-before(//div, 'Posted in'), ' on ')
 strip_image_src: /content/images/globals/
 strip: //h2[. = 'Page 1']/preceding::p
 strip: //h2
+strip: //font
 
 prune: no
 
 single_page_link: concat('http://www.anandtech.com/print/', substring-after(//meta[@property='og:url']/@content, '/show/'))
+next_page_link: //div[@class='article_links']/a[@class='fl-rt']
 
 test_url: http://www.anandtech.com/show/8370/gigabyte-am1m-s2h-review
 test_url: http://www.anandtech.com/show/8402/sandisk-releases-ultra-ii-ssd-the-second-tlc-nand-ssd-in-the-market

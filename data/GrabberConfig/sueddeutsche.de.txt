@@ -20,8 +20,10 @@
 
 
 body: //article[@id="sitecontent"]
+author: //meta[@name="author"]/@content
 
 strip: //section[@class="header"]
 strip: //div[@id="article-sidebar-wrapper"]
 strip: //p[@class="anzeige"]
 strip: //section[@class="authors"]
+

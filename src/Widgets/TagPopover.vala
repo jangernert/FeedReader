@@ -37,7 +37,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
 		m_stack.set_transition_duration(0);
 
-		var empty_label = new Gtk.Label(_("add Tags:"));
+		var empty_label = new Gtk.Label(_("Add Tag:"));
 		empty_label.get_style_context().add_class("h4");
 		empty_label.set_alignment(0, 0.5f);
 		m_stack.add_named(empty_label, "empty");

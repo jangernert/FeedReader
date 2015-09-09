@@ -262,6 +262,7 @@ public class FeedReader.Grabber : GLib.Object {
         }
 
         grabberUtils.fixLazyImg(doc, "class=\"lazyload\"", "data-src");
+        grabberUtils.setAttributes(doc, "style", "");
 
         // complete relative source urls of images
         logger.print(LogMessage.DEBUG, "Grabber: copmplete urls");

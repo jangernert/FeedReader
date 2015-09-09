@@ -315,14 +315,13 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		{
 			case Backend.TTRSS:
 				settings_general.set_enum("account-type", Backend.TTRSS);
-				string url = m_ttrss_url_entry.get_text();
-				settings_ttrss.set_string("url", url);
+				settings_ttrss.set_string("url", m_ttrss_url_entry.get_text());
 				settings_ttrss.set_string("username", m_ttrss_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "URL", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-				attributes["URL"] = url;
+				attributes["URL"] = m_ttrss_url_entry.get_text();
 				attributes["Username"] = m_ttrss_user_entry.get_text();
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
@@ -336,6 +335,16 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.OWNCLOUD:
 				settings_general.set_enum("account-type", Backend.OWNCLOUD);
+				settings_owncloud.set_string("url", m_owncloud_url_entry.get_text());
+				settings_owncloud.set_string("username", m_owncloud_user_entry.get_text());
+				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+							                      "URL", Secret.SchemaAttributeType.STRING,
+							                      "Username", Secret.SchemaAttributeType.STRING);
+				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["URL"] = m_owncloud_url_entry.get_text();
+				attributes["Username"] = m_owncloud_user_entry.get_text();
+				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_owncloud_password_entry.get_text(), null);}
+				catch(GLib.Error e){}
 				break;
 
 			case Backend.NONE:

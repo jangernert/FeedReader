@@ -23,7 +23,7 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 	private Json.Object m_root_object;
     private string m_method;
 
-    public OwnCloudNews_Message(string destination, string username, string password, string method = "POST")
+    public OwnCloudNews_Message(string destination, string username, string password, string method)
     {
         m_message_string = new GLib.StringBuilder();
         m_method = method;
@@ -103,6 +103,11 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 	{
 		return m_message_string.str;
 	}
+
+    public void printMessage()
+    {
+        logger.print(LogMessage.DEBUG, m_message_string.str);
+    }
 
 	public void printResponse()
 	{

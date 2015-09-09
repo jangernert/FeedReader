@@ -16,6 +16,7 @@
 public class FeedReader.FeedServer : GLib.Object {
 	private ttrss_interface m_ttrss;
 	private FeedlyAPI m_feedly;
+	private OwncloudNewsAPI m_owncloud;
 	private int m_type;
 	private bool m_supportTags;
 	public signal void initSyncStage(int stage);
@@ -36,6 +37,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.FEEDLY:
 				m_feedly = new FeedlyAPI();
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud = new OwncloudNewsAPI();
 				break;
 		}
 	}
@@ -73,6 +78,10 @@ public class FeedReader.FeedServer : GLib.Object {
 					return m_feedly.login();
 				}
 				break;
+
+			case Backend.OWNCLOUD:
+					return m_owncloud.login();
+				break;
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -97,6 +106,15 @@ public class FeedReader.FeedServer : GLib.Object {
 					if(!m_feedly.ping())
 					{
 						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - feedly not reachable");
+						Idle.add((owned) callback);
+						return null;
+					}
+					break;
+
+				case Backend.OWNCLOUD:
+					if(!m_owncloud.ping())
+					{
+						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - owncloud not logged in or unreachable");
 						Idle.add((owned) callback);
 						return null;
 					}
@@ -126,6 +144,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_feedly.getFeeds(ref feeds);
 					m_feedly.getTags(ref tags);
 					m_feedly.getArticles(ref articles, settings_general.get_int("max-articles"));
+					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.getFeeds(ref feeds);
+					m_owncloud.getCategories(ref categories, ref feeds);
+					m_owncloud.getArticles(ref articles, settings_general.get_int("max-articles"));
 					break;
 			}
 
@@ -280,6 +304,22 @@ public class FeedReader.FeedServer : GLib.Object {
 					initSyncFeed("");
 					initSyncStage(7);
 					break;
+
+				case Backend.OWNCLOUD:
+						initSyncStage(1);
+						m_owncloud.getFeeds(ref feeds);
+						m_owncloud.getCategories(ref categories, ref feeds);
+						initSyncStage(2);
+						initSyncStage(3);
+
+						// get ALL articles
+						m_owncloud.getArticles(ref articles, -1);
+						initSyncStage(4);
+						initSyncStage(5);
+						initSyncStage(6);
+						initSyncFeed("");
+						initSyncStage(7);
+						break;
 			}
 
 
@@ -331,6 +371,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDLY:
 					m_feedly.mark_as_read(articleIDs, "entries", read);
 					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.updateArticleUnread(articleIDs, read);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -353,6 +397,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.FEEDLY:
 					m_feedly.setArticleIsMarked(articleID, marked);
+					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.updateArticleMarked(articleID, marked);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -377,6 +425,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDLY:
 					m_feedly.mark_as_read(feedID, "feeds", ArticleStatus.READ);
 					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.markFeedRead(feedID, false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -399,6 +451,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.FEEDLY:
 					m_feedly.mark_as_read(catID, "categories", ArticleStatus.READ);
+					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.markFeedRead(catID, true);
 					break;
 			}
 			Idle.add((owned) callback);

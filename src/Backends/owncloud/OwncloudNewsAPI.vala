@@ -116,8 +116,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     					if(feed_node.has_member("faviconLink"))
                         {
-    						OwncloudNews_Utils.downloadIcon(feed_id, feed_node.get_string_member("faviconLink"));
-                            hasIcon = true;
+                            hasIcon = OwncloudNews_Utils.downloadIcon(feed_id, feed_node.get_string_member("faviconLink"));
                         }
 
     					feeds.append(
@@ -231,11 +230,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         args += "offset=%i".printf(skip);
 
 		if(maxArticles < limit)
-            args += "batchSize=%i&".printf(maxArticles);
+            args += "&batchSize=%i".printf(maxArticles);
 		else
-            args += "batchSize=%i&".printf(limit);
+            args += "&batchSize=%i".printf(limit);
 
         var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
+        logger.print(LogMessage.DEBUG, m_OwnCloudURL + "items?" + args);
 		int error = message.send();
         var response = message.get_response_object();
         if(response.has_member("items"))
@@ -280,10 +280,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         else
             type = "feeds";
 
-        string url = "%s/%s/read".printf(type, feedID);
+        string url = "%s/%s/read?newestItemId=%i".printf(type, feedID, dataBase.getNewestArticle());
 
         var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        message.add_int("newestItemId", dataBase.getNewestArticle());
         int error = message.send();
 
 		return true;
@@ -292,29 +291,28 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
-        string url = "";
+        string url = "items/%s/".printf(articleIDs);
 
         if(unread == ArticleStatus.UNREAD)
-            url = "items/read/multiple";
+            url += "unread";
         else if(unread == ArticleStatus.READ)
-            url = "items/unread/multiple";
+            url += "read";
 
         var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        message.add_int_array("items", articleIDs);
         int error = message.send();
 
 		return true;
 	}
 
 
-    public bool updateArticleMarked(int articleID, ArticleStatus marked)
+    public bool updateArticleMarked(string articleID, ArticleStatus marked)
 	{
         var article = dataBase.read_article(articleID);
         string url = "/items/%s/%s/".printf(article.getFeedID(), article.getHash());
 
-        if(unread == ArticleStatus.MARKED)
+        if(marked == ArticleStatus.MARKED)
             url += "star";
-        else if(unread == ArticleStatus.UNMARKED)
+        else if(marked == ArticleStatus.UNMARKED)
             url += "unstar";
 
         var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
@@ -322,4 +320,10 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 		return true;
 	}
+
+    public bool ping()
+    {
+        //FIXME: place actual code here :)
+        return true;
+    }
 }

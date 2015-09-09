@@ -4,31 +4,14 @@ public class FeedReader.ServiceInfo : Gtk.Box {
 
     public ServiceInfo()
     {
-        string service_name = "";
-        string user_name = "";
-
-        switch(settings_general.get_enum("account-type"))
-        {
-            case Backend.TTRSS:
-                service_name = "ttrss";
-                user_name = settings_ttrss.get_string("username") + "@" + shortenURL(settings_ttrss.get_string("url"));
-                break;
-            case Backend.FEEDLY:
-                service_name = "feedly";
-                user_name = settings_feedly.get_string("email");
-                break;
-            case Backend.OWNCLOUD:
-                service_name = "owncloud";
-                user_name = "username@Server";
-                break;
-        }
-
-        m_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));
-        m_label = new Gtk.Label(user_name);
+        m_logo = new Gtk.Image.from_file("");
+        m_label = new Gtk.Label("");
         m_label.margin_start = 10;
         m_label.margin_end = 10;
         m_label.set_ellipsize(Pango.EllipsizeMode.END);
         m_label.opacity = 0.6;
+
+        refresh();
 
         this.pack_start(m_logo, false, false, 0);
         this.pack_start(m_label, false, false, 5);
@@ -55,11 +38,11 @@ public class FeedReader.ServiceInfo : Gtk.Box {
                 break;
             case Backend.OWNCLOUD:
                 service_name = "owncloud";
-                user_name = "username@Server";
+                user_name = settings_owncloud.get_string("username") + "@" + shortenURL(settings_owncloud.get_string("url"));
                 break;
         }
 
-        m_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));
+        m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));
         m_label.set_label(user_name);
         show_all();
     }
@@ -73,7 +56,7 @@ public class FeedReader.ServiceInfo : Gtk.Box {
         }
         else if(longURL.has_prefix("http://"))
         {
-            longURL = longURL.substring(8);
+            longURL = longURL.substring(7);
         }
 
         if(longURL.has_prefix("www."))

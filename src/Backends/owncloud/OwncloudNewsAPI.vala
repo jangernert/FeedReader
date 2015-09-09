@@ -184,9 +184,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         args += "id=%i".printf(id);
 
 		var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
-        logger.print(LogMessage.DEBUG, m_OwnCloudURL + "items?" + args);
 		int error = message.send();
-        message.printResponse();
         var response = message.get_response_object();
         if(response.has_member("items"))
         {
@@ -237,7 +235,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             args += "&batchSize=%i".printf(limit);
 
         var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
-        logger.print(LogMessage.DEBUG, m_OwnCloudURL + "items?" + args);
 		int error = message.send();
         var response = message.get_response_object();
         if(response.has_member("items"))
@@ -252,22 +249,26 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                 ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
                 ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
 
-                articles.append(
-                    new article (	article_node.get_int_member("id").to_string(),
-                					article_node.get_string_member("title"),
-                					article_node.get_string_member("url"),
-                					article_node.get_int_member("feedId").to_string(),
-                					unread,
-                					marked,
-                					article_node.get_string_member("body"),
-                					"",
-                					article_node.get_string_member("author"),
-                					new DateTime.from_unix_local(article_node.get_int_member("lastModified")),
-                					-1,
-                					"",
-                					article_node.get_string_member("guidHash")
-                                )
-                );
+                var Article = new article (	article_node.get_int_member("id").to_string(),
+                        					article_node.get_string_member("title"),
+                        					article_node.get_string_member("url"),
+                        					article_node.get_int_member("feedId").to_string(),
+                        					unread,
+                        					marked,
+                        					article_node.get_string_member("body"),
+                        					"",
+                        					article_node.get_string_member("author"),
+                        					new DateTime.from_unix_local(article_node.get_int_member("lastModified")),
+                        					-1,
+                        					"",
+                        					article_node.get_string_member("guidHash"));
+
+                if(!dataBase.article_exists(Article.getArticleID()))
+    			{
+    				FeedServer.grabContent(ref Article);
+    			}
+
+                articles.append(Article);
             }
         }
 	}

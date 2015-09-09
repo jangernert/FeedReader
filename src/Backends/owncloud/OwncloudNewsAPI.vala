@@ -273,31 +273,53 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool markFeedRead(string feedID, bool isCatID)
 	{
-		bool return_value = false;
+        string type = "";
 
         if(isCatID)
-        {
-
-        }
+            type = "folders";
         else
-        {
+            type = "feeds";
 
-        }
+        string url = "%s/%s/read".printf(type, feedID);
 
-		return return_value;
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_int("newestItemId", dataBase.getNewestArticle());
+        int error = message.send();
+
+		return true;
 	}
 
 
     public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
-		bool return_value = false;
-		return return_value;
+        string url = "";
+
+        if(unread == ArticleStatus.UNREAD)
+            url = "items/read/multiple";
+        else if(unread == ArticleStatus.READ)
+            url = "items/unread/multiple";
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_int_array("items", articleIDs);
+        int error = message.send();
+
+		return true;
 	}
 
 
     public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	{
-		bool return_value = false;
-		return return_value;
+        var article = dataBase.read_article(articleID);
+        string url = "/items/%s/%s/".printf(article.getFeedID(), article.getHash());
+
+        if(unread == ArticleStatus.MARKED)
+            url += "star";
+        else if(unread == ArticleStatus.UNMARKED)
+            url += "unstar";
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        int error = message.send();
+
+		return true;
 	}
 }

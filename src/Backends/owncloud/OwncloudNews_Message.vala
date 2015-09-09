@@ -17,6 +17,7 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 
     private Soup.Session m_session;
 	private Soup.Message m_message_soup;
+    private GLib.StringBuilder m_message_string;
 	private string m_contenttype;
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
@@ -24,6 +25,7 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 
     public OwnCloudNews_Message(string destination, string username, string password, string method = "POST")
     {
+        m_message_string = new GLib.StringBuilder();
         m_method = method;
 		m_session = new Soup.Session();
         //m_session.ssl_strict = false;
@@ -36,9 +38,34 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
         m_message_soup.request_headers.append("Authorization","Basic %s".printf(base64));
 	}
 
+    public void add_int(string type, int val)
+	{
+		m_message_string.append(",\"" + type + "\":" + val.to_string());
+	}
+
+	public void add_int_array(string type, string values)
+	{
+		m_message_string.append(",\"" + type + "\":" + values);
+	}
+
+	public void add_bool(string type, bool val)
+	{
+		m_message_string.append(",\"" + type + "\":");
+		if(val)
+			m_message_string.append("true");
+		else
+			m_message_string.append("false");
+	}
+
+	public void add_string(string type, string val)
+	{
+		m_message_string.append(",\"" + type + "\":\"" + val + "\"");
+	}
+
     public ConnectionError send()
 	{
-		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, "".data);
+        m_message_string.overwrite(0, "{").append("}");
+		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 		m_session.send_message(m_message_soup);
 
         if(Utils.CaErrorOccoured(m_message_soup.tls_errors))
@@ -70,6 +97,11 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
     public Json.Object? get_response_object()
 	{
 		return m_root_object;
+	}
+
+    public string getMessage()
+	{
+		return m_message_string.str;
 	}
 
 	public void printResponse()

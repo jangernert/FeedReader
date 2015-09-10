@@ -464,4 +464,49 @@ public class FeedReader.Utils : GLib.Object {
 		return false;
 	}
 
+
+	public static bool ping(string url)
+	{
+	    try
+		{
+	        var resolver = GLib.Resolver.get_default();
+	        var addresses = resolver.lookup_by_name(url, null);
+
+			// if can't resolve url to ip
+			if(addresses == null)
+				return false;
+
+	        var address = addresses.nth_data(0);
+	        var client = new GLib.SocketClient();
+	        var conn = client.connect(new GLib.InetSocketAddress(address, 80));
+
+			// if can't establish connection to ip
+			if(conn == null)
+				return false;
+
+	        var message = @"GET / HTTP/1.1\r\nHost: $url\r\n\r\n";
+	        ssize_t bytesWritten = conn.output_stream.write(message.data);
+
+			// if can't write message
+			if(bytesWritten == -1)
+				return false;
+
+	        var response = new GLib.DataInputStream(conn.input_stream);
+	        var status_line = response.read_line(null).strip();
+
+			// if no response received
+			if(status_line == null)
+				return false;
+
+			return true;
+	    }
+		catch (Error e)
+		{
+			logger.print(LogMessage.DEBUG, "ping failed: %s".printf(url));
+	    }
+
+		return false;
+	}
+
+
 }

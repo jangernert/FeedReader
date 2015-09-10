@@ -339,7 +339,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool ping()
     {
-        //FIXME: place actual code here :)
-        return true;
+        return Utils.ping(m_OwnCloudURL);
     }
 }

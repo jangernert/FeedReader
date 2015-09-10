@@ -317,6 +317,13 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string downloadImage(string url, string articleID, string feedID, int nr)
     {
+        string fixedURL = url;
+        if(fixedURL.has_prefix("//"))
+        {
+            fixedURL = "http:" + fixedURL;
+        }
+
+        logger.print(LogMessage.DEBUG, "downloadImage: %s".printf(fixedURL));
         string imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
 		var path = GLib.File.new_for_path(imgPath);
 		try{
@@ -326,17 +333,18 @@ public class FeedReader.grabberUtils : GLib.Object {
 			//logger.print(LogMessage.DEBUG, e.message);
 		}
 
-        int start = url.last_index_of("/") + 1;
-        string localFilename = imgPath + GLib.Uri.unescape_string("%i_%s".printf(nr, url.substring(start)));
+        int start = fixedURL.last_index_of("/") + 1;
+        string localFilename = imgPath + GLib.Uri.unescape_string("%i_%s".printf(nr, fixedURL.substring(start)));
 
         if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
 		{
 			Soup.Message message_dlImg;
-			message_dlImg = new Soup.Message("GET", url);
+			message_dlImg = new Soup.Message("GET", fixedURL);
 			var session = new Soup.Session();
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);
-			if (status == 200)
+            logger.print(LogMessage.DEBUG, "downloadImage status %u".printf(status));
+			if(status == 200)
 			{
 				try{
 					FileUtils.set_contents(	localFilename,
@@ -346,9 +354,14 @@ public class FeedReader.grabberUtils : GLib.Object {
 				catch(GLib.FileError e)
 				{
 					logger.print(LogMessage.ERROR, "Error writing image: %s".printf(e.message));
-                    return url;
+                    return fixedURL;
 				}
 			}
+            else
+            {
+                logger.print(LogMessage.ERROR, "Error downloading image: %s".printf(fixedURL));
+                return fixedURL;
+            }
 		}
 
         return localFilename;

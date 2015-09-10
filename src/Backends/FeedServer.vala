@@ -659,7 +659,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 		else if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
 		{
-			var grabber = new Grabber(Article.getURL());
+			var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
 			if(grabber.process())
 			{
 				grabber.print();

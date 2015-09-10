@@ -296,4 +296,63 @@ public class FeedReader.grabberUtils : GLib.Object {
     }
 
 
+    public static bool saveImages(Html.Doc* doc, string articleID, string feedID)
+    {
+        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+    	Xml.XPath.Object* res = cntx.eval_expression("//img");
+
+        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+            return false;
+
+        for(int i = 0; i < res->nodesetval->length(); i++)
+        {
+        	Xml.Node* node = res->nodesetval->item(i);
+            node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
+        }
+
+        delete res;
+        return true;
+    }
+
+
+    public static string downloadImage(string url, string articleID, string feedID, int nr)
+    {
+        string imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+		var path = GLib.File.new_for_path(imgPath);
+		try{
+			path.make_directory_with_parents();
+		}
+		catch(GLib.Error e){
+			//logger.print(LogMessage.DEBUG, e.message);
+		}
+
+        int start = url.last_index_of("/") + 1;
+        string localFilename = imgPath + GLib.Uri.unescape_string("%i_%s".printf(nr, url.substring(start)));
+
+        if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
+		{
+			Soup.Message message_dlImg;
+			message_dlImg = new Soup.Message("GET", url);
+			var session = new Soup.Session();
+			session.ssl_strict = false;
+			var status = session.send_message(message_dlImg);
+			if (status == 200)
+			{
+				try{
+					FileUtils.set_contents(	localFilename,
+											(string)message_dlImg.response_body.flatten().data,
+											(long)message_dlImg.response_body.length);
+				}
+				catch(GLib.FileError e)
+				{
+					logger.print(LogMessage.ERROR, "Error writing image: %s".printf(e.message));
+                    return url;
+				}
+			}
+		}
+
+        return localFilename;
+    }
+
+
 }

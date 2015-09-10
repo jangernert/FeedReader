@@ -212,7 +212,7 @@ public class FeedReader.articleView : Gtk.Stack {
 					Article.getDateNice(),
 					Article.getFeedID()
 				)
-			, null);
+			, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 		this.show_all();
 
 		if(m_currentView == m_view1)		 this.set_visible_child_full("view1", Gtk.StackTransitionType.CROSSFADE);

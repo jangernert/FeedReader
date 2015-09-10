@@ -15,12 +15,14 @@
 
 public class FeedReader.Grabber : GLib.Object {
     private string m_articleURL;
+    private string m_articleID;
+    private string m_feedID;
     private string m_rawHtml;
     private string m_nexPageURL;
     private GrabberConfig m_config;
     private bool m_firstPage;
     private string m_hostName;
-    private Xml.Doc* m_doc;
+    private Html.Doc* m_doc;
     private Xml.Node* m_root;
     private Xml.Ns* m_ns;
     private bool m_foundSomething;
@@ -32,9 +34,11 @@ public class FeedReader.Grabber : GLib.Object {
     public string m_date;
     public string m_html;
 
-    public Grabber(string articleURL)
+    public Grabber(string articleURL, string articleID, string feedID)
     {
         m_articleURL = articleURL;
+        m_articleID = articleID;
+        m_feedID = feedID;
         m_firstPage = true;
         m_foundSomething = false;
         m_singlePage = false;
@@ -324,6 +328,7 @@ public class FeedReader.Grabber : GLib.Object {
             return true;
         }
 
+        grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
         postProcessing();
         return true;
     }

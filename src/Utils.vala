@@ -32,6 +32,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			else if(article.getHTML() != "" && article.getHTML() != null)
 			{
+				logger.print(LogMessage.INFO, "generate preview: %s".printf(article.getTitle()));
 				string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
 				int outputfd = GLib.FileUtils.mkstemp(filename);
 				try{
@@ -63,10 +64,10 @@ public class FeedReader.Utils : GLib.Object {
 
 				string xml = "<?xml";
 
-				if(output.has_prefix(xml))
+				while(output.has_prefix(xml))
 				{
 					int end = output.index_of_char('>');
-					output = output.slice(end+1, output.length);
+					output = output.slice(end+1, output.length).chug();
 				}
 
 				output = output.replace("\n"," ");
@@ -509,4 +510,33 @@ public class FeedReader.Utils : GLib.Object {
 	}
 
 
+	public static bool remove_directory(string path, uint level = 0)
+	{
+		++level;
+		bool flag = false;
+		var directory = GLib.File.new_for_path(path);
+
+		var enumerator = directory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
+
+		GLib.FileInfo file_info;
+		while((file_info = enumerator.next_file()) != null)
+		{
+			string file_name = file_info.get_name();
+
+			if((file_info.get_file_type()) == GLib.FileType.DIRECTORY)
+			{
+				remove_directory(path + file_name + "/", level);
+	    	}
+
+			var file = directory.get_child(file_name);
+			file.delete();
+		}
+
+		if(level == 1)
+		{
+			directory.delete();
+		}
+
+		return flag;
+	}
 }

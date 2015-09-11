@@ -354,17 +354,17 @@ public class FeedReader.grabberUtils : GLib.Object {
 				catch(GLib.FileError e)
 				{
 					logger.print(LogMessage.ERROR, "Error writing image: %s".printf(e.message));
-                    return fixedURL;
+                    return url;
 				}
 			}
             else
             {
                 logger.print(LogMessage.ERROR, "Error downloading image: %s".printf(fixedURL));
-                return fixedURL;
+                return url;
             }
 		}
 
-        return localFilename;
+        return localFilename.replace("?", "%3F");
     }
 
 

@@ -174,10 +174,28 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public void dropOldArtilces(int weeks)
 	{
-		var query = new QueryBuilder(QueryType.DELETE, "main.articles");
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("articleID");
+		query.selectField("feedID");
 		query.addCustomCondition("date <= datetime('now', '-%i months')".printf(weeks));
-		executeSQL(query.build());
+		query.build();
 		query.print();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		while (stmt.step () == Sqlite.ROW) {
+			delete_article(stmt.column_text(0), stmt.column_text(1));
+		}
+	}
+
+	private void delete_article(string articleID, string feedID)
+	{
+		executeSQL("DELETE FROM main.articles WHERE articleID = \"" + articleID + "\"");
+		string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+		Utils.remove_directory(folder_path);
 	}
 
 	public void dropTag(string tagID)
@@ -1057,6 +1075,8 @@ public class FeedReader.dbManager : GLib.Object {
 	public void delete_articles(string feedID)
 	{
 		executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
+		string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/".printf(feedID);
+		Utils.remove_directory(folder_path);
 	}
 
 

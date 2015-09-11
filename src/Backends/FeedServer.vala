@@ -653,11 +653,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public static void grabContent(ref article Article)
 	{
-		if(settings_general.get_enum("content-grabber") == ContentGrabber.NONE)
-		{
-			return;
-		}
-		else if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
+		if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
 		{
 			var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
 			if(grabber.process())
@@ -668,6 +664,8 @@ public class FeedReader.FeedServer : GLib.Object {
 					Article.setAuthor(grabber.getAuthor());
 				}
 				Article.setHTML(grabber.getArticle());
+
+				return;
 			}
 		}
 		else if(settings_general.get_enum("content-grabber") == ContentGrabber.READABILITY)
@@ -678,5 +676,42 @@ public class FeedReader.FeedServer : GLib.Object {
 			Article.setHTML(grabber.getContent());
 			Article.setPreview(grabber.getPreview());
 		}
+
+		downloadImages(ref Article);
+	}
+
+	private static void downloadImages(ref article Article)
+	{
+		var html_cntx = new Html.ParserCtxt();
+        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+        var doc = html_cntx.read_doc(Article.getHTML(), "");
+        if (doc == null)
+        {
+            logger.print(LogMessage.DEBUG, "Grabber: parsing failed");
+    		return;
+    	}
+
+		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
+
+		string html = "";
+		doc->dump_memory_enc(out html);
+        html = html.replace("<h3/>", "<h3></h3>");
+
+    	int pos1 = html.index_of("<iframe", 0);
+    	int pos2 = -1;
+    	while(pos1 != -1)
+    	{
+    		pos2 = html.index_of("/>", pos1);
+    		string broken_iframe = html.substring(pos1, pos2+2-pos1);
+    		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
+    		html = html.replace(broken_iframe, fixed_iframe);
+    		int pos3 = html.index_of("<iframe", pos1+7);
+    		if(pos3 == pos1)
+    			break;
+    		else
+    			pos1 = pos3;
+    	}
+
+		Article.setHTML(html);
 	}
 }

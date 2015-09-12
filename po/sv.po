@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-08-31 03:44+0200\n"
-"PO-Revision-Date: 2015-09-03 19:58+0000\n"
+"PO-Revision-Date: 2015-09-11 20:38+0000\n"
 "Last-Translator: Mikael Nyberg <mikanybe@gmail.com>\n"
 "Language-Team: Swedish <sv@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-11 06:06+0000\n"
+"X-Launchpad-Export-Date: 2015-09-12 05:38+0000\n"
 "X-Generator: Launchpad (build 17720)\n"
 
 #: ../src/Backends/FeedServer.vala:495
@@ -43,7 +43,7 @@ msgstr "Ingen artikel vald."
 
 #: ../src/Widgets/ArticleView.vala:179
 msgid "Not available"
-msgstr ""
+msgstr "Ej tillgänglig"
 
 #: ../src/Widgets/LoginPage.vala:22
 msgid "Tiny Tiny RSS"
@@ -103,11 +103,11 @@ msgstr "OwnCloud URL:"
 
 #: ../src/Widgets/SharePopover.vala:21
 msgid "Please"
-msgstr ""
+msgstr "Vänligen"
 
 #: ../src/Widgets/SharePopover.vala:23
 msgid "to a service to share this article."
-msgstr ""
+msgstr "på en tjänst för att dela den här artikeln."
 
 #: ../src/Widgets/ReaderHeaderbar.vala:72
 msgid "Tag Article"
@@ -295,7 +295,7 @@ msgstr "Tema"
 
 #: ../src/Widgets/SettingsDialog.vala:182
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #: ../src/Widgets/SettingsDialog.vala:185
 msgid "Spring"
@@ -319,7 +319,7 @@ msgstr "Antal artiklar"
 
 #: ../src/Widgets/SettingsDialog.vala:248
 msgid "Every (seconds)"
-msgstr ""
+msgstr "Varje (sekunder)"
 
 #: ../src/Widgets/SettingsDialog.vala:264
 msgid "Database:"

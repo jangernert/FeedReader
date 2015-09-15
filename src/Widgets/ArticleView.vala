@@ -15,12 +15,8 @@
 
 public class FeedReader.articleView : Gtk.Stack {
 
-	private WebKit.WebView m_view1;
-	private WebKit.WebView m_view2;
-	private WebKit.WebView m_currentView;
-	private WebKit.FindController m_search1;
-	private WebKit.FindController m_search2;
-	private WebKit.FindController m_currentSearch;
+	private WebKit.WebView m_view;
+	private WebKit.FindController m_search;
 	private bool m_open_external;
 	private string m_currentArticle;
 	private bool m_firstTime;
@@ -39,34 +35,21 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_posY = 0;
 		m_momentum = 0;
 
-		m_view1 = new WebKit.WebView();
-		m_view1.load_changed.connect(open_link);
-		m_view1.context_menu.connect(() => { return true; });
-		m_view1.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
-		m_view1.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		m_view1.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
-		m_view1.button_press_event.connect(onClick);
-		m_view1.button_release_event.connect(onRelease);
-		m_view2 = new WebKit.WebView();
-		m_view2.load_changed.connect(open_link);
-		m_view2.context_menu.connect(() => { return true; });
-		m_view2.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
-		m_view2.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		m_view2.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
-		m_view2.button_press_event.connect(onClick);
-		m_view2.button_release_event.connect(onRelease);
-		m_search1 = m_view1.get_find_controller();
-		m_search2 = m_view2.get_find_controller();
-
-		m_currentView = m_view1;
-		m_currentSearch = m_search1;
+		m_view = new WebKit.WebView();
+		m_view.load_changed.connect(open_link);
+		m_view.context_menu.connect(() => { return true; });
+		m_view.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
+		m_view.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_view.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
+		m_view.button_press_event.connect(onClick);
+		m_view.button_release_event.connect(onRelease);
+		m_search = m_view.get_find_controller();
 
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("emptyView");
 
 		this.add_named(emptyView, "empty");
-		this.add_named(m_view1, "view1");
-		this.add_named(m_view2, "view2");
+		this.add_named(m_view, "view");
 
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
@@ -90,7 +73,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			var cursor = new Gdk.Cursor.for_display(display, Gdk.CursorType.FLEUR);
 
 			pointer.grab(
-				m_currentView.get_window(),
+				m_view.get_window(),
 				Gdk.GrabOwnership.NONE,
 				false,
 				Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK,
@@ -100,7 +83,7 @@ public class FeedReader.articleView : Gtk.Stack {
 
 			Gtk.device_grab_add(this, pointer, false);
 			GLib.Timeout.add(10, updateDragMomentum);
-			m_currentView.motion_notify_event.connect(mouseMotion);
+			m_view.motion_notify_event.connect(mouseMotion);
 			return true;
 		}
 
@@ -112,7 +95,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		if(event.button == MouseButton.MIDDLE)
 		{
 			m_posY = 0;
-			m_currentView.motion_notify_event.disconnect(mouseMotion);
+			m_view.motion_notify_event.disconnect(mouseMotion);
 			m_inDrag = false;
 			GLib.Timeout.add(20, ScrollDragRelease);
 
@@ -135,22 +118,6 @@ public class FeedReader.articleView : Gtk.Stack {
 		return true;
 	}
 
-	private bool loadFailed(WebKit.LoadEvent load_event, string failing_uri, void* error)
-	{
-		GLib.Error e = (GLib.Error)error;
-
-		// CANCELLED
-		if(e.code == 302)
-		{
-			logger.print(LogMessage.INFO, "WebView: load failed %i %s %s".printf(e.code, e.message, e.domain.to_string()));
-
-			m_currentView.load_failed.disconnect(loadFailed);
-			fillContent(m_currentArticle);
-		}
-
-		return true;
-	}
-
 	public void reload()
 	{
 		fillContent.begin(m_currentArticle, (obj, res) => {
@@ -160,56 +127,12 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	public async void fillContent(string articleID)
 	{
-		SourceFunc callback = fillContent.callback;
 		m_currentArticle = articleID;
-
-		if(m_open_external == false)
-		{
-			m_currentView.load_failed.connect(loadFailed);
-			m_currentView.stop_loading();
-			return;
-		}
+		logger.print(LogMessage.DEBUG, "WebView: load article %s".printf(articleID));
 
 		m_open_external = false;
-
-		if(m_currentView == m_view1)
-		{
-			m_currentView = m_view2;
-			m_currentSearch = m_search2;
-			m_view1.load_changed.disconnect(open_link);
-			m_view2.load_changed.connect(open_link);
-			m_view1.stop_loading();
-			m_view1.load_html(
-				Utils.buildArticle(
-					"",
-					"Loading",
-					"",
-					"Author",
-					"now",
-					""
-				)
-			, null);
-		}
-		else
-		{
-			m_currentView = m_view1;
-			m_currentSearch = m_search1;
-			m_view1.load_changed.connect(open_link);
-			m_view2.load_changed.disconnect(open_link);
-			m_view2.stop_loading();
-			m_view2.load_html(
-				Utils.buildArticle(
-					"",
-					"Loading",
-					"",
-					"Author",
-					"now",
-					""
-				)
-			, null);
-		}
-
 		article Article = null;
+		SourceFunc callback = fillContent.callback;
 
 		ThreadFunc<void*> run = () => {
 			Article = dataBase.read_article(articleID);
@@ -223,7 +146,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		yield;
 
 
-		m_currentView.load_html(
+		m_view.load_html(
 			Utils.buildArticle(
 					Article.getHTML(),
 					Article.getTitle(),
@@ -234,15 +157,18 @@ public class FeedReader.articleView : Gtk.Stack {
 				)
 			, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 		this.show_all();
-
-		if(m_currentView == m_view1)		 this.set_visible_child_full("view1", Gtk.StackTransitionType.CROSSFADE);
-		else if(m_currentView == m_view2)   this.set_visible_child_full("view2", Gtk.StackTransitionType.CROSSFADE);
+		this.set_visible_child_name("view");
 	}
 
 	public void clearContent()
 	{
 		this.set_visible_child_name("empty");
 		m_currentArticle = "";
+	}
+
+	public bool isLoading()
+	{
+		return !m_open_external;
 	}
 
 	public string getCurrentArticle()
@@ -259,7 +185,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			case WebKit.LoadEvent.STARTED:
 				if(m_open_external)
 				{
-					string url = m_currentView.get_uri();
+					string url = m_view.get_uri();
 					logger.print(LogMessage.DEBUG, "ArticleView: open external url: %s".printf(url));
 
 					try{
@@ -267,33 +193,32 @@ public class FeedReader.articleView : Gtk.Stack {
 					}
 					catch(GLib.Error e){
 						logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
-						m_currentView.stop_loading();
 					}
-					m_currentView.stop_loading();
+					m_view.stop_loading();
 				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
 				if(m_searchTerm != "")
-					m_currentSearch.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
+					m_search.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
 				break;
 			case WebKit.LoadEvent.FINISHED:
-				logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
-				m_open_external = true;
-
 				if(m_firstTime)
 				{
 					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
 					settings_state.set_int("articleview-scrollpos", 0);
 					m_firstTime = false;
 				}
+
+				logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
+				m_open_external = true;
 				break;
 		}
 	}
 
 	public void setScrollPos(int pos)
 	{
-		m_currentView.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
-			m_currentView.run_javascript.end(res);
+		m_view.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
+			m_view.run_javascript.end(res);
 		});
 	}
 
@@ -311,9 +236,9 @@ public class FeedReader.articleView : Gtk.Stack {
 		int upper = -1;
 		var loop = new MainLoop();
 
-		m_currentView.run_javascript.begin(javascript, null, (obj, res) => {
-			m_currentView.run_javascript.end(res);
-			upper = int.parse(m_currentView.get_title());
+		m_view.run_javascript.begin(javascript, null, (obj, res) => {
+			m_view.run_javascript.end(res);
+			upper = int.parse(m_view.get_title());
 			loop.quit();
 		});
 
@@ -330,9 +255,9 @@ public class FeedReader.articleView : Gtk.Stack {
 		int scrollPos = -1;
 		var loop = new MainLoop();
 
-		m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
-			m_currentView.run_javascript.end(res);
-			scrollPos = int.parse(m_currentView.get_title());
+		m_view.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
+			m_view.run_javascript.end(res);
+			scrollPos = int.parse(m_view.get_title());
 			loop.quit();
 		});
 
@@ -370,9 +295,9 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_momentum /= 1.2;
 
 		Gtk.Allocation allocation;
-		m_currentView.get_allocation(out allocation);
+		m_view.get_allocation(out allocation);
 
-		double pageSize = m_currentView.get_allocated_height();
+		double pageSize = m_view.get_allocated_height();
 		double adjValue = pageSize * m_momentum / allocation.height;
 		double oldAdj = getScrollPos();
 		double upper = getScollUpper();

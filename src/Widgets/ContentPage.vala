@@ -19,11 +19,14 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
+	private string m_nextArticle;
+	private GLib.Thread<void*> m_thread;
 	public signal void showArticleButtons(bool show);
 
 
 	public ContentPage()
 	{
+		m_thread = null;
 		logger.print(LogMessage.DEBUG, "ContentPage: setup FeedList");
 		this.orientation = Gtk.Orientation.HORIZONTAL;
 
@@ -87,7 +90,20 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			}
 
 			if(m_article_view.getCurrentArticle() != row.getID())
-				m_article_view.fillContent(row.getID());
+			{
+				if(!m_article_view.isLoading() && m_thread == null)
+				{
+					logger.print(LogMessage.DEBUG, "fill content directly");
+					m_article_view.fillContent(row.getID());
+				}
+				else
+				{
+					logger.print(LogMessage.DEBUG, "write article in que to load");
+					m_nextArticle = row.getID();
+					if(m_thread == null)
+						limitArticle();
+				}
+			}
 		});
 
 		m_articleList.noRowActive.connect(() => {
@@ -99,6 +115,27 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 		this.pack1(m_pane, false, false);
 		this.pack2(m_article_view, true, false);
+	}
+
+	private void limitArticle()
+	{
+		ThreadFunc<void*> run = () => {
+
+			if(m_nextArticle == "")
+				return null;
+
+			while(m_article_view.isLoading())
+			{
+				GLib.Thread.usleep(50000);
+			}
+			
+			logger.print(LogMessage.DEBUG, "wait over: load article from que");
+			m_article_view.fillContent(m_nextArticle);
+			m_nextArticle = "";
+			m_thread = null;
+			return null;
+		};
+		m_thread = new GLib.Thread<void*>("limitArticle", run);
 	}
 
 	public void ArticleListNEXT()

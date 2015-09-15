@@ -3,6 +3,7 @@ cmake_minimum_required (VERSION 2.6)
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+option(WITH_DEBUG "Compile daemon binary with debugging symbols" OFF)
 option(WITH_LIBUNITY "Adds a Badge with the count of the unread articles to the dockitem" ON)
 option(USE_WEBKIT_4 "Compile with Webkit2Gtk 4.0 instead of 3.0" OFF)
 
@@ -137,6 +138,10 @@ if(WITH_LIBUNITY)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
 	list(APPEND DAEMON_PACKAGES unity)
 endif(WITH_LIBUNITY)
+
+if(WITH_DEBUG)
+	list(APPEND DAEMON_OPTIONS -g)
+endif(WITH_DEBUG)
 
 vala_precompile(daemon ${DAEMON_NAME}
     src/Daemon.vala

@@ -27,12 +27,10 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			if(!dataBase.preview_empty(article.getArticleID()))
 			{
-				//article.setPreview(dataBase.read_preview(article.getArticleID()));
 				continue;
 			}
 			else if(article.getHTML() != "" && article.getHTML() != null)
 			{
-				logger.print(LogMessage.INFO, "generate preview: %s".printf(article.getTitle()));
 				string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
 				int outputfd = GLib.FileUtils.mkstemp(filename);
 				try{

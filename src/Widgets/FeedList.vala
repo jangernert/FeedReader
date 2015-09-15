@@ -474,20 +474,16 @@ public class FeedReader.feedList : Gtk.Stack {
 
 			foreach(var item in categories)
 			{
-				logger.print(LogMessage.DEBUG, item.getTitle());
-				logger.print(LogMessage.DEBUG, "length: %i".printf(length));
 				var FeedChildList = m_list.get_children();
 				int pos = 0;
 				foreach(Gtk.Widget existing_row in FeedChildList)
 				{
 					pos++;
-					logger.print(LogMessage.DEBUG, "pos: %i".printf(pos));
 					var tmpRow = existing_row as categorieRow;
 					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
 						(item.getParent() == CategoryID.MASTER && pos > length-1 && !m_TagsDisplayed) ||
 						(item.getParent() == CategoryID.MASTER && pos > length && m_TagsDisplayed))
 					{
-						logger.print(LogMessage.DEBUG, "insert");
 						int level = item.getLevel();
 						string parent = item.getParent();
 						if(m_TagsDisplayed)

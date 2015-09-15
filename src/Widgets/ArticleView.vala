@@ -22,7 +22,6 @@ public class FeedReader.articleView : Gtk.Stack {
 	private WebKit.FindController m_search2;
 	private WebKit.FindController m_currentSearch;
 	private bool m_open_external;
-	private int m_load_ongoing;
 	private string m_currentArticle;
 	private bool m_firstTime;
 	private string m_searchTerm;
@@ -33,7 +32,7 @@ public class FeedReader.articleView : Gtk.Stack {
 
 
 	public articleView () {
-		m_load_ongoing = 0;
+		m_open_external = true;
 		m_searchTerm = "";
 		m_firstTime = true;
 		m_inDrag = false;
@@ -136,6 +135,22 @@ public class FeedReader.articleView : Gtk.Stack {
 		return true;
 	}
 
+	private bool loadFailed(WebKit.LoadEvent load_event, string failing_uri, void* error)
+	{
+		GLib.Error e = (GLib.Error)error;
+
+		// CANCELLED
+		if(e.code == 302)
+		{
+			logger.print(LogMessage.INFO, "WebView: load failed %i %s %s".printf(e.code, e.message, e.domain.to_string()));
+
+			m_currentView.load_failed.disconnect(loadFailed);
+			fillContent(m_currentArticle);
+		}
+
+		return true;
+	}
+
 	public void reload()
 	{
 		fillContent.begin(m_currentArticle, (obj, res) => {
@@ -146,8 +161,16 @@ public class FeedReader.articleView : Gtk.Stack {
 	public async void fillContent(string articleID)
 	{
 		SourceFunc callback = fillContent.callback;
-
 		m_currentArticle = articleID;
+
+		if(m_open_external == false)
+		{
+			m_currentView.load_failed.connect(loadFailed);
+			m_currentView.stop_loading();
+			return;
+		}
+
+		m_open_external = false;
 
 		if(m_currentView == m_view1)
 		{
@@ -199,9 +222,6 @@ public class FeedReader.articleView : Gtk.Stack {
 		new GLib.Thread<void*>("fillContent", run);
 		yield;
 
-		m_open_external = false;
-		m_load_ongoing = 0;
-
 
 		m_currentView.load_html(
 			Utils.buildArticle(
@@ -233,7 +253,6 @@ public class FeedReader.articleView : Gtk.Stack {
 	public void open_link(WebKit.LoadEvent load_event)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleView: load event");
-		m_load_ongoing++;
 
 		switch (load_event)
 		{
@@ -254,20 +273,18 @@ public class FeedReader.articleView : Gtk.Stack {
 				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
-				m_currentSearch.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
+				if(m_searchTerm != "")
+					m_currentSearch.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
 				break;
 			case WebKit.LoadEvent.FINISHED:
-				if(m_load_ongoing >= 3)
-				{
-					logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
-					m_open_external = true;
+				logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
+				m_open_external = true;
 
-					if(m_firstTime)
-					{
-						this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
-						settings_state.set_int("articleview-scrollpos", 0);
-						m_firstTime = false;
-					}
+				if(m_firstTime)
+				{
+					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
+					settings_state.set_int("articleview-scrollpos", 0);
+					m_firstTime = false;
 				}
 				break;
 		}
@@ -322,6 +339,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		loop.run();
 		return scrollPos;
 	}
+
 
 	public void setSearchTerm(string searchTerm)
 	{

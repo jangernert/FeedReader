@@ -713,5 +713,6 @@ public class FeedReader.FeedServer : GLib.Object {
     	}
 
 		Article.setHTML(html);
+		delete doc;
 	}
 }

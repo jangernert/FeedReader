@@ -30,8 +30,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     {
         logger.print(LogMessage.DEBUG, "OwnCloud: login");
         m_username = OwncloudNews_Utils.getUser();
-		//passwd = OwncloudNews_Utils.getPasswd();
-        m_password = "wissen";
+		m_password = OwncloudNews_Utils.getPasswd();
 		m_OwnCloudURL = OwncloudNews_Utils.getURL();
 
 		if(m_OwnCloudURL == "" && m_username == "" && m_password == ""){

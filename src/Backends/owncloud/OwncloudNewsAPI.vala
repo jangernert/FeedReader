@@ -338,6 +338,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool ping()
     {
-        return Utils.ping(m_OwnCloudURL);
+        return Utils.ping(Utils.shortenURL(m_OwnCloudURL));
     }
 }

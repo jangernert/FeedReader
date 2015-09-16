@@ -538,4 +538,30 @@ public class FeedReader.Utils : GLib.Object {
 
 		return flag;
 	}
+
+
+	public static string shortenURL(string url)
+    {
+        string longURL = url;
+        if(longURL.has_prefix("https://"))
+        {
+            longURL = longURL.substring(8);
+        }
+        else if(longURL.has_prefix("http://"))
+        {
+            longURL = longURL.substring(7);
+        }
+
+        if(longURL.has_prefix("www."))
+        {
+            longURL = longURL.substring(4);
+        }
+
+        if(longURL.has_suffix("api/"))
+        {
+            longURL = longURL.substring(0, longURL.length - 4);
+        }
+
+        return longURL;
+    }
 }

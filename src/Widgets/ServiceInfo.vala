@@ -30,7 +30,7 @@ public class FeedReader.ServiceInfo : Gtk.Box {
         {
             case Backend.TTRSS:
                 service_name = "ttrss";
-                user_name = settings_ttrss.get_string("username") + "@" + shortenURL(settings_ttrss.get_string("url"));
+                user_name = settings_ttrss.get_string("username") + "@" + Utils.shortenURL(settings_ttrss.get_string("url"));
                 break;
             case Backend.FEEDLY:
                 service_name = "feedly";
@@ -38,37 +38,12 @@ public class FeedReader.ServiceInfo : Gtk.Box {
                 break;
             case Backend.OWNCLOUD:
                 service_name = "owncloud";
-                user_name = settings_owncloud.get_string("username") + "@" + shortenURL(settings_owncloud.get_string("url"));
+                user_name = settings_owncloud.get_string("username") + "@" + Utils.shortenURL(settings_owncloud.get_string("url"));
                 break;
         }
 
         m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));
         m_label.set_label(user_name);
         show_all();
-    }
-
-    private string shortenURL(string url)
-    {
-        string longURL = url;
-        if(longURL.has_prefix("https://"))
-        {
-            longURL = longURL.substring(8);
-        }
-        else if(longURL.has_prefix("http://"))
-        {
-            longURL = longURL.substring(7);
-        }
-
-        if(longURL.has_prefix("www."))
-        {
-            longURL = longURL.substring(4);
-        }
-
-        if(longURL.has_suffix("api/"))
-        {
-            longURL = longURL.substring(0, longURL.length - 4);
-        }
-
-        return longURL;
     }
 }

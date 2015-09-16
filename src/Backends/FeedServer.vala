@@ -112,12 +112,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.OWNCLOUD:
-					if(!m_owncloud.ping())
-					{
-						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - owncloud not logged in or unreachable");
-						Idle.add((owned) callback);
-						return null;
-					}
+					//if(!m_owncloud.ping())
+					//{
+					//	logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - owncloud not logged in or unreachable");
+					//	Idle.add((owned) callback);
+					//	return null;
+					//}
 					break;
 			}
 

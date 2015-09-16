@@ -391,6 +391,7 @@ namespace FeedReader {
 				      on_bus_aquired,
 				      () => {
 				      			settings_state.set_boolean("currently-updating", false);
+								settings_state.set_boolean("initial-sync-ongoing", false);
 				      },
 				      () => {
 				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name (already running). Will shut down!");

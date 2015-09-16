@@ -469,7 +469,7 @@ public class FeedReader.Utils : GLib.Object {
 	    try
 		{
 	        var resolver = GLib.Resolver.get_default();
-	        var addresses = resolver.lookup_by_name(url, null);
+	        var addresses = resolver.lookup_by_name(url);
 
 			// if can't resolve url to ip
 			if(addresses == null)
@@ -501,7 +501,8 @@ public class FeedReader.Utils : GLib.Object {
 	    }
 		catch (Error e)
 		{
-			logger.print(LogMessage.DEBUG, "ping failed: %s".printf(url));
+			logger.print(LogMessage.ERROR, "ping failed: %s".printf(url));
+			logger.print(LogMessage.ERROR, e.message);
 	    }
 
 		return false;

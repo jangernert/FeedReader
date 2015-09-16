@@ -54,13 +54,13 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 	public bool ping() {
-		return Utils.ping(FeedlySecret.base_uri);
+		return Utils.ping("feedly.com");
 	}
 
 	private bool getUserID()
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
-		var parser = new Json.Parser ();
+		var parser = new Json.Parser();
 		parser.load_from_data (response, -1);
 		var root = parser.get_root().get_object();
 

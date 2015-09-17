@@ -1240,7 +1240,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 	private string getUncategorizedQuery()
 	{
-		string sql = "1";
+		string sql = "0";
 
 		if(settings_general.get_enum("account-type") == Backend.FEEDLY)
 		{

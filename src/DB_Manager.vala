@@ -636,6 +636,9 @@ public class FeedReader.dbManager : GLib.Object {
 			result = stmt.column_text(0);
 		}
 
+		if(result == "")
+			result = _("Uncategorized");
+
 		return result;
 	}
 

@@ -995,6 +995,12 @@ public class FeedReader.dbManager : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			maxCatLevel = stmt.column_int(0);
 		}
+
+		if(maxCatLevel == 0)
+		{
+			maxCatLevel = 1;
+		}
+
 		return maxCatLevel;
 	}
 
@@ -1018,6 +1024,28 @@ public class FeedReader.dbManager : GLib.Object {
 			if(count > 0)
 				return true;
 		}
+		return false;
+	}
+
+	public bool haveCategories()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("count(*)");
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			int count = stmt.column_int(0);
+
+			if(count > 0)
+				return true;
+		}
+
 		return false;
 	}
 
@@ -1209,25 +1237,35 @@ public class FeedReader.dbManager : GLib.Object {
 
 	private string getUncategorizedQuery()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
-		query.selectField("categorieID");
-		query.addCustomCondition("instr(tagID, \"global.must\") > 0");
+		string sql = "";
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK) {
-			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		if(settings_general.get_enum("account-type") == Backend.FEEDLY)
+		{
+			var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+			query.selectField("categorieID");
+			query.addCustomCondition("instr(tagID, \"global.must\") > 0");
+
+			Sqlite.Statement stmt;
+			int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+			if (ec != Sqlite.OK) {
+				error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+			}
+
+			string mustRead = "";
+			while (stmt.step () == Sqlite.ROW) {
+				mustRead = stmt.column_text(0);
+			}
+
+			sql = "category_id = \"\"";
+
+			if(mustRead != "")
+				sql += " OR category_id = \"%s\"".printf(mustRead);
+		}
+		else if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
+		{
+			sql = "category_id = 0";
 		}
 
-		string mustRead = "";
-		while (stmt.step () == Sqlite.ROW) {
-			mustRead = stmt.column_text(0);
-		}
-
-		string sql = "category_id = \"\"";
-
-		if(mustRead != "")
-			sql += " OR category_id = \"%s\"".printf(mustRead);
 
 		return sql;
 	}

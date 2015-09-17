@@ -242,7 +242,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		//-------------------------------------------------------------------
 
-		if(!settings_general.get_boolean("only-feeds"))
+		if(!settings_general.get_boolean("only-feeds") || dataBase.haveCategories())
 		{
 			createCategories();
 			createTags();
@@ -252,7 +252,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(var item in feeds)
 		{
 
-			if(!settings_general.get_boolean("only-feeds"))
+			if(!settings_general.get_boolean("only-feeds") || dataBase.haveCategories())
 			{
 				var FeedChildList = m_list.get_children();
 				int pos = 0;

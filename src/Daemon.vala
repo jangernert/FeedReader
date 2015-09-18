@@ -31,7 +31,10 @@ namespace FeedReader {
 			m_loggedin = login((Backend)settings_general.get_enum("account-type"));
 
 			if(m_loggedin != LoginResponse.SUCCESS)
+			{
+				settings_general.set_enum("account-type", Backend.NONE);
 				logger.print(LogMessage.WARNING, "daemon: not logged in");
+			}
 
 			int sync_timeout = settings_general.get_int("sync");
 #if WITH_LIBUNITY
@@ -98,6 +101,7 @@ namespace FeedReader {
 				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
+					settings_general.set_enum("account-type", Backend.NONE);
 					exit(-1);
 				}
 			}
@@ -114,7 +118,9 @@ namespace FeedReader {
 				logger.print(LogMessage.INFO, "daemon: sync finished");
 			}
 			else
+			{
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
+			}
 		}
 
 

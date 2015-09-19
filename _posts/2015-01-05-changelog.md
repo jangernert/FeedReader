@@ -24,5 +24,4 @@ fa-icon: calendar
 
 **1.0**
 
-*   initial Release
-
+*   initial release

@@ -10,8 +10,3 @@ fa-icon: camera-retro
 ![Screenshot 2](https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot2.png)
 
 ![Screenshot 3](https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot3.png)
-
-![Screenshot 4](https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot4.png)
-
-![Screenshot 5](https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot5.png)
-

@@ -523,14 +523,6 @@ html { box-sizing: border-box; }
   
   
   
-  nav .p-get-it { border-color: SlateGray; }
-  #get-it { background-color: SlateGray !important; color: #111111; }
-  #get-it a { color: #111111; }
-  #get-it .sectiondivider { color: SlateGray; }
-
-  
-  
-  
   nav .p-changelog { border-color: burlywood; }
   #changelog { background-color: burlywood !important; color: darkslategray; }
   #changelog a { color: darkslategray; }
@@ -543,6 +535,14 @@ html { box-sizing: border-box; }
   #screenshots { background-color:  !important; color: #111111; }
   #screenshots a { color: #111111; }
   #screenshots .sectiondivider { color: ; }
+
+  
+  
+  
+  nav .p-get-it { border-color: SlateGray; }
+  #get-it { background-color: SlateGray !important; color: #111111; }
+  #get-it a { color: #111111; }
+  #get-it .sectiondivider { color: SlateGray; }
 
   
   

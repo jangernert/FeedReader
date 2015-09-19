@@ -91,34 +91,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		SourceFunc callback = syncContent.callback;
 
 		ThreadFunc<void*> run = () => {
-			switch(m_type)
+
+			if(!serverAvailable())
 			{
-				case Backend.TTRSS:
-					if(!m_ttrss.isloggedin())
-					{
-						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - ttrss not logged in or unreachable");
-						Idle.add((owned) callback);
-						return null;
-					}
-					break;
-
-				case Backend.FEEDLY:
-					if(!m_feedly.ping())
-					{
-						logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - feedly not reachable");
-						Idle.add((owned) callback);
-						return null;
-					}
-					break;
-
-				case Backend.OWNCLOUD:
-					//if(!m_owncloud.ping())
-					//{
-					//	logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - owncloud not logged in or unreachable");
-					//	Idle.add((owned) callback);
-					//	return null;
-					//}
-					break;
+				logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - not logged in or unreachable");
+				Idle.add((owned) callback);
+				return null;
 			}
 
 			int before = dataBase.getHighestRowID();
@@ -593,6 +571,25 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		new GLib.Thread<void*>("deleteTag", run);
 		yield;
+	}
+
+
+	private bool serverAvailable()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.isloggedin();
+
+			case Backend.FEEDLY:
+				return m_feedly.ping();
+
+			case Backend.OWNCLOUD:
+				//return m_owncloud.ping();
+				return true;
+		}
+
+		return false;
 	}
 
 

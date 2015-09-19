@@ -242,7 +242,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		//-------------------------------------------------------------------
 
-		if(!onlyShowFeeds())
+		if(!Utils.onlyShowFeeds())
 		{
 			createCategories();
 			createTags();
@@ -252,7 +252,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(var item in feeds)
 		{
 
-			if(!onlyShowFeeds())
+			if(!Utils.onlyShowFeeds())
 			{
 				var FeedChildList = m_list.get_children();
 				int pos = 0;
@@ -377,19 +377,6 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 	}
 
-	private bool onlyShowFeeds()
-	{
-		return false;
-
-		if(settings_general.get_boolean("only-feeds"))
-			return true;
-
-		if(!dataBase.haveCategories() && !haveTags())
-			return true;
-
-		return false;
-	}
-
 
 	void restoreScrollPos(Object sender, ParamSpec property)
 	{
@@ -412,7 +399,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		int maxCatLevel = dataBase.getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
 
-		if(haveTags())
+		if(!Utils.onlyShowFeeds())
 		{
 			var categorierow = new categorieRow(
 					                                "Categories",
@@ -832,25 +819,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				feedDaemon_interface.markFeedAsRead(id, true);
 			}
 		}
-	}
-
-
-	private bool haveTags()
-	{
-		int backend = settings_general.get_enum("account-type");
-
-		switch(backend)
-		{
-			case Backend.OWNCLOUD:
-				return false;
-		}
-
-		if(dataBase.getTagCount() == 0)
-		{
-			return false;
-		}
-
-		return true;
 	}
 
 	private bool expandCat(string name)

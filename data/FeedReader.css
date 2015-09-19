@@ -33,6 +33,11 @@ FeedReaderUpdateButton GtkSpinner {
 .feed-list-row {
 	text-shadow: none;
 	icon-shadow: none;
+	background: none;
+}
+
+GtkBox.feed-row {
+	background: @feedrow-bg;
 }
 
 .list-row {
@@ -50,10 +55,6 @@ GtkEventBox {
 	background: none;
 }
 
-.feed-list-row {
-	background: none;
-}
-
 .feed-list,
 .feed-list .scrollbar {
 	background: @feedlist-bg;
@@ -66,10 +67,6 @@ GtkEventBox {
 .feed-list-row:selected,
 .feed-list-row:selected GtkBox.feed-row {
 	background: @feedlist-selected;
-}
-
-GtkBox.feed-row {
-	background: @feedrow-bg;
 }
 
 .feed-list GtkLabel{

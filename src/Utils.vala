@@ -564,4 +564,33 @@ public class FeedReader.Utils : GLib.Object {
 
         return longURL;
     }
+
+
+	public static bool haveTags()
+	{
+		switch(settings_general.get_enum("account-type"))
+		{
+			case Backend.OWNCLOUD:
+				return false;
+		}
+
+		if(dataBase.getTagCount() == 0)
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+
+	public static bool onlyShowFeeds()
+	{
+		if(settings_general.get_boolean("only-feeds"))
+			return true;
+
+		if(!dataBase.haveCategories() && !Utils.haveTags())
+			return true;
+
+		return false;
+	}
 }

@@ -92,13 +92,11 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
 
-			if(m_catID != CategoryID.TTRSS_SPECIAL)
+			if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 			{
-				if(!settings_general.get_boolean("only-feeds"))
-				{
-					m_box.get_style_context().add_class("feed-row");
-				}
+				m_box.get_style_context().add_class("feed-row");
 			}
+
 			m_box.pack_start(m_icon, false, false, 8);
 			m_box.pack_start(m_label, true, true, 0);
 			m_box.pack_end (m_unreadBox, false, false, 8);

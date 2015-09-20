@@ -204,7 +204,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			newFeedList();
 
 			// get unread articles
-			//getArticles(getUnreadCount()-10, ArticleStatus.UNREAD);
+			getArticles(getUnreadCount()-10, ArticleStatus.UNREAD);
 
 			// get marked articles
 			getArticles(settings_general.get_int("max-articles")-10, ArticleStatus.MARKED);

@@ -150,7 +150,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				var response = message.get_response_object();
 				unread = int.parse(response.get_string_member("unread"));
 			}
-			logger.print(LogMessage.INFO, "There are %i unread Feeds".printf(unread));
+			logger.print(LogMessage.INFO, "There are %i unread articles".printf(unread));
 		}
 
 		return unread;
@@ -437,8 +437,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			var response = message.get_response_array();
 			var headline_count = response.get_length();
-			logger.print(LogMessage.DEBUG, "TTRSS sync: headline count: %u".printf(headline_count));
-			logger.print(LogMessage.DEBUG, "TTRSS sync: skip: %i".printf(skip));
 
 			for(uint i = 0; i < headline_count; i++)
 			{

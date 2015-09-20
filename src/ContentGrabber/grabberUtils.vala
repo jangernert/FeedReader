@@ -323,8 +323,7 @@ public class FeedReader.grabberUtils : GLib.Object {
             fixedURL = "http:" + fixedURL;
         }
 
-        logger.print(LogMessage.DEBUG, "downloadImage: %s".printf(fixedURL));
-        string imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+        string imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(GLib.Uri.escape_string(feedID), GLib.Uri.escape_string(articleID));
 		var path = GLib.File.new_for_path(imgPath);
 		try{
 			path.make_directory_with_parents();
@@ -343,7 +342,6 @@ public class FeedReader.grabberUtils : GLib.Object {
 			var session = new Soup.Session();
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);
-            logger.print(LogMessage.DEBUG, "downloadImage status %u".printf(status));
 			if(status == 200)
 			{
 				try{

@@ -284,10 +284,8 @@ public class FeedReader.dbManager : GLib.Object {
 
 	public uint get_unread_total()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("unread");
-		query.addEqualsCondition("level", "1");
-		query.addEqualsCondition("categorieID", "-1", false, true);
 		query.build();
 
 		Sqlite.Statement stmt;

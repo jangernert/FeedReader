@@ -86,7 +86,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/FeedList.vala
     src/Widgets/FeedRow.vala
     src/Widgets/HoverButton.vala
-    src/Widgets/InitSyncPage.vala
     src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
     src/Widgets/ModeButton.vala

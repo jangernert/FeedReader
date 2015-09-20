@@ -24,7 +24,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
 	private ContentPage m_content;
-	private InitSyncPage m_InitSync;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
 
@@ -39,7 +38,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		setupCSS();
 		setupLoginPage();
-		setupInitSyncPage();
 		setupResetPage();
 		setupContentPage();
 		setupSpringCleanPage();
@@ -167,9 +165,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		logger.print(LogMessage.DEBUG, "MainWindow: show content");
 		m_content.newFeedList();
 		m_stack.set_visible_child_full("content", transition);
-
-		if(!settings_state.get_boolean("currently-updating"))
-			m_headerbar.setButtonsSensitive(true);
+		m_headerbar.setButtonsSensitive(true);
 
 		m_headerbar.show_all();
 		this.set_titlebar(m_headerbar);
@@ -207,15 +203,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_stack.set_visible_child_full("WebLogin", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
-	}
-
-	private void showInitSync(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
-	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show initsync");
-		m_stack.set_visible_child_full("initsync", transition);
-		m_headerbar.setButtonsSensitive(false);
-		this.set_titlebar(m_simpleHeader);
-		m_InitSync.start(m_login.useGrabber());
 	}
 
 	private void onClose()
@@ -302,7 +289,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login.submit_data.connect(() => {
 			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
-			showInitSync();
+			feedDaemon_interface.startInitSync(m_login.useGrabber());
+			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
@@ -317,7 +305,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 				return;
 			}
-			showInitSync();
+			feedDaemon_interface.startInitSync(m_login.useGrabber());
+			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		m_stack.add_named(loginBox, "login");
 		m_stack.add_named(WebLogin, "WebLogin");
@@ -335,12 +324,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		reset.reset.connect(() => {
 			showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 		});
-	}
-
-	private void setupInitSyncPage()
-	{
-		m_InitSync = new InitSyncPage();
-		m_stack.add_named(m_InitSync, "initsync");
 	}
 
 	private void setupSpringCleanPage()

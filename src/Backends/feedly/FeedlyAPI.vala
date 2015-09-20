@@ -208,14 +208,12 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public string getArticles(ref GLib.List<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
-		string steamID = "";
+		string steamID = "user/" + m_userID + "/category/global.all";
 		string cont = "";
 		string onlyUnread = "false";
 		string marked_tag = "user/" + m_userID + "/tag/global.saved";
 
-		if(whatToGet == ArticleStatus.ALL)
-			steamID = "user/" + m_userID + "/category/global.all";
-		else if(whatToGet == ArticleStatus.MARKED)
+		if(whatToGet == ArticleStatus.MARKED)
 			steamID = marked_tag;
 		else if(whatToGet == ArticleStatus.UNREAD)
 			onlyUnread = "true";
@@ -229,7 +227,8 @@ public class FeedReader.FeedlyAPI : Object {
 
 		var parser = new Json.Parser();
 
-		string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, continuation));
+		string streamCall = "/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, continuation);
+		string entry_id_response = m_connection.send_get_request_to_feedly(streamCall);
 		parser.load_from_data(entry_id_response, -1);
 		var root = parser.get_root().get_object();
 		if(root.has_member("continuation"))
@@ -365,7 +364,7 @@ public class FeedReader.FeedlyAPI : Object {
 		int unread_count = -1;
 
 		for (int i = 0; i < m_unreadcounts.get_length (); i++) {
-			var unread = m_unreadcounts.get_object_element (i);
+			var unread = m_unreadcounts.get_object_element(i);
 
 			string unread_id = unread.get_string_member ("id");
 
@@ -384,14 +383,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public int getTotalUnread()
 	{
-		int unread_count = 0;
-
-		for (int i = 0; i < m_unreadcounts.get_length (); i++) {
-			var unread = m_unreadcounts.get_object_element (i);
-			unread_count += (int)unread.get_int_member ("count");
-		}
-
-		return unread_count;
+		return getUnreadCountforID("user/" + m_userID + "/category/global.all");
 	}
 
 

@@ -129,7 +129,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			newFeedList();
 
-			getArticles(ref articles, settings_general.get_int("max-articles")-10);
+			getArticles(settings_general.get_int("max-articles")-10);
 
 			//update fulltext table
 			dataBase.updateFTS();
@@ -188,7 +188,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			var categories = new GLib.List<category>();
 			var feeds      = new GLib.List<feed>();
 			var tags       = new GLib.List<tag>();
-			var articles   = new GLib.List<article>();
 
 			getFeedsAndCats(ref feeds, ref categories, ref tags);
 
@@ -206,22 +205,23 @@ public class FeedReader.FeedServer : GLib.Object {
 			newFeedList();
 
 			// get unread articles
-			getArticles(ref articles, settings_general.get_int("max-articles")-10, ArticleStatus.UNREAD);
+			logger.print(LogMessage.DEBUG, "get %i unread articles".printf(getUnreadCount()));
+			getArticles(getUnreadCount()-10, ArticleStatus.UNREAD);
 
 			// get marked articles
-			getArticles(ref articles, settings_general.get_int("max-articles")-10, ArticleStatus.MARKED);
+			getArticles(settings_general.get_int("max-articles")-10, ArticleStatus.MARKED);
 
 			// get articles for each tag
 			foreach(var tag_item in tags)
 			{
-				getArticles(ref articles, settings_general.get_int("max-articles")-10, ArticleStatus.ALL, tag_item.getTagID(), true);
+				getArticles((settings_general.get_int("max-articles")/8)-10, ArticleStatus.ALL, tag_item.getTagID(), true);
 			}
 
 			// get articles for each feed
-			foreach(var feed_item in feeds)
-			{
-				getArticles(ref articles, settings_general.get_int("max-articles")-10, ArticleStatus.ALL, feed_item.getFeedID());
-			}
+			//foreach(var feed_item in feeds)
+			//{
+			//	getArticles((settings_general.get_int("max-articles")/8)-10, ArticleStatus.ALL, feed_item.getFeedID());
+			//}
 
 			//update fulltext table
 			dataBase.updateFTS();
@@ -517,16 +517,41 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	private void getArticles(ref GLib.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string feedID = "", bool isTagID = false)
+	private int getUnreadCount()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.getUnreadCount();
+
+			case Backend.FEEDLY:
+				return m_feedly.getTotalUnread();
+
+			case Backend.OWNCLOUD:
+				return -1;
+		}
+
+		return 0;
+	}
+
+	private void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string feedID = "", bool isTagID = false)
 	{
 		string continuation = "";
 
 		for(int i = count; i >= 0; i=i-10)
 		{
+			var articles = new GLib.List<article>();
+
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.getArticles(ref articles, i, 10, whatToGet, int.parse(feedID));
+					int ttrss_feedID = 0;
+					if(feedID == "")
+						ttrss_feedID = TTRSSSpecialID.ALL;
+					else
+						ttrss_feedID = int.parse(feedID);
+
+					m_ttrss.getArticles(ref articles, i, 10, whatToGet, ttrss_feedID);
 					break;
 
 				case Backend.FEEDLY:

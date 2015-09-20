@@ -98,8 +98,10 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		resetSettings(settings_state);
 		resetSettings(settings_feedly);
 		resetSettings(settings_ttrss);
+		resetSettings(settings_owncloud);
 
 		settings_state.set_boolean("currently-updating", false);
+		feedDaemon_interface.login(Backend.NONE);
 		reset();
 	}
 

@@ -233,6 +233,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         args += "offset=%i".printf(skip);
         args += "&batchSize=%i".printf(count);
 
+        logger.print(LogMessage.DEBUG, "items?" + args);
+
         var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
 		int error = message.send();
         var response = message.get_response_object();

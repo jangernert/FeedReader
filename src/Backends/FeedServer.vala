@@ -204,6 +204,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			newFeedList();
 
 			// get unread articles
+			logger.print(LogMessage.DEBUG, "unread count: %i".printf(getUnreadCount()));
 			getArticles(getUnreadCount()-10, ArticleStatus.UNREAD);
 
 			// get marked articles
@@ -526,7 +527,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				return m_feedly.getTotalUnread();
 
 			case Backend.OWNCLOUD:
-				return -1;
+				return (int)dataBase.get_unread_total();
 		}
 
 		return 0;

@@ -72,7 +72,7 @@
 		</key>
 
 		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>
-			<default>'NEVER'</default>
+			<default>'6 Months'</default>
 		</key>
 
 		<key name='content-grabber' enum='org.gnome.feedreader.grabber'>

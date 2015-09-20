@@ -114,15 +114,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.show_all();
 
 		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS
-		&& !settings_state.get_boolean("initial-sync-ongoing")
 		&& !settings_state.get_boolean("spring-cleaning"))
 		{
 			loadContent();
 		}
 		else
 		{
-			if(!settings_state.get_boolean("initial-sync-ongoing")
-			&& !settings_state.get_boolean("spring-cleaning")
+			if(!settings_state.get_boolean("spring-cleaning")
 			&& feedDaemon_interface.login((Backend)settings_general.get_enum("account-type")) == LoginResponse.SUCCESS)
 			{
 				loadContent();
@@ -130,10 +128,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			else if (settings_state.get_boolean("spring-cleaning"))
 			{
 				showSpringClean();
-			}
-			else if (settings_state.get_boolean("initial-sync-ongoing"))
-			{
-				showInitSync();
 			}
 			else
 			{

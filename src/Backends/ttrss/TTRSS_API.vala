@@ -405,17 +405,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getArticles(ref GLib.List<article> articles, int maxArticles, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL, int skip = 0, int limit = 200)
+	public void getArticles(ref GLib.List<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
-
-		if(maxArticles < limit)
-			message.add_int("limit", maxArticles);
-		else
-			message.add_int("limit", limit);
+		message.add_int("limit", limit);
 
 
 		message.add_int("skip", skip);
@@ -436,7 +432,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 
 		int error = message.send();
-		//message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{
@@ -495,82 +490,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				articles.append(Article);
 
 			}
-
-			if(headline_count == 200 && (skip+200) < maxArticles)
-			{
-				logger.print(LogMessage.DEBUG, "TTRSS sync: get more headlines");
-				if(maxArticles - skip < 200)
-				{
-					getArticles(ref articles, maxArticles, whatToGet, feedID, skip + 200, maxArticles - skip);
-				}
-				else
-				{
-					getArticles(ref articles, maxArticles, whatToGet, feedID, skip + 200);
-				}
-			}
 		}
 	}
-
-	// currently not used - tt-rss server needs newsplusplus extention
-	/*public void updateArticles(int feedID = TTRSSSpecialID.ALL)
-	{
-		if(isloggedin())
-		{
-			int limit = 2 * settings_general.get_int("max-articles");
-			uint headline_count;
-
-			// update unread
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "getCompactHeadlines");
-			message.add_int("feed_id", feedID);
-			message.add_int("limit", limit);
-			message.add_string("view_mode", "unread");
-			int error = message.send();
-
-			if(error == ConnectionError.SUCCESS)
-			{
-				dataBase.markReadAllArticles();
-				var response = message.get_response_array();
-				headline_count = response.get_length();
-				logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to unread".printf(headline_count));
-
-				for(uint i = 0; i < headline_count; i++)
-				{
-					var headline_node = response.get_object_element(i);
-					dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "unread", ArticleStatus.UNREAD, (obj, res) => {
-						dataBase.update_article.end(res);
-					});
-				}
-			}
-
-
-			// update marked
-			var message2 = new ttrss_message(m_ttrss_url);
-			message2.add_string("sid", m_ttrss_sessionid);
-			message2.add_string("op", "getCompactHeadlines");
-			message2.add_int("feed_id", feedID);
-			message2.add_int("limit", limit);
-			message2.add_string("view_mode", "marked");
-			error = message2.send();
-
-			if(error == ConnectionError.SUCCESS)
-			{
-				dataBase.unmarkAllArticles();
-				var response2 = message2.get_response_array();
-				headline_count = response2.get_length();
-				logger.print(LogMessage.DEBUG, "TTRSS: About to update %u Articles to marked".printf(headline_count));
-
-				for(uint i = 0; i < headline_count; i++)
-				{
-					var headline_node = response2.get_object_element(i);
-					dataBase.update_article.begin(headline_node.get_int_member("id").to_string(), "marked", ArticleStatus.MARKED, (obj, res) => {
-						dataBase.update_article.end(res);
-					});
-				}
-			}
-		}
-	}*/
 
 
 	private void getArticle(int articleID, out string title, out string author, out string url, out string html)

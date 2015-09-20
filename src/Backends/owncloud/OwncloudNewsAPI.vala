@@ -223,7 +223,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 
 
-    public void getArticles(ref GLib.List<article> articles, int maxArticles, bool read = true, OwnCloudType type = OwnCloudType.ALL, int id = 0, int skip = 0, int limit = 200)
+    public void getArticles(ref GLib.List<article> articles, int skip, int count, bool read = true, OwnCloudType type = OwnCloudType.ALL, int id = 0)
 	{
         string args = "";
         args += "oldestFirst=false&";
@@ -231,11 +231,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         args += "getRead=%s&".printf(read ? "true" : "false");
         args += "id=%i&".printf(id);
         args += "offset=%i".printf(skip);
-
-		if(maxArticles < limit)
-            args += "&batchSize=%i".printf(maxArticles);
-		else
-            args += "&batchSize=%i".printf(limit);
+        args += "&batchSize=%i".printf(count);
 
         var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
 		int error = message.send();

@@ -135,14 +135,6 @@
             </description>
         </key>
 
-        <key name="initial-sync-ongoing" type="b">
-            <default>false</default>
-            <summary>currently doing the init snyc</summary>
-            <description>
-                If the FeedReader is currently busy getting all articles after account configuration.
-            </description>
-        </key>
-
         <key name="spring-cleaning" type="b">
             <default>false</default>
             <summary>Clean up the DB</summary>
@@ -164,14 +156,6 @@
             <summary>timestamp of the last sync</summary>
             <description>
                 Timestamp of the last time the data got updated.
-            </description>
-        </key>
-
-        <key name="initial-sync-level" type="i">
-            <default>0</default>
-            <summary>Current Level of the InitSync</summary>
-            <description>
-                What operations of the InitSync are already done to restore the checks correctly
             </description>
         </key>
 

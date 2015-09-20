@@ -80,9 +80,6 @@ namespace FeedReader {
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
 		public signal void updateArticleList();
-		public signal void initSyncStage(int stage);
-		public signal void initSyncTag(string tagName);
-		public signal void initSyncFeed(string feedName);
 
 		private async void sync()
 		{
@@ -136,11 +133,9 @@ namespace FeedReader {
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: initSync started");
 				settings_state.set_boolean("currently-updating", true);
-				settings_state.set_boolean("initial-sync-ongoing", true);
 				yield server.InitSyncContent(useGrabber);
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
-				settings_state.set_boolean("initial-sync-ongoing", false);
 				syncFinished();
 				logger.print(LogMessage.INFO, "daemon: initSync finished");
 			}
@@ -152,20 +147,16 @@ namespace FeedReader {
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 			server = new FeedServer(type);
+
+			server.newFeedList.connect(() => {
+				newFeedList();
+			});
+
+			server.newArticleList.connect(() => {
+				updateArticleList();
+			});
+
 			m_loggedin = server.login();
-
-			server.initSyncStage.connect((stage) => {
-				logger.print(LogMessage.DEBUG, "daemon: stage %i".printf(stage));
-				initSyncStage(stage);
-			});
-
-			server.initSyncTag.connect((tagName) => {
-				initSyncTag(tagName);
-			});
-
-			server.initSyncFeed.connect((feedName) => {
-				initSyncFeed(feedName);
-			});
 
 			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
 			return m_loggedin;
@@ -397,7 +388,6 @@ namespace FeedReader {
 				      on_bus_aquired,
 				      () => {
 				      			settings_state.set_boolean("currently-updating", false);
-								settings_state.set_boolean("initial-sync-ongoing", false);
 								settings_state.set_boolean("spring-cleaning", false);
 				      },
 				      () => {

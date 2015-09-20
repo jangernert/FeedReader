@@ -206,9 +206,10 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public void getArticles(ref GLib.List<article> articles, int maxArticles, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public string getArticles(ref GLib.List<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "";
+		string cont = "";
 		string onlyUnread = "false";
 		string marked_tag = "user/" + m_userID + "/tag/global.saved";
 
@@ -226,14 +227,19 @@ public class FeedReader.FeedlyAPI : Object {
 		if(feed_id != "" && whatToGet == ArticleStatus.ALL)
 			steamID = feed_id;
 
+		var parser = new Json.Parser();
 
+		string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, continuation));
+		parser.load_from_data(entry_id_response, -1);
+		var root = parser.get_root().get_object();
+		if(root.has_member("continuation"))
+		{
+			cont = root.get_string_member("continuation");
+		}
 
-		string entry_id_response = m_connection.send_get_request_to_feedly("/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest".printf(steamID, onlyUnread, maxArticles));
 		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
 
-		var parser = new Json.Parser();
 		parser.load_from_data(response, -1);
-
 		var array = parser.get_root().get_array();
 
 		for(int i = 0; i < array.get_length(); i++) {
@@ -305,6 +311,8 @@ public class FeedReader.FeedlyAPI : Object {
 
 			articles.append(Article);
 		}
+
+		return cont;
 	}
 
 

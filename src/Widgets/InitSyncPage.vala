@@ -59,25 +59,6 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 		this.set_valign(Gtk.Align.CENTER);
 		this.margin = 20;
 		this.add(m_layout);
-
-
-		feedDaemon_interface.initSyncStage.connect((stage) => {
-			logger.print(LogMessage.DEBUG, "InitSyncPage: stage %i".printf(stage));
-			setStage(stage);
-		});
-
-		feedDaemon_interface.initSyncTag.connect((tagName) => {
-			setCurrentTag(tagName);
-		});
-
-		feedDaemon_interface.initSyncFeed.connect((feedName) => {
-			setCurrentFeed(feedName);
-		});
-
-		if(settings_state.get_int("initial-sync-level") != 0)
-		{
-			setStage(settings_state.get_int("initial-sync-level")-1);
-		}
 	}
 
 
@@ -113,14 +94,5 @@ public class FeedReader.InitSyncPage : Gtk.Bin {
 		}
 
 		m_label.set_text("(Getting articles for: %s)".printf(feed));
-	}
-
-	private void setStage(int stage)
-	{
-		settings_state.set_int("initial-sync-level", stage);
-		double progress = m_progress.get_fraction ();
-		progress = progress + 0.1;
-		if(progress < 1.0)
-			m_progress.set_fraction(progress);
 	}
 }

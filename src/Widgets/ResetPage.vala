@@ -100,6 +100,8 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		resetSettings(settings_ttrss);
 		resetSettings(settings_owncloud);
 
+		Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+
 		settings_state.set_boolean("currently-updating", false);
 		feedDaemon_interface.login(Backend.NONE);
 		reset();

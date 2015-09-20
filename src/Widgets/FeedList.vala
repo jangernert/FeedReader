@@ -399,7 +399,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		int maxCatLevel = dataBase.getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
 
-		if(!Utils.onlyShowFeeds())
+		if(!Utils.onlyShowFeeds() && Utils.haveTags())
 		{
 			var categorierow = new categorieRow(
 					                                "Categories",

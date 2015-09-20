@@ -64,7 +64,7 @@
 		</key>
 
 		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
-			<default>'ERROR'</default>
+			<default>'DEBUG'</default>
 		</key>
 
 		<key name='article-theme' enum='org.gnome.feedreader.theme'>

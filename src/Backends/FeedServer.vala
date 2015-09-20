@@ -79,8 +79,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				break;
 
 			case Backend.OWNCLOUD:
-					return m_owncloud.login();
-				break;
+				return m_owncloud.login();
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -205,8 +204,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			newFeedList();
 
 			// get unread articles
-			logger.print(LogMessage.DEBUG, "get %i unread articles".printf(getUnreadCount()));
-			getArticles(getUnreadCount()-10, ArticleStatus.UNREAD);
+			//getArticles(getUnreadCount()-10, ArticleStatus.UNREAD);
 
 			// get marked articles
 			getArticles(settings_general.get_int("max-articles")-10, ArticleStatus.MARKED);

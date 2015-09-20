@@ -169,9 +169,9 @@ public class FeedReader.ttrss_message : GLib.Object {
 		return null;
 	}
 
-	public string getMessage()
+	public void printMessage()
 	{
-		return m_message_string.str;
+		logger.print(LogMessage.DEBUG, m_message_string.str);
 	}
 
 	public void printResponse()

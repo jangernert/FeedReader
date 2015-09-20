@@ -537,8 +537,9 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		string continuation = "";
 
-		for(int i = count; i >= 0; i=i-10)
+		for(int i = count; i > -10; i=i-10)
 		{
+			if(i < 0) i = 0;
 			var articles = new GLib.List<article>();
 
 			switch(m_type)
@@ -706,7 +707,7 @@ public class FeedReader.FeedServer : GLib.Object {
             logger.print(LogMessage.DEBUG, "Grabber: parsing failed");
     		return;
     	}
-
+		grabberUtils.repairImg(doc, Article.getURL());
 		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
 
 		string html = "";

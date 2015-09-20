@@ -26,6 +26,8 @@ public class FeedReader.articleList : Gtk.Stack {
 	private Gtk.Adjustment m_scroll2_adjustment;
 	private Gtk.Label m_emptyList;
 	private string m_emptyListString;
+	private Gtk.Box m_syncingBox;
+	private Gtk.Spinner m_syncSpinner;
 	private double m_lmit;
 	private string m_current_feed_selected;
 	private bool m_only_unread;
@@ -63,6 +65,20 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_emptyList.set_margin_left(30);
 		m_emptyList.set_margin_right(30);
 		m_emptyList.set_justify(Gtk.Justification.CENTER);
+
+		m_syncingBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
+		m_syncingBox.set_margin_left(30);
+		m_syncingBox.set_margin_right(30);
+		var syncingLabel = new Gtk.Label(_("Sync is in progress. Articles should appear any second."));
+		syncingLabel.get_style_context().add_class("emptyView");
+		syncingLabel.set_ellipsize (Pango.EllipsizeMode.END);
+		syncingLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
+		syncingLabel.set_line_wrap(true);
+		syncingLabel.set_lines(2);
+		m_syncSpinner = new Gtk.Spinner();
+		m_syncSpinner.set_size_request(32, 32);
+		m_syncingBox.pack_start(m_syncSpinner);
+		m_syncingBox.pack_start(syncingLabel);
 
 		m_List1 = new Gtk.ListBox();
 		m_List1.set_selection_mode(Gtk.SelectionMode.BROWSE);
@@ -151,6 +167,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		this.add_named(m_scroll1, "list1");
 		this.add_named(m_scroll2, "list2");
 		this.add_named(m_emptyList, "empty");
+		this.add_named(m_syncingBox, "syncing");
 	}
 
 	private bool key_pressed(Gdk.EventKey event)
@@ -566,8 +583,17 @@ public class FeedReader.articleList : Gtk.Stack {
 			}
 			else if(!addRows)
 			{
-				m_emptyList.set_text(buildEmptyString());
-				this.set_visible_child_full("empty", transition);
+				if(!settings_state.get_boolean("currently-updating"))
+				{
+					m_emptyList.set_text(buildEmptyString());
+					this.set_visible_child_full("empty", transition);
+				}
+				else
+				{
+					this.set_visible_child_full("syncing", transition);
+					m_syncSpinner.start();
+				}
+
 				noRowActive();
 			}
 		}

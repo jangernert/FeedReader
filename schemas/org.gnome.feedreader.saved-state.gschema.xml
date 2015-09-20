@@ -120,7 +120,7 @@
 		</key>
 
         <key name="expanded-categories" type="as">
-            <default>[]</default>
+            <default>['Categories', 'Labels']</default>
             <summary>expaneded categories</summary>
             <description>
                 all the categories that are expanded, showing their feeds and subcategories

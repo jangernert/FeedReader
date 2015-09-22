@@ -4,6 +4,13 @@ bg: burlywood
 color: darkslategray
 fa-icon: calendar
 ---
+**1.2.1**
+
+*   added: built-time-switch for Webkit2Gtk 4.0
+*   added: missing tooltips
+*   added: remove articles from unread/marked list when it makes sense
+*   fixed: active article removed from list after sync
+
 **1.2**
 
 *   improved article-view
@@ -21,6 +28,7 @@ fa-icon: calendar
 *   basic full text search
 *   support feeds without category (feedly)
 *   support feeds with multiple categories (feedly)
+*   tons of fixes
 
 **1.0**
 

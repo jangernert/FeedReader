@@ -38,7 +38,7 @@ namespace FeedReader {
 	[DBus (name = "org.gnome.feedreader")]
 	interface FeedDaemon : Object {
 		public abstract void startSync() throws IOError;
-		public abstract void startInitSync(bool useGrabber) throws IOError;
+		public abstract void startInitSync() throws IOError;
 		public abstract LoginResponse login(Backend type) throws IOError;
 		public abstract int isLoggedIn() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
@@ -104,8 +104,7 @@ namespace FeedReader {
 
 				feedDaemon_interface.syncFinished.connect(() => {
 				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
-				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT);
-					m_window.getContent().updateArticleList();
+				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
 					m_window.setRefreshButton(false);
 				});
 

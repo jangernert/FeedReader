@@ -102,3 +102,11 @@ GtkListBoxRow GtkLabel.headline-unread-label {
 GtkScrolledWindow GtkViewport.servicebox {
 	border: 1px solid alpha (#000, 0.30);
 }
+
+
+.offline {
+	background: black;
+	color: white;
+	opacity: 0.8;
+	border-radius: 10;
+}

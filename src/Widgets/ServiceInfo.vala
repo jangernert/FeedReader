@@ -1,6 +1,7 @@
-public class FeedReader.ServiceInfo : Gtk.Box {
+public class FeedReader.ServiceInfo : Gtk.Overlay {
     private Gtk.Image m_logo;
     private Gtk.Label m_label;
+    private Gtk.Box m_box;
 
     public ServiceInfo()
     {
@@ -13,12 +14,20 @@ public class FeedReader.ServiceInfo : Gtk.Box {
 
         refresh();
 
-        this.pack_start(m_logo, false, false, 0);
-        this.pack_start(m_label, false, false, 5);
+        m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+        m_box.pack_start(m_logo, false, false, 0);
+        m_box.pack_start(m_label, false, false, 5);
+        m_box.margin_top = 20;
+        m_box.margin_bottom = 5;
+        this.add(m_box);
 
-        this.orientation = Gtk.Orientation.VERTICAL;
-        this.margin_top = 20;
-        this.margin_bottom = 5;
+        var label = new Gtk.Label("OFFLINE");
+        label.margin_start = 40;
+        label.margin_end = 40;
+        label.margin_top = 30;
+        label.margin_bottom = 10;
+        label.get_style_context().add_class("offline");
+        this.add_overlay(label);
     }
 
     public void refresh()
@@ -42,7 +51,7 @@ public class FeedReader.ServiceInfo : Gtk.Box {
                 break;
         }
 
-        m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s.svg".printf(service_name));
+        m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s-grey.svg".printf(service_name));
         m_label.set_label(user_name);
         show_all();
     }

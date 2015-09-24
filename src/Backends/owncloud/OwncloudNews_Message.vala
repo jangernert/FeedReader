@@ -68,7 +68,7 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 		m_session.send_message(m_message_soup);
 
-        if(Utils.CaErrorOccoured(m_message_soup.tls_errors))
+        if(m_message_soup.tls_errors != 0)
 		{
 			logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;

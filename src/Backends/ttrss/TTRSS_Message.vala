@@ -28,7 +28,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 	{
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
-		//m_session.ssl_strict = false;
+		m_session.ssl_strict = false;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
 
@@ -66,7 +66,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 		var status = m_session.send_message(m_message_soup);
 
-		if(Utils.CaErrorOccoured(m_message_soup.tls_errors))
+		if(m_message_soup.tls_errors != 0)
 		{
 			logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;
@@ -128,6 +128,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 				}
 
 				logger.print(LogMessage.ERROR, "ttrss api error");
+				printMessage();
 				printResponse();
 				return ConnectionError.TTRSS_API;
 			}

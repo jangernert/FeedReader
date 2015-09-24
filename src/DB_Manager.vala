@@ -669,6 +669,46 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
+	public void update_articles(ref GLib.List<article> articles)
+	{
+		executeSQL("BEGIN TRANSACTION");
+
+		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+		update_query.updateValuePair("unread", "$UNREAD");
+		update_query.updateValuePair("marked", "$MARKED");
+		update_query.updateValuePair("tags", "$TAGS");
+		update_query.addEqualsCondition("articleID", "$ARTICLEID");
+		update_query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
+
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		int unread_position = stmt.bind_parameter_index("$UNREAD");
+		int marked_position = stmt.bind_parameter_index("$MARKED");
+		int tags_position = stmt.bind_parameter_index("$TAGS");
+		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
+		assert (unread_position > 0);
+		assert (marked_position > 0);
+		assert (tags_position > 0);
+		assert (articleID_position > 0);
+
+		foreach(var article in articles)
+		{
+			stmt.bind_text(unread_position, article.getUnread().to_string());
+			stmt.bind_text(marked_position, article.getMarked().to_string());
+			stmt.bind_text(tags_position, article.getTagString());
+			stmt.bind_text(articleID_position, article.getArticleID());
+
+			while(stmt.step () == Sqlite.ROW) {}
+			stmt.reset();
+		}
+
+		executeSQL("COMMIT TRANSACTION");
+	}
+
 
 	public void write_articles(ref GLib.List<article> articles)
 	{
@@ -742,38 +782,6 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text(author_position, article.getAuthor());
 			stmt.bind_text(date_position, article.getDateStr());
 			stmt.bind_text(guidHash_position, article.getHash());
-
-			while(stmt.step () == Sqlite.ROW) {}
-			stmt.reset();
-		}
-
-		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		update_query.updateValuePair("unread", "$UNREAD");
-		update_query.updateValuePair("marked", "$MARKED");
-		update_query.updateValuePair("tags", "$TAGS");
-		update_query.addEqualsCondition("articleID", "$ARTICLEID");
-		update_query.build();
-
-		ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
-
-		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
-		unread_position = stmt.bind_parameter_index("$UNREAD");
-		marked_position = stmt.bind_parameter_index("$MARKED");
-		tags_position = stmt.bind_parameter_index("$TAGS");
-		articleID_position = stmt.bind_parameter_index("$ARTICLEID");
-		assert (unread_position > 0);
-		assert (marked_position > 0);
-		assert (tags_position > 0);
-		assert (articleID_position > 0);
-
-		foreach(var article in articles)
-		{
-			stmt.bind_text(unread_position, article.getUnread().to_string());
-			stmt.bind_text(marked_position, article.getMarked().to_string());
-			stmt.bind_text(tags_position, article.getTagString());
-			stmt.bind_text(articleID_position, article.getArticleID());
 
 			while(stmt.step () == Sqlite.ROW) {}
 			stmt.reset();

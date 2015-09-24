@@ -423,44 +423,52 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static string printTlsCertificateFlags(GLib.TlsCertificateFlags flag)
 	{
-		switch(flag)
+		string errors = "";
+		int flags = flag;
+
+		if(flags - GLib.TlsCertificateFlags.GENERIC_ERROR >= 0)
 		{
-			case GLib.TlsCertificateFlags.UNKNOWN_CA:
-				return "UNKNOWN_CA";
-			case GLib.TlsCertificateFlags.BAD_IDENTITY:
-				return "BAD_IDENTITY";
-			case GLib.TlsCertificateFlags.NOT_ACTIVATED:
-				return "NOT_ACTIVATED";
-			case GLib.TlsCertificateFlags.EXPIRED:
-				return "EXPIRED";
-			case GLib.TlsCertificateFlags.REVOKED:
-				return "REVOKED";
-			case GLib.TlsCertificateFlags.INSECURE:
-				return "INSECURE";
-			case GLib.TlsCertificateFlags.GENERIC_ERROR:
-				return "GENERIC_ERROR";
-			case GLib.TlsCertificateFlags.VALIDATE_ALL:
-				return "VALIDATE_ALL";
+			errors += "GENERIC_ERROR ";
+			flags -= GLib.TlsCertificateFlags.VALIDATE_ALL;
 		}
 
-		return "blubb";
-	}
-
-	public static bool CaErrorOccoured(GLib.TlsCertificateFlags flag)
-	{
-		switch(flag)
+		if(flags - GLib.TlsCertificateFlags.INSECURE >= 0)
 		{
-			case GLib.TlsCertificateFlags.UNKNOWN_CA:
-			case GLib.TlsCertificateFlags.BAD_IDENTITY:
-			case GLib.TlsCertificateFlags.NOT_ACTIVATED:
-			case GLib.TlsCertificateFlags.EXPIRED:
-			case GLib.TlsCertificateFlags.REVOKED:
-			case GLib.TlsCertificateFlags.INSECURE:
-			case GLib.TlsCertificateFlags.GENERIC_ERROR:
-				return true;
+			errors += "INSECURE ";
+			flags -= GLib.TlsCertificateFlags.INSECURE;
 		}
 
-		return false;
+		if(flags - GLib.TlsCertificateFlags.REVOKED >= 0)
+		{
+			errors += "REVOKED ";
+			flags -= GLib.TlsCertificateFlags.REVOKED;
+		}
+
+		if(flags - GLib.TlsCertificateFlags.EXPIRED >= 0)
+		{
+			errors += "EXPIRED ";
+			flags -= GLib.TlsCertificateFlags.EXPIRED;
+		}
+
+		if(flags - GLib.TlsCertificateFlags.NOT_ACTIVATED >= 0)
+		{
+			errors += "NOT_ACTIVATED ";
+			flags -= GLib.TlsCertificateFlags.NOT_ACTIVATED;
+		}
+
+		if(flags - GLib.TlsCertificateFlags.BAD_IDENTITY >= 0)
+		{
+			errors += "BAD_IDENTITY ";
+			flags -= GLib.TlsCertificateFlags.BAD_IDENTITY;
+		}
+
+		if(flags - GLib.TlsCertificateFlags.UNKNOWN_CA >= 0)
+		{
+			errors += "UNKNOWN_CA ";
+			flags -= GLib.TlsCertificateFlags.UNKNOWN_CA;
+		}
+
+		return errors;
 	}
 
 

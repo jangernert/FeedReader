@@ -50,8 +50,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			if(has_icon)
 			{
 				try{
-					if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
-						icon_path += "owncloud_";
 					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + feedID.replace("/", "_").replace(".", "_") + ".ico");
 					Utils.scale_pixbuf(ref tmp_icon, 24);
 					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);

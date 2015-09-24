@@ -160,10 +160,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		return m_headerbar.currentlyUpdating();
 	}
 
-	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool noNewFeedList = false)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show content");
-		m_content.newFeedList();
+		if(!noNewFeedList)
+			m_content.newFeedList();
 		m_stack.set_visible_child_full("content", transition);
 		m_headerbar.setButtonsSensitive(true);
 
@@ -289,7 +290,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login.submit_data.connect(() => {
 			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
-			feedDaemon_interface.startInitSync(m_login.useGrabber());
+			feedDaemon_interface.startInitSync();
 			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		m_login.loginError.connect((errorCode) => {
@@ -305,7 +306,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 				return;
 			}
-			feedDaemon_interface.startInitSync(m_login.useGrabber());
+			feedDaemon_interface.startInitSync();
 			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		m_stack.add_named(loginBox, "login");

@@ -128,7 +128,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			newFeedList();
 
-			getArticles(settings_general.get_int("max-articles")-10);
+			getArticles(settings_general.get_int("max-articles"));
 
 			//update fulltext table
 			dataBase.updateFTS();
@@ -173,13 +173,9 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	public async void InitSyncContent(bool useGrabber)
+	public async void InitSyncContent()
 	{
 		SourceFunc callback = InitSyncContent.callback;
-		int max = settings_general.get_int("max-articles")-10;
-
-		if(!useGrabber)
-			settings_general.set_enum("content-grabber", ContentGrabber.NONE);
 
 		ThreadFunc<void*> run = () => {
 			logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
@@ -205,22 +201,16 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			// get unread articles
 			logger.print(LogMessage.DEBUG, "unread count: %i".printf(getUnreadCount()));
-			getArticles(getUnreadCount()-10, ArticleStatus.UNREAD);
+			getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 			// get marked articles
-			getArticles(settings_general.get_int("max-articles")-10, ArticleStatus.MARKED);
+			getArticles(settings_general.get_int("max-articles"), ArticleStatus.MARKED);
 
 			// get articles for each tag
 			foreach(var tag_item in tags)
 			{
-				getArticles((settings_general.get_int("max-articles")/8)-10, ArticleStatus.ALL, tag_item.getTagID(), true);
+				getArticles((settings_general.get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
 			}
-
-			// get articles for each feed
-			//foreach(var feed_item in feeds)
-			//{
-			//	getArticles((settings_general.get_int("max-articles")/8)-10, ArticleStatus.ALL, feed_item.getFeedID());
-			//}
 
 			//update fulltext table
 			dataBase.updateFTS();
@@ -535,79 +525,163 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string feedID = "", bool isTagID = false)
 	{
-		string continuation = "";
-
-		for(int i = count; i > -10; i=i-10)
+		switch(m_type)
 		{
-			if(i < 0) i = 0;
-			var articles = new GLib.List<article>();
+			case Backend.TTRSS:
+				int ttrss_feedID = 0;
+				if(feedID == "")
+					ttrss_feedID = TTRSSSpecialID.ALL;
+				else
+					ttrss_feedID = int.parse(feedID);
 
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					int ttrss_feedID = 0;
-					if(feedID == "")
-						ttrss_feedID = TTRSSSpecialID.ALL;
+
+
+				string articleIDs = "";
+				int amount = 200;
+
+				for(int i = count; i > -amount; i -= amount)
+				{
+					var articles = new GLib.List<article>();
+
+					if(i < 0)
+					{
+						i = 0;
+						amount = count % amount;
+					}
+
+					m_ttrss.getHeadlines(ref articles, i-amount, amount, whatToGet, ttrss_feedID);
+
+					articles.reverse();
+					dataBase.update_articles(ref articles);
+					newArticleList();
+
+					foreach(article Article in articles)
+					{
+						if(!dataBase.article_exists(Article.getArticleID()))
+						{
+							articleIDs += Article.getArticleID() + ",";
+						}
+					}
+				}
+
+				if(articleIDs.length > 0)
+					articleIDs = articleIDs.substring(0, articleIDs.length -1);
+
+				var articles = new GLib.List<article>();
+
+				if(articleIDs != "")
+					m_ttrss.getArticles(articleIDs, ref articles);
+
+				articles.sort_with_data ((a, b) => {
+						return strcmp (a.getArticleID(), b.getArticleID());
+				});
+
+
+				if(articles.length() > 0)
+				{
+					var new_articles = new GLib.List<article>();
+					string last = articles.last().data.getArticleID();
+
+					foreach(article Article in articles)
+					{
+						FeedServer.grabContent(ref Article);
+						new_articles.append(Article);
+
+						if(new_articles.length() == 10 || Article.getArticleID() == last)
+						{
+							dataBase.write_articles(ref new_articles);
+							newArticleList();
+							new_articles = new GLib.List<article>();
+						}
+					}
+				}
+				break;
+
+			case Backend.FEEDLY:
+				string continuation = "";
+				string feedly_tagID = "";
+				string feedly_feedID = "";
+				if(feedID != "")
+				{
+					if(isTagID)
+					{
+						feedly_tagID = feedID;
+					}
 					else
-						ttrss_feedID = int.parse(feedID);
-
-					m_ttrss.getArticles(ref articles, i, 10, whatToGet, ttrss_feedID);
-					break;
-
-				case Backend.FEEDLY:
-					string feedly_tagID = "";
-					string feedly_feedID = "";
-					if(feedID != "")
 					{
-						if(isTagID)
-						{
-							feedly_tagID = feedID;
-						}
-						else
-						{
-							feedly_feedID = feedID;
-						}
+						feedly_feedID = feedID;
 					}
-					continuation = m_feedly.getArticles(ref articles, 10, continuation, whatToGet, feedly_tagID, feedly_feedID);
-					break;
+				}
 
-				case Backend.OWNCLOUD:
-					OwnCloudType type = OwnCloudType.ALL;
-					bool read = true;
-					int id = 0;
+				int amount = 10;
 
-					switch(whatToGet)
+				for(int i = count; i > -amount; i -= amount)
+				{
+					if(i < 0)
 					{
-						case ArticleStatus.ALL:
-							break;
-						case ArticleStatus.UNREAD:
-							read = false;
-							break;
-						case ArticleStatus.MARKED:
-							type = OwnCloudType.STARRED;
-							break;
+						i = 0;
+						amount = count % amount;
 					}
 
-					if(feedID != "")
+					var articles = new GLib.List<article>();
+					continuation = m_feedly.getArticles(ref articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
+
+					articles.reverse();
+					dataBase.update_articles(ref articles);
+					dataBase.write_articles(ref articles);
+					newArticleList();
+
+					if(continuation == "")
+						break;
+				}
+				break;
+
+			case Backend.OWNCLOUD:
+				OwnCloudType type = OwnCloudType.ALL;
+				bool read = true;
+				int id = 0;
+
+				switch(whatToGet)
+				{
+					case ArticleStatus.ALL:
+						break;
+					case ArticleStatus.UNREAD:
+						read = false;
+						break;
+					case ArticleStatus.MARKED:
+						type = OwnCloudType.STARRED;
+						break;
+				}
+
+				if(feedID != "")
+				{
+					if(isTagID == true)
+						return;
+
+					id = int.parse(feedID);
+					type = OwnCloudType.FEED;
+				}
+
+				var articles = new GLib.List<article>();
+
+				if(count == -1)
+					m_owncloud.getNewArticles(ref articles, settings_state.get_int("last-sync"), type, id);
+				else
+					m_owncloud.getArticles(ref articles, count, 10, read, type, id);
+
+				var new_articles = new GLib.List<article>();
+				foreach(article Article in articles)
+				{
+					FeedServer.grabContent(ref Article);
+					new_articles.append(Article);
+
+					if(new_articles.length() == 10)
 					{
-						if(isTagID == true)
-							return;
-
-						id = int.parse(feedID);
-						type = OwnCloudType.FEED;
+						dataBase.write_articles(ref new_articles);
+						newArticleList();
+						new_articles = new GLib.List<article>();
 					}
-
-					m_owncloud.getArticles(ref articles, i, 10, read, type, id);
-					break;
-			}
-
-			// write articles
-			articles.reverse();
-			dataBase.write_articles(ref articles);
-
-			newArticleList();
-
-			if(m_type == Backend.FEEDLY && continuation == "")
+				}
 				break;
 		}
 	}

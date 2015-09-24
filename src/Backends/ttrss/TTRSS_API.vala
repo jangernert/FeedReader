@@ -405,15 +405,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getArticles(ref GLib.List<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
+	public void getHeadlines(ref GLib.List<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
 		message.add_int("limit", limit);
-
-
 		message.add_int("skip", skip);
 
 		switch(whatToGet)
@@ -442,12 +440,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			{
 				var headline_node = response.get_object_element(i);
 
-				int articleID = (int)headline_node.get_int_member("id");
-				string title = headline_node.get_string_member("title").replace("&","");
-				string author = headline_node.get_string_member("author");
-				string url = headline_node.get_string_member("link");
-				string html = "article already exists";
-
 				string tagString = "";
 				if(headline_node.has_member("labels"))
 				{
@@ -465,25 +457,18 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 				var Article = new article(
 										headline_node.get_int_member("id").to_string(),
-										title,
-										url,
+										headline_node.get_string_member("title").replace("&",""),
+										headline_node.get_string_member("link"),
 										headline_node.get_string_member("feed_id"),
 										(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
 										(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 										"",
 										"",
-										(author == "") ? _("not found") : author,
+										(headline_node.get_string_member("author") == "") ? _("not found") : headline_node.get_string_member("author"),
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
 										tagString
 								);
-
-				if(!dataBase.article_exists(articleID.to_string()))
-				{
-					getArticle(articleID, out title, out author, out url, out html);
-					Article.setHTML(html);
-					FeedServer.grabContent(ref Article);
-				}
 
 				articles.append(Article);
 
@@ -492,27 +477,58 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	private void getArticle(int articleID, out string title, out string author, out string url, out string html)
+	public void getArticles(string articleIDs, ref GLib.List<article> articles)
 	{
-		title = author = url = html = "TTRSS: getArticle error";
-
 		if(isloggedin())
 		{
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getArticle");
-			message.add_int("article_id", articleID);
+			message.add_string("article_id", articleIDs);
 			int error = message.send();
+			message.printMessage();
 
 			if(error == ConnectionError.SUCCESS)
 			{
 				var response = message.get_response_array();
-				var article_node = response.get_object_element(0);
+				var article_count = response.get_length();
 
-				title = article_node.get_string_member("title");
-				url = article_node.get_string_member("link");
-				author = article_node.get_string_member("author");
-				html = article_node.get_string_member("content");
+				for(uint i = 0; i < article_count; i++)
+				{
+					var article_node = response.get_object_element(i);
+
+					string tagString = "";
+					if(article_node.has_member("labels"))
+					{
+						var tags = article_node.get_array_member("labels");
+
+						uint tagCount = 0;
+						if(tags != null)
+							tagCount = tags.get_length();
+
+						for(int j = 0; j < tagCount; ++j)
+						{
+							tagString = tagString + tags.get_array_element(j).get_int_element(0).to_string() + ",";
+						}
+					}
+
+					var Article = new article(
+											article_node.get_string_member("id"),
+											article_node.get_string_member("title").replace("&",""),
+											article_node.get_string_member("link"),
+											article_node.get_string_member("feed_id"),
+											(article_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+											(article_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+											article_node.get_string_member("content"),
+											"",
+											(article_node.get_string_member("author") == "") ? _("not found") : article_node.get_string_member("author"),
+											new DateTime.from_unix_local(article_node.get_int_member("updated")),
+											-1,
+											tagString
+									);
+
+					articles.append(Article);
+				}
 			}
 		}
 	}

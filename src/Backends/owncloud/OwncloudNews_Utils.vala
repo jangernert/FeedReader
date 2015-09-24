@@ -78,7 +78,7 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 			//logger.print(LogMessage.DEBUG, e.message);
 		}
 
-		string local_filename = icon_path + "owncloud_" + feed_id + ".ico";
+		string local_filename = icon_path + feed_id + ".ico";
 
 
 

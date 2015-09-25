@@ -145,6 +145,31 @@ public class FeedReader.dbManager : GLib.Object {
 		settings_state.set_int("last-spring-cleaning", (int)now.to_unix());
 	}
 
+	public bool isEmpty()
+	{
+		if(!isTableEmpty("articles"))
+		{
+			return false;
+		}
+
+		if(!isTableEmpty("categories"))
+		{
+			return false;
+		}
+
+		if(!isTableEmpty("feeds"))
+		{
+			return false;
+		}
+
+		if(!isTableEmpty("tags"))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
 	public bool isTableEmpty(string table)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.%s".printf(table));

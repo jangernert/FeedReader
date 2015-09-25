@@ -290,7 +290,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login.submit_data.connect(() => {
 			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
-			feedDaemon_interface.startInitSync();
+			if(dataBase.isEmpty())
+				feedDaemon_interface.startInitSync();
+			else
+				feedDaemon_interface.startSync();
 			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		m_login.loginError.connect((errorCode) => {
@@ -306,7 +309,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
 				return;
 			}
-			feedDaemon_interface.startInitSync();
+			if(dataBase.isEmpty())
+				feedDaemon_interface.startInitSync();
+			else
+				feedDaemon_interface.startSync();
 			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		m_stack.add_named(loginBox, "login");

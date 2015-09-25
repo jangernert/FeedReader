@@ -27,19 +27,21 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         label.margin_top = 30;
         label.margin_bottom = 10;
         label.get_style_context().add_class("offline");
-        this.add_overlay(label);
+        //this.add_overlay(label);
     }
 
     public void refresh()
     {
         string service_name = "";
         string user_name = "";
+        string server = "";
 
         switch(settings_general.get_enum("account-type"))
         {
             case Backend.TTRSS:
                 service_name = "ttrss";
-                user_name = settings_ttrss.get_string("username") + "@" + Utils.shortenURL(settings_ttrss.get_string("url"));
+                user_name = settings_ttrss.get_string("username");
+                server = Utils.shortenURL(settings_ttrss.get_string("url"));
                 break;
             case Backend.FEEDLY:
                 service_name = "feedly";
@@ -47,11 +49,13 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
                 break;
             case Backend.OWNCLOUD:
                 service_name = "owncloud";
-                user_name = settings_owncloud.get_string("username") + "@" + Utils.shortenURL(settings_owncloud.get_string("url"));
+                user_name = settings_owncloud.get_string("username");
+                server = Utils.shortenURL(settings_owncloud.get_string("url"));
                 break;
         }
 
         m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s-grey.svg".printf(service_name));
+        this.set_tooltip_text(server);
         m_label.set_label(user_name);
         show_all();
     }

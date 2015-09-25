@@ -128,7 +128,19 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			newFeedList();
 
-			getArticles(settings_general.get_int("max-articles"));
+			int unread = getUnreadCount();
+			int max = settings_general.get_int("max-articles");
+
+			if(unread > max)
+			{
+				getArticles(20, ArticleStatus.MARKED);
+				getArticles(unread);
+			}
+			else
+			{
+				getArticles(max);
+			}
+
 
 			//update fulltext table
 			dataBase.updateFTS();
@@ -200,7 +212,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			newFeedList();
 
 			// get unread articles
-			logger.print(LogMessage.DEBUG, "unread count: %i".printf(getUnreadCount()));
 			getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 			// get marked articles
@@ -669,13 +680,15 @@ public class FeedReader.FeedServer : GLib.Object {
 				else
 					m_owncloud.getArticles(ref articles, count, 10, read, type, id);
 
+				string last = articles.last().data.getArticleID();
 				var new_articles = new GLib.List<article>();
+
 				foreach(article Article in articles)
 				{
 					FeedServer.grabContent(ref Article);
 					new_articles.append(Article);
 
-					if(new_articles.length() == 10)
+					if(new_articles.length() == 10 || Article.getArticleID() == last)
 					{
 						dataBase.write_articles(ref new_articles);
 						newArticleList();

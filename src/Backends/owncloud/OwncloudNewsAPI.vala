@@ -196,7 +196,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             for(uint i = 0; i < article_count; i++)
             {
                 var article_node = article_array.get_object_element(i);
-                logger.print(LogMessage.DEBUG, article_node.get_int_member("id").to_string());
+                //logger.print(LogMessage.DEBUG, article_node.get_int_member("id").to_string());
 
                 ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
                 ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
@@ -213,7 +213,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                         					new DateTime.from_unix_local(article_node.get_int_member("lastModified")),
                         					-1,
                         					"",
-                        					article_node.get_string_member("guidHash"));
+                        					article_node.get_string_member("guidHash"),
+                                            (int)article_node.get_int_member("lastModified"));
 
                 articles.append(Article);
             }
@@ -262,7 +263,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                         					new DateTime.from_unix_local(article_node.get_int_member("lastModified")),
                         					-1,
                         					"",
-                        					article_node.get_string_member("guidHash"));
+                        					article_node.get_string_member("guidHash"),
+                                            (int)article_node.get_int_member("lastModified"));
 
                 articles.append(Article);
             }

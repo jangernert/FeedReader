@@ -259,45 +259,18 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 		}
 
-		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
-		{
-			string url = ""; //FIXME feedreader_settings.get_string("url");
-			string username = ""; //FIXME feedreader_settings.get_string("username");
-			m_owncloud_url_entry.set_text(url);
-			m_owncloud_user_entry.set_text(username);
 
-			var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-				                              "URL", Secret.SchemaAttributeType.STRING,
-				                              "Username", Secret.SchemaAttributeType.STRING);
+		string owncloud_url = settings_owncloud.get_string("url");
+		string owncloud_username = settings_owncloud.get_string("username");
+		m_owncloud_url_entry.set_text(owncloud_url);
+		m_owncloud_user_entry.set_text(owncloud_username);
+		m_owncloud_password_entry.set_text(OwncloudNews_Utils.getPasswd());
 
-			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-			attributes["URL"] = url;
-			attributes["Username"] = username;
-
-			string passwd = "";
-			try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
-			m_owncloud_password_entry.set_text(passwd);
-		}
-
-		if(settings_general.get_enum("account-type") == Backend.TTRSS)
-		{
-			string url = settings_ttrss.get_string("url");
-			string username = settings_ttrss.get_string("username");
-			m_ttrss_url_entry.set_text(url);
-			m_ttrss_user_entry.set_text(username);
-
-			var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-											"URL", Secret.SchemaAttributeType.STRING,
-											"Username", Secret.SchemaAttributeType.STRING);
-
-			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-			attributes["URL"] = url;
-			attributes["Username"] = username;
-
-			string passwd = "";
-			try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
-			m_ttrss_password_entry.set_text(passwd);
-		}
+		string ttrss_url = settings_ttrss.get_string("url");
+		string ttrss_username = settings_ttrss.get_string("username");
+		m_ttrss_url_entry.set_text(ttrss_url);
+		m_ttrss_user_entry.set_text(ttrss_username);
+		m_ttrss_password_entry.set_text(ttrss_utils.getPasswd());
 	}
 
 

@@ -676,7 +676,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				var articles = new GLib.List<article>();
 
 				if(count == -1)
-					m_owncloud.getNewArticles(ref articles, settings_state.get_int("last-sync"), type, id);
+					m_owncloud.getNewArticles(ref articles, dataBase.getLastModified(), type, id);
 				else
 					m_owncloud.getArticles(ref articles, 0, count, read, type, id);
 

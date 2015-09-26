@@ -77,7 +77,8 @@ public class FeedReader.dbManager : GLib.Object {
 												"marked" INTEGER NOT NULL,
 												"tags" TEXT,
 												"date" DATETIME NOT NULL,
-												"guidHash" TEXT
+												"guidHash" TEXT,
+												"lastModified" INTEGER
 											)""");
 
 			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
@@ -637,6 +638,26 @@ public class FeedReader.dbManager : GLib.Object {
 		return result;
 	}
 
+	public int getLastModified()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("MAX(lastModified)");
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "getLastModified - %s".printf(sqlite_db.errmsg()));
+
+		int result = 0;
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+
+		return result;
+	}
+
 
 	public string getCategoryName(string catID)
 	{
@@ -702,6 +723,7 @@ public class FeedReader.dbManager : GLib.Object {
 		update_query.updateValuePair("unread", "$UNREAD");
 		update_query.updateValuePair("marked", "$MARKED");
 		update_query.updateValuePair("tags", "$TAGS");
+		update_query.updateValuePair("lastModified", "$LASTMODIFIED");
 		update_query.addEqualsCondition("articleID", "$ARTICLEID");
 		update_query.build();
 
@@ -714,17 +736,21 @@ public class FeedReader.dbManager : GLib.Object {
 		int unread_position = stmt.bind_parameter_index("$UNREAD");
 		int marked_position = stmt.bind_parameter_index("$MARKED");
 		int tags_position = stmt.bind_parameter_index("$TAGS");
+		int modified_position = stmt.bind_parameter_index("$LASTMODIFIED");
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		assert (unread_position > 0);
 		assert (marked_position > 0);
 		assert (tags_position > 0);
+		assert (modified_position > 0);
 		assert (articleID_position > 0);
+
 
 		foreach(var article in articles)
 		{
 			stmt.bind_text(unread_position, article.getUnread().to_string());
 			stmt.bind_text(marked_position, article.getMarked().to_string());
 			stmt.bind_text(tags_position, article.getTagString());
+			stmt.bind_int (modified_position, article.getLastModified());
 			stmt.bind_text(articleID_position, article.getArticleID());
 
 			while(stmt.step () == Sqlite.ROW) {}
@@ -756,6 +782,7 @@ public class FeedReader.dbManager : GLib.Object {
 		query.insertValuePair("tags", "$TAGS");
 		query.insertValuePair("date", "$DATE");
 		query.insertValuePair("guidHash", "$GUIDHASH");
+		query.insertValuePair("lastModified", "$LASTMODIFIED");
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -778,6 +805,7 @@ public class FeedReader.dbManager : GLib.Object {
 		int author_position = stmt.bind_parameter_index("$AUTHOR");
 		int date_position = stmt.bind_parameter_index("$DATE");
 		int guidHash_position = stmt.bind_parameter_index("$GUIDHASH");
+		int modified_position = stmt.bind_parameter_index("$LASTMODIFIED");
 
 		assert (articleID_position > 0);
 		assert (feedID_position > 0);
@@ -791,6 +819,7 @@ public class FeedReader.dbManager : GLib.Object {
 		assert (author_position > 0);
 		assert (date_position > 0);
 		assert (guidHash_position > 0);
+		assert (modified_position > 0);
 
 
 		foreach(var article in articles)
@@ -807,6 +836,7 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text(author_position, article.getAuthor());
 			stmt.bind_text(date_position, article.getDateStr());
 			stmt.bind_text(guidHash_position, article.getHash());
+			stmt.bind_int (modified_position, article.getLastModified());
 
 			while(stmt.step () == Sqlite.ROW) {}
 			stmt.reset();

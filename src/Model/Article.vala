@@ -28,6 +28,7 @@ public class FeedReader.article : GLib.Object {
 	private int m_sortID;
 	private GLib.DateTime m_date;
 	private string m_guidHash;
+	private int m_lastModified;
 
 
 
@@ -43,7 +44,8 @@ public class FeedReader.article : GLib.Object {
 						GLib.DateTime date,
 						int sortID,
 						string tags,
-						string guidHash = "")
+						string guidHash = "",
+						int lastModified = 0)
 	{
 		m_articleID = articleID;
 		m_title = title;
@@ -57,6 +59,7 @@ public class FeedReader.article : GLib.Object {
 		m_sortID = sortID;
 		m_date = date;
 		m_guidHash = guidHash;
+		m_lastModified = lastModified;
 		m_tags = new GLib.List<string>();
 		var tagArray = tags.split(",");
 		foreach(string tag in tagArray)
@@ -192,5 +195,10 @@ public class FeedReader.article : GLib.Object {
 	public string getHash()
 	{
 		return m_guidHash;
+	}
+
+	public int getLastModified()
+	{
+		return m_lastModified;
 	}
 }

@@ -66,7 +66,7 @@ public class FeedReader.Grabber : GLib.Object {
 
     public bool process()
     {
-        logger.print(LogMessage.DEBUG, "grabber: process article: " + m_articleURL);
+        logger.print(LogMessage.DEBUG, "Grabber: process article: " + m_articleURL);
         bool downloaded = false;
 
         if(!checkConfigFile())
@@ -136,6 +136,10 @@ public class FeedReader.Grabber : GLib.Object {
             }
         });
         session.send_message(msg);
+
+        if(msg.response_body == null)
+            return false;
+
         m_rawHtml = (string)msg.response_body.flatten().data;
         return true;
     }

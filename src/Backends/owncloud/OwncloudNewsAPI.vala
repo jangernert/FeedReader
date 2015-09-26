@@ -181,8 +181,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         args += "lastModified=%i&".printf(lastModified);
         args += "type=%i&".printf(type);
         args += "id=%i".printf(id);
+        logger.print(LogMessage.DEBUG, "items?" + args);
 
-		var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
+		var message = new OwnCloudNews_Message(m_OwnCloudURL + "items/updated?" + args, m_username, m_password, "GET");
 		int error = message.send();
         var response = message.get_response_object();
         if(response.has_member("items"))
@@ -264,11 +265,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                         					-1,
                         					"",
                         					article_node.get_string_member("guidHash"));
-
-                if(!dataBase.article_exists(Article.getArticleID()))
-    			{
-    				FeedServer.grabContent(ref Article);
-    			}
 
                 articles.append(Article);
             }

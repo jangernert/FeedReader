@@ -19,64 +19,67 @@ public class FeedReader.Utils : GLib.Object {
 	public static void generatePreviews(ref GLib.List<article> articles)
 	{
 		string noPreview = _("No Preview Available");
-		foreach(var article in articles)
+		foreach(var Article in articles)
 		{
-			if(article.getPreview() != null && article.getPreview() != "")
+			if(!dataBase.article_exists(Article.getArticleID()))
 			{
-				continue;
-			}
-			if(!dataBase.preview_empty(article.getArticleID()))
-			{
-				continue;
-			}
-			else if(article.getHTML() != "" && article.getHTML() != null)
-			{
-				string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
-				int outputfd = GLib.FileUtils.mkstemp(filename);
-				try{
-					GLib.FileUtils.set_contents(filename, article.getHTML());
-				}
-				catch(GLib.FileError e){
-					logger.print(LogMessage.ERROR, "error writing html to tmp file - %s".printf(e.message));
-				}
-				GLib.FileUtils.close(outputfd);
-
-				string output = "";
-				string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
-				try{
-					GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-				}
-				catch(GLib.SpawnError e){
-					logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
-				}
-
-				output = output.strip();
-
-				if(output == "" || output == null)
+				if(Article.getPreview() != null && Article.getPreview() != "")
 				{
-					logger.print(LogMessage.ERROR, "html2text could not generate preview text");
-					article.setPreview(noPreview);
-					logger.print(LogMessage.DEBUG, filename);
 					continue;
 				}
-
-				string xml = "<?xml";
-
-				while(output.has_prefix(xml))
+				if(!dataBase.preview_empty(Article.getArticleID()))
 				{
-					int end = output.index_of_char('>');
-					output = output.slice(end+1, output.length).chug();
+					continue;
 				}
+				else if(Article.getHTML() != "" && Article.getHTML() != null)
+				{
+					string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
+					int outputfd = GLib.FileUtils.mkstemp(filename);
+					try{
+						GLib.FileUtils.set_contents(filename, Article.getHTML());
+					}
+					catch(GLib.FileError e){
+						logger.print(LogMessage.ERROR, "error writing html to tmp file - %s".printf(e.message));
+					}
+					GLib.FileUtils.close(outputfd);
 
-				output = output.replace("\n"," ");
-				output = output.replace("_"," ");
+					string output = "";
+					string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
+					try{
+						GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+					}
+					catch(GLib.SpawnError e){
+						logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
+					}
 
-				article.setPreview(output);
-			}
-			else
-			{
-				logger.print(LogMessage.DEBUG, "no html to create preview from");
-				article.setPreview(noPreview);
+					output = output.strip();
+
+					if(output == "" || output == null)
+					{
+						logger.print(LogMessage.ERROR, "html2text could not generate preview text");
+						Article.setPreview(noPreview);
+						logger.print(LogMessage.DEBUG, filename);
+						continue;
+					}
+
+					string xml = "<?xml";
+
+					while(output.has_prefix(xml))
+					{
+						int end = output.index_of_char('>');
+						output = output.slice(end+1, output.length).chug();
+					}
+
+					output = output.replace("\n"," ");
+					output = output.replace("_"," ");
+
+					Article.setPreview(output);
+				}
+				else
+				{
+					logger.print(LogMessage.DEBUG, "no html to create preview from");
+					Article.setPreview(noPreview);
+				}
 			}
 		}
 	}
@@ -84,15 +87,18 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void checkHTML(ref GLib.List<article> articles)
 	{
-		foreach(var article in articles)
+		foreach(var Article in articles)
 		{
-			string modified_html = _("No Text available for this article :(");
-			if(article.getHTML() != "")
+			if(!dataBase.article_exists(Article.getArticleID()))
 			{
-				modified_html = article.getHTML().replace("src=\"//","src=\"http://").replace("target=\"_blank\"", "");
-			}
+				string modified_html = _("No Text available for this article :(");
+				if(Article.getHTML() != "")
+				{
+					modified_html = Article.getHTML().replace("src=\"//","src=\"http://").replace("target=\"_blank\"", "");
+				}
 
-			article.setHTML(modified_html);
+				Article.setHTML(modified_html);
+			}
 		}
 	}
 

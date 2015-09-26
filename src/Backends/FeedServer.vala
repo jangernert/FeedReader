@@ -129,9 +129,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			newFeedList();
 
 			int unread = getUnreadCount();
-			int max = settings_general.get_int("max-articles");
+			int max = ArticleSyncCount();
 
-			if(unread > max)
+			if(unread > max && settings_general.get_enum("account-type") != Backend.OWNCLOUD)
 			{
 				getArticles(20, ArticleStatus.MARKED);
 				getArticles(unread);
@@ -211,9 +211,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			newFeedList();
 
-			// get unread articles
-			getArticles(getUnreadCount(), ArticleStatus.UNREAD);
-
 			// get marked articles
 			getArticles(settings_general.get_int("max-articles"), ArticleStatus.MARKED);
 
@@ -222,6 +219,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				getArticles((settings_general.get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
 			}
+
+			// get unread articles
+			getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 			//update fulltext table
 			dataBase.updateFTS();
@@ -678,21 +678,28 @@ public class FeedReader.FeedServer : GLib.Object {
 				if(count == -1)
 					m_owncloud.getNewArticles(ref articles, settings_state.get_int("last-sync"), type, id);
 				else
-					m_owncloud.getArticles(ref articles, count, 10, read, type, id);
+					m_owncloud.getArticles(ref articles, 0, count, read, type, id);
 
-				string last = articles.last().data.getArticleID();
-				var new_articles = new GLib.List<article>();
+				string last = "";
 
-				foreach(article Article in articles)
+				if(articles.length() > 0)
 				{
-					FeedServer.grabContent(ref Article);
-					new_articles.append(Article);
+					articles.reverse();
+					last = articles.last().data.getArticleID();
+					var new_articles = new GLib.List<article>();
 
-					if(new_articles.length() == 10 || Article.getArticleID() == last)
+					foreach(article Article in articles)
 					{
-						dataBase.write_articles(ref new_articles);
-						newArticleList();
-						new_articles = new GLib.List<article>();
+						FeedServer.grabContent(ref Article);
+						new_articles.append(Article);
+
+						if(new_articles.length() == 10 || Article.getArticleID() == last)
+						{
+							dataBase.update_articles(ref articles);
+							dataBase.write_articles(ref new_articles);
+							newArticleList();
+							new_articles = new GLib.List<article>();
+						}
 					}
 				}
 				break;
@@ -757,31 +764,34 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public static void grabContent(ref article Article)
 	{
-		if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
+		if(!dataBase.article_exists(Article.getArticleID()))
 		{
-			var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
-			if(grabber.process())
+			if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
 			{
-				grabber.print();
-				if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+				var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
+				if(grabber.process())
 				{
-					Article.setAuthor(grabber.getAuthor());
+					grabber.print();
+					if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+					{
+						Article.setAuthor(grabber.getAuthor());
+					}
+					Article.setHTML(grabber.getArticle());
+
+					return;
 				}
-				Article.setHTML(grabber.getArticle());
-
-				return;
 			}
-		}
-		else if(settings_general.get_enum("content-grabber") == ContentGrabber.READABILITY)
-		{
-			var grabber = new ReadabilityParserAPI(Article.getURL());
-			grabber.process();
-			Article.setAuthor(grabber.getAuthor());
-			Article.setHTML(grabber.getContent());
-			Article.setPreview(grabber.getPreview());
-		}
+			else if(settings_general.get_enum("content-grabber") == ContentGrabber.READABILITY)
+			{
+				var grabber = new ReadabilityParserAPI(Article.getURL());
+				grabber.process();
+				Article.setAuthor(grabber.getAuthor());
+				Article.setHTML(grabber.getContent());
+				Article.setPreview(grabber.getPreview());
+			}
 
-		downloadImages(ref Article);
+			downloadImages(ref Article);
+		}
 	}
 
 	private static void downloadImages(ref article Article)
@@ -818,5 +828,13 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		Article.setHTML(html);
 		delete doc;
+	}
+
+	private static int ArticleSyncCount()
+	{
+		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
+			return -1;
+
+		return settings_general.get_int("max-articles");
 	}
 }

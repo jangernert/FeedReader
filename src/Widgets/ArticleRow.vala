@@ -62,9 +62,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 
-		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
-			icon_path += "owncloud_";
-		
 		string feed_icon_name = icon_path + iconname.replace("/", "_").replace(".", "_") + ".ico";
 		Gdk.Pixbuf tmp_icon;
 		try{

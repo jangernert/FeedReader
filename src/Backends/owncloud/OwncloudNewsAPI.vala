@@ -181,19 +181,22 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         args += "lastModified=%i&".printf(lastModified);
         args += "type=%i&".printf(type);
         args += "id=%i".printf(id);
-        logger.print(LogMessage.DEBUG, "items?" + args);
 
-		var message = new OwnCloudNews_Message(m_OwnCloudURL + "items/updated?" + args, m_username, m_password, "GET");
+        logger.print(LogMessage.DEBUG, "/items/updated?" + args);
+
+		var message = new OwnCloudNews_Message(m_OwnCloudURL + "/items/updated?" + args, m_username, m_password, "GET");
 		int error = message.send();
         var response = message.get_response_object();
         if(response.has_member("items"))
         {
             var article_array = response.get_array_member("items");
             var article_count = article_array.get_length();
+            logger.print(LogMessage.DEBUG, "%u articles returned".printf(article_count));
 
             for(uint i = 0; i < article_count; i++)
             {
                 var article_node = article_array.get_object_element(i);
+                logger.print(LogMessage.DEBUG, article_node.get_int_member("id").to_string());
 
                 ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
                 ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
@@ -211,11 +214,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                         					-1,
                         					"",
                         					article_node.get_string_member("guidHash"));
-
-                if(!dataBase.article_exists(Article.getArticleID()))
-    			{
-    				FeedServer.grabContent(ref Article);
-    			}
 
                 articles.append(Article);
             }

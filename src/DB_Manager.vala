@@ -731,7 +731,7 @@ public class FeedReader.dbManager : GLib.Object {
 		int ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
 
 		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+			logger.print(LogMessage.ERROR, "upate_articles: %s".printf(sqlite_db.errmsg()));
 
 		int unread_position = stmt.bind_parameter_index("$UNREAD");
 		int marked_position = stmt.bind_parameter_index("$MARKED");
@@ -789,7 +789,7 @@ public class FeedReader.dbManager : GLib.Object {
 		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
 
 		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+			logger.print(LogMessage.ERROR, "write_arties: %s".printf(sqlite_db.errmsg()));
 
 
 

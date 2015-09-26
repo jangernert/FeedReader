@@ -430,6 +430,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 
 		int error = message.send();
+		message.printMessage();
 
 		if(error == ConnectionError.SUCCESS)
 		{

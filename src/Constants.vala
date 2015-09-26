@@ -167,7 +167,7 @@ namespace FeedReader {
 		 const string[] authors     = { "Jan Lukas Gernert", null };
 		 const string[] documenters = { "nobody", null };
 		 const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
-		 const string iconName      = "internet-news-reader";
+		 const string iconName      = "feedreader";
 		 const string translators   = null;
 		 const string website       = null;
 		 const string websiteLabel  = null;

@@ -560,7 +560,11 @@ public class FeedReader.FeedServer : GLib.Object {
 						amount = count % amount;
 					}
 
-					m_ttrss.getHeadlines(ref articles, i-amount, amount, whatToGet, ttrss_feedID);
+					int skip = i-amount;
+					if(skip < 0)
+						skip = 0;
+
+					m_ttrss.getHeadlines(ref articles, skip, amount, whatToGet, ttrss_feedID);
 
 					articles.reverse();
 					dataBase.update_articles(ref articles);

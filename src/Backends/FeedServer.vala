@@ -220,8 +220,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				getArticles((settings_general.get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
 			}
 
-			//get max-articls amunt like normal sync
-			getArticles(settings_general.get_int("max-articles"));
+			if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
+			{
+				//get max-articls amunt like normal sync
+				getArticles(settings_general.get_int("max-articles"));
+			}
 
 			// get unread articles
 			getArticles(getUnreadCount(), ArticleStatus.UNREAD);

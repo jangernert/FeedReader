@@ -128,7 +128,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			{
 				GLib.Thread.usleep(50000);
 			}
-			
+
 			logger.print(LogMessage.DEBUG, "wait over: load article from que");
 			m_article_view.fillContent(m_nextArticle);
 			m_nextArticle = "";
@@ -293,6 +293,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public void openSelectedArticle()
 	{
 		m_articleList.openSelected();
+	}
+
+	public void centerSelectedRow()
+	{
+		m_articleList.centerSelectedRow();
 	}
 
 	public GLib.List<tag> getSelectedArticleTags()

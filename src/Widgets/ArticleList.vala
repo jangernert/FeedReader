@@ -317,6 +317,40 @@ public class FeedReader.articleList : Gtk.Stack {
 	}
 
 
+	public void centerSelectedRow()
+	{
+		int scroll = (int)(m_current_adjustment.get_page_size()/2);
+		logger.print(LogMessage.DEBUG, "page size: %i".printf(scroll));
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+
+		if(selected_row == null)
+			return;
+
+		var FeedChildList = m_currentList.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null)
+			{
+				logger.print(LogMessage.DEBUG, "row: %s".printf(tmpRow.getName()));
+				if(tmpRow.getID() != selected_row.getID())
+				{
+					scroll += tmpRow.get_allocated_height()/2;
+					logger.print(LogMessage.DEBUG, "scroll: %i".printf(scroll));
+					break;
+				}
+				else if(tmpRow.isRevealed())
+				{
+					scroll += tmpRow.get_allocated_height();
+					logger.print(LogMessage.DEBUG, "scroll: %i".printf(scroll));
+				}
+			}
+		}
+
+		smooth_adjustment_to(m_current_adjustment, (int)scroll);
+	}
+
+
 	void restoreScrollPos(Object sender, ParamSpec property)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: restore ScrollPos");

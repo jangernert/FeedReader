@@ -492,6 +492,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				logger.print(LogMessage.DEBUG, "shortcut: sync");
 				((rssReaderApp)GLib.Application.get_default()).sync();
 				break;
+
+			case Gdk.Key.s:
+				logger.print(LogMessage.DEBUG, "shortcut: scroll to selcted row");
+				m_content.centerSelectedRow();
+				break;
 		}
 		return false;
 	}

@@ -737,8 +737,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				if(headline_count == 1)
 					message = _("There is 1 new article");
-				else if(headline_count == 200)
-					message = _("There are >200 new articles");
 				else
 					message = _("There are %u new articles").printf(headline_count);
 

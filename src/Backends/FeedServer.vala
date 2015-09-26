@@ -548,22 +548,22 @@ public class FeedReader.FeedServer : GLib.Object {
 
 
 				string articleIDs = "";
+				int skip = count;
 				int amount = 200;
 
-				for(int i = count; i > -amount; i -= amount)
+				while(skip > 0)
 				{
-					var articles = new GLib.List<article>();
-
-					if(i < 0)
+					if(skip >= amount)
 					{
-						i = 0;
-						amount = count % amount;
+						skip -= amount;
+					}
+					else
+					{
+						amount = skip;
+						skip = 0;
 					}
 
-					int skip = i-amount;
-					if(skip < 0)
-						skip = 0;
-
+					var articles = new GLib.List<article>();
 					m_ttrss.getHeadlines(ref articles, skip, amount, whatToGet, ttrss_feedID);
 
 					articles.reverse();
@@ -628,14 +628,19 @@ public class FeedReader.FeedServer : GLib.Object {
 					}
 				}
 
+				int skip = count;
 				int amount = 10;
 
-				for(int i = count; i > -amount; i -= amount)
+				while(skip > 0)
 				{
-					if(i < 0)
+					if(skip >= amount)
 					{
-						i = 0;
-						amount = count % amount;
+						skip -= amount;
+					}
+					else
+					{
+						amount = skip;
+						skip = 0;
 					}
 
 					var articles = new GLib.List<article>();

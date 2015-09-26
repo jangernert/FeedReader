@@ -240,6 +240,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 				if(share.getAccessToken(type))
 				{
 					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
+					m_isLoggedIN = true;
 					m_label.set_label(m_serviceSettings.get_string("username"));
 					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
 				}

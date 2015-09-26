@@ -747,6 +747,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				{
 					notification = new Notify.Notification(summary, message, AboutInfo.iconName);
 					notification.set_urgency(Notify.Urgency.NORMAL);
+					notification.set_app_name(AboutInfo.programmName);
 
 					notification.add_action ("default", "Show FeedReader", (notification, action) => {
 						logger.print(LogMessage.DEBUG, "notification: default action");
@@ -773,12 +774,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					notification.update(summary, message, AboutInfo.iconName);
 				}
 
-
-				try {
-					notification.show();
-				} catch (GLib.Error e) {
-					logger.print(LogMessage.ERROR, e.message);
-				}
+				notification.show();
 			}
 		}catch (GLib.Error e) {
 			logger.print(LogMessage.ERROR, e.message);

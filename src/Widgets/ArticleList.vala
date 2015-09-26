@@ -319,7 +319,7 @@ public class FeedReader.articleList : Gtk.Stack {
 
 	public void centerSelectedRow()
 	{
-		int scroll = (int)(m_current_adjustment.get_page_size()/2);
+		int scroll = -(int)(m_current_adjustment.get_page_size()/2);
 		logger.print(LogMessage.DEBUG, "page size: %i".printf(scroll));
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
@@ -333,7 +333,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			if(tmpRow != null)
 			{
 				logger.print(LogMessage.DEBUG, "row: %s".printf(tmpRow.getName()));
-				if(tmpRow.getID() != selected_row.getID())
+				if(tmpRow.getID() == selected_row.getID())
 				{
 					scroll += tmpRow.get_allocated_height()/2;
 					logger.print(LogMessage.DEBUG, "scroll: %i".printf(scroll));
@@ -919,7 +919,7 @@ public class FeedReader.articleList : Gtk.Stack {
 
 
 	// thx to pantheon files developers =)
-	private void smooth_adjustment_to(Gtk.Adjustment adj, int final)
+	private void smooth_adjustment_to(Gtk.Adjustment adj, int final, int duration = 1000)
 	{
 		m_scrollOngoing = true;
 
@@ -936,10 +936,19 @@ public class FeedReader.articleList : Gtk.Stack {
         (to_do > 0) ? factor = 1 : factor = -1;
         to_do = (double) (((int) to_do).abs () + 1);
 
+        int steps = (int)(GLib.Math.ceil(to_do/10));
+        int stepSize = 10;
+
+        if(steps < 10)
+        {
+			steps *= 2;
+			stepSize /= 2;
+        }
+
         var newvalue = 0;
         var old_adj_value = adj.value;
 
-        timeout_source_id = Timeout.add(1000 / 60, () => {
+        timeout_source_id = Timeout.add(duration / steps, () => {
             /* If the user move it at the same time, just stop the animation */
             if (old_adj_value != adj.value) {
                 timeout_source_id = 0;
@@ -948,7 +957,7 @@ public class FeedReader.articleList : Gtk.Stack {
                 return false;
             }
 
-            if (newvalue >= to_do - 10) {
+            if (newvalue >= to_do - stepSize) {
                 /* to be sure that there is not a little problem */
                 adj.value = final;
                 timeout_source_id = 0;
@@ -956,7 +965,7 @@ public class FeedReader.articleList : Gtk.Stack {
                 return false;
             }
 
-            newvalue += 10;
+            newvalue += stepSize;
 
             adj.value = initial + factor * GLib.Math.sin( ( (double)newvalue / (double)to_do) * Math.PI / 2) * to_do;
             old_adj_value = adj.value;

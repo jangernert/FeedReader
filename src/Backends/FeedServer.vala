@@ -149,7 +149,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			int newArticles = after-before;
 			if(newArticles > 0)
 			{
-				sendNotification();
+				sendNotification(newArticles);
 				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
 				settings_state.set_int("articlelist-new-rows", newCount);
 			}
@@ -722,7 +722,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
-	public static void sendNotification()
+	public static void sendNotification(uint newArticles)
 	{
 		try{
 			string message = "";
@@ -735,7 +735,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				return;
 			}
 
-			if(count > 0)
+			if(count > 0 && newArticles > 0)
 			{
 				if(count == 1)
 					message = _("There is 1 new article");

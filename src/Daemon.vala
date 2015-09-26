@@ -381,7 +381,7 @@ namespace FeedReader {
 		settings_instapaper = new GLib.Settings ("org.gnome.feedreader.instapaper");
 		settings_evernote = new GLib.Settings ("org.gnome.feedreader.evernote");
 		logger = new Logger();
-		Notify.init("org.gnome.feedreader");
+		Notify.init(AboutInfo.programmName);
 		Utils.copyAutostart();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,

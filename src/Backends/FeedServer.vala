@@ -149,7 +149,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			int newArticles = after-before;
 			if(newArticles > 0)
 			{
-				sendNotification(newArticles);
+				sendNotification();
 				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
 				settings_state.set_int("articlelist-new-rows", newCount);
 			}
@@ -722,10 +722,12 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
-	public static void sendNotification(uint headline_count)
+	public static void sendNotification()
 	{
 		try{
-			string message;
+			string message = "";
+			string summary = _("New Articles");
+			uint count = dataBase.get_unread_total();
 
 			if(!Notify.is_initted())
 			{
@@ -733,35 +735,44 @@ public class FeedReader.FeedServer : GLib.Object {
 				return;
 			}
 
-			if(headline_count > 0)
+			if(count > 0)
 			{
-				if(headline_count == 1)
+				if(count == 1)
 					message = _("There is 1 new article");
 				else
-					message = _("There are %u new articles").printf(headline_count);
+					message = _("There are %u new articles").printf(count);
 
-				notification = new Notify.Notification(_("New Articles"), message, "internet-news-reader");
-				notification.set_urgency(Notify.Urgency.NORMAL);
 
-				notification.add_action ("default", "Show FeedReader", (notification, action) => {
-					logger.print(LogMessage.DEBUG, "notification: default action");
-					try {
-						notification.close();
-					} catch (Error e) {
-						logger.print(LogMessage.ERROR, e.message);
-					}
+				if(notification == null)
+				{
+					notification = new Notify.Notification(summary, message, AboutInfo.iconName);
+					notification.set_urgency(Notify.Urgency.NORMAL);
 
-					string[] spawn_args = {"feedreader"};
-					try{
-						GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-					}catch(GLib.SpawnError e){
-						logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
-					}
-				});
+					notification.add_action ("default", "Show FeedReader", (notification, action) => {
+						logger.print(LogMessage.DEBUG, "notification: default action");
+						try {
+							notification.close();
+						} catch (Error e) {
+							logger.print(LogMessage.ERROR, e.message);
+						}
 
-				notification.closed.connect(() => {
-					logger.print(LogMessage.DEBUG, "notification: closed");
-				});
+						string[] spawn_args = {"feedreader"};
+						try{
+							GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+						}catch(GLib.SpawnError e){
+							logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+						}
+					});
+
+					notification.closed.connect(() => {
+						logger.print(LogMessage.DEBUG, "notification: closed");
+					});
+				}
+				else
+				{
+					notification.update(summary, message, AboutInfo.iconName);
+				}
+
 
 				try {
 					notification.show();

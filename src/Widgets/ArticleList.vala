@@ -133,7 +133,7 @@ public class FeedReader.articleList : Gtk.Stack {
 
 			if(m_selected_article != selectedID)
 			{
-				if(m_only_unread || m_only_marked)
+				if(m_only_unread || m_only_marked || m_IDtype == FeedListType.TAG)
 				{
 					var articleChildList = m_currentList.get_children();
 					foreach(Gtk.Widget row in articleChildList)
@@ -142,7 +142,8 @@ public class FeedReader.articleList : Gtk.Stack {
 						if(tmpRow != null && tmpRow.isBeingRevealed())
 						{
 							if((!tmpRow.isUnread() && m_only_unread)
-							|| (!tmpRow.isMarked() && m_only_marked))
+							|| (!tmpRow.isMarked() && m_only_marked)
+							|| (m_IDtype == FeedListType.TAG && !tmpRow.hasTag(m_current_feed_selected)))
 							{
 								removeRow(tmpRow);
 								break;
@@ -288,6 +289,16 @@ public class FeedReader.articleList : Gtk.Stack {
 	public int getAmountOfRowsToLoad()
 	{
 		return (int)m_currentList.get_children().length();
+	}
+
+	public void removeTagFromSelectedRow(string tagID)
+	{
+		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
+
+		if(selected_row == null)
+			return;
+
+		selected_row.removeTag(tagID);
 	}
 
 
@@ -573,7 +584,8 @@ public class FeedReader.articleList : Gtk.Stack {
 							                        item.getMarked(),
 							                        item.getSortID(),
 							                        item.getPreview(),
-													item.getDate()
+													item.getDate(),
+													item.getTagString()
 							                        );
 					tmpRow.ArticleStateChanged.connect(rowStateChanged);
 
@@ -741,7 +753,8 @@ public class FeedReader.articleList : Gtk.Stack {
 					                            item.getMarked(),
 					                            item.getSortID(),
 					                            item.getPreview(),
-												item.getDate()
+												item.getDate(),
+												item.getTagString()
 					                            );
 				int pos = 0;
 				bool added = false;
@@ -995,6 +1008,17 @@ public class FeedReader.articleList : Gtk.Stack {
 			{
 				var tmpRow = row as articleRow;
 				if(tmpRow != null && tmpRow.isMarked())
+				{
+					++count;
+				}
+			}
+		}
+		else if(m_IDtype == FeedListType.TAG)
+		{
+			foreach(Gtk.Widget row in articleChildList)
+			{
+				var tmpRow = row as articleRow;
+				if(tmpRow != null && tmpRow.hasTag(m_current_feed_selected))
 				{
 					++count;
 				}

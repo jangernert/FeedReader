@@ -197,6 +197,12 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			m_stack.set_visible_child_name("empty");
 			this.show_all();
 		}
+
+		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		if(window != null)
+		{
+			window.getContent().removeTagFromSelectedRow(row.getTagID());
+		}
 	}
 
 	private string getActiveArticleID()

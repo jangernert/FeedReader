@@ -229,6 +229,35 @@ public class FeedReader.dbManager : GLib.Object {
 		var query = new QueryBuilder(QueryType.DELETE, "main.tags");
 		query.addEqualsCondition("tagID", tagID, true, true);
 		executeSQL(query.build());
+
+		query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("tags");
+		query.selectField("articleID");
+		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+		while (stmt.step () == Sqlite.ROW) {
+			string old_tags = stmt.column_text(0);
+			string articleID = stmt.column_text(1);
+			string new_tags = "";
+			var tagArray = old_tags.split(",");
+			foreach(string tag in tagArray)
+			{
+				tag = tag.strip();
+				if(tag != "" && tag != tagID)
+					new_tags += "tag" + ",";
+			}
+
+			query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+			query.updateValuePair("tags", new_tags);
+			query.addEqualsCondition("articleID", articleID, true, true);
+			executeSQL(query.build());
+		}
 	}
 
 	public int getArticelCount()
@@ -924,7 +953,7 @@ public class FeedReader.dbManager : GLib.Object {
 			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
 
 		while (stmt.step () == Sqlite.ROW) {
-			if(stmt.column_int(0) == 2)
+			if(stmt.column_int(0) > 1)
 				return true;
 		}
 

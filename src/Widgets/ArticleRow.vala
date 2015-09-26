@@ -34,12 +34,24 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_marked;
 	private bool m_hovering_row;
 	private string m_articleID { get; private set; }
+	private GLib.List<string> m_tags;
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 	public signal void ArticleStateChanged(ArticleStatus status);
 	public signal void child_revealed();
 
-	public articleRow(string aritcleName, ArticleStatus unread, string iconname, string url, string feedID, string articleID, ArticleStatus marked, int sortID, string preview, GLib.DateTime date)
+	public articleRow(
+						string aritcleName,
+						ArticleStatus unread,
+						string iconname,
+						string url,
+						string feedID,
+						string articleID,
+						ArticleStatus marked,
+						int sortID,
+						string preview,
+						GLib.DateTime date,
+						string tags)
 	{
 		m_hovering_unread = false;
 		m_hovering_marked = false;
@@ -53,6 +65,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_url = url;
 		m_is_unread = unread;
 		m_date = date;
+		m_tags = new GLib.List<string>();
+		var tagArray = tags.split(",");
+		foreach(string tag in tagArray)
+		{
+			if(tag.strip() != "")
+				m_tags.append(tag);
+		}
 
 		m_unread_stack = new Gtk.Stack();
 		m_marked_stack = new Gtk.Stack();
@@ -546,6 +565,29 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public bool isBeingRevealed()
 	{
 		return m_revealer.get_reveal_child();
+	}
+
+	public bool hasTag(string tagID)
+	{
+		foreach(string tag in m_tags)
+		{
+			if(tag == tagID)
+				return true;
+		}
+
+		return false;
+	}
+
+	public void removeTag(string tagID)
+	{
+		GLib.List<string> new_tags = new GLib.List<string>();
+		foreach(string tag in m_tags)
+		{
+			if(tag != tagID)
+				new_tags.append(tag);
+		}
+
+		m_tags = new_tags.copy();
 	}
 
 }

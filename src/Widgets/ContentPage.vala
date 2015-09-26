@@ -300,6 +300,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_articleList.centerSelectedRow();
 	}
 
+	public void removeTagFromSelectedRow(string tagID)
+	{
+		m_articleList.removeTagFromSelectedRow(tagID);
+	}
+
 	public GLib.List<tag> getSelectedArticleTags()
 	{
 		string id = m_articleList.getSelectedID();

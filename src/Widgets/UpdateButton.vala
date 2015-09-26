@@ -24,10 +24,10 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 		m_spinner = new Gtk.Spinner();
 		m_stack = new Gtk.Stack();
-		m_spinner.set_size_request(24,24);
+		m_spinner.set_size_request(16,16);
 		this.set_relief(Gtk.ReliefStyle.NONE);
 
-		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.LARGE_TOOLBAR);
+		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.SMALL_TOOLBAR);
 		m_stack.add_named(m_spinner, "spinner");
 		m_stack.add_named(m_icon, "icon");
 		this.add(m_stack);

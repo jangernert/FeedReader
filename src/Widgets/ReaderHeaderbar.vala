@@ -24,7 +24,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private Gtk.SearchEntry m_search;
 	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
-    private Gtk.HeaderBar m_header_right;
+	private Gtk.HeaderBar m_header_right;
 	private TagPopover m_pop;
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
@@ -35,8 +35,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 	public readerHeaderbar () {
-		var share_icon = new Gtk.Image.from_icon_name("feed-share-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		var share_icon = new Gtk.Image.from_icon_name("feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var marked_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
@@ -59,17 +59,17 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 		m_header_left = new Gtk.HeaderBar ();
-        m_header_left.show_close_button = true;
-        m_header_left.get_style_context().add_class("header_right");
-        m_header_left.get_style_context().add_class("titlebar");
-        m_header_left.set_size_request(601, 0);
+		m_header_left.show_close_button = true;
+		m_header_left.get_style_context().add_class("header_right");
+		m_header_left.get_style_context().add_class("titlebar");
+		m_header_left.set_size_request(601, 0);
 
 
-        m_header_right = new Gtk.HeaderBar ();
-        m_header_right.show_close_button = true;
-        m_header_right.get_style_context().add_class("header_left");
-        m_header_right.get_style_context().add_class("titlebar");
-        m_header_right.set_title("FeedReader");
+		m_header_right = new Gtk.HeaderBar ();
+		m_header_right.show_close_button = true;
+		m_header_right.get_style_context().add_class("header_left");
+		m_header_right.get_style_context().add_class("titlebar");
+		m_header_right.set_title("FeedReader");
 		m_header_right.set_size_request(600, 0);
 
 		Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);

@@ -7,215 +7,93 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-08-31 03:44+0200\n"
+"POT-Creation-Date: 2015-09-26 19:01+0200\n"
 "PO-Revision-Date: 2015-09-06 00:11+0000\n"
 "Last-Translator: German <gergarcia8@yahoo.com.ar>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-25 05:53+0000\n"
+"X-Launchpad-Export-Date: 2015-09-27 05:43+0000\n"
 "X-Generator: Launchpad (build 17754)\n"
 
-#: ../src/Backends/FeedServer.vala:495
-msgid "There is 1 new article"
-msgstr "Hay 1 artículo nuevo"
-
-#: ../src/Backends/FeedServer.vala:497
-msgid "There are >200 new articles"
-msgstr "Hay más de 200 artículos nuevos"
-
-#: ../src/Backends/FeedServer.vala:499
-msgid "There are %u new articles"
-msgstr "Hay %u artículos nuevos"
-
-#: ../src/Backends/FeedServer.vala:501
-msgid "New Articles"
-msgstr "Artículos nuevos"
-
-#: ../src/Backends/ttrss/TTRSS_API.vala:448
-msgid "not found"
-msgstr "no encontrado"
-
-#: ../src/Widgets/ArticleView.vala:50
-msgid "No Article selected."
-msgstr "Ningún artículo seleccionado."
-
-#: ../src/Widgets/ArticleView.vala:179
-msgid "Not available"
-msgstr "No disponible"
-
-#: ../src/Widgets/LoginPage.vala:22
-msgid "Tiny Tiny RSS"
-msgstr "Tiny Tiny RSS"
-
-#: ../src/Widgets/LoginPage.vala:22
-msgid "Feedly"
-msgstr "Feedly"
-
-#: ../src/Widgets/LoginPage.vala:22
-msgid "OwnCloud"
-msgstr "OwnCloud"
-
-#: ../src/Widgets/LoginPage.vala:26
-msgid "Where are your feeds?"
-msgstr "¿Dónde se ubican sus canales?"
-
-#: ../src/Widgets/LoginPage.vala:30
-msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
-"Seleccione el servicio RSS que utilice y acceda a éste para comenzar."
-
-#: ../src/Widgets/LoginPage.vala:64 ../src/Widgets/SharePopover.vala:15
-#: ../src/Widgets/ServiceSettingsRow.vala:88
-msgid "Login"
-msgstr "Conectar"
-
-#: ../src/Widgets/LoginPage.vala:101
-msgid "No service selected."
-msgstr "Ningún servicio seleccionado."
-
-#: ../src/Widgets/LoginPage.vala:118
-msgid "TinyTinyRSS URL:"
-msgstr "URL de TinyTinyRSS:"
-
-#: ../src/Widgets/LoginPage.vala:119 ../src/Widgets/LoginPage.vala:190
-#: ../src/Widgets/ServiceSettingsRow.vala:71
-msgid "Username:"
-msgstr "Nombre de usuario:"
-
-#: ../src/Widgets/LoginPage.vala:120 ../src/Widgets/LoginPage.vala:191
-#: ../src/Widgets/ServiceSettingsRow.vala:72
-msgid "Password:"
-msgstr "Contraseña:"
-
-#: ../src/Widgets/LoginPage.vala:170
-msgid ""
-"You will be redirected to the feedly website where you can use your Facebook-"
-", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
-msgstr ""
-"Será redirigido al sitio web de Feedly, donde podrá identificarse con su "
-"cuenta de Facebook, Google, Twitter, Microsoft o Evernote."
-
-#: ../src/Widgets/LoginPage.vala:189
-msgid "OwnCloud URL:"
-msgstr "URL de OwnCloud:"
-
-#: ../src/Widgets/SharePopover.vala:21
-msgid "Please"
-msgstr "Por favor"
-
-#: ../src/Widgets/SharePopover.vala:23
-msgid "to a service to share this article."
-msgstr "a un servicio para compartir este artículo"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:72
-msgid "Tag Article"
-msgstr "Etiquetar artículo"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:82
-msgid "Share Article"
-msgstr "Compartir artículo"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:116
-msgid "Search Articles"
-msgstr "Buscar artículos"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:123
-msgid "Settings"
-msgstr "Configuración"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:125
-msgid "Change Account"
-msgstr "Cambiar cuenta"
-
-#: ../src/Widgets/ServiceSettingsRow.vala:46
-msgid "Username or Password incorrect"
-msgstr "Nombre de usuario o contraseña incorrectos"
-
-#: ../src/Widgets/ServiceSettingsRow.vala:93
-msgid "Logout"
-msgstr "Salir"
-
-#: ../src/Widgets/ServiceSettingsRow.vala:222
-msgid "waiting"
-msgstr "esperando"
-
-#: ../src/Widgets/SpringCleanPage.vala:13
-msgid ""
-"FeedReader is cleaning the database.\n"
-"This shouldn't take too long."
-msgstr ""
-"FeedReader está limpiando la base de datos.\n"
-"Esto no llevará mucho tiempo."
-
-#: ../src/Widgets/FeedList.vala:435
-msgid "Uncategorized"
-msgstr "Sin categorizar"
-
-#: ../src/Widgets/ResetPage.vala:18
-msgid "Change Account?"
-msgstr "¿Quiere cambiar de cuenta?"
-
-#: ../src/Widgets/ResetPage.vala:22
-msgid ""
-"You are about to change the account you want FeedReader to use.\n"
-" This means deleting all local data of your old account."
-msgstr ""
-"Está a punto de cambiar la cuenta que usa en FeedReader.\n"
-" Esto implica borrar todos los datos locales de su antigua cuenta."
-
-#: ../src/Widgets/ResetPage.vala:26
-msgid "New account"
-msgstr "Cuenta nueva"
-
-#: ../src/Widgets/ResetPage.vala:29
-msgid "Waiting for current sync to finish"
-msgstr "Esperando que termine la sincronización"
-
-#: ../src/Widgets/ResetPage.vala:39
-msgid "I changed my mind"
-msgstr "He cambiado de idea"
-
-#: ../src/Widgets/ArticleList.vala:39
-msgid "None of the %i Articles in the database fit the current filters."
-msgstr ""
-"Ninguno de los %i Artículos en la base de datos concuerda con los filtros "
-"actuales."
-
-#: ../src/Widgets/MainWindow.vala:18 ../src/Constants.vala:136
+#: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Widgets/MainWindow.vala:359
+#: ../src/Constants.vala:166
+msgid "Desktop Client for various RSS Services"
+msgstr "Cliente de escritorio para varios servicios RSS"
+
+#: ../src/Utils.vala:21
+msgid "No Preview Available"
+msgstr "No hay vista previa disponible"
+
+#: ../src/Utils.vala:94
+msgid "No Text available for this article :("
+msgstr "No hay texto disponible en este artículo :("
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:69
+msgid "no Author"
+msgstr "sin Autor"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:81
+msgid "no Title"
+msgstr "sin Título"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:93
+msgid "no Preview"
+msgstr "sin Vista Previa"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:105
+msgid "no content"
+msgstr "sin contenido"
+
+#: ../src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "Acerca de FeedReader"
+
+#: ../src/Widgets/TagPopover.vala:40
+msgid "Add Tag:"
+msgstr ""
+
+#: ../src/Widgets/TagPopover.vala:52
+msgid "Tags:"
+msgstr "Etiquetas:"
+
+#: ../src/Widgets/TagPopover.vala:129
+msgid "add Tag"
+msgstr "agregar etiqueta"
+
+#: ../src/Widgets/MainWindow.vala:358
 msgid "Please select a service first"
 msgstr "Seleccione primero un servicio"
 
-#: ../src/Widgets/MainWindow.vala:362
+#: ../src/Widgets/MainWindow.vala:361
 msgid "Please enter a valid username"
 msgstr "Por favor, indique un nombre de usuario válido"
 
-#: ../src/Widgets/MainWindow.vala:365
+#: ../src/Widgets/MainWindow.vala:364
 msgid "Please enter a valid password"
 msgstr "Por favor, indique una contraseña válida"
 
-#: ../src/Widgets/MainWindow.vala:368
+#: ../src/Widgets/MainWindow.vala:367
 msgid "Please enter a valid URL"
 msgstr "Por favor, indique un URL válido"
 
-#: ../src/Widgets/MainWindow.vala:371
+#: ../src/Widgets/MainWindow.vala:370
 msgid "Please enter your Login details"
 msgstr "Por favor, indique sus detalles de acceso"
 
-#: ../src/Widgets/MainWindow.vala:374
+#: ../src/Widgets/MainWindow.vala:373
 msgid "Sorry, something went wrong."
 msgstr "Lo siento, ha ocurrido un error."
 
-#: ../src/Widgets/MainWindow.vala:377
+#: ../src/Widgets/MainWindow.vala:376
 msgid "Either your username or the password are not correct."
 msgstr "Su usuario o su contraseña no son correctos."
 
-#: ../src/Widgets/MainWindow.vala:380
+#: ../src/Widgets/MainWindow.vala:379
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -223,195 +101,335 @@ msgstr ""
 "No hay conexión con el servidor. Revise su conexión a internet y la URL del "
 "servidor."
 
-#: ../src/Widgets/UpdateButton.vala:20
+#: ../src/Widgets/MainWindow.vala:382
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:385
+msgid "No valid CA certificate available!"
+msgstr ""
+
+#: ../src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "¿Quiere cambiar de cuenta?"
+
+#: ../src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+"Está a punto de cambiar la cuenta que usa en FeedReader.\n"
+" Esto implica borrar todos los datos locales de su antigua cuenta."
+
+#: ../src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Cuenta nueva"
+
+#: ../src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Esperando que termine la sincronización"
+
+#: ../src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "He cambiado de idea"
+
+#: ../src/Widgets/UpdateButton.vala:35
 msgid "Update Feeds"
 msgstr "Actualizar feeds"
 
-#: ../src/Widgets/TagPopover.vala:25
-msgid "add Tags:"
-msgstr "Agregar etiquetas:"
+#: ../src/Widgets/ServiceSettingsRow.vala:61
+msgid "Username or Password incorrect"
+msgstr "Nombre de usuario o contraseña incorrectos"
 
-#: ../src/Widgets/TagPopover.vala:37
-msgid "Tags:"
-msgstr "Etiquetas:"
+#: ../src/Widgets/ServiceSettingsRow.vala:86 ../src/Widgets/LoginPage.vala:127
+#: ../src/Widgets/LoginPage.vala:196
+msgid "Username:"
+msgstr "Nombre de usuario:"
 
-#: ../src/Widgets/TagPopover.vala:114
-msgid "add Tag"
-msgstr "agregar etiqueta"
+#: ../src/Widgets/ServiceSettingsRow.vala:87 ../src/Widgets/LoginPage.vala:128
+#: ../src/Widgets/LoginPage.vala:197
+msgid "Password:"
+msgstr "Contraseña:"
 
-#: ../src/Widgets/SettingsDialog.vala:50
+#: ../src/Widgets/ServiceSettingsRow.vala:103 ../src/Widgets/LoginPage.vala:78
+#: ../src/Widgets/SharePopover.vala:30
+msgid "Login"
+msgstr "Conectar"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:108
+msgid "Logout"
+msgstr "Salir"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:237
+msgid "waiting"
+msgstr "esperando"
+
+#: ../src/Widgets/ArticleView.vala:48
+msgid "No Article selected."
+msgstr "Ningún artículo seleccionado."
+
+#: ../src/Widgets/ArticleView.vala:140
+msgid "Not available"
+msgstr "No disponible"
+
+#: ../src/Widgets/FeedList.vala:476 ../src/DB_Manager.vala:684
+msgid "Uncategorized"
+msgstr "Sin categorizar"
+
+#: ../src/Widgets/SpringCleanPage.vala:28
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr ""
+"FeedReader está limpiando la base de datos.\n"
+"Esto no llevará mucho tiempo."
+
+#: ../src/Widgets/ReaderHeaderbar.vala:49
+msgid "Mark article (un)starred"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:55
+msgid "Mark article (un)read"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "Show all articles"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Show only unread articles"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Show only starred articles"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:89
+msgid "Tag Article"
+msgstr "Etiquetar artículo"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:99
+msgid "Share Article"
+msgstr "Compartir artículo"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:133
+msgid "Search Articles"
+msgstr "Buscar artículos"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:140
+#: ../src/Widgets/ReaderHeaderbar.vala:151
+msgid "Settings"
+msgstr "Configuración"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:142
+msgid "Change Account"
+msgstr "Cambiar cuenta"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "Feedly"
+msgstr "Feedly"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "OwnCloud"
+msgstr "OwnCloud"
+
+#: ../src/Widgets/LoginPage.vala:40
+msgid "Where are your feeds?"
+msgstr "¿Dónde se ubican sus canales?"
+
+#: ../src/Widgets/LoginPage.vala:44
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+"Seleccione el servicio RSS que utilice y acceda a éste para comenzar."
+
+#: ../src/Widgets/LoginPage.vala:109
+msgid "No service selected."
+msgstr "Ningún servicio seleccionado."
+
+#: ../src/Widgets/LoginPage.vala:126
+msgid "TinyTinyRSS URL:"
+msgstr "URL de TinyTinyRSS:"
+
+#: ../src/Widgets/LoginPage.vala:176
+msgid ""
+"You will be redirected to the feedly website where you can use your Facebook-"
+", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr ""
+"Será redirigido al sitio web de Feedly, donde podrá identificarse con su "
+"cuenta de Facebook, Google, Twitter, Microsoft o Evernote."
+
+#: ../src/Widgets/LoginPage.vala:195
+msgid "OwnCloud URL:"
+msgstr "URL de OwnCloud:"
+
+#: ../src/Widgets/SettingsDialog.vala:65
 msgid "Interface"
 msgstr "Aspecto"
 
-#: ../src/Widgets/SettingsDialog.vala:51
+#: ../src/Widgets/SettingsDialog.vala:66
 msgid "Internals"
 msgstr "Internos"
 
-#: ../src/Widgets/SettingsDialog.vala:52
+#: ../src/Widgets/SettingsDialog.vala:67
 msgid "Services"
 msgstr "Servicios"
 
-#: ../src/Widgets/SettingsDialog.vala:62
+#: ../src/Widgets/SettingsDialog.vala:77
 msgid "Close"
 msgstr "Cerrar"
 
-#: ../src/Widgets/SettingsDialog.vala:71
+#: ../src/Widgets/SettingsDialog.vala:86
 msgid "Feed List:"
 msgstr "Lista de canales"
 
-#: ../src/Widgets/SettingsDialog.vala:78
+#: ../src/Widgets/SettingsDialog.vala:93
 msgid "Only show feeds"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:94
+#: ../src/Widgets/SettingsDialog.vala:109
 msgid "Only show unread"
 msgstr "Mostrar artículos sin leer"
 
-#: ../src/Widgets/SettingsDialog.vala:111
-msgid "Article List:"
+#: ../src/Widgets/SettingsDialog.vala:124
+msgid "Sort FeedList by"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:118
-msgid "Sort articles by"
-msgstr "Ordenar artículos por"
-
-#: ../src/Widgets/SettingsDialog.vala:125
-msgid "Date"
-msgstr "Fecha"
-
-#: ../src/Widgets/SettingsDialog.vala:128
+#: ../src/Widgets/SettingsDialog.vala:131
+#: ../src/Widgets/SettingsDialog.vala:171
 msgid "Received"
 msgstr "Recibido"
 
-#: ../src/Widgets/SettingsDialog.vala:151
+#: ../src/Widgets/SettingsDialog.vala:134
+msgid "Alphabetically"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:154
+msgid "Article List:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:161
+msgid "Sort articles by"
+msgstr "Ordenar artículos por"
+
+#: ../src/Widgets/SettingsDialog.vala:168
+msgid "Date"
+msgstr "Fecha"
+
+#: ../src/Widgets/SettingsDialog.vala:194
 msgid "Newest first"
 msgstr "Lo más reciente primero"
 
-#: ../src/Widgets/SettingsDialog.vala:168
+#: ../src/Widgets/SettingsDialog.vala:211
 msgid "Article View:"
 msgstr "Vista de artículo"
 
-#: ../src/Widgets/SettingsDialog.vala:175
+#: ../src/Widgets/SettingsDialog.vala:218
 msgid "Theme"
 msgstr "Tema"
 
-#: ../src/Widgets/SettingsDialog.vala:182
+#: ../src/Widgets/SettingsDialog.vala:225
 msgid "Default"
 msgstr "Predeterminado"
 
-#: ../src/Widgets/SettingsDialog.vala:185
+#: ../src/Widgets/SettingsDialog.vala:228
 msgid "Spring"
 msgstr "Primavera"
 
-#: ../src/Widgets/SettingsDialog.vala:188
+#: ../src/Widgets/SettingsDialog.vala:231
 msgid "Midnight"
 msgstr "Medianoche"
 
-#: ../src/Widgets/SettingsDialog.vala:191
+#: ../src/Widgets/SettingsDialog.vala:234
 msgid "Parchment"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:228
+#: ../src/Widgets/SettingsDialog.vala:271
 msgid "Sync:"
 msgstr "Sincronizar:"
 
-#: ../src/Widgets/SettingsDialog.vala:235
+#: ../src/Widgets/SettingsDialog.vala:278
 msgid "Number of articles"
 msgstr "Número de artículos"
 
-#: ../src/Widgets/SettingsDialog.vala:248
+#: ../src/Widgets/SettingsDialog.vala:291
 msgid "Every (seconds)"
 msgstr "Cada (segundos)"
 
-#: ../src/Widgets/SettingsDialog.vala:264
+#: ../src/Widgets/SettingsDialog.vala:307
 msgid "Database:"
 msgstr "Base de datos:"
 
-#: ../src/Widgets/SettingsDialog.vala:271
+#: ../src/Widgets/SettingsDialog.vala:314
 msgid "Drop articles after"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:278
+#: ../src/Widgets/SettingsDialog.vala:321
 msgid "Never"
 msgstr "Nunca"
 
-#: ../src/Widgets/SettingsDialog.vala:281
+#: ../src/Widgets/SettingsDialog.vala:324
 msgid "1 Week"
 msgstr "1 semana"
 
-#: ../src/Widgets/SettingsDialog.vala:284
+#: ../src/Widgets/SettingsDialog.vala:327
 msgid "1 Month"
 msgstr "1 mes"
 
-#: ../src/Widgets/SettingsDialog.vala:287
+#: ../src/Widgets/SettingsDialog.vala:330
 msgid "6 Months"
 msgstr "6 meses"
 
-#: ../src/Widgets/SettingsDialog.vala:324
+#: ../src/Widgets/SettingsDialog.vala:367
 msgid "Additional Functionality:"
 msgstr "Funcionalidad adicional:"
 
-#: ../src/Widgets/SettingsDialog.vala:331
+#: ../src/Widgets/SettingsDialog.vala:374
 msgid "Content Grabber"
 msgstr "Captador de contenido"
 
-#: ../src/Widgets/SettingsDialog.vala:338
+#: ../src/Widgets/SettingsDialog.vala:381
 msgid "None"
 msgstr "Ninguno"
 
-#: ../src/Widgets/SettingsDialog.vala:341
+#: ../src/Widgets/SettingsDialog.vala:384
 msgid "Built in grabber"
 msgstr "Captador incorporado"
 
-#: ../src/Widgets/InitSyncPage.vala:15
-msgid ""
-"FeedReader is now getting the first batch of articles.\n"
-"Depending on your connection and settings this can take some time."
+#: ../src/Widgets/ArticleList.vala:58
+msgid "None of the %i Articles in the database fit the current filters."
 msgstr ""
-"FeedReader va a realizar la primera carga de artículos.\n"
-"Dependiendo de su conexión y configuración, este proceso podría llevar algún "
-"tiempo."
+"Ninguno de los %i Artículos en la base de datos concuerda con los filtros "
+"actuales."
 
-#: ../src/Utils.vala:6
-msgid "No Preview Available"
-msgstr "No hay vista previa disponible"
+#: ../src/Widgets/ArticleList.vala:72
+msgid "Sync is in progress. Articles should appear any second."
+msgstr ""
 
-#: ../src/Utils.vala:75
-msgid "No Text available for this article :("
-msgstr "No hay texto disponible en este artículo :("
+#: ../src/Widgets/SharePopover.vala:36
+msgid "Please"
+msgstr "Por favor"
 
-#: ../src/Constants.vala:139
-msgid "Desktop Client for various RSS Services"
-msgstr "Cliente de escritorio para varios servicios RSS"
+#: ../src/Widgets/SharePopover.vala:38
+msgid "to a service to share this article."
+msgstr "a un servicio para compartir este artículo"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:54
-msgid "no Author"
-msgstr "sin Autor"
+#: ../src/Backends/ttrss/TTRSS_API.vala:468
+#: ../src/Backends/ttrss/TTRSS_API.vala:525
+msgid "not found"
+msgstr "no encontrado"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:66
-msgid "no Title"
-msgstr "sin Título"
+#: ../src/Backends/FeedServer.vala:739
+msgid "There is 1 new article"
+msgstr "Hay 1 artículo nuevo"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:78
-msgid "no Preview"
-msgstr "sin Vista Previa"
+#: ../src/Backends/FeedServer.vala:741
+msgid "There are %u new articles"
+msgstr "Hay %u artículos nuevos"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:90
-msgid "no content"
-msgstr "sin contenido"
-
-#: ../src/FeedReader.vala:6
-msgid "About FeedReader"
-msgstr "Acerca de FeedReader"
-
-#: ../src/Model/Article.vala:110
-msgid "no date available"
-msgstr "no hay datos disponibles"
-
-#: ../src/Model/Article.vala:116
-msgid "Today"
-msgstr "Hoy"
-
-#: ../src/Model/Article.vala:120
-msgid "Yesterday"
-msgstr "Ayer"
+#: ../src/Backends/FeedServer.vala:743
+msgid "New Articles"
+msgstr "Artículos nuevos"

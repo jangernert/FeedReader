@@ -506,18 +506,6 @@ public class FeedReader.articleList : Gtk.Stack {
 		return "";
 	}
 
-	public string getSelectedID()
-	{
-		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
-		if(selected_row != null)
-			return selected_row.getID();
-
-		if(m_currentList.get_children().length() == 0)
-			return "empty";
-
-		return "";
-	}
-
 
 	private async void createHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
 	{
@@ -789,12 +777,25 @@ public class FeedReader.articleList : Gtk.Stack {
 				{
 					m_currentList.add(newRow);
 				}
-				newRow.reveal(true);
+
+
+				// animate article to slide down from the top
+				if(getSelectedArticle() == "")
+				{
+					newRow.reveal(true);
+				}
+				// dont animate the insert and scroll to compensate the additional pixels
+				else
+				{
+					newRow.reveal(true, 0);
+					newRow.size_allocate.connect(onAllocated);
+				}
+
 				articleChildList = m_currentList.get_children();
 			}
 		}
 
-		// delte not all other rows
+		// delte all obsolete rows
 		articleChildList = m_currentList.get_children();
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
@@ -807,6 +808,12 @@ public class FeedReader.articleList : Gtk.Stack {
 				m_currentList.remove(tmpRow);
 			}
 		}
+	}
+
+	private void onAllocated(Gtk.Widget row, Gtk.Allocation allocation)
+	{
+		setScrollPos(getScrollPos() + allocation.height);
+		row.size_allocate.disconnect(onAllocated);
 	}
 
 

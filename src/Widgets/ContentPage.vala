@@ -307,7 +307,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 	public GLib.List<tag> getSelectedArticleTags()
 	{
-		string id = m_articleList.getSelectedID();
+		string id = m_articleList.getSelectedArticle();
 		var article = dataBase.read_article(id);
 		unowned GLib.List<string> tagIDs = article.getTags();
 

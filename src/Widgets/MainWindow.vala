@@ -58,7 +58,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		login_action.set_enabled(true);
 
 		m_headerbar = new readerHeaderbar();
-		m_headerbar.refresh.connect(app.sync);
+		m_headerbar.refresh.connect(() => {
+			m_content.syncStarted();
+			app.sync();
+		});
 
 		m_headerbar.change_state.connect((state, transition) => {
 			m_content.setArticleListState(state);

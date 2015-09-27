@@ -104,6 +104,7 @@ namespace FeedReader {
 
 				feedDaemon_interface.syncFinished.connect(() => {
 				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
+					m_window.getContent().syncFinished();
 				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
 					m_window.setRefreshButton(false);
 				});

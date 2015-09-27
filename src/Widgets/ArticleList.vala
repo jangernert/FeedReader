@@ -40,6 +40,7 @@ public class FeedReader.articleList : Gtk.Stack {
 	private uint timeout_source_id = 0;
 	private double m_scrollPos = 0;
 	private bool m_scrollOngoing = false;
+	private bool m_syncing = false;
 	private string m_selected_article;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
@@ -629,7 +630,7 @@ public class FeedReader.articleList : Gtk.Stack {
 			}
 			else if(!addRows)
 			{
-				if(!settings_state.get_boolean("currently-updating"))
+				if(!m_syncing)
 				{
 					m_emptyList.set_text(buildEmptyString());
 					this.set_visible_child_full("empty", transition);
@@ -686,7 +687,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		bool sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
 
-		if(this.get_visible_child_name() == "empty")
+		if(this.get_visible_child_name() == "empty" || this.get_visible_child_name() == "syncing")
 		{
 			newHeadlineList();
 			return;
@@ -1030,6 +1031,25 @@ public class FeedReader.articleList : Gtk.Stack {
 		}
 
 		return count;
+	}
+
+	public void syncStarted()
+	{
+		m_syncing = true;
+		if(this.get_visible_child_name() == "empty")
+		{
+			this.set_visible_child_full("syncing", Gtk.StackTransitionType.CROSSFADE);
+			m_syncSpinner.start();
+		}
+	}
+
+	public void syncFinished()
+	{
+		m_syncing = false;
+		if(this.get_visible_child_name() == "syncing")
+		{
+			this.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
+		}
 	}
 
 }

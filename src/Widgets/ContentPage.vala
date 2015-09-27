@@ -320,4 +320,14 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 		return tags;
 	}
+
+	public void syncStarted()
+	{
+		m_articleList.syncStarted();
+	}
+
+	public void syncFinished()
+	{
+		m_articleList.syncFinished();
+	}
 }

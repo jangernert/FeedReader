@@ -13,8 +13,9 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.articleList : Gtk.Stack {
+public class FeedReader.articleList : Gtk.Overlay {
 
+	private Gtk.Stack m_stack;
 	private Gtk.ScrolledWindow m_currentScroll;
 	private Gtk.ScrolledWindow m_scroll1;
 	private Gtk.ScrolledWindow m_scroll2;
@@ -164,12 +165,14 @@ public class FeedReader.articleList : Gtk.Stack {
 		m_currentScroll = m_scroll1;
 		m_current_adjustment = m_scroll1_adjustment;
 
-		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		this.set_transition_duration(100);
-		this.add_named(m_scroll1, "list1");
-		this.add_named(m_scroll2, "list2");
-		this.add_named(m_emptyList, "empty");
-		this.add_named(m_syncingBox, "syncing");
+		m_stack = new Gtk.Stack();
+		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_stack.set_transition_duration(100);
+		m_stack.add_named(m_scroll1, "list1");
+		m_stack.add_named(m_scroll2, "list2");
+		m_stack.add_named(m_emptyList, "empty");
+		m_stack.add_named(m_syncingBox, "syncing");
+		this.add(m_stack);
 	}
 
 	private bool key_pressed(Gdk.EventKey event)
@@ -550,8 +553,8 @@ public class FeedReader.articleList : Gtk.Stack {
 		{
 			if(hasContent)
 			{
-				if(m_currentList == m_List1)		 this.set_visible_child_full("list1", transition);
-				else if(m_currentList == m_List2)   this.set_visible_child_full("list2", transition);
+				if(m_currentList == m_List1)		 m_stack.set_visible_child_full("list1", transition);
+				else if(m_currentList == m_List2)   m_stack.set_visible_child_full("list2", transition);
 
 				foreach(var item in articles)
 				{
@@ -621,11 +624,11 @@ public class FeedReader.articleList : Gtk.Stack {
 				if(!m_syncing)
 				{
 					m_emptyList.set_text(buildEmptyString());
-					this.set_visible_child_full("empty", transition);
+					m_stack.set_visible_child_full("empty", transition);
 				}
 				else
 				{
-					this.set_visible_child_full("syncing", transition);
+					m_stack.set_visible_child_full("syncing", transition);
 					m_syncSpinner.start();
 				}
 
@@ -675,7 +678,7 @@ public class FeedReader.articleList : Gtk.Stack {
 		bool sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
 
-		if(this.get_visible_child_name() == "empty" || this.get_visible_child_name() == "syncing")
+		if(m_stack.get_visible_child_name() == "empty" || m_stack.get_visible_child_name() == "syncing")
 		{
 			newHeadlineList();
 			return;
@@ -1043,9 +1046,9 @@ public class FeedReader.articleList : Gtk.Stack {
 	public void syncStarted()
 	{
 		m_syncing = true;
-		if(this.get_visible_child_name() == "empty")
+		if(m_stack.get_visible_child_name() == "empty")
 		{
-			this.set_visible_child_full("syncing", Gtk.StackTransitionType.CROSSFADE);
+			m_stack.set_visible_child_full("syncing", Gtk.StackTransitionType.CROSSFADE);
 			m_syncSpinner.start();
 		}
 	}
@@ -1053,9 +1056,9 @@ public class FeedReader.articleList : Gtk.Stack {
 	public void syncFinished()
 	{
 		m_syncing = false;
-		if(this.get_visible_child_name() == "syncing")
+		if(m_stack.get_visible_child_name() == "syncing")
 		{
-			this.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
+			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 		}
 	}
 

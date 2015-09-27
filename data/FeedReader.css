@@ -110,3 +110,12 @@ GtkScrolledWindow GtkViewport.servicebox {
 	opacity: 0.8;
 	border-radius: 10;
 }
+
+.overlay-button:prelight {
+	background: none;
+	box-shadow: none;
+}
+
+.overlay-label {
+	font-weight: bold
+}

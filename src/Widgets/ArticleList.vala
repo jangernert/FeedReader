@@ -38,11 +38,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private FeedListType m_IDtype;
 	private bool m_limitScroll;
 	private int m_threadCount;
-	private uint timeout_source_id = 0;
+	private uint m_timeout_source_id = 0;
 	private double m_scrollPos = 0;
 	private bool m_scrollOngoing = false;
 	private bool m_syncing = false;
 	private string m_selected_article;
+	private ArticleListOverlay m_overlay;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
 
@@ -173,6 +174,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_stack.add_named(m_emptyList, "empty");
 		m_stack.add_named(m_syncingBox, "syncing");
 		this.add(m_stack);
+
+		m_overlay = new ArticleListOverlay("New Articles", "scroll up", "feed-arrow-up");
+		m_overlay.action.connect(() => {
+			scrollUP();
+		});
+		this.add_overlay(m_overlay);
 	}
 
 	private bool key_pressed(Gdk.EventKey event)
@@ -408,9 +415,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private void scrollUP()
 	{
-		m_current_adjustment = m_currentScroll.get_vadjustment();
-		m_current_adjustment.set_value(0);
-		m_currentScroll.set_vadjustment(m_current_adjustment);
+		smooth_adjustment_to(m_current_adjustment, 0);
 	}
 
 
@@ -677,6 +682,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
 		bool sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
+		bool newArticles = false;
 
 		if(m_stack.get_visible_child_name() == "empty" || m_stack.get_visible_child_name() == "syncing")
 		{
@@ -792,6 +798,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 				{
 					newRow.reveal(true, 0);
 					newRow.size_allocate.connect(onAllocated);
+					newArticles = true;
 				}
 
 				articleChildList = m_currentList.get_children();
@@ -811,6 +818,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 				m_currentList.remove(tmpRow);
 			}
 		}
+
+		if(newArticles)
+			m_overlay.reveal();
 	}
 
 	private void onAllocated(Gtk.Widget row, Gtk.Allocation allocation)
@@ -947,10 +957,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		m_scrollOngoing = true;
 
-        if (timeout_source_id > 0)
+        if (m_timeout_source_id > 0)
 		{
-            GLib.Source.remove(timeout_source_id);
-            timeout_source_id = 0;
+            GLib.Source.remove(m_timeout_source_id);
+            m_timeout_source_id = 0;
         }
 
         var initial = adj.value;
@@ -972,10 +982,10 @@ public class FeedReader.articleList : Gtk.Overlay {
         var newvalue = 0;
         var old_adj_value = adj.value;
 
-        timeout_source_id = Timeout.add(duration / steps, () => {
+        m_timeout_source_id = Timeout.add(duration / steps, () => {
             /* If the user move it at the same time, just stop the animation */
             if (old_adj_value != adj.value) {
-                timeout_source_id = 0;
+                m_timeout_source_id = 0;
 				m_scrollPos = adj.value;
 				m_scrollOngoing = false;
                 return false;
@@ -984,7 +994,7 @@ public class FeedReader.articleList : Gtk.Overlay {
             if (newvalue >= to_do - stepSize) {
                 /* to be sure that there is not a little problem */
                 adj.value = final;
-                timeout_source_id = 0;
+                m_timeout_source_id = 0;
 				m_scrollOngoing = false;
                 return false;
             }

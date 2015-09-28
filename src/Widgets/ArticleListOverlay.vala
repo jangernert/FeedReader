@@ -21,6 +21,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 	private Gtk.EventBox m_eventbox;
 	private uint m_timeout_source_id = 0;
 	private bool m_clicked = false;
+	private bool m_hover = false;
 	public signal void action();
 
 	public ArticleListOverlay(string text, string tooltip, string iconName)
@@ -115,6 +116,8 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 		if(event.detail == Gdk.NotifyType.INFERIOR)
 			return true;
 
+		m_hover = true;
+
 		if (m_timeout_source_id > 0)
 		{
 			GLib.Source.remove(m_timeout_source_id);
@@ -132,12 +135,19 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 		if(event.detail == Gdk.NotifyType.INFERIOR)
 			return true;
 
+		m_hover = false;
+
 		if(m_clicked)
 			reveal(1000, 0);
 		else
 			reveal(1000, 2000);
 
 		return true;
+	}
+
+	public bool hovered()
+	{
+		return m_hover;
 	}
 
 }

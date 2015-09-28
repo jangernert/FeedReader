@@ -107,7 +107,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 				if((m_scroll1_adjustment.get_value() + m_scroll1_adjustment.get_page_size())/m_scroll1_adjustment.get_upper() > m_lmit)
 					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-				else if(m_scroll1_adjustment.get_value() == 0)
+				else if(m_scroll1_adjustment.get_value() == 0 && !m_overlay.hovered())
 					m_overlay.hide();
 			}
 		});
@@ -121,7 +121,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 				if((m_scroll2_adjustment.get_value() + m_scroll2_adjustment.get_page_size())/m_scroll2_adjustment.get_upper() > m_lmit)
 					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-				else if(m_scroll1_adjustment.get_value() == 0)
+				else if(m_scroll1_adjustment.get_value() == 0 && !m_overlay.hovered())
 					m_overlay.hide();
 			}
 		});

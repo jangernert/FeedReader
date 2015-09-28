@@ -20,6 +20,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 	private Gtk.Box m_box;
 	private Gtk.EventBox m_eventbox;
 	private uint m_timeout_source_id = 0;
+	private bool m_clicked = false;
 	public signal void action();
 
 	public ArticleListOverlay(string text, string tooltip, string iconName)
@@ -44,6 +45,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 		m_button.get_style_context().add_class("overlay-button");
 		m_button.clicked.connect(() => {
 			action();
+			m_clicked = true;
 		});
 
         m_box.pack_start(m_label, true, false);
@@ -70,6 +72,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 
 	public void reveal(int animation = 1000, int stay = 5000)
 	{
+		m_clicked = false;
 		this.set_visible(true);
 		m_eventbox.show_all();
 
@@ -89,7 +92,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
         this.set_reveal_child(true);
 	}
 
-	private void hide(int animation = 1000)
+	public void hide(int animation = 1000)
 	{
 		this.set_transition_duration(animation);
         this.set_reveal_child(false);
@@ -129,7 +132,11 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 		if(event.detail == Gdk.NotifyType.INFERIOR)
 			return true;
 
-		reveal(1000, 2000);
+		if(m_clicked)
+			reveal(1000, 0);
+		else
+			reveal(1000, 2000);
+
 		return true;
 	}
 

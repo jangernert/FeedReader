@@ -24,6 +24,7 @@ namespace FeedReader {
 		private Unity.LauncherEntry m_launcher;
 #endif
 		private LoginResponse m_loggedin;
+		private uint m_timeout_source_id = 0;
 
 		public FeedDaemonServer()
 		{
@@ -36,20 +37,11 @@ namespace FeedReader {
 				logger.print(LogMessage.WARNING, "daemon: not logged in");
 			}
 
-			int sync_timeout = settings_general.get_int("sync");
 #if WITH_LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 			updateBadge();
 #endif
-			logger.print(LogMessage.DEBUG, "daemon: add timeout");
-			GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, sync_timeout, () => {
-				if(!settings_state.get_boolean("currently-updating"))
-				{
-			   		logger.print(LogMessage.DEBUG, "daemon: Timeout!");
-					startSync();
-				}
-				return true;
-			});
+			scheduleSync(settings_general.get_int("sync"));
 		}
 
 		public void startSync()
@@ -70,6 +62,24 @@ namespace FeedReader {
 		public bool supportTags()
 		{
 			return server.supportTags();
+		}
+
+		public void scheduleSync(int time)
+		{
+			if (m_timeout_source_id > 0)
+			{
+				GLib.Source.remove(m_timeout_source_id);
+				m_timeout_source_id = 0;
+			}
+
+			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time, () => {
+				if(!settings_state.get_boolean("currently-updating"))
+				{
+			   		logger.print(LogMessage.DEBUG, "daemon: Timeout!");
+					startSync();
+				}
+				return true;
+			});
 		}
 
 

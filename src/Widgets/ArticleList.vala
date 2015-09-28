@@ -428,9 +428,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private void scrollDOWN()
 	{
-		m_current_adjustment = m_currentScroll.get_vadjustment();
-		m_current_adjustment.set_value(m_current_adjustment.get_upper());
-		m_currentScroll.set_vadjustment(m_current_adjustment);
+		smooth_adjustment_to(m_current_adjustment, (int)m_current_adjustment.get_upper());
 	}
 
 
@@ -977,14 +975,9 @@ public class FeedReader.articleList : Gtk.Overlay {
         (to_do > 0) ? factor = 1 : factor = -1;
         to_do = (double) (((int) to_do).abs () + 1);
 
-        int steps = (int)(GLib.Math.ceil(to_do/10));
-        int stepSize = 10;
 
-        if(steps < 10)
-        {
-			steps *= 2;
-			stepSize /= 2;
-        }
+		int stepSize = 5;
+        int steps = (int)(GLib.Math.ceil(to_do/stepSize));
 
         var newvalue = 0;
         var old_adj_value = adj.value;

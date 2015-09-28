@@ -4,6 +4,7 @@
 - add ownCloud News support
 - overlay to indicate new articles
 - dynamic switch between GMenu in gnome and menu-button elsewhere
+- notifications are updated rather than creating new ones every time
 
 1.2:
 - add ability to share articles

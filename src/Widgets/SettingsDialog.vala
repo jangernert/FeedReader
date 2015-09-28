@@ -294,7 +294,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var sync_time_button = new Gtk.SpinButton.with_range(60, 1080, 10);
         sync_time_button.set_value(settings_general.get_int("sync"));
         sync_time_button.value_changed.connect(() => {
-            settings_general.set_int("sync", sync_time_button.get_value_as_int());
+        	int time = sync_time_button.get_value_as_int();
+            settings_general.set_int("sync", time);
+            feedDaemon_interface.scheduleSync(time);
         });
         sync_time_box.pack_start(sync_time, true, true, 0);
         sync_time_box.pack_end(sync_time_button, false, false, 0);

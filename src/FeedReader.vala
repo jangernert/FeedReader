@@ -37,6 +37,7 @@ namespace FeedReader {
 
 	[DBus (name = "org.gnome.feedreader")]
 	interface FeedDaemon : Object {
+		public abstract void scheduleSync(int time) throws IOError;
 		public abstract void startSync() throws IOError;
 		public abstract void startInitSync() throws IOError;
 		public abstract LoginResponse login(Backend type) throws IOError;

@@ -39,6 +39,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private bool m_limitScroll;
 	private int m_threadCount;
 	private uint m_timeout_source_id = 0;
+	private uint m_select_source_id = 0;
 	private double m_scrollPos = 0;
 	private bool m_scrollOngoing = false;
 	private bool m_syncing = false;
@@ -214,6 +215,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 		articleRow new_article = null;
+		int time = 300;
 
 		var ArticleListChildren = m_currentList.get_children();
 		if(!down){
@@ -231,9 +233,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		} while(!new_article.isBeingRevealed());
 
 
-		m_currentList.select_row(new_article);
-		row_activated(new_article);
-
 		if((!m_only_unread || selected_row.isUnread())
 		&&(!m_only_marked || selected_row.isMarked()))
 		{
@@ -244,12 +243,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 			if(down)
 			{
 				m_scrollPos += offset;
-				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
+				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos, time);
 			}
 			else
 			{
 				m_scrollPos -= offset;
-				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos);
+				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos, time);
 			}
 
 			if(m_scrollPos < 0.0)
@@ -260,7 +259,24 @@ public class FeedReader.articleList : Gtk.Overlay {
 			m_currentScroll.set_vadjustment(m_current_adjustment);
 		}
 
-		new_article.activate();
+		selectAfter(new_article, time);
+	}
+
+	private void selectAfter(articleRow row, int time)
+	{
+		m_currentList.select_row(row);
+
+		if (m_select_source_id > 0)
+		{
+            GLib.Source.remove(m_select_source_id);
+            m_select_source_id = 0;
+        }
+
+        m_select_source_id = Timeout.add(time, () => {
+            row.activate();
+            row_activated(row);
+            return false;
+        });
 	}
 
 	public void toggleReadSelected()

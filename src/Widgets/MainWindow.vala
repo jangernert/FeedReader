@@ -43,19 +43,43 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		setupSpringCleanPage();
 		onClose();
 
-		var settings_action = new SimpleAction ("settings", null);
-		settings_action.activate.connect (() => {
+		var settings_action = new SimpleAction("settings", null);
+		settings_action.activate.connect(() => {
 			showSettings("ui");
 		});
 		add_action(settings_action);
 		settings_action.set_enabled(true);
 
-		var login_action = new SimpleAction ("reset", null);
-		login_action.activate.connect (() => {
+		var login_action = new SimpleAction("reset", null);
+		login_action.activate.connect(() => {
 			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
 		add_action(login_action);
 		login_action.set_enabled(true);
+
+		var about_action = new SimpleAction("about", null);
+		about_action.activate.connect(() => {
+			Gtk.AboutDialog dialog = new Gtk.AboutDialog();
+			dialog.set_transient_for(this);
+			dialog.artists = AboutInfo.artists;
+			dialog.authors = AboutInfo.authors;
+			dialog.documenters = null;
+			dialog.translator_credits = AboutInfo.translators;
+
+			dialog.program_name = AboutInfo.programmName;
+			dialog.comments = AboutInfo.comments;
+			dialog.copyright = AboutInfo.copyright;
+			dialog.version = AboutInfo.version;
+			dialog.logo_icon_name = AboutInfo.iconName;
+			dialog.license_type = Gtk.License.GPL_3_0;
+			dialog.wrap_license = true;
+
+			dialog.website = AboutInfo.website;
+			dialog.website_label = AboutInfo.websiteLabel;
+			dialog.present();
+		});
+		add_action(about_action);
+		about_action.set_enabled(true);
 
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(() => {

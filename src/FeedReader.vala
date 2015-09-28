@@ -120,6 +120,20 @@ namespace FeedReader {
 				logger.print(LogMessage.ERROR, e.message);
 			}
 			base.startup();
+
+			if(GLib.Environment.get_variable("DESKTOP_SESSION") == "gnome")
+			{
+				var menu = new GLib.Menu();
+				menu.append(Menu.settings, "win.settings");
+				menu.append(Menu.reset, "win.reset");
+				menu.append(Menu.about, "win.about");
+				menu.append(Menu.quit, "app.quit");
+				this.app_menu = menu;
+
+				var quit_action = new SimpleAction("quit", null);
+				quit_action.activate.connect(this.quit);
+				this.add_action(quit_action);
+			}
 		}
 
 		public override void activate()

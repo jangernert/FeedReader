@@ -136,21 +136,28 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			search_term(m_search.text);
 		});
 
-		var menumodel = new GLib.Menu();
-		var settings = new MenuItem(_("Settings"), "win.settings");
-		menumodel.insert_item(0, settings);
-		var changeAccount = new MenuItem(_("Change Account"), "win.reset");
-		menumodel.insert_item(1, changeAccount);
+		string session = GLib.Environment.get_variable("DESKTOP_SESSION");
+		if(session != "gnome")
+		{
+			var menumodel = new GLib.Menu();
+			menumodel.append(Menu.settings, "win.settings");
+			menumodel.append(Menu.reset, "win.reset");
+
+			if(session != "pantheon")
+			{
+				menumodel.append(Menu.about, "win.about");
+			}
+
+			var menubutton = new Gtk.MenuButton();
+			menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
+			menubutton.set_size_request(32, 32);
+			menubutton.set_use_popover(true);
+			menubutton.set_menu_model(menumodel);
+			menubutton.set_tooltip_text(_("Settings"));
+			m_header_left.pack_end(menubutton);
+		}
 
 
-		var menubutton = new Gtk.MenuButton();
-		menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
-		menubutton.set_size_request(32, 32);
-		menubutton.set_use_popover(true);
-		menubutton.set_menu_model(menumodel);
-		menubutton.set_tooltip_text(_("Settings"));
-
-		m_header_left.pack_end(menubutton);
 		m_header_left.pack_end(m_search);
 		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);

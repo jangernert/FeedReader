@@ -173,6 +173,13 @@ namespace FeedReader {
 		 const string websiteLabel  = null;
 	}
 
+	namespace Menu {
+		const string about = _("About");
+		const string settings = _("Settings");
+		const string reset = _("Change Account");
+		const string quit = _("Quit");
+	}
+
 	public enum MouseButton {
 		LEFT = 1,
 		MIDDLE,

@@ -410,6 +410,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_current_adjustment = m_currentScroll.get_vadjustment();
 		m_current_adjustment.set_value(newPos);
 		m_currentScroll.set_vadjustment(m_current_adjustment);
+
+		if(new_rows > 0)
+			m_overlay.reveal();
 	}
 
 

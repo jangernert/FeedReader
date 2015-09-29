@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-09-26 19:01+0200\n"
-"PO-Revision-Date: 2015-09-21 17:30+0000\n"
+"PO-Revision-Date: 2015-09-28 11:20+0000\n"
 "Last-Translator: Sebastian Grabowski <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-27 05:43+0000\n"
-"X-Generator: Launchpad (build 17754)\n"
+"X-Launchpad-Export-Date: 2015-09-29 06:13+0000\n"
+"X-Generator: Launchpad (build 17768)\n"
 
 #: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
 msgid "FeedReader"
@@ -104,10 +104,11 @@ msgstr ""
 #: ../src/Widgets/MainWindow.vala:382
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
+"Der API-Zugriff ist auf dem Server deaktiviert. Bitte aktiviere ihn zuerst!"
 
 #: ../src/Widgets/MainWindow.vala:385
 msgid "No valid CA certificate available!"
-msgstr ""
+msgstr "Kein gültiges CA-Zertifikat verfügbar!"
 
 #: ../src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -192,15 +193,15 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:55
 msgid "Mark article (un)read"
-msgstr ""
+msgstr "Markiere Artikel als (un)gelesen"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
-msgstr ""
+msgstr "Zeige alle Artikel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
-msgstr ""
+msgstr "Zeige nur ungelesene Artikel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
@@ -246,7 +247,7 @@ msgstr "Wo befinden sich Ihre Feeds?"
 #: ../src/Widgets/LoginPage.vala:44
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
-"Bitte wählen Sie den genutzten RSS-Diens aus und melden Sie sich an, um "
+"Bitte wählen Sie den genutzten RSS-Dienst aus und melden Sie sich an, um "
 "fortzufahren."
 
 #: ../src/Widgets/LoginPage.vala:109
@@ -271,7 +272,7 @@ msgstr "OwnCloud-Adresse:"
 
 #: ../src/Widgets/SettingsDialog.vala:65
 msgid "Interface"
-msgstr "Schnittstelle"
+msgstr "Oberfläche"
 
 #: ../src/Widgets/SettingsDialog.vala:66
 msgid "Internals"
@@ -299,7 +300,7 @@ msgstr "Nur ungelesene anzeigen"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "Sort FeedList by"
-msgstr ""
+msgstr "Sortiere Feed-Liste nach"
 
 #: ../src/Widgets/SettingsDialog.vala:131
 #: ../src/Widgets/SettingsDialog.vala:171
@@ -308,7 +309,7 @@ msgstr "Empfangen"
 
 #: ../src/Widgets/SettingsDialog.vala:134
 msgid "Alphabetically"
-msgstr ""
+msgstr "alphabetisch"
 
 #: ../src/Widgets/SettingsDialog.vala:154
 msgid "Article List:"

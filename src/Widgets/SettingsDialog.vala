@@ -274,18 +274,22 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         sync_settings.get_style_context().add_class("h4");
         m_internalsBox.pack_start(sync_settings, false, true, 0);
 
-        var sync_count_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        var sync_count = new Gtk.Label(_("Number of articles"));
-        sync_count.set_alignment(0, 0.5f);
-        sync_count.margin_start = 15;
-        var sync_count_button = new Gtk.SpinButton.with_range(10, 1000, 10);
-        sync_count_button.set_value(settings_general.get_int("max-articles"));
-        sync_count_button.value_changed.connect(() => {
-            settings_general.set_int("max-articles", sync_count_button.get_value_as_int());
-        });
-        sync_count_box.pack_start(sync_count, true, true, 0);
-        sync_count_box.pack_end(sync_count_button, false, false, 0);
-        m_internalsBox.pack_start(sync_count_box, false, true, 0);
+		if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
+		{
+			var sync_count_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		    var sync_count = new Gtk.Label(_("Number of articles"));
+		    sync_count.set_alignment(0, 0.5f);
+		    sync_count.margin_start = 15;
+		    var sync_count_button = new Gtk.SpinButton.with_range(10, 1000, 10);
+		    sync_count_button.set_value(settings_general.get_int("max-articles"));
+		    sync_count_button.value_changed.connect(() => {
+		        settings_general.set_int("max-articles", sync_count_button.get_value_as_int());
+		    });
+		    sync_count_box.pack_start(sync_count, true, true, 0);
+		    sync_count_box.pack_end(sync_count_button, false, false, 0);
+		    m_internalsBox.pack_start(sync_count_box, false, true, 0);
+		}
+
 
         var sync_time_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
         var sync_time = new Gtk.Label(_("Every (seconds)"));

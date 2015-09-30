@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-09-26 19:01+0200\n"
-"PO-Revision-Date: 2015-09-06 00:11+0000\n"
-"Last-Translator: German <gergarcia8@yahoo.com.ar>\n"
+"PO-Revision-Date: 2015-09-30 00:15+0000\n"
+"Last-Translator: bitseater <Unknown>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-27 05:43+0000\n"
-"X-Generator: Launchpad (build 17754)\n"
+"X-Launchpad-Export-Date: 2015-09-30 05:46+0000\n"
+"X-Generator: Launchpad (build 17768)\n"
 
 #: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
 msgid "FeedReader"
@@ -55,7 +55,7 @@ msgstr "Acerca de FeedReader"
 
 #: ../src/Widgets/TagPopover.vala:40
 msgid "Add Tag:"
-msgstr ""
+msgstr "Añadir Etiqueta:"
 
 #: ../src/Widgets/TagPopover.vala:52
 msgid "Tags:"
@@ -63,7 +63,7 @@ msgstr "Etiquetas:"
 
 #: ../src/Widgets/TagPopover.vala:129
 msgid "add Tag"
-msgstr "agregar etiqueta"
+msgstr "agregar Etiqueta"
 
 #: ../src/Widgets/MainWindow.vala:358
 msgid "Please select a service first"
@@ -104,10 +104,12 @@ msgstr ""
 #: ../src/Widgets/MainWindow.vala:382
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
+"El acceso a la API está desactivado en el servidor. Por favor, pimero "
+"actívelo."
 
 #: ../src/Widgets/MainWindow.vala:385
 msgid "No valid CA certificate available!"
-msgstr ""
+msgstr "¡No hay disponible un Certificado de Autorización válido!"
 
 #: ../src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -186,23 +188,23 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:49
 msgid "Mark article (un)starred"
-msgstr ""
+msgstr "Marcar/desmarcar artículo como favorito"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:55
 msgid "Mark article (un)read"
-msgstr ""
+msgstr "Marcar artículo como (no)leido"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
-msgstr ""
+msgstr "Mostrar todos los artículos"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
-msgstr ""
+msgstr "Mostrar sólo artículos no leidos"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
-msgstr ""
+msgstr "Mostrar sólo artículos favoritos"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:89
 msgid "Tag Article"
@@ -288,7 +290,7 @@ msgstr "Lista de canales"
 
 #: ../src/Widgets/SettingsDialog.vala:93
 msgid "Only show feeds"
-msgstr ""
+msgstr "Mostrar sólo canales"
 
 #: ../src/Widgets/SettingsDialog.vala:109
 msgid "Only show unread"
@@ -296,7 +298,7 @@ msgstr "Mostrar artículos sin leer"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "Sort FeedList by"
-msgstr ""
+msgstr "Ordenar Lista de Canales por"
 
 #: ../src/Widgets/SettingsDialog.vala:131
 #: ../src/Widgets/SettingsDialog.vala:171
@@ -305,11 +307,11 @@ msgstr "Recibido"
 
 #: ../src/Widgets/SettingsDialog.vala:134
 msgid "Alphabetically"
-msgstr ""
+msgstr "Alfabéticamente"
 
 #: ../src/Widgets/SettingsDialog.vala:154
 msgid "Article List:"
-msgstr ""
+msgstr "Lista de Artículos:"
 
 #: ../src/Widgets/SettingsDialog.vala:161
 msgid "Sort articles by"
@@ -345,7 +347,7 @@ msgstr "Medianoche"
 
 #: ../src/Widgets/SettingsDialog.vala:234
 msgid "Parchment"
-msgstr ""
+msgstr "Pergamino"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "Sync:"
@@ -365,7 +367,7 @@ msgstr "Base de datos:"
 
 #: ../src/Widgets/SettingsDialog.vala:314
 msgid "Drop articles after"
-msgstr ""
+msgstr "Eliminar articulos después de"
 
 #: ../src/Widgets/SettingsDialog.vala:321
 msgid "Never"
@@ -408,6 +410,7 @@ msgstr ""
 #: ../src/Widgets/ArticleList.vala:72
 msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
+"Sincronización en marcha. Los articulos aparecerán en cualquier momento."
 
 #: ../src/Widgets/SharePopover.vala:36
 msgid "Please"

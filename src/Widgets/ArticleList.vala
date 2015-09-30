@@ -265,6 +265,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private void selectAfter(articleRow row, int time)
 	{
 		m_currentList.select_row(row);
+		row.updateUnread(ArticleStatus.READ);
+		feedDaemon_interface.changeArticle(row.getID(), ArticleStatus.READ);
 
 		if (m_select_source_id > 0)
 		{

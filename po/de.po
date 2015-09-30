@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-09-26 19:01+0200\n"
-"PO-Revision-Date: 2015-09-28 11:20+0000\n"
-"Last-Translator: Sebastian Grabowski <Unknown>\n"
+"PO-Revision-Date: 2015-09-29 22:44+0000\n"
+"Last-Translator: Tobias Bannert <Unknown>\n"
 "Language-Team: German <de@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-29 06:13+0000\n"
+"X-Launchpad-Export-Date: 2015-09-30 05:46+0000\n"
 "X-Generator: Launchpad (build 17768)\n"
 
 #: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
@@ -23,7 +23,7 @@ msgstr "FeedReader"
 
 #: ../src/Constants.vala:166
 msgid "Desktop Client for various RSS Services"
-msgstr "Desktop Client für verschiedene RSS-Dienste"
+msgstr "Schreibtischprogramm für verschiedene RSS-Dienste"
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
@@ -31,7 +31,7 @@ msgstr "Keine Vorschau verfügbar"
 
 #: ../src/Utils.vala:94
 msgid "No Text available for this article :("
-msgstr "Kein Text verfügbar für diesen Artikel :("
+msgstr "Kein Text für diesen Artikel verfügbar :("
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:69
 msgid "no Author"
@@ -55,19 +55,19 @@ msgstr "Über FeedReader"
 
 #: ../src/Widgets/TagPopover.vala:40
 msgid "Add Tag:"
-msgstr ""
+msgstr "Schlagwort hinzufügen:"
 
 #: ../src/Widgets/TagPopover.vala:52
 msgid "Tags:"
-msgstr "Tags:"
+msgstr "Schlagwörter:"
 
 #: ../src/Widgets/TagPopover.vala:129
 msgid "add Tag"
-msgstr "Tag hinzufügen"
+msgstr "Schlagwort hinzufügen"
 
 #: ../src/Widgets/MainWindow.vala:358
 msgid "Please select a service first"
-msgstr "Bitte wählen Sie zuerst einen Dienst aus"
+msgstr "Bitte zuerst einen Dienst auswählen"
 
 #: ../src/Widgets/MainWindow.vala:361
 msgid "Please enter a valid username"
@@ -75,7 +75,7 @@ msgstr "Bitte einen gültigen Benutzernamen eingeben"
 
 #: ../src/Widgets/MainWindow.vala:364
 msgid "Please enter a valid password"
-msgstr "Bitte eine gültiges Passwort eingeben"
+msgstr "Bitte ein gültiges Passwort eingeben"
 
 #: ../src/Widgets/MainWindow.vala:367
 msgid "Please enter a valid URL"
@@ -83,28 +83,29 @@ msgstr "Bitte eine gültige Adresse eingeben"
 
 #: ../src/Widgets/MainWindow.vala:370
 msgid "Please enter your Login details"
-msgstr "Bitte geben Sie ihre Anmelde-Daten ein"
+msgstr "Bitte geben Ihre Anmeldedaten eingeben"
 
 #: ../src/Widgets/MainWindow.vala:373
 msgid "Sorry, something went wrong."
-msgstr "Verzeihung, ein Fehler ist aufgetreten."
+msgstr "Leider ist ein Fehler ist aufgetreten."
 
 #: ../src/Widgets/MainWindow.vala:376
 msgid "Either your username or the password are not correct."
-msgstr "Ihr Benutzername oder das Passwort ist falsch."
+msgstr "Entweder ist Ihr Benutzername oder das Passwort falsch."
 
 #: ../src/Widgets/MainWindow.vala:379
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
-"Keine Verbindung zum Server. Überprüfen Sie ihre Internetverbindung und den "
-"URL zum Server!"
+"Keine Verbindung zum Server. Bitte überprüfen Sie Ihre Internetverbindung "
+"und die Serveradresse!"
 
 #: ../src/Widgets/MainWindow.vala:382
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
-"Der API-Zugriff ist auf dem Server deaktiviert. Bitte aktiviere ihn zuerst!"
+"Der API-Zugriff ist auf dem Server deaktiviert. Bitte diesen zuerst "
+"aktivieren!"
 
 #: ../src/Widgets/MainWindow.vala:385
 msgid "No valid CA certificate available!"
@@ -121,7 +122,7 @@ msgid ""
 msgstr ""
 "Sie sind gerade dabei, das Konto zu ändern, welches Sie mit FeedReader "
 "benutzen möchten.\n"
-" Dies hat zur Folge, dass alle lokalen Daten ihres alten Kontos gelöscht "
+" Das hat zur Folge, dass alle lokalen Daten Ihres alten Kontos gelöscht "
 "werden."
 
 #: ../src/Widgets/ResetPage.vala:41
@@ -130,7 +131,7 @@ msgstr "Neues Konto"
 
 #: ../src/Widgets/ResetPage.vala:44
 msgid "Waiting for current sync to finish"
-msgstr "Warte auf das Abschließen der Synchronisation"
+msgstr "Auf das Fertigstellen der Synchronisation wird gewartet"
 
 #: ../src/Widgets/ResetPage.vala:54
 msgid "I changed my mind"
@@ -184,32 +185,32 @@ msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
 msgstr ""
-"FeedReader räumt die Datenbank auf.\n"
-"Dies sollte nicht zu lange dauern."
+"FeedReader säubert gerade die Datenbank.\n"
+"Das sollte nicht zu lange dauern."
 
 #: ../src/Widgets/ReaderHeaderbar.vala:49
 msgid "Mark article (un)starred"
-msgstr ""
+msgstr "Artikel (nicht) markieren"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:55
 msgid "Mark article (un)read"
-msgstr "Markiere Artikel als (un)gelesen"
+msgstr "Artikel als (un)gelesen markieren"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
-msgstr "Zeige alle Artikel"
+msgstr "Alle Artikel anzeigen"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
-msgstr "Zeige nur ungelesene Artikel"
+msgstr "Nur ungelesene Artikel anzeigen"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
-msgstr ""
+msgstr "Nur markierte Artikel anzeigen"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:89
 msgid "Tag Article"
-msgstr "Artikel taggen"
+msgstr "Artikel verschlagworten"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:99
 msgid "Share Article"
@@ -246,9 +247,7 @@ msgstr "Wo befinden sich Ihre Feeds?"
 
 #: ../src/Widgets/LoginPage.vala:44
 msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
-"Bitte wählen Sie den genutzten RSS-Dienst aus und melden Sie sich an, um "
-"fortzufahren."
+msgstr "Zum fortzufahren, bitte den RSS-Dienst auswählen und anmelden."
 
 #: ../src/Widgets/LoginPage.vala:109
 msgid "No service selected."
@@ -256,7 +255,7 @@ msgstr "Kein Dienst ausgewählt."
 
 #: ../src/Widgets/LoginPage.vala:126
 msgid "TinyTinyRSS URL:"
-msgstr "TinyTinyRSS-URL:"
+msgstr "TinyTinyRSS-Adresse:"
 
 #: ../src/Widgets/LoginPage.vala:176
 msgid ""
@@ -300,7 +299,7 @@ msgstr "Nur ungelesene anzeigen"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "Sort FeedList by"
-msgstr "Sortiere Feed-Liste nach"
+msgstr "Feed-Liste sortieren nach"
 
 #: ../src/Widgets/SettingsDialog.vala:131
 #: ../src/Widgets/SettingsDialog.vala:171
@@ -313,7 +312,7 @@ msgstr "alphabetisch"
 
 #: ../src/Widgets/SettingsDialog.vala:154
 msgid "Article List:"
-msgstr "Artikel-Liste:"
+msgstr "Artikelliste:"
 
 #: ../src/Widgets/SettingsDialog.vala:161
 msgid "Sort articles by"
@@ -341,15 +340,15 @@ msgstr "Standard"
 
 #: ../src/Widgets/SettingsDialog.vala:228
 msgid "Spring"
-msgstr ""
+msgstr "Frühling"
 
 #: ../src/Widgets/SettingsDialog.vala:231
 msgid "Midnight"
-msgstr ""
+msgstr "Mitternacht"
 
 #: ../src/Widgets/SettingsDialog.vala:234
 msgid "Parchment"
-msgstr ""
+msgstr "Pergament"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "Sync:"
@@ -411,6 +410,7 @@ msgstr ""
 #: ../src/Widgets/ArticleList.vala:72
 msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
+"Synchronisierung läuft gerade. Artikel sollten jede Sekunde erscheinen."
 
 #: ../src/Widgets/SharePopover.vala:36
 msgid "Please"

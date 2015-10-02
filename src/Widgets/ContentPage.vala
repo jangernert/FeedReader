@@ -112,6 +112,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 		m_article_view = new articleView();
 
+		m_article_view.enterFullscreen.connect(enterFullscreen);
+		m_article_view.leaveFullscreen.connect(leaveFullscreen);
+
 
 		this.pack1(m_pane, false, false);
 		this.pack2(m_article_view, true, false);
@@ -138,13 +141,26 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_thread = new GLib.Thread<void*>("limitArticle", run);
 	}
 
+	public void enterFullscreen()
+	{
+		if(settings_tweaks.get_boolean("fullscreen-videos"))
+			m_pane.set_visible(false);
+	}
+
+	public void leaveFullscreen()
+	{
+		m_pane.set_visible(true);
+	}
+
 	public void ArticleListNEXT()
 	{
+		leaveFullscreen();
 		m_articleList.move(false);
 	}
 
 	public void ArticleListPREV()
 	{
+		leaveFullscreen();
 		m_articleList.move(true);
 	}
 

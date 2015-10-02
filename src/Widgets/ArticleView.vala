@@ -25,6 +25,8 @@ public class FeedReader.articleView : Gtk.Stack {
 	private double m_posY;
 	private double m_momentum;
 	private bool m_inDrag;
+	public signal void enterFullscreen();
+	public signal void leaveFullscreen();
 
 
 	public articleView () {
@@ -43,6 +45,8 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
 		m_view.button_press_event.connect(onClick);
 		m_view.button_release_event.connect(onRelease);
+		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});
+		m_view.leave_fullscreen.connect(() => { leaveFullscreen(); return false;});
 		m_search = m_view.get_find_controller();
 
 		var emptyView = new Gtk.Label(_("No Article selected."));

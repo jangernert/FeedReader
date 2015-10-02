@@ -91,6 +91,10 @@ public class FeedReader.PocketAPI : GLib.Object {
 
         m_message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
+
+        if(settings_tweaks.get_boolean("do-not-track"))
+				m_message_soup.request_headers.append("DNT", "1");
+
 		m_session.send_message(m_message_soup);
 
         if((string)m_message_soup.response_body.flatten().data == null

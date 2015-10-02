@@ -110,7 +110,7 @@ GtkScrolledWindow GtkViewport.servicebox {
 	box-shadow: none;
 }
 
-.overlay-label {
+.bold {
 	font-weight: bold
 }
 

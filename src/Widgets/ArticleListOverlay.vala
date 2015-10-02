@@ -32,7 +32,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 
         m_label = new Gtk.Label(text);
         m_label.margin_left = 30;
-        m_label.get_style_context().add_class("overlay-label");
+        m_label.get_style_context().add_class("bold");
 
 
         m_button = new Gtk.Button();

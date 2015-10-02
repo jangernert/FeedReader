@@ -9,3 +9,4 @@ Terminal=false
 Type=Application
 X-GNOME-Gettext-Domain=tt-rss
 X-GNOME-Keywords=
+X-GNOME-UsesNotifications=true

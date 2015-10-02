@@ -86,7 +86,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var feed_settings = new Gtk.Label(_("Feed List:"));
         feed_settings.margin_top = 15;
         feed_settings.set_alignment(0, 0.5f);
-        feed_settings.get_style_context().add_class("h4");
+        feed_settings.get_style_context().add_class("bold");
         m_uiBox.pack_start(feed_settings, false, true, 0);
 
         var only_feeds_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -154,7 +154,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var article_settings = new Gtk.Label(_("Article List:"));
         article_settings.margin_top = 15;
         article_settings.set_alignment(0, 0.5f);
-        article_settings.get_style_context().add_class("h4");
+        article_settings.get_style_context().add_class("bold");
         m_uiBox.pack_start(article_settings, false, true, 0);
 
         var article_sort_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -211,7 +211,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var articleview_settings = new Gtk.Label(_("Article View:"));
         articleview_settings.margin_top = 15;
         articleview_settings.set_alignment(0, 0.5f);
-        articleview_settings.get_style_context().add_class("h4");
+        articleview_settings.get_style_context().add_class("bold");
         m_uiBox.pack_start(articleview_settings, false, true, 0);
 
         var article_theme_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -271,7 +271,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var sync_settings = new Gtk.Label(_("Sync:"));
         sync_settings.margin_top = 15;
         sync_settings.set_alignment(0, 0.5f);
-        sync_settings.get_style_context().add_class("h4");
+        sync_settings.get_style_context().add_class("bold");
         m_internalsBox.pack_start(sync_settings, false, true, 0);
 
 		if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
@@ -313,7 +313,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var db_settings = new Gtk.Label(_("Database:"));
         db_settings.margin_top = 15;
         db_settings.set_alignment(0, 0.5f);
-        db_settings.get_style_context().add_class("h4");
+        db_settings.get_style_context().add_class("bold");
         m_internalsBox.pack_start(db_settings, false, true, 0);
 
         var drop_articles_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
@@ -373,7 +373,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var service_settings = new Gtk.Label(_("Additional Functionality:"));
         service_settings.margin_top = 15;
         service_settings.set_alignment(0, 0.5f);
-        service_settings.get_style_context().add_class("h4");
+        service_settings.get_style_context().add_class("bold");
         m_internalsBox.pack_start(service_settings, false, true, 0);
 
         var grabber_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);

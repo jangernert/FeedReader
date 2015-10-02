@@ -722,7 +722,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
-	public static void sendNotification(uint newArticles)
+	private void sendNotification(uint newArticles)
 	{
 		try{
 			string message = "";
@@ -748,6 +748,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					notification = new Notify.Notification(summary, message, AboutInfo.iconName);
 					notification.set_urgency(Notify.Urgency.NORMAL);
 					notification.set_app_name(AboutInfo.programmName);
+					notification.set_hint("desktop-entry", new Variant ("(s)", "feedreader"));
 
 					notification.add_action ("default", "Show FeedReader", (notification, action) => {
 						logger.print(LogMessage.DEBUG, "notification: default action");

@@ -135,6 +135,10 @@ public class FeedReader.Grabber : GLib.Object {
                 logger.print(LogMessage.DEBUG, "Grabber: new url is: " + m_articleURL);
             }
         });
+
+        if(settings_tweaks.get_boolean("do-not-track"))
+			msg.request_headers.append("DNT", "1");
+
         session.send_message(msg);
 
         if(msg.response_body == null)

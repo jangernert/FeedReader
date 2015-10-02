@@ -326,6 +326,10 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message ("GET", icon_url);
+
+			if(settings_tweaks.get_boolean("do-not-track"))
+				message_dlIcon.request_headers.append("DNT", "1");
+
 			var session = new Soup.Session ();
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)

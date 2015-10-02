@@ -69,6 +69,9 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 
+		if(settings_tweaks.get_boolean("do-not-track"))
+				message.request_headers.append("DNT", "1");
+
 		m_refresh_token = settings_feedly.get_string("feedly-refresh-token");
 		string message_string = "refresh_token=" + m_refresh_token + "&client_id=" + FeedlySecret.apiClientId + "&client_secret=" + FeedlySecret.apiClientSecret + "&grant_type=refresh_token";
 
@@ -110,6 +113,9 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
 
+		if(settings_tweaks.get_boolean("do-not-track"))
+				message.request_headers.append("DNT", "1");
+
 		var gen = new Json.Generator();
 		gen.set_root(root);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
@@ -128,6 +134,9 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
+		if(settings_tweaks.get_boolean("do-not-track"))
+				message.request_headers.append("DNT", "1");
+
 		var gen = new Json.Generator();
 		gen.set_root(root);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
@@ -145,6 +154,9 @@ public class FeedReader.FeedlyConnection {
 	{
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
+
+		if(settings_tweaks.get_boolean("do-not-track"))
+				message.request_headers.append("DNT", "1");
 
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
 		message.request_headers.append("Content-Type", type);
@@ -165,6 +177,10 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
+
+		if(settings_tweaks.get_boolean("do-not-track"))
+				message.request_headers.append("DNT", "1");
+
 		session.send_message(message);
 		return (string)message.response_body.data;
 	}

@@ -64,6 +64,10 @@ public class FeedReader.ttrss_message : GLib.Object {
 	{
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
+
+		if(settings_tweaks.get_boolean("do-not-track"))
+				m_message_soup.request_headers.append("DNT", "1");
+
 		var status = m_session.send_message(m_message_soup);
 
 		if(m_message_soup.tls_errors != 0)

@@ -86,6 +86,10 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 		{
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", icon_url);
+
+			if(settings_tweaks.get_boolean("do-not-track"))
+				message_dlIcon.request_headers.append("DNT", "1");
+
 			var session = new Soup.Session();
             session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);

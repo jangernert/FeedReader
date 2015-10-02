@@ -29,6 +29,9 @@ public class FeedReader.ReadabilityParserAPI : GLib.Object {
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser ();
 		m_message_soup = new Soup.Message ("GET", "https://www.readability.com/api/content/v1/parser?url=" + url + "&token=" + m_token);
+
+		if(settings_tweaks.get_boolean("do-not-track"))
+			m_message_soup.request_headers.append("DNT", "1");
     }
 
     public int process()

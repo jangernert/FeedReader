@@ -97,6 +97,10 @@ public class FeedReader.ttrss_utils : GLib.Object {
 		{
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", remote_filename);
+
+			if(settings_tweaks.get_boolean("do-not-track"))
+				message_dlIcon.request_headers.append("DNT", "1");
+
 			var session = new Soup.Session();
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);

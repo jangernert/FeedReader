@@ -339,6 +339,10 @@ public class FeedReader.grabberUtils : GLib.Object {
 		{
 			Soup.Message message_dlImg;
 			message_dlImg = new Soup.Message("GET", fixedURL);
+
+			if(settings_tweaks.get_boolean("do-not-track"))
+				message_dlImg.request_headers.append("DNT", "1");
+
 			var session = new Soup.Session();
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);

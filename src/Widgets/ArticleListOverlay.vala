@@ -85,7 +85,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 			m_timeout_source_id = 0;
 		}
 
-		m_timeout_source_id = Timeout.add(stay, () => {
+		m_timeout_source_id = GLib.Timeout.add(stay, () => {
 		    hide(animation);
 		    m_timeout_source_id = 0;
 			return false;
@@ -107,7 +107,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 			m_timeout_source_id = 0;
 		}
 
-		m_timeout_source_id = Timeout.add(animation, () => {
+		m_timeout_source_id = GLib.Timeout.add(animation, () => {
 		    this.set_visible(false);
 		    m_timeout_source_id = 0;
 			return false;

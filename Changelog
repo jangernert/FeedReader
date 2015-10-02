@@ -1,10 +1,12 @@
 1.4
+- add ownCloud News support
 - make sync more responsive
 - app fully operational during initial sync
-- add ownCloud News support
 - overlay to indicate new articles
 - dynamic switch between GMenu in gnome and menu-button elsewhere
 - notifications are updated rather than creating new ones every time
+- respect notification settings of the DE
+- better font-styling on non-elementary distributions
 
 1.2:
 - add ability to share articles

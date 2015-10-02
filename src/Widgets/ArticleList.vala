@@ -887,7 +887,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public void removeRow(articleRow row)
 	{
-		row.reveal(false, 700);
+		int time = 700;
+		row.reveal(false, time);
+		GLib.Timeout.add(time, () => {
+		    m_currentList.remove(row);
+			return false;
+		});
 		m_current_adjustment = m_currentScroll.get_vadjustment();
 		if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
 		{

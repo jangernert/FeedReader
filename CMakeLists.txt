@@ -56,7 +56,7 @@ set(UI_PACKAGES
     libsecret-1
     libnotify
     rest-0.7)
-    
+
 if(USE_WEBKIT_4)
 	list(APPEND UI_PACKAGES WebKit2-4.0)
 else(USE_WEBKIT_4)
@@ -110,7 +110,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/Share/ReadabilityAPI.vala
     src/Share/PocketAPI.vala
     src/Share/InstapaperAPI.vala
-    src/Share/EvernoteAPI.vala
     src/Share/share.vala
 
 # tell what libraries to use when compiling
@@ -135,7 +134,7 @@ set(DAEMON_PACKAGES
     libsecret-1
     libxml-2.0
     rest-0.7)
-    
+
 if(WITH_LIBUNITY)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
 	list(APPEND DAEMON_PACKAGES unity)

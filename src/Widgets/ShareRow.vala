@@ -42,10 +42,6 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
             case OAuth.POCKET:
                 iconName = "feed-share-pocket";
                 break;
-
-			case OAuth.EVERNOTE:
-	            iconName = "feed-share-evernote";
-	            break;
         }
         var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
 

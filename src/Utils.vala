@@ -186,12 +186,17 @@ public class FeedReader.Utils : GLib.Object {
 				break;
 		}
 
+		string searchTerm = "";
+
+		if(settings_tweaks.get_boolean("restore-searchterm"))
+			searchTerm = settings_state.get_string("search-term");
+
 		var articles = dataBase.read_articles(
 			selectedRow[1],
 			IDtype,
 			only_unread,
 			only_marked,
-			settings_state.get_string("search-term"),
+			searchTerm,
 			newArticlesCount,
 			0,
 			newArticlesCount);
@@ -333,14 +338,6 @@ public class FeedReader.Utils : GLib.Object {
 
 			case OAuth.INSTAPAPER:
 				break;
-
-			case OAuth.EVERNOTE:
-				url = EvernoteSecrets.base_uri
-					+ "OAuth.action?oauth_token="
-					+ settings_evernote.get_string("oauth-request-token")
-					+ "&supportLinkedSandbox=true&suggestedNotebookName="
-					+ GLib.Uri.escape_string("FeedReader");
-				break;
 		}
 
 		logger.print(LogMessage.DEBUG, url);
@@ -358,19 +355,6 @@ public class FeedReader.Utils : GLib.Object {
 
 		if(arg == FeedlySecret.apiRedirectUri)
 			return OAuth.FEEDLY;
-
-		if(arg.has_prefix(EvernoteSecrets.oauth_callback))
-		{
-			string needle = "verifier=";
-			int verifier_start = arg.index_of(needle)+(needle.length);
-			if(verifier_start != -1)
-			{
-				int verifier_end = arg.index_of("&", verifier_start);
-				string verifier = arg.substring(verifier_start, verifier_end-verifier_start);
-				settings_evernote.set_string("oauth-verifier", verifier);
-			}
-			return OAuth.EVERNOTE;
-		}
 
 		if(arg.has_prefix(ReadabilitySecrets.oauth_callback))
 		{

@@ -86,13 +86,6 @@ public class FeedReader.SharePopover : Gtk.Popover {
             m_list.add(instaRow);
             m_haveServices = true;
         }
-
-		if(settings_evernote.get_boolean("is-logged-in"))
-        {
-            var evernoteRow = new ShareRow("Evernote", OAuth.EVERNOTE);
-            m_list.add(evernoteRow);
-            m_haveServices = true;
-        }
     }
 
     private void shareURL(Gtk.ListBoxRow row)

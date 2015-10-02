@@ -1,0 +1,22 @@
+<schemalist>
+	<schema id="org.gnome.feedreader.tweaks" path="/org/gnome/feedreader/tweaks/" gettext-domain="feedreader">
+
+		<key name="show-badge" type="b">
+		    <default>true</default>
+		    <summary>show badge on dock</summary>
+		    <description>
+			Attempt to show a badge on the dock/taskbar of the desktop with the number on unread articles.
+			(Only possible with compile option -DWITH_LIBUNITY=ON)
+		    </description>
+		</key>
+
+	  	<key name="restore-searchterm" type="b">
+		    <default>true</default>
+		    <summary>restore the search term on startup</summary>
+		    <description>
+			If active the current search term will be saved on exit and restored next startup.
+		    </description>
+		</key>
+
+	</schema>
+</schemalist>

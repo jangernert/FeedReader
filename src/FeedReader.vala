@@ -29,7 +29,7 @@ namespace FeedReader {
 	GLib.Settings settings_readability;
 	GLib.Settings settings_pocket;
 	GLib.Settings settings_instapaper;
-	GLib.Settings settings_evernote;
+	GLib.Settings settings_tweaks;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
 	Share share;
@@ -74,7 +74,7 @@ namespace FeedReader {
 			settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
 			settings_pocket = new GLib.Settings ("org.gnome.feedreader.pocket");
 			settings_instapaper = new GLib.Settings ("org.gnome.feedreader.instapaper");
-			settings_evernote = new GLib.Settings ("org.gnome.feedreader.evernote");
+			settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 
 			logger = new Logger();
 			share = new Share();

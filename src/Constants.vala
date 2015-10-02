@@ -27,8 +27,7 @@ namespace FeedReader {
 		FEEDLY,
 		READABILITY,
 		INSTAPAPER,
-		POCKET,
-		EVERNOTE
+		POCKET
 	}
 
 	public enum LogLevel {
@@ -150,13 +149,6 @@ namespace FeedReader {
 		const string base_uri			= "https://getpocket.com/v3/";
 		const string oauth_consumer_key		= "43273-30a11c29b5eeabfa905df168";
 		const string oauth_callback			= "feedreader://pocket";
-	}
-
-	namespace EvernoteSecrets {
-		const string base_uri			= "https://sandbox.evernote.com/";
-		const string oauth_consumer_key		= "eviltwin1125";
-		const string oauth_consumer_secret	= "50ee4def493350c5";
-		const string oauth_callback			= "feedreader://evernote";
 	}
 
 	namespace AboutInfo {

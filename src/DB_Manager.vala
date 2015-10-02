@@ -204,6 +204,7 @@ public class FeedReader.dbManager : GLib.Object {
 		query.selectField("articleID");
 		query.selectField("feedID");
 		query.addCustomCondition("date <= datetime('now', '-%i months')".printf(weeks));
+		query.addEqualsCondition("marked", ArticleStatus.MARKED, false, false);
 		if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
 			query.addCustomCondition("rowid BETWEEN %i AND %i".printf(getHighestRowID(), getHighestRowID()-settings_general.get_int("max-articls")));
 		query.build();

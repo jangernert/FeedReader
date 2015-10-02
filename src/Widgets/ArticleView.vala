@@ -46,7 +46,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_search = m_view.get_find_controller();
 
 		var emptyView = new Gtk.Label(_("No Article selected."));
-		emptyView.get_style_context().add_class("emptyView");
+		emptyView.get_style_context().add_class("h2");
 
 		this.add_named(emptyView, "empty");
 		this.add_named(m_view, "view");

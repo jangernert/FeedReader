@@ -74,12 +74,6 @@ GtkEventBox {
 	font-weight: bold;
 }
 
-GtkLabel.emptyView {
-	font-weight: normal;
-	font-style: normal;
-	font-size: x-large;
-}
-
 .preview {
 	font-size: small;
 }
@@ -118,4 +112,17 @@ GtkScrolledWindow GtkViewport.servicebox {
 
 .overlay-label {
 	font-weight: bold
+}
+
+.h1 {
+	font-weight: bold;
+	font-size: xx-large;
+}
+
+.h2 {
+	font-size: x-large;
+}
+
+.h3 {
+	font-size: large;
 }

@@ -61,7 +61,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
 		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
-		m_emptyList.get_style_context().add_class("emptyView");
+		m_emptyList.get_style_context().add_class("h2");
 		m_emptyList.set_ellipsize (Pango.EllipsizeMode.END);
 		m_emptyList.set_line_wrap_mode(Pango.WrapMode.WORD);
 		m_emptyList.set_line_wrap(true);
@@ -74,7 +74,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_syncingBox.set_margin_left(30);
 		m_syncingBox.set_margin_right(30);
 		var syncingLabel = new Gtk.Label(_("Sync is in progress. Articles should appear any second."));
-		syncingLabel.get_style_context().add_class("emptyView");
+		syncingLabel.get_style_context().add_class("h2");
 		syncingLabel.set_ellipsize (Pango.EllipsizeMode.END);
 		syncingLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
 		syncingLabel.set_line_wrap(true);

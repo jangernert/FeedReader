@@ -7,6 +7,7 @@
 - notifications are updated rather than creating new ones every time
 - respect notification settings of the DE
 - better font-styling on non-elementary distributions
+- proper fullscreen mode for videos
 
 1.2:
 - add ability to share articles

@@ -1694,9 +1694,17 @@ public class FeedReader.dbManager : GLib.Object {
 			query.addCustomCondition("articleID in (SELECT articleID FROM main.articles ORDER BY rowid DESC LIMIT %i)".printf(searchRows));
 		}
 
-		string order_field = "rowid";
-		if(settings_general.get_boolean("articlelist-sort-by-date"))
-			order_field = "date";
+		string order_field = "";
+		switch(settings_general.get_enum("articlelist-sort-by"))
+		{
+			case ArticleListSort.RECEIVED:
+				order_field = "rowid";
+				break;
+
+			case ArticleListSort.DATE:
+				order_field = "date";
+				break;
+		}
 
 		bool desc = false;
 		if(settings_general.get_boolean("articlelist-newest-first"))

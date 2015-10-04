@@ -37,10 +37,7 @@ public class FeedReader.Share : GLib.Object {
 		ThreadFunc<void*> run = () => {
             m_instapaper.checkLogin();
             m_instapaper.getUserID();
-
             m_readability.getUsername();
-
-
 
 			Idle.add((owned) callback);
 			return null;

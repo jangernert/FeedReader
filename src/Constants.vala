@@ -122,6 +122,11 @@ namespace FeedReader {
 		CA_ERROR
 	}
 
+	public enum ArticleListSort {
+		RECEIVED,
+		DATE
+	}
+
 
 	namespace FeedlySecret {
 		 const string base_uri        = "http://cloud.feedly.com";

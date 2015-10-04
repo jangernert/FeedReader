@@ -38,6 +38,11 @@
 		<value nick="ALPHABETICAL" value="1"/>
 	</enum>
 
+  	<enum id="org.gnome.feedreader.article-list-sort">
+		<value nick="RECEIVED" value="0"/>
+		<value nick="DATE" value="1"/>
+	</enum>
+
 
 
 
@@ -111,15 +116,15 @@
 			<default>'RECEIVED'</default>
 		</key>
 
-		<key name="articlelist-sort-by-date" type="b">
-			<default>false</default>
+		<key name='articlelist-sort-by' enum='org.gnome.feedreader.article-list-sort'>
+			<default>'RECEIVED'</default>
 			<summary>sort articles by date</summary>
 			<description>
 				Sort articles in the ArticleList by date not by insert order.
 			</description>
 		</key>
 
-		<key name="articlelist-newest-first" type="b">
+		<key name='articlelist-newest-first' type='b'>
 			<default>true</default>
 			<summary>newest articles first</summary>
 			<description>

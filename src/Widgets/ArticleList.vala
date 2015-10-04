@@ -704,7 +704,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public void updateArticleList()
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
-		bool sortByDate = settings_general.get_boolean("articlelist-sort-by-date");
+		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
 		bool newArticles = false;
 

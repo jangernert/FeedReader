@@ -97,6 +97,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ServiceSettingsRow.vala
     src/Widgets/ShareRow.vala
     src/Widgets/ServiceInfo.vala
+    src/Widgets/Setting.vala
     src/Widgets/SettingsDialog.vala
     src/Widgets/SharePopover.vala
     src/Widgets/SpringCleanPage.vala

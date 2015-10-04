@@ -21,20 +21,12 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     public SettingsDialog(Gtk.Window parent, string show)
     {
+    	Object(use_header_bar: 1);
         this.title = "Settings";
 		this.border_width = 20;
         this.set_transient_for(parent);
         this.set_modal(true);
 		set_default_size(350, 415);
-
-        this.response.connect((id) => {
-            switch(id)
-            {
-                case 1:
-                    this.destroy();
-                    break;
-            }
-        });
 
         var stack = new Gtk.Stack();
         stack.set_transition_duration(50);
@@ -52,8 +44,6 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         content.set_spacing(2);
         content.pack_start(switcher, false, false, 0);
         content.add(stack);
-
-        this.add_button(_("Close"), 1);
         this.show_all();
 
         stack.set_visible_child_name(show);

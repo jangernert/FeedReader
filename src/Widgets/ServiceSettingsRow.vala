@@ -34,12 +34,30 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 	private string m_id;
 	public signal void Logut();
 
-	public ServiceRow(string serviceName, OAuth type)
+	public ServiceRow(OAuth type, string? id, bool loggedIn, string username = "")
 	{
-		m_id = share.newAccount(type);
-		m_name = serviceName;
+		if(id == null)
+			m_id = share.newAccount(type);
+		else
+			m_id = id;
+
+		switch(type)
+		{
+			case OAuth.READABILITY:
+				m_name = "Readability";
+				break;
+			case OAuth.POCKET:
+				m_name = "Pocket";
+				break;
+			case OAuth.INSTAPAPER:
+				m_name = "Instapaper";
+				break;
+			default:
+				m_name = "";
+				break;
+		}
         m_type = type;
-		m_isLoggedIN = false;
+		m_isLoggedIN = loggedIn;
 		m_iconStack = new Gtk.Stack();
 		m_iconStack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
 		m_iconStack.set_transition_duration(300);
@@ -145,7 +163,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 
 
 		var label1 = new Gtk.Label(m_name);
-		m_label = new Gtk.Label("username");
+		m_label = new Gtk.Label(username);
 		label1.set_alignment(0.5f, 1.0f);
 		m_label.set_alignment(0.5f, 0.2f);
 		m_label.opacity = 0.5;
@@ -176,9 +194,8 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		this.add(m_revealer);
 		this.show_all();
 
-		/*if(m_serviceSettings.get_boolean("is-logged-in"))
+		if(m_isLoggedIN)
 		{
-			m_isLoggedIN = true;
 			m_iconStack.set_visible_child_name("loggedIN");
 			m_labelStack.set_visible_child_name("loggedIN");
 		}
@@ -186,7 +203,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		{
 			m_iconStack.set_visible_child_name("button");
 			m_labelStack.set_visible_child_name("loggedOUT");
-		}*/
+		}
 	}
 
 	private bool onEnter()
@@ -236,12 +253,12 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 			share.loginPage(m_id);
 			m_login_button.set_label(_("waiting"));
 			m_login_button.set_sensitive(false);
-			((rssReaderApp)GLib.Application.get_default()).callback.connect((type) => {
-				if(share.getAccessToken(m_id))
+			((rssReaderApp)GLib.Application.get_default()).callback.connect((type, oauthVerifier) => {
+				if(share.getAccessToken(m_id, oauthVerifier))
 				{
 					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
 					m_isLoggedIN = true;
-					//m_label.set_label(m_serviceSettings.get_string("username"));
+					m_label.set_label(share.getUsername(m_id));
 					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
 				}
 			});

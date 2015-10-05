@@ -23,9 +23,11 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     private string m_verifier;
     private string m_secret;
     private string m_username;
+    private bool m_loggedIn;
 
     public ReadabilityAPI(string id, string settings_path = "")
     {
+    	logger.print(LogMessage.DEBUG, "new Readability account");
     	m_id = id;
 
         if(settings_path == "")
@@ -37,10 +39,13 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     			ReadabilitySecrets.oauth_consumer_secret,
     			ReadabilitySecrets.base_uri,
     			false);
+
+    		m_loggedIn = false;
         }
         else
         {
-        	m_settings = new GLib.Settings(settings_path);
+        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", settings_path);
+        	m_username = m_settings.get_string("username");
 
             m_oauth = new Rest.OAuthProxy.with_token (
     			ReadabilitySecrets.oauth_consumer_key,
@@ -51,6 +56,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     			false);
 
             m_settings.set_boolean("is-logged-in", true);
+            m_loggedIn = true;
         }
     }
 
@@ -75,7 +81,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return true;
     }
 
-    public bool getAccessToken(string verifier = "")
+    public bool getAccessToken(string verifier)
     {
         if(verifier == "")
         {
@@ -91,7 +97,8 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
 		m_accessToken = m_oauth.get_token();
 		m_secret = m_oauth.get_token_secret();
-        getUsername();
+        refreshUsername();
+        writeData();
 
         return true;
     }
@@ -112,7 +119,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return true;
     }
 
-    public bool getUsername()
+    public bool refreshUsername()
     {
         bool login = false;
         var call = m_oauth.new_call();
@@ -160,6 +167,11 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return login;
     }
 
+    public string getUsername()
+    {
+    	return m_username;
+    }
+
     private bool isLoggedIn()
     {
         return m_settings.get_boolean("is-logged-in");
@@ -167,11 +179,43 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
     private void writeData()
     {
+
 		m_settings.set_string("oauth-access-token", m_accessToken);
 		m_settings.set_string("oauth-access-token-secret", m_secret);
 		m_settings.set_string("username", m_username);
 		m_settings.set_boolean("is-logged-in", true);
+		setArray();
     }
+
+    private void setArray()
+    {
+		var array = settings_share.get_strv("readability");
+
+		foreach(string id in array)
+		{
+			if(id == m_id)
+				return;
+		}
+
+		array += m_id;
+		settings_share.set_strv("readability", array);
+    }
+
+
+    private void deleteArray()
+    {
+    	var array = settings_share.get_strv("readability");
+    	string[] array2 = {};
+
+    	foreach(string id in array)
+		{
+			if(id != m_id)
+				array2 += id;
+		}
+
+		settings_share.set_strv("readability", array2);
+    }
+
 
     public bool logout()
     {
@@ -181,17 +225,17 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 			m_settings.reset(key);
 		}
 
-        m_oauth = new Rest.OAuthProxy (
-            ReadabilitySecrets.oauth_consumer_key,
-            ReadabilitySecrets.oauth_consumer_secret,
-            ReadabilitySecrets.base_uri,
-            false);
-
+		deleteArray();
         return true;
     }
 
     public string getURL()
     {
-		return	ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + m_settings.get_string("oauth-request-token");
+		return	ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + m_requestToken;
+    }
+
+    public string getID()
+    {
+    	return m_id;
     }
 }

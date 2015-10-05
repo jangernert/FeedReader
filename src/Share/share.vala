@@ -21,7 +21,25 @@ public class FeedReader.Share : GLib.Object {
 
 	public Share()
 	{
-		// FIXME: go through and init every account
+		m_readability = new GLib.List<ReadabilityAPI>();
+		var readabilityAccounts = settings_share.get_strv("readability");
+		foreach(string id in readabilityAccounts)
+		{
+			m_readability.append(new ReadabilityAPI(id, "/org/gnome/feedreader/share/readability/%s/".printf(id)));
+		}
+	}
+
+
+	public GLib.List<ShareAccount> getAccounts()
+	{
+		var list = new GLib.List<ShareAccount>();
+
+		foreach(var account in m_readability)
+		{
+			list.append(new ShareAccount(account.getID(), OAuth.READABILITY, account.getUsername()));
+		}
+
+		return list;
 	}
 
 
@@ -39,31 +57,87 @@ public class FeedReader.Share : GLib.Object {
 		return id;
 	}
 
-	public void deleteAccount(string m_id)
-	{
 
+	public void deleteAccount(string accountID)
+	{
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				m_readability.remove(api);
+				return;
+			}
+		}
+	}
+
+
+	public void logout(string accountID)
+	{
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				api.logout();
+				return;
+			}
+		}
 	}
 
 	public bool getRequestToken(string accountID)
 	{
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.getRequestToken();
+			}
+		}
+
 		return false;
 	}
 
-	public bool getAccessToken(string accountID, string username = "", string password = "")
+	public bool getAccessToken(string accountID, string verifier = "", string username = "", string password = "")
 	{
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.getAccessToken(verifier);
+			}
+		}
+
 		return false;
 	}
 
 
 	public void loginPage(string accountID)
 	{
-		//Gtk.show_uri(Gdk.Screen.get_default(), Utils.buildURL(m_type), Gdk.CURRENT_TIME);
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				Gtk.show_uri(Gdk.Screen.get_default(), api.getURL(), Gdk.CURRENT_TIME);
+				return;
+			}
+		}
+
+
+		// FIXME: instapaper & pocket
 	}
 
 
-	public void logout(string accountID)
+	public string getUsername(string accountID)
 	{
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.getUsername();
+			}
+		}
 
+
+		return "";
 	}
 
 
@@ -71,104 +145,4 @@ public class FeedReader.Share : GLib.Object {
 	{
 		return false;
 	}
-
-    /*private ReadabilityAPI m_readability;
-    private PocketAPI m_pocket;
-    private InstaAPI m_instapaper;
-
-    public Share()
-    {
-        m_readability = new ReadabilityAPI();
-        m_pocket = new PocketAPI();
-        m_instapaper = new InstaAPI();
-    }
-
-    public async void checkAccessTokens()
-	{
-		SourceFunc callback = checkAccessTokens.callback;
-
-		ThreadFunc<void*> run = () => {
-            m_instapaper.checkLogin();
-            m_instapaper.getUserID();
-            m_readability.getUsername();
-
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("checkAccessTokens", run);
-		yield;
-	}
-
-    public bool getRequestToken(OAuth type)
-    {
-        switch(type)
-        {
-            case OAuth.READABILITY:
-                return m_readability.getRequestToken();
-
-            case OAuth.POCKET:
-                return m_pocket.getRequestToken();
-
-            case OAuth.INSTAPAPER:
-                return true;
-
-            default:
-                return false;
-        }
-    }
-
-    public bool getAccessToken(OAuth type, string username = "", string password = "")
-    {
-        switch(type)
-        {
-            case OAuth.READABILITY:
-                return m_readability.getAccessToken();
-
-            case OAuth.POCKET:
-                return m_pocket.getAccessToken();
-
-            case OAuth.INSTAPAPER:
-                return m_instapaper.getAccessToken(username, password);
-
-            default:
-                return false;
-        }
-    }
-
-    public bool addBookmark(OAuth type, string url)
-    {
-        switch(type)
-        {
-            case OAuth.READABILITY:
-                return m_readability.addBookmark(url);
-
-            case OAuth.POCKET:
-                return m_pocket.addBookmark(url);
-
-            case OAuth.INSTAPAPER:
-                return m_instapaper.addBookmark(url);
-
-            default:
-                return false;
-        }
-    }
-
-
-    public bool logout(OAuth type)
-    {
-        switch(type)
-        {
-            case OAuth.READABILITY:
-                return m_readability.logout();
-
-            case OAuth.POCKET:
-                return m_pocket.logout();
-
-            case OAuth.INSTAPAPER:
-                return m_instapaper.logout();
-
-            default:
-                return false;
-        }
-    }*/
 }

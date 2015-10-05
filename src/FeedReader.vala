@@ -26,10 +26,8 @@ namespace FeedReader {
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
 	GLib.Settings settings_owncloud;
-	//GLib.Settings settings_readability;
-	//GLib.Settings settings_pocket;
-	//GLib.Settings settings_instapaper;
 	GLib.Settings settings_tweaks;
+	GLib.Settings settings_share;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
 	Share share;
@@ -62,7 +60,7 @@ namespace FeedReader {
 	public class rssReaderApp : Gtk.Application {
 
 		private readerUI m_window;
-		public signal void callback(OAuth type, string oauthVerifier = "");
+		public signal void callback(OAuth type, string oauthVerifier);
 
 		protected override void startup()
 		{
@@ -71,13 +69,11 @@ namespace FeedReader {
 			settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 			settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 			settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
-			//settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
-			//settings_pocket = new GLib.Settings ("org.gnome.feedreader.pocket");
-			//settings_instapaper = new GLib.Settings ("org.gnome.feedreader.instapaper");
 			settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
+			settings_share = new GLib.Settings ("org.gnome.feedreader.share");
 
 			logger = new Logger();
-			//share = new Share();
+			share = new Share();
 
 			startDaemon();
 
@@ -153,8 +149,14 @@ namespace FeedReader {
 		public override int command_line(ApplicationCommandLine command_line)
 		{
 			var args = command_line.get_arguments();
+			string verifier = "";
 			if(args.length > 1)
-				callback(Utils.parseArg(args[1]));
+			{
+				logger.print(LogMessage.DEBUG, "FeedReader: callback %s".printf(args[1]));
+				var type = Utils.parseArg(args[1], out verifier);
+				callback(type , verifier);
+			}
+
 
 
 			activate();

@@ -159,7 +159,17 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         viewport.add(service_list);
         service_scroll.add(viewport);
 
-        // FIXME: add all existing accounts
+        var list = share.getAccounts();
+
+        foreach(var account in list)
+        {
+        	var row = new ServiceRow(account.getType(), account.getID(), true, account.getUsername());
+			row.Logut.connect(() => {
+				removeRow(row, service_list);
+			});
+			service_list.add(row);
+			row.reveal();
+        }
 
         var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
         addAccount.set_relief(Gtk.ReliefStyle.NONE);
@@ -180,8 +190,8 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			}
 
 			var popover = new ServiceSettingsPopover(addAccount);
-			popover.newAccount.connect((type, name) => {
-				var row = new ServiceRow(name, type);
+			popover.newAccount.connect((type) => {
+				var row = new ServiceRow(type, null, false);
 				row.Logut.connect(() => {
 					removeRow(row, service_list);
 				});

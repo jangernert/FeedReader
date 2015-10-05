@@ -316,7 +316,7 @@ public class FeedReader.Utils : GLib.Object {
 	}
 
 
-	public static OAuth parseArg(string arg)
+	public static OAuth parseArg(string arg, out string verifier)
 	{
 		if(arg == PocketSecrets.oauth_callback)
 			return OAuth.POCKET;
@@ -331,8 +331,7 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			int verifier_start = arg.index_of("=")+1;
 			int verifier_end = arg.index_of("&", verifier_start);
-			string verifier = arg.substring(verifier_start, verifier_end-verifier_start);
-			//settings_readability.set_string("oauth-verifier", verifier);
+			verifier = arg.substring(verifier_start, verifier_end-verifier_start);
 			return OAuth.READABILITY;
 		}
 

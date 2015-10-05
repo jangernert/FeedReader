@@ -74,6 +74,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Model/Category.vala
     src/Model/Article.vala
     src/Model/Tag.vala
+    src/Model/ShareAccount.vala
     src/Constants.vala
     src/DB_Manager.vala
     src/Utils.vala

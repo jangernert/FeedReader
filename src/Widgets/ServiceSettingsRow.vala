@@ -17,6 +17,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 
 	private string m_name;
     private OAuth m_type;
+    private Gtk.Revealer m_revealer;
     private Gtk.Label m_label;
     private Gtk.Box m_box;
 	private Gtk.Box m_labelBox;
@@ -29,11 +30,13 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 	private Gtk.Entry m_passEntry;
 	private bool m_isLoggedIN;
 	private Gtk.InfoBar m_errorBar;
-	private Gtk.Revealer m_revealer;
+	private Gtk.Revealer m_login_revealer;
 	private string m_id;
+	public signal void Logut();
 
 	public ServiceRow(string serviceName, OAuth type)
 	{
+		m_id = share.newAccount(type);
 		m_name = serviceName;
         m_type = type;
 		m_isLoggedIN = false;
@@ -87,9 +90,9 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
         grid.attach(m_userEntry, 1, 1, 1, 1);
         grid.attach(m_passEntry, 1, 2, 1, 1);
 
-		m_revealer = new Gtk.Revealer();
-		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.add(grid);
+		m_login_revealer = new Gtk.Revealer();
+		m_login_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+		m_login_revealer.add(grid);
 		//------------------------------------------------
 
 		m_eventbox = new Gtk.EventBox();
@@ -161,10 +164,16 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.set_size_request(0, 2);
 		seperator_box.pack_start(m_box, true, true, 0);
-		seperator_box.pack_start(m_revealer, false, false, 0);
+		seperator_box.pack_start(m_login_revealer, false, false, 0);
 		seperator_box.pack_start(separator, false, false, 0);
 
-		this.add(seperator_box);
+
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+		m_revealer.add(seperator_box);
+		m_revealer.set_reveal_child(false);
+
+		this.add(m_revealer);
 		this.show_all();
 
 		/*if(m_serviceSettings.get_boolean("is-logged-in"))
@@ -191,7 +200,6 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 	{
 		if(m_isLoggedIN)
 			m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_RIGHT);
-
 		return false;
 	}
 
@@ -214,9 +222,11 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 	private void logout()
 	{
 		share.logout(m_id);
+		share.deleteAccount(m_id);
 		m_isLoggedIN = false;
 		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 		m_labelStack.set_visible_child_name("loggedOUT");
+		Logut();
 	}
 
 	private void doOAuth()
@@ -240,12 +250,12 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 
 	private void doXAuth()
 	{
-		if(m_revealer.get_child_revealed())
+		if(m_login_revealer.get_child_revealed())
 		{
 			if(share.getAccessToken(m_id,  m_userEntry.get_text(), m_passEntry.get_text()))
 			{
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-				m_revealer.set_reveal_child(false);
+				m_login_revealer.set_reveal_child(false);
 				m_isLoggedIN = true;
 				m_iconStack.set_visible_child_name("loggedIN");
 				//m_label.set_label(m_serviceSettings.get_string("username"));
@@ -259,10 +269,31 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		}
 		else
 		{
-			m_revealer.set_reveal_child(true);
+			m_login_revealer.set_reveal_child(true);
 			m_login_button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 			m_userEntry.grab_focus();
 		}
+	}
+
+	public void reveal()
+	{
+		m_revealer.set_reveal_child(true);
+		this.show_all();
+	}
+
+	public void unreveal()
+	{
+		m_revealer.set_reveal_child(false);
+	}
+
+	public bool isLoggedIn()
+	{
+		return m_isLoggedIN;
+	}
+
+	public string getID()
+	{
+		return m_id;
 	}
 
 }

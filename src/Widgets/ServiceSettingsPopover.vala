@@ -16,7 +16,7 @@
 public class FeedReader.ServiceSettingsPopover : Gtk.Popover {
 
 	private Gtk.ListBox m_list;
-	public signal void newAccount(OAuth type);
+	public signal void newAccount(OAuth type, string name);
 
 
 	public ServiceSettingsPopover(Gtk.Widget widget)
@@ -25,7 +25,7 @@ public class FeedReader.ServiceSettingsPopover : Gtk.Popover {
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
         m_list.row_activated.connect((row) => {
-			newAccount(((ServiceSettingsPopoverRow)row).getType());
+			newAccount(((ServiceSettingsPopoverRow)row).getType(), ((ServiceSettingsPopoverRow)row).getName());
 			this.hide();
         });
 
@@ -56,6 +56,7 @@ public class FeedReader.ServiceSettingsPopoverRow : Gtk.ListBoxRow {
 
 	public ServiceSettingsPopoverRow(string serviceName, OAuth type, string iconName)
 	{
+		m_type = type;
 		m_name = serviceName;
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         m_box.margin = 3;
@@ -79,6 +80,11 @@ public class FeedReader.ServiceSettingsPopoverRow : Gtk.ListBoxRow {
     public OAuth getType()
     {
         return m_type;
+    }
+
+    public string getName()
+    {
+    	return m_name;
     }
 
 }

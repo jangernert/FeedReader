@@ -167,9 +167,26 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		service_list.add(addAccount);
 
 		addAccount.clicked.connect(() => {
+
+			var children = service_list.get_children();
+			foreach(Gtk.Widget row in children)
+			{
+				var tmpRow = row as ServiceRow;
+				if(tmpRow != null && !tmpRow.isLoggedIn())
+				{
+					share.deleteAccount(tmpRow.getID());
+					removeRow(tmpRow, service_list);
+				}
+			}
+
 			var popover = new ServiceSettingsPopover(addAccount);
-			popover.newAccount.connect(() => {
-				// FIXME: add new account
+			popover.newAccount.connect((type, name) => {
+				var row = new ServiceRow(name, type);
+				row.Logut.connect(() => {
+					removeRow(row, service_list);
+				});
+				service_list.insert(row, 0);
+				row.reveal();
 			});
 		});
 
@@ -189,4 +206,13 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         headline.get_style_context().add_class("bold");
         return headline;
     }
+
+    public void removeRow(ServiceRow row, Gtk.ListBox list)
+	{
+		row.unreveal();
+		GLib.Timeout.add(700, () => {
+		    list.remove(row);
+			return false;
+		});
+	}
 }

@@ -29,7 +29,19 @@ public class FeedReader.Share : GLib.Object {
 	{
 		string id = Utils.string_random(12);
 
+		switch(type)
+        {
+            case OAuth.READABILITY:
+                m_readability.append(new ReadabilityAPI(id));
+				break;
+        }
+
 		return id;
+	}
+
+	public void deleteAccount(string m_id)
+	{
+
 	}
 
 	public bool getRequestToken(string accountID)

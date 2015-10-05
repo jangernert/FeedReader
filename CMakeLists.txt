@@ -94,6 +94,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ModeButton.vala
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/ResetPage.vala
+    src/Widgets/ServiceSettingsPopover.vala
     src/Widgets/ServiceSettingsRow.vala
     src/Widgets/ShareRow.vala
     src/Widgets/ServiceInfo.vala
@@ -109,8 +110,8 @@ vala_precompile(UI ${EXEC_NAME}
     src/ContentGrabber/stringPair.vala
     src/Backends/ttrss/TTRSS_Message.vala
     src/Share/ReadabilityAPI.vala
-    src/Share/PocketAPI.vala
-    src/Share/InstapaperAPI.vala
+    #src/Share/PocketAPI.vala
+    #src/Share/InstapaperAPI.vala
     src/Share/share.vala
 
 # tell what libraries to use when compiling

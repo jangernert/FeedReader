@@ -15,7 +15,52 @@
 
 public class FeedReader.Share : GLib.Object {
 
-    private ReadabilityAPI m_readability;
+	private GLib.List<ReadabilityAPI> m_readability;
+	//private GLib.List<PocketAPI> m_pocket;
+	//private GLib.List<InstaAPI> m_instapaper;
+
+	public Share()
+	{
+		// FIXME: go through and init every account
+	}
+
+
+	public string newAccount(OAuth type)
+	{
+		string id = Utils.string_random(12);
+
+		return id;
+	}
+
+	public bool getRequestToken(string accountID)
+	{
+		return false;
+	}
+
+	public bool getAccessToken(string accountID, string username = "", string password = "")
+	{
+		return false;
+	}
+
+
+	public void loginPage(string accountID)
+	{
+		//Gtk.show_uri(Gdk.Screen.get_default(), Utils.buildURL(m_type), Gdk.CURRENT_TIME);
+	}
+
+
+	public void logout(string accountID)
+	{
+
+	}
+
+
+	public bool addBookmark(string accountID, string url)
+	{
+		return false;
+	}
+
+    /*private ReadabilityAPI m_readability;
     private PocketAPI m_pocket;
     private InstaAPI m_instapaper;
 
@@ -24,10 +69,6 @@ public class FeedReader.Share : GLib.Object {
         m_readability = new ReadabilityAPI();
         m_pocket = new PocketAPI();
         m_instapaper = new InstaAPI();
-
-        //checkAccessTokens.begin((obj, res) => {
-        //    checkAccessTokens.end(res);
-        //});
     }
 
     public async void checkAccessTokens()
@@ -117,5 +158,5 @@ public class FeedReader.Share : GLib.Object {
             default:
                 return false;
         }
-    }
+    }*/
 }

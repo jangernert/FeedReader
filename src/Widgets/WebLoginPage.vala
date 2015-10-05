@@ -36,7 +36,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	public void loadPage(OAuth serviceType)
 	{
 		m_serviceType = serviceType;
-		m_url = Utils.buildURL(serviceType);
+		m_url = buildURL(serviceType);
 		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + m_url);
 		m_view.load_uri(m_url);
 	}
@@ -96,5 +96,21 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		}
 		else
 			return false;
+	}
+
+	public static string buildURL(OAuth serviceType)
+	{
+		string url = "";
+
+		switch(serviceType)
+		{
+			case OAuth.FEEDLY:
+				url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
+					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+				break;
+		}
+
+		logger.print(LogMessage.DEBUG, url);
+		return url;
 	}
 }

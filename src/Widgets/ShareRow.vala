@@ -18,18 +18,18 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 	private string m_name;
     private Gtk.Label m_label;
     private Gtk.Box m_box;
-    private OAuth m_type;
+    private string m_id;
 
-	public ShareRow(string serviceName, OAuth type)
+	public ShareRow(string serviceName, OAuth type, string id)
 	{
+		m_id = id;
 		m_name = serviceName;
-        m_type = type;
 
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         m_box.margin = 3;
         string iconName = "";
 
-        switch (m_type)
+        switch(type)
         {
             case OAuth.READABILITY:
                 iconName = "feed-share-readability";
@@ -57,9 +57,9 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 		this.show_all();
 	}
 
-    public OAuth getType()
+    public string getID()
     {
-        return m_type;
+        return m_id;
     }
 
 }

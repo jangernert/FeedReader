@@ -120,7 +120,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var db_settings = headline(_("Database:"));
 
-        var drop_articles = new SettingDropbox(_("Drop articles after"), settings_general, "drop-articles-after",
+        var drop_articles = new SettingDropbox(_("Delete articles after"), settings_general, "drop-articles-after",
 												{_("Never"), _("1 Week"), _("1 Month"), _("6 Months")});
 
 		var service_settings = headline(_("Additional Functionality:"));
@@ -159,13 +159,19 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         viewport.add(service_list);
         service_scroll.add(viewport);
 
-        var readabilityRow = new ServiceRow("Readability.com", OAuth.READABILITY);
-        var pocketRow = new ServiceRow("Pocket", OAuth.POCKET);
-        var instaRow = new ServiceRow("Instapaper", OAuth.INSTAPAPER);
-        service_list.insert(readabilityRow, -1);
-        service_list.insert(pocketRow, -1);
-        service_list.insert(instaRow, -1);
+        // FIXME: add all existing accounts
 
+        var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
+        addAccount.set_relief(Gtk.ReliefStyle.NONE);
+        addAccount.get_style_context().add_class("addServiceButton");
+		service_list.add(addAccount);
+
+		addAccount.clicked.connect(() => {
+			var popover = new ServiceSettingsPopover(addAccount);
+			popover.newAccount.connect(() => {
+				// FIXME: add new account
+			});
+		});
 
     	var serviceBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         serviceBox.expand = true;

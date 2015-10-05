@@ -24,7 +24,7 @@ public class FeedReader.ReadabilityParserAPI : GLib.Object {
 
     public ReadabilityParserAPI(string url)
     {
-        m_token = settings_readability.get_string("parser-api-key");
+        m_token = settings_tweaks.get_string("parser-api-key");
         m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser ();

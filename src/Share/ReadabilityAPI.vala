@@ -16,11 +16,22 @@
 public class FeedReader.ReadabilityAPI : GLib.Object {
 
     private Rest.OAuthProxy m_oauth;
+    private GLib.Settings m_settings;
+    private string m_id;
+    private string m_requestToken;
+    private string m_accessToken;
+    private string m_verifier;
+    private string m_secret;
+    private string m_username;
 
-    public ReadabilityAPI()
+    public ReadabilityAPI(string id, string settings_path = "")
     {
-        if(settings_readability.get_string("oauth-access-token") == "")
+    	m_id = id;
+
+        if(settings_path == "")
         {
+        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
+
             m_oauth = new Rest.OAuthProxy (
     			ReadabilitySecrets.oauth_consumer_key,
     			ReadabilitySecrets.oauth_consumer_secret,
@@ -29,16 +40,23 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         }
         else
         {
+        	m_settings = new GLib.Settings(settings_path);
+
             m_oauth = new Rest.OAuthProxy.with_token (
     			ReadabilitySecrets.oauth_consumer_key,
     			ReadabilitySecrets.oauth_consumer_secret,
-                settings_readability.get_string("oauth-access-token"),
-                settings_readability.get_string("oauth-access-token-secret"),
+                m_settings.get_string("oauth-access-token"),
+                m_settings.get_string("oauth-access-token-secret"),
     			ReadabilitySecrets.base_uri,
     			false);
 
-            settings_readability.set_boolean("is-logged-in", true);
+            m_settings.set_boolean("is-logged-in", true);
         }
+    }
+
+    ~ReadabilityAPI()
+    {
+    	m_settings.set_boolean("is-logged-in", false);
     }
 
     public bool getRequestToken()
@@ -53,26 +71,26 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
             return false;
 		}
 
-        settings_readability.set_string("oauth-request-token", m_oauth.get_token());
+		m_requestToken = m_oauth.get_token();
         return true;
     }
 
-    public bool getAccessToken()
+    public bool getAccessToken(string verifier = "")
     {
-        if(settings_readability.get_string("oauth-verifier") == "")
+        if(verifier == "")
         {
             return false;
         }
 
         try {
-			m_oauth.access_token("oauth/access_token", settings_readability.get_string("oauth-verifier"));
+			m_oauth.access_token("oauth/access_token", verifier);
 		} catch (Error e) {
 			logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get access token: " + e.message);
             return false;
 		}
 
-        settings_readability.set_string("oauth-access-token", m_oauth.get_token());
-        settings_readability.set_string("oauth-access-token-secret", m_oauth.get_token_secret());
+		m_accessToken = m_oauth.get_token();
+		m_secret = m_oauth.get_token_secret();
         getUsername();
 
         return true;
@@ -127,28 +145,41 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         var root_object = parser.get_root().get_object();
         if(root_object.has_member("username"))
         {
-            string username = root_object.get_string_member("username");
-            settings_readability.set_string("username", username);
+            m_username = root_object.get_string_member("username");
             login = true;
+
+            if(m_settings != null)
+            {
+            	m_settings.set_string("username", m_username);
+            	return login;
+            }
         }
 
-        settings_readability.set_boolean("is-logged-in", login);
+		if(m_settings != null)
+        	m_settings.set_boolean("is-logged-in", login);
         return login;
     }
 
     private bool isLoggedIn()
     {
-        return settings_readability.get_boolean("is-logged-in");
+        return m_settings.get_boolean("is-logged-in");
+    }
+
+    private void writeData()
+    {
+		m_settings.set_string("oauth-access-token", m_accessToken);
+		m_settings.set_string("oauth-access-token-secret", m_secret);
+		m_settings.set_string("username", m_username);
+		m_settings.set_boolean("is-logged-in", true);
     }
 
     public bool logout()
     {
-        settings_readability.set_string("username", "");
-        settings_readability.set_string("oauth-access-token", "");
-        settings_readability.set_string("oauth-access-token-secret", "");
-        settings_readability.set_string("oauth-verifier", "");
-        settings_readability.set_string("oauth-request-token", "");
-        settings_readability.set_boolean("is-logged-in", false);
+    	var keys = m_settings.list_keys();
+		foreach(string key in keys)
+		{
+			m_settings.reset(key);
+		}
 
         m_oauth = new Rest.OAuthProxy (
             ReadabilitySecrets.oauth_consumer_key,
@@ -157,5 +188,10 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
             false);
 
         return true;
+    }
+
+    public string getURL()
+    {
+		return	ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + m_settings.get_string("oauth-request-token");
     }
 }

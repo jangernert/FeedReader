@@ -66,7 +66,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
     private void populateList()
     {
-        if(settings_readability.get_boolean("is-logged-in"))
+        /*if(settings_readability.get_boolean("is-logged-in"))
         {
             var readabilityRow = new ShareRow("Readability", OAuth.READABILITY);
             m_list.add(readabilityRow);
@@ -85,7 +85,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
             var instaRow = new ShareRow("Instapaper", OAuth.INSTAPAPER);
             m_list.add(instaRow);
             m_haveServices = true;
-        }
+        }*/
     }
 
     private void shareURL(Gtk.ListBoxRow row)
@@ -93,13 +93,13 @@ public class FeedReader.SharePopover : Gtk.Popover {
         this.hide();
         var shareRow = row as ShareRow;
         string url = "";
-        OAuth type = shareRow.getType();
+        string id = shareRow.getID();
 
         var window = this.get_toplevel() as readerUI;
         if(window != null)
             url = window.getContent().getSelectedURL();
 
-        share.addBookmark(type, url);
+        share.addBookmark(id, url);
         logger.print(LogMessage.DEBUG, "bookmark: " + url);
     }
 }

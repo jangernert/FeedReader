@@ -45,6 +45,7 @@ GtkBox.feed-row {
 	outline: none;
 }
 
+.addServiceButton,
 GtkListBoxRow {
 	border: none;
 	border-radius: 0px;
@@ -125,4 +126,9 @@ GtkScrolledWindow GtkViewport.servicebox {
 
 .h3 {
 	font-size: large;
+}
+
+.h4 {
+	font-size: medium;
+	font-weight: bold
 }

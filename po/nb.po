@@ -8,14 +8,14 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-09-26 19:01+0200\n"
-"PO-Revision-Date: 2014-11-02 21:12+0000\n"
-"Last-Translator: JeanLuc <Unknown>\n"
+"PO-Revision-Date: 2015-10-05 17:35+0000\n"
+"Last-Translator: Harald H. <haarektrans@gmail.com>\n"
 "Language-Team: Norwegian Bokmal <nb@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-09-27 05:43+0000\n"
-"X-Generator: Launchpad (build 17754)\n"
+"X-Launchpad-Export-Date: 2015-10-06 06:08+0000\n"
+"X-Generator: Launchpad (build 17796)\n"
 
 #: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
 msgid "FeedReader"
@@ -23,119 +23,124 @@ msgstr "FeedReader"
 
 #: ../src/Constants.vala:166
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Skrivebordsklient for ulike RSS-tjenester"
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
-msgstr ""
+msgstr "Ingen forhåndsvisning tilgjengelig"
 
 #: ../src/Utils.vala:94
 msgid "No Text available for this article :("
-msgstr ""
+msgstr "Ingen tekst tilgjengelig for denne artikkelen :("
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:69
 msgid "no Author"
-msgstr ""
+msgstr "ingen forfatter"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:81
 msgid "no Title"
-msgstr ""
+msgstr "ingen tittel"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:93
 msgid "no Preview"
-msgstr ""
+msgstr "ingen forhåndsvisning"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:105
 msgid "no content"
-msgstr ""
+msgstr "uten innhold"
 
 #: ../src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "Om FeedReader"
 
 #: ../src/Widgets/TagPopover.vala:40
 msgid "Add Tag:"
-msgstr ""
+msgstr "Legg til merkelapp:"
 
 #: ../src/Widgets/TagPopover.vala:52
 msgid "Tags:"
-msgstr ""
+msgstr "Merkelapper:"
 
 #: ../src/Widgets/TagPopover.vala:129
 msgid "add Tag"
-msgstr ""
+msgstr "legg til merkelapp"
 
 #: ../src/Widgets/MainWindow.vala:358
 msgid "Please select a service first"
-msgstr ""
+msgstr "Velg først en tjeneste"
 
 #: ../src/Widgets/MainWindow.vala:361
 msgid "Please enter a valid username"
-msgstr ""
+msgstr "Angi et gyldig brukernavn"
 
 #: ../src/Widgets/MainWindow.vala:364
 msgid "Please enter a valid password"
-msgstr ""
+msgstr "Angi et gyldig passord"
 
 #: ../src/Widgets/MainWindow.vala:367
 msgid "Please enter a valid URL"
-msgstr ""
+msgstr "Angi en gyldig nettadresse"
 
 #: ../src/Widgets/MainWindow.vala:370
 msgid "Please enter your Login details"
-msgstr ""
+msgstr "Angi dine innloggingsdetaljer"
 
 #: ../src/Widgets/MainWindow.vala:373
 msgid "Sorry, something went wrong."
-msgstr ""
+msgstr "Beklager, noe gikk galt."
 
 #: ../src/Widgets/MainWindow.vala:376
 msgid "Either your username or the password are not correct."
-msgstr ""
+msgstr "Enten er ditt brukernavn eller passord feil."
 
 #: ../src/Widgets/MainWindow.vala:379
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
+"Ingen forbindelse til tjeneren. Kontroller internettforbindelsen din og "
+"lenken til tjeneren."
 
 #: ../src/Widgets/MainWindow.vala:382
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
+"API-tilgang er deaktivert på tjeneren. Vennligst aktiver dette først!"
 
 #: ../src/Widgets/MainWindow.vala:385
 msgid "No valid CA certificate available!"
-msgstr ""
+msgstr "Ingen gyldig CA-sertifikat tilgjengelig!"
 
 #: ../src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
-msgstr ""
+msgstr "Endre konto?"
 
 #: ../src/Widgets/ResetPage.vala:37
 msgid ""
 "You are about to change the account you want FeedReader to use.\n"
 " This means deleting all local data of your old account."
 msgstr ""
+"Du er i ferd med å endre kontoen som du vil at FeedReader skal bruke.\n"
+"Dette innebærer å slette alle lokale data fra den gamle kontoen."
 
 #: ../src/Widgets/ResetPage.vala:41
 msgid "New account"
-msgstr ""
+msgstr "Ny konto"
 
 #: ../src/Widgets/ResetPage.vala:44
 msgid "Waiting for current sync to finish"
-msgstr ""
+msgstr "Venter på at pågående synkronisering skal fullføre"
 
 #: ../src/Widgets/ResetPage.vala:54
 msgid "I changed my mind"
-msgstr ""
+msgstr "Jeg har ombestemt meg"
 
 #: ../src/Widgets/UpdateButton.vala:35
 msgid "Update Feeds"
-msgstr ""
+msgstr "Oppdater nyhetskilder"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:61
 msgid "Username or Password incorrect"
-msgstr ""
+msgstr "Brukernavn eller passord er feil"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:86 ../src/Widgets/LoginPage.vala:127
 #: ../src/Widgets/LoginPage.vala:196
@@ -150,275 +155,279 @@ msgstr "Passord:"
 #: ../src/Widgets/ServiceSettingsRow.vala:103 ../src/Widgets/LoginPage.vala:78
 #: ../src/Widgets/SharePopover.vala:30
 msgid "Login"
-msgstr ""
+msgstr "Logg inn"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:108
 msgid "Logout"
-msgstr ""
+msgstr "Logg ut"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:237
 msgid "waiting"
-msgstr ""
+msgstr "venter"
 
 #: ../src/Widgets/ArticleView.vala:48
 msgid "No Article selected."
-msgstr "Kein Artikel ausgewählt"
+msgstr "Ingen artikkel valgt."
 
 #: ../src/Widgets/ArticleView.vala:140
 msgid "Not available"
-msgstr ""
+msgstr "Ikke tilgjengelig"
 
 #: ../src/Widgets/FeedList.vala:476 ../src/DB_Manager.vala:684
 msgid "Uncategorized"
-msgstr ""
+msgstr "Ukategorisert"
 
 #: ../src/Widgets/SpringCleanPage.vala:28
 msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
 msgstr ""
+"FeedReader rengjør databasen.\n"
+"Dette burde ikke ta for lang tid."
 
 #: ../src/Widgets/ReaderHeaderbar.vala:49
 msgid "Mark article (un)starred"
-msgstr ""
+msgstr "Merk eller fjern stjerne fra artikkel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:55
 msgid "Mark article (un)read"
-msgstr ""
+msgstr "Merk artikkel som (u)lest"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
-msgstr ""
+msgstr "Vis alle artikler"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
-msgstr ""
+msgstr "Vis kun uleste artikler"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
-msgstr ""
+msgstr "Vis kun stjernemerkede artikler"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:89
 msgid "Tag Article"
-msgstr ""
+msgstr "Merk artikkel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:99
 msgid "Share Article"
-msgstr ""
+msgstr "Del artikkel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:133
 msgid "Search Articles"
-msgstr ""
+msgstr "Søk artikler"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:140
 #: ../src/Widgets/ReaderHeaderbar.vala:151
 msgid "Settings"
-msgstr ""
+msgstr "Innstillinger"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:142
 msgid "Change Account"
-msgstr ""
+msgstr "Endre konto"
 
 #: ../src/Widgets/LoginPage.vala:36
 msgid "Tiny Tiny RSS"
-msgstr ""
+msgstr "Tiny Tiny RSS"
 
 #: ../src/Widgets/LoginPage.vala:36
 msgid "Feedly"
-msgstr ""
+msgstr "Feedly"
 
 #: ../src/Widgets/LoginPage.vala:36
 msgid "OwnCloud"
-msgstr ""
+msgstr "OwnCloud"
 
 #: ../src/Widgets/LoginPage.vala:40
 msgid "Where are your feeds?"
-msgstr ""
+msgstr "Hvor er dine nyhetskilder?"
 
 #: ../src/Widgets/LoginPage.vala:44
 msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
+msgstr "Velg RSS-tjenesten du bruker og logg inn for å komme i gang."
 
 #: ../src/Widgets/LoginPage.vala:109
 msgid "No service selected."
-msgstr ""
+msgstr "Ingen tjeneste valgt."
 
 #: ../src/Widgets/LoginPage.vala:126
 msgid "TinyTinyRSS URL:"
-msgstr ""
+msgstr "TinyTinyRSS URL:"
 
 #: ../src/Widgets/LoginPage.vala:176
 msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
 msgstr ""
+"Du vil bli videresendt til Feedlys nettside hvor du kan bruke din Facebook-, "
+"Google-, Twitter-, Microsoft- eller Evernote-konto for å logge inn."
 
 #: ../src/Widgets/LoginPage.vala:195
 msgid "OwnCloud URL:"
-msgstr ""
+msgstr "OwnCloud URL:"
 
 #: ../src/Widgets/SettingsDialog.vala:65
 msgid "Interface"
-msgstr ""
+msgstr "Grensesnitt"
 
 #: ../src/Widgets/SettingsDialog.vala:66
 msgid "Internals"
-msgstr ""
+msgstr "Interne"
 
 #: ../src/Widgets/SettingsDialog.vala:67
 msgid "Services"
-msgstr ""
+msgstr "Tjenester"
 
 #: ../src/Widgets/SettingsDialog.vala:77
 msgid "Close"
-msgstr ""
+msgstr "Lukk"
 
 #: ../src/Widgets/SettingsDialog.vala:86
 msgid "Feed List:"
-msgstr ""
+msgstr "Nyhetsliste:"
 
 #: ../src/Widgets/SettingsDialog.vala:93
 msgid "Only show feeds"
-msgstr ""
+msgstr "Vis kun nyhetskilder"
 
 #: ../src/Widgets/SettingsDialog.vala:109
 msgid "Only show unread"
-msgstr ""
+msgstr "Vis kun uleste"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "Sort FeedList by"
-msgstr ""
+msgstr "Sorter nyhetsliste etter"
 
 #: ../src/Widgets/SettingsDialog.vala:131
 #: ../src/Widgets/SettingsDialog.vala:171
 msgid "Received"
-msgstr ""
+msgstr "Mottatt"
 
 #: ../src/Widgets/SettingsDialog.vala:134
 msgid "Alphabetically"
-msgstr ""
+msgstr "Alfabetisk"
 
 #: ../src/Widgets/SettingsDialog.vala:154
 msgid "Article List:"
-msgstr ""
+msgstr "Artikkelliste:"
 
 #: ../src/Widgets/SettingsDialog.vala:161
 msgid "Sort articles by"
-msgstr ""
+msgstr "Sorter artikler etter"
 
 #: ../src/Widgets/SettingsDialog.vala:168
 msgid "Date"
-msgstr ""
+msgstr "Dato"
 
 #: ../src/Widgets/SettingsDialog.vala:194
 msgid "Newest first"
-msgstr ""
+msgstr "Nyeste først"
 
 #: ../src/Widgets/SettingsDialog.vala:211
 msgid "Article View:"
-msgstr ""
+msgstr "Artikkelvisning:"
 
 #: ../src/Widgets/SettingsDialog.vala:218
 msgid "Theme"
-msgstr ""
+msgstr "Utseende"
 
 #: ../src/Widgets/SettingsDialog.vala:225
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #: ../src/Widgets/SettingsDialog.vala:228
 msgid "Spring"
-msgstr ""
+msgstr "Vår"
 
 #: ../src/Widgets/SettingsDialog.vala:231
 msgid "Midnight"
-msgstr ""
+msgstr "Midnatt"
 
 #: ../src/Widgets/SettingsDialog.vala:234
 msgid "Parchment"
-msgstr ""
+msgstr "Pergament"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "Sync:"
-msgstr ""
+msgstr "Synkroniser:"
 
 #: ../src/Widgets/SettingsDialog.vala:278
 msgid "Number of articles"
-msgstr ""
+msgstr "Antall artikler"
 
 #: ../src/Widgets/SettingsDialog.vala:291
 msgid "Every (seconds)"
-msgstr ""
+msgstr "Hvert (sekund)"
 
 #: ../src/Widgets/SettingsDialog.vala:307
 msgid "Database:"
-msgstr ""
+msgstr "Database:"
 
 #: ../src/Widgets/SettingsDialog.vala:314
 msgid "Drop articles after"
-msgstr ""
+msgstr "Dropp artikler etter"
 
 #: ../src/Widgets/SettingsDialog.vala:321
 msgid "Never"
-msgstr ""
+msgstr "Aldri"
 
 #: ../src/Widgets/SettingsDialog.vala:324
 msgid "1 Week"
-msgstr ""
+msgstr "1 uke"
 
 #: ../src/Widgets/SettingsDialog.vala:327
 msgid "1 Month"
-msgstr ""
+msgstr "1 måned"
 
 #: ../src/Widgets/SettingsDialog.vala:330
 msgid "6 Months"
-msgstr ""
+msgstr "6 måneder"
 
 #: ../src/Widgets/SettingsDialog.vala:367
 msgid "Additional Functionality:"
-msgstr ""
+msgstr "Ytterligere funksjoner:"
 
 #: ../src/Widgets/SettingsDialog.vala:374
 msgid "Content Grabber"
-msgstr ""
+msgstr "Innholdsskraper"
 
 #: ../src/Widgets/SettingsDialog.vala:381
 msgid "None"
-msgstr ""
+msgstr "Ingen"
 
 #: ../src/Widgets/SettingsDialog.vala:384
 msgid "Built in grabber"
-msgstr ""
+msgstr "Innebygget innholdsskraper"
 
 #: ../src/Widgets/ArticleList.vala:58
 msgid "None of the %i Articles in the database fit the current filters."
-msgstr ""
+msgstr "Ingen av de %i artiklene i databasen passer med gjeldende filtre."
 
 #: ../src/Widgets/ArticleList.vala:72
 msgid "Sync is in progress. Articles should appear any second."
-msgstr ""
+msgstr "Synkronisering pågår. Artiklene bør vises ganske snart."
 
 #: ../src/Widgets/SharePopover.vala:36
 msgid "Please"
-msgstr ""
+msgstr "Vennligst"
 
 #: ../src/Widgets/SharePopover.vala:38
 msgid "to a service to share this article."
-msgstr ""
+msgstr "til en tjeneste for å dele denne artikkelen."
 
 #: ../src/Backends/ttrss/TTRSS_API.vala:468
 #: ../src/Backends/ttrss/TTRSS_API.vala:525
 msgid "not found"
-msgstr ""
+msgstr "ikke funnet"
 
 #: ../src/Backends/FeedServer.vala:739
 msgid "There is 1 new article"
-msgstr "Ein neuer Artikel"
+msgstr "Det er 1 ny artikkel"
 
 #: ../src/Backends/FeedServer.vala:741
 msgid "There are %u new articles"
-msgstr ""
+msgstr "Det er %u nye artikler"
 
 #: ../src/Backends/FeedServer.vala:743
 msgid "New Articles"
-msgstr "Neue Artikel"
+msgstr "Nye artikler"

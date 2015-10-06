@@ -19,14 +19,25 @@ public class FeedReader.InstaAPI : GLib.Object {
 	private Soup.Message m_message_soup;
     private string m_contenttype;
     private Rest.OAuthProxy m_oauth;
+    private GLib.Settings m_settings;
+    private string m_id;
+    private string m_accessToken;
+    private string m_accessToken_secret;
+    private string m_username;
+    private string m_userID;
+    private string m_passwd;
+    private bool m_loggedIn;
 
-    public InstaAPI()
+    public InstaAPI(string id, string settings_path = "")
     {
+    	m_id = id;
 		m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded";
 
-        if(settings_instapaper.get_string("oauth-token") == "")
+        if(settings_path == "")
         {
+        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
+
             m_oauth = new Rest.OAuthProxy (
                 InstapaperSecrets.oauth_consumer_key,
                 InstapaperSecrets.oauth_consumer_secret,
@@ -35,19 +46,24 @@ public class FeedReader.InstaAPI : GLib.Object {
         }
         else
         {
+        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", settings_path);
+        	m_username = m_settings.get_string("username");
+        	m_userID = m_settings.get_string("user-id");
+        	m_passwd = getPassword();
+
             m_oauth = new Rest.OAuthProxy.with_token (
     			InstapaperSecrets.oauth_consumer_key,
     			InstapaperSecrets.oauth_consumer_secret,
-                settings_instapaper.get_string("oauth-token"),
-                settings_instapaper.get_string("oauth-token-secret"),
+                m_settings.get_string("oauth-access-token"),
+                m_settings.get_string("oauth-access-token-secret"),
     			"https://www.instapaper.com/api/1/",
     			false);
 
-            if(settings_instapaper.get_string("user-id") != "")
+            if(m_settings.get_string("user-id") != "")
             {
-                if(getPassword() != "")
+                if(m_passwd != "")
                 {
-                    settings_instapaper.set_boolean("is-logged-in", true);
+                    m_loggedIn = true;
                 }
             }
         }
@@ -57,7 +73,7 @@ public class FeedReader.InstaAPI : GLib.Object {
     public bool checkLogin()
     {
         bool login = false;
-        string message = "username=" + settings_instapaper.get_string("username") + "&password=" + getPassword();
+        string message = "username=" + m_username + "&password=" + getPassword();
 
         m_message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/authenticate");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
@@ -78,33 +94,39 @@ public class FeedReader.InstaAPI : GLib.Object {
             login = true;
         }
 
-        settings_instapaper.set_boolean("is-logged-in", login);
+        m_loggedIn = true;
         return login;
     }
 
-    private void saveLogin(string username, string password)
+    private void writeData()
     {
-        settings_instapaper.set_string("username", username);
+    	m_settings.set_string("oauth-access-token", m_accessToken);
+    	m_settings.set_string("oauth-access-token-secret", m_accessToken_secret);
+        m_settings.set_string("username", m_username);
+        m_settings.set_string("user-id", m_userID);
+        setArray();
         var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
-                                        "Username", Secret.SchemaAttributeType.STRING);
+                                        "userID", Secret.SchemaAttributeType.STRING);
 
         var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-        attributes["Username"] = username;
+        attributes["userID"] = m_userID;
         try{
-            Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedreader: Instapaper login", password, null);
+            Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedreader: Instapaper login", m_passwd, null);
         }
         catch(GLib.Error e){}
     }
 
     public bool getAccessToken(string username, string password)
     {
+    	m_username = username;
+    	m_passwd = password;
         var call = m_oauth.new_call();
 		m_oauth.url_format = "https://www.instapaper.com/api/1/";
 		call.set_function ("oauth/access_token");
 		call.set_method("POST");
 		call.add_param("x_auth_mode", "client_auth");
-		call.add_param("x_auth_username", username);
-        call.add_param("x_auth_password", password);
+		call.add_param("x_auth_username", m_username);
+        call.add_param("x_auth_password", m_passwd);
         try{
             call.run();
         }
@@ -118,7 +140,7 @@ public class FeedReader.InstaAPI : GLib.Object {
 
         if(status != 200)
         {
-            settings_instapaper.set_boolean("is-logged-in", false);
+            m_loggedIn = false;
             return false;
         }
 
@@ -127,22 +149,19 @@ public class FeedReader.InstaAPI : GLib.Object {
         int secretEnd = response.index_of_char('&', secretStart);
         int tokenStart = response.index_of_char('=', secretEnd)+1;
 
-        string secret = response.substring(secretStart, secretEnd-secretStart);
-        string token = response.substring(tokenStart);
+        m_accessToken_secret = response.substring(secretStart, secretEnd-secretStart);
+        m_accessToken = response.substring(tokenStart);
 
-        m_oauth.set_token(token);
-        m_oauth.set_token_secret(secret);
+        m_oauth.set_token(m_accessToken);
+        m_oauth.set_token_secret(m_accessToken_secret);
 
-        settings_instapaper.set_string("oauth-token-secret", secret);
-        settings_instapaper.set_string("oauth-token", token);
-
-        if(settings_instapaper.get_string("user-id") == "")
+        if(m_userID == "" || m_userID == null)
         {
             getUserID();
         }
 
-        saveLogin(username, password);
-        settings_instapaper.set_boolean("is-logged-in", true);
+		writeData();
+        m_loggedIn = true;
         return true;
     }
 
@@ -174,22 +193,20 @@ public class FeedReader.InstaAPI : GLib.Object {
         var root_object = array.get_object_element(0);
         if(root_object.has_member("user_id"))
         {
-            var userID = root_object.get_int_member("user_id");
-            var username = root_object.get_string_member("username");
-            settings_instapaper.set_string("user-id", userID.to_string());
-            settings_instapaper.set_string("username", username);
+            m_userID = root_object.get_int_member("user_id").to_string();
+            m_username = root_object.get_string_member("username");
         }
         else if(root_object.has_member("error"))
         {
             logger.print(LogMessage.ERROR, root_object.get_int_member("error_code").to_string());
             logger.print(LogMessage.ERROR, root_object.get_string_member("message"));
-            settings_instapaper.set_boolean("is-logged-in", false);
+			m_loggedIn = false;
         }
     }
 
     public bool addBookmark(string url)
     {
-        string message  = "username=" + settings_instapaper.get_string("username")
+        string message  = "username=" + m_userID
                         + "&password=" + getPassword()
                         + "&url=" + GLib.Uri.escape_string(url);
 
@@ -213,11 +230,10 @@ public class FeedReader.InstaAPI : GLib.Object {
 
     private string getPassword()
     {
-        string username = settings_instapaper.get_string("username");
-        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "Username", Secret.SchemaAttributeType.STRING);
+        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "userID", Secret.SchemaAttributeType.STRING);
 
         var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-        attributes["Username"] = username;
+        attributes["userID"] = m_userID;
 
         string passwd = "";
         try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){}
@@ -227,20 +243,22 @@ public class FeedReader.InstaAPI : GLib.Object {
 
     public bool logout()
     {
-        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "Username", Secret.SchemaAttributeType.STRING);
+        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "userID", Secret.SchemaAttributeType.STRING);
 
         var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-        attributes["Username"] = settings_instapaper.get_string("username");
+        attributes["userID"] = m_userID;
 
         Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
             bool removed = Secret.password_clearv.end(async_res);
         });
 
-        settings_instapaper.set_string("oauth-token", "");
-        settings_instapaper.set_string("oauth-token-secret", "");
-        settings_instapaper.set_string("user-id", "");
-        settings_instapaper.set_string("username", "");
-        settings_instapaper.set_boolean("is-logged-in", false);
+        var keys = m_settings.list_keys();
+		foreach(string key in keys)
+		{
+			m_settings.reset(key);
+		}
+
+		deleteArray();
 
         m_oauth = new Rest.OAuthProxy (
             InstapaperSecrets.oauth_consumer_key,
@@ -249,6 +267,47 @@ public class FeedReader.InstaAPI : GLib.Object {
             false);
 
         return true;
+    }
+
+    private void setArray()
+    {
+		var array = settings_share.get_strv("instapaper");
+
+		foreach(string id in array)
+		{
+			if(id == m_id)
+				return;
+		}
+
+		array += m_id;
+		settings_share.set_strv("instapaper", array);
+    }
+
+
+    private void deleteArray()
+    {
+    	var array = settings_share.get_strv("instapaper");
+    	string[] array2 = {};
+
+    	foreach(string id in array)
+		{
+			if(id != m_id)
+				array2 += id;
+		}
+
+		settings_share.set_strv("instapaper", array2);
+    }
+
+
+    public string getID()
+    {
+    	return m_id;
+    }
+
+
+    public string getUsername()
+    {
+    	return m_username;
     }
 
 }

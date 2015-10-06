@@ -29,14 +29,6 @@
 
     <schema id="org.gnome.feedreader.share.account" gettext-domain="feedreader">
 
-        <key name="is-logged-in" type="b">
-            <default>false</default>
-            <summary></summary>
-            <description>
-
-            </description>
-        </key>
-
         <key name="oauth-access-token-secret" type="s">
             <default>""</default>
             <summary>Acces key to API</summary>
@@ -67,5 +59,6 @@
 
             </description>
         </key>
+
     </schema>
 </schemalist>

@@ -17,7 +17,7 @@ public class FeedReader.Share : GLib.Object {
 
 	private GLib.List<ReadabilityAPI> m_readability;
 	private GLib.List<PocketAPI> m_pocket;
-	//private GLib.List<InstaAPI> m_instapaper;
+	private GLib.List<InstaAPI> m_instapaper;
 
 	public Share()
 	{
@@ -33,6 +33,13 @@ public class FeedReader.Share : GLib.Object {
 		foreach(string id in pocketAccounts)
 		{
 			m_pocket.append(new PocketAPI(id, "/org/gnome/feedreader/share/pocket/%s/".printf(id)));
+		}
+
+		m_instapaper = new GLib.List<InstaAPI>();
+		var instaAccounts = settings_share.get_strv("instapaper");
+		foreach(string id in instaAccounts)
+		{
+			m_instapaper.append(new InstaAPI(id, "/org/gnome/feedreader/share/instapaper/%s/".printf(id)));
 		}
 	}
 
@@ -51,6 +58,11 @@ public class FeedReader.Share : GLib.Object {
 			list.append(new ShareAccount(account.getID(), OAuth.POCKET, account.getUsername()));
 		}
 
+		foreach(var account in m_instapaper)
+		{
+			list.append(new ShareAccount(account.getID(), OAuth.INSTAPAPER, account.getUsername()));
+		}
+
 		return list;
 	}
 
@@ -66,6 +78,9 @@ public class FeedReader.Share : GLib.Object {
 				break;
 			case OAuth.POCKET:
 				m_pocket.append(new PocketAPI(id));
+				break;
+			case OAuth.INSTAPAPER:
+				m_instapaper.append(new InstaAPI(id));
 				break;
         }
 
@@ -92,6 +107,15 @@ public class FeedReader.Share : GLib.Object {
 				return;
 			}
 		}
+
+		foreach(var api in m_instapaper)
+		{
+			if(api.getID() == accountID)
+			{
+				m_instapaper.remove(api);
+				return;
+			}
+		}
 	}
 
 
@@ -107,6 +131,15 @@ public class FeedReader.Share : GLib.Object {
 		}
 
 		foreach(var api in m_pocket)
+		{
+			if(api.getID() == accountID)
+			{
+				api.logout();
+				return;
+			}
+		}
+
+		foreach(var api in m_instapaper)
 		{
 			if(api.getID() == accountID)
 			{
@@ -134,6 +167,14 @@ public class FeedReader.Share : GLib.Object {
 			}
 		}
 
+		foreach(var api in m_instapaper)
+		{
+			if(api.getID() == accountID)
+			{
+				return true;
+			}
+		}
+
 
 		return false;
 	}
@@ -153,6 +194,14 @@ public class FeedReader.Share : GLib.Object {
 			if(api.getID() == accountID)
 			{
 				return api.getAccessToken();
+			}
+		}
+
+		foreach(var api in m_instapaper)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.getAccessToken(username, password);
 			}
 		}
 
@@ -193,6 +242,14 @@ public class FeedReader.Share : GLib.Object {
 		}
 
 		foreach(var api in m_pocket)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.getUsername();
+			}
+		}
+
+		foreach(var api in m_instapaper)
 		{
 			if(api.getID() == accountID)
 			{

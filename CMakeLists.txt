@@ -112,7 +112,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Backends/ttrss/TTRSS_Message.vala
     src/Share/ReadabilityAPI.vala
     src/Share/PocketAPI.vala
-    #src/Share/InstapaperAPI.vala
+    src/Share/InstapaperAPI.vala
     src/Share/share.vala
 
 # tell what libraries to use when compiling

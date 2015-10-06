@@ -161,7 +161,6 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		label.set_alignment(0.5f, 0.5f);
 
 
-
 		var label1 = new Gtk.Label(m_name);
 		m_label = new Gtk.Label(username);
 		label1.set_alignment(0.5f, 1.0f);
@@ -269,13 +268,13 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 	{
 		if(m_login_revealer.get_child_revealed())
 		{
-			if(share.getAccessToken(m_id,  m_userEntry.get_text(), m_passEntry.get_text()))
+			if(share.getAccessToken(m_id, "",  m_userEntry.get_text(), m_passEntry.get_text()))
 			{
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 				m_login_revealer.set_reveal_child(false);
 				m_isLoggedIN = true;
 				m_iconStack.set_visible_child_name("loggedIN");
-				//m_label.set_label(m_serviceSettings.get_string("username"));
+				m_label.set_label(share.getUsername(m_id));
 				m_labelStack.set_visible_child_name("loggedIN");
 			}
 			else

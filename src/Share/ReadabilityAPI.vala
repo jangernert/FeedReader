@@ -54,15 +54,10 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     			ReadabilitySecrets.base_uri,
     			false);
 
-            m_settings.set_boolean("is-logged-in", true);
             m_loggedIn = true;
         }
     }
 
-    ~ReadabilityAPI()
-    {
-    	m_settings.set_boolean("is-logged-in", false);
-    }
 
     public bool getRequestToken()
     {
@@ -161,8 +156,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
             }
         }
 
-		if(m_settings != null)
-        	m_settings.set_boolean("is-logged-in", login);
+		m_loggedIn = login;
         return login;
     }
 
@@ -173,7 +167,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
     private bool isLoggedIn()
     {
-        return m_settings.get_boolean("is-logged-in");
+        return m_loggedIn;
     }
 
     private void writeData()
@@ -182,7 +176,6 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 		m_settings.set_string("oauth-access-token", m_accessToken);
 		m_settings.set_string("oauth-access-token-secret", m_secret);
 		m_settings.set_string("username", m_username);
-		m_settings.set_boolean("is-logged-in", true);
 		setArray();
     }
 

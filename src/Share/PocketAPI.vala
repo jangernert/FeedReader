@@ -45,12 +45,6 @@ public class FeedReader.PocketAPI : GLib.Object {
     }
 
 
-    ~PocketAPI()
-    {
-    	m_settings.set_boolean("is-logged-in", false);
-    }
-
-
     public bool getRequestToken()
     {
     	logger.print(LogMessage.DEBUG, "PocketAPI: get request token");
@@ -130,14 +124,13 @@ public class FeedReader.PocketAPI : GLib.Object {
 
     private bool isLoggedIn()
     {
-        return m_settings.get_boolean("is-logged-in");
+        return m_loggedIn;
     }
 
     private void writeData()
     {
 		m_settings.set_string("oauth-access-token", m_accessToken);
 		m_settings.set_string("username", m_username);
-		m_settings.set_boolean("is-logged-in", true);
 		setArray();
     }
 

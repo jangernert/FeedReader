@@ -16,7 +16,7 @@
 public class FeedReader.Share : GLib.Object {
 
 	private GLib.List<ReadabilityAPI> m_readability;
-	//private GLib.List<PocketAPI> m_pocket;
+	private GLib.List<PocketAPI> m_pocket;
 	//private GLib.List<InstaAPI> m_instapaper;
 
 	public Share()
@@ -26,6 +26,13 @@ public class FeedReader.Share : GLib.Object {
 		foreach(string id in readabilityAccounts)
 		{
 			m_readability.append(new ReadabilityAPI(id, "/org/gnome/feedreader/share/readability/%s/".printf(id)));
+		}
+
+		m_pocket = new GLib.List<PocketAPI>();
+		var pocketAccounts = settings_share.get_strv("pocket");
+		foreach(string id in pocketAccounts)
+		{
+			m_pocket.append(new PocketAPI(id, "/org/gnome/feedreader/share/pocket/%s/".printf(id)));
 		}
 	}
 
@@ -37,6 +44,11 @@ public class FeedReader.Share : GLib.Object {
 		foreach(var account in m_readability)
 		{
 			list.append(new ShareAccount(account.getID(), OAuth.READABILITY, account.getUsername()));
+		}
+
+		foreach(var account in m_pocket)
+		{
+			list.append(new ShareAccount(account.getID(), OAuth.POCKET, account.getUsername()));
 		}
 
 		return list;
@@ -51,6 +63,9 @@ public class FeedReader.Share : GLib.Object {
         {
             case OAuth.READABILITY:
                 m_readability.append(new ReadabilityAPI(id));
+				break;
+			case OAuth.POCKET:
+				m_pocket.append(new PocketAPI(id));
 				break;
         }
 
@@ -68,12 +83,30 @@ public class FeedReader.Share : GLib.Object {
 				return;
 			}
 		}
+
+		foreach(var api in m_pocket)
+		{
+			if(api.getID() == accountID)
+			{
+				m_pocket.remove(api);
+				return;
+			}
+		}
 	}
 
 
 	public void logout(string accountID)
 	{
 		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				api.logout();
+				return;
+			}
+		}
+
+		foreach(var api in m_pocket)
 		{
 			if(api.getID() == accountID)
 			{
@@ -93,16 +126,33 @@ public class FeedReader.Share : GLib.Object {
 			}
 		}
 
-		return false;
-	}
-
-	public bool getAccessToken(string accountID, string verifier = "", string username = "", string password = "")
-	{
-		foreach(var api in m_readability)
+		foreach(var api in m_pocket)
 		{
 			if(api.getID() == accountID)
 			{
+				return api.getRequestToken();
+			}
+		}
+
+
+		return false;
+	}
+
+	public bool getAccessToken(string accountID, string? verifier = "", string username = "", string password = "")
+	{
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID && verifier != null)
+			{
 				return api.getAccessToken(verifier);
+			}
+		}
+
+		foreach(var api in m_pocket)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.getAccessToken();
 			}
 		}
 
@@ -121,14 +171,28 @@ public class FeedReader.Share : GLib.Object {
 			}
 		}
 
-
-		// FIXME: instapaper & pocket
+		foreach(var api in m_pocket)
+		{
+			if(api.getID() == accountID)
+			{
+				Gtk.show_uri(Gdk.Screen.get_default(), api.getURL(), Gdk.CURRENT_TIME);
+				return;
+			}
+		}
 	}
 
 
 	public string getUsername(string accountID)
 	{
 		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.getUsername();
+			}
+		}
+
+		foreach(var api in m_pocket)
 		{
 			if(api.getID() == accountID)
 			{

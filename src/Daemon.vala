@@ -369,9 +369,6 @@ namespace FeedReader {
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
 	GLib.Settings settings_owncloud;
-	GLib.Settings settings_readability;
-	GLib.Settings settings_pocket;
-	GLib.Settings settings_instapaper;
 	GLib.Settings settings_tweaks;
 	FeedServer server;
 	Logger logger;
@@ -387,13 +384,12 @@ namespace FeedReader {
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
-		settings_readability = new GLib.Settings ("org.gnome.feedreader.readability");
-		settings_pocket = new GLib.Settings ("org.gnome.feedreader.pocket");
-		settings_instapaper = new GLib.Settings ("org.gnome.feedreader.instapaper");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 		logger = new Logger();
 		Notify.init(AboutInfo.programmName);
 		Utils.copyAutostart();
+
+		logger.print(LogMessage.INFO, "FeedReader Daemon" + AboutInfo.version);
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,

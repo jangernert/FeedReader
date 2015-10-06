@@ -60,7 +60,7 @@ namespace FeedReader {
 	public class rssReaderApp : Gtk.Application {
 
 		private readerUI m_window;
-		public signal void callback(OAuth type, string oauthVerifier);
+		public signal void callback(OAuth type, string? oauthVerifier);
 
 		protected override void startup()
 		{
@@ -75,10 +75,12 @@ namespace FeedReader {
 			logger = new Logger();
 			share = new Share();
 
+			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
 			startDaemon();
 
 			dataBase = new dbManager();
 			dataBase.init();
+
 
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");

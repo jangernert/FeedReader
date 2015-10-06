@@ -17,21 +17,43 @@ public class FeedReader.PocketAPI : GLib.Object {
 
     private Soup.Session m_session;
 	private Soup.Message m_message_soup;
+	private GLib.Settings m_settings;
     private string m_contenttype;
+    private string m_id;
+    private string m_requestToken;
+    private string m_accessToken;
+    private string m_username;
+    private bool m_loggedIn;
 
-    public PocketAPI()
+    public PocketAPI(string id, string settings_path = "")
     {
+    	m_id = id;
 		m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded; charset=UTF8";
 
-        if(settings_pocket.get_string("oauth-access-token") != "")
-        {
-            settings_pocket.set_boolean("is-logged-in", true);
-        }
+		if(settings_path == "")
+		{
+			m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+			m_loggedIn = false;
+		}
+		else
+		{
+			m_settings = new Settings.with_path("org.gnome.feedreader.share.account", settings_path);
+			m_username = m_settings.get_string("username");
+			m_loggedIn = false;
+		}
     }
+
+
+    ~PocketAPI()
+    {
+    	m_settings.set_boolean("is-logged-in", false);
+    }
+
 
     public bool getRequestToken()
     {
+    	logger.print(LogMessage.DEBUG, "PocketAPI: get request token");
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&redirect_uri=" + PocketSecrets.oauth_callback;
 
         m_message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/request");
@@ -47,15 +69,14 @@ public class FeedReader.PocketAPI : GLib.Object {
 			return false;
 
         string response = (string)m_message_soup.response_body.flatten().data;
-        response = response.substring(response.index_of_char('=')+1);
-        settings_pocket.set_string("oauth-request-token", response);
+        m_requestToken = response.substring(response.index_of_char('=')+1);
         return true;
     }
 
 
     public bool getAccessToken()
     {
-        string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&code=" + settings_pocket.get_string("oauth-request-token");
+        string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&code=" + m_requestToken;
 
         m_message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/authorize");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
@@ -75,19 +96,17 @@ public class FeedReader.PocketAPI : GLib.Object {
         int tokenEnd = response.index_of_char('&', tokenStart);
         int userStart = response.index_of_char('=', tokenEnd)+1;
 
-        string accessToken = response.substring(tokenStart, tokenEnd-tokenStart);
-        string username = GLib.Uri.unescape_string(response.substring(userStart));
-
-        settings_pocket.set_string("oauth-access-token", accessToken);
-        settings_pocket.set_string("username", username);
-        settings_pocket.set_boolean("is-logged-in", true);
+        m_accessToken = response.substring(tokenStart, tokenEnd-tokenStart);
+        m_username = GLib.Uri.unescape_string(response.substring(userStart));
+        m_loggedIn = true;
+        writeData();
         return true;
     }
 
 
     public bool addBookmark(string url)
     {
-        string message = "url=" + GLib.Uri.escape_string(url) + "&consumer_key=" + PocketSecrets.oauth_consumer_key + "&access_token=" + settings_pocket.get_string("oauth-access-token");
+        string message = "url=" + GLib.Uri.escape_string(url) + "&consumer_key=" + PocketSecrets.oauth_consumer_key + "&access_token=" + m_accessToken;
 
         m_message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
@@ -104,13 +123,76 @@ public class FeedReader.PocketAPI : GLib.Object {
         return true;
     }
 
+    public string getUsername()
+    {
+    	return m_username;
+    }
+
+    private bool isLoggedIn()
+    {
+        return m_settings.get_boolean("is-logged-in");
+    }
+
+    private void writeData()
+    {
+		m_settings.set_string("oauth-access-token", m_accessToken);
+		m_settings.set_string("username", m_username);
+		m_settings.set_boolean("is-logged-in", true);
+		setArray();
+    }
+
+    private void setArray()
+    {
+		var array = settings_share.get_strv("pocket");
+
+		foreach(string id in array)
+		{
+			if(id == m_id)
+				return;
+		}
+
+		array += m_id;
+		settings_share.set_strv("pocket", array);
+    }
+
+
+    private void deleteArray()
+    {
+    	var array = settings_share.get_strv("pocket");
+    	string[] array2 = {};
+
+    	foreach(string id in array)
+		{
+			if(id != m_id)
+				array2 += id;
+		}
+
+		settings_share.set_strv("pocket", array2);
+    }
+
+
     public bool logout()
     {
-        settings_pocket.set_string("oauth-access-token", "");
-        settings_pocket.set_string("oauth-request-token", "");
-        settings_pocket.set_string("username", "");
-        settings_pocket.set_boolean("is-logged-in", false);
+    	var keys = m_settings.list_keys();
+		foreach(string key in keys)
+		{
+			m_settings.reset(key);
+		}
+
+		deleteArray();
         return true;
+    }
+
+    public string getURL()
+    {
+		return	"https://getpocket.com/auth/authorize?request_token="
+				+ m_requestToken + "&redirect_uri="
+				+ GLib.Uri.escape_string(PocketSecrets.oauth_callback);
+    }
+
+    public string getID()
+    {
+    	return m_id;
     }
 
 }

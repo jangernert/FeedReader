@@ -27,7 +27,6 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
     public ReadabilityAPI(string id, string settings_path = "")
     {
-    	logger.print(LogMessage.DEBUG, "new Readability account");
     	m_id = id;
 
         if(settings_path == "")

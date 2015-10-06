@@ -129,6 +129,9 @@ GtkScrolledWindow GtkViewport.servicebox {
 }
 
 .h4 {
-	font-size: medium;
 	font-weight: bold
+}
+
+.small {
+	font-size: x-small;
 }

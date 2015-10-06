@@ -40,6 +40,7 @@ public class FeedReader.PocketAPI : GLib.Object {
 		{
 			m_settings = new Settings.with_path("org.gnome.feedreader.share.account", settings_path);
 			m_username = m_settings.get_string("username");
+			m_accessToken = m_settings.get_string("oauth-access-token");
 			m_loggedIn = false;
 		}
     }
@@ -101,6 +102,8 @@ public class FeedReader.PocketAPI : GLib.Object {
     public bool addBookmark(string url)
     {
         string message = "url=" + GLib.Uri.escape_string(url) + "&consumer_key=" + PocketSecrets.oauth_consumer_key + "&access_token=" + m_accessToken;
+
+        logger.print(LogMessage.DEBUG, "PocketAPI: " + message);
 
         m_message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);

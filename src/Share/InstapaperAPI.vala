@@ -206,11 +206,12 @@ public class FeedReader.InstaAPI : GLib.Object {
 
     public bool addBookmark(string url)
     {
-        string message  = "username=" + m_userID
+        string message  = "user_id=" + m_userID
+        				+ "&username=" + m_username
                         + "&password=" + getPassword()
                         + "&url=" + GLib.Uri.escape_string(url);
 
-        //logger.print(LogMessage.DEBUG, message);
+        logger.print(LogMessage.DEBUG, "InstaAPI: " + message);
 
         m_message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/add");
         m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, message.data);
@@ -219,10 +220,12 @@ public class FeedReader.InstaAPI : GLib.Object {
 				m_message_soup.request_headers.append("DNT", "1");
 
 		m_session.send_message(m_message_soup);
+		string response = (string)m_message_soup.response_body.flatten().data;
 
-        if((string)m_message_soup.response_body.flatten().data == null
-		|| (string)m_message_soup.response_body.flatten().data == "")
+        if(response == null || response == "")
 			return false;
+
+		logger.print(LogMessage.DEBUG, "InstaAPI: " + response);
 
         return true;
     }

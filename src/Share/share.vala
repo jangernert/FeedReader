@@ -264,6 +264,30 @@ public class FeedReader.Share : GLib.Object {
 
 	public bool addBookmark(string accountID, string url)
 	{
+		foreach(var api in m_readability)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.addBookmark(url);
+			}
+		}
+
+		foreach(var api in m_pocket)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.addBookmark(url);
+			}
+		}
+
+		foreach(var api in m_instapaper)
+		{
+			if(api.getID() == accountID)
+			{
+				return api.addBookmark(url);
+			}
+		}
+
 		return false;
 	}
 }

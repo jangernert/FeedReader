@@ -17,12 +17,10 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 	private Gtk.ListBox m_list;
     private Gtk.Button m_login_button;
-    private bool m_haveServices;
     public signal void showSettings(string panel);
 
 	public SharePopover(Gtk.Widget widget)
 	{
-        m_haveServices = false;
         m_list = new Gtk.ListBox();
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
@@ -47,9 +45,8 @@ public class FeedReader.SharePopover : Gtk.Popover {
             this.hide();
         });
 
-        populateList();
 
-        if(m_haveServices)
+        if(populateList())
         {
             this.add(m_list);
         }
@@ -64,28 +61,19 @@ public class FeedReader.SharePopover : Gtk.Popover {
         this.show_all();
 	}
 
-    private void populateList()
+    private bool populateList()
     {
-        /*if(settings_readability.get_boolean("is-logged-in"))
+    	var list = share.getAccounts();
+
+        foreach(var account in list)
         {
-            var readabilityRow = new ShareRow("Readability", OAuth.READABILITY);
-            m_list.add(readabilityRow);
-            m_haveServices = true;
+        	m_list.add(new ShareRow(account.getType(), account.getID(), account.getUsername()));
         }
 
-        if(settings_pocket.get_boolean("is-logged-in"))
-        {
-            var pocketRow = new ShareRow("Pocket", OAuth.POCKET);
-            m_list.add(pocketRow);
-            m_haveServices = true;
-        }
+		if(list.length() >= 1)
+			return true;
 
-        if(settings_instapaper.get_boolean("is-logged-in"))
-        {
-            var instaRow = new ShareRow("Instapaper", OAuth.INSTAPAPER);
-            m_list.add(instaRow);
-            m_haveServices = true;
-        }*/
+        return false;
     }
 
     private void shareURL(Gtk.ListBoxRow row)
@@ -100,6 +88,6 @@ public class FeedReader.SharePopover : Gtk.Popover {
             url = window.getContent().getSelectedURL();
 
         share.addBookmark(id, url);
-        logger.print(LogMessage.DEBUG, "bookmark: " + url);
+        logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
     }
 }

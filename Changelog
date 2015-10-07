@@ -8,6 +8,7 @@
 - respect notification settings of the DE
 - better font-styling on non-elementary distributions
 - proper fullscreen mode for videos
+- support multiple share accounts of the same kind (e.g. two different pocket accounts)
 
 1.2:
 - add ability to share articles

@@ -46,7 +46,7 @@ public class FeedReader.Grabber : GLib.Object {
 
     ~Grabber()
     {
-        //delete m_doc;
+        delete m_doc;
         delete m_root;
         delete m_ns;
     }
@@ -186,7 +186,7 @@ public class FeedReader.Grabber : GLib.Object {
         }
 
         // get link to single-page view if it exists and download that page
-        if(m_config.getXPathSinglePageURL() != null)
+        if(m_config.getXPathSinglePageURL() != null && m_nexPageURL == null)
         {
             logger.print(LogMessage.DEBUG, "Grabber: grab single page view");
             string url = grabberUtils.getURL(doc, m_config.getXPathSinglePageURL());

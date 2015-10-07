@@ -192,6 +192,11 @@ public class FeedReader.Grabber : GLib.Object {
             string url = grabberUtils.getURL(doc, m_config.getXPathSinglePageURL());
             if(url != "" && url != null)
             {
+            	if(!url.has_prefix("http"))
+		        {
+		            url = grabberUtils.completeURL(url, m_articleURL);
+		        }
+            	logger.print(LogMessage.DEBUG, "Grabber: single page url " + url);
                 m_singlePage = true;
                 m_articleURL = url;
                 download();

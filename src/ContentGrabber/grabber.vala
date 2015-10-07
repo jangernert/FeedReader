@@ -322,6 +322,15 @@ public class FeedReader.Grabber : GLib.Object {
                 if(grabberUtils.extractBody(doc, bodyXPath, m_root))
                     m_foundSomething = true;
             }
+
+            if(m_foundSomething)
+            {
+            	logger.print(LogMessage.DEBUG, "Grabber: body found");
+            }
+            else
+            {
+            	logger.print(LogMessage.DEBUG, "Grabber: no body found");
+            }
         }
 
         delete doc;

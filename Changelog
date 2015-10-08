@@ -1,6 +1,6 @@
 1.4
 - ownCloud News support
-- make sync more responsive
+- sync more responsive
 - app fully operational during initial sync
 - overlay to indicate new articles
 - dynamic switch between GMenu in gnome and menu-button elsewhere

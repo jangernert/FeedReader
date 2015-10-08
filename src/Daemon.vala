@@ -389,7 +389,7 @@ namespace FeedReader {
 		Notify.init(AboutInfo.programmName);
 		Utils.copyAutostart();
 
-		logger.print(LogMessage.INFO, "FeedReader Daemon" + AboutInfo.version);
+		logger.print(LogMessage.INFO, "FeedReader Daemon " + AboutInfo.version);
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,

@@ -136,6 +136,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		m_iconStack.add_named(m_login_button, "button");
 		m_iconStack.add_named(loggedIN, "loggedIN");
 		m_iconStack.add_named(m_logout_button, "logOUT");
+		m_iconStack.set_size_request(100, 0);
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 50);
@@ -156,6 +157,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
         }
 
 		var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
+		icon.set_size_request(100, 0);
 
 		var label = new Gtk.Label(m_name);
 		label.set_alignment(0.5f, 0.5f);
@@ -173,7 +175,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 		m_labelStack.add_named(label, "loggedOUT");
 		m_labelStack.add_named(m_labelBox, "loggedIN");
 
-		m_box.pack_start(icon, false, false, 8);
+		m_box.pack_start(icon, false, false, 0);
 		m_box.pack_start(m_labelStack, true, true, 0);
         m_box.pack_end(m_eventbox, false, false, 0);
 

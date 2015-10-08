@@ -53,8 +53,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("op", "login");
 		message.add_string("user", username);
-		message.add_string("password", passwd);
+		message.add_string("password", passwd.escape(""));
 		int error = message.send();
+		message.printMessage();
+		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{

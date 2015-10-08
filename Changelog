@@ -1,5 +1,5 @@
 1.4
-- add ownCloud News support
+- ownCloud News support
 - make sync more responsive
 - app fully operational during initial sync
 - overlay to indicate new articles
@@ -11,7 +11,7 @@
 - support multiple share accounts of the same kind (e.g. two different pocket accounts)
 
 1.2:
-- add ability to share articles
+- ability to share articles
 	- share to readability
 	- share to instapaper
 	- share to pocket

@@ -29,36 +29,27 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private string m_emptyListString;
 	private Gtk.Box m_syncingBox;
 	private Gtk.Spinner m_syncSpinner;
-	private double m_lmit;
-	private string m_current_feed_selected;
 	private bool m_only_unread;
 	private bool m_only_marked;
-	private string m_searchTerm;
-	private uint m_limit;
-	private FeedListType m_IDtype;
-	private bool m_limitScroll;
-	private int m_threadCount;
+	private string m_current_feed_selected = FeedID.ALL;
+	private double m_lmit = 0.8;
+	private string m_searchTerm = "";
+	private uint m_limit = 15;
+	private FeedListType m_IDtype = FeedListType.FEED;
+	private bool m_limitScroll = false;
+	private int m_threadCount = 0;
 	private uint m_timeout_source_id = 0;
 	private uint m_select_source_id = 0;
 	private double m_scrollPos = 0;
 	private bool m_scrollOngoing = false;
 	private bool m_syncing = false;
-	private string m_selected_article;
+	private string m_selected_article = "";
 	private ArticleListOverlay m_overlay;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
 
 
 	public articleList () {
-		m_lmit = 0.8;
-		m_current_feed_selected = FeedID.ALL;
-		m_IDtype = FeedListType.FEED;
-		m_searchTerm = "";
-		m_limit = 15;
-		m_limitScroll = false;
-		m_threadCount = 0;
-		m_selected_article = "";
-
 		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
 		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
 		m_emptyList.get_style_context().add_class("h2");
@@ -904,17 +895,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private void limitScroll()
 	{
-		ThreadFunc<void*> run = () => {
+		m_limitScroll = true;
 
-			if(m_limitScroll == true)
-				return null;
-
-			m_limitScroll = true;
-			GLib.Thread.usleep(500000);
+		GLib.Timeout.add(500, () => {
 			m_limitScroll = false;
-			return null;
-		};
-		new GLib.Thread<void*>("limitScroll", run);
+			return false;
+		});
 	}
 
 

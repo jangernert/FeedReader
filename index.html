@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>FeedReader - RSS desktop client</title>
+
+        <link rel="stylesheet" href="./styles/bootstrap.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head>
+    <body>
+
+        <nav class="navbar navbar-default" role="navigation">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+              </button>
+            </div>
+            <a class="navbar-brand" href="#">FeedReader</a>
+
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#screenshots">Screenshots</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#install">Installation</a></li>
+              <li><a href="#get-involved">Get inolved</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <div class="container">
+            <div class="jumbotron">
+                <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
+                <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot4.png" class="img-responsive">
+                <p class="text-center lead">FeedReader is a modern desktop application designed to complement existing web-based RSS accounts. It combines all the advantages of web based services like synchronisation across all your devices with everything you expect from a modern desktop application.</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="container" id="screenshots">
+            <h1 class="text-center">Screenshots</h1>
+            <br/>
+            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+              <!-- Indicators -->
+              <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+              </ol>
+
+              <!-- Wrapper for slides -->
+              <div class="carousel-inner">
+                <div class="item active">
+                  <img class="img-responsive" src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot1.png" alt="...">
+                </div>
+                <div class="item">
+                  <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot2.png" alt="...">
+                </div>
+                <div class="item">
+                  <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot3.png" alt="...">
+                </div>
+              </div>
+
+              <!-- Controls -->
+              <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                  <span class="glyphicon glyphicon-chevron-left"></span>
+              </a>
+              <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                  <span class="glyphicon glyphicon-chevron-right"></span>
+              </a>
+            </div> <!-- Carousel -->
+        </div>
+
+        <hr>
+
+        <div class="container" id="features">
+            <h1 class="text-center">Features</h1>
+
+            <div class="col-xs-12">
+
+                <div class="col-md-4 text-center">
+                    <h1 class="text-center"><small>Hosting services</small></h1>
+                    <img width="150" height="150" src="./images/feedly_logo.png" alt="feedly"><br/><br/>
+                    <a href="#" class="btn btn-default btn-lg">feedly</a><br/><br/>
+                    <img width="150" height="150" src="./images/tt-rss_logo.png" alt="Tiny Tiny RSS"><br/><br/>
+                    <a href="#" class="btn btn-default btn-lg">Tiny Tiny RSS</a><br/><br/>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h1 class="text-center"><small>Read-it-later services</small></h1>
+                    <img width="150" height="150" src="./images/pocket_logo.png"><br/><br/>
+                    <a href="#" class="btn btn-default btn-lg">Pocket</a><br/><br/>
+                    <img width="150" height="150" src="./images/instapaper_logo.png"><br/><br/>
+                    <a href="#" class="btn btn-default btn-lg">Instapaper</a><br/><br/>
+                </div>
+                <div class="col-md-4 text-center">
+                    <h1 class="text-center"><small>Other</small></h1>
+                    <ul>
+                        <h3><small>Desktop notifications</small></h3>
+                        <h3><small>Handy keyboard shortcuts</small></h3>
+                        <h3><small>Fast search and filters</small></h3>
+                        <h3><small>Consistent article formating</small></h3>
+                        <h3><small>Tagging</small></h3>
+                        <h3><small>Customizability</small></h3>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="container" id="install">
+            <h1 class="text-center">Installation</h1>
+                <ul class="nav nav-tabs nav-justified">
+                    <li role="presentation" class="active"><a data-toggle="tab" href="#ubuntu">Ubuntu / Linux Mint / elementary OS</a></li>
+                    <li role="presentation"><a data-toggle="tab" href="#arch">Arch Linux</a></li>
+                    <li role="presentation"><a data-toggle="tab" href="#solus">Solus OS</a></li>
+                    <li role="presentation"><a data-toggle="tab" href="#fedora">Fedora</a></li>
+
+                    <div class="tab-content">
+                        <div id="ubuntu" class="tab-pane fade in active">
+                            <p>To install FeedReader in Ubuntu 15.04, elementary OS Freya or Linux Mint 17, paste these three commands in your terminal:</p>
+                            <pre>sudo add-apt-repository ppa:eviltwin1/feedreader-stable<br/>sudo apt-get update<br/>sudo apt-get install feedreader</pre>
+                        </div>
+                        <div id="arch" class="tab-pane fade">
+                            <p>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</p>
+                        </div>
+                        <div id="solus" class="tab-pane fade">
+                            <p>FeedReader is already packaged in the software-center of Solus.</p>
+                        </div>
+                        <div id="fedora" class="tab-pane fade">
+                            <p>Available in the default repository of Fedora 21 and newer.</p>
+                        </div>
+                    </div>
+
+                </ul>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="container" id="get-involved">
+            <div class="text-center">
+                <h1>Get Involved</h1>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    </body>
+</html>

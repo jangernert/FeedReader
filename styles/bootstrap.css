@@ -13,7 +13,7 @@
  */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
 html {
-  font-family: sans-serif;
+  font-family: 'Raleway', sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
@@ -4333,6 +4333,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   font-size: 20px;
   line-height: 22px;
   height: 65px;
+  max-width: 50%;
 }
 .navbar-brand:hover,
 .navbar-brand:focus {

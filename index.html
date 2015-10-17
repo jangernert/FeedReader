@@ -16,14 +16,14 @@
     </head>
     <body>
 
-        <nav class="navbar navbar-default" role="navigation">
+        <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
           <div class="container-fluid">
             <div class="navbar-header">
               <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
                 <span class="sr-only">Toggle navigation</span>
               </button>
             </div>
-            <a class="navbar-brand" href="#">FeedReader</a>
+            <a class="navbar-brand" href="#feedreader">FeedReader</a>
 
             <ul class="nav navbar-nav navbar-right">
               <li><a href="#screenshots">Screenshots</a></li>
@@ -33,8 +33,8 @@
             </ul>
           </div>
         </nav>
-
-        <div class="container">
+        <p>&nbsp</p>
+        <div class="container" id="feedreader">
             <div class="jumbotron">
                 <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
                 <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot4.png" class="img-responsive">
@@ -48,12 +48,6 @@
             <h1 class="text-center">Screenshots</h1>
             <br/>
             <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-              <!-- Indicators -->
-              <ol class="carousel-indicators">
-                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
-                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
-                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
-              </ol>
 
               <!-- Wrapper for slides -->
               <div class="carousel-inner">
@@ -125,17 +119,17 @@
 
                     <div class="tab-content">
                         <div id="ubuntu" class="tab-pane fade in active">
-                            <p>To install FeedReader in Ubuntu 15.04, elementary OS Freya or Linux Mint 17, paste these three commands in your terminal:</p>
+                            <h3><small>FeedReader works with Gtk+ 3.12. To install FeedReader in Ubuntu 15.04 (or newer), elementary OS Freya or Linux Mint 17 (or newer), paste these three commands in your terminal:</small></h3>
                             <pre>sudo add-apt-repository ppa:eviltwin1/feedreader-stable<br/>sudo apt-get update<br/>sudo apt-get install feedreader</pre>
                         </div>
                         <div id="arch" class="tab-pane fade">
-                            <p>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</p>
+                            <h3><small>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</small></h3>
                         </div>
                         <div id="solus" class="tab-pane fade">
-                            <p>FeedReader is already packaged in the software-center of Solus.</p>
+                            <h3><small>FeedReader is already packaged in the software-center of Solus.</small></h3>
                         </div>
                         <div id="fedora" class="tab-pane fade">
-                            <p>Available in the default repository of Fedora 21 and newer.</p>
+                            <h3><small>Available in the default repository of Fedora 21 and newer.</small></h3>
                         </div>
                     </div>
 
@@ -154,11 +148,14 @@
                     <i class="fa fa-life-ring fa-5x"></i>
                 </div>
                 <p>&nbsp</p>
-                <h3><small>Please report bugs over at launchpad or check out the code to fix the issue yourself here. You can also support development of FeedReader over at Bountysource and throw a few $ at any bug you would like to be fixed or any feature you would like to see added.</small></h3>
+                <h3><small>
+                    Please report bugs over at <a href="https://bugs.launchpad.net/feedreader">Launchpad</a>.<br/>
+                    You can also support the development of FeedReader over at <a href="https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038">Bountysource</a> and throw in a few bucks at any bug you would like to be fixed or any feature you would like to see implemented.
+                </small></h3>
             </div>
             <div class="col-md-6">
                 <h1 class="text-center"><small>Get Involved</small></h1>
-                <h5>Vala</h5>
+                <h4>Vala</h4>
                 <ul>
                     <li>You can find the code on Launchpad.</li>
                     <li>Help us fixing bugs or implement your own ideas.</li>
@@ -182,10 +179,11 @@
         </div>
 
         <p>&nbsp</p>
-
+        <hr>
         <div class="navbar" role="navigation">
             <div class="text-center">
                 <p>Designed by <a href="https://r3bl.me">Aleksandar Todorović</a> using the <a href="http://bootswatch.com/readable/">Readable Bootstrap theme</a>.</p>
+                <p>
             </div>
         </div>
 

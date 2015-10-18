@@ -1,4 +1,433 @@
+# Russian translation for feedreader
+# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
+# This file is distributed under the same license as the feedreader package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
+#
 msgid ""
 msgstr ""
+"Project-Id-Version: feedreader\n"
+"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2015-09-26 19:01+0200\n"
+"PO-Revision-Date: 2015-10-16 20:39+0000\n"
+"Last-Translator: Ushakov Maksym <msincster@gmail.com>\n"
+"Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Launchpad-Export-Date: 2015-10-18 05:53+0000\n"
+"X-Generator: Launchpad (build 17812)\n"
+
+#: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: ../src/Constants.vala:166
+msgid "Desktop Client for various RSS Services"
+msgstr "Клиент для RSS сервисов"
+
+#: ../src/Utils.vala:21
+msgid "No Preview Available"
+msgstr "Предпросмотр не доступен"
+
+#: ../src/Utils.vala:94
+msgid "No Text available for this article :("
+msgstr "Текст статьи не доступен :("
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:69
+msgid "no Author"
+msgstr "нет автора"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:81
+msgid "no Title"
+msgstr "нет заголовка"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:93
+msgid "no Preview"
+msgstr "нет предпросмотра"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:105
+msgid "no content"
+msgstr "пусто"
+
+#: ../src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "О программе"
+
+#: ../src/Widgets/TagPopover.vala:40
+msgid "Add Tag:"
+msgstr "Добавить метку:"
+
+#: ../src/Widgets/TagPopover.vala:52
+msgid "Tags:"
+msgstr "Метки:"
+
+#: ../src/Widgets/TagPopover.vala:129
+msgid "add Tag"
+msgstr "добавить метку"
+
+#: ../src/Widgets/MainWindow.vala:358
+msgid "Please select a service first"
+msgstr "Сперва выберите сервис"
+
+#: ../src/Widgets/MainWindow.vala:361
+msgid "Please enter a valid username"
+msgstr "Введите допустимое имя пользователя"
+
+#: ../src/Widgets/MainWindow.vala:364
+msgid "Please enter a valid password"
+msgstr "Введите допустимый пароль"
+
+#: ../src/Widgets/MainWindow.vala:367
+msgid "Please enter a valid URL"
+msgstr "Введите корректный URL"
+
+#: ../src/Widgets/MainWindow.vala:370
+msgid "Please enter your Login details"
+msgstr "Введите ваш логин"
+
+#: ../src/Widgets/MainWindow.vala:373
+msgid "Sorry, something went wrong."
+msgstr "Извините, что-то пошло не так."
+
+#: ../src/Widgets/MainWindow.vala:376
+msgid "Either your username or the password are not correct."
+msgstr "Введенный логин или пароль не правильный."
+
+#: ../src/Widgets/MainWindow.vala:379
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+"Нет подключения к серверу. Проверьте соединение с интернетом и адрес сервера!"
+
+#: ../src/Widgets/MainWindow.vala:382
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "API сервера не доступно. Сперва нужно его включить!"
+
+#: ../src/Widgets/MainWindow.vala:385
+msgid "No valid CA certificate available!"
+msgstr "Нет доступных CA сертификатов"
+
+#: ../src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "Изменить учётную запись?"
+
+#: ../src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+"Вы запросили замену учётной записи в FeedReader.\n"
+" Это действие удалит все локальные данные предыдущей учётной записи."
+
+#: ../src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Новая учётная запись"
+
+#: ../src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Ожидаю завершения синхронизации"
+
+#: ../src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "Я передумал"
+
+#: ../src/Widgets/UpdateButton.vala:35
+msgid "Update Feeds"
+msgstr "Обновить ленты"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:61
+msgid "Username or Password incorrect"
+msgstr "Неверное имя пользователя или пароль"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:86 ../src/Widgets/LoginPage.vala:127
+#: ../src/Widgets/LoginPage.vala:196
+msgid "Username:"
+msgstr "Имя пользователя:"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:87 ../src/Widgets/LoginPage.vala:128
+#: ../src/Widgets/LoginPage.vala:197
+msgid "Password:"
+msgstr "Пароль:"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:103 ../src/Widgets/LoginPage.vala:78
+#: ../src/Widgets/SharePopover.vala:30
+msgid "Login"
+msgstr "Войти"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:108
+msgid "Logout"
+msgstr "Выйти"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:237
+msgid "waiting"
+msgstr "ожидание"
+
+#: ../src/Widgets/ArticleView.vala:48
+msgid "No Article selected."
+msgstr "Статья не выбрана."
+
+#: ../src/Widgets/ArticleView.vala:140
+msgid "Not available"
+msgstr "Недоступно"
+
+#: ../src/Widgets/FeedList.vala:476 ../src/DB_Manager.vala:684
+msgid "Uncategorized"
+msgstr "Без категории"
+
+#: ../src/Widgets/SpringCleanPage.vala:28
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr ""
+"FeedReader очищает базу данных.\n"
+"Это не займёт много времени."
+
+#: ../src/Widgets/ReaderHeaderbar.vala:49
+msgid "Mark article (un)starred"
+msgstr "Пометить статью"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:55
+msgid "Mark article (un)read"
+msgstr "Пометить как (не)прочитанное"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "Show all articles"
+msgstr "Показать все статьи"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Show only unread articles"
+msgstr "Показать только непрочитанное"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Show only starred articles"
+msgstr "Показать только отмеченные статьи"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:89
+msgid "Tag Article"
+msgstr "Метка статьи"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:99
+msgid "Share Article"
+msgstr "Поделиться статьёй"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:133
+msgid "Search Articles"
+msgstr "Поиск статей"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:140
+#: ../src/Widgets/ReaderHeaderbar.vala:151
+msgid "Settings"
+msgstr "Параметры"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:142
+msgid "Change Account"
+msgstr "Сменить учётную запись"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "Feedly"
+msgstr "Feedly"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "OwnCloud"
+msgstr "OwnCloud"
+
+#: ../src/Widgets/LoginPage.vala:40
+msgid "Where are your feeds?"
+msgstr "Где ваши ленты?"
+
+#: ../src/Widgets/LoginPage.vala:44
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+"Пожалуйста укажите RSS  сервис, который вы используете, и войдите в него для "
+"продолжения."
+
+#: ../src/Widgets/LoginPage.vala:109
+msgid "No service selected."
+msgstr "Сервис не выбран."
+
+#: ../src/Widgets/LoginPage.vala:126
+msgid "TinyTinyRSS URL:"
+msgstr "TinyTinyRSS URL:"
+
+#: ../src/Widgets/LoginPage.vala:176
+msgid ""
+"You will be redirected to the feedly website where you can use your Facebook-"
+", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr ""
+"Вы будете перенаправлены на веб-сайт feedly, где сможете использовать свои "
+"Facebook, Google, Twitter, Microsoft или Evernote учётные записи для входа."
+
+#: ../src/Widgets/LoginPage.vala:195
+msgid "OwnCloud URL:"
+msgstr "OwnCloud URL:"
+
+#: ../src/Widgets/SettingsDialog.vala:65
+msgid "Interface"
+msgstr "Внешний вид"
+
+#: ../src/Widgets/SettingsDialog.vala:66
+msgid "Internals"
+msgstr "Внутренние"
+
+#: ../src/Widgets/SettingsDialog.vala:67
+msgid "Services"
+msgstr "Сервисы"
+
+#: ../src/Widgets/SettingsDialog.vala:77
+msgid "Close"
+msgstr "Закрыть"
+
+#: ../src/Widgets/SettingsDialog.vala:86
+msgid "Feed List:"
+msgstr "Список лент"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Only show feeds"
+msgstr "Показать только ленту"
+
+#: ../src/Widgets/SettingsDialog.vala:109
+msgid "Only show unread"
+msgstr "Показать только не прочтенные"
+
+#: ../src/Widgets/SettingsDialog.vala:124
+msgid "Sort FeedList by"
+msgstr "Отсортировать по"
+
+#: ../src/Widgets/SettingsDialog.vala:131
+#: ../src/Widgets/SettingsDialog.vala:171
+msgid "Received"
+msgstr "Принятым"
+
+#: ../src/Widgets/SettingsDialog.vala:134
+msgid "Alphabetically"
+msgstr "алфавиту"
+
+#: ../src/Widgets/SettingsDialog.vala:154
+msgid "Article List:"
+msgstr "Список статей:"
+
+#: ../src/Widgets/SettingsDialog.vala:161
+msgid "Sort articles by"
+msgstr "Сортировать статьи по:"
+
+#: ../src/Widgets/SettingsDialog.vala:168
+msgid "Date"
+msgstr "Дате"
+
+#: ../src/Widgets/SettingsDialog.vala:194
+msgid "Newest first"
+msgstr "Сперва новые"
+
+#: ../src/Widgets/SettingsDialog.vala:211
+msgid "Article View:"
+msgstr "Просмотр статьи:"
+
+#: ../src/Widgets/SettingsDialog.vala:218
+msgid "Theme"
+msgstr "Оформление"
+
+#: ../src/Widgets/SettingsDialog.vala:225
+msgid "Default"
+msgstr "Стандарт"
+
+#: ../src/Widgets/SettingsDialog.vala:228
+msgid "Spring"
+msgstr "Весна"
+
+#: ../src/Widgets/SettingsDialog.vala:231
+msgid "Midnight"
+msgstr "Полночь"
+
+#: ../src/Widgets/SettingsDialog.vala:234
+msgid "Parchment"
+msgstr "Пергамент"
+
+#: ../src/Widgets/SettingsDialog.vala:271
+msgid "Sync:"
+msgstr "Синхронизировать:"
+
+#: ../src/Widgets/SettingsDialog.vala:278
+msgid "Number of articles"
+msgstr "Количество статей"
+
+#: ../src/Widgets/SettingsDialog.vala:291
+msgid "Every (seconds)"
+msgstr "Каждые (секунд)"
+
+#: ../src/Widgets/SettingsDialog.vala:307
+msgid "Database:"
+msgstr "База данных:"
+
+#: ../src/Widgets/SettingsDialog.vala:314
+msgid "Drop articles after"
+msgstr "Удалять статьи после"
+
+#: ../src/Widgets/SettingsDialog.vala:321
+msgid "Never"
+msgstr "Никогда"
+
+#: ../src/Widgets/SettingsDialog.vala:324
+msgid "1 Week"
+msgstr "1 недели"
+
+#: ../src/Widgets/SettingsDialog.vala:327
+msgid "1 Month"
+msgstr "1 месяца"
+
+#: ../src/Widgets/SettingsDialog.vala:330
+msgid "6 Months"
+msgstr "6 месяцев"
+
+#: ../src/Widgets/SettingsDialog.vala:367
+msgid "Additional Functionality:"
+msgstr "Дополнительные возможности:"
+
+#: ../src/Widgets/SettingsDialog.vala:374
+msgid "Content Grabber"
+msgstr "Content Grabber"
+
+#: ../src/Widgets/SettingsDialog.vala:381
+msgid "None"
+msgstr "Не указан"
+
+#: ../src/Widgets/SettingsDialog.vala:384
+msgid "Built in grabber"
+msgstr "Встроенный grabber"
+
+#: ../src/Widgets/ArticleList.vala:58
+msgid "None of the %i Articles in the database fit the current filters."
+msgstr "Не одна из %i статей не попадает в указанный фильтр."
+
+#: ../src/Widgets/ArticleList.vala:72
+msgid "Sync is in progress. Articles should appear any second."
+msgstr "Синхронизация. Статьи скоро будут загружены."
+
+#: ../src/Widgets/SharePopover.vala:36
+msgid "Please"
+msgstr "Пожалуйста"
+
+#: ../src/Widgets/SharePopover.vala:38
+msgid "to a service to share this article."
+msgstr "сервис, чтоб поделиться статьей."
+
+#: ../src/Backends/ttrss/TTRSS_API.vala:468
+#: ../src/Backends/ttrss/TTRSS_API.vala:525
+msgid "not found"
+msgstr "не найдено"
+
+#: ../src/Backends/FeedServer.vala:739
+msgid "There is 1 new article"
+msgstr "1 новая статья"
+
+#: ../src/Backends/FeedServer.vala:741
+msgid "There are %u new articles"
+msgstr "%u новых статей"
+
+#: ../src/Backends/FeedServer.vala:743
+msgid "New Articles"
+msgstr "Новые статьи"

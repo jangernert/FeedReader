@@ -150,8 +150,17 @@ public class FeedReader.FeedServer : GLib.Object {
 			if(newArticles > 0)
 			{
 				sendNotification(newArticles);
-				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-				settings_state.set_int("articlelist-new-rows", newCount);
+
+				if(!settings_state.get_boolean("no-animations"))
+				{
+					logger.print(LogMessage.DEBUG, "UI is running");
+					int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+					settings_state.set_int("articlelist-new-rows", newCount);
+				}
+				else
+				{
+					logger.print(LogMessage.DEBUG, "UI NOT running");
+				}
 			}
 
 			switch(settings_general.get_enum("drop-articles-after"))

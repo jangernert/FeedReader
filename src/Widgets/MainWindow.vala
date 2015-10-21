@@ -258,7 +258,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_int("articlelist-row-amount", m_content.getArticlesToLoad());
 			settings_state.set_double("articlelist-scrollpos",  m_content.getArticleListScrollPos());
 			settings_state.set_string("articlelist-selected-row", m_content.getSelectedArticle());
-			settings_state.set_int("articlelist-new-rows", 0);
 			settings_state.set_enum("show-articles", m_headerbar.getArticleListState());
 			settings_state.set_boolean("no-animations", true);
 			settings_state.set_string("search-term", m_headerbar.getSearchTerm());

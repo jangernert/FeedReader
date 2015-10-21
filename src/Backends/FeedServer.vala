@@ -150,17 +150,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			if(newArticles > 0)
 			{
 				sendNotification(newArticles);
-
-				if(!settings_state.get_boolean("no-animations"))
-				{
-					logger.print(LogMessage.DEBUG, "UI is running");
-					int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-					settings_state.set_int("articlelist-new-rows", newCount);
-				}
-				else
-				{
-					logger.print(LogMessage.DEBUG, "UI NOT running");
-				}
 			}
 
 			switch(settings_general.get_enum("drop-articles-after"))
@@ -614,6 +603,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 					foreach(article Article in articles)
 					{
+						int before = dataBase.getHighestRowID();
 						FeedServer.grabContent(ref Article);
 						new_articles.append(Article);
 
@@ -622,6 +612,7 @@ public class FeedReader.FeedServer : GLib.Object {
 							dataBase.write_articles(ref new_articles);
 							newArticleList();
 							new_articles = new GLib.List<article>();
+							setNewRows(before);
 						}
 					}
 				}
@@ -661,10 +652,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					var articles = new GLib.List<article>();
 					continuation = m_feedly.getArticles(ref articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
 
+					int before = dataBase.getHighestRowID();
 					articles.reverse();
 					dataBase.update_articles(ref articles);
 					dataBase.write_articles(ref articles);
 					newArticleList();
+					setNewRows(before);
 
 					if(continuation == "")
 						break;
@@ -714,6 +707,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 					foreach(article Article in articles)
 					{
+						int before = dataBase.getHighestRowID();
 						FeedServer.grabContent(ref Article);
 						new_articles.append(Article);
 
@@ -723,10 +717,28 @@ public class FeedReader.FeedServer : GLib.Object {
 							dataBase.write_articles(ref new_articles);
 							newArticleList();
 							new_articles = new GLib.List<article>();
+							setNewRows(before);
 						}
 					}
 				}
 				break;
+		}
+	}
+
+	private void setNewRows(int before)
+	{
+		int after = dataBase.getHighestRowID();
+		int newArticles = after-before;
+
+		if(settings_state.get_boolean("no-animations"))
+		{
+			logger.print(LogMessage.DEBUG, "UI NOT running");
+			int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+			settings_state.set_int("articlelist-new-rows", newCount);
+		}
+		else
+		{
+			logger.print(LogMessage.DEBUG, "UI is running");
 		}
 	}
 

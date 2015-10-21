@@ -360,7 +360,8 @@ public class FeedReader.dbManager : GLib.Object {
 			unread += stmt.column_int(0);
 		}
 
-		unread += get_unread_uncategorized();
+		if(settings_general.get_enum("account-type") == Backend.FEEDLY)
+			unread += get_unread_uncategorized();
 
 		stmt.reset ();
 		return unread;

@@ -692,9 +692,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 		createHeadlineList(transition);
 	}
 
-	public void updateArticleList()
+	public async void updateArticleList()
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
+		GLib.List<article> articles = new GLib.List<article>();
 		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
 		bool newArticles = false;
@@ -724,7 +725,19 @@ public class FeedReader.articleList : Gtk.Overlay {
 			m_limit = m_currentList.get_children().length() + new_articles;
 		}
 
-		var articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+		SourceFunc callback = updateArticleList.callback;
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
+		ThreadFunc<void*> run = () => {
+			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+			Idle.add((owned) callback);
+			return null;
+		};
+		//-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+		new GLib.Thread<void*>("updateArticleList", run);
+		yield;
+
+
 
 		foreach(Gtk.Widget row in articleChildList)
 		{
@@ -740,6 +753,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 		foreach(var item in articles)
 		{
 			found = false;
+
+			while(Gtk.events_pending())
+			{
+				Gtk.main_iteration();
+			}
 
 			foreach(Gtk.Widget row in articleChildList)
 			{
@@ -781,6 +799,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 				}
 				foreach(Gtk.Widget row in articleChildList)
 				{
+					while(Gtk.events_pending())
+					{
+						Gtk.main_iteration();
+					}
+
 					pos++;
 					var tmpRow = row as articleRow;
 					if(tmpRow != null)

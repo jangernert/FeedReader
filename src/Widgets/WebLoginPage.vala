@@ -18,7 +18,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private WebKit.WebView m_view;
 	private string m_url;
 	private int m_serviceType;
-	public signal void success();
+	public signal void success(Backend be);
 
 
 	public WebLoginPage() {
@@ -73,7 +73,8 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				if(getFeedlyApiCode(url))
 				{
 					m_view.stop_loading();
-					success();
+
+					success(Backend.FEEDLY);
 				}
 				break;
 		}

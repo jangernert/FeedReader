@@ -72,7 +72,7 @@ namespace FeedReader {
 			settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 			settings_share = new GLib.Settings ("org.gnome.feedreader.share");
 
-			logger = new Logger();
+			logger = new Logger("ui");
 			share = new Share();
 
 			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);

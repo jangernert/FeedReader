@@ -321,11 +321,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});
-		WebLogin.success.connect(() => {
+		WebLogin.success.connect((backend) => {
 			logger.print(LogMessage.DEBUG, "WebLogin: success");
 			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			settings_state.set_string("feedlist-selected-row", "feed -4");
-			if(feedDaemon_interface.login((Backend)settings_general.get_enum("account-type")) != LoginResponse.SUCCESS)
+			if(feedDaemon_interface.login(backend) != LoginResponse.SUCCESS)
 			{
 				logger.print(LogMessage.DEBUG, "MainWindow: login failed -> go back to login page");
 				showLogin(Gtk.StackTransitionType.SLIDE_LEFT);

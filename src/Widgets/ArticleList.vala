@@ -425,7 +425,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 		settings_state.set_int("articlelist-new-rows", 0);
 
-		if(new_rows > 0)
+		if(new_rows > 0 && newPos > 0)
 			m_overlay.reveal();
 	}
 

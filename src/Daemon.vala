@@ -29,13 +29,7 @@ namespace FeedReader {
 		public FeedDaemonServer()
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
-			m_loggedin = login((Backend)settings_general.get_enum("account-type"));
-
-			if(m_loggedin != LoginResponse.SUCCESS)
-			{
-				settings_general.set_enum("account-type", Backend.NONE);
-				logger.print(LogMessage.WARNING, "daemon: not logged in");
-			}
+			login((Backend)settings_general.get_enum("account-type"));
 
 #if WITH_LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
@@ -108,7 +102,6 @@ namespace FeedReader {
 				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
-					settings_general.set_enum("account-type", Backend.NONE);
 					exit(-1);
 				}
 			}
@@ -167,6 +160,16 @@ namespace FeedReader {
 			});
 
 			m_loggedin = server.login();
+
+			if(m_loggedin == LoginResponse.SUCCESS)
+			{
+				settings_general.set_enum("account-type", type);
+			}
+			else
+			{
+				//FIXME: offline mode
+			}
+
 
 			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
 			return m_loggedin;
@@ -385,7 +388,7 @@ namespace FeedReader {
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
-		logger = new Logger();
+		logger = new Logger("daemon");
 		Notify.init(AboutInfo.programmName);
 		Utils.copyAutostart();
 

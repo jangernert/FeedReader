@@ -120,7 +120,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 	private void limitArticle()
 	{
-		m_timeout_source_id = GLib.Timeout.add(2000, () => {
+		m_timeout_source_id = GLib.Timeout.add(1500, () => {
 			if(m_nextArticle != "")
 			{
 				logger.print(LogMessage.DEBUG, "wait over: load article from que");

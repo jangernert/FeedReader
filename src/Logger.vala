@@ -16,11 +16,20 @@
 public class FeedReader.Logger : GLib.Object {
 
 	private int m_LogLevel;
+	private GLib.FileOutputStream m_stream;
 
-	public Logger()
+	public Logger(string filename)
 	{
 		var logLevel = settings_general.get_enum("log-level");
 		m_LogLevel = LogLevel.DEBUG;
+
+		string path = "%s/.local/share/feedreader/%s.log".printf(GLib.Environment.get_home_dir(), filename);
+
+		if(FileUtils.test(path, GLib.FileTest.EXISTS))
+			GLib.FileUtils.remove(path);
+
+		var file = GLib.File.new_for_path(path);
+		m_stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 		switch(logLevel)
 		{
@@ -71,26 +80,31 @@ public class FeedReader.Logger : GLib.Object {
 			case LogMessage.ERROR:
 				set_color(ConsoleColor.RED);
 				stdout.printf("[ ERROR ] ");
+				m_stream.write("[ ERROR ] ".data);
 				break;
 
 			case LogMessage.WARNING:
 				set_color(ConsoleColor.YELLOW);
 				stdout.printf("[WARNING] ");
+				m_stream.write("[WARNING] ".data);
 				break;
 
 			case LogMessage.INFO:
 				set_color(ConsoleColor.GREEN);
 				stdout.printf("[ INFO  ] ");
+				m_stream.write("[ INFO  ] ".data);
 				break;
 
 			case LogMessage.DEBUG:
 				set_color(ConsoleColor.BLUE);
 				stdout.printf("[ DEBUG ] ");
+				m_stream.write("[ DEBUG ] ".data);
 				break;
 		}
 
 		reset_color();
 		stdout.printf("%s\n", message);
+		m_stream.write("%s\n".printf(message).data);
 	}
 
 	private void reset_color()

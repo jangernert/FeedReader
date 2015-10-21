@@ -277,10 +277,12 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private void write_login_data()
 	{
 		logger.print(LogMessage.DEBUG, "write login data");
+		var backend = Backend.NONE;
+
 		switch(m_comboBox.get_active())
 		{
 			case Backend.TTRSS:
-				settings_general.set_enum("account-type", Backend.TTRSS);
+				backend = Backend.TTRSS;
 				settings_ttrss.set_string("url", m_ttrss_url_entry.get_text());
 				settings_ttrss.set_string("username", m_ttrss_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
@@ -294,13 +296,12 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 
 			case Backend.FEEDLY:
-				logger.print(LogMessage.DEBUG, "write type feedly");
-				settings_general.set_enum("account-type", Backend.FEEDLY);
+				backend = Backend.FEEDLY;
 				loadLoginPage(OAuth.FEEDLY);
 				return;
 
 			case Backend.OWNCLOUD:
-				settings_general.set_enum("account-type", Backend.OWNCLOUD);
+				backend = Backend.OWNCLOUD;
 				settings_owncloud.set_string("url", m_owncloud_url_entry.get_text());
 				settings_owncloud.set_string("username", m_owncloud_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
@@ -312,13 +313,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_owncloud_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
 				break;
-
-			case Backend.NONE:
-				settings_general.set_enum("account-type", Backend.NONE);
-				break;
 		}
 
-		LoginResponse status = feedDaemon_interface.login((Backend)settings_general.get_enum("account-type"));
+		LoginResponse status = feedDaemon_interface.login(backend);
 		logger.print(LogMessage.DEBUG, "LoginPage: status = %i".printf(status));
 		if(status == LoginResponse.SUCCESS)
 		{

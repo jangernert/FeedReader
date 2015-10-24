@@ -89,10 +89,10 @@ public class FeedReader.grabberUtils : GLib.Object {
         return result;
     }
 
-    public static bool repairImg(Html.Doc* doc, string articleURL)
+    public static bool repairURL(string xpath, string attr, Html.Doc* doc, string articleURL)
     {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
-    	Xml.XPath.Object* res = cntx.eval_expression("//img");
+    	Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
         if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
             return false;
@@ -100,7 +100,7 @@ public class FeedReader.grabberUtils : GLib.Object {
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
         	Xml.Node* node = res->nodesetval->item(i);
-            node->set_prop("src", completeURL(node->get_prop("src"), articleURL));
+            node->set_prop(attr, completeURL(node->get_prop(attr), articleURL));
         }
 
         delete res;
@@ -119,24 +119,6 @@ public class FeedReader.grabberUtils : GLib.Object {
         {
         	Xml.Node* node = res->nodesetval->item(i);
             node->set_prop("src", node->get_prop(correctURL));
-        }
-
-        delete res;
-        return true;
-    }
-
-    public static bool repairURL(Html.Doc* doc, string articleURL)
-    {
-        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
-    	Xml.XPath.Object* res = cntx.eval_expression("//a");
-
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
-            return false;
-
-        for(int i = 0; i < res->nodesetval->length(); i++)
-        {
-        	Xml.Node* node = res->nodesetval->item(i);
-            node->set_prop("href", completeURL(node->get_prop("href"), articleURL));
         }
 
         delete res;
@@ -269,6 +251,10 @@ public class FeedReader.grabberUtils : GLib.Object {
                 baseURL = baseURL + "/";
             }
             return baseURL + incompleteURL;
+        }
+        else if(incompleteURL.has_prefix("//"))
+        {
+            return "http:" + incompleteURL;
         }
 
         return incompleteURL;

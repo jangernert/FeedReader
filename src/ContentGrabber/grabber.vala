@@ -283,8 +283,9 @@ public class FeedReader.Grabber : GLib.Object {
 
         // complete relative source urls of images
         logger.print(LogMessage.DEBUG, "Grabber: copmplete urls");
-        grabberUtils.repairImg(doc, m_articleURL);
-        grabberUtils.repairURL(doc, m_articleURL);
+        grabberUtils.repairURL("//img", "src", doc, m_articleURL);
+        grabberUtils.repairURL("//a", "src", doc, m_articleURL);
+        grabberUtils.repairURL("//object", "data", doc, m_articleURL);
 
         // strip elements using Readability.com and Instapaper.com ignore class names
 		// .entry-unrelated and .instapaper_ignore

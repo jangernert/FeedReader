@@ -846,7 +846,7 @@ public class FeedReader.FeedServer : GLib.Object {
             logger.print(LogMessage.DEBUG, "Grabber: parsing failed");
     		return;
     	}
-		grabberUtils.repairImg(doc, Article.getURL());
+		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
 		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
 
 		string html = "";

@@ -15,7 +15,7 @@
    height="16"
    id="svg4077"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="feed-refresh.svg">
+   sodipodi:docname="feed-refresh-symbolic.svg">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -30,8 +30,8 @@
      id="namedview3973"
      showgrid="false"
      inkscape:zoom="27.812867"
-     inkscape:cx="7.310573"
-     inkscape:cy="10.650961"
+     inkscape:cx="1.252226"
+     inkscape:cy="10.579052"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -89,10 +89,5 @@
      d="M 8.53125,0 C 8.230004,0 8,0.2532205 8,0.5625 L 8,2 C 4.1340068,2 1,5.1340068 1,9 c 0,3.865993 3.1340068,7 7,7 3.865993,0 7,-3.134007 7,-7 l -3,0 c 0,2.209139 -1.790861,4 -4,4 C 5.790861,13 4,11.209139 4,9 4,6.790861 5.790861,5 8,5 L 8,6.4375 C 8,6.746779 8.230004,7 8.53125,7 8.60657,7 8.684743,6.9971 8.75,6.96875 l 4.90625,-2.9375 C 13.852022,3.9462374 14,3.7319596 14,3.5 14,3.2680404 13.852022,3.0537626 13.65625,2.96875 L 8.75,0.03125 C 8.684743,0.002914 8.606566,0 8.53125,0 Z"
      inkscape:connector-curvature="0"
      id="path3003"
-     style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:url(#radialGradient3813-6);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate" />
-  <path
-     d="M 8.53125,0.5 C 8.518522,0.5 8.5,0.5084789 8.5,0.5625 L 8.5,2 C 8.4926,2.2596991 8.259699,2.4925833 8,2.5 4.4122565,2.5 1.5,5.4122565 1.5,9 c 0,3.587743 2.9122565,6.5 6.5,6.5 3.416779,0 6.179296,-2.650652 6.4375,-6 l -2.03125,0 C 12.145122,11.741701 10.310018,13.5 8,13.5 5.5126113,13.5 3.5,11.487389 3.5,9 3.5,6.512611 5.5126113,4.5 8,4.5 8.259699,4.50742 8.492583,4.7403009 8.5,5 l 0,1.4375 C 8.5,6.49152 8.51852,6.5 8.53125,6.5 L 13.375,3.59375 c 0.245134,-0.095683 0,-0.1875 0,-0.1875 z"
-     inkscape:connector-curvature="0"
-     id="path4018"
-     style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:0.1;fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate" />
+     style="color:#000000;display:inline;overflow:visible;visibility:visible;fill:#bebebe;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;enable-background:accumulate" />
 </svg>

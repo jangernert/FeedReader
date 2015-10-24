@@ -124,7 +124,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 
-		m_refresh_button = new UpdateButton("feed-refresh");
+		m_refresh_button = new UpdateButton("feed-refresh-symbolic");
 		m_refresh_button.clicked.connect(() => {
 			refresh();
 		});

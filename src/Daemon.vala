@@ -376,6 +376,7 @@ namespace FeedReader {
 	FeedServer server;
 	Logger logger;
 	Notify.Notification notification;
+	bool m_notifyActionSupport = false;
 
 
 	void main () {
@@ -390,6 +391,18 @@ namespace FeedReader {
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 		logger = new Logger("daemon");
 		Notify.init(AboutInfo.programmName);
+		var notify_server_caps = Notify.get_server_caps();
+		foreach(string str in notify_server_caps)
+		{
+			if(str == "actions")
+			{
+				m_notifyActionSupport = true;
+				logger.print(LogMessage.INFO, "daemon: Notification actions supported");
+				break;
+			}
+			g_free(str);
+		}
+		g_list_free(notify_server_caps);
 		Utils.copyAutostart();
 
 		logger.print(LogMessage.INFO, "FeedReader Daemon " + AboutInfo.version);

@@ -771,25 +771,24 @@ public class FeedReader.FeedServer : GLib.Object {
 					notification.set_app_name(AboutInfo.programmName);
 					notification.set_hint("desktop-entry", new Variant ("(s)", "feedreader"));
 
-					notification.add_action ("default", "Show FeedReader", (notification, action) => {
-						logger.print(LogMessage.DEBUG, "notification: default action");
-						try {
-							notification.close();
-						} catch (Error e) {
-							logger.print(LogMessage.ERROR, e.message);
-						}
+					if(m_notifyActionSupport)
+					{
+						notification.add_action ("default", "Show FeedReader", (notification, action) => {
+							logger.print(LogMessage.DEBUG, "notification: default action");
+							try {
+								notification.close();
+							} catch (Error e) {
+								logger.print(LogMessage.ERROR, e.message);
+							}
 
-						string[] spawn_args = {"feedreader"};
-						try{
-							GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-						}catch(GLib.SpawnError e){
-							logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
-						}
-					});
-
-					notification.closed.connect(() => {
-						logger.print(LogMessage.DEBUG, "notification: closed");
-					});
+							string[] spawn_args = {"feedreader"};
+							try{
+								GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+							}catch(GLib.SpawnError e){
+								logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+							}
+						});
+					}
 				}
 				else
 				{

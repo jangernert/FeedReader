@@ -26,4 +26,5 @@ strip: //section[@class="header"]
 strip: //div[@id="article-sidebar-wrapper"]
 strip: //p[@class="anzeige"]
 strip: //section[@class="authors"]
+strip: //div[contains(@class, "embed")]
 

@@ -396,7 +396,6 @@ namespace FeedReader {
 				logger.print(LogMessage.INFO, "daemon: Notification actions supported");
 				break;
 			}
-			g_free(str);
 		}
 		g_list_free(notify_server_caps);
 		Utils.copyAutostart();

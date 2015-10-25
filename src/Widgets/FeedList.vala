@@ -242,13 +242,14 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		//-------------------------------------------------------------------
 
+		var feeds = dataBase.read_feeds();
+
 		if(!Utils.onlyShowFeeds())
 		{
-			createCategories();
+			createCategories(ref feeds);
 			createTags();
 		}
 
-		var feeds = dataBase.read_feeds();
 		foreach(var item in feeds)
 		{
 
@@ -394,7 +395,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	private void createCategories()
+	private void createCategories(ref GLib.List<feed> feeds)
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
@@ -455,7 +456,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		for(int i = 1; i <= maxCatLevel; i++)
 		{
-			var categories = dataBase.read_categories_level(i);
+			var categories = dataBase.read_categories_level(i, feeds);
 
 			if(dataBase.haveFeedsWithoutCat())
 			{
@@ -465,10 +466,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					catID = "0";
 				}
-				//else if(settings_general.get_enum("account-type") == Backend.FEEDLY)
-				//{
-				//	catID = "";
-				//}
 
 				categories.insert(
 					new category(

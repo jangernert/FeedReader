@@ -17,12 +17,12 @@ public class FeedReader.category : GLib.Object {
 
 	private string m_categorieID;
 	private string m_title;
-	private int m_unread_count;
+	private uint m_unread_count;
 	private int m_orderID;
 	private string m_parent;
 	private int m_level;
 
-	public category (string categorieID, string title, int unread_count, int orderID, string parent, int level) {
+	public category (string categorieID, string title, uint unread_count, int orderID, string parent, int level) {
 		m_categorieID = categorieID;
 		m_title = title;
 		m_unread_count = unread_count;
@@ -41,7 +41,7 @@ public class FeedReader.category : GLib.Object {
 		return m_title;
 	}
 
-	public int getUnreadCount()
+	public uint getUnreadCount()
 	{
 		return m_unread_count;
 	}
@@ -63,6 +63,6 @@ public class FeedReader.category : GLib.Object {
 
 	public void print()
 	{
-		logger.print(LogMessage.DEBUG, "\ntitle: %s\nid: %s\nunread: %i".printf(m_title, m_categorieID, m_unread_count));
+		logger.print(LogMessage.DEBUG, "\ntitle: %s\nid: %s\nunread: %u".printf(m_title, m_categorieID, m_unread_count));
 	}
 }

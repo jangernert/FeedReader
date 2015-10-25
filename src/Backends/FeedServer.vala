@@ -110,8 +110,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			dataBase.reset_exists_flag();
 			dataBase.write_categories(ref categories);
 			dataBase.delete_nonexisting_categories();
-			if(m_type == Backend.TTRSS)
-				m_ttrss.updateCategorieUnread();
 
 			// write feeds
 			dataBase.reset_subscribed_flag();
@@ -198,8 +196,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			// write categories
 			dataBase.write_categories(ref categories);
-			if(m_type == Backend.TTRSS)
-				m_ttrss.updateCategorieUnread();
 
 			// write feeds
 			dataBase.write_feeds(ref feeds);
@@ -610,6 +606,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						if(new_articles.length() == 10 || Article.getArticleID() == last)
 						{
 							dataBase.write_articles(ref new_articles);
+							newFeedList();
 							newArticleList();
 							new_articles = new GLib.List<article>();
 							setNewRows(before);
@@ -656,6 +653,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					articles.reverse();
 					dataBase.update_articles(ref articles);
 					dataBase.write_articles(ref articles);
+					newFeedList();
 					newArticleList();
 					setNewRows(before);
 
@@ -715,6 +713,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						{
 							dataBase.update_articles(ref articles);
 							dataBase.write_articles(ref new_articles);
+							newFeedList();
 							newArticleList();
 							new_articles = new GLib.List<article>();
 							setNewRows(before);

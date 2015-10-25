@@ -384,29 +384,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void updateCategorieUnread()
-	{
-		var message = new ttrss_message(m_ttrss_url);
-		message.add_string("sid", m_ttrss_sessionid);
-		message.add_string("op", "getCategories");
-		message.add_bool("include_empty", false);
-		int error = message.send();
-
-		if(error == ConnectionError.SUCCESS)
-		{
-			var response = message.get_response_array();
-			var categorie_count = response.get_length();
-
-			for(int i = 0; i < categorie_count; i++)
-			{
-				var categorie_node = response.get_object_element(i);
-				if(categorie_node.get_string_member("id") != null)
-					dataBase.updateCategorie(categorie_node.get_string_member("id"), (int)categorie_node.get_int_member("unread"));
-			}
-		}
-	}
-
-
 	public void getHeadlines(ref GLib.List<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
 	{
 		var message = new ttrss_message(m_ttrss_url);

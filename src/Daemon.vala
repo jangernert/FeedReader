@@ -194,10 +194,6 @@ namespace FeedReader {
 
 				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
 					dataBase.update_article.end(res);
-				});
-
-				dataBase.change_unread.begin(dataBase.getFeedIDofArticle(articleID), status, (obj, res) => {
-					dataBase.change_unread.end(res);
 					updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleID), increase);
 					updateBadge();
 				});

@@ -831,4 +831,9 @@ public class FeedReader.feedList : Gtk.Stack {
 		return false;
 	}
 
+	public void updateAccountInfo()
+	{
+		m_branding.refresh();
+	}
+
 }

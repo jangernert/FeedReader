@@ -194,6 +194,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_content.newFeedList();
 		m_stack.set_visible_child_full("content", transition);
 		m_headerbar.setButtonsSensitive(true);
+		m_content.updateAccountInfo();
 
 		m_headerbar.show_all();
 		this.set_titlebar(m_headerbar);

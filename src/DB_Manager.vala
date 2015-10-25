@@ -30,7 +30,7 @@ public class FeedReader.dbManager : GLib.Object {
 				logger.print(LogMessage.ERROR, "Can't create directory for database: %s".printf(e.message));
 			}
 		}
-		int rc = Sqlite.Database.open_v2(db_path + "feedreader-02.db", out sqlite_db);
+		int rc = Sqlite.Database.open_v2(db_path + "feedreader-03.db", out sqlite_db);
 		if (rc != Sqlite.OK) {
 			logger.print(LogMessage.ERROR, "Can't open database: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
 		}

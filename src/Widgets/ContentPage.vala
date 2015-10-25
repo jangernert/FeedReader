@@ -338,4 +338,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		m_articleList.syncFinished();
 	}
+
+	public void updateAccountInfo()
+	{
+		m_feedList.updateAccountInfo();
+	}
 }

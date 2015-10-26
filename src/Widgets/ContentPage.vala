@@ -166,6 +166,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_feedList.newFeedlist(defaultSettings);
 	}
 
+	public void updateFeedList()
+	{
+		m_feedList.refreshCounters();
+	}
+
 	public void reloadArticleView()
 	{
 		m_article_view.reload();

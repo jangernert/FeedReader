@@ -53,6 +53,7 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
+		public signal void updateFeedList();
 		public signal void updateArticleList();
 	}
 
@@ -91,6 +92,10 @@ namespace FeedReader {
 
 				feedDaemon_interface.newFeedList.connect(() => {
 				    m_window.getContent().newFeedList();
+				});
+
+				feedDaemon_interface.updateFeedList.connect(() => {
+				    m_window.getContent().updateFeedList();
 				});
 
 				feedDaemon_interface.updateArticleList.connect(() => {

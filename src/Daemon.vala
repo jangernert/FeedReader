@@ -83,6 +83,7 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
+		public signal void updateFeedList();
 		public signal void updateArticleList();
 
 		private async void sync()
@@ -153,6 +154,10 @@ namespace FeedReader {
 
 			server.newFeedList.connect(() => {
 				newFeedList();
+			});
+
+			server.updateFeedList.connect(() => {
+				updateFeedList();
 			});
 
 			server.newArticleList.connect(() => {

@@ -620,6 +620,66 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 	}
 
+	public void refreshCounters()
+	{
+		var feeds = dataBase.read_feeds();
+		var categories = dataBase.read_categories(feeds);
+
+		var FeedChildList = m_list.get_children();
+
+		// update "All Articles"
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpFeedRow = row as FeedRow;
+			if(tmpFeedRow != null && tmpFeedRow.getName() == "All Articles")
+			{
+				tmpFeedRow.set_unread_count(dataBase.get_unread_total());
+				break;
+			}
+		}
+
+		// update categories
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpCatRow = row as categorieRow;
+			if(tmpCatRow != null)
+			{
+				foreach(category cat in categories)
+				{
+					if(tmpCatRow.getID() == cat.getCatID())
+					{
+						tmpCatRow.set_unread_count(cat.getUnreadCount());
+						if(settings_general.get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
+							tmpCatRow.reveal(true);
+
+						break;
+					}
+				}
+			}
+		}
+
+		// update feeds
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpFeedRow = row as FeedRow;
+			if(tmpFeedRow != null)
+			{
+				foreach(feed Feed in feeds)
+				{
+					if(tmpFeedRow.getID() == Feed.getFeedID())
+					{
+						tmpFeedRow.set_unread_count(Feed.getUnread());
+						if(settings_general.get_boolean("feedlist-only-show-unread") && tmpFeedRow.getUnreadCount() != 0)
+							tmpFeedRow.reveal(true);
+
+						break;
+					}
+				}
+			}
+		}
+	}
+
+
 
 	private void initCollapseCategories()
 	{

@@ -425,7 +425,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 		settings_state.set_int("articlelist-new-rows", 0);
 
-		if(new_rows > 0 && newPos > 0)
+		// (FeedChildList.length()-i)*100 = height of the "old" rows
+		// height of the "old" rows should be bigger than the page size
+		// to make sure there are enough articles to scroll down
+		// and not see "new" articles that should be further up in the list
+		if(new_rows > 0 && newPos > 0 && (FeedChildList.length()-i)*100 >= m_current_adjustment.get_page_size())
 			m_overlay.reveal();
 	}
 

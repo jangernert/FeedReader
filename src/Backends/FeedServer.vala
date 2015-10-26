@@ -20,6 +20,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private int m_type;
 	private bool m_supportTags;
 	public signal void newFeedList();
+	public signal void updateFeedList();
 	public signal void newArticleList();
 
 	public FeedServer(Backend type)
@@ -606,7 +607,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						if(new_articles.length() == 10 || Article.getArticleID() == last)
 						{
 							dataBase.write_articles(ref new_articles);
-							newFeedList();
+							updateFeedList();
 							newArticleList();
 							new_articles = new GLib.List<article>();
 							setNewRows(before);
@@ -653,7 +654,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					articles.reverse();
 					dataBase.update_articles(ref articles);
 					dataBase.write_articles(ref articles);
-					newFeedList();
+					updateFeedList();
 					newArticleList();
 					setNewRows(before);
 
@@ -713,7 +714,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						{
 							dataBase.update_articles(ref articles);
 							dataBase.write_articles(ref new_articles);
-							newFeedList();
+							updateFeedList();
 							newArticleList();
 							new_articles = new GLib.List<article>();
 							setNewRows(before);

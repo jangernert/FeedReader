@@ -422,7 +422,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void loadContent()
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: load content");
-		//m_content.newFeedList();
 		dataBase.updateBadge.connect(() => {
 			feedDaemon_interface.updateBadge();
 		});

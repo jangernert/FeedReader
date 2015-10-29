@@ -323,13 +323,13 @@ public class FeedReader.grabberUtils : GLib.Object {
 
         if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
 		{
-			Soup.Message message_dlImg;
-			message_dlImg = new Soup.Message("GET", fixedURL);
+			Soup.Message message_dlImg = new Soup.Message("GET", fixedURL);
 
 			if(settings_tweaks.get_boolean("do-not-track"))
 				message_dlImg.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+            session.timeout = 5;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);
 			if(status == 200)

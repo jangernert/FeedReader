@@ -37,7 +37,22 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_posY = 0;
 		m_momentum = 0;
 
-		m_view = new WebKit.WebView();
+		var settings = new WebKit.Settings();
+		settings.set_enable_accelerated_2d_canvas(true);
+		settings.set_enable_html5_database(false);
+		settings.set_enable_html5_local_storage(false);
+		settings.set_enable_java(false);
+		settings.set_enable_media_stream(false);
+		settings.set_enable_page_cache(false);
+		settings.set_enable_plugins(false);
+		settings.set_enable_private_browsing(true);
+		settings.set_enable_smooth_scrolling(true);
+		settings.set_javascript_can_access_clipboard(false);
+		settings.set_javascript_can_open_windows_automatically(false);
+		settings.set_media_playback_requires_user_gesture(true);
+		settings.set_user_agent_with_application_details("FeedReader", AboutInfo.version);
+
+		m_view = new WebKit.WebView.with_settings(settings);
 		m_view.load_changed.connect(open_link);
 		m_view.context_menu.connect(() => { return true; });
 		m_view.set_events(Gdk.EventMask.POINTER_MOTION_MASK);

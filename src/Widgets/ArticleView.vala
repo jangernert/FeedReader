@@ -178,7 +178,9 @@ public class FeedReader.articleView : Gtk.Stack {
 				break;
 		}
 
+#if USE_WEBKIT_4
 		m_view.set_background_color(background);
+#endif
 
 
 

@@ -147,10 +147,14 @@ body {
 table,
 td,
 th {
-    border: 1px solid black;
-    border-collapse: collapse;
-    vertical-align: center;
-    padding: 10px;
+  border: 1px solid black;
+  border-collapse: collapse;
+  vertical-align: center;
+  padding: 10px;
+}
+table {
+  max-width: 100%;
+  max-height: auto;
 }
 th {
     background-color: #eee;

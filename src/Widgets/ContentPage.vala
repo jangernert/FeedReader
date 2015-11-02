@@ -19,8 +19,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
-	private string m_nextArticle;
-	private uint m_timeout_source_id = 0;
 	public signal void showArticleButtons(bool show);
 
 
@@ -89,18 +87,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 			if(m_article_view.getCurrentArticle() != row.getID())
 			{
-				if(!m_article_view.isLoading() && m_timeout_source_id == 0)
-				{
-					logger.print(LogMessage.DEBUG, "fill content directly");
-					m_article_view.fillContent(row.getID());
-				}
-				else
-				{
-					logger.print(LogMessage.DEBUG, "write article in que to load");
-					m_nextArticle = row.getID();
-					if(m_timeout_source_id == 0)
-						limitArticle();
-				}
+				m_article_view.fillContent(row.getID());
 			}
 		});
 
@@ -116,21 +103,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 		this.pack1(m_pane, false, false);
 		this.pack2(m_article_view, true, false);
-	}
-
-	private void limitArticle()
-	{
-		m_timeout_source_id = GLib.Timeout.add(2000, () => {
-			if(m_nextArticle != "")
-			{
-				logger.print(LogMessage.DEBUG, "wait over: load article from que");
-				m_article_view.fillContent(m_nextArticle);
-				m_nextArticle = "";
-		    	m_timeout_source_id = 0;
-			}
-
-			return false;
-		});
 	}
 
 	public void enterFullscreen()

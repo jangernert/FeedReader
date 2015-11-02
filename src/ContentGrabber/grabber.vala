@@ -126,6 +126,7 @@ public class FeedReader.Grabber : GLib.Object {
     private bool download()
     {
         var session = new Soup.Session();
+        session.timeout = 5;
         var msg = new Soup.Message("GET", m_articleURL);
         msg.restarted.connect(() => {
             if(msg.status_code == Soup.Status.MOVED_TEMPORARILY)

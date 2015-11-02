@@ -50,6 +50,8 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.load_failed.connect(loadFailed);
 		m_search = m_view.get_find_controller();
 
+		WebKit.WebContext.get_default().set_cache_model(WebKit.CacheModel.DOCUMENT_BROWSER);
+
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("h2");
 
@@ -263,6 +265,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		if(e.matches(WebKit.NetworkError.quark(), 302) && !m_open_external)
 		{
 			logger.print(LogMessage.DEBUG, "ArticleView: loading canceled " + m_currentArticle);
+			WebKit.WebContext.get_default().clear_cache();
 			fillContent(m_currentArticle);
 		}
 		return true;

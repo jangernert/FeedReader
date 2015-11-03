@@ -17,7 +17,6 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	private WebKit.WebView m_view;
 	private WebKit.FindController m_search;
-	private bool m_open_external;
 	private string m_currentArticle;
 	private bool m_firstTime;
 	private string m_searchTerm;
@@ -30,7 +29,6 @@ public class FeedReader.articleView : Gtk.Stack {
 
 
 	public articleView () {
-		m_open_external = true;
 		m_searchTerm = "";
 		m_firstTime = true;
 		m_inDrag = false;
@@ -62,7 +60,6 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.button_release_event.connect(onRelease);
 		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});
 		m_view.leave_fullscreen.connect(() => { leaveFullscreen(); return false;});
-		m_view.load_failed.connect(loadFailed);
 		m_search = m_view.get_find_controller();
 
 		WebKit.WebContext.get_default().set_cache_model(WebKit.CacheModel.DOCUMENT_BROWSER);
@@ -154,11 +151,11 @@ public class FeedReader.articleView : Gtk.Stack {
 
 		if(isLoading())
 		{
+			m_view.load_failed.connect(loadFailed);
 			m_view.stop_loading();
 			return;
 		}
 
-		m_open_external = false;
 		article Article = null;
 		SourceFunc callback = fillContent.callback;
 
@@ -233,42 +230,36 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	public void open_link(WebKit.LoadEvent load_event)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleView: load event");
-
 		switch (load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
-				if(m_open_external)
+				logger.print(LogMessage.DEBUG, "ArticleView: load STARTED");
+				string url = m_view.get_uri();
+				if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
 				{
-					string url = m_view.get_uri();
-					if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
-					{
-						logger.print(LogMessage.DEBUG, "ArticleView: open external url: %s".printf(url));
-						try{
-							Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
-						}
-						catch(GLib.Error e){
-							logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
-						}
+					logger.print(LogMessage.DEBUG, "ArticleView: open external url: %s".printf(url));
+					try{
+						Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
 					}
-
+					catch(GLib.Error e){
+						logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+					}
 					m_view.stop_loading();
 				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
+				logger.print(LogMessage.DEBUG, "ArticleView: load COMMITTED");
 				if(m_searchTerm != "")
 					m_search.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
 				break;
 			case WebKit.LoadEvent.FINISHED:
+				logger.print(LogMessage.DEBUG, "ArticleView: load FINISHED");
 				if(m_firstTime)
 				{
 					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
 					settings_state.set_int("articleview-scrollpos", 0);
 					m_firstTime = false;
 				}
-
-				logger.print(LogMessage.DEBUG, "ArticleView: set open external = true");
-				m_open_external = true;
 				break;
 		}
 	}
@@ -277,10 +268,11 @@ public class FeedReader.articleView : Gtk.Stack {
 	{
 		GLib.Error e = (GLib.Error)error;
 		logger.print(LogMessage.DEBUG, "ArticleView: load failed: message: \"%s\", domain \"%s\", code \"%i\"".printf(e.message, e.domain.to_string(), e.code));
-		if(e.matches(WebKit.NetworkError.quark(), 302) && !m_open_external)
+		if(e.matches(WebKit.NetworkError.quark(), 302))
 		{
 			logger.print(LogMessage.DEBUG, "ArticleView: loading canceled " + m_currentArticle);
 			WebKit.WebContext.get_default().clear_cache();
+			m_view.load_failed.disconnect(loadFailed);
 			fillContent(m_currentArticle);
 		}
 		return true;

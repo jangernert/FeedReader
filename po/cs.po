@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-09-26 19:01+0200\n"
-"PO-Revision-Date: 2015-04-13 16:45+0000\n"
-"Last-Translator: Tomáš Bubeníček <tombuben@gmail.com>\n"
+"PO-Revision-Date: 2015-11-02 18:49+0000\n"
+"Last-Translator: Jan Máslo <jeden.Maslic.nestaci@openmailbox.org>\n"
 "Language-Team: Czech <cs@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-10-30 05:36+0000\n"
+"X-Launchpad-Export-Date: 2015-11-03 05:35+0000\n"
 "X-Generator: Launchpad (build 17838)\n"
 
 #: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
@@ -51,19 +51,19 @@ msgstr ""
 
 #: ../src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "O FeedReaderu"
 
 #: ../src/Widgets/TagPopover.vala:40
 msgid "Add Tag:"
-msgstr ""
+msgstr "Přidat štítek:"
 
 #: ../src/Widgets/TagPopover.vala:52
 msgid "Tags:"
-msgstr ""
+msgstr "Štítky:"
 
 #: ../src/Widgets/TagPopover.vala:129
 msgid "add Tag"
-msgstr ""
+msgstr "přidat štítek"
 
 #: ../src/Widgets/MainWindow.vala:358
 msgid "Please select a service first"
@@ -123,15 +123,15 @@ msgstr ""
 
 #: ../src/Widgets/ResetPage.vala:41
 msgid "New account"
-msgstr ""
+msgstr "Nový účet"
 
 #: ../src/Widgets/ResetPage.vala:44
 msgid "Waiting for current sync to finish"
-msgstr ""
+msgstr "Čeká se na ukončení současné synchronizace"
 
 #: ../src/Widgets/ResetPage.vala:54
 msgid "I changed my mind"
-msgstr ""
+msgstr "Rozmyslel jsem si to"
 
 #: ../src/Widgets/UpdateButton.vala:35
 msgid "Update Feeds"
@@ -139,7 +139,7 @@ msgstr ""
 
 #: ../src/Widgets/ServiceSettingsRow.vala:61
 msgid "Username or Password incorrect"
-msgstr ""
+msgstr "Neplatné uživatelské jméno nebo heslo"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:86 ../src/Widgets/LoginPage.vala:127
 #: ../src/Widgets/LoginPage.vala:196
@@ -158,7 +158,7 @@ msgstr ""
 
 #: ../src/Widgets/ServiceSettingsRow.vala:108
 msgid "Logout"
-msgstr ""
+msgstr "Odhlásit se"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:237
 msgid "waiting"
@@ -170,37 +170,39 @@ msgstr "Nebyl vybrán článek"
 
 #: ../src/Widgets/ArticleView.vala:140
 msgid "Not available"
-msgstr ""
+msgstr "Není k dispozici"
 
 #: ../src/Widgets/FeedList.vala:476 ../src/DB_Manager.vala:684
 msgid "Uncategorized"
-msgstr ""
+msgstr "Nezařazeno"
 
 #: ../src/Widgets/SpringCleanPage.vala:28
 msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
 msgstr ""
+"FeedReader čistí databázi.\n"
+"Nemělo by to trvat dlouho."
 
 #: ../src/Widgets/ReaderHeaderbar.vala:49
 msgid "Mark article (un)starred"
-msgstr ""
+msgstr "O(d)značit článek hvězdičkou"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:55
 msgid "Mark article (un)read"
-msgstr ""
+msgstr "Označit článek jako (ne)přečtený"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
-msgstr ""
+msgstr "Zobrazit všechny články"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
-msgstr ""
+msgstr "Zobrazit pouze nepřečtené články"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
-msgstr ""
+msgstr "Zobrazit pouze články označené hvězdičkou"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:89
 msgid "Tag Article"
@@ -208,20 +210,20 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:99
 msgid "Share Article"
-msgstr ""
+msgstr "Sdílet článek"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:133
 msgid "Search Articles"
-msgstr ""
+msgstr "Vyhledat články"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:140
 #: ../src/Widgets/ReaderHeaderbar.vala:151
 msgid "Settings"
-msgstr ""
+msgstr "Nastavení"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:142
 msgid "Change Account"
-msgstr ""
+msgstr "Změnit účet"
 
 #: ../src/Widgets/LoginPage.vala:36
 msgid "Tiny Tiny RSS"
@@ -265,7 +267,7 @@ msgstr "OwnCloud URL:"
 
 #: ../src/Widgets/SettingsDialog.vala:65
 msgid "Interface"
-msgstr ""
+msgstr "Rozhraní"
 
 #: ../src/Widgets/SettingsDialog.vala:66
 msgid "Internals"
@@ -273,7 +275,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:67
 msgid "Services"
-msgstr ""
+msgstr "Služby"
 
 #: ../src/Widgets/SettingsDialog.vala:77
 msgid "Close"
@@ -289,11 +291,11 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:109
 msgid "Only show unread"
-msgstr ""
+msgstr "Zobrazit pouze nepřečtené"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "Sort FeedList by"
-msgstr ""
+msgstr "Uspořádat seznam článků podle"
 
 #: ../src/Widgets/SettingsDialog.vala:131
 #: ../src/Widgets/SettingsDialog.vala:171
@@ -302,11 +304,11 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:134
 msgid "Alphabetically"
-msgstr ""
+msgstr "Abecedně"
 
 #: ../src/Widgets/SettingsDialog.vala:154
 msgid "Article List:"
-msgstr ""
+msgstr "Seznam článků:"
 
 #: ../src/Widgets/SettingsDialog.vala:161
 msgid "Sort articles by"
@@ -326,23 +328,23 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:218
 msgid "Theme"
-msgstr ""
+msgstr "Motiv"
 
 #: ../src/Widgets/SettingsDialog.vala:225
 msgid "Default"
-msgstr ""
+msgstr "Výchozí"
 
 #: ../src/Widgets/SettingsDialog.vala:228
 msgid "Spring"
-msgstr ""
+msgstr "Jaro"
 
 #: ../src/Widgets/SettingsDialog.vala:231
 msgid "Midnight"
-msgstr ""
+msgstr "Půlnoc"
 
 #: ../src/Widgets/SettingsDialog.vala:234
 msgid "Parchment"
-msgstr ""
+msgstr "Pergamen"
 
 #: ../src/Widgets/SettingsDialog.vala:271
 msgid "Sync:"
@@ -358,7 +360,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:307
 msgid "Database:"
-msgstr ""
+msgstr "Databáze:"
 
 #: ../src/Widgets/SettingsDialog.vala:314
 msgid "Drop articles after"
@@ -366,19 +368,19 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:321
 msgid "Never"
-msgstr ""
+msgstr "Nikdy"
 
 #: ../src/Widgets/SettingsDialog.vala:324
 msgid "1 Week"
-msgstr ""
+msgstr "1 týden"
 
 #: ../src/Widgets/SettingsDialog.vala:327
 msgid "1 Month"
-msgstr ""
+msgstr "1 měsíc"
 
 #: ../src/Widgets/SettingsDialog.vala:330
 msgid "6 Months"
-msgstr ""
+msgstr "6 měsíců"
 
 #: ../src/Widgets/SettingsDialog.vala:367
 msgid "Additional Functionality:"
@@ -386,7 +388,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:374
 msgid "Content Grabber"
-msgstr ""
+msgstr "Sběrač obsahu"
 
 #: ../src/Widgets/SettingsDialog.vala:381
 msgid "None"
@@ -394,7 +396,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:384
 msgid "Built in grabber"
-msgstr ""
+msgstr "Vestavěný sběrač"
 
 #: ../src/Widgets/ArticleList.vala:58
 msgid "None of the %i Articles in the database fit the current filters."
@@ -402,11 +404,11 @@ msgstr "Žádný z %d článků v databázi nesedí současným filtrům."
 
 #: ../src/Widgets/ArticleList.vala:72
 msgid "Sync is in progress. Articles should appear any second."
-msgstr ""
+msgstr "Probíhá synchronizace. Články se objeví každou chvíli."
 
 #: ../src/Widgets/SharePopover.vala:36
 msgid "Please"
-msgstr ""
+msgstr "Prosím"
 
 #: ../src/Widgets/SharePopover.vala:38
 msgid "to a service to share this article."
@@ -415,7 +417,7 @@ msgstr ""
 #: ../src/Backends/ttrss/TTRSS_API.vala:468
 #: ../src/Backends/ttrss/TTRSS_API.vala:525
 msgid "not found"
-msgstr ""
+msgstr "nenalezeno"
 
 #: ../src/Backends/FeedServer.vala:739
 msgid "There is 1 new article"

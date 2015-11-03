@@ -91,6 +91,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool repairURL(string xpath, string attr, Html.Doc* doc, string articleURL)
     {
+        logger.print(LogMessage.DEBUG, "GrabberUtils: repairURL xpath:\"%s\" attr:\"%s\"".printf(xpath, attr));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
@@ -100,7 +101,8 @@ public class FeedReader.grabberUtils : GLib.Object {
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
         	Xml.Node* node = res->nodesetval->item(i);
-            node->set_prop(attr, completeURL(node->get_prop(attr), articleURL));
+            if(node->get_prop(attr) != null)
+                node->set_prop(attr, completeURL(node->get_prop(attr), articleURL));
         }
 
         delete res;

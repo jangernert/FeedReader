@@ -32,6 +32,15 @@ public class FeedReader.GrabberConfig : GLib.Object {
 
     public GrabberConfig(string filename)
     {
+        m_xpath_title = new Gee.ArrayList<string>();
+        m_xpath_author = new Gee.ArrayList<string>();
+        m_xpath_date = new Gee.ArrayList<string>();
+        m_xpath_body = new Gee.ArrayList<string>();
+        m_xpath_strip = new Gee.ArrayList<string>();
+        m_xpath_stripIDorClass = new Gee.ArrayList<string>();
+        m_xpath_stripImgSrc = new Gee.ArrayList<string>();
+        m_replace = new Gee.ArrayList<StringPair>();
+
         // init defaults:
         m_tidy = true;
         m_prune = true;

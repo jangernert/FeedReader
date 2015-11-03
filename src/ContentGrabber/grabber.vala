@@ -15,8 +15,8 @@
 
 public class FeedReader.Grabber : GLib.Object {
     private string m_articleURL;
-    private string m_articleID;
-    private string m_feedID;
+    private string? m_articleID;
+    private string? m_feedID;
     private string m_rawHtml;
     private string m_nexPageURL;
     private GrabberConfig m_config;
@@ -34,7 +34,7 @@ public class FeedReader.Grabber : GLib.Object {
     public string m_date;
     public string m_html;
 
-    public Grabber(string articleURL, string articleID, string feedID)
+    public Grabber(string articleURL, string? articleID, string? feedID)
     {
         m_articleURL = articleURL;
         m_articleID = articleID;
@@ -283,9 +283,10 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.setAttributes(doc, "style", "");
 
         // complete relative source urls of images
-        logger.print(LogMessage.DEBUG, "Grabber: copmplete urls");
+        logger.print(LogMessage.DEBUG, "Grabber: complete urls");
         grabberUtils.repairURL("//img", "src", doc, m_articleURL);
         grabberUtils.repairURL("//a", "src", doc, m_articleURL);
+        grabberUtils.repairURL("//a", "href", doc, m_articleURL);
         grabberUtils.repairURL("//object", "data", doc, m_articleURL);
 
         // strip elements using Readability.com and Instapaper.com ignore class names
@@ -352,7 +353,8 @@ public class FeedReader.Grabber : GLib.Object {
             return true;
         }
 
-        grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
+        if(m_articleID != null && m_feedID != null)
+            grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
         postProcessing();
         return true;
     }

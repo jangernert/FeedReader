@@ -379,11 +379,17 @@ namespace FeedReader {
 	Notify.Notification notification;
 	bool m_notifyActionSupport = false;
 
+	private const GLib.OptionEntry[] options = {
+		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
+		{ "grabArticle", 0, 0, OptionArg.STRING, ref grabArticle, "use the ContentGrabber to grab the given URL", "URL" },
+		{ null }
+	};
+	private static bool version = false;
+	private static string? grabArticle = null;
 
-	void main () {
-		stderr = FileStream.open ("/dev/null", "w");
-		dataBase = new dbManager();
-		dataBase.init();
+
+	int main (string[] args)
+	{
 		settings_general = new GLib.Settings ("org.gnome.feedreader");
 		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
@@ -391,6 +397,31 @@ namespace FeedReader {
 		settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 		logger = new Logger("daemon");
+
+		try {
+			var opt_context = new GLib.OptionContext();
+			opt_context.set_help_enabled(true);
+			opt_context.add_main_entries(options, null);
+			opt_context.parse(ref args);
+		} catch (OptionError e) {
+			print(e.message + "\n");
+			return 0;
+		}
+
+		if(version)
+		{
+			stdout.printf("Version: %s\n", AboutInfo.version);
+			return 0;
+		}
+
+		if(grabArticle != null)
+		{
+			DEBUGgrabArticle(grabArticle);
+			return 0;
+		}
+
+		dataBase = new dbManager();
+		dataBase.init();
 		Notify.init(AboutInfo.programmName);
 		var notify_server_caps = Notify.get_server_caps();
 		foreach(string str in notify_server_caps)
@@ -420,6 +451,66 @@ namespace FeedReader {
 				      );
 		var mainloop = new GLib.MainLoop();
 		mainloop.run();
+		return 0;
+	}
+
+	public static void DEBUGgrabArticle(string url)
+	{
+		stdout.printf("DEBUG URL: %s\n", url);
+		var grabber = new Grabber(url, null, null);
+		if(grabber.process())
+		{
+			grabber.print();
+			string path = GLib.Environment.get_home_dir() + "/grabbedArticle.html";
+
+			if(FileUtils.test(path, GLib.FileTest.EXISTS))
+				GLib.FileUtils.remove(path);
+
+			var file = GLib.File.new_for_path(path);
+			var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
+
+			stream.write(grabber.getArticle().data);
+			logger.print(LogMessage.DEBUG, "Grabber: article html written to " + path);
+
+			string output = "";
+			string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", path};
+			try{
+				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+			}
+			catch(GLib.SpawnError e){
+				logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
+			}
+
+			output = output.strip();
+
+			if(output == "" || output == null)
+			{
+				logger.print(LogMessage.ERROR, "html2text could not generate preview text");
+				return;
+			}
+
+			string xml = "<?xml";
+
+			while(output.has_prefix(xml))
+			{
+				int end = output.index_of_char('>');
+				output = output.slice(end+1, output.length).chug();
+			}
+
+			output = output.replace("\n"," ");
+			output = output.replace("_"," ");
+
+			path = GLib.Environment.get_home_dir() + "/grabbedArticlePreview.txt";
+
+			if(FileUtils.test(path, GLib.FileTest.EXISTS))
+				GLib.FileUtils.remove(path);
+
+			file = GLib.File.new_for_path(path);
+			stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
+
+			stream.write(output.data);
+			logger.print(LogMessage.DEBUG, "Grabber: preview written to " + path);
+		}
 	}
 
 }

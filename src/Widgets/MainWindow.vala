@@ -263,6 +263,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			settings_state.set_boolean("no-animations", true);
 			settings_state.set_string("search-term", m_headerbar.getSearchTerm());
 			settings_state.set_int("articleview-scrollpos", m_content.getArticleViewScrollPos());
+			settings_state.set_int("articlelist-new-rows", 0);
 		});
 	}
 

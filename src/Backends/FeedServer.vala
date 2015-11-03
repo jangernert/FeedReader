@@ -820,7 +820,16 @@ public class FeedReader.FeedServer : GLib.Object {
 					{
 						Article.setAuthor(grabber.getAuthor());
 					}
-					Article.setHTML(grabber.getArticle());
+					string html = grabber.getArticle();
+					string xml = "<?xml";
+
+					while(html.has_prefix(xml))
+					{
+						int end = html.index_of_char('>');
+						html = html.slice(end+1, html.length).chug();
+					}
+
+					Article.setHTML(html);
 
 					return;
 				}

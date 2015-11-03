@@ -461,6 +461,16 @@ namespace FeedReader {
 		if(grabber.process())
 		{
 			grabber.print();
+
+			string html = grabber.getArticle();
+			string xml = "<?xml";
+
+			while(html.has_prefix(xml))
+			{
+				int end = html.index_of_char('>');
+				html = html.slice(end+1, html.length).chug();
+			}
+
 			string path = GLib.Environment.get_home_dir() + "/grabbedArticle.html";
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
@@ -469,7 +479,7 @@ namespace FeedReader {
 			var file = GLib.File.new_for_path(path);
 			var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
-			stream.write(grabber.getArticle().data);
+			stream.write(html.data);
 			logger.print(LogMessage.DEBUG, "Grabber: article html written to " + path);
 
 			string output = "";
@@ -487,14 +497,6 @@ namespace FeedReader {
 			{
 				logger.print(LogMessage.ERROR, "html2text could not generate preview text");
 				return;
-			}
-
-			string xml = "<?xml";
-
-			while(output.has_prefix(xml))
-			{
-				int end = output.index_of_char('>');
-				output = output.slice(end+1, output.length).chug();
 			}
 
 			output = output.replace("\n"," ");

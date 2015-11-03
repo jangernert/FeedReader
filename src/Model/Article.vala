@@ -21,7 +21,7 @@ public class FeedReader.article : GLib.Object {
 	private string m_html;
 	private string m_preview;
 	private string m_feedID;
-	private GLib.List<string> m_tags;
+	private Gee.ArrayList<string> m_tags;
 	private string m_author;
 	private ArticleStatus m_unread;
 	private ArticleStatus m_marked;
@@ -60,12 +60,12 @@ public class FeedReader.article : GLib.Object {
 		m_date = date;
 		m_guidHash = guidHash;
 		m_lastModified = lastModified;
-		m_tags = new GLib.List<string>();
+		m_tags = new Gee.ArrayList<string>();
 		var tagArray = tags.split(",");
 		foreach(string tag in tagArray)
 		{
 			if(tag.strip() != "")
-				m_tags.append(tag);
+				m_tags.add(tag);
 		}
 	}
 
@@ -172,7 +172,7 @@ public class FeedReader.article : GLib.Object {
 		return m_marked;
 	}
 
-	public unowned GLib.List<string> getTags()
+	public unowned Gee.ArrayList<string> getTags()
 	{
 		return m_tags;
 	}
@@ -189,7 +189,8 @@ public class FeedReader.article : GLib.Object {
 
 	public void addTag(string tag)
 	{
-		m_tags.append(tag);
+		if(!m_tags.contains(tag))
+			m_tags.add(tag);
 	}
 
 	public string getHash()

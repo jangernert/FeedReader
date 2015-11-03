@@ -19,9 +19,9 @@ public class FeedReader.QueryBuilder : GLib.Object {
     private QueryType m_type;
     private string m_table;
     private bool m_noError;
-    private GLib.List<string> m_fields;
-    private GLib.List<string> m_values;
-    private GLib.List<string> m_conditions;
+    private Gee.ArrayList<string> m_fields;
+    private Gee.ArrayList<string> m_values;
+    private Gee.ArrayList<string> m_conditions;
     private GLib.StringBuilder m_insert_fields;
     private GLib.StringBuilder m_insert_values;
     private string m_orderBy;
@@ -31,9 +31,9 @@ public class FeedReader.QueryBuilder : GLib.Object {
     public QueryBuilder(QueryType type, string table)
     {
         m_query = new GLib.StringBuilder();
-        m_fields = new GLib.List<string>();
-        m_values = new GLib.List<string>();
-        m_conditions = new GLib.List<string>();
+        m_fields = new Gee.ArrayList<string>();
+        m_values = new Gee.ArrayList<string>();
+        m_conditions = new Gee.ArrayList<string>();
         m_type = type;
         m_table = table;
         m_noError = true;
@@ -51,8 +51,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
             case QueryType.INSERT:
             case QueryType.INSERT_OR_IGNORE:
             case QueryType.INSERT_OR_REPLACE:
-                m_fields.append(field);
-                m_values.append(value);
+                m_fields.add(field);
+                m_values.add(value);
                 return true;
         }
         logger.print(LogMessage.ERROR, "insertValuePair");
@@ -63,7 +63,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
     {
         if(m_type == QueryType.SELECT)
         {
-            m_fields.append(field);
+            m_fields.add(field);
             return true;
         }
         logger.print(LogMessage.ERROR, "selectField");
@@ -74,8 +74,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
     {
         if(m_type == QueryType.UPDATE)
         {
-            m_fields.append(field);
-            m_values.append(value);
+            m_fields.add(field);
+            m_values.add(value);
             return true;
         }
         logger.print(LogMessage.ERROR, "updateValuePair");
@@ -97,7 +97,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             if(!positive)
                 condition = "NOT " + condition;
 
-            m_conditions.append(condition.printf(field, value));
+            m_conditions.add(condition.printf(field, value));
             return true;
         }
         logger.print(LogMessage.ERROR, "addEqualsConditionString");
@@ -110,14 +110,14 @@ public class FeedReader.QueryBuilder : GLib.Object {
         || m_type == QueryType.SELECT
         || m_type == QueryType.DELETE)
         {
-            m_conditions.append(condition);
+            m_conditions.add(condition);
             return true;
         }
         logger.print(LogMessage.ERROR, "addCustomCondition");
         return false;
     }
 
-    public bool addRangeConditionString(string field, GLib.List<string> values, bool instr = false)
+    public bool addRangeConditionString(string field, Gee.ArrayList<string> values, bool instr = false)
     {
         if(!instr)
         {
@@ -133,7 +133,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
                     compound_values.append("\",");
                 }
                 compound_values.erase(compound_values.len-1);
-                m_conditions.append("%s IN (%s)".printf(field, compound_values.str));
+                m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
                 return true;
             }
         }
@@ -155,7 +155,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
         return false;
     }
 
-    public bool addRangeConditionInt(string field, GLib.List<int> values)
+    public bool addRangeConditionInt(string field, Gee.ArrayList<int> values)
     {
         if(m_type == QueryType.UPDATE
         || m_type == QueryType.SELECT
@@ -168,7 +168,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
                 compound_values.append(",");
             }
             compound_values.erase(compound_values.len-1);
-            m_conditions.append("%s IN (%s)".printf(field, compound_values.str));
+            m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
             return true;
         }
         logger.print(LogMessage.ERROR, "addRangeConditionInt");
@@ -264,11 +264,11 @@ public class FeedReader.QueryBuilder : GLib.Object {
                 m_query.append(m_table);
                 m_query.append(" SET ");
 
-                for(int i = 0; i < m_fields.length(); i++)
+                for(int i = 0; i < m_fields.size; i++)
                 {
-                    m_query.append(m_fields.nth_data(i));
+                    m_query.append(m_fields.get(i));
                     m_query.append(" = ");
-                    m_query.append(m_values.nth_data(i));
+                    m_query.append(m_values.get(i));
                     m_query.append(", ");
                 }
 
@@ -307,7 +307,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
     private string buildConditions()
     {
-        if(m_conditions.length() == 0)
+        if(m_conditions.size == 0)
             return "";
 
         var conditions = new GLib.StringBuilder();

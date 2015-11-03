@@ -94,7 +94,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getCategories(ref GLib.List<category> categories)
+	public void getCategories(ref Gee.LinkedList<category> categories)
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
@@ -106,7 +106,7 @@ public class FeedReader.FeedlyAPI : Object {
 			Json.Object object = array.get_object_element(i);
 			string categorieID = object.get_string_member("id");
 
-			categories.append(
+			categories.add(
 				new category (
 					categorieID,
 					object.get_string_member("label"),
@@ -120,7 +120,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getFeeds(ref GLib.List<feed> feeds)
+	public void getFeeds(ref Gee.LinkedList<feed> feeds)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
 
@@ -168,7 +168,7 @@ public class FeedReader.FeedlyAPI : Object {
 				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
 			}
 
-			feeds.append(
+			feeds.add(
 				new feed (
 						feedID,
 						title,
@@ -182,7 +182,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getTags(ref GLib.List<tag> tags)
+	public void getTags(ref Gee.LinkedList<tag> tags)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
 
@@ -194,7 +194,7 @@ public class FeedReader.FeedlyAPI : Object {
 		for (uint i = 0; i < length; i++) {
 			Json.Object object = array.get_object_element(i);
 
-			tags.append(
+			tags.add(
 				new tag(
 					object.get_string_member("id"),
 					object.has_member("label") ? object.get_string_member("label") : "",
@@ -206,7 +206,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public string getArticles(ref GLib.List<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public string getArticles(ref Gee.LinkedList<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "user/" + m_userID + "/category/global.all";
 		string cont = "";
@@ -308,7 +308,7 @@ public class FeedReader.FeedlyAPI : Object {
 				FeedServer.grabContent(ref Article);
 			}
 
-			articles.append(Article);
+			articles.add(Article);
 		}
 
 		return cont;

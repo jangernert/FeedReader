@@ -159,7 +159,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getFeeds(ref GLib.List<feed> feeds, ref GLib.List<category> categories)
+	public void getFeeds(ref Gee.LinkedList<feed> feeds, ref Gee.LinkedList<category> categories)
 	{
 		if(isloggedin())
 		{
@@ -187,7 +187,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 							if(feed_node.get_boolean_member("has_icon"))
 								ttrss_utils.downloadIcon(feed_id, icon_url);
 
-							feeds.append(
+							feeds.add(
 								new feed (
 										feed_id,
 										feed_node.get_string_member("title"),
@@ -207,7 +207,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	private void getUncategorizedFeeds(ref GLib.List<feed> feeds)
+	private void getUncategorizedFeeds(ref Gee.LinkedList<feed> feeds)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -229,7 +229,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				if(feed_node.get_boolean_member("has_icon"))
 					ttrss_utils.downloadIcon(feed_id, icon_url);
 
-				feeds.append(
+				feeds.add(
 					new feed (
 							feed_id,
 							feed_node.get_string_member("title"),
@@ -243,7 +243,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 	}
 
-	public void getTags(ref GLib.List<tag> tags)
+	public void getTags(ref Gee.LinkedList<tag> tags)
 	{
 		if(isloggedin())
 		{
@@ -260,7 +260,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				for(uint i = 0; i < tag_count; ++i)
 				{
 					var tag_node = response.get_object_element(i);
-					tags.append(
+					tags.add(
 						new tag(
 							tag_node.get_int_member("id").to_string(),
 							tag_node.get_string_member("caption"),
@@ -290,7 +290,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getCategories(ref GLib.List<category> categories)
+	public void getCategories(ref Gee.LinkedList<category> categories)
 	{
 		if(isloggedin())
 		{
@@ -311,7 +311,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	private void getSubCategories(ref GLib.List<category> categories, Json.Object categorie, int level, string parent)
+	private void getSubCategories(ref Gee.LinkedList<category> categories, Json.Object categorie, int level, string parent)
 	{
 		level++;
 		int orderID = 0;
@@ -334,7 +334,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					unread_count = getUncategorizedUnread();
 				}
 
-				categories.append(
+				categories.add(
 					new category (
 						categorieID,
 						title,
@@ -384,7 +384,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getHeadlines(ref GLib.List<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
+	public void getHeadlines(ref Gee.LinkedList<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -450,14 +450,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										tagString
 								);
 
-				articles.append(Article);
-
+				articles.add(Article);
 			}
 		}
 	}
 
 
-	public void getArticles(string articleIDs, ref GLib.List<article> articles)
+	public void getArticles(string articleIDs, ref Gee.LinkedList<article> articles)
 	{
 		if(isloggedin())
 		{
@@ -507,7 +506,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 											tagString
 									);
 
-					articles.append(Article);
+					articles.add(Article);
 				}
 			}
 		}

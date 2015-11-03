@@ -92,7 +92,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-    public void getFeeds(ref GLib.List<feed> feeds)
+    public void getFeeds(ref Gee.LinkedList<feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -118,7 +118,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                             hasIcon = OwncloudNews_Utils.downloadIcon(feed_id, feed_node.get_string_member("faviconLink"));
                         }
 
-    					feeds.append(
+    					feeds.add(
     						new feed (
     								feed_id,
     								feed_node.get_string_member("title"),
@@ -135,7 +135,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-    public void getCategories(ref GLib.List<category> categories, ref GLib.List<feed> feeds)
+    public void getCategories(ref Gee.LinkedList<category> categories, ref Gee.LinkedList<feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -158,7 +158,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                         var folder_node = folder_array.get_object_element(i);
                         string id = folder_node.get_int_member("id").to_string();
 
-                        categories.append(
+                        categories.add(
         					new category (
         						id,
         						folder_node.get_string_member("name"),
@@ -175,7 +175,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-    public void getNewArticles(ref GLib.List<article> articles, int lastModified, OwnCloudType type = OwnCloudType.ALL, int id = 0)
+    public void getNewArticles(ref Gee.LinkedList<article> articles, int lastModified, OwnCloudType type = OwnCloudType.ALL, int id = 0)
 	{
         string args = "";
         args += "lastModified=%i&".printf(lastModified);
@@ -216,14 +216,14 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                         					article_node.get_string_member("guidHash"),
                                             (int)article_node.get_int_member("lastModified"));
 
-                articles.append(Article);
+                articles.add(Article);
             }
         }
     }
 
 
 
-    public void getArticles(ref GLib.List<article> articles, int skip, int count, bool read = true, OwnCloudType type = OwnCloudType.ALL, int id = 0)
+    public void getArticles(ref Gee.LinkedList<article> articles, int skip, int count, bool read = true, OwnCloudType type = OwnCloudType.ALL, int id = 0)
 	{
         string args = "";
         args += "oldestFirst=false&";
@@ -266,7 +266,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                         					article_node.get_string_member("guidHash"),
                                             (int)article_node.get_int_member("lastModified"));
 
-                articles.append(Article);
+                articles.add(Article);
             }
         }
 	}

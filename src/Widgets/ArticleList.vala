@@ -537,7 +537,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private async void createHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: create HeadlineList");
-		GLib.List<article> articles = new GLib.List<article>();
+		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 
 		m_threadCount++;
 		int threadID = m_threadCount;
@@ -558,9 +558,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 			logger.print(LogMessage.DEBUG, "load articles from db");
 			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces);
-			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.length().to_string());
+			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.size.to_string());
 
-			if(articles.length() == 0)
+			if(articles.size == 0)
 			{
 				hasContent = false;
 			}
@@ -699,7 +699,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public async void updateArticleList()
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
-		GLib.List<article> articles = new GLib.List<article>();
+		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
 		bool newArticles = false;

@@ -70,7 +70,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         	m_list.add(new ShareRow(account.getType(), account.getID(), account.getUsername()));
         }
 
-		if(list.length() >= 1)
+		if(list.size >= 1)
 			return true;
 
         return false;

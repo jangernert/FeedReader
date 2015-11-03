@@ -16,7 +16,7 @@
 public class FeedReader.Utils : GLib.Object {
 
 
-	public static void generatePreviews(ref GLib.List<article> articles)
+	public static void generatePreviews(ref Gee.LinkedList<article> articles)
 	{
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
@@ -85,7 +85,7 @@ public class FeedReader.Utils : GLib.Object {
 	}
 
 
-	public static void checkHTML(ref GLib.List<article> articles)
+	public static void checkHTML(ref Gee.LinkedList<article> articles)
 	{
 		foreach(var Article in articles)
 		{
@@ -201,7 +201,7 @@ public class FeedReader.Utils : GLib.Object {
 			0,
 			newArticlesCount);
 
-		return articles.length();
+		return articles.size;
 	}
 
 	// thanks to

@@ -290,17 +290,17 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_articleList.removeTagFromSelectedRow(tagID);
 	}
 
-	public GLib.List<tag> getSelectedArticleTags()
+	public Gee.ArrayList<tag> getSelectedArticleTags()
 	{
 		string id = m_articleList.getSelectedArticle();
 		var article = dataBase.read_article(id);
-		unowned GLib.List<string> tagIDs = article.getTags();
+		unowned Gee.ArrayList<string> tagIDs = article.getTags();
 
-		var tags = new GLib.List<tag>();
+		var tags = new Gee.ArrayList<tag>();
 
 		foreach(string tagID in tagIDs)
 		{
-			tags.append(dataBase.read_tag(tagID));
+			tags.add(dataBase.read_tag(tagID));
 		}
 
 		return tags;

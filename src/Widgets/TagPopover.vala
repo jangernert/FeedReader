@@ -20,13 +20,13 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	private Gtk.Viewport m_viewport;
 	private Gtk.Entry m_entry;
 	private Gtk.Stack m_stack;
-	private GLib.List<tag> m_tags;
+	private Gee.ArrayList<tag> m_tags;
 	private Gtk.EntryCompletion m_complete;
-	private GLib.List<tag> m_availableTags;
+	private Gee.ArrayList<tag> m_availableTags;
 
 	public TagPopover(Gtk.Widget widget)
 	{
-		m_availableTags = new GLib.List<tag>();
+		m_availableTags = new Gee.ArrayList<tag>();
 		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
@@ -74,7 +74,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		this.set_position(Gtk.PositionType.BOTTOM);
         this.show_all();
 
-		if(m_tags.length() == 0)
+		if(m_tags.size == 0)
 			m_stack.set_visible_child_name("empty");
 		else
 			m_stack.set_visible_child_name("tags");
@@ -117,7 +117,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			{
 				list_store.append(out iter);
 				list_store.set(iter, 0, Tag.getTitle());
-				m_availableTags.append(Tag);
+				m_availableTags.add(Tag);
 			}
 		}
 	}

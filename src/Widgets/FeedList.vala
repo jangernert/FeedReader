@@ -395,7 +395,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	private void createCategories(ref GLib.List<feed> feeds)
+	private void createCategories(ref Gee.ArrayList<feed> feeds)
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
@@ -468,15 +468,15 @@ public class FeedReader.feedList : Gtk.Stack {
 				}
 
 				categories.insert(
+					0,
 					new category(
 						catID,
 						_("Uncategorized"),
 						(int)dataBase.get_unread_uncategorized(),
-						(int)(categories.length() + 10),
+						(int)(categories.size + 10),
 						CategoryID.MASTER,
 						1
-					),
-					0
+					)
 				);
 			}
 

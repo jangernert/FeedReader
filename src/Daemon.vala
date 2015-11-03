@@ -218,8 +218,8 @@ namespace FeedReader {
 		{
 			string tagID = server.createTag(caption);
 			var Tag = new tag(tagID, caption, 0);
-			var taglist = new GLib.List<tag>();
-			taglist.append(Tag);
+			var taglist = new Gee.LinkedList<tag>();
+			taglist.add(Tag);
 			dataBase.write_tags(ref taglist);
 			newFeedList();
 

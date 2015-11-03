@@ -100,10 +100,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			int before = dataBase.getHighestRowID();
 
-			var categories = new GLib.List<category>();
-			var feeds      = new GLib.List<feed>();
-			var tags       = new GLib.List<tag>();
-			var articles   = new GLib.List<article>();
+			var categories = new Gee.LinkedList<category>();
+			var feeds      = new Gee.LinkedList<feed>();
+			var tags       = new Gee.LinkedList<tag>();
 
 			getFeedsAndCats(ref feeds, ref categories, ref tags);
 
@@ -189,9 +188,9 @@ public class FeedReader.FeedServer : GLib.Object {
 		ThreadFunc<void*> run = () => {
 			logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
 
-			var categories = new GLib.List<category>();
-			var feeds      = new GLib.List<feed>();
-			var tags       = new GLib.List<tag>();
+			var categories = new Gee.LinkedList<category>();
+			var feeds      = new Gee.LinkedList<feed>();
+			var tags       = new Gee.LinkedList<tag>();
 
 			getFeedsAndCats(ref feeds, ref categories, ref tags);
 
@@ -494,7 +493,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return false;
 	}
 
-	private void getFeedsAndCats(ref GLib.List<feed> feeds, ref GLib.List<category> categories, ref GLib.List<tag> tags)
+	private void getFeedsAndCats(ref Gee.LinkedList<feed> feeds, ref Gee.LinkedList<category> categories, ref Gee.LinkedList<tag> tags)
 	{
 		switch(m_type)
 		{
@@ -564,10 +563,8 @@ public class FeedReader.FeedServer : GLib.Object {
 						skip = 0;
 					}
 
-					var articles = new GLib.List<article>();
+					var articles = new Gee.LinkedList<article>();
 					m_ttrss.getHeadlines(ref articles, skip, amount, whatToGet, ttrss_feedID);
-
-					articles.reverse();
 					dataBase.update_articles(ref articles);
 					newArticleList();
 
@@ -583,33 +580,33 @@ public class FeedReader.FeedServer : GLib.Object {
 				if(articleIDs.length > 0)
 					articleIDs = articleIDs.substring(0, articleIDs.length -1);
 
-				var articles = new GLib.List<article>();
+				var articles = new Gee.LinkedList<article>();
 
 				if(articleIDs != "")
 					m_ttrss.getArticles(articleIDs, ref articles);
 
-				articles.sort_with_data ((a, b) => {
+				articles.sort ((a, b) => {
 						return strcmp (a.getArticleID(), b.getArticleID());
 				});
 
 
-				if(articles.length() > 0)
+				if(articles.size > 0)
 				{
-					var new_articles = new GLib.List<article>();
-					string last = articles.last().data.getArticleID();
+					var new_articles = new Gee.LinkedList<article>();
+					string last = articles.last().getArticleID();
 
 					foreach(article Article in articles)
 					{
 						int before = dataBase.getHighestRowID();
 						FeedServer.grabContent(ref Article);
-						new_articles.append(Article);
+						new_articles.add(Article);
 
-						if(new_articles.length() == 10 || Article.getArticleID() == last)
+						if(new_articles.size == 10 || Article.getArticleID() == last)
 						{
 							dataBase.write_articles(ref new_articles);
 							updateFeedList();
 							newArticleList();
-							new_articles = new GLib.List<article>();
+							new_articles = new Gee.LinkedList<article>();
 							setNewRows(before);
 						}
 					}
@@ -647,11 +644,16 @@ public class FeedReader.FeedServer : GLib.Object {
 						skip = 0;
 					}
 
-					var articles = new GLib.List<article>();
+					var articles = new Gee.LinkedList<article>();
 					continuation = m_feedly.getArticles(ref articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
 
+					foreach(article Article in articles)
+					{
+						if(!dataBase.article_exists(Article.getArticleID()))
+							FeedServer.grabContent(ref Article);
+					}
+
 					int before = dataBase.getHighestRowID();
-					articles.reverse();
 					dataBase.update_articles(ref articles);
 					dataBase.write_articles(ref articles);
 					updateFeedList();
@@ -689,7 +691,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					type = OwnCloudType.FEED;
 				}
 
-				var articles = new GLib.List<article>();
+				var articles = new Gee.LinkedList<article>();
 
 				if(count == -1)
 					m_owncloud.getNewArticles(ref articles, dataBase.getLastModified(), type, id);
@@ -698,25 +700,26 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				string last = "";
 
-				if(articles.length() > 0)
+				if(articles.size > 0)
 				{
-					articles.reverse();
-					last = articles.last().data.getArticleID();
-					var new_articles = new GLib.List<article>();
+					last = articles.first().getArticleID();
+					dataBase.update_articles(ref articles);
+					var new_articles = new Gee.LinkedList<article>();
 
-					foreach(article Article in articles)
+					var it = articles.bidir_list_iterator();
+    				for (var has_next = it.last(); has_next; has_next = it.previous())
 					{
+						article Article = it.get();
 						int before = dataBase.getHighestRowID();
 						FeedServer.grabContent(ref Article);
-						new_articles.append(Article);
+						new_articles.add(Article);
 
-						if(new_articles.length() == 10 || Article.getArticleID() == last)
+						if(new_articles.size == 10 || Article.getArticleID() == last)
 						{
-							dataBase.update_articles(ref articles);
 							dataBase.write_articles(ref new_articles);
 							updateFeedList();
 							newArticleList();
-							new_articles = new GLib.List<article>();
+							new_articles = new Gee.LinkedList<article>();
 							setNewRows(before);
 						}
 					}

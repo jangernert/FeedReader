@@ -15,52 +15,52 @@
 
 public class FeedReader.Share : GLib.Object {
 
-	private GLib.List<ReadabilityAPI> m_readability;
-	private GLib.List<PocketAPI> m_pocket;
-	private GLib.List<InstaAPI> m_instapaper;
+	private Gee.ArrayList<ReadabilityAPI> m_readability;
+	private Gee.ArrayList<PocketAPI> m_pocket;
+	private Gee.ArrayList<InstaAPI> m_instapaper;
 
 	public Share()
 	{
-		m_readability = new GLib.List<ReadabilityAPI>();
+		m_readability = new Gee.ArrayList<ReadabilityAPI>();
 		var readabilityAccounts = settings_share.get_strv("readability");
 		foreach(string id in readabilityAccounts)
 		{
-			m_readability.append(new ReadabilityAPI(id, "/org/gnome/feedreader/share/readability/%s/".printf(id)));
+			m_readability.add(new ReadabilityAPI(id, "/org/gnome/feedreader/share/readability/%s/".printf(id)));
 		}
 
-		m_pocket = new GLib.List<PocketAPI>();
+		m_pocket = new Gee.ArrayList<PocketAPI>();
 		var pocketAccounts = settings_share.get_strv("pocket");
 		foreach(string id in pocketAccounts)
 		{
-			m_pocket.append(new PocketAPI(id, "/org/gnome/feedreader/share/pocket/%s/".printf(id)));
+			m_pocket.add(new PocketAPI(id, "/org/gnome/feedreader/share/pocket/%s/".printf(id)));
 		}
 
-		m_instapaper = new GLib.List<InstaAPI>();
+		m_instapaper = new Gee.ArrayList<InstaAPI>();
 		var instaAccounts = settings_share.get_strv("instapaper");
 		foreach(string id in instaAccounts)
 		{
-			m_instapaper.append(new InstaAPI(id, "/org/gnome/feedreader/share/instapaper/%s/".printf(id)));
+			m_instapaper.add(new InstaAPI(id, "/org/gnome/feedreader/share/instapaper/%s/".printf(id)));
 		}
 	}
 
 
-	public GLib.List<ShareAccount> getAccounts()
+	public Gee.ArrayList<ShareAccount> getAccounts()
 	{
-		var list = new GLib.List<ShareAccount>();
+		var list = new Gee.ArrayList<ShareAccount>();
 
 		foreach(var account in m_readability)
 		{
-			list.append(new ShareAccount(account.getID(), OAuth.READABILITY, account.getUsername()));
+			list.add(new ShareAccount(account.getID(), OAuth.READABILITY, account.getUsername()));
 		}
 
 		foreach(var account in m_pocket)
 		{
-			list.append(new ShareAccount(account.getID(), OAuth.POCKET, account.getUsername()));
+			list.add(new ShareAccount(account.getID(), OAuth.POCKET, account.getUsername()));
 		}
 
 		foreach(var account in m_instapaper)
 		{
-			list.append(new ShareAccount(account.getID(), OAuth.INSTAPAPER, account.getUsername()));
+			list.add(new ShareAccount(account.getID(), OAuth.INSTAPAPER, account.getUsername()));
 		}
 
 		return list;
@@ -74,13 +74,13 @@ public class FeedReader.Share : GLib.Object {
 		switch(type)
         {
             case OAuth.READABILITY:
-                m_readability.append(new ReadabilityAPI(id));
+                m_readability.add(new ReadabilityAPI(id));
 				break;
 			case OAuth.POCKET:
-				m_pocket.append(new PocketAPI(id));
+				m_pocket.add(new PocketAPI(id));
 				break;
 			case OAuth.INSTAPAPER:
-				m_instapaper.append(new InstaAPI(id));
+				m_instapaper.add(new InstaAPI(id));
 				break;
         }
 

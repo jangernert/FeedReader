@@ -331,7 +331,7 @@ public class FeedReader.dbManager : GLib.Object {
 		return unread;
 	}
 
-	public void write_feeds(ref GLib.List<feed> feeds)
+	public void write_feeds(ref Gee.LinkedList<feed> feeds)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -384,7 +384,7 @@ public class FeedReader.dbManager : GLib.Object {
 		executeSQL("COMMIT TRANSACTION");
 	}
 
-	public void write_tags(ref GLib.List<tag> tags)
+	public void write_tags(ref Gee.LinkedList<tag> tags)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -460,7 +460,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public void write_categories(ref GLib.List<category> categories)
+	public void write_categories(ref Gee.LinkedList<category> categories)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -648,7 +648,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public void update_articles(ref GLib.List<article> articles)
+	public void update_articles(ref Gee.LinkedList<article> articles)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -694,7 +694,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public void write_articles(ref GLib.List<article> articles)
+	public void write_articles(ref Gee.LinkedList<article> articles)
 	{
 
 		FeedReader.Utils.generatePreviews(ref articles);
@@ -871,10 +871,10 @@ public class FeedReader.dbManager : GLib.Object {
 		ThreadFunc<void*> run = () => {
 
 			var id_array = articleIDs.split(",");
-			var id_list = new GLib.List<string>();
+			var id_list = new Gee.ArrayList<string>();
 			foreach(string id in id_array)
 			{
-				id_list.append(id);
+				id_list.add(id);
 			}
 
 			var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
@@ -1150,9 +1150,9 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	private GLib.List<string> getFeedIDofCategorie(string categorieID)
+	private Gee.ArrayList<string> getFeedIDofCategorie(string categorieID)
 	{
-		var feedIDs = new GLib.List<string>();
+		var feedIDs = new Gee.ArrayList<string>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("feed_id, category_id");
@@ -1172,7 +1172,7 @@ public class FeedReader.dbManager : GLib.Object {
 				if((categories.length == 0)
 				||(categories.length == 1 && categories[0].contains("global.must")))
 				{
-					feedIDs.append(stmt.column_text(0));
+					feedIDs.add(stmt.column_text(0));
 				}
 			}
 			else
@@ -1181,7 +1181,7 @@ public class FeedReader.dbManager : GLib.Object {
 				{
 					if(cat == categorieID)
 					{
-						feedIDs.append(stmt.column_text(0));
+						feedIDs.add(stmt.column_text(0));
 					}
 				}
 			}
@@ -1303,9 +1303,9 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public GLib.List<feed> read_feeds()
+	public Gee.ArrayList<feed> read_feeds()
 	{
-		GLib.List<feed> tmp = new GLib.List<feed>();
+		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
 		feed tmpfeed;
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
@@ -1324,7 +1324,7 @@ public class FeedReader.dbManager : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
 			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), stmt.column_text(4).split(","));
-			tmp.append(tmpfeed);
+			tmp.add(tmpfeed);
 		}
 
 		return tmp;
@@ -1353,9 +1353,9 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public GLib.List<feed> read_feeds_without_cat()
+	public Gee.ArrayList<feed> read_feeds_without_cat()
 	{
-		GLib.List<feed> tmp = new GLib.List<feed>();
+		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
 		feed tmpfeed;
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
@@ -1374,15 +1374,15 @@ public class FeedReader.dbManager : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(4).split(","));
-			tmp.append(tmpfeed);
+			tmp.add(tmpfeed);
 		}
 
 		return tmp;
 	}
 
-	public GLib.List<category> read_categories(GLib.List<feed>? feeds = null)
+	public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
 	{
-		GLib.List<category> tmp = new GLib.List<category>();
+		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
 		category tmpcategory;
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
@@ -1420,16 +1420,16 @@ public class FeedReader.dbManager : GLib.Object {
 			}
 
 			tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-			tmp.append(tmpcategory);
+			tmp.add(tmpcategory);
 		}
 
 		return tmp;
 	}
 
 
-	public GLib.List<tag> read_tags()
+	public Gee.ArrayList<tag> read_tags()
 	{
-		GLib.List<tag> tmp = new GLib.List<tag>();
+		Gee.ArrayList<tag> tmp = new Gee.ArrayList<tag>();
 		tag tmpTag;
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
@@ -1444,7 +1444,7 @@ public class FeedReader.dbManager : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
-			tmp.append(tmpTag);
+			tmp.add(tmpTag);
 		}
 
 		return tmp;
@@ -1504,9 +1504,9 @@ public class FeedReader.dbManager : GLib.Object {
 		return count;
 	}
 
-	public GLib.List<category> read_categories_level(int level, GLib.List<feed>? feeds = null)
+	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)
 	{
-		GLib.List<category> tmp = new GLib.List<category>();
+		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
 		category tmpcategory;
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
@@ -1553,14 +1553,14 @@ public class FeedReader.dbManager : GLib.Object {
 			}
 
 			tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-			tmp.append(tmpcategory);
+			tmp.add(tmpcategory);
 		}
 
 		return tmp;
 	}
 
 	//[Profile]
-	public GLib.List<article> read_articles(string ID, FeedListType selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	public Gee.ArrayList<article> read_articles(string ID, FeedListType selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
@@ -1654,10 +1654,10 @@ public class FeedReader.dbManager : GLib.Object {
 			logger.print(LogMessage.DEBUG, sqlite_db.errmsg());
 
 
-		GLib.List<article> tmp = new GLib.List<article>();
+		Gee.ArrayList<article> tmp = new Gee.ArrayList<article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
-			tmp.append(new article(
+			tmp.add(new article(
 								stmt.column_text(2),								// articleID
 								stmt.column_text(3),								// title
 								stmt.column_text(5),								// url

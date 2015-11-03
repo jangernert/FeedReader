@@ -34,7 +34,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_marked;
 	private bool m_hovering_row;
 	private string m_articleID { get; private set; }
-	private GLib.List<string> m_tags;
+	private Gee.ArrayList<string> m_tags;
 	public string m_feedID { get; private set; }
 	public int m_sortID { get; private set; }
 	public signal void ArticleStateChanged(ArticleStatus status);
@@ -65,12 +65,12 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_url = url;
 		m_is_unread = unread;
 		m_date = date;
-		m_tags = new GLib.List<string>();
+		m_tags = new Gee.ArrayList<string>();
 		var tagArray = tags.split(",");
 		foreach(string tag in tagArray)
 		{
 			if(tag.strip() != "")
-				m_tags.append(tag);
+				m_tags.add(tag);
 		}
 
 		m_unread_stack = new Gtk.Stack();
@@ -580,14 +580,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	public void removeTag(string tagID)
 	{
-		GLib.List<string> new_tags = new GLib.List<string>();
-		foreach(string tag in m_tags)
-		{
-			if(tag != tagID)
-				new_tags.append(tag);
-		}
-
-		m_tags = new_tags.copy();
+		m_tags.remove(tagID);
 	}
 
 }

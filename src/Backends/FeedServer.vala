@@ -585,8 +585,8 @@ public class FeedReader.FeedServer : GLib.Object {
 				if(articleIDs != "")
 					m_ttrss.getArticles(articleIDs, ref articles);
 
-				articles.sort ((a, b) => {
-						return -strcmp(a.getArticleID(), b.getArticleID());
+				articles.sort((a, b) => {
+						return strcmp(a.getArticleID(), b.getArticleID());
 				});
 
 

@@ -58,9 +58,9 @@ public class FeedReader.Grabber : GLib.Object {
         if(FileUtils.test(filename, GLib.FileTest.EXISTS))
         {
             m_config = new GrabberConfig(filename);
-            //m_config.print();
             return true;
         }
+        logger.print(LogMessage.ERROR, "Grabber: no config found for article: " + m_articleURL);
         return false;
     }
 

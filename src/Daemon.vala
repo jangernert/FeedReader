@@ -456,7 +456,6 @@ namespace FeedReader {
 
 	public static void DEBUGgrabArticle(string url)
 	{
-		stdout.printf("DEBUG URL: %s\n", url);
 		var grabber = new Grabber(url, null, null);
 		if(grabber.process())
 		{
@@ -512,6 +511,10 @@ namespace FeedReader {
 
 			stream.write(output.data);
 			logger.print(LogMessage.DEBUG, "Grabber: preview written to " + path);
+		}
+		else
+		{
+			logger.print(LogMessage.ERROR, "Grabber: article could not be processed " + url);
 		}
 	}
 

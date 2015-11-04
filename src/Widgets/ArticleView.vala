@@ -18,23 +18,19 @@ public class FeedReader.articleView : Gtk.Stack {
 	private WebKit.WebView m_view;
 	private WebKit.FindController m_search;
 	private string m_currentArticle;
-	private bool m_firstTime;
-	private string m_searchTerm;
+	private bool m_firstTime = true;
+	private string m_searchTerm = "";
 	private double m_dragBuffer[10];
-	private double m_posY;
-	private double m_momentum;
-	private bool m_inDrag;
+	private double m_posY = 0;
+	private double m_momentum = 0;
+	private bool m_inDrag = false;
+	private uint m_OngoingScrollID = 0;
 	public signal void enterFullscreen();
 	public signal void leaveFullscreen();
 
 
-	public articleView () {
-		m_searchTerm = "";
-		m_firstTime = true;
-		m_inDrag = false;
-		m_posY = 0;
-		m_momentum = 0;
-
+	public articleView()
+	{
 		var settings = new WebKit.Settings();
 		settings.set_enable_accelerated_2d_canvas(true);
 		settings.set_enable_html5_database(false);
@@ -116,7 +112,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_posY = 0;
 			m_view.motion_notify_event.disconnect(mouseMotion);
 			m_inDrag = false;
-			GLib.Timeout.add(20, ScrollDragRelease);
+			m_OngoingScrollID = GLib.Timeout.add(20, ScrollDragRelease);
 
 			var pointer = Gdk.Display.get_default().get_device_manager().get_client_pointer();
 			Gtk.device_grab_remove(this, pointer);
@@ -155,6 +151,12 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_view.stop_loading();
 			return;
 		}
+
+		if(m_OngoingScrollID > 0)
+		{
+            GLib.Source.remove(m_OngoingScrollID);
+            m_OngoingScrollID = 0;
+        }
 
 		article Article = null;
 		SourceFunc callback = fillContent.callback;

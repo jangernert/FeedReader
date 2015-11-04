@@ -57,6 +57,7 @@ public class FeedReader.Utils : GLib.Object {
 					if(output == "" || output == null)
 					{
 						logger.print(LogMessage.ERROR, "html2text could not generate preview text");
+						// FIXME: use vilistextum as fallback
 						Article.setPreview(noPreview);
 						logger.print(LogMessage.DEBUG, filename);
 						continue;

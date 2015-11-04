@@ -46,7 +46,8 @@ public class FeedReader.articleView : Gtk.Stack {
 		settings.set_media_playback_requires_user_gesture(true);
 		settings.set_user_agent_with_application_details("FeedReader", AboutInfo.version);
 
-		m_view = new WebKit.WebView.with_settings(settings);
+		m_view = new WebKit.WebView();
+		m_view.set_settings(settings);
 		m_view.load_changed.connect(open_link);
 		m_view.context_menu.connect(() => { return true; });
 		m_view.set_events(Gdk.EventMask.POINTER_MOTION_MASK);

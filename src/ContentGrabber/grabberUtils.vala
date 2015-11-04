@@ -135,7 +135,6 @@ public class FeedReader.grabberUtils : GLib.Object {
             ancestor = ancestor.substring(2);
         }
         string query = "%s[not(ancestor::%s)]".printf(xpath, ancestor);
-        //logger.print(LogMessage.DEBUG, query);
 
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(query);
@@ -221,9 +220,14 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string completeURL(string incompleteURL, string articleURL)
     {
-        // lets assume all urls will start with http://www. or https://www.
-        // so only start searching for the second dot after pos 12
-        int index = articleURL.index_of_char('.', 12);
+        int index = 0;
+        if(articleURL.has_prefix("http"))
+        {
+            index = 8;
+        }
+        else
+            index = articleURL.index_of_char('.', 0);
+
         string baseURL = "";
 
         if(incompleteURL.has_prefix("/") && !incompleteURL.has_prefix("//"))
@@ -295,7 +299,10 @@ public class FeedReader.grabberUtils : GLib.Object {
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
         	Xml.Node* node = res->nodesetval->item(i);
-            node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
+            if(node->get_prop("src") != null)
+            {
+                node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
+            }
         }
 
         delete res;

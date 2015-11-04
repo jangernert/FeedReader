@@ -62,6 +62,14 @@ public class FeedReader.Utils : GLib.Object {
 						continue;
 					}
 
+					string xml = "<?xml";
+
+					while(output.has_prefix(xml))
+					{
+						int end = output.index_of_char('>');
+						output = output.slice(end+1, output.length).chug();
+					}
+
 					output = output.replace("\n"," ");
 					output = output.replace("_"," ");
 

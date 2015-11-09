@@ -66,7 +66,7 @@ namespace FeedReader {
 				m_timeout_source_id = 0;
 			}
 
-			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time, () => {
+			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time*60, () => {
 				if(!settings_state.get_boolean("currently-updating"))
 				{
 			   		logger.print(LogMessage.DEBUG, "daemon: Timeout!");
@@ -220,7 +220,7 @@ namespace FeedReader {
 			var Tag = new tag(tagID, caption, 0);
 			var taglist = new Gee.LinkedList<tag>();
 			taglist.add(Tag);
-			dataBase.write_tags(ref taglist);
+			dataBase.write_tags(taglist);
 			newFeedList();
 
 			return tagID;
@@ -390,6 +390,7 @@ namespace FeedReader {
 
 	int main (string[] args)
 	{
+		stderr = FileStream.open ("/dev/null", "w");
 		settings_general = new GLib.Settings ("org.gnome.feedreader");
 		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");

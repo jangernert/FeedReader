@@ -94,7 +94,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getCategories(ref Gee.LinkedList<category> categories)
+	public void getCategories(Gee.LinkedList<category> categories)
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
@@ -120,7 +120,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getFeeds(ref Gee.LinkedList<feed> feeds)
+	public void getFeeds(Gee.LinkedList<feed> feeds)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
 
@@ -182,7 +182,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getTags(ref Gee.LinkedList<tag> tags)
+	public void getTags(Gee.LinkedList<tag> tags)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
 
@@ -206,7 +206,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public string getArticles(ref Gee.LinkedList<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public string getArticles(Gee.LinkedList<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "user/" + m_userID + "/category/global.all";
 		string cont = "";
@@ -305,7 +305,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 			if(!dataBase.article_exists(id))
 			{
-				FeedServer.grabContent(ref Article);
+				FeedServer.grabContent(Article);
 			}
 
 			articles.add(Article);

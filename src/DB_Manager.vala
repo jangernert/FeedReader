@@ -331,7 +331,7 @@ public class FeedReader.dbManager : GLib.Object {
 		return unread;
 	}
 
-	public void write_feeds(ref Gee.LinkedList<feed> feeds)
+	public void write_feeds(Gee.LinkedList<feed> feeds)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -384,7 +384,7 @@ public class FeedReader.dbManager : GLib.Object {
 		executeSQL("COMMIT TRANSACTION");
 	}
 
-	public void write_tags(ref Gee.LinkedList<tag> tags)
+	public void write_tags(Gee.LinkedList<tag> tags)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -460,7 +460,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public void write_categories(ref Gee.LinkedList<category> categories)
+	public void write_categories(Gee.LinkedList<category> categories)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -648,7 +648,7 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public void update_articles(ref Gee.LinkedList<article> articles)
+	public void update_articles(Gee.LinkedList<article> articles)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -686,7 +686,7 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_int (modified_position, article.getLastModified());
 			stmt.bind_text(articleID_position, article.getArticleID());
 
-			while(stmt.step () == Sqlite.ROW) {}
+			while(stmt.step() != Sqlite.DONE) {}
 			stmt.reset();
 		}
 
@@ -694,11 +694,11 @@ public class FeedReader.dbManager : GLib.Object {
 	}
 
 
-	public void write_articles(ref Gee.LinkedList<article> articles)
+	public void write_articles(Gee.LinkedList<article> articles)
 	{
 
-		FeedReader.Utils.generatePreviews(ref articles);
-		FeedReader.Utils.checkHTML(ref articles);
+		FeedReader.Utils.generatePreviews(articles);
+		FeedReader.Utils.checkHTML(articles);
 
 		executeSQL("BEGIN TRANSACTION");
 
@@ -722,7 +722,7 @@ public class FeedReader.dbManager : GLib.Object {
 		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
 
 		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, "write_arties: %s".printf(sqlite_db.errmsg()));
+			logger.print(LogMessage.ERROR, "write_arties: prepare statement: %s".printf(sqlite_db.errmsg()));
 
 
 
@@ -771,7 +771,7 @@ public class FeedReader.dbManager : GLib.Object {
 			stmt.bind_text(guidHash_position, article.getHash());
 			stmt.bind_int (modified_position, article.getLastModified());
 
-			while(stmt.step () == Sqlite.ROW) {}
+			while(stmt.step() != Sqlite.DONE) {}
 			stmt.reset();
 		}
 

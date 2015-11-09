@@ -159,7 +159,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getFeeds(ref Gee.LinkedList<feed> feeds, ref Gee.LinkedList<category> categories)
+	public void getFeeds(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories)
 	{
 		if(isloggedin())
 		{
@@ -202,12 +202,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				}
 			}
 
-			getUncategorizedFeeds(ref feeds);
+			getUncategorizedFeeds(feeds);
 		}
 	}
 
 
-	private void getUncategorizedFeeds(ref Gee.LinkedList<feed> feeds)
+	private void getUncategorizedFeeds(Gee.LinkedList<feed> feeds)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -243,7 +243,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 	}
 
-	public void getTags(ref Gee.LinkedList<tag> tags)
+	public void getTags(Gee.LinkedList<tag> tags)
 	{
 		if(isloggedin())
 		{
@@ -290,7 +290,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getCategories(ref Gee.LinkedList<category> categories)
+	public void getCategories(Gee.LinkedList<category> categories)
 	{
 		if(isloggedin())
 		{
@@ -305,13 +305,13 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				var response = message.get_response_object();
 				var category_object = response.get_object_member("categories");
 
-				getSubCategories(ref categories, category_object, 0, CategoryID.MASTER);
+				getSubCategories(categories, category_object, 0, CategoryID.MASTER);
 			}
 		}
 	}
 
 
-	private void getSubCategories(ref Gee.LinkedList<category> categories, Json.Object categorie, int level, string parent)
+	private void getSubCategories(Gee.LinkedList<category> categories, Json.Object categorie, int level, string parent)
 	{
 		level++;
 		int orderID = 0;
@@ -345,7 +345,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					)
 				);
 
-				getSubCategories(ref categories, categorie_node, level, categorieID);
+				getSubCategories(categories, categorie_node, level, categorieID);
 			}
 		}
 	}
@@ -384,7 +384,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getHeadlines(ref Gee.LinkedList<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
+	public void getHeadlines(Gee.LinkedList<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -456,7 +456,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getArticles(string articleIDs, ref Gee.LinkedList<article> articles)
+	public void getArticles(string articleIDs, Gee.LinkedList<article> articles)
 	{
 		if(isloggedin())
 		{

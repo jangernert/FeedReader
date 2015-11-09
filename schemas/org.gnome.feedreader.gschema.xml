@@ -52,7 +52,7 @@
 			<default>300</default>
 			<summary>sync rate</summary>
 			<description>
-				Seconds between each refresh
+				Minutes between each refresh
 			</description>
 		</key>
 

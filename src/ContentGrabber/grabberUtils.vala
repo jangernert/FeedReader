@@ -25,10 +25,16 @@ public class FeedReader.grabberUtils : GLib.Object {
         bool foundSomething = false;
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
         var res = cntx.eval_expression(xpath);
-        //stdout.printf("xpath: %s\n", xpath);
 
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        if(res == null)
+        {
             return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
 
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
@@ -48,14 +54,20 @@ public class FeedReader.grabberUtils : GLib.Object {
         return foundSomething;
     }
 
-    public static string getURL(Html.Doc* doc, string xpath)
+    public static string? getURL(Html.Doc* doc, string xpath)
     {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
-        //stdout.printf("xpath: %s\n", xpath);
 
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        if(res == null)
+        {
             return null;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return null;
+        }
 
     	Xml.Node* node = res->nodesetval->item(0);
     	//stdout.printf("%s\n", node->get_content());
@@ -68,13 +80,20 @@ public class FeedReader.grabberUtils : GLib.Object {
         return URL;
     }
 
-    public static string getValue(Html.Doc* doc, string xpath, bool remove = false)
+    public static string? getValue(Html.Doc* doc, string xpath, bool remove = false)
     {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        if(res == null)
+        {
             return null;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return null;
+        }
 
     	Xml.Node* node = res->nodesetval->item(0);
         string result = cleanString(node->get_content());
@@ -95,8 +114,15 @@ public class FeedReader.grabberUtils : GLib.Object {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        if(res == null)
+        {
             return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
 
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
@@ -114,8 +140,15 @@ public class FeedReader.grabberUtils : GLib.Object {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img[@%s]".printf(lazyload));
 
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        if(res == null)
+        {
             return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
 
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
@@ -162,8 +195,15 @@ public class FeedReader.grabberUtils : GLib.Object {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//*[@%s]".printf(attribute));
 
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        if(res == null)
+        {
             return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
 
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
@@ -293,8 +333,15 @@ public class FeedReader.grabberUtils : GLib.Object {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img");
 
-        if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        if(res == null)
+        {
             return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
 
         for(int i = 0; i < res->nodesetval->length(); i++)
         {

@@ -114,6 +114,7 @@ public class FeedReader.InstaAPI : GLib.Object {
             Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedreader: Instapaper login", m_passwd, null);
         }
         catch(GLib.Error e){}
+        pwSchema.unref();
     }
 
     public bool getAccessToken(string username, string password)

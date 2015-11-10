@@ -141,6 +141,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 
 				Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
 					removed = Secret.password_clearv.end(async_res);
+					pwSchema.unref();
 				});
 				return removed;
 		}

@@ -424,7 +424,7 @@ namespace FeedReader {
 		dataBase = new dbManager();
 		dataBase.init();
 		Notify.init(AboutInfo.programmName);
-		var notify_server_caps = Notify.get_server_caps();
+		GLib.List<string> notify_server_caps = Notify.get_server_caps();
 		foreach(string str in notify_server_caps)
 		{
 			if(str == "actions")
@@ -434,7 +434,6 @@ namespace FeedReader {
 				break;
 			}
 		}
-		g_list_free(notify_server_caps);
 		Utils.copyAutostart();
 
 		logger.print(LogMessage.INFO, "FeedReader Daemon " + AboutInfo.version);

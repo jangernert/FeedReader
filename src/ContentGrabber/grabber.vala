@@ -78,7 +78,7 @@ public class FeedReader.Grabber : GLib.Object {
 
                 var html_cntx = new Html.ParserCtxt();
                 html_cntx.use_options(Html.ParserOption.NOERROR);
-                var doc = html_cntx.read_doc(m_rawHtml, "");
+                Html.Doc* doc = html_cntx.read_doc(m_rawHtml, "");
                 if (doc == null)
                 {
             		return false;
@@ -87,12 +87,21 @@ public class FeedReader.Grabber : GLib.Object {
                 Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
             	Xml.XPath.Object* res = cntx.eval_expression("//meta[@property='og:url']");
 
-                if(res == null || res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+                if(res == null)
+                {
                     return false;
+                }
+                else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+                {
+                    delete res;
+                    return false;
+                }
 
                 Xml.Node* node = res->nodesetval->item(0);
                 m_articleURL = node->get_prop("content");
                 logger.print(LogMessage.DEBUG, "Grabber: original url: %s".printf(m_articleURL));
+                delete doc;
+                delete res;
 
                 // check again for config file with new url
                 if(!checkConfigFile())

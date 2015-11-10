@@ -293,6 +293,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				attributes["Username"] = m_ttrss_user_entry.get_text();
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
+				pwSchema.unref();
 				break;
 
 			case Backend.FEEDLY:
@@ -312,6 +313,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				attributes["Username"] = m_owncloud_user_entry.get_text();
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_owncloud_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
+				pwSchema.unref();
 				break;
 		}
 

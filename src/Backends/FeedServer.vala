@@ -851,7 +851,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-        var doc = html_cntx.read_doc(Article.getHTML(), "");
+        Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
         if (doc == null)
         {
             logger.print(LogMessage.DEBUG, "Grabber: parsing failed");

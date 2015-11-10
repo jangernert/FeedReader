@@ -70,7 +70,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 
 		var status = m_session.send_message(m_message_soup);
 
-		if(m_message_soup.tls_errors != 0)
+		if(m_message_soup.tls_errors != 0 && !settings_tweaks.get_boolean("ignore-tls-errors"))
 		{
 			logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;

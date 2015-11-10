@@ -274,7 +274,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	}
 
 
-	private void write_login_data()
+	public void write_login_data()
 	{
 		logger.print(LogMessage.DEBUG, "write login data");
 		var backend = Backend.NONE;

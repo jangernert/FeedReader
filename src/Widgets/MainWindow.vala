@@ -23,6 +23,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private Gtk.Stack m_stack;
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
+	private Gtk.Button m_ignore_tls_errors;
 	private ContentPage m_content;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
@@ -292,9 +293,23 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_error_bar.set_message_type(Gtk.MessageType.WARNING);
 		m_error_bar.set_show_close_button(true);
 
+		m_ignore_tls_errors = m_error_bar.add_button("Ignore", Gtk.ResponseType.APPLY);
+		m_ignore_tls_errors.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
+		m_ignore_tls_errors.set_tooltip_text(_("Ignore all tls errors from now on"));
+		m_ignore_tls_errors.set_visible(false);
+
 		m_error_bar.response.connect((response_id) => {
-			if(response_id == Gtk.ResponseType.CLOSE) {
+			switch(response_id)
+			{
+				case Gtk.ResponseType.CLOSE:
 					m_error_bar.set_visible(false);
+					break;
+				case Gtk.ResponseType.APPLY:
+					settings_tweaks.set_boolean("ignore-tls-errors", true);
+					m_ignore_tls_errors.set_visible(false);
+					m_error_bar.set_visible(false);
+					m_login.write_login_data();
+					break;
 			}
 		});
 
@@ -343,6 +358,16 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_error_bar.set_visible(false);
 	}
 
+	private void login()
+	{
+		settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
+		settings_state.set_string("feedlist-selected-row", "feed -4");
+		if(dataBase.isEmpty())
+			feedDaemon_interface.startInitSync();
+		else
+			feedDaemon_interface.startSync();
+		showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
+	}
 
 	private void setupResetPage()
 	{
@@ -406,6 +431,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				break;
 			case LoginResponse.CA_ERROR:
 				m_ErrorMessage.set_label(_("No valid CA certificate available!"));
+				m_ignore_tls_errors.set_visible(true);
 				break;
 			case LoginResponse.SUCCESS:
 			case LoginResponse.FIRST_TRY:

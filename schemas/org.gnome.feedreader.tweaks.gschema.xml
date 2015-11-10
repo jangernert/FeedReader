@@ -34,6 +34,14 @@
 		    </description>
 		</key>
 
+	  	<key name="ignore-tls-errors" type="b">
+		    <default>false</default>
+		    <summary>ignore unknown certificates</summary>
+		    <description>
+			Ignore all tls errors regarding the connection to the rss server
+		    </description>
+		</key>
+
 	  	<key name="parser-api-key" type="s">
 		    <default>""</default>
 		    <summary>Acces key to redability parser-API</summary>

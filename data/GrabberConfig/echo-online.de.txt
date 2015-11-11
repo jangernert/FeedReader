@@ -1,4 +1,4 @@
-# Author: Marvin Dickhaus <github@marvindickhaus.de>
+# Author: Marvin Dickhaus
 # 2014-10-08
 
 #Tidy just messes up the DOM
@@ -19,6 +19,7 @@ date: //li[@class='artikeldatum']
 #The first two URLs will at some point no longer show 
 #the full article. There is a time-based paywall 
 #installed. Using the feed should present valid output
-test_url: http://www.echo-online.de/art1231,5503063
-test_url: http://www.echo-online.de/art1168,5502598
-test_url: http://www.echo-online.de/rss/darmstadt.xml
+#test_url: http://www.echo-online.de/art1231,5503063
+#test_url: http://www.echo-online.de/art1168,5502598
+test_url: http://www.echo-online.de/lokales/darmstadt/index.rss
+

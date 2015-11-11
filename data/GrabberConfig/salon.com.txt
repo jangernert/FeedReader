@@ -8,4 +8,4 @@ prune: no
 # deal with singleton links
 single_page_link: (//h1/a[contains(@href, '/singleton')])[1]
 
-test_url: http://www.salon.com/2011/10/25/occupying_the_rust_belt/singleton/
+test_url: http://www.salon.com/2011/10/25/occupying_the_rust_belt/

@@ -9,6 +9,8 @@
 - better font-styling on non-elementary distributions
 - proper fullscreen mode for videos
 - support multiple share accounts of the same kind (e.g. two different pocket accounts)
+- fixed memory leaks
+- option to ignore unknowns CA
 
 1.2:
 - ability to share articles

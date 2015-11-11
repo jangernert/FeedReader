@@ -1,12 +1,17 @@
-body: //div[@id='main_text']
-title: //div[@id='main_text']/h1
-strip: //div[@id='main_text']/h1
-strip: //div[@id='main_text']/h2
-strip_id_or_class: tools
-strip_id_or_class: articleTools
-strip_id_or_class: pagination
-strip_id_or_class: byline
-strip_id_or_class: tweet
-date: //div[@class='date']
-strip: //div[@class='date']
-test_url: http://www.infoworld.com/d/the-industry-standard/it-jobs-the-rise-both-offshore-and-in-us-187689
+# All sites of the IDG network can be extracted using the same rules,
+# make sure to update all of them
+
+author: //meta[@name="author"]/@content
+date: //meta[@name="DC.date.issued"]/@content
+
+body: //div[@itemprop="articleBody"]
+body: //div[@itemprop="reviewBody"]
+body: //figcaption|//div[@class="img-wrapper"]/noscript/img
+
+next_page_link: //a[@rel="next"]
+
+strip: //aside
+strip: //h3[contains(., "See also:")]
+strip: //div[@id="article-top-page-number"]
+strip: //p[starts-with(normalize-space(.), '[')]
+strip: //p[starts-with(normalize-space(.), '+')]

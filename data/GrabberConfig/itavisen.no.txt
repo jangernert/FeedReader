@@ -1,6 +1,4 @@
-author: //p[@class = 'writer']
+author: //p[@class = 'byline']//span[@class='author']
 
-date: //p[@class = 'published-time']
-
-body: //div[@class = 'text main']
-test_url: http://www.itavisen.no/899786/old-republic-blir-gratis
+body: //div[@id = 'story-contents']
+test_url: http://itavisen.no/2015/09/08/norske-nettleverandorer-vil-ikke-blokkere-pirate-bay/

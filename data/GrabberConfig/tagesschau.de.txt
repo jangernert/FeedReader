@@ -8,5 +8,7 @@ strip: //div[contains(@class, 'mediaCon')]//iframe
 
 prune: no
 
-test_url: http://www.tagesschau.de/inland/germanwings-trauerfeier-111.html
+test_url: http://www.tagesschau.de/ausland/snowden-dateien-entschluesselung-101.html
+test_contains: Snowden hatte zunächst für
+
 test_url: http://www.tagesschau.de/xml/rss2

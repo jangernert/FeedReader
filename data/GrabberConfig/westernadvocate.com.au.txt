@@ -8,4 +8,4 @@ body: //div[contains(@class, "news-article-body")]
 
 strip: //div[contains(@class, "flexslider")]
 
-test_url: http://:www.westernadvocate.com.au/story/1532050/roos-accept-ziebell-ban-commentators-do-not/
+test_url: http://www.westernadvocate.com.au/story/1532050/roos-accept-ziebell-ban-commentators-do-not/

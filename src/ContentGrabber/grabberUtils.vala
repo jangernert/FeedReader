@@ -365,7 +365,7 @@ public class FeedReader.grabberUtils : GLib.Object {
             fixedURL = "http:" + fixedURL;
         }
 
-        string imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+        string imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
         var path = GLib.File.new_for_path(imgPath);
 		try{
 			path.make_directory_with_parents();

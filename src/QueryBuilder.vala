@@ -195,7 +195,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
     public bool limit(uint limit)
     {
-        if(m_type == QueryType.SELECT && limit > 0)
+        if(m_type == QueryType.SELECT)
         {
             m_limit = " LIMIT %u".printf(limit);
             return true;

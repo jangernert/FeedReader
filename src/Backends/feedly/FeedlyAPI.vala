@@ -302,12 +302,6 @@ public class FeedReader.FeedlyAPI : Object {
 								-1,
 								tagString
 						);
-
-			if(!dataBase.article_exists(id))
-			{
-				FeedServer.grabContent(Article);
-			}
-
 			articles.add(Article);
 		}
 

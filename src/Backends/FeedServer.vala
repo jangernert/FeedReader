@@ -630,7 +630,8 @@ public class FeedReader.FeedServer : GLib.Object {
 				}
 
 				int skip = count;
-				int amount = 10;
+				int amount = 200;
+				var articles = new Gee.LinkedList<article>();
 
 				while(skip > 0)
 				{
@@ -644,25 +645,13 @@ public class FeedReader.FeedServer : GLib.Object {
 						skip = 0;
 					}
 
-					var articles = new Gee.LinkedList<article>();
 					continuation = m_feedly.getArticles(articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
-
-					foreach(article Article in articles)
-					{
-						if(!dataBase.article_exists(Article.getArticleID()))
-							FeedServer.grabContent(Article);
-					}
-
-					int before = dataBase.getHighestRowID();
-					dataBase.update_articles(articles);
-					dataBase.write_articles(articles);
-					updateFeedList();
-					newArticleList();
-					setNewRows(before);
 
 					if(continuation == "")
 						break;
 				}
+
+				writeArticlesInChunks(articles, 10);
 				break;
 
 			case Backend.OWNCLOUD:
@@ -698,33 +687,36 @@ public class FeedReader.FeedServer : GLib.Object {
 				else
 					m_owncloud.getArticles(articles, 0, count, read, type, id);
 
-				string last = "";
-
-				if(articles.size > 0)
-				{
-					last = articles.first().getArticleID();
-					dataBase.update_articles(articles);
-					var new_articles = new Gee.LinkedList<article>();
-
-					var it = articles.bidir_list_iterator();
-    				for (var has_next = it.last(); has_next; has_next = it.previous())
-					{
-						article Article = it.get();
-						int before = dataBase.getHighestRowID();
-						FeedServer.grabContent(Article);
-						new_articles.add(Article);
-
-						if(new_articles.size == 10 || Article.getArticleID() == last)
-						{
-							dataBase.write_articles(new_articles);
-							updateFeedList();
-							newArticleList();
-							new_articles = new Gee.LinkedList<article>();
-							setNewRows(before);
-						}
-					}
-				}
+				writeArticlesInChunks(articles, 10);
 				break;
+		}
+	}
+
+	private void writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize)
+	{
+		if(articles.size > 0)
+		{
+			string last = articles.first().getArticleID();
+			dataBase.update_articles(articles);
+			var new_articles = new Gee.LinkedList<article>();
+
+			var it = articles.bidir_list_iterator();
+			for (var has_next = it.last(); has_next; has_next = it.previous())
+			{
+				article Article = it.get();
+				int before = dataBase.getHighestRowID();
+				FeedServer.grabContent(Article);
+				new_articles.add(Article);
+
+				if(new_articles.size == chunksize || Article.getArticleID() == last)
+				{
+					dataBase.write_articles(new_articles);
+					updateFeedList();
+					newArticleList();
+					new_articles = new Gee.LinkedList<article>();
+					setNewRows(before);
+				}
+			}
 		}
 	}
 
@@ -733,15 +725,11 @@ public class FeedReader.FeedServer : GLib.Object {
 		int after = dataBase.getHighestRowID();
 		int newArticles = after-before;
 
-		if(settings_state.get_boolean("no-animations"))
+		if(settings_state.get_boolean("no-animations") && newArticles > 0)
 		{
-			logger.print(LogMessage.DEBUG, "UI NOT running");
+			logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
 			int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
 			settings_state.set_int("articlelist-new-rows", newCount);
-		}
-		else
-		{
-			logger.print(LogMessage.DEBUG, "UI is running");
 		}
 	}
 

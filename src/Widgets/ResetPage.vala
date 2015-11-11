@@ -91,8 +91,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		settings_state.set_boolean("currently-updating", true);
 
 		deletePasswords();
-		dataBase.resetDB();
-		dataBase.init();
+		feedDaemon_interface.resetDB();
 
 		resetSettings(settings_general);
 		resetSettings(settings_state);

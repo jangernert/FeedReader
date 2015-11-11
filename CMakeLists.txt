@@ -77,7 +77,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Model/Tag.vala
     src/Model/ShareAccount.vala
     src/Constants.vala
-    src/DB_Manager.vala
+    src/dbUI.vala
     src/Utils.vala
     src/QueryBuilder.vala
     src/Widgets/ArticleList.vala
@@ -150,7 +150,8 @@ endif(WITH_DEBUG)
 
 vala_precompile(daemon ${DAEMON_NAME}
     src/Daemon.vala
-    src/DB_Manager.vala
+    src/dbUI.vala
+    src/dbDaemon.vala
     src/Logger.vala
     src/Utils.vala
     src/QueryBuilder.vala

@@ -51,7 +51,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 		m_pop.newColorSelected.connect((color) => {
 			m_circle.newColor(color);
-			dataBase.update_tag_color(m_tagID, color);
+			feedDaemon_interface.updateTagColor(m_tagID, color);
 		});
 
 		m_label = new Gtk.Label(m_name);

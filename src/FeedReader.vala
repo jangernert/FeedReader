@@ -20,7 +20,7 @@ namespace FeedReader {
 
 	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
 
-	dbManager dataBase;
+	dbUI dataBase;
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
 	GLib.Settings settings_feedly;
@@ -44,6 +44,8 @@ namespace FeedReader {
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void markAllItemsRead() throws IOError;
 		public abstract void tagArticle(string articleID, string tagID, bool add) throws IOError;
+		public abstract void updateTagColor(string tagID, int color) throws IOError;
+		public abstract void resetDB() throws IOError;
 		public abstract string createTag(string caption) throws IOError;
 		public abstract void updateBadge() throws IOError;
 		public abstract bool supportTags() throws IOError;
@@ -79,7 +81,7 @@ namespace FeedReader {
 			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
 			startDaemon();
 
-			dataBase = new dbManager();
+			dataBase = new dbUI();
 			dataBase.init();
 
 

@@ -287,6 +287,17 @@ namespace FeedReader {
 			dataBase.set_article_tags(articleID, tags);
 		}
 
+		public void updateTagColor(string tagID, int color)
+		{
+			dataBase.update_tag_color(tagID, color);
+		}
+
+		public void resetDB()
+		{
+			dataBase.resetDB();
+			dataBase.init();
+		}
+
 		public void markFeedAsRead(string feedID, bool isCat)
 		{
 			if(isCat)
@@ -367,7 +378,7 @@ namespace FeedReader {
 	}
 
 
-	dbManager dataBase;
+	dbDaemon dataBase;
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
 	GLib.Settings settings_feedly;
@@ -421,7 +432,7 @@ namespace FeedReader {
 			return 0;
 		}
 
-		dataBase = new dbManager();
+		dataBase = new dbDaemon();
 		dataBase.init();
 		Notify.init(AboutInfo.programmName);
 		GLib.List<string> notify_server_caps = Notify.get_server_caps();

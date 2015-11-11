@@ -792,7 +792,7 @@ public class FeedReader.dbUI : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
 		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
-		query.addEqualsCondition("feedID", feedID);
+		query.addEqualsCondition("feedID", feedID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;

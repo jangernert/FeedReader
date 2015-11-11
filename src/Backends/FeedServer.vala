@@ -114,8 +114,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			// write feeds
 			dataBase.reset_subscribed_flag();
 			dataBase.write_feeds(feeds);
-			dataBase.delete_unsubscribed_feeds();
 			dataBase.delete_articles_without_feed();
+			dataBase.delete_unsubscribed_feeds();
 
 			// write tags
 			dataBase.reset_exists_tag();

@@ -503,9 +503,22 @@ namespace FeedReader {
 
 			output = output.strip();
 
+			if(output == "" || output == null || output.has_prefix("Input recoding failed"))
+			{
+				logger.print(LogMessage.DEBUG, "use vilistextum as fallback for html2text");
+				
+				string[] spawn_args_fallback = {"vilistextum", "-a", "-n", "-r", "-t", "-u", path, "-"};
+				try{
+					GLib.Process.spawn_sync(null, spawn_args_fallback, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+				}
+				catch(GLib.SpawnError e){
+					logger.print(LogMessage.ERROR, "vilistextum: %s".printf(e.message));
+				}
+			}
+
 			if(output == "" || output == null)
 			{
-				logger.print(LogMessage.ERROR, "html2text could not generate preview text");
+				logger.print(LogMessage.ERROR, "could not generate preview text");
 				return;
 			}
 

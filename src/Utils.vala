@@ -56,11 +56,29 @@ public class FeedReader.Utils : GLib.Object {
 
 					if(output == "" || output == null)
 					{
+#if WITH_VILISTEXTUM
+						logger.print(LogMessage.DEBUG, "use vilistextum as fallback for html2text");
+						string[] spawn_args_fallback = {"vilistextum", "-a", "-n", "-r", "-t", "-u", filename, "-"};
+						try{
+							GLib.Process.spawn_sync(null, spawn_args_fallback, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+						}
+						catch(GLib.SpawnError e){
+							logger.print(LogMessage.ERROR, "vilistextum: %s".printf(e.message));
+						}
+
+						if(output == "" || output == null)
+						{
+							logger.print(LogMessage.ERROR, "vilistextum could not generate preview text");
+							Article.setPreview(noPreview);
+							logger.print(LogMessage.DEBUG, filename);
+							continue;
+						}
+#else
 						logger.print(LogMessage.ERROR, "html2text could not generate preview text");
-						// FIXME: use vilistextum as fallback
 						Article.setPreview(noPreview);
 						logger.print(LogMessage.DEBUG, filename);
 						continue;
+#endif
 					}
 
 					string xml = "<?xml";

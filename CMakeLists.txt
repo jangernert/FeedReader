@@ -6,6 +6,7 @@ list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(WITH_DEBUG "Compile daemon binary with debugging symbols" OFF)
 option(WITH_LIBUNITY "Adds a Badge with the count of the unread articles to the dockitem" ON)
 option(USE_WEBKIT_4 "Compile with Webkit2Gtk 4.0 instead of 3.0" OFF)
+option(WITH_VILISTEXTUM "Use vilistextum as a fallback when html2text fails to create a preview" ON)
 
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
@@ -63,6 +64,10 @@ if(USE_WEBKIT_4)
 else(USE_WEBKIT_4)
 	list(APPEND UI_PACKAGES WebKit2-3.0)
 endif(USE_WEBKIT_4)
+
+if(WITH_VILISTEXTUM)
+	list(APPEND UI_OPTIONS --define WITH_VILISTEXTUM)
+endif(WITH_VILISTEXTUM)
 
 # files we want to compile
 include(ValaPrecompile)
@@ -143,6 +148,10 @@ if(WITH_LIBUNITY)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
 	list(APPEND DAEMON_PACKAGES unity)
 endif(WITH_LIBUNITY)
+
+if(WITH_VILISTEXTUM)
+	list(APPEND DAEMON_OPTIONS --define WITH_VILISTEXTUM)
+endif(WITH_VILISTEXTUM)
 
 if(WITH_DEBUG)
 	list(APPEND DAEMON_OPTIONS -g)

@@ -11,6 +11,7 @@
 - support multiple share accounts of the same kind (e.g. two different pocket accounts)
 - fixed memory leaks
 - option to ignore unknowns CA
+- updated GrabberConfig files to upstream from fivefilters
 
 1.2:
 - ability to share articles

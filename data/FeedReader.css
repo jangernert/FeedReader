@@ -57,6 +57,7 @@ GtkEventBox {
 }
 
 .feed-list,
+.feed-list-pane,
 .feed-list .scrollbar {
 	background: @feedlist-bg;
 }

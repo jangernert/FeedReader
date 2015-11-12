@@ -685,7 +685,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				if(count == -1)
 					m_owncloud.getNewArticles(articles, dataBase.getLastModified(), type, id);
 				else
-					m_owncloud.getArticles(articles, 0, count, read, type, id);
+					m_owncloud.getArticles(articles, 0, -1, read, type, id);
 
 				writeArticlesInChunks(articles, 10);
 				break;

@@ -652,6 +652,7 @@ public class FeedReader.dbUI : GLib.Object {
 			var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 			query.selectField("categorieID");
 			query.addCustomCondition("instr(tagID, \"global.must\") > 0");
+			query.build();
 
 			Sqlite.Statement stmt;
 			int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
@@ -685,6 +686,7 @@ public class FeedReader.dbUI : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("feed_id");
 		query.addCustomCondition(getUncategorizedQuery());
+		query.build();
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);

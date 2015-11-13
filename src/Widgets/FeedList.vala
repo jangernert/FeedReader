@@ -658,6 +658,22 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 		}
 
+		if(dataBase.haveFeedsWithoutCat())
+		{
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpCatRow = row as categorieRow;
+				if(tmpCatRow != null && (tmpCatRow.getID() == "" || tmpCatRow.getID() == "0"))
+				{
+					tmpCatRow.set_unread_count(dataBase.get_unread_uncategorized());
+					if(settings_general.get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
+						tmpCatRow.reveal(true);
+
+					break;
+				}
+			}
+		}
+
 		// update feeds
 		foreach(Gtk.Widget row in FeedChildList)
 		{

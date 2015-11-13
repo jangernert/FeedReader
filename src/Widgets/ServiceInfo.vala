@@ -14,6 +14,8 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.ServiceInfo : Gtk.Overlay {
+    private Gtk.Stack m_stack;
+    private Gtk.Spinner m_spinner;
     private Gtk.Image m_logo;
     private Gtk.Label m_label;
     private Gtk.Box m_box;
@@ -34,7 +36,14 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         m_box.pack_start(m_label, false, false, 5);
         m_box.margin_top = 20;
         m_box.margin_bottom = 5;
-        this.add(m_box);
+
+        m_spinner = new Gtk.Spinner();
+        m_spinner.set_size_request(32,32);
+
+        m_stack = new Gtk.Stack();
+        m_stack.add_named(m_box, "info");
+        m_stack.add_named(m_spinner, "spinner");
+        this.add(m_stack);
 
         var label = new Gtk.Label("OFFLINE");
         label.margin_start = 40;
@@ -69,9 +78,22 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
                 break;
         }
 
-        m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s-grey.svg".printf(service_name));
-        this.set_tooltip_text(server);
-        m_label.set_label(user_name);
+        if(this.is_visible())
+        {
+            if(user_name == null || user_name == "")
+            {
+                m_spinner.start();
+                m_stack.set_visible_child_name("spinner");
+            }
+            else
+            {
+                m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s-grey.svg".printf(service_name));
+                this.set_tooltip_text(server);
+                m_label.set_label(user_name);
+                m_stack.set_visible_child_name("info");
+            }
+        }
+
         show_all();
     }
 }

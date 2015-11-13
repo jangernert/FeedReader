@@ -60,7 +60,7 @@ public class FeedReader.Grabber : GLib.Object {
             m_config = new GrabberConfig(filename);
             return true;
         }
-        logger.print(LogMessage.ERROR, "Grabber: no config found for article: " + m_articleURL);
+        logger.print(LogMessage.INFO, "Grabber: no config found for article: " + m_articleURL);
         return false;
     }
 

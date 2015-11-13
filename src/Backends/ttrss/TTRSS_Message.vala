@@ -57,7 +57,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 
 	public void add_string(string type, string val)
 	{
-		m_message_string.append(",\"" + type + "\":\"" + val + "\"");
+		m_message_string.append(",\"" + type + "\":\"" + val.replace("\"", "\\\"").replace("\\", "\\\\") + "\"");
 	}
 
 	public ConnectionError send()

@@ -385,7 +385,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 				message_dlImg.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
-            session.timeout = 5;
+            session.timeout = 8;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);
 			if(status == 200)

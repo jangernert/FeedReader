@@ -28,6 +28,7 @@ public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
         var circle = new ColorCircle(Tag.getColor(), false);
         circle.margin_start = 2;
+        circle.margin_end = 3;
         var label = new Gtk.Label(Tag.getTitle());
         label.set_alignment(0, 0.5f);
         m_clear = new Gtk.Image.from_icon_name("edit-clear-symbolic", Gtk.IconSize.MENU);

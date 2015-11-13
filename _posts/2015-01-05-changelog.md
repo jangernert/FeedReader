@@ -5,6 +5,7 @@ color: darkslategray
 fa-icon: calendar
 ---
 **1.4**
+
 *   ownCloud News support
 *   sync more responsive
 *   app fully operational during initial sync

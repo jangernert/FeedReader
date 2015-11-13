@@ -4,6 +4,21 @@ bg: burlywood
 color: darkslategray
 fa-icon: calendar
 ---
+**1.4**
+*   ownCloud News support
+*   sync more responsive
+*   app fully operational during initial sync
+*   overlay to indicate new articles
+*   dynamic switch between GMenu in gnome and menu-button elsewhere
+*   notifications are updated rather than creating new ones every time
+*   respect notification settings of the DE
+*   better font-styling on non-elementary distributions
+*   proper fullscreen mode for videos
+*   support multiple share accounts of the same kind (e.g. two different pocket accounts)
+*   fixed memory leaks
+*   option to ignore unknown CA's
+*   updated GrabberConfig files to upstream from fivefilters
+
 **1.2.1**
 
 *   added: built-time-switch for Webkit2Gtk 4.0

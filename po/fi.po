@@ -7,45 +7,61 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-09-26 19:01+0200\n"
+"POT-Creation-Date: 2015-11-13 23:01+0100\n"
 "PO-Revision-Date: 2015-09-27 15:35+0000\n"
 "Last-Translator: Jiri Grönroos <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-11-10 05:01+0000\n"
-"X-Generator: Launchpad (build 17843)\n"
+"X-Launchpad-Export-Date: 2015-11-14 04:58+0000\n"
+"X-Generator: Launchpad (build 17845)\n"
 
-#: ../src/Constants.vala:163 ../src/Widgets/MainWindow.vala:32
+#: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
 msgid "FeedReader"
 msgstr "Syötteenlukija"
 
-#: ../src/Constants.vala:166
+#: ../src/Constants.vala:163
 msgid "Desktop Client for various RSS Services"
 msgstr "Työpöytäsovellus useiden RSS-palveluiden käyttöön"
+
+#: ../src/Constants.vala:174
+msgid "About"
+msgstr ""
+
+#: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
+msgid "Settings"
+msgstr "Asetukset"
+
+#: ../src/Constants.vala:176
+msgid "Change Account"
+msgstr "Vaihda käyttäjätiliä"
+
+#: ../src/Constants.vala:177
+msgid "Quit"
+msgstr ""
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
 msgstr "Esikatselua ei ole saatavilla"
 
-#: ../src/Utils.vala:94
+#: ../src/Utils.vala:113
 msgid "No Text available for this article :("
 msgstr "Tälle artikkelille ei ole tekstiä tarjolla"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:69
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:72
 msgid "no Author"
 msgstr "ei tekijää"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:81
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:84
 msgid "no Title"
 msgstr "ei otsikkoa"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:93
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:96
 msgid "no Preview"
 msgstr "ei esikatselua"
 
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:105
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:108
 msgid "no content"
 msgstr "ei sisältöä"
 
@@ -65,47 +81,51 @@ msgstr "Tunnisteet:"
 msgid "add Tag"
 msgstr "lisää tunniste"
 
-#: ../src/Widgets/MainWindow.vala:358
+#: ../src/Widgets/MainWindow.vala:298
+msgid "Ignore all tls errors from now on"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:406
 msgid "Please select a service first"
 msgstr "Valitse palvelu ensin"
 
-#: ../src/Widgets/MainWindow.vala:361
+#: ../src/Widgets/MainWindow.vala:409
 msgid "Please enter a valid username"
 msgstr "Anna kelvollinen käyttäjätunnus"
 
-#: ../src/Widgets/MainWindow.vala:364
+#: ../src/Widgets/MainWindow.vala:412
 msgid "Please enter a valid password"
 msgstr "Anna kelvollinen salasana"
 
-#: ../src/Widgets/MainWindow.vala:367
+#: ../src/Widgets/MainWindow.vala:415
 msgid "Please enter a valid URL"
 msgstr "Anna kelvollinen osoite"
 
-#: ../src/Widgets/MainWindow.vala:370
+#: ../src/Widgets/MainWindow.vala:418
 msgid "Please enter your Login details"
 msgstr "Anna kirjautumistietosi"
 
-#: ../src/Widgets/MainWindow.vala:373
+#: ../src/Widgets/MainWindow.vala:421
 msgid "Sorry, something went wrong."
 msgstr "Valitettavasti jokin meni vikaan"
 
-#: ../src/Widgets/MainWindow.vala:376
+#: ../src/Widgets/MainWindow.vala:424
 msgid "Either your username or the password are not correct."
 msgstr "Joko käyttäjätunnus tai salasana on väärin."
 
-#: ../src/Widgets/MainWindow.vala:379
+#: ../src/Widgets/MainWindow.vala:427
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 "Ei yhteyttä palvelimeen. Tarkista verkkoyhteytesi ja palvelimen osoite!"
 
-#: ../src/Widgets/MainWindow.vala:382
+#: ../src/Widgets/MainWindow.vala:430
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 "API-käyttö on poistettu käytöstä palvelinpuolella. Salli API-käyttö ensin!"
 
-#: ../src/Widgets/MainWindow.vala:385
+#: ../src/Widgets/MainWindow.vala:433
 msgid "No valid CA certificate available!"
 msgstr "Kelvollista CA-varmennetta ei ole saatavilla!"
 
@@ -137,42 +157,42 @@ msgstr "Muutin mieleni"
 msgid "Update Feeds"
 msgstr "Päivitä syötteet"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:61
+#: ../src/Widgets/ServiceSettingsRow.vala:81
 msgid "Username or Password incorrect"
 msgstr "Väärä käyttäjätunnus tai salasana"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:86 ../src/Widgets/LoginPage.vala:127
+#: ../src/Widgets/ServiceSettingsRow.vala:106 ../src/Widgets/LoginPage.vala:127
 #: ../src/Widgets/LoginPage.vala:196
 msgid "Username:"
 msgstr "Käyttäjätunnus:"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:87 ../src/Widgets/LoginPage.vala:128
+#: ../src/Widgets/ServiceSettingsRow.vala:107 ../src/Widgets/LoginPage.vala:128
 #: ../src/Widgets/LoginPage.vala:197
 msgid "Password:"
 msgstr "Salasana:"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:103 ../src/Widgets/LoginPage.vala:78
-#: ../src/Widgets/SharePopover.vala:30
+#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:78
+#: ../src/Widgets/SharePopover.vala:28
 msgid "Login"
 msgstr "Kirjaudu"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:108
+#: ../src/Widgets/ServiceSettingsRow.vala:128
 msgid "Logout"
 msgstr "Kirjaudu ulos"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:237
+#: ../src/Widgets/ServiceSettingsRow.vala:255
 msgid "waiting"
 msgstr "odottaa"
 
-#: ../src/Widgets/ArticleView.vala:48
+#: ../src/Widgets/ArticleView.vala:64
 msgid "No Article selected."
 msgstr "Ei artikkelia valittuna"
 
-#: ../src/Widgets/ArticleView.vala:140
+#: ../src/Widgets/ArticleView.vala:168
 msgid "Not available"
 msgstr "Ei saatavilla"
 
-#: ../src/Widgets/FeedList.vala:476 ../src/DB_Manager.vala:684
+#: ../src/Widgets/FeedList.vala:474 ../src/dbUI.vala:353
 msgid "Uncategorized"
 msgstr "Luokittelematon"
 
@@ -216,15 +236,6 @@ msgstr "Jaa artikkeli"
 msgid "Search Articles"
 msgstr "Etsi artikkeleja"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:140
-#: ../src/Widgets/ReaderHeaderbar.vala:151
-msgid "Settings"
-msgstr "Asetukset"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:142
-msgid "Change Account"
-msgstr "Vaihda käyttäjätiliä"
-
 #: ../src/Widgets/LoginPage.vala:36
 msgid "Tiny Tiny RSS"
 msgstr "Tiny Tiny RSS"
@@ -265,170 +276,165 @@ msgstr ""
 msgid "OwnCloud URL:"
 msgstr "OwnCloud-osoite:"
 
-#: ../src/Widgets/SettingsDialog.vala:65
+#: ../src/Widgets/SettingsDialog.vala:34
 msgid "Interface"
 msgstr "Käyttöliittymä"
 
-#: ../src/Widgets/SettingsDialog.vala:66
+#: ../src/Widgets/SettingsDialog.vala:35
 msgid "Internals"
 msgstr "Sisäiset"
 
-#: ../src/Widgets/SettingsDialog.vala:67
+#: ../src/Widgets/SettingsDialog.vala:36
 msgid "Services"
 msgstr "Palvelut"
 
-#: ../src/Widgets/SettingsDialog.vala:77
-msgid "Close"
-msgstr "Sulje"
-
-#: ../src/Widgets/SettingsDialog.vala:86
+#: ../src/Widgets/SettingsDialog.vala:55
 msgid "Feed List:"
 msgstr "Syöteluettelo:"
 
-#: ../src/Widgets/SettingsDialog.vala:93
+#: ../src/Widgets/SettingsDialog.vala:57
 msgid "Only show feeds"
 msgstr "Näytä vain syötteet"
 
-#: ../src/Widgets/SettingsDialog.vala:109
+#: ../src/Widgets/SettingsDialog.vala:64
 msgid "Only show unread"
 msgstr "Näytä vain lukemattomat"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:69
 msgid "Sort FeedList by"
 msgstr "Järjestä syötelista"
 
-#: ../src/Widgets/SettingsDialog.vala:131
-#: ../src/Widgets/SettingsDialog.vala:171
+#: ../src/Widgets/SettingsDialog.vala:69 ../src/Widgets/SettingsDialog.vala:76
 msgid "Received"
 msgstr "Vastaanotettu"
 
-#: ../src/Widgets/SettingsDialog.vala:134
+#: ../src/Widgets/SettingsDialog.vala:69
 msgid "Alphabetically"
 msgstr "Aakkosjärjestyksessä"
 
-#: ../src/Widgets/SettingsDialog.vala:154
+#: ../src/Widgets/SettingsDialog.vala:74
 msgid "Article List:"
 msgstr "Artikkelilista:"
 
-#: ../src/Widgets/SettingsDialog.vala:161
+#: ../src/Widgets/SettingsDialog.vala:76
 msgid "Sort articles by"
 msgstr "Artikkelien järjestysperuste"
 
-#: ../src/Widgets/SettingsDialog.vala:168
+#: ../src/Widgets/SettingsDialog.vala:76
 msgid "Date"
 msgstr "Päiväys"
 
-#: ../src/Widgets/SettingsDialog.vala:194
+#: ../src/Widgets/SettingsDialog.vala:81
 msgid "Newest first"
 msgstr "Uusin ensin"
 
-#: ../src/Widgets/SettingsDialog.vala:211
+#: ../src/Widgets/SettingsDialog.vala:86
 msgid "Article View:"
 msgstr "Artikkelinäkymä:"
 
-#: ../src/Widgets/SettingsDialog.vala:218
+#: ../src/Widgets/SettingsDialog.vala:88
 msgid "Theme"
 msgstr "Teema"
 
-#: ../src/Widgets/SettingsDialog.vala:225
+#: ../src/Widgets/SettingsDialog.vala:88
 msgid "Default"
 msgstr "Oletus"
 
-#: ../src/Widgets/SettingsDialog.vala:228
+#: ../src/Widgets/SettingsDialog.vala:88
 msgid "Spring"
 msgstr "Kevät"
 
-#: ../src/Widgets/SettingsDialog.vala:231
+#: ../src/Widgets/SettingsDialog.vala:88
 msgid "Midnight"
 msgstr "Keskiyö"
 
-#: ../src/Widgets/SettingsDialog.vala:234
+#: ../src/Widgets/SettingsDialog.vala:88
 msgid "Parchment"
 msgstr "Pergamentti"
 
-#: ../src/Widgets/SettingsDialog.vala:271
+#: ../src/Widgets/SettingsDialog.vala:112
 msgid "Sync:"
 msgstr "Synkronoi:"
 
-#: ../src/Widgets/SettingsDialog.vala:278
+#: ../src/Widgets/SettingsDialog.vala:114
 msgid "Number of articles"
 msgstr "Artikkelien lukumäärä"
 
-#: ../src/Widgets/SettingsDialog.vala:291
-msgid "Every (seconds)"
-msgstr "Vuoroväli (sekunneissa)"
+#: ../src/Widgets/SettingsDialog.vala:116
+msgid "Every (Minutes)"
+msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:307
+#: ../src/Widgets/SettingsDialog.vala:121
 msgid "Database:"
 msgstr "Tietokanta:"
 
-#: ../src/Widgets/SettingsDialog.vala:314
-msgid "Drop articles after"
-msgstr "Hylkää artikkelit viiveellä"
+#: ../src/Widgets/SettingsDialog.vala:123
+msgid "Delete articles after"
+msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:321
+#: ../src/Widgets/SettingsDialog.vala:124
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: ../src/Widgets/SettingsDialog.vala:324
+#: ../src/Widgets/SettingsDialog.vala:124
 msgid "1 Week"
 msgstr "1 viikko"
 
-#: ../src/Widgets/SettingsDialog.vala:327
+#: ../src/Widgets/SettingsDialog.vala:124
 msgid "1 Month"
 msgstr "1 kuukausi"
 
-#: ../src/Widgets/SettingsDialog.vala:330
+#: ../src/Widgets/SettingsDialog.vala:124
 msgid "6 Months"
 msgstr "6 kuukautta"
 
-#: ../src/Widgets/SettingsDialog.vala:367
+#: ../src/Widgets/SettingsDialog.vala:126
 msgid "Additional Functionality:"
 msgstr "Lisätoiminnot:"
 
-#: ../src/Widgets/SettingsDialog.vala:374
+#: ../src/Widgets/SettingsDialog.vala:128
 msgid "Content Grabber"
 msgstr "Sisällön noutaja"
 
-#: ../src/Widgets/SettingsDialog.vala:381
+#: ../src/Widgets/SettingsDialog.vala:129
 msgid "None"
 msgstr "Ei mitään"
 
-#: ../src/Widgets/SettingsDialog.vala:384
+#: ../src/Widgets/SettingsDialog.vala:129
 msgid "Built in grabber"
 msgstr "Sisäänrakennettu noutaja"
 
-#: ../src/Widgets/ArticleList.vala:58
+#: ../src/Widgets/ArticleList.vala:53
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr ""
 "Mikään tietokannassa olevista %i artikkelista ei sovi nykyiseen suodatukseen."
 
-#: ../src/Widgets/ArticleList.vala:72
+#: ../src/Widgets/ArticleList.vala:67
 msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
 "Synkronointi on meneillään. Artikkelien tulisi ilmestyä näkyviin pian."
 
-#: ../src/Widgets/SharePopover.vala:36
+#: ../src/Widgets/SharePopover.vala:34
 msgid "Please"
 msgstr "-"
 
-#: ../src/Widgets/SharePopover.vala:38
+#: ../src/Widgets/SharePopover.vala:36
 msgid "to a service to share this article."
 msgstr "palveluun jakaaksesi tämän artikkelin."
 
-#: ../src/Backends/ttrss/TTRSS_API.vala:468
-#: ../src/Backends/ttrss/TTRSS_API.vala:525
+#: ../src/Backends/ttrss/TTRSS_API.vala:447
+#: ../src/Backends/ttrss/TTRSS_API.vala:503
 msgid "not found"
 msgstr "ei löytynyt"
 
-#: ../src/Backends/FeedServer.vala:739
+#: ../src/Backends/FeedServer.vala:741
+msgid "New Articles"
+msgstr "Uudet artikkelit"
+
+#: ../src/Backends/FeedServer.vala:753
 msgid "There is 1 new article"
 msgstr "1 uusi artikkeli"
 
-#: ../src/Backends/FeedServer.vala:741
+#: ../src/Backends/FeedServer.vala:755
 msgid "There are %u new articles"
 msgstr "%u uutta artikkelia"
-
-#: ../src/Backends/FeedServer.vala:743
-msgid "New Articles"
-msgstr "Uudet artikkelit"

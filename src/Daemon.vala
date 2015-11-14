@@ -165,7 +165,7 @@ namespace FeedReader {
 				updateArticleList();
 			});
 
-			server.writeInterfaceState(() => {
+			server.writeInterfaceState.connect(() => {
 				writeInterfaceState();
 			});
 

@@ -80,6 +80,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Model/Category.vala
     src/Model/Article.vala
     src/Model/Tag.vala
+    src/Model/InterfaceState.vala
     src/Model/ShareAccount.vala
     src/Constants.vala
     src/dbUI.vala
@@ -131,9 +132,11 @@ OPTIONS
 )
 
 
-set(DAEMON_OPTIONS --target-glib=2.32)
+set(DAEMON_OPTIONS
+    --target-glib=2.32
+    --define DAEMONCODE)
 set(DAEMON_PACKAGES
-	glib-2.0>=2.32
+    glib-2.0>=2.32
     gio-2.0
     sqlite3
     gee-0.8
@@ -168,6 +171,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Model/Category.vala
     src/Model/Article.vala
     src/Model/Tag.vala
+    src/Model/InterfaceState.vala
     src/Constants.vala
     src/Backends/FeedServer.vala
     src/Backends/ttrss/TTRSS_API.vala

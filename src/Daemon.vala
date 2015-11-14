@@ -506,7 +506,7 @@ namespace FeedReader {
 			if(output == "" || output == null || output.has_prefix("Input recoding failed"))
 			{
 				logger.print(LogMessage.DEBUG, "use vilistextum as fallback for html2text");
-				
+
 				string[] spawn_args_fallback = {"vilistextum", "-a", "-n", "-r", "-t", "-u", path, "-"};
 				try{
 					GLib.Process.spawn_sync(null, spawn_args_fallback, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);

@@ -57,6 +57,7 @@ namespace FeedReader {
 		public signal void newFeedList();
 		public signal void updateFeedList();
 		public signal void updateArticleList();
+		public signal void writeInterfaceState();
 	}
 
 
@@ -105,6 +106,7 @@ namespace FeedReader {
 				});
 
 				feedDaemon_interface.syncStarted.connect(() => {
+					m_window.writeInterfaceState();
 				    m_window.setRefreshButton(true);
 				});
 

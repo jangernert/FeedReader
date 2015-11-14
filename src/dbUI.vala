@@ -553,7 +553,6 @@ public class FeedReader.dbUI : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
 		query.addCustomCondition("date > \"%s\"".printf(date));
-		//query.orderBy("date", true);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -578,22 +577,13 @@ public class FeedReader.dbUI : GLib.Object {
 		query.addEqualsCondition("date", date, true, true);
 		query.build();
 
+		var query2 = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query2.selectField("count(*)");
+		query2.addCustomCondition("rowid > (%s)".printf(query.get()));
+		query2.build();
+
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
-		}
-
-
-		query = new QueryBuilder(QueryType.SELECT, "main.articles");
-		query.selectField("count(*)");
-		query.addCustomCondition("rowid > %i".printf(result));
-		query.build();
-
-		ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		int ec = sqlite_db.prepare_v2 (query2.get(), query2.get().length, out stmt);
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 

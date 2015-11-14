@@ -167,7 +167,25 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static uint getRelevantArticles(int newArticlesCount)
 	{
-		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
+		string[] selectedRow = {};
+		ArticleListState state = ArticleListState.ALL;
+		string searchTerm = "";
+
+#if DAEMONCODE
+		selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
+		state = (ArticleListState)settings_state.get_boolean("show-articles");
+		if(settings_tweaks.get_boolean("restore-searchterm"))
+			searchTerm = settings_state.get_string("search-term");
+#else
+		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		if(window != null)
+		{
+			var interfacestate = window.getInterfaceState();
+			selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
+			state = interfacestate.getArticleListState();
+			searchTerm = interfacestate.getSearchTerm();
+		}
+#endif
 
 		FeedListType IDtype = FeedListType.FEED;
 
@@ -189,7 +207,7 @@ public class FeedReader.Utils : GLib.Object {
 				break;
 		}
 
-		var state = (ArticleListState)settings_state.get_boolean("show-articles");
+
 		bool only_unread = false;
 		bool only_marked = false;
 
@@ -204,11 +222,6 @@ public class FeedReader.Utils : GLib.Object {
 				only_marked = true;
 				break;
 		}
-
-		string searchTerm = "";
-
-		if(settings_tweaks.get_boolean("restore-searchterm"))
-			searchTerm = settings_state.get_string("search-term");
 
 		var articles = dataBase.read_articles(
 			selectedRow[1],

@@ -268,6 +268,36 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 	}
 
+	public InterfaceState getInterfaceState()
+	{
+		int windowWidth = 0;
+		int windowHeight = 0;
+		this.get_size(out windowWidth, out windowHeight);
+
+		var state = new InterfaceState();
+		state.setWindowSize(windowHeight, windowWidth);
+		state.setFeedsAndArticleWidth(m_content.getArticlePlusFeedListWidth());
+		state.setFeedListWidth(m_content.getFeedListWidth());
+		state.setFeedListScrollPos(m_content.getFeedListScrollPos());
+		state.setArticleViewScrollPos(m_content.getArticleViewScrollPos());
+		state.setArticleListScrollPos(m_content.getArticleListScrollPos());
+		state.setArticleListRowCount(m_content.getArticlesToLoad());
+		state.setArticleListSelectedRow(m_content.getSelectedArticle());
+		state.setArticleListNewRowCount(0);
+		state.setWindowMaximized(this.is_maximized);
+		state.setSearchTerm(m_headerbar.getSearchTerm());
+		state.setFeedListSelectedRow(m_content.getSelectedFeedListRow());
+		state.setExpandedCategories(m_content.getExpandedCategories());
+		state.setArticleListState(m_headerbar.getArticleListState());
+
+		return state;
+	}
+
+	public void writeInterfaceState()
+	{
+		getInterfaceState().write();
+	}
+
 	private void setupCSS()
 	{
 		try {

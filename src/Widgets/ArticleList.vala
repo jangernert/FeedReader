@@ -699,6 +699,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public async void updateArticleList()
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
+		uint articlesInserted = 0;
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
@@ -715,15 +716,15 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			var first_row = articleChildList.first().data as articleRow;
 
-			int new_articles = 0;
+			uint new_articles = 0;
 
 			if(sortByDate)
 			{
-				new_articles = dataBase.getRowCountHeadlineByDate(first_row.getDateStr());
+				new_articles = Utils.getRelevantArticles(dataBase.getRowCountHeadlineByDate(first_row.getDateStr()));
 			}
 			else
 			{
-				new_articles = dataBase.getRowCountHeadlineByRowID(first_row.getDateStr());
+				new_articles = Utils.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getDateStr()));
 			}
 
 			m_limit = m_currentList.get_children().length() + new_articles;
@@ -778,6 +779,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 			if(!found)
 			{
+				articlesInserted++;
 				articleRow newRow = new articleRow(
 					                            item.getTitle(),
 					                            item.getUnread(),
@@ -860,6 +862,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 				m_currentList.remove(tmpRow);
 			}
 		}
+
+		logger.print(LogMessage.DEBUG, "ArticleList: %u articles have been added".printf(articlesInserted));
 
 		if(newArticles)
 			m_overlay.reveal();

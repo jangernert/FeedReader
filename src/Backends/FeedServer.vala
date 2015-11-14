@@ -22,6 +22,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public signal void newFeedList();
 	public signal void updateFeedList();
 	public signal void newArticleList();
+	public signal void writeInterfaceState();
 
 	public FeedServer(Backend type)
 	{
@@ -603,6 +604,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 						if(new_articles.size == 10 || Article.getArticleID() == last)
 						{
+							writeInterfaceState();
 							dataBase.write_articles(new_articles);
 							updateFeedList();
 							newArticleList();
@@ -710,6 +712,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				if(new_articles.size == chunksize || Article.getArticleID() == last)
 				{
+					writeInterfaceState();
 					dataBase.write_articles(new_articles);
 					updateFeedList();
 					newArticleList();

@@ -124,6 +124,10 @@ namespace FeedReader {
 				feedDaemon_interface.springCleanFinished.connect(() => {
 				    m_window.showContent();
 				});
+
+				feedDaemon_interface.writeInterfaceState.connect(() => {
+					m_window.writeInterfaceState();
+				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);
 			}

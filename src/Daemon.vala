@@ -85,6 +85,7 @@ namespace FeedReader {
 		public signal void newFeedList();
 		public signal void updateFeedList();
 		public signal void updateArticleList();
+		public signal void writeInterfaceState();
 
 		private async void sync()
 		{
@@ -162,6 +163,10 @@ namespace FeedReader {
 
 			server.newArticleList.connect(() => {
 				updateArticleList();
+			});
+
+			server.writeInterfaceState(() => {
+				writeInterfaceState();
 			});
 
 			m_loggedin = server.login();

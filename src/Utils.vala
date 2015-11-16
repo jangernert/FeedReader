@@ -100,7 +100,64 @@ public class FeedReader.Utils : GLib.Object {
 					Article.setPreview(noPreview);
 				}
 			}
+			Article.setTitle(decodeTitle(Article.getTitle()));
 		}
+	}
+
+	private static string decodeTitle(string old_title)
+	{
+#if DAEMONCODE
+		var html_cntx = new Html.ParserCtxt();
+        html_cntx.use_options(Html.ParserOption.NOWARNING + Html.ParserOption.NOERROR);
+        var doc = html_cntx.read_memory(old_title.to_utf8(), old_title.length, "", "UTF-8");
+
+        if (doc == null)
+        {
+            logger.print(LogMessage.DEBUG, "decodeTitle: parsing failed");
+    		return old_title;
+    	}
+
+        string title = "";
+        doc->dump_memory_enc(out title);
+
+        string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
+        int outputfd = GLib.FileUtils.mkstemp(filename);
+        try{
+            GLib.FileUtils.set_contents(filename, title);
+        }
+        catch(GLib.FileError e){
+            logger.print(LogMessage.DEBUG, "decodeTitle: error writing html to tmp file - %s".printf(e.message));
+        }
+        GLib.FileUtils.close(outputfd);
+
+        string output = "";
+
+#if WITH_VILISTEXTUM
+		string[] spawn_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", filename, "-"};
+#else
+        string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
+#endif
+
+		try{
+			GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+		}
+		catch(GLib.SpawnError e){
+			logger.print(LogMessage.DEBUG, "vilistextum: %s".printf(e.message));
+        }
+
+#if !WITH_VILISTEXTUM
+        string xml = "<?xml";
+        while(output.has_prefix(xml))
+        {
+            int end = output.index_of_char('>');
+            output = output.slice(end+1, output.length).chug();
+        }
+#endif
+
+        return output.strip().replace("\n", "");
+#else
+		return old_title;
+#endif
 	}
 
 

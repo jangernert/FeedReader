@@ -79,6 +79,11 @@ public class FeedReader.article : GLib.Object {
 		return m_title;
 	}
 
+	public void setTitle(string title)
+	{
+		m_title = title;
+	}
+
 	public string getHTML()
 	{
 		return m_html;

@@ -437,7 +437,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 				var Article = new article(
 										headline_node.get_int_member("id").to_string(),
-										headline_node.get_string_member("title").replace("&",""),
+										headline_node.get_string_member("title"),
 										headline_node.get_string_member("link"),
 										headline_node.get_string_member("feed_id"),
 										(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
@@ -493,7 +493,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 					var Article = new article(
 											article_node.get_string_member("id"),
-											article_node.get_string_member("title").replace("&",""),
+											article_node.get_string_member("title"),
 											article_node.get_string_member("link"),
 											article_node.get_string_member("feed_id"),
 											(article_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,

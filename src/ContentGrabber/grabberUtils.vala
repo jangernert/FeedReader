@@ -327,10 +327,12 @@ public class FeedReader.grabberUtils : GLib.Object {
         hostname = hostname.substring(0, index);
 
         index = hostname.index_of_char('.');
-        if(index != -1 && hostname.index_of_char('.', index) != -1)
+        if(index != -1 && hostname.index_of_char('.', index+1) != -1)
         {
             hostname = hostname.substring(index);
         }
+
+        //logger.print(LogMessage.DEBUG, "buildHostName: url: %s hostname: %s".printf(URL, hostname));
 
         return hostname;
     }

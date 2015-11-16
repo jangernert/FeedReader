@@ -324,7 +324,15 @@ public class FeedReader.grabberUtils : GLib.Object {
         }
 
         int index = hostname.index_of_char('/');
-        return hostname.substring(0, index);
+        hostname = hostname.substring(0, index);
+
+        index = hostname.index_of_char('.');
+        if(index != -1 && hostname.index_of_char('.', index) != -1)
+        {
+            hostname = hostname.substring(index);
+        }
+
+        return hostname;
     }
 
 

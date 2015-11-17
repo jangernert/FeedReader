@@ -26,50 +26,49 @@
             <a class="navbar-brand" href="#feedreader">FeedReader</a>
 
             <ul class="nav navbar-nav navbar-right">
-              <li><a href="#screenshots">Screenshots</a></li>
               <li><a href="#features">Features</a></li>
               <li><a href="#install">Installation</a></li>
-              <li><a href="#get-involved">Support & Get Inolved</a></li>
+              <li><a href="#get-involved">Support & Getting Involved</a></li>
+              <li><a href="./changelog.html">Changelog &nbsp<i class="fa fa-external-link"></i></a></li>
             </ul>
           </div>
         </nav>
         <p>&nbsp</p>
         <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
             <div class="jumbotron">
-                <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
-                <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot4.png" class="img-responsive">
+                <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1><br/>
+                
+                <div class="container" id="screenshots" style="padding-top: 60px; margin-top: -60px">
+                    <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
+
+                      <!-- Wrapper for slides -->
+                      <div class="carousel-inner">
+                        <div class="item active">
+                          <img class="img-responsive" src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot1.png" alt="...">
+                        </div>
+                        <div class="item">
+                          <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot2.png" alt="...">
+                        </div>
+                        <div class="item">
+                          <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot3.png" alt="...">
+                        </div>
+                        <div class="item">
+                            <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot4.png" alt="...">
+                        </div>
+                      </div>
+
+                      <!-- Controls -->
+                      <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                          <span class="glyphicon glyphicon-chevron-left"></span>
+                      </a>
+                      <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                          <span class="glyphicon glyphicon-chevron-right"></span>
+                      </a>
+                    </div> <!-- Carousel -->
+                </div>
+                <br/>
                 <p class="text-center lead">FeedReader is a modern desktop application designed to complement existing web-based RSS accounts. It combines all the advantages of web based services like synchronisation across all your devices with everything you expect from a modern desktop application.</p>
             </div>
-        </div>
-
-        <hr>
-
-        <div class="container" id="screenshots" style="padding-top: 60px; margin-top: -60px">
-            <h1 class="text-center">Screenshots</h1>
-            <br/>
-            <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
-
-              <!-- Wrapper for slides -->
-              <div class="carousel-inner">
-                <div class="item active">
-                  <img class="img-responsive" src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot1.png" alt="...">
-                </div>
-                <div class="item">
-                  <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot2.png" alt="...">
-                </div>
-                <div class="item">
-                  <img src="https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot3.png" alt="...">
-                </div>
-              </div>
-
-              <!-- Controls -->
-              <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
-                  <span class="glyphicon glyphicon-chevron-left"></span>
-              </a>
-              <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
-                  <span class="glyphicon glyphicon-chevron-right"></span>
-              </a>
-            </div> <!-- Carousel -->
         </div>
 
         <hr>
@@ -95,13 +94,14 @@
                 </div>
                 <div class="col-md-4 text-center">
                     <h1 class="text-center"><small>Other</small></h1>
+                    <br/>
                     <ul>
-                        <h3><small>Desktop notifications</small></h3>
-                        <h3><small>Handy keyboard shortcuts</small></h3>
-                        <h3><small>Fast search and filters</small></h3>
-                        <h3><small>Consistent article formating</small></h3>
-                        <h3><small>Tagging</small></h3>
-                        <h3><small>Customizability</small></h3>
+                        <p style="font-size: 125%">Desktop notifications</p><br/>
+                        <p style="font-size: 125%">Handy keyboard shortcuts</p><br/>
+                        <p style="font-size: 125%">Fast search and filters</p><br/>
+                        <p style="font-size: 125%">Consistent article formating</p><br/>
+                        <p style="font-size: 125%">Tagging</p><br/>
+                        <p style="font-size: 125%">Customizability</p><br/>
                     </ul>
                 </div>
             </div>
@@ -111,16 +111,18 @@
 
         <div class="container" id="install" style="padding-top: 60px; margin-top: -60px">
             <h1 class="text-center">Installation</h1>
+            <br/>
                 <ul class="nav nav-tabs nav-justified">
-                    <li role="presentation" class="active"><a data-toggle="tab" href="#ubuntu">Ubuntu / Linux Mint / elementary OS</a></li>
+                    <li role="presentation" class="active"><a data-toggle="tab" href="#ubuntu">Ubuntu / elementary OS</a></li>
                     <li role="presentation"><a data-toggle="tab" href="#arch">Arch Linux</a></li>
                     <li role="presentation"><a data-toggle="tab" href="#solus">Solus OS</a></li>
                     <li role="presentation"><a data-toggle="tab" href="#fedora">Fedora</a></li>
 
                     <div class="tab-content">
                         <div id="ubuntu" class="tab-pane fade in active">
-                            <h3><small>To install FeedReader in Ubuntu 15.04, elementary OS Freya or Linux Mint 17, paste these three commands in your terminal:</small></h3>
+                            <p>To install FeedReader in Ubuntu 15.04 (or newer) or in elementary OS Freya, paste these three commands into your terminal:</p>
                             <pre>sudo add-apt-repository ppa:eviltwin1/feedreader-stable<br/>sudo apt-get update<br/>sudo apt-get install feedreader</pre>
+                            <p>Note that FeedReader requires that you have Gtk 3.12 or newer installed. FeedReader will not work with Ubuntu-based systems that do not satisfy this criteria. To check which version of Gtk is running on your system, open up your terminal and type: <pre>dpkg -l libgtk-3-0</pre></p>
                         </div>
                         <div id="arch" class="tab-pane fade">
                             <h3><small>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</small></h3>
@@ -140,7 +142,7 @@
         <hr>
 
         <div class="container" id="get-involved" style="padding-top: 60px; margin-top: -60px">
-            <h1 class="text-center">Support & Get Involved</h1>
+            <h1 class="text-center">Support & Getting Involved</h1>
             <div class="col-md-6">
                 <h1 class="text-center"><small>Support</small></h1>
                 <p>&nbsp</p>
@@ -148,13 +150,13 @@
                     <i class="fa fa-life-ring fa-5x"></i>
                 </div>
                 <p>&nbsp</p>
-                <h3><small>
+                <p style="font-size: 125%" class="text-center">
                     Please report bugs over at <a href="https://bugs.launchpad.net/feedreader">Launchpad</a>.<br/>
                     You can also support the development of FeedReader over at <a href="https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038">Bountysource</a> and throw in a few bucks at any bug you would like to be fixed or any feature you would like to see implemented.
-                </small></h3>
+                </p>
             </div>
             <div class="col-md-6">
-                <h1 class="text-center"><small>Get Involved</small></h1>
+                <h1 class="text-center"><small>Getting Involved</small></h1>
                 <h4>Vala</h4>
                 <ul>
                     <li>You can find the code on Launchpad.</li>

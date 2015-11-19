@@ -33,7 +33,16 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				else if(Article.getHTML() != "" && Article.getHTML() != null)
 				{
-					string filename = GLib.Environment.get_tmp_dir() + "/FeedReader/articleHtml.XXXXXX";
+					string tmp_path = GLib.Environment.get_tmp_dir() + "/FeedReader/";
+					var path = GLib.File.new_for_path(tmp_path);
+					try{
+						path.make_directory_with_parents();
+					}
+					catch(GLib.Error e){
+						//logger.print(LogMessage.DEBUG, e.message);
+					}
+
+					string filename = tmp_path + "articleHtml.XXXXXX";
 					int outputfd = GLib.FileUtils.mkstemp(filename);
 					try{
 						GLib.FileUtils.set_contents(filename, Article.getHTML());
@@ -120,7 +129,16 @@ public class FeedReader.Utils : GLib.Object {
         string title = "";
         doc->dump_memory_enc(out title);
 
-        string filename = GLib.Environment.get_tmp_dir() + "/FeedReader/articleHtml.XXXXXX";
+		string tmp_path = GLib.Environment.get_tmp_dir() + "/FeedReader/";
+		var path = GLib.File.new_for_path(tmp_path);
+		try{
+			path.make_directory_with_parents();
+		}
+		catch(GLib.Error e){
+			//logger.print(LogMessage.DEBUG, e.message);
+		}
+
+		string filename = tmp_path + "articleHtml.XXXXXX";
         int outputfd = GLib.FileUtils.mkstemp(filename);
         try{
             GLib.FileUtils.set_contents(filename, title);

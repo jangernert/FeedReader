@@ -398,10 +398,14 @@ namespace FeedReader {
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "grabArticle", 0, 0, OptionArg.STRING, ref grabArticle, "use the ContentGrabber to grab the given URL", "URL" },
+		{ "grabImages", 0, 0, OptionArg.STRING, ref grabImages, "download all images of the html-document", "PATH" },
+		{ "url", 0, 0, OptionArg.STRING, ref articleUrl, "url of the article needed to do grabImages", "URL" },
 		{ null }
 	};
 	private static bool version = false;
 	private static string? grabArticle = null;
+	private static string? grabImages = null;
+	private static string? articleUrl = null;
 
 
 	int main (string[] args)
@@ -431,11 +435,18 @@ namespace FeedReader {
 			return 0;
 		}
 
-		if(grabArticle != null)
+		if(grabImages != null && articleUrl != null)
 		{
-			DEBUGgrabArticle(grabArticle);
+			DebugUtils.grabImages(grabImages, articleUrl);
 			return 0;
 		}
+
+		if(grabArticle != null)
+		{
+			DebugUtils.grabArticle(grabArticle);
+			return 0;
+		}
+
 
 		dataBase = new dbDaemon();
 		dataBase.init();
@@ -469,82 +480,4 @@ namespace FeedReader {
 		mainloop.run();
 		return 0;
 	}
-
-	public static void DEBUGgrabArticle(string url)
-	{
-		var grabber = new Grabber(url, null, null);
-		if(grabber.process())
-		{
-			grabber.print();
-
-			string html = grabber.getArticle();
-			string xml = "<?xml";
-
-			while(html.has_prefix(xml))
-			{
-				int end = html.index_of_char('>');
-				html = html.slice(end+1, html.length).chug();
-			}
-
-			string path = GLib.Environment.get_home_dir() + "/grabbedArticle.html";
-
-			if(FileUtils.test(path, GLib.FileTest.EXISTS))
-				GLib.FileUtils.remove(path);
-
-			var file = GLib.File.new_for_path(path);
-			var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
-
-			stream.write(html.data);
-			logger.print(LogMessage.DEBUG, "Grabber: article html written to " + path);
-
-			string output = "";
-			string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", path};
-			try{
-				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-			}
-			catch(GLib.SpawnError e){
-				logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
-			}
-
-			output = output.strip();
-
-			if(output == "" || output == null || output.has_prefix("Input recoding failed"))
-			{
-				logger.print(LogMessage.DEBUG, "use vilistextum as fallback for html2text");
-
-				string[] spawn_args_fallback = {"vilistextum", "-a", "-n", "-r", "-t", "-u", path, "-"};
-				try{
-					GLib.Process.spawn_sync(null, spawn_args_fallback, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-				}
-				catch(GLib.SpawnError e){
-					logger.print(LogMessage.ERROR, "vilistextum: %s".printf(e.message));
-				}
-			}
-
-			if(output == "" || output == null)
-			{
-				logger.print(LogMessage.ERROR, "could not generate preview text");
-				return;
-			}
-
-			output = output.replace("\n"," ");
-			output = output.replace("_"," ");
-
-			path = GLib.Environment.get_home_dir() + "/grabbedArticlePreview.txt";
-
-			if(FileUtils.test(path, GLib.FileTest.EXISTS))
-				GLib.FileUtils.remove(path);
-
-			file = GLib.File.new_for_path(path);
-			stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
-
-			stream.write(output.data);
-			logger.print(LogMessage.DEBUG, "Grabber: preview written to " + path);
-		}
-		else
-		{
-			logger.print(LogMessage.ERROR, "Grabber: article could not be processed " + url);
-		}
-	}
-
 }

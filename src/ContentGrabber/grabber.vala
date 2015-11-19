@@ -364,6 +364,9 @@ public class FeedReader.Grabber : GLib.Object {
 
         if(m_articleID != null && m_feedID != null)
             grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
+        else
+            grabberUtils.saveImages(m_doc, "", "");
+
         postProcessing();
         return true;
     }

@@ -370,12 +370,18 @@ public class FeedReader.grabberUtils : GLib.Object {
     public static string downloadImage(string url, string articleID, string feedID, int nr)
     {
         string fixedURL = url;
+        string imgPath = "";
+
         if(fixedURL.has_prefix("//"))
         {
             fixedURL = "http:" + fixedURL;
         }
 
-        string imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
+        if(articleID == "" && feedID == "")
+            imgPath = GLib.Environment.get_home_dir() + "/ArticleImages/";
+        else
+            imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
+
         var path = GLib.File.new_for_path(imgPath);
 		try{
 			path.make_directory_with_parents();

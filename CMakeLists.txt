@@ -187,6 +187,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala
     src/ContentGrabber/ReadabilityParserAPI.vala
+    src/Debug/DebugUtils.vala
 
 
 PACKAGES

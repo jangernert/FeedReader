@@ -18,7 +18,8 @@ public class FeedReader.dbUI : GLib.Object {
 	protected Sqlite.Database sqlite_db;
 	public signal void updateBadge();
 
-	public dbUI () {
+	public dbUI(string dbFile = "feedreader-03.db")
+	{
 		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";
 		var path = GLib.File.new_for_path(db_path);
 		if(!path.query_exists())
@@ -30,7 +31,7 @@ public class FeedReader.dbUI : GLib.Object {
 				logger.print(LogMessage.ERROR, "Can't create directory for database: %s".printf(e.message));
 			}
 		}
-		int rc = Sqlite.Database.open_v2(db_path + "feedreader-03.db", out sqlite_db);
+		int rc = Sqlite.Database.open_v2(db_path + dbFile, out sqlite_db);
 		if (rc != Sqlite.OK) {
 			logger.print(LogMessage.ERROR, "Can't open database: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
 		}

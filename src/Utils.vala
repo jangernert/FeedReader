@@ -154,7 +154,7 @@ public class FeedReader.Utils : GLib.Object {
         }
 #endif
 
-        return output.strip().replace("\n", "");
+        return output.strip().replace("\n", " ");
 #else
 		return old_title;
 #endif

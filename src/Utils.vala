@@ -33,7 +33,7 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				else if(Article.getHTML() != "" && Article.getHTML() != null)
 				{
-					string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
+					string filename = GLib.Environment.get_tmp_dir() + "/FeedReader/articleHtml.XXXXXX";
 					int outputfd = GLib.FileUtils.mkstemp(filename);
 					try{
 						GLib.FileUtils.set_contents(filename, Article.getHTML());
@@ -120,7 +120,7 @@ public class FeedReader.Utils : GLib.Object {
         string title = "";
         doc->dump_memory_enc(out title);
 
-        string filename = GLib.Environment.get_tmp_dir() + "/" + "articleHtml.XXXXXX";
+        string filename = GLib.Environment.get_tmp_dir() + "/FeedReader/articleHtml.XXXXXX";
         int outputfd = GLib.FileUtils.mkstemp(filename);
         try{
             GLib.FileUtils.set_contents(filename, title);

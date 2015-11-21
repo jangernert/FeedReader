@@ -206,7 +206,6 @@ public class FeedReader.dbUI : GLib.Object {
 		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
 		query.addCustomCondition(getUncategorizedFeedsQuery());
 		query.build();
-		query.print();
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
@@ -641,7 +640,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 		if(settings_general.get_enum("account-type") == Backend.FEEDLY)
 		{
-			sql = "instr(category_id, \"global.must\") > 0 AND instr(category_id, \",\") = 0";
+			sql = "instr(category_id, \",\") = 0";
 		}
 		else if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
 		{
@@ -660,7 +659,6 @@ public class FeedReader.dbUI : GLib.Object {
 		query.selectField("feed_id");
 		query.addCustomCondition(getUncategorizedQuery());
 		query.build();
-		query.print();
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);

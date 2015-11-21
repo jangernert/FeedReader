@@ -28,7 +28,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 	{
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
-		//m_session.ssl_strict = false;
+		m_session.ssl_strict = false;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
 
@@ -79,7 +79,10 @@ public class FeedReader.ttrss_message : GLib.Object {
 
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")
+		{
+			logger.print(LogMessage.ERROR, "TTRSS Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
 			return ConnectionError.NO_RESPONSE;
+		}
 
 		try{
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);

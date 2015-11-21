@@ -56,7 +56,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("password", passwd);
 		int error = message.send();
 		message.printMessage();
-		message.printResponse();
+		if(error != ConnectionError.NO_RESPONSE)
+			message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{

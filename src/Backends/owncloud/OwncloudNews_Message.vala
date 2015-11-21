@@ -28,7 +28,7 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
         m_message_string = new GLib.StringBuilder();
         m_method = method;
 		m_session = new Soup.Session();
-        //m_session.ssl_strict = false;
+        m_session.ssl_strict = false;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
 		m_message_soup = new Soup.Message(m_method, destination);
@@ -81,7 +81,7 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")
         {
-            logger.print(LogMessage.ERROR, "No response from Message to owncloud");
+            logger.print(LogMessage.ERROR, "ownCloud Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
             return ConnectionError.NO_RESPONSE;
         }
 

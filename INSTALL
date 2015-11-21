@@ -28,5 +28,5 @@ libgee-0.8-dev
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-make -j(threads)
+make -j 1
 sudo make install

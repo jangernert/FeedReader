@@ -663,7 +663,7 @@ public class FeedReader.Utils : GLib.Object {
 		if(settings_general.get_boolean("only-feeds"))
 			return true;
 
-		if(!dataBase.haveCategories() && !Utils.haveTags())
+		if(!dataBase.haveCategories() && !Utils.haveTags() && !dataBase.haveFeedsWithoutCat())
 			return true;
 
 		return false;

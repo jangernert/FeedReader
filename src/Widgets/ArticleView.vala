@@ -173,31 +173,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		new GLib.Thread<void*>("fillContent", run);
 		yield;
 
-
-		var background = Gdk.RGBA();
-
-		switch(settings_general.get_enum("article-theme"))
-		{
-			case ArticleTheme.DEFAULT:
-				background.parse("#FFFFFF");
-				break;
-
-			case ArticleTheme.SPRING:
-				background.parse("#FFFFFF");
-				break;
-
-			case ArticleTheme.MIDNIGHT:
-				background.parse("#0B243B");
-				break;
-
-			case ArticleTheme.PARCHMENT:
-				background.parse("#F5ECCE");
-				break;
-		}
-
-#if USE_WEBKIT_4
-		m_view.set_background_color(background);
-#endif
+		setBackgroundColor();
 
 
 
@@ -381,6 +357,18 @@ public class FeedReader.articleView : Gtk.Stack {
 			return false;
 		else
 			return true;
+	}
+
+	private void setBackgroundColor()
+	{
+#if USE_WEBKIT_4
+		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		if(window != null)
+		{
+			var background = window.getContent().getBackgroundColor();
+			m_view.set_background_color(background);
+		}
+#endif
 	}
 
 }

@@ -1113,4 +1113,15 @@ public class FeedReader.articleList : Gtk.Overlay {
 		}
 	}
 
+	public Gdk.RGBA getBackgroundColor()
+	{
+		// code according to: https://blogs.gnome.org/mclasen/2015/11/20/a-gtk-update/
+		var context = m_currentList.get_style_context();
+		context.save();
+		context.set_state(Gtk.StateFlags.NORMAL);
+		var color = context.get_background_color(context.get_state());
+		context.restore();
+		return color;
+	}
+
 }

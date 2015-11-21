@@ -320,4 +320,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		m_feedList.updateAccountInfo();
 	}
+
+	public Gdk.RGBA getBackgroundColor()
+	{
+		return m_articleList.getBackgroundColor();
+	}
 }

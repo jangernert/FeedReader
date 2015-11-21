@@ -15,8 +15,8 @@
 
 public class FeedReader.dbDaemon : FeedReader.dbUI {
 
-    public dbDaemon () {
-
+    public dbDaemon (string dbFile = "feedreader-03.db") {
+        base(dbFile);
     }
 
     public bool resetDB()

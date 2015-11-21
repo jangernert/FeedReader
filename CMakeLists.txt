@@ -14,6 +14,7 @@ set (PKGDATADIR "${DATADIR}/FeedReader")
 set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
 set (EXEC_NAME "feedreader")
 set (DAEMON_NAME ${EXEC_NAME}-daemon)
+set (DEBUG_NAME ${EXEC_NAME}-debug)
 set (RELEASE_NAME "RSS Client")
 set (VERSION "1.2.1")
 set (VERSION_INFO "whats up world")
@@ -48,7 +49,7 @@ ensure_vala_version("0.24" MINIMUM)
 
 set(UI_OPTIONS --target-glib=2.32)
 set(UI_PACKAGES
-	glib-2.0>=2.32
+    glib-2.0>=2.32
     gtk+-3.0
     json-glib-1.0
     libsoup-2.4
@@ -197,6 +198,48 @@ OPTIONS
     ${DAEMON_OPTIONS}
 )
 
+
+set(DEBUG_OPTIONS
+    --target-glib=2.32
+    --define DAEMONCODE)
+set(DEBUG_PACKAGES
+    glib-2.0>=2.32
+    gtk+-3.0
+    gio-2.0
+    sqlite3
+    gee-0.8
+    libsoup-2.4
+    json-glib-1.0
+    libxml-2.0)
+
+vala_precompile(debug ${DEBUG_NAME}
+    src/dbUI.vala
+    src/dbDaemon.vala
+    src/Logger.vala
+    src/Utils.vala
+    src/QueryBuilder.vala
+    src/Model/Feed.vala
+    src/Model/Category.vala
+    src/Model/Article.vala
+    src/Model/Tag.vala
+    src/Model/InterfaceState.vala
+    src/Constants.vala
+    src/ContentGrabber/stringPair.vala
+    src/ContentGrabber/grabberConfig.vala
+    src/ContentGrabber/grabber.vala
+    src/ContentGrabber/grabberUtils.vala
+    src/ContentGrabber/ReadabilityParserAPI.vala
+    src/Debug/DebugServer.vala
+    src/Debug/DebugUtils.vala
+
+
+PACKAGES
+    ${DEBUG_PACKAGES}
+
+OPTIONS
+    ${DEBUG_OPTIONS}
+)
+
 # uninstall target
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake"
@@ -211,10 +254,12 @@ add_custom_target(uninstall
 # tell cmake what to call the executable we just made
 add_executable(${EXEC_NAME} ${UI})
 add_executable(${DAEMON_NAME} ${daemon})
+add_executable(${DEBUG_NAME} ${debug})
 
 # install the binaries we just made
 install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
+install (TARGETS ${DEBUG_NAME} RUNTIME DESTINATION bin)
 
 # install our .desktop file so the Applications menu will see it
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)

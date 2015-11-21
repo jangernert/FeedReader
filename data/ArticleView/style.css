@@ -307,6 +307,10 @@ div.content {
   border: 1px solid rgba(0, 0, 0, 0.05);
   text-align: left;
 }
+/* DEFAULT THEME*/
+div.theme.default {
+  background: white;
+}
 /* MIDNIGHT THEME -- also default dark */
 div.theme.midnight {
   color:rgba(255, 255, 255, 0.6);

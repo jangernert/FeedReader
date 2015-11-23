@@ -400,9 +400,11 @@ namespace FeedReader {
 		{ "grabArticle", 0, 0, OptionArg.STRING, ref grabArticle, "use the ContentGrabber to grab the given URL", "URL" },
 		{ "grabImages", 0, 0, OptionArg.STRING, ref grabImages, "download all images of the html-document", "PATH" },
 		{ "url", 0, 0, OptionArg.STRING, ref articleUrl, "url of the article needed to do grabImages", "URL" },
+		{ "unreadCount", 0, 0, OptionArg.NONE, ref unreadCount, "current count of unread articles in the database", null },
 		{ null }
 	};
 	private static bool version = false;
+	private static bool unreadCount = false;
 	private static string? grabArticle = null;
 	private static string? grabImages = null;
 	private static string? articleUrl = null;
@@ -417,7 +419,6 @@ namespace FeedReader {
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
-		logger = new Logger("daemon");
 
 		try {
 			var opt_context = new GLib.OptionContext();
@@ -435,19 +436,33 @@ namespace FeedReader {
 			return 0;
 		}
 
+		if(unreadCount)
+		{
+			var old_stdout =(owned)stdout;
+			stdout = FileStream.open("/dev/null", "w");
+			logger = new Logger("daemon");
+			dataBase = new dbDaemon();
+			dataBase.init();
+			stdout =(owned)old_stdout;
+			stdout.printf("%u\n", dataBase.get_unread_total());
+			return 0;
+		}
+
 		if(grabImages != null && articleUrl != null)
 		{
+			logger = new Logger("daemon");
 			DebugUtils.grabImages(grabImages, articleUrl);
 			return 0;
 		}
 
 		if(grabArticle != null)
 		{
+			logger = new Logger("daemon");
 			DebugUtils.grabArticle(grabArticle);
 			return 0;
 		}
 
-
+		logger = new Logger("daemon");
 		dataBase = new dbDaemon();
 		dataBase.init();
 		Notify.init(AboutInfo.programmName);

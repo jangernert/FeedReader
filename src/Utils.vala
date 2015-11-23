@@ -15,6 +15,9 @@
 
 public class FeedReader.Utils : GLib.Object {
 
+	private const string[] vilistextum_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
+	private const string[] html2text_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
+
 
 	public static void generatePreviews(Gee.LinkedList<article> articles)
 	{
@@ -54,13 +57,12 @@ public class FeedReader.Utils : GLib.Object {
 
 					string output = "";
 
-#if WITH_VILISTEXTUM
-					string[] spawn_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
-#else
-					string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
-#endif
 					try{
-						GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+#if WITH_VILISTEXTUM
+						GLib.Process.spawn_sync(null, vilistextum_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+#else
+						GLib.Process.spawn_sync(null, html2text_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+#endif
 					}
 					catch(GLib.SpawnError e){
 						logger.print(LogMessage.ERROR, "%s: %s".printf(spawn_args[0], e.message));
@@ -136,14 +138,12 @@ public class FeedReader.Utils : GLib.Object {
 
         string output = "";
 
-#if WITH_VILISTEXTUM
-		string[] spawn_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
-#else
-        string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
-#endif
-
 		try{
-			GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+#if WITH_VILISTEXTUM
+			GLib.Process.spawn_sync(null, vilistextum_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+#else
+			GLib.Process.spawn_sync(null, html2text_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
+#endif
 		}
 		catch(GLib.SpawnError e){
 			logger.print(LogMessage.ERROR, "%s: %s".printf(spawn_args[0], e.message));

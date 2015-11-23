@@ -53,41 +53,27 @@ public class FeedReader.Utils : GLib.Object {
 					GLib.FileUtils.close(outputfd);
 
 					string output = "";
+
+#if WITH_VILISTEXTUM
+					string[] spawn_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
+#else
 					string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
+#endif
 					try{
 						GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 					}
 					catch(GLib.SpawnError e){
-						logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
+						logger.print(LogMessage.ERROR, "%s: %s".printf(spawn_args[0], e.message));
 					}
 
 					output = output.strip();
 
 					if(output == "" || output == null)
 					{
-#if WITH_VILISTEXTUM
-						logger.print(LogMessage.DEBUG, "use vilistextum as fallback for html2text");
-						string[] spawn_args_fallback = {"vilistextum", "-a", "-n", "-r", "-t", "-u", filename, "-"};
-						try{
-							GLib.Process.spawn_sync(null, spawn_args_fallback, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-						}
-						catch(GLib.SpawnError e){
-							logger.print(LogMessage.ERROR, "vilistextum: %s".printf(e.message));
-						}
-
-						if(output == "" || output == null)
-						{
-							logger.print(LogMessage.ERROR, "vilistextum could not generate preview text");
-							Article.setPreview(noPreview);
-							logger.print(LogMessage.DEBUG, filename);
-							continue;
-						}
-#else
 						logger.print(LogMessage.ERROR, "html2text could not generate preview text");
 						Article.setPreview(noPreview);
 						logger.print(LogMessage.DEBUG, filename);
 						continue;
-#endif
 					}
 
 					string xml = "<?xml";
@@ -151,7 +137,7 @@ public class FeedReader.Utils : GLib.Object {
         string output = "";
 
 #if WITH_VILISTEXTUM
-		string[] spawn_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", filename, "-"};
+		string[] spawn_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
 #else
         string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
 #endif
@@ -160,7 +146,7 @@ public class FeedReader.Utils : GLib.Object {
 			GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 		}
 		catch(GLib.SpawnError e){
-			logger.print(LogMessage.DEBUG, "vilistextum: %s".printf(e.message));
+			logger.print(LogMessage.ERROR, "%s: %s".printf(spawn_args[0], e.message));
         }
 
 #if !WITH_VILISTEXTUM
@@ -171,8 +157,7 @@ public class FeedReader.Utils : GLib.Object {
             output = output.slice(end+1, output.length).chug();
         }
 #endif
-
-        return output.strip().replace("\n", " ");
+		return output.strip().replace("\n", " ");
 #else
 		return old_title;
 #endif
@@ -190,7 +175,6 @@ public class FeedReader.Utils : GLib.Object {
 				{
 					modified_html = Article.getHTML().replace("src=\"//","src=\"http://").replace("target=\"_blank\"", "");
 				}
-
 				Article.setHTML(modified_html);
 			}
 		}

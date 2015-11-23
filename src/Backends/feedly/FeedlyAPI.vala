@@ -247,7 +247,7 @@ public class FeedReader.FeedlyAPI : Object {
 			string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
 			string author = object.has_member("author") ? object.get_string_member("author") : "None";
 			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
-			string Content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
+			string content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
 			bool unread = object.get_boolean_member("unread");
 			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
 			string feedID = object.get_object_member("origin").get_string_member("streamId");
@@ -294,7 +294,7 @@ public class FeedReader.FeedlyAPI : Object {
 								feedID,
 								(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
 								marked,
-								Content,
+								content,
 								//summaryContent,
 								"",
 								author,

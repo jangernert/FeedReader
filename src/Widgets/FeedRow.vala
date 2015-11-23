@@ -45,12 +45,14 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-			string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+			string icon_path = GLib.Environment.get_home_dir()
+								+ "/.local/share/feedreader/data/feed_icons/"
+								+ feedID.replace("/", "_").replace(".", "_") + ".ico";
 
-			if(has_icon)
+			if(has_icon && FileUtils.test(icon_path, GLib.FileTest.EXISTS))
 			{
 				try{
-					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path + feedID.replace("/", "_").replace(".", "_") + ".ico");
+					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path);
 					Utils.scale_pixbuf(ref tmp_icon, 24);
 					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
 				}catch(GLib.Error e){}

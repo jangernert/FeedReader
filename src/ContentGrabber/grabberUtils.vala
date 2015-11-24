@@ -340,6 +340,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool saveImages(Html.Doc* doc, string articleID, string feedID)
     {
+        logger.print(LogMessage.DEBUG, "GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img");
 
@@ -358,7 +359,11 @@ public class FeedReader.grabberUtils : GLib.Object {
         	Xml.Node* node = res->nodesetval->item(i);
             if(node->get_prop("src") != null)
             {
-                node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
+                if(node->get_prop("width") != null && int.parse(node->get_prop("width")) > 1
+                && node->get_prop("height") != null && int.parse(node->get_prop("height")) > 1)
+                {
+                    node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
+                }
             }
         }
 
@@ -369,6 +374,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string downloadImage(string url, string articleID, string feedID, int nr)
     {
+        logger.print(LogMessage.DEBUG, "GrabberUtils: download Image %s".printf(url));
         string fixedURL = url;
         string imgPath = "";
 

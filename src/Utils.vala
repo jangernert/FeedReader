@@ -15,10 +15,6 @@
 
 public class FeedReader.Utils : GLib.Object {
 
-	private const string[] vilistextum_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
-	private const string[] html2text_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
-
-
 	public static void generatePreviews(Gee.LinkedList<article> articles)
 	{
 		string noPreview = _("No Preview Available");
@@ -56,6 +52,9 @@ public class FeedReader.Utils : GLib.Object {
 					GLib.FileUtils.close(outputfd);
 
 					string output = "";
+					string[] vilistextum_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
+					string[] html2text_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
+
 
 					try{
 #if WITH_VILISTEXTUM
@@ -65,7 +64,7 @@ public class FeedReader.Utils : GLib.Object {
 #endif
 					}
 					catch(GLib.SpawnError e){
-						logger.print(LogMessage.ERROR, "%s: %s".printf(spawn_args[0], e.message));
+						logger.print(LogMessage.ERROR, "generatePreviews: %s".printf(e.message));
 					}
 
 					output = output.strip();
@@ -137,6 +136,9 @@ public class FeedReader.Utils : GLib.Object {
         GLib.FileUtils.close(outputfd);
 
         string output = "";
+		string[] vilistextum_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
+		string[] html2text_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
+
 
 		try{
 #if WITH_VILISTEXTUM
@@ -146,7 +148,7 @@ public class FeedReader.Utils : GLib.Object {
 #endif
 		}
 		catch(GLib.SpawnError e){
-			logger.print(LogMessage.ERROR, "%s: %s".printf(spawn_args[0], e.message));
+			logger.print(LogMessage.ERROR, "decodeTitle: %s".printf(e.message));
         }
 
 #if !WITH_VILISTEXTUM

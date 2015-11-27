@@ -2,8 +2,6 @@
 // Needed Packages
 //+++++++++++++++++++++++++++++++++++++++
 
-html2text
-vilistextum (optional: disable with -DWITH_VILISTEXTUM=OFF)
 build-essential
 cmake
 valac

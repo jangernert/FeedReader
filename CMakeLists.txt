@@ -1,12 +1,12 @@
-project (RSSReader)
+project (FeedReader)
 cmake_minimum_required (VERSION 2.6)
+include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(WITH_DEBUG "Compile daemon binary with debugging symbols" OFF)
 option(WITH_LIBUNITY "Adds a Badge with the count of the unread articles to the dockitem" ON)
 option(USE_WEBKIT_4 "Compile with Webkit2Gtk 4.0 instead of 3.0" OFF)
-option(WITH_VILISTEXTUM "Use vilistextum as a fallback when html2text fails to create a preview" ON)
 
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
@@ -23,6 +23,7 @@ find_package(PkgConfig)
 add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
 add_subdirectory (schemas)
+add_subdirectory (libVilistextum)
 
 
 set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
@@ -47,7 +48,10 @@ find_package(Vala REQUIRED)
 include(ValaVersion)
 ensure_vala_version("0.24" MINIMUM)
 
-set(UI_OPTIONS --target-glib=2.32)
+set(UI_OPTIONS
+    --target-glib=2.32
+    --thread)
+
 set(UI_PACKAGES
     glib-2.0>=2.32
     gtk+-3.0
@@ -65,10 +69,6 @@ if(USE_WEBKIT_4)
 else(USE_WEBKIT_4)
 	list(APPEND UI_PACKAGES WebKit2-3.0)
 endif(USE_WEBKIT_4)
-
-if(WITH_VILISTEXTUM)
-	list(APPEND UI_OPTIONS --define WITH_VILISTEXTUM)
-endif(WITH_VILISTEXTUM)
 
 # files we want to compile
 include(ValaPrecompile)
@@ -130,11 +130,15 @@ PACKAGES
 OPTIONS
     ${UI_OPTIONS}
 
+CUSTOM_VAPIS
+    vapi/libvilistextum.vapi
+
 )
 
 
 set(DAEMON_OPTIONS
     --target-glib=2.32
+    --thread
     --define DAEMONCODE)
 set(DAEMON_PACKAGES
     glib-2.0>=2.32
@@ -152,10 +156,6 @@ if(WITH_LIBUNITY)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
 	list(APPEND DAEMON_PACKAGES unity)
 endif(WITH_LIBUNITY)
-
-if(WITH_VILISTEXTUM)
-	list(APPEND DAEMON_OPTIONS --define WITH_VILISTEXTUM)
-endif(WITH_VILISTEXTUM)
 
 if(WITH_DEBUG)
 	list(APPEND DAEMON_OPTIONS -g)
@@ -196,6 +196,9 @@ PACKAGES
 
 OPTIONS
     ${DAEMON_OPTIONS}
+
+CUSTOM_VAPIS
+    vapi/libvilistextum.vapi
 )
 
 
@@ -238,6 +241,9 @@ PACKAGES
 
 OPTIONS
     ${DEBUG_OPTIONS}
+
+CUSTOM_VAPIS
+    vapi/libvilistextum.vapi
 )
 
 # uninstall target
@@ -250,18 +256,16 @@ add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake)
 
 
-
-# tell cmake what to call the executable we just made
 add_executable(${EXEC_NAME} ${UI})
+target_link_libraries(${EXEC_NAME} vilistextum)
 add_executable(${DAEMON_NAME} ${daemon})
+target_link_libraries(${DAEMON_NAME} vilistextum)
 add_executable(${DEBUG_NAME} ${debug})
+target_link_libraries(${DEBUG_NAME} vilistextum)
 
-# install the binaries we just made
 install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DEBUG_NAME} RUNTIME DESTINATION bin)
-
-# install our .desktop file so the Applications menu will see it
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION ${DATADIR}/dbus-1/services/)
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION /usr/share/icons)
@@ -270,4 +274,3 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader.css DESTINATION ${PKG
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/html2textrc DESTINATION ${PKGDATADIR})

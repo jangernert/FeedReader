@@ -42,29 +42,7 @@ public class FeedReader.DebugUtils : GLib.Object {
 			stream.write(html.data);
 			logger.print(LogMessage.DEBUG, "Grabber: article html written to " + path);
 
-			string output = "";
-			string[] spawn_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", path};
-			try{
-				GLib.Process.spawn_sync(null, spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-			}
-			catch(GLib.SpawnError e){
-				logger.print(LogMessage.ERROR, "html2text: %s".printf(e.message));
-			}
-
-			output = output.strip();
-
-			if(output == "" || output == null || output.has_prefix("Input recoding failed"))
-			{
-				logger.print(LogMessage.DEBUG, "use vilistextum as fallback for html2text");
-
-				string[] spawn_args_fallback = {"vilistextum", "-a", "-n", "-r", "-t", "-u", path, "-"};
-				try{
-					GLib.Process.spawn_sync(null, spawn_args_fallback, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-				}
-				catch(GLib.SpawnError e){
-					logger.print(LogMessage.ERROR, "vilistextum: %s".printf(e.message));
-				}
-			}
+			string output = libVilistextum.parse(html, 1);
 
 			if(output == "" || output == null)
 			{

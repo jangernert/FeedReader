@@ -359,8 +359,13 @@ public class FeedReader.grabberUtils : GLib.Object {
         	Xml.Node* node = res->nodesetval->item(i);
             if(node->get_prop("src") != null)
             {
-                if(node->get_prop("width") != null && int.parse(node->get_prop("width")) > 1
-                && node->get_prop("height") != null && int.parse(node->get_prop("height")) > 1)
+                if(
+                    ((node->get_prop("width") != null && int.parse(node->get_prop("width")) > 1)
+                    || (node->get_prop("width") == null))
+                &&
+                    ((node->get_prop("height") != null && int.parse(node->get_prop("height")) > 1)
+                    || (node->get_prop("height") == null))
+                )
                 {
                     node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
                 }

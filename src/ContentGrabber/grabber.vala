@@ -390,7 +390,6 @@ public class FeedReader.Grabber : GLib.Object {
     {
         logger.print(LogMessage.DEBUG, "Grabber: postProcessing");
         m_doc->dump_memory_enc(out m_html);
-        logger.print(LogMessage.DEBUG, m_html);
         m_html = m_html.replace("<h3/>", "<h3></h3>");
 
     	int pos1 = m_html.index_of("<iframe", 0);

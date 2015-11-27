@@ -32,48 +32,13 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				else if(Article.getHTML() != "" && Article.getHTML() != null)
 				{
-					string tmp_path = GLib.Environment.get_tmp_dir() + "/FeedReader/";
-					var path = GLib.File.new_for_path(tmp_path);
-					try{
-						path.make_directory_with_parents();
-					}
-					catch(GLib.Error e){
-						//logger.print(LogMessage.DEBUG, e.message);
-					}
-
-					string filename = tmp_path + "articleHtml.XXXXXX";
-					int outputfd = GLib.FileUtils.mkstemp(filename);
-					try{
-						GLib.FileUtils.set_contents(filename, Article.getHTML());
-					}
-					catch(GLib.FileError e){
-						logger.print(LogMessage.ERROR, "error writing html to tmp file - %s".printf(e.message));
-					}
-					GLib.FileUtils.close(outputfd);
-
-					string output = "";
-					string[] vilistextum_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
-					string[] html2text_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
-
-
-					try{
-#if WITH_VILISTEXTUM
-						GLib.Process.spawn_sync(null, vilistextum_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-#else
-						GLib.Process.spawn_sync(null, html2text_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-#endif
-					}
-					catch(GLib.SpawnError e){
-						logger.print(LogMessage.ERROR, "generatePreviews: %s".printf(e.message));
-					}
-
+					string output = libVilistextum.parse(Article.getHTML(), 1);
 					output = output.strip();
 
 					if(output == "" || output == null)
 					{
-						logger.print(LogMessage.ERROR, "html2text could not generate preview text");
+						logger.print(LogMessage.ERROR, "generatePreviews: no Preview");
 						Article.setPreview(noPreview);
-						logger.print(LogMessage.DEBUG, filename);
 						continue;
 					}
 
@@ -96,73 +61,22 @@ public class FeedReader.Utils : GLib.Object {
 					Article.setPreview(noPreview);
 				}
 			}
-			Article.setTitle(decodeTitle(Article.getTitle()));
+			Article.setTitle(UTF8fix(Article.getTitle()));
 		}
 	}
 
-	private static string decodeTitle(string old_title)
+	private static string UTF8fix(string old_string)
 	{
 #if DAEMONCODE
-		var html_cntx = new Html.ParserCtxt();
-        html_cntx.use_options(Html.ParserOption.NOWARNING + Html.ParserOption.NOERROR);
-        var doc = html_cntx.read_memory(old_title.to_utf8(), old_title.length, "", "UTF-8");
+		string? output = libVilistextum.parse(old_string, 0);
 
-        if (doc == null)
-        {
-            logger.print(LogMessage.DEBUG, "decodeTitle: parsing failed");
-    		return old_title;
-    	}
-
-        string title = "";
-        doc->dump_memory_enc(out title);
-
-		string tmp_path = GLib.Environment.get_tmp_dir() + "/FeedReader/";
-		var path = GLib.File.new_for_path(tmp_path);
-		try{
-			path.make_directory_with_parents();
+		if(output != null)
+		{
+			output = output.replace("\n"," ").strip();
+			return output;
 		}
-		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
-		}
-
-		string filename = tmp_path + "articleHtml.XXXXXX";
-        int outputfd = GLib.FileUtils.mkstemp(filename);
-        try{
-            GLib.FileUtils.set_contents(filename, title);
-        }
-        catch(GLib.FileError e){
-            logger.print(LogMessage.DEBUG, "decodeTitle: error writing html to tmp file - %s".printf(e.message));
-        }
-        GLib.FileUtils.close(outputfd);
-
-        string output = "";
-		string[] vilistextum_args = {"vilistextum", "-a", "-n", "-r", "-t", "-u", "-y", "\"utf-8\"", filename, "-"};
-		string[] html2text_args = {"html2text", "-utf8", "-nobs", "-style", "pretty", "-rcfile", "/usr/share/FeedReader/html2textrc", filename};
-
-
-		try{
-#if WITH_VILISTEXTUM
-			GLib.Process.spawn_sync(null, vilistextum_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
-#else
-			GLib.Process.spawn_sync(null, html2text_args, null , GLib.SpawnFlags.SEARCH_PATH, null, out output, null, null);
 #endif
-		}
-		catch(GLib.SpawnError e){
-			logger.print(LogMessage.ERROR, "decodeTitle: %s".printf(e.message));
-        }
-
-#if !WITH_VILISTEXTUM
-        string xml = "<?xml";
-        while(output.has_prefix(xml))
-        {
-            int end = output.index_of_char('>');
-            output = output.slice(end+1, output.length).chug();
-        }
-#endif
-		return output.strip().replace("\n", " ");
-#else
-		return old_title;
-#endif
+		return old_string;
 	}
 
 

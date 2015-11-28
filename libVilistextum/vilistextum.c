@@ -43,7 +43,6 @@ char* vilistextum(char* text, int extractText)
 	length = strlen(text);
 	error = 0;
 	set_options();
-	mallocOutput(strlen(text));
 
 	if(init_multibyte())
 	{
@@ -55,13 +54,9 @@ char* vilistextum(char* text, int extractText)
 	if(!error)
 	{
 		CHAR* output = getOutput();
-		size_t buffersize = sizeof(char)*length;
-		if(buffer!=NULL)
-			free(buffer);
+		size_t buffersize = 2*sizeof(char)*length;
 		buffer = malloc(buffersize);
 		int ret = wcstombs ( buffer, output, buffersize );
-		//memset(output,0,sizeof(DEF_STR_LEN));
-		//output[0]='\0';
 		if (ret==buffersize) buffer[buffersize-1]='\0';
 		if (ret)
 			return buffer;

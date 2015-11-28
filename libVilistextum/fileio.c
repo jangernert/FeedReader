@@ -43,6 +43,11 @@ void open_files(char *input)
 		fprintf(stderr, "Couldn't open input file %s!\n",input);
 		error = 1;
 	}
+
+	if(OUTPUT != NULL)
+		free(OUTPUT);
+	OUTPUT = (CHAR*)malloc(2*sizeof(CHAR)*strlen(input));
+	OUTPUT[0]='\0';
 }
 
 /* ------------------------------------------------ */
@@ -62,11 +67,7 @@ CHAR* getOutput()
 
 void mallocOutput(size_t length)
 {
-	if(OUTPUT != NULL)
-		free(OUTPUT);
-	//OUTPUT = realloc(OUTPUT, sizeof(CHAR)*length);
-	OUTPUT = (CHAR*)malloc(2*sizeof(CHAR)*length);
-	OUTPUT[0]='\0';
+
 }
 
 /* ------------------------------------------------ */

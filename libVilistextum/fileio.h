@@ -11,6 +11,5 @@ int read_char();
 void putback_char(CHAR c);
 void quit();
 CHAR* getOutput();
-void mallocOutput(size_t length);
 
 #endif

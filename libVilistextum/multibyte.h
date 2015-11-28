@@ -22,6 +22,5 @@
 #define STRING(string) L##string
 
 #define GETC(stream) fgetwc(stream)
-#define UNGETC(c, s) ungetwc(c, s)
 #define CEOF WEOF
 

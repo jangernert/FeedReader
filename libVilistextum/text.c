@@ -144,7 +144,10 @@ void print_zeile()
 		if (get_align()==CENTER) { center_zeile(); }
 		if (get_align()==RIGHT)  { right_zeile(); }
 
-		if (!nooutput) { output_string(zeile); }
+		if (!nooutput)
+		{
+			output_string(zeile);
+		}
 
 		zeilen_len_old=zeilen_len;
 		clear_line();
@@ -243,7 +246,8 @@ void wort_ende()
 		else if (zeilen_len != 0)
 		{
 			/* add space + word */
-			zeile_plus_wort(ONESPACE,1,1); zeile_plus_wort(wort,wort_len, wort_pos);
+			zeile_plus_wort(ONESPACE,1,1);
+			zeile_plus_wort(wort,wort_len, wort_pos);
 		}
 		else /* zeilen_len==0 => new beginning of a paragraph */
 		{

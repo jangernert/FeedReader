@@ -18,14 +18,14 @@
 #include "fileio.h"
 #include "charset.h"
 
-char buffer[DEF_STR_LEN];
+char* buffer;
+size_t length;
 
 /* ------------------------------------------------ */
 
 void set_options()
 {
 	convert_characters = 1;
-	option_output_utf8 = 1;
 	shrink_lines = 1;
 	remove_empty_alt = 1;
 	option_no_image = 1;
@@ -38,14 +38,15 @@ void set_options()
 	errorlevel = 0;
 }
 
-CHAR* vilistextum(char* text, int extractText)
+char* vilistextum(char* text, int extractText)
 {
+	length = strlen(text);
 	error = 0;
+	set_options();
+	mallocOutput(strlen(text));
 
 	if(init_multibyte())
 	{
-		use_default_charset();
-		set_options();
 		open_files(text);
 		html(extractText);
 		quit();
@@ -54,9 +55,14 @@ CHAR* vilistextum(char* text, int extractText)
 	if(!error)
 	{
 		CHAR* output = getOutput();
-		int ret = wcstombs ( buffer, output, sizeof(buffer) );
-		memset(output,0,sizeof(DEF_STR_LEN));
-		if (ret==DEF_STR_LEN) buffer[DEF_STR_LEN-1]='\0';
+		size_t buffersize = sizeof(char)*length;
+		if(buffer!=NULL)
+			free(buffer);
+		buffer = malloc(buffersize);
+		int ret = wcstombs ( buffer, output, buffersize );
+		//memset(output,0,sizeof(DEF_STR_LEN));
+		//output[0]='\0';
+		if (ret==buffersize) buffer[buffersize-1]='\0';
 		if (ret)
 			return buffer;
 		else

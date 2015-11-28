@@ -437,6 +437,4 @@ public class FeedReader.grabberUtils : GLib.Object {
 
         return localFilename.replace("?", "%3F");
     }
-
-
 }

@@ -60,8 +60,8 @@ public class FeedReader.Utils : GLib.Object {
 					logger.print(LogMessage.DEBUG, "no html to create preview from");
 					Article.setPreview(noPreview);
 				}
+				Article.setTitle(UTF8fix(Article.getTitle()));
 			}
-			Article.setTitle(UTF8fix(Article.getTitle()));
 		}
 	}
 

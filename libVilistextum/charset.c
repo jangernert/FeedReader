@@ -45,51 +45,9 @@ int init_multibyte()
 
 int convert_character(int num, CHAR *outstring)
 {
-	char in[33], out[33];
-	size_t result=(size_t)(-1);
-	int i;
-	int converted; /* has the entity been successfully converted */
-
-	char *inp, *outp;
-	size_t insize = 1, outsize = 32;
-
-	/* no conversion needed */
-	if (option_output_utf8) {
-		outstring[0] = num;
-		outstring[1] = L'\0';
-		return 1;
-	}
-
-	for (i=0; i<33; i++) { in[i]=0x00; out[i]=0x00; }
-	inp  = in;
-	outp = out;
-	insize = wctomb(inp, num);
-
-	if ((conv = iconv_open(iconv_charset, "utf-8"))==(iconv_t)(-1))
-	{
-		printf("iconv_open failed in convert_character: wrong character set?\n");
-		perror(iconv_charset);
-		return -1;
-	}
-
-	result = iconv(conv, &inp, &insize, &outp, &outsize);
-	iconv_close(conv);
-
-	if (result==(size_t)(-1))
-	{
-		converted = 0;
-		/* if the entity is 160 (nbsp), use ' ' instead */
-		if (num==160) {
-			converted = 1;
-			outstring[0] = L' '; outstring[1] = L'\0';
-		}
-	} else {
-		converted = 1;
-		outstring[0] = num;
-		outstring[1] = L'\0';
-	}
-
-	return(converted);
+	outstring[0] = num;
+	outstring[1] = L'\0';
+	return 1;
 }
 
 /* ------------------------------------------------ */

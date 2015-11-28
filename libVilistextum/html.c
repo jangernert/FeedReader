@@ -142,15 +142,14 @@ void html(int extractText)
 
 	for (i=0; i<DEF_STR_LEN; i++) { str[i]=0x00; }
 
-	for (;;)
+	if(extractText)
 	{
-		ch = read_char();
-		if(ch == 0)
-			return;
-
-
-		if(extractText)
+		for (;;)
 		{
+			ch = read_char();
+			//printf("'%ls'\n", &ch);
+			if(ch == EOF)
+				return;
 			switch (ch)
 			{
 				case '<':
@@ -219,8 +218,14 @@ void html(int extractText)
 					break;
 			}
 		}
-		else
+	}
+	else
+	{
+		for (;;)
 		{
+			ch = read_char();
+			if(ch == EOF)
+				return;
 			switch (ch)
 			{
 				/* Entities  */

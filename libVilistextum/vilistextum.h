@@ -18,10 +18,9 @@ int transliteration;
 
 int option_no_image;
 int option_no_alt;
-int option_output_utf8;
 
 CHAR* default_image;
 
-CHAR* vilistextum(char* text, int extractText);
+char* vilistextum(char* text, int extractText);
 
 #endif

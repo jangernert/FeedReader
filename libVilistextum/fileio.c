@@ -29,9 +29,9 @@
 
 FILE *in;
 
-CHAR curr_ch;
-CHAR OUTPUT[DEF_STR_LEN];
+CHAR* OUTPUT;
 CHAR LINEBREAK[1] = L"\n";
+long int count = 0;
 
 /* ------------------------------------------------ */
 
@@ -47,68 +47,10 @@ void open_files(char *input)
 
 /* ------------------------------------------------ */
 
-
-void convert_string(char *str, CHAR *converted_string)
-{
-	iconv_t conv;
-	char output[DEF_STR_LEN];
-	char *inp, *outp;
-	int fehlernr=0;
-	size_t insize, outsize;
-	char *ret;
-
-	/* set locale based on environment variables */
-	ret = setlocale(LC_CTYPE, "");
-	if (ret==NULL) {
-		fprintf(stderr, "setlocale failed with: %s\n\n", getenv("LC_CTYPE"));
-		error = 1;
-	}
-
-	insize = strlen(str);
-	if (insize > DEF_STR_LEN) { insize = DEF_STR_LEN; }
-	outsize = DEF_STR_LEN;
-
-	inp = str;
-	outp = output;
-
-	if ((conv = iconv_open("utf-8", "char"))==(iconv_t)(-1))
-	{
-		fprintf(stderr, "convert_string: iconv_open failed. Can't convert from %s to UTF-8.\n",
-		getenv("LC_CTYPE"));
-		error = 1;
-	}
-
-	iconv(conv, &inp, &insize, &outp, &outsize);
-	fehlernr = errno;
-
-	if (fehlernr==E2BIG) { fprintf(stderr, "errno==E2BIG\n"); }
-	else if (fehlernr==EILSEQ) {
-		fprintf(stderr, "convert_string: Can't interpret '%s' as character from charset %s\n", str, getenv("LC_CTYPE"));
-		fprintf(stderr, "convert_string: Check your language settings with locale(1)\n");
-	}
-	else if (fehlernr==EINVAL) { fprintf(stderr, "convert_string: errno==EINVAL\n"); }
-
-	output[strlen(output)] = '\0';
-
-	ret = setlocale(LC_CTYPE, "utf-8");
-	if (ret==NULL) {
-		fprintf(stderr, "setlocale failed with: %s\n\n", "utf-8");
-		error = 1;
-	}
-	mbstowcs(converted_string, output, strlen(output));
-
-	iconv_close(conv);
-}
-
-/* ------------------------------------------------ */
-
 void output_string(CHAR *str)
 {
-	if (option_output_utf8) {
-		/* internal locale is utf-8, no conversion needed */
-		wcscat(OUTPUT, str);
-		wcscat(OUTPUT, LINEBREAK);
-	}
+	wcscat(OUTPUT, str);
+	wcscat(OUTPUT, LINEBREAK);
 }
 
 /* ------------------------------------------------ */
@@ -118,17 +60,31 @@ CHAR* getOutput()
 	return OUTPUT;
 }
 
+void mallocOutput(size_t length)
+{
+	if(OUTPUT != NULL)
+		free(OUTPUT);
+	//OUTPUT = realloc(OUTPUT, sizeof(CHAR)*length);
+	OUTPUT = (CHAR*)malloc(2*sizeof(CHAR)*length);
+	OUTPUT[0]='\0';
+}
+
 /* ------------------------------------------------ */
 
 void quit()
 {
-	if (!is_zeile_empty()) { wort_ende(); print_zeile(); }
+	if (!is_zeile_empty())
+	{
+		wort_ende();
+		print_zeile();
+	}
 }
 
 /* ------------------------------------------------ */
 
 int read_char()
 {
+	count = count + 1;
 	int c = ' ';
 	int fehlernr=0; /* tmp variable for errno */
 	static int i=0;
@@ -152,9 +108,12 @@ int read_char()
 	/* check if the conversion from the character set from the HTML document
 	   to utf-8 is possible */
 	if ((conv = iconv_open("utf-8", get_iconv_charset()))==(iconv_t)(-1)) {
-		fprintf(stderr, "read_char: iconv_open failed, wrong character set?\n");
+		printf("read_char: iconv_open failed, wrong character set?\n");
+		printf("iconv_open(\"utf-8\", \"%s\");\n", get_iconv_charset());
 		perror(get_iconv_charset());
+		printf("count: %li\n", count);
 		error = 1;
+		return EOF;
 	}
 
 	j=0;
@@ -202,18 +161,10 @@ int read_char()
 	errno = 0;
 
 	if (feof(in)) {
-		return 0;
+		return EOF;
 	} else {
-		curr_ch = c;
 		return c;
 	}
-}
-
-/* ------------------------------------------------ */
-
-int get_current_char()
-{
-	return(curr_ch);
 }
 
 /* ------------------------------------------------ */
@@ -231,7 +182,12 @@ void goback_char(int p)
 /* put c back onto stream */
 void putback_char(CHAR c)
 {
-	UNGETC (c, in);
+	char buffer[4];
+	wcstombs(buffer, &c, 4);
+	for(int i = 0; i < 4; i++)
+	{
+		ungetc(buffer[i], in);
+	}
 }
 
 /* ------------------------------------------------ */

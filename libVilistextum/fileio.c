@@ -183,9 +183,10 @@ void goback_char(int p)
 /* put c back onto stream */
 void putback_char(CHAR c)
 {
+	int i;
 	char buffer[4];
 	wcstombs(buffer, &c, 4);
-	for(int i = 0; i < 4; i++)
+	for(i = 0; i < 4; i++)
 	{
 		ungetc(buffer[i], in);
 	}

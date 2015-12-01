@@ -53,14 +53,29 @@ public class FeedReader.Grabber : GLib.Object {
 
     private bool checkConfigFile()
     {
-        m_hostName = grabberUtils.buildHostName(m_articleURL);
-        string filename = "/usr/share/FeedReader/GrabberConfig/" + m_hostName + ".txt";
+        string filepath = "/usr/share/FeedReader/GrabberConfig/";
+
+        m_hostName = grabberUtils.buildHostName(m_articleURL, false);
+        string filename = filepath + m_hostName + ".txt";
         if(FileUtils.test(filename, GLib.FileTest.EXISTS))
         {
             m_config = new GrabberConfig(filename);
+            logger.print(LogMessage.DEBUG, "Grabber: using config %s.txt".printf(m_hostName));
             return true;
         }
-        logger.print(LogMessage.INFO, "Grabber: no config found for article: " + m_articleURL);
+
+        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) found for article: %s".printf(m_hostName, m_articleURL));
+
+        m_hostName = grabberUtils.buildHostName(m_articleURL, true);
+        filename = filepath + m_hostName + ".txt";
+        if(FileUtils.test("%s%s.txt".printf(filename, m_hostName), GLib.FileTest.EXISTS))
+        {
+            m_config = new GrabberConfig(filename);
+            logger.print(LogMessage.DEBUG, "Grabber: using config %s.txt".printf(m_hostName));
+            return true;
+        }
+
+        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) found for article: %s".printf(m_hostName, m_articleURL));
         return false;
     }
 
@@ -127,7 +142,10 @@ public class FeedReader.Grabber : GLib.Object {
             return false;
 
         if(!m_foundSomething)
+        {
+            logger.print(LogMessage.ERROR, "Grabber: no body found");
             return false;
+        }
 
         return true;
     }
@@ -343,6 +361,10 @@ public class FeedReader.Grabber : GLib.Object {
             {
             	logger.print(LogMessage.DEBUG, "Grabber: no body found");
             }
+        }
+        else
+        {
+            logger.print(LogMessage.ERROR, "Grabber: config file has no rule for 'body'");
         }
 
         delete doc;

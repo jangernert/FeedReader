@@ -306,7 +306,7 @@ public class FeedReader.grabberUtils : GLib.Object {
         return incompleteURL;
     }
 
-    public static string buildHostName(string URL)
+    public static string buildHostName(string URL, bool cutSubdomain = true)
     {
         string hostname = URL;
         if(hostname.has_prefix("http://"))
@@ -326,13 +326,14 @@ public class FeedReader.grabberUtils : GLib.Object {
         int index = hostname.index_of_char('/');
         hostname = hostname.substring(0, index);
 
-        index = hostname.index_of_char('.');
-        if(index != -1 && hostname.index_of_char('.', index+1) != -1)
+        if(cutSubdomain)
         {
-            hostname = hostname.substring(index);
+            index = hostname.index_of_char('.');
+            if(index != -1 && hostname.index_of_char('.', index+1) != -1)
+            {
+                hostname = hostname.substring(index);
+            }
         }
-
-        //logger.print(LogMessage.DEBUG, "buildHostName: url: %s hostname: %s".printf(URL, hostname));
 
         return hostname;
     }

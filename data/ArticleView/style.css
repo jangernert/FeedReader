@@ -308,6 +308,19 @@ div.content {
   border: 1px solid rgba(0, 0, 0, 0.05);
   text-align: left;
 }
+dt {
+  float: left;
+  font-weight: bold;
+  margin-right: 0.5em;
+}
+dt:after { 
+  content: ": "; 
+}
+dd:after {
+  clear: left;
+  content: " ";
+  display: block;
+}
 /* DEFAULT THEME*/
 div.theme.default {
   background: white;

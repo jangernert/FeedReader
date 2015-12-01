@@ -50,7 +50,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 
         if(!file.query_exists())
         {
-            stderr.printf ("File '%s' doesn't exist.\n", file.get_path());
+            logger.print(LogMessage.ERROR, "File '%s' doesn't exist.".printf(file.get_path()));
             return;
         }
 

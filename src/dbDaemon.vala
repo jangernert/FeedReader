@@ -25,6 +25,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         executeSQL("DROP TABLE main.categories");
         executeSQL("DROP TABLE main.articles");
         executeSQL("DROP TABLE main.tags");
+        executeSQL("DROP TABLE main.fts_table");
         executeSQL("VACUUM");
 
         string query = "PRAGMA INTEGRITY_CHECK";

@@ -23,6 +23,7 @@ public class FeedReader.DebugUtils : GLib.Object {
 			grabber.print();
 
 			string html = grabber.getArticle();
+			string title = Utils.UTF8fix(grabber.getTitle());
 			string xml = "<?xml";
 
 			while(html.has_prefix(xml))
@@ -31,7 +32,7 @@ public class FeedReader.DebugUtils : GLib.Object {
 				html = html.slice(end+1, html.length).chug();
 			}
 
-			string path = GLib.Environment.get_home_dir() + "/grabbedArticle.html";
+			string path = GLib.Environment.get_home_dir() + "/%s.html".printf(title);
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
 				GLib.FileUtils.remove(path);
@@ -53,7 +54,7 @@ public class FeedReader.DebugUtils : GLib.Object {
 			output = output.replace("\n"," ");
 			output = output.replace("_"," ");
 
-			path = GLib.Environment.get_home_dir() + "/grabbedArticlePreview.txt";
+			path = GLib.Environment.get_home_dir() + "/%s.txt".printf(title);
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
 				GLib.FileUtils.remove(path);
@@ -106,5 +107,35 @@ public class FeedReader.DebugUtils : GLib.Object {
 		var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 		stream.write(html.data);
 		delete doc;
+	}
+
+	public static void dummyFeeds(int catcount, int feedcount)
+	{
+		var cats = new Gee.LinkedList<category>();
+		var feeds = new Gee.LinkedList<feed>();
+
+		for(int i = 1; i <= catcount; ++i)
+		{
+			cats.add(new category(i.to_string(), "dummy category %i".printf(i), 0, i, CategoryID.MASTER, 1));
+		}
+
+		foreach(category cat in cats)
+		{
+			for(int i = 1; i <= feedcount; ++i)
+			{
+				feeds.add(new feed("%s%i".printf(cat.getCatID(), i), "dummy feed %s.%i".printf(cat.getCatID(),i), "https://www.google.com/", false, 0, {cat.getCatID()}));
+			}
+		}
+
+		// write categories
+		dataBase.reset_exists_flag();
+		dataBase.write_categories(cats);
+		dataBase.delete_nonexisting_categories();
+
+		// write feeds
+		dataBase.reset_subscribed_flag();
+		dataBase.write_feeds(feeds);
+		dataBase.delete_articles_without_feed();
+		dataBase.delete_unsubscribed_feeds();
 	}
 }

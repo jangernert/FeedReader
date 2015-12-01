@@ -17,11 +17,15 @@ extern void exit(int exit_code);
 
 namespace FeedReader {
 
-	public class FeedReaderDebuggerWindow : Gtk.ApplicationWindow
+	public class FeedReaderDebuggerWindow : Gtk.Window
 	{
+		public signal void newFeedList();
+		public signal void updateFeedList();
+		public signal void newArticleList();
+		public signal void updateArticleList();
 
-		internal FeedReaderDebuggerWindow (FeedReaderDebugger app) {
-			Object(application: app, title: "FeedReader Debugger");
+		internal FeedReaderDebuggerWindow () {
+			this.title = "FeedReader Debugger";
 
 			var grid = new Gtk.Grid();
 			grid.expand = true;
@@ -33,7 +37,14 @@ namespace FeedReader {
 			var reset_button = new Gtk.Button.with_label("Reset DB");
 			reset_button.clicked.connect(on_reset_button_click);
 			var start_button = new Gtk.Button.with_label("Start FeedReader");
-			//start_button.clicked.connect();
+			start_button.clicked.connect(() => {
+				string[] spawn_args = {"feedreader", "--debug"};
+				try{
+					GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+				}catch(GLib.SpawnError e){
+					logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+				}
+			});
 
 			var sync = setupSync();
 			var articleList = setupArticleList();
@@ -48,6 +59,10 @@ namespace FeedReader {
 			var bar = new Gtk.HeaderBar ();
 	        bar.show_close_button = true;
 			bar.set_title("FeedReader Debugger");
+
+			this.destroy.connect (() => {
+				Gtk.main_quit ();
+			});
 
 			this.set_titlebar(bar);
 			this.add(grid);
@@ -75,9 +90,13 @@ namespace FeedReader {
 		private Gtk.Bin setupArticleList()
 		{
 			var update_button = new Gtk.Button.with_label("update");
-			//update_button.clicked.connect();
+			update_button.clicked.connect(() => {
+				updateArticleList();
+			});
 			var new_button = new Gtk.Button.with_label("new");
-			//new_button.clicked.connect();
+			new_button.clicked.connect(() => {
+				newArticleList();
+			});
 
 			var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 			box.pack_start(update_button);
@@ -91,24 +110,57 @@ namespace FeedReader {
 
 		private Gtk.Bin setupFeedList()
 		{
+			var catLabel = new Gtk.Label("categories");
+			catLabel.set_size_request(70, 0);
+			catLabel.set_xalign(0);
+			var catSpin = new Gtk.SpinButton.with_range(1, 20, 1);
+			catSpin.set_value(5);
+			var box3 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
+			box3.pack_start(catLabel);
+			box3.pack_start(catSpin);
+
+			var feedLabel = new Gtk.Label("feeds per cat");
+			feedLabel.set_size_request(70, 0);
+			feedLabel.set_xalign(0);
+			var feedSpin = new Gtk.SpinButton.with_range(1, 20, 1);
+			feedSpin.set_value(5);
+			var box4 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
+			box4.pack_start(feedLabel);
+			box4.pack_start(feedSpin);
+
 			var update_button = new Gtk.Button.with_label("update");
-			//update_button.clicked.connect();
+			update_button.clicked.connect(() => {
+				updateFeedList();
+			});
 			var new_button = new Gtk.Button.with_label("new");
-			//new_button.clicked.connect();
+			new_button.clicked.connect(() => {
+				newFeedList();
+			});
+			var fill_button = new Gtk.Button.with_label("fill");
+			fill_button.clicked.connect(() => {
+				DebugUtils.dummyFeeds(catSpin.get_value_as_int(), feedSpin.get_value_as_int());
+			});
 
 			var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 			box.pack_start(update_button);
 			box.pack_start(new_button);
-			box.margin = 10;
+
+			var box2 = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+			box2.pack_start(box3);
+			box2.pack_start(box4);
+			box2.pack_start(fill_button);
+			box2.pack_start(box);
+			box2.margin = 10;
 
 			var frame = new Gtk.Frame ("FeedList");
-			frame.add(box);
+			frame.add(box2);
 			return frame;
 		}
 
 		void on_reset_button_click (Gtk.Button button)
 		{
-
+			dataBase.resetDB();
+			dataBase.init();
 		}
 
 		void on_sync_button_click (Gtk.Button button)
@@ -118,31 +170,125 @@ namespace FeedReader {
 	}
 
 	[DBus (name = "org.gnome.feedreader")]
-	public class FeedReaderDebugger : Gtk.Application
-	{
-		protected override void activate()
+	public class FeedDaemonServer : Object {
+		public signal void syncStarted();
+		public signal void syncFinished();
+		public signal void springCleanStarted();
+		public signal void springCleanFinished();
+		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
+		public signal void newFeedList();
+		public signal void updateFeedList();
+		public signal void newArticleList();
+		public signal void updateArticleList();
+		public signal void writeInterfaceState();
+
+		public FeedDaemonServer()
 		{
-			new FeedReaderDebuggerWindow (this).show ();
+			logger.print(LogMessage.DEBUG, "daemon: constructor");
+			var window = new FeedReaderDebuggerWindow();
+			window.newFeedList.connect(() => {
+				newFeedList();
+			});
+			window.updateFeedList.connect(() => {
+				updateFeedList();
+			});
+			window.newArticleList.connect(() => {
+				newArticleList();
+			});
+			window.updateArticleList.connect(() => {
+				updateArticleList();
+			});
 		}
 
-		internal FeedReaderDebugger()
+		public void startSync()
 		{
-			Object(application_id: "org.example.FeedReaderDebugger");
 
 		}
 
-		public int isLoggedIn()
+		public void startInitSync()
+		{
+
+		}
+
+
+		public bool supportTags()
+		{
+			return false;
+		}
+
+		public void scheduleSync(int time)
+		{
+
+		}
+
+		public LoginResponse login(Backend type)
 		{
 			return LoginResponse.SUCCESS;
 		}
 
-		public bool supportTags()
+		public LoginResponse isLoggedIn()
 		{
-			return true;
+			return LoginResponse.SUCCESS;
 		}
 
-		public void updateBadge(){}
+		public void changeArticle(string articleID, ArticleStatus status)
+		{
+
+		}
+
+		public string createTag(string caption)
+		{
+			return "";
+		}
+
+		public void tagArticle(string articleID, string tagID, bool add)
+		{
+
+		}
+
+		public void updateTagColor(string tagID, int color)
+		{
+
+		}
+
+		public void resetDB()
+		{
+
+		}
+
+		public void markFeedAsRead(string feedID, bool isCat)
+		{
+
+		}
+
+		public void markAllItemsRead()
+		{
+
+		}
+
+		public void updateBadge()
+		{
+
+		}
 	}
+
+	[DBus (name = "org.gnome.feedreaderError")]
+	public errordomain FeedError
+	{
+		SOME_ERROR
+	}
+
+	void on_bus_aquired (DBusConnection conn) {
+		try {
+		    conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer());
+		} catch (IOError e) {
+		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
+		    logger.print(LogMessage.WARNING, e.message);
+		    exit(-1);
+		}
+		logger.print(LogMessage.DEBUG, "daemon: bus aquired");
+	}
+
 
 	dbDaemon dataBase;
 	GLib.Settings settings_general;
@@ -150,43 +296,31 @@ namespace FeedReader {
 	GLib.Settings settings_tweaks;
 	Logger logger;
 
-	public int main(string[] args)
+
+
+	int main (string[] args)
 	{
+		Gtk.init(ref args);
 		settings_general = new GLib.Settings ("org.gnome.feedreader");
 		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
-		logger = new Logger("daemon");
+
+		logger = new Logger("debugger");
 		dataBase = new dbDaemon("debug.db");
 		dataBase.init();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
-					  on_bus_aquired,
-					  () => {
-								settings_state.set_boolean("currently-updating", false);
+				      on_bus_aquired,
+				      () => {
+				      			settings_state.set_boolean("currently-updating", false);
 								settings_state.set_boolean("spring-cleaning", false);
-					  },
-					  () => {
-								logger.print(LogMessage.WARNING, "daemon: Could not aquire name (already running). Will shut down!");
-								exit(-1);
-							}
-					  );
-		return new FeedReaderDebugger ().run (args);
-	}
-
-	void on_bus_aquired (DBusConnection conn) {
-		try {
-			conn.register_object ("/org/gnome/feedreader", new FeedReaderDebugger());
-		} catch (IOError e) {
-			logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
-			logger.print(LogMessage.WARNING, e.message);
-			exit(-1);
-		}
-		logger.print(LogMessage.DEBUG, "daemon: bus aquired");
-	}
-
-	[DBus (name = "org.gnome.feedreaderError")]
-	public errordomain FeedError
-	{
-		SOME_ERROR
+				      },
+				      () => {
+				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name (already running). Will shut down!");
+				          		exit(-1);
+				          	}
+				      );
+		Gtk.main();
+		return 0;
 	}
 }

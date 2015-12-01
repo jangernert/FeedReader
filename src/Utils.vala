@@ -48,6 +48,7 @@ public class FeedReader.Utils : GLib.Object {
 					{
 						int end = output.index_of_char('>');
 						output = output.slice(end+1, output.length).chug();
+						output = output.strip();
 					}
 
 					output = output.replace("\n"," ");
@@ -65,7 +66,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
-	private static string UTF8fix(string old_string)
+	public static string UTF8fix(string old_string)
 	{
 #if DAEMONCODE
 		string? output = libVilistextum.parse(old_string, 0);

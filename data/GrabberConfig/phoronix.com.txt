@@ -1,5 +1,6 @@
 # based on the grabber rules of picofeed
 
+title: //article[@class='full']/header
 body: //div[@class="content"]/child::node()
 test_url: http://www.phoronix.com/scan.php?page=article&item=amazon_ec2_bare&num=1
 

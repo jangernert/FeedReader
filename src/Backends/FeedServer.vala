@@ -811,6 +811,10 @@ public class FeedReader.FeedServer : GLib.Object {
 					{
 						Article.setAuthor(grabber.getAuthor());
 					}
+					if(Article.getTitle() != "" && grabber.getTitle() != null)
+					{
+						Article.setTitle(grabber.getTitle());
+					}
 					string html = grabber.getArticle();
 					string xml = "<?xml";
 

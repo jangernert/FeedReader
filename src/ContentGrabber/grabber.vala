@@ -422,8 +422,13 @@ public class FeedReader.Grabber : GLib.Object {
             logger.print(LogMessage.DEBUG, "Grabber: date: %s".printf(m_date));
     }
 
-    public string getAuthor()
+    public string? getAuthor()
     {
         return m_author;
+    }
+
+    public string? getTitle()
+    {
+        return m_title;
     }
 }

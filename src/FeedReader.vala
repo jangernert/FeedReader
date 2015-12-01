@@ -39,7 +39,7 @@ namespace FeedReader {
 		public abstract void startSync() throws IOError;
 		public abstract void startInitSync() throws IOError;
 		public abstract LoginResponse login(Backend type) throws IOError;
-		public abstract int isLoggedIn() throws IOError;
+		public abstract LoginResponse isLoggedIn() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void markAllItemsRead() throws IOError;
@@ -56,6 +56,7 @@ namespace FeedReader {
 		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
 		public signal void updateFeedList();
+		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 	}
@@ -82,7 +83,15 @@ namespace FeedReader {
 			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
 			startDaemon();
 
-			dataBase = new dbUI();
+			if(debug)
+			{
+				dataBase = new dbUI("debug.db");
+			}
+			else
+			{
+				dataBase = new dbUI();
+			}
+
 			dataBase.init();
 
 
@@ -99,6 +108,10 @@ namespace FeedReader {
 
 				feedDaemon_interface.updateFeedList.connect(() => {
 				    m_window.getContent().updateFeedList();
+				});
+
+				feedDaemon_interface.newArticleList.connect(() => {
+				    m_window.getContent().newHeadlineList();
 				});
 
 				feedDaemon_interface.updateArticleList.connect(() => {
@@ -243,11 +256,13 @@ namespace FeedReader {
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
+		{ "debug", 0, 0, OptionArg.NONE, ref debug, "stat in debug mode", null },
 		{ null }
 	};
 
 	private static bool version = false;
 	private static bool about = false;
+	private static bool debug = false;
 
 	static void show_about(string[] args)
 	{

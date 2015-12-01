@@ -241,6 +241,7 @@ a {
   color: #318c34;
  outline : none;
 }
+ins,
 a:hover {
   text-decoration: none;
 }
@@ -290,7 +291,7 @@ header.post h1 {
 }
 header.post a:link {
   outline : none;
-    text-decoration: none;
+  text-decoration: none;
 }
 header.post span.source {
   color: rgba(0, 0, 0, 0.75);

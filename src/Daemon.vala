@@ -26,6 +26,17 @@ namespace FeedReader {
 		private LoginResponse m_loggedin;
 		private uint m_timeout_source_id = 0;
 
+		public signal void syncStarted();
+		public signal void syncFinished();
+		public signal void springCleanStarted();
+		public signal void springCleanFinished();
+		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
+		public signal void newFeedList();
+		public signal void updateFeedList();
+		public signal void newArticleList();
+		public signal void updateArticleList();
+		public signal void writeInterfaceState();
+
 		public FeedDaemonServer()
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
@@ -75,17 +86,6 @@ namespace FeedReader {
 				return true;
 			});
 		}
-
-
-		public signal void syncStarted();
-		public signal void syncFinished();
-		public signal void springCleanStarted();
-		public signal void springCleanFinished();
-		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
-		public signal void newFeedList();
-		public signal void updateFeedList();
-		public signal void updateArticleList();
-		public signal void writeInterfaceState();
 
 		private async void sync()
 		{
@@ -185,7 +185,7 @@ namespace FeedReader {
 			return m_loggedin;
 		}
 
-		public int isLoggedIn()
+		public LoginResponse isLoggedIn()
 		{
 			return m_loggedin;
 		}

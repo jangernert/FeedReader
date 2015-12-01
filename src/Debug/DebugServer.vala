@@ -112,7 +112,7 @@ namespace FeedReader {
 		{
 			var catLabel = new Gtk.Label("categories");
 			catLabel.set_size_request(70, 0);
-			catLabel.set_xalign(0);
+			catLabel.set_alignment(0, 0.5f);
 			var catSpin = new Gtk.SpinButton.with_range(1, 20, 1);
 			catSpin.set_value(5);
 			var box3 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
@@ -121,7 +121,7 @@ namespace FeedReader {
 
 			var feedLabel = new Gtk.Label("feeds per cat");
 			feedLabel.set_size_request(70, 0);
-			feedLabel.set_xalign(0);
+			feedLabel.set_alignment(0, 0.5f);
 			var feedSpin = new Gtk.SpinButton.with_range(1, 20, 1);
 			feedSpin.set_value(5);
 			var box4 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);

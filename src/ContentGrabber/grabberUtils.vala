@@ -438,4 +438,29 @@ public class FeedReader.grabberUtils : GLib.Object {
 
         return localFilename.replace("?", "%3F");
     }
+
+    public static string postProcessing(ref string html)
+    {
+        logger.print(LogMessage.DEBUG, "GrabberUtils: postProcessing");
+        html = html.replace("<h3/>", "<h3></h3>");
+
+    	int pos1 = html.index_of("<iframe", 0);
+    	int pos2 = -1;
+    	while(pos1 != -1)
+    	{
+    		pos2 = html.index_of("/>", pos1);
+    		string broken_iframe = html.substring(pos1, pos2+2-pos1);
+            logger.print(LogMessage.DEBUG, "GrabberUtils: broken = %s".printf(broken_iframe));
+    		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length-2) + "></iframe>";
+            logger.print(LogMessage.DEBUG, "GrabberUtils: fixed = %s".printf(fixed_iframe));
+    		html = html.replace(broken_iframe, fixed_iframe);
+    		int pos3 = html.index_of("<iframe", pos1+7);
+    		if(pos3 == pos1 || pos3 > html.length)
+    			break;
+    		else
+    			pos1 = pos3;
+    	}
+        logger.print(LogMessage.DEBUG, "GrabberUtils: postProcessing done");
+        return html;
+    }
 }

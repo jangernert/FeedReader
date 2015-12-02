@@ -37,7 +37,6 @@ long int count = 0;
 
 void open_files(char *input)
 {
-	//if ((in = fopen(input, "r")) == 0)
 	if((in = fmemopen(input, strlen(input), "r"))==0)
 	{
 		fprintf(stderr, "Couldn't open input file %s!\n",input);
@@ -63,11 +62,6 @@ void output_string(CHAR *str)
 CHAR* getOutput()
 {
 	return OUTPUT;
-}
-
-void mallocOutput(size_t length)
-{
-
 }
 
 /* ------------------------------------------------ */
@@ -183,13 +177,9 @@ void goback_char(int p)
 /* put c back onto stream */
 void putback_char(CHAR c)
 {
-	int i;
-	char buffer[4];
-	wcstombs(buffer, &c, 4);
-	for(i = 0; i < 4; i++)
-	{
-		ungetc(buffer[i], in);
-	}
+	char buffer[1];
+	wcstombs(buffer, &c, 1);
+	ungetc(buffer[0], in);
 }
 
 /* ------------------------------------------------ */

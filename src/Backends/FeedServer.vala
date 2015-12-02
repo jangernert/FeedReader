@@ -605,6 +605,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						if(new_articles.size == 10 || Article.getArticleID() == last)
 						{
 							writeInterfaceState();
+							logger.print(LogMessage.DEBUG, "FeedServer: write batch of %i articles to db".printf(new_articles.size));
 							dataBase.write_articles(new_articles);
 							updateFeedList();
 							newArticleList();
@@ -857,23 +858,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		string html = "";
 		doc->dump_memory_enc(out html);
-        html = html.replace("<h3/>", "<h3></h3>");
-
-    	int pos1 = html.index_of("<iframe", 0);
-    	int pos2 = -1;
-    	while(pos1 != -1)
-    	{
-    		pos2 = html.index_of("/>", pos1);
-    		string broken_iframe = html.substring(pos1, pos2+2-pos1);
-    		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
-    		html = html.replace(broken_iframe, fixed_iframe);
-    		int pos3 = html.index_of("<iframe", pos1+7);
-    		if(pos3 == pos1)
-    			break;
-    		else
-    			pos1 = pos3;
-    	}
-
+        html = grabberUtils.postProcessing(ref html);
 		Article.setHTML(html);
 		delete doc;
 	}

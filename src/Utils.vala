@@ -17,6 +17,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void generatePreviews(Gee.LinkedList<article> articles)
 	{
+		logger.print(LogMessage.DEBUG, "Utils: generatePreviews");
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
 		{

@@ -342,7 +342,7 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.stripNode(doc, "//comment()");
 
 
-
+        // get the content of the article
         unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();
         if(bodyList.size != 0)
         {
@@ -351,6 +351,8 @@ public class FeedReader.Grabber : GLib.Object {
             {
                 if(grabberUtils.extractBody(doc, bodyXPath, m_root))
                     m_foundSomething = true;
+                else
+                    logger.print(LogMessage.ERROR, bodyXPath);
             }
 
             if(m_foundSomething)
@@ -360,6 +362,7 @@ public class FeedReader.Grabber : GLib.Object {
             else
             {
             	logger.print(LogMessage.DEBUG, "Grabber: no body found");
+                return false;
             }
         }
         else
@@ -390,7 +393,8 @@ public class FeedReader.Grabber : GLib.Object {
         else
             grabberUtils.saveImages(m_doc, "", "");
 
-        postProcessing();
+        m_doc->dump_memory_enc(out m_html);
+        m_html = grabberUtils.postProcessing(ref m_html);
         return true;
     }
 
@@ -406,13 +410,6 @@ public class FeedReader.Grabber : GLib.Object {
     public string getArticle()
     {
         return m_html;
-    }
-
-    private void postProcessing()
-    {
-        logger.print(LogMessage.DEBUG, "Grabber: postProcessing");
-        m_html = m_html.replace("<h3/>", "<h3></h3>");
-        m_html = grabberUtils.postProcessing(ref m_html);
     }
 
     public void print()

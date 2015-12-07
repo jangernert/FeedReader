@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-11-13 23:01+0100\n"
-"PO-Revision-Date: 2015-09-30 00:15+0000\n"
-"Last-Translator: bitseater <Unknown>\n"
+"PO-Revision-Date: 2015-12-06 16:44+0000\n"
+"Last-Translator: davidu0 <david.usero@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2015-12-04 05:48+0000\n"
+"X-Launchpad-Export-Date: 2015-12-07 05:39+0000\n"
 "X-Generator: Launchpad (build 17862)\n"
 
 #: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
@@ -27,7 +27,7 @@ msgstr "Cliente de escritorio para varios servicios RSS"
 
 #: ../src/Constants.vala:174
 msgid "About"
-msgstr ""
+msgstr "Acerca de"
 
 #: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
 msgid "Settings"
@@ -39,7 +39,7 @@ msgstr "Cambiar cuenta"
 
 #: ../src/Constants.vala:177
 msgid "Quit"
-msgstr ""
+msgstr "Salir"
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
@@ -212,7 +212,7 @@ msgstr "Marcar/desmarcar artículo como favorito"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:55
 msgid "Mark article (un)read"
-msgstr "Marcar artículo como (no)leido"
+msgstr "Marcar artículo como (no)leído"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
@@ -220,7 +220,7 @@ msgstr "Mostrar todos los artículos"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
-msgstr "Mostrar sólo artículos no leidos"
+msgstr "Mostrar sólo artículos no leídos"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
@@ -365,7 +365,7 @@ msgstr "Número de artículos"
 
 #: ../src/Widgets/SettingsDialog.vala:116
 msgid "Every (Minutes)"
-msgstr ""
+msgstr "Cada (minutos)"
 
 #: ../src/Widgets/SettingsDialog.vala:121
 msgid "Database:"

@@ -216,8 +216,8 @@ namespace FeedReader {
 					dataBase.update_article.end(res);
 				});
 			}
-
 		}
+
 
 		public string createTag(string caption)
 		{

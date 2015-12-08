@@ -239,7 +239,24 @@ namespace FeedReader {
 
 		public void changeArticle(string articleID, ArticleStatus status)
 		{
+			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
+			{
+				bool increase = true;
+				if(status == ArticleStatus.READ)
+					increase = false;
 
+				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
+					dataBase.update_article.end(res);
+					updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleID), increase);
+					updateBadge();
+				});
+			}
+			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
+			{
+				dataBase.update_article.begin(articleID, "marked", status, (obj, res) => {
+					dataBase.update_article.end(res);
+				});
+			}
 		}
 
 		public string createTag(string caption)
@@ -264,12 +281,34 @@ namespace FeedReader {
 
 		public void markFeedAsRead(string feedID, bool isCat)
 		{
-
+			if(isCat)
+			{
+				dataBase.markCategorieRead.begin(feedID, (obj, res) => {
+					dataBase.markCategorieRead.end(res);
+					updateBadge();
+					newFeedList();
+					updateArticleList();
+				});
+			}
+			else
+			{
+				dataBase.markFeedRead.begin(feedID, (obj, res) => {
+					dataBase.markFeedRead.end(res);
+					updateBadge();
+					newFeedList();
+					updateArticleList();
+				});
+			}
 		}
 
 		public void markAllItemsRead()
 		{
-
+			dataBase.markAllRead.begin((obj, res) => {
+				dataBase.markAllRead.end(res);
+				updateBadge();
+				newFeedList();
+				updateArticleList();
+			});
 		}
 
 		public void updateBadge()

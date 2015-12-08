@@ -241,7 +241,7 @@ public class FeedReader.Grabber : GLib.Object {
             foreach(string xpath in title)
             {
                 string tmptitle = grabberUtils.getValue(doc, xpath, m_firstPage);
-                if(tmptitle != null)
+                if(tmptitle != null && tmptitle != "")
                     m_title = tmptitle.chomp().chug();
             }
         }

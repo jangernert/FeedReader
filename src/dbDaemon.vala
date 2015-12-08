@@ -330,7 +330,6 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public void write_articles(Gee.LinkedList<article> articles)
     {
-
         FeedReader.Utils.generatePreviews(articles);
         FeedReader.Utils.checkHTML(articles);
 

@@ -40,6 +40,7 @@ public class FeedReader.Utils : GLib.Object {
 					{
 						logger.print(LogMessage.ERROR, "generatePreviews: no Preview");
 						Article.setPreview(noPreview);
+						Article.setTitle(UTF8fix(Article.getTitle()));
 						continue;
 					}
 
@@ -75,7 +76,10 @@ public class FeedReader.Utils : GLib.Object {
 		if(output != null)
 		{
 			output = output.replace("\n"," ").strip();
-			return output;
+			if(output != "")
+			{
+				return output;
+			}
 		}
 #endif
 		return old_string;

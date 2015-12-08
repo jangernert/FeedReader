@@ -15,6 +15,57 @@
 
 public class FeedReader.DebugUtils : GLib.Object {
 
+	private const string dummyHTML =
+	"""
+		<h1>HTML Ipsum Presents</h1>
+		<p>
+			<strong>Pellentesque habitant morbi tristique</strong> senectus et netus et malesuada fames ac turpis egestas.
+			Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante.
+			Donec eu libero sit amet quam egestas semper.
+			<em>Aenean ultricies mi vitae est.</em> Mauris placerat eleifend leo.
+			Quisque sit amet est et sapien ullamcorper pharetra.
+			Vestibulum erat wisi, condimentum sed, <code>commodo vitae</code>, ornare sit amet, wisi.
+			Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui.
+			<a href="#">Donec non enim</a> in turpis pulvinar facilisis. Ut felis.
+		</p>
+		<h2>Header Level 2</h2>
+		<ol>
+		   <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+		   <li>Aliquam tincidunt mauris eu risus.</li>
+		</ol>
+		<blockquote>
+			<p>
+				Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+				Vivamus magna. Cras in mi at felis aliquet congue. Ut a est eget ligula molestie gravida.
+				Curabitur massa. Donec eleifend, libero at sagittis mollis, tellus est malesuada tellus, at luctus turpis elit sit amet quam.
+				Vivamus pretium ornare est.
+			</p>
+		</blockquote>
+		<h3>Header Level 3</h3>
+		<ul>
+		   <li>Lorem ipsum dolor sit amet, consectetuer adipiscing elit.</li>
+		   <li>Aliquam tincidunt mauris eu risus.</li>
+		</ul>
+		<pre><code>
+		#header h1 a {
+			display: block;
+			width: 300px;
+			height: 80px;
+		}
+		</code></pre>
+	""";
+
+	private const string dummyPreview =
+	"""
+		Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor
+		invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et
+		justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+		ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
+		eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et
+		accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
+		ipsum dolor sit amet.
+	""";
+
 	public static void grabArticle(string url)
 	{
 		var grabber = new Grabber(url, null, null);
@@ -137,5 +188,52 @@ public class FeedReader.DebugUtils : GLib.Object {
 		dataBase.write_feeds(feeds);
 		dataBase.delete_articles_without_feed();
 		dataBase.delete_unsubscribed_feeds();
+	}
+
+	public static void dummyArticles(int count, int newCount)
+	{
+		if(newCount > count)
+			return;
+
+		int oldCount = count - newCount;
+
+		var feeds = dataBase.read_feeds();
+		int feedCount = feeds.size;
+		var random = new GLib.Rand.with_seed(0);
+		var articles = new Gee.LinkedList<article>();
+
+		int newestArticle = dataBase.getHighestRowID();
+
+		for(int i = 0; i < newCount; ++i)
+		{
+			int feedNumber = random.int_range(0, feedCount);
+			string feedID = feeds.get(feedNumber).getFeedID();
+			++newestArticle;
+
+			var Article = new article(
+									newestArticle.to_string(),
+									"dummy Article",
+									"http://jangernert.github.io/feedreader/",
+									feedID,
+									ArticleStatus.UNREAD,
+									ArticleStatus.UNMARKED,
+									dummyHTML,
+									dummyPreview.replace("\n", " "),
+									"John Doe",
+									new DateTime.now_local(),
+									-1,
+									""
+							);
+			articles.add(Article);
+		}
+
+		var oldArticles = dataBase.read_articles(FeedID.ALL, FeedListType.FEED, false, false, "", oldCount);
+		foreach(var Article in oldArticles)
+		{
+			articles.add(Article);
+		}
+
+		dataBase.update_articles(articles);
+		dataBase.write_articles(articles);
 	}
 }

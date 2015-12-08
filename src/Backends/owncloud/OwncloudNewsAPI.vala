@@ -272,44 +272,43 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-    public bool markFeedRead(string feedID, bool isCatID)
+	public bool markFeedRead(string feedID, bool isCatID)
 	{
-        string type = "";
+		string type = "";
 
-        if(isCatID)
-            type = "folders";
-        else
-            type = "feeds";
+		if(isCatID)
+			type = "folders";
+		else
+			type = "feeds";
 
-        string url = "%s/%s/read?newestItemId=%i".printf(type, feedID, dataBase.getNewestArticle());
+		string url = "%s/%s/read?newestItemId=%i".printf(type, feedID, int.parse(dataBase.getNewestArticle()));
 
-        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        int error = message.send();
+		var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+		int error = message.send();
 
 		return true;
 	}
 
-    public bool markAllItemsRead()
+	public bool markAllItemsRead()
 	{
-        string url = "items/read?newestItemId=%i".printf(dataBase.getNewestArticle());
-        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        int error = message.send();
-
+        	string url = "items/read?newestItemId=%i".printf(int.parse(dataBase.getNewestArticle()));
+        	var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        	int error = message.send();
 		return true;
 	}
 
 
-    public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
+	public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
-        string url = "items/%s/".printf(articleIDs);
+		string url = "items/%s/".printf(articleIDs);
 
-        if(unread == ArticleStatus.UNREAD)
-            url += "unread";
-        else if(unread == ArticleStatus.READ)
-            url += "read";
+		if(unread == ArticleStatus.UNREAD)
+			url += "unread";
+		else if(unread == ArticleStatus.READ)
+			url += "read";
 
-        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        int error = message.send();
+		var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+		int error = message.send();
 
 		return true;
 	}

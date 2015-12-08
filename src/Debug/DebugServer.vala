@@ -19,6 +19,8 @@ namespace FeedReader {
 
 	public class FeedReaderDebuggerWindow : Gtk.Window
 	{
+		public signal void syncStarted();
+		public signal void syncFinished();
 		public signal void newFeedList();
 		public signal void updateFeedList();
 		public signal void newArticleList();
@@ -72,10 +74,19 @@ namespace FeedReader {
 
 		private Gtk.Bin setupSync()
 		{
-			var sync_button = new Gtk.Button.with_label("Sync");
-			sync_button.clicked.connect(on_sync_button_click);
-
 			var spin = new Gtk.SpinButton.with_range(1, 200, 1);
+			spin.set_value(20.0);
+			var sync_button = new Gtk.Button.with_label("Sync");
+			sync_button.clicked.connect(() => {
+				syncStarted();
+				settings_state.set_boolean("currently-updating", true);
+				DebugUtils.dummyArticles(settings_general.get_int("max-articles"), spin.get_value_as_int());
+				updateFeedList();
+				updateArticleList();
+				settings_state.set_boolean("currently-updating", false);
+				syncFinished();
+			});
+
 
 			var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 			box.pack_start(spin);
@@ -161,11 +172,6 @@ namespace FeedReader {
 		{
 			dataBase.resetDB();
 			dataBase.init();
-		}
-
-		void on_sync_button_click (Gtk.Button button)
-		{
-
 		}
 	}
 

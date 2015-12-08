@@ -691,9 +691,9 @@ public class FeedReader.dbUI : GLib.Object {
 	}
 
 
-	public int getNewestArticle()
+	public string getNewestArticle()
 	{
-		int result = 0;
+		string result = "";
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("articleID");
@@ -706,7 +706,7 @@ public class FeedReader.dbUI : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
+			result = stmt.column_text(0);
 		}
 		return result;
 	}

@@ -45,7 +45,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		feedlist_box.pack_start(m_list);
 
 		m_scroll = new Gtk.ScrolledWindow(null, null);
-		m_scroll.set_size_request(200, 500);
+		m_scroll.set_size_request(100, 0);
 		m_scroll.add(feedlist_box);
 		m_scroll_adjustment = m_scroll.get_vadjustment();
 

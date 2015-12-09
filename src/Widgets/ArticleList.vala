@@ -83,10 +83,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 
 		m_scroll1 = new Gtk.ScrolledWindow(null, null);
-		m_scroll1.set_size_request(400, 500);
+		m_scroll1.set_size_request(250, 0);
 		m_scroll1.add(m_List1);
 		m_scroll2 = new Gtk.ScrolledWindow(null, null);
-		m_scroll2.set_size_request(400, 500);
+		m_scroll2.set_size_request(250, 0);
 		m_scroll2.add(m_List2);
 
 

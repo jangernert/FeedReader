@@ -62,7 +62,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_left.show_close_button = true;
 		m_header_left.get_style_context().add_class("header_right");
 		m_header_left.get_style_context().add_class("titlebar");
-		m_header_left.set_size_request(601, 0);
+		m_header_left.set_size_request(500, 0);
 
 
 		m_header_right = new Gtk.HeaderBar ();
@@ -70,7 +70,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_right.get_style_context().add_class("header_left");
 		m_header_right.get_style_context().add_class("titlebar");
 		m_header_right.set_title("FeedReader");
-		m_header_right.set_size_request(600, 0);
+		m_header_right.set_size_request(500, 0);
 
 		Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
 		realize.connect(set_window_buttons);

@@ -70,7 +70,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		this.set_visible_child_name("empty");
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(100);
-		this.set_size_request(500, 0);
+		this.set_size_request(450, 0);
 	}
 
 	private bool onClick(Gdk.EventButton event)

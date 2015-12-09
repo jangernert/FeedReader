@@ -70,7 +70,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_right.get_style_context().add_class("header_left");
 		m_header_right.get_style_context().add_class("titlebar");
 		m_header_right.set_title("FeedReader");
-		m_header_right.set_size_request(500, 0);
+		m_header_right.set_size_request(450, 0);
 
 		Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
 		realize.connect(set_window_buttons);

@@ -25,6 +25,7 @@ namespace FeedReader {
 		public signal void updateFeedList();
 		public signal void newArticleList();
 		public signal void updateArticleList();
+		public signal void showArticleListOverlay();
 
 		internal FeedReaderDebuggerWindow () {
 			this.title = "FeedReader Debugger";
@@ -85,6 +86,8 @@ namespace FeedReader {
 				updateArticleList();
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
+				if(spin.get_value_as_int() > 0)
+					showArticleListOverlay();
 			});
 
 
@@ -187,6 +190,7 @@ namespace FeedReader {
 		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
+		public signal void showArticleListOverlay();
 
 		public FeedDaemonServer()
 		{
@@ -203,6 +207,10 @@ namespace FeedReader {
 			});
 			window.updateArticleList.connect(() => {
 				updateArticleList();
+			});
+
+			window.showArticleListOverlay.connect(() => {
+				showArticleListOverlay();
 			});
 		}
 

@@ -325,4 +325,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		return m_articleList.getBackgroundColor();
 	}
+
+	public void showArticleListOverlay()
+	{
+		m_articleList.showOverlay();
+	}
 }

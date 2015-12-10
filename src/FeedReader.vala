@@ -59,6 +59,7 @@ namespace FeedReader {
 		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
+		public signal void showArticleListOverlay();
 	}
 
 
@@ -140,6 +141,10 @@ namespace FeedReader {
 
 				feedDaemon_interface.writeInterfaceState.connect(() => {
 					m_window.writeInterfaceState();
+				});
+
+				feedDaemon_interface.showArticleListOverlay.connect(() => {
+					m_window.getContent().showArticleListOverlay();
 				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);

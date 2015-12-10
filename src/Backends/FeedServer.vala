@@ -23,6 +23,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public signal void updateFeedList();
 	public signal void newArticleList();
 	public signal void writeInterfaceState();
+	public signal void showArticleListOverlay();
 
 	public FeedServer(Backend type)
 	{
@@ -734,6 +735,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
 			int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
 			settings_state.set_int("articlelist-new-rows", newCount);
+		}
+		else
+		{
+			showArticleListOverlay();
 		}
 	}
 

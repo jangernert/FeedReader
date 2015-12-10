@@ -36,6 +36,7 @@ namespace FeedReader {
 		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
+		public signal void showArticleListOverlay();
 
 		public FeedDaemonServer()
 		{
@@ -167,6 +168,10 @@ namespace FeedReader {
 
 			server.writeInterfaceState.connect(() => {
 				writeInterfaceState();
+			});
+
+			server.showArticleListOverlay.connect(() => {
+				showArticleListOverlay();
 			});
 
 			m_loggedin = server.login();

@@ -160,6 +160,3 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 	}
 
 }
-
-
-

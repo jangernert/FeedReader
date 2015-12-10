@@ -575,6 +575,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				logger.print(LogMessage.DEBUG, "shortcut: scroll to selcted row");
 				m_content.centerSelectedRow();
 				break;
+
+			case Gdk.Key.q:
+				if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
+				{
+					logger.print(LogMessage.DEBUG, "shortcut: quit");
+					this.close();
+				}
+				break;
 		}
 		return false;
 	}

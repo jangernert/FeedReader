@@ -568,13 +568,13 @@ public class FeedReader.dbUI : GLib.Object {
 	}
 
 
-	public int getRowCountHeadlineByRowID(string date)
+	public int getRowCountHeadlineByRowID(string id)
 	{
 		int result = 0;
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("rowid");
-		query.addEqualsCondition("date", date, true, true);
+		query.addEqualsCondition("articleID", id, true, true);
 		query.build();
 
 		var query2 = new QueryBuilder(QueryType.SELECT, "main.articles");

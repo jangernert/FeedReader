@@ -724,9 +724,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 			}
 			else
 			{
-				new_articles = Utils.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getDateStr()));
+				new_articles = Utils.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getID()));
 			}
-
 			m_limit = m_currentList.get_children().length() + new_articles;
 		}
 

@@ -703,7 +703,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
 		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
-		bool newArticles = false;
+		//bool newArticles = false;
 
 		if(m_stack.get_visible_child_name() == "empty" || m_stack.get_visible_child_name() == "syncing")
 		{
@@ -842,7 +842,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 				{
 					newRow.reveal(true, 0);
 					newRow.size_allocate.connect(onAllocated);
-					newArticles = true;
+					//newArticles = true;
 				}
 
 				articleChildList = m_currentList.get_children();
@@ -865,8 +865,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		logger.print(LogMessage.DEBUG, "ArticleList: %u articles have been added".printf(articlesInserted));
 
-		if(newArticles)
-			m_overlay.reveal();
+		//if(newArticles)
+		//	m_overlay.reveal();
 	}
 
 	private void onAllocated(Gtk.Widget row, Gtk.Allocation allocation)

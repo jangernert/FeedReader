@@ -10,7 +10,7 @@
 		    </description>
 		</key>
 
-	  	<key name="restore-searchterm" type="b">
+		<key name="restore-searchterm" type="b">
 		    <default>true</default>
 		    <summary>restore the search term on startup</summary>
 		    <description>
@@ -18,7 +18,7 @@
 		    </description>
 		</key>
 
-	  	<key name="do-not-track" type="b">
+		<key name="do-not-track" type="b">
 		    <default>true</default>
 		    <summary>do not track</summary>
 		    <description>
@@ -26,7 +26,7 @@
 		    </description>
 		</key>
 
-	  	<key name="fullscreen-videos" type="b">
+		<key name="fullscreen-videos" type="b">
 		    <default>true</default>
 		    <summary>fullscreen html5 videos</summary>
 		    <description>
@@ -34,7 +34,7 @@
 		    </description>
 		</key>
 
-	  	<key name="ignore-tls-errors" type="b">
+		<key name="ignore-tls-errors" type="b">
 		    <default>false</default>
 		    <summary>ignore unknown certificates</summary>
 		    <description>
@@ -42,7 +42,15 @@
 		    </description>
 		</key>
 
-	  	<key name="parser-api-key" type="s">
+		<key name="feedreader-autostart" type="b">
+		    <default>true</default>
+		    <summary>keep feedreader in autostart</summary>
+		    <description>
+			on startup of the daemon copy the desktop file in the autostart folder
+		    </description>
+		</key>
+
+		<key name="parser-api-key" type="s">
 		    <default>""</default>
 		    <summary>Acces key to redability parser-API</summary>
 		    <description>

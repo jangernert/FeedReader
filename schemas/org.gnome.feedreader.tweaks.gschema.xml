@@ -58,5 +58,13 @@
 		    </description>
 		</key>
 
+		<key name="sync-on-startup" type="b">
+		    <default>false</default>
+		    <summary>sync on ui startup</summary>
+		    <description>
+			start a sync as soon as the UI is started
+		    </description>
+		</key>
+
 	</schema>
 </schemalist>

@@ -173,6 +173,8 @@ namespace FeedReader {
 			{
 				m_window = new readerUI(this);
 				m_window.set_icon_name("feedreader");
+				if(settings_tweaks.get_boolean("sync-on-startup"))
+					sync();
 			}
 
 			m_window.show_all();

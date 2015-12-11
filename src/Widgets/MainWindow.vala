@@ -583,6 +583,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					this.close();
 				}
 				break;
+
+			case Gdk.Key.f:
+				if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
+				{
+					logger.print(LogMessage.DEBUG, "shortcut: focus search");
+					m_headerbar.focusSearch();
+				}
+				break;
 		}
 		return false;
 	}

@@ -263,4 +263,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_read_button.toggle();
 	}
 
+	public void focusSearch()
+	{
+		m_search.grab_focus();
+	}
+
 }

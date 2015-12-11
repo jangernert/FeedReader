@@ -148,8 +148,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 							|| (!tmpRow.isMarked() && m_only_marked)
 							|| (m_IDtype == FeedListType.TAG && !tmpRow.hasTag(m_current_feed_selected)))
 							{
-								removeRow(tmpRow);
-								break;
+								if(tmpRow.getID() != selectedID)
+								{
+									removeRow(tmpRow);
+									break;
+								}
 							}
 						}
 					}

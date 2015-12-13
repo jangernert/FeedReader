@@ -95,8 +95,8 @@
             </description>
         </key>
 
-        <key name="articlelist-row-amount" type="i">
-            <default>15</default>
+        <key name="articlelist-row-offset" type="i">
+            <default>0</default>
             <summary>ArticleList number of rows</summary>
             <description>
                 How much articles to load on startup

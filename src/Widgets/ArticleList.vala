@@ -317,9 +317,31 @@ public class FeedReader.articleList : Gtk.Overlay {
 	}
 
 
-	public int getAmountOfRowsToLoad()
+	public void getArticleListState(out double scrollPos, out int offset)
 	{
-		return (int)m_currentList.get_children().length();
+		logger.print(LogMessage.DEBUG, "ArticleList: get State");
+		scrollPos = m_current_adjustment.get_value();
+		logger.print(LogMessage.DEBUG, "scrollpos %f".printf(scrollPos));
+		offset = 0;
+		var FeedChildList = m_currentList.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null)
+			{
+				if((scrollPos-tmpRow.get_allocated_height()) > 0)
+				{
+					scrollPos -= tmpRow.get_allocated_height();
+					++offset;
+				}
+				else
+				{
+					break;
+				}
+			}
+		}
+		logger.print(LogMessage.DEBUG, "scrollpos %f".printf(scrollPos));
+		logger.print(LogMessage.DEBUG, "offset %i".printf(offset));
 	}
 
 	public void removeTagFromSelectedRow(string tagID)
@@ -397,10 +419,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: restore ScrollPos");
 		m_current_adjustment.notify["upper"].disconnect(restoreScrollPos);
-		setScrollPos(settings_state.get_double("articlelist-scrollpos"));
+		setScrollPos(m_current_adjustment.get_value() + settings_state.get_double("articlelist-scrollpos"));
 
 		settings_state.set_int("articlelist-new-rows", 0);
-		settings_state.set_int("articlelist-row-amount", 15);
 		settings_state.set_double("articlelist-scrollpos",  0);
 	}
 
@@ -431,13 +452,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_current_adjustment.set_value(newPos);
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 		settings_state.set_int("articlelist-new-rows", 0);
-
-		// (FeedChildList.length()-i)*100 = height of the "old" rows
-		// height of the "old" rows should be bigger than the page size
-		// to make sure there are enough articles to scroll down
-		// and not see "new" articles that should be further up in the list
-		if(new_rows > 0 && newPos > 0 && (FeedChildList.length()-i)*100 >= m_current_adjustment.get_page_size())
-			m_overlay.reveal();
 	}
 
 
@@ -450,26 +464,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private void scrollDOWN()
 	{
 		smooth_adjustment_to(m_current_adjustment, (int)m_current_adjustment.get_upper());
-	}
-
-
-	public double getScrollPos()
-	{
-		return m_current_adjustment.get_value();
-	}
-
-	private int shortenArticleList()
-	{
-		double RowVSpace = 102;
-		int stillInViewport = (int)((settings_state.get_double("articlelist-scrollpos")+settings_state.get_int("window-height"))/RowVSpace);
-		if(stillInViewport < settings_state.get_int("articlelist-row-amount"))
-		{
-			return stillInViewport+(int)(settings_state.get_int("window-height")/RowVSpace);
-		}
-		else if(settings_state.get_int("articlelist-row-amount") == 0)
-			return 15;
-
-		return settings_state.get_int("articlelist-row-amount");
 	}
 
 
@@ -550,6 +544,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 		int threadID = m_threadCount;
 		bool hasContent = true;
 		uint displayed_artilces = getDisplayedArticles();
+		uint offset = (uint)settings_state.get_int("articlelist-row-offset") + (uint)settings_state.get_int("articlelist-new-rows");
+		logger.print(LogMessage.DEBUG, "ArticleList: offset %u".printf(offset));
 
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll();
@@ -560,11 +556,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 			// wait a little so the currently selected article is updated in the db
 			GLib.Thread.usleep(50000);
-			m_limit = shortenArticleList() + settings_state.get_int("articlelist-new-rows");
+			m_limit = 20;
 			logger.print(LogMessage.DEBUG, "limit: " + m_limit.to_string());
 
 			logger.print(LogMessage.DEBUG, "load articles from db");
-			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces);
+			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces + offset);
 			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.size.to_string());
 
 			if(articles.size == 0)
@@ -649,6 +645,15 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 				if(settings_state.get_boolean("no-animations"))
 					settings_state.set_boolean("no-animations", false);
+
+				if(offset > 0)
+				{
+					settings_state.set_int("articlelist-row-offset", 0);
+					updateArticleList(false);
+				}
+
+				if(settings_state.get_int("articlelist-new-rows") > 0)
+					m_overlay.reveal();
 			}
 			else if(!addRows)
 			{
@@ -671,9 +676,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: delete HeadlineList");
-
-		if(settings_state.get_int("articlelist-row-amount") < 15)
-			settings_state.reset("articlelist-row-amount");
 
 		string selectedArticle = getSelectedArticle();
 
@@ -703,7 +705,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		createHeadlineList(transition);
 	}
 
-	public async void updateArticleList()
+	public async void updateArticleList(bool slideIN = true)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
 		uint articlesInserted = 0;
@@ -732,8 +734,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 			{
 				new_articles = Utils.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getID()));
 			}
+			logger.print(LogMessage.DEBUG, "updateArticleList: new articles: %u".printf(new_articles));
 			m_limit = m_currentList.get_children().length() + new_articles;
 		}
+
 
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -838,7 +842,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 
 				// animate article to slide down from the top
-				if(getSelectedArticle() == "")
+				if(getSelectedArticle() == "" && slideIN)
 				{
 					newRow.reveal(true);
 				}
@@ -872,8 +876,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private void onAllocated(Gtk.Widget row, Gtk.Allocation allocation)
 	{
-		setScrollPos(getScrollPos() + allocation.height);
+		m_limitScroll = true;
+		setScrollPos(m_current_adjustment.get_value() + allocation.height);
 		row.size_allocate.disconnect(onAllocated);
+		m_limitScroll = false;
 	}
 
 

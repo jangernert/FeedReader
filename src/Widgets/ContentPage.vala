@@ -59,7 +59,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		});
 
 		m_feedList.markAllArticlesAsRead.connect(markAllArticlesAsRead);
-		m_feedList.updateArticleList.connect(updateArticleList);
 
 
 		m_articleList = new articleList();
@@ -225,14 +224,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		this.set_position(pos);
 	}
 
-	public int getArticlesToLoad()
+	public void getArticleListState(out double scrollPos, out int offset)
 	{
-		return m_articleList.getAmountOfRowsToLoad();
-	}
-
-	public double getArticleListScrollPos()
-	{
-		return m_articleList.getScrollPos();
+		m_articleList.getArticleListState(out scrollPos, out offset);
 	}
 
 	public int getArticleViewScrollPos()

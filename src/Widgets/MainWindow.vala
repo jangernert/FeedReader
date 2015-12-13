@@ -252,13 +252,17 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			if(settings_state.get_boolean("spring-cleaning"))
 				return;
 
+			int offset = 0;
+			double scrollPos = 0.0;
+			m_content.getArticleListState(out scrollPos, out offset);
+
 			settings_state.set_strv("expanded-categories", m_content.getExpandedCategories());
 			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
 			settings_state.set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
 			settings_state.set_int("feed-row-width", m_content.getFeedListWidth());
 			settings_state.set_int("feeds-and-articles-width", m_content.getArticlePlusFeedListWidth());
-			settings_state.set_int("articlelist-row-amount", m_content.getArticlesToLoad());
-			settings_state.set_double("articlelist-scrollpos",  m_content.getArticleListScrollPos());
+			settings_state.set_int("articlelist-row-offset", offset);
+			settings_state.set_double("articlelist-scrollpos",  scrollPos);
 			settings_state.set_string("articlelist-selected-row", m_content.getSelectedArticle());
 			settings_state.set_enum("show-articles", m_headerbar.getArticleListState());
 			settings_state.set_boolean("no-animations", true);
@@ -274,14 +278,18 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		int windowHeight = 0;
 		this.get_size(out windowWidth, out windowHeight);
 
+		int offset = 0;
+		double scrollPos = 0.0;
+		m_content.getArticleListState(out scrollPos, out offset);
+
 		var state = new InterfaceState();
 		state.setWindowSize(windowHeight, windowWidth);
 		state.setFeedsAndArticleWidth(m_content.getArticlePlusFeedListWidth());
 		state.setFeedListWidth(m_content.getFeedListWidth());
 		state.setFeedListScrollPos(m_content.getFeedListScrollPos());
 		state.setArticleViewScrollPos(m_content.getArticleViewScrollPos());
-		state.setArticleListScrollPos(m_content.getArticleListScrollPos());
-		state.setArticleListRowCount(m_content.getArticlesToLoad());
+		state.setArticleListScrollPos(scrollPos);
+		state.setArticleListRowOffset(offset);
 		state.setArticleListSelectedRow(m_content.getSelectedArticle());
 		state.setArticleListNewRowCount(0);
 		state.setWindowMaximized(this.is_maximized);

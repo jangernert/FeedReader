@@ -28,7 +28,6 @@ public class FeedReader.feedList : Gtk.Stack {
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
 	public signal void markAllArticlesAsRead();
-	public signal void updateArticleList();
 
 	public feedList () {
 		m_selected = null;

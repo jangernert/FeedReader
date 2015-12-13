@@ -19,7 +19,7 @@ public class FeedReader.InterfaceState : GLib.Object {
     private int m_WindowWidth = 1600;
     private int m_FeedsAndArticleWidth = 600;
     private int m_FeedListWidth = 200;
-    private int m_ArticleListRowCount = 15;
+    private int m_ArticleListRowOffset = 15;
     private int m_ArticleListNewRowCount = 0;
     private int m_ArticleViewScrollPos = 0;
     private bool m_WindowMaximized = false;
@@ -46,7 +46,7 @@ public class FeedReader.InterfaceState : GLib.Object {
         settings_state.set_string   ("feedlist-selected-row",       m_FeedListSelectedRow);
         settings_state.set_int      ("feed-row-width",              m_FeedListWidth);
         settings_state.set_int      ("feeds-and-articles-width",    m_FeedsAndArticleWidth);
-        settings_state.set_int      ("articlelist-row-amount",      m_ArticleListRowCount);
+        settings_state.set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
         settings_state.set_double   ("articlelist-scrollpos",       m_ArticleListScrollPos);
         settings_state.set_string   ("articlelist-selected-row",    m_ArticleListSelectedRow);
         settings_state.set_enum     ("show-articles",               m_ArticleListState);
@@ -121,14 +121,14 @@ public class FeedReader.InterfaceState : GLib.Object {
         return m_ArticleListScrollPos;
     }
 
-    public void setArticleListRowCount(int count)
+    public void setArticleListRowOffset(int count)
     {
-        m_ArticleListRowCount = count;
+        m_ArticleListRowOffset = count;
     }
 
-    public int getArticleListRowCount()
+    public int getArticleListRowOffset()
     {
-        return m_ArticleListRowCount;
+        return m_ArticleListRowOffset;
     }
 
     public void setArticleListSelectedRow(string articleID)

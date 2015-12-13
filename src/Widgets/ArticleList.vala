@@ -329,7 +329,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			var tmpRow = row as articleRow;
 			if(tmpRow != null)
 			{
-				if((scrollPos-tmpRow.get_allocated_height()) > 0)
+				if((scrollPos-tmpRow.get_allocated_height()) >= 0)
 				{
 					scrollPos -= tmpRow.get_allocated_height();
 					++offset;
@@ -428,28 +428,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private void setScrollPos(double pos)
 	{
-		int new_rows = settings_state.get_int("articlelist-new-rows");
-		int i = 0;
-		int additionalScroll = 0;
-		var FeedChildList = m_currentList.get_children();
-
-		foreach(Gtk.Widget row in FeedChildList)
-		{
-			if(i < new_rows)
-			{
-				additionalScroll += row.get_allocated_height();
-				++i;
-			}
-			else
-			{
-				break;
-			}
-		}
-
-		double newPos = pos + additionalScroll;
-
 		m_current_adjustment = m_currentScroll.get_vadjustment();
-		m_current_adjustment.set_value(newPos);
+		m_current_adjustment.set_value(pos);
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 		settings_state.set_int("articlelist-new-rows", 0);
 	}

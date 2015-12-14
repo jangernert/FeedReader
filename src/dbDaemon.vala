@@ -282,6 +282,50 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         executeSQL("COMMIT TRANSACTION");
     }
 
+    public void updateArticlesByID(Gee.LinkedList<string> ids, string field)
+    {
+        // first reset all articles
+        var reset_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+        if(field == "unread")
+            reset_query.updateValuePair(field, ArticleStatus.READ.to_string());
+        else if(field == "marked")
+            reset_query.updateValuePair(field, ArticleStatus.UNMARKED.to_string());
+        executeSQL(reset_query.build());
+
+
+        executeSQL("BEGIN TRANSACTION");
+
+        // then reapply states of the synced articles
+        var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+
+        if(field == "unread")
+            update_query.updateValuePair(field, ArticleStatus.UNREAD.to_string());
+        else if(field == "marked")
+            update_query.updateValuePair(field, ArticleStatus.MARKED.to_string());
+
+        update_query.addEqualsCondition("articleID", "$ARTICLEID");
+        update_query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
+
+        if (ec != Sqlite.OK)
+            logger.print(LogMessage.ERROR, "updateArticlesByID: %s".printf(sqlite_db.errmsg()));
+
+        int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
+        assert (articleID_position > 0);
+
+
+        foreach(string id in ids)
+        {
+            stmt.bind_text(articleID_position, id);
+            while(stmt.step() != Sqlite.DONE) {}
+            stmt.reset();
+        }
+
+        executeSQL("COMMIT TRANSACTION");
+    }
+
     public void update_articles(Gee.LinkedList<article> articles)
     {
         executeSQL("BEGIN TRANSACTION");

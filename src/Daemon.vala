@@ -162,7 +162,7 @@ namespace FeedReader {
 				updateFeedList();
 			});
 
-			server.newArticleList.connect(() => {
+			server.updateArticleList.connect(() => {
 				updateArticleList();
 			});
 

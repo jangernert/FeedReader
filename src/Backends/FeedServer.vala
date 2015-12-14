@@ -21,7 +21,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private bool m_supportTags;
 	public signal void newFeedList();
 	public signal void updateFeedList();
-	public signal void newArticleList();
+	public signal void updateArticleList();
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
 
@@ -541,6 +541,25 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
+				// first update read and marked status of (nearly) all existing articles
+				if(settings_tweaks.get_boolean("ttrss-newsplus"))
+				{
+					logger.print(LogMessage.DEBUG, "getArticles: newsplus plugin active");
+					var unreadIDs = m_ttrss.NewsPlusUpdateUnread(10*settings_general.get_int("max-articles"));
+					if(unreadIDs != null)
+					{
+						dataBase.updateArticlesByID(unreadIDs, "unread");
+					}
+
+					var markedIDs = m_ttrss.NewsPlusUpdateMarked(settings_general.get_int("max-articles"));
+					if(markedIDs != null)
+					{
+						dataBase.updateArticlesByID(markedIDs, "marked");
+					}
+
+					updateArticleList();
+				}
+
 				int ttrss_feedID = 0;
 				if(feedID == "")
 					ttrss_feedID = TTRSSSpecialID.ALL;
@@ -568,7 +587,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					var articles = new Gee.LinkedList<article>();
 					m_ttrss.getHeadlines(articles, skip, amount, whatToGet, ttrss_feedID);
 					dataBase.update_articles(articles);
-					newArticleList();
+					updateArticleList();
 
 					foreach(article Article in articles)
 					{
@@ -609,7 +628,7 @@ public class FeedReader.FeedServer : GLib.Object {
 							logger.print(LogMessage.DEBUG, "FeedServer: write batch of %i articles to db".printf(new_articles.size));
 							dataBase.write_articles(new_articles);
 							updateFeedList();
-							newArticleList();
+							updateArticleList();
 							new_articles = new Gee.LinkedList<article>();
 							setNewRows(before);
 						}
@@ -717,7 +736,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					writeInterfaceState();
 					dataBase.write_articles(new_articles);
 					updateFeedList();
-					newArticleList();
+					updateArticleList();
 					new_articles = new Gee.LinkedList<article>();
 					setNewRows(before);
 				}

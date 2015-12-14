@@ -49,7 +49,7 @@
 
 	<schema id="org.gnome.feedreader" path="/org/gnome/feedreader/" gettext-domain="feedreader">
 		<key name="sync" type="i">
-			<default>300</default>
+			<default>30</default>
 			<summary>sync rate</summary>
 			<description>
 				Minutes between each refresh

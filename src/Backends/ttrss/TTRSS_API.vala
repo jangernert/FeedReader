@@ -456,6 +456,64 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 	}
 
+	// tt-rss server needs newsplusplus extention
+	public Gee.LinkedList<string>? NewsPlusUpdateUnread(int limit)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getCompactHeadlines");
+		message.add_int("feed_id", TTRSSSpecialID.ALL);
+		message.add_int("limit", limit);
+		message.add_string("view_mode", "unread");
+		int error = message.send();
+		message.printMessage();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_array();
+			var headline_count = response.get_length();
+
+			var ids = new Gee.LinkedList<string>();
+
+			for(uint i = 0; i < headline_count; i++)
+			{
+				var headline_node = response.get_object_element(i);
+				ids.add(headline_node.get_int_member("id").to_string());
+			}
+			return ids;
+		}
+		return null;
+	}
+
+	// tt-rss server needs newsplusplus extention
+	public Gee.LinkedList<string>? NewsPlusUpdateMarked(int limit)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getCompactHeadlines");
+		message.add_int("feed_id", TTRSSSpecialID.ALL);
+		message.add_int("limit", limit);
+		message.add_string("view_mode", "marked");
+		int error = message.send();
+		message.printMessage();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_array();
+			var headline_count = response.get_length();
+
+			var ids = new Gee.LinkedList<string>();
+
+			for(uint i = 0; i < headline_count; i++)
+			{
+				var headline_node = response.get_object_element(i);
+				ids.add(headline_node.get_int_member("id").to_string());
+			}
+			return ids;
+		}
+		return null;
+	}
+
 
 	public void getArticles(string articleIDs, Gee.LinkedList<article> articles)
 	{

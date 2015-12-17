@@ -2,7 +2,7 @@
 Name=FeedReader Autostart
 GenericName=RSS Client
 Comment=
-Categories=GTK;Utility;
+Categories=Network;Feed;
 Exec=feedreader-daemon
 Icon=feedreader
 Terminal=false

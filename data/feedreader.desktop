@@ -2,7 +2,7 @@
 Name=FeedReader
 GenericName=RSS Client
 Comment=Read feeds from web services
-Categories=GTK;Utility;
+Categories=Network;Feed;
 Exec=feedreader %U
 Icon=feedreader
 Terminal=false

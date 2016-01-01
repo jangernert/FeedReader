@@ -575,8 +575,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				break;
 
 			case Gdk.Key.F5:
-				logger.print(LogMessage.DEBUG, "shortcut: sync");
-				((rssReaderApp)GLib.Application.get_default()).sync();
+				if(m_stack.get_visible_child_name() == "content")
+				{
+					logger.print(LogMessage.DEBUG, "shortcut: sync");
+					((rssReaderApp)GLib.Application.get_default()).sync();
+				}
 				break;
 
 			case Gdk.Key.s:

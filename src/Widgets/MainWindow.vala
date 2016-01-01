@@ -532,6 +532,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private bool shortcuts(Gdk.EventKey event)
 	{
+		if(m_stack.get_visible_child_name() != "content")
+			return false;
+
 		if(m_headerbar.searchFocused())
 			return false;
 
@@ -575,11 +578,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				break;
 
 			case Gdk.Key.F5:
-				if(m_stack.get_visible_child_name() == "content")
-				{
-					logger.print(LogMessage.DEBUG, "shortcut: sync");
-					((rssReaderApp)GLib.Application.get_default()).sync();
-				}
+				logger.print(LogMessage.DEBUG, "shortcut: sync");
+				((rssReaderApp)GLib.Application.get_default()).sync();
 				break;
 
 			case Gdk.Key.s:

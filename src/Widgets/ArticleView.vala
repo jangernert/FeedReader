@@ -25,6 +25,7 @@ public class FeedReader.articleView : Gtk.Stack {
 	private double m_momentum = 0;
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
+	private bool m_stopLoading = false;
 	public signal void enterFullscreen();
 	public signal void leaveFullscreen();
 
@@ -148,8 +149,10 @@ public class FeedReader.articleView : Gtk.Stack {
 
 		if(isLoading())
 		{
+			logger.print(LogMessage.DEBUG, "ArticleView: still busy loading last article. will cancel loading and load new article");
 			m_view.load_failed.connect(loadFailed);
 			m_view.stop_loading();
+			m_stopLoading = true;
 			return;
 		}
 
@@ -233,6 +236,13 @@ public class FeedReader.articleView : Gtk.Stack {
 				break;
 			case WebKit.LoadEvent.FINISHED:
 				logger.print(LogMessage.DEBUG, "ArticleView: load FINISHED");
+				if(m_stopLoading)
+				{
+					logger.print(LogMessage.DEBUG, "ArticleView: loading finished before canceling");
+					m_view.load_failed.disconnect(loadFailed);
+					m_stopLoading = false;
+					fillContent(m_currentArticle);
+				}
 				if(m_firstTime)
 				{
 					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
@@ -252,6 +262,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			logger.print(LogMessage.DEBUG, "ArticleView: loading canceled " + m_currentArticle);
 			WebKit.WebContext.get_default().clear_cache();
 			m_view.load_failed.disconnect(loadFailed);
+			m_stopLoading = false;
 			fillContent(m_currentArticle);
 		}
 		return true;
@@ -297,11 +308,18 @@ public class FeedReader.articleView : Gtk.Stack {
 		int scrollPos = -1;
 		var loop = new MainLoop();
 
-		m_view.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
-			m_view.run_javascript.end(res);
-			scrollPos = int.parse(m_view.get_title());
-			loop.quit();
-		});
+		try{
+			m_view.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
+				m_view.run_javascript.end(res);
+				scrollPos = int.parse(m_view.get_title());
+				loop.quit();
+			});
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ArticleView: could not get scroll-pos, javascript error: " + e.message);
+		}
+
 
 		loop.run();
 		return scrollPos;

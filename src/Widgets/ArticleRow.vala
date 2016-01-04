@@ -170,14 +170,20 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
 		icon_box.pack_end(m_marked_eventbox, false, false, 0);
 
+		string short_preview = "";
 
-		int length = 300;
-		if(preview.length < length)
-			length = preview.length;
-
-		string short_preview = preview.slice(0, length);
-		short_preview = short_preview.slice(0, short_preview.last_index_of(" "));
-		short_preview = short_preview.strip();
+		if(preview != "")
+		{
+			if(preview.length > 300)
+			{
+				short_preview = preview.slice(0, 300);
+				short_preview = short_preview.slice(0, short_preview.last_index_of(" "));
+				short_preview = short_preview.strip();
+			}
+			else
+				short_preview = preview;
+		}
+		
 
 		var body_label = new Gtk.Label(short_preview);
 		body_label.opacity = 0.7;

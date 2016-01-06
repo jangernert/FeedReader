@@ -1,0 +1,7 @@
+body: //*[@class='ar-annotation'] | //div[@class="ar-content"]
+strip_id_or_class: ar-link-to-another
+strip_id_or_class: ar-tags
+next_page_link: //a[@data-tracker='Navigace,NextChapter']
+
+test_url: http://www.zive.cz/clanky/tyden-zive-pocitac-ktery-pripomina-hamburger/sc-3-a-180652/default.aspx
+test_url: www.zive.cz/clanky/6-specialnich-pc-na-doma-k-praci-i-na-hrani-vanoce-2015/sc-3-a-180617/default.aspx

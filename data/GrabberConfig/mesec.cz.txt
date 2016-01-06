@@ -1,0 +1,4 @@
+body: //div[@class='urs'] | //div[@itemprop='articleBody']
+strip_id_or_class: promo-in-article
+
+test_url: www.mesec.cz/aktuality/ceske-drahy-pridaji-zamestnancum-jejich-mzdy-vzrostou-o-1-7/

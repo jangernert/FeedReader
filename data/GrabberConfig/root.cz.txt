@@ -1,0 +1,4 @@
+body: //div[@class='urs'] | //div[@itemprop='articleBody']
+
+test_url: http://www.root.cz/zpravicky/google-testuje-moznost-vyzkouset-mobilni-aplikace-pred-instalaci/
+test_url: http://www.root.cz/clanky/let-s-encrypt-otevrel-branu-ve-verejne-bete-muze-mit-certifikat-kazdy/

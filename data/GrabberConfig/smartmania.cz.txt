@@ -1,0 +1,6 @@
+strip_id_or_class: komentare
+replace_string(<h2>Nepřehlédněte</h2>): <!-- nothing -->
+next_page_link: //div[contains(concat(' ',normalize-space(@class),' '),' navigation ')]/a[@class='right']
+
+test_url: http://smartmania.cz/bleskovky/oppo-vanoce-2015-adventni-kalendar-r7-12597
+test_url: http://smartmania.cz/recenze/lumia-950-recenze-microsoft-windows-10-test-12623

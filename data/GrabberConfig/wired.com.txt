@@ -10,6 +10,9 @@ strip_id_or_class: pullquote
 strip_id_or_class: left_rail
 strip_id_or_class: related-container
 strip_id_or_class: radvert-caption-wrap
+strip_id_or_class: related
+strip_id_or_class: article-tags
+strip_id_or_class: visually-hidden
 
 # Remove gallery?
 strip_id_or_class: wpgallery
@@ -23,3 +26,4 @@ single_page_link: //a[.='View All' and contains(@href, '/all/')]
 test_url: http://www.wired.com/cloudline/2011/10/meet-arms-cortex-a15-the-future-of-the-ipad-and-possibly-the-macbook-air/
 test_url: http://www.wired.com/wiredenterprise/2013/09/docker/
 test_url: http://www.wired.com/threatlevel/2012/05/ff_counterfeiter/all/
+test_url: http://www.wired.com/2015/11/i-turned-off-javascript-for-a-whole-week-and-it-was-glorious/

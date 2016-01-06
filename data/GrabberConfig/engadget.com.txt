@@ -1,6 +1,5 @@
 title: //meta[@property="og:title"]/@content
-body: //div[@class='post_body']
-date: //*[@class='post_time']
+body: //div[contains(@class, 'o-article_block')]
 
 prune: no
 

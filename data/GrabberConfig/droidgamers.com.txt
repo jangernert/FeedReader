@@ -1,0 +1,7 @@
+strip_id_or_class: actions
+strip_id_or_class: article-info
+strip_id_or_class: bt-social-share
+strip_id_or_class: author_bio
+strip_id_or_class: dsq-brlink
+
+test_url: http://www.droidgamers.com/index.php/game-news/android-game-news/10346-carpazzzi-soft-and-bulkypix-globally-launches-mad-aces-onto-google-play-this-morning

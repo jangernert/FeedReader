@@ -1,0 +1,5 @@
+body: //img[starts-with(@class, 'aligncenter size-full wp-image-')]
+
+test_url: http://www.commitstrip.com/en/2015/11/10/coder-epitaphs/
+test_url: http://www.commitstrip.com/en/2015/11/12/pay-to-pitch-to-randoms-the-next-big-idea/
+test_url: http://www.commitstrip.com/en/2015/11/13/the-last-ever-line-of-code/

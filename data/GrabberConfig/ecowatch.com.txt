@@ -1,0 +1,10 @@
+date: //meta[@property="article:published_time"]/@content
+body: //div[contains(concat(' ',normalize-space(@class),' '),' post-content ')]
+strip_id_or_class: print-no
+strip_id_or_class: subscribe
+strip_id_or_class: pagination
+strip: //p[starts-with(., 'Read page ')]
+
+next_page_link: //link[@rel="next"]
+
+test_url: http://ecowatch.com/2015/09/16/gop-climate-change-denial/

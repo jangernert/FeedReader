@@ -1,0 +1,9 @@
+body: //div[@itemprop='articleBody']
+single_page_link: //a[contains(., 'Singlepage-weergave')]
+
+strip: //q[@class='streamer']
+prune: no
+
+test_url: http://tweakers.net/feeds/mixed.xml
+test_url: https://tweakers.net/reviews/4110/tv-kijken-zonder-kabels-vodafone-tv-anywhere-en-kpn-play.html
+test_url: https://tweakers.net/reviews/4113/all/hp-spectre-13-x360-convertible-die-vrijwel-alles-goed-doet.html

@@ -1,7 +1,7 @@
 tidy: no
 prune: no
 
-title: //h1[contains(@itemprop,'headline')]
+title: //span[@itemprop='title']
 author: //span[@itemprop='author']//span[@itemprop='name']
 body: //article
 date: //time

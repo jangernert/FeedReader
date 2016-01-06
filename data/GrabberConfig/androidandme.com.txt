@@ -1,0 +1,5 @@
+body: //img[@class='attachment-large wp-post-image'] | //div[@class='entry-content']
+prune: no
+
+test_url: http://androidandme.com/2015/12/news/google-introduces-trial-run-ads-and-interactive-interstitials/
+test_url: http://androidandme.com/2015/12/applications/top-10-new-android-games-this-week-maestria-mad-aces/

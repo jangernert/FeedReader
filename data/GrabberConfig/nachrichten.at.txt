@@ -1,0 +1,8 @@
+single_page_link: //a[@class="drucken"]
+
+body: //div[@class="artikeldruck"]
+
+strip: //div[@class="druckheadline"]
+strip: //div[@class="druckfuss"]
+
+test_url: http://www.nachrichten.at/nachrichten/chronik/Silvester-in-der-Bundeshauptstadt-Anti-Terror-Einheiten-ruesten-sich;art58,2069166

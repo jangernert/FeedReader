@@ -1,0 +1,3 @@
+strip_id_or_class: promo-in-article
+
+test_url: http://www.lupa.cz/clanky/michal-zamec-parfums-za-dva-roky-presahneme-obrat-6-miliard-korun/

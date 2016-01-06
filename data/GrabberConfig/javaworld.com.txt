@@ -1,0 +1,17 @@
+# All sites of the IDG network can be extracted using the same rules,
+# make sure to update all of them
+
+author: //meta[@name="author"]/@content
+date: //meta[@name="DC.date.issued"]/@content
+
+body: //div[@itemprop="articleBody"]
+body: //div[@itemprop="reviewBody"]
+body: //figcaption|//div[@class="img-wrapper"]/noscript/img
+
+next_page_link: //a[@rel="next"]
+
+strip: //aside
+strip: //h3[contains(., "See also:")]
+strip: //div[@id="article-top-page-number"]
+strip: //p[starts-with(normalize-space(.), '[')]
+strip: //p[starts-with(normalize-space(.), '+')]

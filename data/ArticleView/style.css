@@ -322,6 +322,13 @@ dd:after {
   content: " ";
   display: block;
 }
+blockquote {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 50px;
+  padding-left: 15px;
+  border-left: 3px solid #ccc;
+} 
 /* DEFAULT THEME*/
 div.theme.default {
   background: white;

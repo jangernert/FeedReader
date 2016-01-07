@@ -30,7 +30,6 @@ namespace FeedReader {
 		public signal void syncFinished();
 		public signal void springCleanStarted();
 		public signal void springCleanFinished();
-		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
 		public signal void updateFeedList();
 		public signal void newArticleList();
@@ -209,7 +208,7 @@ namespace FeedReader {
 
 				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
 					dataBase.update_article.end(res);
-					updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleID), increase);
+					updateFeedList();
 					updateBadge();
 				});
 			}

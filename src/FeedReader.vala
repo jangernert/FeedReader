@@ -53,7 +53,6 @@ namespace FeedReader {
 		public signal void syncFinished();
 		public signal void springCleanStarted();
 		public signal void springCleanFinished();
-		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
 		public signal void updateFeedList();
 		public signal void newArticleList();
@@ -98,10 +97,6 @@ namespace FeedReader {
 
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
-
-				feedDaemon_interface.updateFeedlistUnreadCount.connect((feedID, increase) => {
-				    m_window.getContent().updateFeedListCountUnread(feedID, increase);
-				});
 
 				feedDaemon_interface.newFeedList.connect(() => {
 				    m_window.getContent().newFeedList();

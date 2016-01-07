@@ -147,11 +147,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_article_view.reload();
 	}
 
-	public void updateFeedListCountUnread(string feedID, bool increase)
-	{
-		m_feedList.updateCounters(feedID, increase);
-	}
-
 	public void updateArticleList()
 	{
 		m_articleList.updateArticleList();

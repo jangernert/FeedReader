@@ -586,8 +586,12 @@ public class FeedReader.FeedServer : GLib.Object {
 
 					var articles = new Gee.LinkedList<article>();
 					m_ttrss.getHeadlines(articles, skip, amount, whatToGet, ttrss_feedID);
-					dataBase.update_articles(articles);
-					updateArticleList();
+
+					if(!settings_tweaks.get_boolean("ttrss-newsplus"))
+					{
+						dataBase.update_articles(articles);
+						updateArticleList();
+					}
 
 					foreach(article Article in articles)
 					{

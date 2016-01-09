@@ -599,4 +599,37 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Utils.remove_directory(folder_path);
     }
 
+    public void addOfflineAction(OfflineAction action, string id, string? argument = "")
+    {
+        executeSQL("BEGIN TRANSACTION");
+
+        var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.OfflineActions");
+        query.insertValuePair("action", "$ACTION");
+        query.insertValuePair("id", "$ID");
+        query.insertValuePair("argument", "$ARGUMENT");
+        query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+        if (ec != Sqlite.OK)
+            logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+
+        int action_position = stmt.bind_parameter_index("$ACTION");
+        int id_position = stmt.bind_parameter_index("$ID");
+        int argument_position = stmt.bind_parameter_index("$ARGUMENT");
+        assert (action_position > 0);
+        assert (id_position > 0);
+        assert (argument_position > 0);
+
+        stmt.bind_int (action_position, action);
+        stmt.bind_text(id_position, id);
+        stmt.bind_text(argument_position, argument);
+
+        while (stmt.step () == Sqlite.ROW) {}
+        stmt.reset ();
+
+        executeSQL("COMMIT TRANSACTION");
+    }
+
 }

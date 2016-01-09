@@ -70,7 +70,6 @@ else(USE_WEBKIT_4)
 	list(APPEND UI_PACKAGES WebKit2-3.0)
 endif(USE_WEBKIT_4)
 
-# files we want to compile
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
     src/FeedReader.vala
@@ -162,18 +161,19 @@ if(WITH_DEBUG)
 endif(WITH_DEBUG)
 
 vala_precompile(daemon ${DAEMON_NAME}
+    src/Constants.vala
     src/Daemon.vala
     src/dbUI.vala
     src/dbDaemon.vala
     src/Logger.vala
     src/Utils.vala
+    src/OfflineActionManager.vala
     src/QueryBuilder.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
     src/Model/Tag.vala
     src/Model/InterfaceState.vala
-    src/Constants.vala
     src/Backends/FeedServer.vala
     src/Backends/ttrss/TTRSS_API.vala
     src/Backends/ttrss/TTRSS_Utils.vala

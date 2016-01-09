@@ -127,6 +127,15 @@ namespace FeedReader {
 		DATE
 	}
 
+	public enum OfflineAction {
+		MARK_READ,
+		MARK_UNREAD,
+		MARK_STARRED,
+		MARK_UNSTARRED,
+		MARK_READ_FEED,
+		MARK_READ_CATEGORY
+	}
+
 
 	namespace FeedlySecret {
 		 const string base_uri        = "http://cloud.feedly.com";

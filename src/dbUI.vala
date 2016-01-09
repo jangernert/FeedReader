@@ -45,7 +45,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds"
 											(
-												"feed_id" TEXT PRIMARY KEY  NOT NULL UNIQUE ,
+												"feed_id" TEXT PRIMARY KEY NOT NULL UNIQUE,
 												"name" TEXT NOT NULL,
 												"url" TEXT NOT NULL,
 												"has_icon" INTEGER NOT NULL,
@@ -55,7 +55,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
 											(
-												"categorieID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
+												"categorieID" TEXT PRIMARY KEY NOT NULL UNIQUE,
 												"title" TEXT NOT NULL,
 												"orderID" INTEGER,
 												"exists" INTEGER,
@@ -65,7 +65,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
 											(
-												"articleID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
+												"articleID" TEXT PRIMARY KEY NOT NULL UNIQUE,
 												"feedID" TEXT NOT NULL,
 												"title" TEXT NOT NULL,
 												"author" TEXT,
@@ -82,11 +82,18 @@ public class FeedReader.dbUI : GLib.Object {
 
 			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
 											(
-												"tagID" TEXT PRIMARY KEY  NOT NULL  UNIQUE ,
+												"tagID" TEXT PRIMARY KEY NOT NULL UNIQUE,
 												"title" TEXT NOT NULL,
 												"exists" INTEGER,
 												"color" INTEGER
-												)""");
+											)""");
+
+			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."OfflineActions"
+											(
+												"action" INTEGER PRIMARY KEY NOT NULL UNIQUE,
+												"id" TEXT NOT NULL,
+												"argument" INTEGER
+											)""");
 
 			executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
 			executeSQL(						"""CREATE VIRTUAL TABLE fts_table USING fts4 (content='articles', articleID, preview, title, author)""");

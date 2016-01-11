@@ -23,32 +23,40 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	public void markArticleRead(string id)
 	{
-		dataBase.addOfflineAction(OfflineAction.MARK_READ, id);
+		dataBase.addOfflineAction(OfflineActions.MARK_READ, id);
 	}
 
 	public void markArticleUnread(string id)
 	{
-		dataBase.addOfflineAction(OfflineAction.MARK_UNREAD, id);
+		dataBase.addOfflineAction(OfflineActions.MARK_UNREAD, id);
 	}
 
 	public void markArticleStarred(string id)
 	{
-		dataBase.addOfflineAction(OfflineAction.MARK_STARRED, id);
+		dataBase.addOfflineAction(OfflineActions.MARK_STARRED, id);
 	}
 
 	public void markArticleUnstarred(string id)
 	{
-		dataBase.addOfflineAction(OfflineAction.MARK_UNSTARRED, id);
+		dataBase.addOfflineAction(OfflineActions.MARK_UNSTARRED, id);
 	}
 
 	public void markFeedRead(string id)
 	{
-		dataBase.addOfflineAction(OfflineAction.MARK_READ_FEED, id);
+		dataBase.addOfflineAction(OfflineActions.MARK_READ_FEED, id);
 	}
 
 	public void markCategoryRead(string id)
 	{
-		dataBase.addOfflineAction(OfflineAction.MARK_READ_CATEGORY, id);
+		dataBase.addOfflineAction(OfflineActions.MARK_READ_CATEGORY, id);
+	}
+
+
+	public void goOnline()
+	{
+
+		// empty TABLE
+
 	}
 
 

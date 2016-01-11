@@ -599,7 +599,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Utils.remove_directory(folder_path);
     }
 
-    public void addOfflineAction(OfflineAction action, string id, string? argument = "")
+    public void addOfflineAction(OfflineActions action, string id, string? argument = "")
     {
         executeSQL("BEGIN TRANSACTION");
 
@@ -631,5 +631,27 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
         executeSQL("COMMIT TRANSACTION");
     }
+
+
+    public Gee.ArrayList<OfflineAction> readOfflineActions()
+	{
+		Gee.ArrayList<OfflineAction> tmp = new Gee.ArrayList<OfflineAction>();
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.OfflineActions");
+		query.selectField("*");
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			string feedID = stmt.column_text(0);
+			tmp.add(new OfflineAction((OfflineAction)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2)));
+		}
+
+		return tmp;
+	}
 
 }

@@ -173,6 +173,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Model/Category.vala
     src/Model/Article.vala
     src/Model/Tag.vala
+    src/Model/OfflineAction.vala
     src/Model/InterfaceState.vala
     src/Backends/FeedServer.vala
     src/Backends/ttrss/TTRSS_API.vala
@@ -226,6 +227,7 @@ vala_precompile(debug ${DEBUG_NAME}
     src/Model/Article.vala
     src/Model/Tag.vala
     src/Model/InterfaceState.vala
+    src/Model/OfflineAction.vala
     src/Constants.vala
     src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala

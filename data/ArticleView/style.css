@@ -152,60 +152,6 @@ body {
     font-family: 'Droid Sans', 'Open Sans';
     font-weight: 300;
 }
-table {
-    border: 1px solid rgba(0, 0, 0, 0.8);
-    width: 100% !important;
-    table-layout: fixed;
-    margin: 0;
-    padding: 0;
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-table tr {
-    padding: 5px;
-}
-table > thead > tr:first-child > td {
-    background-color: #318c34;
-    color: #FFF;
-    font-weight: bold;
-}
-table th,
-table td {
-    border: 1px solid rgba(0, 0, 0, 0.4);
-    padding: 10px;
-    text-align: center;
-    word-wrap: break-word;
-}
-table th {
-    text-transform: uppercase;
-    font-size: 14px;
-    letter-spacing: 1px;
-}
-@media screen and (max-width: 650px) {
-    table {
-        border: 0;
-    }
-    table thead {
-        display: none;
-    }
-    table tr {
-        margin-bottom: 10px;
-        display: block;
-    }
-    table td {
-        display: block;
-        text-align: right;
-    }
-    table td:last-child {
-        border-top: 0px;
-    }
-    table td:before {
-        content: attr(data-label);
-        float: left;
-        text-transform: uppercase;
-        font-weight: bold;
-    }
-}
 .tlblue {
     background-color: #2295AB;
     color: white;
@@ -378,9 +324,6 @@ blockquote {
 }
 /* DEFAULT THEME*/
 
-div.theme {
-    width: 50%;
-}
 div.theme.default {
     background: white;
 }
@@ -390,12 +333,13 @@ div.theme.midnight {
     color: rgba(255, 255, 255, 0.6);
     background: #233540;
 }
-div.theme.midnight pre, div.theme.midnight code {
+div.theme.midnight pre, 
+div.theme.midnight pre code,
+div.theme.midnight code {
     background-color: rgba(255, 255, 255, 0.6);
     color: #233540;
-    font-family: 'Open Sans';
-    overflow: auto;
-    font-size: 12px;
+    font-family: 'Monospace';
+    font-size: 13px;
 }
 div.theme.midnight table,
 div.theme.midnight th,
@@ -409,7 +353,11 @@ div.theme.midnight header.post {
 div.theme.midnight header.post h1 {
     color: #fff;
 }
+div.theme.midnight header.post h1 a{
+    color:#9BA6AC;
+}
 div.theme.midnight header.post span.source {
+    font-size:13px;
     color: #2978a6;
 }
 div.theme.midnight header.post span.author {
@@ -421,9 +369,7 @@ div.theme.midnight div.content {
 div.theme.midnight div.content a {
     color: #2978a6;
 }
-div.theme.midnight div.content code {
-    background-color: rgba(20, 20, 20, 0.6);
-}
+
 div.theme.midnight div.content h1,
 div.theme.midnight div.content h2,
 div.theme.midnight div.content h3,

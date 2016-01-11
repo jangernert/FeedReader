@@ -25,37 +25,36 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     private string m_username;
     private bool m_loggedIn;
 
-    public ReadabilityAPI(string id, string settings_path = "")
+
+    public ReadabilityAPI(string id)
     {
-    	m_id = id;
+        m_id = id;
+        m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
 
-        if(settings_path == "")
-        {
-        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
+        m_oauth = new Rest.OAuthProxy (
+            ReadabilitySecrets.oauth_consumer_key,
+            ReadabilitySecrets.oauth_consumer_secret,
+            ReadabilitySecrets.base_uri,
+            false);
 
-            m_oauth = new Rest.OAuthProxy (
-    			ReadabilitySecrets.oauth_consumer_key,
-    			ReadabilitySecrets.oauth_consumer_secret,
-    			ReadabilitySecrets.base_uri,
-    			false);
+        m_loggedIn = false;
+    }
 
-    		m_loggedIn = false;
-        }
-        else
-        {
-        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", settings_path);
-        	m_username = m_settings.get_string("username");
+    public ReadabilityAPI.open(string id)
+    {
+        m_id = id;
+        m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
+        m_username = m_settings.get_string("username");
 
-            m_oauth = new Rest.OAuthProxy.with_token (
-    			ReadabilitySecrets.oauth_consumer_key,
-    			ReadabilitySecrets.oauth_consumer_secret,
-                m_settings.get_string("oauth-access-token"),
-                m_settings.get_string("oauth-access-token-secret"),
-    			ReadabilitySecrets.base_uri,
-    			false);
+        m_oauth = new Rest.OAuthProxy.with_token (
+            ReadabilitySecrets.oauth_consumer_key,
+            ReadabilitySecrets.oauth_consumer_secret,
+            m_settings.get_string("oauth-access-token"),
+            m_settings.get_string("oauth-access-token-secret"),
+            ReadabilitySecrets.base_uri,
+            false);
 
-            m_loggedIn = true;
-        }
+        m_loggedIn = true;
     }
 
 

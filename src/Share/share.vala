@@ -25,21 +25,21 @@ public class FeedReader.Share : GLib.Object {
 		var readabilityAccounts = settings_share.get_strv("readability");
 		foreach(string id in readabilityAccounts)
 		{
-			m_readability.add(new ReadabilityAPI(id, "/org/gnome/feedreader/share/readability/%s/".printf(id)));
+			m_readability.add(new ReadabilityAPI.open(id));
 		}
 
 		m_pocket = new Gee.ArrayList<PocketAPI>();
 		var pocketAccounts = settings_share.get_strv("pocket");
 		foreach(string id in pocketAccounts)
 		{
-			m_pocket.add(new PocketAPI(id, "/org/gnome/feedreader/share/pocket/%s/".printf(id)));
+			m_pocket.add(new PocketAPI.open(id));
 		}
 
 		m_instapaper = new Gee.ArrayList<InstaAPI>();
 		var instaAccounts = settings_share.get_strv("instapaper");
 		foreach(string id in instaAccounts)
 		{
-			m_instapaper.add(new InstaAPI(id, "/org/gnome/feedreader/share/instapaper/%s/".printf(id)));
+			m_instapaper.add(new InstaAPI.open(id));
 		}
 	}
 

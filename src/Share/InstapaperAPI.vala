@@ -28,46 +28,47 @@ public class FeedReader.InstaAPI : GLib.Object {
     private string m_passwd;
     private bool m_loggedIn;
 
-    public InstaAPI(string id, string settings_path = "")
+    public InstaAPI(string id)
     {
     	m_id = id;
 		m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded";
 
-        if(settings_path == "")
+        m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
+
+        m_oauth = new Rest.OAuthProxy (
+            InstapaperSecrets.oauth_consumer_key,
+            InstapaperSecrets.oauth_consumer_secret,
+            "https://www.instapaper.com/api/1/",
+            false);
+    }
+
+    public InstaAPI.open(string id)
+    {
+        m_id = id;
+		m_session = new Soup.Session();
+		m_contenttype = "application/x-www-form-urlencoded";
+
+        m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
+        m_username = m_settings.get_string("username");
+        m_userID = m_settings.get_string("user-id");
+        m_passwd = getPassword();
+
+        m_oauth = new Rest.OAuthProxy.with_token (
+            InstapaperSecrets.oauth_consumer_key,
+            InstapaperSecrets.oauth_consumer_secret,
+            m_settings.get_string("oauth-access-token"),
+            m_settings.get_string("oauth-access-token-secret"),
+            "https://www.instapaper.com/api/1/",
+            false);
+
+        if(m_settings.get_string("user-id") != "")
         {
-        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
-
-            m_oauth = new Rest.OAuthProxy (
-                InstapaperSecrets.oauth_consumer_key,
-                InstapaperSecrets.oauth_consumer_secret,
-                "https://www.instapaper.com/api/1/",
-                false);
-        }
-        else
-        {
-        	m_settings = new Settings.with_path("org.gnome.feedreader.share.account", settings_path);
-        	m_username = m_settings.get_string("username");
-        	m_userID = m_settings.get_string("user-id");
-        	m_passwd = getPassword();
-
-            m_oauth = new Rest.OAuthProxy.with_token (
-    			InstapaperSecrets.oauth_consumer_key,
-    			InstapaperSecrets.oauth_consumer_secret,
-                m_settings.get_string("oauth-access-token"),
-                m_settings.get_string("oauth-access-token-secret"),
-    			"https://www.instapaper.com/api/1/",
-    			false);
-
-            if(m_settings.get_string("user-id") != "")
+            if(m_passwd != "")
             {
-                if(m_passwd != "")
-                {
-                    m_loggedIn = true;
-                }
+                m_loggedIn = true;
             }
         }
-
     }
 
     public bool checkLogin()

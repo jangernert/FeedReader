@@ -25,24 +25,26 @@ public class FeedReader.PocketAPI : GLib.Object {
     private string m_username;
     private bool m_loggedIn;
 
-    public PocketAPI(string id, string settings_path = "")
+    public PocketAPI(string id)
     {
     	m_id = id;
 		m_session = new Soup.Session();
 		m_contenttype = "application/x-www-form-urlencoded; charset=UTF8";
 
-		if(settings_path == "")
-		{
-			m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
-			m_loggedIn = false;
-		}
-		else
-		{
-			m_settings = new Settings.with_path("org.gnome.feedreader.share.account", settings_path);
-			m_username = m_settings.get_string("username");
-			m_accessToken = m_settings.get_string("oauth-access-token");
-			m_loggedIn = false;
-		}
+		m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+		m_loggedIn = false;
+    }
+
+    public PocketAPI.open(string id)
+    {
+        m_id = id;
+		m_session = new Soup.Session();
+		m_contenttype = "application/x-www-form-urlencoded; charset=UTF8";
+
+        m_settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+        m_username = m_settings.get_string("username");
+        m_accessToken = m_settings.get_string("oauth-access-token");
+        m_loggedIn = false;
     }
 
 

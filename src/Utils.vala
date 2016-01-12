@@ -297,11 +297,11 @@ public class FeedReader.Utils : GLib.Object {
 		switch(settings_general.get_enum("fontsize"))
 		{
 			case FontSize.SMALL:
-				fontsize = "xx-small";
+				fontsize = "smaller";
 				break;
 
 			case FontSize.NORMAL:
-				fontsize = "initial";
+				fontsize = "medium";
 				break;
 
 			case FontSize.LARGE:

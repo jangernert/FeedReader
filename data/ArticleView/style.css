@@ -288,12 +288,12 @@ header.post a:link {
 }
 header.post span.source {
     color: rgba(0, 0, 0, 0.75);
-	font-size:inherit;
+	font-size: 0.75rem;
 }
 header.post span.author {
     color: rgba(0, 0, 0, 0.8);
     font-weight: 500;
-    font-size:inherit;
+    font-size: 0.75rem;
 }
 
 div.content {
@@ -322,6 +322,9 @@ blockquote {
     margin-left: 50px;
     padding-left: 15px;
     border-left: 3px solid #ccc;
+}
+b{
+	font-weight: bold;
 }
 /* DEFAULT THEME*/
 

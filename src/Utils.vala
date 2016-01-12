@@ -294,29 +294,39 @@ public class FeedReader.Utils : GLib.Object {
 
 
 		string fontsize = "intial";
+		string sourcefontsize = "0.75rem";
 		switch(settings_general.get_enum("fontsize"))
 		{
 			case FontSize.SMALL:
 				fontsize = "smaller";
+				sourcefontsize = "0.5rem";
 				break;
 
 			case FontSize.NORMAL:
 				fontsize = "medium";
+				sourcefontsize = "0.75rem";
 				break;
 
 			case FontSize.LARGE:
 				fontsize = "large";
+				sourcefontsize = "1.0rem";
 				break;
 
 			case FontSize.HUGE:
 				fontsize = "xx-large";
+				sourcefontsize = "1.2rem";
 				break;
 		}
 
 		string fontsize_id = "$FONTSIZE";
+		string sourcefontsize_id = "$SOURCEFONTSIZE";
 		int fontsize_pos = article.str.index_of(fontsize_id);
 		article.erase(fontsize_pos, fontsize_id.length);
 		article.insert(fontsize_pos, fontsize);
+
+		int sourcefontsize_pos = article.str.index_of(sourcefontsize_id);
+		article.erase(sourcefontsize_pos, sourcefontsize_id.length);
+		article.insert(sourcefontsize_pos, sourcefontsize);
 
 		string css;
 		try{

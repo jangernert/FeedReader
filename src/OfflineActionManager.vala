@@ -15,6 +15,9 @@
 
 public class FeedReader.OfflineActionManager : GLib.Object {
 
+	private OfflineActions m_lastAction = OfflineActions.NONE;
+	private string m_ids = "";
+
 	public OfflineActionManager()
 	{
 
@@ -23,41 +26,115 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	public void markArticleRead(string id)
 	{
-		dataBase.addOfflineAction(OfflineActions.MARK_READ, id);
+		var action = new OfflineAction(OfflineActions.MARK_READ, id, "");
+		addAction(action);
 	}
 
 	public void markArticleUnread(string id)
 	{
-		dataBase.addOfflineAction(OfflineActions.MARK_UNREAD, id);
+		var action = new OfflineAction(OfflineActions.MARK_UNREAD, id, "");
+		addAction(action);
 	}
 
 	public void markArticleStarred(string id)
 	{
-		dataBase.addOfflineAction(OfflineActions.MARK_STARRED, id);
+		var action = new OfflineAction(OfflineActions.MARK_STARRED, id, "");
+		addAction(action);
 	}
 
 	public void markArticleUnstarred(string id)
 	{
-		dataBase.addOfflineAction(OfflineActions.MARK_UNSTARRED, id);
+		var action = new OfflineAction(OfflineActions.MARK_UNSTARRED, id, "");
+		addAction(action);
 	}
 
 	public void markFeedRead(string id)
 	{
-		dataBase.addOfflineAction(OfflineActions.MARK_READ_FEED, id);
+		var action = new OfflineAction(OfflineActions.MARK_READ_FEED, id, "");
+		addAction(action);
 	}
 
 	public void markCategoryRead(string id)
 	{
-		dataBase.addOfflineAction(OfflineActions.MARK_READ_CATEGORY, id);
+		var action = new OfflineAction(OfflineActions.MARK_READ_CATEGORY, id, "");
+		addAction(action);
 	}
 
+	public void markAllRead()
+	{
+		var action = new OfflineAction(OfflineActions.MARK_READ_ALL, "", "");
+		addAction(action);
+	}
+
+	private void addAction(OfflineAction action)
+	{
+		if(dataBase.offlineActionNecessary(action))
+		{
+			dataBase.deleteOppositeOfflineAction(action);
+		}
+		else
+		{
+			dataBase.addOfflineAction(action.getType(), action.getID());
+		}
+	}
 
 	public void goOnline()
 	{
+		var actions = dataBase.readOfflineActions();
 
-		// empty TABLE
+		foreach(OfflineAction action in actions)
+		{
+			switch(action.getType())
+			{
+				case OfflineActions.MARK_READ:
+				case OfflineActions.MARK_UNREAD:
+				case OfflineActions.MARK_STARRED:
+				case OfflineActions.MARK_UNSTARRED:
+					if(action.getType() != m_lastAction)
+					{
+						executeActions(m_ids, m_lastAction);
+						m_lastAction = OfflineActions.NONE;
+						m_ids = "";
+					}
+					else
+					{
+						m_ids += "," + action.getID();
+					}
+					break;
+				case OfflineActions.MARK_READ_FEED:
+					server.setFeedRead(action.getID());
+					break;
+				case OfflineActions.MARK_READ_CATEGORY:
+					server.setCategorieRead(action.getID());
+					break;
+				case OfflineActions.MARK_READ_ALL:
+					server.markAllItemsRead();
+					break;
+			}
 
+			m_lastAction = action.getType();
+		}
+
+		dataBase.resetOfflineActions();
 	}
 
+	private void executeActions(string ids, OfflineActions action)
+	{
+		switch(action)
+		{
+			case OfflineActions.MARK_READ:
+				server.setArticleIsRead(ids, ArticleStatus.READ);
+				break;
+			case OfflineActions.MARK_UNREAD:
+				server.setArticleIsRead(ids, ArticleStatus.UNREAD);
+				break;
+			case OfflineActions.MARK_STARRED:
+				server.setArticleIsMarked(ids, ArticleStatus.MARKED);
+				break;
+			case OfflineActions.MARK_UNSTARRED:
+				server.setArticleIsMarked(ids, ArticleStatus.UNMARKED);
+				break;
+		}
+	}
 
 }

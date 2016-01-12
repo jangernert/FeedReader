@@ -15,11 +15,11 @@
 
 public class FeedReader.OfflineAction : GLib.Object {
 
-	private OfflineAction m_action;
+	private OfflineActions m_action;
 	private string m_id;
 	private string m_argument;
 
-	public OfflineAction(OfflineAction action, string id, string argument) {
+	public OfflineAction(OfflineActions action, string id, string argument) {
 		m_action = action;
 		m_id = id;
 		m_argument = argument;
@@ -30,13 +30,49 @@ public class FeedReader.OfflineAction : GLib.Object {
 		return m_id;
 	}
 
-	public OfflineAction getAction()
+	public void setID(string id)
+	{
+		m_id = id;
+	}
+
+	public OfflineActions getType()
 	{
 		return m_action;
+	}
+
+	public void setType(OfflineActions action)
+	{
+		m_action = action;
 	}
 
 	public string getArgument()
 	{
 		return m_argument;
+	}
+
+	public void setArgument(string argument)
+	{
+		m_argument = argument;
+	}
+
+	public OfflineActions opposite()
+	{
+		switch(m_action)
+		{
+			case OfflineActions.MARK_READ:
+				return OfflineActions.MARK_UNREAD;
+				break;
+			case OfflineActions.MARK_UNREAD:
+				return OfflineActions.MARK_READ;
+				break;
+			case OfflineActions.MARK_STARRED:
+				return OfflineActions.MARK_UNSTARRED;
+				break;
+			case OfflineActions.MARK_UNSTARRED:
+				return OfflineActions.MARK_STARRED;
+				break;
+		}
+
+		return OfflineActions.NONE;
 	}
 }

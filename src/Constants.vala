@@ -128,12 +128,14 @@ namespace FeedReader {
 	}
 
 	public enum OfflineActions {
+		NONE,
 		MARK_READ,
 		MARK_UNREAD,
 		MARK_STARRED,
 		MARK_UNSTARRED,
 		MARK_READ_FEED,
-		MARK_READ_CATEGORY
+		MARK_READ_CATEGORY,
+		MARK_READ_ALL
 	}
 
 

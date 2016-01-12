@@ -637,7 +637,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 	{
 		Gee.ArrayList<OfflineAction> tmp = new Gee.ArrayList<OfflineAction>();
 
-		var query = new QueryBuilder(QueryType.SELECT, "main.OfflineActions");
+		var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
 		query.selectField("*");
 		query.build();
 
@@ -648,10 +648,48 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
-			tmp.add(new OfflineAction((OfflineAction)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2)));
+			tmp.add(new OfflineAction((OfflineActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2)));
 		}
 
 		return tmp;
 	}
+
+    public void resetOfflineActions()
+    {
+        executeSQL("DELETE * FROM OfflineActions");
+    }
+
+    public bool offlineActionNecessary(OfflineAction action)
+    {
+        var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
+        query.selectField("rowid");
+        query.addEqualsCondition("argument", action.getArgument(), true, true);
+        query.addEqualsCondition("id", action.getID(), true, true);
+        query.addEqualsCondition("action", action.opposite().to_string());
+        query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+        if (ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "offlineActionNecessary - %s".printf(sqlite_db.errmsg()));
+            logger.print(LogMessage.ERROR, query.get());
+        }
+
+        while (stmt.step () == Sqlite.ROW) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public void deleteOppositeOfflineAction(OfflineAction action)
+    {
+        var query = new QueryBuilder(QueryType.DELETE, "OfflineActions");
+        query.addEqualsCondition("argument", action.getArgument(), true, true);
+        query.addEqualsCondition("id", action.getID(), true, true);
+        query.addEqualsCondition("action", action.opposite().to_string());
+        executeSQL(query.build());
+    }
 
 }

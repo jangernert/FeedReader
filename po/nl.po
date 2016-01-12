@@ -8,128 +8,131 @@ msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
 "POT-Creation-Date: 2015-11-13 23:01+0100\n"
-"PO-Revision-Date: 2015-01-14 16:23+0000\n"
-"Last-Translator: Joost-fock <Unknown>\n"
+"PO-Revision-Date: 2016-01-11 21:47+0000\n"
+"Last-Translator: Valentijn <valentijnishaqsada@protonmail.com>\n"
 "Language-Team: Dutch <nl@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-09 05:32+0000\n"
+"X-Launchpad-Export-Date: 2016-01-12 05:43+0000\n"
 "X-Generator: Launchpad (build 17881)\n"
 
 #: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
 msgid "FeedReader"
-msgstr ""
+msgstr "FeedReader"
 
 #: ../src/Constants.vala:163
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Desktop Client voor verschillende RSS diensten"
 
 #: ../src/Constants.vala:174
 msgid "About"
-msgstr ""
+msgstr "Over"
 
 #: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
 msgid "Settings"
-msgstr ""
+msgstr "Instellingen"
 
 #: ../src/Constants.vala:176
 msgid "Change Account"
-msgstr ""
+msgstr "Account wijzigen"
 
 #: ../src/Constants.vala:177
 msgid "Quit"
-msgstr ""
+msgstr "Afsluiten"
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
-msgstr ""
+msgstr "Geen voorbeeldweergave beschikbaar"
 
 #: ../src/Utils.vala:113
 msgid "No Text available for this article :("
-msgstr ""
+msgstr "Geen tekst beschikbaar voor dit artikel :("
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:72
 msgid "no Author"
-msgstr ""
+msgstr "geen Auteur"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:84
 msgid "no Title"
-msgstr ""
+msgstr "geen Titel"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:96
 msgid "no Preview"
-msgstr ""
+msgstr "geen Voorbeeldweergave"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:108
 msgid "no content"
-msgstr ""
+msgstr "Geen inhoud"
 
 #: ../src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "OVer FeedReader"
 
 #: ../src/Widgets/TagPopover.vala:40
 msgid "Add Tag:"
-msgstr ""
+msgstr "Tag toevoegen:"
 
 #: ../src/Widgets/TagPopover.vala:52
 msgid "Tags:"
-msgstr ""
+msgstr "Tags:"
 
 #: ../src/Widgets/TagPopover.vala:129
 msgid "add Tag"
-msgstr ""
+msgstr "Tag toevoegen"
 
 #: ../src/Widgets/MainWindow.vala:298
 msgid "Ignore all tls errors from now on"
-msgstr ""
+msgstr "Negeer alle tls foutmeldingen vanaf nu"
 
 #: ../src/Widgets/MainWindow.vala:406
 msgid "Please select a service first"
-msgstr ""
+msgstr "Selecteer alstublieft eerst een dienst"
 
 #: ../src/Widgets/MainWindow.vala:409
 msgid "Please enter a valid username"
-msgstr ""
+msgstr "Voer een geldige gebruikersnaam in"
 
 #: ../src/Widgets/MainWindow.vala:412
 msgid "Please enter a valid password"
-msgstr ""
+msgstr "Voer een geldig wachtwoord in"
 
 #: ../src/Widgets/MainWindow.vala:415
 msgid "Please enter a valid URL"
-msgstr ""
+msgstr "Voer alstublieft een correcte URL in"
 
 #: ../src/Widgets/MainWindow.vala:418
 msgid "Please enter your Login details"
-msgstr ""
+msgstr "Voer alstublieft je inloggevens in"
 
 #: ../src/Widgets/MainWindow.vala:421
 msgid "Sorry, something went wrong."
-msgstr ""
+msgstr "Sorry, er ging iets mis"
 
 #: ../src/Widgets/MainWindow.vala:424
 msgid "Either your username or the password are not correct."
-msgstr ""
+msgstr "Je gebruikersnaam of je wachtwoord is niet juist"
 
 #: ../src/Widgets/MainWindow.vala:427
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
+"Geen verbinding met de server. Controleer je internetverbinding en de URL "
+"van de server!"
 
 #: ../src/Widgets/MainWindow.vala:430
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
+"API toegang is uitgeschakeld op deze server. Zet deze alstublieft eerst aan."
 
 #: ../src/Widgets/MainWindow.vala:433
 msgid "No valid CA certificate available!"
-msgstr ""
+msgstr "Geen geldig CA certificaat beschikbaar!"
 
 #: ../src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
-msgstr ""
+msgstr "Verander Account?"
 
 #: ../src/Widgets/ResetPage.vala:37
 msgid ""
@@ -139,7 +142,7 @@ msgstr ""
 
 #: ../src/Widgets/ResetPage.vala:41
 msgid "New account"
-msgstr ""
+msgstr "Nieuwe account"
 
 #: ../src/Widgets/ResetPage.vala:44
 msgid "Waiting for current sync to finish"
@@ -147,15 +150,15 @@ msgstr ""
 
 #: ../src/Widgets/ResetPage.vala:54
 msgid "I changed my mind"
-msgstr ""
+msgstr "Ik ben van gedachten veranderd"
 
 #: ../src/Widgets/UpdateButton.vala:35
 msgid "Update Feeds"
-msgstr ""
+msgstr "Feeds Updaten"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:81
 msgid "Username or Password incorrect"
-msgstr ""
+msgstr "Gebruikersnaam of wachtwoord is incorrect"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:106 ../src/Widgets/LoginPage.vala:127
 #: ../src/Widgets/LoginPage.vala:196
@@ -170,15 +173,15 @@ msgstr "Wachtwoord:"
 #: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:78
 #: ../src/Widgets/SharePopover.vala:28
 msgid "Login"
-msgstr ""
+msgstr "Inloggen"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:128
 msgid "Logout"
-msgstr ""
+msgstr "Uitloggen"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:255
 msgid "waiting"
-msgstr ""
+msgstr "aan het wachten"
 
 #: ../src/Widgets/ArticleView.vala:64
 msgid "No Article selected."
@@ -186,11 +189,11 @@ msgstr "Geen artikel geselecteerd"
 
 #: ../src/Widgets/ArticleView.vala:168
 msgid "Not available"
-msgstr ""
+msgstr "Niet beschikbaar"
 
 #: ../src/Widgets/FeedList.vala:474 ../src/dbUI.vala:353
 msgid "Uncategorized"
-msgstr ""
+msgstr "Niet gecategoriseerd"
 
 #: ../src/Widgets/SpringCleanPage.vala:28
 msgid ""
@@ -204,15 +207,15 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:55
 msgid "Mark article (un)read"
-msgstr ""
+msgstr "Markeer artikel als (on)gelezen"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
-msgstr ""
+msgstr "Toon alle artikelen"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
-msgstr ""
+msgstr "Toon alleen ongelezen artikelen"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
@@ -224,23 +227,23 @@ msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:99
 msgid "Share Article"
-msgstr ""
+msgstr "Deel Artikel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:133
 msgid "Search Articles"
-msgstr ""
+msgstr "Zoek Artikelen"
 
 #: ../src/Widgets/LoginPage.vala:36
 msgid "Tiny Tiny RSS"
-msgstr ""
+msgstr "Tiny Tiny RSS"
 
 #: ../src/Widgets/LoginPage.vala:36
 msgid "Feedly"
-msgstr ""
+msgstr "Feedly"
 
 #: ../src/Widgets/LoginPage.vala:36
 msgid "OwnCloud"
-msgstr ""
+msgstr "OwnCloud"
 
 #: ../src/Widgets/LoginPage.vala:40
 msgid "Where are your feeds?"
@@ -252,25 +255,27 @@ msgstr ""
 
 #: ../src/Widgets/LoginPage.vala:109
 msgid "No service selected."
-msgstr ""
+msgstr "Geen dienst geselecteerd."
 
 #: ../src/Widgets/LoginPage.vala:126
 msgid "TinyTinyRSS URL:"
-msgstr ""
+msgstr "TinyTinyRSS URL:"
 
 #: ../src/Widgets/LoginPage.vala:176
 msgid ""
 "You will be redirected to the feedly website where you can use your Facebook-"
 ", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
 msgstr ""
+"U zal worden doorverwezen naar de feedly website waar u uw Facebook-, Google-"
+", Twitter-, Microsoft- of Evernote-Acccount kunt gebruiken om in te loggen"
 
 #: ../src/Widgets/LoginPage.vala:195
 msgid "OwnCloud URL:"
-msgstr ""
+msgstr "OwnCloud URL:"
 
 #: ../src/Widgets/SettingsDialog.vala:34
 msgid "Interface"
-msgstr ""
+msgstr "Interface"
 
 #: ../src/Widgets/SettingsDialog.vala:35
 msgid "Internals"
@@ -298,11 +303,11 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:69 ../src/Widgets/SettingsDialog.vala:76
 msgid "Received"
-msgstr ""
+msgstr "Ontvangen"
 
 #: ../src/Widgets/SettingsDialog.vala:69
 msgid "Alphabetically"
-msgstr ""
+msgstr "Alfabetisch"
 
 #: ../src/Widgets/SettingsDialog.vala:74
 msgid "Article List:"
@@ -310,15 +315,15 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:76
 msgid "Sort articles by"
-msgstr ""
+msgstr "Sorteer artikels op"
 
 #: ../src/Widgets/SettingsDialog.vala:76
 msgid "Date"
-msgstr ""
+msgstr "Datum"
 
 #: ../src/Widgets/SettingsDialog.vala:81
 msgid "Newest first"
-msgstr ""
+msgstr "Nieuwste eerst"
 
 #: ../src/Widgets/SettingsDialog.vala:86
 msgid "Article View:"
@@ -326,11 +331,11 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:88
 msgid "Theme"
-msgstr ""
+msgstr "Thema"
 
 #: ../src/Widgets/SettingsDialog.vala:88
 msgid "Default"
-msgstr ""
+msgstr "Standaard"
 
 #: ../src/Widgets/SettingsDialog.vala:88
 msgid "Spring"
@@ -346,39 +351,39 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:112
 msgid "Sync:"
-msgstr ""
+msgstr "Synchroniseren:"
 
 #: ../src/Widgets/SettingsDialog.vala:114
 msgid "Number of articles"
-msgstr ""
+msgstr "Aantal artikelen"
 
 #: ../src/Widgets/SettingsDialog.vala:116
 msgid "Every (Minutes)"
-msgstr ""
+msgstr "Elke (Minuten)"
 
 #: ../src/Widgets/SettingsDialog.vala:121
 msgid "Database:"
-msgstr ""
+msgstr "Database:"
 
 #: ../src/Widgets/SettingsDialog.vala:123
 msgid "Delete articles after"
-msgstr ""
+msgstr "Verwijder artikelen na"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "Never"
-msgstr ""
+msgstr "Nooit"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "1 Week"
-msgstr ""
+msgstr "1 Week"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "1 Month"
-msgstr ""
+msgstr "1 Maand"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "6 Months"
-msgstr ""
+msgstr "6 Maanden"
 
 #: ../src/Widgets/SettingsDialog.vala:126
 msgid "Additional Functionality:"
@@ -390,7 +395,7 @@ msgstr ""
 
 #: ../src/Widgets/SettingsDialog.vala:129
 msgid "None"
-msgstr ""
+msgstr "Geen"
 
 #: ../src/Widgets/SettingsDialog.vala:129
 msgid "Built in grabber"
@@ -406,7 +411,7 @@ msgstr ""
 
 #: ../src/Widgets/SharePopover.vala:34
 msgid "Please"
-msgstr ""
+msgstr "Alstublieft"
 
 #: ../src/Widgets/SharePopover.vala:36
 msgid "to a service to share this article."
@@ -415,7 +420,7 @@ msgstr ""
 #: ../src/Backends/ttrss/TTRSS_API.vala:447
 #: ../src/Backends/ttrss/TTRSS_API.vala:503
 msgid "not found"
-msgstr ""
+msgstr "niet gevonden"
 
 #: ../src/Backends/FeedServer.vala:741
 msgid "New Articles"
@@ -427,4 +432,4 @@ msgstr "Er is 1 nieuw artikel"
 
 #: ../src/Backends/FeedServer.vala:755
 msgid "There are %u new articles"
-msgstr ""
+msgstr "Er zijn %u nieuwe artikelen"

@@ -177,12 +177,13 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_stack.add_named(m_emptyList, "empty");
 		m_stack.add_named(m_syncingBox, "syncing");
 		this.add(m_stack);
-
-		m_overlay = new ArticleListOverlay("New Articles", "scroll up", "feed-arrow-up");
-		m_overlay.action.connect(() => {
-			scrollUP();
-		});
-		this.add_overlay(m_overlay);
+		if(dataBase.get_unread_total() > 0){
+			m_overlay = new ArticleListOverlay("New Articles", "scroll up", "feed-arrow-up");
+			m_overlay.action.connect(() => {
+				scrollUP();
+			});
+			this.add_overlay(m_overlay);
+		}
 	}
 
 	private bool key_pressed(Gdk.EventKey event)

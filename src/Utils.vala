@@ -320,7 +320,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		string css;
 		try{
-			GLib.FileUtils.get_contents("style.css", out css);
+			GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/style.css", out css);
 		}
 		catch(GLib.Error e){
 			logger.print(LogMessage.ERROR, e.message);

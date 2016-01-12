@@ -210,6 +210,13 @@ namespace FeedReader {
 		PARCHMENT
 	}
 
+	public enum FontSize {
+		SMALL,
+		NORMAL,
+		LARGE,
+		HUGE
+	}
+
 	public enum DropArticles {
 		NEVER,
 		ONE_WEEK,

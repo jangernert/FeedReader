@@ -241,29 +241,29 @@ public class FeedReader.Utils : GLib.Object {
 		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/article.html", out template);
 		article.assign(template);
 
-		//int html_pos = article.str.index_of("$HTML");
-		int html_pos = 567;
-		article.erase(html_pos, 5);
+		string html_id = "$HTML";
+		int html_pos = article.str.index_of(html_id);
+		article.erase(html_pos, html_id.length);
 		article.insert(html_pos, html);
 
-		//int author_pos = article.str.index_of("$AUTHOR");
-		int author_pos = 508;
-		article.erase(author_pos, 7);
+		string author_id = "$AUTHOR";
+		int author_pos = article.str.index_of(author_id);
+		article.erase(author_pos, author_id.length);
 		article.insert(author_pos, author_date);
 
-		//int title_pos = article.str.index_of("$TITLE");
-		int title_pos = 465;
-		article.erase(title_pos, 6);
+		string title_id = "$TITLE";
+		int title_pos = article.str.index_of(title_id);
+		article.erase(title_pos, title_id.length);
 		article.insert(title_pos, title);
 
-		//int url_pos = article.str.index_of("$URL");
-		int url_pos = 459;
-		article.erase(url_pos, 4);
+		string url_id = "$URL";
+		int url_pos = article.str.index_of(url_id);
+		article.erase(url_pos, url_id.length);
 		article.insert(url_pos, url);
 
-		//int feed_pos = article.str.index_of("$FEED");
-		int feed_pos = 427;
-		article.erase(feed_pos, 5);
+		string feed_id = "$FEED";
+		int feed_pos = article.str.index_of(feed_id);
+		article.erase(feed_pos, feed_id.length);
 		article.insert(feed_pos, dataBase.getFeedName(feedID));
 
 
@@ -287,17 +287,47 @@ public class FeedReader.Utils : GLib.Object {
 				break;
 		}
 
-		//int theme_pos = article.str.index_of("$THEME");
-		int theme_pos = 368;
-		article.erase(theme_pos, 6);
+		string theme_id = "$THEME";
+		int theme_pos = article.str.index_of(theme_id);
+		article.erase(theme_pos, theme_id.length);
 		article.insert(theme_pos, theme);
 
-		string css;
-		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/style.css", out css);
 
-		//int css_pos = article.str.index_of("$CSS");
-		int css_pos = 319;
-		article.erase(css_pos, 4);
+		string fontsize = "size ";
+		switch(settings_general.get_enum("fontsize"))
+		{
+			case FontSize.SMALL:
+				theme += "small";
+				break;
+
+			case FontSize.NORMAL:
+				theme += "normal";
+				break;
+
+			case FontSize.LARGE:
+				theme += "large";
+				break;
+
+			case FontSize.HUGE:
+				theme += "huge";
+				break;
+		}
+
+		string fontsize_id = "$FONTSIZE";
+		int fontsize_pos = article.str.index_of(fontsize_id);
+		article.erase(fontsize_pos, fontsize_id.length);
+		article.insert(fontsize_pos, fontsize);
+
+		string css;
+		try{
+			GLib.FileUtils.get_contents("style.css", out css);
+		}
+		catch(GLib.Error e){
+			logger.print(LogMessage.ERROR, e.message);
+		}
+		string css_id = "$CSS";
+		int css_pos = article.str.index_of(css_id);
+		article.erase(css_pos, css_id.length);
 		article.insert(css_pos, css);
 
 		return article.str;

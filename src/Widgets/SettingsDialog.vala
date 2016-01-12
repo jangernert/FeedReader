@@ -90,6 +90,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			reloadArticleView();
 		});
 
+        var fontsize = new SettingDropbox(_("Font Size"), settings_general, "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
+		fontsize.changed.connect(() => {
+			reloadArticleView();
+		});
+
 
 		var uiBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         uiBox.expand = true;
@@ -102,6 +107,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         uiBox.pack_start(newest_first, false, true, 0);
         uiBox.pack_start(articleview_settings, false, true, 0);
         uiBox.pack_start(article_theme, false, true, 0);
+        uiBox.pack_start(fontsize, false, true, 0);
 
         return uiBox;
     }

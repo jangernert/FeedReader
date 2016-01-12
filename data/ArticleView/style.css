@@ -212,7 +212,6 @@ body,
 p {
     margin-bottom: 1rem;
     color: #1d1f1c;
-    font-size: 1rem;
     line-height: 1.8em;
     text-align: left;
 }
@@ -289,18 +288,20 @@ header.post a:link {
 }
 header.post span.source {
     color: rgba(0, 0, 0, 0.75);
-    font-size: 0.75rem;
+	font-size:inherit;
 }
 header.post span.author {
     color: rgba(0, 0, 0, 0.8);
-    font-size: 0.75rem;
     font-weight: 500;
+    font-size:inherit;
 }
+
 div.content {
     padding: 2rem;
     margin-bottom: 3rem;
     border: 1px solid rgba(0, 0, 0, 0.05);
-    text-align: left;
+    text-align: justify;
+    font-size:inherit;
 }
 dt {
     float: left;
@@ -333,13 +334,12 @@ div.theme.midnight {
     color: rgba(255, 255, 255, 0.6);
     background: #233540;
 }
-div.theme.midnight pre, 
+div.theme.midnight pre,
 div.theme.midnight pre code,
 div.theme.midnight code {
     background-color: rgba(255, 255, 255, 0.6);
     color: #233540;
     font-family: 'Monospace';
-    font-size: 13px;
 }
 div.theme.midnight table,
 div.theme.midnight th,
@@ -357,7 +357,6 @@ div.theme.midnight header.post h1 a{
     color:#9BA6AC;
 }
 div.theme.midnight header.post span.source {
-    font-size:13px;
     color: #2978a6;
 }
 div.theme.midnight header.post span.author {

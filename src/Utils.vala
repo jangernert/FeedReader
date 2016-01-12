@@ -293,23 +293,23 @@ public class FeedReader.Utils : GLib.Object {
 		article.insert(theme_pos, theme);
 
 
-		string fontsize = "size ";
+		string fontsize = "intial";
 		switch(settings_general.get_enum("fontsize"))
 		{
 			case FontSize.SMALL:
-				fontsize += "small";
+				fontsize = "xx-small";
 				break;
 
 			case FontSize.NORMAL:
-				fontsize += "normal";
+				fontsize = "initial";
 				break;
 
 			case FontSize.LARGE:
-				fontsize += "large";
+				fontsize = "large";
 				break;
 
 			case FontSize.HUGE:
-				fontsize += "huge";
+				fontsize = "xx-large";
 				break;
 		}
 

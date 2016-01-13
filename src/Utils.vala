@@ -324,9 +324,12 @@ public class FeedReader.Utils : GLib.Object {
 		article.erase(fontsize_pos, fontsize_id.length);
 		article.insert(fontsize_pos, fontsize);
 
-		int sourcefontsize_pos = article.str.index_of(sourcefontsize_id);
-		article.erase(sourcefontsize_pos, sourcefontsize_id.length);
-		article.insert(sourcefontsize_pos, sourcefontsize);
+		for(int i = article.str.index_of(sourcefontsize_id); i != -1; i = article.str.index_of(sourcefontsize_id))
+		{
+			article.erase(i, sourcefontsize_id.length);
+			article.insert(i, sourcefontsize);
+		}
+
 
 		string css;
 		try{

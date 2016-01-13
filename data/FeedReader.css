@@ -13,10 +13,6 @@
 	color: white;
 }
 
-FeedReaderUpdateButton GtkSpinner {
-	color: black;
-}
-
 .headerbar_pane.pane-separator {
 	border-radius: 0;
 	border-width: 0 1px 1px 0;

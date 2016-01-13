@@ -882,6 +882,7 @@ public class FeedReader.FeedServer : GLib.Object {
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
+		grabberUtils.setAttributes(doc, "style", "");
 		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
 
 		string html = "";

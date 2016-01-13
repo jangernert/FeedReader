@@ -36,6 +36,7 @@ namespace FeedReader {
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
+		public signal void setOffline();
 
 		public FeedDaemonServer()
 		{
@@ -104,7 +105,7 @@ namespace FeedReader {
 				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
-					exit(-1);
+					setOffline();
 				}
 			}
 
@@ -181,7 +182,7 @@ namespace FeedReader {
 			}
 			else
 			{
-				//FIXME: offline mode
+				setOffline();
 			}
 
 
@@ -192,6 +193,16 @@ namespace FeedReader {
 		public LoginResponse isLoggedIn()
 		{
 			return m_loggedin;
+		}
+
+		public bool isOnline()
+		{
+			if(m_loggedin != LoginResponse.SUCCESS)
+			{
+				return false;
+			}
+
+			return true;
 		}
 
 		public void changeArticle(string articleID, ArticleStatus status)

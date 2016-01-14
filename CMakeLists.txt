@@ -49,8 +49,7 @@ include(ValaVersion)
 ensure_vala_version("0.24" MINIMUM)
 
 set(UI_OPTIONS
-    --target-glib=2.32
-    --thread)
+    --target-glib=2.32)
 
 set(UI_PACKAGES
     glib-2.0>=2.32
@@ -84,6 +83,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Model/ShareAccount.vala
     src/Constants.vala
     src/dbUI.vala
+    src/UiUtils.vala
     src/Utils.vala
     src/QueryBuilder.vala
     src/Widgets/ArticleList.vala
@@ -131,14 +131,14 @@ OPTIONS
 
 CUSTOM_VAPIS
     vapi/libvilistextum.vapi
-
 )
+
+add_executable(${EXEC_NAME} ${UI})
+target_link_libraries(${EXEC_NAME} vilistextum)
 
 
 set(DAEMON_OPTIONS
-    --target-glib=2.32
-    --thread
-    --define DAEMONCODE)
+    --target-glib=2.32)
 set(DAEMON_PACKAGES
     glib-2.0>=2.32
     gio-2.0
@@ -202,10 +202,12 @@ CUSTOM_VAPIS
     vapi/libvilistextum.vapi
 )
 
+add_executable(${DAEMON_NAME} ${daemon})
+target_link_libraries(${DAEMON_NAME} vilistextum)
+
 
 set(DEBUG_OPTIONS
-    --target-glib=2.32
-    --define DAEMONCODE)
+    --target-glib=2.32)
 set(DEBUG_PACKAGES
     glib-2.0>=2.32
     gtk+-3.0
@@ -248,6 +250,10 @@ CUSTOM_VAPIS
     vapi/libvilistextum.vapi
 )
 
+add_executable(${DEBUG_NAME} ${debug})
+target_link_libraries(${DEBUG_NAME} vilistextum)
+#target_compile_definitions(${DEBUG_NAME} PRIVATE DAEMONCODE=1)
+
 # uninstall target
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake"
@@ -256,14 +262,6 @@ configure_file(
 
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake)
-
-
-add_executable(${EXEC_NAME} ${UI})
-target_link_libraries(${EXEC_NAME} vilistextum)
-add_executable(${DAEMON_NAME} ${daemon})
-target_link_libraries(${DAEMON_NAME} vilistextum)
-add_executable(${DEBUG_NAME} ${debug})
-target_link_libraries(${DEBUG_NAME} vilistextum)
 
 install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)

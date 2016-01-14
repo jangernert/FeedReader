@@ -45,6 +45,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private bool m_syncing = false;
 	private string m_selected_article = "";
 	private ArticleListOverlay m_overlay;
+	private uint m_helperCounter = 0;
+	private uint m_helperCounter2 = 0;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
 
@@ -91,36 +93,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 
 		m_scroll1_adjustment = m_scroll1.get_vadjustment();
-		m_scroll1_adjustment.value_changed.connect(() => {
-			if(!m_limitScroll)
-			{
-				if(!m_scrollOngoing)
-					m_scrollPos = m_scroll1_adjustment.get_value();
-
-				if((m_scroll1_adjustment.get_value() + m_scroll1_adjustment.get_page_size())/m_scroll1_adjustment.get_upper() > m_lmit)
-					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-				else if(m_scroll1_adjustment.get_value() == 0.0 && !m_overlay.hovered())
-				{
-					m_overlay.hide();
-				}
-			}
-		});
+		m_scroll1_adjustment.value_changed.connect(scroll1ValueChanged);
 
 		m_scroll2_adjustment = m_scroll2.get_vadjustment();
-		m_scroll2_adjustment.value_changed.connect(() => {
-			if(!m_limitScroll)
-			{
-				if(!m_scrollOngoing)
-					m_scrollPos = m_scroll2_adjustment.get_value();
-
-				if((m_scroll2_adjustment.get_value() + m_scroll2_adjustment.get_page_size())/m_scroll2_adjustment.get_upper() > m_lmit)
-					createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-				else if(m_scroll2_adjustment.get_value() == 0.0 && !m_overlay.hovered())
-				{
-					m_overlay.hide();
-				}
-			}
-		});
+		m_scroll2_adjustment.value_changed.connect(scroll2ValueChanged);
 
 
 		m_List1.row_activated.connect((row) => {
@@ -182,6 +158,44 @@ public class FeedReader.articleList : Gtk.Overlay {
 			scrollUP();
 		});
 		this.add_overlay(m_overlay);
+	}
+
+	private void scroll1ValueChanged()
+	{
+		if(!m_limitScroll && m_helperCounter == 0)
+		{
+			if(!m_scrollOngoing)
+				m_scrollPos = m_scroll1_adjustment.get_value();
+
+			if((m_scroll1_adjustment.get_value() + m_scroll1_adjustment.get_page_size())/m_scroll1_adjustment.get_upper() > m_lmit)
+			{
+				logger.print(LogMessage.INFO, "load more because of scrolling");
+				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+			}
+			else if(m_scroll1_adjustment.get_value() == 0.0 && !m_overlay.hovered())
+			{
+				m_overlay.hide();
+			}
+		}
+	}
+
+	private void scroll2ValueChanged()
+	{
+		if(!m_limitScroll && m_helperCounter == 0)
+		{
+			if(!m_scrollOngoing)
+				m_scrollPos = m_scroll2_adjustment.get_value();
+
+			if((m_scroll2_adjustment.get_value() + m_scroll2_adjustment.get_page_size())/m_scroll2_adjustment.get_upper() > m_lmit)
+			{
+				logger.print(LogMessage.INFO, "load more because of scrolling");
+				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+			}
+			else if(m_scroll2_adjustment.get_value() == 0.0 && !m_overlay.hovered())
+			{
+				m_overlay.hide();
+			}
+		}
 	}
 
 	private bool key_pressed(Gdk.EventKey event)
@@ -516,7 +530,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private async void createHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleList: create HeadlineList");
+		logger.print(LogMessage.DEBUG, "ArticleList: createHeadlineList");
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 
 		m_threadCount++;
@@ -650,6 +664,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 				noRowActive();
 			}
 		}
+		logger.print(LogMessage.DEBUG, "ArticleList: createHeadlineList finished");
 	}
 
 	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
@@ -686,7 +701,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public async void updateArticleList(bool slideIN = true)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleList: insert new articles");
+		logger.print(LogMessage.DEBUG, "ArticleList: updateArticleList");
 		uint articlesInserted = 0;
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
@@ -707,14 +722,15 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 			if(sortByDate)
 			{
-				new_articles = Utils.getRelevantArticles(dataBase.getRowCountHeadlineByDate(first_row.getDateStr()));
+				new_articles = UiUtils.getRelevantArticles(dataBase.getRowCountHeadlineByDate(first_row.getDateStr()));
 			}
 			else
 			{
-				new_articles = Utils.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getID()));
+				new_articles = UiUtils.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getID()));
 			}
 			logger.print(LogMessage.DEBUG, "updateArticleList: new articles: %u".printf(new_articles));
 			m_limit = m_currentList.get_children().length() + new_articles;
+			m_helperCounter = new_articles;
 		}
 
 
@@ -722,6 +738,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.size.to_string());
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -851,6 +868,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		}
 
 		logger.print(LogMessage.DEBUG, "ArticleList: %u articles have been added".printf(articlesInserted));
+		logger.print(LogMessage.DEBUG, "ArticleList: updateArticleList finished");
 	}
 
 	private void onAllocated(Gtk.Widget row, Gtk.Allocation allocation)
@@ -858,6 +876,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_limitScroll = true;
 		setScrollPos(m_current_adjustment.get_value() + allocation.height);
 		row.size_allocate.disconnect(onAllocated);
+		m_helperCounter2++;
+		if(m_helperCounter == m_helperCounter2)
+		{
+			m_helperCounter = 0;
+			m_helperCounter2 = 0;
+		}
 		m_limitScroll = false;
 	}
 
@@ -873,20 +897,23 @@ public class FeedReader.articleList : Gtk.Overlay {
 			case ArticleStatus.READ:
 			case ArticleStatus.UNMARKED:
 				articleRow selected_row = m_currentList.get_selected_row() as articleRow;
-				var articleChildList = m_currentList.get_children();
-				foreach(Gtk.Widget row in articleChildList)
+				if(selected_row != null)
 				{
-					var tmpRow = row as articleRow;
-					if(((tmpRow != null && tmpRow.getID() != selected_row.getID())
-					|| (tmpRow != null && selected_row == null)) && tmpRow.isBeingRevealed())
+					var articleChildList = m_currentList.get_children();
+					foreach(Gtk.Widget row in articleChildList)
 					{
-						if((m_only_unread && !tmpRow.isUnread())
-						||(m_only_marked && !tmpRow.isMarked()))
+						var tmpRow = row as articleRow;
+						if(((tmpRow != null && tmpRow.getID() != selected_row.getID())
+						|| (tmpRow != null && selected_row == null)) && tmpRow.isBeingRevealed())
 						{
-							removeRow(tmpRow);
-							break;
-						}
+							if((m_only_unread && !tmpRow.isUnread())
+							||(m_only_marked && !tmpRow.isMarked()))
+							{
+								removeRow(tmpRow);
+								break;
+							}
 
+						}
 					}
 				}
 				break;
@@ -907,17 +934,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 			logger.print(LogMessage.DEBUG, "load more");
 			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
 		}
-	}
-
-
-	private void limitScroll()
-	{
-		m_limitScroll = true;
-
-		GLib.Timeout.add(500, () => {
-			m_limitScroll = false;
-			return false;
-		});
 	}
 
 
@@ -1113,6 +1129,16 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public void showOverlay()
 	{
 		m_overlay.reveal();
+	}
+
+	private void limitScroll()
+	{
+		m_limitScroll = true;
+
+		GLib.Timeout.add(500, () => {
+			m_limitScroll = false;
+			return false;
+		});
 	}
 
 }

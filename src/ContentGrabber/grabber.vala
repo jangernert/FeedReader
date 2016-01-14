@@ -341,7 +341,6 @@ public class FeedReader.Grabber : GLib.Object {
         logger.print(LogMessage.DEBUG, "Grabber: strip all comments");
         grabberUtils.stripNode(doc, "//comment()");
 
-
         // get the content of the article
         unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();
         if(bodyList.size != 0)

@@ -7,8 +7,6 @@
 
 #fake-example *:selected *:visited { opacity: 1; }
 
-
-
 .destructive-action GtkSpinner {
 	color: white;
 }

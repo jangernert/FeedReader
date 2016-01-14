@@ -27,6 +27,8 @@ namespace FeedReader {
 		public signal void updateArticleList();
 		public signal void showArticleListOverlay();
 
+		private Gtk.Button m_sync_button;
+
 		internal FeedReaderDebuggerWindow () {
 			this.title = "FeedReader Debugger";
 
@@ -77,23 +79,28 @@ namespace FeedReader {
 		{
 			var spin = new Gtk.SpinButton.with_range(1, 200, 1);
 			spin.set_value(20.0);
-			var sync_button = new Gtk.Button.with_label("Sync");
-			sync_button.clicked.connect(() => {
+			m_sync_button = new Gtk.Button.with_label("Sync");
+			if(dataBase.isTableEmpty("feeds"))
+				m_sync_button.set_sensitive(false);
+
+			m_sync_button.clicked.connect(() => {
+				int count = spin.get_value_as_int();
 				syncStarted();
 				settings_state.set_boolean("currently-updating", true);
-				DebugUtils.dummyArticles(settings_general.get_int("max-articles"), spin.get_value_as_int());
+				DebugUtils.dummyArticles(settings_general.get_int("max-articles"), count);
 				updateFeedList();
 				updateArticleList();
 				settings_state.set_boolean("currently-updating", false);
+				settings_state.set_int("articlelist-new-rows", count);
 				syncFinished();
-				if(spin.get_value_as_int() > 0)
+				if(count > 0)
 					showArticleListOverlay();
 			});
 
 
 			var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 			box.pack_start(spin);
-			box.pack_end(sync_button);
+			box.pack_end(m_sync_button);
 			box.margin = 10;
 
 			var frame = new Gtk.Frame ("Simulate Sync");
@@ -153,6 +160,7 @@ namespace FeedReader {
 			var fill_button = new Gtk.Button.with_label("fill");
 			fill_button.clicked.connect(() => {
 				DebugUtils.dummyFeeds(catSpin.get_value_as_int(), feedSpin.get_value_as_int());
+				m_sync_button.set_sensitive(true);
 			});
 
 			var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
@@ -175,6 +183,7 @@ namespace FeedReader {
 		{
 			dataBase.resetDB();
 			dataBase.init();
+			m_sync_button.set_sensitive(false);
 		}
 	}
 
@@ -184,7 +193,6 @@ namespace FeedReader {
 		public signal void syncFinished();
 		public signal void springCleanStarted();
 		public signal void springCleanFinished();
-		public signal void updateFeedlistUnreadCount(string feedID, bool increase);
 		public signal void newFeedList();
 		public signal void updateFeedList();
 		public signal void newArticleList();
@@ -255,7 +263,7 @@ namespace FeedReader {
 
 				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
 					dataBase.update_article.end(res);
-					updateFeedlistUnreadCount(dataBase.getFeedIDofArticle(articleID), increase);
+					updateFeedList();
 					updateBadge();
 				});
 			}

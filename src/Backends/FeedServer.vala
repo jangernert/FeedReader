@@ -150,6 +150,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			if(newArticles > 0)
 			{
 				sendNotification(newArticles);
+				showArticleListOverlay();
 			}
 
 			switch(settings_general.get_enum("drop-articles-after"))
@@ -752,19 +753,13 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		int after = dataBase.getHighestRowID();
 		int newArticles = after-before;
+		logger.print(LogMessage.DEBUG, "FeedServer: new articles: %i".printf(newArticles));
 
-		if(newArticles > 0)
+		if(newArticles > 0 && settings_state.get_boolean("no-animations"))
 		{
-			if(settings_state.get_boolean("no-animations"))
-			{
-				logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
-				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-				settings_state.set_int("articlelist-new-rows", newCount);
-			}
-			else
-			{
-				showArticleListOverlay();
-			}
+			logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
+			int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+			settings_state.set_int("articlelist-new-rows", newCount);
 		}
 	}
 

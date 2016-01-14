@@ -67,12 +67,12 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         query.selectField("articleID");
         query.selectField("feedID");
         query.addCustomCondition("date <= datetime('now', '-%i months')".printf(weeks));
-        query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string(), false, false);
+        query.addEqualsCondition("marked", ArticleStatus.UNMARKED.to_string());
         if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
         {
             int highesID = getHighestRowID();
             int syncCount = settings_general.get_int("max-articles");
-            query.addCustomCondition("NOT rowid BETWEEN %i AND %i".printf(highesID, highesID-syncCount));
+            query.addCustomCondition("rowid BETWEEN 1 AND %i".printf(highesID-syncCount));
         }
         query.build();
         query.print();

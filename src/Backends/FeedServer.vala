@@ -753,15 +753,18 @@ public class FeedReader.FeedServer : GLib.Object {
 		int after = dataBase.getHighestRowID();
 		int newArticles = after-before;
 
-		if(settings_state.get_boolean("no-animations") && newArticles > 0)
+		if(newArticles > 0)
 		{
-			logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
-			int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-			settings_state.set_int("articlelist-new-rows", newCount);
-		}
-		else
-		{
-			showArticleListOverlay();
+			if(settings_state.get_boolean("no-animations"))
+			{
+				logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
+				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				settings_state.set_int("articlelist-new-rows", newCount);
+			}
+			else
+			{
+				showArticleListOverlay();
+			}
 		}
 	}
 

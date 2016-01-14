@@ -50,7 +50,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         label.margin_end = 40;
         label.margin_top = 30;
         label.margin_bottom = 10;
-        label.get_style_context().add_class("offline");
+        label.get_style_context().add_class("overlay");
         //this.add_overlay(label);
     }
 

@@ -28,7 +28,7 @@ public class FeedReader.ArticleListOverlay : Gtk.Revealer {
 	public ArticleListOverlay(string text, string tooltip, string iconName)
 	{
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		m_box.get_style_context().add_class("offline");
+		m_box.get_style_context().add_class("overlay");
 
         m_label = new Gtk.Label(text);
         m_label.margin_left = 30;

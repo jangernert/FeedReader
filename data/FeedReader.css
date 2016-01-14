@@ -101,7 +101,7 @@ GtkScrolledWindow GtkViewport.servicebox {
 }
 
 
-.offline {
+.overlay {
 	background: black;
 	color: white;
 	opacity: 0.8;

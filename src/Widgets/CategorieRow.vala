@@ -53,12 +53,13 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		var rowhight = 30;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 
-		var pixbuf = new Gdk.Pixbuf.from_file("/usr/share/icons/hicolor/16x16/actions/feed-sidebar-arrow.svg");
-		var pixbuf2 = pixbuf.rotate_simple(Gdk.PixbufRotation.CLOCKWISE);
-		m_icon_expanded = new Gtk.Image.from_pixbuf(pixbuf2);
-		m_icon_expanded.opacity = m_opacity;
-		m_icon_collapsed = new Gtk.Image.from_pixbuf(pixbuf);
+
+		m_icon_collapsed = new Gtk.Image.from_icon_name("feed-sidebar-arrow-side-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_icon_collapsed.opacity = m_opacity;
+
+		m_icon_expanded = new Gtk.Image.from_icon_name("feed-sidebar-arrow-down-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		m_icon_expanded.opacity = m_opacity;
+
 
 
 		m_stack = new Gtk.Stack();

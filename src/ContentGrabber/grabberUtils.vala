@@ -403,7 +403,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		}
 
         int start = fixedURL.last_index_of("/") + 1;
-        string localFilename = imgPath + GLib.Uri.unescape_string("%i_%s".printf(nr, fixedURL.substring(start)));
+        string localFilename = imgPath + nr.to_string();
 
         if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
 		{

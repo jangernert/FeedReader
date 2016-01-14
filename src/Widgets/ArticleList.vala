@@ -288,6 +288,7 @@ public class FeedReader.articleList : Gtk.Overlay {
         m_select_source_id = Timeout.add(time, () => {
             row.activate();
             row_activated(row);
+			m_select_source_id = 0;
             return false;
         });
 	}

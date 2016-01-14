@@ -25,8 +25,8 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		m_color = color;
 
 		try{
-			m_icon = new Gtk.Image.from_pixbuf(drawIcon());
-			m_icon_light = new Gtk.Image.from_pixbuf(drawIcon(true));
+			m_icon = new Gtk.Image.from_surface(drawIcon());
+			m_icon_light = new Gtk.Image.from_surface(drawIcon(true));
 		}
 		catch(GLib.Error e)
 		{
@@ -54,8 +54,8 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		m_color = color;
 
 		try{
-			m_icon.set_from_pixbuf(drawIcon());
-			m_icon_light.set_from_pixbuf(drawIcon(true));
+			m_icon.set_from_surface(drawIcon());
+			m_icon_light.set_from_surface(drawIcon(true));
 		}
 		catch(GLib.Error e)
 		{
@@ -85,9 +85,10 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 	}
 
 
-	private Gdk.Pixbuf drawIcon(bool light = false)
+	private Cairo.Surface drawIcon(bool light = false)
 	{
-		int size = 16;
+		int scaleFactor = this.get_scale_factor();
+		int size = 16 * scaleFactor;
 		var color = Gdk.RGBA();
 		color.parse(COLORS[m_color]);
 		double lighten = 1.0;
@@ -95,21 +96,20 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 			lighten = 0.7;
 
 		var surface = this.get_window().create_similar_image_surface(0, size, size, 0);
-		//var surface = this.get_window().create_similar_surface(Cairo.Content.COLOR_ALPHA, size, size);
-		//Cairo.ImageSurface surface = new Cairo.ImageSurface(Cairo.Format.ARGB32, size, size);
 		Cairo.Context context = new Cairo.Context(surface);
 
 		context.set_line_width(2);
 		context.set_fill_rule(Cairo.FillRule.EVEN_ODD);
 
+		double half = size/(2*scaleFactor);
 		context.set_source_rgba(color.red, color.green, color.blue, 0.6*lighten);
-		context.arc(size/2, size/2, (size/2), 0, 2*Math.PI);
+		context.arc(half, half, half, 0, 2*Math.PI);
 		context.fill_preserve();
 
-		context.arc(size/2, size/2, (size/2)-(size/8), 0, 2*Math.PI);
+		context.arc(half, half, half-(half/4), 0, 2*Math.PI);
 		context.set_source_rgba(color.red, color.green, color.blue, 0.6*lighten);
 		context.fill_preserve();
 
-		return Gdk.pixbuf_get_from_surface(surface, 0, 0, size, size);
+		return surface;
 	}
 }

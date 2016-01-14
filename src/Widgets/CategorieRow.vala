@@ -54,10 +54,10 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 
 
-		m_icon_collapsed = new Gtk.Image.from_icon_name("feed-sidebar-arrow-side-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		m_icon_collapsed = new Gtk.Image.from_icon_name("feed-sidebar-arrow-side", Gtk.IconSize.SMALL_TOOLBAR);
 		m_icon_collapsed.opacity = m_opacity;
 
-		m_icon_expanded = new Gtk.Image.from_icon_name("feed-sidebar-arrow-down-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		m_icon_expanded = new Gtk.Image.from_icon_name("feed-sidebar-arrow-down", Gtk.IconSize.SMALL_TOOLBAR);
 		m_icon_expanded.opacity = m_opacity;
 
 

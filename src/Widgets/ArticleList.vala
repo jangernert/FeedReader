@@ -730,6 +730,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 			}
 			logger.print(LogMessage.DEBUG, "updateArticleList: new articles: %u".printf(new_articles));
 			m_limit = m_currentList.get_children().length() + new_articles;
+
+			// counter of all new rows that will be added
+			// increase helpCounter2 on every size_allocate of a new row and check if all rows have been allocated
+			// only after all articles are allocated new rows can be added by scrolling down the list
 			m_helperCounter = new_articles;
 		}
 
@@ -876,6 +880,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_limitScroll = true;
 		setScrollPos(m_current_adjustment.get_value() + allocation.height);
 		row.size_allocate.disconnect(onAllocated);
+
+		// increase helpCounter2 for every row that is allocated and check if all of them
+		// (should be helpCounter) have been allocated
 		m_helperCounter2++;
 		if(m_helperCounter == m_helperCounter2)
 		{

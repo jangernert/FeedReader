@@ -572,6 +572,32 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 		}
 
+		// update feeds
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpFeedRow = row as FeedRow;
+			if(tmpFeedRow != null)
+			{
+				foreach(feed Feed in feeds)
+				{
+					if(tmpFeedRow.getID() == Feed.getFeedID())
+					{
+						tmpFeedRow.set_unread_count(Feed.getUnread());
+						if(settings_general.get_boolean("feedlist-only-show-unread"))
+						{
+							if(tmpFeedRow.getUnreadCount() == 0)
+								tmpFeedRow.reveal(false);
+							else if(isCategorieExpanded(tmpFeedRow.getCatID()))
+								tmpFeedRow.reveal(true);
+						}
+
+
+						break;
+					}
+				}
+			}
+		}
+
 		// update categories
 		foreach(Gtk.Widget row in FeedChildList)
 		{
@@ -583,8 +609,13 @@ public class FeedReader.feedList : Gtk.Stack {
 					if(tmpCatRow.getID() == cat.getCatID())
 					{
 						tmpCatRow.set_unread_count(cat.getUnreadCount());
-						if(settings_general.get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
-							tmpCatRow.reveal(true);
+						if(settings_general.get_boolean("feedlist-only-show-unread"))
+						{
+							if(tmpCatRow.getUnreadCount() == 0)
+								tmpCatRow.reveal(false);
+							else
+								tmpCatRow.reveal(true);
+						}
 
 						break;
 					}
@@ -604,26 +635,6 @@ public class FeedReader.feedList : Gtk.Stack {
 						tmpCatRow.reveal(true);
 
 					break;
-				}
-			}
-		}
-
-		// update feeds
-		foreach(Gtk.Widget row in FeedChildList)
-		{
-			var tmpFeedRow = row as FeedRow;
-			if(tmpFeedRow != null)
-			{
-				foreach(feed Feed in feeds)
-				{
-					if(tmpFeedRow.getID() == Feed.getFeedID())
-					{
-						tmpFeedRow.set_unread_count(Feed.getUnread());
-						if(settings_general.get_boolean("feedlist-only-show-unread") && tmpFeedRow.getUnreadCount() != 0)
-							tmpFeedRow.reveal(true);
-
-						break;
-					}
 				}
 			}
 		}

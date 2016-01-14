@@ -1135,7 +1135,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public void showOverlay()
 	{
-		if(m_currentScroll.get_vadjustment() > 0.0)
+		if(m_currentScroll.get_vadjustment().get_value() > 0.0)
 			m_overlay.reveal();
 	}
 

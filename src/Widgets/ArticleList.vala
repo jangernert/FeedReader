@@ -579,55 +579,57 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 				foreach(var item in articles)
 				{
-					while(Gtk.events_pending())
+					if(!articleAlreadInList(item.getArticleID()))
 					{
-						Gtk.main_iteration();
-					}
+						while(Gtk.events_pending())
+						{
+							Gtk.main_iteration();
+						}
 
-					if(threadID < m_threadCount)
-						break;
+						if(threadID < m_threadCount)
+							break;
 
-					var tmpRow = new articleRow(
-							                        item.getTitle(),
-							                        item.getUnread(),
-							                        item.getFeedID(),
-							                        item.getURL(),
-							                        item.getFeedID(),
-							                        item.getArticleID(),
-							                        item.getMarked(),
-							                        item.getSortID(),
-							                        item.getPreview(),
-													item.getDate(),
-													item.getTagString()
-							                        );
-					tmpRow.ArticleStateChanged.connect(rowStateChanged);
+						var tmpRow = new articleRow(
+								                        item.getTitle(),
+								                        item.getUnread(),
+								                        item.getFeedID(),
+								                        item.getURL(),
+								                        item.getFeedID(),
+								                        item.getArticleID(),
+								                        item.getMarked(),
+								                        item.getSortID(),
+								                        item.getPreview(),
+														item.getDate(),
+														item.getTagString()
+								                        );
+						tmpRow.ArticleStateChanged.connect(rowStateChanged);
 
-					while(Gtk.events_pending())
-					{
-						Gtk.main_iteration();
-					}
+						while(Gtk.events_pending())
+						{
+							Gtk.main_iteration();
+						}
 
-					if(threadID < m_threadCount)
-						break;
+						if(threadID < m_threadCount)
+							break;
 
-					m_currentList.add(tmpRow);
+						m_currentList.add(tmpRow);
 
-					if(settings_state.get_boolean("no-animations"))
-					{
-						tmpRow.reveal(true, 0);
-					}
-					else if(transition == Gtk.StackTransitionType.CROSSFADE)
-					{
-						if(addRows)
-							tmpRow.reveal(true);
+						if(settings_state.get_boolean("no-animations"))
+						{
+							tmpRow.reveal(true, 0);
+						}
+						else if(transition == Gtk.StackTransitionType.CROSSFADE)
+						{
+							if(addRows)
+								tmpRow.reveal(true);
+							else
+								tmpRow.reveal(true, 150);
+						}
 						else
-							tmpRow.reveal(true, 150);
+						{
+							tmpRow.reveal(true, 0);
+						}
 					}
-					else
-					{
-						tmpRow.reveal(true, 0);
-					}
-
 				}
 
 				if(!addRows)
@@ -1148,6 +1150,19 @@ public class FeedReader.articleList : Gtk.Overlay {
 			m_limitScroll = false;
 			return false;
 		});
+	}
+
+	private bool articleAlreadInList(string id)
+	{
+		var articleChildList = m_currentList.get_children();
+		foreach(Gtk.Widget row in articleChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && tmpRow.getID() == id)
+				return true;
+		}
+
+		return false;
 	}
 
 }

@@ -95,7 +95,6 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		});
 
 		m_article_view = new articleView();
-
 		m_article_view.enterFullscreen.connect(enterFullscreen);
 		m_article_view.leaveFullscreen.connect(leaveFullscreen);
 

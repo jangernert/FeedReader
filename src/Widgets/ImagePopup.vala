@@ -31,6 +31,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 	private double m_posX = 0;
 	private double m_posY = 0;
 	private bool m_hoverHeader = false;
+	private bool m_hoverImage = false;
 	private bool m_dragWindow = false;
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
@@ -44,6 +45,14 @@ public class FeedReader.imagePopup : Gtk.Window {
 		this.window_position = Gtk.WindowPosition.CENTER_ON_PARENT;
 		this.transient_for = parent;
 		this.modal = true;
+		this.button_press_event.connect((evt) => {
+			if(!m_hoverImage && !m_hoverHeader)
+			{
+				this.destroy();
+				return true;
+			}
+			return false;
+		});
 
 		m_image = new Gtk.Image.from_file(imagePath);
 		int img_width = m_image.get_pixbuf().width;
@@ -132,8 +141,8 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 
 		m_eventBox = new Gtk.EventBox();
-		m_eventBox.button_press_event.connect(buttonPressed);
-		m_eventBox.button_release_event.connect(buttonReleased);
+		m_eventBox.button_press_event.connect(eventButtonPressed);
+		m_eventBox.button_release_event.connect(eventButtonReleased);
 		m_eventBox.enter_notify_event.connect(onEnter);
 		m_eventBox.leave_notify_event.connect(onLeave);
 		m_eventBox.key_press_event.connect(keyPressed);
@@ -170,7 +179,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		return false;
 	}
 
-	private bool buttonPressed(Gdk.EventButton evt)
+	private bool eventButtonPressed(Gdk.EventButton evt)
 	{
 		if(!m_hoverHeader)
 		{
@@ -231,7 +240,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		return false;
 	}
 
-	private bool buttonReleased(Gdk.EventButton evt)
+	private bool eventButtonReleased(Gdk.EventButton evt)
 	{
 		if(evt.button == MouseButton.MIDDLE)
 		{
@@ -260,6 +269,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 	private bool onEnter(Gdk.EventCrossing event)
 	{
+		m_hoverImage = true;
 		m_revealer.set_reveal_child(true);
 		m_revealer.show();
 		return true;
@@ -273,6 +283,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		if(m_dragWindow)
 			return false;
 
+		m_hoverImage = false;
 		m_revealer.set_reveal_child(false);
 		return true;
 	}

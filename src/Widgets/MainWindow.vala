@@ -62,6 +62,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		about_action.activate.connect(() => {
 			Gtk.AboutDialog dialog = new Gtk.AboutDialog();
 			dialog.set_transient_for(this);
+			dialog.set_modal(true);
 			dialog.artists = AboutInfo.artists;
 			dialog.authors = AboutInfo.authors;
 			dialog.documenters = null;

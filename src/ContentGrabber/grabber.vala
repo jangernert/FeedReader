@@ -87,7 +87,10 @@ public class FeedReader.Grabber : GLib.Object {
         if(!checkConfigFile())
         {
             // check page for feedsportal
-            if( (m_articleURL.contains("feedsportal.com") || m_articleURL.contains("feeds.gawker.com")) && download())
+            if( (m_articleURL.contains("feedsportal.com")
+            || m_articleURL.contains("feeds.gawker.com")
+            || m_articleURL.contains("feedproxy.google.com") )
+            && download())
             {
                 downloaded = true;
 

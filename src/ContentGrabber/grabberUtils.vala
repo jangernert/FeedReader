@@ -215,6 +215,35 @@ public class FeedReader.grabberUtils : GLib.Object {
         return true;
     }
 
+    public static bool removeAttributes(Html.Doc* doc, string? tag, string attribute)
+    {
+        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+        Xml.XPath.Object* res;
+        if(tag == null)
+            res = cntx.eval_expression("//*[@%s]".printf(attribute));
+        else
+            res = cntx.eval_expression("//%s[@%s]".printf(tag, attribute));
+
+        if(res == null)
+        {
+            return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
+
+        for(int i = 0; i < res->nodesetval->length(); i++)
+        {
+        	Xml.Node* node = res->nodesetval->item(i);
+            node->unset_prop(attribute);
+        }
+
+        delete res;
+        return true;
+    }
+
     public static void stripIDorClass(Html.Doc* doc, string IDorClass)
     {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);

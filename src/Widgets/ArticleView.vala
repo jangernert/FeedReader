@@ -26,6 +26,8 @@ public class FeedReader.articleView : Gtk.Stack {
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
 	private bool m_stopLoading = false;
+	private string m_imagePath;
+	private string m_imageURL;
 	public signal void enterFullscreen();
 	public signal void leaveFullscreen();
 
@@ -56,6 +58,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
 		m_view.button_press_event.connect(onClick);
 		m_view.button_release_event.connect(onRelease);
+		m_view.mouse_target_changed.connect(onMouseTargetChange);
 		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});
 		m_view.leave_fullscreen.connect(() => { leaveFullscreen(); return false;});
 		m_search = m_view.get_find_controller();
@@ -101,6 +104,16 @@ public class FeedReader.articleView : Gtk.Stack {
 			Gtk.device_grab_add(this, pointer, false);
 			GLib.Timeout.add(10, updateDragMomentum);
 			m_view.motion_notify_event.connect(mouseMotion);
+			return true;
+		}
+		else if (event.button == MouseButton.LEFT && m_imagePath != null)
+		{
+			var window = this.get_toplevel() as readerUI;
+			string prefix = "file://";
+			if(m_imagePath.has_prefix(prefix))
+				m_imagePath = m_imagePath.substring(prefix.length);
+			logger.print(LogMessage.DEBUG, m_imagePath);
+			var popup = new imagePopup(m_imagePath, m_imageURL, window);
 			return true;
 		}
 
@@ -372,7 +385,10 @@ public class FeedReader.articleView : Gtk.Stack {
 		setScrollPos((int)newScrollPos);
 
 		if (m_momentum < 1 && m_momentum > -1)
+		{
+			m_OngoingScrollID = 0;
 			return false;
+		}
 		else
 			return true;
 	}
@@ -387,6 +403,27 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_view.set_background_color(background);
 		}
 #endif
+	}
+
+	private void onMouseTargetChange(WebKit.HitTestResult result, uint modifiers)
+	{
+		if(result.context_is_image())
+		{
+			m_imagePath = result.get_image_uri();
+			if(result.context_is_link())
+			{
+				m_imageURL = result.get_link_uri();
+			}
+			else
+			{
+				m_imageURL = null;
+			}
+		}
+		else
+		{
+				m_imagePath = null;
+				m_imageURL = null;
+		}
 	}
 
 }

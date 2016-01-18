@@ -150,7 +150,7 @@ public class FeedReader.Utils : GLib.Object {
 		ArticleListState state = ArticleListState.ALL;
 		string searchTerm = "";
 		selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
-		state = (ArticleListState)settings_state.get_boolean("show-articles");
+		state = (ArticleListState)settings_state.get_enum("show-articles");
 		if(settings_tweaks.get_boolean("restore-searchterm"))
 			searchTerm = settings_state.get_string("search-term");
 
@@ -200,6 +200,7 @@ public class FeedReader.Utils : GLib.Object {
 			0,
 			newArticlesCount);
 
+		logger.print(LogMessage.DEBUG, "getRelevantArticles: %u".printf(articles.size));
 		return articles.size;
 	}
 

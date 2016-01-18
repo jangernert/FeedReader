@@ -673,6 +673,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: delete HeadlineList");
+		m_overlay.hide();
 
 		string selectedArticle = getSelectedArticle();
 

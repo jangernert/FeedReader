@@ -170,7 +170,7 @@ namespace FeedReader {
 	namespace AboutInfo {
 		 const string programmName  = _("FeedReader");
 		 const string copyright     = "Copyright © 2014 Jan Lukas Gernert";
-		 const string version       = "1.4.3";
+		 const string version       = "1.5 dev";
 		 const string comments      = _("Desktop Client for various RSS Services");
 		 const string[] authors     = { "Jan Lukas Gernert", null };
 		 const string[] documenters = { "nobody", null };

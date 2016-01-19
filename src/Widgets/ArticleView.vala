@@ -407,7 +407,7 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	private void onMouseTargetChange(WebKit.HitTestResult result, uint modifiers)
 	{
-		if(result.context_is_image() && !result.get_image_uri().has_prefix("http://"))
+		if(result.context_is_image())
 		{
 			m_imagePath = result.get_image_uri();
 			if(result.context_is_link())

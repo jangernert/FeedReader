@@ -392,26 +392,6 @@ public class FeedReader.Utils : GLib.Object {
 		return false;
 	}
 
-	public static string parseSearchTerm(string searchTerm)
-	{
-		if(searchTerm.has_prefix("title: "))
-		{
-			return searchTerm.substring(7);
-		}
-
-		if(searchTerm.has_prefix("author: "))
-		{
-			return searchTerm.substring(8);
-		}
-
-		if(searchTerm.has_prefix("content: "))
-		{
-			return searchTerm.substring(9);
-		}
-
-		return searchTerm;
-	}
-
 	public static void copyAutostart()
 	{
 		string filename = GLib.Environment.get_home_dir() + "/.config/autostart/feedreader-autostart.desktop";
@@ -603,5 +583,96 @@ public class FeedReader.Utils : GLib.Object {
 			return true;
 
 		return false;
+	}
+
+	// thx to geary :)
+	public static string prepareSearchQuery(string raw_query)
+	{
+        // Two goals here:
+        //   1) append an * after every term so it becomes a prefix search
+        //      (see <https://www.sqlite.org/fts3.html#section_3>), and
+        //   2) strip out common words/operators that might get interpreted as
+        //      search operators.
+        // We ignore everything inside quotes to give the user a way to
+        // override our algorithm here.  The idea is to offer one search query
+        // syntax for Geary that we can use locally and via IMAP, etc.
+
+        string quote_balanced = parseSearchTerm(raw_query).replace("'", " ");
+        if(countChar(raw_query, '"') % 2 != 0)
+		{
+            // Remove the last quote if it's not balanced.  This has the
+            // benefit of showing decent results as you type a quoted phrase.
+            int last_quote = raw_query.last_index_of_char('"');
+            assert(last_quote >= 0);
+            quote_balanced = raw_query.splice(last_quote, last_quote + 1, " ");
+        }
+
+        string[] words = quote_balanced.split_set(" \t\r\n:()%*\\");
+        bool in_quote = false;
+        StringBuilder prepared_query = new StringBuilder();
+        foreach(string s in words)
+		{
+            s = s.strip();
+
+            int quotes = countChar(s, '"');
+            if(!in_quote && quotes > 0)
+			{
+                in_quote = true;
+                --quotes;
+            }
+
+            if(!in_quote)
+			{
+                string lower = s.down();
+                if(lower == "" || lower == "and" || lower == "or" || lower == "not" || lower == "near" || lower.has_prefix("near/"))
+                    continue;
+
+                if(s.has_prefix("-"))
+                    s = s.substring(1);
+
+                if(s == "")
+                    continue;
+
+                s = "\"" + s + "*\"";
+            }
+
+            if(in_quote && quotes % 2 != 0)
+                in_quote = false;
+
+            prepared_query.append(s);
+            prepared_query.append(" ");
+        }
+
+        assert(!in_quote);
+
+        return prepared_query.str.strip();
+    }
+
+	public static int countChar(string s, unichar c)
+	{
+	    int count = 0;
+	    for (int index = 0; (index = s.index_of_char(c, index)) >= 0; ++index, ++count)
+	        ;
+	    return count;
+	}
+
+	public static string parseSearchTerm(string searchTerm)
+	{
+		if(searchTerm.has_prefix("title: "))
+		{
+			return searchTerm.substring(7);
+		}
+
+		if(searchTerm.has_prefix("author: "))
+		{
+			return searchTerm.substring(8);
+		}
+
+		if(searchTerm.has_prefix("content: "))
+		{
+			return searchTerm.substring(9);
+		}
+
+		return searchTerm;
 	}
 }

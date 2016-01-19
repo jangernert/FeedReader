@@ -410,7 +410,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		if(result.context_is_image())
 		{
 			m_imagePath = result.get_image_uri();
-			if(result.context_is_link())
+			if(result.context_is_link() && !result.get_link_uri().has_prefix("http://"))
 			{
 				m_imageURL = result.get_link_uri();
 			}

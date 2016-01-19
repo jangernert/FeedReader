@@ -1039,19 +1039,19 @@ public class FeedReader.dbUI : GLib.Object {
 		if(searchTerm != ""){
 			if(searchTerm.has_prefix("title: "))
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH \"%s\")".printf(Utils.parseSearchTerm(searchTerm)));
+				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH \"*%s*\")".printf(Utils.parseSearchTerm(searchTerm)));
 			}
 			else if(searchTerm.has_prefix("author: "))
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH \"%s\")".printf(Utils.parseSearchTerm(searchTerm)));
+				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH \"*%s*\")".printf(Utils.parseSearchTerm(searchTerm)));
 			}
 			else if(searchTerm.has_prefix("content: "))
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH \"%s\")".printf(Utils.parseSearchTerm(searchTerm)));
+				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH \"*%s*\")".printf(Utils.parseSearchTerm(searchTerm)));
 			}
 			else
 			{
-				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH \"%s\")".printf(Utils.parseSearchTerm(searchTerm)));
+				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH \"*%s*\")".printf(Utils.parseSearchTerm(searchTerm)));
 			}
 		}
 

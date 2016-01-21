@@ -38,7 +38,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		m_level = level;
 		m_catID = catID;
 		m_subscribed = true;
-		m_name = text.replace("&","&amp;");
+		m_name = text;
 		if(text != "")
 		{
 			m_feedID = feedID;

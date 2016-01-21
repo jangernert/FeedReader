@@ -149,7 +149,10 @@ void html(int extractText)
 			ch = read_char();
 			//printf("'%ls'\n", &ch);
 			if(ch == EOF)
+			{
+				wort_ende();
 				return;
+			}
 			switch (ch)
 			{
 				case '<':
@@ -225,7 +228,10 @@ void html(int extractText)
 		{
 			ch = read_char();
 			if(ch == EOF)
+			{
+				wort_ende();
 				return;
+			}
 			switch (ch)
 			{
 				/* Entities  */

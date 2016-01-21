@@ -171,7 +171,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             catString = catString.substring(0, catString.length-1);
 
             stmt.bind_text(feedID_pos, feed_item.getFeedID());
-            stmt.bind_text(feedName_pos, feed_item.getTitle());
+            stmt.bind_text(feedName_pos, Utils.UTF8fix(feed_item.getTitle()));
             stmt.bind_text(feedURL_pos, feed_item.getURL());
             stmt.bind_int (hasIcon_pos, feed_item.hasIcon() ? 1 : 0);
             stmt.bind_text(catID_pos, catString);

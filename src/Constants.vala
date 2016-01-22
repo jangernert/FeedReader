@@ -140,6 +140,8 @@ namespace FeedReader {
 
 	namespace InoReaderSecret {
 		const string base_uri = "https://www.inoreader.com/reader/api/0/";
+		const string apikey = "1000001058";
+		const string apitoken = "a3LyhdTSKk_dcCygZUZBZenIO2SQcpzz";
 	}
 
 	namespace FeedlySecret {

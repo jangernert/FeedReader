@@ -255,28 +255,13 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	private void setup_inoreader_login()
 	{
-    		var inoreader_apikey_label = new Gtk.Label(_("Api Key:"));
-		var inoreader_apisecret_label = new Gtk.Label(_("Api Secret:"));
+
 		var inoreader_user_label = new Gtk.Label(_("Username:"));
 		var inoreader_password_label = new Gtk.Label(_("Password:"));
 
-        	inoreader_apikey_label.set_alignment(1.0f, 0.5f);
-        	inoreader_apisecret_label.set_alignment(1.0f, 0.5f);
-        	inoreader_user_label.set_alignment(1.0f, 0.5f);
-		inoreader_password_label.set_alignment(1.0f, 0.5f);
-
-		inoreader_apikey_label.set_hexpand(true);
-    		inoreader_apisecret_label.set_hexpand(true);
-		inoreader_user_label.set_hexpand(true);
-		inoreader_password_label.set_hexpand(true);
-
-		m_inoreader_apikey_entry = new Gtk.Entry();
-		m_inoreader_apisecret_entry = new Gtk.Entry();
 		m_inoreader_user_entry = new Gtk.Entry();
 		m_inoreader_password_entry = new Gtk.Entry();
 
-		m_inoreader_apikey_entry.activate.connect(write_login_data);
-    		m_inoreader_apisecret_entry.activate.connect(write_login_data);
 		m_inoreader_user_entry.activate.connect(write_login_data);
 		m_inoreader_password_entry.activate.connect(write_login_data);
 
@@ -291,14 +276,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
 
-		grid.attach(inoreader_apikey_label, 0, 0, 1, 1);
-		grid.attach(m_inoreader_apikey_entry, 1, 0, 1, 1);
-		grid.attach(inoreader_apisecret_label, 0, 1, 1, 1);
-		grid.attach(m_inoreader_apisecret_entry, 1, 1, 1, 1);
-		grid.attach(inoreader_user_label, 0, 2, 1, 1);
-		grid.attach(m_inoreader_user_entry, 1, 2, 1, 1);
-		grid.attach(inoreader_password_label, 0, 3, 1, 1);
-		grid.attach(m_inoreader_password_entry, 1, 3, 1, 1);
+		grid.attach(inoreader_user_label, 0, 0, 1, 1);
+		grid.attach(m_inoreader_user_entry, 1, 0, 1, 1);
+		grid.attach(inoreader_password_label, 0, 1, 1, 1);
+		grid.attach(m_inoreader_password_entry, 1, 1, 1, 1);
 
 		var inoreader_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		inoreader_box.pack_start(ttrss_logo, false, false, 10);
@@ -389,17 +370,13 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				pwSchema.unref();
 				break;
 			case Backend.INOREADER:
-				backend = Backend.INOREADER;
-				settings_inoreader.set_string("inoreader-api-key", m_inoreader_apikey_entry.get_text());
-				settings_inoreader.set_string("inoreader-api-token", m_inoreader_apisecret_entry.get_text());
+				backend = Backend.INOREADER;);
 				settings_inoreader.set_string("inoreader-api-username", m_inoreader_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "Apikey", Secret.SchemaAttributeType.STRING,
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-				attributes["Apikey"] = m_inoreader_apikey_entry.get_text();
-				attributes["Apisecret"] = m_inoreader_apisecret_entry.get_text();
 				attributes["Username"] = m_inoreader_user_entry.get_text();
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_inoreader_password_entry.get_text(), null);}
 				catch(GLib.Error e){}

@@ -546,6 +546,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.OWNCLOUD:
 				return (int)dataBase.get_unread_total();
+
+			case Backend.INOREADER:
+				return m_inoreader.getTotalUnread();
 		}
 
 		return 0;

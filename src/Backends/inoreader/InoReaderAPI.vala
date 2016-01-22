@@ -144,7 +144,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategories: Could not load message response");
+			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
 		}
 		var root = parser.get_root().get_object();
@@ -188,6 +188,39 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 				++orderID;
 			}
 		}
+	}
+
+
+	public int getTotalUnread()
+	{
+		string response = m_connection.send_request("unread-count");
+
+		var parser = new Json.Parser();
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "getTotalUnread: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+		}
+
+		var root = parser.get_root().get_object();
+		var array = root.get_array_member("unreadcounts");
+		uint length = array.get_length();
+		int count = 0;
+
+		for (uint i = 0; i < length; i++)
+		{
+			Json.Object object = array.get_object_element(i);
+			if(object.get_string_member("id").has_prefix("feed/"))
+			{
+				count += (int)object.get_int_member("count");
+			}
+
+		}
+
+		logger.print(LogMessage.DEBUG, "getTotalUnread %i".printf(count));
+		return count;
 	}
 
 }

@@ -529,7 +529,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.INOREADER:
 				m_inoreader.getFeeds(feeds);
-				m_inoreader.getCategories(categories);
+				m_inoreader.getCategoriesAndTags(feeds, categories, tags);
 				return;
 		}
 	}

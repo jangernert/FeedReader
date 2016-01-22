@@ -76,7 +76,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	public void getFeeds(Gee.LinkedList<feed> feeds)
 	{
 		string response = m_connection.send_request("subscription/list");
-		logger.print(LogMessage.DEBUG, "getFeeds: " + response);
 
 		var parser = new Json.Parser();
 		try{
@@ -87,13 +86,58 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			logger.print(LogMessage.ERROR, e.message);
 		}
 		var root = parser.get_root().get_object();
+		var array = root.get_array_member("subscriptions");
+		uint length = array.get_length();
+
+		for (uint i = 0; i < length; i++)
+		{
+			Json.Object object = array.get_object_element(i);
+
+			string feedID = object.get_string_member("id");
+			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
+			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
+
+			if(icon_url != "" && !inoreader_utils.downloadIcon(feedID, icon_url))
+			{
+				icon_url = "";
+			}
+
+			string title = "No Title";
+			if(object.has_member("title"))
+			{
+				title = object.get_string_member("title");
+			}
+			else
+			{
+				title = ttrss_utils.URLtoFeedName(url);
+			}
+
+			uint catCount = object.get_array_member("categories").get_length();
+			string[] categories = {};
+
+			for(uint j = 0; j < catCount; ++j)
+			{
+				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
+			}
+
+			feeds.add(
+				new feed (
+						feedID,
+						title,
+						url,
+						(icon_url == "") ? false : true,
+						0,
+						categories
+					)
+			);
+		}
+
 
 	}
 
-	public void getCategories(Gee.LinkedList<category> categories)
+	public void getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		string response = m_connection.send_request("tag/list");
-		logger.print(LogMessage.DEBUG, "getCategories: " + response);
 
 		var parser = new Json.Parser();
 		try{

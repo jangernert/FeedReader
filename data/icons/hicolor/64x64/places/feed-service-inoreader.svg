@@ -168,6 +168,38 @@
          result="composite2"
          id="feComposite5775" />
     </filter>
+    <filter
+       style="color-interpolation-filters:sRGB;"
+       inkscape:label="Drop Shadow"
+       id="filter4168">
+      <feFlood
+         flood-opacity="0.498039"
+         flood-color="rgb(0,0,0)"
+         result="flood"
+         id="feFlood4170" />
+      <feComposite
+         in="flood"
+         in2="SourceGraphic"
+         operator="in"
+         result="composite1"
+         id="feComposite4172" />
+      <feGaussianBlur
+         in="composite1"
+         stdDeviation="0.5"
+         result="blur"
+         id="feGaussianBlur4174" />
+      <feOffset
+         dx="0"
+         dy="0"
+         result="offset"
+         id="feOffset4176" />
+      <feComposite
+         in="SourceGraphic"
+         in2="offset"
+         operator="over"
+         result="composite2"
+         id="feComposite4178" />
+    </filter>
   </defs>
   <sodipodi:namedview
      id="base"
@@ -177,17 +209,17 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="5.6568543"
-     inkscape:cx="31.859446"
+     inkscape:cx="24.434825"
      inkscape:cy="28.558162"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="false"
      units="px"
-     inkscape:window-width="1920"
-     inkscape:window-height="1145"
-     inkscape:window-x="0"
-     inkscape:window-y="27"
-     inkscape:window-maximized="1"
+     inkscape:window-width="1246"
+     inkscape:window-height="711"
+     inkscape:window-x="674"
+     inkscape:window-y="99"
+     inkscape:window-maximized="0"
      showguides="true"
      inkscape:guide-bbox="true" />
   <metadata
@@ -198,7 +230,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -209,7 +241,7 @@
      transform="translate(0,-988.3622)"
      style="display:inline">
     <rect
-       style="opacity:1;fill:url(#linearGradient4338);fill-opacity:1;stroke:none;stroke-width:0.27891666;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       style="opacity:1;fill:url(#linearGradient4338);fill-opacity:1;stroke:none;stroke-width:0.27891666;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;filter:url(#filter4168)"
        id="rect4201"
        width="55.042133"
        height="55.465805"

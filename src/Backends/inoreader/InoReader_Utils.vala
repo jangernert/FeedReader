@@ -47,4 +47,49 @@ public class FeedReader.inoreader_utils : GLib.Object {
 
 		return passwd;
 	}
+
+	public static bool downloadIcon(string feed_id, string icon_url)
+	{
+		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+		var path = GLib.File.new_for_path(icon_path);
+		try{
+			path.make_directory_with_parents();
+		}
+		catch(GLib.Error e){
+			//logger.print(LogMessage.DEBUG, e.message);
+		}
+
+		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
+
+		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+		{
+			Soup.Message message_dlIcon;
+			message_dlIcon = new Soup.Message("GET", icon_url);
+
+			if(settings_tweaks.get_boolean("do-not-track"))
+				message_dlIcon.request_headers.append("DNT", "1");
+
+			var session = new Soup.Session();
+			session.ssl_strict = false;
+			var status = session.send_message(message_dlIcon);
+			if (status == 200)
+			{
+				try{
+					FileUtils.set_contents(	local_filename,
+											(string)message_dlIcon.response_body.flatten().data,
+											(long)message_dlIcon.response_body.length);
+				}
+				catch(GLib.FileError e)
+				{
+					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+				}
+				return true;
+			}
+			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			return false;
+		}
+
+		// file already exists
+		return true;
+	}
 }

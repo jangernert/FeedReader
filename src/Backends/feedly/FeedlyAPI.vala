@@ -153,7 +153,7 @@ public class FeedReader.FeedlyAPI : Object {
 			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
 		}
-		Json.Array array = parser.get_root().get_array ();
+		Json.Array array = parser.get_root().get_array();
 		uint length = array.get_length();
 
 		for (uint i = 0; i < length; i++) {

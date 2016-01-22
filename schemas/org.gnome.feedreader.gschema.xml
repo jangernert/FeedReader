@@ -4,6 +4,7 @@
 		<value nick="TTRSS" value="0"/>
 		<value nick="FEEDLY" value="1"/>
 		<value nick="OWNCLOUD" value="2"/>
+		<value nick="INOREADER" value="3"/>
 	</enum>
 
 	<enum id="org.gnome.feedreader.grabber">

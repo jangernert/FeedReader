@@ -31,7 +31,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		m_connection.getToken();
 		if(getUserID())
 		{
-			logger.print(LogMessage.DEBUG, "feedly: login success");
+			logger.print(LogMessage.DEBUG, "inoreader: login success");
 			return LoginResponse.SUCCESS;
 		}
 		return LoginResponse.UNKNOWN_ERROR;

@@ -1,0 +1,25 @@
+<schemalist>
+	<schema id="org.gnome.feedreader.inoreader" path="/org/gnome/feedreader/inoreader/" gettext-domain="inoreader">
+	<key name="inoreader-api-token" type="s">
+		<default>""</default>
+		<summary>Acces key to Feedly-API</summary>
+		<description>Acces Token</description>
+	</key>
+	<key name="inoreader-api-key" type="s">
+		<default>""</default>
+		<summary>Refresh token</summary>
+		<description>App Key</description>
+	</key>
+
+	<key name="inoreader-api-username" type="s">
+		<default>""</default>
+		<summary>apiCode</summary>
+		<description></description>
+		</key>
+	<key name="inoreader-api-code" type="s">
+		<default>""</default>
+		<summary>apiCode</summary>
+		<description>Code to get access token for the first time. Gets returned after logging in via google/facebook.</description>
+	</key>
+	</schema>
+</schemalist>

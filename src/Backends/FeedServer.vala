@@ -17,6 +17,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private ttrss_interface m_ttrss;
 	private FeedlyAPI m_feedly;
 	private OwncloudNewsAPI m_owncloud;
+	private InoReaderAPI m_inoreader;
 	private int m_type;
 	private bool m_supportTags;
 	public signal void newFeedList();
@@ -43,6 +44,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.OWNCLOUD:
 				m_owncloud = new OwncloudNewsAPI();
+				break;
+			case Backend.INOREADER:
+				m_inoreader = new InoReaderAPI();
 				break;
 		}
 	}
@@ -83,6 +87,8 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.OWNCLOUD:
 				return m_owncloud.login();
+			case Backend.INOREADER:
+				return m_inoreader.login();
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -517,6 +523,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				m_owncloud.getFeeds(feeds);
 				m_owncloud.getCategories(categories, feeds);
 				return;
+
+			case Backend.INOREADER:
+				inoreader.getCategories(categories);
+				inoreader.getFeeds(feeds);
+				return;
 		}
 	}
 
@@ -716,6 +727,11 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_owncloud.getArticles(articles, 0, -1, read, type, id);
 
 				writeArticlesInChunks(articles, 10);
+				break;
+
+			case Backend.INOREADER:
+
+
 				break;
 		}
 	}

@@ -138,6 +138,9 @@ namespace FeedReader {
 		MARK_READ_ALL
 	}
 
+	namespace InoReaderSecret {
+		const string base_uri = "https://www.inoreader.com/reader/api/0/";
+	}
 
 	namespace FeedlySecret {
 		 const string base_uri        = "http://cloud.feedly.com";

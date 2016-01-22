@@ -19,7 +19,8 @@ namespace FeedReader {
 		NONE = -1,
 		TTRSS = 0,
 		FEEDLY,
-		OWNCLOUD
+		OWNCLOUD,
+		INOREADER
 	}
 
 	public enum OAuth {

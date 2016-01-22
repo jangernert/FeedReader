@@ -370,13 +370,15 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				pwSchema.unref();
 				break;
 			case Backend.INOREADER:
-				backend = Backend.INOREADER;);
+				backend = Backend.INOREADER;
 				settings_inoreader.set_string("inoreader-api-username", m_inoreader_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "Apikey", Secret.SchemaAttributeType.STRING,
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["Apikey"] = InoReaderSecret.apikey;
+				attributes["Apisecret"] = InoReaderSecret.apitoken;
 				attributes["Username"] = m_inoreader_user_entry.get_text();
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_inoreader_password_entry.get_text(), null);}
 				catch(GLib.Error e){}

@@ -72,7 +72,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         {
             int highesID = getHighestRowID();
             int syncCount = settings_general.get_int("max-articles");
-            query.addCustomCondition("rowid BETWEEN 1 AND %i".printf(highesID-syncCount));
+            int upper = highesID-syncCount;
+            if(upper <= 0)
+                upper = 1;
+            query.addCustomCondition("rowid BETWEEN 1 AND %i".printf(upper));
         }
         query.build();
         query.print();

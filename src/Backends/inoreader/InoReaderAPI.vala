@@ -148,7 +148,46 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			logger.print(LogMessage.ERROR, e.message);
 		}
 		var root = parser.get_root().get_object();
+		var array = root.get_array_member("tags");
+		uint length = array.get_length();
+		int orderID = 0;
 
+		for (uint i = 0; i < length; i++)
+		{
+			Json.Object object = array.get_object_element(i);
+			string id = object.get_string_member("id");
+			int start = id.last_index_of_char('/') + 1;
+			string title = id.substring(start);
+
+			if(id.contains("/label/"))
+			{
+				if(inoreader_utils.tagIsCat(id, feeds))
+				{
+					categories.add(
+						new category(
+							id,
+							title,
+							0,
+							orderID,
+							CategoryID.MASTER,
+							1
+						)
+					);
+				}
+				else
+				{
+					tags.add(
+						new tag(
+							id,
+							title,
+							dataBase.getTagColor()
+						)
+					);
+				}
+
+				++orderID;
+			}
+		}
 	}
 
 }

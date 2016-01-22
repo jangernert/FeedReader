@@ -74,7 +74,6 @@ public class FeedReader.FeedServer : GLib.Object {
 				m_ttrss.supportTags.begin((obj, res) => {
 					m_supportTags = m_ttrss.supportTags.end(res);
 				});
-
 				return response;
 
 			case Backend.FEEDLY:
@@ -87,6 +86,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.OWNCLOUD:
 				return m_owncloud.login();
+
 			case Backend.INOREADER:
 				return m_inoreader.login();
 		}

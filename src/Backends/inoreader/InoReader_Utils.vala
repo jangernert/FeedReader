@@ -15,17 +15,14 @@
 
 public class FeedReader.inoreader_utils : GLib.Object {
 
-	public static string getApi()
-	{
-		return settings_inoreader.get_string ("inoreader-api-key");
-	}
-	public static string getApiToken()
-	{
-		return settings_inoreader.get_string ("inoreader-api-token");
-	}
 	public static string getUser()
 	{
 		return settings_inoreader.get_string ("inoreader-api-username");
+	}
+
+	public static string getAccessToken()
+	{
+		return settings_inoreader.get_string ("inoreader-api-code");
 	}
 
 	public static string getPasswd()

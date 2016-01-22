@@ -22,8 +22,8 @@ public class FeedReader.InoReaderConnection {
 	public InoReaderConnection () {
 		m_api_key = InoReaderSecret.apikey;
 		m_api_token = InoReaderSecret.apitoken;
-		m_api_username = settings_inoreader.get_string("inoreader-api-username");
-		m_api_code = settings_inoreader.get_string("inoreader-api-code");
+		m_api_username = inoreader_utils.getUser();
+		m_api_code = inoreader_utils.getAccessToken();
 	}
 
 	public int getToken()
@@ -37,21 +37,24 @@ public class FeedReader.InoReaderConnection {
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["Apikey"] = InoReaderSecret.apikey;
 		attributes["Apisecret"] = InoReaderSecret.apitoken;
-		attributes["Username"] = settings_inoreader.get_string ("inoreader-api-username");
+		attributes["Username"] = m_api_username;
 
 		string passwd = "";
-		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
+		try{
+			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
+		}
+		catch(GLib.Error e){
 			logger.print(LogMessage.ERROR, e.message);
 		}
 
 		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd ;
-		message.request_headers.append("AppId",m_api_key);
-		message.request_headers.append("AppKey",m_api_token);
+		message.request_headers.append("AppId", m_api_key);
+		message.request_headers.append("AppKey", m_api_token);
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 
 		try{
-			var regex = new Regex (".*\\w\\s.*\\w\\sAuth=");
+			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			string response = (string)message.response_body.flatten().data;
 			logger.print(LogMessage.DEBUG, "Retreving API Code : " + response );
 			if(regex.match(response)){

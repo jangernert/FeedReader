@@ -58,8 +58,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return false;
 	}
 
-	public void getCategories(Gee.LinkedList<category> categories){
-
+	public void getCategories(Gee.LinkedList<category> categories)
+	{
 		string response = m_connection.send_request("subscription/list");
 
 		var parser = new Json.Parser();

@@ -287,6 +287,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		m_login_details.add_named(inoreader_box, "inoreader");
 	}
+
 	public void loadData()
 	{
 		switch(settings_general.get_enum("account-type"))

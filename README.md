@@ -8,6 +8,10 @@ FeedReader is a modern desktop application designed to complement existing web-b
 
 <div style="text-align:center"><img src ="https://raw.githubusercontent.com/jangernert/feedreader/gh-pages/Screenshot4.png" /></div>
 
+Launchpad : https://launchpad.net/feedreader<br/>
+For translators : https://translations.launchpad.net/feedreader
+
+
 
 ### Dependencies 
 - build-essential

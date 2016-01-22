@@ -76,6 +76,10 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
                 user_name = settings_owncloud.get_string("username");
                 server = Utils.shortenURL(settings_owncloud.get_string("url"));
                 break;
+            case Backend.INOREADER:
+                service_name = "inoreader";
+                user_name = settings_inoreader.get_string("inoreader-api-username");
+                break;
         }
 
         if(this.is_visible())

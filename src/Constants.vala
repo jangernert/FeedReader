@@ -19,7 +19,8 @@ namespace FeedReader {
 		NONE = -1,
 		TTRSS = 0,
 		FEEDLY,
-		OWNCLOUD
+		OWNCLOUD,
+		INOREADER
 	}
 
 	public enum OAuth {
@@ -138,6 +139,11 @@ namespace FeedReader {
 		MARK_READ_ALL
 	}
 
+	namespace InoReaderSecret {
+		const string base_uri = "https://www.inoreader.com/reader/api/0/";
+		const string apikey = "1000001058";
+		const string apitoken = "a3LyhdTSKk_dcCygZUZBZenIO2SQcpzz";
+	}
 
 	namespace FeedlySecret {
 		 const string base_uri        = "http://cloud.feedly.com";

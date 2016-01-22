@@ -497,6 +497,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.OWNCLOUD:
 				//return m_owncloud.ping();
 				return true;
+
+			case Backend.INOREADER:
+				return m_inoreader.ping();
 		}
 
 		return false;

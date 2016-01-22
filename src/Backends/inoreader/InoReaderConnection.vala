@@ -19,7 +19,8 @@ public class FeedReader.InoReaderConnection {
 	private string m_api_username;
 	private string m_api_code;
 
-	public InoReaderConnection () {
+	public InoReaderConnection ()
+	{
 		m_api_key = InoReaderSecret.apikey;
 		m_api_token = InoReaderSecret.apitoken;
 		m_api_username = inoreader_utils.getUser();
@@ -56,27 +57,28 @@ public class FeedReader.InoReaderConnection {
 		try{
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			string response = (string)message.response_body.flatten().data;
-			logger.print(LogMessage.DEBUG, "Retreving API Code : " + response );
-			if(regex.match(response)){
+			if(regex.match(response))
+			{
 				string split = regex.replace( response, -1,0,"");
 				settings_inoreader.set_string("inoreader-api-code",split.strip());
-				m_api_code = settings_inoreader.get_string("inoreader-api-code");
-				logger.print(LogMessage.DEBUG, "Retreving API Code : " + split.strip() );
+				m_api_code = inoreader_utils.getAccessToken();
 				return LoginResponse.SUCCESS;
 			}
-			else{
+			else
+			{
 				logger.print(LogMessage.DEBUG, response);
 				return LoginResponse.WRONG_LOGIN;
 			}
 		}
-		catch (Error e) {
+		catch (Error e){
 			logger.print(LogMessage.ERROR, "Could not load response to Message from inoreader - %s".printf(e.message));
 		}
 
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-	public string send_request(string path){
+	public string send_request(string path)
+	{
 		return send_post_request(path, "POST");
 	}
 

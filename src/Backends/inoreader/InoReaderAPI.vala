@@ -28,14 +28,22 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		m_connection.getToken();
+		if(inoreader_utils.getAccessToken() == "")
+		{
+			m_connection.getToken();
+		}
+
 		if(getUserID())
 		{
-			logger.print(LogMessage.DEBUG, "inoreader: login success");
 			return LoginResponse.SUCCESS;
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}
+
+	public bool ping() {
+		return Utils.ping("inoreader.com");
+	}
+
 	private bool getUserID()
 	{
 		string response = m_connection.send_request("user-info");
@@ -60,7 +68,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public void getCategories(Gee.LinkedList<category> categories)
 	{
-		string response = m_connection.send_request("subscription/list");
+		string response = m_connection.send_request("tag/list");
+		logger.print(LogMessage.DEBUG, "getCategories: " + response);
 
 		var parser = new Json.Parser();
 		parser.load_from_data (response, -1);

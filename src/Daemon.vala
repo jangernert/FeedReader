@@ -102,7 +102,7 @@ namespace FeedReader {
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
+				login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
 					setOffline();
@@ -131,7 +131,7 @@ namespace FeedReader {
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
+				login((Backend)settings_general.get_enum("account-type"));
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
@@ -186,7 +186,7 @@ namespace FeedReader {
 			}
 
 
-			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
+			logger.print(LogMessage.DEBUG, "daemon: login status = " +m_loggedin.to_string());
 			return m_loggedin;
 		}
 

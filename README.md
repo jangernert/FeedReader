@@ -56,6 +56,6 @@ For translators : https://translations.launchpad.net/feedreader
 git clone https://github.com/jangernert/FeedReader && cd ./FeedReader
 mkdir build & cd ./build 
 cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-make -j 1
+make
 sudo make install
 ```

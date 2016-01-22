@@ -102,7 +102,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getCategories: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
-			return false;
 		}
 		var root = parser.get_root().get_object();
 

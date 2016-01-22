@@ -263,7 +263,7 @@ public class FeedReader.FeedlyAPI : Object {
 		string streamCall = "/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, continuation);
 		string entry_id_response = m_connection.send_get_request_to_feedly(streamCall);
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(entry_id_response, -1);
 		}
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getArticles: Could not load message response");

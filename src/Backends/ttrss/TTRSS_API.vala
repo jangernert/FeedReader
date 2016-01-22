@@ -142,7 +142,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public int getUnreadCount()
 	{
 		int unread = 0;
-		if(isloggedin()) {
+		if(isloggedin())
+		{
 			var message = new ttrss_message(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "getUnread");

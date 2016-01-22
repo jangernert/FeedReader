@@ -48,7 +48,14 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		string response = m_connection.send_request("user-info");
 		var parser = new Json.Parser();
-		parser.load_from_data (response, -1);
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "getUserID: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+			return false;
+		}
 		var root = parser.get_root().get_object();
 
 		if(root.has_member("userId"))
@@ -66,13 +73,37 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return false;
 	}
 
+	public void getFeeds(Gee.LinkedList<feed> feeds)
+	{
+		string response = m_connection.send_request("subscription/list");
+		logger.print(LogMessage.DEBUG, "getFeeds: " + response);
+
+		var parser = new Json.Parser();
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+		}
+		var root = parser.get_root().get_object();
+
+	}
+
 	public void getCategories(Gee.LinkedList<category> categories)
 	{
 		string response = m_connection.send_request("tag/list");
 		logger.print(LogMessage.DEBUG, "getCategories: " + response);
 
 		var parser = new Json.Parser();
-		parser.load_from_data (response, -1);
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "getCategories: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+			return false;
+		}
 		var root = parser.get_root().get_object();
 
 	}

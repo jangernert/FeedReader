@@ -1,0 +1,15 @@
+<schemalist>
+	<schema id="org.gnome.feedreader.inoreader" path="/org/gnome/feedreader/inoreader/" gettext-domain="inoreader">
+
+	<key name="inoreader-api-username" type="s">
+		<default>""</default>
+		<summary>apiCode</summary>
+		<description>Authenticated username to InoReader throught API</description>
+		</key>
+	<key name="inoreader-api-code" type="s">
+		<default>""</default>
+		<description>Authorization code to InoReader throught API</description>
+	</key>
+	</schema>
+
+</schemalist>

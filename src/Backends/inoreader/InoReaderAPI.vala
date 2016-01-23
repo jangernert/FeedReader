@@ -360,4 +360,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		string response = m_connection.send_request("mark-all-as-read", message_string);
 	}
 
+	public string composeTagID(string tagName)
+	{
+		return "user/%s/label/%s".printf(m_userID, tagName);
+	}
+
 }

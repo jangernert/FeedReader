@@ -25,6 +25,11 @@ public class FeedReader.inoreader_utils : GLib.Object {
 		return settings_inoreader.get_string ("access-token");
 	}
 
+	public static string getUserID()
+	{
+		return settings_inoreader.get_string ("user-id");
+	}
+
 	public static string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,

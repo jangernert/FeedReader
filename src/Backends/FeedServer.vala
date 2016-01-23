@@ -491,18 +491,19 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public string createTag(string caption)
 	{
-		string tagID = "";
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				tagID = m_ttrss.createTag(caption).to_string();
-				break;
+				return m_ttrss.createTag(caption).to_string();
 
 			case Backend.FEEDLY:
-				tagID = m_feedly.createTag(caption);
-				break;
+				return m_feedly.createTag(caption);
+
+			case Backend.INOREADER:
+				return m_inoreader.composeTagID(caption);
 		}
-		return tagID;
+
+		return ":(";
 	}
 
 	public async void deleteTag(string tagID)

@@ -41,6 +41,11 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 		return settings_owncloud.get_string ("username");
 	}
 
+    public static string getUnmodifiedURL()
+    {
+        return settings_owncloud.get_string("url");
+    }
+
 	public static string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,

@@ -272,11 +272,13 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		if(continuation != null)
 			message_string += "&c=" + continuation;
 
+
+		string api_endpoint = "stream/contents";
 		if(feed_id != null)
-			message_string += "&s=" + feed_id;
+			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
 		else if(tagID != null)
-			message_string += "&s=" + tagID;
-		string response = m_connection.send_request("stream/contents", message_string);
+			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
+		string response = m_connection.send_request(api_endpoint, message_string);
 
 		//logger.print(LogMessage.DEBUG, message_string);
 		//logger.print(LogMessage.DEBUG, response);

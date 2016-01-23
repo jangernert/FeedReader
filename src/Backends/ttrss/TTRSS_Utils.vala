@@ -39,6 +39,11 @@ public class FeedReader.ttrss_utils : GLib.Object {
 		return settings_ttrss.get_string ("username");
 	}
 
+	public static string getUnmodifiedURL()
+	{
+		return settings_ttrss.get_string ("url");
+	}
+
 	public static string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,

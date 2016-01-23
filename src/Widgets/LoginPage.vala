@@ -315,17 +315,16 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		}
 
 
-		string owncloud_url = settings_owncloud.get_string("url");
-		string owncloud_username = settings_owncloud.get_string("username");
-		m_owncloud_url_entry.set_text(owncloud_url);
-		m_owncloud_user_entry.set_text(owncloud_username);
+		m_owncloud_url_entry.set_text(OwncloudNews_Utils.getUnmodifiedURL());
+		m_owncloud_user_entry.set_text(OwncloudNews_Utils.getUser());
 		m_owncloud_password_entry.set_text(OwncloudNews_Utils.getPasswd());
 
-		string ttrss_url = settings_ttrss.get_string("url");
-		string ttrss_username = settings_ttrss.get_string("username");
-		m_ttrss_url_entry.set_text(ttrss_url);
-		m_ttrss_user_entry.set_text(ttrss_username);
+		m_ttrss_url_entry.set_text(ttrss_utils.getUnmodifiedURL());
+		m_ttrss_user_entry.set_text(ttrss_utils.getUser());
 		m_ttrss_password_entry.set_text(ttrss_utils.getPasswd());
+
+		m_inoreader_user_entry.set_text(inoreader_utils.getUser());
+		m_inoreader_password_entry.set_text(inoreader_utils.getPasswd());
 	}
 
 

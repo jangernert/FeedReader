@@ -75,6 +75,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Logger.vala
     src/Backends/ttrss/TTRSS_Utils.vala
     src/Backends/owncloud/OwncloudNews_Utils.vala
+    src/Backends/inoreader/InoReader_Utils.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala

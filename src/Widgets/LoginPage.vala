@@ -21,6 +21,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.Entry m_owncloud_url_entry;
 	private Gtk.Entry m_owncloud_user_entry;
 	private Gtk.Entry m_owncloud_password_entry;
+	private Gtk.Entry m_inoreader_user_entry;
+	private Gtk.Entry m_inoreader_password_entry;
+	private Gtk.Entry m_inoreader_apikey_entry;
+	private Gtk.Entry m_inoreader_apisecret_entry;
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
@@ -33,7 +37,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public LoginPage()
 	{
 
-		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud")};
+		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
 
@@ -52,15 +56,23 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 
 		var liststore = new Gtk.ListStore(1, typeof (string));
+
 		Gtk.TreeIter ttrss;
 		liststore.append(out ttrss);
 		liststore.set(ttrss, 0, m_account_types[Backend.TTRSS]);
+
 		Gtk.TreeIter feedly;
 		liststore.append(out feedly);
 		liststore.set(feedly, 0, m_account_types[Backend.FEEDLY]);
+
 		Gtk.TreeIter ownCloud;
 		liststore.append(out ownCloud);
 		liststore.set(ownCloud, 0, m_account_types[Backend.OWNCLOUD]);
+
+		Gtk.TreeIter inoReader;
+		liststore.append(out inoReader);
+		liststore.set(inoReader, 0, m_account_types[Backend.INOREADER]);
+
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
@@ -102,6 +114,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 					case Backend.OWNCLOUD:
 						m_login_details.set_visible_child_name("owncloud");
 						break;
+					case Backend.INOREADER:
+						m_login_details.set_visible_child_name("inoreader");
+						break;
 				}
 			}
 		});
@@ -112,6 +127,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		setup_ttrss_login();
 		setup_feedly_login();
 		setup_owncloud_login();
+		setup_inoreader_login();
 
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
@@ -237,6 +253,41 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_login_details.add_named(owncloud_box, "owncloud");
 	}
 
+	private void setup_inoreader_login()
+	{
+
+		var inoreader_user_label = new Gtk.Label(_("Username:"));
+		var inoreader_password_label = new Gtk.Label(_("Password:"));
+
+		m_inoreader_user_entry = new Gtk.Entry();
+		m_inoreader_password_entry = new Gtk.Entry();
+
+		m_inoreader_user_entry.activate.connect(write_login_data);
+		m_inoreader_password_entry.activate.connect(write_login_data);
+
+		m_inoreader_password_entry.set_invisible_char('*');
+		m_inoreader_password_entry.set_visibility(false);
+
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
+
+		grid.attach(inoreader_user_label, 0, 0, 1, 1);
+		grid.attach(m_inoreader_user_entry, 1, 0, 1, 1);
+		grid.attach(inoreader_password_label, 0, 1, 1, 1);
+		grid.attach(m_inoreader_password_entry, 1, 1, 1, 1);
+
+		var inoreader_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+		inoreader_box.pack_start(ttrss_logo, false, false, 10);
+		inoreader_box.pack_start(grid, true, true, 10);
+
+		m_login_details.add_named(inoreader_box, "inoreader");
+	}
+
 	public void loadData()
 	{
 		switch(settings_general.get_enum("account-type"))
@@ -257,20 +308,23 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				m_comboBox.set_active(Backend.OWNCLOUD);
 				m_login_details.set_visible_child_name("owncloud");
 				break;
+			case Backend.INOREADER:
+				m_comboBox.set_active(Backend.INOREADER);
+				m_login_details.set_visible_child_name("inoreader");
+				break;
 		}
 
 
-		string owncloud_url = settings_owncloud.get_string("url");
-		string owncloud_username = settings_owncloud.get_string("username");
-		m_owncloud_url_entry.set_text(owncloud_url);
-		m_owncloud_user_entry.set_text(owncloud_username);
+		m_owncloud_url_entry.set_text(OwncloudNews_Utils.getUnmodifiedURL());
+		m_owncloud_user_entry.set_text(OwncloudNews_Utils.getUser());
 		m_owncloud_password_entry.set_text(OwncloudNews_Utils.getPasswd());
 
-		string ttrss_url = settings_ttrss.get_string("url");
-		string ttrss_username = settings_ttrss.get_string("username");
-		m_ttrss_url_entry.set_text(ttrss_url);
-		m_ttrss_user_entry.set_text(ttrss_username);
+		m_ttrss_url_entry.set_text(ttrss_utils.getUnmodifiedURL());
+		m_ttrss_user_entry.set_text(ttrss_utils.getUser());
 		m_ttrss_password_entry.set_text(ttrss_utils.getPasswd());
+
+		m_inoreader_user_entry.set_text(inoreader_utils.getUser());
+		m_inoreader_password_entry.set_text(inoreader_utils.getPasswd());
 	}
 
 
@@ -314,6 +368,20 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_owncloud_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
 				pwSchema.unref();
+				break;
+			case Backend.INOREADER:
+				backend = Backend.INOREADER;
+				settings_inoreader.set_string("username", m_inoreader_user_entry.get_text());
+				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+							                      "Apikey", Secret.SchemaAttributeType.STRING,
+							                      "Apisecret", Secret.SchemaAttributeType.STRING,
+							                      "Username", Secret.SchemaAttributeType.STRING);
+				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["Apikey"] = InoReaderSecret.apikey;
+				attributes["Apisecret"] = InoReaderSecret.apitoken;
+				attributes["Username"] = m_inoreader_user_entry.get_text();
+				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_inoreader_password_entry.get_text(), null);}
+				catch(GLib.Error e){}
 				break;
 		}
 

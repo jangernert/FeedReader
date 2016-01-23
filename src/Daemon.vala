@@ -102,7 +102,7 @@ namespace FeedReader {
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
+				login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
 					setOffline();
@@ -131,7 +131,7 @@ namespace FeedReader {
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				m_loggedin = login((Backend)settings_general.get_enum("account-type"));
+				login((Backend)settings_general.get_enum("account-type"));
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
@@ -186,7 +186,7 @@ namespace FeedReader {
 			}
 
 
-			logger.print(LogMessage.DEBUG, "daemon: login status = %i".printf(m_loggedin));
+			logger.print(LogMessage.DEBUG, "daemon: login status = " +m_loggedin.to_string());
 			return m_loggedin;
 		}
 
@@ -404,6 +404,7 @@ namespace FeedReader {
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
 	GLib.Settings settings_owncloud;
+	GLib.Settings settings_inoreader;
 	GLib.Settings settings_tweaks;
 	FeedServer server;
 	Logger logger;
@@ -433,6 +434,7 @@ namespace FeedReader {
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
+		settings_inoreader = new GLib.Settings ("org.gnome.feedreader.inoreader");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 
 		try {

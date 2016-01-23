@@ -72,7 +72,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         {
             int highesID = getHighestRowID();
             int syncCount = settings_general.get_int("max-articles");
-            query.addCustomCondition("rowid BETWEEN 1 AND %i".printf(highesID-syncCount));
+            int upper = highesID-syncCount;
+            if(upper <= 0)
+                upper = 1;
+            query.addCustomCondition("rowid BETWEEN 1 AND %i".printf(upper));
         }
         query.build();
         query.print();
@@ -124,7 +127,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             }
 
             query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-            query.updateValuePair("tags", new_tags);
+            query.updateValuePair("tags", "\"%s\"".printf(new_tags));
             query.addEqualsCondition("articleID", articleID, true, true);
             executeSQL(query.build());
         }
@@ -526,6 +529,24 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         new GLib.Thread<void*>("markCategorieRead", run);
         yield;
     }
+
+    public async void markFeedRead(string feedID)
+	{
+		SourceFunc callback = markFeedRead.callback;
+
+		ThreadFunc<void*> run = () => {
+
+			var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+			query.updateValuePair("unread", ArticleStatus.READ.to_string());
+			query.addEqualsCondition("feedID", feedID, true, true);
+			executeSQL(query.build());
+
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("markFeedRead", run);
+		yield;
+	}
 
     public async void markAllRead()
     {

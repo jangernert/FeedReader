@@ -61,6 +61,17 @@ public class FeedReader.feed : GLib.Object {
 		return m_catIDs;
 	}
 
+	public bool hasCat(string catID)
+	{
+		foreach(string cat in m_catIDs)
+		{
+			if(cat == catID)
+				return true;
+		}
+
+		return false;
+	}
+
 	public bool isUncategorized()
 	{
 		if(m_catIDs.length == 0)

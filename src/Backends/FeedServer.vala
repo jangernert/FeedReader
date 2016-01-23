@@ -17,6 +17,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private ttrss_interface m_ttrss;
 	private FeedlyAPI m_feedly;
 	private OwncloudNewsAPI m_owncloud;
+	private InoReaderAPI m_inoreader;
 	private int m_type;
 	private bool m_supportTags;
 	public signal void newFeedList();
@@ -44,6 +45,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.OWNCLOUD:
 				m_owncloud = new OwncloudNewsAPI();
 				break;
+			case Backend.INOREADER:
+				m_inoreader = new InoReaderAPI();
+				break;
 		}
 	}
 
@@ -70,7 +74,6 @@ public class FeedReader.FeedServer : GLib.Object {
 				m_ttrss.supportTags.begin((obj, res) => {
 					m_supportTags = m_ttrss.supportTags.end(res);
 				});
-
 				return response;
 
 			case Backend.FEEDLY:
@@ -83,6 +86,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.OWNCLOUD:
 				return m_owncloud.login();
+
+			case Backend.INOREADER:
+				m_supportTags = true;
+				return m_inoreader.login();
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -134,7 +141,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			if(unread > max && settings_general.get_enum("account-type") != Backend.OWNCLOUD)
 			{
 				getArticles(20, ArticleStatus.MARKED);
-				getArticles(unread);
+				getArticles(unread, ArticleStatus.UNREAD);
 			}
 			else
 			{
@@ -263,6 +270,13 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.OWNCLOUD:
 					m_owncloud.updateArticleUnread(articleIDs, read);
 					break;
+
+				case Backend.INOREADER:
+					if(read == ArticleStatus.READ)
+						m_inoreader.edidTag(articleIDs, "user/-/state/com.google/read");
+					else
+						m_inoreader.edidTag(articleIDs, "user/-/state/com.google/read", false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -289,6 +303,12 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.OWNCLOUD:
 					m_owncloud.updateArticleMarked(articleID, marked);
+					break;
+				case Backend.INOREADER:
+					if(marked == ArticleStatus.MARKED)
+						m_inoreader.edidTag(articleID, "user/-/state/com.google/starred");
+					else
+						m_inoreader.edidTag(articleID, "user/-/state/com.google/starred", false);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -317,6 +337,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.OWNCLOUD:
 					m_owncloud.markFeedRead(feedID, false);
 					break;
+
+				case Backend.INOREADER:
+					m_inoreader.markAsRead(feedID);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -343,6 +367,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.OWNCLOUD:
 					m_owncloud.markFeedRead(catID, true);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.markAsRead(catID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -381,6 +409,21 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.OWNCLOUD:
 					m_owncloud.markAllItemsRead();
 					break;
+
+				case Backend.INOREADER:
+					var categories = dataBase.read_categories();
+					foreach(category cat in categories)
+					{
+						m_inoreader.markAsRead(cat.getCatID());
+					}
+
+					var feeds = dataBase.read_feeds_without_cat();
+					foreach(feed Feed in feeds)
+					{
+						m_inoreader.markAsRead(Feed.getFeedID());
+					}
+					m_inoreader.markAsRead();
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -404,6 +447,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.FEEDLY:
 					m_feedly.addArticleTag(articleID, tagID);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.edidTag(articleID, tagID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -429,6 +476,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDLY:
 					m_feedly.deleteArticleTag(articleID, tagID);
 					break;
+
+				case Backend.INOREADER:
+					m_inoreader.edidTag(articleID, tagID, false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -440,18 +491,19 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public string createTag(string caption)
 	{
-		string tagID = "";
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				tagID = m_ttrss.createTag(caption).to_string();
-				break;
+				return m_ttrss.createTag(caption).to_string();
 
 			case Backend.FEEDLY:
-				tagID = m_feedly.createTag(caption);
-				break;
+				return m_feedly.createTag(caption);
+
+			case Backend.INOREADER:
+				return m_inoreader.composeTagID(caption);
 		}
-		return tagID;
+
+		return ":(";
 	}
 
 	public async void deleteTag(string tagID)
@@ -467,6 +519,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.FEEDLY:
 					m_feedly.deleteTag(tagID);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.deleteTag(tagID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -491,6 +547,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.OWNCLOUD:
 				//return m_owncloud.ping();
 				return true;
+
+			case Backend.INOREADER:
+				return m_inoreader.ping();
 		}
 
 		return false;
@@ -517,6 +576,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				m_owncloud.getFeeds(feeds);
 				m_owncloud.getCategories(categories, feeds);
 				return;
+
+			case Backend.INOREADER:
+				m_inoreader.getFeeds(feeds);
+				m_inoreader.getCategoriesAndTags(feeds, categories, tags);
+				return;
 		}
 	}
 
@@ -532,18 +596,21 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.OWNCLOUD:
 				return (int)dataBase.get_unread_total();
+
+			case Backend.INOREADER:
+				return m_inoreader.getTotalUnread();
 		}
 
 		return 0;
 	}
 
-	private void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string feedID = "", bool isTagID = false)
+	private void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false)
 	{
 		switch(m_type)
 		{
 			case Backend.TTRSS:
 				// first update read and marked status of (nearly) all existing articles
-				if(settings_tweaks.get_boolean("ttrss-newsplus"))
+				if(settings_tweaks.get_boolean("ttrss-newsplus") && whatToGet != ArticleStatus.MARKED)
 				{
 					logger.print(LogMessage.DEBUG, "getArticles: newsplus plugin active");
 					var unreadIDs = m_ttrss.NewsPlusUpdateUnread(10*settings_general.get_int("max-articles"));
@@ -557,16 +624,14 @@ public class FeedReader.FeedServer : GLib.Object {
 					{
 						dataBase.updateArticlesByID(markedIDs, "marked");
 					}
-
 					updateArticleList();
 				}
 
 				int ttrss_feedID = 0;
-				if(feedID == "")
+				if(feedID == null)
 					ttrss_feedID = TTRSSSpecialID.ALL;
 				else
 					ttrss_feedID = int.parse(feedID);
-
 
 
 				string articleIDs = "";
@@ -645,7 +710,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				string continuation = "";
 				string feedly_tagID = "";
 				string feedly_feedID = "";
-				if(feedID != "")
+				if(feedID != null)
 				{
 					if(isTagID)
 					{
@@ -699,7 +764,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						break;
 				}
 
-				if(feedID != "")
+				if(feedID != null)
 				{
 					if(isTagID == true)
 						return;
@@ -715,6 +780,59 @@ public class FeedReader.FeedServer : GLib.Object {
 				else
 					m_owncloud.getArticles(articles, 0, -1, read, type, id);
 
+				writeArticlesInChunks(articles, 10);
+				break;
+
+			case Backend.INOREADER:
+				if(whatToGet == ArticleStatus.READ)
+				{
+					return;
+				}
+				else if(whatToGet == ArticleStatus.ALL)
+				{
+					var unreadIDs = new Gee.LinkedList<string>();
+					string? continuation = null;
+					int left = 4*count;
+
+					while(left > 0)
+					{
+						if(left > 1000)
+						{
+							continuation = m_inoreader.updateArticles(unreadIDs, 1000, continuation);
+							left -= 1000;
+						}
+						else
+						{
+							m_inoreader.updateArticles(unreadIDs, left, continuation);
+							left = 0;
+						}
+					}
+					dataBase.updateArticlesByID(unreadIDs, "unread");
+					updateArticleList();
+				}
+
+				var articles = new Gee.LinkedList<article>();
+				string? continuation = null;
+				int left = count;
+				string? inoreader_feedID = (isTagID) ? null : feedID;
+				string? inoreader_tagID = (isTagID) ? feedID : null;
+
+				while(left > 0)
+				{
+					if(left > 1000)
+					{
+						continuation = m_inoreader.getArticles(articles, 1000, whatToGet, continuation, inoreader_tagID, inoreader_feedID);
+						left -= 1000;
+					}
+					else
+					{
+						continuation = m_inoreader.getArticles(articles, left, whatToGet, continuation, inoreader_tagID, inoreader_feedID);
+						left = 0;
+					}
+				}
+				//m_inoreader.getArticles(articles, 1, ArticleStatus.READ, null, null, null);
+				//m_inoreader.getArticles(articles, 1, ArticleStatus.UNREAD, null, null, null);
+				//m_inoreader.getArticles(articles, 1, ArticleStatus.MARKED, null, null, null);
 				writeArticlesInChunks(articles, 10);
 				break;
 		}

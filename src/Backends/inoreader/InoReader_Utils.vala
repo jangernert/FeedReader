@@ -13,80 +13,44 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ttrss_utils : GLib.Object {
-
-	public static string getURL()
-	{
-		string tmp_url = settings_ttrss.get_string("url");
-		if(tmp_url != ""){
-			if(!tmp_url.has_suffix("/"))
-				tmp_url = tmp_url + "/";
-
-			if(!tmp_url.has_suffix("/api/"))
-				tmp_url = tmp_url + "api/";
-
-			if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
-					tmp_url = "http://" + tmp_url;
-		}
-
-		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
-
-		return tmp_url;
-	}
+public class FeedReader.inoreader_utils : GLib.Object {
 
 	public static string getUser()
 	{
-		return settings_ttrss.get_string ("username");
+		return settings_inoreader.get_string ("username");
 	}
 
-	public static string getUnmodifiedURL()
+	public static string getAccessToken()
 	{
-		return settings_ttrss.get_string ("url");
+		return settings_inoreader.get_string ("access-token");
+	}
+
+	public static string getUserID()
+	{
+		return settings_inoreader.get_string ("user-id");
 	}
 
 	public static string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-
+							                      "Apikey", Secret.SchemaAttributeType.STRING,
+							                      "Apisecret", Secret.SchemaAttributeType.STRING,
+							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = settings_ttrss.get_string("url");
-		attributes["Username"] = getUser();
+		attributes["Apikey"] = InoReaderSecret.apikey;
+		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Username"] = settings_inoreader.get_string("username");
 
 		string passwd = "";
-
-		try{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e){
+		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
 			logger.print(LogMessage.ERROR, e.message);
 		}
-
-		pwSchema.unref();
-
 		if(passwd == null)
 		{
 			return "";
 		}
 
 		return passwd;
-	}
-
-	public static string URLtoFeedName(string url)
-	{
-		var feedname = new GLib.StringBuilder(url);
-
-		if(feedname.str.has_suffix("/"))
-			feedname.erase(feedname.str.char_count()-1);
-
-		if(feedname.str.has_prefix("http://"))
-			feedname.erase(0, 7);
-
-		if(feedname.str.has_prefix("www."))
-			feedname.erase(0, 4);
-
-		return feedname.str;
 	}
 
 	public static bool downloadIcon(string feed_id, string icon_url)
@@ -100,15 +64,12 @@ public class FeedReader.ttrss_utils : GLib.Object {
 			//logger.print(LogMessage.DEBUG, e.message);
 		}
 
-		string remote_filename = icon_url + feed_id + ".ico";
-		string local_filename = icon_path + feed_id + ".ico";
-
-
+		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
 
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
 			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message("GET", remote_filename);
+			message_dlIcon = new Soup.Message("GET", icon_url);
 
 			if(settings_tweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
@@ -135,5 +96,18 @@ public class FeedReader.ttrss_utils : GLib.Object {
 
 		// file already exists
 		return true;
+	}
+
+
+	public static bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
+	{
+		foreach(feed Feed in feeds)
+		{
+			if(Feed.hasCat(tagID))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 }

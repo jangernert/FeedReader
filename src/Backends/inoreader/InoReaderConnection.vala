@@ -19,7 +19,7 @@ public class FeedReader.InoReaderConnection {
 	private string m_api_username;
 	private string m_api_code;
 
-	public InoReaderConnection ()
+	public InoReaderConnection()
 	{
 		m_api_key = InoReaderSecret.apikey;
 		m_api_token = InoReaderSecret.apitoken;
@@ -77,12 +77,12 @@ public class FeedReader.InoReaderConnection {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-	public string send_request(string path)
+	public string send_request(string path, string? message_string = null)
 	{
-		return send_post_request(path, "POST");
+		return send_post_request(path, "POST", message_string);
 	}
 
-	private string send_post_request(string path, string type)
+	private string send_post_request(string path, string type, string? message_string = null)
 	{
 		var session = new Soup.Session();
 		var message = new Soup.Message(type, InoReaderSecret.base_uri+path);
@@ -90,9 +90,12 @@ public class FeedReader.InoReaderConnection {
 		string inoauth = "GoogleLogin auth=";
 		inoauth += settings_inoreader.get_string("inoreader-api-code");
 
-		message.request_headers.append("Authorization", inoauth ) ;
-		message.request_headers.append("AppId",m_api_key);
-		message.request_headers.append("AppKey",m_api_token);
+		message.request_headers.append("Authorization", inoauth) ;
+		message.request_headers.append("AppId", m_api_key);
+		message.request_headers.append("AppKey", m_api_token);
+
+		if(message_string != null)
+			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 
 		session.send_message(message);
 		return (string)message.response_body.data;

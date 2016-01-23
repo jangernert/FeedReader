@@ -293,7 +293,7 @@ public class FeedReader.dbUI : GLib.Object {
 	}
 
 
-	public string getTagName(string tagID)
+	public string? getTagName(string tagID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
 		query.selectField("title");
@@ -305,7 +305,7 @@ public class FeedReader.dbUI : GLib.Object {
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, "getTagName - %s".printf(sqlite_db.errmsg()));
 
-		string result = "";
+		string result = null;
 
 		while (stmt.step () == Sqlite.ROW) {
 			result = stmt.column_text(0);
@@ -444,24 +444,6 @@ public class FeedReader.dbUI : GLib.Object {
 		}
 		stmt.reset ();
 		return "";
-	}
-
-	public async void markFeedRead(string feedID)
-	{
-		SourceFunc callback = markFeedRead.callback;
-
-		ThreadFunc<void*> run = () => {
-
-			var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-			query.updateValuePair("unread", ArticleStatus.READ.to_string());
-			query.addEqualsCondition("feedID", feedID);
-			executeSQL(query.build());
-
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("markFeedRead", run);
-		yield;
 	}
 
 	public int getMaxCatLevel()

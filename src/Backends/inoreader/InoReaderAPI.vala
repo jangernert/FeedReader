@@ -223,4 +223,140 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return count;
 	}
 
+
+	public string? updateArticles(Gee.LinkedList<string> ids, int count, string? continuation = null)
+	{
+		var message_string = "n=" + count.to_string();
+		message_string += "&xt=user/-/state/com.google/read";
+		if(continuation != null)
+			message_string += "&c=" + continuation;
+		string response = m_connection.send_request("stream/items/ids", message_string);
+
+		var parser = new Json.Parser();
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+		}
+
+		var root = parser.get_root().get_object();
+		var array = root.get_array_member("itemRefs");
+		uint length = array.get_length();
+
+		for (uint i = 0; i < length; i++)
+		{
+			Json.Object object = array.get_object_element(i);
+			ids.add(object.get_string_member("id"));
+		}
+
+		if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+			return root.get_string_member("continuation");
+
+		return null;
+	}
+
+	public string? getArticles(Gee.LinkedList<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
+	{
+		var message_string = "n=" + count.to_string();
+
+		if(whatToGet == ArticleStatus.UNREAD)
+			message_string += "&xt=user/-/state/com.google/read";
+		if(whatToGet == ArticleStatus.READ)
+			message_string += "&it=user/-/state/com.google/read";
+		else if(whatToGet == ArticleStatus.MARKED)
+			message_string += "&it=user/-/state/com.google/starred";
+
+		if(continuation != null)
+			message_string += "&c=" + continuation;
+
+		if(feed_id != null)
+			message_string += "&s=" + feed_id;
+		else if(tagID != null)
+			message_string += "&s=" + tagID;
+		string response = m_connection.send_request("stream/contents", message_string);
+
+		//logger.print(LogMessage.DEBUG, message_string);
+		//logger.print(LogMessage.DEBUG, response);
+
+		var parser = new Json.Parser();
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+		}
+
+		var root = parser.get_root().get_object();
+		var array = root.get_array_member("items");
+		uint length = array.get_length();
+
+		for (uint i = 0; i < length; i++)
+		{
+			Json.Object object = array.get_object_element(i);
+			string id = object.get_string_member("id");
+			id = id.substring(id.last_index_of_char('/')+1);
+			string tagString = "";
+			bool marked = false;
+			bool read = false;
+			var cats = object.get_array_member("categories");
+			uint cat_length = cats.get_length();
+
+			for (uint j = 0; j < cat_length; j++)
+			{
+				string cat = cats.get_string_element(j);
+				if(cat.has_suffix("com.google/starred"))
+					marked = true;
+				else if(cat.has_suffix("com.google/read"))
+					read = true;
+				else if(cat.contains("/label/") && dataBase.getTagName(cat) != null)
+					tagString += cat;
+			}
+
+			articles.add(new article(
+									id,
+									object.get_string_member("title"),
+									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
+									object.get_object_member("origin").get_string_member("streamId"),
+									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
+									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+									object.get_object_member("summary").get_string_member("content"),
+									"",
+									(object.get_string_member("author") == "") ? _("not found") : object.get_string_member("author"),
+									new DateTime.from_unix_local(object.get_int_member("published")),
+									-1,
+									tagString
+							)
+						);
+		}
+
+		if(root.has_member("continuation") && root.get_string_member("continuation") != "")
+			return root.get_string_member("continuation");
+
+		return null;
+	}
+
+
+	public void edidTag(string articleID, string tagID, bool add = true)
+	{
+		var message_string = "";
+		if(add)
+			message_string += "a=";
+		else
+			message_string += "r=";
+
+		message_string += tagID;
+		message_string += "&i=" + articleID;
+		string response = m_connection.send_request("edit-tag", message_string);
+	}
+
+	public void markAsRead(string? streamID = null)
+	{
+		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
+		logger.print(LogMessage.DEBUG, message_string);
+		string response = m_connection.send_request("mark-all-as-read", message_string);
+	}
+
 }

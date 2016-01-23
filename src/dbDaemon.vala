@@ -530,6 +530,24 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
+    public async void markFeedRead(string feedID)
+	{
+		SourceFunc callback = markFeedRead.callback;
+
+		ThreadFunc<void*> run = () => {
+
+			var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+			query.updateValuePair("unread", ArticleStatus.READ.to_string());
+			query.addEqualsCondition("feedID", feedID, true, true);
+			executeSQL(query.build());
+
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("markFeedRead", run);
+		yield;
+	}
+
     public async void markAllRead()
     {
         SourceFunc callback = markAllRead.callback;

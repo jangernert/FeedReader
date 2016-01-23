@@ -60,7 +60,7 @@ public class FeedReader.InoReaderConnection {
 			if(regex.match(response))
 			{
 				string split = regex.replace( response, -1,0,"");
-				settings_inoreader.set_string("inoreader-api-code",split.strip());
+				settings_inoreader.set_string("access-token",split.strip());
 				m_api_code = inoreader_utils.getAccessToken();
 				return LoginResponse.SUCCESS;
 			}
@@ -87,8 +87,7 @@ public class FeedReader.InoReaderConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message(type, InoReaderSecret.base_uri+path);
 
-		string inoauth = "GoogleLogin auth=";
-		inoauth += settings_inoreader.get_string("inoreader-api-code");
+		string inoauth = "GoogleLogin auth=" + inoreader_utils.getAccessToken();
 
 		message.request_headers.append("Authorization", inoauth) ;
 		message.request_headers.append("AppId", m_api_key);

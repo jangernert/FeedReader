@@ -17,12 +17,12 @@ public class FeedReader.inoreader_utils : GLib.Object {
 
 	public static string getUser()
 	{
-		return settings_inoreader.get_string ("inoreader-api-username");
+		return settings_inoreader.get_string ("username");
 	}
 
 	public static string getAccessToken()
 	{
-		return settings_inoreader.get_string ("inoreader-api-code");
+		return settings_inoreader.get_string ("access-token");
 	}
 
 	public static string getPasswd()
@@ -32,9 +32,9 @@ public class FeedReader.inoreader_utils : GLib.Object {
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = settings_inoreader.get_string ("inoreader-api-key");
-		attributes["Apisecret"] = settings_inoreader.get_string ("inoreader-api-token");
-		attributes["Username"] = settings_inoreader.get_string ("inoreader-api-username");
+		attributes["Apikey"] = InoReaderSecret.apikey;
+		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Username"] = settings_inoreader.get_string("username");
 
 		string passwd = "";
 		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){

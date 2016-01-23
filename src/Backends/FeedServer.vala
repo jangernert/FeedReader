@@ -619,16 +619,14 @@ public class FeedReader.FeedServer : GLib.Object {
 					{
 						dataBase.updateArticlesByID(markedIDs, "marked");
 					}
-
 					updateArticleList();
 				}
 
 				int ttrss_feedID = 0;
-				if(feedID == "")
+				if(feedID == null)
 					ttrss_feedID = TTRSSSpecialID.ALL;
 				else
 					ttrss_feedID = int.parse(feedID);
-
 
 
 				string articleIDs = "";
@@ -707,7 +705,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				string continuation = "";
 				string feedly_tagID = "";
 				string feedly_feedID = "";
-				if(feedID != "")
+				if(feedID != null)
 				{
 					if(isTagID)
 					{
@@ -761,7 +759,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						break;
 				}
 
-				if(feedID != "")
+				if(feedID != null)
 				{
 					if(isTagID == true)
 						return;

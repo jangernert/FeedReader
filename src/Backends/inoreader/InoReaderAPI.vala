@@ -61,11 +61,12 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
+			settings_inoreader.set_string("user-id", m_userID);
 			logger.print(LogMessage.INFO, "Inoreader: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
 			{
-				settings_inoreader.set_string("inoreader-api-username", root.get_string_member("userEmail"));
+				settings_inoreader.set_string("username", root.get_string_member("userEmail"));
 			}
 			return true;
 		}

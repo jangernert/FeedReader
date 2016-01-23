@@ -372,7 +372,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 			case Backend.INOREADER:
 				backend = Backend.INOREADER;
-				settings_inoreader.set_string("inoreader-api-username", m_inoreader_user_entry.get_text());
+				settings_inoreader.set_string("username", m_inoreader_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "Apikey", Secret.SchemaAttributeType.STRING,
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,

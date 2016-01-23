@@ -365,4 +365,11 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return "user/%s/label/%s".printf(m_userID, tagName);
 	}
 
+	public void deleteTag(string tagID)
+	{
+		var message_string = "s=" + tagID;
+		string response = m_connection.send_request("disable-tag", message_string);
+	}
+
+
 }

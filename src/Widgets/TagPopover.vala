@@ -136,6 +136,8 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		});
 		m_entry.activate.connect(() => {
 			unowned string str = m_entry.get_text();
+			if(str == "")
+				return;
 			bool available = false;
 			string tagID = "";
 

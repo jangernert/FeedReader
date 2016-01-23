@@ -520,6 +520,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDLY:
 					m_feedly.deleteTag(tagID);
 					break;
+
+				case Backend.INOREADER:
+					m_inoreader.deleteTag(tagID);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;

@@ -127,7 +127,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             }
 
             query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-            query.updateValuePair("tags", new_tags);
+            query.updateValuePair("tags", "\"%s\"".printf(new_tags));
             query.addEqualsCondition("articleID", articleID, true, true);
             executeSQL(query.build());
         }

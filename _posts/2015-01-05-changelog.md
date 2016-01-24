@@ -20,13 +20,6 @@ fa-icon: calendar
 *   option to ignore unknown CA's
 *   updated GrabberConfig files to upstream from fivefilters
 
-**1.2.1**
-
-*   added: built-time-switch for Webkit2Gtk 4.0
-*   added: missing tooltips
-*   added: remove articles from unread/marked list when it makes sense
-*   fixed: active article removed from list after sync
-
 **1.2**
 
 *   improved article-view

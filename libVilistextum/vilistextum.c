@@ -40,6 +40,9 @@ void set_options()
 
 char* vilistextum(char* text, int extractText)
 {
+	if(text == NULL)
+		return NULL;
+
 	length = strlen(text);
 	error = 0;
 	set_options();

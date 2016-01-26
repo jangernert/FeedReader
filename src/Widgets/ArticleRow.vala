@@ -160,11 +160,25 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		body_label.set_line_wrap(true);
 		body_label.set_lines(3);
 
+		var feedLabel = new Gtk.Label(dataBase.getFeedName(m_article.getFeedID()));
+		feedLabel.get_style_context().add_class("preview");
+		feedLabel.opacity = 0.6;
+		feedLabel.set_alignment(0.0f, 0.5f);
+		var dateLabel = new Gtk.Label(m_article.getDateNice());
+		dateLabel.get_style_context().add_class("preview");
+		dateLabel.opacity = 0.6;
+		dateLabel.set_alignment(1.0f, 0.5f);
+		var date_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		date_box.pack_start(feedLabel, true, true, 0);
+		date_box.pack_end(dateLabel, true, true, 0);
+		date_box.margin_top = 5;
+
 
 		var text_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		text_box.margin_end = 15;
-		text_box.pack_start(m_label, true, true, 6);
-		text_box.pack_end(body_label, true, true, 6);
+		text_box.pack_start(date_box, false, false, 0);
+		text_box.pack_start(m_label, true, true, 0);
+		text_box.pack_end(body_label, true, true, 2);
 
 		m_box.pack_start(icon_box, false, false, 8);
 		m_box.pack_start(text_box, true, true, 0);

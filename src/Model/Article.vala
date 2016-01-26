@@ -151,11 +151,11 @@ public class FeedReader.article : GLib.Object {
 		{
 			if(date_day == now_day)
 			{
-				//return _("Today") + m_date.format(" %H:%M");
+				return _("Today") + m_date.format(" %H:%M");
 			}
 			else if(date_day == now_day-1)
 			{
-				//return _("Yesterday") + m_date.format(" %H:%M");
+				return _("Yesterday") + m_date.format(" %H:%M");
 			}
 		}
 

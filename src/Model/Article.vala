@@ -172,9 +172,19 @@ public class FeedReader.article : GLib.Object {
 		return m_unread;
 	}
 
+	public void setUnread(ArticleStatus unread)
+	{
+		m_unread = unread;
+	}
+
 	public ArticleStatus getMarked()
 	{
 		return m_marked;
+	}
+
+	public void setMarked(ArticleStatus marked)
+	{
+		m_marked = marked;
 	}
 
 	public unowned Gee.ArrayList<string> getTags()
@@ -190,6 +200,11 @@ public class FeedReader.article : GLib.Object {
 			tags += tag + ",";
 		}
 		return tags;
+	}
+
+	public void setTags(Gee.ArrayList<string> tags)
+	{
+		m_tags = tags;
 	}
 
 	public void addTag(string tag)

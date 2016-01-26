@@ -589,19 +589,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 						if(threadID < m_threadCount)
 							break;
 
-						var tmpRow = new articleRow(
-								                        item.getTitle(),
-								                        item.getUnread(),
-								                        item.getFeedID(),
-								                        item.getURL(),
-								                        item.getFeedID(),
-								                        item.getArticleID(),
-								                        item.getMarked(),
-								                        item.getSortID(),
-								                        item.getPreview(),
-														item.getDate(),
-														item.getTagString()
-								                        );
+						var tmpRow = new articleRow(item);
 						tmpRow.ArticleStateChanged.connect(rowStateChanged);
 
 						while(Gtk.events_pending())
@@ -793,19 +781,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			if(!found)
 			{
 				articlesInserted++;
-				articleRow newRow = new articleRow(
-					                            item.getTitle(),
-					                            item.getUnread(),
-					                            item.getFeedID(),
-					                            item.getURL(),
-					                            item.getFeedID(),
-					                            item.getArticleID(),
-					                            item.getMarked(),
-					                            item.getSortID(),
-					                            item.getPreview(),
-												item.getDate(),
-												item.getTagString()
-					                            );
+				articleRow newRow = new articleRow(item);
 				int pos = 0;
 				bool added = false;
 				newRow.setUpdated(true);
@@ -827,8 +803,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 					var tmpRow = row as articleRow;
 					if(tmpRow != null)
 					{
-						if((newestFirst && !sortByDate && newRow.m_sortID > tmpRow.m_sortID)
-						|| (!newestFirst && !sortByDate && newRow.m_sortID < tmpRow.m_sortID)
+						if((newestFirst && !sortByDate && newRow.getSortID() > tmpRow.getSortID())
+						|| (!newestFirst && !sortByDate && newRow.getSortID() < tmpRow.getSortID())
 						|| (newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == 1)
 						|| (!newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == -1))
 						{

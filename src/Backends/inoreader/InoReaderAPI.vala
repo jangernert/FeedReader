@@ -388,9 +388,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		}
 
 		var root = parser.get_root().get_object();
-		int count = (int)object.get_int_member("count");
+		int count = (int)root.get_int_member("count");
 
-		var searchfeed;
+		string searchfeed = "";
 		if (count == 1 ){
 			logger.print(LogMessage.DEBUG, "searchforFeed: results - %d".printf(count));
 			return searchfeed = root.get_string_member("streamId");
@@ -406,7 +406,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		message_string += "&a="+ subscription;
 
-		if(title.get_length() > 0){
+		if(title.length > 0){
 			message_string += "&t="+ title;
 		}
 		string response = m_connection.send_request("subscription/edit",message_string);

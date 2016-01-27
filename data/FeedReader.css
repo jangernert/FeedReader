@@ -85,7 +85,7 @@ GtkEventBox {
 GtkListBoxRow GtkLabel.headline-read-label,
 GtkListBoxRow GtkLabel.headline-unread-label {
 	font-style: normal;
-	font-size: large;
+
 }
 
 GtkListBoxRow GtkLabel.headline-read-label {

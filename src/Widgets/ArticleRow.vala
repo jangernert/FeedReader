@@ -73,7 +73,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		else
 			m_label.get_style_context().add_class("headline-read-label");
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
-		m_label.set_alignment(0, 0.5f);
+		m_label.set_alignment(0.0f, 0.2f);
 
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);
@@ -154,11 +154,11 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		var body_label = new Gtk.Label(short_preview);
 		body_label.opacity = 0.7;
 		body_label.get_style_context().add_class("preview");
-		body_label.set_alignment(0, 0);
+		body_label.set_alignment(0.0f, 0.0f);
 		body_label.set_ellipsize (Pango.EllipsizeMode.END);
 		body_label.set_line_wrap_mode(Pango.WrapMode.WORD_CHAR);
 		body_label.set_line_wrap(true);
-		body_label.set_lines(3);
+		body_label.set_lines(2);
 
 		var feedLabel = new Gtk.Label(dataBase.getFeedName(m_article.getFeedID()));
 		feedLabel.get_style_context().add_class("preview");
@@ -171,14 +171,15 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		var date_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		date_box.pack_start(feedLabel, true, true, 0);
 		date_box.pack_end(dateLabel, true, true, 0);
-		date_box.margin_top = 5;
 
 
 		var text_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		text_box.margin_end = 15;
-		text_box.pack_start(date_box, false, false, 0);
+		text_box.margin_top = 8;
+		text_box.margin_bottom = 8;
+		text_box.pack_start(date_box, true, true, 0);
 		text_box.pack_start(m_label, true, true, 0);
-		text_box.pack_end(body_label, true, true, 2);
+		text_box.pack_end(body_label, true, true, 0);
 
 		m_box.pack_start(icon_box, false, false, 8);
 		m_box.pack_start(text_box, true, true, 0);

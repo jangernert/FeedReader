@@ -43,7 +43,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_marked_stack = new Gtk.Stack();
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		m_box.set_size_request(0, 75);
+		m_box.set_size_request(0, 100);
 
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 
@@ -73,7 +73,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		else
 			m_label.get_style_context().add_class("headline-read-label");
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
-		m_label.set_alignment(0, 0.2f);
+		m_label.set_alignment(0.0f, 0.2f);
 
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);

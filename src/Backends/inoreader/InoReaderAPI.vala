@@ -373,5 +373,51 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		string response = m_connection.send_request("disable-tag", message_string);
 	}
 
+	public string searchforFeed(string url){
 
+		var message_string = "quickadd=" + GLib.Uri.escape_string(url) ;
+		string response = m_connection.send_request("subscription/quickadd",message_string);
+
+		var parser = new Json.Parser();
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "InoReader searchforFeed: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+		}
+
+		var root = parser.get_root().get_object();
+		int count = (int)object.get_int_member("count");
+
+		var searchfeed;
+		if (count == 1 ){
+			logger.print(LogMessage.DEBUG, "searchforFeed: results - %d".printf(count));
+			return searchfeed = root.get_string_member("streamId");
+		}
+		return searchfeed;
+	}
+
+	public void addFeedtoSub(string feedId, string action, string subscription, string title){
+
+		var message_string = "s=" + GLib.Uri.escape_string(feedId) ;
+
+		message_string += "&ac=" + action;
+
+		message_string += "&a="+ subscription;
+
+		if(title.get_length() > 0){
+			message_string += "&t="+ title;
+		}
+		string response = m_connection.send_request("subscription/edit",message_string);
+
+		var parser = new Json.Parser();
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "InoReader addFeedtoSub: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+		}
+	}
 }

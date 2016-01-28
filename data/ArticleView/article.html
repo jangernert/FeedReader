@@ -9,8 +9,18 @@
         document.addEventListener("DOMContentLoaded", function () {
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
-                naturalHeight = images[i].naturalHeight;
-                naturalWidth = images[i].naturalWidth;
+                extension = images[i].src.split(".").pop().toLowerCase();
+                if (extension == "gif") {
+                    var img = new Image();
+                    img.onload = function () {
+                        naturalWidth = img.width;
+                        naturalHeight = img.height;
+                    }
+                    img.src = images[i].src;
+                } else {
+                    naturalHeight = images[i].naturalHeight;
+                    naturalWidth = images[i].naturalWidth;
+                }
                 if (naturalWidth > images[i].width && naturalHeight > images[i].height) {
                     images[i].addEventListener("click", function () {
                         document.title = "path:" + encodeURIComponent(this.src) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;

@@ -1,46 +1,48 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<meta charset="UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>FeedReader Article</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeedReader Article</title>
     <script type="application/javascript">
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             var images = document.getElementsByTagName("img");
-            for(var i=0; i < images.length; i++){
+            for (var i = 0; i < images.length; i++) {
                 naturalHeight = images[i].naturalHeight;
                 naturalWidth = images[i].naturalWidth;
                 if (naturalWidth > images[i].width && naturalHeight > images[i].height) {
-                    images[i].addEventListener("click", function(){
-                        document.title = "path:" + encodeURIComponent(this.src) + " sizeX:"+ naturalWidth + " sizeY:" + naturalHeight;
+                    images[i].addEventListener("click", function () {
+                        document.title = "path:" + encodeURIComponent(this.src) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;
                     }, false);
 
-                    images[i].addEventListener("mouseover", function() {
+                    images[i].addEventListener("mouseover", function () {
                         this.classList.add("clickable-img-hover");
                     }, false);
-                    images[i].addEventListener("mouseout", function(){
+                    images[i].addEventListener("mouseout", function () {
                         this.classList.remove("clickable-img-hover");
                     }, false);
-                }   
+                }
             }
         });
     </script>
-	<style>
-		$CSS
-	</style>
+    <style>
+        $CSS
+    </style>
 </head>
 
 <body style="font-size:$FONTSIZE;">
-	<div class="$THEME">
-		<header class="post">
-			<span class="source" style="font-size:$SOURCEFONTSIZE;">$FEED</span>
-  			<h1><a href="$URL">$TITLE</a></h1>
-  			<span class="author" style="font-size:$SOURCEFONTSIZE;">$AUTHOR</span>
-		</header>
+    <div class="$THEME">
+        <header class="post">
+            <span class="source" style="font-size:$SOURCEFONTSIZE;">$FEED</span>
+            <h1><a href="$URL">$TITLE</a></h1>
+            <span class="author" style="font-size:$SOURCEFONTSIZE;">$AUTHOR</span>
+        </header>
 
-		<div class="content">
-			$HTML
-		</div>
-	</div>
+        <div class="content">
+            $HTML
+        </div>
+    </div>
 </body>
+
 </html>

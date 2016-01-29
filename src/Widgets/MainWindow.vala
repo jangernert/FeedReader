@@ -604,7 +604,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				}
 				break;
 		}
-		return false;
+		return true;
 	}
 
 

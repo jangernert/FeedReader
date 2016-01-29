@@ -224,6 +224,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public void move(bool down)
 	{
+		m_scrollPos = m_current_adjustment.get_value();
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 		articleRow new_article = null;
 		int time = 300;

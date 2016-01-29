@@ -533,13 +533,16 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private async void createHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: createHeadlineList");
+		m_scrollPos = m_current_adjustment.get_value();
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 
 		m_threadCount++;
 		int threadID = m_threadCount;
 		bool hasContent = true;
 		uint displayed_artilces = getDisplayedArticles();
-		uint offset = (uint)settings_state.get_int("articlelist-row-offset") + (uint)settings_state.get_int("articlelist-new-rows");
+		uint offset = (uint)settings_state.get_int("articlelist-row-offset");
+		if(!m_only_unread && !m_only_marked)
+		 	offset += (uint)settings_state.get_int("articlelist-new-rows");
 		logger.print(LogMessage.DEBUG, "ArticleList: offset %u".printf(offset));
 
 		// dont allow new articles being created due to scrolling for 0.5s
@@ -637,7 +640,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					updateArticleList(false);
 				}
 
-				if(settings_state.get_int("articlelist-new-rows") > 0)
+				if(!m_only_unread && !m_only_marked && settings_state.get_int("articlelist-new-rows") > 0)
 					m_overlay.reveal();
 			}
 			else if(!addRows)
@@ -695,6 +698,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public async void updateArticleList(bool slideIN = true)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: updateArticleList");
+		m_scrollPos = m_current_adjustment.get_value();
 		uint articlesInserted = 0;
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
@@ -848,7 +852,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			if(tmpRow != null && !tmpRow.getUpdated()
 			&& selected_row.getID() != tmpRow.getID())
 			{
-				m_currentList.remove(tmpRow);
+				removeRow(tmpRow);
 			}
 		}
 

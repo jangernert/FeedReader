@@ -15,5 +15,13 @@
 				Username to log into owncloud
 			</description>
 		</key>
+		
+		<key name="htaccess-username" type="s">
+			<default>""</default>
+			<summary>Username to log into owncloud</summary>
+			<description>
+				Username to log into owncloud
+			</description>
+		</key>
 	</schema>
 </schemalist>

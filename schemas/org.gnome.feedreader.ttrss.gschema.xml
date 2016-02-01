@@ -15,5 +15,13 @@
 				Username to log into tt-rss
 			</description>
 		</key>
+		
+		<key name="htaccess-username" type="s">
+			<default>""</default>
+			<summary>Username to grant http access</summary>
+			<description>
+				Username to grant http access when unauthorized (401)
+			</description>
+		</key>
 	</schema>
 </schemalist>

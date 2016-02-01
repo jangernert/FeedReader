@@ -18,9 +18,13 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.Entry m_ttrss_url_entry;
 	private Gtk.Entry m_ttrss_user_entry;
 	private Gtk.Entry m_ttrss_password_entry;
+	private Gtk.Entry m_ttrss_auth_pw_entry;
+	private Gtk.Entry m_ttrss_auth_user_entry;
 	private Gtk.Entry m_owncloud_url_entry;
 	private Gtk.Entry m_owncloud_user_entry;
 	private Gtk.Entry m_owncloud_password_entry;
+	private Gtk.Entry m_owncloud_auth_user_entry;
+	private Gtk.Entry m_owncloud_auth_pw_entry;
 	private Gtk.Entry m_inoreader_user_entry;
 	private Gtk.Entry m_inoreader_password_entry;
 	private Gtk.Entry m_inoreader_apikey_entry;
@@ -168,8 +172,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
-
 		grid.attach(ttrss_url_label, 0, 0, 1, 1);
 		grid.attach(m_ttrss_url_entry, 1, 0, 1, 1);
 		grid.attach(ttrss_user_label, 0, 1, 1, 1);
@@ -177,9 +179,45 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.attach(ttrss_password_label, 0, 2, 1, 1);
 		grid.attach(m_ttrss_password_entry, 1, 2, 1, 1);
 
+
+		// http auth stuff ----------------------------------------------------
+		var ttrss_auth_user_label = new Gtk.Label(_("Username:"));
+		var ttrss_auth_password_label = new Gtk.Label(_("Password:"));
+
+		ttrss_auth_user_label.set_alignment(1.0f, 0.5f);
+		ttrss_auth_password_label.set_alignment(1.0f, 0.5f);
+
+		ttrss_auth_user_label.set_hexpand(true);
+		ttrss_auth_password_label.set_hexpand(true);
+
+		m_ttrss_auth_user_entry = new Gtk.Entry();
+		m_ttrss_auth_pw_entry = new Gtk.Entry();
+
+		var authGrid = new Gtk.Grid();
+		authGrid.margin = 10;
+		authGrid.set_column_spacing(10);
+		authGrid.set_row_spacing(10);
+		authGrid.set_valign(Gtk.Align.CENTER);
+		authGrid.set_halign(Gtk.Align.CENTER);
+
+		authGrid.attach(ttrss_auth_user_label, 0, 0, 1, 1);
+		authGrid.attach(m_ttrss_auth_user_entry, 1, 0, 1, 1);
+		authGrid.attach(ttrss_auth_password_label, 0, 1, 1, 1);
+		authGrid.attach(m_ttrss_auth_pw_entry, 1, 1, 1, 1);
+
+		var ttrss_frame = new Gtk.Frame(_("HTTP Authorization"));
+		ttrss_frame.set_halign(Gtk.Align.CENTER);
+		ttrss_frame.add(authGrid);
+		var ttrss_revealer = new Gtk.Revealer();
+		ttrss_revealer.add(ttrss_frame);
+		//---------------------------------------------------------------------
+
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
+
 		var ttrss_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		ttrss_box.pack_start(ttrss_logo, false, false, 10);
 		ttrss_box.pack_start(grid, true, true, 10);
+		ttrss_box.pack_start(ttrss_revealer, true, true, 10);
 
 		m_login_details.add_named(ttrss_box, "ttrss");
 	}
@@ -246,9 +284,42 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.attach(owncloud_password_label, 0, 2, 1, 1);
 		grid.attach(m_owncloud_password_entry, 1, 2, 1, 1);
 
+		// http auth stuff ----------------------------------------------------
+		var owncloud_auth_user_label = new Gtk.Label(_("Username:"));
+		var owncloud_auth_password_label = new Gtk.Label(_("Password:"));
+
+		owncloud_auth_user_label.set_alignment(1.0f, 0.5f);
+		owncloud_auth_password_label.set_alignment(1.0f, 0.5f);
+
+		owncloud_auth_user_label.set_hexpand(true);
+		owncloud_auth_password_label.set_hexpand(true);
+
+		m_owncloud_auth_user_entry = new Gtk.Entry();
+		m_owncloud_auth_pw_entry = new Gtk.Entry();
+
+		var authGrid = new Gtk.Grid();
+		authGrid.margin = 10;
+		authGrid.set_column_spacing(10);
+		authGrid.set_row_spacing(10);
+		authGrid.set_valign(Gtk.Align.CENTER);
+		authGrid.set_halign(Gtk.Align.CENTER);
+
+		authGrid.attach(owncloud_auth_user_label, 0, 0, 1, 1);
+		authGrid.attach(m_owncloud_auth_user_entry, 1, 0, 1, 1);
+		authGrid.attach(owncloud_auth_password_label, 0, 1, 1, 1);
+		authGrid.attach(m_owncloud_auth_pw_entry, 1, 1, 1, 1);
+
+		var owncloud_frame = new Gtk.Frame(_("HTTP Authorization"));
+		owncloud_frame.set_halign(Gtk.Align.CENTER);
+		owncloud_frame.add(authGrid);
+		var owncloud_revealer = new Gtk.Revealer();
+		owncloud_revealer.add(owncloud_frame);
+		//---------------------------------------------------------------------
+
 		var owncloud_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		owncloud_box.pack_start(owncloud_logo, false, false, 10);
 		owncloud_box.pack_start(grid, true, true, 10);
+		owncloud_box.pack_start(owncloud_revealer, true, true, 10);
 
 		m_login_details.add_named(owncloud_box, "owncloud");
 	}

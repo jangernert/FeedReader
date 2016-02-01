@@ -39,6 +39,11 @@ public class FeedReader.ttrss_utils : GLib.Object {
 		return settings_ttrss.get_string ("username");
 	}
 
+	public static string getHtaccessUser()
+	{
+		return settings_ttrss.get_string ("htaccess-username");
+	}
+
 	public static string getUnmodifiedURL()
 	{
 		return settings_ttrss.get_string ("url");
@@ -53,6 +58,37 @@ public class FeedReader.ttrss_utils : GLib.Object {
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = settings_ttrss.get_string("url");
 		attributes["Username"] = getUser();
+
+		string passwd = "";
+
+		try{
+			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
+		}
+		catch(GLib.Error e){
+			logger.print(LogMessage.ERROR, e.message);
+		}
+
+		pwSchema.unref();
+
+		if(passwd == null)
+		{
+			return "";
+		}
+
+		return passwd;
+	}
+
+	public static string getHtaccessPasswd()
+	{
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+		                                  "URL", Secret.SchemaAttributeType.STRING,
+		                                  "Username", Secret.SchemaAttributeType.STRING,
+										  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
+
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["URL"] = settings_ttrss.get_string("url");
+		attributes["Username"] = getHtaccessUser();
+		attributes["htaccess"] = "true";
 
 		string passwd = "";
 

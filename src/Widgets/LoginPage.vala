@@ -195,6 +195,11 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		m_ttrss_auth_user_entry = new Gtk.Entry();
 		m_ttrss_auth_pw_entry = new Gtk.Entry();
+		m_ttrss_auth_pw_entry.set_invisible_char('*');
+		m_ttrss_auth_pw_entry.set_visibility(false);
+
+		m_ttrss_auth_user_entry.activate.connect(write_login_data);
+		m_ttrss_auth_pw_entry.activate.connect(write_login_data);
 
 		var authGrid = new Gtk.Grid();
 		authGrid.margin = 10;
@@ -299,6 +304,11 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		m_owncloud_auth_user_entry = new Gtk.Entry();
 		m_owncloud_auth_pw_entry = new Gtk.Entry();
+		m_owncloud_auth_pw_entry.set_invisible_char('*');
+		m_owncloud_auth_pw_entry.set_visibility(false);
+
+		m_owncloud_auth_user_entry.activate.connect(write_login_data);
+		m_owncloud_auth_pw_entry.activate.connect(write_login_data);
 
 		var authGrid = new Gtk.Grid();
 		authGrid.margin = 10;
@@ -436,18 +446,20 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 				attributes["URL"] = m_ttrss_url_entry.get_text();
 				attributes["Username"] = m_ttrss_user_entry.get_text();
+				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
+				catch(GLib.Error e){}
 				if(m_need_htaccess)
 				{
 					settings_ttrss.set_string("htaccess-username", m_ttrss_auth_user_entry.get_text());
-					try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
-					catch(GLib.Error e){}
 					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 								            			  "URL", Secret.SchemaAttributeType.STRING,
-								                		  "Username", Secret.SchemaAttributeType.STRING);
+								                		  "Username", Secret.SchemaAttributeType.STRING,
+														  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
 					var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 					authAttributes["URL"] = m_ttrss_url_entry.get_text();
 					authAttributes["Username"] = m_ttrss_auth_user_entry.get_text();
-					try{Secret.password_storev_sync(pwSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_ttrss_auth_pw_entry.get_text(), null);}
+					authAttributes["htaccess"] = "true";
+					try{Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_ttrss_auth_pw_entry.get_text(), null);}
 					catch(GLib.Error e){}
 				}
 				break;
@@ -474,11 +486,13 @@ public class FeedReader.LoginPage : Gtk.Bin {
 					settings_owncloud.set_string("htaccess-username", m_owncloud_auth_user_entry.get_text());
 					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 								            			  "URL", Secret.SchemaAttributeType.STRING,
-								            			  "Username", Secret.SchemaAttributeType.STRING);
+								            			  "Username", Secret.SchemaAttributeType.STRING,
+														  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
 					var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 					authAttributes["URL"] = m_owncloud_url_entry.get_text();
 					authAttributes["Username"] = m_owncloud_auth_user_entry.get_text();
-					try{Secret.password_storev_sync(pwSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_owncloud_auth_pw_entry.get_text(), null);}
+					authAttributes["htaccess"] = "true";
+					try{Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_owncloud_auth_pw_entry.get_text(), null);}
 					catch(GLib.Error e){}
 				}
 				break;

@@ -36,6 +36,17 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
         string credentials = username + ":" + password;
         string base64 = GLib.Base64.encode(credentials.data);
         m_message_soup.request_headers.append("Authorization","Basic %s".printf(base64));
+
+        m_session.authenticate.connect((msg, auth, retrying) => {
+			if(OwncloudNews_Utils.getHtaccessUser() == "")
+			{
+				logger.print(LogMessage.ERROR, "ownCloud Session: need Authentication");
+			}
+			else
+			{
+				auth.authenticate(OwncloudNews_Utils.getHtaccessUser(), OwncloudNews_Utils.getHtaccessPasswd());
+			}
+		});
 	}
 
     public void add_int(string type, int val)

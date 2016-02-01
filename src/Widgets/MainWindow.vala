@@ -603,6 +603,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					m_headerbar.focusSearch();
 				}
 				break;
+
+			default:
+				return false;
 		}
 		return true;
 	}

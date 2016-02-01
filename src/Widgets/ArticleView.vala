@@ -58,7 +58,10 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
 		m_view.button_press_event.connect(onClick);
 		m_view.button_release_event.connect(onRelease);
-		m_view.mouse_target_changed.connect(onMouseTargetChange);
+		m_view.notify["title"].connect(() => {
+			logger.print(LogMessage.DEBUG, "title: " + m_view.title);
+		});
+		//m_view.mouse_target_changed.connect(onMouseTargetChange);
 		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});
 		m_view.leave_fullscreen.connect(() => { leaveFullscreen(); return false;});
 		m_search = m_view.get_find_controller();
@@ -106,7 +109,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_view.motion_notify_event.connect(mouseMotion);
 			return true;
 		}
-		else if (event.button == MouseButton.LEFT && m_imagePath != null)
+		/*else if (event.button == MouseButton.LEFT && m_imagePath != null)
 		{
 			var window = this.get_toplevel() as readerUI;
 			string prefix = "file://";
@@ -115,7 +118,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			logger.print(LogMessage.DEBUG, m_imagePath);
 			var popup = new imagePopup(m_imagePath, m_imageURL, window);
 			return true;
-		}
+		}*/
 
 		return false;
 	}
@@ -405,7 +408,7 @@ public class FeedReader.articleView : Gtk.Stack {
 #endif
 	}
 
-	private void onMouseTargetChange(WebKit.HitTestResult result, uint modifiers)
+	/*private void onMouseTargetChange(WebKit.HitTestResult result, uint modifiers)
 	{
 		if(result.context_is_image())
 		{
@@ -424,6 +427,6 @@ public class FeedReader.articleView : Gtk.Stack {
 				m_imagePath = null;
 				m_imageURL = null;
 		}
-	}
+	}*/
 
 }

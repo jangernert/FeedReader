@@ -84,6 +84,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
         {
             return LoginResponse.CA_ERROR;
         }
+		else if(error == ConnectionError.UNAUTHORIZED)
+		{
+			return LoginResponse.UNAUTHORIZED;
+		}
 
 		return LoginResponse.UNKNOWN_ERROR;
 	}

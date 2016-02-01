@@ -70,7 +70,12 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 		if(settings_tweaks.get_boolean("do-not-track"))
 				m_message_soup.request_headers.append("DNT", "1");
 
-		m_session.send_message(m_message_soup);
+		var status = m_session.send_message(m_message_soup);
+
+        if(status == 401) // unauthorized
+		{
+			return ConnectionError.UNAUTHORIZED;
+		}
 
         if(m_message_soup.tls_errors != 0 && !settings_tweaks.get_boolean("ignore-tls-errors"))
 		{

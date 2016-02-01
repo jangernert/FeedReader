@@ -470,6 +470,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				break;
 			case LoginResponse.UNAUTHORIZED:
 				m_ErrorMessage.set_label(_("Not authorized to access URL"));
+				m_login.showHtAccess();
 				break;
 			case LoginResponse.CA_ERROR:
 				m_ErrorMessage.set_label(_("No valid CA certificate available!"));

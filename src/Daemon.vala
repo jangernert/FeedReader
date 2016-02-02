@@ -103,6 +103,7 @@ namespace FeedReader {
 
 			if(!server.serverAvailable())
 			{
+				m_loggedin = LoginResponse.UNKNOWN_ERROR;
 				setOffline();
 				return;
 			}

@@ -14,8 +14,8 @@
                 var height = srcImg.height;
                 var img = new Image();
                 img.onload = function () {
-                    var naturalWidth = img.width;
-                    var naturalHeight = img.height;
+                    var naturalWidth = this.width;
+                    var naturalHeight = this.height;
                     if (naturalHeight > height || naturalWidth > width) {
                         srcImg.addEventListener("click", function (e) {
                             e.preventDefault();
@@ -61,3 +61,4 @@
 </body>
 
 </html>
+

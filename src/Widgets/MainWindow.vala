@@ -152,9 +152,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			{
 				loadContent();
 			}
-			else if (settings_state.get_boolean("spring-cleaning"))
+			else if(settings_state.get_boolean("spring-cleaning"))
 			{
 				showSpringClean();
+			}
+			else if(!dataBase.isEmpty())
+			{
+				showOfflineContent();
 			}
 			else
 			{
@@ -187,6 +191,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	public bool currentlyUpdating()
 	{
 		return m_headerbar.currentlyUpdating();
+	}
+
+	public void showOfflineContent()
+	{
+		showContent();
+		m_content.setOffline();
 	}
 
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool noNewFeedList = false)

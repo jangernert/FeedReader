@@ -18,6 +18,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
     private Gtk.Spinner m_spinner;
     private Gtk.Image m_logo;
     private Gtk.Label m_label;
+    private Gtk.Label m_offline;
     private Gtk.Box m_box;
 
     public ServiceInfo()
@@ -45,13 +46,14 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         m_stack.add_named(m_spinner, "spinner");
         this.add(m_stack);
 
-        var label = new Gtk.Label("OFFLINE");
-        label.margin_start = 40;
-        label.margin_end = 40;
-        label.margin_top = 30;
-        label.margin_bottom = 10;
-        label.get_style_context().add_class("overlay");
-        //this.add_overlay(label);
+        m_offline = new Gtk.Label("OFFLINE");
+        m_offline.margin_start = 40;
+        m_offline.margin_end = 40;
+        m_offline.margin_top = 30;
+        m_offline.margin_bottom = 10;
+        m_offline.get_style_context().add_class("overlay");
+        m_offline.no_show_all = true;
+        this.add_overlay(m_offline);
     }
 
     public void refresh()
@@ -99,5 +101,15 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         }
 
         show_all();
+    }
+
+    public void setOffline()
+    {
+        m_offline.show();
+    }
+
+    public void setOnline()
+    {
+        m_offline.hide();
     }
 }

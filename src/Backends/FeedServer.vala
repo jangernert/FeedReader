@@ -534,7 +534,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
-	private bool serverAvailable()
+	public bool serverAvailable()
 	{
 		switch(m_type)
 		{

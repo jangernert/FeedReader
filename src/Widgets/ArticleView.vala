@@ -59,7 +59,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.button_press_event.connect(onClick);
 		m_view.button_release_event.connect(onRelease);
 		m_view.notify["title"].connect(() => {
-			logger.print(LogMessage.DEBUG, "title: " + m_view.title);
+			//logger.print(LogMessage.DEBUG, "title: " + m_view.title);
 		});
 		//m_view.mouse_target_changed.connect(onMouseTargetChange);
 		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});

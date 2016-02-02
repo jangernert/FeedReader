@@ -318,4 +318,14 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		m_articleList.showOverlay();
 	}
+
+	public void setOffline()
+	{
+		m_feedList.setOffline();
+	}
+
+	public void setOnline()
+	{
+		m_feedList.setOnline();
+	}
 }

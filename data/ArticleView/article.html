@@ -14,11 +14,6 @@
 
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
-                if (images[i].parentElement.nodeName.toLowerCase() == "a") {
-                    newContent = images[i].parentElement.innerHTML;
-                    oldContent = images[i].parentElement.parentElement.innerHTML;
-                    images[i].parentElement.parentElement.innerHTML = oldContent.replace(oldContent, newContent);
-                }
                 images[i].removeAttribute("class");
                 images[i].removeAttribute("width");
                 images[i].removeAttribute("height");
@@ -39,8 +34,15 @@
         function showPopover(source, naturalWidth, naturalHeight, width, height) {
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
-                if (images[i].src == source) {
+                if (images[i].src == source && naturalWidth != 0 && nautralHeight != 0) {
                     if (height/naturalHeight < 0.8 || width/naturalWidth < 0.8) {
+                        
+                        if (images[i].parentElement.nodeName.toLowerCase() == "a") {
+                            newContent = images[i].parentElement.innerHTML;
+                            oldContent = images[i].parentElement.parentElement.innerHTML;
+                            images[i].parentElement.parentElement.innerHTML = oldContent.replace(oldContent, newContent);
+                        }
+                        
                         images[i].addEventListener("click", function (e) {
                             e.preventDefault();
                             document.title = "path:" + encodeURIComponent(source) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;

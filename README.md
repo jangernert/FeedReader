@@ -33,7 +33,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 
 
 ### How to install 
-  - elementary OS / Ubuntu:<br/>
+  - elementary OS / Ubuntu :<br/>
     <pre>
     sudo add-apt-repository ppa:eviltwin1/feedreader-stable
     sudo apt-get update
@@ -47,7 +47,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
     <pre>
       sudo dnf install feedreader
     </per>
-  - Solus OS  <br/>
+  - Solus OS : <br/>
     <pre>
       sudo eopkg install feedreader
     </pre>

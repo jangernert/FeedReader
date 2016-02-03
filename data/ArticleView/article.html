@@ -25,7 +25,7 @@
                 img.onload = function () {
                     var naturalWidth = this.width;
                     var naturalHeight = this.height;
-                    showPopover(this.src, naturalWidth, naturalHeight, naturalHeight > height || naturalWidth > width);
+                    showPopover(this.src, naturalWidth, naturalHeight, height/naturalHeight < 0.8 || width/naturalWidth < 0.8);
                 }
                 img.src = images[i].src;
             }

@@ -24,34 +24,34 @@
                 var img = new Image();
                 img.onload = function () {
                     var naturalWidth = this.width;
-                    var naturalHeight = this.height;                    
-                    showPopover(this.src, naturalHeight > height || naturalWidth > width);
+                    var naturalHeight = this.height;
+                    showPopover(this.src, naturalWidth, naturalHeight, naturalHeight > height || naturalWidth > width);
                 }
                 img.src = images[i].src;
             }
         }
 
-        function showPopover(source, hasBeenResized) {
+        function showPopover(source, naturalWidth, naturalHeight, hasBeenResized) {
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
                 if (images[i].src == source) {
-    	            if (hasBeenResized) {
-	                    images[i].addEventListener("click", function (e) {
-	                        e.preventDefault();
-	                        document.title = "path:" + encodeURIComponent(this.src) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;
-	                    }, false);
+                    if (hasBeenResized) {
+                        images[i].addEventListener("click", function (e) {
+                            e.preventDefault();
+                            document.title = "path:" + encodeURIComponent(source) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;
+                        }, false);
 
-	                    images[i].addEventListener("mouseover", function () {
-	                        this.className = "clickable-img-hover";
-	                    }, false);
+                        images[i].addEventListener("mouseover", function () {
+                            this.className = "clickable-img-hover";
+                        }, false);
 
-	                    images[i].addEventListener("mouseout", function () {
-	                        this.className = "";
-	                    }, false);
-	                } else {
-	                	var clone = images[i].cloneNode(true);
-	                	images[i].parenNode.replaceChild(clone, images[i]);
-	                }
+                        images[i].addEventListener("mouseout", function () {
+                            this.className = "";
+                        }, false);
+                    } else {
+                        var clone = images[i].cloneNode(true);
+                        images[i].parenNode.replaceChild(clone, images[i]);
+                    }
                 }
             }
 

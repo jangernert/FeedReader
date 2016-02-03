@@ -33,7 +33,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 
 
 ### How to install 
-  - Elementary OS / Ubuntu:<br/>
+  - elementary OS / Ubuntu:<br/>
     <pre>
     sudo add-apt-repository ppa:eviltwin1/feedreader-stable
     sudo apt-get update

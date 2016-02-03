@@ -17,6 +17,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - build-essential
 - cmake
 - valac
+- pkg-config
 - libgirepository1.0-dev
 - libgtk-3-dev
 - libsoup2.4-dev

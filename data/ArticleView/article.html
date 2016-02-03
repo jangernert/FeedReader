@@ -14,6 +14,11 @@
 
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
+                if (images[i].parentElement.nodeName.toLowerCase() == "a") {
+                    newContent = images[i].parentElement.innerHTML;
+                    oldContent = images[i].parentElement.parentElement.innerHTML;
+                    images[i].parentElement.parentElement.innerHTML = oldContent.replace(oldContent, newContent);
+                }
                 images[i].removeAttribute("class");
                 images[i].removeAttribute("width");
                 images[i].removeAttribute("height");
@@ -25,17 +30,17 @@
                 img.onload = function () {
                     var naturalWidth = this.width;
                     var naturalHeight = this.height;
-                    showPopover(this.src, naturalWidth, naturalHeight, height/naturalHeight < 0.8 || width/naturalWidth < 0.8);
+                    showPopover(this.src, naturalWidth, naturalHeight, width, height);
                 }
                 img.src = images[i].src;
             }
         }
 
-        function showPopover(source, naturalWidth, naturalHeight, hasBeenResized) {
+        function showPopover(source, naturalWidth, naturalHeight, width, height) {
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
                 if (images[i].src == source) {
-                    if (hasBeenResized) {
+                    if (height/naturalHeight < 0.8 || width/naturalWidth < 0.8) {
                         images[i].addEventListener("click", function (e) {
                             e.preventDefault();
                             document.title = "path:" + encodeURIComponent(source) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;

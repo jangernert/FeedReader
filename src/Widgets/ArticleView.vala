@@ -277,6 +277,7 @@ public class FeedReader.articleView : Gtk.Stack {
 				{
 					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
 					settings_state.set_int("articleview-scrollpos", 0);
+					m_view.grab_focus();
 					m_firstTime = false;
 				}
 				break;

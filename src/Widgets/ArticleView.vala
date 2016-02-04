@@ -85,7 +85,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			}
 
 		});
-		//m_view.mouse_target_changed.connect(onMouseTargetChange);
+
 		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});
 		m_view.leave_fullscreen.connect(() => { leaveFullscreen(); return false;});
 		m_search = m_view.get_find_controller();

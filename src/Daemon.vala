@@ -37,6 +37,7 @@ namespace FeedReader {
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
+		public signal void setOnline();
 
 		public FeedDaemonServer()
 		{
@@ -100,17 +101,26 @@ namespace FeedReader {
 				springCleanFinished();
 			}
 
+			if(!server.serverAvailable())
+			{
+				m_loggedin = LoginResponse.UNKNOWN_ERROR;
+				setOffline();
+				return;
+			}
+
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
 					setOffline();
+					return;
 				}
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
+				setOnline();
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
@@ -179,6 +189,7 @@ namespace FeedReader {
 			if(m_loggedin == LoginResponse.SUCCESS)
 			{
 				settings_general.set_enum("account-type", type);
+				setOnline();
 			}
 			else
 			{

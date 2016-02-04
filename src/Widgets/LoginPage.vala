@@ -18,9 +18,15 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.Entry m_ttrss_url_entry;
 	private Gtk.Entry m_ttrss_user_entry;
 	private Gtk.Entry m_ttrss_password_entry;
+	private Gtk.Entry m_ttrss_auth_pw_entry;
+	private Gtk.Entry m_ttrss_auth_user_entry;
+	private Gtk.Revealer m_ttrss_revealer;
 	private Gtk.Entry m_owncloud_url_entry;
 	private Gtk.Entry m_owncloud_user_entry;
 	private Gtk.Entry m_owncloud_password_entry;
+	private Gtk.Entry m_owncloud_auth_user_entry;
+	private Gtk.Entry m_owncloud_auth_pw_entry;
+	private Gtk.Revealer m_owncloud_revealer;
 	private Gtk.Entry m_inoreader_user_entry;
 	private Gtk.Entry m_inoreader_password_entry;
 	private Gtk.Entry m_inoreader_apikey_entry;
@@ -29,6 +35,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
 	private string[] m_account_types;
+	private bool m_need_htaccess = false;
 	public signal void submit_data();
 	public signal void loginError(LoginResponse errorCode);
 	public signal void loadLoginPage(OAuth type);
@@ -168,8 +175,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
-
 		grid.attach(ttrss_url_label, 0, 0, 1, 1);
 		grid.attach(m_ttrss_url_entry, 1, 0, 1, 1);
 		grid.attach(ttrss_user_label, 0, 1, 1, 1);
@@ -177,9 +182,50 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.attach(ttrss_password_label, 0, 2, 1, 1);
 		grid.attach(m_ttrss_password_entry, 1, 2, 1, 1);
 
+
+		// http auth stuff ----------------------------------------------------
+		var ttrss_auth_user_label = new Gtk.Label(_("Username:"));
+		var ttrss_auth_password_label = new Gtk.Label(_("Password:"));
+
+		ttrss_auth_user_label.set_alignment(1.0f, 0.5f);
+		ttrss_auth_password_label.set_alignment(1.0f, 0.5f);
+
+		ttrss_auth_user_label.set_hexpand(true);
+		ttrss_auth_password_label.set_hexpand(true);
+
+		m_ttrss_auth_user_entry = new Gtk.Entry();
+		m_ttrss_auth_pw_entry = new Gtk.Entry();
+		m_ttrss_auth_pw_entry.set_invisible_char('*');
+		m_ttrss_auth_pw_entry.set_visibility(false);
+
+		m_ttrss_auth_user_entry.activate.connect(write_login_data);
+		m_ttrss_auth_pw_entry.activate.connect(write_login_data);
+
+		var authGrid = new Gtk.Grid();
+		authGrid.margin = 10;
+		authGrid.set_column_spacing(10);
+		authGrid.set_row_spacing(10);
+		authGrid.set_valign(Gtk.Align.CENTER);
+		authGrid.set_halign(Gtk.Align.CENTER);
+
+		authGrid.attach(ttrss_auth_user_label, 0, 0, 1, 1);
+		authGrid.attach(m_ttrss_auth_user_entry, 1, 0, 1, 1);
+		authGrid.attach(ttrss_auth_password_label, 0, 1, 1, 1);
+		authGrid.attach(m_ttrss_auth_pw_entry, 1, 1, 1, 1);
+
+		var ttrss_frame = new Gtk.Frame(_("HTTP Authorization"));
+		ttrss_frame.set_halign(Gtk.Align.CENTER);
+		ttrss_frame.add(authGrid);
+		m_ttrss_revealer = new Gtk.Revealer();
+		m_ttrss_revealer.add(ttrss_frame);
+		//---------------------------------------------------------------------
+
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
+
 		var ttrss_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		ttrss_box.pack_start(ttrss_logo, false, false, 10);
 		ttrss_box.pack_start(grid, true, true, 10);
+		ttrss_box.pack_start(m_ttrss_revealer, true, true, 10);
 
 		m_login_details.add_named(ttrss_box, "ttrss");
 	}
@@ -246,9 +292,47 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.attach(owncloud_password_label, 0, 2, 1, 1);
 		grid.attach(m_owncloud_password_entry, 1, 2, 1, 1);
 
+		// http auth stuff ----------------------------------------------------
+		var owncloud_auth_user_label = new Gtk.Label(_("Username:"));
+		var owncloud_auth_password_label = new Gtk.Label(_("Password:"));
+
+		owncloud_auth_user_label.set_alignment(1.0f, 0.5f);
+		owncloud_auth_password_label.set_alignment(1.0f, 0.5f);
+
+		owncloud_auth_user_label.set_hexpand(true);
+		owncloud_auth_password_label.set_hexpand(true);
+
+		m_owncloud_auth_user_entry = new Gtk.Entry();
+		m_owncloud_auth_pw_entry = new Gtk.Entry();
+		m_owncloud_auth_pw_entry.set_invisible_char('*');
+		m_owncloud_auth_pw_entry.set_visibility(false);
+
+		m_owncloud_auth_user_entry.activate.connect(write_login_data);
+		m_owncloud_auth_pw_entry.activate.connect(write_login_data);
+
+		var authGrid = new Gtk.Grid();
+		authGrid.margin = 10;
+		authGrid.set_column_spacing(10);
+		authGrid.set_row_spacing(10);
+		authGrid.set_valign(Gtk.Align.CENTER);
+		authGrid.set_halign(Gtk.Align.CENTER);
+
+		authGrid.attach(owncloud_auth_user_label, 0, 0, 1, 1);
+		authGrid.attach(m_owncloud_auth_user_entry, 1, 0, 1, 1);
+		authGrid.attach(owncloud_auth_password_label, 0, 1, 1, 1);
+		authGrid.attach(m_owncloud_auth_pw_entry, 1, 1, 1, 1);
+
+		var owncloud_frame = new Gtk.Frame(_("HTTP Authorization"));
+		owncloud_frame.set_halign(Gtk.Align.CENTER);
+		owncloud_frame.add(authGrid);
+		m_owncloud_revealer = new Gtk.Revealer();
+		m_owncloud_revealer.add(owncloud_frame);
+		//---------------------------------------------------------------------
+
 		var owncloud_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		owncloud_box.pack_start(owncloud_logo, false, false, 10);
 		owncloud_box.pack_start(grid, true, true, 10);
+		owncloud_box.pack_start(m_owncloud_revealer, true, true, 10);
 
 		m_login_details.add_named(owncloud_box, "owncloud");
 	}
@@ -328,6 +412,23 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	}
 
 
+	public void showHtAccess()
+	{
+		switch(m_comboBox.get_active())
+		{
+			case Backend.TTRSS:
+				m_ttrss_revealer.set_reveal_child(true);
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud_revealer.set_reveal_child(true);
+				break;
+		}
+
+		m_need_htaccess = true;
+	}
+
+
 	public void write_login_data()
 	{
 		logger.print(LogMessage.DEBUG, "write login data");
@@ -347,7 +448,20 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				attributes["Username"] = m_ttrss_user_entry.get_text();
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
-				pwSchema.unref();
+				if(m_need_htaccess)
+				{
+					settings_ttrss.set_string("htaccess-username", m_ttrss_auth_user_entry.get_text());
+					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+								            			  "URL", Secret.SchemaAttributeType.STRING,
+								                		  "Username", Secret.SchemaAttributeType.STRING,
+														  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
+					var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+					authAttributes["URL"] = m_ttrss_url_entry.get_text();
+					authAttributes["Username"] = m_ttrss_auth_user_entry.get_text();
+					authAttributes["htaccess"] = "true";
+					try{Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_ttrss_auth_pw_entry.get_text(), null);}
+					catch(GLib.Error e){}
+				}
 				break;
 
 			case Backend.FEEDLY:
@@ -367,7 +481,20 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				attributes["Username"] = m_owncloud_user_entry.get_text();
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_owncloud_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
-				pwSchema.unref();
+				if(m_need_htaccess)
+				{
+					settings_owncloud.set_string("htaccess-username", m_owncloud_auth_user_entry.get_text());
+					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+								            			  "URL", Secret.SchemaAttributeType.STRING,
+								            			  "Username", Secret.SchemaAttributeType.STRING,
+														  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
+					var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+					authAttributes["URL"] = m_owncloud_url_entry.get_text();
+					authAttributes["Username"] = m_owncloud_auth_user_entry.get_text();
+					authAttributes["htaccess"] = "true";
+					try{Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_owncloud_auth_pw_entry.get_text(), null);}
+					catch(GLib.Error e){}
+				}
 				break;
 			case Backend.INOREADER:
 				backend = Backend.INOREADER;

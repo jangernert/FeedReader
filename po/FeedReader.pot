@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-13 23:01+0100\n"
+"POT-Creation-Date: 2016-02-01 15:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,35 +17,43 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
+#: ../src/Constants.vala:179 ../src/Widgets/MainWindow.vala:33
 msgid "FeedReader"
 msgstr ""
 
-#: ../src/Constants.vala:163
+#: ../src/Constants.vala:182
 msgid "Desktop Client for various RSS Services"
 msgstr ""
 
-#: ../src/Constants.vala:174
+#: ../src/Constants.vala:193
 msgid "About"
 msgstr ""
 
-#: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
+#: ../src/Constants.vala:194 ../src/Widgets/ReaderHeaderbar.vala:158
 msgid "Settings"
 msgstr ""
 
-#: ../src/Constants.vala:176
+#: ../src/Constants.vala:195
 msgid "Change Account"
 msgstr ""
 
-#: ../src/Constants.vala:177
+#: ../src/Constants.vala:196
 msgid "Quit"
+msgstr ""
+
+#: ../src/Model/Article.vala:154
+msgid "Today"
+msgstr ""
+
+#: ../src/Model/Article.vala:158
+msgid "Yesterday"
 msgstr ""
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
 msgstr ""
 
-#: ../src/Utils.vala:113
+#: ../src/Utils.vala:93
 msgid "No Text available for this article :("
 msgstr ""
 
@@ -81,49 +89,53 @@ msgstr ""
 msgid "add Tag"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:298
+#: ../src/Widgets/MainWindow.vala:337
 msgid "Ignore all tls errors from now on"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:406
+#: ../src/Widgets/MainWindow.vala:445
 msgid "Please select a service first"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:409
+#: ../src/Widgets/MainWindow.vala:448
 msgid "Please enter a valid username"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:412
+#: ../src/Widgets/MainWindow.vala:451
 msgid "Please enter a valid password"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:415
+#: ../src/Widgets/MainWindow.vala:454
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:418
+#: ../src/Widgets/MainWindow.vala:457
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:421
+#: ../src/Widgets/MainWindow.vala:460
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:424
+#: ../src/Widgets/MainWindow.vala:463
 msgid "Either your username or the password are not correct."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:427
+#: ../src/Widgets/MainWindow.vala:466
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:430
+#: ../src/Widgets/MainWindow.vala:469
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:433
+#: ../src/Widgets/MainWindow.vala:472
+msgid "Not authorized to access URL"
+msgstr ""
+
+#: ../src/Widgets/MainWindow.vala:476
 msgid "No valid CA certificate available!"
 msgstr ""
 
@@ -157,17 +169,19 @@ msgstr ""
 msgid "Username or Password incorrect"
 msgstr ""
 
-#: ../src/Widgets/ServiceSettingsRow.vala:106 ../src/Widgets/LoginPage.vala:127
-#: ../src/Widgets/LoginPage.vala:196
+#: ../src/Widgets/ServiceSettingsRow.vala:106 ../src/Widgets/LoginPage.vala:150
+#: ../src/Widgets/LoginPage.vala:187 ../src/Widgets/LoginPage.vala:258
+#: ../src/Widgets/LoginPage.vala:296 ../src/Widgets/LoginPage.vala:343
 msgid "Username:"
 msgstr ""
 
-#: ../src/Widgets/ServiceSettingsRow.vala:107 ../src/Widgets/LoginPage.vala:128
-#: ../src/Widgets/LoginPage.vala:197
+#: ../src/Widgets/ServiceSettingsRow.vala:107 ../src/Widgets/LoginPage.vala:151
+#: ../src/Widgets/LoginPage.vala:188 ../src/Widgets/LoginPage.vala:259
+#: ../src/Widgets/LoginPage.vala:297 ../src/Widgets/LoginPage.vala:344
 msgid "Password:"
 msgstr ""
 
-#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:78
+#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:97
 #: ../src/Widgets/SharePopover.vala:28
 msgid "Login"
 msgstr ""
@@ -180,15 +194,15 @@ msgstr ""
 msgid "waiting"
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:64
+#: ../src/Widgets/ArticleView.vala:71
 msgid "No Article selected."
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:168
+#: ../src/Widgets/ArticleView.vala:187
 msgid "Not available"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:474 ../src/dbUI.vala:353
+#: ../src/Widgets/FeedList.vala:473 ../src/dbUI.vala:360
 msgid "Uncategorized"
 msgstr ""
 
@@ -230,41 +244,49 @@ msgstr ""
 msgid "Search Articles"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "Tiny Tiny RSS"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "Feedly"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "OwnCloud"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:40
+#: ../src/Widgets/LoginPage.vala:47
+msgid "InoReader"
+msgstr ""
+
+#: ../src/Widgets/LoginPage.vala:51
 msgid "Where are your feeds?"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:44
+#: ../src/Widgets/LoginPage.vala:55
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:109
+#: ../src/Widgets/LoginPage.vala:131
 msgid "No service selected."
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:126
+#: ../src/Widgets/LoginPage.vala:149
 msgid "TinyTinyRSS URL:"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:176
+#: ../src/Widgets/LoginPage.vala:216 ../src/Widgets/LoginPage.vala:325
+msgid "HTTP Authorization"
+msgstr ""
+
+#: ../src/Widgets/LoginPage.vala:238
 msgid ""
 "You will be redirected to the feedly website where you can use your "
 "Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:195
+#: ../src/Widgets/LoginPage.vala:257
 msgid "OwnCloud URL:"
 msgstr ""
 
@@ -344,63 +366,83 @@ msgstr ""
 msgid "Parchment"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:112
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Font Size"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Small"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Normal"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Large"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Huge"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:118
 msgid "Sync:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:114
+#: ../src/Widgets/SettingsDialog.vala:120
 msgid "Number of articles"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:116
+#: ../src/Widgets/SettingsDialog.vala:122
 msgid "Every (Minutes)"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:121
+#: ../src/Widgets/SettingsDialog.vala:127
 msgid "Database:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:123
+#: ../src/Widgets/SettingsDialog.vala:129
 msgid "Delete articles after"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "Never"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "1 Week"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "1 Month"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "6 Months"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:126
+#: ../src/Widgets/SettingsDialog.vala:132
 msgid "Additional Functionality:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:128
+#: ../src/Widgets/SettingsDialog.vala:134
 msgid "Content Grabber"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: ../src/Widgets/SettingsDialog.vala:135
 msgid "None"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: ../src/Widgets/SettingsDialog.vala:135
 msgid "Built in grabber"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:53
+#: ../src/Widgets/ArticleList.vala:55
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:67
+#: ../src/Widgets/ArticleList.vala:69
 msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
 
@@ -412,19 +454,20 @@ msgstr ""
 msgid "to a service to share this article."
 msgstr ""
 
-#: ../src/Backends/ttrss/TTRSS_API.vala:447
-#: ../src/Backends/ttrss/TTRSS_API.vala:503
+#: ../src/Backends/ttrss/TTRSS_API.vala:453
+#: ../src/Backends/ttrss/TTRSS_API.vala:567
+#: ../src/Backends/inoreader/InoReaderAPI.vala:330
 msgid "not found"
 msgstr ""
 
-#: ../src/Backends/FeedServer.vala:741
+#: ../src/Backends/FeedServer.vala:889
 msgid "New Articles"
 msgstr ""
 
-#: ../src/Backends/FeedServer.vala:753
+#: ../src/Backends/FeedServer.vala:901
 msgid "There is 1 new article"
 msgstr ""
 
-#: ../src/Backends/FeedServer.vala:755
+#: ../src/Backends/FeedServer.vala:903
 msgid "There are %u new articles"
 msgstr ""

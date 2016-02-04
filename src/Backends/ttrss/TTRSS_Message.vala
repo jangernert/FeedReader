@@ -33,6 +33,16 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_parser = new Json.Parser();
 
 		m_message_soup = new Soup.Message("POST", destination);
+		m_session.authenticate.connect((msg, auth, retrying) => {
+			if(ttrss_utils.getHtaccessUser() == "")
+			{
+				logger.print(LogMessage.ERROR, "TTRSS Session: need Authentication");
+			}
+			else
+			{
+				auth.authenticate(ttrss_utils.getHtaccessUser(), ttrss_utils.getHtaccessPasswd());
+			}
+		});
 	}
 
 
@@ -69,6 +79,11 @@ public class FeedReader.ttrss_message : GLib.Object {
 				m_message_soup.request_headers.append("DNT", "1");
 
 		var status = m_session.send_message(m_message_soup);
+
+		if(status == 401) // unauthorized
+		{
+			return ConnectionError.UNAUTHORIZED;
+		}
 
 		if(m_message_soup.tls_errors != 0 && !settings_tweaks.get_boolean("ignore-tls-errors"))
 		{

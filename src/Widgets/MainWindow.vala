@@ -152,9 +152,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			{
 				loadContent();
 			}
-			else if (settings_state.get_boolean("spring-cleaning"))
+			else if(settings_state.get_boolean("spring-cleaning"))
 			{
 				showSpringClean();
+			}
+			else if(!dataBase.isEmpty())
+			{
+				showOfflineContent();
 			}
 			else
 			{
@@ -187,6 +191,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	public bool currentlyUpdating()
 	{
 		return m_headerbar.currentlyUpdating();
+	}
+
+	public void showOfflineContent()
+	{
+		showContent();
+		m_content.setOffline();
 	}
 
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool noNewFeedList = false)
@@ -468,6 +478,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case LoginResponse.NO_API_ACCESS:
 				m_ErrorMessage.set_label(_("API access is disabled on the server. Please enable it first!"));
 				break;
+			case LoginResponse.UNAUTHORIZED:
+				m_ErrorMessage.set_label(_("Not authorized to access URL"));
+				m_login.showHtAccess();
+				break;
 			case LoginResponse.CA_ERROR:
 				m_ErrorMessage.set_label(_("No valid CA certificate available!"));
 				m_ignore_tls_errors.set_visible(true);
@@ -603,6 +617,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					m_headerbar.focusSearch();
 				}
 				break;
+
+			default:
+				return false;
 		}
 		return true;
 	}

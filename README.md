@@ -17,6 +17,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - build-essential
 - cmake
 - valac
+- pkg-config
 - libgirepository1.0-dev
 - libgtk-3-dev
 - libsoup2.4-dev
@@ -32,7 +33,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 
 
 ### How to install 
-  - Elementary OS / Ubuntu:<br/>
+  - elementary OS / Ubuntu :<br/>
     <pre>
     sudo add-apt-repository ppa:eviltwin1/feedreader-stable
     sudo apt-get update
@@ -46,7 +47,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
     <pre>
       sudo dnf install feedreader
     </per>
-  - Solus OS  <br/>
+  - Solus OS : <br/>
     <pre>
       sudo eopkg install feedreader
     </pre>

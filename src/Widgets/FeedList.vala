@@ -857,4 +857,14 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_branding.refresh();
 	}
 
+	public void setOffline()
+	{
+		m_branding.setOffline();
+	}
+
+	public void setOnline()
+	{
+		m_branding.setOnline();
+	}
+
 }

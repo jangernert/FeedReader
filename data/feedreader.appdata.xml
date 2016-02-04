@@ -14,7 +14,9 @@
 		<p>Currently supported services:</p>
 		<ul>
 			<li>Tiny Tiny RSS</li>
-			<li>Feedly</li>
+			<li>feedly</li>
+			<li>ownCloud</li>
+			<li>Inoreader</li>
 		</ul>
 		<p>
 			It combines all the advantages of web based services like synchronisation across all your devices
@@ -26,24 +28,24 @@
 
 	<screenshots>
 		<screenshot type="default">
-			<image>https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot1.png</image>
+			<image>https://raw.githubusercontent.com/jangernert/FeedReader/gh-pages/Screenshot1.png</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot2.png</image>
+			<image>https://raw.githubusercontent.com/jangernert/FeedReader/gh-pages/Screenshot2.png</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot3.png</image>
+			<image>https://raw.githubusercontent.com/jangernert/FeedReader/gh-pages/Screenshot3.png</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot4.png</image>
+			<image>https://raw.githubusercontent.com/jangernert/FeedReader/gh-pages/Screenshot4.png</image>
 		</screenshot>
 		<screenshot>
-			<image>https://raw.githubusercontent.com/jangernert/feedreader/master/Screenshot5.png</image>
+			<image>https://raw.githubusercontent.com/jangernert/FeedReader/gh-pages/Screenshot5.png</image>
 		</screenshot>
 	</screenshots>
 
-	<url type="homepage">http://jangernert.github.io/feedreader/</url>
-	<project_group>elementaryOS</project_group>
+	<url type="homepage">http://jangernert.github.io/FeedReader/</url>
+	<project_group>GNOME</project_group>
 
 	<provides>
 		<binary>feedreader</binary>
@@ -51,7 +53,33 @@
 	</provides>
 
 	<releases>
-		<release version="0.2" timestamp="1365768000">
+		<release version="1.4" timestamp="1441065600">
+			<description>
+				<p>ownCloud News support</p>
+				<p>sync more responsive</p>
+				<p>app fully operational during initial sync</p>
+				<p>overlay to indicate new articles</p>
+				<p>better Gnome integration</p>
+				<p>proper fullscreen mode for videos</p>
+				<p>support multiple share accounts of the same kind</p>
+				<p>option to ignore unknown CA’s</p>
+				<p>tons of fixes</p>
+			</description>
+		</release>
+		<release version="1.2" timestamp="1441065600">
+			<description>
+				<p>improved article-view</p>
+				<p>drag article with middle mouse click</p>
+				<p>updated UI and animations</p>
+				<p>global short-cuts</p>
+				<p>tag articles</p>
+				<p>share articles to readability/instapaper/pocket</p>
+				<p>article grabber (grabs full articles without ads from website for known sites)</p>
+				<p>basic full text search</p>
+				<p>tons of fixes</p>
+			</description>
+		</release>
+		<release version="1.0" timestamp="1365768000">
 			<description>
 				<p>First release</p>
 			</description>

@@ -36,7 +36,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
 
-	public imagePopup(string imagePath, string? url, Gtk.Window parent)
+	public imagePopup(string imagePath, string? url, Gtk.Window parent, int img_height, int img_width)
 	{
 		this.title = "";
 		this.decorated = false;
@@ -48,15 +48,13 @@ public class FeedReader.imagePopup : Gtk.Window {
 		this.button_press_event.connect((evt) => {
 			if(!m_hoverImage && !m_hoverHeader)
 			{
-				this.destroy();
+				closeWindow();
 				return true;
 			}
 			return false;
 		});
 
 		m_image = new Gtk.Image.from_file(imagePath);
-		int img_width = m_image.get_pixbuf().width;
-		int img_height = m_image.get_pixbuf().height;
 		int win_width  = (int)(Gdk.Screen.width()*0.8);
 		int win_height = (int)(Gdk.Screen.height()*0.8);
 		int min_height = 300;
@@ -234,7 +232,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 			}
 			else if(evt.button == MouseButton.LEFT)
 			{
-				this.destroy();
+				closeWindow();
 			}
 		}
 		return false;
@@ -262,7 +260,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 	{
 		if(evt.keyval == Gdk.Key.Escape)
 		{
-			this.destroy();
+			closeWindow();
 		}
 		return false;
 	}
@@ -354,5 +352,15 @@ public class FeedReader.imagePopup : Gtk.Window {
 		}
 		else
 			return true;
+	}
+
+	private void closeWindow()
+	{
+		if(m_OngoingScrollID != 0)
+		{
+			GLib.Source.remove(m_OngoingScrollID);
+			m_OngoingScrollID = 0;
+		}
+		this.destroy();
 	}
 }

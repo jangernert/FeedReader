@@ -36,6 +36,17 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
         string credentials = username + ":" + password;
         string base64 = GLib.Base64.encode(credentials.data);
         m_message_soup.request_headers.append("Authorization","Basic %s".printf(base64));
+
+        m_session.authenticate.connect((msg, auth, retrying) => {
+			if(OwncloudNews_Utils.getHtaccessUser() == "")
+			{
+				logger.print(LogMessage.ERROR, "ownCloud Session: need Authentication");
+			}
+			else
+			{
+				auth.authenticate(OwncloudNews_Utils.getHtaccessUser(), OwncloudNews_Utils.getHtaccessPasswd());
+			}
+		});
 	}
 
     public void add_int(string type, int val)
@@ -70,7 +81,12 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 		if(settings_tweaks.get_boolean("do-not-track"))
 				m_message_soup.request_headers.append("DNT", "1");
 
-		m_session.send_message(m_message_soup);
+		var status = m_session.send_message(m_message_soup);
+
+        if(status == 401) // unauthorized
+		{
+			return ConnectionError.UNAUTHORIZED;
+		}
 
         if(m_message_soup.tls_errors != 0 && !settings_tweaks.get_boolean("ignore-tls-errors"))
 		{

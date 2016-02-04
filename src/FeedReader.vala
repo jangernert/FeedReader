@@ -60,6 +60,8 @@ namespace FeedReader {
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
+		public signal void setOffline();
+		public signal void setOnline();
 	}
 
 
@@ -142,6 +144,14 @@ namespace FeedReader {
 
 				feedDaemon_interface.showArticleListOverlay.connect(() => {
 					m_window.getContent().showArticleListOverlay();
+				});
+
+				feedDaemon_interface.setOffline.connect(() => {
+					m_window.getContent().setOffline();
+				});
+
+				feedDaemon_interface.setOnline.connect(() => {
+					m_window.getContent().setOnline();
 				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);

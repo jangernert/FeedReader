@@ -26,7 +26,6 @@ public class FeedReader.articleView : Gtk.Stack {
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
 	private bool m_stopLoading = false;
-	private string m_imagePath;
 	private string m_imageURL;
 	public signal void enterFullscreen();
 	public signal void leaveFullscreen();
@@ -58,7 +57,35 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
 		m_view.button_press_event.connect(onClick);
 		m_view.button_release_event.connect(onRelease);
-		m_view.mouse_target_changed.connect(onMouseTargetChange);
+		m_view.notify["title"].connect(() => {
+			if(m_view.title.has_prefix("path:"))
+			{
+				int pathEnd = m_view.title.index_of_char(' ');
+				string path = GLib.Uri.unescape_string(m_view.title.substring(5, pathEnd-5));
+				string prefix = "file://";
+				if(path.has_prefix(prefix))
+					path = path.substring(prefix.length);
+				logger.print(LogMessage.DEBUG, "path: " + path);
+
+				int sizeXStart = m_view.title.index_of_char(':', pathEnd) + 1;
+				int sizeXEnd = m_view.title.index_of_char(' ', sizeXStart);
+				int sizeX = int.parse(m_view.title.substring(sizeXStart, sizeXEnd-sizeXStart));
+
+				int sizeYStart = m_view.title.index_of_char(':', sizeXEnd) + 1;
+				int sizeYEnd = m_view.title.index_of_char(' ', sizeYStart);
+				int sizeY = int.parse(m_view.title.substring(sizeYStart, sizeYEnd-sizeYStart));
+
+				logger.print(LogMessage.DEBUG, "sizeX: %i sizeY: %i".printf(sizeX, sizeY));
+				m_view.run_javascript.begin("document.title = \"\";", null, (obj, res) => {
+					m_view.run_javascript.end(res);
+				});
+
+				var window = this.get_toplevel() as readerUI;
+				var popup = new imagePopup(path, null, window, sizeY, sizeX);
+			}
+
+		});
+
 		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});
 		m_view.leave_fullscreen.connect(() => { leaveFullscreen(); return false;});
 		m_search = m_view.get_find_controller();
@@ -104,16 +131,6 @@ public class FeedReader.articleView : Gtk.Stack {
 			Gtk.device_grab_add(this, pointer, false);
 			GLib.Timeout.add(10, updateDragMomentum);
 			m_view.motion_notify_event.connect(mouseMotion);
-			return true;
-		}
-		else if (event.button == MouseButton.LEFT && m_imagePath != null)
-		{
-			var window = this.get_toplevel() as readerUI;
-			string prefix = "file://";
-			if(m_imagePath.has_prefix(prefix))
-				m_imagePath = m_imagePath.substring(prefix.length);
-			logger.print(LogMessage.DEBUG, m_imagePath);
-			var popup = new imagePopup(m_imagePath, m_imageURL, window);
 			return true;
 		}
 
@@ -260,6 +277,7 @@ public class FeedReader.articleView : Gtk.Stack {
 				{
 					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
 					settings_state.set_int("articleview-scrollpos", 0);
+					m_view.grab_focus();
 					m_firstTime = false;
 				}
 				break;
@@ -403,27 +421,6 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_view.set_background_color(background);
 		}
 #endif
-	}
-
-	private void onMouseTargetChange(WebKit.HitTestResult result, uint modifiers)
-	{
-		if(result.context_is_image())
-		{
-			m_imagePath = result.get_image_uri();
-			if(result.context_is_link())
-			{
-				m_imageURL = result.get_link_uri();
-			}
-			else
-			{
-				m_imageURL = null;
-			}
-		}
-		else
-		{
-				m_imagePath = null;
-				m_imageURL = null;
-		}
 	}
 
 }

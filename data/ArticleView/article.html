@@ -6,42 +6,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FeedReader Article</title>
     <script type="application/javascript">
-        document.addEventListener("DOMContentLoaded", function () {
+        function detectImageSize() {
+            var figures = document.getElementsByTagName("figure");
+            for (var j = 0; j < figures.length; j++) {
+                figures[j].removeAttribute("style");
+            }
+
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
-                extension = images[i].src.split(".").pop().toLowerCase();
-                if (extension == "gif") {
-                    var img = new Image();
-                    img.onload = function () {
-                        naturalWidth = img.width;
-                        naturalHeight = img.height;
-                    }
-                    img.src = images[i].src;
-                } else {
-                    naturalHeight = images[i].naturalHeight;
-                    naturalWidth = images[i].naturalWidth;
+                images[i].removeAttribute("class");
+                images[i].removeAttribute("width");
+                images[i].removeAttribute("height");
+                images[i].removeAttribute("style");
+                images[i].removeAttribute("sizes");
+                var width = images[i].clientWidth;
+                var height = images[i].clientHeight;
+                var img = new Image();
+                img.onload = function () {
+                    var naturalWidth = this.width;
+                    var naturalHeight = this.height;
+                    showPopover(this.src, naturalWidth, naturalHeight, width, height);
                 }
-                if (naturalWidth > images[i].width && naturalHeight > images[i].height) {
-                    images[i].addEventListener("click", function () {
-                        document.title = "path:" + encodeURIComponent(this.src) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;
-                    }, false);
+                img.src = images[i].src;
+            }
+        }
 
-                    images[i].addEventListener("mouseover", function () {
-                        this.classList.add("clickable-img-hover");
-                    }, false);
-                    images[i].addEventListener("mouseout", function () {
-                        this.classList.remove("clickable-img-hover");
-                    }, false);
+        function showPopover(source, naturalWidth, naturalHeight, width, height) {
+            var images = document.getElementsByTagName("img");
+            for (var i = 0; i < images.length; i++) {
+                if (images[i].src == source && naturalWidth != 0 && nautralHeight != 0) {
+                    if (height/naturalHeight < 0.8 || width/naturalWidth < 0.8) {
+                        
+                        if (images[i].parentElement.nodeName.toLowerCase() == "a") {
+                            newContent = images[i].parentElement.innerHTML;
+                            oldContent = images[i].parentElement.parentElement.innerHTML;
+                            images[i].parentElement.parentElement.innerHTML = oldContent.replace(oldContent, newContent);
+                        }
+                        
+                        images[i].addEventListener("click", function (e) {
+                            e.preventDefault();
+                            document.title = "path:" + encodeURIComponent(source) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;
+                        }, false);
+
+                        images[i].addEventListener("mouseover", function () {
+                            this.className = "clickable-img-hover";
+                        }, false);
+
+                        images[i].addEventListener("mouseout", function () {
+                            this.className = "";
+                        }, false);
+                    } else {
+                        var clone = images[i].cloneNode(true);
+                        images[i].parenNode.replaceChild(clone, images[i]);
+                    }
                 }
             }
-        });
+
+        }
     </script>
     <style>
         $CSS
     </style>
 </head>
 
-<body style="font-size:$FONTSIZE;">
+<body style="font-size:$FONTSIZE;" onload="detectImageSize();">
     <div class="$THEME">
         <header class="post">
             <span class="source" style="font-size:$SOURCEFONTSIZE;">$FEED</span>

@@ -1,21 +1,24 @@
-# French translation for feedreader
-# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
-# This file is distributed under the same license as the feedreader package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
-#
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>, 2016
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015
+# Florian, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: feedreader\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
+"Project-Id-Version: FeedReader\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-11-13 23:01+0100\n"
-"PO-Revision-Date: 2015-11-08 22:51+0000\n"
-"Last-Translator: François-Xavier Guillois <Unknown>\n"
-"Language-Team: French <fr@li.org>\n"
+"PO-Revision-Date: 2016-01-29 13:50+0000\n"
+"Last-Translator: Florian\n"
+"Language-Team: French (http://www.transifex.com/dev-feedreader/feedreader/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:53+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"Language: fr\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
 msgid "FeedReader"
@@ -27,7 +30,7 @@ msgstr "Client pour de multiples services RSS"
 
 #: ../src/Constants.vala:174
 msgid "About"
-msgstr ""
+msgstr "À propos"
 
 #: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
 msgid "Settings"
@@ -39,7 +42,7 @@ msgstr "Changer de compte"
 
 #: ../src/Constants.vala:177
 msgid "Quit"
-msgstr ""
+msgstr "Quitter"
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
@@ -117,18 +120,15 @@ msgstr "Votre nom d'utilisateur ou votre mot de passe est incorrect."
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
-msgstr ""
-"Pas de connexion au serveur. Vérifiez votre connexion internet et l'URL du "
-"serveur !"
+msgstr "Pas de connexion au serveur. Vérifiez votre connexion internet et l'URL du serveur !"
 
 #: ../src/Widgets/MainWindow.vala:430
 msgid "API access is disabled on the server. Please enable it first!"
-msgstr ""
-"L'accès par l'API est désactivée sur le serveur. Veuillez l'activer d'abord !"
+msgstr "L'accès par l'API est désactivée sur le serveur. Veuillez l'activer d'abord !"
 
 #: ../src/Widgets/MainWindow.vala:433
 msgid "No valid CA certificate available!"
-msgstr ""
+msgstr "Pas de certificat CA valide !"
 
 #: ../src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -138,10 +138,7 @@ msgstr "Changer de compte ?"
 msgid ""
 "You are about to change the account you want FeedReader to use.\n"
 " This means deleting all local data of your old account."
-msgstr ""
-"Vous êtes sur le point de modifier le compte utilisé par FeedReader.\n"
-"Cela signifie que toutes les données locales de votre ancien compte vont "
-"être supprimées."
+msgstr "Vous êtes sur le point de modifier le compte utilisé par FeedReader.\nCela signifie que toutes les données locales de votre ancien compte vont être supprimées."
 
 #: ../src/Widgets/ResetPage.vala:41
 msgid "New account"
@@ -163,13 +160,13 @@ msgstr "Mettre à jour les Flux"
 msgid "Username or Password incorrect"
 msgstr "Utilisateur ou mot de passe incorrect"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:106 ../src/Widgets/LoginPage.vala:127
-#: ../src/Widgets/LoginPage.vala:196
+#: ../src/Widgets/ServiceSettingsRow.vala:106
+#: ../src/Widgets/LoginPage.vala:127 ../src/Widgets/LoginPage.vala:196
 msgid "Username:"
 msgstr "Nom d'utilisateur :"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:107 ../src/Widgets/LoginPage.vala:128
-#: ../src/Widgets/LoginPage.vala:197
+#: ../src/Widgets/ServiceSettingsRow.vala:107
+#: ../src/Widgets/LoginPage.vala:128 ../src/Widgets/LoginPage.vala:197
 msgid "Password:"
 msgstr "Mot de passe :"
 
@@ -202,9 +199,7 @@ msgstr "Non classé"
 msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
-msgstr ""
-"FeedReader nettoie la base de données.\n"
-"Cela ne devrait pas durer longtemps."
+msgstr "FeedReader nettoie la base de données.\nCela ne devrait pas durer longtemps."
 
 #: ../src/Widgets/ReaderHeaderbar.vala:49
 msgid "Mark article (un)starred"
@@ -256,9 +251,7 @@ msgstr "Ou sont vos flux ?"
 
 #: ../src/Widgets/LoginPage.vala:44
 msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
-"Sélectionner le service de flux RSS que vous utilisez et connectez-vous pour "
-"y accéder."
+msgstr "Sélectionner le service de flux RSS que vous utilisez et connectez-vous pour y accéder."
 
 #: ../src/Widgets/LoginPage.vala:109
 msgid "No service selected."
@@ -270,12 +263,9 @@ msgstr "TinyTinyRSS URL :"
 
 #: ../src/Widgets/LoginPage.vala:176
 msgid ""
-"You will be redirected to the feedly website where you can use your Facebook-"
-", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
-msgstr ""
-"Vous allez être redirigé vers le site Web Feedly où vous pouvez utiliser "
-"votre compte Facebook, Google, Twitter, Microsoft ou Evernote pour vous "
-"connecter."
+"You will be redirected to the feedly website where you can use your "
+"Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr "Vous allez être redirigé vers le site Web Feedly où vous pouvez utiliser votre compte Facebook, Google, Twitter, Microsoft ou Evernote pour vous connecter."
 
 #: ../src/Widgets/LoginPage.vala:195
 msgid "OwnCloud URL:"
@@ -287,7 +277,7 @@ msgstr "Interface"
 
 #: ../src/Widgets/SettingsDialog.vala:35
 msgid "Internals"
-msgstr ""
+msgstr "Réglages"
 
 #: ../src/Widgets/SettingsDialog.vala:36
 msgid "Services"
@@ -311,7 +301,7 @@ msgstr "Classer la liste des flux par"
 
 #: ../src/Widgets/SettingsDialog.vala:69 ../src/Widgets/SettingsDialog.vala:76
 msgid "Received"
-msgstr ""
+msgstr "Date de réception"
 
 #: ../src/Widgets/SettingsDialog.vala:69
 msgid "Alphabetically"
@@ -335,7 +325,7 @@ msgstr "Le plus récent en premier"
 
 #: ../src/Widgets/SettingsDialog.vala:86
 msgid "Article View:"
-msgstr ""
+msgstr "Vue article :"
 
 #: ../src/Widgets/SettingsDialog.vala:88
 msgid "Theme"
@@ -367,7 +357,7 @@ msgstr "Nombre d'articles"
 
 #: ../src/Widgets/SettingsDialog.vala:116
 msgid "Every (Minutes)"
-msgstr ""
+msgstr "Toutes les (Minutes)"
 
 #: ../src/Widgets/SettingsDialog.vala:121
 msgid "Database:"
@@ -375,7 +365,7 @@ msgstr "Base de données :"
 
 #: ../src/Widgets/SettingsDialog.vala:123
 msgid "Delete articles after"
-msgstr ""
+msgstr "Supprimer les articles après"
 
 #: ../src/Widgets/SettingsDialog.vala:124
 msgid "Never"
@@ -411,15 +401,11 @@ msgstr ""
 
 #: ../src/Widgets/ArticleList.vala:53
 msgid "None of the %i Articles in the database fit the current filters."
-msgstr ""
-"Aucun des %i articles dans la base de données ne correspond aux filtres "
-"actuels."
+msgstr "Aucun des %i articles dans la base de données ne correspond aux filtres actuels."
 
 #: ../src/Widgets/ArticleList.vala:67
 msgid "Sync is in progress. Articles should appear any second."
-msgstr ""
-"La synchronisation es en cours. Les articles devraient apparaître très "
-"prochainement."
+msgstr "La synchronisation est en cours. Les articles devraient apparaître très prochainement."
 
 #: ../src/Widgets/SharePopover.vala:34
 msgid "Please"
@@ -432,7 +418,7 @@ msgstr "à un service pour partager cet article"
 #: ../src/Backends/ttrss/TTRSS_API.vala:447
 #: ../src/Backends/ttrss/TTRSS_API.vala:503
 msgid "not found"
-msgstr "non trouvé"
+msgstr "aucun résultat"
 
 #: ../src/Backends/FeedServer.vala:741
 msgid "New Articles"

@@ -1,4 +1,431 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Mohamad Hasan Al Banna <se7entime@openmailbox.org>, 2016
 msgid ""
 msgstr ""
+"Project-Id-Version: FeedReader\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-11-13 23:01+0100\n"
+"PO-Revision-Date: 2016-02-02 10:33+0000\n"
+"Last-Translator: Mohamad Hasan Al Banna <se7entime@openmailbox.org>\n"
+"Language-Team: Indonesian (http://www.transifex.com/dev-feedreader/feedreader/language/id/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: id\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: ../src/Constants.vala:163
+msgid "Desktop Client for various RSS Services"
+msgstr "Klien Desktop untuk berbagai macam Layanan RSS"
+
+#: ../src/Constants.vala:174
+msgid "About"
+msgstr "Tentang"
+
+#: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
+msgid "Settings"
+msgstr "Pengaturan"
+
+#: ../src/Constants.vala:176
+msgid "Change Account"
+msgstr "Ubah Akun"
+
+#: ../src/Constants.vala:177
+msgid "Quit"
+msgstr "Keluar"
+
+#: ../src/Utils.vala:21
+msgid "No Preview Available"
+msgstr "Tidak ada Pratinjau yang Tersedia"
+
+#: ../src/Utils.vala:113
+msgid "No Text available for this article :("
+msgstr "Tidak ada Teks yang tersedia untuk artikel ini :("
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:72
+msgid "no Author"
+msgstr "tanpa Author"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:84
+msgid "no Title"
+msgstr "tanpa Judul"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:96
+msgid "no Preview"
+msgstr "tanpa Pratayang"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:108
+msgid "no content"
+msgstr "tanpa konten"
+
+#: ../src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "Tentang FeedReader"
+
+#: ../src/Widgets/TagPopover.vala:40
+msgid "Add Tag:"
+msgstr "Tambahkan Tag:"
+
+#: ../src/Widgets/TagPopover.vala:52
+msgid "Tags:"
+msgstr "Tag:"
+
+#: ../src/Widgets/TagPopover.vala:129
+msgid "add Tag"
+msgstr "tambahkan Tag"
+
+#: ../src/Widgets/MainWindow.vala:298
+msgid "Ignore all tls errors from now on"
+msgstr "Diamkan semua galat tls mulai dari sekarang"
+
+#: ../src/Widgets/MainWindow.vala:406
+msgid "Please select a service first"
+msgstr "Harap pilih layanan untuk pertama kali"
+
+#: ../src/Widgets/MainWindow.vala:409
+msgid "Please enter a valid username"
+msgstr "Harap masukkan nama pengguna yang benar"
+
+#: ../src/Widgets/MainWindow.vala:412
+msgid "Please enter a valid password"
+msgstr "Harap masukkan kata sandi yang benar"
+
+#: ../src/Widgets/MainWindow.vala:415
+msgid "Please enter a valid URL"
+msgstr "Harap masukkan tautan yang benar"
+
+#: ../src/Widgets/MainWindow.vala:418
+msgid "Please enter your Login details"
+msgstr "Harap masukkan rincian Masuk log anda"
+
+#: ../src/Widgets/MainWindow.vala:421
+msgid "Sorry, something went wrong."
+msgstr "Maaf, ada sesuatu yang salah."
+
+#: ../src/Widgets/MainWindow.vala:424
+msgid "Either your username or the password are not correct."
+msgstr "Baik nama pengguna kamu atau kata sandi tidak benar"
+
+#: ../src/Widgets/MainWindow.vala:427
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr "Tidak ada koneksi ke server. Periksa koneksi internet anda dan URL server!"
+
+#: ../src/Widgets/MainWindow.vala:430
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "Akses API dimatikan diserver. Harap aktifkan terlebih dahulu!"
+
+#: ../src/Widgets/MainWindow.vala:433
+msgid "No valid CA certificate available!"
+msgstr "Tidak ada sertifikat CA valid yang tersedia!"
+
+#: ../src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "Ganti Akun?"
+
+#: ../src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr "Anda sedang mengubah akun yang FeedReader ingin gunakan.\nIni berarti menghapus semua data lokal dari akun lama anda."
+
+#: ../src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Akun Baru"
+
+#: ../src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Menunggu sinkronisasi saat ini untuk selesai"
+
+#: ../src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "Saya berubah pikiran"
+
+#: ../src/Widgets/UpdateButton.vala:35
+msgid "Update Feeds"
+msgstr "Perbarui Umpan"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:81
+msgid "Username or Password incorrect"
+msgstr "Nama Pengguna ata Kata sandi salah"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:106
+#: ../src/Widgets/LoginPage.vala:127 ../src/Widgets/LoginPage.vala:196
+msgid "Username:"
+msgstr "Nama Pengguna:"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:107
+#: ../src/Widgets/LoginPage.vala:128 ../src/Widgets/LoginPage.vala:197
+msgid "Password:"
+msgstr "Kata Sandi:"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:78
+#: ../src/Widgets/SharePopover.vala:28
+msgid "Login"
+msgstr "Masuk log"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:128
+msgid "Logout"
+msgstr "Keluar log"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:255
+msgid "waiting"
+msgstr "menunggu"
+
+#: ../src/Widgets/ArticleView.vala:64
+msgid "No Article selected."
+msgstr "Tidak ada Artikel yang dipilih."
+
+#: ../src/Widgets/ArticleView.vala:168
+msgid "Not available"
+msgstr "Tidak tersedia"
+
+#: ../src/Widgets/FeedList.vala:474 ../src/dbUI.vala:353
+msgid "Uncategorized"
+msgstr "Tidak berkategori"
+
+#: ../src/Widgets/SpringCleanPage.vala:28
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr "FeedReader sedang membersihkan basis data.\nIni seharusnya tidak terlalu lama."
+
+#: ../src/Widgets/ReaderHeaderbar.vala:49
+msgid "Mark article (un)starred"
+msgstr "Tandai artikel (tidak)berbintang"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:55
+msgid "Mark article (un)read"
+msgstr "Tandai artikel (tidak)terbaca"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "Show all articles"
+msgstr "Tampilkan semua artikel"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Show only unread articles"
+msgstr "Tampilkan hanya artikel belum terbaca"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Show only starred articles"
+msgstr "Tampilkan hanya artikel berbintang"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:89
+msgid "Tag Article"
+msgstr "Tag Artikel"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:99
+msgid "Share Article"
+msgstr "Bagikan Artikel"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:133
+msgid "Search Articles"
+msgstr "Cari Artikel"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "Feedly"
+msgstr "Feedly"
+
+#: ../src/Widgets/LoginPage.vala:36
+msgid "OwnCloud"
+msgstr "OwnCloud"
+
+#: ../src/Widgets/LoginPage.vala:40
+msgid "Where are your feeds?"
+msgstr "Dimana umpan anda?"
+
+#: ../src/Widgets/LoginPage.vala:44
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr "Harap pilih layanan RSS yang kamu gunakan dan masuk log untuk selanjutnya."
+
+#: ../src/Widgets/LoginPage.vala:109
+msgid "No service selected."
+msgstr "Tidak ada layanan yang dipilih."
+
+#: ../src/Widgets/LoginPage.vala:126
+msgid "TinyTinyRSS URL:"
+msgstr "URL TinyTinyRSS:"
+
+#: ../src/Widgets/LoginPage.vala:176
+msgid ""
+"You will be redirected to the feedly website where you can use your "
+"Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr "Anda akan diarahkan ke situs feedly dimana anda akan menggunakan akun Facebook-, Google-, Twitter-, Microsoft- atau Akun-Evernote untuk masuk log."
+
+#: ../src/Widgets/LoginPage.vala:195
+msgid "OwnCloud URL:"
+msgstr "URL OwnCloud:"
+
+#: ../src/Widgets/SettingsDialog.vala:34
+msgid "Interface"
+msgstr "Tampilan"
+
+#: ../src/Widgets/SettingsDialog.vala:35
+msgid "Internals"
+msgstr "Internal"
+
+#: ../src/Widgets/SettingsDialog.vala:36
+msgid "Services"
+msgstr "Layanan"
+
+#: ../src/Widgets/SettingsDialog.vala:55
+msgid "Feed List:"
+msgstr "Daftar Umpan:"
+
+#: ../src/Widgets/SettingsDialog.vala:57
+msgid "Only show feeds"
+msgstr "Hanya tampilkan umpan"
+
+#: ../src/Widgets/SettingsDialog.vala:64
+msgid "Only show unread"
+msgstr "Hanya tampikan belum dibaca"
+
+#: ../src/Widgets/SettingsDialog.vala:69
+msgid "Sort FeedList by"
+msgstr "Urutkan FeedList sesuai"
+
+#: ../src/Widgets/SettingsDialog.vala:69 ../src/Widgets/SettingsDialog.vala:76
+msgid "Received"
+msgstr "Diterima"
+
+#: ../src/Widgets/SettingsDialog.vala:69
+msgid "Alphabetically"
+msgstr "Sesuai Abjad"
+
+#: ../src/Widgets/SettingsDialog.vala:74
+msgid "Article List:"
+msgstr "Daftar Artikel:"
+
+#: ../src/Widgets/SettingsDialog.vala:76
+msgid "Sort articles by"
+msgstr "Urutkan artikel sesuai"
+
+#: ../src/Widgets/SettingsDialog.vala:76
+msgid "Date"
+msgstr "Tanggal"
+
+#: ../src/Widgets/SettingsDialog.vala:81
+msgid "Newest first"
+msgstr "Yang paling baru duluan"
+
+#: ../src/Widgets/SettingsDialog.vala:86
+msgid "Article View:"
+msgstr "Tampilan Artikel:"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Theme"
+msgstr "Tema"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Default"
+msgstr "Standar"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Spring"
+msgstr "Spring"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Midnight"
+msgstr "Midnight"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Parchment"
+msgstr "Parchment"
+
+#: ../src/Widgets/SettingsDialog.vala:112
+msgid "Sync:"
+msgstr "Sinkron:"
+
+#: ../src/Widgets/SettingsDialog.vala:114
+msgid "Number of articles"
+msgstr "Jumlah artikel"
+
+#: ../src/Widgets/SettingsDialog.vala:116
+msgid "Every (Minutes)"
+msgstr "Setiap (Menit)"
+
+#: ../src/Widgets/SettingsDialog.vala:121
+msgid "Database:"
+msgstr "Basis data:"
+
+#: ../src/Widgets/SettingsDialog.vala:123
+msgid "Delete articles after"
+msgstr "Hapus artikel setelah"
+
+#: ../src/Widgets/SettingsDialog.vala:124
+msgid "Never"
+msgstr "Tidak pernah"
+
+#: ../src/Widgets/SettingsDialog.vala:124
+msgid "1 Week"
+msgstr "1 Minggu"
+
+#: ../src/Widgets/SettingsDialog.vala:124
+msgid "1 Month"
+msgstr "1 Bulan"
+
+#: ../src/Widgets/SettingsDialog.vala:124
+msgid "6 Months"
+msgstr "6 Bulan"
+
+#: ../src/Widgets/SettingsDialog.vala:126
+msgid "Additional Functionality:"
+msgstr "Fungsionalitas Tambahan:"
+
+#: ../src/Widgets/SettingsDialog.vala:128
+msgid "Content Grabber"
+msgstr "Pengambil Konten"
+
+#: ../src/Widgets/SettingsDialog.vala:129
+msgid "None"
+msgstr "Tidak ada"
+
+#: ../src/Widgets/SettingsDialog.vala:129
+msgid "Built in grabber"
+msgstr "Pengambil bawaan"
+
+#: ../src/Widgets/ArticleList.vala:53
+msgid "None of the %i Articles in the database fit the current filters."
+msgstr "Tidak ada Artikel %i yang sesuai dibasis data untuk penyaringan saat ini"
+
+#: ../src/Widgets/ArticleList.vala:67
+msgid "Sync is in progress. Articles should appear any second."
+msgstr "Sinkronisasi sedang berjalan. Artikel seharusnya tampil dalam beberapa detik."
+
+#: ../src/Widgets/SharePopover.vala:34
+msgid "Please"
+msgstr "Harap"
+
+#: ../src/Widgets/SharePopover.vala:36
+msgid "to a service to share this article."
+msgstr "untuk layanan untuk membagikan artikel ini."
+
+#: ../src/Backends/ttrss/TTRSS_API.vala:447
+#: ../src/Backends/ttrss/TTRSS_API.vala:503
+msgid "not found"
+msgstr "tidak ditemukan"
+
+#: ../src/Backends/FeedServer.vala:741
+msgid "New Articles"
+msgstr "Artikel Baru"
+
+#: ../src/Backends/FeedServer.vala:753
+msgid "There is 1 new article"
+msgstr "Terdapat 1 artikel baru"
+
+#: ../src/Backends/FeedServer.vala:755
+msgid "There are %u new articles"
+msgstr "Terdapat %u artikel baru"

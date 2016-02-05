@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-05 12:58+0100\n"
+"POT-Creation-Date: 2016-02-05 13:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -200,6 +200,22 @@ msgstr ""
 
 #: ../src/Widgets/ArticleView.vala:201
 msgid "Not available"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:228
+msgid "All Articles"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:405
+msgid "Categories"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:424
+msgid "Tags"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:426
+msgid "Labels"
 msgstr ""
 
 #: ../src/Widgets/FeedList.vala:473 ../src/dbUI.vala:360

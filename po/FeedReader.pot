@@ -221,11 +221,23 @@ msgid "Mark article (un)read"
 msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "All"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
 msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Unread"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Starred"
 msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82

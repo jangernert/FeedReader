@@ -437,3 +437,15 @@ msgstr "1 новая статья"
 #: ../src/Backends/FeedServer.vala:755
 msgid "There are %u new articles"
 msgstr "%u новых статей"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "All"
+msgstr "Все"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "Unread"
+msgstr "Непрочитаные"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "Starred"
+msgstr "Помеченные"

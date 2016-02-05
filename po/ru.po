@@ -212,12 +212,24 @@ msgid "Mark article (un)read"
 msgstr "Пометить как (не)прочитанное"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "All"
+msgstr "Все"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
 msgstr "Показать все статьи"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Unread"
+msgstr "Непрочитаные"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
 msgstr "Показать только непрочитанное"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Starred"
+msgstr "Помеченные"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
@@ -437,15 +449,3 @@ msgstr "1 новая статья"
 #: ../src/Backends/FeedServer.vala:755
 msgid "There are %u new articles"
 msgstr "%u новых статей"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:80
-msgid "All"
-msgstr "Все"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:80
-msgid "Unread"
-msgstr "Непрочитаные"
-
-#: ../src/Widgets/ReaderHeaderbar.vala:80
-msgid "Starred"
-msgstr "Помеченные"

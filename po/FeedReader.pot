@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-01 15:57+0100\n"
+"POT-Creation-Date: 2016-02-05 13:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,53 +89,53 @@ msgstr ""
 msgid "add Tag"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:337
+#: ../src/Widgets/MainWindow.vala:347
 msgid "Ignore all tls errors from now on"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:445
+#: ../src/Widgets/MainWindow.vala:455
 msgid "Please select a service first"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:448
+#: ../src/Widgets/MainWindow.vala:458
 msgid "Please enter a valid username"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:451
+#: ../src/Widgets/MainWindow.vala:461
 msgid "Please enter a valid password"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:454
+#: ../src/Widgets/MainWindow.vala:464
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:457
+#: ../src/Widgets/MainWindow.vala:467
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:460
+#: ../src/Widgets/MainWindow.vala:470
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:463
+#: ../src/Widgets/MainWindow.vala:473
 msgid "Either your username or the password are not correct."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:466
+#: ../src/Widgets/MainWindow.vala:476
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:469
+#: ../src/Widgets/MainWindow.vala:479
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:472
+#: ../src/Widgets/MainWindow.vala:482
 msgid "Not authorized to access URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:476
+#: ../src/Widgets/MainWindow.vala:486
 msgid "No valid CA certificate available!"
 msgstr ""
 
@@ -194,12 +194,28 @@ msgstr ""
 msgid "waiting"
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:71
+#: ../src/Widgets/ArticleView.vala:95
 msgid "No Article selected."
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:187
+#: ../src/Widgets/ArticleView.vala:201
 msgid "Not available"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:228
+msgid "All Articles"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:405
+msgid "Categories"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:424
+msgid "Tags"
+msgstr ""
+
+#: ../src/Widgets/FeedList.vala:426
+msgid "Labels"
 msgstr ""
 
 #: ../src/Widgets/FeedList.vala:473 ../src/dbUI.vala:360
@@ -221,11 +237,23 @@ msgid "Mark article (un)read"
 msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "All"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
 msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Unread"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
+msgstr ""
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Starred"
 msgstr ""
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82

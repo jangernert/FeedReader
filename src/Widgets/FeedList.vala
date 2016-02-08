@@ -225,7 +225,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_list.add(row_seperator1);
 
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow("All Articles", unread, false, FeedID.ALL, "-1", 0);
+		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL, "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
 		m_list.add(row_all);
@@ -402,7 +402,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		if(!Utils.onlyShowFeeds() && Utils.haveTags())
 		{
 			var categorierow = new categorieRow(
-					                                "Categories",
+					                                _("Categories"),
 					                                CategoryID.MASTER,
 					                                0,
 					                                0,
@@ -421,9 +421,9 @@ public class FeedReader.feedList : Gtk.Stack {
 			m_list.insert(categorierow, length+1);
 			categorierow.setAsRead.connect(markSelectedRead);
 			categorierow.reveal(true);
-			string name = "Tags";
+			string name = _("Tags");
 			if(settings_general.get_enum("account-type") == Backend.TTRSS)
-				name = "Labels";
+				name = _("Labels");
 
 			var tagrow = new categorieRow(
 					                                name,

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-13 23:01+0100\n"
-"PO-Revision-Date: 2016-02-02 10:33+0000\n"
+"POT-Creation-Date: 2016-02-05 13:03+0100\n"
+"PO-Revision-Date: 2016-02-06 20:51+0000\n"
 "Last-Translator: Mohamad Hasan Al Banna <se7entime@openmailbox.org>\n"
 "Language-Team: Indonesian (http://www.transifex.com/dev-feedreader/feedreader/language/id/)\n"
 "MIME-Version: 1.0\n"
@@ -18,35 +18,43 @@ msgstr ""
 "Language: id\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
+#: ../src/Constants.vala:179 ../src/Widgets/MainWindow.vala:33
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Constants.vala:163
+#: ../src/Constants.vala:182
 msgid "Desktop Client for various RSS Services"
 msgstr "Klien Desktop untuk berbagai macam Layanan RSS"
 
-#: ../src/Constants.vala:174
+#: ../src/Constants.vala:193
 msgid "About"
 msgstr "Tentang"
 
-#: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
+#: ../src/Constants.vala:194 ../src/Widgets/ReaderHeaderbar.vala:158
 msgid "Settings"
 msgstr "Pengaturan"
 
-#: ../src/Constants.vala:176
+#: ../src/Constants.vala:195
 msgid "Change Account"
 msgstr "Ubah Akun"
 
-#: ../src/Constants.vala:177
+#: ../src/Constants.vala:196
 msgid "Quit"
 msgstr "Keluar"
+
+#: ../src/Model/Article.vala:154
+msgid "Today"
+msgstr "Hari ini"
+
+#: ../src/Model/Article.vala:158
+msgid "Yesterday"
+msgstr "Kemarin"
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
 msgstr "Tidak ada Pratinjau yang Tersedia"
 
-#: ../src/Utils.vala:113
+#: ../src/Utils.vala:93
 msgid "No Text available for this article :("
 msgstr "Tidak ada Teks yang tersedia untuk artikel ini :("
 
@@ -82,49 +90,53 @@ msgstr "Tag:"
 msgid "add Tag"
 msgstr "tambahkan Tag"
 
-#: ../src/Widgets/MainWindow.vala:298
+#: ../src/Widgets/MainWindow.vala:347
 msgid "Ignore all tls errors from now on"
 msgstr "Diamkan semua galat tls mulai dari sekarang"
 
-#: ../src/Widgets/MainWindow.vala:406
+#: ../src/Widgets/MainWindow.vala:455
 msgid "Please select a service first"
 msgstr "Harap pilih layanan untuk pertama kali"
 
-#: ../src/Widgets/MainWindow.vala:409
+#: ../src/Widgets/MainWindow.vala:458
 msgid "Please enter a valid username"
 msgstr "Harap masukkan nama pengguna yang benar"
 
-#: ../src/Widgets/MainWindow.vala:412
+#: ../src/Widgets/MainWindow.vala:461
 msgid "Please enter a valid password"
 msgstr "Harap masukkan kata sandi yang benar"
 
-#: ../src/Widgets/MainWindow.vala:415
+#: ../src/Widgets/MainWindow.vala:464
 msgid "Please enter a valid URL"
 msgstr "Harap masukkan tautan yang benar"
 
-#: ../src/Widgets/MainWindow.vala:418
+#: ../src/Widgets/MainWindow.vala:467
 msgid "Please enter your Login details"
 msgstr "Harap masukkan rincian Masuk log anda"
 
-#: ../src/Widgets/MainWindow.vala:421
+#: ../src/Widgets/MainWindow.vala:470
 msgid "Sorry, something went wrong."
 msgstr "Maaf, ada sesuatu yang salah."
 
-#: ../src/Widgets/MainWindow.vala:424
+#: ../src/Widgets/MainWindow.vala:473
 msgid "Either your username or the password are not correct."
 msgstr "Baik nama pengguna kamu atau kata sandi tidak benar"
 
-#: ../src/Widgets/MainWindow.vala:427
+#: ../src/Widgets/MainWindow.vala:476
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr "Tidak ada koneksi ke server. Periksa koneksi internet anda dan URL server!"
 
-#: ../src/Widgets/MainWindow.vala:430
+#: ../src/Widgets/MainWindow.vala:479
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "Akses API dimatikan diserver. Harap aktifkan terlebih dahulu!"
 
-#: ../src/Widgets/MainWindow.vala:433
+#: ../src/Widgets/MainWindow.vala:482
+msgid "Not authorized to access URL"
+msgstr "Tidak diizinkan untuk mengakses URL"
+
+#: ../src/Widgets/MainWindow.vala:486
 msgid "No valid CA certificate available!"
 msgstr "Tidak ada sertifikat CA valid yang tersedia!"
 
@@ -159,16 +171,20 @@ msgid "Username or Password incorrect"
 msgstr "Nama Pengguna ata Kata sandi salah"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:106
-#: ../src/Widgets/LoginPage.vala:127 ../src/Widgets/LoginPage.vala:196
+#: ../src/Widgets/LoginPage.vala:150 ../src/Widgets/LoginPage.vala:187
+#: ../src/Widgets/LoginPage.vala:258 ../src/Widgets/LoginPage.vala:296
+#: ../src/Widgets/LoginPage.vala:343
 msgid "Username:"
 msgstr "Nama Pengguna:"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:107
-#: ../src/Widgets/LoginPage.vala:128 ../src/Widgets/LoginPage.vala:197
+#: ../src/Widgets/LoginPage.vala:151 ../src/Widgets/LoginPage.vala:188
+#: ../src/Widgets/LoginPage.vala:259 ../src/Widgets/LoginPage.vala:297
+#: ../src/Widgets/LoginPage.vala:344
 msgid "Password:"
 msgstr "Kata Sandi:"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:78
+#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:97
 #: ../src/Widgets/SharePopover.vala:28
 msgid "Login"
 msgstr "Masuk log"
@@ -181,15 +197,31 @@ msgstr "Keluar log"
 msgid "waiting"
 msgstr "menunggu"
 
-#: ../src/Widgets/ArticleView.vala:64
+#: ../src/Widgets/ArticleView.vala:95
 msgid "No Article selected."
 msgstr "Tidak ada Artikel yang dipilih."
 
-#: ../src/Widgets/ArticleView.vala:168
+#: ../src/Widgets/ArticleView.vala:201
 msgid "Not available"
 msgstr "Tidak tersedia"
 
-#: ../src/Widgets/FeedList.vala:474 ../src/dbUI.vala:353
+#: ../src/Widgets/FeedList.vala:228
+msgid "All Articles"
+msgstr "Semua Artikel"
+
+#: ../src/Widgets/FeedList.vala:405
+msgid "Categories"
+msgstr "Kategori"
+
+#: ../src/Widgets/FeedList.vala:424
+msgid "Tags"
+msgstr "Tag"
+
+#: ../src/Widgets/FeedList.vala:426
+msgid "Labels"
+msgstr "Label"
+
+#: ../src/Widgets/FeedList.vala:473 ../src/dbUI.vala:360
 msgid "Uncategorized"
 msgstr "Tidak berkategori"
 
@@ -208,12 +240,24 @@ msgid "Mark article (un)read"
 msgstr "Tandai artikel (tidak)terbaca"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:80
+msgid "All"
+msgstr "Semua"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:80
 msgid "Show all articles"
 msgstr "Tampilkan semua artikel"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Unread"
+msgstr "Belum dibaca"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
 msgid "Show only unread articles"
 msgstr "Tampilkan hanya artikel belum terbaca"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Starred"
+msgstr "Berbintang"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
 msgid "Show only starred articles"
@@ -231,41 +275,49 @@ msgstr "Bagikan Artikel"
 msgid "Search Articles"
 msgstr "Cari Artikel"
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "Tiny Tiny RSS"
 msgstr "Tiny Tiny RSS"
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "Feedly"
 msgstr "Feedly"
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "OwnCloud"
 msgstr "OwnCloud"
 
-#: ../src/Widgets/LoginPage.vala:40
+#: ../src/Widgets/LoginPage.vala:47
+msgid "InoReader"
+msgstr "InoReader"
+
+#: ../src/Widgets/LoginPage.vala:51
 msgid "Where are your feeds?"
 msgstr "Dimana umpan anda?"
 
-#: ../src/Widgets/LoginPage.vala:44
+#: ../src/Widgets/LoginPage.vala:55
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr "Harap pilih layanan RSS yang kamu gunakan dan masuk log untuk selanjutnya."
 
-#: ../src/Widgets/LoginPage.vala:109
+#: ../src/Widgets/LoginPage.vala:131
 msgid "No service selected."
 msgstr "Tidak ada layanan yang dipilih."
 
-#: ../src/Widgets/LoginPage.vala:126
+#: ../src/Widgets/LoginPage.vala:149
 msgid "TinyTinyRSS URL:"
 msgstr "URL TinyTinyRSS:"
 
-#: ../src/Widgets/LoginPage.vala:176
+#: ../src/Widgets/LoginPage.vala:216 ../src/Widgets/LoginPage.vala:325
+msgid "HTTP Authorization"
+msgstr "Otorisasi HTTP"
+
+#: ../src/Widgets/LoginPage.vala:238
 msgid ""
 "You will be redirected to the feedly website where you can use your "
 "Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
 msgstr "Anda akan diarahkan ke situs feedly dimana anda akan menggunakan akun Facebook-, Google-, Twitter-, Microsoft- atau Akun-Evernote untuk masuk log."
 
-#: ../src/Widgets/LoginPage.vala:195
+#: ../src/Widgets/LoginPage.vala:257
 msgid "OwnCloud URL:"
 msgstr "URL OwnCloud:"
 
@@ -345,63 +397,83 @@ msgstr "Midnight"
 msgid "Parchment"
 msgstr "Parchment"
 
-#: ../src/Widgets/SettingsDialog.vala:112
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Font Size"
+msgstr "Ukuran Font"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Small"
+msgstr "Kecil"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Normal"
+msgstr "Normal"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Large"
+msgstr "Besar"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Huge"
+msgstr "Lebih Besar"
+
+#: ../src/Widgets/SettingsDialog.vala:118
 msgid "Sync:"
 msgstr "Sinkron:"
 
-#: ../src/Widgets/SettingsDialog.vala:114
+#: ../src/Widgets/SettingsDialog.vala:120
 msgid "Number of articles"
 msgstr "Jumlah artikel"
 
-#: ../src/Widgets/SettingsDialog.vala:116
+#: ../src/Widgets/SettingsDialog.vala:122
 msgid "Every (Minutes)"
 msgstr "Setiap (Menit)"
 
-#: ../src/Widgets/SettingsDialog.vala:121
+#: ../src/Widgets/SettingsDialog.vala:127
 msgid "Database:"
 msgstr "Basis data:"
 
-#: ../src/Widgets/SettingsDialog.vala:123
+#: ../src/Widgets/SettingsDialog.vala:129
 msgid "Delete articles after"
 msgstr "Hapus artikel setelah"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "Never"
 msgstr "Tidak pernah"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "1 Week"
 msgstr "1 Minggu"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "1 Month"
 msgstr "1 Bulan"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:130
 msgid "6 Months"
 msgstr "6 Bulan"
 
-#: ../src/Widgets/SettingsDialog.vala:126
+#: ../src/Widgets/SettingsDialog.vala:132
 msgid "Additional Functionality:"
 msgstr "Fungsionalitas Tambahan:"
 
-#: ../src/Widgets/SettingsDialog.vala:128
+#: ../src/Widgets/SettingsDialog.vala:134
 msgid "Content Grabber"
 msgstr "Pengambil Konten"
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: ../src/Widgets/SettingsDialog.vala:135
 msgid "None"
 msgstr "Tidak ada"
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: ../src/Widgets/SettingsDialog.vala:135
 msgid "Built in grabber"
 msgstr "Pengambil bawaan"
 
-#: ../src/Widgets/ArticleList.vala:53
+#: ../src/Widgets/ArticleList.vala:55
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr "Tidak ada Artikel %i yang sesuai dibasis data untuk penyaringan saat ini"
 
-#: ../src/Widgets/ArticleList.vala:67
+#: ../src/Widgets/ArticleList.vala:69
 msgid "Sync is in progress. Articles should appear any second."
 msgstr "Sinkronisasi sedang berjalan. Artikel seharusnya tampil dalam beberapa detik."
 
@@ -413,19 +485,20 @@ msgstr "Harap"
 msgid "to a service to share this article."
 msgstr "untuk layanan untuk membagikan artikel ini."
 
-#: ../src/Backends/ttrss/TTRSS_API.vala:447
-#: ../src/Backends/ttrss/TTRSS_API.vala:503
+#: ../src/Backends/ttrss/TTRSS_API.vala:453
+#: ../src/Backends/ttrss/TTRSS_API.vala:567
+#: ../src/Backends/inoreader/InoReaderAPI.vala:330
 msgid "not found"
 msgstr "tidak ditemukan"
 
-#: ../src/Backends/FeedServer.vala:741
+#: ../src/Backends/FeedServer.vala:889
 msgid "New Articles"
 msgstr "Artikel Baru"
 
-#: ../src/Backends/FeedServer.vala:753
+#: ../src/Backends/FeedServer.vala:901
 msgid "There is 1 new article"
 msgstr "Terdapat 1 artikel baru"
 
-#: ../src/Backends/FeedServer.vala:755
+#: ../src/Backends/FeedServer.vala:903
 msgid "There are %u new articles"
 msgstr "Terdapat %u artikel baru"

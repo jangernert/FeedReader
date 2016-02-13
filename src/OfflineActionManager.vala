@@ -24,27 +24,23 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 	}
 
 
-	public void markArticleRead(string id)
+	public void markArticleRead(string id, ArticleStatus read)
 	{
-		var action = new OfflineAction(OfflineActions.MARK_READ, id, "");
+		var offlineAction = OfflineActions.MARK_READ;
+		if(read == ArticleStatus.UNREAD)
+			offlineAction = OfflineActions.MARK_UNREAD;
+
+		var action = new OfflineAction(offlineAction, id, "");
 		addAction(action);
 	}
 
-	public void markArticleUnread(string id)
+	public void markArticleStarred(string id, ArticleStatus marked)
 	{
-		var action = new OfflineAction(OfflineActions.MARK_UNREAD, id, "");
-		addAction(action);
-	}
+		var offlineAction = OfflineActions.MARK_STARRED;
+		if(marked == ArticleStatus.UNMARKED)
+			offlineAction = OfflineActions.MARK_UNSTARRED;
 
-	public void markArticleStarred(string id)
-	{
-		var action = new OfflineAction(OfflineActions.MARK_STARRED, id, "");
-		addAction(action);
-	}
-
-	public void markArticleUnstarred(string id)
-	{
-		var action = new OfflineAction(OfflineActions.MARK_UNSTARRED, id, "");
+		var action = new OfflineAction(offlineAction, id, "");
 		addAction(action);
 	}
 
@@ -70,11 +66,11 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 	{
 		if(dataBase.offlineActionNecessary(action))
 		{
-			dataBase.deleteOppositeOfflineAction(action);
+			dataBase.addOfflineAction(action.getType(), action.getID());
 		}
 		else
 		{
-			dataBase.addOfflineAction(action.getType(), action.getID());
+			dataBase.deleteOppositeOfflineAction(action);
 		}
 	}
 

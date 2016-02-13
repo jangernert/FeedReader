@@ -90,7 +90,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."OfflineActions"
 											(
-												"action" INTEGER PRIMARY KEY NOT NULL UNIQUE,
+												"action" INTEGER NOT NULL,
 												"id" TEXT NOT NULL,
 												"argument" INTEGER
 											)""");

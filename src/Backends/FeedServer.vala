@@ -18,8 +18,10 @@ public class FeedReader.FeedServer : GLib.Object {
 	private FeedlyAPI m_feedly;
 	private OwncloudNewsAPI m_owncloud;
 	private InoReaderAPI m_inoreader;
+	private OfflineActionManager m_offlineActions;
 	private int m_type;
 	private bool m_supportTags;
+	private bool m_offline = false;
 	public signal void newFeedList();
 	public signal void updateFeedList();
 	public signal void updateArticleList();
@@ -30,6 +32,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		m_type = type;
 		m_supportTags = false;
+		m_offlineActions = new OfflineActionManager();
 		logger.print(LogMessage.DEBUG, "FeedServer: new with type %i".printf(type));
 
 		switch(m_type)
@@ -254,8 +257,17 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
-		SourceFunc callback = setArticleIsRead.callback;
+		if(m_offline)
+		{
+			var idArray = articleIDs.split(",");
+			foreach(string id in idArray)
+			{
+				m_offlineActions.markArticleRead(id, read);
+			}
+			return;
+		}
 
+		SourceFunc callback = setArticleIsRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -288,8 +300,13 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
-		SourceFunc callback = setArticleIsMarked.callback;
+		if(m_offline)
+		{
+			m_offlineActions.markArticleStarred(articleID, marked);
+			return;
+		}
 
+		SourceFunc callback = setArticleIsMarked.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -321,8 +338,13 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setFeedRead(string feedID)
 	{
-		SourceFunc callback = setFeedRead.callback;
+		if(m_offline)
+		{
+			m_offlineActions.markFeedRead(feedID);
+			return;
+		}
 
+		SourceFunc callback = setFeedRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -352,8 +374,13 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setCategorieRead(string catID)
 	{
-		SourceFunc callback = setCategorieRead.callback;
+		if(m_offline)
+		{
+			m_offlineActions.markCategoryRead(catID);
+			return;
+		}
 
+		SourceFunc callback = setCategorieRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -383,8 +410,13 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void markAllItemsRead()
 	{
-		SourceFunc callback = markAllItemsRead.callback;
+		if(m_offline)
+		{
+			m_offlineActions.markAllRead();
+			return;
+		}
 
+		SourceFunc callback = markAllItemsRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -436,8 +468,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void addArticleTag(string articleID, string tagID)
 	{
-		SourceFunc callback = addArticleTag.callback;
+		if(m_offline)
+			return;
 
+		SourceFunc callback = addArticleTag.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -464,8 +498,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void removeArticleTag(string articleID, string tagID)
 	{
-		SourceFunc callback = removeArticleTag.callback;
+		if(m_offline)
+			return;
 
+		SourceFunc callback = removeArticleTag.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -491,6 +527,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public string createTag(string caption)
 	{
+		if(m_offline)
+			return ":(";
+
 		switch(m_type)
 		{
 			case Backend.TTRSS:
@@ -508,8 +547,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void deleteTag(string tagID)
 	{
-		SourceFunc callback = deleteTag.callback;
+		if(m_offline)
+			return;
 
+		SourceFunc callback = deleteTag.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
@@ -1017,5 +1058,17 @@ public class FeedReader.FeedServer : GLib.Object {
 			return -1;
 
 		return settings_general.get_int("max-articles");
+	}
+
+	public void setOffline()
+	{
+		logger.print(LogMessage.DEBUG, "FeedServer: setOffline");
+		m_offline = true;
+	}
+
+	public void setOnline()
+	{
+		logger.print(LogMessage.DEBUG, "FeedServer: setOnline");
+		m_offline = false;
 	}
 }

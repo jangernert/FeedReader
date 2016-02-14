@@ -117,7 +117,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     {
 		var sync_settings = headline(_("Sync:"));
 
-		var sync_count = new SettingSpin(_("Number of articles"), settings_general, "max-articles", 10, 1000, 10);
+		var sync_count = new SettingSpin(_("Number of articles"), settings_general, "max-articles", 10, 5000, 10);
 
 		var sync_time = new SettingSpin(_("Every (Minutes)"), settings_general, "sync", 5, 600, 5);
 		sync_time.changed.connect(() => {

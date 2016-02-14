@@ -50,6 +50,7 @@ namespace FeedReader {
 		public abstract string createTag(string caption) throws IOError;
 		public abstract void updateBadge() throws IOError;
 		public abstract bool supportTags() throws IOError;
+		public abstract bool checkOnline() throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();
@@ -147,11 +148,11 @@ namespace FeedReader {
 				});
 
 				feedDaemon_interface.setOffline.connect(() => {
-					m_window.getContent().setOffline();
+					m_window.setOffline();
 				});
 
 				feedDaemon_interface.setOnline.connect(() => {
-					m_window.getContent().setOnline();
+					m_window.setOnline();
 				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);
@@ -186,6 +187,7 @@ namespace FeedReader {
 
 			m_window.show_all();
 			feedDaemon_interface.updateBadge();
+			feedDaemon_interface.checkOnline();
 		}
 
 		public override int command_line(ApplicationCommandLine command_line)

@@ -42,6 +42,8 @@ namespace FeedReader {
 		public FeedDaemonServer()
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
+			this.setOffline.connect(server.setOffline);
+			this.setOnline.connect(server.setOnline);
 			login((Backend)settings_general.get_enum("account-type"));
 
 #if WITH_LIBUNITY
@@ -101,12 +103,8 @@ namespace FeedReader {
 				springCleanFinished();
 			}
 
-			if(!server.serverAvailable())
-			{
-				m_loggedin = LoginResponse.UNKNOWN_ERROR;
-				setOffline();
+			if(!checkOnline())
 				return;
-			}
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
@@ -134,6 +132,18 @@ namespace FeedReader {
 			{
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
 			}
+		}
+
+		public bool checkOnline()
+		{
+			if(!server.serverAvailable())
+			{
+				m_loggedin = LoginResponse.UNKNOWN_ERROR;
+				setOffline();
+				return false;
+			}
+
+			return true;
 		}
 
 
@@ -197,7 +207,7 @@ namespace FeedReader {
 			}
 
 
-			logger.print(LogMessage.DEBUG, "daemon: login status = " +m_loggedin.to_string());
+			logger.print(LogMessage.DEBUG, "daemon: login status = " + m_loggedin.to_string());
 			return m_loggedin;
 		}
 

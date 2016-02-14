@@ -640,4 +640,16 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		return m_headerbar;
 	}
 
+	public void setOffline()
+	{
+		m_content.setOffline();
+		m_headerbar.setOffline();
+	}
+
+	public void setOnline()
+	{
+		m_content.setOnline();
+		m_headerbar.setOnline();
+	}
+
 }

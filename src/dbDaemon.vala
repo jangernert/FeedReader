@@ -683,10 +683,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
     public bool offlineActionNecessary(OfflineAction action)
     {
         var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
-        query.selectField("rowid");
+        query.selectField("count(*)");
         query.addEqualsCondition("argument", action.getArgument(), true, true);
         query.addEqualsCondition("id", action.getID(), true, true);
-        query.addEqualsCondition("action", action.opposite().to_string());
+        query.addEqualsCondition("action", "%i".printf(action.opposite()));
         query.build();
 
         Sqlite.Statement stmt;
@@ -698,10 +698,11 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         }
 
         while (stmt.step () == Sqlite.ROW) {
-            return true;
+            if(stmt.column_int(0) > 0)
+                return false;
         }
 
-        return false;
+        return true;
     }
 
     public void deleteOppositeOfflineAction(OfflineAction action)
@@ -709,7 +710,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         var query = new QueryBuilder(QueryType.DELETE, "OfflineActions");
         query.addEqualsCondition("argument", action.getArgument(), true, true);
         query.addEqualsCondition("id", action.getID(), true, true);
-        query.addEqualsCondition("action", action.opposite().to_string());
+        query.addEqualsCondition("action", "%i".printf(action.opposite()));
         executeSQL(query.build());
     }
 

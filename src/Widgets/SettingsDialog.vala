@@ -22,7 +22,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     public SettingsDialog(Gtk.Window parent, string show)
     {
     	Object(use_header_bar: 1);
-        this.title = "Settings";
+        this.title = _("Settings");
 		this.border_width = 20;
         this.set_transient_for(parent);
         this.set_modal(true);

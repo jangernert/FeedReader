@@ -88,7 +88,8 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 				case OfflineActions.MARK_UNSTARRED:
 					if(action.getType() != m_lastAction)
 					{
-						executeActions(m_ids, m_lastAction);
+						m_ids += action.getID();
+						executeActions(m_ids.substring(1), m_lastAction);
 						m_lastAction = OfflineActions.NONE;
 						m_ids = "";
 					}
@@ -116,6 +117,7 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	private void executeActions(string ids, OfflineActions action)
 	{
+		logger.print(LogMessage.DEBUG, "OfflineActionManager: executeActions %s %s".printf(ids, action.to_string()));
 		switch(action)
 		{
 			case OfflineActions.MARK_READ:

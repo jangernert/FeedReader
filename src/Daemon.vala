@@ -42,8 +42,6 @@ namespace FeedReader {
 		public FeedDaemonServer()
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
-			this.setOffline.connect(server.setOffline);
-			this.setOnline.connect(server.setOnline);
 			login((Backend)settings_general.get_enum("account-type"));
 
 #if WITH_LIBUNITY
@@ -147,6 +145,20 @@ namespace FeedReader {
 		}
 
 
+		public async void checkOnlineAsync()
+		{
+			SourceFunc callback = checkOnlineAsync.callback;
+			ThreadFunc<void*> run = () => {
+				Idle.add((owned) callback);
+				checkOnline();
+				return null;
+			};
+
+			new GLib.Thread<void*>("checkOnlineAsync", run);
+			yield;
+		}
+
+
 		private async void initSync()
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
@@ -173,6 +185,8 @@ namespace FeedReader {
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 			server = new FeedServer(type);
+			this.setOffline.connect(server.setOffline);
+			this.setOnline.connect(server.setOnline);
 
 			server.newFeedList.connect(() => {
 				newFeedList();

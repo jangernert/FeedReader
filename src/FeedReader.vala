@@ -50,7 +50,7 @@ namespace FeedReader {
 		public abstract string createTag(string caption) throws IOError;
 		public abstract void updateBadge() throws IOError;
 		public abstract bool supportTags() throws IOError;
-		public abstract bool checkOnline() throws IOError;
+		public abstract void checkOnlineAsync() throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();
@@ -187,7 +187,7 @@ namespace FeedReader {
 
 			m_window.show_all();
 			feedDaemon_interface.updateBadge();
-			feedDaemon_interface.checkOnline();
+			feedDaemon_interface.checkOnlineAsync();
 		}
 
 		public override int command_line(ApplicationCommandLine command_line)

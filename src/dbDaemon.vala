@@ -661,6 +661,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 		var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
 		query.selectField("*");
 		query.build();
+        query.print();
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
@@ -669,7 +670,9 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
-			tmp.add(new OfflineAction((OfflineActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2)));
+            var action = new OfflineAction((OfflineActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
+            action.print();
+			tmp.add(action);
 		}
 
 		return tmp;
@@ -677,7 +680,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public void resetOfflineActions()
     {
-        executeSQL("DELETE * FROM OfflineActions");
+        executeSQL("DELETE FROM OfflineActions");
     }
 
     public bool offlineActionNecessary(OfflineAction action)

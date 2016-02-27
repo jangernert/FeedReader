@@ -1069,6 +1069,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public void setOnline()
 	{
 		logger.print(LogMessage.DEBUG, "FeedServer: setOnline");
+		m_offlineActions.goOnline();
 		m_offline = false;
 	}
 }

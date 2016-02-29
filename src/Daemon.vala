@@ -109,14 +109,12 @@ namespace FeedReader {
 				login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
-					setOffline();
 					return;
 				}
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
-				setOnline();
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
@@ -139,6 +137,11 @@ namespace FeedReader {
 				m_loggedin = LoginResponse.UNKNOWN_ERROR;
 				setOffline();
 				return false;
+			}
+
+			if(m_loggedin != LoginResponse.SUCCESS)
+			{
+				login((Backend)settings_general.get_enum("account-type"));
 			}
 
 			return true;

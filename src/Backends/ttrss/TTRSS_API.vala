@@ -643,6 +643,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				return_value = true;
 		}
 
+		message.printMessage();
+		message.printResponse();
+
 		return return_value;
 	}
 

@@ -6,62 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FeedReader Article</title>
     <script type="application/javascript">
-        function detectImageSize() {
-            var figures = document.getElementsByTagName("figure");
-            for (var j = 0; j < figures.length; j++) {
-                figures[j].removeAttribute("style");
-            }
-
+        function ImagesPopover() {
             var images = document.getElementsByTagName("img");
             for (var i = 0; i < images.length; i++) {
-                images[i].removeAttribute("class");
-                images[i].removeAttribute("width");
-                images[i].removeAttribute("height");
-                images[i].removeAttribute("style");
-                images[i].removeAttribute("sizes");
-                var width = images[i].clientWidth;
-                var height = images[i].clientHeight;
+                var srcImg = images[i];
+                var width = srcImg.width;
+                var height = srcImg.height;
                 var img = new Image();
                 img.onload = function () {
                     var naturalWidth = this.width;
                     var naturalHeight = this.height;
-                    showPopover(this.src, naturalWidth, naturalHeight, width, height);
-                }
-                img.src = images[i].src;
-            }
-        }
-
-        function showPopover(source, naturalWidth, naturalHeight, width, height) {
-            var images = document.getElementsByTagName("img");
-            for (var i = 0; i < images.length; i++) {
-                if (images[i].src == source && naturalWidth != 0 && nautralHeight != 0) {
-                    if (height/naturalHeight < 0.8 || width/naturalWidth < 0.8) {
-                        
-                        if (images[i].parentElement.nodeName.toLowerCase() == "a") {
-                            newContent = images[i].parentElement.innerHTML;
-                            oldContent = images[i].parentElement.parentElement.innerHTML;
-                            images[i].parentElement.parentElement.innerHTML = oldContent.replace(oldContent, newContent);
-                        }
-                        
-                        images[i].addEventListener("click", function (e) {
+                    if (naturalHeight > height || naturalWidth > width) {
+                        srcImg.addEventListener("click", function (e) {
                             e.preventDefault();
-                            document.title = "path:" + encodeURIComponent(source) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;
+                            document.title = "path:" + encodeURIComponent(this.src) + " sizeX:" + naturalWidth + " sizeY:" + naturalHeight;
                         }, false);
-
-                        images[i].addEventListener("mouseover", function () {
-                            this.className = "clickable-img-hover";
+                        srcImg.addEventListener("mouseover", function () {
+                            if (this.classList) {
+                                this.classList.add("clickable-img-hover");
+                            } else {
+                                this.className += "clickable-img-hover";
+                            }
                         }, false);
-
-                        images[i].addEventListener("mouseout", function () {
-                            this.className = "";
+                        srcImg.addEventListener("mouseout", function () {
+                            if (this.classList) {
+                                this.classList.remove("clickable-img-hover");
+                            } else {
+                                this.className = this.className.replace('/b\clickable-img-hover/b', '');
+                            }
                         }, false);
-                    } else {
-                        var clone = images[i].cloneNode(true);
-                        images[i].parenNode.replaceChild(clone, images[i]);
                     }
                 }
+                img.src = srcImg.src;
             }
-
         }
     </script>
     <style>
@@ -69,7 +46,7 @@
     </style>
 </head>
 
-<body style="font-size:$FONTSIZE;" onload="detectImageSize();">
+<body style="font-size:$FONTSIZE;" onload="ImagesPopover();">
     <div class="$THEME">
         <header class="post">
             <span class="source" style="font-size:$SOURCEFONTSIZE;">$FEED</span>
@@ -84,3 +61,4 @@
 </body>
 
 </html>
+

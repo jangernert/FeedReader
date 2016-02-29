@@ -680,6 +680,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public void resetOfflineActions()
     {
+        logger.print(LogMessage.DEBUG, "resetOfflineActions");
         executeSQL("DELETE FROM OfflineActions");
     }
 
@@ -715,6 +716,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         query.addEqualsCondition("id", action.getID(), true, true);
         query.addEqualsCondition("action", "%i".printf(action.opposite()));
         executeSQL(query.build());
+        query.print();
     }
 
 }

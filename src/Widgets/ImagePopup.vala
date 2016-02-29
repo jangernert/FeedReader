@@ -16,7 +16,9 @@
 public class FeedReader.imagePopup : Gtk.Window {
 
 	private Gtk.ScrolledWindow m_scroll;
-	private Gtk.Image m_image;
+	private Gtk.ImageView m_image;
+	private Gtk.Scale m_scale;
+	private Gtk.Revealer m_scaleRevealer;
 	private Gtk.EventBox m_eventBox;
 	private Gtk.Overlay m_overlay;
 	private Gtk.Revealer m_revealer;
@@ -54,7 +56,22 @@ public class FeedReader.imagePopup : Gtk.Window {
 			return false;
 		});
 
-		m_image = new Gtk.Image.from_file(imagePath);
+		var file = GLib.File.new_for_path(imagePath);
+		m_image = new Gtk.ImageView();
+		m_image.zoomable = true;
+		m_image.load_from_file_async.begin (file, 0);
+
+		m_scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0, 5, 0.2);
+		m_scale.set_size_request(200, 0);
+		m_scale.value_changed.connect (() => {
+			m_image.scale = m_scale.get_value();
+		});
+
+		m_scaleRevealer = new Gtk.Revealer();
+		m_scaleRevealer.valign = Gtk.Align.START;
+		m_scaleRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT);
+		m_scaleRevealer.add(m_scale);
+
 		int win_width  = (int)(Gdk.Screen.width()*0.8);
 		int win_height = (int)(Gdk.Screen.height()*0.8);
 		int min_height = 300;
@@ -90,12 +107,20 @@ public class FeedReader.imagePopup : Gtk.Window {
 		var zoomButton = new Gtk.ToggleButton();
 		zoomButton.add(new Gtk.Image.from_icon_name("zoom-in-symbolic", Gtk.IconSize.BUTTON));
 		zoomButton.get_style_context().add_class("headerbutton");
+		zoomButton.toggled.connect(() => {
+			m_scale.set_value(1.0);
+			if(zoomButton.get_active())
+				m_scaleRevealer.set_reveal_child(true);
+			else
+				m_scaleRevealer.set_reveal_child(false);
+		});
 
 		var header = new Gtk.HeaderBar ();
 		header.show_close_button = true;
 		header.set_size_request(0, 30);
 		header.get_style_context().add_class("imageOverlay");
 		header.pack_start(zoomButton);
+		header.pack_start(m_scaleRevealer);
 		var headerEvents = new Gtk.EventBox();
 		headerEvents.button_press_event.connect(headerButtonPressed);
 		headerEvents.enter_notify_event.connect(() => {

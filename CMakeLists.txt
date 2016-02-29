@@ -1,6 +1,7 @@
 project (FeedReader)
 cmake_minimum_required (VERSION 2.6)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
+include_directories(${CMAKE_SOURCE_DIR}/gtkimageview)
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -133,10 +134,12 @@ OPTIONS
 
 CUSTOM_VAPIS
     vapi/libvilistextum.vapi
+    vapi/gtkimageview.vapi
 )
 
 add_executable(${EXEC_NAME} ${UI})
 target_link_libraries(${EXEC_NAME} vilistextum)
+target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/gtkimageview/libgtkimageview.a)
 
 
 set(DAEMON_OPTIONS

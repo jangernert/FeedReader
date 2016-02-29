@@ -22,6 +22,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 	private Gtk.EventBox m_eventBox;
 	private Gtk.Overlay m_overlay;
 	private Gtk.Revealer m_revealer;
+	private Gtk.ToggleButton m_zoomButton;
 	private double m_dndX;
 	private double m_dndY;
 	private double m_adjX;
@@ -37,6 +38,8 @@ public class FeedReader.imagePopup : Gtk.Window {
 	private bool m_dragWindow = false;
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
+	private double m_maxZoom = 5.0;
+	private double m_minZoom = 0.2;
 
 	public imagePopup(string imagePath, string? url, Gtk.Window parent, int img_height, int img_width)
 	{
@@ -60,8 +63,9 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_image = new Gtk.ImageView();
 		m_image.zoomable = true;
 		m_image.load_from_file_async.begin (file, 0);
+		m_image.notify["scale"].connect(onImageScrolled);
 
-		m_scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0, 5, 0.2);
+		m_scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, m_minZoom, m_maxZoom, 0.2);
 		m_scale.set_size_request(200, 0);
 		m_scale.value_changed.connect (() => {
 			m_image.scale = m_scale.get_value();
@@ -104,22 +108,32 @@ public class FeedReader.imagePopup : Gtk.Window {
 		}
 
 
-		var zoomButton = new Gtk.ToggleButton();
-		zoomButton.add(new Gtk.Image.from_icon_name("zoom-in-symbolic", Gtk.IconSize.BUTTON));
-		zoomButton.get_style_context().add_class("headerbutton");
-		zoomButton.toggled.connect(() => {
-			m_scale.set_value(1.0);
-			if(zoomButton.get_active())
+		m_zoomButton = new Gtk.ToggleButton();
+		m_zoomButton.add(new Gtk.Image.from_icon_name("zoom-in-symbolic", Gtk.IconSize.BUTTON));
+		m_zoomButton.get_style_context().add_class("headerbutton");
+		m_zoomButton.toggled.connect(() => {
+			m_image.notify["scale"].disconnect(onImageScrolled);
+			if(m_zoomButton.get_active())
+			{
+				m_scale.set_value(m_image.scale);
 				m_scaleRevealer.set_reveal_child(true);
+			}
 			else
+			{
+				m_image.scale = 1.0;
 				m_scaleRevealer.set_reveal_child(false);
+			}
+			GLib.Timeout.add(150, () => {
+			    m_image.notify["scale"].connect(onImageScrolled);
+				return false;
+			});
 		});
 
 		var header = new Gtk.HeaderBar ();
 		header.show_close_button = true;
 		header.set_size_request(0, 30);
 		header.get_style_context().add_class("imageOverlay");
-		header.pack_start(zoomButton);
+		header.pack_start(m_zoomButton);
 		header.pack_start(m_scaleRevealer);
 		var headerEvents = new Gtk.EventBox();
 		headerEvents.button_press_event.connect(headerButtonPressed);
@@ -174,6 +188,25 @@ public class FeedReader.imagePopup : Gtk.Window {
 		this.add(m_eventBox);
 		this.set_size_request(win_width, win_height);
 		this.show_all();
+	}
+
+	public void onImageScrolled()
+	{
+		if(m_image.scale > m_maxZoom)
+		{
+			m_image.scale = m_maxZoom;
+			return;
+		}
+
+		if(m_image.scale < m_minZoom)
+		{
+			m_image.scale = m_minZoom;
+			return;
+		}
+
+		m_zoomButton.set_active(true);
+		m_scaleRevealer.set_reveal_child(true);
+		m_scale.set_value(m_image.scale);
 	}
 
 	private bool headerButtonPressed(Gdk.EventButton evt)

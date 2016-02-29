@@ -112,7 +112,8 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_zoomButton.add(new Gtk.Image.from_icon_name("zoom-in-symbolic", Gtk.IconSize.BUTTON));
 		m_zoomButton.get_style_context().add_class("headerbutton");
 		m_zoomButton.toggled.connect(() => {
-			m_image.notify["scale"].disconnect(onImageScrolled);
+			if(!m_zoomButton.get_active())
+				m_image.notify["scale"].disconnect(onImageScrolled);
 			if(m_zoomButton.get_active())
 			{
 				m_scale.set_value(m_image.scale);
@@ -123,10 +124,14 @@ public class FeedReader.imagePopup : Gtk.Window {
 				m_image.scale = 1.0;
 				m_scaleRevealer.set_reveal_child(false);
 			}
-			GLib.Timeout.add(150, () => {
-			    m_image.notify["scale"].connect(onImageScrolled);
-				return false;
-			});
+
+			if(!m_zoomButton.get_active())
+			{
+				GLib.Timeout.add(150, () => {
+				    m_image.notify["scale"].connect(onImageScrolled);
+					return false;
+				});
+			}
 		});
 
 		var header = new Gtk.HeaderBar ();

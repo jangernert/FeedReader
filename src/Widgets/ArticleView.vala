@@ -51,7 +51,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view = new WebKit.WebView();
 		m_view.set_settings(settings);
 		m_view.load_changed.connect(open_link);
-		m_view.context_menu.connect(() => { return true; });
+		m_view.context_menu.connect(onContextMenu);
 		m_view.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
 		m_view.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_view.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
@@ -421,6 +421,31 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_view.set_background_color(background);
 		}
 #endif
+	}
+
+	private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitTestResult hitTest)
+	{
+		var menuItems = menu.get_items().copy();
+		foreach(var menuItem in menuItems)
+		{
+			if(menuItem.get_action() == null)
+			{
+				menu.remove(menuItem);
+				continue;
+			}
+
+			if((menuItem.get_action().name != "context-menu-action-3")  // copy link location
+			&& (menuItem.get_action().name != "context-menu-action-6")  // copy image
+			&& (menuItem.get_action().name != "context-menu-action-7")) // copy image address
+			{
+				menu.remove(menuItem);
+			}
+		}
+
+		if(menu.first() == null)
+			return true;
+
+		return false;
 	}
 
 }

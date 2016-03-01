@@ -40,8 +40,9 @@ public class FeedReader.imagePopup : Gtk.Window {
 	private uint m_OngoingScrollID = 0;
 	private double m_maxZoom = 5.0;
 	private double m_minZoom = 0.2;
+	private double m_initZoom = 1.0;
 
-	public imagePopup(string imagePath, string? url, Gtk.Window parent, int img_height, int img_width)
+	public imagePopup(string imagePath, string? url, Gtk.Window parent, double img_height, double img_width)
 	{
 		this.title = "";
 		this.decorated = false;
@@ -63,7 +64,6 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_image = new Gtk.ImageView();
 		m_image.zoomable = true;
 		m_image.load_from_file_async.begin (file, 0);
-		m_image.notify["scale"].connect(onImageScrolled);
 
 		m_scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, m_minZoom, m_maxZoom, 0.2);
 		m_scale.set_size_request(200, 0);
@@ -76,13 +76,15 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_scaleRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT);
 		m_scaleRevealer.add(m_scale);
 
-		int win_width  = (int)(Gdk.Screen.width()*0.8);
-		int win_height = (int)(Gdk.Screen.height()*0.8);
-		int min_height = 300;
-		int min_widht = 500;
+		double win_width  = (int)(Gdk.Screen.width()*0.8);
+		double win_height = (int)(Gdk.Screen.height()*0.8);
+		double min_height = 300;
+		double min_widht = 500;
 
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.add(m_image);
+
+
 
 		if(img_width <= win_width)
 		{
@@ -95,19 +97,24 @@ public class FeedReader.imagePopup : Gtk.Window {
 				win_width = img_width;
 			}
 		}
+		else if(img_width > win_width)
+		{
+			m_initZoom = win_width/img_width;
+			m_image.scale = m_initZoom;
+		}
 
-		if(img_height <= win_height) {
+		if(img_height * m_initZoom <= win_height) {
 			if(img_height < min_height)
 			{
 				win_height = min_height;
 			}
 			else
 			{
-				win_height = img_height;
+				win_height = img_height * m_initZoom;
 			}
 		}
 
-
+		m_image.notify["scale"].connect(onImageScrolled);
 		m_zoomButton = new Gtk.ToggleButton();
 		m_zoomButton.add(new Gtk.Image.from_icon_name("zoom-in-symbolic", Gtk.IconSize.BUTTON));
 		m_zoomButton.get_style_context().add_class("headerbutton");
@@ -121,7 +128,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 			}
 			else
 			{
-				m_image.scale = 1.0;
+				m_image.scale = m_initZoom;
 				m_scaleRevealer.set_reveal_child(false);
 			}
 
@@ -191,7 +198,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_eventBox.add(m_overlay);
 
 		this.add(m_eventBox);
-		this.set_size_request(win_width, win_height);
+		this.set_size_request((int)win_width, (int)win_height);
 		this.show_all();
 	}
 

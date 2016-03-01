@@ -31,6 +31,8 @@ public class FeedReader.articleView : Gtk.Stack {
 	private uint m_OngoingScrollID = 0;
 	private bool m_stopLoading = false;
 	private string m_imageURL;
+	private uint m_timeout_source_id;
+	private uint m_overlayFade = 200;
 	public signal void enterFullscreen();
 	public signal void leaveFullscreen();
 
@@ -103,6 +105,7 @@ public class FeedReader.articleView : Gtk.Stack {
 
 		m_overlayLabel = new Gtk.Label("dummy URL");
 		m_overlayLabel.margin = 10;
+		m_overlayLabel.opacity = 0.0;
 		m_overlayLabel.height_request = 30;
 		m_overlayLabel.valign = Gtk.Align.END;
 		m_overlayLabel.halign = Gtk.Align.START;
@@ -487,6 +490,23 @@ public class FeedReader.articleView : Gtk.Stack {
 			m_overlayLabel.width_chars = url.length;
 			m_overlayLabel.show();
 
+			if(m_timeout_source_id > 0)
+			{
+				GLib.Source.remove(m_timeout_source_id);
+				m_timeout_source_id = 0;
+			}
+
+			m_timeout_source_id = GLib.Timeout.add(m_overlayFade/10, () => {
+				if(m_overlayLabel.opacity == 1.0)
+				{
+					m_timeout_source_id = 0;
+					return false;
+				}
+
+			    m_overlayLabel.opacity += 0.1;
+				return true;
+			});
+
 			double relX = m_posX2/this.get_allocated_height();
 			double relY = m_posY2/this.get_allocated_width();
 
@@ -501,7 +521,23 @@ public class FeedReader.articleView : Gtk.Stack {
 		}
 		else
 		{
-			m_overlayLabel.hide();
+			if(m_timeout_source_id > 0)
+			{
+				GLib.Source.remove(m_timeout_source_id);
+				m_timeout_source_id = 0;
+			}
+
+			m_timeout_source_id = GLib.Timeout.add(m_overlayFade/10, () => {
+				if(m_overlayLabel.opacity == 0.0)
+				{
+					m_timeout_source_id = 0;
+					m_overlayLabel.hide();
+					return false;
+				}
+
+			    m_overlayLabel.opacity -= 0.1;
+				return true;
+			});
 		}
 	}
 

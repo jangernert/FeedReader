@@ -894,7 +894,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					if(tmpRow != null)
 					{
 						if((selected_row != null && tmpRow.getID() != selected_row.getID())
-						|| tmpRow.isBeingRevealed())
+						|| selected_row == null)
 						{
 							if((m_only_unread && !tmpRow.isUnread())
 							||(m_only_marked && !tmpRow.isMarked()))
@@ -902,7 +902,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 								removeRow(tmpRow);
 								break;
 							}
-
 						}
 					}
 				}

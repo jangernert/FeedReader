@@ -334,11 +334,75 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return true;
 	}
 
+    public bool addFeed(string feedURL, string? catID = null)
+    {
+        int id = 0;
+        if(catID != null)
+            id = int.parse(catID);
+
+        string url = "/feeds?url=%s&folderId=%i".printf(feedURL, id);
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "POST");
+        int error = message.send();
+
+		return true;
+    }
+
+    public bool removeFeed(string feedID)
+    {
+        string url = "/feeds/%s".printf(feedID);
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "DELETE");
+        int error = message.send();
+
+		return true;
+    }
+
+    public bool reameFeed(string feedID, string title)
+    {
+        string url = "/feeds/%s/rename?feedTitle=%s".printf(feedID, title);
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        int error = message.send();
+
+		return true;
+    }
+
+    public bool addFolder(string title)
+    {
+        string url = "/folders?name=%s".printf(title);
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "POST");
+        int error = message.send();
+
+		return true;
+    }
+
+    public bool removeFolder(string catID)
+    {
+        string url = "/folders/%s".printf(catID);
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "DELETE");
+        int error = message.send();
+
+		return true;
+    }
+
+    public bool reameFolder(string catID, string title)
+    {
+        string url = "/folders/%s?name=%s".printf(catID, title);
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        int error = message.send();
+
+		return true;
+    }
+
     public bool ping()
     {
         var message = new OwnCloudNews_Message(m_OwnCloudURL, m_username, m_password, "PUT");
         int error = message.send();
-        
+
         if(error == ConnectionError.NO_RESPONSE)
 		{
 			return false;

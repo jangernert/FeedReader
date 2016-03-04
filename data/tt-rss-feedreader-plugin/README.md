@@ -37,6 +37,20 @@ Parameters:
  * cateogry_id (int) - the id of the category
 
 
+**renameCategory**
+
+Parameters:
+ * cateogry_id (int) - the id of the category
+ * caption (string) - new name of the category
+
+
+**renameFeed**
+
+Parameters:
+ * feed_id (int) - the id of the feed
+ * caption (string)  - new name of the feed
+
+
 ## Installation
 
 To install this plugin download the zip file, then extract it in your own tt-rss/plugin/ directory.

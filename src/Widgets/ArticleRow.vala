@@ -273,6 +273,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				return false;
 		}
 		toggleUnread();
+		ArticleStateChanged(m_article.getUnread());
 		return true;
 	}
 
@@ -312,7 +313,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_article.getUnread() != unread)
 		{
 			m_article.setUnread(unread);
-			ArticleStateChanged(m_article.getUnread());
 			if(m_article.getUnread() == ArticleStatus.UNREAD)
 			{
 				m_label.get_style_context().remove_class("headline-read-label");
@@ -380,6 +380,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				return false;
 		}
 		toggleMarked();
+		ArticleStateChanged(m_article.getMarked());
 		return true;
 	}
 
@@ -419,7 +420,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_article.getMarked() != marked)
 		{
 			m_article.setMarked(marked);
-			ArticleStateChanged(m_article.getMarked());
 			switch(m_article.getMarked())
 			{
 				case ArticleStatus.MARKED:

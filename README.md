@@ -60,3 +60,4 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make
 sudo make install
 ```
+Arch users can build the latest version using `yaourt feedreader-git`

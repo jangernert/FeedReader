@@ -107,9 +107,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		});
 
 		this.row_activated.connect((selected_row) => {
-
 			string selectedID = ((articleRow)selected_row).getID();
-
 			if(m_selected_article != selectedID)
 			{
 				if(m_only_unread || m_only_marked || m_IDtype == FeedListType.TAG)
@@ -889,14 +887,14 @@ public class FeedReader.articleList : Gtk.Overlay {
 			case ArticleStatus.READ:
 			case ArticleStatus.UNMARKED:
 				articleRow selected_row = m_currentList.get_selected_row() as articleRow;
-				if(selected_row != null)
+				var articleChildList = m_currentList.get_children();
+				foreach(Gtk.Widget row in articleChildList)
 				{
-					var articleChildList = m_currentList.get_children();
-					foreach(Gtk.Widget row in articleChildList)
+					var tmpRow = row as articleRow;
+					if(tmpRow != null)
 					{
-						var tmpRow = row as articleRow;
-						if(((tmpRow != null && tmpRow.getID() != selected_row.getID())
-						|| (tmpRow != null && selected_row == null)) && tmpRow.isBeingRevealed())
+						if((selected_row != null && tmpRow.getID() != selected_row.getID())
+						|| selected_row == null)
 						{
 							if((m_only_unread && !tmpRow.isUnread())
 							||(m_only_marked && !tmpRow.isMarked()))
@@ -904,7 +902,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 								removeRow(tmpRow);
 								break;
 							}
-
 						}
 					}
 				}

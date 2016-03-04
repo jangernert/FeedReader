@@ -21,6 +21,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public bool resetDB()
     {
+        logger.print(LogMessage.WARNING, "resetDB");
         executeSQL("DROP TABLE main.feeds");
         executeSQL("DROP TABLE main.categories");
         executeSQL("DROP TABLE main.articles");
@@ -680,6 +681,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public void resetOfflineActions()
     {
+        logger.print(LogMessage.WARNING, "resetOfflineActions");
         executeSQL("DELETE FROM OfflineActions");
     }
 
@@ -715,6 +717,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         query.addEqualsCondition("id", action.getID(), true, true);
         query.addEqualsCondition("action", "%i".printf(action.opposite()));
         executeSQL(query.build());
+        query.print();
     }
 
 }

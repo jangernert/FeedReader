@@ -92,6 +92,25 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
+	public bool logout()
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "logout");
+		int error = message.send();
+		logger.print(LogMessage.WARNING, "TTRSS: logout");
+		message.printResponse();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_object();
+			m_ttrss_sessionid = "";
+			return response.get_boolean_member("status");
+		}
+
+		return false;
+	}
+
 
 	public bool isloggedin()
 	{
@@ -99,6 +118,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "isLoggedIn");
 		int error = message.send();
+		logger.print(LogMessage.DEBUG, "TTRSS: isloggedin?");
+		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{
@@ -146,20 +167,17 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public int getUnreadCount()
 	{
 		int unread = 0;
-		if(isloggedin())
-		{
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "getUnread");
-			int error = message.send();
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getUnread");
+		int error = message.send();
 
-			if(error == ConnectionError.SUCCESS)
-			{
-				var response = message.get_response_object();
-				unread = int.parse(response.get_string_member("unread"));
-			}
-			logger.print(LogMessage.INFO, "There are %i unread articles".printf(unread));
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_object();
+			unread = int.parse(response.get_string_member("unread"));
 		}
+		logger.print(LogMessage.INFO, "There are %i unread articles".printf(unread));
 
 		return unread;
 	}
@@ -167,49 +185,46 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getFeeds(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories)
 	{
-		if(isloggedin())
+		foreach(var item in categories)
 		{
-			foreach(var item in categories)
+			if(int.parse(item.getCatID()) > 0)
 			{
-				if(int.parse(item.getCatID()) > 0)
+				var message = new ttrss_message(m_ttrss_url);
+				message.add_string("sid", m_ttrss_sessionid);
+				message.add_string("op", "getFeeds");
+				message.add_int("cat_id", int.parse(item.getCatID()));
+				int error = message.send();
+
+				if(error == ConnectionError.SUCCESS)
 				{
-					var message = new ttrss_message(m_ttrss_url);
-					message.add_string("sid", m_ttrss_sessionid);
-					message.add_string("op", "getFeeds");
-					message.add_int("cat_id", int.parse(item.getCatID()));
-					int error = message.send();
+					var response = message.get_response_array();
+					var feed_count = response.get_length();
+					string icon_url = m_ttrss_url.replace("api/", getIconDir());
 
-					if(error == ConnectionError.SUCCESS)
+					for(uint i = 0; i < feed_count; i++)
 					{
-						var response = message.get_response_array();
-						var feed_count = response.get_length();
-						string icon_url = m_ttrss_url.replace("api/", getIconDir());
+						var feed_node = response.get_object_element(i);
+						string feed_id = feed_node.get_int_member("id").to_string();
 
-						for(uint i = 0; i < feed_count; i++)
-						{
-							var feed_node = response.get_object_element(i);
-							string feed_id = feed_node.get_int_member("id").to_string();
+						if(feed_node.get_boolean_member("has_icon"))
+							ttrss_utils.downloadIcon(feed_id, icon_url);
 
-							if(feed_node.get_boolean_member("has_icon"))
-								ttrss_utils.downloadIcon(feed_id, icon_url);
-
-							feeds.add(
-								new feed (
-										feed_id,
-										feed_node.get_string_member("title"),
-										feed_node.get_string_member("feed_url"),
-										feed_node.get_boolean_member("has_icon"),
-										(int)feed_node.get_int_member("unread"),
-										{ feed_node.get_int_member("cat_id").to_string() }
-									)
-							);
-						}
+						feeds.add(
+							new feed (
+									feed_id,
+									feed_node.get_string_member("title"),
+									feed_node.get_string_member("feed_url"),
+									feed_node.get_boolean_member("has_icon"),
+									(int)feed_node.get_int_member("unread"),
+									{ feed_node.get_int_member("cat_id").to_string() }
+								)
+						);
 					}
 				}
 			}
-
-			getUncategorizedFeeds(feeds);
 		}
+
+		getUncategorizedFeeds(feeds);
 	}
 
 
@@ -251,29 +266,26 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getTags(Gee.LinkedList<tag> tags)
 	{
-		if(isloggedin())
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getLabels");
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
 		{
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "getLabels");
-			int error = message.send();
+			var response = message.get_response_array();
+			var tag_count = response.get_length();
 
-			if(error == ConnectionError.SUCCESS)
+			for(uint i = 0; i < tag_count; ++i)
 			{
-				var response = message.get_response_array();
-				var tag_count = response.get_length();
-
-				for(uint i = 0; i < tag_count; ++i)
-				{
-					var tag_node = response.get_object_element(i);
-					tags.add(
-						new tag(
-							tag_node.get_int_member("id").to_string(),
-							tag_node.get_string_member("caption"),
-							dataBase.getTagColor()
-						)
-					);
-				}
+				var tag_node = response.get_object_element(i);
+				tags.add(
+					new tag(
+						tag_node.get_int_member("id").to_string(),
+						tag_node.get_string_member("caption"),
+						dataBase.getTagColor()
+					)
+				);
 			}
 		}
 	}
@@ -298,21 +310,18 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getCategories(Gee.LinkedList<category> categories)
 	{
-		if(isloggedin())
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getFeedTree");
+		message.add_bool("include_empty", false);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
 		{
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "getFeedTree");
-			message.add_bool("include_empty", false);
-			int error = message.send();
+			var response = message.get_response_object();
+			var category_object = response.get_object_member("categories");
 
-			if(error == ConnectionError.SUCCESS)
-			{
-				var response = message.get_response_object();
-				var category_object = response.get_object_member("categories");
-
-				getSubCategories(categories, category_object, 0, CategoryID.MASTER);
-			}
+			getSubCategories(categories, category_object, 0, CategoryID.MASTER);
 		}
 	}
 
@@ -522,56 +531,53 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getArticles(string articleIDs, Gee.LinkedList<article> articles)
 	{
-		if(isloggedin())
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "getArticle");
+		message.add_string("article_id", articleIDs);
+		int error = message.send();
+		message.printMessage();
+
+		if(error == ConnectionError.SUCCESS)
 		{
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "getArticle");
-			message.add_string("article_id", articleIDs);
-			int error = message.send();
-			message.printMessage();
+			var response = message.get_response_array();
+			var article_count = response.get_length();
 
-			if(error == ConnectionError.SUCCESS)
+			for(uint i = 0; i < article_count; i++)
 			{
-				var response = message.get_response_array();
-				var article_count = response.get_length();
+				var article_node = response.get_object_element(i);
 
-				for(uint i = 0; i < article_count; i++)
+				string tagString = "";
+				if(article_node.has_member("labels"))
 				{
-					var article_node = response.get_object_element(i);
+					var tags = article_node.get_array_member("labels");
 
-					string tagString = "";
-					if(article_node.has_member("labels"))
+					uint tagCount = 0;
+					if(tags != null)
+						tagCount = tags.get_length();
+
+					for(int j = 0; j < tagCount; ++j)
 					{
-						var tags = article_node.get_array_member("labels");
-
-						uint tagCount = 0;
-						if(tags != null)
-							tagCount = tags.get_length();
-
-						for(int j = 0; j < tagCount; ++j)
-						{
-							tagString = tagString + tags.get_array_element(j).get_int_element(0).to_string() + ",";
-						}
+						tagString = tagString + tags.get_array_element(j).get_int_element(0).to_string() + ",";
 					}
-
-					var Article = new article(
-											article_node.get_string_member("id"),
-											article_node.get_string_member("title"),
-											article_node.get_string_member("link"),
-											article_node.get_string_member("feed_id"),
-											(article_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-											(article_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-											article_node.get_string_member("content"),
-											"",
-											(article_node.get_string_member("author") == "") ? _("not found") : article_node.get_string_member("author"),
-											new DateTime.from_unix_local(article_node.get_int_member("updated")),
-											-1,
-											tagString
-									);
-
-					articles.add(Article);
 				}
+
+				var Article = new article(
+										article_node.get_string_member("id"),
+										article_node.get_string_member("title"),
+										article_node.get_string_member("link"),
+										article_node.get_string_member("feed_id"),
+										(article_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+										(article_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+										article_node.get_string_member("content"),
+										"",
+										(article_node.get_string_member("author") == "") ? _("not found") : article_node.get_string_member("author"),
+										new DateTime.from_unix_local(article_node.get_int_member("updated")),
+										-1,
+										tagString
+								);
+
+				articles.add(Article);
 			}
 		}
 	}
@@ -642,6 +648,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			if(response.get_string_member("status") == "OK")
 				return_value = true;
 		}
+
+		message.printMessage();
+		message.printResponse();
 
 		return return_value;
 	}
@@ -721,5 +730,19 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 
 		return false;
+	}
+
+	public bool ping() {
+		var message = new ttrss_message(m_ttrss_url);
+		int error = message.send();
+		logger.print(LogMessage.DEBUG, "TTRSS: ping");
+		message.printResponse();
+
+		if(error == ConnectionError.NO_RESPONSE)
+		{
+			return false;
+		}
+
+		return true;
 	}
 }

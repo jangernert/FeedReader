@@ -109,14 +109,12 @@ namespace FeedReader {
 				login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
-					setOffline();
 					return;
 				}
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
-				setOnline();
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
@@ -134,11 +132,18 @@ namespace FeedReader {
 
 		public bool checkOnline()
 		{
+			logger.print(LogMessage.DEBUG, "Daemon: checkOnline");
 			if(!server.serverAvailable())
 			{
 				m_loggedin = LoginResponse.UNKNOWN_ERROR;
 				setOffline();
 				return false;
+			}
+
+			if(m_loggedin != LoginResponse.SUCCESS)
+			{
+				server.logout();
+				login((Backend)settings_general.get_enum("account-type"));
 			}
 
 			return true;
@@ -147,6 +152,7 @@ namespace FeedReader {
 
 		public async void checkOnlineAsync()
 		{
+			logger.print(LogMessage.DEBUG, "Daemon: checkOnlineAsync");
 			SourceFunc callback = checkOnlineAsync.callback;
 			ThreadFunc<void*> run = () => {
 				Idle.add((owned) callback);
@@ -242,6 +248,7 @@ namespace FeedReader {
 
 		public void changeArticle(string articleID, ArticleStatus status)
 		{
+			logger.print(LogMessage.DEBUG, "Daemon: changeArticle %s %s".printf(articleID, status.to_string()));
 			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
 			{
 				bool increase = true;

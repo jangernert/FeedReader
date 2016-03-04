@@ -139,6 +139,7 @@ public class FeedReader.dbUI : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.%s".printf(table));
 		query.selectField("count(*)");
 		query.build();
+		query.print();
 
 		int count = -1;
 		Sqlite.Statement stmt;
@@ -146,13 +147,10 @@ public class FeedReader.dbUI : GLib.Object {
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode (), sqlite_db.errmsg ()));
 
-
-		int cols = stmt.column_count ();
 		while (stmt.step () == Sqlite.ROW) {
-			for (int i = 0; i < cols; i++) {
-				count = stmt.column_int(i);
-			}
+			count = stmt.column_int(0);
 		}
+		logger.print(LogMessage.DEBUG, "count %i".printf(count));
 		stmt.reset ();
 
 		if(count > 0)

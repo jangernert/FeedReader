@@ -147,12 +147,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		}
 		else
 		{
-			if(!settings_state.get_boolean("spring-cleaning")
-			&& feedDaemon_interface.login((Backend)settings_general.get_enum("account-type")) == LoginResponse.SUCCESS)
-			{
-				loadContent();
-			}
-			else if(settings_state.get_boolean("spring-cleaning"))
+			if(settings_state.get_boolean("spring-cleaning"))
 			{
 				showSpringClean();
 			}

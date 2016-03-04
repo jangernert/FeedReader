@@ -97,6 +97,30 @@ public class FeedReader.FeedServer : GLib.Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
+	public bool logout()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.logout();
+				break;
+
+			case Backend.FEEDLY:
+				//FIXME: add feedly
+				break;
+
+			case Backend.OWNCLOUD:
+				// no need to log out
+				return true;
+
+			case Backend.INOREADER:
+				//FIXME: add inoreader
+				break;
+		}
+
+		return false;
+	}
+
 	public async void syncContent()
 	{
 		SourceFunc callback = syncContent.callback;
@@ -580,13 +604,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				return m_ttrss.isloggedin();
+				return m_ttrss.ping();
 
 			case Backend.FEEDLY:
 				return m_feedly.ping();
 
 			case Backend.OWNCLOUD:
-				//return m_owncloud.ping();
+				return m_owncloud.ping();
 				return true;
 
 			case Backend.INOREADER:
@@ -1071,6 +1095,10 @@ public class FeedReader.FeedServer : GLib.Object {
 		logger.print(LogMessage.DEBUG, "FeedServer: setOnline");
 		m_offline = false;
 		if(serverAvailable())
+		{
+			logger.print(LogMessage.DEBUG, "FeedServer: server is available again");
 			m_offlineActions.goOnline();
+			dataBase.resetOfflineActions();
+		}
 	}
 }

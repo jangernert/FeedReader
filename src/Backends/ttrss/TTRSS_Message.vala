@@ -53,7 +53,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 
 	public void add_int_array(string type, string values)
 	{
-		m_message_string.append(",\"" + type + "\":" + values);
+		m_message_string.append(",\"" + type + "\":\"" + values + "\"");
 	}
 
 	public void add_bool(string type, bool val)

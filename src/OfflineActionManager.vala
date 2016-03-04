@@ -77,7 +77,13 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 	public void goOnline()
 	{
 		if(dataBase.isTableEmpty("OfflineActions"))
+		{
+			logger.print(LogMessage.DEBUG, "OfflineManager - goOnline: no actions to perform");
 			return;
+		}
+
+
+		logger.print(LogMessage.DEBUG, "OfflineActionManager: goOnline");
 
 		var actions = dataBase.readOfflineActions();
 
@@ -120,8 +126,6 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 		{
 			executeActions(m_ids.substring(1), m_lastAction);
 		}
-
-		dataBase.resetOfflineActions();
 	}
 
 	private void executeActions(string ids, OfflineActions action)

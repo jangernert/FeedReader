@@ -21,6 +21,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public bool resetDB()
     {
+        logger.print(LogMessage.WARNING, "resetDB");
         executeSQL("DROP TABLE main.feeds");
         executeSQL("DROP TABLE main.categories");
         executeSQL("DROP TABLE main.articles");
@@ -680,7 +681,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public void resetOfflineActions()
     {
-        logger.print(LogMessage.DEBUG, "resetOfflineActions");
+        logger.print(LogMessage.WARNING, "resetOfflineActions");
         executeSQL("DELETE FROM OfflineActions");
     }
 

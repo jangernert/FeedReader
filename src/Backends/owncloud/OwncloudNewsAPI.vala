@@ -295,9 +295,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool markAllItemsRead()
 	{
-        	string url = "items/read?newestItemId=%i".printf(int.parse(dataBase.getNewestArticle()));
-        	var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        	int error = message.send();
+        string url = "items/read?newestItemId=%i".printf(int.parse(dataBase.getNewestArticle()));
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        int error = message.send();
 		return true;
 	}
 
@@ -336,6 +336,14 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool ping()
     {
-        return Utils.ping(Utils.shortenURL(m_OwnCloudURL));
+        var message = new OwnCloudNews_Message(m_OwnCloudURL, m_username, m_password, "PUT");
+        int error = message.send();
+        
+        if(error == ConnectionError.NO_RESPONSE)
+		{
+			return false;
+		}
+
+		return true;
     }
 }

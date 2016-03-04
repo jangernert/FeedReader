@@ -807,6 +807,40 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
+	public bool renameCategory(string catID, string title)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "renameCategory");
+		message.add_int("category_id", catID);
+		message.add_int("caption", title);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool renameFeed(string feedID, string title)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "renameCategory");
+		message.add_int("feed_id", feedID);
+		message.add_int("caption", title);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	public bool ping() {
 		var message = new ttrss_message(m_ttrss_url);
 		int error = message.send();

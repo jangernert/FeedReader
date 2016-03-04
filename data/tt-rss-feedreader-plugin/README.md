@@ -2,7 +2,7 @@
 
 This is a plugin for [Tiny-Tiny-RSS](http://tt-rss.org) web based news feed reader and aggregator.
 
-It adds a new API (addLabel and removeLabel) to allow better interaction of Tiny-Tiny-RSS and clients.
+It adds a new API calls to allow better interaction of Tiny-Tiny-RSS and clients (in this case FeedReader).
 
 The plugin requires (at least) version 1.12 of Tiny-Tiny-RSS.
 

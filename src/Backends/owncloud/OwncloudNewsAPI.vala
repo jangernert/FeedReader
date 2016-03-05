@@ -270,7 +270,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool markFeedRead(string feedID, bool isCatID)
 	{
-		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds"), feedID);
+		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
 		var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_int("newestItemId", int.parse(dataBase.getNewestArticle()));
 		int error = message.send();
@@ -290,7 +290,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
-		string url;
+		string url = "";
 
 		if(unread == ArticleStatus.UNREAD)
 			url = "/items/unread/multiple";

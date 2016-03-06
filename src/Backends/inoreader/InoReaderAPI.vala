@@ -378,5 +378,44 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		string response = m_connection.send_request("disable-tag", message_string);
 	}
 
+	public void renameTag(string tagID, string title)
+	{
+		var message_string = "s=" + tagID;
+		message_string += "dest=" + composeTagID(title);
+		string response = m_connection.send_request("rename-tag", message_string);
+	}
+
+	public void editSubscription(InoSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	{
+		var message_string = "ac=";
+
+		switch(action)
+		{
+			InoSubscriptionAction.EDIT:
+				message_string += "edit";
+				break;
+			InoSubscriptionAction.SUBSCRIBE:
+				message_string += "subscribe";
+				break;
+			InoSubscriptionAction.UNSUBSCRIBE:
+				message_string += "unsubscribe";
+				break;
+		}
+
+		message_string += "&s=" + feedID;
+
+		if(title != null)
+			message_string += "&t=" + title;
+
+		if(add != null)
+			message_string += "&a=" + add;
+
+		if(remove != null)
+			message_string += "&r=" + remove;
+
+
+		m_connection.send_request("subscription/edit", message_string);
+	}
+
 
 }

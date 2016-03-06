@@ -141,6 +141,12 @@ namespace FeedReader {
 		MARK_READ_ALL
 	}
 
+	public enum InoSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
 	namespace InoReaderSecret {
 		const string base_uri = "https://www.inoreader.com/reader/api/0/";
 		const string apikey = "1000001058";

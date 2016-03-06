@@ -342,7 +342,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	}
 
 
-	public void edidTag(string articleID, string tagID, bool add = true)
+	public void edidTag(string articleIDs, string tagID, bool add = true)
 	{
 		var message_string = "";
 		if(add)
@@ -351,7 +351,12 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			message_string += "r=";
 
 		message_string += tagID;
-		message_string += "&i=" + articleID;
+
+		var id_array = articleIDs.split(",");
+		forach(string id in id_array)
+		{
+			message_string += "&i=" + id;
+		}
 		string response = m_connection.send_request("edit-tag", message_string);
 	}
 

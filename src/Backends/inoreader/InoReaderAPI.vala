@@ -391,13 +391,13 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		switch(action)
 		{
-			InoSubscriptionAction.EDIT:
+			case InoSubscriptionAction.EDIT:
 				message_string += "edit";
 				break;
-			InoSubscriptionAction.SUBSCRIBE:
+			case InoSubscriptionAction.SUBSCRIBE:
 				message_string += "subscribe";
 				break;
-			InoSubscriptionAction.UNSUBSCRIBE:
+			case InoSubscriptionAction.UNSUBSCRIBE:
 				message_string += "unsubscribe";
 				break;
 		}

@@ -717,6 +717,46 @@ public class FeedReader.dbUI : GLib.Object {
 		return result;
 	}
 
+	public int getHighestFeedID()
+	{
+		int result = 0;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("max(feed_id)");
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+		return result;
+	}
+
+
+	public feed? read_feed(string feedID)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("*");
+		query.addEqualsCondition("feed_id", feedID);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			var tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), stmt.column_text(4).split(","));
+			return tmpfeed;
+		}
+
+		return null;
+	}
+
 
 	public Gee.ArrayList<feed> read_feeds()
 	{

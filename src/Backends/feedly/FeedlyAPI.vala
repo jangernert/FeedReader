@@ -26,6 +26,11 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection = new FeedlyConnection();
 	}
 
+	public string createCatID(string title)
+	{
+		return "user/%s/category/%s".printf(m_userID, title);
+	}
+
 	public LoginResponse login()
 	{
 		logger.print(LogMessage.DEBUG, "feedly backend: login");
@@ -540,6 +545,60 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 
 		return true;
+	}
+
+
+	public void addSubscription(string feedURL, string? title = null, string? catIDs = null)
+	{
+		Json.Object object = new Json.Object();
+		object.set_string_member("id", "feed/" + feedURL);
+
+		if(title != null)
+		{
+			object.set_string_member("title", title);
+		}
+
+		if(catIDs != null)
+		{
+			var catArray = catIDs.split(",");
+			Json.Array cats = new Json.Array();
+
+			foreach(string catID in catArray)
+			{
+				string catName = dataBase.getCategoryName(catID);
+				Json.Object catObject = new Json.Object();
+				catObject.set_string_member("id", catID);
+				catObject.set_string_member("label", catName);
+				cats.add_object_element(catObject);
+			}
+
+			object.set_array_member("categories", cats);
+		}
+
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(object);
+
+		m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
+	}
+
+	public void removeSubscription(string feedID)
+	{
+		m_connection.send_delete_request_to_feedly("/v3/subscriptions/" + feedID);
+	}
+
+	public void renameCategory(string catID, string title)
+	{
+		Json.Object object = new Json.Object();
+		object.set_string_member("label", title);
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(object);
+
+		m_connection.send_post_request_to_feedly("/v3/categories/" + catID, root);
+	}
+
+	public void removeCategory(string catID)
+	{
+		m_connection.send_delete_request_to_feedly("/v3/categories/" + catID);
 	}
 
 }

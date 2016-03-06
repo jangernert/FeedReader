@@ -321,7 +321,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return true;
 	}
 
-    public bool addFeed(string feedURL, string? catID = null)
+    public int64 addFeed(string feedURL, string? catID = null)
     {
         string url = "/feeds";
         var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "POST");
@@ -329,7 +329,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int("folderId", (catID != null) ? int.parse(catID) : 0);
         int error = message.send();
 
-		return true;
+        var response = message.get_response_object();
+        if(response.has_member("feeds"))
+        {
+            return response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+        }
+		return 0;
     }
 
     public void removeFeed(string feedID)
@@ -347,13 +352,19 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         int error = message.send();
     }
 
-    public bool addFolder(string title)
+    public int64 addFolder(string title)
     {
         string url = "/folders";
         var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "POST");
         message.add_string("name", title);
         int error = message.send();
-		return true;
+
+        var response = message.get_response_object();
+        if(response.has_member("folders"))
+        {
+            return response.get_array_member("folders").get_object_element(0).get_int_member("id");
+        }
+		return 0;
     }
 
     public bool removeFolder(string catID)

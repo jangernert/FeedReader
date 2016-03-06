@@ -61,6 +61,17 @@ public class FeedReader.feed : GLib.Object {
 		return m_catIDs;
 	}
 
+	public string getCatString()
+	{
+		string catIDs = "";
+		foreach(string id in m_catIDs)
+		{
+			catIDs += id + ",";
+		}
+
+		return catIDs;
+	}
+
 	public bool hasCat(string catID)
 	{
 		foreach(string cat in m_catIDs)

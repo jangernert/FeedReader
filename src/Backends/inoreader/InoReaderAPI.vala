@@ -353,7 +353,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		message_string += tagID;
 
 		var id_array = articleIDs.split(",");
-		forach(string id in id_array)
+		foreach(string id in id_array)
 		{
 			message_string += "&i=" + id;
 		}

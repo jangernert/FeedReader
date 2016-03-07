@@ -416,3 +416,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		m_connection.send_request("subscription/edit", message_string);
 	}
+
+
+}
+

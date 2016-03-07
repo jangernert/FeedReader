@@ -620,6 +620,140 @@ public class FeedReader.FeedServer : GLib.Object {
 		return false;
 	}
 
+	public string addFeed(string feedURL, string? catID = null)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.subscribeToFeed(feedURL, catID);
+				return (dataBase.getHighestFeedID() + 1).to_string();
+
+			case Backend.FEEDLY:
+				m_feedly.addSubscription(feedURL, null, catID);
+				return "feed/" + feedURL;
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.addFeed(feedURL, catID).to_string();
+
+			case Backend.INOREADER:
+				m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+				return "feed/" + feedURL;
+		}
+
+		return "";
+	}
+
+	public void removeFeed(string feedID)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.unsubscribeFeed(feedID);
+				break;
+
+			case Backend.FEEDLY:
+				m_feedly.removeSubscription(feedID);
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud.removeFeed(feedID);
+				break;
+
+			case Backend.INOREADER:
+				m_inoreader.editSubscription(InoSubscriptionAction.UNSUBSCRIBE, feedID);
+				break;
+		}
+	}
+
+	public void renameFeed(string feedID, string title)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.renameFeed(feedID, title);
+				break;
+
+			case Backend.FEEDLY:
+				var feed = dataBase.read_feed(feedID);
+				m_feedly.addSubscription(feed.getFeedID(), title, feed.getCatString());
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud.reameFeed(feedID, title);
+				break;
+
+			case Backend.INOREADER:
+				m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, title);
+				break;
+		}
+	}
+
+	public string addCategory(string title)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.createCategory(title);
+
+			case Backend.FEEDLY:
+				string catID = m_feedly.createCatID(title);
+				m_feedly.renameCategory(catID, title);
+				return catID;
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.addFolder(title).to_string();
+
+			case Backend.INOREADER:
+				return m_inoreader.composeTagID(title);
+		}
+
+		return "";
+	}
+
+	public void renameCategory(string catID, string title)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.renameCategory(catID, title);
+				break;
+
+			case Backend.FEEDLY:
+				m_feedly.renameCategory(catID, title);
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud.reameFolder(catID, title);
+				break;
+
+			case Backend.INOREADER:
+				m_inoreader.renameTag(catID, title);
+				break;
+		}
+	}
+
+	public void deleteCategory(string catID)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.removeCategory(catID);
+				break;
+
+			case Backend.FEEDLY:
+				m_feedly.removeCategory(catID);
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud.removeFolder(catID);
+				break;
+
+			case Backend.INOREADER:
+				m_inoreader.deleteTag(catID);
+				break;
+		}
+	}
+
 	private void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		switch(m_type)

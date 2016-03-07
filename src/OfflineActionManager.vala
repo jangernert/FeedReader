@@ -94,8 +94,6 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 			{
 				case OfflineActions.MARK_READ:
 				case OfflineActions.MARK_UNREAD:
-				case OfflineActions.MARK_STARRED:
-				case OfflineActions.MARK_UNSTARRED:
 					if(action.getType() != m_lastAction && m_ids != "")
 					{
 						m_ids += action.getID();
@@ -107,6 +105,12 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 					{
 						m_ids += "," + action.getID();
 					}
+					break;
+				case OfflineActions.MARK_STARRED:
+					server.setArticleIsMarked(action.getID(), ArticleStatus.MARKED);
+					break;
+				case OfflineActions.MARK_UNSTARRED:
+					server.setArticleIsMarked(action.getID(), ArticleStatus.UNMARKED);
 					break;
 				case OfflineActions.MARK_READ_FEED:
 					server.setFeedRead(action.getID());
@@ -138,12 +142,6 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 				break;
 			case OfflineActions.MARK_UNREAD:
 				server.setArticleIsRead(ids, ArticleStatus.UNREAD);
-				break;
-			case OfflineActions.MARK_STARRED:
-				server.setArticleIsMarked(ids, ArticleStatus.MARKED);
-				break;
-			case OfflineActions.MARK_UNSTARRED:
-				server.setArticleIsMarked(ids, ArticleStatus.UNMARKED);
 				break;
 		}
 	}

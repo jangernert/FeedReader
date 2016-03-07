@@ -732,6 +732,115 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
+
+	public bool subscribeToFeed(string feedURL, string? catID = null, string? username = null, string? password = null)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "subscribeToFeed");
+		message.add_int("feed_url", int.parse(feedURL));
+
+		if(catID != null)
+			message.add_int("category_id", int.parse(catID));
+		if(username != null && password != null)
+		{
+			message.add_string("login", username);
+			message.add_string("password", password);
+		}
+
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool unsubscribeFeed(string feedID)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "unsubscribeFeed");
+		message.add_int("feed_id", int.parse(feedID));
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public string? createCategory(string title)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "addCategory");
+		message.add_string("caption", title);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			var response = message.get_response_object();
+			return response.get_string_member("content");
+		}
+
+		return null;
+	}
+
+	public bool removeCategory(string catID)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "removeCategory");
+		message.add_int("category_id", int.parse(catID));
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool renameCategory(string catID, string title)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "renameCategory");
+		message.add_int("category_id", int.parse(catID));
+		message.add_string("caption", title);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool renameFeed(string feedID, string title)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "renameCategory");
+		message.add_int("feed_id", int.parse(feedID));
+		message.add_string("caption", title);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	public bool ping() {
 		var message = new ttrss_message(m_ttrss_url);
 		int error = message.send();

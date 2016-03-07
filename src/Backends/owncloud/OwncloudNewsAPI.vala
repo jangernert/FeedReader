@@ -181,14 +181,10 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public void getNewArticles(Gee.LinkedList<article> articles, int lastModified, OwnCloudType type = OwnCloudType.ALL, int id = 0)
 	{
-        string args = "";
-        args += "lastModified=%i&".printf(lastModified);
-        args += "type=%i&".printf(type);
-        args += "id=%i".printf(id);
-
-        logger.print(LogMessage.DEBUG, "/items/updated?" + args);
-
-		var message = new OwnCloudNews_Message(m_OwnCloudURL + "/items/updated?" + args, m_username, m_password, "GET");
+		var message = new OwnCloudNews_Message(m_OwnCloudURL + "/items/updated", m_username, m_password, "GET");
+        message.add_int("lastModified", lastModified);
+        message.add_int("type", type);
+        message.add_int("id", id);
 		int error = message.send();
         var response = message.get_response_object();
         if(response.has_member("items"))
@@ -229,17 +225,13 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public void getArticles(Gee.LinkedList<article> articles, int skip, int count, bool read = true, OwnCloudType type = OwnCloudType.ALL, int id = 0)
 	{
-        string args = "";
-        args += "oldestFirst=false&";
-        args += "type=%i&".printf(type);
-        args += "getRead=%s&".printf(read ? "true" : "false");
-        args += "id=%i&".printf(id);
-        args += "offset=%i".printf(skip);
-        args += "&batchSize=%i".printf(count);
-
-        logger.print(LogMessage.DEBUG, "items?" + args);
-
-        var message = new OwnCloudNews_Message(m_OwnCloudURL + "items?" + args, m_username, m_password, "GET");
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + "items", m_username, m_password, "GET");
+        message.add_bool("oldestFirst", false);
+        message.add_int("type", type);
+        message.add_bool("getRead", read);
+        message.add_int("id", id);
+        message.add_int("offset", skip);
+        message.add_int("batchSize", count);
 		int error = message.send();
         var response = message.get_response_object();
         if(response.has_member("items"))
@@ -278,16 +270,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool markFeedRead(string feedID, bool isCatID)
 	{
-		string type = "";
-
-		if(isCatID)
-			type = "folders";
-		else
-			type = "feeds";
-
-		string url = "%s/%s/read?newestItemId=%i".printf(type, feedID, int.parse(dataBase.getNewestArticle()));
-
+		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
 		var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_int("newestItemId", int.parse(dataBase.getNewestArticle()));
 		int error = message.send();
 
 		return true;
@@ -295,8 +280,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool markAllItemsRead()
 	{
-        string url = "items/read?newestItemId=%i".printf(int.parse(dataBase.getNewestArticle()));
+        string url = "items/read";
         var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_int("newestItemId", int.parse(dataBase.getNewestArticle()));
         int error = message.send();
 		return true;
 	}
@@ -304,14 +290,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
-		string url = "items/%s/".printf(articleIDs);
+		string url = "";
 
 		if(unread == ArticleStatus.UNREAD)
-			url += "unread";
+			url = "/items/unread/multiple";
 		else if(unread == ArticleStatus.READ)
-			url += "read";
+			url = "/items/read/multiple";
 
 		var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_int_array("items", articleIDs);
 		int error = message.send();
 
 		return true;
@@ -334,11 +321,75 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return true;
 	}
 
+    public int64 addFeed(string feedURL, string? catID = null)
+    {
+        string url = "/feeds";
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "POST");
+        message.add_string("url", feedURL);
+        message.add_int("folderId", (catID != null) ? int.parse(catID) : 0);
+        int error = message.send();
+
+        var response = message.get_response_object();
+        if(response.has_member("feeds"))
+        {
+            return response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+        }
+		return 0;
+    }
+
+    public void removeFeed(string feedID)
+    {
+        string url = "/feeds/%s".printf(feedID);
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "DELETE");
+        int error = message.send();
+    }
+
+    public void reameFeed(string feedID, string title)
+    {
+        string url = "/feeds/%s/rename".printf(feedID);
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_string("feedTitle", title);
+        int error = message.send();
+    }
+
+    public int64 addFolder(string title)
+    {
+        string url = "/folders";
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "POST");
+        message.add_string("name", title);
+        int error = message.send();
+
+        var response = message.get_response_object();
+        if(response.has_member("folders"))
+        {
+            return response.get_array_member("folders").get_object_element(0).get_int_member("id");
+        }
+		return 0;
+    }
+
+    public bool removeFolder(string catID)
+    {
+        string url = "/folders/%s".printf(catID);
+
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "DELETE");
+        int error = message.send();
+
+		return true;
+    }
+
+    public void reameFolder(string catID, string title)
+    {
+        string url = "/folders/%s".printf(catID);
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_string("name", title);
+        int error = message.send();
+    }
+
     public bool ping()
     {
         var message = new OwnCloudNews_Message(m_OwnCloudURL, m_username, m_password, "PUT");
         int error = message.send();
-        
+
         if(error == ConnectionError.NO_RESPONSE)
 		{
 			return false;

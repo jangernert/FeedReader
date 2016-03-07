@@ -342,7 +342,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	}
 
 
-	public void edidTag(string articleID, string tagID, bool add = true)
+	public void edidTag(string articleIDs, string tagID, bool add = true)
 	{
 		var message_string = "";
 		if(add)
@@ -351,7 +351,12 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			message_string += "r=";
 
 		message_string += tagID;
-		message_string += "&i=" + articleID;
+
+		var id_array = articleIDs.split(",");
+		foreach(string id in id_array)
+		{
+			message_string += "&i=" + id;
+		}
 		string response = m_connection.send_request("edit-tag", message_string);
 	}
 
@@ -373,51 +378,41 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		string response = m_connection.send_request("disable-tag", message_string);
 	}
 
-	public string searchforFeed(string url){
-
-		var message_string = "quickadd=" + GLib.Uri.escape_string(url) ;
-		string response = m_connection.send_request("subscription/quickadd",message_string);
-
-		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
-		}
-		catch (Error e) {
-			logger.print(LogMessage.ERROR, "InoReader searchforFeed: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
-		}
-
-		var root = parser.get_root().get_object();
-		int count = (int)root.get_int_member("count");
-
-		string searchfeed = "";
-		if (count == 1 ){
-			logger.print(LogMessage.DEBUG, "searchforFeed: results - %d".printf(count));
-			return searchfeed = root.get_string_member("streamId");
-		}
-		return searchfeed;
+	public void renameTag(string tagID, string title)
+	{
+		var message_string = "s=" + tagID;
+		message_string += "dest=" + composeTagID(title);
+		string response = m_connection.send_request("rename-tag", message_string);
 	}
 
-	public void addFeedtoSub(string feedId, string action, string subscription, string title){
+	public void editSubscription(InoSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	{
+		var message_string = "ac=";
 
-		var message_string = "s=" + GLib.Uri.escape_string(feedId) ;
-
-		message_string += "&ac=" + action;
-
-		message_string += "&a="+ subscription;
-
-		if(title.length > 0){
-			message_string += "&t="+ title;
+		switch(action)
+		{
+			case InoSubscriptionAction.EDIT:
+				message_string += "edit";
+				break;
+			case InoSubscriptionAction.SUBSCRIBE:
+				message_string += "subscribe";
+				break;
+			case InoSubscriptionAction.UNSUBSCRIBE:
+				message_string += "unsubscribe";
+				break;
 		}
-		string response = m_connection.send_request("subscription/edit",message_string);
 
-		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
-		}
-		catch (Error e) {
-			logger.print(LogMessage.ERROR, "InoReader addFeedtoSub: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
-		}
+		message_string += "&s=" + feedID;
+
+		if(title != null)
+			message_string += "&t=" + title;
+
+		if(add != null)
+			message_string += "&a=" + add;
+
+		if(remove != null)
+			message_string += "&r=" + remove;
+
+
+		m_connection.send_request("subscription/edit", message_string);
 	}
-}

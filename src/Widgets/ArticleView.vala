@@ -445,7 +445,11 @@ public class FeedReader.articleView : Gtk.Stack {
 		if(window != null)
 		{
 			var background = window.getContent().getBackgroundColor();
-			m_view.set_background_color(background);
+            if(background.alpha == 1.0)
+            {
+                // Don't set a background color that is transparent.
+                m_view.set_background_color(background);
+            }
 		}
 #endif
 	}

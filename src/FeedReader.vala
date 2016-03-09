@@ -51,6 +51,7 @@ namespace FeedReader {
 		public abstract void updateBadge() throws IOError;
 		public abstract bool supportTags() throws IOError;
 		public abstract void checkOnlineAsync() throws IOError;
+		public abstract void removeCategory(string catID) throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();

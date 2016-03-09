@@ -18,7 +18,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private Gtk.Box m_box;
 	private string m_name;
 	private Gtk.Label m_label;
-	private Gtk.EventBox m_eventbox;
+	private Gtk.EventBox m_eventBox;
+	private Gtk.EventBox m_expandBox;
 	private Gtk.EventBox m_unreadBox;
 	private Gtk.Revealer m_revealer;
 	private Gtk.Label m_unread;
@@ -68,15 +69,15 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_stack.add_named(m_icon_expanded, "expanded");
 		m_stack.add_named(m_icon_collapsed, "collapsed");
 
-		m_eventbox = new Gtk.EventBox();
-		m_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		m_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
-		m_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		m_eventbox.margin_start = (level-1) * 24;
-		m_eventbox.add(m_stack);
-		m_eventbox.button_press_event.connect(onClick);
-		m_eventbox.enter_notify_event.connect(onEnter);
-		m_eventbox.leave_notify_event.connect(onLeave);
+		m_expandBox = new Gtk.EventBox();
+		m_expandBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_expandBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_expandBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_expandBox.margin_start = (level-1) * 24;
+		m_expandBox.add(m_stack);
+		m_expandBox.button_press_event.connect(onExpandClick);
+		m_expandBox.enter_notify_event.connect(onExpandEnter);
+		m_expandBox.leave_notify_event.connect(onExpandLeave);
 
 		m_label = new Gtk.Label(m_name);
 		m_label.set_size_request (0, rowhight);
@@ -105,12 +106,21 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_unreadBox.enter_notify_event.connect(onUnreadEnter);
 		m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
-		m_box.pack_start(m_eventbox, false, false, 8);
+		m_box.pack_start(m_expandBox, false, false, 8);
 		m_box.pack_start(m_label, true, true, 0);
 		m_box.pack_end(m_unreadBox, false, false, 8);
+
+		m_eventBox = new Gtk.EventBox();
+		if(m_categorieID != CategoryID.MASTER && m_categorieID != CategoryID.TAGS)
+		{
+			m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+			m_eventBox.button_press_event.connect(onClick);
+		}
+		m_eventBox.add(m_box);
+
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.add(m_box);
+		m_revealer.add(m_eventBox);
 		m_revealer.set_reveal_child(false);
 		this.add(m_revealer);
 		this.show_all();
@@ -121,6 +131,59 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			m_stack.set_visible_child_name("collapsed");
 		else
 			m_stack.set_visible_child_name("expanded");
+	}
+
+	private bool onClick(Gdk.EventButton event)
+	{
+		// only right click allowed
+		if(event.button != 3)
+			return false;
+
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
+
+		var remove_action = new GLib.SimpleAction("delete", null);
+		remove_action.activate.connect(() => {
+			logger.print(LogMessage.DEBUG, "remove");
+		});
+		var rename_action = new GLib.SimpleAction("rename", null);
+		rename_action.activate.connect(() => {
+			logger.print(LogMessage.DEBUG, "rename");
+		});
+		var app = (rssReaderApp)GLib.Application.get_default();
+		app.add_action(remove_action);
+		app.add_action(rename_action);
+
+		var menu = new GLib.Menu();
+		menu.append("Delete", "delete");
+		menu.append("Rename", "rename");
+
+		var pop = new Gtk.Popover(this);
+		pop.set_position(Gtk.PositionType.BOTTOM);
+		pop.bind_model(menu, "app");
+		pop.closed.connect(() => {
+			if(this.is_selected())
+				this.get_style_context().remove_class("feed-list-row-selected-popover");
+			else
+				this.get_style_context().remove_class("feed-list-row-popover");
+
+			this.get_style_context().add_class("feed-list-row");
+		});
+		pop.show();
+
+		this.get_style_context().remove_class("feed-list-row");
+
+		if(this.is_selected())
+			this.get_style_context().add_class("feed-list-row-selected-popover");
+		else
+			this.get_style_context().add_class("feed-list-row-popover");
+
+		return true;
 	}
 
 	private bool onUnreadClick(Gdk.EventButton event)
@@ -156,8 +219,12 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	private bool onClick(Gdk.EventButton event)
+	private bool onExpandClick(Gdk.EventButton event)
 	{
+		// only accept left mouse button
+		if(event.button != 1)
+			return false;
+
 		switch(event.type)
 		{
 			case Gdk.EventType.BUTTON_RELEASE:
@@ -186,7 +253,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	private bool onEnter(Gdk.EventCrossing event)
+	private bool onExpandEnter(Gdk.EventCrossing event)
 	{
 		m_hovered = true;
 		m_icon_expanded.opacity = 1.0;
@@ -194,7 +261,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	private bool onLeave(Gdk.EventCrossing event)
+	private bool onExpandLeave(Gdk.EventCrossing event)
 	{
 		if(event.detail != Gdk.NotifyType.VIRTUAL && event.mode != Gdk.CrossingMode.NORMAL)
 			return false;

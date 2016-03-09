@@ -404,6 +404,18 @@ namespace FeedReader {
 			});
 		}
 
+		public void removeCategory(string catID)
+		{
+			server.deleteCategory.begin(catID, (obj, res) => {
+				server.deleteCategory.end(res);
+			});
+
+			dataBase.delte_category.begin(catID, (obj, res) => {
+				dataBase.delte_category.end(res);
+				newFeedList();
+			});
+		}
+
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY

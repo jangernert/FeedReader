@@ -621,6 +621,45 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Utils.remove_directory(folder_path);
     }
 
+    public async void delte_category(string catID)
+    {
+        SourceFunc callback = delte_category.callback;
+        ThreadFunc<void*> run = () => {
+            executeSQL("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
+            var backend = (Backend)settings_general.get_enum("account-type");
+            switch(backend)
+            {
+                case Backend.TTRSS:
+                case Backend.OWNCLOUD:
+                    executeSQL("UPDATE main.feeds set category_id = \"0\" WHERE category_id = \"" + catID + "\"");
+                    break;
+                case Backend.FEEDLY:
+                case Backend.INOREADER:
+                    var query = new QueryBuilder(QueryType.SELECT, "feeds");
+                    query.selectField("feed_id, category_id");
+                    query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(catID));
+                    query.build();
+
+                    Sqlite.Statement stmt;
+                    int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+                    if (ec != Sqlite.OK)
+                        logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+                    while (stmt.step () == Sqlite.ROW) {
+                        string feedID = stmt.column_text(0);
+                        string catIDs = stmt.column_text(0).replace(catID + ",", "");
+
+                        executeSQL("UPDATE main.feeds set category_id = \"" + catIDs + "\" WHERE feed_id = \"" + feedID + "\"");
+                    }
+                    break;
+            }
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("delte_category", run);
+        yield;
+    }
+
     public void addOfflineAction(OfflineActions action, string id, string? argument = "")
     {
         executeSQL("BEGIN TRANSACTION");

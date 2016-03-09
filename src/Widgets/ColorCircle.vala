@@ -40,9 +40,9 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 
 		if(clickable)
 		{
-			this.enter_notify_event.connect(() => {IconEnter(); return true;});
-			this.leave_notify_event.connect(() => {IconLeave(); return true;});
-			this.button_press_event.connect(() => {IconClicked(); return true;});
+			this.enter_notify_event.connect(IconEnter);
+			this.leave_notify_event.connect(IconLeave);
+			this.button_press_event.connect(IconClicked);
 		}
 
 		this.add(m_icon);
@@ -64,24 +64,38 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 	}
 
 
-	private void IconEnter()
+	private bool IconEnter()
 	{
 		this.remove(m_icon);
 		this.add(m_icon_light);
 		this.show_all();
+		return true;
 	}
 
-	private void IconLeave()
+	private bool IconLeave()
 	{
 		this.remove(m_icon_light);
 		this.add(m_icon);
 		this.show_all();
+		return true;
 	}
 
-	private void IconClicked()
+	private bool IconClicked(Gdk.EventButton event)
 	{
+		if(event.button != 1)
+			return false;
+
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
+
 		logger.print(LogMessage.DEBUG, "ColorCircle: click");
 		clicked(m_color);
+		return true;
 	}
 
 

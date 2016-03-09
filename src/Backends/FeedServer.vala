@@ -732,26 +732,35 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	public void deleteCategory(string catID)
+	public async void deleteCategory(string catID)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.removeCategory(catID);
-				break;
+		SourceFunc callback = deleteCategory.callback;
 
-			case Backend.FEEDLY:
-				m_feedly.removeCategory(catID);
-				break;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.removeCategory(catID);
+					break;
 
-			case Backend.OWNCLOUD:
-				m_owncloud.removeFolder(catID);
-				break;
+				case Backend.FEEDLY:
+					m_feedly.removeCategory(catID);
+					break;
 
-			case Backend.INOREADER:
-				m_inoreader.deleteTag(catID);
-				break;
-		}
+				case Backend.OWNCLOUD:
+					m_owncloud.removeFolder(catID);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.deleteTag(catID);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("deleteCategory", run);
+		yield;
 	}
 
 	private void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)

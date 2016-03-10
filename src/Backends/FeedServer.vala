@@ -1206,6 +1206,7 @@ public class FeedReader.FeedServer : GLib.Object {
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
+		grabberUtils.stripNode(doc, "//a[not(node())]");
 		grabberUtils.removeAttributes(doc, null, "style");
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");

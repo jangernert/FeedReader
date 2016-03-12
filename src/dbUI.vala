@@ -852,6 +852,7 @@ public class FeedReader.dbUI : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step () == Sqlite.ROW) {
+			bool hasFeeds = false;
 			string catID = stmt.column_text(0);
 			uint unread = 0;
 			if(feeds != null)
@@ -865,6 +866,7 @@ public class FeedReader.dbUI : GLib.Object {
 						if(id == catID)
 						{
 							found = true;
+							hasFeeds = true;
 							break;
 						}
 					}
@@ -874,8 +876,11 @@ public class FeedReader.dbUI : GLib.Object {
 				}
 			}
 
-			tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-			tmp.add(tmpcategory);
+			if(hasFeeds)
+			{
+				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+				tmp.add(tmpcategory);
+			}
 		}
 
 		return tmp;
@@ -986,6 +991,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string catID = stmt.column_text(0);
+			bool hasFeeds = false;
 			uint unread = 0;
 			if(feeds != null)
 			{
@@ -998,6 +1004,7 @@ public class FeedReader.dbUI : GLib.Object {
 						if(id == catID)
 						{
 							found = true;
+							hasFeeds = true;
 							break;
 						}
 					}
@@ -1007,8 +1014,11 @@ public class FeedReader.dbUI : GLib.Object {
 				}
 			}
 
-			tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-			tmp.add(tmpcategory);
+			if(hasFeeds)
+			{
+				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+				tmp.add(tmpcategory);
+			}
 		}
 
 		return tmp;

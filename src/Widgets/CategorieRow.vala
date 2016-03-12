@@ -40,6 +40,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private Gtk.Stack m_unreadStack;
 	public signal void collapse(bool collapse, string catID);
 	public signal void setAsRead(FeedListType type, string id);
+	public signal void selectDefaultRow();
 
 	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
 
@@ -149,7 +150,18 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 		var remove_action = new GLib.SimpleAction("delete", null);
 		remove_action.activate.connect(() => {
-			logger.print(LogMessage.DEBUG, "remove");
+			if(!m_collapsed)
+				expand_collapse();
+
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+			//GLib.Timeout.add(time, () => {
+			//    feedDaemon_interface.removeCategory(m_categorieID);
+			//	return false;
+			//});
 		});
 		var rename_action = new GLib.SimpleAction("rename", null);
 		rename_action.activate.connect(() => {

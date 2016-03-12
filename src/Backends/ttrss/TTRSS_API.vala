@@ -313,7 +313,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getFeedTree");
-		message.add_bool("include_empty", false);
+		message.add_bool("include_empty", true);
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
@@ -843,15 +843,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool ping() {
 		var message = new ttrss_message(m_ttrss_url);
-		int error = message.send();
 		logger.print(LogMessage.DEBUG, "TTRSS: ping");
-		message.printResponse();
+		int error = message.send(true);
 
-		if(error == ConnectionError.NO_RESPONSE)
+		if(error == ConnectionError.SUCCESS)
 		{
-			return false;
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 }

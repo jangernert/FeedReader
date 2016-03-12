@@ -630,6 +630,9 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             switch(backend)
             {
                 case Backend.TTRSS:
+                    executeSQL("UPDATE main.feeds set category_id = \"0\" WHERE category_id = \"" + catID + "\"");
+                    executeSQL("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
+                    break;
                 case Backend.OWNCLOUD:
                     executeSQL("UPDATE main.feeds set category_id = \"0\" WHERE category_id = \"" + catID + "\"");
                     break;

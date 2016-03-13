@@ -37,13 +37,16 @@ input,
 th,
 td,
 figure {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.unselectable {
     -webkit-user-select: none;
     -webkit-touch-callout: none;
     -webkit-user-drag: none;
     user-select: none;
-    margin: 0;
-    padding: 0;
-    border: 0;
 }
 
 img {

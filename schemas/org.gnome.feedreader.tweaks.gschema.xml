@@ -73,6 +73,14 @@
 				use newsplus plugin for ttrss to sync read and marked status for 10x the amount of "max-articles"
 			</description>
 		</key>
+		
+		<key name="article-select-text" type="b">
+			<default>false</default>
+			<summary>select text of articles</summary>
+			<description>
+				enable selecting text in the articleview, also copy text
+			</description>
+		</key>
 
 	</schema>
 </schemalist>

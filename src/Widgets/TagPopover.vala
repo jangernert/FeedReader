@@ -191,6 +191,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			if(Tag.getTagID() == row.getTagID())
 			{
 				m_tags.remove(Tag);
+				break;
 			}
 		}
 

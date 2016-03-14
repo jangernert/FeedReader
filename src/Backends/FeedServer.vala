@@ -710,26 +710,35 @@ public class FeedReader.FeedServer : GLib.Object {
 		return "";
 	}
 
-	public void renameCategory(string catID, string title)
+	public async void renameCategory(string catID, string title)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.renameCategory(catID, title);
-				break;
+		SourceFunc callback = renameCategory.callback;
 
-			case Backend.FEEDLY:
-				m_feedly.renameCategory(catID, title);
-				break;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.renameCategory(catID, title);
+					break;
 
-			case Backend.OWNCLOUD:
-				m_owncloud.reameFolder(catID, title);
-				break;
+				case Backend.FEEDLY:
+					m_feedly.renameCategory(catID, title);
+					break;
 
-			case Backend.INOREADER:
-				m_inoreader.renameTag(catID, title);
-				break;
-		}
+				case Backend.OWNCLOUD:
+					m_owncloud.reameFolder(catID, title);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.renameTag(catID, title);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("renameCategory", run);
+		yield;
 	}
 
 	public async void deleteCategory(string catID)

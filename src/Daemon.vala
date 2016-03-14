@@ -416,6 +416,18 @@ namespace FeedReader {
 			});
 		}
 
+		public void renameCategory(string catID, string newName)
+		{
+			server.renameCategory.begin(catID, newName, (obj, res) => {
+				server.renameCategory.end(res);
+			});
+
+			dataBase.rename_category.begin(catID, newName, (obj, res) => {
+				dataBase.rename_category.end(res);
+				newFeedList();
+			});
+		}
+
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY

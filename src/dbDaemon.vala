@@ -663,6 +663,21 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
+    public async void rename_category(string catID, string newName)
+    {
+        SourceFunc callback = rename_category.callback;
+        ThreadFunc<void*> run = () => {
+            var query = new QueryBuilder(QueryType.UPDATE, "categories");
+            query.updateValuePair("title", newName);
+            query.addEqualsCondition("categorieID", catID);
+            executeSQL(query.build());
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("rename_category", run);
+        yield;
+    }
+
     public void addOfflineAction(OfflineActions action, string id, string? argument = "")
     {
         executeSQL("BEGIN TRANSACTION");

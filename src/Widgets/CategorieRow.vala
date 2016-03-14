@@ -176,6 +176,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			renameButton.get_style_context().add_class("suggested-action");
 			renameButton.clicked.connect(() => {
 				popRename.hide();
+				feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
 			});
 
 			var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);

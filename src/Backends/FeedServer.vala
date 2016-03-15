@@ -643,49 +643,67 @@ public class FeedReader.FeedServer : GLib.Object {
 		return "";
 	}
 
-	public void removeFeed(string feedID)
+	public async void removeFeed(string feedID)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.unsubscribeFeed(feedID);
-				break;
+		SourceFunc callback = removeFeed.callback;
 
-			case Backend.FEEDLY:
-				m_feedly.removeSubscription(feedID);
-				break;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.unsubscribeFeed(feedID);
+					break;
 
-			case Backend.OWNCLOUD:
-				m_owncloud.removeFeed(feedID);
-				break;
+				case Backend.FEEDLY:
+					m_feedly.removeSubscription(feedID);
+					break;
 
-			case Backend.INOREADER:
-				m_inoreader.editSubscription(InoSubscriptionAction.UNSUBSCRIBE, feedID);
-				break;
-		}
+				case Backend.OWNCLOUD:
+					m_owncloud.removeFeed(feedID);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.editSubscription(InoSubscriptionAction.UNSUBSCRIBE, feedID);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("removeFeed", run);
+		yield;
 	}
 
-	public void renameFeed(string feedID, string title)
+	public async void renameFeed(string feedID, string title)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.renameFeed(feedID, title);
-				break;
+		SourceFunc callback = renameFeed.callback;
 
-			case Backend.FEEDLY:
-				var feed = dataBase.read_feed(feedID);
-				m_feedly.addSubscription(feed.getFeedID(), title, feed.getCatString());
-				break;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.renameFeed(feedID, title);
+					break;
 
-			case Backend.OWNCLOUD:
-				m_owncloud.reameFeed(feedID, title);
-				break;
+				case Backend.FEEDLY:
+					var feed = dataBase.read_feed(feedID);
+					m_feedly.addSubscription(feed.getFeedID(), title, feed.getCatString());
+					break;
 
-			case Backend.INOREADER:
-				m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, title);
-				break;
-		}
+				case Backend.OWNCLOUD:
+					m_owncloud.reameFeed(feedID, title);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, title);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("renameFeed", run);
+		yield;
 	}
 
 	public string addCategory(string title)

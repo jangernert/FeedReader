@@ -84,6 +84,14 @@ GtkEventBox {
 	background: shade(@feedlist-selected, 1.1);
 }
 
+.feed-row-popover {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.feed-row-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
 
 .feed-list-row:selected:prelight,
 .feed-list-row:selected:prelight GtkBox.feed-row {

@@ -148,7 +148,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				return false;
 		}
 
-		var remove_action = new GLib.SimpleAction("delete", null);
+		var remove_action = new GLib.SimpleAction("deleteCat", null);
 		remove_action.activate.connect(() => {
 			if(!m_collapsed)
 				expand_collapse();
@@ -163,7 +163,19 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				return false;
 			});
 		});
-		var rename_action = new GLib.SimpleAction("rename", null);
+		var markAsRead_action = new GLib.SimpleAction("markCatAsRead", null);
+		markAsRead_action.activate.connect(() => {
+			setAsRead(FeedListType.CATEGORY, m_categorieID);
+		});
+		if(m_unread_count != 0)
+		{
+			markAsRead_action.set_enabled(true);
+		}
+		else
+		{
+			markAsRead_action.set_enabled(false);
+		}
+		var rename_action = new GLib.SimpleAction("renameCat", null);
 		rename_action.activate.connect(() => {
 			var popRename = new Gtk.Popover(this);
 			popRename.set_position(Gtk.PositionType.BOTTOM);
@@ -189,12 +201,14 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			showPopoverStyle();
 		});
 		var app = (rssReaderApp)GLib.Application.get_default();
-		app.add_action(remove_action);
+		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
+		app.add_action(remove_action);
 
 		var menu = new GLib.Menu();
-		menu.append("Delete", "delete");
-		menu.append("Rename", "rename");
+		menu.append(_("Mark as read"), "markCatAsRead");
+		menu.append(_("Rename"), "renameCat");
+		menu.append(_("Delete"), "deleteCat");
 
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);

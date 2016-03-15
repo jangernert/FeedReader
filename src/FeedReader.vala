@@ -53,6 +53,8 @@ namespace FeedReader {
 		public abstract void checkOnlineAsync() throws IOError;
 		public abstract void removeCategory(string catID) throws IOError;
 		public abstract void renameCategory(string catID, string newName) throws IOError;
+		public abstract void removeFeed(string feedID) throws IOError;
+		public abstract void renameFeed(string feedID, string newName) throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();

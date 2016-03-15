@@ -428,6 +428,30 @@ namespace FeedReader {
 			});
 		}
 
+		public void renameFeed(string feedID, string newName)
+		{
+			server.renameFeed.begin(feedID, newName, (obj, res) => {
+				server.renameFeed.end(res);
+			});
+
+			dataBase.rename_feed.begin(feedID, newName, (obj, res) => {
+				dataBase.rename_feed.end(res);
+				newFeedList();
+			});
+		}
+
+		public void removeFeed(string feedID)
+		{
+			server.removeFeed.begin(feedID, (obj, res) => {
+				server.removeFeed.end(res);
+			});
+
+			dataBase.delete_feed.begin(feedID, (obj, res) => {
+				dataBase.delete_feed.end(res);
+				newFeedList();
+			});
+		}
+
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY

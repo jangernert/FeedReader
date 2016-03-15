@@ -828,7 +828,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
-		message.add_string("op", "renameCategory");
+		message.add_string("op", "renameFeed");
 		message.add_int("feed_id", int.parse(feedID));
 		message.add_string("caption", title);
 		int error = message.send();

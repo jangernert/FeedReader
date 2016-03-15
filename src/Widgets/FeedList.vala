@@ -276,6 +276,7 @@ public class FeedReader.feedList : Gtk.Stack {
 													  );
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
+							feedrow.selectDefaultRow.connect(selectDefaultRow);
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							pos++;
@@ -295,6 +296,7 @@ public class FeedReader.feedList : Gtk.Stack {
 											);
 				m_list.insert(feedrow, -1);
 				feedrow.setAsRead.connect(markSelectedRead);
+				feedrow.selectDefaultRow.connect(selectDefaultRow);
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}

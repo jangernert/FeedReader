@@ -24,12 +24,14 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private Gtk.Image m_icon;
 	private Gtk.Label m_unread;
 	private uint m_unread_count;
+	private Gtk.EventBox m_eventBox;
 	private Gtk.EventBox m_unreadBox;
 	private bool m_unreadHovered;
 	private Gtk.Stack m_unreadStack;
 	private string m_name { get; private set; }
 	private string m_feedID { get; private set; }
 	public signal void setAsRead(FeedListType type, string id);
+	public signal void selectDefaultRow();
 
 
 	public FeedRow (string text, uint unread_count, bool has_icon, string feedID, string catID, int level)
@@ -101,14 +103,132 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_box.pack_start(m_label, true, true, 0);
 			m_box.pack_end (m_unreadBox, false, false, 8);
 
+			m_eventBox = new Gtk.EventBox();
+			if(m_feedID != FeedID.ALL)
+			{
+				m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+				m_eventBox.button_press_event.connect(onClick);
+			}
+			m_eventBox.add(m_box);
+
 			m_revealer = new Gtk.Revealer();
 			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-			m_revealer.add(m_box);
+			m_revealer.add(m_eventBox);
 			m_revealer.set_reveal_child(false);
 			this.add(m_revealer);
 			this.show_all();
 
 			set_unread_count(m_unread_count);
+		}
+	}
+
+	private bool onClick(Gdk.EventButton event)
+	{
+		// only right click allowed
+		if(event.button != 3)
+			return false;
+
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
+
+		var remove_action = new GLib.SimpleAction("deleteFeed", null);
+		remove_action.activate.connect(() => {
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+			GLib.Timeout.add(time, () => {
+			    feedDaemon_interface.removeFeed(m_feedID);
+				return false;
+			});
+		});
+		var markAsRead_action = new GLib.SimpleAction("markFeedAsRead", null);
+		markAsRead_action.activate.connect(() => {
+			setAsRead(FeedListType.FEED, m_feedID);
+		});
+		if(m_unread_count != 0)
+		{
+			markAsRead_action.set_enabled(true);
+		}
+		else
+		{
+			markAsRead_action.set_enabled(false);
+		}
+		var rename_action = new GLib.SimpleAction("renameFeed", null);
+		rename_action.activate.connect(() => {
+			var popRename = new Gtk.Popover(this);
+			popRename.set_position(Gtk.PositionType.BOTTOM);
+			popRename.closed.connect(closePopoverStyle);
+
+			var renameEntry = new Gtk.Entry();
+			renameEntry.set_text(m_name);
+
+			var renameButton = new Gtk.Button.with_label(_("rename"));
+			renameButton.get_style_context().add_class("suggested-action");
+			renameButton.clicked.connect(() => {
+				popRename.hide();
+				feedDaemon_interface.renameFeed(m_feedID, renameEntry.get_text());
+			});
+
+			var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+			renameBox.margin = 5;
+			renameBox.pack_start(renameEntry, true, true, 0);
+			renameBox.pack_start(renameButton, false, false, 0);
+
+			popRename.add(renameBox);
+			popRename.show_all();
+			showPopoverStyle();
+		});
+		var app = (rssReaderApp)GLib.Application.get_default();
+		app.add_action(markAsRead_action);
+		app.add_action(rename_action);
+		app.add_action(remove_action);
+
+		var menu = new GLib.Menu();
+		menu.append(_("Mark as read"), "markFeedAsRead");
+		menu.append(_("Rename"), "renameFeed");
+		menu.append(_("Delete"), "deleteFeed");
+
+		var pop = new Gtk.Popover(this);
+		pop.set_position(Gtk.PositionType.BOTTOM);
+		pop.bind_model(menu, "app");
+		pop.closed.connect(closePopoverStyle);
+		pop.show();
+		showPopoverStyle();
+
+
+		return true;
+	}
+
+	private void showPopoverStyle()
+	{
+		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
+		{
+			m_box.get_style_context().remove_class("feed-row");
+		}
+
+		if(this.is_selected())
+			m_box.get_style_context().add_class("feed-row-selected-popover");
+		else
+			m_box.get_style_context().add_class("feed-row-popover");
+	}
+
+	private void closePopoverStyle()
+	{
+		if(this.is_selected())
+			m_box.get_style_context().remove_class("feed-row-selected-popover");
+		else
+			m_box.get_style_context().remove_class("feed-row-popover");
+
+		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
+		{
+			m_box.get_style_context().add_class("feed-row");
 		}
 	}
 

@@ -678,6 +678,31 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
+    public async void rename_feed(string feedID, string newName)
+    {
+        SourceFunc callback = rename_feed.callback;
+        ThreadFunc<void*> run = () => {
+            executeSQL("UPDATE feeds SET name = \"%s\" WHERE feed_id = \"%s\"".printf(newName, feedID));
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("rename_feed", run);
+        yield;
+    }
+
+    public async void delete_feed(string feedID)
+    {
+        SourceFunc callback = delete_feed.callback;
+        ThreadFunc<void*> run = () => {
+            executeSQL("DELETE FROM feeds WHERE feed_id = \"%s\"".printf(feedID));
+            delete_articles(feedID);
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("delete_feed", run);
+        yield;
+    }
+
     public void addOfflineAction(OfflineActions action, string id, string? argument = "")
     {
         executeSQL("BEGIN TRANSACTION");

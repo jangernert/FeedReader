@@ -163,6 +163,21 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				return false;
 			});
 		});
+		var removeWithChildren_action = new GLib.SimpleAction("deleteAllCat", null);
+		removeWithChildren_action.activate.connect(() => {
+			if(!m_collapsed)
+				expand_collapse();
+
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+			GLib.Timeout.add(time, () => {
+			    feedDaemon_interface.removeCategoryWithChildren(m_categorieID);
+				return false;
+			});
+		});
 		var markAsRead_action = new GLib.SimpleAction("markCatAsRead", null);
 		markAsRead_action.activate.connect(() => {
 			setAsRead(FeedListType.CATEGORY, m_categorieID);
@@ -181,11 +196,13 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);
+		app.add_action(removeWithChildren_action);
 
 		var menu = new GLib.Menu();
 		menu.append(_("Mark as read"), "markCatAsRead");
 		menu.append(_("Rename"), "renameCat");
 		menu.append(_("Delete"), "deleteCat");
+		menu.append(_("Delete (with Feeds)"), "deleteAllCat");
 
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);

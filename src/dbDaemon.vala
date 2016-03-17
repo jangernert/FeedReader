@@ -621,9 +621,9 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Utils.remove_directory(folder_path);
     }
 
-    public async void delte_category(string catID)
+    public async void delete_category(string catID)
     {
-        SourceFunc callback = delte_category.callback;
+        SourceFunc callback = delete_category.callback;
         ThreadFunc<void*> run = () => {
             executeSQL("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
             var backend = (Backend)settings_general.get_enum("account-type");
@@ -659,7 +659,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             Idle.add((owned) callback);
             return null;
         };
-        new GLib.Thread<void*>("delte_category", run);
+        new GLib.Thread<void*>("delete_category", run);
         yield;
     }
 

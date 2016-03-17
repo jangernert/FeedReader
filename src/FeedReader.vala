@@ -52,6 +52,7 @@ namespace FeedReader {
 		public abstract bool supportTags() throws IOError;
 		public abstract void checkOnlineAsync() throws IOError;
 		public abstract void removeCategory(string catID) throws IOError;
+		public abstract void removeCategoryWithChildren(string catID) throws IOError;
 		public abstract void renameCategory(string catID, string newName) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;

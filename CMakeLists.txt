@@ -97,6 +97,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ColorPopover.vala
     src/Widgets/ContentPage.vala
     src/Widgets/FeedList.vala
+    src/Widgets/FeedListFooter.vala
     src/Widgets/FeedRow.vala
     src/Widgets/HoverButton.vala
     src/Widgets/ImagePopup.vala

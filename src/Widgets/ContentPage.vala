@@ -19,6 +19,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
+	private FeedListFooter m_footer;
 	public signal void showArticleButtons(bool show);
 
 
@@ -29,13 +30,16 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 		this.set_position(settings_state.get_int("feeds-and-articles-width"));
 
-
 		m_feedList = new feedList();
+		m_footer = new FeedListFooter();
+		var feedListBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		feedListBox.pack_start(m_feedList);
+		feedListBox.pack_end(m_footer, false, false);
 
 		m_pane = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane.set_size_request(0, 300);
 		m_pane.set_position(settings_state.get_int("feed-row-width"));
-		m_pane.pack1(m_feedList, false, false);
+		m_pane.pack1(feedListBox, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
 			m_articleList.setSelectedType(FeedListType.FEED);

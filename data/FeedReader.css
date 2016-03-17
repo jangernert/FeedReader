@@ -130,6 +130,14 @@ GtkScrolledWindow GtkViewport.servicebox {
 	border: 1px solid alpha (#000, 0.30);
 }
 
+.FeedListFooter {
+	background: shade(@feedlist-bg, 0.9);
+}
+
+.FeedListFooterButton:prelight {
+	background: shade(@feedlist-bg, 1.1);
+}
+
 
 .overlay {
 	background: black;

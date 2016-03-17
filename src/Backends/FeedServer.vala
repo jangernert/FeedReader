@@ -790,6 +790,32 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
+	public async void removeCatFromFeed(string feedID, string catID)
+	{
+		SourceFunc callback = removeCatFromFeed.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+				case Backend.OWNCLOUD:
+				case Backend.INOREADER:
+					return null;
+
+				// only feedly supports multiple categories atm
+				case Backend.FEEDLY:
+					var feed = dataBase.read_feed(feedID);
+					m_feedly.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("removeCatFromFeed", run);
+		yield;
+	}
+
 	private void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		switch(m_type)

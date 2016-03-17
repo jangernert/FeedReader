@@ -835,6 +835,26 @@ public class FeedReader.dbUI : GLib.Object {
 		return tmp;
 	}
 
+	public category? read_category(string catID)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("*");
+		query.addEqualsCondition("categorieID", catID);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			var tmpcategory = new category(catID, stmt.column_text(1), 0, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+			return tmpcategory;
+		}
+
+		return null;
+	}
+
 	public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
 	{
 		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();

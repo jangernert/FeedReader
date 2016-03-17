@@ -148,6 +148,18 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 				return false;
 			});
 		});
+		var remove_only_action = new GLib.SimpleAction("deleteOnlyFeed", null);
+		remove_action.activate.connect(() => {
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+			GLib.Timeout.add(time, () => {
+			    feedDaemon_interface.removeFeedOnlyFromCat(m_feedID, m_catID);
+				return false;
+			});
+		});
 		var markAsRead_action = new GLib.SimpleAction("markFeedAsRead", null);
 		markAsRead_action.activate.connect(() => {
 			setAsRead(FeedListType.FEED, m_feedID);
@@ -166,10 +178,17 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);
+		app.add_action(remove_only_action);
+
+		var feed = dataBase.read_feed(m_feedID);
+		var catCount = feed.getCatIDs().length;
+		var cat = dataBase.read_category(m_catID);
 
 		var menu = new GLib.Menu();
 		menu.append(_("Mark as read"), "markFeedAsRead");
 		menu.append(_("Rename"), "renameFeed");
+		if(catCount > 1)
+			menu.append(_("Remove only from %s").printf(cat.getTitle()), "deleteFeed");
 		menu.append(_("Delete"), "deleteFeed");
 
 		var pop = new Gtk.Popover(this);

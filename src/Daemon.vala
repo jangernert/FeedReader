@@ -452,6 +452,18 @@ namespace FeedReader {
 			});
 		}
 
+		public void removeFeedOnlyFromCat(string feedID, string catID)
+		{
+			server.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
+				server.removeCatFromFeed.end(res);
+			});
+
+			dataBase.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
+				dataBase.removeCatFromFeed.end(res);
+				newFeedList();
+			});
+		}
+
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY

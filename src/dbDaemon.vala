@@ -690,6 +690,19 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
+    public async void removeCatFromFeed(string feedID, string catID)
+    {
+        SourceFunc callback = removeCatFromFeed.callback;
+        ThreadFunc<void*> run = () => {
+            var feed = read_feed(feedID);
+            executeSQL("UPDATE feeds SET category_id = \"%s\" WHERE feed_id = \"%s\"".printf(feed.getCatString().replace(catID + ",", ""), feedID));
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("removeCatFromFeed", run);
+        yield;
+    }
+
     public async void delete_feed(string feedID)
     {
         SourceFunc callback = delete_feed.callback;

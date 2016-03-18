@@ -192,6 +192,7 @@ public class FeedReader.DebugUtils : GLib.Object {
 
 	public static void dummyArticles(int count, int newCount)
 	{
+		logger.print(LogMessage.DEBUG, "DebugUtils: insert dummy Articles");
 		if(newCount > count)
 			return;
 

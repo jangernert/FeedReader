@@ -85,16 +85,44 @@ namespace FeedReader {
 
 			m_sync_button.clicked.connect(() => {
 				int count = spin.get_value_as_int();
+				bool showOverlay = (count > 0) ? true : false;
 				syncStarted();
 				settings_state.set_boolean("currently-updating", true);
-				DebugUtils.dummyArticles(settings_general.get_int("max-articles"), count);
-				updateFeedList();
-				updateArticleList();
-				settings_state.set_boolean("currently-updating", false);
-				settings_state.set_int("articlelist-new-rows", count);
-				syncFinished();
-				if(count > 0)
-					showArticleListOverlay();
+
+				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 15, () => {
+					if(count > 0)
+					{
+						if(count >= 10)
+						{
+							count -= 10;
+							DebugUtils.dummyArticles(settings_general.get_int("max-articles"), 10);
+							settings_state.set_int("articlelist-new-rows", settings_state.get_int("articlelist-new-rows") + 10);
+						}
+						else
+						{
+							DebugUtils.dummyArticles(settings_general.get_int("max-articles"), count);
+							settings_state.set_int("articlelist-new-rows", settings_state.get_int("articlelist-new-rows") + count);
+							count = 0;
+						}
+
+						updateFeedList();
+						updateArticleList();
+					}
+
+					if(count == 0)
+					{
+						if(showOverlay)
+						{
+							logger.print(LogMessage.INFO, "show Overlay");
+							showArticleListOverlay();
+						}
+						settings_state.set_boolean("currently-updating", false);
+						syncFinished();
+						return false;
+					}
+
+					return true;
+				});
 			});
 
 
@@ -220,6 +248,14 @@ namespace FeedReader {
 			window.showArticleListOverlay.connect(() => {
 				showArticleListOverlay();
 			});
+
+			window.syncStarted.connect(() => {
+				syncStarted();
+			});
+
+			window.syncFinished.connect(() => {
+				syncFinished();
+			});
 		}
 
 		public void startSync()
@@ -273,6 +309,11 @@ namespace FeedReader {
 					dataBase.update_article.end(res);
 				});
 			}
+		}
+
+		public void checkOnlineAsync()
+		{
+
 		}
 
 		public string createTag(string caption)

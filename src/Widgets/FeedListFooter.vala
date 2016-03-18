@@ -25,13 +25,23 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		this.valign = Gtk.Align.END;
 		this.get_style_context().add_class("FeedListFooter");
 
-		var addButton = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var addButton = new Gtk.Button.from_icon_name("feed-add", Gtk.IconSize.SMALL_TOOLBAR);
 		addButton.get_style_context().remove_class("button");
 		addButton.get_style_context().add_class("FeedListFooterButton");
+		addButton.get_image().opacity = 0.8;
+		addButton.clicked.connect(() => {
+			addButton.get_style_context().add_class("FeedListFooterButtonPopover");
+			var addPop = new AddPopover(addButton);
+			addPop.closed.connect(() => {
+				addButton.get_style_context().remove_class("FeedListFooterButtonPopover");
+			});
+			addPop.show();
+		});
 
-		var removeButton = new Gtk.Button.from_icon_name("list-remove-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var removeButton = new Gtk.Button.from_icon_name("feed-remove", Gtk.IconSize.SMALL_TOOLBAR);
 		removeButton.get_style_context().remove_class("button");
 		removeButton.get_style_context().add_class("FeedListFooterButton");
+		removeButton.get_image().opacity = 0.8;
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.pack_start(addButton);

@@ -88,6 +88,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/UiUtils.vala
     src/Utils.vala
     src/QueryBuilder.vala
+    src/Widgets/AddPopover.vala
     src/Widgets/ArticleList.vala
     src/Widgets/ArticleListOverlay.vala
     src/Widgets/ArticleRow.vala

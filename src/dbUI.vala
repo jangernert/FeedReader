@@ -517,7 +517,25 @@ public class FeedReader.dbUI : GLib.Object {
 	public bool article_exists(string articleID)
 	{
 		int result = 0;
-		string query = "SELECT EXISTS(SELECT 1 FROM main.articles WHERE articleID = \"" + articleID + "\" LIMIT 1)";
+		string query = "SELECT EXISTS(SELECT 1 FROM articles WHERE articleID = \"" + articleID + "\" LIMIT 1)";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+		if(result == 1)
+			return true;
+
+		return false;
+	}
+
+	public bool category_exists(string catID)
+	{
+		int result = 0;
+		string query = "SELECT EXISTS(SELECT 1 FROM categories WHERE categorieID = \"" + catID + "\" LIMIT 1)";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK)

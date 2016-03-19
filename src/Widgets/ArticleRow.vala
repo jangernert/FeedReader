@@ -127,8 +127,10 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_row_eventbox = new Gtk.EventBox();
 		m_row_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_row_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_row_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_row_eventbox.enter_notify_event.connect(rowEnter);
 		m_row_eventbox.leave_notify_event.connect(rowLeave);
+		m_row_eventbox.button_press_event.connect(rowClick);
 
 
 
@@ -259,6 +261,25 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				break;
 		}
 
+		return true;
+	}
+
+	private bool rowClick(Gdk.EventButton event)
+	{
+		// only accept left mouse button
+		if(event.button != 1)
+			return false;
+
+		// only double click
+		if(event.type != Gdk.EventType.@2BUTTON_PRESS)
+			return false;
+
+			try{
+				Gtk.show_uri(Gdk.Screen.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
+			}
+			catch(GLib.Error e){
+				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+			}
 		return true;
 	}
 

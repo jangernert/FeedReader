@@ -89,33 +89,32 @@ namespace FeedReader {
 				syncStarted();
 				settings_state.set_boolean("currently-updating", true);
 
-				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 15, () => {
+				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 5, () => {
 					if(count > 0)
 					{
+						int before = dataBase.getHighestRowID();
+
 						if(count >= 10)
 						{
 							count -= 10;
 							DebugUtils.dummyArticles(settings_general.get_int("max-articles"), 10);
-							settings_state.set_int("articlelist-new-rows", settings_state.get_int("articlelist-new-rows") + 10);
 						}
 						else
 						{
 							DebugUtils.dummyArticles(settings_general.get_int("max-articles"), count);
-							settings_state.set_int("articlelist-new-rows", settings_state.get_int("articlelist-new-rows") + count);
 							count = 0;
 						}
 
 						updateFeedList();
 						updateArticleList();
+						setNewRows(before);
 					}
 
 					if(count == 0)
 					{
 						if(showOverlay)
-						{
-							logger.print(LogMessage.INFO, "show Overlay");
 							showArticleListOverlay();
-						}
+
 						settings_state.set_boolean("currently-updating", false);
 						syncFinished();
 						return false;
@@ -124,7 +123,6 @@ namespace FeedReader {
 					return true;
 				});
 			});
-
 
 			var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 			box.pack_start(spin);
@@ -212,6 +210,20 @@ namespace FeedReader {
 			dataBase.resetDB();
 			dataBase.init();
 			m_sync_button.set_sensitive(false);
+		}
+
+		private void setNewRows(int before)
+		{
+			int after = dataBase.getHighestRowID();
+			int newArticles = after-before;
+			logger.print(LogMessage.DEBUG, "FeedServer: new articles: %i".printf(newArticles));
+
+			if(newArticles > 0 && settings_state.get_boolean("no-animations"))
+			{
+				logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
+				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				settings_state.set_int("articlelist-new-rows", newCount);
+			}
 		}
 	}
 

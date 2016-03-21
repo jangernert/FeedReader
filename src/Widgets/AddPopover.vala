@@ -21,15 +21,30 @@ public class FeedReader.AddPopover : Gtk.Popover {
 	private Gtk.Grid m_opmlGrid;
 	private Gtk.Entry m_urlEntry;
 	private Gtk.Entry m_catEntry;
+	private Gtk.EntryCompletion m_complete;
 
 	public AddPopover(Gtk.Widget parent)
 	{
 		this.relative_to = parent;
 		this.position = Gtk.PositionType.TOP;
 
+		Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
+		Gtk.TreeIter iter;
+		var cats = dataBase.read_categories();
+
+		foreach(var cat in cats)
+		{
+			list_store.append(out iter);
+			list_store.set(iter, 0, cat.getTitle());
+		}
+
 		m_urlEntry = new Gtk.Entry();
 		m_catEntry = new Gtk.Entry();
+		m_complete = new Gtk.EntryCompletion();
+		m_complete.set_model(list_store);
+		m_complete.set_text_column(0);
 		m_catEntry.placeholder_text = _("Uncategorized");
+		m_catEntry.set_completion(m_complete);
 		var urlLabel = new Gtk.Label(_("URL:"));
 		var catLabel = new Gtk.Label(_("Category:"));
 		urlLabel.set_xalign(1.0f);

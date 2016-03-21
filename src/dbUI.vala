@@ -914,7 +914,7 @@ public class FeedReader.dbUI : GLib.Object {
 				}
 			}
 
-			if(hasFeeds)
+			if(hasFeeds || feeds == null)
 			{
 				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
 				tmp.add(tmpcategory);

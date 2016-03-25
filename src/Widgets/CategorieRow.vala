@@ -40,6 +40,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private Gtk.Stack m_unreadStack;
 	public signal void collapse(bool collapse, string catID);
 	public signal void setAsRead(FeedListType type, string id);
+	public signal void selectDefaultRow();
 
 	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
 
@@ -147,43 +148,120 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				return false;
 		}
 
-		var remove_action = new GLib.SimpleAction("delete", null);
+		var remove_action = new GLib.SimpleAction("deleteCat", null);
 		remove_action.activate.connect(() => {
-			logger.print(LogMessage.DEBUG, "remove");
+			if(!m_collapsed)
+				expand_collapse();
+
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+			GLib.Timeout.add(time, () => {
+			    feedDaemon_interface.removeCategory(m_categorieID);
+				return false;
+			});
 		});
-		var rename_action = new GLib.SimpleAction("rename", null);
-		rename_action.activate.connect(() => {
-			logger.print(LogMessage.DEBUG, "rename");
+		var removeWithChildren_action = new GLib.SimpleAction("deleteAllCat", null);
+		removeWithChildren_action.activate.connect(() => {
+			if(!m_collapsed)
+				expand_collapse();
+
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+			GLib.Timeout.add(time, () => {
+			    feedDaemon_interface.removeCategoryWithChildren(m_categorieID);
+				return false;
+			});
 		});
+		var markAsRead_action = new GLib.SimpleAction("markCatAsRead", null);
+		markAsRead_action.activate.connect(() => {
+			setAsRead(FeedListType.CATEGORY, m_categorieID);
+		});
+		if(m_unread_count != 0)
+		{
+			markAsRead_action.set_enabled(true);
+		}
+		else
+		{
+			markAsRead_action.set_enabled(false);
+		}
+		var rename_action = new GLib.SimpleAction("renameCat", null);
+		rename_action.activate.connect(showRenamePopover);
 		var app = (rssReaderApp)GLib.Application.get_default();
-		app.add_action(remove_action);
+		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
+		app.add_action(remove_action);
+		app.add_action(removeWithChildren_action);
 
 		var menu = new GLib.Menu();
-		menu.append("Delete", "delete");
-		menu.append("Rename", "rename");
+		menu.append(_("Mark as read"), "markCatAsRead");
+		menu.append(_("Rename"), "renameCat");
+		menu.append(_("Delete"), "deleteCat");
+		menu.append(_("Delete (with Feeds)"), "deleteAllCat");
 
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);
 		pop.bind_model(menu, "app");
-		pop.closed.connect(() => {
-			if(this.is_selected())
-				this.get_style_context().remove_class("feed-list-row-selected-popover");
-			else
-				this.get_style_context().remove_class("feed-list-row-popover");
-
-			this.get_style_context().add_class("feed-list-row");
-		});
+		pop.closed.connect(closePopoverStyle);
 		pop.show();
+		showPopoverStyle();
 
+		return true;
+	}
+
+	private void showPopoverStyle()
+	{
 		this.get_style_context().remove_class("feed-list-row");
 
 		if(this.is_selected())
 			this.get_style_context().add_class("feed-list-row-selected-popover");
 		else
 			this.get_style_context().add_class("feed-list-row-popover");
+	}
 
-		return true;
+	private void closePopoverStyle()
+	{
+		if(this.is_selected())
+			this.get_style_context().remove_class("feed-list-row-selected-popover");
+		else
+			this.get_style_context().remove_class("feed-list-row-popover");
+
+		this.get_style_context().add_class("feed-list-row");
+	}
+
+	private void showRenamePopover()
+	{
+		var popRename = new Gtk.Popover(this);
+		popRename.set_position(Gtk.PositionType.BOTTOM);
+		popRename.closed.connect(closePopoverStyle);
+
+		var renameEntry = new Gtk.Entry();
+		renameEntry.set_text(m_name);
+		renameEntry.activate.connect(() => {
+			popRename.hide();
+			feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
+		});
+
+		var renameButton = new Gtk.Button.with_label(_("rename"));
+		renameButton.get_style_context().add_class("suggested-action");
+		renameButton.clicked.connect(() => {
+			popRename.hide();
+			feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
+		});
+
+		var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		renameBox.margin = 5;
+		renameBox.pack_start(renameEntry, true, true, 0);
+		renameBox.pack_start(renameButton, false, false, 0);
+
+		popRename.add(renameBox);
+		popRename.show_all();
+		showPopoverStyle();
 	}
 
 	private bool onUnreadClick(Gdk.EventButton event)

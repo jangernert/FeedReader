@@ -621,15 +621,18 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Utils.remove_directory(folder_path);
     }
 
-    public async void delte_category(string catID)
+    public async void delete_category(string catID)
     {
-        SourceFunc callback = delte_category.callback;
+        SourceFunc callback = delete_category.callback;
         ThreadFunc<void*> run = () => {
             executeSQL("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
             var backend = (Backend)settings_general.get_enum("account-type");
             switch(backend)
             {
                 case Backend.TTRSS:
+                    executeSQL("UPDATE main.feeds set category_id = \"0\" WHERE category_id = \"" + catID + "\"");
+                    executeSQL("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
+                    break;
                 case Backend.OWNCLOUD:
                     executeSQL("UPDATE main.feeds set category_id = \"0\" WHERE category_id = \"" + catID + "\"");
                     break;
@@ -656,7 +659,60 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             Idle.add((owned) callback);
             return null;
         };
-        new GLib.Thread<void*>("delte_category", run);
+        new GLib.Thread<void*>("delete_category", run);
+        yield;
+    }
+
+    public async void rename_category(string catID, string newName)
+    {
+        SourceFunc callback = rename_category.callback;
+        ThreadFunc<void*> run = () => {
+            var query = new QueryBuilder(QueryType.UPDATE, "categories");
+            query.updateValuePair("title", newName);
+            query.addEqualsCondition("categorieID", catID);
+            executeSQL(query.build());
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("rename_category", run);
+        yield;
+    }
+
+    public async void rename_feed(string feedID, string newName)
+    {
+        SourceFunc callback = rename_feed.callback;
+        ThreadFunc<void*> run = () => {
+            executeSQL("UPDATE feeds SET name = \"%s\" WHERE feed_id = \"%s\"".printf(newName, feedID));
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("rename_feed", run);
+        yield;
+    }
+
+    public async void removeCatFromFeed(string feedID, string catID)
+    {
+        SourceFunc callback = removeCatFromFeed.callback;
+        ThreadFunc<void*> run = () => {
+            var feed = read_feed(feedID);
+            executeSQL("UPDATE feeds SET category_id = \"%s\" WHERE feed_id = \"%s\"".printf(feed.getCatString().replace(catID + ",", ""), feedID));
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("removeCatFromFeed", run);
+        yield;
+    }
+
+    public async void delete_feed(string feedID)
+    {
+        SourceFunc callback = delete_feed.callback;
+        ThreadFunc<void*> run = () => {
+            executeSQL("DELETE FROM feeds WHERE feed_id = \"%s\"".printf(feedID));
+            delete_articles(feedID);
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("delete_feed", run);
         yield;
     }
 

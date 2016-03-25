@@ -85,18 +85,44 @@ namespace FeedReader {
 
 			m_sync_button.clicked.connect(() => {
 				int count = spin.get_value_as_int();
+				bool showOverlay = (count > 0) ? true : false;
 				syncStarted();
 				settings_state.set_boolean("currently-updating", true);
-				DebugUtils.dummyArticles(settings_general.get_int("max-articles"), count);
-				updateFeedList();
-				updateArticleList();
-				settings_state.set_boolean("currently-updating", false);
-				settings_state.set_int("articlelist-new-rows", count);
-				syncFinished();
-				if(count > 0)
-					showArticleListOverlay();
-			});
 
+				GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 5, () => {
+					if(count > 0)
+					{
+						int before = dataBase.getHighestRowID();
+
+						if(count >= 10)
+						{
+							count -= 10;
+							DebugUtils.dummyArticles(settings_general.get_int("max-articles"), 10);
+						}
+						else
+						{
+							DebugUtils.dummyArticles(settings_general.get_int("max-articles"), count);
+							count = 0;
+						}
+
+						updateFeedList();
+						updateArticleList();
+						setNewRows(before);
+					}
+
+					if(count == 0)
+					{
+						if(showOverlay)
+							showArticleListOverlay();
+
+						settings_state.set_boolean("currently-updating", false);
+						syncFinished();
+						return false;
+					}
+
+					return true;
+				});
+			});
 
 			var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 			box.pack_start(spin);
@@ -185,6 +211,20 @@ namespace FeedReader {
 			dataBase.init();
 			m_sync_button.set_sensitive(false);
 		}
+
+		private void setNewRows(int before)
+		{
+			int after = dataBase.getHighestRowID();
+			int newArticles = after-before;
+			logger.print(LogMessage.DEBUG, "FeedServer: new articles: %i".printf(newArticles));
+
+			if(newArticles > 0 && settings_state.get_boolean("no-animations"))
+			{
+				logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
+				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				settings_state.set_int("articlelist-new-rows", newCount);
+			}
+		}
 	}
 
 	[DBus (name = "org.gnome.feedreader")]
@@ -219,6 +259,14 @@ namespace FeedReader {
 
 			window.showArticleListOverlay.connect(() => {
 				showArticleListOverlay();
+			});
+
+			window.syncStarted.connect(() => {
+				syncStarted();
+			});
+
+			window.syncFinished.connect(() => {
+				syncFinished();
 			});
 		}
 
@@ -273,6 +321,11 @@ namespace FeedReader {
 					dataBase.update_article.end(res);
 				});
 			}
+		}
+
+		public void checkOnlineAsync()
+		{
+
 		}
 
 		public string createTag(string caption)

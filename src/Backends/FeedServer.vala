@@ -620,116 +620,150 @@ public class FeedReader.FeedServer : GLib.Object {
 		return false;
 	}
 
-	public string addFeed(string feedURL, string? catID = null)
+	public string addFeed(string feedURL, string? catID = null, string? newCatName = null)
 	{
 		switch(m_type)
 		{
 			case Backend.TTRSS:
+				if(catID == null && newCatName != null)
+					m_ttrss.createCategory(newCatName);
+
 				m_ttrss.subscribeToFeed(feedURL, catID);
 				return (dataBase.getHighestFeedID() + 1).to_string();
 
 			case Backend.FEEDLY:
-				m_feedly.addSubscription(feedURL, null, catID);
+				if(catID == null && newCatName != null)
+				{
+					string newCatID = m_feedly.createCatID(newCatName);
+					m_feedly.addSubscription(feedURL, null, newCatID);
+				}
+				else
+				{
+					m_feedly.addSubscription(feedURL, null, catID);
+				}
 				return "feed/" + feedURL;
 
 			case Backend.OWNCLOUD:
-				return m_owncloud.addFeed(feedURL, catID).to_string();
+				string newFeedID = "";
+				if(catID == null && newCatName != null)
+				{
+					string newCatID = m_owncloud.addFolder(newCatName).to_string();
+					newFeedID = m_owncloud.addFeed(feedURL, newCatID).to_string();
+				}
+				else
+				{
+					newFeedID = m_owncloud.addFeed(feedURL, catID).to_string();
+				}
+				return newFeedID;
 
 			case Backend.INOREADER:
-				m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+				if(catID == null && newCatName != null)
+				{
+					string newCatID = m_inoreader.composeTagID(newCatName);
+					m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+				}
+				else
+				{
+					m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+				}
 				return "feed/" + feedURL;
 		}
 
 		return "";
 	}
 
-	public void removeFeed(string feedID)
+	public async void removeFeed(string feedID)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.unsubscribeFeed(feedID);
-				break;
+		SourceFunc callback = removeFeed.callback;
 
-			case Backend.FEEDLY:
-				m_feedly.removeSubscription(feedID);
-				break;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.unsubscribeFeed(feedID);
+					break;
 
-			case Backend.OWNCLOUD:
-				m_owncloud.removeFeed(feedID);
-				break;
+				case Backend.FEEDLY:
+					m_feedly.removeSubscription(feedID);
+					break;
 
-			case Backend.INOREADER:
-				m_inoreader.editSubscription(InoSubscriptionAction.UNSUBSCRIBE, feedID);
-				break;
-		}
+				case Backend.OWNCLOUD:
+					m_owncloud.removeFeed(feedID);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.editSubscription(InoSubscriptionAction.UNSUBSCRIBE, feedID);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("removeFeed", run);
+		yield;
 	}
 
-	public void renameFeed(string feedID, string title)
+	public async void renameFeed(string feedID, string title)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.renameFeed(feedID, title);
-				break;
+		SourceFunc callback = renameFeed.callback;
 
-			case Backend.FEEDLY:
-				var feed = dataBase.read_feed(feedID);
-				m_feedly.addSubscription(feed.getFeedID(), title, feed.getCatString());
-				break;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.renameFeed(feedID, title);
+					break;
 
-			case Backend.OWNCLOUD:
-				m_owncloud.reameFeed(feedID, title);
-				break;
+				case Backend.FEEDLY:
+					var feed = dataBase.read_feed(feedID);
+					m_feedly.addSubscription(feed.getFeedID(), title, feed.getCatString());
+					break;
 
-			case Backend.INOREADER:
-				m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, title);
-				break;
-		}
+				case Backend.OWNCLOUD:
+					m_owncloud.reameFeed(feedID, title);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, title);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("renameFeed", run);
+		yield;
 	}
 
-	public string addCategory(string title)
+	public async void renameCategory(string catID, string title)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				return m_ttrss.createCategory(title);
+		SourceFunc callback = renameCategory.callback;
 
-			case Backend.FEEDLY:
-				string catID = m_feedly.createCatID(title);
-				m_feedly.renameCategory(catID, title);
-				return catID;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.renameCategory(catID, title);
+					break;
 
-			case Backend.OWNCLOUD:
-				return m_owncloud.addFolder(title).to_string();
+				case Backend.FEEDLY:
+					m_feedly.renameCategory(catID, title);
+					break;
 
-			case Backend.INOREADER:
-				return m_inoreader.composeTagID(title);
-		}
+				case Backend.OWNCLOUD:
+					m_owncloud.reameFolder(catID, title);
+					break;
 
-		return "";
-	}
+				case Backend.INOREADER:
+					m_inoreader.renameTag(catID, title);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
 
-	public void renameCategory(string catID, string title)
-	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				m_ttrss.renameCategory(catID, title);
-				break;
-
-			case Backend.FEEDLY:
-				m_feedly.renameCategory(catID, title);
-				break;
-
-			case Backend.OWNCLOUD:
-				m_owncloud.reameFolder(catID, title);
-				break;
-
-			case Backend.INOREADER:
-				m_inoreader.renameTag(catID, title);
-				break;
-		}
+		new GLib.Thread<void*>("renameCategory", run);
+		yield;
 	}
 
 	public async void deleteCategory(string catID)
@@ -760,6 +794,32 @@ public class FeedReader.FeedServer : GLib.Object {
 		};
 
 		new GLib.Thread<void*>("deleteCategory", run);
+		yield;
+	}
+
+	public async void removeCatFromFeed(string feedID, string catID)
+	{
+		SourceFunc callback = removeCatFromFeed.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+				case Backend.OWNCLOUD:
+				case Backend.INOREADER:
+					return null;
+
+				// only feedly supports multiple categories atm
+				case Backend.FEEDLY:
+					var feed = dataBase.read_feed(feedID);
+					m_feedly.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("removeCatFromFeed", run);
 		yield;
 	}
 
@@ -1206,6 +1266,7 @@ public class FeedReader.FeedServer : GLib.Object {
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
+		grabberUtils.stripNode(doc, "//a[not(node())]");
 		grabberUtils.removeAttributes(doc, null, "style");
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");

@@ -276,6 +276,7 @@ public class FeedReader.feedList : Gtk.Stack {
 													  );
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
+							feedrow.selectDefaultRow.connect(selectDefaultRow);
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							pos++;
@@ -295,6 +296,7 @@ public class FeedReader.feedList : Gtk.Stack {
 											);
 				m_list.insert(feedrow, -1);
 				feedrow.setAsRead.connect(markSelectedRead);
+				feedrow.selectDefaultRow.connect(selectDefaultRow);
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}
@@ -420,6 +422,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			});
 			m_list.insert(categorierow, length+1);
 			categorierow.setAsRead.connect(markSelectedRead);
+			categorierow.selectDefaultRow.connect(selectDefaultRow);
 			categorierow.reveal(true);
 			string name = _("Tags");
 			if(settings_general.get_enum("account-type") == Backend.TTRSS)
@@ -517,6 +520,7 @@ public class FeedReader.feedList : Gtk.Stack {
 						});
 						m_list.insert(categorierow, pos);
 						categorierow.setAsRead.connect(markSelectedRead);
+						categorierow.selectDefaultRow.connect(selectDefaultRow);
 						if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnreadCount() != 0)
 							categorierow.reveal(true);
 						break;
@@ -865,6 +869,22 @@ public class FeedReader.feedList : Gtk.Stack {
 	public void setOnline()
 	{
 		m_branding.setOnline();
+	}
+
+	public void selectDefaultRow()
+	{
+		var FeedChildList = m_list.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as FeedRow;
+			if(tmpRow != null && tmpRow.getID() == FeedID.ALL)
+			{
+				m_list.select_row(tmpRow);
+				tmpRow.activate();
+				newFeedSelected(tmpRow.getID());
+				return;
+			}
+		}
 	}
 
 }

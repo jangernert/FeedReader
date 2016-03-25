@@ -517,7 +517,25 @@ public class FeedReader.dbUI : GLib.Object {
 	public bool article_exists(string articleID)
 	{
 		int result = 0;
-		string query = "SELECT EXISTS(SELECT 1 FROM main.articles WHERE articleID = \"" + articleID + "\" LIMIT 1)";
+		string query = "SELECT EXISTS(SELECT 1 FROM articles WHERE articleID = \"" + articleID + "\" LIMIT 1)";
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_int(0);
+		}
+		if(result == 1)
+			return true;
+
+		return false;
+	}
+
+	public bool category_exists(string catID)
+	{
+		int result = 0;
+		string query = "SELECT EXISTS(SELECT 1 FROM categories WHERE categorieID = \"" + catID + "\" LIMIT 1)";
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
 		if (ec != Sqlite.OK)
@@ -835,6 +853,26 @@ public class FeedReader.dbUI : GLib.Object {
 		return tmp;
 	}
 
+	public category? read_category(string catID)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("*");
+		query.addEqualsCondition("categorieID", catID);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			var tmpcategory = new category(catID, stmt.column_text(1), 0, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+			return tmpcategory;
+		}
+
+		return null;
+	}
+
 	public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
 	{
 		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
@@ -852,6 +890,7 @@ public class FeedReader.dbUI : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step () == Sqlite.ROW) {
+			bool hasFeeds = false;
 			string catID = stmt.column_text(0);
 			uint unread = 0;
 			if(feeds != null)
@@ -865,6 +904,7 @@ public class FeedReader.dbUI : GLib.Object {
 						if(id == catID)
 						{
 							found = true;
+							hasFeeds = true;
 							break;
 						}
 					}
@@ -874,8 +914,11 @@ public class FeedReader.dbUI : GLib.Object {
 				}
 			}
 
-			tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-			tmp.add(tmpcategory);
+			if(hasFeeds || feeds == null)
+			{
+				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+				tmp.add(tmpcategory);
+			}
 		}
 
 		return tmp;
@@ -986,6 +1029,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string catID = stmt.column_text(0);
+			bool hasFeeds = false;
 			uint unread = 0;
 			if(feeds != null)
 			{
@@ -998,6 +1042,7 @@ public class FeedReader.dbUI : GLib.Object {
 						if(id == catID)
 						{
 							found = true;
+							hasFeeds = true;
 							break;
 						}
 					}
@@ -1007,8 +1052,11 @@ public class FeedReader.dbUI : GLib.Object {
 				}
 			}
 
-			tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-			tmp.add(tmpcategory);
+			if(hasFeeds)
+			{
+				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+				tmp.add(tmpcategory);
+			}
 		}
 
 		return tmp;

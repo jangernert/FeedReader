@@ -279,6 +279,19 @@ public class FeedReader.Utils : GLib.Object {
 		article.erase(theme_pos, theme_id.length);
 		article.insert(theme_pos, theme);
 
+		string select_id = "$UNSELECTABLE";
+		int select_pos = article.str.index_of(select_id);
+
+		if(settings_tweaks.get_boolean("article-select-text"))
+		{
+			article.erase(select_pos-1, select_id.length+1);
+		}
+		else
+		{
+			article.erase(select_pos, select_id.length);
+			article.insert(select_pos, "unselectable");
+		}
+
 
 		string fontsize = "intial";
 		string sourcefontsize = "0.75rem";

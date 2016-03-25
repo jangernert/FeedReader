@@ -410,8 +410,82 @@ namespace FeedReader {
 				server.deleteCategory.end(res);
 			});
 
-			dataBase.delte_category.begin(catID, (obj, res) => {
-				dataBase.delte_category.end(res);
+			dataBase.delete_category.begin(catID, (obj, res) => {
+				dataBase.delete_category.end(res);
+				newFeedList();
+			});
+		}
+
+		public void removeCategoryWithChildren(string catID)
+		{
+			var feeds = dataBase.read_feeds();
+			deleteFeedsofCat(catID, feeds);
+
+			var cats = dataBase.read_categories(feeds);
+			foreach(var cat in cats)
+			{
+				if(cat.getParent() == catID)
+				{
+					removeCategoryWithChildren(catID);
+				}
+			}
+		}
+
+		private void deleteFeedsofCat(string catID, Gee.ArrayList<feed> feeds)
+		{
+			foreach(feed Feed in feeds)
+			{
+				if(Feed.hasCat(catID))
+				{
+					removeFeed(Feed.getFeedID());
+				}
+			}
+		}
+
+		public void renameCategory(string catID, string newName)
+		{
+			server.renameCategory.begin(catID, newName, (obj, res) => {
+				server.renameCategory.end(res);
+			});
+
+			dataBase.rename_category.begin(catID, newName, (obj, res) => {
+				dataBase.rename_category.end(res);
+				newFeedList();
+			});
+		}
+
+		public void renameFeed(string feedID, string newName)
+		{
+			server.renameFeed.begin(feedID, newName, (obj, res) => {
+				server.renameFeed.end(res);
+			});
+
+			dataBase.rename_feed.begin(feedID, newName, (obj, res) => {
+				dataBase.rename_feed.end(res);
+				newFeedList();
+			});
+		}
+
+		public void removeFeed(string feedID)
+		{
+			server.removeFeed.begin(feedID, (obj, res) => {
+				server.removeFeed.end(res);
+			});
+
+			dataBase.delete_feed.begin(feedID, (obj, res) => {
+				dataBase.delete_feed.end(res);
+				newFeedList();
+			});
+		}
+
+		public void removeFeedOnlyFromCat(string feedID, string catID)
+		{
+			server.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
+				server.removeCatFromFeed.end(res);
+			});
+
+			dataBase.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
+				dataBase.removeCatFromFeed.end(res);
 				newFeedList();
 			});
 		}

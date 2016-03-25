@@ -84,6 +84,14 @@ GtkEventBox {
 	background: shade(@feedlist-selected, 1.1);
 }
 
+.feed-row-popover {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.feed-row-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
 
 .feed-list-row:selected:prelight,
 .feed-list-row:selected:prelight GtkBox.feed-row {
@@ -120,6 +128,18 @@ GtkListBoxRow GtkLabel.headline-unread-label {
 
 GtkScrolledWindow GtkViewport.servicebox {
 	border: 1px solid alpha (#000, 0.30);
+}
+
+.FeedListFooter {
+	background: shade(@feedlist-bg, 0.9);
+}
+
+.FeedListFooterButton:prelight {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+.FeedListFooterButtonPopover {
+	background: shade(@feedlist-bg, 1.1);
 }
 
 

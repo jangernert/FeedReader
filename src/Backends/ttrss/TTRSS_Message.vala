@@ -70,7 +70,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		m_message_string.append(",\"" + type + "\":\"" + val.replace("\"", "\\\"").replace("\\", "\\\\") + "\"");
 	}
 
-	public ConnectionError send()
+	public ConnectionError send(bool ping = false)
 	{
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
@@ -97,6 +97,12 @@ public class FeedReader.ttrss_message : GLib.Object {
 		{
 			logger.print(LogMessage.ERROR, "TTRSS Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
 			return ConnectionError.NO_RESPONSE;
+		}
+
+		if(ping)
+		{
+			logger.print(LogMessage.DEBUG, "TTRSS Message: ping successfull");
+			return ConnectionError.SUCCESS;
 		}
 
 		try{

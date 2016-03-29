@@ -620,56 +620,70 @@ public class FeedReader.FeedServer : GLib.Object {
 		return false;
 	}
 
-	public string addFeed(string feedURL, string? catID = null, string? newCatName = null)
+	public async string addFeed(string feedURL, string? catID = null, string? newCatName = null)
 	{
-		switch(m_type)
-		{
-			case Backend.TTRSS:
-				if(catID == null && newCatName != null)
-					m_ttrss.createCategory(newCatName);
+		string feedID = "";
 
-				m_ttrss.subscribeToFeed(feedURL, catID);
-				return (dataBase.getHighestFeedID() + 1).to_string();
+		SourceFunc callback = addFeed.callback;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					if(catID == null && newCatName != null)
+						m_ttrss.createCategory(newCatName);
 
-			case Backend.FEEDLY:
-				if(catID == null && newCatName != null)
-				{
-					string newCatID = m_feedly.createCatID(newCatName);
-					m_feedly.addSubscription(feedURL, null, newCatID);
-				}
-				else
-				{
-					m_feedly.addSubscription(feedURL, null, catID);
-				}
-				return "feed/" + feedURL;
+					m_ttrss.subscribeToFeed(feedURL, catID);
+					feedID = (dataBase.getHighestFeedID() + 1).to_string();
+					break;
 
-			case Backend.OWNCLOUD:
-				string newFeedID = "";
-				if(catID == null && newCatName != null)
-				{
-					string newCatID = m_owncloud.addFolder(newCatName).to_string();
-					newFeedID = m_owncloud.addFeed(feedURL, newCatID).to_string();
-				}
-				else
-				{
-					newFeedID = m_owncloud.addFeed(feedURL, catID).to_string();
-				}
-				return newFeedID;
+				case Backend.FEEDLY:
+					if(catID == null && newCatName != null)
+					{
+						string newCatID = m_feedly.createCatID(newCatName);
+						m_feedly.addSubscription(feedURL, null, newCatID);
+					}
+					else
+					{
+						m_feedly.addSubscription(feedURL, null, catID);
+					}
+					feedID = "feed/" + feedURL;
+					break;
 
-			case Backend.INOREADER:
-				if(catID == null && newCatName != null)
-				{
-					string newCatID = m_inoreader.composeTagID(newCatName);
-					m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
-				}
-				else
-				{
-					m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
-				}
-				return "feed/" + feedURL;
-		}
+				case Backend.OWNCLOUD:
+					string newFeedID = "";
+					if(catID == null && newCatName != null)
+					{
+						string newCatID = m_owncloud.addFolder(newCatName).to_string();
+						newFeedID = m_owncloud.addFeed(feedURL, newCatID).to_string();
+					}
+					else
+					{
+						newFeedID = m_owncloud.addFeed(feedURL, catID).to_string();
+					}
+					feedID = newFeedID;
+					break;
 
-		return "";
+				case Backend.INOREADER:
+					if(catID == null && newCatName != null)
+					{
+						string newCatID = m_inoreader.composeTagID(newCatName);
+						m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+					}
+					else
+					{
+						m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+					}
+					feedID = "feed/" + feedURL;
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("addFeed", run);
+		yield;
+
+		return feedID;
 	}
 
 	public async void removeFeed(string feedID)

@@ -738,7 +738,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "subscribeToFeed");
-		message.add_int("feed_url", int.parse(feedURL));
+		message.add_string("feed_url", feedURL);
 
 		if(catID != null)
 			message.add_int("category_id", int.parse(catID));
@@ -749,6 +749,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 
 		int error = message.send();
+		message.printMessage();
 
 		if(error == ConnectionError.SUCCESS)
 		{
@@ -781,6 +782,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("op", "addCategory");
 		message.add_string("caption", title);
 		int error = message.send();
+		message.printMessage();
 
 		if(error == ConnectionError.SUCCESS)
 		{

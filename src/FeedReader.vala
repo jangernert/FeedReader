@@ -54,6 +54,7 @@ namespace FeedReader {
 		public abstract void removeCategory(string catID) throws IOError;
 		public abstract void removeCategoryWithChildren(string catID) throws IOError;
 		public abstract void renameCategory(string catID, string newName) throws IOError;
+		public abstract void addFeed(string feedURL, string cat, bool isID) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
 		public abstract void renameFeed(string feedID, string newName) throws IOError;

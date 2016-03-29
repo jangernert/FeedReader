@@ -16,6 +16,7 @@
 public class FeedReader.FeedListFooter : Gtk.Box {
 
 	private Gtk.Box m_box;
+	private Gtk.Stack m_addStack;
 
 	public FeedListFooter()
 	{
@@ -38,13 +39,18 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 			addPop.show();
 		});
 
+		var addSpinner = new Gtk.Spinner();
+		m_addStack = new Gtk.Stack();
+		m_addStack.add_named(addButton, "button");
+		m_addStack.add_named(addSpinner, "spinner");
+
 		var removeButton = new Gtk.Button.from_icon_name("feed-remove", Gtk.IconSize.SMALL_TOOLBAR);
 		removeButton.get_style_context().remove_class("button");
 		removeButton.get_style_context().add_class("FeedListFooterButton");
 		removeButton.get_image().opacity = 0.8;
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		m_box.pack_start(addButton);
+		m_box.pack_start(m_addStack);
 		m_box.pack_start(new Gtk.Separator(Gtk.Orientation.VERTICAL), false, false);
 		m_box.pack_start(removeButton);
 

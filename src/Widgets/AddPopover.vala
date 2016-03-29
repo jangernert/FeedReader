@@ -22,6 +22,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 	private Gtk.Entry m_urlEntry;
 	private Gtk.Entry m_catEntry;
 	private Gtk.EntryCompletion m_complete;
+	private Gee.ArrayList<category> m_cats;
 
 	public AddPopover(Gtk.Widget parent)
 	{
@@ -30,21 +31,32 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 		Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
 		Gtk.TreeIter iter;
-		var cats = dataBase.read_categories();
+		m_cats = dataBase.read_categories();
 
-		foreach(var cat in cats)
+		foreach(var cat in m_cats)
 		{
 			list_store.append(out iter);
 			list_store.set(iter, 0, cat.getTitle());
 		}
 
 		m_urlEntry = new Gtk.Entry();
+		m_urlEntry.activate.connect(() => {
+			m_catEntry.grab_focus();
+		});
 		m_catEntry = new Gtk.Entry();
 		m_complete = new Gtk.EntryCompletion();
 		m_complete.set_model(list_store);
 		m_complete.set_text_column(0);
 		m_catEntry.placeholder_text = _("Uncategorized");
 		m_catEntry.set_completion(m_complete);
+		m_catEntry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-clear");
+		m_catEntry.activate.connect(addFeed);
+		m_catEntry.icon_press.connect((pos, event) => {
+			if(pos == Gtk.EntryIconPosition.SECONDARY)
+			{
+				m_catEntry.set_text("");
+			}
+		});
 		var urlLabel = new Gtk.Label(_("URL:"));
 		var catLabel = new Gtk.Label(_("Category:"));
 		urlLabel.set_xalign(1.0f);
@@ -52,6 +64,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		var addButton = new Gtk.Button.with_label(_("Add"));
 		addButton.get_style_context().add_class("suggested-action");
 		addButton.halign = Gtk.Align.END;
+		addButton.clicked.connect(addFeed);
 
 		m_feedGrid = new Gtk.Grid();
 		m_feedGrid.row_spacing = 5;
@@ -79,5 +92,22 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 		this.add(m_box);
 		this.show_all();
+	}
+
+	private void addFeed()
+	{
+		string catID = "";
+		bool isID = true;
+
+		catID = dataBase.getCategoryID(m_catEntry.text);
+
+		if(catID == null)
+		{
+			catID = m_catEntry.text;
+			isID = false;
+		}
+
+		logger.print(LogMessage.DEBUG, "addFeed: %s, %s".printf(m_urlEntry.text, catID));
+		feedDaemon_interface.addFeed(m_urlEntry.text, catID, isID);
 	}
 }

@@ -361,6 +361,28 @@ public class FeedReader.dbUI : GLib.Object {
 	}
 
 
+	public string? getCategoryID(string catname)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("categorieID");
+		query.addEqualsCondition("title", catname, true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "getCategoryID - %s".printf(sqlite_db.errmsg()));
+
+		string? result = null;
+
+		while (stmt.step () == Sqlite.ROW) {
+			result = stmt.column_text(0);
+		}
+
+		return result;
+	}
+
+
 	public bool preview_empty(string articleID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");

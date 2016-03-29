@@ -38,6 +38,7 @@ namespace FeedReader {
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
+		public signal void feedAdded();
 
 		public FeedDaemonServer()
 		{
@@ -463,6 +464,22 @@ namespace FeedReader {
 			dataBase.rename_feed.begin(feedID, newName, (obj, res) => {
 				dataBase.rename_feed.end(res);
 				newFeedList();
+			});
+		}
+
+		public void addFeed(string feedURL, string cat, bool isID)
+		{
+			string catID = null;
+			string newCatName = null;
+
+			if(isID)
+				catID = cat;
+			else
+				newCatName = cat;
+
+			server.addFeed.begin(feedURL, catID, newCatName, (obj, res) => {
+				server.addFeed.end(res);
+				feedAdded();
 			});
 		}
 

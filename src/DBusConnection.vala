@@ -51,6 +51,7 @@ namespace FeedReader {
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
+		public signal void feedAdded();
 	}
 
 
@@ -116,6 +117,10 @@ namespace FeedReader {
 
 				feedDaemon_interface.setOnline.connect(() => {
 					window.setOnline();
+				});
+
+				feedDaemon_interface.feedAdded.connect(() => {
+					window.getContent().footerSetReady();
 				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);

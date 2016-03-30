@@ -17,6 +17,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	private Gtk.Box m_box;
 	private Gtk.Stack m_addStack;
+	private Gtk.Spinner m_addSpinner;
 
 	public FeedListFooter()
 	{
@@ -39,10 +40,13 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 			addPop.show();
 		});
 
-		var addSpinner = new Gtk.Spinner();
+		m_addSpinner = new Gtk.Spinner();
+		m_addSpinner.get_style_context().add_class("feedlist-spinner");
+		m_addSpinner.margin = 4;
+		m_addSpinner.start();
 		m_addStack = new Gtk.Stack();
 		m_addStack.add_named(addButton, "button");
-		m_addStack.add_named(addSpinner, "spinner");
+		m_addStack.add_named(m_addSpinner, "spinner");
 
 		var removeButton = new Gtk.Button.from_icon_name("feed-remove", Gtk.IconSize.SMALL_TOOLBAR);
 		removeButton.get_style_context().remove_class("button");
@@ -56,5 +60,18 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 		this.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false);
 		this.pack_start(m_box);
+	}
+
+	public void setBusy()
+	{
+		m_addStack.set_visible_child_name("spinner");
+		m_addStack.show_all();
+	}
+
+	public void setReady()
+	{
+		m_addStack.set_visible_child_name("button");
+		m_addSpinner.start();
+		m_addStack.show_all();
 	}
 }

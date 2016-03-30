@@ -25,6 +25,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		m_spinner = new Gtk.Spinner();
 		m_stack = new Gtk.Stack();
 		m_spinner.set_size_request(16,16);
+		m_spinner.get_style_context().add_class("feedlist-spinner");
 		this.set_relief(Gtk.ReliefStyle.NONE);
 
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.SMALL_TOOLBAR);

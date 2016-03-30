@@ -784,10 +784,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		int error = message.send();
 		message.printMessage();
 
+
 		if(error == ConnectionError.SUCCESS)
 		{
-			var response = message.get_response_object();
-			return response.get_string_member("content");
+			return message.get_response_string();
 		}
 
 		return null;

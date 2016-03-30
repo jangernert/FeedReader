@@ -630,9 +630,14 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				case Backend.TTRSS:
 					if(catID == null && newCatName != null)
-						m_ttrss.createCategory(newCatName);
-
-					m_ttrss.subscribeToFeed(feedURL, catID);
+					{
+						var newCatID = m_ttrss.createCategory(newCatName);
+						m_ttrss.subscribeToFeed(feedURL, newCatID);
+					}
+					else
+					{
+						m_ttrss.subscribeToFeed(feedURL, catID);
+					}
 					feedID = (dataBase.getHighestFeedID() + 1).to_string();
 					break;
 

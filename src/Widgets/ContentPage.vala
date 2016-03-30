@@ -332,4 +332,14 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		m_feedList.setOnline();
 	}
+
+	public void footerSetBusy()
+	{
+		m_footer.setBusy();
+	}
+
+	public void footerSetReady()
+	{
+		m_footer.setReady();
+	}
 }

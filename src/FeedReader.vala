@@ -34,45 +34,6 @@ namespace FeedReader {
 	Share share;
 
 
-	[DBus (name = "org.gnome.feedreader")]
-	interface FeedDaemon : Object {
-		public abstract void scheduleSync(int time) throws IOError;
-		public abstract void startSync() throws IOError;
-		public abstract void startInitSync() throws IOError;
-		public abstract LoginResponse login(Backend type) throws IOError;
-		public abstract LoginResponse isLoggedIn() throws IOError;
-		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
-		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
-		public abstract void markAllItemsRead() throws IOError;
-		public abstract void tagArticle(string articleID, string tagID, bool add) throws IOError;
-		public abstract void updateTagColor(string tagID, int color) throws IOError;
-		public abstract void resetDB() throws IOError;
-		public abstract string createTag(string caption) throws IOError;
-		public abstract void updateBadge() throws IOError;
-		public abstract bool supportTags() throws IOError;
-		public abstract void checkOnlineAsync() throws IOError;
-		public abstract void removeCategory(string catID) throws IOError;
-		public abstract void removeCategoryWithChildren(string catID) throws IOError;
-		public abstract void renameCategory(string catID, string newName) throws IOError;
-		public abstract void addFeed(string feedURL, string cat, bool isID) throws IOError;
-		public abstract void removeFeed(string feedID) throws IOError;
-		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
-		public abstract void renameFeed(string feedID, string newName) throws IOError;
-		public signal void syncStarted();
-		public signal void syncFinished();
-		public signal void springCleanStarted();
-		public signal void springCleanFinished();
-		public signal void newFeedList();
-		public signal void updateFeedList();
-		public signal void newArticleList();
-		public signal void updateArticleList();
-		public signal void writeInterfaceState();
-		public signal void showArticleListOverlay();
-		public signal void setOffline();
-		public signal void setOnline();
-	}
-
-
 	public class rssReaderApp : Gtk.Application {
 
 		private readerUI m_window;
@@ -105,65 +66,6 @@ namespace FeedReader {
 			}
 
 			dataBase.init();
-
-
-			try{
-				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
-
-				feedDaemon_interface.newFeedList.connect(() => {
-				    m_window.getContent().newFeedList();
-				});
-
-				feedDaemon_interface.updateFeedList.connect(() => {
-				    m_window.getContent().updateFeedList();
-				});
-
-				feedDaemon_interface.newArticleList.connect(() => {
-				    m_window.getContent().newHeadlineList();
-				});
-
-				feedDaemon_interface.updateArticleList.connect(() => {
-				    m_window.getContent().updateArticleList();
-				});
-
-				feedDaemon_interface.syncStarted.connect(() => {
-					m_window.writeInterfaceState();
-				    m_window.setRefreshButton(true);
-				});
-
-				feedDaemon_interface.syncFinished.connect(() => {
-				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
-					m_window.getContent().syncFinished();
-				    m_window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
-					m_window.setRefreshButton(false);
-				});
-
-				feedDaemon_interface.springCleanStarted.connect(() => {
-				    m_window.showSpringClean();
-				});
-
-				feedDaemon_interface.springCleanFinished.connect(() => {
-				    m_window.showContent();
-				});
-
-				feedDaemon_interface.writeInterfaceState.connect(() => {
-					m_window.writeInterfaceState();
-				});
-
-				feedDaemon_interface.showArticleListOverlay.connect(() => {
-					m_window.getContent().showArticleListOverlay();
-				});
-
-				feedDaemon_interface.setOffline.connect(() => {
-					m_window.setOffline();
-				});
-
-				feedDaemon_interface.setOnline.connect(() => {
-					m_window.setOnline();
-				});
-			}catch (IOError e) {
-				logger.print(LogMessage.ERROR, e.message);
-			}
 			base.startup();
 
 			if(GLib.Environment.get_variable("DESKTOP_SESSION") == "gnome")
@@ -193,6 +95,7 @@ namespace FeedReader {
 			}
 
 			m_window.show_all();
+			DBusConnection.setup(m_window);
 			feedDaemon_interface.updateBadge();
 			feedDaemon_interface.checkOnlineAsync();
 		}

@@ -72,6 +72,7 @@ endif(USE_WEBKIT_4)
 
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
+    src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
     src/Backends/ttrss/TTRSS_Utils.vala

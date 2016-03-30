@@ -109,5 +109,6 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 		logger.print(LogMessage.DEBUG, "addFeed: %s, %s".printf(m_urlEntry.text, catID));
 		feedDaemon_interface.addFeed(m_urlEntry.text, catID, isID);
+		this.hide();
 	}
 }

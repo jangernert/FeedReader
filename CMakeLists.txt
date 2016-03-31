@@ -107,6 +107,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/MainWindow.vala
     src/Widgets/ModeButton.vala
     src/Widgets/ReaderHeaderbar.vala
+    src/Widgets/RemovePopover.vala
     src/Widgets/ResetPage.vala
     src/Widgets/ServiceSettingsPopover.vala
     src/Widgets/ServiceSettingsRow.vala

@@ -480,7 +480,7 @@ namespace FeedReader {
 			server.addFeed.begin(feedURL, catID, newCatName, (obj, res) => {
 				server.addFeed.end(res);
 				feedAdded();
-				//startSync();
+				startSync();
 			});
 		}
 

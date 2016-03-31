@@ -52,6 +52,14 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		removeButton.get_style_context().remove_class("button");
 		removeButton.get_style_context().add_class("FeedListFooterButton");
 		removeButton.get_image().opacity = 0.8;
+		removeButton.clicked.connect(() => {
+			removeButton.get_style_context().add_class("FeedListFooterButtonPopover");
+			var removePop = new RemovePopover(removeButton, "blubb");
+			removePop.closed.connect(() => {
+				removeButton.get_style_context().remove_class("FeedListFooterButtonPopover");
+			});
+			removeButton.show();
+		});
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.pack_start(m_addStack);

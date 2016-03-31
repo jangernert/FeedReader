@@ -26,6 +26,10 @@ add_subdirectory (po)
 add_subdirectory (schemas)
 add_subdirectory (libVilistextum)
 
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.vala.in" "${CMAKE_SOURCE_DIR}/GitSHA1.vala" @ONLY)
+
 
 set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
 
@@ -47,6 +51,7 @@ link_directories(${DEPS_LIBRARY_DIRS})
 
 find_package(Vala REQUIRED)
 include(ValaVersion)
+
 ensure_vala_version("0.24" MINIMUM)
 
 set(UI_OPTIONS
@@ -72,6 +77,7 @@ endif(USE_WEBKIT_4)
 
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
+    GitSHA1.vala
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala

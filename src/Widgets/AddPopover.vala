@@ -96,6 +96,12 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 	private void addFeed()
 	{
+		if(m_urlEntry.text == "")
+		{
+			m_urlEntry.grab_focus();
+			return;
+		}
+
 		string catID = "";
 		bool isID = true;
 

@@ -164,6 +164,7 @@ namespace FeedReader {
 		if(version)
 		{
 			stdout.printf("Version: %s\n", AboutInfo.version);
+			stdout.printf("Git Commit: %s\n", g_GIT_SHA1);
 			return 0;
 		}
 

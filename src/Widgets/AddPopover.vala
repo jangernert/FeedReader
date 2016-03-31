@@ -59,8 +59,8 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		});
 		var urlLabel = new Gtk.Label(_("URL:"));
 		var catLabel = new Gtk.Label(_("Category:"));
-		urlLabel.set_xalign(1.0f);
-		catLabel.set_xalign(1.0f);
+		urlLabel.set_alignment(1.0f, 0.5f);
+		catLabel.set_alignment(1.0f, 0.5f);
 		var addButton = new Gtk.Button.with_label(_("Add"));
 		addButton.get_style_context().add_class("suggested-action");
 		addButton.halign = Gtk.Align.END;

@@ -201,8 +201,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		var menu = new GLib.Menu();
 		menu.append(_("Mark as read"), "markCatAsRead");
 		menu.append(_("Rename"), "renameCat");
-		menu.append(_("Delete"), "deleteCat");
-		menu.append(_("Delete (with Feeds)"), "deleteAllCat");
+		menu.append(_("Remove"), "deleteCat");
+		menu.append(_("Remove (with Feeds)"), "deleteAllCat");
 
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);

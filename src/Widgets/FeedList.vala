@@ -751,13 +751,13 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	public string getSelectedFeed()
+	public string? getSelectedFeed()
 	{
 		FeedRow selected_row = m_list.get_selected_row() as FeedRow;
 		if(selected_row != null)
 			return selected_row.getID();
 
-		return "0";
+		return null;
 	}
 
 
@@ -781,7 +781,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	public string getSelectedRow()
+	public string? getSelectedRow()
 	{
 		var feedrow = m_list.get_selected_row() as FeedRow;
 		var catrow = m_list.get_selected_row() as categorieRow;
@@ -800,7 +800,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			return "tag " + tagrow.getID();
 		}
 
-		return "";
+		return null;
 	}
 
 

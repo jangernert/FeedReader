@@ -18,6 +18,9 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	private Gtk.Box m_box;
 	private Gtk.Stack m_addStack;
 	private Gtk.Spinner m_addSpinner;
+	private Gtk.Button m_removeButton;
+	private FeedListType m_type;
+	private string m_id;
 
 	public FeedListFooter()
 	{
@@ -48,23 +51,23 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_addStack.add_named(addButton, "button");
 		m_addStack.add_named(m_addSpinner, "spinner");
 
-		var removeButton = new Gtk.Button.from_icon_name("feed-remove", Gtk.IconSize.SMALL_TOOLBAR);
-		removeButton.get_style_context().remove_class("button");
-		removeButton.get_style_context().add_class("FeedListFooterButton");
-		removeButton.get_image().opacity = 0.8;
-		removeButton.clicked.connect(() => {
-			removeButton.get_style_context().add_class("FeedListFooterButtonPopover");
-			var removePop = new RemovePopover(removeButton, "blubb");
+		m_removeButton = new Gtk.Button.from_icon_name("feed-remove", Gtk.IconSize.SMALL_TOOLBAR);
+		m_removeButton.get_style_context().remove_class("button");
+		m_removeButton.get_style_context().add_class("FeedListFooterButton");
+		m_removeButton.get_image().opacity = 0.8;
+		m_removeButton.clicked.connect(() => {
+			m_removeButton.get_style_context().add_class("FeedListFooterButtonPopover");
+			var removePop = new RemovePopover(m_removeButton, m_type, m_id);
 			removePop.closed.connect(() => {
-				removeButton.get_style_context().remove_class("FeedListFooterButtonPopover");
+				m_removeButton.get_style_context().remove_class("FeedListFooterButtonPopover");
 			});
-			removeButton.show();
+			m_removeButton.show();
 		});
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.pack_start(m_addStack);
 		m_box.pack_start(new Gtk.Separator(Gtk.Orientation.VERTICAL), false, false);
-		m_box.pack_start(removeButton);
+		m_box.pack_start(m_removeButton);
 
 		this.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false);
 		this.pack_start(m_box);
@@ -81,5 +84,16 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_addStack.set_visible_child_name("button");
 		m_addSpinner.start();
 		m_addStack.show_all();
+	}
+
+	public void setRemoveButtonSensitive(bool sensitive)
+	{
+		m_removeButton.set_sensitive(sensitive);
+	}
+
+	public void setSelectedRow(FeedListType type, string id)
+	{
+		m_type = type;
+		m_id = id;
 	}
 }

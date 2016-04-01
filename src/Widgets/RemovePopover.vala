@@ -15,12 +15,32 @@
 
 public class FeedReader.RemovePopover : Gtk.Popover {
 
-	public RemovePopover(Gtk.Widget parent, string name)
+	public RemovePopover(Gtk.Widget parent, FeedListType type, string id)
 	{
 		this.relative_to = parent;
 		this.position = Gtk.PositionType.TOP;
 
-		var removeButton = new Gtk.Button.with_label("Remove " + name);
+		string name = "ERROR!!!111eleven";
+
+		switch(type)
+		{
+			case FeedListType.TAG:
+				var tag = dataBase.read_tag(id);
+				name = tag.getTitle();
+				break;
+
+			case FeedListType.FEED:
+				var feed = dataBase.read_feed(id);
+				name = feed.getTitle();
+				break;
+
+			case FeedListType.CATEGORY:
+				var cat = dataBase.read_category(id);
+				name = cat.getTitle();
+				break;
+		}
+
+		var removeButton = new Gtk.Button.with_label(_("Remove \"%s\"").printf(name));
 		removeButton.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
 		removeButton.clicked.connect(removeFeed);
 		removeButton.margin = 10;

@@ -46,13 +46,24 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
 			m_articleList.newHeadlineList();
-		});
+
+			if(feedID == FeedID.ALL)
+			{
+				m_footer.setRemoveButtonSensitive(false);
+			}
+			else
+			{
+				m_footer.setRemoveButtonSensitive(true);
+				m_footer.setSelectedRow(FeedListType.FEED, feedID);
+			}
+ 		});
 
 		m_feedList.newTagSelected.connect((tagID) => {
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
 			m_articleList.newHeadlineList();
+			m_footer.setRemoveButtonSensitive(false);
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
@@ -60,6 +71,16 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
 			m_articleList.newHeadlineList();
+
+			if(categorieID != CategoryID.MASTER && categorieID != CategoryID.TAGS)
+			{
+				m_footer.setRemoveButtonSensitive(true);
+				m_footer.setSelectedRow(FeedListType.CATEGORY, categorieID);
+			}
+			else
+			{
+				m_footer.setRemoveButtonSensitive(false);
+			}
 		});
 
 		m_feedList.markAllArticlesAsRead.connect(markAllArticlesAsRead);

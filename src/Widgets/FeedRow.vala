@@ -189,7 +189,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		menu.append(_("Rename"), "renameFeed");
 		if(catCount > 1)
 			menu.append(_("Remove only from %s").printf(cat.getTitle()), "deleteFeed");
-		menu.append(_("Delete"), "deleteFeed");
+		menu.append(_("Remove"), "deleteFeed");
 
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);

@@ -114,6 +114,14 @@ public class FeedReader.feedList : Gtk.Stack {
 		});
 	}
 
+	public void collapseSelectedCat()
+	{
+		categorieRow selected_categorie = m_list.get_selected_row() as categorieRow;
+		if(selected_categorie != null && selected_categorie.isExpanded())
+		{
+			selected_categorie.expand_collapse();
+		}
+	}
 
 	private void move(bool down)
 	{
@@ -661,7 +669,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	private void collapseCategorie(string catID)
+	public void collapseCategorie(string catID)
 	{
 		var FeedChildList = m_list.get_children();
 

@@ -15,27 +15,32 @@
 
 public class FeedReader.RemovePopover : Gtk.Popover {
 
+	private string m_id;
+	private FeedListType m_type;
+
 	public RemovePopover(Gtk.Widget parent, FeedListType type, string id)
 	{
 		this.relative_to = parent;
 		this.position = Gtk.PositionType.TOP;
+		m_type = type;
+		m_id = id;
 
 		string name = "ERROR!!!111eleven";
 
-		switch(type)
+		switch(m_type)
 		{
 			case FeedListType.TAG:
-				var tag = dataBase.read_tag(id);
+				var tag = dataBase.read_tag(m_id);
 				name = tag.getTitle();
 				break;
 
 			case FeedListType.FEED:
-				var feed = dataBase.read_feed(id);
+				var feed = dataBase.read_feed(m_id);
 				name = feed.getTitle();
 				break;
 
 			case FeedListType.CATEGORY:
-				var cat = dataBase.read_category(id);
+				var cat = dataBase.read_category(m_id);
 				name = cat.getTitle();
 				break;
 		}
@@ -50,6 +55,15 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	public void removeFeed()
 	{
-
+		if(m_type == FeedListType.CATEGORY)
+		{
+			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			if(window != null)
+			{
+				window.getContent().getFeedList().collapseSelectedCat();
+			}
+		}
+		
+		this.hide();
 	}
 }

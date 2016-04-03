@@ -363,4 +363,9 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	{
 		m_footer.setReady();
 	}
+
+	public feedList getFeedList()
+	{
+		return m_feedList;
+	}
 }

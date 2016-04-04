@@ -216,7 +216,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 	private void showPopoverStyle()
 	{
-		this.get_style_context().remove_class("feed-list-row");
+		//this.get_style_context().remove_class("feed-list-row");
 
 		if(this.is_selected())
 			this.get_style_context().add_class("feed-list-row-selected-popover");
@@ -231,7 +231,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		else
 			this.get_style_context().remove_class("feed-list-row-popover");
 
-		this.get_style_context().add_class("feed-list-row");
+		//this.get_style_context().add_class("feed-list-row");
 	}
 
 	private void showRenamePopover()

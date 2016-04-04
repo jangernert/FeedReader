@@ -26,7 +26,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		this.border_width = 20;
         this.set_transient_for(parent);
         this.set_modal(true);
-		set_default_size(440, 415);
+		set_default_size(460, 415);
 
         var stack = new Gtk.Stack();
         stack.set_transition_duration(50);

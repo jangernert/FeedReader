@@ -140,8 +140,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
 		this.show_all();
 
-		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS
-		&& !settings_state.get_boolean("spring-cleaning"))
+		if(feedDaemon_interface.isOnline() && !settings_state.get_boolean("spring-cleaning"))
 		{
 			loadContent();
 		}

@@ -86,6 +86,8 @@ namespace FeedReader {
 		public override void activate()
 		{
 			base.activate();
+			var connection = new DBusConnection();
+
 			if (m_window == null)
 			{
 				m_window = new readerUI(this);
@@ -95,7 +97,7 @@ namespace FeedReader {
 			}
 
 			m_window.show_all();
-			DBusConnection.setup(m_window);
+			connection.setup(m_window);
 			feedDaemon_interface.updateBadge();
 			feedDaemon_interface.checkOnlineAsync();
 		}

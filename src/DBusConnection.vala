@@ -22,6 +22,7 @@ namespace FeedReader {
 		public abstract void startInitSync() throws IOError;
 		public abstract LoginResponse login(Backend type) throws IOError;
 		public abstract LoginResponse isLoggedIn() throws IOError;
+		public abstract bool isOnline() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void markAllItemsRead() throws IOError;
@@ -59,73 +60,70 @@ namespace FeedReader {
 
 		public DBusConnection()
 		{
-
-		}
-
-		public static void setup(readerUI window)
-		{
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
-
-				feedDaemon_interface.newFeedList.connect(() => {
-				    window.getContent().newFeedList();
-				});
-
-				feedDaemon_interface.updateFeedList.connect(() => {
-				    window.getContent().updateFeedList();
-				});
-
-				feedDaemon_interface.newArticleList.connect(() => {
-				    window.getContent().newHeadlineList();
-				});
-
-				feedDaemon_interface.updateArticleList.connect(() => {
-				    window.getContent().updateArticleList();
-				});
-
-				feedDaemon_interface.syncStarted.connect(() => {
-					window.writeInterfaceState();
-				    window.setRefreshButton(true);
-				});
-
-				feedDaemon_interface.syncFinished.connect(() => {
-				    logger.print(LogMessage.DEBUG, "sync finished -> update ui");
-					window.getContent().syncFinished();
-				    window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
-					window.setRefreshButton(false);
-				});
-
-				feedDaemon_interface.springCleanStarted.connect(() => {
-				    window.showSpringClean();
-				});
-
-				feedDaemon_interface.springCleanFinished.connect(() => {
-				    window.showContent();
-				});
-
-				feedDaemon_interface.writeInterfaceState.connect(() => {
-					window.writeInterfaceState();
-				});
-
-				feedDaemon_interface.showArticleListOverlay.connect(() => {
-					window.getContent().showArticleListOverlay();
-				});
-
-				feedDaemon_interface.setOffline.connect(() => {
-					window.setOffline();
-				});
-
-				feedDaemon_interface.setOnline.connect(() => {
-					window.setOnline();
-				});
-
-				feedDaemon_interface.feedAdded.connect(() => {
-					window.getContent().footerSetReady();
-				});
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);
 			}
 		}
 
+		public void setup(readerUI window)
+		{
+			feedDaemon_interface.newFeedList.connect(() => {
+				window.getContent().newFeedList();
+			});
+
+			feedDaemon_interface.updateFeedList.connect(() => {
+				window.getContent().updateFeedList();
+			});
+
+			feedDaemon_interface.newArticleList.connect(() => {
+				window.getContent().newHeadlineList();
+			});
+
+			feedDaemon_interface.updateArticleList.connect(() => {
+				window.getContent().updateArticleList();
+			});
+
+			feedDaemon_interface.syncStarted.connect(() => {
+				window.writeInterfaceState();
+				window.setRefreshButton(true);
+			});
+
+			feedDaemon_interface.syncFinished.connect(() => {
+				logger.print(LogMessage.DEBUG, "sync finished -> update ui");
+				window.getContent().syncFinished();
+				window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
+				window.setRefreshButton(false);
+			});
+
+			feedDaemon_interface.springCleanStarted.connect(() => {
+				window.showSpringClean();
+			});
+
+			feedDaemon_interface.springCleanFinished.connect(() => {
+				window.showContent();
+			});
+
+			feedDaemon_interface.writeInterfaceState.connect(() => {
+				window.writeInterfaceState();
+			});
+
+			feedDaemon_interface.showArticleListOverlay.connect(() => {
+				window.getContent().showArticleListOverlay();
+			});
+
+			feedDaemon_interface.setOffline.connect(() => {
+				window.setOffline();
+			});
+
+			feedDaemon_interface.setOnline.connect(() => {
+				window.setOnline();
+			});
+
+			feedDaemon_interface.feedAdded.connect(() => {
+				window.getContent().footerSetReady();
+			});
+		}
 	}
 }

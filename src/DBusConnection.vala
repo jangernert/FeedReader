@@ -60,6 +60,11 @@ namespace FeedReader {
 
 		public DBusConnection()
 		{
+
+		}
+
+		public static void setup()
+		{
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync (BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
 			}catch (IOError e) {
@@ -67,7 +72,7 @@ namespace FeedReader {
 			}
 		}
 
-		public void setup(readerUI window)
+		public static void connectSignals(readerUI window)
 		{
 			feedDaemon_interface.newFeedList.connect(() => {
 				window.getContent().newFeedList();
@@ -125,5 +130,6 @@ namespace FeedReader {
 				window.getContent().footerSetReady();
 			});
 		}
+
 	}
 }

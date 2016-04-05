@@ -895,4 +895,47 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 	}
 
+	public void revealRow(string id, FeedListType type, bool reveal, uint time)
+	{
+		var FeedChildList = m_list.get_children();
+
+		switch(type)
+		{
+			case FeedListType.CATEGORY:
+				foreach(Gtk.Widget row in FeedChildList)
+				{
+					var tmpRow = row as categorieRow;
+					if(tmpRow != null && tmpRow.getID() == id)
+					{
+						tmpRow.reveal(false, time);
+						return;
+					}
+				}
+				break;
+			case FeedListType.FEED:
+				foreach(Gtk.Widget row in FeedChildList)
+				{
+					var tmpRow = row as FeedRow;
+					if(tmpRow != null && tmpRow.getID() == id)
+					{
+						tmpRow.reveal(false, time);
+						return;
+					}
+				}
+				break;
+			case FeedListType.TAG:
+				foreach(Gtk.Widget row in FeedChildList)
+				{
+					var tmpRow = row as TagRow;
+					if(tmpRow != null && tmpRow.getID() == id)
+					{
+						tmpRow.reveal(false, time);
+						return;
+					}
+				}
+				break;
+		}
+
+	}
+
 }

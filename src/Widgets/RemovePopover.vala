@@ -55,15 +55,37 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	public void removeFeed()
 	{
+		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		var feedList = window.getContent().getFeedList();
+
 		if(m_type == FeedListType.CATEGORY)
 		{
-			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
-			if(window != null)
-			{
-				window.getContent().getFeedList().collapseSelectedCat();
-			}
+			feedList.collapseSelectedCat();
+			feedList.selectDefaultRow();
 		}
-		
+
+		uint time = 300;
+		feedList.revealRow(m_id, m_type, false, time);
+
+		GLib.Timeout.add(time, () => {
+			switch(m_type)
+			{
+				case FeedListType.TAG:
+					// FIXME
+					break;
+
+				case FeedListType.FEED:
+					feedDaemon_interface.removeFeed(m_id);
+					break;
+
+				case FeedListType.CATEGORY:
+					feedDaemon_interface.removeCategory(m_id);
+					break;
+			}
+
+			return false;
+		});
+
 		this.hide();
 	}
 }

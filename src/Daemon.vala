@@ -222,6 +222,10 @@ namespace FeedReader {
 				settings_general.set_enum("account-type", type);
 				setOnline();
 			}
+			else if(m_loggedin == LoginResponse.NO_BACKEND)
+			{
+				// do nothing
+			}
 			else
 			{
 				setOffline();

@@ -557,6 +557,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					if(tmpRow.getID() == CategoryID.TAGS)
 					{
 						var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
+						tagrow.selectDefaultRow.connect(selectDefaultRow);
 						m_list.insert(tagrow, pos);
 						tagrow.reveal(true);
 						break;

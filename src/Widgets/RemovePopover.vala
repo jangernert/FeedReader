@@ -71,7 +71,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 			switch(m_type)
 			{
 				case FeedListType.TAG:
-					// FIXME
+					feedDaemon_interface.deleteTag(m_id);
 					break;
 
 				case FeedListType.FEED:

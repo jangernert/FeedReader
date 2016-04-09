@@ -344,14 +344,28 @@ namespace FeedReader {
 							server.deleteTag.end(res);
 						});
 
-						dataBase.dropTag(tagID);
-						newFeedList();
+						dataBase.dropTag.begin(tagID, (obj, res) => {
+							dataBase.dropTag.end(res);
+							newFeedList();
+						});
 					}
 				}
 			}
 
 			logger.print(LogMessage.DEBUG, "daemon: set tag string: " + tags);
 			dataBase.set_article_tags(articleID, tags);
+		}
+
+		public void deleteTag(string tagID)
+		{
+			server.deleteTag.begin(tagID, (obj, res) => {
+				server.deleteTag.end(res);
+			});
+
+			dataBase.dropTag.begin(tagID, (obj, res) => {
+				dataBase.dropTag.end(res);
+				newFeedList();
+			});
 		}
 
 		public void updateTagColor(string tagID, int color)

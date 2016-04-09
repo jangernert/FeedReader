@@ -63,7 +63,8 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
 			m_articleList.newHeadlineList();
-			m_footer.setRemoveButtonSensitive(false);
+			m_footer.setRemoveButtonSensitive(true);
+			m_footer.setSelectedRow(FeedListType.TAG, tagID);
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {

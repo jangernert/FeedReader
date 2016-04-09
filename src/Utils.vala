@@ -56,7 +56,7 @@ public class FeedReader.Utils : GLib.Object {
 					output = output.replace("\n"," ");
 					output = output.replace("_"," ");
 
-					Article.setPreview(output);
+					Article.setPreview(output.chug());
 				}
 				else
 				{

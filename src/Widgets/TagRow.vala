@@ -25,8 +25,10 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private Gtk.Revealer m_revealer;
 	private Gtk.Label m_unread;
 	private uint m_unread_count;
+	private Gtk.EventBox m_eventBox;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
+	public signal void selectDefaultRow();
 
 
 	public TagRow (string name, string tagID, int color)
@@ -67,8 +69,72 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
-		this.add(m_revealer);
+
+		m_eventBox = new Gtk.EventBox();
+		m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_eventBox.button_press_event.connect(onClick);
+		m_eventBox.add(m_revealer);
+
+		this.add(m_eventBox);
 		this.show_all();
+	}
+
+	private bool onClick(Gdk.EventButton event)
+	{
+		// only right click allowed
+		if(event.button != 3)
+			return false;
+
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
+
+		var remove_action = new GLib.SimpleAction("deleteTag", null);
+		remove_action.activate.connect(() => {
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+			GLib.Timeout.add(time, () => {
+			    feedDaemon_interface.deleteTag(m_tagID);
+				return false;
+			});
+		});
+		var app = (rssReaderApp)GLib.Application.get_default();
+		app.add_action(remove_action);
+
+		var menu = new GLib.Menu();
+		menu.append(_("Remove"), "deleteTag");
+
+		var pop = new Gtk.Popover(this);
+		pop.set_position(Gtk.PositionType.BOTTOM);
+		pop.bind_model(menu, "app");
+		pop.closed.connect(closePopoverStyle);
+		pop.show();
+		showPopoverStyle();
+
+		return true;
+	}
+
+	private void closePopoverStyle()
+	{
+		if(this.is_selected())
+			this.get_style_context().remove_class("feed-list-row-selected-popover");
+		else
+			this.get_style_context().remove_class("feed-list-row-popover");
+	}
+
+	private void showPopoverStyle()
+	{
+		if(this.is_selected())
+			this.get_style_context().add_class("feed-list-row-selected-popover");
+		else
+			this.get_style_context().add_class("feed-list-row-popover");
 	}
 
 	public void update(string name)

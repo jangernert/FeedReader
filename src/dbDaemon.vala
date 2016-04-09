@@ -98,40 +98,48 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Utils.remove_directory(folder_path);
     }
 
-    public void dropTag(string tagID)
+    public async void dropTag(string tagID)
     {
-        var query = new QueryBuilder(QueryType.DELETE, "main.tags");
-        query.addEqualsCondition("tagID", tagID, true, true);
-        executeSQL(query.build());
+        SourceFunc callback = dropTag.callback;
+        ThreadFunc<void*> run = () => {
+            var query = new QueryBuilder(QueryType.DELETE, "main.tags");
+            query.addEqualsCondition("tagID", tagID, true, true);
+            executeSQL(query.build());
 
-        query = new QueryBuilder(QueryType.SELECT, "main.articles");
-        query.selectField("tags");
-        query.selectField("articleID");
-        query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
-        query.build();
+            query = new QueryBuilder(QueryType.SELECT, "main.articles");
+            query.selectField("tags");
+            query.selectField("articleID");
+            query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
+            query.build();
 
-        Sqlite.Statement stmt;
-        int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-        if (ec != Sqlite.OK) {
-            error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
-        }
-        while (stmt.step () == Sqlite.ROW) {
-            string old_tags = stmt.column_text(0);
-            string articleID = stmt.column_text(1);
-            string new_tags = "";
-            var tagArray = old_tags.split(",");
-            foreach(string tag in tagArray)
-            {
-                tag = tag.strip();
-                if(tag != "" && tag != tagID)
-                    new_tags += "tag" + ",";
+            Sqlite.Statement stmt;
+            int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+            if (ec != Sqlite.OK) {
+                error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
             }
 
-            query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-            query.updateValuePair("tags", "\"%s\"".printf(new_tags));
-            query.addEqualsCondition("articleID", articleID, true, true);
-            executeSQL(query.build());
-        }
+            while (stmt.step () == Sqlite.ROW) {
+                string old_tags = stmt.column_text(0);
+                string articleID = stmt.column_text(1);
+                string new_tags = "";
+                var tagArray = old_tags.split(",");
+                foreach(string tag in tagArray)
+                {
+                    tag = tag.strip();
+                    if(tag != "" && tag != tagID)
+                        new_tags += "tag" + ",";
+                }
+
+                query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+                query.updateValuePair("tags", "\"%s\"".printf(new_tags));
+                query.addEqualsCondition("articleID", articleID, true, true);
+                executeSQL(query.build());
+            }
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("dropTag", run);
+        yield;
     }
 
     public void write_feeds(Gee.LinkedList<feed> feeds)

@@ -149,7 +149,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			});
 		});
 		var remove_only_action = new GLib.SimpleAction("deleteOnlyFeed", null);
-		remove_action.activate.connect(() => {
+		remove_only_action.activate.connect(() => {
 			if(this.is_selected())
 				selectDefaultRow();
 

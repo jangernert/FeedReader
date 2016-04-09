@@ -28,6 +28,7 @@ namespace FeedReader {
 		public abstract void markAllItemsRead() throws IOError;
 		public abstract void tagArticle(string articleID, string tagID, bool add) throws IOError;
 		public abstract void deleteTag(string tagID) throws IOError;
+		public abstract void renameTag(string tagID, string newName) throws IOError;
 		public abstract void updateTagColor(string tagID, int color) throws IOError;
 		public abstract void resetDB() throws IOError;
 		public abstract string createTag(string caption) throws IOError;

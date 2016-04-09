@@ -105,10 +105,14 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 				return false;
 			});
 		});
+		var rename_action = new GLib.SimpleAction("renameTag", null);
+		rename_action.activate.connect(showRenamePopover);
 		var app = (rssReaderApp)GLib.Application.get_default();
+		app.add_action(rename_action);
 		app.add_action(remove_action);
 
 		var menu = new GLib.Menu();
+		menu.append(_("Rename"), "renameTag");
 		menu.append(_("Remove"), "deleteTag");
 
 		var pop = new Gtk.Popover(this);
@@ -178,6 +182,36 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			m_revealer.set_transition_duration(duration);
 			m_revealer.set_reveal_child(reveal);
 		}
+	}
+
+	private void showRenamePopover()
+	{
+		var popRename = new Gtk.Popover(this);
+		popRename.set_position(Gtk.PositionType.BOTTOM);
+		popRename.closed.connect(closePopoverStyle);
+
+		var renameEntry = new Gtk.Entry();
+		renameEntry.set_text(m_name);
+		renameEntry.activate.connect(() => {
+			popRename.hide();
+			feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+		});
+
+		var renameButton = new Gtk.Button.with_label(_("rename"));
+		renameButton.get_style_context().add_class("suggested-action");
+		renameButton.clicked.connect(() => {
+			popRename.hide();
+			feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+		});
+
+		var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		renameBox.margin = 5;
+		renameBox.pack_start(renameEntry, true, true, 0);
+		renameBox.pack_start(renameButton, false, false, 0);
+
+		popRename.add(renameBox);
+		popRename.show_all();
+		showPopoverStyle();
 	}
 
 }

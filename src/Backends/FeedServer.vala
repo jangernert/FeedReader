@@ -598,6 +598,34 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
+	public async void renameTag(string tagID, string title)
+	{
+		if(m_offline)
+			return;
+
+		SourceFunc callback = renameTag.callback;
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					// FIXME
+					break;
+
+				case Backend.FEEDLY:
+					m_feedly.renameTag(tagID, title);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.renameTag(tagID, title);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("renameTag", run);
+		yield;
+	}
 
 	public bool serverAvailable()
 	{

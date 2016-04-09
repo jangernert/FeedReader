@@ -698,6 +698,18 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
+    public async void rename_tag(string tagID, string newName)
+    {
+        SourceFunc callback = rename_tag.callback;
+        ThreadFunc<void*> run = () => {
+            executeSQL("UPDATE tags SET title = \"%s\" WHERE tagID = \"%s\"".printf(newName, tagID));
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("rename_tag", run);
+        yield;
+    }
+
     public async void removeCatFromFeed(string feedID, string catID)
     {
         SourceFunc callback = removeCatFromFeed.callback;

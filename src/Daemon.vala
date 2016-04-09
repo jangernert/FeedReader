@@ -356,6 +356,18 @@ namespace FeedReader {
 			dataBase.set_article_tags(articleID, tags);
 		}
 
+		public void renameTag(string tagID, string newName)
+		{
+			server.renameTag.begin(tagID, newName, (obj, res) => {
+				server.renameTag.end(res);
+			});
+
+			dataBase.rename_tag.begin(tagID, newName, (obj, res) => {
+				dataBase.rename_tag.end(res);
+				newFeedList();
+			});
+		}
+
 		public void deleteTag(string tagID)
 		{
 			server.deleteTag.begin(tagID, (obj, res) => {

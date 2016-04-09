@@ -596,6 +596,16 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_post_request_to_feedly("/v3/categories/" + catID, root);
 	}
 
+	public void renameTag(string tagID, string title)
+	{
+		Json.Object object = new Json.Object();
+		object.set_string_member("label", title);
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(object);
+
+		m_connection.send_post_request_to_feedly("/v3/tags/" + tagID, root);
+	}
+
 	public void removeCategory(string catID)
 	{
 		m_connection.send_delete_request_to_feedly("/v3/categories/" + catID);

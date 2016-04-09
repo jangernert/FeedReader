@@ -179,3 +179,14 @@ GtkScrolledWindow GtkViewport.servicebox {
 .small {
 	font-size: x-small;
 }
+
+/*--------------------DnD----------------------*/
+.drag-articlerow {
+	background: mix(@theme_bg_color, @theme_fg_color, 0.3);
+}
+
+
+
+
+/*---------------------------------------------*/
+

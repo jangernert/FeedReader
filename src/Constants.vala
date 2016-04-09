@@ -44,6 +44,11 @@ namespace FeedReader {
 		MARKED
 	}
 
+	public enum DragTarget {
+	    INT32,
+	    STRING
+	}
+
 	public enum ConsoleColor {
         BLACK,
         RED,

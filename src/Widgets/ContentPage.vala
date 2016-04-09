@@ -88,6 +88,13 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 
 		m_articleList = new articleList();
+		m_articleList.drag_started.connect(() => {
+			m_feedList.expandCategorie(CategoryID.TAGS);
+			m_feedList.collapseCategorie(CategoryID.MASTER);
+		});
+		m_articleList.drag_finished.connect(() => {
+			m_feedList.expandCategorie(CategoryID.MASTER);
+		});
 		setArticleListState((ArticleListState)settings_state.get_enum("show-articles"));
 
 		m_pane.pack2(m_articleList, false, false);

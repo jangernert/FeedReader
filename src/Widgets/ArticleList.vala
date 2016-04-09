@@ -49,6 +49,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private uint m_helperCounter2 = 0;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
+	public signal void drag_started();
+	public signal void drag_finished();
 
 
 	public articleList () {
@@ -593,6 +595,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 						var tmpRow = new articleRow(item);
 						tmpRow.ArticleStateChanged.connect(rowStateChanged);
+						tmpRow.drag_started.connect(() => {drag_started();});
+						tmpRow.drag_finished.connect(() => {drag_finished();});
 
 						while(Gtk.events_pending())
 						{
@@ -789,6 +793,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 				bool added = false;
 				newRow.setUpdated(true);
 				newRow.ArticleStateChanged.connect(rowStateChanged);
+				newRow.drag_started.connect(() => {drag_started();});
+				newRow.drag_finished.connect(() => {drag_finished();});
 
 				if(articleChildList == null)
 				{

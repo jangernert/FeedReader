@@ -714,7 +714,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	private void expandCategorie(string catID)
+	public void expandCategorie(string catID)
 	{
 		var FeedChildList = m_list.get_children();
 

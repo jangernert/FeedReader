@@ -31,6 +31,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_row;
 	public signal void ArticleStateChanged(ArticleStatus status);
 	public signal void child_revealed();
+	public signal void drag_started();
+	public signal void drag_finished();
 
 	private const Gtk.TargetEntry[] target_list = {
 	    { "STRING",     0, DragTarget.STRING }
@@ -192,17 +194,21 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		this.show_all();
 
 		// Make the this widget a DnD source.
-        Gtk.drag_source_set (
-                this,
-                Gdk.ModifierType.BUTTON1_MASK,
-                target_list,
-                Gdk.DragAction.LINK
-        );
 
-		this.drag_begin.connect(onDragBegin);
-        this.drag_data_get.connect(onDragDataGet);
-        this.drag_data_delete.connect(onDragDataDelete);
-        this.drag_end.connect(onDragEnd);
+		if(!settings_general.get_boolean("only-feeds"))
+		{
+			Gtk.drag_source_set (
+	                this,
+	                Gdk.ModifierType.BUTTON1_MASK,
+	                target_list,
+	                Gdk.DragAction.LINK
+	        );
+
+			this.drag_begin.connect(onDragBegin);
+	        this.drag_data_get.connect(onDragDataGet);
+	        this.drag_data_delete.connect(onDragDataDelete);
+	        this.drag_end.connect(onDragEnd);
+		}
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
@@ -210,6 +216,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragBegin");
 		this.get_style_context().add_class("drag-articlerow");
 		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
+		drag_started();
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
@@ -226,6 +233,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragEnd");
 		this.get_style_context().remove_class("drag-articlerow");
+		drag_finished();
 	}
 
 	private Gtk.Image getFeedIcon()

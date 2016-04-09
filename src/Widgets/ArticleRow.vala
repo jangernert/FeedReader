@@ -201,7 +201,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	                this,
 	                Gdk.ModifierType.BUTTON1_MASK,
 	                target_list,
-	                Gdk.DragAction.LINK
+	                Gdk.DragAction.COPY
 	        );
 
 			this.drag_begin.connect(onDragBegin);
@@ -222,6 +222,15 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataGet");
+
+		if(target_type == DragTarget.STRING)
+		{
+			selection_data.set_text(m_article.getArticleID(), -1);
+		}
+		else
+		{
+			selection_data.set_text("ERROR!!!!!1111eleven", -1);
+		}
 	}
 
 	private void onDragDataDelete(Gtk.Widget widget, Gdk.DragContext context)

@@ -84,10 +84,9 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		// Make this widget a DnD destination.
         Gtk.drag_dest_set (
                 this,
-                Gtk.DestDefaults.MOTION
-                | Gtk.DestDefaults.HIGHLIGHT,
+                Gtk.DestDefaults.MOTION,
                 target_list,
-                Gdk.DragAction.LINK
+                Gdk.DragAction.COPY
         );
 
         // All possible destination signals
@@ -99,23 +98,47 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
+		showPopoverStyle();
         return false;
     }
 
 	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
 	{
-        logger.print(LogMessage.DEBUG, "TagRow: onDragLeave");
+        closePopoverStyle();
     }
 
 	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
-        return true;
+		bool is_valid_drop_site = true;
+
+        // If the source offers a target
+        if(context.list_targets() != null)
+		{
+            var target_type = (Gdk.Atom)context.list_targets().nth_data(0);
+
+            // Request the data from the source.
+            Gtk.drag_get_data(widget, context, target_type, time);
+        }
+		else
+		{
+            is_valid_drop_site = false;
+        }
+
+        return is_valid_drop_site;
     }
 
-	private void onDragDataReceived (Gtk.Widget widget, Gdk.DragContext context, int x, int y,
+	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
                                         Gtk.SelectionData selection_data, uint target_type, uint time)
     {
-        Gtk.drag_finish (context, false, true, time);
+		if(selection_data != null
+		&& selection_data.get_length() >= 0
+		&& target_type == DragTarget.STRING)
+		{
+			logger.print(LogMessage.DEBUG, "drag articleID: " + (string)selection_data.get_data());
+			feedDaemon_interface.tagArticle((string)selection_data.get_data(), m_tagID, true);
+        }
+
+        Gtk.drag_finish(context, true, false, time);
     }
 
 	private bool onClick(Gdk.EventButton event)

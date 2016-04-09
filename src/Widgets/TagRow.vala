@@ -30,6 +30,9 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	public string m_tagID { get; private set; }
 	public signal void selectDefaultRow();
 
+	private const Gtk.TargetEntry[] target_list = {
+	    { "STRING",     0, DragTarget.STRING }
+	};
 
 	public TagRow (string name, string tagID, int color)
 	{
@@ -77,7 +80,43 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 		this.add(m_eventBox);
 		this.show_all();
+
+		// Make this widget a DnD destination.
+        Gtk.drag_dest_set (
+                this,
+                Gtk.DestDefaults.MOTION
+                | Gtk.DestDefaults.HIGHLIGHT,
+                target_list,
+                Gdk.DragAction.LINK
+        );
+
+        // All possible destination signals
+        this.drag_motion.connect(onDragMotion);
+        this.drag_leave.connect(onDragLeave);
+        this.drag_drop.connect(onDragDrop);
+        this.drag_data_received.connect(onDragDataReceived);
 	}
+
+	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
+    {
+        return false;
+    }
+
+	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
+	{
+        logger.print(LogMessage.DEBUG, "TagRow: onDragLeave");
+    }
+
+	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
+    {
+        return true;
+    }
+
+	private void onDragDataReceived (Gtk.Widget widget, Gdk.DragContext context, int x, int y,
+                                        Gtk.SelectionData selection_data, uint target_type, uint time)
+    {
+        Gtk.drag_finish (context, false, true, time);
+    }
 
 	private bool onClick(Gdk.EventButton event)
 	{

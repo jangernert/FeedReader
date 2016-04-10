@@ -29,6 +29,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
 	public signal void selectDefaultRow();
+	public signal void removeRow();
 
 	private const Gtk.TargetEntry[] target_list = {
 	    { "STRING",     0, DragTarget.TAGID }
@@ -253,7 +254,14 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	{
 		var popRename = new Gtk.Popover(this);
 		popRename.set_position(Gtk.PositionType.BOTTOM);
-		popRename.closed.connect(closePopoverStyle);
+		popRename.closed.connect(() => {
+			closePopoverStyle();
+			if(m_tagID == TagID.NEW && context != null)
+			{
+				removeRow();
+				Gtk.drag_finish(context, true, false, time);
+			}
+		});
 
 		var renameEntry = new Gtk.Entry();
 		renameEntry.set_text(m_name);

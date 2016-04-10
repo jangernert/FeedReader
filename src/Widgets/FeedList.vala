@@ -549,6 +549,9 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
 				tagrow.selectDefaultRow.connect(selectDefaultRow);
+				tagrow.removeRow.connect(() => {
+					removeRow(tagrow);
+				});
 				m_list.insert(tagrow, -1);
 				tagrow.reveal(true);
 			}
@@ -945,6 +948,9 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		var tagrow = new TagRow (_("New Tag"), TagID.NEW, 0);
 		tagrow.selectDefaultRow.connect(selectDefaultRow);
+		tagrow.removeRow.connect(() => {
+			removeRow(tagrow);
+		});
 		m_list.insert(tagrow, -1);
 		tagrow.reveal(true, 250);
 		tagrow.opacity = 0.5;

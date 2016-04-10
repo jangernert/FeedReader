@@ -31,7 +31,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	public signal void selectDefaultRow();
 
 	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.STRING }
+	    { "STRING",     0, DragTarget.TAGID }
 	};
 
 	public TagRow (string name, string tagID, int color)
@@ -109,8 +109,6 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
-		bool is_valid_drop_site = true;
-
         // If the source offers a target
         if(context.list_targets() != null)
 		{
@@ -118,27 +116,30 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
             // Request the data from the source.
             Gtk.drag_get_data(widget, context, target_type, time);
-        }
-		else
-		{
-            is_valid_drop_site = false;
+			return true;
         }
 
-        return is_valid_drop_site;
+		return false;
     }
 
 	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
-                                        Gtk.SelectionData selection_data, uint target_type, uint time)
+                                    Gtk.SelectionData selection_data, uint target_type, uint time)
     {
 		if(selection_data != null
 		&& selection_data.get_length() >= 0
-		&& target_type == DragTarget.STRING)
+		&& target_type == DragTarget.TAGID)
 		{
-			logger.print(LogMessage.DEBUG, "drag articleID: " + (string)selection_data.get_data());
-			feedDaemon_interface.tagArticle((string)selection_data.get_data(), m_tagID, true);
+			if(m_tagID != TagID.NEW)
+			{
+				logger.print(LogMessage.DEBUG, "drag articleID: " + (string)selection_data.get_data());
+				feedDaemon_interface.tagArticle((string)selection_data.get_data(), m_tagID, true);
+				Gtk.drag_finish(context, true, false, time);
+			}
+			else
+			{
+				showRenamePopover(context, time, (string)selection_data.get_data());
+			}
         }
-
-        Gtk.drag_finish(context, true, false, time);
     }
 
 	private bool onClick(Gdk.EventButton event)
@@ -168,7 +169,9 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			});
 		});
 		var rename_action = new GLib.SimpleAction("renameTag", null);
-		rename_action.activate.connect(showRenamePopover);
+		rename_action.activate.connect(() => {
+			showRenamePopover();
+		});
 		var app = (rssReaderApp)GLib.Application.get_default();
 		app.add_action(rename_action);
 		app.add_action(remove_action);
@@ -246,7 +249,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		}
 	}
 
-	private void showRenamePopover()
+	private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, string? articleID = null)
 	{
 		var popRename = new Gtk.Popover(this);
 		popRename.set_position(Gtk.PositionType.BOTTOM);
@@ -255,15 +258,24 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		var renameEntry = new Gtk.Entry();
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
-			popRename.hide();
-			feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+			if(m_tagID != TagID.NEW)
+			{
+				popRename.hide();
+				feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+			}
+			else if(context != null)
+			{
+				m_tagID = feedDaemon_interface.createTag(renameEntry.get_text());
+				popRename.hide();
+				feedDaemon_interface.tagArticle(articleID, m_tagID, true);
+				Gtk.drag_finish(context, true, false, time);
+			}
 		});
 
 		var renameButton = new Gtk.Button.with_label(_("rename"));
 		renameButton.get_style_context().add_class("suggested-action");
 		renameButton.clicked.connect(() => {
-			popRename.hide();
-			feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+			renameEntry.activate();
 		});
 
 		var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);

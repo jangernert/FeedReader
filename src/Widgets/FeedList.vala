@@ -424,9 +424,9 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                );
 			categorierow.collapse.connect((collapse, catID) => {
 				if(collapse)
-					collapseCategorie(catID);
+					collapseCategorieInternal(catID);
 				else
-					expandCategorie(catID);
+					expandCategorieInternal(catID);
 			});
 			m_list.insert(categorierow, length+1);
 			categorierow.setAsRead.connect(markSelectedRead);
@@ -449,9 +449,9 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                );
 			tagrow.collapse.connect((collapse, catID) => {
 				if(collapse)
-					collapseCategorie(catID);
+					collapseCategorieInternal(catID);
 				else
-					expandCategorie(catID);
+					expandCategorieInternal(catID);
 			});
 			m_list.insert(tagrow, length+2);
 			tagrow.setAsRead.connect(markSelectedRead);
@@ -522,9 +522,9 @@ public class FeedReader.feedList : Gtk.Stack {
 					    expand = false;
 						categorierow.collapse.connect((collapse, catID) => {
 							if(collapse)
-								collapseCategorie(catID);
+								collapseCategorieInternal(catID);
 							else
-								expandCategorie(catID);
+								expandCategorieInternal(catID);
 						});
 						m_list.insert(categorierow, pos);
 						categorierow.setAsRead.connect(markSelectedRead);
@@ -541,28 +541,16 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void createTags()
 	{
-		var FeedChildList = m_list.get_children();
-		int pos = 0;
-		var tags = dataBase.read_tags();
-		foreach(var Tag in tags)
+		if(!settings_general.get_boolean("only-feeds"))
 		{
-			pos = 0;
-			foreach(Gtk.Widget row in FeedChildList)
+			var FeedChildList = m_list.get_children();
+			var tags = dataBase.read_tags();
+			foreach(var Tag in tags)
 			{
-				pos++;
-				var tmpRow = row as categorieRow;
-
-				if(tmpRow != null)
-				{
-					if(tmpRow.getID() == CategoryID.TAGS)
-					{
-						var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
-						tagrow.selectDefaultRow.connect(selectDefaultRow);
-						m_list.insert(tagrow, pos);
-						tagrow.reveal(true);
-						break;
-					}
-				}
+				var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
+				tagrow.selectDefaultRow.connect(selectDefaultRow);
+				m_list.insert(tagrow, -1);
+				tagrow.reveal(true);
 			}
 		}
 	}
@@ -664,13 +652,13 @@ public class FeedReader.feedList : Gtk.Stack {
 			var tmpCatRow = row as categorieRow;
 			if(tmpCatRow != null && !tmpCatRow.isExpanded())
 			{
-				collapseCategorie(tmpCatRow.getID());
+				collapseCategorieInternal(tmpCatRow.getID());
 			}
 		}
 	}
 
 
-	public void collapseCategorie(string catID)
+	private void collapseCategorieInternal(string catID)
 	{
 		var FeedChildList = m_list.get_children();
 
@@ -686,7 +674,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			if(tmpCatRow != null && tmpCatRow.getParent() == catID)
 			{
 				tmpCatRow.reveal(false, m_expand_collapse_time);
-				collapseCategorie(tmpCatRow.getID());
+				collapseCategorieInternal(tmpCatRow.getID());
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
@@ -714,7 +702,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	public void expandCategorie(string catID)
+	private void expandCategorieInternal(string catID)
 	{
 		var FeedChildList = m_list.get_children();
 
@@ -734,12 +722,27 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					tmpCatRow.reveal(true, m_expand_collapse_time);
 					if(tmpCatRow.isExpanded())
-						expandCategorie(tmpCatRow.getID());
+						expandCategorieInternal(tmpCatRow.getID());
 				}
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
 				tmpTagRow.reveal(true, m_expand_collapse_time);
+			}
+		}
+	}
+
+	public void expand_collapse_category(string catID, bool expand = true)
+	{
+		var FeedChildList = m_list.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpCatRow = row as categorieRow;
+			if(tmpCatRow != null && tmpCatRow.getID() == catID)
+			{
+				if((!expand && tmpCatRow.isExpanded())
+				||(expand && !tmpCatRow.isExpanded()))
+					tmpCatRow.expand_collapse();
 			}
 		}
 	}
@@ -936,7 +939,61 @@ public class FeedReader.feedList : Gtk.Stack {
 				}
 				break;
 		}
+	}
 
+	public void addEmptyTagRow()
+	{
+		var tagrow = new TagRow (_("New Tag"), TagID.NEW, 0);
+		tagrow.selectDefaultRow.connect(selectDefaultRow);
+		m_list.insert(tagrow, -1);
+		tagrow.reveal(true, 250);
+		tagrow.opacity = 0.5;
+	}
+
+	public void removeEmptyTagRow()
+	{
+		logger.print(LogMessage.DEBUG, "removeEmptyTagRow");
+		var FeedChildList = m_list.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as TagRow;
+			if(tmpRow != null && tmpRow.getID() == TagID.NEW)
+			{
+				removeRow(tmpRow, 250);
+			}
+		}
+	}
+
+	public void removeRow(Gtk.Widget row, int duration = 700)
+	{
+		var tagRow = row as TagRow;
+		var catRow = row as categorieRow;
+		var feedRow = row as FeedRow;
+
+		if(tagRow != null)
+		{
+			tagRow.reveal(false, duration);
+			GLib.Timeout.add(duration, () => {
+			    m_list.remove(tagRow);
+				return false;
+			});
+		}
+		else if(catRow != null)
+		{
+			catRow.reveal(false, duration);
+			GLib.Timeout.add(duration, () => {
+			    m_list.remove(catRow);
+				return false;
+			});
+		}
+		else if(feedRow != null)
+		{
+			feedRow.reveal(false, duration);
+			GLib.Timeout.add(duration, () => {
+			    m_list.remove(feedRow);
+				return false;
+			});
+		}
 	}
 
 }

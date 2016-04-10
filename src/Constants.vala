@@ -45,7 +45,7 @@ namespace FeedReader {
 	}
 
 	public enum DragTarget {
-	    INT32,
+	    TAGID,
 	    STRING
 	}
 
@@ -150,6 +150,10 @@ namespace FeedReader {
 		EDIT,
 		SUBSCRIBE,
 		UNSUBSCRIBE
+	}
+
+	namespace TagID {
+		const string NEW = "blubb";
 	}
 
 	namespace InoReaderSecret {

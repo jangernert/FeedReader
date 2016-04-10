@@ -31,11 +31,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_row;
 	public signal void ArticleStateChanged(ArticleStatus status);
 	public signal void child_revealed();
-	public signal void drag_started();
-	public signal void drag_finished();
 
 	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.STRING }
+	    { "STRING",     0, DragTarget.TAGID }
 	};
 
 	public articleRow(article Article)
@@ -208,6 +206,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	        this.drag_data_get.connect(onDragDataGet);
 	        this.drag_data_delete.connect(onDragDataDelete);
 	        this.drag_end.connect(onDragEnd);
+			this.drag_failed.connect(onDragFail);
 		}
 	}
 
@@ -216,14 +215,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragBegin");
 		this.get_style_context().add_class("drag-articlerow");
 		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
-		drag_started();
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataGet");
 
-		if(target_type == DragTarget.STRING)
+		if(target_type == DragTarget.TAGID)
 		{
 			selection_data.set_text(m_article.getArticleID(), -1);
 		}
@@ -242,7 +240,12 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragEnd");
 		this.get_style_context().remove_class("drag-articlerow");
-		drag_finished();
+	}
+
+	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
+	{
+		logger.print(LogMessage.DEBUG, "ArticleRow: drag failed - " + result.to_string());
+		return false;
 	}
 
 	private Gtk.Image getFeedIcon()

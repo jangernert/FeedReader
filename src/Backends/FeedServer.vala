@@ -607,6 +607,9 @@ public class FeedReader.FeedServer : GLib.Object {
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
+				case Backend.TTRSS:
+					m_ttrss.renameTag(int.parse(tagID), title);
+					break;
 				case Backend.FEEDLY:
 					m_feedly.renameTag(tagID, title);
 					break;

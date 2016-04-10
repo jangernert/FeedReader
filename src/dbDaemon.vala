@@ -199,7 +199,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
     {
         executeSQL("BEGIN TRANSACTION");
 
-        var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.tags");
+        var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.tags");
         query.insertValuePair("tagID", "$TAGID");
         query.insertValuePair("title", "$LABEL");
         query.insertValuePair("\"exists\"", "1");

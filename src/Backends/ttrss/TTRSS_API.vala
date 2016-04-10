@@ -732,6 +732,23 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
+	public bool renameTag(int tagID, string newName)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "renameLabel");
+		message.add_int("label_id", tagID);
+		message.add_string("caption", newName);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 
 	public bool subscribeToFeed(string feedURL, string? catID = null, string? username = null, string? password = null)
 	{

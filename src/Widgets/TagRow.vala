@@ -169,14 +169,6 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		});
 		var rename_action = new GLib.SimpleAction("renameTag", null);
 		rename_action.activate.connect(showRenamePopover);
-		if(settings_general.get_enum("account-type") == Backend.TTRSS)
-		{
-			rename_action.set_enabled(false);
-		}
-		else
-		{
-			rename_action.set_enabled(true);
-		}
 		var app = (rssReaderApp)GLib.Application.get_default();
 		app.add_action(rename_action);
 		app.add_action(remove_action);

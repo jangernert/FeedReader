@@ -23,6 +23,7 @@ class Api_feedreader extends Plugin {
 		$this->dbh = $host->get_dbh();
 		$this->host->add_api_method("addLabel", $this);
 		$this->host->add_api_method("removeLabel", $this);
+		$this->host->add_api_method("renameLabel", $this);
 		$this->host->add_api_method("addCategory", $this);
 		$this->host->add_api_method("removeCategory", $this);
 		$this->host->add_api_method("renameCategory", $this);
@@ -51,6 +52,22 @@ class Api_feedreader extends Plugin {
 			label_create($caption);
 			$id = label_find_id($caption, $_SESSION["uid"]);
 			return array(API::STATUS_OK, label_to_feed_id($id));
+		}
+		else
+		{
+			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
+		}
+	}
+	
+	function renameLabel()
+	{
+		$caption = db_escape_string($_REQUEST["caption"]);
+		$label_id = feed_to_label_id((int)db_escape_string($_REQUEST["label_id"]));
+		
+		if($label_id != "" && $caption != "")
+		{
+			$this->dbh->query("UPDATE ttrss_labels2 SET caption = '$caption' WHERE id = '$label_id' AND owner_uid = " . $_SESSION["uid"]);
+			return array(API::STATUS_OK);
 		}
 		else
 		{

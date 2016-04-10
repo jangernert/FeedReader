@@ -199,7 +199,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
     {
         executeSQL("BEGIN TRANSACTION");
 
-        var query = new QueryBuilder(QueryType.INSERT_OR_REPLACE, "main.tags");
+        var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.tags");
         query.insertValuePair("tagID", "$TAGID");
         query.insertValuePair("title", "$LABEL");
         query.insertValuePair("\"exists\"", "1");
@@ -232,6 +232,34 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         executeSQL("COMMIT TRANSACTION");
     }
 
+    public void update_tags(Gee.LinkedList<tag> tags)
+    {
+        executeSQL("BEGIN TRANSACTION");
+
+        var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
+        query.updateValuePair("title", "$TITLE");
+        query.updateValuePair("\"exists\"", "1");
+        query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+        if (ec != Sqlite.OK)
+            logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+        int title_position = stmt.bind_parameter_index("$TITLE");
+        assert (title_position > 0);
+
+        foreach(var tag_item in tags)
+        {
+            stmt.bind_text(title_position, tag_item.getTitle());
+            while (stmt.step () == Sqlite.ROW) {}
+            stmt.reset ();
+        }
+
+        executeSQL("COMMIT TRANSACTION");
+    }
+
+
     public void update_tag_color(string tagID, int color)
     {
         var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
@@ -241,13 +269,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
     }
 
 
-    public void update_tag(string tagID)
-    {
-        var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
-        query.updateValuePair("\"exists\"", "1");
-        query.addEqualsCondition("tagID", tagID, true, true);
-        executeSQL(query.build());
-    }
+
 
     public void write_categories(Gee.LinkedList<category> categories)
     {

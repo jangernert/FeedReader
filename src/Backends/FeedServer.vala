@@ -156,8 +156,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			// write tags
 			dataBase.reset_exists_tag();
 			dataBase.write_tags(tags);
-			foreach(var tag_item in tags)
-				dataBase.update_tag(tag_item.getTagID());
+			dataBase.update_tags(tags);
 			dataBase.delete_nonexisting_tags();
 
 			newFeedList();

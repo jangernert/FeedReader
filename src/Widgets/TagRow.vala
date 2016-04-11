@@ -266,6 +266,12 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			if(m_tagID == TagID.NEW && context != null)
 			{
 				removeRow();
+				if(dataBase.read_tags().is_empty)
+				{
+					var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+					var feedlist = window.getContent().getFeedList();
+					feedlist.newFeedlist(false, false);
+				}
 				Gtk.drag_finish(context, true, false, time);
 			}
 		});

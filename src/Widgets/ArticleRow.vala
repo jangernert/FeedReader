@@ -217,6 +217,12 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragBegin");
 		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
 		highlight_row(m_article.getArticleID());
+		if(dataBase.read_tags().is_empty)
+		{
+			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			var feedlist = window.getContent().getFeedList();
+			feedlist.newFeedlist(false, true);
+		}
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
@@ -247,6 +253,12 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: drag failed - " + result.to_string());
+		if(dataBase.read_tags().is_empty)
+		{
+			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			var feedlist = window.getContent().getFeedList();
+			feedlist.newFeedlist(false, false);
+		}
 		return false;
 	}
 

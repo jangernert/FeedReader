@@ -193,7 +193,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	public void newFeedlist(bool defaultSettings)
+	public void newFeedlist(bool defaultSettings, bool masterCat = false)
 	{
 		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
 		m_branding.refresh();
@@ -217,13 +217,13 @@ public class FeedReader.feedList : Gtk.Stack {
 			m_list.remove(row);
 			row.destroy();
 		}
-		createFeedlist(defaultSettings);
+		createFeedlist(defaultSettings, masterCat);
 		settings_state.set_boolean("no-animations", false);
 		m_update = false;
 	}
 
 
-	public void createFeedlist(bool defaultSettings)
+	private void createFeedlist(bool defaultSettings, bool masterCat)
 	{
 		var row_seperator1 = new FeedRow("", 0, false, "", "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
@@ -253,7 +253,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		if(!Utils.onlyShowFeeds())
 		{
-			createCategories(ref feeds);
+			createCategories(ref feeds, masterCat);
 			createTags();
 		}
 
@@ -404,12 +404,12 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	private void createCategories(ref Gee.ArrayList<feed> feeds)
+	private void createCategories(ref Gee.ArrayList<feed> feeds, bool masterCat)
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
 
-		if(!Utils.onlyShowFeeds() && Utils.haveTags())
+		if((!Utils.onlyShowFeeds() && Utils.haveTags()) || masterCat)
 		{
 			var categorierow = new categorieRow(
 					                                _("Categories"),

@@ -164,22 +164,21 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 			uint time = 300;
 			this.reveal(false, time);
-			GLib.Timeout.add(time, () => {
-			    feedDaemon_interface.deleteTag(m_tagID);
-				return false;
+
+			var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+			var notification = content.showNotification(_("Tag \"%s\" removed").printf(m_name));
+			ulong eventID = notification.dismissed.connect(() => {
+				feedDaemon_interface.deleteTag(m_tagID);
+			});
+			notification.revert.connect(() => {
+				notification.disconnect(eventID);
+				this.reveal(true, time);
+				notification.dismiss();
 			});
 		});
 		var rename_action = new GLib.SimpleAction("renameTag", null);
 		rename_action.activate.connect(() => {
 			showRenamePopover();
-			var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
-			var notification = content.showNotification("blubb");
-			notification.revert.connect(() => {
-				logger.print(LogMessage.DEBUG, "reverted");
-			});
-			notification.dismissed.connect(() => {
-				logger.print(LogMessage.DEBUG, "dismissed");
-			});
 		});
 		var app = (rssReaderApp)GLib.Application.get_default();
 		app.add_action(rename_action);

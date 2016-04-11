@@ -150,17 +150,31 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 		var remove_action = new GLib.SimpleAction("deleteCat", null);
 		remove_action.activate.connect(() => {
+			bool wasExpanded = false;
+
 			if(!m_collapsed)
+			{
+				wasExpanded = true;
 				expand_collapse();
+			}
 
 			if(this.is_selected())
 				selectDefaultRow();
 
 			uint time = 300;
 			this.reveal(false, time);
-			GLib.Timeout.add(time, () => {
-			    feedDaemon_interface.removeCategory(m_categorieID);
-				return false;
+
+			var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+			var notification = content.showNotification(_("Category \"%s\" removed").printf(m_name));
+			ulong eventID = notification.dismissed.connect(() => {
+				feedDaemon_interface.removeCategory(m_categorieID);
+			});
+			notification.revert.connect(() => {
+				notification.disconnect(eventID);
+				this.reveal(true, time);
+				if(wasExpanded)
+					expand_collapse();
+				notification.dismiss();
 			});
 		});
 		var removeWithChildren_action = new GLib.SimpleAction("deleteAllCat", null);

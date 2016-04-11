@@ -143,23 +143,19 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			uint time = 300;
 			this.reveal(false, time);
-			GLib.Timeout.add(time, () => {
-			    feedDaemon_interface.removeFeed(m_feedID);
-				return false;
-			});
-		});
-		var remove_only_action = new GLib.SimpleAction("deleteOnlyFeed", null);
-		remove_only_action.activate.connect(() => {
-			if(this.is_selected())
-				selectDefaultRow();
 
-			uint time = 300;
-			this.reveal(false, time);
-			GLib.Timeout.add(time, () => {
-			    feedDaemon_interface.removeFeedOnlyFromCat(m_feedID, m_catID);
-				return false;
+			var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+			var notification = content.showNotification(_("Feed \"%s\" removed").printf(m_name));
+			ulong eventID = notification.dismissed.connect(() => {
+				feedDaemon_interface.removeFeed(m_feedID);
+			});
+			notification.revert.connect(() => {
+				notification.disconnect(eventID);
+				this.reveal(true, time);
+				notification.dismiss();
 			});
 		});
+
 		var markAsRead_action = new GLib.SimpleAction("markFeedAsRead", null);
 		markAsRead_action.activate.connect(() => {
 			setAsRead(FeedListType.FEED, m_feedID);
@@ -178,7 +174,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);
-		app.add_action(remove_only_action);
 
 		var feed = dataBase.read_feed(m_feedID);
 		var catCount = feed.getCatIDs().length;

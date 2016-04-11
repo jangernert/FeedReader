@@ -914,7 +914,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					var tmpRow = row as categorieRow;
 					if(tmpRow != null && tmpRow.getID() == id)
 					{
-						tmpRow.reveal(false, time);
+						tmpRow.reveal(reveal, time);
 						return;
 					}
 				}
@@ -925,7 +925,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					var tmpRow = row as FeedRow;
 					if(tmpRow != null && tmpRow.getID() == id)
 					{
-						tmpRow.reveal(false, time);
+						tmpRow.reveal(reveal, time);
 						return;
 					}
 				}
@@ -936,7 +936,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					var tmpRow = row as TagRow;
 					if(tmpRow != null && tmpRow.getID() == id)
 					{
-						tmpRow.reveal(false, time);
+						tmpRow.reveal(reveal, time);
 						return;
 					}
 				}

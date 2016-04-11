@@ -17,6 +17,8 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	private string m_id;
 	private FeedListType m_type;
+	private feedList m_feedlist;
+	private uint m_time = 300;
 
 	public RemovePopover(Gtk.Widget parent, FeedListType type, string id)
 	{
@@ -47,45 +49,86 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 		var removeButton = new Gtk.Button.with_label(_("Remove \"%s\"").printf(name));
 		removeButton.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
-		removeButton.clicked.connect(removeFeed);
+		removeButton.clicked.connect(removeX);
 		removeButton.margin = 10;
 		this.add(removeButton);
 		this.show_all();
 	}
 
-	public void removeFeed()
+	public void removeX()
 	{
 		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
-		var feedList = window.getContent().getFeedList();
+		m_feedlist = window.getContent().getFeedList();
+		m_feedlist.selectDefaultRow();
+		m_feedlist.revealRow(m_id, m_type, false, m_time);
 
-		if(m_type == FeedListType.CATEGORY)
+		switch(m_type)
 		{
-			feedList.collapseSelectedCat();
-			feedList.selectDefaultRow();
+			case FeedListType.TAG:
+				removeTag();
+				break;
+
+			case FeedListType.FEED:
+				removeFeed();
+				break;
+
+			case FeedListType.CATEGORY:
+				removeCategory();
+				break;
 		}
 
-		uint time = 300;
-		feedList.revealRow(m_id, m_type, false, time);
-
-		GLib.Timeout.add(time, () => {
-			switch(m_type)
-			{
-				case FeedListType.TAG:
-					feedDaemon_interface.deleteTag(m_id);
-					break;
-
-				case FeedListType.FEED:
-					feedDaemon_interface.removeFeed(m_id);
-					break;
-
-				case FeedListType.CATEGORY:
-					feedDaemon_interface.removeCategory(m_id);
-					break;
-			}
-
-			return false;
-		});
-
 		this.hide();
+	}
+
+	private void removeTag()
+	{
+		var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+		var tagName = dataBase.getTagName(m_id);
+		string text = _("Tag \"%s\" removed").printf(tagName);
+		var notification = content.showNotification(text);
+
+		ulong eventID = notification.dismissed.connect(() => {
+			feedDaemon_interface.deleteTag(m_id);
+		});
+		notification.revert.connect(() => {
+			notification.disconnect(eventID);
+			m_feedlist.revealRow(m_id, m_type, true, m_time);
+			notification.dismiss();
+		});
+	}
+
+	private void removeFeed()
+	{
+		var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+		var feedName = dataBase.getFeedName(m_id);
+		string text = _("Feed \"%s\" removed").printf(feedName);
+		var notification = content.showNotification(text);
+
+		ulong eventID = notification.dismissed.connect(() => {
+			feedDaemon_interface.removeFeed(m_id);
+		});
+		notification.revert.connect(() => {
+			notification.disconnect(eventID);
+			m_feedlist.revealRow(m_id, m_type, true, m_time);
+			notification.dismiss();
+		});
+	}
+
+	private void removeCategory()
+	{
+		m_feedlist.expand_collapse_category(m_id, false);
+		var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+		var catName = dataBase.getCategoryName(m_id);
+		string text = _("Category \"%s\" removed").printf(catName);
+		var notification = content.showNotification(text);
+
+		ulong eventID = notification.dismissed.connect(() => {
+			feedDaemon_interface.removeCategory(m_id);
+		});
+		notification.revert.connect(() => {
+			notification.disconnect(eventID);
+			m_feedlist.revealRow(m_id, m_type, true, m_time);
+			notification.dismiss();
+		});
 	}
 }

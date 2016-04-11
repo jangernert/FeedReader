@@ -1,0 +1,12 @@
+# mobile site (automatic redirect - noscript meta refresh)
+author: (//*[contains(@class, 'UserNames-displayName') or contains(@class, 'fullname')])[1]
+body: (//div[contains(@class, 'TweetDetail-text') or contains(@class, 'tweet-text')])[1]
+date: (//div[contains(@class, 'TweetDetail-timeAndGeo') or contains(@class, 'metadata')])[1]
+
+parser: html5php
+
+prune: no
+tidy: yes
+
+test_url: https://mobile.twitter.com/medialens/status/216883678582804480
+test_contains: is all but alone in challenging the tsunami of UK

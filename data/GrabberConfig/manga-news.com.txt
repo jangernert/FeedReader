@@ -1,0 +1,7 @@
+title: //h2[@class='actu-title']
+
+body: //div[@class='actu-content']
+
+prune: no
+
+test_url: http://www.manga-news.com/index.php/actus/2016/02/02/Deux-retours-dans-le-planning-des-editions-Pika

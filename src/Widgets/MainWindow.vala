@@ -106,7 +106,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 
 		m_headerbar.notify["position"].connect(() => {
-        	m_content.set_position(m_headerbar.get_position());
+        	m_content.setArticleListPosition(m_headerbar.get_position());
         });
 
 		m_headerbar.toggledMarked.connect(() => {
@@ -435,8 +435,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_content = new ContentPage();
 		m_stack.add_named(m_content, "content");
 
-		m_content.notify["position"].connect(() => {
-        	m_headerbar.set_position(m_content.get_position());
+		m_content.panedPosChange.connect((pos) => {
+        	m_headerbar.set_position(pos);
         });
 	}
 

@@ -172,6 +172,14 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		var rename_action = new GLib.SimpleAction("renameTag", null);
 		rename_action.activate.connect(() => {
 			showRenamePopover();
+			var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+			var notification = content.showNotification("blubb");
+			notification.revert.connect(() => {
+				logger.print(LogMessage.DEBUG, "reverted");
+			});
+			notification.dismissed.connect(() => {
+				logger.print(LogMessage.DEBUG, "dismissed");
+			});
 		});
 		var app = (rssReaderApp)GLib.Application.get_default();
 		app.add_action(rename_action);

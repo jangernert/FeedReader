@@ -391,4 +391,12 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		m_pane1.set_position(pos);
 	}
+
+	public InAppNotification showNotification(string message)
+	{
+		var notification = new InAppNotification(message);
+		this.add_overlay(notification);
+		this.show_all();
+		return notification;
+	}
 }

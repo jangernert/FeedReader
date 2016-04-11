@@ -1,7 +1,7 @@
 project (FeedReader)
 cmake_minimum_required (VERSION 2.6)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
-include_directories(${CMAKE_SOURCE_DIR}/gtkimageview)
+include_directories(${CMAKE_SOURCE_DIR}/staticLibs)
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -109,6 +109,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/FeedRow.vala
     src/Widgets/HoverButton.vala
     src/Widgets/ImagePopup.vala
+    src/Widgets/InAppNotification.vala
     src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
     src/Widgets/ModeButton.vala
@@ -145,11 +146,13 @@ OPTIONS
 CUSTOM_VAPIS
     vapi/libvilistextum.vapi
     vapi/gtkimageview.vapi
+    vapi/gd-1.0.vapi
 )
 
 add_executable(${EXEC_NAME} ${UI})
 target_link_libraries(${EXEC_NAME} vilistextum)
-target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/gtkimageview/libgtkimageview.a)
+target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgtkimageview.a)
+target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgd.a)
 
 
 set(DAEMON_OPTIONS

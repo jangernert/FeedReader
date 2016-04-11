@@ -92,6 +92,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 		this.add(m_box);
 		this.show_all();
+		m_urlEntry.grab_focus();
 	}
 
 	private void addFeed()

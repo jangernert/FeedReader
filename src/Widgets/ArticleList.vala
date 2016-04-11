@@ -596,6 +596,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 						tmpRow.drag_begin.connect(( context) => {drag_begin(context);});
 						tmpRow.drag_end.connect((context) => {drag_end(context);});
 						tmpRow.drag_failed.connect((context, result) => {drag_failed(context, result); return true;});
+						tmpRow.highlight_row.connect(highlightRow);
+						tmpRow.revert_highlight.connect(unHighlightRow);
 
 						while(Gtk.events_pending())
 						{
@@ -795,6 +797,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 				newRow.drag_begin.connect((context) => {drag_begin(context);});
 				newRow.drag_end.connect((context) => {drag_end(context);});
 				newRow.drag_failed.connect((context, result) => {drag_failed(context, result); return true;});
+				newRow.highlight_row.connect(highlightRow);
+				newRow.revert_highlight.connect(unHighlightRow);
 
 				if(articleChildList == null)
 				{
@@ -1148,6 +1152,28 @@ public class FeedReader.articleList : Gtk.Overlay {
 		}
 
 		return false;
+	}
+
+	private void highlightRow(string articleID)
+	{
+		var articleChildList = m_currentList.get_children();
+		foreach(Gtk.Widget row in articleChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && tmpRow.getID() != articleID)
+				tmpRow.opacity = 0.5;
+		}
+	}
+
+	private void unHighlightRow()
+	{
+		var articleChildList = m_currentList.get_children();
+		foreach(Gtk.Widget row in articleChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null)
+				tmpRow.opacity = 1.0;
+		}
 	}
 
 }

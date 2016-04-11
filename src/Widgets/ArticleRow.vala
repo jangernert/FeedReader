@@ -31,6 +31,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_row;
 	public signal void ArticleStateChanged(ArticleStatus status);
 	public signal void child_revealed();
+	public signal void highlight_row(string articleID);
+	public signal void revert_highlight();
 
 	private const Gtk.TargetEntry[] target_list = {
 	    { "STRING",     0, DragTarget.TAGID }
@@ -213,8 +215,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragBegin");
-		this.get_style_context().add_class("drag-articlerow");
 		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
+		highlight_row(m_article.getArticleID());
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
@@ -239,7 +241,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragEnd");
-		this.get_style_context().remove_class("drag-articlerow");
+		revert_highlight();
 	}
 
 	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
@@ -274,7 +276,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e){}
 
-		return (new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR)).get_pixbuf();
+		return new Gdk.Pixbuf.from_file_at_size("/usr/share/icons/hicolor/24x24/status/feed-rss.svg", 24, 24);
 	}
 
 

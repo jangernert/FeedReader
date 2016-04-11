@@ -1,8 +1,8 @@
 author: //p[contains(@class, "byline")]/a[contains(@class, "author")]
-
+title: //[h1=@class="stream_title"]
 date: //span[contains(@class, "publish-date")]/time[@pubdate]/@datetime
 
-body: //div[contains(@class, 'entry-content')]
+body: //div[contains(@class, 'm-article__entry-section')]
 # for vergecasts, e.g. http://www.theverge.com/2013/8/22/4648566/the-vergecast-090-august-22th-2013-video
 body: //article
 prune: no
@@ -40,7 +40,7 @@ replace_string(<noscript>): <div>
 replace_string(</noscript>): </div>
 
 find_string: <script
-replace_string: <div style="display:none" 
+replace_string: <div style="display:none"
 find_string: </script>
 replace_string: </div>
 

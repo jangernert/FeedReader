@@ -1,5 +1,6 @@
-# Since this element has class="clear", the Instapaper stylesheets (at least this text parser preview), will render it unreadable, with a 1px font size and line height.
+title: //h1[contains(@class, 'article__headline')]
 
+body: //div[contains(@class, 'article__body-content') or contains(@class, 'article__lead') or contains(@class, 'image-box__container')]
 body: //div[@id="article-content"]
 
 
@@ -12,7 +13,7 @@ strip_id_or_class: recommend
 strip_id_or_class: article-readers
 strip_id_or_class: article-addons
 strip_id_or_class: hook
-strip_id_or_class: right
+#strip_id_or_class: right
 strip_id_or_class: footer
 
 strip_id_or_class: ad-head
@@ -23,6 +24,15 @@ strip: //div[@id="mirrors"]
 
 # Author
 author: //div[@id="byline"]/div/p/strong
+
+find_string: <noscript>
+replace_string: <!-- removed -->
+find_string: </noscript>
+replace_string: <!-- removed -->
+
+#parser: html5php
+prune: no
+tidy: no
 
 # Date
 date: substring(substring-after(//p[@class="published"], 'Publicerad '), 0, 11)

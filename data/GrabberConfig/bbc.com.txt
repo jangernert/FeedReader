@@ -1,4 +1,4 @@
-body: //div[@class="story-body"]
+body: //div[@id="story-body"]
 # for video entries
 body: //div[contains(@class, "videoInStory") or @id="meta-information"]
 title: //h1[@class="story-header"]
@@ -30,6 +30,11 @@ strip: //div[contains(@class, 'comment-introduction')]
 strip: //div[contains(@class, 'share-tools')]
 strip: //div[@id='also-related-links']
 
+strip: //figcaption
+strip_id_or_class: image-and-copyright-container
+
+strip: //aside[contains(@class, 'sp-pullout')]
+
 strip_id_or_class: share-help
 strip_id_or_class: comments_module
 
@@ -38,6 +43,8 @@ replace_string: http://ichef.bbci.co.uk/news/624/
 
 find_string: http://ichef.bbci.co.uk/news/304/
 replace_string: http://ichef.bbci.co.uk/news/624/
+
+replace_string({width}{hidpi}): 624
 
 replace_string(<noscript>): <div>
 replace_string(</noscript>): </div>

@@ -15,4 +15,4 @@ strip: //div[@class="department"]
 #strip product cap links
 strip: //div[@class="cap-main"]
 strip: //div[@id="compare-lede"]
-test_url: http://www.techhive.com/article/2010549/up-close-with-blackberry-10.html
+test_url: http://www.techhive.com/article/3023383/streaming-media/vlc-for-apple-tv-review-goodbye-format-woes.html

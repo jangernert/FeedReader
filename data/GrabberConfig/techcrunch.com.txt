@@ -1,11 +1,12 @@
-body: //div[contains(@class, 'media-container') or contains(@class, 'body-copy')]
+body: //div[@class='rticle-entry text']
 
-author: //a[@class="name"]
+author: //div[@class='byline']/a
 
-date: //div[@class="post-time"]
+date: //div[@class="byline"]/time/@datetime
 
-title: //h1[@class="headline"]
+title: //h1[@class="tweet-title"]
 strip_id_or_class: module-crunchbase
+strip_id_or_class: aside aside-related-articles
 
 # The following is for the mobile site
 body: //div[@id="singlentry"]
@@ -15,4 +16,4 @@ title: //a[@class="sh2"]
 
 prune: no
 
-test_url: http://techcrunch.com/2011/10/18/apples-insanely-great-q1-2012/
+test_url: http://techcrunch.com/2016/02/02/spotcap/?ncid=rss&utm_source=feedburner&utm_medium=feed&utm_campaign=Feed%3A+francaistechcrunch+%28TechCrunch+en+Francais%29

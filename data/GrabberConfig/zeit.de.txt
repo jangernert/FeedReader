@@ -1,48 +1,62 @@
-# 2015.07.08 [Marvin Dickhaus] fixed single_page_link
-# 2013.10.30 [rezor92] fixed single_page_link
-# 2012-12-23 [carlo@...] fixed half-assed headlines in articles, removed inline author profiles, adjusted picture captions
-# 2012-03-17 [dkless@...] Cut metadata parts in the beginning and the ends of the content block; copyright entries for pictures removed; Author fixed, not sure if old entries still valid (I left them); Weird problems with some pages addressed (see last section for removing hidden section)
-# 2011-12-09 [carlo@...] Removed "related articles" block
-# 2011-08-23 [carlo@...] changed single page link to use print version: page works better, less ambiguity. Related cleanups and simplifications.
-# 2011-08-20 [carlo@...] added author, fixed date
+tidy: no
+prune: no
+
+# Figures are wrapped in a noscript tag which is itself wrapped in a
+# conditional comment. Feed readers will fail to parse this correctly
+# so get rid of the noscript tag altogether.
+replace_string(<noscript): <foo
+
+title: //meta[@property='og:title']/@content
+date: //meta[@name='date']/@content
+
+strip: //span[@class='figure__copyright']
+
+# Self advertisements
+strip: //figure[@class='figure-stamp']
+strip: //a[contains(@title, 'Dieser Text ')]
+strip: //a[contains(@title, 'Dieser Artikel ')]
+strip: //span[@class='figure__text']/text()[contains(., 'Dieser Text ')]
+strip: //span[@class='figure__text']/text()[contains(., 'Dieser Artikel ')]
+
+#######################################
+# ZEIT:
+#######################################
 
 single_page_link: //a[contains(@href, 'komplettansicht')]
-tidy: no
 
-title: //title
-date: substring-before( //li[@class="date"], " " )
-author: //li[@class="author"]/a/text() | //li[@class="author first"]/a/text()
-author: substring-after(//li[@class='source first '], 'Quelle: ')
+author: //a[@class='byline__author']/span
+author: substring-after(//span[@class='metadata__source'], 'Quelle: ')
 
-strip_id_or_class: articleheader
-strip: //div[@id="comments"] | //div[@class="pagination block"] | //p[@class="ressortbacklink"] | //div[@id="relatedArticles"]  |  // div[@class="inline portrait"]
+body: //main/article/div[@itemprop='articleBody']
 
-#Removes author and date from the start
-strip: //ul[@class="tools"]
-#Removes copyright statement - often disturb as first line of the news
-strip: //p[@class="copyright"]
-strip: //div[@class="copyright"]
-#Removes pagination links at the end
-strip: //div[@class="pagination"]
-#Removes link to main page at the bottom of some articles (Zur Startseite)
-strip: //a[@href='http://www.zeit.de']
+strip: //a[@href='#']
+strip: //form[@id='newsletter-teaser-form']
+strip_id_or_class: 'article-pagination article__item '
 
-# Fix picture captions
-wrap_in(small): //p[@class="caption"]/text()
-
-# Fix sub-headlines
-wrap_in(h2): //p/strong
-dissolve: //h2/strong
-
-#Sometimes things are embedded in the print version that are not displayed on the web, but will be displayed in the mobilized versions and lead even to problems. These sections are removed here.
-strip_id_or_class:"informatives"
-strip_id_or_class:"bottom"
-strip_id_or_class:"teasermosaic"
-strip_id_or_class:"comments"
-strip_id_or_class:"articlefooter af"
-strip_id_or_class:"relateds"
-strip_id_or_class:"pagination"
-
-footnotes: no
 test_url: http://www.zeit.de/kultur/film/2012-12/Kurzfilmtag
-test_url: http://www.zeit.de/kultur/2015-07/kapitalismuskritik-selbstberuhigung-armin-nassehi
+test_url: http://www.zeit.de/sport/2016-01/darts-wm-finale-anderson-lewis/komplettansicht
+test_url: http://www.zeit.de/kultur/2015-12/selbstverwirklichung-optimierung-essay
+test_url: http://www.zeit.de/2015/51/selbstdiagnose-gesundheit-zuhause-blut-urin-selbsttest
+test_url: http://www.zeit.de/campus/2015/s2/nebenjob-master-studium-finanzierung
+test_url: http://www.zeit.de/hamburg/politik-wirtschaft/2015-12/hamburg-wohnungsbau-fluechtlinge
+
+#######################################
+# ZEIT MAGAZIN:
+#######################################
+
+next_page_link: //meta[@rel='next']/@href
+
+author: //a[@class='article__head__meta__author']/span
+
+body: //main/article/div[@class='article__wrap']
+
+strip: //div[@class='article__head-wrap']//h1
+strip_id_or_class: article__socialbox
+strip_id_or_class: article__nextread nextread-base is-centered
+strip_id_or_class: js-comments
+strip_id_or_class: article__pagination is-constrained is-centered
+strip_id_or_class: article__head__meta
+
+test_url: http://www.zeit.de/zeit-magazin/2015/51/daisy-ridley-traum
+test_url: http://www.zeit.de/zeit-magazin/2015/52/cyberstalking-internet-stalker-familie-mierau
+test_url: http://www.zeit.de/zeit-magazin/leben/2015-12/rueckblick-2015-magnum-fs

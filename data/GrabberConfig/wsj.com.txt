@@ -18,6 +18,8 @@ strip: //*[contains(@style, 'visibility: hidden;')]
 strip: //div[contains(@class, 'insetContent') and not(contains(@class, 'image'))]
 strip: //div[contains(@class, 'carousel')]
 
+http_header(user-agent): Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+
 prune: no
 tidy: no
 

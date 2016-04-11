@@ -1,7 +1,7 @@
 tidy: no
 prune: no
 
-title: (//span[@itemprop='title'])[last()]
+title: //span[@itemprop='title']
 author: //span[@itemprop='author']//span[@itemprop='name']
 body: //article
 date: //time

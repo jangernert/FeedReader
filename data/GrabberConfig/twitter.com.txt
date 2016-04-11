@@ -3,6 +3,12 @@ body: (//p[contains(@class, 'js-tweet-text')])[1]
 author: (//strong[contains(@class, 'fullname')])[1]
 date: //span[contains(@class, 'js-short-timestamp')]/@data-time
 
+# mobile site (automatic redirect - noscript meta refresh)
+author: (//div[contains(@class, 'fullname')])[1]
+body: (//div[contains(@class, 'TweetDetail-text')])[1]
+
+parser: html5php
+
 prune: no
 tidy: no
 

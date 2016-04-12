@@ -292,6 +292,7 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION $
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION /usr/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache /usr/share/icons/hicolor)")
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader.css DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader320.css DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})

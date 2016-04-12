@@ -315,8 +315,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		try {
     		Gtk.CssProvider provider = new Gtk.CssProvider ();
-    		provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
 
+			// lets assume we're on Gtk+ 3.XX
+			if(Gtk.get_minor_version() <= 18)
+    			provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
+			else
+				// FIXME: load different CSS file for Gtk+ 3.20 and above
+				provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
 
 			weak Gdk.Display display = Gdk.Display.get_default ();
             weak Gdk.Screen screen = display.get_default_screen ();

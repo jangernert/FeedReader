@@ -90,7 +90,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		ulong eventID = notification.dismissed.connect(() => {
 			feedDaemon_interface.deleteTag(m_id);
 		});
-		notification.revert.connect(() => {
+		notification.action.connect(() => {
 			notification.disconnect(eventID);
 			m_feedlist.revealRow(m_id, m_type, true, m_time);
 			notification.dismiss();
@@ -107,7 +107,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		ulong eventID = notification.dismissed.connect(() => {
 			feedDaemon_interface.removeFeed(m_id);
 		});
-		notification.revert.connect(() => {
+		notification.action.connect(() => {
 			notification.disconnect(eventID);
 			m_feedlist.revealRow(m_id, m_type, true, m_time);
 			notification.dismiss();
@@ -125,7 +125,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		ulong eventID = notification.dismissed.connect(() => {
 			feedDaemon_interface.removeCategory(m_id);
 		});
-		notification.revert.connect(() => {
+		notification.action.connect(() => {
 			notification.disconnect(eventID);
 			m_feedlist.revealRow(m_id, m_type, true, m_time);
 			notification.dismiss();

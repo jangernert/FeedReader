@@ -44,7 +44,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private bool m_scrollOngoing = false;
 	private bool m_syncing = false;
 	private string m_selected_article = "";
-	private ArticleListOverlay m_overlay;
+	private InAppNotification m_overlay;
 	private uint m_helperCounter = 0;
 	private uint m_helperCounter2 = 0;
 	public signal void row_activated(articleRow? row);
@@ -151,11 +151,19 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_stack.add_named(m_emptyList, "empty");
 		m_stack.add_named(m_syncingBox, "syncing");
 		this.add(m_stack);
-		m_overlay = new ArticleListOverlay("New Articles", "scroll up", "feed-arrow-up");
+	}
+
+	private void showNotification()
+	{
+		m_overlay = new InAppNotification.withIcon(_("New Articles"), "feed-arrow-up", _("scroll up"));
 		m_overlay.action.connect(() => {
 			scrollUP();
 		});
+		m_overlay.dismissed.connect(() => {
+			m_overlay = null;
+		});
 		this.add_overlay(m_overlay);
+		this.show_all();
 	}
 
 	private void scroll1ValueChanged()
@@ -170,9 +178,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 				logger.print(LogMessage.INFO, "load more because of scrolling");
 				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
 			}
-			else if(m_scroll1_adjustment.get_value() == 0.0 && !m_overlay.hovered())
+			else if(m_scroll1_adjustment.get_value() == 0.0 && m_overlay != null)
 			{
-				m_overlay.hide();
+				m_overlay.dismiss();
 			}
 		}
 	}
@@ -189,9 +197,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 				logger.print(LogMessage.INFO, "load more because of scrolling");
 				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
 			}
-			else if(m_scroll2_adjustment.get_value() == 0.0 && !m_overlay.hovered())
+			else if(m_scroll2_adjustment.get_value() == 0.0 && m_overlay != null)
 			{
-				m_overlay.hide();
+				m_overlay.dismiss();
 			}
 		}
 	}
@@ -644,7 +652,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 				}
 
 				if(!m_only_unread && !m_only_marked && settings_state.get_int("articlelist-new-rows") > 0)
-					m_overlay.reveal();
+					showNotification();
 			}
 			else if(!addRows)
 			{
@@ -668,7 +676,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: delete HeadlineList");
-		m_overlay.hide();
+		if(m_overlay != null)
+			m_overlay.dismiss();
 
 		string selectedArticle = getSelectedArticle();
 
@@ -1128,7 +1137,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public void showOverlay()
 	{
 		if(m_currentScroll.get_vadjustment().get_value() > 0.0)
-			m_overlay.reveal();
+			showNotification();
 	}
 
 	private void limitScroll()

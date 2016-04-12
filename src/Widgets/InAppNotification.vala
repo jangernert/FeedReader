@@ -16,20 +16,34 @@
 public class FeedReader.InAppNotification : Gd.Notification {
 
 	private Gtk.Box m_box;
-	private Gtk.Button m_revertButton;
-	public signal void revert();
+	private Gtk.Button m_Button;
+	public signal void action();
 
-	public InAppNotification(string message, int timeout = 5)
+	public InAppNotification(string message, string buttonText, string? tooltip = null, int timeout = 5)
 	{
+		m_Button = new Gtk.Button.with_label(buttonText);
+		setup(message, tooltip);
+	}
+
+	public InAppNotification.withIcon(string message, string icon, string? tooltip = null, int timeout = 5)
+	{
+		m_Button = new Gtk.Button.from_icon_name(icon);
+		setup(message, tooltip);
+	}
+
+
+	private void setup(string message, string? tooltip)
+	{
+		m_Button.set_tooltip_text(tooltip);
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
-		m_revertButton = new Gtk.Button.with_label(_("undo"));
 		m_box.pack_start(new Gtk.Label(message));
-		m_box.pack_start(m_revertButton);
+		m_box.pack_start(m_Button);
 		this.set_timeout(5);
+		this.set_show_close_button(false);
 		this.add(m_box);
 
-		m_revertButton.clicked.connect(() => {
-			revert();
+		m_Button.clicked.connect(() => {
+			action();
 		});
 	}
 

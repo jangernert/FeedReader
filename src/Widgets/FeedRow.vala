@@ -149,7 +149,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			ulong eventID = notification.dismissed.connect(() => {
 				feedDaemon_interface.removeFeed(m_feedID);
 			});
-			notification.revert.connect(() => {
+			notification.action.connect(() => {
 				notification.disconnect(eventID);
 				this.reveal(true, time);
 				notification.dismiss();

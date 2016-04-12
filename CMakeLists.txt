@@ -97,7 +97,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/QueryBuilder.vala
     src/Widgets/AddPopover.vala
     src/Widgets/ArticleList.vala
-    src/Widgets/ArticleListOverlay.vala
     src/Widgets/ArticleRow.vala
     src/Widgets/ArticleView.vala
     src/Widgets/CategorieRow.vala

@@ -392,9 +392,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_pane1.set_position(pos);
 	}
 
-	public InAppNotification showNotification(string message)
+	public InAppNotification showNotification(string message, string buttonText = _("undo"))
 	{
-		var notification = new InAppNotification(message);
+		var notification = new InAppNotification(message, buttonText);
 		this.add_overlay(notification);
 		this.show_all();
 		return notification;

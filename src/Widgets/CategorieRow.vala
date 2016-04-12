@@ -169,7 +169,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			ulong eventID = notification.dismissed.connect(() => {
 				feedDaemon_interface.removeCategory(m_categorieID);
 			});
-			notification.revert.connect(() => {
+			notification.action.connect(() => {
 				notification.disconnect(eventID);
 				this.reveal(true, time);
 				if(wasExpanded)

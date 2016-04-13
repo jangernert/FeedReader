@@ -424,8 +424,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		logger.print(LogMessage.DEBUG, "ArticleList: restore ScrollPos");
 		m_current_adjustment.notify["upper"].disconnect(restoreScrollPos);
 		setScrollPos(m_current_adjustment.get_value() + settings_state.get_double("articlelist-scrollpos"));
-
-		settings_state.set_int("articlelist-new-rows", 0);
 		settings_state.set_double("articlelist-scrollpos",  0);
 	}
 
@@ -792,6 +790,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 				newRow.drag_failed.connect((context, result) => {drag_failed(context, result); return true;});
 				newRow.highlight_row.connect(highlightRow);
 				newRow.revert_highlight.connect(unHighlightRow);
+				if(getSelectedArticle() != "" || !slideIN)
+					newRow.size_allocate.connect(onAllocated);
 
 				if(articleChildList == null)
 				{
@@ -836,7 +836,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 				else
 				{
 					newRow.reveal(true, 0);
-					newRow.size_allocate.connect(onAllocated);
 				}
 
 				articleChildList = m_currentList.get_children();
@@ -1032,6 +1031,8 @@ public class FeedReader.articleList : Gtk.Overlay {
                 adj.value = final;
                 m_timeout_source_id = 0;
 				m_limitScroll = false;
+				if(adj.value == 0.0 && m_overlay != null)
+					m_overlay.dismiss();
                 return false;
             }
 

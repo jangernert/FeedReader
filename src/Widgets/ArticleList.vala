@@ -40,8 +40,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private int m_threadCount = 0;
 	private uint m_timeout_source_id = 0;
 	private uint m_select_source_id = 0;
-	private double m_scrollPos = 0;
-	private bool m_scrollOngoing = false;
+	private double m_scrollPos = 0.0;
 	private bool m_syncing = false;
 	private string m_selected_article = "";
 	private InAppNotification m_overlay;
@@ -93,10 +92,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 
 		m_scroll1_adjustment = m_scroll1.get_vadjustment();
-		m_scroll1_adjustment.value_changed.connect(scroll1ValueChanged);
+		m_scroll1_adjustment.value_changed.connect(scrollValueChanged);
 
 		m_scroll2_adjustment = m_scroll2.get_vadjustment();
-		m_scroll2_adjustment.value_changed.connect(scroll2ValueChanged);
+		m_scroll2_adjustment.value_changed.connect(scrollValueChanged);
 
 
 		m_List1.row_activated.connect((row) => {
@@ -166,41 +165,25 @@ public class FeedReader.articleList : Gtk.Overlay {
 		this.show_all();
 	}
 
-	private void scroll1ValueChanged()
+	private void scrollValueChanged()
 	{
 		if(!m_limitScroll && m_helperCounter == 0)
 		{
-			if(!m_scrollOngoing)
-				m_scrollPos = m_scroll1_adjustment.get_value();
-
-			if((m_scroll1_adjustment.get_value() + m_scroll1_adjustment.get_page_size())/m_scroll1_adjustment.get_upper() > m_lmit)
-			{
-				logger.print(LogMessage.INFO, "load more because of scrolling");
-				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-			}
-			else if(m_scroll1_adjustment.get_value() == 0.0 && m_overlay != null)
-			{
-				m_overlay.dismiss();
-			}
+			m_scrollPos = m_current_adjustment.get_value();
+			needToLoadMore(m_current_adjustment);
 		}
 	}
 
-	private void scroll2ValueChanged()
+	private void needToLoadMore(Gtk.Adjustment adj)
 	{
-		if(!m_limitScroll && m_helperCounter == 0)
+		if((adj.get_value() + adj.get_page_size())/adj.get_upper() > m_lmit)
 		{
-			if(!m_scrollOngoing)
-				m_scrollPos = m_scroll2_adjustment.get_value();
-
-			if((m_scroll2_adjustment.get_value() + m_scroll2_adjustment.get_page_size())/m_scroll2_adjustment.get_upper() > m_lmit)
-			{
-				logger.print(LogMessage.INFO, "load more because of scrolling");
-				createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
-			}
-			else if(m_scroll2_adjustment.get_value() == 0.0 && m_overlay != null)
-			{
-				m_overlay.dismiss();
-			}
+			logger.print(LogMessage.INFO, "load more because of scrolling");
+			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+		}
+		else if(adj.get_value() == 0.0 && m_overlay != null)
+		{
+			m_overlay.dismiss();
 		}
 	}
 
@@ -230,7 +213,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public void move(bool down)
 	{
-		m_scrollPos = m_current_adjustment.get_value();
+		needToLoadMore(m_current_adjustment);
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 		articleRow new_article = null;
 		int time = 300;
@@ -261,13 +244,13 @@ public class FeedReader.articleList : Gtk.Overlay {
 			if(down)
 			{
 				m_scrollPos += offset;
-				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos, time);
 			}
 			else
 			{
 				m_scrollPos -= offset;
-				smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos, time);
 			}
+
+			smooth_adjustment_to(m_current_adjustment, (int)m_scrollPos, time);
 
 			if(m_scrollPos < 0.0)
 			{
@@ -453,6 +436,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_current_adjustment.set_value(pos);
 		m_currentScroll.set_vadjustment(m_current_adjustment);
 		settings_state.set_int("articlelist-new-rows", 0);
+		m_scrollPos = pos;
 	}
 
 
@@ -1011,7 +995,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 	// thx to pantheon files developers =)
 	private void smooth_adjustment_to(Gtk.Adjustment adj, int final, int duration = 1000)
 	{
-		m_scrollOngoing = true;
+		logger.print(LogMessage.DEBUG, "smooth adjust to: " + final.to_string());
+		m_limitScroll = true;
 
         if (m_timeout_source_id > 0)
 		{
@@ -1038,7 +1023,7 @@ public class FeedReader.articleList : Gtk.Overlay {
             if (old_adj_value != adj.value) {
                 m_timeout_source_id = 0;
 				m_scrollPos = adj.value;
-				m_scrollOngoing = false;
+				m_limitScroll = false;
                 return false;
             }
 
@@ -1046,12 +1031,12 @@ public class FeedReader.articleList : Gtk.Overlay {
                 /* to be sure that there is not a little problem */
                 adj.value = final;
                 m_timeout_source_id = 0;
-				m_scrollOngoing = false;
+				m_limitScroll = false;
                 return false;
             }
 
             newvalue += stepSize;
-
+			m_limitScroll = true;
             adj.value = initial + factor * GLib.Math.sin( ( (double)newvalue / (double)to_do) * Math.PI / 2) * to_do;
             old_adj_value = adj.value;
             return true;

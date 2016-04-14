@@ -868,6 +868,31 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
+	public async void importOPML(string opml)
+	{
+		SourceFunc callback = importOPML.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+				case Backend.OWNCLOUD:
+				case Backend.INOREADER:
+					var parser = new OPMLparser(opml);
+					parser.parse(this);
+					break;
+
+				case Backend.FEEDLY:
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("importOPML", run);
+		yield;
+	}
+
 	private void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		switch(m_type)

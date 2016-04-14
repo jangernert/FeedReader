@@ -39,6 +39,7 @@ namespace FeedReader {
 		public signal void setOffline();
 		public signal void setOnline();
 		public signal void feedAdded();
+		public signal void opmlImported();
 
 		public FeedDaemonServer()
 		{
@@ -535,6 +536,14 @@ namespace FeedReader {
 			dataBase.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
 				dataBase.removeCatFromFeed.end(res);
 				newFeedList();
+			});
+		}
+
+		public void importOPML(string opml)
+		{
+			server.importOPML.begin(opml, (obj, res) => {
+				server.importOPML.end(res);
+				opmlImported();
 			});
 		}
 

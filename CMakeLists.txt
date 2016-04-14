@@ -193,6 +193,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Model/OfflineAction.vala
     src/Model/InterfaceState.vala
     src/Backends/FeedServer.vala
+    src/Backends/OPMLparser.vala
     src/Backends/ttrss/TTRSS_API.vala
     src/Backends/ttrss/TTRSS_Utils.vala
     src/Backends/ttrss/TTRSS_Message.vala

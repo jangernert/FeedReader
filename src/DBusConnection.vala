@@ -42,6 +42,7 @@ namespace FeedReader {
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
 		public abstract void renameFeed(string feedID, string newName) throws IOError;
+		public abstract void importOPML(string opml) throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();
@@ -55,6 +56,7 @@ namespace FeedReader {
 		public signal void setOffline();
 		public signal void setOnline();
 		public signal void feedAdded();
+		public signal void opmlImported();
 	}
 
 
@@ -129,6 +131,10 @@ namespace FeedReader {
 			});
 
 			feedDaemon_interface.feedAdded.connect(() => {
+				window.getContent().footerSetReady();
+			});
+
+			feedDaemon_interface.opmlImported.connect(() => {
 				window.getContent().footerSetReady();
 			});
 		}

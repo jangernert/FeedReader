@@ -136,12 +136,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 		logger.print(LogMessage.DEBUG, "addFeed: %s, %s".printf(m_urlEntry.text, catID));
 		feedDaemon_interface.addFeed(m_urlEntry.text, catID, isID);
-		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
-		if(window != null)
-		{
-			window.getContent().footerSetBusy();
-		}
-		this.hide();
+		setBusy();
 	}
 
 	private void importOPML()
@@ -151,5 +146,17 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		uint8[] contents;
 		file.load_contents (null, out contents, null);
 		logger.print(LogMessage.DEBUG, (string)contents);
+		feedDaemon_interface.importOPML((string)contents);
+		setBusy();
+	}
+
+	private void setBusy()
+	{
+		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		if(window != null)
+		{
+			window.getContent().footerSetBusy();
+		}
+		this.hide();
 	}
 }

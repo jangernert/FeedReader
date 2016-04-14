@@ -16,17 +16,128 @@
 public class FeedReader.OPMLparser : GLib.Object {
 
 	private string m_opmlString;
+	private FeedServer m_server;
+	private uint m_level = 0;
 
 	public OPMLparser(string opml)
 	{
 		m_opmlString = opml;
 
-		var cntx = new Xml.ParserCtxt();
-		cntx.use_options(Xml.ParserOption.NOERROR + Xml.ParserOption.NOWARNING);
-		Xml.Doc* doc = cntx.read_doc(m_rawHtml, "");
-		if (doc == null)
-		{
+	}
+
+	public bool parse(FeedServer server)
+	{
+		m_server = server;
+
+		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, Xml.ParserOption.NOERROR + Xml.ParserOption.NOWARNING);
+		if(doc == null)
 			return false;
+
+		Xml.Node* root = doc->get_root_element();
+		if(root->name != "opml")
+			return false;
+
+		logger.print(LogMessage.DEBUG, "OPML version: " + root->get_prop("version"));
+
+		for(var node = root->children; node != null; node = node->next)
+		{
+			if(node->type == Xml.ElementType.ELEMENT_NODE)
+			{
+				switch(node->name)
+				{
+					case "head":
+						parseHead(node);
+						break;
+
+					case "body":
+						parseTree(node);
+						break;
+				}
+			}
 		}
+
+		return true;
+	}
+
+	private void parseHead(Xml.Node* root)
+	{
+		for(var node = root->children; node != null; node = node->next)
+		{
+			if(node->type == Xml.ElementType.ELEMENT_NODE)
+			{
+				switch(node->name)
+				{
+					case "title":
+						logger.print(LogMessage.DEBUG, "Title: " + node->get_content());
+						break;
+
+					case "dateCreated":
+						logger.print(LogMessage.DEBUG, "dateCreated: " + node->get_content());
+						break;
+
+					case "dateModified":
+						logger.print(LogMessage.DEBUG, "dateModified: " + node->get_content());
+						break;
+				}
+			}
+		}
+	}
+
+	private void parseTree(Xml.Node* root)
+	{
+		m_level++;
+		for(var node = root->children; node != null; node = node->next)
+		{
+			if(node->type == Xml.ElementType.ELEMENT_NODE)
+			{
+				if(hasProp(node, "text") && !hasProp(node, "xmlUrl"))
+				{
+					if(hasProp(node, "title") || !hasProp(node, "schema-version"))
+						parseCat(node);
+				}
+				else if(hasProp(node, "xmlUrl") && hasProp(node, "htmlUrl"))
+				{
+					parseFeed(node);
+				}
+			}
+		}
+		m_level--;
+	}
+
+	private void parseCat(Xml.Node* node)
+	{
+		string title = node->get_prop("text");
+		logger.print(LogMessage.DEBUG, space() + "Category: " + title);
+		parseTree(node);
+	}
+
+	private void parseFeed(Xml.Node* node)
+	{
+		if(node->get_prop("type") == "rss")
+		{
+			string title = node->get_prop("text");
+			string feedURL = node->get_prop("xmlUrl");
+			string website = node->get_prop("htmlUrl");
+			logger.print(LogMessage.DEBUG, space() + "Feed: " + title + " website: " + website + " feedURL: " + feedURL);
+		}
+	}
+
+	private bool hasProp(Xml.Node* node, string prop)
+	{
+		if(node->get_prop(prop) != null)
+			return true;
+
+		return false;
+	}
+
+	private string space()
+	{
+		string tmp = "";
+		for(int i = 1; i < m_level; i++)
+		{
+			tmp += "	";
+		}
+
+		return tmp;
 	}
 }

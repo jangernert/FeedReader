@@ -94,6 +94,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		});
 		m_articleList.drag_end.connect((context) => {
 			m_feedList.expand_collapse_category(CategoryID.MASTER, true);
+			m_feedList.removeEmptyTagRow();
 		});
 		m_articleList.drag_failed.connect((context, result) => {
 			m_feedList.removeEmptyTagRow();

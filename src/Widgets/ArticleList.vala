@@ -441,12 +441,14 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private void scrollUP()
 	{
 		smooth_adjustment_to(m_current_adjustment, 0);
+		m_scrollPos = 0.0;
 	}
 
 
 	private void scrollDOWN()
 	{
 		smooth_adjustment_to(m_current_adjustment, (int)m_current_adjustment.get_upper());
+		m_scrollPos = m_current_adjustment.get_upper();
 	}
 
 

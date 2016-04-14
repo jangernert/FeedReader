@@ -38,7 +38,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private bool m_hovered = false;
 	private bool m_unreadHovered = false;
 	private Gtk.Stack m_unreadStack;
-	public signal void collapse(bool collapse, string catID);
+	public signal void collapse(bool collapse, string catID, bool selectParent);
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void selectDefaultRow();
 
@@ -328,7 +328,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	public bool expand_collapse()
+	public bool expand_collapse(bool selectParent = true)
 	{
 		if(m_collapsed)
 		{
@@ -341,7 +341,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			m_stack.set_visible_child_name("collapsed");
 		}
 
-		collapse(m_collapsed, m_categorieID);
+		collapse(m_collapsed, m_categorieID, selectParent);
 		return true;
 	}
 

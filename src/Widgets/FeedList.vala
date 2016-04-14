@@ -422,9 +422,9 @@ public class FeedReader.feedList : Gtk.Stack {
 													// or if it has to be done to restore the state of the feedrow
 							                        !m_TagsDisplayed || expandCat("Categories")
 					                                );
-			categorierow.collapse.connect((collapse, catID) => {
+			categorierow.collapse.connect((collapse, catID, selectParent) => {
 				if(collapse)
-					collapseCategorieInternal(catID);
+					collapseCategorieInternal(catID, selectParent);
 				else
 					expandCategorieInternal(catID);
 			});
@@ -447,9 +447,9 @@ public class FeedReader.feedList : Gtk.Stack {
 													// or if it has to be done to restore the state of the feedrow
 							                        !m_TagsDisplayed || expandCat(name)
 					                                );
-			tagrow.collapse.connect((collapse, catID) => {
+			tagrow.collapse.connect((collapse, catID, selectParent) => {
 				if(collapse)
-					collapseCategorieInternal(catID);
+					collapseCategorieInternal(catID, selectParent);
 				else
 					expandCategorieInternal(catID);
 			});
@@ -520,9 +520,9 @@ public class FeedReader.feedList : Gtk.Stack {
 							                        expandCat(item.getTitle())
 					                                );
 					    expand = false;
-						categorierow.collapse.connect((collapse, catID) => {
+						categorierow.collapse.connect((collapse, catID, selectParent) => {
 							if(collapse)
-								collapseCategorieInternal(catID);
+								collapseCategorieInternal(catID, selectParent);
 							else
 								expandCategorieInternal(catID);
 						});
@@ -661,7 +661,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	}
 
 
-	private void collapseCategorieInternal(string catID)
+	private void collapseCategorieInternal(string catID, bool selectParent = true)
 	{
 		var FeedChildList = m_list.get_children();
 
@@ -677,7 +677,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			if(tmpCatRow != null && tmpCatRow.getParent() == catID)
 			{
 				tmpCatRow.reveal(false, m_expand_collapse_time);
-				collapseCategorieInternal(tmpCatRow.getID());
+				collapseCategorieInternal(tmpCatRow.getID(), selectParent);
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS)
 			{
@@ -685,20 +685,25 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 		}
 
-		var selected_feed = m_list.get_selected_row() as FeedRow;
-		var selected_cat = m_list.get_selected_row() as categorieRow;
-		var selected_tag = m_list.get_selected_row() as TagRow;
-
-		if( (selected_feed != null && !selected_feed.isRevealed()) || (selected_cat != null && !selected_cat.isRevealed()) || (selected_tag != null && !selected_tag.isRevealed()) )
+		if(selectParent)
 		{
-			foreach(Gtk.Widget row in FeedChildList)
+			var selected_feed = m_list.get_selected_row() as FeedRow;
+			var selected_cat = m_list.get_selected_row() as categorieRow;
+			var selected_tag = m_list.get_selected_row() as TagRow;
+
+			if((selected_feed != null && !selected_feed.isRevealed())
+			|| (selected_cat != null && !selected_cat.isRevealed())
+			|| (selected_tag != null && !selected_tag.isRevealed()))
 			{
-				var tmpCatRow = row as categorieRow;
-				if(tmpCatRow != null && tmpCatRow.getID() == catID)
+				foreach(Gtk.Widget row in FeedChildList)
 				{
-					m_list.select_row(tmpCatRow);
-					m_selected = tmpCatRow;
-					newCategorieSelected(catID);
+					var tmpCatRow = row as categorieRow;
+					if(tmpCatRow != null && tmpCatRow.getID() == catID)
+					{
+						m_list.select_row(tmpCatRow);
+						m_selected = tmpCatRow;
+						newCategorieSelected(catID);
+					}
 				}
 			}
 		}
@@ -745,7 +750,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				if((!expand && tmpCatRow.isExpanded())
 				||(expand && !tmpCatRow.isExpanded()))
-					tmpCatRow.expand_collapse();
+					tmpCatRow.expand_collapse(false);
 			}
 		}
 	}

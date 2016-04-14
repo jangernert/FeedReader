@@ -918,6 +918,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDLY:
+					m_feedly.importOPML(opml);
 					break;
 			}
 			Idle.add((owned) callback);

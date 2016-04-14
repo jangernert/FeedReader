@@ -16,7 +16,6 @@
 public class FeedReader.OPMLparser : GLib.Object {
 
 	private string m_opmlString;
-	private FeedServer m_server;
 	private uint m_level = 0;
 
 	public OPMLparser(string opml)
@@ -25,10 +24,8 @@ public class FeedReader.OPMLparser : GLib.Object {
 
 	}
 
-	public bool parse(FeedServer server)
+	public bool parse()
 	{
-		m_server = server;
-
 		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, Xml.ParserOption.NOERROR + Xml.ParserOption.NOWARNING);
 		if(doc == null)
 			return false;
@@ -83,7 +80,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 		}
 	}
 
-	private void parseTree(Xml.Node* root)
+	private void parseTree(Xml.Node* root, string? catID = null)
 	{
 		m_level++;
 		for(var node = root->children; node != null; node = node->next)
@@ -93,25 +90,26 @@ public class FeedReader.OPMLparser : GLib.Object {
 				if(hasProp(node, "text") && !hasProp(node, "xmlUrl"))
 				{
 					if(hasProp(node, "title") || !hasProp(node, "schema-version"))
-						parseCat(node);
+						parseCat(node, catID);
 				}
 				else if(hasProp(node, "xmlUrl") && hasProp(node, "htmlUrl"))
 				{
-					parseFeed(node);
+					parseFeed(node, catID);
 				}
 			}
 		}
 		m_level--;
 	}
 
-	private void parseCat(Xml.Node* node)
+	private void parseCat(Xml.Node* node, string? parentCatID = null)
 	{
 		string title = node->get_prop("text");
 		logger.print(LogMessage.DEBUG, space() + "Category: " + title);
-		parseTree(node);
+		string catID = daemon.addCategory("title", parentCatID);
+		parseTree(node, catID);
 	}
 
-	private void parseFeed(Xml.Node* node)
+	private void parseFeed(Xml.Node* node, string? catID = null)
 	{
 		if(node->get_prop("type") == "rss")
 		{
@@ -119,6 +117,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			string feedURL = node->get_prop("xmlUrl");
 			string website = node->get_prop("htmlUrl");
 			logger.print(LogMessage.DEBUG, space() + "Feed: " + title + " website: " + website + " feedURL: " + feedURL);
+			daemon.addFeed(feedURL, catID, true);
 		}
 	}
 

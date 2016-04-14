@@ -448,6 +448,15 @@ namespace FeedReader {
 			});
 		}
 
+		public string addCategory(string title, string? parentID = null)
+		{
+			string catID = server.createCategory(title);
+			// FIXME: create subcategories
+			// if(server.supportMultiLevelCategories())
+
+			return catID;
+		}
+
 		public void removeCategoryWithChildren(string catID)
 		{
 			var feeds = dataBase.read_feeds();
@@ -572,8 +581,9 @@ namespace FeedReader {
 	}
 
 	void on_bus_aquired (DBusConnection conn) {
+		daemon = new FeedDaemonServer();
 		try {
-		    conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer());
+		    conn.register_object ("/org/gnome/feedreader", daemon);
 		} catch (IOError e) {
 		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
 		    logger.print(LogMessage.WARNING, e.message);
@@ -593,6 +603,7 @@ namespace FeedReader {
 	GLib.Settings settings_tweaks;
 	FeedServer server;
 	Logger logger;
+	FeedDaemonServer daemon;
 	Notify.Notification notification;
 	bool m_notifyActionSupport = false;
 

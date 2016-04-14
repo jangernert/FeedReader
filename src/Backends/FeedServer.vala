@@ -64,6 +64,21 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_supportTags;
 	}
 
+	public bool supportMultiLevelCategories()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return true;
+
+			case Backend.FEEDLY:
+			case Backend.OWNCLOUD:
+			case Backend.INOREADER:
+			default:
+				return false;
+		}
+	}
+
 	public LoginResponse login()
 	{
 		switch(m_type)
@@ -780,6 +795,26 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
+	public string createCategory(string title)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.createCategory(title);
+
+			case Backend.FEEDLY:
+				return m_feedly.createCatID(title);
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.addFolder(title).to_string();
+
+			case Backend.INOREADER:
+				return m_inoreader.composeTagID(title);
+		}
+
+		return "fail";
+	}
+
 	public async void renameCategory(string catID, string title)
 	{
 		SourceFunc callback = renameCategory.callback;
@@ -879,7 +914,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.OWNCLOUD:
 				case Backend.INOREADER:
 					var parser = new OPMLparser(opml);
-					parser.parse(this);
+					parser.parse();
 					break;
 
 				case Backend.FEEDLY:

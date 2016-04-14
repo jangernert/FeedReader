@@ -70,8 +70,6 @@ public class FeedReader.grabberUtils : GLib.Object {
         }
 
     	Xml.Node* node = res->nodesetval->item(0);
-    	//stdout.printf("%s\n", node->get_content());
-        //stdout.printf("%s\n", node->get_prop("href"));
         string URL = node->get_prop("href");
 
         node->unlink();

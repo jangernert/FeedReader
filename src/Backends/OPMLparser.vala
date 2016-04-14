@@ -15,8 +15,18 @@
 
 public class FeedReader.OPMLparser : GLib.Object {
 
-	public OPMLparser()
+	private string m_opmlString;
+
+	public OPMLparser(string opml)
 	{
-		
+		m_opmlString = opml;
+
+		var cntx = new Xml.ParserCtxt();
+		cntx.use_options(Xml.ParserOption.NOERROR + Xml.ParserOption.NOWARNING);
+		Xml.Doc* doc = cntx.read_doc(m_rawHtml, "");
+		if (doc == null)
+		{
+			return false;
+		}
 	}
 }

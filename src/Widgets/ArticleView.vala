@@ -47,7 +47,6 @@ public class FeedReader.articleView : Gtk.Stack {
 		settings.set_enable_media_stream(false);
 		settings.set_enable_page_cache(false);
 		settings.set_enable_plugins(false);
-		settings.set_enable_private_browsing(true);
 		settings.set_enable_smooth_scrolling(true);
 		settings.set_javascript_can_access_clipboard(false);
 		settings.set_javascript_can_open_windows_automatically(false);

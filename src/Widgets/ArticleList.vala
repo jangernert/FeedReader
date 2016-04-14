@@ -524,6 +524,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_scrollPos = m_current_adjustment.get_value();
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 
+		bool show_notification = false;
+		if(!m_only_unread && !m_only_marked && settings_state.get_int("articlelist-new-rows") > 0)
+			show_notification = true;
+
 		m_threadCount++;
 		int threadID = m_threadCount;
 		bool hasContent = true;
@@ -633,7 +637,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					updateArticleList(false);
 				}
 
-				if(!m_only_unread && !m_only_marked && settings_state.get_int("articlelist-new-rows") > 0)
+				if(show_notification)
 					showNotification();
 			}
 			else if(!addRows)
@@ -1122,7 +1126,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public void showOverlay()
 	{
-		if(m_currentScroll.get_vadjustment().get_value() > 0.0)
+		if(m_current_adjustment.get_value() > 0.0)
 			showNotification();
 	}
 

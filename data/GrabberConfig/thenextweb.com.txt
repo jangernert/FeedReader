@@ -1,7 +1,10 @@
+title: //h1[@class='title']
 body: //div[@class='l-postSingle-content-main-video'] | //div[contains(concat(' ',normalize-space(@class),' '),' l-postSingle-content-main-content ')]
-author: //meta[@name="author"]/@content
+author: //a[@class='author']
+date: //div[@class='meta']/time/@datetime
 
 strip: //div[contains(concat(' ',normalize-space(@class),' '),' l-postSingle-content-bottom-share ')]
+strip_id_or_class: articleShare-buttons
 replace_string(data-original=): src=
 
 tidy: no

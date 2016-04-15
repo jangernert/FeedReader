@@ -25,9 +25,15 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private Gtk.Revealer m_revealer;
 	private Gtk.Label m_unread;
 	private uint m_unread_count;
+	private Gtk.EventBox m_eventBox;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
+	public signal void selectDefaultRow();
+	public signal void removeRow();
 
+	private const Gtk.TargetEntry[] target_list = {
+	    { "STRING",     0, DragTarget.TAGID }
+	};
 
 	public TagRow (string name, string tagID, int color)
 	{
@@ -67,8 +73,145 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
-		this.add(m_revealer);
+
+		m_eventBox = new Gtk.EventBox();
+		m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_eventBox.button_press_event.connect(onClick);
+		m_eventBox.add(m_revealer);
+
+		this.add(m_eventBox);
 		this.show_all();
+
+		// Make this widget a DnD destination.
+        Gtk.drag_dest_set (
+                this,
+                Gtk.DestDefaults.MOTION,
+                target_list,
+                Gdk.DragAction.COPY
+        );
+
+        // All possible destination signals
+        this.drag_motion.connect(onDragMotion);
+        this.drag_leave.connect(onDragLeave);
+        this.drag_drop.connect(onDragDrop);
+        this.drag_data_received.connect(onDragDataReceived);
+	}
+
+	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
+    {
+		showPopoverStyle();
+        return false;
+    }
+
+	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
+	{
+        closePopoverStyle();
+    }
+
+	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
+    {
+        // If the source offers a target
+        if(context.list_targets() != null)
+		{
+            var target_type = (Gdk.Atom)context.list_targets().nth_data(0);
+
+            // Request the data from the source.
+            Gtk.drag_get_data(widget, context, target_type, time);
+			return true;
+        }
+
+		return false;
+    }
+
+	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
+                                    Gtk.SelectionData selection_data, uint target_type, uint time)
+    {
+		if(selection_data != null
+		&& selection_data.get_length() >= 0
+		&& target_type == DragTarget.TAGID)
+		{
+			if(m_tagID != TagID.NEW)
+			{
+				logger.print(LogMessage.DEBUG, "drag articleID: " + (string)selection_data.get_data());
+				feedDaemon_interface.tagArticle((string)selection_data.get_data(), m_tagID, true);
+				Gtk.drag_finish(context, true, false, time);
+			}
+			else
+			{
+				showRenamePopover(context, time, (string)selection_data.get_data());
+			}
+        }
+    }
+
+	private bool onClick(Gdk.EventButton event)
+	{
+		// only right click allowed
+		if(event.button != 3)
+			return false;
+
+		switch(event.type)
+		{
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
+		}
+
+		var remove_action = new GLib.SimpleAction("deleteTag", null);
+		remove_action.activate.connect(() => {
+			if(this.is_selected())
+				selectDefaultRow();
+
+			uint time = 300;
+			this.reveal(false, time);
+
+			var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+			var notification = content.showNotification(_("Tag \"%s\" removed").printf(m_name));
+			ulong eventID = notification.dismissed.connect(() => {
+				feedDaemon_interface.deleteTag(m_tagID);
+			});
+			notification.action.connect(() => {
+				notification.disconnect(eventID);
+				this.reveal(true, time);
+				notification.dismiss();
+			});
+		});
+		var rename_action = new GLib.SimpleAction("renameTag", null);
+		rename_action.activate.connect(() => {
+			showRenamePopover();
+		});
+		var app = (rssReaderApp)GLib.Application.get_default();
+		app.add_action(rename_action);
+		app.add_action(remove_action);
+
+		var menu = new GLib.Menu();
+		menu.append(_("Rename"), "renameTag");
+		menu.append(_("Remove"), "deleteTag");
+
+		var pop = new Gtk.Popover(this);
+		pop.set_position(Gtk.PositionType.BOTTOM);
+		pop.bind_model(menu, "app");
+		pop.closed.connect(closePopoverStyle);
+		pop.show();
+		showPopoverStyle();
+
+		return true;
+	}
+
+	private void closePopoverStyle()
+	{
+		if(this.is_selected())
+			this.get_style_context().remove_class("feed-list-row-selected-popover");
+		else
+			this.get_style_context().remove_class("feed-list-row-popover");
+	}
+
+	private void showPopoverStyle()
+	{
+		if(this.is_selected())
+			this.get_style_context().add_class("feed-list-row-selected-popover");
+		else
+			this.get_style_context().add_class("feed-list-row-popover");
 	}
 
 	public void update(string name)
@@ -112,6 +255,58 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			m_revealer.set_transition_duration(duration);
 			m_revealer.set_reveal_child(reveal);
 		}
+	}
+
+	private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, string? articleID = null)
+	{
+		var popRename = new Gtk.Popover(this);
+		popRename.set_position(Gtk.PositionType.BOTTOM);
+		popRename.closed.connect(() => {
+			closePopoverStyle();
+			if(m_tagID == TagID.NEW && context != null)
+			{
+				removeRow();
+				if(dataBase.read_tags().is_empty)
+				{
+					var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+					var feedlist = window.getContent().getFeedList();
+					feedlist.newFeedlist(false, false);
+				}
+				Gtk.drag_finish(context, true, false, time);
+			}
+		});
+
+		var renameEntry = new Gtk.Entry();
+		renameEntry.set_text(m_name);
+		renameEntry.activate.connect(() => {
+			if(m_tagID != TagID.NEW)
+			{
+				popRename.hide();
+				feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+			}
+			else if(context != null)
+			{
+				m_tagID = feedDaemon_interface.createTag(renameEntry.get_text());
+				popRename.hide();
+				feedDaemon_interface.tagArticle(articleID, m_tagID, true);
+				Gtk.drag_finish(context, true, false, time);
+			}
+		});
+
+		var renameButton = new Gtk.Button.with_label(_("rename"));
+		renameButton.get_style_context().add_class("suggested-action");
+		renameButton.clicked.connect(() => {
+			renameEntry.activate();
+		});
+
+		var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		renameBox.margin = 5;
+		renameBox.pack_start(renameEntry, true, true, 0);
+		renameBox.pack_start(renameButton, false, false, 0);
+
+		popRename.add(renameBox);
+		popRename.show_all();
+		showPopoverStyle();
 	}
 
 }

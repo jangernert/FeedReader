@@ -44,6 +44,11 @@ namespace FeedReader {
 		MARKED
 	}
 
+	public enum DragTarget {
+	    TAGID,
+	    STRING
+	}
+
 	public enum ConsoleColor {
         BLACK,
         RED,
@@ -147,6 +152,10 @@ namespace FeedReader {
 		UNSUBSCRIBE
 	}
 
+	namespace TagID {
+		const string NEW = "blubb";
+	}
+
 	namespace InoReaderSecret {
 		const string base_uri = "https://www.inoreader.com/reader/api/0/";
 		const string apikey = "1000001058";
@@ -186,13 +195,13 @@ namespace FeedReader {
 		 const string copyright     = "Copyright © 2014 Jan Lukas Gernert";
 		 const string version       = "1.5 dev";
 		 const string comments      = _("Desktop Client for various RSS Services");
-		 const string[] authors     = { "Jan Lukas Gernert", null };
+		 const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", null };
 		 const string[] documenters = { "nobody", null };
 		 const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
 		 const string iconName      = "feedreader";
-		 const string translators   = null;
-		 const string website       = null;
-		 const string websiteLabel  = null;
+		 const string translators   = _("translator-credits");
+		 const string website       = "http://jangernert.github.io/FeedReader/";
+		 const string websiteLabel  = _("FeedReader Website");
 	}
 
 	namespace Menu {

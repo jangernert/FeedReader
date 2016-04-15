@@ -13,22 +13,21 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ContentPage : Gtk.Paned {
+public class FeedReader.ContentPage : Gtk.Overlay {
 
-	private Gtk.Paned m_pane;
+	private Gtk.Paned m_pane1;
+	private Gtk.Paned m_pane2;
 	private articleView m_article_view;
 	private articleList m_articleList;
 	private feedList m_feedList;
 	private FeedListFooter m_footer;
 	public signal void showArticleButtons(bool show);
+	public signal void panedPosChange(int pos);
 
 
 	public ContentPage()
 	{
 		logger.print(LogMessage.DEBUG, "ContentPage: setup FeedList");
-		this.orientation = Gtk.Orientation.HORIZONTAL;
-
-		this.set_position(settings_state.get_int("feeds-and-articles-width"));
 
 		m_feedList = new feedList();
 		m_footer = new FeedListFooter();
@@ -36,23 +35,35 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		feedListBox.pack_start(m_feedList);
 		feedListBox.pack_end(m_footer, false, false);
 
-		m_pane = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
-		m_pane.set_size_request(0, 300);
-		m_pane.set_position(settings_state.get_int("feed-row-width"));
-		m_pane.pack1(feedListBox, false, false);
+		m_pane2 = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+		m_pane2.set_size_request(0, 300);
+		m_pane2.set_position(settings_state.get_int("feed-row-width"));
+		m_pane2.pack1(feedListBox, false, false);
 
 		m_feedList.newFeedSelected.connect((feedID) => {
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
 			m_articleList.newHeadlineList();
-		});
+
+			if(feedID == FeedID.ALL)
+			{
+				m_footer.setRemoveButtonSensitive(false);
+			}
+			else
+			{
+				m_footer.setRemoveButtonSensitive(true);
+				m_footer.setSelectedRow(FeedListType.FEED, feedID);
+			}
+ 		});
 
 		m_feedList.newTagSelected.connect((tagID) => {
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
 			m_articleList.newHeadlineList();
+			m_footer.setRemoveButtonSensitive(true);
+			m_footer.setSelectedRow(FeedListType.TAG, tagID);
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
@@ -60,15 +71,38 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
 			m_articleList.newHeadlineList();
+
+			if(categorieID != CategoryID.MASTER && categorieID != CategoryID.TAGS)
+			{
+				m_footer.setRemoveButtonSensitive(true);
+				m_footer.setSelectedRow(FeedListType.CATEGORY, categorieID);
+			}
+			else
+			{
+				m_footer.setRemoveButtonSensitive(false);
+			}
 		});
 
 		m_feedList.markAllArticlesAsRead.connect(markAllArticlesAsRead);
 
 
 		m_articleList = new articleList();
+		m_articleList.drag_begin.connect((context) => {
+			m_feedList.expand_collapse_category(CategoryID.TAGS, true);
+			m_feedList.expand_collapse_category(CategoryID.MASTER, false);
+			m_feedList.addEmptyTagRow();
+		});
+		m_articleList.drag_end.connect((context) => {
+			m_feedList.expand_collapse_category(CategoryID.MASTER, true);
+			m_feedList.removeEmptyTagRow();
+		});
+		m_articleList.drag_failed.connect((context, result) => {
+			m_feedList.removeEmptyTagRow();
+			return true;
+		});
 		setArticleListState((ArticleListState)settings_state.get_enum("show-articles"));
 
-		m_pane.pack2(m_articleList, false, false);
+		m_pane2.pack2(m_articleList, false, false);
 
 
 		m_articleList.row_activated.connect((row) => {
@@ -103,19 +137,25 @@ public class FeedReader.ContentPage : Gtk.Paned {
 		m_article_view.leaveFullscreen.connect(leaveFullscreen);
 
 
-		this.pack1(m_pane, false, false);
-		this.pack2(m_article_view, true, false);
+		m_pane1 = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
+		m_pane1.set_position(settings_state.get_int("feeds-and-articles-width"));
+		m_pane1.pack1(m_pane2, false, false);
+		m_pane1.pack2(m_article_view, true, false);
+		m_pane1.notify["position"].connect(() => {
+			panedPosChange(m_pane1.get_position());
+		});
+		this.add(m_pane1);
 	}
 
 	public void enterFullscreen()
 	{
 		if(settings_tweaks.get_boolean("fullscreen-videos"))
-			m_pane.set_visible(false);
+			m_pane2.set_visible(false);
 	}
 
 	public void leaveFullscreen()
 	{
-		m_pane.set_visible(true);
+		m_pane2.set_visible(true);
 	}
 
 	public void ArticleListNEXT()
@@ -204,22 +244,22 @@ public class FeedReader.ContentPage : Gtk.Paned {
 
 	public int getFeedListWidth()
 	{
-		return m_pane.get_position();
+		return m_pane2.get_position();
 	}
 
 	public void setFeedListWidth(int pos)
 	{
-		m_pane.set_position(pos);
+		m_pane2.set_position(pos);
 	}
 
 	public int getArticlePlusFeedListWidth()
 	{
-		return this.get_position();
+		return m_pane1.get_position();
 	}
 
 	public void setArticlePlusFeedListWidth(int pos)
 	{
-		this.set_position(pos);
+		m_pane1.set_position(pos);
 	}
 
 	public void getArticleListState(out double scrollPos, out int offset)
@@ -331,5 +371,33 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public void setOnline()
 	{
 		m_feedList.setOnline();
+	}
+
+	public void footerSetBusy()
+	{
+		m_footer.setBusy();
+	}
+
+	public void footerSetReady()
+	{
+		m_footer.setReady();
+	}
+
+	public feedList getFeedList()
+	{
+		return m_feedList;
+	}
+
+	public void setArticleListPosition(int pos)
+	{
+		m_pane1.set_position(pos);
+	}
+
+	public InAppNotification showNotification(string message, string buttonText = _("undo"))
+	{
+		var notification = new InAppNotification(message, buttonText);
+		this.add_overlay(notification);
+		this.show_all();
+		return notification;
 	}
 }

@@ -23,5 +23,7 @@ strip_id_or_class: engagement_block
 
 single_page_link: //a[contains(@href, '/print/')]
 
+http_header(user-agent): Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
+
 test_url: http://www.forbes.com/forbes/2011/0509/technology-frog-design-jan-chipchase-ethnographer-birth-cool_print.html
 test_url: http://www.forbes.com/sites/bruceupbin/2012/09/11/the-iphone-5-winners-and-losers/

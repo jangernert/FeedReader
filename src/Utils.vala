@@ -40,7 +40,7 @@ public class FeedReader.Utils : GLib.Object {
 					{
 						logger.print(LogMessage.ERROR, "generatePreviews: no Preview");
 						Article.setPreview(noPreview);
-						Article.setTitle(UTF8fix(Article.getTitle()));
+						Article.setTitle(UTF8fix(Article.getTitle(), true));
 						continue;
 					}
 
@@ -56,21 +56,25 @@ public class FeedReader.Utils : GLib.Object {
 					output = output.replace("\n"," ");
 					output = output.replace("_"," ");
 
-					Article.setPreview(output);
+					Article.setPreview(output.chug());
 				}
 				else
 				{
 					logger.print(LogMessage.DEBUG, "no html to create preview from");
 					Article.setPreview(noPreview);
 				}
-				Article.setTitle(UTF8fix(Article.getTitle()));
+				Article.setTitle(UTF8fix(Article.getTitle(), true));
 			}
 		}
 	}
 
-	public static string UTF8fix(string old_string)
+	public static string UTF8fix(string old_string, bool removeHTML = false)
 	{
-		string? output = libVilistextum.parse(old_string, 0);
+		int rm_html = 0;
+		if(removeHTML)
+			rm_html = 1;
+
+		string? output = libVilistextum.parse(old_string, rm_html);
 
 		if(output != null)
 		{

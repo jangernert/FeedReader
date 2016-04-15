@@ -1,7 +1,7 @@
 project (FeedReader)
 cmake_minimum_required (VERSION 2.6)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
-include_directories(${CMAKE_SOURCE_DIR}/gtkimageview)
+include_directories(${CMAKE_SOURCE_DIR}/staticLibs)
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -26,6 +26,10 @@ add_subdirectory (po)
 add_subdirectory (schemas)
 add_subdirectory (libVilistextum)
 
+include(GetGitRevisionDescription)
+get_git_head_revision(GIT_REFSPEC GIT_SHA1)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.vala.in" "${CMAKE_SOURCE_DIR}/GitSHA1.vala" @ONLY)
+
 
 set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
 
@@ -47,6 +51,7 @@ link_directories(${DEPS_LIBRARY_DIRS})
 
 find_package(Vala REQUIRED)
 include(ValaVersion)
+
 ensure_vala_version("0.24" MINIMUM)
 
 set(UI_OPTIONS
@@ -72,6 +77,8 @@ endif(USE_WEBKIT_4)
 
 include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
+    GitSHA1.vala
+    src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
     src/Backends/ttrss/TTRSS_Utils.vala
@@ -90,7 +97,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/QueryBuilder.vala
     src/Widgets/AddPopover.vala
     src/Widgets/ArticleList.vala
-    src/Widgets/ArticleListOverlay.vala
     src/Widgets/ArticleRow.vala
     src/Widgets/ArticleView.vala
     src/Widgets/CategorieRow.vala
@@ -102,10 +108,12 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/FeedRow.vala
     src/Widgets/HoverButton.vala
     src/Widgets/ImagePopup.vala
+    src/Widgets/InAppNotification.vala
     src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
     src/Widgets/ModeButton.vala
     src/Widgets/ReaderHeaderbar.vala
+    src/Widgets/RemovePopover.vala
     src/Widgets/ResetPage.vala
     src/Widgets/ServiceSettingsPopover.vala
     src/Widgets/ServiceSettingsRow.vala
@@ -137,11 +145,13 @@ OPTIONS
 CUSTOM_VAPIS
     vapi/libvilistextum.vapi
     vapi/gtkimageview.vapi
+    vapi/gd-1.0.vapi
 )
 
 add_executable(${EXEC_NAME} ${UI})
 target_link_libraries(${EXEC_NAME} vilistextum)
-target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/gtkimageview/libgtkimageview.a)
+target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgtkimageview.a)
+target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgd.a)
 
 
 set(DAEMON_OPTIONS
@@ -183,6 +193,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Model/OfflineAction.vala
     src/Model/InterfaceState.vala
     src/Backends/FeedServer.vala
+    src/Backends/OPMLparser.vala
     src/Backends/ttrss/TTRSS_API.vala
     src/Backends/ttrss/TTRSS_Utils.vala
     src/Backends/ttrss/TTRSS_Message.vala
@@ -281,6 +292,7 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION $
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION /usr/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache /usr/share/icons/hicolor)")
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader.css DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader320.css DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})

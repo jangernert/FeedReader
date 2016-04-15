@@ -1,4 +1,4 @@
-body: //div[contains(@class, 'sectionArticle')]//div[contains(concat(' ',normalize-space(@class),' '),' box ')]
+body: //div[contains(@class, 'sectionArticle') and contains(@class, 'sectionZ')]
 
 strip_id_or_class: infokasten
 strip_id_or_class: teaserImTeaser

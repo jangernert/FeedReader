@@ -9,6 +9,8 @@ author: //h4[@class='author']
 
 body: //article | //div[@class='meldung_wrapper']
 
+strip: //nav
+
 # General cleanup
 strip: //time
 strip: //header
@@ -27,7 +29,7 @@ strip: //span[@class='source']
 #strip: //div[@class='gallery compact']/figcaption
 strip_id_or_class: comments
 strip_id_or_class: ISI_IGNORE
-strip_id_or_class: clear
+#strip_id_or_class: clear
 
 strip_id_or_class: linkurl_grossbild
 strip_id_or_class: image-num
@@ -44,6 +46,7 @@ replace_string(</h5>): </h2>
 replace_string(<span class="bild_rechts" style="width:): <p "
 replace_string(<div class="heisebox">): <blockquote>
 
+single_page_link: //footer//a[contains(@href, '?view=print')]
 
 next_page_link: //a[@class='next']
 next_page_link: //a[@title='vor']

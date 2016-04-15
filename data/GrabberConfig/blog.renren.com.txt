@@ -8,4 +8,4 @@ author://span[contains(@class, 'name')]
 body://div[contains(@class, 'content-body')]
 
 convert_double_br_tags:yes
-test_url: http://blog.renren.com/share/230305019/1502806705
+test_url: http://blog.renren.com/share/224959024/14260739544

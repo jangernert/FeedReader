@@ -7,8 +7,8 @@ strip: //div[contains(@data-sigil, 'm-mentions-expand')]
 prune: no
 tidy: no
 
-single_page_link: concat("https://m.", substring-after(//link[@rel="alternate" and @media="handheld"]/@href, "//www."))
-if_page_contains: //link[@rel="alternate" and @media="handheld"]
+#single_page_link: concat("https://m.", substring-after(//link[@rel="alternate" and @media="handheld"]/@href, "//www."))
+#if_page_contains: //link[@rel="alternate" and @media="handheld"]
 
 test_url: https://www.facebook.com/permalink.php?story_fbid=10154584776550183&id=294468630182
 test_contains: holding an extraordinary session in Brussels this month

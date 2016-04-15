@@ -31,6 +31,12 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_row;
 	public signal void ArticleStateChanged(ArticleStatus status);
 	public signal void child_revealed();
+	public signal void highlight_row(string articleID);
+	public signal void revert_highlight();
+
+	private const Gtk.TargetEntry[] target_list = {
+	    { "STRING",     0, DragTarget.TAGID }
+	};
 
 	public articleRow(article Article)
 	{
@@ -44,24 +50,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 100);
+		m_icon = getFeedIcon();
 
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-
-		string feed_icon_name = icon_path + m_article.getFeedID().replace("/", "_").replace(".", "_") + ".ico";
-		Gdk.Pixbuf tmp_icon;
-		try{
-			if(FileUtils.test(feed_icon_name, GLib.FileTest.EXISTS))
-			{
-				tmp_icon = new Gdk.Pixbuf.from_file(feed_icon_name);
-				Utils.scale_pixbuf(ref tmp_icon, 24);
-				m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
-			}
-			else
-			{
-				m_icon = new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
-			}
-		}
-		catch(GLib.Error e){}
 
 
 		m_label = new Gtk.Label(m_article.getTitle());
@@ -202,7 +192,112 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_row_eventbox.add(m_revealer);
 		this.add(m_row_eventbox);
 		this.show_all();
+
+		// Make the this widget a DnD source.
+
+		if(!settings_general.get_boolean("only-feeds"))
+		{
+			Gtk.drag_source_set (
+	                this,
+	                Gdk.ModifierType.BUTTON1_MASK,
+	                target_list,
+	                Gdk.DragAction.COPY
+	        );
+
+			this.drag_begin.connect(onDragBegin);
+	        this.drag_data_get.connect(onDragDataGet);
+	        this.drag_data_delete.connect(onDragDataDelete);
+	        this.drag_end.connect(onDragEnd);
+			this.drag_failed.connect(onDragFail);
+		}
 	}
+
+	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "ArticleRow: onDragBegin");
+		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
+		highlight_row(m_article.getArticleID());
+		if(dataBase.read_tags().is_empty)
+		{
+			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			var feedlist = window.getContent().getFeedList();
+			feedlist.newFeedlist(false, true);
+		}
+	}
+
+	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
+	{
+		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataGet");
+
+		if(target_type == DragTarget.TAGID)
+		{
+			selection_data.set_text(m_article.getArticleID(), -1);
+		}
+		else
+		{
+			selection_data.set_text("ERROR!!!!!1111eleven", -1);
+		}
+	}
+
+	private void onDragDataDelete(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataDelete");
+	}
+
+	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "ArticleRow: onDragEnd");
+		revert_highlight();
+	}
+
+	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
+	{
+		logger.print(LogMessage.DEBUG, "ArticleRow: drag failed - " + result.to_string());
+		if(dataBase.read_tags().is_empty)
+		{
+			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			var feedlist = window.getContent().getFeedList();
+			feedlist.newFeedlist(false, false);
+		}
+		return false;
+	}
+
+	private Gtk.Image getFeedIcon()
+	{
+		try{
+			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
+			{
+				var tmp_icon = new Gdk.Pixbuf.from_file(getIconPath());
+				Utils.scale_pixbuf(ref tmp_icon, 24);
+				return new Gtk.Image.from_pixbuf(tmp_icon);
+			}
+		}
+		catch(GLib.Error e){}
+
+		return new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
+	}
+
+
+	private Gdk.Pixbuf getFeedPixbuf()
+	{
+		try{
+			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
+			{
+				return new Gdk.Pixbuf.from_file_at_size(getIconPath(), 24, 24);
+			}
+		}
+		catch(GLib.Error e){}
+
+		return new Gdk.Pixbuf.from_file_at_size("/usr/share/icons/hicolor/24x24/status/feed-rss.svg", 24, 24);
+	}
+
+
+	private string getIconPath()
+	{
+		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+		return icon_path + m_article.getFeedID().replace("/", "_").replace(".", "_") + ".ico";
+	}
+
 
 	private bool rowEnter(Gdk.EventCrossing event)
 	{

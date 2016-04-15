@@ -106,7 +106,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 
 		m_headerbar.notify["position"].connect(() => {
-        	m_content.set_position(m_headerbar.get_position());
+        	m_content.setArticleListPosition(m_headerbar.get_position());
         });
 
 		m_headerbar.toggledMarked.connect(() => {
@@ -140,8 +140,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
 		this.show_all();
 
-		if(feedDaemon_interface.isLoggedIn() == LoginResponse.SUCCESS
-		&& !settings_state.get_boolean("spring-cleaning"))
+		if(feedDaemon_interface.isOnline() && !settings_state.get_boolean("spring-cleaning"))
 		{
 			loadContent();
 		}
@@ -316,8 +315,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		try {
     		Gtk.CssProvider provider = new Gtk.CssProvider ();
-    		provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
 
+			// lets asume we're on Gtk+ 3.XX
+			if(Gtk.get_minor_version() <= 18)
+    			provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
+			else
+				provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader320.css"));
 
 			weak Gdk.Display display = Gdk.Display.get_default ();
             weak Gdk.Screen screen = display.get_default_screen ();
@@ -436,8 +439,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_content = new ContentPage();
 		m_stack.add_named(m_content, "content");
 
-		m_content.notify["position"].connect(() => {
-        	m_headerbar.set_position(m_content.get_position());
+		m_content.panedPosChange.connect((pos) => {
+        	m_headerbar.set_position(pos);
         });
 	}
 

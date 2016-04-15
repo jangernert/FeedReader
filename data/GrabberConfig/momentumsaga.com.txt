@@ -1,0 +1,5 @@
+title: //div[contains(concat(' ',normalize-space(@class),' '),' post-header ')]//h1
+body: //div[contains(concat(' ',normalize-space(@class),' '),' post-entry ')]
+date: //span[contains(concat(' ',normalize-space(@class),' '),' date ')
+
+test_url: http://www.momentumsaga.com/2015/03/meus-dez-livros-preferidos-de-ficcao-cientifica.html

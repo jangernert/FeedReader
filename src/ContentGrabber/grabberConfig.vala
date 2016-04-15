@@ -165,104 +165,103 @@ public class FeedReader.GrabberConfig : GLib.Object {
 
     public void print()
     {
+        const string TAB = "     ";
+
         if(m_xpath_title.size != 0)
         {
-            stdout.printf("title:\n");
+            logger.print(LogMessage.DEBUG, "title:");
             foreach(string title in m_xpath_title)
             {
-                stdout.printf("     %s\n", title);
+                logger.print(LogMessage.DEBUG, TAB + title);
             }
         }
 
         if(m_xpath_author.size != 0)
         {
-            stdout.printf("author:\n");
+            logger.print(LogMessage.DEBUG, "author:");
             foreach(string author in m_xpath_author)
             {
-                stdout.printf("     %s\n", author);
+                logger.print(LogMessage.DEBUG, TAB + author);
             }
         }
 
         if(m_xpath_date.size != 0)
         {
-            stdout.printf("date:\n");
+            logger.print(LogMessage.DEBUG, "date:");
             foreach(string date in m_xpath_date)
             {
-                stdout.printf("     %s\n", date);
+                logger.print(LogMessage.DEBUG, TAB + date);
             }
         }
 
         if(m_xpath_body.size != 0)
         {
-            stdout.printf("body:\n");
+            logger.print(LogMessage.DEBUG, "body:");
             foreach(string body in m_xpath_body)
             {
-                stdout.printf("     %s\n", body);
+                logger.print(LogMessage.DEBUG, TAB + body);
             }
         }
 
         if(m_xpath_strip.size != 0)
         {
-            stdout.printf("strip:\n");
+            logger.print(LogMessage.DEBUG, "strip:");
             foreach(string strip in m_xpath_strip)
             {
-                stdout.printf("     %s\n", strip);
+                logger.print(LogMessage.DEBUG, TAB + strip);
             }
         }
 
         if(m_xpath_stripIDorClass.size != 0)
         {
-            stdout.printf("stripIDorClass:\n");
+            logger.print(LogMessage.DEBUG, "stripIDorClass:");
             foreach(string stripIDorClass in m_xpath_stripIDorClass)
             {
-                stdout.printf("     %s\n", stripIDorClass);
+                logger.print(LogMessage.DEBUG, TAB + stripIDorClass);
             }
         }
 
         if(m_xpath_stripImgSrc.size != 0)
         {
-            stdout.printf("stripImgSrc:\n");
+            logger.print(LogMessage.DEBUG, "stripImgSrc:");
             foreach(string stripImgSrc in m_xpath_stripImgSrc)
             {
-                stdout.printf("     %s\n", stripImgSrc);
+                logger.print(LogMessage.DEBUG, TAB + stripImgSrc);
             }
         }
 
-        stdout.printf("tidy: ");
         if(m_tidy)
-            stdout.printf("yes\n");
+            logger.print(LogMessage.DEBUG, "tidy: yes");
         else
-            stdout.printf("no\n");
+            logger.print(LogMessage.DEBUG, "tidy: no");
 
-        stdout.printf("prune: ");
         if(m_prune)
-            stdout.printf("yes\n");
+            logger.print(LogMessage.DEBUG, "prune: yes");
         else
-            stdout.printf("no\n");
+            logger.print(LogMessage.DEBUG, "prune: no");
 
-        stdout.printf("autodetectOnFailure: ");
         if(m_autodetectOnFailure)
-            stdout.printf("yes\n");
+            logger.print(LogMessage.DEBUG, "autodetectOnFailure: yes");
         else
-            stdout.printf("no\n");
+            logger.print(LogMessage.DEBUG, "autodetectOnFailure: no");
 
         if(m_singlePageLink != null)
-            stdout.printf("singlePageLink: %s\n", m_singlePageLink);
+            logger.print(LogMessage.DEBUG, "singlePageLink: " + m_singlePageLink);
 
         if(m_nextPageLink != null)
-            stdout.printf("nextPageLink: %s\n", m_nextPageLink);
+            logger.print(LogMessage.DEBUG, "nextPageLink: " + m_nextPageLink);
 
         if(m_replace.size != 0)
         {
-            stdout.printf("replace:\n");
+            logger.print(LogMessage.DEBUG, "replace:");
             foreach(StringPair tmp in m_replace)
             {
-                stdout.printf("replace %s with %s\n", tmp.getString1(), tmp.getString2());
+                logger.print(LogMessage.DEBUG, "replace %s with %s".printf(tmp.getString1(), tmp.getString2()));
             }
         }
 
         if(m_testURL != null)
-            stdout.printf("testURL: %s\n", m_testURL);
+            logger.print(LogMessage.DEBUG, "testURL: " + m_testURL);
     }
 
 

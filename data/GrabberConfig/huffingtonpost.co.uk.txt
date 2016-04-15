@@ -1,0 +1,5 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' entry__body ')]
+strip_id_or_class: tag-cloud
+strip_id_or_class: below-entry
+
+test_url: http://www.huffingtonpost.co.uk/entry/edward-snowdens-david-cameron-tweet-tells-public-to-rise-up-if-they-want-him-to-resign_uk_57074b52e4b00c769e2d91a9?s481714i

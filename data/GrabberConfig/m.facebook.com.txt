@@ -8,5 +8,5 @@ strip: //*[contains(@data-sigil, 'm-mentions-expand') or contains(@data-sigil, '
 prune: no
 tidy: no
 
-test_url: https://www.facebook.com/permalink.php?story_fbid=10154584776550183&id=294468630182
+test_url: https://m.facebook.com/permalink.php?story_fbid=10154584776550183&id=294468630182
 test_contains: holding an extraordinary session in Brussels this month

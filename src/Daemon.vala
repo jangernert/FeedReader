@@ -38,6 +38,8 @@ namespace FeedReader {
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
+		public signal void feedAdded();
+		public signal void opmlImported();
 
 		public FeedDaemonServer()
 		{
@@ -221,6 +223,10 @@ namespace FeedReader {
 				settings_general.set_enum("account-type", type);
 				setOnline();
 			}
+			else if(m_loggedin == LoginResponse.NO_BACKEND)
+			{
+				// do nothing
+			}
 			else
 			{
 				setOffline();
@@ -339,14 +345,40 @@ namespace FeedReader {
 							server.deleteTag.end(res);
 						});
 
-						dataBase.dropTag(tagID);
-						newFeedList();
+						dataBase.dropTag.begin(tagID, (obj, res) => {
+							dataBase.dropTag.end(res);
+							newFeedList();
+						});
 					}
 				}
 			}
 
 			logger.print(LogMessage.DEBUG, "daemon: set tag string: " + tags);
 			dataBase.set_article_tags(articleID, tags);
+		}
+
+		public void renameTag(string tagID, string newName)
+		{
+			server.renameTag.begin(tagID, newName, (obj, res) => {
+				server.renameTag.end(res);
+			});
+
+			dataBase.rename_tag.begin(tagID, newName, (obj, res) => {
+				dataBase.rename_tag.end(res);
+				newFeedList();
+			});
+		}
+
+		public void deleteTag(string tagID)
+		{
+			server.deleteTag.begin(tagID, (obj, res) => {
+				server.deleteTag.end(res);
+			});
+
+			dataBase.dropTag.begin(tagID, (obj, res) => {
+				dataBase.dropTag.end(res);
+				newFeedList();
+			});
 		}
 
 		public void updateTagColor(string tagID, int color)
@@ -416,6 +448,15 @@ namespace FeedReader {
 			});
 		}
 
+		public string addCategory(string title, string? parentID = null)
+		{
+			string catID = server.createCategory(title);
+			// FIXME: create subcategories
+			// if(server.supportMultiLevelCategories())
+
+			return catID;
+		}
+
 		public void removeCategoryWithChildren(string catID)
 		{
 			var feeds = dataBase.read_feeds();
@@ -466,6 +507,23 @@ namespace FeedReader {
 			});
 		}
 
+		public void addFeed(string feedURL, string cat, bool isID)
+		{
+			string catID = null;
+			string newCatName = null;
+
+			if(isID)
+				catID = cat;
+			else
+				newCatName = cat;
+
+			server.addFeed.begin(feedURL, catID, newCatName, (obj, res) => {
+				server.addFeed.end(res);
+				feedAdded();
+				startSync();
+			});
+		}
+
 		public void removeFeed(string feedID)
 		{
 			server.removeFeed.begin(feedID, (obj, res) => {
@@ -487,6 +545,14 @@ namespace FeedReader {
 			dataBase.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
 				dataBase.removeCatFromFeed.end(res);
 				newFeedList();
+			});
+		}
+
+		public void importOPML(string opml)
+		{
+			server.importOPML.begin(opml, (obj, res) => {
+				server.importOPML.end(res);
+				opmlImported();
 			});
 		}
 
@@ -515,8 +581,9 @@ namespace FeedReader {
 	}
 
 	void on_bus_aquired (DBusConnection conn) {
+		daemon = new FeedDaemonServer();
 		try {
-		    conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer());
+		    conn.register_object ("/org/gnome/feedreader", daemon);
 		} catch (IOError e) {
 		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
 		    logger.print(LogMessage.WARNING, e.message);
@@ -536,6 +603,7 @@ namespace FeedReader {
 	GLib.Settings settings_tweaks;
 	FeedServer server;
 	Logger logger;
+	FeedDaemonServer daemon;
 	Notify.Notification notification;
 	bool m_notifyActionSupport = false;
 

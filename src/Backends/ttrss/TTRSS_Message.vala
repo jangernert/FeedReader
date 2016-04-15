@@ -170,7 +170,7 @@ public class FeedReader.ttrss_message : GLib.Object {
 		return ConnectionError.UNKNOWN;
 	}
 
-	public Json.Object get_response_object()
+	public Json.Object? get_response_object()
 	{
 		if(m_root_object.has_member("content"))
 		{
@@ -179,17 +179,26 @@ public class FeedReader.ttrss_message : GLib.Object {
 		return null;
 	}
 
-	public int64 get_response_int()
+	public int64? get_response_int()
 	{
 		if(m_root_object.has_member("content"))
 		{
 			return m_root_object.get_int_member("content");
 		}
-		return -99;
+		return null;
+	}
+
+	public string? get_response_string()
+	{
+		if(m_root_object.has_member("content"))
+		{
+			return m_root_object.get_string_member("content");
+		}
+		return null;
 	}
 
 
-	public Json.Array get_response_array()
+	public Json.Array? get_response_array()
 	{
 		if(m_root_object.has_member("content"))
 		{

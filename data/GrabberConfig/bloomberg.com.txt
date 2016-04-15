@@ -1,0 +1,6 @@
+date: //*[@itemprop='datePublished']/@datetime
+author: //meta[@name="sailthru.author"]/@content
+body: //*[@itemprop='articleBody' or @itemprop='description']
+
+test_url: http://www.bloomberg.com/news/articles/2015-12-30/will-your-job-disappear-by-2024-
+test_contains: Every week, hosts Tori Stilwell

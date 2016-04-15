@@ -1,0 +1,5 @@
+title://h1[contains(concat(' ',normalize-space(@class),' '),' title ')]
+body: //div[@id='content-font']
+strip://div[contains(concat(' ',normalize-space(@class),' '),' single-content ')]//div[contains(concat(' ',normalize-space(@class),' '),' single-info-post ')]
+
+test_url: http://imasters.com.br/desenvolvimento/como-se-destacar-em-programacao-e-banco-de-dados/?utm_source=iMasters+List&utm_campaign=ec7fb0575d-News_semanal_2014_07_297_28_2014&utm_medium=email&utm_term=0_c1528e6ab3-ec7fb0575d-359620857

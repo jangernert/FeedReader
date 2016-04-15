@@ -5,4 +5,5 @@ date: //time
 
 prune: no
 
-test_url: http://gizmodo.com/5880147/kuhn-rikon-improves-their-spice-grinder-with-grade-school-science
+test_url: http://www.gizmodo.com.au/2016/01/these-hateful-eightfigures-are-delightfully-retro/
+test_contains: NECA have fully unveiled

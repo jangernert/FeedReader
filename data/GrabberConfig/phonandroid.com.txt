@@ -1,0 +1,9 @@
+body: //section[@class='content-txt']
+title: //h1[@class='entry-title']
+author: //span[@class='author']
+date: //span[@class='infos']/time/@datetime
+
+prune: no
+test_url: http://www.phonandroid.com/marche-tablettes-encore-pris-belle-claque-2015.html
+test_url: http://krugman.blogs.nytimes.com/2012/09/12/a-vote-of-confidence/
+test_url: http://bits.blogs.nytimes.com/2012/01/16/wikipedia-plans-to-go-dark-on-wednesday-to-protest-sopa/

@@ -103,6 +103,7 @@ namespace FeedReader {
 				springCleanFinished();
 			}
 
+
 			if(!checkOnline())
 				return;
 
@@ -152,18 +153,20 @@ namespace FeedReader {
 		}
 
 
-		public async void checkOnlineAsync()
+		public async bool checkOnlineAsync()
 		{
 			logger.print(LogMessage.DEBUG, "Daemon: checkOnlineAsync");
+			bool online = false;
 			SourceFunc callback = checkOnlineAsync.callback;
 			ThreadFunc<void*> run = () => {
 				Idle.add((owned) callback);
-				checkOnline();
+				online = checkOnline();
 				return null;
 			};
 
 			new GLib.Thread<void*>("checkOnlineAsync", run);
 			yield;
+			return online;
 		}
 
 
@@ -450,10 +453,7 @@ namespace FeedReader {
 
 		public string addCategory(string title, string? parentID = null)
 		{
-			string catID = server.createCategory(title);
-			// FIXME: create subcategories
-			// if(server.supportMultiLevelCategories())
-
+			string catID = server.createCategory(title, parentID);
 			return catID;
 		}
 

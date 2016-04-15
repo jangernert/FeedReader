@@ -792,12 +792,14 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
-	public string? createCategory(string title)
+	public string? createCategory(string title, string? parentID = null)
 	{
 		var message = new ttrss_message(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "addCategory");
 		message.add_string("caption", title);
+		if(parentID != null)
+			message.add_int("parent_id", int.parse(parentID));
 		int error = message.send();
 		message.printMessage();
 

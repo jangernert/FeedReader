@@ -34,7 +34,7 @@ namespace FeedReader {
 		public abstract string createTag(string caption) throws IOError;
 		public abstract void updateBadge() throws IOError;
 		public abstract bool supportTags() throws IOError;
-		public abstract void checkOnlineAsync() throws IOError;
+		public abstract bool checkOnlineAsync() throws IOError;
 		public abstract void removeCategory(string catID) throws IOError;
 		public abstract void removeCategoryWithChildren(string catID) throws IOError;
 		public abstract void renameCategory(string catID, string newName) throws IOError;

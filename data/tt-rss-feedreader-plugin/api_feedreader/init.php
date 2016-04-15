@@ -93,9 +93,18 @@ class Api_feedreader extends Plugin {
 	function addCategory()
 	{
 		$caption = db_escape_string($_REQUEST["caption"]);
+		$parent_id = (int)db_escape_string($_REQUEST["parent_id"]);
 		if($caption != "")
 		{
-			add_feed_category($caption);
+			if($parent_id != "")
+			{
+				add_feed_category($caption, $parent_id);
+			}
+			else
+			{
+				add_feed_category($caption);
+			}
+			
 			return array(API::STATUS_OK, get_feed_category($caption));
 		}
 		else

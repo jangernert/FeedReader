@@ -795,12 +795,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
-	public string createCategory(string title)
+	public string createCategory(string title, string? parentID = null)
 	{
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				return m_ttrss.createCategory(title);
+				return m_ttrss.createCategory(title, parentID);
 
 			case Backend.FEEDLY:
 				return m_feedly.createCatID(title);

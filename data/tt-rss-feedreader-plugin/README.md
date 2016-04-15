@@ -43,6 +43,13 @@ Parameters:
 
 Parameters:
  * cateogry_id (int) - the id of the category
+ 
+
+**moveCategory**
+
+Parameters:
+ * cateogry_id (int) - the id of the category
+ * parent_id (int) - cateogry id of the new parent
 
 
 **renameCategory**
@@ -57,6 +64,13 @@ Parameters:
 Parameters:
  * feed_id (int) - the id of the feed
  * caption (string)  - new name of the feed
+ 
+
+**moveFeed**
+
+Parameters:
+ * feed_id (int) - the id of the feed
+ * category_id (int)  - id of category the feed will be moved to
 
 
 ## Installation

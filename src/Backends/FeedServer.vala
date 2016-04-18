@@ -877,6 +877,30 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
+	public async void moveCategory(string catID, string newParentID)
+	{
+		SourceFunc callback = moveCategory.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.moveCategory(catID, newParentID);
+					break;
+
+				case Backend.FEEDLY:
+				case Backend.OWNCLOUD:
+				case Backend.INOREADER:
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("moveCategory", run);
+		yield;
+	}
+
 	public async void deleteCategory(string catID)
 	{
 		SourceFunc callback = deleteCategory.callback;

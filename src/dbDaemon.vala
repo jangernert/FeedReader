@@ -708,6 +708,21 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
+    public async void move_category(string catID, string newParentID)
+    {
+        SourceFunc callback = move_category.callback;
+        ThreadFunc<void*> run = () => {
+            var query = new QueryBuilder(QueryType.UPDATE, "categories");
+            query.updateValuePair("Parent", newParentID);
+            query.addEqualsCondition("categorieID", catID);
+            executeSQL(query.build());
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("move_category", run);
+        yield;
+    }
+
     public async void rename_feed(string feedID, string newName)
     {
         SourceFunc callback = rename_feed.callback;
@@ -717,6 +732,46 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             return null;
         };
         new GLib.Thread<void*>("rename_feed", run);
+        yield;
+    }
+
+    public async void move_feed(string feedID, string? currentCatID = null, string? newCatID = null)
+    {
+        SourceFunc callback = move_feed.callback;
+        ThreadFunc<void*> run = () => {
+            var Feed = dataBase.read_feed(feedID);
+            var catArray = Feed.getCatIDs();
+
+            if(currentCatID != null && Feed.hasCat(currentCatID))
+            {
+                string[] newCatArray = {};
+
+                foreach(string catID in catArray)
+        		{
+        			if(catID != currentCatID)
+        			{
+        				newCatArray += catID;
+        			}
+        		}
+
+                catArray = newCatArray;
+            }
+
+            if(newCatID != null)
+                catArray += newCatID;
+
+            string catString = "";
+
+            foreach(string catID in catArray)
+            {
+                catString += catID + ",";
+            }
+
+            executeSQL("UPDATE feeds SET category_id = \"%s\" WHERE feed_id = \"%s\"".printf(catString, feedID));
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("move_feed", run);
         yield;
     }
 

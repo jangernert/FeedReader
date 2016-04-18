@@ -75,7 +75,7 @@ public class FeedReader.Grabber : GLib.Object {
             return true;
         }
 
-        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) found for article: %s".printf(m_hostName, m_articleURL));
+        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) - cutSubdomain - found for article: %s".printf(m_hostName, m_articleURL));
         return false;
     }
 

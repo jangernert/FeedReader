@@ -451,6 +451,18 @@ namespace FeedReader {
 			});
 		}
 
+		public void moveCategory(string catID, string newParentID)
+		{
+			server.moveCategory.begin(catID, newParentID, (obj, res) => {
+				server.moveCategory.end(res);
+			});
+
+			dataBase.move_category.begin(catID, newParentID, (obj, res) => {
+				dataBase.move_category.end(res);
+				newFeedList();
+			});
+		}
+
 		public string addCategory(string title, string? parentID = null)
 		{
 			string catID = server.createCategory(title, parentID);
@@ -503,6 +515,18 @@ namespace FeedReader {
 
 			dataBase.rename_feed.begin(feedID, newName, (obj, res) => {
 				dataBase.rename_feed.end(res);
+				newFeedList();
+			});
+		}
+
+		public void moveFeed(string feedID, string? currentCatID = null, string? newCatID = null)
+		{
+			server.moveFeed.begin(feedID, currentCatID, newCatID, (obj, res) => {
+				server.moveFeed.end(res);
+			});
+
+			dataBase.move_feed.begin(feedID, currentCatID, newCatID, (obj, res) => {
+				dataBase.move_feed.end(res);
 				newFeedList();
 			});
 		}

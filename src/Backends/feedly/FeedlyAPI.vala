@@ -581,6 +581,11 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
 	}
 
+	public void moveSubscription(string feedID, string oldCatID, string newCatID)
+	{
+		
+	}
+
 	public void removeSubscription(string feedID)
 	{
 		m_connection.send_delete_request_to_feedly("/v3/subscriptions/" + feedID);

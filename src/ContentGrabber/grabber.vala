@@ -89,7 +89,7 @@ public class FeedReader.Grabber : GLib.Object {
             // download to check if website redirects
             downloaded = download();
 
-            // check page for feedsportal
+            // check again after possible redirect
             if(!checkConfigFile())
                 return false;
         }
@@ -124,9 +124,10 @@ public class FeedReader.Grabber : GLib.Object {
         session.timeout = 5;
         var msg = new Soup.Message("GET", m_articleURL);
         msg.restarted.connect(() => {
-            if(msg.status_code == Soup.Status.MOVED_TEMPORARILY)
+            logger.print(LogMessage.DEBUG, "Grabber: download redirected - " + msg.status_code.to_string());
+            if(msg.status_code == Soup.Status.MOVED_TEMPORARILY
+            || msg.status_code == Soup.Status.MOVED_PERMANENTLY)
             {
-                logger.print(LogMessage.DEBUG, "Grabber: download redirected - \"302 Moved Temporarily\"");
                 m_articleURL = msg.uri.to_string(false);
                 logger.print(LogMessage.DEBUG, "Grabber: new url is: " + m_articleURL);
             }
@@ -138,7 +139,16 @@ public class FeedReader.Grabber : GLib.Object {
         session.send_message(msg);
 
         if(msg.response_body == null)
+        {
+            logger.print(LogMessage.DEBUG, "Grabber: download failed - no response");
             return false;
+        }
+
+        if((string)msg.response_body.flatten().data == "")
+        {
+            logger.print(LogMessage.DEBUG, "Grabber: download failed - empty response");
+            return false;
+        }
 
         m_rawHtml = (string)msg.response_body.flatten().data;
         return true;

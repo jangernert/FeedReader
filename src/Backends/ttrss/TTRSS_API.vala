@@ -828,6 +828,23 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
+	public bool moveCategory(string catID, string parentID)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "moveCategory");
+		message.add_int("category_id", int.parse(catID));
+		message.add_int("parent_id", int.parse(parentID));
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	public bool renameCategory(string catID, string title)
 	{
 		var message = new ttrss_message(m_ttrss_url);
@@ -852,6 +869,23 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("op", "renameFeed");
 		message.add_int("feed_id", int.parse(feedID));
 		message.add_string("caption", title);
+		int error = message.send();
+
+		if(error == ConnectionError.SUCCESS)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
+	public bool moveFeed(string feedID, string catID)
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "moveFeed");
+		message.add_int("feed_id", int.parse(feedID));
+		message.add_int("category_id", int.parse(catID));
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)

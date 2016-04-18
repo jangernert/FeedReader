@@ -583,7 +583,40 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public void moveSubscription(string feedID, string oldCatID, string newCatID)
 	{
-		
+		var Feed = dataBase.read_feed(feedID);
+
+		Json.Object object = new Json.Object();
+		object.set_string_member("id", feedID);
+		object.set_string_member("title", Feed.getTitle());
+
+
+		var catArray = Feed.getCatIDs();
+		Json.Array cats = new Json.Array();
+
+		foreach(string catID in catArray)
+		{
+			if(catID != oldCatID)
+			{
+				string catName = dataBase.getCategoryName(catID);
+				Json.Object catObject = new Json.Object();
+				catObject.set_string_member("id", catID);
+				catObject.set_string_member("label", catName);
+				cats.add_object_element(catObject);
+			}
+		}
+
+		string newCatName = dataBase.getCategoryName(newCatID);
+		Json.Object catObject = new Json.Object();
+		catObject.set_string_member("id", newCatID);
+		catObject.set_string_member("label", newCatName);
+		cats.add_object_element(catObject);
+
+		object.set_array_member("categories", cats);
+
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(object);
+
+		m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
 	}
 
 	public void removeSubscription(string feedID)

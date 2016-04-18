@@ -352,6 +352,14 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         int error = message.send();
     }
 
+    public void moveFeed(string feedID, string? newCatID = null)
+    {
+        string url = "/feeds/%s/move".printf(feedID);
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_int("folderId", (newCatID != null) ? int.parse(newCatID) : 0);
+        int error = message.send();
+    }
+
     public int64 addFolder(string title)
     {
         string url = "/folders";

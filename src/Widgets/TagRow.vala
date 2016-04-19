@@ -32,7 +32,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	public signal void removeRow();
 
 	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.TAGID }
+	    { "STRING",     0, DragTarget.TAG }
 	};
 
 	public TagRow (string name, string tagID, int color)
@@ -128,7 +128,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
     {
 		if(selection_data != null
 		&& selection_data.get_length() >= 0
-		&& target_type == DragTarget.TAGID)
+		&& target_type == DragTarget.TAG)
 		{
 			if(m_tagID != TagID.NEW)
 			{

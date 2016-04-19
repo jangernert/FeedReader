@@ -33,6 +33,10 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void selectDefaultRow();
 
+	private const Gtk.TargetEntry[] target_list = {
+	    { "STRING",     0, DragTarget.FEED }
+	};
+
 
 	public FeedRow (string text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
@@ -47,22 +51,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-			string icon_path = GLib.Environment.get_home_dir()
-								+ "/.local/share/feedreader/data/feed_icons/"
-								+ feedID.replace("/", "_").replace(".", "_") + ".ico";
-
-			if(has_icon && FileUtils.test(icon_path, GLib.FileTest.EXISTS))
-			{
-				try{
-					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path);
-					Utils.scale_pixbuf(ref tmp_icon, 24);
-					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
-				}catch(GLib.Error e){}
-			}
-			else
-			{
-				m_icon = new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
-			}
+			m_icon = getFeedIcon();
 
 			m_icon.margin_start = level * 24;
 
@@ -119,7 +108,82 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			this.show_all();
 
 			set_unread_count(m_unread_count);
+
+			Gtk.drag_source_set (
+	                this,
+	                Gdk.ModifierType.BUTTON1_MASK,
+	                target_list,
+	                Gdk.DragAction.MOVE
+	        );
+
+			this.drag_begin.connect(onDragBegin);
+	        this.drag_data_get.connect(onDragDataGet);
+	        this.drag_data_delete.connect(onDragDataDelete);
+	        this.drag_end.connect(onDragEnd);
+			this.drag_failed.connect(onDragFail);
 		}
+	}
+
+	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "FeedRow: onDragBegin");
+		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
+	}
+
+	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
+	{
+		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataGet");
+	}
+
+	private void onDragDataDelete(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataDelete");
+	}
+
+	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "FeedRow: onDragEnd");
+
+	}
+
+	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
+	{
+		logger.print(LogMessage.DEBUG, "FeedRow: drag failed - " + result.to_string());
+		return false;
+	}
+
+	private Gtk.Image getFeedIcon()
+	{
+		try{
+			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
+			{
+				var tmp_icon = new Gdk.Pixbuf.from_file(getIconPath());
+				Utils.scale_pixbuf(ref tmp_icon, 24);
+				return new Gtk.Image.from_pixbuf(tmp_icon);
+			}
+		}
+		catch(GLib.Error e){}
+
+		return new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
+	}
+
+	private Gdk.Pixbuf getFeedPixbuf()
+	{
+		try{
+			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
+			{
+				return new Gdk.Pixbuf.from_file_at_size(getIconPath(), 24, 24);
+			}
+		}
+		catch(GLib.Error e){}
+
+		return new Gdk.Pixbuf.from_file_at_size("/usr/share/icons/hicolor/24x24/status/feed-rss.svg", 24, 24);
+	}
+
+	private string getIconPath()
+	{
+		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+		return icon_path + m_feedID.replace("/", "_").replace(".", "_") + ".ico";
 	}
 
 	private bool onClick(Gdk.EventButton event)

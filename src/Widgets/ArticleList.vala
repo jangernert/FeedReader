@@ -154,6 +154,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private void showNotification()
 	{
+		if(m_overlay != null)
+			return;
+
 		m_overlay = new InAppNotification.withIcon(_("New Articles"), "feed-arrow-up", _("scroll up"));
 		m_overlay.action.connect(() => {
 			scrollUP();

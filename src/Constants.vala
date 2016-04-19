@@ -45,8 +45,9 @@ namespace FeedReader {
 	}
 
 	public enum DragTarget {
-	    TAGID,
-	    STRING
+	    TAG,
+	    FEED,
+		CAT
 	}
 
 	public enum ConsoleColor {

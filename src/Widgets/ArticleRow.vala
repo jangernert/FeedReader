@@ -35,7 +35,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public signal void revert_highlight();
 
 	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.TAGID }
+	    { "STRING",     0, DragTarget.TAG }
 	};
 
 	public articleRow(article Article)
@@ -229,7 +229,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataGet");
 
-		if(target_type == DragTarget.TAGID)
+		if(target_type == DragTarget.TAG)
 		{
 			selection_data.set_text(m_article.getArticleID(), -1);
 		}

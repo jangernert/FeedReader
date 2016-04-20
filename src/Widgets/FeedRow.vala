@@ -109,25 +109,29 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			set_unread_count(m_unread_count);
 
-			Gtk.drag_source_set (
-	                this,
-	                Gdk.ModifierType.BUTTON1_MASK,
-	                target_list,
-	                Gdk.DragAction.MOVE
-	        );
+			if(m_feedID != FeedID.ALL)
+			{
+				Gtk.drag_source_set (
+		                this,
+		                Gdk.ModifierType.BUTTON1_MASK,
+		                target_list,
+		                Gdk.DragAction.MOVE
+		        );
 
-			this.drag_begin.connect(onDragBegin);
-	        this.drag_data_get.connect(onDragDataGet);
-	        this.drag_data_delete.connect(onDragDataDelete);
-	        this.drag_end.connect(onDragEnd);
-			this.drag_failed.connect(onDragFail);
+				this.drag_begin.connect(onDragBegin);
+		        this.drag_data_get.connect(onDragDataGet);
+		        this.drag_data_delete.connect(onDragDataDelete);
+		        this.drag_end.connect(onDragEnd);
+				this.drag_failed.connect(onDragFail);
+			}
 		}
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
 		logger.print(LogMessage.DEBUG, "FeedRow: onDragBegin");
-		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
+		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
+
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
@@ -157,8 +161,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		try{
 			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
 			{
-				var tmp_icon = new Gdk.Pixbuf.from_file(getIconPath());
-				Utils.scale_pixbuf(ref tmp_icon, 24);
+				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, false);
 				return new Gtk.Image.from_pixbuf(tmp_icon);
 			}
 		}
@@ -167,17 +170,12 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		return new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
 	}
 
-	private Gdk.Pixbuf getFeedPixbuf()
+	private Gtk.Window getFeedIconWindow()
 	{
-		try{
-			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
-			{
-				return new Gdk.Pixbuf.from_file_at_size(getIconPath(), 24, 24);
-			}
-		}
-		catch(GLib.Error e){}
-
-		return new Gdk.Pixbuf.from_file_at_size("/usr/share/icons/hicolor/24x24/status/feed-rss.svg", 24, 24);
+		var window = new Gtk.Window(Gtk.WindowType.POPUP);
+		window.add(getFeedIcon());
+		window.show_all();
+		return window;
 	}
 
 	private string getIconPath()

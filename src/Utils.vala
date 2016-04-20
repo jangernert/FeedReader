@@ -350,31 +350,6 @@ public class FeedReader.Utils : GLib.Object {
 		return article.str;
 	}
 
-	public static void scale_pixbuf(ref Gdk.Pixbuf icon, int size)
-	{
-		var width = icon.get_width();
-		var height = icon.get_height();
-
-		double aspect_ratio = (double)width/(double)height;
-		if(width > height)
-		{
-			width = size;
-			height = (int)((float)size /aspect_ratio);
-		}
-		else if(height > width)
-		{
-			height = size;
-			width = (int)((float)size /aspect_ratio);
-		}
-		else
-		{
-			height = size;
-			width = size;
-		}
-
-		icon = icon.scale_simple(width, height, Gdk.InterpType.BILINEAR);
-	}
-
 
 	public static OAuth parseArg(string arg, out string verifier)
 	{

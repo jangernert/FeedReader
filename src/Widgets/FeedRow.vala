@@ -34,7 +34,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void selectDefaultRow();
 
 	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.FEED }
+	    { "STRING",     0, DragTarget.CAT }
 	};
 
 
@@ -137,6 +137,11 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
 		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataGet");
+
+		if(target_type == DragTarget.CAT)
+		{
+			selection_data.set_text(m_feedID + "," + m_catID, -1);
+		}
 	}
 
 	private void onDragDataDelete(Gtk.Widget widget, Gdk.DragContext context)

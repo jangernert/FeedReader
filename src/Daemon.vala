@@ -521,7 +521,7 @@ namespace FeedReader {
 
 		public void moveFeed(string feedID, string? currentCatID = null, string? newCatID = null)
 		{
-			server.moveFeed.begin(feedID, currentCatID, newCatID, (obj, res) => {
+			server.moveFeed.begin(feedID, newCatID, currentCatID, (obj, res) => {
 				server.moveFeed.end(res);
 			});
 

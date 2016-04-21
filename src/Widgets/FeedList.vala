@@ -288,7 +288,8 @@ public class FeedReader.feedList : Gtk.Stack {
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.selectDefaultRow.connect(selectDefaultRow);
 							feedrow.drag_begin.connect(onDragBegin);
-							feedrow.drag_failed.connect(onDragFail);
+							feedrow.drag_failed.connect(() => { onDragEnd(); return false; });
+							feedrow.drag_end.connect(() => { onDragEnd(); });
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							pos++;
@@ -310,7 +311,8 @@ public class FeedReader.feedList : Gtk.Stack {
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.selectDefaultRow.connect(selectDefaultRow);
 				feedrow.drag_begin.connect(onDragBegin);
-				feedrow.drag_failed.connect(onDragFail);
+				feedrow.drag_failed.connect(() => { onDragEnd(); return false; });
+				feedrow.drag_end.connect(() => { onDragEnd(); });
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}
@@ -1045,9 +1047,8 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 	}
 
-	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
+	private void onDragEnd()
 	{
-
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{
@@ -1058,7 +1059,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				tmpCat.expand_collapse();
 			}
 		}
-		return false;
 	}
 
 }

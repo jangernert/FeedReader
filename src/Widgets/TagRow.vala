@@ -82,7 +82,6 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		this.add(m_eventBox);
 		this.show_all();
 
-		// Make this widget a DnD destination.
         Gtk.drag_dest_set (
                 this,
                 Gtk.DestDefaults.MOTION,
@@ -90,7 +89,6 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
                 Gdk.DragAction.COPY
         );
 
-        // All possible destination signals
         this.drag_motion.connect(onDragMotion);
         this.drag_leave.connect(onDragLeave);
         this.drag_drop.connect(onDragDrop);

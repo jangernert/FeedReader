@@ -42,6 +42,10 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void selectDefaultRow();
 
+	private const Gtk.TargetEntry[] target_list = {
+	    { "STRING",     0, DragTarget.CAT }
+	};
+
 	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
 
 		this.get_style_context().add_class("feed-list-row");
@@ -132,7 +136,64 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			m_stack.set_visible_child_name("collapsed");
 		else
 			m_stack.set_visible_child_name("expanded");
+
+		Gtk.drag_dest_set (
+	            this,
+	            Gtk.DestDefaults.MOTION,
+	            target_list,
+	            Gdk.DragAction.MOVE
+	    );
+
+	    this.drag_motion.connect(onDragMotion);
+	    this.drag_leave.connect(onDragLeave);
+	    this.drag_drop.connect(onDragDrop);
+	    this.drag_data_received.connect(onDragDataReceived);
 	}
+
+	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
+    {
+		showPopoverStyle();
+        return false;
+    }
+
+	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
+	{
+        closePopoverStyle();
+    }
+
+	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
+    {
+        // If the source offers a target
+        if(context.list_targets() != null)
+		{
+            var target_type = (Gdk.Atom)context.list_targets().nth_data(0);
+
+            // Request the data from the source.
+            Gtk.drag_get_data(widget, context, target_type, time);
+			return true;
+        }
+
+		return false;
+    }
+
+	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
+                                    Gtk.SelectionData selection_data, uint target_type, uint time)
+    {
+		if(selection_data != null
+		&& selection_data.get_length() >= 0
+		&& target_type == DragTarget.CAT)
+		{
+			string[] data = ((string)selection_data.get_data()).split(",");
+			string feedID = data[0];
+			string currentCat = data[1];
+			logger.print(LogMessage.DEBUG, "drag feedID: " + feedID + " currentCat: " + currentCat);
+
+			if(currentCat != m_categorieID)
+				feedDaemon_interface.moveFeed(feedID, currentCat, m_categorieID);
+
+			Gtk.drag_finish(context, true, false, time);
+        }
+    }
 
 	private bool onClick(Gdk.EventButton event)
 	{

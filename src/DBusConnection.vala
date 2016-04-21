@@ -41,6 +41,7 @@ namespace FeedReader {
 		public abstract void addFeed(string feedURL, string cat, bool isID) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
+		public abstract void moveFeed(string feedID, string? currentCatID = null, string? newCatID = null) throws IOError;
 		public abstract void renameFeed(string feedID, string newName) throws IOError;
 		public abstract void importOPML(string opml) throws IOError;
 		public signal void syncStarted();

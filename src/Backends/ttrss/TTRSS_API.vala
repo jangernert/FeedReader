@@ -887,6 +887,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_int("feed_id", int.parse(feedID));
 		message.add_int("category_id", int.parse(catID));
 		int error = message.send();
+		message.printMessage();
+		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{

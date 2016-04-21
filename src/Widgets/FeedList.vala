@@ -225,12 +225,13 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void createFeedlist(bool defaultSettings, bool masterCat)
 	{
-		var row_seperator1 = new FeedRow("", 0, false, "", "-1", 0);
+		var row_separator1 = new FeedRow("", 0, false, "", "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+		separator1.get_style_context().add_class("feedlist-separator");
 		separator1.margin_top = 8;
-		row_seperator1.add(separator1);
-		row_seperator1.sensitive = false;
-		m_list.add(row_seperator1);
+		row_separator1.add(separator1);
+		row_separator1.sensitive = false;
+		m_list.add(row_separator1);
 
 		var unread = dataBase.get_unread_total();
 		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL, "-1", 0);
@@ -240,12 +241,13 @@ public class FeedReader.feedList : Gtk.Stack {
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
 
-		var row_seperator = new FeedRow("", 0, false, "", "-1", 0);
+		var row_separator = new FeedRow("", 0, false, "", "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+		separator.get_style_context().add_class("feedlist-separator");
 		separator.margin_bottom = 8;
-		row_seperator.add(separator);
-		row_seperator.sensitive = false;
-		m_list.add(row_seperator);
+		row_separator.add(separator);
+		row_separator.sensitive = false;
+		m_list.add(row_separator);
 
 		//-------------------------------------------------------------------
 

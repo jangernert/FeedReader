@@ -66,10 +66,14 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.pack_start(m_addStack);
-		m_box.pack_start(new Gtk.Separator(Gtk.Orientation.VERTICAL), false, false);
+		var sep1 = new Gtk.Separator(Gtk.Orientation.VERTICAL);
+		var sep2 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+		sep1.get_style_context().add_class("feedlist-separator");
+		sep2.get_style_context().add_class("feedlist-separator");
+		m_box.pack_start(sep1, false, false);
 		m_box.pack_start(m_removeButton);
 
-		this.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false);
+		this.pack_start(sep2, false, false);
 		this.pack_start(m_box);
 	}
 

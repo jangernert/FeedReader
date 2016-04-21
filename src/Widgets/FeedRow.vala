@@ -161,7 +161,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		try{
 			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
 			{
-				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, false);
+				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, true);
 				return new Gtk.Image.from_pixbuf(tmp_icon);
 			}
 		}

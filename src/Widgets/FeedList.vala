@@ -1031,7 +1031,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				if(tmpCat.getID() == CategoryID.TAGS && tmpCat.isExpanded())
 				{
-					tmpCat.expand_collapse();
+					expand_collapse_category(tmpCat.getID(), false);
 				}
 				else if(tmpCat.getID() == CategoryID.MASTER)
 				{

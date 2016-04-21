@@ -109,7 +109,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			set_unread_count(m_unread_count);
 
-			if(m_feedID != FeedID.ALL)
+			if(m_feedID != FeedID.ALL && !settings_general.get_boolean("only-feeds"))
 			{
 				Gtk.drag_source_set (
 		                this,

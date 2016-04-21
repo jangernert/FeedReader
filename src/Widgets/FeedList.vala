@@ -287,6 +287,8 @@ public class FeedReader.feedList : Gtk.Stack {
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.selectDefaultRow.connect(selectDefaultRow);
+							feedrow.drag_begin.connect(onDragBegin);
+							feedrow.drag_failed.connect(onDragFail);
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							pos++;
@@ -307,6 +309,8 @@ public class FeedReader.feedList : Gtk.Stack {
 				m_list.insert(feedrow, -1);
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.selectDefaultRow.connect(selectDefaultRow);
+				feedrow.drag_begin.connect(onDragBegin);
+				feedrow.drag_failed.connect(onDragFail);
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}
@@ -422,7 +426,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							                        1,
 													// expand the category "categories" if either it is inserted for the first time (no tag before)
 													// or if it has to be done to restore the state of the feedrow
-							                        !m_TagsDisplayed || expandCat("Categories")
+							                        !m_TagsDisplayed || getCatState("Categories")
 					                                );
 			categorierow.collapse.connect((collapse, catID, selectParent) => {
 				if(collapse)
@@ -447,7 +451,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							                        1,
 													// expand the category "tags" if either it is inserted for the first time (no tag before)
 													// or if it has to be done to restore the state of the feedrow
-							                        !m_TagsDisplayed || expandCat(name)
+							                        !m_TagsDisplayed || getCatState(name)
 					                                );
 			tagrow.collapse.connect((collapse, catID, selectParent) => {
 				if(collapse)
@@ -519,7 +523,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                item.getUnreadCount(),
 					                                parent,
 							                        level,
-							                        expandCat(item.getTitle())
+							                        getCatState(item.getTitle())
 					                                );
 					    expand = false;
 						categorierow.collapse.connect((collapse, catID, selectParent) => {
@@ -865,7 +869,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 	}
 
-	private bool expandCat(string name)
+	private bool getCatState(string name)
 	{
 		string[] list = settings_state.get_strv("expanded-categories");
 
@@ -1007,6 +1011,54 @@ public class FeedReader.feedList : Gtk.Stack {
 				return false;
 			});
 		}
+	}
+
+	private void onDragBegin(Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "FeedList: onDragBegin");
+
+		// save current state
+		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		window.writeInterfaceState();
+
+		// collapse all feeds and show all Categories
+		var FeedChildList = m_list.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpCat = row as categorieRow;
+
+			if(tmpCat != null)
+			{
+				if(tmpCat.getID() == CategoryID.TAGS && tmpCat.isExpanded())
+				{
+					tmpCat.expand_collapse();
+				}
+				else if(tmpCat.getID() == CategoryID.MASTER)
+				{
+					// do nothing
+				}
+				else
+				{
+					expand_collapse_category(tmpCat.getID(), false);
+				}
+			}
+		}
+	}
+
+	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
+	{
+
+		var FeedChildList = m_list.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpCat = row as categorieRow;
+
+			if(tmpCat != null && getCatState(tmpCat.getName()) && !tmpCat.isExpanded())
+			{
+				tmpCat.expand_collapse();
+			}
+		}
+		return false;
 	}
 
 }

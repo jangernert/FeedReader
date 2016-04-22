@@ -137,8 +137,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		&& m_categorieID != CategoryID.TAGS)
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
-			    { "text/plain",     0, DragTarget.FEED },
-				{ "STRING",     0, DragTarget.CAT }
+			    { "text/plain",	0, DragTarget.FEED },
+				{ "STRING",		0, DragTarget.CAT }
 			};
 
 			Gtk.drag_dest_set (
@@ -215,7 +215,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
 		showPopoverStyle();
-        return false;
+        return true;
     }
 
 	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
@@ -266,7 +266,10 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			else if(target_type == DragTarget.CAT)
 			{
 				logger.print(LogMessage.DEBUG, "drag catID: " + dataString);
-				feedDaemon_interface.moveCategory(dataString, m_categorieID);
+
+				if(dataString != m_categorieID)
+					feedDaemon_interface.moveCategory(dataString, m_categorieID);
+
 				Gtk.drag_finish(context, true, false, time);
 			}
 		}

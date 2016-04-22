@@ -97,9 +97,16 @@ class Api_feedreader extends Plugin {
 		$category_id = (int)db_escape_string($_REQUEST["category_id"]);
 		$parent_id = (int)db_escape_string($_REQUEST["parent_id"]);
 		
-		if($category_id != "" && $parent_id != "")
+		if($category_id != "")
 		{
-			$this->dbh->query("UPDATE ttrss_feed_categories SET parent_cat = '$parent_id' WHERE id = '$category_id' AND owner_uid = ".$_SESSION["uid"]);
+			if($parent_id == "")
+			{
+				$this->dbh->query("UPDATE ttrss_feed_categories SET parent_cat = NULL WHERE id = '$category_id' AND owner_uid = ".$_SESSION["uid"]);
+			}
+			else
+			{
+				$this->dbh->query("UPDATE ttrss_feed_categories SET parent_cat = '$parent_id' WHERE id = '$category_id' AND owner_uid = ".$_SESSION["uid"]);
+			}
 			return array(API::STATUS_OK);
 		}
 		else

@@ -837,7 +837,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "moveCategory");
 		message.add_int("category_id", int.parse(catID));
-		message.add_int("parent_id", int.parse(parentID));
+		if(parentID != CategoryID.MASTER)
+			message.add_int("parent_id", int.parse(parentID));
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)

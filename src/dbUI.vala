@@ -918,34 +918,20 @@ public class FeedReader.dbUI : GLib.Object {
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
-		while (stmt.step () == Sqlite.ROW) {
-			bool hasFeeds = false;
+		while (stmt.step () == Sqlite.ROW)
+		{
 			string catID = stmt.column_text(0);
-			uint unread = 0;
-			if(feeds != null)
-			{
-				foreach(feed Feed in feeds)
-				{
-					bool found = false;
-					var ids = Feed.getCatIDs();
-					foreach(string id in ids)
-					{
-						if(id == catID)
-						{
-							found = true;
-							hasFeeds = true;
-							break;
-						}
-					}
 
-					if(found)
-						unread += Feed.getUnread();
-				}
-			}
-
-			if(hasFeeds || feeds == null)
+			if(feeds == null || Utils.showCategory(catID, feeds))
 			{
-				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+				tmpcategory = new category(
+					catID, stmt.column_text(1),
+					Utils.categoryGetUnread(catID, feeds),
+					stmt.column_int(3),
+					stmt.column_text(4),
+					stmt.column_int(5)
+				);
+
 				tmp.add(tmpcategory);
 			}
 		}

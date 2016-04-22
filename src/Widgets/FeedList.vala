@@ -512,8 +512,9 @@ public class FeedReader.feedList : Gtk.Stack {
 						string parent = item.getParent();
 						if(m_TagsDisplayed)
 						{
+							if(level == 1)
+								parent = CategoryID.MASTER;
 							level++;
-							parent = CategoryID.MASTER;
 						}
 
 						var categorierow = new categorieRow(

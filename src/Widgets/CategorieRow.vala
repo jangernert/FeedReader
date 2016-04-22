@@ -137,17 +137,21 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		else
 			m_stack.set_visible_child_name("expanded");
 
-		Gtk.drag_dest_set (
-	            this,
-	            Gtk.DestDefaults.MOTION,
-	            target_list,
-	            Gdk.DragAction.MOVE
-	    );
+		if(m_categorieID != CategoryID.MASTER
+		&& m_categorieID != CategoryID.TAGS)
+		{
+			Gtk.drag_dest_set (
+		            this,
+		            Gtk.DestDefaults.MOTION,
+		            target_list,
+		            Gdk.DragAction.MOVE
+		    );
 
-	    this.drag_motion.connect(onDragMotion);
-	    this.drag_leave.connect(onDragLeave);
-	    this.drag_drop.connect(onDragDrop);
-	    this.drag_data_received.connect(onDragDataReceived);
+		    this.drag_motion.connect(onDragMotion);
+		    this.drag_leave.connect(onDragLeave);
+		    this.drag_drop.connect(onDragDrop);
+		    this.drag_data_received.connect(onDragDataReceived);
+		}
 	}
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)

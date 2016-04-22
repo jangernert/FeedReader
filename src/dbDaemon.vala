@@ -738,14 +738,14 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
-    public async void move_feed(string feedID, string? currentCatID = null, string? newCatID = null)
+    public async void move_feed(string feedID, string currentCatID, string? newCatID = null)
     {
         SourceFunc callback = move_feed.callback;
         ThreadFunc<void*> run = () => {
             var Feed = dataBase.read_feed(feedID);
             var catArray = Feed.getCatIDs();
 
-            if(currentCatID != null && Feed.hasCat(currentCatID))
+            if(Feed.hasCat(currentCatID))
             {
                 string[] newCatArray = {};
 
@@ -765,10 +765,13 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
             string catString = "";
 
-            foreach(string catID in catArray)
+            for(int i = 0; i < catArray.length; i++)
             {
-                catString += catID + ",";
+                catString += catArray[i];
+                if(i < catArray.length-1)
+                    catString += ",";
             }
+
 
             executeSQL("UPDATE feeds SET category_id = \"%s\" WHERE feed_id = \"%s\"".printf(catString, feedID));
             Idle.add((owned) callback);

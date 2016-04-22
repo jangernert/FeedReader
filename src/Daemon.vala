@@ -519,7 +519,7 @@ namespace FeedReader {
 			});
 		}
 
-		public void moveFeed(string feedID, string? currentCatID = null, string? newCatID = null)
+		public void moveFeed(string feedID, string currentCatID, string? newCatID = null)
 		{
 			server.moveFeed.begin(feedID, newCatID, currentCatID, (obj, res) => {
 				server.moveFeed.end(res);

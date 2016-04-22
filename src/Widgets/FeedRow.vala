@@ -34,7 +34,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void selectDefaultRow();
 
 	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.CAT }
+	    { "text/plain",     0, DragTarget.FEED }
 	};
 
 
@@ -120,9 +120,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 				this.drag_begin.connect(onDragBegin);
 		        this.drag_data_get.connect(onDragDataGet);
-		        this.drag_data_delete.connect(onDragDataDelete);
-		        this.drag_end.connect(onDragEnd);
-				this.drag_failed.connect(onDragFail);
 			}
 		}
 	}
@@ -138,27 +135,10 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	{
 		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataGet");
 
-		if(target_type == DragTarget.CAT)
+		if(target_type == DragTarget.FEED)
 		{
 			selection_data.set_text(m_feedID + "," + m_catID, -1);
 		}
-	}
-
-	private void onDragDataDelete(Gtk.Widget widget, Gdk.DragContext context)
-	{
-		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataDelete");
-	}
-
-	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
-	{
-		logger.print(LogMessage.DEBUG, "FeedRow: onDragEnd");
-
-	}
-
-	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
-	{
-		logger.print(LogMessage.DEBUG, "FeedRow: drag failed - " + result.to_string());
-		return false;
 	}
 
 	private Gtk.Image getFeedIcon()

@@ -206,7 +206,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 			this.drag_begin.connect(onDragBegin);
 	        this.drag_data_get.connect(onDragDataGet);
-	        this.drag_data_delete.connect(onDragDataDelete);
 	        this.drag_end.connect(onDragEnd);
 			this.drag_failed.connect(onDragFail);
 		}
@@ -237,11 +236,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		{
 			selection_data.set_text("ERROR!!!!!1111eleven", -1);
 		}
-	}
-
-	private void onDragDataDelete(Gtk.Widget widget, Gdk.DragContext context)
-	{
-		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataDelete");
 	}
 
 	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)

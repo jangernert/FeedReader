@@ -37,6 +37,7 @@ namespace FeedReader {
 		public abstract bool checkOnlineAsync() throws IOError;
 		public abstract void removeCategory(string catID) throws IOError;
 		public abstract void removeCategoryWithChildren(string catID) throws IOError;
+		public abstract void moveCategory(string catID, string newParentID) throws IOError;
 		public abstract void renameCategory(string catID, string newName) throws IOError;
 		public abstract void addFeed(string feedURL, string cat, bool isID) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;

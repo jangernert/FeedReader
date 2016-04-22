@@ -42,7 +42,12 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void selectDefaultRow();
 
-	private const Gtk.TargetEntry[] target_list = {
+	private const Gtk.TargetEntry[] accepted_targets = {
+	    { "text/plain",     0, DragTarget.FEED },
+		{ "STRING",     0, DragTarget.CAT }
+	};
+
+	private const Gtk.TargetEntry[] provided_targets = {
 	    { "STRING",     0, DragTarget.CAT }
 	};
 
@@ -143,7 +148,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			Gtk.drag_dest_set (
 		            this,
 		            Gtk.DestDefaults.MOTION,
-		            target_list,
+		            accepted_targets,
 		            Gdk.DragAction.MOVE
 		    );
 
@@ -151,8 +156,43 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		    this.drag_leave.connect(onDragLeave);
 		    this.drag_drop.connect(onDragDrop);
 		    this.drag_data_received.connect(onDragDataReceived);
+
+			if(settings_general.get_enum("account-type") == Backend.TTRSS)
+			{
+				Gtk.drag_source_set (
+						this,
+						Gdk.ModifierType.BUTTON1_MASK,
+						provided_targets,
+						Gdk.DragAction.MOVE
+				);
+
+				this.drag_begin.connect(onDragBegin);
+				this.drag_data_get.connect(onDragDataGet);
+			}
 		}
 	}
+
+//------------- Drag Source Functions ----------------------------------------------
+
+	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "categoryRow: onDragBegin");
+		Gtk.drag_set_icon_widget(context, getDragWindow(), 0, 0);
+
+	}
+
+	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
+	{
+		logger.print(LogMessage.DEBUG, "categoryRow: onDragDataGet");
+
+		if(target_type == DragTarget.CAT)
+		{
+			selection_data.set_text(m_categorieID, -1);
+		}
+	}
+
+
+//------------- Drag Target Functions ----------------------------------------------
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
@@ -165,8 +205,11 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
         closePopoverStyle();
     }
 
+
 	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
+		logger.print(LogMessage.DEBUG, "categoryRow: onDragDrop");
+
         // If the source offers a target
         if(context.list_targets() != null)
 		{
@@ -183,21 +226,42 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
                                     Gtk.SelectionData selection_data, uint target_type, uint time)
     {
-		if(selection_data != null
-		&& selection_data.get_length() >= 0
-		&& target_type == DragTarget.CAT)
+		logger.print(LogMessage.DEBUG, "categoryRow: onDragDataReceived");
+
+		var dataString = selection_data.get_text();
+
+		if(dataString != null
+		&& selection_data.get_length() >= 0)
 		{
-			string[] data = ((string)selection_data.get_data()).split(",");
-			string feedID = data[0];
-			string currentCat = data[1];
-			logger.print(LogMessage.DEBUG, "drag feedID: " + feedID + " currentCat: " + currentCat);
+			if(target_type == DragTarget.FEED)
+			{
+				string[] data = dataString.split(",");
+				string feedID = data[0];
+				string currentCat = data[1];
+				logger.print(LogMessage.DEBUG, "drag feedID: " + feedID + " currentCat: " + currentCat);
 
-			if(currentCat != m_categorieID)
-				feedDaemon_interface.moveFeed(feedID, currentCat, m_categorieID);
+				if(currentCat != m_categorieID)
+					feedDaemon_interface.moveFeed(feedID, currentCat, m_categorieID);
 
-			Gtk.drag_finish(context, true, false, time);
-        }
+				Gtk.drag_finish(context, true, false, time);
+	        }
+			else if(target_type == DragTarget.CAT)
+			{
+				logger.print(LogMessage.DEBUG, "drag catID: " + dataString);
+				feedDaemon_interface.moveCategory(dataString, m_categorieID);
+				Gtk.drag_finish(context, true, false, time);
+			}
+		}
+
     }
+
+	private Gtk.Window getDragWindow()
+	{
+		var window = new Gtk.Window(Gtk.WindowType.POPUP);
+		window.add(new Gtk.Label(m_name));
+		window.show_all();
+		return window;
+	}
 
 	private bool onClick(Gdk.EventButton event)
 	{

@@ -712,8 +712,11 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
     {
         SourceFunc callback = move_category.callback;
         ThreadFunc<void*> run = () => {
+            var parent = read_category(newParentID);
+
             var query = new QueryBuilder(QueryType.UPDATE, "categories");
             query.updateValuePair("Parent", newParentID);
+            query.updateValuePair("Level", "%i".printf(parent.getLevel()+1));
             query.addEqualsCondition("categorieID", catID);
             executeSQL(query.build());
             Idle.add((owned) callback);

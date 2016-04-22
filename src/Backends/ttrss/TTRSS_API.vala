@@ -338,27 +338,30 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			if(categorie_node.get_string_member("id").has_prefix("CAT:"))
 			{
 				orderID++;
-
-				string title = categorie_node.get_string_member("name");
-				int unread_count = (int)categorie_node.get_int_member("unread");
 				string catID = categorie_node.get_string_member("id");
 				string categorieID = catID.slice(4, catID.length);
 
-				if(title == "Uncategorized")
+				if(int.parse(categorieID) >= 0)
 				{
-					unread_count = getUncategorizedUnread();
-				}
+					string title = categorie_node.get_string_member("name");
+					int unread_count = (int)categorie_node.get_int_member("unread");
 
-				categories.add(
-					new category (
-						categorieID,
-						title,
-						unread_count,
-						orderID,
-						parent,
-						level
-					)
-				);
+					if(title == "Uncategorized")
+					{
+						unread_count = getUncategorizedUnread();
+					}
+
+					categories.add(
+						new category (
+							categorieID,
+							title,
+							unread_count,
+							orderID,
+							parent,
+							level
+						)
+					);
+				}
 
 				getSubCategories(categories, categorie_node, level, categorieID);
 			}
@@ -887,8 +890,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_int("feed_id", int.parse(feedID));
 		message.add_int("category_id", int.parse(catID));
 		int error = message.send();
-		message.printMessage();
-		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{

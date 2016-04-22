@@ -472,7 +472,6 @@ public class FeedReader.dbUI : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("max(Level)");
-		query.addCustomCondition("categorieID >= 0");
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -902,7 +901,6 @@ public class FeedReader.dbUI : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("*");
-		query.addCustomCondition("categorieID >= 0");
 		query.orderBy("orderID", true);
 		query.build();
 
@@ -1031,8 +1029,8 @@ public class FeedReader.dbUI : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("*");
-		query.addCustomCondition("categorieID >= 0");
 		query.addEqualsCondition("level", level.to_string());
+		
 		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 		{
 			query.orderBy("title", true);

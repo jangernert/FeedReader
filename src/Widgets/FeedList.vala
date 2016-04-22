@@ -289,7 +289,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							feedrow.selectDefaultRow.connect(selectDefaultRow);
 							feedrow.drag_begin.connect(onDragBegin);
 							feedrow.drag_failed.connect(() => { onDragEnd(); return false; });
-							feedrow.drag_end.connect(() => { onDragEnd(); });
+							//feedrow.drag_end.connect(() => { onDragEnd(); });
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							pos++;
@@ -312,7 +312,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				feedrow.selectDefaultRow.connect(selectDefaultRow);
 				feedrow.drag_begin.connect(onDragBegin);
 				feedrow.drag_failed.connect(() => { onDragEnd(); return false; });
-				feedrow.drag_end.connect(() => { onDragEnd(); });
+				//feedrow.drag_end.connect(() => { onDragEnd(); });
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}

@@ -33,11 +33,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void selectDefaultRow();
 
-	private const Gtk.TargetEntry[] target_list = {
-	    { "text/plain",     0, DragTarget.FEED }
-	};
-
-
 	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		this.get_style_context().add_class("feed-list-row");
@@ -111,10 +106,14 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			if(m_feedID != FeedID.ALL && !settings_general.get_boolean("only-feeds"))
 			{
+				const Gtk.TargetEntry[] provided_targets = {
+				    { "text/plain",     0, DragTarget.FEED }
+				};
+
 				Gtk.drag_source_set (
 		                this,
 		                Gdk.ModifierType.BUTTON1_MASK,
-		                target_list,
+		                provided_targets,
 		                Gdk.DragAction.MOVE
 		        );
 

@@ -31,10 +31,6 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	public signal void selectDefaultRow();
 	public signal void removeRow();
 
-	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.TAG }
-	};
-
 	public TagRow (string name, string tagID, int color)
 	{
 		this.get_style_context().add_class("feed-list-row");
@@ -82,10 +78,14 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		this.add(m_eventBox);
 		this.show_all();
 
+		const Gtk.TargetEntry[] accepted_targets = {
+		    { "STRING",     0, DragTarget.TAG }
+		};
+
         Gtk.drag_dest_set (
                 this,
                 Gtk.DestDefaults.MOTION,
-                target_list,
+                accepted_targets,
                 Gdk.DragAction.COPY
         );
 

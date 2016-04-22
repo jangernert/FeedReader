@@ -42,15 +42,6 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void selectDefaultRow();
 
-	private const Gtk.TargetEntry[] accepted_targets = {
-	    { "text/plain",     0, DragTarget.FEED },
-		{ "STRING",     0, DragTarget.CAT }
-	};
-
-	private const Gtk.TargetEntry[] provided_targets = {
-	    { "STRING",     0, DragTarget.CAT }
-	};
-
 	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
 
 		this.get_style_context().add_class("feed-list-row");
@@ -145,6 +136,11 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		if(m_categorieID != CategoryID.MASTER
 		&& m_categorieID != CategoryID.TAGS)
 		{
+			const Gtk.TargetEntry[] accepted_targets = {
+			    { "text/plain",     0, DragTarget.FEED },
+				{ "STRING",     0, DragTarget.CAT }
+			};
+
 			Gtk.drag_dest_set (
 		            this,
 		            Gtk.DestDefaults.MOTION,
@@ -159,6 +155,10 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 			if(settings_general.get_enum("account-type") == Backend.TTRSS)
 			{
+				const Gtk.TargetEntry[] provided_targets = {
+				    { "STRING",     0, DragTarget.CAT }
+				};
+
 				Gtk.drag_source_set (
 						this,
 						Gdk.ModifierType.BUTTON1_MASK,
@@ -169,6 +169,24 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				this.drag_begin.connect(onDragBegin);
 				this.drag_data_get.connect(onDragDataGet);
 			}
+		}
+		else if(m_categorieID == CategoryID.MASTER)
+		{
+			const Gtk.TargetEntry[] accepted_targets = {
+			    { "STRING",     0, DragTarget.CAT }
+			};
+
+			Gtk.drag_dest_set (
+		            this,
+		            Gtk.DestDefaults.MOTION,
+		            accepted_targets,
+		            Gdk.DragAction.MOVE
+		    );
+
+		    this.drag_motion.connect(onDragMotion);
+		    this.drag_leave.connect(onDragLeave);
+		    this.drag_drop.connect(onDragDrop);
+		    this.drag_data_received.connect(onDragDataReceived);
 		}
 	}
 

@@ -34,10 +34,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public signal void highlight_row(string articleID);
 	public signal void revert_highlight();
 
-	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.TAG }
-	};
-
 	public articleRow(article Article)
 	{
 		m_article = Article;
@@ -197,10 +193,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		if(!settings_general.get_boolean("only-feeds"))
 		{
+			const Gtk.TargetEntry[] provided_targets = {
+			    { "STRING",     0, DragTarget.TAG }
+			};
+
 			Gtk.drag_source_set (
 	                this,
 	                Gdk.ModifierType.BUTTON1_MASK,
-	                target_list,
+	                provided_targets,
 	                Gdk.DragAction.COPY
 	        );
 

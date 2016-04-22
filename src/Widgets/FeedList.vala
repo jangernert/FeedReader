@@ -225,7 +225,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void createFeedlist(bool defaultSettings, bool masterCat)
 	{
-		var row_separator1 = new FeedRow("", 0, false, "", "-1", 0);
+		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator1.get_style_context().add_class("feedlist-separator");
 		separator1.margin_top = 8;
@@ -241,7 +241,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
 
-		var row_separator = new FeedRow("", 0, false, "", "-1", 0);
+		var row_separator = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.get_style_context().add_class("feedlist-separator");
 		separator.margin_bottom = 8;
@@ -288,8 +288,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.selectDefaultRow.connect(selectDefaultRow);
 							feedrow.drag_begin.connect(onDragBegin);
-							feedrow.drag_failed.connect(() => { onDragEnd(); return false; });
-							//feedrow.drag_end.connect(() => { onDragEnd(); });
+							feedrow.drag_failed.connect(onDragEnd);
 							if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
 							pos++;
@@ -311,8 +310,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.selectDefaultRow.connect(selectDefaultRow);
 				feedrow.drag_begin.connect(onDragBegin);
-				feedrow.drag_failed.connect(() => { onDragEnd(); return false; });
-				//feedrow.drag_end.connect(() => { onDragEnd(); });
+				feedrow.drag_failed.connect(onDragEnd);
 				if(!settings_general.get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
 			}
@@ -1028,37 +1026,63 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpCat = row as categorieRow;
+			var tmpFeed = row as FeedRow;
+			var tmpTag = row as TagRow;
 
 			if(tmpCat != null)
 			{
-				if(tmpCat.getID() == CategoryID.TAGS && tmpCat.isExpanded())
+				tmpCat.reveal(true);
+			}
+			else if(tmpFeed != null)
+			{
+				if(tmpFeed.getID() != FeedID.SEPARATOR
+				&& tmpFeed.getID() != FeedID.ALL)
 				{
-					expand_collapse_category(tmpCat.getID(), false);
+					tmpFeed.reveal(false);
 				}
-				else if(tmpCat.getID() == CategoryID.MASTER)
-				{
-					// do nothing
-				}
-				else
-				{
-					expand_collapse_category(tmpCat.getID(), false);
-				}
+			}
+			else if(tmpTag != null)
+			{
+				tmpTag.reveal(false);
 			}
 		}
 	}
 
-	private void onDragEnd()
+	public bool onDragEnd(Gdk.DragContext context, Gtk.DragResult result)
 	{
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpCat = row as categorieRow;
+			var tmpFeed = row as FeedRow;
+			var tmpTag = row as TagRow;
 
-			if(tmpCat != null && getCatState(tmpCat.getName()) && !tmpCat.isExpanded())
+			if(tmpCat != null)
 			{
-				tmpCat.expand_collapse();
+				if(tmpCat.getID() != CategoryID.MASTER
+				&& tmpCat.getID() != CategoryID.TAGS
+				&& tmpCat.getParent() != CategoryID.MASTER
+				&& !isCategorieExpanded(tmpCat.getParent()))
+				{
+					tmpCat.reveal(false);
+				}
+			}
+			else if(tmpFeed != null)
+			{
+				if(tmpFeed.getID() != FeedID.SEPARATOR
+				&& tmpFeed.getID() != FeedID.ALL)
+				{
+					if(isCategorieExpanded(tmpFeed.getCatID()))
+						tmpFeed.reveal(true);
+				}
+			}
+			else if(tmpTag != null && isCategorieExpanded(CategoryID.TAGS))
+			{
+				tmpTag.reveal(true);
 			}
 		}
+
+		return false;
 	}
 
 }

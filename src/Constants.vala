@@ -277,6 +277,7 @@ namespace FeedReader {
 	}
 
 	namespace FeedID {
+		const string SEPARATOR = "-5";
 		const string ALL = "-4";
 		const string CATEGORIES = "-2";
 	}

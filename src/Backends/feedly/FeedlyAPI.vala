@@ -128,9 +128,14 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 		Json.Array array = parser.get_root().get_array();
 
-		for (int i = 0; i < array.get_length (); i++) {
+		for (int i = 0; i < array.get_length (); i++)
+		{
 			Json.Object object = array.get_object_element(i);
 			string categorieID = object.get_string_member("id");
+
+			if(categorieID.has_suffix("global.all")
+			|| categorieID.has_suffix("global.uncategorized"))
+				continue;
 
 			categories.add(
 				new category (
@@ -197,7 +202,13 @@ public class FeedReader.FeedlyAPI : Object {
 
 			for(uint j = 0; j < catCount; ++j)
 			{
-				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
+				string categorieID = object.get_array_member("categories").get_object_element(j).get_string_member("id");
+
+				if(categorieID.has_suffix("global.all")
+				|| categorieID.has_suffix("global.uncategorized"))
+					continue;
+
+				categories += categorieID;
 			}
 
 			feeds.add(

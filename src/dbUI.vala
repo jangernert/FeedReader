@@ -901,7 +901,16 @@ public class FeedReader.dbUI : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("*");
-		query.orderBy("orderID", true);
+
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("title", true);
+		}
+		else
+		{
+			query.orderBy("orderID", true);
+		}
+
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -942,6 +951,23 @@ public class FeedReader.dbUI : GLib.Object {
 		}
 
 		return tmp;
+	}
+
+
+	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)
+	{
+		var categories = read_categories(feeds);
+		var tmpCategories = new Gee.ArrayList<category>();
+
+		foreach(category cat in categories)
+		{
+			if(cat.getLevel() == level)
+			{
+				tmpCategories.add(cat);
+			}
+		}
+
+		return tmpCategories;
 	}
 
 
@@ -1020,66 +1046,6 @@ public class FeedReader.dbUI : GLib.Object {
 		}
 
 		return count;
-	}
-
-	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)
-	{
-		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
-		category tmpcategory;
-
-		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
-		query.selectField("*");
-		query.addEqualsCondition("level", level.to_string());
-		
-		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
-		{
-			query.orderBy("title", true);
-		}
-		else
-		{
-			query.orderBy("orderID", true);
-		}
-
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
-		while (stmt.step () == Sqlite.ROW) {
-			string catID = stmt.column_text(0);
-			bool hasFeeds = false;
-			uint unread = 0;
-			if(feeds != null)
-			{
-				foreach(feed Feed in feeds)
-				{
-					bool found = false;
-					var ids = Feed.getCatIDs();
-					foreach(string id in ids)
-					{
-						if(id == catID)
-						{
-							found = true;
-							hasFeeds = true;
-							break;
-						}
-					}
-
-					if(found)
-						unread += Feed.getUnread();
-				}
-			}
-
-			if(hasFeeds)
-			{
-				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-				tmp.add(tmpcategory);
-			}
-		}
-
-		return tmp;
 	}
 
 	//[Profile]

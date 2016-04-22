@@ -38,17 +38,17 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	};
 
 
-	public FeedRow (string text, uint unread_count, bool has_icon, string feedID, string catID, int level)
+	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
 		m_catID = catID;
 		m_subscribed = true;
 		m_name = text;
-		if(text != "")
-		{
-			m_feedID = feedID;
+		m_feedID = feedID;
 
+		if(text != null)
+		{
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 			m_icon = getFeedIcon();

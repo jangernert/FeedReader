@@ -158,7 +158,11 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
         if(ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: write_feeds - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+        }
+
 
 
         int feedID_pos   = stmt.bind_parameter_index("$FEEDID");
@@ -209,8 +213,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: write_tags - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
+        }
 
         int tagID_position = stmt.bind_parameter_index("$TAGID");
         int label_position = stmt.bind_parameter_index("$LABEL");
@@ -244,7 +250,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: update_tags - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+        }
 
         int title_position = stmt.bind_parameter_index("$TITLE");
         assert (title_position > 0);
@@ -287,7 +296,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: write_categories - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+        }
 
 
         int catID_position       = stmt.bind_parameter_index("$CATID");

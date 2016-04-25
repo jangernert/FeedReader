@@ -264,7 +264,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			if(m_tagID == TagID.NEW && context != null)
 			{
 				removeRow();
-				if(dataBase.read_tags().is_empty)
+				if(Utils.haveTags())
 				{
 					var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
 					var feedlist = window.getContent().getFeedList();
@@ -291,7 +291,11 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			}
 		});
 
-		var renameButton = new Gtk.Button.with_label(_("rename"));
+		string label = _("rename");
+		if(m_tagID == TagID.NEW && context != null)
+			label = _("add");
+
+		var renameButton = new Gtk.Button.with_label(label);
 		renameButton.get_style_context().add_class("suggested-action");
 		renameButton.clicked.connect(() => {
 			renameEntry.activate();

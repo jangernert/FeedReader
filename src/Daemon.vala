@@ -73,6 +73,11 @@ namespace FeedReader {
 			return server.supportTags();
 		}
 
+		public bool supportMultiLevelCategories()
+		{
+			return server.supportMultiLevelCategories();
+		}
+
 		public void scheduleSync(int time)
 		{
 			if (m_timeout_source_id > 0)
@@ -463,9 +468,31 @@ namespace FeedReader {
 			});
 		}
 
-		public string addCategory(string title, string? parentID = null)
+		public string addCategory(string title, string? parentID = null, bool createLocally = false)
 		{
+			logger.print(LogMessage.DEBUG, "daemon: addCategory " + title);
 			string catID = server.createCategory(title, parentID);
+
+			if(createLocally)
+			{
+				string? parent = parentID;
+				int level = 1;
+				if(parentID == null || parentID == "")
+				{
+					parent = CategoryID.MASTER;
+				}
+				else
+				{
+					var parentCat = dataBase.read_category(parentID);
+					level = parentCat.getLevel()+1;
+				}
+
+				var cat = new category(catID, title, 0, 99, parent, level);
+				var list = new Gee.LinkedList<category>();
+				list.add(cat);
+				dataBase.write_categories(list);
+			}
+
 			return catID;
 		}
 

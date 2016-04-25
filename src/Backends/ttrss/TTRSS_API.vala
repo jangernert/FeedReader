@@ -801,7 +801,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "addCategory");
 		message.add_string("caption", title);
-		if(parentID != null)
+		if(parentID != null && parentID != "")
 			message.add_int("parent_id", int.parse(parentID));
 		int error = message.send();
 		message.printMessage();

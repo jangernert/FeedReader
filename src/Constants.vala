@@ -274,6 +274,7 @@ namespace FeedReader {
 		 const string TTRSS_SPECIAL = "-1";
 		 const string MASTER        = "-2";
 		 const string TAGS          = "-3";
+		 const string NEW			= "-4";
 	}
 
 	namespace FeedID {

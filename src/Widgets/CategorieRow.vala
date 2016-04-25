@@ -41,6 +41,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public signal void collapse(bool collapse, string catID, bool selectParent);
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void selectDefaultRow();
+	public signal void removeRow();
 
 	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
 
@@ -251,26 +252,60 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		if(dataString != null
 		&& selection_data.get_length() >= 0)
 		{
-			if(target_type == DragTarget.FEED)
+			if(m_categorieID == CategoryID.NEW)
 			{
-				string[] data = dataString.split(",");
-				string feedID = data[0];
-				string currentCat = data[1];
-				logger.print(LogMessage.DEBUG, "drag feedID: " + feedID + " currentCat: " + currentCat);
+				if(target_type == DragTarget.FEED)
+				{
+					string[] data = dataString.split(",");
+					string feedID = data[0];
+					string currentCat = data[1];
 
-				if(currentCat != m_categorieID)
-					feedDaemon_interface.moveFeed(feedID, currentCat, m_categorieID);
-
-				Gtk.drag_finish(context, true, false, time);
-	        }
-			else if(target_type == DragTarget.CAT)
+					showRenamePopover(context, time, feedID, currentCat);
+				}
+				else if(target_type == DragTarget.CAT)
+				{
+					showRenamePopover(context, time, dataString);
+				}
+			}
+			else
 			{
-				logger.print(LogMessage.DEBUG, "drag catID: " + dataString);
+				if(target_type == DragTarget.FEED)
+				{
+					string[] data = dataString.split(",");
+					string feedID = data[0];
+					string currentCat = data[1];
+					logger.print(LogMessage.DEBUG, "drag feedID: " + feedID + " currentCat: " + currentCat);
 
-				if(dataString != m_categorieID)
-					feedDaemon_interface.moveCategory(dataString, m_categorieID);
+					if(currentCat == m_categorieID)
+					{
+						logger.print(LogMessage.DEBUG, "categoryRow: drag current parent -> drag_failed");
+						this.drag_failed(context, Gtk.DragResult.NO_TARGET);
+						return;
+					}
+					else
+					{
+						feedDaemon_interface.moveFeed(feedID, currentCat, m_categorieID);
+					}
 
-				Gtk.drag_finish(context, true, false, time);
+					Gtk.drag_finish(context, true, false, time);
+		        }
+				else if(target_type == DragTarget.CAT)
+				{
+					logger.print(LogMessage.DEBUG, "drag catID: " + dataString);
+
+					if(dataString == m_categorieID)
+					{
+						logger.print(LogMessage.DEBUG, "categoryRow: drag on self -> drag_failed");
+						this.drag_failed(context, Gtk.DragResult.NO_TARGET);
+						return;
+					}
+					else
+					{
+						feedDaemon_interface.moveCategory(dataString, m_categorieID);
+					}
+
+					Gtk.drag_finish(context, true, false, time);
+				}
 			}
 		}
 
@@ -355,7 +390,9 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			markAsRead_action.set_enabled(false);
 		}
 		var rename_action = new GLib.SimpleAction("renameCat", null);
-		rename_action.activate.connect(showRenamePopover);
+		rename_action.activate.connect(() => {
+			showRenamePopover();
+		});
 		var app = (rssReaderApp)GLib.Application.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
@@ -380,8 +417,6 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 	private void showPopoverStyle()
 	{
-		//this.get_style_context().remove_class("feed-list-row");
-
 		if(this.is_selected())
 			this.get_style_context().add_class("feed-list-row-selected-popover");
 		else
@@ -394,28 +429,56 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			this.get_style_context().remove_class("feed-list-row-selected-popover");
 		else
 			this.get_style_context().remove_class("feed-list-row-popover");
-
-		//this.get_style_context().add_class("feed-list-row");
 	}
 
-	private void showRenamePopover()
+	private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, string? id1 = null, string? id2 = null)
 	{
 		var popRename = new Gtk.Popover(this);
 		popRename.set_position(Gtk.PositionType.BOTTOM);
-		popRename.closed.connect(closePopoverStyle);
+		popRename.closed.connect(() => {
+			closePopoverStyle();
+			if(m_categorieID == CategoryID.NEW && context != null)
+			{
+				this.drag_failed(context, Gtk.DragResult.NO_TARGET);
+				removeRow();
+			}
+		});
 
 		var renameEntry = new Gtk.Entry();
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
 			popRename.hide();
-			feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
+
+			if(m_categorieID != CategoryID.NEW)
+			{
+				feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
+			}
+			else if(context != null)
+			{
+				logger.print(LogMessage.DEBUG, "categoryRow: create new category " + renameEntry.get_text());
+				string catID = feedDaemon_interface.addCategory(renameEntry.get_text(), "", true);
+
+				if(id2 == null) // move feed
+				{
+					feedDaemon_interface.moveCategory(id1, catID);
+				}
+				else // move category
+				{
+					feedDaemon_interface.moveFeed(id1, id2, catID);
+				}
+
+				Gtk.drag_finish(context, true, false, time);
+			}
 		});
 
-		var renameButton = new Gtk.Button.with_label(_("rename"));
+		string label = _("rename");
+		if(m_categorieID == CategoryID.NEW && context != null)
+			label = _("add");
+
+		var renameButton = new Gtk.Button.with_label(label);
 		renameButton.get_style_context().add_class("suggested-action");
 		renameButton.clicked.connect(() => {
-			popRename.hide();
-			feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
+			renameEntry.activate();
 		});
 
 		var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);

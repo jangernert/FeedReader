@@ -23,6 +23,7 @@ namespace FeedReader {
 		public abstract LoginResponse login(Backend type) throws IOError;
 		public abstract LoginResponse isLoggedIn() throws IOError;
 		public abstract bool isOnline() throws IOError;
+		public abstract bool supportMultiLevelCategories() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void markAllItemsRead() throws IOError;
@@ -35,6 +36,7 @@ namespace FeedReader {
 		public abstract void updateBadge() throws IOError;
 		public abstract bool supportTags() throws IOError;
 		public abstract bool checkOnlineAsync() throws IOError;
+		public abstract string addCategory(string title, string parentID, bool createLocally) throws IOError;
 		public abstract void removeCategory(string catID) throws IOError;
 		public abstract void removeCategoryWithChildren(string catID) throws IOError;
 		public abstract void moveCategory(string catID, string newParentID) throws IOError;

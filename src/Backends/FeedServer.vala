@@ -1326,6 +1326,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			if(count > 0 && newArticles > 0)
 			{
+				if(settings_tweaks.get_boolean("notifications-only-new-articles"))
+					count = newArticles;
+
 				if(count == 1)
 					message = _("There is 1 new article");
 				else

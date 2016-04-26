@@ -157,6 +157,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private Gtk.Window getFeedIconWindow()
 	{
 		var window = new Gtk.Window(Gtk.WindowType.POPUP);
+		var visual = window.get_screen().get_rgba_visual();
+		window.set_visual(visual);
+		window.get_style_context().add_class("transparentBG");
 		window.add(getFeedIcon());
 		window.show_all();
 		return window;

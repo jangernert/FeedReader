@@ -43,7 +43,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public signal void selectDefaultRow();
 	public signal void removeRow();
 
-	public categorieRow (string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded) {
+	public categorieRow(string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded)
+	{
 
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
@@ -314,7 +315,14 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private Gtk.Window getDragWindow()
 	{
 		var window = new Gtk.Window(Gtk.WindowType.POPUP);
-		window.add(new Gtk.Label(m_name));
+		var visual = window.get_screen().get_rgba_visual();
+		window.set_visual(visual);
+		window.get_style_context().add_class("feed-list");
+		window.get_style_context().add_class("feed-list-row-popover");
+		var row = new categorieRow(m_name, m_categorieID, m_orderID, m_unread_count, m_parentID, m_level, !m_collapsed);
+		row.set_size_request(this.get_allocated_width(), 0);
+		row.reveal(true);
+		window.add(row);
 		window.show_all();
 		return window;
 	}

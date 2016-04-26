@@ -994,35 +994,38 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 	}
 
-	public void removeRow(Gtk.Widget row, int duration = 700)
+	public void removeRow(Gtk.Widget? row, int duration = 700)
 	{
-		var tagRow = row as TagRow;
-		var catRow = row as categorieRow;
-		var feedRow = row as FeedRow;
+		if(row != null)
+		{
+			var tagRow = row as TagRow;
+			var catRow = row as categorieRow;
+			var feedRow = row as FeedRow;
 
-		if(tagRow != null)
-		{
-			tagRow.reveal(false, duration);
-			GLib.Timeout.add(duration, () => {
-			    m_list.remove(tagRow);
-				return false;
-			});
-		}
-		else if(catRow != null)
-		{
-			catRow.reveal(false, duration);
-			GLib.Timeout.add(duration, () => {
-			    m_list.remove(catRow);
-				return false;
-			});
-		}
-		else if(feedRow != null)
-		{
-			feedRow.reveal(false, duration);
-			GLib.Timeout.add(duration, () => {
-			    m_list.remove(feedRow);
-				return false;
-			});
+			if(tagRow != null)
+			{
+				tagRow.reveal(false, duration);
+				GLib.Timeout.add(duration, () => {
+				    m_list.remove(tagRow);
+					return false;
+				});
+			}
+			else if(catRow != null)
+			{
+				catRow.reveal(false, duration);
+				GLib.Timeout.add(duration, () => {
+				    m_list.remove(catRow);
+					return false;
+				});
+			}
+			else if(feedRow != null)
+			{
+				feedRow.reveal(false, duration);
+				GLib.Timeout.add(duration, () => {
+				    m_list.remove(feedRow);
+					return false;
+				});
+			}
 		}
 	}
 

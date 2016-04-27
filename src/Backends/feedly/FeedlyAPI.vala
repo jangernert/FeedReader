@@ -292,6 +292,7 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 
 		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
+		//logger.print(LogMessage.DEBUG, response);
 
 		try{
 			parser.load_from_data(response, -1);

@@ -664,15 +664,10 @@ public class FeedReader.dbUI : GLib.Object {
 	{
 		string sql = "0";
 
-		if(settings_general.get_enum("account-type") == Backend.FEEDLY)
-		{
-			sql = "instr(category_id, \",\") = 0";
-		}
-		else if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
+		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
 		{
 			sql = "category_id = 0";
 		}
-
 
 		return sql;
 	}

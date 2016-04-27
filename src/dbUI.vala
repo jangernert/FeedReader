@@ -662,7 +662,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 	protected string getUncategorizedQuery()
 	{
-		string sql = "0";
+		string sql = "category_id = \"\"";
 
 		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
 		{
@@ -812,7 +812,11 @@ public class FeedReader.dbUI : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
-			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), stmt.column_text(4).split(","));
+			string catString = stmt.column_text(4);
+			string[] catVec = { "" };
+			if(catString != "")
+				catVec = catString.split(",");
+			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
 			tmp.add(tmpfeed);
 		}
 
@@ -862,7 +866,12 @@ public class FeedReader.dbUI : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(4).split(","));
+			string feedID = stmt.column_text(0);
+			string catString = stmt.column_text(4);
+			string[] catVec = { "" };
+			if(catString != "")
+				catVec = catString.split(",");
+			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
 			tmp.add(tmpfeed);
 		}
 

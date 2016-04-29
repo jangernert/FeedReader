@@ -381,7 +381,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
-		message_string += "dest=" + composeTagID(title);
+		message_string += "&dest=" + composeTagID(title);
 		string response = m_connection.send_request("rename-tag", message_string);
 	}
 

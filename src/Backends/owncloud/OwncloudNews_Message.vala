@@ -73,7 +73,7 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 		m_message_string.append(",\"" + type + "\":\"" + val + "\"");
 	}
 
-    public ConnectionError send()
+    public ConnectionError send(bool ping = false)
 	{
         m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
@@ -101,13 +101,20 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
             return ConnectionError.NO_RESPONSE;
         }
 
+        if(ping)
+        {
+            logger.print(LogMessage.DEBUG, "ownCloud Message: ping successfull");
+			return ConnectionError.SUCCESS;
+        }
+
 		try{
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "Could not load response from Message to owncloud");
+            printMessage();
 			logger.print(LogMessage.ERROR, e.message);
-			return ConnectionError.NO_RESPONSE;
+			return ConnectionError.UNKNOWN;
 		}
 
 		m_root_object = m_parser.get_root().get_object();

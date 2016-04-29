@@ -28,7 +28,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private Gtk.EventBox m_eventBox;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
-	public signal void selectDefaultRow();
+	public signal void moveUP();
 	public signal void removeRow();
 
 	public TagRow (string name, string tagID, int color)
@@ -164,7 +164,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		var remove_action = new GLib.SimpleAction("deleteTag", null);
 		remove_action.activate.connect(() => {
 			if(this.is_selected())
-				selectDefaultRow();
+				moveUP();
 
 			uint time = 300;
 			this.reveal(false, time);

@@ -40,7 +40,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private Gtk.Stack m_unreadStack;
 	public signal void collapse(bool collapse, string catID, bool selectParent);
 	public signal void setAsRead(FeedListType type, string id);
-	public signal void selectDefaultRow();
+	public signal void moveUP();
 	public signal void removeRow();
 
 	public categorieRow(string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded)
@@ -357,7 +357,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			}
 
 			if(this.is_selected())
-				selectDefaultRow();
+				moveUP();
 
 			uint time = 300;
 			this.reveal(false, time);
@@ -381,7 +381,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				expand_collapse();
 
 			if(this.is_selected())
-				selectDefaultRow();
+				moveUP();
 
 			uint time = 300;
 			this.reveal(false, time);

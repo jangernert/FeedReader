@@ -31,7 +31,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private string m_name { get; private set; }
 	private string m_feedID { get; private set; }
 	public signal void setAsRead(FeedListType type, string id);
-	public signal void selectDefaultRow();
+	public signal void moveUP();
 
 	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
@@ -193,7 +193,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var remove_action = new GLib.SimpleAction("deleteFeed", null);
 		remove_action.activate.connect(() => {
 			if(this.is_selected())
-				selectDefaultRow();
+				moveUP();
 
 			uint time = 300;
 			this.reveal(false, time);

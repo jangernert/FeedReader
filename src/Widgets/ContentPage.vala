@@ -366,11 +366,23 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	public void setOffline()
 	{
 		m_feedList.setOffline();
+
+		if(!UiUtils.canManipulateContent())
+		{
+			m_footer.setActive(false);
+			m_feedList.newFeedlist(false);
+		}
 	}
 
 	public void setOnline()
 	{
 		m_feedList.setOnline();
+
+		if(UiUtils.canManipulateContent())
+		{
+			m_footer.setActive(true);
+			m_feedList.newFeedlist(false);
+		}
 	}
 
 	public void footerSetBusy()

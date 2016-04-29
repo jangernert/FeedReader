@@ -136,7 +136,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			m_stack.set_visible_child_name("expanded");
 
 		if(m_categorieID != CategoryID.MASTER
-		&& m_categorieID != CategoryID.TAGS)
+		&& m_categorieID != CategoryID.TAGS
+		&& UiUtils.canManipulateContent())
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
 			    { "text/plain",	0, DragTarget.FEED },
@@ -330,7 +331,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private bool onClick(Gdk.EventButton event)
 	{
 		// only right click allowed
-		if(event.button != 3)
+		if(event.button != 3 && !UiUtils.canManipulateContent())
 			return false;
 
 		switch(event.type)

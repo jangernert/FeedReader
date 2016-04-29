@@ -104,7 +104,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			set_unread_count(m_unread_count);
 
-			if(m_feedID != FeedID.ALL && !settings_general.get_boolean("only-feeds"))
+			if(m_feedID != FeedID.ALL
+			&& !settings_general.get_boolean("only-feeds")
+			&& UiUtils.canManipulateContent())
 			{
 				const Gtk.TargetEntry[] provided_targets = {
 				    { "text/plain",     0, DragTarget.FEED }
@@ -174,7 +176,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private bool onClick(Gdk.EventButton event)
 	{
 		// only right click allowed
-		if(event.button != 3)
+		if(event.button != 3 && !UiUtils.canManipulateContent())
 			return false;
 
 		switch(event.type)

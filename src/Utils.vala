@@ -729,6 +729,4 @@ public class FeedReader.Utils : GLib.Object {
 		return unread;
 	}
 
-
-
 }

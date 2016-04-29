@@ -78,21 +78,24 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		this.add(m_eventBox);
 		this.show_all();
 
-		const Gtk.TargetEntry[] accepted_targets = {
-		    { "STRING",     0, DragTarget.TAG }
-		};
+		if(UiUtils.canManipulateContent())
+		{
+			const Gtk.TargetEntry[] accepted_targets = {
+			    { "STRING",     0, DragTarget.TAG }
+			};
 
-        Gtk.drag_dest_set (
-                this,
-                Gtk.DestDefaults.MOTION,
-                accepted_targets,
-                Gdk.DragAction.COPY
-        );
+	        Gtk.drag_dest_set (
+	                this,
+	                Gtk.DestDefaults.MOTION,
+	                accepted_targets,
+	                Gdk.DragAction.COPY
+	        );
 
-        this.drag_motion.connect(onDragMotion);
-        this.drag_leave.connect(onDragLeave);
-        this.drag_drop.connect(onDragDrop);
-        this.drag_data_received.connect(onDragDataReceived);
+	        this.drag_motion.connect(onDragMotion);
+	        this.drag_leave.connect(onDragLeave);
+	        this.drag_drop.connect(onDragDrop);
+	        this.drag_data_received.connect(onDragDataReceived);
+		}
 	}
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
@@ -144,7 +147,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private bool onClick(Gdk.EventButton event)
 	{
 		// only right click allowed
-		if(event.button != 3)
+		if(event.button != 3 && !UiUtils.canManipulateContent())
 			return false;
 
 		switch(event.type)

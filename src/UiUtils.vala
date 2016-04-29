@@ -78,4 +78,12 @@ public class FeedReader.UiUtils : GLib.Object {
 
 		return articles.size;
 	}
+
+	public static bool canManipulateContent()
+	{
+		// if backend = local RSS -> return true;
+
+		// otherwise only when online
+		return feedDaemon_interface.isOnline();
+	}
 }

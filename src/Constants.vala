@@ -28,7 +28,8 @@ namespace FeedReader {
 		FEEDLY,
 		READABILITY,
 		INSTAPAPER,
-		POCKET
+		POCKET,
+		MAIL
 	}
 
 	public enum LogLevel {

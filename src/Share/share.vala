@@ -264,6 +264,12 @@ public class FeedReader.Share : GLib.Object {
 
 	public bool addBookmark(string accountID, string url)
 	{
+		if(accountID == "mail")
+		{
+			ShareMail.share(url);
+			return true;
+		}
+
 		foreach(var api in m_readability)
 		{
 			if(api.getID() == accountID)

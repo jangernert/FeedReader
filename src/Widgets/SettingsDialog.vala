@@ -33,7 +33,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         stack.set_halign(Gtk.Align.FILL);
         stack.add_titled(setup_UI(), "ui", _("Interface"));
         stack.add_titled(setup_Internal(), "internal", _("Internals"));
-        stack.add_titled(setup_Service(), "service", _("Services"));
+        stack.add_titled(setup_Service(), "service", _("Share"));
 
 		Gtk.StackSwitcher switcher = new Gtk.StackSwitcher();
         switcher.set_halign(Gtk.Align.CENTER);

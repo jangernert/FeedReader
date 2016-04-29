@@ -130,6 +130,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/WebLoginPage.vala
     src/ContentGrabber/stringPair.vala
     src/Backends/ttrss/TTRSS_Message.vala
+    src/Share/Email.vala
     src/Share/ReadabilityAPI.vala
     src/Share/PocketAPI.vala
     src/Share/InstapaperAPI.vala

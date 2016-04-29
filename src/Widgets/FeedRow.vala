@@ -176,7 +176,10 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private bool onClick(Gdk.EventButton event)
 	{
 		// only right click allowed
-		if(event.button != 3 && !UiUtils.canManipulateContent())
+		if(event.button != 3)
+			return false;
+
+		if(!UiUtils.canManipulateContent())
 			return false;
 
 		switch(event.type)

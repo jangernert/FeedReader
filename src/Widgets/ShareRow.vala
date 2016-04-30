@@ -17,29 +17,31 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 
     private string m_id;
 
-	public ShareRow(OAuth type, string id, string username)
+	public ShareRow(OAuth type, string id, string? username = null)
 	{
 		m_id = id;
 
 
         string iconName = "";
-        string serviceName = "";
+        string? serviceName = username;
 
         switch(type)
         {
             case OAuth.READABILITY:
-            	serviceName = "Readability";
                 iconName = "feed-share-readability";
                 break;
 
             case OAuth.INSTAPAPER:
-            	serviceName = "Instapaper";
                 iconName = "feed-share-instapaper";
                 break;
 
             case OAuth.POCKET:
-            	serviceName = "Pocket";
                 iconName = "feed-share-pocket";
+                break;
+
+            case OAuth.MAIL:
+                serviceName = "Email";
+                iconName = "mail-send";
                 break;
         }
         var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
@@ -50,16 +52,19 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
         serviceLabel.set_alignment(0.5f, 0.5f);
         serviceLabel.get_style_context().add_class("h4");
 
-        var userLabel = new Gtk.Label(username);
-        userLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
-        userLabel.set_ellipsize(Pango.EllipsizeMode.END);
-        userLabel.set_alignment(0.5f, 0.5f);
-        userLabel.opacity = 0.5;
-        userLabel.get_style_context().add_class("small");
-
         var labelBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		labelBox.pack_start(serviceLabel, true, true, 0);
-		labelBox.pack_start(userLabel, true, true, 0);
+
+        /*if(username != null)
+        {
+            var userLabel = new Gtk.Label(username);
+            userLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
+            userLabel.set_ellipsize(Pango.EllipsizeMode.END);
+            userLabel.set_alignment(0.5f, 0.5f);
+            userLabel.opacity = 0.5;
+            userLabel.get_style_context().add_class("small");
+    		labelBox.pack_start(userLabel, true, true, 0);
+        }*/
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         box.margin = 3;

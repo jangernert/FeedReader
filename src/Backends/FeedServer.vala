@@ -652,7 +652,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.OWNCLOUD:
 				return m_owncloud.ping();
-				return true;
 
 			case Backend.INOREADER:
 				return m_inoreader.ping();
@@ -795,12 +794,43 @@ public class FeedReader.FeedServer : GLib.Object {
 		yield;
 	}
 
-	public string createCategory(string title)
+	public async void moveFeed(string feedID, string newCatID, string? currentCatID = null)
+	{
+		SourceFunc callback = moveFeed.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.moveFeed(feedID, newCatID);
+					break;
+
+				case Backend.FEEDLY:
+					m_feedly.moveSubscription(feedID, newCatID, currentCatID);
+					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.moveFeed(feedID, newCatID);
+					break;
+
+				case Backend.INOREADER:
+					m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("moveFeed", run);
+		yield;
+	}
+
+	public string createCategory(string title, string? parentID = null)
 	{
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				return m_ttrss.createCategory(title);
+				return m_ttrss.createCategory(title, parentID);
 
 			case Backend.FEEDLY:
 				return m_feedly.createCatID(title);
@@ -843,6 +873,30 @@ public class FeedReader.FeedServer : GLib.Object {
 		};
 
 		new GLib.Thread<void*>("renameCategory", run);
+		yield;
+	}
+
+	public async void moveCategory(string catID, string newParentID)
+	{
+		SourceFunc callback = moveCategory.callback;
+
+		ThreadFunc<void*> run = () => {
+			switch(m_type)
+			{
+				case Backend.TTRSS:
+					m_ttrss.moveCategory(catID, newParentID);
+					break;
+
+				case Backend.FEEDLY:
+				case Backend.OWNCLOUD:
+				case Backend.INOREADER:
+					break;
+			}
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("moveCategory", run);
 		yield;
 	}
 
@@ -1271,6 +1325,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			if(count > 0 && newArticles > 0)
 			{
+				if(settings_tweaks.get_boolean("notifications-only-new-articles"))
+					count = newArticles;
+
 				if(count == 1)
 					message = _("There is 1 new article");
 				else

@@ -11,16 +11,23 @@ The plugin requires (at least) version 1.12 of Tiny-Tiny-RSS.
 
 **addLabel**
 
-Returns a JSON-encoded ID of the added tag.
+Returns a JSON-encoded ID of the added label.
 
 Parameters:
- * caption (string) - the caption of the tag
+ * caption (string) - the caption of the label
 
 
 **removeLabel**
 
 Parameters:
- * label_id (int) - the id of the tag
+ * label_id (int) - the id of the label
+
+
+ **renameLabel**
+
+Parameters:
+ * label_id (int) - the id of the label
+ * caption (string) - new name of the label
 
 
 **addCategory**
@@ -29,12 +36,20 @@ Returns a JSON-encoded ID of the added tag.
 
 Parameters:
  * caption (string) - the caption of the category
+ * parent_id (int, optional) - id of the category the new one should be placed into
 
 
 **removeCategory**
 
 Parameters:
  * cateogry_id (int) - the id of the category
+ 
+
+**moveCategory**
+
+Parameters:
+ * cateogry_id (int) - the id of the category
+ * parent_id (int) - cateogry id of the new parent
 
 
 **renameCategory**
@@ -49,6 +64,13 @@ Parameters:
 Parameters:
  * feed_id (int) - the id of the feed
  * caption (string)  - new name of the feed
+ 
+
+**moveFeed**
+
+Parameters:
+ * feed_id (int) - the id of the feed
+ * category_id (int)  - id of category the feed will be moved to
 
 
 ## Installation

@@ -350,31 +350,6 @@ public class FeedReader.Utils : GLib.Object {
 		return article.str;
 	}
 
-	public static void scale_pixbuf(ref Gdk.Pixbuf icon, int size)
-	{
-		var width = icon.get_width();
-		var height = icon.get_height();
-
-		double aspect_ratio = (double)width/(double)height;
-		if(width > height)
-		{
-			width = size;
-			height = (int)((float)size /aspect_ratio);
-		}
-		else if(height > width)
-		{
-			height = size;
-			width = (int)((float)size /aspect_ratio);
-		}
-		else
-		{
-			height = size;
-			width = size;
-		}
-
-		icon = icon.scale_simple(width, height, Gdk.InterpType.BILINEAR);
-	}
-
 
 	public static OAuth parseArg(string arg, out string verifier)
 	{
@@ -692,4 +667,66 @@ public class FeedReader.Utils : GLib.Object {
 
 		return searchTerm;
 	}
+
+	public static bool showCategory(string catID, Gee.ArrayList<feed> feeds)
+	{
+		var type = settings_general.get_enum("account-type");
+
+		switch(type)
+		{
+			case Backend.TTRSS:
+				if(catID == "0" && !categoryIsPopulated(catID, feeds)) // ttrss uncategorized
+				{
+					return false;
+				}
+				return true;
+
+			case Backend.FEEDLY:
+				if(catID.has_suffix("global.must") && !categoryIsPopulated(catID, feeds))
+				{
+					return false;
+				}
+				return true;
+		}
+
+		return true;
+	}
+
+	public static bool categoryIsPopulated(string catID, Gee.ArrayList<feed> feeds)
+	{
+		foreach(feed Feed in feeds)
+		{
+			var ids = Feed.getCatIDs();
+			foreach(string id in ids)
+			{
+				if(id == catID)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public static uint categoryGetUnread(string catID, Gee.ArrayList<feed> feeds)
+	{
+		uint unread = 0;
+
+		foreach(feed Feed in feeds)
+		{
+			var ids = Feed.getCatIDs();
+			foreach(string id in ids)
+			{
+				if(id == catID)
+				{
+					unread += Feed.getUnread();
+					break;
+				}
+			}
+		}
+
+		return unread;
+	}
+
 }

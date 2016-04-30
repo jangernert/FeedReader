@@ -31,38 +31,22 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private string m_name { get; private set; }
 	private string m_feedID { get; private set; }
 	public signal void setAsRead(FeedListType type, string id);
-	public signal void selectDefaultRow();
+	public signal void moveUP();
 
-
-	public FeedRow (string text, uint unread_count, bool has_icon, string feedID, string catID, int level)
+	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		this.get_style_context().add_class("feed-list-row");
 		m_level = level;
 		m_catID = catID;
 		m_subscribed = true;
 		m_name = text;
-		if(text != "")
-		{
-			m_feedID = feedID;
+		m_feedID = feedID;
 
+		if(text != null)
+		{
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-			string icon_path = GLib.Environment.get_home_dir()
-								+ "/.local/share/feedreader/data/feed_icons/"
-								+ feedID.replace("/", "_").replace(".", "_") + ".ico";
-
-			if(has_icon && FileUtils.test(icon_path, GLib.FileTest.EXISTS))
-			{
-				try{
-					Gdk.Pixbuf tmp_icon = new Gdk.Pixbuf.from_file(icon_path);
-					Utils.scale_pixbuf(ref tmp_icon, 24);
-					m_icon = new Gtk.Image.from_pixbuf(tmp_icon);
-				}catch(GLib.Error e){}
-			}
-			else
-			{
-				m_icon = new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
-			}
+			m_icon = getFeedIcon();
 
 			m_icon.margin_start = level * 24;
 
@@ -119,13 +103,83 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			this.show_all();
 
 			set_unread_count(m_unread_count);
+
+			if(m_feedID != FeedID.ALL
+			&& !settings_general.get_boolean("only-feeds")
+			&& UiUtils.canManipulateContent())
+			{
+				const Gtk.TargetEntry[] provided_targets = {
+				    { "text/plain",     0, DragTarget.FEED }
+				};
+
+				Gtk.drag_source_set (
+		                this,
+		                Gdk.ModifierType.BUTTON1_MASK,
+		                provided_targets,
+		                Gdk.DragAction.MOVE
+		        );
+
+				this.drag_begin.connect(onDragBegin);
+		        this.drag_data_get.connect(onDragDataGet);
+			}
 		}
+	}
+
+	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
+	{
+		logger.print(LogMessage.DEBUG, "FeedRow: onDragBegin");
+		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
+
+	}
+
+	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
+	{
+		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataGet");
+
+		if(target_type == DragTarget.FEED)
+		{
+			selection_data.set_text(m_feedID + "," + m_catID, -1);
+		}
+	}
+
+	private Gtk.Image getFeedIcon()
+	{
+		try{
+			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
+			{
+				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, true);
+				return new Gtk.Image.from_pixbuf(tmp_icon);
+			}
+		}
+		catch(GLib.Error e){}
+
+		return new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
+	}
+
+	private Gtk.Window getFeedIconWindow()
+	{
+		var window = new Gtk.Window(Gtk.WindowType.POPUP);
+		var visual = window.get_screen().get_rgba_visual();
+		window.set_visual(visual);
+		window.get_style_context().add_class("transparentBG");
+		window.add(getFeedIcon());
+		window.show_all();
+		return window;
+	}
+
+	private string getIconPath()
+	{
+		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+		return icon_path + m_feedID.replace("/", "_").replace(".", "_") + ".ico";
 	}
 
 	private bool onClick(Gdk.EventButton event)
 	{
 		// only right click allowed
 		if(event.button != 3)
+			return false;
+
+		if(!UiUtils.canManipulateContent())
 			return false;
 
 		switch(event.type)
@@ -139,7 +193,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var remove_action = new GLib.SimpleAction("deleteFeed", null);
 		remove_action.activate.connect(() => {
 			if(this.is_selected())
-				selectDefaultRow();
+				moveUP();
 
 			uint time = 300;
 			this.reveal(false, time);

@@ -158,7 +158,11 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
         if(ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: write_feeds - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+        }
+
 
 
         int feedID_pos   = stmt.bind_parameter_index("$FEEDID");
@@ -209,8 +213,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: write_tags - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
+        }
 
         int tagID_position = stmt.bind_parameter_index("$TAGID");
         int label_position = stmt.bind_parameter_index("$LABEL");
@@ -221,6 +227,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
         foreach(var tag_item in tags)
         {
+            //logger.print(LogMessage.DEBUG, "write_tags: %s %s %i".printf(tag_item.getTagID(), tag_item.getTitle(), tag_item.getColor()));
             stmt.bind_text(tagID_position, tag_item.getTagID());
             stmt.bind_text(label_position, tag_item.getTitle());
             stmt.bind_int (color_position, tag_item.getColor());
@@ -239,19 +246,26 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
         query.updateValuePair("title", "$TITLE");
         query.updateValuePair("\"exists\"", "1");
+        query.addEqualsCondition("tagID", "$TAGID");
         query.build();
 
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: update_tags - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+        }
 
         int title_position = stmt.bind_parameter_index("$TITLE");
+        int tagID_position = stmt.bind_parameter_index("$TAGID");
         assert (title_position > 0);
+        assert (tagID_position > 0);
 
         foreach(var tag_item in tags)
         {
             stmt.bind_text(title_position, tag_item.getTitle());
+            stmt.bind_text(tagID_position, tag_item.getTagID());
             while (stmt.step () == Sqlite.ROW) {}
             stmt.reset ();
         }
@@ -287,7 +301,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: write_categories - " + query.get());
             logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+        }
 
 
         int catID_position       = stmt.bind_parameter_index("$CATID");
@@ -698,8 +715,8 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         SourceFunc callback = rename_category.callback;
         ThreadFunc<void*> run = () => {
             var query = new QueryBuilder(QueryType.UPDATE, "categories");
-            query.updateValuePair("title", newName);
-            query.addEqualsCondition("categorieID", catID);
+            query.updateValuePair("title", newName, true);
+            query.addEqualsCondition("categorieID", catID, true, true);
             executeSQL(query.build());
             Idle.add((owned) callback);
             return null;
@@ -708,15 +725,79 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         yield;
     }
 
+    public async void move_category(string catID, string newParentID)
+    {
+        SourceFunc callback = move_category.callback;
+        ThreadFunc<void*> run = () => {
+            var parent = read_category(newParentID);
+
+            var query = new QueryBuilder(QueryType.UPDATE, "categories");
+            query.updateValuePair("Parent", newParentID);
+            query.updateValuePair("Level", "%i".printf(parent.getLevel()+1));
+            query.addEqualsCondition("categorieID", catID);
+            executeSQL(query.build());
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("move_category", run);
+        yield;
+    }
+
     public async void rename_feed(string feedID, string newName)
     {
         SourceFunc callback = rename_feed.callback;
         ThreadFunc<void*> run = () => {
-            executeSQL("UPDATE feeds SET name = \"%s\" WHERE feed_id = \"%s\"".printf(newName, feedID));
+            var query = new QueryBuilder(QueryType.UPDATE, "feeds");
+            query.updateValuePair("name", newName, true);
+            query.addEqualsCondition("feed_id", feedID, true, true);
+            executeSQL(query.build());
             Idle.add((owned) callback);
             return null;
         };
         new GLib.Thread<void*>("rename_feed", run);
+        yield;
+    }
+
+    public async void move_feed(string feedID, string currentCatID, string? newCatID = null)
+    {
+        SourceFunc callback = move_feed.callback;
+        ThreadFunc<void*> run = () => {
+            var Feed = dataBase.read_feed(feedID);
+            var catArray = Feed.getCatIDs();
+
+            if(Feed.hasCat(currentCatID))
+            {
+                string[] newCatArray = {};
+
+                foreach(string catID in catArray)
+        		{
+        			if(catID != currentCatID)
+        			{
+        				newCatArray += catID;
+        			}
+        		}
+
+                catArray = newCatArray;
+            }
+
+            if(newCatID != null)
+                catArray += newCatID;
+
+            string catString = "";
+
+            for(int i = 0; i < catArray.length; i++)
+            {
+                catString += catArray[i];
+                if(i < catArray.length-1)
+                    catString += ",";
+            }
+
+
+            executeSQL("UPDATE feeds SET category_id = \"%s\" WHERE feed_id = \"%s\"".printf(catString, feedID));
+            Idle.add((owned) callback);
+            return null;
+        };
+        new GLib.Thread<void*>("move_feed", run);
         yield;
     }
 

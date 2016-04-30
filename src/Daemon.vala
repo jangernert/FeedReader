@@ -73,6 +73,11 @@ namespace FeedReader {
 			return server.supportTags();
 		}
 
+		public bool supportMultiLevelCategories()
+		{
+			return server.supportMultiLevelCategories();
+		}
+
 		public void scheduleSync(int time)
 		{
 			if (m_timeout_source_id > 0)
@@ -102,6 +107,7 @@ namespace FeedReader {
 				settings_state.set_boolean("spring-cleaning", false);
 				springCleanFinished();
 			}
+
 
 			if(!checkOnline())
 				return;
@@ -152,18 +158,20 @@ namespace FeedReader {
 		}
 
 
-		public async void checkOnlineAsync()
+		public async bool checkOnlineAsync()
 		{
 			logger.print(LogMessage.DEBUG, "Daemon: checkOnlineAsync");
+			bool online = false;
 			SourceFunc callback = checkOnlineAsync.callback;
 			ThreadFunc<void*> run = () => {
 				Idle.add((owned) callback);
-				checkOnline();
+				online = checkOnline();
 				return null;
 			};
 
 			new GLib.Thread<void*>("checkOnlineAsync", run);
 			yield;
+			return online;
 		}
 
 
@@ -448,11 +456,42 @@ namespace FeedReader {
 			});
 		}
 
-		public string addCategory(string title, string? parentID = null)
+		public void moveCategory(string catID, string newParentID)
 		{
-			string catID = server.createCategory(title);
-			// FIXME: create subcategories
-			// if(server.supportMultiLevelCategories())
+			server.moveCategory.begin(catID, newParentID, (obj, res) => {
+				server.moveCategory.end(res);
+			});
+
+			dataBase.move_category.begin(catID, newParentID, (obj, res) => {
+				dataBase.move_category.end(res);
+				newFeedList();
+			});
+		}
+
+		public string addCategory(string title, string? parentID = null, bool createLocally = false)
+		{
+			logger.print(LogMessage.DEBUG, "daemon: addCategory " + title);
+			string catID = server.createCategory(title, parentID);
+
+			if(createLocally)
+			{
+				string? parent = parentID;
+				int level = 1;
+				if(parentID == null || parentID == "")
+				{
+					parent = CategoryID.MASTER;
+				}
+				else
+				{
+					var parentCat = dataBase.read_category(parentID);
+					level = parentCat.getLevel()+1;
+				}
+
+				var cat = new category(catID, title, 0, 99, parent, level);
+				var list = new Gee.LinkedList<category>();
+				list.add(cat);
+				dataBase.write_categories(list);
+			}
 
 			return catID;
 		}
@@ -503,6 +542,18 @@ namespace FeedReader {
 
 			dataBase.rename_feed.begin(feedID, newName, (obj, res) => {
 				dataBase.rename_feed.end(res);
+				newFeedList();
+			});
+		}
+
+		public void moveFeed(string feedID, string currentCatID, string? newCatID = null)
+		{
+			server.moveFeed.begin(feedID, newCatID, currentCatID, (obj, res) => {
+				server.moveFeed.end(res);
+			});
+
+			dataBase.move_feed.begin(feedID, currentCatID, newCatID, (obj, res) => {
+				dataBase.move_feed.end(res);
 				newFeedList();
 			});
 		}

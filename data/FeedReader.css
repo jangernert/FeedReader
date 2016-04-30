@@ -142,17 +142,15 @@ GtkScrolledWindow GtkViewport.servicebox {
 	background: shade(@feedlist-bg, 1.1);
 }
 
+.transparentBG {
+	background: rgba(0, 0, 0, 0);
+}
 
 .overlay {
 	background: black;
 	color: white;
 	opacity: 0.8;
 	border-radius: 10px;
-}
-
-.overlay-button:prelight {
-	background: none;
-	box-shadow: none;
 }
 
 .bold {

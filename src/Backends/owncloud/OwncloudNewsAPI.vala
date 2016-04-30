@@ -187,6 +187,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int("id", id);
 		int error = message.send();
         var response = message.get_response_object();
+
         if(response.has_member("items"))
         {
             var article_array = response.get_array_member("items");
@@ -234,6 +235,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int("batchSize", count);
 		int error = message.send();
         var response = message.get_response_object();
+
         if(response.has_member("items"))
         {
             var article_array = response.get_array_member("items");
@@ -352,6 +354,14 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         int error = message.send();
     }
 
+    public void moveFeed(string feedID, string? newCatID = null)
+    {
+        string url = "/feeds/%s/move".printf(feedID);
+        var message = new OwnCloudNews_Message(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        message.add_int("folderId", (newCatID != null) ? int.parse(newCatID) : 0);
+        int error = message.send();
+    }
+
     public int64 addFolder(string title)
     {
         string url = "/folders";
@@ -388,7 +398,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     public bool ping()
     {
         var message = new OwnCloudNews_Message(m_OwnCloudURL, m_username, m_password, "PUT");
-        int error = message.send();
+        int error = message.send(true);
 
         if(error == ConnectionError.NO_RESPONSE)
 		{

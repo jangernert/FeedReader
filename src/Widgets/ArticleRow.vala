@@ -34,10 +34,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public signal void highlight_row(string articleID);
 	public signal void revert_highlight();
 
-	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.TAGID }
-	};
-
 	public articleRow(article Article)
 	{
 		m_article = Article;
@@ -195,18 +191,21 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		// Make the this widget a DnD source.
 
-		if(!settings_general.get_boolean("only-feeds"))
+		if(!settings_general.get_boolean("only-feeds") && feedDaemon_interface.isOnline())
 		{
+			const Gtk.TargetEntry[] provided_targets = {
+			    { "STRING",     0, DragTarget.TAG }
+			};
+
 			Gtk.drag_source_set (
 	                this,
 	                Gdk.ModifierType.BUTTON1_MASK,
-	                target_list,
+	                provided_targets,
 	                Gdk.DragAction.COPY
 	        );
 
 			this.drag_begin.connect(onDragBegin);
 	        this.drag_data_get.connect(onDragDataGet);
-	        this.drag_data_delete.connect(onDragDataDelete);
 	        this.drag_end.connect(onDragEnd);
 			this.drag_failed.connect(onDragFail);
 		}
@@ -215,7 +214,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragBegin");
-		Gtk.drag_set_icon_pixbuf(context, getFeedPixbuf(), 0, 0);
+		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
 		highlight_row(m_article.getArticleID());
 		if(dataBase.read_tags().is_empty)
 		{
@@ -229,7 +228,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataGet");
 
-		if(target_type == DragTarget.TAGID)
+		if(target_type == DragTarget.TAG)
 		{
 			selection_data.set_text(m_article.getArticleID(), -1);
 		}
@@ -237,11 +236,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		{
 			selection_data.set_text("ERROR!!!!!1111eleven", -1);
 		}
-	}
-
-	private void onDragDataDelete(Gtk.Widget widget, Gdk.DragContext context)
-	{
-		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataDelete");
 	}
 
 	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
@@ -267,8 +261,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		try{
 			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
 			{
-				var tmp_icon = new Gdk.Pixbuf.from_file(getIconPath());
-				Utils.scale_pixbuf(ref tmp_icon, 24);
+				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, true);
 				return new Gtk.Image.from_pixbuf(tmp_icon);
 			}
 		}
@@ -278,17 +271,15 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	}
 
 
-	private Gdk.Pixbuf getFeedPixbuf()
+	private Gtk.Window getFeedIconWindow()
 	{
-		try{
-			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
-			{
-				return new Gdk.Pixbuf.from_file_at_size(getIconPath(), 24, 24);
-			}
-		}
-		catch(GLib.Error e){}
-
-		return new Gdk.Pixbuf.from_file_at_size("/usr/share/icons/hicolor/24x24/status/feed-rss.svg", 24, 24);
+		var window = new Gtk.Window(Gtk.WindowType.POPUP);
+		var visual = window.get_screen().get_rgba_visual();
+		window.set_visual(visual);
+		window.get_style_context().add_class("transparentBG");
+		window.add(getFeedIcon());
+		window.show_all();
+		return window;
 	}
 
 

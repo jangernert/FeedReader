@@ -28,7 +28,8 @@ namespace FeedReader {
 		FEEDLY,
 		READABILITY,
 		INSTAPAPER,
-		POCKET
+		POCKET,
+		MAIL
 	}
 
 	public enum LogLevel {
@@ -45,8 +46,9 @@ namespace FeedReader {
 	}
 
 	public enum DragTarget {
-	    TAGID,
-	    STRING
+	    TAG,
+	    FEED,
+		CAT
 	}
 
 	public enum ConsoleColor {
@@ -273,9 +275,11 @@ namespace FeedReader {
 		 const string TTRSS_SPECIAL = "-1";
 		 const string MASTER        = "-2";
 		 const string TAGS          = "-3";
+		 const string NEW			= "-4";
 	}
 
 	namespace FeedID {
+		const string SEPARATOR = "-5";
 		const string ALL = "-4";
 		const string CATEGORIES = "-2";
 	}

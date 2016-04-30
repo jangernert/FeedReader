@@ -128,9 +128,14 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 		Json.Array array = parser.get_root().get_array();
 
-		for (int i = 0; i < array.get_length (); i++) {
+		for (int i = 0; i < array.get_length (); i++)
+		{
 			Json.Object object = array.get_object_element(i);
 			string categorieID = object.get_string_member("id");
+
+			if(categorieID.has_suffix("global.all")
+			|| categorieID.has_suffix("global.uncategorized"))
+				continue;
 
 			categories.add(
 				new category (
@@ -197,7 +202,13 @@ public class FeedReader.FeedlyAPI : Object {
 
 			for(uint j = 0; j < catCount; ++j)
 			{
-				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
+				string categorieID = object.get_array_member("categories").get_object_element(j).get_string_member("id");
+
+				if(categorieID.has_suffix("global.all")
+				|| categorieID.has_suffix("global.uncategorized"))
+					continue;
+
+				categories += categorieID;
 			}
 
 			feeds.add(
@@ -281,6 +292,7 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 
 		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
+		//logger.print(LogMessage.DEBUG, response);
 
 		try{
 			parser.load_from_data(response, -1);
@@ -574,6 +586,44 @@ public class FeedReader.FeedlyAPI : Object {
 
 			object.set_array_member("categories", cats);
 		}
+
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(object);
+
+		m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
+	}
+
+	public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)
+	{
+		var Feed = dataBase.read_feed(feedID);
+
+		Json.Object object = new Json.Object();
+		object.set_string_member("id", feedID);
+		object.set_string_member("title", Feed.getTitle());
+
+
+		var catArray = Feed.getCatIDs();
+		Json.Array cats = new Json.Array();
+
+		foreach(string catID in catArray)
+		{
+			if(catID != oldCatID)
+			{
+				string catName = dataBase.getCategoryName(catID);
+				Json.Object catObject = new Json.Object();
+				catObject.set_string_member("id", catID);
+				catObject.set_string_member("label", catName);
+				cats.add_object_element(catObject);
+			}
+		}
+
+		string newCatName = dataBase.getCategoryName(newCatID);
+		Json.Object catObject = new Json.Object();
+		catObject.set_string_member("id", newCatID);
+		catObject.set_string_member("label", newCatName);
+		cats.add_object_element(catObject);
+
+		object.set_array_member("categories", cats);
 
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object(object);

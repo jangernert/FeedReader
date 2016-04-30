@@ -75,7 +75,7 @@ public class FeedReader.Grabber : GLib.Object {
             return true;
         }
 
-        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) found for article: %s".printf(m_hostName, m_articleURL));
+        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) - cutSubdomain - found for article: %s".printf(m_hostName, m_articleURL));
         return false;
     }
 
@@ -86,46 +86,11 @@ public class FeedReader.Grabber : GLib.Object {
 
         if(!checkConfigFile())
         {
-            // check page for feedsportal
-            if( (m_articleURL.contains("feedsportal.com")
-            || m_articleURL.contains("feeds.gawker.com")
-            || m_articleURL.contains("feedproxy.google.com") )
-            && download())
-            {
-                downloaded = true;
+            // download to check if website redirects
+            downloaded = download();
 
-                var html_cntx = new Html.ParserCtxt();
-                html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-                Html.Doc* doc = html_cntx.read_doc(m_rawHtml, "");
-                if (doc == null)
-                {
-            		return false;
-            	}
-
-                Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
-            	Xml.XPath.Object* res = cntx.eval_expression("//meta[@property='og:url']");
-
-                if(res == null)
-                {
-                    return false;
-                }
-                else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
-                {
-                    delete res;
-                    return false;
-                }
-
-                Xml.Node* node = res->nodesetval->item(0);
-                m_articleURL = node->get_prop("content");
-                logger.print(LogMessage.DEBUG, "Grabber: original url: %s".printf(m_articleURL));
-                delete doc;
-                delete res;
-
-                // check again for config file with new url
-                if(!checkConfigFile())
-                    return false;
-            }
-            else
+            // check again after possible redirect
+            if(!checkConfigFile())
                 return false;
         }
 
@@ -159,9 +124,10 @@ public class FeedReader.Grabber : GLib.Object {
         session.timeout = 5;
         var msg = new Soup.Message("GET", m_articleURL);
         msg.restarted.connect(() => {
-            if(msg.status_code == Soup.Status.MOVED_TEMPORARILY)
+            logger.print(LogMessage.DEBUG, "Grabber: download redirected - " + msg.status_code.to_string());
+            if(msg.status_code == Soup.Status.MOVED_TEMPORARILY
+            || msg.status_code == Soup.Status.MOVED_PERMANENTLY)
             {
-                logger.print(LogMessage.DEBUG, "Grabber: download redirected - \"302 Moved Temporarily\"");
                 m_articleURL = msg.uri.to_string(false);
                 logger.print(LogMessage.DEBUG, "Grabber: new url is: " + m_articleURL);
             }
@@ -173,7 +139,16 @@ public class FeedReader.Grabber : GLib.Object {
         session.send_message(msg);
 
         if(msg.response_body == null)
+        {
+            logger.print(LogMessage.DEBUG, "Grabber: download failed - no response");
             return false;
+        }
+
+        if((string)msg.response_body.flatten().data == "")
+        {
+            logger.print(LogMessage.DEBUG, "Grabber: download failed - empty response");
+            return false;
+        }
 
         m_rawHtml = (string)msg.response_body.flatten().data;
         return true;

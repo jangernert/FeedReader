@@ -28,12 +28,8 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private Gtk.EventBox m_eventBox;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
-	public signal void selectDefaultRow();
+	public signal void moveUP();
 	public signal void removeRow();
-
-	private const Gtk.TargetEntry[] target_list = {
-	    { "STRING",     0, DragTarget.TAGID }
-	};
 
 	public TagRow (string name, string tagID, int color)
 	{
@@ -82,19 +78,24 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		this.add(m_eventBox);
 		this.show_all();
 
-		// Make this widget a DnD destination.
-        Gtk.drag_dest_set (
-                this,
-                Gtk.DestDefaults.MOTION,
-                target_list,
-                Gdk.DragAction.COPY
-        );
+		if(UiUtils.canManipulateContent())
+		{
+			const Gtk.TargetEntry[] accepted_targets = {
+			    { "STRING",     0, DragTarget.TAG }
+			};
 
-        // All possible destination signals
-        this.drag_motion.connect(onDragMotion);
-        this.drag_leave.connect(onDragLeave);
-        this.drag_drop.connect(onDragDrop);
-        this.drag_data_received.connect(onDragDataReceived);
+	        Gtk.drag_dest_set (
+	                this,
+	                Gtk.DestDefaults.MOTION,
+	                accepted_targets,
+	                Gdk.DragAction.COPY
+	        );
+
+	        this.drag_motion.connect(onDragMotion);
+	        this.drag_leave.connect(onDragLeave);
+	        this.drag_drop.connect(onDragDrop);
+	        this.drag_data_received.connect(onDragDataReceived);
+		}
 	}
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
@@ -128,7 +129,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
     {
 		if(selection_data != null
 		&& selection_data.get_length() >= 0
-		&& target_type == DragTarget.TAGID)
+		&& target_type == DragTarget.TAG)
 		{
 			if(m_tagID != TagID.NEW)
 			{
@@ -149,6 +150,9 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		if(event.button != 3)
 			return false;
 
+		if(!UiUtils.canManipulateContent())
+			return false;
+
 		switch(event.type)
 		{
 			case Gdk.EventType.BUTTON_RELEASE:
@@ -160,7 +164,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		var remove_action = new GLib.SimpleAction("deleteTag", null);
 		remove_action.activate.connect(() => {
 			if(this.is_selected())
-				selectDefaultRow();
+				moveUP();
 
 			uint time = 300;
 			this.reveal(false, time);
@@ -266,7 +270,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			if(m_tagID == TagID.NEW && context != null)
 			{
 				removeRow();
-				if(dataBase.read_tags().is_empty)
+				if(Utils.haveTags())
 				{
 					var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
 					var feedlist = window.getContent().getFeedList();
@@ -293,7 +297,11 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			}
 		});
 
-		var renameButton = new Gtk.Button.with_label(_("rename"));
+		string label = _("rename");
+		if(m_tagID == TagID.NEW && context != null)
+			label = _("add");
+
+		var renameButton = new Gtk.Button.with_label(label);
 		renameButton.get_style_context().add_class("suggested-action");
 		renameButton.clicked.connect(() => {
 			renameEntry.activate();

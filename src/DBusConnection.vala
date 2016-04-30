@@ -23,6 +23,7 @@ namespace FeedReader {
 		public abstract LoginResponse login(Backend type) throws IOError;
 		public abstract LoginResponse isLoggedIn() throws IOError;
 		public abstract bool isOnline() throws IOError;
+		public abstract bool supportMultiLevelCategories() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void markAllItemsRead() throws IOError;
@@ -34,13 +35,16 @@ namespace FeedReader {
 		public abstract string createTag(string caption) throws IOError;
 		public abstract void updateBadge() throws IOError;
 		public abstract bool supportTags() throws IOError;
-		public abstract void checkOnlineAsync() throws IOError;
+		public abstract bool checkOnlineAsync() throws IOError;
+		public abstract string addCategory(string title, string parentID, bool createLocally) throws IOError;
 		public abstract void removeCategory(string catID) throws IOError;
 		public abstract void removeCategoryWithChildren(string catID) throws IOError;
+		public abstract void moveCategory(string catID, string newParentID) throws IOError;
 		public abstract void renameCategory(string catID, string newName) throws IOError;
 		public abstract void addFeed(string feedURL, string cat, bool isID) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
+		public abstract void moveFeed(string feedID, string currentCatID, string? newCatID = null) throws IOError;
 		public abstract void renameFeed(string feedID, string newName) throws IOError;
 		public abstract void importOPML(string opml) throws IOError;
 		public signal void syncStarted();

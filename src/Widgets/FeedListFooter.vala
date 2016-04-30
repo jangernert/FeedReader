@@ -18,6 +18,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	private Gtk.Box m_box;
 	private Gtk.Stack m_addStack;
 	private Gtk.Spinner m_addSpinner;
+	private Gtk.Button m_addButton;
 	private Gtk.Button m_removeButton;
 	private FeedListType m_type;
 	private string m_id;
@@ -30,15 +31,15 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		this.valign = Gtk.Align.END;
 		this.get_style_context().add_class("FeedListFooter");
 
-		var addButton = new Gtk.Button.from_icon_name("feed-add", Gtk.IconSize.SMALL_TOOLBAR);
-		addButton.get_style_context().remove_class("button");
-		addButton.get_style_context().add_class("FeedListFooterButton");
-		addButton.get_image().opacity = 0.8;
-		addButton.clicked.connect(() => {
-			addButton.get_style_context().add_class("FeedListFooterButtonPopover");
-			var addPop = new AddPopover(addButton);
+		m_addButton = new Gtk.Button.from_icon_name("feed-add", Gtk.IconSize.SMALL_TOOLBAR);
+		m_addButton.get_style_context().remove_class("button");
+		m_addButton.get_style_context().add_class("FeedListFooterButton");
+		m_addButton.get_image().opacity = 0.8;
+		m_addButton.clicked.connect(() => {
+			m_addButton.get_style_context().add_class("FeedListFooterButtonPopover");
+			var addPop = new AddPopover(m_addButton);
 			addPop.closed.connect(() => {
-				addButton.get_style_context().remove_class("FeedListFooterButtonPopover");
+				m_addButton.get_style_context().remove_class("FeedListFooterButtonPopover");
 			});
 			addPop.show();
 		});
@@ -48,7 +49,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_addSpinner.margin = 4;
 		m_addSpinner.start();
 		m_addStack = new Gtk.Stack();
-		m_addStack.add_named(addButton, "button");
+		m_addStack.add_named(m_addButton, "button");
 		m_addStack.add_named(m_addSpinner, "spinner");
 
 		m_removeButton = new Gtk.Button.from_icon_name("feed-remove", Gtk.IconSize.SMALL_TOOLBAR);
@@ -66,10 +67,14 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.pack_start(m_addStack);
-		m_box.pack_start(new Gtk.Separator(Gtk.Orientation.VERTICAL), false, false);
+		var sep1 = new Gtk.Separator(Gtk.Orientation.VERTICAL);
+		var sep2 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
+		sep1.get_style_context().add_class("feedlist-separator");
+		sep2.get_style_context().add_class("feedlist-separator");
+		m_box.pack_start(sep1, false, false);
 		m_box.pack_start(m_removeButton);
 
-		this.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false);
+		this.pack_start(sep2, false, false);
 		this.pack_start(m_box);
 	}
 
@@ -95,5 +100,11 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	{
 		m_type = type;
 		m_id = id;
+	}
+
+	public void setActive(bool active)
+	{
+		m_addButton.set_sensitive(active);
+		m_removeButton.set_sensitive(active);
 	}
 }

@@ -472,7 +472,6 @@ public class FeedReader.dbUI : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("max(Level)");
-		query.addCustomCondition("categorieID >= 0");
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -663,17 +662,12 @@ public class FeedReader.dbUI : GLib.Object {
 
 	protected string getUncategorizedQuery()
 	{
-		string sql = "0";
+		string sql = "category_id = \"\"";
 
-		if(settings_general.get_enum("account-type") == Backend.FEEDLY)
-		{
-			sql = "instr(category_id, \",\") = 0";
-		}
-		else if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
+		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
 		{
 			sql = "category_id = 0";
 		}
-
 
 		return sql;
 	}
@@ -818,7 +812,11 @@ public class FeedReader.dbUI : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
-			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), stmt.column_text(4).split(","));
+			string catString = stmt.column_text(4);
+			string[] catVec = { "" };
+			if(catString != "")
+				catVec = catString.split(",");
+			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
 			tmp.add(tmpfeed);
 		}
 
@@ -868,7 +866,12 @@ public class FeedReader.dbUI : GLib.Object {
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpfeed = new feed(stmt.column_text(0), stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), (uint)stmt.column_int(4), stmt.column_text(4).split(","));
+			string feedID = stmt.column_text(0);
+			string catString = stmt.column_text(4);
+			string[] catVec = { "" };
+			if(catString != "")
+				catVec = catString.split(",");
+			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
 			tmp.add(tmpfeed);
 		}
 
@@ -902,8 +905,16 @@ public class FeedReader.dbUI : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("*");
-		query.addCustomCondition("categorieID >= 0");
-		query.orderBy("orderID", true);
+
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("title", true);
+		}
+		else
+		{
+			query.orderBy("orderID", true);
+		}
+
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -911,39 +922,42 @@ public class FeedReader.dbUI : GLib.Object {
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
-		while (stmt.step () == Sqlite.ROW) {
-			bool hasFeeds = false;
+		while (stmt.step () == Sqlite.ROW)
+		{
 			string catID = stmt.column_text(0);
-			uint unread = 0;
-			if(feeds != null)
-			{
-				foreach(feed Feed in feeds)
-				{
-					bool found = false;
-					var ids = Feed.getCatIDs();
-					foreach(string id in ids)
-					{
-						if(id == catID)
-						{
-							found = true;
-							hasFeeds = true;
-							break;
-						}
-					}
 
-					if(found)
-						unread += Feed.getUnread();
-				}
-			}
-
-			if(hasFeeds || feeds == null)
+			if(feeds == null || Utils.showCategory(catID, feeds))
 			{
-				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+				tmpcategory = new category(
+					catID, stmt.column_text(1),
+					Utils.categoryGetUnread(catID, feeds),
+					stmt.column_int(3),
+					stmt.column_text(4),
+					stmt.column_int(5)
+				);
+
 				tmp.add(tmpcategory);
 			}
 		}
 
 		return tmp;
+	}
+
+
+	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)
+	{
+		var categories = read_categories(feeds);
+		var tmpCategories = new Gee.ArrayList<category>();
+
+		foreach(category cat in categories)
+		{
+			if(cat.getLevel() == level)
+			{
+				tmpCategories.add(cat);
+			}
+		}
+
+		return tmpCategories;
 	}
 
 
@@ -1022,66 +1036,6 @@ public class FeedReader.dbUI : GLib.Object {
 		}
 
 		return count;
-	}
-
-	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)
-	{
-		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
-		category tmpcategory;
-
-		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
-		query.selectField("*");
-		query.addCustomCondition("categorieID >= 0");
-		query.addEqualsCondition("level", level.to_string());
-		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
-		{
-			query.orderBy("title", true);
-		}
-		else
-		{
-			query.orderBy("orderID", true);
-		}
-
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
-		while (stmt.step () == Sqlite.ROW) {
-			string catID = stmt.column_text(0);
-			bool hasFeeds = false;
-			uint unread = 0;
-			if(feeds != null)
-			{
-				foreach(feed Feed in feeds)
-				{
-					bool found = false;
-					var ids = Feed.getCatIDs();
-					foreach(string id in ids)
-					{
-						if(id == catID)
-						{
-							found = true;
-							hasFeeds = true;
-							break;
-						}
-					}
-
-					if(found)
-						unread += Feed.getUnread();
-				}
-			}
-
-			if(hasFeeds)
-			{
-				tmpcategory = new category(catID, stmt.column_text(1), unread, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
-				tmp.add(tmpcategory);
-			}
-		}
-
-		return tmp;
 	}
 
 	//[Profile]

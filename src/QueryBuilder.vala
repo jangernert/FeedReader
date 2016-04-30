@@ -70,12 +70,15 @@ public class FeedReader.QueryBuilder : GLib.Object {
         return false;
     }
 
-    public bool updateValuePair(string field, string value)
+    public bool updateValuePair(string field, string value, bool isString = false)
     {
         if(m_type == QueryType.UPDATE)
         {
             m_fields.add(field);
-            m_values.add(value);
+            if(isString)
+                m_values.add("'%s'".printf(value));
+            else
+                m_values.add(value);
             return true;
         }
         logger.print(LogMessage.ERROR, "updateValuePair");

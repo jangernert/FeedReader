@@ -59,7 +59,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 	{
 		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
 		m_feedlist = window.getContent().getFeedList();
-		m_feedlist.selectDefaultRow();
+		m_feedlist.moveUP();
 		m_feedlist.revealRow(m_id, m_type, false, m_time);
 
 		switch(m_type)

@@ -84,22 +84,22 @@ public class FeedReader.FeedlyAPI : Object {
 			if(root.has_member("email"))
 				settings_feedly.set_string("email", root.get_string_member("email"));
 			else if(root.has_member("givenName"))
-				settings_inoreader.set_string("username", root.get_string_member("givenName"));
+				settings_feedly.set_string("email", root.get_string_member("givenName"));
 			else if(root.has_member("fullName"))
-				settings_inoreader.set_string("username", root.get_string_member("fullName"));
+				settings_feedly.set_string("email", root.get_string_member("fullName"));
 			else if(root.has_member("google"))
-				settings_inoreader.set_string("username", root.get_string_member("google"));
+				settings_feedly.set_string("email", root.get_string_member("google"));
 			else if(root.has_member("reader"))
-				settings_inoreader.set_string("username", root.get_string_member("reader"));
+				settings_feedly.set_string("email", root.get_string_member("reader"));
 			else if(root.has_member("twitterUserId"))
-				settings_inoreader.set_string("username", root.get_string_member("twitterUserId"));
+				settings_feedly.set_string("email", root.get_string_member("twitterUserId"));
 			else if(root.has_member("facebookUserId"))
-				settings_inoreader.set_string("username", root.get_string_member("facebookUserId"));
+				settings_feedly.set_string("email", root.get_string_member("facebookUserId"));
 			else if(root.has_member("wordPressId"))
-				settings_inoreader.set_string("username", root.get_string_member("wordPressId"));
+				settings_feedly.set_string("email", root.get_string_member("wordPressId"));
 			else if(root.has_member("windowsLiveId"))
-				settings_inoreader.set_string("username", root.get_string_member("windowsLiveId"));
-			
+				settings_feedly.set_string("email", root.get_string_member("windowsLiveId"));
+
 			return true;
 		}
 

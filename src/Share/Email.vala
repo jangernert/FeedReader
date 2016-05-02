@@ -24,12 +24,7 @@ public class FeedReader.ShareMail : GLib.Object {
 	public static void share(string url)
 	{
 
-		string body =
-		_("""Hey,
-		check out this interesting article I just read:
-		%s
-
-		- send by FeedReader""").printf(url);
+		string body = _("Hey,\ncheck out this interesting article I just read:\n%s\n\n- send by FeedReader").printf(url);
 
 		string mailto = "mailto:john.doe@domain.com?body=%s".printf(GLib.Uri.escape_string(body));
 

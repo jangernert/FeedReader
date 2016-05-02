@@ -793,7 +793,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             }
 
 
-            executeSQL("UPDATE feeds SET category_id = \"%s\" WHERE feed_id = \"%s\"".printf(catString, feedID));
+            var query = new QueryBuilder(QueryType.UPDATE, "feeds");
+            query.updateValuePair("category_id", catString, true);
+            query.addEqualsCondition("feed_id", feedID, true, true);
+            executeSQL(query.build());
             Idle.add((owned) callback);
             return null;
         };
@@ -805,7 +808,36 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
     {
         SourceFunc callback = rename_tag.callback;
         ThreadFunc<void*> run = () => {
-            executeSQL("UPDATE tags SET title = \"%s\" WHERE tagID = \"%s\"".printf(newName, tagID));
+
+            if(settings_general.get_enum("account-type") == Backend.INOREADER)
+            {
+                var tag = read_tag(tagID);
+                string newID = tagID.replace(tag.getTitle(), newName);
+                var query2 = new QueryBuilder(QueryType.UPDATE, "tags");
+                query2.updateValuePair("tagID", newID, true);
+                query2.addEqualsCondition("tagID", tagID, true, true);
+                executeSQL(query2.build());
+                query2.print();
+
+                var query3 = new QueryBuilder(QueryType.UPDATE, "articles");
+                query3.updateValuePair("tags", "replace(tags, '%s', '%s')".printf(tagID, newID));
+                query3.addCustomCondition("instr(tags, '%s')".printf(tagID));
+                executeSQL(query3.build());
+                query3.print();
+
+                var query = new QueryBuilder(QueryType.UPDATE, "tags");
+                query.updateValuePair("title", newName, true);
+                query.addEqualsCondition("tagID", newID, true, true);
+                executeSQL(query.build());
+            }
+            else
+            {
+                var query = new QueryBuilder(QueryType.UPDATE, "tags");
+                query.updateValuePair("title", newName, true);
+                query.addEqualsCondition("tagID", tagID, true, true);
+                executeSQL(query.build());
+            }
+
             Idle.add((owned) callback);
             return null;
         };
@@ -818,7 +850,10 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         SourceFunc callback = removeCatFromFeed.callback;
         ThreadFunc<void*> run = () => {
             var feed = read_feed(feedID);
-            executeSQL("UPDATE feeds SET category_id = \"%s\" WHERE feed_id = \"%s\"".printf(feed.getCatString().replace(catID + ",", ""), feedID));
+            var query = new QueryBuilder(QueryType.UPDATE, "feeds");
+            query.updateValuePair("category_id", feed.getCatString().replace(catID + ",", ""), true);
+            query.addEqualsCondition("feed_id", feedID, true, true);
+            executeSQL(query.build());
             Idle.add((owned) callback);
             return null;
         };

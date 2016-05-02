@@ -37,6 +37,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		{
 			return LoginResponse.SUCCESS;
 		}
+
+		settings_inoreader.reset("access-token");
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
@@ -65,9 +68,26 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			logger.print(LogMessage.INFO, "Inoreader: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
-			{
 				settings_inoreader.set_string("username", root.get_string_member("userEmail"));
-			}
+			else if(root.has_member("givenName"))
+				settings_inoreader.set_string("username", root.get_string_member("givenName"));
+			else if(root.has_member("fullName"))
+				settings_inoreader.set_string("username", root.get_string_member("fullName"));
+			else if(root.has_member("google"))
+				settings_inoreader.set_string("username", root.get_string_member("google"));
+			else if(root.has_member("reader"))
+				settings_inoreader.set_string("username", root.get_string_member("reader"));
+			else if(root.has_member("twitterUserId"))
+				settings_inoreader.set_string("username", root.get_string_member("twitterUserId"));
+			else if(root.has_member("facebookUserId"))
+				settings_inoreader.set_string("username", root.get_string_member("facebookUserId"));
+			else if(root.has_member("wordPressId"))
+				settings_inoreader.set_string("username", root.get_string_member("wordPressId"));
+			else if(root.has_member("windowsLiveId"))
+				settings_inoreader.set_string("username", root.get_string_member("windowsLiveId"));
+
+
+
 			return true;
 		}
 

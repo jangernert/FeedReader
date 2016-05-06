@@ -19,6 +19,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 	private FeedListType m_type;
 	private feedList m_feedlist;
 	private uint m_time = 300;
+	private string m_name;
 
 	public RemovePopover(Gtk.Widget parent, FeedListType type, string id)
 	{
@@ -27,27 +28,22 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		m_type = type;
 		m_id = id;
 
-		string name = "ERROR!!!111eleven";
-
 		switch(m_type)
 		{
 			case FeedListType.TAG:
-				var tag = dataBase.read_tag(m_id);
-				name = tag.getTitle();
+				m_name = dataBase.getTagName(m_id);
 				break;
 
 			case FeedListType.FEED:
-				var feed = dataBase.read_feed(m_id);
-				name = feed.getTitle();
+				m_name = dataBase.getFeedName(m_id);
 				break;
 
 			case FeedListType.CATEGORY:
-				var cat = dataBase.read_category(m_id);
-				name = cat.getTitle();
+				m_name = dataBase.getCategoryName(m_id);
 				break;
 		}
 
-		var removeButton = new Gtk.Button.with_label(_("Remove \"%s\"").printf(name));
+		var removeButton = new Gtk.Button.with_label(_("Remove \"%s\"").printf(m_name));
 		removeButton.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
 		removeButton.clicked.connect(removeX);
 		removeButton.margin = 10;
@@ -83,8 +79,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 	private void removeTag()
 	{
 		var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
-		var tagName = dataBase.getTagName(m_id);
-		string text = _("Tag \"%s\" removed").printf(tagName);
+		string text = _("Tag \"%s\" removed").printf(m_name);
 		var notification = content.showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
@@ -100,8 +95,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 	private void removeFeed()
 	{
 		var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
-		var feedName = dataBase.getFeedName(m_id);
-		string text = _("Feed \"%s\" removed").printf(feedName);
+		string text = _("Feed \"%s\" removed").printf(m_name);
 		var notification = content.showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
@@ -118,8 +112,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 	{
 		m_feedlist.expand_collapse_category(m_id, false);
 		var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
-		var catName = dataBase.getCategoryName(m_id);
-		string text = _("Category \"%s\" removed").printf(catName);
+		string text = _("Category \"%s\" removed").printf(m_name);
 		var notification = content.showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {

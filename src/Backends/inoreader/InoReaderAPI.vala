@@ -37,6 +37,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		{
 			return LoginResponse.SUCCESS;
 		}
+
+		settings_inoreader.reset("access-token");
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
@@ -65,9 +68,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			logger.print(LogMessage.INFO, "Inoreader: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
-			{
 				settings_inoreader.set_string("username", root.get_string_member("userEmail"));
-			}
+
 			return true;
 		}
 

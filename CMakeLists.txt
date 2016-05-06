@@ -155,8 +155,9 @@ CUSTOM_VAPIS
 
 add_executable(${EXEC_NAME} ${UI})
 target_link_libraries(${EXEC_NAME} vilistextum)
-target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgtkimageview.a)
-target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgd.a)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/staticLibs DESTINATION ${CMAKE_BINARY_DIR})
+target_link_libraries(${EXEC_NAME} ${CMAKE_BINARY_DIR}/staticLibs/libgtkimageview.a)
+target_link_libraries(${EXEC_NAME} ${CMAKE_BINARY_DIR}/staticLibs/libgd.a)
 
 
 set(DAEMON_OPTIONS

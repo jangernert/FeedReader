@@ -22,12 +22,12 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - libgtk-3-dev
 - libsoup2.4-dev
 - libjson-glib-dev
-- libwebkit2gtk-3.0-dev (or version 4.0 with build switch -DUSE_WEBKIT_4=ON)
+- libwebkit2gtk-4.0-dev (or version 3.0)
 - libsqlite3-dev
 - libsecret-1-dev
 - libnotify-dev
 - libxml2-dev
-- libunity-dev (optional: disable with -DWITH_LIBUNITY=OFF)
+- libunity-dev (optional)
 - librest-dev
 - libgee-0.8-dev
 

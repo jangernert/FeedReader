@@ -1,7 +1,8 @@
 project (FeedReader)
 cmake_minimum_required (VERSION 2.6)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
-include_directories(${CMAKE_SOURCE_DIR}/staticLibs)
+include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)
+include_directories(${CMAKE_SOURCE_DIR})
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
@@ -59,6 +60,8 @@ link_libraries(${DEPS_LIBRARIES} -lm)
 link_directories(${DEPS_LIBRARY_DIRS})
 
 add_subdirectory (WebExtension)
+add_subdirectory (libgtkimageview)
+add_subdirectory (libgd)
 
 set(UI_OPTIONS
     --target-glib=2.32)
@@ -155,9 +158,8 @@ CUSTOM_VAPIS
 
 add_executable(${EXEC_NAME} ${UI})
 target_link_libraries(${EXEC_NAME} vilistextum)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/staticLibs DESTINATION ${CMAKE_BINARY_DIR})
-target_link_libraries(${EXEC_NAME} ${CMAKE_BINARY_DIR}/staticLibs/libgtkimageview.a)
-target_link_libraries(${EXEC_NAME} ${CMAKE_BINARY_DIR}/staticLibs/libgd.a)
+target_link_libraries(${EXEC_NAME} gtkimageview)
+target_link_libraries(${EXEC_NAME} gd)
 
 
 set(DAEMON_OPTIONS

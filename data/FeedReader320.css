@@ -11,7 +11,7 @@
 	color: mix(@theme_bg_color, @theme_fg_color, 0.5);
 }
 
-FeedReaderUpdateButton:insensitive * {
+FeedReaderUpdateButton:disabled * {
 	opacity:1;
 }
 
@@ -34,7 +34,7 @@ FeedReaderUpdateButton:insensitive * {
 
 .feed-list-row {
 	text-shadow: none;
-	icon-shadow: none;
+	-gtk-icon-shadow: none;
 	background: none;
 }
 
@@ -69,7 +69,7 @@ GtkEventBox {
 	background: @feedlist-selected;
 }
 
-.feed-list-row:prelight {
+.feed-list-row:hover {
 	background: shade(@feedlist-bg, 1.1);
 }
 
@@ -90,12 +90,12 @@ GtkEventBox {
 }
 
 
-.feed-list-row:selected:prelight,
-.feed-list-row:selected:prelight box.feed-row {
+.feed-list-row:selected:hover,
+.feed-list-row:selected:hover box.feed-row {
 	background: shade(@feedlist-selected, 1.1);
 }
 
-.feed-list-row:prelight box.feed-row {
+.feed-list-row:hover box.feed-row {
 	background: shade(@feedrow-bg, 1.1);
 }
 
@@ -140,7 +140,7 @@ scrolledwindow viewport.servicebox {
 	border-top-right-radius: 0;
 }
 
-.FeedListFooter button:prelight {
+.FeedListFooter button:hover {
 	background: shade(@feedlist-bg, 1.1);
 }
 

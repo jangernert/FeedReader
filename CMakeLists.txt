@@ -23,7 +23,7 @@ find_package(PkgConfig)
 find_package(Vala REQUIRED)
 include(ValaVersion)
 include(ValaPrecompile)
-ensure_vala_version("0.24" MINIMUM)
+ensure_vala_version("0.26" MINIMUM)
 
 pkg_check_modules(WEBKITGTK4 QUIET webkit2gtk-4.0)
 pkg_check_modules(LIBUNITY QUIET unity)

@@ -41,7 +41,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
     </pre>
   - Arch : <br/>
     <pre>
-      yaourt feedreader
+      yaourt -S feedreader
     </pre>
   - Fedora : <br/>
     <pre>
@@ -60,4 +60,4 @@ cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make
 sudo make install
 ```
-Arch users can build the latest version using `yaourt feedreader-git`
+Arch users can build the latest version using `yaourt -S feedreader-git`

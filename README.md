@@ -1,8 +1,11 @@
+# FeedReader Website
 
-FeedReader Webpage based on [github.com/t413/SinglePaged](https://github.com/t413/SinglePaged).
+FeedReader is a modern desktop application designed to complement existing web-based RSS accounts. It combines all the advantages of web based services like synchronisation across all your devices with everything you expect from a modern desktop application.
 
-- Switch to `gh-pages` branch
-- Modify `_config.yml` and `_posts/*.md` files as desired.
-- Run command `bundle exec jekyll serve` or `jekyll serve -w`
-- Visit [localhost:4000](http://localhost:4000) to see a locally served preview.
-- Push changes to `gh-pages` branch in GitHub.
+![](./images/Screenshot4.png)
+
+**NOTE:** This is the code for the [website](http://jangernert.github.io/FeedReader/) of the FeedReader project.
+
+## Credits
+
+Built using [Readable Bootstrap theme](http://bootswatch.com/readable/) from [Bootswatch](http://bootswatch.com/).

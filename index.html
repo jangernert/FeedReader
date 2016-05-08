@@ -1,64 +1,345 @@
----
----
 <!DOCTYPE html>
-<html dir="ltr" lang="en">
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ site.title }}</title>
-	<meta name="keywords" content="{{ site.keywords }}">
-	<meta name="description" content="{{ site.description }}">
-  <link rel="stylesheet" href="combo.css">
-  <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,700' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
-  {% if site.favicon %}<link rel="shortcut icon" href="{{ site.favicon }}" type="image/x-icon">{% endif %}
-	{% if site.touch_icon %}<link rel="apple-touch-icon" href="{{ site.touch_icon }}">{% endif %}
+    <meta charset="utf-8">
+    <title>FeedReader - RSS desktop client</title>
+    <meta name="keywords" content="FeedReader, RSS, desktop, client">
+    <meta name="description" content="FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="./styles/bootstrap.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
+
 <body>
-  <div id="main">
 
-    <nav><ul>
-      {% for node in site.posts reversed %}
-        {% capture id %}{{ node.id | remove:'/' | downcase }}{% endcapture %}
-        <li class="p-{{id}}"><a href="#{{id}}">{{node.title}}</a></li>
-      {% endfor %}
-    </ul></nav>
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span class="scroll"><a class="navbar-brand" href="#feedreader">FeedReader</a></span>
+            </div>
 
-
-    {% for page in site.posts reversed %}
-      {% capture id %}{{ page.id | remove:'/' | downcase }}{% endcapture %}
-      <div id="{{id}}" class="section p-{{id}}">
-        {% if page.icon %}
-        <div class="subtlecircle sectiondivider imaged">
-          <img src="{{page.icon}}" alt="section icon" />
-          <h5 class="icon-title">{{ page.title }}</h5>
+            <div class="collapse navbar-right navbar-collapse" id="navigationbar">
+                <ul class="nav navbar-nav">
+                    <li class="scroll"><a href="#features">Features</a></li>
+                    <li class="scroll"><a href="#install">Installation</a></li>
+                    <li class="scroll"><a href="#get-involved">Support & Getting Involved</a></li>
+                    <li><a href="./changelog.html">Changelog &nbsp; <i class="fa fa-external-link"></i></a></li>
+                </ul>
+            </div>
         </div>
-        {% elsif page.fa-icon %}
-        <div class="subtlecircle sectiondivider faicon">
-          <span class="fa-stack">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <i class="fa fa-{{ page.fa-icon }} fa-stack-1x"></i>
-          </span>
-          <h5 class="icon-title">{{ page.title }}</h5>
-        </div>
-        {% endif %}
-        <div class="container {{ page.style }}">
-          {{ page.content }}
-        </div>
-      </div>
-    {% endfor %}
+    </nav>
+    <p> &nbsp; </p>
+    <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
+        <div class="jumbotron">
+            <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
+            <br/>
 
+            <div class="container" id="screenshots" style="padding-top: 60px; margin-top: -60px">
+                <div id="carousel-example-generic" class="carousel slide" data-ride="carousel">
 
-    <div id="footer" class="section text-white">
-      <div class="container">
-        {% capture foottext %} {% include footer.md %} {% endcapture %}
-        {{ foottext | markdownify }}
-      </div>
+                    <!-- Wrapper for slides -->
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <img class="img-responsive" src="images/Screenshot1.png" alt="...">
+                        </div>
+                        <div class="item">
+                            <img src="images/Screenshot2.png" alt="...">
+                        </div>
+                        <div class="item">
+                            <img src="images/Screenshot3.png" alt="...">
+                        </div>
+                        <div class="item">
+                            <img src="images/Screenshot4.png" alt="...">
+                        </div>
+                    </div>
+
+                    <!-- Controls -->
+                    <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left"></span>
+                    </a>
+                    <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right"></span>
+                    </a>
+                </div>
+                <!-- Carousel -->
+            </div>
+            <br/>
+            <h3>
+            	FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.
+            	<small>
+            		It combines all the advantages of web based services like synchronisation across all your devices with everything you expect from a modern desktop application.
+            	</small>
+            </h3>
+            </p>
+        </div>
     </div>
-  </div>
 
-{% include analytics.html %}
+    <hr>
+
+    <div class="container" id="features" style="padding-top: 60px; margin-top: -60px">
+        <h1 class="text-center">Features</h1>
+
+        <h1 class="text-center"><small>FeedReader works with</small></h1>
+        <br>
+        <div class="col-xs-12">
+            <div class="col-md-4 list-group ">
+                <a href="http://feedly.com/" class="list-group-item">
+                    <h4 class="list-group-item-heading">feedly</h4>
+                    <p class="list-group-item-text">
+                        <img width="100" height="100" src="./images/feedly_logo.svg" alt="feedly">
+                        <br> One of the most popular online RSS services available.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a href="https://tt-rss.org/" class="list-group-item">
+                    <h4 class="list-group-item-heading">Tiny Tiny RSS</h4>
+                    <p class="list-group-item-text">
+                        <img width="100" height="100" src="./images/tt-rss_logo.svg" alt="Tiny Tiny RSS">
+                        <br> Self hosted powerful but lightweight RSS reader.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a href="https://owncloud.org/" class="list-group-item">
+                    <h4 class="list-group-item-heading">OwnCloud</h4>
+                    <p class="list-group-item-text">
+                        <img width="100" height="100" src="./images/owncloud_logo.svg" alt="OwnCloud">
+                        <br> Self hosted cloud that can do RSS and much, much more.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a href="http://www.inoreader.com/" class="list-group-item">
+                    <h4 class="list-group-item-heading">InoReader</h4>
+                    <p class="list-group-item-text">
+                        <img width="100" height="100" src="./images/inoreader_logo.svg" alt="InoReader">
+                        <br> Popular alternative to feedly with similar features.
+                    </p>
+                </a>
+            </div>
+
+        </div>
+        <br />
+
+        <h1 class="text-center"><small>Push to Read-it-later</small></h1>
+        <br>
+        <div class="col-xs-12">
+            <div class="col-md-4 list-group">
+                <a href="https://getpocket.com/" class="list-group-item">
+                    <h4 class="list-group-item-heading">Pocket</h4>
+                    <p class="list-group-item-text">
+                        <img width="100" height="100" src="./images/pocket_logo.png" alt="Pocket">
+                        <br> Read articles later or on the go with FeedReader's Pocket integration.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group">
+                <a href="https://www.instapaper.com/" class="list-group-item">
+                    <h4 class="list-group-item-heading">Instapaper</h4>
+                    <p class="list-group-item-text">
+                        <img width="100" height="100" src="./images/instapaper_logo.png" alt="Instapaper">
+                        <br> No time to read the article right now? Just push it to your Instapaper account.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group">
+                <a href="https://www.readability.com/" class="list-group-item">
+                    <h4 class="list-group-item-heading">Readability</h4>
+                    <p class="list-group-item-text">
+                        <img width="100" height="100" src="./images/readability_logo.png" alt="Readability">
+                        <br> Send articles from FeedReader to Readability with a single click.
+                    </p>
+                </a>
+            </div>
+        </div>
+	
+        <h1 class="text-center"><small>What makes FeedReader special?</small></h1>
+        <br>
+        <div class="col-xs-12">
+            <div class="col-md-4 list-group ">
+                <a class="list-group-item">
+                    <h4 class="list-group-item-heading">Desktop notifications</h4>
+                    <p class="list-group-item-text">
+                    	<img width="100" height="100" src="./images/notification_logo.svg" alt="Desktop notifications">
+                    	<br> Always stay up to date. FeedReader will notify you whenever there are new articles for you.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a class="list-group-item">
+                    <h4 class="list-group-item-heading">Handy keyboard shortcuts</h4>
+                    <p class="list-group-item-text">
+                    	<img width="100" height="100" src="./images/shortcut_logo.svg" alt="Keyboard shortcuts">
+                    	<br> Don't like clicking? No problem! FeedReader has keyboard-shortcut's for most of it's actions.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a class="list-group-item">
+                    <h4 class="list-group-item-heading">Fast search and filters</h4>
+                    <p class="list-group-item-text">
+                    	<img width="100" height="100" src="./images/search_logo.svg" alt="Search and filters">
+                    	<br> Remember that one article from last week you can't find anymore? With FeedReader you can.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a class="list-group-item">
+                    <h4 class="list-group-item-heading">Consistent article formating</h4>
+                    <p class="list-group-item-text">
+                    	<img width="100" height="100" src="./images/format_logo.svg" alt="Article formating">
+                    	<br> Read the complete article nicely formated directly inside FeedReader and choose one of 4 themes.
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a class="list-group-item">
+                    <h4 class="list-group-item-heading">Tagging</h4>
+                    <p class="list-group-item-text">
+                    	<img width="100" height="100" src="./images/tag_logo.svg" alt="Tagging">
+                    	<br> Keep track of all your articles. Create tags to categorize and sort articles.
+                    	<br> <small>(Not available with ownCloud News)</small>
+                    </p>
+                </a>
+            </div>
+            <div class="col-md-4 list-group ">
+                <a class="list-group-item">
+                    <h4 class="list-group-item-heading">Customizability</h4>
+                    <p class="list-group-item-text">
+                    	<img width="100" height="100" src="./images/customize_logo.svg" alt="Customizability">
+                    	<br> FeedReader is more flexible than it might first seem. Just open up dconf-editor and start tweaking.
+                    </p>
+                </a>
+            </div>
+        </div>
+        
+        <h2 class="text-center"><small>And much more ...</small></h2>
+    </div>
+
+    <hr>
+
+    <div class="container" id="install" style="padding-top: 60px; margin-top: -60px">
+        <h1 class="text-center">Installation</h1>
+        <br/>
+        <ul class="nav nav-tabs nav-justified">
+            <li role="presentation" class="active"><a data-toggle="tab" href="#ubuntu">Ubuntu / elementary OS</a></li>
+            <li role="presentation"><a data-toggle="tab" href="#arch">Arch Linux</a></li>
+            <li role="presentation"><a data-toggle="tab" href="#solus">Solus OS</a></li>
+            <li role="presentation"><a data-toggle="tab" href="#fedora">Fedora</a></li>
+        </ul>
+        <div class="tab-content">
+            <div id="ubuntu" class="tab-pane fade in active">
+            	<h3><small>Available in the FeedReader <a href="https://code.launchpad.net/~eviltwin1/+archive/ubuntu/feedreader-stable">Stable PPA</a></small></h3>
+                To install FeedReader in Ubuntu 15.04 (or newer) or in elementary OS Freya, paste these three commands into your terminal:
+                <pre>sudo add-apt-repository ppa:eviltwin1/feedreader-stable<br/>sudo apt-get update<br/>sudo apt-get install feedreader</pre> Note that FeedReader requires that you have Gtk 3.12 or newer installed. FeedReader will not work with Ubuntu-based
+                systems that do not satisfy this criteria. To check which version of Gtk is running on your system, open up your terminal and type: <pre>dpkg -l libgtk-3-0</pre>
+            </div>
+            <div id="arch" class="tab-pane fade">
+                <h3><small>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</small></h3> To install the stable version using the command line
+                <pre>yaourt -S feedreader</pre> You can also install the latest source code version using
+                <pre>yaourt -S feedreader-git</pre>
+
+            </div>
+            <div id="solus" class="tab-pane fade">
+                <h3><small>FeedReader is already packaged in the software-center of Solus.</small></h3> To install it using the command line
+                <pre>sudo eopkg install feedreader</pre>
+            </div>
+            <div id="fedora" class="tab-pane fade">
+                <h3><small>Available in the default repository of Fedora 21 and newer.</small></h3> To install it using the command line
+                <pre>sudo dnf install feedreader</pre>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+    <div class="container" id="get-involved" style="padding-top: 60px; margin-top: -60px">
+        <h1 class="text-center">Support & Getting Involved</h1>
+        <div class="col-md-6">
+            <h1 class="text-center"><small>Support</small></h1>
+            <p> &nbsp; </p>
+            <div class="text-center">
+                <i class="fa fa-life-ring fa-5x"></i>
+            </div>
+            <p> &nbsp; </p>
+            <p style="font-size: 125%" class="text-center">
+                Please report bugs over at <a href="https://github.com/jangernert/FeedReader">Github</a>.
+                <br/> You can also support the development of FeedReader over at <a href="https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038">Bountysource</a> and throw in a few bucks at any bug you would like to be fixed or any
+                feature you would like to see implemented.
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h1 class="text-center"><small>Getting Involved</small></h1>
+            <h4>Vala</h4>
+            <ul>
+                <li>You can find the code on Github.</li>
+                <li>Help us fixing bugs or implement your own ideas.</li>
+                <li>Talk to me on G+ before working on bigger changes =)</li>
+            </ul>
+            <h5>CSS</h5>
+            <ul>
+                <li>Improve the theming of FeedReader itself with Gtk-CSS</li>
+                <li>Improve the current article theme with its 3 color variants</li>
+                <li>Create a completely new article theme</li>
+            </ul>
+            <h5>Translation</h5>
+            <ul>
+                <li>Help us translate Feedreader to other languages at <a href="https://www.transifex.com/organizations/feedreader/">Transifex</a> and join Feedreader translators team.</li>
+            </ul>
+            <h5>Grabber Configuration</h5>
+            <ul>
+                <li>Have you encountered a feed that does only contain a small preview of the article? Then help us change that.</li>
+                <li>You only need to know the basics about XPath (its not hard at all)</li>
+                <li>Here is the full documentation of FiveFilters</li>
+                <li>Look at the existing config-files to learn how they work</li>
+                <li>If you find a bug in the existing config-files (most likely the website changed) feel free to fix it</li>
+            </ul>
+
+        </div>
+    </div>
+
+    <p> &nbsp; </p>
+    <hr>
+    <div class="navbar" role="navigation">
+        <div class="text-center">
+            <p>Designed by <a href="https://r3bl.me">Aleksandar Todorović</a> &amp; <a href="https://github.com/bil-elmoussaoui">Bilal Elmoussaoui</a> using the <a href="http://bootswatch.com/readable/">Readable Bootstrap theme</a>. </p>
+        </div>
+    </div>
+
+    <script src="scripts/jquery-1.9.1.min.js"></script>
+    <script src="scripts/jquery-ui.min.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script>
+        $(function() {
+            $('.scroll a').bind('click', function(event) {
+                var $anchor = $(this);
+                if ($($anchor.attr("href")).length) {
+                    var element = $anchor.attr("href");
+                } else {
+                    var element = "body";
+                }
+                $('body,html').stop().animate({
+                    scrollTop: $(element).offset().top
+                }, 600, 'easeInOutExpo');
+                event.preventDefault();
+            });
+        });
+    </script>
 </body>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script src="site.js"></script>
+
 </html>

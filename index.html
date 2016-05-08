@@ -1,13 +1,13 @@
-t
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
+    <title>FeedReader - RSS desktop client</title>
+    <meta name="keywords" content="FeedReader, RSS, desktop, client">
+    <meta name="description" content="FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FeedReader - RSS desktop client</title>
-
     <link rel="stylesheet" href="./styles/bootstrap.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
@@ -37,12 +37,12 @@ t
                     <li class="scroll"><a href="#features">Features</a></li>
                     <li class="scroll"><a href="#install">Installation</a></li>
                     <li class="scroll"><a href="#get-involved">Support & Getting Involved</a></li>
-                    <li><a href="./changelog.html">Changelog &nbsp<i class="fa fa-external-link"></i></a></li>
+                    <li><a href="./changelog.html">Changelog &nbsp; <i class="fa fa-external-link"></i></a></li>
                 </ul>
             </div>
         </div>
     </nav>
-    <p>&nbsp</p>
+    <p> &nbsp; </p>
     <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
         <div class="jumbotron">
             <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
@@ -204,7 +204,6 @@ t
                 </a>
             </div>
         </div>
-
     </div>
 
     <hr>
@@ -217,53 +216,44 @@ t
             <li role="presentation"><a data-toggle="tab" href="#arch">Arch Linux</a></li>
             <li role="presentation"><a data-toggle="tab" href="#solus">Solus OS</a></li>
             <li role="presentation"><a data-toggle="tab" href="#fedora">Fedora</a></li>
-
-            <div class="tab-content">
-                <div id="ubuntu" class="tab-pane fade in active">
-                    <p>To install FeedReader in Ubuntu 15.04 (or newer) or in elementary OS Freya, paste these three commands into your terminal:</p>
-                    <pre>sudo add-apt-repository ppa:eviltwin1/feedreader-stable<br/>sudo apt-get update<br/>sudo apt-get install feedreader</pre>
-                    <p>Note that FeedReader requires that you have Gtk 3.12 or newer installed. FeedReader will not work with Ubuntu-based systems that do not satisfy this criteria. To check which version of Gtk is running on your system, open up your terminal
-                        and type: <pre>dpkg -l libgtk-3-0</pre></p>
-                </div>
-                <div id="arch" class="tab-pane fade">
-                    <h3><small>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</small></h3>
-                    <p>
-                        To install the stable version using the command line
-                        <pre>yaourt -S feedreader</pre> You can also install it from the latest source code version using
-                        <pre>yaourt -S feedreader-git</pre>
-                    </p>
-                </div>
-                <div id="solus" class="tab-pane fade">
-                    <h3><small>FeedReader is already packaged in the software-center of Solus.</small></h3>
-                    <p>
-                        To install it using the command line
-                        <pre>sudo eopkg install feedreader</pre>
-                    </p>
-                </div>
-                <div id="fedora" class="tab-pane fade">
-                    <h3><small>Available in the default repository of Fedora 21 and newer.</small></h3>
-                    <p>
-                        To install it using the command line
-                        <pre>  sudo dnf install feedreader</pre>
-                    </p>
-                </div>
-            </div>
-
         </ul>
-    </div>
-    </div>
+        <div class="tab-content">
+            <div id="ubuntu" class="tab-pane fade in active">
+                    To install FeedReader in Ubuntu 15.04 (or newer) or in elementary OS Freya, paste these three commands into your terminal:
+                    <pre>sudo add-apt-repository ppa:eviltwin1/feedreader-stable<br/>sudo apt-get update<br/>sudo apt-get install feedreader</pre>
+                    Note that FeedReader requires that you have Gtk 3.12 or newer installed. FeedReader will not work with Ubuntu-based systems that do not satisfy this criteria. To check which version of Gtk is running on your system, open up your terminal and type: <pre>dpkg -l libgtk-3-0</pre>
+            </div>
+            <div id="arch" class="tab-pane fade">
+                <h3><small>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</small></h3>
 
+                To install the stable version using the command line
+                <pre>yaourt -S feedreader</pre> You can also install the latest source code version using
+                <pre>yaourt -S feedreader-git</pre>
+
+            </div>
+            <div id="solus" class="tab-pane fade">
+                <h3><small>FeedReader is already packaged in the software-center of Solus.</small></h3>
+                    To install it using the command line
+                    <pre>sudo eopkg install feedreader</pre>
+            </div>
+            <div id="fedora" class="tab-pane fade">
+                <h3><small>Available in the default repository of Fedora 21 and newer.</small></h3>
+                    To install it using the command line
+                    <pre>sudo dnf install feedreader</pre>
+            </div>
+        </div>
+    </div>
     <hr>
 
     <div class="container" id="get-involved" style="padding-top: 60px; margin-top: -60px">
         <h1 class="text-center">Support & Getting Involved</h1>
         <div class="col-md-6">
             <h1 class="text-center"><small>Support</small></h1>
-            <p>&nbsp</p>
+            <p> &nbsp; </p>
             <div class="text-center">
                 <i class="fa fa-life-ring fa-5x"></i>
             </div>
-            <p>&nbsp</p>
+            <p> &nbsp; </p>
             <p style="font-size: 125%" class="text-center">
                 Please report bugs over at <a href="https://github.com/jangernert/FeedReader">Github</a>.
                 <br/> You can also support the development of FeedReader over at <a href="https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038">Bountysource</a> and throw in a few bucks at any bug you would like to be fixed or any
@@ -300,12 +290,11 @@ t
         </div>
     </div>
 
-    <p>&nbsp</p>
+    <p> &nbsp; </p>
     <hr>
     <div class="navbar" role="navigation">
         <div class="text-center">
             <p>Designed by <a href="https://r3bl.me">Aleksandar Todorović</a> using the <a href="http://bootswatch.com/readable/">Readable Bootstrap theme</a>. </p>
-            <p>
         </div>
     </div>
 

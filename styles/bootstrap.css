@@ -5454,6 +5454,9 @@ button.list-group-item-danger.active:focus {
   margin-bottom: 0;
   line-height: 1.3;
 }
+.list-group-item-text img{
+  margin-bottom: 10px;
+}
 .panel {
   margin-bottom: 22px;
   background-color: #ffffff;
@@ -6865,4 +6868,3 @@ legend {
 .modal .close {
   color: #333333;
 }
-

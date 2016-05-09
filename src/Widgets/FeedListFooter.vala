@@ -22,6 +22,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	private Gtk.Button m_removeButton;
 	private FeedListType m_type;
 	private string m_id;
+	private bool m_online = true;
 
 	public FeedListFooter()
 	{
@@ -91,7 +92,8 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	public void setRemoveButtonSensitive(bool sensitive)
 	{
-		m_removeButton.set_sensitive(sensitive);
+		if(m_online)
+			m_removeButton.set_sensitive(sensitive);
 	}
 
 	public void setSelectedRow(FeedListType type, string id)
@@ -102,6 +104,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	public void setActive(bool active)
 	{
+		m_online = active;
 		m_addButton.set_sensitive(active);
 		m_removeButton.set_sensitive(active);
 	}

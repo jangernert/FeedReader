@@ -16,8 +16,9 @@
 public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     public signal void newFeedList(bool defaultSettings = false);
-    public signal void newArticleList();
+    public signal void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE);
     public signal void reloadArticleView();
+    public signal void reloadCSS();
 
     public SettingsDialog(Gtk.Window parent, string show)
     {
@@ -71,6 +72,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         	newFeedList();
         });
 
+        var feedlist_theme = new SettingDropbox(_("Theme"), settings_general, "feedlist-theme", {_("Gtk+"), _("Dark"), _("elementary")});
+        feedlist_theme.changed.connect(() => {
+        	reloadCSS();
+        });
+
         var article_settings = headline(_("Article List:"));
 
         var article_sort = new SettingDropbox(_("Sort articles by"), settings_general, "articlelist-sort-by", {_("Received"), _("Date")});
@@ -102,6 +108,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		uiBox.pack_start(only_feeds, false, true, 0);
 		uiBox.pack_start(only_unread, false, true, 0);
         uiBox.pack_start(feedlist_sort, false, true, 0);
+        uiBox.pack_start(feedlist_theme, false, true, 0);
         uiBox.pack_start(article_settings, false, true, 0);
         uiBox.pack_start(article_sort, false, true, 0);
         uiBox.pack_start(newest_first, false, true, 0);

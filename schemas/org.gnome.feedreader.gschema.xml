@@ -20,7 +20,7 @@
 		<value nick="DEBUG" value="3"/>
 	</enum>
 
-	<enum id="org.gnome.feedreader.theme">
+	<enum id="org.gnome.feedreader.article-theme">
 		<value nick="DEFAULT" value="0"/>
 		<value nick="SPRING" value="1"/>
 		<value nick="MIDNIGHT" value="2"/>
@@ -49,6 +49,12 @@
   	<enum id="org.gnome.feedreader.article-list-sort">
 		<value nick="RECEIVED" value="0"/>
 		<value nick="DATE" value="1"/>
+	</enum>
+	
+	<enum id="org.gnome.feedreader.feedlist-theme">
+		<value nick="GTK" value="0"/>
+		<value nick="DARK" value="1"/>
+		<value nick="ELEMENTARY" value="2"/>
 	</enum>
 
 
@@ -80,8 +86,12 @@
 			<default>'DEBUG'</default>
 		</key>
 
-		<key name='article-theme' enum='org.gnome.feedreader.theme'>
+		<key name='article-theme' enum='org.gnome.feedreader.article-theme'>
 			<default>'DEFAULT'</default>
+		</key>
+		
+		<key name='feedlist-theme' enum='org.gnome.feedreader.feedlist-theme'>
+			<default>'GTK'</default>
 		</key>
 
 		<key name='fontsize' enum='org.gnome.feedreader.fontsize'>

@@ -1,0 +1,118 @@
+@define-color feedlist-bg			#444;
+@define-color feedrow-bg			shade(@feedlist-bg, 1.2);
+@define-color feedlist-slider		shade(@feedlist-bg, 2.5);
+@define-color feedlist-label		shade(@feedlist-bg, 3);
+@define-color feedlist-selected		shade(@feedlist-bg, 1.6);
+
+#fake-example *:selected *:visited { opacity: 1; }
+
+.feedlist-spinner {
+	color: mix(@theme_bg_color, @theme_fg_color, 0.5);
+}
+
+FeedReaderUpdateButton:insensitive * {
+	opacity:1;
+}
+
+GtkListBoxRow {
+	border: none;
+	border-radius: 0px;
+	background-image: none;
+}
+
+GtkEventBox {
+	background: none;
+}
+
+.feed-list-row {
+	text-shadow: none;
+	icon-shadow: none;
+	background: none;
+}
+
+.list-row {
+	padding: 0px;
+	outline: none;
+}
+
+.destructive-action GtkSpinner {
+	color: white;
+}
+
+.transparentBG {
+	background: rgba(0, 0, 0, 0);
+}
+
+.overlay {
+	background: black;
+	color: white;
+	opacity: 0.8;
+	border-radius: 10px;
+}
+
+.bold {
+	font-weight: bold
+}
+
+.h1 {
+	font-weight: bold;
+	font-size: xx-large;
+}
+
+.h2 {
+	font-size: x-large;
+}
+
+.h3 {
+	font-size: large;
+}
+
+.h4 {
+	font-weight: bold
+}
+
+.small {
+	font-size: x-small;
+}
+
+GtkScrolledWindow GtkViewport.servicebox {
+	border: 1px solid alpha (#000, 0.30);
+}
+
+.preview {
+	font-size: small;
+}
+
+
+GtkListBoxRow GtkLabel.headline-read-label,
+GtkListBoxRow GtkLabel.headline-unread-label {
+	font-style: normal;
+	font-size: large;
+}
+
+GtkListBoxRow GtkLabel.headline-read-label {
+	font-weight: normal;
+}
+
+GtkListBoxRow GtkLabel.headline-unread-label {
+	font-weight: bold;
+}
+
+.addServiceButton {
+	border: none;
+	border-radius: 0px;
+	background-image: none;
+}
+
+.headerbar_pane.pane-separator {
+	border-radius: 0;
+	border-width: 0 1px 1px 0;
+}
+
+.header_right {
+	border-top-right-radius: 0;
+}
+
+.header_left {
+	border-top-left-radius: 0;
+}

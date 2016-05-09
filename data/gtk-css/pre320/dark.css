@@ -1,0 +1,73 @@
+.feed-row {
+	background: @feedrow-bg;
+}
+
+.feed-list,
+.feed-list .scrollbar {
+	background: @feedlist-bg;
+}
+
+.feed-list .slider {
+	background: @feedlist-slider;
+}
+
+.feed-list-row:selected,
+.feed-list-row:selected .feed-row {
+	background: @feedlist-selected;
+}
+
+.feed-list-row:prelight {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+.feed-list-row-popover {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+.feed-list-row-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
+.feed-row-popover {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.feed-row-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
+
+.feed-list-row:selected:prelight,
+.feed-list-row:selected:prelight GtkBox.feed-row {
+	background: shade(@feedlist-selected, 1.1);
+}
+
+.feed-list-row:prelight GtkBox.feed-row {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.feed-list GtkLabel{
+	color: @feedlist-label;
+	font-weight: bold;
+}
+
+.feedlist-symbolic {
+	color: @feedlist-label;
+}
+
+.FeedListFooter {
+	background: shade(@feedlist-bg, 0.9);
+}
+
+.FeedListFooter GtkButton:prelight {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+.FeedListFooter GtkButton {
+	box-shadow: none;
+}
+
+.FeedListFooterButtonPopover {
+	background: shade(@feedlist-bg, 1.1);
+}
+

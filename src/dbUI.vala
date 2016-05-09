@@ -930,7 +930,7 @@ public class FeedReader.dbUI : GLib.Object {
 			{
 				tmpcategory = new category(
 					catID, stmt.column_text(1),
-					Utils.categoryGetUnread(catID, feeds),
+					(feeds == null) ? 0 : Utils.categoryGetUnread(catID, feeds),
 					stmt.column_int(3),
 					stmt.column_text(4),
 					stmt.column_int(5)

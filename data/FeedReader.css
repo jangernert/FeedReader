@@ -113,6 +113,9 @@ GtkScrolledWindow GtkViewport.servicebox {
 .FeedListFooterButtonPopover {
     background: shade(@theme_bg_color, 0.9);
 }
+.branding-logo {
+    color: @theme_fg_color;
+}
 .transparentBG {
     background: rgba(0, 0, 0, 0);
 }

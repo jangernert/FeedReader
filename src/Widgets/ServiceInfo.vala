@@ -23,13 +23,13 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
 
     public ServiceInfo()
     {
+        m_logo = new Gtk.Image.from_icon_name("", Gtk.IconSize.DIALOG);
         m_logo = new Gtk.Image.from_file("");
         m_logo.get_style_context().add_class("branding-logo");
         m_label = new Gtk.Label("");
         m_label.margin_start = 10;
         m_label.margin_end = 10;
         m_label.set_ellipsize(Pango.EllipsizeMode.END);
-        m_label.opacity = 0.6;
         m_label.get_style_context().add_class("branding-label");
 
         refresh();
@@ -95,7 +95,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
             }
             else
             {
-                m_logo.set_from_file("/usr/share/icons/hicolor/64x64/places/feed-service-%s-symbolic.svg".printf(service_name));
+                m_logo.set_from_icon_name("feed-service-%s-symbolic".printf(service_name), Gtk.IconSize.INVALID);
                 this.set_tooltip_text(server);
                 m_label.set_label(user_name);
                 m_stack.set_visible_child_name("info");

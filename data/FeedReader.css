@@ -29,7 +29,8 @@ GtkBox.feed-row {
     padding: 0px;
     outline: none;
 }
-.addServiceButton, GtkListBoxRow {
+.addServiceButton,
+GtkListBoxRow {
     border: none;
     border-radius: 0px;
     background-image: none;
@@ -37,13 +38,16 @@ GtkBox.feed-row {
 GtkEventBox {
     background: none;
 }
-.feed-list, .feed-list .scrollbar {
+.feed-list,
+.feed-list .scrollbar {
     background: @theme_bg_color;
 }
 .feed-list .slider {
     background: @theme_bg_color;
 }
-.feed-list-row:selected, .feed-list-row:selected GtkBox.feed-row {
+.feed-list-row:selected,
+.feed-list-row:selected *,
+.feed-list-row:selected GtkBox.feed-row {
     background: @theme_selected_bg_color;
     color: @theme_selected_fg_color;
 }
@@ -51,20 +55,22 @@ GtkEventBox {
     background: shade(@theme_bg_color, 0.9);
 }
 .feed-list-row-popover {
-    background: shade(@theme_bg_color, 1.1);
+    background: shade(@theme_bg_color, 0.9);
 }
 .feed-list-row-selected-popover {
-    background: shade(@theme_selected_bg_color, 1.1);
+    background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }
 .feed-row-popover {
-    background: shade(@theme_bg_color, 1.1);
+    background: shade(@theme_bg_color, 0.9);
 }
 .feed-row-selected-popover {
-    background: shade(@theme_selected_bg_color, 1.1);
+    background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }
-.feed-list-row:selected:prelight, .feed-list-row:selected:prelight GtkBox.feed-row {
+.feed-list-row:selected:prelight,
+.feed-list-row:selected:prelight GtkBox.feed-row,
+.feed-list-row:selected:prelight GtkBox.feed-row * {
     background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }
@@ -77,7 +83,8 @@ GtkEventBox {
 .preview {
     font-size: small;
 }
-GtkListBoxRow GtkLabel.headline-read-label, GtkListBoxRow GtkLabel.headline-unread-label {
+GtkListBoxRow GtkLabel.headline-read-label,
+GtkListBoxRow GtkLabel.headline-unread-label {
     font-style: normal;
     font-size: large;
 }

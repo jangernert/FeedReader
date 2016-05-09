@@ -50,10 +50,10 @@ GtkEventBox {
     background: shade(@theme_bg_color, 0.9);
 }
 .feed-list-row-popover {
-    background: shade(@theme_bg_color, 1.1);
+    background: shade(@theme_bg_color, 0.9);
 }
 .feed-list-row-selected-popover {
-    background: shade(@theme_selected_bg_color, 1.1);
+    background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }
 .feed-row-popover {

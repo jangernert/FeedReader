@@ -98,7 +98,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_unreadStack.set_transition_duration(0);
 		m_unreadStack.add_named(m_unread, "unreadCount");
 		m_unreadStack.add_named(new Gtk.Label(""), "nothing");
-		m_unreadStack.add_named(new Gtk.Image.from_icon_name("feed-mark-read", Gtk.IconSize.LARGE_TOOLBAR), "mark");
+		m_unreadStack.add_named(new Gtk.Image.from_icon_name("feed-mark-read-symbolic", Gtk.IconSize.LARGE_TOOLBAR), "mark");
 
 		m_unreadBox = new Gtk.EventBox();
 		m_unreadBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);

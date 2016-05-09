@@ -51,6 +51,11 @@ box.feed-row {
 	font-weight: bold;
 }
 
+.feedlist-separator {
+	color: shade(@feedlist-bg, 0.82);
+	border: 1px solid;
+}
+
 .FeedListFooter {
 	background: shade(@feedlist-bg, 0.9);
 }

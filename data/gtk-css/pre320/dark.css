@@ -51,6 +51,11 @@
 	font-weight: bold;
 }
 
+.feedlist-separator {
+	color: shade(@feedlist-bg, 0.82);
+	border: 1px solid;
+}
+
 .feedlist-symbolic {
 	color: @feedlist-label;
 }

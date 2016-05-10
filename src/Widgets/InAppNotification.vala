@@ -27,7 +27,7 @@ public class FeedReader.InAppNotification : Gd.Notification {
 
 	public InAppNotification.withIcon(string message, string icon, string? tooltip = null, int timeout = 5)
 	{
-		m_Button = new Gtk.Button.from_icon_name(icon);
+		m_Button = new Gtk.Button.from_icon_name(icon, Gtk.IconSize.BUTTON);
 		setup(message, tooltip);
 	}
 

@@ -22,6 +22,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	private Gtk.Button m_removeButton;
 	private FeedListType m_type;
 	private string m_id;
+	private bool m_online = true;
 
 	public FeedListFooter()
 	{
@@ -31,8 +32,9 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		this.valign = Gtk.Align.END;
 		this.get_style_context().add_class("FeedListFooter");
 
-		m_addButton = new Gtk.Button.from_icon_name("feed-add", Gtk.IconSize.SMALL_TOOLBAR);
+		m_addButton = new Gtk.Button.from_icon_name("feed-add-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_addButton.get_style_context().remove_class("button");
+		m_addButton.get_style_context().add_class("feedlist-symbolic");
 		m_addButton.get_image().opacity = 0.8;
 		m_addButton.clicked.connect(() => {
 			m_addButton.get_style_context().add_class("FeedListFooterButtonPopover");
@@ -51,8 +53,9 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_addStack.add_named(m_addButton, "button");
 		m_addStack.add_named(m_addSpinner, "spinner");
 
-		m_removeButton = new Gtk.Button.from_icon_name("feed-remove", Gtk.IconSize.SMALL_TOOLBAR);
+		m_removeButton = new Gtk.Button.from_icon_name("feed-remove-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_removeButton.get_style_context().remove_class("button");
+		m_removeButton.get_style_context().add_class("feedlist-symbolic");
 		m_removeButton.get_image().opacity = 0.8;
 		m_removeButton.clicked.connect(() => {
 			m_removeButton.get_style_context().add_class("FeedListFooterButtonPopover");
@@ -91,7 +94,8 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	public void setRemoveButtonSensitive(bool sensitive)
 	{
-		m_removeButton.set_sensitive(sensitive);
+		if(m_online)
+			m_removeButton.set_sensitive(sensitive);
 	}
 
 	public void setSelectedRow(FeedListType type, string id)
@@ -102,6 +106,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	public void setActive(bool active)
 	{
+		m_online = active;
 		m_addButton.set_sensitive(active);
 		m_removeButton.set_sensitive(active);
 	}

@@ -12,7 +12,7 @@
    version="1.1"
    width="16"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="feed-remove-feed.svg">
+   sodipodi:docname="feed-add-symbolic.svg">
   <sodipodi:namedview
      pagecolor="#ffffff"
      bordercolor="#666666"
@@ -22,16 +22,16 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="880"
-     inkscape:window-height="480"
+     inkscape:window-width="1920"
+     inkscape:window-height="1145"
      id="namedview18"
      showgrid="false"
      inkscape:zoom="14.75"
-     inkscape:cx="8"
+     inkscape:cx="-8.8474576"
      inkscape:cy="8"
-     inkscape:window-x="378"
-     inkscape:window-y="259"
-     inkscape:window-maximized="0"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
      inkscape:current-layer="svg7384" />
   <metadata
      id="metadata90">
@@ -70,36 +70,33 @@
      id="layer9"
      label="status"
      style="display:inline"
-     transform="translate(-273.0006,-68)" />
+     transform="translate(-293.0006,-68)" />
   <g
      id="layer10"
      style="display:inline"
-     transform="translate(-273.0006,-68)" />
+     transform="translate(-293.0006,-68)" />
   <g
      id="layer13"
      style="display:inline"
-     transform="translate(-273.0006,-68)" />
+     transform="translate(-293.0006,-68)" />
   <g
      id="layer14"
-     transform="translate(-273.0006,-68)" />
+     transform="translate(-293.0006,-68)" />
   <g
      id="layer15"
      style="display:inline"
-     transform="translate(-273.0006,-68)" />
+     transform="translate(-293.0006,-68)" />
   <g
      id="g71291"
      style="display:inline"
-     transform="translate(-273.0006,-68)" />
+     transform="translate(-293.0006,-68)" />
   <g
      id="layer12"
-     style="display:inline;fill:#ffffff;fill-opacity:1"
-     transform="translate(-273.0006,-68)">
-    <rect
-       height="2.0002136"
-       id="rect31984"
-       style="color:#bebebe;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible"
-       width="9.9996014"
-       x="276.00079"
-       y="74.999786" />
+     style="display:inline;fill:#bebebe;fill-opacity:1"
+     transform="translate(-293.0006,-68)">
+    <path
+       d="m 300.0006,71 0,4 -4,0 0,2 4,0 0,4 2,0 0,-4 4,0 0,-2 -4,0 0,-4 -2,0 z"
+       id="rect31992"
+       style="color:#bebebe;fill:#bebebe;fill-opacity:1;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible" />
   </g>
 </svg>

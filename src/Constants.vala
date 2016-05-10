@@ -235,6 +235,12 @@ namespace FeedReader {
 		PARCHMENT
 	}
 
+	public enum FeedListTheme {
+		GTK,
+		DARK,
+		ELEMENTARY
+	}
+
 	public enum FontSize {
 		SMALL,
 		NORMAL,

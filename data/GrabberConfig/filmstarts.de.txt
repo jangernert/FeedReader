@@ -1,0 +1,13 @@
+title: //div[@class='title large']
+author: //meta[@name='author']/@content
+
+body: //div[@id="col_main"]
+
+strip: //div[contains(@class, "samekind")]
+strip: //div[contains(@class, "shareThis")]
+strip: //div[@class="jtp"]
+strip: //div[@id="showdisqus"]
+strip: //div[@class="disqus_toggle"]
+strip: //div[@class="lighten margin_20b"]
+
+test_url: http://www.filmstarts.de/nachrichten/18503731.html

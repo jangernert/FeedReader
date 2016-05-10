@@ -1,0 +1,79 @@
+box.feed-row {
+	background: @feedrow-bg;
+}
+
+.feed-list,
+.feed-list .scrollbar {
+	background: @feedlist-bg;
+}
+
+.feed-list .slider {
+	background: @feedlist-slider;
+}
+
+.feed-list-row:selected,
+.feed-list-row:selected box.feed-row {
+	background: @feedlist-selected;
+}
+
+.feed-list-row:hover {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+.feed-list-row-popover {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+.feed-list-row-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
+.feed-row-popover {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.feed-row-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
+
+.feed-list-row:selected:hover,
+.feed-list-row:selected:hover box.feed-row {
+	background: shade(@feedlist-selected, 1.1);
+}
+
+.feed-list-row:hover box.feed-row {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.feed-list label{
+	color: @feedlist-label;
+	font-weight: bold;
+}
+
+.feedlist-separator {
+	color: shade(@feedlist-bg, 0.82);
+	border: 1px solid;
+}
+
+.FeedListFooter {
+	background: shade(@feedlist-bg, 0.9);
+}
+
+.FeedListFooter button {
+	background:none;
+	border: none;
+	border-bottom-left-radius: 0;
+	border-top-left-radius: 0;
+	border-bottom-right-radius: 0;
+	border-top-right-radius: 0;
+}
+
+.FeedListFooter button:hover {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+
+.FeedListFooterButtonPopover {
+	background: shade(@feedlist-bg, 1.1);
+}

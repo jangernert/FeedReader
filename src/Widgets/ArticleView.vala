@@ -13,6 +13,13 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+[DBus (name = "org.gnome.feedreader.FeedReaderArticleView")]
+interface FeedReaderWebExtension : Object
+{
+	public abstract void recalculate() throws IOError;
+    public signal void onClick(string path, int width, int height, string url);
+}
+
 public class FeedReader.articleView : Gtk.Stack {
 
 	private Gtk.Overlay m_overlay;
@@ -33,6 +40,10 @@ public class FeedReader.articleView : Gtk.Stack {
 	private string m_imageURL;
 	private uint m_timeout_source_id;
 	private uint m_overlayFade = 200;
+	private FeedReaderWebExtension m_messenger = null;
+	private bool m_connected = false;
+	private int m_height = 0;
+	private int m_width = 0;
 	public signal void enterFullscreen();
 	public signal void leaveFullscreen();
 
@@ -64,37 +75,16 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.button_press_event.connect(onClick);
 		m_view.button_release_event.connect(onRelease);
 		m_view.motion_notify_event.connect(onMouseMotion);
-		m_view.notify["title"].connect(() => {
-			if(m_view.title.has_prefix("path:"))
-			{
-				int pathEnd = m_view.title.index_of_char(' ');
-				string path = GLib.Uri.unescape_string(m_view.title.substring(5, pathEnd-5));
-				string prefix = "file://";
-				if(path.has_prefix(prefix))
-					path = path.substring(prefix.length);
-				logger.print(LogMessage.DEBUG, "path: " + path);
-
-				int sizeXStart = m_view.title.index_of_char(':', pathEnd) + 1;
-				int sizeXEnd = m_view.title.index_of_char(' ', sizeXStart);
-				double sizeX = double.parse(m_view.title.substring(sizeXStart, sizeXEnd-sizeXStart));
-
-				int sizeYStart = m_view.title.index_of_char(':', sizeXEnd) + 1;
-				int sizeYEnd = m_view.title.index_of_char(' ', sizeYStart);
-				double sizeY = double.parse(m_view.title.substring(sizeYStart, sizeYEnd-sizeYStart));
-
-				logger.print(LogMessage.DEBUG, "sizeX: %f sizeY: %f".printf(sizeX, sizeY));
-				m_view.run_javascript.begin("document.title = \"\";", null, (obj, res) => {
-					m_view.run_javascript.end(res);
-				});
-
-				var window = this.get_toplevel() as readerUI;
-				var popup = new imagePopup(path, null, window, sizeY, sizeX);
-			}
-
+		m_view.enter_fullscreen.connect(() => {
+			m_connected = false;
+			enterFullscreen();
+			return false;
 		});
-
-		m_view.enter_fullscreen.connect(() => { enterFullscreen(); return false;});
-		m_view.leave_fullscreen.connect(() => { leaveFullscreen(); return false;});
+		m_view.leave_fullscreen.connect(() => {
+			m_connected = true;
+			leaveFullscreen();
+			return false;
+		});
 		m_search = m_view.get_find_controller();
 
 		WebKit.WebContext.get_default().set_cache_model(WebKit.CacheModel.DOCUMENT_BROWSER);
@@ -121,7 +111,59 @@ public class FeedReader.articleView : Gtk.Stack {
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(100);
 		this.set_size_request(450, 0);
+
+		this.size_allocate.connect((allocation) => {
+			if(allocation.width != m_width
+			|| allocation.height != m_height)
+			{
+				m_width = allocation.width;
+				m_height = allocation.height;
+				logger.print(LogMessage.DEBUG, "ArticleView: size changed");
+				recalculate();
+			}
+        });
+
+		Bus.watch_name(BusType.SESSION, "org.gnome.feedreader.FeedReaderArticleView", GLib.BusNameWatcherFlags.NONE,
+		(connection, name, owner) => { on_extension_appeared(connection, name, owner); }, null);
 	}
+
+	private void on_extension_appeared(GLib.DBusConnection connection, string name, string owner)
+    {
+    	try
+    	{
+			m_connected = true;
+			m_messenger = connection.get_proxy_sync("org.gnome.feedreader.FeedReaderArticleView", "/org/gnome/feedreader/FeedReaderArticleView", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
+			m_messenger.onClick.connect((path, width, height, url) => {
+				var window = this.get_toplevel() as readerUI;
+				var popup = new imagePopup(path, url, window, height, width);
+			});
+			recalculate();
+		}
+		catch(GLib.IOError e)
+		{
+			logger.print(LogMessage.ERROR, e.message);
+		}
+    }
+
+	private async void recalculate()
+    {
+		SourceFunc callback = recalculate.callback;
+		ThreadFunc<void*> run = () => {
+			try
+	    	{
+	    		if(m_connected && this.get_visible_child_name() != "empty")
+	    			m_messenger.recalculate();
+	    	}
+	    	catch(GLib.IOError e)
+	    	{
+	    		warning(e.message);
+	    	}
+			Idle.add((owned) callback);
+			return null;
+		};
+		new GLib.Thread<void*>("recalculate", run);
+		yield;
+    }
 
 	private bool onClick(Gdk.EventButton event)
 	{
@@ -306,6 +348,7 @@ public class FeedReader.articleView : Gtk.Stack {
 					m_view.grab_focus();
 					m_firstTime = false;
 				}
+				recalculate();
 				break;
 		}
 	}

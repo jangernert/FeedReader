@@ -1,13 +1,12 @@
 project (FeedReader)
 cmake_minimum_required (VERSION 2.6)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
-include_directories(${CMAKE_SOURCE_DIR}/staticLibs)
+include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)
+include_directories(${CMAKE_SOURCE_DIR})
 
 
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 option(WITH_DEBUG "Compile daemon binary with debugging symbols" OFF)
-option(WITH_LIBUNITY "Adds a Badge with the count of the unread articles to the dockitem" ON)
-option(USE_WEBKIT_4 "Compile with Webkit2Gtk 4.0 instead of 3.0" OFF)
 
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
@@ -16,11 +15,19 @@ set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
 set (EXEC_NAME "feedreader")
 set (DAEMON_NAME ${EXEC_NAME}-daemon)
 set (DEBUG_NAME ${EXEC_NAME}-debug)
-set (RELEASE_NAME "RSS Client")
-set (VERSION "1.2.1")
-set (VERSION_INFO "whats up world")
+set (WEBEXTENSION_NAME webextension)
+set (RELEASE_NAME "FeedReader")
+set (VERSION "1.6")
 
 find_package(PkgConfig)
+find_package(Vala REQUIRED)
+include(ValaVersion)
+include(ValaPrecompile)
+ensure_vala_version("0.26" MINIMUM)
+
+pkg_check_modules(WEBKITGTK4 QUIET webkit2gtk-4.0)
+pkg_check_modules(LIBUNITY QUIET unity)
+
 add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
 add_subdirectory (schemas)
@@ -33,15 +40,18 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.vala.in" "${CMAKE_SOURCE_DIR
 
 set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
 
-if(WITH_LIBUNITY)
+if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)
-endif(WITH_LIBUNITY)
+	message(STATUS "libunity: ON")
+endif(LIBUNITY_FOUND)
 
-if(USE_WEBKIT_4)
+if(WEBKITGTK4_FOUND)
 	list(APPEND MODULES webkit2gtk-4.0)
-else(USE_WEBKIT_4)
+	message(STATUS "webkit2gtk-4.0: ON")
+else(WEBKITGTK4_FOUND)
 	list(APPEND MODULES webkit2gtk-3.0)
-endif(USE_WEBKIT_4)
+	message(STATUS "webkit2gtk-3.0: ON")
+endif(WEBKITGTK4_FOUND)
 
 pkg_check_modules(DEPS REQUIRED ${MODULES})
 
@@ -49,10 +59,9 @@ add_definitions(${DEPS_CFLAGS})
 link_libraries(${DEPS_LIBRARIES} -lm)
 link_directories(${DEPS_LIBRARY_DIRS})
 
-find_package(Vala REQUIRED)
-include(ValaVersion)
-
-ensure_vala_version("0.24" MINIMUM)
+add_subdirectory (WebExtension)
+add_subdirectory (libgtkimageview)
+add_subdirectory (libgd)
 
 set(UI_OPTIONS
     --target-glib=2.32)
@@ -68,14 +77,13 @@ set(UI_PACKAGES
     libnotify
     rest-0.7)
 
-if(USE_WEBKIT_4)
+if(WEBKITGTK4_FOUND)
 	list(APPEND UI_PACKAGES WebKit2-4.0)
 	list(APPEND UI_OPTIONS --define USE_WEBKIT_4)
-else(USE_WEBKIT_4)
+else(WEBKITGTK4_FOUND)
 	list(APPEND UI_PACKAGES WebKit2-3.0)
-endif(USE_WEBKIT_4)
+endif(WEBKITGTK4_FOUND)
 
-include(ValaPrecompile)
 vala_precompile(UI ${EXEC_NAME}
     GitSHA1.vala
     src/DBusConnection.vala
@@ -136,7 +144,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/Share/InstapaperAPI.vala
     src/Share/share.vala
 
-# tell what libraries to use when compiling
 PACKAGES
     ${UI_PACKAGES}
 
@@ -151,8 +158,8 @@ CUSTOM_VAPIS
 
 add_executable(${EXEC_NAME} ${UI})
 target_link_libraries(${EXEC_NAME} vilistextum)
-target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgtkimageview.a)
-target_link_libraries(${EXEC_NAME} ${CMAKE_SOURCE_DIR}/staticLibs/libgd.a)
+target_link_libraries(${EXEC_NAME} gtkimageview)
+target_link_libraries(${EXEC_NAME} gd)
 
 
 set(DAEMON_OPTIONS
@@ -169,10 +176,10 @@ set(DAEMON_PACKAGES
     libxml-2.0
     rest-0.7)
 
-if(WITH_LIBUNITY)
+if(LIBUNITY_FOUND)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
 	list(APPEND DAEMON_PACKAGES unity)
-endif(WITH_LIBUNITY)
+endif(LIBUNITY_FOUND)
 
 if(WITH_DEBUG)
 	list(APPEND DAEMON_OPTIONS -g)
@@ -227,19 +234,6 @@ CUSTOM_VAPIS
 add_executable(${DAEMON_NAME} ${daemon})
 target_link_libraries(${DAEMON_NAME} vilistextum)
 
-
-set(DEBUG_OPTIONS
-    --target-glib=2.32)
-set(DEBUG_PACKAGES
-    glib-2.0>=2.32
-    gtk+-3.0
-    gio-2.0
-    sqlite3
-    gee-0.8
-    libsoup-2.4
-    json-glib-1.0
-    libxml-2.0)
-
 vala_precompile(debug ${DEBUG_NAME}
     src/dbUI.vala
     src/dbDaemon.vala
@@ -263,10 +257,17 @@ vala_precompile(debug ${DEBUG_NAME}
 
 
 PACKAGES
-    ${DEBUG_PACKAGES}
+    glib-2.0>=2.32
+    gtk+-3.0
+    gio-2.0
+    sqlite3
+    gee-0.8
+    libsoup-2.4
+    json-glib-1.0
+    libxml-2.0
 
 OPTIONS
-    ${DEBUG_OPTIONS}
+    --target-glib=2.32
 
 CUSTOM_VAPIS
     vapi/libvilistextum.vapi
@@ -274,7 +275,7 @@ CUSTOM_VAPIS
 
 add_executable(${DEBUG_NAME} ${debug})
 target_link_libraries(${DEBUG_NAME} vilistextum)
-#target_compile_definitions(${DEBUG_NAME} PRIVATE DAEMONCODE=1)
+
 
 # uninstall target
 configure_file(
@@ -288,12 +289,12 @@ add_custom_target(uninstall
 install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DEBUG_NAME} RUNTIME DESTINATION bin)
+install (FILES ${PROJECT_BINARY_DIR}/WebExtension/libwebextension.so DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION ${DATADIR}/dbus-1/services/)
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION /usr/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache /usr/share/icons/hicolor)")
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader.css DESTINATION ${PKGDATADIR})
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/FeedReader320.css DESTINATION ${PKGDATADIR})
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})

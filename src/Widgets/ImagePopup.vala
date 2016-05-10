@@ -164,7 +164,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		});
 		headerEvents.add(header);
 
-		if(url != null)
+		if(url != null && url != "")
 		{
 			var urlButton = new Gtk.Button.with_label("Open URL");
 			urlButton.set_tooltip_text(url);

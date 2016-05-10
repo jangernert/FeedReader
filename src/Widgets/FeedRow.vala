@@ -66,7 +66,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadStack.set_transition_duration(0);
 			m_unreadStack.add_named(m_unread, "unreadCount");
 			m_unreadStack.add_named(new Gtk.Label(""), "nothing");
-			m_unreadStack.add_named(new Gtk.Image.from_icon_name("feed-mark-read", Gtk.IconSize.LARGE_TOOLBAR), "mark");
+			var markIcon = new Gtk.Image.from_icon_name("feed-mark-read-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+			markIcon.get_style_context().add_class("feedlist-symbolic");
+			m_unreadStack.add_named(markIcon, "mark");
 
 			m_unreadBox = new Gtk.EventBox();
 			m_unreadBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
@@ -153,7 +155,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e){}
 
-		return new Gtk.Image.from_icon_name("feed-rss", Gtk.IconSize.LARGE_TOOLBAR);
+		var defaultIcon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		defaultIcon.get_style_context().add_class("feedlist-symbolic");
+		return defaultIcon;
 	}
 
 	private Gtk.Window getFeedIconWindow()

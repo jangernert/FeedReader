@@ -27,6 +27,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private ContentPage m_content;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
+	Gtk.CssProvider m_cssProvider;
 
 	public readerUI(rssReaderApp app)
 	{
@@ -164,17 +165,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void showSettings(string panel)
 	{
 		var settings = new SettingsDialog(this, panel);
-		settings.newFeedList.connect((defaultSettings) => {
-			m_content.newFeedList(defaultSettings);
-		});
 
-		settings.newArticleList.connect(() => {
-			m_content.newHeadlineList();
-		});
-
-		settings.reloadArticleView.connect(() => {
-			m_content.reloadArticleView();
-		});
+		settings.newFeedList.connect(m_content.newFeedList);
+		settings.newArticleList.connect(m_content.newHeadlineList);
+		settings.reloadArticleView.connect(m_content.reloadArticleView);
+		settings.reloadCSS.connect(reloadCSS);
 	}
 
 	public void setRefreshButton(bool refreshing)
@@ -311,21 +306,74 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		getInterfaceState().write();
 	}
 
+	private void reloadCSS()
+	{
+		logger.print(LogMessage.DEBUG, "MainWindow: reloadCSS");
+		string path = "/usr/share/FeedReader/gtk-css/";
+		removeProvider(m_cssProvider);
+		setupCSS();
+	}
+
 	private void setupCSS()
 	{
-		try {
-    		Gtk.CssProvider provider = new Gtk.CssProvider ();
+		logger.print(LogMessage.DEBUG, "MainWindow: setupCSS");
+		string path = "/usr/share/FeedReader/gtk-css/";
 
-			// lets asume we're on Gtk+ 3.XX
-			if(Gtk.get_minor_version() <= 18)
-    			provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader.css"));
-			else
-				provider.load_from_file(GLib.File.new_for_path("/usr/share/FeedReader/FeedReader320.css"));
+		// lets asume we're on Gtk+ 3.XX
+		if(Gtk.get_minor_version() <= 18)
+			path += "pre320/";
+		else
+			path += "post320/";
 
-			weak Gdk.Display display = Gdk.Display.get_default ();
-            weak Gdk.Screen screen = display.get_default_screen ();
-			Gtk.StyleContext.add_provider_for_screen (screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-		} catch (Error e) {
+		addProvider(path + "basics.css");
+
+		FeedListTheme theme = (FeedListTheme)settings_general.get_enum("feedlist-theme");
+
+		switch(theme)
+		{
+			case FeedListTheme.GTK:
+				m_cssProvider = addProvider(path + "gtk.css");
+				break;
+
+			case FeedListTheme.DARK:
+				m_cssProvider = addProvider(path + "dark.css");
+				break;
+
+			case FeedListTheme.ELEMENTARY:
+				m_cssProvider = addProvider(path + "elementary.css");
+				break;
+		}
+	}
+
+	private Gtk.CssProvider? addProvider(string path)
+	{
+		try
+		{
+    		Gtk.CssProvider provider = new Gtk.CssProvider();
+			provider.load_from_path(path);
+			weak Gdk.Display display = Gdk.Display.get_default();
+            weak Gdk.Screen screen = display.get_default_screen();
+			Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+			return provider;
+		}
+		catch (Error e)
+		{
+			logger.print(LogMessage.WARNING, e.message);
+		}
+
+		return null;
+	}
+
+	private void removeProvider(Gtk.CssProvider provider)
+	{
+		try
+		{
+			weak Gdk.Display display = Gdk.Display.get_default();
+            weak Gdk.Screen screen = display.get_default_screen();
+			Gtk.StyleContext.remove_provider_for_screen(screen, provider);
+		}
+		catch (Error e)
+		{
 			logger.print(LogMessage.WARNING, e.message);
 		}
 	}

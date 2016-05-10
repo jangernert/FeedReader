@@ -79,11 +79,20 @@ public class FeedReader.UiUtils : GLib.Object {
 		return articles.size;
 	}
 
-	public static bool canManipulateContent()
+	public static bool canManipulateContent(bool? online = null)
 	{
 		// if backend = local RSS -> return true;
 
-		// otherwise only when online
+		// when we already know wheather feedreader is online or offline
+		if(online != null)
+		{
+			if(online)
+				return true;
+			else
+				return false;
+		}
+
+		// otherwise check if online
 		return feedDaemon_interface.isOnline();
 	}
 }

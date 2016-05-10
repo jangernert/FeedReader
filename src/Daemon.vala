@@ -154,6 +154,7 @@ namespace FeedReader {
 				login((Backend)settings_general.get_enum("account-type"));
 			}
 
+			setOnline();
 			return true;
 		}
 

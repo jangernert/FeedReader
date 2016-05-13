@@ -25,7 +25,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
     {
         m_logo = new Gtk.Image.from_icon_name("", Gtk.IconSize.DIALOG);
         m_logo = new Gtk.Image.from_file("");
-        m_logo.get_style_context().add_class("feedlist-symbolic");
+        m_logo.get_style_context().add_class("sidebar-symbolic");
         m_label = new Gtk.Label("");
         m_label.margin_start = 10;
         m_label.margin_end = 10;

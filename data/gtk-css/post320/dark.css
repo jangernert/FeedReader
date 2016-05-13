@@ -41,12 +41,12 @@
 	background: shade(@feedrow-bg, 1.1);
 }
 
-.feedlist-separator {
+.sidebar-separator {
 	color: shade(@feedlist-bg, 0.82);
 	border: 1px solid;
 }
 
-.feedlist-symbolic {
+.sidebar-symbolic {
 	color: @feedlist-label;
 }
 

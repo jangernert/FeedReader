@@ -227,7 +227,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator1.get_style_context().add_class("feedlist-separator");
+		separator1.get_style_context().add_class("sidebar-separator");
 		separator1.margin_top = 8;
 		row_separator1.add(separator1);
 		row_separator1.sensitive = false;
@@ -243,7 +243,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		var row_separator = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator.get_style_context().add_class("feedlist-separator");
+		separator.get_style_context().add_class("sidebar-separator");
 		separator.margin_bottom = 8;
 		row_separator.add(separator);
 		row_separator.sensitive = false;

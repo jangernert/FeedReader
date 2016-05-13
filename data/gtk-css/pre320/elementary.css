@@ -1,9 +1,14 @@
+.sidebar-symbolic {
+	color: alpha(#333, 0.7);
+}
+
+.sidebar-separator {
+	color: alpha(#333, 0.2);
+}
+
 .sidebar {
     background-color: shade (#DEDEDE, 0.92);
     color: mix (#DEDEDE, #333, 0.60);
-    -gtk-icon-style: regular;
-    -GtkTreeView-horizontal-separator: 1px;
-    -GtkTreeView-vertical-separator: 6px;
 }
 
 .sidebar-row,
@@ -98,7 +103,5 @@
 .footer GtkButton {
 	box-shadow: none;
 }
-
-
 
 

@@ -39,16 +39,16 @@
 /* sidebar footer */
 /******************/
 
-.footer GtkButton:prelight {
-	background: shade(@theme_bg_color, 0.9);
-	color: @theme_fg_color;
-}
-
 .footer GtkButton {
 	box-shadow: none;
 }
 
 .footer GtkButton GtkLabel {
+	color: @theme_fg_color;
+}
+
+.footer GtkButton:prelight {
+	background: shade(@theme_bg_color, 0.9);
 	color: @theme_fg_color;
 }
 

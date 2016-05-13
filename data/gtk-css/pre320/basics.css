@@ -1,9 +1,3 @@
-@define-color feedlist-bg			#444;
-@define-color feedrow-bg			shade(@feedlist-bg, 1.2);
-@define-color feedlist-slider		shade(@feedlist-bg, 2.5);
-@define-color feedlist-label		shade(@feedlist-bg, 3);
-@define-color feedlist-selected		shade(@feedlist-bg, 1.6);
-
 #fake-example *:selected *:visited { opacity: 1; }
 
 .feedlist-spinner {

@@ -63,7 +63,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 			removePop.closed.connect(() => {
 				m_removeButton.get_style_context().remove_class("footer-popover");
 			});
-			m_removeButton.show();
+			removePop.show();
 		});
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);

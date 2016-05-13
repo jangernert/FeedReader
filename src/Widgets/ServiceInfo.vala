@@ -25,13 +25,11 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
     {
         m_logo = new Gtk.Image.from_icon_name("", Gtk.IconSize.DIALOG);
         m_logo = new Gtk.Image.from_file("");
-        m_logo.get_style_context().add_class("branding-logo");
         m_logo.get_style_context().add_class("feedlist-symbolic");
         m_label = new Gtk.Label("");
         m_label.margin_start = 10;
         m_label.margin_end = 10;
         m_label.set_ellipsize(Pango.EllipsizeMode.END);
-        m_label.get_style_context().add_class("branding-label");
 
         refresh();
 
@@ -47,6 +45,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         m_stack = new Gtk.Stack();
         m_stack.add_named(m_box, "info");
         m_stack.add_named(m_spinner, "spinner");
+        m_stack.get_style_context().add_class("sidebar");
         this.add(m_stack);
 
         m_offline = new Gtk.Label("OFFLINE");

@@ -33,7 +33,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	public TagRow (string name, string tagID, int color)
 	{
-		this.get_style_context().add_class("feed-list-row");
+		this.get_style_context().add_class("sidebar-row");
 		m_exits = true;
 		m_color = color;
 		m_name = name.replace("&","&amp;");
@@ -205,17 +205,17 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private void closePopoverStyle()
 	{
 		if(this.is_selected())
-			this.get_style_context().remove_class("feed-list-row-selected-popover");
+			this.get_style_context().remove_class("sidebar-row-selected-popover");
 		else
-			this.get_style_context().remove_class("feed-list-row-popover");
+			this.get_style_context().remove_class("sidebar-row-popover");
 	}
 
 	private void showPopoverStyle()
 	{
 		if(this.is_selected())
-			this.get_style_context().add_class("feed-list-row-selected-popover");
+			this.get_style_context().add_class("sidebar-row-selected-popover");
 		else
-			this.get_style_context().add_class("feed-list-row-popover");
+			this.get_style_context().add_class("sidebar-row-popover");
 	}
 
 	public void update(string name)

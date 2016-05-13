@@ -35,7 +35,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
-		this.get_style_context().add_class("feed-list-row");
+		this.get_style_context().add_class("sidebar-row");
 		m_level = level;
 		m_catID = catID;
 		m_subscribed = true;
@@ -59,7 +59,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unread = new Gtk.Label(null);
 			m_unread.set_size_request (0, rowhight);
 			m_unread.set_alignment(0.8f, 0.5f);
-			m_unread.get_style_context().add_class("unread-count");
 
 			m_unreadStack = new Gtk.Stack();
 			m_unreadStack.set_transition_type(Gtk.StackTransitionType.NONE);
@@ -82,7 +81,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 			{
-				m_box.get_style_context().add_class("feed-row");
+				m_box.get_style_context().add_class("sidebar-feed");
 			}
 
 			m_box.pack_start(m_icon, false, false, 8);
@@ -259,25 +258,25 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	{
 		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 		{
-			m_box.get_style_context().remove_class("feed-row");
+			m_box.get_style_context().remove_class("sidebar-feed");
 		}
 
 		if(this.is_selected())
-			m_box.get_style_context().add_class("feed-row-selected-popover");
+			m_box.get_style_context().add_class("sidebar-feed-selected-popover");
 		else
-			m_box.get_style_context().add_class("feed-row-popover");
+			m_box.get_style_context().add_class("sidebar-feed-popover");
 	}
 
 	private void closePopoverStyle()
 	{
 		if(this.is_selected())
-			m_box.get_style_context().remove_class("feed-row-selected-popover");
+			m_box.get_style_context().remove_class("sidebar-feed-selected-popover");
 		else
-			m_box.get_style_context().remove_class("feed-row-popover");
+			m_box.get_style_context().remove_class("sidebar-feed-popover");
 
 		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 		{
-			m_box.get_style_context().add_class("feed-row");
+			m_box.get_style_context().add_class("sidebar-feed");
 		}
 	}
 

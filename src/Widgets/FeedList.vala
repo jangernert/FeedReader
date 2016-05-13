@@ -37,7 +37,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_spinner = new Gtk.Spinner();
 		m_list = new Gtk.ListBox();
 		m_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
-		m_list.get_style_context().add_class("feed-list");
+		m_list.get_style_context().add_class("sidebar");
 		m_branding = new ServiceInfo();
 		var feedlist_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		feedlist_box.pack_start(m_branding, false, false, 0);
@@ -49,7 +49,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_scroll_adjustment = m_scroll.get_vadjustment();
 
 
-		this.get_style_context().add_class("feed-list");
+		//this.get_style_context().add_class("feed-list");
 
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(50);

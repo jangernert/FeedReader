@@ -1,9 +1,3 @@
-@define-color feedlist-bg			#444;
-@define-color feedrow-bg			shade(@feedlist-bg, 1.2);
-@define-color feedlist-slider		shade(@feedlist-bg, 2.5);
-@define-color feedlist-label		shade(@feedlist-bg, 3);
-@define-color feedlist-selected		shade(@feedlist-bg, 1.6);
-
 #fake-example *:selected *:visited { opacity: 1; }
 
 .feedlist-spinner {
@@ -15,12 +9,6 @@ FeedReaderUpdateButton:disabled * {
 }
 
 GtkEventBox {
-	background: none;
-}
-
-.feed-list-row {
-	text-shadow: none;
-	-gtk-icon-shadow: none;
 	background: none;
 }
 
@@ -37,39 +25,8 @@ row {
 	color: white;
 }
 
-.headerbar_pane.pane-separator {
-	border-radius: 0;
-	border-width: 0 1px 1px 0;
-}
-
-.header_right {
-	border-top-right-radius: 0;
-}
-
-.header_left {
-	border-top-left-radius: 0;
-}
-
-.preview {
-    font-size: small;
-}
-
-row label.headline-read-label,
-row label.headline-unread-label {
-    font-style: normal;
-    font-size: large;
-}
-
-row label.headline-read-label {
-    font-weight: normal;
-}
-
-row label.headline-unread-label {
-    font-weight: bold;
-}
-
-scrolledwindow viewport.servicebox {
-    border: 1px solid alpha (#000, 0.30);
+.FeedListFooter button {
+	box-shadow: none;
 }
 
 .transparentBG {
@@ -82,6 +39,21 @@ scrolledwindow viewport.servicebox {
     opacity: 0.8;
     border-radius: 10px;
 }
+
+.servicebox {
+    border: 1px solid alpha (#000, 0.30);
+}
+
+.sidebar-row {
+	text-shadow: none;
+	-gtk-icon-shadow: none;
+	background: none;
+}
+
+/***************/
+/* text styles */
+/***************/
+
 
 .bold {
     font-weight: bold
@@ -107,7 +79,38 @@ scrolledwindow viewport.servicebox {
     font-size: x-small;
 }
 
+.preview {
+    font-size: small;
+}
 
-.FeedListFooter button {
-	box-shadow: none;
+.headline-read,
+.headline-unread {
+    font-style: normal;
+    font-size: large;
+}
+
+.headline-read {
+    font-weight: normal;
+}
+
+.headline-unread {
+    font-weight: bold;
+}
+
+
+/*******************/
+/* split headerbar */
+/*******************/
+
+.headerbar_pane.pane-separator {
+	border-radius: 0;
+	border-width: 0 1px 1px 0;
+}
+
+.header_right {
+	border-top-right-radius: 0;
+}
+
+.header_left {
+	border-top-left-radius: 0;
 }

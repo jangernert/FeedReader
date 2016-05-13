@@ -42,19 +42,19 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		empty_label.set_alignment(0, 0.5f);
 		m_stack.add_named(empty_label, "empty");
 
-        m_list = new Gtk.ListBox();
+		m_list = new Gtk.ListBox();
 		m_list.margin = 2;
 		m_list.set_size_request(150, 0);
-        m_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		m_list.set_selection_mode(Gtk.SelectionMode.NONE);
+		m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_box.margin = 10;
 
-	    var tag_label = new Gtk.Label(_("Tags:"));
+		var tag_label = new Gtk.Label(_("Tags:"));
 		tag_label.get_style_context().add_class("h4");
 		tag_label.set_alignment(0, 0.5f);
 		var m_viewport = new Gtk.Viewport(null, null);
-	    m_viewport.get_style_context().add_class("servicebox");
-	    m_viewport.add(m_list);
+		m_viewport.get_style_context().add_class("servicebox");
+		m_viewport.add(m_list);
 		m_viewport.margin_bottom = 10;
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		box.pack_start(tag_label);
@@ -72,7 +72,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		this.add(m_box);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
-        this.show_all();
+		this.show_all();
 
 		if(m_tags.size == 0)
 			m_stack.set_visible_child_name("empty");

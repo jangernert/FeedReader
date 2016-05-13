@@ -14,17 +14,18 @@ FeedReaderUpdateButton:insensitive * {
 	opacity:1;
 }
 
-GtkListBoxRow {
+GtkEventBox {
+	background: none;
+}
+
+GtkListBoxRow,
+.addServiceButton {
 	border: none;
 	border-radius: 0px;
 	background-image: none;
 }
 
-GtkEventBox {
-	background: none;
-}
-
-.feed-list-row {
+.sidebar {
 	text-shadow: none;
 	icon-shadow: none;
 	background: none;
@@ -49,6 +50,14 @@ GtkEventBox {
 	opacity: 0.8;
 	border-radius: 10px;
 }
+
+.servicebox {
+	border: 1px solid alpha (#000, 0.30);
+}
+
+/***************/
+/* text styles */
+/***************/
 
 .bold {
 	font-weight: bold
@@ -75,34 +84,27 @@ GtkEventBox {
 	font-size: x-small;
 }
 
-GtkScrolledWindow GtkViewport.servicebox {
-	border: 1px solid alpha (#000, 0.30);
-}
-
 .preview {
 	font-size: small;
 }
 
-
-GtkListBoxRow GtkLabel.headline-read-label,
-GtkListBoxRow GtkLabel.headline-unread-label {
+.headline-read,
+.headline-unread {
 	font-style: normal;
 	font-size: large;
 }
 
-GtkListBoxRow GtkLabel.headline-read-label {
+.headline-read {
 	font-weight: normal;
 }
 
-GtkListBoxRow GtkLabel.headline-unread-label {
+.headline-unread {
 	font-weight: bold;
 }
 
-.addServiceButton {
-	border: none;
-	border-radius: 0px;
-	background-image: none;
-}
+/*******************/
+/* split headerbar */
+/*******************/
 
 .headerbar_pane.pane-separator {
 	border-radius: 0;

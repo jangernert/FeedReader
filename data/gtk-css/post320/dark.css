@@ -1,54 +1,44 @@
-box.feed-row {
-	background: @feedrow-bg;
-}
+@define-color feedlist-bg			#444;
+@define-color feedrow-bg			shade(@feedlist-bg, 1.2);
+@define-color feedlist-slider		shade(@feedlist-bg, 2.5);
+@define-color feedlist-label		shade(@feedlist-bg, 3);
+@define-color feedlist-selected		shade(@feedlist-bg, 1.6);
 
-.feed-list,
-.feed-list .scrollbar {
+
+.sidebar,
+.sidebar .scrollbar {
 	background: @feedlist-bg;
 }
 
-.feed-list .slider {
+.sidebar .slider {
 	background: @feedlist-slider;
 }
 
-.feed-list-row:selected,
-.feed-list-row:selected box.feed-row {
+.sidebar label{
+	color: @feedlist-label;
+	font-weight: bold;
+}
+
+.sidebar-row:selected,
+.sidebar-row:selected .sidebar-feed {
 	background: @feedlist-selected;
 }
 
-.feed-list-row:hover {
+.sidebar-row:hover {
 	background: shade(@feedlist-bg, 1.1);
 }
 
-.feed-list-row-popover {
-	background: shade(@feedlist-bg, 1.1);
-}
-
-.feed-list-row-selected-popover {
+.sidebar-row:selected:hover,
+.sidebar-row:selected:hover .sidebar-feed {
 	background: shade(@feedlist-selected, 1.1);
 }
 
-.feed-row-popover {
+.sidebar-feed {
+	background: @feedrow-bg;
+}
+
+.sidebar-row:hover .sidebar-feed {
 	background: shade(@feedrow-bg, 1.1);
-}
-
-.feed-row-selected-popover {
-	background: shade(@feedlist-selected, 1.1);
-}
-
-
-.feed-list-row:selected:hover,
-.feed-list-row:selected:hover box.feed-row {
-	background: shade(@feedlist-selected, 1.1);
-}
-
-.feed-list-row:hover box.feed-row {
-	background: shade(@feedrow-bg, 1.1);
-}
-
-.feed-list label{
-	color: @feedlist-label;
-	font-weight: bold;
 }
 
 .feedlist-separator {
@@ -56,11 +46,15 @@ box.feed-row {
 	border: 1px solid;
 }
 
-.FeedListFooter {
+/******************/
+/* sidebar footer */
+/******************/
+
+.footer {
 	background: shade(@feedlist-bg, 0.9);
 }
 
-.FeedListFooter button {
+.footer button {
 	background:none;
 	border: none;
 	border-bottom-left-radius: 0;
@@ -69,11 +63,30 @@ box.feed-row {
 	border-top-right-radius: 0;
 }
 
-.FeedListFooter button:hover {
+.footer button:hover {
 	background: shade(@feedlist-bg, 1.1);
 }
 
+/**********************************************/
+/* predefined styles for right-click-popovers */
+/**********************************************/
 
-.FeedListFooterButtonPopover {
+.footer-popover {
 	background: shade(@feedlist-bg, 1.1);
+}
+
+.sidebar-row-popover {
+	background: shade(@feedlist-bg, 1.1);
+}
+
+.sidebar-row-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
+.sidebar-feed-popover {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.sidebar-feed-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
 }

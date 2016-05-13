@@ -20,7 +20,7 @@
 }
 
 .sidebar-row:selected,
-.sidebar-row:selected .sidebar-feed {
+.sidebar-feed:selected {
 	background: @feedlist-selected;
 }
 
@@ -29,7 +29,7 @@
 }
 
 .sidebar-row:selected:hover,
-.sidebar-row:selected:hover .sidebar-feed {
+.sidebar-feed:selected:hover {
 	background: shade(@feedlist-selected, 1.1);
 }
 
@@ -37,7 +37,7 @@
 	background: @feedrow-bg;
 }
 
-.sidebar-row:hover .sidebar-feed {
+.sidebar-feed:hover {
 	background: shade(@feedrow-bg, 1.1);
 }
 
@@ -75,6 +75,14 @@
 	background: shade(@feedlist-bg, 1.1);
 }
 
+.sidebar-feed-popover {
+	background: shade(@feedrow-bg, 1.1);
+}
+
+.sidebar-feed-selected-popover {
+	background: shade(@feedlist-selected, 1.1);
+}
+
 .sidebar-row-popover {
 	background: shade(@feedlist-bg, 1.1);
 }
@@ -83,10 +91,3 @@
 	background: shade(@feedlist-selected, 1.1);
 }
 
-.sidebar-feed-popover {
-	background: shade(@feedrow-bg, 1.1);
-}
-
-.sidebar-feed-selected-popover {
-	background: shade(@feedlist-selected, 1.1);
-}

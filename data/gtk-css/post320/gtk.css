@@ -5,7 +5,7 @@
 }
 
 .sidebar-row:selected,
-.sidebar-row:selected .sidebar-feed {
+.sidebar-feed:selected {
 	background: @theme_selected_bg_color;
 	color: @theme_selected_fg_color;
 }
@@ -19,7 +19,7 @@
 }
 
 .sidebar-row:selected:hover,
-.sidebar-row:selected:hover .sidebar-feed {
+.sidebar-feed:selected:hover {
 	background: shade(@theme_selected_bg_color, 0.9);
 	color: @theme_selected_fg_color;
 }
@@ -28,7 +28,7 @@
 	background: @theme_bg_color;
 }
 
-.sidebar-row:hover .sidebar-feed {
+.sidebar-feed:hover {
 	background: shade(@theme_bg_color, 0.9);
 }
 

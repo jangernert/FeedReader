@@ -10,7 +10,7 @@
 
 .sidebar-row:selected,
 .sidebar-row:selected *,
-.sidebar-row:selected .sidebar-feed {
+.sidebar-feed:selected {
 	background: @theme_selected_bg_color;
 	color: @theme_selected_fg_color;
 }
@@ -20,8 +20,8 @@
 }
 
 .sidebar-row:selected:prelight,
-.sidebar-row:selected:prelight .sidebar-feed,
-.sidebar-row:selected:prelight .sidebar-feed * {
+.sidebar-feed:selected:prelight,
+.sidebar-feed:selected:prelight * {
 	background: shade(@theme_selected_bg_color, 0.9);
 	color: @theme_selected_fg_color;
 }
@@ -30,7 +30,7 @@
 	background: shade(@theme_bg_color, 1.2);
 }
 
-.sidebar-row:prelight .sidebar-feed {
+.sidebar-feed:prelight {
 	background: shade(@theme_bg_color, 0.9);
 }
 

@@ -667,8 +667,8 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void initCollapseCategories()
 	{
+		logger.print(LogMessage.DEBUG, "initCollapseCategories");
 		var FeedChildList = m_list.get_children();
-
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpCatRow = row as categorieRow;

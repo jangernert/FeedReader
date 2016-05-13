@@ -28,6 +28,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private Gtk.EventBox m_unreadBox;
 	private bool m_unreadHovered;
 	private Gtk.Stack m_unreadStack;
+	private uint m_timeout_source_id;
 	private string m_name { get; private set; }
 	private string m_feedID { get; private set; }
 	public signal void setAsRead(FeedListType type, string id);
@@ -35,7 +36,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
-		this.get_style_context().add_class("sidebar-row");
+		//this.get_style_context().add_class("sidebar-row");
 		m_level = level;
 		m_catID = catID;
 		m_subscribed = true;
@@ -81,7 +82,11 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 			{
-				m_box.get_style_context().add_class("sidebar-feed");
+				this.get_style_context().add_class("sidebar-feed");
+			}
+			else
+			{
+				this.get_style_context().add_class("sidebar-row");
 			}
 
 			m_box.pack_start(m_icon, false, false, 8);
@@ -101,7 +106,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_revealer.add(m_eventBox);
 			m_revealer.set_reveal_child(false);
 			this.add(m_revealer);
-			this.show_all();
+			this.no_show_all = true;;
+			m_revealer.show_all();
 
 			set_unread_count(m_unread_count);
 
@@ -258,25 +264,25 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	{
 		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 		{
-			m_box.get_style_context().remove_class("sidebar-feed");
+			this.get_style_context().remove_class("sidebar-feed");
 		}
 
 		if(this.is_selected())
-			m_box.get_style_context().add_class("sidebar-feed-selected-popover");
+			this.get_style_context().add_class("sidebar-feed-selected-popover");
 		else
-			m_box.get_style_context().add_class("sidebar-feed-popover");
+			this.get_style_context().add_class("sidebar-feed-popover");
 	}
 
 	private void closePopoverStyle()
 	{
 		if(this.is_selected())
-			m_box.get_style_context().remove_class("sidebar-feed-selected-popover");
+			this.get_style_context().remove_class("sidebar-feed-selected-popover");
 		else
-			m_box.get_style_context().remove_class("sidebar-feed-popover");
+			this.get_style_context().remove_class("sidebar-feed-popover");
 
 		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 		{
-			m_box.get_style_context().add_class("sidebar-feed");
+			this.get_style_context().add_class("sidebar-feed");
 		}
 	}
 
@@ -416,8 +422,23 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal, uint duration = 500)
 	{
+		if(m_timeout_source_id > 0)
+		{
+			GLib.Source.remove(m_timeout_source_id);
+			m_timeout_source_id = 0;
+		}
+		
+		if(reveal)
+		{
+			this.show();
+		}
+
 		if(settings_state.get_boolean("no-animations"))
 		{
+			if(!reveal)
+			{
+				this.hide();
+			}
 			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
 			m_revealer.set_transition_duration(0);
 			m_revealer.set_reveal_child(reveal);
@@ -428,6 +449,14 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		{
 			m_revealer.set_transition_duration(duration);
 			m_revealer.set_reveal_child(reveal);
+			if(!reveal)
+			{
+				m_timeout_source_id = GLib.Timeout.add(duration, () => {
+					this.hide();
+					m_timeout_source_id = 0;
+					return false;
+				});
+			}
 		}
 	}
 

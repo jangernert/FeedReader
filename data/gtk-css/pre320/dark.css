@@ -8,7 +8,7 @@
 }
 
 .sidebar-row:selected,
-.sidebar-row:selected .sidebar-feed {
+.sidebar-feed:selected {
 	background: @feedlist-selected;
 }
 
@@ -23,7 +23,7 @@
 
 
 .sidebar-row:selected:prelight,
-.sidebar-row:selected:prelight .sidebar-feed {
+.sidebar-feed:selected:prelight {
 	background: shade(@feedlist-selected, 1.1);
 }
 
@@ -31,7 +31,7 @@
 	background: @feedrow-bg;
 }
 
-.sidebar-row:prelight .sidebar-feed {
+.sidebar-feed:prelight {
 	background: shade(@feedrow-bg, 1.1);
 }
 

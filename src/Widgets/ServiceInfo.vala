@@ -96,6 +96,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
             else
             {
                 m_logo.set_from_icon_name("feed-service-%s-symbolic".printf(service_name), Gtk.IconSize.INVALID);
+                m_logo.get_style_context().add_class("sidebar-symbolic");
                 this.set_tooltip_text(server);
                 m_label.set_label(user_name);
                 m_stack.set_visible_child_name("info");

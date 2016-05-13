@@ -24,12 +24,15 @@
 	background: @feedlist-selected;
 }
 
-.sidebar-row:hover {
+.sidebar-row:hover,
+.sidebar-row-popover {
 	background: shade(@feedlist-bg, 1.1);
 }
 
 .sidebar-row:selected:hover,
-.sidebar-feed:selected:hover {
+.sidebar-feed:selected:hover,
+.sidebar-feed-selected-popover,
+.sidebar-row-selected-popover {
 	background: shade(@feedlist-selected, 1.1);
 }
 
@@ -37,7 +40,8 @@
 	background: @feedrow-bg;
 }
 
-.sidebar-feed:hover {
+.sidebar-feed:hover,
+.sidebar-feed-popover {
 	background: shade(@feedrow-bg, 1.1);
 }
 
@@ -67,31 +71,8 @@
 	border-top-right-radius: 0;
 }
 
-.footer button:hover {
-	background: shade(@feedlist-bg, 1.1);
-}
-
-/**********************************************/
-/* predefined styles for right-click-popovers */
-/**********************************************/
-
+.footer button:hover,
 .footer-popover {
 	background: shade(@feedlist-bg, 1.1);
-}
-
-.sidebar-feed-popover {
-	background: shade(@feedrow-bg, 1.1);
-}
-
-.sidebar-feed-selected-popover {
-	background: shade(@feedlist-selected, 1.1);
-}
-
-.sidebar-row-popover {
-	background: shade(@feedlist-bg, 1.1);
-}
-
-.sidebar-row-selected-popover {
-	background: shade(@feedlist-selected, 1.1);
 }
 

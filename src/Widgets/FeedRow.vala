@@ -67,7 +67,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadStack.add_named(m_unread, "unreadCount");
 			m_unreadStack.add_named(new Gtk.Label(""), "nothing");
 			var markIcon = new Gtk.Image.from_icon_name("feed-mark-read-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-			markIcon.get_style_context().add_class("feedlist-symbolic");
+			markIcon.get_style_context().add_class("sidebar-symbolic");
 			m_unreadStack.add_named(markIcon, "mark");
 
 			m_unreadBox = new Gtk.EventBox();
@@ -161,7 +161,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		catch(GLib.Error e){}
 
 		var defaultIcon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		defaultIcon.get_style_context().add_class("feedlist-symbolic");
+		defaultIcon.get_style_context().add_class("sidebar-symbolic");
 		return defaultIcon;
 	}
 
@@ -427,7 +427,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			GLib.Source.remove(m_timeout_source_id);
 			m_timeout_source_id = 0;
 		}
-		
+
 		if(reveal)
 		{
 			this.show();

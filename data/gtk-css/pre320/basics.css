@@ -23,6 +23,7 @@ GtkListBoxRow,
 	text-shadow: none;
 	icon-shadow: none;
 	background: none;
+	-gtk-icon-style: symbolic;
 }
 
 .list-row {

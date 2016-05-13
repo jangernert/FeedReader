@@ -1,7 +1,3 @@
-.sidebar-symbolic {
-	color: alpha(#333, 0.7);
-}
-
 .sidebar-separator {
 	color: alpha(#333, 0.2);
 }
@@ -85,6 +81,10 @@
 
 .sidebar .frame {
     border: none;
+}
+
+.sidebar-symbolic {
+	color: alpha(#333, 0.8);
 }
 
 /******************/

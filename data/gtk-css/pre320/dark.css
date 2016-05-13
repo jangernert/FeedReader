@@ -23,13 +23,16 @@
 	font-weight: bold;
 }
 
-.sidebar-row:prelight {
+.sidebar-row:prelight,
+.sidebar-row-popover {
 	background: shade(@feedlist-bg, 1.1);
 }
 
 
 .sidebar-row:selected:prelight,
-.sidebar-feed:selected:prelight {
+.sidebar-feed:selected:prelight,
+.sidebar-row-selected-popover,
+.sidebar-feed-selected-popover {
 	background: shade(@feedlist-selected, 1.1);
 }
 
@@ -37,7 +40,8 @@
 	background: @feedrow-bg;
 }
 
-.sidebar-feed:prelight {
+.sidebar-feed:prelight,
+.sidebar-feed-popover {
 	background: shade(@feedrow-bg, 1.1);
 }
 
@@ -59,7 +63,8 @@
 	background: shade(@feedlist-bg, 0.9);
 }
 
-.footer GtkButton:prelight {
+.footer GtkButton:prelight,
+.footer-popover {
 	background: shade(@feedlist-bg, 1.1);
 }
 
@@ -67,28 +72,4 @@
 	box-shadow: none;
 }
 
-
-/**********************************************/
-/* predefined styles for right-click-popovers */
-/**********************************************/
-
-.footer-popover {
-	background: shade(@feedlist-bg, 1.1);
-}
-
-.sidebar-row-popover {
-	background: shade(@feedlist-bg, 1.1);
-}
-
-.sidebar-row-selected-popover {
-	background: shade(@feedlist-selected, 1.1);
-}
-
-.sidebar-feed-popover {
-	background: shade(@feedrow-bg, 1.1);
-}
-
-.sidebar-feed-selected-popover {
-	background: shade(@feedlist-selected, 1.1);
-}
 

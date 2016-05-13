@@ -91,7 +91,7 @@
 		</key>
 		
 		<key name='feedlist-theme' enum='org.gnome.feedreader.feedlist-theme'>
-			<default>'GTK'</default>
+			<default>'DARK'</default>
 		</key>
 
 		<key name='fontsize' enum='org.gnome.feedreader.fontsize'>

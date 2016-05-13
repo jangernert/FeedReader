@@ -45,7 +45,8 @@
 .footer button {
 	background: @theme_bg_color;
 	color: @theme_fg_color;
-	border: none;
+	border-width: 0;
+	border-radius: 0;
 }
 
 .footer button:disabled {
@@ -53,11 +54,14 @@
 }
 
 .footer button:active{
-	border:none;
+	border-width: 0;
+	border-radius: 0;
 }
 
 .footer button:hover {
 	background: shade(@theme_bg_color, 0.9);
+	border-width: 0;
+	border-radius: 0;
 	color: @theme_fg_color;
 }
 

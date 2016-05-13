@@ -46,6 +46,10 @@
 	border: 1px solid;
 }
 
+.feedlist-symbolic {
+	color: @feedlist-label;
+}
+
 /******************/
 /* sidebar footer */
 /******************/

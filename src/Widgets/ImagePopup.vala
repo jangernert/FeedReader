@@ -66,8 +66,9 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_image.load_from_file_async.begin (file, 0);
 
 		m_scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, m_minZoom, m_maxZoom, 0.2);
-		//m_scale.draw_value = false;
+		m_scale.draw_value = false;
 		m_scale.set_size_request(200, 0);
+		m_scale.add_mark(1.0, Gtk.PositionType.BOTTOM, null);
 		m_scale.value_changed.connect (() => {
 			m_image.scale = m_scale.get_value();
 		});
@@ -146,6 +147,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		header.show_close_button = true;
 		header.set_size_request(0, 30);
 		header.get_style_context().add_class("imageOverlay");
+		header.get_style_context().add_class("titlebar");
 		header.pack_start(m_zoomButton);
 		header.pack_start(m_scaleRevealer);
 		var headerEvents = new Gtk.EventBox();

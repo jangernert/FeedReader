@@ -97,6 +97,11 @@ GtkListBoxRow,
 	font-weight: bold;
 }
 
+.imageOverlay {
+	border-top-right-radius: 0;
+	border-top-left-radius: 0;
+}
+
 /*******************/
 /* split headerbar */
 /*******************/

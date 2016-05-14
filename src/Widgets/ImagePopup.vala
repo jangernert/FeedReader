@@ -74,7 +74,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		});
 
 		m_scaleRevealer = new Gtk.Revealer();
-		m_scaleRevealer.valign = Gtk.Align.START;
+		m_scaleRevealer.valign = Gtk.Align.FILL;
 		m_scaleRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT);
 		m_scaleRevealer.add(m_scale);
 

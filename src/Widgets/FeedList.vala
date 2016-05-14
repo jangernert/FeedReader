@@ -48,9 +48,6 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_scroll.add(feedlist_box);
 		m_scroll_adjustment = m_scroll.get_vadjustment();
 
-
-		//this.get_style_context().add_class("feed-list");
-
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(50);
 

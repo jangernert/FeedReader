@@ -1,4 +1,4 @@
-# Dependencies (package names may differ depending on distribution)
+## Dependencies (package names may differ depending on distribution)
 
 - build-essential
 - cmake
@@ -18,7 +18,7 @@
 - libgee-0.8-dev
 
 
-# Compiling
+## Compiling
 
 ```
 git clone https://github.com/jangernert/FeedReader && cd ./FeedReader

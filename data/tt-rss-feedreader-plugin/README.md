@@ -23,7 +23,7 @@ Parameters:
  * label_id (int) - the id of the label
 
 
- **renameLabel**
+**renameLabel**
 
 Parameters:
  * label_id (int) - the id of the label

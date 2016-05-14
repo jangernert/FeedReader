@@ -107,6 +107,11 @@ row {
 	border-width: 0 1px 1px 0;
 }
 
+.titlebar .pane-separator {
+    background-color: alpha(@theme_fg_color, 0.4);
+    background-image: none;
+}
+
 .header_right {
 	border-top-right-radius: 0;
 }

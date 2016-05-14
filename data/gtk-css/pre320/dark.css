@@ -21,6 +21,7 @@
 .sidebar GtkLabel{
 	color: @feedlist-label;
 	font-weight: bold;
+	text-shadow: none;
 }
 
 .sidebar-row:prelight,

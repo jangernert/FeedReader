@@ -16,10 +16,10 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 ### Dependencies 
 - build-essential
 - cmake
-- valac
+- vala (>=0.26)
 - pkg-config
 - libgirepository1.0-dev
-- libgtk-3-dev
+- libgtk-3-dev (>= 3.12)
 - libsoup2.4-dev
 - libjson-glib-dev
 - libwebkit2gtk-4.0-dev (or version 3.0)

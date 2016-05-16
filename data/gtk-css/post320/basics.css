@@ -1,113 +1,95 @@
-@define-color feedlist-bg			#444;
-@define-color feedrow-bg			shade(@feedlist-bg, 1.2);
-@define-color feedlist-slider		shade(@feedlist-bg, 2.5);
-@define-color feedlist-label		shade(@feedlist-bg, 3);
-@define-color feedlist-selected		shade(@feedlist-bg, 1.6);
-
-#fake-example *:selected *:visited { opacity: 1; }
-
 .feedlist-spinner {
-	color: mix(@theme_bg_color, @theme_fg_color, 0.5);
+    color: mix(@theme_bg_color, @theme_fg_color, 0.5);
 }
-
 FeedReaderUpdateButton:disabled * {
-	opacity:1;
+    opacity: 1;
 }
-
 GtkEventBox {
-	background: none;
+    background: none;
 }
-
-.feed-list-row {
-	text-shadow: none;
-	-gtk-icon-shadow: none;
-	background: none;
-}
-
 .addServiceButton,
 row {
-	outline: none;
-	padding: 0px;
-	border: none;
-	border-radius: 0px;
-	background-image: none;
+    outline: none;
+    padding: 0px;
+    border: none;
+    border-radius: 0px;
+    background-image: none;
 }
-
 .destructive-action spinner {
-	color: white;
+    color: white;
 }
-
-.headerbar_pane.pane-separator {
-	border-radius: 0;
-	border-width: 0 1px 1px 0;
+.FeedListFooter button {
+    box-shadow: none;
 }
-
-.header_right {
-	border-top-right-radius: 0;
-}
-
-.header_left {
-	border-top-left-radius: 0;
-}
-
-.preview {
-    font-size: small;
-}
-
-row label.headline-read-label,
-row label.headline-unread-label {
-    font-style: normal;
-    font-size: large;
-}
-
-row label.headline-read-label {
-    font-weight: normal;
-}
-
-row label.headline-unread-label {
-    font-weight: bold;
-}
-
-scrolledwindow viewport.servicebox {
-    border: 1px solid alpha (#000, 0.30);
-}
-
 .transparentBG {
     background: rgba(0, 0, 0, 0);
 }
-
 .overlay {
     background: black;
     color: white;
     opacity: 0.8;
     border-radius: 10px;
 }
+.servicebox {
+    border: 1px solid alpha (#000, 0.30);
+}
+.sidebar-row {
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+    background: none;
+}
+/***************/
+/* text styles */
+/***************/
 
 .bold {
     font-weight: bold
 }
-
 .h1 {
     font-weight: bold;
     font-size: xx-large;
 }
-
 .h2 {
     font-size: x-large;
 }
-
 .h3 {
     font-size: large;
 }
 .h4 {
     font-weight: bold
 }
-
 .small {
     font-size: x-small;
 }
+.preview {
+    font-size: small;
+}
+.headline-read,
+.headline-unread {
+    font-style: normal;
+    font-size: large;
+}
+.headline-read {
+    font-weight: normal;
+}
+.headline-unread {
+    font-weight: bold;
+}
+/*******************/
+/* split headerbar */
+/*******************/
 
-
-.FeedListFooter button {
-	box-shadow: none;
+.headerbar_pane.pane-separator {
+    border-radius: 0;
+    border-width: 0 1px 1px 0;
+}
+.titlebar .pane-separator {
+    background-color: alpha(@theme_fg_color, 0.4);
+    background-image: none;
+}
+.header_right {
+    border-top-right-radius: 0;
+}
+.header_left {
+    border-top-left-radius: 0;
 }

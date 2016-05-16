@@ -55,9 +55,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_label.set_line_wrap(true);
 		m_label.set_lines(2);
 		if(m_article.getUnread() == ArticleStatus.UNREAD)
-			m_label.get_style_context().add_class("headline-unread-label");
+			m_label.get_style_context().add_class("headline-unread");
 		else
-			m_label.get_style_context().add_class("headline-read-label");
+			m_label.get_style_context().add_class("headline-read");
 		m_label.set_ellipsize (Pango.EllipsizeMode.END);
 		m_label.set_alignment(0.0f, 0.2f);
 
@@ -422,14 +422,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			m_article.setUnread(unread);
 			if(m_article.getUnread() == ArticleStatus.UNREAD)
 			{
-				m_label.get_style_context().remove_class("headline-read-label");
-				m_label.get_style_context().add_class("headline-unread-label");
+				m_label.get_style_context().remove_class("headline-read");
+				m_label.get_style_context().add_class("headline-unread");
 				m_unread_stack.set_visible_child_name("unread");
 			}
 			else
 			{
-				m_label.get_style_context().remove_class("headline-unread-label");
-				m_label.get_style_context().add_class("headline-read-label");
+				m_label.get_style_context().remove_class("headline-unread");
+				m_label.get_style_context().add_class("headline-read");
 				if(m_hovering_row)
 				{
 					m_unread_stack.set_visible_child_name("read");

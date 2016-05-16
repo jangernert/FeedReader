@@ -23,7 +23,7 @@ Parameters:
  * label_id (int) - the id of the label
 
 
- **renameLabel**
+**renameLabel**
 
 Parameters:
  * label_id (int) - the id of the label
@@ -77,8 +77,8 @@ Parameters:
 
 To install this plugin download the zip file, then extract it in your own tt-rss/plugin/ directory.
 
-You should have a new "api_labels" directory under plugins.
-Edit your config.php and add "api_labels" to the list of system plugins. It will be automatically enabled for every user.
+You should have a new "api_feedreader" directory under plugins.
+Edit your config.php and add "api_feedreader" to the list of system plugins. It will be automatically enabled for every user.
 
 ## License
 This code is licensed under GPLv3. Although I am not a personal fan of the v3, since this code was built upon the existing source of TT-RSS, it inherits the same license.

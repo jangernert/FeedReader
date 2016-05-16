@@ -37,7 +37,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_spinner = new Gtk.Spinner();
 		m_list = new Gtk.ListBox();
 		m_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
-		m_list.get_style_context().add_class("feed-list");
+		m_list.get_style_context().add_class("sidebar");
 		m_branding = new ServiceInfo();
 		var feedlist_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		feedlist_box.pack_start(m_branding, false, false, 0);
@@ -47,9 +47,6 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_scroll.set_size_request(100, 0);
 		m_scroll.add(feedlist_box);
 		m_scroll_adjustment = m_scroll.get_vadjustment();
-
-
-		this.get_style_context().add_class("feed-list");
 
 		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		this.set_transition_duration(50);
@@ -227,7 +224,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator1.get_style_context().add_class("feedlist-separator");
+		separator1.get_style_context().add_class("sidebar-separator");
 		separator1.margin_top = 8;
 		row_separator1.add(separator1);
 		row_separator1.sensitive = false;
@@ -243,7 +240,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		var row_separator = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator.get_style_context().add_class("feedlist-separator");
+		separator.get_style_context().add_class("sidebar-separator");
 		separator.margin_bottom = 8;
 		row_separator.add(separator);
 		row_separator.sensitive = false;
@@ -667,8 +664,8 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void initCollapseCategories()
 	{
+		logger.print(LogMessage.DEBUG, "initCollapseCategories");
 		var FeedChildList = m_list.get_children();
-
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpCatRow = row as categorieRow;

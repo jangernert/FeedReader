@@ -382,6 +382,15 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		{
 			m_footer.setActive(true);
 			m_feedList.newFeedlist(false);
+
+			var selected_row = m_feedList.getSelectedRow();
+			string[] selected = selected_row.split(" ");
+
+			if((selected[0] == "feed" && selected[1] == FeedID.ALL)
+			|| (selected[0] == "cat" && (selected[1] == CategoryID.MASTER || selected[1] == CategoryID.TAGS)))
+			{
+				m_footer.setRemoveButtonSensitive(false);
+			}
 		}
 	}
 

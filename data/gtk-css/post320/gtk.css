@@ -1,71 +1,69 @@
 .sidebar,
 .sidebar .scrollbar,
 .sidebar .slider {
-	background: @theme_bg_color;
+    background: @theme_bg_color;
 }
-
+.activatable {
+    background-color: @theme_bg_color;
+    color: @theme_fg_color;
+}
+.activatable:selected {
+    background-color: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
+}
+.sidebar-feed {
+    background: @theme_bg_color;
+    color: @theme_fg_color;
+}
+.sidebar-row {
+    color: @theme_fg_color;
+}
 .sidebar-row:selected,
 .sidebar-row:selected *,
-.sidebar-feed:selected {
-	background: @theme_selected_bg_color;
-	color: @theme_selected_fg_color;
+.sidebar-feed:selected,
+.sidebar-feed:selected * {
+    background: @theme_selected_bg_color;
+    color: @theme_selected_fg_color;
 }
-
-.sidebar-row {
-	color: @theme_fg_color;
-}
-
 .sidebar-row:hover,
 .sidebar-feed:hover,
 .sidebar-row-popover,
 .sidebar-feed-popover {
-	background: shade(@theme_bg_color, 0.9);
+    background: shade(@theme_bg_color, 0.9);
 }
-
 .sidebar-row:selected:hover,
 .sidebar-feed:selected:hover,
 .sidebar-feed:selected:hover *,
 .sidebar-feed-selected-popover,
-.sidebar-row-selected-popover
- {
-	background: shade(@theme_selected_bg_color, 0.9);
-	color: @theme_selected_fg_color;
+.sidebar-row-selected-popover {
+    background: shade(@theme_selected_bg_color, 0.9);
+    color: @theme_selected_fg_color;
 }
-
-.sidebar-feed {
-	background: shade(@theme_bg_color, 1.2);
-}
-
-
 /******************/
 /* sidebar footer */
 /******************/
 
 .footer label,
 .footer button label {
-	color: @theme_fg_color;
+    color: @theme_fg_color;
 }
-
 .footer button {
-	background: @theme_bg_color;
-	color: @theme_fg_color;
-	border-width: 0;
-	border-radius: 0;
+    background: @theme_bg_color;
+    color: @theme_fg_color;
+    border-width: 0;
+    border-radius: 0;
 }
-
 .footer button:disabled {
-	color: mix(@theme_bg_color, @theme_fg_color, 0.5);
+    color: mix(@theme_bg_color, @theme_fg_color, 0.5);
 }
-
-.footer button:active{
-	border-width: 0;
-	border-radius: 0;
+.footer button:active {
+    border-width: 0;
+    border-radius: 0;
 }
-
 .footer button:hover,
 .footer-popover {
-	background: shade(@theme_bg_color, 0.9);
-	border-width: 0;
-	border-radius: 0;
-	color: @theme_fg_color;
+    background: shade(@theme_bg_color, 0.9);
+    border-width: 0;
+    border-radius: 0;
+    color: @theme_fg_color;
 }

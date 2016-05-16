@@ -5,8 +5,9 @@
 @define-color feedlist-selected shade(@feedlist-bg, 1.6);
 
 .sidebar,
-.sidebar .scrollbar {
-    background: @feedlist-bg;
+.sidebar .scrollbar,
+.sidebar .activatable {
+    background-color: @feedlist-bg;
 }
 .sidebar .slider {
     background: @feedlist-slider;
@@ -16,7 +17,9 @@
     font-weight: bold;
 }
 .sidebar-row:selected,
-.sidebar-feed:selected {
+.sidebar-row:selected*,
+.sidebar-feed:selected,
+.sidebar-feed:selected * {
     background: @feedlist-selected;
 }
 .sidebar-row:hover,
@@ -29,9 +32,11 @@
 .sidebar-row-selected-popover {
     background: shade(@feedlist-selected, 1.1);
 }
-.sidebar-feed {
-    background: @feedrow-bg;
+.sidebar-feed,
+.sidebar-row {
+    background: @feedlist-bg;
 }
+
 .sidebar-feed:hover,
 .sidebar-feed-popover {
     background: shade(@feedrow-bg, 1.1);
@@ -48,17 +53,24 @@
 /******************/
 
 .footer {
-    background: shade(@feedlist-bg, 0.9);
+    background: @feedlist-bg;
 }
 .footer button {
     background: none;
-    border: none;
-    border-bottom-left-radius: 0;
-    border-top-left-radius: 0;
-    border-bottom-right-radius: 0;
-    border-top-right-radius: 0;
+    border: 0;
+    border-radius:0;
 }
 .footer button:hover,
 .footer-popover {
     background: shade(@feedlist-bg, 1.1);
+    border-width: 0;
+    border-radius: 0;
+}
+.footer button:disabled {
+	color:shade(@feedlist-label, 0.9);
+}
+
+.footer button:active {
+    border-width: 0;
+    border-radius: 0;
 }

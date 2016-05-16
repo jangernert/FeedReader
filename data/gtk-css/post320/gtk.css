@@ -1,8 +1,10 @@
 .sidebar,
 .sidebar .scrollbar,
-.sidebar .slider {
+.sidebar .slider,
+.sidebar .activatable {
     background: @theme_bg_color;
 }
+
 .sidebar-feed {
     background: @theme_bg_color;
     color: @theme_fg_color;

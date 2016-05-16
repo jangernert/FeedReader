@@ -1,76 +1,60 @@
-@define-color feedlist-bg			#444;
-@define-color feedrow-bg			shade(@feedlist-bg, 1.2);
-@define-color feedlist-slider		shade(@feedlist-bg, 2.5);
-@define-color feedlist-label		shade(@feedlist-bg, 3);
-@define-color feedlist-selected		shade(@feedlist-bg, 1.6);
+@define-color feedlist-bg #444;
+@define-color feedrow-bg shade(@feedlist-bg, 1.2);
+@define-color feedlist-slider shade(@feedlist-bg, 2.5);
+@define-color feedlist-label shade(@feedlist-bg, 3);
+@define-color feedlist-selected shade(@feedlist-bg, 1.6);
 
 .sidebar,
 .sidebar .scrollbar {
-	background: @feedlist-bg;
+    background: @feedlist-bg;
 }
-
 .sidebar .slider {
-	background: @feedlist-slider;
+    background: @feedlist-slider;
 }
-
 .sidebar-row:selected,
 .sidebar-feed:selected {
-	background: @feedlist-selected;
+    background: @feedlist-selected;
 }
-
-.sidebar GtkLabel{
-	color: @feedlist-label;
-	font-weight: bold;
-	text-shadow: none;
+.sidebar GtkLabel {
+    color: @feedlist-label;
+    font-weight: bold;
+    text-shadow: none;
 }
-
 .sidebar-row:prelight,
 .sidebar-row-popover {
-	background: shade(@feedlist-bg, 1.1);
+    background: shade(@feedlist-bg, 1.1);
 }
-
-
 .sidebar-row:selected:prelight,
 .sidebar-feed:selected:prelight,
 .sidebar-row-selected-popover,
 .sidebar-feed-selected-popover {
-	background: shade(@feedlist-selected, 1.1);
+    background: shade(@feedlist-selected, 1.1);
 }
-
 .sidebar-feed {
-	background: @feedrow-bg;
+    background: @feedrow-bg;
 }
-
 .sidebar-feed:prelight,
 .sidebar-feed-popover {
-	background: shade(@feedrow-bg, 1.1);
+    background: shade(@feedrow-bg, 1.1);
 }
-
-
 .sidebar-separator {
-	color: shade(@feedlist-bg, 0.82);
-	border: 1px solid;
+    color: shade(@feedlist-bg, 0.82);
+    border: 1px solid;
 }
-
 .sidebar-symbolic {
-	color: @feedlist-label;
+    color: @feedlist-label;
 }
-
 /******************/
 /* sidebar footer */
 /******************/
 
 .footer {
-	background: shade(@feedlist-bg, 0.9);
+    background: shade(@feedlist-bg, 0.9);
 }
-
 .footer GtkButton:prelight,
 .footer-popover {
-	background: shade(@feedlist-bg, 1.1);
+    background: shade(@feedlist-bg, 1.1);
 }
-
 .footer GtkButton {
-	box-shadow: none;
+    box-shadow: none;
 }
-
-

@@ -3,14 +3,6 @@
 .sidebar .slider {
     background: @theme_bg_color;
 }
-.activatable {
-    background-color: @theme_bg_color;
-    color: @theme_fg_color;
-}
-.activatable:selected {
-    background-color: @theme_selected_bg_color;
-    color: @theme_selected_fg_color;
-}
 .sidebar-feed {
     background: @theme_bg_color;
     color: @theme_fg_color;

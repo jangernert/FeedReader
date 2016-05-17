@@ -1,4 +1,618 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# S Shen, 2016
 msgid ""
 msgstr ""
+"Project-Id-Version: FeedReader\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-02 17:51+0200\n"
+"PO-Revision-Date: 2016-05-12 21:31+0000\n"
+"Last-Translator: S Shen\n"
+"Language-Team: Chinese (China) (http://www.transifex.com/dev-feedreader/feedreader/language/zh_CN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: zh_CN\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: ../src/Constants.vala:196 ../src/Widgets/MainWindow.vala:33
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: ../src/Constants.vala:199
+msgid "Desktop Client for various RSS Services"
+msgstr "RSS 服务桌面客户端"
+
+#: ../src/Constants.vala:204
+msgid "translator-credits"
+msgstr "译者-致谢"
+
+#: ../src/Constants.vala:206
+msgid "FeedReader Website"
+msgstr "FeedReader 网站"
+
+#: ../src/Constants.vala:210
+msgid "About"
+msgstr "关于"
+
+#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:159
+#: ../src/Widgets/SettingsDialog.vala:25
+msgid "Settings"
+msgstr "设置"
+
+#: ../src/Constants.vala:212
+msgid "Change Account"
+msgstr "更换账户"
+
+#: ../src/Constants.vala:213
+msgid "Quit"
+msgstr "退出"
+
+#: ../src/Model/Article.vala:154
+msgid "Today"
+msgstr "今天"
+
+#: ../src/Model/Article.vala:158
+msgid "Yesterday"
+msgstr "昨天"
+
+#: ../src/Utils.vala:21
+msgid "No Preview Available"
+msgstr "无可用预览"
+
+#: ../src/Utils.vala:97
+msgid "No Text available for this article :("
+msgstr "该文章中无可用文本 :("
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:72
+msgid "no Author"
+msgstr "无作者"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:84
+msgid "no Title"
+msgstr "无标题"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:96
+msgid "no Preview"
+msgstr "无预览"
+
+#: ../src/ContentGrabber/ReadabilityParserAPI.vala:108
+msgid "no content"
+msgstr "无内容"
+
+#: ../src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "关于 FeedReader"
+
+#: ../src/Widgets/TagPopover.vala:40
+msgid "Add Tag:"
+msgstr "添加标签:"
+
+#: ../src/Widgets/TagPopover.vala:52
+msgid "Tags:"
+msgstr "标签:"
+
+#: ../src/Widgets/TagPopover.vala:129
+msgid "add Tag"
+msgstr "添加标签"
+
+#: ../src/Widgets/MainWindow.vala:345
+msgid "Ignore all tls errors from now on"
+msgstr "忽略之后所有的 tls 错误"
+
+#: ../src/Widgets/MainWindow.vala:453
+msgid "Please select a service first"
+msgstr "请先选择一项服务"
+
+#: ../src/Widgets/MainWindow.vala:456
+msgid "Please enter a valid username"
+msgstr "请输入有效用户名"
+
+#: ../src/Widgets/MainWindow.vala:459
+msgid "Please enter a valid password"
+msgstr "请输入有效密码"
+
+#: ../src/Widgets/MainWindow.vala:462
+msgid "Please enter a valid URL"
+msgstr "请输入有效 URL"
+
+#: ../src/Widgets/MainWindow.vala:465
+msgid "Please enter your Login details"
+msgstr "请输入您的登录信息"
+
+#: ../src/Widgets/MainWindow.vala:468
+msgid "Sorry, something went wrong."
+msgstr "抱歉, 出错了."
+
+#: ../src/Widgets/MainWindow.vala:471
+msgid "Either your username or the password are not correct."
+msgstr "您的用户名或密码不正确"
+
+#: ../src/Widgets/MainWindow.vala:474
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr "无法连接至服务器. 请检查您的网络链接和服务器 URL!"
+
+#: ../src/Widgets/MainWindow.vala:477
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "该服务器禁止 API 访问. 请先启用!"
+
+#: ../src/Widgets/MainWindow.vala:480
+msgid "Not authorized to access URL"
+msgstr "未被授权访问 URL"
+
+#: ../src/Widgets/MainWindow.vala:484
+msgid "No valid CA certificate available!"
+msgstr "无可用的有效 CA 证书"
+
+#: ../src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "更换账户?"
+
+#: ../src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr "您即将更换 FeedReader 中使用的账户.\n旧账户的所有本地数据将被删除."
+
+#: ../src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "新账户"
+
+#: ../src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "等待同步完成"
+
+#: ../src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "我改主意了"
+
+#: ../src/Widgets/UpdateButton.vala:36
+msgid "Update Feeds"
+msgstr "更新内容源"
+
+#: ../src/Widgets/RemovePopover.vala:50
+msgid "Remove \"%s\""
+msgstr "移除 \"%s\""
+
+#: ../src/Widgets/RemovePopover.vala:87 ../src/Widgets/TagRow.vala:173
+msgid "Tag \"%s\" removed"
+msgstr "标签 \"%s\" 已被移除"
+
+#: ../src/Widgets/RemovePopover.vala:104 ../src/Widgets/FeedRow.vala:202
+msgid "Feed \"%s\" removed"
+msgstr "内容源 \"%s\" 已被移除"
+
+#: ../src/Widgets/RemovePopover.vala:122 ../src/Widgets/CategorieRow.vala:366
+msgid "Category \"%s\" removed"
+msgstr "分类 \"%s\" 已被移除"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:81
+msgid "Username or Password incorrect"
+msgstr "用户名或密码不正确"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:106
+#: ../src/Widgets/LoginPage.vala:150 ../src/Widgets/LoginPage.vala:187
+#: ../src/Widgets/LoginPage.vala:258 ../src/Widgets/LoginPage.vala:296
+#: ../src/Widgets/LoginPage.vala:343
+msgid "Username:"
+msgstr "用户名:"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:107
+#: ../src/Widgets/LoginPage.vala:151 ../src/Widgets/LoginPage.vala:188
+#: ../src/Widgets/LoginPage.vala:259 ../src/Widgets/LoginPage.vala:297
+#: ../src/Widgets/LoginPage.vala:344
+msgid "Password:"
+msgstr "密码:"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:97
+#: ../src/Widgets/SharePopover.vala:28
+msgid "Login"
+msgstr "登录"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:128
+msgid "Logout"
+msgstr "登出"
+
+#: ../src/Widgets/ServiceSettingsRow.vala:255
+msgid "waiting"
+msgstr "等待中"
+
+#: ../src/Widgets/ArticleView.vala:102
+msgid "No Article selected."
+msgstr "未选择文章."
+
+#: ../src/Widgets/ArticleView.vala:227
+msgid "Not available"
+msgstr "不可用"
+
+#: ../src/Widgets/FeedList.vala:237
+msgid "All Articles"
+msgstr "所有文章"
+
+#: ../src/Widgets/FeedList.vala:427
+msgid "Categories"
+msgstr "分类"
+
+#: ../src/Widgets/FeedList.vala:447
+msgid "Tags"
+msgstr "标签"
+
+#: ../src/Widgets/FeedList.vala:449
+msgid "Labels"
+msgstr "标签"
+
+#: ../src/Widgets/FeedList.vala:496 ../src/Widgets/AddPopover.vala:51
+#: ../src/dbUI.vala:358
+msgid "Uncategorized"
+msgstr "未分类"
+
+#: ../src/Widgets/FeedList.vala:962
+msgid "New Tag"
+msgstr "新标签"
+
+#: ../src/Widgets/FeedList.vala:1082
+msgid "New Category"
+msgstr "新分类"
+
+#: ../src/Widgets/SpringCleanPage.vala:28
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr "FeedReader 正在清理数据库.\n请稍候."
+
+#: ../src/Widgets/ReaderHeaderbar.vala:50
+msgid "Mark article (un)starred"
+msgstr "为文章 (移除)添加星标"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:56
+msgid "Mark article (un)read"
+msgstr "标记文章为 (未)已读"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "All"
+msgstr "所有"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Show all articles"
+msgstr "显示所有文章"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Unread"
+msgstr "未读"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Show only unread articles"
+msgstr "仅显示未读文章"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:83
+msgid "Starred"
+msgstr "星标"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:83
+msgid "Show only starred articles"
+msgstr "仅显示星标文章"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:90
+msgid "Tag Article"
+msgstr "标记文章"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:100
+msgid "Share Article"
+msgstr "分享文章"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:134
+msgid "Search Articles"
+msgstr "搜索文章"
+
+#: ../src/Widgets/LoginPage.vala:47
+msgid "Tiny Tiny RSS"
+msgstr "Tiny Tiny RSS"
+
+#: ../src/Widgets/LoginPage.vala:47
+msgid "Feedly"
+msgstr "Feedly"
+
+#: ../src/Widgets/LoginPage.vala:47
+msgid "OwnCloud"
+msgstr "OwnCloud"
+
+#: ../src/Widgets/LoginPage.vala:47
+msgid "InoReader"
+msgstr "InoReader"
+
+#: ../src/Widgets/LoginPage.vala:51
+msgid "Where are your feeds?"
+msgstr "您的内容源在哪里?"
+
+#: ../src/Widgets/LoginPage.vala:55
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr "请选择您使用的 RSS 服务并登录以继续."
+
+#: ../src/Widgets/LoginPage.vala:131
+msgid "No service selected."
+msgstr "未选择服务."
+
+#: ../src/Widgets/LoginPage.vala:149
+msgid "TinyTinyRSS URL:"
+msgstr "TinyTinyRSS URL:"
+
+#: ../src/Widgets/LoginPage.vala:216 ../src/Widgets/LoginPage.vala:325
+msgid "HTTP Authorization"
+msgstr "HTTP 验证"
+
+#: ../src/Widgets/LoginPage.vala:238
+msgid ""
+"You will be redirected to the feedly website where you can use your "
+"Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr "您将被重定向至 Feedly 网站并请使用 Facebook-, Google-, Twitter-, Microsoft- 或 Evernote-账户登录."
+
+#: ../src/Widgets/LoginPage.vala:257
+msgid "OwnCloud URL:"
+msgstr "OwnCloud URL:"
+
+#: ../src/Widgets/TagRow.vala:192 ../src/Widgets/FeedRow.vala:238
+#: ../src/Widgets/CategorieRow.vala:417
+msgid "Rename"
+msgstr "重命名"
+
+#: ../src/Widgets/TagRow.vala:193 ../src/Widgets/FeedRow.vala:241
+#: ../src/Widgets/CategorieRow.vala:418
+msgid "Remove"
+msgstr "移除"
+
+#: ../src/Widgets/TagRow.vala:300 ../src/Widgets/FeedRow.vala:293
+#: ../src/Widgets/CategorieRow.vala:487
+msgid "rename"
+msgstr "重命名"
+
+#: ../src/Widgets/TagRow.vala:302 ../src/Widgets/CategorieRow.vala:489
+msgid "add"
+msgstr "添加"
+
+#: ../src/Widgets/SettingsDialog.vala:34
+msgid "Interface"
+msgstr "界面"
+
+#: ../src/Widgets/SettingsDialog.vala:35
+msgid "Internals"
+msgstr "内部"
+
+#: ../src/Widgets/SettingsDialog.vala:36
+msgid "Share"
+msgstr "分享"
+
+#: ../src/Widgets/SettingsDialog.vala:55
+msgid "Feed List:"
+msgstr "内容源列表:"
+
+#: ../src/Widgets/SettingsDialog.vala:57
+msgid "Only show feeds"
+msgstr "仅显示内容源"
+
+#: ../src/Widgets/SettingsDialog.vala:64
+msgid "Only show unread"
+msgstr "仅显示唯独"
+
+#: ../src/Widgets/SettingsDialog.vala:69
+msgid "Sort FeedList by"
+msgstr "内容源列表排序"
+
+#: ../src/Widgets/SettingsDialog.vala:69 ../src/Widgets/SettingsDialog.vala:76
+msgid "Received"
+msgstr "已接收"
+
+#: ../src/Widgets/SettingsDialog.vala:69
+msgid "Alphabetically"
+msgstr "按字母顺序"
+
+#: ../src/Widgets/SettingsDialog.vala:74
+msgid "Article List:"
+msgstr "文章列表:"
+
+#: ../src/Widgets/SettingsDialog.vala:76
+msgid "Sort articles by"
+msgstr "文章排序"
+
+#: ../src/Widgets/SettingsDialog.vala:76
+msgid "Date"
+msgstr "日期"
+
+#: ../src/Widgets/SettingsDialog.vala:81
+msgid "Newest first"
+msgstr "最新在前"
+
+#: ../src/Widgets/SettingsDialog.vala:86
+msgid "Article View:"
+msgstr "阅读视图:"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Theme"
+msgstr "主题"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Default"
+msgstr "默认"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Spring"
+msgstr "初春"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Midnight"
+msgstr "暗夜"
+
+#: ../src/Widgets/SettingsDialog.vala:88
+msgid "Parchment"
+msgstr "复古"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Font Size"
+msgstr "字体大小"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Small"
+msgstr "小"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Normal"
+msgstr "正常"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Large"
+msgstr "大"
+
+#: ../src/Widgets/SettingsDialog.vala:93
+msgid "Huge"
+msgstr "最大"
+
+#: ../src/Widgets/SettingsDialog.vala:118
+msgid "Sync:"
+msgstr "同步:"
+
+#: ../src/Widgets/SettingsDialog.vala:120
+msgid "Number of articles"
+msgstr "文章数"
+
+#: ../src/Widgets/SettingsDialog.vala:122
+msgid "Every (Minutes)"
+msgstr "每 (分钟)"
+
+#: ../src/Widgets/SettingsDialog.vala:127
+msgid "Database:"
+msgstr "数据库:"
+
+#: ../src/Widgets/SettingsDialog.vala:129
+msgid "Delete articles after"
+msgstr "何时删除文章"
+
+#: ../src/Widgets/SettingsDialog.vala:130
+msgid "Never"
+msgstr "从不"
+
+#: ../src/Widgets/SettingsDialog.vala:130
+msgid "1 Week"
+msgstr "1 周后"
+
+#: ../src/Widgets/SettingsDialog.vala:130
+msgid "1 Month"
+msgstr "1 个月后"
+
+#: ../src/Widgets/SettingsDialog.vala:130
+msgid "6 Months"
+msgstr "6 个月后"
+
+#: ../src/Widgets/SettingsDialog.vala:132
+msgid "Additional Functionality:"
+msgstr "其他功能:"
+
+#: ../src/Widgets/SettingsDialog.vala:134
+msgid "Content Grabber"
+msgstr "内容抓取"
+
+#: ../src/Widgets/SettingsDialog.vala:135
+msgid "None"
+msgstr "无"
+
+#: ../src/Widgets/SettingsDialog.vala:135
+msgid "Built in grabber"
+msgstr "内置抓取器"
+
+#: ../src/Widgets/ContentPage.vala:408
+msgid "undo"
+msgstr "撤销"
+
+#: ../src/Widgets/ArticleList.vala:54
+msgid "None of the %i Articles in the database fit the current filters."
+msgstr "数据库中的 %i 篇文章均不匹配当前条件."
+
+#: ../src/Widgets/ArticleList.vala:68
+msgid "Sync is in progress. Articles should appear any second."
+msgstr "同步中. 即将显示新内容."
+
+#: ../src/Widgets/ArticleList.vala:160 ../src/Backends/FeedServer.vala:1317
+msgid "New Articles"
+msgstr "新文章"
+
+#: ../src/Widgets/ArticleList.vala:160
+msgid "scroll up"
+msgstr "向上卷动"
+
+#: ../src/Widgets/FeedRow.vala:237 ../src/Widgets/CategorieRow.vala:416
+msgid "Mark as read"
+msgstr "标记为已读"
+
+#: ../src/Widgets/FeedRow.vala:240
+msgid "Remove only from %s"
+msgstr "仅从 %s 中移除"
+
+#: ../src/Widgets/CategorieRow.vala:419
+msgid "Remove (with Feeds)"
+msgstr "移除 (带内容源)"
+
+#: ../src/Widgets/SharePopover.vala:34
+msgid "Please"
+msgstr "请"
+
+#: ../src/Widgets/SharePopover.vala:36
+msgid "to a service to share this article."
+msgstr "至某个服务以分享该文章"
+
+#: ../src/Widgets/AddPopover.vala:61
+msgid "URL:"
+msgstr "URL:"
+
+#: ../src/Widgets/AddPopover.vala:62
+msgid "Category:"
+msgstr "分类:"
+
+#: ../src/Widgets/AddPopover.vala:65
+msgid "Add"
+msgstr "添加:"
+
+#: ../src/Widgets/AddPopover.vala:79
+msgid "OPML-File:"
+msgstr "OPML-文件:"
+
+#: ../src/Widgets/AddPopover.vala:81
+msgid "Select OPML-file"
+msgstr "选择 OPML-文件"
+
+#: ../src/Widgets/AddPopover.vala:87
+msgid "Import"
+msgstr "导入"
+
+#: ../src/Widgets/AddPopover.vala:101
+msgid "Add feed"
+msgstr "添加内容源"
+
+#: ../src/Widgets/AddPopover.vala:102
+msgid "Import OPML"
+msgstr "导入 OPML"
+
+#: ../src/Backends/ttrss/TTRSS_API.vala:465
+#: ../src/Backends/ttrss/TTRSS_API.vala:578
+#: ../src/Backends/inoreader/InoReaderAPI.vala:332
+msgid "not found"
+msgstr "未找到"
+
+#: ../src/Backends/FeedServer.vala:1332
+msgid "There is 1 new article"
+msgstr "有 1 篇新文章"
+
+#: ../src/Backends/FeedServer.vala:1334
+msgid "There are %u new articles"
+msgstr "有 %u 篇新文章s"
+
+#: ../src/Share/Email.vala:27
+msgid ""
+"Hey,\n"
+"check out this interesting article I just read:\n"
+"%s\n"
+"\n"
+"- send by FeedReader"
+msgstr "嗨,\n来看看我刚阅读的这篇有趣的文章:\n%s\n\n- 由 FeedReader 发送"

@@ -1,0 +1,17 @@
+title: //div[@class='title']/h1
+author: //div[@class="author_link"]/span/a[@itemprop="author"]
+date: //div[@id="publish_post"]/time/@datetime
+body: //section[@id="single"]
+
+strip: //div[@class="title"]
+strip: //div[@class="info_top"]
+strip: //div[@class="follow-tools"]
+strip: //div[@class="author"]
+strip: //div[@id="share_post"]
+strip: //div[@id="topic_ass"]
+strip: //div[@id="taboola-below-article-thumbs-mix"]
+strip: //section[@id="facebook-com"]
+strip: //section[@id="related_post"]
+strip: //div[@id="ligatus"]
+
+test_url: http://www.begeek.fr/videos-amazon-va-defier-youtube-france-202647

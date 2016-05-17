@@ -5,6 +5,9 @@ date: //div[@class='meta']/time/@datetime
 
 strip: //div[contains(concat(' ',normalize-space(@class),' '),' l-postSingle-content-bottom-share ')]
 strip_id_or_class: articleShare-buttons
+strip_id_or_class: ica-wrapper
+strip_id_or_class: post-author-bio
+strip_id_or_class: post-author-trivia
 replace_string(data-original=): src=
 
 tidy: no

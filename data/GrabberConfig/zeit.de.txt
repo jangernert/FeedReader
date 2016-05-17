@@ -22,7 +22,7 @@ strip: //span[@class='figure__text']/text()[contains(., 'Dieser Artikel ')]
 # ZEIT:
 #######################################
 
-single_page_link: //a[contains(@href, 'komplettansicht')]
+single_page_link: //a[@class='article-toc__onesie']
 
 author: //a[@class='byline__author']/span
 author: substring-after(//span[@class='metadata__source'], 'Quelle: ')
@@ -31,7 +31,7 @@ body: //main/article/div[@itemprop='articleBody']
 
 strip: //a[@href='#']
 strip: //form[@id='newsletter-teaser-form']
-strip_id_or_class: 'article-pagination article__item '
+strip_id_or_class: 'article-pagination article__item'
 
 test_url: http://www.zeit.de/kultur/film/2012-12/Kurzfilmtag
 test_url: http://www.zeit.de/sport/2016-01/darts-wm-finale-anderson-lewis/komplettansicht

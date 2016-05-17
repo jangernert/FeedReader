@@ -462,7 +462,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 										"",
 										"",
-										(headline_node.get_string_member("author") == "") ? _("not found") : headline_node.get_string_member("author"),
+										(headline_node.get_string_member("author") == "") ? null : headline_node.get_string_member("author"),
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
 										tagString
@@ -575,7 +575,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										(article_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 										article_node.get_string_member("content"),
 										"",
-										(article_node.get_string_member("author") == "") ? _("not found") : article_node.get_string_member("author"),
+										(article_node.get_string_member("author") == "") ? null : article_node.get_string_member("author"),
 										new DateTime.from_unix_local(article_node.get_int_member("updated")),
 										-1,
 										tagString

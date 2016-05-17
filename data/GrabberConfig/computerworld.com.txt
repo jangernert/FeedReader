@@ -15,3 +15,5 @@ strip: //h3[contains(., "See also:")]
 strip: //div[@id="article-top-page-number"]
 strip: //p[starts-with(normalize-space(.), '[')]
 strip: //p[starts-with(normalize-space(.), '+')]
+
+test_url: http://www.computerworld.com/article/3054550/data-storage/scientists-could-use-dna-to-shrink-a-data-center-into-a-sugar-cube.html

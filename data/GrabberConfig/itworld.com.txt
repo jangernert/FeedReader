@@ -15,3 +15,5 @@ strip: //h3[contains(., "See also:")]
 strip: //div[@id="article-top-page-number"]
 strip: //p[starts-with(normalize-space(.), '[')]
 strip: //p[starts-with(normalize-space(.), '+')]
+
+test_url: http://www.itworld.com/article/3055304/your-face-is-big-data-the-title-of-this-photographers-experiment-says-it-all.html

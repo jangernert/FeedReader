@@ -1,6 +1,6 @@
 # based on the grabber rules of picofeed
 
-body: //div[@class="content"]/child::node()
+body: //div[@class="content"]
 test_url: http://www.phoronix.com/scan.php?page=article&item=amazon_ec2_bare&num=1
 
 # replace_string(<h5>): <h2>

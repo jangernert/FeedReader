@@ -43,7 +43,7 @@
 }
 .sidebar-separator {
     color: shade(@feedlist-bg, 0.82);
-    border: 1px solid;
+    border: none;
 }
 .sidebar-symbolic {
     color: @feedlist-label;

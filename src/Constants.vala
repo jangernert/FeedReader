@@ -290,6 +290,8 @@ namespace FeedReader {
 		const string CATEGORIES = "-2";
 	}
 
+	const int DBusAPIVersion = 16;
+
 	// tango colors
 	const string[] COLORS = {
 								"#edd400", // butter medium

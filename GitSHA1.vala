@@ -1,1 +1,1 @@
-const string g_GIT_SHA1 = "285e18477ed26c023f7b4ab53b5e47e4d244519a";
+const string g_GIT_SHA1 = "24515016d393345afa69f8f3cdd26975fff2e736";

@@ -57,13 +57,9 @@ namespace FeedReader {
 			startDaemon();
 
 			if(debug)
-			{
 				dataBase = new dbUI("debug.db");
-			}
 			else
-			{
 				dataBase = new dbUI();
-			}
 
 			dataBase.init();
 			base.startup();
@@ -100,6 +96,7 @@ namespace FeedReader {
 
 			m_window.show_all();
 			DBusConnection.connectSignals(m_window);
+			checkDaemonVersion();
 			feedDaemon_interface.updateBadge();
 			feedDaemon_interface.checkOnlineAsync();
 		}
@@ -131,12 +128,30 @@ namespace FeedReader {
 			}
 		}
 
-		public void startDaemon()
+		private void checkDaemonVersion()
+		{
+			if(feedDaemon_interface.getVersion() < DBusAPIVersion)
+			{
+				killDaemon();
+				startDaemon();
+			}
+		}
+
+		private void startDaemon()
 		{
 			logger.print(LogMessage.INFO, "FeedReader: start daemon");
-			string[] spawn_args = {"feedreader-daemon"};
 			try{
-				GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+				GLib.Process.spawn_async("/", {"feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+			}catch(GLib.SpawnError e){
+				logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+			}
+		}
+
+		private void killDaemon()
+		{
+			logger.print(LogMessage.INFO, "FeedReader: terminating daemon");
+			try{
+				GLib.Process.spawn_async("/", {"killall", "feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 			}catch(GLib.SpawnError e){
 				logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
 			}

@@ -41,6 +41,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public signal void collapse(bool collapse, string catID, bool selectParent);
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void moveUP();
+	public signal void deselectRow();
 	public signal void removeRow();
 
 	public categorieRow(string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded)
@@ -687,7 +688,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		else
 		{
 			if(!reveal && this.is_selected())
-				moveUP();
+				deselectRow();
 
 			m_revealer.set_transition_duration(duration);
 			m_revealer.set_reveal_child(reveal);

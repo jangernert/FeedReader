@@ -284,6 +284,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.moveUP.connect(moveUP);
+							feedrow.deselectRow.connect(deselectRow);
 							feedrow.drag_begin.connect((context) => {
 								onDragBegin(context);
 								showNewCategory();
@@ -309,6 +310,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				m_list.insert(feedrow, -1);
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.moveUP.connect(moveUP);
+				feedrow.deselectRow.connect(deselectRow);
 				feedrow.drag_begin.connect((context) => {
 					onDragBegin(context);
 					showNewCategory();
@@ -539,6 +541,7 @@ public class FeedReader.feedList : Gtk.Stack {
 						m_list.insert(categorierow, pos);
 						categorierow.setAsRead.connect(markSelectedRead);
 						categorierow.moveUP.connect(moveUP);
+						categorierow.deselectRow.connect(deselectRow);
 						categorierow.drag_begin.connect((context) => {
 							onDragBegin(context);
 							if(feedDaemon_interface.supportMultiLevelCategories())
@@ -978,6 +981,11 @@ public class FeedReader.feedList : Gtk.Stack {
 				removeRow(tmpRow, 250);
 			}
 		}
+	}
+
+	public void deselectRow()
+	{
+		m_list.select_row(null);
 	}
 
 	public void removeRow(Gtk.Widget? row, int duration = 700)

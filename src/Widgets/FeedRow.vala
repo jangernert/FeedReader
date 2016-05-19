@@ -33,6 +33,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private string m_feedID { get; private set; }
 	public signal void setAsRead(FeedListType type, string id);
 	public signal void moveUP();
+	public signal void deselectRow();
 
 	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
@@ -451,7 +452,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			if(!reveal)
 			{
 				if(this.is_selected())
-					moveUP();
+					deselectRow();
 
 				m_timeout_source_id = GLib.Timeout.add(duration, () => {
 					this.hide();

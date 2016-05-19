@@ -585,7 +585,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpFeedRow = row as FeedRow;
-			if(tmpFeedRow != null && tmpFeedRow.getName() == "All Articles")
+			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL)
 			{
 				tmpFeedRow.set_unread_count(dataBase.get_unread_total());
 				break;

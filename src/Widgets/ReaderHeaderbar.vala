@@ -145,6 +145,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			var menumodel = new GLib.Menu();
 			menumodel.append(Menu.settings, "win.settings");
 			menumodel.append(Menu.reset, "win.reset");
+			menumodel.append(Menu.bugs, "win.bugs");
+			menumodel.append(Menu.bounty, "win.bounty");
 
 			if(session != "pantheon")
 			{

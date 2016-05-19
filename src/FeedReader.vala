@@ -69,6 +69,8 @@ namespace FeedReader {
 				var menu = new GLib.Menu();
 				menu.append(Menu.settings, "win.settings");
 				menu.append(Menu.reset, "win.reset");
+				menu.append(Menu.bugs, "win.bugs");
+				menu.append(Menu.bounty, "win.bounty");
 				menu.append(Menu.about, "win.about");
 				menu.append(Menu.quit, "app.quit");
 				this.app_menu = menu;

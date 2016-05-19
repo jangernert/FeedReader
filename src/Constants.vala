@@ -211,6 +211,8 @@ namespace FeedReader {
 		const string settings = _("Settings");
 		const string reset = _("Change Account");
 		const string quit = _("Quit");
+		const string bugs = _("Report a bug");
+		const string bounty = _("Bounties");
 	}
 
 	public enum MouseButton {

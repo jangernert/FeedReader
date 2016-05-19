@@ -686,6 +686,9 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		}
 		else
 		{
+			if(!reveal && this.is_selected())
+				moveUP();
+
 			m_revealer.set_transition_duration(duration);
 			m_revealer.set_reveal_child(reveal);
 		}

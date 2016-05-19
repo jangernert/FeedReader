@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-18 01:29+0200\n"
+"POT-Creation-Date: 2016-05-19 14:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:159
+#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:161
 #: ../src/Widgets/SettingsDialog.vala:26
 msgid "Settings"
 msgstr ""
@@ -48,6 +48,14 @@ msgstr ""
 
 #: ../src/Constants.vala:213
 msgid "Quit"
+msgstr ""
+
+#: ../src/Constants.vala:214
+msgid "Report a bug"
+msgstr ""
+
+#: ../src/Constants.vala:215
+msgid "Bounties"
 msgstr ""
 
 #: ../src/Model/Article.vala:154
@@ -102,53 +110,53 @@ msgstr ""
 msgid "add Tag"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:393
+#: ../src/Widgets/MainWindow.vala:417
 msgid "Ignore all tls errors from now on"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:501
+#: ../src/Widgets/MainWindow.vala:525
 msgid "Please select a service first"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:504
+#: ../src/Widgets/MainWindow.vala:528
 msgid "Please enter a valid username"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:507
+#: ../src/Widgets/MainWindow.vala:531
 msgid "Please enter a valid password"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:510
+#: ../src/Widgets/MainWindow.vala:534
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:513
+#: ../src/Widgets/MainWindow.vala:537
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:516
+#: ../src/Widgets/MainWindow.vala:540
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:519
+#: ../src/Widgets/MainWindow.vala:543
 msgid "Either your username or the password are not correct."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:522
+#: ../src/Widgets/MainWindow.vala:546
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:525
+#: ../src/Widgets/MainWindow.vala:549
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:528
+#: ../src/Widgets/MainWindow.vala:552
 msgid "Not authorized to access URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:532
+#: ../src/Widgets/MainWindow.vala:556
 msgid "No valid CA certificate available!"
 msgstr ""
 

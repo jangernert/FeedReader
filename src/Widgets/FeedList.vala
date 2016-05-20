@@ -28,6 +28,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
 	public signal void markAllArticlesAsRead();
+	public signal void clearSelected();
 
 	public feedList () {
 		m_selected = null;
@@ -986,6 +987,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	public void deselectRow()
 	{
 		m_list.select_row(null);
+		clearSelected();
 	}
 
 	public void removeRow(Gtk.Widget? row, int duration = 700)

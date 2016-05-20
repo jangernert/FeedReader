@@ -40,6 +40,10 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_pane2.set_position(settings_state.get_int("feed-row-width"));
 		m_pane2.pack1(feedListBox, false, false);
 
+		m_feedList.clearSelected.connect(() => {
+			m_footer.setRemoveButtonSensitive(false);
+		});
+
 		m_feedList.newFeedSelected.connect((feedID) => {
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();

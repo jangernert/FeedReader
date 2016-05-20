@@ -1,6 +1,7 @@
 title: //div[@class='title large']
 author: //meta[@name='author']/@content
 
+body: //div[contains(concat(' ',normalize-space(@class),' '),' slideshowPicture ')]
 body: //div[@id="col_main"]
 
 strip: //div[contains(@class, "samekind")]

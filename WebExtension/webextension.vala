@@ -52,12 +52,14 @@ public class FeedReaderWebExtension : Object {
 			if(hRatio <= threshold || wRatio <= threshold)
 			{
 				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseover", on_enter, false);
+				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mousemove", on_enter, false);
 				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseout", on_leave, false);
 				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("click", on_click, false);
 			}
 			else
 			{
 				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mouseover", on_enter, false);
+				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mousemove", on_enter, false);
 				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mouseout", on_leave, false);
 				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("click", on_click, false);
 				image.set_attribute("class", "");

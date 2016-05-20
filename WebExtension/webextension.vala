@@ -114,7 +114,6 @@ public class FeedReaderWebExtension : Object {
 			src = src.substring("file://".length);
 		
         	onClick(src, (int)image.natural_width, (int)image.natural_height, url);
-    		image.set_attribute("class", "");
     	}
     	catch(GLib.Error e)
     	{

@@ -42,6 +42,9 @@ public class FeedReader.Grabber : GLib.Object {
         m_firstPage = true;
         m_foundSomething = false;
         m_singlePage = false;
+
+        if(m_articleURL.has_prefix("//"))
+            m_articleURL = "http:" + m_articleURL;
     }
 
     ~Grabber()

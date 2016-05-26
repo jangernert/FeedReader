@@ -426,6 +426,7 @@ public class FeedReader.dbUI : GLib.Object {
 			logger.print(LogMessage.ERROR, "reading preview - %s".printf(sqlite_db.errmsg()));
 
 		while (stmt.step () == Sqlite.ROW) {
+			string? author = (stmt.column_text(4) == "") ? null : stmt.column_text(4);
 			tmp = new article(
 								articleID,
 								stmt.column_text(3),
@@ -435,7 +436,7 @@ public class FeedReader.dbUI : GLib.Object {
 								(ArticleStatus)stmt.column_int(9),
 								stmt.column_text(6),
 								stmt.column_text(7),
-								stmt.column_text(4),
+								author,
 								Utils.convertStringToDate(stmt.column_text(11)),
 								stmt.column_int(0),
 								stmt.column_text(10),

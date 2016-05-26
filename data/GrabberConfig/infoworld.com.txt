@@ -15,3 +15,5 @@ strip: //h3[contains(., "See also:")]
 strip: //div[@id="article-top-page-number"]
 strip: //p[starts-with(normalize-space(.), '[')]
 strip: //p[starts-with(normalize-space(.), '+')]
+
+test_url: http://www.infoworld.com/article/3053563/it-management/disrupt-or-die-beware-the-siren-calls-of-tech-consultants.html

@@ -22,7 +22,7 @@ public class FeedReader.article : GLib.Object {
 	private string m_preview;
 	private string m_feedID;
 	private Gee.ArrayList<string> m_tags;
-	private string m_author;
+	private string? m_author;
 	private ArticleStatus m_unread;
 	private ArticleStatus m_marked;
 	private int m_sortID;
@@ -40,7 +40,7 @@ public class FeedReader.article : GLib.Object {
 						ArticleStatus marked,
 						string html,
 						string preview,
-						string author,
+						string? author,
 						GLib.DateTime date,
 						int sortID,
 						string tags,
@@ -104,12 +104,12 @@ public class FeedReader.article : GLib.Object {
 		m_preview = preview;
 	}
 
-	public string getAuthor()
+	public string? getAuthor()
 	{
 		return m_author;
 	}
 
-	public void setAuthor(string author)
+	public void setAuthor(string? author)
 	{
 		m_author = author;
 	}

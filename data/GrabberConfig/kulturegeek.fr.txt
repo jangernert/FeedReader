@@ -1,0 +1,13 @@
+title: //h1[@class='post-name']
+author: //span[@class="police_info reviewer"]/a
+date: //span[@class="police_info dtreviewed"]
+body: //div[@class="post-content"]
+
+strip: //div[@class="yarpp-related"]
+strip: //div[@id="pafternews"]
+strip: //div[@class="partage_reseaux2"]
+strip: //div[@class="partage_reseaux"]
+strip: //a[@class="enp-report"]
+strip: //div[@class="adsPost"]
+
+test_url: http://kulturegeek.fr/news-84253/plan-promos-high-tech-week-end-13

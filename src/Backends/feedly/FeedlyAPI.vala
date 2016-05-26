@@ -322,7 +322,7 @@ public class FeedReader.FeedlyAPI : Object {
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
 			string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
-			string author = object.has_member("author") ? object.get_string_member("author") : "None";
+			string? author = object.has_member("author") ? object.get_string_member("author") : null;
 			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
 			string content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
 			bool unread = object.get_boolean_member("unread");

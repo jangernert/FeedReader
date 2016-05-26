@@ -55,7 +55,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 ### How to build the latest version
 ```
 git clone https://github.com/jangernert/FeedReader && cd ./FeedReader
-mkdir build & cd ./build 
+mkdir build && cd ./build 
 cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 make
 sudo make install

@@ -28,6 +28,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
 	public signal void markAllArticlesAsRead();
+	public signal void clearSelected();
 
 	public feedList () {
 		m_selected = null;
@@ -284,6 +285,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.moveUP.connect(moveUP);
+							feedrow.deselectRow.connect(deselectRow);
 							feedrow.drag_begin.connect((context) => {
 								onDragBegin(context);
 								showNewCategory();
@@ -309,6 +311,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				m_list.insert(feedrow, -1);
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.moveUP.connect(moveUP);
+				feedrow.deselectRow.connect(deselectRow);
 				feedrow.drag_begin.connect((context) => {
 					onDragBegin(context);
 					showNewCategory();
@@ -539,6 +542,7 @@ public class FeedReader.feedList : Gtk.Stack {
 						m_list.insert(categorierow, pos);
 						categorierow.setAsRead.connect(markSelectedRead);
 						categorierow.moveUP.connect(moveUP);
+						categorierow.deselectRow.connect(deselectRow);
 						categorierow.drag_begin.connect((context) => {
 							onDragBegin(context);
 							if(feedDaemon_interface.supportMultiLevelCategories())
@@ -585,7 +589,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpFeedRow = row as FeedRow;
-			if(tmpFeedRow != null && tmpFeedRow.getName() == "All Articles")
+			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL)
 			{
 				tmpFeedRow.set_unread_count(dataBase.get_unread_total());
 				break;
@@ -978,6 +982,12 @@ public class FeedReader.feedList : Gtk.Stack {
 				removeRow(tmpRow, 250);
 			}
 		}
+	}
+
+	public void deselectRow()
+	{
+		m_list.select_row(null);
+		clearSelected();
 	}
 
 	public void removeRow(Gtk.Widget? row, int duration = 700)

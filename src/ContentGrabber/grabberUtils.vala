@@ -417,7 +417,7 @@ public class FeedReader.grabberUtils : GLib.Object {
         }
 
         if(articleID == "" && feedID == "")
-            imgPath = GLib.Environment.get_home_dir() + "/ArticleImages/";
+            imgPath = GLib.Environment.get_home_dir() + "/debug-article/ArticleImages/";
         else
             imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
 

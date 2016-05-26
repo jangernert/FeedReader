@@ -223,10 +223,14 @@ public class FeedReader.Utils : GLib.Object {
 		return random;
 	}
 
-	public static string buildArticle(string html, string title, string url, string author, string date, string feedID)
+	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
 	{
 		var article = new GLib.StringBuilder();
-		string author_date = "posted by: %s, %s".printf(author, date);
+		string author_date = "";
+		if(author != null)
+			author_date +=  _("posted by: %s, ").printf(author);
+
+		author_date += date;
 
         string template;
 		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/article.html", out template);
@@ -456,35 +460,57 @@ public class FeedReader.Utils : GLib.Object {
 
 			// if can't resolve url to ip
 			if(addresses == null)
+			{
+				logger.print(LogMessage.ERROR, "Ping failed: can't resolve url " + url);
 				return false;
+			}
 
-	        var address = addresses.nth_data(0);
-	        var client = new GLib.SocketClient();
-	        var conn = client.connect(new GLib.InetSocketAddress(address, 80));
+
+			var client = new GLib.SocketClient();
+			SocketConnection? conn = null;
+
+			foreach(InetAddress ip in addresses)
+			{
+				logger.print(LogMessage.DEBUG, "Ping: trying ip-address " + ip.to_string());
+				conn = client.connect(new GLib.InetSocketAddress(ip, 80));
+
+				if(conn != null)
+					break;
+			}
 
 			// if can't establish connection to ip
 			if(conn == null)
+			{
+				logger.print(LogMessage.ERROR, "Ping failed: can't establish connection to ip");
 				return false;
+			}
+
 
 	        var message = @"GET / HTTP/1.1\r\nHost: $url\r\n\r\n";
 	        ssize_t bytesWritten = conn.output_stream.write(message.data);
 
 			// if can't write message
 			if(bytesWritten == -1)
+			{
+				logger.print(LogMessage.ERROR, "Ping failed: can't write message");
 				return false;
+			}
 
 	        var response = new GLib.DataInputStream(conn.input_stream);
 	        var status_line = response.read_line(null).strip();
 
 			// if no response received
 			if(status_line == null)
+			{
+				logger.print(LogMessage.ERROR, "Ping failed: no response received");
 				return false;
+			}
 
 			return true;
 	    }
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "ping failed: %s".printf(url));
+			logger.print(LogMessage.ERROR, "Ping failed: %s".printf(url));
 			logger.print(LogMessage.ERROR, e.message);
 	    }
 

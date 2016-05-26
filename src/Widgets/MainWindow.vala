@@ -45,12 +45,36 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		setupSpringCleanPage();
 		onClose();
 
-		var settings_action = new SimpleAction("settings", null);
-		settings_action.activate.connect(() => {
+		var reportBugAction = new SimpleAction("bugs", null);
+		reportBugAction.activate.connect(() => {
+			try{
+				Gtk.show_uri(Gdk.Screen.get_default(), "https://github.com/jangernert/FeedReader/issues", Gdk.CURRENT_TIME);
+			}
+			catch(GLib.Error e){
+				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+			}
+		});
+		add_action(reportBugAction);
+		reportBugAction.set_enabled(true);
+
+		var bountyAction = new SimpleAction("bounty", null);
+		bountyAction.activate.connect(() => {
+			try{
+				Gtk.show_uri(Gdk.Screen.get_default(), "https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038", Gdk.CURRENT_TIME);
+			}
+			catch(GLib.Error e){
+				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+			}
+		});
+		add_action(bountyAction);
+		bountyAction.set_enabled(true);
+
+		var settingsAction = new SimpleAction("settings", null);
+		settingsAction.activate.connect(() => {
 			showSettings("ui");
 		});
-		add_action(settings_action);
-		settings_action.set_enabled(true);
+		add_action(settingsAction);
+		settingsAction.set_enabled(true);
 
 		var login_action = new SimpleAction("reset", null);
 		login_action.activate.connect(() => {

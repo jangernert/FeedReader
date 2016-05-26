@@ -42,6 +42,9 @@ public class FeedReader.Grabber : GLib.Object {
         m_firstPage = true;
         m_foundSomething = false;
         m_singlePage = false;
+
+        if(m_articleURL.has_prefix("//"))
+            m_articleURL = "http:" + m_articleURL;
     }
 
     ~Grabber()
@@ -151,6 +154,43 @@ public class FeedReader.Grabber : GLib.Object {
         }
 
         m_rawHtml = (string)msg.response_body.flatten().data;
+        if(!m_rawHtml.validate())
+        {
+            string needle = "content=\"text/html; charset=";
+            int start = m_rawHtml.index_of(needle) + needle.length;
+            string locale = "";
+
+            if(start != -1)
+            {
+                int end = m_rawHtml.index_of("\"", start);
+                locale = m_rawHtml.substring(start, end-start);
+            }
+            else
+            {
+                needle = "charset=\"";
+                start = m_rawHtml.index_of(needle) + needle.length;
+                if(start != -1)
+                {
+                    int end = m_rawHtml.index_of("\"", start);
+                    locale = m_rawHtml.substring(start, end-start);
+                }
+                else
+                {
+                    return false;
+                }
+            }
+
+            logger.print(LogMessage.INFO, locale);
+            try
+            {
+                m_rawHtml = GLib.convert(m_rawHtml, -1, "utf-8", locale);
+            }
+            catch(ConvertError e)
+            {
+                logger.print(LogMessage.ERROR, e.message);
+            }
+        }
+
         return true;
     }
 

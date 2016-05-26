@@ -67,6 +67,11 @@ namespace FeedReader {
 			});
 		}
 
+		public int getVersion()
+		{
+			return DBusAPIVersion;
+		}
+
 
 		public bool supportTags()
 		{

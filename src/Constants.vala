@@ -211,6 +211,8 @@ namespace FeedReader {
 		const string settings = _("Settings");
 		const string reset = _("Change Account");
 		const string quit = _("Quit");
+		const string bugs = _("Report a bug");
+		const string bounty = _("Bounties");
 	}
 
 	public enum MouseButton {
@@ -289,6 +291,8 @@ namespace FeedReader {
 		const string ALL = "-4";
 		const string CATEGORIES = "-2";
 	}
+
+	const int DBusAPIVersion = 16;
 
 	// tango colors
 	const string[] COLORS = {

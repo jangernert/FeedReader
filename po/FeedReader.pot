@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-02 17:51+0200\n"
+"POT-Creation-Date: 2016-05-19 14:50+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/Constants.vala:196 ../src/Widgets/MainWindow.vala:33
+#: ../src/Constants.vala:196 ../src/Widgets/MainWindow.vala:34
 msgid "FeedReader"
 msgstr ""
 
@@ -37,8 +37,8 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:159
-#: ../src/Widgets/SettingsDialog.vala:25
+#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:161
+#: ../src/Widgets/SettingsDialog.vala:26
 msgid "Settings"
 msgstr ""
 
@@ -48,6 +48,14 @@ msgstr ""
 
 #: ../src/Constants.vala:213
 msgid "Quit"
+msgstr ""
+
+#: ../src/Constants.vala:214
+msgid "Report a bug"
+msgstr ""
+
+#: ../src/Constants.vala:215
+msgid "Bounties"
 msgstr ""
 
 #: ../src/Model/Article.vala:154
@@ -64,6 +72,10 @@ msgstr ""
 
 #: ../src/Utils.vala:97
 msgid "No Text available for this article :("
+msgstr ""
+
+#: ../src/Utils.vala:231
+msgid "posted by: %s, "
 msgstr ""
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:72
@@ -98,53 +110,53 @@ msgstr ""
 msgid "add Tag"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:345
+#: ../src/Widgets/MainWindow.vala:417
 msgid "Ignore all tls errors from now on"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:453
+#: ../src/Widgets/MainWindow.vala:525
 msgid "Please select a service first"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:456
+#: ../src/Widgets/MainWindow.vala:528
 msgid "Please enter a valid username"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:459
+#: ../src/Widgets/MainWindow.vala:531
 msgid "Please enter a valid password"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:462
+#: ../src/Widgets/MainWindow.vala:534
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:465
+#: ../src/Widgets/MainWindow.vala:537
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:468
+#: ../src/Widgets/MainWindow.vala:540
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:471
+#: ../src/Widgets/MainWindow.vala:543
 msgid "Either your username or the password are not correct."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:474
+#: ../src/Widgets/MainWindow.vala:546
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:477
+#: ../src/Widgets/MainWindow.vala:549
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:480
+#: ../src/Widgets/MainWindow.vala:552
 msgid "Not authorized to access URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:484
+#: ../src/Widgets/MainWindow.vala:556
 msgid "No valid CA certificate available!"
 msgstr ""
 
@@ -174,19 +186,19 @@ msgstr ""
 msgid "Update Feeds"
 msgstr ""
 
-#: ../src/Widgets/RemovePopover.vala:50
+#: ../src/Widgets/RemovePopover.vala:46
 msgid "Remove \"%s\""
 msgstr ""
 
-#: ../src/Widgets/RemovePopover.vala:87 ../src/Widgets/TagRow.vala:173
+#: ../src/Widgets/RemovePopover.vala:82 ../src/Widgets/TagRow.vala:173
 msgid "Tag \"%s\" removed"
 msgstr ""
 
-#: ../src/Widgets/RemovePopover.vala:104 ../src/Widgets/FeedRow.vala:202
+#: ../src/Widgets/RemovePopover.vala:98 ../src/Widgets/FeedRow.vala:211
 msgid "Feed \"%s\" removed"
 msgstr ""
 
-#: ../src/Widgets/RemovePopover.vala:122 ../src/Widgets/CategorieRow.vala:366
+#: ../src/Widgets/RemovePopover.vala:115 ../src/Widgets/CategorieRow.vala:369
 msgid "Category \"%s\" removed"
 msgstr ""
 
@@ -219,40 +231,36 @@ msgstr ""
 msgid "waiting"
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:102
+#: ../src/Widgets/ArticleView.vala:92
 msgid "No Article selected."
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:227
-msgid "Not available"
-msgstr ""
-
-#: ../src/Widgets/FeedList.vala:237
+#: ../src/Widgets/FeedList.vala:234
 msgid "All Articles"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:427
+#: ../src/Widgets/FeedList.vala:424
 msgid "Categories"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:447
+#: ../src/Widgets/FeedList.vala:444
 msgid "Tags"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:449
+#: ../src/Widgets/FeedList.vala:446
 msgid "Labels"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:496 ../src/Widgets/AddPopover.vala:51
+#: ../src/Widgets/FeedList.vala:493 ../src/Widgets/AddPopover.vala:51
 #: ../src/dbUI.vala:358
 msgid "Uncategorized"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:962
+#: ../src/Widgets/FeedList.vala:959
 msgid "New Tag"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:1082
+#: ../src/Widgets/FeedList.vala:1079
 msgid "New Category"
 msgstr ""
 
@@ -352,174 +360,186 @@ msgstr ""
 msgid "OwnCloud URL:"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:192 ../src/Widgets/FeedRow.vala:238
-#: ../src/Widgets/CategorieRow.vala:417
+#: ../src/Widgets/TagRow.vala:192 ../src/Widgets/FeedRow.vala:247
+#: ../src/Widgets/CategorieRow.vala:420
 msgid "Rename"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:193 ../src/Widgets/FeedRow.vala:241
-#: ../src/Widgets/CategorieRow.vala:418
+#: ../src/Widgets/TagRow.vala:193 ../src/Widgets/FeedRow.vala:250
+#: ../src/Widgets/CategorieRow.vala:421
 msgid "Remove"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:300 ../src/Widgets/FeedRow.vala:293
-#: ../src/Widgets/CategorieRow.vala:487
+#: ../src/Widgets/TagRow.vala:300 ../src/Widgets/FeedRow.vala:302
+#: ../src/Widgets/CategorieRow.vala:490
 msgid "rename"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:302 ../src/Widgets/CategorieRow.vala:489
+#: ../src/Widgets/TagRow.vala:302 ../src/Widgets/CategorieRow.vala:492
 msgid "add"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:34
+#: ../src/Widgets/SettingsDialog.vala:35
 msgid "Interface"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:35
+#: ../src/Widgets/SettingsDialog.vala:36
 msgid "Internals"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:36
+#: ../src/Widgets/SettingsDialog.vala:37
 msgid "Share"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:55
+#: ../src/Widgets/SettingsDialog.vala:56
 msgid "Feed List:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:57
+#: ../src/Widgets/SettingsDialog.vala:58
 msgid "Only show feeds"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:64
+#: ../src/Widgets/SettingsDialog.vala:65
 msgid "Only show unread"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:69
+#: ../src/Widgets/SettingsDialog.vala:70
 msgid "Sort FeedList by"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:69 ../src/Widgets/SettingsDialog.vala:76
+#: ../src/Widgets/SettingsDialog.vala:70 ../src/Widgets/SettingsDialog.vala:82
 msgid "Received"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:69
+#: ../src/Widgets/SettingsDialog.vala:70
 msgid "Alphabetically"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:74
-msgid "Article List:"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:76
-msgid "Sort articles by"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:76
-msgid "Date"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:81
-msgid "Newest first"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:86
-msgid "Article View:"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:75 ../src/Widgets/SettingsDialog.vala:94
 msgid "Theme"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:75
+msgid "Gtk+"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:75
+msgid "Dark"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:75
+msgid "elementary"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:80
+msgid "Article List:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:82
+msgid "Sort articles by"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:82
+msgid "Date"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:87
+msgid "Newest first"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:92
+msgid "Article View:"
+msgstr ""
+
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Default"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Spring"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Midnight"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Parchment"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:93
+#: ../src/Widgets/SettingsDialog.vala:99
 msgid "Font Size"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:93
+#: ../src/Widgets/SettingsDialog.vala:99
 msgid "Small"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:93
+#: ../src/Widgets/SettingsDialog.vala:99
 msgid "Normal"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:93
+#: ../src/Widgets/SettingsDialog.vala:99
 msgid "Large"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:93
+#: ../src/Widgets/SettingsDialog.vala:99
 msgid "Huge"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:118
+#: ../src/Widgets/SettingsDialog.vala:125
 msgid "Sync:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:120
+#: ../src/Widgets/SettingsDialog.vala:127
 msgid "Number of articles"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:122
+#: ../src/Widgets/SettingsDialog.vala:129
 msgid "Every (Minutes)"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:127
+#: ../src/Widgets/SettingsDialog.vala:134
 msgid "Database:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: ../src/Widgets/SettingsDialog.vala:136
 msgid "Delete articles after"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:130
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "Never"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:130
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "1 Week"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:130
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "1 Month"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:130
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "6 Months"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:132
+#: ../src/Widgets/SettingsDialog.vala:139
 msgid "Additional Functionality:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:134
+#: ../src/Widgets/SettingsDialog.vala:141
 msgid "Content Grabber"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:135
+#: ../src/Widgets/SettingsDialog.vala:142
 msgid "None"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:135
+#: ../src/Widgets/SettingsDialog.vala:142
 msgid "Built in grabber"
 msgstr ""
 
-#: ../src/Widgets/ContentPage.vala:408
+#: ../src/Widgets/ContentPage.vala:417
 msgid "undo"
 msgstr ""
 
@@ -539,15 +559,15 @@ msgstr ""
 msgid "scroll up"
 msgstr ""
 
-#: ../src/Widgets/FeedRow.vala:237 ../src/Widgets/CategorieRow.vala:416
+#: ../src/Widgets/FeedRow.vala:246 ../src/Widgets/CategorieRow.vala:419
 msgid "Mark as read"
 msgstr ""
 
-#: ../src/Widgets/FeedRow.vala:240
+#: ../src/Widgets/FeedRow.vala:249
 msgid "Remove only from %s"
 msgstr ""
 
-#: ../src/Widgets/CategorieRow.vala:419
+#: ../src/Widgets/CategorieRow.vala:422
 msgid "Remove (with Feeds)"
 msgstr ""
 
@@ -589,12 +609,6 @@ msgstr ""
 
 #: ../src/Widgets/AddPopover.vala:102
 msgid "Import OPML"
-msgstr ""
-
-#: ../src/Backends/ttrss/TTRSS_API.vala:465
-#: ../src/Backends/ttrss/TTRSS_API.vala:578
-#: ../src/Backends/inoreader/InoReaderAPI.vala:332
-msgid "not found"
 msgstr ""
 
 #: ../src/Backends/FeedServer.vala:1332

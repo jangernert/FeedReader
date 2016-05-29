@@ -103,6 +103,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 			dialog.website = AboutInfo.website;
 			dialog.website_label = AboutInfo.websiteLabel;
+
+			dialog.response.connect((response_id) => {
+				if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
+				{
+					dialog.hide_on_delete();
+				}
+			});
+
 			dialog.present();
 		});
 		add_action(about_action);

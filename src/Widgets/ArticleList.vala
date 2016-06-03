@@ -953,52 +953,96 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private string buildEmptyString()
 	{
-		string message = "No ";
-
-		if(m_only_unread)
-			message += "unread ";
-
-		if(m_only_marked)
-		{
-			if(m_only_unread)
-				message += "and ";
-			message += "marked ";
-		}
-
-		message += "articles ";
-
-		if(m_searchTerm != "")
-		{
-			message += "that fit \"%s\" ".printf(Utils.parseSearchTerm(m_searchTerm));
-		}
-
-		string name = "";
-
+		string message = "";
 		if(m_current_feed_selected != FeedID.ALL && m_current_feed_selected != FeedID.CATEGORIES)
 		{
-			message += "in ";
 			switch(m_IDtype)
 			{
 				case FeedListType.FEED:
-					message += "the feed ";
 					name = dataBase.getFeedName(m_current_feed_selected);
+					if(m_only_unread && !m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No unread articles that fit "%s" in the feed "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No unread articles in the feed "%s" could be found').printf(name);
+						}	
+					}
+					if(m_only_unread && m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No unread articles and marked that fit "%s" in the feed "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No unread and marked articles in the feed "%s" could be found').printf(name);
+						}	
+					}
+					if(!m_only_unread && m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No marked articles that fit "%s" in the feed "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No marked articles in the feed "%s" could be found').printf(name);
+						}	
+					}
 					break;
 				case FeedListType.TAG:
-					message += "the tag ";
 					name = dataBase.getTagName(m_current_feed_selected);
+					if(m_only_unread && !m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No unread articles that fit "%s" in the tag "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No unread articles in the tag "%s" could be found').printf(name);
+						}	
+					}
+					if(m_only_unread && m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No unread articles and marked that fit "%s" in the tag "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No unread and marked articles in the tag "%s" could be found').printf(name);
+						}	
+					}
+					if(!m_only_unread && m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No marked articles that fit "%s" in the tag "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No marked articles in the tag "%s" could be found').printf(name);
+						}	
+					}
 					break;
 				case FeedListType.CATEGORY:
-					message += "the category ";
 					name = dataBase.getCategoryName(m_current_feed_selected);
+					if(m_only_unread && !m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No unread articles that fit "%s" in the category "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No unread articles in the category "%s" could be found').printf(name);
+						}	
+					}
+					if(m_only_unread && m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No unread articles and marked that fit "%s" in the category "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No unread and marked articles in the category "%s" could be found').printf(name);
+						}	
+					}
+					if(!m_only_unread && m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _('No marked articles that fit "%s" in the category "%s" could be found').printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _('No marked articles in the category "%s" could be found').printf(name);
+						}	
+					}
 					break;
 			}
-			message += "\"%s\" ".printf(name);
 		}
-		message += "could be found.";
-
 		return message;
 	}
-
 
 	// thx to pantheon files developers =)
 	private void smooth_adjustment_to(Gtk.Adjustment adj, int final, int duration = 1000)

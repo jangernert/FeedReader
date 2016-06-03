@@ -64,8 +64,7 @@ namespace FeedReader {
 			dataBase.init();
 			base.startup();
 
-			if(GLib.Environment.get_variable("DESKTOP_SESSION") == "gnome"
-			|| GLib.Environment.get_variable("DESKTOP_SESSION") == "gnome-wayland")
+			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
 			{
 				var menu = new GLib.Menu();
 				menu.append(Menu.settings, "win.settings");

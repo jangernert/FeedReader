@@ -139,8 +139,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		if(settings_tweaks.get_boolean("restore-searchterm"))
 			m_search.text = settings_state.get_string("search-term");
 
-		string session = GLib.Environment.get_variable("DESKTOP_SESSION");
-		if(session != "gnome" && session != "gnome-wayland")
+		string session = GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down();
+		if(session != "gnome")
 		{
 			var menumodel = new GLib.Menu();
 			menumodel.append(Menu.settings, "win.settings");

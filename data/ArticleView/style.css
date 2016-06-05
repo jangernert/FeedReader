@@ -256,16 +256,15 @@ p {
 pre,
 code {
     background-color: #eee;
-    overflow: auto;
     margin: 0 0 1em;
-}
-
-pre {
-    padding: .5em 1em;
     white-space: pre-wrap;
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
     overflow: auto;
     width: auto;
+}
+
+pre {
+    padding: .5em 1em;
 }
 
 code {

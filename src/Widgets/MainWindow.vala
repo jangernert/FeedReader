@@ -351,12 +351,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		logger.print(LogMessage.DEBUG, "MainWindow: setupCSS");
 		string path = "/usr/share/FeedReader/gtk-css/";
 
-		// lets asume we're on Gtk+ 3.XX
-		if(Gtk.get_minor_version() <= 18)
-			path += "pre320/";
-		else
-			path += "post320/";
-
 		addProvider(path + "basics.css");
 
 		FeedListTheme theme = (FeedListTheme)settings_general.get_enum("feedlist-theme");

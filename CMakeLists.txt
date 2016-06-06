@@ -27,6 +27,7 @@ ensure_vala_version("0.26" MINIMUM)
 
 pkg_check_modules(WEBKITGTK4 QUIET webkit2gtk-4.0)
 pkg_check_modules(LIBUNITY QUIET unity)
+pkg_check_modules(GTK320 QUIET gtk+-3.0>=3.20)
 
 add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
@@ -294,7 +295,13 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION $
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION ${DATADIR}/dbus-1/services/)
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION /usr/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache /usr/share/icons/hicolor)")
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css DESTINATION ${PKGDATADIR})
+
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})
+
+if(GTK320_FOUND)
+	install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css/post320/gtk-css DESTINATION ${PKGDATADIR})
+else(GTK320_FOUND)
+	install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css/pre320/gtk-css DESTINATION ${PKGDATADIR})
+endif(GTK320_FOUND)

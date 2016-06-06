@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-19 14:50+0200\n"
+"POT-Creation-Date: 2016-06-06 15:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:161
+#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:149
 #: ../src/Widgets/SettingsDialog.vala:26
 msgid "Settings"
 msgstr ""
@@ -56,6 +56,10 @@ msgstr ""
 
 #: ../src/Constants.vala:215
 msgid "Bounties"
+msgstr ""
+
+#: ../src/Constants.vala:216
+msgid "Shortcuts"
 msgstr ""
 
 #: ../src/Model/Article.vala:154
@@ -110,53 +114,53 @@ msgstr ""
 msgid "add Tag"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:417
+#: ../src/Widgets/MainWindow.vala:436
 msgid "Ignore all tls errors from now on"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:525
+#: ../src/Widgets/MainWindow.vala:544
 msgid "Please select a service first"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:528
+#: ../src/Widgets/MainWindow.vala:547
 msgid "Please enter a valid username"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:531
+#: ../src/Widgets/MainWindow.vala:550
 msgid "Please enter a valid password"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:534
+#: ../src/Widgets/MainWindow.vala:553
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:537
+#: ../src/Widgets/MainWindow.vala:556
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:540
+#: ../src/Widgets/MainWindow.vala:559
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:543
+#: ../src/Widgets/MainWindow.vala:562
 msgid "Either your username or the password are not correct."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:546
+#: ../src/Widgets/MainWindow.vala:565
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:549
+#: ../src/Widgets/MainWindow.vala:568
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:552
+#: ../src/Widgets/MainWindow.vala:571
 msgid "Not authorized to access URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:556
+#: ../src/Widgets/MainWindow.vala:575
 msgid "No valid CA certificate available!"
 msgstr ""
 
@@ -198,7 +202,7 @@ msgstr ""
 msgid "Feed \"%s\" removed"
 msgstr ""
 
-#: ../src/Widgets/RemovePopover.vala:115 ../src/Widgets/CategorieRow.vala:369
+#: ../src/Widgets/RemovePopover.vala:115 ../src/Widgets/CategorieRow.vala:370
 msgid "Category \"%s\" removed"
 msgstr ""
 
@@ -235,32 +239,32 @@ msgstr ""
 msgid "No Article selected."
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:234
+#: ../src/Widgets/FeedList.vala:235
 msgid "All Articles"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:424
+#: ../src/Widgets/FeedList.vala:427
 msgid "Categories"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:444
+#: ../src/Widgets/FeedList.vala:447
 msgid "Tags"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:446
+#: ../src/Widgets/FeedList.vala:449
 msgid "Labels"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:493 ../src/Widgets/AddPopover.vala:51
+#: ../src/Widgets/FeedList.vala:496 ../src/Widgets/AddPopover.vala:51
 #: ../src/dbUI.vala:358
 msgid "Uncategorized"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:959
+#: ../src/Widgets/FeedList.vala:963
 msgid "New Tag"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:1079
+#: ../src/Widgets/FeedList.vala:1089
 msgid "New Category"
 msgstr ""
 
@@ -361,21 +365,21 @@ msgid "OwnCloud URL:"
 msgstr ""
 
 #: ../src/Widgets/TagRow.vala:192 ../src/Widgets/FeedRow.vala:247
-#: ../src/Widgets/CategorieRow.vala:420
+#: ../src/Widgets/CategorieRow.vala:421
 msgid "Rename"
 msgstr ""
 
 #: ../src/Widgets/TagRow.vala:193 ../src/Widgets/FeedRow.vala:250
-#: ../src/Widgets/CategorieRow.vala:421
+#: ../src/Widgets/CategorieRow.vala:422
 msgid "Remove"
 msgstr ""
 
 #: ../src/Widgets/TagRow.vala:300 ../src/Widgets/FeedRow.vala:302
-#: ../src/Widgets/CategorieRow.vala:490
+#: ../src/Widgets/CategorieRow.vala:491
 msgid "rename"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:302 ../src/Widgets/CategorieRow.vala:492
+#: ../src/Widgets/TagRow.vala:302 ../src/Widgets/CategorieRow.vala:493
 msgid "add"
 msgstr ""
 
@@ -539,7 +543,7 @@ msgstr ""
 msgid "Built in grabber"
 msgstr ""
 
-#: ../src/Widgets/ContentPage.vala:417
+#: ../src/Widgets/ContentPage.vala:421
 msgid "undo"
 msgstr ""
 
@@ -559,7 +563,87 @@ msgstr ""
 msgid "scroll up"
 msgstr ""
 
-#: ../src/Widgets/FeedRow.vala:246 ../src/Widgets/CategorieRow.vala:419
+#: ../src/Widgets/ArticleList.vala:966
+msgid "No unread articles that fit \"%s\" in the feed \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:968
+msgid "No unread articles in the feed \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:974
+msgid ""
+"No unread articles and marked that fit \"%s\" in the feed \"%s\" could be "
+"found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:976
+msgid "No unread and marked articles in the feed \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:982
+msgid "No marked articles that fit \"%s\" in the feed \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:984
+msgid "No marked articles in the feed \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:993
+msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:995
+msgid "No unread articles in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1001
+msgid ""
+"No unread articles and marked that fit \"%s\" in the tag \"%s\" could be "
+"found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1003
+msgid "No unread and marked articles in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1009
+msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1011
+msgid "No marked articles in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1020
+msgid ""
+"No unread articles that fit \"%s\" in the category \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1022
+msgid "No unread articles in the category \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1028
+msgid ""
+"No unread articles and marked that fit \"%s\" in the category \"%s\" could "
+"be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1030
+msgid "No unread and marked articles in the category \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1036
+msgid ""
+"No marked articles that fit \"%s\" in the category \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1038
+msgid "No marked articles in the category \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/FeedRow.vala:246 ../src/Widgets/CategorieRow.vala:420
 msgid "Mark as read"
 msgstr ""
 
@@ -567,7 +651,7 @@ msgstr ""
 msgid "Remove only from %s"
 msgstr ""
 
-#: ../src/Widgets/CategorieRow.vala:422
+#: ../src/Widgets/CategorieRow.vala:423
 msgid "Remove (with Feeds)"
 msgstr ""
 

@@ -107,7 +107,7 @@ public class FeedReader.UiUtils : GLib.Object {
 		urlMenu.append(Menu.bounty, "win.bounty");
 
 		var aboutMenu = new GLib.Menu();
-#if WITH_GTK320
+#if USE_GTK320
 		aboutMenu.append(Menu.shortcuts, "win.shortcuts");
 #endif
 		aboutMenu.append(Menu.about, "win.about");

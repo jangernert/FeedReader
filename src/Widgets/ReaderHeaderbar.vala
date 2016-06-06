@@ -139,25 +139,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		if(settings_tweaks.get_boolean("restore-searchterm"))
 			m_search.text = settings_state.get_string("search-term");
 
-		string session = GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down();
-		if(session != "gnome")
+		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "gnome")
 		{
-			var menumodel = new GLib.Menu();
-			menumodel.append(Menu.settings, "win.settings");
-			menumodel.append(Menu.reset, "win.reset");
-			menumodel.append(Menu.bugs, "win.bugs");
-			menumodel.append(Menu.bounty, "win.bounty");
-
-			if(session != "pantheon")
-			{
-				menumodel.append(Menu.about, "win.about");
-			}
-
 			var menubutton = new Gtk.MenuButton();
 			menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
 			menubutton.set_size_request(32, 32);
 			menubutton.set_use_popover(true);
-			menubutton.set_menu_model(menumodel);
+			menubutton.set_menu_model(UiUtils.getMenu());
 			menubutton.set_tooltip_text(_("Settings"));
 			m_header_left.pack_end(menubutton);
 		}

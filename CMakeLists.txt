@@ -85,6 +85,10 @@ else(WEBKITGTK4_FOUND)
 	list(APPEND UI_PACKAGES WebKit2-3.0)
 endif(WEBKITGTK4_FOUND)
 
+if(GTK320_FOUND)
+	list(APPEND UI_OPTIONS --define USE_GTK320)
+endif(GTK320_FOUND)
+
 vala_precompile(UI ${EXEC_NAME}
     GitSHA1.vala
     src/DBusConnection.vala

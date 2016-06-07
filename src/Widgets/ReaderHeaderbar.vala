@@ -58,6 +58,14 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			toggledRead();
 		});
 
+		var fullscreen_button = new Gtk.Button.from_icon_name("view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		fullscreen_button.set_tooltip_text(_("Read article fullscreen"));
+		fullscreen_button.clicked.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			window.fullscreen();
+			window.getContent().enterFullscreen(false);
+		});
+
 
 		m_header_left = new Gtk.HeaderBar ();
 		m_header_left.show_close_button = true;
@@ -155,6 +163,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);
 
+		m_header_right.pack_start(fullscreen_button);
 		m_header_right.pack_start(m_mark_button);
 		m_header_right.pack_start(m_read_button);
 		m_header_right.pack_end(m_share_button);

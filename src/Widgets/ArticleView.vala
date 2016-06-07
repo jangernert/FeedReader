@@ -44,8 +44,10 @@ public class FeedReader.articleView : Gtk.Stack {
 	private bool m_connected = false;
 	private int m_height = 0;
 	private int m_width = 0;
-	public signal void enterFullscreen();
-	public signal void leaveFullscreen();
+	private bool m_FullscreenVideo = false;
+	private bool m_FullscreenArticle = false;
+	public signal void enterFullscreen(bool video);
+	public signal void leaveFullscreen(bool video);
 
 
 	public articleView()
@@ -76,13 +78,15 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_view.button_release_event.connect(onRelease);
 		m_view.motion_notify_event.connect(onMouseMotion);
 		m_view.enter_fullscreen.connect(() => {
+			m_FullscreenVideo = true;
 			m_connected = false;
-			enterFullscreen();
+			enterFullscreen(true);
 			return false;
 		});
 		m_view.leave_fullscreen.connect(() => {
+			m_FullscreenVideo = false;
 			m_connected = true;
-			leaveFullscreen();
+			leaveFullscreen(true);
 			return false;
 		});
 		m_search = m_view.get_find_controller();
@@ -583,6 +587,21 @@ public class FeedReader.articleView : Gtk.Stack {
 				return true;
 			});
 		}
+	}
+
+	public bool fullscreenVideo()
+	{
+		return m_FullscreenVideo;
+	}
+
+	public bool fullscreenArticle()
+	{
+		return m_FullscreenArticle;
+	}
+
+	public void setFullscreenArticle(bool fs)
+	{
+		m_FullscreenArticle = fs;
 	}
 
 }

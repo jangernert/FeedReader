@@ -151,26 +151,42 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		this.add(m_pane1);
 	}
 
-	public void enterFullscreen()
+	public void enterFullscreen(bool video)
 	{
-		if(settings_tweaks.get_boolean("fullscreen-videos"))
-			m_pane2.set_visible(false);
+		if(video)
+		{
+			if(!settings_tweaks.get_boolean("fullscreen-videos"))
+				return;
+		}
+		else
+		{
+			m_article_view.setFullscreenArticle(true);
+		}
+
+		m_pane2.set_visible(false);
 	}
 
-	public void leaveFullscreen()
+	public void leaveFullscreen(bool video)
 	{
+		if(!video)
+		{
+			m_article_view.setFullscreenArticle(false);
+		}
+
 		m_pane2.set_visible(true);
 	}
 
 	public void ArticleListNEXT()
 	{
-		leaveFullscreen();
+		if(!m_article_view.fullscreenArticle())
+			leaveFullscreen(true);
 		m_articleList.move(false);
 	}
 
 	public void ArticleListPREV()
 	{
-		leaveFullscreen();
+		if(!m_article_view.fullscreenArticle())
+			leaveFullscreen(true);
 		m_articleList.move(true);
 	}
 
@@ -424,5 +440,10 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		this.add_overlay(notification);
 		this.show_all();
 		return notification;
+	}
+
+	public bool isFullscreen()
+	{
+		return m_article_view.fullscreenArticle();
 	}
 }

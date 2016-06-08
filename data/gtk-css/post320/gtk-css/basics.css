@@ -1,33 +1,25 @@
-#fake-example *:selected *:visited {
-    opacity: 1;
-}
 .feedlist-spinner {
     color: mix(@theme_bg_color, @theme_fg_color, 0.5);
 }
-FeedReaderUpdateButton:insensitive * {
+FeedReaderUpdateButton:disabled * {
     opacity: 1;
 }
 GtkEventBox {
     background: none;
 }
-GtkListBoxRow,
-.addServiceButton {
+.addServiceButton,
+row {
+    outline: none;
+    padding: 0px;
     border: none;
     border-radius: 0px;
     background-image: none;
 }
-.sidebar {
-    text-shadow: none;
-    icon-shadow: none;
-    background: none;
-    -gtk-icon-style: symbolic;
-}
-.list-row {
-    padding: 0px;
-    outline: none;
-}
-.destructive-action GtkSpinner {
+.destructive-action spinner {
     color: white;
+}
+.FeedListFooter button {
+    box-shadow: none;
 }
 .transparentBG {
     background: rgba(0, 0, 0, 0);
@@ -40,6 +32,11 @@ GtkListBoxRow,
 }
 .servicebox {
     border: 1px solid alpha (#000, 0.30);
+}
+.sidebar-row {
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+    background: none;
 }
 /***************/
 /* text styles */
@@ -78,10 +75,6 @@ GtkListBoxRow,
 .headline-unread {
     font-weight: bold;
 }
-.imageOverlay {
-    border-top-right-radius: 0;
-    border-top-left-radius: 0;
-}
 /*******************/
 /* split headerbar */
 /*******************/
@@ -91,7 +84,7 @@ GtkListBoxRow,
     border-width: 0 1px 1px 0;
 }
 .titlebar .pane-separator {
-    background-color: alpha(@theme_fg_color, 0.4);
+    background-color: shade(@theme_bg_color, 0.4);
     background-image: none;
 }
 .header_right {

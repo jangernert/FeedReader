@@ -64,20 +64,13 @@ namespace FeedReader {
 			dataBase.init();
 			base.startup();
 
-			if(GLib.Environment.get_variable("DESKTOP_SESSION") == "gnome")
+			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
 			{
-				var menu = new GLib.Menu();
-				menu.append(Menu.settings, "win.settings");
-				menu.append(Menu.reset, "win.reset");
-				menu.append(Menu.bugs, "win.bugs");
-				menu.append(Menu.bounty, "win.bounty");
-				menu.append(Menu.about, "win.about");
-				menu.append(Menu.quit, "app.quit");
-				this.app_menu = menu;
-
 				var quit_action = new SimpleAction("quit", null);
 				quit_action.activate.connect(this.quit);
 				this.add_action(quit_action);
+				
+				this.app_menu = UiUtils.getMenu();
 			}
 		}
 

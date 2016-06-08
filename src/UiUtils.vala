@@ -95,4 +95,33 @@ public class FeedReader.UiUtils : GLib.Object {
 		// otherwise check if online
 		return feedDaemon_interface.isOnline();
 	}
+
+	public static GLib.Menu getMenu()
+	{
+		var settingMenu = new GLib.Menu();
+		settingMenu.append(Menu.settings, "win.settings");
+		settingMenu.append(Menu.reset, "win.reset");
+
+		var urlMenu = new GLib.Menu();
+		urlMenu.append(Menu.bugs, "win.bugs");
+		urlMenu.append(Menu.bounty, "win.bounty");
+
+		var aboutMenu = new GLib.Menu();
+#if USE_GTK320
+		aboutMenu.append(Menu.shortcuts, "win.shortcuts");
+#endif
+		aboutMenu.append(Menu.about, "win.about");
+		aboutMenu.append(Menu.quit, "app.quit");
+
+		var menu = new GLib.Menu();
+		menu.append_section("", settingMenu);
+		menu.append_section("", urlMenu);
+
+		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "pantheon")
+		{
+			menu.append_section("", aboutMenu);
+		}
+
+		return menu;
+	}
 }

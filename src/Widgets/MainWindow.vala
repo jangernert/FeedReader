@@ -45,6 +45,23 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		setupSpringCleanPage();
 		onClose();
 
+		var shortcutsAction = new SimpleAction("shortcuts", null);
+		shortcutsAction.activate.connect(() => {
+			try {
+			    var builder = new Builder();
+			    builder.add_from_file("/usr/share/FeedReader/shortcuts.ui");
+			    builder.connect_signals(null);
+			    var shortuctsWindow = builder.get_object("shortcuts") as Gtk.Window;
+			    shortuctsWindow.set_transient_for(this);
+				shortuctsWindow.set_modal(true);
+			    shortuctsWindow.show_all();
+			} catch (Error e) {
+				logger.print(LogMessage.DEBUG, "Could not load UI: %s".printf(e.message));
+			}
+		});
+		add_action(shortcutsAction);
+		shortcutsAction.set_enabled(true);
+
 		var reportBugAction = new SimpleAction("bugs", null);
 		reportBugAction.activate.connect(() => {
 			try{
@@ -103,6 +120,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 			dialog.website = AboutInfo.website;
 			dialog.website_label = AboutInfo.websiteLabel;
+
+			dialog.response.connect((response_id) => {
+				if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
+				{
+					dialog.hide_on_delete();
+				}
+			});
+
 			dialog.present();
 		});
 		add_action(about_action);
@@ -342,12 +367,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: setupCSS");
 		string path = "/usr/share/FeedReader/gtk-css/";
-
-		// lets asume we're on Gtk+ 3.XX
-		if(Gtk.get_minor_version() <= 18)
-			path += "pre320/";
-		else
-			path += "post320/";
 
 		addProvider(path + "basics.css");
 

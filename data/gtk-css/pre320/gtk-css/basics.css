@@ -1,25 +1,33 @@
+#fake-example *:selected *:visited {
+    opacity: 1;
+}
 .feedlist-spinner {
     color: mix(@theme_bg_color, @theme_fg_color, 0.5);
 }
-FeedReaderUpdateButton:disabled * {
+FeedReaderUpdateButton:insensitive * {
     opacity: 1;
 }
 GtkEventBox {
     background: none;
 }
-.addServiceButton,
-row {
-    outline: none;
-    padding: 0px;
+GtkListBoxRow,
+.addServiceButton {
     border: none;
     border-radius: 0px;
     background-image: none;
 }
-.destructive-action spinner {
-    color: white;
+.sidebar {
+    text-shadow: none;
+    icon-shadow: none;
+    background: none;
+    -gtk-icon-style: symbolic;
 }
-.FeedListFooter button {
-    box-shadow: none;
+.list-row {
+    padding: 0px;
+    outline: none;
+}
+.destructive-action GtkSpinner {
+    color: white;
 }
 .transparentBG {
     background: rgba(0, 0, 0, 0);
@@ -32,11 +40,6 @@ row {
 }
 .servicebox {
     border: 1px solid alpha (#000, 0.30);
-}
-.sidebar-row {
-    text-shadow: none;
-    -gtk-icon-shadow: none;
-    background: none;
 }
 /***************/
 /* text styles */
@@ -75,6 +78,10 @@ row {
 .headline-unread {
     font-weight: bold;
 }
+.imageOverlay {
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+}
 /*******************/
 /* split headerbar */
 /*******************/
@@ -84,7 +91,7 @@ row {
     border-width: 0 1px 1px 0;
 }
 .titlebar .pane-separator {
-    background-color: alpha(@theme_fg_color, 0.4);
+    background-color: shade(@theme_bg_color, 0.4);
     background-image: none;
 }
 .header_right {

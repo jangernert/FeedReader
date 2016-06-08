@@ -715,6 +715,19 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				}
 				break;
 
+			case Gdk.Key.F:
+				if(!m_content.isFullscreen() && m_content.getSelectedArticle() != "")
+				{
+					this.fullscreen();
+					m_content.enterFullscreen(false);
+				}
+				else if(m_content.isFullscreen())
+				{
+					this.unfullscreen();
+					m_content.leaveFullscreen(false);
+				}
+				break;
+
 			default:
 				return false;
 		}

@@ -486,9 +486,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if(selected_row != null)
 			return selected_row.getID();
 
-		if(m_currentList.get_children().length() == 0)
-			return "empty";
-
 		return "";
 	}
 
@@ -966,7 +963,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread articles in the feed \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -974,7 +971,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles and marked that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread and marked articles in the feed \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(!m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -982,7 +979,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No marked articles in the feed \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					break;
 				case FeedListType.TAG:
@@ -993,7 +990,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread articles in the tag \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1001,7 +998,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles and marked that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread and marked articles in the tag \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(!m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1009,7 +1006,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No marked articles in the tag \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					break;
 				case FeedListType.CATEGORY:
@@ -1020,7 +1017,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread articles in the category \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1028,7 +1025,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles and marked that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread and marked articles in the category \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(!m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1036,7 +1033,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No marked articles in the category \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					break;
 			}

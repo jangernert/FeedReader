@@ -641,6 +641,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_FullscreenVideo = true;
 		m_connected = false;
 		enterFullscreen(true);
+		m_fsHead.hide();
+		m_prevButton.hide();
+		m_nextButton.hide();
 		return false;
 	}
 

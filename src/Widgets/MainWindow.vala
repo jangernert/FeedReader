@@ -657,6 +657,17 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				m_content.ArticleListNEXT();
 				break;
 
+			case Gdk.Key.Left:
+			case Gdk.Key.Right:
+				if(m_content.isFullscreen())
+				{
+					if(event.keyval == Gdk.Key.Left)
+						m_content.ArticleListPREV();
+					else
+						m_content.ArticleListNEXT();
+				}
+				break;
+
 			case Gdk.Key.r:
 				logger.print(LogMessage.DEBUG, "shortcut: toggle read");
 				m_content.toggleReadSelectedArticle();

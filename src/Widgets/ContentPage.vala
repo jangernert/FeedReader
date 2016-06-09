@@ -325,12 +325,14 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void toggleReadSelectedArticle()
 	{
-		m_articleList.toggleReadSelected();
+		bool unread = m_articleList.toggleReadSelected();
+		m_article_view.setUnread(unread);
 	}
 
 	public void toggleMarkedSelectedArticle()
 	{
-		m_articleList.toggleMarkedSelected();
+		bool marked = m_articleList.toggleMarkedSelected();
+		m_article_view.setMarked(marked);
 	}
 
 	public void openSelectedArticle()

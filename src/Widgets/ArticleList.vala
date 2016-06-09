@@ -286,26 +286,24 @@ public class FeedReader.articleList : Gtk.Overlay {
         });
 	}
 
-	public void toggleReadSelected()
+	public bool toggleReadSelected()
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
 		if(selected_row == null)
-			return;
+			return false;
 
-		selected_row.toggleUnread();
-		selected_row.show_all();
+		return selected_row.toggleUnread();
 	}
 
-	public void toggleMarkedSelected()
+	public bool toggleMarkedSelected()
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
 		if(selected_row == null)
-			return;
+			return false;
 
-		selected_row.toggleMarked();
-		selected_row.show_all();
+		return selected_row.toggleMarked();
 	}
 
 	public void openSelected()

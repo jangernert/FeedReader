@@ -130,7 +130,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_fsHead = new fullscreenHeaderbar();
 		m_fsHead.close.connect(() => {
 			leaveFullscreen(false);
-			var window = this.get_toplevel() as Gtk.ApplicationWindow;
+			var window = this.get_toplevel() as readerUI;
 			if(window != null && window.is_toplevel())
 				window.unfullscreen();
 		});
@@ -294,6 +294,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		setBackgroundColor();
 		m_fsHead.setTitle(Article.getTitle());
+		m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
+		m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
 
 		m_currentView.load_html(
 			Utils.buildArticle(
@@ -684,6 +686,16 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.motion_notify_event.connect(onMouseMotion);
 		m_currentView.enter_fullscreen.connect(enter_fullscreen);
 		m_currentView.leave_fullscreen.connect(leave_fullscreen);
+	}
+
+	public void setMarked(bool marked)
+	{
+		m_fsHead.setMarked(marked);
+	}
+
+	public void setUnread(bool unread)
+	{
+		m_fsHead.setUnread(unread);
 	}
 
 }

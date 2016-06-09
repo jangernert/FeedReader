@@ -486,6 +486,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if(selected_row != null)
 			return selected_row.getID();
 
+		if(m_currentList.get_children().length() == 0)
+			return "empty";
+
 		return "";
 	}
 

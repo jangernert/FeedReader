@@ -42,6 +42,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var fs_icon = new Gtk.Image.from_icon_name("view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_state = (ArticleListState)settings_state.get_enum("show-articles");
 
 
@@ -58,8 +59,12 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			toggledRead();
 		});
 
-		var fullscreen_button = new Gtk.Button.from_icon_name("view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var fullscreen_button = new Gtk.Button();
+		fullscreen_button.add(fs_icon);
+		fullscreen_button.set_relief(Gtk.ReliefStyle.NONE);
+		fullscreen_button.set_focus_on_click(false);
 		fullscreen_button.set_tooltip_text(_("Read article fullscreen"));
+		fullscreen_button.sensitive = true;
 		fullscreen_button.clicked.connect(() => {
 			var window = this.get_toplevel() as readerUI;
 			window.fullscreen();

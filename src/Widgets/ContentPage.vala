@@ -180,6 +180,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		if(!m_article_view.fullscreenArticle())
 			leaveFullscreen(true);
+		else
+			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_LEFT, 500);
+
 		m_articleList.move(false);
 	}
 
@@ -187,6 +190,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		if(!m_article_view.fullscreenArticle())
 			leaveFullscreen(true);
+		else
+			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_RIGHT, 500);
+
 		m_articleList.move(true);
 	}
 

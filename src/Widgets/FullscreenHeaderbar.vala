@@ -103,7 +103,7 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 		m_revealer.valign = Gtk.Align.START;
 		m_revealer.add(m_header);
 
-		this.set_size_request(0, 50);
+		this.set_size_request(0, 80);
 		this.no_show_all = true;
 		this.enter_notify_event.connect((event) => {
 			m_revealer.show_all();

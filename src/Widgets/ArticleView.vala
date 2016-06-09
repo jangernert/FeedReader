@@ -29,6 +29,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private WebKit.FindController m_search;
 	private Gtk.Stack m_stack;
 	private fullscreenHeaderbar m_fsHead;
+	private fullscreenButton m_prevButton;
+	private fullscreenButton m_nextButton;
 	private string m_currentArticle;
 	private bool m_firstTime = true;
 	private string m_searchTerm = "";
@@ -139,7 +141,27 @@ public class FeedReader.articleView : Gtk.Overlay {
 		fullscreenHeaderOverlay.add(m_stack);
 		fullscreenHeaderOverlay.add_overlay(m_fsHead);
 
-		this.add(fullscreenHeaderOverlay);
+		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
+		m_prevButton.click.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			if(window != null && window.is_toplevel())
+				window.getContent().ArticleListPREV();
+		});
+		var prevOverlay = new Gtk.Overlay();
+		prevOverlay.add(fullscreenHeaderOverlay);
+		prevOverlay.add_overlay(m_prevButton);
+
+		m_nextButton = new fullscreenButton("go-next-symbolic", Gtk.Align.END);
+		m_nextButton.click.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			if(window != null && window.is_toplevel())
+				window.getContent().ArticleListNEXT();
+		});
+		var nextOverlay = new Gtk.Overlay();
+		nextOverlay.add(prevOverlay);
+		nextOverlay.add_overlay(m_nextButton);
+
+		this.add(nextOverlay);
 		this.add_overlay(m_overlayLabel);
 
 		Bus.watch_name(BusType.SESSION, "org.gnome.feedreader.FeedReaderArticleView", GLib.BusNameWatcherFlags.NONE,
@@ -639,12 +661,16 @@ public class FeedReader.articleView : Gtk.Overlay {
 		if(fs)
 		{
 			m_fsHead.show();
+			m_prevButton.show();
+			m_nextButton.show();
 		}
 		else
 		{
 			m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 			m_stack.set_transition_duration(100);
 			m_fsHead.hide();
+			m_prevButton.hide();
+			m_nextButton.hide();
 		}
 	}
 

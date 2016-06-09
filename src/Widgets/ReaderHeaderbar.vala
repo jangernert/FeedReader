@@ -19,6 +19,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private Gtk.Button m_tag_button;
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
+	private Gtk.Button m_fullscreen_button;
 	private ModeButton m_modeButton;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
@@ -58,13 +59,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			toggledRead();
 		});
 
-		var fullscreen_button = new Gtk.Button();
-		fullscreen_button.add(fs_icon);
-		fullscreen_button.set_relief(Gtk.ReliefStyle.NONE);
-		fullscreen_button.set_focus_on_click(false);
-		fullscreen_button.set_tooltip_text(_("Read article fullscreen"));
-		fullscreen_button.sensitive = true;
-		fullscreen_button.clicked.connect(() => {
+		m_fullscreen_button = new Gtk.Button();
+		m_fullscreen_button.add(fs_icon);
+		m_fullscreen_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_fullscreen_button.set_focus_on_click(false);
+		m_fullscreen_button.set_tooltip_text(_("Read article fullscreen"));
+		m_fullscreen_button.sensitive = false;
+		m_fullscreen_button.clicked.connect(() => {
 			var window = this.get_toplevel() as readerUI;
 			window.fullscreen();
 			window.getContent().enterFullscreen(false);
@@ -167,7 +168,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);
 
-		m_header_right.pack_start(fullscreen_button);
+		m_header_right.pack_start(m_fullscreen_button);
 		m_header_right.pack_start(m_mark_button);
 		m_header_right.pack_start(m_read_button);
 		m_header_right.pack_end(m_share_button);
@@ -211,6 +212,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	{
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
+		m_fullscreen_button.sensitive = show;
 
 		if(m_online)
 		{

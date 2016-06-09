@@ -28,6 +28,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private WebKit.WebView m_currentView;
 	private WebKit.FindController m_search;
 	private Gtk.Stack m_stack;
+	private Gtk.EventBox m_eventBox;
+	private Gtk.Revealer m_revealer;
 	private string m_currentArticle;
 	private bool m_firstTime = true;
 	private string m_searchTerm = "";
@@ -126,7 +128,51 @@ public class FeedReader.articleView : Gtk.Overlay {
 			}
         });
 
-		this.add(m_stack);
+		var close_icon = new Gtk.Image.from_icon_name("view-restore-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var closeButton = new Gtk.Button();
+		closeButton.add(close_icon);
+		closeButton.set_relief(Gtk.ReliefStyle.NONE);
+		closeButton.set_focus_on_click(false);
+		closeButton.set_tooltip_text(_("Leave fullscreen mode"));
+		closeButton.clicked.connect(() => {
+			leaveFullscreen(false);
+			var window = this.get_toplevel() as Gtk.ApplicationWindow;
+			if(window != null && window.is_toplevel())
+				window.unfullscreen();
+		});
+		var fullscreenHeader = new Gtk.HeaderBar();
+		fullscreenHeader.get_style_context().add_class("titlebar");
+		fullscreenHeader.get_style_context().add_class("imageOverlay");
+		fullscreenHeader.valign = Gtk.Align.START;
+		fullscreenHeader.pack_end(closeButton);
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+		m_revealer.set_transition_duration(300);
+		m_revealer.valign = Gtk.Align.START;
+		m_revealer.add(fullscreenHeader);
+		m_eventBox = new Gtk.EventBox();
+		m_eventBox.set_size_request(0, 50);
+		m_eventBox.no_show_all = true;
+		m_eventBox.enter_notify_event.connect((event) => {
+			m_revealer.set_reveal_child(true);
+			m_revealer.show_all();
+			return true;
+		});
+		m_eventBox.leave_notify_event.connect((event) => {
+			if(event.detail == Gdk.NotifyType.INFERIOR)
+				return false;
+
+			m_revealer.set_reveal_child(false);
+			return true;
+		});
+		m_eventBox.add(m_revealer);
+		m_eventBox.valign = Gtk.Align.START;
+
+		var fullscreenHeaderOverlay = new Gtk.Overlay();
+		fullscreenHeaderOverlay.add(m_stack);
+		fullscreenHeaderOverlay.add_overlay(m_eventBox);
+
+		this.add(fullscreenHeaderOverlay);
 		this.add_overlay(m_overlayLabel);
 
 		Bus.watch_name(BusType.SESSION, "org.gnome.feedreader.FeedReaderArticleView", GLib.BusNameWatcherFlags.NONE,
@@ -622,10 +668,15 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		m_FullscreenArticle = fs;
 
-		if(!fs)
+		if(fs)
+		{
+			m_eventBox.show();
+		}
+		else
 		{
 			m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 			m_stack.set_transition_duration(100);
+			m_eventBox.hide();
 		}
 	}
 

@@ -79,9 +79,12 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
             m_timeout_source_id = 0;
         }
 
-		this.visible = true;
-		m_icon.show();
-
+		if(show)
+		{
+			this.visible = true;
+			m_icon.show();
+		}
+		
 		m_timeout_source_id = Timeout.add(20, () => {
 
 			if(show)

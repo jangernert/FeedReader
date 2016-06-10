@@ -17,6 +17,8 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
 
 	private Gtk.Image m_icon;
 	private double m_opacity = 0.4;
+	private bool m_hover = false;
+	private uint m_timeout_source_id = 0;
 	public signal void click();
 
 	public fullscreenButton(string iconName, Gtk.Align align)
@@ -37,19 +39,21 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
 
 		m_icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DIALOG);
 		m_icon.margin = 20;
-		this.opacity = m_opacity;
+		this.opacity = 0.0;
 		this.add(m_icon);
 	}
 
 	private bool onEnter(Gdk.EventCrossing event)
     {
 		this.opacity = 1.0;
+		m_hover = true;
         return true;
     }
 
     private bool onLeave(Gdk.EventCrossing event)
     {
 		this.opacity = m_opacity;
+		m_hover = false;
         return true;
     }
 
@@ -67,10 +71,45 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
         return true;
     }
 
-	public void show()
+	public void reveal(bool show)
 	{
+		if (m_timeout_source_id > 0)
+		{
+            GLib.Source.remove(m_timeout_source_id);
+            m_timeout_source_id = 0;
+        }
+
 		this.visible = true;
 		m_icon.show();
+
+		m_timeout_source_id = Timeout.add(20, () => {
+
+			if(show)
+			{
+				if(!m_hover && this.opacity-m_opacity <= 0.02)
+				{
+					this.opacity = m_opacity;
+					return false;
+				}
+
+				if(m_hover && this.opacity == 1.0)
+					return false;
+
+				this.opacity += 0.02;
+			}
+			else
+			{
+				if(this.opacity == 0.0)
+				{
+					this.hide();
+					return false;
+				}
+
+				this.opacity -= 0.02;
+			}
+
+            return true;
+        });
 	}
 
 }

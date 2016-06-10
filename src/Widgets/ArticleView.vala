@@ -642,8 +642,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_connected = false;
 		enterFullscreen(true);
 		m_fsHead.hide();
-		m_prevButton.hide();
-		m_nextButton.hide();
+		m_prevButton.reveal(false);
+		m_nextButton.reveal(false);
 		return false;
 	}
 
@@ -664,16 +664,24 @@ public class FeedReader.articleView : Gtk.Overlay {
 		if(fs)
 		{
 			m_fsHead.show();
-			m_prevButton.show();
-			m_nextButton.show();
+
+			var window = this.get_toplevel() as readerUI;
+			var content = window.getContent();
+
+			if(!content.ArticleListSelectedIsFirst())
+				m_nextButton.reveal(true);
+
+			if(!content.ArticleListSelectedIsLast())
+				m_prevButton.reveal(true);
+
 		}
 		else
 		{
 			m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 			m_stack.set_transition_duration(100);
 			m_fsHead.hide();
-			m_prevButton.hide();
-			m_nextButton.hide();
+			m_prevButton.reveal(false);
+			m_nextButton.reveal(false);
 		}
 	}
 
@@ -725,6 +733,16 @@ public class FeedReader.articleView : Gtk.Overlay {
 	public void setUnread(bool unread)
 	{
 		m_fsHead.setUnread(unread);
+	}
+
+	public void nextButtonVisible(bool vis)
+	{
+		m_nextButton.reveal(vis);
+	}
+
+	public void prevButtonVisible(bool vis)
+	{
+		m_prevButton.reveal(vis);
 	}
 
 }

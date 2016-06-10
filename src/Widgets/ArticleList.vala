@@ -1222,4 +1222,28 @@ public class FeedReader.articleList : Gtk.Overlay {
 		}
 	}
 
+	public bool selectedIsFirst()
+	{
+		var selected_row = m_currentList.get_selected_row() as articleRow;
+		var ArticleListChildren = m_currentList.get_children();
+		int n = ArticleListChildren.index(selected_row);
+
+		if(n == 0)
+			return true;
+
+		return false;
+	}
+
+	public bool selectedIsLast()
+	{
+		var selected_row = m_currentList.get_selected_row() as articleRow;
+		var ArticleListChildren = m_currentList.get_children();
+		int n = ArticleListChildren.index(selected_row);
+
+		if(n + 1 == ArticleListChildren.length())
+			return true;
+
+		return false;
+	}
+
 }

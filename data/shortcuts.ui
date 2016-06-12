@@ -32,6 +32,13 @@
                                 <property name="accelerator">&lt;Primary&gt;Q</property>
                             </object>
                         </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">True</property>
+                                <property name="title" translatable="yes" context="shortcut window">Fullscreen the selected article</property>
+                                <property name="accelerator">&lt;SHIFT&gt;F</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
                 <child>

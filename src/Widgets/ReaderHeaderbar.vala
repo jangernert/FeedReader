@@ -19,13 +19,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private Gtk.Button m_tag_button;
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
+	private Gtk.Button m_fullscreen_button;
 	private ModeButton m_modeButton;
 	private UpdateButton m_refresh_button;
 	private Gtk.SearchEntry m_search;
 	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
 	private Gtk.HeaderBar m_header_right;
-	private TagPopover m_pop;
 	private bool m_online = true;
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
@@ -42,6 +42,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var fs_icon = new Gtk.Image.from_icon_name("view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_state = (ArticleListState)settings_state.get_enum("show-articles");
 
 
@@ -56,6 +57,18 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_read_button.set_tooltip_text(_("Mark article (un)read"));
 		m_read_button.clicked.connect(() => {
 			toggledRead();
+		});
+
+		m_fullscreen_button = new Gtk.Button();
+		m_fullscreen_button.add(fs_icon);
+		m_fullscreen_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_fullscreen_button.set_focus_on_click(false);
+		m_fullscreen_button.set_tooltip_text(_("Read article fullscreen"));
+		m_fullscreen_button.sensitive = false;
+		m_fullscreen_button.clicked.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			window.fullscreen();
+			window.getContent().enterFullscreen(false);
 		});
 
 
@@ -90,7 +103,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_tag_button.set_tooltip_text(_("Tag Article"));
 		m_tag_button.sensitive = false;
 		m_tag_button.clicked.connect(() => {
-			m_pop = new TagPopover(m_tag_button);
+			var pop = new TagPopover(m_tag_button);
 		});
 
 		m_share_button = new Gtk.Button();
@@ -155,6 +168,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);
 
+		m_header_right.pack_start(m_fullscreen_button);
 		m_header_right.pack_start(m_mark_button);
 		m_header_right.pack_start(m_read_button);
 		m_header_right.pack_end(m_share_button);
@@ -198,6 +212,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	{
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
+		m_fullscreen_button.sensitive = show;
 
 		if(m_online)
 		{
@@ -230,14 +245,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public bool searchFocused()
 	{
 		return m_search.has_focus;
-	}
-
-	public bool tagEntryFocused()
-	{
-		if(m_pop == null)
-			return false;
-
-		return m_pop.entryFocused();
 	}
 
 	public void setMarked(bool marked)

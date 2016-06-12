@@ -642,9 +642,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		if(m_headerbar.searchFocused())
 			return false;
 
-		if(m_headerbar.tagEntryFocused())
-			return false;
-
 		switch(event.keyval)
 		{
 			case Gdk.Key.j:
@@ -655,6 +652,17 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case Gdk.Key.k:
 				logger.print(LogMessage.DEBUG, "shortcut: up");
 				m_content.ArticleListNEXT();
+				break;
+
+			case Gdk.Key.Left:
+			case Gdk.Key.Right:
+				if(m_content.isFullscreen())
+				{
+					if(event.keyval == Gdk.Key.Left)
+						m_content.ArticleListPREV();
+					else
+						m_content.ArticleListNEXT();
+				}
 				break;
 
 			case Gdk.Key.r:
@@ -704,6 +712,29 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				{
 					logger.print(LogMessage.DEBUG, "shortcut: focus search");
 					m_headerbar.focusSearch();
+				}
+				break;
+
+			case Gdk.Key.Escape:
+				if(m_content.isFullscreen())
+				{
+					this.unfullscreen();
+					m_content.leaveFullscreen(false);
+				}
+				break;
+
+			case Gdk.Key.F:
+				if(!m_content.isFullscreen()
+				&& m_content.getSelectedArticle() != ""
+				&& m_content.getSelectedArticle() != "empty")
+				{
+					this.fullscreen();
+					m_content.enterFullscreen(false);
+				}
+				else if(m_content.isFullscreen())
+				{
+					this.unfullscreen();
+					m_content.leaveFullscreen(false);
 				}
 				break;
 

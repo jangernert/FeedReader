@@ -20,12 +20,17 @@ interface FeedReaderWebExtension : Object
     public signal void onClick(string path, int width, int height, string url);
 }
 
-public class FeedReader.articleView : Gtk.Stack {
+public class FeedReader.articleView : Gtk.Overlay {
 
-	private Gtk.Overlay m_overlay;
 	private Gtk.Label m_overlayLabel;
-	private WebKit.WebView m_view;
+	private WebKit.WebView m_view1;
+	private WebKit.WebView m_view2;
+	private WebKit.WebView m_currentView;
 	private WebKit.FindController m_search;
+	private Gtk.Stack m_stack;
+	private fullscreenHeaderbar m_fsHead;
+	private fullscreenButton m_prevButton;
+	private fullscreenButton m_nextButton;
 	private string m_currentArticle;
 	private bool m_firstTime = true;
 	private string m_searchTerm = "";
@@ -44,8 +49,10 @@ public class FeedReader.articleView : Gtk.Stack {
 	private bool m_connected = false;
 	private int m_height = 0;
 	private int m_width = 0;
-	public signal void enterFullscreen();
-	public signal void leaveFullscreen();
+	private bool m_FullscreenVideo = false;
+	private bool m_FullscreenArticle = false;
+	public signal void enterFullscreen(bool video);
+	public signal void leaveFullscreen(bool video);
 
 
 	public articleView()
@@ -64,28 +71,28 @@ public class FeedReader.articleView : Gtk.Stack {
 		settings.set_media_playback_requires_user_gesture(true);
 		settings.set_user_agent_with_application_details("FeedReader", AboutInfo.version);
 
-		m_view = new WebKit.WebView();
-		m_view.set_settings(settings);
-		m_view.load_changed.connect(open_link);
-		m_view.context_menu.connect(onContextMenu);
-		m_view.mouse_target_changed.connect(onMouseOver);
-		m_view.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
-		m_view.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		m_view.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
-		m_view.button_press_event.connect(onClick);
-		m_view.button_release_event.connect(onRelease);
-		m_view.motion_notify_event.connect(onMouseMotion);
-		m_view.enter_fullscreen.connect(() => {
-			m_connected = false;
-			enterFullscreen();
-			return false;
-		});
-		m_view.leave_fullscreen.connect(() => {
-			m_connected = true;
-			leaveFullscreen();
-			return false;
-		});
-		m_search = m_view.get_find_controller();
+		m_view1 = new WebKit.WebView();
+		m_view1.set_settings(settings);
+		m_view1.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
+		m_view1.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_view1.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
+		m_view1.load_changed.connect(open_link);
+		m_view1.context_menu.connect(onContextMenu);
+		m_view1.mouse_target_changed.connect(onMouseOver);
+		m_view1.button_press_event.connect(onClick);
+		m_view1.button_release_event.connect(onRelease);
+		m_view1.motion_notify_event.connect(onMouseMotion);
+		m_view1.enter_fullscreen.connect(enter_fullscreen);
+		m_view1.leave_fullscreen.connect(leave_fullscreen);
+
+		m_view2 = new WebKit.WebView();
+		m_view2.set_settings(settings);
+		m_view2.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
+		m_view2.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_view2.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
+
+		m_currentView = m_view1;
+		m_search = m_currentView.get_find_controller();
 
 		WebKit.WebContext.get_default().set_cache_model(WebKit.CacheModel.DOCUMENT_BROWSER);
 
@@ -100,17 +107,16 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_overlayLabel.halign = Gtk.Align.START;
 		m_overlayLabel.get_style_context().add_class("overlay");
 		m_overlayLabel.no_show_all = true;
-		m_overlay = new Gtk.Overlay();
-		m_overlay.add(m_view);
-		m_overlay.add_overlay(m_overlayLabel);
 
-		this.add_named(emptyView, "empty");
-		this.add_named(m_overlay, "view");
+		m_stack = new Gtk.Stack();
+		m_stack.add_named(emptyView, "empty");
+		m_stack.add_named(m_view1, "view1");
+		m_stack.add_named(m_view2, "view2");
 
-		this.set_visible_child_name("empty");
-		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		this.set_transition_duration(100);
-		this.set_size_request(450, 0);
+		m_stack.set_visible_child_name("empty");
+		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_stack.set_transition_duration(100);
+		m_stack.set_size_request(450, 0);
 
 		this.size_allocate.connect((allocation) => {
 			if(allocation.width != m_width
@@ -122,6 +128,41 @@ public class FeedReader.articleView : Gtk.Stack {
 				recalculate();
 			}
         });
+
+		m_fsHead = new fullscreenHeaderbar();
+		m_fsHead.close.connect(() => {
+			leaveFullscreen(false);
+			var window = this.get_toplevel() as readerUI;
+			if(window != null && window.is_toplevel())
+				window.unfullscreen();
+		});
+
+		var fullscreenHeaderOverlay = new Gtk.Overlay();
+		fullscreenHeaderOverlay.add(m_stack);
+		fullscreenHeaderOverlay.add_overlay(m_fsHead);
+
+		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
+		m_prevButton.click.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			if(window != null && window.is_toplevel())
+				window.getContent().ArticleListPREV();
+		});
+		var prevOverlay = new Gtk.Overlay();
+		prevOverlay.add(fullscreenHeaderOverlay);
+		prevOverlay.add_overlay(m_prevButton);
+
+		m_nextButton = new fullscreenButton("go-next-symbolic", Gtk.Align.END);
+		m_nextButton.click.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			if(window != null && window.is_toplevel())
+				window.getContent().ArticleListNEXT();
+		});
+		var nextOverlay = new Gtk.Overlay();
+		nextOverlay.add(prevOverlay);
+		nextOverlay.add_overlay(m_nextButton);
+
+		this.add(nextOverlay);
+		this.add_overlay(m_overlayLabel);
 
 		Bus.watch_name(BusType.SESSION, "org.gnome.feedreader.FeedReaderArticleView", GLib.BusNameWatcherFlags.NONE,
 		(connection, name, owner) => { on_extension_appeared(connection, name, owner); }, null);
@@ -151,7 +192,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		ThreadFunc<void*> run = () => {
 			try
 	    	{
-	    		if(m_connected && this.get_visible_child_name() != "empty")
+	    		if(m_connected && m_stack.get_visible_child_name() != "empty")
 	    			m_messenger.recalculate();
 	    	}
 	    	catch(GLib.IOError e)
@@ -181,7 +222,7 @@ public class FeedReader.articleView : Gtk.Stack {
 			var cursor = new Gdk.Cursor.for_display(display, Gdk.CursorType.FLEUR);
 
 			pointer.grab(
-				m_view.get_window(),
+				m_currentView.get_window(),
 				Gdk.GrabOwnership.NONE,
 				false,
 				Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK,
@@ -191,7 +232,7 @@ public class FeedReader.articleView : Gtk.Stack {
 
 			Gtk.device_grab_add(this, pointer, false);
 			GLib.Timeout.add(10, updateDragMomentum);
-			m_view.motion_notify_event.connect(updateScroll);
+			m_currentView.motion_notify_event.connect(updateScroll);
 			return true;
 		}
 
@@ -203,7 +244,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		if(event.button == MouseButton.MIDDLE)
 		{
 			//m_posY = 0;
-			m_view.motion_notify_event.disconnect(updateScroll);
+			m_currentView.motion_notify_event.disconnect(updateScroll);
 			m_inDrag = false;
 			m_OngoingScrollID = GLib.Timeout.add(20, ScrollDragRelease);
 
@@ -248,11 +289,13 @@ public class FeedReader.articleView : Gtk.Stack {
 		if(isLoading())
 		{
 			logger.print(LogMessage.DEBUG, "ArticleView: still busy loading last article. will cancel loading and load new article");
-			m_view.load_failed.connect(loadFailed);
-			m_view.stop_loading();
+			m_currentView.load_failed.connect(loadFailed);
+			m_currentView.stop_loading();
 			m_stopLoading = true;
 			return;
 		}
+
+		switchViews();
 
 		if(m_OngoingScrollID > 0)
 		{
@@ -272,10 +315,11 @@ public class FeedReader.articleView : Gtk.Stack {
 		yield;
 
 		setBackgroundColor();
+		m_fsHead.setTitle(Article.getTitle());
+		m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
+		m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
 
-
-
-		m_view.load_html(
+		m_currentView.load_html(
 			Utils.buildArticle(
 					Article.getHTML(),
 					Article.getTitle(),
@@ -286,18 +330,17 @@ public class FeedReader.articleView : Gtk.Stack {
 				)
 			, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 		this.show_all();
-		this.set_visible_child_name("view");
 	}
 
 	public void clearContent()
 	{
-		this.set_visible_child_name("empty");
+		m_stack.set_visible_child_name("empty");
 		m_currentArticle = "";
 	}
 
 	public bool isLoading()
 	{
-		return m_view.is_loading;
+		return m_currentView.is_loading;
 	}
 
 	public string getCurrentArticle()
@@ -311,7 +354,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		{
 			case WebKit.LoadEvent.STARTED:
 				logger.print(LogMessage.DEBUG, "ArticleView: load STARTED");
-				string url = m_view.get_uri();
+				string url = m_currentView.get_uri();
 				if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
 				{
 					logger.print(LogMessage.DEBUG, "ArticleView: open external url: %s".printf(url));
@@ -321,7 +364,7 @@ public class FeedReader.articleView : Gtk.Stack {
 					catch(GLib.Error e){
 						logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
 					}
-					m_view.stop_loading();
+					m_currentView.stop_loading();
 				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
@@ -334,15 +377,15 @@ public class FeedReader.articleView : Gtk.Stack {
 				if(m_stopLoading)
 				{
 					logger.print(LogMessage.DEBUG, "ArticleView: loading finished before canceling");
-					m_view.load_failed.disconnect(loadFailed);
+					m_currentView.load_failed.disconnect(loadFailed);
 					m_stopLoading = false;
 					fillContent(m_currentArticle);
 				}
 				if(m_firstTime)
 				{
-					this.setScrollPos(settings_state.get_int("articleview-scrollpos"));
+					setScrollPos(settings_state.get_int("articleview-scrollpos"));
 					settings_state.set_int("articleview-scrollpos", 0);
-					m_view.grab_focus();
+					m_currentView.grab_focus();
 					m_firstTime = false;
 				}
 				recalculate();
@@ -358,7 +401,7 @@ public class FeedReader.articleView : Gtk.Stack {
 		{
 			logger.print(LogMessage.DEBUG, "ArticleView: loading canceled " + m_currentArticle);
 			WebKit.WebContext.get_default().clear_cache();
-			m_view.load_failed.disconnect(loadFailed);
+			m_currentView.load_failed.disconnect(loadFailed);
 			m_stopLoading = false;
 			fillContent(m_currentArticle);
 		}
@@ -367,8 +410,8 @@ public class FeedReader.articleView : Gtk.Stack {
 
 	public void setScrollPos(int pos)
 	{
-		m_view.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
-			m_view.run_javascript.end(res);
+		m_currentView.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
+			m_currentView.run_javascript.end(res);
 		});
 	}
 
@@ -386,9 +429,9 @@ public class FeedReader.articleView : Gtk.Stack {
 		int upper = -1;
 		var loop = new MainLoop();
 
-		m_view.run_javascript.begin(javascript, null, (obj, res) => {
-			m_view.run_javascript.end(res);
-			upper = int.parse(m_view.get_title());
+		m_currentView.run_javascript.begin(javascript, null, (obj, res) => {
+			m_currentView.run_javascript.end(res);
+			upper = int.parse(m_currentView.get_title());
 			loop.quit();
 		});
 
@@ -406,9 +449,9 @@ public class FeedReader.articleView : Gtk.Stack {
 		var loop = new MainLoop();
 
 		try{
-			m_view.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
-				m_view.run_javascript.end(res);
-				scrollPos = int.parse(m_view.get_title());
+			m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
+				m_currentView.run_javascript.end(res);
+				scrollPos = int.parse(m_currentView.get_title());
 				loop.quit();
 			});
 		}
@@ -452,9 +495,9 @@ public class FeedReader.articleView : Gtk.Stack {
 		m_momentum /= 1.2;
 
 		Gtk.Allocation allocation;
-		m_view.get_allocation(out allocation);
+		m_currentView.get_allocation(out allocation);
 
-		double pageSize = m_view.get_allocated_height();
+		double pageSize = m_currentView.get_allocated_height();
 		double adjValue = pageSize * m_momentum / allocation.height;
 		double oldAdj = getScrollPos();
 		double upper = getScollUpper();
@@ -487,7 +530,7 @@ public class FeedReader.articleView : Gtk.Stack {
             if(background.alpha == 1.0)
             {
                 // Don't set a background color that is transparent.
-                m_view.set_background_color(background);
+                m_currentView.set_background_color(background);
             }
 		}
 #endif
@@ -583,6 +626,123 @@ public class FeedReader.articleView : Gtk.Stack {
 				return true;
 			});
 		}
+	}
+
+	private bool leave_fullscreen()
+	{
+		m_FullscreenVideo = false;
+		m_connected = true;
+		leaveFullscreen(true);
+		return false;
+	}
+
+	private bool enter_fullscreen()
+	{
+		m_FullscreenVideo = true;
+		m_connected = false;
+		enterFullscreen(true);
+		m_fsHead.hide();
+		m_prevButton.reveal(false);
+		m_nextButton.reveal(false);
+		return false;
+	}
+
+	public bool fullscreenVideo()
+	{
+		return m_FullscreenVideo;
+	}
+
+	public bool fullscreenArticle()
+	{
+		return m_FullscreenArticle;
+	}
+
+	public void setFullscreenArticle(bool fs)
+	{
+		m_FullscreenArticle = fs;
+
+		if(fs)
+		{
+			m_fsHead.show();
+
+			var window = this.get_toplevel() as readerUI;
+			var content = window.getContent();
+
+			if(!content.ArticleListSelectedIsFirst())
+				m_nextButton.reveal(true);
+
+			if(!content.ArticleListSelectedIsLast())
+				m_prevButton.reveal(true);
+
+		}
+		else
+		{
+			m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+			m_stack.set_transition_duration(100);
+			m_fsHead.hide();
+			m_prevButton.reveal(false);
+			m_nextButton.reveal(false);
+		}
+	}
+
+	public void setTransition(Gtk.StackTransitionType trans, uint time)
+	{
+		m_stack.set_transition_type(trans);
+		m_stack.set_transition_duration(time);
+	}
+
+	private void switchViews()
+	{
+		m_currentView.load_changed.disconnect(open_link);
+		m_currentView.context_menu.disconnect(onContextMenu);
+		m_currentView.mouse_target_changed.disconnect(onMouseOver);
+		m_currentView.button_press_event.disconnect(onClick);
+		m_currentView.button_release_event.disconnect(onRelease);
+		m_currentView.motion_notify_event.disconnect(onMouseMotion);
+		m_currentView.enter_fullscreen.disconnect(enter_fullscreen);
+		m_currentView.leave_fullscreen.disconnect(leave_fullscreen);
+
+		if(m_stack.get_visible_child_name() == "view1")
+		{
+			m_currentView = m_view2;
+			m_stack.set_visible_child_name("view2");
+			m_view1.load_html("", null);
+		}
+		else
+		{
+			m_currentView = m_view1;
+			m_stack.set_visible_child_name("view1");
+			m_view2.load_html("", null);
+		}
+
+		m_currentView.load_changed.connect(open_link);
+		m_currentView.context_menu.connect(onContextMenu);
+		m_currentView.mouse_target_changed.connect(onMouseOver);
+		m_currentView.button_press_event.connect(onClick);
+		m_currentView.button_release_event.connect(onRelease);
+		m_currentView.motion_notify_event.connect(onMouseMotion);
+		m_currentView.enter_fullscreen.connect(enter_fullscreen);
+		m_currentView.leave_fullscreen.connect(leave_fullscreen);
+	}
+
+	public void setMarked(bool marked)
+	{
+		m_fsHead.setMarked(marked);
+	}
+
+	public void setUnread(bool unread)
+	{
+		m_fsHead.setUnread(unread);
+	}
+
+	public void nextButtonVisible(bool vis)
+	{
+		m_nextButton.reveal(vis);
+	}
+
+	public void prevButtonVisible(bool vis)
+	{
+		m_prevButton.reveal(vis);
 	}
 
 }

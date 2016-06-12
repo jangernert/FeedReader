@@ -119,6 +119,8 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/FeedList.vala
     src/Widgets/FeedListFooter.vala
     src/Widgets/FeedRow.vala
+    src/Widgets/FullscreenButton.vala
+    src/Widgets/FullscreenHeaderbar.vala
     src/Widgets/HoverButton.vala
     src/Widgets/ImagePopup.vala
     src/Widgets/InAppNotification.vala

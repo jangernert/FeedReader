@@ -267,7 +267,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e){}
 
-		return new Gtk.Image.from_icon_name("application-rss+xml-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		return new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 	}
 
 

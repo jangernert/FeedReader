@@ -84,7 +84,7 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
 			this.visible = true;
 			m_icon.show();
 		}
-		
+
 		m_timeout_source_id = Timeout.add(20, () => {
 
 			if(show)
@@ -92,11 +92,15 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
 				if(!m_hover && this.opacity-m_opacity <= 0.02)
 				{
 					this.opacity = m_opacity;
+					m_timeout_source_id = 0;
 					return false;
 				}
 
 				if(m_hover && this.opacity == 1.0)
+				{
+					m_timeout_source_id = 0;
 					return false;
+				}
 
 				this.opacity += 0.02;
 			}
@@ -105,6 +109,7 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
 				if(this.opacity == 0.0)
 				{
 					this.hide();
+					m_timeout_source_id = 0;
 					return false;
 				}
 

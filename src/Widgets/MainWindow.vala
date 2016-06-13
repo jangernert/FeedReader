@@ -182,6 +182,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			this.maximize();
 		}
 
+		this.window_state_event.connect(onStateEvent);
+
 		this.key_press_event.connect(shortcuts);
 		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
@@ -209,6 +211,27 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				showLogin();
 			}
 		}
+	}
+
+	private bool onStateEvent(Gdk.EventWindowState event)
+	{
+		base.window_state_event(event);
+
+		if(event.type == Gdk.EventType.WINDOW_STATE)
+		{
+			if(event.changed_mask == Gdk.WindowState.FULLSCREEN)
+			{
+				if(m_content.getSelectedArticle() == ""
+				|| m_content.getSelectedArticle() == "empty")
+					return true;
+
+				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
+					m_content.enterFullscreen(false);
+				else
+					m_content.leaveFullscreen(false);
+			}
+		}
+		return false;
 	}
 
 	private void showSettings(string panel)
@@ -717,21 +740,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 			case Gdk.Key.Escape:
 				if(m_content.isFullscreen())
-				{
-					this.unfullscreen();
-					m_content.leaveFullscreen(false);
-				}
-				break;
-
-			case Gdk.Key.F:
-				if(!m_content.isFullscreen()
-				&& m_content.getSelectedArticle() != ""
-				&& m_content.getSelectedArticle() != "empty")
-				{
-					this.fullscreen();
-					m_content.enterFullscreen(false);
-				}
-				else if(m_content.isFullscreen())
 				{
 					this.unfullscreen();
 					m_content.leaveFullscreen(false);

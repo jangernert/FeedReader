@@ -9,17 +9,13 @@
     background: @theme_selected_bg_color;
     color: @theme_selected_fg_color;
 }
-.sidebar-row:prelight,
-.sidebar-row-popover,
-.sidebar-feed:prelight,
-.sidebar-feed-popover {
+.sidebar-row:prelight
+.sidebar-feed:prelight {
     background: shade(@theme_bg_color, 0.9);
 }
 .sidebar-row:selected:prelight,
 .sidebar-feed:selected:prelight,
-.sidebar-feed:selected:prelight *,
-.sidebar-feed-selected-popover,
-.sidebar-row-selected-popover {
+.sidebar-feed:selected:prelight * {
     background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }

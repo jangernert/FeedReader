@@ -252,45 +252,23 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);
 		pop.bind_model(menu, "app");
-		pop.closed.connect(closePopoverStyle);
+		pop.closed.connect(() => {
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
+		});
 		pop.show();
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
 
 
 		return true;
-	}
-
-	private void showPopoverStyle()
-	{
-		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
-		{
-			this.get_style_context().remove_class("sidebar-feed");
-		}
-
-		if(this.is_selected())
-			this.get_style_context().add_class("sidebar-feed-selected-popover");
-		else
-			this.get_style_context().add_class("sidebar-feed-popover");
-	}
-
-	private void closePopoverStyle()
-	{
-		if(this.is_selected())
-			this.get_style_context().remove_class("sidebar-feed-selected-popover");
-		else
-			this.get_style_context().remove_class("sidebar-feed-popover");
-
-		if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
-		{
-			this.get_style_context().add_class("sidebar-feed");
-		}
 	}
 
 	private void showRenamePopover()
 	{
 		var popRename = new Gtk.Popover(this);
 		popRename.set_position(Gtk.PositionType.BOTTOM);
-		popRename.closed.connect(closePopoverStyle);
+		popRename.closed.connect(() => {
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
+		});
 
 		var renameEntry = new Gtk.Entry();
 		renameEntry.set_text(m_name);
@@ -313,7 +291,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 		popRename.add(renameBox);
 		popRename.show_all();
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
 	}
 
 	public void set_unread_count(uint unread_count)

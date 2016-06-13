@@ -20,21 +20,17 @@
     font-weight: bold;
     text-shadow: none;
 }
-.sidebar-row:prelight,
-.sidebar-row-popover {
+.sidebar-row:prelight {
     background: shade(@feedlist-bg, 1.1);
 }
 .sidebar-row:selected:prelight,
-.sidebar-feed:selected:prelight,
-.sidebar-row-selected-popover,
-.sidebar-feed-selected-popover {
+.sidebar-feed:selected:prelight {
     background: shade(@feedlist-selected, 1.1);
 }
 .sidebar-feed {
     background: @feedrow-bg;
 }
-.sidebar-feed:prelight,
-.sidebar-feed-popover {
+.sidebar-feed:prelight{
     background: shade(@feedrow-bg, 1.1);
 }
 .sidebar-separator {

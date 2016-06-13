@@ -221,13 +221,13 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
         return true;
     }
 
 	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
 	{
-        closePopoverStyle();
+        this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
     }
 
 
@@ -425,27 +425,13 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);
 		pop.bind_model(menu, "app");
-		pop.closed.connect(closePopoverStyle);
+		pop.closed.connect(() => {
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
+		});
 		pop.show();
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
 
 		return true;
-	}
-
-	private void showPopoverStyle()
-	{
-		if(this.is_selected())
-			this.get_style_context().add_class("sidebar-row-selected-popover");
-		else
-			this.get_style_context().add_class("sidebar-row-popover");
-	}
-
-	private void closePopoverStyle()
-	{
-		if(this.is_selected())
-			this.get_style_context().remove_class("sidebar-row-selected-popover");
-		else
-			this.get_style_context().remove_class("sidebar-row-popover");
 	}
 
 	private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, string? id1 = null, string? id2 = null)
@@ -453,7 +439,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		var popRename = new Gtk.Popover(this);
 		popRename.set_position(Gtk.PositionType.BOTTOM);
 		popRename.closed.connect(() => {
-			closePopoverStyle();
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
 			if(m_categorieID == CategoryID.NEW && context != null)
 			{
 				this.drag_failed(context, Gtk.DragResult.NO_TARGET);
@@ -505,7 +491,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 		popRename.add(renameBox);
 		popRename.show_all();
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
 	}
 
 	private bool onUnreadClick(Gdk.EventButton event)

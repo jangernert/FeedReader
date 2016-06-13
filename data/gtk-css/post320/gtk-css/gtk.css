@@ -20,16 +20,12 @@
     color: @theme_selected_fg_color;
 }
 .sidebar-row:hover,
-.sidebar-feed:hover,
-.sidebar-row-popover,
-.sidebar-feed-popover {
+.sidebar-feed:hover {
     background: shade(@theme_bg_color, 0.9);
 }
 .sidebar-row:selected:hover,
 .sidebar-feed:selected:hover,
-.sidebar-feed:selected:hover *,
-.sidebar-feed-selected-popover,
-.sidebar-row-selected-popover {
+.sidebar-feed:selected:hover * {
     background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }

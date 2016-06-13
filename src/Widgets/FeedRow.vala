@@ -160,7 +160,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e){}
 
-		var defaultIcon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		var defaultIcon = new Gtk.Image.from_icon_name("application-rss+xml-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		defaultIcon.get_style_context().add_class("sidebar-symbolic");
 		return defaultIcon;
 	}

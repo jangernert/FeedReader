@@ -172,8 +172,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		if(!m_limitScroll && m_helperCounter == 0)
 		{
+			var oldValue = m_scrollPos;
 			m_scrollPos = m_current_adjustment.get_value();
-			needToLoadMore(m_current_adjustment);
+			if(m_scrollPos > oldValue)
+				needToLoadMore(m_current_adjustment);
 		}
 	}
 

@@ -51,6 +51,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private int m_width = 0;
 	private bool m_FullscreenVideo = false;
 	private bool m_FullscreenArticle = false;
+	private double m_FullscreenZoomLevel = 1.25;
 	public signal void enterFullscreen(bool video);
 	public signal void leaveFullscreen(bool video);
 
@@ -74,8 +75,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_view1 = new WebKit.WebView();
 		m_view1.set_settings(settings);
 		m_view1.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
+		m_view1.set_events(Gdk.EventMask.SCROLL_MASK);
 		m_view1.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_view1.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
+		m_view1.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		m_view1.load_changed.connect(open_link);
 		m_view1.context_menu.connect(onContextMenu);
 		m_view1.mouse_target_changed.connect(onMouseOver);
@@ -84,12 +87,16 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_view1.motion_notify_event.connect(onMouseMotion);
 		m_view1.enter_fullscreen.connect(enter_fullscreen);
 		m_view1.leave_fullscreen.connect(leave_fullscreen);
+		m_view1.scroll_event.connect(onScroll);
+		m_view1.key_press_event.connect(onKeyPress);
 
 		m_view2 = new WebKit.WebView();
 		m_view2.set_settings(settings);
 		m_view2.set_events(Gdk.EventMask.POINTER_MOTION_MASK);
+		m_view2.set_events(Gdk.EventMask.SCROLL_MASK);
 		m_view2.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		m_view2.set_events(Gdk.EventMask.BUTTON_RELEASE_MASK);
+		m_view2.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 
 		m_currentView = m_view1;
 		m_search = m_currentView.get_find_controller();
@@ -265,6 +272,43 @@ public class FeedReader.articleView : Gtk.Overlay {
 		return false;
 	}
 
+	private bool onScroll(Gdk.EventScroll event)
+	{
+		if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
+		{
+			if(event.delta_y > 0)
+				m_currentView.zoom_level -= 0.25;
+			else if(event.delta_y < 0)
+				m_currentView.zoom_level += 0.25;
+			return true;
+		}
+
+		return false;
+	}
+
+	private bool onKeyPress(Gdk.EventKey event)
+	{
+		if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
+		{
+			switch(event.keyval)
+			{
+				case Gdk.Key.KP_0:
+					m_currentView.zoom_level = 1.0;
+					return true;
+
+				case Gdk.Key.KP_Add:
+					m_currentView.zoom_level += 0.25;
+					return true;
+
+				case Gdk.Key.KP_Subtract:
+					m_currentView.zoom_level -= 0.25;
+					return true;
+			}
+		}
+
+		return false;
+	}
+
 	private bool updateScroll(Gdk.EventMotion event)
 	{
 		double scroll = m_posY - event.y;
@@ -296,6 +340,12 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 
 		switchViews();
+
+		if(m_FullscreenArticle)
+			m_currentView.zoom_level = m_FullscreenZoomLevel;
+		else
+			m_currentView.zoom_level = 1.0;
+
 
 		if(m_OngoingScrollID > 0)
 		{
@@ -664,6 +714,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		if(fs)
 		{
 			m_fsHead.show();
+			m_currentView.zoom_level = m_FullscreenZoomLevel;
 
 			var window = this.get_toplevel() as readerUI;
 			var content = window.getContent();
@@ -677,6 +728,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 		else
 		{
+			m_currentView.zoom_level = 1.0;
 			m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 			m_stack.set_transition_duration(100);
 			m_fsHead.hide();
@@ -701,6 +753,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.motion_notify_event.disconnect(onMouseMotion);
 		m_currentView.enter_fullscreen.disconnect(enter_fullscreen);
 		m_currentView.leave_fullscreen.disconnect(leave_fullscreen);
+		m_currentView.scroll_event.disconnect(onScroll);
+		m_currentView.key_press_event.disconnect(onKeyPress);
 
 		if(m_stack.get_visible_child_name() == "view1")
 		{
@@ -723,6 +777,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.motion_notify_event.connect(onMouseMotion);
 		m_currentView.enter_fullscreen.connect(enter_fullscreen);
 		m_currentView.leave_fullscreen.connect(leave_fullscreen);
+		m_currentView.scroll_event.connect(onScroll);
+		m_currentView.key_press_event.connect(onKeyPress);
 
 		if(m_FullscreenArticle)
 		{

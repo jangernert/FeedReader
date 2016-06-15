@@ -172,8 +172,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		if(!m_limitScroll && m_helperCounter == 0)
 		{
+			var oldValue = m_scrollPos;
 			m_scrollPos = m_current_adjustment.get_value();
-			needToLoadMore(m_current_adjustment);
+			if(m_scrollPos > oldValue)
+				needToLoadMore(m_current_adjustment);
 		}
 	}
 
@@ -286,26 +288,24 @@ public class FeedReader.articleList : Gtk.Overlay {
         });
 	}
 
-	public void toggleReadSelected()
+	public bool toggleReadSelected()
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
 		if(selected_row == null)
-			return;
+			return false;
 
-		selected_row.toggleUnread();
-		selected_row.show_all();
+		return selected_row.toggleUnread();
 	}
 
-	public void toggleMarkedSelected()
+	public bool toggleMarkedSelected()
 	{
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 
 		if(selected_row == null)
-			return;
+			return false;
 
-		selected_row.toggleMarked();
-		selected_row.show_all();
+		return selected_row.toggleMarked();
 	}
 
 	public void openSelected()
@@ -920,7 +920,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		}
 	}
 
-	public void removeRow(articleRow row)
+	private void removeRow(articleRow row)
 	{
 		int time = 700;
 		row.reveal(false, time);
@@ -966,7 +966,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread articles in the feed \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -974,7 +974,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles and marked that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread and marked articles in the feed \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(!m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -982,7 +982,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No marked articles in the feed \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					break;
 				case FeedListType.TAG:
@@ -993,7 +993,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread articles in the tag \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1001,7 +1001,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles and marked that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread and marked articles in the tag \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(!m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1009,7 +1009,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No marked articles in the tag \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					break;
 				case FeedListType.CATEGORY:
@@ -1020,7 +1020,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread articles in the category \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1028,7 +1028,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No unread articles and marked that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No unread and marked articles in the category \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					if(!m_only_unread && m_only_marked){
 						if(m_searchTerm != "")
@@ -1036,7 +1036,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No marked articles in the category \"%s\" could be found").printf(name);
-						}	
+						}
 					}
 					break;
 			}
@@ -1222,6 +1222,37 @@ public class FeedReader.articleList : Gtk.Overlay {
 			if(tmpRow != null)
 				tmpRow.opacity = 1.0;
 		}
+	}
+
+	public bool selectedIsFirst()
+	{
+		var selected_row = m_currentList.get_selected_row() as articleRow;
+		var ArticleListChildren = m_currentList.get_children();
+		int n = ArticleListChildren.index(selected_row);
+		var lastRow = ArticleListChildren.last().data as articleRow;
+
+		if(n == 0)
+			return true;
+		else if(m_only_unread && n == 1 && !lastRow.isBeingRevealed())
+			return true;
+
+		return false;
+	}
+
+	public bool selectedIsLast()
+	{
+		var selected_row = m_currentList.get_selected_row() as articleRow;
+		var ArticleListChildren = m_currentList.get_children();
+		int n = ArticleListChildren.index(selected_row);
+		uint length = ArticleListChildren.length();
+		var lastRow = ArticleListChildren.last().data as articleRow;
+
+		if(n + 1 == length)
+			return true;
+		else if(m_only_unread && n + 2 == length && !lastRow.isBeingRevealed())
+			return true;
+
+		return false;
 	}
 
 }

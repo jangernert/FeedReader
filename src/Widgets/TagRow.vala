@@ -100,13 +100,13 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	private bool onDragMotion(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
         return false;
     }
 
 	private void onDragLeave(Gtk.Widget widget, Gdk.DragContext context, uint time)
 	{
-        closePopoverStyle();
+        this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
     }
 
 	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
@@ -195,27 +195,13 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		var pop = new Gtk.Popover(this);
 		pop.set_position(Gtk.PositionType.BOTTOM);
 		pop.bind_model(menu, "app");
-		pop.closed.connect(closePopoverStyle);
+		pop.closed.connect(() => {
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
+		});
 		pop.show();
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
 
 		return true;
-	}
-
-	private void closePopoverStyle()
-	{
-		if(this.is_selected())
-			this.get_style_context().remove_class("sidebar-row-selected-popover");
-		else
-			this.get_style_context().remove_class("sidebar-row-popover");
-	}
-
-	private void showPopoverStyle()
-	{
-		if(this.is_selected())
-			this.get_style_context().add_class("sidebar-row-selected-popover");
-		else
-			this.get_style_context().add_class("sidebar-row-popover");
 	}
 
 	public void update(string name)
@@ -266,7 +252,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		var popRename = new Gtk.Popover(this);
 		popRename.set_position(Gtk.PositionType.BOTTOM);
 		popRename.closed.connect(() => {
-			closePopoverStyle();
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
 			if(m_tagID == TagID.NEW && context != null)
 			{
 				removeRow();
@@ -314,7 +300,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 		popRename.add(renameBox);
 		popRename.show_all();
-		showPopoverStyle();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
 	}
 
 }

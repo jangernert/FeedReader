@@ -151,26 +151,48 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		this.add(m_pane1);
 	}
 
-	public void enterFullscreen()
+	public void enterFullscreen(bool video)
 	{
-		if(settings_tweaks.get_boolean("fullscreen-videos"))
-			m_pane2.set_visible(false);
+		if(video)
+		{
+			if(!settings_tweaks.get_boolean("fullscreen-videos"))
+				return;
+		}
+		else
+		{
+			m_article_view.setFullscreenArticle(true);
+		}
+
+		m_pane2.set_visible(false);
 	}
 
-	public void leaveFullscreen()
+	public void leaveFullscreen(bool video)
 	{
+		if(!video)
+		{
+			m_article_view.setFullscreenArticle(false);
+		}
+
 		m_pane2.set_visible(true);
 	}
 
 	public void ArticleListNEXT()
 	{
-		leaveFullscreen();
+		if(!m_article_view.fullscreenArticle())
+			leaveFullscreen(true);
+		else
+			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_LEFT, 500);
+
 		m_articleList.move(false);
 	}
 
 	public void ArticleListPREV()
 	{
-		leaveFullscreen();
+		if(!m_article_view.fullscreenArticle())
+			leaveFullscreen(true);
+		else
+			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_RIGHT, 500);
+
 		m_articleList.move(true);
 	}
 
@@ -303,12 +325,14 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void toggleReadSelectedArticle()
 	{
-		m_articleList.toggleReadSelected();
+		bool unread = m_articleList.toggleReadSelected();
+		m_article_view.setUnread(unread);
 	}
 
 	public void toggleMarkedSelectedArticle()
 	{
-		m_articleList.toggleMarkedSelected();
+		bool marked = m_articleList.toggleMarkedSelected();
+		m_article_view.setMarked(marked);
 	}
 
 	public void openSelectedArticle()
@@ -424,5 +448,20 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		this.add_overlay(notification);
 		this.show_all();
 		return notification;
+	}
+
+	public bool isFullscreen()
+	{
+		return m_article_view.fullscreenArticle();
+	}
+
+	public bool ArticleListSelectedIsFirst()
+	{
+		return m_articleList.selectedIsFirst();
+	}
+
+	public bool ArticleListSelectedIsLast()
+	{
+		return m_articleList.selectedIsLast();
 	}
 }

@@ -6,4 +6,6 @@ strip: //div[@id="article-sidebar-wrapper"]
 strip: //p[@class="anzeige"]
 strip: //section[@class="authors"]
 
+replace_string(src="http://media-cdn.sueddeutsche.de/globalassets/img/unsprited/placeholder.png" data-src): src
+
 test_url: http://www.sueddeutsche.de/muenchen/mietshaus-am-gaertnerplatz-alles-muss-raus-1.1556693

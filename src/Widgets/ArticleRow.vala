@@ -384,8 +384,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	public void toggleUnread()
+	public bool toggleUnread()
 	{
+		bool unread = false;
 		string articleID = "";
 		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
@@ -397,6 +398,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		{
 			case ArticleStatus.READ:
 				updateUnread(ArticleStatus.UNREAD);
+				unread = true;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
 					window.getHeaderBar().setRead(true);
@@ -404,6 +406,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				break;
 			case ArticleStatus.UNREAD:
 				updateUnread(ArticleStatus.READ);
+				unread = false;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
 					window.getHeaderBar().setRead(false);
@@ -413,6 +416,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 
 		feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getUnread());
+		show_all();
+		return unread;
 	}
 
 	public void updateUnread(ArticleStatus unread)
@@ -491,8 +496,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	public void toggleMarked()
+	public bool toggleMarked()
 	{
+		bool marked = false;
 		string articleID = "";
 		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
@@ -504,6 +510,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		{
 			case ArticleStatus.MARKED:
 				updateMarked(ArticleStatus.UNMARKED);
+				marked = false;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
 					window.getHeaderBar().setMarked(false);
@@ -512,6 +519,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 			case ArticleStatus.UNMARKED:
 				updateMarked(ArticleStatus.MARKED);
+				marked = true;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
 					window.getHeaderBar().setMarked(true);
@@ -520,6 +528,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 
 		feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getMarked());
+		this.show_all();
+		return marked;
 	}
 
 	public void updateMarked(ArticleStatus marked)

@@ -90,7 +90,7 @@ public class FeedReader.HoverButton : Gtk.EventBox {
     }
 
 
-    private bool onEnter()
+    private bool onEnter(Gdk.EventCrossing event)
     {
         if(m_isActive)
         {
@@ -103,8 +103,11 @@ public class FeedReader.HoverButton : Gtk.EventBox {
         return true;
     }
 
-    private bool onLeave()
+    private bool onLeave(Gdk.EventCrossing event)
     {
+        if(event.detail == Gdk.NotifyType.NONLINEAR_VIRTUAL)
+            return false;
+
         if(m_just_clicked)
         {
             m_just_clicked = false;

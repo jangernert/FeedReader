@@ -177,6 +177,8 @@ body {
     cursor: default;
     font-family: 'Droid Sans', 'Open Sans';
     font-weight: 300;
+    max-width: 1200px;
+    margin: auto;
 }
 
 .tlblue {

@@ -984,6 +984,14 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles in the feed \"%s\" could be found").printf(name);
 						}
 					}
+					if(!m_only_unread && !m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _("No articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _("No articles in the feed \"%s\" could be found").printf(name);
+						}
+					}
 					break;
 				case FeedListType.TAG:
 					name = dataBase.getTagName(m_current_feed_selected);
@@ -1011,6 +1019,14 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles in the tag \"%s\" could be found").printf(name);
 						}
 					}
+					if(!m_only_unread && !m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _("No articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _("No articles in the tag \"%s\" could be found").printf(name);
+						}
+					}
 					break;
 				case FeedListType.CATEGORY:
 					name = dataBase.getCategoryName(m_current_feed_selected);
@@ -1036,6 +1052,14 @@ public class FeedReader.articleList : Gtk.Overlay {
 							message = _("No marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
 						}else {
 							message = _("No marked articles in the category \"%s\" could be found").printf(name);
+						}
+					}
+					if(!m_only_unread && !m_only_marked){
+						if(m_searchTerm != "")
+						{
+							message = _("No articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
+						}else {
+							message = _("No articles in the category \"%s\" could be found").printf(name);
 						}
 					}
 					break;

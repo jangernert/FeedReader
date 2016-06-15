@@ -550,7 +550,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		double pageSize = m_currentView.get_allocated_height();
 		double adjValue = pageSize * m_momentum / allocation.height;
 		double oldAdj = getScrollPos();
-		double upper = getScollUpper();
+		double upper = getScollUpper() * m_currentView.zoom_level;
 
 		if ((oldAdj + adjValue) > (upper - pageSize)
 		|| (oldAdj + adjValue) < 0)

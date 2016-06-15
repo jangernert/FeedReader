@@ -184,16 +184,6 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_LEFT, 500);
 
 		m_articleList.move(false);
-
-		if(m_article_view.fullscreenArticle())
-		{
-			m_article_view.prevButtonVisible(true);
-
-			if(m_articleList.selectedIsFirst())
-				m_article_view.nextButtonVisible(false);
-			else
-				m_article_view.nextButtonVisible(true);
-		}
 	}
 
 	public void ArticleListPREV()
@@ -204,16 +194,6 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_RIGHT, 500);
 
 		m_articleList.move(true);
-
-		if(m_article_view.fullscreenArticle())
-		{
-			m_article_view.nextButtonVisible(true);
-
-			if(m_articleList.selectedIsLast())
-				m_article_view.prevButtonVisible(false);
-			else
-				m_article_view.prevButtonVisible(true);
-		}
 	}
 
 	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)

@@ -920,7 +920,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		}
 	}
 
-	public void removeRow(articleRow row)
+	private void removeRow(articleRow row)
 	{
 		int time = 700;
 		row.reveal(false, time);
@@ -1241,8 +1241,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 		var selected_row = m_currentList.get_selected_row() as articleRow;
 		var ArticleListChildren = m_currentList.get_children();
 		int n = ArticleListChildren.index(selected_row);
+		uint length = ArticleListChildren.length();
+		var lastRow = ArticleListChildren.last().data as articleRow;
 
-		if(n + 1 == ArticleListChildren.length())
+		if(n + 1 == length)
+			return true;
+		else if(m_only_unread && n + 2 == length && !lastRow.isBeingRevealed())
 			return true;
 
 		return false;

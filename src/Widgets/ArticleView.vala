@@ -723,6 +723,21 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.motion_notify_event.connect(onMouseMotion);
 		m_currentView.enter_fullscreen.connect(enter_fullscreen);
 		m_currentView.leave_fullscreen.connect(leave_fullscreen);
+
+		if(m_FullscreenArticle)
+		{
+			var window = this.get_toplevel() as readerUI;
+
+			if(window.getContent().ArticleListSelectedIsLast())
+				m_prevButton.reveal(false);
+			else
+				m_prevButton.reveal(true);
+
+			if(window.getContent().ArticleListSelectedIsFirst())
+				m_nextButton.reveal(false);
+			else
+				m_nextButton.reveal(true);
+		}
 	}
 
 	public void setMarked(bool marked)

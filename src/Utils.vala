@@ -17,7 +17,6 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void generatePreviews(Gee.LinkedList<article> articles)
 	{
-		logger.print(LogMessage.DEBUG, "Utils: generatePreviews");
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
 		{
@@ -33,6 +32,7 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				else if(Article.getHTML() != "" && Article.getHTML() != null)
 				{
+					logger.print(LogMessage.DEBUG, "Utils: generate preview for article: " + Article.getArticleID());
 					string output = libVilistextum.parse(Article.getHTML(), 1);
 					output = output.strip();
 

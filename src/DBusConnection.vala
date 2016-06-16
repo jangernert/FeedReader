@@ -84,65 +84,79 @@ namespace FeedReader {
 		public static void connectSignals(readerUI window)
 		{
 			feedDaemon_interface.newFeedList.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: newFeedList");
 				window.getContent().newFeedList();
 			});
 
 			feedDaemon_interface.updateFeedList.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: updateFeedList");
 				window.getContent().updateFeedList();
 			});
 
 			feedDaemon_interface.newArticleList.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: newArticleList");
 				window.getContent().newHeadlineList();
 			});
 
 			feedDaemon_interface.updateArticleList.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: updateArticleList");
 				window.getContent().updateArticleList();
 			});
 
 			feedDaemon_interface.syncStarted.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: syncStarted");
 				window.writeInterfaceState();
 				window.setRefreshButton(true);
 			});
 
 			feedDaemon_interface.syncFinished.connect(() => {
-				logger.print(LogMessage.DEBUG, "sync finished -> update ui");
+				logger.print(LogMessage.DEBUG, "DBusConnection: syncFinished");
 				window.getContent().syncFinished();
 				window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
 				window.setRefreshButton(false);
 			});
 
 			feedDaemon_interface.springCleanStarted.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: springCleanStarted");
 				window.showSpringClean();
 			});
 
 			feedDaemon_interface.springCleanFinished.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: springCleanFinished");
 				window.showContent();
 			});
 
 			feedDaemon_interface.writeInterfaceState.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: writeInterfaceState");
 				window.writeInterfaceState();
 			});
 
 			feedDaemon_interface.showArticleListOverlay.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: showArticleListOverlay");
 				window.getContent().showArticleListOverlay();
 			});
 
 			feedDaemon_interface.setOffline.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: setOffline");
 				window.setOffline();
 			});
 
 			feedDaemon_interface.setOnline.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: setOnline");
 				window.setOnline();
 			});
 
 			feedDaemon_interface.feedAdded.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: feedAdded");
 				window.getContent().footerSetReady();
 			});
 
 			feedDaemon_interface.opmlImported.connect(() => {
+				logger.print(LogMessage.DEBUG, "DBusConnection: opmlImported");
 				window.getContent().footerSetReady();
 			});
 		}
 
 	}
 }
+

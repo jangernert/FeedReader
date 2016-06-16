@@ -1258,9 +1258,6 @@ public class FeedReader.FeedServer : GLib.Object {
 						left = 0;
 					}
 				}
-				//m_inoreader.getArticles(articles, 1, ArticleStatus.READ, null, null, null);
-				//m_inoreader.getArticles(articles, 1, ArticleStatus.UNREAD, null, null, null);
-				//m_inoreader.getArticles(articles, 1, ArticleStatus.MARKED, null, null, null);
 				writeArticlesInChunks(articles, 10);
 				break;
 		}
@@ -1272,22 +1269,21 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			string last = articles.first().getArticleID();
 			dataBase.update_articles(articles);
+			updateFeedList();
+			updateArticleList();
 			var new_articles = new Gee.LinkedList<article>();
 
 			var it = articles.bidir_list_iterator();
 			for (var has_next = it.last(); has_next; has_next = it.previous())
 			{
 				article Article = it.get();
-				int before = dataBase.getHighestRowID();
 				FeedServer.grabContent(Article);
 				new_articles.add(Article);
 
 				if(new_articles.size == chunksize || Article.getArticleID() == last)
 				{
-					writeInterfaceState();
+					int before = dataBase.getHighestRowID();
 					dataBase.write_articles(new_articles);
-					updateFeedList();
-					updateArticleList();
 					new_articles = new Gee.LinkedList<article>();
 					setNewRows(before);
 				}
@@ -1299,13 +1295,20 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		int after = dataBase.getHighestRowID();
 		int newArticles = after-before;
-		logger.print(LogMessage.DEBUG, "FeedServer: new articles: %i".printf(newArticles));
 
-		if(newArticles > 0 && settings_state.get_boolean("no-animations"))
+		if(newArticles > 0)
 		{
-			logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
-			int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-			settings_state.set_int("articlelist-new-rows", newCount);
+			logger.print(LogMessage.DEBUG, "FeedServer: new articles: %i".printf(newArticles));
+			writeInterfaceState();
+			updateFeedList();
+			updateArticleList();
+			
+			if(settings_state.get_boolean("no-animations"))
+			{
+				logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
+				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				settings_state.set_int("articlelist-new-rows", newCount);
+			}
 		}
 	}
 

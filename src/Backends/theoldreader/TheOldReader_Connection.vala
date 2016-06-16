@@ -71,6 +71,7 @@ public class FeedReader.TheOldReaderConnection {
 	public string send_get_request(string path)
 	{
 		var session = new Soup.Session();
+		logger.print(LogMessage.DEBUG, TheOldReaderSecret.base_uri+path);
 		var message = new Soup.Message("GET", TheOldReaderSecret.base_uri+path);
 
 		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
@@ -85,6 +86,7 @@ public class FeedReader.TheOldReaderConnection {
 	public string send_post_request(string path)
 	{
 		var session = new Soup.Session();
+		logger.print(LogMessage.DEBUG, TheOldReaderSecret.base_uri+path);
 		var message = new Soup.Message("POST", TheOldReaderSecret.base_uri+path);
 
 		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
@@ -92,6 +94,7 @@ public class FeedReader.TheOldReaderConnection {
 		message.request_headers.append("Authorization", oldauth) ;
 
 		session.send_message(message);
+
 		return (string)message.response_body.data;
 	}
 

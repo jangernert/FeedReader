@@ -52,6 +52,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.INOREADER:
 				m_inoreader = new InoReaderAPI();
 				break;
+			case Backend.THEOLDREADER:
+				m_theoldreader = new TheOldReaderAPI();
+				break;
 		}
 	}
 
@@ -135,6 +138,9 @@ public class FeedReader.FeedServer : GLib.Object {
 				return true;
 
 			case Backend.INOREADER:
+				//FIXME: add inoreader
+				break;
+			case Backend.THEOLDREADER:
 				//FIXME: add inoreader
 				break;
 		}

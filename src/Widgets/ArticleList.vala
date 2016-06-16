@@ -174,6 +174,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			var oldValue = m_scrollPos;
 			m_scrollPos = m_current_adjustment.get_value();
+			dismissOverlay(m_current_adjustment);
 			if(m_scrollPos > oldValue)
 				needToLoadMore(m_current_adjustment);
 		}
@@ -186,7 +187,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 			logger.print(LogMessage.INFO, "load more because of scrolling");
 			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
 		}
-		else if(adj.get_value() == 0.0 && m_overlay != null)
+	}
+
+	public void dismissOverlay(Gtk.Adjustment adj)
+	{
+		if(adj.get_value() == 0.0 && m_overlay != null)
 		{
 			m_overlay.dismiss();
 		}
@@ -219,6 +224,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	public void move(bool down)
 	{
 		needToLoadMore(m_current_adjustment);
+		dismissOverlay(m_current_adjustment);
 		articleRow selected_row = m_currentList.get_selected_row() as articleRow;
 		articleRow new_article = null;
 		int time = 300;

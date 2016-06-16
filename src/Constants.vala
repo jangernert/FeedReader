@@ -20,7 +20,8 @@ namespace FeedReader {
 		TTRSS = 0,
 		FEEDLY,
 		OWNCLOUD,
-		INOREADER
+		INOREADER,
+		THEOLDREADER
 	}
 
 	public enum OAuth {
@@ -162,6 +163,13 @@ namespace FeedReader {
 		const string base_uri = "https://www.inoreader.com/reader/api/0/";
 		const string apikey = "1000001058";
 		const string apitoken = "a3LyhdTSKk_dcCygZUZBZenIO2SQcpzz";
+	}
+
+	namespace TheOldReaderSecret {
+		const string base_uri = "https://theoldreader.com/reader/api/0/";
+		const string client = "FeedReader";
+		const string accountType = "HOSTED_OR_GOOGLE";
+		const string service = "reader";
 	}
 
 	namespace FeedlySecret {

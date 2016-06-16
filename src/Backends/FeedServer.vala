@@ -18,6 +18,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private FeedlyAPI m_feedly;
 	private OwncloudNewsAPI m_owncloud;
 	private InoReaderAPI m_inoreader;
+	private TheOldReaderAPI m_theoldreader;
 	private OfflineActionManager m_offlineActions;
 	private int m_type;
 	private bool m_supportTags;
@@ -108,6 +109,11 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.INOREADER:
 				m_supportTags = true;
 				return m_inoreader.login();
+
+			case Backend.THEOLDREADER:
+				m_supportTags = false;
+				return m_theoldreader.login();
+
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -327,6 +333,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					else
 						m_inoreader.edidTag(articleIDs, "user/-/state/com.google/read", false);
 					break;
+				case Backend.THEOLDREADER:
+					if(read == ArticleStatus.READ)
+						m_theoldreader.edidTag(articleIDs, "user/-/state/com.google/read");
+					else
+						m_theoldreader.edidTag(articleIDs, "user/-/state/com.google/read",false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -365,6 +377,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					else
 						m_inoreader.edidTag(articleID, "user/-/state/com.google/starred", false);
 					break;
+				case Backend.THEOLDREADER:
+					if(marked == ArticleStatus.MARKED)
+						m_theoldreader.edidTag(articleID, "user/-/state/com.google/starred");
+					else
+						m_theoldreader.edidTag(articleID, "user/-/state/com.google/starred", false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -401,6 +419,9 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.INOREADER:
 					m_inoreader.markAsRead(feedID);
 					break;
+				case Backend.THEOLDREADER:
+					m_theoldreader.markAsRead(feedID);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -436,6 +457,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.INOREADER:
 					m_inoreader.markAsRead(catID);
+					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.markAsRead(catID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -494,6 +519,21 @@ public class FeedReader.FeedServer : GLib.Object {
 					}
 					m_inoreader.markAsRead();
 					break;
+
+				case Backend.THEOLDREADER:
+					var categories = dataBase.read_categories();
+					foreach(category cat in categories)
+					{
+						m_theoldreader.markAsRead(cat.getCatID());
+					}
+
+					var feeds = dataBase.read_feeds_without_cat();
+					foreach(feed Feed in feeds)
+					{
+						m_theoldreader.markAsRead(Feed.getFeedID());
+					}
+					m_theoldreader.markAsRead();
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -523,6 +563,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.INOREADER:
 					m_inoreader.edidTag(articleID, tagID);
+					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.edidTag(articleID, tagID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -554,6 +598,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.INOREADER:
 					m_inoreader.edidTag(articleID, tagID, false);
 					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.edidTag(articleID, tagID, false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -578,6 +626,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.INOREADER:
 				return m_inoreader.composeTagID(caption);
+
+			case Backend.THEOLDREADER:
+				return m_theoldreader.composeTagID(caption);
 		}
 
 		return ":(";
@@ -602,6 +653,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.INOREADER:
 					m_inoreader.deleteTag(tagID);
+					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.deleteTag(tagID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -655,6 +710,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.INOREADER:
 				return m_inoreader.ping();
+
+			case Backend.THEOLDREADER:
+				return m_theoldreader.ping();
 		}
 
 		return false;
@@ -1009,6 +1067,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				m_inoreader.getFeeds(feeds);
 				m_inoreader.getCategoriesAndTags(feeds, categories, tags);
 				return;
+
+			case Backend.THEOLDREADER:
+				m_theoldreader.getFeeds(feeds);
+				m_theoldreader.getCategoriesAndTags(feeds, categories, tags);
+				return;
 		}
 	}
 
@@ -1027,6 +1090,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.INOREADER:
 				return m_inoreader.getTotalUnread();
+
+			case Backend.THEOLDREADER:
+				return m_theoldreader.getTotalUnread();
 		}
 
 		return 0;
@@ -1263,6 +1329,58 @@ public class FeedReader.FeedServer : GLib.Object {
 				//m_inoreader.getArticles(articles, 1, ArticleStatus.MARKED, null, null, null);
 				writeArticlesInChunks(articles, 10);
 				break;
+
+			case Backend.THEOLDREADER:
+				if(whatToGet == ArticleStatus.READ)
+				{
+					return;
+				}
+				else if(whatToGet == ArticleStatus.ALL)
+				{
+					var unreadIDs = new Gee.LinkedList<string>();
+					string? continuation = null;
+					int left = 4*count;
+
+					while(left > 0)
+					{
+						if(left > 1000)
+						{
+							continuation = m_theoldreader.updateArticles(unreadIDs, 1000, continuation);
+							left -= 1000;
+						}
+						else
+						{
+							m_theoldreader.updateArticles(unreadIDs, left, continuation);
+							left = 0;
+						}
+					}
+					dataBase.updateArticlesByID(unreadIDs, "unread");
+					updateArticleList();
+				}
+
+				var articles = new Gee.LinkedList<article>();
+				string? continuation = null;
+				int left = count;
+				string? theoldreader_feedID = (isTagID) ? null : feedID;
+				string? theoldreader_tagID = (isTagID) ? feedID : null;
+
+				while(left > 0)
+				{
+					if(left > 1000)
+					{
+						continuation = m_theoldreader.getArticles(articles, 1000, whatToGet, continuation, theoldreader_tagID, theoldreader_feedID);
+						left -= 1000;
+					}
+					else
+					{
+						continuation = m_theoldreader.getArticles(articles, left, whatToGet, continuation, theoldreader_tagID, theoldreader_feedID);
+						left = 0;
+					}
+				}
+				writeArticlesInChunks(articles, 10);
+				break;
+
+
 		}
 	}
 

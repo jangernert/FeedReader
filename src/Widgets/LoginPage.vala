@@ -29,8 +29,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.Revealer m_owncloud_revealer;
 	private Gtk.Entry m_inoreader_user_entry;
 	private Gtk.Entry m_inoreader_password_entry;
-	private Gtk.Entry m_inoreader_apikey_entry;
-	private Gtk.Entry m_inoreader_apisecret_entry;
+	private Gtk.Entry m_theoldreader_user_entry;
+	private Gtk.Entry m_theoldreader_password_entry;
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
@@ -44,7 +44,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public LoginPage()
 	{
 
-		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader")};
+		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
 
@@ -79,6 +79,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		Gtk.TreeIter inoReader;
 		liststore.append(out inoReader);
 		liststore.set(inoReader, 0, m_account_types[Backend.INOREADER]);
+
+		Gtk.TreeIter theOldReader;
+		liststore.append(out theOldReader);
+		liststore.set(theOldReader, 0, m_account_types[Backend.THEOLDREADER]);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -124,6 +128,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 					case Backend.INOREADER:
 						m_login_details.set_visible_child_name("inoreader");
 						break;
+					case Backend.THEOLDREADER:
+						m_login_details.set_visible_child_name("theoldreader");
+						break;
 				}
 			}
 		});
@@ -135,6 +142,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		setup_feedly_login();
 		setup_owncloud_login();
 		setup_inoreader_login();
+		setup_theoldreader_login();
 
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
@@ -372,6 +380,41 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_login_details.add_named(inoreader_box, "inoreader");
 	}
 
+	private void setup_theoldreader_login()
+	{
+		var theoldreader_user_label = new Gtk.Label(_("Username:"));
+		var theoldreader_pass_label = new Gtk.Label(_("Password:"));
+
+		m_theoldreader_user_entry = new Gtk.Entry();
+		m_theoldreader_password_entry = new Gtk.Entry();
+
+		m_theoldreader_user_entry.activate.connect(write_login_data);
+		m_theoldreader_password_entry.activate.connect(write_login_data);
+
+		m_theoldreader_password_entry.set_invisible_char('*');
+		m_theoldreader_password_entry.set_visibility(false);
+		
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
+		
+		grid.attach(theoldreader_user_label, 0, 0, 1, 1);
+		grid.attach(m_theoldreader_user_entry, 1, 0, 1, 1);
+		grid.attach(theoldreader_pass_label, 0, 1, 1, 1);
+		grid.attach(m_theoldreader_password_entry, 1, 1, 1, 1);
+
+		var theoldreader_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+		theoldreader_box.pack_start(ttrss_logo, false, false, 10);
+		theoldreader_box.pack_start(grid, true, true, 10);
+
+		m_login_details.add_named(theoldreader_box, "theoldreader");
+
+	}
+
 	public void loadData()
 	{
 		switch(settings_general.get_enum("account-type"))
@@ -396,6 +439,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				m_comboBox.set_active(Backend.INOREADER);
 				m_login_details.set_visible_child_name("inoreader");
 				break;
+			case Backend.THEOLDREADER:
+				m_comboBox.set_active(Backend.THEOLDREADER);
+				m_login_details.set_visible_child_name("theoldreader");
+				break;
 		}
 
 
@@ -409,6 +456,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		m_inoreader_user_entry.set_text(inoreader_utils.getUser());
 		m_inoreader_password_entry.set_text(inoreader_utils.getPasswd());
+
+		m_theoldreader_user_entry.set_text(theoldreader_utils.getUser());
+		m_theoldreader_password_entry.set_text(theoldreader_utils.getPasswd());
 	}
 
 
@@ -510,6 +560,18 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_inoreader_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
 				break;
+
+			case Backend.THEOLDREADER:
+				backend = Backend.THEOLDREADER;
+				settings_theoldreader.set_string("username", m_theoldreader_user_entry.get_text());
+				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+							                      "Username", Secret.SchemaAttributeType.STRING);
+				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["Username"] = m_theoldreader_user_entry.get_text();
+				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_theoldreader_password_entry.get_text(), null);}
+				catch(GLib.Error e){}
+				break;
+
 		}
 
 		LoginResponse status = feedDaemon_interface.login(backend);

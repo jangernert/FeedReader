@@ -5,6 +5,7 @@
 		<value nick="FEEDLY" value="1"/>
 		<value nick="OWNCLOUD" value="2"/>
 		<value nick="INOREADER" value="3"/>
+		<value nick="THEOLDREADER" value="4"/>
 	</enum>
 
 	<enum id="org.gnome.feedreader.grabber">

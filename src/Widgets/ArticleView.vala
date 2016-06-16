@@ -293,7 +293,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 			switch(event.keyval)
 			{
 				case Gdk.Key.KP_0:
-					m_currentView.zoom_level = 1.0;
+					if(m_FullscreenArticle)
+						m_currentView.zoom_level = m_FullscreenZoomLevel;
+					else
+						m_currentView.zoom_level = 1.0;
 					return true;
 
 				case Gdk.Key.KP_Add:

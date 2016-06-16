@@ -1253,7 +1253,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		var selected_row = m_currentList.get_selected_row() as articleRow;
 		var ArticleListChildren = m_currentList.get_children();
 		int n = ArticleListChildren.index(selected_row);
-		var lastRow = ArticleListChildren.last().data as articleRow;
+		var lastRow = ArticleListChildren.first().data as articleRow;
 
 		if(n == 0)
 			return true;

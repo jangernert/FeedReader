@@ -17,7 +17,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	private FeedHQConnection m_connection;
 
-	private string m_theinoreader;
+	private string m_feedhq;
 	private string m_userID;
 
 	public FeedHQAPI ()
@@ -61,12 +61,12 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
-			settings_inoreader.set_string("user-id", m_userID);
+			settings_feedhq.set_string("user-id", m_userID);
 			logger.print(LogMessage.INFO, "Feedhq: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
 			{
-				settings_inoreader.set_string("username", root.get_string_member("userEmail"));
+				settings_feedhq.set_string("username", root.get_string_member("userEmail"));
 			}
 			return true;
 		}

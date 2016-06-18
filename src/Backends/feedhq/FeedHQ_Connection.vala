@@ -13,11 +13,11 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.FeedhqConnection {
+public class FeedReader.FeedHQConnection {
 	private string m_api_code;
 	private string m_api_username;
 
-	public FeedhqConnection()
+	public FeedHQConnection()
 	{
 		m_api_username = feedhq_utils.getUser();
 		m_api_code = feedhq_utils.getAccessToken();

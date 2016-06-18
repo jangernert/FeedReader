@@ -28,8 +28,10 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
+		logger.print(LogMessage.ERROR, "login setup");
 		if(feedhq_utils.getAccessToken() == "")
 		{
+			logger.print(LogMessage.ERROR, "getting gettoken");
 			m_connection.getToken();
 		}
 

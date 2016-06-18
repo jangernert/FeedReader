@@ -658,6 +658,8 @@ namespace FeedReader {
 	GLib.Settings settings_owncloud;
 	GLib.Settings settings_inoreader;
 	GLib.Settings settings_theoldreader;
+	GLib.Settings settings_feedhq;
+	
 	GLib.Settings settings_tweaks;
 	FeedServer server;
 	Logger logger;

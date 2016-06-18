@@ -11,7 +11,7 @@
 		<description>Authorization code to TheOldreader throught API</description>
 	</key>
 
-	<key name="Service" type="s">
+	<key name="service" type="s">
 		<default>""</default>
 		<description>Service Name</description>
 	</key>

@@ -628,7 +628,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.FEEDHQ:
 				backend = Backend.FEEDHQ;
-				settings_feedhq.set_string("username", m_theoldreader_user_entry.get_text());
+				settings_feedhq.set_string("username", m_feedhq_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 												"Service", Secret.SchemaAttributeType.STRING,
 							                    "Username", Secret.SchemaAttributeType.STRING);

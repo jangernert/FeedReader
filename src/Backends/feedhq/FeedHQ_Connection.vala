@@ -42,7 +42,7 @@ public class FeedReader.FeedHQConnection {
 		}
 
 		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd;
-		logger.print( LogMessage.DEBUG, m_api_username + " - "+ passwd );
+		logger.print( LogMessage.DEBUG, message_string );
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 

@@ -231,7 +231,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		message_string += "&xt=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
+		string response = m_connection.send_post_request("stream/items/ids?output=json",message_string);
 
 		var parser = new Json.Parser();
 		try{
@@ -269,7 +269,6 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		else if(whatToGet == ArticleStatus.MARKED)
 			message_string += "&s=user/-/state/com.google/starred";
 
-		if(continuation != null)
 			message_string += "&c=" + continuation;
 
 
@@ -352,14 +351,14 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 		message_string += tagID;
 		message_string += "&i=" + articleID;
-		string response = m_connection.send_post_request("edit-tag?output=json&"+message_string);
+		string response = m_connection.send_post_request("edit-tag", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
 	{
 		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
 		logger.print(LogMessage.DEBUG, message_string);
-		string response = m_connection.send_post_request("mark-all-as-read?"+message_string);
+		string response = m_connection.send_post_request("mark-all-as-read",message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -370,13 +369,13 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_post_request("disable-tag?"+message_string);
+		string response = m_connection.send_post_request("disable-tag", message_string);
 	}
 
 	public string searchforFeed(string url){
 
 		var message_string = "quickadd=" + GLib.Uri.escape_string(url) ;
-		string response = m_connection.send_post_request("subscription/quickadd?"+message_string);
+		string response = m_connection.send_post_request("subscription/quickadd",message_string);
 
 		var parser = new Json.Parser();
 		try{
@@ -409,7 +408,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		if(title.length > 0){
 			message_string += "&t="+ title;
 		}
-		string response = m_connection.send_post_request("subscription/edit?"+message_string);
+		string response = m_connection.send_post_request("subscription/edit",message_string);
 
 		var parser = new Json.Parser();
 		try{

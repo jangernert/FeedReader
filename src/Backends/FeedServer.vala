@@ -635,6 +635,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.THEOLDREADER:
 				return m_theoldreader.composeTagID(caption);
+
 		}
 
 		return ":(";
@@ -661,9 +662,6 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_inoreader.deleteTag(tagID);
 					break;
 
-				case Backend.THEOLDREADER:
-					m_theoldreader.deleteTag(tagID);
-					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -784,6 +782,18 @@ public class FeedReader.FeedServer : GLib.Object {
 					}
 					feedID = "feed/" + feedURL;
 					break;
+				case Backend.THEOLDREADER:
+					if(catID == null && newCatName != null)
+					{
+						string newCatID = m_theoldreader.composeTagID(newCatName);
+						m_theoldreader.editSubscription(TheOldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+					}
+					else
+					{
+						m_theoldreader.editSubscription(TheOldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+					}
+					feedID = "feed/" + feedURL;
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -817,6 +827,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.INOREADER:
 					m_inoreader.editSubscription(InoSubscriptionAction.UNSUBSCRIBE, feedID);
 					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.editSubscription(TheOldreaderSubscriptionAction.UNSUBSCRIBE, feedID);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -848,6 +862,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.INOREADER:
 					m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, title);
+					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.editSubscription(TheOldreaderSubscriptionAction.EDIT, feedID, title);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -904,6 +922,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.INOREADER:
 				return m_inoreader.composeTagID(title);
+
+			case Backend.THEOLDREADER:
+				return m_theoldreader.composeTagID(title);
+
 		}
 
 		return "fail";
@@ -931,6 +953,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.INOREADER:
 					m_inoreader.renameTag(catID, title);
 					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.renameTag(catID, title);
+					break;
+
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -986,6 +1013,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.INOREADER:
 					m_inoreader.deleteTag(catID);
 					break;
+
+				case Backend.THEOLDREADER:
+					m_theoldreader.deleteTag(catID);
+					break;
+
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -1031,6 +1063,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.TTRSS:
 				case Backend.OWNCLOUD:
 				case Backend.INOREADER:
+				case Backend.THEOLDREADER:
 					var parser = new OPMLparser(opml);
 					parser.parse();
 					break;

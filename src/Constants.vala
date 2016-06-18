@@ -155,6 +155,12 @@ namespace FeedReader {
 		UNSUBSCRIBE
 	}
 
+	public enum TheOldreaderSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
 	namespace TagID {
 		const string NEW = "blubb";
 	}

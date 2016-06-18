@@ -1121,6 +1121,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 				case Backend.FEEDHQ:
 					m_feedhq.deleteTag(catID);
+					break;
 
 			}
 			Idle.add((owned) callback);

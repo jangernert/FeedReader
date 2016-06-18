@@ -1,14 +1,14 @@
 <schemalist>
-	<schema id="org.gnome.feedreader.feedhq" path="/org/gnome/feedreader/feedhq/" gettext-domain="feedhq">
+	<schema id="org.gnome.feedreader.bazqux" path="/org/gnome/feedreader/bazqux/" gettext-domain="bazqux">
 
 	<key name="username" type="s">
 		<default>""</default>
 		<summary>apiCode</summary>
-		<description>Authenticated username to feedhq throught API</description>
+		<description>Authenticated username to bazqux throught API</description>
 		</key>
 	<key name="access-token" type="s">
 		<default>""</default>
-		<description>Authorization code to feedhq throught API</description>
+		<description>Authorization code to bazqux throught API</description>
 	</key>
 
 	<key name="service" type="s">

@@ -333,7 +333,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentArticle = articleID;
 		logger.print(LogMessage.DEBUG, "ArticleView: load article %s".printf(articleID));
 
-		if(isLoading())
+		if(m_currentView.is_loading)
 		{
 			logger.print(LogMessage.DEBUG, "ArticleView: still busy loading last article. will cancel loading and load new article");
 			m_currentView.load_failed.connect(loadFailed);
@@ -389,11 +389,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		m_stack.set_visible_child_name("empty");
 		m_currentArticle = "";
-	}
-
-	public bool isLoading()
-	{
-		return m_currentView.is_loading;
 	}
 
 	public string getCurrentArticle()

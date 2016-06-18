@@ -75,6 +75,7 @@ public class FeedReader.FeedHQConnection {
 		string oldauth = "GoogleLogin auth=" + feedhq_utils.getAccessToken();
 		message.request_headers.append("Authorization", oldauth) ;
 		session.send_message(message);
+		logger.print(LogMessage.DEBUG, (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 
@@ -87,6 +88,7 @@ public class FeedReader.FeedHQConnection {
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
+		logger.print(LogMessage.DEBUG, (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 }

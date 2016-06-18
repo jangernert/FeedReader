@@ -33,13 +33,11 @@ public class FeedReader.feedhq_utils : GLib.Object {
 	public static string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "Apikey", Secret.SchemaAttributeType.STRING,
-							                      "Apisecret", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
+							                    "Service", Secret.SchemaAttributeType.STRING,
+							                    "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = InoReaderSecret.apikey;
-		attributes["Apisecret"] = InoReaderSecret.apitoken;
 		attributes["Username"] = settings_feedhq.get_string("username");
+		attributes["Service"] = "bazqux";
 
 		string passwd = "";
 		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){

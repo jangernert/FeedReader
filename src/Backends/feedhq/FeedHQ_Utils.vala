@@ -13,31 +13,33 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.theoldreader_utils : GLib.Object {
+public class FeedReader.feedhq_utils : GLib.Object {
 
 	public static string getUser()
 	{
-		return settings_theoldreader.get_string ("username");
+		return settings_feedhq.get_string ("username");
 	}
 
 	public static string getAccessToken()
 	{
-		return settings_theoldreader.get_string ("access-token");
+		return settings_feedhq.get_string ("access-token");
 	}
 
 	public static string getUserID()
 	{
-		return settings_theoldreader.get_string ("user-id");
+		return settings_feedhq.get_string ("user-id");
 	}
 
 	public static string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-												"Service", Secret.SchemaAttributeType.STRING,
-							                    "Username", Secret.SchemaAttributeType.STRING);
+							                      "Apikey", Secret.SchemaAttributeType.STRING,
+							                      "Apisecret", Secret.SchemaAttributeType.STRING,
+							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Username"] = settings_theoldreader.get_string("username");
-		attributes["Service"] = "oldreader";
+		attributes["Apikey"] = InoReaderSecret.apikey;
+		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Username"] = settings_feedhq.get_string("username");
 
 		string passwd = "";
 		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){

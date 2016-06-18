@@ -21,7 +21,8 @@ namespace FeedReader {
 		FEEDLY,
 		OWNCLOUD,
 		INOREADER,
-		THEOLDREADER
+		THEOLDREADER,
+		FEEDHQ
 	}
 
 	public enum OAuth {
@@ -161,6 +162,12 @@ namespace FeedReader {
 		UNSUBSCRIBE
 	}
 
+	public enum FeedHQSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
 	namespace TagID {
 		const string NEW = "blubb";
 	}
@@ -176,6 +183,10 @@ namespace FeedReader {
 		const string client = "FeedReader";
 		const string accountType = "HOSTED_OR_GOOGLE";
 		const string service = "reader";
+	}
+
+	namespace FeedHQSecret {
+		const string base_uri = "https://theoldreader.com/reader/api/0/";
 	}
 
 	namespace FeedlySecret {

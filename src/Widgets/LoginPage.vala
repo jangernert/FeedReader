@@ -31,6 +31,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.Entry m_inoreader_password_entry;
 	private Gtk.Entry m_theoldreader_user_entry;
 	private Gtk.Entry m_theoldreader_password_entry;
+	private Gtk.Entry m_feedhq_user_entry;
+	private Gtk.Entry m_feedhq_password_entry;
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
@@ -44,7 +46,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public LoginPage()
 	{
 
-		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader")};
+		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
 
@@ -83,6 +85,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		Gtk.TreeIter theOldReader;
 		liststore.append(out theOldReader);
 		liststore.set(theOldReader, 0, m_account_types[Backend.THEOLDREADER]);
+
+		Gtk.TreeIter feedhq;
+		liststore.append(out feedhq);
+		liststore.set(feedhq, 0, m_account_types[Backend.FEEDHQ]);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -131,6 +137,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 					case Backend.THEOLDREADER:
 						m_login_details.set_visible_child_name("theoldreader");
 						break;
+					case Backend.FEEDHQ:
+						m_login_details.set_visible_child_name("feedhq");
+						break;
 				}
 			}
 		});
@@ -143,6 +152,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		setup_owncloud_login();
 		setup_inoreader_login();
 		setup_theoldreader_login();
+		setup_feedhq_login();
 
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
@@ -415,6 +425,41 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	}
 
+	private void setup_feedhq_login()
+	{
+		var feedhq_user_label = new Gtk.Label(_("Username:"));
+		var feedhq_pass_label = new Gtk.Label(_("Password:"));
+
+		m_feedhq_user_entry = new Gtk.Entry();
+		m_feedhq_password_entry = new Gtk.Entry();
+
+		m_feedhq_user_entry.activate.connect(write_login_data);
+		m_feedhq_password_entry.activate.connect(write_login_data);
+
+		m_feedhq_password_entry.set_invisible_char('*');
+		m_feedhq_password_entry.set_visibility(false);
+		
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-feedhq.svg");
+		
+		grid.attach(feedhq_user_label, 0, 0, 1, 1);
+		grid.attach(m_feedhq_user_entry, 1, 0, 1, 1);
+		grid.attach(feedhq_pass_label, 0, 1, 1, 1);
+		grid.attach(m_feedhq_password_entry, 1, 1, 1, 1);
+
+		var feedhq_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
+		feedhq_box.pack_start(ttrss_logo, false, false, 10);
+		feedhq_box.pack_start(grid, true, true, 10);
+
+		m_login_details.add_named(feedhq_box, "feedhq");
+
+	}
+
 	public void loadData()
 	{
 		switch(settings_general.get_enum("account-type"))
@@ -443,6 +488,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				m_comboBox.set_active(Backend.THEOLDREADER);
 				m_login_details.set_visible_child_name("theoldreader");
 				break;
+			case Backend.FEEDHQ:
+				m_comboBox.set_active(Backend.FEEDHQ);
+				m_login_details.set_visible_child_name("feedhq");
+				break;
 		}
 
 
@@ -459,6 +508,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		m_theoldreader_user_entry.set_text(theoldreader_utils.getUser());
 		m_theoldreader_password_entry.set_text(theoldreader_utils.getPasswd());
+
+		m_feedhq_user_entry.set_text( feedhq_utils.getUser() );
+		m_feedhq_password_entry.set_text( feedhq_utils.getPasswd() );
 	}
 
 
@@ -565,10 +617,25 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				backend = Backend.THEOLDREADER;
 				settings_theoldreader.set_string("username", m_theoldreader_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+													"Service", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 				attributes["Username"] = m_theoldreader_user_entry.get_text();
-				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_theoldreader_password_entry.get_text(), null);}
+				attributes["Service"] = "oldreader";
+ 				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_theoldreader_password_entry.get_text(), null);}
+				catch(GLib.Error e){}
+				break;
+
+			case Backend.FEEDHQ:
+				backend = Backend.FEEDHQ;
+				settings_feedhq.set_string("username", m_theoldreader_user_entry.get_text());
+				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+												"Service", Secret.SchemaAttributeType.STRING,
+							                    "Username", Secret.SchemaAttributeType.STRING);
+				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+				attributes["Username"] = m_feedhq_user_entry.get_text();
+				attributes["Service"] = "feedhq";
+				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_feedhq_password_entry.get_text(), null);}
 				catch(GLib.Error e){}
 				break;
 

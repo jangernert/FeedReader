@@ -19,6 +19,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private OwncloudNewsAPI m_owncloud;
 	private InoReaderAPI m_inoreader;
 	private TheOldReaderAPI m_theoldreader;
+	private FeedHQAPI m_feedhq;
 	private OfflineActionManager m_offlineActions;
 	private int m_type;
 	private bool m_supportTags;

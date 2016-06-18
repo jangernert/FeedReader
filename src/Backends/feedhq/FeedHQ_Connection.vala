@@ -28,10 +28,11 @@ public class FeedReader.FeedHQConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin/");
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+												 "Service", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["Username"] = m_api_username;
-
+		attributes["Service"] = "feedhq";
 		string passwd = "";
 		try{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);

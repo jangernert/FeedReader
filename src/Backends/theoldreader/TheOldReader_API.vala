@@ -357,8 +357,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 	public void markAsRead(string? streamID = null)
 	{
 		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
-		logger.print(LogMessage.DEBUG, message_string);
-		string response = m_connection.send_post_request("mark-all-as-read",message_string);
+		string response = m_connection.send_post_request("mark-all-as-read",message_string );
 	}
 
 	public string composeTagID(string tagName)
@@ -372,51 +371,42 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		string response = m_connection.send_post_request("disable-tag", message_string);
 	}
 
-	public string searchforFeed(string url){
-
-		var message_string = "quickadd=" + GLib.Uri.escape_string(url) ;
-		string response = m_connection.send_post_request("subscription/quickadd",message_string);
-
-		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
-		}
-		catch (Error e) {
-			logger.print(LogMessage.ERROR, "TheOldreader searchforFeed: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
-		}
-
-		var root = parser.get_root().get_object();
-		int count = (int)root.get_int_member("count");
-
-		string searchfeed = "";
-		if (count == 1 ){
-			logger.print(LogMessage.DEBUG, "searchforFeed: results - %d".printf(count));
-			return searchfeed = root.get_string_member("streamId");
-		}
-		return searchfeed;
+	public void renameTag(string tagID, string title)
+	{
+		var message_string = "s=" + tagID;
+		message_string += "&dest=" + composeTagID(title);
+		string response = m_connection.send_post_request("rename-tag", message_string);
 	}
 
-	public void addFeedtoSub(string feedId, string action, string subscription, string title){
+	public void editSubscription(TheOldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	{
+		var message_string = "ac=";
 
-		var message_string = "s=" + GLib.Uri.escape_string(feedId) ;
-
-		message_string += "&ac=" + action;
-
-		message_string += "&a="+ subscription;
-
-		if(title.length > 0){
-			message_string += "&t="+ title;
+		switch(action)
+		{
+			case TheOldreaderSubscriptionAction.EDIT:
+				message_string += "edit";
+				break;
+			case TheOldreaderSubscriptionAction.SUBSCRIBE:
+				message_string += "subscribe";
+				break;
+			case TheOldreaderSubscriptionAction.UNSUBSCRIBE:
+				message_string += "unsubscribe";
+				break;
 		}
-		string response = m_connection.send_post_request("subscription/edit",message_string);
 
-		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
-		}
-		catch (Error e) {
-			logger.print(LogMessage.ERROR, "TheOldreader addFeedtoSub: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
-		}
+		message_string += "&s=" + feedID;
+
+		if(title != null)
+			message_string += "&t=" + title;
+
+		if(add != null)
+			message_string += "&a=" + add;
+
+		if(remove != null)
+			message_string += "&r=" + remove;
+
+
+		m_connection.send_post_request("subscription/edit", message_string);
 	}
 }

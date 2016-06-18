@@ -79,6 +79,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.FEEDLY:
 			case Backend.OWNCLOUD:
 			case Backend.INOREADER:
+			case Backend.THEOLDREADER:
+			case Backend.FEEDHQ:
 			default:
 				return false;
 		}
@@ -118,6 +120,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				m_supportTags = false;
 				return m_theoldreader.login();
 
+			case Backend.FEEDHQ:
+				m_supportTags = false;
+				return m_feedhq.login();
+
 		}
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -143,6 +149,9 @@ public class FeedReader.FeedServer : GLib.Object {
 				break;
 			case Backend.THEOLDREADER:
 				//FIXME: add inoreader
+				break;
+			case Backend.FEEDHQ:
+
 				break;
 		}
 
@@ -345,6 +354,12 @@ public class FeedReader.FeedServer : GLib.Object {
 						m_theoldreader.edidTag(articleIDs, "user/-/state/com.google/read");
 					else
 						m_theoldreader.edidTag(articleIDs, "user/-/state/com.google/read",false);
+					break;
+				case Backend.FEEDHQ:
+					if(read == ArticleStatus.READ)
+						m_feedhq.edidTag(articleIDs, "user/-/state/com.google/read");
+					else
+						m_feedhq.edidTag(articleIDs, "user/-/state/com.google/read",false);
 					break;
 			}
 			Idle.add((owned) callback);

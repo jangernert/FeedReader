@@ -659,6 +659,7 @@ namespace FeedReader {
 	GLib.Settings settings_inoreader;
 	GLib.Settings settings_theoldreader;
 	GLib.Settings settings_feedhq;
+	Glib.Settings settings_bazqux;
 	
 	GLib.Settings settings_tweaks;
 	FeedServer server;

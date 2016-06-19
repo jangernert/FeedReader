@@ -67,7 +67,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         var query = new QueryBuilder(QueryType.SELECT, "main.articles");
         query.selectField("articleID");
         query.selectField("feedID");
-        query.addCustomCondition("date <= datetime('now', '-%i months')".printf(weeks));
+        query.addCustomCondition("date <= datetime('now', '-%i days')".printf(weeks*7));
         query.addEqualsCondition("marked", ArticleStatus.UNMARKED.to_string());
         if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
         {
@@ -75,7 +75,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             int syncCount = settings_general.get_int("max-articles");
             int upper = highesID-syncCount;
             if(upper <= 0)
-                upper = 1;
+                return;
             query.addCustomCondition("rowid BETWEEN 1 AND %i".printf(upper));
         }
         query.build();

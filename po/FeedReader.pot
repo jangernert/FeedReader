@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-06 15:00+0200\n"
+"POT-Creation-Date: 2016-06-16 01:38+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -37,7 +37,7 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:149
+#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:162
 #: ../src/Widgets/SettingsDialog.vala:26
 msgid "Settings"
 msgstr ""
@@ -114,53 +114,53 @@ msgstr ""
 msgid "add Tag"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:436
+#: ../src/Widgets/MainWindow.vala:459
 msgid "Ignore all tls errors from now on"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:544
+#: ../src/Widgets/MainWindow.vala:567
 msgid "Please select a service first"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:547
+#: ../src/Widgets/MainWindow.vala:570
 msgid "Please enter a valid username"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:550
+#: ../src/Widgets/MainWindow.vala:573
 msgid "Please enter a valid password"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:553
+#: ../src/Widgets/MainWindow.vala:576
 msgid "Please enter a valid URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:556
+#: ../src/Widgets/MainWindow.vala:579
 msgid "Please enter your Login details"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:559
+#: ../src/Widgets/MainWindow.vala:582
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:562
+#: ../src/Widgets/MainWindow.vala:585
 msgid "Either your username or the password are not correct."
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:565
+#: ../src/Widgets/MainWindow.vala:588
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:568
+#: ../src/Widgets/MainWindow.vala:591
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:571
+#: ../src/Widgets/MainWindow.vala:594
 msgid "Not authorized to access URL"
 msgstr ""
 
-#: ../src/Widgets/MainWindow.vala:575
+#: ../src/Widgets/MainWindow.vala:598
 msgid "No valid CA certificate available!"
 msgstr ""
 
@@ -188,6 +188,30 @@ msgstr ""
 
 #: ../src/Widgets/UpdateButton.vala:36
 msgid "Update Feeds"
+msgstr ""
+
+#: ../src/Widgets/FullscreenHeaderbar.vala:38
+#: ../src/Widgets/ReaderHeaderbar.vala:51
+msgid "Mark article (un)starred"
+msgstr ""
+
+#: ../src/Widgets/FullscreenHeaderbar.vala:45
+#: ../src/Widgets/ReaderHeaderbar.vala:57
+msgid "Mark article (un)read"
+msgstr ""
+
+#: ../src/Widgets/FullscreenHeaderbar.vala:56
+#: ../src/Widgets/ReaderHeaderbar.vala:103
+msgid "Tag Article"
+msgstr ""
+
+#: ../src/Widgets/FullscreenHeaderbar.vala:71
+#: ../src/Widgets/ReaderHeaderbar.vala:113
+msgid "Share Article"
+msgstr ""
+
+#: ../src/Widgets/FullscreenHeaderbar.vala:87
+msgid "Leave fullscreen mode"
 msgstr ""
 
 #: ../src/Widgets/RemovePopover.vala:46
@@ -235,7 +259,7 @@ msgstr ""
 msgid "waiting"
 msgstr ""
 
-#: ../src/Widgets/ArticleView.vala:92
+#: ../src/Widgets/ArticleView.vala:106
 msgid "No Article selected."
 msgstr ""
 
@@ -274,47 +298,35 @@ msgid ""
 "This shouldn't take too long."
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:50
-msgid "Mark article (un)starred"
+#: ../src/Widgets/ReaderHeaderbar.vala:66
+msgid "Read article fullscreen"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:56
-msgid "Mark article (un)read"
-msgstr ""
-
-#: ../src/Widgets/ReaderHeaderbar.vala:81
+#: ../src/Widgets/ReaderHeaderbar.vala:94
 msgid "All"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:81
+#: ../src/Widgets/ReaderHeaderbar.vala:94
 msgid "Show all articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:82
+#: ../src/Widgets/ReaderHeaderbar.vala:95
 msgid "Unread"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:82
+#: ../src/Widgets/ReaderHeaderbar.vala:95
 msgid "Show only unread articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:83
+#: ../src/Widgets/ReaderHeaderbar.vala:96
 msgid "Starred"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:83
+#: ../src/Widgets/ReaderHeaderbar.vala:96
 msgid "Show only starred articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:90
-msgid "Tag Article"
-msgstr ""
-
-#: ../src/Widgets/ReaderHeaderbar.vala:100
-msgid "Share Article"
-msgstr ""
-
-#: ../src/Widgets/ReaderHeaderbar.vala:134
+#: ../src/Widgets/ReaderHeaderbar.vala:147
 msgid "Search Articles"
 msgstr ""
 
@@ -374,12 +386,12 @@ msgstr ""
 msgid "Remove"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:300 ../src/Widgets/FeedRow.vala:302
-#: ../src/Widgets/CategorieRow.vala:491
+#: ../src/Widgets/TagRow.vala:286 ../src/Widgets/FeedRow.vala:280
+#: ../src/Widgets/CategorieRow.vala:477
 msgid "rename"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:302 ../src/Widgets/CategorieRow.vala:493
+#: ../src/Widgets/TagRow.vala:288 ../src/Widgets/CategorieRow.vala:479
 msgid "add"
 msgstr ""
 
@@ -543,7 +555,7 @@ msgstr ""
 msgid "Built in grabber"
 msgstr ""
 
-#: ../src/Widgets/ContentPage.vala:421
+#: ../src/Widgets/ContentPage.vala:445
 msgid "undo"
 msgstr ""
 
@@ -589,58 +601,82 @@ msgstr ""
 msgid "No marked articles in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:993
-msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
+#: ../src/Widgets/ArticleList.vala:990
+msgid "No articles that fit \"%s\" in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:995
-msgid "No unread articles in the tag \"%s\" could be found"
+#: ../src/Widgets/ArticleList.vala:992
+msgid "No articles in the feed \"%s\" could be found"
 msgstr ""
 
 #: ../src/Widgets/ArticleList.vala:1001
+msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1003
+msgid "No unread articles in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1009
 msgid ""
 "No unread articles and marked that fit \"%s\" in the tag \"%s\" could be "
 "found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1003
+#: ../src/Widgets/ArticleList.vala:1011
 msgid "No unread and marked articles in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1009
+#: ../src/Widgets/ArticleList.vala:1017
 msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1011
+#: ../src/Widgets/ArticleList.vala:1019
 msgid "No marked articles in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1020
+#: ../src/Widgets/ArticleList.vala:1025
+msgid "No articles that fit \"%s\" in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1027
+msgid "No articles in the tag \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1036
 msgid ""
 "No unread articles that fit \"%s\" in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1022
+#: ../src/Widgets/ArticleList.vala:1038
 msgid "No unread articles in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1028
+#: ../src/Widgets/ArticleList.vala:1044
 msgid ""
 "No unread articles and marked that fit \"%s\" in the category \"%s\" could "
 "be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1030
+#: ../src/Widgets/ArticleList.vala:1046
 msgid "No unread and marked articles in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1036
+#: ../src/Widgets/ArticleList.vala:1052
 msgid ""
 "No marked articles that fit \"%s\" in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1038
+#: ../src/Widgets/ArticleList.vala:1054
 msgid "No marked articles in the category \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1060
+msgid "No articles that fit \"%s\" in the category \"%s\" could be found"
+msgstr ""
+
+#: ../src/Widgets/ArticleList.vala:1062
+msgid "No articles in the category \"%s\" could be found"
 msgstr ""
 
 #: ../src/Widgets/FeedRow.vala:246 ../src/Widgets/CategorieRow.vala:420

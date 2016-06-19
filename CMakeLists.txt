@@ -231,7 +231,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backends/feedhq/FeedHQ_Utils.vala
     src/Backends/bazqux/BazQux_API.vala
     src/Backends/bazqux/BazQux_Utils.vala
-    src/Backends/bazqux/BazQux_Connections.vala
+    src/Backends/bazqux/BazQux_Connection.vala
     src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala

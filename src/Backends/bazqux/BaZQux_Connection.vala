@@ -26,7 +26,7 @@ public class FeedReader.BazquxConnection {
 	public int getToken()
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", "https://feedhq.com/accounts/ClientLogin/");
+		var message = new Soup.Message("POST", "https://bazqux.com/accounts/ClientLogin/");
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 												"Service", Secret.SchemaAttributeType.STRING,
 							                     "Username", Secret.SchemaAttributeType.STRING);

@@ -20,6 +20,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private InoReaderAPI m_inoreader;
 	private TheOldReaderAPI m_theoldreader;
 	private FeedHQAPI m_feedhq;
+	private BazQuxAPI m_bazqux;
 	private OfflineActionManager m_offlineActions;
 	private int m_type;
 	private bool m_supportTags;
@@ -59,6 +60,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.FEEDHQ:
 				m_feedhq = new FeedHQAPI();
 				break;
+			case Backend.BAZQUX:
+				m_bazqux = new BazQuxAPI();
 		}
 	}
 
@@ -84,6 +87,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.INOREADER:
 			case Backend.THEOLDREADER:
 			case Backend.FEEDHQ:
+			case Backend.BAZQUX:
 			default:
 				return false;
 		}
@@ -103,7 +107,6 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_supportTags = m_ttrss.supportTags.end(res);
 				});
 				return response;
-
 			case Backend.FEEDLY:
 				if(m_feedly.ping())
 				{
@@ -111,21 +114,21 @@ public class FeedReader.FeedServer : GLib.Object {
 					return m_feedly.login();
 				}
 				break;
-
 			case Backend.OWNCLOUD:
 				return m_owncloud.login();
-
 			case Backend.INOREADER:
 				m_supportTags = true;
 				return m_inoreader.login();
-
 			case Backend.THEOLDREADER:
 				m_supportTags = false;
 				return m_theoldreader.login();
-
 			case Backend.FEEDHQ:
 				m_supportTags = false;
 				return m_feedhq.login();
+			case Backend.BAZQUX:
+				m_supportTags = false;
+				return m_bazqux.login();
+
 
 		}
 		return LoginResponse.UNKNOWN_ERROR;

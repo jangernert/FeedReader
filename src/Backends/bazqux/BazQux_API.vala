@@ -5,7 +5,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 	private string m_bazqux;
 	private string m_userID;
 
-	public TheOldReaderAPI ()
+	public BazQuxAPI ()
 	{
 		m_connection = new BazQuxConnection();
 	}

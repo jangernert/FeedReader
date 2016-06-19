@@ -22,7 +22,8 @@ namespace FeedReader {
 		OWNCLOUD,
 		INOREADER,
 		THEOLDREADER,
-		FEEDHQ
+		FEEDHQ,
+		BAZQUX
 	}
 
 	public enum OAuth {
@@ -168,6 +169,12 @@ namespace FeedReader {
 		UNSUBSCRIBE
 	}
 
+	public enum BazQuxSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
 	namespace TagID {
 		const string NEW = "blubb";
 	}
@@ -187,6 +194,10 @@ namespace FeedReader {
 
 	namespace FeedHQSecret {
 		const string base_uri = "https://theoldreader.com/reader/api/0/";
+	}
+
+	namespace BazQuxSecret {
+		const string base_uri = "https://bazqux.com/reader/api/0/";
 	}
 
 	namespace FeedlySecret {

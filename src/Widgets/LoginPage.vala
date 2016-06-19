@@ -148,6 +148,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 						break;
 					case Backend.BAZQUX:
 						m_login_details.set_visible_child_name("bazqux");
+						break;
 				}
 			}
 		});

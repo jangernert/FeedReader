@@ -206,7 +206,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	    	}
 	    	catch(GLib.IOError e)
 	    	{
-	    		warning(e.message);
+	    		logger.print(LogMessage.WARNING, "ArticleView: recalculate " + e.message);
 	    	}
 			Idle.add((owned) callback);
 			return null;

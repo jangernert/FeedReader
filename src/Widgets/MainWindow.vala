@@ -167,7 +167,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_content.toggleReadSelectedArticle();
 		});
 
-		m_simpleHeader = new Gtk.HeaderBar ();
+		m_simpleHeader = new Gtk.HeaderBar();
 		m_simpleHeader.show_close_button = true;
 		m_simpleHeader.set_title("FeedReader");
 
@@ -192,6 +192,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
 		this.show_all();
 
+		logger.print(LogMessage.DEBUG, "MainWindow: determining state");
 		if(feedDaemon_interface.isOnline() && !settings_state.get_boolean("spring-cleaning"))
 		{
 			loadContent();

@@ -577,6 +577,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 		new GLib.Thread<void*>("createHeadlineList", run);
 		yield;
 
+		logger.print(LogMessage.DEBUG, "ArticleList: insert new rows");
+
 		if(!(threadID < m_threadCount))
 		{
 			if(hasContent)

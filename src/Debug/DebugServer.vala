@@ -301,6 +301,16 @@ namespace FeedReader {
 			return LoginResponse.SUCCESS;
 		}
 
+		public bool isOnline()
+		{
+			return true;
+		}
+
+		public int getVersion()
+		{
+			return DBusAPIVersion;
+		}
+
 		public void changeArticle(string articleID, ArticleStatus status)
 		{
 			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
@@ -323,9 +333,9 @@ namespace FeedReader {
 			}
 		}
 
-		public void checkOnlineAsync()
+		public async bool checkOnlineAsync()
 		{
-
+			return true;
 		}
 
 		public string createTag(string caption)

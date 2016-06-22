@@ -217,7 +217,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		message_string += "&xt=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-		string response = m_connection.send_post_request("stream/items/ids?output=json&",message_string);
+		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
 
 		var parser = new Json.Parser();
 		try{
@@ -342,7 +342,9 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 	public void markAsRead(string? streamID = null)
 	{
-		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
+		int64 lastsync = settings_state.get_int("last-sync");
+		lastsync = lastsync*1000000;
+		string message_string = "s=%s&ts=%lld".printf(streamID, lastsync);
 		string response = m_connection.send_post_request("mark-all-as-read",message_string );
 	}
 

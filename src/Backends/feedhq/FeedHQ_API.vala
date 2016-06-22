@@ -349,8 +349,10 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	}
 
 	public void markAsRead(string? streamID = null)
-	{
-		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
+	{ 
+		int64 lastsync = settings_state.get_int("last-sync");
+		lastsync = lastsync*1000;
+		string message_string = "s=%s&ts=%lld".printf(streamID, lastsync);
 		string response = m_connection.send_post_request("mark-all-as-read",message_string );
 	}
 	public string composeID(string tagName)

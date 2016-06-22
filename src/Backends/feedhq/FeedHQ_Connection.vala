@@ -26,35 +26,22 @@ public class FeedReader.FeedHQConnection {
 	public int getToken()
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin/");
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-												 "Service", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Username"] = m_api_username;
-		attributes["Service"] = "feedhq";
-		string passwd = "";
-		try{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
-		}
+		var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin");
 
+		string passwd = feedhq_utils.getPasswd();
 		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd;
-		logger.print( LogMessage.DEBUG, message_string );
+
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 
 		try{
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			string response = (string)message.response_body.flatten().data;
-			logger.print(LogMessage.ERROR, "Could not load response to Message from feedhq - %s".printf(response));
+			/*logger.print(LogMessage.ERROR, "Could not load response to Message from feedhq - %s".printf(response));*/
 			if(regex.match(response))
 			{
 				string split = regex.replace( response, -1,0,"");
 				settings_feedhq.set_string("access-token",split.strip());
-				m_api_code = feedhq_utils.getAccessToken();
 				return LoginResponse.SUCCESS;
 			}
 			else
@@ -77,7 +64,7 @@ public class FeedReader.FeedHQConnection {
 		string oldauth = "GoogleLogin auth=" + feedhq_utils.getAccessToken();
 		message.request_headers.append("Authorization", oldauth) ;
 		session.send_message(message);
-		logger.print(LogMessage.DEBUG, (string)message.response_body.data);
+		logger.print(LogMessage.DEBUG, FeedHQSecret.base_uri+path);
 		return (string)message.response_body.data;
 	}
 
@@ -87,10 +74,27 @@ public class FeedReader.FeedHQConnection {
 		var message = new Soup.Message("POST", FeedHQSecret.base_uri+path);
 		string oldauth = "GoogleLogin auth=" + feedhq_utils.getAccessToken();
 		message.request_headers.append("Authorization", oldauth) ;
-		if(message_string != null)
-			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+		string message_data = message_string;
+		if(message_string != null){
+			message_data += "&T=";
+			message_data += feedhq_utils.getTempPostToken() ;
+			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_data.data);
+		}
 		session.send_message(message);
+		logger.print(LogMessage.DEBUG, FeedHQSecret.base_uri+path);
+		logger.print(LogMessage.DEBUG, message_data);
+		logger.print(LogMessage.DEBUG, oldauth);
 		logger.print(LogMessage.DEBUG, (string)message.response_body.data);
+		if((string)message.response_body.data == "Invalid POST token" ){
+			getTempPostToken();
+			session.send_message(message);
+		}
 		return (string)message.response_body.data;
+	}
+	private void getTempPostToken()
+	{
+		var response = send_get_request("token");
+		string temptoken = (string)response;
+		settings_feedhq.set_string("access-post-token", temptoken);
 	}
 }

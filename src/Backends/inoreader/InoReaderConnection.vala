@@ -30,7 +30,7 @@ public class FeedReader.InoReaderConnection {
 	public int getToken()
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", "https://www.inoreader.com/accounts/ClientLogin/");
+		var message = new Soup.Message("POST", "https://www.inoreader.com/accounts/ClientLogin");
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "Apikey", Secret.SchemaAttributeType.STRING,
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,
@@ -97,6 +97,9 @@ public class FeedReader.InoReaderConnection {
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 
 		session.send_message(message);
+		logger.print(LogMessage.DEBUG, InoReaderSecret.base_uri+path);
+		logger.print(LogMessage.DEBUG, message_string);
+		logger.print(LogMessage.DEBUG, (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 

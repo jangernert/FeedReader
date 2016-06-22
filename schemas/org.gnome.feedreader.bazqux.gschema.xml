@@ -1,5 +1,5 @@
 <schemalist>
-	<schema id="org.gnome.feedreader.bazqux" path="/org/gnome/feedreader/bazqux/" gettext-domain="bazqux">
+	<schema id="org.gnome.feedreader.bazqux" path="/org/gnome/feedreader/bazqux/" gettext-domain="feedreader">
 
 	<key name="username" type="s">
 		<default>""</default>
@@ -11,11 +11,7 @@
 		<description>Authorization code to bazqux throught API</description>
 	</key>
 
-	<key name="service" type="s">
-		<default>""</default>
-		<description>Service Name</description>
-	</key>
-	
+
 	<key name="user-id" type="s">
 		<default>""</default>
 		<description>Interneal User ID</description>

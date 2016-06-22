@@ -25,6 +25,10 @@ public class FeedReader.feedhq_utils : GLib.Object {
 		return settings_feedhq.get_string ("access-token");
 	}
 
+	public static string getTempPostToken()
+	{
+		return settings_feedhq.get_string ("access-post-token");
+	}
 	public static string getUserID()
 	{
 		return settings_feedhq.get_string ("user-id");
@@ -37,7 +41,7 @@ public class FeedReader.feedhq_utils : GLib.Object {
 							                    "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["Username"] = settings_feedhq.get_string("username");
-		attributes["Service"] = "bazqux";
+		attributes["Service"] = "feedhq";
 
 		string passwd = "";
 		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
@@ -94,18 +98,5 @@ public class FeedReader.feedhq_utils : GLib.Object {
 
 		// file already exists
 		return true;
-	}
-
-
-	public static bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
-	{
-		foreach(feed Feed in feeds)
-		{
-			if(Feed.hasCat(tagID))
-			{
-				return true;
-			}
-		}
-		return false;
 	}
 }

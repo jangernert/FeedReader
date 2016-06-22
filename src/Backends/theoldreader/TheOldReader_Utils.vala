@@ -95,17 +95,4 @@ public class FeedReader.theoldreader_utils : GLib.Object {
 		// file already exists
 		return true;
 	}
-
-
-	public static bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
-	{
-		foreach(feed Feed in feeds)
-		{
-			if(Feed.hasCat(tagID))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
 }

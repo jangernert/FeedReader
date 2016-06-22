@@ -71,35 +71,24 @@ public class FeedReader.TheOldReaderConnection {
 	public string send_get_request(string path)
 	{
 		var session = new Soup.Session();
-		logger.print(LogMessage.DEBUG, TheOldReaderSecret.base_uri+path);
 		var message = new Soup.Message("GET", TheOldReaderSecret.base_uri+path);
-
 		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
-
 		message.request_headers.append("Authorization", oldauth) ;
-
 		session.send_message(message);
-
 		return (string)message.response_body.data;
 	}
 
 	public string send_post_request(string path, string? message_string = null)
 	{
 		var session = new Soup.Session();
-		logger.print(LogMessage.DEBUG, "post request " + path + " : " + message_string);
+		// logger.print(LogMessage.DEBUG, "post request " + path + " : " + message_string);
 		var message = new Soup.Message("POST", TheOldReaderSecret.base_uri+path);
-
 		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
-
 		message.request_headers.append("Authorization", oldauth) ;
-
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-
 		session.send_message(message);
-
-		logger.print(LogMessage.DEBUG, "post reposne" + (string)message.response_body.data);
-
+		// logger.print(LogMessage.DEBUG, "post reposne" + (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 

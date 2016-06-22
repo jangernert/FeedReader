@@ -1,5 +1,5 @@
 <schemalist>
-	<schema id="org.gnome.feedreader.feedhq" path="/org/gnome/feedreader/feedhq/" gettext-domain="feedhq">
+	<schema id="org.gnome.feedreader.feedhq" path="/org/gnome/feedreader/feedhq/" gettext-domain="feedreader">
 
 	<key name="username" type="s">
 		<default>""</default>
@@ -10,12 +10,10 @@
 		<default>""</default>
 		<description>Authorization code to feedhq throught API</description>
 	</key>
-
-	<key name="service" type="s">
+	<key name="access-post-token" type="s">
 		<default>""</default>
-		<description>Service Name</description>
+		<description>Authorization code to feedhq throught API</description>
 	</key>
-	
 	<key name="user-id" type="s">
 		<default>""</default>
 		<description>Interneal User ID</description>

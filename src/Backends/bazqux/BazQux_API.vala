@@ -13,15 +13,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		if(bazqux_utils.getAccessToken() == "")
-		{
-			m_connection.getToken();
-		}
-
-		// if(getUserID())
-		// {
-		// 	return LoginResponse.SUCCESS;
-		// }
+		m_connection.getToken();
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 

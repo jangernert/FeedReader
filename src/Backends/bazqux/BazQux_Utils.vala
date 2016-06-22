@@ -33,8 +33,8 @@ public class FeedReader.bazqux_utils : GLib.Object {
 	public static string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-												"Service", Secret.SchemaAttributeType.STRING,
-							                    "Username", Secret.SchemaAttributeType.STRING);
+									"Service", Secret.SchemaAttributeType.STRING,
+									"Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["Username"] = settings_bazqux.get_string("username");
 		attributes["Service"] = "bazqux";

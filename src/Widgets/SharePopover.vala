@@ -16,7 +16,6 @@
 public class FeedReader.SharePopover : Gtk.Popover {
 
 	private Gtk.ListBox m_list;
-    private Gtk.Button m_login_button;
     public signal void showSettings(string panel);
 
 	public SharePopover(Gtk.Widget widget)
@@ -25,43 +24,15 @@ public class FeedReader.SharePopover : Gtk.Popover {
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
         m_list.row_activated.connect(shareURL);
-        m_login_button = new Gtk.Button.with_label(_("Login"));
-        m_login_button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-        m_login_button.get_style_context().add_class("h4");
-        var emptyBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
-        emptyBox.margin = 30;
-
-        var label1 = new Gtk.Label(_("Please"));
-        label1.get_style_context().add_class("h4");
-        var label2 = new Gtk.Label(_("to a service to share this article."));
-        label2.get_style_context().add_class("h4");
-
-        emptyBox.pack_start(label1);
-        emptyBox.pack_start(m_login_button);
-        emptyBox.pack_start(label2);
-
-        m_login_button.clicked.connect(() => {
-            showSettings("service");
-            this.hide();
-        });
-
-
-        if(populateList())
-        {
-            this.add(m_list);
-        }
-        else
-        {
-            this.add(emptyBox);
-        }
-
+        populateList();
+		this.add(m_list);
 		this.set_modal(true);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
         this.show_all();
 	}
 
-    private bool populateList()
+    private void populateList()
     {
     	var list = share.getAccounts();
 
@@ -72,16 +43,37 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 		m_list.add(new ShareRow(OAuth.MAIL, "mail", null));
 
-		if(list.size >= 1)
-			return true;
+		var addIcon = new Gtk.Image.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
+		var addLabel = new Gtk.Label(_("Configure more accounts"));
+		addLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
+        addLabel.set_ellipsize(Pango.EllipsizeMode.END);
+        addLabel.set_alignment(0.5f, 0.5f);
+        addLabel.get_style_context().add_class("h4");
+		var addBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		addBox.margin = 3;
+        addBox.pack_start(addIcon, false, false, 8);
+        addBox.pack_start(addLabel, true, true, 0);
 
-        return false;
+		var addRow = new Gtk.ListBoxRow();
+		addRow.margin = 2;
+		addRow.add(addBox);
+
+		m_list.add(addRow);
     }
 
     private void shareURL(Gtk.ListBoxRow row)
     {
         this.hide();
-        var shareRow = row as ShareRow;
+        ShareRow? shareRow = row as ShareRow;
+
+		if(shareRow == null)
+		{
+			showSettings("service");
+			logger.print(LogMessage.DEBUG, "SharePopover: open Settings");
+			this.hide();
+			return;
+		}
+
         string url = "";
         string id = shareRow.getID();
 

@@ -214,7 +214,7 @@ public class FeedReader.DebugUtils : GLib.Object {
 			var Article = new article(
 									newestArticle.to_string(),
 									"dummy Article",
-									"http://jangernert.github.io/feedreader/",
+									"http://jangernert.github.io/FeedReader/",
 									feedID,
 									ArticleStatus.UNREAD,
 									ArticleStatus.UNMARKED,

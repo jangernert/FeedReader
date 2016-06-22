@@ -188,9 +188,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			logger.print(LogMessage.WARNING, "gtk_decoration_layout in unexpected format");
         }
 
-		logger.print(LogMessage.DEBUG, buttons[0]);
-		logger.print(LogMessage.DEBUG, buttons[1]);
-
 		m_header_left.set_decoration_layout(buttons[0] + ":");
 		m_header_right.set_decoration_layout(":" + buttons[1]);
     }

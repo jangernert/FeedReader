@@ -52,24 +52,10 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
         serviceLabel.set_alignment(0.5f, 0.5f);
         serviceLabel.get_style_context().add_class("h4");
 
-        var labelBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-		labelBox.pack_start(serviceLabel, true, true, 0);
-
-        /*if(username != null)
-        {
-            var userLabel = new Gtk.Label(username);
-            userLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
-            userLabel.set_ellipsize(Pango.EllipsizeMode.END);
-            userLabel.set_alignment(0.5f, 0.5f);
-            userLabel.opacity = 0.5;
-            userLabel.get_style_context().add_class("small");
-    		labelBox.pack_start(userLabel, true, true, 0);
-        }*/
-
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         box.margin = 3;
         box.pack_start(icon, false, false, 8);
-        box.pack_start(labelBox, true, true, 0);
+        box.pack_start(serviceLabel, true, true, 0);
 
 		this.add(box);
 		this.margin = 2;

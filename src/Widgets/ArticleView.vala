@@ -52,6 +52,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool m_FullscreenVideo = false;
 	private bool m_FullscreenArticle = false;
 	private double m_FullscreenZoomLevel = 1.25;
+	private bool m_crashed = false;
 	public signal void enterFullscreen(bool video);
 	public signal void leaveFullscreen(bool video);
 
@@ -89,6 +90,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_view1.leave_fullscreen.connect(leave_fullscreen);
 		m_view1.scroll_event.connect(onScroll);
 		m_view1.key_press_event.connect(onKeyPress);
+		m_view1.web_process_crashed.connect(onCrash);
 
 		m_view2 = new WebKit.WebView();
 		m_view2.set_settings(settings);
@@ -204,7 +206,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	    	}
 	    	catch(GLib.IOError e)
 	    	{
-	    		warning(e.message);
+	    		logger.print(LogMessage.WARNING, "ArticleView: recalculate " + e.message);
 	    	}
 			Idle.add((owned) callback);
 			return null;
@@ -333,7 +335,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentArticle = articleID;
 		logger.print(LogMessage.DEBUG, "ArticleView: load article %s".printf(articleID));
 
-		if(m_currentView.is_loading)
+		if(m_currentView.is_loading && !m_crashed)
 		{
 			logger.print(LogMessage.DEBUG, "ArticleView: still busy loading last article. will cancel loading and load new article");
 			m_currentView.load_failed.connect(loadFailed);
@@ -342,6 +344,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			return;
 		}
 
+		m_crashed = false;
 		switchViews();
 
 		if(m_FullscreenArticle)
@@ -753,6 +756,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.leave_fullscreen.disconnect(leave_fullscreen);
 		m_currentView.scroll_event.disconnect(onScroll);
 		m_currentView.key_press_event.disconnect(onKeyPress);
+		m_currentView.web_process_crashed.disconnect(onCrash);
 
 		if(m_stack.get_visible_child_name() == "view1")
 		{
@@ -777,6 +781,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.leave_fullscreen.connect(leave_fullscreen);
 		m_currentView.scroll_event.connect(onScroll);
 		m_currentView.key_press_event.connect(onKeyPress);
+		m_currentView.web_process_crashed.connect(onCrash);
 
 		if(m_FullscreenArticle)
 		{
@@ -812,6 +817,13 @@ public class FeedReader.articleView : Gtk.Overlay {
 	public void prevButtonVisible(bool vis)
 	{
 		m_prevButton.reveal(vis);
+	}
+
+	private bool onCrash()
+	{
+		logger.print(LogMessage.ERROR, "ArticleView: webview crashed");
+		m_crashed = true;
+		return false;
 	}
 
 }

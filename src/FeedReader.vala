@@ -60,12 +60,18 @@ namespace FeedReader {
 			share = new Share();
 
 			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
-			startDaemon();
+
 
 			if(debug)
+			{
 				dataBase = new dbUI("debug.db");
+			}
 			else
+			{
+				startDaemon();
 				dataBase = new dbUI();
+			}
+
 
 			dataBase.init();
 			base.startup();
@@ -75,7 +81,7 @@ namespace FeedReader {
 				var quit_action = new SimpleAction("quit", null);
 				quit_action.activate.connect(this.quit);
 				this.add_action(quit_action);
-				
+
 				this.app_menu = UiUtils.getMenu();
 			}
 		}

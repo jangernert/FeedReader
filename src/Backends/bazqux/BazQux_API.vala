@@ -70,7 +70,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 	public void getFeeds(Gee.LinkedList<feed> feeds)
 	{
 
-		string response = m_connection.send_get_request("subscription/list");
+		string response = m_connection.send_get_request("subscription/list?output=json");
 
 		var parser = new Json.Parser();
 		try{
@@ -131,7 +131,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 
 	public void getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		string response = m_connection.send_get_request("tag/list");
+		string response = m_connection.send_get_request("tag/list?output=json");
 
 		var parser = new Json.Parser();
 		try{
@@ -173,7 +173,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 
 	public int getTotalUnread()
 	{
-		string response = m_connection.send_get_request("unread-count");
+		string response = m_connection.send_get_request("unread-count?output=json");
 
 		var parser = new Json.Parser();
 		try{
@@ -210,7 +210,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 		message_string += "&xt=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-		string response = m_connection.send_get_request("stream/items/ids?"+message_string);
+		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
 
 		var parser = new Json.Parser();
 		try{
@@ -256,7 +256,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
-		string response = m_connection.send_get_request(api_endpoint+"?"+message_string);
+		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
 
 		//logger.print(LogMessage.DEBUG, message_string);
 		//logger.print(LogMessage.DEBUG, response);
@@ -329,7 +329,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 
 		message_string += tagID;
 		message_string += "&i=" + composeID(articleID);
-		string response = m_connection.send_post_request("edit-tag", message_string);
+		string response = m_connection.send_post_request("edit-tag?output=json", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
@@ -337,7 +337,7 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 		int64 lastsync = settings_state.get_int("last-sync");
 		lastsync = lastsync*10000000;
 		string message_string = "s=%s&ts=%lld".printf(streamID, lastsync);
-		string response = m_connection.send_post_request("mark-all-as-read",message_string );
+		string response = m_connection.send_post_request("mark-all-as-read?output=json",message_string );
 	}
 	public string composeID(string tagName)
 	{
@@ -351,14 +351,14 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_post_request("disable-tag", message_string);
+		string response = m_connection.send_post_request("disable-tag?output=json", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_post_request("rename-tag", message_string);
+		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
 	public void editSubscription(FeedHQSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
@@ -389,6 +389,6 @@ public class FeedReader.BazQuxAPI : GLib.Object {
 			message_string += "&r=" + remove;
 
 
-		m_connection.send_post_request("subscription/edit", message_string);
+		m_connection.send_post_request("subscription/edit?output=json", message_string);
 	}
 }

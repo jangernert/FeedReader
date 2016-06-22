@@ -94,7 +94,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		Gtk.TreeIter bazqux;
 		liststore.append(out bazqux);
-		liststore.set(feedhq, 0, m_account_types[Backend.BAZQUX]);
+		liststore.set(bazqux, 0, m_account_types[Backend.BAZQUX]);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -680,12 +680,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.FEEDHQ:
 				backend = Backend.FEEDHQ;
-				// logger.print(LogMessage.DEBUG, m_feedhq_user_entry.get_text() );
-				// logger.print(LogMessage.DEBUG, m_feedhq_password_entry.get_text() );
 				settings_feedhq.set_string("username", m_feedhq_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-												"Service", Secret.SchemaAttributeType.STRING,
-							                    "Username", Secret.SchemaAttributeType.STRING);
+									"Service", Secret.SchemaAttributeType.STRING,
+									"Username", Secret.SchemaAttributeType.STRING);
 				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 				attributes["Username"] = m_feedhq_user_entry.get_text();
 				attributes["Service"] = "feedhq";
@@ -695,12 +693,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.BAZQUX:
 				backend = Backend.BAZQUX;
-				// logger.print(LogMessage.DEBUG, m_feedhq_user_entry.get_text() );
-				// logger.print(LogMessage.DEBUG, m_feedhq_password_entry.get_text() );
 				settings_bazqux.set_string("username", m_bazqux_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-												"Service", Secret.SchemaAttributeType.STRING,
-							                    "Username", Secret.SchemaAttributeType.STRING);
+									"Service", Secret.SchemaAttributeType.STRING,
+									"Username", Secret.SchemaAttributeType.STRING);
 				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 				attributes["Username"] = m_bazqux_user_entry.get_text();
 				attributes["Service"] = "bazqux";

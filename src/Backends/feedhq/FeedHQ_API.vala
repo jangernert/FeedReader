@@ -31,12 +31,12 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		logger.print(LogMessage.ERROR, "login setup");
 		if(feedhq_utils.getAccessToken() == "")
 		{
-			logger.print(LogMessage.ERROR, "getting gettoken");
 			m_connection.getToken();
 		}
 
 		if(getUserID())
 		{
+			getTempPostToken();
 			return LoginResponse.SUCCESS;
 		}
 		return LoginResponse.UNKNOWN_ERROR;
@@ -48,7 +48,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	private bool getUserID()
 	{
-		string response = m_connection.send_get_request("user-info?output=json");
+		string response = m_connection.send_get_request("user-info");
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -76,10 +76,17 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return false;
 	}
 
+	public void getTempPostToken()
+	{
+		var response = m_connection.send_get_request("token");
+		string temptoken = (string)response;
+		settings_feedhq.set_string("access-post-token", temptoken);
+	}
+
 	public void getFeeds(Gee.LinkedList<feed> feeds)
 	{
 
-		string response = m_connection.send_get_request("subscription/list?output=json");
+		string response = m_connection.send_get_request("subscription/list");
 
 		var parser = new Json.Parser();
 		try{
@@ -140,7 +147,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public void getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		string response = m_connection.send_get_request("tag/list?output=json");
+		string response = m_connection.send_get_request("tag/list");
 
 		var parser = new Json.Parser();
 		try{
@@ -164,8 +171,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 			if(id.contains("/label/"))
 			{
-				if(feedhq_utils.tagIsCat(id, feeds))
-				{
 					categories.add(
 						new category(
 							id,
@@ -176,18 +181,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 							1
 						)
 					);
-				}
-				else
-				{
-					tags.add(
-						new tag(
-							id,
-							title,
-							dataBase.getTagColor()
-						)
-					);
-				}
-
 				++orderID;
 			}
 		}
@@ -196,7 +189,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public int getTotalUnread()
 	{
-		string response = m_connection.send_get_request("unread-count?output=json");
+		string response = m_connection.send_get_request("unread-count");
 
 		var parser = new Json.Parser();
 		try{
@@ -233,7 +226,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		message_string += "&xt=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-		string response = m_connection.send_post_request("stream/items/ids?output=json",message_string);
+		string response = m_connection.send_get_request("stream/items/ids?"+message_string);
 
 		var parser = new Json.Parser();
 		try{
@@ -265,12 +258,12 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		var message_string = "n=" + count.to_string();
 
 		if(whatToGet == ArticleStatus.UNREAD)
-			message_string += "&xt=user/-/state/com.google/read";
+			message_string += "&s=user/-/state/com.google/unread";
 		if(whatToGet == ArticleStatus.READ)
 			message_string += "&s=user/-/state/com.google/read";
 		else if(whatToGet == ArticleStatus.MARKED)
 			message_string += "&s=user/-/state/com.google/starred";
-
+		if (continuation != null)
 			message_string += "&c=" + continuation;
 
 
@@ -279,7 +272,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
-		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
+		string response = m_connection.send_get_request(api_endpoint+"?"+message_string);
 
 		//logger.print(LogMessage.DEBUG, message_string);
 		//logger.print(LogMessage.DEBUG, response);
@@ -307,7 +300,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			bool read = false;
 			var cats = object.get_array_member("categories");
 			uint cat_length = cats.get_length();
-
 			for (uint j = 0; j < cat_length; j++)
 			{
 				string cat = cats.get_string_element(j);
@@ -326,7 +318,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 									object.get_object_member("origin").get_string_member("streamId"),
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-									object.get_object_member("summary").get_string_member("content"),
+									object.get_object_member("content").get_string_member("content"),
 									"",
 									(object.get_string_member("author") == "") ? _("not found") : object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
@@ -352,16 +344,21 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			message_string += "r=";
 
 		message_string += tagID;
-		message_string += "&i=" + articleID;
+		message_string += "&i=" + composeID(articleID);
 		string response = m_connection.send_post_request("edit-tag", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
-	{
-		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
+	{ 
+		int64 lastsync = settings_state.get_int("last-sync");
+		lastsync = lastsync*10000000;
+		string message_string = "s=%s&ts=%lld".printf(streamID, lastsync);
 		string response = m_connection.send_post_request("mark-all-as-read",message_string );
 	}
-
+	public string composeID(string tagName)
+	{
+		return "tag:google.com,2005:reader/item/%s".printf(tagName);
+	}	
 	public string composeTagID(string tagName)
 	{
 		return "user/%s/label/%s".printf(m_userID, tagName);
@@ -383,7 +380,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public void editSubscription(FeedHQSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
-
 		switch(action)
 		{
 			case FeedHQSubscriptionAction.EDIT:

@@ -193,7 +193,7 @@ namespace FeedReader {
 	}
 
 	namespace FeedHQSecret {
-		const string base_uri = "https://theoldreader.com/reader/api/0/";
+		const string base_uri = "https://feedhq.org/reader/api/0/";
 	}
 
 	namespace BazQuxSecret {

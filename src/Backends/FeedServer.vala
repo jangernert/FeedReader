@@ -62,6 +62,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				break;
 			case Backend.BAZQUX:
 				m_bazqux = new BazQuxAPI();
+				break;
 		}
 	}
 
@@ -620,14 +621,6 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.INOREADER:
 					m_inoreader.edidTag(articleID, tagID);
 					break;
-
-				case Backend.THEOLDREADER:
-					m_theoldreader.edidTag(articleID, tagID);
-					break;
-
-				case Backend.FEEDHQ:
-					m_feedhq.edidTag(articleID, tagID);
-					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -657,14 +650,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.INOREADER:
 					m_inoreader.edidTag(articleID, tagID, false);
-					break;
-
-				case Backend.THEOLDREADER:
-					m_theoldreader.edidTag(articleID, tagID, false);
-					break;
-
-				case Backend.FEEDHQ:
-					m_feedhq.edidTag(articleID, tagID, false);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -869,13 +854,17 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDHQ:
-					if(catID == null && newCatName != null)
+					if(catID == null && newCatName == null)
 					{
+						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);
+					}
+					else if (catID == null && newCatName != null){
 						string newCatID = m_feedhq.composeTagID(newCatName);
-						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);	
 					}
 					else
 					{
+						logger.print(LogMessage.DEBUG, "adding subscription "+catID);
 						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
 					}
 					feedID = "feed/" + feedURL;
@@ -1543,7 +1532,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					var unreadIDs = new Gee.LinkedList<string>();
 					string? continuation = null;
 					int left = 4*count;
-
+					logger.print( LogMessage.DEBUG ,"Getting articles  %i".printf(left));
 					while(left > 0)
 					{
 						if(left > 1000)

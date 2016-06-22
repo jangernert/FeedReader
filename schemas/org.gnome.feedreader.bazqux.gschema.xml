@@ -10,8 +10,10 @@
 		<default>""</default>
 		<description>Authorization code to bazqux throught API</description>
 	</key>
-
-
+	<key name="access-post-token" type="s">
+		<default>""</default>
+		<description>Authorization code to feedhq throught API</description>
+	</key>
 	<key name="user-id" type="s">
 		<default>""</default>
 		<description>Interneal User ID</description>

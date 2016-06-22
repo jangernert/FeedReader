@@ -368,6 +368,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					else
 						m_feedhq.edidTag(articleIDs, "user/-/state/com.google/read",false);
 					break;
+				case Backend.BAZQUX:
+					if(read == ArticleStatus.READ)
+						m_bazqux.edidTag(articleIDs, "user/-/state/com.google/read");
+					else
+						m_bazqux.edidTag(articleIDs, "user/-/state/com.google/read",false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -418,6 +424,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					else
 						m_feedhq.edidTag(articleID, "user/-/state/com.google/starred", false);
 					break;
+				case Backend.BAZQUX:
+					if(marked == ArticleStatus.MARKED)
+						m_bazqux.edidTag(articleID, "user/-/state/com.google/starred");
+					else
+						m_bazqux.edidTag(articleID, "user/-/state/com.google/starred", false);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -459,6 +471,9 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 				case Backend.FEEDHQ:
 					m_feedhq.markAsRead(feedID);
+					break;
+				case Backend.BAZQUX:
+					m_bazqux.markAsRead(feedID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -502,6 +517,9 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 				case Backend.FEEDHQ:
 					m_feedhq.markAsRead(catID);
+					break;
+				case Backend.BAZQUX:
+					m_bazqux.markAsRead(catID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -589,6 +607,21 @@ public class FeedReader.FeedServer : GLib.Object {
 						m_feedhq.markAsRead(Feed.getFeedID());
 					}
 					m_feedhq.markAsRead();
+					break;
+
+				case Backend.BAZQUX:
+					var categories = dataBase.read_categories();
+					foreach(category cat in categories)
+					{
+						m_bazqux.markAsRead(cat.getCatID());
+					}
+
+					var feeds = dataBase.read_feeds_without_cat();
+					foreach(feed Feed in feeds)
+					{
+						m_bazqux.markAsRead(Feed.getFeedID());
+					}
+					m_bazqux.markAsRead();
 					break;
 
 			}
@@ -682,6 +715,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.FEEDHQ:
 				return m_feedhq.composeTagID(caption);
 
+			case Backend.BAZQUX:
+				return m_bazqux.composeTagID(caption);
+
 		}
 
 		return ":(";
@@ -710,6 +746,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				case Backend.FEEDHQ:
 					m_feedhq.deleteTag(tagID);
+					break;
+
+				case Backend.BAZQUX:
+					m_bazqux.deleteTag(tagID);
 					break;
 
 			}
@@ -744,6 +784,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDHQ:
 					m_feedhq.renameTag(tagID, title);
 					break;
+
+				case Backend.BAZQUX:
+					m_bazqux.renameTag(tagID, title);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -774,6 +818,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.FEEDHQ:
 				return m_feedhq.ping();
+
+			case Backend.BAZQUX:
+				return m_bazqux.ping();
 		}
 
 		return false;
@@ -864,8 +911,23 @@ public class FeedReader.FeedServer : GLib.Object {
 					}
 					else
 					{
-						logger.print(LogMessage.DEBUG, "adding subscription "+catID);
 						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+					}
+					feedID = "feed/" + feedURL;
+					break;
+
+				case Backend.BAZQUX:
+					if(catID == null && newCatName == null)
+					{
+						m_bazqux.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);
+					}
+					else if (catID == null && newCatName != null){
+						string newCatID = m_feedhq.composeTagID(newCatName);
+						m_bazqux.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);	
+					}
+					else
+					{
+						m_bazqux.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
 					}
 					feedID = "feed/" + feedURL;
 					break;
@@ -910,6 +972,10 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDHQ:
 					m_feedhq.editSubscription(FeedHQSubscriptionAction.UNSUBSCRIBE, feedID);
 					break;
+
+				case Backend.BAZQUX:
+					m_bazqux.editSubscription(FeedHQSubscriptionAction.UNSUBSCRIBE, feedID);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -951,6 +1017,10 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_feedhq.editSubscription(FeedHQSubscriptionAction.EDIT, feedID, title);
 					break;
 
+				case Backend.BAZQUX:
+					m_bazqux.editSubscription(FeedHQSubscriptionAction.EDIT, feedID, title);
+					break;
+
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -985,6 +1055,9 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDHQ:
 					m_feedhq.editSubscription(FeedHQSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
 					break;
+				case Backend.BAZQUX:
+					m_bazqux.editSubscription(FeedHQSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
+					break;
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -1015,6 +1088,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.FEEDHQ:
 				return m_feedhq.composeTagID(title);
+
+			case Backend.BAZQUX:
+				return m_bazqux.composeTagID(title);
 
 		}
 
@@ -1052,6 +1128,10 @@ public class FeedReader.FeedServer : GLib.Object {
 					m_feedhq.renameTag(catID, title);
 					break;
 
+				case Backend.BAZQUX:
+					m_bazqux.renameTag(catID, title);
+					break;
+
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -1075,6 +1155,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.FEEDLY:
 				case Backend.OWNCLOUD:
 				case Backend.INOREADER:
+				case Backend.BAZQUX:
 					break;
 			}
 			Idle.add((owned) callback);
@@ -1111,8 +1192,13 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.THEOLDREADER:
 					m_theoldreader.deleteTag(catID);
 					break;
+				
 				case Backend.FEEDHQ:
 					m_feedhq.deleteTag(catID);
+					break;
+
+				case Backend.BAZQUX:
+					m_bazqux.deleteTag(catID);
 					break;
 
 			}
@@ -1134,6 +1220,9 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.TTRSS:
 				case Backend.OWNCLOUD:
 				case Backend.INOREADER:
+				case Backend.FEEDHQ:
+				case Backend.THEOLDREADER:
+				case Backend.BAZQUX:
 					return null;
 
 				// only feedly supports multiple categories atm
@@ -1162,6 +1251,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				case Backend.INOREADER:
 				case Backend.THEOLDREADER:
 				case Backend.FEEDHQ:
+				case Backend.BAZQUX:
 					var parser = new OPMLparser(opml);
 					parser.parse();
 					break;
@@ -1214,6 +1304,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				m_feedhq.getFeeds(feeds);
 				m_feedhq.getCategoriesAndTags(feeds, categories, tags);
 				return;
+
+			case Backend.BAZQUX:
+				m_bazqux.getFeeds(feeds);
+				m_bazqux.getCategoriesAndTags(feeds, categories, tags);
+				return;
 		}
 	}
 
@@ -1238,6 +1333,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			case Backend.FEEDHQ:
 				return m_feedhq.getTotalUnread();
+
+			case Backend.BAZQUX:
+				return m_bazqux.getTotalUnread();
 		}
 
 		return 0;
@@ -1566,6 +1664,56 @@ public class FeedReader.FeedServer : GLib.Object {
 					else
 					{
 						continuation = m_feedhq.getArticles(articles, left, whatToGet, continuation, feedhq_tagID, feedhq_feedID);
+						left = 0;
+					}
+				}
+				writeArticlesInChunks(articles, 10);
+				break;
+
+			case Backend.BAZQUX:
+				if(whatToGet == ArticleStatus.READ)
+				{
+					return;
+				}
+				else if(whatToGet == ArticleStatus.ALL)
+				{
+					var unreadIDs = new Gee.LinkedList<string>();
+					string? continuation = null;
+					int left = 4*count;
+					logger.print( LogMessage.DEBUG ,"Getting articles  %i".printf(left));
+					while(left > 0)
+					{
+						if(left > 1000)
+						{
+							continuation = m_bazqux.updateArticles(unreadIDs, 1000, continuation);
+							left -= 1000;
+						}
+						else
+						{
+							m_bazqux.updateArticles(unreadIDs, left, continuation);
+							left = 0;
+						}
+					}
+					dataBase.updateArticlesByID(unreadIDs, "unread");
+					updateArticleList();
+				}
+
+				var articles = new Gee.LinkedList<article>();
+				string? continuation = null;
+				int left = count;
+				string? feedhq_feedID = (isTagID) ? null : feedID;
+				string? feedhq_tagID = (isTagID) ? feedID : null;
+
+				while(left > 0)
+				{
+					if(left > 1000)
+					{
+						continuation = m_bazqux.getArticles(articles, 1000, whatToGet, continuation, feedhq_tagID, feedhq_feedID);
+						left -= 1000;
+					}
+					else
+					{
+						continuation = m_bazqux.getArticles(articles, left, whatToGet, continuation, feedhq_tagID, feedhq_feedID);
 						left = 0;
 					}
 				}

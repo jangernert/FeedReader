@@ -78,4 +78,11 @@ public class FeedReader.BazQuxConnection {
 		session.send_message(message);
 		return (string)message.response_body.data;
 	}
+
+	private void getTempPostToken()
+	{
+		var response = send_get_request("token");
+		string temptoken = (string)response;
+		settings_feedhq.set_string("access-post-token", temptoken);
+	}
 }

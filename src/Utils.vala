@@ -74,7 +74,8 @@ public class FeedReader.Utils : GLib.Object {
 		if(removeHTML)
 			rm_html = 1;
 
-		string? output = libVilistextum.parse(old_string, rm_html);
+		string? output = old_string.replace("\n"," ").strip();
+		output = libVilistextum.parse(old_string, rm_html);
 
 		if(output != null)
 		{

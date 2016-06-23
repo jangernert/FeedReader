@@ -48,7 +48,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public LoginPage()
 	{
 
-		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ"), _("BazQux")};
+		// m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ"), _("BazQux")};
+		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ"),};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
 
@@ -92,9 +93,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		liststore.append(out feedhq);
 		liststore.set(feedhq, 0, m_account_types[Backend.FEEDHQ]);
 
-		Gtk.TreeIter bazqux;
-		liststore.append(out bazqux);
-		liststore.set(bazqux, 0, m_account_types[Backend.BAZQUX]);
+		// Gtk.TreeIter bazqux;
+		// liststore.append(out bazqux);
+		// liststore.set(bazqux, 0, m_account_types[Backend.BAZQUX]);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -146,9 +147,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 					case Backend.FEEDHQ:
 						m_login_details.set_visible_child_name("feedhq");
 						break;
-					case Backend.BAZQUX:
-						m_login_details.set_visible_child_name("bazqux");
-						break;
+					// case Backend.BAZQUX:
+					// 	m_login_details.set_visible_child_name("bazqux");
+					// 	break;
 				}
 			}
 		});
@@ -162,7 +163,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		setup_inoreader_login();
 		setup_theoldreader_login();
 		setup_feedhq_login();
-		setup_bazqux_login();
+		// setup_bazqux_login();
 
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);

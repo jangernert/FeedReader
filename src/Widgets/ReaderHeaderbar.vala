@@ -272,7 +272,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void setOffline()
 	{
 		m_online = false;
-		if(UiUtils.canManipulateContent())
+		if(UiUtils.canManipulateContent()
+		&& feedDaemon_interface.supportTags())
 			m_tag_button.sensitive = false;
 		m_share_button.sensitive = false;
 	}
@@ -280,7 +281,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void setOnline()
 	{
 		m_online = true;
-		m_tag_button.sensitive = true;
+		if(UiUtils.canManipulateContent()
+		&& feedDaemon_interface.supportTags())
+			m_tag_button.sensitive = true;
 		m_share_button.sensitive = true;
 	}
 

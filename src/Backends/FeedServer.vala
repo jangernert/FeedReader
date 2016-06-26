@@ -905,9 +905,10 @@ public class FeedReader.FeedServer : GLib.Object {
 					{
 						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);
 					}
-					else if (catID == null && newCatName != null){
+					else if (catID == null && newCatName != ""){
+
 						string newCatID = m_feedhq.composeTagID(newCatName);
-						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);	
+						m_feedhq.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);	
 					}
 					else
 					{
@@ -921,7 +922,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					{
 						m_bazqux.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);
 					}
-					else if (catID == null && newCatName != null){
+					else if (catID == null && newCatName != ""){
 						string newCatID = m_feedhq.composeTagID(newCatName);
 						m_bazqux.editSubscription(FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, null);	
 					}

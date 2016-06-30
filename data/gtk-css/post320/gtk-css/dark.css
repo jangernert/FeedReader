@@ -5,22 +5,20 @@
 @define-color feedlist-selected shade(@feedlist-bg, 1.6);
 
 .sidebar,
-.sidebar .scrollbar,
-.sidebar .activatable {
+.sidebar .scrollbar {
     background-color: @feedlist-bg;
 }
 .sidebar .slider {
     background: @feedlist-slider;
 }
+.sidebar-row:selected,
+.sidebar-feed:selected {
+    background: @feedlist-selected;
+}
 .sidebar label {
     color: @feedlist-label;
     font-weight: bold;
-}
-.sidebar-row:selected,
-.sidebar-row:selected*,
-.sidebar-feed:selected,
-.sidebar-feed:selected * {
-    background: @feedlist-selected;
+    text-shadow: none;
 }
 .sidebar-row:hover {
     background: shade(@feedlist-bg, 1.1);
@@ -29,11 +27,9 @@
 .sidebar-feed:selected:hover {
     background: shade(@feedlist-selected, 1.1);
 }
-.sidebar-feed,
-.sidebar-row {
-    background: @feedlist-bg;
+.sidebar-feed {
+    background: @feedrow-bg;
 }
-
 .sidebar-feed:hover {
     background: shade(@feedrow-bg, 1.1);
 }
@@ -49,7 +45,7 @@
 /******************/
 
 .footer {
-    background: @feedlist-bg;
+    background: shade(@feedlist-bg, 0.9);
 }
 .footer button {
     background: none;
@@ -67,7 +63,6 @@
 .footer button:disabled {
 	color:shade(@feedlist-label, 0.9);
 }
-
 .footer button:active {
     border-width: 0;
     border-radius: 0;

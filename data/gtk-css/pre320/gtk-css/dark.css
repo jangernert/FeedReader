@@ -54,3 +54,6 @@
 .footer GtkButton {
     box-shadow: none;
 }
+.footer GtkButton:disabled {
+	color:shade(@feedlist-label, 0.9);
+}

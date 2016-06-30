@@ -92,6 +92,7 @@ public class FeedReader.AddButton : Gtk.Button {
 		this.get_style_context().add_class("sidebar-symbolic");
 		this.image.opacity = 0.8;
 		this.clicked.connect(onClick);
+		this.relief = Gtk.ReliefStyle.NONE;
 	}
 
 	public void onClick()
@@ -119,6 +120,7 @@ public class FeedReader.RemoveButton : Gtk.Button {
 		this.get_style_context().add_class("sidebar-symbolic");
 		this.image.opacity = 0.8;
 		this.clicked.connect(onClick);
+		this.relief = Gtk.ReliefStyle.NONE;
 	}
 
 	public void onClick()

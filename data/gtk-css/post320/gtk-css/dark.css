@@ -47,23 +47,16 @@
 .footer {
     background: shade(@feedlist-bg, 0.9);
 }
+.footer button:hover,
+.footer-popover {
+    background: shade(@feedlist-bg, 1.1);
+}
 .footer button {
-    background: none;
     border: 0;
     border-radius:0;
     -gtk-icon-shadow: none;
     box-shadow: none;
 }
-.footer button:hover,
-.footer-popover {
-    background: shade(@feedlist-bg, 1.1);
-    border-width: 0;
-    border-radius: 0;
-}
 .footer button:disabled {
 	color:shade(@feedlist-label, 0.9);
-}
-.footer button:active {
-    border-width: 0;
-    border-radius: 0;
 }

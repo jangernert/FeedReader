@@ -14,6 +14,12 @@ row {
     border: none;
     border-radius: 0px;
     background-image: none;
+    padding: 0;
+}
+.article-list row {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: rgba(128, 128, 128, 0.3);
 }
 .destructive-action spinner {
     color: white;

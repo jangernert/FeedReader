@@ -172,15 +172,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_box.pack_start(icon_box, false, false, 8);
 		m_box.pack_start(text_box, true, true, 0);
 
-		var seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator.set_size_request(0, 2);
-		seperator_box.pack_start(m_box, true, true, 0);
-		seperator_box.pack_start(separator, false, false, 0);
-
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.add(seperator_box);
+		m_revealer.add(m_box);
 		m_revealer.set_reveal_child(false);
 		m_revealer.notify["child_revealed"].connect(() => {
 			child_revealed();

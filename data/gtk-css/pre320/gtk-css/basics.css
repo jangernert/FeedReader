@@ -16,6 +16,11 @@ GtkListBoxRow,
     border-radius: 0px;
     background-image: none;
 }
+.article-list GtkListBoxRow {
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+	border-bottom-color: rgba(128, 128, 128, 0.3);
+}
 .sidebar {
     text-shadow: none;
     icon-shadow: none;

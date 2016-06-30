@@ -25,7 +25,7 @@ include(ValaVersion)
 include(ValaPrecompile)
 ensure_vala_version("0.26" MINIMUM)
 
-pkg_check_modules(WEBKITGTK4 QUIET webkit2gtk-4.0)
+pkg_check_modules(WEBKITGTK4 QUIET webkit2gtk-4.0>=2.8.0)
 pkg_check_modules(LIBUNITY QUIET unity)
 pkg_check_modules(GTK320 QUIET gtk+-3.0>=3.20)
 

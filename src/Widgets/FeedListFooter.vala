@@ -18,10 +18,8 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	private Gtk.Box m_box;
 	private Gtk.Stack m_addStack;
 	private Gtk.Spinner m_addSpinner;
-	private Gtk.Button m_addButton;
-	private Gtk.Button m_removeButton;
-	private FeedListType m_type;
-	private string m_id;
+	private AddButton m_addButton;
+	private RemoveButton m_removeButton;
 	private bool m_online = true;
 
 	public FeedListFooter()
@@ -31,20 +29,8 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		this.set_size_request(0, 40);
 		this.valign = Gtk.Align.END;
 		this.get_style_context().add_class("footer");
-
-		m_addButton = new Gtk.Button.from_icon_name("feed-add-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		m_addButton.get_style_context().remove_class("button");
-		m_addButton.get_style_context().add_class("sidebar-symbolic");
-		m_addButton.get_image().opacity = 0.8;
-		m_addButton.clicked.connect(() => {
-			m_addButton.get_style_context().add_class("footer-popover");
-			var addPop = new AddPopover(m_addButton);
-			addPop.closed.connect(() => {
-				m_addButton.get_style_context().remove_class("footer-popover");
-			});
-			addPop.show();
-		});
-
+		m_addButton = new AddButton();
+		m_removeButton = new RemoveButton();
 		m_addSpinner = new Gtk.Spinner();
 		m_addSpinner.get_style_context().add_class("feedlist-spinner");
 		m_addSpinner.margin = 4;
@@ -52,20 +38,6 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_addStack = new Gtk.Stack();
 		m_addStack.add_named(m_addButton, "button");
 		m_addStack.add_named(m_addSpinner, "spinner");
-
-		m_removeButton = new Gtk.Button.from_icon_name("feed-remove-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		m_removeButton.get_style_context().remove_class("button");
-		m_removeButton.get_style_context().add_class("sidebar-symbolic");
-		m_removeButton.get_image().opacity = 0.8;
-		m_removeButton.clicked.connect(() => {
-			m_removeButton.get_style_context().add_class("footer-popover");
-			var removePop = new RemovePopover(m_removeButton, m_type, m_id);
-			removePop.closed.connect(() => {
-				m_removeButton.get_style_context().remove_class("footer-popover");
-			});
-			removePop.show();
-		});
-
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.pack_start(m_addStack);
 		var sep1 = new Gtk.Separator(Gtk.Orientation.VERTICAL);
@@ -74,7 +46,6 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		sep2.get_style_context().add_class("sidebar-separator");
 		m_box.pack_start(sep1, false, false);
 		m_box.pack_start(m_removeButton);
-
 		this.pack_start(sep2, false, false);
 		this.pack_start(m_box);
 	}
@@ -100,8 +71,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	public void setSelectedRow(FeedListType type, string id)
 	{
-		m_type = type;
-		m_id = id;
+		m_removeButton.setSelectedRow(type, id);
 	}
 
 	public void setActive(bool active)
@@ -109,5 +79,60 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_online = active;
 		m_addButton.set_sensitive(active);
 		m_removeButton.set_sensitive(active);
+	}
+}
+
+
+public class FeedReader.AddButton : Gtk.Button {
+	public AddButton()
+	{
+		var image = new Gtk.Image.from_icon_name("feed-remove-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		this.image = image;
+		this.get_style_context().remove_class("button");
+		this.get_style_context().add_class("sidebar-symbolic");
+		this.image.opacity = 0.8;
+		this.clicked.connect(onClick);
+	}
+
+	public void onClick()
+	{
+		this.get_style_context().add_class("footer-popover");
+		var pop = new AddPopover(this);
+		pop.closed.connect(() => {
+			this.get_style_context().remove_class("footer-popover");
+			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
+		});
+		pop.show();
+		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
+	}
+}
+
+public class FeedReader.RemoveButton : Gtk.Button {
+	private FeedListType m_type;
+	private string m_id;
+
+	public RemoveButton()
+	{
+		var image = new Gtk.Image.from_icon_name("feed-add-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		this.image = image;
+		this.get_style_context().remove_class("button");
+		this.get_style_context().add_class("sidebar-symbolic");
+		this.image.opacity = 0.8;
+		this.clicked.connect(onClick);
+	}
+
+	public void onClick()
+	{
+		this.get_style_context().add_class("footer-popover");
+		var pop = new RemovePopover(this, m_type, m_id);
+		pop.closed.connect(() => {
+			this.get_style_context().remove_class("footer-popover");
+		});
+		pop.show();
+	}
+	public void setSelectedRow(FeedListType type, string id)
+	{
+		m_type = type;
+		m_id = id;
 	}
 }

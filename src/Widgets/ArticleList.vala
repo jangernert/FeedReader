@@ -150,6 +150,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_stack.add_named(m_emptyList, "empty");
 		m_stack.add_named(m_syncingBox, "syncing");
 		this.add(m_stack);
+		this.get_style_context().add_class("article-list");
 	}
 
 	private void showNotification()

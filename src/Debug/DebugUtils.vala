@@ -213,7 +213,7 @@ public class FeedReader.DebugUtils : GLib.Object {
 
 			var Article = new article(
 									newestArticle.to_string(),
-									"dummy Article",
+									"dummy Article (%i)".printf(newestArticle),
 									"http://jangernert.github.io/FeedReader/",
 									feedID,
 									ArticleStatus.UNREAD,

@@ -85,7 +85,11 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
                 user_name = settings_inoreader.get_string("username");
                 break;
             case Backend.THEOLDREADER:
-                service_name = "theoldreader";
+                service_name = "oldreader";
+                user_name = settings_theoldreader.get_string("username");
+                break;
+            case Backend.FEEDHQ:
+                service_name = "feedhq";
                 user_name = settings_theoldreader.get_string("username");
                 break;
 

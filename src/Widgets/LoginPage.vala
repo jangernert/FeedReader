@@ -48,8 +48,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public LoginPage()
 	{
 
-		// m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ"), _("BazQux")};
-		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ"),};
+		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ"), _("BazQux")};
+		// m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader"),_("TheOldReader"),_("FeedHQ"),};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
 
@@ -93,9 +93,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		liststore.append(out feedhq);
 		liststore.set(feedhq, 0, m_account_types[Backend.FEEDHQ]);
 
-		// Gtk.TreeIter bazqux;
-		// liststore.append(out bazqux);
-		// liststore.set(bazqux, 0, m_account_types[Backend.BAZQUX]);
+		Gtk.TreeIter bazqux;
+		liststore.append(out bazqux);
+		liststore.set(bazqux, 0, m_account_types[Backend.BAZQUX]);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -147,9 +147,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 					case Backend.FEEDHQ:
 						m_login_details.set_visible_child_name("feedhq");
 						break;
-					// case Backend.BAZQUX:
-					// 	m_login_details.set_visible_child_name("bazqux");
-					// 	break;
+					case Backend.BAZQUX:
+						m_login_details.set_visible_child_name("bazqux");
+						break;
 				}
 			}
 		});
@@ -163,7 +163,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		setup_inoreader_login();
 		setup_theoldreader_login();
 		setup_feedhq_login();
-		// setup_bazqux_login();
+		setup_bazqux_login();
 
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
@@ -421,7 +421,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
+		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-oldreader.svg");
 		
 		grid.attach(theoldreader_user_label, 0, 0, 1, 1);
 		grid.attach(m_theoldreader_user_entry, 1, 0, 1, 1);
@@ -456,7 +456,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-feedhq.svg");
+		// var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-feedhq.svg");
 		
 		grid.attach(feedhq_user_label, 0, 0, 1, 1);
 		grid.attach(m_feedhq_user_entry, 1, 0, 1, 1);
@@ -464,7 +464,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.attach(m_feedhq_password_entry, 1, 1, 1, 1);
 
 		var feedhq_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
-		feedhq_box.pack_start(ttrss_logo, false, false, 10);
+		// feedhq_box.pack_start(ttrss_logo, false, false, 10);
 		feedhq_box.pack_start(grid, true, true, 10);
 
 		m_login_details.add_named(feedhq_box, "feedhq");

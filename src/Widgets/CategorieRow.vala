@@ -443,15 +443,12 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			if(m_categorieID == CategoryID.NEW && context != null)
 			{
 				this.drag_failed(context, Gtk.DragResult.NO_TARGET);
-				removeRow();
 			}
 		});
 
 		var renameEntry = new Gtk.Entry();
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
-			popRename.hide();
-
 			if(m_categorieID != CategoryID.NEW)
 			{
 				feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
@@ -459,19 +456,20 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			else if(context != null)
 			{
 				logger.print(LogMessage.DEBUG, "categoryRow: create new category " + renameEntry.get_text());
-				string catID = feedDaemon_interface.addCategory(renameEntry.get_text(), "", true);
+				m_categorieID = feedDaemon_interface.addCategory(renameEntry.get_text(), "", true);
 
 				if(id2 == null) // move feed
 				{
-					feedDaemon_interface.moveCategory(id1, catID);
+					feedDaemon_interface.moveCategory(id1, m_categorieID);
 				}
 				else // move category
 				{
-					feedDaemon_interface.moveFeed(id1, id2, catID);
+					feedDaemon_interface.moveFeed(id1, id2, m_categorieID);
 				}
 
 				Gtk.drag_finish(context, true, false, time);
 			}
+			popRename.hide();
 		});
 
 		string label = _("rename");

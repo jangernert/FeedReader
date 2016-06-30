@@ -17,13 +17,13 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private Gtk.ScrolledWindow m_scroll;
 	private Gtk.ListBox m_list;
-	private Gtk.ListBoxRow m_selected;
+	private Gtk.ListBoxRow? m_selected = null;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Adjustment m_scroll_adjustment;
 	private ServiceInfo m_branding;
-	private uint m_expand_collapse_time;
-	private bool m_update;
-	private bool m_TagsDisplayed;
+	private uint m_expand_collapse_time = 150;
+	private bool m_update = false;
+	private bool m_TagsDisplayed = false;
 	public signal void newFeedSelected(string feedID);
 	public signal void newTagSelected(string tagID);
 	public signal void newCategorieSelected(string categorieID);
@@ -31,10 +31,6 @@ public class FeedReader.feedList : Gtk.Stack {
 	public signal void clearSelected();
 
 	public feedList () {
-		m_selected = null;
-		m_update = false;
-		m_TagsDisplayed = false;
-		m_expand_collapse_time = 150;
 		m_spinner = new Gtk.Spinner();
 		m_list = new Gtk.ListBox();
 		m_list.set_selection_mode(Gtk.SelectionMode.BROWSE);
@@ -330,7 +326,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void restoreSelectedRow(bool defaultSettings)
 	{
-		logger.print(LogMessage.DEBUG, "FeedList: restore selected row");
+		logger.print(LogMessage.DEBUG, "FeedList: restore selected row: " + settings_state.get_string("feedlist-selected-row"));
 		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
 
 		var FeedChildList = m_list.get_children();
@@ -344,8 +340,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
-					if(defaultSettings)
-						newFeedSelected(tmpRow.getID());
 					return;
 				}
 			}
@@ -360,8 +354,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
-					if(defaultSettings)
-						newCategorieSelected(tmpRow.getID());
 					return;
 				}
 			}
@@ -376,8 +368,6 @@ public class FeedReader.feedList : Gtk.Stack {
 				{
 					m_list.select_row(tmpRow);
 					tmpRow.activate();
-					if(defaultSettings)
-						newTagSelected(tmpRow.getID());
 					return;
 				}
 			}
@@ -990,7 +980,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		clearSelected();
 	}
 
-	public void removeRow(Gtk.Widget? row, int duration = 700)
+	private void removeRow(Gtk.Widget? row, int duration = 700)
 	{
 		if(row != null)
 		{
@@ -1065,7 +1055,6 @@ public class FeedReader.feedList : Gtk.Stack {
 		int level = 1;
 		int pos = -1;
 
-
 		if(Utils.haveTags())
 		{
 			var FeedChildList = m_list.get_children();
@@ -1085,12 +1074,8 @@ public class FeedReader.feedList : Gtk.Stack {
 			level = 1;
 		}
 
-
 		var newRow = new categorieRow(_("New Category"), CategoryID.NEW, 99, 0, CategoryID.MASTER, level, false);
 		newRow.drag_failed.connect(onDragEnd);
-		newRow.removeRow.connect(() => {
-			removeRow(newRow);
-		});
 		m_list.insert(newRow, pos);
 		newRow.opacity = 0.5;
 		newRow.reveal(true);
@@ -1098,6 +1083,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private bool onDragEnd(Gdk.DragContext context, Gtk.DragResult result)
 	{
+		logger.print(LogMessage.DEBUG, "FeedList: onDragBegin");
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{

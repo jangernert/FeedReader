@@ -212,7 +212,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		highlight_row(m_article.getArticleID());
 		if(dataBase.read_tags().is_empty)
 		{
-			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 			var feedlist = window.getContent().getFeedList();
 			feedlist.newFeedlist(false, true);
 		}
@@ -243,7 +243,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		logger.print(LogMessage.DEBUG, "ArticleRow: drag failed - " + result.to_string());
 		if(dataBase.read_tags().is_empty)
 		{
-			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 			var feedlist = window.getContent().getFeedList();
 			feedlist.newFeedlist(false, false);
 		}
@@ -382,7 +382,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		bool unread = false;
 		string articleID = "";
-		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			articleID = window.getContent().getSelectedArticle();
@@ -494,7 +494,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		bool marked = false;
 		string articleID = "";
-		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			articleID = window.getContent().getSelectedArticle();

@@ -48,6 +48,7 @@ namespace FeedReader {
 		public abstract void moveFeed(string feedID, string currentCatID, string? newCatID = null) throws IOError;
 		public abstract void renameFeed(string feedID, string newName) throws IOError;
 		public abstract void importOPML(string opml) throws IOError;
+		public abstract void quit() throws IOError;
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();
@@ -159,4 +160,3 @@ namespace FeedReader {
 
 	}
 }
-

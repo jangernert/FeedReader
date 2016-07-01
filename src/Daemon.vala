@@ -629,6 +629,15 @@ namespace FeedReader {
 			}
 #endif
 		}
+
+		public void quit()
+		{
+			logger.print(LogMessage.DEBUG, "Quit!");
+			GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 1, () => {
+				exit(-1);
+				return false;
+			});
+		}
 	}
 
 	[DBus (name = "org.gnome.feedreaderError")]
@@ -637,11 +646,15 @@ namespace FeedReader {
 		SOME_ERROR
 	}
 
-	void on_bus_aquired (DBusConnection conn) {
+	void on_bus_aquired(DBusConnection conn)
+	{
 		daemon = new FeedDaemonServer();
-		try {
-		    conn.register_object ("/org/gnome/feedreader", daemon);
-		} catch (IOError e) {
+		try
+		{
+		    conn.register_object("/org/gnome/feedreader", daemon);
+		}
+		catch (IOError e)
+		{
 		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
 		    logger.print(LogMessage.WARNING, e.message);
 		    exit(-1);

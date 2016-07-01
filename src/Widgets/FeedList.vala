@@ -1020,7 +1020,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		logger.print(LogMessage.DEBUG, "FeedList: onDragBegin");
 
 		// save current state
-		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		window.writeInterfaceState();
 
 		// collapse all feeds and show all Categories

@@ -34,7 +34,7 @@ namespace FeedReader {
 	Share share;
 
 
-	public class rssReaderApp : Gtk.Application {
+	public class FeedApp : Gtk.Application {
 
 		private readerUI m_window;
 		public signal void callback(OAuth type, string? oauthVerifier);
@@ -120,6 +120,14 @@ namespace FeedReader {
 			return 0;
 		}
 
+		protected override void shutdown()
+		{
+			logger.print(LogMessage.DEBUG, "Shutdown!");
+			if(settings_tweaks.get_boolean("quit-daemon"))
+				feedDaemon_interface.quit();
+			base.shutdown();
+		}
+
 		public void sync()
 		{
 			try{
@@ -133,7 +141,7 @@ namespace FeedReader {
 		{
 			if(feedDaemon_interface.getVersion() < DBusAPIVersion)
 			{
-				killDaemon();
+				feedDaemon_interface.quit();
 				startDaemon();
 			}
 		}
@@ -148,22 +156,12 @@ namespace FeedReader {
 			}
 		}
 
-		private void killDaemon()
-		{
-			logger.print(LogMessage.INFO, "FeedReader: terminating daemon");
-			try{
-				GLib.Process.spawn_async("/", {"killall", "feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-			}catch(GLib.SpawnError e){
-				logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
-			}
-		}
-
 		public readerUI getWindow()
 		{
 			return m_window;
 		}
 
-		public rssReaderApp()
+		public FeedApp()
 		{
 			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
@@ -194,7 +192,7 @@ namespace FeedReader {
 			return 0;
 		}
 
-		var app = new rssReaderApp();
+		var app = new FeedApp();
 		app.run(args);
 
 		return 0;

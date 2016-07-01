@@ -21,7 +21,7 @@ public class FeedReader.UiUtils : GLib.Object {
 		string[] selectedRow = {};
 		ArticleListState state = ArticleListState.ALL;
 		string searchTerm = "";
-		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			var interfacestate = window.getInterfaceState();

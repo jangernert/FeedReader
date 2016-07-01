@@ -29,7 +29,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private SpringCleanPage m_SpringClean;
 	Gtk.CssProvider m_cssProvider;
 
-	public readerUI(rssReaderApp app)
+	public readerUI(FeedApp app)
 	{
 		Object (application: app, title: _("FeedReader"));
 		this.window_position = WindowPosition.CENTER;
@@ -718,7 +718,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 			case Gdk.Key.F5:
 				logger.print(LogMessage.DEBUG, "shortcut: sync");
-				((rssReaderApp)GLib.Application.get_default()).sync();
+				((FeedApp)GLib.Application.get_default()).sync();
 				break;
 
 			case Gdk.Key.s:

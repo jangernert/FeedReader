@@ -254,7 +254,7 @@ public class FeedReader.ServiceRow : Gtk.ListBoxRow {
 			share.loginPage(m_id);
 			m_login_button.set_label(_("waiting"));
 			m_login_button.set_sensitive(false);
-			((rssReaderApp)GLib.Application.get_default()).callback.connect((type, oauthVerifier) => {
+			((FeedApp)GLib.Application.get_default()).callback.connect((type, oauthVerifier) => {
 				if(share.getAccessToken(m_id, oauthVerifier))
 				{
 					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);

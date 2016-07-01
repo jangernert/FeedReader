@@ -65,6 +65,14 @@
 				start a sync as soon as the UI is started
 			</description>
 		</key>
+		
+		<key name="quit-daemon" type="b">
+			<default>false</default>
+			<summary>quit the daemon</summary>
+			<description>
+				quit the daemon as soon as the UI closes -> no background syncs possible
+			</description>
+		</key>
 
 		<key name="ttrss-newsplus" type="b">
 			<default>false</default>

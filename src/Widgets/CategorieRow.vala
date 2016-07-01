@@ -366,7 +366,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var content = ((rssReaderApp)GLib.Application.get_default()).getWindow().getContent();
+			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 			var notification = content.showNotification(_("Category \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
 				feedDaemon_interface.removeCategory(m_categorieID);
@@ -410,7 +410,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		rename_action.activate.connect(() => {
 			showRenamePopover();
 		});
-		var app = (rssReaderApp)GLib.Application.get_default();
+		var app = (FeedApp)GLib.Application.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);

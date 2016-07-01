@@ -152,7 +152,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 	private void setBusy()
 	{
-		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			window.getContent().footerSetBusy();

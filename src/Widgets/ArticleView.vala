@@ -574,7 +574,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private void setBackgroundColor()
 	{
 #if USE_WEBKIT_4
-		var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			var background = window.getContent().getBackgroundColor();

@@ -117,7 +117,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 			showArticleButtons(true);
 
-			var window = ((rssReaderApp)GLib.Application.get_default()).getWindow();
+			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 			if(window != null)
 			{
 				var header = window.getHeaderBar();

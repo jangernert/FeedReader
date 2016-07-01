@@ -226,6 +226,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				|| m_content.getSelectedArticle() == "empty")
 					return true;
 
+				if(m_content.isFullscreenVideo())
+					return true;
+
 				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
 					m_content.enterFullscreen(false);
 				else

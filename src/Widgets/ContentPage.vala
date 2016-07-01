@@ -455,6 +455,11 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		return m_article_view.fullscreenArticle();
 	}
 
+	public bool isFullscreenVideo()
+	{
+		return m_article_view.fullscreenVideo();
+	}
+
 	public bool ArticleListSelectedIsFirst()
 	{
 		return m_articleList.selectedIsFirst();

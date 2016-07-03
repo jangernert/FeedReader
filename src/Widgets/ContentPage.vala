@@ -48,7 +48,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
-			m_articleList.newHeadlineList();
+			m_articleList.newList();
 
 			if(feedID == FeedID.ALL)
 			{
@@ -65,7 +65,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
-			m_articleList.newHeadlineList();
+			m_articleList.newList();
 			m_footer.setRemoveButtonSensitive(true);
 			m_footer.setSelectedRow(FeedListType.TAG, tagID);
 		});
@@ -74,7 +74,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedType(FeedListType.CATEGORY);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
-			m_articleList.newHeadlineList();
+			m_articleList.newList();
 
 			if(categorieID != CategoryID.MASTER && categorieID != CategoryID.TAGS)
 			{
@@ -196,9 +196,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_articleList.move(true);
 	}
 
-	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	public void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		m_articleList.newHeadlineList(transition);
+		m_articleList.newList(transition);
 	}
 
 	public void newFeedList(bool defaultSettings = false)

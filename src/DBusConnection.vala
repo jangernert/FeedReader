@@ -96,7 +96,7 @@ namespace FeedReader {
 
 			feedDaemon_interface.newArticleList.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: newArticleList");
-				window.getContent().newHeadlineList();
+				window.getContent().newArticleList();
 			});
 
 			feedDaemon_interface.updateArticleList.connect(() => {

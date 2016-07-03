@@ -38,10 +38,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private FeedListType m_IDtype = FeedListType.FEED;
 	private bool m_limitScroll = false;
 	private int m_threadCount = 0;
-	private uint m_timeout_source_id = 0;
+	private uint m_scroll_source_id = 0;
 	private uint m_select_source_id = 0;
+	private uint m_update_source_id = 0;
 	private double m_scrollPos = 0.0;
 	private bool m_syncing = false;
+	private bool m_busy = false;
 	private string m_selected_article = "";
 	private InAppNotification m_overlay;
 	private uint m_helperCounter = 0;
@@ -186,7 +188,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if((adj.get_value() + adj.get_page_size())/adj.get_upper() > m_lmit)
 		{
 			logger.print(LogMessage.INFO, "load more because of scrolling");
-			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+			create(Gtk.StackTransitionType.CROSSFADE, true);
 		}
 	}
 
@@ -530,9 +532,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 	}
 
 
-	private async void createHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
+	private async void create(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleList: createHeadlineList");
+		logger.print(LogMessage.DEBUG, "ArticleList: create");
 		m_scrollPos = m_current_adjustment.get_value();
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 
@@ -552,7 +554,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll();
 
-		SourceFunc callback = createHeadlineList.callback;
+		SourceFunc callback = create.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 
@@ -575,7 +577,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-		new GLib.Thread<void*>("createHeadlineList", run);
+		new GLib.Thread<void*>("create", run);
 		yield;
 
 		logger.print(LogMessage.DEBUG, "ArticleList: insert new rows");
@@ -670,12 +672,37 @@ public class FeedReader.articleList : Gtk.Overlay {
 				noRowActive();
 			}
 		}
-		logger.print(LogMessage.DEBUG, "ArticleList: createHeadlineList finished");
+		logger.print(LogMessage.DEBUG, "ArticleList: create finished");
 	}
 
-	public void newHeadlineList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	public void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleList: delete HeadlineList");
+		logger.print(LogMessage.DEBUG, "ArticleList: newList");
+		if(m_busy)
+		{
+			logger.print(LogMessage.WARNING, "ArticleList: newList - already busy");
+
+			if (m_update_source_id > 0)
+			{
+				GLib.Source.remove(m_update_source_id);
+				m_update_source_id = 0;
+			}
+
+			logger.print(LogMessage.WARNING, "ArticleList: newList - queue up update");
+			m_update_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 1, () => {
+				logger.print(LogMessage.WARNING, "ArticleList: newList - check if ready");
+				if(!m_busy)
+				{
+					m_update_source_id = 0;
+					newList(transition);
+					return false;
+				}
+				return true;
+			});
+			return;
+		}
+
+		m_busy = true;
 		if(m_overlay != null)
 			m_overlay.dismiss();
 
@@ -704,12 +731,34 @@ public class FeedReader.articleList : Gtk.Overlay {
 			row.destroy();
 		}
 
-		createHeadlineList(transition);
+		create(transition);
+		m_busy = false;
 	}
 
 	public async void updateArticleList(bool slideIN = true)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: updateArticleList");
+		if(m_busy)
+		{
+			logger.print(LogMessage.WARNING, "ArticleList: updateArticleList - already busy");
+			if(m_update_source_id == 0)
+			{
+				logger.print(LogMessage.WARNING, "ArticleList: updateArticleList - queue up update");
+				m_update_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 1, () => {
+					logger.print(LogMessage.WARNING, "ArticleList: updateArticleList - check if ready");
+					if(!m_busy)
+					{
+						m_update_source_id = 0;
+						updateArticleList(slideIN);
+				   		return false;
+					}
+					return true;
+				});
+			}
+			return;
+		}
+		m_busy = true;
+
 		m_scrollPos = m_current_adjustment.get_value();
 		uint articlesInserted = 0;
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
@@ -718,7 +767,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		if(m_stack.get_visible_child_name() == "empty" || m_stack.get_visible_child_name() == "syncing")
 		{
-			newHeadlineList();
+			newList();
 			return;
 		}
 
@@ -874,6 +923,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 			}
 		}
 
+		if(articlesInserted == 0 || getSelectedArticle() == "" || slideIN)
+			m_busy = false;
+
 		logger.print(LogMessage.DEBUG, "ArticleList: %u articles have been added".printf(articlesInserted));
 		logger.print(LogMessage.DEBUG, "ArticleList: updateArticleList finished");
 	}
@@ -891,6 +943,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			m_helperCounter = 0;
 			m_helperCounter2 = 0;
+			m_busy = false;
 		}
 		m_limitScroll = false;
 	}
@@ -941,7 +994,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
 		{
 			logger.print(LogMessage.DEBUG, "load more");
-			createHeadlineList(Gtk.StackTransitionType.CROSSFADE, true);
+			create(Gtk.StackTransitionType.CROSSFADE, true);
 		}
 	}
 
@@ -1074,6 +1127,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 					break;
 			}
 		}
+		else
+		{
+			message = _("No unread articles for search-term \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
+		}
 		return message;
 	}
 
@@ -1083,10 +1140,10 @@ public class FeedReader.articleList : Gtk.Overlay {
 		logger.print(LogMessage.DEBUG, "smooth adjust to: " + final.to_string());
 		m_limitScroll = true;
 
-        if (m_timeout_source_id > 0)
+        if (m_scroll_source_id > 0)
 		{
-            GLib.Source.remove(m_timeout_source_id);
-            m_timeout_source_id = 0;
+            GLib.Source.remove(m_scroll_source_id);
+            m_scroll_source_id = 0;
         }
 
         var initial = adj.value;
@@ -1103,10 +1160,10 @@ public class FeedReader.articleList : Gtk.Overlay {
         var newvalue = 0;
         var old_adj_value = adj.value;
 
-        m_timeout_source_id = Timeout.add(duration / steps, () => {
+        m_scroll_source_id = Timeout.add(duration / steps, () => {
             /* If the user move it at the same time, just stop the animation */
             if (old_adj_value != adj.value) {
-                m_timeout_source_id = 0;
+                m_scroll_source_id = 0;
 				m_scrollPos = adj.value;
 				m_limitScroll = false;
                 return false;
@@ -1115,7 +1172,7 @@ public class FeedReader.articleList : Gtk.Overlay {
             if (newvalue >= to_do - stepSize) {
                 /* to be sure that there is not a little problem */
                 adj.value = final;
-                m_timeout_source_id = 0;
+                m_scroll_source_id = 0;
 				m_limitScroll = false;
 				if(adj.value == 0.0 && m_overlay != null)
 					m_overlay.dismiss();

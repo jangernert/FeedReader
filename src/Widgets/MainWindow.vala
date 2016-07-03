@@ -142,13 +142,13 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_headerbar.change_state.connect((state, transition) => {
 			m_content.setArticleListState(state);
 			m_content.clearArticleView();
-			m_content.newHeadlineList(transition);
+			m_content.newArticleList(transition);
 		});
 
 		m_headerbar.search_term.connect((searchTerm) => {
 			m_content.setSearchTerm(searchTerm);
 			m_content.clearArticleView();
-			m_content.newHeadlineList();
+			m_content.newArticleList();
 		});
 
 		m_headerbar.showSettings.connect((panel) => {
@@ -243,7 +243,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		var settings = new SettingsDialog(this, panel);
 
 		settings.newFeedList.connect(m_content.newFeedList);
-		settings.newArticleList.connect(m_content.newHeadlineList);
+		settings.newArticleList.connect(m_content.newArticleList);
 		settings.reloadArticleView.connect(m_content.reloadArticleView);
 		settings.reloadCSS.connect(reloadCSS);
 	}

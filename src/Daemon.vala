@@ -113,22 +113,28 @@ namespace FeedReader {
 				springCleanFinished();
 			}
 
+			syncStarted();
+
 
 			if(!checkOnline())
+			{
+				syncFinished();
 				return;
+			}
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				login((Backend)settings_general.get_enum("account-type"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
+					setOffline();
+					syncFinished();
 					return;
 				}
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
-				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
 				yield server.syncContent();

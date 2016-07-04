@@ -89,12 +89,18 @@ public class FeedReader.Grabber : GLib.Object {
 
         if(!checkConfigFile())
         {
+            string oldURL = m_articleURL;
+
             // download to check if website redirects
             downloaded = download();
 
-            // check again after possible redirect
-            if(!checkConfigFile())
-                return false;
+            // if URL is different now after redirect
+            if(m_articleURL != oldURL)
+            {
+                // check again after possible redirect
+                if(!checkConfigFile())
+                    return false;
+            }
         }
 
         logger.print(LogMessage.DEBUG, "Grabber: config found");

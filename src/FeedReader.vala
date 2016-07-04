@@ -128,13 +128,21 @@ namespace FeedReader {
 			base.shutdown();
 		}
 
-		public void sync()
+		public async void sync()
 		{
-			try{
-				feedDaemon_interface.startSync();
-			}catch (IOError e) {
-				logger.print(LogMessage.ERROR, e.message);
-			}
+			SourceFunc callback = sync.callback;
+			ThreadFunc<void*> run = () => {
+				try{
+					feedDaemon_interface.startSync();
+				}catch (IOError e) {
+					logger.print(LogMessage.ERROR, e.message);
+				}
+				Idle.add((owned) callback);
+				return null;
+			};
+
+			new GLib.Thread<void*>("sync", run);
+			yield;
 		}
 
 		private void checkDaemonVersion()

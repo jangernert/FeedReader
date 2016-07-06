@@ -78,6 +78,7 @@ namespace FeedReader {
 			try{
 				feedDaemon_interface = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
 			}catch (IOError e) {
+				logger.print(LogMessage.ERROR, "Failed to connect to daemon!");
 				logger.print(LogMessage.ERROR, e.message);
 				startDaemon();
 			}

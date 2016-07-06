@@ -36,6 +36,15 @@ public class FeedReader.dbUI : GLib.Object {
 			logger.print(LogMessage.ERROR, "Can't open database: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
 		}
 		sqlite_db.busy_timeout(1000);
+		sqlite_db.update_hook(watchDog);
+	}
+
+	private void watchDog(Sqlite.Action action, string dbname, string table, int64 rowID)
+	{
+		if(action == Sqlite.Action.DELETE)
+		{
+			logger.print(LogMessage.WARNING, "DELETING rowID: %s from  table: %s and db: %s".printf(rowID.to_string(), table, dbname));
+		}
 	}
 
 	public void init()
@@ -102,8 +111,9 @@ public class FeedReader.dbUI : GLib.Object {
 	protected void executeSQL(string sql)
 	{
 		string errmsg;
-		int ec = sqlite_db.exec (sql, null, out errmsg);
-		if (ec != Sqlite.OK) {
+		int ec = sqlite_db.exec(sql, null, out errmsg);
+		if (ec != Sqlite.OK)
+		{
 			logger.print(LogMessage.ERROR, sql);
 			logger.print(LogMessage.ERROR, errmsg);
 		}

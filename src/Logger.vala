@@ -29,7 +29,7 @@ public class FeedReader.Logger : GLib.Object {
 			GLib.FileUtils.remove(path);
 
 		var file = GLib.File.new_for_path(path);
-		m_stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
+		m_stream = file.create(FileCreateFlags.NONE);
 
 		switch(logLevel)
 		{
@@ -104,7 +104,17 @@ public class FeedReader.Logger : GLib.Object {
 
 		reset_color();
 		stdout.printf("%s\n", message);
-		m_stream.write("%s\n".printf(message).data);
+		try
+		{
+			m_stream.write("%s\n".printf(message).data);
+		}
+		catch(GLib.IOError e)
+		{
+			set_color(ConsoleColor.RED);
+			stdout.printf("[ ERROR ] ");
+			stdout.printf("%s\n", e.message);
+			reset_color();
+		}
 	}
 
 	private void reset_color()

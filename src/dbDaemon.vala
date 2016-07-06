@@ -93,6 +93,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     private void delete_article(string articleID, string feedID)
     {
+        logger.print(LogMessage.INFO, "Deleting article \"%s\"".printf(articleID));
         executeSQL("DELETE FROM main.articles WHERE articleID = \"" + articleID + "\"");
         string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
         Utils.remove_directory(folder_path);

@@ -79,6 +79,19 @@ namespace FeedReader {
 				feedDaemon_interface = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
 			}catch (IOError e) {
 				logger.print(LogMessage.ERROR, e.message);
+				startDaemon();
+			}
+
+			checkDaemonVersion();
+		}
+
+		public static void startDaemon()
+		{
+			logger.print(LogMessage.INFO, "FeedReader: start daemon");
+			try{
+				GLib.Process.spawn_async("/", {"feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+			}catch(GLib.SpawnError e){
+				logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
 			}
 		}
 
@@ -156,6 +169,15 @@ namespace FeedReader {
 				logger.print(LogMessage.DEBUG, "DBusConnection: opmlImported");
 				window.getContent().footerSetReady();
 			});
+		}
+
+		private static void checkDaemonVersion()
+		{
+			if(feedDaemon_interface.getVersion() < DBusAPIVersion)
+			{
+				feedDaemon_interface.quit();
+				startDaemon();
+			}
 		}
 
 	}

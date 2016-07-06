@@ -62,7 +62,6 @@ namespace FeedReader {
 			}
 			else
 			{
-				startDaemon();
 				dataBase = new dbUI();
 			}
 
@@ -97,7 +96,6 @@ namespace FeedReader {
 
 			m_window.show_all();
 			DBusConnection.connectSignals(m_window);
-			checkDaemonVersion();
 			feedDaemon_interface.updateBadge();
 			feedDaemon_interface.checkOnlineAsync();
 		}
@@ -112,8 +110,6 @@ namespace FeedReader {
 				var type = Utils.parseArg(args[1], out verifier);
 				callback(type , verifier);
 			}
-
-
 
 			activate();
 
@@ -143,25 +139,6 @@ namespace FeedReader {
 
 			new GLib.Thread<void*>("sync", run);
 			yield;
-		}
-
-		private void checkDaemonVersion()
-		{
-			if(feedDaemon_interface.getVersion() < DBusAPIVersion)
-			{
-				feedDaemon_interface.quit();
-				startDaemon();
-			}
-		}
-
-		private void startDaemon()
-		{
-			logger.print(LogMessage.INFO, "FeedReader: start daemon");
-			try{
-				GLib.Process.spawn_async("/", {"feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-			}catch(GLib.SpawnError e){
-				logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
-			}
 		}
 
 		public readerUI getWindow()

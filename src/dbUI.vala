@@ -105,7 +105,7 @@ public class FeedReader.dbUI : GLib.Object {
 											)""");
 
 			executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
-			executeSQL(						"""CREATE VIRTUAL TABLE fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
+			executeSQL(						"""CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
 	}
 
 	protected void executeSQL(string sql)

@@ -19,6 +19,11 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         base(dbFile);
     }
 
+    public void checkpoint()
+    {
+        sqlite_db.wal_checkpoint(null);
+    }
+
     public bool resetDB()
     {
         logger.print(LogMessage.WARNING, "resetDB");

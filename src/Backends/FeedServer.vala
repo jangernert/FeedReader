@@ -222,6 +222,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			var now = new DateTime.now_local();
 			settings_state.set_int("last-sync", (int)now.to_unix());
 
+			dataBase.checkpoint();
+
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -1302,7 +1304,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			writeInterfaceState();
 			updateFeedList();
 			updateArticleList();
-			
+
 			if(settings_state.get_boolean("no-animations"))
 			{
 				logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");

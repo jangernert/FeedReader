@@ -763,7 +763,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		uint articlesInserted = 0;
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
-		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
 
 		if(m_stack.get_visible_child_name() == "empty" || m_stack.get_visible_child_name() == "syncing")
 		{
@@ -876,10 +875,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 					var tmpRow = row as articleRow;
 					if(tmpRow != null)
 					{
-						if((newestFirst && !sortByDate && newRow.getSortID() > tmpRow.getSortID())
-						|| (!newestFirst && !sortByDate && newRow.getSortID() < tmpRow.getSortID())
-						|| (newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == 1)
-						|| (!newestFirst && sortByDate && newRow.getDate().compare(tmpRow.getDate()) == -1))
+						if((!sortByDate && newRow.getSortID() > tmpRow.getSortID())
+						|| (sortByDate && newRow.getDate().compare(tmpRow.getDate()) == 1))
 						{
 							m_currentList.insert(newRow, pos-1);
 							added = true;

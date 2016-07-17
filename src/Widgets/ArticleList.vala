@@ -532,7 +532,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	}
 
 
-	private async void create(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool addRows = false)
+	private async void create(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool loadMore = false)
 	{
 		logger.print(LogMessage.DEBUG, "ArticleList: create");
 		m_scrollPos = m_current_adjustment.get_value();
@@ -625,7 +625,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 						}
 						else if(transition == Gtk.StackTransitionType.CROSSFADE)
 						{
-							if(addRows)
+							if(loadMore)
 								tmpRow.reveal(true);
 							else
 								tmpRow.reveal(true, 150);
@@ -637,7 +637,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					}
 				}
 
-				if(!addRows)
+				if(!loadMore)
 				{
 					m_current_adjustment.notify["upper"].connect(restoreScrollPos);
 					if(!restoreSelectedRow())
@@ -656,7 +656,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 				if(show_notification)
 					showNotification();
 			}
-			else if(!addRows)
+			else if(!loadMore)
 			{
 				if(!m_syncing)
 				{
@@ -766,6 +766,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		if(m_stack.get_visible_child_name() == "empty" || m_stack.get_visible_child_name() == "syncing")
 		{
+			logger.print(LogMessage.WARNING, "ArticleList: updateArticleList - list was empty, so no reason to update - will launch newList()");
+			m_busy = false;
 			newList();
 			return;
 		}
@@ -794,12 +796,14 @@ public class FeedReader.articleList : Gtk.Overlay {
 			m_helperCounter = new_articles;
 		}
 
+		uint actual_loaded = 0;
 
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
-			logger.print(LogMessage.DEBUG, "actual articles loaded: " + articles.size.to_string());
+			actual_loaded =  articles.size;
+			logger.print(LogMessage.DEBUG, "actual articles loaded: " + actual_loaded.to_string());
 			Idle.add((owned) callback);
 			return null;
 		};
@@ -808,7 +812,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 		new GLib.Thread<void*>("updateArticleList", run);
 		yield;
 
-
+		if(actual_loaded == 0)
+		{
+			logger.print(LogMessage.DEBUG, "updateArticleList: nothing to do -> return");
+			m_busy = false;
+			return;
+		}
 
 		foreach(Gtk.Widget row in articleChildList)
 		{

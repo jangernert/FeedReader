@@ -1019,114 +1019,130 @@ public class FeedReader.articleList : Gtk.Overlay {
 			{
 				case FeedListType.FEED:
 					name = dataBase.getFeedName(m_current_feed_selected);
-					if(m_only_unread && !m_only_marked){
+					if(m_only_unread && !m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No unread articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No unread articles in the feed \"%s\" could be found").printf(name);
-						}
 					}
-					if(m_only_unread && m_only_marked){
+					else if(m_only_unread && m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
-							message = _("No unread articles and marked that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+							message = _("No unread and marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
+						else
 							message = _("No unread and marked articles in the feed \"%s\" could be found").printf(name);
-						}
 					}
-					if(!m_only_unread && m_only_marked){
+					else if(!m_only_unread && m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No marked articles in the feed \"%s\" could be found").printf(name);
-						}
 					}
-					if(!m_only_unread && !m_only_marked){
+					else if(!m_only_unread && !m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No articles in the feed \"%s\" could be found").printf(name);
-						}
 					}
 					break;
 				case FeedListType.TAG:
 					name = dataBase.getTagName(m_current_feed_selected);
-					if(m_only_unread && !m_only_marked){
+					if(m_only_unread && !m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No unread articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No unread articles in the tag \"%s\" could be found").printf(name);
-						}
 					}
-					if(m_only_unread && m_only_marked){
+					else if(m_only_unread && m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
-							message = _("No unread articles and marked that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+							message = _("No unread and marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
+						else
 							message = _("No unread and marked articles in the tag \"%s\" could be found").printf(name);
-						}
 					}
-					if(!m_only_unread && m_only_marked){
+					else if(!m_only_unread && m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No marked articles in the tag \"%s\" could be found").printf(name);
-						}
 					}
-					if(!m_only_unread && !m_only_marked){
+					else if(!m_only_unread && !m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No articles in the tag \"%s\" could be found").printf(name);
-						}
 					}
 					break;
 				case FeedListType.CATEGORY:
 					name = dataBase.getCategoryName(m_current_feed_selected);
-					if(m_only_unread && !m_only_marked){
+					if(m_only_unread && !m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No unread articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No unread articles in the category \"%s\" could be found").printf(name);
-						}
 					}
-					if(m_only_unread && m_only_marked){
+					else if(m_only_unread && m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
-							message = _("No unread articles and marked that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+							message = _("No unread and marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
+						else
 							message = _("No unread and marked articles in the category \"%s\" could be found").printf(name);
-						}
 					}
-					if(!m_only_unread && m_only_marked){
+					else if(!m_only_unread && m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No marked articles in the category \"%s\" could be found").printf(name);
-						}
 					}
-					if(!m_only_unread && !m_only_marked){
+					else if(!m_only_unread && !m_only_marked)
+					{
 						if(m_searchTerm != "")
-						{
 							message = _("No articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						}else {
+						else
 							message = _("No articles in the category \"%s\" could be found").printf(name);
-						}
 					}
 					break;
 			}
 		}
 		else
 		{
-			message = _("No unread articles for search-term \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
+			if(m_only_unread && !m_only_marked)
+			{
+				if(m_searchTerm != "")
+					message = _("No unread articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
+				else
+					message = _("No unread articles could be found");
+			}
+			else if(m_only_unread && m_only_marked)
+			{
+				if(m_searchTerm != "")
+					message = _("No unread and marked articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
+				else
+					message = _("No unread and marked articles could be found");
+			}
+			else if(!m_only_unread && m_only_marked)
+			{
+				if(m_searchTerm != "")
+					message = _("No marked articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
+				else
+					message = _("No marked articles could be found");
+			}
+			else if(!m_only_unread && !m_only_marked)
+			{
+				if(m_searchTerm != "")
+					message = _("No articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
+				else
+					message = _("No articles could be found");
+			}
+
 		}
 		return message;
 	}

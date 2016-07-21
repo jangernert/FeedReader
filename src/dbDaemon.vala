@@ -119,12 +119,14 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             query.build();
 
             Sqlite.Statement stmt;
-            int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-            if (ec != Sqlite.OK) {
-                error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+            int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+            if(ec != Sqlite.OK)
+            {
+                logger.print(LogMessage.ERROR, "dbDaemon: dropTag: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
             }
 
-            while (stmt.step () == Sqlite.ROW) {
+            while(stmt.step () == Sqlite.ROW)
+            {
                 string old_tags = stmt.column_text(0);
                 string articleID = stmt.column_text(1);
                 string new_tags = "";
@@ -663,10 +665,12 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-        if (ec != Sqlite.OK) {
-            error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+        if(ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: delete_articles_without_feed: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
         }
-        while (stmt.step () == Sqlite.ROW) {
+        while(stmt.step () == Sqlite.ROW)
+        {
             delete_articles(stmt.column_text(0));
         }
     }

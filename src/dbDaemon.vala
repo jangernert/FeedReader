@@ -89,7 +89,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         Sqlite.Statement stmt;
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK) {
-            error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+            logger.print(LogMessage.ERROR, "dbDaemon: dropOldArtilces: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
         }
         while (stmt.step () == Sqlite.ROW) {
             delete_article(stmt.column_text(0), stmt.column_text(1));
@@ -636,22 +636,26 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public void delete_unsubscribed_feeds()
     {
+        logger.print(LogMessage.WARNING, "dbDaemon: Deleting unsibscribed feeds");
         executeSQL("DELETE FROM main.feeds WHERE \"subscribed\" = 0");
     }
 
 
     public void delete_nonexisting_categories()
     {
+        logger.print(LogMessage.WARNING, "dbDaemon: Deleting nonexisting categories");
         executeSQL("DELETE FROM main.categories WHERE \"exists\" = 0");
     }
 
     public void delete_nonexisting_tags()
     {
+        logger.print(LogMessage.WARNING, "dbDaemon: Deleting nonexisting tags");
         executeSQL("DELETE FROM main.tags WHERE \"exists\" = 0");
     }
 
     public void delete_articles_without_feed()
     {
+        logger.print(LogMessage.WARNING, "dbDaemon: Deleting articles without feed");
         var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
         query.selectField("feed_id");
         query.addEqualsCondition("subscribed", "0", true, false);
@@ -669,6 +673,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
 
     public void delete_articles(string feedID)
     {
+        logger.print(LogMessage.WARNING, "dbDaemon: Deleting all articles of feed \"%s\"".printf(feedID));
         executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
         string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/".printf(feedID);
         Utils.remove_directory(folder_path);
@@ -701,7 +706,8 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
                     if (ec != Sqlite.OK)
                         logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
-                    while (stmt.step () == Sqlite.ROW) {
+                    while(stmt.step () == Sqlite.ROW)
+                    {
                         string feedID = stmt.column_text(0);
                         string catIDs = stmt.column_text(0).replace(catID + ",", "");
 

@@ -141,7 +141,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		logger.print(LogMessage.DEBUG, "last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
 		logger.print(LogMessage.DEBUG, "now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
-		logger.print(LogMessage.DEBUG, "difference: %f".printf(difference/GLib.TimeSpan.DAY));
+		logger.print(LogMessage.DEBUG, "difference: %i".printf(difference.DAY));
 
 		if((difference/GLib.TimeSpan.DAY) >= settings_general.get_int("spring-clean-after"))
 			doCleaning = true;

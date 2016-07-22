@@ -455,8 +455,9 @@ public class FeedReader.FeedlyAPI : Object {
 			}
 		}
 
-		if(unread_count == -1) {
-			logger.print(LogMessage.ERROR, "Unkown id: %s".printf(id));
+		if(unread_count == -1)
+		{
+			logger.print(LogMessage.ERROR, "Unknown id: %s".printf(id));
 		}
 
 		return unread_count;

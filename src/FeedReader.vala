@@ -84,7 +84,7 @@ namespace FeedReader {
 			base.activate();
 			DBusConnection.setup();
 
-			WebKit.WebContext.get_default().set_web_extensions_directory("/usr/share/FeedReader/");
+			WebKit.WebContext.get_default().set_web_extensions_directory(InstallPrefix + "/share/FeedReader/");
 
 			if (m_window == null)
 			{

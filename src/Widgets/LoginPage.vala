@@ -220,7 +220,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_ttrss_revealer.add(ttrss_frame);
 		//---------------------------------------------------------------------
 
-		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
+		var ttrss_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
 
 		var ttrss_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
 		ttrss_box.pack_start(ttrss_logo, false, false, 10);
@@ -233,7 +233,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	private void setup_feedly_login()
 	{
-		var feedly_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-feedly.svg");
+		var feedly_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-feedly.svg");
 
 		var text = new Gtk.Label(_("You will be redirected to the feedly website where you can use your Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."));
 		text.get_style_context().add_class("h3");
@@ -283,7 +283,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var owncloud_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
+		var owncloud_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
 
 		grid.attach(owncloud_url_label, 0, 0, 1, 1);
 		grid.attach(m_owncloud_url_entry, 1, 0, 1, 1);
@@ -358,7 +358,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var ttrss_logo = new Gtk.Image.from_file("/usr/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
+		var ttrss_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
 
 		grid.attach(inoreader_user_label, 0, 0, 1, 1);
 		grid.attach(m_inoreader_user_entry, 1, 0, 1, 1);

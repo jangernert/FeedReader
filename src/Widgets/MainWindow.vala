@@ -49,7 +49,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		shortcutsAction.activate.connect(() => {
 			try {
 			    var builder = new Builder();
-			    builder.add_from_file("/usr/share/FeedReader/shortcuts.ui");
+			    builder.add_from_file(InstallPrefix + "/share/FeedReader/shortcuts.ui");
 			    builder.connect_signals(null);
 			    var shortuctsWindow = builder.get_object("shortcuts") as Gtk.Window;
 			    shortuctsWindow.set_transient_for(this);
@@ -385,7 +385,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void reloadCSS()
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: reloadCSS");
-		string path = "/usr/share/FeedReader/gtk-css/";
+		string path = InstallPrefix + "/share/FeedReader/gtk-css/";
 		removeProvider(m_cssProvider);
 		setupCSS();
 	}
@@ -393,7 +393,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void setupCSS()
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: setupCSS");
-		string path = "/usr/share/FeedReader/gtk-css/";
+		string path = InstallPrefix + "/share/FeedReader/gtk-css/";
 
 		addProvider(path + "basics.css");
 

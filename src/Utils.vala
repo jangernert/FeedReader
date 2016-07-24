@@ -234,7 +234,7 @@ public class FeedReader.Utils : GLib.Object {
 		author_date += date;
 
         string template;
-		GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/article.html", out template);
+		GLib.FileUtils.get_contents(InstallPrefix + "/share/FeedReader/ArticleView/article.html", out template);
 		article.assign(template);
 
 		string html_id = "$HTML";
@@ -342,7 +342,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		string css;
 		try{
-			GLib.FileUtils.get_contents("/usr/share/FeedReader/ArticleView/style.css", out css);
+			GLib.FileUtils.get_contents(InstallPrefix + "/share/FeedReader/ArticleView/style.css", out css);
 		}
 		catch(GLib.Error e){
 			logger.print(LogMessage.ERROR, e.message);
@@ -395,7 +395,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		if(settings_tweaks.get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{
-			var origin = File.new_for_path("/usr/share/FeedReader/feedreader-autostart.desktop");
+			var origin = File.new_for_path(InstallPrefix + "/share/FeedReader/feedreader-autostart.desktop");
 			var destination = File.new_for_path(filename);
         	origin.copy(destination, FileCopyFlags.NONE);
 		}

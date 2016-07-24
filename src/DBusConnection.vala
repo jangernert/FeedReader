@@ -86,7 +86,7 @@ namespace FeedReader {
 			checkDaemonVersion();
 		}
 
-		public static void startDaemon()
+		private static void startDaemon()
 		{
 			logger.print(LogMessage.INFO, "FeedReader: start daemon");
 			try{

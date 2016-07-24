@@ -37,6 +37,8 @@ add_subdirectory (libVilistextum)
 include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.vala.in" "${CMAKE_SOURCE_DIR}/GitSHA1.vala" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/InstallPrefix.vala.in" "${CMAKE_SOURCE_DIR}/InstallPrefix.vala" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service.in" "${CMAKE_SOURCE_DIR}/data/feedreader.service" @ONLY)
 
 
 set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
@@ -91,6 +93,7 @@ endif(GTK320_FOUND)
 
 vala_precompile(UI ${EXEC_NAME}
     GitSHA1.vala
+    InstallPrefix.vala
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
@@ -193,6 +196,7 @@ if(WITH_DEBUG)
 endif(WITH_DEBUG)
 
 vala_precompile(daemon ${DAEMON_NAME}
+    InstallPrefix.vala
     src/Constants.vala
     src/Daemon.vala
     src/dbUI.vala
@@ -242,6 +246,7 @@ add_executable(${DAEMON_NAME} ${daemon})
 target_link_libraries(${DAEMON_NAME} vilistextum)
 
 vala_precompile(debug ${DEBUG_NAME}
+    InstallPrefix.vala
     src/dbUI.vala
     src/dbDaemon.vala
     src/Logger.vala
@@ -299,8 +304,8 @@ install (TARGETS ${DEBUG_NAME} RUNTIME DESTINATION bin)
 install (FILES ${PROJECT_BINARY_DIR}/WebExtension/libwebextension.so DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION ${DATADIR}/dbus-1/services/)
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION /usr/share/icons)
-install (CODE "execute_process (COMMAND gtk-update-icon-cache /usr/share/icons/hicolor)")
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
+install (CODE "execute_process (COMMAND gtk-update-icon-cache ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/shortcuts.ui DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})

@@ -37,27 +37,7 @@
                 <child>
                     <object class="GtkShortcutsGroup">
                         <property name="visible">True</property>
-                        <property name="title" translatable="yes" context="shortcut window">Articles list</property>
-                        <child>
-                            <object class="GtkShortcutsShortcut">
-                                <property name="visible">True</property>
-                                <property name="title" translatable="yes" context="shortcut window">Center the currently selected article in the articles list</property>
-                                <property name="accelerator">S</property>
-                            </object>
-                        </child>
-                        <child>
-                            <object class="GtkShortcutsShortcut">
-                                <property name="visible">True</property>
-                                <property name="title" translatable="yes" context="shortcut window">Mark the currently selected in the feed-list as read</property>
-                                <property name="accelerator">&lt;SHIFT&gt;A</property>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkShortcutsGroup">
-                        <property name="visible">True</property>
-                        <property name="title" translatable="yes" context="shortcut window">Feed list</property>
+                        <property name="title" translatable="yes" context="shortcut window">Feed-List</property>
                         <child>
                             <object class="GtkShortcutsShortcut">
                                 <property name="visible">True</property>
@@ -72,12 +52,19 @@
                                 <property name="accelerator">Left Right</property>
                             </object>
                         </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">True</property>
+                                <property name="title" translatable="yes" context="shortcut window">Mark the currently selected as read</property>
+                                <property name="accelerator">&lt;SHIFT&gt;A</property>
+                            </object>
+                        </child>
                     </object>
                 </child>
                 <child>
                     <object class="GtkShortcutsGroup">
                         <property name="visible">True</property>
-                        <property name="title" translatable="yes" context="shortcut window">Articles</property>
+                        <property name="title" translatable="yes" context="shortcut window">Article-List</property>
                         <child>
                             <object class="GtkShortcutsShortcut">
                                 <property name="visible">True</property>
@@ -102,15 +89,22 @@
                         <child>
                             <object class="GtkShortcutsShortcut">
                                 <property name="visible">True</property>
-                                <property name="title" translatable="yes" context="shortcut window">Open the url of the selected article</property>
+                                <property name="title" translatable="yes" context="shortcut window">Open the URL of the selected article</property>
                                 <property name="accelerator">O</property>
                             </object>
                         </child>
                         <child>
                             <object class="GtkShortcutsShortcut">
                                 <property name="visible">True</property>
-                                <property name="title" translatable="yes" context="shortcut window">Scroll the article list all the way up/down</property>
+                                <property name="title" translatable="yes" context="shortcut window">Scroll all the way up/down</property>
                                 <property name="accelerator">Page_Up Page_Down</property>
+                            </object>
+                        </child>
+                        <child>
+                            <object class="GtkShortcutsShortcut">
+                                <property name="visible">True</property>
+                                <property name="title" translatable="yes" context="shortcut window">Center the currently selected article</property>
+                                <property name="accelerator">S</property>
                             </object>
                         </child>
                     </object>

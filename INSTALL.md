@@ -21,10 +21,11 @@
 ## Compiling
 
 ```
-git clone https://github.com/jangernert/FeedReader && cd ./FeedReader
+git clone https://github.com/jangernert/FeedReader
+cd ./FeedReader
 mkdir build
 cd build 
-cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+cmake ..
 make
 sudo make install
 ```

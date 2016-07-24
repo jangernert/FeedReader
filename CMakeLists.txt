@@ -246,7 +246,6 @@ add_executable(${DAEMON_NAME} ${daemon})
 target_link_libraries(${DAEMON_NAME} vilistextum)
 
 vala_precompile(debug ${DEBUG_NAME}
-    InstallPrefix.vala
     src/dbUI.vala
     src/dbDaemon.vala
     src/Logger.vala
@@ -266,6 +265,7 @@ vala_precompile(debug ${DEBUG_NAME}
     src/ContentGrabber/ReadabilityParserAPI.vala
     src/Debug/DebugServer.vala
     src/Debug/DebugUtils.vala
+    InstallPrefix.vala
 
 
 PACKAGES

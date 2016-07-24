@@ -992,7 +992,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		int time = 700;
 		row.reveal(false, time);
-		GLib.Timeout.add(time, () => {
+		GLib.Timeout.add(time + 50, () => {
 		    m_currentList.remove(row);
 			return false;
 		});

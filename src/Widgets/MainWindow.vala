@@ -46,19 +46,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		onClose();
 
 		var shortcutsAction = new SimpleAction("shortcuts", null);
-		shortcutsAction.activate.connect(() => {
-			try {
-			    var builder = new Builder();
-			    builder.add_from_file(InstallPrefix + "/share/FeedReader/shortcuts.ui");
-			    builder.connect_signals(null);
-			    var shortuctsWindow = builder.get_object("shortcuts") as Gtk.Window;
-			    shortuctsWindow.set_transient_for(this);
-				shortuctsWindow.set_modal(true);
-			    shortuctsWindow.show_all();
-			} catch (Error e) {
-				logger.print(LogMessage.DEBUG, "Could not load UI: %s".printf(e.message));
-			}
-		});
+		shortcutsAction.activate.connect(showShortcutWindow);
 		add_action(shortcutsAction);
 		shortcutsAction.set_enabled(true);
 
@@ -750,10 +738,31 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				}
 				break;
 
+			case Gdk.Key.F1:
+			case Gdk.Key.question:
+				logger.print(LogMessage.DEBUG, "shortcut: showShortcutWindow");
+				showShortcutWindow();
+				break;
+
 			default:
 				return false;
 		}
 		return true;
+	}
+
+	private void showShortcutWindow()
+	{
+		try {
+			var builder = new Builder();
+			builder.add_from_file(InstallPrefix + "/share/FeedReader/shortcuts.ui");
+			builder.connect_signals(null);
+			var shortuctsWindow = builder.get_object("shortcuts") as Gtk.Window;
+			shortuctsWindow.set_transient_for(this);
+			shortuctsWindow.set_modal(true);
+			shortuctsWindow.show_all();
+		} catch (Error e) {
+			logger.print(LogMessage.DEBUG, "Could not load UI: %s".printf(e.message));
+		}
 	}
 
 

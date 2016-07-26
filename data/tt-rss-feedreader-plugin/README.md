@@ -32,7 +32,7 @@ Parameters:
 
 **addCategory**
 
-Returns a JSON-encoded ID of the added tag.
+Returns a JSON-encoded ID of the added category.
 
 Parameters:
  * caption (string) - the caption of the category

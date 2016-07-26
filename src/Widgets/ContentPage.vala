@@ -110,13 +110,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 
 		m_articleList.row_activated.connect((row) => {
-			if(row.isUnread()){
-				feedDaemon_interface.changeArticle(row.getID(), ArticleStatus.READ);
-				row.updateUnread(ArticleStatus.READ);
-			}
-
 			showArticleButtons(true);
-
 			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 			if(window != null)
 			{

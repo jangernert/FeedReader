@@ -354,12 +354,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(event.type != Gdk.EventType.@2BUTTON_PRESS)
 			return false;
 
-			try{
-				Gtk.show_uri(Gdk.Screen.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
-			}
-			catch(GLib.Error e){
-				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
-			}
+		try{
+			Gtk.show_uri(Gdk.Screen.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
+		}
+		catch(GLib.Error e){
+			logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+		}
+		
 		return true;
 	}
 

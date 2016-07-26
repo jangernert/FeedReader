@@ -108,7 +108,14 @@ public class FeedReader.articleList : Gtk.Overlay {
 		});
 
 		this.row_activated.connect((selected_row) => {
-			string selectedID = ((articleRow)selected_row).getID();
+			var article_row = (articleRow)selected_row;
+			string selectedID = article_row.getID();
+
+			if(article_row.isUnread()){
+				feedDaemon_interface.changeArticle(selectedID, ArticleStatus.READ);
+				article_row.updateUnread(ArticleStatus.READ);
+			}
+
 			if(m_selected_article != selectedID)
 			{
 				if(m_only_unread || m_only_marked || m_IDtype == FeedListType.TAG)
@@ -279,8 +286,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private void selectAfter(articleRow row, int time)
 	{
-		m_currentList.select_row(row);
 		row.updateUnread(ArticleStatus.READ);
+		m_currentList.select_row(row);
 		feedDaemon_interface.changeArticle(row.getID(), ArticleStatus.READ);
 
 		if (m_select_source_id > 0)

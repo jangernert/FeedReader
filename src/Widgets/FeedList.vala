@@ -991,7 +991,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			if(tagRow != null)
 			{
 				tagRow.reveal(false, duration);
-				GLib.Timeout.add(duration, () => {
+				GLib.Timeout.add(duration + 20, () => {
 				    m_list.remove(tagRow);
 					return false;
 				});
@@ -999,7 +999,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			else if(catRow != null)
 			{
 				catRow.reveal(false, duration);
-				GLib.Timeout.add(duration, () => {
+				GLib.Timeout.add(duration + 20, () => {
 				    m_list.remove(catRow);
 					return false;
 				});
@@ -1007,7 +1007,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			else if(feedRow != null)
 			{
 				feedRow.reveal(false, duration);
-				GLib.Timeout.add(duration, () => {
+				GLib.Timeout.add(duration + 20, () => {
 				    m_list.remove(feedRow);
 					return false;
 				});

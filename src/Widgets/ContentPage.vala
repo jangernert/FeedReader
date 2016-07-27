@@ -97,11 +97,12 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_feedList.addEmptyTagRow();
 		});
 		m_articleList.drag_end.connect((context) => {
+			logger.print(LogMessage.DEBUG, "ContentPage: articleList drag_end signal");
 			m_feedList.expand_collapse_category(CategoryID.MASTER, true);
 			m_feedList.removeEmptyTagRow();
 		});
 		m_articleList.drag_failed.connect((context, result) => {
-			m_feedList.removeEmptyTagRow();
+			logger.print(LogMessage.DEBUG, "ContentPage: articleList drag_failed signal");
 			return true;
 		});
 		setArticleListState((ArticleListState)settings_state.get_enum("show-articles"));
@@ -115,7 +116,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			if(window != null)
 			{
 				var header = window.getHeaderBar();
-				logger.print(LogMessage.DEBUG, "contentPage: set headerbar");
+				logger.print(LogMessage.DEBUG, "ContentPage: set headerbar");
 				header.setRead(row.isUnread());
 				header.setMarked(row.isMarked());
 			}

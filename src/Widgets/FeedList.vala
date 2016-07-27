@@ -18,6 +18,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	private Gtk.ScrolledWindow m_scroll;
 	private Gtk.ListBox m_list;
 	private Gtk.ListBoxRow? m_selected = null;
+	private TagRow? m_emptyTagRow = null;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Adjustment m_scroll_adjustment;
 	private ServiceInfo m_branding;
@@ -950,28 +951,20 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void addEmptyTagRow()
 	{
-		var tagrow = new TagRow (_("New Tag"), TagID.NEW, 0);
-		tagrow.moveUP.connect(moveUP);
-		tagrow.removeRow.connect(() => {
-			removeRow(tagrow);
+		m_emptyTagRow = new TagRow (_("New Tag"), TagID.NEW, 0);
+		m_emptyTagRow.moveUP.connect(moveUP);
+		m_emptyTagRow.removeRow.connect(() => {
+			removeRow(m_emptyTagRow);
 		});
-		m_list.insert(tagrow, -1);
-		tagrow.reveal(true, 250);
-		tagrow.opacity = 0.5;
+		m_list.insert(m_emptyTagRow, -1);
+		m_emptyTagRow.reveal(true, 250);
+		m_emptyTagRow.opacity = 0.5;
 	}
 
 	public void removeEmptyTagRow()
 	{
 		logger.print(LogMessage.DEBUG, "removeEmptyTagRow");
-		var FeedChildList = m_list.get_children();
-		foreach(Gtk.Widget row in FeedChildList)
-		{
-			var tmpRow = row as TagRow;
-			if(tmpRow != null && tmpRow.getID() == TagID.NEW)
-			{
-				removeRow(tmpRow, 250);
-			}
-		}
+		removeRow(m_emptyTagRow, 250);
 	}
 
 	public void deselectRow()

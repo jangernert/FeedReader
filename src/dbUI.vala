@@ -41,7 +41,7 @@ public class FeedReader.dbUI : GLib.Object {
 
 	private void watchDog(Sqlite.Action action, string dbname, string table, int64 rowID)
 	{
-		if(action == Sqlite.Action.DELETE)
+		if(action == Sqlite.Action.DELETE && !table.has_prefix("fts_"))
 		{
 			logger.print(LogMessage.WARNING, "DELETING rowID: %s from  table: %s and db: %s".printf(rowID.to_string(), table, dbname));
 		}

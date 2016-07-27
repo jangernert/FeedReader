@@ -129,7 +129,8 @@ namespace FeedReader {
 		NO_CONNECTION,
 		NO_API_ACCESS,
 		UNAUTHORIZED,
-		CA_ERROR
+		CA_ERROR,
+		PLUGIN_NEEDED
 	}
 
 	public enum ArticleListSort {

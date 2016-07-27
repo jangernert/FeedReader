@@ -66,7 +66,11 @@ public class FeedReader.ttrss_interface : GLib.Object {
 			m_ttrss_apilevel = response.get_int_member("api_level");
 			logger.print(LogMessage.INFO, "TTRSS Session ID: %s".printf(m_ttrss_sessionid));
 			logger.print(LogMessage.INFO, "TTRSS API Level: %lld".printf(m_ttrss_apilevel));
-			return LoginResponse.SUCCESS;
+
+			if(haveAPIplugin())
+				return LoginResponse.SUCCESS;
+
+			return LoginResponse.PLUGIN_NEEDED;
 		}
 		else if(error == ConnectionError.TTRSS_API)
 		{
@@ -128,6 +132,19 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 
 		return false;
+	}
+
+	private bool haveAPIplugin()
+	{
+		var message = new ttrss_message(m_ttrss_url);
+		message.add_string("sid", m_ttrss_sessionid);
+		message.add_string("op", "removeLabel");
+		int error = message.send();
+
+		if(error == ConnectionError.TTRSS_API)
+			return false;
+
+		return true;
 	}
 
 	public async bool supportTags()

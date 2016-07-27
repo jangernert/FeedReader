@@ -32,7 +32,7 @@ Parameters:
 
 **addCategory**
 
-Returns a JSON-encoded ID of the added tag.
+Returns a JSON-encoded ID of the added category.
 
 Parameters:
  * caption (string) - the caption of the category
@@ -81,4 +81,4 @@ You should have a new "api_feedreader" directory under plugins.
 Edit your config.php and add "api_feedreader" to the list of system plugins. It will be automatically enabled for every user.
 
 ## License
-This code is licensed under GPLv3. Although I am not a personal fan of the v3, since this code was built upon the existing source of TT-RSS, it inherits the same license.
+This code is licensed under GPLv3.

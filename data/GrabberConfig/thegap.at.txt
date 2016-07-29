@@ -1,0 +1,41 @@
+prune: no
+tidy: no
+
+title: //h1
+strip: //h1
+
+date: //span[contains(concat(' ', normalize-space(@class), ' '), ' date ')]
+strip: //span[contains(concat(' ', normalize-space(@class), ' '), ' date ')]
+
+# Article
+
+author: normalize-space(substring-after(//div[@class='artikel']/p[1], 'von '))
+strip: //div[@class='artikel']/p[1]
+
+next_page_link: //a[@class='but weiter']/@href
+strip: //div[@class='browsetext']
+
+body: //div[@class='artikel']
+strip: //h5
+strip: //div[@class='copyrights']
+strip: //div[@class='textbox']
+strip: (//div[@class='artikel']//br)[1]
+strip: //div[@class='clear']
+strip: //p[starts-with(., 'Weiter zu:')]
+strip: //a[@name='minislide']
+strip: //div[@class='kommentare']
+
+# Slideshows
+
+author: normalize-space(substring-after(//div[@id='normal']/p[1], 'von '))
+strip: //div[@id='normal']/p[1]
+
+body: //div[@id='normal']
+next_page_link: //a[@class='next']/@href
+strip: //a[@class='next']
+strip: //a[@class='prev']
+strip: (//div[@id='normal']//br)[1]
+
+test_url: http://www.thegap.at/rubriken/stories/artikel/lecko-mio/
+test_url: http://www.thegap.at/rubriken/stories/artikel/die-frauen-im-arkadenhof/
+test_url: http://www.thegap.at/rubriken/stories/artikel/nothilfe-im-wandel/

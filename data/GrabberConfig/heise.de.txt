@@ -5,7 +5,7 @@ prune: no
 
 title: //article/h1 | //h1
 date: //p[@class='news_datum']
-author: //h4[@class='author']
+author: //span[@class='author']
 
 body: //article | //div[@class='meldung_wrapper']
 
@@ -46,7 +46,7 @@ replace_string(</h5>): </h2>
 replace_string(<span class="bild_rechts" style="width:): <p "
 replace_string(<div class="heisebox">): <blockquote>
 
-single_page_link: //footer//a[contains(@href, '?view=print')]
+single_page_link: //a[contains(@href, '?view=print')]
 
 next_page_link: //a[@class='next']
 next_page_link: //a[@title='vor']
@@ -54,3 +54,4 @@ next_page_link: //a[@title='vor']
 test_url: http://www.heise.de/open/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
 test_url: http://m.heise.de/open/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
 test_url: http://www.heise.de/newsticker/meldung/Ueberwachungstechnik-Die-globale-Handy-Standortueberwachung-2301494.html
+test_url: http://www.heise.de/newsticker/meldung/Bodenradar-fuer-selbstfahrende-Autos-horcht-unter-die-Strasse-3273941.html

@@ -3,8 +3,8 @@ single_page_link: //div[@id='ss-storyText']//p[contains(., 'Mehr dazu')]/a
 
 title: substring-before(//title,' - ')
 body: //div[@id="ss-storyText"]
-author: substring-before(//div[@id="ss-storyText"]//p[contains(text(), ', ORF')], ', ORF')
-strip: //div[@id="ss-storyText"]//p[contains(text(), ', ORF')]
+author: substring-before(//div[@id="ss-storyText"]//p[contains(text(), ', ORF.at')], ', ORF.at')
+strip: //div[@id="ss-storyText"]//p[contains(text(), ', ORF.at')]
 date: substring-after(//div[@class='storyMeta socialshare']//p[@class='date'],'Publiziert am')
 strip: //p[@class='date']
 

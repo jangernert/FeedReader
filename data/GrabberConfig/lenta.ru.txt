@@ -1,0 +1,7 @@
+body: //div[@itemprop='articleBody'] | //img[@itemprop='image']
+strip_id_or_class: b-inline-topics-box
+
+# do not prune embedded videos
+prune: no
+
+test_url: https://lenta.ru/news/2016/07/08/weakpound/

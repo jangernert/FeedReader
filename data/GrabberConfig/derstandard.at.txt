@@ -15,6 +15,7 @@ strip: //div[@class='credits']
 strip: //div[@id='feature-cover']
 strip: //div[@id='feature-meta']
 strip: //li[@class='empty']
+strip: //ul[@class='lookup-links']
 
 prune: no
 tidy: no

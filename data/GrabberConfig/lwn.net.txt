@@ -5,6 +5,8 @@ tidy: yes
 prune: no
 
 single_page_link: //div[@class='ArticleText']//a[contains(text(), 'Full Story')]/@href
+single_page_link: concat(//div[@class='ArticleText']//a[contains(text(), 'Read more')]/@href, 'bigpage')
+if_page_contains: //div[@class='ArticleText']//a[contains(text(), 'Read more')]
 
 title: //h1
 

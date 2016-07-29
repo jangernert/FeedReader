@@ -1,0 +1,3 @@
+http_header(user-agent): PHP/7.0
+
+test_url: http://allafrica.com/tools/headlines/rdf/latest/headlines.rdf

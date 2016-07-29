@@ -1,4 +1,4 @@
-body: //*[@class='ar-annotation'] | //div[@class="ar-content"]
+body: //*[@class='ar-annotation'] | //div[contains(@class='ar-content')]
 strip_id_or_class: ar-link-to-another
 strip_id_or_class: ar-tags
 next_page_link: //a[@data-tracker='Navigace,NextChapter']

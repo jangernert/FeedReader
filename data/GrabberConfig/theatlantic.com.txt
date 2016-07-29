@@ -1,5 +1,7 @@
 title: //div[contains(@class, 'articleHead')]//h1
 
+single_page_link: //link[contains(@href, '/amp/article/')]
+
 body: //div[@itemprop='articleBody']
 body: //div[@class='articleText']
 body: //div[@class='articleContent']
@@ -25,3 +27,4 @@ test_contains: The curve tends to evince itself
 test_url: http://www.theatlantic.com/technology/archive/2011/04/want-to-see-how-crazy-a-bot-run-market-can-be/237773/
 test_url: http://www.theatlantic.com/magazine/archive/2007/11/the-autumn-of-the-multitaskers/6342/
 test_url: http://www.theatlantic.com/entertainment/archive/2012/04/30-rock-live-a-funny-reminder-of-why-sitcoms-arent-shot-live-anymore/256447/
+test_url: http://www.theatlantic.com/technology/archive/2013/06/fix-things-never-force-it-lessons-from-grandpa/276873/

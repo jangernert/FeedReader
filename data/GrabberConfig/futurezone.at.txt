@@ -1,11 +1,21 @@
-date: //span[@class='date']
-strip: //div[@class='postsidebar']
-body: //div[@class='singlepost']
-title: //div[@class='singlepost']/h1
-move_into(//div[@class='singlepost']): //div[@class='info']
-strip: //div[@class='gallery']
-strip: //div[@class='biggallery']
-strip: //ul[@class='social']
-strip: //ul[@class='social_mail']
+single_page_link: //a[@class='print']
 
-test_url: http://futurezone.at/future/5502-erste-galileo-satelliten-starten-ins-all.php
+parser: html5php
+tidy: no
+prune: no
+
+body: //article
+strip: //section[@class='heroheader']
+strip: //section[contains(concat(' ', normalize-space(@class), ' '), ' tags ')]
+strip: //div[@class='gallery-title-container']
+strip: //figcaption/span
+strip: //div[contains(concat(' ', normalize-space(@class), ' '), ' controls ')]
+strip: //i[@class='icon zoom']
+
+author: normalize-space(substring-after(//article/p[1], 'Autor: '))
+strip: //article/p[1]
+
+date: substring-after(//div[contains(concat(' ', normalize-space(@class), ' '), ' editedby ')]/span, 'Erstellt am ')
+strip: //div[contains(concat(' ', normalize-space(@class), ' '), ' editedby ')]
+
+test_url: http://futurezone.at/produkte/sony-xperia-x-im-test-mittelklasse-zum-premium-preis/209.178.838

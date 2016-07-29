@@ -1,5 +1,5 @@
 author: //p[contains(@class, "byline")]/a[contains(@class, "author")]
-title: //[h1=@class="stream_title"]
+title: //section[contains(concat(' ',normalize-space(@class),' '),' lede ')]//h1
 date: //span[contains(@class, "publish-date")]/time[@pubdate]/@datetime
 
 body: //div[contains(@class, 'm-article__entry-section')]

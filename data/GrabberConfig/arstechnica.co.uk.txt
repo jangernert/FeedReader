@@ -1,0 +1,6 @@
+strip: //aside
+next_page_link: //nav//a[contains(text(), 'Next')]/@href
+
+test_url: http://arstechnica.co.uk/science/2016/06/what-is-open-access-free-sharing-of-all-human-knowledge/
+test_url: http://arstechnica.co.uk/information-technology/2016/05/eben-moglen-gpl-online-advertising-is-becoming-a-perfect-despotism/
+

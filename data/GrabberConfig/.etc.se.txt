@@ -1,0 +1,9 @@
+body: //div[contains(@class, '-body-')]
+date: //meta[@name='dcterms.date']/@content
+author: //meta[@name='dcterms.creator']/@content
+
+test_url: http://stockholm.etc.se/debatt/jobbgaraget-gav-hopp-ungdomar-i-tensta
+test_contains: Jobbgaraget startades av Angeles
+
+test_url: http://goteborg.etc.se/inrikes/snart-oppnar-stans-forsta-ekogalleria
+test_contains: Krasnapolsky och just nu

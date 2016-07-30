@@ -590,7 +590,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				m_ErrorMessage.set_label(_("No valid CA certificate available!"));
 				m_ignore_tls_errors.set_visible(true);
 				break;
-			case LoginResponse.CA_ERROR:
+			case LoginResponse.PLUGIN_NEEDED:
 				m_ErrorMessage.set_label(_("Please install the \"api_feedreader\"-plugin on your tt-rss instance!"));
 				m_ignore_tls_errors.set_visible(true);
 				break;

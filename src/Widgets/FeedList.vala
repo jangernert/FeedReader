@@ -24,6 +24,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	private ServiceInfo m_branding;
 	private uint m_expand_collapse_time = 150;
 	private bool m_update = false;
+	private bool m_busy = false;
 	private bool m_TagsDisplayed = false;
 	public signal void newFeedSelected(string feedID);
 	public signal void newTagSelected(string tagID);
@@ -191,6 +192,14 @@ public class FeedReader.feedList : Gtk.Stack {
 	public void newFeedlist(bool defaultSettings, bool masterCat = false)
 	{
 		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
+
+		if(m_busy)
+		{
+			logger.print(LogMessage.DEBUG, "FeedList: busy");
+			return;
+		}
+
+		m_busy = true;
 		m_branding.refresh();
 		var FeedChildList = m_list.get_children();
 
@@ -215,6 +224,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		createFeedlist(defaultSettings, masterCat);
 		settings_state.set_boolean("no-animations", false);
 		m_update = false;
+		m_busy = false;
 	}
 
 
@@ -964,7 +974,18 @@ public class FeedReader.feedList : Gtk.Stack {
 	public void removeEmptyTagRow()
 	{
 		logger.print(LogMessage.DEBUG, "removeEmptyTagRow");
-		removeRow(m_emptyTagRow, 250);
+
+		if(m_busy)
+		{
+			logger.print(LogMessage.DEBUG, "FeedList: busy");
+			return;
+		}
+		
+		if(m_emptyTagRow != null)
+		{
+			removeRow(m_emptyTagRow, 250);
+			m_emptyTagRow = null;
+		}
 	}
 
 	public void deselectRow()

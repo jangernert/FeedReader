@@ -255,12 +255,11 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
 			if(m_tagID == TagID.NEW && context != null)
 			{
-				removeRow();
 				if(Utils.haveTags())
 				{
 					var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 					var feedlist = window.getContent().getFeedList();
-					feedlist.newFeedlist(false, false);
+					//feedlist.newFeedlist(false, false);
 				}
 				Gtk.drag_finish(context, true, false, time);
 			}

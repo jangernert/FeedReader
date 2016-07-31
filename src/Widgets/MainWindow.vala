@@ -552,7 +552,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void showErrorBar(int ErrorCode)
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show error bar - errorCode = %i".printf(ErrorCode));
+		logger.print(LogMessage.DEBUG, "MainWindow: show error bar - errorCode = " + ErrorCode.to_string());
 		switch(ErrorCode)
 		{
 			case LoginResponse.NO_BACKEND:

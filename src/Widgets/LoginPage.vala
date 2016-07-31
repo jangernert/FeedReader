@@ -513,7 +513,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		}
 
 		LoginResponse status = feedDaemon_interface.login(backend);
-		logger.print(LogMessage.DEBUG, "LoginPage: status = %i".printf(status));
+		logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());
 		if(status == LoginResponse.SUCCESS)
 		{
 			submit_data();

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-06-16 01:38+0200\n"
+"POT-Creation-Date: 2016-07-31 15:35+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,733 +17,896 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../src/Constants.vala:196 ../src/Widgets/MainWindow.vala:34
+#: data/feedreader.appdata.xml:6 src/Widgets/MainWindow.vala:34
+#: src/Constants.vala:197
 msgid "FeedReader"
 msgstr ""
 
-#: ../src/Constants.vala:199
-msgid "Desktop Client for various RSS Services"
+#: data/feedreader.appdata.xml:7
+msgid "RSS client for various webservices"
 msgstr ""
 
-#: ../src/Constants.vala:204
-msgid "translator-credits"
+#: data/feedreader.appdata.xml:10
+msgid ""
+"FeedReader is a program designed to complement an already existing web-based "
+"RSS reader account."
 msgstr ""
 
-#: ../src/Constants.vala:206
-msgid "FeedReader Website"
+#: data/feedreader.appdata.xml:14
+msgid "Currently supported services:"
 msgstr ""
 
-#: ../src/Constants.vala:210
-msgid "About"
+#: data/feedreader.appdata.xml:16 src/Widgets/LoginPage.vala:47
+msgid "Tiny Tiny RSS"
 msgstr ""
 
-#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:162
-#: ../src/Widgets/SettingsDialog.vala:26
-msgid "Settings"
+#: data/feedreader.appdata.xml:17
+msgid "feedly"
 msgstr ""
 
-#: ../src/Constants.vala:212
-msgid "Change Account"
+#: data/feedreader.appdata.xml:18
+msgid "ownCloud"
 msgstr ""
 
-#: ../src/Constants.vala:213
+#: data/feedreader.appdata.xml:19
+msgid "Inoreader"
+msgstr ""
+
+#: data/feedreader.appdata.xml:21
+msgid ""
+"It combines all the advantages of web based services like synchronisation "
+"across all your devices with everything you expect from a modern desktop "
+"application: Desktop notifications, fast search and filters, tagging, "
+"sharing to \"read-it-later\" services like pocket and instapaper, handy "
+"keyboard shortcuts and a database that keeps all your old articles as long "
+"as you like."
+msgstr ""
+
+#: data/shortcuts.ui:13
+msgctxt "shortcut window"
+msgid "General"
+msgstr ""
+
+#: data/shortcuts.ui:17
+msgctxt "shortcut window"
+msgid "Refresh"
+msgstr ""
+
+#: data/shortcuts.ui:24
+msgctxt "shortcut window"
+msgid "Search"
+msgstr ""
+
+#: data/shortcuts.ui:31
+msgctxt "shortcut window"
 msgid "Quit"
 msgstr ""
 
-#: ../src/Constants.vala:214
-msgid "Report a bug"
+#: data/shortcuts.ui:40
+msgctxt "shortcut window"
+msgid "Feed-List"
 msgstr ""
 
-#: ../src/Constants.vala:215
-msgid "Bounties"
+#: data/shortcuts.ui:44
+msgctxt "shortcut window"
+msgid "Navigate the feed-list "
 msgstr ""
 
-#: ../src/Constants.vala:216
-msgid "Shortcuts"
+#: data/shortcuts.ui:51
+msgctxt "shortcut window"
+msgid "Collapse/Expand categories"
 msgstr ""
 
-#: ../src/Model/Article.vala:154
+#: data/shortcuts.ui:58
+msgctxt "shortcut window"
+msgid "Mark the currently selected as read"
+msgstr ""
+
+#: data/shortcuts.ui:67
+msgctxt "shortcut window"
+msgid "Article-List"
+msgstr ""
+
+#: data/shortcuts.ui:71
+msgctxt "shortcut window"
+msgid "Select next/previous article"
+msgstr ""
+
+#: data/shortcuts.ui:78
+msgctxt "shortcut window"
+msgid "Toggle the selected article un/read"
+msgstr ""
+
+#: data/shortcuts.ui:85
+msgctxt "shortcut window"
+msgid "Toggle the selected article un/marked"
+msgstr ""
+
+#: data/shortcuts.ui:92
+msgctxt "shortcut window"
+msgid "Open the URL of the selected article"
+msgstr ""
+
+#: data/shortcuts.ui:99
+msgctxt "shortcut window"
+msgid "Scroll all the way up/down"
+msgstr ""
+
+#: data/shortcuts.ui:106
+msgctxt "shortcut window"
+msgid "Center the currently selected article"
+msgstr ""
+
+#: src/Model/Article.vala:154
 msgid "Today"
 msgstr ""
 
-#: ../src/Model/Article.vala:158
+#: src/Model/Article.vala:158
 msgid "Yesterday"
 msgstr ""
 
-#: ../src/Utils.vala:21
-msgid "No Preview Available"
-msgstr ""
-
-#: ../src/Utils.vala:97
-msgid "No Text available for this article :("
-msgstr ""
-
-#: ../src/Utils.vala:231
-msgid "posted by: %s, "
-msgstr ""
-
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:72
-msgid "no Author"
-msgstr ""
-
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:84
-msgid "no Title"
-msgstr ""
-
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:96
-msgid "no Preview"
-msgstr ""
-
-#: ../src/ContentGrabber/ReadabilityParserAPI.vala:108
-msgid "no content"
-msgstr ""
-
-#: ../src/FeedReader.vala:21
-msgid "About FeedReader"
-msgstr ""
-
-#: ../src/Widgets/TagPopover.vala:40
-msgid "Add Tag:"
-msgstr ""
-
-#: ../src/Widgets/TagPopover.vala:52
-msgid "Tags:"
-msgstr ""
-
-#: ../src/Widgets/TagPopover.vala:129
-msgid "add Tag"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:459
-msgid "Ignore all tls errors from now on"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:567
-msgid "Please select a service first"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:570
-msgid "Please enter a valid username"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:573
-msgid "Please enter a valid password"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:576
-msgid "Please enter a valid URL"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:579
-msgid "Please enter your Login details"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:582
-msgid "Sorry, something went wrong."
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:585
-msgid "Either your username or the password are not correct."
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:588
-msgid ""
-"No connection to the server. Check your internet connection and the server "
-"URL!"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:591
-msgid "API access is disabled on the server. Please enable it first!"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:594
-msgid "Not authorized to access URL"
-msgstr ""
-
-#: ../src/Widgets/MainWindow.vala:598
-msgid "No valid CA certificate available!"
-msgstr ""
-
-#: ../src/Widgets/ResetPage.vala:33
-msgid "Change Account?"
-msgstr ""
-
-#: ../src/Widgets/ResetPage.vala:37
-msgid ""
-"You are about to change the account you want FeedReader to use.\n"
-" This means deleting all local data of your old account."
-msgstr ""
-
-#: ../src/Widgets/ResetPage.vala:41
-msgid "New account"
-msgstr ""
-
-#: ../src/Widgets/ResetPage.vala:44
-msgid "Waiting for current sync to finish"
-msgstr ""
-
-#: ../src/Widgets/ResetPage.vala:54
-msgid "I changed my mind"
-msgstr ""
-
-#: ../src/Widgets/UpdateButton.vala:36
-msgid "Update Feeds"
-msgstr ""
-
-#: ../src/Widgets/FullscreenHeaderbar.vala:38
-#: ../src/Widgets/ReaderHeaderbar.vala:51
-msgid "Mark article (un)starred"
-msgstr ""
-
-#: ../src/Widgets/FullscreenHeaderbar.vala:45
-#: ../src/Widgets/ReaderHeaderbar.vala:57
-msgid "Mark article (un)read"
-msgstr ""
-
-#: ../src/Widgets/FullscreenHeaderbar.vala:56
-#: ../src/Widgets/ReaderHeaderbar.vala:103
-msgid "Tag Article"
-msgstr ""
-
-#: ../src/Widgets/FullscreenHeaderbar.vala:71
-#: ../src/Widgets/ReaderHeaderbar.vala:113
-msgid "Share Article"
-msgstr ""
-
-#: ../src/Widgets/FullscreenHeaderbar.vala:87
-msgid "Leave fullscreen mode"
-msgstr ""
-
-#: ../src/Widgets/RemovePopover.vala:46
-msgid "Remove \"%s\""
-msgstr ""
-
-#: ../src/Widgets/RemovePopover.vala:82 ../src/Widgets/TagRow.vala:173
-msgid "Tag \"%s\" removed"
-msgstr ""
-
-#: ../src/Widgets/RemovePopover.vala:98 ../src/Widgets/FeedRow.vala:211
-msgid "Feed \"%s\" removed"
-msgstr ""
-
-#: ../src/Widgets/RemovePopover.vala:115 ../src/Widgets/CategorieRow.vala:370
-msgid "Category \"%s\" removed"
-msgstr ""
-
-#: ../src/Widgets/ServiceSettingsRow.vala:81
-msgid "Username or Password incorrect"
-msgstr ""
-
-#: ../src/Widgets/ServiceSettingsRow.vala:106 ../src/Widgets/LoginPage.vala:150
-#: ../src/Widgets/LoginPage.vala:187 ../src/Widgets/LoginPage.vala:258
-#: ../src/Widgets/LoginPage.vala:296 ../src/Widgets/LoginPage.vala:343
-msgid "Username:"
-msgstr ""
-
-#: ../src/Widgets/ServiceSettingsRow.vala:107 ../src/Widgets/LoginPage.vala:151
-#: ../src/Widgets/LoginPage.vala:188 ../src/Widgets/LoginPage.vala:259
-#: ../src/Widgets/LoginPage.vala:297 ../src/Widgets/LoginPage.vala:344
-msgid "Password:"
-msgstr ""
-
-#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:97
-#: ../src/Widgets/SharePopover.vala:28
-msgid "Login"
-msgstr ""
-
-#: ../src/Widgets/ServiceSettingsRow.vala:128
-msgid "Logout"
-msgstr ""
-
-#: ../src/Widgets/ServiceSettingsRow.vala:255
-msgid "waiting"
-msgstr ""
-
-#: ../src/Widgets/ArticleView.vala:106
-msgid "No Article selected."
-msgstr ""
-
-#: ../src/Widgets/FeedList.vala:235
+#: src/Widgets/FeedList.vala:242
 msgid "All Articles"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:427
+#: src/Widgets/FeedList.vala:428
 msgid "Categories"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:447
+#: src/Widgets/FeedList.vala:448
 msgid "Tags"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:449
+#: src/Widgets/FeedList.vala:450
 msgid "Labels"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:496 ../src/Widgets/AddPopover.vala:51
-#: ../src/dbUI.vala:358
+#: src/Widgets/FeedList.vala:497 src/Widgets/AddPopover.vala:51
+#: src/dbUI.vala:368
 msgid "Uncategorized"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:963
+#: src/Widgets/FeedList.vala:964
 msgid "New Tag"
 msgstr ""
 
-#: ../src/Widgets/FeedList.vala:1089
+#: src/Widgets/FeedList.vala:1091
 msgid "New Category"
 msgstr ""
 
-#: ../src/Widgets/SpringCleanPage.vala:28
+#: src/Widgets/ServiceSettingsRow.vala:81
+msgid "Username or Password incorrect"
+msgstr ""
+
+#: src/Widgets/ServiceSettingsRow.vala:106 src/Widgets/LoginPage.vala:150
+#: src/Widgets/LoginPage.vala:187 src/Widgets/LoginPage.vala:258
+#: src/Widgets/LoginPage.vala:296 src/Widgets/LoginPage.vala:343
+msgid "Username:"
+msgstr ""
+
+#: src/Widgets/ServiceSettingsRow.vala:107 src/Widgets/LoginPage.vala:151
+#: src/Widgets/LoginPage.vala:188 src/Widgets/LoginPage.vala:259
+#: src/Widgets/LoginPage.vala:297 src/Widgets/LoginPage.vala:344
+msgid "Password:"
+msgstr ""
+
+#: src/Widgets/ServiceSettingsRow.vala:123 src/Widgets/LoginPage.vala:97
+msgid "Login"
+msgstr ""
+
+#: src/Widgets/ServiceSettingsRow.vala:128
+msgid "Logout"
+msgstr ""
+
+#: src/Widgets/ServiceSettingsRow.vala:255
+msgid "waiting"
+msgstr ""
+
+#: src/Widgets/SpringCleanPage.vala:28
 msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:66
+#: src/Widgets/MainWindow.vala:451
+msgid "Ignore all tls errors from now on"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:559
+msgid "Please select a service first"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:562
+msgid "Please enter a valid username"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:565
+msgid "Please enter a valid password"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:568
+msgid "Please enter a valid URL"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:571
+msgid "Please enter your Login details"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:574
+msgid "Sorry, something went wrong."
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:577
+msgid "Either your username or the password are not correct."
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:580
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:583
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:586
+msgid "Not authorized to access URL"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:590
+msgid "No valid CA certificate available!"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:594
+msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
+msgstr ""
+
+#: src/Widgets/SharePopover.vala:47
+msgid "Configure more accounts"
+msgstr ""
+
+#: src/Widgets/ArticleView.vala:108
+msgid "No Article selected."
+msgstr ""
+
+#: src/Widgets/ReaderHeaderbar.vala:51 src/Widgets/FullscreenHeaderbar.vala:38
+msgid "Mark article (un)starred"
+msgstr ""
+
+#: src/Widgets/ReaderHeaderbar.vala:57 src/Widgets/FullscreenHeaderbar.vala:45
+msgid "Mark article (un)read"
+msgstr ""
+
+#: src/Widgets/ReaderHeaderbar.vala:66
 msgid "Read article fullscreen"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:94
+#: src/Widgets/ReaderHeaderbar.vala:94
 msgid "All"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:94
+#: src/Widgets/ReaderHeaderbar.vala:94
 msgid "Show all articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:95
+#: src/Widgets/ReaderHeaderbar.vala:95
 msgid "Unread"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:95
+#: src/Widgets/ReaderHeaderbar.vala:95
 msgid "Show only unread articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:96
+#: src/Widgets/ReaderHeaderbar.vala:96
 msgid "Starred"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:96
+#: src/Widgets/ReaderHeaderbar.vala:96
 msgid "Show only starred articles"
 msgstr ""
 
-#: ../src/Widgets/ReaderHeaderbar.vala:147
+#: src/Widgets/ReaderHeaderbar.vala:103 src/Widgets/FullscreenHeaderbar.vala:56
+msgid "Tag Article"
+msgstr ""
+
+#: src/Widgets/ReaderHeaderbar.vala:113 src/Widgets/FullscreenHeaderbar.vala:71
+msgid "Share Article"
+msgstr ""
+
+#: src/Widgets/ReaderHeaderbar.vala:147
 msgid "Search Articles"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:47
-msgid "Tiny Tiny RSS"
+#: src/Widgets/ReaderHeaderbar.vala:162 src/Widgets/SettingsDialog.vala:26
+#: src/Constants.vala:212
+msgid "Settings"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:47
+#: src/Widgets/LoginPage.vala:47
 msgid "Feedly"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:47
+#: src/Widgets/LoginPage.vala:47
 msgid "OwnCloud"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:47
+#: src/Widgets/LoginPage.vala:47
 msgid "InoReader"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:51
+#: src/Widgets/LoginPage.vala:51
 msgid "Where are your feeds?"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:55
+#: src/Widgets/LoginPage.vala:55
 msgid "Please select the RSS service you are using and log in to get going."
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:131
+#: src/Widgets/LoginPage.vala:131
 msgid "No service selected."
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:149
+#: src/Widgets/LoginPage.vala:149
 msgid "TinyTinyRSS URL:"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:216 ../src/Widgets/LoginPage.vala:325
+#: src/Widgets/LoginPage.vala:216 src/Widgets/LoginPage.vala:325
 msgid "HTTP Authorization"
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:238
+#: src/Widgets/LoginPage.vala:238
 msgid ""
 "You will be redirected to the feedly website where you can use your "
 "Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
 msgstr ""
 
-#: ../src/Widgets/LoginPage.vala:257
+#: src/Widgets/LoginPage.vala:257
 msgid "OwnCloud URL:"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:192 ../src/Widgets/FeedRow.vala:247
-#: ../src/Widgets/CategorieRow.vala:421
+#: src/Widgets/CategorieRow.vala:370 src/Widgets/RemovePopover.vala:115
+#, c-format
+msgid "Category \"%s\" removed"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:420 src/Widgets/FeedRow.vala:246
+msgid "Mark as read"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:421 src/Widgets/TagRow.vala:192
+#: src/Widgets/FeedRow.vala:247
 msgid "Rename"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:193 ../src/Widgets/FeedRow.vala:250
-#: ../src/Widgets/CategorieRow.vala:422
+#: src/Widgets/CategorieRow.vala:422 src/Widgets/TagRow.vala:193
+#: src/Widgets/FeedRow.vala:250
 msgid "Remove"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:286 ../src/Widgets/FeedRow.vala:280
-#: ../src/Widgets/CategorieRow.vala:477
+#: src/Widgets/CategorieRow.vala:423
+msgid "Remove (with Feeds)"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:475 src/Widgets/TagRow.vala:285
+#: src/Widgets/FeedRow.vala:280
 msgid "rename"
 msgstr ""
 
-#: ../src/Widgets/TagRow.vala:288 ../src/Widgets/CategorieRow.vala:479
+#: src/Widgets/CategorieRow.vala:477 src/Widgets/TagRow.vala:287
 msgid "add"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:35
+#: src/Widgets/SettingsDialog.vala:35
 msgid "Interface"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:36
+#: src/Widgets/SettingsDialog.vala:36
 msgid "Internals"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:37
+#: src/Widgets/SettingsDialog.vala:37
 msgid "Share"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:56
+#: src/Widgets/SettingsDialog.vala:56
 msgid "Feed List:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:58
+#: src/Widgets/SettingsDialog.vala:58
 msgid "Only show feeds"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:65
+#: src/Widgets/SettingsDialog.vala:65
 msgid "Only show unread"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:70
+#: src/Widgets/SettingsDialog.vala:70
 msgid "Sort FeedList by"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:70 ../src/Widgets/SettingsDialog.vala:82
+#: src/Widgets/SettingsDialog.vala:70 src/Widgets/SettingsDialog.vala:82
 msgid "Received"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:70
+#: src/Widgets/SettingsDialog.vala:70
 msgid "Alphabetically"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:75 ../src/Widgets/SettingsDialog.vala:94
+#: src/Widgets/SettingsDialog.vala:75 src/Widgets/SettingsDialog.vala:89
 msgid "Theme"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:75
+#: src/Widgets/SettingsDialog.vala:75
 msgid "Gtk+"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:75
+#: src/Widgets/SettingsDialog.vala:75
 msgid "Dark"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:75
+#: src/Widgets/SettingsDialog.vala:75
 msgid "elementary"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:80
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Article List:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:82
+#: src/Widgets/SettingsDialog.vala:82
 msgid "Sort articles by"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:82
+#: src/Widgets/SettingsDialog.vala:82
 msgid "Date"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:87
-msgid "Newest first"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:92
+#: src/Widgets/SettingsDialog.vala:87
 msgid "Article View:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:94
+#: src/Widgets/SettingsDialog.vala:89
 msgid "Default"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:94
+#: src/Widgets/SettingsDialog.vala:89
 msgid "Spring"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:94
+#: src/Widgets/SettingsDialog.vala:89
 msgid "Midnight"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:94
+#: src/Widgets/SettingsDialog.vala:89
 msgid "Parchment"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:99
+#: src/Widgets/SettingsDialog.vala:94
 msgid "Font Size"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:99
+#: src/Widgets/SettingsDialog.vala:94
 msgid "Small"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:99
+#: src/Widgets/SettingsDialog.vala:94
 msgid "Normal"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:99
+#: src/Widgets/SettingsDialog.vala:94
 msgid "Large"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:99
+#: src/Widgets/SettingsDialog.vala:94
 msgid "Huge"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:125
+#: src/Widgets/SettingsDialog.vala:119
 msgid "Sync:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:127
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Number of articles"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: src/Widgets/SettingsDialog.vala:123
 msgid "Every (Minutes)"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:134
+#: src/Widgets/SettingsDialog.vala:128
 msgid "Database:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:136
+#: src/Widgets/SettingsDialog.vala:130
 msgid "Delete articles after"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:137
+#: src/Widgets/SettingsDialog.vala:131
 msgid "Never"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:137
+#: src/Widgets/SettingsDialog.vala:131
 msgid "1 Week"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:137
+#: src/Widgets/SettingsDialog.vala:131
 msgid "1 Month"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:137
+#: src/Widgets/SettingsDialog.vala:131
 msgid "6 Months"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:139
+#: src/Widgets/SettingsDialog.vala:133
 msgid "Additional Functionality:"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:141
+#: src/Widgets/SettingsDialog.vala:135
 msgid "Content Grabber"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:142
+#: src/Widgets/SettingsDialog.vala:136
 msgid "None"
 msgstr ""
 
-#: ../src/Widgets/SettingsDialog.vala:142
+#: src/Widgets/SettingsDialog.vala:136
 msgid "Built in grabber"
 msgstr ""
 
-#: ../src/Widgets/ContentPage.vala:445
+#: src/Widgets/FullscreenHeaderbar.vala:87
+msgid "Leave fullscreen mode"
+msgstr ""
+
+#: src/Widgets/ContentPage.vala:440
 msgid "undo"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:54
+#: src/Widgets/UpdateButton.vala:36
+msgid "Update Feeds"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:61
+msgid "URL:"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:62
+msgid "Category:"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:65
+msgid "Add"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:79
+msgid "OPML-File:"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:81
+msgid "Select OPML-file"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:87
+msgid "Import"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:101
+msgid "Add feed"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:102
+msgid "Import OPML"
+msgstr ""
+
+#: src/Widgets/RemovePopover.vala:46
+#, c-format
+msgid "Remove \"%s\""
+msgstr ""
+
+#: src/Widgets/RemovePopover.vala:82 src/Widgets/TagRow.vala:173
+#, c-format
+msgid "Tag \"%s\" removed"
+msgstr ""
+
+#: src/Widgets/RemovePopover.vala:98 src/Widgets/FeedRow.vala:211
+#, c-format
+msgid "Feed \"%s\" removed"
+msgstr ""
+
+#: src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr ""
+
+#: src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+
+#: src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr ""
+
+#: src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr ""
+
+#: src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr ""
+
+#: src/Widgets/TagPopover.vala:40
+msgid "Add Tag:"
+msgstr ""
+
+#: src/Widgets/TagPopover.vala:52
+msgid "Tags:"
+msgstr ""
+
+#: src/Widgets/TagPopover.vala:129
+msgid "add Tag"
+msgstr ""
+
+#: src/Widgets/ArticleList.vala:56
+#, c-format
 msgid "None of the %i Articles in the database fit the current filters."
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:68
+#: src/Widgets/ArticleList.vala:70
 msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:160 ../src/Backends/FeedServer.vala:1317
+#: src/Widgets/ArticleList.vala:170
 msgid "New Articles"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:160
+#: src/Widgets/ArticleList.vala:170
 msgid "scroll up"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:966
+#: src/Widgets/ArticleList.vala:1047
+#, c-format
 msgid "No unread articles that fit \"%s\" in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:968
+#: src/Widgets/ArticleList.vala:1049
+#, c-format
 msgid "No unread articles in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:974
+#: src/Widgets/ArticleList.vala:1054
+#, c-format
 msgid ""
-"No unread articles and marked that fit \"%s\" in the feed \"%s\" could be "
+"No unread and marked articles that fit \"%s\" in the feed \"%s\" could be "
 "found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:976
+#: src/Widgets/ArticleList.vala:1056
+#, c-format
 msgid "No unread and marked articles in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:982
+#: src/Widgets/ArticleList.vala:1061
+#, c-format
 msgid "No marked articles that fit \"%s\" in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:984
+#: src/Widgets/ArticleList.vala:1063
+#, c-format
 msgid "No marked articles in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:990
+#: src/Widgets/ArticleList.vala:1068
+#, c-format
 msgid "No articles that fit \"%s\" in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:992
+#: src/Widgets/ArticleList.vala:1070
+#, c-format
 msgid "No articles in the feed \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1001
+#: src/Widgets/ArticleList.vala:1078
+#, c-format
 msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1003
+#: src/Widgets/ArticleList.vala:1080
+#, c-format
 msgid "No unread articles in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1009
+#: src/Widgets/ArticleList.vala:1085
+#, c-format
 msgid ""
-"No unread articles and marked that fit \"%s\" in the tag \"%s\" could be "
+"No unread and marked articles that fit \"%s\" in the tag \"%s\" could be "
 "found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1011
+#: src/Widgets/ArticleList.vala:1087
+#, c-format
 msgid "No unread and marked articles in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1017
+#: src/Widgets/ArticleList.vala:1092
+#, c-format
 msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1019
+#: src/Widgets/ArticleList.vala:1094
+#, c-format
 msgid "No marked articles in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1025
+#: src/Widgets/ArticleList.vala:1099
+#, c-format
 msgid "No articles that fit \"%s\" in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1027
+#: src/Widgets/ArticleList.vala:1101
+#, c-format
 msgid "No articles in the tag \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1036
+#: src/Widgets/ArticleList.vala:1109
+#, c-format
 msgid ""
 "No unread articles that fit \"%s\" in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1038
+#: src/Widgets/ArticleList.vala:1111
+#, c-format
 msgid "No unread articles in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1044
+#: src/Widgets/ArticleList.vala:1116
+#, c-format
 msgid ""
-"No unread articles and marked that fit \"%s\" in the category \"%s\" could "
+"No unread and marked articles that fit \"%s\" in the category \"%s\" could "
 "be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1046
+#: src/Widgets/ArticleList.vala:1118
+#, c-format
 msgid "No unread and marked articles in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1052
+#: src/Widgets/ArticleList.vala:1123
+#, c-format
 msgid ""
 "No marked articles that fit \"%s\" in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1054
+#: src/Widgets/ArticleList.vala:1125
+#, c-format
 msgid "No marked articles in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1060
+#: src/Widgets/ArticleList.vala:1130
+#, c-format
 msgid "No articles that fit \"%s\" in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/ArticleList.vala:1062
+#: src/Widgets/ArticleList.vala:1132
+#, c-format
 msgid "No articles in the category \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/FeedRow.vala:246 ../src/Widgets/CategorieRow.vala:420
-msgid "Mark as read"
+#: src/Widgets/ArticleList.vala:1142
+#, c-format
+msgid "No unread articles that fit \"%s\" could be found"
 msgstr ""
 
-#: ../src/Widgets/FeedRow.vala:249
+#: src/Widgets/ArticleList.vala:1144
+msgid "No unread articles could be found"
+msgstr ""
+
+#: src/Widgets/ArticleList.vala:1149
+#, c-format
+msgid "No unread and marked articles that fit \"%s\" could be found"
+msgstr ""
+
+#: src/Widgets/ArticleList.vala:1151
+msgid "No unread and marked articles could be found"
+msgstr ""
+
+#: src/Widgets/ArticleList.vala:1156
+#, c-format
+msgid "No marked articles that fit \"%s\" could be found"
+msgstr ""
+
+#: src/Widgets/ArticleList.vala:1158
+msgid "No marked articles could be found"
+msgstr ""
+
+#: src/Widgets/ArticleList.vala:1163
+#, c-format
+msgid "No articles that fit \"%s\" could be found"
+msgstr ""
+
+#: src/Widgets/ArticleList.vala:1165
+msgid "No articles could be found"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:249
+#, c-format
 msgid "Remove only from %s"
 msgstr ""
 
-#: ../src/Widgets/CategorieRow.vala:423
-msgid "Remove (with Feeds)"
+#: src/ContentGrabber/ReadabilityParserAPI.vala:72
+msgid "no Author"
 msgstr ""
 
-#: ../src/Widgets/SharePopover.vala:34
-msgid "Please"
+#: src/ContentGrabber/ReadabilityParserAPI.vala:84
+msgid "no Title"
 msgstr ""
 
-#: ../src/Widgets/SharePopover.vala:36
-msgid "to a service to share this article."
+#: src/ContentGrabber/ReadabilityParserAPI.vala:96
+msgid "no Preview"
 msgstr ""
 
-#: ../src/Widgets/AddPopover.vala:61
-msgid "URL:"
+#: src/ContentGrabber/ReadabilityParserAPI.vala:108
+msgid "no content"
 msgstr ""
 
-#: ../src/Widgets/AddPopover.vala:62
-msgid "Category:"
-msgstr ""
-
-#: ../src/Widgets/AddPopover.vala:65
-msgid "Add"
-msgstr ""
-
-#: ../src/Widgets/AddPopover.vala:79
-msgid "OPML-File:"
-msgstr ""
-
-#: ../src/Widgets/AddPopover.vala:81
-msgid "Select OPML-file"
-msgstr ""
-
-#: ../src/Widgets/AddPopover.vala:87
-msgid "Import"
-msgstr ""
-
-#: ../src/Widgets/AddPopover.vala:101
-msgid "Add feed"
-msgstr ""
-
-#: ../src/Widgets/AddPopover.vala:102
-msgid "Import OPML"
-msgstr ""
-
-#: ../src/Backends/FeedServer.vala:1332
-msgid "There is 1 new article"
-msgstr ""
-
-#: ../src/Backends/FeedServer.vala:1334
-msgid "There are %u new articles"
-msgstr ""
-
-#: ../src/Share/Email.vala:27
+#: src/Share/Email.vala:27
+#, c-format
 msgid ""
 "Hey,\n"
 "check out this interesting article I just read:\n"
 "%s\n"
 "\n"
 "- send by FeedReader"
+msgstr ""
+
+#: src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr ""
+
+#: src/Constants.vala:200
+msgid "Desktop Client for various RSS Services"
+msgstr ""
+
+#: src/Constants.vala:205
+msgid "translator-credits"
+msgstr ""
+
+#: src/Constants.vala:207
+msgid "FeedReader Website"
+msgstr ""
+
+#: src/Constants.vala:211
+msgid "About"
+msgstr ""
+
+#: src/Constants.vala:213
+msgid "Change Account"
+msgstr ""
+
+#: src/Constants.vala:214
+msgid "Quit"
+msgstr ""
+
+#: src/Constants.vala:215
+msgid "Report a bug"
+msgstr ""
+
+#: src/Constants.vala:216
+msgid "Bounties"
+msgstr ""
+
+#: src/Constants.vala:217
+msgid "Shortcuts"
+msgstr ""
+
+#: src/Utils.vala:20
+msgid "No Preview Available"
+msgstr ""
+
+#: src/Utils.vala:98
+msgid "No Text available for this article :("
+msgstr ""
+
+#: src/Utils.vala:232
+#, c-format
+msgid "posted by: %s, "
 msgstr ""

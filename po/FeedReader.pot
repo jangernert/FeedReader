@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-31 15:35+0200\n"
+"POT-Creation-Date: 2016-07-31 16:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,58 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/feedreader.appdata.xml:6 src/Widgets/MainWindow.vala:34
-#: src/Constants.vala:197
+#: data/feedreader.desktop.in:3 data/feedreader.appdata.xml.in:6
+#: src/Widgets/MainWindow.vala:34 src/Constants.vala:197
 msgid "FeedReader"
 msgstr ""
 
-#: data/feedreader.appdata.xml:7
+#: data/feedreader.desktop.in:4 data/feedreader-autostart.desktop.in:4
+msgid "RSS Client"
+msgstr ""
+
+#: data/feedreader.desktop.in:5
+msgid "Read feeds from web services"
+msgstr ""
+
+#: data/feedreader.desktop.in:8 data/feedreader-autostart.desktop.in:8
+msgid "feedreader"
+msgstr ""
+
+#: data/feedreader.desktop.in:19 src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr ""
+
+#: data/feedreader.appdata.xml.in:7
 msgid "RSS client for various webservices"
 msgstr ""
 
-#: data/feedreader.appdata.xml:10
+#: data/feedreader.appdata.xml.in:10
 msgid ""
 "FeedReader is a program designed to complement an already existing web-based "
 "RSS reader account."
 msgstr ""
 
-#: data/feedreader.appdata.xml:14
+#: data/feedreader.appdata.xml.in:14
 msgid "Currently supported services:"
 msgstr ""
 
-#: data/feedreader.appdata.xml:16 src/Widgets/LoginPage.vala:47
+#: data/feedreader.appdata.xml.in:16 src/Widgets/LoginPage.vala:47
 msgid "Tiny Tiny RSS"
 msgstr ""
 
-#: data/feedreader.appdata.xml:17
+#: data/feedreader.appdata.xml.in:17
 msgid "feedly"
 msgstr ""
 
-#: data/feedreader.appdata.xml:18
+#: data/feedreader.appdata.xml.in:18
 msgid "ownCloud"
 msgstr ""
 
-#: data/feedreader.appdata.xml:19
+#: data/feedreader.appdata.xml.in:19
 msgid "Inoreader"
 msgstr ""
 
-#: data/feedreader.appdata.xml:21
+#: data/feedreader.appdata.xml.in:21
 msgid ""
 "It combines all the advantages of web based services like synchronisation "
 "across all your devices with everything you expect from a modern desktop "
@@ -60,6 +76,14 @@ msgid ""
 "sharing to \"read-it-later\" services like pocket and instapaper, handy "
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
+msgstr ""
+
+#: data/feedreader-autostart.desktop.in:3
+msgid "FeedReader Autostart"
+msgstr ""
+
+#: data/feedreader-autostart.desktop.in:6
+msgid "Categories=Network;Feed;"
 msgstr ""
 
 #: data/shortcuts.ui:13
@@ -856,10 +880,6 @@ msgid ""
 "%s\n"
 "\n"
 "- send by FeedReader"
-msgstr ""
-
-#: src/FeedReader.vala:21
-msgid "About FeedReader"
 msgstr ""
 
 #: src/Constants.vala:200

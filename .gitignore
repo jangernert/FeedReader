@@ -1,1 +1,7 @@
 build/
+feedreader.service
+feedreader.desktop
+feedreader-autostart.desktop
+feedreader-autostart.desktop
+GitSHA1.vala
+InstallPrefix.vala

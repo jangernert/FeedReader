@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=FeedReader
+GenericName=RSS Client
+Comment=Read feeds from web services
+Categories=Network;Feed;
+Exec=feedreader %U
+Icon=feedreader
+Terminal=false
+Type=Application
+X-GNOME-UsesNotifications=true
+X-GNOME-Gettext-Domain=FeedReader
+X-GNOME-Keywords=
+Actions=AboutDialog;
+MimeType=x-scheme-handler/feedreader;
+
+[Desktop Action AboutDialog]
+Exec=feedreader --about
+Name=About FeedReader

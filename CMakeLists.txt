@@ -39,6 +39,9 @@ get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.vala.in" "${CMAKE_SOURCE_DIR}/GitSHA1.vala" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/InstallPrefix.vala.in" "${CMAKE_SOURCE_DIR}/InstallPrefix.vala" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service.in" "${CMAKE_SOURCE_DIR}/data/feedreader.service" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.appdata.xml.in" "${CMAKE_SOURCE_DIR}/data/feedreader.appdata.xml" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader.desktop" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader-autostart.desktop" @ONLY)
 
 
 set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)

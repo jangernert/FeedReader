@@ -1,430 +1,634 @@
-# Portuguese translation for feedreader
-# Copyright (c) 2015 Rosetta Contributors and Canonical Ltd 2015
-# This file is distributed under the same license as the feedreader package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2015.
-#
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2015
+# Lucas Capalbo Lavezzo <lucas.capalbo@gmail.com>, 2016
+# Pedro Monteiro <pmem@outlook.pt>, 2016
 msgid ""
 msgstr ""
-"Project-Id-Version: feedreader\n"
-"Report-Msgid-Bugs-To: FULL NAME <EMAIL@ADDRESS>\n"
-"POT-Creation-Date: 2015-11-13 23:01+0100\n"
-"PO-Revision-Date: 2015-02-13 21:28+0000\n"
-"Last-Translator: Hugo Vieira <hmvieira32@gmail.com>\n"
-"Language-Team: Portuguese <pt@li.org>\n"
+"Project-Id-Version: FeedReader\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-05-19 14:50+0200\n"
+"PO-Revision-Date: 2016-07-01 21:45+0000\n"
+"Last-Translator: Pedro Monteiro <pmem@outlook.pt>\n"
+"Language-Team: Portuguese (http://www.transifex.com/dev-feedreader/feedreader/language/pt/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:53+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"Language: pt\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/Constants.vala:160 ../src/Widgets/MainWindow.vala:33
+#: ../src/Constants.vala:196 ../src/Widgets/MainWindow.vala:34
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: ../src/Constants.vala:163
+#: ../src/Constants.vala:199
 msgid "Desktop Client for various RSS Services"
-msgstr ""
+msgstr "Cliente de vários serviços RSS para Desktop"
 
-#: ../src/Constants.vala:174
+#: ../src/Constants.vala:204
+msgid "translator-credits"
+msgstr "Créditos de Tradução"
+
+#: ../src/Constants.vala:206
+msgid "FeedReader Website"
+msgstr "Página Web do FeedReader"
+
+#: ../src/Constants.vala:210
 msgid "About"
-msgstr ""
+msgstr "Sobre"
 
-#: ../src/Constants.vala:175 ../src/Widgets/ReaderHeaderbar.vala:158
+#: ../src/Constants.vala:211 ../src/Widgets/ReaderHeaderbar.vala:161
+#: ../src/Widgets/SettingsDialog.vala:26
 msgid "Settings"
-msgstr ""
+msgstr "Configurações"
 
-#: ../src/Constants.vala:176
+#: ../src/Constants.vala:212
 msgid "Change Account"
-msgstr ""
+msgstr "Mudar de conta"
 
-#: ../src/Constants.vala:177
+#: ../src/Constants.vala:213
 msgid "Quit"
-msgstr ""
+msgstr "Sair"
+
+#: ../src/Constants.vala:214
+msgid "Report a bug"
+msgstr "Reportar um problema"
+
+#: ../src/Constants.vala:215
+msgid "Bounties"
+msgstr "Recompensas"
+
+#: ../src/Model/Article.vala:154
+msgid "Today"
+msgstr "Hoje"
+
+#: ../src/Model/Article.vala:158
+msgid "Yesterday"
+msgstr "Ontem"
 
 #: ../src/Utils.vala:21
 msgid "No Preview Available"
-msgstr ""
+msgstr "Pré-visualização Indisponível"
 
-#: ../src/Utils.vala:113
+#: ../src/Utils.vala:97
 msgid "No Text available for this article :("
-msgstr ""
+msgstr "Nenhum texto disponível para este artigo :("
+
+#: ../src/Utils.vala:231
+msgid "posted by: %s, "
+msgstr "publicado por: %s,"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:72
 msgid "no Author"
-msgstr ""
+msgstr "sem Autor"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:84
 msgid "no Title"
-msgstr ""
+msgstr "sem Título"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:96
 msgid "no Preview"
-msgstr ""
+msgstr "sem Pré-visualização"
 
 #: ../src/ContentGrabber/ReadabilityParserAPI.vala:108
 msgid "no content"
-msgstr ""
+msgstr "sem conteúdo"
 
 #: ../src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "Sobre FeedReader"
 
 #: ../src/Widgets/TagPopover.vala:40
 msgid "Add Tag:"
-msgstr ""
+msgstr "Adicionar etiqueta:"
 
 #: ../src/Widgets/TagPopover.vala:52
 msgid "Tags:"
-msgstr ""
+msgstr "Etiquetas:"
 
 #: ../src/Widgets/TagPopover.vala:129
 msgid "add Tag"
-msgstr ""
+msgstr "adicionar etiqueta"
 
-#: ../src/Widgets/MainWindow.vala:298
+#: ../src/Widgets/MainWindow.vala:417
 msgid "Ignore all tls errors from now on"
-msgstr ""
+msgstr "Ignorar todos os erros de tls a partir de agora"
 
-#: ../src/Widgets/MainWindow.vala:406
+#: ../src/Widgets/MainWindow.vala:525
 msgid "Please select a service first"
 msgstr "Insira um serviço primeiro"
 
-#: ../src/Widgets/MainWindow.vala:409
+#: ../src/Widgets/MainWindow.vala:528
 msgid "Please enter a valid username"
-msgstr "Introduza um nome de utilizador válido"
+msgstr "Por favor, introduza um nome de utilizador válido"
 
-#: ../src/Widgets/MainWindow.vala:412
+#: ../src/Widgets/MainWindow.vala:531
 msgid "Please enter a valid password"
-msgstr "Introduza uma password válida"
+msgstr "Por favor, introduza uma palavra-passe válida"
 
-#: ../src/Widgets/MainWindow.vala:415
+#: ../src/Widgets/MainWindow.vala:534
 msgid "Please enter a valid URL"
-msgstr "Introduza uma hiperligação válida"
+msgstr "Por favor, introduza um URL válido"
 
-#: ../src/Widgets/MainWindow.vala:418
+#: ../src/Widgets/MainWindow.vala:537
 msgid "Please enter your Login details"
 msgstr "Introduza os seus detalhes de Login"
 
-#: ../src/Widgets/MainWindow.vala:421
+#: ../src/Widgets/MainWindow.vala:540
 msgid "Sorry, something went wrong."
 msgstr "Ocorreu um erro. Pedimos desculpa."
 
-#: ../src/Widgets/MainWindow.vala:424
+#: ../src/Widgets/MainWindow.vala:543
 msgid "Either your username or the password are not correct."
-msgstr ""
+msgstr "O nome de utilizador ou a palavra-passe estão incorretos."
 
-#: ../src/Widgets/MainWindow.vala:427
+#: ../src/Widgets/MainWindow.vala:546
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
-msgstr ""
+msgstr "Sem ligação ao servidor. Verifique a ligação à Internet e o URL do servidor!"
 
-#: ../src/Widgets/MainWindow.vala:430
+#: ../src/Widgets/MainWindow.vala:549
 msgid "API access is disabled on the server. Please enable it first!"
-msgstr ""
+msgstr "O acesso à API está desativado no servidor. Por favor ative-o primeiro!"
 
-#: ../src/Widgets/MainWindow.vala:433
+#: ../src/Widgets/MainWindow.vala:552
+msgid "Not authorized to access URL"
+msgstr "Sem autorização para aceder ao URL"
+
+#: ../src/Widgets/MainWindow.vala:556
 msgid "No valid CA certificate available!"
-msgstr ""
+msgstr "Nenhum certificado CA válido!"
 
 #: ../src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
-msgstr ""
+msgstr "Mudar de conta?"
 
 #: ../src/Widgets/ResetPage.vala:37
 msgid ""
 "You are about to change the account you want FeedReader to use.\n"
 " This means deleting all local data of your old account."
-msgstr ""
+msgstr "Está prestes a mudar a conta que é usada pelo FeedReader.\nIsto irá remover todos os dados locais da conta antiga."
 
 #: ../src/Widgets/ResetPage.vala:41
 msgid "New account"
-msgstr ""
+msgstr "Nova conta"
 
 #: ../src/Widgets/ResetPage.vala:44
 msgid "Waiting for current sync to finish"
-msgstr ""
+msgstr "À espera que a sincronização em curso termine"
 
 #: ../src/Widgets/ResetPage.vala:54
 msgid "I changed my mind"
-msgstr ""
+msgstr "Mudei de ideias"
 
-#: ../src/Widgets/UpdateButton.vala:35
+#: ../src/Widgets/UpdateButton.vala:36
 msgid "Update Feeds"
-msgstr ""
+msgstr "Atualizar Feeds"
+
+#: ../src/Widgets/RemovePopover.vala:46
+msgid "Remove \"%s\""
+msgstr "Remover \"%s\""
+
+#: ../src/Widgets/RemovePopover.vala:82 ../src/Widgets/TagRow.vala:173
+msgid "Tag \"%s\" removed"
+msgstr "A etiqueta \"%s\" foi removida"
+
+#: ../src/Widgets/RemovePopover.vala:98 ../src/Widgets/FeedRow.vala:211
+msgid "Feed \"%s\" removed"
+msgstr "O feed \"%s\" foi removido"
+
+#: ../src/Widgets/RemovePopover.vala:115 ../src/Widgets/CategorieRow.vala:369
+msgid "Category \"%s\" removed"
+msgstr "A categoria \"%s\" foi removida"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:81
 msgid "Username or Password incorrect"
-msgstr ""
+msgstr "Nome de utilizador ou Palavra-passe incorretos"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:106 ../src/Widgets/LoginPage.vala:127
-#: ../src/Widgets/LoginPage.vala:196
+#: ../src/Widgets/ServiceSettingsRow.vala:106
+#: ../src/Widgets/LoginPage.vala:150 ../src/Widgets/LoginPage.vala:187
+#: ../src/Widgets/LoginPage.vala:258 ../src/Widgets/LoginPage.vala:296
+#: ../src/Widgets/LoginPage.vala:343
 msgid "Username:"
-msgstr "Utilizador:"
+msgstr "Nome de Utilizador:"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:107 ../src/Widgets/LoginPage.vala:128
-#: ../src/Widgets/LoginPage.vala:197
+#: ../src/Widgets/ServiceSettingsRow.vala:107
+#: ../src/Widgets/LoginPage.vala:151 ../src/Widgets/LoginPage.vala:188
+#: ../src/Widgets/LoginPage.vala:259 ../src/Widgets/LoginPage.vala:297
+#: ../src/Widgets/LoginPage.vala:344
 msgid "Password:"
-msgstr "Senha"
+msgstr "Palavra-passe:"
 
-#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:78
+#: ../src/Widgets/ServiceSettingsRow.vala:123 ../src/Widgets/LoginPage.vala:97
 #: ../src/Widgets/SharePopover.vala:28
 msgid "Login"
-msgstr ""
+msgstr "Entrar"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:128
 msgid "Logout"
-msgstr ""
+msgstr "Sair"
 
 #: ../src/Widgets/ServiceSettingsRow.vala:255
 msgid "waiting"
-msgstr ""
+msgstr "à espera"
 
-#: ../src/Widgets/ArticleView.vala:64
+#: ../src/Widgets/ArticleView.vala:92
 msgid "No Article selected."
-msgstr "Nenhum arquivo selecionado"
+msgstr "Nenhum artigo selecionado."
 
-#: ../src/Widgets/ArticleView.vala:168
-msgid "Not available"
-msgstr ""
+#: ../src/Widgets/FeedList.vala:234
+msgid "All Articles"
+msgstr "Todos os Artigos"
 
-#: ../src/Widgets/FeedList.vala:474 ../src/dbUI.vala:353
+#: ../src/Widgets/FeedList.vala:424
+msgid "Categories"
+msgstr "Categorias"
+
+#: ../src/Widgets/FeedList.vala:444
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: ../src/Widgets/FeedList.vala:446
+msgid "Labels"
+msgstr "Rótulos"
+
+#: ../src/Widgets/FeedList.vala:493 ../src/Widgets/AddPopover.vala:51
+#: ../src/dbUI.vala:358
 msgid "Uncategorized"
-msgstr ""
+msgstr "Sem categoria"
+
+#: ../src/Widgets/FeedList.vala:959
+msgid "New Tag"
+msgstr "Nova Etiqueta"
+
+#: ../src/Widgets/FeedList.vala:1079
+msgid "New Category"
+msgstr "Nova Categoria"
 
 #: ../src/Widgets/SpringCleanPage.vala:28
 msgid ""
 "FeedReader is cleaning the database.\n"
 "This shouldn't take too long."
-msgstr ""
+msgstr "O FeedReader está a limpar a base de dados.\nIsto não deve demorar muito."
 
-#: ../src/Widgets/ReaderHeaderbar.vala:49
+#: ../src/Widgets/ReaderHeaderbar.vala:50
 msgid "Mark article (un)starred"
-msgstr ""
+msgstr "Adicionar/Remover estrela ao artigo"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:55
+#: ../src/Widgets/ReaderHeaderbar.vala:56
 msgid "Mark article (un)read"
-msgstr ""
-
-#: ../src/Widgets/ReaderHeaderbar.vala:80
-msgid "Show all articles"
-msgstr ""
+msgstr "Marcar/Desmarcar artigo como lido"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:81
-msgid "Show only unread articles"
-msgstr ""
+msgid "All"
+msgstr "Tudo"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:81
+msgid "Show all articles"
+msgstr "Mostrar todos os artigos"
 
 #: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Unread"
+msgstr "Não Lidos"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:82
+msgid "Show only unread articles"
+msgstr "Mostrar apenas artigos não lidos"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:83
+msgid "Starred"
+msgstr "Com Estrela"
+
+#: ../src/Widgets/ReaderHeaderbar.vala:83
 msgid "Show only starred articles"
-msgstr ""
+msgstr "Mostrar apenas artigos com estrela"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:89
+#: ../src/Widgets/ReaderHeaderbar.vala:90
 msgid "Tag Article"
-msgstr ""
+msgstr "Adicionar Etiqueta"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:99
+#: ../src/Widgets/ReaderHeaderbar.vala:100
 msgid "Share Article"
-msgstr ""
+msgstr "Partilhar Artigo"
 
-#: ../src/Widgets/ReaderHeaderbar.vala:133
+#: ../src/Widgets/ReaderHeaderbar.vala:134
 msgid "Search Articles"
-msgstr ""
+msgstr "Procurar Artigos"
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "Tiny Tiny RSS"
 msgstr "Tiny Tiny RSS"
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "Feedly"
 msgstr "Feedly"
 
-#: ../src/Widgets/LoginPage.vala:36
+#: ../src/Widgets/LoginPage.vala:47
 msgid "OwnCloud"
 msgstr "OwnCloud"
 
-#: ../src/Widgets/LoginPage.vala:40
+#: ../src/Widgets/LoginPage.vala:47
+msgid "InoReader"
+msgstr "InoReader"
+
+#: ../src/Widgets/LoginPage.vala:51
 msgid "Where are your feeds?"
-msgstr ""
+msgstr "Onde estão os seus feeds?"
 
-#: ../src/Widgets/LoginPage.vala:44
+#: ../src/Widgets/LoginPage.vala:55
 msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
+msgstr "Por favor, selecione o serviço RSS que usa e faça login para continuar."
 
-#: ../src/Widgets/LoginPage.vala:109
+#: ../src/Widgets/LoginPage.vala:131
 msgid "No service selected."
-msgstr ""
+msgstr "Nenhum serviço selecionado."
 
-#: ../src/Widgets/LoginPage.vala:126
+#: ../src/Widgets/LoginPage.vala:149
 msgid "TinyTinyRSS URL:"
-msgstr ""
+msgstr "URL do TinyTinyRSS:"
 
-#: ../src/Widgets/LoginPage.vala:176
+#: ../src/Widgets/LoginPage.vala:216 ../src/Widgets/LoginPage.vala:325
+msgid "HTTP Authorization"
+msgstr "Autorização HTTP"
+
+#: ../src/Widgets/LoginPage.vala:238
 msgid ""
-"You will be redirected to the feedly website where you can use your Facebook-"
-", Google-, Twitter-, Microsoft- or Evernote-Account to log in."
-msgstr ""
+"You will be redirected to the feedly website where you can use your "
+"Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
+msgstr "Será redirecionado para a página web do feedly onde poderá fazer login com a conta do Facebook, Google, Microsoft ou Evernote."
 
-#: ../src/Widgets/LoginPage.vala:195
+#: ../src/Widgets/LoginPage.vala:257
 msgid "OwnCloud URL:"
 msgstr "OwnCloud URL:"
 
-#: ../src/Widgets/SettingsDialog.vala:34
-msgid "Interface"
-msgstr ""
+#: ../src/Widgets/TagRow.vala:192 ../src/Widgets/FeedRow.vala:247
+#: ../src/Widgets/CategorieRow.vala:420
+msgid "Rename"
+msgstr "Renomear"
+
+#: ../src/Widgets/TagRow.vala:193 ../src/Widgets/FeedRow.vala:250
+#: ../src/Widgets/CategorieRow.vala:421
+msgid "Remove"
+msgstr "Remover"
+
+#: ../src/Widgets/TagRow.vala:300 ../src/Widgets/FeedRow.vala:302
+#: ../src/Widgets/CategorieRow.vala:490
+msgid "rename"
+msgstr "renomear"
+
+#: ../src/Widgets/TagRow.vala:302 ../src/Widgets/CategorieRow.vala:492
+msgid "add"
+msgstr "adicionar"
 
 #: ../src/Widgets/SettingsDialog.vala:35
-msgid "Internals"
-msgstr ""
+msgid "Interface"
+msgstr "Interface"
 
 #: ../src/Widgets/SettingsDialog.vala:36
-msgid "Services"
-msgstr ""
+msgid "Internals"
+msgstr "Interior"
 
-#: ../src/Widgets/SettingsDialog.vala:55
+#: ../src/Widgets/SettingsDialog.vala:37
+msgid "Share"
+msgstr "Partilhar"
+
+#: ../src/Widgets/SettingsDialog.vala:56
 msgid "Feed List:"
-msgstr ""
+msgstr "Lista de Feeds:"
 
-#: ../src/Widgets/SettingsDialog.vala:57
+#: ../src/Widgets/SettingsDialog.vala:58
 msgid "Only show feeds"
-msgstr ""
+msgstr "Mostrar apenas feeds"
 
-#: ../src/Widgets/SettingsDialog.vala:64
+#: ../src/Widgets/SettingsDialog.vala:65
 msgid "Only show unread"
-msgstr ""
+msgstr "Mostrar apenas não lidos"
 
-#: ../src/Widgets/SettingsDialog.vala:69
+#: ../src/Widgets/SettingsDialog.vala:70
 msgid "Sort FeedList by"
-msgstr ""
+msgstr "Ordenar a lista de Feeds por"
 
-#: ../src/Widgets/SettingsDialog.vala:69 ../src/Widgets/SettingsDialog.vala:76
+#: ../src/Widgets/SettingsDialog.vala:70 ../src/Widgets/SettingsDialog.vala:82
 msgid "Received"
-msgstr ""
+msgstr "Recebido"
 
-#: ../src/Widgets/SettingsDialog.vala:69
+#: ../src/Widgets/SettingsDialog.vala:70
 msgid "Alphabetically"
-msgstr ""
+msgstr "Alfabeticamente"
 
-#: ../src/Widgets/SettingsDialog.vala:74
-msgid "Article List:"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:76
-msgid "Sort articles by"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:76
-msgid "Date"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:81
-msgid "Newest first"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:86
-msgid "Article View:"
-msgstr ""
-
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:75 ../src/Widgets/SettingsDialog.vala:94
 msgid "Theme"
-msgstr ""
+msgstr "Tema"
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:75
+msgid "Gtk+"
+msgstr "Gtk+"
+
+#: ../src/Widgets/SettingsDialog.vala:75
+msgid "Dark"
+msgstr "Escuro"
+
+#: ../src/Widgets/SettingsDialog.vala:75
+msgid "elementary"
+msgstr "elementary"
+
+#: ../src/Widgets/SettingsDialog.vala:80
+msgid "Article List:"
+msgstr "Lista de Artigos:"
+
+#: ../src/Widgets/SettingsDialog.vala:82
+msgid "Sort articles by"
+msgstr "Ordenar artigos por"
+
+#: ../src/Widgets/SettingsDialog.vala:82
+msgid "Date"
+msgstr "Data"
+
+#: ../src/Widgets/SettingsDialog.vala:87
+msgid "Newest first"
+msgstr "Novos primeiro"
+
+#: ../src/Widgets/SettingsDialog.vala:92
+msgid "Article View:"
+msgstr "Vista de Artigos:"
+
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Default"
-msgstr ""
+msgstr "Por defeito"
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Spring"
-msgstr ""
+msgstr "Primavera"
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Midnight"
-msgstr ""
+msgstr "Meia-noite"
 
-#: ../src/Widgets/SettingsDialog.vala:88
+#: ../src/Widgets/SettingsDialog.vala:94
 msgid "Parchment"
-msgstr ""
+msgstr "Pergaminho"
 
-#: ../src/Widgets/SettingsDialog.vala:112
+#: ../src/Widgets/SettingsDialog.vala:99
+msgid "Font Size"
+msgstr "Tamanho do Tipo de Letra"
+
+#: ../src/Widgets/SettingsDialog.vala:99
+msgid "Small"
+msgstr "Pequeno"
+
+#: ../src/Widgets/SettingsDialog.vala:99
+msgid "Normal"
+msgstr "Normal"
+
+#: ../src/Widgets/SettingsDialog.vala:99
+msgid "Large"
+msgstr "Grande"
+
+#: ../src/Widgets/SettingsDialog.vala:99
+msgid "Huge"
+msgstr "Enorme"
+
+#: ../src/Widgets/SettingsDialog.vala:125
 msgid "Sync:"
-msgstr ""
+msgstr "Sincronização:"
 
-#: ../src/Widgets/SettingsDialog.vala:114
+#: ../src/Widgets/SettingsDialog.vala:127
 msgid "Number of articles"
-msgstr ""
+msgstr "Número de artigos"
 
-#: ../src/Widgets/SettingsDialog.vala:116
+#: ../src/Widgets/SettingsDialog.vala:129
 msgid "Every (Minutes)"
-msgstr ""
+msgstr "Todos os (Minutos)"
 
-#: ../src/Widgets/SettingsDialog.vala:121
+#: ../src/Widgets/SettingsDialog.vala:134
 msgid "Database:"
-msgstr ""
+msgstr "Base de Dados:"
 
-#: ../src/Widgets/SettingsDialog.vala:123
+#: ../src/Widgets/SettingsDialog.vala:136
 msgid "Delete articles after"
-msgstr ""
+msgstr "Remover artigos depois de"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "Never"
-msgstr ""
+msgstr "Nunca"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "1 Week"
-msgstr ""
+msgstr "1 Semana"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "1 Month"
-msgstr ""
+msgstr "1 Mês"
 
-#: ../src/Widgets/SettingsDialog.vala:124
+#: ../src/Widgets/SettingsDialog.vala:137
 msgid "6 Months"
-msgstr ""
+msgstr "6 Meses"
 
-#: ../src/Widgets/SettingsDialog.vala:126
+#: ../src/Widgets/SettingsDialog.vala:139
 msgid "Additional Functionality:"
-msgstr ""
+msgstr "Funcionalidades Adicionais:"
 
-#: ../src/Widgets/SettingsDialog.vala:128
+#: ../src/Widgets/SettingsDialog.vala:141
 msgid "Content Grabber"
-msgstr ""
+msgstr "Agregador de Conteúdos"
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: ../src/Widgets/SettingsDialog.vala:142
 msgid "None"
-msgstr ""
+msgstr "Nenhum"
 
-#: ../src/Widgets/SettingsDialog.vala:129
+#: ../src/Widgets/SettingsDialog.vala:142
 msgid "Built in grabber"
-msgstr ""
+msgstr "Agregador embutido"
 
-#: ../src/Widgets/ArticleList.vala:53
+#: ../src/Widgets/ContentPage.vala:417
+msgid "undo"
+msgstr "desfazer"
+
+#: ../src/Widgets/ArticleList.vala:54
 msgid "None of the %i Articles in the database fit the current filters."
-msgstr ""
+msgstr "Nenhum dos %i Artigos na base de dados corresponde com os filtros atuais."
 
-#: ../src/Widgets/ArticleList.vala:67
+#: ../src/Widgets/ArticleList.vala:68
 msgid "Sync is in progress. Articles should appear any second."
-msgstr ""
+msgstr "Sincronização em curso. Os Artigos devem começar a aparecer a qualquer momento."
 
-#: ../src/Widgets/SharePopover.vala:34
-msgid "Please"
-msgstr ""
-
-#: ../src/Widgets/SharePopover.vala:36
-msgid "to a service to share this article."
-msgstr ""
-
-#: ../src/Backends/ttrss/TTRSS_API.vala:447
-#: ../src/Backends/ttrss/TTRSS_API.vala:503
-msgid "not found"
-msgstr ""
-
-#: ../src/Backends/FeedServer.vala:741
+#: ../src/Widgets/ArticleList.vala:160 ../src/Backends/FeedServer.vala:1317
 msgid "New Articles"
 msgstr "Novos Artigos"
 
-#: ../src/Backends/FeedServer.vala:753
+#: ../src/Widgets/ArticleList.vala:160
+msgid "scroll up"
+msgstr "ir para cima"
+
+#: ../src/Widgets/FeedRow.vala:246 ../src/Widgets/CategorieRow.vala:419
+msgid "Mark as read"
+msgstr "Marcar como Lido"
+
+#: ../src/Widgets/FeedRow.vala:249
+msgid "Remove only from %s"
+msgstr "Remover apenas de %s"
+
+#: ../src/Widgets/CategorieRow.vala:422
+msgid "Remove (with Feeds)"
+msgstr "Remover (com os Feeds)"
+
+#: ../src/Widgets/SharePopover.vala:34
+msgid "Please"
+msgstr "Por favor"
+
+#: ../src/Widgets/SharePopover.vala:36
+msgid "to a service to share this article."
+msgstr "a um serviço para partilhar este artigo."
+
+#: ../src/Widgets/AddPopover.vala:61
+msgid "URL:"
+msgstr "URL:"
+
+#: ../src/Widgets/AddPopover.vala:62
+msgid "Category:"
+msgstr "Categoria:"
+
+#: ../src/Widgets/AddPopover.vala:65
+msgid "Add"
+msgstr "Adicionar"
+
+#: ../src/Widgets/AddPopover.vala:79
+msgid "OPML-File:"
+msgstr "Ficheiro OPML:"
+
+#: ../src/Widgets/AddPopover.vala:81
+msgid "Select OPML-file"
+msgstr "Selecionar ficheiro OPML"
+
+#: ../src/Widgets/AddPopover.vala:87
+msgid "Import"
+msgstr "Importar"
+
+#: ../src/Widgets/AddPopover.vala:101
+msgid "Add feed"
+msgstr "Adicionar feed"
+
+#: ../src/Widgets/AddPopover.vala:102
+msgid "Import OPML"
+msgstr "Importar OPML"
+
+#: ../src/Backends/FeedServer.vala:1332
 msgid "There is 1 new article"
 msgstr "Há um novo artigo"
 
-#: ../src/Backends/FeedServer.vala:755
+#: ../src/Backends/FeedServer.vala:1334
 msgid "There are %u new articles"
-msgstr ""
+msgstr "Há %u novos artigos"
+
+#: ../src/Share/Email.vala:27
+msgid ""
+"Hey,\n"
+"check out this interesting article I just read:\n"
+"%s\n"
+"\n"
+"- send by FeedReader"
+msgstr "Oi,\nolha este artigo que acabei de ler:\n%s\n\n- enviado de FeedReader"

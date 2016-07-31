@@ -142,9 +142,18 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.TTRSS_API)
-			return false;
+		{
+			var response = message.get_response_object();
+			if(response.has_member("error"))
+			{
+				if(response.get_string_member("error") == "INCORRECT_USAGE")
+				{
+					return true;
+				}
+			}
+		}
 
-		return true;
+		return false;
 	}
 
 	public async bool supportTags()

@@ -1,107 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-	<id>feedreader.desktop</id>
-	<metadata_license>CC0</metadata_license>
-	<project_license>GPL-3.0+</project_license>
-	<name>FeedReader</name>
-	<summary>RSS client for various webservices</summary>
-
-	<description>
-		<p>
-			FeedReader is a program designed to complement an already existing web-based
-			RSS reader account.
-		</p>
-		<p>Currently supported services:</p>
-		<ul>
-			<li>Tiny Tiny RSS</li>
-			<li>feedly</li>
-			<li>ownCloud</li>
-			<li>Inoreader</li>
-		</ul>
-		<p>
-			It combines all the advantages of web based services like synchronisation across all your devices
-			with everything you expect from a modern desktop application: Desktop notifications, fast search
-			and filters, tagging, sharing to "read-it-later" services like pocket and instapaper, handy keyboard
-			shortcuts and a database that keeps all your old articles as long as you like.
-	    </p>
-	</description>
-
-	<screenshots>
-		<screenshot type="default">
-			<image>http://jangernert.github.io/FeedReader/images/Screenshot1.png</image>
-		</screenshot>
-		<screenshot>
-			<image>http://jangernert.github.io/FeedReader/images/Screenshot2.png</image>
-		</screenshot>
-		<screenshot>
-			<image>http://jangernert.github.io/FeedReader/images/Screenshot3.png</image>
-		</screenshot>
-		<screenshot>
-			<image>http://jangernert.github.io/FeedReader/images/Screenshot4.png</image>
-		</screenshot>
-		<screenshot>
-			<image>http://jangernert.github.io/FeedReader/images/Screenshot5.png</image>
-		</screenshot>
-	</screenshots>
-
-	<url type="homepage">http://jangernert.github.io/FeedReader/</url>
-	<project_group>GNOME</project_group>
-
-	<provides>
-		<binary>feedreader</binary>
-		<binary>feedreader-daemon</binary>
-	</provides>
-
-	<releases>
-		<release version="1.6" timestamp="1463182002">
-			<description>
-				<p>Inoreader support</p>
-				<p>Offline Mode</p>
-				<p>Imageviewer</p>
-				<p>Manipulate feeds and categories</p>
-				<p>Sidebar themes</p>
-				<p>Support http-basic-auth</p>
-				<p>Article List: time stamp</p>
-				<p>Article List: double click to open in browser</p>
-				<p>Article View: Show URL on mouseover</p>
-				<p>Article View: Right click menu</p>
-				<p>Article View: Configure font size</p>
-				<p>Commit version in "--about"</p>
-				<p>Support Gtk+ 3.20</p>
-				<p>HiDPI support</p>
-				<p>lots of bugfixes</p>
-			</description>
-		</release>
-		<release version="1.4" timestamp="1441065600">
-			<description>
-				<p>ownCloud News support</p>
-				<p>sync more responsive</p>
-				<p>app fully operational during initial sync</p>
-				<p>overlay to indicate new articles</p>
-				<p>better Gnome integration</p>
-				<p>proper fullscreen mode for videos</p>
-				<p>support multiple share accounts of the same kind</p>
-				<p>option to ignore unknown CA’s</p>
-				<p>tons of fixes</p>
-			</description>
-		</release>
-		<release version="1.2" timestamp="1441065600">
-			<description>
-				<p>improved article-view</p>
-				<p>drag article with middle mouse click</p>
-				<p>updated UI and animations</p>
-				<p>global short-cuts</p>
-				<p>tag articles</p>
-				<p>share articles to readability/instapaper/pocket</p>
-				<p>article grabber (grabs full articles without ads from website for known sites)</p>
-				<p>basic full text search</p>
-				<p>tons of fixes</p>
-			</description>
-		</release>
-		<release version="1.0" timestamp="1365768000">
-			<description>
-				<p>First release</p>
-			</description>
-		</release>
-	</releases>
+    <id>org.gnome.FeedReader</id>
+    <metadata_license>CC0</metadata_license>
+    <project_license>GPL-3.0+</project_license>
+    <name>FeedReader</name>
+    <summary>RSS client for various webservices</summary>
+    <translation type="gettext">FeedReader</translation>
+    <description>
+        <p>
+		FeedReader is a program designed to complement an already existing web-based
+		RSS reader account.
+	</p>
+        <p>Currently supported services:</p>
+        <ul>
+            <li>Tiny Tiny RSS</li>
+            <li>feedly</li>
+            <li>ownCloud</li>
+            <li>Inoreader</li>
+        </ul>
+        <p>
+		It combines all the advantages of web based services like synchronisation across all your devices
+		with everything you expect from a modern desktop application: Desktop notifications, fast search
+		and filters, tagging, sharing to "read-it-later" services like pocket and instapaper, handy keyboard
+		shortcuts and a database that keeps all your old articles as long as you like.
+    	</p>
+    </description>
+    <screenshots>
+        <screenshot type="default">
+            <image>http://jangernert.github.io/FeedReader/images/Screenshot1.png</image>
+        </screenshot>
+        <screenshot>
+            <image>http://jangernert.github.io/FeedReader/images/Screenshot2.png</image>
+        </screenshot>
+        <screenshot>
+            <image>http://jangernert.github.io/FeedReader/images/Screenshot3.png</image>
+        </screenshot>
+        <screenshot>
+            <image>http://jangernert.github.io/FeedReader/images/Screenshot4.png</image>
+        </screenshot>
+        <screenshot>
+            <image>http://jangernert.github.io/FeedReader/images/Screenshot5.png</image>
+        </screenshot>
+    </screenshots>
+    <url type="homepage">http://jangernert.github.io/FeedReader/</url>
+    <project_group>GNOME</project_group>
+    <provides>
+        <binary>feedreader</binary>
+        <binary>feedreader-daemon</binary>
+    </provides>
+    <releases>
+        <release version="1.6" timestamp="1463182002">
+            <description>
+                <p>Inoreader support</p>
+                <p>Offline Mode</p>
+                <p>Imageviewer</p>
+                <p>Manipulate feeds and categories</p>
+                <p>Sidebar themes</p>
+                <p>Support http-basic-auth</p>
+                <p>Article List: time stamp</p>
+                <p>Article List: double click to open in browser</p>
+                <p>Article View: Show URL on mouseover</p>
+                <p>Article View: Right click menu</p>
+                <p>Article View: Configure font size</p>
+                <p>Commit version in "--about"</p>
+                <p>Support Gtk+ 3.20</p>
+                <p>HiDPI support</p>
+                <p>lots of bugfixes</p>
+            </description>
+        </release>
+        <release version="1.4" timestamp="1441065600">
+            <description>
+                <p>ownCloud News support</p>
+                <p>sync more responsive</p>
+                <p>app fully operational during initial sync</p>
+                <p>overlay to indicate new articles</p>
+                <p>better Gnome integration</p>
+                <p>proper fullscreen mode for videos</p>
+                <p>support multiple share accounts of the same kind</p>
+                <p>option to ignore unknown CA’s</p>
+                <p>tons of fixes</p>
+            </description>
+        </release>
+        <release version="1.2" timestamp="1441065600">
+            <description>
+                <p>improved article-view</p>
+                <p>drag article with middle mouse click</p>
+                <p>updated UI and animations</p>
+                <p>global short-cuts</p>
+                <p>tag articles</p>
+                <p>share articles to readability/instapaper/pocket</p>
+                <p>article grabber (grabs full articles without ads from website for known sites)</p>
+                <p>basic full text search</p>
+                <p>tons of fixes</p>
+            </description>
+        </release>
+        <release version="1.0" timestamp="1365768000">
+            <description>
+                <p>First release</p>
+            </description>
+        </release>
+    </releases>
 </component>

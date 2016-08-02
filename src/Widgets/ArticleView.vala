@@ -18,6 +18,7 @@ interface FeedReaderWebExtension : Object
 {
 	public abstract void recalculate() throws IOError;
     public signal void onClick(string path, int width, int height, string url);
+	public signal void message(string message);
 }
 
 public class FeedReader.articleView : Gtk.Overlay {
@@ -186,6 +187,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_messenger.onClick.connect((path, width, height, url) => {
 				var window = this.get_toplevel() as readerUI;
 				var popup = new imagePopup(path, url, window, height, width);
+			});
+			m_messenger.message.connect((message) => {
+				logger.print(LogMessage.INFO, "ArticleView: webextension-message: " + message);
 			});
 			recalculate();
 		}
@@ -768,17 +772,22 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.key_press_event.disconnect(onKeyPress);
 		m_currentView.web_process_crashed.disconnect(onCrash);
 
-		if(m_stack.get_visible_child_name() == "view1")
+		switch(m_stack.get_visible_child_name())
 		{
-			m_currentView = m_view2;
-			m_stack.set_visible_child_name("view2");
-			m_view1.load_html("", null);
-		}
-		else
-		{
-			m_currentView = m_view1;
-			m_stack.set_visible_child_name("view1");
-			m_view2.load_html("", null);
+			case "view1":
+				logger.print(LogMessage.DEBUG, "ArticleView: view2");
+				m_currentView = m_view2;
+				m_stack.set_visible_child_name("view2");
+				m_view1.load_html("", null);
+				break;
+
+			case "view2":
+			case "empty":
+				logger.print(LogMessage.DEBUG, "ArticleView: view1");
+				m_currentView = m_view1;
+				m_stack.set_visible_child_name("view1");
+				m_view2.load_html("", null);
+				break;
 		}
 
 		m_currentView.load_changed.connect(open_link);

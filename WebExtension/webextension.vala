@@ -23,16 +23,21 @@ public class FeedReaderWebExtension : Object {
     public void on_page_created(WebKit.WebExtension extension, WebKit.WebPage page)
     {
         m_page = page;
-        m_page.document_loaded.connect(onDocLoaded);  
+        m_page.document_loaded.connect(() => {
+        	onDocLoaded(page);
+        });
+        message("on_page_created");
     }
     
-    private void onDocLoaded()
+    private void onDocLoaded(WebKit.WebPage page)
     {
-    	m_doc = m_page.get_dom_document();
+    	m_doc = page.get_dom_document();
+    	message("onDocLoaded");
     }
     
     public void recalculate()
-    {	
+    {
+    	message("recalculate");
 	var images = m_doc.get_images();
 	ulong count = images.get_length();
 		

@@ -133,11 +133,11 @@ public class FeedReader.grabberUtils : GLib.Object {
         return true;
     }
 
-    public static bool fixLazyImg(Html.Doc* doc, string lazyload, string correctURL)
+    public static bool fixLazyImg(Html.Doc* doc, string className, string correctURL)
     {
         logger.print(LogMessage.DEBUG, "grabberUtils: fixLazyImg");
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
-    	Xml.XPath.Object* res = cntx.eval_expression("//img[@%s]".printf(lazyload));
+    	Xml.XPath.Object* res = cntx.eval_expression("//img[contains(@class, '%s')]".printf(className));
 
         if(res == null)
         {

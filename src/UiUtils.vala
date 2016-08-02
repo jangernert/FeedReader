@@ -124,4 +124,56 @@ public class FeedReader.UiUtils : GLib.Object {
 
 		return menu;
 	}
+
+	public static void saveImageDialog(string imagePath, Gtk.Window parent)
+	{
+		var _file = GLib.File.new_for_path(imagePath);
+		var mimeType = _file.query_info("standard::content-type", 0, null).get_content_type();
+		var filter = new Gtk.FileFilter();
+		filter.add_mime_type(mimeType);
+
+		var map = new Gee.HashMap<string, string>();
+		map.set("image/gif", ".gif");
+		map.set("image/jpeg", ".jpeg");
+		map.set("image/png", ".png");
+		map.set("image/x-icon", ".ico");
+
+		var save_dialog = new Gtk.FileChooserDialog("Save Image",
+													parent,
+													Gtk.FileChooserAction.SAVE,
+													Gtk.Stock.CANCEL,
+													Gtk.ResponseType.CANCEL,
+													Gtk.Stock.SAVE,
+													Gtk.ResponseType.ACCEPT);
+		save_dialog.set_do_overwrite_confirmation(true);
+		save_dialog.set_modal(true);
+		save_dialog.set_current_folder(GLib.Environment.get_home_dir());
+		save_dialog.set_current_name("Article_Image" + map.get(mimeType));
+		save_dialog.set_filter(filter);
+		save_dialog.response.connect((dialog, response_id) => {
+			switch(response_id)
+			{
+				case Gtk.ResponseType.ACCEPT:
+					try
+					{
+						var savefile = save_dialog.get_file();
+						uint8[] data;
+						string etag;
+						_file.load_contents(null, out data, out etag);
+						savefile.replace_contents(data, null, false, GLib.FileCreateFlags.REPLACE_DESTINATION, null, null);
+					}
+					catch(Error e)
+					{
+						logger.print(LogMessage.DEBUG, "imagePopup: save file: " + e.message);
+					}
+					break;
+
+				case Gtk.ResponseType.CANCEL:
+				default:
+					break;
+			}
+			save_dialog.destroy();
+		});
+		save_dialog.show();
+	}
 }

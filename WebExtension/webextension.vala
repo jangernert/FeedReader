@@ -4,6 +4,7 @@ public class FeedReaderWebExtension : Object {
     private WebKit.WebPage m_page;
     private WebKit.DOM.Document m_doc;
     public signal void onClick(string path, int width, int height, string url);
+    public signal void message(string message);
     
     [DBus (visible = false)]
     public void on_bus_aquired(DBusConnection connection)

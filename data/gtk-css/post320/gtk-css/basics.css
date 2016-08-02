@@ -47,6 +47,9 @@ row {
     -gtk-icon-shadow: none;
     background: none;
 }
+.imageOverlay {
+    border-radius: 0;
+}
 /***************/
 /* text styles */
 /***************/

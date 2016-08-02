@@ -135,6 +135,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool fixLazyImg(Html.Doc* doc, string lazyload, string correctURL)
     {
+        logger.print(LogMessage.DEBUG, "grabberUtils: fixLazyImg");
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img[@%s]".printf(lazyload));
 

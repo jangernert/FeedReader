@@ -333,7 +333,7 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
-        grabberUtils.fixLazyImg(doc, "class=\"lazyload\"", "data-src");
+        grabberUtils.fixLazyImg(doc, "contains(@class, 'lazyload')", "data-src");
         grabberUtils.removeAttributes(doc, null, "style");
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");

@@ -16,12 +16,14 @@
 public class FeedReader.imagePopup : Gtk.Window {
 
 	private Gtk.ScrolledWindow m_scroll;
+	private string m_imagePath;
 	private Gtk.ImageView m_image;
 	private Gtk.Scale m_scale;
 	private Gtk.Revealer m_scaleRevealer;
 	private Gtk.EventBox m_eventBox;
 	private Gtk.Overlay m_overlay;
 	private Gtk.Revealer m_revealer;
+	private Gtk.Button m_saveButton;
 	private Gtk.ToggleButton m_zoomButton;
 	private double m_dndX;
 	private double m_dndY;
@@ -60,16 +62,18 @@ public class FeedReader.imagePopup : Gtk.Window {
 			return false;
 		});
 
-		var file = GLib.File.new_for_path(imagePath);
+		m_imagePath = imagePath;
+
+		var file = GLib.File.new_for_path(m_imagePath);
 		m_image = new Gtk.ImageView();
 		m_image.zoomable = true;
-		m_image.load_from_file_async.begin (file, 0);
+		m_image.load_from_file_async.begin(file, 0);
 
-		m_scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, m_minZoom, m_maxZoom, 0.2);
+		m_scale = new Gtk.Scale.with_range(Gtk.Orientation.HORIZONTAL, m_minZoom, m_maxZoom, 0.2);
 		m_scale.draw_value = false;
 		m_scale.set_size_request(200, 0);
 		m_scale.add_mark(1.0, Gtk.PositionType.BOTTOM, null);
-		m_scale.value_changed.connect (() => {
+		m_scale.value_changed.connect(() => {
 			m_image.scale = m_scale.get_value();
 		});
 
@@ -116,10 +120,14 @@ public class FeedReader.imagePopup : Gtk.Window {
 			}
 		}
 
+		m_saveButton = new Gtk.Button.from_icon_name("document-save-symbolic", Gtk.IconSize.BUTTON);
+		m_saveButton.clicked.connect(() => {
+			UiUtils.saveImageDialog(m_imagePath, this.transient_for);
+		});
+
 		m_image.notify["scale"].connect(onImageScrolled);
 		m_zoomButton = new Gtk.ToggleButton();
 		m_zoomButton.add(new Gtk.Image.from_icon_name("zoom-in-symbolic", Gtk.IconSize.BUTTON));
-		m_zoomButton.get_style_context().add_class("headerbutton");
 		m_zoomButton.toggled.connect(() => {
 			if(!m_zoomButton.get_active())
 				m_image.notify["scale"].disconnect(onImageScrolled);
@@ -148,6 +156,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		header.set_size_request(0, 30);
 		header.get_style_context().add_class("imageOverlay");
 		header.get_style_context().add_class("titlebar");
+		header.pack_start(m_saveButton);
 		header.pack_start(m_zoomButton);
 		header.pack_start(m_scaleRevealer);
 		var headerEvents = new Gtk.EventBox();

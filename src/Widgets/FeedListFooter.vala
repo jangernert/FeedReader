@@ -42,8 +42,8 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_box.pack_start(m_addStack);
 		var sep1 = new Gtk.Separator(Gtk.Orientation.VERTICAL);
 		var sep2 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		sep1.get_style_context().add_class("sidebar-separator");
-		sep2.get_style_context().add_class("sidebar-separator");
+		sep1.get_style_context().add_class("fr-sidebar-separator");
+		sep2.get_style_context().add_class("fr-sidebar-separator");
 		m_box.pack_start(sep1, false, false);
 		m_box.pack_start(m_removeButton);
 		this.pack_start(sep2, false, false);
@@ -89,7 +89,7 @@ public class FeedReader.AddButton : Gtk.Button {
 		var image = new Gtk.Image.from_icon_name("feed-add-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		this.image = image;
 		this.get_style_context().remove_class("button");
-		this.get_style_context().add_class("sidebar-symbolic");
+		this.get_style_context().add_class("fr-sidebar-symbolic");
 		this.image.opacity = 0.8;
 		this.clicked.connect(onClick);
 		this.relief = Gtk.ReliefStyle.NONE;
@@ -117,7 +117,7 @@ public class FeedReader.RemoveButton : Gtk.Button {
 		var image = new Gtk.Image.from_icon_name("feed-remove-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		this.image = image;
 		this.get_style_context().remove_class("button");
-		this.get_style_context().add_class("sidebar-symbolic");
+		this.get_style_context().add_class("fr-sidebar-symbolic");
 		this.image.opacity = 0.8;
 		this.clicked.connect(onClick);
 		this.relief = Gtk.ReliefStyle.NONE;

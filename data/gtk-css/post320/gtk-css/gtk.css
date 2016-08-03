@@ -1,31 +1,31 @@
-.sidebar,
-.sidebar .scrollbar,
-.sidebar .slider,
-.sidebar .activatable {
+.fr-sidebar,
+.fr-sidebar .scrollbar,
+.fr-sidebar .slider,
+.fr-sidebar .activatable {
     background: @theme_bg_color;
 }
 
-.sidebar-feed {
+.fr-sidebar-feed {
     background: @theme_bg_color;
     color: @theme_fg_color;
 }
-.sidebar-row {
+.fr-sidebar-row {
     color: @theme_fg_color;
 }
-.sidebar-row:selected,
-.sidebar-row:selected *,
-.sidebar-feed:selected,
-.sidebar-feed:selected * {
+.fr-sidebar-row:selected,
+.fr-sidebar-row:selected *,
+.fr-sidebar-feed:selected,
+.fr-sidebar-feed:selected * {
     background: @theme_selected_bg_color;
     color: @theme_selected_fg_color;
 }
-.sidebar-row:hover,
-.sidebar-feed:hover {
+.fr-sidebar-row:hover,
+.fr-sidebar-feed:hover {
     background: shade(@theme_bg_color, 0.9);
 }
-.sidebar-row:selected:hover,
-.sidebar-feed:selected:hover,
-.sidebar-feed:selected:hover * {
+.fr-sidebar-row:selected:hover,
+.fr-sidebar-feed:selected:hover,
+.fr-sidebar-feed:selected:hover * {
     background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }

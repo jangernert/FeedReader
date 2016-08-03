@@ -33,7 +33,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	public TagRow (string name, string tagID, int color)
 	{
-		this.get_style_context().add_class("sidebar-row");
+		this.get_style_context().add_class("fr-sidebar-row");
 		m_exits = true;
 		m_color = color;
 		m_name = name.replace("&","&amp;");

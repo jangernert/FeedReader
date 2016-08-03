@@ -25,7 +25,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
     {
         m_logo = new Gtk.Image.from_icon_name("", Gtk.IconSize.DIALOG);
         m_logo = new Gtk.Image.from_file("");
-        m_logo.get_style_context().add_class("sidebar-symbolic");
+        m_logo.get_style_context().add_class("fr-sidebar-symbolic");
         m_label = new Gtk.Label("");
         m_label.margin_start = 10;
         m_label.margin_end = 10;
@@ -45,7 +45,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         m_stack = new Gtk.Stack();
         m_stack.add_named(m_box, "info");
         m_stack.add_named(m_spinner, "spinner");
-        m_stack.get_style_context().add_class("sidebar");
+        m_stack.get_style_context().add_class("fr-sidebar");
         this.add(m_stack);
 
         m_offline = new Gtk.Label("OFFLINE");
@@ -96,7 +96,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
             else
             {
                 m_logo.set_from_icon_name("feed-service-%s-symbolic".printf(service_name), Gtk.IconSize.INVALID);
-                m_logo.get_style_context().add_class("sidebar-symbolic");
+                m_logo.get_style_context().add_class("fr-sidebar-symbolic");
                 this.set_tooltip_text(server);
                 m_label.set_label(user_name);
                 m_stack.set_visible_child_name("info");

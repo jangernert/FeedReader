@@ -67,7 +67,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadStack.add_named(m_unread, "unreadCount");
 			m_unreadStack.add_named(new Gtk.Label(""), "nothing");
 			var markIcon = new Gtk.Image.from_icon_name("feed-mark-read-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-			markIcon.get_style_context().add_class("sidebar-symbolic");
+			markIcon.get_style_context().add_class("fr-sidebar-symbolic");
 			m_unreadStack.add_named(markIcon, "mark");
 
 			m_unreadBox = new Gtk.EventBox();
@@ -82,11 +82,11 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			if(m_catID != CategoryID.TTRSS_SPECIAL && !Utils.onlyShowFeeds())
 			{
-				this.get_style_context().add_class("sidebar-feed");
+				this.get_style_context().add_class("fr-sidebar-feed");
 			}
 			else
 			{
-				this.get_style_context().add_class("sidebar-row");
+				this.get_style_context().add_class("fr-sidebar-row");
 			}
 
 			m_box.pack_start(m_icon, false, false, 8);
@@ -161,7 +161,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		catch(GLib.Error e){}
 
 		var defaultIcon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		defaultIcon.get_style_context().add_class("sidebar-symbolic");
+		defaultIcon.get_style_context().add_class("fr-sidebar-symbolic");
 		return defaultIcon;
 	}
 

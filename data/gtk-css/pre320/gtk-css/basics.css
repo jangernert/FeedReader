@@ -21,7 +21,7 @@ GtkListBoxRow,
 	border-bottom-style: solid;
 	border-bottom-color: rgba(128, 128, 128, 0.3);
 }
-.sidebar {
+.fr-sidebar {
     text-shadow: none;
     icon-shadow: none;
     background: none;

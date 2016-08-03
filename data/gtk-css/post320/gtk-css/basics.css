@@ -42,7 +42,7 @@ row {
 .servicebox {
     border: 1px solid alpha (#000, 0.30);
 }
-.sidebar-row {
+.fr-sidebar-row {
     text-shadow: none;
     -gtk-icon-shadow: none;
     background: none;

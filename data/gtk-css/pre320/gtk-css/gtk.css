@@ -1,25 +1,25 @@
-.sidebar,
-.sidebar .scrollbar,
-.sidebar .slider {
+.fr-sidebar,
+.fr-sidebar .scrollbar,
+.fr-sidebar .slider {
     background: @theme_bg_color;
 }
-.sidebar-row:selected,
-.sidebar-row:selected *,
-.sidebar-feed:selected {
+.fr-sidebar-row:selected,
+.fr-sidebar-row:selected *,
+.fr-sidebar-feed:selected {
     background: @theme_selected_bg_color;
     color: @theme_selected_fg_color;
 }
-.sidebar-row:prelight
-.sidebar-feed:prelight {
+.fr-sidebar-row:prelight
+.fr-sidebar-feed:prelight {
     background: shade(@theme_bg_color, 0.9);
 }
-.sidebar-row:selected:prelight,
-.sidebar-feed:selected:prelight,
-.sidebar-feed:selected:prelight * {
+.fr-sidebar-row:selected:prelight,
+.fr-sidebar-feed:selected:prelight,
+.fr-sidebar-feed:selected:prelight * {
     background: shade(@theme_selected_bg_color, 0.9);
     color: @theme_selected_fg_color;
 }
-.sidebar-feed {
+.fr-sidebar-feed {
     background: shade(@theme_bg_color, 1.2);
 }
 /******************/

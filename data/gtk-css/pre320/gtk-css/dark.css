@@ -4,40 +4,40 @@
 @define-color feedlist-label shade(@feedlist-bg, 3);
 @define-color feedlist-selected shade(@feedlist-bg, 1.6);
 
-.sidebar,
-.sidebar .scrollbar {
+.fr-sidebar,
+.fr-sidebar .scrollbar {
     background: @feedlist-bg;
 }
-.sidebar .slider {
+.fr-sidebar .slider {
     background: @feedlist-slider;
 }
-.sidebar-row:selected,
-.sidebar-feed:selected {
+.fr-sidebar-row:selected,
+.fr-sidebar-feed:selected {
     background: @feedlist-selected;
 }
-.sidebar GtkLabel {
+.fr-sidebar GtkLabel {
     color: @feedlist-label;
     font-weight: bold;
     text-shadow: none;
 }
-.sidebar-row:prelight {
+.fr-sidebar-row:prelight {
     background: shade(@feedlist-bg, 1.1);
 }
-.sidebar-row:selected:prelight,
-.sidebar-feed:selected:prelight {
+.fr-sidebar-row:selected:prelight,
+.fr-sidebar-feed:selected:prelight {
     background: shade(@feedlist-selected, 1.1);
 }
-.sidebar-feed {
+.fr-sidebar-feed {
     background: @feedrow-bg;
 }
-.sidebar-feed:prelight{
+.fr-sidebar-feed:prelight{
     background: shade(@feedrow-bg, 1.1);
 }
-.sidebar-separator {
+.fr-sidebar-separator {
     color: shade(@feedlist-bg, 0.82);
     border: 1px solid;
 }
-.sidebar-symbolic {
+.fr-sidebar-symbolic {
     color: @feedlist-label;
 }
 /******************/

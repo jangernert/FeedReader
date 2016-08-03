@@ -682,6 +682,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					else
 						m_content.ArticleListNEXT();
 				}
+				else
+					return false;
 				break;
 
 			case Gdk.Key.r:

@@ -685,6 +685,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	private void collapseCategorieInternal(string catID, bool selectParent = true)
 	{
 		var FeedChildList = m_list.get_children();
+		var selected_row = m_list.get_selected_row();
 
 		foreach(Gtk.Widget row in FeedChildList)
 		{
@@ -708,9 +709,9 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		if(selectParent)
 		{
-			var selected_feed = m_list.get_selected_row() as FeedRow;
-			var selected_cat = m_list.get_selected_row() as categorieRow;
-			var selected_tag = m_list.get_selected_row() as TagRow;
+			var selected_feed = selected_row as FeedRow;
+			var selected_cat = selected_row as categorieRow;
+			var selected_tag = selected_row as TagRow;
 
 			if((selected_feed != null && !selected_feed.isRevealed())
 			|| (selected_cat != null && !selected_cat.isRevealed())
@@ -980,7 +981,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			logger.print(LogMessage.DEBUG, "FeedList: busy");
 			return;
 		}
-		
+
 		if(m_emptyTagRow != null)
 		{
 			removeRow(m_emptyTagRow, 250);

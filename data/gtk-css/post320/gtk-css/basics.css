@@ -105,3 +105,62 @@ row {
 .header_left {
     border-top-left-radius: 0;
 }
+
+/******************/
+/*  media-player  */
+/******************/
+.player,
+.playerButton,
+.bufferLabel,
+.playerClose {
+	color: white;
+}
+
+.player,
+.bufferLabel {
+	background: black;
+}
+
+.player,
+.playerButton,
+.bufferLabel {
+	border-radius: 10px;
+	border-style: solid;
+}
+
+.player,
+.playerButton:hover,
+.bufferLabel,
+.playerClose {
+	border-color: white;
+	background-image: none;
+}
+
+.player,
+.playerClose {
+	border-width: 3px;
+}
+
+.playerButton,
+.bufferLabel {
+	border-width: 2px;
+}
+
+.player GtkScale {
+	background: white;
+}
+
+.playerButton,
+.bufferLabel {
+	font-weight: bold;
+	font-size: large;
+	box-shadow: none;
+	text-shadow: none;
+}
+
+.playerClose {
+	background: black;
+	border-radius: 999px;
+	box-shadow: none;
+}
+

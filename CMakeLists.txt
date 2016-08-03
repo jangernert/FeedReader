@@ -44,7 +44,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader-autostart.desktop" @ONLY)
 
 
-set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7)
+set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7 gstreamer-1.0 gstreamer-pbutils-1.0)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)
@@ -81,7 +81,9 @@ set(UI_PACKAGES
     gee-0.8
     libsecret-1
     libnotify
-    rest-0.7)
+    rest-0.7
+    gstreamer-1.0
+    gstreamer-pbutils-1.0)
 
 if(WEBKITGTK4_FOUND)
 	list(APPEND UI_PACKAGES WebKit2-4.0)
@@ -132,6 +134,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/InAppNotification.vala
     src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
+    src/Widgets/MediaPlayer.vala
     src/Widgets/ModeButton.vala
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/RemovePopover.vala

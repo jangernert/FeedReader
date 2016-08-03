@@ -149,6 +149,17 @@ namespace FeedReader {
 		MARK_READ_ALL
 	}
 
+	public enum MediaType {
+		VIDEO,
+		AUDIO
+	}
+
+	public enum DisplayPosition {
+		ALL,
+		POS,
+		LEFT
+	}
+
 	public enum InoSubscriptionAction {
 		EDIT,
 		SUBSCRIBE,

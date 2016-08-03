@@ -177,6 +177,7 @@ namespace FeedReader {
 			return 0;
 		}
 
+		Gst.init(ref args);
 		var app = new FeedApp();
 		app.run(args);
 

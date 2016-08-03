@@ -23,6 +23,7 @@ interface FeedReaderWebExtension : Object
 
 public class FeedReader.articleView : Gtk.Overlay {
 
+	private Gtk.Overlay m_videoOverlay;
 	private Gtk.Label m_overlayLabel;
 	private WebKit.WebView m_view1;
 	private WebKit.WebView m_view2;
@@ -171,7 +172,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 		nextOverlay.add(prevOverlay);
 		nextOverlay.add_overlay(m_nextButton);
 
-		this.add(nextOverlay);
+		m_videoOverlay = new Gtk.Overlay();
+		m_videoOverlay.add(nextOverlay);
+		m_videoOverlay.add_overlay(new MediaPlayer("http://audio.lugradio.org/badvoltage/Bad%20Voltage%201x72.ogg", MediaType.AUDIO));
+
+		this.add(m_videoOverlay);
 		this.add_overlay(m_overlayLabel);
 
 		Bus.watch_name(BusType.SESSION, "org.gnome.feedreader.FeedReaderArticleView", GLib.BusNameWatcherFlags.NONE,

@@ -1,7 +1,6 @@
 [DBus (name = "org.gnome.feedreader.FeedReaderArticleView")]
 public class FeedReaderWebExtension : Object {
     
-    private WebKit.WebPage m_page;
     private WebKit.DOM.Document m_doc;
     public signal void onClick(string path, int width, int height, string url);
     public signal void message(string message);
@@ -22,8 +21,7 @@ public class FeedReaderWebExtension : Object {
     [DBus (visible = false)]
     public void on_page_created(WebKit.WebExtension extension, WebKit.WebPage page)
     {
-        m_page = page;
-        m_page.document_loaded.connect(() => {
+        page.document_loaded.connect(() => {
         	onDocLoaded(page);
         });
         message("on_page_created");

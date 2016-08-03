@@ -156,7 +156,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 			if(current_feed != null)
 			{
-				if(current_feed.isRevealed() && current_feed.getName() != "")
+				if(current_feed.getID() != FeedID.SEPARATOR && current_feed.isRevealed() && current_feed.getName() != "")
 				{
 					m_list.select_row(current_feed);
 					newFeedSelected(current_feed.getID());

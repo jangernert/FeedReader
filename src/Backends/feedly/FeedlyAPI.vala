@@ -375,7 +375,12 @@ public class FeedReader.FeedlyAPI : Object {
 
 				for(int j = 0; j < mediaCount; ++j)
 				{
-					mediaString = mediaString + attachments.get_object_element(j).get_string_member("href") + ",";
+					var attachment = attachments.get_object_element(j);
+					if(attachment.get_string_member("type").contains("audio")
+					|| attachment.get_string_member("type").contains("video"))
+					{
+						mediaString = mediaString + attachment.get_string_member("href") + ",";
+					}
 				}
 			}
 

@@ -360,7 +360,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		catch(GLib.Error e){
 			logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
 		}
-		
+
 		return true;
 	}
 
@@ -685,6 +685,11 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public int getSortID()
 	{
 		return m_article.getSortID();
+	}
+
+	public unowned Gee.ArrayList<string> getMedia()
+	{
+		return m_article.getMedia();
 	}
 
 }

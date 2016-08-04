@@ -119,6 +119,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 				logger.print(LogMessage.DEBUG, "ContentPage: set headerbar");
 				header.setRead(row.isUnread());
 				header.setMarked(row.isMarked());
+				//FIXME: set media button of headerbar
 			}
 
 			if(m_article_view.getCurrentArticle() != row.getID())

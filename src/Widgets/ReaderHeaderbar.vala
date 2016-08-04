@@ -224,11 +224,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		}
 	}
 
-	public bool currentlyUpdating()
-	{
-		return m_refresh_button.getStatus();
-	}
-
 	public string getSearchTerm()
 	{
 		return m_search.text;

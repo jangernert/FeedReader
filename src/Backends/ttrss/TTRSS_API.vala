@@ -490,7 +490,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 					for(int j = 0; j < mediaCount; ++j)
 					{
-						mediaString = mediaString + attachments.get_object_element(j).get_string_member("content_url") + ",";
+						var attachment = attachments.get_object_element(j);
+						if(attachment.get_string_member("content_type").contains("audio")
+						|| attachment.get_string_member("content_type").contains("video"))
+						{
+							mediaString = mediaString + attachment.get_string_member("content_url") + ",";
+						}
 					}
 				}
 
@@ -619,7 +624,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 					for(int j = 0; j < mediaCount; ++j)
 					{
-						mediaString = mediaString + attachments.get_object_element(j).get_string_member("content_url") + ",";
+						var attachment = attachments.get_object_element(j);
+						if(attachment.get_string_member("content_type").contains("audio")
+						|| attachment.get_string_member("content_type").contains("video"))
+						{
+							mediaString = mediaString + attachment.get_string_member("content_url") + ",";
+						}
 					}
 				}
 

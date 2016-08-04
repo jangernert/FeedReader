@@ -241,11 +241,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_headerbar.setRefreshButton(refreshing);
 	}
 
-	public bool currentlyUpdating()
-	{
-		return m_headerbar.currentlyUpdating();
-	}
-
 	public void showOfflineContent()
 	{
 		showContent();

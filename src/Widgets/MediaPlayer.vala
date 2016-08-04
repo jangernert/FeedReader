@@ -187,8 +187,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		m_closeButton.set_relief(Gtk.ReliefStyle.NONE);
 		m_closeButton.get_style_context().add_class("playerClose");
 		m_closeButton.clicked.connect(() => {
-			m_player.set_state(Gst.State.NULL);
-			this.destroy();
+			kill();
 		});
 		m_closeButton.valign = Gtk.Align.START;
 		m_closeButton.halign = Gtk.Align.END;
@@ -470,6 +469,12 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 			int height = (int)(width/m_aspectRatio);
 			m_videoWidget.set_size_request(-1, height);
 		}
+	}
+
+	public void kill()
+	{
+		m_player.set_state(Gst.State.NULL);
+		this.destroy();
 	}
 
 }

@@ -18,7 +18,7 @@ public class FeedReader.dbUI : GLib.Object {
 	protected Sqlite.Database sqlite_db;
 	public signal void updateBadge();
 
-	public dbUI(string dbFile = "feedreader-03.db")
+	public dbUI(string dbFile = "feedreader-04.db")
 	{
 		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";
 		var path = GLib.File.new_for_path(db_path);

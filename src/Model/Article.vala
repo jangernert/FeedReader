@@ -250,6 +250,14 @@ public class FeedReader.article : GLib.Object {
 			m_media.add(m);
 	}
 
+	public bool haveMedia()
+	{
+		if(m_media.size > 0)
+			return true;
+
+		return false;
+	}
+
 	public string getHash()
 	{
 		return m_guidHash;

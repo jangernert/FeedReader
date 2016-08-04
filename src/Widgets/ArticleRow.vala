@@ -687,9 +687,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		return m_article.getSortID();
 	}
 
-	public unowned Gee.ArrayList<string> getMedia()
+	public bool haveMedia()
 	{
-		return m_article.getMedia();
+		return m_article.haveMedia();
 	}
 
 }

@@ -20,7 +20,8 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private bool m_status;
 	private Gtk.Stack m_stack;
 
-	public UpdateButton (string iconname) {
+	public UpdateButton(string iconname, string tooltip)
+	{
 
 		m_spinner = new Gtk.Spinner();
 		m_stack = new Gtk.Stack();
@@ -33,7 +34,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		m_stack.add_named(m_icon, "icon");
 		this.add(m_stack);
 		this.set_focus_on_click(false);
-		this.set_tooltip_text(_("Update Feeds"));
+		this.set_tooltip_text(tooltip);
 		this.show_all();
 
 		if(settings_state.get_boolean("currently-updating"))

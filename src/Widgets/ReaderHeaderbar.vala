@@ -17,6 +17,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	private Gtk.Button m_share_button;
 	private Gtk.Button m_tag_button;
+	private UpdateButton m_media_button;
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
 	private Gtk.Button m_fullscreen_button;
@@ -119,6 +120,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			});
 		});
 
+		m_media_button = new UpdateButton("mail-attachment-symbolic", _("Attachments"));
+		m_media_button.clicked.connect(() => {
+			var pop = new MediaPopover(m_media_button);
+		});
+
 		m_modeButton.mode_changed.connect(() => {
 			var transition = Gtk.StackTransitionType.CROSSFADE;
 			if(m_state == ArticleListState.ALL
@@ -138,7 +144,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 
-		m_refresh_button = new UpdateButton("feed-refresh-symbolic");
+		m_refresh_button = new UpdateButton("feed-refresh-symbolic", _("Update Feeds"));
 		m_refresh_button.clicked.connect(() => {
 			refresh();
 		});
@@ -173,6 +179,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_right.pack_start(m_read_button);
 		m_header_right.pack_end(m_share_button);
 		m_header_right.pack_end(m_tag_button);
+		m_header_right.pack_end(m_media_button);
 
 		this.pack1(m_header_left, true, false);
 		this.pack2(m_header_right, true, false);
@@ -280,6 +287,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		&& feedDaemon_interface.supportTags())
 			m_tag_button.sensitive = true;
 		m_share_button.sensitive = true;
+	}
+
+	public void showMediaButton(bool show)
+	{
+		m_media_button.visible = show;
 	}
 
 }

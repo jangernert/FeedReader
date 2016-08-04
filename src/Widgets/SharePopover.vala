@@ -70,7 +70,6 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		{
 			showSettings("service");
 			logger.print(LogMessage.DEBUG, "SharePopover: open Settings");
-			this.hide();
 			return;
 		}
 

@@ -119,7 +119,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 				logger.print(LogMessage.DEBUG, "ContentPage: set headerbar");
 				header.setRead(row.isUnread());
 				header.setMarked(row.isMarked());
-				//FIXME: set media button of headerbar
+				header.showMediaButton(row.haveMedia());
 			}
 
 			if(m_article_view.getCurrentArticle() != row.getID())
@@ -360,6 +360,13 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		}
 
 		return tags;
+	}
+
+	public Gee.ArrayList<string> getSelectedArticleMedia()
+	{
+		string id = m_articleList.getSelectedArticle();
+		var article = dataBase.read_article(id);
+		return article.getMedia();
 	}
 
 	public void syncStarted()

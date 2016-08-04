@@ -34,6 +34,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private fullscreenButton m_prevButton;
 	private fullscreenButton m_nextButton;
 	private string m_currentArticle;
+	private MediaPlayer? m_currentMedia = null;
 	private bool m_firstTime = true;
 	private string m_searchTerm = "";
 	private double m_dragBuffer[10];
@@ -174,7 +175,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_videoOverlay = new Gtk.Overlay();
 		m_videoOverlay.add(nextOverlay);
-		m_videoOverlay.add_overlay(new MediaPlayer("http://audio.lugradio.org/badvoltage/Bad%20Voltage%201x72.ogg"));
 
 		this.add(m_videoOverlay);
 		this.add_overlay(m_overlayLabel);
@@ -848,6 +848,19 @@ public class FeedReader.articleView : Gtk.Overlay {
 		logger.print(LogMessage.ERROR, "ArticleView: webview crashed");
 		m_crashed = true;
 		return false;
+	}
+
+	public void addMedia(MediaPlayer media)
+	{
+		//m_videoOverlay.add_overlay(new MediaPlayer("http://audio.lugradio.org/badvoltage/Bad%20Voltage%201x72.ogg"));
+		if(m_currentMedia == null)
+			m_videoOverlay.add_overlay(media);
+		else
+		{
+			m_currentMedia.kill();
+			m_currentMedia = media;
+			m_videoOverlay.add_overlay(media);
+		}
 	}
 
 }

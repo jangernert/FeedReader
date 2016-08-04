@@ -135,6 +135,8 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/LoginPage.vala
     src/Widgets/MainWindow.vala
     src/Widgets/MediaPlayer.vala
+    src/Widgets/MediaPopover.vala
+    src/Widgets/MediaRow.vala
     src/Widgets/ModeButton.vala
     src/Widgets/ReaderHeaderbar.vala
     src/Widgets/RemovePopover.vala

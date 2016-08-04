@@ -15,7 +15,7 @@
 
 public class FeedReader.dbDaemon : FeedReader.dbUI {
 
-    public dbDaemon (string dbFile = "feedreader-03.db") {
+    public dbDaemon (string dbFile = "feedreader-04.db") {
         base(dbFile);
     }
 

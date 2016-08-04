@@ -472,4 +472,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		return m_articleList.selectedIsLast();
 	}
+
+	public void ArticleViewAddMedia(MediaPlayer media)
+	{
+		m_article_view.addMedia(media);
+	}
 }

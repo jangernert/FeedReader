@@ -854,13 +854,16 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		//m_videoOverlay.add_overlay(new MediaPlayer("http://audio.lugradio.org/badvoltage/Bad%20Voltage%201x72.ogg"));
 		if(m_currentMedia == null)
+		{
 			m_videoOverlay.add_overlay(media);
+		}
 		else
 		{
 			m_currentMedia.kill();
-			m_currentMedia = media;
 			m_videoOverlay.add_overlay(media);
 		}
+
+		m_currentMedia = media;
 	}
 
 }

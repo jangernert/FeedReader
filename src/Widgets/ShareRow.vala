@@ -49,7 +49,7 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
         var serviceLabel = new Gtk.Label(serviceName);
         serviceLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
         serviceLabel.set_ellipsize(Pango.EllipsizeMode.END);
-        serviceLabel.set_alignment(0.5f, 0.5f);
+        serviceLabel.set_alignment(0.0f, 0.5f);
         serviceLabel.get_style_context().add_class("h4");
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);

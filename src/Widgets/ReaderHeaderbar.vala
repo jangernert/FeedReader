@@ -123,6 +123,18 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_media_button = new UpdateButton("mail-attachment-symbolic", _("Attachments"));
 		m_media_button.clicked.connect(() => {
 			var pop = new MediaPopover(m_media_button);
+			pop.play.connect((url) => {
+				var window = this.get_toplevel() as readerUI;
+		        if(window != null)
+				{
+					m_media_button.updating(true);
+					var media = new MediaPlayer(url);
+					media.loaded.connect(() => {
+						m_media_button.updating(false);
+					});
+					window.getContent().ArticleViewAddMedia(media);
+				}
+			});
 		});
 
 		m_modeButton.mode_changed.connect(() => {

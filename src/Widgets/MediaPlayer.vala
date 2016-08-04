@@ -36,34 +36,54 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 	private double m_aspectRatio = 0.0;
 	private uint m_seek_source_id = 0;
 	private MediaType m_type;
+	private string m_URL;
 	private DisplayPosition m_display = DisplayPosition.ALL;
 
-	public MediaPlayer(string uri, MediaType type)
+	public MediaPlayer(string url)
 	{
-		m_type = type;
+		m_type = MediaType.AUDIO;
+		m_URL = url;
 
-		if(m_type == MediaType.VIDEO)
-		{
+		inspectMedia.begin((obj, res) => {
+			buildUI();
+			inspectMedia.end(res);
+		});
+	}
+
+	private async void inspectMedia()
+	{
+		SourceFunc callback = inspectMedia.callback;
+
+		ThreadFunc<void*> run = () => {
 			try
-	        {
-	        	var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10*Gst.SECOND));
-	            var info = discoverer.discover_uri(uri);
+		    {
+		        var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10*Gst.SECOND));
+		        var info = discoverer.discover_uri(m_URL);
 
-	            foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
+		        foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
 				{
 					if(i is Gst.PbUtils.DiscovererVideoInfo)
 					{
 						var v = (Gst.PbUtils.DiscovererVideoInfo)i;
 						m_aspectRatio = ((double)v.get_width())/((double)v.get_height());
+						m_type = MediaType.VIDEO;
 					}
 				}
-	        }
-	        catch (Error e)
-	        {
+		    }
+		    catch (Error e)
+		    {
 				logger.print(LogMessage.ERROR, "Unable discover_uri: " + e.message);
 			}
-		}
+			Idle.add((owned) callback);
+			return null;
+		};
 
+		new GLib.Thread<void*>("inspectMedia", run);
+		yield;
+	}
+
+	private void buildUI()
+	{
 		var gtksink = Gst.ElementFactory.make("gtksink", "sink");
 		gtksink.get("widget", out m_videoWidget);
 		m_videoWidget.margin_start = m_margin;
@@ -74,7 +94,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		m_player = Gst.ElementFactory.make("playbin", "player");
 		m_player["video_sink"] = gtksink;
 		m_player["volume"] = 1.0;
-		m_player["uri"] = uri;
+		m_player["uri"] = m_URL;
 
 		Gst.Bus bus = m_player.get_bus();
 		bus.add_watch(GLib.Priority.DEFAULT, busCallback);
@@ -367,6 +387,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		//m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,  pos);
 		m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH,  pos);
 		m_playButton.set_image(m_pauseIcon);
+		m_player.set_state(Gst.State.PLAYING);
 	}
 
 	private void toggleMute()

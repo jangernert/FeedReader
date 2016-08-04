@@ -38,6 +38,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 	private MediaType m_type;
 	private string m_URL;
 	private DisplayPosition m_display = DisplayPosition.ALL;
+	public signal void loaded();
 
 	public MediaPlayer(string url)
 	{
@@ -46,6 +47,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 
 		inspectMedia.begin((obj, res) => {
 			buildUI();
+			loaded();
 			inspectMedia.end(res);
 		});
 	}

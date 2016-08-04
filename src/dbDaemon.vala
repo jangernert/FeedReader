@@ -452,6 +452,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         query.insertValuePair("date", "$DATE");
         query.insertValuePair("guidHash", "$GUIDHASH");
         query.insertValuePair("lastModified", "$LASTMODIFIED");
+        query.insertValuePair("media", "$MEDIA");
         query.build();
 
         Sqlite.Statement stmt;
@@ -475,6 +476,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         int date_position = stmt.bind_parameter_index("$DATE");
         int guidHash_position = stmt.bind_parameter_index("$GUIDHASH");
         int modified_position = stmt.bind_parameter_index("$LASTMODIFIED");
+        int media_position = stmt.bind_parameter_index("$MEDIA");
 
         assert (articleID_position > 0);
         assert (feedID_position > 0);
@@ -489,7 +491,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
         assert (date_position > 0);
         assert (guidHash_position > 0);
         assert (modified_position > 0);
-
+        assert (media_position > 0);
 
         foreach(var article in articles)
         {
@@ -506,6 +508,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
             stmt.bind_text(date_position, article.getDateStr());
             stmt.bind_text(guidHash_position, article.getHash());
             stmt.bind_int (modified_position, article.getLastModified());
+            stmt.bind_text(media_position, article.getMediaString());
 
             while(stmt.step() != Sqlite.DONE) {}
             stmt.reset();

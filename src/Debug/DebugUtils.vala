@@ -223,7 +223,8 @@ public class FeedReader.DebugUtils : GLib.Object {
 									"John Doe",
 									new DateTime.now_local(),
 									-1,
-									""
+									"", // tags
+									"" // media
 							);
 			articles.add(Article);
 		}

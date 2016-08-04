@@ -22,6 +22,7 @@ public class FeedReader.article : GLib.Object {
 	private string m_preview;
 	private string m_feedID;
 	private Gee.ArrayList<string> m_tags;
+	private Gee.ArrayList<string> m_media;
 	private string? m_author;
 	private ArticleStatus m_unread;
 	private ArticleStatus m_marked;
@@ -44,6 +45,7 @@ public class FeedReader.article : GLib.Object {
 						GLib.DateTime date,
 						int sortID,
 						string tags,
+						string media,
 						string guidHash = "",
 						int lastModified = 0)
 	{
@@ -60,12 +62,21 @@ public class FeedReader.article : GLib.Object {
 		m_date = date;
 		m_guidHash = guidHash;
 		m_lastModified = lastModified;
+
 		m_tags = new Gee.ArrayList<string>();
 		var tagArray = tags.split(",");
 		foreach(string tag in tagArray)
 		{
 			if(tag.strip() != "")
 				m_tags.add(tag);
+		}
+
+		m_media = new Gee.ArrayList<string>();
+		var mediaArray = media.split(",");
+		foreach(string m in mediaArray)
+		{
+			if(m.strip() != "")
+				m_media.add(m);
 		}
 	}
 
@@ -211,6 +222,32 @@ public class FeedReader.article : GLib.Object {
 	{
 		if(!m_tags.contains(tag))
 			m_tags.add(tag);
+	}
+
+	public unowned Gee.ArrayList<string> getMedia()
+	{
+		return m_media;
+	}
+
+	public string getMediaString()
+	{
+		string media = "";
+		foreach(string m in m_media)
+		{
+			media += m + ",";
+		}
+		return media;
+	}
+
+	public void setMedia(Gee.ArrayList<string> media)
+	{
+		m_media = media;
+	}
+
+	public void addMedia(string m)
+	{
+		if(!m_media.contains(m))
+			m_media.add(m);
 	}
 
 	public string getHash()

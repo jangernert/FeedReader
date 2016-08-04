@@ -86,7 +86,8 @@ public class FeedReader.dbUI : GLib.Object {
 												"tags" TEXT,
 												"date" DATETIME NOT NULL,
 												"guidHash" TEXT,
-												"lastModified" INTEGER
+												"lastModified" INTEGER,
+												"media" TEXT
 											)""");
 
 			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
@@ -448,9 +449,10 @@ public class FeedReader.dbUI : GLib.Object {
 								stmt.column_text(7),
 								author,
 								Utils.convertStringToDate(stmt.column_text(11)),
-								stmt.column_int(0),
-								stmt.column_text(10),
-								stmt.column_text(12)
+								stmt.column_int(0), // rowid (sortid)
+								stmt.column_text(10), // tags
+								stmt.column_text(14), // media
+								stmt.column_text(12)  // guid
 							);
 		}
 		stmt.reset ();
@@ -1065,6 +1067,7 @@ public class FeedReader.dbUI : GLib.Object {
 		query.selectField("tags");
 		query.selectField("date");
 		query.selectField("guidHash");
+		query.selectField("media");
 
 		if(selectedType == FeedListType.FEED && ID != FeedID.ALL)
 		{
@@ -1156,7 +1159,8 @@ public class FeedReader.dbUI : GLib.Object {
 								Utils.convertStringToDate(stmt.column_text(10)),	// date
 								stmt.column_int(0),									// sortID
 								stmt.column_text(9),								// tags
-								stmt.column_text(11)
+								stmt.column_text(12),								// media
+								stmt.column_text(11)								// guid
 							));
 		}
 

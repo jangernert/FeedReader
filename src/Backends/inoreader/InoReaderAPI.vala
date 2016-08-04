@@ -320,6 +320,21 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					tagString += cat;
 			}
 
+			string mediaString = "";
+			if(object.has_member("enclosure"))
+			{
+				var attachments = object.get_array_member("enclosure");
+
+				uint mediaCount = 0;
+				if(attachments != null)
+					mediaCount = attachments.get_length();
+
+				for(int j = 0; j < mediaCount; ++j)
+				{
+					mediaString = mediaString + attachments.get_object_element(j).get_string_member("href") + ",";
+				}
+			}
+
 			articles.add(new article(
 									id,
 									object.get_string_member("title"),
@@ -332,7 +347,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
-									tagString
+									tagString,
+									mediaString
 							)
 						);
 		}

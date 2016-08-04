@@ -364,6 +364,21 @@ public class FeedReader.FeedlyAPI : Object {
 				}
 			}
 
+			string mediaString = "";
+			if(object.has_member("enclosure"))
+			{
+				var attachments = object.get_array_member("enclosure");
+
+				uint mediaCount = 0;
+				if(attachments != null)
+					mediaCount = attachments.get_length();
+
+				for(int j = 0; j < mediaCount; ++j)
+				{
+					mediaString = mediaString + attachments.get_object_element(j).get_string_member("href") + ",";
+				}
+			}
+
 			var Article = new article(
 								id,
 								title,
@@ -377,7 +392,8 @@ public class FeedReader.FeedlyAPI : Object {
 								author,
 								date, // timestamp includes msecs so divide by 1000 to get rid of them
 								-1,
-								tagString
+								tagString,
+								mediaString
 						);
 			articles.add(Article);
 		}

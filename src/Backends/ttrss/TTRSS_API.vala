@@ -479,6 +479,21 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					}
 				}
 
+				string mediaString = "";
+				if(headline_node.has_member("attachments"))
+				{
+					var attachments = headline_node.get_array_member("attachments");
+
+					uint mediaCount = 0;
+					if(attachments != null)
+						mediaCount = attachments.get_length();
+
+					for(int j = 0; j < mediaCount; ++j)
+					{
+						mediaString = mediaString + attachments.get_object_element(j).get_string_member("content_url") + ",";
+					}
+				}
+
 				var Article = new article(
 										headline_node.get_int_member("id").to_string(),
 										headline_node.get_string_member("title"),
@@ -491,7 +506,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										(headline_node.get_string_member("author") == "") ? null : headline_node.get_string_member("author"),
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
-										tagString
+										tagString,
+										mediaString
 								);
 
 				articles.add(Article);
@@ -592,6 +608,21 @@ public class FeedReader.ttrss_interface : GLib.Object {
 					}
 				}
 
+				string mediaString = "";
+				if(article_node.has_member("attachments"))
+				{
+					var attachments = article_node.get_array_member("attachments");
+
+					uint mediaCount = 0;
+					if(attachments != null)
+						mediaCount = attachments.get_length();
+
+					for(int j = 0; j < mediaCount; ++j)
+					{
+						mediaString = mediaString + attachments.get_object_element(j).get_string_member("content_url") + ",";
+					}
+				}
+
 				var Article = new article(
 										article_node.get_string_member("id"),
 										article_node.get_string_member("title"),
@@ -604,7 +635,8 @@ public class FeedReader.ttrss_interface : GLib.Object {
 										(article_node.get_string_member("author") == "") ? null : article_node.get_string_member("author"),
 										new DateTime.from_unix_local(article_node.get_int_member("updated")),
 										-1,
-										tagString
+										tagString,
+										mediaString
 								);
 
 				articles.add(Article);

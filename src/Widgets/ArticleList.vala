@@ -1176,7 +1176,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_limitScroll = true;
 
         if (m_scroll_source_id > 0)
-		{
+	{
             GLib.Source.remove(m_scroll_source_id);
             m_scroll_source_id = 0;
         }

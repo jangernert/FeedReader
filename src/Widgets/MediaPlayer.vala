@@ -18,7 +18,9 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 	private Gst.Element m_player;
 	private Gtk.Widget m_videoWidget;
 	private Gtk.Box m_box;
+	private Gtk.Stack m_playStack;
 	private Gtk.Button m_playButton;
+	private Gtk.Spinner m_playSpinner;
 	private Gtk.Button m_muteButton;
 	private Gtk.Button m_closeButton;
 	private Gtk.Scale m_scale;
@@ -32,12 +34,15 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 	private Gtk.Image m_closeIcon;
 	private bool m_muted = false;
 	private double m_aspectRatio = 0.0;
+	private uint m_seek_source_id = 0;
+	private MediaType m_type;
 	private DisplayPosition m_display = DisplayPosition.ALL;
-	public signal void close();
 
 	public MediaPlayer(string uri, MediaType type)
 	{
-		if(type == MediaType.VIDEO)
+		m_type = type;
+
+		if(m_type == MediaType.VIDEO)
 		{
 			try
 	        {
@@ -87,7 +92,8 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 				double position = (double)pos/1000000000;
 				double duration = (double)dur/1000000000;
 				double percent = position*100.0/duration;
-				m_scale.set_value(percent);
+				if(m_seek_source_id == 0)
+					m_scale.set_value(percent);
 				calcTime();
 			}
 			return true;
@@ -108,6 +114,12 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		m_playButton.halign = Gtk.Align.CENTER;
 		m_playButton.set_size_request(48, 48);
 
+		m_playSpinner = new Gtk.Spinner();
+		m_playStack = new Gtk.Stack();
+		m_playStack.add_named(m_playButton, "button");
+		m_playStack.add_named(m_playSpinner, "spinner");
+		m_playStack.set_visible_child_name("button");
+
 		m_muteButton = new Gtk.Button();
 		m_muteButton.set_image(m_noiseIcon);
 		m_muteButton.set_relief(Gtk.ReliefStyle.NONE);
@@ -120,7 +132,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		m_scale = new Gtk.Scale.with_range(Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
 		m_scale.draw_value = false;
 		m_scale.set_size_request(200, 48);
-		m_scale.change_value.connect(seek);
+		m_scale.change_value.connect(valueChanged);
 
 		m_labelButton = new Gtk.Button.with_label("00:00");
 		m_labelButton.set_relief(Gtk.ReliefStyle.NONE);
@@ -132,7 +144,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 
 		var hBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 		hBox.margin = m_margin;
-		hBox.pack_start(m_playButton, false, false);
+		hBox.pack_start(m_playStack, false, false);
 		hBox.pack_start(m_muteButton, false, false);
 		hBox.pack_start(m_scale);
 		hBox.pack_start(m_labelButton, false, false);
@@ -152,7 +164,10 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		m_closeButton.set_image(m_closeIcon);
 		m_closeButton.set_relief(Gtk.ReliefStyle.NONE);
 		m_closeButton.get_style_context().add_class("playerClose");
-		m_closeButton.clicked.connect(() => { close(); });
+		m_closeButton.clicked.connect(() => {
+			m_player.set_state(Gst.State.NULL);
+			this.destroy();
+		});
 		m_closeButton.valign = Gtk.Align.START;
 		m_closeButton.halign = Gtk.Align.END;
 		m_closeButton.set_size_request(32, 32);
@@ -161,7 +176,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_box.get_style_context().add_class("player");
 		m_box.margin = 40;
-		if(type == MediaType.VIDEO)
+		if(m_type == MediaType.VIDEO)
 			m_box.pack_start(bufferOverlay, true, true);
 		m_box.pack_start(hBox, false, false);
 
@@ -318,9 +333,33 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		}
 	}
 
-	private bool seek(Gtk.ScrollType scroll, double new_value)
+	private bool valueChanged(Gtk.ScrollType scroll, double new_value)
 	{
 		m_scale.set_value(new_value);
+
+		if (m_seek_source_id == 0)
+		{
+			double startValue = new_value;
+
+			m_seek_source_id = GLib.Timeout.add_full(GLib.Priority.DEFAULT, 500, () => {
+				if(m_scale.get_value() != startValue)
+				{
+					startValue = m_scale.get_value();
+					return true;
+				}
+				else
+				{
+					m_seek_source_id = 0;
+					seek(startValue);
+					return false;
+				}
+			});
+		}
+		return true;
+	}
+
+	private void seek(double new_value)
+	{
 		int64 dur;
 		double percent = new_value/100.0;
 		m_player.query_duration(Gst.Format.TIME, out dur);
@@ -328,7 +367,6 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		//m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,  pos);
 		m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH,  pos);
 		m_playButton.set_image(m_pauseIcon);
-		return true;
 	}
 
 	private void toggleMute()
@@ -369,13 +407,25 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 				if(percent < 100)
 				{
 					m_player.set_state(Gst.State.PAUSED);
-					m_bufferLabel.set_text(percent.to_string() + "%");
-					m_bufferLabel.show();
+
+					if(m_type == MediaType.VIDEO)
+					{
+						m_bufferLabel.set_text(percent.to_string() + "%");
+						m_bufferLabel.show();
+					}
+					else
+					{
+						m_playStack.set_visible_child_name("spinner");
+						m_playSpinner.start();
+					}
 				}
 				else
 				{
 					m_player.set_state(Gst.State.PLAYING);
-					m_bufferLabel.hide();
+					if(m_type == MediaType.VIDEO)
+						m_bufferLabel.hide();
+					else
+						m_playStack.set_visible_child_name("button");
 				}
 				break;
 

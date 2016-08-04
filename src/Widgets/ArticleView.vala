@@ -174,7 +174,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_videoOverlay = new Gtk.Overlay();
 		m_videoOverlay.add(nextOverlay);
-		m_videoOverlay.add_overlay(new MediaPlayer("http://audio.lugradio.org/badvoltage/Bad%20Voltage%201x72.ogg", MediaType.AUDIO));
+		//m_videoOverlay.add_overlay(new MediaPlayer("http://audio.lugradio.org/badvoltage/Bad%20Voltage%201x72.ogg", MediaType.AUDIO));
 
 		this.add(m_videoOverlay);
 		this.add_overlay(m_overlayLabel);

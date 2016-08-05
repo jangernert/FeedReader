@@ -25,7 +25,6 @@ include(ValaVersion)
 include(ValaPrecompile)
 ensure_vala_version("0.26" MINIMUM)
 
-pkg_check_modules(WEBKITGTK4 QUIET webkit2gtk-4.0>=2.8.0)
 pkg_check_modules(LIBUNITY QUIET unity)
 pkg_check_modules(GTK320 QUIET gtk+-3.0>=3.20)
 
@@ -44,20 +43,12 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader-autostart.desktop" @ONLY)
 
 
-set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7 gstreamer-1.0 gstreamer-pbutils-1.0 goa-1.0)
+set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7 webkit2gtk-4.0 gstreamer-1.0 gstreamer-pbutils-1.0 goa-1.0)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)
 	message(STATUS "libunity: ON")
 endif(LIBUNITY_FOUND)
-
-if(WEBKITGTK4_FOUND)
-	list(APPEND MODULES webkit2gtk-4.0)
-	message(STATUS "webkit2gtk-4.0: ON")
-else(WEBKITGTK4_FOUND)
-	list(APPEND MODULES webkit2gtk-3.0)
-	message(STATUS "webkit2gtk-3.0: ON")
-endif(WEBKITGTK4_FOUND)
 
 pkg_check_modules(DEPS REQUIRED ${MODULES})
 
@@ -82,16 +73,10 @@ set(UI_PACKAGES
     libsecret-1
     libnotify
     rest-0.7
+    WebKit2-4.0
     gstreamer-1.0
     gstreamer-pbutils-1.0
     goa-1.0)
-
-if(WEBKITGTK4_FOUND)
-	list(APPEND UI_PACKAGES WebKit2-4.0)
-	list(APPEND UI_OPTIONS --define USE_WEBKIT_4)
-else(WEBKITGTK4_FOUND)
-	list(APPEND UI_PACKAGES WebKit2-3.0)
-endif(WEBKITGTK4_FOUND)
 
 if(GTK320_FOUND)
 	list(APPEND UI_OPTIONS --define USE_GTK320)
@@ -173,6 +158,7 @@ CUSTOM_VAPIS
     vapi/libvilistextum.vapi
     vapi/gtkimageview.vapi
     vapi/gd-1.0.vapi
+    vapi/goa-1.0.vapi
 )
 
 add_executable(${EXEC_NAME} ${UI})

@@ -582,7 +582,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private void setBackgroundColor()
 	{
-#if USE_WEBKIT_4
 		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
@@ -593,7 +592,6 @@ public class FeedReader.articleView : Gtk.Overlay {
                 m_currentView.set_background_color(background);
             }
 		}
-#endif
 	}
 
 	private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitTestResult hitTest)

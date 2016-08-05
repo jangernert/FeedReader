@@ -22,7 +22,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - libgtk-3-dev (>= 3.12)
 - libsoup2.4-dev
 - libjson-glib-dev
-- libwebkit2gtk-4.0-dev (or version 3.0)
+- libwebkit2gtk-4.0-dev
 - libsqlite3-dev
 - libsecret-1-dev
 - libnotify-dev
@@ -30,6 +30,9 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - libunity-dev (optional)
 - librest-dev
 - libgee-0.8-dev
+- libgstreamer1.0-dev
+- libgstreamer-plugins-base1.0-dev (gstreamer-pbutils-1.0)
+- libgoa-1.0-dev
 
 
 ### How to install 

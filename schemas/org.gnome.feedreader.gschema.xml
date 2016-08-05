@@ -154,5 +154,13 @@
 				Sort articles in the ArticleList by date not by insert order.
 			</description>
 		</key>
+
+		<key name='articlelist-newest-first' type='b'>
+			<default>true</default>
+			<summary>newest articles first</summary>
+			<description>
+				Sort articles in the ArticleList from new to old (either by article date or insert order).
+			</description>
+		</key>
 	</schema>
 </schemalist>

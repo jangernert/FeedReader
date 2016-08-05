@@ -84,6 +84,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         	newArticleList();
         });
 
+        var newest_first = new SettingSwitch(_("Newest first"), settings_general, "articlelist-newest-first");
+        newest_first.changed.connect(() => {
+        	newArticleList();
+        });
+
         var articleview_settings = headline(_("Article View:"));
 
         var article_theme = new SettingDropbox(_("Theme"), settings_general, "article-theme", {_("Default"), _("Spring"), _("Midnight"), _("Parchment")});
@@ -106,6 +111,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         uiBox.pack_start(feedlist_theme, false, true, 0);
         uiBox.pack_start(article_settings, false, true, 0);
         uiBox.pack_start(article_sort, false, true, 0);
+        uiBox.pack_start(newest_first, false, true, 0);
         uiBox.pack_start(articleview_settings, false, true, 0);
         uiBox.pack_start(article_theme, false, true, 0);
         uiBox.pack_start(fontsize, false, true, 0);

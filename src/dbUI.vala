@@ -1130,7 +1130,11 @@ public class FeedReader.dbUI : GLib.Object {
 				break;
 		}
 
-		query.orderBy(order_field, true);
+		bool desc = false;
+		if(settings_general.get_boolean("articlelist-newest-first"))
+			desc = true;
+
+		query.orderBy(order_field, desc);
 		query.limit(limit);
 		query.offset(offset);
 		query.build();

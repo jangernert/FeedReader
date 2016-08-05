@@ -135,6 +135,9 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var grabber = new SettingDropbox(_("Content Grabber"), settings_general,"content-grabber",
 		    								{_("None"), _("Built in grabber")});
 
+        var mediaplayer = new SettingDropbox(_("Media Player"), settings_general,"mediaplayer",
+                                    		{_("Internal"), _("System Default")});
+
 
     	var internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         internalsBox.expand = true;
@@ -146,6 +149,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         internalsBox.pack_start(drop_articles, false, true, 0);
         internalsBox.pack_start(service_settings, false, true, 0);
         internalsBox.pack_start(grabber, false, true, 0);
+        internalsBox.pack_start(mediaplayer, false, true, 0);
 
 		return internalsBox;
     }

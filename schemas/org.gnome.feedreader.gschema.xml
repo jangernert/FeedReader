@@ -56,6 +56,11 @@
 		<value nick="DARK" value="1"/>
 		<value nick="ELEMENTARY" value="2"/>
 	</enum>
+	
+	<enum id="org.gnome.feedreader.media-player">
+		<value nick="INTERNAL" value="0"/>
+		<value nick="SYSTEM" value="1"/>
+	</enum>
 
 
 
@@ -136,6 +141,10 @@
 
 		<key name='feedlist-sort-by' enum='org.gnome.feedreader.feedlist-sort'>
 			<default>'RECEIVED'</default>
+		</key>
+		
+		<key name='mediaplayer' enum='org.gnome.feedreader.media-player'>
+			<default>'INTERNAL'</default>
 		</key>
 
 		<key name='articlelist-sort-by' enum='org.gnome.feedreader.article-list-sort'>

@@ -154,6 +154,11 @@ namespace FeedReader {
 		AUDIO
 	}
 
+	public enum Player {
+		INTERNAL,
+		SYSTEM
+	}
+
 	public enum DisplayPosition {
 		ALL,
 		POS,

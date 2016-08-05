@@ -26,7 +26,6 @@ include(ValaPrecompile)
 ensure_vala_version("0.26" MINIMUM)
 
 pkg_check_modules(LIBUNITY QUIET unity)
-pkg_check_modules(GTK320 QUIET gtk+-3.0>=3.20)
 
 add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
 add_subdirectory (po)
@@ -77,10 +76,6 @@ set(UI_PACKAGES
     gstreamer-1.0
     gstreamer-pbutils-1.0
     goa-1.0)
-
-if(GTK320_FOUND)
-	list(APPEND UI_OPTIONS --define USE_GTK320)
-endif(GTK320_FOUND)
 
 vala_precompile(UI ${EXEC_NAME}
     GitSHA1.vala
@@ -158,7 +153,6 @@ CUSTOM_VAPIS
     vapi/libvilistextum.vapi
     vapi/gtkimageview.vapi
     vapi/gd-1.0.vapi
-    vapi/goa-1.0.vapi
 )
 
 add_executable(${EXEC_NAME} ${UI})
@@ -305,9 +299,4 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/shortcuts.ui DESTINATION ${PKGDA
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})
-
-if(GTK320_FOUND)
-	install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css/post320/gtk-css DESTINATION ${PKGDATADIR})
-else(GTK320_FOUND)
-	install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css/pre320/gtk-css DESTINATION ${PKGDATADIR})
-endif(GTK320_FOUND)
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css DESTINATION ${PKGDATADIR})

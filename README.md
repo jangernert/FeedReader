@@ -19,7 +19,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - vala (>=0.26)
 - pkg-config
 - libgirepository1.0-dev
-- libgtk-3-dev (>= 3.12)
+- libgtk-3-dev (>= 3.20)
 - libsoup2.4-dev
 - libjson-glib-dev
 - libwebkit2gtk-4.0-dev
@@ -32,7 +32,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - libgee-0.8-dev
 - libgstreamer1.0-dev
 - libgstreamer-plugins-base1.0-dev (gstreamer-pbutils-1.0)
-- libgoa-1.0-dev
+- libgoa-1.0-dev (>= 3.20)
 
 
 ### How to install 

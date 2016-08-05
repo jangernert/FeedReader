@@ -385,8 +385,8 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		double percent = new_value/100.0;
 		m_player.query_duration(Gst.Format.TIME, out dur);
 		int64 pos = (int64)(percent * (double)dur);
-		//m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,  pos);
-		m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH,  pos);
+		m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,  pos);
+		//m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH,  pos);
 		m_playButton.set_image(m_pauseIcon);
 		m_player.set_state(Gst.State.PLAYING);
 	}

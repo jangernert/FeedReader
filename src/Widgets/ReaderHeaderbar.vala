@@ -229,6 +229,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
+		m_media_button.visible = show;
 
 		if(m_online)
 		{

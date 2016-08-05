@@ -44,7 +44,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader-autostart.desktop" @ONLY)
 
 
-set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7 gstreamer-1.0 gstreamer-pbutils-1.0)
+set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7 gstreamer-1.0 gstreamer-pbutils-1.0 goa-1.0)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)
@@ -61,7 +61,7 @@ endif(WEBKITGTK4_FOUND)
 
 pkg_check_modules(DEPS REQUIRED ${MODULES})
 
-add_definitions(${DEPS_CFLAGS})
+add_definitions(${DEPS_CFLAGS} -DGOA_API_IS_SUBJECT_TO_CHANGE)
 link_libraries(${DEPS_LIBRARIES} -lm)
 link_directories(${DEPS_LIBRARY_DIRS})
 
@@ -83,7 +83,8 @@ set(UI_PACKAGES
     libnotify
     rest-0.7
     gstreamer-1.0
-    gstreamer-pbutils-1.0)
+    gstreamer-pbutils-1.0
+    goa-1.0)
 
 if(WEBKITGTK4_FOUND)
 	list(APPEND UI_PACKAGES WebKit2-4.0)

@@ -207,7 +207,7 @@ namespace FeedReader {
 	{
 		Gtk.init(ref args);
         Gtk.AboutDialog dialog = new Gtk.AboutDialog();
-
+		test();
         dialog.response.connect ((response_id) => {
 			if(response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
 				Gtk.main_quit();
@@ -264,6 +264,31 @@ namespace FeedReader {
 		window.show_all();
 
 		Gtk.main();
+	}
+
+	public static void test()
+	{
+		var client = new Goa.Client.sync();
+		var accounts = client.get_accounts();
+		foreach(var object in accounts)
+		{
+			stdout.printf("account type: %s\n", object.account.provider_type);
+			stdout.printf("account name: %s\n", object.account.provider_name);
+			stdout.printf("account identity: %s\n", object.account.identity);
+			stdout.printf("account id: %s\n", object.account.id);
+
+			if(object.oauth2_based != null)
+			{
+				string access_token = "";
+				int expires = 0;
+				object.oauth2_based.call_get_access_token_sync(out access_token, out expires);
+				stdout.printf("access token: %s\n", access_token);
+				stdout.printf("expires in: %i\n", expires);
+				stdout.printf("client id: %s\n", object.oauth2_based.client_id);
+				stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
+			}
+				stdout.printf("\n");
+		}
 	}
 
 }

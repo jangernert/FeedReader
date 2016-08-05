@@ -177,6 +177,12 @@ namespace FeedReader {
 			return 0;
 		}
 
+		if(media != null)
+		{
+			playMedia(args, media);
+			return 0;
+		}
+
 		Gst.init(ref args);
 		var app = new FeedApp();
 		app.run(args);
@@ -187,13 +193,15 @@ namespace FeedReader {
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
-		{ "debug", 0, 0, OptionArg.NONE, ref debug, "stat in debug mode", null },
+		{ "debug", 0, 0, OptionArg.NONE, ref debug, "start in debug mode", null },
+		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
 		{ null }
 	};
 
 	private static bool version = false;
 	private static bool about = false;
 	private static bool debug = false;
+	private static string? media = null;
 
 	static void show_about(string[] args)
 	{
@@ -221,6 +229,39 @@ namespace FeedReader {
 		dialog.website = AboutInfo.website;
 		dialog.website_label = AboutInfo.websiteLabel;
 		dialog.present ();
+
+		Gtk.main();
+	}
+
+	static void playMedia(string[] args, string url)
+	{
+		Gtk.init(ref args);
+		Gst.init(ref args);
+
+		settings_general = new GLib.Settings ("org.gnome.feedreader");
+		logger = new Logger("mediaPlayer");
+
+		var window = new Gtk.Window();
+		window.set_size_request(800, 600);
+		window.destroy.connect(Gtk.main_quit);
+		var header = new Gtk.HeaderBar();
+		header.show_close_button = true;
+
+		try
+		{
+    		Gtk.CssProvider provider = new Gtk.CssProvider();
+			provider.load_from_path(InstallPrefix + "/share/FeedReader/gtk-css/basics.css");
+			weak Gdk.Display display = Gdk.Display.get_default();
+            weak Gdk.Screen screen = display.get_default_screen();
+			Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		}
+		catch (Error e){}
+
+		var player = new FeedReader.MediaPlayer(url);
+
+		window.add(player);
+		window.set_titlebar(header);
+		window.show_all();
 
 		Gtk.main();
 	}

@@ -260,8 +260,8 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		int64 dur;
 		m_player.query_position(Gst.Format.TIME, out pos);
 		m_player.query_duration(Gst.Format.TIME, out dur);
-		double position = (double)pos/1000000000;
-		double duration = (double)dur/1000000000;
+		double position = (int)((double)pos/1000000000);
+		double duration = (int)((double)dur/1000000000);
 
 
 
@@ -269,12 +269,12 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		double? md = null;
 		double? hd = null;
 
-		if(sd >= 60.0)
+		if( ((int)sd) >= 60)
 		{
 			md = (int)(sd/60);
 			sd = sd - (md*60);
 
-			if(md >= 60.0)
+			if( ((int)md) >= 60)
 			{
 				hd = (int)(md/60);
 				md = md - (hd*60);
@@ -285,12 +285,12 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		double? mp = null;
 		double? hp = null;
 
-		if(sp >= 60.0)
+		if( ((int)sp) >= 60)
 		{
 			mp = (int)(sp/60);
 			sp = sp - (mp*60);
 
-			if(mp >= 60.0)
+			if( ((int)mp) >= 60)
 			{
 				hp = (int)(mp/60);
 				mp = mp - (hp*60);
@@ -301,12 +301,12 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		double? mr = null;
 		double? hr = null;
 
-		if(sr >= 60.0)
+		if( ((int)sr) >= 60)
 		{
 			mr = (int)(sr/60);
 			sr = sr - (mr*60);
 
-			if(mr >= 60.0)
+			if( ((int)mr) >= 60)
 			{
 				hr = (int)(mr/60);
 				mr = mr - (hr*60);
@@ -316,20 +316,20 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		var pLabel = "";
 		(hp != null) ? pLabel += "%02.0f:".printf(hp) : null;
 		(mp != null) ? pLabel += "%02.0f".printf(mp) : null;
-		(mp != null && hp == null) ? pLabel += ":" : pLabel += "0:";
-		(hp == null) ? pLabel += "%02.0f".printf(sp) : null;
+		(mp != null) ? pLabel += ":" : pLabel += "0:";
+		pLabel += "%02.0f".printf(sp);
 
 		var dLabel = "";
 		(hd != null) ? dLabel += "%02.0f:".printf(hd) : null;
 		(md != null) ? dLabel += "%02.0f".printf(md) : null;
-		(md != null && hd == null) ? dLabel += ":" : dLabel += "0:";
-		(hd == null) ? dLabel += "%02.0f".printf(sd) : null;
+		(md != null) ? dLabel += ":" : dLabel += "0:";
+		dLabel += "%02.0f".printf(sd);
 
 		var rLabel = "-";
 		(hr != null) ? rLabel += "%02.0f:".printf(hr) : null;
 		(mr != null) ? rLabel += "%02.0f".printf(mr) : null;
-		(mr != null && hr == null) ? rLabel += ":" : rLabel += "0:";
-		(hr == null) ? rLabel += "%02.0f".printf(sr) : null;
+		(mr != null) ? rLabel += ":" : rLabel += "0:";
+		rLabel += "%02.0f".printf(sr);
 
 		if(dur == -1)
 		{

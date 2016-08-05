@@ -949,7 +949,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private void onAllocated(Gtk.Widget row, Gtk.Allocation allocation)
 	{
 		m_limitScroll = true;
-		setScrollPos(m_current_adjustment.get_value() + allocation.height);
+		if(settings_general.get_boolean("articlelist-newest-first"))
+			setScrollPos(m_current_adjustment.get_value() + allocation.height);
 		row.size_allocate.disconnect(onAllocated);
 
 		// increase helpCounter2 for every row that is allocated and check if all of them
@@ -1179,7 +1180,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_limitScroll = true;
 
         if (m_scroll_source_id > 0)
-	{
+		{
             GLib.Source.remove(m_scroll_source_id);
             m_scroll_source_id = 0;
         }

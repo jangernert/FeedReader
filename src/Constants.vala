@@ -20,7 +20,10 @@ namespace FeedReader {
 		TTRSS = 0,
 		FEEDLY,
 		OWNCLOUD,
-		INOREADER
+		INOREADER,
+		THEOLDREADER,
+		FEEDHQ,
+		BAZQUX
 	}
 
 	public enum OAuth {
@@ -171,6 +174,24 @@ namespace FeedReader {
 		UNSUBSCRIBE
 	}
 
+	public enum TheOldreaderSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
+	public enum FeedHQSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
+	public enum BazQuxSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
 	namespace TagID {
 		const string NEW = "blubb";
 	}
@@ -179,6 +200,21 @@ namespace FeedReader {
 		const string base_uri = "https://www.inoreader.com/reader/api/0/";
 		const string apikey = "1000001058";
 		const string apitoken = "a3LyhdTSKk_dcCygZUZBZenIO2SQcpzz";
+	}
+
+	namespace TheOldReaderSecret {
+		const string base_uri = "https://theoldreader.com/reader/api/0/";
+		const string client = "FeedReader";
+		const string accountType = "HOSTED_OR_GOOGLE";
+		const string service = "reader";
+	}
+
+	namespace FeedHQSecret {
+		const string base_uri = "https://feedhq.org/reader/api/0/";
+	}
+
+	namespace BazQuxSecret {
+		const string base_uri = "https://bazqux.com/reader/api/0/";
 	}
 
 	namespace FeedlySecret {

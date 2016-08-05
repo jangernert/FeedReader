@@ -13,31 +13,23 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.InoReaderConnection {
-	private string m_api_key;
-	private string m_api_token;
-	private string m_api_username;
+public class FeedReader.TheOldReaderConnection {
 	private string m_api_code;
+	private string m_api_username;
 
-	public InoReaderConnection()
+	public TheOldReaderConnection()
 	{
-		m_api_key = InoReaderSecret.apikey;
-		m_api_token = InoReaderSecret.apitoken;
-		m_api_username = inoreader_utils.getUser();
-		m_api_code = inoreader_utils.getAccessToken();
+		m_api_username = theoldreader_utils.getUser();
+		m_api_code = theoldreader_utils.getAccessToken();
 	}
 
 	public int getToken()
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", "https://www.inoreader.com/accounts/ClientLogin");
+		var message = new Soup.Message("POST", "https://theoldreader.com/accounts/ClientLogin/");
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "Apikey", Secret.SchemaAttributeType.STRING,
-							                      "Apisecret", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = InoReaderSecret.apikey;
-		attributes["Apisecret"] = InoReaderSecret.apitoken;
 		attributes["Username"] = m_api_username;
 
 		string passwd = "";
@@ -48,20 +40,19 @@ public class FeedReader.InoReaderConnection {
 			logger.print(LogMessage.ERROR, e.message);
 		}
 
-		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd ;
-		message.request_headers.append("AppId", m_api_key);
-		message.request_headers.append("AppKey", m_api_token);
+		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd + "&service=reader&accountType=HOSTED_OR_GOOGLE&client=FeedReader";
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 
 		try{
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			string response = (string)message.response_body.flatten().data;
+			logger.print(LogMessage.ERROR, "Could not load response to Message from oldreader - %s".printf(response));
 			if(regex.match(response))
 			{
 				string split = regex.replace( response, -1,0,"");
-				settings_inoreader.set_string("access-token",split.strip());
-				m_api_code = inoreader_utils.getAccessToken();
+				settings_theoldreader.set_string("access-token",split.strip());
+				m_api_code = theoldreader_utils.getAccessToken();
 				return LoginResponse.SUCCESS;
 			}
 			else
@@ -71,28 +62,34 @@ public class FeedReader.InoReaderConnection {
 			}
 		}
 		catch (Error e){
-			logger.print(LogMessage.ERROR, "Could not load response to Message from inoreader - %s".printf(e.message));
+			logger.print(LogMessage.ERROR, "Could not load response to Message from oldreader - %s".printf(e.message));
 		}
 
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-	public string send_request(string path, string? message_string = null)
-	{
-		return send_post_request(path, "POST", message_string);
-	}
-
-	private string send_post_request(string path, string type, string? message_string = null)
+	public string send_get_request(string path)
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message(type, InoReaderSecret.base_uri+path);
-		string inoauth = "GoogleLogin auth=" + inoreader_utils.getAccessToken();
-		message.request_headers.append("Authorization", inoauth) ;
-		message.request_headers.append("AppId", m_api_key);
-		message.request_headers.append("AppKey", m_api_token);
+		var message = new Soup.Message("GET", TheOldReaderSecret.base_uri+path);
+		logger.print(LogMessage.DEBUG, "Get theoldreader" + TheOldReaderSecret.base_uri+path);
+		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
+		message.request_headers.append("Authorization", oldauth) ;
+		session.send_message(message);
+		return (string)message.response_body.data;
+	}
+
+	public string send_post_request(string path, string? message_string = null)
+	{
+		var session = new Soup.Session();
+		logger.print(LogMessage.DEBUG, "post request " + path + " : " + message_string);
+		var message = new Soup.Message("POST", TheOldReaderSecret.base_uri+path);
+		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
+		message.request_headers.append("Authorization", oldauth) ;
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
+		logger.print(LogMessage.DEBUG, "post reposne" + (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 

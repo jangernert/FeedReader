@@ -676,6 +676,10 @@ namespace FeedReader {
 	GLib.Settings settings_ttrss;
 	GLib.Settings settings_owncloud;
 	GLib.Settings settings_inoreader;
+	GLib.Settings settings_theoldreader;
+	GLib.Settings settings_feedhq;
+	GLib.Settings settings_bazqux;
+	
 	GLib.Settings settings_tweaks;
 	FeedServer server;
 	Logger logger;
@@ -707,6 +711,9 @@ namespace FeedReader {
 		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
 		settings_inoreader = new GLib.Settings ("org.gnome.feedreader.inoreader");
+		settings_theoldreader = new GLib.Settings("org.gnome.feedreader.theoldreader");
+		settings_bazqux = new GLib.Settings("org.gnome.feedreader.bazqux");
+		settings_feedhq = new GLib.Settings("org.gnome.feedreader.feedhq");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 
 		try {

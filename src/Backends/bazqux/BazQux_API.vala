@@ -1,55 +1,38 @@
-//	This file is part of FeedReader.
-//
-//	FeedReader is free software: you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation, either version 3 of the License, or
-//	(at your option) any later version.
-//
-//	FeedReader is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
-//
-//	You should have received a copy of the GNU General Public License
-//	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
+public class FeedReader.BazQuxAPI : GLib.Object {
 
-public class FeedReader.InoReaderAPI : GLib.Object {
+	private BazQuxConnection m_connection;
 
-	private InoReaderConnection m_connection;
-
-	private string m_inoreader;
+	private string m_bazqux;
 	private string m_userID;
 
-	public InoReaderAPI ()
+	public BazQuxAPI ()
 	{
-		m_connection = new InoReaderConnection();
+		m_connection = new BazQuxConnection();
 	}
 
 
 	public LoginResponse login()
 	{
-		if(inoreader_utils.getAccessToken() == "")
+		if(bazqux_utils.getAccessToken() == "")
 		{
 			m_connection.getToken();
 		}
 
 		if(getUserID())
 		{
+			getTempPostToken();
 			return LoginResponse.SUCCESS;
 		}
-
-		settings_inoreader.reset("access-token");
-
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public bool ping() {
-		return Utils.ping("inoreader.com");
+		return Utils.ping("bazqux.com");
 	}
 
 	private bool getUserID()
 	{
-		string response = m_connection.send_request("user-info");
+		string response = m_connection.send_get_request("user-info");
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -64,21 +47,30 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
-			settings_inoreader.set_string("user-id", m_userID);
-			logger.print(LogMessage.INFO, "Inoreader: userID = " + m_userID);
+			settings_feedhq.set_string("user-id", m_userID);
+			logger.print(LogMessage.INFO, "Feedhq: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
-				settings_inoreader.set_string("username", root.get_string_member("userEmail"));
-
+			{
+				settings_feedhq.set_string("username", root.get_string_member("userEmail"));
+			}
 			return true;
 		}
 
 		return false;
 	}
 
+	public void getTempPostToken()
+	{
+		var response = m_connection.send_get_request("token");
+		string temptoken = (string)response;
+		settings_feedhq.set_string("access-post-token", temptoken);
+	}
+
 	public void getFeeds(Gee.LinkedList<feed> feeds)
 	{
-		string response = m_connection.send_request("subscription/list");
+
+		string response = m_connection.send_get_request("subscription/list?output=json");
 
 		var parser = new Json.Parser();
 		try{
@@ -100,7 +92,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
 
-			if(icon_url != "" && !inoreader_utils.downloadIcon(feedID, icon_url))
+			if(icon_url != "" && !feedhq_utils.downloadIcon(feedID, "https:"+icon_url))
 			{
 				icon_url = "";
 			}
@@ -122,7 +114,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			{
 				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
 			}
-
 			feeds.add(
 				new feed (
 						feedID,
@@ -140,7 +131,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public void getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		string response = m_connection.send_request("tag/list");
+		string response = m_connection.send_get_request("tag/list?output=json");
 
 		var parser = new Json.Parser();
 		try{
@@ -164,8 +155,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 			if(id.contains("/label/"))
 			{
-				if(inoreader_utils.tagIsCat(id, feeds))
-				{
 					categories.add(
 						new category(
 							id,
@@ -176,18 +165,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 							1
 						)
 					);
-				}
-				else
-				{
-					tags.add(
-						new tag(
-							id,
-							title,
-							dataBase.getTagColor()
-						)
-					);
-				}
-
 				++orderID;
 			}
 		}
@@ -196,7 +173,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public int getTotalUnread()
 	{
-		string response = m_connection.send_request("unread-count");
+		string response = m_connection.send_get_request("unread-count?output=json");
 
 		var parser = new Json.Parser();
 		try{
@@ -233,14 +210,14 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		message_string += "&xt=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-		string response = m_connection.send_request("stream/items/ids", message_string);
+		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
 
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
+			logger.print(LogMessage.ERROR, "updateArticles: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
 		}
 
@@ -265,13 +242,12 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		var message_string = "n=" + count.to_string();
 
 		if(whatToGet == ArticleStatus.UNREAD)
-			message_string += "&xt=user/-/state/com.google/read";
+			message_string += "&s=user/-/state/com.google/unread";
 		if(whatToGet == ArticleStatus.READ)
-			message_string += "&it=user/-/state/com.google/read";
+			message_string += "&s=user/-/state/com.google/read";
 		else if(whatToGet == ArticleStatus.MARKED)
-			message_string += "&it=user/-/state/com.google/starred";
-
-		if(continuation != null)
+			message_string += "&s=user/-/state/com.google/starred";
+		if (continuation != null)
 			message_string += "&c=" + continuation;
 
 
@@ -280,7 +256,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
-		string response = m_connection.send_request(api_endpoint, message_string);
+		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
 
 		//logger.print(LogMessage.DEBUG, message_string);
 		//logger.print(LogMessage.DEBUG, response);
@@ -308,7 +284,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			bool read = false;
 			var cats = object.get_array_member("categories");
 			uint cat_length = cats.get_length();
-
 			for (uint j = 0; j < cat_length; j++)
 			{
 				string cat = cats.get_string_element(j);
@@ -320,26 +295,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					tagString += cat;
 			}
 
-			string mediaString = "";
-			if(object.has_member("enclosure"))
-			{
-				var attachments = object.get_array_member("enclosure");
-
-				uint mediaCount = 0;
-				if(attachments != null)
-					mediaCount = attachments.get_length();
-
-				for(int j = 0; j < mediaCount; ++j)
-				{
-					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
-					{
-						mediaString = mediaString + attachment.get_string_member("href") + ",";
-					}
-				}
-			}
-
 			articles.add(new article(
 									id,
 									object.get_string_member("title"),
@@ -347,13 +302,12 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 									object.get_object_member("origin").get_string_member("streamId"),
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-									object.get_object_member("summary").get_string_member("content"),
+									object.get_object_member("content").get_string_member("content"),
 									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+									(object.get_string_member("author") == "") ? _("not found") : object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
-									tagString,
-									mediaString
+									tagString
 							)
 						);
 		}
@@ -365,7 +319,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	}
 
 
-	public void edidTag(string articleIDs, string tagID, bool add = true)
+	public void edidTag(string articleID, string tagID, bool add = true)
 	{
 		var message_string = "";
 		if(add)
@@ -374,22 +328,21 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			message_string += "r=";
 
 		message_string += tagID;
-
-		var id_array = articleIDs.split(",");
-		foreach(string id in id_array)
-		{
-			message_string += "&i=" + id;
-		}
-		string response = m_connection.send_request("edit-tag", message_string);
+		message_string += "&i=" + composeID(articleID);
+		string response = m_connection.send_post_request("edit-tag?output=json", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
-	{
-		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
-		logger.print(LogMessage.DEBUG, message_string);
-		string response = m_connection.send_request("mark-all-as-read", message_string);
+	{ 
+		int64 lastsync = settings_state.get_int("last-sync");
+		lastsync = lastsync*10000000;
+		string message_string = "s=%s&ts=%lld".printf(streamID, lastsync);
+		string response = m_connection.send_post_request("mark-all-as-read?output=json",message_string );
 	}
-
+	public string composeID(string tagName)
+	{
+		return "/item/%s".printf(tagName);
+	}	
 	public string composeTagID(string tagName)
 	{
 		return "user/%s/label/%s".printf(m_userID, tagName);
@@ -398,29 +351,28 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_request("disable-tag", message_string);
+		string response = m_connection.send_post_request("disable-tag?output=json", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_request("rename-tag", message_string);
+		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
-	public void editSubscription(InoSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	public void editSubscription(FeedHQSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
-
 		switch(action)
 		{
-			case InoSubscriptionAction.EDIT:
+			case FeedHQSubscriptionAction.EDIT:
 				message_string += "edit";
 				break;
-			case InoSubscriptionAction.SUBSCRIBE:
+			case FeedHQSubscriptionAction.SUBSCRIBE:
 				message_string += "subscribe";
 				break;
-			case InoSubscriptionAction.UNSUBSCRIBE:
+			case FeedHQSubscriptionAction.UNSUBSCRIBE:
 				message_string += "unsubscribe";
 				break;
 		}
@@ -437,9 +389,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			message_string += "&r=" + remove;
 
 
-		m_connection.send_request("subscription/edit", message_string);
+		m_connection.send_post_request("subscription/edit?output=json", message_string);
 	}
-
-
 }
-

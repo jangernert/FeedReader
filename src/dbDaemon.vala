@@ -1048,4 +1048,42 @@ public class FeedReader.dbDaemon : dbBase {
         return true;
 	}
 
+    public Gee.ArrayList<feed> read_feeds_without_cat()
+	{
+		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
+		feed tmpfeed;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("*");
+		query.addCustomCondition(getUncategorizedQuery());
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("name", true);
+		}
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			string feedID = stmt.column_text(0);
+			string catString = stmt.column_text(4);
+			string[] catVec = { "" };
+			if(catString != "")
+				catVec = catString.split(",");
+			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
+			tmp.add(tmpfeed);
+		}
+
+		return tmp;
+	}
+
+    protected string getUncategorizedQuery()
+	{
+		string catID = server.uncategorizedID();
+		return "category_id = \"%s\"".printf(catID);
+	}
+
 }

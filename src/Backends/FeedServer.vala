@@ -141,6 +141,27 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	public string uncategorizedID()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.uncategorizedID();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.uncategorizedID();
+
+			case Backend.INOREADER:
+				return m_inoreader.uncategorizedID();
+
+			case Backend.FEEDLY:
+				return m_feedly.uncategorizedID();
+
+			default:
+				return "";
+		}
+	}
+
 	public bool hideCagetoryWhenEmtpy(string catID)
 	{
 		switch(m_type)

@@ -474,4 +474,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
     {
         Utils.resetSettings(settings_inoreader);
     }
+
+	public string uncategorizedID()
+	{
+		return "";
+	}
 }

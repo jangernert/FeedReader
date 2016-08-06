@@ -98,6 +98,11 @@ namespace FeedReader {
 			return server.getServerURL();
 		}
 
+		public string uncategorizedID()
+		{
+			return server.uncategorizedID();
+		}
+
 		public bool hideCagetoryWhenEmtpy(string catID)
 		{
 			return server.hideCagetoryWhenEmtpy(catID);

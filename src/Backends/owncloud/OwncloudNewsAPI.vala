@@ -463,4 +463,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         Utils.resetSettings(settings_owncloud);
         OwncloudNews_Utils.deletePassword();
     }
+
+    public string uncategorizedID()
+	{
+		return "0";
+	}
 }

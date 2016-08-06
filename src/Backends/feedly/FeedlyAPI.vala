@@ -737,4 +737,9 @@ public class FeedReader.FeedlyAPI : Object {
     {
         Utils.resetSettings(settings_feedly);
     }
+
+	public string uncategorizedID()
+	{
+		return "";
+	}
 }

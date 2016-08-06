@@ -984,4 +984,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		Utils.resetSettings(settings_ttrss);
 		ttrss_utils.deletePassword();
 	}
+
+	public string uncategorizedID()
+	{
+		return "0";
+	}
 }

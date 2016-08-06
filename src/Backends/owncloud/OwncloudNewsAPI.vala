@@ -428,28 +428,33 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return true;
     }
 
-    public bool doesMultiLevelCategories()
+    public static bool doesMultiLevelCategories()
 	{
 		return false;
 	}
 
-    public bool supportTags()
+    public static bool supportTags()
 	{
 		return false;
 	}
 
-    public string symbolicIcon()
+    public static string symbolicIcon()
 	{
 		return "feed-service-owncloud-symbolic";
 	}
 
-    public string accountName()
+    public static string accountName()
 	{
 		return settings_owncloud.get_string("username");
 	}
 
-    public string getServer()
+    public static string getServer()
 	{
 		return settings_owncloud.get_string("url");
+	}
+
+    public static bool hideCagetoryWhenEmtpy(string cadID)
+	{
+		return false;
 	}
 }

@@ -39,6 +39,7 @@ namespace FeedReader {
 		public abstract void quit() throws IOError;
 
 		// BACKEND INFOS
+		public abstract bool hideCagetoryWhenEmtpy(string catID) throws IOError;
 		public abstract bool supportMultiLevelCategories() throws IOError;
 		public abstract bool supportTags() throws IOError;
 		public abstract string? symbolicIcon() throws IOError;

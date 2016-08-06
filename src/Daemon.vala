@@ -98,6 +98,11 @@ namespace FeedReader {
 			return server.getServerURL();
 		}
 
+		public bool hideCagetoryWhenEmtpy(string catID)
+		{
+			return server.hideCagetoryWhenEmtpy(catID);
+		}
+
 		public void scheduleSync(int time)
 		{
 			if (m_timeout_source_id > 0)

@@ -440,23 +440,33 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		m_connection.send_request("subscription/edit", message_string);
 	}
 
-	public bool doesMultiLevelCategories()
+	public static bool doesMultiLevelCategories()
 	{
 		return false;
 	}
 
-	public bool supportTags()
+	public static bool supportTags()
 	{
 		return true;
 	}
 
-	public string symbolicIcon()
+	public static string symbolicIcon()
 	{
 		return "feed-service-inoreader-symbolic";
 	}
 
-	public string accountName()
+	public static string accountName()
 	{
 		return settings_inoreader.get_string("username");
+	}
+
+	public static string? getServer()
+	{
+		return null;
+	}
+
+	public static bool hideCagetoryWhenEmtpy(string cadID)
+	{
+		return false;
 	}
 }

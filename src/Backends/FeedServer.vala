@@ -131,9 +131,34 @@ public class FeedReader.FeedServer : GLib.Object {
 				return m_owncloud.getServer();
 
 			case Backend.INOREADER:
+				return m_inoreader.getServer();
+
 			case Backend.FEEDLY:
+				return m_feedly.getServer();
+
 			default:
 				return null;
+		}
+	}
+
+	public bool hideCagetoryWhenEmtpy(string catID)
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.hideCagetoryWhenEmtpy(catID);
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.hideCagetoryWhenEmtpy(catID);
+
+			case Backend.INOREADER:
+				return m_inoreader.hideCagetoryWhenEmtpy(catID);
+
+			case Backend.FEEDLY:
+				return m_feedly.hideCagetoryWhenEmtpy(catID);
+
+			default:
+				return false;
 		}
 	}
 

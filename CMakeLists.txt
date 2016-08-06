@@ -93,6 +93,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Model/InterfaceState.vala
     src/Model/ShareAccount.vala
     src/Constants.vala
+    src/dbBase.vala
     src/dbUI.vala
     src/UiUtils.vala
     src/Utils.vala
@@ -188,7 +189,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     InstallPrefix.vala
     src/Constants.vala
     src/Daemon.vala
-    src/dbUI.vala
+    src/dbBase.vala
     src/dbDaemon.vala
     src/Logger.vala
     src/Utils.vala
@@ -235,10 +236,11 @@ add_executable(${DAEMON_NAME} ${daemon})
 target_link_libraries(${DAEMON_NAME} vilistextum)
 
 vala_precompile(debug ${DEBUG_NAME}
-    src/dbUI.vala
+    src/dbBase.vala
     src/dbDaemon.vala
     src/Logger.vala
     src/Utils.vala
+    src/OfflineActionManager.vala
     src/QueryBuilder.vala
     src/Model/Feed.vala
     src/Model/Category.vala
@@ -247,6 +249,19 @@ vala_precompile(debug ${DEBUG_NAME}
     src/Model/InterfaceState.vala
     src/Model/OfflineAction.vala
     src/Constants.vala
+    src/Backends/FeedServer.vala
+    src/Backends/OPMLparser.vala
+    src/Backends/ttrss/TTRSS_API.vala
+    src/Backends/ttrss/TTRSS_Utils.vala
+    src/Backends/ttrss/TTRSS_Message.vala
+    src/Backends/feedly/FeedlyAPI.vala
+    src/Backends/feedly/FeedlyConnection.vala
+    src/Backends/inoreader/InoReaderAPI.vala
+    src/Backends/inoreader/InoReaderConnection.vala
+    src/Backends/inoreader/InoReader_Utils.vala
+    src/Backends/owncloud/OwncloudNewsAPI.vala
+    src/Backends/owncloud/OwncloudNews_Message.vala
+    src/Backends/owncloud/OwncloudNews_Utils.vala
     src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
@@ -265,7 +280,9 @@ PACKAGES
     gee-0.8
     libsoup-2.4
     json-glib-1.0
+    libsecret-1
     libxml-2.0
+    libnotify
 
 OPTIONS
     --target-glib=2.32

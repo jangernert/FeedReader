@@ -394,6 +394,16 @@ namespace FeedReader {
 		{
 
 		}
+
+		public string addCategory(string title, string? parentID = null, bool createLocally = false)
+		{
+			return "";
+		}
+
+		public void addFeed(string feedURL, string cat, bool isID)
+		{
+
+		}
 	}
 
 	[DBus (name = "org.gnome.feedreaderError")]
@@ -404,7 +414,8 @@ namespace FeedReader {
 
 	void on_bus_aquired (DBusConnection conn) {
 		try {
-		    conn.register_object ("/org/gnome/feedreader", new FeedDaemonServer());
+			daemon = new FeedDaemonServer();
+		    conn.register_object ("/org/gnome/feedreader", daemon);
 		} catch (IOError e) {
 		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
 		    logger.print(LogMessage.WARNING, e.message);
@@ -415,10 +426,18 @@ namespace FeedReader {
 
 
 	dbDaemon dataBase;
+	FeedServer server;
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
+	GLib.Settings settings_feedly;
+	GLib.Settings settings_ttrss;
+	GLib.Settings settings_owncloud;
+	GLib.Settings settings_inoreader;
 	GLib.Settings settings_tweaks;
 	Logger logger;
+	FeedDaemonServer daemon;
+	Notify.Notification notification;
+	bool m_notifyActionSupport = false;
 
 
 
@@ -431,6 +450,7 @@ namespace FeedReader {
 
 		logger = new Logger("debugger");
 		dataBase = new dbDaemon("debug.db");
+		server = new FeedServer(Backend.NONE);
 		dataBase.init();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,

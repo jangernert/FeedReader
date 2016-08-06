@@ -992,53 +992,7 @@ public class FeedReader.dbDaemon : dbBase {
         query.print();
     }
 
-
-    public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
-	{
-		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
-		category tmpcategory;
-
-		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
-		query.selectField("*");
-
-		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
-		{
-			query.orderBy("title", true);
-		}
-		else
-		{
-			query.orderBy("orderID", true);
-		}
-
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
-		while(stmt.step () == Sqlite.ROW)
-		{
-			string catID = stmt.column_text(0);
-
-			if(feeds == null || showCategory(catID, feeds))
-			{
-				tmpcategory = new category(
-					catID, stmt.column_text(1),
-					(feeds == null) ? 0 : Utils.categoryGetUnread(catID, feeds),
-					stmt.column_int(3),
-					stmt.column_text(4),
-					stmt.column_int(5)
-				);
-
-				tmp.add(tmpcategory);
-			}
-		}
-
-		return tmp;
-	}
-
-    private bool showCategory(string catID, Gee.ArrayList<feed> feeds)
+    protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
         if(server.hideCagetoryWhenEmtpy(catID)
         && !Utils.categoryIsPopulated(catID, feeds))
@@ -1048,39 +1002,7 @@ public class FeedReader.dbDaemon : dbBase {
         return true;
 	}
 
-    public Gee.ArrayList<feed> read_feeds_without_cat()
-	{
-		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
-		feed tmpfeed;
-
-		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
-		query.selectField("*");
-		query.addCustomCondition(getUncategorizedQuery());
-		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
-		{
-			query.orderBy("name", true);
-		}
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
-		while (stmt.step () == Sqlite.ROW) {
-			string feedID = stmt.column_text(0);
-			string catString = stmt.column_text(4);
-			string[] catVec = { "" };
-			if(catString != "")
-				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
-			tmp.add(tmpfeed);
-		}
-
-		return tmp;
-	}
-
-    protected string getUncategorizedQuery()
+    protected override string getUncategorizedQuery()
 	{
 		string catID = server.uncategorizedID();
 		return "category_id = \"%s\"".printf(catID);

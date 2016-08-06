@@ -215,6 +215,27 @@ public class FeedReader.dbBase : GLib.Object {
 		return unread;
 	}
 
+	public uint get_unread_uncategorized()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+		query.addCustomCondition(getUncategorizedFeedsQuery());
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, "%d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+
+		int unread = 0;
+		while (stmt.step() == Sqlite.ROW) {
+			unread = stmt.column_int(0);
+		}
+		stmt.reset();
+		return unread;
+	}
+
 	public int getTagColor()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.tags");
@@ -483,6 +504,28 @@ public class FeedReader.dbBase : GLib.Object {
 		return maxCatLevel;
 	}
 
+	public bool haveFeedsWithoutCat()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("count(*)");
+		query.addCustomCondition(getUncategorizedQuery());
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			int count = stmt.column_int(0);
+
+			if(count > 0)
+				return true;
+		}
+		return false;
+	}
+
 	public bool haveCategories()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
@@ -628,6 +671,39 @@ public class FeedReader.dbBase : GLib.Object {
 			}
 		}
 		return feedIDs;
+	}
+
+	protected virtual string getUncategorizedQuery()
+	{
+		return "";
+	}
+
+	protected virtual bool showCategory(string catID, Gee.ArrayList<feed> feeds)
+	{
+        return true;
+	}
+
+	protected string getUncategorizedFeedsQuery()
+	{
+		string sql = "feedID IN (%s)";
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("feed_id");
+		query.addCustomCondition(getUncategorizedQuery());
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK) {
+			error("Error: %d: %s\n", sqlite_db.errcode (), sqlite_db.errmsg ());
+		}
+
+		string feedIDs = "";
+		while (stmt.step () == Sqlite.ROW) {
+			feedIDs += "\"" + stmt.column_text(0) + "\"" + ",";
+		}
+
+		return sql.printf(feedIDs.substring(0, feedIDs.length-1));
 	}
 
 
@@ -780,6 +856,39 @@ public class FeedReader.dbBase : GLib.Object {
 		return count;
 	}
 
+
+	public Gee.ArrayList<feed> read_feeds_without_cat()
+	{
+		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
+		feed tmpfeed;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("*");
+		query.addCustomCondition(getUncategorizedQuery());
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("name", true);
+		}
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			string feedID = stmt.column_text(0);
+			string catString = stmt.column_text(4);
+			string[] catVec = { "" };
+			if(catString != "")
+				catVec = catString.split(",");
+			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
+			tmp.add(tmpfeed);
+		}
+
+		return tmp;
+	}
+
 	public category? read_category(string catID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
@@ -876,6 +985,67 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		return count;
+	}
+
+	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)
+	{
+		var categories = read_categories(feeds);
+		var tmpCategories = new Gee.ArrayList<category>();
+
+		foreach(category cat in categories)
+		{
+			if(cat.getLevel() == level)
+			{
+				tmpCategories.add(cat);
+			}
+		}
+
+		return tmpCategories;
+	}
+
+    public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
+	{
+		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
+		category tmpcategory;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
+		query.selectField("*");
+
+		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		{
+			query.orderBy("title", true);
+		}
+		else
+		{
+			query.orderBy("orderID", true);
+		}
+
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while(stmt.step () == Sqlite.ROW)
+		{
+			string catID = stmt.column_text(0);
+
+			if(feeds == null || showCategory(catID, feeds))
+			{
+				tmpcategory = new category(
+					catID, stmt.column_text(1),
+					(feeds == null) ? 0 : Utils.categoryGetUnread(catID, feeds),
+					stmt.column_int(3),
+					stmt.column_text(4),
+					stmt.column_int(5)
+				);
+
+				tmp.add(tmpcategory);
+			}
+		}
+
+		return tmp;
 	}
 
 	//[Profile]

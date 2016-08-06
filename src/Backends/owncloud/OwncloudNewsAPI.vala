@@ -457,4 +457,10 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		return false;
 	}
+
+    public void resetAccount()
+    {
+        Utils.resetSettings(settings_owncloud);
+        OwncloudNews_Utils.deletePassword();
+    }
 }

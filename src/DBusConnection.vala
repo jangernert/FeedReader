@@ -34,6 +34,7 @@ namespace FeedReader {
 		public abstract bool checkOnlineAsync() throws IOError;
 
 		// GENERAL
+		public abstract void resetAccount() throws IOError;
 		public abstract void resetDB() throws IOError;
 		public abstract int getVersion() throws IOError;
 		public abstract void quit() throws IOError;

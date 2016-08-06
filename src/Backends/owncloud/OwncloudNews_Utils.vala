@@ -79,6 +79,23 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 		return passwd;
 	}
 
+    public static bool deletePassword()
+	{
+		bool removed = false;
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+										"URL", Secret.SchemaAttributeType.STRING,
+										"Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+        attributes["URL"] = settings_owncloud.get_string("url");
+		attributes["Username"] = getUser();
+
+		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
+			removed = Secret.password_clearv.end(async_res);
+			pwSchema.unref();
+		});
+		return removed;
+	}
+
     public static string getHtaccessPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,

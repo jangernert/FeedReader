@@ -696,4 +696,13 @@ public class FeedReader.Utils : GLib.Object {
 		return unread;
 	}
 
+	public static void resetSettings(GLib.Settings settings)
+	{
+		var keys = settings.list_keys();
+		foreach(string key in keys)
+		{
+			settings.reset(key);
+		}
+	}
+
 }

@@ -732,4 +732,9 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		return catID.has_suffix("global.must");
 	}
+
+	public void resetAccount()
+    {
+        Utils.resetSettings(settings_feedly);
+    }
 }

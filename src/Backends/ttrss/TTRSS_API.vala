@@ -978,4 +978,10 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	{
 		return catID == "0";
 	}
+
+	public void resetAccount()
+	{
+		Utils.resetSettings(settings_ttrss);
+		ttrss_utils.deletePassword();
+	}
 }

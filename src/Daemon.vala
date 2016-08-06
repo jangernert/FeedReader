@@ -432,6 +432,11 @@ namespace FeedReader {
 			dataBase.init();
 		}
 
+		public void resetAccount()
+		{
+			server.resetAccount();
+		}
+
 		public void markFeedAsRead(string feedID, bool isCat)
 		{
 			if(isCat)

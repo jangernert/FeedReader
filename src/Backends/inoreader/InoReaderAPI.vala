@@ -469,4 +469,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		return false;
 	}
+
+	public void resetAccount()
+    {
+        Utils.resetSettings(settings_inoreader);
+    }
 }

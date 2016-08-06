@@ -183,6 +183,28 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	public void resetAccount()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.resetAccount();
+				break;
+
+			case Backend.FEEDLY:
+				m_feedly.resetAccount();
+				break;
+
+			case Backend.INOREADER:
+				m_inoreader.resetAccount();
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud.resetAccount();
+				break;
+		}
+	}
+
 	public LoginResponse login()
 	{
 		switch(m_type)

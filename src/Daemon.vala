@@ -83,6 +83,21 @@ namespace FeedReader {
 			return server.supportMultiLevelCategories();
 		}
 
+		public string? symbolicIcon()
+		{
+			return server.symbolicIcon();
+		}
+
+		public string? accountName()
+		{
+			return server.accountName();
+		}
+
+		public string? getServerURL()
+		{
+			return server.getServerURL();
+		}
+
 		public void scheduleSync(int time)
 		{
 			if (m_timeout_source_id > 0)

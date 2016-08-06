@@ -17,38 +17,57 @@ namespace FeedReader {
 
 	[DBus (name = "org.gnome.feedreader")]
 	interface FeedDaemon : Object {
-		public abstract int getVersion() throws IOError;
+
 		public abstract void scheduleSync(int time) throws IOError;
 		public abstract void startSync() throws IOError;
 		public abstract void startInitSync() throws IOError;
-		public abstract LoginResponse login(Backend type) throws IOError;
-		public abstract LoginResponse isLoggedIn() throws IOError;
-		public abstract bool isOnline() throws IOError;
-		public abstract bool supportMultiLevelCategories() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void markAllItemsRead() throws IOError;
+		public abstract void updateBadge() throws IOError;
+
+
+		// OFFLINE / ONLINE
+		public abstract LoginResponse login(Backend type) throws IOError;
+		public abstract LoginResponse isLoggedIn() throws IOError;
+		public abstract bool isOnline() throws IOError;
+		public abstract bool checkOnlineAsync() throws IOError;
+
+		// GENERAL
+		public abstract void resetDB() throws IOError;
+		public abstract int getVersion() throws IOError;
+		public abstract void quit() throws IOError;
+
+		// BACKEND INFOS
+		public abstract bool supportMultiLevelCategories() throws IOError;
+		public abstract bool supportTags() throws IOError;
+		public abstract string? symbolicIcon() throws IOError;
+		public abstract string? accountName() throws IOError;
+		public abstract string? getServerURL() throws IOError;
+
+		// MANIPULATE TAGS
+		public abstract string createTag(string caption) throws IOError;
 		public abstract void tagArticle(string articleID, string tagID, bool add) throws IOError;
 		public abstract void deleteTag(string tagID) throws IOError;
 		public abstract void renameTag(string tagID, string newName) throws IOError;
 		public abstract void updateTagColor(string tagID, int color) throws IOError;
-		public abstract void resetDB() throws IOError;
-		public abstract string createTag(string caption) throws IOError;
-		public abstract void updateBadge() throws IOError;
-		public abstract bool supportTags() throws IOError;
-		public abstract bool checkOnlineAsync() throws IOError;
+
+		// MANIPULATE CATEGORIES
 		public abstract string addCategory(string title, string parentID, bool createLocally) throws IOError;
 		public abstract void removeCategory(string catID) throws IOError;
 		public abstract void removeCategoryWithChildren(string catID) throws IOError;
 		public abstract void moveCategory(string catID, string newParentID) throws IOError;
 		public abstract void renameCategory(string catID, string newName) throws IOError;
+
+		// MANIPULATE FEEDS
 		public abstract void addFeed(string feedURL, string cat, bool isID) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
 		public abstract void moveFeed(string feedID, string currentCatID, string? newCatID = null) throws IOError;
 		public abstract void renameFeed(string feedID, string newName) throws IOError;
 		public abstract void importOPML(string opml) throws IOError;
-		public abstract void quit() throws IOError;
+
+		// SIGNALS
 		public signal void syncStarted();
 		public signal void syncFinished();
 		public signal void springCleanStarted();

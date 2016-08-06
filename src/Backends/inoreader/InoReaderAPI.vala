@@ -449,4 +449,14 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		return true;
 	}
+
+	public string symbolicIcon()
+	{
+		return "feed-service-inoreader-symbolic";
+	}
+
+	public string accountName()
+	{
+		return settings_inoreader.get_string("username");
+	}
 }

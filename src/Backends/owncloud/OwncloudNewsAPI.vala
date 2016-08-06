@@ -437,4 +437,19 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		return false;
 	}
+
+    public string symbolicIcon()
+	{
+		return "feed-service-owncloud-symbolic";
+	}
+
+    public string accountName()
+	{
+		return settings_owncloud.get_string("username");
+	}
+
+    public string getServer()
+	{
+		return settings_owncloud.get_string("url");
+	}
 }

@@ -78,6 +78,65 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	public string? symbolicIcon()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.symbolicIcon();
+
+			case Backend.FEEDLY:
+				return m_feedly.symbolicIcon();
+
+			case Backend.INOREADER:
+				return m_inoreader.symbolicIcon();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.symbolicIcon();
+
+			default:
+				return null;
+		}
+	}
+
+	public string? accountName()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.accountName();
+
+			case Backend.FEEDLY:
+				return m_feedly.accountName();
+
+			case Backend.INOREADER:
+				return m_inoreader.accountName();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.accountName();
+
+			default:
+				return null;
+		}
+	}
+
+	public string? getServerURL()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.getServer();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.getServer();
+
+			case Backend.INOREADER:
+			case Backend.FEEDLY:
+			default:
+				return null;
+		}
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		switch(m_type)

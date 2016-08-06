@@ -60,46 +60,25 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
 
     public void refresh()
     {
-        string service_name = "";
-        string user_name = "";
-        string server = "";
-
-        switch(settings_general.get_enum("account-type"))
-        {
-            case Backend.TTRSS:
-                service_name = "ttrss";
-                user_name = settings_ttrss.get_string("username");
-                server = Utils.shortenURL(settings_ttrss.get_string("url"));
-                break;
-            case Backend.FEEDLY:
-                service_name = "feedly";
-                user_name = settings_feedly.get_string("email");
-                break;
-            case Backend.OWNCLOUD:
-                service_name = "owncloud";
-                user_name = settings_owncloud.get_string("username");
-                server = Utils.shortenURL(settings_owncloud.get_string("url"));
-                break;
-            case Backend.INOREADER:
-                service_name = "inoreader";
-                user_name = settings_inoreader.get_string("username");
-                break;
-        }
+        string? service_icon = feedDaemon_interface.symbolicIcon();
+        string? user_name = feedDaemon_interface.accountName();
+        string server = feedDaemon_interface.getServerURL();
 
         if(this.is_visible())
         {
-            if(user_name == null || user_name == "")
+            if(user_name == null || service_icon == null)
             {
                 m_spinner.start();
                 m_stack.set_visible_child_name("spinner");
             }
             else
             {
-                m_logo.set_from_icon_name("feed-service-%s-symbolic".printf(service_name), Gtk.IconSize.INVALID);
+                m_logo.set_from_icon_name(service_icon, Gtk.IconSize.INVALID);
                 m_logo.get_style_context().add_class("fr-sidebar-symbolic");
-                this.set_tooltip_text(server);
                 m_label.set_label(user_name);
                 m_stack.set_visible_child_name("info");
+                if(server != null)
+                    this.set_tooltip_text(Utils.shortenURL(server));
             }
         }
 

@@ -712,4 +712,14 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		return true;
 	}
+
+	public string symbolicIcon()
+	{
+		return "feed-service-feedly-symbolic";
+	}
+
+	public string accountName()
+	{
+		return settings_feedly.get_string("email");
+	}
 }

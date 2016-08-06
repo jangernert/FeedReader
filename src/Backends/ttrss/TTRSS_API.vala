@@ -958,4 +958,19 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	{
 		return true;
 	}
+
+	public string symbolicIcon()
+	{
+		return "feed-service-ttrss-symbolic";
+	}
+
+	public string accountName()
+	{
+		return settings_ttrss.get_string("username");
+	}
+
+	public string getServer()
+	{
+		return settings_ttrss.get_string("url");
+	}
 }

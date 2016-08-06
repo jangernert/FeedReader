@@ -433,7 +433,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							                        1,
 													// expand the category "categories" if either it is inserted for the first time (no tag before)
 													// or if it has to be done to restore the state of the feedrow
-							                        !m_TagsDisplayed || getCatState("Categories")
+							                        getCatState(CategoryID.MASTER)
 					                                );
 			categorierow.collapse.connect((collapse, catID, selectParent) => {
 				if(collapse)
@@ -455,7 +455,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							                        1,
 													// expand the category "tags" if either it is inserted for the first time (no tag before)
 													// or if it has to be done to restore the state of the feedrow
-							                        !m_TagsDisplayed || getCatState("Tags")
+							                        getCatState(CategoryID.TAGS)
 					                                );
 			tagrow.collapse.connect((collapse, catID, selectParent) => {
 				if(collapse)
@@ -528,7 +528,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					                                item.getUnreadCount(),
 					                                parent,
 							                        level,
-							                        getCatState(item.getTitle())
+							                        getCatState(item.getCatID())
 					                                );
 					    expand = false;
 						categorierow.collapse.connect((collapse, catID, selectParent) => {
@@ -812,7 +812,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				if(tmpCatRow.isExpanded())
 				{
-					e += tmpCatRow.getName();
+					e += tmpCatRow.getID();
 				}
 			}
 		}
@@ -882,13 +882,13 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 	}
 
-	private bool getCatState(string name)
+	private bool getCatState(string id)
 	{
 		string[] list = settings_state.get_strv("expanded-categories");
 
 		foreach(string str in list)
 		{
-			if(name == str)
+			if(id == str)
 				return true;
 		}
 

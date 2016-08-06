@@ -108,14 +108,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static string[] getDefaultExpandedCategories()
 	{
-		string[] e = {};
-		e += "Categories";
-		if(settings_general.get_enum("account-type") == Backend.TTRSS)
-			e += "Labels";
-		else
-			e += "Tags";
-
-		return e;
+		return {CategoryID.MASTER, CategoryID.TAGS};
 	}
 
 	public static GLib.DateTime convertStringToDate(string date)

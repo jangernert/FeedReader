@@ -707,4 +707,9 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		return false;
 	}
+
+	public bool supportTags()
+	{
+		return true;
+	}
 }

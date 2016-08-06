@@ -90,12 +90,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-
-    public bool supportTags()
-	{
-		return false;
-	}
-
     public void getFeeds(Gee.LinkedList<feed> feeds)
 	{
 		if(isloggedin())
@@ -435,6 +429,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     }
 
     public bool doesMultiLevelCategories()
+	{
+		return false;
+	}
+
+    public bool supportTags()
 	{
 		return false;
 	}

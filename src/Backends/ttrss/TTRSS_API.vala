@@ -156,39 +156,6 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
-	public async bool supportTags()
-	{
-		SourceFunc callback = supportTags.callback;
-		bool result = false;
-
-		ThreadFunc<void*> run = () => {
-			var message = new ttrss_message(m_ttrss_url);
-			message.add_string("sid", m_ttrss_sessionid);
-			message.add_string("op", "removeLabel");
-			int error = message.send();
-
-			if(error == ConnectionError.TTRSS_API)
-			{
-				var response = message.get_response_object();
-				if(response.has_member("error"))
-				{
-					if(response.get_string_member("error") == "INCORRECT_USAGE")
-					{
-						result = true;
-					}
-				}
-			}
-
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("update_article", run);
-		yield;
-
-		return result;
-	}
-
 
 	public int getUnreadCount()
 	{
@@ -983,6 +950,11 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 	public bool doesMultiLevelCategories()
+	{
+		return true;
+	}
+
+	public bool supportTags()
 	{
 		return true;
 	}

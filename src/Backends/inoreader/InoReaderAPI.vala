@@ -444,4 +444,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		return false;
 	}
+
+	public bool supportTags()
+	{
+		return true;
+	}
 }

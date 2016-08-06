@@ -20,7 +20,6 @@ public class FeedReader.FeedServer : GLib.Object {
 	private InoReaderAPI m_inoreader;
 	private OfflineActionManager m_offlineActions;
 	private int m_type;
-	private bool m_supportTags;
 	private bool m_offline = false;
 	public signal void newFeedList();
 	public signal void updateFeedList();
@@ -31,7 +30,6 @@ public class FeedReader.FeedServer : GLib.Object {
 	public FeedServer(Backend type)
 	{
 		m_type = type;
-		m_supportTags = false;
 		m_offlineActions = new OfflineActionManager();
 		logger.print(LogMessage.DEBUG, "FeedServer: new with type %i".printf(type));
 
@@ -61,7 +59,23 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool supportTags()
 	{
-		return m_supportTags;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.supportTags();
+
+			case Backend.FEEDLY:
+				return m_feedly.supportTags();
+
+			case Backend.INOREADER:
+				return m_inoreader.supportTags();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.supportTags();
+
+			default:
+				return false;
+		}
 	}
 
 	public bool supportMultiLevelCategories()
@@ -93,17 +107,11 @@ public class FeedReader.FeedServer : GLib.Object {
 				return LoginResponse.NO_BACKEND;
 
 			case Backend.TTRSS:
-				var response = m_ttrss.login();
-				m_supportTags = false;
-				m_ttrss.supportTags.begin((obj, res) => {
-					m_supportTags = m_ttrss.supportTags.end(res);
-				});
-				return response;
+				return m_ttrss.login();
 
 			case Backend.FEEDLY:
 				if(m_feedly.ping())
 				{
-					m_supportTags = true;
 					return m_feedly.login();
 				}
 				break;
@@ -112,7 +120,6 @@ public class FeedReader.FeedServer : GLib.Object {
 				return m_owncloud.login();
 
 			case Backend.INOREADER:
-				m_supportTags = true;
 				return m_inoreader.login();
 		}
 		return LoginResponse.UNKNOWN_ERROR;

@@ -455,7 +455,7 @@ public class FeedReader.feedList : Gtk.Stack {
 							                        1,
 													// expand the category "tags" if either it is inserted for the first time (no tag before)
 													// or if it has to be done to restore the state of the feedrow
-							                        !m_TagsDisplayed || getCatState(name)
+							                        !m_TagsDisplayed || getCatState("Tags")
 					                                );
 			tagrow.collapse.connect((collapse, catID, selectParent) => {
 				if(collapse)

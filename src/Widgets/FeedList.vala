@@ -258,7 +258,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		var feeds = dataBase.read_feeds();
 
-		if(!Utils.onlyShowFeeds())
+		if(!UiUtils.onlyShowFeeds())
 		{
 			createCategories(ref feeds, masterCat);
 			createTags();
@@ -267,7 +267,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(var item in feeds)
 		{
 
-			if(!Utils.onlyShowFeeds())
+			if(!UiUtils.onlyShowFeeds())
 			{
 				var FeedChildList = m_list.get_children();
 				int pos = 0;
@@ -421,8 +421,9 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
+		bool supportTags = feedDaemon_interface.supportTags();
 
-		if((!Utils.onlyShowFeeds() && Utils.haveTags()) || masterCat)
+		if((!UiUtils.onlyShowFeeds() && supportTags) || masterCat)
 		{
 			var categorierow = new categorieRow(
 					                                _("Categories"),
@@ -1067,7 +1068,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		int level = 1;
 		int pos = -1;
 
-		if(Utils.haveTags())
+		if(feedDaemon_interface.supportTags())
 		{
 			var FeedChildList = m_list.get_children();
 			foreach(Gtk.Widget row in FeedChildList)

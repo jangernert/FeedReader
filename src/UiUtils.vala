@@ -123,6 +123,19 @@ public class FeedReader.UiUtils : GLib.Object {
 		return menu;
 	}
 
+	public static bool onlyShowFeeds()
+	{
+		if(settings_general.get_boolean("only-feeds"))
+			return true;
+
+		if(!dataBase.haveCategories()
+		&& !feedDaemon_interface.supportTags()
+		&& !dataBase.haveFeedsWithoutCat())
+			return true;
+
+		return false;
+	}
+
 	public static void saveImageDialog(string imagePath, Gtk.Window parent)
 	{
 		var _file = GLib.File.new_for_path(imagePath);

@@ -69,11 +69,17 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				return true;
+				return m_ttrss.doesMultiLevelCategories();
 
 			case Backend.FEEDLY:
-			case Backend.OWNCLOUD:
+				return m_feedly.doesMultiLevelCategories();
+
 			case Backend.INOREADER:
+				return m_inoreader.doesMultiLevelCategories();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.doesMultiLevelCategories();
+
 			default:
 				return false;
 		}
@@ -1473,4 +1479,5 @@ public class FeedReader.FeedServer : GLib.Object {
 			dataBase.resetOfflineActions();
 		}
 	}
+
 }

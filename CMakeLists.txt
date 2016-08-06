@@ -23,7 +23,7 @@ find_package(PkgConfig)
 find_package(Vala REQUIRED)
 include(ValaVersion)
 include(ValaPrecompile)
-ensure_vala_version("0.26" MINIMUM)
+ensure_vala_version("0.30" MINIMUM)
 
 pkg_check_modules(LIBUNITY QUIET unity)
 

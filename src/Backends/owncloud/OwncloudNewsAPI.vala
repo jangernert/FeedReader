@@ -433,4 +433,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 		return true;
     }
+
+    public bool doesMultiLevelCategories()
+	{
+		return false;
+	}
 }

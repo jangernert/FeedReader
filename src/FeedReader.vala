@@ -183,6 +183,12 @@ namespace FeedReader {
 			return 0;
 		}
 
+		if(test)
+		{
+			testFunc();
+			return 0;
+		}
+
 		Gst.init(ref args);
 		var app = new FeedApp();
 		app.run(args);
@@ -195,6 +201,7 @@ namespace FeedReader {
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
 		{ "debug", 0, 0, OptionArg.NONE, ref debug, "start in debug mode", null },
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
+		{ "test", 0, 0, OptionArg.NONE, ref test, "test", null },
 		{ null }
 	};
 
@@ -202,12 +209,12 @@ namespace FeedReader {
 	private static bool about = false;
 	private static bool debug = false;
 	private static string? media = null;
+	private static bool test = false;
 
 	static void show_about(string[] args)
 	{
 		Gtk.init(ref args);
         Gtk.AboutDialog dialog = new Gtk.AboutDialog();
-		test();
         dialog.response.connect ((response_id) => {
 			if(response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
 				Gtk.main_quit();
@@ -266,7 +273,7 @@ namespace FeedReader {
 		Gtk.main();
 	}
 
-	public static void test()
+	public static void testFunc()
 	{
 		Goa.Client? client = new Goa.Client.sync();
 
@@ -290,7 +297,24 @@ namespace FeedReader {
 					stdout.printf("client id: %s\n", object.oauth2_based.client_id);
 					stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
 				}
-					stdout.printf("\n");
+				else if(object.oauth_based != null)
+				{
+					string access_token = "";
+					string access_token_secret = "";
+					int expires = 0;
+					object.oauth_based.call_get_access_token_sync(out access_token, out access_token_secret, out expires);
+					stdout.printf("access token: %s\n", access_token);
+					stdout.printf("access token secret: %s\n", access_token_secret);
+					stdout.printf("expires in: %i\n", expires);
+				}
+				else if(object.password_based != null)
+				{
+					string password = "";
+					object.password_based.call_get_password_sync ("abc", out password);
+					stdout.printf("password: %s\n", password);
+					stdout.printf("presentation identity: %s\n", object.account.presentation_identity);
+				}
+				stdout.printf("\n");
 			}
 		}
 		else

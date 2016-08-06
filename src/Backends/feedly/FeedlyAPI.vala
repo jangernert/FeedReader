@@ -703,4 +703,8 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_post_string_request_to_feedly("/v3/opml", opml, "text/xml");
 	}
 
+	public bool doesMultiLevelCategories()
+	{
+		return false;
+	}
 }

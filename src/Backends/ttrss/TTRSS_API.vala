@@ -981,4 +981,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 		return false;
 	}
+
+	public bool doesMultiLevelCategories()
+	{
+		return true;
+	}
 }

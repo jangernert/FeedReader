@@ -160,7 +160,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		    this.drag_drop.connect(onDragDrop);
 		    this.drag_data_received.connect(onDragDataReceived);
 
-			if(settings_general.get_enum("account-type") == Backend.TTRSS)
+			if(feedDaemon_interface.supportMultiLevelCategories())
 			{
 				const Gtk.TargetEntry[] provided_targets = {
 				    { "STRING",     0, DragTarget.CAT }

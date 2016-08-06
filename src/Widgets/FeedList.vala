@@ -445,12 +445,9 @@ public class FeedReader.feedList : Gtk.Stack {
 			categorierow.setAsRead.connect(markSelectedRead);
 			categorierow.moveUP.connect(moveUP);
 			categorierow.reveal(true);
-			string name = _("Tags");
-			if(settings_general.get_enum("account-type") == Backend.TTRSS)
-				name = _("Labels");
 
 			var tagrow = new categorieRow(
-					                                name,
+					                                _("Tags"),
 					                                CategoryID.TAGS,
 					                                0,
 					                                0,

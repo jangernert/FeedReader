@@ -148,10 +148,10 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     	var internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         internalsBox.expand = true;
         internalsBox.pack_start(sync_settings, false, true, 0);
-        if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
-		internalsBox.pack_start(sync_count, false, true, 0);
-	internalsBox.pack_start(sync_time, false, true, 0);
-	internalsBox.pack_start(db_settings, false, true, 0);
+        if(feedDaemon_interface.useMaxArticles())
+		      internalsBox.pack_start(sync_count, false, true, 0);
+    	internalsBox.pack_start(sync_time, false, true, 0);
+    	internalsBox.pack_start(db_settings, false, true, 0);
         internalsBox.pack_start(drop_articles, false, true, 0);
         internalsBox.pack_start(service_settings, false, true, 0);
         internalsBox.pack_start(grabber, false, true, 0);

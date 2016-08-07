@@ -108,6 +108,11 @@ namespace FeedReader {
 			return server.hideCagetoryWhenEmtpy(catID);
 		}
 
+		public bool useMaxArticles()
+		{
+			return server.useMaxArticles();
+		}
+
 		public void scheduleSync(int time)
 		{
 			if (m_timeout_source_id > 0)

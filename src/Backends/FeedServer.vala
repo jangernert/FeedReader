@@ -227,25 +227,24 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 	// whether or not to use the "max-articles"-setting
-	private bool useMaxArticles()
+	public bool useMaxArticles()
 	{
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				m_ttrss.useMaxArticles();
-				break;
+				return m_ttrss.useMaxArticles();
 
 			case Backend.FEEDLY:
-				m_feedly.useMaxArticles();
-				break;
+				return m_feedly.useMaxArticles();
 
 			case Backend.INOREADER:
-				m_inoreader.useMaxArticles();
-				break;
+				return m_inoreader.useMaxArticles();
 
 			case Backend.OWNCLOUD:
-				m_owncloud.useMaxArticles();
-				break;
+				return m_owncloud.useMaxArticles();
+
+			default:
+				return true;
 		}
 	}
 
@@ -1611,7 +1610,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		delete doc;
 	}
 
-	private static int ArticleSyncCount()
+	private int ArticleSyncCount()
 	{
 		if(!useMaxArticles())
 			return -1;

@@ -74,7 +74,7 @@ public class FeedReader.dbDaemon : dbBase {
         query.selectField("feedID");
         query.addCustomCondition("date <= datetime('now', '-%i days')".printf(weeks*7));
         query.addEqualsCondition("marked", ArticleStatus.UNMARKED.to_string());
-        if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
+        if(server.useMaxArticles())
         {
             int highesID = getHighestRowID();
             int syncCount = settings_general.get_int("max-articles");

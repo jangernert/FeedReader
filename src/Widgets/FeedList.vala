@@ -481,17 +481,10 @@ public class FeedReader.feedList : Gtk.Stack {
 
 			if(dataBase.haveFeedsWithoutCat())
 			{
-				string catID = "";
-
-				if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
-				{
-					catID = "0";
-				}
-
 				categories.insert(
 					0,
 					new category(
-						catID,
+						feedDaemon_interface.uncategorizedID(),
 						_("Uncategorized"),
 						(int)dataBase.get_unread_uncategorized(),
 						(int)(categories.size + 10),

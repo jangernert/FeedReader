@@ -479,4 +479,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		return "";
 	}
+
+	public bool useMaxArticles()
+	{
+		return true;
+	}
 }

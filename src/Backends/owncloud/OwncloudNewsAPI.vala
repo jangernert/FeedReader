@@ -468,4 +468,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		return "0";
 	}
+
+    public bool useMaxArticles()
+	{
+		return false;
+	}
 }

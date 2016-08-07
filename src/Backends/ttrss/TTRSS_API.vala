@@ -989,4 +989,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	{
 		return "0";
 	}
+
+	public bool useMaxArticles()
+	{
+		return true;
+	}
 }

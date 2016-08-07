@@ -742,4 +742,9 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		return "";
 	}
+
+	public bool useMaxArticles()
+	{
+		return true;
+	}
 }

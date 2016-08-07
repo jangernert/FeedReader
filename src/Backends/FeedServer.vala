@@ -226,6 +226,29 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	// whether or not to use the "max-articles"-setting
+	private bool useMaxArticles()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.useMaxArticles();
+				break;
+
+			case Backend.FEEDLY:
+				m_feedly.useMaxArticles();
+				break;
+
+			case Backend.INOREADER:
+				m_inoreader.useMaxArticles();
+				break;
+
+			case Backend.OWNCLOUD:
+				m_owncloud.useMaxArticles();
+				break;
+		}
+	}
+
 	public LoginResponse login()
 	{
 		switch(m_type)
@@ -319,7 +342,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			int unread = getUnreadCount();
 			int max = ArticleSyncCount();
 
-			if(unread > max && settings_general.get_enum("account-type") != Backend.OWNCLOUD)
+			if(unread > max && useMaxArticles())
 			{
 				getArticles(20, ArticleStatus.MARKED);
 				getArticles(unread, ArticleStatus.UNREAD);
@@ -407,7 +430,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				getArticles((settings_general.get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
 			}
 
-			if(settings_general.get_enum("account-type") != Backend.OWNCLOUD)
+			if(useMaxArticles())
 			{
 				//get max-articls amunt like normal sync
 				getArticles(settings_general.get_int("max-articles"));
@@ -1590,7 +1613,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private static int ArticleSyncCount()
 	{
-		if(settings_general.get_enum("account-type") == Backend.OWNCLOUD)
+		if(!useMaxArticles())
 			return -1;
 
 		return settings_general.get_int("max-articles");

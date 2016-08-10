@@ -7,12 +7,6 @@
 		<value nick="INOREADER" value="3"/>
 	</enum>
 
-	<enum id="org.gnome.feedreader.grabber">
-		<value nick="NONE" value="0"/>
-		<value nick="BUILTIN" value="1"/>
-		<value nick="READABILITY" value="2"/>
-	</enum>
-
 	<enum id="org.gnome.feedreader.loglevel">
 		<value nick="OFF" value="0"/>
 		<value nick="ERROR" value="1"/>
@@ -107,11 +101,11 @@
 			<default>'6 Months'</default>
 		</key>
 
-		<key name='content-grabber' enum='org.gnome.feedreader.grabber'>
-			<default>'BUILTIN'</default>
+		<key name='content-grabber' type="b">
+			<default>true</default>
 			<summary>grab full content of articles</summary>
 			<description>
-				choose which method to use to grab the whole article even if the feed only provides a small preview
+				Whether to use the content-grabber to download the full content of articles.
 			</description>
 		</key>
 

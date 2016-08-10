@@ -275,12 +275,6 @@ namespace FeedReader {
 		SIX_MONTHS
 	}
 
-	public enum ContentGrabber {
-		NONE,
-		BUILTIN,
-		READABILITY
-	}
-
 	public enum FeedListType {
 		ALL_FEEDS,
 		SPACER,

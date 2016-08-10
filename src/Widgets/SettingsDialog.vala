@@ -138,8 +138,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var service_settings = headline(_("Additional Functionality:"));
 
-        var grabber = new SettingDropbox(_("Content Grabber"), settings_general,"content-grabber",
-		    								{_("None"), _("Built in grabber")});
+        var grabber = new SettingSwitch(_("Content Grabber"), settings_general,"content-grabber");
 
         var mediaplayer = new SettingDropbox(_("Media Player"), settings_general,"mediaplayer",
                                     		{_("Internal"), _("System Default")});

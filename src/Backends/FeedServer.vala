@@ -1579,7 +1579,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		if(!dataBase.article_exists(Article.getArticleID()))
 		{
-			if(settings_general.get_enum("content-grabber") == ContentGrabber.BUILTIN)
+			if(settings_general.get_boolean("content-grabber"))
 			{
 				var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
 				if(grabber.process())
@@ -1606,14 +1606,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 					return;
 				}
-			}
-			else if(settings_general.get_enum("content-grabber") == ContentGrabber.READABILITY)
-			{
-				var grabber = new ReadabilityParserAPI(Article.getURL());
-				grabber.process();
-				Article.setAuthor(grabber.getAuthor());
-				Article.setHTML(grabber.getContent());
-				Article.setPreview(grabber.getPreview());
 			}
 
 			downloadImages(Article);

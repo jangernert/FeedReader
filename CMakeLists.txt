@@ -139,9 +139,9 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/WebLoginPage.vala
     src/ContentGrabber/stringPair.vala
     src/Share/Email.vala
-    src/Share/ReadabilityAPI.vala
     src/Share/PocketAPI.vala
     src/Share/InstapaperAPI.vala
+    src/Share/ReadabilityAPI.vala
     src/Share/share.vala
 
 PACKAGES
@@ -219,7 +219,6 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala
-    src/ContentGrabber/ReadabilityParserAPI.vala
     src/Debug/DebugUtils.vala
 
 
@@ -268,7 +267,6 @@ vala_precompile(debug ${DEBUG_NAME}
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala
-    src/ContentGrabber/ReadabilityParserAPI.vala
     src/Debug/DebugServer.vala
     src/Debug/DebugUtils.vala
     InstallPrefix.vala

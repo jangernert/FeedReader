@@ -829,7 +829,7 @@ public class FeedReader.dbDaemon : dbBase {
         SourceFunc callback = rename_tag.callback;
         ThreadFunc<void*> run = () => {
 
-            if(settings_general.get_enum("account-type") == Backend.INOREADER)
+            if(server.tagIDaffectedByNameChange())
             {
                 var tag = read_tag(tagID);
                 string newID = tagID.replace(tag.getTitle(), newName);

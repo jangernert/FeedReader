@@ -752,4 +752,9 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		return true;
 	}
+
+	public bool tagIDaffectedByNameChange()
+	{
+		return false;
+	}
 }

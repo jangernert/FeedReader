@@ -478,4 +478,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		return false;
 	}
+
+    public bool tagIDaffectedByNameChange()
+	{
+		return false;
+	}
 }

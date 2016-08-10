@@ -489,4 +489,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		return true;
 	}
+
+	public bool tagIDaffectedByNameChange()
+	{
+		return true;
+	}
 }

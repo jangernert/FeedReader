@@ -225,6 +225,29 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	// some backends (inoreader, feedly) have the tag-name as part of the ID
+	// but for some of them the tagID changes when the name was changed (inoreader)
+	public bool tagIDaffectedByNameChange()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.tagIDaffectedByNameChange();
+
+			case Backend.FEEDLY:
+				return m_feedly.tagIDaffectedByNameChange();
+
+			case Backend.INOREADER:
+				return m_inoreader.tagIDaffectedByNameChange();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.tagIDaffectedByNameChange();
+
+			default:
+				return false;
+		}
+	}
+
 	public void resetAccount()
 	{
 		switch(m_type)

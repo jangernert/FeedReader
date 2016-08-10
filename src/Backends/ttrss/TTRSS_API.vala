@@ -999,4 +999,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	{
 		return false;
 	}
+
+	public bool tagIDaffectedByNameChange()
+	{
+		return false;
+	}
 }

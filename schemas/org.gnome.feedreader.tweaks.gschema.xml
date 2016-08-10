@@ -42,14 +42,6 @@
 			</description>
 		</key>
 
-		<key name="parser-api-key" type="s">
-			<default>""</default>
-			<summary>Acces key to redability parser-API</summary>
-			<description>
-				Acces key to parser-API of redability.com
-			</description>
-		</key>
-
 		<key name="sync-on-startup" type="b">
 			<default>false</default>
 			<summary>sync on ui startup</summary>

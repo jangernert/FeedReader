@@ -73,7 +73,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 			return LoginResponse.PLUGIN_NEEDED;
 		}
-		else if(error == ConnectionError.TTRSS_API)
+		else if(error == ConnectionError.API_ERROR)
 		{
 			return LoginResponse.WRONG_LOGIN;
 		}
@@ -81,7 +81,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			return LoginResponse.NO_CONNECTION;
 		}
-		else if(error == ConnectionError.TTRSS_API_DISABLED)
+		else if(error == ConnectionError.API_DISABLED)
 		{
 			return LoginResponse.NO_API_ACCESS;
 		}
@@ -142,7 +142,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		message.add_string("op", "removeLabel");
 		int error = message.send();
 
-		if(error == ConnectionError.TTRSS_API)
+		if(error == ConnectionError.API_ERROR)
 		{
 			var response = message.get_response_object();
 			if(response.has_member("error"))

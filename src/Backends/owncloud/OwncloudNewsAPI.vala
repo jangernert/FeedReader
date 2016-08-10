@@ -59,7 +59,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			logger.print(LogMessage.INFO, "OwnCloud version: %s".printf(m_OwnCloudVersion));
 			return LoginResponse.SUCCESS;
 		}
-		else if(error == ConnectionError.OWNCLOUD_API)
+		else if(error == ConnectionError.API_ERROR)
 		{
 			return LoginResponse.WRONG_LOGIN;
 		}

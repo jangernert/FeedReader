@@ -119,19 +119,8 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 
 		if(m_root_object.has_member("error"))
-		{
-			string error = m_root_object.get_string_member("error");
-			if(error == "NOT_LOGGED_IN")
-			{
-				logger.print(LogMessage.ERROR, "invalid ttrss session id");
-				return ConnectionError.INVALID_SESSIONID;
-			}
-			else if(error == "API_DISABLED")
-			{
-				logger.print(LogMessage.ERROR, "ttrss api is disabled: please enable it first");
-				return ConnectionError.TTRSS_API_DISABLED;
-			}
-		}
+			parseError(m_root_object);
+
 
 		if(m_root_object.has_member("status"))
 		{
@@ -141,25 +130,10 @@ public class FeedReader.ttrssMessage : GLib.Object {
 				{
 					var content = m_root_object.get_object_member("content");
 					if(content.has_member("error"))
-					{
-						string error = content.get_string_member("error");
-						if(error == "NOT_LOGGED_IN")
-						{
-							logger.print(LogMessage.ERROR, "invalid ttrss session id");
-							return ConnectionError.INVALID_SESSIONID;
-						}
-						else if(error == "API_DISABLED")
-						{
-							logger.print(LogMessage.ERROR, "ttrss api is disabled: please enable it first");
-							return ConnectionError.TTRSS_API_DISABLED;
-						}
-					}
+						parseError(content);
 				}
 
-				logger.print(LogMessage.ERROR, "ttrss api error");
-				printMessage();
-				printResponse();
-				return ConnectionError.TTRSS_API;
+				return ApiError();
 			}
 			else if(m_root_object.get_int_member("status") == 0)
 			{
@@ -216,5 +190,30 @@ public class FeedReader.ttrssMessage : GLib.Object {
 	public void printResponse()
 	{
 		logger.print(LogMessage.DEBUG, (string)m_message_soup.response_body.flatten().data);
+	}
+
+	private ConnectionError parseError(Json.Object err)
+	{
+		string error = err.get_string_member("error");
+		if(error == "NOT_LOGGED_IN")
+		{
+			logger.print(LogMessage.ERROR, "invalid ttrss session id");
+			return ConnectionError.INVALID_SESSIONID;
+		}
+		else if(error == "API_DISABLED")
+		{
+			logger.print(LogMessage.ERROR, "ttrss api is disabled: please enable it first");
+			return ConnectionError.API_DISABLED;
+		}
+
+		return ApiError();
+	}
+
+	private ConnectionError ApiError()
+	{
+		logger.print(LogMessage.ERROR, "ttrss api error");
+		printMessage();
+		printResponse();
+		return ConnectionError.API_ERROR;
 	}
 }

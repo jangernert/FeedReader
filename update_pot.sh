@@ -1,0 +1,1 @@
+find . -name "*.vala" ! -name "FeedServer.vala" ! -name "grabber.vala" ! -name "grabberUtils.vala" ! -name "DebugUtils.vala" -o -name "*.ui" -o -name "*.appdata.xml.in" -o -name "*.desktop.in" | xargs xgettext -o po/FeedReader.pot

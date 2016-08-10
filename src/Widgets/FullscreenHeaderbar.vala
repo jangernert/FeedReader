@@ -23,6 +23,7 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 	private Gtk.Button m_tag_button;
 	private bool m_popover = false;
 	private bool m_hover = false;
+	private uint m_timeout_source_id = 0;
 	public signal void close();
 
 	public fullscreenHeaderbar()
@@ -109,6 +110,7 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 			m_revealer.show_all();
 			m_revealer.set_reveal_child(true);
 			m_hover = true;
+			removeTimeout();
 			return true;
 		});
 		this.leave_notify_event.connect((event) => {
@@ -123,7 +125,13 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 			if(m_popover)
 				return false;
 
-			m_revealer.set_reveal_child(false);
+
+			removeTimeout();
+			m_timeout_source_id = GLib.Timeout.add(1000, () => {
+				m_revealer.set_reveal_child(false);
+				return false;
+			});
+
 			return true;
 		});
 		this.add(m_revealer);
@@ -143,5 +151,14 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 	public void setUnread(bool unread)
 	{
 		m_read_button.setActive(unread);
+	}
+
+	private void removeTimeout()
+	{
+		if(m_timeout_source_id > 0)
+		{
+			GLib.Source.remove(m_timeout_source_id);
+			m_timeout_source_id = 0;
+		}
 	}
 }

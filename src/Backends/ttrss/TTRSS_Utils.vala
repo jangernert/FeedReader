@@ -126,22 +126,6 @@ public class FeedReader.ttrss_utils : GLib.Object {
 		return passwd;
 	}
 
-	public static string URLtoFeedName(string url)
-	{
-		var feedname = new GLib.StringBuilder(url);
-
-		if(feedname.str.has_suffix("/"))
-			feedname.erase(feedname.str.char_count()-1);
-
-		if(feedname.str.has_prefix("http://"))
-			feedname.erase(0, 7);
-
-		if(feedname.str.has_prefix("www."))
-			feedname.erase(0, 4);
-
-		return feedname.str;
-	}
-
 	public static bool downloadIcon(string feed_id, string icon_url)
 	{
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";

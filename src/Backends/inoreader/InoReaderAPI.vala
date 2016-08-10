@@ -112,7 +112,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			}
 			else
 			{
-				title = ttrss_utils.URLtoFeedName(url);
+				title = Utils.URLtoFeedName(url);
 			}
 
 			uint catCount = object.get_array_member("categories").get_length();

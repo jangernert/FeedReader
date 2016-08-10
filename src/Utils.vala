@@ -705,4 +705,20 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
+	public static string URLtoFeedName(string url)
+	{
+		var feedname = new GLib.StringBuilder(url);
+
+		if(feedname.str.has_suffix("/"))
+			feedname.erase(feedname.str.char_count()-1);
+
+		if(feedname.str.has_prefix("http://"))
+			feedname.erase(0, 7);
+
+		if(feedname.str.has_prefix("www."))
+			feedname.erase(0, 4);
+
+		return feedname.str;
+	}
+
 }

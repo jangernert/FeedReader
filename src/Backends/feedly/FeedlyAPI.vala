@@ -36,6 +36,10 @@ public class FeedReader.FeedlyAPI : Object {
 	public LoginResponse login()
 	{
 		logger.print(LogMessage.DEBUG, "feedly backend: login");
+
+		if(!ping())
+			return LoginResponse.NO_CONNECTION;
+
 		if(m_utils.getRefreshToken() == "")
 		{
 			m_connection.getToken();

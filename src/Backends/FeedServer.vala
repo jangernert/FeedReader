@@ -303,11 +303,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				return m_ttrss.login();
 
 			case Backend.FEEDLY:
-				if(m_feedly.ping())
-				{
-					return m_feedly.login();
-				}
-				break;
+				return m_feedly.login();
 
 			case Backend.OWNCLOUD:
 				return m_owncloud.login();

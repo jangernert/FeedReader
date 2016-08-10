@@ -20,6 +20,11 @@ public class FeedReader.inoreader_utils : GLib.Object {
 		return settings_inoreader.get_string ("username");
 	}
 
+	public static void setUser(string user)
+	{
+		settings_inoreader.set_string ("username", user);
+	}
+
 	public static string getAccessToken()
 	{
 		return settings_inoreader.get_string ("access-token");

@@ -438,8 +438,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		{
 			case Backend.TTRSS:
 				backend = Backend.TTRSS;
-				settings_ttrss.set_string("url", m_ttrss_url_entry.get_text());
-				settings_ttrss.set_string("username", m_ttrss_user_entry.get_text());
+				ttrss_utils.setURL(m_ttrss_url_entry.get_text());
+				ttrss_utils.setUser(m_ttrss_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "URL", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
@@ -450,7 +450,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				catch(GLib.Error e){}
 				if(m_need_htaccess)
 				{
-					settings_ttrss.set_string("htaccess-username", m_ttrss_auth_user_entry.get_text());
+					ttrss_utils.setHtaccessUser(m_ttrss_auth_user_entry.get_text());
 					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 								            			  "URL", Secret.SchemaAttributeType.STRING,
 								                		  "Username", Secret.SchemaAttributeType.STRING,
@@ -471,8 +471,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.OWNCLOUD:
 				backend = Backend.OWNCLOUD;
-				settings_owncloud.set_string("url", m_owncloud_url_entry.get_text());
-				settings_owncloud.set_string("username", m_owncloud_user_entry.get_text());
+				OwncloudNews_Utils.setURL(m_owncloud_url_entry.get_text());
+				OwncloudNews_Utils.setUser(m_owncloud_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "URL", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
@@ -483,7 +483,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				catch(GLib.Error e){}
 				if(m_need_htaccess)
 				{
-					settings_owncloud.set_string("htaccess-username", m_owncloud_auth_user_entry.get_text());
+					OwncloudNews_Utils.setHtaccessUser(m_owncloud_auth_user_entry.get_text());
 					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 								            			  "URL", Secret.SchemaAttributeType.STRING,
 								            			  "Username", Secret.SchemaAttributeType.STRING,
@@ -498,7 +498,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 			case Backend.INOREADER:
 				backend = Backend.INOREADER;
-				settings_inoreader.set_string("username", m_inoreader_user_entry.get_text());
+				inoreader_utils.setUser(m_inoreader_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "Apikey", Secret.SchemaAttributeType.STRING,
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,

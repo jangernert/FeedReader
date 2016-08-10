@@ -36,14 +36,29 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 		return tmp_url;
 	}
 
+    public static void setURL(string url)
+    {
+        settings_owncloud.set_string ("url", url);
+    }
+
     public static string getUser()
 	{
 		return settings_owncloud.get_string ("username");
 	}
 
+    public static void setUser(string user)
+	{
+		settings_owncloud.set_string ("username", user);
+	}
+
     public static string getHtaccessUser()
 	{
 		return settings_owncloud.get_string ("htaccess-username");
+	}
+
+    public static void setHtaccessUser(string ht_user)
+	{
+		settings_owncloud.set_string ("htaccess-username", ht_user);
 	}
 
     public static string getUnmodifiedURL()

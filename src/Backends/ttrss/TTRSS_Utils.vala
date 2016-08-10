@@ -34,19 +34,34 @@ public class FeedReader.ttrss_utils : GLib.Object {
 		return tmp_url;
 	}
 
+	public static void setURL(string url)
+	{
+		settings_ttrss.set_string("url", url);
+	}
+
 	public static string getUser()
 	{
-		return settings_ttrss.get_string ("username");
+		return settings_ttrss.get_string("username");
+	}
+
+	public static void setUser(string user)
+	{
+		settings_ttrss.set_string("username", user);
 	}
 
 	public static string getHtaccessUser()
 	{
-		return settings_ttrss.get_string ("htaccess-username");
+		return settings_ttrss.get_string("htaccess-username");
+	}
+
+	public static void setHtaccessUser(string ht_user)
+	{
+		settings_ttrss.set_string("htaccess-username", ht_user);
 	}
 
 	public static string getUnmodifiedURL()
 	{
-		return settings_ttrss.get_string ("url");
+		return settings_ttrss.get_string("url");
 	}
 
 	public static string getPasswd()

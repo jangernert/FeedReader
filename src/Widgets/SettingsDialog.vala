@@ -140,8 +140,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
         var grabber = new SettingSwitch(_("Content Grabber"), settings_general,"content-grabber");
 
-        var mediaplayer = new SettingDropbox(_("Media Player"), settings_general,"mediaplayer",
-                                    		{_("Internal"), _("System Default")});
+        var mediaplayer = new SettingSwitch(_("Internal Media Player"), settings_general,"mediaplayer");
 
 
     	var internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);

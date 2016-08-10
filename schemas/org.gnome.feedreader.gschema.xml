@@ -137,8 +137,8 @@
 			<default>'RECEIVED'</default>
 		</key>
 		
-		<key name='mediaplayer' enum='org.gnome.feedreader.media-player'>
-			<default>'INTERNAL'</default>
+		<key name='mediaplayer' type="b">
+			<default>true</default>
 		</key>
 
 		<key name='articlelist-sort-by' enum='org.gnome.feedreader.article-list-sort'>

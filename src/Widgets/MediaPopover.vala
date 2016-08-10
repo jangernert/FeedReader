@@ -54,23 +54,21 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 
 		if(mRow != null)
 		{
-			switch(settings_general.get_enum("mediaplayer"))
+			if(settings_general.get_boolean("mediaplayer"))
 			{
-				case Player.INTERNAL:
-					play(mRow.getURL());
-					break;
-
-				case Player.SYSTEM:
-					try
-					{
-						string[] spawn_args = {"xdg-open", mRow.getURL()};
-						GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-					}
-					catch(GLib.SpawnError e)
-					{
-						logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
-					}
-					break;
+				play(mRow.getURL());
+			}
+			else
+			{
+				try
+				{
+					string[] spawn_args = {"xdg-open", mRow.getURL()};
+					GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+				}
+				catch(GLib.SpawnError e)
+				{
+					logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+				}
 			}
 		}
     }

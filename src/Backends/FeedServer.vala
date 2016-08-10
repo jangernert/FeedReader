@@ -1245,21 +1245,14 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				// first update read and marked status of (nearly) all existing articles
-				if(settings_tweaks.get_boolean("ttrss-newsplus") && whatToGet != ArticleStatus.MARKED)
+				// first use newsPlus plugin to update states of 10x as much articles as we would normaly do
+				var unreadIDs = m_ttrss.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
+				if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
 				{
 					logger.print(LogMessage.DEBUG, "getArticles: newsplus plugin active");
-					var unreadIDs = m_ttrss.NewsPlusUpdateUnread(10*settings_general.get_int("max-articles"));
-					if(unreadIDs != null)
-					{
-						dataBase.updateArticlesByID(unreadIDs, "unread");
-					}
-
-					var markedIDs = m_ttrss.NewsPlusUpdateMarked(settings_general.get_int("max-articles"));
-					if(markedIDs != null)
-					{
-						dataBase.updateArticlesByID(markedIDs, "marked");
-					}
+					var markedIDs = m_ttrss.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
+					dataBase.updateArticlesByID(unreadIDs, "unread");
+					dataBase.updateArticlesByID(markedIDs, "marked");
 					updateArticleList();
 				}
 
@@ -1289,7 +1282,8 @@ public class FeedReader.FeedServer : GLib.Object {
 					var articles = new Gee.LinkedList<article>();
 					m_ttrss.getHeadlines(articles, skip, amount, whatToGet, ttrss_feedID);
 
-					if(!settings_tweaks.get_boolean("ttrss-newsplus"))
+					// only update article states if they haven't been updated by the newsPlus-plugin
+					if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
 					{
 						dataBase.update_articles(articles);
 						updateArticleList();

@@ -20,8 +20,12 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private int m_serviceType;
 	public signal void success(Backend be);
 
+	// FIXME: temporary
+	private FeedlyUtils m_feedlyUtils;
+
 
 	public WebLoginPage() {
+		m_feedlyUtils = new FeedlyUtils();
 		var settings = new WebKit.Settings();
 		settings.set_user_agent_with_application_details("FeedReader", AboutInfo.version);
 		m_view = new WebKit.WebView();
@@ -87,11 +91,8 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			int start = url.index_of("=")+1;
 			int end = url.index_of("&");
 			string code = url.substring(start, end-start);
-			if(!settings_feedly.set_string("feedly-api-code", code))
-			{
-				logger.print(LogMessage.DEBUG, "WebLoginPage: could not set api code");
-			}
-			logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + settings_feedly.get_string("feedly-api-code"));
+			m_feedlyUtils.setApiCode(code);
+			logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + code);
 			GLib.Thread.usleep(500000);
 			return true;
 		}

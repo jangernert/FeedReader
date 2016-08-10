@@ -23,7 +23,6 @@ namespace FeedReader {
 	dbUI dataBase;
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
-	GLib.Settings settings_feedly;
 	GLib.Settings settings_tweaks;
 	GLib.Settings settings_share;
 	FeedDaemon feedDaemon_interface;
@@ -38,11 +37,10 @@ namespace FeedReader {
 
 		protected override void startup()
 		{
-			settings_general = new GLib.Settings ("org.gnome.feedreader");
-			settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
-			settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
-			settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
-			settings_share = new GLib.Settings ("org.gnome.feedreader.share");
+			settings_general = new GLib.Settings("org.gnome.feedreader");
+			settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
+			settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+			settings_share = new GLib.Settings("org.gnome.feedreader.share");
 
 			logger = new Logger("ui");
 			share = new Share();

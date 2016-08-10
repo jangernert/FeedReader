@@ -429,7 +429,6 @@ namespace FeedReader {
 	FeedServer server;
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
-	GLib.Settings settings_feedly;
 	GLib.Settings settings_tweaks;
 	Logger logger;
 	FeedDaemonServer daemon;

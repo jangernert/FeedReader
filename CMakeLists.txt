@@ -86,6 +86,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Backends/ttrss/ttrssUtils.vala
     src/Backends/owncloud/OwncloudNewsUtils.vala
     src/Backends/inoreader/InoReaderUtils.vala
+    src/Backends/feedly/FeedlyUtils.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
@@ -207,6 +208,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backends/ttrss/ttrssMessage.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
+    src/Backends/feedly/FeedlyUtils.vala
     src/Backends/inoreader/InoReaderAPI.vala
     src/Backends/inoreader/InoReaderConnection.vala
     src/Backends/inoreader/InoReaderUtils.vala
@@ -255,6 +257,7 @@ vala_precompile(debug ${DEBUG_NAME}
     src/Backends/ttrss/ttrssMessage.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
+    src/Backends/feedly/FeedlyUtils.vala
     src/Backends/inoreader/InoReaderAPI.vala
     src/Backends/inoreader/InoReaderConnection.vala
     src/Backends/inoreader/InoReaderUtils.vala

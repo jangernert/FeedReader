@@ -21,9 +21,11 @@ public class FeedReader.FeedlyAPI : Object {
 	private string m_userID;
 	private Gee.HashMap<string,int> markers;
 	private Json.Array m_unreadcounts;
+	private FeedlyUtils m_utils;
 
 	public FeedlyAPI() {
 		m_connection = new FeedlyConnection();
+		m_utils = new FeedlyUtils();
 	}
 
 	public string createCatID(string title)
@@ -34,7 +36,7 @@ public class FeedReader.FeedlyAPI : Object {
 	public LoginResponse login()
 	{
 		logger.print(LogMessage.DEBUG, "feedly backend: login");
-		if(settings_feedly.get_string("feedly-refresh-token") == "")
+		if(m_utils.getRefreshToken() == "")
 		{
 			m_connection.getToken();
 		}
@@ -51,9 +53,9 @@ public class FeedReader.FeedlyAPI : Object {
 			return LoginResponse.SUCCESS;
 		}
 
-		settings_feedly.reset("feedly-access-token");
-		settings_feedly.reset("feedly-refresh-token");
-		settings_feedly.reset("feedly-api-code");
+		m_utils.setAccessToken("");
+		m_utils.setRefreshToken("");
+		m_utils.setApiCode("");
 
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -82,23 +84,23 @@ public class FeedReader.FeedlyAPI : Object {
 			logger.print(LogMessage.INFO, "feedly: userID = " + m_userID);
 
 			if(root.has_member("email"))
-				settings_feedly.set_string("email", root.get_string_member("email"));
+				m_utils.setEmail(root.get_string_member("email"));
 			else if(root.has_member("givenName"))
-				settings_feedly.set_string("email", root.get_string_member("givenName"));
+				m_utils.setEmail(root.get_string_member("givenName"));
 			else if(root.has_member("fullName"))
-				settings_feedly.set_string("email", root.get_string_member("fullName"));
+				m_utils.setEmail(root.get_string_member("fullName"));
 			else if(root.has_member("google"))
-				settings_feedly.set_string("email", root.get_string_member("google"));
+				m_utils.setEmail(root.get_string_member("google"));
 			else if(root.has_member("reader"))
-				settings_feedly.set_string("email", root.get_string_member("reader"));
+				m_utils.setEmail(root.get_string_member("reader"));
 			else if(root.has_member("twitterUserId"))
-				settings_feedly.set_string("email", root.get_string_member("twitterUserId"));
+				m_utils.setEmail(root.get_string_member("twitterUserId"));
 			else if(root.has_member("facebookUserId"))
-				settings_feedly.set_string("email", root.get_string_member("facebookUserId"));
+				m_utils.setEmail(root.get_string_member("facebookUserId"));
 			else if(root.has_member("wordPressId"))
-				settings_feedly.set_string("email", root.get_string_member("wordPressId"));
+				m_utils.setEmail(root.get_string_member("wordPressId"));
 			else if(root.has_member("windowsLiveId"))
-				settings_feedly.set_string("email", root.get_string_member("windowsLiveId"));
+				m_utils.setEmail(root.get_string_member("windowsLiveId"));
 
 			return true;
 		}
@@ -720,7 +722,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public string accountName()
 	{
-		return settings_feedly.get_string("email");
+		return m_utils.getEmail();
 	}
 
 	public string? getServer()
@@ -735,7 +737,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public void resetAccount()
     {
-        Utils.resetSettings(settings_feedly);
+        m_utils.resetAccount();
     }
 
 	public string uncategorizedID()

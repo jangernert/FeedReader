@@ -707,7 +707,6 @@ namespace FeedReader {
 	dbDaemon dataBase;
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
-	GLib.Settings settings_feedly;
 	GLib.Settings settings_tweaks;
 	FeedServer server;
 	Logger logger;
@@ -732,11 +731,10 @@ namespace FeedReader {
 
 	int main (string[] args)
 	{
-		stderr = FileStream.open ("/dev/null", "w");
-		settings_general = new GLib.Settings ("org.gnome.feedreader");
-		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
-		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
-		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
+		stderr = FileStream.open("/dev/null", "w");
+		settings_general = new GLib.Settings("org.gnome.feedreader");
+		settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
+		settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 
 		try {
 			var opt_context = new GLib.OptionContext();

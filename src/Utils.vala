@@ -712,6 +712,9 @@ public class FeedReader.Utils : GLib.Object {
 		if(feedname.str.has_suffix("/"))
 			feedname.erase(feedname.str.char_count()-1);
 
+		if(feedname.str.has_prefix("https://"))
+			feedname.erase(0, 8);
+
 		if(feedname.str.has_prefix("http://"))
 			feedname.erase(0, 7);
 

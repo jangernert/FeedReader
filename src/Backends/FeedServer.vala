@@ -1526,7 +1526,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		try{
 			string message = "";
 			string summary = _("New Articles");
-			uint count = dataBase.get_unread_total();
+			uint unread = dataBase.get_unread_total();
 
 			if(!Notify.is_initted())
 			{
@@ -1534,15 +1534,12 @@ public class FeedReader.FeedServer : GLib.Object {
 				return;
 			}
 
-			if(count > 0 && newArticles > 0)
+			if(newArticles > 0)
 			{
-				if(settings_tweaks.get_boolean("notifications-only-new-articles"))
-					count = newArticles;
-
-				if(count == 1)
-					message = _("There is 1 new article");
+				if(unread == 1)
+					message = _("There is 1 new article (%u unread)").printf(unread);
 				else
-					message = _("There are %u new articles").printf(count);
+					message = _("There are %u new articles (%u unread)").printf(newArticles, unread);
 
 
 				if(notification == null)

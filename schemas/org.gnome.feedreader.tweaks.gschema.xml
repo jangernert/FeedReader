@@ -89,14 +89,6 @@
 				enable selecting text in the articleview, also copy text
 			</description>
 		</key>
-		
-		<key name="notifications-only-new-articles" type="b">
-			<default>false</default>
-			<summary>only show count of NEW articles</summary>
-			<description>
-				Enable to only show the count of articles that got synced during the current sync.
-			</description>
-		</key>
 
 	</schema>
 </schemalist>

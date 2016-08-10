@@ -149,12 +149,8 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void enterFullscreen(bool video)
 	{
-		if(video)
-		{
-			if(!settings_tweaks.get_boolean("fullscreen-videos"))
-				return;
-		}
-		else
+		// fullscreen not requested by video -> go to fullscreen-article-mode
+		if(!video)
 		{
 			m_article_view.setFullscreenArticle(true);
 		}

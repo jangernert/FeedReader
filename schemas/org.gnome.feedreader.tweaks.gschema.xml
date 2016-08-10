@@ -26,14 +26,6 @@
 			</description>
 		</key>
 
-		<key name="fullscreen-videos" type="b">
-			<default>true</default>
-			<summary>fullscreen html5 videos</summary>
-			<description>
-				When a html5 video requests fullscreen mode hide feed- and article-list.
-			</description>
-		</key>
-
 		<key name="ignore-tls-errors" type="b">
 			<default>false</default>
 			<summary>ignore unknown certificates</summary>

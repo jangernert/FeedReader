@@ -41,16 +41,16 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public signal void loadLoginPage(OAuth type);
 
 	// FIXME: temporary
-	private OwncloudNews_Utils m_OC_utils;
-	private ttrss_utils m_ttrss_utils;
-	private inoreader_utils m_ino_utils;
+	private OwncloudNewsUtils m_OC_utils;
+	private ttrssUtils m_ttrss_utils;
+	private InoReaderUtils m_ino_utils;
 
 
 	public LoginPage()
 	{
-		m_ino_utils = new inoreader_utils();
-		m_OC_utils = new OwncloudNews_Utils();
-		m_ttrss_utils = new ttrss_utils();
+		m_ino_utils = new InoReaderUtils();
+		m_OC_utils = new OwncloudNewsUtils();
+		m_ttrss_utils = new ttrssUtils();
 
 		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);

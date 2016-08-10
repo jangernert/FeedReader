@@ -16,14 +16,14 @@
 public class FeedReader.InoReaderAPI : GLib.Object {
 
 	private InoReaderConnection m_connection;
-	private inoreader_utils m_utils;
+	private InoReaderUtils m_utils;
 	private string m_inoreader;
 	private string m_userID;
 
 	public InoReaderAPI ()
 	{
 		m_connection = new InoReaderConnection();
-		m_utils = new inoreader_utils();
+		m_utils = new InoReaderUtils();
 	}
 
 

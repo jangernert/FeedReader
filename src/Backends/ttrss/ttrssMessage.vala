@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ttrss_message : GLib.Object {
+public class FeedReader.ttrssMessage : GLib.Object {
 
 	private Soup.Session m_session;
 	private Soup.Message m_message_soup;
@@ -21,12 +21,12 @@ public class FeedReader.ttrss_message : GLib.Object {
 	private string m_contenttype;
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
-	private ttrss_utils m_utils;
+	private ttrssUtils m_utils;
 
 
-	public ttrss_message(string destination)
+	public ttrssMessage(string destination)
 	{
-		m_utils = new ttrss_utils();
+		m_utils = new ttrssUtils();
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
 		m_session.ssl_strict = false;

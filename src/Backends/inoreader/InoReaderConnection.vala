@@ -18,11 +18,11 @@ public class FeedReader.InoReaderConnection {
 	private string m_api_token;
 	private string m_api_username;
 	private string m_api_code;
-	private inoreader_utils m_utils;
+	private InoReaderUtils m_utils;
 
 	public InoReaderConnection()
 	{
-		m_utils = new inoreader_utils();
+		m_utils = new InoReaderUtils();
 		m_api_key = InoReaderSecret.apikey;
 		m_api_token = InoReaderSecret.apitoken;
 		m_api_username = m_utils.getUser();

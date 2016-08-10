@@ -16,7 +16,7 @@
 public class FeedReader.ttrss_interface : GLib.Object {
 
 	public string m_ttrss_url { get; private set; }
-	private ttrss_utils m_utils;
+	private ttrssUtils m_utils;
 	private string m_ttrss_sessionid;
 	private uint64 m_ttrss_apilevel;
 	private Json.Parser m_parser;
@@ -25,6 +25,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public ttrss_interface ()
 	{
 		m_parser = new Json.Parser();
+		m_utils = new ttrssUtils();
 	}
 
 
@@ -50,7 +51,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		}
 
 
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("op", "login");
 		message.add_string("user", username);
 		message.add_string("password", passwd);
@@ -98,7 +99,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool logout()
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "logout");
 		int error = message.send();
@@ -118,7 +119,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool isloggedin()
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "isLoggedIn");
 		int error = message.send();
@@ -136,7 +137,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	private bool haveAPIplugin()
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "removeLabel");
 		int error = message.send();
@@ -160,7 +161,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public int getUnreadCount()
 	{
 		int unread = 0;
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getUnread");
 		int error = message.send();
@@ -182,7 +183,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		{
 			if(int.parse(item.getCatID()) > 0)
 			{
-				var message = new ttrss_message(m_ttrss_url);
+				var message = new ttrssMessage(m_ttrss_url);
 				message.add_string("sid", m_ttrss_sessionid);
 				message.add_string("op", "getFeeds");
 				message.add_int("cat_id", int.parse(item.getCatID()));
@@ -223,7 +224,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	private void getUncategorizedFeeds(Gee.LinkedList<feed> feeds)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getFeeds");
 		message.add_int("cat_id", 0);
@@ -259,7 +260,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getTags(Gee.LinkedList<tag> tags)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getLabels");
 		int error = message.send();
@@ -286,7 +287,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public string getIconDir()
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getConfig");
 		int error = message.send();
@@ -303,7 +304,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getCategories(Gee.LinkedList<category> categories)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getFeedTree");
 		message.add_bool("include_empty", true);
@@ -364,7 +365,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	private int getUncategorizedUnread()
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getCounters");
 		message.add_string("output_mode", "c");
@@ -397,7 +398,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getHeadlines(Gee.LinkedList<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
 		message.add_int("feed_id", feedID);
@@ -490,7 +491,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	// tt-rss server needs newsplusplus extention
 	public Gee.LinkedList<string>? NewsPlusUpdateUnread(int limit)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getCompactHeadlines");
 		message.add_int("feed_id", TTRSSSpecialID.ALL);
@@ -519,7 +520,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	// tt-rss server needs newsplusplus extention
 	public Gee.LinkedList<string>? NewsPlusUpdateMarked(int limit)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getCompactHeadlines");
 		message.add_int("feed_id", TTRSSSpecialID.ALL);
@@ -548,7 +549,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void getArticles(string articleIDs, Gee.LinkedList<article> articles)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getArticle");
 		message.add_string("article_id", articleIDs);
@@ -624,7 +625,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public bool markFeedRead(string feedID, bool isCatID)
 	{
 		bool return_value = false;
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "catchupFeed");
 		message.add_int_array("feed_id", feedID);
@@ -648,7 +649,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		var categories = dataBase.read_categories();
 		foreach(category cat in categories)
 		{
-			var message = new ttrss_message(m_ttrss_url);
+			var message = new ttrssMessage(m_ttrss_url);
 			message.add_string("sid", m_ttrss_sessionid);
 			message.add_string("op", "catchupFeed");
 			message.add_int_array("feed_id", cat.getCatID());
@@ -670,7 +671,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
 		bool return_value = false;
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "updateArticle");
 		message.add_int_array("article_ids", articleIDs);
@@ -698,7 +699,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	{
 		bool return_value = false;
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "updateArticle");
 		message.add_int("article_ids", articleID);
@@ -721,7 +722,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool addArticleTag(int articleID, int tagID, bool add)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "setArticleLabel");
 		message.add_int("article_ids", articleID);
@@ -741,7 +742,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public int64 createTag(string caption)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "addLabel");
 		message.add_string("caption", caption);
@@ -757,7 +758,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool deleteTag(int tagID)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "removeLabel");
 		message.add_int("label_id", tagID);
@@ -773,7 +774,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool renameTag(int tagID, string newName)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "renameLabel");
 		message.add_int("label_id", tagID);
@@ -791,7 +792,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool subscribeToFeed(string feedURL, string? catID = null, string? username = null, string? password = null)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "subscribeToFeed");
 		message.add_string("feed_url", feedURL);
@@ -817,7 +818,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool unsubscribeFeed(string feedID)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "unsubscribeFeed");
 		message.add_int("feed_id", int.parse(feedID));
@@ -833,7 +834,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public string? createCategory(string title, string? parentID = null)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "addCategory");
 		message.add_string("caption", title);
@@ -853,7 +854,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool removeCategory(string catID)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "removeCategory");
 		message.add_int("category_id", int.parse(catID));
@@ -869,7 +870,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool moveCategory(string catID, string parentID)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "moveCategory");
 		message.add_int("category_id", int.parse(catID));
@@ -887,7 +888,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool renameCategory(string catID, string title)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "renameCategory");
 		message.add_int("category_id", int.parse(catID));
@@ -904,7 +905,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool renameFeed(string feedID, string title)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "renameFeed");
 		message.add_int("feed_id", int.parse(feedID));
@@ -921,7 +922,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public bool moveFeed(string feedID, string catID)
 	{
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "moveFeed");
 		message.add_int("feed_id", int.parse(feedID));
@@ -937,7 +938,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 	public bool ping() {
-		var message = new ttrss_message(m_ttrss_url);
+		var message = new ttrssMessage(m_ttrss_url);
 		logger.print(LogMessage.DEBUG, "TTRSS: ping");
 		int error = message.send(true);
 

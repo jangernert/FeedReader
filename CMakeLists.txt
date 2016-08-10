@@ -83,9 +83,9 @@ vala_precompile(UI ${EXEC_NAME}
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
-    src/Backends/ttrss/TTRSS_Utils.vala
-    src/Backends/owncloud/OwncloudNews_Utils.vala
-    src/Backends/inoreader/InoReader_Utils.vala
+    src/Backends/ttrss/ttrssUtils.vala
+    src/Backends/owncloud/OwncloudNewsUtils.vala
+    src/Backends/inoreader/InoReaderUtils.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
@@ -137,7 +137,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
     src/ContentGrabber/stringPair.vala
-    src/Backends/ttrss/TTRSS_Message.vala
     src/Share/Email.vala
     src/Share/ReadabilityAPI.vala
     src/Share/PocketAPI.vala
@@ -203,17 +202,17 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Model/InterfaceState.vala
     src/Backends/FeedServer.vala
     src/Backends/OPMLparser.vala
-    src/Backends/ttrss/TTRSS_API.vala
-    src/Backends/ttrss/TTRSS_Utils.vala
-    src/Backends/ttrss/TTRSS_Message.vala
+    src/Backends/ttrss/ttrssAPI.vala
+    src/Backends/ttrss/ttrssUtils.vala
+    src/Backends/ttrss/ttrssMessage.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
     src/Backends/inoreader/InoReaderAPI.vala
     src/Backends/inoreader/InoReaderConnection.vala
-    src/Backends/inoreader/InoReader_Utils.vala
+    src/Backends/inoreader/InoReaderUtils.vala
     src/Backends/owncloud/OwncloudNewsAPI.vala
-    src/Backends/owncloud/OwncloudNews_Message.vala
-    src/Backends/owncloud/OwncloudNews_Utils.vala
+    src/Backends/owncloud/OwncloudNewsMessage.vala
+    src/Backends/owncloud/OwncloudNewsUtils.vala
     src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
@@ -251,17 +250,17 @@ vala_precompile(debug ${DEBUG_NAME}
     src/Constants.vala
     src/Backends/FeedServer.vala
     src/Backends/OPMLparser.vala
-    src/Backends/ttrss/TTRSS_API.vala
-    src/Backends/ttrss/TTRSS_Utils.vala
-    src/Backends/ttrss/TTRSS_Message.vala
+    src/Backends/ttrss/ttrssAPI.vala
+    src/Backends/ttrss/ttrssUtils.vala
+    src/Backends/ttrss/ttrssMessage.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
     src/Backends/inoreader/InoReaderAPI.vala
     src/Backends/inoreader/InoReaderConnection.vala
-    src/Backends/inoreader/InoReader_Utils.vala
+    src/Backends/inoreader/InoReaderUtils.vala
     src/Backends/owncloud/OwncloudNewsAPI.vala
-    src/Backends/owncloud/OwncloudNews_Message.vala
-    src/Backends/owncloud/OwncloudNews_Utils.vala
+    src/Backends/owncloud/OwncloudNewsMessage.vala
+    src/Backends/owncloud/OwncloudNewsUtils.vala
     src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala

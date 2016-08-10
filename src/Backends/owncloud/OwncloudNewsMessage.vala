@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.OwnCloudNews_Message : GLib.Object {
+public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
     private Soup.Session m_session;
 	private Soup.Message m_message_soup;
@@ -22,11 +22,11 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
     private string m_method;
-    private OwncloudNews_Utils m_utils;
+    private OwncloudNewsUtils m_utils;
 
-    public OwnCloudNews_Message(string destination, string username, string password, string method)
+    public OwnCloudNewsMessage(string destination, string username, string password, string method)
     {
-        m_utils = new OwncloudNews_Utils();
+        m_utils = new OwncloudNewsUtils();
         m_message_string = new GLib.StringBuilder();
         m_method = method;
 		m_session = new Soup.Session();

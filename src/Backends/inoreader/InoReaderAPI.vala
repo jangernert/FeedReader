@@ -484,4 +484,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		return true;
 	}
+
+	public bool supportMultiCategoriesPerFeed()
+	{
+		return true;
+	}
 }

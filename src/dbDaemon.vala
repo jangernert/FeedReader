@@ -691,37 +691,38 @@ public class FeedReader.dbDaemon : dbBase {
         SourceFunc callback = delete_category.callback;
         ThreadFunc<void*> run = () => {
             executeSQL("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
-            var backend = (Backend)settings_general.get_enum("account-type");
-            switch(backend)
+
+
+            if(server.supportMultiCategoriesPerFeed())
             {
-                case Backend.TTRSS:
-                    executeSQL("UPDATE main.feeds set category_id = \"0\" WHERE category_id = \"" + catID + "\"");
-                    executeSQL("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
-                    break;
-                case Backend.OWNCLOUD:
-                    executeSQL("UPDATE main.feeds set category_id = \"0\" WHERE category_id = \"" + catID + "\"");
-                    break;
-                case Backend.FEEDLY:
-                case Backend.INOREADER:
-                    var query = new QueryBuilder(QueryType.SELECT, "feeds");
-                    query.selectField("feed_id, category_id");
-                    query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(catID));
-                    query.build();
+                var query = new QueryBuilder(QueryType.SELECT, "feeds");
+                query.selectField("feed_id, category_id");
+                query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(catID));
+                query.build();
 
-                    Sqlite.Statement stmt;
-                    int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-                    if (ec != Sqlite.OK)
-                        logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+                Sqlite.Statement stmt;
+                int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+                if (ec != Sqlite.OK)
+                    logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
-                    while(stmt.step () == Sqlite.ROW)
-                    {
-                        string feedID = stmt.column_text(0);
-                        string catIDs = stmt.column_text(0).replace(catID + ",", "");
+                while(stmt.step () == Sqlite.ROW)
+                {
+                    string feedID = stmt.column_text(0);
+                    string catIDs = stmt.column_text(0).replace(catID + ",", "");
 
-                        executeSQL("UPDATE main.feeds set category_id = \"" + catIDs + "\" WHERE feed_id = \"" + feedID + "\"");
-                    }
-                    break;
+                    executeSQL("UPDATE main.feeds set category_id = \"" + catIDs + "\" WHERE feed_id = \"" + feedID + "\"");
+                }
             }
+            else
+            {
+                executeSQL("UPDATE main.feeds set category_id = \"%s\" WHERE category_id = \"%s\"".printf(server.uncategorizedID(), catID));
+
+                if(server.supportMultiLevelCategories())
+                {
+                    executeSQL("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
+                }
+            }
+
             Idle.add((owned) callback);
             return null;
         };

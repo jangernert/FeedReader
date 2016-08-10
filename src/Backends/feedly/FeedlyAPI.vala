@@ -747,4 +747,9 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		return true;
 	}
+
+	public bool supportMultiCategoriesPerFeed()
+	{
+		return true;
+	}
 }

@@ -473,4 +473,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		return false;
 	}
+
+    public bool supportMultiCategoriesPerFeed()
+	{
+		return false;
+	}
 }

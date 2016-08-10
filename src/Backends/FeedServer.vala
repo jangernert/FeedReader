@@ -204,6 +204,27 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	public bool supportMultiCategoriesPerFeed()
+	{
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				return m_ttrss.supportMultiCategoriesPerFeed();
+
+			case Backend.FEEDLY:
+				return m_feedly.supportMultiCategoriesPerFeed();
+
+			case Backend.INOREADER:
+				return m_inoreader.supportMultiCategoriesPerFeed();
+
+			case Backend.OWNCLOUD:
+				return m_owncloud.supportMultiCategoriesPerFeed();
+
+			default:
+				return false;
+		}
+	}
+
 	public void resetAccount()
 	{
 		switch(m_type)

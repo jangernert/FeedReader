@@ -994,4 +994,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	{
 		return true;
 	}
+
+	public bool supportMultiCategoriesPerFeed()
+	{
+		return false;
+	}
 }

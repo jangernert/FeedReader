@@ -15,27 +15,54 @@
 
 public class FeedReader.inoreader_utils : GLib.Object {
 
-	public static string getUser()
+	private GLib.Settings m_settings;
+
+	public inoreader_utils()
 	{
-		return settings_inoreader.get_string ("username");
+		m_settings = new GLib.Settings("org.gnome.feedreader.inoreader");
 	}
 
-	public static void setUser(string user)
+	public string getUser()
 	{
-		settings_inoreader.set_string ("username", user);
+		return m_settings.get_string("username");
 	}
 
-	public static string getAccessToken()
+	public void setUser(string user)
 	{
-		return settings_inoreader.get_string ("access-token");
+		m_settings.set_string("username", user);
 	}
 
-	public static string getUserID()
+	public string getAccessToken()
 	{
-		return settings_inoreader.get_string ("user-id");
+		return m_settings.get_string("access-token");
 	}
 
-	public static string getPasswd()
+	public void setAccessToken(string token)
+	{
+		m_settings.set_string("access-token", token);
+	}
+
+	public string getUserID()
+	{
+		return m_settings.get_string("user-id");
+	}
+
+	public void setUserID(string id)
+	{
+		m_settings.set_string("user-id", id);
+	}
+
+	public string getEmail()
+	{
+		return m_settings.get_string("userEmail");
+	}
+
+	public void setEmail(string email)
+	{
+		m_settings.set_string("userEmail", email);
+	}
+
+	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "Apikey", Secret.SchemaAttributeType.STRING,
@@ -44,7 +71,7 @@ public class FeedReader.inoreader_utils : GLib.Object {
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["Apikey"] = InoReaderSecret.apikey;
 		attributes["Apisecret"] = InoReaderSecret.apitoken;
-		attributes["Username"] = settings_inoreader.get_string("username");
+		attributes["Username"] = m_settings.get_string("username");
 
 		string passwd = "";
 		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
@@ -58,7 +85,32 @@ public class FeedReader.inoreader_utils : GLib.Object {
 		return passwd;
 	}
 
-	public static bool downloadIcon(string feed_id, string icon_url)
+	public void resetAccount()
+	{
+		Utils.resetSettings(m_settings);
+		deletePassword();
+	}
+
+	public bool deletePassword()
+	{
+		bool removed = false;
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+							                      "Apikey", Secret.SchemaAttributeType.STRING,
+							                      "Apisecret", Secret.SchemaAttributeType.STRING,
+							                      "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["Apikey"] = InoReaderSecret.apikey;
+		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Username"] = m_settings.get_string("username");
+
+		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
+			removed = Secret.password_clearv.end(async_res);
+			pwSchema.unref();
+		});
+		return removed;
+	}
+
+	public bool downloadIcon(string feed_id, string icon_url)
 	{
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
@@ -104,7 +156,7 @@ public class FeedReader.inoreader_utils : GLib.Object {
 	}
 
 
-	public static bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
+	public bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
 	{
 		foreach(feed Feed in feeds)
 		{

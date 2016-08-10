@@ -43,10 +43,12 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	// FIXME: temporary
 	private OwncloudNews_Utils m_OC_utils;
 	private ttrss_utils m_ttrss_utils;
+	private inoreader_utils m_ino_utils;
 
 
 	public LoginPage()
 	{
+		m_ino_utils = new inoreader_utils();
 		m_OC_utils = new OwncloudNews_Utils();
 		m_ttrss_utils = new ttrss_utils();
 
@@ -413,8 +415,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_ttrss_user_entry.set_text(m_ttrss_utils.getUser());
 		m_ttrss_password_entry.set_text(m_ttrss_utils.getPasswd());
 
-		m_inoreader_user_entry.set_text(inoreader_utils.getUser());
-		m_inoreader_password_entry.set_text(inoreader_utils.getPasswd());
+		m_inoreader_user_entry.set_text(m_ino_utils.getUser());
+		m_inoreader_password_entry.set_text(m_ino_utils.getPasswd());
 	}
 
 
@@ -504,7 +506,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 			case Backend.INOREADER:
 				backend = Backend.INOREADER;
-				inoreader_utils.setUser(m_inoreader_user_entry.get_text());
+				m_ino_utils.setUser(m_inoreader_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "Apikey", Secret.SchemaAttributeType.STRING,
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,

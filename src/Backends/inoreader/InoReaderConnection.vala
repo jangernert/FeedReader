@@ -18,13 +18,15 @@ public class FeedReader.InoReaderConnection {
 	private string m_api_token;
 	private string m_api_username;
 	private string m_api_code;
+	private inoreader_utils m_utils;
 
 	public InoReaderConnection()
 	{
+		m_utils = new inoreader_utils();
 		m_api_key = InoReaderSecret.apikey;
 		m_api_token = InoReaderSecret.apitoken;
-		m_api_username = inoreader_utils.getUser();
-		m_api_code = inoreader_utils.getAccessToken();
+		m_api_username = m_utils.getUser();
+		m_api_code = m_utils.getAccessToken();
 	}
 
 	public int getToken()
@@ -60,8 +62,8 @@ public class FeedReader.InoReaderConnection {
 			if(regex.match(response))
 			{
 				string split = regex.replace( response, -1,0,"");
-				settings_inoreader.set_string("access-token",split.strip());
-				m_api_code = inoreader_utils.getAccessToken();
+				m_utils.setAccessToken(split.strip());
+				m_api_code = m_utils.getAccessToken();
 				return LoginResponse.SUCCESS;
 			}
 			else
@@ -87,7 +89,7 @@ public class FeedReader.InoReaderConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message(type, InoReaderSecret.base_uri+path);
 
-		string inoauth = "GoogleLogin auth=" + inoreader_utils.getAccessToken();
+		string inoauth = "GoogleLogin auth=" + m_utils.getAccessToken();
 
 		message.request_headers.append("Authorization", inoauth) ;
 		message.request_headers.append("AppId", m_api_key);

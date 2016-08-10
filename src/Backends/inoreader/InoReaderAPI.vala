@@ -16,19 +16,20 @@
 public class FeedReader.InoReaderAPI : GLib.Object {
 
 	private InoReaderConnection m_connection;
-
+	private inoreader_utils m_utils;
 	private string m_inoreader;
 	private string m_userID;
 
 	public InoReaderAPI ()
 	{
 		m_connection = new InoReaderConnection();
+		m_utils = new inoreader_utils();
 	}
 
 
 	public LoginResponse login()
 	{
-		if(inoreader_utils.getAccessToken() == "")
+		if(m_utils.getAccessToken() == "")
 		{
 			m_connection.getToken();
 		}
@@ -38,7 +39,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			return LoginResponse.SUCCESS;
 		}
 
-		settings_inoreader.reset("access-token");
+		m_utils.setAccessToken("");
 
 		return LoginResponse.UNKNOWN_ERROR;
 	}
@@ -64,11 +65,11 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
-			settings_inoreader.set_string("user-id", m_userID);
+			m_utils.setUserID(m_userID);
 			logger.print(LogMessage.INFO, "Inoreader: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
-				settings_inoreader.set_string("username", root.get_string_member("userEmail"));
+				m_utils.setEmail(root.get_string_member("userEmail"));
 
 			return true;
 		}
@@ -100,7 +101,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
 
-			if(icon_url != "" && !inoreader_utils.downloadIcon(feedID, icon_url))
+			if(icon_url != "" && !m_utils.downloadIcon(feedID, icon_url))
 			{
 				icon_url = "";
 			}
@@ -164,7 +165,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 			if(id.contains("/label/"))
 			{
-				if(inoreader_utils.tagIsCat(id, feeds))
+				if(m_utils.tagIsCat(id, feeds))
 				{
 					categories.add(
 						new category(
@@ -457,7 +458,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public string accountName()
 	{
-		return settings_inoreader.get_string("username");
+		return m_utils.getUser();
 	}
 
 	public string? getServer()
@@ -472,7 +473,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public void resetAccount()
     {
-        Utils.resetSettings(settings_inoreader);
+        m_utils.resetAccount();
     }
 
 	public string uncategorizedID()

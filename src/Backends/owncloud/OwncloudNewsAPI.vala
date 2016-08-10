@@ -20,18 +20,20 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	private Json.Parser m_parser;
     private string m_username;
     private string m_password;
+    private OwncloudNews_Utils m_utils;
 
     public OwncloudNewsAPI()
     {
         m_parser = new Json.Parser ();
+        m_utils = new OwncloudNews_Utils();
     }
 
     public LoginResponse login()
     {
         logger.print(LogMessage.DEBUG, "OwnCloud: login");
-        m_username = OwncloudNews_Utils.getUser();
-		m_password = OwncloudNews_Utils.getPasswd();
-		m_OwnCloudURL = OwncloudNews_Utils.getURL();
+        m_username = m_utils.getUser();
+		m_password = m_utils.getPasswd();
+		m_OwnCloudURL = m_utils.getURL();
 
 		if(m_OwnCloudURL == "" && m_username == "" && m_password == ""){
 			m_OwnCloudURL = "example-host/owncloud";
@@ -113,7 +115,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     					if(feed_node.has_member("faviconLink"))
                         {
-                            hasIcon = OwncloudNews_Utils.downloadIcon(feed_id, feed_node.get_string_member("faviconLink"));
+                            hasIcon = m_utils.downloadIcon(feed_id, feed_node.get_string_member("faviconLink"));
                         }
 
     					feeds.add(
@@ -160,7 +162,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         					new category (
         						id,
         						folder_node.get_string_member("name"),
-        						OwncloudNews_Utils.countUnread(feeds, id),
+        						m_utils.countUnread(feeds, id),
         						orderID,
         						CategoryID.MASTER,
         						1
@@ -428,40 +430,39 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return true;
     }
 
-    public static bool doesMultiLevelCategories()
+    public bool doesMultiLevelCategories()
 	{
 		return false;
 	}
 
-    public static bool supportTags()
+    public bool supportTags()
 	{
 		return false;
 	}
 
-    public static string symbolicIcon()
+    public string symbolicIcon()
 	{
 		return "feed-service-owncloud-symbolic";
 	}
 
-    public static string accountName()
+    public string accountName()
 	{
-		return settings_owncloud.get_string("username");
+		return m_utils.getUser();
 	}
 
-    public static string getServer()
+    public string getServer()
 	{
-		return settings_owncloud.get_string("url");
+		return m_utils.getURL();
 	}
 
-    public static bool hideCagetoryWhenEmtpy(string cadID)
+    public bool hideCagetoryWhenEmtpy(string cadID)
 	{
 		return false;
 	}
 
     public void resetAccount()
     {
-        Utils.resetSettings(settings_owncloud);
-        OwncloudNews_Utils.deletePassword();
+        m_utils.resetAccount();
     }
 
     public string uncategorizedID()

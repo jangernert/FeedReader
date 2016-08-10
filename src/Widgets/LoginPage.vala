@@ -40,9 +40,13 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public signal void loginError(LoginResponse errorCode);
 	public signal void loadLoginPage(OAuth type);
 
+	// FIXME: temporary
+	private OwncloudNews_Utils m_OC_utils;
+
 
 	public LoginPage()
 	{
+		m_OC_utils = new OwncloudNews_Utils();
 
 		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -399,9 +403,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		}
 
 
-		m_owncloud_url_entry.set_text(OwncloudNews_Utils.getUnmodifiedURL());
-		m_owncloud_user_entry.set_text(OwncloudNews_Utils.getUser());
-		m_owncloud_password_entry.set_text(OwncloudNews_Utils.getPasswd());
+		m_owncloud_url_entry.set_text(m_OC_utils.getUnmodifiedURL());
+		m_owncloud_user_entry.set_text(m_OC_utils.getUser());
+		m_owncloud_password_entry.set_text(m_OC_utils.getPasswd());
 
 		m_ttrss_url_entry.set_text(ttrss_utils.getUnmodifiedURL());
 		m_ttrss_user_entry.set_text(ttrss_utils.getUser());
@@ -471,8 +475,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.OWNCLOUD:
 				backend = Backend.OWNCLOUD;
-				OwncloudNews_Utils.setURL(m_owncloud_url_entry.get_text());
-				OwncloudNews_Utils.setUser(m_owncloud_user_entry.get_text());
+				m_OC_utils.setURL(m_owncloud_url_entry.get_text());
+				m_OC_utils.setUser(m_owncloud_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "URL", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
@@ -483,7 +487,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				catch(GLib.Error e){}
 				if(m_need_htaccess)
 				{
-					OwncloudNews_Utils.setHtaccessUser(m_owncloud_auth_user_entry.get_text());
+					m_OC_utils.setHtaccessUser(m_owncloud_auth_user_entry.get_text());
 					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 								            			  "URL", Secret.SchemaAttributeType.STRING,
 								            			  "Username", Secret.SchemaAttributeType.STRING,

@@ -949,32 +949,32 @@ public class FeedReader.ttrss_interface : GLib.Object {
 		return false;
 	}
 
-	public static bool doesMultiLevelCategories()
+	public bool doesMultiLevelCategories()
 	{
 		return true;
 	}
 
-	public static bool supportTags()
+	public bool supportTags()
 	{
 		return true;
 	}
 
-	public static string symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-ttrss-symbolic";
 	}
 
-	public static string accountName()
+	public string accountName()
 	{
 		return settings_ttrss.get_string("username");
 	}
 
-	public static string getServer()
+	public string getServer()
 	{
 		return settings_ttrss.get_string("url");
 	}
 
-	public static bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCagetoryWhenEmtpy(string catID)
 	{
 		return catID == "0";
 	}

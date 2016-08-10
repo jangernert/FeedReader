@@ -15,11 +15,18 @@
 
 public class FeedReader.OwncloudNews_Utils : GLib.Object {
 
-    public static string getURL()
+    GLib.Settings m_settings;
+
+    public OwncloudNews_Utils()
+    {
+        m_settings = new GLib.Settings ("org.gnome.feedreader.owncloud");
+    }
+
+    public string getURL()
 	{
         //https://yourowncloud.com/index.php/apps/news/api/v1-2/
 
-		string tmp_url = settings_owncloud.get_string("url");
+		string tmp_url = m_settings.get_string("url");
 		if(tmp_url != ""){
 			if(!tmp_url.has_suffix("/"))
 				tmp_url = tmp_url + "/";
@@ -36,44 +43,44 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 		return tmp_url;
 	}
 
-    public static void setURL(string url)
+    public void setURL(string url)
     {
-        settings_owncloud.set_string ("url", url);
+        m_settings.set_string ("url", url);
     }
 
-    public static string getUser()
+    public string getUser()
 	{
-		return settings_owncloud.get_string ("username");
+		return m_settings.get_string ("username");
 	}
 
-    public static void setUser(string user)
+    public void setUser(string user)
 	{
-		settings_owncloud.set_string ("username", user);
+		m_settings.set_string ("username", user);
 	}
 
-    public static string getHtaccessUser()
+    public string getHtaccessUser()
 	{
-		return settings_owncloud.get_string ("htaccess-username");
+		return m_settings.get_string ("htaccess-username");
 	}
 
-    public static void setHtaccessUser(string ht_user)
+    public void setHtaccessUser(string ht_user)
 	{
-		settings_owncloud.set_string ("htaccess-username", ht_user);
+		m_settings.set_string ("htaccess-username", ht_user);
 	}
 
-    public static string getUnmodifiedURL()
+    public string getUnmodifiedURL()
     {
-        return settings_owncloud.get_string("url");
+        return m_settings.get_string("url");
     }
 
-	public static string getPasswd()
+	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 		                                  "URL", Secret.SchemaAttributeType.STRING,
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = settings_owncloud.get_string("url");
+		attributes["URL"] = m_settings.get_string("url");
 		attributes["Username"] = getUser();
 
 		string passwd = "";
@@ -94,14 +101,20 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 		return passwd;
 	}
 
-    public static bool deletePassword()
+    public void resetAccount()
+    {
+        Utils.resetSettings(m_settings);
+        deletePassword();
+    }
+
+    public bool deletePassword()
 	{
 		bool removed = false;
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 										"URL", Secret.SchemaAttributeType.STRING,
 										"Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-        attributes["URL"] = settings_owncloud.get_string("url");
+        attributes["URL"] = m_settings.get_string("url");
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
@@ -111,7 +124,7 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 		return removed;
 	}
 
-    public static string getHtaccessPasswd()
+    public string getHtaccessPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 		                                  "URL", Secret.SchemaAttributeType.STRING,
@@ -119,7 +132,7 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
                                           "htaccess", Secret.SchemaAttributeType.BOOLEAN);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = settings_owncloud.get_string("url");
+		attributes["URL"] = m_settings.get_string("url");
 		attributes["Username"] = getHtaccessUser();
         attributes["Username"] = "true";
 
@@ -142,7 +155,7 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 	}
 
 
-    public static bool downloadIcon(string feed_id, string icon_url)
+    public bool downloadIcon(string feed_id, string icon_url)
 	{
         if(icon_url == "")
             return false;
@@ -165,7 +178,7 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", icon_url);
 
-			if(settings_tweaks.get_boolean("do-not-track"))
+			if(m_settings.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
@@ -193,7 +206,7 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
 	}
 
 
-    public static int countUnread(Gee.LinkedList<feed> feeds, string id)
+    public int countUnread(Gee.LinkedList<feed> feeds, string id)
     {
         int unread = 0;
 

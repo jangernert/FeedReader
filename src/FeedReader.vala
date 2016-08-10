@@ -26,7 +26,6 @@ namespace FeedReader {
 	GLib.Settings settings_feedly;
 	GLib.Settings settings_ttrss;
 	GLib.Settings settings_inoreader;
-	GLib.Settings settings_owncloud;
 	GLib.Settings settings_tweaks;
 	GLib.Settings settings_share;
 	FeedDaemon feedDaemon_interface;
@@ -45,7 +44,6 @@ namespace FeedReader {
 			settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 			settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
 			settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
-			settings_owncloud = new GLib.Settings ("org.gnome.feedreader.owncloud");
 			settings_inoreader = new GLib.Settings ("org.gnome.feedreader.inoreader");
 			settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 			settings_share = new GLib.Settings ("org.gnome.feedreader.share");

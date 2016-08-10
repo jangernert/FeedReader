@@ -703,32 +703,32 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_post_string_request_to_feedly("/v3/opml", opml, "text/xml");
 	}
 
-	public static bool doesMultiLevelCategories()
+	public bool doesMultiLevelCategories()
 	{
 		return false;
 	}
 
-	public static bool supportTags()
+	public bool supportTags()
 	{
 		return true;
 	}
 
-	public static string symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-feedly-symbolic";
 	}
 
-	public static string accountName()
+	public string accountName()
 	{
 		return settings_feedly.get_string("email");
 	}
 
-	public static string? getServer()
+	public string? getServer()
 	{
 		return null;
 	}
 
-	public static bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCagetoryWhenEmtpy(string catID)
 	{
 		return catID.has_suffix("global.must");
 	}

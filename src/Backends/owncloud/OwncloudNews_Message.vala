@@ -22,9 +22,11 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
     private string m_method;
+    private OwncloudNews_Utils m_utils;
 
     public OwnCloudNews_Message(string destination, string username, string password, string method)
     {
+        m_utils = new OwncloudNews_Utils();
         m_message_string = new GLib.StringBuilder();
         m_method = method;
 		m_session = new Soup.Session();
@@ -38,13 +40,13 @@ public class FeedReader.OwnCloudNews_Message : GLib.Object {
         m_message_soup.request_headers.append("Authorization","Basic %s".printf(base64));
 
         m_session.authenticate.connect((msg, auth, retrying) => {
-			if(OwncloudNews_Utils.getHtaccessUser() == "")
+			if(m_utils.getHtaccessUser() == "")
 			{
 				logger.print(LogMessage.ERROR, "ownCloud Session: need Authentication");
 			}
 			else
 			{
-				auth.authenticate(OwncloudNews_Utils.getHtaccessUser(), OwncloudNews_Utils.getHtaccessPasswd());
+				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}
 		});
 	}

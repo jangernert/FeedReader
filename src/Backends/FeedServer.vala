@@ -1252,13 +1252,6 @@ public class FeedReader.FeedServer : GLib.Object {
 					updateArticleList();
 				}
 
-				int ttrss_feedID = 0;
-				if(feedID == null)
-					ttrss_feedID = TTRSSSpecialID.ALL;
-				else
-					ttrss_feedID = int.parse(feedID);
-
-
 				string articleIDs = "";
 				int skip = count;
 				int amount = 200;
@@ -1276,7 +1269,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					}
 
 					var articles = new Gee.LinkedList<article>();
-					m_ttrss.getHeadlines(articles, skip, amount, whatToGet, ttrss_feedID);
+					m_ttrss.getHeadlines(articles, skip, amount, whatToGet, feedID);
 
 					// only update article states if they haven't been updated by the newsPlus-plugin
 					if(unreadIDs == null || whatToGet != ArticleStatus.ALL)

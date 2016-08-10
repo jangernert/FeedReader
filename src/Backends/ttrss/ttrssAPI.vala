@@ -21,6 +21,15 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	private uint64 m_ttrss_apilevel;
 	private Json.Parser m_parser;
 
+	private enum TTRSSSpecialID {
+		ARCHIVED      = 0,
+		STARRED       = -1,
+		PUBLISHED     = -2,
+		FRESH         = -3,
+		ALL           = -4,
+		RECENTLY_READ = -6
+	}
+
 
 	public ttrss_interface ()
 	{
@@ -396,12 +405,18 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	}
 
 
-	public void getHeadlines(Gee.LinkedList<article> articles, int skip, int limit, ArticleStatus whatToGet = ArticleStatus.ALL, int feedID = TTRSSSpecialID.ALL)
+	public void getHeadlines(Gee.LinkedList<article> articles, int skip, int limit, ArticleStatus whatToGet, string? feedID)
 	{
+		int ttrss_feedID = 0;
+		if(feedID == null)
+			ttrss_feedID = TTRSSSpecialID.ALL;
+		else
+			ttrss_feedID = int.parse(feedID);
+
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "getHeadlines");
-		message.add_int("feed_id", feedID);
+		message.add_int("feed_id", ttrss_feedID);
 		message.add_int("limit", limit);
 		message.add_int("skip", skip);
 

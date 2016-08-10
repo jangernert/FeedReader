@@ -16,7 +16,7 @@
 public class FeedReader.ttrss_interface : GLib.Object {
 
 	public string m_ttrss_url { get; private set; }
-
+	private ttrss_utils m_utils;
 	private string m_ttrss_sessionid;
 	private uint64 m_ttrss_apilevel;
 	private Json.Parser m_parser;
@@ -31,9 +31,9 @@ public class FeedReader.ttrss_interface : GLib.Object {
 	public LoginResponse login()
 	{
 		logger.print(LogMessage.DEBUG, "TTRSS: login");
-		string username = ttrss_utils.getUser();
-		string passwd = ttrss_utils.getPasswd();
-		m_ttrss_url = ttrss_utils.getURL();
+		string username = m_utils.getUser();
+		string passwd = m_utils.getPasswd();
+		m_ttrss_url = m_utils.getURL();
 
 		if(m_ttrss_url == "" && username == "" && passwd == ""){
 			m_ttrss_url = "example-host/tt-rss";
@@ -200,7 +200,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 						string feed_id = feed_node.get_int_member("id").to_string();
 
 						if(feed_node.get_boolean_member("has_icon"))
-							ttrss_utils.downloadIcon(feed_id, icon_url);
+							m_utils.downloadIcon(feed_id, icon_url);
 
 						feeds.add(
 							new feed (
@@ -241,7 +241,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 				string feed_id = feed_node.get_int_member("id").to_string();
 
 				if(feed_node.get_boolean_member("has_icon"))
-					ttrss_utils.downloadIcon(feed_id, icon_url);
+					m_utils.downloadIcon(feed_id, icon_url);
 
 				feeds.add(
 					new feed (
@@ -966,12 +966,12 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public string accountName()
 	{
-		return settings_ttrss.get_string("username");
+		return m_utils.getUser();
 	}
 
 	public string getServer()
 	{
-		return settings_ttrss.get_string("url");
+		return m_utils.getURL();
 	}
 
 	public bool hideCagetoryWhenEmtpy(string catID)
@@ -981,8 +981,7 @@ public class FeedReader.ttrss_interface : GLib.Object {
 
 	public void resetAccount()
 	{
-		Utils.resetSettings(settings_ttrss);
-		ttrss_utils.deletePassword();
+		m_utils.resetAccount();
 	}
 
 	public string uncategorizedID()

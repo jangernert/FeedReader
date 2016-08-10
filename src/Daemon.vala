@@ -708,7 +708,6 @@ namespace FeedReader {
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
 	GLib.Settings settings_feedly;
-	GLib.Settings settings_ttrss;
 	GLib.Settings settings_inoreader;
 	GLib.Settings settings_tweaks;
 	FeedServer server;
@@ -738,7 +737,6 @@ namespace FeedReader {
 		settings_general = new GLib.Settings ("org.gnome.feedreader");
 		settings_state = new GLib.Settings ("org.gnome.feedreader.saved-state");
 		settings_feedly = new GLib.Settings ("org.gnome.feedreader.feedly");
-		settings_ttrss = new GLib.Settings ("org.gnome.feedreader.ttrss");
 		settings_inoreader = new GLib.Settings ("org.gnome.feedreader.inoreader");
 		settings_tweaks = new GLib.Settings ("org.gnome.feedreader.tweaks");
 

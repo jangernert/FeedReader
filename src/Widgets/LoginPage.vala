@@ -42,11 +42,13 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	// FIXME: temporary
 	private OwncloudNews_Utils m_OC_utils;
+	private ttrss_utils m_ttrss_utils;
 
 
 	public LoginPage()
 	{
 		m_OC_utils = new OwncloudNews_Utils();
+		m_ttrss_utils = new ttrss_utils();
 
 		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -407,9 +409,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_owncloud_user_entry.set_text(m_OC_utils.getUser());
 		m_owncloud_password_entry.set_text(m_OC_utils.getPasswd());
 
-		m_ttrss_url_entry.set_text(ttrss_utils.getUnmodifiedURL());
-		m_ttrss_user_entry.set_text(ttrss_utils.getUser());
-		m_ttrss_password_entry.set_text(ttrss_utils.getPasswd());
+		m_ttrss_url_entry.set_text(m_ttrss_utils.getUnmodifiedURL());
+		m_ttrss_user_entry.set_text(m_ttrss_utils.getUser());
+		m_ttrss_password_entry.set_text(m_ttrss_utils.getPasswd());
 
 		m_inoreader_user_entry.set_text(inoreader_utils.getUser());
 		m_inoreader_password_entry.set_text(inoreader_utils.getPasswd());
@@ -442,8 +444,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		{
 			case Backend.TTRSS:
 				backend = Backend.TTRSS;
-				ttrss_utils.setURL(m_ttrss_url_entry.get_text());
-				ttrss_utils.setUser(m_ttrss_user_entry.get_text());
+				m_ttrss_utils.setURL(m_ttrss_url_entry.get_text());
+				m_ttrss_utils.setUser(m_ttrss_user_entry.get_text());
 				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 							                      "URL", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
@@ -454,7 +456,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				catch(GLib.Error e){}
 				if(m_need_htaccess)
 				{
-					ttrss_utils.setHtaccessUser(m_ttrss_auth_user_entry.get_text());
+					m_ttrss_utils.setHtaccessUser(m_ttrss_auth_user_entry.get_text());
 					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 								            			  "URL", Secret.SchemaAttributeType.STRING,
 								                		  "Username", Secret.SchemaAttributeType.STRING,

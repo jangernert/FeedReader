@@ -21,11 +21,12 @@ public class FeedReader.ttrss_message : GLib.Object {
 	private string m_contenttype;
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
-
+	private ttrss_utils m_utils;
 
 
 	public ttrss_message(string destination)
 	{
+		m_utils = new ttrss_utils();
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
 		m_session.ssl_strict = false;
@@ -34,13 +35,13 @@ public class FeedReader.ttrss_message : GLib.Object {
 
 		m_message_soup = new Soup.Message("POST", destination);
 		m_session.authenticate.connect((msg, auth, retrying) => {
-			if(ttrss_utils.getHtaccessUser() == "")
+			if(m_utils.getHtaccessUser() == "")
 			{
 				logger.print(LogMessage.ERROR, "TTRSS Session: need Authentication");
 			}
 			else
 			{
-				auth.authenticate(ttrss_utils.getHtaccessUser(), ttrss_utils.getHtaccessPasswd());
+				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}
 		});
 	}

@@ -256,8 +256,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_headerbar.setButtonsSensitive(true);
 		m_content.updateAccountInfo();
 
-		m_headerbar.show_all();
-		this.set_titlebar(m_headerbar);
+		if(!m_content.isFullscreen())
+		{
+			m_headerbar.show_all();
+			this.set_titlebar(m_headerbar);
+		}
 	}
 
 	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)

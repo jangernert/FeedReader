@@ -650,6 +650,28 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	}
 
 
+	private bool checkShortcut(Gdk.EventKey event, string gsettingKey)
+	{
+		uint? key;
+		Gdk.ModifierType? mod;
+		string setting = settings_keybindings.get_string(gsettingKey);
+		Gtk.accelerator_parse(setting, out key, out mod);
+
+		if(key != null && event.keyval == key)
+		{
+			if(mod == null && event.state == 0)
+			{
+				return true;
+			}
+			else
+			{
+				if((event.state & mod) == mod)
+					return true;
+			}
+		}
+
+		return false;
+	}
 
 	private bool shortcuts(Gdk.EventKey event)
 	{
@@ -659,73 +681,111 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		if(m_headerbar.searchFocused())
 			return false;
 
-		switch(event.keyval)
+		if(checkShortcut(event, "articlelist-prev"))
 		{
-			case Gdk.Key.j:
-				logger.print(LogMessage.DEBUG, "shortcut: down");
-				m_content.ArticleListPREV();
-				break;
+			logger.print(LogMessage.DEBUG, "shortcut: down");
+			m_content.ArticleListPREV();
+			return true;
+		}
 
-			case Gdk.Key.k:
-				logger.print(LogMessage.DEBUG, "shortcut: up");
-				m_content.ArticleListNEXT();
-				break;
+		if(checkShortcut(event, "articlelist-next"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: up");
+			m_content.ArticleListNEXT();
+			return true;
+		}
 
-			case Gdk.Key.Left:
-			case Gdk.Key.Right:
-				if(m_content.isFullscreen())
-				{
-					if(event.keyval == Gdk.Key.Left)
-						m_content.ArticleListPREV();
-					else
-						m_content.ArticleListNEXT();
-				}
+		if(event.keyval == Gdk.Key.Left || event.keyval == Gdk.Key.Right)
+		{
+			if(m_content.isFullscreen())
+			{
+				if(event.keyval == Gdk.Key.Left)
+					m_content.ArticleListPREV();
 				else
-					return false;
-				break;
+					m_content.ArticleListNEXT();
 
-			case Gdk.Key.r:
-				logger.print(LogMessage.DEBUG, "shortcut: toggle read");
-				m_content.toggleReadSelectedArticle();
-				m_headerbar.toggleRead();
-				break;
+				return true;
+			}
+			else
+				return false;
+		}
 
-			case Gdk.Key.m:
-				logger.print(LogMessage.DEBUG, "shortcut: toggle marked");
-				m_content.toggleMarkedSelectedArticle();
-				m_headerbar.toggleMarked();
-				break;
+		if(checkShortcut(event, "articlelist-toggle-read"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: toggle read");
+			m_content.toggleReadSelectedArticle();
+			m_headerbar.toggleRead();
+			return true;
+		}
 
-			case Gdk.Key.o:
-				logger.print(LogMessage.DEBUG, "shortcut: open in browser");
-				m_content.openSelectedArticle();
-				break;
+		if(checkShortcut(event, "articlelist-toggle-marked"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: toggle marked");
+			m_content.toggleMarkedSelectedArticle();
+			m_headerbar.toggleMarked();
+			return true;
+		}
 
-			case Gdk.Key.A:
-				logger.print(LogMessage.DEBUG, "shortcut: mark all as read");
-				//if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
-				markSelectedRead();
-				m_headerbar.setRead(false);
-				break;
+		if(checkShortcut(event, "articlelist-open-url"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: open in browser");
+			m_content.openSelectedArticle();
+			return true;
+		}
 
-			case Gdk.Key.F5:
-				logger.print(LogMessage.DEBUG, "shortcut: sync");
-				((FeedApp)GLib.Application.get_default()).sync();
-				break;
+		if(checkShortcut(event, "feedlist-mark-read"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: mark all as read");
+			markSelectedRead();
+			m_headerbar.setRead(false);
+			return true;
+		}
 
-			case Gdk.Key.s:
-				logger.print(LogMessage.DEBUG, "shortcut: scroll to selcted row");
-				m_content.centerSelectedRow();
-				break;
+		if(checkShortcut(event, "global-sync"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: sync");
+			((FeedApp)GLib.Application.get_default()).sync();
+			return true;
+		}
 
-			case Gdk.Key.q:
-				if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
-				{
-					logger.print(LogMessage.DEBUG, "shortcut: quit");
-					this.close();
-				}
-				break;
+		if(checkShortcut(event, "articlelist-center-selected"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: scroll to selcted row");
+			m_content.centerSelectedRow();
+			return true;
+		}
 
+		if(checkShortcut(event, "global-search"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: focus search");
+			m_headerbar.focusSearch();
+			return true;
+		}
+
+		if(checkShortcut(event, "global-quit"))
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: quit");
+			this.close();
+			return true;
+		}
+
+		if(event.keyval == Gdk.Key.Escape && m_content.isFullscreen())
+		{
+			this.unfullscreen();
+			m_content.leaveFullscreen(false);
+			return true;
+		}
+
+		if(event.keyval == Gdk.Key.F1)
+		{
+			logger.print(LogMessage.DEBUG, "shortcut: showShortcutWindow");
+			showShortcutWindow();
+			return true;
+		}
+
+
+		/*switch(event.keyval)
+		{
 			case Gdk.Key.f:
 				if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
 				{
@@ -733,24 +793,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					m_headerbar.focusSearch();
 				}
 				break;
-
-			case Gdk.Key.Escape:
-				if(m_content.isFullscreen())
-				{
-					this.unfullscreen();
-					m_content.leaveFullscreen(false);
-				}
-				break;
-
-			case Gdk.Key.F1:
-			case Gdk.Key.question:
-				logger.print(LogMessage.DEBUG, "shortcut: showShortcutWindow");
-				showShortcutWindow();
-				break;
-
-			default:
-				return false;
-		}
+		}*/
 		return true;
 	}
 

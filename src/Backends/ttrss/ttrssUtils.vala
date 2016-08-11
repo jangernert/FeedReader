@@ -100,6 +100,24 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		return passwd;
 	}
 
+	public void setPassword(string passwd)
+	{
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+										  "URL", Secret.SchemaAttributeType.STRING,
+										  "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["URL"] = getURL();
+		attributes["Username"] = getUser();
+		try
+		{
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+		}
+	}
+
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
@@ -141,7 +159,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+			logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		pwSchema.unref();
@@ -152,6 +170,26 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 
 		return passwd;
+	}
+
+	public void setHtAccessPassword(string passwd)
+	{
+		var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+											  "URL", Secret.SchemaAttributeType.STRING,
+											  "Username", Secret.SchemaAttributeType.STRING,
+											  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
+		var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		authAttributes["URL"] = getURL();
+		authAttributes["Username"] = getUser();
+		authAttributes["htaccess"] = "true";
+		try
+		{
+			Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", passwd, null);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
+		}
 	}
 
 	public bool downloadIcon(string feed_id, string icon_url)

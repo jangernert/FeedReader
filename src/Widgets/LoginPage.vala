@@ -448,27 +448,11 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				backend = Backend.TTRSS;
 				m_ttrss_utils.setURL(m_ttrss_url_entry.get_text());
 				m_ttrss_utils.setUser(m_ttrss_user_entry.get_text());
-				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "URL", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-				attributes["URL"] = m_ttrss_url_entry.get_text();
-				attributes["Username"] = m_ttrss_user_entry.get_text();
-				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_ttrss_password_entry.get_text(), null);}
-				catch(GLib.Error e){}
+				m_ttrss_utils.setPassword(m_ttrss_password_entry.get_text());
 				if(m_need_htaccess)
 				{
 					m_ttrss_utils.setHtaccessUser(m_ttrss_auth_user_entry.get_text());
-					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-								            			  "URL", Secret.SchemaAttributeType.STRING,
-								                		  "Username", Secret.SchemaAttributeType.STRING,
-														  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
-					var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-					authAttributes["URL"] = m_ttrss_url_entry.get_text();
-					authAttributes["Username"] = m_ttrss_auth_user_entry.get_text();
-					authAttributes["htaccess"] = "true";
-					try{Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_ttrss_auth_pw_entry.get_text(), null);}
-					catch(GLib.Error e){}
+					m_ttrss_utils.setHtAccessPassword(m_ttrss_auth_pw_entry.get_text());
 				}
 				break;
 
@@ -481,42 +465,17 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				backend = Backend.OWNCLOUD;
 				m_OC_utils.setURL(m_owncloud_url_entry.get_text());
 				m_OC_utils.setUser(m_owncloud_user_entry.get_text());
-				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "URL", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-				attributes["URL"] = m_owncloud_url_entry.get_text();
-				attributes["Username"] = m_owncloud_user_entry.get_text();
-				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_owncloud_password_entry.get_text(), null);}
-				catch(GLib.Error e){}
+				m_OC_utils.setPassword(m_owncloud_password_entry.get_text());
 				if(m_need_htaccess)
 				{
 					m_OC_utils.setHtaccessUser(m_owncloud_auth_user_entry.get_text());
-					var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-								            			  "URL", Secret.SchemaAttributeType.STRING,
-								            			  "Username", Secret.SchemaAttributeType.STRING,
-														  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
-					var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-					authAttributes["URL"] = m_owncloud_url_entry.get_text();
-					authAttributes["Username"] = m_owncloud_auth_user_entry.get_text();
-					authAttributes["htaccess"] = "true";
-					try{Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", m_owncloud_auth_pw_entry.get_text(), null);}
-					catch(GLib.Error e){}
+					m_OC_utils.setHtAccessPassword(m_owncloud_auth_pw_entry.get_text());
 				}
 				break;
 			case Backend.INOREADER:
 				backend = Backend.INOREADER;
 				m_ino_utils.setUser(m_inoreader_user_entry.get_text());
-				var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "Apikey", Secret.SchemaAttributeType.STRING,
-							                      "Apisecret", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-				var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-				attributes["Apikey"] = InoReaderSecret.apikey;
-				attributes["Apisecret"] = InoReaderSecret.apitoken;
-				attributes["Username"] = m_inoreader_user_entry.get_text();
-				try{Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", m_inoreader_password_entry.get_text(), null);}
-				catch(GLib.Error e){}
+				m_ino_utils.setPassword(m_inoreader_password_entry.get_text());
 				break;
 		}
 

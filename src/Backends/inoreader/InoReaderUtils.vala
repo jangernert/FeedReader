@@ -74,15 +74,41 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 		attributes["Username"] = m_settings.get_string("username");
 
 		string passwd = "";
-		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+		try
+		{
+			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "InoReaderUtils: getPasswd: " + e.message);
+		}
+
 		if(passwd == null)
 		{
 			return "";
 		}
 
 		return passwd;
+	}
+
+	public void setPassword(string passwd)
+	{
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+										  "Apikey", Secret.SchemaAttributeType.STRING,
+										  "Apisecret", Secret.SchemaAttributeType.STRING,
+										  "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["Apikey"] = InoReaderSecret.apikey;
+		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Username"] = getUser();
+		try
+		{
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "InoReaderUtils: setPassword: " + e.message);
+		}
 	}
 
 	public void resetAccount()

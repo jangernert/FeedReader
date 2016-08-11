@@ -31,6 +31,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
         var stack = new Gtk.Stack();
         stack.set_transition_duration(50);
+        stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
         stack.set_halign(Gtk.Align.FILL);
         stack.add_titled(setup_UI(), "ui", _("Interface"));
         stack.add_titled(setup_Internal(), "internal", _("Internals"));

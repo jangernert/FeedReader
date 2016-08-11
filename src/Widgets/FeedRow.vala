@@ -81,13 +81,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 
 			if(!UiUtils.onlyShowFeeds())
-			{
 				this.get_style_context().add_class("fr-sidebar-feed");
-			}
 			else
-			{
 				this.get_style_context().add_class("fr-sidebar-row");
-			}
 
 			m_box.pack_start(m_icon, false, false, 8);
 			m_box.pack_start(m_label, true, true, 0);

@@ -127,6 +127,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Widgets/ServiceSettingsPopover.vala
     src/Widgets/ServiceSettingsRow.vala
     src/Widgets/ShareRow.vala
+    src/Widgets/ShortcutsWindow.vala
     src/Widgets/ServiceInfo.vala
     src/Widgets/Setting.vala
     src/Widgets/SettingsDialog.vala

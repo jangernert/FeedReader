@@ -25,6 +25,7 @@ namespace FeedReader {
 	GLib.Settings settings_state;
 	GLib.Settings settings_tweaks;
 	GLib.Settings settings_share;
+	GLib.Settings settings_keybindings;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
 	Share share;

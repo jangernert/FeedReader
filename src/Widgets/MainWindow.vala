@@ -756,17 +756,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void showShortcutWindow()
 	{
-		try {
-			var builder = new Builder();
-			builder.add_from_file(InstallPrefix + "/share/FeedReader/shortcuts.ui");
-			builder.connect_signals(null);
-			var shortuctsWindow = builder.get_object("shortcuts") as Gtk.Window;
-			shortuctsWindow.set_transient_for(this);
-			shortuctsWindow.set_modal(true);
-			shortuctsWindow.show_all();
-		} catch (Error e) {
-			logger.print(LogMessage.DEBUG, "Could not load UI: %s".printf(e.message));
-		}
+		var shortuctsWindow = new ShortcutsWindow(this);
 	}
 
 

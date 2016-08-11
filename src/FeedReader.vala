@@ -42,6 +42,7 @@ namespace FeedReader {
 			settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 			settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 			settings_share = new GLib.Settings("org.gnome.feedreader.share");
+			settings_keybindings = new GLib.Settings("org.gnome.feedreader.keybindings");
 
 			logger = new Logger("ui");
 			share = new Share();

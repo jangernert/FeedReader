@@ -17,12 +17,16 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 
 	public ShortcutsWindow(Gtk.Window parent)
 	{
+
 		//--------------------------------------------------
 		var general = newGroup(_("General"));
 		//--------------------------------------------------
-		var refresh = newShortcut(_("Refresh"), "F5");
-		var search = newShortcut(_("Search"), "<Primary>F");
-		var quit = newShortcut(_("Quit"), "<Primary>Q");
+		string globalSync = settings_keybindings.get_string("global-sync");
+		string globalSearch = settings_keybindings.get_string("global-search");
+		string globalQuit = settings_keybindings.get_string("global-quit");
+		var refresh = newShortcut(_("Refresh"), globalSync);
+		var search = newShortcut(_("Search"), globalSearch);
+		var quit = newShortcut(_("Quit"), globalQuit);
 		general.add(refresh);
 		general.add(search);
 		general.add(quit);
@@ -32,9 +36,10 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		//--------------------------------------------------
 		var feedList = newGroup(_("Feed-List"));
 		//--------------------------------------------------
+		string feedListMarkRead = settings_keybindings.get_string("feedlist-mark-read");
 		var navigate = newShortcut(_("Navigate the feed-list"), "Up Down");
 		var expCol = newShortcut(_("Collapse/Expand categories"), "Left Right");
-		var flmark = newShortcut(_("Mark the currently selected as read"), "<SHIFT>A");
+		var flmark = newShortcut(_("Mark the currently selected as read"), feedListMarkRead);
 		feedList.add(navigate);
 		feedList.add(expCol);
 		feedList.add(flmark);
@@ -44,15 +49,21 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		//--------------------------------------------------
 		var articleList = newGroup(_("Article-List"));
 		//--------------------------------------------------
-		var nextprev = newShortcut(_("Select next/previous article"), "J K");
-		var toggleRead = newShortcut(_("Toggle the selected article un/read"), "R");
-		var toggleMarked = newShortcut(_("Toggle the selected article un/marked"), "M");
-		var openURL = newShortcut(_("Open the URL of the selected article"), "O");
+		string prev = settings_keybindings.get_string("articlelist-prev");
+		string next = settings_keybindings.get_string("articlelist-next");
+		string nextPrev = "%s %s".printf(prev, next);
+		string toggleRead = settings_keybindings.get_string("articlelist-toggle-read");
+		string toggleMarked = settings_keybindings.get_string("articlelist-toggle-marked");
+		string openUrl = settings_keybindings.get_string("articlelist-open-url");
+		var nextprev = newShortcut(_("Select next/previous article"), nextPrev);
+		var toggleread = newShortcut(_("Toggle the selected article un/read"), toggleRead);
+		var togglemarked = newShortcut(_("Toggle the selected article un/marked"), toggleMarked);
+		var openURL = newShortcut(_("Open the URL of the selected article"), openUrl);
 		var upDown = newShortcut(_("Scroll all the way up/down"), "Page_Up Page_Down");
 		var centerSelected = newShortcut(_("Center the currently selected article"), "S");
 		articleList.add(nextprev);
-		articleList.add(toggleRead);
-		articleList.add(toggleMarked);
+		articleList.add(toggleread);
+		articleList.add(togglemarked);
 		articleList.add(openURL);
 		articleList.add(upDown);
 		articleList.add(centerSelected);

@@ -129,6 +129,7 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 			removeTimeout();
 			m_timeout_source_id = GLib.Timeout.add(1000, () => {
 				m_revealer.set_reveal_child(false);
+				m_timeout_source_id = 0;
 				return false;
 			});
 

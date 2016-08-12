@@ -14,8 +14,6 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.InoReaderConnection {
-	private string m_api_key;
-	private string m_api_token;
 	private string m_api_username;
 	private string m_api_code;
 	private InoReaderUtils m_utils;
@@ -23,8 +21,6 @@ public class FeedReader.InoReaderConnection {
 	public InoReaderConnection()
 	{
 		m_utils = new InoReaderUtils();
-		m_api_key = InoReaderSecret.apikey;
-		m_api_token = InoReaderSecret.apitoken;
 		m_api_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 	}
@@ -38,8 +34,8 @@ public class FeedReader.InoReaderConnection {
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = InoReaderSecret.apikey;
-		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Apikey"] = m_utils.getApiKey();
+		attributes["Apisecret"] = m_utils.getApiToken();
 		attributes["Username"] = m_api_username;
 
 		string passwd = "";
@@ -51,8 +47,8 @@ public class FeedReader.InoReaderConnection {
 		}
 
 		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd ;
-		message.request_headers.append("AppId", m_api_key);
-		message.request_headers.append("AppKey", m_api_token);
+		message.request_headers.append("AppId", m_utils.getApiKey());
+		message.request_headers.append("AppKey", m_utils.getApiToken());
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 
@@ -87,13 +83,13 @@ public class FeedReader.InoReaderConnection {
 	private string send_post_request(string path, string type, string? message_string = null)
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message(type, InoReaderSecret.base_uri+path);
+		var message = new Soup.Message(type, m_utils.getBaseURI() + path);
 
 		string inoauth = "GoogleLogin auth=" + m_utils.getAccessToken();
 
 		message.request_headers.append("Authorization", inoauth) ;
-		message.request_headers.append("AppId", m_api_key);
-		message.request_headers.append("AppKey", m_api_token);
+		message.request_headers.append("AppId", m_utils.getApiKey());
+		message.request_headers.append("AppKey", m_utils.getApiToken());
 
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);

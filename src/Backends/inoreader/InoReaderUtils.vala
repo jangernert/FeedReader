@@ -69,8 +69,8 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = InoReaderSecret.apikey;
-		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Apikey"] = getApiKey();
+		attributes["Apisecret"] = getApiToken();
 		attributes["Username"] = m_settings.get_string("username");
 
 		string passwd = "";
@@ -98,8 +98,8 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 										  "Apisecret", Secret.SchemaAttributeType.STRING,
 										  "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = InoReaderSecret.apikey;
-		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Apikey"] = getApiKey();
+		attributes["Apisecret"] = getApiToken();
 		attributes["Username"] = getUser();
 		try
 		{
@@ -125,8 +125,8 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 							                      "Apisecret", Secret.SchemaAttributeType.STRING,
 							                      "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = InoReaderSecret.apikey;
-		attributes["Apisecret"] = InoReaderSecret.apitoken;
+		attributes["Apikey"] = getApiKey();
+		attributes["Apisecret"] = getApiToken();
 		attributes["Username"] = m_settings.get_string("username");
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
@@ -192,5 +192,20 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 			}
 		}
 		return false;
+	}
+
+	public string getBaseURI()
+	{
+		return "https://www.inoreader.com/reader/api/0/";
+	}
+
+	public string getApiKey()
+	{
+		return "1000001058";
+	}
+
+	public string getApiToken()
+	{
+		return "a3LyhdTSKk_dcCygZUZBZenIO2SQcpzz";
 	}
 }

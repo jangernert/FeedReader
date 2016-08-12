@@ -14,33 +14,32 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 
-public class FeedReader.ttrssLoginWidget : Gtk.Box {
+public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 
 	private Gtk.Entry m_urlEntry;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
-	private Gtk.Entry m_authPasswordEntry;
-	private Gtk.Entry m_authUserEntry;
+	private Gtk.Entry m_AuthUserEntry;
+	private Gtk.Entry m_AuthPasswordEntry;
 	private Gtk.Revealer m_revealer;
+	private OwncloudNewsUtils m_utils;
 	private bool m_need_htaccess = false;
-	private ttrssUtils m_utils;
-	public signal void login();
 
-	public ttrssLoginWidget()
+	public OwnCloudNewsLoginWidget()
 	{
-		m_utils = new ttrssUtils();
+		m_utils = new OwncloudNewsUtils();
 
-		var url_label = new Gtk.Label(_("TinyTinyRSS URL:"));
-		var user_label = new Gtk.Label(_("Username:"));
-		var password_label = new Gtk.Label(_("Password:"));
+		var urlLabel = new Gtk.Label(_("OwnCloud URL:"));
+		var userLabel = new Gtk.Label(_("Username:"));
+		var passwordLabel = new Gtk.Label(_("Password:"));
 
-		url_label.set_alignment(1.0f, 0.5f);
-		user_label.set_alignment(1.0f, 0.5f);
-		password_label.set_alignment(1.0f, 0.5f);
+		urlLabel.set_alignment(1.0f, 0.5f);
+		userLabel.set_alignment(1.0f, 0.5f);
+		passwordLabel.set_alignment(1.0f, 0.5f);
 
-		url_label.set_hexpand(true);
-		user_label.set_hexpand(true);
-		password_label.set_hexpand(true);
+		urlLabel.set_hexpand(true);
+		userLabel.set_hexpand(true);
+		passwordLabel.set_hexpand(true);
 
 		m_urlEntry = new Gtk.Entry();
 		m_userEntry = new Gtk.Entry();
@@ -59,31 +58,32 @@ public class FeedReader.ttrssLoginWidget : Gtk.Box {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		grid.attach(url_label, 0, 0, 1, 1);
+		var owncloud_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
+
+		grid.attach(urlLabel, 0, 0, 1, 1);
 		grid.attach(m_urlEntry, 1, 0, 1, 1);
-		grid.attach(user_label, 0, 1, 1, 1);
+		grid.attach(userLabel, 0, 1, 1, 1);
 		grid.attach(m_userEntry, 1, 1, 1, 1);
-		grid.attach(password_label, 0, 2, 1, 1);
+		grid.attach(passwordLabel, 0, 2, 1, 1);
 		grid.attach(m_passwordEntry, 1, 2, 1, 1);
 
-
 		// http auth stuff ----------------------------------------------------
-		var auth_user_label = new Gtk.Label(_("Username:"));
-		var auth_password_label = new Gtk.Label(_("Password:"));
+		var authUserLabel = new Gtk.Label(_("Username:"));
+		var authPasswordLabel = new Gtk.Label(_("Password:"));
 
-		auth_user_label.set_alignment(1.0f, 0.5f);
-		auth_password_label.set_alignment(1.0f, 0.5f);
+		authUserLabel.set_alignment(1.0f, 0.5f);
+		authPasswordLabel.set_alignment(1.0f, 0.5f);
 
-		auth_user_label.set_hexpand(true);
-		auth_password_label.set_hexpand(true);
+		authUserLabel.set_hexpand(true);
+		authPasswordLabel.set_hexpand(true);
 
-		m_authUserEntry = new Gtk.Entry();
-		m_authPasswordEntry = new Gtk.Entry();
-		m_authPasswordEntry.set_invisible_char('*');
-		m_authPasswordEntry.set_visibility(false);
+		m_AuthUserEntry = new Gtk.Entry();
+		m_AuthPasswordEntry = new Gtk.Entry();
+		m_AuthPasswordEntry.set_invisible_char('*');
+		m_AuthPasswordEntry.set_visibility(false);
 
-		m_authUserEntry.activate.connect(writeData);
-		m_authPasswordEntry.activate.connect(writeData);
+		m_AuthUserEntry.activate.connect(writeData);
+		m_AuthPasswordEntry.activate.connect(writeData);
 
 		var authGrid = new Gtk.Grid();
 		authGrid.margin = 10;
@@ -92,10 +92,10 @@ public class FeedReader.ttrssLoginWidget : Gtk.Box {
 		authGrid.set_valign(Gtk.Align.CENTER);
 		authGrid.set_halign(Gtk.Align.CENTER);
 
-		authGrid.attach(auth_user_label, 0, 0, 1, 1);
-		authGrid.attach(m_authUserEntry, 1, 0, 1, 1);
-		authGrid.attach(auth_password_label, 0, 1, 1, 1);
-		authGrid.attach(m_authPasswordEntry, 1, 1, 1, 1);
+		authGrid.attach(authUserLabel, 0, 0, 1, 1);
+		authGrid.attach(m_AuthUserEntry, 1, 0, 1, 1);
+		authGrid.attach(authPasswordLabel, 0, 1, 1, 1);
+		authGrid.attach(m_AuthPasswordEntry, 1, 1, 1, 1);
 
 		var frame = new Gtk.Frame(_("HTTP Authorization"));
 		frame.set_halign(Gtk.Align.CENTER);
@@ -104,19 +104,12 @@ public class FeedReader.ttrssLoginWidget : Gtk.Box {
 		m_revealer.add(frame);
 		//---------------------------------------------------------------------
 
-		var ttrss_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
-
 		this.orientation = Gtk.Orientation.VERTICAL;
 		this.spacing = 10;
-		this.pack_start(ttrss_logo, false, false, 10);
+		this.pack_start(owncloud_logo, false, false, 10);
 		this.pack_start(grid, true, true, 10);
 		this.pack_start(m_revealer, true, true, 10);
 		this.show_all();
-	}
-
-	public void showHtAccess()
-	{
-		m_revealer.set_reveal_child(true);
 	}
 
 	public void writeData()
@@ -126,9 +119,14 @@ public class FeedReader.ttrssLoginWidget : Gtk.Box {
 		m_utils.setPassword(m_passwordEntry.get_text());
 		if(m_need_htaccess)
 		{
-			m_utils.setHtaccessUser(m_authUserEntry.get_text());
-			m_utils.setHtAccessPassword(m_authPasswordEntry.get_text());
+			m_utils.setHtaccessUser(m_AuthUserEntry.get_text());
+			m_utils.setHtAccessPassword(m_AuthPasswordEntry.get_text());
 		}
+	}
+
+	public void showHtAccess()
+	{
+		m_revealer.set_reveal_child(true);
 	}
 
 	public void fill()

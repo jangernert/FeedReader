@@ -15,12 +15,6 @@
 
 public class FeedReader.LoginPage : Gtk.Bin {
 
-	private Gtk.Entry m_owncloud_url_entry;
-	private Gtk.Entry m_owncloud_user_entry;
-	private Gtk.Entry m_owncloud_password_entry;
-	private Gtk.Entry m_owncloud_auth_user_entry;
-	private Gtk.Entry m_owncloud_auth_pw_entry;
-	private Gtk.Revealer m_owncloud_revealer;
 	private Gtk.Entry m_inoreader_user_entry;
 	private Gtk.Entry m_inoreader_password_entry;
 	private Gtk.Entry m_inoreader_apikey_entry;
@@ -35,16 +29,12 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public signal void loadLoginPage(OAuth type);
 
 	// FIXME: temporary
-	private OwncloudNewsUtils m_OC_utils;
-	private ttrssUtils m_ttrss_utils;
 	private InoReaderUtils m_ino_utils;
 
 
 	public LoginPage()
 	{
 		m_ino_utils = new InoReaderUtils();
-		m_OC_utils = new OwncloudNewsUtils();
-		m_ttrss_utils = new ttrssUtils();
 
 		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader")};
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
@@ -137,7 +127,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		m_login_details.add_named(new ttrssLoginWidget(), "ttrss");
 		setup_feedly_login();
-		setup_owncloud_login();
+		m_login_details.add_named(new OwnCloudNewsLoginWidget(), "owncloud");
 		setup_inoreader_login();
 
 		this.set_halign(Gtk.Align.CENTER);
@@ -166,92 +156,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		feedly_box.pack_start(feedly_logo, false, false, 20);
 		feedly_box.pack_start(text, false, false, 10);
 		m_login_details.add_named(feedly_box, "feedly");
-	}
-
-
-	private void setup_owncloud_login()
-	{
-		var owncloud_url_label = new Gtk.Label(_("OwnCloud URL:"));
-		var owncloud_user_label = new Gtk.Label(_("Username:"));
-		var owncloud_password_label = new Gtk.Label(_("Password:"));
-
-		owncloud_url_label.set_alignment(1.0f, 0.5f);
-		owncloud_user_label.set_alignment(1.0f, 0.5f);
-		owncloud_password_label.set_alignment(1.0f, 0.5f);
-
-		owncloud_url_label.set_hexpand(true);
-		owncloud_user_label.set_hexpand(true);
-		owncloud_password_label.set_hexpand(true);
-
-		m_owncloud_url_entry = new Gtk.Entry();
-		m_owncloud_user_entry = new Gtk.Entry();
-		m_owncloud_password_entry = new Gtk.Entry();
-
-		m_owncloud_url_entry.activate.connect(write_login_data);
-		m_owncloud_user_entry.activate.connect(write_login_data);
-		m_owncloud_password_entry.activate.connect(write_login_data);
-
-		m_owncloud_password_entry.set_invisible_char('*');
-		m_owncloud_password_entry.set_visibility(false);
-
-		var grid = new Gtk.Grid();
-		grid.set_column_spacing(10);
-		grid.set_row_spacing(10);
-		grid.set_valign(Gtk.Align.CENTER);
-		grid.set_halign(Gtk.Align.CENTER);
-
-		var owncloud_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
-
-		grid.attach(owncloud_url_label, 0, 0, 1, 1);
-		grid.attach(m_owncloud_url_entry, 1, 0, 1, 1);
-		grid.attach(owncloud_user_label, 0, 1, 1, 1);
-		grid.attach(m_owncloud_user_entry, 1, 1, 1, 1);
-		grid.attach(owncloud_password_label, 0, 2, 1, 1);
-		grid.attach(m_owncloud_password_entry, 1, 2, 1, 1);
-
-		// http auth stuff ----------------------------------------------------
-		var owncloud_auth_user_label = new Gtk.Label(_("Username:"));
-		var owncloud_auth_password_label = new Gtk.Label(_("Password:"));
-
-		owncloud_auth_user_label.set_alignment(1.0f, 0.5f);
-		owncloud_auth_password_label.set_alignment(1.0f, 0.5f);
-
-		owncloud_auth_user_label.set_hexpand(true);
-		owncloud_auth_password_label.set_hexpand(true);
-
-		m_owncloud_auth_user_entry = new Gtk.Entry();
-		m_owncloud_auth_pw_entry = new Gtk.Entry();
-		m_owncloud_auth_pw_entry.set_invisible_char('*');
-		m_owncloud_auth_pw_entry.set_visibility(false);
-
-		m_owncloud_auth_user_entry.activate.connect(write_login_data);
-		m_owncloud_auth_pw_entry.activate.connect(write_login_data);
-
-		var authGrid = new Gtk.Grid();
-		authGrid.margin = 10;
-		authGrid.set_column_spacing(10);
-		authGrid.set_row_spacing(10);
-		authGrid.set_valign(Gtk.Align.CENTER);
-		authGrid.set_halign(Gtk.Align.CENTER);
-
-		authGrid.attach(owncloud_auth_user_label, 0, 0, 1, 1);
-		authGrid.attach(m_owncloud_auth_user_entry, 1, 0, 1, 1);
-		authGrid.attach(owncloud_auth_password_label, 0, 1, 1, 1);
-		authGrid.attach(m_owncloud_auth_pw_entry, 1, 1, 1, 1);
-
-		var owncloud_frame = new Gtk.Frame(_("HTTP Authorization"));
-		owncloud_frame.set_halign(Gtk.Align.CENTER);
-		owncloud_frame.add(authGrid);
-		m_owncloud_revealer = new Gtk.Revealer();
-		m_owncloud_revealer.add(owncloud_frame);
-		//---------------------------------------------------------------------
-
-		var owncloud_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
-		owncloud_box.pack_start(owncloud_logo, false, false, 10);
-		owncloud_box.pack_start(grid, true, true, 10);
-		owncloud_box.pack_start(m_owncloud_revealer, true, true, 10);
-
-		m_login_details.add_named(owncloud_box, "owncloud");
 	}
 
 	private void setup_inoreader_login()
@@ -316,10 +220,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		}
 
 
-		m_owncloud_url_entry.set_text(m_OC_utils.getUnmodifiedURL());
-		m_owncloud_user_entry.set_text(m_OC_utils.getUser());
-		m_owncloud_password_entry.set_text(m_OC_utils.getPasswd());
-
+		(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).fill();
 		(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).fill();
 
 		m_inoreader_user_entry.set_text(m_ino_utils.getUser());
@@ -336,7 +237,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 				break;
 
 			case Backend.OWNCLOUD:
-				m_owncloud_revealer.set_reveal_child(true);
+				(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).showHtAccess();
 				break;
 		}
 
@@ -363,14 +264,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.OWNCLOUD:
 				backend = Backend.OWNCLOUD;
-				m_OC_utils.setURL(m_owncloud_url_entry.get_text());
-				m_OC_utils.setUser(m_owncloud_user_entry.get_text());
-				m_OC_utils.setPassword(m_owncloud_password_entry.get_text());
-				if(m_need_htaccess)
-				{
-					m_OC_utils.setHtaccessUser(m_owncloud_auth_user_entry.get_text());
-					m_OC_utils.setHtAccessPassword(m_owncloud_auth_pw_entry.get_text());
-				}
+				(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).writeData();
 				break;
 			case Backend.INOREADER:
 				backend = Backend.INOREADER;

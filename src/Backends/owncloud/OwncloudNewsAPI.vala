@@ -240,7 +240,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 
 
-    public void getArticles(Gee.LinkedList<article> articles, int skip, int count, bool read = true, OwnCloudType type, int id = 0)
+    public void getArticles(Gee.LinkedList<article> articles, int skip, int count, bool read, OwnCloudType type, int id)
 	{
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + "items", m_username, m_password, "GET");
         message.add_bool("oldestFirst", false);

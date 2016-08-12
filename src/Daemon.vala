@@ -24,6 +24,8 @@ namespace FeedReader {
 		private Unity.LauncherEntry m_launcher;
 #endif
 		private LoginResponse m_loggedin;
+		private bool m_offline = true;
+		private OfflineActionManager m_offlineActions;
 		private uint m_timeout_source_id = 0;
 
 		public signal void syncStarted();
@@ -44,6 +46,7 @@ namespace FeedReader {
 		public FeedDaemonServer()
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
+			m_offlineActions = new OfflineActionManager();
 			login((Backend)settings_general.get_enum("account-type"));
 
 #if WITH_LIBUNITY
@@ -243,8 +246,17 @@ namespace FeedReader {
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 			server = new FeedServer(type);
-			this.setOffline.connect(server.setOffline);
-			this.setOnline.connect(server.setOnline);
+			this.setOffline.connect(() => {
+				m_offline = true;
+			});
+			this.setOnline.connect(() => {
+				m_offline = false;
+				if(dataBase.isTableEmpty("OfflineActions"))
+				{
+					m_offlineActions.goOnline();
+					dataBase.resetOfflineActions();
+				}
+			});
 
 			server.newFeedList.connect(() => {
 				newFeedList();
@@ -311,9 +323,20 @@ namespace FeedReader {
 				if(status == ArticleStatus.READ)
 					increase = false;
 
-				server.setArticleIsRead.begin(articleID, status, (obj, res) => {
-					server.setArticleIsRead.end(res);
-				});
+				if(m_offline)
+				{
+					var idArray = articleID.split(",");
+					foreach(string id in idArray)
+					{
+						m_offlineActions.markArticleRead(id, status);
+					}
+				}
+				else
+				{
+					server.setArticleIsRead.begin(articleID, status, (obj, res) => {
+						server.setArticleIsRead.end(res);
+					});
+				}
 
 				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
 					dataBase.update_article.end(res);
@@ -323,7 +346,11 @@ namespace FeedReader {
 			}
 			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
 			{
-				server.setArticleIsMarked(articleID, status);
+				if(m_offline)
+					m_offlineActions.markArticleStarred(articleID, status);
+				else
+					server.setArticleIsMarked(articleID, status);
+
 
 				dataBase.update_article.begin(articleID, "marked", status, (obj, res) => {
 					dataBase.update_article.end(res);
@@ -334,6 +361,9 @@ namespace FeedReader {
 
 		public string createTag(string caption)
 		{
+			if(m_offline)
+				return ":(";
+
 			string tagID = server.createTag(caption);
 			var Tag = new tag(tagID, caption, 0);
 			var taglist = new Gee.LinkedList<tag>();
@@ -346,6 +376,9 @@ namespace FeedReader {
 
 		public void tagArticle(string articleID, string tagID, bool add)
 		{
+			if(m_offline)
+				return;
+
 			string tags = dataBase.read_article_tags(articleID);
 
 			if(add)
@@ -409,6 +442,9 @@ namespace FeedReader {
 
 		public void renameTag(string tagID, string newName)
 		{
+			if(m_offline)
+				return;
+
 			server.renameTag.begin(tagID, newName, (obj, res) => {
 				server.renameTag.end(res);
 			});
@@ -421,6 +457,9 @@ namespace FeedReader {
 
 		public void deleteTag(string tagID)
 		{
+			if(m_offline)
+				return;
+
 			server.deleteTag.begin(tagID, (obj, res) => {
 				server.deleteTag.end(res);
 			});
@@ -451,9 +490,16 @@ namespace FeedReader {
 		{
 			if(isCat)
 			{
-				server.setCategorieRead.begin(feedID, (obj, res) => {
-					server.setCategorieRead.end(res);
-				});
+				if(m_offline)
+				{
+					m_offlineActions.markCategoryRead(feedID);
+				}
+				else
+				{
+					server.setCategorieRead.begin(feedID, (obj, res) => {
+						server.setCategorieRead.end(res);
+					});
+				}
 
 				dataBase.markCategorieRead.begin(feedID, (obj, res) => {
 					dataBase.markCategorieRead.end(res);
@@ -464,9 +510,16 @@ namespace FeedReader {
 			}
 			else
 			{
-				server.setFeedRead.begin(feedID, (obj, res) => {
-					server.setFeedRead.end(res);
-				});
+				if(m_offline)
+				{
+					m_offlineActions.markFeedRead(feedID);
+				}
+				else
+				{
+					server.setFeedRead.begin(feedID, (obj, res) => {
+						server.setFeedRead.end(res);
+					});
+				}
 
 				dataBase.markFeedRead.begin(feedID, (obj, res) => {
 					dataBase.markFeedRead.end(res);
@@ -479,9 +532,16 @@ namespace FeedReader {
 
 		public void markAllItemsRead()
 		{
-			server.markAllItemsRead.begin((obj, res) => {
-				server.markAllItemsRead.end(res);
-			});
+			if(m_offline)
+			{
+				m_offlineActions.markAllRead();
+			}
+			else
+			{
+				server.markAllItemsRead.begin((obj, res) => {
+					server.markAllItemsRead.end(res);
+				});
+			}
 
 			dataBase.markAllRead.begin((obj, res) => {
 				dataBase.markAllRead.end(res);

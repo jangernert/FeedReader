@@ -18,9 +18,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private feedlyInterface m_feedly;
 	private OwncloudNewsInterface m_owncloud;
 	private InoReaderInterface m_inoreader;
-	private OfflineActionManager m_offlineActions;
 	private int m_type;
-	private bool m_offline = false;
 	public signal void newFeedList();
 	public signal void updateFeedList();
 	public signal void updateArticleList();
@@ -30,7 +28,6 @@ public class FeedReader.FeedServer : GLib.Object {
 	public FeedServer(Backend type)
 	{
 		m_type = type;
-		m_offlineActions = new OfflineActionManager();
 		logger.print(LogMessage.DEBUG, "FeedServer: new with type %i".printf(type));
 
 		switch(m_type)
@@ -518,16 +515,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
-		if(m_offline)
-		{
-			var idArray = articleIDs.split(",");
-			foreach(string id in idArray)
-			{
-				m_offlineActions.markArticleRead(id, read);
-			}
-			return;
-		}
-
 		SourceFunc callback = setArticleIsRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -558,12 +545,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
-		if(m_offline)
-		{
-			m_offlineActions.markArticleStarred(articleID, marked);
-			return;
-		}
-
 		SourceFunc callback = setArticleIsMarked.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -594,12 +575,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setFeedRead(string feedID)
 	{
-		if(m_offline)
-		{
-			m_offlineActions.markFeedRead(feedID);
-			return;
-		}
-
 		SourceFunc callback = setFeedRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -630,12 +605,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void setCategorieRead(string catID)
 	{
-		if(m_offline)
-		{
-			m_offlineActions.markCategoryRead(catID);
-			return;
-		}
-
 		SourceFunc callback = setCategorieRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -666,12 +635,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void markAllItemsRead()
 	{
-		if(m_offline)
-		{
-			m_offlineActions.markAllRead();
-			return;
-		}
-
 		SourceFunc callback = markAllItemsRead.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -703,9 +666,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void tagArticle(string articleID, string tagID)
 	{
-		if(m_offline)
-			return;
-
 		SourceFunc callback = tagArticle.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -733,9 +693,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void removeArticleTag(string articleID, string tagID)
 	{
-		if(m_offline)
-			return;
-
 		SourceFunc callback = removeArticleTag.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -762,9 +719,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public string createTag(string caption)
 	{
-		if(m_offline)
-			return ":(";
-
 		switch(m_type)
 		{
 			case Backend.TTRSS:
@@ -782,9 +736,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void deleteTag(string tagID)
 	{
-		if(m_offline)
-			return;
-
 		SourceFunc callback = deleteTag.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -815,9 +766,6 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void renameTag(string tagID, string title)
 	{
-		if(m_offline)
-			return;
-
 		SourceFunc callback = renameTag.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
@@ -1406,24 +1354,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			return -1;
 
 		return settings_general.get_int("max-articles");
-	}
-
-	public void setOffline()
-	{
-		logger.print(LogMessage.DEBUG, "FeedServer: setOffline");
-		m_offline = true;
-	}
-
-	public void setOnline()
-	{
-		logger.print(LogMessage.DEBUG, "FeedServer: setOnline");
-		m_offline = false;
-		if(serverAvailable())
-		{
-			logger.print(LogMessage.DEBUG, "FeedServer: server is available again");
-			m_offlineActions.goOnline();
-			dataBase.resetOfflineActions();
-		}
 	}
 
 }

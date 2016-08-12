@@ -60,9 +60,12 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
 
     public void refresh()
     {
+        if(!feedDaemon_interface.isOnline())
+            return;
+
         string? service_icon = feedDaemon_interface.symbolicIcon();
         string? user_name = feedDaemon_interface.accountName();
-        string server = feedDaemon_interface.getServerURL();
+        string? server = feedDaemon_interface.getServerURL();
 
         if(this.is_visible())
         {

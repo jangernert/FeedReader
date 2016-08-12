@@ -83,6 +83,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
+    src/Backends/ttrss/ttrssLoginWidget.vala
     src/Backends/ttrss/ttrssUtils.vala
     src/Backends/owncloud/OwncloudNewsUtils.vala
     src/Backends/inoreader/InoReaderUtils.vala

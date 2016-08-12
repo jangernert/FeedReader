@@ -94,6 +94,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.OWNCLOUD:
 				return m_owncloud.symbolicIcon();
 
+			case Backend.NONE:
 			default:
 				return null;
 		}
@@ -115,6 +116,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.OWNCLOUD:
 				return m_owncloud.accountName();
 
+			case Backend.NONE:
 			default:
 				return null;
 		}
@@ -136,6 +138,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			case Backend.FEEDLY:
 				return m_feedly.getServer();
 
+			case Backend.NONE:
 			default:
 				return null;
 		}

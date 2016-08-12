@@ -15,12 +15,6 @@
 
 public class FeedReader.LoginPage : Gtk.Bin {
 
-	private Gtk.Entry m_ttrss_url_entry;
-	private Gtk.Entry m_ttrss_user_entry;
-	private Gtk.Entry m_ttrss_password_entry;
-	private Gtk.Entry m_ttrss_auth_pw_entry;
-	private Gtk.Entry m_ttrss_auth_user_entry;
-	private Gtk.Revealer m_ttrss_revealer;
 	private Gtk.Entry m_owncloud_url_entry;
 	private Gtk.Entry m_owncloud_user_entry;
 	private Gtk.Entry m_owncloud_password_entry;
@@ -139,7 +133,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		var nothing_selected = new Gtk.Label(_("No service selected."));
 		nothing_selected.get_style_context().add_class("h3");
 		m_login_details.add_named(nothing_selected, "none");
-		setup_ttrss_login();
+
+
+		m_login_details.add_named(new ttrssLoginWidget(), "ttrss");
 		setup_feedly_login();
 		setup_owncloud_login();
 		setup_inoreader_login();
@@ -149,93 +145,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		this.margin = 20;
 		this.add(m_layout);
 		this.show_all();
-	}
-
-
-	private void setup_ttrss_login()
-	{
-		var ttrss_url_label = new Gtk.Label(_("TinyTinyRSS URL:"));
-		var ttrss_user_label = new Gtk.Label(_("Username:"));
-		var ttrss_password_label = new Gtk.Label(_("Password:"));
-
-		ttrss_url_label.set_alignment(1.0f, 0.5f);
-		ttrss_user_label.set_alignment(1.0f, 0.5f);
-		ttrss_password_label.set_alignment(1.0f, 0.5f);
-
-		ttrss_url_label.set_hexpand(true);
-		ttrss_user_label.set_hexpand(true);
-		ttrss_password_label.set_hexpand(true);
-
-		m_ttrss_url_entry = new Gtk.Entry();
-		m_ttrss_user_entry = new Gtk.Entry();
-		m_ttrss_password_entry = new Gtk.Entry();
-
-		m_ttrss_url_entry.activate.connect(write_login_data);
-		m_ttrss_user_entry.activate.connect(write_login_data);
-		m_ttrss_password_entry.activate.connect(write_login_data);
-
-		m_ttrss_password_entry.set_invisible_char('*');
-		m_ttrss_password_entry.set_visibility(false);
-
-		var grid = new Gtk.Grid();
-		grid.set_column_spacing(10);
-		grid.set_row_spacing(10);
-		grid.set_valign(Gtk.Align.CENTER);
-		grid.set_halign(Gtk.Align.CENTER);
-
-		grid.attach(ttrss_url_label, 0, 0, 1, 1);
-		grid.attach(m_ttrss_url_entry, 1, 0, 1, 1);
-		grid.attach(ttrss_user_label, 0, 1, 1, 1);
-		grid.attach(m_ttrss_user_entry, 1, 1, 1, 1);
-		grid.attach(ttrss_password_label, 0, 2, 1, 1);
-		grid.attach(m_ttrss_password_entry, 1, 2, 1, 1);
-
-
-		// http auth stuff ----------------------------------------------------
-		var ttrss_auth_user_label = new Gtk.Label(_("Username:"));
-		var ttrss_auth_password_label = new Gtk.Label(_("Password:"));
-
-		ttrss_auth_user_label.set_alignment(1.0f, 0.5f);
-		ttrss_auth_password_label.set_alignment(1.0f, 0.5f);
-
-		ttrss_auth_user_label.set_hexpand(true);
-		ttrss_auth_password_label.set_hexpand(true);
-
-		m_ttrss_auth_user_entry = new Gtk.Entry();
-		m_ttrss_auth_pw_entry = new Gtk.Entry();
-		m_ttrss_auth_pw_entry.set_invisible_char('*');
-		m_ttrss_auth_pw_entry.set_visibility(false);
-
-		m_ttrss_auth_user_entry.activate.connect(write_login_data);
-		m_ttrss_auth_pw_entry.activate.connect(write_login_data);
-
-		var authGrid = new Gtk.Grid();
-		authGrid.margin = 10;
-		authGrid.set_column_spacing(10);
-		authGrid.set_row_spacing(10);
-		authGrid.set_valign(Gtk.Align.CENTER);
-		authGrid.set_halign(Gtk.Align.CENTER);
-
-		authGrid.attach(ttrss_auth_user_label, 0, 0, 1, 1);
-		authGrid.attach(m_ttrss_auth_user_entry, 1, 0, 1, 1);
-		authGrid.attach(ttrss_auth_password_label, 0, 1, 1, 1);
-		authGrid.attach(m_ttrss_auth_pw_entry, 1, 1, 1, 1);
-
-		var ttrss_frame = new Gtk.Frame(_("HTTP Authorization"));
-		ttrss_frame.set_halign(Gtk.Align.CENTER);
-		ttrss_frame.add(authGrid);
-		m_ttrss_revealer = new Gtk.Revealer();
-		m_ttrss_revealer.add(ttrss_frame);
-		//---------------------------------------------------------------------
-
-		var ttrss_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
-
-		var ttrss_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
-		ttrss_box.pack_start(ttrss_logo, false, false, 10);
-		ttrss_box.pack_start(grid, true, true, 10);
-		ttrss_box.pack_start(m_ttrss_revealer, true, true, 10);
-
-		m_login_details.add_named(ttrss_box, "ttrss");
 	}
 
 
@@ -366,7 +275,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var ttrss_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
+		var inoreader_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
 
 		grid.attach(inoreader_user_label, 0, 0, 1, 1);
 		grid.attach(m_inoreader_user_entry, 1, 0, 1, 1);
@@ -374,7 +283,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		grid.attach(m_inoreader_password_entry, 1, 1, 1, 1);
 
 		var inoreader_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
-		inoreader_box.pack_start(ttrss_logo, false, false, 10);
+		inoreader_box.pack_start(inoreader_logo, false, false, 10);
 		inoreader_box.pack_start(grid, true, true, 10);
 
 		m_login_details.add_named(inoreader_box, "inoreader");
@@ -411,9 +320,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_owncloud_user_entry.set_text(m_OC_utils.getUser());
 		m_owncloud_password_entry.set_text(m_OC_utils.getPasswd());
 
-		m_ttrss_url_entry.set_text(m_ttrss_utils.getUnmodifiedURL());
-		m_ttrss_user_entry.set_text(m_ttrss_utils.getUser());
-		m_ttrss_password_entry.set_text(m_ttrss_utils.getPasswd());
+		(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).fill();
 
 		m_inoreader_user_entry.set_text(m_ino_utils.getUser());
 		m_inoreader_password_entry.set_text(m_ino_utils.getPasswd());
@@ -425,7 +332,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		switch(m_comboBox.get_active())
 		{
 			case Backend.TTRSS:
-				m_ttrss_revealer.set_reveal_child(true);
+				(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).showHtAccess();
 				break;
 
 			case Backend.OWNCLOUD:
@@ -446,14 +353,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		{
 			case Backend.TTRSS:
 				backend = Backend.TTRSS;
-				m_ttrss_utils.setURL(m_ttrss_url_entry.get_text());
-				m_ttrss_utils.setUser(m_ttrss_user_entry.get_text());
-				m_ttrss_utils.setPassword(m_ttrss_password_entry.get_text());
-				if(m_need_htaccess)
-				{
-					m_ttrss_utils.setHtaccessUser(m_ttrss_auth_user_entry.get_text());
-					m_ttrss_utils.setHtAccessPassword(m_ttrss_auth_pw_entry.get_text());
-				}
+				(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).writeData();
 				break;
 
 			case Backend.FEEDLY:

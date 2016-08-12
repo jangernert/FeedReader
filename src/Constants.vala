@@ -80,13 +80,6 @@ namespace FeedReader {
 		UNKNOWN
 	}
 
-	public enum OwnCloudType {
-		FEED,
-		FOLDER,
-		STARRED,
-		ALL
-	}
-
 	public enum ArticleStatus {
 		READ = 8,
 		UNREAD,
@@ -148,12 +141,6 @@ namespace FeedReader {
 		ALL,
 		POS,
 		LEFT
-	}
-
-	public enum InoSubscriptionAction {
-		EDIT,
-		SUBSCRIBE,
-		UNSUBSCRIBE
 	}
 
 	namespace TagID {

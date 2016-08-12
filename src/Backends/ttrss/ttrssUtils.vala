@@ -15,6 +15,15 @@
 
 public class FeedReader.ttrssUtils : GLib.Object {
 
+	public enum TTRSSSpecialID {
+		ARCHIVED      = 0,
+		STARRED       = -1,
+		PUBLISHED     = -2,
+		FRESH         = -3,
+		ALL           = -4,
+		RECENTLY_READ = -6
+	}
+
 	GLib.Settings m_settings;
 
 	public ttrssUtils()

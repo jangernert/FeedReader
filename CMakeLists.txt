@@ -209,15 +209,19 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backends/FeedServer.vala
     src/Backends/OPMLparser.vala
     src/Backends/ttrss/ttrssAPI.vala
+    src/Backends/ttrss/ttrssInterface.vala
     src/Backends/ttrss/ttrssUtils.vala
     src/Backends/ttrss/ttrssMessage.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
+    src/Backends/feedly/FeedlyInterface.vala
     src/Backends/feedly/FeedlyUtils.vala
     src/Backends/inoreader/InoReaderAPI.vala
     src/Backends/inoreader/InoReaderConnection.vala
+    src/Backends/inoreader/InoReaderInterface.vala
     src/Backends/inoreader/InoReaderUtils.vala
     src/Backends/owncloud/OwncloudNewsAPI.vala
+    src/Backends/owncloud/OwncloudNewsInterface.vala
     src/Backends/owncloud/OwncloudNewsMessage.vala
     src/Backends/owncloud/OwncloudNewsUtils.vala
     src/ContentGrabber/stringPair.vala
@@ -257,15 +261,19 @@ vala_precompile(debug ${DEBUG_NAME}
     src/Backends/FeedServer.vala
     src/Backends/OPMLparser.vala
     src/Backends/ttrss/ttrssAPI.vala
+    src/Backends/ttrss/ttrssInterface.vala
     src/Backends/ttrss/ttrssUtils.vala
     src/Backends/ttrss/ttrssMessage.vala
     src/Backends/feedly/FeedlyAPI.vala
     src/Backends/feedly/FeedlyConnection.vala
+    src/Backends/feedly/FeedlyInterface.vala
     src/Backends/feedly/FeedlyUtils.vala
     src/Backends/inoreader/InoReaderAPI.vala
     src/Backends/inoreader/InoReaderConnection.vala
+    src/Backends/inoreader/InoReaderInterface.vala
     src/Backends/inoreader/InoReaderUtils.vala
     src/Backends/owncloud/OwncloudNewsAPI.vala
+    src/Backends/owncloud/OwncloudNewsInterface.vala
     src/Backends/owncloud/OwncloudNewsMessage.vala
     src/Backends/owncloud/OwncloudNewsUtils.vala
     src/ContentGrabber/stringPair.vala

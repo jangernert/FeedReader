@@ -14,10 +14,10 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.FeedServer : GLib.Object {
-	private ttrss_interface m_ttrss;
-	private FeedlyAPI m_feedly;
-	private OwncloudNewsAPI m_owncloud;
-	private InoReaderAPI m_inoreader;
+	private ttrssInterface m_ttrss;
+	private feedlyInterface m_feedly;
+	private OwncloudNewsInterface m_owncloud;
+	private InoReaderInterface m_inoreader;
 	private OfflineActionManager m_offlineActions;
 	private int m_type;
 	private bool m_offline = false;
@@ -36,18 +36,37 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				m_ttrss = new ttrss_interface();
+				m_ttrss = new ttrssInterface();
+				m_ttrss.updateFeedList.connect(() => {updateFeedList();});
+				m_ttrss.updateArticleList.connect(() => {updateArticleList();});
+				m_ttrss.writeInterfaceState.connect(() => {writeInterfaceState();});
+				m_ttrss.setNewRows.connect((before) => {setNewRows(before);});
 				break;
 
 			case Backend.FEEDLY:
-				m_feedly = new FeedlyAPI();
+				m_feedly = new feedlyInterface();
+				m_feedly.updateFeedList.connect(() => {updateFeedList();});
+				m_feedly.updateArticleList.connect(() => {updateArticleList();});
+				m_feedly.writeArticlesInChunks.connect((articles, chunksize) => {
+					writeArticlesInChunks(articles, chunksize);
+				});
 				break;
 
 			case Backend.OWNCLOUD:
-				m_owncloud = new OwncloudNewsAPI();
+				m_owncloud = new OwncloudNewsInterface();
+				m_owncloud.updateFeedList.connect(() => {updateFeedList();});
+				m_owncloud.updateArticleList.connect(() => {updateArticleList();});
+				m_owncloud.writeArticlesInChunks.connect((articles, chunksize) => {
+					writeArticlesInChunks(articles, chunksize);
+				});
 				break;
 			case Backend.INOREADER:
-				m_inoreader = new InoReaderAPI();
+				m_inoreader = new InoReaderInterface();
+				m_inoreader.updateFeedList.connect(() => {updateFeedList();});
+				m_inoreader.updateArticleList.connect(() => {updateArticleList();});
+				m_inoreader.writeArticlesInChunks.connect((articles, chunksize) => {
+					writeArticlesInChunks(articles, chunksize);
+				});
 				break;
 		}
 	}
@@ -191,16 +210,16 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				return m_ttrss.doesMultiLevelCategories();
+				return m_ttrss.supportMultiLevelCategories();
 
 			case Backend.FEEDLY:
-				return m_feedly.doesMultiLevelCategories();
+				return m_feedly.supportMultiLevelCategories();
 
 			case Backend.INOREADER:
-				return m_inoreader.doesMultiLevelCategories();
+				return m_inoreader.supportMultiLevelCategories();
 
 			case Backend.OWNCLOUD:
-				return m_owncloud.doesMultiLevelCategories();
+				return m_owncloud.supportMultiLevelCategories();
 
 			default:
 				return false;
@@ -323,18 +342,15 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			case Backend.TTRSS:
 				return m_ttrss.logout();
-				break;
 
 			case Backend.FEEDLY:
-				//FIXME: add feedly
-				break;
+				return m_feedly.logout();
 
 			case Backend.OWNCLOUD:
-				// no need to log out
-				return true;
+				return m_owncloud.logout();
 
 			case Backend.INOREADER:
-				//FIXME: add inoreader
+				return m_inoreader.logout();
 				break;
 		}
 
@@ -517,22 +533,19 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.updateArticleUnread(articleIDs, read);
+					m_ttrss.setArticleIsRead(articleIDs, read);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.mark_as_read(articleIDs, "entries", read);
+					m_feedly.setArticleIsRead(articleIDs, read);
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.updateArticleUnread(articleIDs, read);
+					m_owncloud.setArticleIsRead(articleIDs, read);
 					break;
 
 				case Backend.INOREADER:
-					if(read == ArticleStatus.READ)
-						m_inoreader.edidTag(articleIDs, "user/-/state/com.google/read");
-					else
-						m_inoreader.edidTag(articleIDs, "user/-/state/com.google/read", false);
+					m_inoreader.setArticleIsRead(articleIDs, read);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -556,7 +569,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.updateArticleMarked(int.parse(articleID), marked);
+					m_ttrss.setArticleIsMarked(articleID, marked);
 					break;
 
 				case Backend.FEEDLY:
@@ -564,13 +577,11 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.updateArticleMarked(articleID, marked);
+					m_owncloud.setArticleIsMarked(articleID, marked);
 					break;
+
 				case Backend.INOREADER:
-					if(marked == ArticleStatus.MARKED)
-						m_inoreader.edidTag(articleID, "user/-/state/com.google/starred");
-					else
-						m_inoreader.edidTag(articleID, "user/-/state/com.google/starred", false);
+					m_inoreader.setArticleIsMarked(articleID, marked);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -594,19 +605,19 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.markFeedRead(feedID, false);
+					m_ttrss.setFeedRead(feedID);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.mark_as_read(feedID, "feeds", ArticleStatus.READ);
+					m_feedly.setFeedRead(feedID);
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.markFeedRead(feedID, false);
+					m_owncloud.setFeedRead(feedID);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.markAsRead(feedID);
+					m_inoreader.setFeedRead(feedID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -630,19 +641,19 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.markFeedRead(catID, true);
+					m_ttrss.setCategorieRead(catID);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.mark_as_read(catID, "categories", ArticleStatus.READ);
+					m_feedly.setCategorieRead(catID);
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.markFeedRead(catID, true);
+					m_owncloud.setCategorieRead(catID);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.markAsRead(catID);
+					m_inoreader.setCategorieRead(catID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -670,17 +681,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDLY:
-					var categories = dataBase.read_categories();
-					foreach(category cat in categories)
-					{
-						m_feedly.mark_as_read(cat.getCatID(), "categories", ArticleStatus.READ);
-					}
-
-					var feeds = dataBase.read_feeds_without_cat();
-					foreach(feed Feed in feeds)
-					{
-						m_feedly.mark_as_read(Feed.getFeedID(), "feeds", ArticleStatus.READ);
-					}
+					m_feedly.markAllItemsRead();
 					break;
 
 				case Backend.OWNCLOUD:
@@ -688,18 +689,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.INOREADER:
-					var categories = dataBase.read_categories();
-					foreach(category cat in categories)
-					{
-						m_inoreader.markAsRead(cat.getCatID());
-					}
-
-					var feeds = dataBase.read_feeds_without_cat();
-					foreach(feed Feed in feeds)
-					{
-						m_inoreader.markAsRead(Feed.getFeedID());
-					}
-					m_inoreader.markAsRead();
+					m_inoreader.markAllItemsRead();
 					break;
 			}
 			Idle.add((owned) callback);
@@ -711,32 +701,32 @@ public class FeedReader.FeedServer : GLib.Object {
 	}
 
 
-	public async void addArticleTag(string articleID, string tagID)
+	public async void tagArticle(string articleID, string tagID)
 	{
 		if(m_offline)
 			return;
 
-		SourceFunc callback = addArticleTag.callback;
+		SourceFunc callback = tagArticle.callback;
 		ThreadFunc<void*> run = () => {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.addArticleTag(int.parse(articleID), int.parse(tagID), true);
+					m_ttrss.tagArticle(articleID, tagID);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.addArticleTag(articleID, tagID);
+					m_feedly.tagArticle(articleID, tagID);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.edidTag(articleID, tagID);
+					m_inoreader.tagArticle(articleID, tagID);
 					break;
 			}
 			Idle.add((owned) callback);
 			return null;
 		};
 
-		new GLib.Thread<void*>("addArticleTag", run);
+		new GLib.Thread<void*>("tagArticle", run);
 		yield;
 	}
 
@@ -751,15 +741,15 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.addArticleTag(int.parse(articleID), int.parse(tagID), false);
+					m_ttrss.removeArticleTag(articleID, tagID);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.deleteArticleTag(articleID, tagID);
+					m_feedly.removeArticleTag(articleID, tagID);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.edidTag(articleID, tagID, false);
+					m_inoreader.removeArticleTag(articleID, tagID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -778,13 +768,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				return m_ttrss.createTag(caption).to_string();
+				return m_ttrss.createTag(caption);
 
 			case Backend.FEEDLY:
 				return m_feedly.createTag(caption);
 
 			case Backend.INOREADER:
-				return m_inoreader.composeTagID(caption);
+				return m_inoreader.createTag(caption);
 		}
 
 		return ":(";
@@ -800,11 +790,15 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.deleteTag(int.parse(tagID));
+					m_ttrss.deleteTag(tagID);
 					break;
 
 				case Backend.FEEDLY:
 					m_feedly.deleteTag(tagID);
+					break;
+
+				case Backend.OWNCLOUD:
+					m_owncloud.deleteTag(tagID);
 					break;
 
 				case Backend.INOREADER:
@@ -829,7 +823,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.renameTag(int.parse(tagID), title);
+					m_ttrss.renameTag(tagID, title);
 					break;
 				case Backend.FEEDLY:
 					m_feedly.renameTag(tagID, title);
@@ -852,16 +846,16 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				return m_ttrss.ping();
+				return m_ttrss.serverAvailable();
 
 			case Backend.FEEDLY:
-				return m_feedly.ping();
+				return m_feedly.serverAvailable();
 
 			case Backend.OWNCLOUD:
-				return m_owncloud.ping();
+				return m_owncloud.serverAvailable();
 
 			case Backend.INOREADER:
-				return m_inoreader.ping();
+				return m_inoreader.serverAvailable();
 		}
 
 		return false;
@@ -876,56 +870,19 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					if(catID == null && newCatName != null)
-					{
-						var newCatID = m_ttrss.createCategory(newCatName);
-						m_ttrss.subscribeToFeed(feedURL, newCatID);
-					}
-					else
-					{
-						m_ttrss.subscribeToFeed(feedURL, catID);
-					}
-					feedID = (dataBase.getHighestFeedID() + 1).to_string();
+					m_ttrss.addFeed(feedURL, catID, newCatName);
 					break;
 
 				case Backend.FEEDLY:
-					if(catID == null && newCatName != null)
-					{
-						string newCatID = m_feedly.createCatID(newCatName);
-						m_feedly.addSubscription(feedURL, null, newCatID);
-					}
-					else
-					{
-						m_feedly.addSubscription(feedURL, null, catID);
-					}
-					feedID = "feed/" + feedURL;
+					m_feedly.addFeed(feedURL, catID, newCatName);
 					break;
 
 				case Backend.OWNCLOUD:
-					string newFeedID = "";
-					if(catID == null && newCatName != null)
-					{
-						string newCatID = m_owncloud.addFolder(newCatName).to_string();
-						newFeedID = m_owncloud.addFeed(feedURL, newCatID).to_string();
-					}
-					else
-					{
-						newFeedID = m_owncloud.addFeed(feedURL, catID).to_string();
-					}
-					feedID = newFeedID;
+					m_owncloud.addFeed(feedURL, catID, newCatName);
 					break;
 
 				case Backend.INOREADER:
-					if(catID == null && newCatName != null)
-					{
-						string newCatID = m_inoreader.composeTagID(newCatName);
-						m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
-					}
-					else
-					{
-						m_inoreader.editSubscription(InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
-					}
-					feedID = "feed/" + feedURL;
+					m_inoreader.addFeed(feedURL, catID, newCatName);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -946,11 +903,11 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.unsubscribeFeed(feedID);
+					m_ttrss.removeFeed(feedID);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.removeSubscription(feedID);
+					m_feedly.removeFeed(feedID);
 					break;
 
 				case Backend.OWNCLOUD:
@@ -958,7 +915,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.editSubscription(InoSubscriptionAction.UNSUBSCRIBE, feedID);
+					m_inoreader.removeFeed(feedID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -981,16 +938,15 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDLY:
-					var feed = dataBase.read_feed(feedID);
-					m_feedly.addSubscription(feed.getFeedID(), title, feed.getCatString());
+					m_feedly.renameFeed(feedID, title);
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.reameFeed(feedID, title);
+					m_owncloud.renameFeed(feedID, title);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, title);
+					m_inoreader.renameFeed(feedID, title);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -1009,19 +965,19 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.moveFeed(feedID, newCatID);
+					m_ttrss.moveFeed(feedID, newCatID, currentCatID);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.moveSubscription(feedID, newCatID, currentCatID);
+					m_feedly.moveFeed(feedID, newCatID, currentCatID);
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.moveFeed(feedID, newCatID);
+					m_owncloud.moveFeed(feedID, newCatID, currentCatID);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.editSubscription(InoSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
+					m_inoreader.moveFeed(feedID, newCatID, currentCatID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -1040,13 +996,13 @@ public class FeedReader.FeedServer : GLib.Object {
 				return m_ttrss.createCategory(title, parentID);
 
 			case Backend.FEEDLY:
-				return m_feedly.createCatID(title);
+				return m_feedly.createCategory(title, parentID);
 
 			case Backend.OWNCLOUD:
-				return m_owncloud.addFolder(title).to_string();
+				return m_owncloud.createCategory(title, parentID);
 
 			case Backend.INOREADER:
-				return m_inoreader.composeTagID(title);
+				return m_inoreader.createCategory(title, parentID);
 		}
 
 		return "fail";
@@ -1068,11 +1024,11 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.reameFolder(catID, title);
+					m_owncloud.renameCategory(catID, title);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.renameTag(catID, title);
+					m_inoreader.renameCategory(catID, title);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -1095,8 +1051,15 @@ public class FeedReader.FeedServer : GLib.Object {
 					break;
 
 				case Backend.FEEDLY:
+					m_feedly.moveCategory(catID, newParentID);
+					break;
+
 				case Backend.OWNCLOUD:
+					m_owncloud.moveCategory(catID, newParentID);
+					break;
+
 				case Backend.INOREADER:
+					m_inoreader.moveCategory(catID, newParentID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -1115,19 +1078,19 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
-					m_ttrss.removeCategory(catID);
+					m_ttrss.deleteCategory(catID);
 					break;
 
 				case Backend.FEEDLY:
-					m_feedly.removeCategory(catID);
+					m_feedly.deleteCategory(catID);
 					break;
 
 				case Backend.OWNCLOUD:
-					m_owncloud.removeFolder(catID);
+					m_owncloud.deleteCategory(catID);
 					break;
 
 				case Backend.INOREADER:
-					m_inoreader.deleteTag(catID);
+					m_inoreader.deleteCategory(catID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -1146,14 +1109,20 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
+					m_ttrss.removeCatFromFeed(feedID, catID);
+					break;
+
 				case Backend.OWNCLOUD:
+					m_owncloud.removeCatFromFeed(feedID, catID);
+					break;
+
 				case Backend.INOREADER:
-					return null;
+					m_inoreader.removeCatFromFeed(feedID, catID);
+					break;
 
 				// only feedly supports multiple categories atm
 				case Backend.FEEDLY:
-					var feed = dataBase.read_feed(feedID);
-					m_feedly.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
+					m_feedly.removeCatFromFeed(feedID, catID);
 					break;
 			}
 			Idle.add((owned) callback);
@@ -1172,10 +1141,15 @@ public class FeedReader.FeedServer : GLib.Object {
 			switch(m_type)
 			{
 				case Backend.TTRSS:
+					m_ttrss.importOPML(opml);
+					break;
+
 				case Backend.OWNCLOUD:
+					m_ttrss.importOPML(opml);
+					break;
+
 				case Backend.INOREADER:
-					var parser = new OPMLparser(opml);
-					parser.parse();
+					m_inoreader.importOPML(opml);
 					break;
 
 				case Backend.FEEDLY:
@@ -1195,26 +1169,19 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				m_ttrss.getCategories(categories);
-				m_ttrss.getFeeds(feeds, categories);
-				m_ttrss.getTags(tags);
+				m_ttrss.getFeedsAndCats(feeds, categories, tags);
 				return;
 
 			case Backend.FEEDLY:
-				m_feedly.getUnreadCounts();
-				m_feedly.getCategories(categories);
-				m_feedly.getFeeds(feeds);
-				m_feedly.getTags(tags);
+				m_feedly.getFeedsAndCats(feeds, categories, tags);
 				return;
 
 			case Backend.OWNCLOUD:
-				m_owncloud.getFeeds(feeds);
-				m_owncloud.getCategories(categories, feeds);
+				m_owncloud.getFeedsAndCats(feeds, categories, tags);
 				return;
 
 			case Backend.INOREADER:
-				m_inoreader.getFeeds(feeds);
-				m_inoreader.getCategoriesAndTags(feeds, categories, tags);
+				m_inoreader.getFeedsAndCats(feeds, categories, tags);
 				return;
 		}
 	}
@@ -1227,13 +1194,13 @@ public class FeedReader.FeedServer : GLib.Object {
 				return m_ttrss.getUnreadCount();
 
 			case Backend.FEEDLY:
-				return m_feedly.getTotalUnread();
+				return m_feedly.getUnreadCount();
 
 			case Backend.OWNCLOUD:
-				return (int)dataBase.get_unread_total();
+				return m_owncloud.getUnreadCount();
 
 			case Backend.INOREADER:
-				return m_inoreader.getTotalUnread();
+				return m_inoreader.getUnreadCount();
 		}
 
 		return 0;
@@ -1244,215 +1211,19 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(m_type)
 		{
 			case Backend.TTRSS:
-				// first use newsPlus plugin to update states of 10x as much articles as we would normaly do
-				var unreadIDs = m_ttrss.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
-				if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
-				{
-					logger.print(LogMessage.DEBUG, "getArticles: newsplus plugin active");
-					var markedIDs = m_ttrss.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
-					dataBase.updateArticlesByID(unreadIDs, "unread");
-					dataBase.updateArticlesByID(markedIDs, "marked");
-					updateArticleList();
-				}
-
-				string articleIDs = "";
-				int skip = count;
-				int amount = 200;
-
-				while(skip > 0)
-				{
-					if(skip >= amount)
-					{
-						skip -= amount;
-					}
-					else
-					{
-						amount = skip;
-						skip = 0;
-					}
-
-					var articles = new Gee.LinkedList<article>();
-					m_ttrss.getHeadlines(articles, skip, amount, whatToGet, feedID);
-
-					// only update article states if they haven't been updated by the newsPlus-plugin
-					if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
-					{
-						dataBase.update_articles(articles);
-						updateArticleList();
-					}
-
-					foreach(article Article in articles)
-					{
-						if(!dataBase.article_exists(Article.getArticleID()))
-						{
-							articleIDs += Article.getArticleID() + ",";
-						}
-					}
-				}
-
-				if(articleIDs.length > 0)
-					articleIDs = articleIDs.substring(0, articleIDs.length -1);
-
-				var articles = new Gee.LinkedList<article>();
-
-				if(articleIDs != "")
-					m_ttrss.getArticles(articleIDs, articles);
-
-				articles.sort((a, b) => {
-						return strcmp(a.getArticleID(), b.getArticleID());
-				});
-
-
-				if(articles.size > 0)
-				{
-					var new_articles = new Gee.LinkedList<article>();
-					string last = articles.last().getArticleID();
-
-					foreach(article Article in articles)
-					{
-						int before = dataBase.getHighestRowID();
-						FeedServer.grabContent(Article);
-						new_articles.add(Article);
-
-						if(new_articles.size == 10 || Article.getArticleID() == last)
-						{
-							writeInterfaceState();
-							logger.print(LogMessage.DEBUG, "FeedServer: write batch of %i articles to db".printf(new_articles.size));
-							dataBase.write_articles(new_articles);
-							updateFeedList();
-							updateArticleList();
-							new_articles = new Gee.LinkedList<article>();
-							setNewRows(before);
-						}
-					}
-				}
+				m_ttrss.getArticles(count, whatToGet, feedID, isTagID);
 				break;
 
 			case Backend.FEEDLY:
-				string continuation = "";
-				string feedly_tagID = "";
-				string feedly_feedID = "";
-				if(feedID != null)
-				{
-					if(isTagID)
-					{
-						feedly_tagID = feedID;
-					}
-					else
-					{
-						feedly_feedID = feedID;
-					}
-				}
-
-				int skip = count;
-				int amount = 200;
-				var articles = new Gee.LinkedList<article>();
-
-				while(skip > 0)
-				{
-					if(skip >= amount)
-					{
-						skip -= amount;
-					}
-					else
-					{
-						amount = skip;
-						skip = 0;
-					}
-
-					continuation = m_feedly.getArticles(articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
-
-					if(continuation == "")
-						break;
-				}
-
-				writeArticlesInChunks(articles, 10);
+				m_feedly.getArticles(count, whatToGet, feedID, isTagID);
 				break;
 
 			case Backend.OWNCLOUD:
-				OwnCloudType type = OwnCloudType.ALL;
-				bool read = true;
-				int id = 0;
-
-				switch(whatToGet)
-				{
-					case ArticleStatus.ALL:
-						break;
-					case ArticleStatus.UNREAD:
-						read = false;
-						break;
-					case ArticleStatus.MARKED:
-						type = OwnCloudType.STARRED;
-						break;
-				}
-
-				if(feedID != null)
-				{
-					if(isTagID == true)
-						return;
-
-					id = int.parse(feedID);
-					type = OwnCloudType.FEED;
-				}
-
-				var articles = new Gee.LinkedList<article>();
-
-				if(count == -1)
-					m_owncloud.getNewArticles(articles, dataBase.getLastModified(), type, id);
-				else
-					m_owncloud.getArticles(articles, 0, -1, read, type, id);
-
-				writeArticlesInChunks(articles, 10);
+				m_owncloud.getArticles(count, whatToGet, feedID, isTagID);
 				break;
 
 			case Backend.INOREADER:
-				if(whatToGet == ArticleStatus.READ)
-				{
-					return;
-				}
-				else if(whatToGet == ArticleStatus.ALL)
-				{
-					var unreadIDs = new Gee.LinkedList<string>();
-					string? continuation = null;
-					int left = 4*count;
-
-					while(left > 0)
-					{
-						if(left > 1000)
-						{
-							continuation = m_inoreader.updateArticles(unreadIDs, 1000, continuation);
-							left -= 1000;
-						}
-						else
-						{
-							m_inoreader.updateArticles(unreadIDs, left, continuation);
-							left = 0;
-						}
-					}
-					dataBase.updateArticlesByID(unreadIDs, "unread");
-					updateArticleList();
-				}
-
-				var articles = new Gee.LinkedList<article>();
-				string? continuation = null;
-				int left = count;
-				string? inoreader_feedID = (isTagID) ? null : feedID;
-				string? inoreader_tagID = (isTagID) ? feedID : null;
-
-				while(left > 0)
-				{
-					if(left > 1000)
-					{
-						continuation = m_inoreader.getArticles(articles, 1000, whatToGet, continuation, inoreader_tagID, inoreader_feedID);
-						left -= 1000;
-					}
-					else
-					{
-						continuation = m_inoreader.getArticles(articles, left, whatToGet, continuation, inoreader_tagID, inoreader_feedID);
-						left = 0;
-					}
-				}
-				writeArticlesInChunks(articles, 10);
+				m_inoreader.getArticles(count, whatToGet, feedID, isTagID);
 				break;
 		}
 	}

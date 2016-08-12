@@ -15,6 +15,12 @@
 
 public class FeedReader.InoReaderAPI : GLib.Object {
 
+	public enum InoSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
+
 	private InoReaderConnection m_connection;
 	private InoReaderUtils m_utils;
 	private string m_inoreader;
@@ -439,60 +445,5 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 
 		m_connection.send_request("subscription/edit", message_string);
-	}
-
-	public bool doesMultiLevelCategories()
-	{
-		return false;
-	}
-
-	public bool supportTags()
-	{
-		return true;
-	}
-
-	public string symbolicIcon()
-	{
-		return "feed-service-inoreader-symbolic";
-	}
-
-	public string accountName()
-	{
-		return m_utils.getUser();
-	}
-
-	public string? getServer()
-	{
-		return null;
-	}
-
-	public bool hideCagetoryWhenEmtpy(string cadID)
-	{
-		return false;
-	}
-
-	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
-
-	public string uncategorizedID()
-	{
-		return "";
-	}
-
-	public bool useMaxArticles()
-	{
-		return true;
-	}
-
-	public bool supportMultiCategoriesPerFeed()
-	{
-		return true;
-	}
-
-	public bool tagIDaffectedByNameChange()
-	{
-		return true;
 	}
 }

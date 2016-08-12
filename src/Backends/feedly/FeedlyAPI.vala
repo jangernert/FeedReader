@@ -33,11 +33,16 @@ public class FeedReader.FeedlyAPI : Object {
 		return "user/%s/category/%s".printf(m_userID, title);
 	}
 
+	public string getMarkedID()
+	{
+		return "user/" + m_userID + "/tag/global.saved";
+	}
+
 	public LoginResponse login()
 	{
 		logger.print(LogMessage.DEBUG, "feedly backend: login");
 
-		if(!ping())
+		if(!Utils.ping("feedly.com"))
 			return LoginResponse.NO_CONNECTION;
 
 		if(m_utils.getRefreshToken() == "")
@@ -62,10 +67,6 @@ public class FeedReader.FeedlyAPI : Object {
 		m_utils.setApiCode("");
 
 		return LoginResponse.UNKNOWN_ERROR;
-	}
-
-	public bool ping() {
-		return Utils.ping("feedly.com");
 	}
 
 	private bool getUserID()
@@ -582,26 +583,6 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_delete_request_to_feedly("/v3/tags/" + GLib.Uri.escape_string(tagID));
 	}
 
-	public bool setArticleIsMarked(string articleID, ArticleStatus marked)
-	{
-		string marked_tag = "user/" + m_userID + "/tag/global.saved";
-
-		if(marked == ArticleStatus.MARKED)
-		{
-			addArticleTag(articleID, marked_tag);
-		}
-		else if(marked == ArticleStatus.UNMARKED)
-		{
-			deleteArticleTag(articleID, marked_tag);
-		}
-		else
-		{
-			return false;
-		}
-
-		return true;
-	}
-
 
 	public void addSubscription(string feedURL, string? title = null, string? catIDs = null)
 	{
@@ -707,60 +688,5 @@ public class FeedReader.FeedlyAPI : Object {
 	public void importOPML(string opml)
 	{
 		m_connection.send_post_string_request_to_feedly("/v3/opml", opml, "text/xml");
-	}
-
-	public bool doesMultiLevelCategories()
-	{
-		return false;
-	}
-
-	public bool supportTags()
-	{
-		return true;
-	}
-
-	public string symbolicIcon()
-	{
-		return "feed-service-feedly-symbolic";
-	}
-
-	public string accountName()
-	{
-		return m_utils.getEmail();
-	}
-
-	public string? getServer()
-	{
-		return null;
-	}
-
-	public bool hideCagetoryWhenEmtpy(string catID)
-	{
-		return catID.has_suffix("global.must");
-	}
-
-	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
-
-	public string uncategorizedID()
-	{
-		return "";
-	}
-
-	public bool useMaxArticles()
-	{
-		return true;
-	}
-
-	public bool supportMultiCategoriesPerFeed()
-	{
-		return true;
-	}
-
-	public bool tagIDaffectedByNameChange()
-	{
-		return false;
 	}
 }

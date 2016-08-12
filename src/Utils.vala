@@ -357,9 +357,6 @@ public class FeedReader.Utils : GLib.Object {
 		if(arg == InstapaperSecrets.oauth_callback)
 			return OAuth.INSTAPAPER;
 
-		if(arg == FeedlySecret.apiRedirectUri)
-			return OAuth.FEEDLY;
-
 		if(arg.has_prefix(ReadabilitySecrets.oauth_callback))
 		{
 			int verifier_start = arg.index_of("=")+1;

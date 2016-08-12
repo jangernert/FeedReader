@@ -350,8 +350,8 @@ namespace FeedReader {
 
 			if(add)
 			{
-				server.addArticleTag.begin(articleID, tagID, (obj, res) => {
-					server.setArticleIsRead.end(res);
+				server.tagArticle.begin(articleID, tagID, (obj, res) => {
+					server.tagArticle.end(res);
 				});
 
 				if(!tags.contains(tagID))

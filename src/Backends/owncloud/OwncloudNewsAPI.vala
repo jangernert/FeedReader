@@ -15,6 +15,13 @@
 
 public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
+    public enum OwnCloudType {
+		FEED,
+		FOLDER,
+		STARRED,
+		ALL
+	}
+
     private string m_OwnCloudURL;
 	private string m_OwnCloudVersion;
 	private Json.Parser m_parser;
@@ -175,7 +182,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-    public void getNewArticles(Gee.LinkedList<article> articles, int lastModified, OwnCloudType type = OwnCloudType.ALL, int id = 0)
+    public void getNewArticles(Gee.LinkedList<article> articles, int lastModified, OwnCloudType type, int id)
 	{
 		var message = new OwnCloudNewsMessage(m_OwnCloudURL + "/items/updated", m_username, m_password, "GET");
         message.add_int("lastModified", lastModified);
@@ -233,7 +240,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 
 
-    public void getArticles(Gee.LinkedList<article> articles, int skip, int count, bool read = true, OwnCloudType type = OwnCloudType.ALL, int id = 0)
+    public void getArticles(Gee.LinkedList<article> articles, int skip, int count, bool read = true, OwnCloudType type, int id = 0)
 	{
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + "items", m_username, m_password, "GET");
         message.add_bool("oldestFirst", false);
@@ -368,7 +375,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         int error = message.send();
     }
 
-    public void reameFeed(string feedID, string title)
+    public void renameFeed(string feedID, string title)
     {
         string url = "/feeds/%s/rename".printf(feedID);
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
@@ -409,7 +416,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return true;
     }
 
-    public void reameFolder(string catID, string title)
+    public void renameCategory(string catID, string title)
     {
         string url = "/folders/%s".printf(catID);
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
@@ -429,59 +436,4 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 		return true;
     }
-
-    public bool doesMultiLevelCategories()
-	{
-		return false;
-	}
-
-    public bool supportTags()
-	{
-		return false;
-	}
-
-    public string symbolicIcon()
-	{
-		return "feed-service-owncloud-symbolic";
-	}
-
-    public string accountName()
-	{
-		return m_utils.getUser();
-	}
-
-    public string getServer()
-	{
-		return m_utils.getURL();
-	}
-
-    public bool hideCagetoryWhenEmtpy(string cadID)
-	{
-		return false;
-	}
-
-    public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
-
-    public string uncategorizedID()
-	{
-		return "0";
-	}
-
-    public bool useMaxArticles()
-	{
-		return false;
-	}
-
-    public bool supportMultiCategoriesPerFeed()
-	{
-		return false;
-	}
-
-    public bool tagIDaffectedByNameChange()
-	{
-		return false;
-	}
 }

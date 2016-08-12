@@ -18,7 +18,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
-	private string[] m_account_types;
 	private bool m_need_htaccess = false;
 	public signal void submit_data();
 	public signal void loginError(LoginResponse errorCode);
@@ -27,7 +26,20 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	public LoginPage()
 	{
-		m_account_types = {_("Tiny Tiny RSS"), _("Feedly"), _("OwnCloud"),_("InoReader")};
+		m_login_details = new Gtk.Stack();
+		m_login_details.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_login_details.set_transition_duration(100);
+
+		var nothing_selected = new Gtk.Label(_("No service selected."));
+		nothing_selected.get_style_context().add_class("h3");
+		m_login_details.add_named(nothing_selected, "none");
+
+
+		m_login_details.add_named(new ttrssLoginWidget(), "ttrss");
+		m_login_details.add_named(new feedlyLoginWidget(), "feedly");
+		m_login_details.add_named(new OwnCloudNewsLoginWidget(), "owncloud");
+		m_login_details.add_named(new InoReaderLoginWidget(), "inoreader");
+
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
 
@@ -46,22 +58,10 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 
 		var liststore = new Gtk.ListStore(1, typeof (string));
-
-		Gtk.TreeIter ttrss;
-		liststore.append(out ttrss);
-		liststore.set(ttrss, 0, m_account_types[Backend.TTRSS]);
-
-		Gtk.TreeIter feedly;
-		liststore.append(out feedly);
-		liststore.set(feedly, 0, m_account_types[Backend.FEEDLY]);
-
-		Gtk.TreeIter ownCloud;
-		liststore.append(out ownCloud);
-		liststore.set(ownCloud, 0, m_account_types[Backend.OWNCLOUD]);
-
-		Gtk.TreeIter inoReader;
-		liststore.append(out inoReader);
-		liststore.set(inoReader, 0, m_account_types[Backend.INOREADER]);
+		(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).populateList(liststore);
+		(m_login_details.get_child_by_name("feedly") as feedlyLoginWidget).populateList(liststore);
+		(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).populateList(liststore);
+		(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).populateList(liststore);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -71,10 +71,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_comboBox.set_size_request(300, 0);
 		m_comboBox.set_valign(Gtk.Align.CENTER);
 		m_comboBox.set_halign(Gtk.Align.CENTER);
-
-		m_login_details = new Gtk.Stack();
-		m_login_details.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_login_details.set_transition_duration(100);
 
 		var buttonBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		var loginButton = new Gtk.Button.with_label(_("Login"));
@@ -111,42 +107,11 @@ public class FeedReader.LoginPage : Gtk.Bin {
 			}
 		});
 
-		var nothing_selected = new Gtk.Label(_("No service selected."));
-		nothing_selected.get_style_context().add_class("h3");
-		m_login_details.add_named(nothing_selected, "none");
-
-
-		m_login_details.add_named(new ttrssLoginWidget(), "ttrss");
-		setup_feedly_login();
-		m_login_details.add_named(new OwnCloudNewsLoginWidget(), "owncloud");
-		m_login_details.add_named(new InoReaderLoginWidget(), "inoreader");
-
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
 		this.margin = 20;
 		this.add(m_layout);
 		this.show_all();
-	}
-
-
-	private void setup_feedly_login()
-	{
-		var feedly_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-feedly.svg");
-
-		var text = new Gtk.Label(_("You will be redirected to the feedly website where you can use your Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."));
-		text.get_style_context().add_class("h3");
-		text.set_justify(Gtk.Justification.CENTER);
-		text.set_line_wrap_mode(Pango.WrapMode.WORD);
-		text.set_line_wrap(true);
-		text.set_lines(3);
-		text.expand = false;
-		text.set_width_chars(60);
-		text.set_max_width_chars(60);
-
-		var feedly_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 10);
-		feedly_box.pack_start(feedly_logo, false, false, 20);
-		feedly_box.pack_start(text, false, false, 10);
-		m_login_details.add_named(feedly_box, "feedly");
 	}
 
 	public void loadData()

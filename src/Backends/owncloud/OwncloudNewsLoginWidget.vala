@@ -135,4 +135,11 @@ public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 		m_userEntry.set_text(m_utils.getUser());
 		m_passwordEntry.set_text(m_utils.getPasswd());
 	}
+
+	public void populateList(Gtk.ListStore liststore)
+	{
+		Gtk.TreeIter iter;
+		liststore.append(out iter);
+		liststore.set(iter, 0, _("OwnCloud"));
+	}
 }

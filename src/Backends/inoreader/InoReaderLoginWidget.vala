@@ -21,6 +21,8 @@ public class FeedReader.InoReaderLoginWidget : Gtk.Box {
 
 	public InoReaderLoginWidget()
 	{
+		m_utils = new InoReaderUtils();
+		
 		var userLabel = new Gtk.Label(_("Username:"));
 		var passwordLabel = new Gtk.Label(_("Password:"));
 
@@ -51,6 +53,13 @@ public class FeedReader.InoReaderLoginWidget : Gtk.Box {
 		this.pack_start(logo, false, false, 10);
 		this.pack_start(grid, true, true, 10);
 		this.show_all();
+	}
+
+	public void populateList(Gtk.ListStore liststore)
+	{
+		Gtk.TreeIter iter;
+		liststore.append(out iter);
+		liststore.set(iter, 0, _("InoReader"));
 	}
 
 	public void writeData()

@@ -89,6 +89,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/Backends/owncloud/OwncloudNewsUtils.vala
     src/Backends/inoreader/InoReaderLoginWidget.vala
     src/Backends/inoreader/InoReaderUtils.vala
+    src/Backends/feedly/FeedlyLoginWidget.vala
     src/Backends/feedly/FeedlyUtils.vala
     src/Model/Feed.vala
     src/Model/Category.vala

@@ -104,11 +104,11 @@ public class FeedReader.ttrssLoginWidget : Gtk.Box {
 		m_revealer.add(frame);
 		//---------------------------------------------------------------------
 
-		var ttrss_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
+		var logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
 
 		this.orientation = Gtk.Orientation.VERTICAL;
 		this.spacing = 10;
-		this.pack_start(ttrss_logo, false, false, 10);
+		this.pack_start(logo, false, false, 10);
 		this.pack_start(grid, true, true, 10);
 		this.pack_start(m_revealer, true, true, 10);
 		this.show_all();

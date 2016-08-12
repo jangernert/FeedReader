@@ -58,7 +58,7 @@ public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var owncloud_logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
+		var logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
 
 		grid.attach(urlLabel, 0, 0, 1, 1);
 		grid.attach(m_urlEntry, 1, 0, 1, 1);
@@ -106,7 +106,7 @@ public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 
 		this.orientation = Gtk.Orientation.VERTICAL;
 		this.spacing = 10;
-		this.pack_start(owncloud_logo, false, false, 10);
+		this.pack_start(logo, false, false, 10);
 		this.pack_start(grid, true, true, 10);
 		this.pack_start(m_revealer, true, true, 10);
 		this.show_all();

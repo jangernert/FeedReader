@@ -827,14 +827,14 @@ namespace FeedReader {
 		if(grabImages != null && articleUrl != null)
 		{
 			logger = new Logger("daemon");
-			DebugUtils.grabImages(grabImages, articleUrl);
+			FeedServer.grabImages(grabImages, articleUrl);
 			return 0;
 		}
 
 		if(grabArticle != null)
 		{
 			logger = new Logger("daemon");
-			DebugUtils.grabArticle(grabArticle);
+			FeedServer.grabArticle(grabArticle);
 			return 0;
 		}
 

@@ -789,11 +789,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 			if(sortByDate)
 			{
-				new_articles = UiUtils.getRelevantArticles(dataBase.getRowCountHeadlineByDate(first_row.getDateStr()));
+				new_articles = UtilsUI.getRelevantArticles(dataBase.getRowCountHeadlineByDate(first_row.getDateStr()));
 			}
 			else
 			{
-				new_articles = UiUtils.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getID()));
+				new_articles = UtilsUI.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getID()));
 			}
 			logger.print(LogMessage.DEBUG, "updateArticleList: new articles: %u".printf(new_articles));
 			m_limit = m_currentList.get_children().length() + new_articles;

@@ -141,7 +141,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 		if(m_categorieID != CategoryID.MASTER
 		&& m_categorieID != CategoryID.TAGS
-		&& UiUtils.canManipulateContent())
+		&& UtilsUI.canManipulateContent())
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
 			    { "text/plain",	0, DragTarget.FEED },
@@ -338,7 +338,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		if(event.button != 3)
 			return false;
 
-		if(!UiUtils.canManipulateContent())
+		if(!UtilsUI.canManipulateContent())
 			return false;
 
 

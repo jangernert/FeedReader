@@ -147,14 +147,6 @@ namespace FeedReader {
 		const string NEW = "blubb";
 	}
 
-	namespace FeedlySecret {
-		 const string base_uri        = "http://cloud.feedly.com";
-		 const string apiClientId     = "boutroue";
-		 const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
-		 const string apiRedirectUri  = "http://localhost";
-		 const string apiAuthScope    = "https://cloud.feedly.com/subscriptions";
-	}
-
 	namespace ReadabilitySecrets {
 		const string base_uri			= "https://www.readability.com/api/rest/v1/";
 		const string oauth_consumer_key		= "jangernert";

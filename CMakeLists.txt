@@ -14,7 +14,6 @@ set (PKGDATADIR "${DATADIR}/FeedReader")
 set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
 set (EXEC_NAME "feedreader")
 set (DAEMON_NAME ${EXEC_NAME}-daemon)
-set (DEBUG_NAME ${EXEC_NAME}-debug)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
 set (VERSION "1.6")
@@ -100,8 +99,8 @@ vala_precompile(UI ${EXEC_NAME}
     src/Constants.vala
     src/dbBase.vala
     src/dbUI.vala
-    src/UiUtils.vala
     src/Utils.vala
+    src/UtilsUI.vala
     src/QueryBuilder.vala
     src/Widgets/AddPopover.vala
     src/Widgets/ArticleList.vala
@@ -228,7 +227,6 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala
-    src/Debug/DebugUtils.vala
 
 
 PACKAGES
@@ -244,69 +242,6 @@ CUSTOM_VAPIS
 add_executable(${DAEMON_NAME} ${daemon})
 target_link_libraries(${DAEMON_NAME} vilistextum)
 
-vala_precompile(debug ${DEBUG_NAME}
-    src/dbBase.vala
-    src/dbDaemon.vala
-    src/Logger.vala
-    src/Utils.vala
-    src/OfflineActionManager.vala
-    src/QueryBuilder.vala
-    src/Model/Feed.vala
-    src/Model/Category.vala
-    src/Model/Article.vala
-    src/Model/Tag.vala
-    src/Model/InterfaceState.vala
-    src/Model/OfflineAction.vala
-    src/Constants.vala
-    src/Backends/FeedServer.vala
-    src/Backends/OPMLparser.vala
-    src/Backends/ttrss/ttrssAPI.vala
-    src/Backends/ttrss/ttrssInterface.vala
-    src/Backends/ttrss/ttrssUtils.vala
-    src/Backends/ttrss/ttrssMessage.vala
-    src/Backends/feedly/FeedlyAPI.vala
-    src/Backends/feedly/FeedlyConnection.vala
-    src/Backends/feedly/FeedlyInterface.vala
-    src/Backends/feedly/FeedlyUtils.vala
-    src/Backends/inoreader/InoReaderAPI.vala
-    src/Backends/inoreader/InoReaderConnection.vala
-    src/Backends/inoreader/InoReaderInterface.vala
-    src/Backends/inoreader/InoReaderUtils.vala
-    src/Backends/owncloud/OwncloudNewsAPI.vala
-    src/Backends/owncloud/OwncloudNewsInterface.vala
-    src/Backends/owncloud/OwncloudNewsMessage.vala
-    src/Backends/owncloud/OwncloudNewsUtils.vala
-    src/ContentGrabber/stringPair.vala
-    src/ContentGrabber/grabberConfig.vala
-    src/ContentGrabber/grabber.vala
-    src/ContentGrabber/grabberUtils.vala
-    src/Debug/DebugServer.vala
-    src/Debug/DebugUtils.vala
-    InstallPrefix.vala
-
-
-PACKAGES
-    glib-2.0>=2.32
-    gtk+-3.0
-    gio-2.0
-    sqlite3
-    gee-0.8
-    libsoup-2.4
-    json-glib-1.0
-    libsecret-1
-    libxml-2.0
-    libnotify
-
-OPTIONS
-    --target-glib=2.32
-
-CUSTOM_VAPIS
-    vapi/libvilistextum.vapi
-)
-
-add_executable(${DEBUG_NAME} ${debug})
-target_link_libraries(${DEBUG_NAME} vilistextum)
-
 
 # uninstall target
 configure_file(
@@ -319,7 +254,6 @@ add_custom_target(uninstall
 
 install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
-install (TARGETS ${DEBUG_NAME} RUNTIME DESTINATION bin)
 install (FILES ${PROJECT_BINARY_DIR}/WebExtension/libwebextension.so DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION ${DATADIR}/dbus-1/services/)

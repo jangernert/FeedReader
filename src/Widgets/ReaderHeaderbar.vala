@@ -177,7 +177,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
 			menubutton.set_size_request(32, 32);
 			menubutton.set_use_popover(true);
-			menubutton.set_menu_model(UiUtils.getMenu());
+			menubutton.set_menu_model(UtilsUI.getMenu());
 			menubutton.set_tooltip_text(_("Settings"));
 			m_header_left.pack_end(menubutton);
 		}
@@ -239,7 +239,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 		if(m_online
 		&& feedDaemon_interface.supportTags()
-		&& UiUtils.canManipulateContent())
+		&& UtilsUI.canManipulateContent())
 		{
 			m_tag_button.sensitive = show;
 		}
@@ -288,7 +288,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void setOffline()
 	{
 		m_online = false;
-		if(UiUtils.canManipulateContent()
+		if(UtilsUI.canManipulateContent()
 		&& feedDaemon_interface.supportTags())
 			m_tag_button.sensitive = false;
 		m_share_button.sensitive = false;
@@ -297,7 +297,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void setOnline()
 	{
 		m_online = true;
-		if(UiUtils.canManipulateContent()
+		if(UtilsUI.canManipulateContent()
 		&& feedDaemon_interface.supportTags())
 			m_tag_button.sensitive = true;
 		m_share_button.sensitive = true;

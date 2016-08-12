@@ -394,7 +394,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		m_feedList.setOffline();
 
-		if(!UiUtils.canManipulateContent(false))
+		if(!UtilsUI.canManipulateContent(false))
 		{
 			m_footer.setActive(false);
 			m_feedList.newFeedlist(false);
@@ -405,7 +405,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		m_feedList.setOnline();
 
-		if(UiUtils.canManipulateContent(true))
+		if(UtilsUI.canManipulateContent(true))
 		{
 			m_footer.setActive(true);
 			m_feedList.newFeedlist(false);

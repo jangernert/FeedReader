@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.UiUtils : GLib.Object {
+public class FeedReader.UtilsUI : GLib.Object {
 
 
 	public static uint getRelevantArticles(int newArticlesCount)
@@ -186,5 +186,88 @@ public class FeedReader.UiUtils : GLib.Object {
 			save_dialog.destroy();
 		});
 		save_dialog.show();
+	}
+
+	public static void playMedia(string[] args, string url)
+	{
+		Gtk.init(ref args);
+		Gst.init(ref args);
+
+		settings_general = new GLib.Settings ("org.gnome.feedreader");
+		logger = new Logger("mediaPlayer");
+
+		var window = new Gtk.Window();
+		window.set_size_request(800, 600);
+		window.destroy.connect(Gtk.main_quit);
+		var header = new Gtk.HeaderBar();
+		header.show_close_button = true;
+
+		try
+		{
+    		Gtk.CssProvider provider = new Gtk.CssProvider();
+			provider.load_from_path(InstallPrefix + "/share/FeedReader/gtk-css/basics.css");
+			weak Gdk.Display display = Gdk.Display.get_default();
+            weak Gdk.Screen screen = display.get_default_screen();
+			Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		}
+		catch (Error e){}
+
+		var player = new FeedReader.MediaPlayer(url);
+
+		window.add(player);
+		window.set_titlebar(header);
+		window.show_all();
+
+		Gtk.main();
+	}
+
+	public static void testGOA()
+	{
+		Goa.Client? client = new Goa.Client.sync();
+
+		if(client != null)
+		{
+			var accounts = client.get_accounts();
+			foreach(var object in accounts)
+			{
+				stdout.printf("account type: %s\n", object.account.provider_type);
+				stdout.printf("account name: %s\n", object.account.provider_name);
+				stdout.printf("account identity: %s\n", object.account.identity);
+				stdout.printf("account id: %s\n", object.account.id);
+
+				if(object.oauth2_based != null)
+				{
+					string access_token = "";
+					int expires = 0;
+					object.oauth2_based.call_get_access_token_sync(out access_token, out expires);
+					stdout.printf("access token: %s\n", access_token);
+					stdout.printf("expires in: %i\n", expires);
+					stdout.printf("client id: %s\n", object.oauth2_based.client_id);
+					stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
+				}
+				else if(object.oauth_based != null)
+				{
+					string access_token = "";
+					string access_token_secret = "";
+					int expires = 0;
+					object.oauth_based.call_get_access_token_sync(out access_token, out access_token_secret, out expires);
+					stdout.printf("access token: %s\n", access_token);
+					stdout.printf("access token secret: %s\n", access_token_secret);
+					stdout.printf("expires in: %i\n", expires);
+				}
+				else if(object.password_based != null)
+				{
+					string password = "";
+					object.password_based.call_get_password_sync ("abc", out password);
+					stdout.printf("password: %s\n", password);
+					stdout.printf("presentation identity: %s\n", object.account.presentation_identity);
+				}
+				stdout.printf("\n");
+			}
+		}
+		else
+		{
+			stdout.printf("goa not available");
+		}
 	}
 }

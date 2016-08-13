@@ -104,50 +104,43 @@ public class FeedReader.dbDaemon : dbBase {
         Utils.remove_directory(folder_path);
     }
 
-    public async void dropTag(string tagID)
+    public void dropTag(string tagID)
     {
-        SourceFunc callback = dropTag.callback;
-        ThreadFunc<void*> run = () => {
-            var query = new QueryBuilder(QueryType.DELETE, "main.tags");
-            query.addEqualsCondition("tagID", tagID, true, true);
+        var query = new QueryBuilder(QueryType.DELETE, "main.tags");
+        query.addEqualsCondition("tagID", tagID, true, true);
+        executeSQL(query.build());
+
+        query = new QueryBuilder(QueryType.SELECT, "main.articles");
+        query.selectField("tags");
+        query.selectField("articleID");
+        query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
+        query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+        if(ec != Sqlite.OK)
+        {
+            logger.print(LogMessage.ERROR, "dbDaemon: dropTag: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+        }
+
+        while(stmt.step () == Sqlite.ROW)
+        {
+            string old_tags = stmt.column_text(0);
+            string articleID = stmt.column_text(1);
+            string new_tags = "";
+            var tagArray = old_tags.split(",");
+            foreach(string tag in tagArray)
+            {
+                tag = tag.strip();
+                if(tag != "" && tag != tagID)
+                    new_tags += "tag" + ",";
+            }
+
+            query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+            query.updateValuePair("tags", "\"%s\"".printf(new_tags));
+            query.addEqualsCondition("articleID", articleID, true, true);
             executeSQL(query.build());
-
-            query = new QueryBuilder(QueryType.SELECT, "main.articles");
-            query.selectField("tags");
-            query.selectField("articleID");
-            query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
-            query.build();
-
-            Sqlite.Statement stmt;
-            int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-            if(ec != Sqlite.OK)
-            {
-                logger.print(LogMessage.ERROR, "dbDaemon: dropTag: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
-            }
-
-            while(stmt.step () == Sqlite.ROW)
-            {
-                string old_tags = stmt.column_text(0);
-                string articleID = stmt.column_text(1);
-                string new_tags = "";
-                var tagArray = old_tags.split(",");
-                foreach(string tag in tagArray)
-                {
-                    tag = tag.strip();
-                    if(tag != "" && tag != tagID)
-                        new_tags += "tag" + ",";
-                }
-
-                query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-                query.updateValuePair("tags", "\"%s\"".printf(new_tags));
-                query.addEqualsCondition("articleID", articleID, true, true);
-                executeSQL(query.build());
-            }
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("dropTag", run);
-        yield;
+        }
     }
 
     public void write_feeds(Gee.LinkedList<feed> feeds)
@@ -546,82 +539,42 @@ public class FeedReader.dbDaemon : dbBase {
         return false;
     }
 
-    public async void update_article(string articleIDs, string field, int field_value)
+    public void update_article(string articleIDs, string field, int field_value)
     {
-        SourceFunc callback = update_article.callback;
+        var id_array = articleIDs.split(",");
+        var id_list = new Gee.ArrayList<string>();
+        foreach(string id in id_array)
+        {
+            id_list.add(id);
+        }
 
-        ThreadFunc<void*> run = () => {
-
-            var id_array = articleIDs.split(",");
-            var id_list = new Gee.ArrayList<string>();
-            foreach(string id in id_array)
-            {
-                id_list.add(id);
-            }
-
-            var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-            query.updateValuePair(field, field_value.to_string());
-            query.addRangeConditionString("articleID", id_list);
-            executeSQL(query.build());
-
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("update_article", run);
-        yield;
+        var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+        query.updateValuePair(field, field_value.to_string());
+        query.addRangeConditionString("articleID", id_list);
+        executeSQL(query.build());
     }
 
-    public async void markCategorieRead(string catID)
+    public void markCategorieRead(string catID)
     {
-        SourceFunc callback = markCategorieRead.callback;
-
-        ThreadFunc<void*> run = () => {
-
-            var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-            query.updateValuePair("unread", ArticleStatus.READ.to_string());
-            query.addRangeConditionString("feedID", getFeedIDofCategorie(catID));
-            executeSQL(query.build());
-
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("markCategorieRead", run);
-        yield;
+        var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+        query.updateValuePair("unread", ArticleStatus.READ.to_string());
+        query.addRangeConditionString("feedID", getFeedIDofCategorie(catID));
+        executeSQL(query.build());
     }
 
-    public async void markFeedRead(string feedID)
+    public void markFeedRead(string feedID)
 	{
-		SourceFunc callback = markFeedRead.callback;
-
-		ThreadFunc<void*> run = () => {
-
-			var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-			query.updateValuePair("unread", ArticleStatus.READ.to_string());
-			query.addEqualsCondition("feedID", feedID, true, true);
-			executeSQL(query.build());
-
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("markFeedRead", run);
-		yield;
+		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+		query.updateValuePair("unread", ArticleStatus.READ.to_string());
+		query.addEqualsCondition("feedID", feedID, true, true);
+		executeSQL(query.build());
 	}
 
-    public async void markAllRead()
+    public void markAllRead()
     {
-        SourceFunc callback = markAllRead.callback;
-
-        ThreadFunc<void*> run = () => {
-
-            var query1 = new QueryBuilder(QueryType.UPDATE, "main.articles");
-            query1.updateValuePair("unread", ArticleStatus.READ.to_string());
-            executeSQL(query1.build());
-
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("markAllRead", run);
-        yield;
+        var query1 = new QueryBuilder(QueryType.UPDATE, "main.articles");
+        query1.updateValuePair("unread", ArticleStatus.READ.to_string());
+        executeSQL(query1.build());
     }
 
     public void reset_subscribed_flag()
@@ -686,212 +639,150 @@ public class FeedReader.dbDaemon : dbBase {
         Utils.remove_directory(folder_path);
     }
 
-    public async void delete_category(string catID)
+    public void delete_category(string catID)
     {
-        SourceFunc callback = delete_category.callback;
-        ThreadFunc<void*> run = () => {
-            executeSQL("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
+        executeSQL("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
 
+        if(server.supportMultiCategoriesPerFeed())
+        {
+            var query = new QueryBuilder(QueryType.SELECT, "feeds");
+            query.selectField("feed_id, category_id");
+            query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(catID));
+            query.build();
 
-            if(server.supportMultiCategoriesPerFeed())
+            Sqlite.Statement stmt;
+            int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+            if (ec != Sqlite.OK)
+                logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+            while(stmt.step () == Sqlite.ROW)
             {
-                var query = new QueryBuilder(QueryType.SELECT, "feeds");
-                query.selectField("feed_id, category_id");
-                query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(catID));
-                query.build();
+                string feedID = stmt.column_text(0);
+                string catIDs = stmt.column_text(0).replace(catID + ",", "");
 
-                Sqlite.Statement stmt;
-                int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-                if (ec != Sqlite.OK)
-                    logger.print(LogMessage.ERROR, sqlite_db.errmsg());
-
-                while(stmt.step () == Sqlite.ROW)
-                {
-                    string feedID = stmt.column_text(0);
-                    string catIDs = stmt.column_text(0).replace(catID + ",", "");
-
-                    executeSQL("UPDATE main.feeds set category_id = \"" + catIDs + "\" WHERE feed_id = \"" + feedID + "\"");
-                }
+                executeSQL("UPDATE main.feeds set category_id = \"" + catIDs + "\" WHERE feed_id = \"" + feedID + "\"");
             }
-            else
+        }
+        else
+        {
+            executeSQL("UPDATE main.feeds set category_id = \"%s\" WHERE category_id = \"%s\"".printf(server.uncategorizedID(), catID));
+
+            if(server.supportMultiLevelCategories())
             {
-                executeSQL("UPDATE main.feeds set category_id = \"%s\" WHERE category_id = \"%s\"".printf(server.uncategorizedID(), catID));
-
-                if(server.supportMultiLevelCategories())
-                {
-                    executeSQL("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
-                }
+                executeSQL("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
             }
-
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("delete_category", run);
-        yield;
+        }
     }
 
-    public async void rename_category(string catID, string newName)
+    public void rename_category(string catID, string newName)
     {
-        SourceFunc callback = rename_category.callback;
-        ThreadFunc<void*> run = () => {
-            var query = new QueryBuilder(QueryType.UPDATE, "categories");
+        var query = new QueryBuilder(QueryType.UPDATE, "categories");
+        query.updateValuePair("title", newName, true);
+        query.addEqualsCondition("categorieID", catID, true, true);
+        executeSQL(query.build());
+    }
+
+    public void move_category(string catID, string newParentID)
+    {
+        var parent = read_category(newParentID);
+        var query = new QueryBuilder(QueryType.UPDATE, "categories");
+        query.updateValuePair("Parent", newParentID);
+        query.updateValuePair("Level", "%i".printf(parent.getLevel()+1));
+        query.addEqualsCondition("categorieID", catID);
+        executeSQL(query.build());
+    }
+
+    public void rename_feed(string feedID, string newName)
+    {
+        var query = new QueryBuilder(QueryType.UPDATE, "feeds");
+        query.updateValuePair("name", newName, true);
+        query.addEqualsCondition("feed_id", feedID, true, true);
+        executeSQL(query.build());
+    }
+
+    public void move_feed(string feedID, string currentCatID, string? newCatID = null)
+    {
+        var Feed = dataBase.read_feed(feedID);
+        var catArray = Feed.getCatIDs();
+
+        if(Feed.hasCat(currentCatID))
+        {
+            string[] newCatArray = {};
+
+            foreach(string catID in catArray)
+    		{
+    			if(catID != currentCatID)
+    			{
+    				newCatArray += catID;
+    			}
+    		}
+
+            catArray = newCatArray;
+        }
+
+        if(newCatID != null)
+            catArray += newCatID;
+
+        string catString = "";
+
+        for(int i = 0; i < catArray.length; i++)
+        {
+            catString += catArray[i];
+            if(i < catArray.length-1)
+                catString += ",";
+        }
+
+        var query = new QueryBuilder(QueryType.UPDATE, "feeds");
+        query.updateValuePair("category_id", catString, true);
+        query.addEqualsCondition("feed_id", feedID, true, true);
+        executeSQL(query.build());
+    }
+
+    public void rename_tag(string tagID, string newName)
+    {
+        if(server.tagIDaffectedByNameChange())
+        {
+            var tag = read_tag(tagID);
+            string newID = tagID.replace(tag.getTitle(), newName);
+            var query2 = new QueryBuilder(QueryType.UPDATE, "tags");
+            query2.updateValuePair("tagID", newID, true);
+            query2.addEqualsCondition("tagID", tagID, true, true);
+            executeSQL(query2.build());
+            query2.print();
+
+            var query3 = new QueryBuilder(QueryType.UPDATE, "articles");
+            query3.updateValuePair("tags", "replace(tags, '%s', '%s')".printf(tagID, newID));
+            query3.addCustomCondition("instr(tags, '%s')".printf(tagID));
+            executeSQL(query3.build());
+            query3.print();
+
+            var query = new QueryBuilder(QueryType.UPDATE, "tags");
             query.updateValuePair("title", newName, true);
-            query.addEqualsCondition("categorieID", catID, true, true);
+            query.addEqualsCondition("tagID", newID, true, true);
             executeSQL(query.build());
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("rename_category", run);
-        yield;
-    }
-
-    public async void move_category(string catID, string newParentID)
-    {
-        SourceFunc callback = move_category.callback;
-        ThreadFunc<void*> run = () => {
-            var parent = read_category(newParentID);
-
-            var query = new QueryBuilder(QueryType.UPDATE, "categories");
-            query.updateValuePair("Parent", newParentID);
-            query.updateValuePair("Level", "%i".printf(parent.getLevel()+1));
-            query.addEqualsCondition("categorieID", catID);
+        }
+        else
+        {
+            var query = new QueryBuilder(QueryType.UPDATE, "tags");
+            query.updateValuePair("title", newName, true);
+            query.addEqualsCondition("tagID", tagID, true, true);
             executeSQL(query.build());
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("move_category", run);
-        yield;
+        }
     }
 
-    public async void rename_feed(string feedID, string newName)
+    public void removeCatFromFeed(string feedID, string catID)
     {
-        SourceFunc callback = rename_feed.callback;
-        ThreadFunc<void*> run = () => {
-            var query = new QueryBuilder(QueryType.UPDATE, "feeds");
-            query.updateValuePair("name", newName, true);
-            query.addEqualsCondition("feed_id", feedID, true, true);
-            executeSQL(query.build());
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("rename_feed", run);
-        yield;
+        var feed = read_feed(feedID);
+        var query = new QueryBuilder(QueryType.UPDATE, "feeds");
+        query.updateValuePair("category_id", feed.getCatString().replace(catID + ",", ""), true);
+        query.addEqualsCondition("feed_id", feedID, true, true);
+        executeSQL(query.build());
     }
 
-    public async void move_feed(string feedID, string currentCatID, string? newCatID = null)
+    public void delete_feed(string feedID)
     {
-        SourceFunc callback = move_feed.callback;
-        ThreadFunc<void*> run = () => {
-            var Feed = dataBase.read_feed(feedID);
-            var catArray = Feed.getCatIDs();
-
-            if(Feed.hasCat(currentCatID))
-            {
-                string[] newCatArray = {};
-
-                foreach(string catID in catArray)
-        		{
-        			if(catID != currentCatID)
-        			{
-        				newCatArray += catID;
-        			}
-        		}
-
-                catArray = newCatArray;
-            }
-
-            if(newCatID != null)
-                catArray += newCatID;
-
-            string catString = "";
-
-            for(int i = 0; i < catArray.length; i++)
-            {
-                catString += catArray[i];
-                if(i < catArray.length-1)
-                    catString += ",";
-            }
-
-
-            var query = new QueryBuilder(QueryType.UPDATE, "feeds");
-            query.updateValuePair("category_id", catString, true);
-            query.addEqualsCondition("feed_id", feedID, true, true);
-            executeSQL(query.build());
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("move_feed", run);
-        yield;
-    }
-
-    public async void rename_tag(string tagID, string newName)
-    {
-        SourceFunc callback = rename_tag.callback;
-        ThreadFunc<void*> run = () => {
-
-            if(server.tagIDaffectedByNameChange())
-            {
-                var tag = read_tag(tagID);
-                string newID = tagID.replace(tag.getTitle(), newName);
-                var query2 = new QueryBuilder(QueryType.UPDATE, "tags");
-                query2.updateValuePair("tagID", newID, true);
-                query2.addEqualsCondition("tagID", tagID, true, true);
-                executeSQL(query2.build());
-                query2.print();
-
-                var query3 = new QueryBuilder(QueryType.UPDATE, "articles");
-                query3.updateValuePair("tags", "replace(tags, '%s', '%s')".printf(tagID, newID));
-                query3.addCustomCondition("instr(tags, '%s')".printf(tagID));
-                executeSQL(query3.build());
-                query3.print();
-
-                var query = new QueryBuilder(QueryType.UPDATE, "tags");
-                query.updateValuePair("title", newName, true);
-                query.addEqualsCondition("tagID", newID, true, true);
-                executeSQL(query.build());
-            }
-            else
-            {
-                var query = new QueryBuilder(QueryType.UPDATE, "tags");
-                query.updateValuePair("title", newName, true);
-                query.addEqualsCondition("tagID", tagID, true, true);
-                executeSQL(query.build());
-            }
-
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("rename_tag", run);
-        yield;
-    }
-
-    public async void removeCatFromFeed(string feedID, string catID)
-    {
-        SourceFunc callback = removeCatFromFeed.callback;
-        ThreadFunc<void*> run = () => {
-            var feed = read_feed(feedID);
-            var query = new QueryBuilder(QueryType.UPDATE, "feeds");
-            query.updateValuePair("category_id", feed.getCatString().replace(catID + ",", ""), true);
-            query.addEqualsCondition("feed_id", feedID, true, true);
-            executeSQL(query.build());
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("removeCatFromFeed", run);
-        yield;
-    }
-
-    public async void delete_feed(string feedID)
-    {
-        SourceFunc callback = delete_feed.callback;
-        ThreadFunc<void*> run = () => {
-            executeSQL("DELETE FROM feeds WHERE feed_id = \"%s\"".printf(feedID));
-            delete_articles(feedID);
-            Idle.add((owned) callback);
-            return null;
-        };
-        new GLib.Thread<void*>("delete_feed", run);
-        yield;
+        executeSQL("DELETE FROM feeds WHERE feed_id = \"%s\"".printf(feedID));
+        delete_articles(feedID);
     }
 
     public void addOfflineAction(OfflineActions action, string id, string? argument = "")

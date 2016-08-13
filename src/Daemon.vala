@@ -335,8 +335,9 @@ namespace FeedReader {
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
-					dataBase.update_article.end(res);
+				asyncPayload pl = () => { dataBase.update_article(articleID, "unread", status); };
+				callAsync.begin((owned)pl, (obj, res) => {
+					callAsync.end(res);
 					updateFeedList();
 					updateBadge();
 				});
@@ -352,9 +353,8 @@ namespace FeedReader {
 				}
 
 
-				dataBase.update_article.begin(articleID, "marked", status, (obj, res) => {
-					dataBase.update_article.end(res);
-				});
+				asyncPayload pl = () => { dataBase.update_article(articleID, "marked", status); };
+				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}
 		}
 
@@ -424,10 +424,11 @@ namespace FeedReader {
 					{
 						logger.print(LogMessage.DEBUG, "daemon: remove tag completely");
 						asyncPayload pl2 = () => { server.deleteTag(tagID); };
-						callAsync.begin(pl2, (obj, res) => { callAsync.end(res); });
+						callAsync.begin((owned)pl2, (obj, res) => { callAsync.end(res); });
 
-						dataBase.dropTag.begin(tagID, (obj, res) => {
-							dataBase.dropTag.end(res);
+						asyncPayload pl3 = () => { dataBase.dropTag(tagID); };
+						callAsync.begin((owned)pl3, (obj, res) => {
+							callAsync.end(res);
 							newFeedList();
 						});
 					}
@@ -446,8 +447,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.renameTag(tagID, newName); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.rename_tag.begin(tagID, newName, (obj, res) => {
-				dataBase.rename_tag.end(res);
+			asyncPayload pl2 = () => { dataBase.rename_tag(tagID, newName); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -460,8 +462,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.deleteTag(tagID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.dropTag.begin(tagID, (obj, res) => {
-				dataBase.dropTag.end(res);
+			asyncPayload pl2 = () => { dataBase.dropTag(tagID); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -496,8 +499,9 @@ namespace FeedReader {
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-				dataBase.markCategorieRead.begin(feedID, (obj, res) => {
-					dataBase.markCategorieRead.end(res);
+				asyncPayload pl = () => { dataBase.markCategorieRead(feedID); };
+				callAsync.begin((owned)pl, (obj, res) => {
+					callAsync.end(res);
 					updateBadge();
 					newFeedList();
 					updateArticleList();
@@ -515,8 +519,9 @@ namespace FeedReader {
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-				dataBase.markFeedRead.begin(feedID, (obj, res) => {
-					dataBase.markFeedRead.end(res);
+				asyncPayload pl = () => { dataBase.markFeedRead(feedID); };
+				callAsync.begin((owned)pl, (obj, res) => {
+					callAsync.end(res);
 					updateBadge();
 					newFeedList();
 					updateArticleList();
@@ -536,8 +541,9 @@ namespace FeedReader {
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}
 
-			dataBase.markAllRead.begin((obj, res) => {
-				dataBase.markAllRead.end(res);
+			asyncPayload pl = () => { dataBase.markAllRead(); };
+			callAsync.begin((owned)pl, (obj, res) => {
+				callAsync.end(res);
 				updateBadge();
 				newFeedList();
 				updateArticleList();
@@ -549,8 +555,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.deleteCategory(catID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.delete_category.begin(catID, (obj, res) => {
-				dataBase.delete_category.end(res);
+			asyncPayload pl2 = () => { dataBase.delete_category(catID); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -560,8 +567,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.moveCategory(catID, newParentID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.move_category.begin(catID, newParentID, (obj, res) => {
-				dataBase.move_category.end(res);
+			asyncPayload pl2 = () => { dataBase.move_category(catID, newParentID); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -625,8 +633,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.renameCategory(catID, newName); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.rename_category.begin(catID, newName, (obj, res) => {
-				dataBase.rename_category.end(res);
+			asyncPayload pl2 = () => { dataBase.rename_category(catID, newName); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -636,8 +645,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.renameFeed(feedID, newName); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.rename_feed.begin(feedID, newName, (obj, res) => {
-				dataBase.rename_feed.end(res);
+			asyncPayload pl2 = () => { dataBase.rename_feed(feedID, newName); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -647,8 +657,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.moveFeed(feedID, newCatID, currentCatID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.move_feed.begin(feedID, currentCatID, newCatID, (obj, res) => {
-				dataBase.move_feed.end(res);
+			asyncPayload pl2 = () => { dataBase.move_feed(feedID, currentCatID, newCatID); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -664,7 +675,7 @@ namespace FeedReader {
 				newCatName = cat;
 
 			asyncPayload pl = () => { server.addFeed(feedURL, catID, newCatName); };
-			callAsync.begin(pl, (obj, res) => {
+			callAsync.begin((owned)pl, (obj, res) => {
 				callAsync.end(res);
 				feedAdded();
 				startSync();
@@ -676,8 +687,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.removeFeed(feedID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.delete_feed.begin(feedID, (obj, res) => {
-				dataBase.delete_feed.end(res);
+			asyncPayload pl2 = () => { dataBase.delete_feed(feedID); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -687,8 +699,9 @@ namespace FeedReader {
 			asyncPayload pl = () => { server.removeCatFromFeed(feedID, catID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			dataBase.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
-				dataBase.removeCatFromFeed.end(res);
+			asyncPayload pl2 = () => { dataBase.removeCatFromFeed(feedID, catID); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
 				newFeedList();
 			});
 		}
@@ -696,7 +709,7 @@ namespace FeedReader {
 		public void importOPML(string opml)
 		{
 			asyncPayload pl = () => { server.importOPML(opml); };
-			callAsync.begin(pl, (obj, res) => {
+			callAsync.begin((owned)pl, (obj, res) => {
 				callAsync.end(res);
 				opmlImported();
 			});

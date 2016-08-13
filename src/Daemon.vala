@@ -27,6 +27,7 @@ namespace FeedReader {
 		private bool m_offline = true;
 		private OfflineActionManager m_offlineActions;
 		private uint m_timeout_source_id = 0;
+		private delegate void asyncPayload();
 
 		public signal void syncStarted();
 		public signal void syncFinished();
@@ -58,16 +59,12 @@ namespace FeedReader {
 
 		public void startSync()
 		{
-			sync.begin((obj, res) => {
-				sync.end(res);
-			});
+			callAsync(sync);
 		}
 
 		public void startInitSync()
 		{
-			initSync.begin((obj, res) => {
-				initSync.end(res);
-			});
+			callAsync(initSync);
 		}
 
 		public int getVersion()
@@ -134,7 +131,7 @@ namespace FeedReader {
 			});
 		}
 
-		private async void sync()
+		private void sync()
 		{
 			if(Utils.springCleaningNecessary())
 			{
@@ -170,7 +167,7 @@ namespace FeedReader {
 			{
 				logger.print(LogMessage.INFO, "daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
-				yield server.syncContent();
+				server.syncContent();
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
@@ -220,7 +217,7 @@ namespace FeedReader {
 		}
 
 
-		private async void initSync()
+		private void initSync()
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
@@ -232,7 +229,7 @@ namespace FeedReader {
 				syncStarted();
 				logger.print(LogMessage.INFO, "daemon: initSync started");
 				settings_state.set_boolean("currently-updating", true);
-				yield server.InitSyncContent();
+				server.InitSyncContent();
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
@@ -333,9 +330,9 @@ namespace FeedReader {
 				}
 				else
 				{
-					server.setArticleIsRead.begin(articleID, status, (obj, res) => {
-						server.setArticleIsRead.end(res);
-					});
+
+					asyncPayload pl = () => { server.setArticleIsRead(articleID, status); };
+					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
 				dataBase.update_article.begin(articleID, "unread", status, (obj, res) => {
@@ -349,7 +346,10 @@ namespace FeedReader {
 				if(m_offline)
 					m_offlineActions.markArticleStarred(articleID, status);
 				else
-					server.setArticleIsMarked(articleID, status);
+				{
+					asyncPayload pl = () => { server.setArticleIsMarked(articleID, status); };
+					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
+				}
 
 
 				dataBase.update_article.begin(articleID, "marked", status, (obj, res) => {
@@ -383,9 +383,8 @@ namespace FeedReader {
 
 			if(add)
 			{
-				server.tagArticle.begin(articleID, tagID, (obj, res) => {
-					server.tagArticle.end(res);
-				});
+				asyncPayload pl = () => { server.tagArticle(articleID, tagID); };
+				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 				if(!tags.contains(tagID))
 				{
@@ -395,9 +394,9 @@ namespace FeedReader {
 			else
 			{
 				logger.print(LogMessage.DEBUG, "daemon: remove tag: " + tagID + " from article: " + articleID);
-				server.removeArticleTag.begin(articleID, tagID, (obj, res) => {
-					server.setArticleIsRead.end(res);
-				});
+
+				asyncPayload pl = () => { server.removeArticleTag(articleID, tagID); };
+				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 				logger.print(LogMessage.DEBUG, "daemon: tagstring = " + tags);
 
@@ -424,9 +423,8 @@ namespace FeedReader {
 					if(!dataBase.tag_still_used(tagID))
 					{
 						logger.print(LogMessage.DEBUG, "daemon: remove tag completely");
-						server.deleteTag.begin(tagID, (obj, res) => {
-							server.deleteTag.end(res);
-						});
+						asyncPayload pl2 = () => { server.deleteTag(tagID); };
+						callAsync.begin(pl2, (obj, res) => { callAsync.end(res); });
 
 						dataBase.dropTag.begin(tagID, (obj, res) => {
 							dataBase.dropTag.end(res);
@@ -445,9 +443,8 @@ namespace FeedReader {
 			if(m_offline)
 				return;
 
-			server.renameTag.begin(tagID, newName, (obj, res) => {
-				server.renameTag.end(res);
-			});
+			asyncPayload pl = () => { server.renameTag(tagID, newName); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.rename_tag.begin(tagID, newName, (obj, res) => {
 				dataBase.rename_tag.end(res);
@@ -460,9 +457,8 @@ namespace FeedReader {
 			if(m_offline)
 				return;
 
-			server.deleteTag.begin(tagID, (obj, res) => {
-				server.deleteTag.end(res);
-			});
+			asyncPayload pl = () => { server.deleteTag(tagID); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.dropTag.begin(tagID, (obj, res) => {
 				dataBase.dropTag.end(res);
@@ -496,9 +492,8 @@ namespace FeedReader {
 				}
 				else
 				{
-					server.setCategorieRead.begin(feedID, (obj, res) => {
-						server.setCategorieRead.end(res);
-					});
+					asyncPayload pl = () => { server.setCategorieRead(feedID); };
+					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
 				dataBase.markCategorieRead.begin(feedID, (obj, res) => {
@@ -516,9 +511,8 @@ namespace FeedReader {
 				}
 				else
 				{
-					server.setFeedRead.begin(feedID, (obj, res) => {
-						server.setFeedRead.end(res);
-					});
+					asyncPayload pl = () => { server.setFeedRead(feedID); };
+					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
 				dataBase.markFeedRead.begin(feedID, (obj, res) => {
@@ -538,9 +532,8 @@ namespace FeedReader {
 			}
 			else
 			{
-				server.markAllItemsRead.begin((obj, res) => {
-					server.markAllItemsRead.end(res);
-				});
+				asyncPayload pl = () => { server.markAllItemsRead(); };
+				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}
 
 			dataBase.markAllRead.begin((obj, res) => {
@@ -553,9 +546,8 @@ namespace FeedReader {
 
 		public void removeCategory(string catID)
 		{
-			server.deleteCategory.begin(catID, (obj, res) => {
-				server.deleteCategory.end(res);
-			});
+			asyncPayload pl = () => { server.deleteCategory(catID); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.delete_category.begin(catID, (obj, res) => {
 				dataBase.delete_category.end(res);
@@ -565,9 +557,8 @@ namespace FeedReader {
 
 		public void moveCategory(string catID, string newParentID)
 		{
-			server.moveCategory.begin(catID, newParentID, (obj, res) => {
-				server.moveCategory.end(res);
-			});
+			asyncPayload pl = () => { server.moveCategory(catID, newParentID); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.move_category.begin(catID, newParentID, (obj, res) => {
 				dataBase.move_category.end(res);
@@ -631,9 +622,8 @@ namespace FeedReader {
 
 		public void renameCategory(string catID, string newName)
 		{
-			server.renameCategory.begin(catID, newName, (obj, res) => {
-				server.renameCategory.end(res);
-			});
+			asyncPayload pl = () => { server.renameCategory(catID, newName); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.rename_category.begin(catID, newName, (obj, res) => {
 				dataBase.rename_category.end(res);
@@ -643,9 +633,8 @@ namespace FeedReader {
 
 		public void renameFeed(string feedID, string newName)
 		{
-			server.renameFeed.begin(feedID, newName, (obj, res) => {
-				server.renameFeed.end(res);
-			});
+			asyncPayload pl = () => { server.renameFeed(feedID, newName); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.rename_feed.begin(feedID, newName, (obj, res) => {
 				dataBase.rename_feed.end(res);
@@ -655,9 +644,8 @@ namespace FeedReader {
 
 		public void moveFeed(string feedID, string currentCatID, string? newCatID = null)
 		{
-			server.moveFeed.begin(feedID, newCatID, currentCatID, (obj, res) => {
-				server.moveFeed.end(res);
-			});
+			asyncPayload pl = () => { server.moveFeed(feedID, newCatID, currentCatID); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.move_feed.begin(feedID, currentCatID, newCatID, (obj, res) => {
 				dataBase.move_feed.end(res);
@@ -675,8 +663,9 @@ namespace FeedReader {
 			else
 				newCatName = cat;
 
-			server.addFeed.begin(feedURL, catID, newCatName, (obj, res) => {
-				server.addFeed.end(res);
+			asyncPayload pl = () => { server.addFeed(feedURL, catID, newCatName); };
+			callAsync.begin(pl, (obj, res) => {
+				callAsync.end(res);
 				feedAdded();
 				startSync();
 			});
@@ -684,9 +673,8 @@ namespace FeedReader {
 
 		public void removeFeed(string feedID)
 		{
-			server.removeFeed.begin(feedID, (obj, res) => {
-				server.removeFeed.end(res);
-			});
+			asyncPayload pl = () => { server.removeFeed(feedID); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.delete_feed.begin(feedID, (obj, res) => {
 				dataBase.delete_feed.end(res);
@@ -696,9 +684,8 @@ namespace FeedReader {
 
 		public void removeFeedOnlyFromCat(string feedID, string catID)
 		{
-			server.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
-				server.removeCatFromFeed.end(res);
-			});
+			asyncPayload pl = () => { server.removeCatFromFeed(feedID, catID); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
 			dataBase.removeCatFromFeed.begin(feedID, catID, (obj, res) => {
 				dataBase.removeCatFromFeed.end(res);
@@ -708,8 +695,9 @@ namespace FeedReader {
 
 		public void importOPML(string opml)
 		{
-			server.importOPML.begin(opml, (obj, res) => {
-				server.importOPML.end(res);
+			asyncPayload pl = () => { server.importOPML(opml); };
+			callAsync.begin(pl, (obj, res) => {
+				callAsync.end(res);
 				opmlImported();
 			});
 		}
@@ -739,6 +727,18 @@ namespace FeedReader {
 				return false;
 			});
 		}
+
+		private async void callAsync(owned asyncPayload func)
+		{
+			SourceFunc callback = callAsync.callback;
+			new GLib.Thread<void*>(null, () => {
+				func();
+				Idle.add((owned) callback);
+				return null;
+			});
+			yield;
+		}
+
 	}
 
 	[DBus (name = "org.gnome.feedreaderError")]

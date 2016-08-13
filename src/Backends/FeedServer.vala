@@ -354,367 +354,289 @@ public class FeedReader.FeedServer : GLib.Object {
 		return false;
 	}
 
-	public async void syncContent()
+	public void syncContent()
 	{
-		SourceFunc callback = syncContent.callback;
+		if(!serverAvailable())
+		{
+			logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - not logged in or unreachable");
+			return;
+		}
 
-		ThreadFunc<void*> run = () => {
+		int before = dataBase.getHighestRowID();
 
-			if(!serverAvailable())
-			{
-				logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - not logged in or unreachable");
-				Idle.add((owned) callback);
-				return null;
-			}
+		var categories = new Gee.LinkedList<category>();
+		var feeds      = new Gee.LinkedList<feed>();
+		var tags       = new Gee.LinkedList<tag>();
 
-			int before = dataBase.getHighestRowID();
+		getFeedsAndCats(feeds, categories, tags);
 
-			var categories = new Gee.LinkedList<category>();
-			var feeds      = new Gee.LinkedList<feed>();
-			var tags       = new Gee.LinkedList<tag>();
+		// write categories
+		dataBase.reset_exists_flag();
+		dataBase.write_categories(categories);
+		dataBase.delete_nonexisting_categories();
 
-			getFeedsAndCats(feeds, categories, tags);
+		// write feeds
+		dataBase.reset_subscribed_flag();
+		dataBase.write_feeds(feeds);
+		dataBase.delete_articles_without_feed();
+		dataBase.delete_unsubscribed_feeds();
 
-			// write categories
-			dataBase.reset_exists_flag();
-			dataBase.write_categories(categories);
-			dataBase.delete_nonexisting_categories();
+		// write tags
+		dataBase.reset_exists_tag();
+		dataBase.write_tags(tags);
+		dataBase.update_tags(tags);
+		dataBase.delete_nonexisting_tags();
 
-			// write feeds
-			dataBase.reset_subscribed_flag();
-			dataBase.write_feeds(feeds);
-			dataBase.delete_articles_without_feed();
-			dataBase.delete_unsubscribed_feeds();
+		newFeedList();
 
-			// write tags
-			dataBase.reset_exists_tag();
-			dataBase.write_tags(tags);
-			dataBase.update_tags(tags);
-			dataBase.delete_nonexisting_tags();
+		int unread = getUnreadCount();
+		int max = ArticleSyncCount();
 
-			newFeedList();
-
-			int unread = getUnreadCount();
-			int max = ArticleSyncCount();
-
-			if(unread > max && useMaxArticles())
-			{
-				getArticles(20, ArticleStatus.MARKED);
-				getArticles(unread, ArticleStatus.UNREAD);
-			}
-			else
-			{
-				getArticles(max);
-			}
+		if(unread > max && useMaxArticles())
+		{
+			getArticles(20, ArticleStatus.MARKED);
+			getArticles(unread, ArticleStatus.UNREAD);
+		}
+		else
+		{
+			getArticles(max);
+		}
 
 
-			//update fulltext table
-			dataBase.updateFTS();
+		//update fulltext table
+		dataBase.updateFTS();
 
-			int after = dataBase.getHighestRowID();
-			int newArticles = after-before;
-			if(newArticles > 0)
-			{
-				sendNotification(newArticles);
-				showArticleListOverlay();
-			}
+		int after = dataBase.getHighestRowID();
+		int newArticles = after-before;
+		if(newArticles > 0)
+		{
+			sendNotification(newArticles);
+			showArticleListOverlay();
+		}
 
-			switch(settings_general.get_enum("drop-articles-after"))
-			{
-				case DropArticles.NEVER:
-	                break;
+		switch(settings_general.get_enum("drop-articles-after"))
+		{
+			case DropArticles.NEVER:
+	            break;
 
-				case DropArticles.ONE_WEEK:
-					dataBase.dropOldArtilces(1);
-					break;
+			case DropArticles.ONE_WEEK:
+				dataBase.dropOldArtilces(1);
+				break;
 
-				case DropArticles.ONE_MONTH:
-					dataBase.dropOldArtilces(4);
-					break;
+			case DropArticles.ONE_MONTH:
+				dataBase.dropOldArtilces(4);
+				break;
 
-				case DropArticles.SIX_MONTHS:
-					dataBase.dropOldArtilces(24);
-					break;
-			}
+			case DropArticles.SIX_MONTHS:
+				dataBase.dropOldArtilces(24);
+				break;
+		}
 
-			var now = new DateTime.now_local();
-			settings_state.set_int("last-sync", (int)now.to_unix());
+		var now = new DateTime.now_local();
+		settings_state.set_int("last-sync", (int)now.to_unix());
 
-			dataBase.checkpoint();
-
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("syncContent", run);
-		yield;
+		dataBase.checkpoint();
 
 		return;
 	}
 
-	public async void InitSyncContent()
+	public void InitSyncContent()
 	{
-		SourceFunc callback = InitSyncContent.callback;
+		logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
 
-		ThreadFunc<void*> run = () => {
-			logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
+		var categories = new Gee.LinkedList<category>();
+		var feeds      = new Gee.LinkedList<feed>();
+		var tags       = new Gee.LinkedList<tag>();
 
-			var categories = new Gee.LinkedList<category>();
-			var feeds      = new Gee.LinkedList<feed>();
-			var tags       = new Gee.LinkedList<tag>();
+		getFeedsAndCats(feeds, categories, tags);
 
-			getFeedsAndCats(feeds, categories, tags);
+		// write categories
+		dataBase.write_categories(categories);
 
-			// write categories
-			dataBase.write_categories(categories);
+		// write feeds
+		dataBase.write_feeds(feeds);
 
-			// write feeds
-			dataBase.write_feeds(feeds);
+		// write tags
+		dataBase.write_tags(tags);
 
-			// write tags
-			dataBase.write_tags(tags);
+		newFeedList();
 
-			newFeedList();
+		// get marked articles
+		getArticles(settings_general.get_int("max-articles"), ArticleStatus.MARKED);
 
-			// get marked articles
-			getArticles(settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+		// get articles for each tag
+		foreach(var tag_item in tags)
+		{
+			getArticles((settings_general.get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
+		}
 
-			// get articles for each tag
-			foreach(var tag_item in tags)
-			{
-				getArticles((settings_general.get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
-			}
+		if(useMaxArticles())
+		{
+			//get max-articls amunt like normal sync
+			getArticles(settings_general.get_int("max-articles"));
+		}
 
-			if(useMaxArticles())
-			{
-				//get max-articls amunt like normal sync
-				getArticles(settings_general.get_int("max-articles"));
-			}
+		// get unread articles
+		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
-			// get unread articles
-			getArticles(getUnreadCount(), ArticleStatus.UNREAD);
+		//update fulltext table
+		dataBase.updateFTS();
 
-			//update fulltext table
-			dataBase.updateFTS();
+		settings_general.reset("content-grabber");
 
-			settings_general.reset("content-grabber");
-
-			var now = new DateTime.now_local();
-			settings_state.set_int("last-sync", (int)now.to_unix());
-
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("InitSyncContent", run);
-		yield;
+		var now = new DateTime.now_local();
+		settings_state.set_int("last-sync", (int)now.to_unix());
 
 		return;
 	}
 
 
-	public async void setArticleIsRead(string articleIDs, ArticleStatus read)
+	public void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
-		SourceFunc callback = setArticleIsRead.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.setArticleIsRead(articleIDs, read);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.setArticleIsRead(articleIDs, read);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.setArticleIsRead(articleIDs, read);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.setArticleIsRead(articleIDs, read);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.setArticleIsRead(articleIDs, read);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.setArticleIsRead(articleIDs, read);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.setArticleIsRead(articleIDs, read);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("setArticleIsRead", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.setArticleIsRead(articleIDs, read);
+				break;
+		}
 	}
 
-	public async void setArticleIsMarked(string articleID, ArticleStatus marked)
+	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
-		SourceFunc callback = setArticleIsMarked.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.setArticleIsMarked(articleID, marked);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.setArticleIsMarked(articleID, marked);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.setArticleIsMarked(articleID, marked);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.setArticleIsMarked(articleID, marked);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.setArticleIsMarked(articleID, marked);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.setArticleIsMarked(articleID, marked);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.setArticleIsMarked(articleID, marked);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("setArticleIsMarked", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.setArticleIsMarked(articleID, marked);
+				break;
+		}
 	}
 
-	public async void setFeedRead(string feedID)
+	public void setFeedRead(string feedID)
 	{
-		SourceFunc callback = setFeedRead.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.setFeedRead(feedID);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.setFeedRead(feedID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.setFeedRead(feedID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.setFeedRead(feedID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.setFeedRead(feedID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.setFeedRead(feedID);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.setFeedRead(feedID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("setFeedRead", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.setFeedRead(feedID);
+				break;
+		}
 	}
 
-	public async void setCategorieRead(string catID)
+	public void setCategorieRead(string catID)
 	{
-		SourceFunc callback = setCategorieRead.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.setCategorieRead(catID);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.setCategorieRead(catID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.setCategorieRead(catID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.setCategorieRead(catID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.setCategorieRead(catID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.setCategorieRead(catID);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.setCategorieRead(catID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("setCategorieRead", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.setCategorieRead(catID);
+				break;
+		}
 	}
 
-	public async void markAllItemsRead()
+	public void markAllItemsRead()
 	{
-		SourceFunc callback = markAllItemsRead.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.markAllItemsRead();
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.markAllItemsRead();
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.markAllItemsRead();
-					break;
+			case Backend.FEEDLY:
+				m_feedly.markAllItemsRead();
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.markAllItemsRead();
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.markAllItemsRead();
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.markAllItemsRead();
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("markAllItemsRead", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.markAllItemsRead();
+				break;
+		}
 	}
 
 
-	public async void tagArticle(string articleID, string tagID)
+	public void tagArticle(string articleID, string tagID)
 	{
-		SourceFunc callback = tagArticle.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.tagArticle(articleID, tagID);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.tagArticle(articleID, tagID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.tagArticle(articleID, tagID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.tagArticle(articleID, tagID);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.tagArticle(articleID, tagID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("tagArticle", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.tagArticle(articleID, tagID);
+				break;
+		}
 	}
 
 
-	public async void removeArticleTag(string articleID, string tagID)
+	public void removeArticleTag(string articleID, string tagID)
 	{
-		SourceFunc callback = removeArticleTag.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.removeArticleTag(articleID, tagID);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.removeArticleTag(articleID, tagID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.removeArticleTag(articleID, tagID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.removeArticleTag(articleID, tagID);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.removeArticleTag(articleID, tagID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("removeArticleTag", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.removeArticleTag(articleID, tagID);
+				break;
+		}
 	}
 
 	public string createTag(string caption)
@@ -734,59 +656,43 @@ public class FeedReader.FeedServer : GLib.Object {
 		return ":(";
 	}
 
-	public async void deleteTag(string tagID)
+	public void deleteTag(string tagID)
 	{
-		SourceFunc callback = deleteTag.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.deleteTag(tagID);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.deleteTag(tagID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.deleteTag(tagID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.deleteTag(tagID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.deleteTag(tagID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.deleteTag(tagID);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.deleteTag(tagID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("deleteTag", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.deleteTag(tagID);
+				break;
+		}
 	}
 
-	public async void renameTag(string tagID, string title)
+	public void renameTag(string tagID, string title)
 	{
-		SourceFunc callback = renameTag.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.renameTag(tagID, title);
-					break;
-				case Backend.FEEDLY:
-					m_feedly.renameTag(tagID, title);
-					break;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.renameTag(tagID, title);
+				break;
+			case Backend.FEEDLY:
+				m_feedly.renameTag(tagID, title);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.renameTag(tagID, title);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("renameTag", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.renameTag(tagID, title);
+				break;
+		}
 	}
 
 	public bool serverAvailable()
@@ -809,131 +715,92 @@ public class FeedReader.FeedServer : GLib.Object {
 		return false;
 	}
 
-	public async string addFeed(string feedURL, string? catID = null, string? newCatName = null)
+	public void addFeed(string feedURL, string? catID = null, string? newCatName = null)
 	{
-		string feedID = "";
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.addFeed(feedURL, catID, newCatName);
+				break;
 
-		SourceFunc callback = addFeed.callback;
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.addFeed(feedURL, catID, newCatName);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.addFeed(feedURL, catID, newCatName);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.addFeed(feedURL, catID, newCatName);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.addFeed(feedURL, catID, newCatName);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.addFeed(feedURL, catID, newCatName);
-					break;
-
-				case Backend.INOREADER:
-					m_inoreader.addFeed(feedURL, catID, newCatName);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("addFeed", run);
-		yield;
-
-		return feedID;
+			case Backend.INOREADER:
+				m_inoreader.addFeed(feedURL, catID, newCatName);
+				break;
+		}
 	}
 
-	public async void removeFeed(string feedID)
+	public void removeFeed(string feedID)
 	{
-		SourceFunc callback = removeFeed.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.removeFeed(feedID);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.removeFeed(feedID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.removeFeed(feedID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.removeFeed(feedID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.removeFeed(feedID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.removeFeed(feedID);
-					break;
-
-				case Backend.INOREADER:
-					m_inoreader.removeFeed(feedID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("removeFeed", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.removeFeed(feedID);
+				break;
+		}
 	}
 
-	public async void renameFeed(string feedID, string title)
+	public void renameFeed(string feedID, string title)
 	{
-		SourceFunc callback = renameFeed.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.renameFeed(feedID, title);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.renameFeed(feedID, title);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.renameFeed(feedID, title);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.renameFeed(feedID, title);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.renameFeed(feedID, title);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.renameFeed(feedID, title);
-					break;
-
-				case Backend.INOREADER:
-					m_inoreader.renameFeed(feedID, title);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("renameFeed", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.renameFeed(feedID, title);
+				break;
+		}
 	}
 
-	public async void moveFeed(string feedID, string newCatID, string? currentCatID = null)
+	public void moveFeed(string feedID, string newCatID, string? currentCatID = null)
 	{
-		SourceFunc callback = moveFeed.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.moveFeed(feedID, newCatID, currentCatID);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.moveFeed(feedID, newCatID, currentCatID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.moveFeed(feedID, newCatID, currentCatID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.moveFeed(feedID, newCatID, currentCatID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.moveFeed(feedID, newCatID, currentCatID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.moveFeed(feedID, newCatID, currentCatID);
-					break;
-
-				case Backend.INOREADER:
-					m_inoreader.moveFeed(feedID, newCatID, currentCatID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("moveFeed", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.moveFeed(feedID, newCatID, currentCatID);
+				break;
+		}
 	}
 
 	public string createCategory(string title, string? parentID = null)
@@ -956,160 +823,115 @@ public class FeedReader.FeedServer : GLib.Object {
 		return "fail";
 	}
 
-	public async void renameCategory(string catID, string title)
+	public void renameCategory(string catID, string title)
 	{
-		SourceFunc callback = renameCategory.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.renameCategory(catID, title);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.renameCategory(catID, title);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.renameCategory(catID, title);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.renameCategory(catID, title);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.renameCategory(catID, title);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.renameCategory(catID, title);
-					break;
-
-				case Backend.INOREADER:
-					m_inoreader.renameCategory(catID, title);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("renameCategory", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.renameCategory(catID, title);
+				break;
+		}
 	}
 
-	public async void moveCategory(string catID, string newParentID)
+	public void moveCategory(string catID, string newParentID)
 	{
-		SourceFunc callback = moveCategory.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.moveCategory(catID, newParentID);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.moveCategory(catID, newParentID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.moveCategory(catID, newParentID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.moveCategory(catID, newParentID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.moveCategory(catID, newParentID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.moveCategory(catID, newParentID);
-					break;
-
-				case Backend.INOREADER:
-					m_inoreader.moveCategory(catID, newParentID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("moveCategory", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.moveCategory(catID, newParentID);
+				break;
+		}
 	}
 
-	public async void deleteCategory(string catID)
+	public void deleteCategory(string catID)
 	{
-		SourceFunc callback = deleteCategory.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.deleteCategory(catID);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.deleteCategory(catID);
-					break;
+			case Backend.FEEDLY:
+				m_feedly.deleteCategory(catID);
+				break;
 
-				case Backend.FEEDLY:
-					m_feedly.deleteCategory(catID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.deleteCategory(catID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.deleteCategory(catID);
-					break;
-
-				case Backend.INOREADER:
-					m_inoreader.deleteCategory(catID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("deleteCategory", run);
-		yield;
+			case Backend.INOREADER:
+				m_inoreader.deleteCategory(catID);
+				break;
+		}
 	}
 
-	public async void removeCatFromFeed(string feedID, string catID)
+	public void removeCatFromFeed(string feedID, string catID)
 	{
-		SourceFunc callback = removeCatFromFeed.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.removeCatFromFeed(feedID, catID);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.removeCatFromFeed(feedID, catID);
-					break;
+			case Backend.OWNCLOUD:
+				m_owncloud.removeCatFromFeed(feedID, catID);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_owncloud.removeCatFromFeed(feedID, catID);
-					break;
+			case Backend.INOREADER:
+				m_inoreader.removeCatFromFeed(feedID, catID);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.removeCatFromFeed(feedID, catID);
-					break;
-
-				// only feedly supports multiple categories atm
-				case Backend.FEEDLY:
-					m_feedly.removeCatFromFeed(feedID, catID);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("removeCatFromFeed", run);
-		yield;
+			// only feedly supports multiple categories atm
+			case Backend.FEEDLY:
+				m_feedly.removeCatFromFeed(feedID, catID);
+				break;
+		}
 	}
 
-	public async void importOPML(string opml)
+	public void importOPML(string opml)
 	{
-		SourceFunc callback = importOPML.callback;
+		switch(m_type)
+		{
+			case Backend.TTRSS:
+				m_ttrss.importOPML(opml);
+				break;
 
-		ThreadFunc<void*> run = () => {
-			switch(m_type)
-			{
-				case Backend.TTRSS:
-					m_ttrss.importOPML(opml);
-					break;
+			case Backend.OWNCLOUD:
+				m_ttrss.importOPML(opml);
+				break;
 
-				case Backend.OWNCLOUD:
-					m_ttrss.importOPML(opml);
-					break;
+			case Backend.INOREADER:
+				m_inoreader.importOPML(opml);
+				break;
 
-				case Backend.INOREADER:
-					m_inoreader.importOPML(opml);
-					break;
-
-				case Backend.FEEDLY:
-					m_feedly.importOPML(opml);
-					break;
-			}
-			Idle.add((owned) callback);
-			return null;
-		};
-
-		new GLib.Thread<void*>("importOPML", run);
-		yield;
+			case Backend.FEEDLY:
+				m_feedly.importOPML(opml);
+				break;
+		}
 	}
 
 	private void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)

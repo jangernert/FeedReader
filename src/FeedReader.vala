@@ -48,16 +48,7 @@ namespace FeedReader {
 			share = new Share();
 
 			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
-
-
-			if(debug)
-			{
-				dataBase = new dbUI("debug.db");
-			}
-			else
-			{
-				dataBase = new dbUI();
-			}
+			dataBase = new dbUI();
 
 
 			dataBase.init();
@@ -193,7 +184,6 @@ namespace FeedReader {
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
-		{ "debug", 0, 0, OptionArg.NONE, ref debug, "start in debug mode", null },
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
 		{ "test", 0, 0, OptionArg.NONE, ref test, "test", null },
 		{ null }
@@ -201,7 +191,6 @@ namespace FeedReader {
 
 	private static bool version = false;
 	private static bool about = false;
-	private static bool debug = false;
 	private static string? media = null;
 	private static bool test = false;
 

@@ -638,8 +638,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return_value = true;
 		}
 
-		message.printMessage();
-		message.printResponse();
+		//message.printMessage();
+		//message.printResponse();
 
 		return return_value;
 	}

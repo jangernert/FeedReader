@@ -107,6 +107,7 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 		this.set_size_request(0, 80);
 		this.no_show_all = true;
 		this.enter_notify_event.connect((event) => {
+			m_revealer.set_transition_duration(300);
 			m_revealer.show_all();
 			m_revealer.set_reveal_child(true);
 			m_hover = true;
@@ -127,7 +128,8 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 
 
 			removeTimeout();
-			m_timeout_source_id = GLib.Timeout.add(1000, () => {
+			m_timeout_source_id = GLib.Timeout.add(500, () => {
+				m_revealer.set_transition_duration(800);
 				m_revealer.set_reveal_child(false);
 				m_timeout_source_id = 0;
 				return false;

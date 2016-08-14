@@ -346,7 +346,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public string getCategoryName(string catID)
 	{
-		if(catID == CategoryID.TAGS)
+		if(catID == CategoryID.TAGS.to_string())
 			return "Tags";
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
@@ -1070,11 +1070,11 @@ public class FeedReader.dbBase : GLib.Object {
 		{
 			query.addEqualsCondition("feedID", ID, true, true);
 		}
-		else if(selectedType == FeedListType.CATEGORY && ID != CategoryID.MASTER && ID != CategoryID.TAGS)
+		else if(selectedType == FeedListType.CATEGORY && ID != CategoryID.MASTER.to_string() && ID != CategoryID.TAGS.to_string())
 		{
 			query.addRangeConditionString("feedID", getFeedIDofCategorie(ID));
 		}
-		else if(ID == CategoryID.TAGS)
+		else if(ID == CategoryID.TAGS.to_string())
 		{
 			query.addCustomCondition(getAllTagsCondition());
 		}

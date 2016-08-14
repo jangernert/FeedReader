@@ -13,6 +13,10 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+
+FeedReader.dbDaemon dataBase;
+FeedReader.Logger logger;
+
 public class FeedReader.ttrssAPI : GLib.Object {
 
 	public string m_ttrss_url { get; private set; }
@@ -314,7 +318,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			var response = message.get_response_object();
 			var category_object = response.get_object_member("categories");
 
-			getSubCategories(categories, category_object, 0, CategoryID.MASTER);
+			getSubCategories(categories, category_object, 0, CategoryID.MASTER.to_string());
 		}
 	}
 
@@ -823,7 +827,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "moveCategory");
 		message.add_int("category_id", catID);
-		if(parentID != int.parse(CategoryID.MASTER))
+		if(parentID != int.parse(CategoryID.MASTER.to_string()))
 			message.add_int("parent_id", parentID);
 		int error = message.send();
 

@@ -248,11 +248,16 @@ namespace FeedReader {
 		ALPHABETICAL
 	}
 
-	namespace CategoryID {
-		 const string NONE          = "-99";
-		 const string MASTER        = "-2";
-		 const string TAGS          = "-3";
-		 const string NEW			= "-4";
+	public enum CategoryID {
+		NONE = -99,
+		MASTER = -2,
+		TAGS = -3,
+		NEW = -4;
+
+		public string to_string()
+		{
+ 			return ((int)this).to_string();
+ 		}
 	}
 
 	namespace FeedID {

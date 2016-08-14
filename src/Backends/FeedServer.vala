@@ -15,15 +15,42 @@
 
 public class FeedReader.FeedServer : GLib.Object {
 
+	private bool m_pluginLoaded = false;
 	public signal void newFeedList();
 	public signal void updateFeedList();
 	public signal void updateArticleList();
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
 
-	public FeedServer(Backend type)
+	public FeedServer(string plug_name)
 	{
+		var engine = Peas.Engine.get_default();
+		engine.add_search_path(Environment.get_current_dir(), null);
 
+		var extensions = new Peas.ExtensionSet(engine, typeof (FeedServerInterface),
+			"m_dataBase", dataBase,
+			"m_logger", logger);
+
+		extensions.extension_added.connect((info, extension) => {
+			(extension as FeedServerInterface).init();
+			logger.print(LogMessage.DEBUG, (extension as FeedServerInterface).symbolicIcon());
+		});
+
+		extensions.extension_removed.connect((info, extension) => {
+
+		});
+
+		var plugin = engine.get_plugin_info(plug_name);
+
+		if(plugin != null)
+			m_pluginLoaded = engine.try_load_plugin(plugin);
+		else
+			m_pluginLoaded = false;
+	}
+
+	public bool pluginLoaded()
+	{
+		return m_pluginLoaded;
 	}
 
 	public void syncContent()

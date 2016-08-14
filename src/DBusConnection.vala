@@ -28,7 +28,7 @@ namespace FeedReader {
 
 
 		// OFFLINE / ONLINE
-		public abstract LoginResponse login(Backend type) throws IOError;
+		public abstract LoginResponse login(string plugin) throws IOError;
 		public abstract LoginResponse isLoggedIn() throws IOError;
 		public abstract bool isOnline() throws IOError;
 		public abstract bool checkOnlineAsync() throws IOError;

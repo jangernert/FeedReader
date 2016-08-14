@@ -15,12 +15,17 @@
 
 public interface FeedReader.FeedServerInterface : GLib.Object {
 
+	public signal void newFeedList();
+	public signal void updateFeedList();
+	public signal void updateArticleList();
+	public signal void writeInterfaceState();
+	public signal void showArticleListOverlay();
+	public signal void setNewRows(int before);
 
-	public abstract signal void newFeedList();
-	public abstract signal void updateFeedList();
-	public abstract signal void updateArticleList();
-	public abstract signal void writeInterfaceState();
-	public abstract signal void showArticleListOverlay();
+	public abstract dbDaemon m_dataBase { get; construct set; }
+	public abstract Logger m_logger { get; construct set; }
+
+	public abstract void init();
 
 	public abstract bool supportTags();
 
@@ -73,7 +78,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool serverAvailable();
 
-	public abstract void addFeed(string feedURL, string? catID = null, string? newCatName = null);
+	public abstract string addFeed(string feedURL, string? catID = null, string? newCatName = null);
 
 	public abstract void removeFeed(string feedID);
 

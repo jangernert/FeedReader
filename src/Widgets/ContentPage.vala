@@ -76,7 +76,8 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedFeed(categorieID);
 			m_articleList.newList();
 
-			if(categorieID != CategoryID.MASTER && categorieID != CategoryID.TAGS)
+			if(categorieID != CategoryID.MASTER.to_string()
+			&& categorieID != CategoryID.TAGS.to_string())
 			{
 				m_footer.setRemoveButtonSensitive(true);
 				m_footer.setSelectedRow(FeedListType.CATEGORY, categorieID);
@@ -92,13 +93,13 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 		m_articleList = new articleList();
 		m_articleList.drag_begin.connect((context) => {
-			m_feedList.expand_collapse_category(CategoryID.TAGS, true);
-			m_feedList.expand_collapse_category(CategoryID.MASTER, false);
+			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
+			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
 			m_feedList.addEmptyTagRow();
 		});
 		m_articleList.drag_end.connect((context) => {
 			logger.print(LogMessage.DEBUG, "ContentPage: articleList drag_end signal");
-			m_feedList.expand_collapse_category(CategoryID.MASTER, true);
+			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), true);
 			m_feedList.removeEmptyTagRow();
 		});
 		m_articleList.drag_failed.connect((context, result) => {
@@ -414,7 +415,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			string[] selected = selected_row.split(" ");
 
 			if((selected[0] == "feed" && selected[1] == FeedID.ALL)
-			|| (selected[0] == "cat" && (selected[1] == CategoryID.MASTER || selected[1] == CategoryID.TAGS)))
+			|| (selected[0] == "cat" && (selected[1] == CategoryID.MASTER.to_string() || selected[1] == CategoryID.TAGS.to_string())))
 			{
 				m_footer.setRemoveButtonSensitive(false);
 			}

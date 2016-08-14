@@ -118,7 +118,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_box.pack_end(m_unreadBox, false, false, 8);
 
 		m_eventBox = new Gtk.EventBox();
-		if(m_categorieID != CategoryID.MASTER && m_categorieID != CategoryID.TAGS)
+		if(m_categorieID != CategoryID.MASTER.to_string()
+		&& m_categorieID != CategoryID.TAGS.to_string())
 		{
 			m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 			m_eventBox.button_press_event.connect(onClick);
@@ -139,8 +140,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		else
 			m_stack.set_visible_child_name("expanded");
 
-		if(m_categorieID != CategoryID.MASTER
-		&& m_categorieID != CategoryID.TAGS
+		if(m_categorieID != CategoryID.MASTER.to_string()
+		&& m_categorieID != CategoryID.TAGS.to_string()
 		&& UtilsUI.canManipulateContent())
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
@@ -177,7 +178,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				this.drag_data_get.connect(onDragDataGet);
 			}
 		}
-		else if(m_categorieID == CategoryID.MASTER)
+		else if(m_categorieID == CategoryID.MASTER.to_string())
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
 			    { "STRING",     0, DragTarget.CAT }
@@ -258,7 +259,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		if(dataString != null
 		&& selection_data.get_length() >= 0)
 		{
-			if(m_categorieID == CategoryID.NEW)
+			if(m_categorieID == CategoryID.NEW.to_string())
 			{
 				if(target_type == DragTarget.FEED)
 				{
@@ -440,7 +441,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		popRename.set_position(Gtk.PositionType.BOTTOM);
 		popRename.closed.connect(() => {
 			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
-			if(m_categorieID == CategoryID.NEW && context != null)
+			if(m_categorieID == CategoryID.NEW.to_string() && context != null)
 			{
 				this.drag_failed(context, Gtk.DragResult.NO_TARGET);
 			}
@@ -449,7 +450,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		var renameEntry = new Gtk.Entry();
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
-			if(m_categorieID != CategoryID.NEW)
+			if(m_categorieID != CategoryID.NEW.to_string())
 			{
 				feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
 			}
@@ -473,7 +474,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		});
 
 		string label = _("rename");
-		if(m_categorieID == CategoryID.NEW && context != null)
+		if(m_categorieID == CategoryID.NEW.to_string() && context != null)
 			label = _("add");
 
 		var renameButton = new Gtk.Button.with_label(label);

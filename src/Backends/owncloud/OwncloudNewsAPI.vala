@@ -171,7 +171,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         						folder_node.get_string_member("name"),
         						m_utils.countUnread(feeds, id),
         						orderID,
-        						CategoryID.MASTER,
+        						CategoryID.MASTER.to_string(),
         						1
         					)
         				);

@@ -48,7 +48,7 @@ namespace FeedReader {
 		{
 			logger.print(LogMessage.DEBUG, "daemon: constructor");
 			m_offlineActions = new OfflineActionManager();
-			login((Backend)settings_general.get_enum("account-type"));
+			login(settings_general.get_string("plugin"));
 
 #if WITH_LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
@@ -154,7 +154,7 @@ namespace FeedReader {
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				login((Backend)settings_general.get_enum("account-type"));
+				login(settings_general.get_string("plugin"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
 					setOffline();
@@ -192,7 +192,7 @@ namespace FeedReader {
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				server.logout();
-				login((Backend)settings_general.get_enum("account-type"));
+				login(settings_general.get_string("plugin"));
 			}
 
 			setOnline();
@@ -221,7 +221,7 @@ namespace FeedReader {
 		{
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				login((Backend)settings_general.get_enum("account-type"));
+				login(settings_general.get_string("plugin"));
 			}
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
@@ -239,10 +239,24 @@ namespace FeedReader {
 				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
 		}
 
-		public LoginResponse login(Backend type)
+		public LoginResponse login(string plugName)
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
-			server = new FeedServer(type);
+
+			if(plugName == "none")
+			{
+				logger.print(LogMessage.ERROR, "daemon: no plugin to load defined");
+				return LoginResponse.NO_BACKEND;
+			}
+
+			server = new FeedServer(plugName);
+
+			if(!server.pluginLoaded())
+			{
+				logger.print(LogMessage.ERROR, "daemon: plugin '%s' couldn't be loaded by feedserver".printf(plugName));
+				return LoginResponse.NO_BACKEND;
+			}
+
 			this.setOffline.connect(() => {
 				m_offline = true;
 			});
@@ -279,7 +293,7 @@ namespace FeedReader {
 
 			if(m_loggedin == LoginResponse.SUCCESS)
 			{
-				settings_general.set_enum("account-type", type);
+				settings_general.set_string("plugin", plugName);
 				setOnline();
 			}
 			else if(m_loggedin == LoginResponse.NO_BACKEND)
@@ -585,7 +599,7 @@ namespace FeedReader {
 				int level = 1;
 				if(parentID == null || parentID == "")
 				{
-					parent = CategoryID.MASTER;
+					parent = CategoryID.MASTER.to_string();
 				}
 				else
 				{
@@ -804,7 +818,7 @@ namespace FeedReader {
 
 	int main (string[] args)
 	{
-		stderr = FileStream.open("/dev/null", "w");
+		//stderr = FileStream.open("/dev/null", "w");
 		settings_general = new GLib.Settings("org.gnome.feedreader");
 		settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 		settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");

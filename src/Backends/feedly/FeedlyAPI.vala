@@ -165,7 +165,7 @@ public class FeedReader.FeedlyAPI : Object {
 					object.get_string_member("label"),
 					getUnreadCountforID(categorieID),
 					i+1,
-					CategoryID.MASTER,
+					CategoryID.MASTER.to_string(),
 					1
 				)
 			);

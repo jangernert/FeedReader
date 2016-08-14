@@ -38,7 +38,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		m_color = color;
 		m_name = name.replace("&","&amp;");
 		m_tagID = tagID;
-		m_catID = CategoryID.TAGS;
+		m_catID = CategoryID.TAGS.to_string();
 
 		var rowhight = 30;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);

@@ -73,6 +73,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 	public ConnectionError send(bool ping = false)
 	{
+		var settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 

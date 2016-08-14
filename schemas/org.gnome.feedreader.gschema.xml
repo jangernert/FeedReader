@@ -80,6 +80,10 @@
 		<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
 			<default>'NONE'</default>
 		</key>
+		
+		<key name='plugin' type="s">
+			<default>'none'</default>
+		</key>
 
 		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
 			<default>'DEBUG'</default>

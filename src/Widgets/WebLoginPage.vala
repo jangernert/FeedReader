@@ -18,7 +18,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	private WebKit.WebView m_view;
 	private string m_url;
 	private int m_serviceType;
-	public signal void success(Backend be);
+	public signal void success(string plug);
 
 	// FIXME: temporary
 	private FeedlyUtils m_feedlyUtils;
@@ -78,7 +78,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 				{
 					m_view.stop_loading();
 
-					success(Backend.FEEDLY);
+					success("feedly");
 				}
 				break;
 		}

@@ -108,7 +108,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static string[] getDefaultExpandedCategories()
 	{
-		return {CategoryID.MASTER, CategoryID.TAGS};
+		return {CategoryID.MASTER.to_string(), CategoryID.TAGS.to_string()};
 	}
 
 	public static GLib.DateTime convertStringToDate(string date)

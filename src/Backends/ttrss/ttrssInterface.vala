@@ -13,20 +13,20 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ttrssInterface : GLib.Object {
+public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface {
 
 	private ttrssAPI m_api;
 	private ttrssUtils m_utils;
 
-	public signal void updateFeedList();
-	public signal void updateArticleList();
-	public signal void writeInterfaceState();
-	public signal void setNewRows(int before);
+	public dbDaemon m_dataBase { get; construct set; }
+	public Logger m_logger { get; construct set; }
 
-	public ttrssInterface()
+	public void init()
 	{
 		m_api = new ttrssAPI();
 		m_utils = new ttrssUtils();
+		dataBase = m_dataBase;
+		logger = m_logger;
 	}
 
 	public bool supportTags()
@@ -34,17 +34,17 @@ public class FeedReader.ttrssInterface : GLib.Object {
 		return true;
 	}
 
-	public string symbolicIcon()
+	public string? symbolicIcon()
 	{
 		return "feed-service-ttrss-symbolic";
 	}
 
-	public string accountName()
+	public string? accountName()
 	{
 		return m_utils.getUser();
 	}
 
-	public string getServer()
+	public string? getServerURL()
 	{
 		return m_utils.getURL();
 	}
@@ -178,7 +178,7 @@ public class FeedReader.ttrssInterface : GLib.Object {
 		m_api.renameFeed(int.parse(feedID), title);
 	}
 
-	public async void moveFeed(string feedID, string newCatID, string? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
 		m_api.moveFeed(int.parse(feedID), int.parse(newCatID));
 	}
@@ -231,6 +231,8 @@ public class FeedReader.ttrssInterface : GLib.Object {
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
 	{
+		var settings_general = new GLib.Settings("org.gnome.feedreader");
+
 		// first use newsPlus plugin to update states of 10x as much articles as we would normaly do
 		var unreadIDs = m_api.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
 		if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
@@ -315,4 +317,11 @@ public class FeedReader.ttrssInterface : GLib.Object {
 		}
 	}
 
+}
+
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
+{
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof(FeedReader.FeedServerInterface), typeof(FeedReader.ttrssInterface));
 }

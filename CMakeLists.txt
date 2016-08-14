@@ -41,7 +41,21 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader-autostart.desktop" @ONLY)
 
 
-set(MODULES gtk+-3.0 json-glib-1.0 gee-0.8 libsoup-2.4 sqlite3 libsecret-1 libnotify libxml-2.0 rest-0.7 webkit2gtk-4.0 gstreamer-1.0 gstreamer-pbutils-1.0 goa-1.0)
+set(MODULES 
+	gtk+-3.0
+	json-glib-1.0
+	gee-0.8
+	libsoup-2.4
+	sqlite3
+	libsecret-1
+	libnotify
+	libxml-2.0
+	rest-0.7
+	webkit2gtk-4.0
+	gstreamer-1.0
+	gstreamer-pbutils-1.0
+	goa-1.0
+	libpeas-1.0)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)
@@ -167,7 +181,9 @@ target_link_libraries(${EXEC_NAME} gd)
 
 
 set(DAEMON_OPTIONS
-    --target-glib=2.32)
+    --target-glib=2.32
+    --header=FeedReader.h
+    --vapi=FeedReader.vapi)
 set(DAEMON_PACKAGES
     glib-2.0>=2.32
     gio-2.0
@@ -178,7 +194,8 @@ set(DAEMON_PACKAGES
     libnotify
     libsecret-1
     libxml-2.0
-    rest-0.7)
+    rest-0.7
+    libpeas-1.0)
 
 if(LIBUNITY_FOUND)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)

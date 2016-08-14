@@ -167,26 +167,26 @@ public class FeedReader.LoginPage : Gtk.Bin {
 	public void write_login_data()
 	{
 		logger.print(LogMessage.DEBUG, "write login data");
-		var backend = Backend.NONE;
+		var backend = "none";
 
 		switch(m_comboBox.get_active())
 		{
 			case Backend.TTRSS:
-				backend = Backend.TTRSS;
+				backend = "ttrss";
 				(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).writeData();
 				break;
 
 			case Backend.FEEDLY:
-				backend = Backend.FEEDLY;
+				backend = "feedly";
 				loadLoginPage(OAuth.FEEDLY);
 				return;
 
 			case Backend.OWNCLOUD:
-				backend = Backend.OWNCLOUD;
+				backend = "owncloud";
 				(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).writeData();
 				break;
 			case Backend.INOREADER:
-				backend = Backend.INOREADER;
+				backend = "inoreader";
 				(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).writeData();
 				break;
 		}

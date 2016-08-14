@@ -219,6 +219,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
+			var settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", remote_filename);
 

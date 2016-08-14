@@ -98,7 +98,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 
 		settings_state.set_boolean("currently-updating", false);
-		feedDaemon_interface.login(Backend.NONE);
+		feedDaemon_interface.login("none");
 		reset();
 	}
 

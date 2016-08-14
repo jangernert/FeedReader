@@ -179,7 +179,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 							title,
 							0,
 							orderID,
-							CategoryID.MASTER,
+							CategoryID.MASTER.to_string(),
 							1
 						)
 					);

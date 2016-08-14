@@ -18,6 +18,7 @@ PACKAGES
 
 OPTIONS
     --target-glib=2.32
+    --library ttrss
 
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/FeedReader.vapi

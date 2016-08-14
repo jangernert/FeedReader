@@ -26,5 +26,6 @@ CUSTOM_VAPIS
 
 add_library(ttrss SHARED ${VALA_C})
 
-install (TARGETS ttrss DESTINATION ${PKGDATADIR}/plugins)
-install (FILES ttrss.plugin DESTINATION ${PKGDATADIR}/plugins)
+install(TARGETS ttrss DESTINATION ${PKGDATADIR}/plugins)
+install(FILES ttrss.plugin DESTINATION ${PKGDATADIR}/plugins)
+add_schema("org.gnome.feedreader.ttrss.gschema.xml")

@@ -45,7 +45,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 					tmp_url = "http://" + tmp_url;
 		}
 
-		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
+		//logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
 
 		return tmp_url;
 	}
@@ -96,10 +96,8 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+			//logger.print(LogMessage.ERROR, e.message);
 		}
-
-		pwSchema.unref();
 
 		if(passwd == null)
 		{
@@ -123,7 +121,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+			//logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -168,7 +166,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
+			//logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		pwSchema.unref();
@@ -197,7 +195,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
+			//logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
 		}
 	}
 
@@ -238,11 +236,11 @@ public class FeedReader.ttrssUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					//logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			//logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

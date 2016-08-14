@@ -16,6 +16,7 @@
 public class FeedReader.FeedServer : GLib.Object {
 
 	private bool m_pluginLoaded = false;
+	private FeedServerInterface m_plugin;
 	public signal void newFeedList();
 	public signal void updateFeedList();
 	public signal void updateArticleList();
@@ -32,8 +33,14 @@ public class FeedReader.FeedServer : GLib.Object {
 			"m_logger", logger);
 
 		extensions.extension_added.connect((info, extension) => {
-			(extension as FeedServerInterface).init();
-			logger.print(LogMessage.DEBUG, (extension as FeedServerInterface).symbolicIcon());
+			m_plugin = (extension as FeedServerInterface);
+			m_plugin.init();
+			m_plugin.newFeedList.connect(() => { newFeedList(); });
+			m_plugin.updateFeedList.connect(() => { updateFeedList(); });
+			m_plugin.updateArticleList.connect(() => { updateArticleList(); });
+			m_plugin.writeInterfaceState.connect(() => { writeInterfaceState(); });
+			m_plugin.showArticleListOverlay.connect(() => { showArticleListOverlay(); });
+			m_plugin.setNewRows.connect((before) => { setNewRows(before); });
 		});
 
 		extensions.extension_removed.connect((info, extension) => {
@@ -465,190 +472,190 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool supportTags()
 	{
-		return false;
+		return m_plugin.supportTags();
 	}
 
 	public string? symbolicIcon()
 	{
-		return null;
+		return m_plugin.symbolicIcon();
 	}
 
 	public string? accountName()
 	{
-		return null;
+		return m_plugin.accountName();
 	}
 
 	public string? getServerURL()
 	{
-		return null;
+		return m_plugin.getServerURL();
 	}
 
 	public string uncategorizedID()
 	{
-		return "";
+		return m_plugin.uncategorizedID();
 	}
 
 	public bool hideCagetoryWhenEmtpy(string catID)
 	{
-		return false;
+		return m_plugin.hideCagetoryWhenEmtpy(catID);
 	}
 
 	public bool supportMultiLevelCategories()
 	{
-		return false;
+		return m_plugin.supportMultiLevelCategories();
 	}
 
 	public bool supportMultiCategoriesPerFeed()
 	{
-		return false;
+		return m_plugin.supportMultiCategoriesPerFeed();
 	}
 
 	// some backends (inoreader, feedly) have the tag-name as part of the ID
 	// but for some of them the tagID changes when the name was changed (inoreader)
 	public bool tagIDaffectedByNameChange()
 	{
-		return false;
+		return m_plugin.tagIDaffectedByNameChange();
 	}
 
 	public void resetAccount()
 	{
-
+		m_plugin.resetAccount();
 	}
 
 	// whether or not to use the "max-articles"-setting
 	public bool useMaxArticles()
 	{
-		return false;
+		return m_plugin.useMaxArticles();
 	}
 
 	public LoginResponse login()
 	{
-		return LoginResponse.UNKNOWN_ERROR;
+		return m_plugin.login();
 	}
 
 	public bool logout()
 	{
-		return false;
+		return m_plugin.logout();
 	}
 
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
-
+		m_plugin.setArticleIsRead(articleIDs, read);
 	}
 
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
-
+		m_plugin.setArticleIsMarked(articleID, marked);
 	}
 
 	public void setFeedRead(string feedID)
 	{
-
+		m_plugin.setFeedRead(feedID);
 	}
 
 	public void setCategorieRead(string catID)
 	{
-
+		m_plugin.setCategorieRead(catID);
 	}
 
 	public void markAllItemsRead()
 	{
-
+		m_plugin.markAllItemsRead();
 	}
 
 	public void tagArticle(string articleID, string tagID)
 	{
-
+		m_plugin.tagArticle(articleID, tagID);
 	}
 
 	public void removeArticleTag(string articleID, string tagID)
 	{
-
+		m_plugin.removeArticleTag(articleID, tagID);
 	}
 
 	public string createTag(string caption)
 	{
-		return "";
+		return m_plugin.createTag(caption);
 	}
 
 	public void deleteTag(string tagID)
 	{
-
+		m_plugin.deleteTag(tagID);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
-
+		m_plugin.renameTag(tagID, title);
 	}
 
 	public bool serverAvailable()
 	{
-		return false;
+		return m_plugin.serverAvailable();
 	}
 
 	public void addFeed(string feedURL, string? catID = null, string? newCatName = null)
 	{
-
+		m_plugin.addFeed(feedURL, catID, newCatName);
 	}
 
 	public void removeFeed(string feedID)
 	{
-
+		m_plugin.removeFeed(feedID);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-
+		m_plugin.renameFeed(feedID, title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID = null)
 	{
-
+		m_plugin.moveFeed(feedID, newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID = null)
 	{
-		return "";
+		return m_plugin.createCategory(title, parentID);
 	}
 
 	public void renameCategory(string catID, string title)
 	{
-
+		m_plugin.renameCategory(catID, title);
 	}
 
 	public void moveCategory(string catID, string newParentID)
 	{
-
+		m_plugin.moveCategory(catID, newParentID);
 	}
 
 	public void deleteCategory(string catID)
 	{
-
+		m_plugin.deleteCategory(catID);
 	}
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-
+		m_plugin.removeCatFromFeed(feedID, catID);
 	}
 
 	public void importOPML(string opml)
 	{
-
+		m_plugin.importOPML(opml);
 	}
 
 	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-
+		m_plugin.getFeedsAndCats(feeds, categories, tags);
 	}
 
 	public int getUnreadCount()
 	{
-		return 0;
+		return m_plugin.getUnreadCount();
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false)
 	{
-
+		m_plugin.getArticles(count, whatToGet, feedID, isTagID);
 	}
 
 }

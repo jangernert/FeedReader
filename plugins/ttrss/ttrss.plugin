@@ -1,0 +1,8 @@
+[Plugin]
+Module=ttrss
+Loader=C
+Name=Tiny Tiny RSS
+Description=Add Tiny Tiny RSS backend to FeedReader
+Authors=Jan Lukas Gernert <jangernert@gmail.com>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert
+Website=http://jangernert.github.io/FeedReader/

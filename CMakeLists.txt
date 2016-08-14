@@ -68,9 +68,9 @@ add_definitions(${DEPS_CFLAGS} -DGOA_API_IS_SUBJECT_TO_CHANGE)
 link_libraries(${DEPS_LIBRARIES} -lm)
 link_directories(${DEPS_LIBRARY_DIRS})
 
-add_subdirectory (WebExtension)
-add_subdirectory (libgtkimageview)
-add_subdirectory (libgd)
+add_subdirectory(WebExtension)
+add_subdirectory(libgtkimageview)
+add_subdirectory(libgd)
 
 set(UI_OPTIONS
     --target-glib=2.32)
@@ -96,14 +96,14 @@ vala_precompile(UI ${EXEC_NAME}
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
-    src/Backends/ttrss/ttrssLoginWidget.vala
-    src/Backends/ttrss/ttrssUtils.vala
-    src/Backends/owncloud/OwncloudNewsLoginWidget.vala
-    src/Backends/owncloud/OwncloudNewsUtils.vala
-    src/Backends/inoreader/InoReaderLoginWidget.vala
-    src/Backends/inoreader/InoReaderUtils.vala
-    src/Backends/feedly/FeedlyLoginWidget.vala
-    src/Backends/feedly/FeedlyUtils.vala
+    plugins/ttrss/ttrssLoginWidget.vala
+    plugins/ttrss/ttrssUtils.vala
+    plugins/owncloud/OwncloudNewsLoginWidget.vala
+    plugins/owncloud/OwncloudNewsUtils.vala
+    plugins/inoreader/InoReaderLoginWidget.vala
+    plugins/inoreader/InoReaderUtils.vala
+    plugins/feedly/FeedlyLoginWidget.vala
+    plugins/feedly/FeedlyUtils.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
@@ -243,6 +243,8 @@ CUSTOM_VAPIS
 
 add_executable(${DAEMON_NAME} ${daemon})
 target_link_libraries(${DAEMON_NAME} vilistextum)
+
+add_subdirectory(plugins/ttrss)
 
 
 # uninstall target

@@ -214,9 +214,9 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Model/Tag.vala
     src/Model/OfflineAction.vala
     src/Model/InterfaceState.vala
-    src/Backends/FeedServer.vala
-    src/Backends/FeedServerInterface.vala
-    src/Backends/OPMLparser.vala
+    src/Backend/FeedServer.vala
+    src/Backend/FeedServerInterface.vala
+    src/Backend/OPMLparser.vala
     src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala

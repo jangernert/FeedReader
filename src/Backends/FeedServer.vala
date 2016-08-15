@@ -27,6 +27,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		var engine = Peas.Engine.get_default();
 		engine.add_search_path(InstallPrefix + "/share/FeedReader/plugins/", null);
+		engine.enable_loader("python3");
 
 		var extensions = new Peas.ExtensionSet(engine, typeof (FeedServerInterface),
 			"m_dataBase", dataBase,

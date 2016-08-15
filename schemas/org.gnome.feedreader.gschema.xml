@@ -1,11 +1,4 @@
 <schemalist>
-	<enum id="org.gnome.feedreader.accounttypes">
-		<value nick="NONE" value="-1"/>
-		<value nick="TTRSS" value="0"/>
-		<value nick="FEEDLY" value="1"/>
-		<value nick="OWNCLOUD" value="2"/>
-		<value nick="INOREADER" value="3"/>
-	</enum>
 
 	<enum id="org.gnome.feedreader.loglevel">
 		<value nick="OFF" value="0"/>
@@ -75,10 +68,6 @@
 			<description>
 				The maximum of articles that are fetched from the server.
 			</description>
-		</key>
-
-		<key name='account-type' enum='org.gnome.feedreader.accounttypes'>
-			<default>'NONE'</default>
 		</key>
 		
 		<key name='plugin' type="s">

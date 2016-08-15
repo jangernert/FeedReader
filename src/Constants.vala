@@ -15,17 +15,8 @@
 
 namespace FeedReader {
 
-	public enum Backend {
-		NONE = -1,
-		TTRSS = 0,
-		FEEDLY,
-		OWNCLOUD,
-		INOREADER
-	}
-
 	public enum OAuth {
 		NONE,
-		FEEDLY,
 		READABILITY,
 		INSTAPAPER,
 		POCKET,

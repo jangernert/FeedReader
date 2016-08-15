@@ -36,9 +36,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 
 		//m_login_details.add_named(new ttrssLoginWidget(), "ttrss");
-		//m_login_details.add_named(new feedlyLoginWidget(), "feedly");
-		//m_login_details.add_named(new OwnCloudNewsLoginWidget(), "owncloud");
-		//m_login_details.add_named(new InoReaderLoginWidget(), "inoreader");
 
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
@@ -59,9 +56,6 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		var liststore = new Gtk.ListStore(1, typeof (string));
 		//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).populateList(liststore);
-		//(m_login_details.get_child_by_name("feedly") as feedlyLoginWidget).populateList(liststore);
-		//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).populateList(liststore);
-		//(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).populateList(liststore);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -85,25 +79,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 
 		m_comboBox.changed.connect(() => {
-			if(m_comboBox.get_active() != -1) {
-				switch(m_comboBox.get_active())
-				{
-					case Backend.NONE:
-						m_login_details.set_visible_child_name("none");
-						break;
-					case Backend.TTRSS:
-						m_login_details.set_visible_child_name("ttrss");
-						break;
-					case Backend.FEEDLY:
-						m_login_details.set_visible_child_name("feedly");
-						break;
-					case Backend.OWNCLOUD:
-						m_login_details.set_visible_child_name("owncloud");
-						break;
-					case Backend.INOREADER:
-						m_login_details.set_visible_child_name("inoreader");
-						break;
-				}
+			if(m_comboBox.get_active() != -1)
+			{
+				//m_login_details.set_visible_child_name("ttrss");
 			}
 		});
 
@@ -116,29 +94,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	public void loadData()
 	{
-		switch(settings_general.get_enum("account-type"))
-		{
-			case Backend.NONE:
-				m_comboBox.set_active(Backend.NONE);
-				m_login_details.set_visible_child_name("none");
-				break;
-			case Backend.TTRSS:
-				m_comboBox.set_active(Backend.TTRSS);
-				m_login_details.set_visible_child_name("ttrss");
-				break;
-			case Backend.FEEDLY:
-				m_comboBox.set_active(Backend.FEEDLY);
-				m_login_details.set_visible_child_name("feedly");
-				break;
-			case Backend.OWNCLOUD:
-				m_comboBox.set_active(Backend.OWNCLOUD);
-				m_login_details.set_visible_child_name("owncloud");
-				break;
-			case Backend.INOREADER:
-				m_comboBox.set_active(Backend.INOREADER);
-				m_login_details.set_visible_child_name("inoreader");
-				break;
-		}
+		//m_comboBox.set_active(Backend.TTRSS);
+		//m_login_details.set_visible_child_name("ttrss");
 
 
 		//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).fill();
@@ -149,17 +106,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 	public void showHtAccess()
 	{
-		switch(m_comboBox.get_active())
-		{
-			case Backend.TTRSS:
-				//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).showHtAccess();
-				break;
-
-			case Backend.OWNCLOUD:
-				//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).showHtAccess();
-				break;
-		}
-
+		//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).showHtAccess();
 		m_need_htaccess = true;
 	}
 
@@ -169,27 +116,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		logger.print(LogMessage.DEBUG, "write login data");
 		var backend = "none";
 
-		switch(m_comboBox.get_active())
-		{
-			case Backend.TTRSS:
-				backend = "ttrss";
-				//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).writeData();
-				break;
-
-			case Backend.FEEDLY:
-				backend = "feedly";
-				loadLoginPage(OAuth.FEEDLY);
-				return;
-
-			case Backend.OWNCLOUD:
-				backend = "owncloud";
-				//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).writeData();
-				break;
-			case Backend.INOREADER:
-				backend = "inoreader";
-				//(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).writeData();
-				break;
-		}
+		//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).writeData();
+		// or
+		// loadLoginPage(OAuth.FEEDLY);
 
 		LoginResponse status = feedDaemon_interface.login(backend);
 		logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());

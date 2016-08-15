@@ -1,11 +1,11 @@
-set (NAME ttrss)
+set (NAME owncloud)
 set (TARGETNAME ${NAME}_target)
 
 vala_precompile(VALA_C ${TARGETNAME}
-    ttrssAPI.vala
-    ttrssInterface.vala
-    ttrssMessage.vala
-    ttrssUtils.vala
+    OwncloudNewsAPI.vala
+    OwncloudNewsInterface.vala
+    OwncloudNewsMessage.vala
+    OwncloudNewsUtils.vala
 
 
 PACKAGES

@@ -271,6 +271,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string cleanString(string text)
     {
+        if(text == null)
+            return "";
+        
         var tmpText =  text.replace("\n", "");
         var array = tmpText.split(" ");
         tmpText = "";

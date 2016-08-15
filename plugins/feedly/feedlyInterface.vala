@@ -13,19 +13,20 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedlyInterface : GLib.Object {
+public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterface {
 
 	private FeedlyAPI m_api;
 	private FeedlyUtils m_utils;
 
-	public signal void updateFeedList();
-	public signal void updateArticleList();
-	public signal void writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize);
+	public dbDaemon m_dataBase { get; construct set; }
+	public Logger m_logger { get; construct set; }
 
-	public feedlyInterface()
+	public void init()
 	{
 		m_api = new FeedlyAPI();
 		m_utils = new FeedlyUtils();
+		dataBase = m_dataBase;
+		logger = m_logger;
 	}
 
 	public bool supportTags()
@@ -33,17 +34,17 @@ public class FeedReader.feedlyInterface : GLib.Object {
 		return true;
 	}
 
-	public string symbolicIcon()
+	public string? symbolicIcon()
 	{
 		return "feed-service-feedly-symbolic";
 	}
 
-	public string accountName()
+	public string? accountName()
 	{
 		return m_utils.getEmail();
 	}
 
-	public string? getServer()
+	public string? getServerURL()
 	{
 		return null;
 	}
@@ -281,4 +282,11 @@ public class FeedReader.feedlyInterface : GLib.Object {
 
 		writeArticlesInChunks(articles, 10);
 	}
+}
+
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
+{
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof(FeedReader.FeedServerInterface), typeof(FeedReader.feedlyInterface));
 }

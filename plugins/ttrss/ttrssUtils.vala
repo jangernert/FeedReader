@@ -45,7 +45,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 					tmp_url = "http://" + tmp_url;
 		}
 
-		//logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
+		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
 
 		return tmp_url;
 	}
@@ -96,7 +96,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.ERROR, e.message);
+			logger.print(LogMessage.ERROR, e.message);
 		}
 
 		if(passwd == null)
@@ -121,7 +121,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			//logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -143,7 +143,6 @@ public class FeedReader.ttrssUtils : GLib.Object {
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
 			removed = Secret.password_clearv.end(async_res);
-			pwSchema.unref();
 		});
 		return removed;
 	}
@@ -166,10 +165,8 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
+			logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
 		}
-
-		pwSchema.unref();
 
 		if(passwd == null)
 		{
@@ -195,12 +192,13 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			//logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
+			logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
 		}
 	}
 
 	public bool downloadIcon(string feed_id, string icon_url)
 	{
+		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
 		try{
@@ -217,11 +215,10 @@ public class FeedReader.ttrssUtils : GLib.Object {
 
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
-			var settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", remote_filename);
 
-			if(settings_tweaks.get_boolean("do-not-track"))
+			if(settingsTweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
@@ -236,11 +233,11 @@ public class FeedReader.ttrssUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					//logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			//logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

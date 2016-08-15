@@ -13,19 +13,20 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.OwncloudNewsInterface : GLib.Object {
+public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerInterface {
 
 	private OwncloudNewsAPI m_api;
 	private OwncloudNewsUtils m_utils;
 
-	public signal void updateFeedList();
-	public signal void updateArticleList();
-	public signal void writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize);
+	public dbDaemon m_dataBase { get; construct set; }
+	public Logger m_logger { get; construct set; }
 
-	public OwncloudNewsInterface()
+	public void init()
 	{
 		m_api = new OwncloudNewsAPI();
 		m_utils = new OwncloudNewsUtils();
+		dataBase = m_dataBase;
+		logger = m_logger;
 	}
 
 	public bool supportTags()
@@ -33,17 +34,17 @@ public class FeedReader.OwncloudNewsInterface : GLib.Object {
 		return false;
 	}
 
-	public string symbolicIcon()
+	public string? symbolicIcon()
 	{
 		return "feed-service-owncloud-symbolic";
 	}
 
-	public string accountName()
+	public string? accountName()
 	{
 		return m_utils.getUser();
 	}
 
-	public string getServer()
+	public string? getServerURL()
 	{
 		return m_utils.getURL();
 	}
@@ -252,4 +253,11 @@ public class FeedReader.OwncloudNewsInterface : GLib.Object {
 
 		writeArticlesInChunks(articles, 10);
 	}
+}
+
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
+{
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof(FeedReader.FeedServerInterface), typeof(FeedReader.OwncloudNewsInterface));
 }

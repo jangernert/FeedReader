@@ -104,6 +104,11 @@ public class FeedReader.Grabber : GLib.Object {
                 if(!checkConfigFile())
                     return false;
             }
+            else
+            {
+                // url is still the same, so we don't have a grabber config
+                return false;
+            }
         }
 
         logger.print(LogMessage.DEBUG, "Grabber: config found");

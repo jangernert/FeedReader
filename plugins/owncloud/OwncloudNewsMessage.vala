@@ -77,10 +77,11 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
     public ConnectionError send(bool ping = false)
 	{
+        var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
         m_message_string.overwrite(0, "{").append("}");
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 
-		if(settings_tweaks.get_boolean("do-not-track"))
+		if(settingsTweaks.get_boolean("do-not-track"))
 				m_message_soup.request_headers.append("DNT", "1");
 
 		var status = m_session.send_message(m_message_soup);
@@ -90,7 +91,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 			return ConnectionError.UNAUTHORIZED;
 		}
 
-        if(m_message_soup.tls_errors != 0 && !settings_tweaks.get_boolean("ignore-tls-errors"))
+        if(m_message_soup.tls_errors != 0 && !settingsTweaks.get_boolean("ignore-tls-errors"))
 		{
 			logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;

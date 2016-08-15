@@ -13,6 +13,9 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+FeedReader.dbDaemon dataBase;
+FeedReader.Logger logger;
+
 public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public enum OwnCloudType {

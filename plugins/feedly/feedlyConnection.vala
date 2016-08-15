@@ -18,10 +18,12 @@ public class FeedReader.FeedlyConnection {
 	private string m_refresh_token;
 	private string m_apiCode;
 	private FeedlyUtils m_utils;
+	private GLib.Settings m_settingsTweaks;
 
 	public FeedlyConnection () {
 		m_utils = new FeedlyUtils();
 		m_access_token = m_utils.getAccessToken();
+		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 	}
 
 	public int getToken()
@@ -71,7 +73,7 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 
-		if(settings_tweaks.get_boolean("do-not-track"))
+		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
 		m_refresh_token = m_utils.getRefreshToken();
@@ -115,7 +117,7 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
 
-		if(settings_tweaks.get_boolean("do-not-track"))
+		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
 		var gen = new Json.Generator();
@@ -136,7 +138,7 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
-		if(settings_tweaks.get_boolean("do-not-track"))
+		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
 		var gen = new Json.Generator();
@@ -157,7 +159,7 @@ public class FeedReader.FeedlyConnection {
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
-		if(settings_tweaks.get_boolean("do-not-track"))
+		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
@@ -180,7 +182,7 @@ public class FeedReader.FeedlyConnection {
 		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_access_token));
 
-		if(settings_tweaks.get_boolean("do-not-track"))
+		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
 		session.send_message(message);

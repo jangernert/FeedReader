@@ -36,9 +36,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 
 		//m_login_details.add_named(new ttrssLoginWidget(), "ttrss");
-		m_login_details.add_named(new feedlyLoginWidget(), "feedly");
-		m_login_details.add_named(new OwnCloudNewsLoginWidget(), "owncloud");
-		m_login_details.add_named(new InoReaderLoginWidget(), "inoreader");
+		//m_login_details.add_named(new feedlyLoginWidget(), "feedly");
+		//m_login_details.add_named(new OwnCloudNewsLoginWidget(), "owncloud");
+		//m_login_details.add_named(new InoReaderLoginWidget(), "inoreader");
 
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
@@ -59,9 +59,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 		var liststore = new Gtk.ListStore(1, typeof (string));
 		//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).populateList(liststore);
-		(m_login_details.get_child_by_name("feedly") as feedlyLoginWidget).populateList(liststore);
-		(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).populateList(liststore);
-		(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).populateList(liststore);
+		//(m_login_details.get_child_by_name("feedly") as feedlyLoginWidget).populateList(liststore);
+		//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).populateList(liststore);
+		//(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).populateList(liststore);
 
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
 
@@ -141,9 +141,9 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		}
 
 
-		(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).fill();
+		//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).fill();
 		//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).fill();
-		(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).fill();
+		//(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).fill();
 	}
 
 
@@ -152,11 +152,11 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		switch(m_comboBox.get_active())
 		{
 			case Backend.TTRSS:
-				(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).showHtAccess();
+				//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).showHtAccess();
 				break;
 
 			case Backend.OWNCLOUD:
-				(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).showHtAccess();
+				//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).showHtAccess();
 				break;
 		}
 
@@ -173,7 +173,7 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		{
 			case Backend.TTRSS:
 				backend = "ttrss";
-				(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).writeData();
+				//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).writeData();
 				break;
 
 			case Backend.FEEDLY:
@@ -183,11 +183,11 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 			case Backend.OWNCLOUD:
 				backend = "owncloud";
-				(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).writeData();
+				//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).writeData();
 				break;
 			case Backend.INOREADER:
 				backend = "inoreader";
-				(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).writeData();
+				//(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).writeData();
 				break;
 		}
 

@@ -21,11 +21,11 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	public signal void success(string plug);
 
 	// FIXME: temporary
-	private FeedlyUtils m_feedlyUtils;
+	//private FeedlyUtils m_feedlyUtils;
 
 
 	public WebLoginPage() {
-		m_feedlyUtils = new FeedlyUtils();
+		//m_feedlyUtils = new FeedlyUtils();
 		var settings = new WebKit.Settings();
 		settings.set_user_agent_with_application_details("FeedReader", AboutInfo.version);
 		m_view = new WebKit.WebView();
@@ -86,18 +86,18 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	bool getFeedlyApiCode(string url)
 	{
-		if(url.has_prefix(FeedlySecret.apiRedirectUri))
-		{
+		//if(url.has_prefix(FeedlySecret.apiRedirectUri))
+		//{
 			int start = url.index_of("=")+1;
 			int end = url.index_of("&");
 			string code = url.substring(start, end-start);
-			m_feedlyUtils.setApiCode(code);
+			//m_feedlyUtils.setApiCode(code);
 			logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + code);
 			GLib.Thread.usleep(500000);
 			return true;
-		}
-		else
-			return false;
+		//}
+		//else
+		//	return false;
 	}
 
 	public static string buildURL(OAuth serviceType)
@@ -107,8 +107,8 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		switch(serviceType)
 		{
 			case OAuth.FEEDLY:
-				url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
-					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+				//url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
+				//	+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
 				break;
 		}
 

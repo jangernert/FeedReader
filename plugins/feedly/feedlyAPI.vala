@@ -13,6 +13,9 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+FeedReader.dbDaemon dataBase;
+FeedReader.Logger logger;
+
 public class FeedReader.FeedlyAPI : Object {
 
 	private FeedlyConnection m_connection;
@@ -416,6 +419,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 	private bool downloadIcon(string feed_id, string icon_url)
 	{
+		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
@@ -426,7 +430,7 @@ public class FeedReader.FeedlyAPI : Object {
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message ("GET", icon_url);
 
-			if(settings_tweaks.get_boolean("do-not-track"))
+			if(settingsTweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session ();

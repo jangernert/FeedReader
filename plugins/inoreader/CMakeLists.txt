@@ -1,12 +1,11 @@
-set (NAME ttrss)
+set (NAME inoreader)
 set (TARGETNAME ${NAME}_target)
 
 vala_precompile(VALA_C ${TARGETNAME}
-    ttrssAPI.vala
-    ttrssInterface.vala
-    ttrssMessage.vala
-    ttrssUtils.vala
-
+    InoReaderAPI.vala
+    InoReaderConnection.vala
+    InoReaderInterface.vala
+    InoReaderUtils.vala
 
 PACKAGES
     libpeas-1.0

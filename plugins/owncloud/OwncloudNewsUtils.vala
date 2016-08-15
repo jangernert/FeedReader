@@ -91,8 +91,6 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 			logger.print(LogMessage.ERROR, "OwncloudNewsUtils: getPasswd: " + e.message);
 		}
 
-        pwSchema.unref();
-
 		if(passwd == null)
 		{
 			return "";
@@ -137,7 +135,6 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
 			removed = Secret.password_clearv.end(async_res);
-			pwSchema.unref();
 		});
 		return removed;
 	}
@@ -161,8 +158,6 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
         catch(GLib.Error e){
 			logger.print(LogMessage.ERROR, "OwncloudNewsUtils: getHtaccessPasswd: " + e.message);
 		}
-
-        pwSchema.unref();
 
 		if(passwd == null)
 		{
@@ -213,10 +208,11 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
+            var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", icon_url);
 
-			if(m_settings.get_boolean("do-not-track"))
+			if(settingsTweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();

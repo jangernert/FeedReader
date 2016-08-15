@@ -1,11 +1,11 @@
-set (NAME ttrss)
+set (NAME feedly)
 set (TARGETNAME ${NAME}_target)
 
 vala_precompile(VALA_C ${TARGETNAME}
-    ttrssAPI.vala
-    ttrssInterface.vala
-    ttrssMessage.vala
-    ttrssUtils.vala
+    feedlyAPI.vala
+    feedlyConnection.vala
+    feedlyInterface.vala
+    feedlyUtils.vala
 
 
 PACKAGES

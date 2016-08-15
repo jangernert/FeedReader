@@ -13,6 +13,9 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+FeedReader.dbDaemon dataBase;
+FeedReader.Logger logger;
+
 public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public enum InoSubscriptionAction {
@@ -392,7 +395,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public void markAsRead(string? streamID = null)
 	{
-		string message_string = "s=%s&ts=%i".printf(streamID, settings_state.get_int("last-sync"));
+		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
+		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
 		logger.print(LogMessage.DEBUG, message_string);
 		string response = m_connection.send_request("mark-all-as-read", message_string);
 	}

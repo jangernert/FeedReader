@@ -96,14 +96,6 @@ vala_precompile(UI ${EXEC_NAME}
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
-    plugins/ttrss/ttrssLoginWidget.vala
-    plugins/ttrss/ttrssUtils.vala
-    plugins/owncloud/OwncloudNewsLoginWidget.vala
-    plugins/owncloud/OwncloudNewsUtils.vala
-    plugins/inoreader/InoReaderLoginWidget.vala
-    plugins/inoreader/InoReaderUtils.vala
-    plugins/feedly/FeedlyLoginWidget.vala
-    plugins/feedly/FeedlyUtils.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
@@ -244,7 +236,10 @@ CUSTOM_VAPIS
 add_executable(${DAEMON_NAME} ${daemon})
 target_link_libraries(${DAEMON_NAME} vilistextum)
 
-add_subdirectory(plugins/ttrss)
+
+# build plugins
+add_subdirectory(plugins)
+
 
 
 # uninstall target

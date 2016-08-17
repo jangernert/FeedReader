@@ -24,6 +24,7 @@ OPTIONS
 
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/FeedReader.vapi
+    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
 )
 
 add_library(${NAME} SHARED ${VALA_C})
@@ -51,6 +52,7 @@ OPTIONS
 
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
+    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
     ${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
 )
 

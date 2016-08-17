@@ -377,7 +377,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return settings_general.get_int("max-articles");
 	}
 
-	public static void grabArticle(string url)
+	/*public static void grabArticle(string url)
 	{
 		var grabber = new Grabber(url, null, null);
 		if(grabber.process())
@@ -431,7 +431,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			logger.print(LogMessage.ERROR, "Grabber: article could not be processed " + url);
 		}
-	}
+	}*/
 
 	public static void grabImages(string htmlFile, string url)
 	{

@@ -23,6 +23,7 @@ OPTIONS
 
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/FeedReader.vapi
+    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
 )
 
 add_library(${NAME} SHARED ${VALA_C})

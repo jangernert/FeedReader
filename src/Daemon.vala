@@ -856,7 +856,7 @@ namespace FeedReader {
 		if(grabArticle != null)
 		{
 			logger = new Logger("daemon");
-			FeedServer.grabArticle(grabArticle);
+			//FeedServer.grabArticle(grabArticle);
 			return 0;
 		}
 

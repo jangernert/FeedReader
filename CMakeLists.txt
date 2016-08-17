@@ -10,8 +10,8 @@ include_directories(${CMAKE_SOURCE_DIR})
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set (PKGDATADIR "${DATADIR}/FeedReader")
 set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})
-set (EXEC_NAME "feedreader")
-set (DAEMON_NAME ${EXEC_NAME}-daemon)
+set (UI_NAME "feedreader")
+set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
 set (VERSION "2.0")
@@ -31,7 +31,7 @@ add_subdirectory (libVilistextum)
 
 include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMakeConstants.vala.in" "${CMAKE_SOURCE_DIR}/CMakeConstants.vala" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Constants.vala.in" "${CMAKE_SOURCE_DIR}/Constants.vala" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service.in" "${CMAKE_SOURCE_DIR}/data/feedreader.service" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.appdata.xml.in" "${CMAKE_SOURCE_DIR}/data/feedreader.appdata.xml" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader.desktop" @ONLY)
@@ -69,6 +69,48 @@ add_subdirectory(WebExtension)
 add_subdirectory(libgtkimageview)
 add_subdirectory(libgd)
 
+
+################################################################################
+
+
+vala_precompile(LIBFR test123
+    src/Common.vala
+    src/Logger.vala
+    src/Enums.vala
+    src/dbBase.vala
+    src/Utils.vala
+    src/QueryBuilder.vala
+    src/Model/Feed.vala
+    src/Model/Category.vala
+    src/Model/Article.vala
+    src/Model/Tag.vala
+    src/Model/OfflineAction.vala
+    src/Model/InterfaceState.vala
+    src/Model/ShareAccount.vala
+    Constants.vala
+
+PACKAGES
+    gee-0.8
+    libsecret-1
+    sqlite3
+    libsoup-2.4
+
+OPTIONS
+    --target-glib=2.32
+    --vapi=FeedReaderCommon.vapi
+    --header=FeedReaderCommon.h
+    
+CUSTOM_VAPIS
+    vapi/libvilistextum.vapi
+)
+
+add_library(FeedReaderCommon STATIC ${LIBFR})
+target_link_libraries(FeedReaderCommon vilistextum)
+
+
+################################################################################
+
+
 set(UI_OPTIONS
     --target-glib=2.32
     --header=FeedReaderUI.h
@@ -90,24 +132,13 @@ set(UI_PACKAGES
     goa-1.0
     libpeas-1.0)
 
-vala_precompile(UI ${EXEC_NAME}
-    CMakeConstants.vala
+vala_precompile(UI ${UI_NAME}
+    Constants.vala
     src/DBusConnection.vala
     src/FeedReader.vala
-    src/Logger.vala
     src/LoginInterface.vala
-    src/Model/Feed.vala
-    src/Model/Category.vala
-    src/Model/Article.vala
-    src/Model/Tag.vala
-    src/Model/InterfaceState.vala
-    src/Model/ShareAccount.vala
-    src/Constants.vala
-    src/dbBase.vala
     src/dbUI.vala
-    src/Utils.vala
     src/UtilsUI.vala
-    src/QueryBuilder.vala
     src/Widgets/AddPopover.vala
     src/Widgets/ArticleList.vala
     src/Widgets/ArticleRow.vala
@@ -161,13 +192,17 @@ OPTIONS
     ${UI_OPTIONS}
 
 CUSTOM_VAPIS
+    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
     vapi/libvilistextum.vapi
     vapi/gtkimageview.vapi
     vapi/gd-1.0.vapi
 )
 
-add_executable(${EXEC_NAME} ${UI})
-target_link_libraries(${EXEC_NAME} vilistextum gtkimageview gd)
+add_executable(${UI_NAME} ${UI})
+target_link_libraries(${UI_NAME} vilistextum gtkimageview gd FeedReaderCommon)
+
+
+################################################################################
 
 
 set(DAEMON_OPTIONS
@@ -193,21 +228,9 @@ if(LIBUNITY_FOUND)
 endif(LIBUNITY_FOUND)
 
 vala_precompile(daemon ${DAEMON_NAME}
-    src/Constants.vala
     src/Daemon.vala
-    src/dbBase.vala
     src/dbDaemon.vala
-    src/Logger.vala
-    src/Utils.vala
     src/OfflineActionManager.vala
-    src/QueryBuilder.vala
-    CMakeConstants.vala
-    src/Model/Feed.vala
-    src/Model/Category.vala
-    src/Model/Article.vala
-    src/Model/Tag.vala
-    src/Model/OfflineAction.vala
-    src/Model/InterfaceState.vala
     src/Backend/FeedServer.vala
     src/Backend/FeedServerInterface.vala
     src/Backend/OPMLparser.vala
@@ -215,6 +238,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala
+    Constants.vala
 
 
 PACKAGES
@@ -225,15 +249,25 @@ OPTIONS
 
 CUSTOM_VAPIS
     vapi/libvilistextum.vapi
+    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
 )
 
 add_executable(${DAEMON_NAME} ${daemon})
-target_link_libraries(${DAEMON_NAME} vilistextum)
+target_link_libraries(${DAEMON_NAME} vilistextum FeedReaderCommon)
+
+
+################################################################################
+
+
+add_dependencies(${DAEMON_NAME} FeedReaderCommon)
+add_dependencies(${UI_NAME} FeedReaderCommon)
 
 
 # build plugins
 add_subdirectory(plugins)
 
+
+################################################################################
 
 
 # uninstall target
@@ -245,7 +279,7 @@ configure_file(
 add_custom_target(uninstall
     COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake)
 
-install (TARGETS ${EXEC_NAME} RUNTIME DESTINATION bin)
+install (TARGETS ${UI_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
 install (FILES ${PROJECT_BINARY_DIR}/WebExtension/libwebextension.so DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)

@@ -1,12 +1,10 @@
 project (FeedReader)
 cmake_minimum_required (VERSION 2.6)
+list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
 include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)
 include_directories(${CMAKE_SOURCE_DIR})
 
-
-list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-option(WITH_DEBUG "Compile daemon binary with debugging symbols" OFF)
 
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
@@ -169,9 +167,7 @@ CUSTOM_VAPIS
 )
 
 add_executable(${EXEC_NAME} ${UI})
-target_link_libraries(${EXEC_NAME} vilistextum)
-target_link_libraries(${EXEC_NAME} gtkimageview)
-target_link_libraries(${EXEC_NAME} gd)
+target_link_libraries(${EXEC_NAME} vilistextum gtkimageview gd)
 
 
 set(DAEMON_OPTIONS
@@ -195,10 +191,6 @@ if(LIBUNITY_FOUND)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
 	list(APPEND DAEMON_PACKAGES unity)
 endif(LIBUNITY_FOUND)
-
-if(WITH_DEBUG)
-	list(APPEND DAEMON_OPTIONS -g)
-endif(WITH_DEBUG)
 
 vala_precompile(daemon ${DAEMON_NAME}
     src/Constants.vala

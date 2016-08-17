@@ -1,12 +1,13 @@
 set (NAME ttrss)
-set (TARGETNAME ${NAME}_target)
+set (UINAME ttrssUI)
+set (DAEMONTARGET ${NAME}_target)
+set (UITARGET ${UINAME}_target)
 
-vala_precompile(VALA_C ${TARGETNAME}
+vala_precompile(VALA_C ${DAEMONTARGET}
     ttrssAPI.vala
     ttrssInterface.vala
     ttrssMessage.vala
     ttrssUtils.vala
-
 
 PACKAGES
     libpeas-1.0
@@ -27,10 +28,47 @@ CUSTOM_VAPIS
 
 add_library(${NAME} SHARED ${VALA_C})
 
+
+# ----------------------------------------------------------
+
+
+vala_precompile(VALA_C2 ${UITARGET}
+    ttrssLoginWidget.vala
+    ttrssUtils.vala
+
+PACKAGES
+    libpeas-1.0
+    gtk+-3.0
+    gee-0.8
+    libsecret-1
+    sqlite3
+    libsoup-2.4
+    WebKit2-4.0
+
+OPTIONS
+    --target-glib=2.32
+    --library ${NAME}
+
+CUSTOM_VAPIS
+    ${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
+    ${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
+)
+
+add_library(${UINAME} SHARED ${VALA_C2})
+
+
+# ----------------------------------------------------------
+
+add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
+add_dependencies(${UINAME} ${EXEC_NAME} ${DAEMON_NAME})
+
+
 add_schema("org.gnome.feedreader.${NAME}.gschema.xml")
 
 install(TARGETS ${NAME} DESTINATION ${PKGDATADIR}/plugins)
+install(TARGETS ${UINAME} DESTINATION ${PKGDATADIR}/pluginsUI)
 install(FILES ${NAME}.plugin DESTINATION ${PKGDATADIR}/plugins)
+install(FILES ${UINAME}.plugin DESTINATION ${PKGDATADIR}/pluginsUI)
 install (DIRECTORY icons/hicolor/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 install(CODE "execute_process (COMMAND gtk-update-icon-cache -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 

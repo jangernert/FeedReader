@@ -16,12 +16,14 @@
 public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private WebKit.WebView m_view;
-	private string m_url;
+	private string m_plug;
+	public signal bool getApiCode(string url);
 	public signal void success(string plug);
 
 
-	public WebLoginPage()
+	public WebLoginPage(string plug)
 	{
+		m_plug = plug;
 		var settings = new WebKit.Settings();
 		settings.set_user_agent_with_application_details("FeedReader", AboutInfo.version);
 		m_view = new WebKit.WebView();
@@ -33,11 +35,10 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	}
 
 
-	public void loadPage(OAuth serviceType)
+	public void loadPage(string url)
 	{
-		m_url = buildURL(serviceType);
-		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + m_url);
-		m_view.load_uri(m_url);
+		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + url);
+		m_view.load_uri(url);
 	}
 
 	public void redirection(WebKit.LoadEvent load_event)
@@ -47,11 +48,11 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		{
 			case WebKit.LoadEvent.STARTED:
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent STARTED");
-				checkURL();
+				check();
 				break;
 			case WebKit.LoadEvent.REDIRECTED:
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent REDIRECTED");
-				checkURL();
+				check();
 				break;
 			case WebKit.LoadEvent.COMMITTED:
 				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent COMMITED");
@@ -63,15 +64,14 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	}
 
 	// FIXME: let the plugin get the api-code
-	void checkURL()
+	void check()
 	{
 		string url = m_view.get_uri();
 
-		if(getFeedlyApiCode(url))
+		if(getApiCode(url))
 		{
 			m_view.stop_loading();
-
-			success("feedly");
+			success(m_plug);
 		}
 	}
 
@@ -89,16 +89,13 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		return true;
 	}
 
-	// FIXME: let the plugin build the url
-	public static string buildURL(OAuth serviceType)
-	{
-		/*
-		string url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
-					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+
+	/*
+	string url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
+				+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
 
 
-		logger.print(LogMessage.DEBUG, url);
-		*/
-		return "url";
-	}
+	logger.print(LogMessage.DEBUG, url);
+	*/
+
 }

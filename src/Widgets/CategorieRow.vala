@@ -81,6 +81,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_expandBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_expandBox.margin_start = (level-1) * 24;
 		m_expandBox.add(m_stack);
+		m_expandBox.set_size_request(32, 0);
 		m_expandBox.button_press_event.connect(onExpandClick);
 		m_expandBox.enter_notify_event.connect(onExpandEnter);
 		m_expandBox.leave_notify_event.connect(onExpandLeave);
@@ -113,7 +114,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		m_unreadBox.enter_notify_event.connect(onUnreadEnter);
 		m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
-		m_box.pack_start(m_expandBox, false, false, 8);
+		m_box.pack_start(m_expandBox, false, false, 0);
 		m_box.pack_start(m_label, true, true, 0);
 		m_box.pack_end(m_unreadBox, false, false, 8);
 

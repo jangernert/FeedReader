@@ -73,7 +73,9 @@ add_subdirectory(libgtkimageview)
 add_subdirectory(libgd)
 
 set(UI_OPTIONS
-    --target-glib=2.32)
+    --target-glib=2.32
+    --header=FeedReaderUI.h
+    --vapi=FeedReaderUI.vapi)
 
 set(UI_PACKAGES
     glib-2.0>=2.32
@@ -88,7 +90,8 @@ set(UI_PACKAGES
     WebKit2-4.0
     gstreamer-1.0
     gstreamer-pbutils-1.0
-    goa-1.0)
+    goa-1.0
+    libpeas-1.0)
 
 vala_precompile(UI ${EXEC_NAME}
     GitSHA1.vala
@@ -96,6 +99,7 @@ vala_precompile(UI ${EXEC_NAME}
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
+    src/LoginInterface.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala

@@ -13,15 +13,16 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.LoginPage : Gtk.Bin {
+public class FeedReader.LoginPage : Gtk.Stack {
 
 	private Gtk.ComboBox m_comboBox;
 	private Gtk.Stack m_login_details;
 	private Gtk.Box m_layout;
 	private bool m_need_htaccess = false;
+	private Peas.ExtensionSet m_extensions;
+	private Peas.Engine m_engine;
 	public signal void submit_data();
 	public signal void loginError(LoginResponse errorCode);
-	public signal void loadLoginPage(OAuth type);
 
 
 	public LoginPage()
@@ -30,12 +31,38 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_login_details.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_login_details.set_transition_duration(100);
 
-		var nothing_selected = new Gtk.Label(_("No service selected."));
-		nothing_selected.get_style_context().add_class("h3");
-		m_login_details.add_named(nothing_selected, "none");
+		var liststore = new Gtk.ListStore(2, typeof(string), typeof(string));
+		m_comboBox = new Gtk.ComboBox.with_model(liststore);
+		m_comboBox.set_id_column(1);
 
 
-		//m_login_details.add_named(new ttrssLoginWidget(), "ttrss");
+
+
+		m_engine = Peas.Engine.get_default();
+		m_engine.add_search_path(InstallPrefix + "/share/FeedReader/pluginsUI/", null);
+		m_engine.enable_loader("python3");
+
+		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface),
+			"m_stack", m_login_details,
+			"m_listStore", liststore,
+			"m_logger", logger,
+			"m_installPrefix", InstallPrefix);
+
+		m_extensions.extension_added.connect((info, extension) => {
+			var plugin = (extension as LoginInterface);
+			plugin.init();
+			plugin.login.connect(() => { write_login_data(); });
+
+			string plug = settings_general.get_string("plugin");
+			m_comboBox.set_active_id(plug);
+			//m_login_details.set_visible_child_name("none");
+		});
+
+		foreach(var plugin in m_engine.get_plugin_list())
+		{
+			m_engine.try_load_plugin(plugin);
+		}
+
 
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
@@ -54,13 +81,8 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		m_layout.pack_start(welcomeText2, false, true, 2);
 
 
-		var liststore = new Gtk.ListStore(1, typeof (string));
-		//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).populateList(liststore);
-
-		m_comboBox = new Gtk.ComboBox.with_model(liststore);
-
 		Gtk.CellRendererText renderer = new Gtk.CellRendererText();
-		m_comboBox.pack_start (renderer, false);
+		m_comboBox.pack_start(renderer, false);
 		m_comboBox.add_attribute(renderer, "text", 0);
 		m_comboBox.set_size_request(300, 0);
 		m_comboBox.set_valign(Gtk.Align.CENTER);
@@ -79,34 +101,32 @@ public class FeedReader.LoginPage : Gtk.Bin {
 
 
 		m_comboBox.changed.connect(() => {
-			if(m_comboBox.get_active() != -1)
+			string? id = m_comboBox.get_active_id();
+
+			if(id != null)
 			{
-				//m_login_details.set_visible_child_name("ttrss");
+				m_login_details.set_visible_child_name(id);
 			}
 		});
 
+		var nothing_selected = new Gtk.Label(_("No service selected."));
+		nothing_selected.get_style_context().add_class("h3");
+		m_login_details.add_named(nothing_selected, "none");
+		m_login_details.set_visible_child_name("none");
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
 		this.margin = 20;
-		this.add(m_layout);
+		this.add_named(m_layout, "login");
 		this.show_all();
-	}
-
-	public void loadData()
-	{
-		//m_comboBox.set_active(Backend.TTRSS);
-		//m_login_details.set_visible_child_name("ttrss");
-
-
-		//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).fill();
-		//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).fill();
-		//(m_login_details.get_child_by_name("inoreader") as InoReaderLoginWidget).fill();
 	}
 
 
 	public void showHtAccess()
 	{
-		//(m_login_details.get_child_by_name("owncloud") as OwnCloudNewsLoginWidget).showHtAccess();
+		string plugName = m_login_details.get_visible_child_name();
+		var info = m_engine.get_plugin_info(plugName);
+		var extension = m_extensions.get_extension(info) as LoginInterface;
+		extension.showHtAccess();
 		m_need_htaccess = true;
 	}
 
@@ -116,9 +136,22 @@ public class FeedReader.LoginPage : Gtk.Bin {
 		logger.print(LogMessage.DEBUG, "write login data");
 		var backend = "none";
 
-		//(m_login_details.get_child_by_name("ttrss") as ttrssLoginWidget).writeData();
-		// or
-		// loadLoginPage(OAuth.FEEDLY);
+		string plugName = m_login_details.get_visible_child_name();
+		var info = m_engine.get_plugin_info(plugName);
+		var extension = m_extensions.get_extension(info) as LoginInterface;
+
+		if(extension.needWebLogin())
+		{
+			var page = new WebLoginPage(plugName);
+			page.loadPage(extension.buildLoginURL());
+			// loadLoginPage(OAuth.FEEDLY);
+			this.add_named(page, "web");
+			this.set_visible_child_name("web");
+		}
+		else
+		{
+			extension.writeData();
+		}
 
 		LoginResponse status = feedDaemon_interface.login(backend);
 		logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());

@@ -266,7 +266,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show login");
-		m_login.loadData();
 		showErrorBar(LoginResponse.FIRST_TRY);
 		m_stack.set_visible_child_full("login", transition);
 		m_headerbar.setButtonsSensitive(false);
@@ -285,14 +284,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show springClean");
 		m_stack.set_visible_child_full("springClean", transition);
-		m_headerbar.setButtonsSensitive(false);
-		this.set_titlebar(m_simpleHeader);
-	}
-
-	private void showWebLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
-	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show weblogin");
-		m_stack.set_visible_child_full("WebLogin", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
@@ -465,11 +456,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 
 		m_login = new LoginPage();
-		var WebLogin = new WebLoginPage();
-		m_login.loadLoginPage.connect((type) => {
-			WebLogin.loadPage(type);
-			showWebLogin(Gtk.StackTransitionType.SLIDE_LEFT);
-		});
 
 		var loginBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 
@@ -488,24 +474,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});
-		WebLogin.success.connect((plugin) => {
-			logger.print(LogMessage.DEBUG, "WebLogin: success");
-			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
-			settings_state.set_string("feedlist-selected-row", "feed -4");
-			if(feedDaemon_interface.login(plugin) != LoginResponse.SUCCESS)
-			{
-				logger.print(LogMessage.DEBUG, "MainWindow: login failed -> go back to login page");
-				showLogin(Gtk.StackTransitionType.SLIDE_LEFT);
-				return;
-			}
-			if(dataBase.isEmpty())
-				feedDaemon_interface.startInitSync();
-			else
-				feedDaemon_interface.startSync();
-			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
-		});
 		m_stack.add_named(loginBox, "login");
-		m_stack.add_named(WebLogin, "WebLogin");
 		m_error_bar.set_visible(false);
 	}
 

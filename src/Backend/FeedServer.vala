@@ -29,7 +29,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		engine.add_search_path(InstallPrefix + "/share/FeedReader/plugins/", null);
 		engine.enable_loader("python3");
 
-		var extensions = new Peas.ExtensionSet(engine, typeof (FeedServerInterface),
+		var extensions = new Peas.ExtensionSet(engine, typeof(FeedServerInterface),
 			"m_dataBase", dataBase,
 			"m_logger", logger);
 
@@ -473,41 +473,65 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool supportTags()
 	{
+		if(!m_pluginLoaded)
+			return false;
+
 		return m_plugin.supportTags();
 	}
 
 	public string? symbolicIcon()
 	{
+		if(!m_pluginLoaded)
+			return null;
+
 		return m_plugin.symbolicIcon();
 	}
 
 	public string? accountName()
 	{
+		if(!m_pluginLoaded)
+			return null;
+
 		return m_plugin.accountName();
 	}
 
 	public string? getServerURL()
 	{
+		if(!m_pluginLoaded)
+			return null;
+
 		return m_plugin.getServerURL();
 	}
 
 	public string uncategorizedID()
 	{
+		if(!m_pluginLoaded)
+			return "";
+
 		return m_plugin.uncategorizedID();
 	}
 
 	public bool hideCagetoryWhenEmtpy(string catID)
 	{
+		if(!m_pluginLoaded)
+			return false;
+
 		return m_plugin.hideCagetoryWhenEmtpy(catID);
 	}
 
 	public bool supportMultiLevelCategories()
 	{
+		if(!m_pluginLoaded)
+			return false;
+
 		return m_plugin.supportMultiLevelCategories();
 	}
 
 	public bool supportMultiCategoriesPerFeed()
 	{
+		if(!m_pluginLoaded)
+			return false;
+
 		return m_plugin.supportMultiCategoriesPerFeed();
 	}
 
@@ -515,17 +539,26 @@ public class FeedReader.FeedServer : GLib.Object {
 	// but for some of them the tagID changes when the name was changed (inoreader)
 	public bool tagIDaffectedByNameChange()
 	{
+		if(!m_pluginLoaded)
+			return false;
+
 		return m_plugin.tagIDaffectedByNameChange();
 	}
 
 	public void resetAccount()
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.resetAccount();
 	}
 
 	// whether or not to use the "max-articles"-setting
 	public bool useMaxArticles()
 	{
+		if(!m_pluginLoaded)
+			return true;
+
 		return m_plugin.useMaxArticles();
 	}
 
@@ -536,126 +569,201 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool logout()
 	{
+		if(!m_pluginLoaded)
+			return false;
+
 		return m_plugin.logout();
 	}
 
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.setArticleIsRead(articleIDs, read);
 	}
 
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.setArticleIsMarked(articleID, marked);
 	}
 
 	public void setFeedRead(string feedID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.setFeedRead(feedID);
 	}
 
 	public void setCategorieRead(string catID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.setCategorieRead(catID);
 	}
 
 	public void markAllItemsRead()
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.markAllItemsRead();
 	}
 
 	public void tagArticle(string articleID, string tagID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.tagArticle(articleID, tagID);
 	}
 
 	public void removeArticleTag(string articleID, string tagID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.removeArticleTag(articleID, tagID);
 	}
 
 	public string createTag(string caption)
 	{
+		if(!m_pluginLoaded)
+			return "";
+
 		return m_plugin.createTag(caption);
 	}
 
 	public void deleteTag(string tagID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.deleteTag(tagID);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.renameTag(tagID, title);
 	}
 
 	public bool serverAvailable()
 	{
+		if(!m_pluginLoaded)
+			return false;
+
 		return m_plugin.serverAvailable();
 	}
 
 	public void addFeed(string feedURL, string? catID = null, string? newCatName = null)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.addFeed(feedURL, catID, newCatName);
 	}
 
 	public void removeFeed(string feedID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.removeFeed(feedID);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.renameFeed(feedID, title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID = null)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.moveFeed(feedID, newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID = null)
 	{
+		if(!m_pluginLoaded)
+			return "";
+
 		return m_plugin.createCategory(title, parentID);
 	}
 
 	public void renameCategory(string catID, string title)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.renameCategory(catID, title);
 	}
 
 	public void moveCategory(string catID, string newParentID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.moveCategory(catID, newParentID);
 	}
 
 	public void deleteCategory(string catID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.deleteCategory(catID);
 	}
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.removeCatFromFeed(feedID, catID);
 	}
 
 	public void importOPML(string opml)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.importOPML(opml);
 	}
 
 	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.getFeedsAndCats(feeds, categories, tags);
 	}
 
 	public int getUnreadCount()
 	{
+		if(!m_pluginLoaded)
+			return 0;
+
 		return m_plugin.getUnreadCount();
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false)
 	{
+		if(!m_pluginLoaded)
+			return;
+
 		m_plugin.getArticles(count, whatToGet, feedID, isTagID);
 	}
 

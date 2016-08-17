@@ -243,18 +243,13 @@ namespace FeedReader {
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 
-			if(plugName == "none")
-			{
-				logger.print(LogMessage.ERROR, "daemon: no plugin to load defined");
-				return LoginResponse.NO_BACKEND;
-			}
-
 			server = new FeedServer(plugName);
 
 			if(!server.pluginLoaded())
 			{
 				logger.print(LogMessage.ERROR, "daemon: plugin '%s' couldn't be loaded by feedserver".printf(plugName));
-				return LoginResponse.NO_BACKEND;
+				m_loggedin = LoginResponse.NO_BACKEND;
+				return m_loggedin;
 			}
 
 			this.setOffline.connect(() => {

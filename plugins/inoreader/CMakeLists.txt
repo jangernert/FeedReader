@@ -26,6 +26,8 @@ CUSTOM_VAPIS
 
 add_library(${NAME} SHARED ${VALA_C})
 
+add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
+
 add_schema("org.gnome.feedreader.${NAME}.gschema.xml")
 
 install(TARGETS ${NAME} DESTINATION ${PKGDATADIR}/plugins)

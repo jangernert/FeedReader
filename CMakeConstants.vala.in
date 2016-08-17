@@ -1,1 +1,2 @@
 const string InstallPrefix = "@CMAKE_INSTALL_PREFIX@";
+const string g_GIT_SHA1 = "@GIT_SHA1@";

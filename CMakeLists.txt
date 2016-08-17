@@ -16,7 +16,7 @@ set (EXEC_NAME "feedreader")
 set (DAEMON_NAME ${EXEC_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
-set (VERSION "1.6")
+set (VERSION "2.0")
 
 find_package(PkgConfig)
 find_package(Vala REQUIRED)
@@ -33,8 +33,7 @@ add_subdirectory (libVilistextum)
 
 include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/GitSHA1.vala.in" "${CMAKE_SOURCE_DIR}/GitSHA1.vala" @ONLY)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/InstallPrefix.vala.in" "${CMAKE_SOURCE_DIR}/InstallPrefix.vala" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/CMakeConstants.vala.in" "${CMAKE_SOURCE_DIR}/CMakeConstants.vala" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service.in" "${CMAKE_SOURCE_DIR}/data/feedreader.service" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.appdata.xml.in" "${CMAKE_SOURCE_DIR}/data/feedreader.appdata.xml" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader.desktop" @ONLY)
@@ -94,8 +93,7 @@ set(UI_PACKAGES
     libpeas-1.0)
 
 vala_precompile(UI ${EXEC_NAME}
-    GitSHA1.vala
-    InstallPrefix.vala
+    CMakeConstants.vala
     src/DBusConnection.vala
     src/FeedReader.vala
     src/Logger.vala
@@ -203,7 +201,6 @@ if(WITH_DEBUG)
 endif(WITH_DEBUG)
 
 vala_precompile(daemon ${DAEMON_NAME}
-    InstallPrefix.vala
     src/Constants.vala
     src/Daemon.vala
     src/dbBase.vala
@@ -212,6 +209,7 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Utils.vala
     src/OfflineActionManager.vala
     src/QueryBuilder.vala
+    CMakeConstants.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala

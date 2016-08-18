@@ -55,7 +55,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 			string plug = settings_general.get_string("plugin");
 			m_comboBox.set_active_id(plug);
-			//m_login_details.set_visible_child_name("none");
 		});
 
 		foreach(var plugin in m_engine.get_plugin_list())
@@ -112,12 +111,13 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		var nothing_selected = new Gtk.Label(_("No service selected."));
 		nothing_selected.get_style_context().add_class("h3");
 		m_login_details.add_named(nothing_selected, "none");
-		m_login_details.set_visible_child_name("none");
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
 		this.margin = 20;
 		this.add_named(m_layout, "login");
 		this.show_all();
+
+		m_login_details.set_visible_child_name("none");
 	}
 
 

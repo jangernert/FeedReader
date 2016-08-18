@@ -42,6 +42,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_plugin.writeInterfaceState.connect(() => { writeInterfaceState(); });
 			m_plugin.showArticleListOverlay.connect(() => { showArticleListOverlay(); });
 			m_plugin.setNewRows.connect((before) => { setNewRows(before); });
+			m_plugin.writeArticlesInChunks.connect((articles, chunksize) => { writeArticlesInChunks(articles, chunksize); });
 		});
 
 		extensions.extension_removed.connect((info, extension) => {
@@ -377,7 +378,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return settings_general.get_int("max-articles");
 	}
 
-	/*public static void grabArticle(string url)
+	public static void grabArticle(string url)
 	{
 		var grabber = new Grabber(url, null, null);
 		if(grabber.process())
@@ -431,7 +432,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			logger.print(LogMessage.ERROR, "Grabber: article could not be processed " + url);
 		}
-	}*/
+	}
 
 	public static void grabImages(string htmlFile, string url)
 	{

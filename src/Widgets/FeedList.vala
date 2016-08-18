@@ -423,7 +423,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		int length = (int)m_list.get_children().length();
 		bool supportTags = feedDaemon_interface.supportTags();
 
-		if((!UtilsUI.onlyShowFeeds() && supportTags) || masterCat)
+		if((supportTags && !dataBase.isTableEmpty("tags")) || masterCat)
 		{
 			var categorierow = new categorieRow(
 					                                _("Categories"),

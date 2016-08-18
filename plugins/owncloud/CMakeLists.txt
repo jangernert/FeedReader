@@ -9,11 +9,11 @@ set (UITARGET ${UINAME}_target)
 # Daemon Plugin
 # ----------------------------------------------------------
 
-vala_precompile(VALA_C ${TARGETNAME}
+vala_precompile(VALA_C ${DAEMONTARGET}
+    OwncloudNewsAPI.vala
     OwncloudNewsInterface.vala
     OwncloudNewsMessage.vala
     OwncloudNewsUtils.vala
-    OwncloudNewsAPI.vala
 
 
 PACKAGES

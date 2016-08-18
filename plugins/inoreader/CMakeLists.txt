@@ -8,10 +8,10 @@ set (UITARGET ${UINAME}_target)
 # Daemon Plugin
 # ----------------------------------------------------------
 
-vala_precompile(VALA_C ${TARGETNAME}
+vala_precompile(VALA_C ${DAEMONTARGET}
+    InoReaderAPI.vala
     InoReaderInterface.vala
     InoReaderUtils.vala
-    InoReaderAPI.vala
     InoReaderConnection.vala
 
 PACKAGES

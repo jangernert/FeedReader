@@ -16,14 +16,12 @@
 public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	private WebKit.WebView m_view;
-	private string m_plug;
 	public signal bool getApiCode(string url);
-	public signal void success(string plug);
+	public signal void success();
 
 
-	public WebLoginPage(string plug)
+	public WebLoginPage()
 	{
-		m_plug = plug;
 		var settings = new WebKit.Settings();
 		settings.set_user_agent_with_application_details("FeedReader", AboutInfo.version);
 		m_view = new WebKit.WebView();
@@ -63,7 +61,6 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		}
 	}
 
-	// FIXME: let the plugin get the api-code
 	void check()
 	{
 		string url = m_view.get_uri();
@@ -71,31 +68,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		if(getApiCode(url))
 		{
 			m_view.stop_loading();
-			success(m_plug);
+			success();
 		}
 	}
-
-	// FIXME: let the plugin get the api-code
-	bool getFeedlyApiCode(string url)
-	{
-		/*
-		int start = url.index_of("=")+1;
-		int end = url.index_of("&");
-		string code = url.substring(start, end-start);
-		m_feedlyUtils.setApiCode(code);
-		logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + code);
-		GLib.Thread.usleep(500000);
-		*/
-		return true;
-	}
-
-
-	/*
-	string url = FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
-				+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
-
-
-	logger.print(LogMessage.DEBUG, url);
-	*/
-
 }

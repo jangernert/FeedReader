@@ -30,7 +30,7 @@ public interface FeedReader.LoginInterface : GLib.Object {
 
 	public abstract void writeData();
 
-	public abstract string extractCode(string redirectURL);
+	public abstract bool extractCode(string redirectURL);
 
 	public abstract string buildLoginURL();
 

@@ -150,9 +150,9 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		return false;
 	}
 
-	public string extractCode(string redirectURL)
+	public bool extractCode(string redirectURL)
 	{
-		return "";
+		return false;
 	}
 
 	public string buildLoginURL()

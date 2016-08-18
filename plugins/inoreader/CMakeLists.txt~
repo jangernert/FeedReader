@@ -1,4 +1,4 @@
-set (NAME feedly)
+set (NAME inoreader)
 
 set (UINAME ${NAME}UI)
 set (DAEMONTARGET ${NAME}_target)
@@ -8,12 +8,11 @@ set (UITARGET ${UINAME}_target)
 # Daemon Plugin
 # ----------------------------------------------------------
 
-vala_precompile(VALA_C ${DAEMONTARGET}
-    feedlyAPI.vala
-    feedlyInterface.vala
-    feedlyUtils.vala
-    feedlyConnection.vala
-
+vala_precompile(VALA_C ${TARGETNAME}
+    InoReaderInterface.vala
+    InoReaderUtils.vala
+    InoReaderAPI.vala
+    InoReaderConnection.vala
 
 PACKAGES
     libpeas-1.0
@@ -40,10 +39,9 @@ add_library(${NAME} SHARED ${VALA_C})
 # UI Plugin
 # ----------------------------------------------------------
 
-
 vala_precompile(VALA_C2 ${UITARGET}
-    feedlyLoginWidget.vala
-    feedlyUtils.vala
+    InoReaderLoginWidget.vala
+    InoReaderUtils.vala
 
 PACKAGES
     libpeas-1.0
@@ -69,9 +67,9 @@ add_library(${UINAME} SHARED ${VALA_C2})
 
 # ----------------------------------------------------------
 
+
 add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
 add_dependencies(${UINAME} ${EXEC_NAME} ${DAEMON_NAME})
-
 
 add_schema("org.gnome.feedreader.${NAME}.gschema.xml")
 

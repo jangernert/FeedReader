@@ -450,7 +450,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					settings_tweaks.set_boolean("ignore-tls-errors", true);
 					m_ignore_tls_errors.set_visible(false);
 					m_error_bar.set_visible(false);
-					m_login.write_login_data();
+					m_login.writeLoginData();
 					break;
 			}
 		});

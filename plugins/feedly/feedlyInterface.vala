@@ -46,7 +46,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public string? getServerURL()
 	{
-		return null;
+		return "feedly.com";
 	}
 
 	public string uncategorizedID()

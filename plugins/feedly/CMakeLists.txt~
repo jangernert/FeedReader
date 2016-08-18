@@ -8,10 +8,10 @@ set (UITARGET ${UINAME}_target)
 # Daemon Plugin
 # ----------------------------------------------------------
 
-vala_precompile(VALA_C ${DAEMONTARGET}
-    feedlyAPI.vala
+vala_precompile(VALA_C ${TARGETNAME}
     feedlyInterface.vala
     feedlyUtils.vala
+    feedlyAPI.vala
     feedlyConnection.vala
 
 

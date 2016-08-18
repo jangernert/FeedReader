@@ -16,20 +16,21 @@
 public class FeedReader.LoginPage : Gtk.Stack {
 
 	private Gtk.ComboBox m_comboBox;
-	private Gtk.Stack m_login_details;
+	private Gtk.Stack m_loginWidget;
 	private Gtk.Box m_layout;
 	private bool m_need_htaccess = false;
 	private Peas.ExtensionSet m_extensions;
 	private Peas.Engine m_engine;
+	private WebLoginPage m_page;
 	public signal void submit_data();
 	public signal void loginError(LoginResponse errorCode);
 
 
 	public LoginPage()
 	{
-		m_login_details = new Gtk.Stack();
-		m_login_details.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_login_details.set_transition_duration(100);
+		m_loginWidget = new Gtk.Stack();
+		m_loginWidget.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_loginWidget.set_transition_duration(100);
 
 		var liststore = new Gtk.ListStore(2, typeof(string), typeof(string));
 		m_comboBox = new Gtk.ComboBox.with_model(liststore);
@@ -43,7 +44,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		m_engine.enable_loader("python3");
 
 		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface),
-			"m_stack", m_login_details,
+			"m_stack", m_loginWidget,
 			"m_listStore", liststore,
 			"m_logger", logger,
 			"m_installPrefix", InstallPrefix);
@@ -51,7 +52,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		m_extensions.extension_added.connect((info, extension) => {
 			var plugin = (extension as LoginInterface);
 			plugin.init();
-			plugin.login.connect(() => { write_login_data(); });
+			plugin.login.connect(() => { writeLoginData(); });
 
 			string plug = settings_general.get_string("plugin");
 			m_comboBox.set_active_id(plug);
@@ -65,6 +66,9 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
+		m_layout.set_halign(Gtk.Align.CENTER);
+		m_layout.set_valign(Gtk.Align.CENTER);
+		m_layout.margin = 20;
 
 		var welcomeText = new Gtk.Label(_("Where are your feeds?"));
 		welcomeText.get_style_context().add_class("h1");
@@ -89,13 +93,13 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 		var buttonBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		var loginButton = new Gtk.Button.with_label(_("Login"));
-		loginButton.clicked.connect(write_login_data);
+		loginButton.clicked.connect(writeLoginData);
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		buttonBox.pack_end(loginButton, false, false, 0);
 
 		m_layout.pack_start(m_comboBox, false, false, 20);
-		m_layout.pack_start(m_login_details, false, true, 10);
+		m_layout.pack_start(m_loginWidget, false, true, 10);
 		m_layout.pack_start(buttonBox, false, true, 0);
 
 
@@ -104,58 +108,53 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 			if(id != null)
 			{
-				m_login_details.set_visible_child_name(id);
+				m_loginWidget.set_visible_child_name(id);
 			}
 		});
 
 		var nothing_selected = new Gtk.Label(_("No service selected."));
 		nothing_selected.get_style_context().add_class("h3");
-		m_login_details.add_named(nothing_selected, "none");
-		this.set_halign(Gtk.Align.CENTER);
-		this.set_valign(Gtk.Align.CENTER);
-		this.margin = 20;
+		m_loginWidget.add_named(nothing_selected, "none");
+
+		m_page = new WebLoginPage();
+		this.add_named(m_page, "web");
 		this.add_named(m_layout, "login");
 		this.show_all();
 
-		m_login_details.set_visible_child_name("none");
+		this.set_visible_child_name("login");
+		m_loginWidget.set_visible_child_name("none");
 	}
 
 
 	public void showHtAccess()
 	{
-		string plugName = m_login_details.get_visible_child_name();
-		var info = m_engine.get_plugin_info(plugName);
-		var extension = m_extensions.get_extension(info) as LoginInterface;
-		extension.showHtAccess();
+		getActivePlugin().showHtAccess();
 		m_need_htaccess = true;
 	}
 
 
-	public void write_login_data()
+	public void writeLoginData()
 	{
 		logger.print(LogMessage.DEBUG, "write login data");
-		var backend = "none";
-
-		string plugName = m_login_details.get_visible_child_name();
-		logger.print(LogMessage.DEBUG, plugName);
-		var info = m_engine.get_plugin_info(plugName);
-		var extension = m_extensions.get_extension(info) as LoginInterface;
-		backend = plugName.substring(0, plugName.length-2);
+		var extension = getActivePlugin();
 
 		if(extension.needWebLogin())
 		{
-			var page = new WebLoginPage(plugName);
-			page.loadPage(extension.buildLoginURL());
-			// loadLoginPage(OAuth.FEEDLY);
-			this.add_named(page, "web");
+			m_page.loadPage(extension.buildLoginURL());
+			m_page.getApiCode.connect(extension.extractCode);
+			m_page.success.connect(login);
 			this.set_visible_child_name("web");
 		}
 		else
 		{
 			extension.writeData();
+			login();
 		}
+	}
 
-		LoginResponse status = feedDaemon_interface.login(backend);
+	private void login()
+	{
+		LoginResponse status = feedDaemon_interface.login(getActivePluginName());
 		logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());
 		if(status == LoginResponse.SUCCESS)
 		{
@@ -164,5 +163,21 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		}
 
 		loginError(status);
+	}
+
+	private LoginInterface getActivePlugin()
+	{
+		string plugName = m_loginWidget.get_visible_child_name();
+		var info = m_engine.get_plugin_info(plugName);
+		return (m_extensions.get_extension(info) as LoginInterface);
+	}
+
+	private string getActivePluginName()
+	{
+		string plugName = m_loginWidget.get_visible_child_name();
+		if(plugName.has_suffix("UI"))
+			return plugName.substring(0, plugName.length-2);
+
+		return "none";
 	}
 }

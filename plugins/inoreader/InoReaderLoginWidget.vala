@@ -77,9 +77,9 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		m_utils.setPassword(m_passwordEntry.get_text());
 	}
 
-	public string extractCode(string redirectURL)
+	public bool extractCode(string redirectURL)
 	{
-		return "";
+		return false;
 	}
 
 	public string buildLoginURL()

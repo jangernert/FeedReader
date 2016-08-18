@@ -1,18 +1,19 @@
-set (NAME feedly)
+set (NAME owncloud)
 
 set (UINAME ${NAME}UI)
 set (DAEMONTARGET ${NAME}_target)
 set (UITARGET ${UINAME}_target)
 
+
 # ----------------------------------------------------------
 # Daemon Plugin
 # ----------------------------------------------------------
 
-vala_precompile(VALA_C ${DAEMONTARGET}
-    feedlyAPI.vala
-    feedlyInterface.vala
-    feedlyUtils.vala
-    feedlyConnection.vala
+vala_precompile(VALA_C ${TARGETNAME}
+    OwncloudNewsInterface.vala
+    OwncloudNewsMessage.vala
+    OwncloudNewsUtils.vala
+    OwncloudNewsAPI.vala
 
 
 PACKAGES
@@ -42,8 +43,8 @@ add_library(${NAME} SHARED ${VALA_C})
 
 
 vala_precompile(VALA_C2 ${UITARGET}
-    feedlyLoginWidget.vala
-    feedlyUtils.vala
+    OwncloudNewsLoginWidget.vala
+    OwncloudNewsUtils.vala
 
 PACKAGES
     libpeas-1.0
@@ -69,9 +70,9 @@ add_library(${UINAME} SHARED ${VALA_C2})
 
 # ----------------------------------------------------------
 
+
 add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
 add_dependencies(${UINAME} ${EXEC_NAME} ${DAEMON_NAME})
-
 
 add_schema("org.gnome.feedreader.${NAME}.gschema.xml")
 

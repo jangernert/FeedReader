@@ -118,7 +118,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		box.pack_start(m_revealer, true, true, 10);
 		box.show_all();
 
-		m_stack.add_named(box, "ttrss");
+		m_stack.add_named(box, "ttrssUI");
 		populateList();
 		fill();
 	}
@@ -156,7 +156,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 		Gtk.TreeIter iter;
 		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("Tiny Tiny RSS"), 1, "ttrss");
+		m_listStore.set(iter, 0, _("Tiny Tiny RSS"), 1, "ttrssUI");
 	}
 
 	public string extractCode(string redirectURL)

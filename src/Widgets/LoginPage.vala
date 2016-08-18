@@ -137,8 +137,10 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		var backend = "none";
 
 		string plugName = m_login_details.get_visible_child_name();
+		logger.print(LogMessage.DEBUG, plugName);
 		var info = m_engine.get_plugin_info(plugName);
 		var extension = m_extensions.get_extension(info) as LoginInterface;
+		backend = plugName.substring(0, plugName.length-2);
 
 		if(extension.needWebLogin())
 		{

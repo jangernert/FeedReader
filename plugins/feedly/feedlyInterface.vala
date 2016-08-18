@@ -123,17 +123,24 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void markAllItemsRead()
 	{
+		string catArray = "";
+		string feedArray = "";
+
 		var categories = dataBase.read_categories();
+		var feeds = dataBase.read_feeds_without_cat();
+
 		foreach(category cat in categories)
 		{
-			m_api.mark_as_read(cat.getCatID(), "categories", ArticleStatus.READ);
+			catArray += cat.getCatID() + ",";
 		}
 
-		var feeds = dataBase.read_feeds_without_cat();
 		foreach(feed Feed in feeds)
 		{
-			m_api.mark_as_read(Feed.getFeedID(), "feeds", ArticleStatus.READ);
+			feedArray += Feed.getFeedID() + ",";
 		}
+
+		m_api.mark_as_read(catArray.substring(0, catArray.length-1), "categories", ArticleStatus.READ);
+		m_api.mark_as_read(feedArray.substring(0, feedArray.length-1), "feeds", ArticleStatus.READ);
 	}
 
 	public void tagArticle(string articleID, string tagID)

@@ -540,6 +540,13 @@ public class FeedReader.FeedlyAPI : Object {
 
 		object.set_array_member(type_id_identificator, ids);
 
+		if(type == "feeds"
+		|| type == "categories")
+		{
+			var now = new DateTime.now_local();
+			object.set_int_member("asOf", now.to_unix()*1000);
+		}
+
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object (object);
 

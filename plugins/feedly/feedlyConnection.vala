@@ -151,6 +151,7 @@ public class FeedReader.FeedlyConnection {
 		logger.print(LogMessage.DEBUG, json);
 		message.request_body.append(Soup.MemoryUse.COPY, json.data);
 		session.send_message(message);
+		logger.print(LogMessage.DEBUG, "Status Code: " + message.status_code.to_string());
 		return (string)message.response_body.flatten().data;
 	}
 

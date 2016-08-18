@@ -1,7 +1,12 @@
 set (NAME ttrss)
-set (UINAME ttrssUI)
+
+set (UINAME ${NAME}UI)
 set (DAEMONTARGET ${NAME}_target)
 set (UITARGET ${UINAME}_target)
+
+# ----------------------------------------------------------
+# Daemon Plugin
+# ----------------------------------------------------------
 
 vala_precompile(VALA_C ${DAEMONTARGET}
     ttrssAPI.vala
@@ -30,6 +35,8 @@ CUSTOM_VAPIS
 add_library(${NAME} SHARED ${VALA_C})
 
 
+# ----------------------------------------------------------
+# UI Plugin
 # ----------------------------------------------------------
 
 
@@ -60,6 +67,7 @@ add_library(${UINAME} SHARED ${VALA_C2})
 
 
 # ----------------------------------------------------------
+
 
 add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
 add_dependencies(${UINAME} ${EXEC_NAME} ${DAEMON_NAME})

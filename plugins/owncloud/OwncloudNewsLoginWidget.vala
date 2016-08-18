@@ -13,8 +13,9 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+FeedReader.Logger logger;
 
-public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
+public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private Gtk.Entry m_urlEntry;
 	private Gtk.Entry m_userEntry;
@@ -25,8 +26,14 @@ public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 	private OwncloudNewsUtils m_utils;
 	private bool m_need_htaccess = false;
 
-	public OwnCloudNewsLoginWidget()
+	public Gtk.Stack m_stack { get; construct set; }
+	public Gtk.ListStore m_listStore { get; construct set; }
+	public Logger m_logger { get; construct set; }
+	public string m_installPrefix { get; construct set; }
+
+	public void init()
 	{
+		logger = m_logger;
 		m_utils = new OwncloudNewsUtils();
 
 		var urlLabel = new Gtk.Label(_("OwnCloud URL:"));
@@ -58,7 +65,7 @@ public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var logo = new Gtk.Image.from_file(InstallPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
+		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
 
 		grid.attach(urlLabel, 0, 0, 1, 1);
 		grid.attach(m_urlEntry, 1, 0, 1, 1);
@@ -104,12 +111,21 @@ public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 		m_revealer.add(frame);
 		//---------------------------------------------------------------------
 
-		this.orientation = Gtk.Orientation.VERTICAL;
-		this.spacing = 10;
-		this.pack_start(logo, false, false, 10);
-		this.pack_start(grid, true, true, 10);
-		this.pack_start(m_revealer, true, true, 10);
-		this.show_all();
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.pack_start(logo, false, false, 10);
+		box.pack_start(grid, true, true, 10);
+		box.pack_start(m_revealer, true, true, 10);
+		box.show_all();
+
+		m_stack.add_named(box, "owncloudUI");
+
+		Gtk.TreeIter iter;
+		m_listStore.append(out iter);
+		m_listStore.set(iter, 0, _("OwnCloud"), 1, "owncloudUI");
+
+		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
+		m_userEntry.set_text(m_utils.getUser());
+		m_passwordEntry.set_text(m_utils.getPasswd());
 	}
 
 	public void writeData()
@@ -129,17 +145,25 @@ public class FeedReader.OwnCloudNewsLoginWidget : Gtk.Box {
 		m_revealer.set_reveal_child(true);
 	}
 
-	public void fill()
+	public bool needWebLogin()
 	{
-		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
-		m_userEntry.set_text(m_utils.getUser());
-		m_passwordEntry.set_text(m_utils.getPasswd());
+		return false;
 	}
 
-	public void populateList(Gtk.ListStore liststore)
+	public string extractCode(string redirectURL)
 	{
-		Gtk.TreeIter iter;
-		liststore.append(out iter);
-		liststore.set(iter, 0, _("OwnCloud"));
+		return "";
 	}
+
+	public string buildLoginURL()
+	{
+		return "";
+	}
+}
+
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
+{
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.OwnCloudNewsLoginWidget));
 }

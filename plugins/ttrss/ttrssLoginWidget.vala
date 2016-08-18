@@ -36,7 +36,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		logger = m_logger;
 		m_utils = new ttrssUtils();
 
-		var url_label = new Gtk.Label(_("TinyTinyRSS URL:"));
+		var url_label = new Gtk.Label(_("Tiny Tiny RSS URL:"));
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
 
@@ -119,8 +119,14 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		box.show_all();
 
 		m_stack.add_named(box, "ttrssUI");
-		populateList();
-		fill();
+
+		Gtk.TreeIter iter;
+		m_listStore.append(out iter);
+		m_listStore.set(iter, 0, _("Tiny Tiny RSS"), 1, "ttrssUI");
+
+		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
+		m_userEntry.set_text(m_utils.getUser());
+		m_passwordEntry.set_text(m_utils.getPasswd());
 	}
 
 	public bool needWebLogin()
@@ -143,20 +149,6 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 			m_utils.setHtaccessUser(m_authUserEntry.get_text());
 			m_utils.setHtAccessPassword(m_authPasswordEntry.get_text());
 		}
-	}
-
-	private void fill()
-	{
-		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
-		m_userEntry.set_text(m_utils.getUser());
-		m_passwordEntry.set_text(m_utils.getPasswd());
-	}
-
-	private void populateList()
-	{
-		Gtk.TreeIter iter;
-		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("Tiny Tiny RSS"), 1, "ttrssUI");
 	}
 
 	public string extractCode(string redirectURL)

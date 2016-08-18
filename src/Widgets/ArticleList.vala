@@ -824,6 +824,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			logger.print(LogMessage.DEBUG, "updateArticleList: nothing to do -> return");
 			m_busy = false;
+			m_emptyList.set_text(buildEmptyString());
+			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 			return;
 		}
 

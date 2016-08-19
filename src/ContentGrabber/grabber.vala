@@ -139,7 +139,7 @@ public class FeedReader.Grabber : GLib.Object {
     {
         var session = new Soup.Session();
         session.timeout = 5;
-        var msg = new Soup.Message("GET", m_articleURL);
+        var msg = new Soup.Message("GET", m_articleURL.escape(""));
         msg.restarted.connect(() => {
             logger.print(LogMessage.DEBUG, "Grabber: download redirected - " + msg.status_code.to_string());
             if(msg.status_code == Soup.Status.MOVED_TEMPORARILY

@@ -14,7 +14,7 @@ set (UI_NAME "feedreader")
 set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
-set (VERSION "2.0")
+set (VERSION "2.0-dev")
 
 find_package(PkgConfig)
 find_package(Vala REQUIRED)

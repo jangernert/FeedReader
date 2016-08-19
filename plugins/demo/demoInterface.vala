@@ -200,61 +200,119 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Method to set the state of articles to read or unread
+	// "articleIDs": comma separated string of articleIDs e.g. "id1,id2,id3"
+	// "read": the state to apply. ArticleStatus.READ or ArticleStatus.UNREAD
+	//--------------------------------------------------------------------------------------
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Method to set the state of articles to marked or unmarked
+	// "articleID": single articleID
+	// "read": the state to apply. ArticleStatus.MARKED or ArticleStatus.UNMARKED
+	//--------------------------------------------------------------------------------------
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Mark all articles of the feed as read
+	//--------------------------------------------------------------------------------------
 	public void setFeedRead(string feedID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Mark all articles of the feeds that are part of the category as read
+	//--------------------------------------------------------------------------------------
 	public void setCategorieRead(string catID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Mark ALL articles as read
+	//--------------------------------------------------------------------------------------
 	public void markAllItemsRead()
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Add an existing tag to the article
+	//--------------------------------------------------------------------------------------
 	public void tagArticle(string articleID, string tagID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Remove an existing tag from the article
+	//--------------------------------------------------------------------------------------
 	public void removeArticleTag(string articleID, string tagID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Create a new tag with the title of "caption" and return the id of the
+	// newly added tag.
+	// Hint: some services don't have API to create tags, but instead create them
+	// on the fly when tagging articles. In this case just compose the tagID
+	// following the schema tha service uses and return it.
+	//--------------------------------------------------------------------------------------
 	public string createTag(string caption)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Delete a tag completely
+	//--------------------------------------------------------------------------------------
 	public void deleteTag(string tagID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Rename the tag with the id "tagID" to the new name "title"
+	//--------------------------------------------------------------------------------------
 	public void renameTag(string tagID, string title)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Subscribe to the URL "feedURL"
+	// "catID": the category the feed should be placed into, "null" otherwise
+	// "newCatName": the name of a new category the feed should be put in, "null" otherwise
+	//--------------------------------------------------------------------------------------
 	public string addFeed(string feedURL, string? catID, string? newCatName)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Remove the feed with the id "feedID" completely
+	//--------------------------------------------------------------------------------------
 	public void removeFeed(string feedID)
 	{
 

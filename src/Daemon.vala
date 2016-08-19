@@ -700,6 +700,7 @@ namespace FeedReader {
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
+				updateArticleList();
 			});
 		}
 

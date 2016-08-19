@@ -80,7 +80,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = m_settings.get_string("url");
+		attributes["URL"] = getURL();
 		attributes["Username"] = getUser();
 
 		string passwd = "";
@@ -130,7 +130,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 										"URL", Secret.SchemaAttributeType.STRING,
 										"Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-        attributes["URL"] = m_settings.get_string("url");
+        attributes["URL"] = getURL();
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
@@ -147,7 +147,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
                                           "htaccess", Secret.SchemaAttributeType.BOOLEAN);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = m_settings.get_string("url");
+		attributes["URL"] = getURL();
 		attributes["Username"] = getHtaccessUser();
         attributes["Username"] = "true";
 
@@ -188,9 +188,9 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
     }
 
 
-    public bool downloadIcon(string feed_id, string icon_url)
+    public bool downloadIcon(string feed_id, string? icon_url)
 	{
-        if(icon_url == "")
+        if(icon_url == "" || icon_url == null)
             return false;
 
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";

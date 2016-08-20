@@ -318,56 +318,127 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Rename the feed with the id "feedID" to "title"
+	//--------------------------------------------------------------------------------------
 	public void renameFeed(string feedID, string title)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Move the feed with the id "feedID" from its current category
+	// to any other category. "currentCatID" is only needed if the
+	// feed can be part of multiple categories at once.
+	//--------------------------------------------------------------------------------------
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Create a new category
+	// "title": title of the new category
+	// "parentID": only needed if multi-level-categories are supported
+	// Hint: some services don't have API to create categories, but instead create them
+	// on the fly when movin feeds over to them. In this case just compose the categoryID
+	// following the schema tha service uses and return it.
+	//--------------------------------------------------------------------------------------
 	public string createCategory(string title, string? parentID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Rename the category with the id "catID" to "title"
+	//--------------------------------------------------------------------------------------
 	public void renameCategory(string catID, string title)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Move the category with the id "catID" into another category
+	// with the id "newParentID"
+	// This method is only used if multi-level-categories are supported
+	//--------------------------------------------------------------------------------------
 	public void moveCategory(string catID, string newParentID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Delete the category with the id "catID"
+	//--------------------------------------------------------------------------------------
 	public void deleteCategory(string catID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Rename the feed with the id "feedID" from the category with the id "catID"
+	// Don't delete the feed entirely, just remove it from the category.
+	// Only useful if feed can be part of multiple categories.
+	//--------------------------------------------------------------------------------------
 	public void removeCatFromFeed(string feedID, string catID)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Import the content of "opml"
+	// If the service doesn't provide API to import OPML you can use the
+	// OPMLparser-class
+	//--------------------------------------------------------------------------------------
 	public void importOPML(string opml)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Get all feeds, categories and tags from the service
+	// Fill up the emtpy LinkedList's that are provided with instances of the
+	// model-classes category, feed and article
+	//--------------------------------------------------------------------------------------
 	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Return the total count of unread articles on the server
+	//--------------------------------------------------------------------------------------
 	public int getUnreadCount()
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Get the requested articles and write them to the data-base
+	//
+	// "count":		the number of articles to get
+	// "whatToGet":	the kind of articles to get (all/unread/marked/etc.)
+	// "feedID":	get only articles of a secific feed or tag
+	// "isTagID":	false if "feedID" is a feed-ID, true if "feedID" is a tag-ID
+	//
+	// It is recommended after getting the articles from the server to use the signal
+	// "writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize)"
+	// to automatically process them in the content-grabber, write them to the
+	// data-base and send all the signals to the UI to update accordingly.
+	// But if the API suggests a different approach you can everything on your
+	// own (see ttrss-backend).
+	//--------------------------------------------------------------------------------------
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
 	{
 
@@ -375,6 +446,11 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 }
 
+
+//--------------------------------------------------------------------------------------
+// Boilerplate code for the plugin. Replace "demoInterface" with the name
+// of your interface-class.
+//--------------------------------------------------------------------------------------
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)
 {

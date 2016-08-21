@@ -172,6 +172,7 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/Setting.vala
     src/Widgets/SettingsDialog.vala
     src/Widgets/SharePopover.vala
+    src/Widgets/SimpleHeader.vala
     src/Widgets/SpringCleanPage.vala
     src/Widgets/TagRow.vala
     src/Widgets/TagPopover.vala

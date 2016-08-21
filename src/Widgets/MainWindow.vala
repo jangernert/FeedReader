@@ -19,7 +19,7 @@ using Gtk;
 public class FeedReader.readerUI : Gtk.ApplicationWindow
 {
 	private readerHeaderbar m_headerbar;
-	private Gtk.HeaderBar m_simpleHeader;
+	private SimpleHeader m_simpleHeader;
 	private Gtk.Stack m_stack;
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
@@ -155,9 +155,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_content.toggleReadSelectedArticle();
 		});
 
-		m_simpleHeader = new Gtk.HeaderBar();
-		m_simpleHeader.show_close_button = true;
-		m_simpleHeader.set_title("FeedReader");
+		m_simpleHeader = new SimpleHeader();
 
 		m_content.showArticleButtons.connect((show) => {
 			m_headerbar.showArticleButtons(show);
@@ -751,7 +749,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			showShortcutWindow();
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -774,6 +772,11 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	public readerHeaderbar getHeaderBar()
 	{
 		return m_headerbar;
+	}
+
+	public SimpleHeader getSimpleHeader()
+	{
+		return m_simpleHeader;
 	}
 
 	public void setOffline()

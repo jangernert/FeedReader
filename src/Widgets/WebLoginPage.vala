@@ -61,7 +61,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		}
 	}
 
-	void check()
+	private void check()
 	{
 		string url = m_view.get_uri();
 
@@ -70,5 +70,10 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 			m_view.stop_loading();
 			success();
 		}
+	}
+
+	public void reset()
+	{
+		m_view.load_uri("about:blank");
 	}
 }

@@ -117,6 +117,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		m_loginWidget.add_named(nothing_selected, "none");
 
 		m_page = new WebLoginPage();
+		this.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
 		this.add_named(m_page, "web");
 		this.add_named(m_layout, "login");
 		this.show_all();
@@ -144,6 +145,15 @@ public class FeedReader.LoginPage : Gtk.Stack {
 			m_page.getApiCode.connect(extension.extractCode);
 			m_page.success.connect(login);
 			this.set_visible_child_name("web");
+
+			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+
+			window.getSimpleHeader().showBackButton(true);
+			window.getSimpleHeader().back.connect(() => {
+				this.set_visible_child_full("login", Gtk.StackTransitionType.SLIDE_RIGHT);
+				window.getSimpleHeader().showBackButton(false);
+				m_page.reset();
+			});
 		}
 		else
 		{

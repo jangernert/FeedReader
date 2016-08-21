@@ -1,6 +1,6 @@
 <schemalist>
     <schema id="org.gnome.feedreader.feedly" path="/org/gnome/feedreader/feedly/" gettext-domain="feedreader">
-		<key name="feedly-access-token" type="s">
+		<key name="access-token" type="s">
 			<default>""</default>
 			<summary>Acces key to Feedly-API</summary>
 			<description>
@@ -8,7 +8,7 @@
 			</description>
 		</key>
 
-		<key name="feedly-refresh-token" type="s">
+		<key name="refresh-token" type="s">
 			<default>""</default>
 			<summary>Refresh token</summary>
 			<description>
@@ -16,7 +16,7 @@
 			</description>
 		</key>
 
-		<key name="feedly-api-code" type="s">
+		<key name="api-code" type="s">
 			<default>""</default>
 			<summary>apiCode</summary>
 			<description>
@@ -24,7 +24,7 @@
 			</description>
 		</key>
 
-        <key name="email" type="s">
+        	<key name="email" type="s">
 			<default>""</default>
 			<summary>user-email</summary>
 			<description>

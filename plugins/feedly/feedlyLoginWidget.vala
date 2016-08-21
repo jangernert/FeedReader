@@ -76,7 +76,7 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 			int end = redirectURL.index_of("&");
 			string code = redirectURL.substring(start, end-start);
 			m_utils.setApiCode(code);
-			logger.print(LogMessage.DEBUG, "WebLoginPage: set feedly-api-code: " + code);
+			logger.print(LogMessage.DEBUG, "feedlyLoginWidget: set feedly-api-code: " + code);
 			GLib.Thread.usleep(500000);
 			return true;
 		}

@@ -48,8 +48,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			return LoginResponse.SUCCESS;
 		}
 
-		m_utils.setAccessToken("");
-
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
@@ -79,6 +77,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 			if(root.has_member("userEmail"))
 				m_utils.setEmail(root.get_string_member("userEmail"));
+
+			if(root.has_member("userName"))
+				m_utils.setUser(root.get_string_member("userName"));
 
 			return true;
 		}

@@ -46,7 +46,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public string? getServerURL()
 	{
-		return null;
+		return "inoreader.com";
 	}
 
 	public string uncategorizedID()

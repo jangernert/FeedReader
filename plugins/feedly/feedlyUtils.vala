@@ -32,32 +32,32 @@ public class FeedReader.FeedlyUtils : Object {
 
 	public string getRefreshToken()
 	{
-		return m_settings.get_string("feedly-refresh-token");
+		return m_settings.get_string("refresh-token");
 	}
 
 	public void setRefreshToken(string token)
 	{
-		m_settings.set_string("feedly-refresh-token", token);
+		m_settings.set_string("refresh-token", token);
 	}
 
 	public string getAccessToken()
 	{
-		return m_settings.get_string("feedly-access-token");
+		return m_settings.get_string("access-token");
 	}
 
 	public void setAccessToken(string token)
 	{
-		m_settings.set_string("feedly-access-token", token);
+		m_settings.set_string("access-token", token);
 	}
 
 	public string getApiCode()
 	{
-		return m_settings.get_string("feedly-api-code");
+		return m_settings.get_string("api-code");
 	}
 
 	public void setApiCode(string code)
 	{
-		m_settings.set_string("feedly-api-code", code);
+		m_settings.set_string("api-code", code);
 	}
 
 	public string getEmail()
@@ -75,4 +75,39 @@ public class FeedReader.FeedlyUtils : Object {
 		Utils.resetSettings(m_settings);
 	}
 
+	public bool downloadIcon(string feed_id, string icon_url)
+	{
+		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+		var path = GLib.File.new_for_path(icon_path);
+		try{path.make_directory_with_parents();}catch(GLib.Error e){}
+		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
+
+		if(!FileUtils.test (local_filename, GLib.FileTest.EXISTS))
+		{
+			Soup.Message message_dlIcon;
+			message_dlIcon = new Soup.Message ("GET", icon_url);
+
+			if(settingsTweaks.get_boolean("do-not-track"))
+				message_dlIcon.request_headers.append("DNT", "1");
+
+			var session = new Soup.Session ();
+			var status = session.send_message(message_dlIcon);
+			if (status == 200)
+			{
+				try{
+					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
+				}
+				catch(GLib.FileError e)
+				{
+					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+				}
+				return true;
+			}
+			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			return false;
+		}
+		// file already exists
+		return true;
+	}
 }

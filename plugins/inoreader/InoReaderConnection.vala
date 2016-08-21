@@ -25,54 +25,97 @@ public class FeedReader.InoReaderConnection {
 		m_api_code = m_utils.getAccessToken();
 	}
 
-	public int getToken()
+	public LoginResponse getToken()
 	{
+		logger.print(LogMessage.DEBUG, "InoReaderConnection: getToken()");
+
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", "https://www.inoreader.com/accounts/ClientLogin/");
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "Apikey", Secret.SchemaAttributeType.STRING,
-							                      "Apisecret", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = m_utils.getApiKey();
-		attributes["Apisecret"] = m_utils.getApiToken();
-		attributes["Username"] = m_api_username;
-
-		string passwd = "";
-		try{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
-		}
-
-		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd ;
-		message.request_headers.append("AppId", m_utils.getApiKey());
-		message.request_headers.append("AppKey", m_utils.getApiToken());
+		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
+		string message_string = "code=" + m_utils.getApiCode()
+								+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
+								+ "&client_id=" + InoReaderSecret.apiClientId
+								+ "&client_secret=" + InoReaderSecret.apiClientSecret
+								+ "&scope="
+								+ "&grant_type=authorization_code";
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
+		string response = (string)message.response_body.flatten().data;
 
-		try{
-			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
-			string response = (string)message.response_body.flatten().data;
-			if(regex.match(response))
-			{
-				string split = regex.replace( response, -1,0,"");
-				m_utils.setAccessToken(split.strip());
-				m_api_code = m_utils.getAccessToken();
-				return LoginResponse.SUCCESS;
-			}
-			else
-			{
-				logger.print(LogMessage.DEBUG, response);
-				return LoginResponse.WRONG_LOGIN;
-			}
+		try
+		{
+			var parser = new Json.Parser();
+			parser.load_from_data(response, -1);
+			var root = parser.get_root().get_object();
+
+			string accessToken = root.get_string_member("access_token");
+			int64 expires = (int)root.get_int_member("expires_in");
+			string refreshToken = root.get_string_member("refresh_token");
+			int64 now = (new DateTime.now_local()).to_unix();
+
+			logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
+			logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
+			logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
+			logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+
+			m_utils.setAccessToken(accessToken);
+			m_utils.setExpiration((int)expires);
+			m_utils.setRefreshToken(refreshToken);
+			m_utils.setTimeStamp((int)now);
 		}
-		catch (Error e){
-			logger.print(LogMessage.ERROR, "Could not load response to Message from inoreader - %s".printf(e.message));
+		catch(Error e)
+		{
+			logger.print(LogMessage.ERROR, "InoReaderConnection - getToken: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+			return LoginResponse.UNKNOWN_ERROR;
 		}
 
-		return LoginResponse.UNKNOWN_ERROR;
+		return LoginResponse.SUCCESS;
+	}
+
+	public LoginResponse refreshToken()
+	{
+		logger.print(LogMessage.DEBUG, "InoReaderConnection: refreshToken()");
+
+		var session = new Soup.Session();
+		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
+		string message_string = "client_id=" + InoReaderSecret.apiClientId
+								+ "&client_secret=" + InoReaderSecret.apiClientSecret
+								+ "&grant_type=refresh_token"
+								+ "&refresh_token=" + m_utils.getRefreshToken();
+
+		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+		session.send_message(message);
+		string response = (string)message.response_body.flatten().data;
+
+		try
+		{
+			var parser = new Json.Parser();
+			parser.load_from_data(response, -1);
+			var root = parser.get_root().get_object();
+
+			string accessToken = root.get_string_member("access_token");
+			int64 expires = (int)root.get_int_member("expires_in");
+			string refreshToken = root.get_string_member("refresh_token");
+			int64 now = (new DateTime.now_local()).to_unix();
+
+			logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
+			logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
+			logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
+			logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+
+			m_utils.setAccessToken(accessToken);
+			m_utils.setExpiration((int)expires);
+			m_utils.setRefreshToken(refreshToken);
+			m_utils.setTimeStamp((int)now);
+		}
+		catch(Error e)
+		{
+			logger.print(LogMessage.ERROR, "InoReaderConnection - getToken: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+			return LoginResponse.UNKNOWN_ERROR;
+		}
+
+		return LoginResponse.SUCCESS;
 	}
 
 	public string send_request(string path, string? message_string = null)
@@ -83,13 +126,13 @@ public class FeedReader.InoReaderConnection {
 	private string send_post_request(string path, string type, string? message_string = null)
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message(type, m_utils.getBaseURI() + path);
+		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 
-		string inoauth = "GoogleLogin auth=" + m_utils.getAccessToken();
+		if(!m_utils.accessTokenValid())
+			refreshToken();
 
+		string inoauth = "Bearer " + m_utils.getAccessToken();
 		message.request_headers.append("Authorization", inoauth) ;
-		message.request_headers.append("AppId", m_utils.getApiKey());
-		message.request_headers.append("AppKey", m_utils.getApiToken());
 
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);

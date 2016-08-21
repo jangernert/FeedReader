@@ -20,13 +20,14 @@ public class FeedReader.FeedlyConnection {
 	private FeedlyUtils m_utils;
 	private GLib.Settings m_settingsTweaks;
 
-	public FeedlyConnection () {
+	public FeedlyConnection()
+	{
 		m_utils = new FeedlyUtils();
 		m_access_token = m_utils.getAccessToken();
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 	}
 
-	public int getToken()
+	public LoginResponse getToken()
 	{
 		var parser = new Json.Parser();
 		var session = new Soup.Session();
@@ -67,7 +68,7 @@ public class FeedReader.FeedlyConnection {
 	}
 
 
-	public int refreshToken()
+	public LoginResponse refreshToken()
 	{
 		var parser = new Json.Parser();
 		var session = new Soup.Session();

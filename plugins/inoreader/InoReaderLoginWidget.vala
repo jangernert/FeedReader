@@ -17,8 +17,6 @@ FeedReader.Logger logger;
 
 public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterface {
 
-	private Gtk.Entry m_userEntry;
-	private Gtk.Entry m_passwordEntry;
 	private InoReaderUtils m_utils;
 
 	public Gtk.Stack m_stack { get; construct set; }
@@ -31,34 +29,21 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		logger = m_logger;
 		m_utils = new InoReaderUtils();
 
-		var userLabel = new Gtk.Label(_("Username:"));
-		var passwordLabel = new Gtk.Label(_("Password:"));
-
-		m_userEntry = new Gtk.Entry();
-		m_passwordEntry = new Gtk.Entry();
-
-		m_userEntry.activate.connect(writeData);
-		m_passwordEntry.activate.connect(writeData);
-
-		m_passwordEntry.set_invisible_char('*');
-		m_passwordEntry.set_visibility(false);
-
-		var grid = new Gtk.Grid();
-		grid.set_column_spacing(10);
-		grid.set_row_spacing(10);
-		grid.set_valign(Gtk.Align.CENTER);
-		grid.set_halign(Gtk.Align.CENTER);
-
 		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-inoreader.svg");
 
-		grid.attach(userLabel, 0, 0, 1, 1);
-		grid.attach(m_userEntry, 1, 0, 1, 1);
-		grid.attach(passwordLabel, 0, 1, 1, 1);
-		grid.attach(m_passwordEntry, 1, 1, 1, 1);
+		var text = new Gtk.Label(_("You will be redirected to the InoReader website where you can log in to your account."));
+		text.get_style_context().add_class("h3");
+		text.set_justify(Gtk.Justification.CENTER);
+		text.set_line_wrap_mode(Pango.WrapMode.WORD);
+		text.set_line_wrap(true);
+		text.set_lines(3);
+		text.expand = false;
+		text.set_width_chars(60);
+		text.set_max_width_chars(60);
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.pack_start(logo, false, false, 10);
-		box.pack_start(grid, true, true, 10);
+		box.pack_start(text, true, true, 10);
 		box.show_all();
 
 		m_stack.add_named(box, "inoreaderUI");
@@ -66,30 +51,56 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		Gtk.TreeIter iter;
 		m_listStore.append(out iter);
 		m_listStore.set(iter, 0, _("InoReader"), 1, "inoreaderUI");
-
-		m_userEntry.set_text(m_utils.getUser());
-		m_passwordEntry.set_text(m_utils.getPasswd());
 	}
 
 	public void writeData()
 	{
-		m_utils.setUser(m_userEntry.get_text());
-		m_utils.setPassword(m_passwordEntry.get_text());
+
 	}
 
 	public bool extractCode(string redirectURL)
 	{
+		if(redirectURL.has_prefix(InoReaderSecret.apiRedirectUri))
+		{
+			logger.print(LogMessage.DEBUG, redirectURL);
+			int csrf_start = redirectURL.index_of("state=")+6;
+			string csrf_code = redirectURL.substring(csrf_start);
+			logger.print(LogMessage.DEBUG, "InoReaderLoginWidget: csrf_code: " + csrf_code);
+
+			if(csrf_code == InoReaderSecret.csrf_protection)
+			{
+				int start = redirectURL.index_of("code=")+5;
+				int end = redirectURL.index_of("&", start);
+				string code = redirectURL.substring(start, end-start);
+				m_utils.setApiCode(code);
+				logger.print(LogMessage.DEBUG, "InoReaderLoginWidget: set inoreader-api-code: " + code);
+				GLib.Thread.usleep(500000);
+				return true;
+			}
+
+			logger.print(LogMessage.ERROR, "InoReaderLoginWidget: csrf_code mismatch");
+		}
+		else
+		{
+			logger.print(LogMessage.WARNING, "InoReaderLoginWidget: wrong redirect_uri: " + redirectURL);
+		}
+
 		return false;
 	}
 
 	public string buildLoginURL()
 	{
-		return "";
+		return "https://www.inoreader.com/oauth2/auth"
+			+ "?client_id=" + InoReaderSecret.apiClientId
+			+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
+			+ "&response_type=code"
+			+ "&scope=read+write"
+			+ "&state=" + InoReaderSecret.csrf_protection;
 	}
 
 	public bool needWebLogin()
 	{
-		return false;
+		return true;
 	}
 
 	public void showHtAccess()

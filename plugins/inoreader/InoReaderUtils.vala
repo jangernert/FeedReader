@@ -13,6 +13,14 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace FeedReader.InoReaderSecret {
+	 const string base_uri        = "https://www.inoreader.com/reader/api/0/";
+	 const string apiClientId     = "1000001384";
+	 const string apiClientSecret = "3AA9IyNTFL_Mgu77WPpWbawx9loERRdf";
+	 const string apiRedirectUri  = "http://localhost";
+	 const string csrf_protection = "123456";
+}
+
 public class FeedReader.InoReaderUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
@@ -32,6 +40,16 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 		m_settings.set_string("username", user);
 	}
 
+	public string getRefreshToken()
+	{
+		return m_settings.get_string("refresh-token");
+	}
+
+	public void setRefreshToken(string token)
+	{
+		m_settings.set_string("refresh-token", token);
+	}
+
 	public string getAccessToken()
 	{
 		return m_settings.get_string("access-token");
@@ -40,6 +58,36 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 	public void setAccessToken(string token)
 	{
 		m_settings.set_string("access-token", token);
+	}
+
+	public string getApiCode()
+	{
+		return m_settings.get_string("api-code");
+	}
+
+	public void setApiCode(string code)
+	{
+		m_settings.set_string("api-code", code);
+	}
+
+	public int getExpiration()
+	{
+		return m_settings.get_int("access-token-expires-in");
+	}
+
+	public void setExpiration(int seconds)
+	{
+		m_settings.set_int("access-token-expires-in", seconds);
+	}
+
+	public int getTimeStamp()
+	{
+		return m_settings.get_int("access-token-timestamp");
+	}
+
+	public void setTimeStamp(int stamp)
+	{
+		m_settings.set_int("access-token-timestamp", stamp);
 	}
 
 	public string getUserID()
@@ -54,86 +102,33 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 
 	public string getEmail()
 	{
-		return m_settings.get_string("userEmail");
+		return m_settings.get_string("user-email");
 	}
 
 	public void setEmail(string email)
 	{
-		m_settings.set_string("userEmail", email);
-	}
-
-	public string getPasswd()
-	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "Apikey", Secret.SchemaAttributeType.STRING,
-							                      "Apisecret", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = getApiKey();
-		attributes["Apisecret"] = getApiToken();
-		attributes["Username"] = m_settings.get_string("username");
-
-		string passwd = "";
-		try
-		{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e)
-		{
-			logger.print(LogMessage.ERROR, "InoReaderUtils: getPasswd: " + e.message);
-		}
-
-		if(passwd == null)
-		{
-			return "";
-		}
-
-		return passwd;
-	}
-
-	public void setPassword(string passwd)
-	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-										  "Apikey", Secret.SchemaAttributeType.STRING,
-										  "Apisecret", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = getApiKey();
-		attributes["Apisecret"] = getApiToken();
-		attributes["Username"] = getUser();
-		try
-		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
-		}
-		catch(GLib.Error e)
-		{
-			logger.print(LogMessage.ERROR, "InoReaderUtils: setPassword: " + e.message);
-		}
+		m_settings.set_string("user-email", email);
 	}
 
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
-		deletePassword();
 	}
 
-	public bool deletePassword()
+	public bool accessTokenValid()
 	{
-		bool removed = false;
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "Apikey", Secret.SchemaAttributeType.STRING,
-							                      "Apisecret", Secret.SchemaAttributeType.STRING,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Apikey"] = getApiKey();
-		attributes["Apisecret"] = getApiToken();
-		attributes["Username"] = m_settings.get_string("username");
+		logger.print(LogMessage.DEBUG, "InoReaderUtils: accessTokenValid()");
 
-		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			removed = Secret.password_clearv.end(async_res);
-			pwSchema.unref();
-		});
-		return removed;
+		var now = new DateTime.now_local();
+		int expires = getTimeStamp() + getExpiration();
+
+		if((int)now.to_unix() >  expires)
+		{
+			logger.print(LogMessage.WARNING, "InoReaderUtils: access token expired");
+			return false;
+		}
+
+		return true;
 	}
 
 	public bool downloadIcon(string feed_id, string icon_url)
@@ -193,20 +188,5 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 			}
 		}
 		return false;
-	}
-
-	public string getBaseURI()
-	{
-		return "https://www.inoreader.com/reader/api/0/";
-	}
-
-	public string getApiKey()
-	{
-		return "1000001058";
-	}
-
-	public string getApiToken()
-	{
-		return "a3LyhdTSKk_dcCygZUZBZenIO2SQcpzz";
 	}
 }

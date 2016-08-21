@@ -1,57 +1,114 @@
-//	This file is part of FeedReader.
-//
-//	FeedReader is free software: you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation, either version 3 of the License, or
-//	(at your option) any later version.
-//
-//	FeedReader is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
-//
-//	You should have received a copy of the GNU General Public License
-//	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
+//--------------------------------------------------------------------------------------
+// This is the plugin that extends user-interface of FeedReader
+// It adds all the necessary widgets to the interface to log into the service.
+// User- and password-entries, or redirect to a website to log in.
+//--------------------------------------------------------------------------------------
 
 public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
+
+	//--------------------------------------------------------------------------------------
+	// The stack with all the login-widgets for the different services.
+	// Add widget and name it just like the plugin itself.
+	//--------------------------------------------------------------------------------------
 	public Gtk.Stack m_stack { get; construct set; }
+
+
+	//--------------------------------------------------------------------------------------
+	// Model for the dropdown-menu to choose the service.
+	// Add new Gtk.TreeIter with first column as name
+	// and second column as id plugin-name + "UI".
+	//--------------------------------------------------------------------------------------
 	public Gtk.ListStore m_listStore { get; construct set; }
+
+
+	//--------------------------------------------------------------------------------------
+	// Can be used to print messages to the commandline which are also
+	// written to the harddrive.
+	//--------------------------------------------------------------------------------------
 	public Logger m_logger { get; construct set; }
+
+
+	//--------------------------------------------------------------------------------------
+	// The install prefix the user (or packager) chooses when building FeedReader
+	// Useful to load custom icons installed alongside the plugin.
+	//--------------------------------------------------------------------------------------
 	public string m_installPrefix { get; construct set; }
 
+
+	//--------------------------------------------------------------------------------------
+	// Called when loading plugin. Setup all the widgets here and add them to
+	// m_stack and m_listStore.
+	// The signal "login()" can be emmited when try to log in.
+	// For example after pressing "enter" in the password-entry.
+	//--------------------------------------------------------------------------------------
 	public void init()
 	{
-
+		//--------------------------------------------------------------------------------------
+		// m_stack.add_named(demoWidget, "demoUI");
+		// Gtk.TreeIter iter;
+		// m_listStore.append(out iter);
+		// m_listStore.set(iter, 0, _("Demo Service 123"), 1, "demoUI");
+		//--------------------------------------------------------------------------------------
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Return wheather the plugin needs a webview to log in via oauth.
+	//--------------------------------------------------------------------------------------
 	public bool needWebLogin()
 	{
 
 	}
 
+
+	//--------------------------------------------------------------------------------------
+	// Only important for self-hosted services.
+	// If the server is secured by htaccess and a second username and password
+	// is required, show the UI to enter those in this methode.
+	// If htaccess won't be needed do nothing here.
+	//--------------------------------------------------------------------------------------
 	public void showHtAccess()
 	{
 
 	}
 
+	//--------------------------------------------------------------------------------------
+	// Methode gets executed before logging in. Write all the data gathered
+	// into gsettings (password, username, access-key).
+	//--------------------------------------------------------------------------------------
 	public void writeData()
 	{
 
 	}
 
-	public bool extractCode(string redirectURL)
+
+	//--------------------------------------------------------------------------------------
+	// Only needed if "needWebLogin()" retruned true. Return URL that should be
+	// loaded to log in via website.
+	//--------------------------------------------------------------------------------------
+	public string buildLoginURL()
 	{
 
 	}
 
-	public string buildLoginURL()
+
+	//--------------------------------------------------------------------------------------
+	// Extract access-key from redirect-URL from webview after loggin in with
+	// the webview.
+	// Return "true" if extracted sucessfuly, "false" otherwise.
+	//--------------------------------------------------------------------------------------
+	public bool extractCode(string redirectURL)
 	{
 
 	}
 }
 
 
+//--------------------------------------------------------------------------------------
+// Boilerplate code for the plugin. Replace "demoLoginWidget" with the name
+// of your interface-class.
+//--------------------------------------------------------------------------------------
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)
 {

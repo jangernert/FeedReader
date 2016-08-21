@@ -70,9 +70,45 @@ public class FeedReader.FeedlyUtils : Object {
 		m_settings.set_string("email", email);
 	}
 
+	public int getExpiration()
+	{
+		return m_settings.get_int("access-token-expires-in");
+	}
+
+	public void setExpiration(int seconds)
+	{
+		m_settings.set_int("access-token-expires-in", seconds);
+	}
+
+	public int getTimeStamp()
+	{
+		return m_settings.get_int("access-token-timestamp");
+	}
+
+	public void setTimeStamp(int stamp)
+	{
+		m_settings.set_int("access-token-timestamp", stamp);
+	}
+
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
+	}
+
+	public bool accessTokenValid()
+	{
+		logger.print(LogMessage.DEBUG, "FeedlyUtils: accessTokenValid()");
+
+		var now = new DateTime.now_local();
+		int expires = getTimeStamp() + getExpiration();
+
+		if((int)now.to_unix() >  expires)
+		{
+			logger.print(LogMessage.WARNING, "FeedlyUtils: access token expired");
+			return false;
+		}
+
+		return true;
 	}
 
 	public bool downloadIcon(string feed_id, string icon_url)

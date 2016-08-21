@@ -125,11 +125,11 @@ public class FeedReader.InoReaderConnection {
 
 	private string send_post_request(string path, string type, string? message_string = null)
 	{
-		var session = new Soup.Session();
-		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
-
 		if(!m_utils.accessTokenValid())
 			refreshToken();
+		
+		var session = new Soup.Session();
+		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 
 		string inoauth = "Bearer " + m_utils.getAccessToken();
 		message.request_headers.append("Authorization", inoauth) ;

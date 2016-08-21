@@ -31,5 +31,13 @@
 				Email address of the current user.
 			</description>
 		</key>
+		
+		<key name="access-token-expires-in" type="i">
+			<default>0</default>
+		</key>
+	
+		<key name="access-token-timestamp" type="i">
+			<default>0</default>
+		</key>
 	</schema>
 </schemalist>

@@ -72,22 +72,12 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 
 	public int getExpiration()
 	{
-		return m_settings.get_int("access-token-expires-in");
+		return m_settings.get_int("access-token-expires");
 	}
 
 	public void setExpiration(int seconds)
 	{
-		m_settings.set_int("access-token-expires-in", seconds);
-	}
-
-	public int getTimeStamp()
-	{
-		return m_settings.get_int("access-token-timestamp");
-	}
-
-	public void setTimeStamp(int stamp)
-	{
-		m_settings.set_int("access-token-timestamp", stamp);
+		m_settings.set_int("access-token-expires", seconds);
 	}
 
 	public string getUserID()
@@ -117,12 +107,9 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 
 	public bool accessTokenValid()
 	{
-		logger.print(LogMessage.DEBUG, "InoReaderUtils: accessTokenValid()");
-
 		var now = new DateTime.now_local();
-		int expires = getTimeStamp() + getExpiration();
-
-		if((int)now.to_unix() >  expires)
+		
+		if((int)now.to_unix() >  getExpiration())
 		{
 			logger.print(LogMessage.WARNING, "InoReaderUtils: access token expired");
 			return false;

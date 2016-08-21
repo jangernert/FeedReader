@@ -57,9 +57,8 @@ public class FeedReader.FeedlyConnection {
 				logger.print(LogMessage.DEBUG, "now: " + now.to_string());
 
 				m_utils.setAccessToken(accessToken);
-				m_utils.setExpiration((int)expires);
+				m_utils.setExpiration((int)(now + expires));
 				m_utils.setRefreshToken(refreshToken);
-				m_utils.setTimeStamp((int)now);
 				return LoginResponse.SUCCESS;
 			}
 			else if(root.has_member("errorCode"))
@@ -112,9 +111,8 @@ public class FeedReader.FeedlyConnection {
 				logger.print(LogMessage.DEBUG, "now: " + now.to_string());
 
 				m_utils.setAccessToken(accessToken);
-				m_utils.setExpiration((int)expires);
+				m_utils.setExpiration((int)(now + expires));
 				m_utils.setRefreshToken(refreshToken);
-				m_utils.setTimeStamp((int)now);
 				return LoginResponse.SUCCESS;
 			}
 			else if(root.has_member("errorCode"))

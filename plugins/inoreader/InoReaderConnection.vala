@@ -58,9 +58,8 @@ public class FeedReader.InoReaderConnection {
 			logger.print(LogMessage.DEBUG, "now: " + now.to_string());
 
 			m_utils.setAccessToken(accessToken);
-			m_utils.setExpiration((int)expires);
+			m_utils.setExpiration((int)(now + expires));
 			m_utils.setRefreshToken(refreshToken);
-			m_utils.setTimeStamp((int)now);
 		}
 		catch(Error e)
 		{
@@ -104,9 +103,8 @@ public class FeedReader.InoReaderConnection {
 			logger.print(LogMessage.DEBUG, "now: " + now.to_string());
 
 			m_utils.setAccessToken(accessToken);
-			m_utils.setExpiration((int)expires);
+			m_utils.setExpiration((int)(now + expires));
 			m_utils.setRefreshToken(refreshToken);
-			m_utils.setTimeStamp((int)now);
 		}
 		catch(Error e)
 		{
@@ -127,7 +125,7 @@ public class FeedReader.InoReaderConnection {
 	{
 		if(!m_utils.accessTokenValid())
 			refreshToken();
-		
+
 		var session = new Soup.Session();
 		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 

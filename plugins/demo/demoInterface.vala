@@ -48,6 +48,17 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 
 	//--------------------------------------------------------------------------------------
+	// If the daemon should to an initial sync after logging in.
+	// For all online services: true
+	// Only for local backend: false
+	//--------------------------------------------------------------------------------------
+	public bool doInitSync()
+	{
+
+	}
+
+
+	//--------------------------------------------------------------------------------------
 	// What is the symbolic icon-name of the service-logo?
 	// Return a string with the name, not the complete path.
 	// For example: "feed-service-demo-symbolic"

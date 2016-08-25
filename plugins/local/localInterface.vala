@@ -31,6 +31,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return true;
 	}
 
+	public bool doInitSync()
+	{
+		return false;
+	}
+
 	public string? symbolicIcon()
 	{
 		return "feed-service-local-symbolic";

@@ -34,6 +34,11 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return false;
 	}
 
+	public bool doInitSync()
+	{
+		return true;
+	}
+
 	public string? symbolicIcon()
 	{
 		return "feed-service-owncloud-symbolic";

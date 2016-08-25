@@ -480,6 +480,14 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.supportTags();
 	}
 
+	public bool doInitSync()
+	{
+		if(!m_pluginLoaded)
+			return false;
+
+		return m_plugin.doInitSync();
+	}
+
 	public string? symbolicIcon()
 	{
 		if(!m_pluginLoaded)

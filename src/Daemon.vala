@@ -219,6 +219,9 @@ namespace FeedReader {
 
 		private void initSync()
 		{
+			if(!server.doInitSync())
+				return;
+
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				login(settings_general.get_string("plugin"));

@@ -30,6 +30,8 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool supportTags();
 
+	public abstract bool doInitSync();
+
 	public abstract string? symbolicIcon();
 
 	public abstract abstract string? accountName();

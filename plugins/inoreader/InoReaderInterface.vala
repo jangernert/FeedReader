@@ -34,6 +34,11 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return true;
 	}
 
+	public bool doInitSync()
+	{
+		return true;
+	}
+
 	public string? symbolicIcon()
 	{
 		return "feed-service-inoreader-symbolic";

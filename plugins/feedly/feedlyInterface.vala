@@ -34,6 +34,11 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return true;
 	}
 
+	public bool doInitSync()
+	{
+		return true;
+	}
+
 	public string? symbolicIcon()
 	{
 		return "feed-service-feedly-symbolic";

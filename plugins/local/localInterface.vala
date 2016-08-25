@@ -291,20 +291,20 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var articles = doc.get_items();
 			foreach(Rss.Item item in articles)
 			{
-				m_logger.print(LogMessage.DEBUG, "title: " + item.title);
-				m_logger.print(LogMessage.DEBUG, "pub_date: " + item.pub_date);
-				m_logger.print(LogMessage.DEBUG, "enclosure: " + item.enclosure_url);
-
 				var date = new GLib.DateTime.now_local();
 
 				if(item.pub_date != null)
 				{
                 	GLib.Time time = GLib.Time();
                 	time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
-                	date = new GLib.DateTime.local(time.year, time.month, time.day, time.hour, time.minute, time.second);
+                	date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
 				}
 
 				string content = m_utils.convert(item.description, locale);
+
+				string media = "";
+				if(item.enclosure_url != null)
+					media = item.enclosure_url;
 
 				var Article = new article
 				(
@@ -320,7 +320,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 									date,
 									0,
 									"",
-									item.enclosure_url
+									media
 				);
 
 				articleArray.add(Article);

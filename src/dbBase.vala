@@ -59,7 +59,8 @@ public class FeedReader.dbBase : GLib.Object {
 												"url" TEXT NOT NULL,
 												"has_icon" INTEGER NOT NULL,
 												"category_id" TEXT,
-												"subscribed" INTEGER DEFAULT 1
+												"subscribed" INTEGER DEFAULT 1,
+												"xmlURL" TEXT
 											)""");
 
 			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
@@ -824,10 +825,14 @@ public class FeedReader.dbBase : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
 			string catString = stmt.column_text(4);
+			string xmlURL = stmt.column_text(6);
+			bool has_icon = ((stmt.column_int(3) == 1) ? true : false);
+			string url = stmt.column_text(2);
+			string name = stmt.column_text(1);
 			string[] catVec = { "" };
 			if(catString != "")
 				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
+			tmpfeed = new feed(feedID, name, url, has_icon, getFeedUnread(feedID), catVec, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -879,10 +884,14 @@ public class FeedReader.dbBase : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
 			string catString = stmt.column_text(4);
+			string xmlURL = stmt.column_text(6);
+			bool has_icon = ((stmt.column_int(3) == 1) ? true : false);
+			string url = stmt.column_text(2);
+			string name = stmt.column_text(1);
 			string[] catVec = { "" };
 			if(catString != "")
 				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), catVec);
+			tmpfeed = new feed(feedID, name, url, has_icon, getFeedUnread(feedID), catVec, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -985,6 +994,25 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		return count;
+	}
+
+	public string getMaxID(string table, string field)
+	{
+		string maxID = "0";
+		var query = new QueryBuilder(QueryType.SELECT, table);
+		query.selectField("max(%s)".printf(field));
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+
+		while (stmt.step () == Sqlite.ROW) {
+			maxID = stmt.column_text(0);
+		}
+
+		return maxID;
 	}
 
 	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)

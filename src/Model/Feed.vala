@@ -23,7 +23,8 @@ public class FeedReader.feed : GLib.Object {
 	private uint m_unread;
 	private string[] m_catIDs;
 
-	public feed (string feedID, string title, string url, bool hasIcon, uint unread, string[] catIDs, string? xmlURL = null) {
+	public feed(string feedID, string title, string url, bool hasIcon, uint unread, string[] catIDs, string? xmlURL = null)
+	{
 		m_feedID = feedID;
 		m_title = title;
 		m_url = url;
@@ -94,6 +95,11 @@ public class FeedReader.feed : GLib.Object {
 			return true;
 
 		return false;
+	}
+
+	public string getXmlUrl()
+	{
+		return m_xmlURL;
 	}
 
 	public void print()

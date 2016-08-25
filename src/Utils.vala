@@ -513,28 +513,37 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		++level;
 		bool flag = false;
-		var directory = GLib.File.new_for_path(path);
 
-		var enumerator = directory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
-
-		GLib.FileInfo file_info;
-		while((file_info = enumerator.next_file()) != null)
+		try
 		{
-			string file_name = file_info.get_name();
+			var directory = GLib.File.new_for_path(path);
 
-			if((file_info.get_file_type()) == GLib.FileType.DIRECTORY)
+			var enumerator = directory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
+
+			GLib.FileInfo file_info;
+			while((file_info = enumerator.next_file()) != null)
 			{
-				remove_directory(path + file_name + "/", level);
-	    	}
+				string file_name = file_info.get_name();
 
-			var file = directory.get_child(file_name);
-			file.delete();
+				if((file_info.get_file_type()) == GLib.FileType.DIRECTORY)
+				{
+					remove_directory(path + file_name + "/", level);
+		    	}
+
+				var file = directory.get_child(file_name);
+				file.delete();
+			}
+
+			if(level == 1)
+			{
+				directory.delete();
+			}
 		}
-
-		if(level == 1)
+		catch(GLib.Error e)
 		{
-			directory.delete();
+			logger.print(LogMessage.ERROR, "Utils - remove_directory: " + e.message);
 		}
+
 
 		return flag;
 	}

@@ -290,6 +290,15 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				m_logger.print(LogMessage.DEBUG, "pub_date: " + item.pub_date);
 				m_logger.print(LogMessage.DEBUG, "enclosure: " + item.enclosure_url);
 
+				var date = new GLib.DateTime.now_local();
+
+				if(item.pub_date != null)
+				{
+                	GLib.Time time = GLib.Time();
+                	time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
+                	date = new GLib.DateTime.local(time.year, time.month, time.day, time.hour, time.minute, time.second);
+				}
+
 				string content = m_utils.convert(item.description, locale);
 
 				var Article = new article
@@ -303,7 +312,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 									content,
 									Utils.UTF8fix(content, true),
 									m_utils.convert(item.author, locale),
-									new GLib.DateTime.now_local(), // FIXME: use pub_date
+									date,
 									0,
 									"",
 									item.enclosure_url

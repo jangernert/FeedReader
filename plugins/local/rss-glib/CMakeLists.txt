@@ -1,5 +1,4 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 find_package(GLIB)
 include_directories(${GLIB_INCLUDE_DIRS})
 

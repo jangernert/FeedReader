@@ -21,7 +21,7 @@ public class FeedReader.ShareMail : GLib.Object {
 
 	}
 
-	public static void share(string url)
+	public static bool addBookmark(string id, string url)
 	{
 
 		string body = _("Hey,\ncheck out this interesting article I just read:\n%s\n\n- send by FeedReader").printf(url);
@@ -31,11 +31,27 @@ public class FeedReader.ShareMail : GLib.Object {
 		logger.print(LogMessage.DEBUG, mailto);
 
 		string[] spawn_args = {"xdg-open", mailto};
-		try{
+		try
+		{
 			GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-		}catch(GLib.SpawnError e){
-			logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+			return true;
 		}
+		catch(GLib.SpawnError e)
+		{
+			logger.print(LogMessage.ERROR, "spawning command line: " + e.message);
+		}
+
+		return false;
+	}
+
+	public static string getIconName()
+    {
+        return "mail-send";
+    }
+
+	public static string getUsername(string id)
+	{
+		return "Email";
 	}
 
 

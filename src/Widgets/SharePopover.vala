@@ -38,10 +38,8 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
         foreach(var account in list)
         {
-        	m_list.add(new ShareRow(account.getType(), account.getID(), account.getUsername()));
+        	m_list.add(new ShareRow(account.getType(), account.getID(), account.getUsername(), account.getIconName()));
         }
-
-		m_list.add(new ShareRow(OAuth.MAIL, "mail", null));
 
 		var addIcon = new Gtk.Image.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
 		var addLabel = new Gtk.Label(_("Configure more accounts"));

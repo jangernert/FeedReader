@@ -179,7 +179,26 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
         foreach(var account in list)
         {
-        	var row = new ServiceRow(account.getType(), account.getID(), true, account.getUsername());
+            ServiceSetup row = null;
+
+            switch(account.getType())
+            {
+                case OAuth.POCKET:
+                    row = new PocketSetup(account.getID(), true, account.getUsername());
+                    break;
+
+                case OAuth.READABILITY:
+                    row = new ReadabilitySetup(account.getID(), true, account.getUsername());
+                    break;
+
+                case OAuth.INSTAPAPER:
+                    row = new InstapaperSetup(account.getID(), true, account.getUsername());
+                    break;
+
+                case OAuth.MAIL:
+                    continue;
+            }
+
 			row.Logut.connect(() => {
 				removeRow(row, service_list);
 			});
@@ -193,11 +212,10 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		service_list.add(addAccount);
 
 		addAccount.clicked.connect(() => {
-
 			var children = service_list.get_children();
 			foreach(Gtk.Widget row in children)
 			{
-				var tmpRow = row as ServiceRow;
+				var tmpRow = row as ServiceSetup;
 				if(tmpRow != null && !tmpRow.isLoggedIn())
 				{
 					share.deleteAccount(tmpRow.getID());
@@ -207,7 +225,22 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 			var popover = new ServiceSettingsPopover(addAccount);
 			popover.newAccount.connect((type) => {
-				var row = new ServiceRow(type, null, false);
+
+                ServiceSetup row = null;
+                switch(type)
+                {
+                    case OAuth.POCKET:
+                        row = new PocketSetup(null, false);
+                        break;
+
+                    case OAuth.READABILITY:
+                        row = new ReadabilitySetup(null, false);
+                        break;
+
+                    case OAuth.INSTAPAPER:
+                        row = new InstapaperSetup(null, false);
+                        break;
+                }
 				row.Logut.connect(() => {
 					removeRow(row, service_list);
 				});
@@ -233,7 +266,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         return headline;
     }
 
-    public void removeRow(ServiceRow row, Gtk.ListBox list)
+    public void removeRow(ServiceSetup row, Gtk.ListBox list)
 	{
 		row.unreveal();
 		GLib.Timeout.add(700, () => {

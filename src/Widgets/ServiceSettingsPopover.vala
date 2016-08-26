@@ -15,29 +15,26 @@
 
 public class FeedReader.ServiceSettingsPopover : Gtk.Popover {
 
-	private Gtk.ListBox m_list;
 	public signal void newAccount(OAuth type);
 
 
 	public ServiceSettingsPopover(Gtk.Widget widget)
 	{
-        m_list = new Gtk.ListBox();
-        m_list.margin = 10;
-        m_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        m_list.row_activated.connect((row) => {
+        var list = new Gtk.ListBox();
+        list.margin = 10;
+        list.set_selection_mode(Gtk.SelectionMode.NONE);
+        list.row_activated.connect((row) => {
 			newAccount(((ServiceSettingsPopoverRow)row).getType());
 			this.hide();
         });
 
-		var instapaper = new ServiceSettingsPopoverRow("Instapaper", OAuth.INSTAPAPER, "feed-share-instapaper");
-        var readability = new ServiceSettingsPopoverRow("Readability", OAuth.READABILITY, "feed-share-readability");
-        var pocket = new ServiceSettingsPopoverRow("Pocket", OAuth.POCKET, "feed-share-pocket");
+		foreach(var account in share.getAccountTypes())
+		{
+			var row = new ServiceSettingsPopoverRow(account.getAccountName(), account.getType(), account.getIconName());
+			list.add(row);
+		}
 
-        m_list.add(instapaper);
-        m_list.add(readability);
-        m_list.add(pocket);
-
-        this.add(m_list);
+        this.add(list);
 		this.set_modal(true);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);

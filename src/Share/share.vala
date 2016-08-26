@@ -15,245 +15,182 @@
 
 public class FeedReader.Share : GLib.Object {
 
-	private Gee.ArrayList<ReadabilityAPI> m_readability;
-	private Gee.ArrayList<PocketAPI> m_pocket;
-	private Gee.ArrayList<InstaAPI> m_instapaper;
+	private Gee.ArrayList<ShareAccount> m_accounts;
 
 	public Share()
 	{
-		m_readability = new Gee.ArrayList<ReadabilityAPI>();
+		m_accounts = new Gee.ArrayList<ShareAccount>();
 		var readabilityAccounts = settings_share.get_strv("readability");
+		var pocketAccounts = settings_share.get_strv("pocket");
+		var instaAccounts = settings_share.get_strv("instapaper");
+
 		foreach(string id in readabilityAccounts)
 		{
-			m_readability.add(new ReadabilityAPI.open(id));
+			string username = ReadabilityAPI.getUsername(id);
+			string iconName = ReadabilityAPI.getIconName();
+			m_accounts.add(new ShareAccount(id, OAuth.READABILITY, username, iconName, "Readability"));
 		}
 
-		m_pocket = new Gee.ArrayList<PocketAPI>();
-		var pocketAccounts = settings_share.get_strv("pocket");
 		foreach(string id in pocketAccounts)
 		{
-			m_pocket.add(new PocketAPI.open(id));
+			string username = PocketAPI.getUsername(id);
+			string iconName = PocketAPI.getIconName();
+			m_accounts.add(new ShareAccount(id, OAuth.POCKET, username, iconName, "Pocket"));
 		}
 
-		m_instapaper = new Gee.ArrayList<InstaAPI>();
-		var instaAccounts = settings_share.get_strv("instapaper");
 		foreach(string id in instaAccounts)
 		{
-			m_instapaper.add(new InstaAPI.open(id));
+			string username = InstaAPI.getUsername(id);
+			string iconName = InstaAPI.getIconName();
+			m_accounts.add(new ShareAccount(id, OAuth.INSTAPAPER, username, iconName, "Instapaper"));
 		}
+
+		m_accounts.add(new ShareAccount("1234", OAuth.MAIL, ShareMail.getUsername(""), ShareMail.getIconName(), "Email"));
+	}
+
+	public Gee.ArrayList<ShareAccount> getAccountTypes()
+	{
+		var accounts = new Gee.ArrayList<ShareAccount>();
+		accounts.add(new ShareAccount("", OAuth.READABILITY, "", ReadabilityAPI.getIconName(), "Readability"));
+		accounts.add(new ShareAccount("", OAuth.POCKET, "", PocketAPI.getIconName(), "Pocket"));
+		accounts.add(new ShareAccount("", OAuth.INSTAPAPER, "", InstaAPI.getIconName(), "Instapaper"));
+		return accounts;
 	}
 
 
 	public Gee.ArrayList<ShareAccount> getAccounts()
 	{
-		var list = new Gee.ArrayList<ShareAccount>();
-
-		foreach(var account in m_readability)
-		{
-			list.add(new ShareAccount(account.getID(), OAuth.READABILITY, account.getUsername()));
-		}
-
-		foreach(var account in m_pocket)
-		{
-			list.add(new ShareAccount(account.getID(), OAuth.POCKET, account.getUsername()));
-		}
-
-		foreach(var account in m_instapaper)
-		{
-			list.add(new ShareAccount(account.getID(), OAuth.INSTAPAPER, account.getUsername()));
-		}
-
-		return list;
-	}
-
-
-	public string newAccount(OAuth type)
-	{
-		string id = Utils.string_random(12);
-
-		switch(type)
-        {
-            case OAuth.READABILITY:
-                m_readability.add(new ReadabilityAPI(id));
-				break;
-			case OAuth.POCKET:
-				m_pocket.add(new PocketAPI(id));
-				break;
-			case OAuth.INSTAPAPER:
-				m_instapaper.add(new InstaAPI(id));
-				break;
-        }
-
-		return id;
+		return m_accounts;
 	}
 
 
 	public void deleteAccount(string accountID)
 	{
-		foreach(var api in m_readability)
+		foreach(var account in m_accounts)
 		{
-			if(api.getID() == accountID)
+			if(account.getID() == accountID)
 			{
-				m_readability.remove(api);
-				return;
-			}
-		}
+				m_accounts.remove(account);
 
-		foreach(var api in m_pocket)
-		{
-			if(api.getID() == accountID)
-			{
-				m_pocket.remove(api);
-				return;
-			}
-		}
+				switch(account.getType())
+				{
+					case OAuth.POCKET:
+						PocketAPI.logout(accountID);
+						return;
 
-		foreach(var api in m_instapaper)
-		{
-			if(api.getID() == accountID)
-			{
-				m_instapaper.remove(api);
-				return;
+					case OAuth.READABILITY:
+						ReadabilityAPI.logout(accountID);
+						return;
+
+					case OAuth.INSTAPAPER:
+						InstaAPI.logout(accountID);
+						return;
+				}
 			}
 		}
 	}
 
-
-	public void logout(string accountID)
+	public string getRequestToken(OAuth type)
 	{
-		foreach(var api in m_readability)
+		switch(type)
 		{
-			if(api.getID() == accountID)
-			{
-				api.logout();
-				return;
-			}
-		}
+			case OAuth.POCKET:
+				return PocketAPI.getRequestToken();
 
-		foreach(var api in m_pocket)
-		{
-			if(api.getID() == accountID)
-			{
-				api.logout();
-				return;
-			}
-		}
+			case OAuth.READABILITY:
+				return ReadabilityAPI.getRequestToken();
 
-		foreach(var api in m_instapaper)
-		{
-			if(api.getID() == accountID)
-			{
-				api.logout();
-				return;
-			}
+			case OAuth.INSTAPAPER:
+			default:
+				return "";
 		}
 	}
 
-	public bool getRequestToken(string accountID)
+	public bool getAccessToken(OAuth type, out string id, string? verifier = "", string username = "", string password = "")
 	{
-		foreach(var api in m_readability)
+		// TODO: check if string is already in use
+		id = Utils.string_random(12);
+
+		switch(type)
 		{
-			if(api.getID() == accountID)
-			{
-				return api.getRequestToken();
-			}
-		}
+			case OAuth.POCKET:
+				if(PocketAPI.getAccessToken(verifier, id))
+				{
+					string usr = PocketAPI.getUsername(id);
+					string icon = PocketAPI.getIconName();
+					m_accounts.add(new ShareAccount(id, OAuth.POCKET, usr, icon, "Pocket"));
+					return true;
+				}
+				break;
 
-		foreach(var api in m_pocket)
-		{
-			if(api.getID() == accountID)
-			{
-				return api.getRequestToken();
-			}
-		}
+			case OAuth.READABILITY:
+				if(ReadabilityAPI.getAccessToken(verifier, id))
+				{
+					string usr = ReadabilityAPI.getUsername(id);
+					string icon = ReadabilityAPI.getIconName();
+					m_accounts.add(new ShareAccount(id, OAuth.READABILITY, usr, icon, "Readability"));
+					return true;
+				}
+				break;
 
-		foreach(var api in m_instapaper)
-		{
-			if(api.getID() == accountID)
-			{
-				return true;
-			}
-		}
-
-
-		return false;
-	}
-
-	public bool getAccessToken(string accountID, string? verifier = "", string username = "", string password = "")
-	{
-		foreach(var api in m_readability)
-		{
-			if(api.getID() == accountID && verifier != null)
-			{
-				return api.getAccessToken(verifier);
-			}
-		}
-
-		foreach(var api in m_pocket)
-		{
-			if(api.getID() == accountID)
-			{
-				return api.getAccessToken();
-			}
-		}
-
-		foreach(var api in m_instapaper)
-		{
-			if(api.getID() == accountID)
-			{
-				return api.getAccessToken(username, password);
-			}
+			case OAuth.INSTAPAPER:
+				if(InstaAPI.getAccessToken(id, username, password))
+				{
+					string usr = InstaAPI.getUsername(id);
+					string icon = InstaAPI.getIconName();
+					m_accounts.add(new ShareAccount(id, OAuth.INSTAPAPER, usr, icon, "Instapaper"));
+					return true;
+				}
+				break;
 		}
 
 		return false;
 	}
 
 
-	public void loginPage(string accountID)
+	public void loginPage(OAuth type, string token)
 	{
-		foreach(var api in m_readability)
+		string url = "";
+
+		switch(type)
 		{
-			if(api.getID() == accountID)
-			{
-				Gtk.show_uri(Gdk.Screen.get_default(), api.getURL(), Gdk.CURRENT_TIME);
+			case OAuth.POCKET:
+				url = PocketAPI.getURL(token);
+				break;
+
+			case OAuth.READABILITY:
+				url = ReadabilityAPI.getURL(token);
+				break;
+
+			case OAuth.INSTAPAPER:
+			default:
 				return;
-			}
 		}
 
-		foreach(var api in m_pocket)
-		{
-			if(api.getID() == accountID)
-			{
-				Gtk.show_uri(Gdk.Screen.get_default(), api.getURL(), Gdk.CURRENT_TIME);
-				return;
-			}
-		}
+		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
 	}
 
 
 	public string getUsername(string accountID)
 	{
-		foreach(var api in m_readability)
+		foreach(var account in m_accounts)
 		{
-			if(api.getID() == accountID)
+			if(account.getID() == accountID)
 			{
-				return api.getUsername();
-			}
-		}
+				switch(account.getType())
+				{
+					case OAuth.POCKET:
+						return PocketAPI.getUsername(accountID);
 
-		foreach(var api in m_pocket)
-		{
-			if(api.getID() == accountID)
-			{
-				return api.getUsername();
-			}
-		}
+					case OAuth.READABILITY:
+						return ReadabilityAPI.getUsername(accountID);
 
-		foreach(var api in m_instapaper)
-		{
-			if(api.getID() == accountID)
-			{
-				return api.getUsername();
+					case OAuth.INSTAPAPER:
+						return InstaAPI.getUsername(accountID);
+
+					case OAuth.MAIL:
+						return ShareMail.getUsername(accountID);
+				}
 			}
 		}
 
@@ -264,33 +201,24 @@ public class FeedReader.Share : GLib.Object {
 
 	public bool addBookmark(string accountID, string url)
 	{
-		if(accountID == "mail")
+		foreach(var account in m_accounts)
 		{
-			ShareMail.share(url);
-			return true;
-		}
-
-		foreach(var api in m_readability)
-		{
-			if(api.getID() == accountID)
+			if(account.getID() == accountID)
 			{
-				return api.addBookmark(url);
-			}
-		}
+				switch(account.getType())
+				{
+					case OAuth.POCKET:
+						return PocketAPI.addBookmark(accountID, url);
 
-		foreach(var api in m_pocket)
-		{
-			if(api.getID() == accountID)
-			{
-				return api.addBookmark(url);
-			}
-		}
+					case OAuth.READABILITY:
+						return ReadabilityAPI.addBookmark(accountID, url);
 
-		foreach(var api in m_instapaper)
-		{
-			if(api.getID() == accountID)
-			{
-				return api.addBookmark(url);
+					case OAuth.INSTAPAPER:
+						return InstaAPI.addBookmark(accountID, url);
+
+					case OAuth.MAIL:
+						return ShareMail.addBookmark(accountID, url);
+				}
 			}
 		}
 

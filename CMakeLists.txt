@@ -165,7 +165,6 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/RemovePopover.vala
     src/Widgets/ResetPage.vala
     src/Widgets/ServiceSettingsPopover.vala
-    src/Widgets/ServiceSettingsRow.vala
     src/Widgets/ShareRow.vala
     src/Widgets/ShortcutsWindow.vala
     src/Widgets/ServiceInfo.vala
@@ -180,11 +179,16 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
     src/ContentGrabber/stringPair.vala
-    src/Share/Email.vala
-    src/Share/PocketAPI.vala
-    src/Share/InstapaperAPI.vala
-    src/Share/ReadabilityAPI.vala
+    src/Share/Email/Email.vala
+    src/Share/Pocket/PocketAPI.vala
+    src/Share/Pocket/PocketSetup.vala
+    src/Share/Instapaper/InstapaperAPI.vala
+    src/Share/Instapaper/InstapaperSetup.vala
+    src/Share/Readability/ReadabilityAPI.vala
+    src/Share/Readability/ReadabilitySetup.vala
     src/Share/share.vala
+    src/Share/ServiceSetup.vala
+    src/Share/ShareAccountInterface.vala
 
 PACKAGES
     ${UI_PACKAGES}

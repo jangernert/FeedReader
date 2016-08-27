@@ -17,7 +17,7 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 
     private string m_id;
 
-	public ShareRow(OAuth type, string id, string username, string iconName)
+	public ShareRow(string type, string id, string username, string iconName)
 	{
 		m_id = id;
         var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);

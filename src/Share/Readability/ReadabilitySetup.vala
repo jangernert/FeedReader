@@ -27,13 +27,13 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 	public override void login()
 	{
 		string id = "";
-		string requestToken = share.getRequestToken(OAuth.READABILITY);
-		share.loginPage(OAuth.READABILITY, requestToken);
+		string requestToken = share.getRequestToken(ReadabilityAPI.ID);
+		share.loginPage(ReadabilityAPI.ID, requestToken);
 
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
 		((FeedApp)GLib.Application.get_default()).callback.connect((type, oauthVerifier) => {
-			if(share.getAccessToken(OAuth.READABILITY, out id, oauthVerifier))
+			if(share.getAccessToken(ReadabilityAPI.ID, out id, oauthVerifier))
 			{
 				m_id = id;
 				m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);

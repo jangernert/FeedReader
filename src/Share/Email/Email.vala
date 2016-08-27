@@ -16,11 +16,8 @@
 
 public class FeedReader.ShareMail : GLib.Object {
 
-	public ShareMail()
-	{
-
-	}
-
+	public static const string ID = "mail";
+	
 	public static bool addBookmark(string id, string url)
 	{
 

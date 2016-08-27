@@ -34,7 +34,7 @@ namespace FeedReader {
 	public class FeedApp : Gtk.Application {
 
 		private readerUI m_window;
-		public signal void callback(OAuth type, string? oauthVerifier);
+		public signal void callback(string type, string? oauthVerifier);
 
 		protected override void startup()
 		{
@@ -92,7 +92,7 @@ namespace FeedReader {
 			if(args.length > 1)
 			{
 				logger.print(LogMessage.DEBUG, "FeedReader: callback %s".printf(args[1]));
-				var type = Utils.parseArg(args[1], out verifier);
+				var type = UtilsUI.parseArg(args[1], out verifier);
 				callback(type , verifier);
 			}
 

@@ -183,19 +183,19 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
             switch(account.getType())
             {
-                case OAuth.POCKET:
+                case PocketAPI.ID:
                     row = new PocketSetup(account.getID(), true, account.getUsername());
                     break;
 
-                case OAuth.READABILITY:
+                case ReadabilityAPI.ID:
                     row = new ReadabilitySetup(account.getID(), true, account.getUsername());
                     break;
 
-                case OAuth.INSTAPAPER:
+                case InstaAPI.ID:
                     row = new InstapaperSetup(account.getID(), true, account.getUsername());
                     break;
 
-                case OAuth.MAIL:
+                case ShareMail.ID:
                     continue;
             }
 
@@ -229,15 +229,15 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
                 ServiceSetup row = null;
                 switch(type)
                 {
-                    case OAuth.POCKET:
+                    case PocketAPI.ID:
                         row = new PocketSetup(null, false);
                         break;
 
-                    case OAuth.READABILITY:
+                    case ReadabilityAPI.ID:
                         row = new ReadabilitySetup(null, false);
                         break;
 
-                    case OAuth.INSTAPAPER:
+                    case InstaAPI.ID:
                         row = new InstapaperSetup(null, false);
                         break;
                 }

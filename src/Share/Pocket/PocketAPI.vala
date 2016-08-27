@@ -15,6 +15,7 @@
 
 public class FeedReader.PocketAPI : GLib.Object {
 
+    public static const string ID = "pocket";
 
     public static string getRequestToken()
     {
@@ -138,4 +139,16 @@ public class FeedReader.PocketAPI : GLib.Object {
         return settings.get_string("username");
     }
 
+    public static bool isArg(string arg)
+    {
+        if(arg == InstapaperSecrets.oauth_callback)
+            return true;
+
+        return false;
+    }
+
+    public static string parseArgs(string arg)
+    {
+		return "";
+    }
 }

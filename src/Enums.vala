@@ -15,14 +15,6 @@
 
 namespace FeedReader {
 
-	public enum OAuth {
-		NONE,
-		READABILITY,
-		INSTAPAPER,
-		POCKET,
-		MAIL
-	}
-
 	public enum LogLevel {
 		OFF,
 		ERROR,

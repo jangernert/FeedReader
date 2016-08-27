@@ -16,12 +16,12 @@
 public class FeedReader.ShareAccount : GLib.Object {
 
 	private string m_id;
-	private OAuth m_type;
+	private string m_type;
 	private string m_accountName;
 	private string m_username;
 	private string m_iconName;
 
-	public ShareAccount(string id, OAuth type, string username, string iconName, string accountName)
+	public ShareAccount(string id, string type, string username, string iconName, string accountName)
 	{
 		m_id = id;
 		m_type = type;
@@ -35,7 +35,7 @@ public class FeedReader.ShareAccount : GLib.Object {
 		return m_id;
 	}
 
-	public OAuth getType()
+	public string getType()
 	{
 		return m_type;
 	}

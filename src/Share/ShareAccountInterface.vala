@@ -18,4 +18,6 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 	public abstract bool getAccessToken(string id, string username, string password);
 
 	public abstract bool addBookmark(string url);
+
+	
 }

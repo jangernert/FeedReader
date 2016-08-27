@@ -348,26 +348,6 @@ public class FeedReader.Utils : GLib.Object {
 		return article.str;
 	}
 
-
-	public static OAuth parseArg(string arg, out string verifier)
-	{
-		if(arg == PocketSecrets.oauth_callback)
-			return OAuth.POCKET;
-
-		if(arg == InstapaperSecrets.oauth_callback)
-			return OAuth.INSTAPAPER;
-
-		if(arg.has_prefix(ReadabilitySecrets.oauth_callback))
-		{
-			int verifier_start = arg.index_of("=")+1;
-			int verifier_end = arg.index_of("&", verifier_start);
-			verifier = arg.substring(verifier_start, verifier_end-verifier_start);
-			return OAuth.READABILITY;
-		}
-
-		return OAuth.NONE;
-	}
-
 	public static bool arrayContains(string[] array, string key)
 	{
 		foreach(string s in array)

@@ -27,13 +27,13 @@ public class FeedReader.PocketSetup : ServiceSetup {
 	public override void login()
 	{
 		string id = "";
-		string requestToken = share.getRequestToken(OAuth.POCKET);
-		share.loginPage(OAuth.POCKET, requestToken);
+		string requestToken = share.getRequestToken(PocketAPI.ID);
+		share.loginPage(PocketAPI.ID, requestToken);
 
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
 		((FeedApp)GLib.Application.get_default()).callback.connect((type, oauthVerifier) => {
-			if(share.getAccessToken(OAuth.POCKET, out id, oauthVerifier))
+			if(share.getAccessToken(PocketAPI.ID, out id, oauthVerifier))
 			{
 				m_id = id;
 				m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);

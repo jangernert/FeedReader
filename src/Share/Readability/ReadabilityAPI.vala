@@ -15,6 +15,8 @@
 
 public class FeedReader.ReadabilityAPI : GLib.Object {
 
+    public static const string ID = "readability";
+
     public static string getRequestToken()
     {
         try
@@ -169,5 +171,20 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
         return settings.get_string("username");
+    }
+
+    public static bool isArg(string arg)
+    {
+        if(arg.has_prefix(ReadabilitySecrets.oauth_callback))
+            return true;
+
+        return false;
+    }
+
+    public static string parseArgs(string arg)
+    {
+		int verifier_start = arg.index_of("=")+1;
+		int verifier_end = arg.index_of("&", verifier_start);
+		return arg.substring(verifier_start, verifier_end-verifier_start);
     }
 }

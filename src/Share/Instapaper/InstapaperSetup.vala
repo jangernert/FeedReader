@@ -85,7 +85,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 		string id = "";
 		if(m_login_revealer.get_child_revealed())
 		{
-			if(share.getAccessToken(OAuth.INSTAPAPER, out id, "",  m_userEntry.get_text(), m_passEntry.get_text()))
+			if(share.getAccessToken(InstaAPI.ID, out id, "",  m_userEntry.get_text(), m_passEntry.get_text()))
 			{
 				m_id = id;
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);

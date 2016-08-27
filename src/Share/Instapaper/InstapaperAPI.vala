@@ -15,6 +15,8 @@
 
 public class FeedReader.InstaAPI : GLib.Object {
 
+    public static const string ID = "instapaper";
+
     public static bool getAccessToken(string id, string username, string password)
     {
         string userID = "";
@@ -211,5 +213,18 @@ public class FeedReader.InstaAPI : GLib.Object {
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
         return settings.get_string("username");
+    }
+
+    public static bool isArg(string arg)
+    {
+        if(arg == PocketSecrets.oauth_callback)
+            return true;
+
+        return false;
+    }
+
+    public static string parseArgs(string arg)
+    {
+		return "";
     }
 }

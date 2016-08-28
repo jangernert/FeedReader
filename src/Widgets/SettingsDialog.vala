@@ -179,31 +179,15 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
         foreach(var account in list)
         {
-            ServiceSetup row = null;
-
-            switch(account.getType())
+            if(share.needSetup(account.getID()))
             {
-                case PocketAPI.ID:
-                    row = new PocketSetup(account.getID(), true, account.getUsername());
-                    break;
-
-                case ReadabilityAPI.ID:
-                    row = new ReadabilitySetup(account.getID(), true, account.getUsername());
-                    break;
-
-                case InstaAPI.ID:
-                    row = new InstapaperSetup(account.getID(), true, account.getUsername());
-                    break;
-
-                case ShareMail.ID:
-                    continue;
+                ServiceSetup row = share.newSetup_withID(account.getID());
+    			row.Logut.connect(() => {
+    				removeRow(row, service_list);
+    			});
+    			service_list.add(row);
+    			row.reveal();
             }
-
-			row.Logut.connect(() => {
-				removeRow(row, service_list);
-			});
-			service_list.add(row);
-			row.reveal();
         }
 
         var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
@@ -225,27 +209,12 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 			var popover = new ServiceSettingsPopover(addAccount);
 			popover.newAccount.connect((type) => {
-
-                ServiceSetup row = null;
-                switch(type)
-                {
-                    case PocketAPI.ID:
-                        row = new PocketSetup(null, false);
-                        break;
-
-                    case ReadabilityAPI.ID:
-                        row = new ReadabilitySetup(null, false);
-                        break;
-
-                    case InstaAPI.ID:
-                        row = new InstapaperSetup(null, false);
-                        break;
-                }
-				row.Logut.connect(() => {
-					removeRow(row, service_list);
-				});
-				service_list.insert(row, 0);
-				row.reveal();
+                ServiceSetup row = share.newSetup(type);
+    			row.Logut.connect(() => {
+    				removeRow(row, service_list);
+    			});
+    			service_list.add(row);
+    			row.reveal();
 			});
 		});
 

@@ -13,11 +13,16 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.InstaAPI : GLib.Object {
+public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
 
     public static const string ID = "instapaper";
 
-    public static bool getAccessToken(string id, string username, string password)
+    public string getRequestToken()
+    {
+        return "";
+    }
+
+    public bool getAccessToken(string id, string? verifier, string username, string password)
     {
         string userID = "";
 
@@ -129,7 +134,7 @@ public class FeedReader.InstaAPI : GLib.Object {
         return true;
     }
 
-    public static bool addBookmark(string id, string url)
+    public bool addBookmark(string id, string url)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
 
@@ -172,7 +177,7 @@ public class FeedReader.InstaAPI : GLib.Object {
         return true;
     }
 
-    public static bool logout(string id)
+    public bool logout(string id)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
         var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password",
@@ -204,18 +209,18 @@ public class FeedReader.InstaAPI : GLib.Object {
         return true;
     }
 
-    public static string getIconName()
+    public string getIconName()
     {
         return "feed-share-instapaper";
     }
 
-    public static string getUsername(string id)
+    public string getUsername(string id)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
         return settings.get_string("username");
     }
 
-    public static bool isArg(string arg)
+    public bool isArg(string arg)
     {
         if(arg == PocketSecrets.oauth_callback)
             return true;
@@ -223,8 +228,38 @@ public class FeedReader.InstaAPI : GLib.Object {
         return false;
     }
 
-    public static string parseArgs(string arg)
+    public string parseArgs(string arg)
     {
 		return "";
+    }
+
+    public bool needSetup()
+	{
+		return true;
+	}
+
+    public string pluginID()
+    {
+        return ID;
+    }
+
+    public string pluginName()
+    {
+        return "Instapaper";
+    }
+
+    public string getURL(string token)
+    {
+        return "";
+    }
+
+    public ServiceSetup? newSetup_withID(string id, string username)
+    {
+        return new InstapaperSetup(id, username);
+    }
+
+    public ServiceSetup? newSetup()
+    {
+        return new InstapaperSetup(null);
     }
 }

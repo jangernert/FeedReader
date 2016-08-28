@@ -123,29 +123,6 @@ public class FeedReader.UtilsUI : GLib.Object {
 		return menu;
 	}
 
-	public static string parseArg(string arg, out string verifier)
-	{
-		if(PocketAPI.isArg(arg))
-		{
-			verifier = PocketAPI.parseArgs(arg);
-			return PocketAPI.ID;
-		}
-
-		if(InstaAPI.isArg(arg))
-		{
-			verifier = InstaAPI.parseArgs(arg);
-			return InstaAPI.ID;
-		}
-
-		if(ReadabilityAPI.isArg(arg))
-		{
-			verifier = ReadabilityAPI.parseArgs(arg);
-			return ReadabilityAPI.ID;
-		}
-
-		return "none";
-	}
-
 	public static bool onlyShowFeeds()
 	{
 		if(settings_general.get_boolean("only-feeds"))

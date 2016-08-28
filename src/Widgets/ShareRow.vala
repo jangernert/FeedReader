@@ -21,6 +21,7 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 	{
 		m_id = id;
         var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
+        icon.set_size_request(32, 32);
         var serviceLabel = new Gtk.Label(username);
         serviceLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
         serviceLabel.set_ellipsize(Pango.EllipsizeMode.END);

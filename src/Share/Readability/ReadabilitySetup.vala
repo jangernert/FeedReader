@@ -15,9 +15,13 @@
 
 public class FeedReader.ReadabilitySetup : ServiceSetup {
 
-	public ReadabilitySetup(string? id, bool loggedIn, string username = "")
+	public ReadabilitySetup(string? id, string username = "")
 	{
-		base("Readability", "feed-share-readability", loggedIn, username);
+		bool loggedIN = false;
+		if(username != "")
+			loggedIN = true;
+
+		base("Readability", "feed-share-readability", loggedIN, username);
 
 		if(id != null)
 			m_id = id;

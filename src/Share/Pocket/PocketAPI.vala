@@ -13,11 +13,11 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.PocketAPI : GLib.Object {
+public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
 
     public static const string ID = "pocket";
 
-    public static string getRequestToken()
+    public string getRequestToken()
     {
     	logger.print(LogMessage.DEBUG, "PocketAPI: get request token");
         var session = new Soup.Session();
@@ -35,8 +35,7 @@ public class FeedReader.PocketAPI : GLib.Object {
         return response.substring(response.index_of_char('=')+1);
     }
 
-
-    public static bool getAccessToken(string requestToken, string id)
+    public bool getAccessToken(string id, string? requestToken, string username, string password)
     {
         var session = new Soup.Session();
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&code=" + requestToken;
@@ -60,10 +59,10 @@ public class FeedReader.PocketAPI : GLib.Object {
         int userStart = response.index_of_char('=', tokenEnd)+1;
 
         string accessToken = response.substring(tokenStart, tokenEnd-tokenStart);
-        string username = GLib.Uri.unescape_string(response.substring(userStart));
+        string user = GLib.Uri.unescape_string(response.substring(userStart));
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
         settings.set_string("oauth-access-token", accessToken);
-        settings.set_string("username", username);
+        settings.set_string("username", user);
 
         var array = settings_share.get_strv("pocket");
         array += id;
@@ -73,7 +72,7 @@ public class FeedReader.PocketAPI : GLib.Object {
     }
 
 
-    public static bool addBookmark(string id, string url)
+    public bool addBookmark(string id, string url)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
 
@@ -99,7 +98,7 @@ public class FeedReader.PocketAPI : GLib.Object {
         return true;
     }
 
-    public static bool logout(string id)
+    public bool logout(string id)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
     	var keys = settings.list_keys();
@@ -121,25 +120,25 @@ public class FeedReader.PocketAPI : GLib.Object {
         return true;
     }
 
-    public static string getURL(string token)
+    public string getURL(string token)
     {
 		return	"https://getpocket.com/auth/authorize?request_token="
 				+ token + "&redirect_uri="
 				+ GLib.Uri.escape_string(PocketSecrets.oauth_callback);
     }
 
-    public static string getIconName()
+    public string getIconName()
     {
         return "feed-share-pocket";
     }
 
-    public static string getUsername(string id)
+    public string getUsername(string id)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
         return settings.get_string("username");
     }
 
-    public static bool isArg(string arg)
+    public bool isArg(string arg)
     {
         if(arg == InstapaperSecrets.oauth_callback)
             return true;
@@ -147,8 +146,33 @@ public class FeedReader.PocketAPI : GLib.Object {
         return false;
     }
 
-    public static string parseArgs(string arg)
+    public string parseArgs(string arg)
     {
 		return "";
+    }
+
+    public bool needSetup()
+	{
+		return true;
+	}
+
+    public string pluginID()
+    {
+        return ID;
+    }
+
+    public string pluginName()
+    {
+        return "Pocket";
+    }
+
+    public ServiceSetup? newSetup_withID(string id, string username)
+    {
+        return new PocketSetup(id, username);
+    }
+
+    public ServiceSetup? newSetup()
+    {
+        return new PocketSetup(null);
     }
 }

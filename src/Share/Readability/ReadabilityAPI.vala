@@ -13,11 +13,11 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ReadabilityAPI : GLib.Object {
+public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 
     public static const string ID = "readability";
 
-    public static string getRequestToken()
+    public string getRequestToken()
     {
         try
         {
@@ -38,7 +38,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return "";
     }
 
-    public static bool getAccessToken(string verifier, string id)
+    public bool getAccessToken(string id, string? verifier, string username, string password)
     {
         try
         {
@@ -52,7 +52,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
             string accessToken = oauthObject.get_token();
     		string secret = oauthObject.get_token_secret();
-            string username = "";
+            string user = "";
             var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
 
 
@@ -87,12 +87,12 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
 
             var root_object = parser.get_root().get_object();
             if(root_object.has_member("username"))
-                username = root_object.get_string_member("username");
+                user = root_object.get_string_member("username");
             // -----------------------------------------------------------------------------------------------
 
             settings.set_string("oauth-access-token", accessToken);
     		settings.set_string("oauth-access-token-secret", secret);
-    		settings.set_string("username", username);
+    		settings.set_string("username", user);
 
             var array = settings_share.get_strv("readability");
     		array += id;
@@ -108,7 +108,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return false;
     }
 
-    public static bool addBookmark(string id, string url)
+    public bool addBookmark(string id, string url)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
 
@@ -135,7 +135,7 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
     }
 
 
-    public static bool logout(string id)
+    public bool logout(string id)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
     	var keys = settings.list_keys();
@@ -157,23 +157,23 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return true;
     }
 
-    public static string getURL(string token)
+    public string getURL(string token)
     {
 		return	ReadabilitySecrets.base_uri + "oauth/authorize/" + "?oauth_token=" + token;
     }
 
-    public static string getIconName()
+    public string getIconName()
     {
         return "feed-share-readability";
     }
 
-    public static string getUsername(string id)
+    public string getUsername(string id)
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
         return settings.get_string("username");
     }
 
-    public static bool isArg(string arg)
+    public bool isArg(string arg)
     {
         if(arg.has_prefix(ReadabilitySecrets.oauth_callback))
             return true;
@@ -181,10 +181,35 @@ public class FeedReader.ReadabilityAPI : GLib.Object {
         return false;
     }
 
-    public static string parseArgs(string arg)
+    public string parseArgs(string arg)
     {
 		int verifier_start = arg.index_of("=")+1;
 		int verifier_end = arg.index_of("&", verifier_start);
 		return arg.substring(verifier_start, verifier_end-verifier_start);
+    }
+
+    public bool needSetup()
+	{
+		return true;
+	}
+
+    public string pluginID()
+    {
+        return ID;
+    }
+
+    public string pluginName()
+    {
+        return "Readability";
+    }
+
+    public ServiceSetup? newSetup_withID(string id, string username)
+    {
+        return new ReadabilitySetup(id, username);
+    }
+
+    public ServiceSetup? newSetup()
+    {
+        return new ReadabilitySetup(null);
     }
 }

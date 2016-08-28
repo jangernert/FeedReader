@@ -16,44 +16,77 @@
 public class FeedReader.Share : GLib.Object {
 
 	private Gee.ArrayList<ShareAccount> m_accounts;
+	private Gee.ArrayList<ShareAccountInterface> m_interfaces;
 
 	public Share()
 	{
+		m_interfaces = new Gee.ArrayList<ShareAccountInterface>();
+		m_interfaces.add(new ReadabilityAPI());
+		m_interfaces.add(new PocketAPI());
+		m_interfaces.add(new InstaAPI());
+		m_interfaces.add(new ShareMail());
+
 		m_accounts = new Gee.ArrayList<ShareAccount>();
-		var readabilityAccounts = settings_share.get_strv("readability");
-		var pocketAccounts = settings_share.get_strv("pocket");
-		var instaAccounts = settings_share.get_strv("instapaper");
 
-		foreach(string id in readabilityAccounts)
+		foreach(var interfce in m_interfaces)
 		{
-			string username = ReadabilityAPI.getUsername(id);
-			string iconName = ReadabilityAPI.getIconName();
-			m_accounts.add(new ShareAccount(id, ReadabilityAPI.ID, username, iconName, "Readability"));
+			if(interfce.needSetup())
+			{
+				var accounts = settings_share.get_strv(interfce.pluginID());
+				foreach(string id in accounts)
+				{
+					m_accounts.add(
+						new ShareAccount(
+							id,
+							interfce.pluginID(),
+							interfce.getUsername(id),
+							interfce.getIconName(),
+							interfce.pluginName()
+						)
+					);
+				}
+			}
+			else
+			{
+				m_accounts.add(
+					new ShareAccount(
+						"",
+						interfce.pluginID(),
+						interfce.pluginName(),
+						interfce.getIconName(),
+						interfce.pluginName()
+					)
+				);
+			}
+
+		}
+	}
+
+	private ShareAccountInterface? getInterface(string type)
+	{
+		foreach(var interfce in m_interfaces)
+		{
+			if(interfce.pluginID() == type)
+			{
+				return interfce;
+			}
 		}
 
-		foreach(string id in pocketAccounts)
-		{
-			string username = PocketAPI.getUsername(id);
-			string iconName = PocketAPI.getIconName();
-			m_accounts.add(new ShareAccount(id, PocketAPI.ID, username, iconName, "Pocket"));
-		}
-
-		foreach(string id in instaAccounts)
-		{
-			string username = InstaAPI.getUsername(id);
-			string iconName = InstaAPI.getIconName();
-			m_accounts.add(new ShareAccount(id, InstaAPI.ID, username, iconName, "Instapaper"));
-		}
-
-		m_accounts.add(new ShareAccount("1234", ShareMail.ID, ShareMail.getUsername(""), ShareMail.getIconName(), "Email"));
+		return null;
 	}
 
 	public Gee.ArrayList<ShareAccount> getAccountTypes()
 	{
 		var accounts = new Gee.ArrayList<ShareAccount>();
-		accounts.add(new ShareAccount("", ReadabilityAPI.ID, "", ReadabilityAPI.getIconName(), "Readability"));
-		accounts.add(new ShareAccount("", PocketAPI.ID, "", PocketAPI.getIconName(), "Pocket"));
-		accounts.add(new ShareAccount("", InstaAPI.ID, "", InstaAPI.getIconName(), "Instapaper"));
+
+		foreach(var interfce in m_interfaces)
+		{
+			if(interfce.needSetup())
+			{
+				accounts.add(new ShareAccount("", interfce.pluginID(), "", interfce.getIconName(), interfce.pluginName()));
+			}
+		}
+
 		return accounts;
 	}
 
@@ -71,39 +104,14 @@ public class FeedReader.Share : GLib.Object {
 			if(account.getID() == accountID)
 			{
 				m_accounts.remove(account);
-
-				switch(account.getType())
-				{
-					case PocketAPI.ID:
-						PocketAPI.logout(accountID);
-						return;
-
-					case ReadabilityAPI.ID:
-						ReadabilityAPI.logout(accountID);
-						return;
-
-					case InstaAPI.ID:
-						InstaAPI.logout(accountID);
-						return;
-				}
+				getInterface(account.getType()).logout(accountID);
 			}
 		}
 	}
 
 	public string getRequestToken(string type)
 	{
-		switch(type)
-		{
-			case PocketAPI.ID:
-				return PocketAPI.getRequestToken();
-
-			case ReadabilityAPI.ID:
-				return ReadabilityAPI.getRequestToken();
-
-			case InstaAPI.ID:
-			default:
-				return "";
-		}
+		return getInterface(type).getRequestToken();
 	}
 
 	public bool getAccessToken(string type, out string id, string? verifier = "", string username = "", string password = "")
@@ -111,37 +119,15 @@ public class FeedReader.Share : GLib.Object {
 		// TODO: check if string is already in use
 		id = Utils.string_random(12);
 
-		switch(type)
+		var api = getInterface(type);
+
+		if(api.getAccessToken(id, verifier, username, password))
 		{
-			case PocketAPI.ID:
-				if(PocketAPI.getAccessToken(verifier, id))
-				{
-					string usr = PocketAPI.getUsername(id);
-					string icon = PocketAPI.getIconName();
-					m_accounts.add(new ShareAccount(id, PocketAPI.ID, usr, icon, "Pocket"));
-					return true;
-				}
-				break;
-
-			case ReadabilityAPI.ID:
-				if(ReadabilityAPI.getAccessToken(verifier, id))
-				{
-					string usr = ReadabilityAPI.getUsername(id);
-					string icon = ReadabilityAPI.getIconName();
-					m_accounts.add(new ShareAccount(id, ReadabilityAPI.ID, usr, icon, "Readability"));
-					return true;
-				}
-				break;
-
-			case InstaAPI.ID:
-				if(InstaAPI.getAccessToken(id, username, password))
-				{
-					string usr = InstaAPI.getUsername(id);
-					string icon = InstaAPI.getIconName();
-					m_accounts.add(new ShareAccount(id, InstaAPI.ID, usr, icon, "Instapaper"));
-					return true;
-				}
-				break;
+			string usr = api.getUsername(id);
+			string icon = api.getIconName();
+			string name = api.pluginName();
+			m_accounts.add(new ShareAccount(id, type, usr, icon, name));
+			return true;
 		}
 
 		return false;
@@ -150,23 +136,7 @@ public class FeedReader.Share : GLib.Object {
 
 	public void loginPage(string type, string token)
 	{
-		string url = "";
-
-		switch(type)
-		{
-			case PocketAPI.ID:
-				url = PocketAPI.getURL(token);
-				break;
-
-			case ReadabilityAPI.ID:
-				url = ReadabilityAPI.getURL(token);
-				break;
-
-			case InstaAPI.ID:
-			default:
-				return;
-		}
-
+		string url = getInterface(type).getURL(token);
 		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
 	}
 
@@ -177,23 +147,9 @@ public class FeedReader.Share : GLib.Object {
 		{
 			if(account.getID() == accountID)
 			{
-				switch(account.getType())
-				{
-					case PocketAPI.ID:
-						return PocketAPI.getUsername(accountID);
-
-					case ReadabilityAPI.ID:
-						return ReadabilityAPI.getUsername(accountID);
-
-					case InstaAPI.ID:
-						return InstaAPI.getUsername(accountID);
-
-					case ShareMail.ID:
-						return ShareMail.getUsername(accountID);
-				}
+				return getInterface(account.getType()).getUsername(accountID);
 			}
 		}
-
 
 		return "";
 	}
@@ -205,23 +161,56 @@ public class FeedReader.Share : GLib.Object {
 		{
 			if(account.getID() == accountID)
 			{
-				switch(account.getType())
-				{
-					case PocketAPI.ID:
-						return PocketAPI.addBookmark(accountID, url);
-
-					case ReadabilityAPI.ID:
-						return ReadabilityAPI.addBookmark(accountID, url);
-
-					case InstaAPI.ID:
-						return InstaAPI.addBookmark(accountID, url);
-
-					case ShareMail.ID:
-						return ShareMail.addBookmark(accountID, url);
-				}
+				return getInterface(account.getType()).addBookmark(accountID, url);
 			}
 		}
 
 		return false;
+	}
+
+	public string parseArg(string arg, out string verifier)
+	{
+
+		foreach(var interfce in m_interfaces)
+		{
+			if(interfce.isArg(arg))
+			{
+				verifier = interfce.parseArgs(arg);
+				return interfce.pluginID();
+			}
+		}
+
+		return "none";
+	}
+
+	public bool needSetup(string accountID)
+	{
+		foreach(var account in m_accounts)
+		{
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).needSetup();
+			}
+		}
+
+		return false;
+	}
+
+	public ServiceSetup? newSetup_withID(string accountID)
+	{
+		foreach(var account in m_accounts)
+		{
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).newSetup_withID(account.getID(), account.getUsername());
+			}
+		}
+
+		return null;
+	}
+
+	public ServiceSetup? newSetup(string type)
+	{
+		return getInterface(type).newSetup();
 	}
 }

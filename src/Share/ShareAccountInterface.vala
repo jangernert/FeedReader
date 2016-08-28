@@ -15,9 +15,31 @@
 
 public interface FeedReader.ShareAccountInterface : GLib.Object {
 
-	public abstract bool getAccessToken(string id, string username, string password);
+	public abstract string pluginID();
 
-	public abstract bool addBookmark(string url);
+	public abstract string pluginName();
 
-	
+	public abstract string getURL(string token);
+
+	public abstract string getRequestToken();
+
+	public abstract bool getAccessToken(string id, string? verifier, string username, string password);
+
+	public abstract bool addBookmark(string id, string url);
+
+	public abstract bool logout(string id);
+
+	public abstract string getIconName();
+
+	public abstract string getUsername(string id);
+
+	public abstract bool isArg(string arg);
+
+	public abstract string parseArgs(string arg);
+
+	public abstract bool needSetup();
+
+	public abstract ServiceSetup? newSetup_withID(string id, string username);
+
+	public abstract ServiceSetup? newSetup();
 }

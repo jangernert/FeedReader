@@ -14,11 +14,11 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 
-public class FeedReader.ShareMail : GLib.Object {
+public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
 
 	public static const string ID = "mail";
-	
-	public static bool addBookmark(string id, string url)
+
+	public bool addBookmark(string id, string url)
 	{
 
 		string body = _("Hey,\ncheck out this interesting article I just read:\n%s\n\n- send by FeedReader").printf(url);
@@ -41,15 +41,69 @@ public class FeedReader.ShareMail : GLib.Object {
 		return false;
 	}
 
-	public static string getIconName()
+	public bool logout(string id)
+	{
+		return false;
+	}
+
+	public bool isArg(string arg)
+	{
+		return false;
+	}
+
+	public string parseArgs(string arg)
+	{
+		return "";
+	}
+
+	public string getURL(string token)
+	{
+		return "";
+	}
+
+	public string getIconName()
     {
         return "mail-send";
     }
 
-	public static string getUsername(string id)
+	public string getUsername(string id)
 	{
 		return "Email";
 	}
 
+	public bool needSetup()
+	{
+		return false;
+	}
+
+	public string pluginID()
+    {
+        return ID;
+    }
+
+	public string pluginName()
+	{
+		return "Email";
+	}
+
+	public ServiceSetup? newSetup_withID(string id, string username)
+    {
+        return null;
+    }
+
+    public ServiceSetup? newSetup()
+    {
+        return null;
+    }
+
+	public string getRequestToken()
+	{
+		return "";
+	}
+
+	public bool getAccessToken(string id, string? verifier, string username, string password)
+	{
+		return false;
+	}
 
 }

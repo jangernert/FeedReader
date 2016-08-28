@@ -20,9 +20,13 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
 
-	public InstapaperSetup(string? id, bool loggedIn, string username = "")
+	public InstapaperSetup(string? id, string username = "")
 	{
-		base("Instapaper", "feed-share-instapaper", loggedIn, username);
+		bool loggedIN = false;
+		if(username != "")
+			loggedIN = true;
+
+		base("Instapaper", "feed-share-instapaper", loggedIN, username);
 
 		//------------------------------------------------
 		// XAuth revealer

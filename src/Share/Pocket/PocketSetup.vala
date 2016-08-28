@@ -15,9 +15,13 @@
 
 public class FeedReader.PocketSetup : ServiceSetup {
 
-	public PocketSetup(string? id, bool loggedIn, string username = "")
+	public PocketSetup(string? id, string username = "")
 	{
-		base("Pocket", "feed-share-pocket", loggedIn, username);
+		bool loggedIN = false;
+		if(username != "")
+			loggedIN = true;
+
+		base("Pocket", "feed-share-pocket", loggedIN, username);
 
 		if(id != null)
 			m_id = id;

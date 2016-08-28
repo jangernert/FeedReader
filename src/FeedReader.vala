@@ -92,7 +92,7 @@ namespace FeedReader {
 			if(args.length > 1)
 			{
 				logger.print(LogMessage.DEBUG, "FeedReader: callback %s".printf(args[1]));
-				var type = UtilsUI.parseArg(args[1], out verifier);
+				var type = share.parseArg(args[1], out verifier);
 				callback(type , verifier);
 			}
 

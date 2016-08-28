@@ -13,10 +13,23 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
+namespace FeedReader.PocketSecrets {
+	const string base_uri			= "https://getpocket.com/v3/";
+	const string oauth_consumer_key		= "43273-30a11c29b5eeabfa905df168";
+	const string oauth_callback			= "feedreader://pocket";
+}
 
-    public static const string ID = "pocket";
+public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
+
+    private GLib.Settings m_shareSettings;
+    private GLib.Settings m_shareTweaks;
     public Logger m_logger { get; construct set; }
+
+    public PocketAPI()
+    {
+        m_shareSettings = new GLib.Settings("org.gnome.feedreader.share");
+        m_shareTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+    }
 
     public string getRequestToken()
     {
@@ -27,7 +40,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/request");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
-        if(settings_tweaks.get_boolean("do-not-track"))
+        if(m_shareTweaks.get_boolean("do-not-track"))
 				message_soup.request_headers.append("DNT", "1");
 
 		session.send_message(message_soup);
@@ -44,7 +57,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/authorize");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
-        if(settings_tweaks.get_boolean("do-not-track"))
+        if(m_shareTweaks.get_boolean("do-not-track"))
 				message_soup.request_headers.append("DNT", "1");
 
 		session.send_message(message_soup);
@@ -65,9 +78,9 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
         settings.set_string("oauth-access-token", accessToken);
         settings.set_string("username", user);
 
-        var array = settings_share.get_strv("pocket");
+        var array = m_shareSettings.get_strv("pocket");
         array += id;
-		settings_share.set_strv("pocket", array);
+		m_shareSettings.set_strv("pocket", array);
 
         return true;
     }
@@ -87,7 +100,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
-        if(settings_tweaks.get_boolean("do-not-track"))
+        if(m_shareTweaks.get_boolean("do-not-track"))
 				message_soup.request_headers.append("DNT", "1");
 
 		session.send_message(message_soup);
@@ -108,7 +121,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
 			settings.reset(key);
 		}
 
-        var array = settings_share.get_strv("pocket");
+        var array = m_shareSettings.get_strv("pocket");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -116,7 +129,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
 			if(i != id)
 				array2 += i;
 		}
-		settings_share.set_strv("pocket", array2);
+		m_shareSettings.set_strv("pocket", array2);
 
         return true;
     }
@@ -146,7 +159,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
 
     public string pluginID()
     {
-        return ID;
+        return "pocket";
     }
 
     public string pluginName()
@@ -163,4 +176,11 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
     {
         return new PocketSetup(null);
     }
+}
+
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
+{
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof(FeedReader.ShareAccountInterface), typeof(FeedReader.PocketAPI));
 }

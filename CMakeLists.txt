@@ -179,13 +179,6 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
     src/ContentGrabber/stringPair.vala
-    src/Share/Email/Email.vala
-    src/Share/Pocket/PocketAPI.vala
-    src/Share/Pocket/PocketSetup.vala
-    src/Share/Instapaper/InstapaperAPI.vala
-    src/Share/Instapaper/InstapaperSetup.vala
-    src/Share/Readability/ReadabilityAPI.vala
-    src/Share/Readability/ReadabilitySetup.vala
     src/Share/share.vala
     src/Share/ServiceSetup.vala
     src/Share/ShareAccountInterface.vala

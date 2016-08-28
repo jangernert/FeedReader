@@ -1,0 +1,8 @@
+[Plugin]
+Module=instapaper
+Loader=C
+Name=Share Instapaper
+Description=Add the option to bookmark articles on Instapaper.
+Authors=Jan Lukas Gernert <jangernert@gmail.com>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert
+Website=http://jangernert.github.io/FeedReader/

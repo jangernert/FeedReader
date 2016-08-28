@@ -35,7 +35,7 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 
 	public override void login()
 	{
-		string id = share.generateNewID();
+		string id = Share.generateNewID();
 		string requestToken = m_api.getRequestToken();
 		string url = m_api.getURL(requestToken);
 		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);

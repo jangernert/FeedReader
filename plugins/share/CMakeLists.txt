@@ -1,0 +1,4 @@
+add_subdirectory(Email)
+add_subdirectory(Instapaper)
+add_subdirectory(Pocket)
+add_subdirectory(Readability)

@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 
-public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
+public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public static const string ID = "mail";
 	public Logger m_logger { get; construct set; }
@@ -82,4 +82,11 @@ public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
         return null;
     }
 
+}
+
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
+{
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof(FeedReader.ShareAccountInterface), typeof(FeedReader.ShareMail));
 }

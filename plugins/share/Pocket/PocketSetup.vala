@@ -35,7 +35,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 	public override void login()
 	{
-		string id = share.generateNewID();
+		string id = Share.generateNewID();
 		string requestToken = m_api.getRequestToken();
 		string url = m_api.getURL(requestToken);
 		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
@@ -44,7 +44,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		m_login_button.set_sensitive(false);
 		((FeedApp)GLib.Application.get_default()).callback.connect((content) => {
 
-			if(content == InstapaperSecrets.oauth_callback)
+			if(content == PocketSecrets.oauth_callback)
 			{
 				if(m_api.getAccessToken(id, requestToken))
 				{

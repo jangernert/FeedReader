@@ -13,10 +13,22 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
+namespace FeedReader.ReadabilitySecrets {
+	const string base_uri			= "https://www.readability.com/api/rest/v1/";
+	const string oauth_consumer_key		= "jangernert";
+	const string oauth_consumer_secret	= "3NSxqNW5d6zVwvZV6tskzVrqctHZceHr";
+	const string oauth_callback			= "feedreader://readability";
+}
 
-    public static const string ID = "readability";
+public class FeedReader.ReadabilityAPI : ShareAccountInterface, Peas.ExtensionBase {
+
+    private GLib.Settings m_shareSettings;
     public Logger m_logger { get; construct set; }
+
+    public ReadabilityAPI()
+    {
+        m_shareSettings = new GLib.Settings("org.gnome.feedreader.share");
+    }
 
     public string getRequestToken()
     {
@@ -95,9 +107,9 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
     		settings.set_string("oauth-access-token-secret", secret);
     		settings.set_string("username", user);
 
-            var array = settings_share.get_strv("readability");
+            var array = m_shareSettings.get_strv("readability");
     		array += id;
-    		settings_share.set_strv("readability", array);
+    		m_shareSettings.set_strv("readability", array);
 
             return true;
 		}
@@ -145,7 +157,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 			settings.reset(key);
 		}
 
-        var array = settings_share.get_strv("readability");
+        var array = m_shareSettings.get_strv("readability");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -153,7 +165,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 			if(i != id)
 				array2 += i;
 		}
-		settings_share.set_strv("readability", array2);
+		m_shareSettings.set_strv("readability", array2);
 
         return true;
     }
@@ -181,7 +193,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 
     public string pluginID()
     {
-        return ID;
+        return "readability";
     }
 
     public string pluginName()
@@ -198,4 +210,11 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
     {
         return new ReadabilitySetup(null);
     }
+}
+
+[ModuleInit]
+public void peas_register_types(GLib.TypeModule module)
+{
+	var objmodule = module as Peas.ObjectModule;
+	objmodule.register_extension_type(typeof(FeedReader.ShareAccountInterface), typeof(FeedReader.ReadabilityAPI));
 }

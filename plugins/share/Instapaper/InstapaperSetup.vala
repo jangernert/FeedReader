@@ -92,7 +92,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 	{
 		if(m_login_revealer.get_child_revealed())
 		{
-			string id = share.generateNewID();
+			string id = Share.generateNewID();
 			string username = m_userEntry.get_text();
 			string password = m_passEntry.get_text();
 

@@ -1,0 +1,8 @@
+[Plugin]
+Module=mail
+Loader=C
+Name=Share Email
+Description=Add the option to share articles via email.
+Authors=Jan Lukas Gernert <jangernert@gmail.com>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert
+Website=http://jangernert.github.io/FeedReader/

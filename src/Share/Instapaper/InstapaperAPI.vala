@@ -16,6 +16,7 @@
 public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
 
     public static const string ID = "instapaper";
+    public Logger m_logger { get; construct set; }
 
     public string getRequestToken()
     {
@@ -45,7 +46,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         }
         catch(Error e)
         {
-            logger.print(LogMessage.ERROR, "instapaper getAccessToken: " + e.message);
+            m_logger.print(LogMessage.ERROR, "instapaper getAccessToken: " + e.message);
         }
 
         string response = call.get_payload();
@@ -78,7 +79,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         }
         catch(Error e)
         {
-            logger.print(LogMessage.DEBUG, "getUserID: " + e.message);
+            m_logger.print(LogMessage.DEBUG, "getUserID: " + e.message);
         }
 
         var parser = new Json.Parser();
@@ -88,8 +89,8 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         }
         catch (Error e)
         {
-            logger.print(LogMessage.ERROR, "Could not load response to Message from instapaper");
-            logger.print(LogMessage.ERROR, e.message);
+            m_logger.print(LogMessage.ERROR, "Could not load response to Message from instapaper");
+            m_logger.print(LogMessage.ERROR, e.message);
         }
 
         var root_node = parser.get_root();
@@ -101,8 +102,8 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         }
         else if(root_object.has_member("error"))
         {
-            logger.print(LogMessage.ERROR, root_object.get_int_member("error_code").to_string());
-            logger.print(LogMessage.ERROR, root_object.get_string_member("message"));
+            m_logger.print(LogMessage.ERROR, root_object.get_int_member("error_code").to_string());
+            m_logger.print(LogMessage.ERROR, root_object.get_string_member("message"));
         }
         //-------------------------------------------------------------------------------------------------------------
 
@@ -128,7 +129,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         }
         catch(GLib.Error e)
         {
-            logger.print(LogMessage.ERROR, "InstaAPI - getAccessToken: " + e.message);
+            m_logger.print(LogMessage.ERROR, "InstaAPI - getAccessToken: " + e.message);
         }
 
         return true;
@@ -149,7 +150,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         }
         catch(GLib.Error e)
         {
-            logger.print(LogMessage.ERROR, "InstaAPI addBookmark: " + e.message);
+            m_logger.print(LogMessage.ERROR, "InstaAPI addBookmark: " + e.message);
         }
 
         var session = new Soup.Session();
@@ -158,7 +159,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
                         + "&password=" + password
                         + "&url=" + GLib.Uri.escape_string(url);
 
-        logger.print(LogMessage.DEBUG, "InstaAPI: " + message);
+        m_logger.print(LogMessage.DEBUG, "InstaAPI: " + message);
 
         var message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/add");
         message_soup.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message.data);
@@ -172,7 +173,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         if(response == null || response == "")
 			return false;
 
-		logger.print(LogMessage.DEBUG, "InstaAPI: " + response);
+		m_logger.print(LogMessage.DEBUG, "InstaAPI: " + response);
 
         return true;
     }

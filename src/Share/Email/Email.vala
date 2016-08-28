@@ -17,6 +17,7 @@
 public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
 
 	public static const string ID = "mail";
+	public Logger m_logger { get; construct set; }
 
 	public bool addBookmark(string id, string url)
 	{
@@ -25,7 +26,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
 
 		string mailto = "mailto:john.doe@domain.com?body=%s".printf(GLib.Uri.escape_string(body));
 
-		logger.print(LogMessage.DEBUG, mailto);
+		m_logger.print(LogMessage.DEBUG, mailto);
 
 		string[] spawn_args = {"xdg-open", mailto};
 		try
@@ -35,7 +36,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
 		}
 		catch(GLib.SpawnError e)
 		{
-			logger.print(LogMessage.ERROR, "spawning command line: " + e.message);
+			m_logger.print(LogMessage.ERROR, "spawning command line: " + e.message);
 		}
 
 		return false;

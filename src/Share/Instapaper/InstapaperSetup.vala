@@ -82,7 +82,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 		m_api = new InstaAPI();
 		m_login_button.clicked.connect(logoutAPI);
-		
+
 		if(id != null)
 			m_id = id;
 	}
@@ -92,14 +92,14 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 	{
 		if(m_login_revealer.get_child_revealed())
 		{
-			string id = share.getNewID();
+			string id = share.generateNewID();
 			string username = m_userEntry.get_text();
 			string password = m_passEntry.get_text();
 
 			if(m_api.getAccessToken(id, username, password))
 			{
 				m_id = id;
-				share.addAccount(id, m_api.pluginID(), username, m_api.getIconName(), m_api.pluginName());
+				m_api.addAccount(id, m_api.pluginID(), username, m_api.getIconName(), m_api.pluginName());
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 				m_login_revealer.set_reveal_child(false);
 				m_isLoggedIN = true;

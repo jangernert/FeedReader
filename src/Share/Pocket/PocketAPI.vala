@@ -16,10 +16,11 @@
 public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
 
     public static const string ID = "pocket";
+    public Logger m_logger { get; construct set; }
 
     public string getRequestToken()
     {
-    	logger.print(LogMessage.DEBUG, "PocketAPI: get request token");
+    	m_logger.print(LogMessage.DEBUG, "PocketAPI: get request token");
         var session = new Soup.Session();
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&redirect_uri=" + PocketSecrets.oauth_callback;
 
@@ -53,7 +54,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
 			return false;
 
         string response = (string)message_soup.response_body.flatten().data;
-        logger.print(LogMessage.DEBUG, response);
+        m_logger.print(LogMessage.DEBUG, response);
         int tokenStart = response.index_of_char('=')+1;
         int tokenEnd = response.index_of_char('&', tokenStart);
         int userStart = response.index_of_char('=', tokenEnd)+1;
@@ -81,7 +82,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
                         + "&consumer_key=" + PocketSecrets.oauth_consumer_key
                         + "&access_token=" + settings.get_string("oauth-access-token");
 
-        logger.print(LogMessage.DEBUG, "PocketAPI: " + message);
+        m_logger.print(LogMessage.DEBUG, "PocketAPI: " + message);
 
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);

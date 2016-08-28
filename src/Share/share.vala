@@ -16,19 +16,40 @@
 public class FeedReader.Share : GLib.Object {
 
 	private Gee.ArrayList<ShareAccount> m_accounts;
-	private Gee.ArrayList<ShareAccountInterface> m_interfaces;
+	private Peas.ExtensionSet m_plugins2;
+	private Gee.ArrayList<ShareAccountInterface> m_plugins;
 
 	public Share()
 	{
-		m_interfaces = new Gee.ArrayList<ShareAccountInterface>();
-		m_interfaces.add(new ReadabilityAPI());
-		m_interfaces.add(new PocketAPI());
-		m_interfaces.add(new InstaAPI());
-		m_interfaces.add(new ShareMail());
+		m_plugins = new Gee.ArrayList<ShareAccountInterface>();
+		//m_plugins.add(new ReadabilityAPI());
+		//m_plugins.add(new PocketAPI());
+		//m_plugins.add(new InstaAPI());
+		//m_plugins.add(new ShareMail());
+
+		var engine = Peas.Engine.get_default();
+		engine.add_search_path(InstallPrefix + "/share/FeedReader/pluginsShare/", null);
+		engine.enable_loader("python3");
+
+		m_plugins2 = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface), "m_logger", logger);
+
+		m_plugins2.extension_added.connect((info, extension) => {
+			var plugin = (extension as ShareAccountInterface);
+			plugin.addAccount.connect(addAccount);
+		});
+
+		m_plugins2.extension_removed.connect((info, extension) => {
+
+		});
+
+		foreach (var plugin in engine.get_plugin_list())
+		{
+			engine.try_load_plugin(plugin);
+		}	
 
 		m_accounts = new Gee.ArrayList<ShareAccount>();
 
-		foreach(var interfce in m_interfaces)
+		foreach(var interfce in m_plugins)
 		{
 			if(interfce.needSetup())
 			{
@@ -64,7 +85,7 @@ public class FeedReader.Share : GLib.Object {
 
 	private ShareAccountInterface? getInterface(string type)
 	{
-		foreach(var interfce in m_interfaces)
+		foreach(var interfce in m_plugins)
 		{
 			if(interfce.pluginID() == type)
 			{
@@ -79,7 +100,7 @@ public class FeedReader.Share : GLib.Object {
 	{
 		var accounts = new Gee.ArrayList<ShareAccount>();
 
-		foreach(var interfce in m_interfaces)
+		foreach(var interfce in m_plugins)
 		{
 			if(interfce.needSetup())
 			{
@@ -109,7 +130,7 @@ public class FeedReader.Share : GLib.Object {
 		}
 	}
 
-	public string getNewID()
+	public static string generateNewID()
 	{
 		// TODO: check if string is already in use
 		return Utils.string_random(12);

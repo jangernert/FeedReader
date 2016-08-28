@@ -35,7 +35,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 	public override void login()
 	{
-		string id = share.getNewID();
+		string id = share.generateNewID();
 		string requestToken = m_api.getRequestToken();
 		string url = m_api.getURL(requestToken);
 		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
@@ -49,7 +49,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 				if(m_api.getAccessToken(id, requestToken))
 				{
 					m_id = id;
-					share.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
+					m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
 					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
 					m_isLoggedIN = true;
 					m_label.set_label(m_api.getUsername(id));

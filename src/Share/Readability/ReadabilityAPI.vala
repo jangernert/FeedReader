@@ -16,6 +16,7 @@
 public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 
     public static const string ID = "readability";
+    public Logger m_logger { get; construct set; }
 
     public string getRequestToken()
     {
@@ -32,7 +33,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 		}
         catch (Error e)
         {
-			logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get request token: " + e.message);
+			m_logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get request token: " + e.message);
 		}
 
         return "";
@@ -67,7 +68,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
             }
             catch(Error e)
             {
-                logger.print(LogMessage.ERROR, e.message);
+                m_logger.print(LogMessage.ERROR, e.message);
             }
             if(call.get_status_code() == 403)
             {
@@ -81,8 +82,8 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
             }
             catch(Error e)
             {
-                logger.print(LogMessage.ERROR, "Could not load response to Message from readability");
-                logger.print(LogMessage.ERROR, e.message);
+                m_logger.print(LogMessage.ERROR, "Could not load response to Message from readability");
+                m_logger.print(LogMessage.ERROR, e.message);
             }
 
             var root_object = parser.get_root().get_object();
@@ -102,7 +103,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 		}
         catch(Error e)
         {
-			logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get access token: " + e.message);
+			m_logger.print(LogMessage.ERROR, "ReadabilityAPI: cannot get access token: " + e.message);
 		}
 
         return false;
@@ -128,8 +129,8 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
 		call.add_param("favorite", "1");
 
         call.run_async((call, error, obj) => {
-        	logger.print(LogMessage.DEBUG, "ReadabilityAPI: status code " + call.get_status_code().to_string());
-        	logger.print(LogMessage.DEBUG, "ReadabilityAPI: payload " + call.get_payload());
+        	m_logger.print(LogMessage.DEBUG, "ReadabilityAPI: status code " + call.get_status_code().to_string());
+        	m_logger.print(LogMessage.DEBUG, "ReadabilityAPI: payload " + call.get_payload());
         }, null);
         return true;
     }

@@ -38,7 +38,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
         return "";
     }
 
-    public bool getAccessToken(string id, string? verifier, string username, string password)
+    public bool getAccessToken(string id, string verifier)
     {
         try
         {
@@ -171,21 +171,6 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, GLib.Object {
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/readability/%s/".printf(id));
         return settings.get_string("username");
-    }
-
-    public bool isArg(string arg)
-    {
-        if(arg.has_prefix(ReadabilitySecrets.oauth_callback))
-            return true;
-
-        return false;
-    }
-
-    public string parseArgs(string arg)
-    {
-		int verifier_start = arg.index_of("=")+1;
-		int verifier_end = arg.index_of("&", verifier_start);
-		return arg.substring(verifier_start, verifier_end-verifier_start);
     }
 
     public bool needSetup()

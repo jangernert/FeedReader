@@ -46,21 +46,6 @@ public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
 		return false;
 	}
 
-	public bool isArg(string arg)
-	{
-		return false;
-	}
-
-	public string parseArgs(string arg)
-	{
-		return "";
-	}
-
-	public string getURL(string token)
-	{
-		return "";
-	}
-
 	public string getIconName()
     {
         return "mail-send";
@@ -95,15 +80,5 @@ public class FeedReader.ShareMail : ShareAccountInterface, GLib.Object {
     {
         return null;
     }
-
-	public string getRequestToken()
-	{
-		return "";
-	}
-
-	public bool getAccessToken(string id, string? verifier, string username, string password)
-	{
-		return false;
-	}
 
 }

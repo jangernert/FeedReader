@@ -19,12 +19,6 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public abstract string pluginName();
 
-	public abstract string getURL(string token);
-
-	public abstract string getRequestToken();
-
-	public abstract bool getAccessToken(string id, string? verifier, string username, string password);
-
 	public abstract bool addBookmark(string id, string url);
 
 	public abstract bool logout(string id);
@@ -32,10 +26,6 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 	public abstract string getIconName();
 
 	public abstract string getUsername(string id);
-
-	public abstract bool isArg(string arg);
-
-	public abstract string parseArgs(string arg);
 
 	public abstract bool needSetup();
 

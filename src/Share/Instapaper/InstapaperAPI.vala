@@ -22,7 +22,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, GLib.Object {
         return "";
     }
 
-    public bool getAccessToken(string id, string? verifier, string username, string password)
+    public bool getAccessToken(string id, string username, string password)
     {
         string userID = "";
 

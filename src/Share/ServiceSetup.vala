@@ -28,7 +28,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 	protected Gtk.Box m_seperator_box;
 	protected bool m_isLoggedIN;
 	protected string m_id;
-	public signal void Logut();
+	public signal void removeRow();
 
 	public ServiceSetup(string name, string iconName, bool loggedIn, string username)
 	{
@@ -137,11 +137,10 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 
 	private void logout()
 	{
-		share.deleteAccount(m_id);
 		m_isLoggedIN = false;
 		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 		m_labelStack.set_visible_child_name("loggedOUT");
-		Logut();
+		logout();
 	}
 
 	public void reveal()

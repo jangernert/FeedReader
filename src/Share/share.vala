@@ -109,35 +109,15 @@ public class FeedReader.Share : GLib.Object {
 		}
 	}
 
-	public string getRequestToken(string type)
-	{
-		return getInterface(type).getRequestToken();
-	}
-
-	public bool getAccessToken(string type, out string id, string? verifier = "", string username = "", string password = "")
+	public string getNewID()
 	{
 		// TODO: check if string is already in use
-		id = Utils.string_random(12);
-
-		var api = getInterface(type);
-
-		if(api.getAccessToken(id, verifier, username, password))
-		{
-			string usr = api.getUsername(id);
-			string icon = api.getIconName();
-			string name = api.pluginName();
-			m_accounts.add(new ShareAccount(id, type, usr, icon, name));
-			return true;
-		}
-
-		return false;
+		return Utils.string_random(12);
 	}
 
-
-	public void loginPage(string type, string token)
+	public void addAccount(string id, string type, string username, string iconName, string accountName)
 	{
-		string url = getInterface(type).getURL(token);
-		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+		m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
 	}
 
 
@@ -166,21 +146,6 @@ public class FeedReader.Share : GLib.Object {
 		}
 
 		return false;
-	}
-
-	public string parseArg(string arg, out string verifier)
-	{
-
-		foreach(var interfce in m_interfaces)
-		{
-			if(interfce.isArg(arg))
-			{
-				verifier = interfce.parseArgs(arg);
-				return interfce.pluginID();
-			}
-		}
-
-		return "none";
 	}
 
 	public bool needSetup(string accountID)

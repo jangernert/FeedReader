@@ -182,7 +182,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
             if(share.needSetup(account.getID()))
             {
                 ServiceSetup row = share.newSetup_withID(account.getID());
-    			row.Logut.connect(() => {
+    			row.removeRow.connect(() => {
     				removeRow(row, service_list);
     			});
     			service_list.add(row);
@@ -210,7 +210,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			var popover = new ServiceSettingsPopover(addAccount);
 			popover.newAccount.connect((type) => {
                 ServiceSetup row = share.newSetup(type);
-    			row.Logut.connect(() => {
+    			row.removeRow.connect(() => {
     				removeRow(row, service_list);
     			});
     			service_list.add(row);

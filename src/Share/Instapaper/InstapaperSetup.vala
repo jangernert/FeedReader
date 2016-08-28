@@ -19,6 +19,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 	private Gtk.Entry m_passEntry;
 	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
+	private InstaAPI m_api;
 
 	public InstapaperSetup(string? id, string username = "")
 	{
@@ -79,6 +80,9 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 		m_seperator_box.pack_start(m_login_revealer, false, false, 0);
 
+		m_api = new InstaAPI();
+		m_login_button.clicked.connect(logoutAPI);
+		
 		if(id != null)
 			m_id = id;
 	}
@@ -86,17 +90,21 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 	public override void login()
 	{
-		string id = "";
 		if(m_login_revealer.get_child_revealed())
 		{
-			if(share.getAccessToken(InstaAPI.ID, out id, "",  m_userEntry.get_text(), m_passEntry.get_text()))
+			string id = share.getNewID();
+			string username = m_userEntry.get_text();
+			string password = m_passEntry.get_text();
+
+			if(m_api.getAccessToken(id, username, password))
 			{
 				m_id = id;
+				share.addAccount(id, m_api.pluginID(), username, m_api.getIconName(), m_api.pluginName());
 				m_login_button.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 				m_login_revealer.set_reveal_child(false);
 				m_isLoggedIN = true;
 				m_iconStack.set_visible_child_name("loggedIN");
-				m_label.set_label(share.getUsername(m_id));
+				m_label.set_label(username);
 				m_labelStack.set_visible_child_name("loggedIN");
 			}
 			else
@@ -111,5 +119,10 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 			m_login_button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 			m_userEntry.grab_focus();
 		}
+	}
+
+	private void logoutAPI()
+	{
+		m_api.logout(m_id);
 	}
 }

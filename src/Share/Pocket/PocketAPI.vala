@@ -35,7 +35,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
         return response.substring(response.index_of_char('=')+1);
     }
 
-    public bool getAccessToken(string id, string? requestToken, string username, string password)
+    public bool getAccessToken(string id, string requestToken)
     {
         var session = new Soup.Session();
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&code=" + requestToken;
@@ -136,19 +136,6 @@ public class FeedReader.PocketAPI : ShareAccountInterface, GLib.Object {
     {
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
         return settings.get_string("username");
-    }
-
-    public bool isArg(string arg)
-    {
-        if(arg == InstapaperSecrets.oauth_callback)
-            return true;
-
-        return false;
-    }
-
-    public string parseArgs(string arg)
-    {
-		return "";
     }
 
     public bool needSetup()

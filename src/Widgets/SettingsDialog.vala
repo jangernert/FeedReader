@@ -193,6 +193,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
         addAccount.set_relief(Gtk.ReliefStyle.NONE);
         addAccount.get_style_context().add_class("addServiceButton");
+        addAccount.set_size_request(0, 48);
 		service_list.add(addAccount);
 
 		addAccount.clicked.connect(() => {

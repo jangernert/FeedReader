@@ -56,6 +56,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool m_FullscreenArticle = false;
 	private double m_FullscreenZoomLevel = 1.25;
 	private bool m_crashed = false;
+	private int m_animationDuration = 150;
 	public signal void enterFullscreen(bool video);
 	public signal void leaveFullscreen(bool video);
 
@@ -127,7 +128,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_stack.set_visible_child_name("empty");
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_stack.set_transition_duration(100);
+		m_stack.set_transition_duration(m_animationDuration);
 		m_stack.set_size_request(450, 0);
 
 		this.size_allocate.connect((allocation) => {
@@ -781,7 +782,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 				logger.print(LogMessage.DEBUG, "ArticleView: view2");
 				m_currentView = m_view2;
 				m_stack.set_visible_child_name("view2");
-				//m_view1.load_uri("about:blank");
+				GLib.Timeout.add(m_animationDuration + 10, () => {
+				    m_view1.load_uri("about:blank");
+					return false;
+				});
+
 				break;
 
 			case "view2":
@@ -789,7 +794,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 				logger.print(LogMessage.DEBUG, "ArticleView: view1");
 				m_currentView = m_view1;
 				m_stack.set_visible_child_name("view1");
-				//m_view2.load_uri("about:blank");
+				GLib.Timeout.add(m_animationDuration + 10, () => {
+				    m_view2.load_uri("about:blank");
+					return false;
+				});
 				break;
 		}
 

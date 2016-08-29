@@ -166,6 +166,7 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, Peas.ExtensionBa
 				array2 += i;
 		}
 		m_shareSettings.set_strv("readability", array2);
+		deleteAccount(id);
 
         return true;
     }
@@ -203,12 +204,12 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, Peas.ExtensionBa
 
     public ServiceSetup? newSetup_withID(string id, string username)
     {
-        return new ReadabilitySetup(id, username);
+        return new ReadabilitySetup(id, this, username);
     }
 
     public ServiceSetup? newSetup()
     {
-        return new ReadabilitySetup(null);
+        return new ReadabilitySetup(null, this);
     }
 }
 

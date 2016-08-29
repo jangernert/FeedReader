@@ -21,7 +21,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 	private Gtk.Revealer m_login_revealer;
 	private InstaAPI m_api;
 
-	public InstapaperSetup(string? id, string username = "")
+	public InstapaperSetup(string? id, InstaAPI api, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -80,7 +80,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 		m_seperator_box.pack_start(m_login_revealer, false, false, 0);
 
-		m_api = new InstaAPI();
+		m_api = api;
 
 		if(id != null)
 			m_id = id;

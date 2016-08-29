@@ -220,6 +220,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 				array2 += i;
 		}
 		m_shareSettings.set_strv("instapaper", array2);
+		deleteAccount(id);
 
         return true;
     }
@@ -257,12 +258,12 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public ServiceSetup? newSetup_withID(string id, string username)
     {
-        return new InstapaperSetup(id, username);
+        return new InstapaperSetup(id, this, username);
     }
 
     public ServiceSetup? newSetup()
     {
-        return new InstapaperSetup(null);
+        return new InstapaperSetup(null, this);
     }
 }
 

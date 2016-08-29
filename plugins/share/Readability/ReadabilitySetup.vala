@@ -17,7 +17,7 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 
 	private ReadabilityAPI m_api;
 
-	public ReadabilitySetup(string? id, string username = "")
+	public ReadabilitySetup(string? id, ReadabilityAPI api, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -25,7 +25,7 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 
 		base("Readability", "feed-share-readability", loggedIN, username);
 
-		m_api = new ReadabilityAPI();
+		m_api = api;
 
 		if(id != null)
 			m_id = id;

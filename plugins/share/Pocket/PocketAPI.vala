@@ -130,6 +130,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 				array2 += i;
 		}
 		m_shareSettings.set_strv("pocket", array2);
+		deleteAccount(id);
 
         return true;
     }
@@ -169,12 +170,12 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public ServiceSetup? newSetup_withID(string id, string username)
     {
-        return new PocketSetup(id, username);
+        return new PocketSetup(id, this, username);
     }
 
     public ServiceSetup? newSetup()
     {
-        return new PocketSetup(null);
+        return new PocketSetup(null, this);
     }
 }
 

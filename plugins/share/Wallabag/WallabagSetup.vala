@@ -15,13 +15,16 @@
 
 public class FeedReader.WallabagSetup : ServiceSetup {
 
+	private Gtk.Entry m_urlEntry;
+	private Gtk.Entry m_idEntry;
+	private Gtk.Entry m_secretEntry;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passEntry;
 	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
 	private WallabagAPI m_api;
 
-	public WallabagSetup(string? id, string username = "")
+	public WallabagSetup(string? id, WallabagAPI api, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -43,7 +46,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		m_errorBar = new Gtk.InfoBar();
 		m_errorBar.no_show_all = true;
 		var error_content = m_errorBar.get_content_area();
-		var errorLabel = new Gtk.Label(_("Username or Password incorrect"));
+		var errorLabel = new Gtk.Label(_("You fucked up"));
 		errorLabel.show();
 		error_content.add(errorLabel);
 		m_errorBar.set_message_type(Gtk.MessageType.WARNING);
@@ -54,10 +57,25 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			}
 		});
 
-        m_userEntry = new Gtk.Entry();
+        m_urlEntry = new Gtk.Entry();
+		m_idEntry = new Gtk.Entry();
+		m_secretEntry = new Gtk.Entry();
+		m_userEntry = new Gtk.Entry();
         m_passEntry = new Gtk.Entry();
 		m_passEntry.set_invisible_char('*');
 		m_passEntry.set_visibility(false);
+
+		m_urlEntry.activate.connect(() => {
+			m_idEntry.grab_focus();
+		});
+
+		m_idEntry.activate.connect(() => {
+			m_secretEntry.grab_focus();
+		});
+
+		m_secretEntry.activate.connect(() => {
+			m_userEntry.grab_focus();
+		});
 
 		m_userEntry.activate.connect(() => {
 			m_passEntry.grab_focus();
@@ -67,11 +85,29 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			login();
 		});
 
+		var urlLabel = new Gtk.Label(_("URL:"));
+		var idLabel = new Gtk.Label(_("Client ID:"));
+		var secretLabel = new Gtk.Label(_("Client Secret:"));
+		var userLabel = new Gtk.Label(_("Username:"));
+		var pwLabel = new Gtk.Label(_("Password:"));
+
+		urlLabel.set_alignment(1.0f, 0.5f);
+		idLabel.set_alignment(1.0f, 0.5f);
+		secretLabel.set_alignment(1.0f, 0.5f);
+		userLabel.set_alignment(1.0f, 0.5f);
+		pwLabel.set_alignment(1.0f, 0.5f);
+
 		grid.attach(m_errorBar, 0, 0, 2, 1);
-        grid.attach(new Gtk.Label(_("Username:")), 0, 1, 1, 1);
-        grid.attach(new Gtk.Label(_("Password:")), 0, 2, 1, 1);
-        grid.attach(m_userEntry, 1, 1, 1, 1);
-        grid.attach(m_passEntry, 1, 2, 1, 1);
+		grid.attach(urlLabel, 0, 1, 1, 1);
+		grid.attach(idLabel, 0, 2, 1, 1);
+		grid.attach(secretLabel, 0, 3, 1, 1);
+        grid.attach(userLabel, 0, 4, 1, 1);
+        grid.attach(pwLabel, 0, 5, 1, 1);
+        grid.attach(m_urlEntry, 1, 1, 1, 1);
+		grid.attach(m_idEntry, 1, 2, 1, 1);
+		grid.attach(m_secretEntry, 1, 3, 1, 1);
+		grid.attach(m_userEntry, 1, 4, 1, 1);
+        grid.attach(m_passEntry, 1, 5, 1, 1);
 
 		m_login_revealer = new Gtk.Revealer();
 		m_login_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -80,7 +116,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 
 		m_seperator_box.pack_start(m_login_revealer, false, false, 0);
 
-		m_api = new WallabagAPI();
+		m_api = api;
 
 		if(id != null)
 			m_id = id;
@@ -94,8 +130,11 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			string id = Share.generateNewID();
 			string username = m_userEntry.get_text();
 			string password = m_passEntry.get_text();
+			string clientID = m_idEntry.get_text();
+			string clientSecret = m_secretEntry.get_text();
+			string baseURL = m_urlEntry.get_text();
 
-			if(m_api.getAccessToken(id, username, password))
+			if(m_api.getAccessToken(id, username, password, clientID, clientSecret, baseURL))
 			{
 				m_id = id;
 				m_api.addAccount(id, m_api.pluginID(), username, m_api.getIconName(), m_api.pluginName());
@@ -118,7 +157,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		{
 			m_login_revealer.set_reveal_child(true);
 			m_login_button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-			m_userEntry.grab_focus();
+			m_urlEntry.grab_focus();
 		}
 	}
 

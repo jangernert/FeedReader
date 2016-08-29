@@ -71,6 +71,18 @@
 
             </description>
         </key>
+        
+        <key name="url" type="s">
+            <default>""</default>
+        </key>
+        
+        <key name="client-id" type="s">
+            <default>""</default>
+        </key>
+        
+        <key name="client-secret" type="s">
+            <default>""</default>
+        </key>
 
     </schema>
 </schemalist>

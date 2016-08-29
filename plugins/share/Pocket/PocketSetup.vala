@@ -17,7 +17,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 	private PocketAPI m_api;
 
-	public PocketSetup(string? id, string username = "")
+	public PocketSetup(string? id, PocketAPI api, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -25,7 +25,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 		base("Pocket", "feed-share-pocket", loggedIN, username);
 
-		m_api = new PocketAPI();
+		m_api = api;
 
 		if(id != null)
 			m_id = id;

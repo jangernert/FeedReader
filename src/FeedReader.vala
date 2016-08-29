@@ -24,7 +24,6 @@ namespace FeedReader {
 	GLib.Settings settings_general;
 	GLib.Settings settings_state;
 	GLib.Settings settings_tweaks;
-	GLib.Settings settings_share;
 	GLib.Settings settings_keybindings;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
@@ -41,7 +40,6 @@ namespace FeedReader {
 			settings_general = new GLib.Settings("org.gnome.feedreader");
 			settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 			settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-			settings_share = new GLib.Settings("org.gnome.feedreader.share");
 			settings_keybindings = new GLib.Settings("org.gnome.feedreader.keybindings");
 
 			logger = new Logger("ui");

@@ -28,7 +28,8 @@ public class FeedReader.Share : GLib.Object {
 
 		m_plugins.extension_added.connect((info, extension) => {
 			var plugin = (extension as ShareAccountInterface);
-			plugin.addAccount.connect(addAccount);
+			plugin.addAccount.connect(accountAdded);
+			plugin.deleteAccount.connect(deleteAccount);
 		});
 
 		m_plugins.extension_removed.connect((info, extension) => {
@@ -40,12 +41,18 @@ public class FeedReader.Share : GLib.Object {
 			engine.try_load_plugin(plugin);
 		}
 
-		m_accounts = new Gee.ArrayList<ShareAccount>();
+		refreshAccounts();
+	}
 
+	private void refreshAccounts()
+	{
+		logger.print(LogMessage.DEBUG, "Share: refreshAccounts");
+		m_accounts = new Gee.ArrayList<ShareAccount>();
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 			if(plugin.needSetup())
 			{
+				var settings_share = new GLib.Settings("org.gnome.feedreader.share");
 				var accounts = settings_share.get_strv(plugin.pluginID());
 				foreach(string id in accounts)
 				{
@@ -72,8 +79,12 @@ public class FeedReader.Share : GLib.Object {
 					)
 				);
 			}
-
 		});
+
+		foreach(var account in m_accounts)
+		{
+			logger.print(LogMessage.DEBUG, account.getType() + " " + account.getID());
+		}
 	}
 
 	private ShareAccountInterface? getInterface(string type)
@@ -122,7 +133,6 @@ public class FeedReader.Share : GLib.Object {
 			if(account.getID() == accountID)
 			{
 				m_accounts.remove(account);
-				getInterface(account.getType()).logout(accountID);
 			}
 		}
 	}
@@ -133,8 +143,9 @@ public class FeedReader.Share : GLib.Object {
 		return Utils.string_random(12);
 	}
 
-	public void addAccount(string id, string type, string username, string iconName, string accountName)
+	public void accountAdded(string id, string type, string username, string iconName, string accountName)
 	{
+		logger.print(LogMessage.DEBUG, "Share: %s account added for user: %s".printf(type, username));
 		m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
 	}
 

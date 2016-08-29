@@ -393,7 +393,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 					Article.getDateNice(),
 					Article.getFeedID()
 				)
-			, null);//"file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+			, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 		this.show_all();
 	}
 

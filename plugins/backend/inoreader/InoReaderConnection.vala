@@ -130,7 +130,7 @@ public class FeedReader.InoReaderConnection {
 		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 
 		string inoauth = "Bearer " + m_utils.getAccessToken();
-		message.request_headers.append("Authorization", inoauth) ;
+		message.request_headers.append("Authorization", inoauth);
 
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);

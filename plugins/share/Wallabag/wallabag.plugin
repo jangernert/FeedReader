@@ -1,0 +1,8 @@
+[Plugin]
+Module=wallabag
+Loader=C
+Name=Share Wallabag
+Description=Add the option to bookmark articles on Wallabag.
+Authors=Jan Lukas Gernert <jangernert@gmail.com>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert
+Website=http://jangernert.github.io/FeedReader/

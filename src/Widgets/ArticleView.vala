@@ -393,7 +393,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 					Article.getDateNice(),
 					Article.getFeedID()
 				)
-			, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+			, null);//"file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 		this.show_all();
 	}
 
@@ -781,7 +781,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				logger.print(LogMessage.DEBUG, "ArticleView: view2");
 				m_currentView = m_view2;
 				m_stack.set_visible_child_name("view2");
-				m_view1.load_uri("about:blank");
+				//m_view1.load_uri("about:blank");
 				break;
 
 			case "view2":
@@ -789,7 +789,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				logger.print(LogMessage.DEBUG, "ArticleView: view1");
 				m_currentView = m_view1;
 				m_stack.set_visible_child_name("view1");
-				m_view2.load_uri("about:blank");
+				//m_view2.load_uri("about:blank");
 				break;
 		}
 

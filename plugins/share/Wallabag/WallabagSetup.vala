@@ -13,21 +13,21 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.InstapaperSetup : ServiceSetup {
+public class FeedReader.WallabagSetup : ServiceSetup {
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passEntry;
 	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
-	private InstaAPI m_api;
+	private WallabagAPI m_api;
 
-	public InstapaperSetup(string? id, string username = "")
+	public WallabagSetup(string? id, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
 			loggedIN = true;
 
-		base("Instapaper", "feed-share-instapaper", loggedIN, username);
+		base("Wallabag", "feed-share-wallabag", loggedIN, username);
 
 		//------------------------------------------------
 		// XAuth revealer
@@ -80,7 +80,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 		m_seperator_box.pack_start(m_login_revealer, false, false, 0);
 
-		m_api = new InstaAPI();
+		m_api = new WallabagAPI();
 
 		if(id != null)
 			m_id = id;
@@ -124,10 +124,12 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 	public override void logout()
 	{
+		logger.print(LogMessage.DEBUG, "WallabagSetup: logout");
 		m_isLoggedIN = false;
 		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 		m_labelStack.set_visible_child_name("loggedOUT");
 		m_api.logout(m_id);
 		removeRow();
 	}
+
 }

@@ -26,7 +26,6 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 		base("Readability", "feed-share-readability", loggedIN, username);
 
 		m_api = new ReadabilityAPI();
-		m_login_button.clicked.connect(logoutAPI);
 
 		if(id != null)
 			m_id = id;
@@ -58,13 +57,19 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 					m_isLoggedIN = true;
 					m_label.set_label(m_api.getUsername(m_id));
 					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
+					m_login_button.clicked.disconnect(login);
+					m_login_button.clicked.connect(logout);
 				}
 			}
 		});
 	}
 
-	private void logoutAPI()
+	public override void logout()
 	{
+		m_isLoggedIN = false;
+		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
+		m_labelStack.set_visible_child_name("loggedOUT");
 		m_api.logout(m_id);
+		removeRow();
 	}
 }

@@ -18,7 +18,12 @@ namespace FeedReader {
 	public enum FeedID {
 		SEPARATOR,
 		ALL,
-		CATEGORIES
+		CATEGORIES;
+
+		public string to_string()
+		{
+ 			return ((int)this).to_string();
+ 		}
 	}
 
 	public enum LogLevel {

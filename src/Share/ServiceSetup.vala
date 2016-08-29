@@ -49,7 +49,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		m_login_button = new Gtk.Button.with_label(_("Login"));
         m_login_button.hexpand = false;
         m_login_button.margin = 10;
-        m_login_button.clicked.connect(login);
+		m_login_button.clicked.connect(login);
 
 		m_logout_button = new Gtk.Button.with_label(_("Logout"));
 		m_logout_button.hexpand = false;
@@ -121,6 +121,11 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 
 	}
 
+	public virtual void logout()
+	{
+
+	}
+
 	private bool onEnter()
 	{
 		if(m_isLoggedIN)
@@ -133,14 +138,6 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		if(m_isLoggedIN)
 			m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_RIGHT);
 		return false;
-	}
-
-	private void logout()
-	{
-		m_isLoggedIN = false;
-		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
-		m_labelStack.set_visible_child_name("loggedOUT");
-		logout();
 	}
 
 	public void reveal()

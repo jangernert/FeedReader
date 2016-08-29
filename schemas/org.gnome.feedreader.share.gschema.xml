@@ -24,6 +24,14 @@
                 all the readability account names
             </description>
         </key>
+        
+        <key name="wallabag" type="as">
+            <default>[]</default>
+            <summary>wallabag accounts</summary>
+            <description>
+                all the wallabag account names
+            </description>
+        </key>
     </schema>
 
 
@@ -44,6 +52,10 @@
                 Acces key to reader-API
             </description>
         </key>
+        
+        <key name="access-token-expires" type="i">
+		<default>0</default>
+	</key>
 
         <key name="username" type="s">
             <default>""</default>

@@ -131,7 +131,7 @@ div.pw {
 
 /* GENERAL & TYPOGRAPHY
 -------------------------------------------------------------------------------------------------------------------------------------------*/
-
+/*
 @font-face {
     font-family: 'Open Sans';
     src: url('assets/opsn-itl-webfont.eot');
@@ -171,7 +171,7 @@ div.pw {
     font-weight: 500;
     font-style: normal;
 }
-
+*/
 body {
     padding: 3rem;
     cursor: default;

@@ -50,7 +50,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedFeed(feedID);
 			m_articleList.newList();
 
-			if(feedID == FeedID.ALL)
+			if(feedID == FeedID.ALL.to_string())
 			{
 				m_footer.setRemoveButtonSensitive(false);
 			}
@@ -414,7 +414,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			var selected_row = m_feedList.getSelectedRow();
 			string[] selected = selected_row.split(" ");
 
-			if((selected[0] == "feed" && selected[1] == FeedID.ALL)
+			if((selected[0] == "feed" && selected[1] == FeedID.ALL.to_string())
 			|| (selected[0] == "cat" && (selected[1] == CategoryID.MASTER.to_string() || selected[1] == CategoryID.TAGS.to_string())))
 			{
 				m_footer.setRemoveButtonSensitive(false);

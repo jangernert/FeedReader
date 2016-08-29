@@ -45,13 +45,7 @@ namespace FeedReader {
 		const string shortcuts = _("Shortcuts");
 	}
 
-	namespace FeedID {
-		const string SEPARATOR = "-5";
-		const string ALL = "-4";
-		const string CATEGORIES = "-2";
-	}
-
-	const int DBusAPIVersion = 16;
+	const int DBusAPIVersion = 17;
 
 	// tango colors
 	const string[] COLORS = {

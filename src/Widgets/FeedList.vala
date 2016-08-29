@@ -156,7 +156,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 			if(current_feed != null)
 			{
-				if(current_feed.getID() != FeedID.SEPARATOR && current_feed.isRevealed() && current_feed.getName() != "")
+				if(current_feed.getID() != FeedID.SEPARATOR.to_string() && current_feed.isRevealed() && current_feed.getName() != "")
 				{
 					m_list.select_row(current_feed);
 					newFeedSelected(current_feed.getID());
@@ -230,7 +230,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void createFeedlist(bool defaultSettings, bool masterCat)
 	{
-		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
+		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR.to_string(), "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator1.get_style_context().add_class("fr-sidebar-separator");
 		separator1.margin_top = 8;
@@ -239,14 +239,14 @@ public class FeedReader.feedList : Gtk.Stack {
 		m_list.add(row_separator1);
 
 		var unread = dataBase.get_unread_total();
-		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL, "-1", 0);
+		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL.to_string(), "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
 		m_list.add(row_all);
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
 
-		var row_separator = new FeedRow(null, 0, false, FeedID.SEPARATOR, "-1", 0);
+		var row_separator = new FeedRow(null, 0, false, FeedID.SEPARATOR.to_string(), "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.get_style_context().add_class("fr-sidebar-separator");
 		separator.margin_bottom = 8;
@@ -390,7 +390,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpRow = row as FeedRow;
-			if(tmpRow != null && tmpRow.getID() == FeedID.ALL)
+			if(tmpRow != null && tmpRow.getID() == FeedID.ALL.to_string())
 			{
 				m_list.select_row(tmpRow);
 				tmpRow.activate();
@@ -581,7 +581,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpFeedRow = row as FeedRow;
-			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL)
+			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL.to_string())
 			{
 				tmpFeedRow.set_unread_count(dataBase.get_unread_total());
 				break;
@@ -849,7 +849,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		if(type == FeedListType.FEED)
 		{
-			if(id == FeedID.ALL)
+			if(id == FeedID.ALL.to_string())
 			{
 				feedDaemon_interface.markAllItemsRead();
 			}
@@ -1043,8 +1043,8 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 			else if(tmpFeed != null)
 			{
-				if(tmpFeed.getID() != FeedID.SEPARATOR
-				&& tmpFeed.getID() != FeedID.ALL)
+				if(tmpFeed.getID() != FeedID.SEPARATOR.to_string()
+				&& tmpFeed.getID() != FeedID.ALL.to_string())
 				{
 					tmpFeed.reveal(false);
 				}
@@ -1115,8 +1115,8 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 			else if(tmpFeed != null)
 			{
-				if(tmpFeed.getID() != FeedID.SEPARATOR
-				&& tmpFeed.getID() != FeedID.ALL)
+				if(tmpFeed.getID() != FeedID.SEPARATOR.to_string()
+				&& tmpFeed.getID() != FeedID.ALL.to_string())
 				{
 					if(isCategorieExpanded(tmpFeed.getCatID()))
 						tmpFeed.reveal(true);

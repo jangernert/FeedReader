@@ -1076,7 +1076,6 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	//[Profile]
 	public Gee.ArrayList<article> read_articles(string ID, FeedListType selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
@@ -1094,7 +1093,7 @@ public class FeedReader.dbBase : GLib.Object {
 		query.selectField("guidHash");
 		query.selectField("media");
 
-		if(selectedType == FeedListType.FEED && ID != FeedID.ALL)
+		if(selectedType == FeedListType.FEED && ID != FeedID.ALL.to_string())
 		{
 			query.addEqualsCondition("feedID", ID, true, true);
 		}

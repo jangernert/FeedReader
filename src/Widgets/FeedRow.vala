@@ -90,7 +90,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_box.pack_end (m_unreadBox, false, false, 8);
 
 			m_eventBox = new Gtk.EventBox();
-			if(m_feedID != FeedID.ALL)
+			if(m_feedID != FeedID.ALL.to_string())
 			{
 				m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 				m_eventBox.button_press_event.connect(onClick);
@@ -107,7 +107,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			set_unread_count(m_unread_count);
 
-			if(m_feedID != FeedID.ALL
+			if(m_feedID != FeedID.ALL.to_string()
 			&& !settings_general.get_boolean("only-feeds")
 			&& UtilsUI.canManipulateContent())
 			{

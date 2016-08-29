@@ -589,7 +589,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(selectedRow[0] == "feed")
 		{
-			if(selectedRow[1] == FeedID.ALL)
+			if(selectedRow[1] == FeedID.ALL.to_string())
 			{
 				var categories = dataBase.read_categories();
 				foreach(category cat in categories)

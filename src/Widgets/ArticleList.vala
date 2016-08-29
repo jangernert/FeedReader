@@ -31,7 +31,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private Gtk.Spinner m_syncSpinner;
 	private bool m_only_unread;
 	private bool m_only_marked;
-	private string m_current_feed_selected = FeedID.ALL;
+	private string m_current_feed_selected = FeedID.ALL.to_string();
 	private double m_lmit = 0.8;
 	private string m_searchTerm = "";
 	private uint m_limit = 15;
@@ -1041,7 +1041,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private string buildEmptyString()
 	{
 		string message = "";
-		if(m_current_feed_selected != FeedID.ALL && m_current_feed_selected != FeedID.CATEGORIES)
+		if(m_current_feed_selected != FeedID.ALL.to_string() && m_current_feed_selected != FeedID.CATEGORIES.to_string())
 		{
 			switch(m_IDtype)
 			{

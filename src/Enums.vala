@@ -15,6 +15,12 @@
 
 namespace FeedReader {
 
+	public enum FeedID {
+		SEPARATOR,
+		ALL,
+		CATEGORIES
+	}
+
 	public enum LogLevel {
 		OFF,
 		ERROR,

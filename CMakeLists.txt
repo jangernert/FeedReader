@@ -17,7 +17,7 @@ set (DAEMON_NAME ${EXEC_NAME}-daemon)
 set (DEBUG_NAME ${EXEC_NAME}-debug)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
-set (VERSION "1.6")
+set (VERSION "1.6.2")
 
 find_package(PkgConfig)
 find_package(Vala REQUIRED)

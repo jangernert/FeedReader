@@ -213,7 +213,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     			row.removeRow.connect(() => {
     				removeRow(row, service_list);
     			});
-    			service_list.add(row);
+    			service_list.insert(row, 0);
     			row.reveal();
 			});
 		});

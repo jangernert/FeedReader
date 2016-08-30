@@ -38,4 +38,6 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 	public abstract ServiceSetup? newSetup_withID(string id, string username);
 
 	public abstract ServiceSetup? newSetup();
+
+	//public abstract Gtk.Widget? shareWidget();
 }

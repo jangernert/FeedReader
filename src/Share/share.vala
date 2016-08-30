@@ -139,8 +139,25 @@ public class FeedReader.Share : GLib.Object {
 
 	public static string generateNewID()
 	{
-		// TODO: check if string is already in use
-		return Utils.string_random(12);
+		string id = Utils.string_random(12);
+
+
+		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
+		string[] keys = share_settings.list_keys();
+
+		foreach(string key in keys)
+		{
+			string[] ids = share_settings.get_strv(key);
+			foreach(string i in ids)
+			{
+				if(i == id)
+				{
+					return generateNewID();
+				}
+			}
+		}
+
+		return id;
 	}
 
 	public void accountAdded(string id, string type, string username, string iconName, string accountName)

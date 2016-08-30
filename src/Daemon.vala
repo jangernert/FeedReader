@@ -817,7 +817,6 @@ namespace FeedReader {
 
 	int main (string[] args)
 	{
-		//stderr = FileStream.open("/dev/null", "w");
 		settings_general = new GLib.Settings("org.gnome.feedreader");
 		settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 		settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");

@@ -17,6 +17,8 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 	private Gtk.ListBox m_list;
     public signal void showSettings(string panel);
+	public signal void startShare();
+	public signal void shareDone();
 
 	public SharePopover(Gtk.Widget widget)
 	{
@@ -62,6 +64,8 @@ public class FeedReader.SharePopover : Gtk.Popover {
     private void shareURL(Gtk.ListBoxRow row)
     {
         this.hide();
+		startShare();
+
         ShareRow? shareRow = row as ShareRow;
 
 		if(shareRow == null)
@@ -78,7 +82,22 @@ public class FeedReader.SharePopover : Gtk.Popover {
         if(window != null)
             url = window.getContent().getSelectedURL();
 
-        share.addBookmark(id, url);
+		shareAsync.begin(id, url, (obj, res) => {
+			shareAsync.end(res);
+			shareDone();
+		});
+
         logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
     }
+
+	private async void shareAsync(string id, string url)
+	{
+		SourceFunc callback = shareAsync.callback;
+		new GLib.Thread<void*>(null, () => {
+			share.addBookmark(id, url);
+			Idle.add((owned) callback);
+			return null;
+		});
+		yield;
+	}
 }

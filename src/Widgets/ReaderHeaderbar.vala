@@ -107,16 +107,34 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			var pop = new TagPopover(m_tag_button);
 		});
 
+
 		m_share_button = new Gtk.Button();
 		m_share_button.add(share_icon);
 		m_share_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_share_button.set_focus_on_click(false);
 		m_share_button.set_tooltip_text(_("Share Article"));
 		m_share_button.sensitive = false;
+
+		var shareSpinner = new Gtk.Spinner();
+		var shareStack = new Gtk.Stack();
+		shareStack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		shareStack.set_transition_duration(100);
+		shareStack.add_named(m_share_button, "button");
+		shareStack.add_named(shareSpinner, "spinner");
+		shareStack.set_visible_child_name("button");
+
 		m_share_button.clicked.connect(() => {
 			var pop = new SharePopover(m_share_button);
 			pop.showSettings.connect((panel) => {
 				showSettings(panel);
+			});
+			pop.startShare.connect(() => {
+				shareStack.set_visible_child_name("spinner");
+				shareSpinner.start();
+			});
+			pop.shareDone.connect(() => {
+				shareStack.set_visible_child_name("button");
+				shareSpinner.stop();
 			});
 		});
 
@@ -190,7 +208,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_right.pack_start(m_fullscreen_button);
 		m_header_right.pack_start(m_mark_button);
 		m_header_right.pack_start(m_read_button);
-		m_header_right.pack_end(m_share_button);
+		m_header_right.pack_end(shareStack);
 		m_header_right.pack_end(m_tag_button);
 		m_header_right.pack_end(m_media_button);
 

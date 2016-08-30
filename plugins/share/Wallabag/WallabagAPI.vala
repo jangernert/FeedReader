@@ -94,6 +94,14 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
 		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
         var array = share_settings.get_strv("wallabag");
+		foreach(string i in array)
+		{
+			if(i == id)
+			{
+				logger.print(LogMessage.WARNING, "WallabagAPI - getAccessToken: id already part of array. Returning");
+				return true;
+			}
+		}
         array += id;
 		share_settings.set_strv("wallabag", array);
 

@@ -211,6 +211,11 @@ public class FeedReader.ReadabilityAPI : ShareAccountInterface, Peas.ExtensionBa
     {
         return new ReadabilitySetup(null, this);
     }
+
+	public ShareForm? shareWidget()
+	{
+		return null;
+	}
 }
 
 [ModuleInit]

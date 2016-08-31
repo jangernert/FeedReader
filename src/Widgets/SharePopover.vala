@@ -29,9 +29,11 @@ public class FeedReader.SharePopover : Gtk.Popover {
         m_list = new Gtk.ListBox();
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        m_list.row_activated.connect(shareURL);
+        m_list.row_activated.connect(clicked);
         populateList();
 		m_stack.add_named(m_list, "list");
+		m_stack.set_transition_duration(150);
+		m_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
 		this.add(m_stack);
 		this.set_modal(true);
 		this.set_relative_to(widget);
@@ -66,11 +68,8 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		m_list.add(addRow);
     }
 
-    private void shareURL(Gtk.ListBoxRow row)
+    private void clicked(Gtk.ListBoxRow row)
     {
-        this.hide();
-		startShare();
-
         ShareRow? shareRow = row as ShareRow;
 
 		if(shareRow == null)
@@ -87,12 +86,17 @@ public class FeedReader.SharePopover : Gtk.Popover {
         if(window != null)
             url = window.getContent().getSelectedURL();
 
-		shareAsync.begin(id, url, (obj, res) => {
-			shareAsync.end(res);
-			shareDone();
-		});
-
-        logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
+		var widget = share.shareWidget(shareRow.getType());
+		if(widget == null)
+			shareURL(id, url);
+		else
+		{
+			m_stack.add_named(widget, "form");
+			m_stack.set_visible_child_name("form");
+			widget.share.connect_after(() => {
+				shareURL(id, url);
+			});
+		}
     }
 
 	private async void shareAsync(string id, string url)
@@ -105,4 +109,34 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		});
 		yield;
 	}
+
+	private void shareURL(string id, string url)
+	{
+		this.hide();
+		startShare();
+		shareAsync.begin(id, url, (obj, res) => {
+			shareAsync.end(res);
+			shareDone();
+		});
+        logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
+	}
+}
+
+public class FeedReader.ShareForm : Gtk.Box {
+
+	public signal void share();
+
+	public ShareForm()
+	{
+		var button = new Gtk.Button.with_label("Share");
+		button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		button.clicked.connect(() => { share(); });
+
+		this.pack_end(button, false, false);
+		this.orientation = Gtk.Orientation.VERTICAL;
+		this.spacing = 5;
+		this.margin = 10;
+		this.show_all();
+	}
+
 }

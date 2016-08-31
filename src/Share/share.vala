@@ -224,4 +224,20 @@ public class FeedReader.Share : GLib.Object {
 	{
 		return getInterface(type).newSetup();
 	}
+
+	public ShareForm? shareWidget(string type)
+	{
+		ShareForm? form = null;
+
+		m_plugins.foreach((@set, info, exten) => {
+			var plugin = (exten as ShareAccountInterface);
+
+			if(plugin.pluginID() == type)
+			{
+				form = plugin.shareWidget();
+			}
+		});
+
+		return form;
+	}
 }

@@ -16,10 +16,12 @@
 public class FeedReader.ShareRow : Gtk.ListBoxRow {
 
     private string m_id;
+    private string m_type;
 
 	public ShareRow(string type, string id, string username, string iconName)
 	{
 		m_id = id;
+        m_type = type;
         var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
         icon.set_size_request(32, 32);
         var serviceLabel = new Gtk.Label(username);
@@ -41,6 +43,11 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
     public string getID()
     {
         return m_id;
+    }
+
+    public string getType()
+    {
+        return m_type;
     }
 
 }

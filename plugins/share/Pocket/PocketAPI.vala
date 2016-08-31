@@ -177,6 +177,11 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
     {
         return new PocketSetup(null, this);
     }
+
+	public ShareForm? shareWidget()
+	{
+		return null;
+	}
 }
 
 [ModuleInit]

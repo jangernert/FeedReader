@@ -25,15 +25,16 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 	public SharePopover(Gtk.Widget widget)
 	{
-		m_stack = new Gtk.Stack();
         m_list = new Gtk.ListBox();
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
         m_list.row_activated.connect(clicked);
         populateList();
-		m_stack.add_named(m_list, "list");
+		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(150);
 		m_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
+		m_stack.add_named(m_list, "list");
+
 		this.add(m_stack);
 		this.set_modal(true);
 		this.set_relative_to(widget);

@@ -80,11 +80,6 @@ public class FeedReader.Share : GLib.Object {
 				);
 			}
 		});
-
-		foreach(var account in m_accounts)
-		{
-			logger.print(LogMessage.DEBUG, account.getType() + " " + account.getID());
-		}
 	}
 
 	private ShareAccountInterface? getInterface(string type)

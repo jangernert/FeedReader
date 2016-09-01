@@ -39,5 +39,5 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public abstract ServiceSetup? newSetup();
 
-	public abstract ShareForm? shareWidget();
+	public abstract ShareForm? shareWidget(string url);
 }

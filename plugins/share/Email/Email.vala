@@ -81,9 +81,9 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
         return null;
     }
 
-	public ShareForm? shareWidget()
+	public ShareForm? shareWidget(string url)
 	{
-		var widget = new EmailForm();
+		var widget = new EmailForm(url);
 		widget.share.connect(() => {
 			m_to = widget.getTo();
 			m_body = widget.getBody();

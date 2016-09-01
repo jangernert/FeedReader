@@ -17,10 +17,13 @@
 public class FeedReader.TwitterForm : ShareForm {
 
 	private Gtk.TextView m_textView;
-	public signal void textChanged(string to, string body);
+	private int m_urlLength;
+	private string m_url;
 
-	public TwitterForm()
+	public TwitterForm(string url)
 	{
+		m_url = url;
+		m_urlLength = TwitterAPI.getUrlLength();
 		string body = _("Hey,\n\nCheck out this interesting article I just read: $URL");
 
 		var scrolled = new Gtk.ScrolledWindow(null, null);
@@ -29,13 +32,40 @@ public class FeedReader.TwitterForm : ShareForm {
 		m_textView.buffer.text = body;
 		m_textView.border_width = 1;
 
+		m_textView.left_margin = 2;
+		m_textView.right_margin = 2;
+		m_textView.top_margin = 2;
+		m_textView.bottom_margin = 2;
+
+		var countLabel = new Gtk.Label(calcLenght(m_textView.buffer.text).to_string() + "/140");
+		countLabel.set_alignment(0.0f, 0.5f);
+
+		m_textView.buffer.changed.connect(() => {
+			countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
+		});
+
+
 		this.pack_start(m_textView);
+		this.pack_start(countLabel, false, false, 5);
 		this.show_all();
 	}
 
 	public string getTweet()
 	{
 		return m_textView.buffer.text;
+	}
+
+	private int calcLenght(string text)
+	{
+		if(text.contains("$URL"))
+		{
+			if(m_url.length >= m_urlLength)
+				return (text.length-3) + m_urlLength;
+			else
+				return (text.length-3) + m_url.length;
+		}
+
+		return text.length;
 	}
 
 }

@@ -178,7 +178,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
         return new PocketSetup(null, this);
     }
 
-	public ShareForm? shareWidget()
+	public ShareForm? shareWidget(string url)
 	{
 		return null;
 	}

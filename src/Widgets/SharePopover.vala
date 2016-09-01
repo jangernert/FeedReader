@@ -101,7 +101,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         if(window != null)
             url = window.getContent().getSelectedURL();
 
-		var widget = share.shareWidget(shareRow.getType());
+		var widget = share.shareWidget(shareRow.getType(), url);
 		if(widget == null)
 			shareURL(id, url);
 		else

@@ -220,7 +220,7 @@ public class FeedReader.Share : GLib.Object {
 		return getInterface(type).newSetup();
 	}
 
-	public ShareForm? shareWidget(string type)
+	public ShareForm? shareWidget(string type, string url)
 	{
 		ShareForm? form = null;
 
@@ -229,7 +229,7 @@ public class FeedReader.Share : GLib.Object {
 
 			if(plugin.pluginID() == type)
 			{
-				form = plugin.shareWidget();
+				form = plugin.shareWidget(url);
 			}
 		});
 

@@ -18,9 +18,8 @@ public class FeedReader.EmailForm : ShareForm {
 
 	private Gtk.Entry m_entry;
 	private Gtk.TextView m_textView;
-	public signal void textChanged(string to, string body);
 
-	public EmailForm()
+	public EmailForm(string url)
 	{
 		string body = _("Hey,\n\nCheck out this interesting article I just read: $URL\n\n- sent by FeedReader");
 		string to = "john.doe@domain.com";
@@ -39,6 +38,11 @@ public class FeedReader.EmailForm : ShareForm {
 		m_textView.set_wrap_mode(Gtk.WrapMode.WORD);
 		m_textView.buffer.text = body;
 		m_textView.border_width = 1;
+
+		m_textView.left_margin = 2;
+		m_textView.right_margin = 2;
+		m_textView.top_margin = 2;
+		m_textView.bottom_margin = 2;
 
 		this.pack_start(box, false, false);
 		this.pack_start(m_textView);

@@ -286,7 +286,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         return new WallabagSetup(null, this);
     }
 
-	public ShareForm? shareWidget()
+	public ShareForm? shareWidget(string url)
 	{
 		return null;
 	}

@@ -32,10 +32,11 @@ public class FeedReader.TwitterForm : ShareForm {
 		m_textView.buffer.text = body;
 		m_textView.border_width = 1;
 
-		m_textView.left_margin = 2;
-		m_textView.right_margin = 2;
-		m_textView.top_margin = 2;
-		m_textView.bottom_margin = 2;
+		int margin = 5;
+		m_textView.left_margin = margin;
+		m_textView.right_margin = margin;
+		m_textView.top_margin = margin;
+		m_textView.bottom_margin = margin;
 
 		var countLabel = new Gtk.Label(calcLenght(m_textView.buffer.text).to_string() + "/140");
 		countLabel.set_alignment(0.0f, 0.5f);

@@ -20,6 +20,7 @@ public class FeedReader.TwitterForm : ShareForm {
 	private int m_urlLength = 0;
 	private string m_url;
 	private Gtk.Stack m_stack;
+	private Gtk.Label m_countLabel;
 
 	public TwitterForm(string url)
 	{
@@ -39,15 +40,15 @@ public class FeedReader.TwitterForm : ShareForm {
 		m_textView.top_margin = margin;
 		m_textView.bottom_margin = margin;
 
-		var countLabel = new Gtk.Label(calcLenght(m_textView.buffer.text).to_string() + "/140");
-		countLabel.set_alignment(0.0f, 0.5f);
+		m_countLabel = new Gtk.Label("");
+		m_countLabel.set_alignment(0.0f, 0.5f);
 		var spinner = new Gtk.Spinner();
 
-		m_stack.add_named(countLabel, "label");
+		m_stack.add_named(m_countLabel, "label");
 		m_stack.add_named(spinner, "spinner");
 
 		m_textView.buffer.changed.connect(() => {
-			countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
+			m_countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
 		});
 
 
@@ -71,6 +72,7 @@ public class FeedReader.TwitterForm : ShareForm {
 		ThreadFunc<void*> run = () => {
 
 	        m_urlLength = api.getUrlLength();
+			m_countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
 
 	        Idle.add((owned) callback);
 	        return null;

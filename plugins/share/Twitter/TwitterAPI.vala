@@ -23,6 +23,7 @@ namespace FeedReader.TwitterSecrets {
 public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 	private Rest.OAuthProxy m_oauthObject;
+	private string m_tweet;
     public Logger m_logger { get; construct set; }
 
     public TwitterAPI()
@@ -189,7 +190,11 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 	public ShareForm? shareWidget()
 	{
-		return null;
+		var widget = new TwitterForm();
+		widget.share.connect(() => {
+			m_tweet = widget.getTweet();
+		});
+		return widget;
 	}
 }
 

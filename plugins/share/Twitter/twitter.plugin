@@ -1,0 +1,8 @@
+[Plugin]
+Module=twitter
+Loader=C
+Name=Share Twitter
+Description=Add the option to tweet about articles.
+Authors=Jan Lukas Gernert <jangernert@gmail.com>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert
+Website=http://jangernert.github.io/FeedReader/

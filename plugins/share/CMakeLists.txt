@@ -1,5 +1,5 @@
 add_subdirectory(Email)
 add_subdirectory(Instapaper)
 add_subdirectory(Pocket)
-add_subdirectory(Readability)
+add_subdirectory(Twitter)
 add_subdirectory(Wallabag)

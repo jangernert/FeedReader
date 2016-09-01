@@ -1,10 +1,11 @@
 <schemalist>
     <schema id="org.gnome.feedreader.share" path="/org/gnome/feedreader/share/" gettext-domain="feedreader">
+    
 	<key name="instapaper" type="as">
             <default>[]</default>
             <summary>instapaper accounts</summary>
             <description>
-                all the instapaper account names
+                all the instapaper account ids
             </description>
         </key>
 
@@ -13,7 +14,7 @@
             <default>[]</default>
             <summary>pocket accounts</summary>
             <description>
-                all the pocket account names
+                all the pocket account ids
             </description>
         </key>
         
@@ -21,9 +22,18 @@
             <default>[]</default>
             <summary>wallabag accounts</summary>
             <description>
-                all the wallabag account names
+                all the wallabag account ids
             </description>
         </key>
+        
+        <key name="twitter" type="as">
+            <default>[]</default>
+            <summary>twitter accounts</summary>
+            <description>
+                all the twitter account ids
+            </description>
+        </key>
+        
     </schema>
 
 

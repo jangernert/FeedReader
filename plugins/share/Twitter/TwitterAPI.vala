@@ -24,6 +24,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 	private Rest.OAuthProxy m_oauthObject;
 	private string m_tweet;
+	private int m_urlLength = 0;
     public Logger m_logger { get; construct set; }
 
     public TwitterAPI()
@@ -208,14 +209,21 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 	public ShareForm? shareWidget(string url)
 	{
 		var widget = new TwitterForm(url);
+
+		widget.setAPI.begin(this, (obj, res) => {
+			widget.setAPI.end(res);
+		});
 		widget.share.connect(() => {
 			m_tweet = widget.getTweet();
 		});
 		return widget;
 	}
 
-	public static int getUrlLength()
+	public int getUrlLength()
 	{
+		if(m_urlLength > 0)
+			return m_urlLength;
+
 		var shareSettings = new GLib.Settings("org.gnome.feedreader.share");
         var array = shareSettings.get_strv("twitter");
 		string id = array[0];
@@ -250,7 +258,8 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         catch(Error e){}
 
 		var root_object = parser.get_root().get_object();
-		return (int)root_object.get_int_member("short_url_length");
+		m_urlLength = (int)root_object.get_int_member("short_url_length");
+		return m_urlLength;
 	}
 }
 

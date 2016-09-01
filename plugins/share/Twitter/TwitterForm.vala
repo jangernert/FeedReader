@@ -17,13 +17,14 @@
 public class FeedReader.TwitterForm : ShareForm {
 
 	private Gtk.TextView m_textView;
-	private int m_urlLength;
+	private int m_urlLength = 0;
 	private string m_url;
+	private Gtk.Stack m_stack;
 
 	public TwitterForm(string url)
 	{
 		m_url = url;
-		m_urlLength = TwitterAPI.getUrlLength();
+		m_stack = new Gtk.Stack();
 		string body = _("Hey,\n\nCheck out this interesting article I just read: $URL");
 
 		var scrolled = new Gtk.ScrolledWindow(null, null);
@@ -40,6 +41,10 @@ public class FeedReader.TwitterForm : ShareForm {
 
 		var countLabel = new Gtk.Label(calcLenght(m_textView.buffer.text).to_string() + "/140");
 		countLabel.set_alignment(0.0f, 0.5f);
+		var spinner = new Gtk.Spinner();
+
+		m_stack.add_named(countLabel, "label");
+		m_stack.add_named(spinner, "spinner");
 
 		m_textView.buffer.changed.connect(() => {
 			countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
@@ -47,13 +52,33 @@ public class FeedReader.TwitterForm : ShareForm {
 
 
 		this.pack_start(m_textView);
-		this.pack_start(countLabel, false, false, 5);
+		this.pack_start(m_stack, false, false, 5);
 		this.show_all();
+
+		m_stack.set_visible_child_name("spinner");
+		spinner.start();
 	}
 
 	public string getTweet()
 	{
 		return m_textView.buffer.text;
+	}
+
+	public async void setAPI(TwitterAPI api)
+	{
+		SourceFunc callback = setAPI.callback;
+
+		ThreadFunc<void*> run = () => {
+
+	        m_urlLength = api.getUrlLength();
+
+	        Idle.add((owned) callback);
+	        return null;
+	    };
+    	Thread.create<void*>(run, false);
+
+		yield;
+		m_stack.set_visible_child_name("label");
 	}
 
 	private int calcLenght(string text)

@@ -16,14 +16,6 @@
                 all the pocket account names
             </description>
         </key>
-
-	<key name="readability" type="as">
-            <default>[]</default>
-            <summary>readability accounts</summary>
-            <description>
-                all the readability account names
-            </description>
-        </key>
         
         <key name="wallabag" type="as">
             <default>[]</default>

@@ -1,8 +1,0 @@
-[Plugin]
-Module=readability
-Loader=C
-Name=Share Readability.com
-Description=Add the option to bookmark articles on Readability.com.
-Authors=Jan Lukas Gernert <jangernert@gmail.com>
-Copyright=Copyright © 2015-16 Jan Lukas Gernert
-Website=http://jangernert.github.io/FeedReader/

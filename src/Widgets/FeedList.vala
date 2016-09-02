@@ -315,7 +315,7 @@ public class FeedReader.feedList : Gtk.Stack {
 												item.getCatIDs()[0],
 												0
 											);
-				m_list.insert(feedrow, -1);
+				m_list.insert(feedrow, 3);
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.moveUP.connect(moveUP);
 				feedrow.deselectRow.connect(deselectRow);

@@ -1,6 +1,7 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 find_package(GLIB)
 include_directories(${GLIB_INCLUDE_DIRS})
+include_directories(../libmrss)
 
 add_library(rss-glib STATIC
 	rss-document.c

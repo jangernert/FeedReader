@@ -72,7 +72,6 @@ public class FeedReader.TwitterForm : ShareForm {
 		ThreadFunc<void*> run = () => {
 
 	        m_urlLength = api.getUrlLength();
-			m_countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
 
 	        Idle.add((owned) callback);
 	        return null;
@@ -80,6 +79,7 @@ public class FeedReader.TwitterForm : ShareForm {
     	Thread.create<void*>(run, false);
 
 		yield;
+		m_countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
 		m_stack.set_visible_child_name("label");
 	}
 

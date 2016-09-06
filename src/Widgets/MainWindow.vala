@@ -624,7 +624,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		string setting = settings_keybindings.get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
 
-		if(key != null && event.keyval == key)
+		if(key != null && Gdk.keyval_to_lower(event.keyval) == key)
 		{
 			if(mod == null && event.state == 0)
 			{

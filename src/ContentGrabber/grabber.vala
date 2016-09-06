@@ -88,6 +88,14 @@ public class FeedReader.Grabber : GLib.Object {
     public bool process()
     {
         logger.print(LogMessage.DEBUG, "Grabber: process article: " + m_articleURL);
+
+        if(m_articleURL == null || m_articleURL == "")
+        {
+            logger.print(LogMessage.ERROR, "No valid article-url?!?");
+            return false;
+        }
+
+
         bool downloaded = false;
 
         if(!checkConfigFile())

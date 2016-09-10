@@ -388,6 +388,10 @@ public class FeedReader.Grabber : GLib.Object {
         logger.print(LogMessage.DEBUG, "Grabber: strip all empty url-tags");
         grabberUtils.stripNode(doc, "//a[not(node())]");
 
+        // strip all externale css and fonts
+        logger.print(LogMessage.DEBUG, "Grabber: strip all externale css and fonts");
+        grabberUtils.stripNode(doc, "//*[@type='text/css']");
+
         // get the content of the article
         unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();
         if(bodyList.size != 0)

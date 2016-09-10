@@ -3,9 +3,7 @@
 tidy: no
 prune: no
 
-title: //div[@class='Newsheader']/h1
-#date: //time
-#author: //a[@rel='author']
+title: //meta[@property='og:title']/@content
 
 body: //div[@id='Newswrap']
 body: //div[@class='text']

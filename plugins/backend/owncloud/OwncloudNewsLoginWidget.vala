@@ -57,7 +57,6 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		m_passwordEntry.activate.connect(writeData);
 
 		m_passwordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
-		m_passwordEntry.set_invisible_char('*');
 		m_passwordEntry.set_visibility(false);
 
 		var grid = new Gtk.Grid();

@@ -56,7 +56,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		m_userEntry.activate.connect(() => { login(); });
 		m_passwordEntry.activate.connect(() => { login(); });
 
-		m_passwordEntry.set_invisible_char('*');
+		m_passwordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
 		m_passwordEntry.set_visibility(false);
 
 		var grid = new Gtk.Grid();
@@ -85,7 +85,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 		m_authUserEntry = new Gtk.Entry();
 		m_authPasswordEntry = new Gtk.Entry();
-		m_authPasswordEntry.set_invisible_char('*');
+		m_authPasswordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
 		m_authPasswordEntry.set_visibility(false);
 
 		m_authUserEntry.activate.connect(() => { login(); });

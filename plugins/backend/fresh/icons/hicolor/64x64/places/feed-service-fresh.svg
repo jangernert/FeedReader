@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 64 64"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="fresh.svg"
+   width="64"
+   height="64">
+  <metadata
+     id="metadata26">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title>Logo FreshRSS</dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs24" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1131"
+     id="namedview22"
+     showgrid="false"
+     inkscape:zoom="5.2149125"
+     inkscape:cx="27.429903"
+     inkscape:cy="13.794958"
+     inkscape:window-x="0"
+     inkscape:window-y="30"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg2" />
+  <title
+     id="title4">Logo FreshRSS</title>
+  <circle
+     cx="32"
+     cy="32"
+     r="8.25"
+     id="circle8"
+     style="fill:#0062be" />
+  <g
+     id="g10"
+     style="fill:none;stroke:#0062be;stroke-width:24"
+     transform="scale(0.25,0.25)">
+    <g
+       id="g12"
+       style="stroke-opacity:0.3">
+      <path
+         d="M 12,128 A 116,116 0 1 1 128,244"
+         id="path14"
+         inkscape:connector-curvature="0" />
+      <path
+         d="m 54,128 a 74,74 0 1 1 74,74"
+         id="path16"
+         inkscape:connector-curvature="0" />
+    </g>
+    <path
+       d="M 128,12 A 116,116 0 0 1 244,128"
+       id="path18"
+       inkscape:connector-curvature="0" />
+    <path
+       d="m 128,54 a 74,74 0 0 1 74,74"
+       id="path20"
+       inkscape:connector-curvature="0" />
+  </g>
+</svg>

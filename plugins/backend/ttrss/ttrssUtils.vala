@@ -87,7 +87,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = m_settings.get_string("url");
+		attributes["URL"] = getURL();
 		attributes["Username"] = getUser();
 
 		string passwd = "";
@@ -138,8 +138,8 @@ public class FeedReader.ttrssUtils : GLib.Object {
 										"URL", Secret.SchemaAttributeType.STRING,
 										"Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = m_settings.get_string("url");
-		attributes["Username"] = m_settings.get_string ("username");
+		attributes["URL"] = getURL();
+		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
 			removed = Secret.password_clearv.end(async_res);
@@ -155,7 +155,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 										  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = m_settings.get_string("url");
+		attributes["URL"] = getURL();
 		attributes["Username"] = getHtaccessUser();
 		attributes["htaccess"] = "true";
 
@@ -184,7 +184,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 											  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
 		var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		authAttributes["URL"] = getURL();
-		authAttributes["Username"] = getUser();
+		authAttributes["Username"] = getHtaccessUser();
 		authAttributes["htaccess"] = "true";
 		try
 		{

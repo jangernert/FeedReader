@@ -33,7 +33,7 @@ public class FeedReader.freshUtils : GLib.Object {
 				tmp_url = tmp_url + "api/greader.php/";
 
 			if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
-					tmp_url = "http://" + tmp_url;
+					tmp_url = "https://" + tmp_url;
 		}
 
 		logger.print(LogMessage.DEBUG, "fresh URL: " + tmp_url);

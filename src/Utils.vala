@@ -422,8 +422,18 @@ public class FeedReader.Utils : GLib.Object {
 	}
 
 
-	public static bool ping(string url)
+	public static bool ping(string link)
 	{
+		string url = link;
+
+		if(url.has_prefix("https://"))
+			url = url.substring("https://".length);
+		else if(url.has_prefix("http://"))
+			url = url.substring("http://".length);
+
+		if(url.has_suffix("/"))
+			url = url.substring(0, url.length-1);
+
 	    try
 		{
 	        var resolver = GLib.Resolver.get_default();

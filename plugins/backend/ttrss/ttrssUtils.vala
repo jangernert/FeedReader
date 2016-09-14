@@ -42,7 +42,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 				tmp_url = tmp_url + "api/";
 
 			if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
-					tmp_url = "http://" + tmp_url;
+					tmp_url = "https://" + tmp_url;
 		}
 
 		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);

@@ -144,10 +144,12 @@ public class FeedReader.FeedlyAPI : Object {
 		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
 		var parser = new Json.Parser();
-		try{
+		try
+		{
 			parser.load_from_data(response, -1);
 		}
-		catch (Error e) {
+		catch (Error e)
+		{
 			logger.print(LogMessage.ERROR, "getCategories: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
 		}

@@ -293,9 +293,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
 		string response = m_connection.send_request(api_endpoint, message_string);
 
-		//logger.print(LogMessage.DEBUG, message_string);
-		//logger.print(LogMessage.DEBUG, response);
-
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);

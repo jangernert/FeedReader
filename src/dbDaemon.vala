@@ -680,10 +680,37 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void rename_category(string catID, string newName)
     {
-        var query = new QueryBuilder(QueryType.UPDATE, "categories");
-        query.updateValuePair("title", newName, true);
-        query.addEqualsCondition("categorieID", catID, true, true);
-        executeSQL(query.build());
+
+        if(server.tagIDaffectedByNameChange())
+        {
+            var cat = read_category(catID);
+            string newID = catID.replace(cat.getTitle(), newName);
+            var query2 = new QueryBuilder(QueryType.UPDATE, "categories");
+            query2.updateValuePair("categorieID", newID, true);
+            query2.addEqualsCondition("categorieID", catID, true, true);
+            executeSQL(query2.build());
+            query2.print();
+
+            var query3 = new QueryBuilder(QueryType.UPDATE, "feeds");
+            query3.updateValuePair("category_id", "replace(category_id, '%s', '%s')".printf(catID, newID));
+            query3.addCustomCondition("instr(category_id, '%s')".printf(catID));
+            executeSQL(query3.build());
+            query3.print();
+
+            var query = new QueryBuilder(QueryType.UPDATE, "categories");
+            query.updateValuePair("title", newName, true);
+            query.addEqualsCondition("categorieID", newID, true, true);
+            executeSQL(query.build());
+        }
+        else
+        {
+            var query = new QueryBuilder(QueryType.UPDATE, "categories");
+            query.updateValuePair("title", newName, true);
+            query.addEqualsCondition("categorieID", catID, true, true);
+            executeSQL(query.build());
+        }
+
+
     }
 
     public void move_category(string catID, string newParentID)

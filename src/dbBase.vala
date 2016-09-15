@@ -908,7 +908,7 @@ public class FeedReader.dbBase : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("*");
-		query.addEqualsCondition("categorieID", catID);
+		query.addEqualsCondition("categorieID", catID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;

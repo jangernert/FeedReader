@@ -54,17 +54,9 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return m_utils.getUnmodifiedURL();
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Many services have different ways of telling if a feed is uncategorized.
-	// OwnCloud-News and Tiny Tiny RSS use the id "0", while feedly and InoReader
-	// use an empty string ("").
-	// Return what this service uses to indicate that the feed does not belong
-	// to any category.
-	//--------------------------------------------------------------------------------------
 	public string uncategorizedID()
 	{
-		return "";
+		return "1";
 	}
 
 
@@ -91,7 +83,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool tagIDaffectedByNameChange()
 	{
-		return false;
+		return true;
 	}
 
 
@@ -119,11 +111,6 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return true;
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Check if the service is reachable.
-	// You can use the method Utils.ping() if the service doesn't provide anything.
-	//--------------------------------------------------------------------------------------
 	public bool serverAvailable()
 	{
 		return Utils.ping(m_utils.getUnmodifiedURL());
@@ -178,50 +165,26 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Add an existing tag to the article
-	//--------------------------------------------------------------------------------------
 	public void tagArticle(string articleID, string tagID)
 	{
-
+		return;
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Remove an existing tag from the article
-	//--------------------------------------------------------------------------------------
 	public void removeArticleTag(string articleID, string tagID)
 	{
-
+		return;
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Create a new tag with the title of "caption" and return the id of the
-	// newly added tag.
-	// Hint: some services don't have API to create tags, but instead create them
-	// on the fly when tagging articles. In this case just compose the tagID
-	// following the schema tha service uses and return it.
-	//--------------------------------------------------------------------------------------
 	public string createTag(string caption)
 	{
 		return "";
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Delete a tag completely
-	//--------------------------------------------------------------------------------------
 	public void deleteTag(string tagID)
 	{
 
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Rename the tag with the id "tagID" to the new name "title"
-	//--------------------------------------------------------------------------------------
 	public void renameTag(string tagID, string title)
 	{
 
@@ -332,24 +295,15 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Get all feeds, categories and tags from the service
-	// Fill up the emtpy LinkedList's that are provided with instances of the
-	// model-classes category, feed and article
-	//--------------------------------------------------------------------------------------
 	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-
+		m_api.getSubscriptionList(feeds);
+		m_api.getTagList(categories);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Return the total count of unread articles on the server
-	//--------------------------------------------------------------------------------------
 	public int getUnreadCount()
 	{
-		return 0;
+		return m_api.getUnreadCounts();
 	}
 
 
@@ -370,16 +324,49 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 	//--------------------------------------------------------------------------------------
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
 	{
+		if(whatToGet == ArticleStatus.READ)
+		{
+			return;
+		}
 
+		var articles = new Gee.LinkedList<article>();
+		string? continuation = null;
+		string? exclude = null;
+		string? labelID = null;
+		int left = count;
+		if(whatToGet == ArticleStatus.ALL)
+		{
+			labelID = "user/-/state/com.google/reading-list";
+		}
+		else if(whatToGet == ArticleStatus.MARKED)
+		{
+			labelID = "user/-/state/com.google/starred";
+		}
+		else if(whatToGet == ArticleStatus.UNREAD)
+		{
+			labelID = "user/-/state/com.google/reading-list";
+			exclude = "user/-/state/com.google/read";
+		}
+
+
+		while(left > 0)
+		{
+			if(left > 1000)
+			{
+				continuation = m_api.getStreamContents(articles, null, labelID, exclude, 1000, "d");
+				left -= 1000;
+			}
+			else
+			{
+				continuation = m_api.getStreamContents(articles, null, labelID, exclude, left, "d");
+				left = 0;
+			}
+		}
+		writeArticlesInChunks(articles, 10);
 	}
 
 }
 
-
-//--------------------------------------------------------------------------------------
-// Boilerplate code for the plugin. Replace "demoInterface" with the name
-// of your interface-class.
-//--------------------------------------------------------------------------------------
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)
 {

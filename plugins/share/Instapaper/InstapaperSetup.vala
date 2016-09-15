@@ -56,7 +56,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
         m_userEntry = new Gtk.Entry();
         m_passEntry = new Gtk.Entry();
-		m_passEntry.set_invisible_char('*');
+		m_passEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
 		m_passEntry.set_visibility(false);
 
 		m_userEntry.activate.connect(() => {

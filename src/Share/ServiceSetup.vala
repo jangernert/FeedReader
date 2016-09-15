@@ -91,7 +91,6 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 
 		m_seperator_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
-		separator.set_size_request(0, 2);
 		m_seperator_box.pack_start(m_box, true, true, 0);
 		m_seperator_box.pack_end(separator, false, false, 0);
 

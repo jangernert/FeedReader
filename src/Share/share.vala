@@ -80,11 +80,6 @@ public class FeedReader.Share : GLib.Object {
 				);
 			}
 		});
-
-		foreach(var account in m_accounts)
-		{
-			logger.print(LogMessage.DEBUG, account.getType() + " " + account.getID());
-		}
 	}
 
 	private ShareAccountInterface? getInterface(string type)
@@ -139,8 +134,25 @@ public class FeedReader.Share : GLib.Object {
 
 	public static string generateNewID()
 	{
-		// TODO: check if string is already in use
-		return Utils.string_random(12);
+		string id = Utils.string_random(12);
+
+
+		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
+		string[] keys = share_settings.list_keys();
+
+		foreach(string key in keys)
+		{
+			string[] ids = share_settings.get_strv(key);
+			foreach(string i in ids)
+			{
+				if(i == id)
+				{
+					return generateNewID();
+				}
+			}
+		}
+
+		return id;
 	}
 
 	public void accountAdded(string id, string type, string username, string iconName, string accountName)
@@ -206,5 +218,21 @@ public class FeedReader.Share : GLib.Object {
 	public ServiceSetup? newSetup(string type)
 	{
 		return getInterface(type).newSetup();
+	}
+
+	public ShareForm? shareWidget(string type, string url)
+	{
+		ShareForm? form = null;
+
+		m_plugins.foreach((@set, info, exten) => {
+			var plugin = (exten as ShareAccountInterface);
+
+			if(plugin.pluginID() == type)
+			{
+				form = plugin.shareWidget(url);
+			}
+		});
+
+		return form;
 	}
 }

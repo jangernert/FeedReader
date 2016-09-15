@@ -88,6 +88,14 @@ public class FeedReader.Grabber : GLib.Object {
     public bool process()
     {
         logger.print(LogMessage.DEBUG, "Grabber: process article: " + m_articleURL);
+
+        if(m_articleURL == null || m_articleURL == "")
+        {
+            logger.print(LogMessage.ERROR, "No valid article-url?!?");
+            return false;
+        }
+
+
         bool downloaded = false;
 
         if(!checkConfigFile())
@@ -379,6 +387,10 @@ public class FeedReader.Grabber : GLib.Object {
         // strip all empty url-tags <a/>
         logger.print(LogMessage.DEBUG, "Grabber: strip all empty url-tags");
         grabberUtils.stripNode(doc, "//a[not(node())]");
+
+        // strip all external css and fonts
+        logger.print(LogMessage.DEBUG, "Grabber: strip all external css and fonts");
+        grabberUtils.stripNode(doc, "//*[@type='text/css']");
 
         // get the content of the article
         unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();

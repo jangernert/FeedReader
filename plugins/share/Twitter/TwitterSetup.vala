@@ -13,17 +13,17 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ReadabilitySetup : ServiceSetup {
+public class FeedReader.TwitterSetup : ServiceSetup {
 
-	private ReadabilityAPI m_api;
+	private TwitterAPI m_api;
 
-	public ReadabilitySetup(string? id, ReadabilityAPI api, string username = "")
+	public TwitterSetup(string? id, TwitterAPI api, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
 			loggedIN = true;
 
-		base("Readability", "feed-share-readability", loggedIN, username);
+		base("Twitter", "feed-share-twitter", loggedIN, username);
 
 		m_api = api;
 
@@ -43,23 +43,30 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 		m_login_button.set_sensitive(false);
 		((FeedApp)GLib.Application.get_default()).callback.connect((content) => {
 
-			if(content.has_prefix(ReadabilitySecrets.oauth_callback))
+			if(content.has_prefix(TwitterSecrets.callback))
 			{
-				int verifier_start = content.index_of("=")+1;
-				int verifier_end = content.index_of("&", verifier_start);
-				string verifier = content.substring(verifier_start, verifier_end-verifier_start);
+				int token_start = content.index_of("token=")+6;
+				int token_end = content.index_of("&", token_start);
+				string token = content.substring(token_start, token_end-token_start);
 
-				if(m_api.getAccessToken(id, verifier))
+				int verifier_start = content.index_of("verifier=")+9;
+				string verifier = content.substring(verifier_start);
+
+				if(token == requestToken)
 				{
-					m_id = id;
-					m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
-					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
-					m_isLoggedIN = true;
-					m_label.set_label(m_api.getUsername(m_id));
-					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
-					m_login_button.clicked.disconnect(login);
-					m_login_button.clicked.connect(logout);
+					if(m_api.getAccessToken(id, verifier))
+					{
+						m_id = id;
+						m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
+						m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
+						m_isLoggedIN = true;
+						m_label.set_label(m_api.getUsername(id));
+						m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
+						m_login_button.clicked.disconnect(login);
+						m_login_button.clicked.connect(logout);
+					}
 				}
+
 			}
 		});
 	}
@@ -72,4 +79,5 @@ public class FeedReader.ReadabilitySetup : ServiceSetup {
 		m_api.logout(m_id);
 		removeRow();
 	}
+
 }

@@ -47,7 +47,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		var shortcutsAction = new SimpleAction("shortcuts", null);
 		shortcutsAction.activate.connect(showShortcutWindow);
-		add_action(shortcutsAction);
+		this.add_action(shortcutsAction);
 		shortcutsAction.set_enabled(true);
 
 		var reportBugAction = new SimpleAction("bugs", null);
@@ -59,7 +59,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
 			}
 		});
-		add_action(reportBugAction);
+		this.add_action(reportBugAction);
 		reportBugAction.set_enabled(true);
 
 		var bountyAction = new SimpleAction("bounty", null);
@@ -71,21 +71,21 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
 			}
 		});
-		add_action(bountyAction);
+		this.add_action(bountyAction);
 		bountyAction.set_enabled(true);
 
 		var settingsAction = new SimpleAction("settings", null);
 		settingsAction.activate.connect(() => {
 			showSettings("ui");
 		});
-		add_action(settingsAction);
+		this.add_action(settingsAction);
 		settingsAction.set_enabled(true);
 
 		var login_action = new SimpleAction("reset", null);
 		login_action.activate.connect(() => {
 			showReset(Gtk.StackTransitionType.SLIDE_RIGHT);
 		});
-		add_action(login_action);
+		this.add_action(login_action);
 		login_action.set_enabled(true);
 
 		var about_action = new SimpleAction("about", null);
@@ -118,7 +118,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 			dialog.present();
 		});
-		add_action(about_action);
+		this.add_action(about_action);
 		about_action.set_enabled(true);
 
 		m_headerbar = new readerHeaderbar();
@@ -624,7 +624,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		string setting = settings_keybindings.get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
 
-		if(key != null && event.keyval == key)
+		if(key != null && Gdk.keyval_to_lower(event.keyval) == key)
 		{
 			if(mod == null && event.state == 0)
 			{

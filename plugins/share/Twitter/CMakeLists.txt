@@ -1,4 +1,4 @@
-set (NAME readability)
+set (NAME twitter)
 set (PLUGTARGET ${NAME}_target)
 
 # ----------------------------------------------------------
@@ -6,8 +6,9 @@ set (PLUGTARGET ${NAME}_target)
 # ----------------------------------------------------------
 
 vala_precompile(VALA_C ${PLUGTARGET}
-    ReadabilityAPI.vala
-    ReadabilitySetup.vala
+    TwitterAPI.vala
+    TwitterSetup.vala
+    TwitterForm.vala
 
 PACKAGES
     libpeas-1.0

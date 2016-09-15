@@ -1,4 +1,5 @@
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+include_directories(../libnxml)
 
 add_library(mrss STATIC
 	mrss.h

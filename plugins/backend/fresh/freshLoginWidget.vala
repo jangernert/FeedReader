@@ -15,7 +15,7 @@
 
 FeedReader.Logger logger;
 
-public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
+public class FeedReader.freshLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private Gtk.Entry m_urlEntry;
 	private Gtk.Entry m_userEntry;
@@ -24,7 +24,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 	private Gtk.Entry m_authUserEntry;
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
-	private ttrssUtils m_utils;
+	private freshUtils m_utils;
 
 	public Gtk.Stack m_stack { get; construct set; }
 	public Gtk.ListStore m_listStore { get; construct set; }
@@ -34,9 +34,9 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 	public void init()
 	{
 		logger = m_logger;
-		m_utils = new ttrssUtils();
+		m_utils = new freshUtils();
 
-		var url_label = new Gtk.Label(_("Tiny Tiny RSS URL:"));
+		var url_label = new Gtk.Label(_("freshRSS URL:"));
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
 
@@ -110,7 +110,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		m_revealer.add(frame);
 		//---------------------------------------------------------------------
 
-		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-ttrss.svg");
+		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-fresh.svg");
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.pack_start(logo, false, false, 10);
@@ -118,11 +118,11 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		box.pack_start(m_revealer, true, true, 10);
 		box.show_all();
 
-		m_stack.add_named(box, "ttrssUI");
+		m_stack.add_named(box, "freshUI");
 
 		Gtk.TreeIter iter;
 		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("Tiny Tiny RSS"), 1, "ttrssUI");
+		m_listStore.set(iter, 0, _("freshRSS"), 1, "freshUI");
 
 		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
 		m_userEntry.set_text(m_utils.getUser());
@@ -167,5 +167,5 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.ttrssLoginWidget));
+	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.freshLoginWidget));
 }

@@ -3,17 +3,19 @@
 tidy: no
 prune: no
 
-title: //div[@class='Newsheader']/h1
-#date: //time
-#author: //a[@rel='author']
+title: //meta[@property='og:title']/@content
 
 body: //div[@id='Newswrap']
 body: //div[@class='text']
-body: //article
+body: (//article)[1]
 
 strip: //div[@id='Newscontents']
 strip: //div[@class='Newsbanner']
 strip: //style
+strip: //a[@title='Share on Facebook']
+strip: //a[@title='Tweet this']
+strip: //iframe[@id='redditframe']
+strip: //img[@title='Share on Reddit']
 
 
 

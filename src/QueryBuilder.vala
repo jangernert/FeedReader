@@ -184,6 +184,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
         {
             m_orderBy = " ORDER BY ";
             m_orderBy += field;
+            m_orderBy += " COLLATE NOCASE";
 
             if(desc)
                 m_orderBy += " DESC";

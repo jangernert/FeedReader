@@ -1,0 +1,35 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.fresh" path="/org/gnome/feedreader/fresh/" gettext-domain="feedreader">
+		<key name="url" type="s">
+			<default>""</default>
+			<summary>Link to your fresh instance</summary>
+			<description>
+				Link to your fresh instance
+			</description>
+		</key>
+
+		<key name="token" type="s">
+			<default>""</default>
+			<summary>access token for freshRSS</summary>
+			<description>
+				access token for freshRSS
+			</description>
+		</key>
+		
+		<key name="username" type="s">
+			<default>""</default>
+			<summary>Username for freshRSS</summary>
+			<description>
+				Username for freshRSS
+			</description>
+		</key>
+		
+		<key name="htaccess-username" type="s">
+			<default>""</default>
+			<summary>Username to grant http access</summary>
+			<description>
+				Username to grant http access when unauthorized (401)
+			</description>
+		</key>
+	</schema>
+</schemalist>

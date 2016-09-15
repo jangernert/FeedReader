@@ -175,7 +175,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
                                               "htaccess", Secret.SchemaAttributeType.BOOLEAN);
         var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
         authAttributes["URL"] = getURL();
-        authAttributes["Username"] = getUser();
+        authAttributes["Username"] = getHtaccessUser();
         authAttributes["htaccess"] = "true";
         try
         {

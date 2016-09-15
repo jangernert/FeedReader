@@ -16,18 +16,26 @@
 public class FeedReader.SharePopover : Gtk.Popover {
 
 	private Gtk.ListBox m_list;
+	private Gtk.Stack m_stack;
     public signal void showSettings(string panel);
 	public signal void startShare();
 	public signal void shareDone();
+
+	// TODO: add stack that can slide over to a gtk.entry to type a message for plugins like mail
 
 	public SharePopover(Gtk.Widget widget)
 	{
         m_list = new Gtk.ListBox();
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        m_list.row_activated.connect(shareURL);
+        m_list.row_activated.connect(clicked);
         populateList();
-		this.add(m_list);
+		m_stack = new Gtk.Stack();
+		m_stack.set_transition_duration(150);
+		m_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
+		m_stack.add_named(m_list, "list");
+
+		this.add(m_stack);
 		this.set_modal(true);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
@@ -43,33 +51,44 @@ public class FeedReader.SharePopover : Gtk.Popover {
         	m_list.add(new ShareRow(account.getType(), account.getID(), account.getUsername(), account.getIconName()));
         }
 
+		var addRow = new Gtk.ListBoxRow();
+		addRow.margin = 2;
+
 		var addIcon = new Gtk.Image.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
-		var addLabel = new Gtk.Label(_("Configure more accounts"));
+		var addLabel = new Gtk.Label(_("Add accounts"));
 		addLabel.set_line_wrap_mode(Pango.WrapMode.WORD);
         addLabel.set_ellipsize(Pango.EllipsizeMode.END);
-        addLabel.set_alignment(0.5f, 0.5f);
+        addLabel.set_alignment(0.0f, 0.5f);
         addLabel.get_style_context().add_class("h4");
+
 		var addBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
 		addBox.margin = 3;
         addBox.pack_start(addIcon, false, false, 8);
         addBox.pack_start(addLabel, true, true, 0);
 
-		var addRow = new Gtk.ListBoxRow();
-		addRow.margin = 2;
-		addRow.add(addBox);
+		if(list.size > 0)
+		{
+			var seperatorBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
+			seperatorBox.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
+	        seperatorBox.pack_start(addBox, true, true, 0);
+			addRow.add(seperatorBox);
+		}
+		else
+		{
+			addRow.add(addBox);
+		}
+
 
 		m_list.add(addRow);
     }
 
-    private void shareURL(Gtk.ListBoxRow row)
+    private void clicked(Gtk.ListBoxRow row)
     {
-        this.hide();
-		startShare();
-
         ShareRow? shareRow = row as ShareRow;
 
 		if(shareRow == null)
 		{
+			this.hide();
 			showSettings("service");
 			logger.print(LogMessage.DEBUG, "SharePopover: open Settings");
 			return;
@@ -82,12 +101,17 @@ public class FeedReader.SharePopover : Gtk.Popover {
         if(window != null)
             url = window.getContent().getSelectedURL();
 
-		shareAsync.begin(id, url, (obj, res) => {
-			shareAsync.end(res);
-			shareDone();
-		});
-
-        logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
+		var widget = share.shareWidget(shareRow.getType(), url);
+		if(widget == null)
+			shareURL(id, url);
+		else
+		{
+			m_stack.add_named(widget, "form");
+			m_stack.set_visible_child_name("form");
+			widget.share.connect_after(() => {
+				shareURL(id, url);
+			});
+		}
     }
 
 	private async void shareAsync(string id, string url)
@@ -100,4 +124,34 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		});
 		yield;
 	}
+
+	private void shareURL(string id, string url)
+	{
+		this.hide();
+		startShare();
+		shareAsync.begin(id, url, (obj, res) => {
+			shareAsync.end(res);
+			shareDone();
+		});
+        logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
+	}
+}
+
+public class FeedReader.ShareForm : Gtk.Box {
+
+	public signal void share();
+
+	public ShareForm()
+	{
+		var button = new Gtk.Button.with_label("Share");
+		button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		button.clicked.connect(() => { share(); });
+
+		this.pack_end(button, false, false);
+		this.orientation = Gtk.Orientation.VERTICAL;
+		this.spacing = 5;
+		this.margin = 10;
+		this.show_all();
+	}
+
 }

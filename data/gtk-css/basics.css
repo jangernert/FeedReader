@@ -50,6 +50,9 @@ row {
 .imageOverlay {
     border-radius: 0;
 }
+textview {
+	background: rgb(120, 120, 120);
+}
 /***************/
 /* text styles */
 /***************/

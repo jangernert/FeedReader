@@ -16,16 +16,15 @@
 
 public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
-	public static const string ID = "mail";
 	public Logger m_logger { get; construct set; }
+	private string m_body;
+	private string m_to;
 
 	public bool addBookmark(string id, string url)
 	{
-
-		string body = _("Hey,\ncheck out this interesting article I just read:\n%s\n\n- send by FeedReader").printf(url);
-
-		string mailto = "mailto:john.doe@domain.com?body=%s".printf(GLib.Uri.escape_string(body));
-
+		string subject = GLib.Uri.escape_string("Amazing article");
+		string body = GLib.Uri.escape_string(m_body.replace("$URL", url));
+		string mailto = "mailto:%s?subject=%s&body=%s".printf(m_to, subject, body);
 		m_logger.print(LogMessage.DEBUG, mailto);
 
 		string[] spawn_args = {"xdg-open", mailto};
@@ -49,7 +48,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public string getIconName()
     {
-        return "mail-send";
+        return "feed-share-email";
     }
 
 	public string getUsername(string id)
@@ -64,7 +63,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public string pluginID()
     {
-        return ID;
+        return "mail";
     }
 
 	public string pluginName()
@@ -82,6 +81,15 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
         return null;
     }
 
+	public ShareForm? shareWidget(string url)
+	{
+		var widget = new EmailForm(url);
+		widget.share.connect(() => {
+			m_to = widget.getTo();
+			m_body = widget.getBody();
+		});
+		return widget;
+	}
 }
 
 [ModuleInit]

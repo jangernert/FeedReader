@@ -62,7 +62,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		m_secretEntry = new Gtk.Entry();
 		m_userEntry = new Gtk.Entry();
         m_passEntry = new Gtk.Entry();
-		m_passEntry.set_invisible_char('*');
+		m_passEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
 		m_passEntry.set_visibility(false);
 
 		m_urlEntry.activate.connect(() => {

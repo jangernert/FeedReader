@@ -13,22 +13,13 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ttrssUtils : GLib.Object {
-
-	public enum TTRSSSpecialID {
-		ARCHIVED      = 0,
-		STARRED       = -1,
-		PUBLISHED     = -2,
-		FRESH         = -3,
-		ALL           = -4,
-		RECENTLY_READ = -6
-	}
+public class FeedReader.freshUtils : GLib.Object {
 
 	GLib.Settings m_settings;
 
-	public ttrssUtils()
+	public freshUtils()
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.ttrss");
+		m_settings = new GLib.Settings("org.gnome.feedreader.fresh");
 	}
 
 	public string getURL()
@@ -38,14 +29,14 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			if(!tmp_url.has_suffix("/"))
 				tmp_url = tmp_url + "/";
 
-			if(!tmp_url.has_suffix("/api/"))
-				tmp_url = tmp_url + "api/";
+			if(!tmp_url.has_suffix("/api/greader.php/"))
+				tmp_url = tmp_url + "api/greader.php/";
 
 			if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
 					tmp_url = "https://" + tmp_url;
 		}
 
-		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
+		logger.print(LogMessage.DEBUG, "fresh URL: " + tmp_url);
 
 		return tmp_url;
 	}
@@ -58,6 +49,16 @@ public class FeedReader.ttrssUtils : GLib.Object {
 	public string getUser()
 	{
 		return m_settings.get_string("username");
+	}
+
+	public void setToken(string token)
+	{
+		m_settings.set_string("token", token);
+	}
+
+	public string getToken()
+	{
+		return m_settings.get_string("token");
 	}
 
 	public void setUser(string user)
@@ -121,7 +122,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+			logger.print(LogMessage.ERROR, "freshUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -165,7 +166,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
+			logger.print(LogMessage.ERROR, "freshUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		if(passwd == null)
@@ -192,56 +193,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
+			logger.print(LogMessage.ERROR, "freshUtils: setHtAccessPassword: " + e.message);
 		}
-	}
-
-	public bool downloadIcon(string feed_id, string icon_url)
-	{
-		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		var path = GLib.File.new_for_path(icon_path);
-		try{
-			path.make_directory_with_parents();
-		}
-		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
-		}
-
-		string remote_filename = icon_url + feed_id + ".ico";
-		string local_filename = icon_path + feed_id + ".ico";
-
-
-
-		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
-		{
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message("GET", remote_filename);
-
-			if(settingsTweaks.get_boolean("do-not-track"))
-				message_dlIcon.request_headers.append("DNT", "1");
-
-			var session = new Soup.Session();
-			session.ssl_strict = false;
-			var status = session.send_message(message_dlIcon);
-			if (status == 200)
-			{
-				try{
-					FileUtils.set_contents(	local_filename,
-											(string)message_dlIcon.response_body.flatten().data,
-											(long)message_dlIcon.response_body.length);
-				}
-				catch(GLib.FileError e)
-				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
-				}
-				return true;
-			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
-			return false;
-		}
-
-		// file already exists
-		return true;
 	}
 }

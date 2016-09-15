@@ -20,6 +20,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public dbBase(string dbFile = "feedreader-04.db")
 	{
+		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
 		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";
 		var path = GLib.File.new_for_path(db_path);
 		if(!path.query_exists())
@@ -45,6 +46,11 @@ public class FeedReader.dbBase : GLib.Object {
 		{
 			logger.print(LogMessage.WARNING, "DELETING rowID: %s from  table: %s and db: %s".printf(rowID.to_string(), table, dbname));
 		}
+	}
+
+	private void errorLogCallback(int eCode, string msg)
+	{
+		logger.print(LogMessage.ERROR, eCode.to_string() + ": " + msg);
 	}
 
 	public void init()

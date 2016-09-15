@@ -143,27 +143,27 @@ public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerIn
 
 	public void tagArticle(string articleID, string tagID)
 	{
-		return;
+		m_api.edidTag(articleID, tagID, true);
 	}
 
 	public void removeArticleTag(string articleID, string tagID)
 	{
-		return;
+		m_api.edidTag(articleID, tagID, false);
 	}
 
 	public string createTag(string caption)
 	{
-		return;
+		return m_api.composeTagID(caption);
 	}
 
 	public void deleteTag(string tagID)
 	{
-		return;
+		m_api.deleteTag(tagID);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
-		return;
+		m_api.renameTag(tagID, title);
 	}
 
 	public bool serverAvailable()
@@ -176,28 +176,28 @@ public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerIn
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(TheOldReaderAPI.InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+			m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(TheOldReaderAPI.InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+			m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
 		}
 		return "feed/" + feedURL;
 	}
 
 	public void removeFeed(string feedID)
 	{
-		m_api.editSubscription(TheOldReaderAPI.InoSubscriptionAction.UNSUBSCRIBE, feedID);
+		m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.UNSUBSCRIBE, feedID);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		m_api.editSubscription(TheOldReaderAPI.InoSubscriptionAction.EDIT, feedID, title);
+		m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.EDIT, feedID, title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
-		m_api.editSubscription(TheOldReaderAPI.InoSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
+		m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID)

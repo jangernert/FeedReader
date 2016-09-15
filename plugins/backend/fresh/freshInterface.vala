@@ -59,13 +59,6 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return "1";
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Sone services have special categories that should not be visible when empty
-	// e.g. feedly has a category called "Must Read".
-	// Argument: ID of a category
-	// Return: wheather the category should be visible when empty
-	//--------------------------------------------------------------------------------------
 	public bool hideCagetoryWhenEmtpy(string catID)
 	{
 		return false;
@@ -86,14 +79,9 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return true;
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Delete all passwords, keys and user-information.
-	// Do not delete feeds or articles from the data-base.
-	//--------------------------------------------------------------------------------------
 	public void resetAccount()
 	{
-
+		m_utils.resetAccount();
 	}
 
 	public bool useMaxArticles()
@@ -116,53 +104,35 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return Utils.ping(m_utils.getUnmodifiedURL());
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Method to set the state of articles to read or unread
-	// "articleIDs": comma separated string of articleIDs e.g. "id1,id2,id3"
-	// "read": the state to apply. ArticleStatus.READ or ArticleStatus.UNREAD
-	//--------------------------------------------------------------------------------------
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)
 	{
-
+		if(read == ArticleStatus.READ)
+			m_api.editTags(articleIDs, "user/-/state/com.google/read", null);
+		else
+			m_api.editTags(articleIDs, null, "user/-/state/com.google/read");
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Method to set the state of articles to marked or unmarked
-	// "articleID": single articleID
-	// "read": the state to apply. ArticleStatus.MARKED or ArticleStatus.UNMARKED
-	//--------------------------------------------------------------------------------------
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
-
+		if(marked == ArticleStatus.MARKED)
+			m_api.editTags(articleID, "user/-/state/com.google/starred", null);
+		else
+			m_api.editTags(articleID, null, "user/-/state/com.google/starred");
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Mark all articles of the feed as read
-	//--------------------------------------------------------------------------------------
 	public void setFeedRead(string feedID)
 	{
-
+		m_api.markAllAsRead(feedID);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Mark all articles of the feeds that are part of the category as read
-	//--------------------------------------------------------------------------------------
 	public void setCategorieRead(string catID)
 	{
-
+		m_api.markAllAsRead(catID);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Mark ALL articles as read
-	//--------------------------------------------------------------------------------------
 	public void markAllItemsRead()
 	{
-
+		m_api.markAllAsRead("user/-/state/com.google/reading-list");
 	}
 
 	public void tagArticle(string articleID, string tagID)
@@ -306,22 +276,6 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return m_api.getUnreadCounts();
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Get the requested articles and write them to the data-base
-	//
-	// "count":		the number of articles to get
-	// "whatToGet":	the kind of articles to get (all/unread/marked/etc.)
-	// "feedID":	get only articles of a secific feed or tag
-	// "isTagID":	false if "feedID" is a feed-ID, true if "feedID" is a tag-ID
-	//
-	// It is recommended after getting the articles from the server to use the signal
-	// "writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize)"
-	// to automatically process them in the content-grabber, write them to the
-	// data-base and send all the signals to the UI to update accordingly.
-	// But if the API suggests a different approach you can everything on your
-	// own (see ttrss-backend).
-	//--------------------------------------------------------------------------------------
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
 	{
 		if(whatToGet == ArticleStatus.READ)

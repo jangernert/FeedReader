@@ -34,7 +34,7 @@ public class FeedReader.freshAPI : Object {
 		if(!Utils.ping(m_utils.getUnmodifiedURL()))
 			return LoginResponse.NO_CONNECTION;
 
-		return m_connection.getToken();
+		return m_connection.getSID();
 	}
 
 	public void getSubscriptionList(Gee.LinkedList<feed> feeds)
@@ -273,6 +273,41 @@ public class FeedReader.freshAPI : Object {
 			return root.get_string_member("continuation");
 
 		return null;
+	}
+
+	public void editTags(string articleIDs, string? addTag = null, string? removeTag = null)
+	{
+		string path = "reader/api/0/edit-tag";
+		string[] arrayID = articleIDs.split(",");
+
+		string request = "T=" + m_connection.getToken();
+
+		if(addTag != null)
+		{
+			request += "&a=" + addTag;
+		}
+
+		if(removeTag != null)
+		{
+			request += "&r=" + removeTag;
+		}
+
+		foreach(string id in arrayID)
+		{
+			request += "&i=-/" + id;
+		}
+
+		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+	}
+
+	public void markAllAsRead(string streamID)
+	{
+		string path = "reader/api/0/mark-all-as-read";
+
+		string request = "T=" + m_connection.getToken();
+		request += "&s=" + streamID;
+
+		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
 	}
 
 }

@@ -24,7 +24,7 @@ public class FeedReader.freshConnection {
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 	}
 
-	public LoginResponse getToken()
+	public LoginResponse getSID()
 	{
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
@@ -62,6 +62,11 @@ public class FeedReader.freshConnection {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
+	public string getToken()
+	{
+		return getRequest("reader/api/0/token").replace("\n", "");
+	}
+
 	public string postRequest(string path, string input, string type)
 	{
 		var session = new Soup.Session();
@@ -70,7 +75,7 @@ public class FeedReader.freshConnection {
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
-		message.request_headers.append("Authorization","GoogleLogin auth= %s".printf(m_utils.getToken()));
+		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 		message.request_headers.append("Content-Type", type);
 
 		message.request_body.append(Soup.MemoryUse.COPY, input.data);

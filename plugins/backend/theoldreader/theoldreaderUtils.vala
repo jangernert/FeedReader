@@ -13,46 +13,67 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.theoldreader_utils : GLib.Object {
+namespace FeedReader.TheOldReaderSecret {
+	 const string base_uri        = "https://theoldreader.com/reader/api/0/";
+}
 
-	public static string getUser()
+public class FeedReader.TheOldReaderUtils : GLib.Object {
+
+	private GLib.Settings m_settings;
+
+	public TheOldReaderUtils()
 	{
-		return settings_theoldreader.get_string ("username");
+		m_settings = new GLib.Settings("org.gnome.feedreader.theoldreader");
 	}
 
-	public static string getAccessToken()
+	public string getUser()
 	{
-		return settings_theoldreader.get_string ("access-token");
+		return m_settings.get_string("username");
 	}
 
-	public static string getUserID()
+	public void setUser(string user)
 	{
-		return settings_theoldreader.get_string ("user-id");
+		m_settings.set_string("username", user);
 	}
 
-	public static string getPasswd()
+	public string getAccessToken()
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-												"Service", Secret.SchemaAttributeType.STRING,
-							                    "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Username"] = settings_theoldreader.get_string("username");
-		attributes["Service"] = "oldreader";
-
-		string passwd = "";
-		try{passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);}catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
-		}
-		if(passwd == null)
-		{
-			return "";
-		}
-
-		return passwd;
+		return m_settings.get_string("access-token");
 	}
 
-	public static bool downloadIcon(string feed_id, string icon_url)
+	public void setAccessToken(string token)
 	{
+		m_settings.set_string("access-token", token);
+	}
+
+	public string getUserID()
+	{
+		return m_settings.get_string("user-id");
+	}
+
+	public void setUserID(string id)
+	{
+		m_settings.set_string("user-id", id);
+	}
+
+	public string getEmail()
+	{
+		return m_settings.get_string("user-email");
+	}
+
+	public void setEmail(string email)
+	{
+		m_settings.set_string("user-email", email);
+	}
+
+	public void resetAccount()
+	{
+		Utils.resetSettings(m_settings);
+	}
+
+	public bool downloadIcon(string feed_id, string icon_url)
+	{
+		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
 		try{
@@ -69,7 +90,7 @@ public class FeedReader.theoldreader_utils : GLib.Object {
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", icon_url);
 
-			if(settings_tweaks.get_boolean("do-not-track"))
+			if(settingsTweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
@@ -94,5 +115,60 @@ public class FeedReader.theoldreader_utils : GLib.Object {
 
 		// file already exists
 		return true;
+	}
+
+
+	public bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
+	{
+		foreach(feed Feed in feeds)
+		{
+			if(Feed.hasCat(tagID))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public string getPasswd()
+	{
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.theoldreader", Secret.SchemaFlags.NONE,
+		                                  "type", "theoldreader",
+		                                  "Username", Secret.SchemaAttributeType.STRING);
+
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["Username"] = getUser();
+		string passwd = "";
+
+		try{
+			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
+		}
+		catch(GLib.Error e){
+			logger.print(LogMessage.ERROR, e.message);
+		}
+
+		if(passwd == null)
+		{
+			return "";
+		}
+
+		return passwd;
+	}
+
+	public void setPassword(string passwd)
+	{
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.theoldreader", Secret.SchemaFlags.NONE,
+										  "type", "theoldreader",
+										  "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["Username"] = getUser();
+		try
+		{
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+		}
 	}
 }

@@ -14,45 +14,38 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.TheOldReaderConnection {
-	private string m_api_code;
 	private string m_api_username;
+	private string m_api_code;
+	private string m_passwd;
+	private TheOldReaderUtils m_utils;
 
 	public TheOldReaderConnection()
 	{
-		m_api_username = theoldreader_utils.getUser();
-		m_api_code = theoldreader_utils.getAccessToken();
+		m_utils = new TheOldReaderUtils();
+		m_api_username = m_utils.getUser();
+		m_api_code = m_utils.getAccessToken();
+		m_passwd = m_utils.getPasswd();
 	}
 
-	public int getToken()
+	public LoginResponse getToken()
 	{
+		logger.print(LogMessage.DEBUG, "TheOldReader Connection: getToken()");
+
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", "https://theoldreader.com/accounts/ClientLogin/");
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-							                      "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Username"] = m_api_username;
-
-		string passwd = "";
-		try{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
-		}
-
-		string message_string = "Email=" + m_api_username + "&Passwd=" + passwd + "&service=reader&accountType=HOSTED_OR_GOOGLE&client=FeedReader";
+		string message_string = "Email=" + m_api_username + "&Passwd=" + m_passwd + "&service=reader&accountType=HOSTED_OR_GOOGLE&client=FeedReader";
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
-
+		string response = (string)message.response_body.flatten().data;
 		try{
+
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
-			string response = (string)message.response_body.flatten().data;
-			logger.print(LogMessage.ERROR, "Could not load response to Message from oldreader - %s".printf(response));
 			if(regex.match(response))
 			{
+				logger.print(LogMessage.ERROR, "Regex theoldreader - %s".printf(response));
 				string split = regex.replace( response, -1,0,"");
-				settings_theoldreader.set_string("access-token",split.strip());
-				m_api_code = theoldreader_utils.getAccessToken();
+				logger.print(LogMessage.ERROR, "authcode"+split);
+				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}
 			else
@@ -61,35 +54,45 @@ public class FeedReader.TheOldReaderConnection {
 				return LoginResponse.WRONG_LOGIN;
 			}
 		}
-		catch (Error e){
-			logger.print(LogMessage.ERROR, "Could not load response to Message from oldreader - %s".printf(e.message));
+		catch(Error e)
+		{
+			logger.print(LogMessage.ERROR, "TheOldReaderConnection - getToken: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+			return LoginResponse.UNKNOWN_ERROR;
 		}
 
-		return LoginResponse.UNKNOWN_ERROR;
+		return LoginResponse.SUCCESS;
 	}
 
-	public string send_get_request(string path)
+	public string send_get_request(string path, string? message_string = null)
 	{
-		var session = new Soup.Session();
-		var message = new Soup.Message("GET", TheOldReaderSecret.base_uri+path);
-		logger.print(LogMessage.DEBUG, "Get theoldreader" + TheOldReaderSecret.base_uri+path);
-		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
-		message.request_headers.append("Authorization", oldauth) ;
-		session.send_message(message);
-		return (string)message.response_body.data;
+		return send_request(path, "GET", message_string);
 	}
 
 	public string send_post_request(string path, string? message_string = null)
 	{
+		return send_request(path, "POST", message_string);
+	}
+
+
+
+	private string send_request(string path, string type, string? message_string = null)
+	{
+
 		var session = new Soup.Session();
-		logger.print(LogMessage.DEBUG, "post request " + path + " : " + message_string);
-		var message = new Soup.Message("POST", TheOldReaderSecret.base_uri+path);
-		string oldauth = "GoogleLogin auth=" + theoldreader_utils.getAccessToken();
-		message.request_headers.append("Authorization", oldauth) ;
+		var message = new Soup.Message(type, TheOldReaderSecret.base_uri + path);
+
+		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
+		message.request_headers.append("Authorization", oldauth);
+
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+
+
 		session.send_message(message);
-		logger.print(LogMessage.DEBUG, "post reposne" + (string)message.response_body.data);
+		logger.print(LogMessage.ERROR, TheOldReaderSecret.base_uri+path);
+		logger.print(LogMessage.ERROR, message_string);
+		logger.print(LogMessage.ERROR, (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 

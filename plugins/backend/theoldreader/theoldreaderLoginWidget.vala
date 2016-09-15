@@ -3,13 +3,14 @@
 // It adds all the necessary widgets to the interface to log into the service.
 // User- and password-entries, or redirect to a website to log in.
 //--------------------------------------------------------------------------------------
+FeedReader.Logger logger;
 
 public class FeedReader.theoldreaderLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
-	private theoldreaderUtils m_utils;
+	private TheOldReaderUtils m_utils;
 	//--------------------------------------------------------------------------------------
 	// The stack with all the login-widgets for the different services.
 	// Add widget and name it just like the plugin itself.
@@ -47,8 +48,7 @@ public class FeedReader.theoldreaderLoginWidget : Peas.ExtensionBase, LoginInter
 	//--------------------------------------------------------------------------------------
 	public void init()
 	{
-		logger = m_logger;
-		m_utils = new theoldreaderUtils();
+		m_utils = new TheOldReaderUtils();
 
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
@@ -158,5 +158,5 @@ public class FeedReader.theoldreaderLoginWidget : Peas.ExtensionBase, LoginInter
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.demoLoginWidget));
+	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.theoldreaderLoginWidget));
 }

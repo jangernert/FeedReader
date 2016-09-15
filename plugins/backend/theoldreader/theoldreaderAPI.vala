@@ -13,11 +13,19 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+FeedReader.dbDaemon dataBase;
+FeedReader.Logger logger;
+
 public class FeedReader.TheOldReaderAPI : GLib.Object {
 
-	private TheOldReaderConnection m_connection;
+	public enum TheOldreaderSubscriptionAction {
+		EDIT,
+		SUBSCRIBE,
+		UNSUBSCRIBE
+	}
 
-	private string m_theinoreader;
+	private TheOldReaderConnection m_connection;
+	private TheOldReaderUtils m_utils;
 	private string m_userID;
 
 	public TheOldReaderAPI ()
@@ -28,10 +36,13 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		if(theoldreader_utils.getAccessToken() == "")
+		// logger.print( LogMessage.ERROR, " TheOldreader Login" );
+		if(m_utils.getAccessToken() == "")
 		{
 			m_connection.getToken();
 		}
+
+		// logger.print( LogMessage.DEBUG, m_utils.getAccessToken() );
 
 		if(getUserID())
 		{
@@ -61,12 +72,12 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
-			settings_inoreader.set_string("user-id", m_userID);
+			m_utils.setUserID(m_userID);
 			logger.print(LogMessage.INFO, "TheOldreader: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
 			{
-				settings_inoreader.set_string("username", root.get_string_member("userEmail"));
+				m_utils.setEmail(root.get_string_member("userEmail"));
 			}
 			return true;
 		}
@@ -99,7 +110,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
 
-			if(icon_url != "" && !theoldreader_utils.downloadIcon(feedID, "https:"+icon_url))
+			if(icon_url != "" && !m_utils.downloadIcon(feedID, "https:"+icon_url))
 			{
 				icon_url = "";
 			}
@@ -111,7 +122,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			}
 			else
 			{
-				title = ttrss_utils.URLtoFeedName(url);
+				title = Utils.URLtoFeedName(url);
 			}
 
 			uint catCount = object.get_array_member("categories").get_length();
@@ -168,7 +179,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 							title,
 							0,
 							orderID,
-							CategoryID.MASTER,
+							CategoryID.MASTER.to_string(),
 							1
 						)
 					);
@@ -303,6 +314,26 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 					tagString += cat;
 			}
 
+			string mediaString = "";
+			if(object.has_member("enclosure"))
+			{
+				var attachments = object.get_array_member("enclosure");
+
+				uint mediaCount = 0;
+				if(attachments != null)
+					mediaCount = attachments.get_length();
+
+				for(int j = 0; j < mediaCount; ++j)
+				{
+					var attachment = attachments.get_object_element(j);
+					if(attachment.get_string_member("type").contains("audio")
+					|| attachment.get_string_member("type").contains("video"))
+					{
+						mediaString = mediaString + attachment.get_string_member("href") + ",";
+					}
+				}
+			}
+
 			articles.add(new article(
 									id,
 									object.get_string_member("title"),
@@ -312,10 +343,11 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
 									"",
-									(object.get_string_member("author") == "") ? _("not found") : object.get_string_member("author"),
+									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
-									tagString
+									tagString,
+									mediaString
 							)
 						);
 		}
@@ -337,15 +369,15 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 		message_string += tagID;
 		message_string += "&i=" + articleID;
-		string response = m_connection.send_post_request("edit-tag", message_string);
+		string response = m_connection.send_post_request("edit-tag?output=json", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
 	{
-		int64 lastsync = settings_state.get_int("last-sync");
-		lastsync = lastsync*1000000;
-		string message_string = "s=%s&ts=%lld".printf(streamID, lastsync);
-		string response = m_connection.send_post_request("mark-all-as-read",message_string );
+		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
+		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
+		logger.print(LogMessage.DEBUG, message_string);
+		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -356,14 +388,14 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_post_request("disable-tag", message_string);
+		string response = m_connection.send_post_request("disable-tag?output=json", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_post_request("rename-tag", message_string);
+		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
 	public void editSubscription(TheOldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
@@ -395,6 +427,6 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			message_string += "&r=" + remove;
 
 
-		m_connection.send_post_request("subscription/edit", message_string);
+		m_connection.send_post_request("subscription/edit?output=json", message_string);
 	}
 }

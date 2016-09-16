@@ -420,7 +420,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// Fill up the emtpy LinkedList's that are provided with instances of the
 	// model-classes category, feed and article
 	//--------------------------------------------------------------------------------------
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 
 	}

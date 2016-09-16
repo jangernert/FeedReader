@@ -101,7 +101,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void importOPML(string opml);
 
-	public abstract void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags);
+	public abstract bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags);
 
 	public abstract int getUnreadCount();
 

@@ -185,7 +185,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		// Make the this widget a DnD source.
 
-		if(!settings_general.get_boolean("only-feeds") && feedDaemon_interface.isOnline())
+		if(!settings_general.get_boolean("only-feeds")
+		&& feedDaemon_interface.isOnline()
+		&& feedDaemon_interface.supportTags())
 		{
 			const Gtk.TargetEntry[] provided_targets = {
 			    { "STRING",     0, DragTarget.TAG }

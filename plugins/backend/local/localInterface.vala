@@ -243,7 +243,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		var cats = m_dataBase.read_categories();
 		foreach(category cat in cats)
@@ -262,6 +262,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			feeds.add(m_utils.downloadFeed(Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs()));
 		}
+
+		return true;
 	}
 
 	public int getUnreadCount()

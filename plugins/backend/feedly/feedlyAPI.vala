@@ -139,17 +139,23 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void getCategories(Gee.LinkedList<category> categories)
+	public bool getCategories(Gee.LinkedList<category> categories)
 	{
 		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
+		if(response == "" || response == null)
+			return false;
+
 		var parser = new Json.Parser();
-		try{
+		try
+		{
 			parser.load_from_data(response, -1);
 		}
-		catch (Error e) {
+		catch (Error e)
+		{
 			logger.print(LogMessage.ERROR, "getCategories: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
 
@@ -173,12 +179,17 @@ public class FeedReader.FeedlyAPI : Object {
 				)
 			);
 		}
+
+		return true;
 	}
 
 
-	public void getFeeds(Gee.LinkedList<feed> feeds)
+	public bool getFeeds(Gee.LinkedList<feed> feeds)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
+
+		if(response == "" || response == null)
+			return false;
 
 		var parser = new Json.Parser();
 		try{
@@ -187,6 +198,7 @@ public class FeedReader.FeedlyAPI : Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
 		uint length = array.get_length();
@@ -247,12 +259,17 @@ public class FeedReader.FeedlyAPI : Object {
 					)
 			);
 		}
+
+		return true;
 	}
 
 
-	public void getTags(Gee.LinkedList<tag> tags)
+	public bool getTags(Gee.LinkedList<tag> tags)
 	{
 		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
+
+		if(response == "" || response == null)
+			return false;
 
 		var parser = new Json.Parser();
 		try{
@@ -261,6 +278,7 @@ public class FeedReader.FeedlyAPI : Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getTags: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		Json.Array array = parser.get_root().get_array ();
 		uint length = array.get_length();
@@ -276,6 +294,8 @@ public class FeedReader.FeedlyAPI : Object {
 				)
 			);
 		}
+
+		return true;
 	}
 
 

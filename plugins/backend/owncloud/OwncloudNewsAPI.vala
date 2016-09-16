@@ -102,7 +102,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-    public void getFeeds(Gee.LinkedList<feed> feeds)
+    public bool getFeeds(Gee.LinkedList<feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -139,13 +139,17 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     							)
     					);
     				}
+
+                    return true;
                 }
 			}
 		}
+
+        return false;
 	}
 
 
-    public void getCategories(Gee.LinkedList<category> categories, Gee.LinkedList<feed> feeds)
+    public bool getCategories(Gee.LinkedList<category> categories, Gee.LinkedList<feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -179,9 +183,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         					)
         				);
                     }
+                    return true;
                 }
 			}
 		}
+        return false;
 	}
 
 

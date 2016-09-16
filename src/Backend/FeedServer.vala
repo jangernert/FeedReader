@@ -76,24 +76,37 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
-		getFeedsAndCats(feeds, categories, tags);
+		if(!getFeedsAndCats(feeds, categories, tags))
+		{
+			logger.print(LogMessage.ERROR, "FeedServer: something went wrong getting categories and feeds");
+			return;
+		}
 
 		// write categories
-		dataBase.reset_exists_flag();
-		dataBase.write_categories(categories);
-		dataBase.delete_nonexisting_categories();
+		if(categories.size != 0)
+		{
+			dataBase.reset_exists_flag();
+			dataBase.write_categories(categories);
+			dataBase.delete_nonexisting_categories();
+		}
 
 		// write feeds
-		dataBase.reset_subscribed_flag();
-		dataBase.write_feeds(feeds);
-		dataBase.delete_articles_without_feed();
-		dataBase.delete_unsubscribed_feeds();
+		if(feeds.size != 0)
+		{
+			dataBase.reset_subscribed_flag();
+			dataBase.write_feeds(feeds);
+			dataBase.delete_articles_without_feed();
+			dataBase.delete_unsubscribed_feeds();
+		}
 
 		// write tags
-		dataBase.reset_exists_tag();
-		dataBase.write_tags(tags);
-		dataBase.update_tags(tags);
-		dataBase.delete_nonexisting_tags();
+		if(tags.size != 0)
+		{
+			dataBase.reset_exists_tag();
+			dataBase.write_tags(tags);
+			dataBase.update_tags(tags);
+			dataBase.delete_nonexisting_tags();
+		}
 
 		newFeedList();
 
@@ -752,12 +765,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		if(!m_pluginLoaded)
-			return;
+			return false;
 
-		m_plugin.getFeedsAndCats(feeds, categories, tags);
+		return m_plugin.getFeedsAndCats(feeds, categories, tags);
 	}
 
 	public int getUnreadCount()

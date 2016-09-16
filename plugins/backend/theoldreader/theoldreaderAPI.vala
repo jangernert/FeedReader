@@ -371,8 +371,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
-		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
-		logger.print(LogMessage.DEBUG, message_string);
+		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
 		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
 

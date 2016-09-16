@@ -56,16 +56,6 @@ public class FeedReader.TheOldReaderUtils : GLib.Object {
 		m_settings.set_string("user-id", id);
 	}
 
-	public string getEmail()
-	{
-		return m_settings.get_string("user-email");
-	}
-
-	public void setEmail(string email)
-	{
-		m_settings.set_string("user-email", email);
-	}
-
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);

@@ -71,15 +71,12 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			m_utils.setUserID(m_userID);
 			logger.print(LogMessage.INFO, "TheOldreader: userID = " + m_userID);
 
-			if(root.has_member("userEmail"))
-				m_utils.setEmail(root.get_string_member("userEmail"));
-
 			if(root.has_member("userName"))
 				m_utils.setEmail(root.get_string_member("userName"));
 
 			return true;
 		}
-		
+
 		return false;
 	}
 

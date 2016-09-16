@@ -1,5 +1,5 @@
 [Plugin]
-Module=theoldreaderUI
+Module=oldreaderUI
 Loader=C
 Name=TheOldReader
 Description=Add TheOldReader backend to FeedReader

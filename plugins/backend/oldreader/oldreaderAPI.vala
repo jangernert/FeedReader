@@ -16,22 +16,22 @@
 FeedReader.dbDaemon dataBase;
 FeedReader.Logger logger;
 
-public class FeedReader.TheOldReaderAPI : GLib.Object {
+public class FeedReader.OldReaderAPI : GLib.Object {
 
-	public enum TheOldreaderSubscriptionAction {
+	public enum OldreaderSubscriptionAction {
 		EDIT,
 		SUBSCRIBE,
 		UNSUBSCRIBE
 	}
 
-	private TheOldReaderConnection m_connection;
-	private TheOldReaderUtils m_utils;
+	private OldReaderConnection m_connection;
+	private OldReaderUtils m_utils;
 	private string m_userID;
 
-	public TheOldReaderAPI ()
+	public OldReaderAPI()
 	{
-		m_utils = new TheOldReaderUtils();
-		m_connection = new TheOldReaderConnection();
+		m_utils = new OldReaderUtils();
+		m_connection = new OldReaderConnection();
 	}
 
 	public LoginResponse login()
@@ -69,10 +69,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
-			logger.print(LogMessage.INFO, "TheOldreader: userID = " + m_userID);
-
-			if(root.has_member("userName"))
-				m_utils.setEmail(root.get_string_member("userName"));
+			logger.print(LogMessage.INFO, "Oldreader: userID = " + m_userID);
 
 			return true;
 		}
@@ -274,9 +271,6 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
 		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
 
-		//logger.print(LogMessage.DEBUG, message_string);
-		//logger.print(LogMessage.DEBUG, response);
-
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -395,19 +389,19 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
-	public void editSubscription(TheOldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	public void editSubscription(OldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
 
 		switch(action)
 		{
-			case TheOldreaderSubscriptionAction.EDIT:
+			case OldreaderSubscriptionAction.EDIT:
 				message_string += "edit";
 				break;
-			case TheOldreaderSubscriptionAction.SUBSCRIBE:
+			case OldreaderSubscriptionAction.SUBSCRIBE:
 				message_string += "subscribe";
 				break;
-			case TheOldreaderSubscriptionAction.UNSUBSCRIBE:
+			case OldreaderSubscriptionAction.UNSUBSCRIBE:
 				message_string += "unsubscribe";
 				break;
 		}

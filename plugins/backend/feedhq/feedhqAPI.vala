@@ -36,18 +36,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		// logger.print( LogMessage.ERROR, " FeedHQ Login" );
+		logger.print( LogMessage.ERROR, " FeedHQ Login" );
+
 		if(m_utils.getAccessToken() == "")
-		{
 			m_connection.getToken();
-		}
 
-		// logger.print( LogMessage.DEBUG, m_utils.getAccessToken() );
-
-		if(getUserID())
-		{
+		if(getUserID() && postToken())
 			return LoginResponse.SUCCESS;
-		}
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
@@ -82,6 +78,25 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			return true;
 		}
 
+		return false;
+	}
+
+	private bool postToken()
+	{
+
+		string response = m_connection.send_get_request("token?output=json");
+		var parser = new Json.Parser();
+		try{
+			parser.load_from_data(response, -1);
+		}
+		catch (Error e) {
+			logger.print(LogMessage.ERROR, "postToken: Could not load message response");
+			logger.print(LogMessage.ERROR, e.message);
+			return false;
+		}
+		var root = parser.get_root().get_object();
+
+		logger.print( LogMessage.DEBUG, response );
 		return false;
 	}
 

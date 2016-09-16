@@ -41,7 +41,7 @@ public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerIn
 
 	public string? symbolicIcon()
 	{
-		return "feed-service-TheOldReader-symbolic";
+		return "feed-service-theoldreader-symbolic";
 	}
 
 	public string? accountName()

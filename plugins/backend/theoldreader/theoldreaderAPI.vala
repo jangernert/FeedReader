@@ -36,14 +36,10 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		// logger.print( LogMessage.ERROR, " TheOldreader Login" );
-		if(m_utils.getAccessToken() == "")
+		if(m_utils.getAccessToken() == "" || m_utils.getAccessToken() == null)
 		{
 			m_connection.getToken();
 		}
-
-		// logger.print( LogMessage.DEBUG, m_utils.getAccessToken() );
-
 		if(getUserID())
 		{
 			return LoginResponse.SUCCESS;

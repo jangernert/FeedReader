@@ -240,12 +240,16 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.importOPML(opml);
 	}
 
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		m_api.getUnreadCounts();
-		m_api.getCategories(categories);
-		m_api.getFeeds(feeds);
-		m_api.getTags(tags);
+
+		if(m_api.getCategories(categories)
+		&& m_api.getFeeds(feeds)
+		&& m_api.getTags(tags))
+			return true;
+
+		return false;
 	}
 
 	public int getUnreadCount()

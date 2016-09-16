@@ -24,7 +24,7 @@ public class FeedReader.freshConnection {
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 	}
 
-	public LoginResponse getToken()
+	public LoginResponse getSID()
 	{
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
@@ -41,7 +41,6 @@ public class FeedReader.freshConnection {
 		}
 
 		string response = (string)message.response_body.flatten().data;
-		logger.print(LogMessage.DEBUG, response);
 
 		if(!response.has_prefix("SID="))
 		{
@@ -63,34 +62,12 @@ public class FeedReader.freshConnection {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-
-	public string send_get_request_to_fresh(string path)
+	public string getToken()
 	{
-		return send_request(path, "GET");
+		return getRequest("reader/api/0/token").replace("\n", "");
 	}
 
-	public string send_put_request_to_fresh(string path, Json.Node root)
-	{
-		var session = new Soup.Session();
-		var message = new Soup.Message("PUT", m_utils.getURL()+path);
-
-		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
-
-		var gen = new Json.Generator();
-		gen.set_root(root);
-		message.request_headers.append("Authorization","GoogleLogin auth= %s".printf(m_utils.getToken()));
-
-		size_t length;
-		string json;
-		json = gen.to_data(out length);
-		message.request_body.append(Soup.MemoryUse.COPY, json.data);
-		session.send_message(message);
-
-		return (string)message.response_body.flatten().data;
-	}
-
-	public string send_post_request_to_fresh(string path, Json.Node root)
+	public string postRequest(string path, string input, string type)
 	{
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", m_utils.getURL()+path);
@@ -98,29 +75,7 @@ public class FeedReader.freshConnection {
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
-		var gen = new Json.Generator();
-		gen.set_root(root);
-		message.request_headers.append("Authorization","GoogleLogin auth= %s".printf(m_utils.getToken()));
-
-		size_t length;
-		string json;
-		json = gen.to_data(out length);
-		logger.print(LogMessage.DEBUG, json);
-		message.request_body.append(Soup.MemoryUse.COPY, json.data);
-		session.send_message(message);
-		logger.print(LogMessage.DEBUG, "Status Code: " + message.status_code.to_string());
-		return (string)message.response_body.flatten().data;
-	}
-
-	public string send_post_string_request_to_fresh(string path, string input, string type)
-	{
-		var session = new Soup.Session();
-		var message = new Soup.Message("POST", m_utils.getURL()+path);
-
-		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
-
-		message.request_headers.append("Authorization","GoogleLogin auth= %s".printf(m_utils.getToken()));
+		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 		message.request_headers.append("Content-Type", type);
 
 		message.request_body.append(Soup.MemoryUse.COPY, input.data);
@@ -129,16 +84,11 @@ public class FeedReader.freshConnection {
 		return (string)message.response_body.flatten().data;
     }
 
-	public string send_delete_request_to_fresh(string path)
-	{
-		return send_request (path, "DELETE");
-	}
-
-	private string send_request(string path, string type)
+	public string getRequest(string path)
 	{
 		var session = new Soup.Session();
-		var message = new Soup.Message(type, m_utils.getURL()+path);
-		message.request_headers.append("Authorization","GoogleLogin auth= %s".printf(m_utils.getToken()));
+		var message = new Soup.Message("GET", m_utils.getURL()+path);
+		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");

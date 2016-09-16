@@ -231,10 +231,13 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		parser.parse();
 	}
 
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		m_api.getFeeds(feeds);
-		m_api.getCategoriesAndTags(feeds, categories, tags);
+		if(m_api.getFeeds(feeds)
+		&& m_api.getCategoriesAndTags(feeds, categories, tags))
+			return true;
+
+		return false;
 	}
 
 	public int getUnreadCount()

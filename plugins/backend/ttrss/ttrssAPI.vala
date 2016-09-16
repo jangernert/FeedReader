@@ -180,7 +180,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public void getFeeds(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories)
+	public bool getFeeds(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories)
 	{
 		foreach(var item in categories)
 		{
@@ -218,14 +218,17 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						);
 					}
 				}
+				else
+				{
+					return false;
+				}
 			}
 		}
-
-		getUncategorizedFeeds(feeds);
+		return true;
 	}
 
 
-	private void getUncategorizedFeeds(Gee.LinkedList<feed> feeds)
+	public bool getUncategorizedFeeds(Gee.LinkedList<feed> feeds)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -258,10 +261,13 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						)
 				);
 			}
+			return true;
 		}
+
+		return false;
 	}
 
-	public void getTags(Gee.LinkedList<tag> tags)
+	public bool getTags(Gee.LinkedList<tag> tags)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -284,7 +290,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					)
 				);
 			}
+
+			return true;
 		}
+
+		return false;
 	}
 
 
@@ -305,7 +315,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public void getCategories(Gee.LinkedList<category> categories)
+	public bool getCategories(Gee.LinkedList<category> categories)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -316,10 +326,14 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		if(error == ConnectionError.SUCCESS)
 		{
 			var response = message.get_response_object();
-			var category_object = response.get_object_member("categories");
-
-			getSubCategories(categories, category_object, 0, CategoryID.MASTER.to_string());
+			if(response.has_member("categories"))
+			{
+				var category_object = response.get_object_member("categories");
+				getSubCategories(categories, category_object, 0, CategoryID.MASTER.to_string());
+				return true;
+			}
 		}
+		return false;
 	}
 
 

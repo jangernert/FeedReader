@@ -74,8 +74,6 @@ public class FeedReader.TheOldReaderConnection {
 		return send_request(path, "POST", message_string);
 	}
 
-
-
 	private string send_request(string path, string type, string? message_string = null)
 	{
 
@@ -88,11 +86,7 @@ public class FeedReader.TheOldReaderConnection {
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 
-
 		session.send_message(message);
-		logger.print(LogMessage.ERROR, TheOldReaderSecret.base_uri+path);
-		logger.print(LogMessage.ERROR, message_string);
-		logger.print(LogMessage.ERROR, (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 

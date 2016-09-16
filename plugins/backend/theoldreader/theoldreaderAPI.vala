@@ -30,13 +30,13 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 	public TheOldReaderAPI ()
 	{
+		m_utils = new TheOldReaderUtils();
 		m_connection = new TheOldReaderConnection();
 	}
 
-
 	public LoginResponse login()
 	{
-		if(m_utils.getAccessToken() == "" || m_utils.getAccessToken() == null)
+		if(m_utils.getAccessToken() == "")
 		{
 			m_connection.getToken();
 		}
@@ -53,6 +53,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 	private bool getUserID()
 	{
+		logger.print(LogMessage.ERROR, "getUserID: getting user info");
 		string response = m_connection.send_get_request("user-info?output=json");
 		var parser = new Json.Parser();
 		try{
@@ -64,28 +65,26 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			return false;
 		}
 		var root = parser.get_root().get_object();
-
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
 			logger.print(LogMessage.INFO, "TheOldreader: userID = " + m_userID);
-
 			if(root.has_member("userEmail"))
 			{
 				m_utils.setEmail(root.get_string_member("userEmail"));
 			}
 			return true;
 		}
-
 		return false;
 	}
 
-	public void getFeeds(Gee.LinkedList<feed> feeds)
+	public bool getFeeds(Gee.LinkedList<feed> feeds)
 	{
 
 		string response = m_connection.send_get_request("subscription/list?output=json");
-
+		if(response == "" || response == null)
+			return false;
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -93,6 +92,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("subscriptions");
@@ -105,7 +105,6 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
-
 			if(icon_url != "" && !m_utils.downloadIcon(feedID, "https:"+icon_url))
 			{
 				icon_url = "";
@@ -139,14 +138,14 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 					)
 			);
 		}
-
-
+		return true;
 	}
 
-	public void getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		string response = m_connection.send_get_request("tag/list?output=json");
-
+		if(response == "" || response == null)
+			return false;
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -154,6 +153,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("tags");
@@ -182,6 +182,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 				++orderID;
 			}
 		}
+		return true;
 	}
 
 
@@ -371,8 +372,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
-		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
-		logger.print(LogMessage.DEBUG, message_string);
+		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
 		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
 

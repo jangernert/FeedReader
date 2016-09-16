@@ -79,11 +79,12 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		return false;
 	}
 
-	public void getFeeds(Gee.LinkedList<feed> feeds)
+	public bool getFeeds(Gee.LinkedList<feed> feeds)
 	{
 
 		string response = m_connection.send_get_request("subscription/list?output=json");
-
+		if(response == "" || response == null)
+			return false;
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -91,6 +92,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("subscriptions");
@@ -136,14 +138,14 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 					)
 			);
 		}
-
-
+		return true;
 	}
 
-	public void getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		string response = m_connection.send_get_request("tag/list?output=json");
-
+		if(response == "" || response == null)
+			return false;
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -151,6 +153,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("tags");
@@ -179,6 +182,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 				++orderID;
 			}
 		}
+		return true;
 	}
 
 

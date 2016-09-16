@@ -13,15 +13,15 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.TheOldReaderConnection {
+public class FeedReader.OldReaderConnection {
 	private string m_api_username;
 	private string m_api_code;
 	private string m_passwd;
-	private TheOldReaderUtils m_utils;
+	private OldReaderUtils m_utils;
 
-	public TheOldReaderConnection()
+	public OldReaderConnection()
 	{
-		m_utils = new TheOldReaderUtils();
+		m_utils = new OldReaderUtils();
 		m_api_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 		m_passwd = m_utils.getPasswd();
@@ -29,7 +29,7 @@ public class FeedReader.TheOldReaderConnection {
 
 	public LoginResponse getToken()
 	{
-		logger.print(LogMessage.DEBUG, "TheOldReader Connection: getToken()");
+		logger.print(LogMessage.DEBUG, "OldReader Connection: getToken()");
 
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", "https://theoldreader.com/accounts/ClientLogin/");
@@ -42,7 +42,7 @@ public class FeedReader.TheOldReaderConnection {
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
-				logger.print(LogMessage.ERROR, "Regex theoldreader - %s".printf(response));
+				logger.print(LogMessage.ERROR, "Regex oldreader - %s".printf(response));
 				string split = regex.replace( response, -1,0,"");
 				logger.print(LogMessage.ERROR, "authcode"+split);
 				m_utils.setAccessToken(split.strip());
@@ -56,7 +56,7 @@ public class FeedReader.TheOldReaderConnection {
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "TheOldReaderConnection - getToken: Could not load message response");
+			logger.print(LogMessage.ERROR, "OldReaderConnection - getToken: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
 			return LoginResponse.UNKNOWN_ERROR;
 		}
@@ -78,7 +78,7 @@ public class FeedReader.TheOldReaderConnection {
 	{
 
 		var session = new Soup.Session();
-		var message = new Soup.Message(type, TheOldReaderSecret.base_uri + path);
+		var message = new Soup.Message(type, OldReaderSecret.base_uri + path);
 
 		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
 		message.request_headers.append("Authorization", oldauth);

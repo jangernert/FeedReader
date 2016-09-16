@@ -1,4 +1,4 @@
-set (NAME theoldreader)
+set (NAME oldreader)
 
 set (UINAME ${NAME}UI)
 set (DAEMONTARGET ${NAME}_target)
@@ -9,10 +9,10 @@ set (UITARGET ${UINAME}_target)
 # ----------------------------------------------------------
 
 vala_precompile(VALA_C ${DAEMONTARGET}
-    theoldreaderAPI.vala
-    theoldreaderInterface.vala
-    theoldreaderUtils.vala
-    theoldreaderConnection.vala
+    oldreaderAPI.vala
+    oldreaderInterface.vala
+    oldreaderUtils.vala
+    oldreaderConnection.vala
 
 PACKAGES
     libpeas-1.0
@@ -41,8 +41,8 @@ add_library(${NAME} SHARED ${VALA_C})
 
 
 vala_precompile(VALA_C2 ${UITARGET}
-    theoldreaderLoginWidget.vala
-    theoldreaderUtils.vala
+    oldreaderLoginWidget.vala
+    oldreaderUtils.vala
 
 PACKAGES
     libpeas-1.0

@@ -13,17 +13,17 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace FeedReader.TheOldReaderSecret {
+namespace FeedReader.OldReaderSecret {
 	 const string base_uri        = "https://theoldreader.com/reader/api/0/";
 }
 
-public class FeedReader.TheOldReaderUtils : GLib.Object {
+public class FeedReader.OldReaderUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
 
-	public TheOldReaderUtils()
+	public OldReaderUtils()
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.theoldreader");
+		m_settings = new GLib.Settings("org.gnome.feedreader.oldreader");
 	}
 
 	public string getUser()
@@ -109,8 +109,8 @@ public class FeedReader.TheOldReaderUtils : GLib.Object {
 
 	public string getPasswd()
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.theoldreader", Secret.SchemaFlags.NONE,
-		                                  "type", "theoldreader",
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
+		                                  "type", "oldreader",
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
@@ -134,8 +134,8 @@ public class FeedReader.TheOldReaderUtils : GLib.Object {
 
 	public void setPassword(string passwd)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.theoldreader", Secret.SchemaFlags.NONE,
-										  "type", "theoldreader",
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
+										  "type", "oldreader",
 										  "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["Username"] = getUser();

@@ -5,12 +5,12 @@
 //--------------------------------------------------------------------------------------
 FeedReader.Logger logger;
 
-public class FeedReader.theoldreaderLoginWidget : Peas.ExtensionBase, LoginInterface {
+public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
-	private TheOldReaderUtils m_utils;
+	private OldReaderUtils m_utils;
 	//--------------------------------------------------------------------------------------
 	// The stack with all the login-widgets for the different services.
 	// Add widget and name it just like the plugin itself.
@@ -48,7 +48,7 @@ public class FeedReader.theoldreaderLoginWidget : Peas.ExtensionBase, LoginInter
 	//--------------------------------------------------------------------------------------
 	public void init()
 	{
-		m_utils = new TheOldReaderUtils();
+		m_utils = new OldReaderUtils();
 
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
@@ -79,18 +79,18 @@ public class FeedReader.theoldreaderLoginWidget : Peas.ExtensionBase, LoginInter
 		grid.attach(password_label, 0, 1, 1, 1);
 		grid.attach(m_passwordEntry, 1, 1, 1, 1);
 
-		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-theoldreader.svg");
+		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-oldreader.svg");
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.pack_start(logo, false, false, 10);
 		box.pack_start(grid, true, true, 10);
 		box.show_all();
 
-		m_stack.add_named(box, "theoldreaderUI");
+		m_stack.add_named(box, "oldreaderUI");
 
 		Gtk.TreeIter iter;
 		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("The Old Reader"), 1, "theoldreaderUI");
+		m_listStore.set(iter, 0, _("The Old Reader"), 1, "oldreaderUI");
 
 		m_userEntry.set_text(m_utils.getUser());
 		m_passwordEntry.set_text(m_utils.getPasswd());
@@ -158,5 +158,5 @@ public class FeedReader.theoldreaderLoginWidget : Peas.ExtensionBase, LoginInter
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.theoldreaderLoginWidget));
+	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.oldreaderLoginWidget));
 }

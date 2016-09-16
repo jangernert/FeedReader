@@ -13,18 +13,18 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerInterface {
+public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInterface {
 
-	private TheOldReaderAPI m_api;
-	private TheOldReaderUtils m_utils;
+	private OldReaderAPI m_api;
+	private OldReaderUtils m_utils;
 
 	public dbDaemon m_dataBase { get; construct set; }
 	public Logger m_logger { get; construct set; }
 
 	public void init()
 	{
-		m_api = new TheOldReaderAPI();
-		m_utils = new TheOldReaderUtils();
+		m_api = new OldReaderAPI();
+		m_utils = new OldReaderUtils();
 		dataBase = m_dataBase;
 		logger = m_logger;
 	}
@@ -41,7 +41,7 @@ public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerIn
 
 	public string? symbolicIcon()
 	{
-		return "feed-service-theoldreader-symbolic";
+		return "feed-service-oldreader-symbolic";
 	}
 
 	public string? accountName()
@@ -176,28 +176,28 @@ public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerIn
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
 		}
 		return "feed/" + feedURL;
 	}
 
 	public void removeFeed(string feedID)
 	{
-		m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.UNSUBSCRIBE, feedID);
+		m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.UNSUBSCRIBE, feedID);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.EDIT, feedID, title);
+		m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.EDIT, feedID, title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
-		m_api.editSubscription(TheOldReaderAPI.TheOldreaderSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
+		m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID)
@@ -275,19 +275,19 @@ public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerIn
 		var articles = new Gee.LinkedList<article>();
 		string? continuation = null;
 		int left = count;
-		string? TheOldReader_feedID = (isTagID) ? null : feedID;
-		string? TheOldReader_tagID = (isTagID) ? feedID : null;
+		string? OldReader_feedID = (isTagID) ? null : feedID;
+		string? OldReader_tagID = (isTagID) ? feedID : null;
 
 		while(left > 0)
 		{
 			if(left > 1000)
 			{
-				continuation = m_api.getArticles(articles, 1000, whatToGet, continuation, TheOldReader_tagID, TheOldReader_feedID);
+				continuation = m_api.getArticles(articles, 1000, whatToGet, continuation, OldReader_tagID, OldReader_feedID);
 				left -= 1000;
 			}
 			else
 			{
-				continuation = m_api.getArticles(articles, left, whatToGet, continuation, TheOldReader_tagID, TheOldReader_feedID);
+				continuation = m_api.getArticles(articles, left, whatToGet, continuation, OldReader_tagID, OldReader_feedID);
 				left = 0;
 			}
 		}
@@ -300,5 +300,5 @@ public class FeedReader.TheOldReaderInterface : Peas.ExtensionBase, FeedServerIn
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.FeedServerInterface), typeof(FeedReader.TheOldReaderInterface));
+	objmodule.register_extension_type(typeof(FeedReader.FeedServerInterface), typeof(FeedReader.OldReaderInterface));
 }

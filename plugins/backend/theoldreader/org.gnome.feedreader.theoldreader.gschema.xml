@@ -1,0 +1,24 @@
+<schemalist>
+	<schema id="org.gnome.feedreader.theoldreader" path="/org/gnome/feedreader/theoldreader/" gettext-domain="theoldreader">
+
+	<key name="username" type="s">
+		<default>""</default>
+		<summary>apiCode</summary>
+		<description>Authenticated username to TheOldReader throught API</description>
+		</key>
+	<key name="access-token" type="s">
+		<default>""</default>
+		<description>Authorization code to TheOldreader throught API</description>
+	</key>
+
+	<key name="service" type="s">
+		<default>""</default>
+		<description>Service Name</description>
+	</key>
+	<key name="user-id" type="s">
+		<default>""</default>
+		<description>Interneal User ID</description>
+	</key>
+	</schema>
+
+</schemalist>

@@ -30,13 +30,13 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 	public TheOldReaderAPI ()
 	{
+		m_utils = new TheOldReaderUtils();
 		m_connection = new TheOldReaderConnection();
 	}
 
-
 	public LoginResponse login()
 	{
-		if(m_utils.getAccessToken() == "" || m_utils.getAccessToken() == null)
+		if(m_utils.getAccessToken() == "")
 		{
 			m_connection.getToken();
 		}
@@ -53,6 +53,7 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 
 	private bool getUserID()
 	{
+		logger.print(LogMessage.ERROR, "getUserID: getting user info");
 		string response = m_connection.send_get_request("user-info?output=json");
 		var parser = new Json.Parser();
 		try{
@@ -64,20 +65,17 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			return false;
 		}
 		var root = parser.get_root().get_object();
-
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
 			logger.print(LogMessage.INFO, "TheOldreader: userID = " + m_userID);
-
 			if(root.has_member("userEmail"))
 			{
 				m_utils.setEmail(root.get_string_member("userEmail"));
 			}
 			return true;
 		}
-
 		return false;
 	}
 
@@ -105,7 +103,6 @@ public class FeedReader.TheOldReaderAPI : GLib.Object {
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
-
 			if(icon_url != "" && !m_utils.downloadIcon(feedID, "https:"+icon_url))
 			{
 				icon_url = "";

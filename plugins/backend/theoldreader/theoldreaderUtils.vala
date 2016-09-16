@@ -117,19 +117,6 @@ public class FeedReader.TheOldReaderUtils : GLib.Object {
 		return true;
 	}
 
-
-	public bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
-	{
-		foreach(feed Feed in feeds)
-		{
-			if(Feed.hasCat(tagID))
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.theoldreader", Secret.SchemaFlags.NONE,

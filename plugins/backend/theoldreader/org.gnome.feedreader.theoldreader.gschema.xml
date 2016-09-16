@@ -20,6 +20,10 @@
 		<default>""</default>
 		<description>Interneal User ID</description>
 	</key>
+	<key name="user-email" type="s">
+		<default>""</default>
+		<description>Interneal User Email </description>
+	</key>
 	</schema>
 
 </schemalist>

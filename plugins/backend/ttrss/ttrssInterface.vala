@@ -222,11 +222,15 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		m_api.getCategories(categories);
-		m_api.getFeeds(feeds, categories);
-		m_api.getTags(tags);
+		if(m_api.getCategories(categories)
+		&& m_api.getFeeds(feeds, categories)
+		&& m_api.getUncategorizedFeeds(feeds)
+		&& m_api.getTags(tags))
+			return true;
+
+		return false;
 	}
 
 	public int getUnreadCount()

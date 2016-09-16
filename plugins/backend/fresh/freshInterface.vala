@@ -265,10 +265,13 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		m_api.getSubscriptionList(feeds);
-		m_api.getTagList(categories);
+		if(m_api.getSubscriptionList(feeds)
+		&& m_api.getTagList(categories))
+			return true;
+
+		return false;
 	}
 
 	public int getUnreadCount()

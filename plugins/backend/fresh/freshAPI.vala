@@ -37,9 +37,12 @@ public class FeedReader.freshAPI : Object {
 		return m_connection.getSID();
 	}
 
-	public void getSubscriptionList(Gee.LinkedList<feed> feeds)
+	public bool getSubscriptionList(Gee.LinkedList<feed> feeds)
 	{
 		string response = m_connection.getRequest("reader/api/0/subscription/list?output=json");
+
+		if(response == "" || response == null)
+			return false;
 
 		var parser = new Json.Parser();
 		try
@@ -50,6 +53,7 @@ public class FeedReader.freshAPI : Object {
 		{
 			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("subscriptions");
 
@@ -95,12 +99,17 @@ public class FeedReader.freshAPI : Object {
 					xmlURL)
 			);
 		}
+
+		return true;
 	}
 
-	public void getTagList(Gee.LinkedList<category> categories)
+	public bool getTagList(Gee.LinkedList<category> categories)
 	{
 		string response = m_connection.getRequest("reader/api/0/tag/list?output=json");
 		string prefix = "user/-/label/";
+
+		if(response == "" || response == null)
+			return false;
 
 		var parser = new Json.Parser();
 		try
@@ -111,6 +120,7 @@ public class FeedReader.freshAPI : Object {
 		{
 			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("tags");
 
@@ -134,6 +144,8 @@ public class FeedReader.freshAPI : Object {
 				)
 			);
 		}
+
+		return true;
 	}
 
 	public int getUnreadCounts()

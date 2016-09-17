@@ -46,6 +46,15 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		m_settings.set_string("access-token", token);
 	}
 
+	public string getPostToken()
+	{
+		return m_settings.get_string("post-token");
+	}
+
+	public void setPostToken(string token)
+	{
+		m_settings.set_string("post-token", token);
+	}
 	public string getUserID()
 	{
 		return m_settings.get_string("user-id");

@@ -32,8 +32,8 @@ public class FeedReader.FeedHQConnection {
 		logger.print(LogMessage.DEBUG, "FeedHQ Connection: getToken()");
 
 		var session = new Soup.Session();
-		var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin/");
-		string message_string = "Email=" + m_api_username + "&Passwd=" + m_passwd + "&service=reader&accountType=HOSTED_OR_GOOGLE&client=FeedReader";
+		var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin");
+		string message_string = "Email=" + m_api_username + "&Passwd=" + m_passwd;
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 		string response = (string)message.response_body.flatten().data;
@@ -42,9 +42,8 @@ public class FeedReader.FeedHQConnection {
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
-				logger.print(LogMessage.ERROR, "Regex FeedHQ - %s".printf(response));
 				string split = regex.replace( response, -1,0,"");
-				logger.print(LogMessage.ERROR, "authcode"+split);
+				logger.print(LogMessage.ERROR, "FeedHQ Authcode : "+split);
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}

@@ -143,29 +143,24 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void tagArticle(string articleID, string tagID)
 	{
-		m_api.edidTag(articleID, tagID, true);
+		return;
 	}
-
 	public void removeArticleTag(string articleID, string tagID)
 	{
-		m_api.edidTag(articleID, tagID, false);
+		return;
 	}
-
 	public string createTag(string caption)
 	{
-		return m_api.composeTagID(caption);
+		return ":(";
 	}
-
 	public void deleteTag(string tagID)
 	{
-		m_api.deleteTag(tagID);
+		return;
 	}
-
 	public void renameTag(string tagID, string title)
 	{
-		m_api.renameTag(tagID, title);
+		return;
 	}
-
 	public bool serverAvailable()
 	{
 		return m_api.ping();
@@ -231,10 +226,11 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		parser.parse();
 	}
 
-	public void getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		m_api.getFeeds(feeds);
-		m_api.getCategoriesAndTags(feeds, categories, tags);
+		if(m_api.getFeeds(feeds) && m_api.getCategoriesAndTags(feeds, categories, tags))
+			return true;
+		return false;
 	}
 
 	public int getUnreadCount()

@@ -48,7 +48,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	}
 
 	public bool ping() {
-		return Utils.ping("FeedHQ.com");
+		return Utils.ping("feedhq.org");
 	}
 
 	private bool getUserID()
@@ -72,9 +72,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			logger.print(LogMessage.INFO, "FeedHQ: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
-			{
 				m_utils.setEmail(root.get_string_member("userEmail"));
-			}
+			if(root.has_member("userName"))
+				m_utils.setUser(root.get_string_member("userName"));
 			return true;
 		}
 
@@ -85,26 +85,21 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 
 		string response = m_connection.send_get_request("token?output=json");
-		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		if (respone){
+			logger.print( LogMessage.DEBUG, "Feehq post token : " +  response );
+			m_utils.setPostToken(response);
+			return true;
 		}
-		catch (Error e) {
-			logger.print(LogMessage.ERROR, "postToken: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
-			return false;
-		}
-		var root = parser.get_root().get_object();
-
-		logger.print( LogMessage.DEBUG, response );
 		return false;
 	}
 
-	public void getFeeds(Gee.LinkedList<feed> feeds)
+	public bool getFeeds(Gee.LinkedList<feed> feeds)
 	{
 
 		string response = m_connection.send_get_request("subscription/list?output=json");
-
+		if(response == "" || response == null)
+			return false;
+		
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -112,6 +107,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return true;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("subscriptions");
@@ -158,14 +154,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 					)
 			);
 		}
-
-
+		return true;
 	}
 
-	public void getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
 		string response = m_connection.send_get_request("tag/list?output=json");
-
+		if(response == "" || response == null)
+			return false;
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -173,6 +169,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
+			return false;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("tags");
@@ -201,6 +198,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 				++orderID;
 			}
 		}
+		return false;
 	}
 
 

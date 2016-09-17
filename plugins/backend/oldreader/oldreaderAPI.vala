@@ -70,6 +70,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
 			logger.print(LogMessage.INFO, "Oldreader: userID = " + m_userID);
+			if(root.has_member("userName"))
+				m_utils.setUser(root.get_string_member("userName"));
 
 			return true;
 		}

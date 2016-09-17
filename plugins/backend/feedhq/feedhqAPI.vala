@@ -31,6 +31,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public FeedHQAPI ()
 	{
 		m_connection = new FeedHQConnection();
+		m_utils = new FeedHQUtils();
 	}
 
 
@@ -71,8 +72,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			m_utils.setUserID(m_userID);
 			logger.print(LogMessage.INFO, "FeedHQ: userID = " + m_userID);
 
-			if(root.has_member("userEmail"))
-				m_utils.setEmail(root.get_string_member("userEmail"));
 			if(root.has_member("userName"))
 				m_utils.setUser(root.get_string_member("userName"));
 			return true;
@@ -85,12 +84,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 
 		string response = m_connection.send_get_request("token?output=json");
-		if (respone){
-			logger.print( LogMessage.DEBUG, "Feehq post token : " +  response );
-			m_utils.setPostToken(response);
-			return true;
-		}
-		return false;
+		logger.print( LogMessage.DEBUG, "Feehq post token : " +  response );
+		m_utils.setPostToken(response);
+		return true;
 	}
 
 	public bool getFeeds(Gee.LinkedList<feed> feeds)
@@ -198,7 +194,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 				++orderID;
 			}
 		}
-		return false;
+		return true;
 	}
 
 
@@ -238,7 +234,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public string? updateArticles(Gee.LinkedList<string> ids, int count, string? continuation = null)
 	{
 		var message_string = "n=" + count.to_string();
-		message_string += "&xt=user/-/state/com.google/read";
+		message_string += "&s=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
 		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);

@@ -21,9 +21,9 @@
 		<description>Interneal User ID</description>
 	</key>
 
-	<key name="user-id" type="s">
+	<key name="post-token" type="s">
 		<default>""</default>
-		<description>Interneal User ID</description>
+	<description>Post Token</description>
 	</key>	
 	</schema>
 

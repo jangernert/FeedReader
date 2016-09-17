@@ -83,14 +83,14 @@ public class FeedReader.FeedHQConnection {
 
 		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
 		message.request_headers.append("Authorization", oldauth);
-
+		var message_string_post = message_string + "&T=" + m_utils.getPostToken();
 		if(message_string != null)
-			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string_post.data);
 
 
 		session.send_message(message);
 		logger.print(LogMessage.ERROR, FeedHQSecret.base_uri+path);
-		logger.print(LogMessage.ERROR, message_string);
+		logger.print(LogMessage.ERROR, message_string_post);
 		logger.print(LogMessage.ERROR, (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}

@@ -274,9 +274,8 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			message_string += "&s=user/-/state/com.google/read";
 		else if(whatToGet == ArticleStatus.MARKED)
 			message_string += "&s=user/-/state/com.google/starred";
-
+		if(continuation != null)
 			message_string += "&c=" + continuation;
-
 
 		string api_endpoint = "stream/contents";
 		if(feed_id != null)
@@ -285,8 +284,8 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
 		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
 
-		//logger.print(LogMessage.DEBUG, message_string);
-		//logger.print(LogMessage.DEBUG, response);
+		// logger.print(LogMessage.DEBUG, message_string);
+		// logger.print(LogMessage.DEBUG, response);
 
 		var parser = new Json.Parser();
 		try{
@@ -303,9 +302,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 		for (uint i = 0; i < length; i++)
 		{
+
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
-			id = id.substring(id.last_index_of_char('/')+1);
 			string tagString = "";
 			bool marked = false;
 			bool read = false;
@@ -319,10 +318,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dataBase.getTagName(cat) != null)
+				else if(cat.contains("/label/"))
 					tagString += cat;
 			}
-
 			string mediaString = "";
 			if(object.has_member("enclosure"))
 			{
@@ -350,9 +348,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 									object.get_object_member("origin").get_string_member("streamId"),
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-									object.get_object_member("summary").get_string_member("content"),
 									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+									"",
+									"",
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									tagString,
@@ -384,7 +382,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
-		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
+		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
 		logger.print(LogMessage.DEBUG, message_string);
 		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
@@ -429,12 +427,13 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		if(title != null)
 			message_string += "&t=" + title;
 
-		if(add != null)
+		string id = add;
+		id = id.substring(id.last_index_of_char('/')+1);
+		if(id != null && id != "")
 			message_string += "&a=" + add;
 
-		if(remove != null)
+		if(remove != null && remove != "")
 			message_string += "&r=" + remove;
-
 
 		m_connection.send_post_request("subscription/edit?output=json", message_string);
 	}

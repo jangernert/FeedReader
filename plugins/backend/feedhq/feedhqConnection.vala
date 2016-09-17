@@ -87,11 +87,7 @@ public class FeedReader.FeedHQConnection {
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string_post.data);
 
-
 		session.send_message(message);
-		logger.print(LogMessage.ERROR, FeedHQSecret.base_uri+path);
-		logger.print(LogMessage.ERROR, message_string_post);
-		logger.print(LogMessage.ERROR, (string)message.response_body.data);
 		return (string)message.response_body.data;
 	}
 

@@ -64,6 +64,11 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return false;
 	}
 
+	public bool supportCategories()
+	{
+		return true;
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		return false;

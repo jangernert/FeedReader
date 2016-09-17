@@ -544,6 +544,14 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.hideCagetoryWhenEmtpy(catID);
 	}
 
+	public bool supportCategories()
+	{
+		if(!m_pluginLoaded)
+			return false;
+
+		return m_plugin.supportCategories();
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		if(!m_pluginLoaded)

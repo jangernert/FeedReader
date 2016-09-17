@@ -64,6 +64,11 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return catID.has_suffix("global.must");
 	}
 
+	public bool supportCategories()
+	{
+		return true;
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		return false;

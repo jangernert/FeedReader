@@ -78,6 +78,11 @@ namespace FeedReader {
 			return server.supportTags();
 		}
 
+		public bool supportCategories()
+		{
+			return server.supportCategories();
+		}
+
 		public bool supportMultiLevelCategories()
 		{
 			return server.supportMultiLevelCategories();

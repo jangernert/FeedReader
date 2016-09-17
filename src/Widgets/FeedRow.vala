@@ -109,7 +109,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			if(m_feedID != FeedID.ALL.to_string()
 			&& !settings_general.get_boolean("only-feeds")
-			&& UtilsUI.canManipulateContent())
+			&& UtilsUI.canManipulateContent()
+			&& feedDaemon_interface.supportCategories())
 			{
 				const Gtk.TargetEntry[] provided_targets = {
 				    { "text/plain",     0, DragTarget.FEED }

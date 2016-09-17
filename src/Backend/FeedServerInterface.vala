@@ -42,6 +42,8 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool hideCagetoryWhenEmtpy(string catID);
 
+	public abstract bool supportCategories();
+
 	public abstract bool supportMultiLevelCategories();
 
 	public abstract bool supportMultiCategoriesPerFeed();

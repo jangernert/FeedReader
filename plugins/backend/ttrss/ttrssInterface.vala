@@ -64,6 +64,11 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		return catID == "0";
 	}
 
+	public bool supportCategories()
+	{
+		return true;
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		return true;

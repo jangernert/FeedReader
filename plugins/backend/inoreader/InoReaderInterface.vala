@@ -64,6 +64,11 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return false;
 	}
 
+	public bool supportCategories()
+	{
+		return true;
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		return false;

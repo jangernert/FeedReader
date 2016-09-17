@@ -114,6 +114,14 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
+	//--------------------------------------------------------------------------------------
+	// Does the service support categories at all? (feedbin is weird :P)
+	//--------------------------------------------------------------------------------------
+	public bool supportCategories()
+	{
+
+	}
+
 
 	//--------------------------------------------------------------------------------------
 	// Does the service allow categories as children of other categories?

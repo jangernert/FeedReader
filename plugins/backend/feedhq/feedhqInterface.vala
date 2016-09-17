@@ -31,7 +31,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public bool supportTags()
 	{
-		return true;
+		return false;
 	}
 
 	public bool doInitSync()
@@ -143,31 +143,27 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void tagArticle(string articleID, string tagID)
 	{
-		m_api.edidTag(articleID, tagID, true);
+		return;
 	}
 
 	public void removeArticleTag(string articleID, string tagID)
 	{
-		m_api.edidTag(articleID, tagID, false);
+		return;
 	}
 
 	public string createTag(string caption)
 	{
-		return m_api.composeTagID(caption);
+		return ":(";
 	}
 
 	public void deleteTag(string tagID)
 	{
-		m_api.deleteTag(tagID);
+		return;
 	}
 
 	public void renameTag(string tagID, string title)
 	{
-		m_api.renameTag(tagID, title);
-	}
-	public bool serverAvailable()
-	{
-		return m_api.ping();
+		return;
 	}
 
 	public string addFeed(string feedURL, string? catID, string? newCatName)

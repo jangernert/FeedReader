@@ -42,7 +42,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		if(m_utils.getAccessToken() == "")
 			m_connection.getToken();
 
-		if(getUserID() && postToken())
+		if(getUserID())
 			return LoginResponse.SUCCESS;
 
 		return LoginResponse.UNKNOWN_ERROR;
@@ -78,15 +78,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		}
 
 		return false;
-	}
-
-	private bool postToken()
-	{
-
-		string response = m_connection.send_get_request("token?output=json");
-		logger.print( LogMessage.DEBUG, "Feehq post token : " +  response );
-		m_utils.setPostToken(response);
-		return true;
 	}
 
 	public bool getFeeds(Gee.LinkedList<feed> feeds)

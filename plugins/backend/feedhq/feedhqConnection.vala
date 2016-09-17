@@ -63,6 +63,26 @@ public class FeedReader.FeedHQConnection {
 		return LoginResponse.SUCCESS;
 	}
 
+
+	public bool postToken()
+	{
+		logger.print(LogMessage.DEBUG, "FeedHQ Connection: postToken()");
+
+		var session = new Soup.Session();
+		var message = new Soup.Message("GET", FeedHQSecret.base_uri + "token?output=json");
+
+		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
+		message.request_headers.append("Authorization", oldauth);
+		session.send_message(message);
+
+		string response =  (string)message.response_body.data;
+		
+		logger.print( LogMessage.DEBUG, "FeedHQ post token : " +  response );
+		m_utils.setPostToken(response);
+		
+		return true;
+
+	}
 	public string send_get_request(string path, string? message_string = null)
 	{
 		return send_request(path, "GET", message_string);
@@ -86,8 +106,13 @@ public class FeedReader.FeedHQConnection {
 		var message_string_post = message_string + "&T=" + m_utils.getPostToken();
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string_post.data);
-
+		
 		session.send_message(message);
+		if((uint)message.status_code == 401){
+			logger.print(LogMessage.DEBUG, "FeedHQ Post Token Expired");
+			postToken();
+		}
+		
 		return (string)message.response_body.data;
 	}
 

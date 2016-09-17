@@ -354,6 +354,9 @@ public class FeedReader.FeedServer : GLib.Object {
 				}
 			}
 
+			if(settings_tweaks.get_boolean("dont-download-images"))
+				return;
+
 			downloadImages(Article);
 		}
 	}

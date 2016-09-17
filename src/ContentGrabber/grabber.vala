@@ -438,10 +438,13 @@ public class FeedReader.Grabber : GLib.Object {
             return true;
         }
 
-        if(m_articleID != null && m_feedID != null)
-            grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
-        else
-            grabberUtils.saveImages(m_doc, "", "");
+        if(!settings_tweaks.get_boolean("dont-download-images"))
+        {
+            if(m_articleID != null && m_feedID != null)
+                grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
+            else
+                grabberUtils.saveImages(m_doc, "", "");
+        }
 
         m_doc->dump_memory_enc(out m_html);
         m_html = grabberUtils.postProcessing(ref m_html);

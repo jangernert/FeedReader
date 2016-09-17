@@ -25,6 +25,14 @@
 				Ask server to not track FeedReader on making requests.
 			</description>
 		</key>
+		
+		<key name="dont-download-images" type="b">
+			<default>false</default>
+			<summary>dont download images</summary>
+			<description>
+				Disable download of images of articles.
+			</description>
+		</key>
 
 		<key name="ignore-tls-errors" type="b">
 			<default>false</default>

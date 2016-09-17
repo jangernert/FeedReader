@@ -79,7 +79,7 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 		grid.attach(password_label, 0, 1, 1, 1);
 		grid.attach(m_passwordEntry, 1, 1, 1, 1);
 
-		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-FeedHQ.svg");
+		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-feedhq.svg");
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.pack_start(logo, false, false, 10);

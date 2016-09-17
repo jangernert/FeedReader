@@ -41,7 +41,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public string? symbolicIcon()
 	{
-		return "feed-service-FeedHQ-symbolic";
+		return "feed-service-feedhq-symbolic";
 	}
 
 	public string? accountName()
@@ -51,7 +51,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public string? getServerURL()
 	{
-		return "FeedHQ.com";
+		return "FeedHQ.org";
 	}
 
 	public string uncategorizedID()
@@ -166,6 +166,11 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		return;
 	}
 
+	public bool serverAvailable()
+	{
+		return m_api.ping();
+	}
+	
 	public string addFeed(string feedURL, string? catID, string? newCatName)
 	{
 		if(catID == null && newCatName != null)

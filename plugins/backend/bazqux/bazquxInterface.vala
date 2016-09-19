@@ -59,6 +59,10 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		return "";
 	}
 
+	public bool supportCategories()
+	{
+		return true;
+	}
 	public bool hideCagetoryWhenEmtpy(string cadID)
 	{
 		return false;

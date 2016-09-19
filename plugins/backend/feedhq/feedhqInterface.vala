@@ -58,6 +58,11 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 	{
 		return "";
 	}
+	
+	public bool supportCategories()
+	{
+		return true;
+	}
 
 	public bool hideCagetoryWhenEmtpy(string cadID)
 	{

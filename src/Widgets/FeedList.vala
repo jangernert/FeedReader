@@ -416,6 +416,56 @@ public class FeedReader.feedList : Gtk.Stack {
 		this.show_all();
 	}
 
+	private void addMasterCategory(int length, string name)
+	{
+		var categorierow = new categorieRow(
+												name,
+												CategoryID.MASTER.to_string(),
+												0,
+												0,
+												CategoryID.NONE.to_string(),
+												1,
+												// expand the category "categories" if either it is inserted for the first time (no tag before)
+												// or if it has to be done to restore the state of the feedrow
+												getCatState(CategoryID.MASTER.to_string())
+												);
+		categorierow.collapse.connect((collapse, catID, selectParent) => {
+			if(collapse)
+				collapseCategorieInternal(catID, selectParent);
+			else
+				expandCategorieInternal(catID);
+		});
+		m_list.insert(categorierow, length+1);
+		categorierow.setAsRead.connect(markSelectedRead);
+		categorierow.moveUP.connect(moveUP);
+		categorierow.reveal(true);
+	}
+
+	private void addTagCategory(int length)
+	{
+		var tagrow = new categorieRow(
+												_("Tags"),
+												CategoryID.TAGS.to_string(),
+												0,
+												0,
+												CategoryID.NONE.to_string(),
+												1,
+												// expand the category "tags" if either it is inserted for the first time (no tag before)
+												// or if it has to be done to restore the state of the feedrow
+												getCatState(CategoryID.TAGS.to_string())
+												);
+		tagrow.collapse.connect((collapse, catID, selectParent) => {
+			if(collapse)
+				collapseCategorieInternal(catID, selectParent);
+			else
+				expandCategorieInternal(catID);
+		});
+		m_list.insert(tagrow, length+2);
+		tagrow.setAsRead.connect(markSelectedRead);
+		tagrow.reveal(true);
+		m_TagsDisplayed = true;
+	}
+
 
 	private void createCategories(ref Gee.ArrayList<feed> feeds, bool masterCat)
 	{
@@ -425,49 +475,13 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		if((supportTags && !dataBase.isTableEmpty("tags")) || masterCat)
 		{
-			var categorierow = new categorieRow(
-					                                _("Categories"),
-					                                CategoryID.MASTER.to_string(),
-					                                0,
-					                                0,
-					                                CategoryID.NONE.to_string(),
-							                        1,
-													// expand the category "categories" if either it is inserted for the first time (no tag before)
-													// or if it has to be done to restore the state of the feedrow
-							                        getCatState(CategoryID.MASTER.to_string())
-					                                );
-			categorierow.collapse.connect((collapse, catID, selectParent) => {
-				if(collapse)
-					collapseCategorieInternal(catID, selectParent);
-				else
-					expandCategorieInternal(catID);
-			});
-			m_list.insert(categorierow, length+1);
-			categorierow.setAsRead.connect(markSelectedRead);
-			categorierow.moveUP.connect(moveUP);
-			categorierow.reveal(true);
-
-			var tagrow = new categorieRow(
-					                                _("Tags"),
-					                                CategoryID.TAGS.to_string(),
-					                                0,
-					                                0,
-					                                CategoryID.NONE.to_string(),
-							                        1,
-													// expand the category "tags" if either it is inserted for the first time (no tag before)
-													// or if it has to be done to restore the state of the feedrow
-							                        getCatState(CategoryID.TAGS.to_string())
-					                                );
-			tagrow.collapse.connect((collapse, catID, selectParent) => {
-				if(collapse)
-					collapseCategorieInternal(catID, selectParent);
-				else
-					expandCategorieInternal(catID);
-			});
-			m_list.insert(tagrow, length+2);
-			tagrow.setAsRead.connect(markSelectedRead);
-			tagrow.reveal(true);
-			m_TagsDisplayed = true;
+			addMasterCategory(length, _("Categories"));
+			addTagCategory(length);
+		}
+		else if(!feedDaemon_interface.supportCategories())
+		{
+			addMasterCategory(length, _("Feeds"));
+			m_TagsDisplayed = false;
 		}
 		else
 		{

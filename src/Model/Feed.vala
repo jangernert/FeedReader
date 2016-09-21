@@ -86,6 +86,16 @@ public class FeedReader.feed : GLib.Object {
 		return false;
 	}
 
+	public void addCat(string catID)
+	{
+		m_catIDs += catID;
+	}
+
+	public void setCats(string[] catIDs)
+	{
+		m_catIDs = catIDs;
+	}
+
 	public bool isUncategorized()
 	{
 		if(m_catIDs.length == 0)

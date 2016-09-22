@@ -122,6 +122,14 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
+	//--------------------------------------------------------------------------------------
+	// Does the service support add/remove/rename of categories and feeds?
+	//--------------------------------------------------------------------------------------
+	public bool supportFeedManipulation()
+	{
+
+	}
+
 
 	//--------------------------------------------------------------------------------------
 	// Does the service allow categories as children of other categories?

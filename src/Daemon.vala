@@ -83,6 +83,11 @@ namespace FeedReader {
 			return server.supportCategories();
 		}
 
+		public bool supportFeedManipulation()
+		{
+			return server.supportFeedManipulation();
+		}
+
 		public bool supportMultiLevelCategories()
 		{
 			return server.supportMultiLevelCategories();

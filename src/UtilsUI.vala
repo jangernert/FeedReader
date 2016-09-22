@@ -82,6 +82,11 @@ public class FeedReader.UtilsUI : GLib.Object {
 	public static bool canManipulateContent(bool? online = null)
 	{
 		// if backend = local RSS -> return true;
+		if(settings_general.get_string("plugin") == "local")
+			return true;
+
+		if(!feedDaemon_interface.supportFeedManipulation())
+			return false;
 
 		// when we already know wheather feedreader is online or offline
 		if(online != null)

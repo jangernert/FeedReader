@@ -184,6 +184,13 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		rename_action.activate.connect(() => {
 			showRenamePopover();
 		});
+
+		if(!feedDaemon_interface.supportFeedManipulation())
+		{
+			rename_action.set_enabled(false);
+			remove_action.set_enabled(false);
+		}
+
 		var app = (FeedApp)GLib.Application.get_default();
 		app.add_action(rename_action);
 		app.add_action(remove_action);

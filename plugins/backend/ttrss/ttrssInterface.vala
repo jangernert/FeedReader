@@ -69,6 +69,11 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		return true;
 	}
 
+	public bool supportFeedManipulation()
+	{
+		return true;
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		return true;

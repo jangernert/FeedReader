@@ -141,61 +141,63 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		else
 			m_stack.set_visible_child_name("expanded");
 
-		if(m_categorieID != CategoryID.MASTER.to_string()
-		&& m_categorieID != CategoryID.TAGS.to_string()
-		&& UtilsUI.canManipulateContent())
+		if(UtilsUI.canManipulateContent())
 		{
-			const Gtk.TargetEntry[] accepted_targets = {
-			    { "text/plain",	0, DragTarget.FEED },
-				{ "STRING",		0, DragTarget.CAT }
-			};
-
-			Gtk.drag_dest_set (
-		            this,
-		            Gtk.DestDefaults.MOTION,
-		            accepted_targets,
-		            Gdk.DragAction.MOVE
-		    );
-
-		    this.drag_motion.connect(onDragMotion);
-		    this.drag_leave.connect(onDragLeave);
-		    this.drag_drop.connect(onDragDrop);
-		    this.drag_data_received.connect(onDragDataReceived);
-
-			if(feedDaemon_interface.supportMultiLevelCategories())
+			if(m_categorieID != CategoryID.MASTER.to_string()
+			&& m_categorieID != CategoryID.TAGS.to_string())
 			{
-				const Gtk.TargetEntry[] provided_targets = {
+				const Gtk.TargetEntry[] accepted_targets = {
+				    { "text/plain",	0, DragTarget.FEED },
+					{ "STRING",		0, DragTarget.CAT }
+				};
+
+				Gtk.drag_dest_set (
+			            this,
+			            Gtk.DestDefaults.MOTION,
+			            accepted_targets,
+			            Gdk.DragAction.MOVE
+			    );
+
+			    this.drag_motion.connect(onDragMotion);
+			    this.drag_leave.connect(onDragLeave);
+			    this.drag_drop.connect(onDragDrop);
+			    this.drag_data_received.connect(onDragDataReceived);
+
+				if(feedDaemon_interface.supportMultiLevelCategories())
+				{
+					const Gtk.TargetEntry[] provided_targets = {
+					    { "STRING",     0, DragTarget.CAT }
+					};
+
+					Gtk.drag_source_set (
+							this,
+							Gdk.ModifierType.BUTTON1_MASK,
+							provided_targets,
+							Gdk.DragAction.MOVE
+					);
+
+					this.drag_begin.connect(onDragBegin);
+					this.drag_data_get.connect(onDragDataGet);
+				}
+			}
+			else if(m_categorieID == CategoryID.MASTER.to_string())
+			{
+				const Gtk.TargetEntry[] accepted_targets = {
 				    { "STRING",     0, DragTarget.CAT }
 				};
 
-				Gtk.drag_source_set (
-						this,
-						Gdk.ModifierType.BUTTON1_MASK,
-						provided_targets,
-						Gdk.DragAction.MOVE
-				);
+				Gtk.drag_dest_set (
+			            this,
+			            Gtk.DestDefaults.MOTION,
+			            accepted_targets,
+			            Gdk.DragAction.MOVE
+			    );
 
-				this.drag_begin.connect(onDragBegin);
-				this.drag_data_get.connect(onDragDataGet);
+			    this.drag_motion.connect(onDragMotion);
+			    this.drag_leave.connect(onDragLeave);
+			    this.drag_drop.connect(onDragDrop);
+			    this.drag_data_received.connect(onDragDataReceived);
 			}
-		}
-		else if(m_categorieID == CategoryID.MASTER.to_string())
-		{
-			const Gtk.TargetEntry[] accepted_targets = {
-			    { "STRING",     0, DragTarget.CAT }
-			};
-
-			Gtk.drag_dest_set (
-		            this,
-		            Gtk.DestDefaults.MOTION,
-		            accepted_targets,
-		            Gdk.DragAction.MOVE
-		    );
-
-		    this.drag_motion.connect(onDragMotion);
-		    this.drag_leave.connect(onDragLeave);
-		    this.drag_drop.connect(onDragDrop);
-		    this.drag_data_received.connect(onDragDataReceived);
 		}
 	}
 
@@ -412,6 +414,14 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		rename_action.activate.connect(() => {
 			showRenamePopover();
 		});
+
+		if(!feedDaemon_interface.supportFeedManipulation())
+		{
+			rename_action.set_enabled(false);
+			remove_action.set_enabled(false);
+			removeWithChildren_action.set_enabled(false);
+		}
+
 		var app = (FeedApp)GLib.Application.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);

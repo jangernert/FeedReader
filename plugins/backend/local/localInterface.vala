@@ -66,6 +66,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return true;
 	}
 
+	public bool supportFeedManipulation()
+	{
+		return true;
+	}
+
 	public bool supportMultiLevelCategories()
 	{
 		return true;

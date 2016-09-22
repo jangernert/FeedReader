@@ -846,7 +846,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	protected uint getFeedUnread(string feedID)
+	public uint getFeedUnread(string feedID)
 	{
 		uint count = 0;
 

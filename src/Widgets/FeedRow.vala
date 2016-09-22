@@ -220,16 +220,21 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		markAsRead_action.activate.connect(() => {
 			setAsRead(FeedListType.FEED, m_feedID);
 		});
+
 		if(m_unread_count != 0)
-		{
 			markAsRead_action.set_enabled(true);
-		}
 		else
-		{
 			markAsRead_action.set_enabled(false);
-		}
+
 		var rename_action = new GLib.SimpleAction("renameFeed", null);
 		rename_action.activate.connect(showRenamePopover);
+
+		if(!feedDaemon_interface.supportFeedManipulation())
+		{
+			rename_action.set_enabled(false);
+			remove_action.set_enabled(false);
+		}
+
 		var app = (FeedApp)GLib.Application.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);

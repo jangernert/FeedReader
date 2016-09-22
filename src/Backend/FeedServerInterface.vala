@@ -44,6 +44,8 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool supportCategories();
 
+	public abstract bool supportFeedManipulation();
+
 	public abstract bool supportMultiLevelCategories();
 
 	public abstract bool supportMultiCategoriesPerFeed();

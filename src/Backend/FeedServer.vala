@@ -552,6 +552,14 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.supportCategories();
 	}
 
+	public bool supportFeedManipulation()
+	{
+		if(!m_pluginLoaded)
+			return false;
+
+		return m_plugin.supportFeedManipulation();
+	}
+	
 	public bool supportMultiLevelCategories()
 	{
 		if(!m_pluginLoaded)

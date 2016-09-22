@@ -1,0 +1,8 @@
+[Plugin]
+Module=feedbinUI
+Loader=C
+Name=Feedbin
+Description=Add Feedbin backend to FeedReader
+Authors=Jan Lukas Gernert <jangernert@gmail.com>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert
+Website=http://jangernert.github.io/FeedReader/

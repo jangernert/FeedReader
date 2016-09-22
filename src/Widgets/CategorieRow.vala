@@ -415,13 +415,6 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			showRenamePopover();
 		});
 
-		if(!feedDaemon_interface.supportFeedManipulation())
-		{
-			rename_action.set_enabled(false);
-			remove_action.set_enabled(false);
-			removeWithChildren_action.set_enabled(false);
-		}
-
 		var app = (FeedApp)GLib.Application.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);

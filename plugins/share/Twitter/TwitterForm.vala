@@ -28,11 +28,15 @@ public class FeedReader.TwitterForm : ShareForm {
 		m_stack = new Gtk.Stack();
 		string body = _("Hey,\n\nCheck out this interesting article I just read: $URL");
 
-		var scrolled = new Gtk.ScrolledWindow(null, null);
 		m_textView = new Gtk.TextView();
 		m_textView.set_wrap_mode(Gtk.WrapMode.WORD);
 		m_textView.buffer.text = body;
-		m_textView.border_width = 1;
+		m_textView.border_width = 2;
+		m_textView.get_style_context().add_class("h3");
+
+		var scrolled = new Gtk.ScrolledWindow(null, null);
+		scrolled.get_style_context().add_class(Gtk.STYLE_CLASS_FRAME);
+		scrolled.add(m_textView);
 
 		int margin = 5;
 		m_textView.left_margin = margin;
@@ -40,20 +44,52 @@ public class FeedReader.TwitterForm : ShareForm {
 		m_textView.top_margin = margin;
 		m_textView.bottom_margin = margin;
 
+		var limitLabel = new Gtk.Label(_("Limit: "));
+		limitLabel.set_alignment(0.0f, 0.5f);
+		limitLabel.get_style_context().add_class("h3");
+
 		m_countLabel = new Gtk.Label("");
 		m_countLabel.set_alignment(0.0f, 0.5f);
+		m_countLabel.get_style_context().add_class("h3");
 		var spinner = new Gtk.Spinner();
 
 		m_stack.add_named(m_countLabel, "label");
 		m_stack.add_named(spinner, "spinner");
 
 		m_textView.buffer.changed.connect(() => {
-			m_countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
+			updateCount();
 		});
 
+		var button = new Gtk.Button.with_label(_("Tweet"));
+		button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		button.clicked.connect(() => { share(); });
 
-		this.pack_start(m_textView);
-		this.pack_start(m_stack, false, false, 5);
+		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		box.pack_start(limitLabel, false, false, 0);
+		box.pack_start(m_stack, false, false, 0);
+		box.pack_end(button, false, false, 0);
+
+		var backButton = new Gtk.Button.from_icon_name("go-previous-symbolic");
+		backButton.set_focus_on_click(false);
+		backButton.set_relief(Gtk.ReliefStyle.NONE);
+		backButton.halign = Gtk.Align.START;
+		backButton.clicked.connect(() => {
+			goBack();
+		});
+
+		var headline = new Gtk.Label(_("Tweet to Followers"));
+		headline.get_style_context().add_class("h2");
+		headline.set_alignment(0.4f, 0.5f);
+		var box2 = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		box2.pack_start(backButton, false, false, 0);
+		box2.pack_start(headline, true, true, 0);
+
+		this.pack_start(box2, false, false, 0);
+		this.pack_start(scrolled);
+		this.pack_end(box, false, false);
+		this.orientation = Gtk.Orientation.VERTICAL;
+		this.spacing = 5;
+		this.margin = 10;
 		this.show_all();
 
 		m_stack.set_visible_child_name("spinner");
@@ -79,7 +115,7 @@ public class FeedReader.TwitterForm : ShareForm {
     	Thread.create<void*>(run, false);
 
 		yield;
-		m_countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
+		updateCount();
 		m_stack.set_visible_child_name("label");
 	}
 
@@ -94,6 +130,11 @@ public class FeedReader.TwitterForm : ShareForm {
 		}
 
 		return text.length;
+	}
+
+	private void updateCount()
+	{
+		m_countLabel.set_text(calcLenght(m_textView.buffer.text).to_string() + "/140");
 	}
 
 }

@@ -28,12 +28,54 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	//--------------------------------------------------------------------------------------
 	public void init()
 	{
-		//--------------------------------------------------------------------------------------
-		// m_stack.add_named(demoWidget, "demoUI");
-		// Gtk.TreeIter iter;
-		// m_listStore.append(out iter);
-		// m_listStore.set(iter, 0, _("Demo Service 123"), 1, "demoUI");
-		//--------------------------------------------------------------------------------------
+
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// Return the the website/homepage of the project
+	//--------------------------------------------------------------------------------------
+	public string getWebsite()
+	{
+
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// Return an unique id for the backend. Basically a short form of the name:
+	// Tiny Tiny RSS -> "ttrss"
+	// Local Backend -> "local"
+	//--------------------------------------------------------------------------------------
+	public string getID()
+	{
+
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// Return flags describing the type of Service
+	// - LOCAL
+	// - HOSTED
+	// - SELF_HOSTED
+	// - FREE_SOFTWARE
+	// - PROPRIETARY
+	// - FREE
+	// - PAID_PREMIUM
+	// - PAID
+	//--------------------------------------------------------------------------------------
+	public BackendFlags getFlags()
+	{
+
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// Return the login UI inside a Gtk.Box (username- and password-entries)
+	// Return 'null' if use web-login
+	//--------------------------------------------------------------------------------------
+	public Gtk.Box? getWidget()
+	{
+
 	}
 
 
@@ -82,6 +124,15 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	public void writeData()
 	{
 
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// Do stuff after a successful login
+	//--------------------------------------------------------------------------------------
+	public void poastLoginAction()
+	{
+		
 	}
 
 

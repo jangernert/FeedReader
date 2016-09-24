@@ -205,4 +205,15 @@ namespace FeedReader {
  			return ((int)this).to_string();
  		}
 	}
+
+	[Flags] public enum BackendFlags {
+		LOCAL,
+		HOSTED,
+		SELF_HOSTED,
+		FREE_SOFTWARE,
+		PROPRIETARY,
+		FREE,
+		PAID_PREMIUM,
+		PAID
+	}
 }

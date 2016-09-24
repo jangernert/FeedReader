@@ -20,6 +20,16 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		m_utils = new OldReaderUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "https://theoldreader.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
 	public string getID()
 	{
 		return "oldreader";

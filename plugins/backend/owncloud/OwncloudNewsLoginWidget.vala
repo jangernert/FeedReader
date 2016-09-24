@@ -35,6 +35,16 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		m_utils = new OwncloudNewsUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "https://github.com/nextcloud/news";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+	}
+
 	public string getID()
 	{
 		return "owncloud";

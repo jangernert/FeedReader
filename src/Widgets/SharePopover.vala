@@ -111,6 +111,10 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			widget.share.connect_after(() => {
 				shareURL(id, url);
 			});
+			widget.goBack.connect(() => {
+				m_stack.set_visible_child_full("list", Gtk.StackTransitionType.SLIDE_RIGHT);
+				m_stack.remove(widget);
+			});
 		}
     }
 
@@ -140,18 +144,11 @@ public class FeedReader.SharePopover : Gtk.Popover {
 public class FeedReader.ShareForm : Gtk.Box {
 
 	public signal void share();
+	public signal void goBack();
 
 	public ShareForm()
 	{
-		var button = new Gtk.Button.with_label("Share");
-		button.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-		button.clicked.connect(() => { share(); });
 
-		this.pack_end(button, false, false);
-		this.orientation = Gtk.Orientation.VERTICAL;
-		this.spacing = 5;
-		this.margin = 10;
-		this.show_all();
 	}
 
 }

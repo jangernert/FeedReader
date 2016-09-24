@@ -27,6 +27,16 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 		m_utils = new FeedlyUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "http://feedly.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
 	public string getID()
 	{
 		return "feedly";

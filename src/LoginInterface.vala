@@ -23,6 +23,10 @@ public interface FeedReader.LoginInterface : GLib.Object {
 
 	public abstract void init();
 
+	public abstract string getWebsite();
+
+	public abstract BackendFlags getFlags();
+
 	public abstract string getID();
 
 	public abstract Gtk.Box? getWidget();

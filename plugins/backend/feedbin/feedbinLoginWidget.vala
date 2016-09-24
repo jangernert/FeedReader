@@ -30,6 +30,16 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		m_utils = new feedbinUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "https://feedbin.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID);
+	}
+
 	public string getID()
 	{
 		return "feedbin";

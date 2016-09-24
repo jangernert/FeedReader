@@ -28,6 +28,16 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		m_utils = new InoReaderUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "http://www.inoreader.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
 	public string getID()
 	{
 		return "inoreader";

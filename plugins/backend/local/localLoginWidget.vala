@@ -26,6 +26,16 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 		logger = m_logger;
 	}
 
+	public string getWebsite()
+	{
+		return "http://jangernert.github.io/FeedReader/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.LOCAL | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+	}
+
 	public string getID()
 	{
 		return "local";

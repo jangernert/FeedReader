@@ -35,6 +35,16 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		m_utils = new ttrssUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "https://tt-rss.org/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+	}
+
 	public string getID()
 	{
 		return "ttrss";

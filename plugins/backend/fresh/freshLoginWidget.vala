@@ -35,6 +35,16 @@ public class FeedReader.freshLoginWidget : Peas.ExtensionBase, LoginInterface {
 		m_utils = new freshUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "https://freshrss.org/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+	}
+
 	public string getID()
 	{
 		return "fresh";

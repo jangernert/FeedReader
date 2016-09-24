@@ -21,8 +21,6 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 	private Gtk.Entry m_passwordEntry;
 	private feedbinUtils m_utils;
 
-	public Gtk.Stack m_stack { get; construct set; }
-	public Gtk.ListStore m_listStore { get; construct set; }
 	public Logger m_logger { get; construct set; }
 	public string m_installPrefix { get; construct set; }
 
@@ -30,7 +28,30 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 	{
 		logger = m_logger;
 		m_utils = new feedbinUtils();
+	}
 
+	public string getID()
+	{
+		return "feedbin";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-feedbin";
+	}
+
+	public string serviceName()
+	{
+		return "Feedbin";
+	}
+
+	public bool needWebLogin()
+	{
+		return false;
+	}
+
+	public Gtk.Box? getWidget()
+	{
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
 
@@ -60,26 +81,32 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		grid.attach(password_label, 0, 1, 1, 1);
 		grid.attach(m_passwordEntry, 1, 1, 1, 1);
 
-		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-feedbin.svg");
+		var logo = new Gtk.Image.from_icon_name("feed-service-feedbin", Gtk.IconSize.MENU);
+
+		var loginLabel = new Gtk.Label(_("Please log in to Feedbin to enjoy using FeedReader"));
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+
+		var loginButton = new Gtk.Button.with_label(_("Login"));
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => { login(); });
+
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.valign = Gtk.Align.CENTER;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(loginLabel, false, false, 10);
 		box.pack_start(logo, false, false, 10);
 		box.pack_start(grid, true, true, 10);
-		box.show_all();
-
-		m_stack.add_named(box, "feedbinUI");
-
-		Gtk.TreeIter iter;
-		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("Feedbin"), 1, "feedbinUI");
+		box.pack_end(loginButton, false, false, 20);
 
 		m_userEntry.set_text(m_utils.getUser());
 		m_passwordEntry.set_text(m_utils.getPasswd());
-	}
 
-	public bool needWebLogin()
-	{
-		return false;
+		return box;
 	}
 
 	public void showHtAccess()
@@ -91,6 +118,11 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 	{
 		m_utils.setUser(m_userEntry.get_text());
 		m_utils.setPassword(m_passwordEntry.get_text());
+	}
+
+	public void poastLoginAction()
+	{
+		return;
 	}
 
 	public bool extractCode(string redirectURL)

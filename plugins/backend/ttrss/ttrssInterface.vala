@@ -180,7 +180,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			m_api.subscribeToFeed(feedURL, catID);
 		}
 
-		return (dataBase.getHighestFeedID() + 1).to_string();
+		return (int.parse(dataBase.getHighestFeedID()) + 1).to_string();
 	}
 
 	public void removeFeed(string feedID)

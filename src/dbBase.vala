@@ -763,15 +763,16 @@ public class FeedReader.dbBase : GLib.Object {
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
-		while (stmt.step () == Sqlite.ROW) {
+		while(stmt.step() == Sqlite.ROW)
+		{
 			result = stmt.column_int(0);
 		}
 		return result;
 	}
 
-	public int getHighestFeedID()
+	public string getHighestFeedID()
 	{
-		int result = 0;
+		string result = "0";
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("max(feed_id)");
@@ -782,9 +783,11 @@ public class FeedReader.dbBase : GLib.Object {
 		if (ec != Sqlite.OK)
 			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
 
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
+		while(stmt.step() == Sqlite.ROW)
+		{
+			result = stmt.column_text(0);
 		}
+
 		return result;
 	}
 

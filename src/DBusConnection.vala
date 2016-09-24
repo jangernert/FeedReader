@@ -16,7 +16,7 @@
 namespace FeedReader {
 
 	[DBus (name = "org.gnome.feedreader")]
-	interface FeedDaemon : Object {
+	public interface FeedDaemon : Object {
 
 		public abstract void scheduleSync(int time) throws IOError;
 		public abstract void startSync() throws IOError;
@@ -66,7 +66,7 @@ namespace FeedReader {
 		public abstract void renameCategory(string catID, string newName) throws IOError;
 
 		// MANIPULATE FEEDS
-		public abstract void addFeed(string feedURL, string cat, bool isID) throws IOError;
+		public abstract void addFeed(string feedURL, string cat, bool isID, bool asynchron = true) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
 		public abstract void moveFeed(string feedID, string currentCatID, string? newCatID = null) throws IOError;

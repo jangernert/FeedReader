@@ -15,11 +15,9 @@
 
 public class FeedReader.localUtils : GLib.Object {
 
-	public Logger m_logger { get; construct set; }
-
-	public localUtils(Logger logger)
+	public localUtils()
 	{
-		m_logger = logger;
+
 	}
 
 	public feed? downloadFeed(string xmlURL, string feedID, string[] catIDs)
@@ -38,7 +36,15 @@ public class FeedReader.localUtils : GLib.Object {
 			parser.load_from_data(xml, xml.length);
 			var doc = parser.get_document();
 
-			downloadIcon(feedID, doc.image_url);
+			if(doc.image_url != null
+			&& doc.image_url != "")
+			{
+				downloadIcon(feedID, doc.image_url);
+			}
+			else
+			{
+				Utils.downloadIcon(feedID, doc.link);
+			}
 
 			var Feed = new feed(
 						feedID,
@@ -53,16 +59,19 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			m_logger.print(LogMessage.ERROR, "localInterface - addFeed: " + e.message);
+			logger.print(LogMessage.ERROR, "localInterface - addFeed: " + e.message);
 		}
 
 		return null;
 	}
 
-	public string? convert(string? text, string locale)
+	public string? convert(string? text, string? locale)
 	{
 		if(text == null)
 			return null;
+
+		if(locale == null)
+			return Utils.UTF8fix(text, false);
 
 		try
 		{
@@ -70,7 +79,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(ConvertError e)
 		{
-			m_logger.print(LogMessage.ERROR, e.message);
+			logger.print(LogMessage.ERROR, e.message);
 		}
 
 		return "";
@@ -87,7 +96,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			m_logger.print(LogMessage.ERROR, "localUtils - deleteIcon: " + e.message);
+			logger.print(LogMessage.ERROR, "localUtils - deleteIcon: " + e.message);
 		}
 		return false;
 	}
@@ -101,7 +110,7 @@ public class FeedReader.localUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//m_logger.print(LogMessage.DEBUG, e.message);
+			//logger.print(LogMessage.DEBUG, e.message);
 		}
 
 		string local_filename = icon_path + feed_id + ".ico";
@@ -126,11 +135,11 @@ public class FeedReader.localUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					m_logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			m_logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

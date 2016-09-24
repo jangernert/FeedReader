@@ -18,9 +18,6 @@ FeedReader.Logger logger;
 public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private FeedlyUtils m_utils;
-
-	public Gtk.Stack m_stack { get; construct set; }
-	public Gtk.ListStore m_listStore { get; construct set; }
 	public Logger m_logger { get; construct set; }
 	public string m_installPrefix { get; construct set; }
 
@@ -28,33 +25,31 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 		logger = m_logger;
 		m_utils = new FeedlyUtils();
-		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-feedly.svg");
+	}
 
-		var text = new Gtk.Label(_("You will be redirected to the feedly website where you can use your Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."));
-		text.get_style_context().add_class("h3");
-		text.set_justify(Gtk.Justification.CENTER);
-		text.set_line_wrap_mode(Pango.WrapMode.WORD);
-		text.set_line_wrap(true);
-		text.set_lines(3);
-		text.expand = false;
-		text.set_width_chars(60);
-		text.set_max_width_chars(60);
+	public string getID()
+	{
+		return "feedly";
+	}
 
-		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
-		box.pack_start(logo, false, false, 10);
-		box.pack_start(text, true, true, 10);
-		box.show_all();
+	public string iconName()
+	{
+		return "feed-service-feedly";
+	}
 
-		m_stack.add_named(box, "feedlyUI");
-
-		Gtk.TreeIter iter;
-		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("Feedly"), 1, "feedlyUI");
+	public string serviceName()
+	{
+		return "feedly";
 	}
 
 	public bool needWebLogin()
 	{
 		return true;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		return null;
 	}
 
 	public void showHtAccess()
@@ -64,7 +59,12 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	public void writeData()
 	{
+		return;
+	}
 
+	public void poastLoginAction()
+	{
+		return;
 	}
 
 	public bool extractCode(string redirectURL)

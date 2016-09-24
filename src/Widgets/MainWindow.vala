@@ -265,6 +265,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: show login");
 		showErrorBar(LoginResponse.FIRST_TRY);
+		m_login.reset();
 		m_stack.set_visible_child_full("login", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
@@ -460,15 +461,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		loginBox.pack_start(m_error_bar, false, false, 0);
 		loginBox.pack_start(m_login, true, true, 0);
 
-		m_login.submit_data.connect(() => {
-			settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
-			settings_state.set_string("feedlist-selected-row", "feed -4");
-			if(dataBase.isEmpty())
-				feedDaemon_interface.startInitSync();
-			else
-				feedDaemon_interface.startSync();
-			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
-		});
+		m_login.submit_data.connect(login);
 		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});

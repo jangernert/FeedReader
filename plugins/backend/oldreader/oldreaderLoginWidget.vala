@@ -11,45 +11,37 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 	private OldReaderUtils m_utils;
-	//--------------------------------------------------------------------------------------
-	// The stack with all the login-widgets for the different services.
-	// Add widget and name it just like the plugin itself.
-	//--------------------------------------------------------------------------------------
-	public Gtk.Stack m_stack { get; construct set; }
 
-
-	//--------------------------------------------------------------------------------------
-	// Model for the dropdown-menu to choose the service.
-	// Add new Gtk.TreeIter with first column as name
-	// and second column as id plugin-name + "UI".
-	//--------------------------------------------------------------------------------------
-	public Gtk.ListStore m_listStore { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
-	// Can be used to print messages to the commandline which are also
-	// written to the harddrive.
-	//--------------------------------------------------------------------------------------
 	public Logger m_logger { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
-	// The install prefix the user (or packager) chooses when building FeedReader
-	// Useful to load custom icons installed alongside the plugin.
-	//--------------------------------------------------------------------------------------
 	public string m_installPrefix { get; construct set; }
 
-
-	//--------------------------------------------------------------------------------------
-	// Called when loading plugin. Setup all the widgets here and add them to
-	// m_stack and m_listStore.
-	// The signal "login()" can be emmited when try to log in.
-	// For example after pressing "enter" in the password-entry.
-	//--------------------------------------------------------------------------------------
 	public void init()
 	{
 		m_utils = new OldReaderUtils();
+	}
 
+	public string getID()
+	{
+		return "oldreader";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-oldreader";
+	}
+
+	public string serviceName()
+	{
+		return "The Old Reader";
+	}
+
+	public bool needWebLogin()
+	{
+		return false;
+	}
+
+	public Gtk.Box? getWidget()
+	{
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
 
@@ -79,81 +71,60 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		grid.attach(password_label, 0, 1, 1, 1);
 		grid.attach(m_passwordEntry, 1, 1, 1, 1);
 
-		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-oldreader.svg");
+		var logo = new Gtk.Image.from_icon_name("feed-service-oldreader", Gtk.IconSize.MENU);
+
+		var loginLabel = new Gtk.Label(_("Please log in to the Old Reader and enjoy using FeedReader"));
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+
+		var loginButton = new Gtk.Button.with_label(_("Login"));
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => { login(); });
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.valign = Gtk.Align.CENTER;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(loginLabel, false, false, 10);
 		box.pack_start(logo, false, false, 10);
 		box.pack_start(grid, true, true, 10);
-		box.show_all();
-
-		m_stack.add_named(box, "oldreaderUI");
-
-		Gtk.TreeIter iter;
-		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("The Old Reader"), 1, "oldreaderUI");
+		box.pack_end(loginButton, false, false, 20);
 
 		m_userEntry.set_text(m_utils.getUser());
 		m_passwordEntry.set_text(m_utils.getPasswd());
+
+		return box;
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Return wheather the plugin needs a webview to log in via oauth.
-	//--------------------------------------------------------------------------------------
-	public bool needWebLogin()
-	{
-		return false;
-	}
-
-
-	//--------------------------------------------------------------------------------------
-	// Only important for self-hosted services.
-	// If the server is secured by htaccess and a second username and password
-	// is required, show the UI to enter those in this methode.
-	// If htaccess won't be needed do nothing here.
-	//--------------------------------------------------------------------------------------
 	public void showHtAccess()
 	{
-
+		return;
 	}
 
-	//--------------------------------------------------------------------------------------
-	// Methode gets executed before logging in. Write all the data gathered
-	// into gsettings (password, username, access-key).
-	//--------------------------------------------------------------------------------------
 	public void writeData()
 	{
 		m_utils.setUser(m_userEntry.get_text());
 		m_utils.setPassword(m_passwordEntry.get_text());
 	}
 
+	public void poastLoginAction()
+	{
+		return;
+	}
 
-	//--------------------------------------------------------------------------------------
-	// Only needed if "needWebLogin()" retruned true. Return URL that should be
-	// loaded to log in via website.
-	//--------------------------------------------------------------------------------------
 	public string buildLoginURL()
 	{
 		return "";
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Extract access-key from redirect-URL from webview after loggin in with
-	// the webview.
-	// Return "true" if extracted sucessfuly, "false" otherwise.
-	//--------------------------------------------------------------------------------------
 	public bool extractCode(string redirectURL)
 	{
 		return false;
 	}
 }
 
-
-//--------------------------------------------------------------------------------------
-// Boilerplate code for the plugin. Replace "demoLoginWidget" with the name
-// of your interface-class.
-//--------------------------------------------------------------------------------------
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)
 {

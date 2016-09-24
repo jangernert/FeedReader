@@ -80,7 +80,7 @@ public class FeedReader.feedbinAPI : Object {
 					id,
 					title,
 					url,
-					m_utils.downloadIcon(id, url),
+					Utils.downloadIcon(id, url),
 					0,
 					{ "0" },
 					xmlURL)

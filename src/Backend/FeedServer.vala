@@ -16,7 +16,10 @@
 public class FeedReader.FeedServer : GLib.Object {
 
 	private bool m_pluginLoaded = false;
-	private FeedServerInterface m_plugin;
+	private string m_plugName;
+	private Peas.ExtensionSet m_extensions;
+	private FeedServerInterface? m_plugin;
+	private Peas.Engine m_engine;
 	public signal void newFeedList();
 	public signal void updateFeedList();
 	public signal void updateArticleList();
@@ -25,15 +28,16 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public FeedServer(string plug_name)
 	{
-		var engine = Peas.Engine.get_default();
-		engine.add_search_path(InstallPrefix + "/share/FeedReader/plugins/", null);
-		engine.enable_loader("python3");
+		m_engine = Peas.Engine.get_default();
+		m_engine.add_search_path(InstallPrefix + "/share/FeedReader/plugins/", null);
+		m_engine.enable_loader("python3");
 
-		var extensions = new Peas.ExtensionSet(engine, typeof(FeedServerInterface),
+		m_extensions = new Peas.ExtensionSet(m_engine, typeof(FeedServerInterface),
 			"m_dataBase", dataBase,
 			"m_logger", logger);
 
-		extensions.extension_added.connect((info, extension) => {
+		m_extensions.extension_added.connect((info, extension) => {
+			logger.print(LogMessage.DEBUG, "feedserver: plugin loaded %s".printf(info.get_name()));
 			m_plugin = (extension as FeedServerInterface);
 			m_plugin.init();
 			m_plugin.newFeedList.connect(() => { newFeedList(); });
@@ -45,16 +49,47 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_plugin.writeArticlesInChunks.connect((articles, chunksize) => { writeArticlesInChunks(articles, chunksize); });
 		});
 
-		extensions.extension_removed.connect((info, extension) => {
-
+		m_extensions.extension_removed.connect((info, extension) => {
+			logger.print(LogMessage.DEBUG, "feedserver: plugin removed %s".printf(info.get_name()));
 		});
 
-		var plugin = engine.get_plugin_info(plug_name);
+		m_engine.load_plugin.connect((info) => {
+			logger.print(LogMessage.DEBUG, "feedserver: engine load %s".printf(info.get_name()));
+		});
+
+		m_engine.unload_plugin.connect((info) => {
+			logger.print(LogMessage.DEBUG, "feedserver: engine unload %s".printf(info.get_name()));
+		});
+
+		loadPlugin(plug_name);
+	}
+
+	public bool unloadPlugin()
+	{
+		logger.print(LogMessage.DEBUG, "feedserver: unload plugin %s".printf(m_plugName));
+		if(m_pluginLoaded)
+		{
+			var plugin = m_engine.get_plugin_info(m_plugName);
+			return m_engine.try_unload_plugin(plugin);
+		}
+		return false;
+	}
+
+	public bool loadPlugin(string plugName)
+	{
+		logger.print(LogMessage.DEBUG, "feedserver: load plugin \"%s\"".printf(plugName));
+		m_plugName = plugName;
+		var plugin = m_engine.get_plugin_info(plugName);
 
 		if(plugin != null)
-			m_pluginLoaded = engine.try_load_plugin(plugin);
+			m_pluginLoaded = m_engine.try_load_plugin(plugin);
 		else
 			m_pluginLoaded = false;
+
+		if(!m_pluginLoaded)
+			logger.print(LogMessage.ERROR, "feedserver: couldn't load plugin %s".printf(m_plugName));
+
+		return m_pluginLoaded;
 	}
 
 	public bool pluginLoaded()
@@ -509,6 +544,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return null;
 
+		logger.print(LogMessage.DEBUG, "feedserver: symbolicIcon");
+
 		return m_plugin.symbolicIcon();
 	}
 
@@ -559,7 +596,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		return m_plugin.supportFeedManipulation();
 	}
-	
+
 	public bool supportMultiLevelCategories()
 	{
 		if(!m_pluginLoaded)

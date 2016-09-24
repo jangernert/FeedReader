@@ -1,0 +1,32 @@
+[
+    {
+        "url": "http://planet.gnome.org/atom.xml",
+        "name": "Planet GNOME",
+        "description": "bla bla bla",
+        "category": "Free Software"
+    },
+    {
+        "url": "http://rss.golem.de/rss.php?feed=ATOM1.0",
+        "name": "Golem.de",
+        "description": "bla bla bla",
+        "category": "General IT"
+    },
+    {
+        "url": "http://rss.sueddeutsche.de/rss/Topthemen",
+        "name": "Sueddeutsche Zeitung",
+        "description": "bla bla bla",
+        "category": "News"
+    },
+    {
+        "url": "http://planetkde.org/rss20.xml",
+        "name": "Planet KDE",
+        "description": "bla bla bla",
+        "category": "Free Software"
+    },
+    {
+    	"url": "http://www.phoronix.com/rss.php",
+    	"name": "Phoronix",
+        "description": "bla bla bla",
+    	"category": "Free Software"
+    }
+]

@@ -95,6 +95,7 @@ namespace FeedReader {
 
 		public string? symbolicIcon()
 		{
+			logger.print(LogMessage.DEBUG, "daemon: symbolicIcon");
 			return server.symbolicIcon();
 		}
 
@@ -132,7 +133,8 @@ namespace FeedReader {
 			}
 
 			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time*60, () => {
-				if(!settings_state.get_boolean("currently-updating"))
+				if(!settings_state.get_boolean("currently-updating")
+				&& server.pluginLoaded())
 				{
 			   		logger.print(LogMessage.DEBUG, "daemon: Timeout!");
 					startSync();
@@ -256,7 +258,13 @@ namespace FeedReader {
 		{
 			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
 
-			server = new FeedServer(plugName);
+			if(server == null)
+				server = new FeedServer(plugName);
+			else
+			{
+				server.unloadPlugin();
+				server.loadPlugin(plugName);
+			}
 
 			if(!server.pluginLoaded())
 			{
@@ -686,7 +694,7 @@ namespace FeedReader {
 			});
 		}
 
-		public void addFeed(string feedURL, string cat, bool isID)
+		public void addFeed(string feedURL, string cat, bool isID, bool asynchron = true)
 		{
 			string catID = null;
 			string newCatName = null;
@@ -696,12 +704,19 @@ namespace FeedReader {
 			else
 				newCatName = cat;
 
-			asyncPayload pl = () => { server.addFeed(feedURL, catID, newCatName); };
-			callAsync.begin((owned)pl, (obj, res) => {
-				callAsync.end(res);
-				feedAdded();
-				startSync();
-			});
+			if(asynchron)
+			{
+				asyncPayload pl = () => { server.addFeed(feedURL, catID, newCatName); };
+				callAsync.begin((owned)pl, (obj, res) => {
+					callAsync.end(res);
+					feedAdded();
+					startSync();
+				});
+			}
+			else
+			{
+				server.addFeed(feedURL, catID, newCatName);
+			}
 		}
 
 		public void removeFeed(string feedID)

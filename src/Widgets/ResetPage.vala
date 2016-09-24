@@ -72,20 +72,23 @@ public class FeedReader.ResetPage : Gtk.Bin {
 
 	private void resetAllData()
 	{
-		m_reset = true;
-		m_newAccountButton.remove(m_deleteLabel);
-		m_newAccountButton.add(m_waitingBox);
-		m_waitingBox.show_all();
-		m_spinner.start();
-		m_newAccountButton.set_sensitive(false);
-
-		while(settings_state.get_boolean("currently-updating"))
+		if(settings_state.get_boolean("currently-updating"))
 		{
-			Gtk.main_iteration();
-		}
+			m_reset = true;
+			m_newAccountButton.remove(m_deleteLabel);
+			m_newAccountButton.add(m_waitingBox);
+			m_waitingBox.show_all();
+			m_spinner.start();
+			m_newAccountButton.set_sensitive(false);
 
-		if(!m_reset)
-			return;
+			while(settings_state.get_boolean("currently-updating"))
+			{
+				Gtk.main_iteration();
+			}
+
+			if(!m_reset)
+				return;
+		}
 
 		// set "currently-updating" ourself to prevent the daemon to start sync
 		settings_state.set_boolean("currently-updating", true);

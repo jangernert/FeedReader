@@ -26,8 +26,6 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 	private OwncloudNewsUtils m_utils;
 	private bool m_need_htaccess = false;
 
-	public Gtk.Stack m_stack { get; construct set; }
-	public Gtk.ListStore m_listStore { get; construct set; }
 	public Logger m_logger { get; construct set; }
 	public string m_installPrefix { get; construct set; }
 
@@ -35,7 +33,52 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 	{
 		logger = m_logger;
 		m_utils = new OwncloudNewsUtils();
+	}
 
+	public string getID()
+	{
+		return "owncloud";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-owncloud";
+	}
+
+	public string serviceName()
+	{
+		return "ownCloud News";
+	}
+
+	public void writeData()
+	{
+		m_utils.setURL(m_urlEntry.get_text());
+		m_utils.setUser(m_userEntry.get_text());
+		m_utils.setPassword(m_passwordEntry.get_text());
+		if(m_need_htaccess)
+		{
+			m_utils.setHtaccessUser(m_AuthUserEntry.get_text());
+			m_utils.setHtAccessPassword(m_AuthPasswordEntry.get_text());
+		}
+	}
+
+	public void poastLoginAction()
+	{
+		return;
+	}
+
+	public void showHtAccess()
+	{
+		m_revealer.set_reveal_child(true);
+	}
+
+	public bool needWebLogin()
+	{
+		return false;
+	}
+
+	public Gtk.Box? getWidget()
+	{
 		var urlLabel = new Gtk.Label(_("OwnCloud URL:"));
 		var userLabel = new Gtk.Label(_("Username:"));
 		var passwordLabel = new Gtk.Label(_("Password:"));
@@ -65,7 +108,7 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var logo = new Gtk.Image.from_file(m_installPrefix + "/share/icons/hicolor/64x64/places/feed-service-owncloud.svg");
+		var logo = new Gtk.Image.from_icon_name("feed-service-owncloud", Gtk.IconSize.MENU);
 
 		grid.attach(urlLabel, 0, 0, 1, 1);
 		grid.attach(m_urlEntry, 1, 0, 1, 1);
@@ -111,43 +154,32 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		m_revealer.add(frame);
 		//---------------------------------------------------------------------
 
+		var loginLabel = new Gtk.Label(_("Please log in to your ownCloud News instance and enjoy using FeedReader"));
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+
+		var loginButton = new Gtk.Button.with_label(_("Login"));
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => { login(); });
+
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.valign = Gtk.Align.CENTER;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(loginLabel, false, false, 10);
 		box.pack_start(logo, false, false, 10);
 		box.pack_start(grid, true, true, 10);
 		box.pack_start(m_revealer, true, true, 10);
-		box.show_all();
+		box.pack_end(loginButton, false, false, 20);
 
-		m_stack.add_named(box, "owncloudUI");
-
-		Gtk.TreeIter iter;
-		m_listStore.append(out iter);
-		m_listStore.set(iter, 0, _("OwnCloud"), 1, "owncloudUI");
 
 		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
 		m_userEntry.set_text(m_utils.getUser());
 		m_passwordEntry.set_text(m_utils.getPasswd());
-	}
 
-	public void writeData()
-	{
-		m_utils.setURL(m_urlEntry.get_text());
-		m_utils.setUser(m_userEntry.get_text());
-		m_utils.setPassword(m_passwordEntry.get_text());
-		if(m_need_htaccess)
-		{
-			m_utils.setHtaccessUser(m_AuthUserEntry.get_text());
-			m_utils.setHtAccessPassword(m_AuthPasswordEntry.get_text());
-		}
-	}
-
-	public void showHtAccess()
-	{
-		m_revealer.set_reveal_child(true);
-	}
-
-	public bool needWebLogin()
-	{
-		return false;
+		return box;
 	}
 
 	public bool extractCode(string redirectURL)

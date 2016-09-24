@@ -51,15 +51,18 @@ target_link_libraries(${NAME} gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
 
 vala_precompile(VALA_C2 ${UITARGET}
     localLoginWidget.vala
+    SuggestedFeedRow.vala
 
 PACKAGES
     libpeas-1.0
     gtk+-3.0
     gee-0.8
+    json-glib-1.0
     libsecret-1
     sqlite3
     libsoup-2.4
     WebKit2-4.0
+    posix
 
 OPTIONS
     --target-glib=2.32
@@ -69,9 +72,11 @@ CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
     ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
     ${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
+    rss-glib/rss-glib-1.0.vapi
 )
 
 add_library(${UINAME} SHARED ${VALA_C2})
+target_link_libraries(${UINAME} gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
 
 
 # ----------------------------------------------------------
@@ -84,6 +89,7 @@ install(TARGETS ${NAME} DESTINATION ${PKGDATADIR}/plugins)
 install(TARGETS ${UINAME} DESTINATION ${PKGDATADIR}/pluginsUI)
 install(FILES ${NAME}.plugin DESTINATION ${PKGDATADIR}/plugins)
 install(FILES ${UINAME}.plugin DESTINATION ${PKGDATADIR}/pluginsUI)
+install(FILES recommendedFeeds.json DESTINATION ${PKGDATADIR})
 install (DIRECTORY icons/hicolor/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)
 install(CODE "execute_process (COMMAND gtk-update-icon-cache -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 

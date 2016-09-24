@@ -80,6 +80,7 @@ vala_precompile(LIBFR test123
     src/dbBase.vala
     src/Utils.vala
     src/QueryBuilder.vala
+    src/ContentGrabber/stringPair.vala
     src/Model/Feed.vala
     src/Model/Category.vala
     src/Model/Article.vala
@@ -156,6 +157,7 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/ImagePopup.vala
     src/Widgets/InAppNotification.vala
     src/Widgets/LoginPage.vala
+    src/Widgets/LoginRow.vala
     src/Widgets/MainWindow.vala
     src/Widgets/MediaPlayer.vala
     src/Widgets/MediaPopover.vala
@@ -178,7 +180,6 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/TagPopoverRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
-    src/ContentGrabber/stringPair.vala
     src/Share/share.vala
     src/Share/ServiceSetup.vala
     src/Share/ShareAccountInterface.vala
@@ -232,7 +233,6 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/Backend/FeedServer.vala
     src/Backend/FeedServerInterface.vala
     src/Backend/OPMLparser.vala
-    src/ContentGrabber/stringPair.vala
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala

@@ -16,19 +16,28 @@
 public interface FeedReader.LoginInterface : GLib.Object {
 
 	public signal void login();
+	public signal void writeFeed(string url, string category);
 
-	public abstract Gtk.Stack m_stack { get; construct set; }
-	public abstract Gtk.ListStore m_listStore { get; construct set; }
 	public abstract Logger m_logger { get; construct set; }
 	public abstract string m_installPrefix { get; construct set; }
 
 	public abstract void init();
+
+	public abstract string getID();
+
+	public abstract Gtk.Box? getWidget();
+
+	public abstract string iconName();
+
+	public abstract string serviceName();
 
 	public abstract bool needWebLogin();
 
 	public abstract void showHtAccess();
 
 	public abstract void writeData();
+
+	public abstract void poastLoginAction();
 
 	public abstract bool extractCode(string redirectURL);
 

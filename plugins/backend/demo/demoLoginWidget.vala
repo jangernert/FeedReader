@@ -6,22 +6,6 @@
 
 public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
-
-	//--------------------------------------------------------------------------------------
-	// The stack with all the login-widgets for the different services.
-	// Add widget and name it just like the plugin itself.
-	//--------------------------------------------------------------------------------------
-	public Gtk.Stack m_stack { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
-	// Model for the dropdown-menu to choose the service.
-	// Add new Gtk.TreeIter with first column as name
-	// and second column as id plugin-name + "UI".
-	//--------------------------------------------------------------------------------------
-	public Gtk.ListStore m_listStore { get; construct set; }
-
-
 	//--------------------------------------------------------------------------------------
 	// Can be used to print messages to the commandline which are also
 	// written to the harddrive.
@@ -50,6 +34,24 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 		// m_listStore.append(out iter);
 		// m_listStore.set(iter, 0, _("Demo Service 123"), 1, "demoUI");
 		//--------------------------------------------------------------------------------------
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// Return the name of the service-icon (non-symbolic).
+	//--------------------------------------------------------------------------------------
+	public string iconName()
+	{
+
+	}
+
+
+	//--------------------------------------------------------------------------------------
+	// Return the name of the service as displayed to the user
+	//--------------------------------------------------------------------------------------
+	public string serviceName()
+	{
+
 	}
 
 

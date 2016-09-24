@@ -13,6 +13,8 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+FeedReader.Logger logger;
+
 public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface {
 
 	public dbDaemon m_dataBase { get; construct set; }
@@ -22,7 +24,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void init()
 	{
-		m_utils = new localUtils(m_logger);
+		m_utils = new localUtils();
+		logger = m_logger;
 	}
 
 
@@ -153,7 +156,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		if(!m_dataBase.isTableEmpty("tags"))
 			tagID = (int.parse(m_dataBase.getMaxID("tags", "tagID")) + 1).to_string();
 
-		m_logger.print(LogMessage.INFO, "createTag: ID = " + tagID);
+		logger.print(LogMessage.INFO, "createTag: ID = " + tagID);
 		return tagID;
 	}
 
@@ -189,8 +192,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			catIDs += "0";
 		}
 
+		string feedID = "feedID1";
 
-		string feedID = (m_dataBase.getHighestFeedID() + 1).to_string();
+		if(!m_dataBase.isTableEmpty("feeds"))
+		{
+			feedID = "feedID%i".printf(int.parse(m_dataBase.getHighestFeedID().substring(6)) + 1);
+		}
+
+		logger.print(LogMessage.INFO, "addFeed: ID = " + feedID);
 		var Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
 
 		var list = new Gee.LinkedList<feed>();
@@ -218,12 +227,22 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public string createCategory(string title, string? parentID)
 	{
-		string catID = "1";
+		string catID = "catID1";
 
 		if(!m_dataBase.isTableEmpty("categories"))
-			catID = (int.parse(m_dataBase.getMaxID("categories", "categorieID")) + 1).to_string();
+		{
+			string? id = m_dataBase.getCategoryID(title);
+			if(id == null)
+			{
+				catID = "catID%i".printf(int.parse(m_dataBase.getMaxID("categories", "categorieID").substring(5)) + 1);
+			}
+			else
+			{
+				catID = id;
+			}
+		}
 
-		m_logger.print(LogMessage.INFO, "createCategory: ID = " + catID);
+		logger.print(LogMessage.INFO, "createCategory: ID = " + catID);
 		return catID;
 	}
 
@@ -298,7 +317,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			Rss.Parser parser = new Rss.Parser();
 			parser.load_from_data(xml, xml.length);
 			var doc = parser.get_document();
-			string locale = doc.encoding;
+			string? locale = null;
+			if(doc.encoding != null
+			&& doc.encoding != "")
+			{
+				locale = doc.encoding;
+			}
 
 			var articles = doc.get_items();
 			foreach(Rss.Item item in articles)
@@ -311,6 +335,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
                 	time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
                 	date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
 				}
+
+				logger.print(LogMessage.INFO, item.title);
+				logger.print(LogMessage.INFO, m_utils.convert(item.title, locale));
 
 				string content = m_utils.convert(item.description, locale);
 
@@ -357,7 +384,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(new_articles.size == 10 || Article.getArticleID() == last)
 				{
 					writeInterfaceState();
-					m_logger.print(LogMessage.DEBUG, "FeedServer: write batch of %i articles to db".printf(new_articles.size));
+					logger.print(LogMessage.DEBUG, "FeedServer: write batch of %i articles to db".printf(new_articles.size));
 					m_dataBase.write_articles(new_articles);
 					updateFeedList();
 					updateArticleList();

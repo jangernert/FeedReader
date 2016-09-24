@@ -131,46 +131,4 @@ public class FeedReader.feedbinUtils : GLib.Object {
 
 		return false;
 	}
-
-	public bool downloadIcon(string feed_id, string feed_url)
-	{
-		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		var path = GLib.File.new_for_path(icon_path);
-		try{path.make_directory_with_parents();}catch(GLib.Error e){}
-		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
-
-		string url = feed_url;
-		if(feed_url.has_prefix("http://"))
-			url.replace("http://", "");
-		else if(feed_url.has_prefix("https://"))
-			url.replace("https://", "");
-
-		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
-		{
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message ("GET", "http://f1.allesedv.com/32/%s".printf(url));
-
-			if(settingsTweaks.get_boolean("do-not-track"))
-				message_dlIcon.request_headers.append("DNT", "1");
-
-			var session = new Soup.Session ();
-			var status = session.send_message(message_dlIcon);
-			if (status == 200)
-			{
-				try{
-					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
-				}
-				catch(GLib.FileError e)
-				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
-				}
-				return true;
-			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
-			return false;
-		}
-		// file already exists
-		return true;
-	}
 }

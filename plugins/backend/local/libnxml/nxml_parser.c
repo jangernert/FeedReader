@@ -102,7 +102,7 @@ __nxml_parse_string (nxml_t * doc, char *buffer, int size)
 
 	  else if (*(buffer + i + 1) == '#')
 	    {
-	      char buf[1024];
+	      char buf[2048];
 	      int k = i;
 	      int last;
 
@@ -118,10 +118,12 @@ __nxml_parse_string (nxml_t * doc, char *buffer, int size)
 	      else
 		last = __nxml_atoi (&buf[1]);
 
-	      if ((last =
-		   __nxml_int_charset (last, (unsigned char *) buf,
-				       doc->encoding)) > 0)
-		__nxml_string_add (ret, buf, last);
+	      if ((last = __nxml_int_charset (last, (unsigned char *) buf, doc->encoding)) > 0)
+	      {
+	      	strncpy(buf, buffer + i, k-i+1);
+		buf[k-i+2] = '\0';
+	      	__nxml_string_add (ret, buf, k-i+1);
+	      }
 	      else
 		__nxml_string_add (ret, buffer + i, 1);
 

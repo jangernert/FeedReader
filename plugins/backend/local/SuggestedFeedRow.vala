@@ -18,13 +18,15 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 	private string m_name;
 	private string m_url;
 	private string m_category;
+	private string m_desc;
 	private Gtk.CheckButton m_check;
 
-	public SuggestedFeedRow(string url, string category, string name)
+	public SuggestedFeedRow(string url, string category, string name, string desc, string lang)
 	{
 		m_name = name;
 		m_url = url;
 		m_category = category;
+		m_desc = desc;
 
 		var iconStack = new Gtk.Stack();
 		iconStack.set_size_request(24, 24);
@@ -40,10 +42,10 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		label.get_style_context().add_class("h3");
 		label.set_alignment(0.0f, 0.5f);
 
-		var catLabel = new Gtk.Label(category);
-		catLabel.opacity = 0.7;
-		catLabel.set_alignment(1.0f, 0.5f);
-		catLabel.get_style_context().add_class("preview");
+		var langLabel = new Gtk.Label(lang);
+		langLabel.opacity = 0.7;
+		langLabel.set_alignment(1.0f, 0.5f);
+		langLabel.get_style_context().add_class("preview");
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		box.margin_top = 5;
@@ -51,11 +53,12 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		box.pack_start(m_check, false, false, 10);
 		box.pack_start(iconStack, false, false, 10);
 		box.pack_start(label, true, true, 10);
-		box.pack_end(catLabel, false, false, 10);
+		box.pack_end(langLabel, false, false, 10);
 		var box2 = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		box2.pack_start(box);
 		box2.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL));
 		this.add(box2);
+		this.set_tooltip_text(m_desc);
 		show_all();
 
 		downloadIcon.begin("/tmp/",m_url, (obj, res) => {

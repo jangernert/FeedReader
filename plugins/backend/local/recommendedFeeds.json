@@ -3,30 +3,56 @@
         "url": "http://planet.gnome.org/atom.xml",
         "name": "Planet GNOME",
         "description": "bla bla bla",
-        "category": "Free Software"
+        "category": "Free Software",
+        "language": "English"
     },
     {
         "url": "http://rss.golem.de/rss.php?feed=ATOM1.0",
         "name": "Golem.de",
         "description": "bla bla bla",
-        "category": "General IT"
+        "category": "General IT",
+        "language": "German"
     },
     {
         "url": "http://rss.sueddeutsche.de/rss/Topthemen",
         "name": "Sueddeutsche Zeitung",
         "description": "bla bla bla",
-        "category": "News"
+        "category": "News",
+        "language": "German"
     },
     {
         "url": "http://planetkde.org/rss20.xml",
         "name": "Planet KDE",
         "description": "bla bla bla",
-        "category": "Free Software"
+        "category": "Free Software",
+        "language": "English"
     },
     {
     	"url": "http://www.phoronix.com/rss.php",
     	"name": "Phoronix",
         "description": "bla bla bla",
-    	"category": "Free Software"
+    	"category": "Free Software",
+        "language": "English"
+    },
+    {
+        "url": "http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+    	"name": "New York Times",
+        "description": "bla bla bla",
+    	"category": "News",
+        "language": "English"
+    },
+    {
+        "url": "http://feeds.bbci.co.uk/news/rss.xml",
+    	"name": "BBC News",
+        "description": "bla bla bla",
+    	"category": "News",
+        "language": "English"
+    },
+    {
+        "url": "http://feed.cnet.com/feed/topics/tech-industry",
+    	"name": "CNET",
+        "description": "bla bla bla",
+    	"category": "General IT",
+        "language": "English"
     }
 ]

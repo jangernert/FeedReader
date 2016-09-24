@@ -83,7 +83,9 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 					new SuggestedFeedRow(
 						object.get_string_member("url"),
 						object.get_string_member("category"),
-						object.get_string_member("name")
+						object.get_string_member("name"),
+						object.get_string_member("description"),
+						object.get_string_member("language")
 						)
 				);
 			}

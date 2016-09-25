@@ -16,7 +16,8 @@
 public class FeedReader.LoginRow : Gtk.ListBoxRow {
 
 	private LoginInterface m_ext;
-	private Gtk.Button m_infoButton;
+	private Gtk.Stack m_infoStack;
+	private bool m_hovered = false;
 
 	public LoginRow(LoginInterface ext)
 	{
@@ -30,17 +31,26 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 		label.set_alignment(0.0f, 0.5f);
 		label.get_style_context().add_class("h3");
 
-		m_infoButton = new Gtk.Button.from_icon_name("fr-backend-info", Gtk.IconSize.LARGE_TOOLBAR);
-		m_infoButton.set_relief(Gtk.ReliefStyle.NONE);
-		m_infoButton.valign = Gtk.Align.CENTER;
-		m_infoButton.no_show_all = true;
+		var infoButton = new Gtk.Button.from_icon_name("fr-backend-info", Gtk.IconSize.LARGE_TOOLBAR);
+		infoButton.set_relief(Gtk.ReliefStyle.NONE);
+		infoButton.set_focus_on_click(false);
+		infoButton.valign = Gtk.Align.CENTER;
+		infoButton.clicked.connect(infoClicked);
+
+		m_infoStack = new Gtk.Stack();
+		m_infoStack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_infoStack.set_transition_duration(50);
+		m_infoStack.valign = Gtk.Align.CENTER;
+		m_infoStack.add_named(new Gtk.Label(""), "empty");
+		m_infoStack.add_named(infoButton, "button");
+		m_infoStack.set_visible_child_name("empty");
 
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 15);
 		box.margin_top = 2;
 		box.margin_bottom = 2;
 		box.pack_start(icon, false, false, 10);
 		box.pack_start(label, true, true, 0);
-		box.pack_end(m_infoButton, false, false, 10);
+		box.pack_end(m_infoStack, false, false, 10);
 		var box2 = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		box2.pack_start(box);
 		box2.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL));
@@ -48,10 +58,8 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 		var eventbox = new Gtk.EventBox();
 		eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		//eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		eventbox.enter_notify_event.connect(rowEnter);
 		eventbox.leave_notify_event.connect(rowLeave);
-		//eventbox.button_press_event.connect(rowClick);
 		eventbox.add(box2);
 
 		this.add(eventbox);
@@ -72,17 +80,37 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 		if(event.detail == Gdk.NotifyType.INFERIOR)
 			return true;
 
-		m_infoButton.show();
+		m_hovered = true;
+		m_infoStack.set_visible_child_name("button");
 		return true;
 	}
 
 	private bool rowLeave(Gdk.EventCrossing event)
 	{
-		if(event.detail == Gdk.NotifyType.INFERIOR)
+		if(event.detail == Gdk.NotifyType.INFERIOR
+		|| event.detail == Gdk.NotifyType.VIRTUAL)
+		{
+			if(event.detail == Gdk.NotifyType.VIRTUAL)
+				m_hovered = false;
 			return true;
+		}
 
-		m_infoButton.hide();
+
+		m_hovered = false;
+		m_infoStack.set_visible_child_name("empty");
 		return true;
 	}
 
+	private void infoClicked()
+	{
+		var pop = new BackendInfoPopover(m_infoStack, m_ext);
+		pop.show_all();
+		pop.closed.connect_after(() => {
+			GLib.Timeout.add(50, () => {
+				if(!m_hovered)
+					m_infoStack.set_visible_child_name("empty");
+				return false;
+			});
+		});
+	}
 }

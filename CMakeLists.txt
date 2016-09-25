@@ -144,6 +144,7 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/ArticleList.vala
     src/Widgets/ArticleRow.vala
     src/Widgets/ArticleView.vala
+    src/Widgets/BackendInfoPopover.vala
     src/Widgets/CategorieRow.vala
     src/Widgets/ColorCircle.vala
     src/Widgets/ColorPopover.vala

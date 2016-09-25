@@ -43,6 +43,10 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_updated = false;
 		m_unread_stack = new Gtk.Stack();
 		m_marked_stack = new Gtk.Stack();
+		m_unread_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_marked_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+		m_unread_stack.set_transition_duration(50);
+		m_marked_stack.set_transition_duration(50);
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 100);

@@ -574,7 +574,8 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 	private bool onExpandLeave(Gdk.EventCrossing event)
 	{
-		if(event.detail != Gdk.NotifyType.VIRTUAL && event.mode != Gdk.CrossingMode.NORMAL)
+		if(event.detail != Gdk.NotifyType.VIRTUAL
+		&& event.mode != Gdk.CrossingMode.NORMAL)
 			return false;
 
 		m_hovered = false;

@@ -54,5 +54,12 @@
         "description": "bla bla bla",
     	"category": "General IT",
         "language": "English"
+    },
+    {
+        "url": "http://feeds.gawker.com/lifehacker/full",
+    	"name": "Lifehacker",
+        "description": "bla bla bla",
+    	"category": "Life & Technology",
+        "language": "English"
     }
 ]

@@ -71,7 +71,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool supportFeedManipulation()
 	{
-		return false;
+		return true;
 	}
 
 	public bool supportMultiLevelCategories()
@@ -170,15 +170,9 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Subscribe to the URL "feedURL"
-	// "catID": the category the feed should be placed into, "null" otherwise
-	// "newCatName": the name of a new category the feed should be put in, "null" otherwise
-	//--------------------------------------------------------------------------------------
 	public string addFeed(string feedURL, string? catID, string? newCatName)
 	{
-		return "";
+		return m_api.editStream("subscribe", null, null, feedURL, null);
 	}
 
 

@@ -52,7 +52,8 @@ set(MODULES
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
 	goa-1.0
-	libpeas-1.0)
+	libpeas-1.0
+	libcurl)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)

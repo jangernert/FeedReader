@@ -324,4 +324,30 @@ public class FeedReader.freshAPI : Object {
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
 	}
 
+	public string editStream(
+							string action,
+							string? streamID = null,
+							string? title = null,
+							string? add = null,
+							string? remove = null
+						)
+	{
+		string path = "reader/api/0/subscription/edit";
+
+		string request = "ac=" + action;
+		if(streamID != null)
+			request += "&s=" + streamID;
+		if(title != null)
+			request += "&t=" + title;
+		if(add != null)
+			request += "&a=" + add;
+		if(remove != null)
+			request += "&r=" + remove;
+
+		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+
+		logger.print(LogMessage.DEBUG, response);
+		return response;
+	}
+
 }

@@ -19,6 +19,8 @@
 - libgstreamer1.0-dev
 - libgstreamer-plugins-base1.0-dev (gstreamer-pbutils-1.0)
 - libgoa-1.0-dev (>= 3.20)
+- libcurl-dev
+- libpeas-dev
 
 
 ## Compiling
@@ -27,7 +29,7 @@
 git clone https://github.com/jangernert/FeedReader
 cd ./FeedReader
 mkdir build
-cd build 
+cd build
 cmake ..
 make
 sudo make install

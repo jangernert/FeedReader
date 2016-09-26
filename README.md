@@ -13,7 +13,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 
 
 
-### Dependencies 
+### Dependencies
 - build-essential
 - cmake
 - vala (>=0.26)
@@ -33,9 +33,11 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - libgstreamer1.0-dev
 - libgstreamer-plugins-base1.0-dev (gstreamer-pbutils-1.0)
 - libgoa-1.0-dev (>= 3.20)
+- libcurl-dev
+- libpeas-dev
 
 
-### How to install 
+### How to install
   - elementary OS / Ubuntu :<br/>
     <pre>
     sudo add-apt-repository ppa:eviltwin1/feedreader-stable
@@ -54,13 +56,13 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
     <pre>
       sudo eopkg install feedreader
     </pre>
-    
+
 ### How to build the latest version
 ```
 git clone https://github.com/jangernert/FeedReader
 cd ./FeedReader
 mkdir build
-cd ./build 
+cd ./build
 cmake ..
 make
 sudo make install

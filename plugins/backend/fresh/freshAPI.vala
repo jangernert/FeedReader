@@ -332,7 +332,7 @@ public class FeedReader.freshAPI : Object {
 		string path = "reader/api/0/mark-all-as-read";
 
 		string request = "T=" + m_connection.getToken();
-		request += "&s=" + streamID;
+		request += "&s=" + GLib.Uri.escape_string(streamID);
 
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
 		logger.print(LogMessage.DEBUG, path + " " + request);
@@ -352,13 +352,13 @@ public class FeedReader.freshAPI : Object {
 		string request = "T=" + m_connection.getToken();
 		request += "&ac=" + action;
 		if(streamID != null)
-			request += "&s=" + streamID;
+			request += "&s=" + GLib.Uri.escape_string(streamID);
 		if(title != null)
-			request += "&t=" + title;
+			request += "&t=" + GLib.Uri.escape_string(title);
 		if(add != null)
-			request += "&a=" + add;
+			request += "&a=" + GLib.Uri.escape_string(add);
 		if(remove != null)
-			request += "&r=" + remove;
+			request += "&r=" + GLib.Uri.escape_string(remove);
 
 		logger.print(LogMessage.DEBUG, path + " " + request);
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
@@ -368,7 +368,7 @@ public class FeedReader.freshAPI : Object {
 
 	public string composeTagID(string title)
 	{
-		return "user/-/label/%s".printf(title);
+		return GLib.Uri.escape_string("user/-/label/%s".printf(title));
 	}
 
 	public void renameTag(string tagID, string title)

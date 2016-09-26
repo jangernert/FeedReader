@@ -178,6 +178,8 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		else if(newCatName != null)
 			cat = newCatName;
 
+		cat = m_api.composeTagID(cat);
+		
 		return m_api.editStream("subscribe", "feed/" + feedURL, null, cat, null);
 	}
 

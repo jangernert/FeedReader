@@ -443,7 +443,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 				break;
 		}
 
-		message_string += "&s=" + feedID;
+		message_string += "&s=" + GLib.Uri.escape_string(feedID);
 
 		if(title != null)
 			message_string += "&t=" + title;

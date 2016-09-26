@@ -350,4 +350,26 @@ public class FeedReader.freshAPI : Object {
 		return response;
 	}
 
+	public string composeTagID(string title)
+	{
+		return "user/-/label/%s".printf(title);
+	}
+
+	public void renameTag(string tagID, string title)
+	{
+		string path = "reader/api/0/rename-tag";
+		var request = "s=" + tagID;
+		request += "&dest=" + composeTagID(title);
+		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+		logger.print(LogMessage.DEBUG, response);
+	}
+
+	public void deleteTag(string tagID)
+	{
+		string path = "reader/api/0/disable-tag";
+		var request = "s=" + tagID;
+		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+		logger.print(LogMessage.DEBUG, response);
+	}
+
 }

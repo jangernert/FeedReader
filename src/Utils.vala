@@ -487,6 +487,8 @@ public class FeedReader.Utils : GLib.Object {
 				return false;
 			}
 
+			logger.print(LogMessage.DEBUG, "Ping successful");
+
 			return true;
 	    }
 		catch (Error e)

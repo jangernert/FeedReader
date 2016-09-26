@@ -172,12 +172,18 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public string addFeed(string feedURL, string? catID, string? newCatName)
 	{
-		return m_api.editStream("subscribe", null, null, feedURL, null);
+		string? cat = null;
+		if(catID != null)
+			cat = catID;
+		else if(newCatName != null)
+			cat = newCatName;
+
+		return m_api.editStream("subscribe", "feed/" + feedURL, null, cat, null);
 	}
 
 	public void removeFeed(string feedID)
 	{
-		m_api.editStream("unsubscribe", null, null, null, feedID);
+		m_api.editStream("unsubscribe", feedID, null, null, null);
 	}
 
 	public void renameFeed(string feedID, string title)

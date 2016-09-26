@@ -205,7 +205,8 @@ public class FeedReader.freshAPI : Object {
 		request += "&n=" + count.to_string();
 		request += "&client=FeedReader";
 		request += "&ck=" + now.to_unix().to_string();
-		request += "&c=" + checkpoint;
+		if(checkpoint != null)
+			request += "&c=" + checkpoint;
 
 		logger.print(LogMessage.DEBUG, "getStreamContents: %s".printf(request));
 
@@ -256,13 +257,23 @@ public class FeedReader.freshAPI : Object {
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
+					if(attachment.has_member("type"))
 					{
-						mediaString = mediaString + attachment.get_string_member("href") + ",";
+						if(attachment.get_string_member("type").contains("audio")
+						|| attachment.get_string_member("type").contains("video"))
+						{
+							mediaString = mediaString + attachment.get_string_member("href") + ",";
+						}
 					}
 				}
 			}
+
+			string? author = null;
+			if(object.has_member("author"))
+			{
+				author = (object.get_string_member("author") == "") ? null : object.get_string_member("author");
+			}
+
 
 			articles.add(new article(
 									id,
@@ -273,7 +284,7 @@ public class FeedReader.freshAPI : Object {
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
 									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+									author,
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									"",
@@ -312,6 +323,8 @@ public class FeedReader.freshAPI : Object {
 		}
 
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+		logger.print(LogMessage.DEBUG, path + " " + request);
+		logger.print(LogMessage.DEBUG, response);
 	}
 
 	public void markAllAsRead(string streamID)
@@ -322,6 +335,8 @@ public class FeedReader.freshAPI : Object {
 		request += "&s=" + streamID;
 
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+		logger.print(LogMessage.DEBUG, path + " " + request);
+		logger.print(LogMessage.DEBUG, response);
 	}
 
 	public string editStream(
@@ -334,7 +349,8 @@ public class FeedReader.freshAPI : Object {
 	{
 		string path = "reader/api/0/subscription/edit";
 
-		string request = "ac=" + action;
+		string request = "T=" + m_connection.getToken();
+		request += "&ac=" + action;
 		if(streamID != null)
 			request += "&s=" + streamID;
 		if(title != null)
@@ -344,8 +360,8 @@ public class FeedReader.freshAPI : Object {
 		if(remove != null)
 			request += "&r=" + remove;
 
+		logger.print(LogMessage.DEBUG, path + " " + request);
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
-
 		logger.print(LogMessage.DEBUG, response);
 		return response;
 	}
@@ -358,8 +374,10 @@ public class FeedReader.freshAPI : Object {
 	public void renameTag(string tagID, string title)
 	{
 		string path = "reader/api/0/rename-tag";
-		var request = "s=" + tagID;
+		string request = "T=" + m_connection.getToken();
+		request += "&s=" + tagID;
 		request += "&dest=" + composeTagID(title);
+		logger.print(LogMessage.DEBUG, path + " " + request);
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
 		logger.print(LogMessage.DEBUG, response);
 	}
@@ -367,7 +385,9 @@ public class FeedReader.freshAPI : Object {
 	public void deleteTag(string tagID)
 	{
 		string path = "reader/api/0/disable-tag";
-		var request = "s=" + tagID;
+		string request = "T=" + m_connection.getToken();
+		request += "&s=" + tagID;
+		logger.print(LogMessage.DEBUG, path + " " + request);
 		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
 		logger.print(LogMessage.DEBUG, response);
 	}

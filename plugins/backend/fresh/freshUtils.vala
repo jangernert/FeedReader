@@ -25,7 +25,8 @@ public class FeedReader.freshUtils : GLib.Object {
 	public string getURL()
 	{
 		string tmp_url = m_settings.get_string("url");
-		if(tmp_url != ""){
+		if(tmp_url != "")
+		{
 			if(!tmp_url.has_suffix("/"))
 				tmp_url = tmp_url + "/";
 

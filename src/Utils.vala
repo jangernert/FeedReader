@@ -424,6 +424,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static bool ping(string link)
 	{
+		logger.print(LogMessage.DEBUG, "Ping:" + link);
 		string url = link;
 
 		if(url.has_prefix("https://"))
@@ -431,8 +432,19 @@ public class FeedReader.Utils : GLib.Object {
 		else if(url.has_prefix("http://"))
 			url = url.substring("http://".length);
 
+		if(url.has_prefix("www."))
+			url = url.substring("www.".length);
+
 		if(url.has_suffix("/"))
 			url = url.substring(0, url.length-1);
+
+		int pos = url.index_of_char('/');
+		if(pos != -1)
+		{
+			url = url.substring(0, pos);
+		}
+
+		logger.print(LogMessage.DEBUG, "Ping: modified URL " + url);
 
 	    try
 		{

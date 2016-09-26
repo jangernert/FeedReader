@@ -10,7 +10,7 @@
         "url": "http://rss.golem.de/rss.php?feed=ATOM1.0",
         "name": "Golem.de",
         "description": "Ständig aktuelle IT-News für Profis und Videos aus Politik, Wirtschaft und Wissenschaft über Hardware, Software, Telekommunikation, Games",
-        "category": "General IT",
+        "category": "Technology",
         "language": "German"
     },
     {
@@ -52,14 +52,14 @@
         "url": "http://feed.cnet.com/feed/topics/tech-industry",
     	"name": "CNET",
         "description": "CNET is the world's leader in tech product reviews, news, prices, videos, forums, how-tos and more.",
-    	"category": "General IT",
+    	"category": "Technology",
         "language": "English"
     },
     {
         "url": "http://feeds.gawker.com/lifehacker/full",
     	"name": "Lifehacker",
         "description": "Lifehacker is a weblog about life hacks and software and covers a wide range of topics including: Microsoft Windows, Mac, Linux programs, iOS and Android, as well as general life tips and tricks.",
-    	"category": "Life & Technology",
+    	"category": "Technology",
         "language": "English"
     }
 ]

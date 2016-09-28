@@ -56,6 +56,12 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
     <pre>
       sudo eopkg install feedreader
     </pre>
+  - openSUSE Tumbleweed : <br/>
+    <pre>
+      sudo zypper ar -r http://download.opensuse.org/repositories/home:/scujas/openSUSE_Tumbleweed/home:scujas.repo
+      sudo zypper refresh
+      sudo zypper install feedreader
+    </pre>
 
 ### How to build the latest version
 ```

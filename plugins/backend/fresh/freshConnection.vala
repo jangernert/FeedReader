@@ -28,10 +28,12 @@ public class FeedReader.freshConnection {
 	{
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
-		string message_string = "Email=" + m_utils.getUser()
-								+ "&Passwd=" + m_utils.getPasswd();
 
-		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+		var msg = new freshMessage();
+		msg.add("Email", m_utils.getUser());
+		msg.add("Passwd", m_utils.getPasswd());
+
+		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, msg.get().data);
 		session.send_message(message);
 
 		if((string)message.response_body.flatten().data == null
@@ -95,5 +97,31 @@ public class FeedReader.freshConnection {
 
 		session.send_message(message);
 		return (string)message.response_body.data;
+	}
+}
+
+
+public class FeedReader.freshMessage {
+
+	string request = "";
+
+	public freshMessage()
+	{
+
+	}
+
+	public void add(string parameter, string val)
+	{
+		if(request != "")
+			request += "&";
+
+		request += parameter;
+		request += "=";
+		request += GLib.Uri.escape_string(val);
+	}
+
+	public string get()
+	{
+		return request;
 	}
 }

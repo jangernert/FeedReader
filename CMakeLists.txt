@@ -39,7 +39,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop.in
 
 
 set(MODULES 
-	gtk+-3.0
+	gtk+-3.0>=3.20
 	json-glib-1.0
 	gee-0.8
 	libsoup-2.4
@@ -52,7 +52,8 @@ set(MODULES
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
 	goa-1.0
-	libpeas-1.0)
+	libpeas-1.0
+	libcurl)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)

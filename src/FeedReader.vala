@@ -37,11 +37,6 @@ namespace FeedReader {
 
 		protected override void startup()
 		{
-			settings_general = new GLib.Settings("org.gnome.feedreader");
-			settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
-			settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-			settings_keybindings = new GLib.Settings("org.gnome.feedreader.keybindings");
-
 			logger = new Logger("ui");
 			share = new Share();
 
@@ -136,6 +131,12 @@ namespace FeedReader {
 
 
 	public static int main (string[] args) {
+
+		settings_general = new GLib.Settings("org.gnome.feedreader");
+		settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
+		settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+		settings_keybindings = new GLib.Settings("org.gnome.feedreader.keybindings");
+
 		try {
 			var opt_context = new OptionContext();
 			opt_context.set_help_enabled(true);
@@ -165,6 +166,13 @@ namespace FeedReader {
 			return 0;
 		}
 
+		if(pingURL != null)
+		{
+			logger = new Logger("ui");
+			Utils.ping(pingURL);
+			return 0;
+		}
+
 		if(test)
 		{
 			UtilsUI.testGOA();
@@ -182,6 +190,7 @@ namespace FeedReader {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
+		{ "ping", 0, 0, OptionArg.STRING, ref pingURL, "test the ping function with given URL", "URL" },
 		{ "test", 0, 0, OptionArg.NONE, ref test, "test", null },
 		{ null }
 	};
@@ -189,6 +198,7 @@ namespace FeedReader {
 	private static bool version = false;
 	private static bool about = false;
 	private static string? media = null;
+	private static string? pingURL = null;
 	private static bool test = false;
 
 	static void show_about(string[] args)

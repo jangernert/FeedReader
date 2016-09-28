@@ -61,5 +61,12 @@
         "description": "Lifehacker is a weblog about life hacks and software and covers a wide range of topics including: Microsoft Windows, Mac, Linux programs, iOS and Android, as well as general life tips and tricks.",
     	"category": "Technology",
         "language": "English"
+    },
+    {
+        "url": "http://feeds.arstechnica.com/arstechnica/index?format=xml",
+    	"name": "Ars Technica",
+        "description": "Ars Technica is a weblog for technology news, tech policy analysis, breakdowns of the latest scientific advancements, gadget reviews, software, hardware, and nearly everything else found in between layers of silicon.",
+    	"category": "Technology",
+        "language": "English"
     }
 ]

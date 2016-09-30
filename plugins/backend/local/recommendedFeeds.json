@@ -7,9 +7,31 @@
         "language": "English"
     },
     {
+        "url": "http://blog.elementary.io/rss",
+        "name": "elementary OS Blog",
+        "description": "The latest updates from the makers of the fast and open replacement for Windows and OS X.",
+        "category": "Free Software",
+        "language": "English"
+    },
+    {
+        "url": "https://feeds.feedburner.com/d0od",
+        "name": "OMG! Ubuntu!",
+        "description": "Ubuntu/Linux News",
+        "category": "Free Software",
+        "language": "English"
+    },
+    
+    {
         "url": "http://rss.golem.de/rss.php?feed=ATOM1.0",
         "name": "Golem.de",
         "description": "Ständig aktuelle IT-News für Profis und Videos aus Politik, Wirtschaft und Wissenschaft über Hardware, Software, Telekommunikation, Games",
+        "category": "Technology",
+        "language": "German"
+    },
+    {
+        "url": "http://www.heise.de/newsticker/heise-atom.xml",
+        "name": "Heise.de",
+        "description": "News und Foren zu Computer, IT, Wissenschaft, Medien und Politik. Preisvergleich von Hardware und Software sowie Downloads bei Heise Medien.",
         "category": "Technology",
         "language": "German"
     },

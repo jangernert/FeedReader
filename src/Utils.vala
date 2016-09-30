@@ -439,31 +439,20 @@ public class FeedReader.Utils : GLib.Object {
 	public static bool ping(string link)
 	{
 		logger.print(LogMessage.DEBUG, "Ping: " + link);
-		string url = link;
+		var uri = new Soup.URI(link);
+		string host = uri.get_host();
 
-		if(url.has_prefix("https://"))
-			url = url.substring("https://".length, -1);
-		else if(url.has_prefix("http://"))
-			url = url.substring("http://".length, -1);
-
-		if(url.has_prefix("www."))
-			url = url.substring("www.".length, -1);
-
-		int pos = url.index_of_char('/');
-		if(pos != -1)
-			url = url.substring(0, pos);
-
-		logger.print(LogMessage.DEBUG, "Ping: modified URL " + url);
+		logger.print(LogMessage.DEBUG, "Ping: modified URL " + host);
 
 	    try
 		{
 	        var resolver = GLib.Resolver.get_default();
-	        var addresses = resolver.lookup_by_name(url);
+	        var addresses = resolver.lookup_by_name(host);
 
-			// if can't resolve url to ip
+			// if can't resolve host to ip
 			if(addresses == null)
 			{
-				logger.print(LogMessage.ERROR, "Ping failed: can't resolve url " + url);
+				logger.print(LogMessage.ERROR, "Ping failed: can't resolve url " + host);
 				return false;
 			}
 
@@ -488,7 +477,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 
 
-	        var message = @"GET / HTTP/1.1\r\nHost: $url\r\n\r\n";
+	        var message = @"GET / HTTP/1.1\r\nHost: $host\r\n\r\n";
 	        ssize_t bytesWritten = conn.output_stream.write(message.data);
 
 			// if can't write message
@@ -514,7 +503,7 @@ public class FeedReader.Utils : GLib.Object {
 	    }
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "Ping failed: %s".printf(url));
+			logger.print(LogMessage.ERROR, "Ping failed: %s".printf(host));
 			logger.print(LogMessage.ERROR, e.message);
 	    }
 

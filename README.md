@@ -58,10 +58,14 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
     </pre>
   - openSUSE Tumbleweed : <br/>
     <pre>
-      sudo zypper ar -r http://download.opensuse.org/repositories/home:/scujas/openSUSE_Tumbleweed/home:scujas.repo
+      sudo zypper addrepo http://download.opensuse.org/repositories/home:scujas:feedreader/openSUSE_Tumbleweed/home:scujas:feedreader.repo
       sudo zypper refresh
       sudo zypper install feedreader
     </pre>
+  - openSUSE using 1-Click-Install
+   - [openSUSE Tumbleweed](http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Tumbleweed/feedreader.ymp)
+   - [openSUSE Leap 42.1](http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Leap_42.1/feedreader.ymp)
+   - [openSUSE Leap 42.2](http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Leap_42.2/feedreader.ymp)
 
 ### How to build the latest version
 ```

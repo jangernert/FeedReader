@@ -60,8 +60,6 @@ public class FeedReader.freshConnection {
 			m_utils.setToken(token);
 			return LoginResponse.SUCCESS;
 		}
-
-		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public string getToken()
@@ -80,7 +78,7 @@ public class FeedReader.freshConnection {
 		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 		message.request_headers.append("Content-Type", type);
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;

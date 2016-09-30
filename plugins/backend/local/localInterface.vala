@@ -315,7 +315,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 			// parse
 			Rss.Parser parser = new Rss.Parser();
-			parser.load_from_data(xml, xml.length);
+			try
+			{
+				parser.load_from_data(xml, xml.length);
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "localInterface.getArticles: %s".printf(e.message));
+			}
 			var doc = parser.get_document();
 			string? locale = null;
 			if(doc.encoding != null

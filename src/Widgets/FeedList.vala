@@ -471,14 +471,31 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		int maxCatLevel = dataBase.getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
-		bool supportTags = feedDaemon_interface.supportTags();
+		bool supportTags = false;
+		bool supportCategories = true;
+		bool supportMultiLevelCategories = false;
+		string uncategorizedID = "";
 
-		if((supportTags && !dataBase.isTableEmpty("tags")) || masterCat)
+		try
+		{
+			supportTags = feedDaemon_interface.supportTags();
+			supportCategories = feedDaemon_interface.supportCategories();
+			uncategorizedID = feedDaemon_interface.uncategorizedID();
+			supportMultiLevelCategories = feedDaemon_interface.supportMultiLevelCategories();
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "FeedList.createCategories: %s".printf(e.message));
+		}
+
+		if((supportTags
+		&& !dataBase.isTableEmpty("tags"))
+		|| masterCat)
 		{
 			addMasterCategory(length, _("Categories"));
 			addTagCategory(length);
 		}
-		else if(!feedDaemon_interface.supportCategories())
+		else if(!supportCategories)
 		{
 			addMasterCategory(length, _("Feeds"));
 			m_TagsDisplayed = false;
@@ -498,7 +515,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				categories.insert(
 					0,
 					new category(
-						feedDaemon_interface.uncategorizedID(),
+						uncategorizedID,
 						_("Uncategorized"),
 						(int)dataBase.get_unread_uncategorized(),
 						(int)(categories.size + 10),
@@ -551,7 +568,7 @@ public class FeedReader.feedList : Gtk.Stack {
 						categorierow.deselectRow.connect(deselectRow);
 						categorierow.drag_begin.connect((context) => {
 							onDragBegin(context);
-							if(feedDaemon_interface.supportMultiLevelCategories())
+							if(supportMultiLevelCategories)
 								showNewCategory();
 						});
 						categorierow.drag_failed.connect(onDragEnd);
@@ -569,7 +586,6 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		if(!settings_general.get_boolean("only-feeds"))
 		{
-			var FeedChildList = m_list.get_children();
 			var tags = dataBase.read_tags();
 			foreach(var Tag in tags)
 			{
@@ -861,32 +877,39 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		logger.print(LogMessage.DEBUG, "FeedList: mark all articles as read");
 
-		if(type == FeedListType.FEED)
+		try
 		{
-			if(id == FeedID.ALL.to_string())
+			if(type == FeedListType.FEED)
 			{
-				feedDaemon_interface.markAllItemsRead();
-			}
-			else
-			{
-				feedDaemon_interface.markFeedAsRead(id, false);
-			}
-		}
-		else if(type == FeedListType.CATEGORY)
-		{
-			if(id == "")
-			{
-				var feeds = dataBase.read_feeds_without_cat();
-				foreach(feed Feed in feeds)
+				if(id == FeedID.ALL.to_string())
 				{
-					feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
-					logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+					feedDaemon_interface.markAllItemsRead();
+				}
+				else
+				{
+					feedDaemon_interface.markFeedAsRead(id, false);
 				}
 			}
-			else
+			else if(type == FeedListType.CATEGORY)
 			{
-				feedDaemon_interface.markFeedAsRead(id, true);
+				if(id == "")
+				{
+					var feeds = dataBase.read_feeds_without_cat();
+					foreach(feed Feed in feeds)
+					{
+						feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
+						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+					}
+				}
+				else
+				{
+					feedDaemon_interface.markFeedAsRead(id, true);
+				}
 			}
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "FeedList.markSelectedRead: %s".printf(e.message));
 		}
 	}
 
@@ -1075,23 +1098,30 @@ public class FeedReader.feedList : Gtk.Stack {
 		int level = 1;
 		int pos = -1;
 
-		if(feedDaemon_interface.supportTags())
+		try
 		{
-			var FeedChildList = m_list.get_children();
-			foreach(Gtk.Widget row in FeedChildList)
+			if(feedDaemon_interface.supportTags())
 			{
-				pos++;
-				var tmpCat = row as categorieRow;
-				if(tmpCat != null && tmpCat.getID() == CategoryID.TAGS.to_string())
+				var FeedChildList = m_list.get_children();
+				foreach(Gtk.Widget row in FeedChildList)
 				{
-					level = 2;
-					break;
+					pos++;
+					var tmpCat = row as categorieRow;
+					if(tmpCat != null && tmpCat.getID() == CategoryID.TAGS.to_string())
+					{
+						level = 2;
+						break;
+					}
 				}
 			}
+			else
+			{
+				level = 1;
+			}
 		}
-		else
+		catch(GLib.Error e)
 		{
-			level = 1;
+			logger.print(LogMessage.ERROR, "FeedList.showNewCategory: %s".printf(e.message));
 		}
 
 		var newRow = new categorieRow(_("New Category"), CategoryID.NEW.to_string(), 99, 0, CategoryID.MASTER.to_string(), level, false);

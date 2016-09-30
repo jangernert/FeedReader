@@ -37,7 +37,15 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		string id = Share.generateNewID();
 		string requestToken = m_api.getRequestToken();
 		string url = m_api.getURL(requestToken);
-		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+		try
+		{
+			Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+		}
+		catch(GLib.Error e)
+		{
+			
+		}
+
 
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);

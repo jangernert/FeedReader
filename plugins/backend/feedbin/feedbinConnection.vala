@@ -39,7 +39,7 @@ public class FeedReader.feedbinConnection {
 
 		message.request_headers.append("Content-Type", "application/json; charset=utf-8");
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;
@@ -58,7 +58,7 @@ public class FeedReader.feedbinConnection {
 
 		message.request_headers.append("Content-Type", "application/json; charset=utf-8");
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;

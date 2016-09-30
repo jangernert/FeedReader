@@ -60,30 +60,37 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
 
     public void refresh()
     {
-        if(!feedDaemon_interface.isOnline())
-            return;
-
-        string? service_icon = feedDaemon_interface.symbolicIcon();
-        string? user_name = feedDaemon_interface.accountName();
-        string? server = feedDaemon_interface.getServerURL();
-
-        if(this.is_visible())
+        try
         {
-            if(user_name == null || service_icon == null)
+            if(!feedDaemon_interface.isOnline())
+                return;
+
+            string? service_icon = feedDaemon_interface.symbolicIcon();
+            string? user_name = feedDaemon_interface.accountName();
+            string? server = feedDaemon_interface.getServerURL();
+
+            if(this.is_visible())
             {
-                m_spinner.start();
-                m_stack.set_visible_child_name("spinner");
-            }
-            else
-            {
-                m_logo.set_from_icon_name(service_icon, Gtk.IconSize.INVALID);
-                m_logo.get_style_context().add_class("fr-sidebar-symbolic");
-                m_label.set_label(user_name);
-                m_stack.set_visible_child_name("info");
-                if(server != null)
-                    this.set_tooltip_text(Utils.shortenURL(server));
+                if(user_name == null || service_icon == null)
+                {
+                    m_spinner.start();
+                    m_stack.set_visible_child_name("spinner");
+                }
+                else
+                {
+                    m_logo.set_from_icon_name(service_icon, Gtk.IconSize.INVALID);
+                    m_logo.get_style_context().add_class("fr-sidebar-symbolic");
+                    m_label.set_label(user_name);
+                    m_stack.set_visible_child_name("info");
+                    if(server != null)
+                        this.set_tooltip_text(Utils.shortenURL(server));
+                }
             }
         }
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ServiceInfo.refresh: %s".printf(e.message));
+		}
 
         show_all();
     }

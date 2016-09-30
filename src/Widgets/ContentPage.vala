@@ -125,7 +125,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 			if(m_article_view.getCurrentArticle() != row.getID())
 			{
-				m_article_view.fillContent(row.getID());
+				m_article_view.fillContent.begin(row.getID(), (obj, res) => {
+					m_article_view.fillContent.end(res);
+				});
 			}
 		});
 
@@ -211,7 +213,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void updateArticleList()
 	{
-		m_articleList.updateArticleList();
+		m_articleList.updateArticleList.begin(true, (obj,res) => {
+			m_articleList.updateArticleList.end(res);
+		});
 	}
 
 	public void setArticleListState(ArticleListState state)

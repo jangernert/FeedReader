@@ -67,10 +67,17 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 
 			if(success)
 			{
-				string filename = "/tmp/" + m_url.replace("/", "_").replace(".", "_") + ".ico";
-				logger.print(LogMessage.DEBUG, "load icon %s".printf(filename));
-				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
-				icon = new Gtk.Image.from_pixbuf(tmp_icon);
+				try
+				{
+					string filename = "/tmp/" + m_url.replace("/", "_").replace(".", "_") + ".ico";
+					logger.print(LogMessage.DEBUG, "load icon %s".printf(filename));
+					var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
+					icon = new Gtk.Image.from_pixbuf(tmp_icon);
+				}
+				catch(GLib.Error e)
+				{
+					logger.print(LogMessage.ERROR, "SuggestedFeedRow.constructor: %s".printf(e.message));
+				}
 			}
 			else
 			{
@@ -105,7 +112,14 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 			string xml = (string)msg.response_body.flatten().data;
 
 			Rss.Parser parser = new Rss.Parser();
-			parser.load_from_data(xml, xml.length);
+			try
+			{
+				parser.load_from_data(xml, xml.length);
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "SuggestedFeedRow.downloadIcon: %s".printf(e.message));
+			}
 			var doc = parser.get_document();
 
 			if(doc.image_url != ""

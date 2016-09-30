@@ -104,7 +104,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_tag_button.set_tooltip_text(_("Tag Article"));
 		m_tag_button.sensitive = false;
 		m_tag_button.clicked.connect(() => {
-			var pop = new TagPopover(m_tag_button);
+			new TagPopover(m_tag_button);
 		});
 
 
@@ -255,12 +255,20 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			m_share_button.sensitive = show;
 		}
 
-		if(m_online
-		&& feedDaemon_interface.supportTags()
-		&& UtilsUI.canManipulateContent())
+		try
 		{
-			m_tag_button.sensitive = show;
+			if(m_online
+			&& feedDaemon_interface.supportTags()
+			&& UtilsUI.canManipulateContent())
+			{
+				m_tag_button.sensitive = show;
+			}
 		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "readerHeaderbar.showArticleButtons: %s".printf(e.message));
+		}
+
 	}
 
 	public string getSearchTerm()
@@ -305,20 +313,35 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void setOffline()
 	{
-		m_online = false;
-		if(UtilsUI.canManipulateContent()
-		&& feedDaemon_interface.supportTags())
-			m_tag_button.sensitive = false;
-		m_share_button.sensitive = false;
+		try
+		{
+			m_online = false;
+			m_share_button.sensitive = false;
+			if(UtilsUI.canManipulateContent()
+			&& feedDaemon_interface.supportTags())
+				m_tag_button.sensitive = false;
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "readerHeaderbar.setOffline: %s".printf(e.message));
+		}
 	}
 
 	public void setOnline()
 	{
-		m_online = true;
-		if(UtilsUI.canManipulateContent()
-		&& feedDaemon_interface.supportTags())
-			m_tag_button.sensitive = true;
-		m_share_button.sensitive = true;
+		try
+		{
+			m_online = true;
+			m_share_button.sensitive = true;
+			if(UtilsUI.canManipulateContent()
+			&& feedDaemon_interface.supportTags())
+				m_tag_button.sensitive = true;
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "readerHeaderbar.setOnline: %s".printf(e.message));
+		}
+
 	}
 
 	public void showMediaButton(bool show)

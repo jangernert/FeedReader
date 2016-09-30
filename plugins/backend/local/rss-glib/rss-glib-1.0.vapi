@@ -20,7 +20,6 @@
  *   Christian Hergert  <chris@dronelabs.com>
  */
 
-[Import ()]
 [CCode (cprefix = "Rss", lower_case_cprefix = "rss_", cheader_filename = "rss-glib.h")]
 namespace Rss {
 	public errordomain ParserError {

@@ -433,7 +433,6 @@ public class FeedReader.grabberUtils : GLib.Object {
 			//logger.print(LogMessage.DEBUG, e.message);
 		}
 
-        int start = fixedURL.last_index_of("/") + 1;
         string localFilename = imgPath + nr.to_string();
 
         if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))

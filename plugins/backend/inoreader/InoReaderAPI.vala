@@ -26,7 +26,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	private InoReaderConnection m_connection;
 	private InoReaderUtils m_utils;
-	private string m_inoreader;
 	private string m_userID;
 
 	public InoReaderAPI ()
@@ -397,7 +396,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		{
 			message_string += "&i=" + id;
 		}
-		string response = m_connection.send_request("edit-tag", message_string);
+		m_connection.send_request("edit-tag", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
@@ -405,7 +404,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
 		logger.print(LogMessage.DEBUG, message_string);
-		string response = m_connection.send_request("mark-all-as-read", message_string);
+		m_connection.send_request("mark-all-as-read", message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -416,14 +415,14 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_request("disable-tag", message_string);
+		m_connection.send_request("disable-tag", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_request("rename-tag", message_string);
+		m_connection.send_request("rename-tag", message_string);
 	}
 
 	public void editSubscription(InoSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)

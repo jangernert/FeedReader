@@ -90,19 +90,26 @@ public class FeedReader.ResetPage : Gtk.Bin {
 				return;
 		}
 
-		// set "currently-updating" ourself to prevent the daemon to start sync
-		settings_state.set_boolean("currently-updating", true);
+		try
+		{
+			// set "currently-updating" ourself to prevent the daemon to start sync
+			settings_state.set_boolean("currently-updating", true);
 
-		Utils.resetSettings(settings_general);
-		Utils.resetSettings(settings_state);
-		feedDaemon_interface.resetDB();
-		feedDaemon_interface.resetAccount();
+			Utils.resetSettings(settings_general);
+			Utils.resetSettings(settings_state);
+			feedDaemon_interface.resetDB();
+			feedDaemon_interface.resetAccount();
 
-		Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+			Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 
-		settings_state.set_boolean("currently-updating", false);
-		feedDaemon_interface.login("none");
-		reset();
+			settings_state.set_boolean("currently-updating", false);
+			feedDaemon_interface.login("none");
+			reset();
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ResetPage.resetAllData: %s".printf(e.message));
+		}
 	}
 
 	private void abortReset()

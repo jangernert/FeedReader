@@ -99,6 +99,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             return true;
         }
 
+        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.isloggedin: not logged in");
 		return false;
 	}
 
@@ -142,7 +143,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
                     return true;
                 }
+                else
+                {
+                    logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getFeeds: no member \"feeds\"");
+                }
 			}
+            else
+            {
+                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getFeeds");
+            }
 		}
 
         return false;
@@ -185,7 +194,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                     }
                     return true;
                 }
+                else
+                {
+                    logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getCategories: no member \"folders\"");
+                }
 			}
+            else
+            {
+                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getCategories");
+            }
 		}
         return false;
 	}
@@ -198,52 +215,63 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int("type", type);
         message.add_int("id", id);
 		int error = message.send();
-        var response = message.get_response_object();
 
-        if(response.has_member("items"))
+        if(error == ConnectionError.SUCCESS)
         {
-            var article_array = response.get_array_member("items");
-            var article_count = article_array.get_length();
-            logger.print(LogMessage.DEBUG, "%u articles returned".printf(article_count));
-
-            for(uint i = 0; i < article_count; i++)
+            var response = message.get_response_object();
+            if(response.has_member("items"))
             {
-                var article_node = article_array.get_object_element(i);
-                //logger.print(LogMessage.DEBUG, article_node.get_int_member("id").to_string());
+                var article_array = response.get_array_member("items");
+                var article_count = article_array.get_length();
+                logger.print(LogMessage.DEBUG, "%u articles returned".printf(article_count));
 
-                ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
-                ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-                string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
-                string media = "";
-
-                if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
-                && article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
+                for(uint i = 0; i < article_count; i++)
                 {
-                    if(article_node.get_string_member("enclosureMime").contains("audio")
-                    || article_node.get_string_member("enclosureMime").contains("video"))
+                    var article_node = article_array.get_object_element(i);
+                    //logger.print(LogMessage.DEBUG, article_node.get_int_member("id").to_string());
+
+                    ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
+                    ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
+                    string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
+                    string media = "";
+
+                    if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
+                    && article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
                     {
-                        media = article_node.get_string_member("enclosureLink");
+                        if(article_node.get_string_member("enclosureMime").contains("audio")
+                        || article_node.get_string_member("enclosureMime").contains("video"))
+                        {
+                            media = article_node.get_string_member("enclosureLink");
+                        }
                     }
+
+                    var Article = new article(	article_node.get_int_member("id").to_string(),
+                            					article_node.get_string_member("title"),
+                            					article_node.get_string_member("url"),
+                            					article_node.get_int_member("feedId").to_string(),
+                            					unread,
+                            					marked,
+                            					article_node.get_string_member("body"),
+                            					"",
+                            					author,
+                            					new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
+                            					-1,
+                            					"", // tags
+                                                media, // media
+                            					article_node.get_string_member("guidHash"),
+                                                (int)article_node.get_int_member("lastModified"));
+
+                    articles.add(Article);
                 }
-
-                var Article = new article(	article_node.get_int_member("id").to_string(),
-                        					article_node.get_string_member("title"),
-                        					article_node.get_string_member("url"),
-                        					article_node.get_int_member("feedId").to_string(),
-                        					unread,
-                        					marked,
-                        					article_node.get_string_member("body"),
-                        					"",
-                        					author,
-                        					new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
-                        					-1,
-                        					"", // tags
-                                            media, // media
-                        					article_node.get_string_member("guidHash"),
-                                            (int)article_node.get_int_member("lastModified"));
-
-                articles.add(Article);
             }
+            else
+            {
+                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getNewArticles: no member \"items\"");
+            }
+        }
+        else
+        {
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getNewArticles");
         }
     }
 
@@ -259,51 +287,62 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int("offset", skip);
         message.add_int("batchSize", count);
 		int error = message.send();
-        var response = message.get_response_object();
 
-        if(response.has_member("items"))
+        if(error == ConnectionError.SUCCESS)
         {
-            var article_array = response.get_array_member("items");
-            var article_count = article_array.get_length();
-            logger.print(LogMessage.DEBUG, "%u articles returned".printf(article_count));
-
-            for(uint i = 0; i < article_count; i++)
+            var response = message.get_response_object();
+            if(response.has_member("items"))
             {
-                var article_node = article_array.get_object_element(i);
+                var article_array = response.get_array_member("items");
+                var article_count = article_array.get_length();
+                logger.print(LogMessage.DEBUG, "%u articles returned".printf(article_count));
 
-                ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
-                ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-                string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
-                string media = "";
-
-                if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
-                && article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
+                for(uint i = 0; i < article_count; i++)
                 {
-                    if(article_node.get_string_member("enclosureMime").contains("audio")
-                    || article_node.get_string_member("enclosureMime").contains("video"))
+                    var article_node = article_array.get_object_element(i);
+
+                    ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
+                    ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
+                    string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
+                    string media = "";
+
+                    if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
+                    && article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
                     {
-                        media = article_node.get_string_member("enclosureLink");
+                        if(article_node.get_string_member("enclosureMime").contains("audio")
+                        || article_node.get_string_member("enclosureMime").contains("video"))
+                        {
+                            media = article_node.get_string_member("enclosureLink");
+                        }
                     }
+
+                    var Article = new article(	article_node.get_int_member("id").to_string(),
+                            					article_node.get_string_member("title"),
+                            					article_node.get_string_member("url"),
+                            					article_node.get_int_member("feedId").to_string(),
+                            					unread,
+                            					marked,
+                            					article_node.get_string_member("body"),
+                            					"",
+                            					author,
+                            					new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
+                            					-1,
+                            					"", // tags
+                                                media,
+                            					article_node.get_string_member("guidHash"),
+                                                (int)article_node.get_int_member("lastModified"));
+
+                    articles.add(Article);
                 }
-
-                var Article = new article(	article_node.get_int_member("id").to_string(),
-                        					article_node.get_string_member("title"),
-                        					article_node.get_string_member("url"),
-                        					article_node.get_int_member("feedId").to_string(),
-                        					unread,
-                        					marked,
-                        					article_node.get_string_member("body"),
-                        					"",
-                        					author,
-                        					new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
-                        					-1,
-                        					"", // tags
-                                            media,
-                        					article_node.get_string_member("guidHash"),
-                                            (int)article_node.get_int_member("lastModified"));
-
-                articles.add(Article);
             }
+            else
+            {
+                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getArticles: no member \"items\"");
+            }
+        }
+        else
+        {
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getArticles");
         }
 	}
 
@@ -315,7 +354,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int("newestItemId", int.parse(dataBase.getNewestArticle()));
 		int error = message.send();
 
-		return true;
+        if(error == ConnectionError.SUCCESS)
+		    return true;
+
+        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.markFeedRead");
+        return false;
 	}
 
 	public bool markAllItemsRead()
@@ -324,7 +367,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_int("newestItemId", int.parse(dataBase.getNewestArticle()));
         int error = message.send();
-		return true;
+
+        if(error == ConnectionError.SUCCESS)
+		    return true;
+
+        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.markAllItemsRead");
+        return false;
 	}
 
 
@@ -341,7 +389,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int_array("items", articleIDs);
 		int error = message.send();
 
-		return true;
+        if(error == ConnectionError.SUCCESS)
+		    return true;
+
+        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.updateArticleUnread");
+        return false;
 	}
 
 
@@ -358,7 +410,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
         int error = message.send();
 
-		return true;
+        if(error == ConnectionError.SUCCESS)
+		    return true;
+
+        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.updateArticleMarked");
+        return false;
 	}
 
     public int64 addFeed(string feedURL, string? catID = null)
@@ -369,11 +425,19 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_int("folderId", (catID != null) ? int.parse(catID) : 0);
         int error = message.send();
 
-        var response = message.get_response_object();
-        if(response.has_member("feeds"))
+        if(error == ConnectionError.SUCCESS)
         {
-            return response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+            var response = message.get_response_object();
+            if(response.has_member("feeds"))
+            {
+                return response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+            }
         }
+        else
+        {
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.addFeed");
+        }
+
 		return 0;
     }
 
@@ -382,6 +446,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         string url = "/feeds/%s".printf(feedID);
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "DELETE");
         int error = message.send();
+
+        if(error != ConnectionError.SUCCESS)
+        {
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.removeFeed");
+        }
     }
 
     public void renameFeed(string feedID, string title)
@@ -390,6 +459,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_string("feedTitle", title);
         int error = message.send();
+
+        if(error != ConnectionError.SUCCESS)
+        {
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.renameFeed");
+        }
     }
 
     public void moveFeed(string feedID, string? newCatID = null)
@@ -398,6 +472,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_int("folderId", (newCatID != null) ? int.parse(newCatID) : 0);
         int error = message.send();
+
+        if(error != ConnectionError.SUCCESS)
+        {
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.moveFeed");
+        }
     }
 
     public int64 addFolder(string title)
@@ -407,11 +486,19 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         message.add_string("name", title);
         int error = message.send();
 
-        var response = message.get_response_object();
-        if(response.has_member("folders"))
+        if(error != ConnectionError.SUCCESS)
         {
-            return response.get_array_member("folders").get_object_element(0).get_int_member("id");
+            var response = message.get_response_object();
+            if(response.has_member("folders"))
+            {
+                return response.get_array_member("folders").get_object_element(0).get_int_member("id");
+            }
         }
+        else
+        {
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.addFolder");
+        }
+
 		return 0;
     }
 
@@ -422,7 +509,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "DELETE");
         int error = message.send();
 
-		return true;
+        if(error == ConnectionError.SUCCESS)
+		    return true;
+
+        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.removeFolder");
+        return false;
     }
 
     public void renameCategory(string catID, string title)
@@ -431,6 +522,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_string("name", title);
         int error = message.send();
+
+        if(error != ConnectionError.SUCCESS)
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.renameCategory");
     }
 
     public bool ping()
@@ -440,6 +534,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
         if(error == ConnectionError.NO_RESPONSE)
 		{
+            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.ping: failed");
 			return false;
 		}
 

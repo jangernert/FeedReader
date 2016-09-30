@@ -451,37 +451,44 @@ public class FeedReader.FeedServer : GLib.Object {
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
 				GLib.FileUtils.remove(path);
 
-			var file = GLib.File.new_for_path(path);
-			var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
-
-			stream.write(html.data);
-			logger.print(LogMessage.DEBUG, "Grabber: article html written to " + path);
-
-			string output = libVilistextum.parse(html, 1);
-
-			if(output == "" || output == null)
+			try
 			{
-				logger.print(LogMessage.ERROR, "could not generate preview text");
-				return;
+				var file = GLib.File.new_for_path(path);
+				var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
+
+				stream.write(html.data);
+				logger.print(LogMessage.DEBUG, "Grabber: article html written to " + path);
+
+				string output = libVilistextum.parse(html, 1);
+
+				if(output == "" || output == null)
+				{
+					logger.print(LogMessage.ERROR, "could not generate preview text");
+					return;
+				}
+
+				output = output.replace("\n"," ");
+				output = output.replace("_"," ");
+
+				path = GLib.Environment.get_home_dir() + "/debug-article/%s.txt".printf(title);
+
+				if(FileUtils.test(path, GLib.FileTest.EXISTS))
+					GLib.FileUtils.remove(path);
+
+				file = GLib.File.new_for_path(path);
+				stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
+
+				stream.write(output.data);
+				logger.print(LogMessage.DEBUG, "Grabber: preview written to " + path);
 			}
-
-			output = output.replace("\n"," ");
-			output = output.replace("_"," ");
-
-			path = GLib.Environment.get_home_dir() + "/debug-article/%s.txt".printf(title);
-
-			if(FileUtils.test(path, GLib.FileTest.EXISTS))
-				GLib.FileUtils.remove(path);
-
-			file = GLib.File.new_for_path(path);
-			stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
-
-			stream.write(output.data);
-			logger.print(LogMessage.DEBUG, "Grabber: preview written to " + path);
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "FeedServer.grabArticle: %s".printf(e.message));
+			}
 		}
 		else
 		{
-			logger.print(LogMessage.ERROR, "Grabber: article could not be processed " + url);
+			logger.print(LogMessage.ERROR, "FeedServer.grabArticle: article could not be processed " + url);
 		}
 	}
 
@@ -517,9 +524,17 @@ public class FeedReader.FeedServer : GLib.Object {
     			pos1 = pos3;
     	}
 
-		var file = GLib.File.new_for_path(GLib.Environment.get_home_dir() + "/debug-article/ArticleLocalImages.html");
-		var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
-		stream.write(html.data);
+		try
+		{
+			var file = GLib.File.new_for_path(GLib.Environment.get_home_dir() + "/debug-article/ArticleLocalImages.html");
+			var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
+			stream.write(html.data);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "FeedServer.grabImages: %s".printf(e.message));
+		}
+
 		delete doc;
 	}
 

@@ -59,12 +59,16 @@ namespace FeedReader {
 
 		public void startSync()
 		{
-			callAsync(sync);
+			callAsync.begin(sync, (obj, res) => {
+				callAsync.begin.end(res);
+			});
 		}
 
 		public void startInitSync()
 		{
-			callAsync(initSync);
+			callAsync.begin(initSync, (obj, res) => {
+				callAsync.begin.end(res);
+			});
 		}
 
 		public int getVersion()

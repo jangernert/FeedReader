@@ -81,24 +81,33 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 	public static bool canManipulateContent(bool? online = null)
 	{
-		// if backend = local RSS -> return true;
-		if(settings_general.get_string("plugin") == "local")
-			return true;
-
-		if(!feedDaemon_interface.supportFeedManipulation())
-			return false;
-
-		// when we already know wheather feedreader is online or offline
-		if(online != null)
+		try
 		{
-			if(online)
+			// if backend = local RSS -> return true;
+			if(settings_general.get_string("plugin") == "local")
 				return true;
-			else
-				return false;
-		}
 
-		// otherwise check if online
-		return feedDaemon_interface.isOnline();
+			if(!feedDaemon_interface.supportFeedManipulation())
+				return false;
+
+			// when we already know wheather feedreader is online or offline
+			if(online != null)
+			{
+				if(online)
+					return true;
+				else
+					return false;
+			}
+
+			// otherwise check if online
+			return feedDaemon_interface.isOnline();
+		}
+        catch(GLib.Error e)
+        {
+            logger.print(LogMessage.ERROR, "UtilsUI.canManipulateContent: %s".printf(e.message));
+        }
+
+		return false;
 	}
 
 	public static GLib.Menu getMenu()
@@ -133,64 +142,79 @@ public class FeedReader.UtilsUI : GLib.Object {
 		if(settings_general.get_boolean("only-feeds"))
 			return true;
 
-		if(!dataBase.haveCategories()
-		&& !feedDaemon_interface.supportTags()
-		&& !dataBase.haveFeedsWithoutCat())
-			return true;
+		try
+		{
+			if(!dataBase.haveCategories()
+			&& !feedDaemon_interface.supportTags()
+			&& !dataBase.haveFeedsWithoutCat())
+				return true;
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "UtilsUI.onlyShowFeeds: %s".printf(e.message));
+		}
 
 		return false;
 	}
 
 	public static void saveImageDialog(string imagePath, Gtk.Window parent)
 	{
-		var _file = GLib.File.new_for_path(imagePath);
-		var mimeType = _file.query_info("standard::content-type", 0, null).get_content_type();
-		var filter = new Gtk.FileFilter();
-		filter.add_mime_type(mimeType);
 
-		var map = new Gee.HashMap<string, string>();
-		map.set("image/gif", ".gif");
-		map.set("image/jpeg", ".jpeg");
-		map.set("image/png", ".png");
-		map.set("image/x-icon", ".ico");
+		try
+		{
+			var file = GLib.File.new_for_path(imagePath);
+			var mimeType = file.query_info("standard::content-type", 0, null).get_content_type();
+			var filter = new Gtk.FileFilter();
+			filter.add_mime_type(mimeType);
 
-		var save_dialog = new Gtk.FileChooserDialog("Save Image",
-													parent,
-													Gtk.FileChooserAction.SAVE,
-													Gtk.Stock.CANCEL,
-													Gtk.ResponseType.CANCEL,
-													Gtk.Stock.SAVE,
-													Gtk.ResponseType.ACCEPT);
-		save_dialog.set_do_overwrite_confirmation(true);
-		save_dialog.set_modal(true);
-		save_dialog.set_current_folder(GLib.Environment.get_home_dir());
-		save_dialog.set_current_name("Article_Image" + map.get(mimeType));
-		save_dialog.set_filter(filter);
-		save_dialog.response.connect((dialog, response_id) => {
-			switch(response_id)
-			{
-				case Gtk.ResponseType.ACCEPT:
-					try
-					{
-						var savefile = save_dialog.get_file();
-						uint8[] data;
-						string etag;
-						_file.load_contents(null, out data, out etag);
-						savefile.replace_contents(data, null, false, GLib.FileCreateFlags.REPLACE_DESTINATION, null, null);
-					}
-					catch(Error e)
-					{
-						logger.print(LogMessage.DEBUG, "imagePopup: save file: " + e.message);
-					}
-					break;
+			var map = new Gee.HashMap<string, string>();
+			map.set("image/gif", ".gif");
+			map.set("image/jpeg", ".jpeg");
+			map.set("image/png", ".png");
+			map.set("image/x-icon", ".ico");
 
-				case Gtk.ResponseType.CANCEL:
-				default:
-					break;
-			}
-			save_dialog.destroy();
-		});
-		save_dialog.show();
+			var save_dialog = new Gtk.FileChooserDialog("Save Image",
+														parent,
+														Gtk.FileChooserAction.SAVE,
+														_("Cancel"),
+														Gtk.ResponseType.CANCEL,
+														_("Save"),
+														Gtk.ResponseType.ACCEPT);
+			save_dialog.set_do_overwrite_confirmation(true);
+			save_dialog.set_modal(true);
+			save_dialog.set_current_folder(GLib.Environment.get_home_dir());
+			save_dialog.set_current_name("Article_Image" + map.get(mimeType));
+			save_dialog.set_filter(filter);
+			save_dialog.response.connect((dialog, response_id) => {
+				switch(response_id)
+				{
+					case Gtk.ResponseType.ACCEPT:
+						try
+						{
+							var savefile = save_dialog.get_file();
+							uint8[] data;
+							string etag;
+							file.load_contents(null, out data, out etag);
+							savefile.replace_contents(data, null, false, GLib.FileCreateFlags.REPLACE_DESTINATION, null, null);
+						}
+						catch(Error e)
+						{
+							logger.print(LogMessage.DEBUG, "imagePopup: save file: " + e.message);
+						}
+						break;
+
+					case Gtk.ResponseType.CANCEL:
+					default:
+						break;
+				}
+				save_dialog.destroy();
+			});
+			save_dialog.show();
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "UtilsUI.saveImageDialog: %s".printf(e.message));
+		}
 	}
 
 	public static void playMedia(string[] args, string url)
@@ -228,51 +252,58 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 	public static void testGOA()
 	{
-		Goa.Client? client = new Goa.Client.sync();
-
-		if(client != null)
+		try
 		{
-			var accounts = client.get_accounts();
-			foreach(var object in accounts)
-			{
-				stdout.printf("account type: %s\n", object.account.provider_type);
-				stdout.printf("account name: %s\n", object.account.provider_name);
-				stdout.printf("account identity: %s\n", object.account.identity);
-				stdout.printf("account id: %s\n", object.account.id);
+			Goa.Client? client = new Goa.Client.sync();
 
-				if(object.oauth2_based != null)
+			if(client != null)
+			{
+				var accounts = client.get_accounts();
+				foreach(var object in accounts)
 				{
-					string access_token = "";
-					int expires = 0;
-					object.oauth2_based.call_get_access_token_sync(out access_token, out expires);
-					stdout.printf("access token: %s\n", access_token);
-					stdout.printf("expires in: %i\n", expires);
-					stdout.printf("client id: %s\n", object.oauth2_based.client_id);
-					stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
+					stdout.printf("account type: %s\n", object.account.provider_type);
+					stdout.printf("account name: %s\n", object.account.provider_name);
+					stdout.printf("account identity: %s\n", object.account.identity);
+					stdout.printf("account id: %s\n", object.account.id);
+
+					if(object.oauth2_based != null)
+					{
+						string access_token = "";
+						int expires = 0;
+						object.oauth2_based.call_get_access_token_sync(out access_token, out expires);
+						stdout.printf("access token: %s\n", access_token);
+						stdout.printf("expires in: %i\n", expires);
+						stdout.printf("client id: %s\n", object.oauth2_based.client_id);
+						stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
+					}
+					else if(object.oauth_based != null)
+					{
+						string access_token = "";
+						string access_token_secret = "";
+						int expires = 0;
+						object.oauth_based.call_get_access_token_sync(out access_token, out access_token_secret, out expires);
+						stdout.printf("access token: %s\n", access_token);
+						stdout.printf("access token secret: %s\n", access_token_secret);
+						stdout.printf("expires in: %i\n", expires);
+					}
+					else if(object.password_based != null)
+					{
+						string password = "";
+						object.password_based.call_get_password_sync ("abc", out password);
+						stdout.printf("password: %s\n", password);
+						stdout.printf("presentation identity: %s\n", object.account.presentation_identity);
+					}
+					stdout.printf("\n");
 				}
-				else if(object.oauth_based != null)
-				{
-					string access_token = "";
-					string access_token_secret = "";
-					int expires = 0;
-					object.oauth_based.call_get_access_token_sync(out access_token, out access_token_secret, out expires);
-					stdout.printf("access token: %s\n", access_token);
-					stdout.printf("access token secret: %s\n", access_token_secret);
-					stdout.printf("expires in: %i\n", expires);
-				}
-				else if(object.password_based != null)
-				{
-					string password = "";
-					object.password_based.call_get_password_sync ("abc", out password);
-					stdout.printf("password: %s\n", password);
-					stdout.printf("presentation identity: %s\n", object.account.presentation_identity);
-				}
-				stdout.printf("\n");
+			}
+			else
+			{
+				stdout.printf("goa not available");
 			}
 		}
-		else
+		catch(GLib.Error e)
 		{
-			stdout.printf("goa not available");
+			logger.print(LogMessage.ERROR, "UtilsUI.testGOA: %s".printf(e.message));
 		}
 	}
 }

@@ -21,18 +21,34 @@ public class FeedReader.dbUI : dbBase {
 
     protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
-        if(feedDaemon_interface.hideCagetoryWhenEmtpy(catID)
-        && !Utils.categoryIsPopulated(catID, feeds))
+        try
         {
-            return false;
+            if(feedDaemon_interface.hideCagetoryWhenEmtpy(catID)
+            && !Utils.categoryIsPopulated(catID, feeds))
+            {
+                return false;
+            }
+        }
+        catch(GLib.Error e)
+        {
+            logger.print(LogMessage.ERROR, "dbUI.showCategory: %s".printf(e.message));
         }
         return true;
 	}
 
     protected override string getUncategorizedQuery()
 	{
-		string catID = feedDaemon_interface.uncategorizedID();
-		return "category_id = \"%s\"".printf(catID);
+        try
+        {
+    		string catID = feedDaemon_interface.uncategorizedID();
+    		return "category_id = \"%s\"".printf(catID);
+        }
+        catch(GLib.Error e)
+        {
+            logger.print(LogMessage.ERROR, "dbUI.showCategory: %s".printf(e.message));
+        }
+
+        return "";
 	}
 
 }

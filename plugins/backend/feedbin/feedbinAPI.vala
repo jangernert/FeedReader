@@ -13,7 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
 FeedReader.Logger logger;
 
 public class FeedReader.feedbinAPI : Object {
@@ -155,7 +154,7 @@ public class FeedReader.feedbinAPI : Object {
 		request += "&starred=%s".printf(starred ? "true" : "false");
 		if(timestamp != null)
 		{
-			var t = new GLib.TimeVal();
+			var t = GLib.TimeVal();
 			if(timestamp.to_timeval(out t))
 			{
 				request += "&since=%s".printf(t.to_iso8601());
@@ -203,7 +202,7 @@ public class FeedReader.feedbinAPI : Object {
 
 			var time = new GLib.DateTime.now_local();
 
-			var t = new GLib.TimeVal();
+			var t = GLib.TimeVal();
 			if(t.from_iso8601(object.get_string_member("published")))
 			{
 				time = new DateTime.from_timeval_local(t);

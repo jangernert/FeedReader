@@ -42,14 +42,28 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
             "https://api.twitter.com/",
             false);
 
+		try
+		{
+			m_oauthObject.request_token("oauth/request_token", TwitterSecrets.callback);
+		}
+		catch(GLib.Error e)
+		{
+			m_logger.print(LogMessage.ERROR, "TwitterAPI.getRequestToken: %s".printf(e.message));
+		}
 
-        m_oauthObject.request_token("oauth/request_token", TwitterSecrets.callback);
 		return m_oauthObject.get_token();
     }
 
     public bool getAccessToken(string id, string verifier)
     {
-		m_oauthObject.access_token("oauth/access_token", verifier);
+		try
+		{
+			m_oauthObject.access_token("oauth/access_token", verifier);
+		}
+		catch(GLib.Error e)
+		{
+			m_logger.print(LogMessage.ERROR, "TwitterAPI.getAccessToken: %s".printf(e.message));
+		}
 
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		string token = m_oauthObject.get_token();

@@ -111,9 +111,17 @@ public class FeedReader.articleList : Gtk.Overlay {
 			var article_row = (articleRow)selected_row;
 			string selectedID = article_row.getID();
 
-			if(article_row.isUnread()){
-				feedDaemon_interface.changeArticle(selectedID, ArticleStatus.READ);
-				article_row.updateUnread(ArticleStatus.READ);
+			try
+			{
+				if(article_row.isUnread())
+				{
+					feedDaemon_interface.changeArticle(selectedID, ArticleStatus.READ);
+					article_row.updateUnread(ArticleStatus.READ);
+				}
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "ArticleList.constructor: %s".printf(e.message));
 			}
 
 			if(m_selected_article != selectedID)
@@ -195,7 +203,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if((adj.get_value() + adj.get_page_size())/adj.get_upper() > m_lmit)
 		{
 			logger.print(LogMessage.INFO, "load more because of scrolling");
-			create(Gtk.StackTransitionType.CROSSFADE, true);
+			create.begin(Gtk.StackTransitionType.CROSSFADE, true, (obj, res) => {
+				create.end(res);
+			});
 		}
 	}
 
@@ -258,8 +268,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if((!m_only_unread || selected_row.isUnread())
 		&&(!m_only_marked || selected_row.isMarked()))
 		{
-			var currentPos = m_current_adjustment.get_value();
-			var max = m_current_adjustment.get_upper();
 			var offset = selected_row.get_allocated_height();
 
 			if(down)
@@ -288,7 +296,15 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		row.updateUnread(ArticleStatus.READ);
 		m_currentList.select_row(row);
-		feedDaemon_interface.changeArticle(row.getID(), ArticleStatus.READ);
+
+		try
+		{
+			feedDaemon_interface.changeArticle(row.getID(), ArticleStatus.READ);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ArticleList.selectAfter: %s".printf(e.message));
+		}
 
 		if (m_select_source_id > 0)
 		{
@@ -657,7 +673,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 				if(offset > 0)
 				{
 					settings_state.set_int("articlelist-row-offset", 0);
-					updateArticleList(false);
+					updateArticleList.begin(false, (obj, res) => {
+						updateArticleList.end(res);
+					});
 				}
 
 				if(show_notification)
@@ -738,7 +756,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 			row.destroy();
 		}
 
-		create(transition);
+		create.begin(transition, false, (obj, res) => {
+			create.end(res);
+		});
 		m_busy = false;
 	}
 
@@ -756,7 +776,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 					if(!m_busy)
 					{
 						m_update_source_id = 0;
-						updateArticleList(slideIN);
+						updateArticleList.begin(slideIN, (obj, res) => {
+							updateArticleList.end(res);
+						});
 				   		return false;
 					}
 					return true;
@@ -1019,7 +1041,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if(m_current_adjustment.get_upper() < this.parent.get_allocated_height() + 306)
 		{
 			logger.print(LogMessage.DEBUG, "load more");
-			create(Gtk.StackTransitionType.CROSSFADE, true);
+			create.begin(Gtk.StackTransitionType.CROSSFADE, true, (obj, res) => {
+				create.end(res);
+			});
 		}
 	}
 

@@ -81,7 +81,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		string accessToken = root_object.get_string_member("access_token");
 		int64 now = (new DateTime.now_local()).to_unix();
 		int64 expires = root_object.get_int_member("expires_in");
-		string refreshToken = root_object.get_string_member("refresh_token");
+		//string refreshToken = root_object.get_string_member("refresh_token");
 
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
         settings.set_string("oauth-access-token", accessToken);
@@ -229,10 +229,12 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
 		string passwd = "";
 
-		try{
+		try
+		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
-		catch(GLib.Error e){
+		catch(GLib.Error e)
+		{
 			logger.print(LogMessage.ERROR, e.message);
 		}
 
@@ -256,7 +258,14 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		attributes["id"] = id;
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			removed = Secret.password_clearv.end(async_res);
+			try
+			{
+				removed = Secret.password_clearv.end(async_res);
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "WallabagAPI.deletePassword: %s".printf(e.message));
+			}
 		});
 		return removed;
 	}

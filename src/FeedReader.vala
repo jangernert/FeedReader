@@ -69,19 +69,27 @@ namespace FeedReader {
 				m_window = new readerUI(this);
 				m_window.set_icon_name("feedreader");
 				if(settings_tweaks.get_boolean("sync-on-startup"))
-					sync();
+					sync.begin((obj, res) => {
+						sync.end(res);
+					});
 			}
 
 			m_window.show_all();
 			DBusConnection.connectSignals(m_window);
-			feedDaemon_interface.updateBadge();
-			feedDaemon_interface.checkOnlineAsync();
+			try
+			{
+				feedDaemon_interface.updateBadge();
+				feedDaemon_interface.checkOnlineAsync();
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "FeedReader.activate: %s".printf(e.message));
+			}
 		}
 
 		public override int command_line(ApplicationCommandLine command_line)
 		{
 			var args = command_line.get_arguments();
-			string verifier = "";
 			if(args.length > 1)
 			{
 				logger.print(LogMessage.DEBUG, "FeedReader: callback %s".printf(args[1]));
@@ -95,19 +103,29 @@ namespace FeedReader {
 
 		protected override void shutdown()
 		{
-			logger.print(LogMessage.DEBUG, "Shutdown!");
-			if(settings_tweaks.get_boolean("quit-daemon"))
-				feedDaemon_interface.quit();
-			base.shutdown();
+			try
+			{
+				logger.print(LogMessage.DEBUG, "Shutdown!");
+				if(settings_tweaks.get_boolean("quit-daemon"))
+					feedDaemon_interface.quit();
+				base.shutdown();
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "FeedReader.shutdown: %s".printf(e.message));
+			}
 		}
 
 		public async void sync()
 		{
 			SourceFunc callback = sync.callback;
 			ThreadFunc<void*> run = () => {
-				try{
+				try
+				{
 					feedDaemon_interface.startSync();
-				}catch (IOError e) {
+				}
+				catch(IOError e)
+				{
 					logger.print(LogMessage.ERROR, e.message);
 				}
 				Idle.add((owned) callback);

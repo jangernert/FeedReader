@@ -361,14 +361,14 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 		message_string += tagID;
 		message_string += "&i=" + articleID;
-		string response = m_connection.send_post_request("edit-tag?output=json", message_string);
+		m_connection.send_post_request("edit-tag?output=json", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
-		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
+		m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -379,14 +379,14 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_post_request("disable-tag?output=json", message_string);
+		m_connection.send_post_request("disable-tag?output=json", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
+		m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
 	public void editSubscription(OldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)

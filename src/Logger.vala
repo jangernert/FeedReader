@@ -29,7 +29,15 @@ public class FeedReader.Logger : GLib.Object {
 			GLib.FileUtils.remove(path);
 
 		var file = GLib.File.new_for_path(path);
-		m_stream = file.create(FileCreateFlags.NONE);
+		try
+		{
+			m_stream = file.create(FileCreateFlags.NONE);
+		}
+		catch(GLib.Error e)
+		{
+			stderr.printf("error creating log-file: %s\n", e.message);
+		}
+
 
 		switch(logLevel)
 		{
@@ -80,41 +88,31 @@ public class FeedReader.Logger : GLib.Object {
 			case LogMessage.ERROR:
 				set_color(ConsoleColor.RED);
 				stdout.printf("[ ERROR ] ");
-				m_stream.write("[ ERROR ] ".data);
+				write("[ ERROR ] ");
 				break;
 
 			case LogMessage.WARNING:
 				set_color(ConsoleColor.YELLOW);
 				stdout.printf("[WARNING] ");
-				m_stream.write("[WARNING] ".data);
+				write("[WARNING] ");
 				break;
 
 			case LogMessage.INFO:
 				set_color(ConsoleColor.GREEN);
 				stdout.printf("[ INFO  ] ");
-				m_stream.write("[ INFO  ] ".data);
+				write("[ INFO  ] ");
 				break;
 
 			case LogMessage.DEBUG:
 				set_color(ConsoleColor.BLUE);
 				stdout.printf("[ DEBUG ] ");
-				m_stream.write("[ DEBUG ] ".data);
+				write("[ DEBUG ] ");
 				break;
 		}
 
 		reset_color();
 		stdout.printf("%s\n", message);
-		try
-		{
-			m_stream.write("%s\n".printf(message).data);
-		}
-		catch(GLib.IOError e)
-		{
-			set_color(ConsoleColor.RED);
-			stdout.printf("[ ERROR ] ");
-			stdout.printf("%s\n", e.message);
-			reset_color();
-		}
+		write("%s\n".printf(message));
 	}
 
 	private void reset_color()
@@ -126,6 +124,21 @@ public class FeedReader.Logger : GLib.Object {
 	{
 		var color_code = color + 30 + 60;
 		stdout.printf("\x001b[%dm", color_code);
+	}
+
+	private void write(string text)
+	{
+		try
+		{
+			m_stream.write(text.data);
+		}
+		catch(GLib.Error e)
+		{
+			set_color(ConsoleColor.RED);
+			stdout.printf("[ ERROR ] ");
+			stderr.printf("error writing log to file: %s\n", e.message);
+			reset_color();
+		}
 	}
 
 }

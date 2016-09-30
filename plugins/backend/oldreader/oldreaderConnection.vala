@@ -37,8 +37,8 @@ public class FeedReader.OldReaderConnection {
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 		string response = (string)message.response_body.flatten().data;
-		try{
-
+		try
+		{
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
@@ -60,8 +60,6 @@ public class FeedReader.OldReaderConnection {
 			logger.print(LogMessage.ERROR, e.message);
 			return LoginResponse.UNKNOWN_ERROR;
 		}
-
-		return LoginResponse.SUCCESS;
 	}
 
 	public string send_get_request(string path, string? message_string = null)

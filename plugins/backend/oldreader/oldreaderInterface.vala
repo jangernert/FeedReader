@@ -243,7 +243,8 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		if(m_api.getFeeds(feeds) && m_api.getCategoriesAndTags(feeds, categories, tags));
+		if(m_api.getFeeds(feeds)
+		&& m_api.getCategoriesAndTags(feeds, categories, tags))
 			return true;
 		return false;
 	}

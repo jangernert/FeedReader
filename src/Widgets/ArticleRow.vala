@@ -187,28 +187,35 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		this.add(m_row_eventbox);
 		this.show_all();
 
-		// Make the this widget a DnD source.
-
-		if(!settings_general.get_boolean("only-feeds")
-		&& feedDaemon_interface.isOnline()
-		&& feedDaemon_interface.supportTags())
+		try
 		{
-			const Gtk.TargetEntry[] provided_targets = {
-			    { "STRING",     0, DragTarget.TAG }
-			};
+			// Make the this widget a DnD source.
+			if(!settings_general.get_boolean("only-feeds")
+			&& feedDaemon_interface.isOnline()
+			&& feedDaemon_interface.supportTags())
+			{
+				const Gtk.TargetEntry[] provided_targets = {
+				    { "STRING",     0, DragTarget.TAG }
+				};
 
-			Gtk.drag_source_set (
-	                this,
-	                Gdk.ModifierType.BUTTON1_MASK,
-	                provided_targets,
-	                Gdk.DragAction.COPY
-	        );
+				Gtk.drag_source_set (
+		                this,
+		                Gdk.ModifierType.BUTTON1_MASK,
+		                provided_targets,
+		                Gdk.DragAction.COPY
+		        );
 
-			this.drag_begin.connect(onDragBegin);
-	        this.drag_data_get.connect(onDragDataGet);
-	        this.drag_end.connect(onDragEnd);
-			this.drag_failed.connect(onDragFail);
+				this.drag_begin.connect(onDragBegin);
+		        this.drag_data_get.connect(onDragDataGet);
+		        this.drag_end.connect(onDragEnd);
+				this.drag_failed.connect(onDragFail);
+			}
 		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ArticleRow.constructor: %s".printf(e.message));
+		}
+
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
@@ -415,8 +422,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-
-		feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getUnread());
+		try
+		{
+			feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getUnread());
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ArticleRow.toggleUnread: %s".printf(e.message));
+		}
 		show_all();
 		return unread;
 	}
@@ -528,7 +541,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-		feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getMarked());
+		try
+		{
+			feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getMarked());
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "ArticleRow.toggleMarked: %s".printf(e.message));
+		}
 		this.show_all();
 		return marked;
 	}

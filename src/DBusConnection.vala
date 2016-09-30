@@ -199,11 +199,19 @@ namespace FeedReader {
 
 		private static void checkDaemonVersion()
 		{
-			if(feedDaemon_interface.getVersion() < DBusAPIVersion)
+			try
 			{
-				feedDaemon_interface.quit();
-				startDaemon();
+				if(feedDaemon_interface.getVersion() < DBusAPIVersion)
+				{
+					feedDaemon_interface.quit();
+					startDaemon();
+				}
 			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "checkDaemonVersion: %s".printf(e.message));
+			}
+
 		}
 
 	}

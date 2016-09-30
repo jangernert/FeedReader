@@ -107,24 +107,31 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			set_unread_count(m_unread_count);
 
-			if(m_feedID != FeedID.ALL.to_string()
-			&& !settings_general.get_boolean("only-feeds")
-			&& UtilsUI.canManipulateContent()
-			&& feedDaemon_interface.supportCategories())
+			try
 			{
-				const Gtk.TargetEntry[] provided_targets = {
-				    { "text/plain",     0, DragTarget.FEED }
-				};
+				if(m_feedID != FeedID.ALL.to_string()
+				&& !settings_general.get_boolean("only-feeds")
+				&& UtilsUI.canManipulateContent()
+				&& feedDaemon_interface.supportCategories())
+				{
+					const Gtk.TargetEntry[] provided_targets = {
+					    { "text/plain",     0, DragTarget.FEED }
+					};
 
-				Gtk.drag_source_set (
-		                this,
-		                Gdk.ModifierType.BUTTON1_MASK,
-		                provided_targets,
-		                Gdk.DragAction.MOVE
-		        );
+					Gtk.drag_source_set (
+			                this,
+			                Gdk.ModifierType.BUTTON1_MASK,
+			                provided_targets,
+			                Gdk.DragAction.MOVE
+			        );
 
-				this.drag_begin.connect(onDragBegin);
-		        this.drag_data_get.connect(onDragDataGet);
+					this.drag_begin.connect(onDragBegin);
+			        this.drag_data_get.connect(onDragDataGet);
+				}
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "FeedRow.constructor: %s".printf(e.message));
 			}
 		}
 	}
@@ -207,7 +214,14 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 			var notification = content.showNotification(_("Feed \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
-				feedDaemon_interface.removeFeed(m_feedID);
+				try
+				{
+					feedDaemon_interface.removeFeed(m_feedID);
+				}
+				catch(GLib.Error e)
+				{
+					logger.print(LogMessage.ERROR, "FeedRow.onClick: %s".printf(e.message));
+				}
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -270,14 +284,20 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
 			popRename.hide();
-			feedDaemon_interface.renameFeed(m_feedID, renameEntry.get_text());
+			try
+			{
+				feedDaemon_interface.renameFeed(m_feedID, renameEntry.get_text());
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "FeedRow.showRenamePopover: %s".printf(e.message));
+			}
 		});
 
 		var renameButton = new Gtk.Button.with_label(_("rename"));
 		renameButton.get_style_context().add_class("suggested-action");
 		renameButton.clicked.connect(() => {
-			popRename.hide();
-			feedDaemon_interface.renameFeed(m_feedID, renameEntry.get_text());
+			renameEntry.activate();
 		});
 
 		var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);

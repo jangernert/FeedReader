@@ -294,7 +294,6 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			time = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
 
 		bool starred = false;
-		int c = 100;
 		string? fID = isTagID ? null : feedID;
 
 

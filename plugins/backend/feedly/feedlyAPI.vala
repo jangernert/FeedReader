@@ -19,10 +19,7 @@ FeedReader.Logger logger;
 public class FeedReader.FeedlyAPI : Object {
 
 	private FeedlyConnection m_connection;
-	private string m_token;
-	private string m_refresh_token;
 	private string m_userID;
-	private Gee.HashMap<string,int> markers;
 	private Json.Array m_unreadcounts;
 	private FeedlyUtils m_utils;
 

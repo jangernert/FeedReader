@@ -297,7 +297,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public string getIconDir()
+	public string? getIconDir()
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);

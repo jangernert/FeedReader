@@ -24,8 +24,6 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 
     public string getURL()
 	{
-        //https://yourowncloud.com/index.php/apps/news/api/v1-2/
-
 		string tmp_url = m_settings.get_string("url");
 		if(tmp_url != ""){
 			if(!tmp_url.has_suffix("/"))
@@ -134,7 +132,14 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			removed = Secret.password_clearv.end(async_res);
+            try
+            {
+                removed = Secret.password_clearv.end(async_res);
+            }
+            catch(GLib.Error e)
+            {
+                logger.print(LogMessage.ERROR, "OwncloudNewsUtils.deletePassword: %s".printf(e.message));
+            }
 		});
 		return removed;
 	}

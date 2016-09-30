@@ -186,19 +186,33 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	private void login(string id)
 	{
-		LoginResponse status = feedDaemon_interface.login(id);
-		logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());
-		if(status == LoginResponse.SUCCESS)
+		try
 		{
-			var ext = getActiveExtension();
-			ext.writeFeed.connect((url, cat) => {
-				feedDaemon_interface.addFeed(url, cat, false, false);
-			});
-			ext.poastLoginAction();
-			submit_data();
-			return;
-		}
+			LoginResponse status = feedDaemon_interface.login(id);
+			logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());
+			if(status == LoginResponse.SUCCESS)
+			{
+				var ext = getActiveExtension();
+				ext.writeFeed.connect((url, cat) => {
+					try
+					{
+						feedDaemon_interface.addFeed(url, cat, false, false);
+					}
+					catch(GLib.Error e)
+					{
+						logger.print(LogMessage.ERROR, "LoginPage.login: %s".printf(e.message));
+					}
+				});
+				ext.poastLoginAction();
+				submit_data();
+				return;
+			}
 
-		loginError(status);
+			loginError(status);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "LoginPage.login: %s".printf(e.message));
+		}
 	}
 }

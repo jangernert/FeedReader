@@ -52,7 +52,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		var tag_label = new Gtk.Label(_("Tags:"));
 		tag_label.get_style_context().add_class("h4");
 		tag_label.set_alignment(0, 0.5f);
-		var m_viewport = new Gtk.Viewport(null, null);
+		m_viewport = new Gtk.Viewport(null, null);
 		m_viewport.get_style_context().add_class("servicebox");
 		m_viewport.add(m_list);
 		m_viewport.margin_bottom = 10;
@@ -162,13 +162,20 @@ public class FeedReader.TagPopover : Gtk.Popover {
 				}
 			}
 
-			if(!available)
+			try
 			{
-				tagID = feedDaemon_interface.createTag(str);
-				logger.print(LogMessage.DEBUG, "TagPopover: " + str + " created with id " + tagID);
+				if(!available)
+				{
+					tagID = feedDaemon_interface.createTag(str);
+					logger.print(LogMessage.DEBUG, "TagPopover: " + str + " created with id " + tagID);
+				}
+				feedDaemon_interface.tagArticle(getActiveArticleID(), tagID, true);
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "TagPopover.setupEntry: %s".printf(e.message));
 			}
 
-			feedDaemon_interface.tagArticle(getActiveArticleID(), tagID, true);
 
 			var new_tag = dataBase.read_tag(tagID);
 			var row = new TagPopoverRow(new_tag);
@@ -183,8 +190,15 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 	private void removeTag(TagPopoverRow row)
 	{
-		feedDaemon_interface.tagArticle(getActiveArticleID(), row.getTagID(), false);
-		m_list.remove(row);
+		try
+		{
+			feedDaemon_interface.tagArticle(getActiveArticleID(), row.getTagID(), false);
+			m_list.remove(row);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "TagPopover.removeTag: %s".printf(e.message));
+		}
 
 		foreach(tag Tag in m_tags)
 		{

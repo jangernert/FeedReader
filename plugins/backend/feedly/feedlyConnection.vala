@@ -153,7 +153,7 @@ public class FeedReader.FeedlyConnection {
 		size_t length;
 		string json;
 		json = gen.to_data(out length);
-		message.request_body.append(Soup.MemoryUse.COPY, json.data);
+		message.request_body.append_take(json.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;
@@ -178,7 +178,7 @@ public class FeedReader.FeedlyConnection {
 		string json;
 		json = gen.to_data(out length);
 		logger.print(LogMessage.DEBUG, json);
-		message.request_body.append(Soup.MemoryUse.COPY, json.data);
+		message.request_body.append_take(json.data);
 		session.send_message(message);
 		logger.print(LogMessage.DEBUG, "Status Code: " + message.status_code.to_string());
 		return (string)message.response_body.flatten().data;
@@ -198,7 +198,7 @@ public class FeedReader.FeedlyConnection {
 		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
 		message.request_headers.append("Content-Type", type);
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;

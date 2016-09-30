@@ -21,7 +21,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void checkpoint()
     {
-        sqlite_db.wal_checkpoint(null);
+        sqlite_db.wal_checkpoint("");
     }
 
     public bool resetDB()
@@ -895,7 +895,6 @@ public class FeedReader.dbDaemon : dbBase {
         }
 
 		while (stmt.step () == Sqlite.ROW) {
-			string feedID = stmt.column_text(0);
             var action = new OfflineAction((OfflineActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
             action.print();
 			tmp.add(action);

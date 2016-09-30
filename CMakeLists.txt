@@ -5,7 +5,7 @@ include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
 include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)
 include_directories(${CMAKE_SOURCE_DIR})
 
-
+add_definitions("-w")
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set (PKGDATADIR "${DATADIR}/FeedReader")
@@ -15,6 +15,7 @@ set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
 set (VERSION "2.0-dev")
+set (GLIB_VERSION 2.40)
 
 find_package(PkgConfig)
 find_package(Vala REQUIRED)
@@ -74,7 +75,7 @@ add_subdirectory(libgd)
 ################################################################################
 
 
-vala_precompile(LIBFR test123
+vala_precompile(LIBFR libFeedReader
     src/Common.vala
     src/Logger.vala
     src/Enums.vala
@@ -98,7 +99,7 @@ PACKAGES
     libsoup-2.4
 
 OPTIONS
-    --target-glib=2.32
+    --target-glib=${GLIB_VERSION}
     --vapi=FeedReaderCommon.vapi
     --header=FeedReaderCommon.h
     
@@ -111,12 +112,6 @@ target_link_libraries(FeedReaderCommon vilistextum)
 
 
 ################################################################################
-
-
-set(UI_OPTIONS
-    --target-glib=2.32
-    --header=FeedReaderUI.h
-    --vapi=FeedReaderUI.vapi)
 
 set(UI_PACKAGES
     glib-2.0>=2.32
@@ -190,7 +185,10 @@ PACKAGES
     ${UI_PACKAGES}
 
 OPTIONS
-    ${UI_OPTIONS}
+    --target-glib=${GLIB_VERSION}
+    --header=FeedReaderUI.h
+    --vapi=FeedReaderUI.vapi
+    --enable-experimental
 
 CUSTOM_VAPIS
     ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
@@ -207,7 +205,7 @@ target_link_libraries(${UI_NAME} vilistextum gtkimageview gd FeedReaderCommon)
 
 
 set(DAEMON_OPTIONS
-    --target-glib=2.32
+    --target-glib=${GLIB_VERSION}
     --header=FeedReader.h
     --vapi=FeedReader.vapi)
 set(DAEMON_PACKAGES

@@ -135,18 +135,33 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		}
 
 		logger.print(LogMessage.DEBUG, "addFeed: %s, %s".printf(m_urlEntry.text, catID));
-		feedDaemon_interface.addFeed(m_urlEntry.text, catID, isID);
+		try
+		{
+			feedDaemon_interface.addFeed(m_urlEntry.text, catID, isID);
+		}
+		catch(Error e)
+		{
+			logger.print(LogMessage.ERROR, "AddPopover.addFeed: %s".printf(e.message));
+		}
+
 		setBusy();
 	}
 
 	private void importOPML()
 	{
-		logger.print(LogMessage.INFO, "selection_changed");
-		var file = m_chooser.get_file();
-		uint8[] contents;
-		file.load_contents (null, out contents, null);
-		logger.print(LogMessage.DEBUG, (string)contents);
-		feedDaemon_interface.importOPML((string)contents);
+		try
+		{
+			logger.print(LogMessage.INFO, "selection_changed");
+			var file = m_chooser.get_file();
+			uint8[] contents;
+			file.load_contents (null, out contents, null);
+			logger.print(LogMessage.DEBUG, (string)contents);
+			feedDaemon_interface.importOPML((string)contents);
+		}
+		catch(GLib.Error e)
+		{
+			logger.print(LogMessage.ERROR, "AddPopover.importOPML: %s".printf(e.message));
+		}
 		setBusy();
 	}
 

@@ -200,10 +200,21 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
         var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
         attributes["userID"] = settings.get_string("user-id");
+		bool removed = false;
 
         Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-            bool removed = Secret.password_clearv.end(async_res);
+			try
+			{
+				removed = Secret.password_clearv.end(async_res);
+			}
+			catch(GLib.Error e)
+			{
+				m_logger.print(LogMessage.ERROR, "InstaAPI.logout: %s".printf(e.message));
+			}
         });
+
+		if(!removed)
+			return false;
 
         var keys = settings.list_keys();
 		foreach(string key in keys)

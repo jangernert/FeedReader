@@ -326,7 +326,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
         return conditions.str;
     }
 
-    public string get()
+    public new string get()
     {
         return m_query.str;
     }

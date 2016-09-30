@@ -105,14 +105,11 @@ public class FeedReader.TwitterForm : ShareForm {
 	{
 		SourceFunc callback = setAPI.callback;
 
-		ThreadFunc<void*> run = () => {
-
-	        m_urlLength = api.getUrlLength();
-
-	        Idle.add((owned) callback);
-	        return null;
-	    };
-    	Thread.create<void*>(run, false);
+		new GLib.Thread<void*>(null, () => {
+			m_urlLength = api.getUrlLength();
+			Idle.add((owned) callback);
+			return null;
+		});
 
 		yield;
 		updateCount();

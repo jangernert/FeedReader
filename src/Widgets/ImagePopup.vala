@@ -279,28 +279,18 @@ public class FeedReader.imagePopup : Gtk.Window {
 				}
 				m_inDrag = true;
 				var display = Gdk.Display.get_default();
-				var pointer = display.get_device_manager().get_client_pointer();
+				var seat = display.get_default_seat();
+				var pointer = seat.get_pointer();
 				var cursor = new Gdk.Cursor.for_display(display, Gdk.CursorType.FLEUR);
 
-				pointer.grab(
-					this.get_window(),
-					Gdk.GrabOwnership.NONE,
-					false,
-					Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK,
-					cursor,
-					Gdk.CURRENT_TIME
-				);
-
-				// Gtk+ 3.20
-				/*var seats = display.get_default_seat();
 				seat.grab(
 					this.get_window(),
 					Gdk.SeatCapabilities.POINTER,
 					false,
 					cursor,
-					null, //Event? event
-					null //SeatGrabPrepareFunc? prepare_func
-				);*/
+					null,
+					null
+				);
 
 				Gtk.device_grab_add(m_eventBox, pointer, false);
 
@@ -327,9 +317,11 @@ public class FeedReader.imagePopup : Gtk.Window {
 			m_posX = 0;
 			m_posY = 0;
 			m_inDrag = false;
-			var pointer = Gdk.Display.get_default().get_device_manager().get_client_pointer();
+			var display = Gdk.Display.get_default();
+			var seat = display.get_default_seat();
+			var pointer = seat.get_pointer();
 			Gtk.device_grab_remove(m_eventBox, pointer);
-			pointer.ungrab(Gdk.CURRENT_TIME);
+			seat.ungrab();
 			m_eventBox.motion_notify_event.disconnect(motionNotify);
 			m_OngoingScrollID = GLib.Timeout.add(20, ScrollDragRelease);
 			return true;

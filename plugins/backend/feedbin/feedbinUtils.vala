@@ -94,7 +94,14 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			removed = Secret.password_clearv.end(async_res);
+			try
+			{
+				removed = Secret.password_clearv.end(async_res);
+			}
+			catch(GLib.Error e)
+			{
+				logger.print(LogMessage.ERROR, "feedbinUtils.deletePassword: %s".printf(e.message));
+			}
 		});
 		return removed;
 	}

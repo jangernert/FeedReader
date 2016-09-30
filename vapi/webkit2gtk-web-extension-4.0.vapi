@@ -879,16 +879,16 @@ namespace WebKit {
 			protected HTMLElement ();
 			public void click ();
 			public string get_access_key ();
-			[Deprecated (since = "2.10")]
+			[Version (deprecated = true, deprecated_since = "2.10")]
 			public WebKit.DOM.HTMLCollection get_children ();
 			public string get_content_editable ();
 			public string get_dir ();
-			[Deprecated (since = "2.8")]
+			[Version (deprecated = true, deprecated_since = "2.8")]
 			public string get_inner_html ();
 			public string get_inner_text ();
 			public bool get_is_content_editable ();
 			public string get_lang ();
-			[Deprecated (since = "2.8")]
+			[Version (deprecated = true, deprecated_since = "2.8")]
 			public string get_outer_html ();
 			public string get_outer_text ();
 			public long get_tab_index ();
@@ -896,11 +896,11 @@ namespace WebKit {
 			public void set_access_key (string value);
 			public void set_content_editable (string value) throws GLib.Error;
 			public void set_dir (string value);
-			[Deprecated (since = "2.8")]
+			[Version (deprecated = true, deprecated_since = "2.8")]
 			public void set_inner_html (string contents) throws GLib.Error;
 			public void set_inner_text (string value) throws GLib.Error;
 			public void set_lang (string value);
-			[Deprecated (since = "2.8")]
+			[Version (deprecated = true, deprecated_since = "2.8")]
 			public void set_outer_html (string contents) throws GLib.Error;
 			public void set_outer_text (string value) throws GLib.Error;
 			public void set_tab_index (long value);

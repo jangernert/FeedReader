@@ -477,7 +477,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 
 
-	        var message = @"GET / HTTP/1.1\r\nHost: $host\r\n\r\n";
+	        var message = @"HEAD / HTTP/1.1\r\nHost: $host\r\n\r\n";
 	        ssize_t bytesWritten = conn.output_stream.write(message.data);
 
 			// if can't write message
@@ -488,7 +488,8 @@ public class FeedReader.Utils : GLib.Object {
 			}
 
 	        var response = new GLib.DataInputStream(conn.input_stream);
-	        var status_line = response.read_line(null).strip();
+			size_t lenght = 0;
+	        var status_line = response.read_line_utf8(out lenght, null).strip();
 
 			// if no response received
 			if(status_line == null)
@@ -497,6 +498,7 @@ public class FeedReader.Utils : GLib.Object {
 				return false;
 			}
 
+			logger.print(LogMessage.DEBUG, status_line);
 			logger.print(LogMessage.DEBUG, "Ping: success!");
 
 			return true;

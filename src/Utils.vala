@@ -428,12 +428,12 @@ public class FeedReader.Utils : GLib.Object {
 		string url = link;
 
 		if(url.has_prefix("https://"))
-			url = url.substring("https://".length);
+			url = url.substring("https://".length, -1);
 		else if(url.has_prefix("http://"))
-			url = url.substring("http://".length);
+			url = url.substring("http://".length, -1);
 
 		if(url.has_prefix("www."))
-			url = url.substring("www.".length);
+			url = url.substring("www.".length, -1);
 
 		int pos = url.index_of_char('/');
 		if(pos != -1)

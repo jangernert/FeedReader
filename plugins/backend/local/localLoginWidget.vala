@@ -180,7 +180,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 		var label = new Gtk.Label(cat1);
 		label.get_style_context().add_class("bold");
-		label.margin_top = 15;
+		label.margin_top = 20;
 		label.margin_bottom = 5;
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);

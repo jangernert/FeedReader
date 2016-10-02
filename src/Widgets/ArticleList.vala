@@ -617,6 +617,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					if(!articleAlreadInList(item.getArticleID()))
 					{
 						while(Gtk.events_pending())
+						//if(Gtk.events_pending())
 						{
 							Gtk.main_iteration();
 						}
@@ -633,6 +634,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 						tmpRow.revert_highlight.connect(unHighlightRow);
 
 						while(Gtk.events_pending())
+						//if(Gtk.events_pending())
 						{
 							Gtk.main_iteration();
 						}
@@ -867,6 +869,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			found = false;
 
 			while(Gtk.events_pending())
+			//if(Gtk.events_pending())
 			{
 				Gtk.main_iteration();
 			}
@@ -908,6 +911,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 				foreach(Gtk.Widget row in articleChildList)
 				{
 					while(Gtk.events_pending())
+					//if(Gtk.events_pending())
 					{
 						Gtk.main_iteration();
 					}

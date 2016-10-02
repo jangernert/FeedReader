@@ -22,7 +22,7 @@ public class FeedReader.ShareRow : Gtk.ListBoxRow {
 	{
 		m_id = id;
         m_type = type;
-        var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
+        var icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/32x32/actions/%s.svg".printf(iconName));
         icon.set_size_request(32, 32);
         var serviceLabel = new Gtk.Label(username);
         serviceLabel.set_line_wrap_mode(Pango.WrapMode.WORD);

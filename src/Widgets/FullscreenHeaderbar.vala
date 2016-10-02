@@ -28,12 +28,13 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 
 	public fullscreenHeaderbar()
 	{
-		var marked_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		var share_icon = new Gtk.Image.from_icon_name("feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var marked_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-marked-symbolic.svg");
+		var unmarked_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-unmarked-symbolic.svg");
+		var read_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-read-symbolic.svg");
+		var unread_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-unread-symbolic.svg");
+		var share_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-share-symbolic.svg");
+		var tag_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-tag-symbolic.svg");
+		var close_icon = new Gtk.Image.from_icon_name("view-restore-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
 		m_mark_button.set_tooltip_text(_("Mark article (un)starred"));
@@ -80,7 +81,6 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 			});
 		});
 
-		var close_icon = new Gtk.Image.from_icon_name("view-restore-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var closeButton = new Gtk.Button();
 		closeButton.add(close_icon);
 		closeButton.set_relief(Gtk.ReliefStyle.NONE);

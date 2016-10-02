@@ -226,16 +226,17 @@ public class FeedReader.Utils : GLib.Object {
 
 		author_date += date;
 
-        string template;
 		try
 		{
-			GLib.FileUtils.get_contents(InstallPrefix + "/share/FeedReader/ArticleView/article.html", out template);
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
+			file.load_contents (null, out contents, null);
+			article.assign((string)contents);
 		}
 		catch(GLib.Error e)
 		{
 			logger.print(LogMessage.ERROR, "Utils.buildArticle: %s".printf(e.message));
 		}
-		article.assign(template);
 
 		string html_id = "$HTML";
 		int html_pos = article.str.index_of(html_id);
@@ -340,17 +341,21 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 
-		string css;
-		try{
-			GLib.FileUtils.get_contents(InstallPrefix + "/share/FeedReader/ArticleView/style.css", out css);
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
+			file.load_contents (null, out contents, null);
+			string css_id = "$CSS";
+			int css_pos = article.str.index_of(css_id);
+			article.erase(css_pos, css_id.length);
+			article.insert(css_pos, (string)contents);
 		}
-		catch(GLib.Error e){
+		catch(GLib.Error e)
+		{
 			logger.print(LogMessage.ERROR, e.message);
 		}
-		string css_id = "$CSS";
-		int css_pos = article.str.index_of(css_id);
-		article.erase(css_pos, css_id.length);
-		article.insert(css_pos, css);
+
 
 		return article.str;
 	}

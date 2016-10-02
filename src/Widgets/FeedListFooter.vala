@@ -116,7 +116,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 public class FeedReader.AddButton : Gtk.Button {
 	public AddButton()
 	{
-		var image = new Gtk.Image.from_icon_name("feed-add-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var image = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-add-symbolic.svg");
 		this.image = image;
 		this.get_style_context().remove_class("button");
 		this.get_style_context().add_class("fr-sidebar-symbolic");
@@ -144,7 +144,7 @@ public class FeedReader.RemoveButton : Gtk.Button {
 
 	public RemoveButton()
 	{
-		var image = new Gtk.Image.from_icon_name("feed-remove-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var image = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-remove-symbolic.svg");
 		this.image = image;
 		this.get_style_context().remove_class("button");
 		this.get_style_context().add_class("fr-sidebar-symbolic");

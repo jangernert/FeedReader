@@ -377,7 +377,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void setupCSS()
 	{
 		logger.print(LogMessage.DEBUG, "MainWindow: setupCSS");
-		string path = InstallPrefix + "/share/FeedReader/gtk-css/";
+		string path = "/org/gnome/FeedReader/gtk-css/";
 
 		addProvider(path + "basics.css");
 
@@ -401,21 +401,12 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private Gtk.CssProvider? addProvider(string path)
 	{
-		try
-		{
-    		Gtk.CssProvider provider = new Gtk.CssProvider();
-			provider.load_from_path(path);
-			weak Gdk.Display display = Gdk.Display.get_default();
-            weak Gdk.Screen screen = display.get_default_screen();
-			Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
-			return provider;
-		}
-		catch (Error e)
-		{
-			logger.print(LogMessage.WARNING, e.message);
-		}
-
-		return null;
+		Gtk.CssProvider provider = new Gtk.CssProvider();
+		provider.load_from_resource(path);
+		weak Gdk.Display display = Gdk.Display.get_default();
+        weak Gdk.Screen screen = display.get_default_screen();
+		Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+		return provider;
 	}
 
 	private void removeProvider(Gtk.CssProvider provider)

@@ -48,7 +48,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public string getIconName()
     {
-        return "feed-share-email";
+        return "feed-share-mail";
     }
 
 	public string getUsername(string id)

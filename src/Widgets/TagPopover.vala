@@ -124,7 +124,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 	private void setupEntry()
 	{
-		m_entry = new Gtk.Entry ();
+		m_entry = new Gtk.Entry();
 		m_entry.margin_top = 0;
 		m_entry.set_placeholder_text(_("add Tag"));
 		m_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-clear");

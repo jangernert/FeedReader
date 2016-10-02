@@ -21,6 +21,7 @@ find_package(PkgConfig)
 find_package(Vala REQUIRED)
 include(ValaVersion)
 include(ValaPrecompile)
+include(GResource)
 ensure_vala_version("0.30" MINIMUM)
 
 pkg_check_modules(LIBUNITY QUIET unity)
@@ -197,7 +198,11 @@ CUSTOM_VAPIS
     vapi/gd-1.0.vapi
 )
 
-add_executable(${UI_NAME} ${UI})
+GLIB_COMPILE_RESOURCES( GRESOURCES SOURCE
+    data/feedreader.gresource.xml
+)
+
+add_executable(${UI_NAME} ${UI} ${GRESOURCES})
 target_link_libraries(${UI_NAME} vilistextum gtkimageview gd FeedReaderCommon)
 
 
@@ -282,9 +287,7 @@ install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
 install (FILES ${PROJECT_BINARY_DIR}/WebExtension/libwebextension.so DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION ${DATADIR}/dbus-1/services/)
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/application-icons/hicolor DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css DESTINATION ${PKGDATADIR})

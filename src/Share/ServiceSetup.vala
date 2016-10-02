@@ -57,7 +57,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		m_logout_button.clicked.connect(logout);
 		m_logout_button.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
 
-		var loggedIN = new Gtk.Image.from_icon_name("feed-status-ok", Gtk.IconSize.LARGE_TOOLBAR);
+		var loggedIN = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/24x24/status/feed-status-ok.svg");
 
 		m_iconStack.add_named(m_login_button, "button");
 		m_iconStack.add_named(loggedIN, "loggedIN");
@@ -67,7 +67,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 		m_box.set_size_request(0, 50);
 
-		var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
+		var icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/32x32/actions/%s.svg".printf(iconName));
 		icon.set_size_request(100, 0);
 
 		var label = new Gtk.Label(m_name);

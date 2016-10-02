@@ -31,9 +31,7 @@ CUSTOM_VAPIS
     ${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
 )
 
-GLIB_COMPILE_RESOURCES( GRESOURCES SOURCE
-    ${NAME}.gresource.xml
-)
+GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${NAME}.gresource.xml)
 
 add_library(${NAME} SHARED ${VALA_C} ${GRESOURCES})
 add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})

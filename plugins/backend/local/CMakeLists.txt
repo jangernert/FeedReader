@@ -75,9 +75,7 @@ CUSTOM_VAPIS
     rss-glib/rss-glib-1.0.vapi
 )
 
-GLIB_COMPILE_RESOURCES( GRESOURCES SOURCE
-    ${NAME}.gresource.xml
-)
+GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${NAME}.gresource.xml)
 
 add_library(${UINAME} SHARED ${VALA_C2} ${GRESOURCES})
 target_link_libraries(${UINAME} gobject-2.0 glib-2.0 curl rss-glib mrss nxml)

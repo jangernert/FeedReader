@@ -198,9 +198,7 @@ CUSTOM_VAPIS
     vapi/gd-1.0.vapi
 )
 
-GLIB_COMPILE_RESOURCES( GRESOURCES SOURCE
-    data/feedreader.gresource.xml
-)
+GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE data/feedreader.gresource.xml)
 
 add_executable(${UI_NAME} ${UI} ${GRESOURCES})
 target_link_libraries(${UI_NAME} vilistextum gtkimageview gd FeedReaderCommon)

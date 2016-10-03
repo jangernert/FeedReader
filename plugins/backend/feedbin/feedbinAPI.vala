@@ -26,7 +26,7 @@ public class FeedReader.feedbinAPI : Object {
 
 	public LoginResponse login()
 	{
-		Logger.get().debug("feedbin backend: login");
+		Logger.debug("feedbin backend: login");
 
 		if(!Utils.ping("feedbin.com"))
 			return LoginResponse.NO_CONNECTION;
@@ -48,8 +48,8 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.get().error("getTagList: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -101,8 +101,8 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.get().error("getTagList: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -164,7 +164,7 @@ public class FeedReader.feedbinAPI : Object {
 		if(feedID != null)
 			request = "feeds/%s/%s".printf(feedID, request);
 
-		Logger.get().debug(request);
+		Logger.debug(request);
 
 		string response = m_connection.getRequest(request);
 
@@ -175,23 +175,23 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch(Error e)
 		{
-			Logger.get().error("getEntries: Could not load message response");
-			Logger.get().error(e.message);
-			Logger.get().error(response);
+			Logger.error("getEntries: Could not load message response");
+			Logger.error(e.message);
+			Logger.error(response);
 		}
 
 		var root = parser.get_root();
 
 		if(root.get_node_type() != Json.NodeType.ARRAY)
 		{
-			Logger.get().error(response);
+			Logger.error(response);
 			return 0;
 		}
 
 		var array = root.get_array();
 		uint length = array.get_length();
 
-		Logger.get().debug("article count: %u".printf(length));
+		Logger.debug("article count: %u".printf(length));
 
 		for(uint i = 0; i < length; i++)
 		{
@@ -324,12 +324,12 @@ public class FeedReader.feedbinAPI : Object {
 		gen.set_root(root);
 		string json = gen.to_data(null);
 
-		Logger.get().debug(json);
+		Logger.debug(json);
 
 		var response = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
 
-		Logger.get().debug("subscriptions/%s/update.json".printf(feedID));
-		Logger.get().debug(response);
+		Logger.debug("subscriptions/%s/update.json".printf(feedID));
+		Logger.debug(response);
 	}
 
 }

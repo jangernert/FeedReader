@@ -33,7 +33,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public string getRequestToken()
     {
-		Logger.get().debug("TwitterAPI: get request token");
+		Logger.debug("TwitterAPI: get request token");
 
 		m_oauthObject = new Rest.OAuthProxy (
             TwitterSecrets.key,
@@ -47,7 +47,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("TwitterAPI.getRequestToken: %s".printf(e.message));
+			Logger.error("TwitterAPI.getRequestToken: %s".printf(e.message));
 		}
 
 		return m_oauthObject.get_token();
@@ -61,7 +61,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("TwitterAPI.getAccessToken: %s".printf(e.message));
+			Logger.error("TwitterAPI.getAccessToken: %s".printf(e.message));
 		}
 
         var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
@@ -83,7 +83,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
         {
-            Logger.get().error(e.message);
+            Logger.error(e.message);
 		}
 
 		var parser = new Json.Parser();
@@ -93,8 +93,8 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
 		{
-            Logger.get().error("Could not load response to Message from twitter");
-            Logger.get().error(e.message);
+            Logger.error("Could not load response to Message from twitter");
+            Logger.error(e.message);
 		}
 
 		var root_object = parser.get_root().get_object();
@@ -144,7 +144,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
         {
-            Logger.get().error(e.message);
+            Logger.error(e.message);
 			return false;
 		}
 

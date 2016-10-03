@@ -91,7 +91,7 @@ public class FeedReader.FeedlyUtils : Object {
 
 		if((int)now.to_unix() >  getExpiration())
 		{
-			Logger.get().warning("FeedlyUtils: access token expired");
+			Logger.warning("FeedlyUtils: access token expired");
 			return false;
 		}
 
@@ -123,11 +123,11 @@ public class FeedReader.FeedlyUtils : Object {
 				}
 				catch(GLib.FileError e)
 				{
-					Logger.get().error("Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			Logger.get().error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 		// file already exists

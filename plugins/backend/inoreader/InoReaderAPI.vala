@@ -61,8 +61,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getUserID: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getUserID: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -71,7 +71,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
-			Logger.get().info("Inoreader: userID = " + m_userID);
+			Logger.info("Inoreader: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
 				m_utils.setEmail(root.get_string_member("userEmail"));
@@ -97,8 +97,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getFeeds: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getFeeds: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -163,8 +163,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getCategoriesAndTags: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -221,8 +221,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getTotalUnread: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTotalUnread: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -240,7 +240,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		}
 
-		Logger.get().debug("getTotalUnread %i".printf(count));
+		Logger.debug("getTotalUnread %i".printf(count));
 		return count;
 	}
 
@@ -258,8 +258,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getCategoriesAndTags: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -305,8 +305,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getCategoriesAndTags: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -402,7 +402,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
-		Logger.get().debug(message_string);
+		Logger.debug(message_string);
 		m_connection.send_request("mark-all-as-read", message_string);
 	}
 

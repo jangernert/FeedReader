@@ -55,7 +55,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
                 m_values.add(value);
                 return true;
         }
-        Logger.get().error("insertValuePair");
+        Logger.error("insertValuePair");
         return false;
     }
 
@@ -66,7 +66,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             m_fields.add(field);
             return true;
         }
-        Logger.get().error("selectField");
+        Logger.error("selectField");
         return false;
     }
 
@@ -81,7 +81,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
                 m_values.add(value);
             return true;
         }
-        Logger.get().error("updateValuePair");
+        Logger.error("updateValuePair");
 
         return false;
     }
@@ -103,7 +103,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             m_conditions.add(condition.printf(field, value));
             return true;
         }
-        Logger.get().error("addEqualsConditionString");
+        Logger.error("addEqualsConditionString");
         return false;
     }
 
@@ -116,7 +116,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             m_conditions.add(condition);
             return true;
         }
-        Logger.get().error("addCustomCondition");
+        Logger.error("addCustomCondition");
         return false;
     }
 
@@ -154,7 +154,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             return true;
         }
 
-        Logger.get().error("addRangeConditionString");
+        Logger.error("addRangeConditionString");
         return false;
     }
 
@@ -174,7 +174,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
             return true;
         }
-        Logger.get().error("addRangeConditionInt");
+        Logger.error("addRangeConditionInt");
         return false;
     }
 
@@ -193,7 +193,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
             return true;
         }
-        Logger.get().error("orderBy");
+        Logger.error("orderBy");
         return false;
     }
 
@@ -204,7 +204,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             m_limit = " LIMIT %u".printf(limit);
             return true;
         }
-        Logger.get().error("limit");
+        Logger.error("limit");
         return false;
     }
 
@@ -215,7 +215,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
             m_offset = " OFFSET %u".printf(offset);
             return true;
         }
-        Logger.get().error("offset");
+        Logger.error("offset");
         return false;
     }
 
@@ -223,7 +223,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
     {
         if(!m_noError)
         {
-            Logger.get().error("build query");
+            Logger.error("build query");
             return "error setting up the query";
         }
 
@@ -338,6 +338,6 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
     public void print()
     {
-        Logger.get().debug(m_query.str);
+        Logger.debug(m_query.str);
     }
 }

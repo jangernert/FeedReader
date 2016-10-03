@@ -32,8 +32,8 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		FeedListType IDtype = FeedListType.FEED;
 
-		Logger.get().debug("selectedRow 0: %s".printf(selectedRow[0]));
-		Logger.get().debug("selectedRow 1: %s".printf(selectedRow[1]));
+		Logger.debug("selectedRow 0: %s".printf(selectedRow[0]));
+		Logger.debug("selectedRow 1: %s".printf(selectedRow[1]));
 
 		switch(selectedRow[0])
 		{
@@ -104,7 +104,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
         catch(GLib.Error e)
         {
-            Logger.get().error("UtilsUI.canManipulateContent: %s".printf(e.message));
+            Logger.error("UtilsUI.canManipulateContent: %s".printf(e.message));
         }
 
 		return false;
@@ -151,7 +151,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("UtilsUI.onlyShowFeeds: %s".printf(e.message));
+			Logger.error("UtilsUI.onlyShowFeeds: %s".printf(e.message));
 		}
 
 		return false;
@@ -199,7 +199,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 						}
 						catch(Error e)
 						{
-							Logger.get().debug("imagePopup: save file: " + e.message);
+							Logger.debug("imagePopup: save file: " + e.message);
 						}
 						break;
 
@@ -213,7 +213,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("UtilsUI.saveImageDialog: %s".printf(e.message));
+			Logger.error("UtilsUI.saveImageDialog: %s".printf(e.message));
 		}
 	}
 
@@ -297,7 +297,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("UtilsUI.testGOA: %s".printf(e.message));
+			Logger.error("UtilsUI.testGOA: %s".printf(e.message));
 		}
 	}
 }

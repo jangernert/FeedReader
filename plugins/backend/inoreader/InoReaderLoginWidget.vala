@@ -66,10 +66,10 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 	{
 		if(redirectURL.has_prefix(InoReaderSecret.apiRedirectUri))
 		{
-			Logger.get().debug(redirectURL);
+			Logger.debug(redirectURL);
 			int csrf_start = redirectURL.index_of("state=")+6;
 			string csrf_code = redirectURL.substring(csrf_start);
-			Logger.get().debug("InoReaderLoginWidget: csrf_code: " + csrf_code);
+			Logger.debug("InoReaderLoginWidget: csrf_code: " + csrf_code);
 
 			if(csrf_code == InoReaderSecret.csrf_protection)
 			{
@@ -77,16 +77,16 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 				int end = redirectURL.index_of("&", start);
 				string code = redirectURL.substring(start, end-start);
 				m_utils.setApiCode(code);
-				Logger.get().debug("InoReaderLoginWidget: set inoreader-api-code: " + code);
+				Logger.debug("InoReaderLoginWidget: set inoreader-api-code: " + code);
 				GLib.Thread.usleep(500000);
 				return true;
 			}
 
-			Logger.get().error("InoReaderLoginWidget: csrf_code mismatch");
+			Logger.error("InoReaderLoginWidget: csrf_code mismatch");
 		}
 		else
 		{
-			Logger.get().warning("InoReaderLoginWidget: wrong redirect_uri: " + redirectURL);
+			Logger.warning("InoReaderLoginWidget: wrong redirect_uri: " + redirectURL);
 		}
 
 		return false;

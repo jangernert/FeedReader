@@ -42,7 +42,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
         m_session.authenticate.connect((msg, auth, retrying) => {
 			if(m_utils.getHtaccessUser() == "")
 			{
-				Logger.get().error("ownCloud Session: need Authentication");
+				Logger.error("ownCloud Session: need Authentication");
 			}
 			else
 			{
@@ -93,20 +93,20 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
         if(m_message_soup.tls_errors != 0 && !settingsTweaks.get_boolean("ignore-tls-errors"))
 		{
-			Logger.get().info("TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
+			Logger.info("TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;
 		}
 
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")
         {
-            Logger.get().error("ownCloud Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
+            Logger.error("ownCloud Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
             return ConnectionError.NO_RESPONSE;
         }
 
         if(ping)
         {
-            Logger.get().debug("ownCloud Message: ping successfull");
+            Logger.debug("ownCloud Message: ping successfull");
 			return ConnectionError.SUCCESS;
         }
 
@@ -114,9 +114,9 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
 		catch (Error e) {
-			Logger.get().error("Could not load response from Message to owncloud");
+			Logger.error("Could not load response from Message to owncloud");
             printMessage();
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 			return ConnectionError.UNKNOWN;
 		}
 
@@ -136,11 +136,11 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
     public void printMessage()
     {
-        Logger.get().debug(m_message_string.str);
+        Logger.debug(m_message_string.str);
     }
 
 	public void printResponse()
 	{
-		Logger.get().debug((string)m_message_soup.response_body.flatten().data);
+		Logger.debug((string)m_message_soup.response_body.flatten().data);
 	}
 }

@@ -29,7 +29,7 @@ public class FeedReader.OldReaderConnection {
 
 	public LoginResponse getToken()
 	{
-		Logger.get().debug("OldReader Connection: getToken()");
+		Logger.debug("OldReader Connection: getToken()");
 
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", "https://theoldreader.com/accounts/ClientLogin/");
@@ -42,22 +42,22 @@ public class FeedReader.OldReaderConnection {
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
-				Logger.get().error("Regex oldreader - %s".printf(response));
+				Logger.error("Regex oldreader - %s".printf(response));
 				string split = regex.replace( response, -1,0,"");
-				Logger.get().error("authcode"+split);
+				Logger.error("authcode"+split);
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}
 			else
 			{
-				Logger.get().debug(response);
+				Logger.debug(response);
 				return LoginResponse.WRONG_LOGIN;
 			}
 		}
 		catch(Error e)
 		{
-			Logger.get().error("OldReaderConnection - getToken: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("OldReaderConnection - getToken: Could not load message response");
+			Logger.error(e.message);
 			return LoginResponse.UNKNOWN_ERROR;
 		}
 	}

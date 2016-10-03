@@ -152,7 +152,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		if(!m_dataBase.isTableEmpty("tags"))
 			tagID = (int.parse(m_dataBase.getMaxID("tags", "tagID")) + 1).to_string();
 
-		Logger.get().info("createTag: ID = " + tagID);
+		Logger.info("createTag: ID = " + tagID);
 		return tagID;
 	}
 
@@ -195,7 +195,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			feedID = "feedID%i".printf(int.parse(m_dataBase.getHighestFeedID().substring(6)) + 1);
 		}
 
-		Logger.get().info("addFeed: ID = " + feedID);
+		Logger.info("addFeed: ID = " + feedID);
 		var Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
 
 		var list = new Gee.LinkedList<feed>();
@@ -238,7 +238,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			}
 		}
 
-		Logger.get().info("createCategory: ID = " + catID);
+		Logger.info("createCategory: ID = " + catID);
 		return catID;
 	}
 
@@ -317,7 +317,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("localInterface.getArticles: %s".printf(e.message));
+				Logger.error("localInterface.getArticles: %s".printf(e.message));
 			}
 			var doc = parser.get_document();
 			string? locale = null;
@@ -339,8 +339,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
                 	date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
 				}
 
-				Logger.get().info(item.title);
-				Logger.get().info(m_utils.convert(item.title, locale));
+				Logger.info(item.title);
+				Logger.info(m_utils.convert(item.title, locale));
 
 				string content = m_utils.convert(item.description, locale);
 
@@ -387,7 +387,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(new_articles.size == 10 || Article.getArticleID() == last)
 				{
 					writeInterfaceState();
-					Logger.get().debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
+					Logger.debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
 					m_dataBase.write_articles(new_articles);
 					updateFeedList();
 					updateArticleList();

@@ -55,7 +55,7 @@ public class FeedReader.Share : GLib.Object {
 
 	private void refreshAccounts()
 	{
-		Logger.get().debug("Share: refreshAccounts");
+		Logger.debug("Share: refreshAccounts");
 		m_accounts = new Gee.ArrayList<ShareAccount>();
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
@@ -169,7 +169,7 @@ public class FeedReader.Share : GLib.Object {
 
 	public void accountAdded(string id, string type, string username, string iconName, string accountName)
 	{
-		Logger.get().debug("Share: %s account added for user: %s".printf(type, username));
+		Logger.debug("Share: %s account added for user: %s".printf(type, username));
 		m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
 	}
 

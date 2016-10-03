@@ -33,7 +33,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		Logger.get().debug("TTRSS: login");
+		Logger.debug("TTRSS: login");
 		string username = m_utils.getUser();
 		string passwd = m_utils.getPasswd();
 		m_ttrss_url = m_utils.getURL();
@@ -66,8 +66,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			var response = message.get_response_object();
 			m_ttrss_sessionid = response.get_string_member("session_id");
 			m_ttrss_apilevel = response.get_int_member("api_level");
-			Logger.get().info("TTRSS Session ID: %s".printf(m_ttrss_sessionid));
-			Logger.get().info("TTRSS API Level: %lld".printf(m_ttrss_apilevel));
+			Logger.info("TTRSS Session ID: %s".printf(m_ttrss_sessionid));
+			Logger.info("TTRSS API Level: %lld".printf(m_ttrss_apilevel));
 
 			if(haveAPIplugin())
 				return LoginResponse.SUCCESS;
@@ -104,7 +104,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "logout");
 		int error = message.send();
-		Logger.get().warning("TTRSS: logout");
+		Logger.warning("TTRSS: logout");
 		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
@@ -124,7 +124,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "isLoggedIn");
 		int error = message.send();
-		Logger.get().debug("TTRSS: isloggedin?");
+		Logger.debug("TTRSS: isloggedin?");
 		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
@@ -172,7 +172,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			var response = message.get_response_object();
 			unread = int.parse(response.get_string_member("unread"));
 		}
-		Logger.get().info("There are %i unread articles".printf(unread));
+		Logger.info("There are %i unread articles".printf(unread));
 
 		return unread;
 	}
@@ -905,7 +905,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	public bool ping()
 	{
 		var message = new ttrssMessage(m_ttrss_url);
-		Logger.get().debug("TTRSS: ping");
+		Logger.debug("TTRSS: ping");
 		int error = message.send(true);
 
 		if(error == ConnectionError.SUCCESS)

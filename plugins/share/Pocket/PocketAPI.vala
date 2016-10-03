@@ -28,7 +28,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public string getRequestToken()
     {
-    	Logger.get().debug("PocketAPI: get request token");
+    	Logger.debug("PocketAPI: get request token");
         var session = new Soup.Session();
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&redirect_uri=" + PocketSecrets.oauth_callback;
 
@@ -62,7 +62,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 			return false;
 
         string response = (string)message_soup.response_body.flatten().data;
-        Logger.get().debug(response);
+        Logger.debug(response);
         int tokenStart = response.index_of_char('=')+1;
         int tokenEnd = response.index_of_char('&', tokenStart);
         int userStart = response.index_of_char('=', tokenEnd)+1;
@@ -90,7 +90,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
                         + "&consumer_key=" + PocketSecrets.oauth_consumer_key
                         + "&access_token=" + settings.get_string("oauth-access-token");
 
-        Logger.get().debug("PocketAPI: " + message);
+        Logger.debug("PocketAPI: " + message);
 
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);

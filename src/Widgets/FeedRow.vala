@@ -131,21 +131,21 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("FeedRow.constructor: %s".printf(e.message));
+				Logger.error("FeedRow.constructor: %s".printf(e.message));
 			}
 		}
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		Logger.get().debug("FeedRow: onDragBegin");
+		Logger.debug("FeedRow: onDragBegin");
 		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
 
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
-		Logger.get().debug("FeedRow: onDragDataGet");
+		Logger.debug("FeedRow: onDragDataGet");
 
 		if(target_type == DragTarget.FEED)
 		{
@@ -220,7 +220,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 				}
 				catch(GLib.Error e)
 				{
-					Logger.get().error("FeedRow.onClick: %s".printf(e.message));
+					Logger.error("FeedRow.onClick: %s".printf(e.message));
 				}
 			});
 			notification.action.connect(() => {
@@ -290,7 +290,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("FeedRow.showRenamePopover: %s".printf(e.message));
+				Logger.error("FeedRow.showRenamePopover: %s".printf(e.message));
 			}
 		});
 

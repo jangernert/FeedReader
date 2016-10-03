@@ -136,7 +136,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			{
 				m_width = allocation.width;
 				m_height = allocation.height;
-				Logger.get().debug("ArticleView: size changed");
+				Logger.debug("ArticleView: size changed");
 				recalculate.begin((obj, res) => {
 					recalculate.end(res);
 				});
@@ -196,7 +196,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
-				Logger.get().info("ArticleView: webextension-message: " + message);
+				Logger.info("ArticleView: webextension-message: " + message);
 			});
 			recalculate.begin((obj, res) => {
 				recalculate.end(res);
@@ -204,7 +204,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 		catch(GLib.IOError e)
 		{
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 		}
     }
 
@@ -219,7 +219,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	    	}
 	    	catch(GLib.IOError e)
 	    	{
-	    		Logger.get().warning("ArticleView: recalculate " + e.message);
+	    		Logger.warning("ArticleView: recalculate " + e.message);
 	    	}
 			Idle.add((owned) callback);
 			return null;
@@ -348,11 +348,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 	public async void fillContent(string articleID)
 	{
 		m_currentArticle = articleID;
-		Logger.get().debug("ArticleView: load article %s".printf(articleID));
+		Logger.debug("ArticleView: load article %s".printf(articleID));
 
 		if(m_currentView.is_loading && !m_crashed)
 		{
-			Logger.get().debug("ArticleView: still busy loading last article. will cancel loading and load new article");
+			Logger.debug("ArticleView: still busy loading last article. will cancel loading and load new article");
 			m_currentView.load_failed.connect(loadFailed);
 			m_currentView.stop_loading();
 			m_stopLoading = true;
@@ -419,30 +419,30 @@ public class FeedReader.articleView : Gtk.Overlay {
 		switch (load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
-				Logger.get().debug("ArticleView: load STARTED");
+				Logger.debug("ArticleView: load STARTED");
 				string url = m_currentView.get_uri();
 				if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
 				{
-					Logger.get().debug("ArticleView: open external url: %s".printf(url));
+					Logger.debug("ArticleView: open external url: %s".printf(url));
 					try{
 						Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
 					}
 					catch(GLib.Error e){
-						Logger.get().debug("could not open the link in an external browser: %s".printf(e.message));
+						Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 					}
 					m_currentView.stop_loading();
 				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
-				Logger.get().debug("ArticleView: load COMMITTED");
+				Logger.debug("ArticleView: load COMMITTED");
 				if(m_searchTerm != "")
 					m_search.search(m_searchTerm, WebKit.FindOptions.CASE_INSENSITIVE, 99);
 				break;
 			case WebKit.LoadEvent.FINISHED:
-				Logger.get().debug("ArticleView: load FINISHED");
+				Logger.debug("ArticleView: load FINISHED");
 				if(m_stopLoading)
 				{
-					Logger.get().debug("ArticleView: loading finished before canceling");
+					Logger.debug("ArticleView: loading finished before canceling");
 					m_currentView.load_failed.disconnect(loadFailed);
 					m_stopLoading = false;
 					reload();
@@ -464,10 +464,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool loadFailed(WebKit.LoadEvent event, string failing_uri, void* error)
 	{
 		GLib.Error e = (GLib.Error)error;
-		Logger.get().debug("ArticleView: load failed: message: \"%s\", domain \"%s\", code \"%i\"".printf(e.message, e.domain.to_string(), e.code));
+		Logger.debug("ArticleView: load failed: message: \"%s\", domain \"%s\", code \"%i\"".printf(e.message, e.domain.to_string(), e.code));
 		if(e.matches(WebKit.NetworkError.quark(), 302))
 		{
-			Logger.get().debug("ArticleView: loading canceled " + m_currentArticle);
+			Logger.debug("ArticleView: loading canceled " + m_currentArticle);
 			WebKit.WebContext.get_default().clear_cache();
 			m_currentView.load_failed.disconnect(loadFailed);
 			m_stopLoading = false;
@@ -485,7 +485,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("ArticleView.setScrollPos: %s".printf(e.message));
+				Logger.error("ArticleView.setScrollPos: %s".printf(e.message));
 			}
 		});
 	}
@@ -511,7 +511,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("ArticleView.setScrollPos: %s".printf(e.message));
+				Logger.error("ArticleView.setScrollPos: %s".printf(e.message));
 			}
 			upper = int.parse(m_currentView.get_title());
 			loop.quit();
@@ -537,7 +537,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				}
 				catch(GLib.Error e)
 				{
-					Logger.get().error("ArticleView: could not get scroll-pos, javascript error: " + e.message);
+					Logger.error("ArticleView: could not get scroll-pos, javascript error: " + e.message);
 				}
 				scrollPos = int.parse(m_currentView.get_title());
 				loop.quit();
@@ -802,7 +802,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		switch(m_stack.get_visible_child_name())
 		{
 			case "view1":
-				Logger.get().debug("ArticleView: view2");
+				Logger.debug("ArticleView: view2");
 				m_currentView = m_view2;
 				m_stack.set_visible_child_name("view2");
 				GLib.Timeout.add(m_animationDuration + 10, () => {
@@ -814,7 +814,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 			case "view2":
 			case "empty":
-				Logger.get().debug("ArticleView: view1");
+				Logger.debug("ArticleView: view1");
 				m_currentView = m_view1;
 				m_stack.set_visible_child_name("view1");
 				GLib.Timeout.add(m_animationDuration + 10, () => {
@@ -874,7 +874,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private bool onCrash()
 	{
-		Logger.get().error("ArticleView: webview crashed");
+		Logger.error("ArticleView: webview crashed");
 		m_crashed = true;
 		return false;
 	}

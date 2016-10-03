@@ -79,7 +79,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 				return false;
 		}
 
-		Logger.get().debug("ColorCircle: click");
+		Logger.debug("ColorCircle: click");
 		clicked(m_color);
 		return true;
 	}

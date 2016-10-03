@@ -48,7 +48,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 		}
 
 		if(passwd == null)
@@ -73,7 +73,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("feedbinUtils: setPassword: " + e.message);
+			Logger.error("feedbinUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("feedbinUtils.deletePassword: %s".printf(e.message));
+				Logger.error("feedbinUtils.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;

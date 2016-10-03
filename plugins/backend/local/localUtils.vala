@@ -59,7 +59,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("localInterface - addFeed: " + e.message);
+			Logger.error("localInterface - addFeed: " + e.message);
 		}
 
 		return null;
@@ -79,7 +79,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(ConvertError e)
 		{
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 		}
 
 		return "";
@@ -96,7 +96,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("localUtils - deleteIcon: " + e.message);
+			Logger.error("localUtils - deleteIcon: " + e.message);
 		}
 		return false;
 	}
@@ -110,7 +110,7 @@ public class FeedReader.localUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//Logger.get().debug(e.message);
+			//Logger.debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id + ".ico";
@@ -135,11 +135,11 @@ public class FeedReader.localUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					Logger.get().error("Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			Logger.get().error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

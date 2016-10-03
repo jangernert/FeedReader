@@ -96,7 +96,7 @@ public class FeedReader.freshUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 		}
 
 		if(passwd == null)
@@ -121,7 +121,7 @@ public class FeedReader.freshUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("freshUtils: setPassword: " + e.message);
+			Logger.error("freshUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class FeedReader.freshUtils : GLib.Object {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("freshUtils.deletePassword: %s".printf(e.message));
+				Logger.error("freshUtils.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;
@@ -172,7 +172,7 @@ public class FeedReader.freshUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			Logger.get().error("freshUtils: getHtaccessPasswd: " + e.message);
+			Logger.error("freshUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		if(passwd == null)
@@ -199,7 +199,7 @@ public class FeedReader.freshUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("freshUtils: setHtAccessPassword: " + e.message);
+			Logger.error("freshUtils: setHtAccessPassword: " + e.message);
 		}
 	}
 
@@ -228,11 +228,11 @@ public class FeedReader.freshUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					Logger.get().error("Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			Logger.get().error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 		// file already exists

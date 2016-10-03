@@ -80,12 +80,12 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 		if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
 		{
-			Logger.get().debug(redirectURL);
+			Logger.debug(redirectURL);
 			int start = redirectURL.index_of("=")+1;
 			int end = redirectURL.index_of("&");
 			string code = redirectURL.substring(start, end-start);
 			m_utils.setApiCode(code);
-			Logger.get().debug("feedlyLoginWidget: set feedly-api-code: " + code);
+			Logger.debug("feedlyLoginWidget: set feedly-api-code: " + code);
 			GLib.Thread.usleep(500000);
 			return true;
 		}

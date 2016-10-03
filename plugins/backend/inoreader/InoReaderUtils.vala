@@ -111,7 +111,7 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 		
 		if((int)now.to_unix() >  getExpiration())
 		{
-			Logger.get().warning("InoReaderUtils: access token expired");
+			Logger.warning("InoReaderUtils: access token expired");
 			return false;
 		}
 
@@ -127,7 +127,7 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//Logger.get().debug(e.message);
+			//Logger.debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
@@ -152,11 +152,11 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					Logger.get().error("Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			Logger.get().error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

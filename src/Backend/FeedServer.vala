@@ -36,7 +36,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			"m_dataBase", dataBase);
 
 		m_extensions.extension_added.connect((info, extension) => {
-			Logger.get().debug("feedserver: plugin loaded %s".printf(info.get_name()));
+			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
 			m_plugin = (extension as FeedServerInterface);
 			m_plugin.init();
 			m_plugin.newFeedList.connect(() => { newFeedList(); });
@@ -49,15 +49,15 @@ public class FeedReader.FeedServer : GLib.Object {
 		});
 
 		m_extensions.extension_removed.connect((info, extension) => {
-			Logger.get().debug("feedserver: plugin removed %s".printf(info.get_name()));
+			Logger.debug("feedserver: plugin removed %s".printf(info.get_name()));
 		});
 
 		m_engine.load_plugin.connect((info) => {
-			Logger.get().debug("feedserver: engine load %s".printf(info.get_name()));
+			Logger.debug("feedserver: engine load %s".printf(info.get_name()));
 		});
 
 		m_engine.unload_plugin.connect((info) => {
-			Logger.get().debug("feedserver: engine unload %s".printf(info.get_name()));
+			Logger.debug("feedserver: engine unload %s".printf(info.get_name()));
 		});
 
 		loadPlugin(plug_name);
@@ -65,7 +65,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool unloadPlugin()
 	{
-		Logger.get().debug("feedserver: unload plugin %s".printf(m_plugName));
+		Logger.debug("feedserver: unload plugin %s".printf(m_plugName));
 		if(m_pluginLoaded)
 		{
 			var plugin = m_engine.get_plugin_info(m_plugName);
@@ -76,7 +76,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool loadPlugin(string plugName)
 	{
-		Logger.get().debug("feedserver: load plugin \"%s\"".printf(plugName));
+		Logger.debug("feedserver: load plugin \"%s\"".printf(plugName));
 		m_plugName = plugName;
 		var plugin = m_engine.get_plugin_info(plugName);
 
@@ -86,7 +86,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_pluginLoaded = false;
 
 		if(!m_pluginLoaded)
-			Logger.get().error("feedserver: couldn't load plugin %s".printf(m_plugName));
+			Logger.error("feedserver: couldn't load plugin %s".printf(m_plugName));
 
 		return m_pluginLoaded;
 	}
@@ -100,7 +100,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		if(!serverAvailable())
 		{
-			Logger.get().debug("FeedServer: can't snyc - not logged in or unreachable");
+			Logger.debug("FeedServer: can't snyc - not logged in or unreachable");
 			return;
 		}
 
@@ -112,7 +112,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(!getFeedsAndCats(feeds, categories, tags))
 		{
-			Logger.get().error("FeedServer: something went wrong getting categories and feeds");
+			Logger.error("FeedServer: something went wrong getting categories and feeds");
 			return;
 		}
 
@@ -197,7 +197,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public void InitSyncContent()
 	{
-		Logger.get().debug("FeedServer: initial sync");
+		Logger.debug("FeedServer: initial sync");
 
 		var categories = new Gee.LinkedList<category>();
 		var feeds      = new Gee.LinkedList<feed>();
@@ -280,14 +280,14 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(newArticles > 0)
 		{
-			Logger.get().debug("FeedServer: new articles: %i".printf(newArticles));
+			Logger.debug("FeedServer: new articles: %i".printf(newArticles));
 			writeInterfaceState();
 			updateFeedList();
 			updateArticleList();
 
 			if(Settings.state().get_boolean("no-animations"))
 			{
-				Logger.get().debug("UI NOT running: setting \"articlelist-new-rows\"");
+				Logger.debug("UI NOT running: setting \"articlelist-new-rows\"");
 				int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
 				Settings.state().set_int("articlelist-new-rows", newCount);
 			}
@@ -304,7 +304,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			if(!Notify.is_initted())
 			{
-				Logger.get().error("notification: libnotifiy not initialized");
+				Logger.error("notification: libnotifiy not initialized");
 				return;
 			}
 
@@ -326,18 +326,18 @@ public class FeedReader.FeedServer : GLib.Object {
 					if(m_notifyActionSupport)
 					{
 						notification.add_action ("default", "Show FeedReader", (notification, action) => {
-							Logger.get().debug("notification: default action");
+							Logger.debug("notification: default action");
 							try {
 								notification.close();
 							} catch (Error e) {
-								Logger.get().error(e.message);
+								Logger.error(e.message);
 							}
 
 							string[] spawn_args = {"feedreader"};
 							try{
 								GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 							}catch(GLib.SpawnError e){
-								Logger.get().error("spawning command line: %s".printf(e.message));
+								Logger.error("spawning command line: %s".printf(e.message));
 							}
 						});
 					}
@@ -350,7 +350,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				notification.show();
 			}
 		}catch (GLib.Error e) {
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 		}
 	}
 
@@ -402,7 +402,7 @@ public class FeedReader.FeedServer : GLib.Object {
         Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
         if (doc == null)
         {
-            Logger.get().debug("Grabber: parsing failed");
+            Logger.debug("Grabber: parsing failed");
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
@@ -456,13 +456,13 @@ public class FeedReader.FeedServer : GLib.Object {
 				var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 				stream.write(html.data);
-				Logger.get().debug("Grabber: article html written to " + path);
+				Logger.debug("Grabber: article html written to " + path);
 
 				string output = libVilistextum.parse(html, 1);
 
 				if(output == "" || output == null)
 				{
-					Logger.get().error("could not generate preview text");
+					Logger.error("could not generate preview text");
 					return;
 				}
 
@@ -478,16 +478,16 @@ public class FeedReader.FeedServer : GLib.Object {
 				stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 				stream.write(output.data);
-				Logger.get().debug("Grabber: preview written to " + path);
+				Logger.debug("Grabber: preview written to " + path);
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("FeedServer.grabArticle: %s".printf(e.message));
+				Logger.error("FeedServer.grabArticle: %s".printf(e.message));
 			}
 		}
 		else
 		{
-			Logger.get().error("FeedServer.grabArticle: article could not be processed " + url);
+			Logger.error("FeedServer.grabArticle: article could not be processed " + url);
 		}
 	}
 
@@ -498,7 +498,7 @@ public class FeedReader.FeedServer : GLib.Object {
         Html.Doc* doc = html_cntx.read_file(htmlFile);
         if (doc == null)
         {
-            Logger.get().debug("Grabber: parsing failed");
+            Logger.debug("Grabber: parsing failed");
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, url);
@@ -531,7 +531,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("FeedServer.grabImages: %s".printf(e.message));
+			Logger.error("FeedServer.grabImages: %s".printf(e.message));
 		}
 
 		delete doc;
@@ -558,7 +558,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return null;
 
-		Logger.get().debug("feedserver: symbolicIcon");
+		Logger.debug("feedserver: symbolicIcon");
 
 		return m_plugin.symbolicIcon();
 	}

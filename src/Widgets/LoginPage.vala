@@ -111,7 +111,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	{
 		var serviceRow = (row as LoginRow);
 		var extension = serviceRow.getExtension();
-		Logger.get().debug("serviceSelected: %s".printf(serviceRow.getServiceName()));
+		Logger.debug("serviceSelected: %s".printf(serviceRow.getServiceName()));
 
 		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		window.getSimpleHeader().showBackButton(true);
@@ -176,7 +176,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	public void writeLoginData()
 	{
-		Logger.get().debug("write login data");
+		Logger.debug("write login data");
 		var ext = getActiveExtension();
 		ext.writeData();
 		login(ext.getID());
@@ -187,7 +187,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		try
 		{
 			LoginResponse status = DBusConnection.get_default().login(id);
-			Logger.get().debug("LoginPage: status = " + status.to_string());
+			Logger.debug("LoginPage: status = " + status.to_string());
 			if(status == LoginResponse.SUCCESS)
 			{
 				var ext = getActiveExtension();
@@ -198,7 +198,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 					}
 					catch(GLib.Error e)
 					{
-						Logger.get().error("LoginPage.login: %s".printf(e.message));
+						Logger.error("LoginPage.login: %s".printf(e.message));
 					}
 				});
 				ext.poastLoginAction();
@@ -210,7 +210,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("LoginPage.login: %s".printf(e.message));
+			Logger.error("LoginPage.login: %s".printf(e.message));
 		}
 	}
 }

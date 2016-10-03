@@ -50,7 +50,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 
         if(!file.query_exists())
         {
-            Logger.get().error("File '%s' doesn't exist.".printf(file.get_path()));
+            Logger.error("File '%s' doesn't exist.".printf(file.get_path()));
             return;
         }
 
@@ -169,99 +169,99 @@ public class FeedReader.GrabberConfig : GLib.Object {
 
         if(m_xpath_title.size != 0)
         {
-            Logger.get().debug("title:");
+            Logger.debug("title:");
             foreach(string title in m_xpath_title)
             {
-                Logger.get().debug(TAB + title);
+                Logger.debug(TAB + title);
             }
         }
 
         if(m_xpath_author.size != 0)
         {
-            Logger.get().debug("author:");
+            Logger.debug("author:");
             foreach(string author in m_xpath_author)
             {
-                Logger.get().debug(TAB + author);
+                Logger.debug(TAB + author);
             }
         }
 
         if(m_xpath_date.size != 0)
         {
-            Logger.get().debug("date:");
+            Logger.debug("date:");
             foreach(string date in m_xpath_date)
             {
-                Logger.get().debug(TAB + date);
+                Logger.debug(TAB + date);
             }
         }
 
         if(m_xpath_body.size != 0)
         {
-            Logger.get().debug("body:");
+            Logger.debug("body:");
             foreach(string body in m_xpath_body)
             {
-                Logger.get().debug(TAB + body);
+                Logger.debug(TAB + body);
             }
         }
 
         if(m_xpath_strip.size != 0)
         {
-            Logger.get().debug("strip:");
+            Logger.debug("strip:");
             foreach(string strip in m_xpath_strip)
             {
-                Logger.get().debug(TAB + strip);
+                Logger.debug(TAB + strip);
             }
         }
 
         if(m_xpath_stripIDorClass.size != 0)
         {
-            Logger.get().debug("stripIDorClass:");
+            Logger.debug("stripIDorClass:");
             foreach(string stripIDorClass in m_xpath_stripIDorClass)
             {
-                Logger.get().debug(TAB + stripIDorClass);
+                Logger.debug(TAB + stripIDorClass);
             }
         }
 
         if(m_xpath_stripImgSrc.size != 0)
         {
-            Logger.get().debug("stripImgSrc:");
+            Logger.debug("stripImgSrc:");
             foreach(string stripImgSrc in m_xpath_stripImgSrc)
             {
-                Logger.get().debug(TAB + stripImgSrc);
+                Logger.debug(TAB + stripImgSrc);
             }
         }
 
         if(m_tidy)
-            Logger.get().debug("tidy: yes");
+            Logger.debug("tidy: yes");
         else
-            Logger.get().debug("tidy: no");
+            Logger.debug("tidy: no");
 
         if(m_prune)
-            Logger.get().debug("prune: yes");
+            Logger.debug("prune: yes");
         else
-            Logger.get().debug("prune: no");
+            Logger.debug("prune: no");
 
         if(m_autodetectOnFailure)
-            Logger.get().debug("autodetectOnFailure: yes");
+            Logger.debug("autodetectOnFailure: yes");
         else
-            Logger.get().debug("autodetectOnFailure: no");
+            Logger.debug("autodetectOnFailure: no");
 
         if(m_singlePageLink != null)
-            Logger.get().debug("singlePageLink: " + m_singlePageLink);
+            Logger.debug("singlePageLink: " + m_singlePageLink);
 
         if(m_nextPageLink != null)
-            Logger.get().debug("nextPageLink: " + m_nextPageLink);
+            Logger.debug("nextPageLink: " + m_nextPageLink);
 
         if(m_replace.size != 0)
         {
-            Logger.get().debug("replace:");
+            Logger.debug("replace:");
             foreach(StringPair tmp in m_replace)
             {
-                Logger.get().debug("replace %s with %s".printf(tmp.getString1(), tmp.getString2()));
+                Logger.debug("replace %s with %s".printf(tmp.getString1(), tmp.getString2()));
             }
         }
 
         if(m_testURL != null)
-            Logger.get().debug("testURL: " + m_testURL);
+            Logger.debug("testURL: " + m_testURL);
     }
 
 

@@ -116,8 +116,8 @@ namespace FeedReader {
 			}
 			catch(IOError e)
 			{
-				Logger.get().error("Failed to connect to daemon!");
-				Logger.get().error(e.message);
+				Logger.error("Failed to connect to daemon!");
+				Logger.error(e.message);
 				startDaemon();
 			}
 
@@ -126,11 +126,11 @@ namespace FeedReader {
 
 		private static void startDaemon()
 		{
-			Logger.get().info("FeedReader: start daemon");
+			Logger.info("FeedReader: start daemon");
 			try{
 				GLib.Process.spawn_async("/", {"feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 			}catch(GLib.SpawnError e){
-				Logger.get().error("spawning command line: %s".printf(e.message));
+				Logger.error("spawning command line: %s".printf(e.message));
 			}
 		}
 
@@ -140,75 +140,75 @@ namespace FeedReader {
 				setup();
 
 			m_connection.newFeedList.connect(() => {
-				Logger.get().debug("DBusConnection: newFeedList");
+				Logger.debug("DBusConnection: newFeedList");
 				window.getContent().newFeedList();
 			});
 
 			m_connection.updateFeedList.connect(() => {
-				Logger.get().debug("DBusConnection: updateFeedList");
+				Logger.debug("DBusConnection: updateFeedList");
 				window.getContent().updateFeedList();
 			});
 
 			m_connection.newArticleList.connect(() => {
-				Logger.get().debug("DBusConnection: newArticleList");
+				Logger.debug("DBusConnection: newArticleList");
 				window.getContent().newArticleList();
 			});
 
 			m_connection.updateArticleList.connect(() => {
-				Logger.get().debug("DBusConnection: updateArticleList");
+				Logger.debug("DBusConnection: updateArticleList");
 				window.getContent().updateArticleList();
 			});
 
 			m_connection.syncStarted.connect(() => {
-				Logger.get().debug("DBusConnection: syncStarted");
+				Logger.debug("DBusConnection: syncStarted");
 				window.writeInterfaceState();
 				window.setRefreshButton(true);
 			});
 
 			m_connection.syncFinished.connect(() => {
-				Logger.get().debug("DBusConnection: syncFinished");
+				Logger.debug("DBusConnection: syncFinished");
 				window.getContent().syncFinished();
 				window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
 				window.setRefreshButton(false);
 			});
 
 			m_connection.springCleanStarted.connect(() => {
-				Logger.get().debug("DBusConnection: springCleanStarted");
+				Logger.debug("DBusConnection: springCleanStarted");
 				window.showSpringClean();
 			});
 
 			m_connection.springCleanFinished.connect(() => {
-				Logger.get().debug("DBusConnection: springCleanFinished");
+				Logger.debug("DBusConnection: springCleanFinished");
 				window.showContent();
 			});
 
 			m_connection.writeInterfaceState.connect(() => {
-				Logger.get().debug("DBusConnection: writeInterfaceState");
+				Logger.debug("DBusConnection: writeInterfaceState");
 				window.writeInterfaceState();
 			});
 
 			m_connection.showArticleListOverlay.connect(() => {
-				Logger.get().debug("DBusConnection: showArticleListOverlay");
+				Logger.debug("DBusConnection: showArticleListOverlay");
 				window.getContent().showArticleListOverlay();
 			});
 
 			m_connection.setOffline.connect(() => {
-				Logger.get().debug("DBusConnection: setOffline");
+				Logger.debug("DBusConnection: setOffline");
 				window.setOffline();
 			});
 
 			m_connection.setOnline.connect(() => {
-				Logger.get().debug("DBusConnection: setOnline");
+				Logger.debug("DBusConnection: setOnline");
 				window.setOnline();
 			});
 
 			m_connection.feedAdded.connect(() => {
-				Logger.get().debug("DBusConnection: feedAdded");
+				Logger.debug("DBusConnection: feedAdded");
 				window.getContent().footerSetReady();
 			});
 
 			m_connection.opmlImported.connect(() => {
-				Logger.get().debug("DBusConnection: opmlImported");
+				Logger.debug("DBusConnection: opmlImported");
 				window.getContent().footerSetReady();
 			});
 		}
@@ -225,7 +225,7 @@ namespace FeedReader {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("checkDaemonVersion: %s".printf(e.message));
+				Logger.error("checkDaemonVersion: %s".printf(e.message));
 			}
 
 		}

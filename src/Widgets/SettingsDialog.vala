@@ -135,7 +135,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
             }
             catch(GLib.Error e)
             {
-                Logger.get().error("SettingsDialog.setup_Internal: scheduleSync %s".printf(e.message));
+                Logger.error("SettingsDialog.setup_Internal: scheduleSync %s".printf(e.message));
             }
 		});
 
@@ -161,7 +161,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         }
         catch(GLib.Error e)
         {
-            Logger.get().error("SettingsDialog.setup_Internal: useMaxArticles %s".printf(e.message));
+            Logger.error("SettingsDialog.setup_Internal: useMaxArticles %s".printf(e.message));
         }
     	internalsBox.pack_start(sync_time, false, true, 0);
     	internalsBox.pack_start(db_settings, false, true, 0);

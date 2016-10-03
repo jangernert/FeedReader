@@ -32,7 +32,7 @@ namespace FeedReader {
 		{
 			Logger.init("ui");
 
-			Logger.get().info("FeedReader " + AboutInfo.version);
+			Logger.info("FeedReader " + AboutInfo.version);
 			dataBase = new dbUI();
 
 
@@ -76,7 +76,7 @@ namespace FeedReader {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("FeedReader.activate: %s".printf(e.message));
+				Logger.error("FeedReader.activate: %s".printf(e.message));
 			}
 		}
 
@@ -85,7 +85,7 @@ namespace FeedReader {
 			var args = command_line.get_arguments();
 			if(args.length > 1)
 			{
-				Logger.get().debug("FeedReader: callback %s".printf(args[1]));
+				Logger.debug("FeedReader: callback %s".printf(args[1]));
 				callback(args[1]);
 			}
 
@@ -98,14 +98,14 @@ namespace FeedReader {
 		{
 			try
 			{
-				Logger.get().debug("Shutdown!");
+				Logger.debug("Shutdown!");
 				if(Settings.tweaks().get_boolean("quit-daemon"))
 					DBusConnection.get_default().quit();
 				base.shutdown();
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("FeedReader.shutdown: %s".printf(e.message));
+				Logger.error("FeedReader.shutdown: %s".printf(e.message));
 			}
 		}
 
@@ -119,7 +119,7 @@ namespace FeedReader {
 				}
 				catch(IOError e)
 				{
-					Logger.get().error(e.message);
+					Logger.error(e.message);
 				}
 				Idle.add((owned) callback);
 				return null;

@@ -58,7 +58,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	public void updating(bool status)
 	{
 
-		Logger.get().debug("UpdateButton: update status");
+		Logger.debug("UpdateButton: update status");
 		m_status = status;
 		if(status)
 		{
@@ -81,7 +81,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 	public void setSensitive(bool sensitive)
 	{
-		Logger.get().debug("UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
+		Logger.debug("UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
 		this.sensitive = sensitive;
 	}
 

@@ -70,13 +70,13 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 				try
 				{
 					string filename = "/tmp/" + m_url.replace("/", "_").replace(".", "_") + ".ico";
-					Logger.get().debug("load icon %s".printf(filename));
+					Logger.debug("load icon %s".printf(filename));
 					var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
 					icon = new Gtk.Image.from_pixbuf(tmp_icon);
 				}
 				catch(GLib.Error e)
 				{
-					Logger.get().error("SuggestedFeedRow.constructor: %s".printf(e.message));
+					Logger.error("SuggestedFeedRow.constructor: %s".printf(e.message));
 				}
 			}
 			else
@@ -118,7 +118,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("SuggestedFeedRow.downloadIcon: %s".printf(e.message));
+				Logger.error("SuggestedFeedRow.downloadIcon: %s".printf(e.message));
 			}
 			var doc = parser.get_document();
 
@@ -137,11 +137,11 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 					}
 					catch(GLib.FileError e)
 					{
-						Logger.get().error("Error writing icon: %s".printf(e.message));
+						Logger.error("Error writing icon: %s".printf(e.message));
 					}
 					success = true;
 				}
-				Logger.get().error("Error downloading icon for feed: %s".printf(m_url));
+				Logger.error("Error downloading icon for feed: %s".printf(m_url));
 			}
 			else
 			{

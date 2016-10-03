@@ -28,7 +28,7 @@ public class FeedReader.freshAPI : Object {
 
 	public LoginResponse login()
 	{
-		Logger.get().debug("fresh backend: login");
+		Logger.debug("fresh backend: login");
 
 		if(!Utils.ping(m_utils.getUnmodifiedURL()))
 			return LoginResponse.NO_CONNECTION;
@@ -50,8 +50,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.get().error("getTagList: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("subscriptions");
@@ -117,8 +117,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.get().error("getTagList: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("tags");
@@ -159,8 +159,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.get().error("getTagList: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("unreadcounts");
 
@@ -208,7 +208,7 @@ public class FeedReader.freshAPI : Object {
 		if(checkpoint != null)
 			msg.add("c", checkpoint);
 
-		Logger.get().debug("getStreamContents: %s".printf(msg.get()));
+		Logger.debug("getStreamContents: %s".printf(msg.get()));
 
 		string response = m_connection.getRequest(path + "?" + msg.get());
 
@@ -219,8 +219,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch(Error e)
 		{
-			Logger.get().error("getStreamContents: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getStreamContents: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -321,8 +321,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path,  msg.get(), "application/x-www-form-urlencoded");
 
-		Logger.get().debug(path + " " + msg.get());
-		Logger.get().debug(response);
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
 	}
 
 	public void markAllAsRead(string streamID)
@@ -335,8 +335,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		Logger.get().debug(path + " " + msg.get());
-		Logger.get().debug(response);
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
 	}
 
 	public string editStream(
@@ -367,8 +367,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		Logger.get().debug(path + " " + msg.get());
-		Logger.get().debug(response);
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
 		return response;
 	}
 
@@ -388,8 +388,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		Logger.get().debug(path + " " + msg.get());
-		Logger.get().debug(response);
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
 	}
 
 	public void deleteTag(string tagID)
@@ -402,8 +402,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		Logger.get().debug(path + " " + msg.get());
-		Logger.get().debug(response);
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
 	}
 
 }

@@ -52,15 +52,15 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 	private bool getUserID()
 	{
-		Logger.get().error("getUserID: getting user info");
+		Logger.error("getUserID: getting user info");
 		string response = m_connection.send_get_request("user-info?output=json");
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getUserID: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getUserID: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -68,7 +68,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
-			Logger.get().info("Oldreader: userID = " + m_userID);
+			Logger.info("Oldreader: userID = " + m_userID);
 
 			return true;
 		}
@@ -87,8 +87,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getFeeds: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getFeeds: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -148,8 +148,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getCategoriesAndTags: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -192,8 +192,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getTotalUnread: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTotalUnread: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -211,7 +211,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 		}
 
-		Logger.get().debug("getTotalUnread %i".printf(count));
+		Logger.debug("getTotalUnread %i".printf(count));
 		return count;
 	}
 
@@ -229,8 +229,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("updateArticles: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("updateArticles: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -275,8 +275,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getCategoriesAndTags: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();

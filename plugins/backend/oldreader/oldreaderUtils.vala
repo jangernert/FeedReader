@@ -70,7 +70,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//Logger.get().debug(e.message);
+			//Logger.debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
@@ -95,11 +95,11 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					Logger.get().error("Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			Logger.get().error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 
@@ -121,7 +121,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 		}
 
 		if(passwd == null)
@@ -145,7 +145,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("ttrssUtils: setPassword: " + e.message);
+			Logger.error("ttrssUtils: setPassword: " + e.message);
 		}
 	}
 }

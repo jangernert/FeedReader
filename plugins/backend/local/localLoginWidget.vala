@@ -105,8 +105,8 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("localLoginWidget: loading json filed");
-			Logger.get().error(e.message);
+			Logger.error("localLoginWidget: loading json filed");
+			Logger.error(e.message);
 		}
 
 		var scroll = new Gtk.ScrolledWindow(null, null);

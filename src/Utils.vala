@@ -32,13 +32,13 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				else if(Article.getHTML() != "" && Article.getHTML() != null)
 				{
-					Logger.get().debug("Utils: generate preview for article: " + Article.getArticleID());
+					Logger.debug("Utils: generate preview for article: " + Article.getArticleID());
 					string output = libVilistextum.parse(Article.getHTML(), 1);
 					output = output.strip();
 
 					if(output == "" || output == null)
 					{
-						Logger.get().error("generatePreviews: no Preview");
+						Logger.error("generatePreviews: no Preview");
 						Article.setPreview(noPreview);
 						Article.setTitle(UTF8fix(Article.getTitle(), true));
 						continue;
@@ -60,7 +60,7 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				else
 				{
-					Logger.get().debug("no html to create preview from");
+					Logger.debug("no html to create preview from");
 					Article.setPreview(noPreview);
 				}
 				Article.setTitle(UTF8fix(Article.getTitle(), true));
@@ -132,9 +132,9 @@ public class FeedReader.Utils : GLib.Object {
 		var difference = now.difference(lastClean);
 		bool doCleaning = false;
 
-		Logger.get().debug("last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
-		Logger.get().debug("now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
-		Logger.get().debug("difference: %f".printf(difference/GLib.TimeSpan.DAY));
+		Logger.debug("last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
+		Logger.debug("now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
+		Logger.debug("difference: %f".printf(difference/GLib.TimeSpan.DAY));
 
 		if((difference/GLib.TimeSpan.DAY) >= Settings.general().get_int("spring-clean-after"))
 			doCleaning = true;
@@ -154,8 +154,8 @@ public class FeedReader.Utils : GLib.Object {
 
 		FeedListType IDtype = FeedListType.FEED;
 
-		Logger.get().debug("selectedRow 0: %s".printf(selectedRow[0]));
-		Logger.get().debug("selectedRow 1: %s".printf(selectedRow[1]));
+		Logger.debug("selectedRow 0: %s".printf(selectedRow[0]));
+		Logger.debug("selectedRow 1: %s".printf(selectedRow[1]));
 
 		switch(selectedRow[0])
 		{
@@ -198,7 +198,7 @@ public class FeedReader.Utils : GLib.Object {
 			0,
 			newArticlesCount);
 
-		Logger.get().debug("getRelevantArticles: %u".printf(articles.size));
+		Logger.debug("getRelevantArticles: %u".printf(articles.size));
 		return articles.size;
 	}
 
@@ -235,7 +235,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("Utils.buildArticle: %s".printf(e.message));
+			Logger.error("Utils.buildArticle: %s".printf(e.message));
 		}
 
 		string html_id = "$HTML";
@@ -353,7 +353,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error(e.message);
+			Logger.error(e.message);
 		}
 
 
@@ -385,7 +385,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("Utils.copyAutostart: %s".printf(e.message));
+				Logger.error("Utils.copyAutostart: %s".printf(e.message));
 			}
 		}
 	}
@@ -443,11 +443,11 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static bool ping(string link)
 	{
-		Logger.get().debug("Ping: " + link);
+		Logger.debug("Ping: " + link);
 		var uri = new Soup.URI(link);
 		string host = uri.get_host();
 
-		Logger.get().debug("Ping: modified URL " + host);
+		Logger.debug("Ping: modified URL " + host);
 
 	    try
 		{
@@ -457,7 +457,7 @@ public class FeedReader.Utils : GLib.Object {
 			// if can't resolve host to ip
 			if(addresses == null)
 			{
-				Logger.get().error("Ping failed: can't resolve url " + host);
+				Logger.error("Ping failed: can't resolve url " + host);
 				return false;
 			}
 
@@ -467,7 +467,7 @@ public class FeedReader.Utils : GLib.Object {
 
 			foreach(InetAddress ip in addresses)
 			{
-				Logger.get().debug("Ping: trying ip-address " + ip.to_string());
+				Logger.debug("Ping: trying ip-address " + ip.to_string());
 				conn = client.connect(new GLib.InetSocketAddress(ip, 80));
 
 				if(conn != null)
@@ -477,7 +477,7 @@ public class FeedReader.Utils : GLib.Object {
 			// if can't establish connection to ip
 			if(conn == null)
 			{
-				Logger.get().error("Ping failed: can't establish connection to ip");
+				Logger.error("Ping failed: can't establish connection to ip");
 				return false;
 			}
 
@@ -488,7 +488,7 @@ public class FeedReader.Utils : GLib.Object {
 			// if can't write message
 			if(bytesWritten == -1)
 			{
-				Logger.get().error("Ping failed: can't write message");
+				Logger.error("Ping failed: can't write message");
 				return false;
 			}
 
@@ -499,19 +499,19 @@ public class FeedReader.Utils : GLib.Object {
 			// if no response received
 			if(status_line == null)
 			{
-				Logger.get().error("Ping failed: no response received");
+				Logger.error("Ping failed: no response received");
 				return false;
 			}
 
-			Logger.get().debug(status_line);
-			Logger.get().debug("Ping: success!");
+			Logger.debug(status_line);
+			Logger.debug("Ping: success!");
 
 			return true;
 	    }
 		catch (Error e)
 		{
-			Logger.get().error("Ping failed: %s".printf(host));
-			Logger.get().error(e.message);
+			Logger.error("Ping failed: %s".printf(host));
+			Logger.error(e.message);
 	    }
 
 		return false;
@@ -550,7 +550,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("Utils - remove_directory: " + e.message);
+			Logger.error("Utils - remove_directory: " + e.message);
 		}
 
 
@@ -752,7 +752,7 @@ public class FeedReader.Utils : GLib.Object {
 		else if(feed_url.has_prefix("https://"))
 			url.replace("https://", "");
 
-		Logger.get().debug("Utils: downloadIcon() url = \"%s\"".printf(url));
+		Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
 
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
@@ -771,11 +771,11 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					Logger.get().error("Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			Logger.get().error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 		// file already exists

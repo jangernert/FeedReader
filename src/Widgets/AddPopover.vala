@@ -134,14 +134,14 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			isID = false;
 		}
 
-		Logger.get().debug("addFeed: %s, %s".printf(m_urlEntry.text, catID));
+		Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, catID));
 		try
 		{
 			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID);
 		}
 		catch(Error e)
 		{
-			Logger.get().error("AddPopover.addFeed: %s".printf(e.message));
+			Logger.error("AddPopover.addFeed: %s".printf(e.message));
 		}
 
 		setBusy();
@@ -151,16 +151,16 @@ public class FeedReader.AddPopover : Gtk.Popover {
 	{
 		try
 		{
-			Logger.get().info("selection_changed");
+			Logger.info("selection_changed");
 			var file = m_chooser.get_file();
 			uint8[] contents;
 			file.load_contents (null, out contents, null);
-			Logger.get().debug((string)contents);
+			Logger.debug((string)contents);
 			DBusConnection.get_default().importOPML((string)contents);
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("AddPopover.importOPML: %s".printf(e.message));
+			Logger.error("AddPopover.importOPML: %s".printf(e.message));
 		}
 		setBusy();
 	}

@@ -254,7 +254,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		var unreadIDs = m_api.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
 		if(unreadIDs != null && whatToGet == ArticleStatus.ALL)
 		{
-			Logger.get().debug("getArticles: newsplus plugin active");
+			Logger.debug("getArticles: newsplus plugin active");
 			var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
 			dataBase.updateArticlesByID(unreadIDs, "unread");
 			dataBase.updateArticlesByID(markedIDs, "marked");
@@ -323,7 +323,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 				if(new_articles.size == 10 || Article.getArticleID() == last)
 				{
 					writeInterfaceState();
-					Logger.get().debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
+					Logger.debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
 					dataBase.write_articles(new_articles);
 					updateFeedList();
 					updateArticleList();

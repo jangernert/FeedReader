@@ -26,7 +26,7 @@ public class FeedReader.Logger : GLib.Object {
 		m_fileName = filename;
 	}
 
-	public static new Logger get()
+	private static Logger get_default()
 	{
 		string name = "uninitialized";
 
@@ -37,6 +37,26 @@ public class FeedReader.Logger : GLib.Object {
 			m_logger = new Logger(name);
 
 		return m_logger;
+	}
+
+	public static void error(string message)
+	{
+		get_default().print(LogMessage.ERROR, message);
+	}
+
+	public static void warning(string message)
+	{
+		get_default().print(LogMessage.WARNING, message);
+	}
+
+	public static void info(string message)
+	{
+		get_default().print(LogMessage.INFO, message);
+	}
+
+	public static void debug(string message)
+	{
+		get_default().print(LogMessage.DEBUG, message);
 	}
 
 
@@ -81,26 +101,6 @@ public class FeedReader.Logger : GLib.Object {
 		}
 
 		m_LogLevel = logLevel;
-	}
-
-	public void error(string message)
-	{
-		print(LogMessage.ERROR, message);
-	}
-
-	public void warning(string message)
-	{
-		print(LogMessage.WARNING, message);
-	}
-
-	public void info(string message)
-	{
-		print(LogMessage.INFO, message);
-	}
-
-	public void debug(string message)
-	{
-		print(LogMessage.DEBUG, message);
 	}
 
 	private void print(LogMessage level, string message)

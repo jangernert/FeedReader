@@ -213,14 +213,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("ArticleRow.constructor: %s".printf(e.message));
+			Logger.error("ArticleRow.constructor: %s".printf(e.message));
 		}
 
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		Logger.get().debug("ArticleRow: onDragBegin");
+		Logger.debug("ArticleRow: onDragBegin");
 		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
 		highlight_row(m_article.getArticleID());
 		if(dataBase.read_tags().is_empty)
@@ -233,7 +233,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
-		Logger.get().debug("ArticleRow: onDragDataGet");
+		Logger.debug("ArticleRow: onDragDataGet");
 
 		if(target_type == DragTarget.TAG)
 		{
@@ -247,13 +247,13 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		Logger.get().debug("ArticleRow: onDragEnd");
+		Logger.debug("ArticleRow: onDragEnd");
 		revert_highlight();
 	}
 
 	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
 	{
-		Logger.get().debug("ArticleRow: drag failed - " + result.to_string());
+		Logger.debug("ArticleRow: drag failed - " + result.to_string());
 		if(dataBase.read_tags().is_empty)
 		{
 			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
@@ -371,7 +371,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			Gtk.show_uri(Gdk.Screen.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
 		}
 		catch(GLib.Error e){
-			Logger.get().debug("could not open the link in an external browser: %s".printf(e.message));
+			Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 		}
 
 		return true;
@@ -428,7 +428,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("ArticleRow.toggleUnread: %s".printf(e.message));
+			Logger.error("ArticleRow.toggleUnread: %s".printf(e.message));
 		}
 		show_all();
 		return unread;
@@ -547,7 +547,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().error("ArticleRow.toggleMarked: %s".printf(e.message));
+			Logger.error("ArticleRow.toggleMarked: %s".printf(e.message));
 		}
 		this.show_all();
 		return marked;

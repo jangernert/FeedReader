@@ -39,7 +39,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public LoginResponse login()
 	{
-		Logger.get().debug("feedly backend: login");
+		Logger.debug("feedly backend: login");
 
 		if(!Utils.ping("feedly.com"))
 			return LoginResponse.NO_CONNECTION;
@@ -51,13 +51,13 @@ public class FeedReader.FeedlyAPI : Object {
 
 		if(tokenStillValid() == ConnectionError.INVALID_SESSIONID)
 		{
-			Logger.get().debug("refresh token");
+			Logger.debug("refresh token");
 			m_connection.refreshToken();
 		}
 
 		if(getUserID())
 		{
-			Logger.get().debug("feedly: login success");
+			Logger.debug("feedly: login success");
 			return LoginResponse.SUCCESS;
 		}
 
@@ -76,8 +76,8 @@ public class FeedReader.FeedlyAPI : Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getUserID: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getUserID: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -85,7 +85,7 @@ public class FeedReader.FeedlyAPI : Object {
 		if(root.has_member("id"))
 		{
 			m_userID = root.get_string_member("id");
-			Logger.get().info("feedly: userID = " + m_userID);
+			Logger.info("feedly: userID = " + m_userID);
 
 			if(root.has_member("email"))
 				m_utils.setEmail(root.get_string_member("email"));
@@ -120,8 +120,8 @@ public class FeedReader.FeedlyAPI : Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("tokenStillValid: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("tokenStillValid: Could not load message response");
+			Logger.error(e.message);
 			return ConnectionError.NO_RESPONSE;
 		}
 
@@ -149,8 +149,8 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.get().error("getCategories: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getCategories: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -192,8 +192,8 @@ public class FeedReader.FeedlyAPI : Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getFeeds: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getFeeds: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -272,8 +272,8 @@ public class FeedReader.FeedlyAPI : Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getTags: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getTags: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array ();
@@ -323,8 +323,8 @@ public class FeedReader.FeedlyAPI : Object {
 			parser.load_from_data(entry_id_response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getArticles: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getArticles: Could not load message response");
+			Logger.error(e.message);
 		}
 		var root = parser.get_root().get_object();
 		if(root.has_member("continuation"))
@@ -333,14 +333,14 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 
 		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
-		//Logger.get().debug(response);
+		//Logger.debug(response);
 
 		try{
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getArticles: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getArticles: Could not load message response");
+			Logger.error(e.message);
 		}
 		var array = parser.get_root().get_array();
 
@@ -442,8 +442,8 @@ public class FeedReader.FeedlyAPI : Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.get().error("getUnreadCounts: Could not load message response");
-			Logger.get().error(e.message);
+			Logger.error("getUnreadCounts: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var object = parser.get_root ().get_object ();
@@ -468,7 +468,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 		if(unread_count == -1)
 		{
-			Logger.get().error("Unknown id: %s".printf(id));
+			Logger.error("Unknown id: %s".printf(id));
 		}
 
 		return unread_count;

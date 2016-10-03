@@ -155,7 +155,7 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.get().debug("could not open the link in an external browser: %s".printf(e.message));
+			Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 		}
 		return true;
 	}

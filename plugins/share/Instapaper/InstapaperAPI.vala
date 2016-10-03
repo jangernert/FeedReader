@@ -55,7 +55,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
         {
-            Logger.get().error("instapaper getAccessToken: " + e.message);
+            Logger.error("instapaper getAccessToken: " + e.message);
         }
 
         string response = call.get_payload();
@@ -88,7 +88,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
         {
-            Logger.get().debug("getUserID: " + e.message);
+            Logger.debug("getUserID: " + e.message);
         }
 
         var parser = new Json.Parser();
@@ -98,8 +98,8 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch (Error e)
         {
-            Logger.get().error("Could not load response to Message from instapaper");
-            Logger.get().error(e.message);
+            Logger.error("Could not load response to Message from instapaper");
+            Logger.error(e.message);
         }
 
         var root_node = parser.get_root();
@@ -111,8 +111,8 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         else if(root_object.has_member("error"))
         {
-            Logger.get().error(root_object.get_int_member("error_code").to_string());
-            Logger.get().error(root_object.get_string_member("message"));
+            Logger.error(root_object.get_int_member("error_code").to_string());
+            Logger.error(root_object.get_string_member("message"));
         }
         //-------------------------------------------------------------------------------------------------------------
 
@@ -138,7 +138,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(GLib.Error e)
         {
-            Logger.get().error("InstaAPI - getAccessToken: " + e.message);
+            Logger.error("InstaAPI - getAccessToken: " + e.message);
         }
 
         return true;
@@ -159,7 +159,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(GLib.Error e)
         {
-            Logger.get().error("InstaAPI addBookmark: " + e.message);
+            Logger.error("InstaAPI addBookmark: " + e.message);
         }
 
         var session = new Soup.Session();
@@ -168,7 +168,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
                         + "&password=" + password
                         + "&url=" + GLib.Uri.escape_string(url);
 
-        Logger.get().debug("InstaAPI: " + message);
+        Logger.debug("InstaAPI: " + message);
 
         var message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/add");
         message_soup.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message.data);
@@ -182,7 +182,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         if(response == null || response == "")
 			return false;
 
-		Logger.get().debug("InstaAPI: " + response);
+		Logger.debug("InstaAPI: " + response);
 
         return true;
     }
@@ -204,7 +204,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("InstaAPI.logout: %s".printf(e.message));
+				Logger.error("InstaAPI.logout: %s".printf(e.message));
 			}
         });
 

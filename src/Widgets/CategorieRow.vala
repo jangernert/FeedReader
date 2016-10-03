@@ -183,7 +183,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				}
 				catch(GLib.Error e)
 				{
-					Logger.get().error("categoryRow.constructor: %s".printf(e.message));
+					Logger.error("categoryRow.constructor: %s".printf(e.message));
 				}
 			}
 			else if(m_categorieID == CategoryID.MASTER.to_string())
@@ -211,14 +211,14 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		Logger.get().debug("categoryRow: onDragBegin");
+		Logger.debug("categoryRow: onDragBegin");
 		Gtk.drag_set_icon_widget(context, getDragWindow(), 0, 0);
 
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
-		Logger.get().debug("categoryRow: onDragDataGet");
+		Logger.debug("categoryRow: onDragDataGet");
 
 		if(target_type == DragTarget.CAT)
 		{
@@ -243,7 +243,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 	private bool onDragDrop(Gtk.Widget widget, Gdk.DragContext context, int x, int y, uint time)
     {
-		Logger.get().debug("categoryRow: onDragDrop");
+		Logger.debug("categoryRow: onDragDrop");
 
         // If the source offers a target
         if(context.list_targets() != null)
@@ -261,7 +261,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
                                     Gtk.SelectionData selection_data, uint target_type, uint time)
     {
-		Logger.get().debug("categoryRow: onDragDataReceived");
+		Logger.debug("categoryRow: onDragDataReceived");
 
 		var dataString = selection_data.get_text();
 
@@ -290,11 +290,11 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 					string[] data = dataString.split(",");
 					string feedID = data[0];
 					string currentCat = data[1];
-					Logger.get().debug("drag feedID: " + feedID + " currentCat: " + currentCat);
+					Logger.debug("drag feedID: " + feedID + " currentCat: " + currentCat);
 
 					if(currentCat == m_categorieID)
 					{
-						Logger.get().debug("categoryRow: drag current parent -> drag_failed");
+						Logger.debug("categoryRow: drag current parent -> drag_failed");
 						this.drag_failed(context, Gtk.DragResult.NO_TARGET);
 						return;
 					}
@@ -306,7 +306,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 						}
 						catch(GLib.Error e)
 						{
-							Logger.get().error("categoryRow.onDragDataReceived: %s".printf(e.message));
+							Logger.error("categoryRow.onDragDataReceived: %s".printf(e.message));
 						}
 					}
 
@@ -314,11 +314,11 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		        }
 				else if(target_type == DragTarget.CAT)
 				{
-					Logger.get().debug("drag catID: " + dataString);
+					Logger.debug("drag catID: " + dataString);
 
 					if(dataString == m_categorieID)
 					{
-						Logger.get().debug("categoryRow: drag on self -> drag_failed");
+						Logger.debug("categoryRow: drag on self -> drag_failed");
 						this.drag_failed(context, Gtk.DragResult.NO_TARGET);
 						return;
 					}
@@ -330,7 +330,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 						}
 						catch(GLib.Error e)
 						{
-							Logger.get().error("categoryRow.onDragDataReceived: %s".printf(e.message));
+							Logger.error("categoryRow.onDragDataReceived: %s".printf(e.message));
 						}
 					}
 
@@ -399,7 +399,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				}
 				catch(GLib.Error e)
 				{
-					Logger.get().error("categoryRow.onClick: %s".printf(e.message));
+					Logger.error("categoryRow.onClick: %s".printf(e.message));
 				}
 			});
 			notification.action.connect(() => {
@@ -427,7 +427,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				}
 				catch(GLib.Error e)
 				{
-					Logger.get().error("categoryRow.onClick: %s".printf(e.message));
+					Logger.error("categoryRow.onClick: %s".printf(e.message));
 				}
 				return false;
 			});
@@ -496,7 +496,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 				}
 				else if(context != null)
 				{
-					Logger.get().debug("categoryRow: create new category " + renameEntry.get_text());
+					Logger.debug("categoryRow: create new category " + renameEntry.get_text());
 					m_categorieID = DBusConnection.get_default().addCategory(renameEntry.get_text(), "", true);
 
 					if(id2 == null) // move feed
@@ -513,7 +513,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.get().error("categoryRow.showRenamePopover: %s".printf(e.message));
+				Logger.error("categoryRow.showRenamePopover: %s".printf(e.message));
 			}
 
 			popRename.hide();

@@ -64,6 +64,7 @@ namespace FeedReader {
 			{
 				m_window = new readerUI(this);
 				m_window.set_icon_name("feedreader");
+				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 				if(settings_tweaks.get_boolean("sync-on-startup"))
 					sync.begin((obj, res) => {
 						sync.end(res);

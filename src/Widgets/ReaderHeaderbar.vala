@@ -37,12 +37,12 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 	public readerHeaderbar () {
-		var share_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-share-symbolic.svg");
-		var tag_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-tag-symbolic.svg");
-		var marked_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-marked-symbolic.svg");
-		var unmarked_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-unmarked-symbolic.svg");
-		var read_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-read-symbolic.svg");
-		var unread_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-unread-symbolic.svg");
+		var share_icon = new Gtk.Image.from_icon_name("feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var marked_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var fs_icon = new Gtk.Image.from_icon_name("view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_state = (ArticleListState)settings_state.get_enum("show-articles");
 
@@ -138,7 +138,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			});
 		});
 
-		m_media_button = new UpdateButton.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/mail-attachment-symbolic.svg", _("Attachments"));
+		m_media_button = new UpdateButton.from_icon_name("mail-attachment-symbolic", _("Attachments"));
 		m_media_button.no_show_all = true;
 		m_media_button.clicked.connect(() => {
 			var pop = new MediaPopover(m_media_button);
@@ -175,7 +175,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 
-		m_refresh_button = new UpdateButton.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-refresh-symbolic.svg", _("Update Feeds"));
+		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update Feeds"));
 		m_refresh_button.clicked.connect(() => {
 			refresh();
 		});

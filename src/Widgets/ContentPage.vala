@@ -349,15 +349,18 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public Gee.ArrayList<tag> getSelectedArticleTags()
 	{
-		string id = m_articleList.getSelectedArticle();
-		var article = dataBase.read_article(id);
-		unowned Gee.ArrayList<string> tagIDs = article.getTags();
-
 		var tags = new Gee.ArrayList<tag>();
+		string id = m_articleList.getSelectedArticle();
 
-		foreach(string tagID in tagIDs)
+		if(id != "" && id != "empty")
 		{
-			tags.add(dataBase.read_tag(tagID));
+			var article = dataBase.read_article(id);
+			unowned Gee.ArrayList<string> tagIDs = article.getTags();
+
+			foreach(string tagID in tagIDs)
+			{
+				tags.add(dataBase.read_tag(tagID));
+			}
 		}
 
 		return tags;

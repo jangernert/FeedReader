@@ -42,7 +42,7 @@
 .fr-sidebar-row:backdrop,
 .fr-sidebar-feed:backdrop {
     color: mix (#DEDEDE, #333, 0.40);
-    -gtk-image-effect: dim;
+    -gtk-icon-effect: dim;
 }
 .fr-sidebar-row:selected:backdrop,
 .fr-sidebar-feed:selected:backdrop {
@@ -72,7 +72,7 @@
 .footer {
     background: shade (#DEDEDE, 0.85);
 }
-.footer button:hover"",
+.footer button:hover,
 .footer-popover {
     background: shade (#DEDEDE, 0.96);
 }

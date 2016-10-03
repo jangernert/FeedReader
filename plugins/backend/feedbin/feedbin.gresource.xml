@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
 	<gresource prefix="/org/gnome/FeedReader">
-		<file preprocess="xml-stripblanks">icons/hicolor/64x64/places/feed-service-feedbin.svg</file>
-		<file preprocess="xml-stripblanks">icons/hicolor/64x64/places/feed-service-feedbin-symbolic.svg</file>
+		<file preprocess="xml-stripblanks">icons/64x64/places/feed-service-feedbin.svg</file>
+		<file preprocess="xml-stripblanks">icons/64x64/places/feed-service-feedbin-symbolic.svg</file>
 	</gresource>
 </gresources>

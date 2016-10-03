@@ -68,10 +68,10 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);
 
-		var marked_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-starred.svg");
-		var unread_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-article-unread.svg");
-		var unmarked_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-non-starred.svg");
-		var read_icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/16x16/status/feed-article-read.svg");
+		var marked_icon = new Gtk.Image.from_icon_name("feed-starred", Gtk.IconSize.SMALL_TOOLBAR);
+		var unread_icon = new Gtk.Image.from_icon_name("feed-article-unread", Gtk.IconSize.SMALL_TOOLBAR);
+		var unmarked_icon = new Gtk.Image.from_icon_name("feed-non-starred", Gtk.IconSize.SMALL_TOOLBAR);
+		var read_icon = new Gtk.Image.from_icon_name("feed-article-read", Gtk.IconSize.SMALL_TOOLBAR);
 
 		m_unread_stack.add_named(unread_icon, "unread");
 		m_unread_stack.add_named(read_icon, "read");
@@ -274,7 +274,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e){}
 
-		return new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/24x24/status/feed-rss-symbolic.svg");
+		return new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 	}
 
 

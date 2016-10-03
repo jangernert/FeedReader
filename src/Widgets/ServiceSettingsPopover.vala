@@ -58,7 +58,7 @@ public class FeedReader.ServiceSettingsPopoverRow : Gtk.ListBoxRow {
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         m_box.margin = 3;
 
-		var icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/32x32/actions/%s.svg".printf(iconName));
+		var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
 
         m_label = new Gtk.Label(serviceName);
         m_label.set_line_wrap_mode(Pango.WrapMode.WORD);

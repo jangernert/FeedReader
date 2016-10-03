@@ -78,7 +78,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
                 }
                 else
                 {
-                    m_logo.set_from_resource("/org/gnome/FeedReader/icons/hicolor/64x64/places/%s.svg".printf(service_icon));
+                    m_logo.set_from_icon_name(service_icon, Gtk.IconSize.BUTTON);
                     m_logo.get_style_context().add_class("fr-sidebar-symbolic");
                     m_label.set_label(user_name);
                     m_stack.set_visible_child_name("info");

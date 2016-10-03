@@ -175,9 +175,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if(m_overlay != null)
 			return;
 
-		m_overlay = new InAppNotification.withIcon_from_resource(
+		m_overlay = new InAppNotification.withIcon(
 			_("New Articles"),
-			"/org/gnome/FeedReader/icons/hicolor/16x16/actions/feed-arrow-up-symbolic.svg",
+			"feed-arrow-up-symbolic",
 			_("scroll up"));
 		m_overlay.action.connect(() => {
 			scrollUP();

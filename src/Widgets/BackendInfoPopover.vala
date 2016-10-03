@@ -162,7 +162,7 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 
 	private Gtk.Image getIcon(string name, string tooltip)
 	{
-		var icon = new Gtk.Image.from_resource("/org/gnome/FeedReader/icons/hicolor/24x24/status/%s.svg".printf(name));
+		var icon = new Gtk.Image.from_icon_name(name, Gtk.IconSize.MENU);
 		icon.halign = Gtk.Align.END;
 		icon.set_tooltip_text(tooltip);
 		return icon;

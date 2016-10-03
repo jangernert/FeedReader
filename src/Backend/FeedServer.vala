@@ -16,7 +16,7 @@
 public class FeedReader.FeedServer : GLib.Object {
 
 	private bool m_pluginLoaded = false;
-	private string m_plugName;
+	private string? m_plugName = null;
 	private Peas.ExtensionSet m_extensions;
 	private FeedServerInterface? m_plugin;
 	private Peas.Engine m_engine;
@@ -26,7 +26,17 @@ public class FeedReader.FeedServer : GLib.Object {
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
 
-	public FeedServer(string plug_name)
+	private static FeedServer? m_server;
+
+	public static FeedServer get_default()
+	{
+		if(m_server == null)
+			m_server = new FeedServer();
+
+		return m_server;
+	}
+
+	private FeedServer()
 	{
 		m_engine = Peas.Engine.get_default();
 		m_engine.add_search_path(Constants.InstallPrefix + "/share/FeedReader/plugins/", null);
@@ -58,12 +68,17 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_engine.unload_plugin.connect((info) => {
 			Logger.debug("feedserver: engine unload %s".printf(info.get_name()));
 		});
-
-		loadPlugin(plug_name);
 	}
 
 	public bool unloadPlugin()
 	{
+		if(m_plugName == null)
+		{
+			Logger.warning("feedserver.unloadPlugin: no plugin loaded");
+			return false;
+		}
+
+
 		Logger.debug("feedserver: unload plugin %s".printf(m_plugName));
 		if(m_pluginLoaded)
 		{

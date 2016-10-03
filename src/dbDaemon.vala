@@ -91,7 +91,7 @@ public class FeedReader.dbDaemon : dbBase {
         query.selectField("feedID");
         query.addCustomCondition("date <= datetime('now', '-%i days')".printf(weeks*7));
         query.addEqualsCondition("marked", ArticleStatus.UNMARKED.to_string());
-        if(server.useMaxArticles())
+        if(FeedServer.get_default().useMaxArticles())
         {
             int highesID = getHighestRowID();
             int syncCount = Settings.general().get_int("max-articles");
@@ -682,7 +682,7 @@ public class FeedReader.dbDaemon : dbBase {
     {
         executeSQL("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
 
-        if(server.supportMultiCategoriesPerFeed())
+        if(FeedServer.get_default().supportMultiCategoriesPerFeed())
         {
             var query = new QueryBuilder(QueryType.SELECT, "feeds");
             query.selectField("feed_id, category_id");
@@ -707,9 +707,9 @@ public class FeedReader.dbDaemon : dbBase {
         }
         else
         {
-            executeSQL("UPDATE main.feeds set category_id = \"%s\" WHERE category_id = \"%s\"".printf(server.uncategorizedID(), catID));
+            executeSQL("UPDATE main.feeds set category_id = \"%s\" WHERE category_id = \"%s\"".printf(FeedServer.get_default().uncategorizedID(), catID));
 
-            if(server.supportMultiLevelCategories())
+            if(FeedServer.get_default().supportMultiLevelCategories())
             {
                 executeSQL("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
             }
@@ -719,7 +719,7 @@ public class FeedReader.dbDaemon : dbBase {
     public void rename_category(string catID, string newName)
     {
 
-        if(server.tagIDaffectedByNameChange())
+        if(FeedServer.get_default().tagIDaffectedByNameChange())
         {
             var cat = read_category(catID);
             string newID = catID.replace(cat.getTitle(), newName);
@@ -809,7 +809,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void rename_tag(string tagID, string newName)
     {
-        if(server.tagIDaffectedByNameChange())
+        if(FeedServer.get_default().tagIDaffectedByNameChange())
         {
             var tag = read_tag(tagID);
             string newID = tagID.replace(tag.getTitle(), newName);
@@ -960,7 +960,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
-        if(server.hideCagetoryWhenEmtpy(catID)
+        if(FeedServer.get_default().hideCagetoryWhenEmtpy(catID)
         && !Utils.categoryIsPopulated(catID, feeds))
         {
             return false;
@@ -970,7 +970,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     protected override string getUncategorizedQuery()
 	{
-		string catID = server.uncategorizedID();
+		string catID = FeedServer.get_default().uncategorizedID();
 		return "category_id = \"%s\"".printf(catID);
 	}
 

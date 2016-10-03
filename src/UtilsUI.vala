@@ -84,7 +84,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		try
 		{
 			// if backend = local RSS -> return true;
-			if(settings_general.get_string("plugin") == "local")
+			if(Settings.general().get_string("plugin") == "local")
 				return true;
 
 			if(!DBusConnection.get_default().supportFeedManipulation())
@@ -139,7 +139,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 	public static bool onlyShowFeeds()
 	{
-		if(settings_general.get_boolean("only-feeds"))
+		if(Settings.general().get_boolean("only-feeds"))
 			return true;
 
 		try
@@ -221,8 +221,6 @@ public class FeedReader.UtilsUI : GLib.Object {
 	{
 		Gtk.init(ref args);
 		Gst.init(ref args);
-
-		settings_general = new GLib.Settings ("org.gnome.feedreader");
 		Logger.init("mediaPlayer");
 
 		var window = new Gtk.Window();

@@ -21,10 +21,6 @@ namespace FeedReader {
 	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
 
 	dbUI dataBase;
-	GLib.Settings settings_general;
-	GLib.Settings settings_state;
-	GLib.Settings settings_tweaks;
-	GLib.Settings settings_keybindings;
 
 
 	public class FeedApp : Gtk.Application {
@@ -64,7 +60,7 @@ namespace FeedReader {
 				m_window = new readerUI(this);
 				m_window.set_icon_name("feedreader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
-				if(settings_tweaks.get_boolean("sync-on-startup"))
+				if(Settings.tweaks().get_boolean("sync-on-startup"))
 					sync.begin((obj, res) => {
 						sync.end(res);
 					});
@@ -103,7 +99,7 @@ namespace FeedReader {
 			try
 			{
 				Logger.get().debug("Shutdown!");
-				if(settings_tweaks.get_boolean("quit-daemon"))
+				if(Settings.tweaks().get_boolean("quit-daemon"))
 					DBusConnection.get_default().quit();
 				base.shutdown();
 			}
@@ -145,19 +141,17 @@ namespace FeedReader {
 	}
 
 
-	public static int main (string[] args) {
-
-		settings_general = new GLib.Settings("org.gnome.feedreader");
-		settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
-		settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-		settings_keybindings = new GLib.Settings("org.gnome.feedreader.keybindings");
-
-		try {
+	public static int main (string[] args)
+	{
+		try
+		{
 			var opt_context = new OptionContext();
 			opt_context.set_help_enabled(true);
 			opt_context.add_main_entries(options, null);
 			opt_context.parse(ref args);
-		} catch (OptionError e) {
+		}
+		catch(OptionError e)
+		{
 			print(e.message + "\n");
 			return 0;
 		}

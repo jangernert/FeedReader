@@ -246,7 +246,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal, uint duration = 500)
 	{
-		if(settings_state.get_boolean("no-animations"))
+		if(Settings.state().get_boolean("no-animations"))
 		{
 			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
 			m_revealer.set_transition_duration(0);

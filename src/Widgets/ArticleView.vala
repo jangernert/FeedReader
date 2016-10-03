@@ -449,8 +449,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 				}
 				if(m_firstTime)
 				{
-					setScrollPos(settings_state.get_int("articleview-scrollpos"));
-					settings_state.set_int("articleview-scrollpos", 0);
+					setScrollPos(Settings.state().get_int("articleview-scrollpos"));
+					Settings.state().set_int("articleview-scrollpos", 0);
 					m_currentView.grab_focus();
 					m_firstTime = false;
 				}

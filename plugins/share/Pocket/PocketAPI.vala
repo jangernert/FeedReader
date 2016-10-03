@@ -21,13 +21,9 @@ namespace FeedReader.PocketSecrets {
 
 public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
-    private GLib.Settings m_shareSettings;
-    private GLib.Settings m_shareTweaks;
-
     public PocketAPI()
     {
-        m_shareSettings = new GLib.Settings("org.gnome.feedreader.share");
-        m_shareTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+
     }
 
     public string getRequestToken()
@@ -39,7 +35,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/request");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
-        if(m_shareTweaks.get_boolean("do-not-track"))
+        if(Settings.tweaks().get_boolean("do-not-track"))
 				message_soup.request_headers.append("DNT", "1");
 
 		session.send_message(message_soup);
@@ -56,7 +52,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/authorize");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
-        if(m_shareTweaks.get_boolean("do-not-track"))
+        if(Settings.tweaks().get_boolean("do-not-track"))
 				message_soup.request_headers.append("DNT", "1");
 
 		session.send_message(message_soup);
@@ -73,13 +69,13 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
         string accessToken = response.substring(tokenStart, tokenEnd-tokenStart);
         string user = GLib.Uri.unescape_string(response.substring(userStart));
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
         settings.set_string("oauth-access-token", accessToken);
         settings.set_string("username", user);
 
-        var array = m_shareSettings.get_strv("pocket");
+        var array = Settings.share().get_strv("pocket");
         array += id;
-		m_shareSettings.set_strv("pocket", array);
+		Settings.share().set_strv("pocket", array);
 
         return true;
     }
@@ -87,7 +83,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool addBookmark(string id, string url)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
 
         var session = new Soup.Session();
         string message = "url=" + GLib.Uri.escape_string(url)
@@ -99,7 +95,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);
 
-        if(m_shareTweaks.get_boolean("do-not-track"))
+        if(Settings.tweaks().get_boolean("do-not-track"))
 				message_soup.request_headers.append("DNT", "1");
 
 		session.send_message(message_soup);
@@ -113,14 +109,14 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool logout(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
     	var keys = settings.list_keys();
 		foreach(string key in keys)
 		{
 			settings.reset(key);
 		}
 
-        var array = m_shareSettings.get_strv("pocket");
+        var array = Settings.share().get_strv("pocket");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -128,7 +124,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 			if(i != id)
 				array2 += i;
 		}
-		m_shareSettings.set_strv("pocket", array2);
+		Settings.share().set_strv("pocket", array2);
 		deleteAccount(id);
 
         return true;
@@ -148,7 +144,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public string getUsername(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
         return settings.get_string("username");
     }
 

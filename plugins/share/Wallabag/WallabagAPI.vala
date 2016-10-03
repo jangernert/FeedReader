@@ -66,7 +66,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		int64 expires = root_object.get_int_member("expires_in");
 		//string refreshToken = root_object.get_string_member("refresh_token");
 
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
         settings.set_string("oauth-access-token", accessToken);
         settings.set_string("username", username);
 		settings.set_int("access-token-expires", (int)(now + expires));
@@ -75,8 +75,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		settings.set_string("client-secret", clientSecret);
 
 
-		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
-        var array = share_settings.get_strv("wallabag");
+        var array = Settings.share().get_strv("wallabag");
 		foreach(string i in array)
 		{
 			if(i == id)
@@ -86,7 +85,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			}
 		}
         array += id;
-		share_settings.set_strv("wallabag", array);
+		Settings.share().set_strv("wallabag", array);
 
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.wallabag.password", Secret.SchemaFlags.NONE,
@@ -111,7 +110,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
     public bool addBookmark(string id, string url)
     {
-		var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
 
 		Logger.get().debug("WallabagAPI - addBookmark: " + url);
 		if(!accessTokenValid(id))
@@ -151,15 +150,14 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
     public bool logout(string id)
     {
 		Logger.get().debug("WallabagAPI - logout");
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
     	var keys = settings.list_keys();
 		foreach(string key in keys)
 		{
 			settings.reset(key);
 		}
 
-		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
-        var array = share_settings.get_strv("wallabag");
+        var array = Settings.share().get_strv("wallabag");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -167,7 +165,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			if(i != id)
 				array2 += i;
 		}
-		share_settings.set_strv("wallabag", array2);
+		Settings.share().set_strv("wallabag", array2);
 		deletePassword(id);
 		deleteAccount(id);
 
@@ -176,7 +174,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
 	private bool accessTokenValid(string id)
 	{
-		var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
 		var now = new DateTime.now_local();
 		int expires = settings.get_int("access-token-expires");
 
@@ -196,7 +194,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
     public string getUsername(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
         return settings.get_string("username");
     }
 

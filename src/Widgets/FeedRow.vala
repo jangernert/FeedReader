@@ -110,7 +110,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			try
 			{
 				if(m_feedID != FeedID.ALL.to_string()
-				&& !settings_general.get_boolean("only-feeds")
+				&& !Settings.general().get_boolean("only-feeds")
 				&& UtilsUI.canManipulateContent()
 				&& DBusConnection.get_default().supportCategories())
 				{
@@ -427,7 +427,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			this.show();
 		}
 
-		if(settings_state.get_boolean("no-animations"))
+		if(Settings.state().get_boolean("no-animations"))
 		{
 			if(!reveal)
 			{

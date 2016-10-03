@@ -169,7 +169,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			showArticleListOverlay();
 		}
 
-		switch(settings_general.get_enum("drop-articles-after"))
+		switch(Settings.general().get_enum("drop-articles-after"))
 		{
 			case DropArticles.NEVER:
 	            break;
@@ -188,7 +188,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 
 		var now = new DateTime.now_local();
-		settings_state.set_int("last-sync", (int)now.to_unix());
+		Settings.state().set_int("last-sync", (int)now.to_unix());
 
 		dataBase.checkpoint();
 
@@ -217,18 +217,18 @@ public class FeedReader.FeedServer : GLib.Object {
 		newFeedList();
 
 		// get marked articles
-		getArticles(settings_general.get_int("max-articles"), ArticleStatus.MARKED);
+		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED);
 
 		// get articles for each tag
 		foreach(var tag_item in tags)
 		{
-			getArticles((settings_general.get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
+			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
 		}
 
 		if(useMaxArticles())
 		{
 			//get max-articls amunt like normal sync
-			getArticles(settings_general.get_int("max-articles"));
+			getArticles(Settings.general().get_int("max-articles"));
 		}
 
 		// get unread articles
@@ -237,10 +237,10 @@ public class FeedReader.FeedServer : GLib.Object {
 		//update fulltext table
 		dataBase.updateFTS();
 
-		settings_general.reset("content-grabber");
+		Settings.general().reset("content-grabber");
 
 		var now = new DateTime.now_local();
-		settings_state.set_int("last-sync", (int)now.to_unix());
+		Settings.state().set_int("last-sync", (int)now.to_unix());
 
 		return;
 	}
@@ -285,11 +285,11 @@ public class FeedReader.FeedServer : GLib.Object {
 			updateFeedList();
 			updateArticleList();
 
-			if(settings_state.get_boolean("no-animations"))
+			if(Settings.state().get_boolean("no-animations"))
 			{
 				Logger.get().debug("UI NOT running: setting \"articlelist-new-rows\"");
-				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-				settings_state.set_int("articlelist-new-rows", newCount);
+				int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				Settings.state().set_int("articlelist-new-rows", newCount);
 			}
 		}
 	}
@@ -359,7 +359,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		if(!dataBase.article_exists(Article.getArticleID()))
 		{
-			if(settings_general.get_boolean("content-grabber"))
+			if(Settings.general().get_boolean("content-grabber"))
 			{
 				var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
 				if(grabber.process())
@@ -388,7 +388,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				}
 			}
 
-			if(settings_tweaks.get_boolean("dont-download-images"))
+			if(Settings.tweaks().get_boolean("dont-download-images"))
 				return;
 
 			downloadImages(Article);
@@ -425,7 +425,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!useMaxArticles())
 			return -1;
 
-		return settings_general.get_int("max-articles");
+		return Settings.general().get_int("max-articles");
 	}
 
 	public static void grabArticle(string url)

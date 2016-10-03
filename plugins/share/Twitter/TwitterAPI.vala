@@ -64,7 +64,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			Logger.get().error("TwitterAPI.getAccessToken: %s".printf(e.message));
 		}
 
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		string token = m_oauthObject.get_token();
 		string secret = m_oauthObject.get_token_secret();
 		settings.set_string("oauth-access-token", token);
@@ -111,10 +111,9 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 
 
-		var shareSettings = new GLib.Settings("org.gnome.feedreader.share");
-        var array = shareSettings.get_strv("twitter");
+        var array = Settings.share().get_strv("twitter");
         array += id;
-		shareSettings.set_strv("twitter", array);
+		Settings.share().set_strv("twitter", array);
 
         return true;
     }
@@ -122,7 +121,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool addBookmark(string id, string url)
     {
-		var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		string token = settings.get_string("oauth-access-token");
 		string secret = settings.get_string("oauth-access-token-secret");
 
@@ -154,15 +153,14 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool logout(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
     	var keys = settings.list_keys();
 		foreach(string key in keys)
 		{
 			settings.reset(key);
 		}
 
-		var shareSettings = new GLib.Settings("org.gnome.feedreader.share");
-        var array = shareSettings.get_strv("twitter");
+        var array = Settings.share().get_strv("twitter");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -170,7 +168,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			if(i != id)
 				array2 += i;
 		}
-		shareSettings.set_strv("twitter", array2);
+		Settings.share().set_strv("twitter", array2);
 		deleteAccount(id);
 
         return true;
@@ -190,7 +188,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public string getUsername(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
         return settings.get_string("username");
     }
 
@@ -237,11 +235,10 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		if(m_urlLength > 0)
 			return m_urlLength;
 
-		var shareSettings = new GLib.Settings("org.gnome.feedreader.share");
-        var array = shareSettings.get_strv("twitter");
+        var array = Settings.share().get_strv("twitter");
 		string id = array[0];
 
-		var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
 		string token = settings.get_string("oauth-access-token");
 		string secret = settings.get_string("oauth-access-token-secret");
 

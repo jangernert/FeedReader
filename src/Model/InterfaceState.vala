@@ -38,21 +38,21 @@ public class FeedReader.InterfaceState : GLib.Object {
 
     public void write()
     {
-        settings_state.set_int      ("window-width",                m_WindowWidth);
-        settings_state.set_int      ("window-height",               m_WindowHeight);
-        settings_state.set_boolean  ("window-maximized",            m_WindowMaximized);
-        settings_state.set_strv     ("expanded-categories",         m_ExpandedCategories);
-        settings_state.set_double   ("feed-row-scrollpos",          m_FeedListScrollPos);
-        settings_state.set_string   ("feedlist-selected-row",       m_FeedListSelectedRow);
-        settings_state.set_int      ("feed-row-width",              m_FeedListWidth);
-        settings_state.set_int      ("feeds-and-articles-width",    m_FeedsAndArticleWidth);
-        settings_state.set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
-        settings_state.set_double   ("articlelist-scrollpos",       m_ArticleListScrollPos);
-        settings_state.set_string   ("articlelist-selected-row",    m_ArticleListSelectedRow);
-        settings_state.set_enum     ("show-articles",               m_ArticleListState);
-        settings_state.set_string   ("search-term",                 m_SearchTerm);
-        settings_state.set_int      ("articleview-scrollpos",       m_ArticleViewScrollPos);
-        settings_state.set_int      ("articlelist-new-rows",        m_ArticleListNewRowCount);
+        Settings.state().set_int      ("window-width",                m_WindowWidth);
+        Settings.state().set_int      ("window-height",               m_WindowHeight);
+        Settings.state().set_boolean  ("window-maximized",            m_WindowMaximized);
+        Settings.state().set_strv     ("expanded-categories",         m_ExpandedCategories);
+        Settings.state().set_double   ("feed-row-scrollpos",          m_FeedListScrollPos);
+        Settings.state().set_string   ("feedlist-selected-row",       m_FeedListSelectedRow);
+        Settings.state().set_int      ("feed-row-width",              m_FeedListWidth);
+        Settings.state().set_int      ("feeds-and-articles-width",    m_FeedsAndArticleWidth);
+        Settings.state().set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
+        Settings.state().set_double   ("articlelist-scrollpos",       m_ArticleListScrollPos);
+        Settings.state().set_string   ("articlelist-selected-row",    m_ArticleListSelectedRow);
+        Settings.state().set_enum     ("show-articles",               m_ArticleListState);
+        Settings.state().set_string   ("search-term",                 m_SearchTerm);
+        Settings.state().set_int      ("articleview-scrollpos",       m_ArticleViewScrollPos);
+        Settings.state().set_int      ("articlelist-new-rows",        m_ArticleListNewRowCount);
     }
 
     public void setWindowSize(int height, int width)

@@ -54,7 +54,7 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 
 		if(mRow != null)
 		{
-			if(settings_general.get_boolean("mediaplayer"))
+			if(Settings.general().get_boolean("mediaplayer"))
 			{
 				play(mRow.getURL());
 			}

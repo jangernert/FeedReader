@@ -56,48 +56,48 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     {
         var feed_settings = headline(_("Feed List:"));
 
-        var only_feeds = new SettingSwitch(_("Only show feeds"), settings_general, "only-feeds");
+        var only_feeds = new SettingSwitch(_("Only show feeds"), Settings.general(), "only-feeds");
         only_feeds.changed.connect(() => {
-        	settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
-        	settings_state.set_string("feedlist-selected-row", "feed -4");
+        	Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
+        	Settings.state().set_string("feedlist-selected-row", "feed -4");
         	newFeedList(true);
         });
 
-        var only_unread = new SettingSwitch(_("Only show unread"), settings_general, "feedlist-only-show-unread");
+        var only_unread = new SettingSwitch(_("Only show unread"), Settings.general(), "feedlist-only-show-unread");
         only_unread.changed.connect(() => {
         	newFeedList();
         });
 
-		var feedlist_sort = new SettingDropbox(_("Sort FeedList by"), settings_general, "feedlist-sort-by", {_("Received"), _("Alphabetically")});
+		var feedlist_sort = new SettingDropbox(_("Sort FeedList by"), Settings.general(), "feedlist-sort-by", {_("Received"), _("Alphabetically")});
         feedlist_sort.changed.connect(() => {
         	newFeedList();
         });
 
-        var feedlist_theme = new SettingDropbox(_("Theme"), settings_general, "feedlist-theme", {_("Gtk+"), _("Dark"), _("elementary")});
+        var feedlist_theme = new SettingDropbox(_("Theme"), Settings.general(), "feedlist-theme", {_("Gtk+"), _("Dark"), _("elementary")});
         feedlist_theme.changed.connect(() => {
         	reloadCSS();
         });
 
         var article_settings = headline(_("Article List:"));
 
-        var article_sort = new SettingDropbox(_("Sort articles by"), settings_general, "articlelist-sort-by", {_("Received"), _("Date")});
+        var article_sort = new SettingDropbox(_("Sort articles by"), Settings.general(), "articlelist-sort-by", {_("Received"), _("Date")});
         article_sort.changed.connect(() => {
         	newArticleList();
         });
 
-        var newest_first = new SettingSwitch(_("Newest first"), settings_general, "articlelist-newest-first");
+        var newest_first = new SettingSwitch(_("Newest first"), Settings.general(), "articlelist-newest-first");
         newest_first.changed.connect(() => {
         	newArticleList();
         });
 
         var articleview_settings = headline(_("Article View:"));
 
-        var article_theme = new SettingDropbox(_("Theme"), settings_general, "article-theme", {_("Default"), _("Spring"), _("Midnight"), _("Parchment")});
+        var article_theme = new SettingDropbox(_("Theme"), Settings.general(), "article-theme", {_("Default"), _("Spring"), _("Midnight"), _("Parchment")});
 		article_theme.changed.connect(() => {
 			reloadArticleView();
 		});
 
-        var fontsize = new SettingDropbox(_("Font Size"), settings_general, "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
+        var fontsize = new SettingDropbox(_("Font Size"), Settings.general(), "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
 		fontsize.changed.connect(() => {
 			reloadArticleView();
 		});
@@ -125,13 +125,13 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     {
 		var sync_settings = headline(_("Sync:"));
 
-		var sync_count = new SettingSpin(_("Number of articles"), settings_general, "max-articles", 10, 5000, 10);
+		var sync_count = new SettingSpin(_("Number of articles"), Settings.general(), "max-articles", 10, 5000, 10);
 
-		var sync_time = new SettingSpin(_("Every (Minutes)"), settings_general, "sync", 5, 600, 5);
+		var sync_time = new SettingSpin(_("Every (Minutes)"), Settings.general(), "sync", 5, 600, 5);
 		sync_time.changed.connect(() => {
             try
             {
-                DBusConnection.get_default().scheduleSync(settings_general.get_int("sync"));
+                DBusConnection.get_default().scheduleSync(Settings.general().get_int("sync"));
             }
             catch(GLib.Error e)
             {
@@ -141,14 +141,14 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var db_settings = headline(_("Database:"));
 
-        var drop_articles = new SettingDropbox(_("Delete articles after"), settings_general, "drop-articles-after",
+        var drop_articles = new SettingDropbox(_("Delete articles after"), Settings.general(), "drop-articles-after",
 												{_("Never"), _("1 Week"), _("1 Month"), _("6 Months")});
 
 		var service_settings = headline(_("Additional Functionality:"));
 
-        var grabber = new SettingSwitch(_("Content Grabber"), settings_general,"content-grabber");
+        var grabber = new SettingSwitch(_("Content Grabber"), Settings.general(),"content-grabber");
 
-        var mediaplayer = new SettingSwitch(_("Internal Media Player"), settings_general,"mediaplayer");
+        var mediaplayer = new SettingSwitch(_("Internal Media Player"), Settings.general(),"mediaplayer");
 
 
     	var internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);

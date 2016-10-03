@@ -72,7 +72,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 
 	private void resetAllData()
 	{
-		if(settings_state.get_boolean("currently-updating"))
+		if(Settings.state().get_boolean("currently-updating"))
 		{
 			m_reset = true;
 			m_newAccountButton.remove(m_deleteLabel);
@@ -81,7 +81,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 			m_spinner.start();
 			m_newAccountButton.set_sensitive(false);
 
-			while(settings_state.get_boolean("currently-updating"))
+			while(Settings.state().get_boolean("currently-updating"))
 			{
 				Gtk.main_iteration();
 			}
@@ -93,16 +93,16 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		try
 		{
 			// set "currently-updating" ourself to prevent the daemon to start sync
-			settings_state.set_boolean("currently-updating", true);
+			Settings.state().set_boolean("currently-updating", true);
 
-			Utils.resetSettings(settings_general);
-			Utils.resetSettings(settings_state);
+			Utils.resetSettings(Settings.general());
+			Utils.resetSettings(Settings.state());
 			DBusConnection.get_default().resetDB();
 			DBusConnection.get_default().resetAccount();
 
 			Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 
-			settings_state.set_boolean("currently-updating", false);
+			Settings.state().set_boolean("currently-updating", false);
 			DBusConnection.get_default().login("none");
 			reset();
 		}

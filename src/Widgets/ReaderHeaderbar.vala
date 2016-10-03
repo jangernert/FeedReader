@@ -44,7 +44,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var fs_icon = new Gtk.Image.from_icon_name("view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		m_state = (ArticleListState)settings_state.get_enum("show-articles");
+		m_state = (ArticleListState)Settings.state().get_enum("show-articles");
 
 
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
@@ -186,8 +186,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			search_term(m_search.text);
 		});
 
-		if(settings_tweaks.get_boolean("restore-searchterm"))
-			m_search.text = settings_state.get_string("search-term");
+		if(Settings.tweaks().get_boolean("restore-searchterm"))
+			m_search.text = Settings.state().get_string("search-term");
 
 		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "gnome")
 		{
@@ -215,7 +215,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		this.pack1(m_header_left, true, false);
 		this.pack2(m_header_right, true, false);
 		this.get_style_context().add_class("headerbar_pane");
-		this.set_position(settings_state.get_int("feeds-and-articles-width"));
+		this.set_position(Settings.state().get_int("feeds-and-articles-width"));
 	}
 
 	private void set_window_buttons()

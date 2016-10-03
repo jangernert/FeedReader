@@ -162,7 +162,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		});
 
 
-		if(settings_state.get_boolean("window-maximized"))
+		if(Settings.state().get_boolean("window-maximized"))
 		{
 			Logger.get().debug("MainWindow: maximize");
 			this.maximize();
@@ -175,19 +175,19 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		this.set_titlebar(m_simpleHeader);
 		this.set_title ("FeedReader");
-		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
+		this.set_default_size(Settings.state().get_int("window-width"), Settings.state().get_int("window-height"));
 		this.show_all();
 
 		Logger.get().debug("MainWindow: determining state");
 		try
 		{
-			if(DBusConnection.get_default().isOnline() && !settings_state.get_boolean("spring-cleaning"))
+			if(DBusConnection.get_default().isOnline() && !Settings.state().get_boolean("spring-cleaning"))
 			{
 				loadContent();
 			}
 			else
 			{
-				if(settings_state.get_boolean("spring-cleaning"))
+				if(Settings.state().get_boolean("spring-cleaning"))
 				{
 					showSpringClean();
 				}
@@ -300,34 +300,34 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			int windowWidth = 0;
 			int windowHeight = 0;
 			this.get_size(out windowWidth, out windowHeight);
-			settings_state.set_int("window-width", windowWidth);
-			settings_state.set_int("window-height", windowHeight);
-			settings_state.set_boolean("window-maximized", this.is_maximized);
+			Settings.state().set_int("window-width", windowWidth);
+			Settings.state().set_int("window-height", windowHeight);
+			Settings.state().set_boolean("window-maximized", this.is_maximized);
 
 			return false;
 		});
 
 		this.destroy.connect(() => {
-			if(settings_state.get_boolean("spring-cleaning"))
+			if(Settings.state().get_boolean("spring-cleaning"))
 				return;
 
 			int offset = 0;
 			double scrollPos = 0.0;
 			m_content.getArticleListState(out scrollPos, out offset);
 
-			settings_state.set_strv("expanded-categories", m_content.getExpandedCategories());
-			settings_state.set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
-			settings_state.set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
-			settings_state.set_int("feed-row-width", m_content.getFeedListWidth());
-			settings_state.set_int("feeds-and-articles-width", m_content.getArticlePlusFeedListWidth());
-			settings_state.set_int("articlelist-row-offset", offset);
-			settings_state.set_double("articlelist-scrollpos",  scrollPos);
-			settings_state.set_string("articlelist-selected-row", m_content.getSelectedArticle());
-			settings_state.set_enum("show-articles", m_headerbar.getArticleListState());
-			settings_state.set_boolean("no-animations", true);
-			settings_state.set_string("search-term", m_headerbar.getSearchTerm());
-			settings_state.set_int("articleview-scrollpos", m_content.getArticleViewScrollPos());
-			settings_state.set_int("articlelist-new-rows", 0);
+			Settings.state().set_strv("expanded-categories", m_content.getExpandedCategories());
+			Settings.state().set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
+			Settings.state().set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
+			Settings.state().set_int("feed-row-width", m_content.getFeedListWidth());
+			Settings.state().set_int("feeds-and-articles-width", m_content.getArticlePlusFeedListWidth());
+			Settings.state().set_int("articlelist-row-offset", offset);
+			Settings.state().set_double("articlelist-scrollpos",  scrollPos);
+			Settings.state().set_string("articlelist-selected-row", m_content.getSelectedArticle());
+			Settings.state().set_enum("show-articles", m_headerbar.getArticleListState());
+			Settings.state().set_boolean("no-animations", true);
+			Settings.state().set_string("search-term", m_headerbar.getSearchTerm());
+			Settings.state().set_int("articleview-scrollpos", m_content.getArticleViewScrollPos());
+			Settings.state().set_int("articlelist-new-rows", 0);
 		});
 	}
 
@@ -379,7 +379,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		addProvider(path + "basics.css");
 
-		FeedListTheme theme = (FeedListTheme)settings_general.get_enum("feedlist-theme");
+		FeedListTheme theme = (FeedListTheme)Settings.general().get_enum("feedlist-theme");
 
 		switch(theme)
 		{
@@ -436,7 +436,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					m_error_bar.set_visible(false);
 					break;
 				case Gtk.ResponseType.APPLY:
-					settings_tweaks.set_boolean("ignore-tls-errors", true);
+					Settings.tweaks().set_boolean("ignore-tls-errors", true);
 					m_ignore_tls_errors.set_visible(false);
 					m_error_bar.set_visible(false);
 					m_login.writeLoginData();
@@ -461,8 +461,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void login()
 	{
-		settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
-		settings_state.set_string("feedlist-selected-row", "feed -4");
+		Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
+		Settings.state().set_string("feedlist-selected-row", "feed -4");
 		try
 		{
 			if(dataBase.isEmpty())
@@ -626,7 +626,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		uint? key;
 		Gdk.ModifierType? mod;
-		string setting = settings_keybindings.get_string(gsettingKey);
+		string setting = Settings.keybindings().get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
 
 		if(key != null && Gdk.keyval_to_lower(event.keyval) == key)

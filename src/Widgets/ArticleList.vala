@@ -399,7 +399,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	private bool restoreSelectedRow()
 	{
-		string selectedRow = settings_state.get_string("articlelist-selected-row");
+		string selectedRow = Settings.state().get_string("articlelist-selected-row");
 
 		if(selectedRow != "")
 		{
@@ -413,7 +413,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					var window = this.get_toplevel() as readerUI;
 					if(window != null && !window.searchFocused())
 						tmpRow.activate();
-					settings_state.set_string("articlelist-selected-row", "");
+					Settings.state().set_string("articlelist-selected-row", "");
 					return true;
 				}
 			}
@@ -461,8 +461,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 	{
 		Logger.get().debug("ArticleList: restore ScrollPos");
 		m_current_adjustment.notify["upper"].disconnect(restoreScrollPos);
-		setScrollPos(m_current_adjustment.get_value() + settings_state.get_double("articlelist-scrollpos"));
-		settings_state.set_double("articlelist-scrollpos",  0);
+		setScrollPos(m_current_adjustment.get_value() + Settings.state().get_double("articlelist-scrollpos"));
+		Settings.state().set_double("articlelist-scrollpos",  0);
 	}
 
 
@@ -471,7 +471,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_current_adjustment = m_currentScroll.get_vadjustment();
 		m_current_adjustment.set_value(pos);
 		m_currentScroll.set_vadjustment(m_current_adjustment);
-		settings_state.set_int("articlelist-new-rows", 0);
+		Settings.state().set_int("articlelist-new-rows", 0);
 		m_scrollPos = pos;
 	}
 
@@ -565,16 +565,16 @@ public class FeedReader.articleList : Gtk.Overlay {
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 
 		bool show_notification = false;
-		if(!m_only_unread && !m_only_marked && settings_state.get_int("articlelist-new-rows") > 0)
+		if(!m_only_unread && !m_only_marked && Settings.state().get_int("articlelist-new-rows") > 0)
 			show_notification = true;
 
 		m_threadCount++;
 		int threadID = m_threadCount;
 		bool hasContent = true;
 		uint displayed_artilces = getDisplayedArticles();
-		uint offset = (uint)settings_state.get_int("articlelist-row-offset");
+		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
 		if(!m_only_unread && !m_only_marked)
-		 	offset += (uint)settings_state.get_int("articlelist-new-rows");
+		 	offset += (uint)Settings.state().get_int("articlelist-new-rows");
 		Logger.get().debug("ArticleList: offset %u".printf(offset));
 
 		// dont allow new articles being created due to scrolling for 0.5s
@@ -647,7 +647,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 						m_currentList.add(tmpRow);
 
-						if(settings_state.get_boolean("no-animations"))
+						if(Settings.state().get_boolean("no-animations"))
 						{
 							tmpRow.reveal(true, 0);
 						}
@@ -672,12 +672,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 						noRowActive();
 				}
 
-				if(settings_state.get_boolean("no-animations"))
-					settings_state.set_boolean("no-animations", false);
+				if(Settings.state().get_boolean("no-animations"))
+					Settings.state().set_boolean("no-animations", false);
 
 				if(offset > 0)
 				{
-					settings_state.set_int("articlelist-row-offset", 0);
+					Settings.state().set_int("articlelist-row-offset", 0);
 					updateArticleList.begin(false, (obj, res) => {
 						updateArticleList.end(res);
 					});
@@ -739,7 +739,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		string selectedArticle = getSelectedArticle();
 
 		if(selectedArticle != "empty")
-			settings_state.set_string("articlelist-selected-row", selectedArticle);
+			Settings.state().set_string("articlelist-selected-row", selectedArticle);
 
 		if(m_currentList == m_List1)
 		{
@@ -796,8 +796,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_scrollPos = m_current_adjustment.get_value();
 		uint articlesInserted = 0;
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
-		bool sortByDate = settings_general.get_enum("articlelist-sort-by") == ArticleListSort.DATE;
-		bool newestFirst = settings_general.get_boolean("articlelist-newest-first");
+		bool sortByDate = Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.DATE;
+		bool newestFirst = Settings.general().get_boolean("articlelist-newest-first");
 
 		if(m_stack.get_visible_child_name() == "empty" || m_stack.get_visible_child_name() == "syncing")
 		{
@@ -980,7 +980,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private void onAllocated(Gtk.Widget row, Gtk.Allocation allocation)
 	{
 		m_limitScroll = true;
-		if(settings_general.get_boolean("articlelist-newest-first"))
+		if(Settings.general().get_boolean("articlelist-newest-first"))
 			setScrollPos(m_current_adjustment.get_value() + allocation.height);
 		row.size_allocate.disconnect(onAllocated);
 

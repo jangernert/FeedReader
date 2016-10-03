@@ -190,7 +190,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		try
 		{
 			// Make the this widget a DnD source.
-			if(!settings_general.get_boolean("only-feeds")
+			if(!Settings.general().get_boolean("only-feeds")
 			&& DBusConnection.get_default().isOnline()
 			&& DBusConnection.get_default().supportTags())
 			{

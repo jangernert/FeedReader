@@ -37,7 +37,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 		m_pane2 = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane2.set_size_request(0, 300);
-		m_pane2.set_position(settings_state.get_int("feed-row-width"));
+		m_pane2.set_position(Settings.state().get_int("feed-row-width"));
 		m_pane2.pack1(feedListBox, false, false);
 
 		m_feedList.clearSelected.connect(() => {
@@ -106,7 +106,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			Logger.get().debug("ContentPage: articleList drag_failed signal");
 			return true;
 		});
-		setArticleListState((ArticleListState)settings_state.get_enum("show-articles"));
+		setArticleListState((ArticleListState)Settings.state().get_enum("show-articles"));
 
 		m_pane2.pack2(m_articleList, false, false);
 
@@ -141,7 +141,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 
 		m_pane1 = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
-		m_pane1.set_position(settings_state.get_int("feeds-and-articles-width"));
+		m_pane1.set_position(Settings.state().get_int("feeds-and-articles-width"));
 		m_pane1.pack1(m_pane2, false, false);
 		m_pane1.pack2(m_article_view, true, false);
 		m_pane1.notify["position"].connect(() => {

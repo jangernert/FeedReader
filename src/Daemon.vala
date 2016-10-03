@@ -48,13 +48,13 @@ namespace FeedReader {
 		{
 			Logger.get().debug("daemon: constructor");
 			m_offlineActions = new OfflineActionManager();
-			login(settings_general.get_string("plugin"));
+			login(Settings.general().get_string("plugin"));
 
 #if WITH_LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
 			updateBadge();
 #endif
-			scheduleSync(settings_general.get_int("sync"));
+			scheduleSync(Settings.general().get_int("sync"));
 		}
 
 		public void startSync()
@@ -137,7 +137,7 @@ namespace FeedReader {
 			}
 
 			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time*60, () => {
-				if(!settings_state.get_boolean("currently-updating")
+				if(!Settings.state().get_boolean("currently-updating")
 				&& server.pluginLoaded())
 				{
 			   		Logger.get().debug("daemon: Timeout!");
@@ -152,10 +152,10 @@ namespace FeedReader {
 			if(Utils.springCleaningNecessary())
 			{
 				Logger.get().info("daemon: spring cleaning");
-				settings_state.set_boolean("spring-cleaning", true);
+				Settings.state().set_boolean("spring-cleaning", true);
 				springCleanStarted();
 				dataBase.springCleaning();
-				settings_state.set_boolean("spring-cleaning", false);
+				Settings.state().set_boolean("spring-cleaning", false);
 				springCleanFinished();
 			}
 
@@ -170,7 +170,7 @@ namespace FeedReader {
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				login(settings_general.get_string("plugin"));
+				login(Settings.general().get_string("plugin"));
 				if(m_loggedin != LoginResponse.SUCCESS)
 				{
 					setOffline();
@@ -179,13 +179,13 @@ namespace FeedReader {
 				}
 			}
 
-			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
+			if(m_loggedin == LoginResponse.SUCCESS && Settings.state().get_boolean("currently-updating") == false)
 			{
 				Logger.get().info("daemon: sync started");
-				settings_state.set_boolean("currently-updating", true);
+				Settings.state().set_boolean("currently-updating", true);
 				server.syncContent();
 				updateBadge();
-				settings_state.set_boolean("currently-updating", false);
+				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();
 				Logger.get().info("daemon: sync finished");
 			}
@@ -208,7 +208,7 @@ namespace FeedReader {
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
 				server.logout();
-				login(settings_general.get_string("plugin"));
+				login(Settings.general().get_string("plugin"));
 			}
 
 			setOnline();
@@ -240,17 +240,17 @@ namespace FeedReader {
 
 			if(m_loggedin != LoginResponse.SUCCESS)
 			{
-				login(settings_general.get_string("plugin"));
+				login(Settings.general().get_string("plugin"));
 			}
 
-			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
+			if(m_loggedin == LoginResponse.SUCCESS && Settings.state().get_boolean("currently-updating") == false)
 			{
 				syncStarted();
 				Logger.get().info("daemon: initSync started");
-				settings_state.set_boolean("currently-updating", true);
+				Settings.state().set_boolean("currently-updating", true);
 				server.InitSyncContent();
 				updateBadge();
-				settings_state.set_boolean("currently-updating", false);
+				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();
 				Logger.get().info("daemon: initSync finished");
 			}
@@ -313,7 +313,7 @@ namespace FeedReader {
 
 			if(m_loggedin == LoginResponse.SUCCESS)
 			{
-				settings_general.set_string("plugin", plugName);
+				Settings.general().set_string("plugin", plugName);
 				setOnline();
 			}
 			else if(m_loggedin == LoginResponse.NO_BACKEND)
@@ -760,8 +760,8 @@ namespace FeedReader {
 		public void updateBadge()
 		{
 #if WITH_LIBUNITY
-			if(!settings_state.get_boolean("spring-cleaning")
-			&& settings_tweaks.get_boolean("show-badge"))
+			if(!Settings.state().get_boolean("spring-cleaning")
+			&& Settings.tweaks().get_boolean("show-badge"))
 			{
 				var count = dataBase.get_unread_total();
 				Logger.get().debug("daemon: update badge count %u".printf(count));
@@ -820,11 +820,7 @@ namespace FeedReader {
 
 
 	dbDaemon dataBase;
-	GLib.Settings settings_general;
-	GLib.Settings settings_state;
-	GLib.Settings settings_tweaks;
 	FeedServer server;
-	Logger logger;
 	FeedDaemonServer daemon;
 	Notify.Notification notification;
 	bool m_notifyActionSupport = false;
@@ -846,10 +842,6 @@ namespace FeedReader {
 
 	int main(string[] args)
 	{
-		settings_general = new GLib.Settings("org.gnome.feedreader");
-		settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
-		settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-
 		try
 		{
 			var opt_context = new GLib.OptionContext();
@@ -916,8 +908,8 @@ namespace FeedReader {
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,
 				      () => {
-				      			settings_state.set_boolean("currently-updating", false);
-								settings_state.set_boolean("spring-cleaning", false);
+				      			Settings.state().set_boolean("currently-updating", false);
+								Settings.state().set_boolean("spring-cleaning", false);
 				      },
 				      () => {
 				      			Logger.get().warning("daemon: Could not aquire name (already running). Will shut down!");

@@ -126,7 +126,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static bool springCleaningNecessary()
 	{
-		var lastClean = new DateTime.from_unix_local(settings_state.get_int("last-spring-cleaning"));
+		var lastClean = new DateTime.from_unix_local(Settings.state().get_int("last-spring-cleaning"));
 		var now = new DateTime.now_local();
 
 		var difference = now.difference(lastClean);
@@ -136,7 +136,7 @@ public class FeedReader.Utils : GLib.Object {
 		Logger.get().debug("now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
 		Logger.get().debug("difference: %f".printf(difference/GLib.TimeSpan.DAY));
 
-		if((difference/GLib.TimeSpan.DAY) >= settings_general.get_int("spring-clean-after"))
+		if((difference/GLib.TimeSpan.DAY) >= Settings.general().get_int("spring-clean-after"))
 			doCleaning = true;
 
 		return doCleaning;
@@ -147,10 +147,10 @@ public class FeedReader.Utils : GLib.Object {
 		string[] selectedRow = {};
 		ArticleListState state = ArticleListState.ALL;
 		string searchTerm = "";
-		selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
-		state = (ArticleListState)settings_state.get_enum("show-articles");
-		if(settings_tweaks.get_boolean("restore-searchterm"))
-			searchTerm = settings_state.get_string("search-term");
+		selectedRow = Settings.state().get_string("feedlist-selected-row").split(" ", 2);
+		state = (ArticleListState)Settings.state().get_enum("show-articles");
+		if(Settings.tweaks().get_boolean("restore-searchterm"))
+			searchTerm = Settings.state().get_string("search-term");
 
 		FeedListType IDtype = FeedListType.FEED;
 
@@ -265,7 +265,7 @@ public class FeedReader.Utils : GLib.Object {
 
 
 		string theme = "theme ";
-		switch(settings_general.get_enum("article-theme"))
+		switch(Settings.general().get_enum("article-theme"))
 		{
 			case ArticleTheme.DEFAULT:
 				theme += "default";
@@ -292,7 +292,7 @@ public class FeedReader.Utils : GLib.Object {
 		string select_id = "$UNSELECTABLE";
 		int select_pos = article.str.index_of(select_id);
 
-		if(settings_tweaks.get_boolean("article-select-text"))
+		if(Settings.tweaks().get_boolean("article-select-text"))
 		{
 			article.erase(select_pos-1, select_id.length+1);
 		}
@@ -305,7 +305,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		string fontsize = "intial";
 		string sourcefontsize = "0.75rem";
-		switch(settings_general.get_enum("fontsize"))
+		switch(Settings.general().get_enum("fontsize"))
 		{
 			case FontSize.SMALL:
 				fontsize = "smaller";
@@ -375,7 +375,7 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		string filename = GLib.Environment.get_home_dir() + "/.config/autostart/feedreader-autostart.desktop";
 
-		if(settings_tweaks.get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
+		if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{
 			try
 			{

@@ -22,13 +22,9 @@ namespace FeedReader.InstapaperSecrets {
 
 public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
-    private GLib.Settings m_shareSettings;
-    private GLib.Settings m_shareTweaks;
-
     public InstaAPI()
     {
-        m_shareSettings = new GLib.Settings("org.gnome.feedreader.share");
-        m_shareTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+
     }
 
     public string getRequestToken()
@@ -121,15 +117,15 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         //-------------------------------------------------------------------------------------------------------------
 
 
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
         settings.set_string("oauth-access-token", accessToken);
     	settings.set_string("oauth-access-token-secret", accessToken_secret);
         settings.set_string("username", username);
         settings.set_string("user-id", userID);
 
-        var array = m_shareSettings.get_strv("instapaper");
+        var array = Settings.share().get_strv("instapaper");
         array += id;
-		m_shareSettings.set_strv("instapaper", array);
+		Settings.share().set_strv("instapaper", array);
 
         var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
                                         "userID", Secret.SchemaAttributeType.STRING);
@@ -150,7 +146,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool addBookmark(string id, string url)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
 
         var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE, "userID", Secret.SchemaAttributeType.STRING);
         var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
@@ -177,7 +173,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         var message_soup = new Soup.Message("POST", "https://www.instapaper.com/api/add");
         message_soup.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message.data);
 
-        if(m_shareTweaks.get_boolean("do-not-track"))
+        if(Settings.tweaks().get_boolean("do-not-track"))
 				message_soup.request_headers.append("DNT", "1");
 
 		session.send_message(message_soup);
@@ -193,7 +189,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool logout(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
         var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password",
                                         Secret.SchemaFlags.NONE, "userID", Secret.SchemaAttributeType.STRING);
 
@@ -221,7 +217,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			settings.reset(key);
 		}
 
-        var array = m_shareSettings.get_strv("instapaper");
+        var array = Settings.share().get_strv("instapaper");
 
     	string[] array2 = {};
     	foreach(string i in array)
@@ -229,7 +225,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			if(i != id)
 				array2 += i;
 		}
-		m_shareSettings.set_strv("instapaper", array2);
+		Settings.share().set_strv("instapaper", array2);
 		deleteAccount(id);
 
         return true;
@@ -242,7 +238,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public string getUsername(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
         return settings.get_string("username");
     }
 

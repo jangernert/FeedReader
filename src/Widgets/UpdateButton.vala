@@ -49,7 +49,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		this.set_tooltip_text(tooltip);
 		this.show_all();
 
-		if(settings_state.get_boolean("currently-updating"))
+		if(Settings.state().get_boolean("currently-updating"))
 			updating(true);
 		else
 			updating(false);

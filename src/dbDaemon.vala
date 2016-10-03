@@ -67,7 +67,7 @@ public class FeedReader.dbDaemon : dbBase {
     {
         executeSQL("VACUUM");
         var now = new DateTime.now_local();
-        settings_state.set_int("last-spring-cleaning", (int)now.to_unix());
+        Settings.state().set_int("last-spring-cleaning", (int)now.to_unix());
     }
 
     public void dropOldArtilces(int weeks)
@@ -80,7 +80,7 @@ public class FeedReader.dbDaemon : dbBase {
         if(server.useMaxArticles())
         {
             int highesID = getHighestRowID();
-            int syncCount = settings_general.get_int("max-articles");
+            int syncCount = Settings.general().get_int("max-articles");
             int upper = highesID-syncCount;
             if(upper <= 0)
                 return;

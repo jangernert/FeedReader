@@ -42,7 +42,7 @@ public class FeedReader.Logger : GLib.Object {
 
 	private Logger(string filename)
 	{
-		var logLevel = settings_general.get_enum("log-level");
+		var logLevel = Settings.general().get_enum("log-level");
 		m_LogLevel = LogLevel.DEBUG;
 
 		string path = "%s/.local/share/feedreader/%s.log".printf(GLib.Environment.get_home_dir(), filename);

@@ -901,7 +901,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("*");
-		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 		{
 			query.orderBy("name", true);
 		}
@@ -966,7 +966,7 @@ public class FeedReader.dbBase : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("*");
 		query.addCustomCondition(getUncategorizedQuery());
-		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 		{
 			query.orderBy("name", true);
 		}
@@ -1153,7 +1153,7 @@ public class FeedReader.dbBase : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.categories");
 		query.selectField("*");
 
-		if(settings_general.get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
+		if(Settings.general().get_enum("feedlist-sort-by") == FeedListSort.ALPHABETICAL)
 		{
 			query.orderBy("title", true);
 		}
@@ -1260,7 +1260,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		string order_field = "";
-		switch(settings_general.get_enum("articlelist-sort-by"))
+		switch(Settings.general().get_enum("articlelist-sort-by"))
 		{
 			case ArticleListSort.RECEIVED:
 				order_field = "rowid";
@@ -1272,7 +1272,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		bool desc = false;
-		if(settings_general.get_boolean("articlelist-newest-first"))
+		if(Settings.general().get_boolean("articlelist-newest-first"))
 			desc = true;
 
 		query.orderBy(order_field, desc);

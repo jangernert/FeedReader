@@ -158,7 +158,7 @@ public class FeedReader.Grabber : GLib.Object {
             }
         });
 
-        if(settings_tweaks.get_boolean("do-not-track"))
+        if(Settings.tweaks().get_boolean("do-not-track"))
 			msg.request_headers.append("DNT", "1");
 
         session.send_message(msg);
@@ -438,7 +438,7 @@ public class FeedReader.Grabber : GLib.Object {
             return true;
         }
 
-        if(!settings_tweaks.get_boolean("dont-download-images"))
+        if(!Settings.tweaks().get_boolean("dont-download-images"))
         {
             if(m_articleID != null && m_feedID != null)
                 grabberUtils.saveImages(m_doc, m_articleID, m_feedID);

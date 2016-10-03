@@ -97,13 +97,13 @@ public class FeedReader.ResetPage : Gtk.Bin {
 
 			Utils.resetSettings(settings_general);
 			Utils.resetSettings(settings_state);
-			feedDaemon_interface.resetDB();
-			feedDaemon_interface.resetAccount();
+			DBusConnection.get_default().resetDB();
+			DBusConnection.get_default().resetAccount();
 
 			Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
 
 			settings_state.set_boolean("currently-updating", false);
-			feedDaemon_interface.login("none");
+			DBusConnection.get_default().login("none");
 			reset();
 		}
 		catch(GLib.Error e)

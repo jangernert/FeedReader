@@ -131,7 +131,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		sync_time.changed.connect(() => {
             try
             {
-                feedDaemon_interface.scheduleSync(settings_general.get_int("sync"));
+                DBusConnection.get_default().scheduleSync(settings_general.get_int("sync"));
             }
             catch(GLib.Error e)
             {
@@ -156,7 +156,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         internalsBox.pack_start(sync_settings, false, true, 0);
         try
         {
-            if(feedDaemon_interface.useMaxArticles())
+            if(DBusConnection.get_default().useMaxArticles())
     		      internalsBox.pack_start(sync_count, false, true, 0);
         }
         catch(GLib.Error e)

@@ -166,10 +166,10 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			{
 				if(!available)
 				{
-					tagID = feedDaemon_interface.createTag(str);
+					tagID = DBusConnection.get_default().createTag(str);
 					logger.print(LogMessage.DEBUG, "TagPopover: " + str + " created with id " + tagID);
 				}
-				feedDaemon_interface.tagArticle(getActiveArticleID(), tagID, true);
+				DBusConnection.get_default().tagArticle(getActiveArticleID(), tagID, true);
 			}
 			catch(GLib.Error e)
 			{
@@ -192,7 +192,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	{
 		try
 		{
-			feedDaemon_interface.tagArticle(getActiveArticleID(), row.getTagID(), false);
+			DBusConnection.get_default().tagArticle(getActiveArticleID(), row.getTagID(), false);
 			m_list.remove(row);
 		}
 		catch(GLib.Error e)

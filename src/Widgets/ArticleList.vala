@@ -115,7 +115,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			{
 				if(article_row.isUnread())
 				{
-					feedDaemon_interface.changeArticle(selectedID, ArticleStatus.READ);
+					DBusConnection.get_default().changeArticle(selectedID, ArticleStatus.READ);
 					article_row.updateUnread(ArticleStatus.READ);
 				}
 			}
@@ -302,7 +302,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		try
 		{
-			feedDaemon_interface.changeArticle(row.getID(), ArticleStatus.READ);
+			DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
 		}
 		catch(GLib.Error e)
 		{

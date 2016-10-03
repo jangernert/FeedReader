@@ -188,7 +188,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	{
 		try
 		{
-			LoginResponse status = feedDaemon_interface.login(id);
+			LoginResponse status = DBusConnection.get_default().login(id);
 			logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());
 			if(status == LoginResponse.SUCCESS)
 			{
@@ -196,7 +196,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 				ext.writeFeed.connect((url, cat) => {
 					try
 					{
-						feedDaemon_interface.addFeed(url, cat, false, false);
+						DBusConnection.get_default().addFeed(url, cat, false, false);
 					}
 					catch(GLib.Error e)
 					{

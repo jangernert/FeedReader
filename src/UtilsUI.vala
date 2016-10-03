@@ -87,7 +87,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			if(settings_general.get_string("plugin") == "local")
 				return true;
 
-			if(!feedDaemon_interface.supportFeedManipulation())
+			if(!DBusConnection.get_default().supportFeedManipulation())
 				return false;
 
 			// when we already know wheather feedreader is online or offline
@@ -100,7 +100,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			}
 
 			// otherwise check if online
-			return feedDaemon_interface.isOnline();
+			return DBusConnection.get_default().isOnline();
 		}
         catch(GLib.Error e)
         {
@@ -145,7 +145,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		try
 		{
 			if(!dataBase.haveCategories()
-			&& !feedDaemon_interface.supportTags()
+			&& !DBusConnection.get_default().supportTags()
 			&& !dataBase.haveFeedsWithoutCat())
 				return true;
 		}

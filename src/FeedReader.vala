@@ -25,7 +25,6 @@ namespace FeedReader {
 	GLib.Settings settings_state;
 	GLib.Settings settings_tweaks;
 	GLib.Settings settings_keybindings;
-	FeedDaemon feedDaemon_interface;
 	Logger logger;
 
 
@@ -58,11 +57,10 @@ namespace FeedReader {
 		public override void activate()
 		{
 			base.activate();
-			DBusConnection.setup();
 
 			WebKit.WebContext.get_default().set_web_extensions_directory(InstallPrefix + "/share/FeedReader/");
 
-			if (m_window == null)
+			if(m_window == null)
 			{
 				m_window = new readerUI(this);
 				m_window.set_icon_name("feedreader");
@@ -73,11 +71,12 @@ namespace FeedReader {
 			}
 
 			m_window.show_all();
-			DBusConnection.connectSignals(m_window);
+
 			try
 			{
-				feedDaemon_interface.updateBadge();
-				feedDaemon_interface.checkOnlineAsync();
+				DBusConnection.connectSignals(m_window);
+				DBusConnection.get_default().updateBadge();
+				DBusConnection.get_default().checkOnlineAsync();
 			}
 			catch(GLib.Error e)
 			{
@@ -105,7 +104,7 @@ namespace FeedReader {
 			{
 				logger.print(LogMessage.DEBUG, "Shutdown!");
 				if(settings_tweaks.get_boolean("quit-daemon"))
-					feedDaemon_interface.quit();
+					DBusConnection.get_default().quit();
 				base.shutdown();
 			}
 			catch(GLib.Error e)
@@ -120,7 +119,7 @@ namespace FeedReader {
 			ThreadFunc<void*> run = () => {
 				try
 				{
-					feedDaemon_interface.startSync();
+					DBusConnection.get_default().startSync();
 				}
 				catch(IOError e)
 				{

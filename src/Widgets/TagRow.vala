@@ -53,7 +53,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			m_circle.newColor(color);
 			try
 			{
-				feedDaemon_interface.updateTagColor(m_tagID, color);
+				DBusConnection.get_default().updateTagColor(m_tagID, color);
 			}
 	        catch(GLib.Error e)
 	        {
@@ -141,7 +141,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 				if(m_tagID != TagID.NEW)
 				{
 					logger.print(LogMessage.DEBUG, "drag articleID: " + (string)selection_data.get_data());
-					feedDaemon_interface.tagArticle((string)selection_data.get_data(), m_tagID, true);
+					DBusConnection.get_default().tagArticle((string)selection_data.get_data(), m_tagID, true);
 					Gtk.drag_finish(context, true, false, time);
 				}
 				else
@@ -184,7 +184,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 			var notification = content.showNotification(_("Tag \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
-				try{feedDaemon_interface.deleteTag(m_tagID);}
+				try{DBusConnection.get_default().deleteTag(m_tagID);}
 				catch(GLib.Error e){logger.print(LogMessage.ERROR, "TagRow.remove_action: %s".printf(e.message));}
 			});
 			notification.action.connect(() => {
@@ -281,7 +281,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 				popRename.hide();
 				try
 				{
-					feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+					DBusConnection.get_default().renameTag(m_tagID, renameEntry.get_text());
 				}
 				catch(GLib.Error e)
 				{
@@ -292,9 +292,9 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			{
 				try
 				{
-					m_tagID = feedDaemon_interface.createTag(renameEntry.get_text());
+					m_tagID = DBusConnection.get_default().createTag(renameEntry.get_text());
 					popRename.hide();
-					feedDaemon_interface.tagArticle(articleID, m_tagID, true);
+					DBusConnection.get_default().tagArticle(articleID, m_tagID, true);
 					Gtk.drag_finish(context, true, false, time);
 				}
 				catch(GLib.Error e)

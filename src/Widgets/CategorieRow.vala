@@ -164,7 +164,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 
 				try
 				{
-					if(feedDaemon_interface.supportMultiLevelCategories())
+					if(DBusConnection.get_default().supportMultiLevelCategories())
 					{
 						const Gtk.TargetEntry[] provided_targets = {
 						    { "STRING",     0, DragTarget.CAT }
@@ -302,7 +302,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 					{
 						try
 						{
-							feedDaemon_interface.moveFeed(feedID, currentCat, m_categorieID);
+							DBusConnection.get_default().moveFeed(feedID, currentCat, m_categorieID);
 						}
 						catch(GLib.Error e)
 						{
@@ -326,7 +326,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 					{
 						try
 						{
-							feedDaemon_interface.moveCategory(dataString, m_categorieID);
+							DBusConnection.get_default().moveCategory(dataString, m_categorieID);
 						}
 						catch(GLib.Error e)
 						{
@@ -395,7 +395,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			ulong eventID = notification.dismissed.connect(() => {
 				try
 				{
-					feedDaemon_interface.removeCategory(m_categorieID);
+					DBusConnection.get_default().removeCategory(m_categorieID);
 				}
 				catch(GLib.Error e)
 				{
@@ -423,7 +423,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			GLib.Timeout.add(time, () => {
 				try
 				{
-					feedDaemon_interface.removeCategoryWithChildren(m_categorieID);
+					DBusConnection.get_default().removeCategoryWithChildren(m_categorieID);
 				}
 				catch(GLib.Error e)
 				{
@@ -492,20 +492,20 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 			{
 				if(m_categorieID != CategoryID.NEW.to_string())
 				{
-					feedDaemon_interface.renameCategory(m_categorieID, renameEntry.get_text());
+					DBusConnection.get_default().renameCategory(m_categorieID, renameEntry.get_text());
 				}
 				else if(context != null)
 				{
 					logger.print(LogMessage.DEBUG, "categoryRow: create new category " + renameEntry.get_text());
-					m_categorieID = feedDaemon_interface.addCategory(renameEntry.get_text(), "", true);
+					m_categorieID = DBusConnection.get_default().addCategory(renameEntry.get_text(), "", true);
 
 					if(id2 == null) // move feed
 					{
-						feedDaemon_interface.moveCategory(id1, m_categorieID);
+						DBusConnection.get_default().moveCategory(id1, m_categorieID);
 					}
 					else // move category
 					{
-						feedDaemon_interface.moveFeed(id1, id2, m_categorieID);
+						DBusConnection.get_default().moveFeed(id1, id2, m_categorieID);
 					}
 
 					Gtk.drag_finish(context, true, false, time);

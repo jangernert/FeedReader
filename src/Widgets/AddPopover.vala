@@ -137,7 +137,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		logger.print(LogMessage.DEBUG, "addFeed: %s, %s".printf(m_urlEntry.text, catID));
 		try
 		{
-			feedDaemon_interface.addFeed(m_urlEntry.text, catID, isID);
+			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID);
 		}
 		catch(Error e)
 		{
@@ -156,7 +156,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			uint8[] contents;
 			file.load_contents (null, out contents, null);
 			logger.print(LogMessage.DEBUG, (string)contents);
-			feedDaemon_interface.importOPML((string)contents);
+			DBusConnection.get_default().importOPML((string)contents);
 		}
 		catch(GLib.Error e)
 		{

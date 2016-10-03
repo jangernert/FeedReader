@@ -258,7 +258,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		try
 		{
 			if(m_online
-			&& feedDaemon_interface.supportTags()
+			&& DBusConnection.get_default().supportTags()
 			&& UtilsUI.canManipulateContent())
 			{
 				m_tag_button.sensitive = show;
@@ -318,7 +318,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			m_online = false;
 			m_share_button.sensitive = false;
 			if(UtilsUI.canManipulateContent()
-			&& feedDaemon_interface.supportTags())
+			&& DBusConnection.get_default().supportTags())
 				m_tag_button.sensitive = false;
 		}
 		catch(GLib.Error e)
@@ -334,7 +334,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			m_online = true;
 			m_share_button.sensitive = true;
 			if(UtilsUI.canManipulateContent()
-			&& feedDaemon_interface.supportTags())
+			&& DBusConnection.get_default().supportTags())
 				m_tag_button.sensitive = true;
 		}
 		catch(GLib.Error e)

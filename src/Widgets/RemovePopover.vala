@@ -85,7 +85,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		ulong eventID = notification.dismissed.connect(() => {
 			try
 			{
-				feedDaemon_interface.deleteTag(m_id);
+				DBusConnection.get_default().deleteTag(m_id);
 			}
 			catch(GLib.Error e)
 			{
@@ -108,7 +108,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		ulong eventID = notification.dismissed.connect(() => {
 			try
 			{
-				feedDaemon_interface.removeFeed(m_id);
+				DBusConnection.get_default().removeFeed(m_id);
 			}
 			catch(GLib.Error e)
 			{
@@ -132,7 +132,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		ulong eventID = notification.dismissed.connect(() => {
 			try
 			{
-				feedDaemon_interface.removeCategory(m_id);
+				DBusConnection.get_default().removeCategory(m_id);
 			}
 			catch(GLib.Error e)
 			{

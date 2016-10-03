@@ -191,8 +191,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		{
 			// Make the this widget a DnD source.
 			if(!settings_general.get_boolean("only-feeds")
-			&& feedDaemon_interface.isOnline()
-			&& feedDaemon_interface.supportTags())
+			&& DBusConnection.get_default().isOnline()
+			&& DBusConnection.get_default().supportTags())
 			{
 				const Gtk.TargetEntry[] provided_targets = {
 				    { "STRING",     0, DragTarget.TAG }
@@ -424,7 +424,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		try
 		{
-			feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getUnread());
+			DBusConnection.get_default().changeArticle(m_article.getArticleID(), m_article.getUnread());
 		}
 		catch(GLib.Error e)
 		{
@@ -543,7 +543,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		try
 		{
-			feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getMarked());
+			DBusConnection.get_default().changeArticle(m_article.getArticleID(), m_article.getMarked());
 		}
 		catch(GLib.Error e)
 		{

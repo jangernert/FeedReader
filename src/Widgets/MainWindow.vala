@@ -183,7 +183,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		logger.print(LogMessage.DEBUG, "MainWindow: determining state");
 		try
 		{
-			if(feedDaemon_interface.isOnline() && !settings_state.get_boolean("spring-cleaning"))
+			if(DBusConnection.get_default().isOnline() && !settings_state.get_boolean("spring-cleaning"))
 			{
 				loadContent();
 			}
@@ -468,9 +468,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		try
 		{
 			if(dataBase.isEmpty())
-				feedDaemon_interface.startInitSync();
+				DBusConnection.get_default().startInitSync();
 			else
-				feedDaemon_interface.startSync();
+				DBusConnection.get_default().startSync();
 		}
 		catch(GLib.Error e)
 		{
@@ -570,7 +570,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		dataBase.updateBadge.connect(() => {
 			try
 			{
-				feedDaemon_interface.updateBadge();
+				DBusConnection.get_default().updateBadge();
 			}
 			catch(Error e)
 			{
@@ -596,25 +596,25 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					var categories = dataBase.read_categories();
 					foreach(category cat in categories)
 					{
-						feedDaemon_interface.markFeedAsRead(cat.getCatID(), true);
+						DBusConnection.get_default().markFeedAsRead(cat.getCatID(), true);
 						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
 					}
 
 					var feeds = dataBase.read_feeds_without_cat();
 					foreach(feed Feed in feeds)
 					{
-						feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
+						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
 						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
 					}
 				}
 				else
 				{
-					feedDaemon_interface.markFeedAsRead(selectedRow[1], false);
+					DBusConnection.get_default().markFeedAsRead(selectedRow[1], false);
 				}
 			}
 			else if(selectedRow[0] == "cat")
 			{
-				feedDaemon_interface.markFeedAsRead(selectedRow[1], true);
+				DBusConnection.get_default().markFeedAsRead(selectedRow[1], true);
 			}
 		}
 		catch(GLib.Error e)

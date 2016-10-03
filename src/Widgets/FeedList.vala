@@ -478,10 +478,10 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		try
 		{
-			supportTags = feedDaemon_interface.supportTags();
-			supportCategories = feedDaemon_interface.supportCategories();
-			uncategorizedID = feedDaemon_interface.uncategorizedID();
-			supportMultiLevelCategories = feedDaemon_interface.supportMultiLevelCategories();
+			supportTags = DBusConnection.get_default().supportTags();
+			supportCategories = DBusConnection.get_default().supportCategories();
+			uncategorizedID = DBusConnection.get_default().uncategorizedID();
+			supportMultiLevelCategories = DBusConnection.get_default().supportMultiLevelCategories();
 		}
 		catch(GLib.Error e)
 		{
@@ -883,11 +883,11 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				if(id == FeedID.ALL.to_string())
 				{
-					feedDaemon_interface.markAllItemsRead();
+					DBusConnection.get_default().markAllItemsRead();
 				}
 				else
 				{
-					feedDaemon_interface.markFeedAsRead(id, false);
+					DBusConnection.get_default().markFeedAsRead(id, false);
 				}
 			}
 			else if(type == FeedListType.CATEGORY)
@@ -897,13 +897,13 @@ public class FeedReader.feedList : Gtk.Stack {
 					var feeds = dataBase.read_feeds_without_cat();
 					foreach(feed Feed in feeds)
 					{
-						feedDaemon_interface.markFeedAsRead(Feed.getFeedID(), false);
+						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
 						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
 					}
 				}
 				else
 				{
-					feedDaemon_interface.markFeedAsRead(id, true);
+					DBusConnection.get_default().markFeedAsRead(id, true);
 				}
 			}
 		}
@@ -1100,7 +1100,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		try
 		{
-			if(feedDaemon_interface.supportTags())
+			if(DBusConnection.get_default().supportTags())
 			{
 				var FeedChildList = m_list.get_children();
 				foreach(Gtk.Widget row in FeedChildList)

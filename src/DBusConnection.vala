@@ -93,16 +93,29 @@ namespace FeedReader {
 
 	public class DBusConnection : GLib.Object {
 
-		public DBusConnection()
+		private static FeedDaemon? m_connection = null;
+
+		public static FeedDaemon get_default()
+		{
+			if(m_connection == null)
+				setup();
+
+			return m_connection;
+		}
+
+		private DBusConnection()
 		{
 
 		}
 
-		public static void setup()
+		private static void setup()
 		{
-			try{
-				feedDaemon_interface = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
-			}catch (IOError e) {
+			try
+			{
+				m_connection = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
+			}
+			catch(IOError e)
+			{
 				logger.print(LogMessage.ERROR, "Failed to connect to daemon!");
 				logger.print(LogMessage.ERROR, e.message);
 				startDaemon();
@@ -123,75 +136,78 @@ namespace FeedReader {
 
 		public static void connectSignals(readerUI window)
 		{
-			feedDaemon_interface.newFeedList.connect(() => {
+			if(m_connection == null)
+				setup();
+
+			m_connection.newFeedList.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: newFeedList");
 				window.getContent().newFeedList();
 			});
 
-			feedDaemon_interface.updateFeedList.connect(() => {
+			m_connection.updateFeedList.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: updateFeedList");
 				window.getContent().updateFeedList();
 			});
 
-			feedDaemon_interface.newArticleList.connect(() => {
+			m_connection.newArticleList.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: newArticleList");
 				window.getContent().newArticleList();
 			});
 
-			feedDaemon_interface.updateArticleList.connect(() => {
+			m_connection.updateArticleList.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: updateArticleList");
 				window.getContent().updateArticleList();
 			});
 
-			feedDaemon_interface.syncStarted.connect(() => {
+			m_connection.syncStarted.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: syncStarted");
 				window.writeInterfaceState();
 				window.setRefreshButton(true);
 			});
 
-			feedDaemon_interface.syncFinished.connect(() => {
+			m_connection.syncFinished.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: syncFinished");
 				window.getContent().syncFinished();
 				window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
 				window.setRefreshButton(false);
 			});
 
-			feedDaemon_interface.springCleanStarted.connect(() => {
+			m_connection.springCleanStarted.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: springCleanStarted");
 				window.showSpringClean();
 			});
 
-			feedDaemon_interface.springCleanFinished.connect(() => {
+			m_connection.springCleanFinished.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: springCleanFinished");
 				window.showContent();
 			});
 
-			feedDaemon_interface.writeInterfaceState.connect(() => {
+			m_connection.writeInterfaceState.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: writeInterfaceState");
 				window.writeInterfaceState();
 			});
 
-			feedDaemon_interface.showArticleListOverlay.connect(() => {
+			m_connection.showArticleListOverlay.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: showArticleListOverlay");
 				window.getContent().showArticleListOverlay();
 			});
 
-			feedDaemon_interface.setOffline.connect(() => {
+			m_connection.setOffline.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: setOffline");
 				window.setOffline();
 			});
 
-			feedDaemon_interface.setOnline.connect(() => {
+			m_connection.setOnline.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: setOnline");
 				window.setOnline();
 			});
 
-			feedDaemon_interface.feedAdded.connect(() => {
+			m_connection.feedAdded.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: feedAdded");
 				window.getContent().footerSetReady();
 			});
 
-			feedDaemon_interface.opmlImported.connect(() => {
+			m_connection.opmlImported.connect(() => {
 				logger.print(LogMessage.DEBUG, "DBusConnection: opmlImported");
 				window.getContent().footerSetReady();
 			});
@@ -201,9 +217,9 @@ namespace FeedReader {
 		{
 			try
 			{
-				if(feedDaemon_interface.getVersion() < DBusAPIVersion)
+				if(m_connection.getVersion() < DBusAPIVersion)
 				{
-					feedDaemon_interface.quit();
+					m_connection.quit();
 					startDaemon();
 				}
 			}

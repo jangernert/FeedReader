@@ -112,7 +112,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 				if(m_feedID != FeedID.ALL.to_string()
 				&& !settings_general.get_boolean("only-feeds")
 				&& UtilsUI.canManipulateContent()
-				&& feedDaemon_interface.supportCategories())
+				&& DBusConnection.get_default().supportCategories())
 				{
 					const Gtk.TargetEntry[] provided_targets = {
 					    { "text/plain",     0, DragTarget.FEED }
@@ -216,7 +216,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			ulong eventID = notification.dismissed.connect(() => {
 				try
 				{
-					feedDaemon_interface.removeFeed(m_feedID);
+					DBusConnection.get_default().removeFeed(m_feedID);
 				}
 				catch(GLib.Error e)
 				{
@@ -286,7 +286,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			popRename.hide();
 			try
 			{
-				feedDaemon_interface.renameFeed(m_feedID, renameEntry.get_text());
+				DBusConnection.get_default().renameFeed(m_feedID, renameEntry.get_text());
 			}
 			catch(GLib.Error e)
 			{

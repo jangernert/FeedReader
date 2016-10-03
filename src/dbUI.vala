@@ -23,7 +23,7 @@ public class FeedReader.dbUI : dbBase {
 	{
         try
         {
-            if(feedDaemon_interface.hideCagetoryWhenEmtpy(catID)
+            if(DBusConnection.get_default().hideCagetoryWhenEmtpy(catID)
             && !Utils.categoryIsPopulated(catID, feeds))
             {
                 return false;
@@ -40,7 +40,7 @@ public class FeedReader.dbUI : dbBase {
 	{
         try
         {
-    		string catID = feedDaemon_interface.uncategorizedID();
+    		string catID = DBusConnection.get_default().uncategorizedID();
     		return "category_id = \"%s\"".printf(catID);
         }
         catch(GLib.Error e)

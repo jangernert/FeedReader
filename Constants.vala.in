@@ -23,12 +23,12 @@ namespace FeedReader {
 		public static const string programmName  = "FeedReader";
 		public static const string copyright     = "Copyright © 2016 Jan Lukas Gernert";
 		public static const string version       = "@VERSION@";
-		public static const string comments      = _("Desktop Client for various RSS Services");
+		public static const string comments      = N_("Desktop Client for various RSS Services");
 		public static const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" ,null };
 		public static const string[] documenters = { "nobody", null };
 		public static const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
 		public static const string iconName      = "feedreader";
-		public static const string translators   = _("translator-credits");
+		public static const string translators   = N_("translator-credits");
 		public static const string website       = "http://jangernert.github.io/FeedReader/";
 	}
 

@@ -215,10 +215,10 @@ namespace FeedReader {
 		dialog.artists = AboutInfo.artists;
 		dialog.authors = AboutInfo.authors;
 		dialog.documenters = null;
-		//dialog.translator_credits = AboutInfo.translators;
+		dialog.translator_credits = AboutInfo.translators;
 
 		dialog.program_name = AboutInfo.programmName;
-		//dialog.comments = AboutInfo.comments;
+		dialog.comments = AboutInfo.comments;
 		dialog.copyright = AboutInfo.copyright;
 		dialog.version = AboutInfo.version;
 		dialog.logo_icon_name = AboutInfo.iconName;

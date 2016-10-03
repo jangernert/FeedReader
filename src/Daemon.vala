@@ -44,7 +44,17 @@ namespace FeedReader {
 		public signal void feedAdded();
 		public signal void opmlImported();
 
-		public FeedDaemonServer()
+		private static FeedDaemonServer? m_daemon;
+
+		public static FeedDaemonServer get_default()
+		{
+			if(m_daemon == null)
+				m_daemon = new FeedDaemonServer();
+
+			return m_daemon;
+		}
+
+		private FeedDaemonServer()
 		{
 			Logger.debug("daemon: constructor");
 			m_offlineActions = new OfflineActionManager();
@@ -799,10 +809,9 @@ namespace FeedReader {
 
 	void on_bus_aquired(DBusConnection conn)
 	{
-		daemon = new FeedDaemonServer();
 		try
 		{
-		    conn.register_object("/org/gnome/feedreader", daemon);
+		    conn.register_object("/org/gnome/feedreader", FeedDaemonServer.get_default());
 		}
 		catch (IOError e)
 		{
@@ -813,9 +822,6 @@ namespace FeedReader {
 		Logger.debug("daemon: bus aquired");
 	}
 
-
-	FeedDaemonServer daemon;
-
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "grabArticle", 0, 0, OptionArg.STRING, ref grabArticle, "use the ContentGrabber to grab the given URL", "URL" },
@@ -824,6 +830,7 @@ namespace FeedReader {
 		{ "unreadCount", 0, 0, OptionArg.NONE, ref unreadCount, "current count of unread articles in the database", null },
 		{ null }
 	};
+
 	private static bool version = false;
 	private static bool unreadCount = false;
 	private static string? grabArticle = null;

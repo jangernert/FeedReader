@@ -105,7 +105,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 	{
 		string title = node->get_prop("text");
 		Logger.debug(space() + "Category: " + title);
-		string catID = daemon.addCategory("title", parentCatID);
+		string catID = FeedDaemonServer.get_default().addCategory("title", parentCatID);
 		parseTree(node, catID);
 	}
 
@@ -117,7 +117,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			string feedURL = node->get_prop("xmlUrl");
 			string website = node->get_prop("htmlUrl");
 			Logger.debug(space() + "Feed: " + title + " website: " + website + " feedURL: " + feedURL);
-			daemon.addFeed(feedURL, catID, true);
+			FeedDaemonServer.get_default().addFeed(feedURL, catID, true);
 		}
 	}
 

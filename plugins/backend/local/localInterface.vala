@@ -111,7 +111,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool serverAvailable()
 	{
-		return Utils.ping("google.com");
+		return Utils.ping("https://www.google.com/");
 	}
 
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)

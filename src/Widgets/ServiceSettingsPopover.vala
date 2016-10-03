@@ -28,7 +28,7 @@ public class FeedReader.ServiceSettingsPopover : Gtk.Popover {
 			this.hide();
         });
 
-		foreach(var account in share.getAccountTypes())
+		foreach(var account in Share.get_default().getAccountTypes())
 		{
 			var row = new ServiceSettingsPopoverRow(account.getAccountName(), account.getType(), account.getIconName());
 			list.add(row);

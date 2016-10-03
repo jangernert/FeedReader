@@ -17,8 +17,17 @@ public class FeedReader.Share : GLib.Object {
 
 	private Gee.ArrayList<ShareAccount> m_accounts;
 	private Peas.ExtensionSet m_plugins;
+	private static Share? m_share = null;
 
-	public Share()
+	public static Share get_default()
+	{
+		if(m_share == null)
+			m_share = new Share();
+
+		return m_share;
+	}
+
+	private Share()
 	{
 		var engine = Peas.Engine.get_default();
 		engine.add_search_path(InstallPrefix + "/share/FeedReader/pluginsShare/", null);

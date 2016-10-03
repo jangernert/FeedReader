@@ -27,7 +27,6 @@ namespace FeedReader {
 	GLib.Settings settings_keybindings;
 	FeedDaemon feedDaemon_interface;
 	Logger logger;
-	Share share;
 
 
 	public class FeedApp : Gtk.Application {
@@ -38,7 +37,6 @@ namespace FeedReader {
 		protected override void startup()
 		{
 			logger = new Logger("ui");
-			share = new Share();
 
 			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
 			dataBase = new dbUI();

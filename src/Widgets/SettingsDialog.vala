@@ -189,13 +189,13 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         viewport.add(service_list);
         service_scroll.add(viewport);
 
-        var list = share.getAccounts();
+        var list = Share.get_default().getAccounts();
 
         foreach(var account in list)
         {
-            if(share.needSetup(account.getID()))
+            if(Share.get_default().needSetup(account.getID()))
             {
-                ServiceSetup row = share.newSetup_withID(account.getID());
+                ServiceSetup row = Share.get_default().newSetup_withID(account.getID());
     			row.removeRow.connect(() => {
     				removeRow(row, service_list);
     			});
@@ -217,14 +217,14 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 				var tmpRow = row as ServiceSetup;
 				if(tmpRow != null && !tmpRow.isLoggedIn())
 				{
-					share.deleteAccount(tmpRow.getID());
+					Share.get_default().deleteAccount(tmpRow.getID());
 					removeRow(tmpRow, service_list);
 				}
 			}
 
 			var popover = new ServiceSettingsPopover(addAccount);
 			popover.newAccount.connect((type) => {
-                ServiceSetup row = share.newSetup(type);
+                ServiceSetup row = Share.get_default().newSetup(type);
     			row.removeRow.connect(() => {
     				removeRow(row, service_list);
     			});

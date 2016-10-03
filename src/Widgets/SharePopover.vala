@@ -44,7 +44,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
     private void populateList()
     {
-    	var list = share.getAccounts();
+    	var list = Share.get_default().getAccounts();
 
         foreach(var account in list)
         {
@@ -101,7 +101,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         if(window != null)
             url = window.getContent().getSelectedURL();
 
-		var widget = share.shareWidget(shareRow.getType(), url);
+		var widget = Share.get_default().shareWidget(shareRow.getType(), url);
 		if(widget == null)
 			shareURL(id, url);
 		else
@@ -122,7 +122,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 	{
 		SourceFunc callback = shareAsync.callback;
 		new GLib.Thread<void*>(null, () => {
-			share.addBookmark(id, url);
+			Share.get_default().addBookmark(id, url);
 			Idle.add((owned) callback);
 			return null;
 		});

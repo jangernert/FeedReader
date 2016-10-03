@@ -78,18 +78,18 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 	{
 		if(dataBase.isTableEmpty("OfflineActions"))
 		{
-			logger.print(LogMessage.DEBUG, "OfflineManager - goOnline: no actions to perform");
+			Logger.get().debug("OfflineManager - goOnline: no actions to perform");
 			return;
 		}
 
 
-		logger.print(LogMessage.DEBUG, "OfflineActionManager: goOnline");
+		Logger.get().debug("OfflineActionManager: goOnline");
 
 		var actions = dataBase.readOfflineActions();
 
 		foreach(OfflineAction action in actions)
 		{
-			logger.print(LogMessage.DEBUG, "OfflineActionManager: goOnline %s %s".printf(action.getID(), action.getType().to_string()));
+			Logger.get().debug("OfflineActionManager: goOnline %s %s".printf(action.getID(), action.getType().to_string()));
 			switch(action.getType())
 			{
 				case OfflineActions.MARK_READ:
@@ -134,7 +134,7 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	private void executeActions(string ids, OfflineActions action)
 	{
-		logger.print(LogMessage.DEBUG, "OfflineActionManager: executeActions %s %s".printf(ids, action.to_string()));
+		Logger.get().debug("OfflineActionManager: executeActions %s %s".printf(ids, action.to_string()));
 		switch(action)
 		{
 			case OfflineActions.MARK_READ:

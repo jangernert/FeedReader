@@ -56,7 +56,7 @@ public class FeedReader.freshConnection {
 			int start = response.index_of("=")+1;
 			int end = response.index_of("\n");
 			string token = response.substring(start, end-start);
-			logger.print(LogMessage.DEBUG, "Token: " + token);
+			Logger.get().debug("Token: " + token);
 			m_utils.setToken(token);
 			return LoginResponse.SUCCESS;
 		}

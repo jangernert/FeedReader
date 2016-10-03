@@ -74,7 +74,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		    }
 		    catch (Error e)
 		    {
-				logger.print(LogMessage.ERROR, "Unable discover_uri: " + e.message);
+				Logger.get().error("Unable discover_uri: " + e.message);
 			}
 			Idle.add((owned) callback);
 			return null;
@@ -415,7 +415,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 				GLib.Error err;
 				string debug;
 				message.parse_error(out err, out debug);
-				logger.print(LogMessage.ERROR, "MediaPlayer: " + err.message);
+				Logger.get().error("MediaPlayer: " + err.message);
 				m_player.set_state(Gst.State.NULL);
 				break;
 

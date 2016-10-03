@@ -17,14 +17,12 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 
 	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
 
 	private feedbinAPI m_api;
 	private feedbinUtils m_utils;
 
 	public void init()
 	{
-		logger = m_logger;
 		m_api = new feedbinAPI();
 		m_utils = new feedbinUtils();
 	}

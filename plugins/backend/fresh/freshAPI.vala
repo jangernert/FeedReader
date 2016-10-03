@@ -14,7 +14,6 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
 
 public class FeedReader.freshAPI : Object {
 
@@ -29,7 +28,7 @@ public class FeedReader.freshAPI : Object {
 
 	public LoginResponse login()
 	{
-		logger.print(LogMessage.DEBUG, "fresh backend: login");
+		Logger.get().debug("fresh backend: login");
 
 		if(!Utils.ping(m_utils.getUnmodifiedURL()))
 			return LoginResponse.NO_CONNECTION;
@@ -51,8 +50,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error("getTagList: Could not load message response");
+			Logger.get().error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("subscriptions");
@@ -118,8 +117,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error("getTagList: Could not load message response");
+			Logger.get().error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("tags");
@@ -160,8 +159,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error("getTagList: Could not load message response");
+			Logger.get().error(e.message);
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("unreadcounts");
 
@@ -209,7 +208,7 @@ public class FeedReader.freshAPI : Object {
 		if(checkpoint != null)
 			msg.add("c", checkpoint);
 
-		logger.print(LogMessage.DEBUG, "getStreamContents: %s".printf(msg.get()));
+		Logger.get().debug("getStreamContents: %s".printf(msg.get()));
 
 		string response = m_connection.getRequest(path + "?" + msg.get());
 
@@ -220,8 +219,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "getStreamContents: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error("getStreamContents: Could not load message response");
+			Logger.get().error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -322,8 +321,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path,  msg.get(), "application/x-www-form-urlencoded");
 
-		logger.print(LogMessage.DEBUG, path + " " + msg.get());
-		logger.print(LogMessage.DEBUG, response);
+		Logger.get().debug(path + " " + msg.get());
+		Logger.get().debug(response);
 	}
 
 	public void markAllAsRead(string streamID)
@@ -336,8 +335,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		logger.print(LogMessage.DEBUG, path + " " + msg.get());
-		logger.print(LogMessage.DEBUG, response);
+		Logger.get().debug(path + " " + msg.get());
+		Logger.get().debug(response);
 	}
 
 	public string editStream(
@@ -368,8 +367,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		logger.print(LogMessage.DEBUG, path + " " + msg.get());
-		logger.print(LogMessage.DEBUG, response);
+		Logger.get().debug(path + " " + msg.get());
+		Logger.get().debug(response);
 		return response;
 	}
 
@@ -389,8 +388,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		logger.print(LogMessage.DEBUG, path + " " + msg.get());
-		logger.print(LogMessage.DEBUG, response);
+		Logger.get().debug(path + " " + msg.get());
+		Logger.get().debug(response);
 	}
 
 	public void deleteTag(string tagID)
@@ -403,8 +402,8 @@ public class FeedReader.freshAPI : Object {
 
 		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
-		logger.print(LogMessage.DEBUG, path + " " + msg.get());
-		logger.print(LogMessage.DEBUG, response);
+		Logger.get().debug(path + " " + msg.get());
+		Logger.get().debug(response);
 	}
 
 }

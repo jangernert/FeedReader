@@ -32,7 +32,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		m_engine.enable_loader("python3");
 
 		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface),
-						"m_logger", logger,
 						"m_installPrefix", Constants.InstallPrefix);
 
 		m_extensions.extension_added.connect((info, extension) => {
@@ -113,7 +112,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	{
 		var serviceRow = (row as LoginRow);
 		var extension = serviceRow.getExtension();
-		logger.print(LogMessage.DEBUG, "serviceSelected: %s".printf(serviceRow.getServiceName()));
+		Logger.get().debug("serviceSelected: %s".printf(serviceRow.getServiceName()));
 
 		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		window.getSimpleHeader().showBackButton(true);
@@ -178,7 +177,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	public void writeLoginData()
 	{
-		logger.print(LogMessage.DEBUG, "write login data");
+		Logger.get().debug("write login data");
 		var ext = getActiveExtension();
 		ext.writeData();
 		login(ext.getID());
@@ -189,7 +188,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		try
 		{
 			LoginResponse status = DBusConnection.get_default().login(id);
-			logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());
+			Logger.get().debug("LoginPage: status = " + status.to_string());
 			if(status == LoginResponse.SUCCESS)
 			{
 				var ext = getActiveExtension();
@@ -200,7 +199,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 					}
 					catch(GLib.Error e)
 					{
-						logger.print(LogMessage.ERROR, "LoginPage.login: %s".printf(e.message));
+						Logger.get().error("LoginPage.login: %s".printf(e.message));
 					}
 				});
 				ext.poastLoginAction();
@@ -212,7 +211,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "LoginPage.login: %s".printf(e.message));
+			Logger.get().error("LoginPage.login: %s".printf(e.message));
 		}
 	}
 }

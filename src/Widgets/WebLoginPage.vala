@@ -35,28 +35,28 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 
 	public void loadPage(string url)
 	{
-		logger.print(LogMessage.DEBUG, "WebLoginPage: load URL: " + url);
+		Logger.get().debug("WebLoginPage: load URL: " + url);
 		m_view.load_uri(url);
 	}
 
 	public void redirection(WebKit.LoadEvent load_event)
 	{
-		logger.print(LogMessage.DEBUG, "WebLoginPage: webView redirection");
+		Logger.get().debug("WebLoginPage: webView redirection");
 		switch(load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
-				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent STARTED");
+				Logger.get().debug("WebLoginPage: LoadEvent STARTED");
 				check();
 				break;
 			case WebKit.LoadEvent.REDIRECTED:
-				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent REDIRECTED");
+				Logger.get().debug("WebLoginPage: LoadEvent REDIRECTED");
 				check();
 				break;
 			case WebKit.LoadEvent.COMMITTED:
-				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent COMMITED");
+				Logger.get().debug("WebLoginPage: LoadEvent COMMITED");
 				break;
 			case WebKit.LoadEvent.FINISHED:
-				logger.print(LogMessage.DEBUG, "WebLoginPage: LoadEvent FINISHED");
+				Logger.get().debug("WebLoginPage: LoadEvent FINISHED");
 				break;
 		}
 	}

@@ -108,7 +108,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool repairURL(string xpath, string attr, Html.Doc* doc, string articleURL)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: repairURL xpath:\"%s\" attr:\"%s\"".printf(xpath, attr));
+        Logger.get().debug("GrabberUtils: repairURL xpath:\"%s\" attr:\"%s\"".printf(xpath, attr));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
@@ -135,7 +135,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool fixLazyImg(Html.Doc* doc, string className, string correctURL)
     {
-        logger.print(LogMessage.DEBUG, "grabberUtils: fixLazyImg");
+        Logger.get().debug("grabberUtils: fixLazyImg");
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img[contains(@class, '%s')]".printf(className));
 
@@ -372,7 +372,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool saveImages(Html.Doc* doc, string articleID, string feedID)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
+        Logger.get().debug("GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img");
 
@@ -411,7 +411,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string downloadImage(string url, string articleID, string feedID, int nr)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: download Image %s".printf(url));
+        Logger.get().debug("GrabberUtils: download Image %s".printf(url));
         string fixedURL = url;
         string imgPath = "";
 
@@ -430,7 +430,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.get().debug(e.message);
 		}
 
         string localFilename = imgPath + nr.to_string();
@@ -455,13 +455,13 @@ public class FeedReader.grabberUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing image: %s".printf(e.message));
+					Logger.get().error("Error writing image: %s".printf(e.message));
                     return url;
 				}
 			}
             else
             {
-                logger.print(LogMessage.ERROR, "Error downloading image: %s".printf(fixedURL));
+                Logger.get().error("Error downloading image: %s".printf(fixedURL));
                 return url;
             }
 		}
@@ -471,7 +471,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string postProcessing(ref string html)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: postProcessing");
+        Logger.get().debug("GrabberUtils: postProcessing");
         html = html.replace("<h3/>", "<h3></h3>");
 
     	int pos1 = html.index_of("<iframe", 0);
@@ -480,9 +480,9 @@ public class FeedReader.grabberUtils : GLib.Object {
     	{
     		pos2 = html.index_of("/>", pos1);
     		string broken_iframe = html.substring(pos1, pos2+2-pos1);
-            logger.print(LogMessage.DEBUG, "GrabberUtils: broken = %s".printf(broken_iframe));
+            Logger.get().debug("GrabberUtils: broken = %s".printf(broken_iframe));
     		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length-2) + "></iframe>";
-            logger.print(LogMessage.DEBUG, "GrabberUtils: fixed = %s".printf(fixed_iframe));
+            Logger.get().debug("GrabberUtils: fixed = %s".printf(fixed_iframe));
     		html = html.replace(broken_iframe, fixed_iframe);
     		int pos3 = html.index_of("<iframe", pos1+7);
     		if(pos3 == pos1 || pos3 > html.length)
@@ -490,7 +490,7 @@ public class FeedReader.grabberUtils : GLib.Object {
     		else
     			pos1 = pos3;
     	}
-        logger.print(LogMessage.DEBUG, "GrabberUtils: postProcessing done");
+        Logger.get().debug("GrabberUtils: postProcessing done");
         return html;
     }
 }

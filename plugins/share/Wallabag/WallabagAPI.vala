@@ -13,33 +13,16 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace FeedReader{
-	Logger logger;
-
-	/*namespace WallabagSecrets {
-		const string base_uri				= "https://v2.wallabag.org/";
-		const string oauth_callback			= "feedreader://wallabag";
-		const string clientID				= "26_22ptghqq832880sww04s4kwww0wc4ok8cg0w88wokgw4sgscc8";
-		const string clientSecret			= "2qzxbatep7s48gsgww0k0gs8c4wscg4c4sgcgcso4o80g44sw0";
-	}*/
-}
-
 public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase {
-
-    public Logger m_logger { get; construct set; }
 
     public WallabagAPI()
     {
-		logger = m_logger;
 
-		this.addAccount.connect((id, type, username, iconName, accountName) => {
-			logger.print(LogMessage.INFO, "WallabagAPI: addAccount()");
-		});
     }
 
     public bool getAccessToken(string id, string username, string password, string clientID, string clientSecret, string baseURL)
     {
-		logger.print(LogMessage.DEBUG, "WallabagAPI getAccessToken");
+		Logger.get().debug("WallabagAPI getAccessToken");
         var session = new Soup.Session();
         string message = "grant_type=password"
 		 				+ "&client_id=" + clientID
@@ -56,14 +39,14 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         if((string)message_soup.response_body.flatten().data == null
 		|| (string)message_soup.response_body.flatten().data == "")
 		{
-			logger.print(LogMessage.ERROR, "WallabagAPI - getAccessToken: no response");
-			logger.print(LogMessage.ERROR, url);
-			logger.print(LogMessage.ERROR, message);
+			Logger.get().error("WallabagAPI - getAccessToken: no response");
+			Logger.get().error(url);
+			Logger.get().error(message);
 			return false;
 		}
 
         string response = (string)message_soup.response_body.flatten().data;
-        logger.print(LogMessage.DEBUG, response);
+        Logger.get().debug(response);
 
 		var parser = new Json.Parser();
         try
@@ -72,8 +55,8 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         }
         catch (Error e)
         {
-            logger.print(LogMessage.ERROR, "Could not load response to Message from instapaper");
-            logger.print(LogMessage.ERROR, e.message);
+            Logger.get().error("Could not load response to Message from instapaper");
+            Logger.get().error(e.message);
         }
 
         var root_node = parser.get_root();
@@ -98,7 +81,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		{
 			if(i == id)
 			{
-				logger.print(LogMessage.WARNING, "WallabagAPI - getAccessToken: id already part of array. Returning");
+				Logger.get().warning("WallabagAPI - getAccessToken: id already part of array. Returning");
 				return true;
 			}
 		}
@@ -119,7 +102,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         }
         catch(GLib.Error e)
         {
-            m_logger.print(LogMessage.ERROR, "WallabagAPI - getAccessToken: " + e.message);
+            Logger.get().error("WallabagAPI - getAccessToken: " + e.message);
         }
 
         return true;
@@ -130,7 +113,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
     {
 		var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
 
-		logger.print(LogMessage.DEBUG, "WallabagAPI - addBookmark: " + url);
+		Logger.get().debug("WallabagAPI - addBookmark: " + url);
 		if(!accessTokenValid(id))
 		{
 			string username = getUsername(id);
@@ -142,7 +125,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			getAccessToken(id, username, password, clientID, clientSecret, baseURL);
 		}
 
-		logger.print(LogMessage.DEBUG, "WallabagAPI - addBookmark: token still valid");
+		Logger.get().debug("WallabagAPI - addBookmark: token still valid");
 
         var session = new Soup.Session();
         string message = "url=" + GLib.Uri.escape_string(url);
@@ -156,9 +139,9 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         if((string)message_soup.response_body.flatten().data == null
 		|| (string)message_soup.response_body.flatten().data == "")
 		{
-			logger.print(LogMessage.ERROR, "WallabagAPI - addBookmark: no response");
-			logger.print(LogMessage.ERROR, url);
-			logger.print(LogMessage.ERROR, message);
+			Logger.get().error("WallabagAPI - addBookmark: no response");
+			Logger.get().error(url);
+			Logger.get().error(message);
 			return false;
 		}
 
@@ -167,7 +150,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
     public bool logout(string id)
     {
-		logger.print(LogMessage.DEBUG, "WallabagAPI - logout");
+		Logger.get().debug("WallabagAPI - logout");
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
     	var keys = settings.list_keys();
 		foreach(string key in keys)
@@ -199,7 +182,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
 		if((int)now.to_unix() >  expires)
 		{
-			logger.print(LogMessage.WARNING, "WallabagAPI: access token expired");
+			Logger.get().warning("WallabagAPI: access token expired");
 			return false;
 		}
 
@@ -235,7 +218,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error(e.message);
 		}
 
 		if(passwd == null)
@@ -264,7 +247,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "WallabagAPI.deletePassword: %s".printf(e.message));
+				Logger.get().error("WallabagAPI.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;

@@ -14,7 +14,6 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
 
 public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
@@ -40,7 +39,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public LoginResponse login()
     {
-        logger.print(LogMessage.DEBUG, "OwnCloud: login");
+        Logger.get().debug("OwnCloud: login");
         m_username = m_utils.getUser();
 		m_password = m_utils.getPasswd();
 		m_OwnCloudURL = m_utils.getURL();
@@ -66,7 +65,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		{
 			var response = message.get_response_object();
 			m_OwnCloudVersion = response.get_string_member("version");
-			logger.print(LogMessage.INFO, "OwnCloud version: %s".printf(m_OwnCloudVersion));
+			Logger.get().info("OwnCloud version: %s".printf(m_OwnCloudVersion));
 			return LoginResponse.SUCCESS;
 		}
 		else if(error == ConnectionError.API_ERROR)
@@ -99,7 +98,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             return true;
         }
 
-        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.isloggedin: not logged in");
+        Logger.get().error("OwncloudNewsAPI.isloggedin: not logged in");
 		return false;
 	}
 
@@ -145,12 +144,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                 }
                 else
                 {
-                    logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getFeeds: no member \"feeds\"");
+                    Logger.get().error("OwncloudNewsAPI.getFeeds: no member \"feeds\"");
                 }
 			}
             else
             {
-                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getFeeds");
+                Logger.get().error("OwncloudNewsAPI.getFeeds");
             }
 		}
 
@@ -196,12 +195,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
                 }
                 else
                 {
-                    logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getCategories: no member \"folders\"");
+                    Logger.get().error("OwncloudNewsAPI.getCategories: no member \"folders\"");
                 }
 			}
             else
             {
-                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getCategories");
+                Logger.get().error("OwncloudNewsAPI.getCategories");
             }
 		}
         return false;
@@ -223,12 +222,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             {
                 var article_array = response.get_array_member("items");
                 var article_count = article_array.get_length();
-                logger.print(LogMessage.DEBUG, "%u articles returned".printf(article_count));
+                Logger.get().debug("%u articles returned".printf(article_count));
 
                 for(uint i = 0; i < article_count; i++)
                 {
                     var article_node = article_array.get_object_element(i);
-                    //logger.print(LogMessage.DEBUG, article_node.get_int_member("id").to_string());
+                    //Logger.get().debug(article_node.get_int_member("id").to_string());
 
                     ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
                     ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
@@ -266,12 +265,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             }
             else
             {
-                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getNewArticles: no member \"items\"");
+                Logger.get().error("OwncloudNewsAPI.getNewArticles: no member \"items\"");
             }
         }
         else
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getNewArticles");
+            Logger.get().error("OwncloudNewsAPI.getNewArticles");
         }
     }
 
@@ -295,7 +294,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             {
                 var article_array = response.get_array_member("items");
                 var article_count = article_array.get_length();
-                logger.print(LogMessage.DEBUG, "%u articles returned".printf(article_count));
+                Logger.get().debug("%u articles returned".printf(article_count));
 
                 for(uint i = 0; i < article_count; i++)
                 {
@@ -337,12 +336,12 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             }
             else
             {
-                logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getArticles: no member \"items\"");
+                Logger.get().error("OwncloudNewsAPI.getArticles: no member \"items\"");
             }
         }
         else
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.getArticles");
+            Logger.get().error("OwncloudNewsAPI.getArticles");
         }
 	}
 
@@ -357,7 +356,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         if(error == ConnectionError.SUCCESS)
 		    return true;
 
-        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.markFeedRead");
+        Logger.get().error("OwncloudNewsAPI.markFeedRead");
         return false;
 	}
 
@@ -371,7 +370,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         if(error == ConnectionError.SUCCESS)
 		    return true;
 
-        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.markAllItemsRead");
+        Logger.get().error("OwncloudNewsAPI.markAllItemsRead");
         return false;
 	}
 
@@ -392,7 +391,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         if(error == ConnectionError.SUCCESS)
 		    return true;
 
-        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.updateArticleUnread");
+        Logger.get().error("OwncloudNewsAPI.updateArticleUnread");
         return false;
 	}
 
@@ -413,7 +412,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         if(error == ConnectionError.SUCCESS)
 		    return true;
 
-        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.updateArticleMarked");
+        Logger.get().error("OwncloudNewsAPI.updateArticleMarked");
         return false;
 	}
 
@@ -435,7 +434,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         }
         else
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.addFeed");
+            Logger.get().error("OwncloudNewsAPI.addFeed");
         }
 
 		return 0;
@@ -449,7 +448,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
         if(error != ConnectionError.SUCCESS)
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.removeFeed");
+            Logger.get().error("OwncloudNewsAPI.removeFeed");
         }
     }
 
@@ -462,7 +461,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
         if(error != ConnectionError.SUCCESS)
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.renameFeed");
+            Logger.get().error("OwncloudNewsAPI.renameFeed");
         }
     }
 
@@ -475,7 +474,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
         if(error != ConnectionError.SUCCESS)
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.moveFeed");
+            Logger.get().error("OwncloudNewsAPI.moveFeed");
         }
     }
 
@@ -496,7 +495,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         }
         else
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.addFolder");
+            Logger.get().error("OwncloudNewsAPI.addFolder");
         }
 
 		return 0;
@@ -512,7 +511,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         if(error == ConnectionError.SUCCESS)
 		    return true;
 
-        logger.print(LogMessage.ERROR, "OwncloudNewsAPI.removeFolder");
+        Logger.get().error("OwncloudNewsAPI.removeFolder");
         return false;
     }
 
@@ -524,7 +523,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         int error = message.send();
 
         if(error != ConnectionError.SUCCESS)
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.renameCategory");
+            Logger.get().error("OwncloudNewsAPI.renameCategory");
     }
 
     public bool ping()
@@ -534,7 +533,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
         if(error == ConnectionError.NO_RESPONSE)
 		{
-            logger.print(LogMessage.ERROR, "OwncloudNewsAPI.ping: failed");
+            Logger.get().error("OwncloudNewsAPI.ping: failed");
 			return false;
 		}
 

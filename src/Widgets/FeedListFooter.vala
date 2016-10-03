@@ -59,7 +59,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedListFooter.constructor: %s".printf(e.message));
+			Logger.get().error("FeedListFooter.constructor: %s".printf(e.message));
 		}
 	}
 
@@ -85,7 +85,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedListFooter.setRemoveButtonSensitive: %s".printf(e.message));
+			Logger.get().error("FeedListFooter.setRemoveButtonSensitive: %s".printf(e.message));
 		}
 	}
 
@@ -107,7 +107,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedListFooter.setActive: %s".printf(e.message));
+			Logger.get().error("FeedListFooter.setActive: %s".printf(e.message));
 		}
 	}
 }

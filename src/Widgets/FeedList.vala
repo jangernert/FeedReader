@@ -191,11 +191,11 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void newFeedlist(bool defaultSettings, bool masterCat = false)
 	{
-		logger.print(LogMessage.DEBUG, "FeedList: new FeedList");
+		Logger.get().debug("FeedList: new FeedList");
 
 		if(m_busy)
 		{
-			logger.print(LogMessage.DEBUG, "FeedList: busy");
+			Logger.get().debug("FeedList: busy");
 			return;
 		}
 
@@ -337,7 +337,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void restoreSelectedRow(bool defaultSettings)
 	{
-		logger.print(LogMessage.DEBUG, "FeedList: restore selected row: " + settings_state.get_string("feedlist-selected-row"));
+		Logger.get().debug("FeedList: restore selected row: " + settings_state.get_string("feedlist-selected-row"));
 		string[] selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
 
 		var FeedChildList = m_list.get_children();
@@ -386,7 +386,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 
 		// row not found: default select "ALL ARTICLES"
-		logger.print(LogMessage.DEBUG, "FeedList: restoreSelectedRow: no selected row found, selectin default");
+		Logger.get().debug("FeedList: restoreSelectedRow: no selected row found, selectin default");
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			var tmpRow = row as FeedRow;
@@ -485,7 +485,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedList.createCategories: %s".printf(e.message));
+			Logger.get().error("FeedList.createCategories: %s".printf(e.message));
 		}
 
 		if((supportTags
@@ -503,7 +503,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		else
 		{
 			m_TagsDisplayed = false;
-			logger.print(LogMessage.DEBUG, "FeedList: no tags");
+			Logger.get().debug("FeedList: no tags");
 		}
 
 		for(int i = 1; i <= maxCatLevel; i++)
@@ -690,7 +690,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void initCollapseCategories()
 	{
-		logger.print(LogMessage.DEBUG, "initCollapseCategories");
+		Logger.get().debug("initCollapseCategories");
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{
@@ -875,7 +875,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void markSelectedRead(FeedListType type, string id)
 	{
-		logger.print(LogMessage.DEBUG, "FeedList: mark all articles as read");
+		Logger.get().debug("FeedList: mark all articles as read");
 
 		try
 		{
@@ -898,7 +898,7 @@ public class FeedReader.feedList : Gtk.Stack {
 					foreach(feed Feed in feeds)
 					{
 						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
-						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+						Logger.get().debug("MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
 					}
 				}
 				else
@@ -909,7 +909,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedList.markSelectedRead: %s".printf(e.message));
+			Logger.get().error("FeedList.markSelectedRead: %s".printf(e.message));
 		}
 	}
 
@@ -1002,11 +1002,11 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void removeEmptyTagRow()
 	{
-		logger.print(LogMessage.DEBUG, "removeEmptyTagRow");
+		Logger.get().debug("removeEmptyTagRow");
 
 		if(m_busy)
 		{
-			logger.print(LogMessage.DEBUG, "FeedList: busy");
+			Logger.get().debug("FeedList: busy");
 			return;
 		}
 
@@ -1060,7 +1060,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void onDragBegin(Gdk.DragContext context)
 	{
-		logger.print(LogMessage.DEBUG, "FeedList: onDragBegin");
+		Logger.get().debug("FeedList: onDragBegin");
 
 		// save current state
 		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
@@ -1121,7 +1121,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedList.showNewCategory: %s".printf(e.message));
+			Logger.get().error("FeedList.showNewCategory: %s".printf(e.message));
 		}
 
 		var newRow = new categorieRow(_("New Category"), CategoryID.NEW.to_string(), 99, 0, CategoryID.MASTER.to_string(), level, false);
@@ -1133,7 +1133,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private bool onDragEnd(Gdk.DragContext context, Gtk.DragResult result)
 	{
-		logger.print(LogMessage.DEBUG, "FeedList: onDragBegin");
+		Logger.get().debug("FeedList: onDragBegin");
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{

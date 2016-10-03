@@ -19,8 +19,6 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public signal void deleteAccount(string id);
 
-	public abstract Logger m_logger { get; construct set; }
-
 	public abstract string pluginID();
 
 	public abstract string pluginName();

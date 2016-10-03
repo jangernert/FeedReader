@@ -57,7 +57,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			}
 	        catch(GLib.Error e)
 	        {
-	            logger.print(LogMessage.ERROR, "TagRow.constructor: %s".printf(e.message));
+	            Logger.get().error("TagRow.constructor: %s".printf(e.message));
 	        }
 		});
 
@@ -140,7 +140,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			{
 				if(m_tagID != TagID.NEW)
 				{
-					logger.print(LogMessage.DEBUG, "drag articleID: " + (string)selection_data.get_data());
+					Logger.get().debug("drag articleID: " + (string)selection_data.get_data());
 					DBusConnection.get_default().tagArticle((string)selection_data.get_data(), m_tagID, true);
 					Gtk.drag_finish(context, true, false, time);
 				}
@@ -152,7 +152,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "TagRow.constructor: %s".printf(e.message));
+			Logger.get().error("TagRow.constructor: %s".printf(e.message));
 		}
     }
 
@@ -185,7 +185,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			var notification = content.showNotification(_("Tag \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
 				try{DBusConnection.get_default().deleteTag(m_tagID);}
-				catch(GLib.Error e){logger.print(LogMessage.ERROR, "TagRow.remove_action: %s".printf(e.message));}
+				catch(GLib.Error e){Logger.get().error("TagRow.remove_action: %s".printf(e.message));}
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -285,7 +285,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 				}
 				catch(GLib.Error e)
 				{
-					logger.print(LogMessage.ERROR, "TagRow.showRenamePopover: %s".printf(e.message));
+					Logger.get().error("TagRow.showRenamePopover: %s".printf(e.message));
 				}
 			}
 			else if(context != null)
@@ -299,7 +299,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 				}
 				catch(GLib.Error e)
 				{
-					logger.print(LogMessage.ERROR, "TagRow.showRenamePopover: %s".printf(e.message));
+					Logger.get().error("TagRow.showRenamePopover: %s".printf(e.message));
 				}
 			}
 		});

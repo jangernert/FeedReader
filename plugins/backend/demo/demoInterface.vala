@@ -16,18 +16,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 
 	//--------------------------------------------------------------------------------------
-	// The logger is used to output debug-information, warnings and errors to the
-	// command line. All messages are also written to a log-file to make it easier
-	// to trace back bugs when the daemon was not started from the shell.
-	// Use like:
-	// logger.print(LogMessage.DEBUG, "message");
-	// Options are:
-	// DEBUG, WARNING, INFO, ERROR
-	//--------------------------------------------------------------------------------------
-	public Logger m_logger { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
 	// This method gets executed right after the plugin is loaded. Do everything
 	// you need to set up the plugin here.
 	//--------------------------------------------------------------------------------------

@@ -223,7 +223,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
         string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
         if (buttons.length < 2) {
 			buttons = {buttons[0], ""};
-			logger.print(LogMessage.WARNING, "gtk_decoration_layout in unexpected format");
+			Logger.get().warning("gtk_decoration_layout in unexpected format");
         }
 
 		m_header_left.set_decoration_layout(buttons[0] + ":");
@@ -237,7 +237,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void setButtonsSensitive(bool sensitive)
 	{
-		logger.print(LogMessage.DEBUG, "HeaderBar: setButtonsSensitive %s".printf(sensitive ? "true" : "false"));
+		Logger.get().debug("HeaderBar: setButtonsSensitive %s".printf(sensitive ? "true" : "false"));
 		m_modeButton.sensitive = sensitive;
 		m_refresh_button.setSensitive(sensitive);
 		m_search.sensitive = sensitive;
@@ -245,7 +245,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void showArticleButtons(bool show)
 	{
-		logger.print(LogMessage.DEBUG, "HeaderBar: showArticleButtons %s".printf(sensitive ? "true" : "false"));
+		Logger.get().debug("HeaderBar: showArticleButtons %s".printf(sensitive ? "true" : "false"));
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
@@ -262,7 +262,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "readerHeaderbar.showArticleButtons: %s".printf(e.message));
+			Logger.get().error("readerHeaderbar.showArticleButtons: %s".printf(e.message));
 		}
 
 	}
@@ -319,7 +319,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "Headerbar.setOffline: %s".printf(e.message));
+			Logger.get().error("Headerbar.setOffline: %s".printf(e.message));
 		}
 	}
 
@@ -338,7 +338,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "Headerbar.setOnline: %s".printf(e.message));
+			Logger.get().error("Headerbar.setOnline: %s".printf(e.message));
 		}
 
 	}

@@ -33,7 +33,7 @@ public class FeedReader.Share : GLib.Object {
 		engine.add_search_path(Constants.InstallPrefix + "/share/FeedReader/pluginsShare/", null);
 		engine.enable_loader("python3");
 
-		m_plugins = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface), "m_logger", logger);
+		m_plugins = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface));
 
 		m_plugins.extension_added.connect((info, extension) => {
 			var plugin = (extension as ShareAccountInterface);
@@ -55,7 +55,7 @@ public class FeedReader.Share : GLib.Object {
 
 	private void refreshAccounts()
 	{
-		logger.print(LogMessage.DEBUG, "Share: refreshAccounts");
+		Logger.get().debug("Share: refreshAccounts");
 		m_accounts = new Gee.ArrayList<ShareAccount>();
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
@@ -169,7 +169,7 @@ public class FeedReader.Share : GLib.Object {
 
 	public void accountAdded(string id, string type, string username, string iconName, string accountName)
 	{
-		logger.print(LogMessage.DEBUG, "Share: %s account added for user: %s".printf(type, username));
+		Logger.get().debug("Share: %s account added for user: %s".printf(type, username));
 		m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
 	}
 

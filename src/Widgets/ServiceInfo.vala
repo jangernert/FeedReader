@@ -89,7 +89,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         }
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ServiceInfo.refresh: %s".printf(e.message));
+			Logger.get().error("ServiceInfo.refresh: %s".printf(e.message));
 		}
 
         show_all();

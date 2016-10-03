@@ -89,7 +89,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "RemovePopover.removeTag: %s".printf(e.message));
+				Logger.get().error("RemovePopover.removeTag: %s".printf(e.message));
 			}
 		});
 		notification.action.connect(() => {
@@ -112,7 +112,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "RemovePopover.removeFeed: %s".printf(e.message));
+				Logger.get().error("RemovePopover.removeFeed: %s".printf(e.message));
 			}
 		});
 		notification.action.connect(() => {
@@ -136,7 +136,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "RemovePopover.removeCategory: %s".printf(e.message));
+				Logger.get().error("RemovePopover.removeCategory: %s".printf(e.message));
 			}
 		});
 		notification.action.connect(() => {

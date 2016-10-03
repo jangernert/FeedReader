@@ -19,13 +19,11 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 	private freshUtils m_utils;
 
 	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
 
 	public void init()
 	{
 		m_api = new freshAPI();
 		m_utils = new freshUtils();
-		logger = m_logger;
 		dataBase = m_dataBase;
 	}
 
@@ -179,7 +177,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 			cat = newCatName;
 
 		cat = m_api.composeTagID(cat);
-		
+
 		return m_api.editStream("subscribe", "feed/" + feedURL, null, cat, null);
 	}
 

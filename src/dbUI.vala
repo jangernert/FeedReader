@@ -31,7 +31,7 @@ public class FeedReader.dbUI : dbBase {
         }
         catch(GLib.Error e)
         {
-            logger.print(LogMessage.ERROR, "dbUI.showCategory: %s".printf(e.message));
+            Logger.get().error("dbUI.showCategory: %s".printf(e.message));
         }
         return true;
 	}
@@ -45,7 +45,7 @@ public class FeedReader.dbUI : dbBase {
         }
         catch(GLib.Error e)
         {
-            logger.print(LogMessage.ERROR, "dbUI.showCategory: %s".printf(e.message));
+            Logger.get().error("dbUI.showCategory: %s".printf(e.message));
         }
 
         return "";

@@ -108,7 +108,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ResetPage.resetAllData: %s".printf(e.message));
+			Logger.get().error("ResetPage.resetAllData: %s".printf(e.message));
 		}
 	}
 

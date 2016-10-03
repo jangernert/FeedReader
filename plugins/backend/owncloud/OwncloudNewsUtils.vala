@@ -36,7 +36,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 					tmp_url = "https://" + tmp_url;
 		}
 
-		logger.print(LogMessage.DEBUG, "OwnCloud URL: " + tmp_url);
+		Logger.get().debug("OwnCloud URL: " + tmp_url);
 
 		return tmp_url;
 	}
@@ -86,7 +86,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
             passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
         }
         catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, "OwncloudNewsUtils: getPasswd: " + e.message);
+			Logger.get().error("OwncloudNewsUtils: getPasswd: " + e.message);
 		}
 
 		if(passwd == null)
@@ -111,7 +111,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
         }
         catch(GLib.Error e)
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsUtils: setPassword: " + e.message);
+            Logger.get().error("OwncloudNewsUtils: setPassword: " + e.message);
         }
     }
 
@@ -138,7 +138,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
             }
             catch(GLib.Error e)
             {
-                logger.print(LogMessage.ERROR, "OwncloudNewsUtils.deletePassword: %s".printf(e.message));
+                Logger.get().error("OwncloudNewsUtils.deletePassword: %s".printf(e.message));
             }
 		});
 		return removed;
@@ -161,7 +161,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
             passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
         }
         catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, "OwncloudNewsUtils: getHtaccessPasswd: " + e.message);
+			Logger.get().error("OwncloudNewsUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		if(passwd == null)
@@ -188,7 +188,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
         }
         catch(GLib.Error e)
         {
-            logger.print(LogMessage.ERROR, "OwncloudNewsUtils: setHtaccessPasswd: " + e.message);
+            Logger.get().error("OwncloudNewsUtils: setHtaccessPasswd: " + e.message);
         }
     }
 
@@ -204,7 +204,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.get().debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id + ".ico";
@@ -232,11 +232,11 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.get().error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed %s, url: %s, status: %u".printf(feed_id, icon_url, status));
+			Logger.get().error("Error downloading icon for feed %s, url: %s, status: %u".printf(feed_id, icon_url, status));
 			return false;
 		}
 

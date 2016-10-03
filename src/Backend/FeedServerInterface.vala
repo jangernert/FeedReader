@@ -24,7 +24,6 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 	public signal void writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize);
 
 	public abstract dbDaemon m_dataBase { get; construct set; }
-	public abstract Logger m_logger { get; construct set; }
 
 	public abstract void init();
 

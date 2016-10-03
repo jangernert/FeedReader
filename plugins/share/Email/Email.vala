@@ -16,7 +16,6 @@
 
 public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
-	public Logger m_logger { get; construct set; }
 	private string m_body;
 	private string m_to;
 
@@ -25,7 +24,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 		string subject = GLib.Uri.escape_string("Amazing article");
 		string body = GLib.Uri.escape_string(m_body.replace("$URL", url));
 		string mailto = "mailto:%s?subject=%s&body=%s".printf(m_to, subject, body);
-		m_logger.print(LogMessage.DEBUG, mailto);
+		Logger.get().debug(mailto);
 
 		string[] spawn_args = {"xdg-open", mailto};
 		try
@@ -35,7 +34,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		catch(GLib.SpawnError e)
 		{
-			m_logger.print(LogMessage.ERROR, "spawning command line: " + e.message);
+			Logger.get().error("spawning command line: " + e.message);
 		}
 
 		return false;

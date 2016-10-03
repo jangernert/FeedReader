@@ -19,14 +19,12 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 	private OldReaderUtils m_utils;
 
 	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
 
 	public void init()
 	{
 		m_api = new OldReaderAPI();
 		m_utils = new OldReaderUtils();
 		dataBase = m_dataBase;
-		logger = m_logger;
 	}
 
 	public bool supportTags()

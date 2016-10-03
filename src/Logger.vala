@@ -18,7 +18,29 @@ public class FeedReader.Logger : GLib.Object {
 	private int m_LogLevel;
 	private GLib.FileOutputStream m_stream;
 
-	public Logger(string filename)
+	private static Logger? m_logger = null;
+	private static string? m_fileName = null;
+
+	public static void init(string filename)
+	{
+		m_fileName = filename;
+	}
+
+	public static new Logger get()
+	{
+		string name = "uninitialized";
+
+		if(m_fileName != null)
+			name = m_fileName;
+
+		if(m_logger == null)
+			m_logger = new Logger(name);
+
+		return m_logger;
+	}
+
+
+	private Logger(string filename)
 	{
 		var logLevel = settings_general.get_enum("log-level");
 		m_LogLevel = LogLevel.DEBUG;
@@ -61,8 +83,27 @@ public class FeedReader.Logger : GLib.Object {
 		m_LogLevel = logLevel;
 	}
 
+	public void error(string message)
+	{
+		print(LogMessage.ERROR, message);
+	}
 
-	public void print(LogMessage level, string message)
+	public void warning(string message)
+	{
+		print(LogMessage.WARNING, message);
+	}
+
+	public void info(string message)
+	{
+		print(LogMessage.INFO, message);
+	}
+
+	public void debug(string message)
+	{
+		print(LogMessage.DEBUG, message);
+	}
+
+	private void print(LogMessage level, string message)
 	{
 		switch(m_LogLevel)
 		{

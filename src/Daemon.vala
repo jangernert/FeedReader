@@ -46,7 +46,7 @@ namespace FeedReader {
 
 		public FeedDaemonServer()
 		{
-			logger.print(LogMessage.DEBUG, "daemon: constructor");
+			Logger.get().debug("daemon: constructor");
 			m_offlineActions = new OfflineActionManager();
 			login(settings_general.get_string("plugin"));
 
@@ -99,7 +99,7 @@ namespace FeedReader {
 
 		public string? symbolicIcon()
 		{
-			logger.print(LogMessage.DEBUG, "daemon: symbolicIcon");
+			Logger.get().debug("daemon: symbolicIcon");
 			return server.symbolicIcon();
 		}
 
@@ -140,7 +140,7 @@ namespace FeedReader {
 				if(!settings_state.get_boolean("currently-updating")
 				&& server.pluginLoaded())
 				{
-			   		logger.print(LogMessage.DEBUG, "daemon: Timeout!");
+			   		Logger.get().debug("daemon: Timeout!");
 					startSync();
 				}
 				return true;
@@ -151,7 +151,7 @@ namespace FeedReader {
 		{
 			if(Utils.springCleaningNecessary())
 			{
-				logger.print(LogMessage.INFO, "daemon: spring cleaning");
+				Logger.get().info("daemon: spring cleaning");
 				settings_state.set_boolean("spring-cleaning", true);
 				springCleanStarted();
 				dataBase.springCleaning();
@@ -181,23 +181,23 @@ namespace FeedReader {
 
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
-				logger.print(LogMessage.INFO, "daemon: sync started");
+				Logger.get().info("daemon: sync started");
 				settings_state.set_boolean("currently-updating", true);
 				server.syncContent();
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
-				logger.print(LogMessage.INFO, "daemon: sync finished");
+				Logger.get().info("daemon: sync finished");
 			}
 			else
 			{
-				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
+				Logger.get().debug("Cant sync because login failed or sync already ongoing");
 			}
 		}
 
 		public bool checkOnline()
 		{
-			logger.print(LogMessage.DEBUG, "Daemon: checkOnline");
+			Logger.get().debug("Daemon: checkOnline");
 			if(!server.serverAvailable())
 			{
 				m_loggedin = LoginResponse.UNKNOWN_ERROR;
@@ -218,7 +218,7 @@ namespace FeedReader {
 
 		public async bool checkOnlineAsync()
 		{
-			logger.print(LogMessage.DEBUG, "Daemon: checkOnlineAsync");
+			Logger.get().debug("Daemon: checkOnlineAsync");
 			bool online = false;
 			SourceFunc callback = checkOnlineAsync.callback;
 			ThreadFunc<void*> run = () => {
@@ -246,21 +246,21 @@ namespace FeedReader {
 			if(m_loggedin == LoginResponse.SUCCESS && settings_state.get_boolean("currently-updating") == false)
 			{
 				syncStarted();
-				logger.print(LogMessage.INFO, "daemon: initSync started");
+				Logger.get().info("daemon: initSync started");
 				settings_state.set_boolean("currently-updating", true);
 				server.InitSyncContent();
 				updateBadge();
 				settings_state.set_boolean("currently-updating", false);
 				syncFinished();
-				logger.print(LogMessage.INFO, "daemon: initSync finished");
+				Logger.get().info("daemon: initSync finished");
 			}
 			else
-				logger.print(LogMessage.DEBUG, "Cant sync because login failed or sync already ongoing");
+				Logger.get().debug("Cant sync because login failed or sync already ongoing");
 		}
 
 		public LoginResponse login(string plugName)
 		{
-			logger.print(LogMessage.DEBUG, "daemon: new FeedServer and login");
+			Logger.get().debug("daemon: new FeedServer and login");
 
 			if(server == null)
 				server = new FeedServer(plugName);
@@ -272,7 +272,7 @@ namespace FeedReader {
 
 			if(!server.pluginLoaded())
 			{
-				logger.print(LogMessage.ERROR, "daemon: plugin '%s' couldn't be loaded by feedserver".printf(plugName));
+				Logger.get().error("daemon: plugin '%s' couldn't be loaded by feedserver".printf(plugName));
 				m_loggedin = LoginResponse.NO_BACKEND;
 				return m_loggedin;
 			}
@@ -326,7 +326,7 @@ namespace FeedReader {
 			}
 
 
-			logger.print(LogMessage.DEBUG, "daemon: login status = " + m_loggedin.to_string());
+			Logger.get().debug("daemon: login status = " + m_loggedin.to_string());
 			return m_loggedin;
 		}
 
@@ -347,7 +347,7 @@ namespace FeedReader {
 
 		public void changeArticle(string articleID, ArticleStatus status)
 		{
-			logger.print(LogMessage.DEBUG, "Daemon: changeArticle %s %s".printf(articleID, status.to_string()));
+			Logger.get().debug("Daemon: changeArticle %s %s".printf(articleID, status.to_string()));
 			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
 			{
 				bool increase = true;
@@ -427,12 +427,12 @@ namespace FeedReader {
 			}
 			else
 			{
-				logger.print(LogMessage.DEBUG, "daemon: remove tag: " + tagID + " from article: " + articleID);
+				Logger.get().debug("daemon: remove tag: " + tagID + " from article: " + articleID);
 
 				asyncPayload pl = () => { server.removeArticleTag(articleID, tagID); };
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-				logger.print(LogMessage.DEBUG, "daemon: tagstring = " + tags);
+				Logger.get().debug("daemon: tagstring = " + tags);
 
 				if(tags == tagID)
 				{
@@ -449,14 +449,14 @@ namespace FeedReader {
 					if(part2.has_prefix(","))
 					{
 						part2 = part2.substring(1);
-						logger.print(LogMessage.ERROR, "daemon: tagArticle");
+						Logger.get().error("daemon: tagArticle");
 					}
 
 					tags = part1 + part2;
 
 					if(!dataBase.tag_still_used(tagID))
 					{
-						logger.print(LogMessage.DEBUG, "daemon: remove tag completely");
+						Logger.get().debug("daemon: remove tag completely");
 						asyncPayload pl2 = () => { server.deleteTag(tagID); };
 						callAsync.begin((owned)pl2, (obj, res) => { callAsync.end(res); });
 
@@ -469,7 +469,7 @@ namespace FeedReader {
 				}
 			}
 
-			logger.print(LogMessage.DEBUG, "daemon: set tag string: " + tags);
+			Logger.get().debug("daemon: set tag string: " + tags);
 			dataBase.set_article_tags(articleID, tags);
 		}
 
@@ -610,7 +610,7 @@ namespace FeedReader {
 
 		public string addCategory(string title, string? parentID = null, bool createLocally = false)
 		{
-			logger.print(LogMessage.DEBUG, "daemon: addCategory " + title);
+			Logger.get().debug("daemon: addCategory " + title);
 			string catID = server.createCategory(title, parentID);
 
 			if(createLocally)
@@ -764,7 +764,7 @@ namespace FeedReader {
 			&& settings_tweaks.get_boolean("show-badge"))
 			{
 				var count = dataBase.get_unread_total();
-				logger.print(LogMessage.DEBUG, "daemon: update badge count %u".printf(count));
+				Logger.get().debug("daemon: update badge count %u".printf(count));
 				m_launcher.count = count;
 				if(count > 0)
 					m_launcher.count_visible = true;
@@ -776,7 +776,7 @@ namespace FeedReader {
 
 		public void quit()
 		{
-			logger.print(LogMessage.DEBUG, "Quit!");
+			Logger.get().debug("Quit!");
 			GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 1, () => {
 				exit(-1);
 				return false;
@@ -811,11 +811,11 @@ namespace FeedReader {
 		}
 		catch (IOError e)
 		{
-		    logger.print(LogMessage.WARNING, "daemon: Could not register service. Will shut down!");
-		    logger.print(LogMessage.WARNING, e.message);
+		    Logger.get().warning("daemon: Could not register service. Will shut down!");
+		    Logger.get().warning(e.message);
 		    exit(-1);
 		}
-		logger.print(LogMessage.DEBUG, "daemon: bus aquired");
+		Logger.get().debug("daemon: bus aquired");
 	}
 
 
@@ -873,7 +873,7 @@ namespace FeedReader {
 		{
 			var old_stdout =(owned)stdout;
 			stdout = FileStream.open("/dev/null", "w");
-			logger = new Logger("daemon");
+			Logger.init("daemon");
 			dataBase = new dbDaemon();
 			dataBase.init();
 			stdout =(owned)old_stdout;
@@ -883,19 +883,19 @@ namespace FeedReader {
 
 		if(grabImages != null && articleUrl != null)
 		{
-			logger = new Logger("daemon");
+			Logger.init("daemon");
 			FeedServer.grabImages(grabImages, articleUrl);
 			return 0;
 		}
 
 		if(grabArticle != null)
 		{
-			logger = new Logger("daemon");
+			Logger.init("daemon");
 			FeedServer.grabArticle(grabArticle);
 			return 0;
 		}
 
-		logger = new Logger("daemon");
+		Logger.init("daemon");
 		dataBase = new dbDaemon();
 		dataBase.init();
 		Notify.init(AboutInfo.programmName);
@@ -905,13 +905,13 @@ namespace FeedReader {
 			if(str == "actions")
 			{
 				m_notifyActionSupport = true;
-				logger.print(LogMessage.INFO, "daemon: Notification actions supported");
+				Logger.get().info("daemon: Notification actions supported");
 				break;
 			}
 		}
 		Utils.copyAutostart();
 
-		logger.print(LogMessage.INFO, "FeedReader Daemon " + AboutInfo.version);
+		Logger.get().info("FeedReader Daemon " + AboutInfo.version);
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,
@@ -920,7 +920,7 @@ namespace FeedReader {
 								settings_state.set_boolean("spring-cleaning", false);
 				      },
 				      () => {
-				      			logger.print(LogMessage.WARNING, "daemon: Could not aquire name (already running). Will shut down!");
+				      			Logger.get().warning("daemon: Could not aquire name (already running). Will shut down!");
 				          		exit(-1);
 				          	}
 				      );

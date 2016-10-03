@@ -185,7 +185,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 					Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
 				}
 				catch(GLib.Error e){
-					logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+					Logger.get().debug("could not open the link in an external browser: %s".printf(e.message));
 				}
 			});
 			header.pack_start(urlButton);

@@ -19,14 +19,12 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 	private FeedlyUtils m_utils;
 
 	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
 
 	public void init()
 	{
 		m_api = new FeedlyAPI();
 		m_utils = new FeedlyUtils();
 		dataBase = m_dataBase;
-		logger = m_logger;
 	}
 
 	public bool supportTags()

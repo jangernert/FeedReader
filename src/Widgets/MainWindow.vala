@@ -56,7 +56,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				Gtk.show_uri(Gdk.Screen.get_default(), "https://github.com/jangernert/FeedReader/issues", Gdk.CURRENT_TIME);
 			}
 			catch(GLib.Error e){
-				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+				Logger.get().debug("could not open the link in an external browser: %s".printf(e.message));
 			}
 		});
 		this.add_action(reportBugAction);
@@ -68,7 +68,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				Gtk.show_uri(Gdk.Screen.get_default(), "https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038", Gdk.CURRENT_TIME);
 			}
 			catch(GLib.Error e){
-				logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+				Logger.get().debug("could not open the link in an external browser: %s".printf(e.message));
 			}
 		});
 		this.add_action(bountyAction);
@@ -164,7 +164,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(settings_state.get_boolean("window-maximized"))
 		{
-			logger.print(LogMessage.DEBUG, "MainWindow: maximize");
+			Logger.get().debug("MainWindow: maximize");
 			this.maximize();
 		}
 
@@ -178,7 +178,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		this.set_default_size(settings_state.get_int("window-width"), settings_state.get_int("window-height"));
 		this.show_all();
 
-		logger.print(LogMessage.DEBUG, "MainWindow: determining state");
+		Logger.get().debug("MainWindow: determining state");
 		try
 		{
 			if(DBusConnection.get_default().isOnline() && !settings_state.get_boolean("spring-cleaning"))
@@ -203,7 +203,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "MainWindow.constructor: %s".printf(e.message));
+			Logger.get().error("MainWindow.constructor: %s".printf(e.message));
 		}
 	}
 
@@ -254,7 +254,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool noNewFeedList = false)
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show content");
+		Logger.get().debug("MainWindow: show content");
 		if(!noNewFeedList)
 			m_content.newFeedList();
 		m_stack.set_visible_child_full("content", transition);
@@ -270,7 +270,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void showLogin(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show login");
+		Logger.get().debug("MainWindow: show login");
 		showErrorBar(LoginResponse.FIRST_TRY);
 		m_login.reset();
 		m_stack.set_visible_child_full("login", transition);
@@ -280,7 +280,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void showReset(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show reset");
+		Logger.get().debug("MainWindow: show reset");
 		m_stack.set_visible_child_full("reset", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
@@ -288,7 +288,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	public void showSpringClean(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show springClean");
+		Logger.get().debug("MainWindow: show springClean");
 		m_stack.set_visible_child_full("springClean", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
@@ -367,14 +367,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void reloadCSS()
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: reloadCSS");
+		Logger.get().debug("MainWindow: reloadCSS");
 		removeProvider(m_cssProvider);
 		setupCSS();
 	}
 
 	private void setupCSS()
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: setupCSS");
+		Logger.get().debug("MainWindow: setupCSS");
 		string path = "/org/gnome/FeedReader/gtk-css/";
 
 		addProvider(path + "basics.css");
@@ -472,7 +472,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "MainWindow.login: %s".printf(e.message));
+			Logger.get().error("MainWindow.login: %s".printf(e.message));
 		}
 		showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 	}
@@ -507,7 +507,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void showErrorBar(int ErrorCode)
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: show error bar - errorCode = " + ErrorCode.to_string());
+		Logger.get().debug("MainWindow: show error bar - errorCode = " + ErrorCode.to_string());
 		switch(ErrorCode)
 		{
 			case LoginResponse.NO_BACKEND:
@@ -552,19 +552,19 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case LoginResponse.SUCCESS:
 			case LoginResponse.FIRST_TRY:
 			default:
-				logger.print(LogMessage.DEBUG, "MainWindow: dont show error bar");
+				Logger.get().debug("MainWindow: dont show error bar");
 				m_error_bar.set_visible(false);
 				return;
 		}
 
-		logger.print(LogMessage.DEBUG, "MainWindow: show error bar");
+		Logger.get().debug("MainWindow: show error bar");
 		m_error_bar.set_visible(true);
 		m_ErrorMessage.show();
 	}
 
 	private void loadContent()
 	{
-		logger.print(LogMessage.DEBUG, "MainWindow: load content");
+		Logger.get().debug("MainWindow: load content");
 		dataBase.updateBadge.connect(() => {
 			try
 			{
@@ -572,7 +572,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			}
 			catch(Error e)
 			{
-				logger.print(LogMessage.ERROR, "MainWindow.loadContent: %s".printf(e.message));
+				Logger.get().error("MainWindow.loadContent: %s".printf(e.message));
 			}
 
 		});
@@ -595,14 +595,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 					foreach(category cat in categories)
 					{
 						DBusConnection.get_default().markFeedAsRead(cat.getCatID(), true);
-						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
+						Logger.get().debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
 					}
 
 					var feeds = dataBase.read_feeds_without_cat();
 					foreach(feed Feed in feeds)
 					{
 						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
-						logger.print(LogMessage.DEBUG, "MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+						Logger.get().debug("MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
 					}
 				}
 				else
@@ -617,7 +617,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "MainWindow.markSelectedRead: %s".printf(e.message));
+			Logger.get().error("MainWindow.markSelectedRead: %s".printf(e.message));
 		}
 	}
 
@@ -655,14 +655,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(checkShortcut(event, "articlelist-prev"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: down");
+			Logger.get().debug("shortcut: down");
 			m_content.ArticleListPREV();
 			return true;
 		}
 
 		if(checkShortcut(event, "articlelist-next"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: up");
+			Logger.get().debug("shortcut: up");
 			m_content.ArticleListNEXT();
 			return true;
 		}
@@ -684,7 +684,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(checkShortcut(event, "articlelist-toggle-read"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: toggle read");
+			Logger.get().debug("shortcut: toggle read");
 			m_content.toggleReadSelectedArticle();
 			m_headerbar.toggleRead();
 			return true;
@@ -692,7 +692,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(checkShortcut(event, "articlelist-toggle-marked"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: toggle marked");
+			Logger.get().debug("shortcut: toggle marked");
 			m_content.toggleMarkedSelectedArticle();
 			m_headerbar.toggleMarked();
 			return true;
@@ -700,14 +700,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(checkShortcut(event, "articlelist-open-url"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: open in browser");
+			Logger.get().debug("shortcut: open in browser");
 			m_content.openSelectedArticle();
 			return true;
 		}
 
 		if(checkShortcut(event, "feedlist-mark-read"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: mark all as read");
+			Logger.get().debug("shortcut: mark all as read");
 			markSelectedRead();
 			m_headerbar.setRead(false);
 			return true;
@@ -715,7 +715,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(checkShortcut(event, "global-sync"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: sync");
+			Logger.get().debug("shortcut: sync");
 			var window = ((FeedApp)GLib.Application.get_default());
 			window.sync.begin((obj, res) => {
 				window.sync.end(res);
@@ -725,21 +725,21 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(checkShortcut(event, "articlelist-center-selected"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: scroll to selcted row");
+			Logger.get().debug("shortcut: scroll to selcted row");
 			m_content.centerSelectedRow();
 			return true;
 		}
 
 		if(checkShortcut(event, "global-search"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: focus search");
+			Logger.get().debug("shortcut: focus search");
 			m_headerbar.focusSearch();
 			return true;
 		}
 
 		if(checkShortcut(event, "global-quit"))
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: quit");
+			Logger.get().debug("shortcut: quit");
 			this.close();
 			return true;
 		}
@@ -753,7 +753,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		if(event.keyval == Gdk.Key.F1)
 		{
-			logger.print(LogMessage.DEBUG, "shortcut: showShortcutWindow");
+			Logger.get().debug("shortcut: showShortcutWindow");
 			showShortcutWindow();
 			return true;
 		}

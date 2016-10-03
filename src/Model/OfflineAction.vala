@@ -74,6 +74,6 @@ public class FeedReader.OfflineAction : GLib.Object {
 
 	public void print()
 	{
-		logger.print(LogMessage.DEBUG, "OfflineAction: %s %s".printf(m_action.to_string(), m_id));
+		Logger.get().debug("OfflineAction: %s %s".printf(m_action.to_string(), m_id));
 	}
 }

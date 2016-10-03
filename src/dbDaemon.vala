@@ -26,7 +26,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     public bool resetDB()
     {
-        logger.print(LogMessage.WARNING, "resetDB");
+        Logger.get().warning("resetDB");
         executeSQL("DROP TABLE main.feeds");
         executeSQL("DROP TABLE main.categories");
         executeSQL("DROP TABLE main.articles");
@@ -39,8 +39,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
         if (ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, query);
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+			Logger.get().error(query);
+			Logger.get().error(sqlite_db.errmsg());
 		}
 
 
@@ -49,7 +49,7 @@ public class FeedReader.dbDaemon : dbBase {
             for (int i = 0; i < cols; i++) {
                 if(stmt.column_text(i) != "ok")
                 {
-                    logger.print(LogMessage.ERROR, "resetting the database failed");
+                    Logger.get().error("resetting the database failed");
                     return false;
                 }
             }
@@ -93,8 +93,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, query.get());
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+			Logger.get().error(query.get());
+			Logger.get().error(sqlite_db.errmsg());
 		}
 
         while (stmt.step () == Sqlite.ROW) {
@@ -104,7 +104,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     private void delete_article(string articleID, string feedID)
     {
-        logger.print(LogMessage.INFO, "Deleting article \"%s\"".printf(articleID));
+        Logger.get().info("Deleting article \"%s\"".printf(articleID));
         executeSQL("DELETE FROM main.articles WHERE articleID = \"" + articleID + "\"");
         string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
         Utils.remove_directory(folder_path);
@@ -126,8 +126,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
         if(ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, query.get());
-			logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+			Logger.get().error(query.get());
+			Logger.get().error(sqlite_db.errmsg());
 		}
 
         while(stmt.step () == Sqlite.ROW)
@@ -168,8 +168,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
         if(ec != Sqlite.OK)
         {
-            logger.print(LogMessage.ERROR, "dbDaemon: write_feeds - " + query.get());
-            logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+            Logger.get().error("dbDaemon: write_feeds - " + query.get());
+            Logger.get().error(sqlite_db.errmsg());
         }
 
 
@@ -226,8 +226,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-            logger.print(LogMessage.ERROR, "dbDaemon: write_tags - " + query.get());
-            logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+            Logger.get().error("dbDaemon: write_tags - " + query.get());
+            Logger.get().error(sqlite_db.errmsg());
         }
 
         int tagID_position = stmt.bind_parameter_index("$TAGID");
@@ -239,7 +239,7 @@ public class FeedReader.dbDaemon : dbBase {
 
         foreach(var tag_item in tags)
         {
-            //logger.print(LogMessage.DEBUG, "write_tags: %s %s %i".printf(tag_item.getTagID(), tag_item.getTitle(), tag_item.getColor()));
+            //Logger.get().debug("write_tags: %s %s %i".printf(tag_item.getTagID(), tag_item.getTitle(), tag_item.getColor()));
             stmt.bind_text(tagID_position, tag_item.getTagID());
             stmt.bind_text(label_position, tag_item.getTitle());
             stmt.bind_int (color_position, tag_item.getColor());
@@ -265,8 +265,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-            logger.print(LogMessage.ERROR, "dbDaemon: update_tags - " + query.get());
-            logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+            Logger.get().error("dbDaemon: update_tags - " + query.get());
+            Logger.get().error(sqlite_db.errmsg());
         }
 
         int title_position = stmt.bind_parameter_index("$TITLE");
@@ -314,8 +314,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-            logger.print(LogMessage.ERROR, "dbDaemon: write_categories - " + query.get());
-            logger.print(LogMessage.ERROR, sqlite_db.errmsg());
+            Logger.get().error("dbDaemon: write_categories - " + query.get());
+            Logger.get().error(sqlite_db.errmsg());
         }
 
 
@@ -374,8 +374,8 @@ public class FeedReader.dbDaemon : dbBase {
 
         if (ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, update_query.get());
-			logger.print(LogMessage.ERROR, "updateArticlesByID: " + sqlite_db.errmsg());
+			Logger.get().error(update_query.get());
+			Logger.get().error("updateArticlesByID: " + sqlite_db.errmsg());
 		}
 
         int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
@@ -409,8 +409,8 @@ public class FeedReader.dbDaemon : dbBase {
 
         if (ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, update_query.get());
-			logger.print(LogMessage.ERROR, "update_articles: " + sqlite_db.errmsg());
+			Logger.get().error(update_query.get());
+			Logger.get().error("update_articles: " + sqlite_db.errmsg());
 		}
 
         int unread_position = stmt.bind_parameter_index("$UNREAD");
@@ -470,8 +470,8 @@ public class FeedReader.dbDaemon : dbBase {
 
         if (ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, query.get());
-			logger.print(LogMessage.ERROR, "write_articles: " + sqlite_db.errmsg());
+			Logger.get().error(query.get());
+			Logger.get().error("write_articles: " + sqlite_db.errmsg());
 		}
 
 
@@ -550,8 +550,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, query.get());
-			logger.print(LogMessage.ERROR, "tag_still_used: " + sqlite_db.errmsg());
+			Logger.get().error(query.get());
+			Logger.get().error("tag_still_used: " + sqlite_db.errmsg());
 		}
 
         while (stmt.step () == Sqlite.ROW) {
@@ -617,26 +617,26 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void delete_unsubscribed_feeds()
     {
-        logger.print(LogMessage.WARNING, "dbDaemon: Deleting unsibscribed feeds");
+        Logger.get().warning("dbDaemon: Deleting unsibscribed feeds");
         executeSQL("DELETE FROM main.feeds WHERE \"subscribed\" = 0");
     }
 
 
     public void delete_nonexisting_categories()
     {
-        logger.print(LogMessage.WARNING, "dbDaemon: Deleting nonexisting categories");
+        Logger.get().warning("dbDaemon: Deleting nonexisting categories");
         executeSQL("DELETE FROM main.categories WHERE \"exists\" = 0");
     }
 
     public void delete_nonexisting_tags()
     {
-        logger.print(LogMessage.WARNING, "dbDaemon: Deleting nonexisting tags");
+        Logger.get().warning("dbDaemon: Deleting nonexisting tags");
         executeSQL("DELETE FROM main.tags WHERE \"exists\" = 0");
     }
 
     public void delete_articles_without_feed()
     {
-        logger.print(LogMessage.WARNING, "dbDaemon: Deleting articles without feed");
+        Logger.get().warning("dbDaemon: Deleting articles without feed");
         var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
         query.selectField("feed_id");
         query.addEqualsCondition("subscribed", "0", true, false);
@@ -646,8 +646,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if(ec != Sqlite.OK)
         {
-			logger.print(LogMessage.ERROR, query.get());
-			logger.print(LogMessage.ERROR, "dbDaemon: delete_articles_without_feed: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+			Logger.get().error(query.get());
+			Logger.get().error("dbDaemon: delete_articles_without_feed: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
 		}
 
         while(stmt.step () == Sqlite.ROW)
@@ -658,7 +658,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void delete_articles(string feedID)
     {
-        logger.print(LogMessage.WARNING, "dbDaemon: Deleting all articles of feed \"%s\"".printf(feedID));
+        Logger.get().warning("dbDaemon: Deleting all articles of feed \"%s\"".printf(feedID));
         executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
         string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/".printf(feedID);
         Utils.remove_directory(folder_path);
@@ -679,8 +679,8 @@ public class FeedReader.dbDaemon : dbBase {
             int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
             if (ec != Sqlite.OK)
             {
-    			logger.print(LogMessage.ERROR, query.get());
-    			logger.print(LogMessage.ERROR, "delete_articles: " + sqlite_db.errmsg());
+    			Logger.get().error(query.get());
+    			Logger.get().error("delete_articles: " + sqlite_db.errmsg());
     		}
 
             while(stmt.step () == Sqlite.ROW)
@@ -854,8 +854,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-            logger.print(LogMessage.ERROR, query.get());
-            logger.print(LogMessage.ERROR, "addOfflineAction: " + sqlite_db.errmsg());
+            Logger.get().error(query.get());
+            Logger.get().error("addOfflineAction: " + sqlite_db.errmsg());
         }
 
 
@@ -890,8 +890,8 @@ public class FeedReader.dbDaemon : dbBase {
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
 		if (ec != Sqlite.OK)
         {
-            logger.print(LogMessage.ERROR, query.get());
-            logger.print(LogMessage.ERROR, "readOfflineActions: " + sqlite_db.errmsg());
+            Logger.get().error(query.get());
+            Logger.get().error("readOfflineActions: " + sqlite_db.errmsg());
         }
 
 		while (stmt.step () == Sqlite.ROW) {
@@ -905,7 +905,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void resetOfflineActions()
     {
-        logger.print(LogMessage.WARNING, "resetOfflineActions");
+        Logger.get().warning("resetOfflineActions");
         executeSQL("DELETE FROM OfflineActions");
     }
 
@@ -922,8 +922,8 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-            logger.print(LogMessage.ERROR, "offlineActionNecessary - %s".printf(sqlite_db.errmsg()));
-            logger.print(LogMessage.ERROR, query.get());
+            Logger.get().error("offlineActionNecessary - %s".printf(sqlite_db.errmsg()));
+            Logger.get().error(query.get());
         }
 
         while (stmt.step () == Sqlite.ROW) {

@@ -51,10 +51,10 @@ public class FeedReader.FeedlyConnection {
 				string refreshToken = root.get_string_member("refresh_token");
 				int64 now = (new DateTime.now_local()).to_unix();
 
-				logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
-				logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
-				logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
-				logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+				Logger.get().debug("access-token: " + accessToken);
+				Logger.get().debug("expires in: " + expires.to_string());
+				Logger.get().debug("refresh-token: " + refreshToken);
+				Logger.get().debug("now: " + now.to_string());
 
 				m_utils.setAccessToken(accessToken);
 				m_utils.setExpiration((int)(now + expires));
@@ -63,13 +63,13 @@ public class FeedReader.FeedlyConnection {
 			}
 			else if(root.has_member("errorCode"))
 			{
-				logger.print(LogMessage.ERROR, "Feedly: getToken response - " + root.get_string_member("errorMessage"));
+				Logger.get().error("Feedly: getToken response - " + root.get_string_member("errorMessage"));
 				return LoginResponse.UNKNOWN_ERROR;
 			}
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "Could not load response to Message from feedly - %s".printf(e.message));
+			Logger.get().error("Could not load response to Message from feedly - %s".printf(e.message));
 		}
 
 		return LoginResponse.UNKNOWN_ERROR;
@@ -105,10 +105,10 @@ public class FeedReader.FeedlyConnection {
 				string refreshToken = root.get_string_member("refresh_token");
 				int64 now = (new DateTime.now_local()).to_unix();
 
-				logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
-				logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
-				logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
-				logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+				Logger.get().debug("access-token: " + accessToken);
+				Logger.get().debug("expires in: " + expires.to_string());
+				Logger.get().debug("refresh-token: " + refreshToken);
+				Logger.get().debug("now: " + now.to_string());
 
 				m_utils.setAccessToken(accessToken);
 				m_utils.setExpiration((int)(now + expires));
@@ -117,13 +117,13 @@ public class FeedReader.FeedlyConnection {
 			}
 			else if(root.has_member("errorCode"))
 			{
-				logger.print(LogMessage.ERROR, "Feedly: refreshToken response - " + root.get_string_member("errorMessage"));
+				Logger.get().error("Feedly: refreshToken response - " + root.get_string_member("errorMessage"));
 				return LoginResponse.UNKNOWN_ERROR;
 			}
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "Could not load response to Message from feedly - %s".printf(e.message));
+			Logger.get().error("Could not load response to Message from feedly - %s".printf(e.message));
 		}
 
 		return LoginResponse.UNKNOWN_ERROR;
@@ -177,10 +177,10 @@ public class FeedReader.FeedlyConnection {
 		size_t length;
 		string json;
 		json = gen.to_data(out length);
-		logger.print(LogMessage.DEBUG, json);
+		Logger.get().debug(json);
 		message.request_body.append_take(json.data);
 		session.send_message(message);
-		logger.print(LogMessage.DEBUG, "Status Code: " + message.status_code.to_string());
+		Logger.get().debug("Status Code: " + message.status_code.to_string());
 		return (string)message.response_body.flatten().data;
 	}
 

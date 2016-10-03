@@ -32,8 +32,8 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		FeedListType IDtype = FeedListType.FEED;
 
-		logger.print(LogMessage.DEBUG, "selectedRow 0: %s".printf(selectedRow[0]));
-		logger.print(LogMessage.DEBUG, "selectedRow 1: %s".printf(selectedRow[1]));
+		Logger.get().debug("selectedRow 0: %s".printf(selectedRow[0]));
+		Logger.get().debug("selectedRow 1: %s".printf(selectedRow[1]));
 
 		switch(selectedRow[0])
 		{
@@ -104,7 +104,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
         catch(GLib.Error e)
         {
-            logger.print(LogMessage.ERROR, "UtilsUI.canManipulateContent: %s".printf(e.message));
+            Logger.get().error("UtilsUI.canManipulateContent: %s".printf(e.message));
         }
 
 		return false;
@@ -151,7 +151,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "UtilsUI.onlyShowFeeds: %s".printf(e.message));
+			Logger.get().error("UtilsUI.onlyShowFeeds: %s".printf(e.message));
 		}
 
 		return false;
@@ -199,7 +199,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 						}
 						catch(Error e)
 						{
-							logger.print(LogMessage.DEBUG, "imagePopup: save file: " + e.message);
+							Logger.get().debug("imagePopup: save file: " + e.message);
 						}
 						break;
 
@@ -213,7 +213,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "UtilsUI.saveImageDialog: %s".printf(e.message));
+			Logger.get().error("UtilsUI.saveImageDialog: %s".printf(e.message));
 		}
 	}
 
@@ -223,7 +223,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		Gst.init(ref args);
 
 		settings_general = new GLib.Settings ("org.gnome.feedreader");
-		logger = new Logger("mediaPlayer");
+		Logger.init("mediaPlayer");
 
 		var window = new Gtk.Window();
 		window.set_size_request(800, 600);
@@ -299,7 +299,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "UtilsUI.testGOA: %s".printf(e.message));
+			Logger.get().error("UtilsUI.testGOA: %s".printf(e.message));
 		}
 	}
 }

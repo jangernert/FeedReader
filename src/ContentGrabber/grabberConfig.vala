@@ -50,7 +50,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 
         if(!file.query_exists())
         {
-            logger.print(LogMessage.ERROR, "File '%s' doesn't exist.".printf(file.get_path()));
+            Logger.get().error("File '%s' doesn't exist.".printf(file.get_path()));
             return;
         }
 
@@ -169,99 +169,99 @@ public class FeedReader.GrabberConfig : GLib.Object {
 
         if(m_xpath_title.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "title:");
+            Logger.get().debug("title:");
             foreach(string title in m_xpath_title)
             {
-                logger.print(LogMessage.DEBUG, TAB + title);
+                Logger.get().debug(TAB + title);
             }
         }
 
         if(m_xpath_author.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "author:");
+            Logger.get().debug("author:");
             foreach(string author in m_xpath_author)
             {
-                logger.print(LogMessage.DEBUG, TAB + author);
+                Logger.get().debug(TAB + author);
             }
         }
 
         if(m_xpath_date.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "date:");
+            Logger.get().debug("date:");
             foreach(string date in m_xpath_date)
             {
-                logger.print(LogMessage.DEBUG, TAB + date);
+                Logger.get().debug(TAB + date);
             }
         }
 
         if(m_xpath_body.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "body:");
+            Logger.get().debug("body:");
             foreach(string body in m_xpath_body)
             {
-                logger.print(LogMessage.DEBUG, TAB + body);
+                Logger.get().debug(TAB + body);
             }
         }
 
         if(m_xpath_strip.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "strip:");
+            Logger.get().debug("strip:");
             foreach(string strip in m_xpath_strip)
             {
-                logger.print(LogMessage.DEBUG, TAB + strip);
+                Logger.get().debug(TAB + strip);
             }
         }
 
         if(m_xpath_stripIDorClass.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "stripIDorClass:");
+            Logger.get().debug("stripIDorClass:");
             foreach(string stripIDorClass in m_xpath_stripIDorClass)
             {
-                logger.print(LogMessage.DEBUG, TAB + stripIDorClass);
+                Logger.get().debug(TAB + stripIDorClass);
             }
         }
 
         if(m_xpath_stripImgSrc.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "stripImgSrc:");
+            Logger.get().debug("stripImgSrc:");
             foreach(string stripImgSrc in m_xpath_stripImgSrc)
             {
-                logger.print(LogMessage.DEBUG, TAB + stripImgSrc);
+                Logger.get().debug(TAB + stripImgSrc);
             }
         }
 
         if(m_tidy)
-            logger.print(LogMessage.DEBUG, "tidy: yes");
+            Logger.get().debug("tidy: yes");
         else
-            logger.print(LogMessage.DEBUG, "tidy: no");
+            Logger.get().debug("tidy: no");
 
         if(m_prune)
-            logger.print(LogMessage.DEBUG, "prune: yes");
+            Logger.get().debug("prune: yes");
         else
-            logger.print(LogMessage.DEBUG, "prune: no");
+            Logger.get().debug("prune: no");
 
         if(m_autodetectOnFailure)
-            logger.print(LogMessage.DEBUG, "autodetectOnFailure: yes");
+            Logger.get().debug("autodetectOnFailure: yes");
         else
-            logger.print(LogMessage.DEBUG, "autodetectOnFailure: no");
+            Logger.get().debug("autodetectOnFailure: no");
 
         if(m_singlePageLink != null)
-            logger.print(LogMessage.DEBUG, "singlePageLink: " + m_singlePageLink);
+            Logger.get().debug("singlePageLink: " + m_singlePageLink);
 
         if(m_nextPageLink != null)
-            logger.print(LogMessage.DEBUG, "nextPageLink: " + m_nextPageLink);
+            Logger.get().debug("nextPageLink: " + m_nextPageLink);
 
         if(m_replace.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "replace:");
+            Logger.get().debug("replace:");
             foreach(StringPair tmp in m_replace)
             {
-                logger.print(LogMessage.DEBUG, "replace %s with %s".printf(tmp.getString1(), tmp.getString2()));
+                Logger.get().debug("replace %s with %s".printf(tmp.getString1(), tmp.getString2()));
             }
         }
 
         if(m_testURL != null)
-            logger.print(LogMessage.DEBUG, "testURL: " + m_testURL);
+            Logger.get().debug("testURL: " + m_testURL);
     }
 
 

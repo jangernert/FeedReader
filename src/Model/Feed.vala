@@ -114,6 +114,6 @@ public class FeedReader.feed : GLib.Object {
 
 	public void print()
 	{
-		logger.print(LogMessage.DEBUG, "\ntitle: %s\nid: %s\nurl: %s\nunread: %u".printf(m_title, m_feedID, m_url, m_unread));
+		Logger.get().debug("\ntitle: %s\nid: %s\nurl: %s\nunread: %u".printf(m_title, m_feedID, m_url, m_unread));
 	}
 }

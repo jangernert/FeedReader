@@ -23,7 +23,6 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     private GLib.Settings m_shareSettings;
     private GLib.Settings m_shareTweaks;
-    public Logger m_logger { get; construct set; }
 
     public PocketAPI()
     {
@@ -33,7 +32,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public string getRequestToken()
     {
-    	m_logger.print(LogMessage.DEBUG, "PocketAPI: get request token");
+    	Logger.get().debug("PocketAPI: get request token");
         var session = new Soup.Session();
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&redirect_uri=" + PocketSecrets.oauth_callback;
 
@@ -67,7 +66,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 			return false;
 
         string response = (string)message_soup.response_body.flatten().data;
-        m_logger.print(LogMessage.DEBUG, response);
+        Logger.get().debug(response);
         int tokenStart = response.index_of_char('=')+1;
         int tokenEnd = response.index_of_char('&', tokenStart);
         int userStart = response.index_of_char('=', tokenEnd)+1;
@@ -95,7 +94,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
                         + "&consumer_key=" + PocketSecrets.oauth_consumer_key
                         + "&access_token=" + settings.get_string("oauth-access-token");
 
-        m_logger.print(LogMessage.DEBUG, "PocketAPI: " + message);
+        Logger.get().debug("PocketAPI: " + message);
 
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/add");
         message_soup.set_request("application/x-www-form-urlencoded; charset=UTF8", Soup.MemoryUse.COPY, message.data);

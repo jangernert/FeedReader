@@ -163,7 +163,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 
 	public override void logout()
 	{
-		logger.print(LogMessage.DEBUG, "WallabagSetup: logout");
+		Logger.get().debug("WallabagSetup: logout");
 		m_isLoggedIN = false;
 		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 		m_labelStack.set_visible_child_name("loggedOUT");

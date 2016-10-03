@@ -45,7 +45,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 					tmp_url = "https://" + tmp_url;
 		}
 
-		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
+		Logger.get().debug("ttrss URL: " + tmp_url);
 
 		return tmp_url;
 	}
@@ -96,7 +96,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error(e.message);
 		}
 
 		if(passwd == null)
@@ -121,7 +121,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+			Logger.get().error("ttrssUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "ttrssUtils.deletePassword: %s".printf(e.message));
+				Logger.get().error("ttrssUtils.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;
@@ -172,7 +172,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
+			Logger.get().error("ttrssUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		if(passwd == null)
@@ -199,7 +199,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
+			Logger.get().error("ttrssUtils: setHtAccessPassword: " + e.message);
 		}
 	}
 
@@ -212,7 +212,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.get().debug(e.message);
 		}
 
 		string remote_filename = icon_url + feed_id + ".ico";
@@ -240,11 +240,11 @@ public class FeedReader.ttrssUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.get().error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.get().error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

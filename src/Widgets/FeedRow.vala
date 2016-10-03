@@ -131,21 +131,21 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "FeedRow.constructor: %s".printf(e.message));
+				Logger.get().error("FeedRow.constructor: %s".printf(e.message));
 			}
 		}
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		logger.print(LogMessage.DEBUG, "FeedRow: onDragBegin");
+		Logger.get().debug("FeedRow: onDragBegin");
 		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
 
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
-		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataGet");
+		Logger.get().debug("FeedRow: onDragDataGet");
 
 		if(target_type == DragTarget.FEED)
 		{
@@ -220,7 +220,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 				}
 				catch(GLib.Error e)
 				{
-					logger.print(LogMessage.ERROR, "FeedRow.onClick: %s".printf(e.message));
+					Logger.get().error("FeedRow.onClick: %s".printf(e.message));
 				}
 			});
 			notification.action.connect(() => {
@@ -290,7 +290,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "FeedRow.showRenamePopover: %s".printf(e.message));
+				Logger.get().error("FeedRow.showRenamePopover: %s".printf(e.message));
 			}
 		});
 

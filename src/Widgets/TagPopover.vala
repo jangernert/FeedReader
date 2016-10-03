@@ -145,7 +145,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			{
 				if(str == Tag.getTitle())
 				{
-					logger.print(LogMessage.DEBUG, "TagPopover: article already tagged");
+					Logger.get().debug("TagPopover: article already tagged");
 					m_entry.set_text("");
 					return;
 				}
@@ -155,7 +155,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			{
 				if(str == Tag.getTitle())
 				{
-					logger.print(LogMessage.DEBUG, "TagPopover: tag available");
+					Logger.get().debug("TagPopover: tag available");
 					tagID = Tag.getTagID();
 					available = true;
 					break;
@@ -167,13 +167,13 @@ public class FeedReader.TagPopover : Gtk.Popover {
 				if(!available)
 				{
 					tagID = DBusConnection.get_default().createTag(str);
-					logger.print(LogMessage.DEBUG, "TagPopover: " + str + " created with id " + tagID);
+					Logger.get().debug("TagPopover: " + str + " created with id " + tagID);
 				}
 				DBusConnection.get_default().tagArticle(getActiveArticleID(), tagID, true);
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "TagPopover.setupEntry: %s".printf(e.message));
+				Logger.get().error("TagPopover.setupEntry: %s".printf(e.message));
 			}
 
 
@@ -197,7 +197,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "TagPopover.removeTag: %s".printf(e.message));
+			Logger.get().error("TagPopover.removeTag: %s".printf(e.message));
 		}
 
 		foreach(tag Tag in m_tags)

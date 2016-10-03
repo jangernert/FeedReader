@@ -33,11 +33,10 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_engine.enable_loader("python3");
 
 		m_extensions = new Peas.ExtensionSet(m_engine, typeof(FeedServerInterface),
-			"m_dataBase", dataBase,
-			"m_logger", logger);
+			"m_dataBase", dataBase);
 
 		m_extensions.extension_added.connect((info, extension) => {
-			logger.print(LogMessage.DEBUG, "feedserver: plugin loaded %s".printf(info.get_name()));
+			Logger.get().debug("feedserver: plugin loaded %s".printf(info.get_name()));
 			m_plugin = (extension as FeedServerInterface);
 			m_plugin.init();
 			m_plugin.newFeedList.connect(() => { newFeedList(); });
@@ -50,15 +49,15 @@ public class FeedReader.FeedServer : GLib.Object {
 		});
 
 		m_extensions.extension_removed.connect((info, extension) => {
-			logger.print(LogMessage.DEBUG, "feedserver: plugin removed %s".printf(info.get_name()));
+			Logger.get().debug("feedserver: plugin removed %s".printf(info.get_name()));
 		});
 
 		m_engine.load_plugin.connect((info) => {
-			logger.print(LogMessage.DEBUG, "feedserver: engine load %s".printf(info.get_name()));
+			Logger.get().debug("feedserver: engine load %s".printf(info.get_name()));
 		});
 
 		m_engine.unload_plugin.connect((info) => {
-			logger.print(LogMessage.DEBUG, "feedserver: engine unload %s".printf(info.get_name()));
+			Logger.get().debug("feedserver: engine unload %s".printf(info.get_name()));
 		});
 
 		loadPlugin(plug_name);
@@ -66,7 +65,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool unloadPlugin()
 	{
-		logger.print(LogMessage.DEBUG, "feedserver: unload plugin %s".printf(m_plugName));
+		Logger.get().debug("feedserver: unload plugin %s".printf(m_plugName));
 		if(m_pluginLoaded)
 		{
 			var plugin = m_engine.get_plugin_info(m_plugName);
@@ -77,7 +76,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool loadPlugin(string plugName)
 	{
-		logger.print(LogMessage.DEBUG, "feedserver: load plugin \"%s\"".printf(plugName));
+		Logger.get().debug("feedserver: load plugin \"%s\"".printf(plugName));
 		m_plugName = plugName;
 		var plugin = m_engine.get_plugin_info(plugName);
 
@@ -87,7 +86,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_pluginLoaded = false;
 
 		if(!m_pluginLoaded)
-			logger.print(LogMessage.ERROR, "feedserver: couldn't load plugin %s".printf(m_plugName));
+			Logger.get().error("feedserver: couldn't load plugin %s".printf(m_plugName));
 
 		return m_pluginLoaded;
 	}
@@ -101,7 +100,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		if(!serverAvailable())
 		{
-			logger.print(LogMessage.DEBUG, "FeedServer: can't snyc - not logged in or unreachable");
+			Logger.get().debug("FeedServer: can't snyc - not logged in or unreachable");
 			return;
 		}
 
@@ -113,7 +112,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(!getFeedsAndCats(feeds, categories, tags))
 		{
-			logger.print(LogMessage.ERROR, "FeedServer: something went wrong getting categories and feeds");
+			Logger.get().error("FeedServer: something went wrong getting categories and feeds");
 			return;
 		}
 
@@ -198,7 +197,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public void InitSyncContent()
 	{
-		logger.print(LogMessage.DEBUG, "FeedServer: initial sync");
+		Logger.get().debug("FeedServer: initial sync");
 
 		var categories = new Gee.LinkedList<category>();
 		var feeds      = new Gee.LinkedList<feed>();
@@ -281,14 +280,14 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(newArticles > 0)
 		{
-			logger.print(LogMessage.DEBUG, "FeedServer: new articles: %i".printf(newArticles));
+			Logger.get().debug("FeedServer: new articles: %i".printf(newArticles));
 			writeInterfaceState();
 			updateFeedList();
 			updateArticleList();
 
 			if(settings_state.get_boolean("no-animations"))
 			{
-				logger.print(LogMessage.DEBUG, "UI NOT running: setting \"articlelist-new-rows\"");
+				Logger.get().debug("UI NOT running: setting \"articlelist-new-rows\"");
 				int newCount = settings_state.get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
 				settings_state.set_int("articlelist-new-rows", newCount);
 			}
@@ -305,7 +304,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			if(!Notify.is_initted())
 			{
-				logger.print(LogMessage.ERROR, "notification: libnotifiy not initialized");
+				Logger.get().error("notification: libnotifiy not initialized");
 				return;
 			}
 
@@ -327,18 +326,18 @@ public class FeedReader.FeedServer : GLib.Object {
 					if(m_notifyActionSupport)
 					{
 						notification.add_action ("default", "Show FeedReader", (notification, action) => {
-							logger.print(LogMessage.DEBUG, "notification: default action");
+							Logger.get().debug("notification: default action");
 							try {
 								notification.close();
 							} catch (Error e) {
-								logger.print(LogMessage.ERROR, e.message);
+								Logger.get().error(e.message);
 							}
 
 							string[] spawn_args = {"feedreader"};
 							try{
 								GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 							}catch(GLib.SpawnError e){
-								logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+								Logger.get().error("spawning command line: %s".printf(e.message));
 							}
 						});
 					}
@@ -351,7 +350,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				notification.show();
 			}
 		}catch (GLib.Error e) {
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error(e.message);
 		}
 	}
 
@@ -403,7 +402,7 @@ public class FeedReader.FeedServer : GLib.Object {
         Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
         if (doc == null)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: parsing failed");
+            Logger.get().debug("Grabber: parsing failed");
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
@@ -457,13 +456,13 @@ public class FeedReader.FeedServer : GLib.Object {
 				var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 				stream.write(html.data);
-				logger.print(LogMessage.DEBUG, "Grabber: article html written to " + path);
+				Logger.get().debug("Grabber: article html written to " + path);
 
 				string output = libVilistextum.parse(html, 1);
 
 				if(output == "" || output == null)
 				{
-					logger.print(LogMessage.ERROR, "could not generate preview text");
+					Logger.get().error("could not generate preview text");
 					return;
 				}
 
@@ -479,16 +478,16 @@ public class FeedReader.FeedServer : GLib.Object {
 				stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 				stream.write(output.data);
-				logger.print(LogMessage.DEBUG, "Grabber: preview written to " + path);
+				Logger.get().debug("Grabber: preview written to " + path);
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "FeedServer.grabArticle: %s".printf(e.message));
+				Logger.get().error("FeedServer.grabArticle: %s".printf(e.message));
 			}
 		}
 		else
 		{
-			logger.print(LogMessage.ERROR, "FeedServer.grabArticle: article could not be processed " + url);
+			Logger.get().error("FeedServer.grabArticle: article could not be processed " + url);
 		}
 	}
 
@@ -499,7 +498,7 @@ public class FeedReader.FeedServer : GLib.Object {
         Html.Doc* doc = html_cntx.read_file(htmlFile);
         if (doc == null)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: parsing failed");
+            Logger.get().debug("Grabber: parsing failed");
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, url);
@@ -532,7 +531,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedServer.grabImages: %s".printf(e.message));
+			Logger.get().error("FeedServer.grabImages: %s".printf(e.message));
 		}
 
 		delete doc;
@@ -559,7 +558,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return null;
 
-		logger.print(LogMessage.DEBUG, "feedserver: symbolicIcon");
+		Logger.get().debug("feedserver: symbolicIcon");
 
 		return m_plugin.symbolicIcon();
 	}

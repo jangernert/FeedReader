@@ -67,7 +67,7 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 				}
 				catch(GLib.SpawnError e)
 				{
-					logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+					Logger.get().error("spawning command line: %s".printf(e.message));
 				}
 			}
 		}

@@ -25,7 +25,6 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 	private Rest.OAuthProxy m_oauthObject;
 	private string m_tweet;
 	private int m_urlLength = 0;
-    public Logger m_logger { get; construct set; }
 
     public TwitterAPI()
     {
@@ -34,7 +33,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public string getRequestToken()
     {
-		m_logger.print(LogMessage.DEBUG, "TwitterAPI: get request token");
+		Logger.get().debug("TwitterAPI: get request token");
 
 		m_oauthObject = new Rest.OAuthProxy (
             TwitterSecrets.key,
@@ -48,7 +47,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		catch(GLib.Error e)
 		{
-			m_logger.print(LogMessage.ERROR, "TwitterAPI.getRequestToken: %s".printf(e.message));
+			Logger.get().error("TwitterAPI.getRequestToken: %s".printf(e.message));
 		}
 
 		return m_oauthObject.get_token();
@@ -62,7 +61,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		catch(GLib.Error e)
 		{
-			m_logger.print(LogMessage.ERROR, "TwitterAPI.getAccessToken: %s".printf(e.message));
+			Logger.get().error("TwitterAPI.getAccessToken: %s".printf(e.message));
 		}
 
         var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));
@@ -84,7 +83,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
         {
-            m_logger.print(LogMessage.ERROR, e.message);
+            Logger.get().error(e.message);
 		}
 
 		var parser = new Json.Parser();
@@ -94,8 +93,8 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
 		{
-            m_logger.print(LogMessage.ERROR, "Could not load response to Message from twitter");
-            m_logger.print(LogMessage.ERROR, e.message);
+            Logger.get().error("Could not load response to Message from twitter");
+            Logger.get().error(e.message);
 		}
 
 		var root_object = parser.get_root().get_object();
@@ -146,7 +145,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
         catch(Error e)
         {
-            m_logger.print(LogMessage.ERROR, e.message);
+            Logger.get().error(e.message);
 			return false;
 		}
 

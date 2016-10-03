@@ -90,7 +90,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		{
 			this.hide();
 			showSettings("service");
-			logger.print(LogMessage.DEBUG, "SharePopover: open Settings");
+			Logger.get().debug("SharePopover: open Settings");
 			return;
 		}
 
@@ -137,7 +137,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			shareAsync.end(res);
 			shareDone();
 		});
-        logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
+        Logger.get().debug("bookmark: %s to %s".printf(url, id));
 	}
 }
 

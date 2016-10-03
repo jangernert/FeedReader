@@ -13,8 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.Logger logger;
-
 public class FeedReader.feedbinAPI : Object {
 
 	private feedbinConnection m_connection;
@@ -28,7 +26,7 @@ public class FeedReader.feedbinAPI : Object {
 
 	public LoginResponse login()
 	{
-		logger.print(LogMessage.DEBUG, "feedbin backend: login");
+		Logger.get().debug("feedbin backend: login");
 
 		if(!Utils.ping("feedbin.com"))
 			return LoginResponse.NO_CONNECTION;
@@ -50,8 +48,8 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error("getTagList: Could not load message response");
+			Logger.get().error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -103,8 +101,8 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.get().error("getTagList: Could not load message response");
+			Logger.get().error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -166,7 +164,7 @@ public class FeedReader.feedbinAPI : Object {
 		if(feedID != null)
 			request = "feeds/%s/%s".printf(feedID, request);
 
-		logger.print(LogMessage.DEBUG, request);
+		Logger.get().debug(request);
 
 		string response = m_connection.getRequest(request);
 
@@ -177,23 +175,23 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "getEntries: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
-			logger.print(LogMessage.ERROR, response);
+			Logger.get().error("getEntries: Could not load message response");
+			Logger.get().error(e.message);
+			Logger.get().error(response);
 		}
 
 		var root = parser.get_root();
 
 		if(root.get_node_type() != Json.NodeType.ARRAY)
 		{
-			logger.print(LogMessage.ERROR, response);
+			Logger.get().error(response);
 			return 0;
 		}
 
 		var array = root.get_array();
 		uint length = array.get_length();
 
-		logger.print(LogMessage.DEBUG, "article count: %u".printf(length));
+		Logger.get().debug("article count: %u".printf(length));
 
 		for(uint i = 0; i < length; i++)
 		{
@@ -326,12 +324,12 @@ public class FeedReader.feedbinAPI : Object {
 		gen.set_root(root);
 		string json = gen.to_data(null);
 
-		logger.print(LogMessage.DEBUG, json);
+		Logger.get().debug(json);
 
 		var response = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
 
-		logger.print(LogMessage.DEBUG, "subscriptions/%s/update.json".printf(feedID));
-		logger.print(LogMessage.DEBUG, response);
+		Logger.get().debug("subscriptions/%s/update.json".printf(feedID));
+		Logger.get().debug(response);
 	}
 
 }

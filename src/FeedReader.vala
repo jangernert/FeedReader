@@ -25,7 +25,6 @@ namespace FeedReader {
 	GLib.Settings settings_state;
 	GLib.Settings settings_tweaks;
 	GLib.Settings settings_keybindings;
-	Logger logger;
 
 
 	public class FeedApp : Gtk.Application {
@@ -35,9 +34,9 @@ namespace FeedReader {
 
 		protected override void startup()
 		{
-			logger = new Logger("ui");
+			Logger.init("ui");
 
-			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
+			Logger.get().info("FeedReader " + AboutInfo.version);
 			dataBase = new dbUI();
 
 
@@ -81,7 +80,7 @@ namespace FeedReader {
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "FeedReader.activate: %s".printf(e.message));
+				Logger.get().error("FeedReader.activate: %s".printf(e.message));
 			}
 		}
 
@@ -90,7 +89,7 @@ namespace FeedReader {
 			var args = command_line.get_arguments();
 			if(args.length > 1)
 			{
-				logger.print(LogMessage.DEBUG, "FeedReader: callback %s".printf(args[1]));
+				Logger.get().debug("FeedReader: callback %s".printf(args[1]));
 				callback(args[1]);
 			}
 
@@ -103,14 +102,14 @@ namespace FeedReader {
 		{
 			try
 			{
-				logger.print(LogMessage.DEBUG, "Shutdown!");
+				Logger.get().debug("Shutdown!");
 				if(settings_tweaks.get_boolean("quit-daemon"))
 					DBusConnection.get_default().quit();
 				base.shutdown();
 			}
 			catch(GLib.Error e)
 			{
-				logger.print(LogMessage.ERROR, "FeedReader.shutdown: %s".printf(e.message));
+				Logger.get().error("FeedReader.shutdown: %s".printf(e.message));
 			}
 		}
 
@@ -124,7 +123,7 @@ namespace FeedReader {
 				}
 				catch(IOError e)
 				{
-					logger.print(LogMessage.ERROR, e.message);
+					Logger.get().error(e.message);
 				}
 				Idle.add((owned) callback);
 				return null;
@@ -184,7 +183,7 @@ namespace FeedReader {
 
 		if(pingURL != null)
 		{
-			logger = new Logger("ui");
+			Logger.init("ui");
 			Utils.ping(pingURL);
 			return 0;
 		}

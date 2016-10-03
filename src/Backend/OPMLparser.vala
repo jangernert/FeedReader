@@ -34,7 +34,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 		if(root->name != "opml")
 			return false;
 
-		logger.print(LogMessage.DEBUG, "OPML version: " + root->get_prop("version"));
+		Logger.get().debug("OPML version: " + root->get_prop("version"));
 
 		for(var node = root->children; node != null; node = node->next)
 		{
@@ -65,15 +65,15 @@ public class FeedReader.OPMLparser : GLib.Object {
 				switch(node->name)
 				{
 					case "title":
-						logger.print(LogMessage.DEBUG, "Title: " + node->get_content());
+						Logger.get().debug("Title: " + node->get_content());
 						break;
 
 					case "dateCreated":
-						logger.print(LogMessage.DEBUG, "dateCreated: " + node->get_content());
+						Logger.get().debug("dateCreated: " + node->get_content());
 						break;
 
 					case "dateModified":
-						logger.print(LogMessage.DEBUG, "dateModified: " + node->get_content());
+						Logger.get().debug("dateModified: " + node->get_content());
 						break;
 				}
 			}
@@ -104,7 +104,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 	private void parseCat(Xml.Node* node, string? parentCatID = null)
 	{
 		string title = node->get_prop("text");
-		logger.print(LogMessage.DEBUG, space() + "Category: " + title);
+		Logger.get().debug(space() + "Category: " + title);
 		string catID = daemon.addCategory("title", parentCatID);
 		parseTree(node, catID);
 	}
@@ -116,7 +116,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			string title = node->get_prop("text");
 			string feedURL = node->get_prop("xmlUrl");
 			string website = node->get_prop("htmlUrl");
-			logger.print(LogMessage.DEBUG, space() + "Feed: " + title + " website: " + website + " feedURL: " + feedURL);
+			Logger.get().debug(space() + "Feed: " + title + " website: " + website + " feedURL: " + feedURL);
 			daemon.addFeed(feedURL, catID, true);
 		}
 	}

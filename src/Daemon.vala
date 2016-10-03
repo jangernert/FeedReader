@@ -821,8 +821,6 @@ namespace FeedReader {
 
 	FeedServer server;
 	FeedDaemonServer daemon;
-	Notify.Notification notification;
-	bool m_notifyActionSupport = false;
 
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
@@ -885,17 +883,7 @@ namespace FeedReader {
 		}
 
 		Logger.init("daemon");
-		Notify.init(AboutInfo.programmName);
-		GLib.List<string> notify_server_caps = Notify.get_server_caps();
-		foreach(string str in notify_server_caps)
-		{
-			if(str == "actions")
-			{
-				m_notifyActionSupport = true;
-				Logger.info("daemon: Notification actions supported");
-				break;
-			}
-		}
+		Notification.init();
 		Utils.copyAutostart();
 
 		Logger.info("FeedReader Daemon " + AboutInfo.version);

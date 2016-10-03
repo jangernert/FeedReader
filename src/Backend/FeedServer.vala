@@ -164,7 +164,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		int newArticles = after-before;
 		if(newArticles > 0)
 		{
-			sendNotification(newArticles);
+			Notification.send(newArticles);
 			showArticleListOverlay();
 		}
 
@@ -292,67 +292,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			}
 		}
 	}
-
-
-	private void sendNotification(uint newArticles)
-	{
-		try{
-			string message = "";
-			string summary = _("New Articles");
-			uint unread = dbDaemon.get_default().get_unread_total();
-
-			if(!Notify.is_initted())
-			{
-				Logger.error("notification: libnotifiy not initialized");
-				return;
-			}
-
-			if(newArticles > 0)
-			{
-				if(unread == 1)
-					message = _("There is 1 new article (%u unread)").printf(unread);
-				else
-					message = _("There are %u new articles (%u unread)").printf(newArticles, unread);
-
-
-				if(notification == null)
-				{
-					notification = new Notify.Notification(summary, message, AboutInfo.iconName);
-					notification.set_urgency(Notify.Urgency.NORMAL);
-					notification.set_app_name(AboutInfo.programmName);
-					notification.set_hint("desktop-entry", new Variant ("(s)", "feedreader"));
-
-					if(m_notifyActionSupport)
-					{
-						notification.add_action ("default", "Show FeedReader", (notification, action) => {
-							Logger.debug("notification: default action");
-							try {
-								notification.close();
-							} catch (Error e) {
-								Logger.error(e.message);
-							}
-
-							string[] spawn_args = {"feedreader"};
-							try{
-								GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-							}catch(GLib.SpawnError e){
-								Logger.error("spawning command line: %s".printf(e.message));
-							}
-						});
-					}
-				}
-				else
-				{
-					notification.update(summary, message, AboutInfo.iconName);
-				}
-
-				notification.show();
-			}
-		}catch (GLib.Error e) {
-			Logger.error(e.message);
-		}
-	}
-
 
 	public static void grabContent(article Article)
 	{

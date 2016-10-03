@@ -231,6 +231,7 @@ endif(LIBUNITY_FOUND)
 vala_precompile(daemon ${DAEMON_NAME}
     src/Daemon.vala
     src/dbDaemon.vala
+    src/Notification.vala
     src/OfflineActionManager.vala
     src/Backend/FeedServer.vala
     src/Backend/FeedServerInterface.vala

@@ -230,7 +230,7 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			uint8[] contents;
 			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
-			file.load_contents (null, out contents, null);
+			file.load_contents(null, out contents, null);
 			article.assign((string)contents);
 		}
 		catch(GLib.Error e)

@@ -18,8 +18,6 @@ public interface FeedReader.LoginInterface : GLib.Object {
 	public signal void login();
 	public signal void writeFeed(string url, string category);
 
-	public abstract string m_installPrefix { get; construct set; }
-
 	public abstract void init();
 
 	public abstract string getWebsite();

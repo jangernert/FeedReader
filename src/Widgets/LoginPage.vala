@@ -31,8 +31,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		m_engine.add_search_path(Constants.InstallPrefix + "/share/FeedReader/pluginsUI/", null);
 		m_engine.enable_loader("python3");
 
-		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface),
-						"m_installPrefix", Constants.InstallPrefix);
+		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface));
 
 		m_extensions.extension_added.connect((info, extension) => {
 			var plugin = (extension as LoginInterface);

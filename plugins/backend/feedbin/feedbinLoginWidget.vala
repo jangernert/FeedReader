@@ -22,7 +22,6 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 	private feedbinUtils m_utils;
 
 	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 
 	public void init()
 	{

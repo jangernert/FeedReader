@@ -27,7 +27,6 @@ public class FeedReader.freshLoginWidget : Peas.ExtensionBase, LoginInterface {
 	private freshUtils m_utils;
 
 	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 
 	public void init()
 	{

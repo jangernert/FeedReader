@@ -13,7 +13,6 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 	private OldReaderUtils m_utils;
 
 	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 
 	public void init()
 	{

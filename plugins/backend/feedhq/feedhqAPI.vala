@@ -16,44 +16,44 @@
 FeedReader.dbDaemon dataBase;
 FeedReader.Logger logger;
 
-public class FeedReader.OldReaderAPI : GLib.Object {
+public class FeedReader.FeedHQAPI : GLib.Object {
 
-	public enum OldreaderSubscriptionAction {
+	public enum FeedHQSubscriptionAction {
 		EDIT,
 		SUBSCRIBE,
 		UNSUBSCRIBE
 	}
 
-	private OldReaderConnection m_connection;
-	private OldReaderUtils m_utils;
+	private FeedHQConnection m_connection;
+	private FeedHQUtils m_utils;
 	private string m_userID;
 
-	public OldReaderAPI()
+	public FeedHQAPI ()
 	{
-		m_utils = new OldReaderUtils();
-		m_connection = new OldReaderConnection();
+		m_connection = new FeedHQConnection();
+		m_utils = new FeedHQUtils();
 	}
+
 
 	public LoginResponse login()
 	{
+		logger.print( LogMessage.ERROR, " FeedHQ Login" );
+
 		if(m_utils.getAccessToken() == "")
-		{
 			m_connection.getToken();
-		}
+
 		if(getUserID())
-		{
 			return LoginResponse.SUCCESS;
-		}
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public bool ping() {
-		return Utils.ping("theoldreader.com");
+		return Utils.ping("feedhq.org");
 	}
 
 	private bool getUserID()
 	{
-		logger.print(LogMessage.ERROR, "getUserID: getting user info");
 		string response = m_connection.send_get_request("user-info?output=json");
 		var parser = new Json.Parser();
 		try{
@@ -65,14 +65,15 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			return false;
 		}
 		var root = parser.get_root().get_object();
+
 		if(root.has_member("userId"))
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
-			logger.print(LogMessage.INFO, "Oldreader: userID = " + m_userID);
+			logger.print(LogMessage.INFO, "FeedHQ: userID = " + m_userID);
+
 			if(root.has_member("userName"))
 				m_utils.setUser(root.get_string_member("userName"));
-
 			return true;
 		}
 
@@ -85,6 +86,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		string response = m_connection.send_get_request("subscription/list?output=json");
 		if(response == "" || response == null)
 			return false;
+		
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -92,7 +94,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		catch (Error e) {
 			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
 			logger.print(LogMessage.ERROR, e.message);
-			return false;
+			return true;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("subscriptions");
@@ -105,6 +107,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
+
 			if(icon_url != "" && !m_utils.downloadIcon(feedID, "https:"+icon_url))
 			{
 				icon_url = "";
@@ -222,7 +225,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	public string? updateArticles(Gee.LinkedList<string> ids, int count, string? continuation = null)
 	{
 		var message_string = "n=" + count.to_string();
-		message_string += "&xt=user/-/state/com.google/read";
+		message_string += "&s=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
 		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
@@ -262,9 +265,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			message_string += "&s=user/-/state/com.google/read";
 		else if(whatToGet == ArticleStatus.MARKED)
 			message_string += "&s=user/-/state/com.google/starred";
-
+		if(continuation != null)
 			message_string += "&c=" + continuation;
-
 
 		string api_endpoint = "stream/contents";
 		if(feed_id != null)
@@ -272,6 +274,9 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
 		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
+
+		// logger.print(LogMessage.DEBUG, message_string);
+		// logger.print(LogMessage.DEBUG, response);
 
 		var parser = new Json.Parser();
 		try{
@@ -288,9 +293,9 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 		for (uint i = 0; i < length; i++)
 		{
+
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
-			id = id.substring(id.last_index_of_char('/')+1);
 			string tagString = "";
 			bool marked = false;
 			bool read = false;
@@ -304,10 +309,9 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dataBase.getTagName(cat) != null)
+				else if(cat.contains("/label/"))
 					tagString += cat;
 			}
-
 			string mediaString = "";
 			if(object.has_member("enclosure"))
 			{
@@ -335,9 +339,9 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 									object.get_object_member("origin").get_string_member("streamId"),
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-									object.get_object_member("summary").get_string_member("content"),
 									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+									"",
+									"",
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									tagString,
@@ -363,14 +367,15 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 		message_string += tagID;
 		message_string += "&i=" + articleID;
-		m_connection.send_post_request("edit-tag?output=json", message_string);
+		string response = m_connection.send_post_request("edit-tag?output=json", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
-		m_connection.send_post_request("mark-all-as-read?output=json", message_string);
+		logger.print(LogMessage.DEBUG, message_string);
+		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -381,29 +386,29 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		m_connection.send_post_request("disable-tag?output=json", message_string);
+		string response = m_connection.send_post_request("disable-tag?output=json", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		m_connection.send_post_request("rename-tag?output=json", message_string);
+		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
-	public void editSubscription(OldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	public void editSubscription(FeedHQSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
 
 		switch(action)
 		{
-			case OldreaderSubscriptionAction.EDIT:
+			case FeedHQSubscriptionAction.EDIT:
 				message_string += "edit";
 				break;
-			case OldreaderSubscriptionAction.SUBSCRIBE:
+			case FeedHQSubscriptionAction.SUBSCRIBE:
 				message_string += "subscribe";
 				break;
-			case OldreaderSubscriptionAction.UNSUBSCRIBE:
+			case FeedHQSubscriptionAction.UNSUBSCRIBE:
 				message_string += "unsubscribe";
 				break;
 		}
@@ -413,12 +418,13 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		if(title != null)
 			message_string += "&t=" + title;
 
-		if(add != null)
+		string id = add;
+		id = id.substring(id.last_index_of_char('/')+1);
+		if(id != null && id != "")
 			message_string += "&a=" + add;
 
-		if(remove != null)
+		if(remove != null && remove != "")
 			message_string += "&r=" + remove;
-
 
 		m_connection.send_post_request("subscription/edit?output=json", message_string);
 	}

@@ -109,9 +109,9 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 
 		var eventbox = new Gtk.EventBox();
 		eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+
 		eventbox.button_press_event.connect(websiteClicked);
 		eventbox.add(getIcon("feed-website-symbolic", m_ext.getWebsite()));
-
 		var nameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, space);
 		nameBox.pack_start(nameLabel, true, false, 0);
 		nameBox.pack_end(eventbox, false, false, 0);
@@ -130,6 +130,9 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
 		this.show_all();
+
+		var cursor = new Gdk.Cursor.for_display(Gdk.Display.get_default(), Gdk.CursorType.HAND1);
+		eventbox.get_window().set_cursor(cursor);
 	}
 
 	private bool websiteClicked(Gdk.EventButton event)

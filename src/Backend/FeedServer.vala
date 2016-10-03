@@ -89,6 +89,9 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			logger.print(LogMessage.ERROR, "feedserver: couldn't load plugin %s".printf(m_plugName));
 
+		// load gresource-icons from the plugin
+		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
+
 		return m_pluginLoaded;
 	}
 

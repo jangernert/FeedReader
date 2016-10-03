@@ -132,6 +132,7 @@ set(UI_PACKAGES
 
 vala_precompile(UI ${UI_NAME}
     src/DBusConnection.vala
+    src/FavIconCache.vala
     src/FeedReader.vala
     src/LoginInterface.vala
     src/dbUI.vala

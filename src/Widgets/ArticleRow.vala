@@ -265,14 +265,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	private Gtk.Image getFeedIcon()
 	{
-		try{
-			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
-			{
-				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, true);
-				return new Gtk.Image.from_pixbuf(tmp_icon);
-			}
-		}
-		catch(GLib.Error e){}
+		var icon = FavIconCache.get_default().getIcon(m_article.getFeedID());
+		if(icon != null)
+			return new Gtk.Image.from_pixbuf(icon);
 
 		return new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 	}
@@ -287,13 +282,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		window.add(getFeedIcon());
 		window.show_all();
 		return window;
-	}
-
-
-	private string getIconPath()
-	{
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		return icon_path + m_article.getFeedID().replace("/", "_").replace(".", "_") + ".ico";
 	}
 
 

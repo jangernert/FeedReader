@@ -90,7 +90,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		int scaleFactor = this.get_scale_factor();
 		int size = 16 * scaleFactor;
 		var color = Gdk.RGBA();
-		color.parse(COLORS[m_color]);
+		color.parse(Constants.COLORS[m_color]);
 		double lighten = 1.0;
 		if(light)
 			lighten = 0.7;

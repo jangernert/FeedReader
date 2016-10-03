@@ -379,7 +379,7 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			try
 			{
-				var origin = File.new_for_path(InstallPrefix + "/share/FeedReader/feedreader-autostart.desktop");
+				var origin = File.new_for_path(Constants.InstallPrefix + "/share/FeedReader/feedreader-autostart.desktop");
 				var destination = File.new_for_path(filename);
 	        	origin.copy(destination, FileCopyFlags.NONE);
 			}

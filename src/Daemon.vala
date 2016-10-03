@@ -73,7 +73,7 @@ namespace FeedReader {
 
 		public int getVersion()
 		{
-			return DBusAPIVersion;
+			return Constants.DBusAPIVersion;
 		}
 
 
@@ -844,18 +844,21 @@ namespace FeedReader {
 	private static string? articleUrl = null;
 
 
-	int main (string[] args)
+	int main(string[] args)
 	{
 		settings_general = new GLib.Settings("org.gnome.feedreader");
 		settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 		settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 
-		try {
+		try
+		{
 			var opt_context = new GLib.OptionContext();
 			opt_context.set_help_enabled(true);
 			opt_context.add_main_entries(options, null);
 			opt_context.parse(ref args);
-		} catch (OptionError e) {
+		}
+		catch(OptionError e)
+		{
 			print(e.message + "\n");
 			return 0;
 		}

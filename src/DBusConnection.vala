@@ -217,7 +217,7 @@ namespace FeedReader {
 		{
 			try
 			{
-				if(m_connection.getVersion() < DBusAPIVersion)
+				if(m_connection.getVersion() < Constants.DBusAPIVersion)
 				{
 					m_connection.quit();
 					startDaemon();

@@ -58,7 +58,7 @@ namespace FeedReader {
 		{
 			base.activate();
 
-			WebKit.WebContext.get_default().set_web_extensions_directory(InstallPrefix + "/share/FeedReader/");
+			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.InstallPrefix + "/share/FeedReader/");
 
 			if(m_window == null)
 			{
@@ -165,7 +165,7 @@ namespace FeedReader {
 		if(version)
 		{
 			stdout.printf("Version: %s\n", AboutInfo.version);
-			stdout.printf("Git Commit: %s\n", g_GIT_SHA1);
+			stdout.printf("Git Commit: %s\n", Constants.g_GIT_SHA1);
 			return 0;
 		}
 
@@ -228,10 +228,10 @@ namespace FeedReader {
 		dialog.artists = AboutInfo.artists;
 		dialog.authors = AboutInfo.authors;
 		dialog.documenters = null;
-		dialog.translator_credits = AboutInfo.translators;
+		//dialog.translator_credits = AboutInfo.translators;
 
 		dialog.program_name = AboutInfo.programmName;
-		dialog.comments = AboutInfo.comments;
+		//dialog.comments = AboutInfo.comments;
 		dialog.copyright = AboutInfo.copyright;
 		dialog.version = AboutInfo.version;
 		dialog.logo_icon_name = AboutInfo.iconName;
@@ -239,8 +239,7 @@ namespace FeedReader {
 		dialog.wrap_license = true;
 
 		dialog.website = AboutInfo.website;
-		dialog.website_label = AboutInfo.websiteLabel;
-		dialog.present ();
+		dialog.present();
 
 		Gtk.main();
 	}

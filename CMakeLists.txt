@@ -131,7 +131,6 @@ set(UI_PACKAGES
     libpeas-1.0)
 
 vala_precompile(UI ${UI_NAME}
-    Constants.vala
     src/DBusConnection.vala
     src/FeedReader.vala
     src/LoginInterface.vala
@@ -239,7 +238,6 @@ vala_precompile(daemon ${DAEMON_NAME}
     src/ContentGrabber/grabberConfig.vala
     src/ContentGrabber/grabber.vala
     src/ContentGrabber/grabberUtils.vala
-    Constants.vala
 
 
 PACKAGES

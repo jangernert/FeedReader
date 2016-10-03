@@ -105,9 +105,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			dialog.logo_icon_name = AboutInfo.iconName;
 			dialog.license_type = Gtk.License.GPL_3_0;
 			dialog.wrap_license = true;
-
 			dialog.website = AboutInfo.website;
-			dialog.website_label = AboutInfo.websiteLabel;
 
 			dialog.response.connect((response_id) => {
 				if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)

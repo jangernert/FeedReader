@@ -234,7 +234,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		try
 		{
     		Gtk.CssProvider provider = new Gtk.CssProvider();
-			provider.load_from_path(InstallPrefix + "/share/FeedReader/gtk-css/basics.css");
+			provider.load_from_path(Constants.InstallPrefix + "/share/FeedReader/gtk-css/basics.css");
 			weak Gdk.Display display = Gdk.Display.get_default();
             weak Gdk.Screen screen = display.get_default_screen();
 			Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);

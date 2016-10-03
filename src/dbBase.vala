@@ -276,7 +276,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 		stmt.reset ();
 
-		return (tagCount % COLORS.length);
+		return (tagCount % Constants.COLORS.length);
 	}
 
 	public string read_preview(string articleID)

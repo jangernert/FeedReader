@@ -248,9 +248,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		app.add_action(rename_action);
 		app.add_action(remove_action);
 
-		var feed = dataBase.read_feed(m_feedID);
+		var feed = dbUI.get_default().read_feed(m_feedID);
 		var catCount = feed.getCatIDs().length;
-		var cat = dataBase.read_category(m_catID);
+		var cat = dbUI.get_default().read_category(m_catID);
 
 		var menu = new GLib.Menu();
 		menu.append(_("Mark as read"), "markFeedAsRead");

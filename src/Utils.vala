@@ -20,13 +20,13 @@ public class FeedReader.Utils : GLib.Object {
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
 		{
-			if(!dataBase.article_exists(Article.getArticleID()))
+			if(!dbBase.get_default().article_exists(Article.getArticleID()))
 			{
 				if(Article.getPreview() != null && Article.getPreview() != "")
 				{
 					continue;
 				}
-				if(!dataBase.preview_empty(Article.getArticleID()))
+				if(!dbBase.get_default().preview_empty(Article.getArticleID()))
 				{
 					continue;
 				}
@@ -93,7 +93,7 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		foreach(var Article in articles)
 		{
-			if(!dataBase.article_exists(Article.getArticleID()))
+			if(!dbBase.get_default().article_exists(Article.getArticleID()))
 			{
 				string modified_html = _("No Text available for this article :(");
 				if(Article.getHTML() != "")
@@ -188,7 +188,7 @@ public class FeedReader.Utils : GLib.Object {
 				break;
 		}
 
-		var articles = dataBase.read_articles(
+		var articles = dbBase.get_default().read_articles(
 			selectedRow[1],
 			IDtype,
 			only_unread,
@@ -261,7 +261,7 @@ public class FeedReader.Utils : GLib.Object {
 		string feed_id = "$FEED";
 		int feed_pos = article.str.index_of(feed_id);
 		article.erase(feed_pos, feed_id.length);
-		article.insert(feed_pos, dataBase.getFeedName(feedID));
+		article.insert(feed_pos, dbBase.get_default().getFeedName(feedID));
 
 
 		string theme = "theme ";
@@ -445,6 +445,13 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		Logger.debug("Ping: " + link);
 		var uri = new Soup.URI(link);
+
+		if(uri == null)
+		{
+			Logger.error("Ping failed: can't parse url! Seems to be not valid.");
+			return false;
+		}
+
 		string host = uri.get_host();
 
 		Logger.debug("Ping: modified URL " + host);

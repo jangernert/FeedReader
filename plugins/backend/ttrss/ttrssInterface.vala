@@ -18,13 +18,10 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 	private ttrssAPI m_api;
 	private ttrssUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-
 	public void init()
 	{
 		m_api = new ttrssAPI();
 		m_utils = new ttrssUtils();
-		dataBase = m_dataBase;
 	}
 
 	public bool supportTags()
@@ -134,7 +131,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void markAllItemsRead()
 	{
-		var categories = dataBase.read_categories();
+		var categories = dbDaemon.get_default().read_categories();
 		foreach(category cat in categories)
 		{
 			m_api.catchupFeed(cat.getCatID(), true);
@@ -178,7 +175,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			m_api.subscribeToFeed(feedURL, catID);
 		}
 
-		return (int.parse(dataBase.getHighestFeedID()) + 1).to_string();
+		return (int.parse(dbDaemon.get_default().getHighestFeedID()) + 1).to_string();
 	}
 
 	public void removeFeed(string feedID)
@@ -256,8 +253,8 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			Logger.debug("getArticles: newsplus plugin active");
 			var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
-			dataBase.updateArticlesByID(unreadIDs, "unread");
-			dataBase.updateArticlesByID(markedIDs, "marked");
+			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
+			dbDaemon.get_default().updateArticlesByID(markedIDs, "marked");
 			updateArticleList();
 		}
 
@@ -283,13 +280,13 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			// only update article states if they haven't been updated by the newsPlus-plugin
 			if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
 			{
-				dataBase.update_articles(articles);
+				dbDaemon.get_default().update_articles(articles);
 				updateArticleList();
 			}
 
 			foreach(article Article in articles)
 			{
-				if(!dataBase.article_exists(Article.getArticleID()))
+				if(!dbDaemon.get_default().article_exists(Article.getArticleID()))
 				{
 					articleIDs += Article.getArticleID() + ",";
 				}
@@ -316,7 +313,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 			foreach(article Article in articles)
 			{
-				int before = dataBase.getHighestRowID();
+				int before = dbDaemon.get_default().getHighestRowID();
 				FeedServer.grabContent(Article);
 				new_articles.add(Article);
 
@@ -324,7 +321,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 				{
 					writeInterfaceState();
 					Logger.debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
-					dataBase.write_articles(new_articles);
+					dbDaemon.get_default().write_articles(new_articles);
 					updateFeedList();
 					updateArticleList();
 					new_articles = new Gee.LinkedList<article>();

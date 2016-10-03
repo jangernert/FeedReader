@@ -13,9 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-
-FeedReader.dbDaemon dataBase;
-
 public class FeedReader.ttrssAPI : GLib.Object {
 
 	public string m_ttrss_url { get; private set; }
@@ -284,7 +281,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					new tag(
 						tag_node.get_int_member("id").to_string(),
 						tag_node.get_string_member("caption"),
-						dataBase.getTagColor()
+						dbDaemon.get_default().getTagColor()
 					)
 				);
 			}

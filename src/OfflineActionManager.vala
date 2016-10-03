@@ -64,19 +64,19 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	private void addAction(OfflineAction action)
 	{
-		if(dataBase.offlineActionNecessary(action))
+		if(dbDaemon.get_default().offlineActionNecessary(action))
 		{
-			dataBase.addOfflineAction(action.getType(), action.getID());
+			dbDaemon.get_default().addOfflineAction(action.getType(), action.getID());
 		}
 		else
 		{
-			dataBase.deleteOppositeOfflineAction(action);
+			dbDaemon.get_default().deleteOppositeOfflineAction(action);
 		}
 	}
 
 	public void goOnline()
 	{
-		if(dataBase.isTableEmpty("OfflineActions"))
+		if(dbDaemon.get_default().isTableEmpty("OfflineActions"))
 		{
 			Logger.debug("OfflineManager - goOnline: no actions to perform");
 			return;
@@ -85,7 +85,7 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 		Logger.debug("OfflineActionManager: goOnline");
 
-		var actions = dataBase.readOfflineActions();
+		var actions = dbDaemon.get_default().readOfflineActions();
 
 		foreach(OfflineAction action in actions)
 		{

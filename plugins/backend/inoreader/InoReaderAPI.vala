@@ -13,8 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-
 public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public enum InoSubscriptionAction {
@@ -200,7 +198,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 						new tag(
 							id,
 							title,
-							dataBase.getTagColor()
+							dbDaemon.get_default().getTagColor()
 						)
 					);
 				}
@@ -331,7 +329,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dataBase.getTagName(cat) != null)
+				else if(cat.contains("/label/") && dbDaemon.get_default().getTagName(cat) != null)
 					tagString += cat;
 			}
 

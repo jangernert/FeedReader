@@ -13,8 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-
 public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public enum OwnCloudType {
@@ -350,7 +348,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
 		var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        message.add_int("newestItemId", int.parse(dataBase.getNewestArticle()));
+        message.add_int("newestItemId", int.parse(dbDaemon.get_default().getNewestArticle()));
 		int error = message.send();
 
         if(error == ConnectionError.SUCCESS)
@@ -364,7 +362,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
         string url = "items/read";
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
-        message.add_int("newestItemId", int.parse(dataBase.getNewestArticle()));
+        message.add_int("newestItemId", int.parse(dbDaemon.get_default().getNewestArticle()));
         int error = message.send();
 
         if(error == ConnectionError.SUCCESS)
@@ -398,7 +396,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool updateArticleMarked(string articleID, ArticleStatus marked)
 	{
-        var article = dataBase.read_article(articleID);
+        var article = dbDaemon.get_default().read_article(articleID);
         string url = "/items/%s/%s/".printf(article.getFeedID(), article.getHash());
 
         if(marked == ArticleStatus.MARKED)

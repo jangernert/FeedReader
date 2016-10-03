@@ -1,3 +1,0 @@
-namespace FeedReader {
-	dbBase dataBase;
-}

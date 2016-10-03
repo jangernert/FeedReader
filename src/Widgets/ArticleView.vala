@@ -378,7 +378,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		SourceFunc callback = fillContent.callback;
 
 		ThreadFunc<void*> run = () => {
-			Article = dataBase.read_article(articleID);
+			Article = dbUI.get_default().read_article(articleID);
 			Idle.add((owned) callback);
 			return null;
 		};

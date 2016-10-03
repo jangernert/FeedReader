@@ -18,13 +18,10 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 	private freshAPI m_api;
 	private freshUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-
 	public void init()
 	{
 		m_api = new freshAPI();
 		m_utils = new freshUtils();
-		dataBase = m_dataBase;
 	}
 
 	public bool supportTags()

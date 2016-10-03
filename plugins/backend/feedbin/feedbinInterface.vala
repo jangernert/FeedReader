@@ -15,9 +15,6 @@
 
 public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterface {
 
-
-	public dbDaemon m_dataBase { get; construct set; }
-
 	private feedbinAPI m_api;
 	private feedbinUtils m_utils;
 
@@ -135,7 +132,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			uint count = (i+1)*1000;
 			uint offset = i*1000;
-			var articles = m_dataBase.read_articles(feedID, FeedListType.FEED, false, false, "", count, offset);
+			var articles = dbDaemon.get_default().read_articles(feedID, FeedListType.FEED, false, false, "", count, offset);
 
 			string articleIDs = "";
 
@@ -155,7 +152,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			uint count = (i+1)*1000;
 			uint offset = i*1000;
-			var articles = m_dataBase.read_articles(catID, FeedListType.CATEGORY, false, false, "", count, offset);
+			var articles = dbDaemon.get_default().read_articles(catID, FeedListType.CATEGORY, false, false, "", count, offset);
 
 			string articleIDs = "";
 
@@ -175,7 +172,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			uint count = (i+1)*1000;
 			uint offset = i*1000;
-			var articles = m_dataBase.read_articles(FeedID.ALL.to_string(), FeedListType.FEED, false, false, "", count, offset);
+			var articles = dbDaemon.get_default().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, false, false, "", count, offset);
 
 			string articleIDs = "";
 
@@ -288,7 +285,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		var articles = new Gee.LinkedList<article>();
 		var settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 		DateTime? time = null;
-		if(!m_dataBase.isTableEmpty("articles"))
+		if(!dbDaemon.get_default().isTableEmpty("articles"))
 			time = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
 
 		bool starred = false;
@@ -316,8 +313,8 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 		writeArticlesInChunks(articles, 10);
 
-		m_dataBase.updateArticlesByID(m_api.unreadEntries(), "unread");
-		m_dataBase.updateArticlesByID(m_api.starredEntries(), "marked");
+		dbDaemon.get_default().updateArticlesByID(m_api.unreadEntries(), "unread");
+		dbDaemon.get_default().updateArticlesByID(m_api.starredEntries(), "marked");
 		updateArticleList();
 		updateFeedList();
 	}

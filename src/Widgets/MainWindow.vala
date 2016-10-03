@@ -191,7 +191,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 				{
 					showSpringClean();
 				}
-				else if(!dataBase.isEmpty())
+				else if(!dbUI.get_default().isEmpty())
 				{
 					showOfflineContent();
 				}
@@ -465,7 +465,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		Settings.state().set_string("feedlist-selected-row", "feed -4");
 		try
 		{
-			if(dataBase.isEmpty())
+			if(dbUI.get_default().isEmpty())
 				DBusConnection.get_default().startInitSync();
 			else
 				DBusConnection.get_default().startSync();
@@ -565,7 +565,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void loadContent()
 	{
 		Logger.debug("MainWindow: load content");
-		dataBase.updateBadge.connect(() => {
+		dbUI.get_default().updateBadge.connect(() => {
 			try
 			{
 				DBusConnection.get_default().updateBadge();
@@ -591,14 +591,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			{
 				if(selectedRow[1] == FeedID.ALL.to_string())
 				{
-					var categories = dataBase.read_categories();
+					var categories = dbUI.get_default().read_categories();
 					foreach(category cat in categories)
 					{
 						DBusConnection.get_default().markFeedAsRead(cat.getCatID(), true);
 						Logger.debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
 					}
 
-					var feeds = dataBase.read_feeds_without_cat();
+					var feeds = dbUI.get_default().read_feeds_without_cat();
 					foreach(feed Feed in feeds)
 					{
 						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);

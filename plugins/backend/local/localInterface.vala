@@ -15,9 +15,7 @@
 
 public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface {
 
-	public dbDaemon m_dataBase { get; construct set; }
 	private localUtils m_utils;
-
 
 	public void init()
 	{
@@ -149,8 +147,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string tagID = "1";
 
-		if(!m_dataBase.isTableEmpty("tags"))
-			tagID = (int.parse(m_dataBase.getMaxID("tags", "tagID")) + 1).to_string();
+		if(!dbDaemon.get_default().isTableEmpty("tags"))
+			tagID = (int.parse(dbDaemon.get_default().getMaxID("tags", "tagID")) + 1).to_string();
 
 		Logger.info("createTag: ID = " + tagID);
 		return tagID;
@@ -176,7 +174,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var cat = new category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
 			var list = new Gee.LinkedList<category>();
 			list.add(cat);
-			m_dataBase.write_categories(list);
+			dbDaemon.get_default().write_categories(list);
 			catIDs += cID;
 		}
 		else if(catID != null && newCatName == null)
@@ -190,9 +188,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		string feedID = "feedID1";
 
-		if(!m_dataBase.isTableEmpty("feeds"))
+		if(!dbDaemon.get_default().isTableEmpty("feeds"))
 		{
-			feedID = "feedID%i".printf(int.parse(m_dataBase.getHighestFeedID().substring(6)) + 1);
+			feedID = "feedID%i".printf(int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1);
 		}
 
 		Logger.info("addFeed: ID = " + feedID);
@@ -200,7 +198,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		var list = new Gee.LinkedList<feed>();
 		list.add(Feed);
-		m_dataBase.write_feeds(list);
+		dbDaemon.get_default().write_feeds(list);
 
 		return feedID;
 	}
@@ -225,12 +223,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string catID = "catID1";
 
-		if(!m_dataBase.isTableEmpty("categories"))
+		if(!dbDaemon.get_default().isTableEmpty("categories"))
 		{
-			string? id = m_dataBase.getCategoryID(title);
+			string? id = dbDaemon.get_default().getCategoryID(title);
 			if(id == null)
 			{
-				catID = "catID%i".printf(int.parse(m_dataBase.getMaxID("categories", "categorieID").substring(5)) + 1);
+				catID = "catID%i".printf(int.parse(dbDaemon.get_default().getMaxID("categories", "categorieID").substring(5)) + 1);
 			}
 			else
 			{
@@ -270,19 +268,19 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		var cats = m_dataBase.read_categories();
+		var cats = dbDaemon.get_default().read_categories();
 		foreach(category cat in cats)
 		{
 			categories.add(cat);
 		}
 
-		var t = m_dataBase.read_tags();
+		var t = dbDaemon.get_default().read_tags();
 		foreach(tag Tag in t)
 		{
 			tags.add(Tag);
 		}
 
-		var f = m_dataBase.read_feeds();
+		var f = dbDaemon.get_default().read_feeds();
 		foreach(feed Feed in f)
 		{
 			feeds.add(m_utils.downloadFeed(Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs()));
@@ -298,7 +296,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
 	{
-		var f = m_dataBase.read_feeds();
+		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
 
 		foreach(feed Feed in f)
@@ -380,7 +378,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 			foreach(article Article in articleArray)
 			{
-				int before = m_dataBase.getHighestRowID();
+				int before = dbDaemon.get_default().getHighestRowID();
 				FeedServer.grabContent(Article);
 				new_articles.add(Article);
 
@@ -388,7 +386,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				{
 					writeInterfaceState();
 					Logger.debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
-					m_dataBase.write_articles(new_articles);
+					dbDaemon.get_default().write_articles(new_articles);
 					updateFeedList();
 					updateArticleList();
 					new_articles = new Gee.LinkedList<article>();

@@ -32,8 +32,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_engine.add_search_path(Constants.InstallPrefix + "/share/FeedReader/plugins/", null);
 		m_engine.enable_loader("python3");
 
-		m_extensions = new Peas.ExtensionSet(m_engine, typeof(FeedServerInterface),
-			"m_dataBase", dataBase);
+		m_extensions = new Peas.ExtensionSet(m_engine, typeof(FeedServerInterface));
 
 		m_extensions.extension_added.connect((info, extension) => {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
@@ -104,7 +103,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 		}
 
-		int before = dataBase.getHighestRowID();
+		int before = dbDaemon.get_default().getHighestRowID();
 
 		var categories = new Gee.LinkedList<category>();
 		var feeds      = new Gee.LinkedList<feed>();
@@ -119,27 +118,27 @@ public class FeedReader.FeedServer : GLib.Object {
 		// write categories
 		if(categories.size != 0)
 		{
-			dataBase.reset_exists_flag();
-			dataBase.write_categories(categories);
-			dataBase.delete_nonexisting_categories();
+			dbDaemon.get_default().reset_exists_flag();
+			dbDaemon.get_default().write_categories(categories);
+			dbDaemon.get_default().delete_nonexisting_categories();
 		}
 
 		// write feeds
 		if(feeds.size != 0)
 		{
-			dataBase.reset_subscribed_flag();
-			dataBase.write_feeds(feeds);
-			dataBase.delete_articles_without_feed();
-			dataBase.delete_unsubscribed_feeds();
+			dbDaemon.get_default().reset_subscribed_flag();
+			dbDaemon.get_default().write_feeds(feeds);
+			dbDaemon.get_default().delete_articles_without_feed();
+			dbDaemon.get_default().delete_unsubscribed_feeds();
 		}
 
 		// write tags
 		if(tags.size != 0)
 		{
-			dataBase.reset_exists_tag();
-			dataBase.write_tags(tags);
-			dataBase.update_tags(tags);
-			dataBase.delete_nonexisting_tags();
+			dbDaemon.get_default().reset_exists_tag();
+			dbDaemon.get_default().write_tags(tags);
+			dbDaemon.get_default().update_tags(tags);
+			dbDaemon.get_default().delete_nonexisting_tags();
 		}
 
 		newFeedList();
@@ -159,9 +158,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 
 		//update fulltext table
-		dataBase.updateFTS();
+		dbDaemon.get_default().updateFTS();
 
-		int after = dataBase.getHighestRowID();
+		int after = dbDaemon.get_default().getHighestRowID();
 		int newArticles = after-before;
 		if(newArticles > 0)
 		{
@@ -175,22 +174,22 @@ public class FeedReader.FeedServer : GLib.Object {
 	            break;
 
 			case DropArticles.ONE_WEEK:
-				dataBase.dropOldArtilces(1);
+				dbDaemon.get_default().dropOldArtilces(1);
 				break;
 
 			case DropArticles.ONE_MONTH:
-				dataBase.dropOldArtilces(4);
+				dbDaemon.get_default().dropOldArtilces(4);
 				break;
 
 			case DropArticles.SIX_MONTHS:
-				dataBase.dropOldArtilces(24);
+				dbDaemon.get_default().dropOldArtilces(24);
 				break;
 		}
 
 		var now = new DateTime.now_local();
 		Settings.state().set_int("last-sync", (int)now.to_unix());
 
-		dataBase.checkpoint();
+		dbDaemon.get_default().checkpoint();
 
 		return;
 	}
@@ -206,13 +205,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		getFeedsAndCats(feeds, categories, tags);
 
 		// write categories
-		dataBase.write_categories(categories);
+		dbDaemon.get_default().write_categories(categories);
 
 		// write feeds
-		dataBase.write_feeds(feeds);
+		dbDaemon.get_default().write_feeds(feeds);
 
 		// write tags
-		dataBase.write_tags(tags);
+		dbDaemon.get_default().write_tags(tags);
 
 		newFeedList();
 
@@ -235,7 +234,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 		//update fulltext table
-		dataBase.updateFTS();
+		dbDaemon.get_default().updateFTS();
 
 		Settings.general().reset("content-grabber");
 
@@ -250,7 +249,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(articles.size > 0)
 		{
 			string last = articles.first().getArticleID();
-			dataBase.update_articles(articles);
+			dbDaemon.get_default().update_articles(articles);
 			updateFeedList();
 			updateArticleList();
 			var new_articles = new Gee.LinkedList<article>();
@@ -264,8 +263,8 @@ public class FeedReader.FeedServer : GLib.Object {
 
 				if(new_articles.size == chunksize || Article.getArticleID() == last)
 				{
-					int before = dataBase.getHighestRowID();
-					dataBase.write_articles(new_articles);
+					int before = dbDaemon.get_default().getHighestRowID();
+					dbDaemon.get_default().write_articles(new_articles);
 					new_articles = new Gee.LinkedList<article>();
 					setNewRows(before);
 				}
@@ -275,7 +274,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void setNewRows(int before)
 	{
-		int after = dataBase.getHighestRowID();
+		int after = dbDaemon.get_default().getHighestRowID();
 		int newArticles = after-before;
 
 		if(newArticles > 0)
@@ -300,7 +299,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		try{
 			string message = "";
 			string summary = _("New Articles");
-			uint unread = dataBase.get_unread_total();
+			uint unread = dbDaemon.get_default().get_unread_total();
 
 			if(!Notify.is_initted())
 			{
@@ -357,7 +356,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public static void grabContent(article Article)
 	{
-		if(!dataBase.article_exists(Article.getArticleID()))
+		if(!dbDaemon.get_default().article_exists(Article.getArticleID()))
 		{
 			if(Settings.general().get_boolean("content-grabber"))
 			{

@@ -15,7 +15,21 @@
 
 public class FeedReader.dbDaemon : dbBase {
 
-    public dbDaemon (string dbFile = "feedreader-04.db") {
+    private static dbDaemon? m_dataBase = null;
+
+    public static new dbDaemon get_default()
+    {
+        if(m_dataBase == null)
+        {
+            m_dataBase = new dbDaemon();
+            m_dataBase.init();
+        }
+
+		return m_dataBase;
+    }
+
+    private dbDaemon(string dbFile = "feedreader-04.db")
+    {
         base(dbFile);
     }
 
@@ -757,7 +771,7 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void move_feed(string feedID, string currentCatID, string? newCatID = null)
     {
-        var Feed = dataBase.read_feed(feedID);
+        var Feed = dbDaemon.get_default().read_feed(feedID);
         var catArray = Feed.getCatIDs();
 
         if(Feed.hasCat(currentCatID))

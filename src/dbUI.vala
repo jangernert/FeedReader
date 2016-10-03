@@ -15,7 +15,22 @@
 
 public class FeedReader.dbUI : dbBase {
 
-    public dbUI (string dbFile = "feedreader-04.db") {
+    private static dbUI? m_dataBase = null;
+
+    public static new dbUI get_default()
+    {
+        if(m_dataBase == null)
+        {
+            m_dataBase = new dbUI();
+            m_dataBase.init();
+        }
+
+
+		return m_dataBase;
+    }
+
+    public dbUI(string dbFile = "feedreader-04.db")
+    {
         base(dbFile);
     }
 

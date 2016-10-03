@@ -16,9 +16,18 @@
 public class FeedReader.dbBase : GLib.Object {
 
 	protected Sqlite.Database sqlite_db;
+	private static dbBase? m_dataBase = null;
 	public signal void updateBadge();
 
-	public dbBase(string dbFile = "feedreader-04.db")
+	public static dbBase get_default()
+	{
+		if(m_dataBase == null)
+			m_dataBase = new dbBase();
+
+		return m_dataBase;
+	}
+
+	protected dbBase(string dbFile = "feedreader-04.db")
 	{
 		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
 		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";

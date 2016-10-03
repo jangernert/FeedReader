@@ -238,7 +238,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		row_separator1.sensitive = false;
 		m_list.add(row_separator1);
 
-		var unread = dataBase.get_unread_total();
+		var unread = dbUI.get_default().get_unread_total();
 		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL.to_string(), "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
@@ -256,7 +256,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		//-------------------------------------------------------------------
 
-		var feeds = dataBase.read_feeds();
+		var feeds = dbUI.get_default().read_feeds();
 
 		if(!UtilsUI.onlyShowFeeds())
 		{
@@ -469,7 +469,7 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	private void createCategories(ref Gee.ArrayList<feed> feeds, bool masterCat)
 	{
-		int maxCatLevel = dataBase.getMaxCatLevel();
+		int maxCatLevel = dbUI.get_default().getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
 		bool supportTags = false;
 		bool supportCategories = true;
@@ -489,7 +489,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 
 		if((supportTags
-		&& !dataBase.isTableEmpty("tags"))
+		&& !dbUI.get_default().isTableEmpty("tags"))
 		|| masterCat)
 		{
 			addMasterCategory(length, _("Categories"));
@@ -508,16 +508,16 @@ public class FeedReader.feedList : Gtk.Stack {
 
 		for(int i = 1; i <= maxCatLevel; i++)
 		{
-			var categories = dataBase.read_categories_level(i, feeds);
+			var categories = dbUI.get_default().read_categories_level(i, feeds);
 
-			if(dataBase.haveFeedsWithoutCat())
+			if(dbUI.get_default().haveFeedsWithoutCat())
 			{
 				categories.insert(
 					0,
 					new category(
 						uncategorizedID,
 						_("Uncategorized"),
-						(int)dataBase.get_unread_uncategorized(),
+						(int)dbUI.get_default().get_unread_uncategorized(),
 						(int)(categories.size + 10),
 						CategoryID.MASTER.to_string(),
 						1
@@ -586,7 +586,7 @@ public class FeedReader.feedList : Gtk.Stack {
 	{
 		if(!Settings.general().get_boolean("only-feeds"))
 		{
-			var tags = dataBase.read_tags();
+			var tags = dbUI.get_default().read_tags();
 			foreach(var Tag in tags)
 			{
 				var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
@@ -602,8 +602,8 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	public void refreshCounters()
 	{
-		var feeds = dataBase.read_feeds();
-		var categories = dataBase.read_categories(feeds);
+		var feeds = dbUI.get_default().read_feeds();
+		var categories = dbUI.get_default().read_categories(feeds);
 
 		var FeedChildList = m_list.get_children();
 
@@ -613,7 +613,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			var tmpFeedRow = row as FeedRow;
 			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL.to_string())
 			{
-				tmpFeedRow.set_unread_count(dataBase.get_unread_total());
+				tmpFeedRow.set_unread_count(dbUI.get_default().get_unread_total());
 				break;
 			}
 		}
@@ -669,14 +669,14 @@ public class FeedReader.feedList : Gtk.Stack {
 			}
 		}
 
-		if(dataBase.haveFeedsWithoutCat())
+		if(dbUI.get_default().haveFeedsWithoutCat())
 		{
 			foreach(Gtk.Widget row in FeedChildList)
 			{
 				var tmpCatRow = row as categorieRow;
 				if(tmpCatRow != null && (tmpCatRow.getID() == "" || tmpCatRow.getID() == "0"))
 				{
-					tmpCatRow.set_unread_count(dataBase.get_unread_uncategorized());
+					tmpCatRow.set_unread_count(dbUI.get_default().get_unread_uncategorized());
 					if(Settings.general().get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
 						tmpCatRow.reveal(true);
 
@@ -894,7 +894,7 @@ public class FeedReader.feedList : Gtk.Stack {
 			{
 				if(id == "")
 				{
-					var feeds = dataBase.read_feeds_without_cat();
+					var feeds = dbUI.get_default().read_feeds_without_cat();
 					foreach(feed Feed in feeds)
 					{
 						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);

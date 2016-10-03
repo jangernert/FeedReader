@@ -66,7 +66,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 				break;
 		}
 
-		var articles = dataBase.read_articles(
+		var articles = dbUI.get_default().read_articles(
 			selectedRow[1],
 			IDtype,
 			only_unread,
@@ -144,9 +144,9 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		try
 		{
-			if(!dataBase.haveCategories()
+			if(!dbUI.get_default().haveCategories()
 			&& !DBusConnection.get_default().supportTags()
-			&& !dataBase.haveFeedsWithoutCat())
+			&& !dbUI.get_default().haveFeedsWithoutCat())
 				return true;
 		}
 		catch(GLib.Error e)

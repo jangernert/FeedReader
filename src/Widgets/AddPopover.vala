@@ -32,7 +32,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 		Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
 		Gtk.TreeIter iter;
-		m_cats = dataBase.read_categories();
+		m_cats = dbUI.get_default().read_categories();
 
 		foreach(var cat in m_cats)
 		{
@@ -126,7 +126,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		string catID = "";
 		bool isID = true;
 
-		catID = dataBase.getCategoryID(m_catEntry.text);
+		catID = dbUI.get_default().getCategoryID(m_catEntry.text);
 
 		if(catID == null)
 		{

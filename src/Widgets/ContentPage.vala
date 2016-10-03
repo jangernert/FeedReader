@@ -354,12 +354,12 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 		if(id != "" && id != "empty")
 		{
-			var article = dataBase.read_article(id);
+			var article = dbUI.get_default().read_article(id);
 			unowned Gee.ArrayList<string> tagIDs = article.getTags();
 
 			foreach(string tagID in tagIDs)
 			{
-				tags.add(dataBase.read_tag(tagID));
+				tags.add(dbUI.get_default().read_tag(tagID));
 			}
 		}
 
@@ -369,7 +369,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	public Gee.ArrayList<string> getSelectedArticleMedia()
 	{
 		string id = m_articleList.getSelectedArticle();
-		var article = dataBase.read_article(id);
+		var article = dbUI.get_default().read_article(id);
 		return article.getMedia();
 	}
 

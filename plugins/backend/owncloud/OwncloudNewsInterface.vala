@@ -18,13 +18,10 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 	private OwncloudNewsAPI m_api;
 	private OwncloudNewsUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-
 	public void init()
 	{
 		m_api = new OwncloudNewsAPI();
 		m_utils = new OwncloudNewsUtils();
-		dataBase = m_dataBase;
 	}
 
 	public bool supportTags()
@@ -230,7 +227,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public int getUnreadCount()
 	{
-		return (int)dataBase.get_unread_total();
+		return (int)dbDaemon.get_default().get_unread_total();
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
@@ -263,7 +260,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		var articles = new Gee.LinkedList<article>();
 
 		if(count == -1)
-			m_api.getNewArticles(articles, dataBase.getLastModified(), type, id);
+			m_api.getNewArticles(articles, dbDaemon.get_default().getLastModified(), type, id);
 		else
 			m_api.getArticles(articles, 0, -1, read, type, id);
 

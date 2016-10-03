@@ -18,13 +18,10 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 	private FeedlyAPI m_api;
 	private FeedlyUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-
 	public void init()
 	{
 		m_api = new FeedlyAPI();
 		m_utils = new FeedlyUtils();
-		dataBase = m_dataBase;
 	}
 
 	public bool supportTags()
@@ -139,8 +136,8 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		string catArray = "";
 		string feedArray = "";
 
-		var categories = dataBase.read_categories();
-		var feeds = dataBase.read_feeds_without_cat();
+		var categories = dbDaemon.get_default().read_categories();
+		var feeds = dbDaemon.get_default().read_feeds_without_cat();
 
 		foreach(category cat in categories)
 		{
@@ -208,7 +205,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void renameFeed(string feedID, string title)
 	{
-		var feed = dataBase.read_feed(feedID);
+		var feed = dbDaemon.get_default().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 	}
 
@@ -239,7 +236,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-		var feed = dataBase.read_feed(feedID);
+		var feed = dbDaemon.get_default().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
 	}
 

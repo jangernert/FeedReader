@@ -20,9 +20,6 @@ namespace FeedReader {
 
 	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
 
-	dbUI dataBase;
-
-
 	public class FeedApp : Gtk.Application {
 
 		private readerUI m_window;
@@ -31,12 +28,8 @@ namespace FeedReader {
 		protected override void startup()
 		{
 			Logger.init("ui");
-
 			Logger.info("FeedReader " + AboutInfo.version);
-			dataBase = new dbUI();
 
-
-			dataBase.init();
 			base.startup();
 
 			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")

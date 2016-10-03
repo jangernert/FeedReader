@@ -13,8 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-
 public class FeedReader.freshAPI : Object {
 
 	private freshConnection m_connection;

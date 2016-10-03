@@ -77,7 +77,6 @@ add_subdirectory(libgd)
 
 
 vala_precompile(LIBFR libFeedReader
-    src/Common.vala
     src/Logger.vala
     src/Enums.vala
     src/dbBase.vala

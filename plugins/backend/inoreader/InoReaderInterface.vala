@@ -18,13 +18,10 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 	private InoReaderAPI m_api;
 	private InoReaderUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-
 	public void init()
 	{
 		m_api = new InoReaderAPI();
 		m_utils = new InoReaderUtils();
-		dataBase = m_dataBase;
 	}
 
 	public bool supportTags()
@@ -135,13 +132,13 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void markAllItemsRead()
 	{
-		var categories = dataBase.read_categories();
+		var categories = dbDaemon.get_default().read_categories();
 		foreach(category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dataBase.read_feeds_without_cat();
+		var feeds = dbDaemon.get_default().read_feeds_without_cat();
 		foreach(feed Feed in feeds)
 		{
 			m_api.markAsRead(Feed.getFeedID());
@@ -278,7 +275,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 					left = 0;
 				}
 			}
-			dataBase.updateArticlesByID(unreadIDs, "unread");
+			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
 		}
 

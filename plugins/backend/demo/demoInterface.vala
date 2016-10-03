@@ -7,15 +7,6 @@
 public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface {
 
 	//--------------------------------------------------------------------------------------
-	// The dataBase object. Use it to gather information like current unread counts,
-	// specific tags or if an article already exists.
-	// It can also be used to write the content directly from the plugin.
-	// But this is not necessary or recommended most of the time.
-	//--------------------------------------------------------------------------------------
-	public dbDaemon m_dataBase { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
 	// This method gets executed right after the plugin is loaded. Do everything
 	// you need to set up the plugin here.
 	//--------------------------------------------------------------------------------------

@@ -54,7 +54,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public articleList () {
 		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
-		m_emptyList = new Gtk.Label(m_emptyListString.printf(dataBase.getArticelCount()));
+		m_emptyList = new Gtk.Label(m_emptyListString.printf(dbUI.get_default().getArticelCount()));
 		m_emptyList.get_style_context().add_class("h2");
 		m_emptyList.set_ellipsize (Pango.EllipsizeMode.END);
 		m_emptyList.set_line_wrap_mode(Pango.WrapMode.WORD);
@@ -590,7 +590,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			Logger.debug("limit: " + m_limit.to_string());
 
 			Logger.debug("load articles from db");
-			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces + offset);
+			articles = dbUI.get_default().read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces + offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 			if(articles.size == 0)
@@ -816,11 +816,11 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 			if(sortByDate)
 			{
-				new_articles = UtilsUI.getRelevantArticles(dataBase.getRowCountHeadlineByDate(first_row.getDateStr()));
+				new_articles = UtilsUI.getRelevantArticles(dbUI.get_default().getRowCountHeadlineByDate(first_row.getDateStr()));
 			}
 			else
 			{
-				new_articles = UtilsUI.getRelevantArticles(dataBase.getRowCountHeadlineByRowID(first_row.getID()));
+				new_articles = UtilsUI.getRelevantArticles(dbUI.get_default().getRowCountHeadlineByRowID(first_row.getID()));
 			}
 			Logger.debug("updateArticleList: new articles: %u".printf(new_articles));
 			m_limit = m_currentList.get_children().length() + new_articles;
@@ -836,7 +836,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
-			articles = dataBase.read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+			articles = dbUI.get_default().read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
 			actual_loaded =  articles.size;
 			Logger.debug("actual articles loaded: " + actual_loaded.to_string());
 			Idle.add((owned) callback);
@@ -1077,7 +1077,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			switch(m_IDtype)
 			{
 				case FeedListType.FEED:
-					name = dataBase.getFeedName(m_current_feed_selected);
+					name = dbUI.get_default().getFeedName(m_current_feed_selected);
 					if(m_only_unread && !m_only_marked)
 					{
 						if(m_searchTerm != "")
@@ -1108,7 +1108,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					}
 					break;
 				case FeedListType.TAG:
-					name = dataBase.getTagName(m_current_feed_selected);
+					name = dbUI.get_default().getTagName(m_current_feed_selected);
 					if(m_only_unread && !m_only_marked)
 					{
 						if(m_searchTerm != "")
@@ -1139,7 +1139,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 					}
 					break;
 				case FeedListType.CATEGORY:
-					name = dataBase.getCategoryName(m_current_feed_selected);
+					name = dbUI.get_default().getCategoryName(m_current_feed_selected);
 					if(m_only_unread && !m_only_marked)
 					{
 						if(m_searchTerm != "")

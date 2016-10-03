@@ -237,7 +237,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void setButtonsSensitive(bool sensitive)
 	{
-		logger.print(LogMessage.DEBUG, "HeaderBar: updatebutton status %s".printf(sensitive ? "true" : "false"));
+		logger.print(LogMessage.DEBUG, "HeaderBar: setButtonsSensitive %s".printf(sensitive ? "true" : "false"));
 		m_modeButton.sensitive = sensitive;
 		m_refresh_button.setSensitive(sensitive);
 		m_search.sensitive = sensitive;
@@ -245,23 +245,19 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void showArticleButtons(bool show)
 	{
+		logger.print(LogMessage.DEBUG, "HeaderBar: showArticleButtons %s".printf(sensitive ? "true" : "false"));
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
 		m_media_button.visible = show;
-
-		if(m_online)
-		{
-			m_share_button.sensitive = show;
-		}
+		m_share_button.sensitive = (show && m_online);
 
 		try
 		{
-			if(m_online
-			&& DBusConnection.get_default().supportTags()
+			if(DBusConnection.get_default().supportTags()
 			&& UtilsUI.canManipulateContent())
 			{
-				m_tag_button.sensitive = show;
+				m_tag_button.sensitive = (show && m_online);
 			}
 		}
 		catch(GLib.Error e)
@@ -323,7 +319,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "readerHeaderbar.setOffline: %s".printf(e.message));
+			logger.print(LogMessage.ERROR, "Headerbar.setOffline: %s".printf(e.message));
 		}
 	}
 
@@ -332,14 +328,17 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		try
 		{
 			m_online = true;
-			m_share_button.sensitive = true;
-			if(UtilsUI.canManipulateContent()
-			&& DBusConnection.get_default().supportTags())
-				m_tag_button.sensitive = true;
+			if(m_mark_button.sensitive)
+			{
+				m_share_button.sensitive = true;
+				if(UtilsUI.canManipulateContent()
+				&& DBusConnection.get_default().supportTags())
+					m_tag_button.sensitive = true;
+			}
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "readerHeaderbar.setOnline: %s".printf(e.message));
+			logger.print(LogMessage.ERROR, "Headerbar.setOnline: %s".printf(e.message));
 		}
 
 	}

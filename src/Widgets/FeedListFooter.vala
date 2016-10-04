@@ -20,7 +20,6 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	private Gtk.Spinner m_addSpinner;
 	private AddButton m_addButton;
 	private RemoveButton m_removeButton;
-	private bool m_online = true;
 
 	public FeedListFooter()
 	{
@@ -80,7 +79,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	{
 		try
 		{
-			if(m_online && DBusConnection.get_default().supportFeedManipulation())
+			if(FeedApp.isOnline() && DBusConnection.get_default().supportFeedManipulation())
 				m_removeButton.set_sensitive(sensitive);
 		}
 		catch(GLib.Error e)
@@ -100,7 +99,6 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		{
 			if(DBusConnection.get_default().supportFeedManipulation())
 			{
-				m_online = active;
 				m_addButton.set_sensitive(active);
 				m_removeButton.set_sensitive(active);
 			}

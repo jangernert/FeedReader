@@ -194,12 +194,20 @@ namespace FeedReader {
 
 			m_connection.setOffline.connect(() => {
 				Logger.debug("DBusConnection: setOffline");
-				window.setOffline();
+				if(FeedApp.isOnline())
+				{
+					FeedApp.setOnline(false);
+					window.setOffline();
+				}
 			});
 
 			m_connection.setOnline.connect(() => {
 				Logger.debug("DBusConnection: setOnline");
-				window.setOnline();
+				if(!FeedApp.isOnline())
+				{
+					FeedApp.setOnline(true);
+					window.setOnline();
+				}
 			});
 
 			m_connection.feedAdded.connect(() => {

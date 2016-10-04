@@ -27,7 +27,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
 	private Gtk.HeaderBar m_header_right;
-	private bool m_online = true;
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
@@ -250,14 +249,14 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
 		m_media_button.visible = show;
-		m_share_button.sensitive = (show && m_online);
+		m_share_button.sensitive = (show && FeedApp.isOnline());
 
 		try
 		{
 			if(DBusConnection.get_default().supportTags()
 			&& UtilsUI.canManipulateContent())
 			{
-				m_tag_button.sensitive = (show && m_online);
+				m_tag_button.sensitive = (show && FeedApp.isOnline());
 			}
 		}
 		catch(GLib.Error e)
@@ -311,7 +310,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	{
 		try
 		{
-			m_online = false;
 			m_share_button.sensitive = false;
 			if(UtilsUI.canManipulateContent()
 			&& DBusConnection.get_default().supportTags())
@@ -327,7 +325,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	{
 		try
 		{
-			m_online = true;
 			if(m_mark_button.sensitive)
 			{
 				m_share_button.sensitive = true;

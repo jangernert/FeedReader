@@ -24,6 +24,17 @@ namespace FeedReader {
 
 		private readerUI m_window;
 		public signal void callback(string content);
+		public static bool m_online = true;
+
+		public static bool isOnline()
+		{
+			return m_online;
+		}
+
+		public static void setOnline(bool online)
+		{
+			m_online = online;
+		}
 
 		protected override void startup()
 		{

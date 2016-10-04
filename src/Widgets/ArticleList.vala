@@ -558,6 +558,68 @@ public class FeedReader.articleList : Gtk.Overlay {
 	}
 
 
+	public void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
+	{
+		Logger.debug("ArticleList: newList");
+		if(m_busy)
+		{
+			Logger.warning("ArticleList: newList - already busy");
+
+			if (m_update_source_id > 0)
+			{
+				GLib.Source.remove(m_update_source_id);
+				m_update_source_id = 0;
+			}
+
+			Logger.warning("ArticleList: newList - queue up update");
+			m_update_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 1, () => {
+				Logger.warning("ArticleList: newList - check if ready");
+				if(!m_busy)
+				{
+					m_update_source_id = 0;
+					newList(transition);
+					return false;
+				}
+				return true;
+			});
+			return;
+		}
+
+		m_busy = true;
+		if(m_overlay != null)
+			m_overlay.dismiss();
+
+		string selectedArticle = getSelectedArticle();
+
+		if(selectedArticle != "empty")
+			Settings.state().set_string("articlelist-selected-row", selectedArticle);
+
+		if(m_currentList == m_List1)
+		{
+			m_currentList = m_List2;
+			m_currentScroll = m_scroll2;
+			m_current_adjustment = m_scroll2_adjustment;
+		}
+		else
+		{
+			m_currentList = m_List1;
+			m_currentScroll = m_scroll1;
+			m_current_adjustment = m_scroll1_adjustment;
+		}
+
+		var articleChildList = m_currentList.get_children();
+		foreach(Gtk.Widget row in articleChildList)
+		{
+			m_currentList.remove(row);
+			row.destroy();
+		}
+
+		create.begin(transition, false, (obj, res) => {
+			create.end(res);
+		});
+		m_busy = false;
+	}
+
 	private async void create(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool loadMore = false)
 	{
 		Logger.debug("ArticleList: create");
@@ -703,68 +765,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 			}
 		}
 		Logger.debug("ArticleList: create finished");
-	}
-
-	public void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
-	{
-		Logger.debug("ArticleList: newList");
-		if(m_busy)
-		{
-			Logger.warning("ArticleList: newList - already busy");
-
-			if (m_update_source_id > 0)
-			{
-				GLib.Source.remove(m_update_source_id);
-				m_update_source_id = 0;
-			}
-
-			Logger.warning("ArticleList: newList - queue up update");
-			m_update_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 1, () => {
-				Logger.warning("ArticleList: newList - check if ready");
-				if(!m_busy)
-				{
-					m_update_source_id = 0;
-					newList(transition);
-					return false;
-				}
-				return true;
-			});
-			return;
-		}
-
-		m_busy = true;
-		if(m_overlay != null)
-			m_overlay.dismiss();
-
-		string selectedArticle = getSelectedArticle();
-
-		if(selectedArticle != "empty")
-			Settings.state().set_string("articlelist-selected-row", selectedArticle);
-
-		if(m_currentList == m_List1)
-		{
-			m_currentList = m_List2;
-			m_currentScroll = m_scroll2;
-			m_current_adjustment = m_scroll2_adjustment;
-		}
-		else
-		{
-			m_currentList = m_List1;
-			m_currentScroll = m_scroll1;
-			m_current_adjustment = m_scroll1_adjustment;
-		}
-
-		var articleChildList = m_currentList.get_children();
-		foreach(Gtk.Widget row in articleChildList)
-		{
-			m_currentList.remove(row);
-			row.destroy();
-		}
-
-		create.begin(transition, false, (obj, res) => {
-			create.end(res);
-		});
-		m_busy = false;
 	}
 
 	public async void updateArticleList(bool slideIN = true)

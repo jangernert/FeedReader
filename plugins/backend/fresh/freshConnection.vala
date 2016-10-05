@@ -39,8 +39,7 @@ public class FeedReader.freshConnection {
 		if((string)message.response_body.flatten().data == null
 		|| (string)message.response_body.flatten().data == "")
 		{
-			Logger.error("No response from freshRSS to message");
-			Logger.error(msg.get());
+			Logger.error("No response from freshRSS to message getSID()");
 			return LoginResponse.NO_CONNECTION;
 		}
 

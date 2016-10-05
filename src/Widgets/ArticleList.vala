@@ -681,11 +681,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 				{
 					if(!articleAlreadInList(item.getArticleID()))
 					{
-						while(Gtk.events_pending())
 						//if(Gtk.events_pending())
-						{
+						while(Gtk.events_pending())
 							Gtk.main_iteration();
-						}
 
 						if(threadID < m_threadCount)
 							break;
@@ -698,11 +696,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 						tmpRow.highlight_row.connect(highlightRow);
 						tmpRow.revert_highlight.connect(unHighlightRow);
 
-						while(Gtk.events_pending())
 						//if(Gtk.events_pending())
-						{
+						while(Gtk.events_pending())
 							Gtk.main_iteration();
-						}
 
 						if(threadID < m_threadCount)
 							break;
@@ -871,11 +867,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			found = false;
 
-			while(Gtk.events_pending())
 			//if(Gtk.events_pending())
-			{
+			while(Gtk.events_pending())
 				Gtk.main_iteration();
-			}
 
 			foreach(Gtk.Widget row in articleChildList)
 			{
@@ -913,11 +907,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 				}
 				foreach(Gtk.Widget row in articleChildList)
 				{
-					while(Gtk.events_pending())
 					//if(Gtk.events_pending())
-					{
+					while(Gtk.events_pending())
 						Gtk.main_iteration();
-					}
 
 					pos++;
 					var tmpRow = row as articleRow;

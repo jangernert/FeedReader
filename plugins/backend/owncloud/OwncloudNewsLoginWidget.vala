@@ -62,12 +62,12 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 	public void writeData()
 	{
 		m_utils.setURL(m_urlEntry.get_text());
-		m_utils.setUser(m_userEntry.get_text());
-		m_utils.setPassword(m_passwordEntry.get_text());
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
 		if(m_need_htaccess)
 		{
-			m_utils.setHtaccessUser(m_AuthUserEntry.get_text());
-			m_utils.setHtAccessPassword(m_AuthPasswordEntry.get_text());
+			m_utils.setHtaccessUser(m_AuthUserEntry.get_text().strip());
+			m_utils.setHtAccessPassword(m_AuthPasswordEntry.get_text().strip());
 		}
 	}
 

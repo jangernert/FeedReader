@@ -120,8 +120,8 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 
 	public void writeData()
 	{
-		m_utils.setUser(m_userEntry.get_text());
-		m_utils.setPassword(m_passwordEntry.get_text());
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
 	}
 
 	public void poastLoginAction()

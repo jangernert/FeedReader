@@ -139,6 +139,9 @@ vala_precompile(UI ${UI_NAME}
     src/UtilsUI.vala
     src/Widgets/AddPopover.vala
     src/Widgets/ArticleList.vala
+    #src/Widgets/ArticleListBox.vala
+    src/Widgets/ArticleListEmptyLabel.vala
+    #src/Widgets/ArticleListScroll.vala
     src/Widgets/ArticleRow.vala
     src/Widgets/ArticleView.vala
     src/Widgets/BackendInfoPopover.vala

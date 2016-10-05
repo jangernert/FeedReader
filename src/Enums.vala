@@ -206,6 +206,12 @@ namespace FeedReader {
  		}
 	}
 
+	public enum ArticleListBalance {
+		NONE,
+		TOP,
+		BOTTOM
+	}
+
 	[Flags] public enum BackendFlags {
 		LOCAL,
 		HOSTED,

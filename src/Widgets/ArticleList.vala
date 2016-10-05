@@ -25,13 +25,12 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private Gtk.Adjustment m_current_adjustment;
 	private Gtk.Adjustment m_scroll1_adjustment;
 	private Gtk.Adjustment m_scroll2_adjustment;
-	private Gtk.Label m_emptyList;
-	private string m_emptyListString;
+	private ArticleListEmptyLabel m_emptyList;
 	private Gtk.Box m_syncingBox;
 	private Gtk.Spinner m_syncSpinner;
 	private bool m_only_unread;
 	private bool m_only_marked;
-	private string m_current_feed_selected = FeedID.ALL.to_string();
+	private string m_selectedFeed = FeedID.ALL.to_string();
 	private double m_lmit = 0.8;
 	private string m_searchTerm = "";
 	private uint m_limit = 15;
@@ -53,16 +52,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 
 	public articleList () {
-		m_emptyListString = _("None of the %i Articles in the database fit the current filters.");
-		m_emptyList = new Gtk.Label(m_emptyListString.printf(dbUI.get_default().getArticelCount()));
-		m_emptyList.get_style_context().add_class("h2");
-		m_emptyList.set_ellipsize (Pango.EllipsizeMode.END);
-		m_emptyList.set_line_wrap_mode(Pango.WrapMode.WORD);
-		m_emptyList.set_line_wrap(true);
-		m_emptyList.set_lines(3);
-		m_emptyList.set_margin_left(30);
-		m_emptyList.set_margin_right(30);
-		m_emptyList.set_justify(Gtk.Justification.CENTER);
+		m_emptyList = new ArticleListEmptyLabel();
 
 		m_syncingBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 		m_syncingBox.set_margin_left(30);
@@ -136,7 +126,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 						{
 							if((!tmpRow.isUnread() && m_only_unread)
 							|| (!tmpRow.isMarked() && m_only_marked)
-							|| (m_IDtype == FeedListType.TAG && !tmpRow.hasTag(m_current_feed_selected)))
+							|| (m_IDtype == FeedListType.TAG && !tmpRow.hasTag(m_selectedFeed)))
 							{
 								if(tmpRow.getID() != selectedID)
 								{
@@ -507,7 +497,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 	public void setSelectedFeed(string feedID)
 	{
-		m_current_feed_selected = feedID;
+		m_selectedFeed = feedID;
 	}
 
 	public void setSelectedType(FeedListType type)
@@ -652,7 +642,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			Logger.debug("limit: " + m_limit.to_string());
 
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces + offset);
+			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces + offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 			if(articles.size == 0)
@@ -748,7 +738,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			{
 				if(!m_syncing)
 				{
-					m_emptyList.set_text(buildEmptyString());
+					m_emptyList.build(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm);
 					m_stack.set_visible_child_full("empty", transition);
 				}
 				else
@@ -832,7 +822,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
-			articles = dbUI.get_default().read_articles(m_current_feed_selected, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
 			actual_loaded =  articles.size;
 			Logger.debug("actual articles loaded: " + actual_loaded.to_string());
 			Idle.add((owned) callback);
@@ -847,7 +837,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			Logger.debug("updateArticleList: nothing to do -> return");
 			m_busy = false;
-			m_emptyList.set_text(buildEmptyString());
+			m_emptyList.build(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm);
 			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 			return;
 		}
@@ -1061,143 +1051,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		}
 	}
 
-	private string buildEmptyString()
-	{
-		string message = "";
-		if(m_current_feed_selected != FeedID.ALL.to_string() && m_current_feed_selected != FeedID.CATEGORIES.to_string())
-		{
-			switch(m_IDtype)
-			{
-				case FeedListType.FEED:
-					name = dbUI.get_default().getFeedName(m_current_feed_selected);
-					if(m_only_unread && !m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No unread articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No unread articles in the feed \"%s\" could be found").printf(name);
-					}
-					else if(m_only_unread && m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No unread and marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No unread and marked articles in the feed \"%s\" could be found").printf(name);
-					}
-					else if(!m_only_unread && m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No marked articles in the feed \"%s\" could be found").printf(name);
-					}
-					else if(!m_only_unread && !m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No articles in the feed \"%s\" could be found").printf(name);
-					}
-					break;
-				case FeedListType.TAG:
-					name = dbUI.get_default().getTagName(m_current_feed_selected);
-					if(m_only_unread && !m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No unread articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No unread articles in the tag \"%s\" could be found").printf(name);
-					}
-					else if(m_only_unread && m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No unread and marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No unread and marked articles in the tag \"%s\" could be found").printf(name);
-					}
-					else if(!m_only_unread && m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No marked articles in the tag \"%s\" could be found").printf(name);
-					}
-					else if(!m_only_unread && !m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No articles in the tag \"%s\" could be found").printf(name);
-					}
-					break;
-				case FeedListType.CATEGORY:
-					name = dbUI.get_default().getCategoryName(m_current_feed_selected);
-					if(m_only_unread && !m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No unread articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No unread articles in the category \"%s\" could be found").printf(name);
-					}
-					else if(m_only_unread && m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No unread and marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No unread and marked articles in the category \"%s\" could be found").printf(name);
-					}
-					else if(!m_only_unread && m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No marked articles in the category \"%s\" could be found").printf(name);
-					}
-					else if(!m_only_unread && !m_only_marked)
-					{
-						if(m_searchTerm != "")
-							message = _("No articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm), name);
-						else
-							message = _("No articles in the category \"%s\" could be found").printf(name);
-					}
-					break;
-			}
-		}
-		else
-		{
-			if(m_only_unread && !m_only_marked)
-			{
-				if(m_searchTerm != "")
-					message = _("No unread articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
-				else
-					message = _("No unread articles could be found");
-			}
-			else if(m_only_unread && m_only_marked)
-			{
-				if(m_searchTerm != "")
-					message = _("No unread and marked articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
-				else
-					message = _("No unread and marked articles could be found");
-			}
-			else if(!m_only_unread && m_only_marked)
-			{
-				if(m_searchTerm != "")
-					message = _("No marked articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
-				else
-					message = _("No marked articles could be found");
-			}
-			else if(!m_only_unread && !m_only_marked)
-			{
-				if(m_searchTerm != "")
-					message = _("No articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(m_searchTerm));
-				else
-					message = _("No articles could be found");
-			}
-
-		}
-		return message;
-	}
-
 	// thx to pantheon files developers =)
 	private void smooth_adjustment_to(Gtk.Adjustment adj, int final, int duration = 1000)
 	{
@@ -1283,7 +1136,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			foreach(Gtk.Widget row in articleChildList)
 			{
 				var tmpRow = row as articleRow;
-				if(tmpRow != null && tmpRow.hasTag(m_current_feed_selected))
+				if(tmpRow != null && tmpRow.hasTag(m_selectedFeed))
 				{
 					++count;
 				}

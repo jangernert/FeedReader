@@ -117,7 +117,7 @@ public class FeedReader.freshUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: freshRSS login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{
@@ -195,7 +195,12 @@ public class FeedReader.freshUtils : GLib.Object {
 		authAttributes["htaccess"] = "true";
 		try
 		{
-			Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", passwd, null);
+			Secret.password_storev_sync(pwAuthSchema,
+										authAttributes,
+										Secret.COLLECTION_DEFAULT,
+										"FeedReader: freshRSS htaccess Authentication",
+										passwd,
+										null);
 		}
 		catch(GLib.Error e)
 		{

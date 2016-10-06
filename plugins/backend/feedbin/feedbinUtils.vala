@@ -69,7 +69,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{

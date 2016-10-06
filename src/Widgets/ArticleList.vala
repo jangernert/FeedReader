@@ -36,7 +36,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private uint m_limit = 15;
 	private FeedListType m_IDtype = FeedListType.FEED;
 	private bool m_limitScroll = false;
-	private int m_threadCount = 0;
 	private uint m_scroll_source_id = 0;
 	private uint m_select_source_id = 0;
 	private uint m_update_source_id = 0;
@@ -47,6 +46,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private InAppNotification m_overlay;
 	private uint m_helperCounter = 0;
 	private uint m_helperCounter2 = 0;
+	private GLib.Thread<void*> m_loadThread;
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
 
@@ -620,8 +620,6 @@ public class FeedReader.articleList : Gtk.Overlay {
 		if(!m_only_unread && !m_only_marked && Settings.state().get_int("articlelist-new-rows") > 0)
 			show_notification = true;
 
-		m_threadCount++;
-		int threadID = m_threadCount;
 		bool hasContent = true;
 		uint displayed_artilces = getDisplayedArticles();
 		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
@@ -631,6 +629,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		// dont allow new articles being created due to scrolling for 0.5s
 		limitScroll();
+
+		if(m_loadThread != null)
+			m_loadThread.join();
 
 		SourceFunc callback = create.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -655,100 +656,91 @@ public class FeedReader.articleList : Gtk.Overlay {
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 
-		new GLib.Thread<void*>("create", run);
+		m_loadThread = new GLib.Thread<void*>("create", run);
 		yield;
 
 		Logger.debug("ArticleList: insert new rows");
 
-		if(!(threadID < m_threadCount))
+		if(hasContent)
 		{
-			if(hasContent)
+			if(m_currentList == m_List1)		 m_stack.set_visible_child_full("list1", transition);
+			else if(m_currentList == m_List2)   m_stack.set_visible_child_full("list2", transition);
+
+			foreach(var item in articles)
 			{
-				if(m_currentList == m_List1)		 m_stack.set_visible_child_full("list1", transition);
-				else if(m_currentList == m_List2)   m_stack.set_visible_child_full("list2", transition);
-
-				foreach(var item in articles)
+				if(!articleAlreadInList(item.getArticleID()))
 				{
-					if(!articleAlreadInList(item.getArticleID()))
+					//if(Gtk.events_pending())
+					while(Gtk.events_pending())
+						Gtk.main_iteration();
+
+					var tmpRow = new articleRow(item);
+					tmpRow.ArticleStateChanged.connect(rowStateChanged);
+					tmpRow.drag_begin.connect(( context) => {drag_begin(context);});
+					tmpRow.drag_end.connect((context) => {drag_end(context);});
+					tmpRow.drag_failed.connect((context, result) => {drag_failed(context, result); return true;});
+					tmpRow.highlight_row.connect(highlightRow);
+					tmpRow.revert_highlight.connect(unHighlightRow);
+
+					//if(Gtk.events_pending())
+					while(Gtk.events_pending())
+						Gtk.main_iteration();
+
+					m_currentList.add(tmpRow);
+
+					if(Settings.state().get_boolean("no-animations"))
 					{
-						//if(Gtk.events_pending())
-						while(Gtk.events_pending())
-							Gtk.main_iteration();
-
-						if(threadID < m_threadCount)
-							break;
-
-						var tmpRow = new articleRow(item);
-						tmpRow.ArticleStateChanged.connect(rowStateChanged);
-						tmpRow.drag_begin.connect(( context) => {drag_begin(context);});
-						tmpRow.drag_end.connect((context) => {drag_end(context);});
-						tmpRow.drag_failed.connect((context, result) => {drag_failed(context, result); return true;});
-						tmpRow.highlight_row.connect(highlightRow);
-						tmpRow.revert_highlight.connect(unHighlightRow);
-
-						//if(Gtk.events_pending())
-						while(Gtk.events_pending())
-							Gtk.main_iteration();
-
-						if(threadID < m_threadCount)
-							break;
-
-						m_currentList.add(tmpRow);
-
-						if(Settings.state().get_boolean("no-animations"))
-						{
-							tmpRow.reveal(true, 0);
-						}
-						else if(transition == Gtk.StackTransitionType.CROSSFADE)
-						{
-							if(loadMore)
-								tmpRow.reveal(true);
-							else
-								tmpRow.reveal(true, 150);
-						}
+						tmpRow.reveal(true, 0);
+					}
+					else if(transition == Gtk.StackTransitionType.CROSSFADE)
+					{
+						if(loadMore)
+							tmpRow.reveal(true);
 						else
-						{
-							tmpRow.reveal(true, 0);
-						}
+							tmpRow.reveal(true, 150);
+					}
+					else
+					{
+						tmpRow.reveal(true, 0);
 					}
 				}
-
-				if(!loadMore)
-				{
-					m_current_adjustment.notify["upper"].connect(restoreScrollPos);
-					if(!restoreSelectedRow())
-						noRowActive();
-				}
-
-				if(Settings.state().get_boolean("no-animations"))
-					Settings.state().set_boolean("no-animations", false);
-
-				if(offset > 0)
-				{
-					Settings.state().set_int("articlelist-row-offset", 0);
-					updateArticleList.begin(false, (obj, res) => {
-						updateArticleList.end(res);
-					});
-				}
-
-				if(show_notification)
-					showNotification();
 			}
-			else if(!loadMore)
+
+			if(!loadMore)
 			{
-				if(!m_syncing)
-				{
-					m_emptyList.build(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm);
-					m_stack.set_visible_child_full("empty", transition);
-				}
-				else
-				{
-					m_stack.set_visible_child_full("syncing", transition);
-					m_syncSpinner.start();
-				}
-
-				noRowActive();
+				m_current_adjustment.notify["upper"].connect(restoreScrollPos);
+				if(!restoreSelectedRow())
+					noRowActive();
 			}
+
+			if(Settings.state().get_boolean("no-animations"))
+				Settings.state().set_boolean("no-animations", false);
+
+			if(offset > 0)
+			{
+				Settings.state().set_int("articlelist-row-offset", 0);
+				updateArticleList.begin(false, (obj, res) => {
+					updateArticleList.end(res);
+				});
+			}
+
+			if(show_notification)
+				showNotification();
+		}
+		else if(!loadMore)
+		{
+			if(!m_syncing)
+			{
+				m_emptyList.build(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm);
+				m_stack.set_visible_child_full("empty", transition);
+			}
+			else
+			{
+				m_stack.set_visible_child_full("syncing", transition);
+				m_syncSpinner.start();
+			}
+
+			noRowActive();
 		}
 		Logger.debug("ArticleList: create finished");
 	}

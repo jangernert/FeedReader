@@ -132,7 +132,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			uint count = (i+1)*1000;
 			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(feedID, FeedListType.FEED, false, false, "", count, offset);
+			var articles = dbDaemon.get_default().read_articles(feedID, FeedListType.FEED, ArticleListState.ALL, "", count, offset);
 
 			string articleIDs = "";
 
@@ -152,7 +152,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			uint count = (i+1)*1000;
 			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(catID, FeedListType.CATEGORY, false, false, "", count, offset);
+			var articles = dbDaemon.get_default().read_articles(catID, FeedListType.CATEGORY, ArticleListState.ALL, "", count, offset);
 
 			string articleIDs = "";
 
@@ -172,7 +172,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			uint count = (i+1)*1000;
 			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, false, false, "", count, offset);
+			var articles = dbDaemon.get_default().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, ArticleListState.ALL, "", count, offset);
 
 			string articleIDs = "";
 

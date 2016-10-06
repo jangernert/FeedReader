@@ -1202,7 +1202,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	public Gee.ArrayList<article> read_articles(string ID, FeedListType selectedType, bool only_unread, bool only_marked, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	public Gee.ArrayList<article> read_articles(string ID, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
@@ -1236,11 +1236,12 @@ public class FeedReader.dbBase : GLib.Object {
 			query.addCustomCondition("instr(tags, \"%s\") > 0".printf(ID));
 		}
 
-		if(only_unread){
+		if(state == ArticleListState.UNREAD)
+		{
 			query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
 		}
-
-		if(only_marked){
+		else if(state == ArticleListState.MARKED)
+		{
 			query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
 		}
 

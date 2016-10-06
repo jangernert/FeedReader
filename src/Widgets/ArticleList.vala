@@ -635,9 +635,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 			Logger.debug("limit: " + m_limit.to_string());
 
 			Logger.debug("load articles from db");
-			bool onlyUnread = (m_state == ArticleListState.UNREAD);
-			bool onlyMarked = (m_state == ArticleListState.MARKED);
-			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, onlyUnread, onlyMarked, m_searchTerm, m_limit, displayed_artilces + offset);
+			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, m_state, m_searchTerm, m_limit, displayed_artilces + offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 			if(articles.size == 0)
@@ -808,9 +806,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
-			bool onlyUnread = (m_state == ArticleListState.UNREAD);
-			bool onlyMarked = (m_state == ArticleListState.MARKED);
-			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, onlyUnread, onlyMarked, m_searchTerm, m_limit);
+			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, m_state, m_searchTerm, m_limit);
 			actual_loaded =  articles.size;
 			Logger.debug("actual articles loaded: " + actual_loaded.to_string());
 			Idle.add((owned) callback);

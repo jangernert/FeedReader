@@ -50,27 +50,10 @@ public class FeedReader.UtilsUI : GLib.Object {
 				break;
 		}
 
-
-		bool only_unread = false;
-		bool only_marked = false;
-
-		switch(state)
-		{
-			case ArticleListState.ALL:
-				break;
-			case ArticleListState.UNREAD:
-				only_unread = true;
-				break;
-			case ArticleListState.MARKED:
-				only_marked = true;
-				break;
-		}
-
 		var articles = dbUI.get_default().read_articles(
 			selectedRow[1],
 			IDtype,
-			only_unread,
-			only_marked,
+			state,
 			searchTerm,
 			newArticlesCount,
 			0,

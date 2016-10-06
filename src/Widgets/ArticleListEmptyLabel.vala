@@ -29,7 +29,7 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 		this.show_all();
 	}
 
-	public void build(string selectedFeed, FeedListType type, bool onlyUnread, bool onlyMarked, string searchTerm)
+	public void build(string selectedFeed, FeedListType type, ArticleListState state, string searchTerm)
 	{
 		string message = "";
 		if(selectedFeed != FeedID.ALL.to_string() && selectedFeed != FeedID.CATEGORIES.to_string())
@@ -38,28 +38,21 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 			{
 				case FeedListType.FEED:
 					name = dbUI.get_default().getFeedName(selectedFeed);
-					if(onlyUnread && !onlyMarked)
+					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
 							message = _("No unread articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
 							message = _("No unread articles in the feed \"%s\" could be found").printf(name);
 					}
-					else if(onlyUnread && onlyMarked)
-					{
-						if(searchTerm != "")
-							message = _("No unread and marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
-						else
-							message = _("No unread and marked articles in the feed \"%s\" could be found").printf(name);
-					}
-					else if(!onlyUnread && onlyMarked)
+					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
 							message = _("No marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
 							message = _("No marked articles in the feed \"%s\" could be found").printf(name);
 					}
-					else if(!onlyUnread && !onlyMarked)
+					else if(state == ArticleListState.ALL)
 					{
 						if(searchTerm != "")
 							message = _("No articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
@@ -69,28 +62,21 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					break;
 				case FeedListType.TAG:
 					name = dbUI.get_default().getTagName(selectedFeed);
-					if(onlyUnread && !onlyMarked)
+					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
 							message = _("No unread articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
 							message = _("No unread articles in the tag \"%s\" could be found").printf(name);
 					}
-					else if(onlyUnread && onlyMarked)
-					{
-						if(searchTerm != "")
-							message = _("No unread and marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
-						else
-							message = _("No unread and marked articles in the tag \"%s\" could be found").printf(name);
-					}
-					else if(!onlyUnread && onlyMarked)
+					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
 							message = _("No marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
 							message = _("No marked articles in the tag \"%s\" could be found").printf(name);
 					}
-					else if(!onlyUnread && !onlyMarked)
+					else if(state == ArticleListState.ALL)
 					{
 						if(searchTerm != "")
 							message = _("No articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
@@ -100,28 +86,21 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					break;
 				case FeedListType.CATEGORY:
 					name = dbUI.get_default().getCategoryName(selectedFeed);
-					if(onlyUnread && !onlyMarked)
+					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
 							message = _("No unread articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
 							message = _("No unread articles in the category \"%s\" could be found").printf(name);
 					}
-					else if(onlyUnread && onlyMarked)
-					{
-						if(searchTerm != "")
-							message = _("No unread and marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
-						else
-							message = _("No unread and marked articles in the category \"%s\" could be found").printf(name);
-					}
-					else if(!onlyUnread && onlyMarked)
+					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
 							message = _("No marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
 							message = _("No marked articles in the category \"%s\" could be found").printf(name);
 					}
-					else if(!onlyUnread && !onlyMarked)
+					else if(state == ArticleListState.ALL)
 					{
 						if(searchTerm != "")
 							message = _("No articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
@@ -133,28 +112,21 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 		}
 		else
 		{
-			if(onlyUnread && !onlyMarked)
+			if(state == ArticleListState.UNREAD)
 			{
 				if(searchTerm != "")
 					message = _("No unread articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
 				else
 					message = _("No unread articles could be found");
 			}
-			else if(onlyUnread && onlyMarked)
-			{
-				if(searchTerm != "")
-					message = _("No unread and marked articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
-				else
-					message = _("No unread and marked articles could be found");
-			}
-			else if(!onlyUnread && onlyMarked)
+			else if(state == ArticleListState.MARKED)
 			{
 				if(searchTerm != "")
 					message = _("No marked articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
 				else
 					message = _("No marked articles could be found");
 			}
-			else if(!onlyUnread && !onlyMarked)
+			else if(state == ArticleListState.ALL)
 			{
 				if(searchTerm != "")
 					message = _("No articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));

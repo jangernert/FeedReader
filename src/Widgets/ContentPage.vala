@@ -220,23 +220,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void setArticleListState(ArticleListState state)
 	{
-		switch(state)
-		{
-			case ArticleListState.ALL:
-				m_articleList.setOnlyUnread(false);
-				m_articleList.setOnlyMarked(false);
-				break;
-
-			case ArticleListState.UNREAD:
-				m_articleList.setOnlyUnread(true);
-				m_articleList.setOnlyMarked(false);
-				break;
-
-			case ArticleListState.MARKED:
-				m_articleList.setOnlyUnread(false);
-				m_articleList.setOnlyMarked(true);
-				break;
-		}
+		m_articleList.setState(state);
 	}
 
 	public void setSearchTerm(string searchTerm)

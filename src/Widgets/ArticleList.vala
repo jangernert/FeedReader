@@ -28,8 +28,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 	private ArticleListEmptyLabel m_emptyList;
 	private Gtk.Box m_syncingBox;
 	private Gtk.Spinner m_syncSpinner;
-	private bool m_only_unread;
-	private bool m_only_marked;
+	private ArticleListState m_state;
 	private string m_selectedFeed = FeedID.ALL.to_string();
 	private double m_lmit = 0.8;
 	private string m_searchTerm = "";
@@ -116,7 +115,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 			if(m_selected_article != selectedID)
 			{
-				if(m_only_unread || m_only_marked || m_IDtype == FeedListType.TAG)
+				if(m_state != ArticleListState.ALL || m_IDtype == FeedListType.TAG)
 				{
 					var articleChildList = m_currentList.get_children();
 					foreach(Gtk.Widget row in articleChildList)
@@ -124,8 +123,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 						var tmpRow = row as articleRow;
 						if(tmpRow != null && tmpRow.isBeingRevealed())
 						{
-							if((!tmpRow.isUnread() && m_only_unread)
-							|| (!tmpRow.isMarked() && m_only_marked)
+							if((!tmpRow.isUnread() && m_state == ArticleListState.UNREAD)
+							|| (!tmpRow.isMarked() && m_state == ArticleListState.MARKED)
 							|| (m_IDtype == FeedListType.TAG && !tmpRow.hasTag(m_selectedFeed)))
 							{
 								if(tmpRow.getID() != selectedID)
@@ -258,8 +257,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 		} while(!new_article.isBeingRevealed());
 
 
-		if((!m_only_unread || selected_row.isUnread())
-		&&(!m_only_marked || selected_row.isMarked()))
+		if((m_state != ArticleListState.UNREAD || selected_row.isUnread())
+		&&(m_state != ArticleListState.MARKED || selected_row.isMarked()))
 		{
 			var offset = selected_row.get_allocated_height();
 
@@ -479,15 +478,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		m_scrollPos = m_current_adjustment.get_upper();
 	}
 
-
-	public void setOnlyUnread(bool only_unread)
+	public void setState(ArticleListState state)
 	{
-		m_only_unread = only_unread;
-	}
-
-	public void setOnlyMarked(bool only_marked)
-	{
-		m_only_marked = only_marked;
+		m_state = state;
 	}
 
 	public void setSearchTerm(string searchTerm)
@@ -617,14 +610,16 @@ public class FeedReader.articleList : Gtk.Overlay {
 		Gee.ArrayList<article> articles = new Gee.ArrayList<article>();
 
 		bool show_notification = false;
-		if(!m_only_unread && !m_only_marked && Settings.state().get_int("articlelist-new-rows") > 0)
-			show_notification = true;
-
 		bool hasContent = true;
 		uint displayed_artilces = getDisplayedArticles();
 		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
-		if(!m_only_unread && !m_only_marked)
-		 	offset += (uint)Settings.state().get_int("articlelist-new-rows");
+		if(m_state == ArticleListState.ALL)
+		{
+			offset += (uint)Settings.state().get_int("articlelist-new-rows");
+			if(Settings.state().get_int("articlelist-new-rows") > 0)
+				show_notification = true;
+		}
+
 		Logger.debug("ArticleList: offset %u".printf(offset));
 
 		// dont allow new articles being created due to scrolling for 0.5s
@@ -636,14 +631,13 @@ public class FeedReader.articleList : Gtk.Overlay {
 		SourceFunc callback = create.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
-
-			// wait a little so the currently selected article is updated in the db
-			GLib.Thread.usleep(50000);
 			m_limit = 20;
 			Logger.debug("limit: " + m_limit.to_string());
 
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit, displayed_artilces + offset);
+			bool onlyUnread = (m_state == ArticleListState.UNREAD);
+			bool onlyMarked = (m_state == ArticleListState.MARKED);
+			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, onlyUnread, onlyMarked, m_searchTerm, m_limit, displayed_artilces + offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 			if(articles.size == 0)
@@ -731,7 +725,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			if(!m_syncing)
 			{
-				m_emptyList.build(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm);
+				m_emptyList.build(m_selectedFeed, m_IDtype, m_state, m_searchTerm);
 				m_stack.set_visible_child_full("empty", transition);
 			}
 			else
@@ -814,7 +808,9 @@ public class FeedReader.articleList : Gtk.Overlay {
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
-			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm, m_limit);
+			bool onlyUnread = (m_state == ArticleListState.UNREAD);
+			bool onlyMarked = (m_state == ArticleListState.MARKED);
+			articles = dbUI.get_default().read_articles(m_selectedFeed, m_IDtype, onlyUnread, onlyMarked, m_searchTerm, m_limit);
 			actual_loaded =  articles.size;
 			Logger.debug("actual articles loaded: " + actual_loaded.to_string());
 			Idle.add((owned) callback);
@@ -829,7 +825,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		{
 			Logger.debug("updateArticleList: nothing to do -> return");
 			m_busy = false;
-			m_emptyList.build(m_selectedFeed, m_IDtype, m_only_unread, m_only_marked, m_searchTerm);
+			m_emptyList.build(m_selectedFeed, m_IDtype, m_state, m_searchTerm);
 			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 			return;
 		}
@@ -991,8 +987,8 @@ public class FeedReader.articleList : Gtk.Overlay {
 						if((selected_row != null && tmpRow.getID() != selected_row.getID())
 						|| selected_row == null)
 						{
-							if((m_only_unread && !tmpRow.isUnread())
-							||(m_only_marked && !tmpRow.isMarked()))
+							if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
+							|| (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
 							{
 								removeRow(tmpRow);
 								break;
@@ -1101,7 +1097,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 		uint count = 0;
 		var articleChildList = m_currentList.get_children();
 
-		if(m_only_unread)
+		if(m_state == ArticleListState.UNREAD)
 		{
 			foreach(Gtk.Widget row in articleChildList)
 			{
@@ -1112,7 +1108,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 				}
 			}
 		}
-		else if(m_only_marked)
+		else if(m_state == ArticleListState.MARKED)
 		{
 			foreach(Gtk.Widget row in articleChildList)
 			{
@@ -1232,7 +1228,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		if(n == 0)
 			return true;
-		else if(m_only_unread && n == 1 && !lastRow.isBeingRevealed())
+		else if(m_state == ArticleListState.UNREAD && n == 1 && !lastRow.isBeingRevealed())
 			return true;
 
 		return false;
@@ -1248,7 +1244,7 @@ public class FeedReader.articleList : Gtk.Overlay {
 
 		if(n + 1 == length)
 			return true;
-		else if(m_only_unread && n + 2 == length && !lastRow.isBeingRevealed())
+		else if(m_state == ArticleListState.UNREAD && n + 2 == length && !lastRow.isBeingRevealed())
 			return true;
 
 		return false;

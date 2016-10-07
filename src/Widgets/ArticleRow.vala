@@ -38,6 +38,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 		var spinner = new Gtk.Spinner();
 		spinner.opacity = 0.3;
+		spinner.set_size_request(32, 32);
+		spinner.halign = Gtk.Align.CENTER;
+		spinner.valign = Gtk.Align.CENTER;
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_size_request(0, 100);

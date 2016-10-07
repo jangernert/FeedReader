@@ -205,8 +205,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	private void loadNewAfterDelay(int delay, int? newCount = null)
 	{
+		Logger.debug(@"ArticleList: loadNewAfterDelay($delay, %s)".printf((newCount == null) ? "null" : newCount.to_string()));
 		GLib.Timeout.add(delay, () => {
-
 			int? count = newCount;
 			if(newCount == null)
 			{
@@ -239,7 +239,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	private async void loadNewer(int newCount)
 	{
-		Logger.debug("ArticleList: loadNewer()");
+		Logger.debug(@"ArticleList: loadNewer($newCount)");
 
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadNewer.callback;

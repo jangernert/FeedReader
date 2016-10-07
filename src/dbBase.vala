@@ -692,7 +692,11 @@ public class FeedReader.dbBase : GLib.Object {
 
 		var query2 = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query2.selectField("count(*)");
-		query2.addCustomCondition("rowid > (%s)".printf(query.get()));
+
+		if(Settings.general().get_boolean("articlelist-newest-first"))
+			query2.addCustomCondition("rowid > (%s)".printf(query.get()));
+		else
+			query2.addCustomCondition("rowid < (%s)".printf(query.get()));
 
 		if(selectedType == FeedListType.FEED && ID != FeedID.ALL.to_string())
 		{

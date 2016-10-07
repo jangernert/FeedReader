@@ -616,7 +616,8 @@ public class FeedReader.articleView : Gtk.Overlay {
             if(background.alpha == 1.0)
             {
                 // Don't set a background color that is transparent.
-                m_currentView.set_background_color(background);
+                m_view1.set_background_color(background);
+				m_view2.set_background_color(background);
             }
 		}
 	}

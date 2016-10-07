@@ -46,7 +46,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public string? getServerURL()
 	{
-		return "https://www.feedly.com/";
+		return "http://feedly.com/";
 	}
 
 	public string uncategorizedID()
@@ -180,7 +180,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public bool serverAvailable()
 	{
-		return Utils.ping("feedly.com");
+		return Utils.ping("http://feedly.com/");
 	}
 
 	public string addFeed(string feedURL, string? catID, string? newCatName)

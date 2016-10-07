@@ -39,7 +39,7 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		Logger.debug("feedly backend: login");
 
-		if(!Utils.ping("feedly.com"))
+		if(!Utils.ping("http://feedly.com/"))
 			return LoginResponse.NO_CONNECTION;
 
 		if(m_utils.getRefreshToken() == "")

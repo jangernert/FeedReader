@@ -124,11 +124,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			}
 
 			if(m_article_view.getCurrentArticle() != row.getID())
-			{
-				m_article_view.fillContent.begin(row.getID(), (obj, res) => {
-					m_article_view.fillContent.end(res);
-				});
-			}
+				m_article_view.fillContent(row.getID());
 		});
 
 		m_articleList.noRowActive.connect(() => {

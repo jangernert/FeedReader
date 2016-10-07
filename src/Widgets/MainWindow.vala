@@ -161,7 +161,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_headerbar.showArticleButtons(show);
 		});
 
-
 		if(Settings.state().get_boolean("window-maximized"))
 		{
 			Logger.debug("MainWindow: maximize");
@@ -169,7 +168,6 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		}
 
 		this.window_state_event.connect(onStateEvent);
-
 		this.key_press_event.connect(shortcuts);
 		this.add(m_stack);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);

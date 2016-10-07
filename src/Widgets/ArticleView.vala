@@ -340,12 +340,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public void reload()
 	{
-		fillContent.begin(m_currentArticle, (obj, res) => {
-			fillContent.end(res);
-		});
+		fillContent(m_currentArticle);
 	}
 
-	public async void fillContent(string articleID)
+	public void fillContent(string articleID)
 	{
 		m_currentArticle = articleID;
 		Logger.debug("ArticleView: load article %s".printf(articleID));
@@ -374,33 +372,27 @@ public class FeedReader.articleView : Gtk.Overlay {
             m_OngoingScrollID = 0;
         }
 
-		article Article = null;
-		SourceFunc callback = fillContent.callback;
+		var Article = dbUI.get_default().read_article(articleID);
 
-		ThreadFunc<void*> run = () => {
-			Article = dbUI.get_default().read_article(articleID);
-			Idle.add((owned) callback);
-			return null;
-		};
-		new GLib.Thread<void*>("fillContent", run);
-		yield;
+		GLib.Idle.add(() => {
+			setBackgroundColor();
+			m_fsHead.setTitle(Article.getTitle());
+			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
+			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
 
-		setBackgroundColor();
-		m_fsHead.setTitle(Article.getTitle());
-		m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
-		m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
-
-		m_currentView.load_html(
-			Utils.buildArticle(
-					Article.getHTML(),
-					Article.getTitle(),
-					Article.getURL(),
-					Article.getAuthor(),
-					Article.getDateNice(),
-					Article.getFeedID()
-				)
-			, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
-		this.show_all();
+			m_currentView.load_html(
+				Utils.buildArticle(
+						Article.getHTML(),
+						Article.getTitle(),
+						Article.getURL(),
+						Article.getAuthor(),
+						Article.getDateNice(),
+						Article.getFeedID()
+					)
+				, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+			this.show_all();
+			return false;
+		});
 	}
 
 	public void clearContent()

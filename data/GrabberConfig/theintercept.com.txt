@@ -1,0 +1,4 @@
+title: //h1[@class="Headline"]
+body: //div[@class="PostContent"]
+
+test_url: https://theintercept.com/2014/10/30/inside-story-matt-taibbis-departure-first-look-media/

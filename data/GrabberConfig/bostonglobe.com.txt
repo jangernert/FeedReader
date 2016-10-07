@@ -10,7 +10,10 @@ strip_id_or_class: promo
 strip_id_or_class: skip-nav
 strip_id_or_class: article-more
 strip_id_or_class: article-bar
+strip_id_or_class: post-comment
 
 # This removes image captions.  If the parser starts saving images from bostonglobe.com (currently, it does not), then this directive should be removed.
 strip_id_or_class: figure
+
 test_url: http://bostonglobe.com/news/nation/2012/03/17/illinois-primary-could-pivotal/PsDzFZqvhEYyXbOcF9FOkO/story.html
+test_url: http://www.bostonglobe.com/news/bigpicture/2016/09/13/paralympics/qcL3h79ohDG6O69GRWLRuK/story.html

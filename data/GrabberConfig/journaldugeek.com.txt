@@ -5,9 +5,11 @@
 date: //meta[@property="og:updated_time"]/@content
 next_page_link: //div[@class="post-content"]/div[@class='row pagination']/a[contains(concat(' ',normalize-space(@class),' '),' next ')]
 
+body: //div[class='post-content']
+
 strip_id_or_class: jdg-recommend
 strip_id_or_class: proofreader-bloc
-strip_id_or_class: single-test
+strip_id_or_class: tests-push
 
-body: //div[contains(concat(' ',normalize-space(@class),' '),' post-content ')]
 test_url: http://www.journaldugeek.com/2015/09/09/apple-ipad-pro/
+test_url: http://www.journaldugeek.com/tests/escape-game-maitres-jeu-vous-influencent-faire-gagner/

@@ -1,4 +1,4 @@
-body: //div[@class='rticle-entry text']
+body: //div[@class='article-entry text']
 
 author: //div[@class='byline']/a
 

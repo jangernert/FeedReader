@@ -30,6 +30,7 @@ replace_string(<hr width="60%" align="left">): <div class="ftrss-strip">
 replace_string(to post comments)): </div>
 strip: //div[@class='ftrss-strip']
 body: //div[@class='ArticleText']
+strip: //table[@class='Form']
 
 test_url: http://lwn.net/Articles/668318/
 test_url: http://lwn.net/Articles/668695/

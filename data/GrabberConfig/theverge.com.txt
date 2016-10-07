@@ -5,9 +5,12 @@ date: //span[contains(@class, "publish-date")]/time[@pubdate]/@datetime
 body: //div[contains(@class, 'm-article__entry-section')]
 # for vergecasts, e.g. http://www.theverge.com/2013/8/22/4648566/the-vergecast-090-august-22th-2013-video
 body: //article
+body: //div[contains(concat(' ',normalize-space(@class),' '),' l-col__main ')]
+
 prune: no
 #tidy: no
 
+strip: //h3
 strip: //article/header
 strip: //*[@id='sticky-menu']
 strip: //aside
@@ -35,6 +38,10 @@ strip_id_or_class: m-video-entry__excerpt
 strip_id_or_class: hidden
 strip_id_or_class: m-article__follow-bar
 strip_id_or_class: m-article__share-buttons
+strip_id_or_class: l-col__sidebar
+strip_id_or_class: c-river
+strip_id_or_class: chorus-ad-placement
+strip_id_or_class: c-related-list
 
 replace_string(<noscript>): <div>
 replace_string(</noscript>): </div>

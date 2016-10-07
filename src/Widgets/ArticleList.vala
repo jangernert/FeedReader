@@ -56,8 +56,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		syncingBox.pack_start(m_syncSpinner);
 		syncingBox.pack_start(syncingLabel);
 
-		m_List1 = new ArticleListBox();
-		m_List2 = new ArticleListBox();
 		m_scroll1 = new ArticleListScroll();
 		m_scroll2 = new ArticleListScroll();
 		m_scroll1.scrolledTop.connect(dismissOverlay);
@@ -66,12 +64,17 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2.valueChanged.connect(removeInvisibleRows);
 		m_scroll1.scrolledBottom.connect(loadMore);
 		m_scroll2.scrolledBottom.connect(loadMore);
+		m_List1 = new ArticleListBox();
+		m_List2 = new ArticleListBox();
+		m_List1.row_activated.connect(rowActivated);
+		m_List2.row_activated.connect(rowActivated);
 		m_List1.balanceNextScroll.connect(m_scroll1.balanceNextScroll);
 		m_List2.balanceNextScroll.connect(m_scroll2.balanceNextScroll);
 		m_List1.key_press_event.connect(keyPressed);
 		m_List2.key_press_event.connect(keyPressed);
 		m_scroll1.add(m_List1);
 		m_scroll2.add(m_List2);
+
 		m_currentList = m_List1;
 		m_currentScroll = m_scroll1;
 
@@ -84,13 +87,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_stack.add_named(syncingBox, "syncing");
 		this.add(m_stack);
 		this.get_style_context().add_class("article-list");
-
-		m_List1.row_activated.connect((row) => {
-			row_activated((articleRow)row);
-		});
-		m_List2.row_activated.connect((row) => {
-			row_activated((articleRow)row);
-		});
 	}
 
 	public async void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
@@ -610,5 +606,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		{
 			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 		}
+	}
+
+	private void rowActivated(Gtk.ListBoxRow row)
+	{
+		row_activated((articleRow)row);
 	}
 }

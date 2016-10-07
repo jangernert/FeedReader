@@ -681,7 +681,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public int getRowCountHeadlineByRowID(string id)
+	public int getArticleCountNewerThanID(string id, string ID, FeedListType selectedType, ArticleListState state, string searchTerm)
 	{
 		int result = 0;
 
@@ -693,6 +693,70 @@ public class FeedReader.dbBase : GLib.Object {
 		var query2 = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query2.selectField("count(*)");
 		query2.addCustomCondition("rowid > (%s)".printf(query.get()));
+
+		if(selectedType == FeedListType.FEED && ID != FeedID.ALL.to_string())
+		{
+			query2.addEqualsCondition("feedID", ID, true, true);
+		}
+		else if(selectedType == FeedListType.CATEGORY && ID != CategoryID.MASTER.to_string() && ID != CategoryID.TAGS.to_string())
+		{
+			query2.addRangeConditionString("feedID", getFeedIDofCategorie(ID));
+		}
+		else if(ID == CategoryID.TAGS.to_string())
+		{
+			query2.addCustomCondition(getAllTagsCondition());
+		}
+		else if(selectedType == FeedListType.TAG)
+		{
+			query2.addCustomCondition("instr(tags, \"%s\") > 0".printf(ID));
+		}
+
+		if(state == ArticleListState.UNREAD)
+		{
+			query2.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+		}
+		else if(state == ArticleListState.MARKED)
+		{
+			query2.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
+		}
+
+		if(searchTerm != ""){
+			if(searchTerm.has_prefix("title: "))
+			{
+				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+			}
+			else if(searchTerm.has_prefix("author: "))
+			{
+				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE author MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+			}
+			else if(searchTerm.has_prefix("content: "))
+			{
+				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE preview MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+			}
+			else
+			{
+				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE fts_table MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
+			}
+		}
+
+		string order_field = "";
+		switch(Settings.general().get_enum("articlelist-sort-by"))
+		{
+			case ArticleListSort.RECEIVED:
+				order_field = "rowid";
+				break;
+
+			case ArticleListSort.DATE:
+				order_field = "date";
+				break;
+		}
+
+		bool desc = false;
+		if(Settings.general().get_boolean("articlelist-newest-first"))
+			desc = true;
+
+		query.orderBy(order_field, desc);
+
 		query2.build();
 
 		Sqlite.Statement stmt;
@@ -1202,7 +1266,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	public Gee.ArrayList<article> read_articles(string ID, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	public Gee.LinkedList<article> read_articles(string ID, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
@@ -1301,7 +1365,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 
-		Gee.ArrayList<article> tmp = new Gee.ArrayList<article>();
+		var tmp = new Gee.LinkedList<article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
 			tmp.add(new article(

@@ -18,7 +18,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	private Gtk.Paned m_pane1;
 	private Gtk.Paned m_pane2;
 	private articleView m_article_view;
-	private articleList m_articleList;
+	private ArticleList m_articleList;
 	private feedList m_feedList;
 	private FeedListFooter m_footer;
 	public signal void showArticleButtons(bool show);
@@ -48,7 +48,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(feedID);
-			m_articleList.newList();
+			newArticleList();
 
 			if(feedID == FeedID.ALL.to_string())
 			{
@@ -65,7 +65,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(tagID);
-			m_articleList.newList();
+			newArticleList();
 			m_footer.setRemoveButtonSensitive(true);
 			m_footer.setSelectedRow(FeedListType.TAG, tagID);
 		});
@@ -74,7 +74,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_articleList.setSelectedType(FeedListType.CATEGORY);
 			m_article_view.clearContent();
 			m_articleList.setSelectedFeed(categorieID);
-			m_articleList.newList();
+			newArticleList();
 
 			if(categorieID != CategoryID.MASTER.to_string()
 			&& categorieID != CategoryID.TAGS.to_string())
@@ -91,7 +91,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.markAllArticlesAsRead.connect(markAllArticlesAsRead);
 
 
-		m_articleList = new articleList();
+		m_articleList = new ArticleList();
 		m_articleList.drag_begin.connect((context) => {
 			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
@@ -193,7 +193,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		m_articleList.newList(transition);
+		m_articleList.newList.begin(transition, (obj, res) => {
+			m_articleList.newList.end(res);
+		});
 	}
 
 	public void newFeedList(bool defaultSettings = false)

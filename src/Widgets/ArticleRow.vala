@@ -27,7 +27,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_unread = false;
 	private bool m_hovering_marked = false;
 	private bool m_hovering_row = false;
-	public signal void ArticleStateChanged(ArticleStatus status);
+	public signal void rowStateChanged(ArticleStatus status);
 	public signal void child_revealed();
 	public signal void highlight_row(string articleID);
 	public signal void revert_highlight();
@@ -382,7 +382,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				return false;
 		}
 		toggleUnread();
-		ArticleStateChanged(m_article.getUnread());
+		rowStateChanged(m_article.getUnread());
 		return true;
 	}
 
@@ -492,7 +492,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				return false;
 		}
 		toggleMarked();
-		ArticleStateChanged(m_article.getMarked());
+		rowStateChanged(m_article.getMarked());
 		return true;
 	}
 

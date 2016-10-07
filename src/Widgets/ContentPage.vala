@@ -112,19 +112,20 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 
 		m_articleList.row_activated.connect((row) => {
-			showArticleButtons(true);
-			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-			if(window != null)
-			{
-				var header = window.getHeaderBar();
-				Logger.debug("ContentPage: set headerbar");
-				header.setRead(row.isUnread());
-				header.setMarked(row.isMarked());
-				header.showMediaButton(row.haveMedia());
-			}
-
 			if(m_article_view.getCurrentArticle() != row.getID())
+			{
 				m_article_view.fillContent(row.getID());
+				showArticleButtons(true);
+				var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+				if(window != null)
+				{
+					var header = window.getHeaderBar();
+					Logger.debug("ContentPage: set headerbar");
+					header.setRead(row.isUnread());
+					header.setMarked(row.isMarked());
+					header.showMediaButton(row.haveMedia());
+				}
+			}
 		});
 
 		m_articleList.noRowActive.connect(() => {

@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.categorieRow : Gtk.ListBoxRow {
+public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 
 	private Gtk.Box m_box;
 	private string m_name;
@@ -43,7 +43,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 	public signal void deselectRow();
 	public signal void removeRow();
 
-	public categorieRow(string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded)
+	public CategoryRow(string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded)
 	{
 
 		this.get_style_context().add_class("fr-sidebar-row");
@@ -348,7 +348,7 @@ public class FeedReader.categorieRow : Gtk.ListBoxRow {
 		window.set_visual(visual);
 		window.get_style_context().add_class("fr-sidebar");
 		window.get_style_context().add_class("fr-sidebar-row-popover");
-		var row = new categorieRow(m_name, m_categorieID, m_orderID, m_unread_count, m_parentID, m_level, !m_collapsed);
+		var row = new CategoryRow(m_name, m_categorieID, m_orderID, m_unread_count, m_parentID, m_level, !m_collapsed);
 		row.set_size_request(this.get_allocated_width(), 0);
 		row.reveal(true);
 		window.add(row);

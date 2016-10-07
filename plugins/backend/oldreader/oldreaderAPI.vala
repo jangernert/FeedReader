@@ -45,7 +45,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	}
 
 	public bool ping() {
-		return Utils.ping("theoldreader.com");
+		return Utils.ping("https://theoldreader.com/");
 	}
 
 	private bool getUserID()

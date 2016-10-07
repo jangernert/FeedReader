@@ -46,7 +46,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public string? getServerURL()
 	{
-		return "feedbin.com";
+		return "https://feedbin.com/";
 	}
 
 	public string uncategorizedID()
@@ -106,7 +106,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool serverAvailable()
 	{
-		return Utils.ping("feedbin.com");
+		return Utils.ping("https://feedbin.com/");
 	}
 
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)

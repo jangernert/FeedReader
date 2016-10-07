@@ -48,7 +48,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	}
 
 	public bool ping() {
-		return Utils.ping("inoreader.com");
+		return Utils.ping("http://www.inoreader.com/");
 	}
 
 	private bool getUserID()

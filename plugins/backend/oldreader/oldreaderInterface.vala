@@ -46,7 +46,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public string? getServerURL()
 	{
-		return "TheOldReader.com";
+		return "https://theoldreader.com/";
 	}
 
 	public string uncategorizedID()

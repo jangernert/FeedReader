@@ -181,6 +181,18 @@ public class FeedReader.articleView : Gtk.Overlay {
 		this.add(m_videoOverlay);
 		this.add_overlay(m_overlayLabel);
 
+		this.size_allocate.connect((alloc) => {
+			setBackgroundColor();
+		});
+
+		Gtk.Settings.get_default().notify["gtk-theme-name"].connect(() => {
+			setBackgroundColor();
+		});
+
+		Gtk.Settings.get_default().notify["gtk-application-prefer-dark-theme"].connect(() => {
+			setBackgroundColor();
+		});
+
 		Bus.watch_name(BusType.SESSION, "org.gnome.feedreader.FeedReaderArticleView", GLib.BusNameWatcherFlags.NONE,
 		(connection, name, owner) => { on_extension_appeared(connection, name, owner); }, null);
 	}
@@ -375,7 +387,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 		var Article = dbUI.get_default().read_article(articleID);
 
 		GLib.Idle.add(() => {
-			setBackgroundColor();
 			m_fsHead.setTitle(Article.getTitle());
 			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
 			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);

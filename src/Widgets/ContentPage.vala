@@ -239,7 +239,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public double getFeedListScrollPos()
 	{
-		return m_feedList.getScrollPos();
+		return m_feedList.vadjustment.value;
 	}
 
 	public string getSelectedFeedListRow()

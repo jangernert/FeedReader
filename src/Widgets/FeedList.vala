@@ -13,14 +13,12 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedList : Gtk.Stack {
+public class FeedReader.feedList : Gtk.ScrolledWindow {
 
-	private Gtk.ScrolledWindow m_scroll;
 	private Gtk.ListBox m_list;
 	private Gtk.ListBoxRow? m_selected = null;
 	private TagRow? m_emptyTagRow = null;
 	private Gtk.Spinner m_spinner;
-	private Gtk.Adjustment m_scroll_adjustment;
 	private ServiceInfo m_branding;
 	private uint m_expand_collapse_time = 150;
 	private bool m_update = false;
@@ -42,18 +40,8 @@ public class FeedReader.feedList : Gtk.Stack {
 		feedlist_box.pack_start(m_branding, false, false, 0);
 		feedlist_box.pack_start(m_list);
 
-		m_scroll = new Gtk.ScrolledWindow(null, null);
-		m_scroll.set_size_request(100, 0);
-		m_scroll.add(feedlist_box);
-		m_scroll_adjustment = m_scroll.get_vadjustment();
-
-		this.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		this.set_transition_duration(50);
-
-		this.add_named(m_scroll, "list");
-		this.add_named(m_spinner, "spinner");
-		this.set_visible_child_name("list");
-
+		this.set_size_request(100, 0);
+		this.add(feedlist_box);
 
 		m_list.row_activated.connect(() => {
 			FeedRow selected_row = m_list.get_selected_row() as FeedRow;
@@ -211,7 +199,7 @@ public class FeedReader.feedList : Gtk.Stack {
 				Settings.state().set_string("feedlist-selected-row", getSelectedRow());
 			}
 
-			Settings.state().set_double("feed-row-scrollpos",  getScrollPos());
+			Settings.state().set_double("feed-row-scrollpos",  vadjustment.value);
 			Settings.state().set_boolean("no-animations", true);
 			m_update = true;
 		}
@@ -332,7 +320,7 @@ public class FeedReader.feedList : Gtk.Stack {
 		initCollapseCategories();
 		restoreSelectedRow(defaultSettings);
 		this.show_all();
-		m_scroll_adjustment.notify["upper"].connect(restoreScrollPos);
+		vadjustment.notify["upper"].connect(restoreScrollPos);
 	}
 
 	private void restoreSelectedRow(bool defaultSettings)
@@ -403,17 +391,8 @@ public class FeedReader.feedList : Gtk.Stack {
 
 	void restoreScrollPos(Object sender, ParamSpec property)
 	{
-		m_scroll_adjustment.notify["upper"].disconnect(restoreScrollPos);
-		setScrollPos(Settings.state().get_double("feed-row-scrollpos"));
-	}
-
-
-	private void setScrollPos(double pos)
-	{
-		m_scroll_adjustment = m_scroll.get_vadjustment();
-		m_scroll_adjustment.set_value(pos);
-		m_scroll.set_vadjustment(m_scroll_adjustment);
-		this.show_all();
+		vadjustment.notify["upper"].disconnect(restoreScrollPos);
+		vadjustment.set_value(Settings.state().get_double("feed-row-scrollpos"));
 	}
 
 	private void addMasterCategory(int length, string name)
@@ -864,12 +843,6 @@ public class FeedReader.feedList : Gtk.Stack {
 		}
 
 		return "";
-	}
-
-
-	public double getScrollPos()
-	{
-		return m_scroll_adjustment.get_value();
 	}
 
 

@@ -269,11 +269,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return -height;
 	}
 
-	private void removeRow(articleRow row)
+	public void removeRow(articleRow row, int animateDuration = 700)
 	{
-		int time = 700;
-		row.reveal(false, time);
-		GLib.Timeout.add(time + 50, () => {
+		row.reveal(false, animateDuration);
+		GLib.Timeout.add(animateDuration + 50, () => {
 			this.remove(row);
 			return false;
 		});

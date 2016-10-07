@@ -17,7 +17,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	public signal void scrolledTop();
 	public signal void scrolledBottom();
-	public signal void valueChanged(double value);
+	public signal void valueChanged(ScrollDirection direction);
 
 	private double m_upperCache = 0.0;
 	private double m_valueCache = 0.0;
@@ -54,7 +54,10 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	private void trackValue()
 	{
-		valueChanged(vadjustment.value);
+		if(vadjustment.value > m_valueCache)
+			valueChanged(ScrollDirection.DOWN);
+		else if(vadjustment.value < m_valueCache)
+			valueChanged(ScrollDirection.UP);
 
 		if(vadjustment.value < 2.0)
 			scrolledTop();
@@ -129,16 +132,24 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		return this.vadjustment.page_size;
 	}
 
-	public bool isVisible(Gtk.ListBoxRow row)
+	public int isVisible(Gtk.ListBoxRow row, int additionalRows = 0)
 	{
 		var rowHeight = row.get_allocated_height();
 		var scrollHeight = this.get_allocated_height();
 		int x, y = 0;
 
 		row.translate_coordinates(this, 0, 0, out x, out y);
-		bool visible = (y > -rowHeight || y >= 0) && (y < scrollHeight);
 
-		return visible;
+		// row is (additionalRows * rowHeight) above the current viewport
+		if(y < -( (1+additionalRows) * rowHeight))
+			return -1;
+
+		// row is (additionalRows * rowHeight) below the current viewport
+		if(y > (additionalRows) * rowHeight + scrollHeight)
+			return 1;
+
+		// row is visible
+		return 0;
 	}
 
 	private bool scrollTick(Gtk.Widget widget, Gdk.FrameClock frame_clock)

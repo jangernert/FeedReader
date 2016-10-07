@@ -32,6 +32,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private ArticleListBox m_List1;
 	private ArticleListBox m_List2;
 	private Gtk.Spinner m_syncSpinner;
+	private uint m_scrollChangedTimeout = 0;
+	private const int m_dynamicRowThreshold = 10;
 
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
@@ -60,6 +62,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2 = new ArticleListScroll();
 		m_scroll1.scrolledTop.connect(dismissOverlay);
 		m_scroll2.scrolledTop.connect(dismissOverlay);
+		m_scroll1.valueChanged.connect(removeInvisibleRows);
+		m_scroll2.valueChanged.connect(removeInvisibleRows);
 		m_scroll1.scrolledBottom.connect(loadMore);
 		m_scroll2.scrolledBottom.connect(loadMore);
 		m_List1.balanceNextScroll.connect(m_scroll1.balanceNextScroll);
@@ -184,7 +188,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
-														10,
+														m_dynamicRowThreshold,
 														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
@@ -323,6 +327,43 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		}
 
 		loadNewAfterDelay(100, newCount);
+	}
+
+	private void removeInvisibleRows(ScrollDirection direction)
+	{
+		if(m_scrollChangedTimeout != 0)
+		{
+			GLib.Source.remove(m_scrollChangedTimeout);
+			m_scrollChangedTimeout = 0;
+		}
+
+		// remove lower articleRows only after scrolling up
+		if(direction == ScrollDirection.UP)
+		{
+			m_scrollChangedTimeout = GLib.Timeout.add(500, () => {
+				Logger.debug("ArticleList: remove invisible rows below");
+				var children = m_currentList.get_children();
+				children.reverse();
+
+				foreach(var r in children)
+				{
+					var row = r as articleRow;
+					if(row != null)
+					{
+						if(m_currentScroll.isVisible(row, m_dynamicRowThreshold) == 1)
+						{
+							m_currentList.removeRow(row, 0);
+						}
+						else
+						{
+							break;
+						}
+					}
+				}
+				m_scrollChangedTimeout = 0;
+				return false;
+			});
+		}
 	}
 
 	private bool keyPressed(Gdk.EventKey event)

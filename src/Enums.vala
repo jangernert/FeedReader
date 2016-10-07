@@ -212,6 +212,11 @@ namespace FeedReader {
 		BOTTOM
 	}
 
+	public enum ScrollDirection {
+		UP,
+		DOWN
+	}
+
 	[Flags] public enum BackendFlags {
 		LOCAL,
 		HOSTED,

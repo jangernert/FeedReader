@@ -37,7 +37,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_article = Article;
 
 		var spinner = new Gtk.Spinner();
-		spinner.opacity = 0.3;
+		spinner.opacity = 0.1;
 		spinner.set_size_request(32, 32);
 		spinner.halign = Gtk.Align.CENTER;
 		spinner.valign = Gtk.Align.CENTER;
@@ -45,7 +45,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_stack = new Gtk.Stack();
 		m_stack.set_size_request(0, 100);
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_stack.set_transition_duration(100);
+		m_stack.set_transition_duration(200);
 		m_stack.add_named(spinner, "spinner");
 
 		m_revealer = new Gtk.Revealer();

@@ -302,6 +302,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		foreach(feed Feed in f)
 		{
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.timeout = 5;
 			var msg = new Soup.Message("GET", Feed.getXmlUrl().escape(""));
 			session.send_message(msg);

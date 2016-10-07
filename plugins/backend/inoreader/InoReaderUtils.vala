@@ -108,7 +108,7 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 	public bool accessTokenValid()
 	{
 		var now = new DateTime.now_local();
-		
+
 		if((int)now.to_unix() >  getExpiration())
 		{
 			Logger.warning("InoReaderUtils: access token expired");
@@ -141,6 +141,7 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)

@@ -226,6 +226,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+            session.user_agent = Constants.USER_AGENT;
             session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)

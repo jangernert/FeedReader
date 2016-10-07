@@ -27,6 +27,7 @@ public class FeedReader.FeedlyConnection {
 	public LoginResponse getToken()
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 		string message_string = "code=" + m_utils.getApiCode()
 								+ "&client_id=" + FeedlySecret.apiClientId
@@ -79,6 +80,7 @@ public class FeedReader.FeedlyConnection {
 	public LoginResponse refreshToken()
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -141,6 +143,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -165,6 +168,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -190,6 +194,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -215,6 +220,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
 

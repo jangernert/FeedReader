@@ -55,7 +55,7 @@ public class FeedReader.Grabber : GLib.Object {
 
     private bool checkConfigFile()
     {
-        string filepath = Constants.InstallPrefix + "/share/FeedReader/GrabberConfig/";
+        string filepath = Constants.INSTALL_PREFIX + "/share/FeedReader/GrabberConfig/";
 
         string hostName = grabberUtils.buildHostName(m_articleURL, false);
         string filename = filepath + hostName + ".txt";
@@ -146,6 +146,7 @@ public class FeedReader.Grabber : GLib.Object {
     private bool download()
     {
         var session = new Soup.Session();
+        session.user_agent = Constants.USER_AGENT;
         session.timeout = 5;
         var msg = new Soup.Message("GET", m_articleURL.escape(""));
         msg.restarted.connect(() => {

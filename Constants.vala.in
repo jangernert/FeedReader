@@ -45,8 +45,9 @@ namespace FeedReader {
 
 	public class Constants : GLib.Object {
 
-		public static const string InstallPrefix = "@CMAKE_INSTALL_PREFIX@";
-		public static const string g_GIT_SHA1 = "@GIT_SHA1@";
+		public static const string INSTALL_PREFIX	= "@CMAKE_INSTALL_PREFIX@";
+		public static const string GIT_SHA1		= "@GIT_SHA1@";
+		public static const string USER_AGENT		= "FeedReader @VERSION@";
 		public static const int DBusAPIVersion = 17;
 
 		// tango colors

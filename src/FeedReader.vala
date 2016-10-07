@@ -57,7 +57,7 @@ namespace FeedReader {
 		{
 			base.activate();
 
-			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.InstallPrefix + "/share/FeedReader/");
+			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/share/FeedReader/");
 
 			if(m_window == null)
 			{
@@ -163,7 +163,7 @@ namespace FeedReader {
 		if(version)
 		{
 			stdout.printf("Version: %s\n", AboutInfo.version);
-			stdout.printf("Git Commit: %s\n", Constants.g_GIT_SHA1);
+			stdout.printf("Git Commit: %s\n", Constants.GIT_SHA1);
 			return 0;
 		}
 

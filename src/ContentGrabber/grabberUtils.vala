@@ -443,6 +443,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 				message_dlImg.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+            session.user_agent = Constants.USER_AGENT;
             session.timeout = 8;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);

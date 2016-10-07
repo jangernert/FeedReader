@@ -24,6 +24,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
     {
 		Logger.debug("WallabagAPI getAccessToken");
         var session = new Soup.Session();
+        session.user_agent = Constants.USER_AGENT;
         string message = "grant_type=password"
 		 				+ "&client_id=" + clientID
 						+ "&client_secret=" + clientSecret
@@ -127,6 +128,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		Logger.debug("WallabagAPI - addBookmark: token still valid");
 
         var session = new Soup.Session();
+        session.user_agent = Constants.USER_AGENT;
         string message = "url=" + GLib.Uri.escape_string(url);
 		string baseURL = settings.get_string("url");
 

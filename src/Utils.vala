@@ -362,7 +362,7 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			try
 			{
-				var origin = File.new_for_path(Constants.InstallPrefix + "/share/FeedReader/feedreader-autostart.desktop");
+				var origin = File.new_for_path(Constants.INSTALL_PREFIX + "/share/FeedReader/feedreader-autostart.desktop");
 				var destination = File.new_for_path(filename);
 	        	origin.copy(destination, FileCopyFlags.NONE);
 			}
@@ -752,7 +752,8 @@ public class FeedReader.Utils : GLib.Object {
 			if(settingsTweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
-			var session = new Soup.Session ();
+			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{

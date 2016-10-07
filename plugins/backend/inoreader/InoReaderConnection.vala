@@ -30,6 +30,7 @@ public class FeedReader.InoReaderConnection {
 		Logger.debug("InoReaderConnection: getToken()");
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "code=" + m_utils.getApiCode()
 								+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
@@ -76,6 +77,7 @@ public class FeedReader.InoReaderConnection {
 		Logger.debug("InoReaderConnection: refreshToken()");
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "client_id=" + InoReaderSecret.apiClientId
 								+ "&client_secret=" + InoReaderSecret.apiClientSecret
@@ -127,6 +129,7 @@ public class FeedReader.InoReaderConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 
 		string inoauth = "Bearer " + m_utils.getAccessToken();

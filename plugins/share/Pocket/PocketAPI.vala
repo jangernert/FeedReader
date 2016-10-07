@@ -30,6 +30,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
     {
     	Logger.debug("PocketAPI: get request token");
         var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&redirect_uri=" + PocketSecrets.oauth_callback;
 
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/request");
@@ -47,6 +48,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
     public bool getAccessToken(string id, string requestToken)
     {
         var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
         string message = "consumer_key=" + PocketSecrets.oauth_consumer_key + "&code=" + requestToken;
 
         var message_soup = new Soup.Message("POST", "https://getpocket.com/v3/oauth/authorize");
@@ -86,6 +88,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
         var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
 
         var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
         string message = "url=" + GLib.Uri.escape_string(url)
                         + "&consumer_key=" + PocketSecrets.oauth_consumer_key
                         + "&access_token=" + settings.get_string("oauth-access-token");

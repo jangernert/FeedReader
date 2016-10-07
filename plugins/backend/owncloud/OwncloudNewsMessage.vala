@@ -30,6 +30,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
         m_message_string = new GLib.StringBuilder();
         m_method = method;
 		m_session = new Soup.Session();
+        m_session.user_agent = Constants.USER_AGENT;
         m_session.ssl_strict = false;
 		m_contenttype = "application/json";
 		m_parser = new Json.Parser();

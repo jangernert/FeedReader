@@ -27,6 +27,7 @@ public class FeedReader.freshConnection {
 	public LoginResponse getSID()
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
 
 		var msg = new freshMessage();
@@ -71,6 +72,7 @@ public class FeedReader.freshConnection {
 	public string postRequest(string path, string input, string type)
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", m_utils.getURL()+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -88,6 +90,7 @@ public class FeedReader.freshConnection {
 	public string getRequest(string path)
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("GET", m_utils.getURL()+path);
 		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 

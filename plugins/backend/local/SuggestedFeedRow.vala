@@ -106,6 +106,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 			}
 
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.timeout = 5;
 			var msg = new Soup.Message("GET", m_url.escape(""));
 			session.send_message(msg);

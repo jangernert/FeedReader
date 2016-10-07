@@ -163,6 +163,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         }
 
         var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
         string message  = "user_id=" + settings.get_string("user-id")
         				+ "&username=" + settings.get_string("username")
                         + "&password=" + password

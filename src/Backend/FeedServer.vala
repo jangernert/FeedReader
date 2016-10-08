@@ -273,7 +273,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			for (var has_next = it.last(); has_next; has_next = it.previous())
 			{
 				article Article = it.get();
-				FeedServer.grabContent(Article);
 				new_articles.add(Article);
 
 				if(new_articles.size == chunksize || Article.getArticleID() == last)
@@ -308,48 +307,63 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	public static void grabContent(article Article)
+	public void grabContent()
 	{
-		if(!dbDaemon.get_default().article_exists(Article.getArticleID()))
+		Logger.debug("FeedServer: grabContent");
+		var articles = dbDaemon.get_default().readUnfetchedArticles();
+
+		if(articles.size > 0)
 		{
-			if(Settings.general().get_boolean("content-grabber"))
+			foreach(var Article in articles)
 			{
-				var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
-				if(grabber.process())
+				if(Settings.general().get_boolean("content-grabber"))
 				{
-					grabber.print();
-					if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+					var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
+					if(grabber.process())
 					{
-						Article.setAuthor(grabber.getAuthor());
+						grabber.print();
+						if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+						{
+							Article.setAuthor(grabber.getAuthor());
+						}
+						if(Article.getTitle() != "" && grabber.getTitle() != null)
+						{
+							Article.setTitle(grabber.getTitle());
+						}
+						string html = grabber.getArticle();
+						string xml = "<?xml";
+
+						while(html.has_prefix(xml))
+						{
+							int end = html.index_of_char('>');
+							html = html.slice(end+1, html.length).chug();
+						}
+
+						Article.setHTML(html);
 					}
-					if(Article.getTitle() != "" && grabber.getTitle() != null)
+					else
 					{
-						Article.setTitle(grabber.getTitle());
+						downloadImages(Article);
 					}
-					string html = grabber.getArticle();
-					string xml = "<?xml";
-
-					while(html.has_prefix(xml))
-					{
-						int end = html.index_of_char('>');
-						html = html.slice(end+1, html.length).chug();
-					}
-
-					Article.setHTML(html);
-
-					return;
 				}
+				else
+				{
+					downloadImages(Article);
+				}
+
+				dbDaemon.get_default().writeContent(Article);
 			}
 
-			if(Settings.tweaks().get_boolean("dont-download-images"))
-				return;
-
-			downloadImages(Article);
+			//update fulltext table
+			dbDaemon.get_default().updateFTS();
 		}
 	}
 
-	private static void downloadImages(article Article)
+	private void downloadImages(article Article)
 	{
+		if(Settings.tweaks().get_boolean("dont-download-images"))
+			return;
+
 		var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
         Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");

@@ -406,6 +406,41 @@ public class FeedReader.dbDaemon : dbBase {
         executeSQL("COMMIT TRANSACTION");
     }
 
+    public void writeContent(article Article)
+    {
+        executeSQL("BEGIN TRANSACTION");
+
+        var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+        update_query.updateValuePair("html", "$HTML");
+        update_query.updateValuePair("preview", "$PREVIEW");
+        update_query.updateValuePair("contentFetched", "1");
+        update_query.addEqualsCondition("articleID", Article.getArticleID(), true, true);
+        update_query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
+
+        if (ec != Sqlite.OK)
+        {
+			Logger.error(update_query.get());
+			Logger.error("update_articles: " + sqlite_db.errmsg());
+		}
+
+        int html_position = stmt.bind_parameter_index("$HTML");
+        int preview_position = stmt.bind_parameter_index("$PREVIEW");
+        assert (html_position > 0);
+        assert (preview_position > 0);
+
+
+        stmt.bind_text(html_position, Article.getHTML());
+        stmt.bind_text(preview_position, Article.getPreview());
+
+        while(stmt.step() != Sqlite.DONE) {}
+        stmt.reset();
+
+        executeSQL("COMMIT TRANSACTION");
+    }
+
     public void update_articles(Gee.LinkedList<article> articles)
     {
         executeSQL("BEGIN TRANSACTION");
@@ -477,6 +512,7 @@ public class FeedReader.dbDaemon : dbBase {
         query.insertValuePair("guidHash", "$GUIDHASH");
         query.insertValuePair("lastModified", "$LASTMODIFIED");
         query.insertValuePair("media", "$MEDIA");
+        query.insertValuePair("contentFetched", "0");
         query.build();
 
         Sqlite.Statement stmt;

@@ -47,6 +47,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.newFeedSelected.connect((feedID) => {
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
+			showArticleButtons(false);
 			m_articleList.setSelectedFeed(feedID);
 			newArticleList();
 
@@ -64,6 +65,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.newTagSelected.connect((tagID) => {
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
+			showArticleButtons(false);
 			m_articleList.setSelectedFeed(tagID);
 			newArticleList();
 			m_footer.setRemoveButtonSensitive(true);
@@ -73,6 +75,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.newCategorieSelected.connect((categorieID) => {
 			m_articleList.setSelectedType(FeedListType.CATEGORY);
 			m_article_view.clearContent();
+			showArticleButtons(false);
 			m_articleList.setSelectedFeed(categorieID);
 			newArticleList();
 
@@ -122,10 +125,6 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 					header.showMediaButton(row.haveMedia());
 				}
 			}
-		});
-
-		m_articleList.noRowActive.connect(() => {
-			showArticleButtons(false);
 		});
 
 		m_article_view = new articleView();
@@ -226,6 +225,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void clearArticleView()
 	{
+		showArticleButtons(false);
 		m_article_view.clearContent();
 	}
 

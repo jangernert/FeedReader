@@ -203,13 +203,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 
 		m_currentArticle = articleID;
-		switchViews();
-
-		if(m_FullscreenArticle)
-			m_currentView.zoom_level = m_FullscreenZoomLevel;
-		else
-			m_currentView.zoom_level = 1.0;
-
 
 		if(m_OngoingScrollID > 0)
 		{
@@ -231,6 +224,13 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		GLib.Idle.add(() => {
 			Logger.debug("ArticleView: WebView load html");
+			switchViews();
+
+			if(m_FullscreenArticle)
+				m_currentView.zoom_level = m_FullscreenZoomLevel;
+			else
+				m_currentView.zoom_level = 1.0;
+
 			m_fsHead.setTitle(Article.getTitle());
 			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
 			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
@@ -325,7 +325,17 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public void clearContent()
 	{
+		m_busy = true;
+		Gtk.Widget? oldView = null;
+		if(m_stack.get_visible_child_name() != "empty")
+			oldView = m_stack.get_visible_child();
 		m_stack.set_visible_child_name("empty");
+		GLib.Timeout.add(m_animationDuration + 10, () => {
+			if(oldView != null)
+				m_stack.remove(oldView);
+			checkQueue();
+			return false;
+		});
 		m_currentArticle = "";
 	}
 

@@ -34,6 +34,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private Gtk.Spinner m_syncSpinner;
 	private uint m_scrollChangedTimeout = 0;
 	private const int m_dynamicRowThreshold = 10;
+	private ulong m_handlerID = 0;
 
 	public signal void row_activated(articleRow? row);
 	public signal void noRowActive();
@@ -162,15 +163,19 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentList.newList(articles);
 
 		// restore the previous selected row
-		ulong handlerID = 0;
-		handlerID = m_currentList.loadDone.connect(() => {
+		m_handlerID = m_currentList.loadDone.connect(() => {
 			restoreSelectedRow();
 			restoreScrollPos();
 			loadNewAfterDelay(500, null);
 			m_currentScroll.scrolledBottom.connect(loadMore);
 			if(Settings.state().get_int("articlelist-new-rows") > 0)
 				showNotification();
-			m_currentList.disconnect(handlerID);
+
+			if(m_handlerID != 0)
+			{
+				m_currentList.disconnect(m_handlerID);
+				m_handlerID = 0;
+			}
 		});
 	}
 

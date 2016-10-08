@@ -368,17 +368,27 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public string? getFirstRowID()
 	{
-		var firstRow = this.get_children().first().data as articleRow;
+		var children = this.get_children();
 
-		if(firstRow != null)
-			return firstRow.getID();
+		if(children == null)
+			return null;
 
-		return null;
+		var firstRow = children.first().data as articleRow;
+
+		if(firstRow == null)
+			return null;
+
+		return firstRow.getID();
 	}
 
 	public string? getLastRowID()
 	{
-		var lastRow = this.get_children().last().data as articleRow;
+		var children = this.get_children();
+
+		if(children == null)
+			return null;
+
+		var lastRow = children.last().data as articleRow;
 
 		if(lastRow != null)
 			return lastRow.getID();

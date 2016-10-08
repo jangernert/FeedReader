@@ -475,7 +475,6 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public article read_article(string articleID)
 	{
-		Logger.debug(@"dbBase.read_article($articleID)");
 		article tmp = null;
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");

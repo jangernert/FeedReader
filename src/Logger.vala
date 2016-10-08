@@ -175,9 +175,8 @@ public class FeedReader.Logger : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			set_color(ConsoleColor.RED);
-			stdout.printf("[ ERROR ] ");
-			stderr.printf("error writing log to file: %s\n", e.message);
+			stderr.printf("[ ERROR ] error writing log to file: %s\n", e.message);
+			stderr.printf("[ ERROR ] %s\n", text);
 			reset_color();
 		}
 	}

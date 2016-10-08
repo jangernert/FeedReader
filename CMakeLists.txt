@@ -138,10 +138,6 @@ vala_precompile(UI ${UI_NAME}
     src/dbUI.vala
     src/UtilsUI.vala
     src/Widgets/AddPopover.vala
-    src/Widgets/ArticleList.vala
-    src/Widgets/ArticleListBox.vala
-    src/Widgets/ArticleListEmptyLabel.vala
-    src/Widgets/ArticleListScroll.vala
     src/Widgets/ArticleRow.vala
     src/Widgets/ArticleView.vala
     src/Widgets/BackendInfoPopover.vala
@@ -181,6 +177,10 @@ vala_precompile(UI ${UI_NAME}
     src/Widgets/TagPopoverRow.vala
     src/Widgets/UpdateButton.vala
     src/Widgets/WebLoginPage.vala
+    src/Widgets/ArticleList/ArticleList.vala
+    src/Widgets/ArticleList/ArticleListBox.vala
+    src/Widgets/ArticleList/ArticleListEmptyLabel.vala
+    src/Widgets/ArticleList/ArticleListScroll.vala
     src/Share/share.vala
     src/Share/ServiceSetup.vala
     src/Share/ShareAccountInterface.vala

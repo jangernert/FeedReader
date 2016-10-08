@@ -102,10 +102,6 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), true);
 			m_feedList.removeEmptyTagRow();
 		});
-		m_articleList.drag_failed.connect((context, result) => {
-			Logger.debug("ContentPage: articleList drag_failed signal");
-			return true;
-		});
 		setArticleListState((ArticleListState)Settings.state().get_enum("show-articles"));
 
 		m_pane2.pack2(m_articleList, false, false);

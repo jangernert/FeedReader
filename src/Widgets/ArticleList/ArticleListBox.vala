@@ -84,7 +84,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			newRow.rowStateChanged.connect(rowStateChanged);
 			newRow.drag_begin.connect((context) => {drag_begin(context);});
 			newRow.drag_end.connect((context) => {drag_end(context);});
-			newRow.drag_failed.connect((context, result) => {drag_failed(context, result); return true;});
 			newRow.highlight_row.connect(highlightRow);
 			newRow.revert_highlight.connect(unHighlightRow);
 

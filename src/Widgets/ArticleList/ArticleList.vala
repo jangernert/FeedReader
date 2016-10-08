@@ -72,6 +72,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_List2.balanceNextScroll.connect(m_scroll2.balanceNextScroll);
 		m_List1.key_press_event.connect(keyPressed);
 		m_List2.key_press_event.connect(keyPressed);
+		m_List1.drag_begin.connect((context) => {drag_begin(context);});
+		m_List2.drag_begin.connect((context) => {drag_begin(context);});
+		m_List1.drag_end.connect((context) => {drag_end(context);});
+		m_List2.drag_end.connect((context) => {drag_end(context);});
 		m_scroll1.add(m_List1);
 		m_scroll2.add(m_List2);
 

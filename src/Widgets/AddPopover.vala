@@ -30,26 +30,12 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		this.relative_to = parent;
 		this.position = Gtk.PositionType.TOP;
 
-		Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
-		Gtk.TreeIter iter;
-		m_cats = dbUI.get_default().read_categories();
-
-		foreach(var cat in m_cats)
-		{
-			list_store.append(out iter);
-			list_store.set(iter, 0, cat.getTitle());
-		}
-
 		m_urlEntry = new Gtk.Entry();
 		m_urlEntry.activate.connect(() => {
 			m_catEntry.grab_focus();
 		});
 		m_catEntry = new Gtk.Entry();
-		m_complete = new Gtk.EntryCompletion();
-		m_complete.set_model(list_store);
-		m_complete.set_text_column(0);
 		m_catEntry.placeholder_text = _("Uncategorized");
-		m_catEntry.set_completion(m_complete);
 		m_catEntry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-clear");
 		m_catEntry.activate.connect(addFeed);
 		m_catEntry.icon_press.connect((pos, event) => {
@@ -113,6 +99,23 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		this.add(m_box);
 		this.show_all();
 		m_urlEntry.grab_focus();
+
+		GLib.Idle.add(() => {
+			Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
+			Gtk.TreeIter iter;
+			m_cats = dbUI.get_default().read_categories();
+
+			foreach(var cat in m_cats)
+			{
+				list_store.append(out iter);
+				list_store.set(iter, 0, cat.getTitle());
+			}
+			m_complete = new Gtk.EntryCompletion();
+			m_complete.set_text_column(0);
+			m_complete.set_model(list_store);
+			m_catEntry.set_completion(m_complete);
+			return false;
+		});
 	}
 
 	private void addFeed()

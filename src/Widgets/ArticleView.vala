@@ -350,12 +350,15 @@ public class FeedReader.articleView : Gtk.Overlay {
 		return false;
 	}
 
-	public void reload()
+	public void load(string? id = null)
 	{
-		fillContent(m_currentArticle);
+		string articleID = (id == null) ? m_currentArticle : id;
+		fillContent.begin(articleID, (obj, res) => {
+			fillContent.end(res);
+		});
 	}
 
-	public void fillContent(string articleID)
+	public async void fillContent(string articleID)
 	{
 		m_currentArticle = articleID;
 		Logger.debug("ArticleView: load article %s".printf(articleID));
@@ -384,9 +387,20 @@ public class FeedReader.articleView : Gtk.Overlay {
             m_OngoingScrollID = 0;
         }
 
-		var Article = dbUI.get_default().read_article(articleID);
+		article Article = null;
+		SourceFunc callback = fillContent.callback;
+
+		ThreadFunc<void*> run = () => {
+			Article = dbUI.get_default().read_article(articleID);
+			Idle.add((owned) callback);
+			return null;
+		};
+
+		new GLib.Thread<void*>("fillContent", run);
+		yield;
 
 		GLib.Idle.add(() => {
+			Logger.debug("ArticleView: WebView load html");
 			m_fsHead.setTitle(Article.getTitle());
 			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
 			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
@@ -448,7 +462,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 					Logger.debug("ArticleView: loading finished before canceling");
 					m_currentView.load_failed.disconnect(loadFailed);
 					m_stopLoading = false;
-					reload();
+					load();
 				}
 				if(m_firstTime)
 				{
@@ -460,6 +474,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 				recalculate.begin((obj, res) => {
 					recalculate.end(res);
 				});
+				break;
+			default:
+				Logger.debug("ArticleView: load ??????");
 				break;
 		}
 	}
@@ -474,7 +491,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			WebKit.WebContext.get_default().clear_cache();
 			m_currentView.load_failed.disconnect(loadFailed);
 			m_stopLoading = false;
-			reload();
+			load();
 		}
 		return true;
 	}
@@ -802,6 +819,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.scroll_event.disconnect(onScroll);
 		m_currentView.key_press_event.disconnect(onKeyPress);
 		m_currentView.web_process_crashed.disconnect(onCrash);
+		m_currentView.notify["estimated-load-progress"].disconnect(printProgress);
 
 		switch(m_stack.get_visible_child_name())
 		{
@@ -839,6 +857,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentView.scroll_event.connect(onScroll);
 		m_currentView.key_press_event.connect(onKeyPress);
 		m_currentView.web_process_crashed.connect(onCrash);
+		m_currentView.notify["estimated-load-progress"].connect(printProgress);
 
 		if(m_FullscreenArticle)
 		{
@@ -854,6 +873,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 			else
 				m_nextButton.reveal(true);
 		}
+	}
+
+	private void printProgress()
+	{
+		Logger.debug("ArticleView: loading %i %%".printf((int)(m_currentView.estimated_load_progress*100)));
 	}
 
 	public void setMarked(bool marked)

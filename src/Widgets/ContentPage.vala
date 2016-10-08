@@ -114,7 +114,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_articleList.row_activated.connect((row) => {
 			if(m_article_view.getCurrentArticle() != row.getID())
 			{
-				m_article_view.fillContent(row.getID());
+				m_article_view.load(row.getID());
 				showArticleButtons(true);
 				var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 				if(window != null)
@@ -207,7 +207,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void reloadArticleView()
 	{
-		m_article_view.reload();
+		m_article_view.load();
 	}
 
 	public void updateArticleList()

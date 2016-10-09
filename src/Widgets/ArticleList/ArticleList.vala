@@ -33,11 +33,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private ArticleListBox m_List2;
 	private Gtk.Spinner m_syncSpinner;
 	private uint m_scrollChangedTimeout = 0;
+	private uint m_loadNewTimeout = 0;
 	private const int m_dynamicRowThreshold = 10;
 	private ulong m_handlerID = 0;
 
 	public signal void row_activated(articleRow? row);
-	public signal void noRowActive();
 
 	public ArticleList()
 	{
@@ -211,8 +211,16 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private void loadNewAfterDelay(int delay, int? newCount = null)
 	{
 		Logger.debug(@"ArticleList: loadNewAfterDelay($delay, %s)".printf((newCount == null) ? "null" : newCount.to_string()));
-		GLib.Timeout.add(delay, () => {
+
+		if(m_loadNewTimeout != 0)
+		{
+			GLib.Source.remove(m_loadNewTimeout);
+			m_loadNewTimeout = 0;
+		}
+
+		m_loadNewTimeout = GLib.Timeout.add(delay, () => {
 			int? count = newCount;
+			m_loadNewTimeout = 0;
 			if(newCount == null)
 			{
 				string? firstRowID = m_currentList.getFirstRowID();

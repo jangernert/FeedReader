@@ -103,7 +103,8 @@ public class FeedReader.dbBase : GLib.Object {
 												"date" DATETIME NOT NULL,
 												"guidHash" TEXT,
 												"lastModified" INTEGER,
-												"media" TEXT
+												"media" TEXT,
+												"contentFetched" INTEGER NOT NULL
 											)""");
 
 			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
@@ -475,7 +476,6 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public article read_article(string articleID)
 	{
-		Logger.debug(@"dbBase.read_article($articleID)");
 		article tmp = null;
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
@@ -1265,6 +1265,50 @@ public class FeedReader.dbBase : GLib.Object {
 
 				tmp.add(tmpcategory);
 			}
+		}
+
+		return tmp;
+	}
+
+	public Gee.LinkedList<article> readUnfetchedArticles()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("articleID");
+		query.selectField("url");
+		query.selectField("preview");
+		query.selectField("html");
+
+		query.addEqualsCondition("contentFetched", "0", true, false);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+
+		var tmp = new Gee.LinkedList<article>();
+		while (stmt.step () == Sqlite.ROW)
+		{
+			tmp.add(new article(
+								stmt.column_text(0),								// articleID
+								"",													// title
+								stmt.column_text(1),								// url
+								"",													// feedID
+								ArticleStatus.UNREAD,								// unread
+								ArticleStatus.UNMARKED,								// marked
+								stmt.column_text(3),								// html
+								stmt.column_text(2),								// preview
+								"",													// author
+								Utils.convertStringToDate("2016-10-08 22:57:00"),	// date
+								0,													// sortID
+								"",													// tags
+								"",													// media
+								""													// guid
+							));
 		}
 
 		return tmp;

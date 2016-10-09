@@ -25,6 +25,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public signal void updateArticleList();
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
+	public signal void updateSyncProgress(string progress);
 
 	private static FeedServer? m_server;
 
@@ -124,6 +125,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
+		updateSyncProgress(_("Getting feeds and categories"));
+
 		if(!getFeedsAndCats(feeds, categories, tags))
 		{
 			Logger.error("FeedServer: something went wrong getting categories and feeds");
@@ -160,6 +163,8 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
+
+		updateSyncProgress(_("Getting articles"));
 
 		if(unread > max && useMaxArticles())
 		{
@@ -217,6 +222,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
+		updateSyncProgress(_("Getting feeds and categories"));
+
 		getFeedsAndCats(feeds, categories, tags);
 
 		// write categories
@@ -231,9 +238,11 @@ public class FeedReader.FeedServer : GLib.Object {
 		newFeedList();
 
 		// get marked articles
+		updateSyncProgress(_("Getting starred articles"));
 		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED);
 
 		// get articles for each tag
+		updateSyncProgress(_("Getting tagged articles"));
 		foreach(var tag_item in tags)
 		{
 			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
@@ -246,6 +255,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 
 		// get unread articles
+		updateSyncProgress(_("Getting unread articles"));
 		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 		//update fulltext table
@@ -273,7 +283,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			for (var has_next = it.last(); has_next; has_next = it.previous())
 			{
 				article Article = it.get();
-				FeedServer.grabContent(Article);
 				new_articles.add(Article);
 
 				if(new_articles.size == chunksize || Article.getArticleID() == last)
@@ -308,48 +317,66 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	public static void grabContent(article Article)
+	public void grabContent()
 	{
-		if(!dbDaemon.get_default().article_exists(Article.getArticleID()))
+		Logger.debug("FeedServer: grabContent");
+		var articles = dbDaemon.get_default().readUnfetchedArticles();
+		int size = articles.size;
+		int i = 0;
+
+		if(size > 0)
 		{
-			if(Settings.general().get_boolean("content-grabber"))
+			foreach(var Article in articles)
 			{
-				var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
-				if(grabber.process())
+				updateSyncProgress(_(@"Grabbing full content: $i / $size"));
+				if(Settings.general().get_boolean("content-grabber"))
 				{
-					grabber.print();
-					if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+					var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
+					if(grabber.process())
 					{
-						Article.setAuthor(grabber.getAuthor());
+						grabber.print();
+						if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+						{
+							Article.setAuthor(grabber.getAuthor());
+						}
+						if(Article.getTitle() != "" && grabber.getTitle() != null)
+						{
+							Article.setTitle(grabber.getTitle());
+						}
+						string html = grabber.getArticle();
+						string xml = "<?xml";
+
+						while(html.has_prefix(xml))
+						{
+							int end = html.index_of_char('>');
+							html = html.slice(end+1, html.length).chug();
+						}
+
+						Article.setHTML(html);
 					}
-					if(Article.getTitle() != "" && grabber.getTitle() != null)
+					else
 					{
-						Article.setTitle(grabber.getTitle());
+						downloadImages(Article);
 					}
-					string html = grabber.getArticle();
-					string xml = "<?xml";
-
-					while(html.has_prefix(xml))
-					{
-						int end = html.index_of_char('>');
-						html = html.slice(end+1, html.length).chug();
-					}
-
-					Article.setHTML(html);
-
-					return;
 				}
+				else
+				{
+					downloadImages(Article);
+				}
+
+				dbDaemon.get_default().writeContent(Article);
 			}
 
-			if(Settings.tweaks().get_boolean("dont-download-images"))
-				return;
-
-			downloadImages(Article);
+			//update fulltext table
+			dbDaemon.get_default().updateFTS();
 		}
 	}
 
-	private static void downloadImages(article Article)
+	private void downloadImages(article Article)
 	{
+		if(Settings.tweaks().get_boolean("dont-download-images"))
+			return;
+
 		var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
         Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");

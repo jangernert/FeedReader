@@ -338,9 +338,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
                 	date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
 				}
 
-				Logger.info(item.title);
-				Logger.info(m_utils.convert(item.title, locale));
-
 				string content = m_utils.convert(item.description, locale);
 
 				string media = "";
@@ -380,7 +377,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			foreach(article Article in articleArray)
 			{
 				int before = dbDaemon.get_default().getHighestRowID();
-				FeedServer.grabContent(Article);
 				new_articles.add(Article);
 
 				if(new_articles.size == 10 || Article.getArticleID() == last)

@@ -314,13 +314,12 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			foreach(article Article in articles)
 			{
 				int before = dbDaemon.get_default().getHighestRowID();
-				FeedServer.grabContent(Article);
 				new_articles.add(Article);
 
 				if(new_articles.size == 10 || Article.getArticleID() == last)
 				{
 					writeInterfaceState();
-					Logger.debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
+					Logger.debug("ttrssInterface: write batch of %i articles to db".printf(new_articles.size));
 					dbDaemon.get_default().write_articles(new_articles);
 					updateFeedList();
 					updateArticleList();

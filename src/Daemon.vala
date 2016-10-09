@@ -43,6 +43,7 @@ namespace FeedReader {
 		public signal void setOnline();
 		public signal void feedAdded();
 		public signal void opmlImported();
+		public signal void updateSyncProgress(string progress);
 
 		private static FeedDaemonServer? m_daemon;
 
@@ -195,6 +196,7 @@ namespace FeedReader {
 				Settings.state().set_boolean("currently-updating", true);
 				FeedServer.get_default().syncContent();
 				updateBadge();
+				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();
 				Logger.info("daemon: sync finished");
@@ -260,6 +262,7 @@ namespace FeedReader {
 				Settings.state().set_boolean("currently-updating", true);
 				FeedServer.get_default().InitSyncContent();
 				updateBadge();
+				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();
 				Logger.info("daemon: initSync finished");
@@ -312,6 +315,10 @@ namespace FeedReader {
 
 			FeedServer.get_default().showArticleListOverlay.connect(() => {
 				showArticleListOverlay();
+			});
+
+			FeedServer.get_default().updateSyncProgress.connect((progress) => {
+				updateSyncProgress(progress);
 			});
 
 			m_loggedin = FeedServer.get_default().login();

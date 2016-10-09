@@ -103,6 +103,7 @@ namespace FeedReader {
 			try
 			{
 				Logger.debug("Shutdown!");
+				Gst.deinit();
 				if(Settings.tweaks().get_boolean("quit-daemon"))
 					DBusConnection.get_default().quit();
 				base.shutdown();

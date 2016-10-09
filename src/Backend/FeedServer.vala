@@ -25,6 +25,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	public signal void updateArticleList();
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
+	public signal void updateSyncProgress(string progress);
 
 	private static FeedServer? m_server;
 
@@ -124,6 +125,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
+		updateSyncProgress(_("Getting feeds and categories"));
+
 		if(!getFeedsAndCats(feeds, categories, tags))
 		{
 			Logger.error("FeedServer: something went wrong getting categories and feeds");
@@ -160,6 +163,8 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
+
+		updateSyncProgress(_("Getting articles"));
 
 		if(unread > max && useMaxArticles())
 		{
@@ -217,6 +222,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
+		updateSyncProgress(_("Getting feeds and categories"));
+
 		getFeedsAndCats(feeds, categories, tags);
 
 		// write categories
@@ -231,9 +238,11 @@ public class FeedReader.FeedServer : GLib.Object {
 		newFeedList();
 
 		// get marked articles
+		updateSyncProgress(_("Getting starred articles"));
 		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED);
 
 		// get articles for each tag
+		updateSyncProgress(_("Getting tagged articles"));
 		foreach(var tag_item in tags)
 		{
 			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
@@ -246,6 +255,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 
 		// get unread articles
+		updateSyncProgress(_("Getting unread articles"));
 		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 		//update fulltext table
@@ -311,11 +321,14 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		Logger.debug("FeedServer: grabContent");
 		var articles = dbDaemon.get_default().readUnfetchedArticles();
+		int size = articles.size;
+		int i = 0;
 
-		if(articles.size > 0)
+		if(size > 0)
 		{
 			foreach(var Article in articles)
 			{
+				updateSyncProgress(_(@"Grabbing full content: $i / $size"));
 				if(Settings.general().get_boolean("content-grabber"))
 				{
 					var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());

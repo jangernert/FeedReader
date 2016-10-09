@@ -88,6 +88,7 @@ namespace FeedReader {
 		public signal void setOnline();
 		public signal void feedAdded();
 		public signal void opmlImported();
+		public signal void updateSyncProgress(string progress);
 	}
 
 
@@ -218,6 +219,11 @@ namespace FeedReader {
 			m_connection.opmlImported.connect(() => {
 				Logger.debug("DBusConnection: opmlImported");
 				window.getContent().footerSetReady();
+			});
+
+			m_connection.updateSyncProgress.connect((progress) => {
+				Logger.debug("DBusConnection: updateSyncProgress");
+				window.getHeaderBar().updateSyncProgress(progress);
 			});
 		}
 

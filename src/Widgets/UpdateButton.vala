@@ -37,7 +37,6 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(16,16);
-		m_spinner.get_style_context().add_class("feedlist-spinner");
 
 		m_stack = new Gtk.Stack();
 		m_stack.add_named(m_spinner, "spinner");
@@ -55,21 +54,20 @@ public class FeedReader.UpdateButton : Gtk.Button {
 			updating(false);
 	}
 
-	public void updating(bool status)
+	public void updating(bool status, bool insensitive = true)
 	{
-
 		Logger.debug("UpdateButton: update status");
 		m_status = status;
+		if(insensitive)
+			this.setSensitive(!status);
 		if(status)
 		{
 			m_stack.set_visible_child_name("spinner");
-			this.setSensitive(false);
 			m_spinner.start();
 		}
 		else
 		{
 			m_stack.set_visible_child_name("icon");
-			this.setSensitive(true);
 			m_spinner.stop();
 		}
 	}

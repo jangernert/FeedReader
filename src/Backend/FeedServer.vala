@@ -328,6 +328,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			foreach(var Article in articles)
 			{
+				++i;
 				updateSyncProgress(_(@"Grabbing full content: $i / $size"));
 				if(Settings.general().get_boolean("content-grabber"))
 				{

@@ -39,6 +39,8 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		m_spinner.set_size_request(16,16);
 
 		m_stack = new Gtk.Stack();
+		m_stack.set_transition_duration(100);
+		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.add_named(m_spinner, "spinner");
 		m_stack.add_named(m_icon, "icon");
 

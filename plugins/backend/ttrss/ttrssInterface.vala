@@ -310,7 +310,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			int before = dbDaemon.get_default().getHighestRowID();
 			writeInterfaceState();
-			dbDaemon.get_default().write_articles(new_articles);
+			dbDaemon.get_default().write_articles(articles);
 			updateFeedList();
 			updateArticleList();
 			setNewRows(before);

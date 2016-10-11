@@ -21,7 +21,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
 	public signal void setNewRows(int before);
-	public signal void writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize);
+	public signal void writeArticles(Gee.LinkedList<article> articles);
 
 	public abstract void init();
 

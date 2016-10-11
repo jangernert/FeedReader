@@ -375,7 +375,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			writeInterfaceState();
 			updateFeedList();
 			updateArticleList();
-			dbDaemon.get_default().write_articles(new_articles);
+			dbDaemon.get_default().write_articles(articleArray);
 			setNewRows(before);
 		}
 	}

@@ -55,7 +55,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_plugin.writeInterfaceState.connect(() => { writeInterfaceState(); });
 			m_plugin.showArticleListOverlay.connect(() => { showArticleListOverlay(); });
 			m_plugin.setNewRows.connect((before) => { setNewRows(before); });
-			m_plugin.writeArticlesInChunks.connect((articles, chunksize) => { writeArticlesInChunks(articles, chunksize); });
+			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
 		});
 
 		m_extensions.extension_removed.connect((info, extension) => {
@@ -273,7 +273,6 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		if(articles.size > 0)
 		{
-			string last = articles.first().getArticleID();
 			dbDaemon.get_default().update_articles(articles);
 			var new_articles = new Gee.LinkedList<article>();
 

@@ -269,30 +269,23 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	private void writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize)
+	private void writeArticles(Gee.LinkedList<article> articles)
 	{
 		if(articles.size > 0)
 		{
 			string last = articles.first().getArticleID();
 			dbDaemon.get_default().update_articles(articles);
-			updateFeedList();
-			updateArticleList();
 			var new_articles = new Gee.LinkedList<article>();
 
 			var it = articles.bidir_list_iterator();
 			for (var has_next = it.last(); has_next; has_next = it.previous())
-			{
-				article Article = it.get();
-				new_articles.add(Article);
+				new_articles.add(it.get());
 
-				if(new_articles.size == chunksize || Article.getArticleID() == last)
-				{
-					int before = dbDaemon.get_default().getHighestRowID();
-					dbDaemon.get_default().write_articles(new_articles);
-					new_articles = new Gee.LinkedList<article>();
-					setNewRows(before);
-				}
-			}
+			int before = dbDaemon.get_default().getHighestRowID();
+			dbDaemon.get_default().write_articles(new_articles);
+			updateFeedList();
+			updateArticleList();
+			setNewRows(before);
 		}
 	}
 

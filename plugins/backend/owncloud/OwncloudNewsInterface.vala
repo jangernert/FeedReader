@@ -264,7 +264,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		else
 			m_api.getArticles(articles, 0, -1, read, type, id);
 
-		writeArticlesInChunks(articles, 10);
+		writeArticles(articles);
 	}
 }
 

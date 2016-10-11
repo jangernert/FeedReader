@@ -297,7 +297,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 				left = 0;
 			}
 		}
-		writeArticlesInChunks(articles, 10);
+		writeArticles(articles);
 	}
 
 }

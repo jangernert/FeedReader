@@ -311,7 +311,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		}
 		while(articleCount == 100);
 
-		writeArticlesInChunks(articles, 10);
+		writeArticles(articles);
 
 		dbDaemon.get_default().updateArticlesByID(m_api.unreadEntries(), "unread");
 		dbDaemon.get_default().updateArticlesByID(m_api.starredEntries(), "marked");

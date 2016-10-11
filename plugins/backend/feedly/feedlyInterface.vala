@@ -301,7 +301,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 				break;
 		}
 
-		writeArticlesInChunks(articles, 10);
+		writeArticles(articles);
 	}
 }
 

@@ -133,8 +133,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				height = 1200;
 			uint limit = height/100 + 5;
 			uint offset = getListOffset();
-			if(m_state == ArticleListState.ALL)
-				offset += (uint)Settings.state().get_int("articlelist-new-rows");
 
 			Logger.debug("load articles from db");
 			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
@@ -491,7 +489,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private uint getListOffset()
 	{
 		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
+		if(m_state == ArticleListState.ALL)
+			offset += (uint)Settings.state().get_int("articlelist-new-rows");
 		Settings.state().set_int("articlelist-row-offset", 0);
+		Settings.state().set_int("articlelist-new-rows", 0);
 		return offset;
 	}
 

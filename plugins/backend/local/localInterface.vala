@@ -371,25 +371,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articleArray.size > 0)
 		{
-			var new_articles = new Gee.LinkedList<article>();
-			string last = articleArray.last().getArticleID();
-
-			foreach(article Article in articleArray)
-			{
-				int before = dbDaemon.get_default().getHighestRowID();
-				new_articles.add(Article);
-
-				if(new_articles.size == 10 || Article.getArticleID() == last)
-				{
-					writeInterfaceState();
-					Logger.debug("FeedServer: write batch of %i articles to db".printf(new_articles.size));
-					dbDaemon.get_default().write_articles(new_articles);
-					updateFeedList();
-					updateArticleList();
-					new_articles = new Gee.LinkedList<article>();
-					setNewRows(before);
-				}
-			}
+			int before = dbDaemon.get_default().getHighestRowID();
+			writeInterfaceState();
+			updateFeedList();
+			updateArticleList();
+			dbDaemon.get_default().write_articles(new_articles);
+			setNewRows(before);
 		}
 	}
 

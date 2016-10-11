@@ -308,25 +308,12 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articles.size > 0)
 		{
-			var new_articles = new Gee.LinkedList<article>();
-			string last = articles.last().getArticleID();
-
-			foreach(article Article in articles)
-			{
-				int before = dbDaemon.get_default().getHighestRowID();
-				new_articles.add(Article);
-
-				if(new_articles.size == 10 || Article.getArticleID() == last)
-				{
-					writeInterfaceState();
-					Logger.debug("ttrssInterface: write batch of %i articles to db".printf(new_articles.size));
-					dbDaemon.get_default().write_articles(new_articles);
-					updateFeedList();
-					updateArticleList();
-					new_articles = new Gee.LinkedList<article>();
-					setNewRows(before);
-				}
-			}
+			int before = dbDaemon.get_default().getHighestRowID();
+			writeInterfaceState();
+			dbDaemon.get_default().write_articles(new_articles);
+			updateFeedList();
+			updateArticleList();
+			setNewRows(before);
 		}
 	}
 

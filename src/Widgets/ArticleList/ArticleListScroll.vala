@@ -25,7 +25,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private ArticleListBalance m_balance = ArticleListBalance.NONE;
 
 	private bool m_scrolledBottomOnCooldown = false;
-	private int m_scrolledBottomCooldown = 500; // cooldown in ms
+	private int m_scrolledBottomCooldown = 200; // cooldown in ms
 
 	//Transition times
     private int64 m_startTime;
@@ -51,6 +51,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			this.vadjustment.value += inc;
 			m_balance = ArticleListBalance.NONE;
 		}
+		checkScrolledDown();
 		m_upperCache = vadjustment.upper;
 		m_valueCache = vadjustment.value;
     }
@@ -65,6 +66,21 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		if(vadjustment.value < 2.0)
 			scrolledTop();
 
+		checkScrolledDown();
+
+		double upper = vadjustment.upper;
+		if(m_balance == ArticleListBalance.BOTTOM)
+		{
+			double inc = (upper - m_upperCache);
+			this.vadjustment.value -= inc;
+			m_balance = ArticleListBalance.NONE;
+		}
+		m_upperCache = vadjustment.upper;
+		m_valueCache = vadjustment.value;
+	}
+
+	private void checkScrolledDown()
+	{
 		double max = vadjustment.upper - vadjustment.page_size;
 		if(vadjustment.value >= max - m_bottomThreshold
 		&& !m_scrolledBottomOnCooldown)
@@ -76,16 +92,6 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 				return false;
 			});
 		}
-
-		double upper = vadjustment.upper;
-		if(m_balance == ArticleListBalance.BOTTOM)
-		{
-			double inc = (upper - m_upperCache);
-			this.vadjustment.value -= inc;
-			m_balance = ArticleListBalance.NONE;
-		}
-		m_upperCache = vadjustment.upper;
-		m_valueCache = vadjustment.value;
 	}
 
 	public void balanceNextScroll(ArticleListBalance mode)

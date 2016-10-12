@@ -416,6 +416,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private int getScollUpper()
 	{
+		if(m_stack.get_visible_child_name() == "empty")
+			return 0;
+
 		string javascript = """
 								document.title = Math.max	(
 																document.body.scrollHeight,
@@ -447,6 +450,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public int getScrollPos()
 	{
+		if(m_stack.get_visible_child_name() == "empty")
+			return 0;
+
 		// use mainloop to prevent app from shutting down before the result can be fetched
 		// ugly but works =/
 		// better solution welcome
@@ -454,18 +460,18 @@ public class FeedReader.articleView : Gtk.Overlay {
 		int scrollPos = -1;
 		var loop = new MainLoop();
 
-			m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
-				try
-				{
-					m_currentView.run_javascript.end(res);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("ArticleView: could not get scroll-pos, javascript error: " + e.message);
-				}
-				scrollPos = int.parse(m_currentView.get_title());
-				loop.quit();
-			});
+		m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
+			try
+			{
+				m_currentView.run_javascript.end(res);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("ArticleView: could not get scroll-pos, javascript error: " + e.message);
+			}
+			scrollPos = int.parse(m_currentView.get_title());
+			loop.quit();
+		});
 
 		loop.run();
 		return scrollPos;

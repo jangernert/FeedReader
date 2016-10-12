@@ -179,6 +179,9 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	private async void loadMore()
 	{
+		if(m_currentList == null)
+			return;
+		
 		Logger.debug("ArticleList.loadmore()");
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadMore.callback;

@@ -88,8 +88,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		if(vadjustment.value >= max - m_bottomThreshold
 		&& !m_scrolledBottomOnCooldown)
 		{
-			scrolledBottom();
 			m_scrolledBottomOnCooldown = true;
+			scrolledBottom();
 			GLib.Timeout.add(m_scrolledBottomCooldown, () => {
 				m_scrolledBottomOnCooldown = false;
 				return false;

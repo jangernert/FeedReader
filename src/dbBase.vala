@@ -34,17 +34,20 @@ public class FeedReader.dbBase : GLib.Object {
 		var path = GLib.File.new_for_path(db_path);
 		if(!path.query_exists())
 		{
-			try{
+			try
+			{
 				path.make_directory_with_parents();
 			}
-			catch(GLib.Error e){
+			catch(GLib.Error e)
+			{
 				Logger.error("Can't create directory for database: %s".printf(e.message));
 			}
 		}
+
 		int rc = Sqlite.Database.open_v2(db_path + dbFile, out sqlite_db);
-		if (rc != Sqlite.OK) {
+		if(rc != Sqlite.OK)
 			Logger.error("Can't open database: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
-		}
+
 		sqlite_db.busy_timeout(1000);
 		sqlite_db.update_hook(watchDog);
 	}
@@ -59,7 +62,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	private void errorLogCallback(int eCode, string msg)
 	{
-		Logger.error(eCode.to_string() + ": " + msg);
+		Logger.error("dbErrorLog: " + eCode.to_string() + ": " + msg);
 	}
 
 	public void init()
@@ -137,6 +140,39 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 	}
 
+	public bool uninitialized()
+	{
+		string query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='articles'";
+
+		int count = -1;
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2(query, query.length, out stmt);
+		if(ec != Sqlite.OK)
+		{
+			Logger.error(query);
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		while(stmt.step() == Sqlite.ROW)
+		{
+			count = stmt.column_int(0);
+		}
+		stmt.reset();
+
+		if(count == 0)
+		{
+			Logger.warning("database uninitialized");
+			return true;
+		}
+		else if(count == 1)
+		{
+			Logger.debug("database already initialized");
+			return false;
+		}
+
+		return true;
+	}
+
 	public bool isEmpty()
 	{
 		if(!isTableEmpty("articles"))
@@ -171,18 +207,19 @@ public class FeedReader.dbBase : GLib.Object {
 
 		int count = -1;
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
+		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
 		{
 			Logger.error(query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		while (stmt.step () == Sqlite.ROW) {
+		while(stmt.step() == Sqlite.ROW)
+		{
 			count = stmt.column_int(0);
 		}
 		Logger.debug("count %i".printf(count));
-		stmt.reset ();
+		stmt.reset();
 
 		if(count > 0)
 			return false;
@@ -199,20 +236,22 @@ public class FeedReader.dbBase : GLib.Object {
 		query.build();
 
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
+		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
 		{
 			Logger.error(query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
 		int cols = stmt.column_count ();
-		while (stmt.step () == Sqlite.ROW) {
-			for (int i = 0; i < cols; i++) {
+		while (stmt.step() == Sqlite.ROW)
+		{
+			for(int i = 0; i < cols; i++)
+			{
 				count = stmt.column_int(i);
 			}
 		}
-		stmt.reset ();
+		stmt.reset();
 
 		return count;
 	}
@@ -482,16 +521,18 @@ public class FeedReader.dbBase : GLib.Object {
 		query.selectField("*");
 		query.addEqualsCondition("articleID", articleID, true, true);
 		query.build();
+		query.print();
 
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
+		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
 		{
 			Logger.error(query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		while (stmt.step () == Sqlite.ROW) {
+		while(stmt.step() == Sqlite.ROW)
+		{
 			string? author = (stmt.column_text(4) == "") ? null : stmt.column_text(4);
 			tmp = new article(
 								articleID,
@@ -510,7 +551,7 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(12)  // guid
 							);
 		}
-		stmt.reset ();
+		stmt.reset();
 		return tmp;
 	}
 

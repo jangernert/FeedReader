@@ -16,42 +16,42 @@
 namespace FeedReader {
 
 	public class TagID : GLib.Object {
-		public static const string NEW = "blubb";
+		public const string NEW = "blubb";
 	}
 
 	public class AboutInfo : GLib.Object {
-		public static const string programmName  = "FeedReader";
-		public static const string copyright     = "Copyright © 2016 Jan Lukas Gernert";
-		public static const string version       = "@VERSION@";
-		public static const string comments      = N_("Desktop Client for various RSS Services");
-		public static const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" ,null };
-		public static const string[] documenters = { "nobody", null };
-		public static const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
-		public static const string iconName      = "feedreader";
-		public static const string translators   = N_("translator-credits");
-		public static const string website       = "http://jangernert.github.io/FeedReader/";
+		public const string programmName  = "FeedReader";
+		public const string copyright     = "Copyright © 2016 Jan Lukas Gernert";
+		public const string version       = "@VERSION@";
+		public const string comments      = N_("Desktop Client for various RSS Services");
+		public const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" ,null };
+		public const string[] documenters = { "nobody", null };
+		public const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
+		public const string iconName      = "feedreader";
+		public const string translators   = N_("translator-credits");
+		public const string website       = "http://jangernert.github.io/FeedReader/";
 	}
 
 	public class Menu : GLib.Object {
-		public static const string about = _("About");
-		public static const string settings = _("Settings");
-		public static const string reset = _("Change Account");
-		public static const string quit = _("Quit");
-		public static const string bugs = _("Report a bug");
-		public static const string bounty = _("Bounties");
-		public static const string shortcuts = _("Shortcuts");
+		public const string about = _("About");
+		public const string settings = _("Settings");
+		public const string reset = _("Change Account");
+		public const string quit = _("Quit");
+		public const string bugs = _("Report a bug");
+		public const string bounty = _("Bounties");
+		public const string shortcuts = _("Shortcuts");
 	}
 
 
 	public class Constants : GLib.Object {
 
-		public static const string INSTALL_PREFIX	= "@CMAKE_INSTALL_PREFIX@";
-		public static const string GIT_SHA1		= "@GIT_SHA1@";
-		public static const string USER_AGENT		= "FeedReader @VERSION@";
-		public static const int DBusAPIVersion = 17;
+		public const string INSTALL_PREFIX	= "@CMAKE_INSTALL_PREFIX@";
+		public const string GIT_SHA1		= "@GIT_SHA1@";
+		public const string USER_AGENT		= "FeedReader @VERSION@";
+		public const int DBusAPIVersion = 17;
 
 		// tango colors
-		public static const string[] COLORS = {
+		public const string[] COLORS = {
 									"#edd400", // butter medium
 									"#f57900", // orange medium
 									"#c17d11", // chocolate medium

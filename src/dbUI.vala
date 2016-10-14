@@ -22,7 +22,8 @@ public class FeedReader.dbUI : dbBase {
         if(m_dataBase == null)
         {
             m_dataBase = new dbUI();
-            m_dataBase.init();
+            if(m_dataBase.uninitialized())
+                m_dataBase.init();
         }
 
 

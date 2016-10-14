@@ -124,7 +124,7 @@ namespace FeedReader {
 				}
 				catch(IOError e)
 				{
-					Logger.error(e.message);
+					Logger.error("FeedReader.sync: " + e.message);
 				}
 				Idle.add((owned) callback);
 				return null;
@@ -189,7 +189,8 @@ namespace FeedReader {
 
 		if(test)
 		{
-			UtilsUI.testGOA();
+			//UtilsUI.testGOA();
+			UtilsUI.testEPUB();
 			return 0;
 		}
 

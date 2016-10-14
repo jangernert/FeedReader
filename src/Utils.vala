@@ -328,7 +328,7 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			uint8[] contents;
 			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
-			file.load_contents (null, out contents, null);
+			file.load_contents(null, out contents, null);
 			string css_id = "$CSS";
 			int css_pos = article.str.index_of(css_id);
 			article.erase(css_pos, css_id.length);
@@ -336,7 +336,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error(e.message);
+			Logger.error("Utils.buildArticle: load CSS: " + e.message);
 		}
 
 
@@ -500,8 +500,7 @@ public class FeedReader.Utils : GLib.Object {
 	    }
 		catch (Error e)
 		{
-			Logger.error("Ping failed: %s".printf(host));
-			Logger.error(e.message);
+			Logger.error("Ping failed: %s, message: %s".printf(host, e.message));
 	    }
 
 		return false;

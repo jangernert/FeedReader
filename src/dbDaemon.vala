@@ -22,7 +22,8 @@ public class FeedReader.dbDaemon : dbBase {
         if(m_dataBase == null)
         {
             m_dataBase = new dbDaemon();
-            m_dataBase.init();
+            if(m_dataBase.uninitialized())
+                m_dataBase.init();
         }
 
 		return m_dataBase;

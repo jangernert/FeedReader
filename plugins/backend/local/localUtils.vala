@@ -107,10 +107,12 @@ public class FeedReader.localUtils : GLib.Object {
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
-		try{
+		try
+		{
 			path.make_directory_with_parents();
 		}
-		catch(GLib.Error e){
+		catch(GLib.Error e)
+		{
 			//Logger.debug(e.message);
 		}
 

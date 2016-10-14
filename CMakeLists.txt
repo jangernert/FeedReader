@@ -121,6 +121,7 @@ set(UI_PACKAGES
     libsoup-2.4
     sqlite3
     gee-0.8
+    #libxml-2.0
     libsecret-1
     libnotify
     rest-0.7
@@ -136,6 +137,7 @@ vala_precompile(UI ${UI_NAME}
     src/FeedReader.vala
     src/LoginInterface.vala
     src/dbUI.vala
+    #src/epubWriter.vala
     src/UtilsUI.vala
     src/Widgets/AddPopover.vala
     src/Widgets/ArticleRow.vala

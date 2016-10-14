@@ -117,8 +117,7 @@ namespace FeedReader {
 			}
 			catch(IOError e)
 			{
-				Logger.error("Failed to connect to daemon!");
-				Logger.error(e.message);
+				Logger.error("Failed to connect to daemon! " + e.message);
 				startDaemon();
 			}
 

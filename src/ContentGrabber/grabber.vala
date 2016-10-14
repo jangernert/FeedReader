@@ -210,7 +210,7 @@ public class FeedReader.Grabber : GLib.Object {
             }
             catch(ConvertError e)
             {
-                Logger.error(e.message);
+                Logger.error("grabber: failed to convert locale - " + e.message);
             }
         }
 
@@ -238,7 +238,7 @@ public class FeedReader.Grabber : GLib.Object {
         var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
         var doc = html_cntx.read_doc(m_rawHtml, "");
-        if (doc == null)
+        if(doc == null)
         {
             Logger.debug("Grabber: parsing failed");
     		return false;

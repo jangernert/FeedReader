@@ -503,7 +503,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 		catch(GLib.IOError e)
 		{
-			Logger.error(e.message);
+			Logger.error("ArticleView.on_extension_appeared: " + e.message);
 		}
     }
 

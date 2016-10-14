@@ -227,6 +227,11 @@ public class FeedReader.UtilsUI : GLib.Object {
 		Gtk.main();
 	}
 
+	public static void testEPUB()
+	{
+		//new epubWriter("161575", GLib.Environment.get_home_dir() + "/article.epub");
+	}
+
 	public static void testGOA()
 	{
 		try

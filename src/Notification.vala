@@ -80,7 +80,7 @@ public class FeedReader.Notification : GLib.Object {
 							}
 							catch(Error e)
 							{
-								Logger.error(e.message);
+								Logger.error("Notification: close - " + e.message);
 							}
 						});
 					}
@@ -95,7 +95,7 @@ public class FeedReader.Notification : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error(e.message);
+			Logger.error("Notification: send - " + e.message);
 		}
 	}
 

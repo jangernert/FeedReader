@@ -921,4 +921,37 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_currentMedia = media;
 	}
 
+	public void print(string filename)
+	{
+		if(m_currentView == null)
+			return;
+
+
+		var settings = new Gtk.PrintSettings();
+		settings.set_printer("Print to File");
+		settings.set("output-file-format", "pdf");
+		//settings.set("output-uri", "file:///home/jeanluc/output.pdf");
+		settings.set("output-uri", filename);
+
+		var setup = new Gtk.PageSetup();
+		setup.set_left_margin(0, Gtk.Unit.MM);
+		setup.set_right_margin(0, Gtk.Unit.MM);
+		//setup.set_top_margin(0, Gtk.Unit.MM);
+		//setup.set_bottom_margin(0, Gtk.Unit.MM);
+
+		var op = new WebKit.PrintOperation(m_currentView);
+		op.set_print_settings(settings);
+		op.set_page_setup(setup);
+
+		op.failed.connect((error) => {
+			Logger.debug("ArticleView: print failed: "+ error.message);
+		});
+
+		op.finished.connect(() => {
+			Logger.debug("ArticleView: print finished");
+		});
+
+		op.print();
+	}
+
 }

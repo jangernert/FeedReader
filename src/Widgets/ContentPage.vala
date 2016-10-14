@@ -460,4 +460,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		m_article_view.addMedia(media);
 	}
+
+	public void print(string uri)
+	{
+		m_article_view.print(uri);
+	}
 }

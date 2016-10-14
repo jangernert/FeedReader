@@ -17,6 +17,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	private Gtk.Button m_share_button;
 	private Gtk.Button m_tag_button;
+	private Gtk.Button m_print_button;
 	private UpdateButton m_media_button;
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
@@ -106,6 +107,17 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_tag_button.sensitive = false;
 		m_tag_button.clicked.connect(() => {
 			new TagPopover(m_tag_button);
+		});
+
+
+		m_print_button = new Gtk.Button.from_icon_name("document-save-symbolic");
+		m_print_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_print_button.set_focus_on_click(false);
+		m_print_button.set_tooltip_text(_("Save Article as PDF"));
+		m_print_button.sensitive = false;
+		m_print_button.clicked.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			UtilsUI.printDialog(window);
 		});
 
 
@@ -220,7 +232,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_right.pack_start(m_read_button);
 		m_header_right.pack_end(shareStack);
 		m_header_right.pack_end(m_tag_button);
+		m_header_right.pack_end(m_print_button);
 		m_header_right.pack_end(m_media_button);
+
 
 		this.pack1(m_header_left, true, false);
 		this.pack2(m_header_right, true, false);
@@ -261,6 +275,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_fullscreen_button.sensitive = show;
 		m_media_button.visible = show;
 		m_share_button.sensitive = (show && FeedApp.isOnline());
+		m_print_button.sensitive = show;
 
 		try
 		{

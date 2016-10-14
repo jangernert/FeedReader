@@ -521,7 +521,6 @@ public class FeedReader.dbBase : GLib.Object {
 		query.selectField("*");
 		query.addEqualsCondition("articleID", articleID, true, true);
 		query.build();
-		query.print();
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);

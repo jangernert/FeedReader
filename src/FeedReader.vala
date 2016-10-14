@@ -189,8 +189,7 @@ namespace FeedReader {
 
 		if(test)
 		{
-			//UtilsUI.testGOA();
-			UtilsUI.testEPUB();
+			UtilsUI.testGOA();
 			return 0;
 		}
 

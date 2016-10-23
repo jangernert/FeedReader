@@ -22,6 +22,10 @@
 - libcurl-dev
 - libpeas-dev
 
+## Fedora dependencies install 
+```
+dnf install gtk3-devel gtk2-devel vala make automake gcc gcc-c++ cmake json-glib-devel libsoup-devel sqlite-devel libgee-devel libsecret-devel libxml-devel rest-devel gstreamer1-devel gstreamer1-plugins-base-devel libpeas-devel webkitgtk4-devel gnome-online-accounts-devel libcurl-devel
+```
 
 ## Compiling
 

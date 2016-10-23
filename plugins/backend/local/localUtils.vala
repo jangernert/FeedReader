@@ -31,27 +31,36 @@ public class FeedReader.localUtils : GLib.Object {
 	        var msg = new Soup.Message("GET", xmlURL.escape(""));
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
+			bool hasIcon = true;
+			string url = "https://google.com";
 
 			// parse
 			Rss.Parser parser = new Rss.Parser();
 			parser.load_from_data(xml, xml.length);
 			var doc = parser.get_document();
 
+			if(doc.link != null
+			&& doc.link != "")
+				url = doc.link;
+
 			if(doc.image_url != null
 			&& doc.image_url != "")
 			{
 				downloadIcon(feedID, doc.image_url);
 			}
-			else
+			else if(doc.link != null
+			&& doc.link != "")
 			{
 				Utils.downloadIcon(feedID, doc.link);
 			}
+			else
+				hasIcon = false;
 
 			var Feed = new feed(
 						feedID,
 						doc.title,
-						doc.link,
-						true,
+						url,
+						hasIcon,
 						0,
 						catIDs,
 						xmlURL);
@@ -60,7 +69,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("localInterface - addFeed: " + e.message);
+			Logger.error("localInterface - addFeed " + xmlURL + " : " + e.message);
 		}
 
 		return null;
@@ -76,7 +85,7 @@ public class FeedReader.localUtils : GLib.Object {
 
 		try
 		{
-			return GLib.convert(text, -1, "utf-8", locale);
+			return Utils.UTF8fix(GLib.convert(text, -1, "utf-8", locale), false);
 		}
 		catch(ConvertError e)
 		{

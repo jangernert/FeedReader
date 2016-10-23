@@ -178,6 +178,14 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		return (int.parse(dbDaemon.get_default().getHighestFeedID()) + 1).to_string();
 	}
 
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		foreach(feed f in feeds)
+		{
+			m_api.subscribeToFeed(f.getXmlUrl(), f.getCatIDs()[0]);
+		}
+	}
+
 	public void removeFeed(string feedID)
 	{
 		m_api.unsubscribeFeed(int.parse(feedID));

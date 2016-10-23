@@ -340,7 +340,7 @@ public class FeedReader.freshAPI : Object {
 
 	public string editStream(
 							string action,
-							string? streamID = null,
+							string[]? streamID = null,
 							string? title = null,
 							string? add = null,
 							string? remove = null
@@ -353,7 +353,10 @@ public class FeedReader.freshAPI : Object {
 		msg.add("ac", action);
 
 		if(streamID != null)
-			msg.add("s", streamID);
+		{
+			foreach(string s in streamID)
+				msg.add("s", s);
+		}
 
 		if(title != null)
 			msg.add("t", title);

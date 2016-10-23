@@ -930,7 +930,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");
 		settings.set("output-file-format", "pdf");
-		//settings.set("output-uri", "file:///home/jeanluc/output.pdf");
 		settings.set("output-uri", filename);
 
 		var setup = new Gtk.PageSetup();

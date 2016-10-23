@@ -74,6 +74,11 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		importButton.get_style_context().add_class("suggested-action");
 		importButton.halign = Gtk.Align.END;
 		importButton.clicked.connect(importOPML);
+		importButton.sensitive = false;
+
+		m_chooser.file_set.connect(() => {
+			importButton.sensitive = true;
+		});
 
 		m_opmlGrid = new Gtk.Grid();
 		m_opmlGrid.row_spacing = 10;

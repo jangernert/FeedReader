@@ -194,13 +194,49 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		Logger.info("addFeed: ID = " + feedID);
-		var Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
+		feed? Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
 
-		var list = new Gee.LinkedList<feed>();
-		list.add(Feed);
-		dbDaemon.get_default().write_feeds(list);
+		if(Feed != null)
+		{
+			var list = new Gee.LinkedList<feed>();
+			list.add(Feed);
+			dbDaemon.get_default().write_feeds(list);
+			return feedID;
+		}
 
-		return feedID;
+		return "";
+	}
+
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		var finishedFeeds = new Gee.LinkedList<feed>();
+
+		int highestID = 0;
+
+		if(!dbDaemon.get_default().isTableEmpty("feeds"))
+			highestID = int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1;
+
+		foreach(feed f in feeds)
+		{
+			string feedID = @"feedID$highestID";
+			highestID++;
+
+			Logger.info("addFeed: ID = " + feedID);
+			feed? Feed = m_utils.downloadFeed(f.getXmlUrl(), feedID, f.getCatIDs());
+
+			if(Feed != null)
+			{
+				if(Feed.getTitle() != "No Title")
+					Feed.setTitle(f.getTitle());
+
+				finishedFeeds.add(Feed);
+			}
+
+			else
+				Logger.error("Couldn't add Feed: " + f.getXmlUrl());
+		}
+
+		dbDaemon.get_default().write_feeds(finishedFeeds);
 	}
 
 	public void removeFeed(string feedID)
@@ -283,7 +319,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var f = dbDaemon.get_default().read_feeds();
 		foreach(feed Feed in f)
 		{
-			feeds.add(m_utils.downloadFeed(Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs()));
+			feeds.add(Feed);
 		}
 
 		return true;
@@ -301,6 +337,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		foreach(feed Feed in f)
 		{
+			Logger.debug("getArticles for feed: " + Feed.getTitle());
 			var session = new Soup.Session();
 			session.user_agent = Constants.USER_AGENT;
 			session.timeout = 5;
@@ -336,6 +373,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
                 	GLib.Time time = GLib.Time();
                 	time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
                 	date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
+
+					if(date == null)
+						date = new GLib.DateTime.now_local();
 				}
 
 				string content = m_utils.convert(item.description, locale);
@@ -346,8 +386,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				var Article = new article
 				(
-									item.guid,
-									m_utils.convert(item.title, locale),
+									(item.guid != null) ? item.guid : Utils.string_random(16),
+									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
 									item.link,
 									Feed.getFeedID(),
 									ArticleStatus.UNREAD,

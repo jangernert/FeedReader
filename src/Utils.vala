@@ -741,10 +741,10 @@ public class FeedReader.Utils : GLib.Object {
 		else if(feed_url.has_prefix("https://"))
 			url.replace("https://", "");
 
-		Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
-
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
+			Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
+			
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message ("GET", "http://f1.allesedv.com/32/%s".printf(url));
 

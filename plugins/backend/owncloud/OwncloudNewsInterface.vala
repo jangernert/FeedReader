@@ -170,6 +170,14 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return m_api.addFeed(feedURL, catID).to_string();
 	}
 
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		foreach(feed f in feeds)
+		{
+			m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0]);
+		}
+	}
+
 	public void removeFeed(string feedID)
 	{
 		m_api.removeFeed(feedID);

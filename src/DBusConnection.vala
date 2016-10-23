@@ -218,6 +218,7 @@ namespace FeedReader {
 			m_connection.opmlImported.connect(() => {
 				Logger.debug("DBusConnection: opmlImported");
 				window.getContent().footerSetReady();
+				window.getContent().newFeedList();
 			});
 
 			m_connection.updateSyncProgress.connect((progress) => {

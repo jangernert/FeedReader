@@ -386,7 +386,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
-	public void editSubscription(OldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	public void editSubscription(OldreaderSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
 
@@ -403,7 +403,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 				break;
 		}
 
-		message_string += "&s=" + feedID;
+		foreach(string s in feedID)
+			message_string += "&s=" + s;
 
 		if(title != null)
 			message_string += "&t=" + title;

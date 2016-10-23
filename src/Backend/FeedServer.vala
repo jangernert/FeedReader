@@ -736,6 +736,14 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.addFeed(feedURL, catID, newCatName);
 	}
 
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		if(!m_pluginLoaded)
+			return;
+
+		m_plugin.addFeeds(feeds);
+	}
+
 	public void removeFeed(string feedID)
 	{
 		if(!m_pluginLoaded)

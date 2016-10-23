@@ -198,6 +198,14 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return "feed/" + feedURL;
 	}
 
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		foreach(feed f in feeds)
+		{
+			m_api.addSubscription(f.getXmlUrl(), null, f.getCatIDs()[0]);
+		}
+	}
+
 	public void removeFeed(string feedID)
 	{
 		m_api.removeSubscription(feedID);

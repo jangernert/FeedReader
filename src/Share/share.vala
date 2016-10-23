@@ -90,6 +90,8 @@ public class FeedReader.Share : GLib.Object {
 			}
 		});
 
+		// add goa-pocket-accounts
+
 		// load gresource-icons from the plugins
 		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 	}

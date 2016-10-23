@@ -216,6 +216,11 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return "";
 	}
 
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		return;
+	}
+
 	public void removeFeed(string feedID)
 	{
 		//m_api.deleteFeed(feedID);

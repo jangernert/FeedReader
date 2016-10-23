@@ -175,22 +175,42 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 		cat = m_api.composeTagID(cat);
 
-		return m_api.editStream("subscribe", "feed/" + feedURL, null, cat, null);
+		return m_api.editStream("subscribe", {"feed/" + feedURL}, null, cat, null);
+	}
+
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		string cat = "";
+		string[] urls = {};
+
+		foreach(feed f in feeds)
+		{
+			if(f.getCatIDs()[0] != cat)
+			{
+				m_api.editStream("subscribe", urls, null, cat, null);
+				urls = {};
+				cat = f.getCatIDs()[0];
+			}
+
+			urls += "feed/" + f.getXmlUrl();
+		}
+
+		m_api.editStream("subscribe", urls, null, cat, null);
 	}
 
 	public void removeFeed(string feedID)
 	{
-		m_api.editStream("unsubscribe", feedID, null, null, null);
+		m_api.editStream("unsubscribe", {feedID}, null, null, null);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		m_api.editStream("edit", feedID, title, null, null);
+		m_api.editStream("edit", {feedID}, title, null, null);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
-		m_api.editStream("edit", feedID, null, newCatID, currentCatID);
+		m_api.editStream("edit", {feedID}, null, newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID)

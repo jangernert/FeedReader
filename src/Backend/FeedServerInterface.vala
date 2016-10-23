@@ -84,6 +84,8 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract string addFeed(string feedURL, string? catID = null, string? newCatName = null);
 
+	public abstract void addFeeds(Gee.LinkedList<feed> feeds);
+
 	public abstract void removeFeed(string feedID);
 
 	public abstract void renameFeed(string feedID, string title);

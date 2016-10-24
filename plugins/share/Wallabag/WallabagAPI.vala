@@ -109,7 +109,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
     }
 
 
-    public bool addBookmark(string id, string url)
+    public bool addBookmark(string id, string url, bool system)
     {
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
 

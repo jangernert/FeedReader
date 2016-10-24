@@ -19,7 +19,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	private string m_body;
 	private string m_to;
 
-	public bool addBookmark(string id, string url)
+	public bool addBookmark(string id, string url, bool system)
 	{
 		string subject = GLib.Uri.escape_string("Amazing article");
 		string body = GLib.Uri.escape_string(m_body.replace("$URL", url));

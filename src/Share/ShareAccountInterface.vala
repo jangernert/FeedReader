@@ -23,7 +23,7 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public abstract string pluginName();
 
-	public abstract bool addBookmark(string id, string url);
+	public abstract bool addBookmark(string id, string url, bool system);
 
 	public abstract bool logout(string id);
 

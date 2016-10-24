@@ -83,15 +83,52 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
     }
 
 
-    public bool addBookmark(string id, string url)
+    public bool addBookmark(string id, string url, bool system)
     {
-        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+		string oauthToken = "";
+
+		if(system)
+		{
+			Logger.debug(@"PocketAPI.addBookmark: $id is system account");
+			try
+			{
+				Goa.Client? client = new Goa.Client.sync();
+				if(client != null)
+				{
+					var accounts = client.get_accounts();
+					foreach(var object in accounts)
+					{
+						if(object.account.provider_type == "pocket"
+						&& object.account.id == id)
+						{
+							int expires = -1;
+							object.oauth2_based.call_get_access_token_sync(out oauthToken, out expires);
+							break;
+						}
+					}
+				}
+				else
+				{
+					Logger.error("PocketAPI: goa not available");
+				}
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("PocketAPI GOA: %s".printf(e.message));
+			}
+		}
+		else
+		{
+			var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
+			oauthToken = settings.get_string("oauth-access-token");
+		}
+
 
         var session = new Soup.Session();
 		session.user_agent = Constants.USER_AGENT;
         string message = "url=" + GLib.Uri.escape_string(url)
                         + "&consumer_key=" + PocketSecrets.oauth_consumer_key
-                        + "&access_token=" + settings.get_string("oauth-access-token");
+                        + "&access_token=" + oauthToken;
 
         Logger.debug("PocketAPI: " + message);
 

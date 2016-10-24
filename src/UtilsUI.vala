@@ -280,9 +280,9 @@ public class FeedReader.UtilsUI : GLib.Object {
 					if(object.oauth2_based != null)
 					{
 						string access_token = "";
-						int expires = 0;
+						int expires = -1;
 						object.oauth2_based.call_get_access_token_sync(out access_token, out expires);
-						stdout.printf("access token: %s\n", access_token);
+						stdout.printf("access token 2: %s\n", access_token);
 						stdout.printf("expires in: %i\n", expires);
 						stdout.printf("client id: %s\n", object.oauth2_based.client_id);
 						stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
@@ -291,7 +291,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 					{
 						string access_token = "";
 						string access_token_secret = "";
-						int expires = 0;
+						int expires = -1;
 						object.oauth_based.call_get_access_token_sync(out access_token, out access_token_secret, out expires);
 						stdout.printf("access token: %s\n", access_token);
 						stdout.printf("access token secret: %s\n", access_token_secret);

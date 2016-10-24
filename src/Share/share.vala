@@ -123,7 +123,7 @@ public class FeedReader.Share : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("UtilsUI.testGOA: %s".printf(e.message));
+			Logger.error("Sahre addGOA: %s".printf(e.message));
 		}
 
 		// load gresource-icons from the plugins
@@ -218,7 +218,7 @@ public class FeedReader.Share : GLib.Object {
 		{
 			if(account.getID() == accountID)
 			{
-				return getInterface(account.getType()).addBookmark(accountID, url);
+				return getInterface(account.getType()).addBookmark(accountID, url, account.isSystemAccount());
 			}
 		}
 

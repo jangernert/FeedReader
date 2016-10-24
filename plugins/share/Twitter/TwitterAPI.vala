@@ -31,6 +31,11 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     }
 
+	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	{
+
+	}
+
     public string getRequestToken()
     {
 		Logger.debug("TwitterAPI: get request token");

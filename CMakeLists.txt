@@ -53,7 +53,6 @@ set(MODULES
 	webkit2gtk-4.0
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
-	goa-1.0
 	libpeas-1.0
 	libcurl)
 
@@ -127,7 +126,6 @@ set(UI_PACKAGES
     WebKit2-4.0
     gstreamer-1.0
     gstreamer-pbutils-1.0
-    goa-1.0
     libpeas-1.0)
 
 vala_precompile(UI ${UI_NAME}

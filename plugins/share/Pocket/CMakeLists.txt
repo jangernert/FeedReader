@@ -1,6 +1,8 @@
 set (NAME pocket)
 set (PLUGTARGET ${NAME}_target)
 
+pkg_check_modules(DEPS REQUIRED goa-1.0)
+
 # ----------------------------------------------------------
 # Daemon Plugin
 # ----------------------------------------------------------

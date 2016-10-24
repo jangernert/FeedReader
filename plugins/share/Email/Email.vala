@@ -40,6 +40,11 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 		return false;
 	}
 
+	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	{
+
+	}
+
 	public bool logout(string id)
 	{
 		return false;

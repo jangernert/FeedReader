@@ -19,6 +19,8 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public signal void deleteAccount(string id);
 
+	public abstract void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts);
+
 	public abstract string pluginID();
 
 	public abstract string pluginName();

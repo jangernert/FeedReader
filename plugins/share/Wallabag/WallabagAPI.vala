@@ -20,6 +20,11 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
     }
 
+    public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+    {
+
+    }
+
     public bool getAccessToken(string id, string username, string password, string clientID, string clientSecret, string baseURL)
     {
 		Logger.debug("WallabagAPI getAccessToken");

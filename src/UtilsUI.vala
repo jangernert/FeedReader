@@ -261,7 +261,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		Gtk.main();
 	}
 
-	public static void testGOA()
+	/*public static void testGOA()
 	{
 		try
 		{
@@ -316,5 +316,5 @@ public class FeedReader.UtilsUI : GLib.Object {
 		{
 			Logger.error("UtilsUI.testGOA: %s".printf(e.message));
 		}
-	}
+	}*/
 }

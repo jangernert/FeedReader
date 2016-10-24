@@ -61,6 +61,7 @@ public class FeedReader.Share : GLib.Object {
 		m_accounts = new Gee.ArrayList<ShareAccount>();
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
+			plugin.setupSystemAccounts(m_accounts);
 			if(plugin.needSetup())
 			{
 				var settings_share = new GLib.Settings("org.gnome.feedreader.share");
@@ -91,40 +92,6 @@ public class FeedReader.Share : GLib.Object {
 				);
 			}
 		});
-
-		// add goa-pocket-accounts
-		try
-		{
-			Goa.Client? client = new Goa.Client.sync();
-			if(client != null)
-			{
-				var accounts = client.get_accounts();
-				foreach(var object in accounts)
-				{
-					if(object.account.provider_type == "pocket")
-					{
-						m_accounts.add(
-							new ShareAccount(
-								object.account.id,
-								object.account.provider_type,
-								object.account.identity,
-								getInterface(object.account.provider_type).getIconName(),
-								getInterface(object.account.provider_type).pluginName(),
-								true
-							)
-						);
-					}
-				}
-			}
-			else
-			{
-				stdout.printf("goa not available");
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Sahre addGOA: %s".printf(e.message));
-		}
 
 		// load gresource-icons from the plugins
 		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");

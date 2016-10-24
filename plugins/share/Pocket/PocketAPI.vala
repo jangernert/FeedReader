@@ -26,6 +26,42 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     }
 
+	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	{
+		try
+		{
+			Goa.Client? client = new Goa.Client.sync();
+			if(client != null)
+			{
+				var goaAccounts = client.get_accounts();
+				foreach(var object in goaAccounts)
+				{
+					if(object.account.provider_type == "pocket")
+					{
+						accounts.add(
+							new ShareAccount(
+								object.account.id,
+								pluginID(),
+								object.account.identity,
+								getIconName(),
+								pluginName(),
+								true
+							)
+						);
+					}
+				}
+			}
+			else
+			{
+				Logger.error("PocketAPI: goa not available");
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("PocketAPI.setupSystemAccounts: %s".printf(e.message));
+		}
+	}
+
     public string getRequestToken()
     {
     	Logger.debug("PocketAPI: get request token");

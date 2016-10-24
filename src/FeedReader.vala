@@ -187,12 +187,6 @@ namespace FeedReader {
 			return 0;
 		}
 
-		if(test)
-		{
-			UtilsUI.testGOA();
-			return 0;
-		}
-
 		Gst.init(ref args);
 		var app = new FeedApp();
 		app.run(args);
@@ -205,7 +199,6 @@ namespace FeedReader {
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
 		{ "ping", 0, 0, OptionArg.STRING, ref pingURL, "test the ping function with given URL", "URL" },
-		{ "test", 0, 0, OptionArg.NONE, ref test, "test", null },
 		{ null }
 	};
 
@@ -213,7 +206,6 @@ namespace FeedReader {
 	private static bool about = false;
 	private static string? media = null;
 	private static string? pingURL = null;
-	private static bool test = false;
 
 	static void show_about(string[] args)
 	{

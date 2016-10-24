@@ -27,6 +27,11 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     }
 
+	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	{
+		
+	}
+
     public string getRequestToken()
     {
         return "";

@@ -21,6 +21,8 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public abstract void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts);
 
+	public abstract bool useSystemAccounts();
+
 	public abstract string pluginID();
 
 	public abstract string pluginName();

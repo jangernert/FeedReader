@@ -29,7 +29,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
 	{
-		
+
 	}
 
     public string getRequestToken()
@@ -252,6 +252,11 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 	{
 		return true;
 	}
+
+	public bool useSystemAccounts()
+    {
+        return false;
+    }
 
     public string pluginID()
     {

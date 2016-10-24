@@ -263,6 +263,11 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		return true;
 	}
 
+    public bool useSystemAccounts()
+    {
+        return false;
+    }
+
     public string pluginID()
     {
         return "wallabag";

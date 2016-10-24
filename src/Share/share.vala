@@ -120,7 +120,7 @@ public class FeedReader.Share : GLib.Object {
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 
-			if(plugin.needSetup())
+			if(plugin.needSetup() && !plugin.useSystemAccounts())
 			{
 				accounts.add(new ShareAccount("", plugin.pluginID(), "", plugin.getIconName(), plugin.pluginName()));
 			}

@@ -230,6 +230,15 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 		return true;
 	}
 
+	public bool useSystemAccounts()
+    {
+		Goa.Client? client = new Goa.Client.sync();
+		if(client != null)
+			return true;
+		
+        return false;
+    }
+
     public string pluginID()
     {
         return "pocket";

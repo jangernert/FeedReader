@@ -17,13 +17,13 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 	private PocketAPI m_api;
 
-	public PocketSetup(string? id, PocketAPI api, string username = "")
+	public PocketSetup(string? id, PocketAPI api, string username = "", bool system = false)
 	{
 		bool loggedIN = false;
 		if(username != "")
 			loggedIN = true;
 
-		base("Pocket", "feed-share-pocket", loggedIN, username);
+		base("Pocket", "feed-share-pocket", loggedIN, username, system);
 
 		m_api = api;
 
@@ -43,7 +43,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		}
 		catch(GLib.Error e)
 		{
-			
+
 		}
 
 

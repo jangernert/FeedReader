@@ -217,6 +217,11 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
         return new TwitterSetup(null, this);
     }
 
+	public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return null;
+	}
+
 	public ShareForm? shareWidget(string url)
 	{
 		var widget = new TwitterForm(url);

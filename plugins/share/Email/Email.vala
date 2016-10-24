@@ -80,6 +80,11 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
         return null;
     }
 
+	public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return null;
+	}
+
 	public ShareForm? shareWidget(string url)
 	{
 		var widget = new EmailForm(url);

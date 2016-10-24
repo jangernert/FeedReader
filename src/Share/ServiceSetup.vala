@@ -28,11 +28,13 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 	protected Gtk.Box m_seperator_box;
 	protected bool m_isLoggedIN;
 	protected string m_id;
+	protected bool m_systemAccount;
 	public signal void removeRow();
 
-	public ServiceSetup(string name, string iconName, bool loggedIn, string username)
+	public ServiceSetup(string name, string iconName, bool loggedIn, string username, bool system = false)
 	{
 		m_name = name;
+		m_systemAccount = system;
 		m_isLoggedIN = loggedIn;
 		m_iconStack = new Gtk.Stack();
 		m_iconStack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
@@ -42,8 +44,11 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		m_eventbox = new Gtk.EventBox();
 		m_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		m_eventbox.enter_notify_event.connect(onEnter);
-		m_eventbox.leave_notify_event.connect(onLeave);
+		if(!m_systemAccount)
+		{
+			m_eventbox.enter_notify_event.connect(onEnter);
+			m_eventbox.leave_notify_event.connect(onLeave);
+		}
 		m_eventbox.add(m_iconStack);
 
 		m_login_button = new Gtk.Button.with_label(_("Login"));
@@ -158,6 +163,16 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 	public string getID()
 	{
 		return m_id;
+	}
+
+	public bool isSystemAccount()
+	{
+		return m_systemAccount;
+	}
+
+	public string getUserName()
+	{
+		return m_label.get_text();
 	}
 
 }

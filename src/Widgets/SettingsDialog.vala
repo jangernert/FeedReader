@@ -178,6 +178,8 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     {
 		var service_list = new Gtk.ListBox();
         service_list.set_selection_mode(Gtk.SelectionMode.NONE);
+        service_list.set_sort_func(sortFunc);
+		service_list.set_header_func(headerFunc);
 
         var service_scroll = new Gtk.ScrolledWindow(null, null);
         service_scroll.expand = true;
@@ -193,7 +195,13 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
         foreach(var account in list)
         {
-            if(Share.get_default().needSetup(account.getID()))
+            if(account.isSystemAccount())
+            {
+                ServiceSetup row = Share.get_default().newSystemAccount(account.getID());
+                service_list.add(row);
+    			row.reveal();
+            }
+            else if(Share.get_default().needSetup(account.getID()))
             {
                 ServiceSetup row = Share.get_default().newSetup_withID(account.getID());
     			row.removeRow.connect(() => {
@@ -217,7 +225,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 				var tmpRow = row as ServiceSetup;
 				if(tmpRow != null && !tmpRow.isLoggedIn())
 				{
-					Share.get_default().deleteAccount(tmpRow.getID());
+					Share.get_default().refreshAccounts();
 					removeRow(tmpRow, service_list);
 				}
 			}
@@ -228,7 +236,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     			row.removeRow.connect(() => {
     				removeRow(row, service_list);
     			});
-    			service_list.insert(row, 0);
+    			service_list.add(row);
     			row.reveal();
 			});
 		});
@@ -257,5 +265,69 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		    list.remove(row);
 			return false;
 		});
+	}
+
+    private int sortFunc(Gtk.ListBoxRow row1, Gtk.ListBoxRow row2)
+	{
+		var r1 = row1 as ServiceSetup;
+		var r2 = row2 as ServiceSetup;
+
+        if(r1 == null && r2 == null)
+            return 0;
+        else if(r1 == null)
+            return 1;
+        else if(r2 == null)
+            return -1;
+
+        if(r1.getUserName() == ""
+        && r2.getUserName() == "")
+            return 0;
+        else if(r1.getUserName() == "")
+            return 1;
+        else if(r2.getUserName() == "")
+            return -1;
+
+		bool sys1 = r1.isSystemAccount();
+		bool sys2 = r2.isSystemAccount();
+
+		if(sys1 && sys2)
+            return 0;
+        else if(sys1)
+            return -1;
+
+        return 1;
+	}
+
+	private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
+	{
+		var label = new Gtk.Label(_("System Accounts"));
+		label.get_style_context().add_class("bold");
+		label.margin_top = 20;
+		label.margin_bottom = 5;
+
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		box.pack_start(label, true, true, 0);
+		box.pack_end(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
+		box.show_all();
+
+		if(before == null)
+		{
+			row.set_header(box);
+			return;
+		}
+
+        var r1 = row as ServiceSetup;
+		var r2 = before as ServiceSetup;
+        if(r1 != null && r2 != null)
+        {
+            bool sys1 = r1.isSystemAccount();
+    		bool sys2 = r2.isSystemAccount();
+
+    		if(!sys1 && sys2)
+            {
+                label.set_text(_("FeedReader Accounts"));
+                row.set_header(box);
+            }
+        }
 	}
 }

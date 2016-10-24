@@ -38,7 +38,9 @@ public class FeedReader.Share : GLib.Object {
 		m_plugins.extension_added.connect((info, extension) => {
 			var plugin = (extension as ShareAccountInterface);
 			plugin.addAccount.connect(accountAdded);
-			plugin.deleteAccount.connect(deleteAccount);
+			plugin.deleteAccount.connect(() => {
+				refreshAccounts();
+			});
 		});
 
 		m_plugins.extension_removed.connect((info, extension) => {
@@ -53,7 +55,7 @@ public class FeedReader.Share : GLib.Object {
 		refreshAccounts();
 	}
 
-	private void refreshAccounts()
+	public void refreshAccounts()
 	{
 		Logger.debug("Share: refreshAccounts");
 		m_accounts = new Gee.ArrayList<ShareAccount>();
@@ -91,6 +93,38 @@ public class FeedReader.Share : GLib.Object {
 		});
 
 		// add goa-pocket-accounts
+		try
+		{
+			Goa.Client? client = new Goa.Client.sync();
+			if(client != null)
+			{
+				var accounts = client.get_accounts();
+				foreach(var object in accounts)
+				{
+					if(object.account.provider_type == "pocket")
+					{
+						m_accounts.add(
+							new ShareAccount(
+								object.account.id,
+								object.account.provider_type,
+								object.account.identity,
+								getInterface(object.account.provider_type).getIconName(),
+								getInterface(object.account.provider_type).pluginName(),
+								true
+							)
+						);
+					}
+				}
+			}
+			else
+			{
+				stdout.printf("goa not available");
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("UtilsUI.testGOA: %s".printf(e.message));
+		}
 
 		// load gresource-icons from the plugins
 		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
@@ -132,18 +166,6 @@ public class FeedReader.Share : GLib.Object {
 	public Gee.ArrayList<ShareAccount> getAccounts()
 	{
 		return m_accounts;
-	}
-
-
-	public void deleteAccount(string accountID)
-	{
-		foreach(var account in m_accounts)
-		{
-			if(account.getID() == accountID)
-			{
-				m_accounts.remove(account);
-			}
-		}
 	}
 
 	public static string generateNewID()
@@ -232,6 +254,19 @@ public class FeedReader.Share : GLib.Object {
 	public ServiceSetup? newSetup(string type)
 	{
 		return getInterface(type).newSetup();
+	}
+
+	public ServiceSetup? newSystemAccount(string accountID)
+	{
+		foreach(var account in m_accounts)
+		{
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).newSystemAccount(account.getID(), account.getUsername());
+			}
+		}
+
+		return null;
 	}
 
 	public ShareForm? shareWidget(string type, string url)

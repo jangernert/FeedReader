@@ -273,6 +273,11 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         return new InstapaperSetup(null, this);
     }
 
+	public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return null;
+	}
+
 	public ShareForm? shareWidget(string url)
 	{
 		return null;

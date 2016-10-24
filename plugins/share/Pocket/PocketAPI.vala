@@ -112,6 +112,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool logout(string id)
     {
+		Logger.debug(@"PocketAPI: logout($id)");
         var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/pocket/%s/".printf(id));
     	var keys = settings.list_keys();
 		foreach(string key in keys)
@@ -175,6 +176,11 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
     {
         return new PocketSetup(null, this);
     }
+
+	public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return new PocketSetup(id, this, username, true);
+	}
 
 	public ShareForm? shareWidget(string url)
 	{

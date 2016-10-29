@@ -50,22 +50,6 @@
 				On startup of the daemon copy the desktop file in the autostart folder
 			</description>
 		</key>
-
-		<key name="sync-on-startup" type="b">
-			<default>false</default>
-			<summary>Sync on UI startup</summary>
-			<description>
-				Start a sync as soon as the UI is started
-			</description>
-		</key>
-		
-		<key name="quit-daemon" type="b">
-			<default>false</default>
-			<summary>Quit daemon with UI</summary>
-			<description>
-				Quit the daemon as soon as the UI closes -> no background syncs possible
-			</description>
-		</key>
 		
 		<key name="article-select-text" type="b">
 			<default>false</default>

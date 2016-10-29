@@ -64,10 +64,6 @@ namespace FeedReader {
 				m_window = new readerUI(this);
 				m_window.set_icon_name("feedreader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
-				if(Settings.tweaks().get_boolean("sync-on-startup"))
-					sync.begin((obj, res) => {
-						sync.end(res);
-					});
 			}
 
 			m_window.show_all();
@@ -104,8 +100,6 @@ namespace FeedReader {
 			{
 				Logger.debug("Shutdown!");
 				Gst.deinit();
-				if(Settings.tweaks().get_boolean("quit-daemon"))
-					DBusConnection.get_default().quit();
 				base.shutdown();
 			}
 			catch(GLib.Error e)

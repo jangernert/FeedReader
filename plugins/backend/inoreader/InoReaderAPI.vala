@@ -261,6 +261,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		}
 
 		var root = parser.get_root().get_object();
+		if(!root.has_member("itemRefs"))
+			return null;
 		var array = root.get_array_member("itemRefs");
 		uint length = array.get_length();
 

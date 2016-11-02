@@ -1,7 +1,11 @@
 set (NAME pocket)
 set (PLUGTARGET ${NAME}_target)
 
-pkg_check_modules(DEPS REQUIRED goa-1.0)
+pkg_check_modules(POCKET_DEPS REQUIRED goa-1.0)
+
+add_definitions(${POCKET_DEPS_CFLAGS} -DGOA_API_IS_SUBJECT_TO_CHANGE)
+link_libraries(${POCKET_DEPS_LIBRARIES} -lm)
+link_directories(${POCKET_DEPS_LIBRARY_DIRS})
 
 # ----------------------------------------------------------
 # Daemon Plugin

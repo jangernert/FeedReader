@@ -96,16 +96,9 @@ namespace FeedReader {
 
 		protected override void shutdown()
 		{
-			try
-			{
-				Logger.debug("Shutdown!");
-				Gst.deinit();
-				base.shutdown();
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("FeedReader.shutdown: %s".printf(e.message));
-			}
+			Logger.debug("Shutdown!");
+			Gst.deinit();
+			base.shutdown();
 		}
 
 		public async void sync()

@@ -94,6 +94,9 @@ public class FeedReader.InoReaderConnection {
 			parser.load_from_data(response, -1);
 			var root = parser.get_root().get_object();
 
+			if(!root.has_member("access_token"))
+				return getToken();
+
 			string accessToken = root.get_string_member("access_token");
 			int64 expires = (int)root.get_int_member("expires_in");
 			string refreshToken = root.get_string_member("refresh_token");

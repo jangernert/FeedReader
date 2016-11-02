@@ -232,11 +232,19 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool useSystemAccounts()
     {
-		Goa.Client? client = new Goa.Client.sync();
-		if(client != null)
-			return true;
-		
-        return false;
+		try
+		{
+			Goa.Client? client = new Goa.Client.sync();
+			if(client != null)
+				return true;
+
+	        return false;
+		}
+		catch(GLib.Error e)
+		{
+			Logger.debug("PocketAPI.useSystemAccounts(): %s".printf(e.message));
+			return false;
+		}
     }
 
     public string pluginID()

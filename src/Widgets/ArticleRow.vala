@@ -436,23 +436,26 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_article.getUnread() != unread)
 		{
 			m_article.setUnread(unread);
-			if(m_article.getUnread() == ArticleStatus.UNREAD)
+			if(m_stack.get_visible_child_name() == "content")
 			{
-				m_label.get_style_context().remove_class("headline-read");
-				m_label.get_style_context().add_class("headline-unread");
-				m_unread_stack.set_visible_child_name("unread");
-			}
-			else
-			{
-				m_label.get_style_context().remove_class("headline-unread");
-				m_label.get_style_context().add_class("headline-read");
-				if(m_hovering_row)
+				if(m_article.getUnread() == ArticleStatus.UNREAD)
 				{
-					m_unread_stack.set_visible_child_name("read");
+					m_label.get_style_context().remove_class("headline-read");
+					m_label.get_style_context().add_class("headline-unread");
+					m_unread_stack.set_visible_child_name("unread");
 				}
 				else
 				{
-					m_unread_stack.set_visible_child_name("empty");
+					m_label.get_style_context().remove_class("headline-unread");
+					m_label.get_style_context().add_class("headline-read");
+					if(m_hovering_row)
+					{
+						m_unread_stack.set_visible_child_name("read");
+					}
+					else
+					{
+						m_unread_stack.set_visible_child_name("empty");
+					}
 				}
 			}
 		}

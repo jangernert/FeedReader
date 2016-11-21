@@ -36,7 +36,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		if(m_utils.getAccessToken() == "")
 		{
 			var response = m_connection.getToken();
-			if(response != SUCCESS)
+			if(response != LoginResponse.SUCCESS)
 				return response;
 		}
 		if(getUserID())

@@ -181,7 +181,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	{
 		if(m_currentList == null)
 			return;
-		
+
 		Logger.debug("ArticleList.loadmore()");
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadMore.callback;
@@ -505,7 +505,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(selectedRow != "")
 		{
-			m_currentList.selectRow(selectedRow);
+			m_currentList.selectRow(selectedRow, 300);
 			Settings.state().set_string("articlelist-selected-row", "");
 		}
 	}

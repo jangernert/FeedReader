@@ -151,8 +151,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
         }
 
         m_selectSourceID = Timeout.add(time, () => {
-            row.activate();
-            //row_activated(row);
+			var window = this.get_toplevel() as readerUI;
+			if(window != null && !window.searchFocused())
+            	row.activate();
 			m_selectSourceID = 0;
             return false;
         });
@@ -469,7 +470,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return scroll;
 	}
 
-	public void selectRow(string articleID)
+	public void selectRow(string articleID, int time = 10)
 	{
 		var children = this.get_children();
 		foreach(var row in children)
@@ -477,10 +478,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			var tmpRow = row as articleRow;
 			if(tmpRow != null && tmpRow.getID() == articleID)
 			{
-				this.select_row(tmpRow);
-				var window = this.get_toplevel() as readerUI;
-				if(window != null && !window.searchFocused())
-					tmpRow.activate();
+				selectAfter(tmpRow, time);
 			}
 		}
 	}

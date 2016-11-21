@@ -109,12 +109,14 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		// switch up lists
 		if(m_currentList == m_List1)
 		{
+			m_List1.stopLoading();
 			m_currentList = m_List2;
 			m_currentScroll = m_scroll2;
 			m_stack.set_visible_child_full("list2", transition);
 		}
 		else
 		{
+			m_List2.stopLoading();
 			m_currentList = m_List1;
 			m_currentScroll = m_scroll1;
 			m_stack.set_visible_child_full("list1", transition);
@@ -183,6 +185,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			return;
 
 		Logger.debug("ArticleList.loadmore()");
+		m_currentList.stopLoading();
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadMore.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -255,6 +258,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	{
 		Logger.debug(@"ArticleList: loadNewer($newCount)");
 
+		m_currentList.stopLoading();
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadNewer.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -300,6 +304,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(firstRowID == null)
 			return;
 
+		m_currentList.stopLoading();
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------

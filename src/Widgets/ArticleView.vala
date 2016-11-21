@@ -353,11 +353,13 @@ public class FeedReader.articleView : Gtk.Overlay {
 				string url = m_currentView.get_uri();
 				if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
 				{
-					Logger.debug("ArticleView: open external url: %s".printf(url));
-					try{
+					Logger.debug(@"ArticleView: open external url: $url");
+					try
+					{
 						Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
 					}
-					catch(GLib.Error e){
+					catch(GLib.Error e)
+					{
 						Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 					}
 					m_currentView.stop_loading();

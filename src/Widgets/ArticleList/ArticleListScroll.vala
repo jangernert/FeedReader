@@ -25,7 +25,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private ArticleListBalance m_balance = ArticleListBalance.NONE;
 
 	private bool m_scrolledBottomOnCooldown = false;
-	private int m_scrolledBottomCooldown = 200; // cooldown in ms
+	private int m_scrolledBottomCooldown = 500; // cooldown in ms
 
 	//Transition times
     private int64 m_startTime = 0;
@@ -92,7 +92,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			scrolledBottom();
 			GLib.Timeout.add(m_scrolledBottomCooldown, () => {
 				m_scrolledBottomOnCooldown = false;
-				if(vadjustment.value >= max - (m_bottomThreshold/2))
+				if(vadjustment.value >= max - 10)
 					scrolledBottom();
 				return false;
 			});

@@ -166,7 +166,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		dateLabel.get_style_context().add_class("preview");
 		dateLabel.opacity = 0.6;
 		dateLabel.set_alignment(1.0f, 0.5f);
-		var date_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		var date_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 		date_box.pack_start(feedLabel, true, true, 0);
 		date_box.pack_end(dateLabel, true, true, 0);
 

@@ -35,12 +35,15 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	{
 		if(m_utils.getAccessToken() == "")
 		{
-			m_connection.getToken();
+			var response = m_connection.getToken();
+			if(response != SUCCESS)
+				return response;
 		}
 		if(getUserID())
 		{
 			return LoginResponse.SUCCESS;
 		}
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 

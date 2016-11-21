@@ -400,11 +400,15 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		switch(event.keyval)
 		{
 			case Gdk.Key.Down:
-				m_currentScroll.scrollDiff(m_currentList.move(true));
-				break;
-
 			case Gdk.Key.Up:
-				m_currentScroll.scrollDiff(m_currentList.move(false));
+				bool down = true;
+				if(event.keyval == Gdk.Key.Up)
+					down = false;
+
+				int diff = m_currentList.move(true);
+
+				if(m_state != ArticleListState.UNREAD)
+					m_currentScroll.scrollDiff(diff);
 				break;
 
 			case Gdk.Key.Page_Down:
@@ -420,7 +424,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	public void move(bool down)
 	{
-		m_currentScroll.scrollDiff(m_currentList.move(down));
+		int diff = m_currentList.move(down);
+
+		if(m_state != ArticleListState.UNREAD)
+			m_currentScroll.scrollDiff(diff);
 	}
 
 	public void showOverlay()

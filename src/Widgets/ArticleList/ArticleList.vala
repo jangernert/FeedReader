@@ -283,6 +283,16 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	{
 		Logger.debug(@"ArticleList: updateArticleList($slideIN)");
 
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "syncing")
+		{
+			Logger.debug("ArticleList: updateArticleList(): emtpy list -> create newList()");
+			newList.begin(Gtk.StackTransitionType.CROSSFADE, (obj, res) => {
+				newList.end(res);
+			});
+			return;
+		}
+
 		var children = m_currentList.get_children();
 		uint listSize = children.length();
 		string? firstRowID = m_currentList.getFirstRowID();

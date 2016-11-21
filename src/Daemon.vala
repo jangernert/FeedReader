@@ -35,7 +35,6 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void newFeedList();
 		public signal void updateFeedList();
-		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
@@ -196,6 +195,7 @@ namespace FeedReader {
 				Settings.state().set_boolean("currently-updating", true);
 				FeedServer.get_default().syncContent();
 				updateBadge();
+				updateArticleList();
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();

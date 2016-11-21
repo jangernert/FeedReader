@@ -149,11 +149,6 @@ namespace FeedReader {
 				window.getContent().updateFeedList();
 			});
 
-			m_connection.newArticleList.connect(() => {
-				Logger.debug("DBusConnection: newArticleList");
-				window.getContent().newArticleList();
-			});
-
 			m_connection.updateArticleList.connect(() => {
 				Logger.debug("DBusConnection: updateArticleList");
 				window.getContent().updateArticleList();

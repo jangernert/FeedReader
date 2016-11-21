@@ -92,6 +92,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			scrolledBottom();
 			GLib.Timeout.add(m_scrolledBottomCooldown, () => {
 				m_scrolledBottomOnCooldown = false;
+				if(vadjustment.value >= max - (m_bottomThreshold/2))
+					scrolledBottom();
 				return false;
 			});
 		}

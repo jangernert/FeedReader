@@ -51,12 +51,53 @@ public class FeedReader.FavIconCache : GLib.Object {
 		}
 	}
 
-	public Gdk.Pixbuf? getIcon(string name)
+	private void refresh()
+	{
+		try
+		{
+			var iconDirPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+			var iconDirectory = GLib.File.new_for_path(iconDirPath);
+			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
+			GLib.FileInfo? fileInfo = null;
+
+			while((fileInfo = enumerator.next_file()) != null)
+			{
+				string fileName = fileInfo.get_name();
+				if(!hasIcon(fileName))
+				{
+					var pixbuf = new Gdk.Pixbuf.from_file_at_scale(iconDirPath + fileName, 24, 24, true);
+					fileName = fileName.substring(0, fileName.length - ".ico".length);
+					m_map.set(fileName, pixbuf);
+				}
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("FavIconCache: %s".printf(e.message));
+		}
+	}
+
+	private bool hasIcon(string iconName)
+	{
+		if(m_map == null)
+		 return false;
+
+		return m_map.has_key(iconName);
+	}
+
+	public Gdk.Pixbuf? getIcon(string name, bool firstTry = true)
 	{
 		string fixedName = name.replace("/", "_").replace(".", "_");
 
-		if(m_map.has_key(fixedName))
+		if(hasIcon(fixedName))
+		{
 			return m_map.get(fixedName).copy();
+		}
+		else if(firstTry)
+		{
+			refresh();
+			return getIcon(name, false);
+		}
 
 		return null;
 	}

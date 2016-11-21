@@ -126,6 +126,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		stopLoading();
 		m_currentScroll.scrolledBottom.disconnect(loadMore);
 		var articles = new Gee.LinkedList<article>();
+		uint offset = 0;
 		SourceFunc callback = newList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -133,7 +134,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			if(height == 1)
 				height = 1200;
 			uint limit = height/100 + 5;
-			uint offset = getListOffset();
+			offset = getListOffset();
 
 			Logger.debug("load articles from db");
 			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
@@ -165,7 +166,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_handlerID = m_currentList.loadDone.connect(() => {
 			restoreSelectedRow();
 			restoreScrollPos();
-			if(getListOffset() > 0)
+			if(offset > 0)
 				loadNewAfterDelay(500, null);
 			m_currentScroll.scrolledBottom.connect(loadMore);
 			if(Settings.state().get_int("articlelist-new-rows") > 0)
@@ -410,13 +411,13 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		switch(event.keyval)
 		{
 			case Gdk.Key.Down:
-			case Gdk.Key.Up:
-				bool down = true;
-				if(event.keyval == Gdk.Key.Up)
-					down = false;
-
 				int diff = m_currentList.move(true);
+				if(m_state != ArticleListState.UNREAD)
+					m_currentScroll.scrollDiff(diff);
+				break;
 
+			case Gdk.Key.Up:
+				int diff = m_currentList.move(false);
 				if(m_state != ArticleListState.UNREAD)
 					m_currentScroll.scrollDiff(diff);
 				break;

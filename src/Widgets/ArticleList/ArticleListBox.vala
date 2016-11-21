@@ -313,7 +313,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 							if(tmpRow.getID() != selectedID)
 							{
 								removeRow(tmpRow);
-								break;
 							}
 						}
 					}

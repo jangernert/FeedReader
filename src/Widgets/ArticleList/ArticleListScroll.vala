@@ -28,10 +28,10 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private int m_scrolledBottomCooldown = 200; // cooldown in ms
 
 	//Transition times
-    private int64 m_startTime;
-    private int64 m_endTime;
-    private double m_transitionDiff;
-    private double m_transitionStartValue;
+    private int64 m_startTime = 0;
+    private int64 m_endTime = 0;
+    private double m_transitionDiff = 0.0;
+    private double m_transitionStartValue = 0.0;
 	private int m_transitionDuration = 500 * 1000;
 
 
@@ -104,7 +104,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	public void scrollDiff(double diff, bool animate = true)
 	{
-		scrollToPos(vadjustment.value + diff, animate);
+		scrollToPos(this.vadjustment.value + diff, animate);
 	}
 
 	public void scrollToPos(double pos, bool animate = true)
@@ -119,13 +119,14 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		{
 			m_startTime = this.get_frame_clock().get_frame_time();
 			m_endTime = m_startTime + m_transitionDuration;
+			double leftOverScroll = m_transitionStartValue + m_transitionDiff - this.vadjustment.value;
 
 			if(pos == -1)
-				m_transitionDiff =  (vadjustment.upper - vadjustment.page_size - vadjustment.value);
+				m_transitionDiff = (vadjustment.upper - vadjustment.page_size - vadjustment.value);
 			else
-				m_transitionDiff = pos-this.vadjustment.value;
+				m_transitionDiff = (pos-this.vadjustment.value)+leftOverScroll;
 
-			m_transitionStartValue = vadjustment.value;
+			m_transitionStartValue = this.vadjustment.value;
 			this.add_tick_callback(scrollTick);
 		}
 		else

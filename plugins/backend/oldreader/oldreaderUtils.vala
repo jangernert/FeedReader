@@ -118,11 +118,13 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		string passwd = "";
 
-		try{
+		try
+		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
-		catch(GLib.Error e){
-			Logger.error(e.message);
+		catch(GLib.Error e)
+		{
+			Logger.error("oldReaderUtils: getPassword: " + e.message);
 		}
 
 		if(passwd == null)
@@ -146,7 +148,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("ttrssUtils: setPassword: " + e.message);
+			Logger.error("oldReaderUtils: setPassword: " + e.message);
 		}
 	}
 }

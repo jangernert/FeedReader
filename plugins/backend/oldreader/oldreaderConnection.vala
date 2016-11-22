@@ -55,7 +55,8 @@ public class FeedReader.OldReaderConnection {
 			}
 			else
 			{
-				Logger.debug(response);
+				Logger.debug(message_string);
+				Logger.error(response);
 				return LoginResponse.WRONG_LOGIN;
 			}
 		}

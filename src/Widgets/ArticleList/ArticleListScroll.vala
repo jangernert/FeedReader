@@ -24,8 +24,9 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private double m_bottomThreshold = 200.0;
 	private ArticleListBalance m_balance = ArticleListBalance.NONE;
 
+	private bool m_scrolledTopOnCooldown = false;
 	private bool m_scrolledBottomOnCooldown = false;
-	private int m_scrolledBottomCooldown = 500; // cooldown in ms
+	private int m_scrollCooldown = 500; // cooldown in ms
 
 	//Transition times
     private int64 m_startTime = 0;
@@ -66,8 +67,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		else if(vadjustment.value < m_valueCache)
 			valueChanged(ScrollDirection.UP);
 
-		if(vadjustment.value < 2.0)
-			scrolledTop();
+		checkScrolledTop();
 
 		checkScrolledDown();
 
@@ -82,6 +82,22 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		m_valueCache = vadjustment.value;
 	}
 
+	private void checkScrolledTop()
+	{
+		if(vadjustment.value < 2.0
+		&& !m_scrolledTopOnCooldown)
+		{
+			m_scrolledTopOnCooldown = true;
+			scrolledTop();
+			GLib.Timeout.add(m_scrollCooldown, () => {
+				m_scrolledTopOnCooldown = false;
+				if(vadjustment.value < 2.0)
+					scrolledTop();
+				return false;
+			});
+		}
+	}
+
 	private void checkScrolledDown()
 	{
 		double max = vadjustment.upper - vadjustment.page_size;
@@ -90,7 +106,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		{
 			m_scrolledBottomOnCooldown = true;
 			scrolledBottom();
-			GLib.Timeout.add(m_scrolledBottomCooldown, () => {
+			GLib.Timeout.add(m_scrollCooldown, () => {
 				m_scrolledBottomOnCooldown = false;
 				if(vadjustment.value >= max - 10)
 					scrolledBottom();

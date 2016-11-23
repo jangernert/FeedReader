@@ -61,6 +61,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2 = new ArticleListScroll();
 		m_scroll1.scrolledTop.connect(dismissOverlay);
 		m_scroll2.scrolledTop.connect(dismissOverlay);
+		m_scroll1.scrolledTop.connect(loadUpper);
+		m_scroll2.scrolledTop.connect(loadUpper);
 		m_scroll1.valueChanged.connect(removeInvisibleRows);
 		m_scroll2.valueChanged.connect(removeInvisibleRows);
 		m_scroll1.scrolledBottom.connect(loadMore);
@@ -167,7 +169,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			restoreSelectedRow();
 			restoreScrollPos();
 			if(offset > 0)
-				loadNewAfterDelay(500, null);
+				loadNewAfterDelay(500, 5);
 			m_currentScroll.scrolledBottom.connect(loadMore);
 			if(Settings.state().get_int("articlelist-new-rows") > 0)
 				showNotification();
@@ -213,49 +215,21 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentList.addBottom(articles);
 	}
 
-	private void loadNewAfterDelay(int delay, int? newCount = null)
+	private void loadUpper()
 	{
-		Logger.debug(@"ArticleList: loadNewAfterDelay($delay, %s)".printf((newCount == null) ? "null" : newCount.to_string()));
+		int offset;
+		int count = determineNewRowCount(10, out offset);
+		Logger.debug(@"offset: $offset");
 
-		if(m_loadNewTimeout != 0)
+		if(count > 0)
 		{
-			GLib.Source.remove(m_loadNewTimeout);
-			m_loadNewTimeout = 0;
+			loadNewer.begin(count, offset, (obj, res) =>{
+				loadNewer.end(res);
+			});
 		}
-
-		m_loadNewTimeout = GLib.Timeout.add(delay, () => {
-			int? count = newCount;
-			m_loadNewTimeout = 0;
-			if(newCount == null)
-			{
-				string? firstRowID = m_currentList.getFirstRowID();
-
-				if(firstRowID != null)
-				{
-					count = dbUI.get_default().getArticleCountNewerThanID(
-																firstRowID,
-																m_selectedFeedListID,
-																m_selectedFeedListType,
-																m_state,
-																m_searchTerm);
-				}
-				else
-				{
-					count = 0;
-				}
-			}
-
-			if(count > 0)
-			{
-				loadNewer.begin(count, (obj, res) =>{
-					loadNewer.end(res);
-				});
-			}
-			return false;
-		});
 	}
 
-	private async void loadNewer(int newCount)
+	private async void loadNewer(int newCount, int offset)
 	{
 		Logger.debug(@"ArticleList: loadNewer($newCount)");
 
@@ -270,7 +244,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														m_state,
 														m_searchTerm,
 														newCount,
-														0);
+														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
 			Idle.add((owned) callback);
@@ -366,7 +340,59 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			}
 		}
 
-		loadNewAfterDelay(100, newCount);
+		//loadNewAfterDelay(100, newCount);
+	}
+
+	private void loadNewAfterDelay(int delay, int? newCount = null)
+	{
+		Logger.debug(@"ArticleList: loadNewAfterDelay($delay, %s)".printf((newCount == null) ? "null" : newCount.to_string()));
+
+		if(m_loadNewTimeout != 0)
+		{
+			GLib.Source.remove(m_loadNewTimeout);
+			m_loadNewTimeout = 0;
+		}
+
+		m_loadNewTimeout = GLib.Timeout.add(delay, () => {
+			m_loadNewTimeout = 0;
+			int offset;
+			int count = determineNewRowCount(newCount, out offset);
+			if(count > 0)
+			{
+				loadNewer.begin(count, offset, (obj, res) =>{
+					loadNewer.end(res);
+				});
+			}
+			return false;
+		});
+	}
+
+	private int determineNewRowCount(int? newCount, out int? offset)
+	{
+		int count = 0;
+		string? firstRowID = m_currentList.getFirstRowID();
+
+		if(firstRowID != null)
+		{
+			count = dbUI.get_default().getArticleCountNewerThanID(
+														firstRowID,
+														m_selectedFeedListID,
+														m_selectedFeedListType,
+														m_state,
+														m_searchTerm);
+		}
+
+		if(newCount != null && newCount < count)
+		{
+			offset = count - newCount;
+			count = newCount;
+		}
+		else
+		{
+			offset = 0;
+		}
+
+		return count;
 	}
 
 	private void removeInvisibleRows(ScrollDirection direction)
@@ -518,6 +544,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				}
 			}
 		}
+
+		rowOffset += determineNewRowCount(null, null);
 		Logger.debug("scrollpos %f".printf(scrollPos));
 		Logger.debug("offset %i".printf(rowOffset));
 	}

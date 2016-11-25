@@ -18,7 +18,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private article m_article;
 	private Gtk.Label m_label;
 	private Gtk.Revealer m_revealer;
-	private Gtk.Stack m_stack;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private Gtk.Stack m_unread_stack;
@@ -27,6 +26,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_hovering_unread = false;
 	private bool m_hovering_marked = false;
 	private bool m_hovering_row = false;
+	private bool m_populated = false;
 	public signal void rowStateChanged(ArticleStatus status);
 	public signal void child_revealed();
 	public signal void highlight_row(string articleID);
@@ -36,29 +36,16 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		m_article = Article;
 
-		var spinner = new Gtk.Spinner();
-		spinner.opacity = 0.1;
-		spinner.set_size_request(32, 32);
-		spinner.halign = Gtk.Align.CENTER;
-		spinner.valign = Gtk.Align.CENTER;
-
-		m_stack = new Gtk.Stack();
-		m_stack.set_size_request(0, 100);
-		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_stack.set_transition_duration(200);
-		m_stack.add_named(spinner, "spinner");
-
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.add(m_stack);
 		m_revealer.set_reveal_child(false);
 		m_revealer.notify["child_revealed"].connect(() => {
 			child_revealed();
 		});
+		this.set_size_request(0, 100);
 		this.add(m_revealer);
 		this.show_all();
 
-		spinner.start();
 		GLib.Idle.add(populate);
 	}
 
@@ -222,8 +209,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			Logger.error("ArticleRow.constructor: %s".printf(e.message));
 		}
 
-		m_stack.add_named(eventbox, "content");
-		m_stack.set_visible_child_name("content");
+		m_revealer.add(eventbox);
+		m_populated = true;
 		return false;
 	}
 
@@ -436,7 +423,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_article.getUnread() != unread)
 		{
 			m_article.setUnread(unread);
-			if(m_stack.get_visible_child_name() == "content")
+			if(m_populated)
 			{
 				if(m_article.getUnread() == ArticleStatus.UNREAD)
 				{

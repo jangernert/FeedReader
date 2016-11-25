@@ -153,7 +153,7 @@ public class FeedReader.FeedlyAPI : Object {
 		}
 		Json.Array array = parser.get_root().get_array();
 
-		for (int i = 0; i < array.get_length (); i++)
+		for (int i = 0; i < array.get_length(); i++)
 		{
 			Json.Object object = array.get_object_element(i);
 			string categorieID = object.get_string_member("id");

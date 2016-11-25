@@ -55,7 +55,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		addRow(ArticleListBalance.NONE);
 	}
 
-	public void stopLoading()
+	private void stopLoading()
 	{
 		if(m_idleID > 0)
 		{

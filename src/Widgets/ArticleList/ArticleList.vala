@@ -61,8 +61,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2 = new ArticleListScroll();
 		m_scroll1.scrolledTop.connect(dismissOverlay);
 		m_scroll2.scrolledTop.connect(dismissOverlay);
-		m_scroll1.scrolledTop.connect(loadUpper);
-		m_scroll2.scrolledTop.connect(loadUpper);
 		m_scroll1.valueChanged.connect(removeInvisibleRows);
 		m_scroll2.valueChanged.connect(removeInvisibleRows);
 		m_scroll1.scrolledBottom.connect(loadMore);
@@ -125,7 +123,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		stopLoading();
 		m_currentScroll.scrolledBottom.disconnect(loadMore);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
@@ -169,7 +166,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			restoreSelectedRow();
 			restoreScrollPos();
 			if(offset > 0)
-				loadNewAfterDelay(500, 5);
+				loadNewAfterDelay(500, null);
 			m_currentScroll.scrolledBottom.connect(loadMore);
 			if(Settings.state().get_int("articlelist-new-rows") > 0)
 				showNotification();
@@ -188,7 +185,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			return;
 
 		Logger.debug("ArticleList.loadmore()");
-		stopLoading();
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadMore.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -215,25 +211,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentList.addBottom(articles);
 	}
 
-	private void loadUpper()
-	{
-		int offset;
-		int count = determineNewRowCount(10, out offset);
-		Logger.debug(@"offset: $offset");
-
-		if(count > 0)
-		{
-			loadNewer.begin(count, offset, (obj, res) =>{
-				loadNewer.end(res);
-			});
-		}
-	}
-
 	private async void loadNewer(int newCount, int offset)
 	{
 		Logger.debug(@"ArticleList: loadNewer($newCount)");
 
-		stopLoading();
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadNewer.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -258,16 +239,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentList.addTop(articles);
 	}
 
-	private void stopLoading()
-	{
-		if(m_handlerID != 0)
-		{
-			m_currentList.disconnect(m_handlerID);
-			m_handlerID = 0;
-		}
-		m_currentList.stopLoading();
-	}
-
 	public async void updateArticleList(bool slideIN = true)
 	{
 		Logger.debug(@"ArticleList: updateArticleList($slideIN)");
@@ -289,7 +260,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(firstRowID == null)
 			return;
 
-		stopLoading();
 		var articles = new Gee.LinkedList<article>();
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -340,7 +310,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			}
 		}
 
-		//loadNewAfterDelay(100, newCount);
+		loadNewAfterDelay(100, newCount);
 	}
 
 	private void loadNewAfterDelay(int delay, int? newCount = null)

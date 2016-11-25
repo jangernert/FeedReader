@@ -101,11 +101,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_overlay != null)
 			m_overlay.dismiss();
 
-		// save currently selected article
-		string selectedArticle = getSelectedArticle();
-		if(selectedArticle != "empty")
-			Settings.state().set_string("articlelist-selected-row", selectedArticle);
-
 		// switch up lists
 		if(m_currentList == m_List1)
 		{
@@ -544,9 +539,12 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private void restoreScrollPos()
 	{
 		var pos = Settings.state().get_double("articlelist-scrollpos");
-		Logger.debug(@"ArticleList: restore ScrollPos $pos");
-		m_currentScroll.scrollDiff(pos);
-		Settings.state().set_double("articlelist-scrollpos",  0);
+		if(pos > 0)
+		{
+			Logger.debug(@"ArticleList: restore ScrollPos $pos");
+			m_currentScroll.scrollDiff(pos);
+			Settings.state().set_double("articlelist-scrollpos",  0);
+		}
 	}
 
 	public void removeTagFromSelectedRow(string tagID)

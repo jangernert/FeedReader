@@ -78,6 +78,13 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			else
 				item = m_lazyQeue.first();
 
+			// check if row is already there
+			if((pos == -1 && getLastRowID() == item.getArticleID())
+			|| (pos == 0 && getFirstRowID() == item.getArticleID()))
+			{
+				checkQueue(item, balance, pos, reverse, animate);
+			}
+
 			balanceNextScroll(balance);
 
 			var newRow = new articleRow(item);
@@ -94,20 +101,25 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 			this.insert(newRow, pos);
 
-			if(m_lazyQeue.size > 1)
-			{
-				m_lazyQeue.remove(item);
-				addRow(balance, pos, reverse);
-			}
-			else
-			{
-				m_lazyQeue = new Gee.LinkedList<article>();
-				m_idleID = 0;
-				loadDone();
-			}
+			checkQueue(item, balance, pos, reverse, animate);
 
 			return false;
 		});
+	}
+
+	private void checkQueue(article item, ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)
+	{
+		if(m_lazyQeue.size > 1)
+		{
+			m_lazyQeue.remove(item);
+			addRow(balance, pos, reverse, animate);
+		}
+		else
+		{
+			m_lazyQeue = new Gee.LinkedList<article>();
+			m_idleID = 0;
+			loadDone();
+		}
 	}
 
 	private void emptyList()
@@ -135,13 +147,16 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		row.updateUnread(ArticleStatus.READ);
 		this.select_row(row);
 
-		try
+		if(row.isUnread())
 		{
-			DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ArticleList.selectAfter: %s".printf(e.message));
+			try
+			{
+				DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("ArticleList.selectAfter: %s".printf(e.message));
+			}
 		}
 
 		if (m_selectSourceID > 0)

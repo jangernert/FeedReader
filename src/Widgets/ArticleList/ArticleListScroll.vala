@@ -34,6 +34,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
     private double m_transitionDiff = 0.0;
     private double m_transitionStartValue = 0.0;
 	private int m_transitionDuration = 500 * 1000;
+	private uint m_scrollCallbackID = 0;
 
 
 	public ArticleListScroll()
@@ -68,7 +69,6 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			valueChanged(ScrollDirection.UP);
 
 		checkScrolledTop();
-
 		checkScrolledDown();
 
 		double upper = vadjustment.upper;
@@ -137,7 +137,15 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		{
 			m_startTime = this.get_frame_clock().get_frame_time();
 			m_endTime = m_startTime + m_transitionDuration;
-			double leftOverScroll = m_transitionStartValue + m_transitionDiff - this.vadjustment.value;
+			double leftOverScroll = 0.0;
+			if(m_transitionStartValue != 0.0)
+				leftOverScroll = m_transitionStartValue + m_transitionDiff - this.vadjustment.value;
+
+			if(m_scrollCallbackID != 0)
+			{
+				this.remove_tick_callback(m_scrollCallbackID);
+				m_scrollCallbackID = 0;
+			}
 
 			if(pos == -1)
 				m_transitionDiff = (vadjustment.upper - vadjustment.page_size - vadjustment.value);
@@ -145,7 +153,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 				m_transitionDiff = (pos-this.vadjustment.value)+leftOverScroll;
 
 			m_transitionStartValue = this.vadjustment.value;
-			this.add_tick_callback(scrollTick);
+			m_scrollCallbackID = this.add_tick_callback(scrollTick);
 		}
 		else
 		{
@@ -212,6 +220,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		if(this.vadjustment.value <= 0 || now >= m_endTime)
 		{
 			this.queue_draw();
+			m_transitionStartValue = 0.0;
+			m_scrollCallbackID = 0;
 			return false;
 		}
 

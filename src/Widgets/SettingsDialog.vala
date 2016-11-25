@@ -310,19 +310,35 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		box.pack_end(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
 		box.show_all();
 
-		if(before == null)
-		{
-			row.set_header(box);
-			return;
-		}
-
         var r1 = row as ServiceSetup;
+
+        // this is the plus-button
+        if(r1 == null)
+            return;
+
+        bool sys1 = r1.isSystemAccount();
+
+        if(before == null)
+        {
+            if(sys1)
+    		{
+    			row.set_header(box);
+    			return;
+    		}
+            else
+            {
+                label.set_text(_("FeedReader Accounts"));
+                row.set_header(box);
+    			return;
+            }
+        }
+		
+
 		var r2 = before as ServiceSetup;
+        bool sys2 = r2.isSystemAccount();
+
         if(r1 != null && r2 != null)
         {
-            bool sys1 = r1.isSystemAccount();
-    		bool sys2 = r2.isSystemAccount();
-
     		if(!sys1 && sys2)
             {
                 label.set_text(_("FeedReader Accounts"));

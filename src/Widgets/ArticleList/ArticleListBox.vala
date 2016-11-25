@@ -71,6 +71,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 		m_idleID = GLib.Idle.add(() => {
 
+			if(m_lazyQeue == null || m_lazyQeue.size == 0)
+				return false;
+
 			article item;
 
 			if(reverse)

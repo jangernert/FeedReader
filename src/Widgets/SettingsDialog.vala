@@ -181,7 +181,6 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		m_serviceList = new Gtk.ListBox();
         m_serviceList.set_selection_mode(Gtk.SelectionMode.NONE);
         m_serviceList.set_sort_func(sortFunc);
-		m_serviceList.set_header_func(headerFunc);
 
         var service_scroll = new Gtk.ScrolledWindow(null, null);
         service_scroll.expand = true;
@@ -204,6 +203,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     public void refreshAccounts()
 	{
+        m_serviceList.set_header_func(null);
 		var children = m_serviceList.get_children();
 		foreach(Gtk.Widget row in children)
 		{
@@ -261,6 +261,8 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     			row.reveal();
 			});
 		});
+
+        m_serviceList.set_header_func(headerFunc);
 	}
 
     public void removeRow(ServiceSetup row, Gtk.ListBox list)

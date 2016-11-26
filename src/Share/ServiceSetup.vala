@@ -178,4 +178,9 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		return m_label.get_text();
 	}
 
+	public string getName()
+	{
+		return m_name;
+	}
+
 }

@@ -53,7 +53,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool m_FullscreenVideo = false;
 	private bool m_FullscreenArticle = false;
 	private double m_FullscreenZoomLevel = 1.25;
-	private int m_animationDuration = 150;
+	private uint m_animationDuration = 150;
 	public signal void enterFullscreen(bool video);
 	public signal void leaveFullscreen(bool video);
 
@@ -280,7 +280,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_currentView = getNewView();
 				m_stack.add_named(m_currentView, "view2");
 				m_stack.set_visible_child_name("view2");
-				GLib.Timeout.add(m_animationDuration + 10, () => {
+				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 					var oldView = m_stack.get_child_by_name("view1");
 					if(oldView != null)
 						m_stack.remove(oldView);
@@ -295,7 +295,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_currentView = getNewView();
 				m_stack.add_named(m_currentView, "view1");
 				m_stack.set_visible_child_name("view1");
-				GLib.Timeout.add(m_animationDuration + 10, () => {
+				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 					var oldView = m_stack.get_child_by_name("view2");
 					if(oldView != null)
 						m_stack.remove(oldView);
@@ -341,7 +341,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		&& m_stack.get_visible_child_name() != "crash")
 			oldView = m_stack.get_visible_child();
 		m_stack.set_visible_child_name("empty");
-		GLib.Timeout.add(m_animationDuration + 10, () => {
+		GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 			if(oldView != null)
 				m_stack.remove(oldView);
 			checkQueue();
@@ -890,6 +890,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		m_stack.set_transition_type(trans);
 		m_stack.set_transition_duration(time);
+		m_animationDuration = time;
 	}
 
 	private void printProgress()
@@ -924,7 +925,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		if(m_stack.get_visible_child_name() != "crash")
 			oldView = m_stack.get_visible_child();
 		m_stack.set_visible_child_name("crash");
-		GLib.Timeout.add(m_animationDuration + 10, () => {
+		GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 			if(oldView != null)
 				m_stack.remove(oldView);
 			checkQueue();

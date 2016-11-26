@@ -192,7 +192,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			return -1;
 
 		// row is (additionalRows * rowHeight) below the current viewport
-		if(y > (additionalRows) * rowHeight + scrollHeight)
+		if(y > (additionalRows * rowHeight + scrollHeight))
 			return 1;
 
 		// row is visible

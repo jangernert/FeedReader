@@ -68,10 +68,22 @@ public class FeedReader.articleView : Gtk.Overlay {
 		var crashLabel = new Gtk.Label(_("WebKit has crashed"));
 		crashLabel.get_style_context().add_class("h2");
 		var crashIcon = new Gtk.Image.from_icon_name("face-crying-symbolic", Gtk.IconSize.BUTTON);
-		var crashView = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		var crashLabelBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		crashLabelBox.pack_start(crashLabel);
+		crashLabelBox.pack_start(crashIcon);
+		var crashButton = new Gtk.Button.with_label("view HTML-code");
+		crashButton.set_relief(Gtk.ReliefStyle.NONE);
+		crashButton.set_focus_on_click(false);
+		crashButton.clicked.connect(() => {
+			var Article = dbUI.get_default().read_article(m_currentArticle);
+			Utils.openInGedit(Article.getHTML());
+		});
+		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		crashView.set_halign(Gtk.Align.CENTER);
-		crashView.pack_start(crashLabel);
-		crashView.pack_start(crashIcon);
+		crashView.set_valign(Gtk.Align.CENTER);
+		crashView.pack_start(crashLabelBox);
+		crashView.pack_start(crashButton);
+
 
 		m_overlayLabel = new Gtk.Label("dummy URL");
 		m_overlayLabel.margin = 10;
@@ -465,7 +477,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	public int getScrollPos()
 	{
 		if(m_stack.get_visible_child_name() == "empty"
-		|| m_stack.get_visible_child_name() == "crahs")
+		|| m_stack.get_visible_child_name() == "crash")
 			return 0;
 
 		// use mainloop to prevent app from shutting down before the result can be fetched

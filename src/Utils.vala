@@ -744,7 +744,7 @@ public class FeedReader.Utils : GLib.Object {
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
 			Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
-			
+
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message ("GET", "http://f1.allesedv.com/32/%s".printf(url));
 
@@ -756,7 +756,8 @@ public class FeedReader.Utils : GLib.Object {
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{
-				try{
+				try
+				{
 					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
 				}
 				catch(GLib.FileError e)
@@ -770,6 +771,30 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		// file already exists
 		return true;
+	}
+
+	public static void openInGedit(string text)
+	{
+		try
+		{
+			string filename = "/tmp/FeedReader_crashed_html.txt";
+			FileUtils.set_contents(filename, text);
+
+			string[] spawn_args = {"gedit", filename};
+			string[] spawn_env = Environ.get();
+			Pid child_pid;
+
+			Process.spawn_async ("/",
+				spawn_args,
+				spawn_env,
+				SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD,
+				null,
+				out child_pid);
+		}
+		catch(GLib.FileError e)
+		{
+			Logger.error("Utils.openInGedit(): %s".printf(e.message));
+		}
 	}
 
 }

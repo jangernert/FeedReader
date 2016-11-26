@@ -65,6 +65,14 @@ public class FeedReader.articleView : Gtk.Overlay {
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("h2");
 
+		var crashLabel = new Gtk.Label(_("WebKit has crashed"));
+		crashLabel.get_style_context().add_class("h2");
+		var crashIcon = new Gtk.Image.from_icon_name("face-crying-symbolic", Gtk.IconSize.BUTTON);
+		var crashView = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		crashView.set_halign(Gtk.Align.CENTER);
+		crashView.pack_start(crashLabel);
+		crashView.pack_start(crashIcon);
+
 		m_overlayLabel = new Gtk.Label("dummy URL");
 		m_overlayLabel.margin = 10;
 		m_overlayLabel.opacity = 0.0;
@@ -76,6 +84,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_stack = new Gtk.Stack();
 		m_stack.add_named(emptyView, "empty");
+		m_stack.add_named(crashView, "crash");
 
 		m_stack.set_visible_child_name("empty");
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
@@ -257,7 +266,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		switch(m_stack.get_visible_child_name())
 		{
 			case "empty":
-				Logger.debug("ArticleView: empty -> view1");
+			case "crash":
+				Logger.debug("ArticleView: %s -> view1".printf(m_stack.get_visible_child_name()));
 				m_currentView = getNewView();
 				m_stack.add_named(m_currentView, "view1");
 				m_stack.set_visible_child_name("view1");
@@ -327,7 +337,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		m_busy = true;
 		Gtk.Widget? oldView = null;
-		if(m_stack.get_visible_child_name() != "empty")
+		if(m_stack.get_visible_child_name() != "empty"
+		&& m_stack.get_visible_child_name() != "crash")
 			oldView = m_stack.get_visible_child();
 		m_stack.set_visible_child_name("empty");
 		GLib.Timeout.add(m_animationDuration + 10, () => {
@@ -418,7 +429,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private int getScollUpper()
 	{
-		if(m_stack.get_visible_child_name() == "empty")
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "crash")
 			return 0;
 
 		string javascript = """
@@ -452,7 +464,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public int getScrollPos()
 	{
-		if(m_stack.get_visible_child_name() == "empty")
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "crahs")
 			return 0;
 
 		// use mainloop to prevent app from shutting down before the result can be fetched
@@ -515,7 +528,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 		ThreadFunc<void*> run = () => {
 			try
 	    	{
-	    		if(m_connected && m_stack.get_visible_child_name() != "empty")
+	    		if(m_connected
+				&& m_stack.get_visible_child_name() != "empty"
+				&& m_stack.get_visible_child_name() != "crash")
 	    			m_messenger.recalculate();
 	    	}
 	    	catch(GLib.IOError e)
@@ -904,6 +919,17 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private bool onCrash()
 	{
+		m_busy = true;
+		Gtk.Widget? oldView = null;
+		if(m_stack.get_visible_child_name() != "crash")
+			oldView = m_stack.get_visible_child();
+		m_stack.set_visible_child_name("crash");
+		GLib.Timeout.add(m_animationDuration + 10, () => {
+			if(oldView != null)
+				m_stack.remove(oldView);
+			checkQueue();
+			return false;
+		});
 		Logger.error("ArticleView: webview crashed");
 		return false;
 	}

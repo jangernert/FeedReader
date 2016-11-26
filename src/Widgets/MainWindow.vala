@@ -27,7 +27,8 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private ContentPage m_content;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
-	Gtk.CssProvider m_cssProvider;
+	private Gtk.CssProvider m_cssProvider;
+	private SettingsDialog? m_dialog = null;
 
 	public readerUI(FeedApp app)
 	{
@@ -231,12 +232,21 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 	private void showSettings(string panel)
 	{
-		var settings = new SettingsDialog(this, panel);
+		m_dialog = new SettingsDialog(this, panel);
 
-		settings.newFeedList.connect(m_content.newFeedList);
-		settings.newArticleList.connect(m_content.newArticleList);
-		settings.reloadArticleView.connect(m_content.reloadArticleView);
-		settings.reloadCSS.connect(reloadCSS);
+		m_dialog.newFeedList.connect(m_content.newFeedList);
+		m_dialog.newArticleList.connect(m_content.newArticleList);
+		m_dialog.reloadArticleView.connect(m_content.reloadArticleView);
+		m_dialog.reloadCSS.connect(reloadCSS);
+		m_dialog.close.connect(() => {
+			m_dialog = null;
+		});
+	}
+
+	public void settingsRefreshAccounts()
+	{
+		if(m_dialog != null)
+			m_dialog.refreshAccounts();
 	}
 
 	public void setRefreshButton(bool refreshing)

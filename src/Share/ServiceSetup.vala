@@ -144,8 +144,11 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		return false;
 	}
 
-	public void reveal()
+	public void reveal(bool animate = true)
 	{
+		if(!animate)
+			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
+
 		m_revealer.set_reveal_child(true);
 		this.show_all();
 	}

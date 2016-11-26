@@ -262,15 +262,15 @@ public class FeedReader.Share : GLib.Object {
 			{
 				m_client.account_added.connect((obj) => {
 					Logger.debug("share: account added");
-					refreshAccounts();
+					accountsChanged(obj);
 				});
 				m_client.account_changed.connect((obj) => {
 					Logger.debug("share: account changed");
-					refreshAccounts();
+					accountsChanged(obj);
 				});
 				m_client.account_removed.connect((obj) => {
-					Logger.debug("share: account changed");
-					refreshAccounts();
+					Logger.debug("share: account removed");
+					accountsChanged(obj);
 				});
 			}
 			else
@@ -282,5 +282,13 @@ public class FeedReader.Share : GLib.Object {
 		{
 			Logger.error("share.checkSystemAccounts: %s".printf(e.message));
 		}
+	}
+
+	private void accountsChanged(Goa.Object object)
+	{
+		refreshAccounts();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		if(window != null)
+			window.settingsRefreshAccounts();
 	}
 }

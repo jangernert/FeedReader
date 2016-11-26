@@ -15,6 +15,8 @@
 
 public class FeedReader.SettingsDialog : Gtk.Dialog {
 
+    private Gtk.ListBox m_serviceList;
+
     public signal void newFeedList(bool defaultSettings = false);
     public signal void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE);
     public signal void reloadArticleView();
@@ -176,70 +178,22 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private Gtk.Box setup_Service()
     {
-		var service_list = new Gtk.ListBox();
-        service_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        service_list.set_sort_func(sortFunc);
-		service_list.set_header_func(headerFunc);
+		m_serviceList = new Gtk.ListBox();
+        m_serviceList.set_selection_mode(Gtk.SelectionMode.NONE);
+        m_serviceList.set_sort_func(sortFunc);
+		m_serviceList.set_header_func(headerFunc);
 
         var service_scroll = new Gtk.ScrolledWindow(null, null);
         service_scroll.expand = true;
         service_scroll.margin_top = 10;
         service_scroll.margin_bottom = 10;
 
-        var viewport = new Gtk.Viewport (null, null);
+        var viewport = new Gtk.Viewport(null, null);
         viewport.get_style_context().add_class("servicebox");
-        viewport.add(service_list);
+        viewport.add(m_serviceList);
         service_scroll.add(viewport);
 
-        var list = Share.get_default().getAccounts();
-
-        foreach(var account in list)
-        {
-            if(account.isSystemAccount())
-            {
-                ServiceSetup row = Share.get_default().newSystemAccount(account.getID());
-                service_list.add(row);
-    			row.reveal();
-            }
-            else if(Share.get_default().needSetup(account.getID()))
-            {
-                ServiceSetup row = Share.get_default().newSetup_withID(account.getID());
-    			row.removeRow.connect(() => {
-    				removeRow(row, service_list);
-    			});
-    			service_list.add(row);
-    			row.reveal();
-            }
-        }
-
-        var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
-        addAccount.set_relief(Gtk.ReliefStyle.NONE);
-        addAccount.get_style_context().add_class("addServiceButton");
-        addAccount.set_size_request(0, 48);
-		service_list.add(addAccount);
-
-		addAccount.clicked.connect(() => {
-			var children = service_list.get_children();
-			foreach(Gtk.Widget row in children)
-			{
-				var tmpRow = row as ServiceSetup;
-				if(tmpRow != null && !tmpRow.isLoggedIn())
-				{
-					Share.get_default().refreshAccounts();
-					removeRow(tmpRow, service_list);
-				}
-			}
-
-			var popover = new ServiceSettingsPopover(addAccount);
-			popover.newAccount.connect((type) => {
-                ServiceSetup row = Share.get_default().newSetup(type);
-    			row.removeRow.connect(() => {
-    				removeRow(row, service_list);
-    			});
-    			service_list.add(row);
-    			row.reveal();
-			});
-		});
+        refreshAccounts();
 
     	var serviceBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         serviceBox.expand = true;
@@ -248,15 +202,66 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         return serviceBox;
     }
 
+    public void refreshAccounts()
+	{
+		var children = m_serviceList.get_children();
+		foreach(Gtk.Widget row in children)
+		{
+			m_serviceList.remove(row);
+			row.destroy();
+		}
 
-    private Gtk.Label headline(string name)
-    {
-    	var headline = new Gtk.Label(name);
-        headline.margin_top = 15;
-        headline.set_alignment(0, 0.5f);
-        headline.get_style_context().add_class("bold");
-        return headline;
-    }
+        var list = Share.get_default().getAccounts();
+
+        foreach(var account in list)
+        {
+            if(account.isSystemAccount())
+            {
+                ServiceSetup row = Share.get_default().newSystemAccount(account.getID());
+                m_serviceList.add(row);
+    			row.reveal(false);
+            }
+            else if(Share.get_default().needSetup(account.getID()))
+            {
+                ServiceSetup row = Share.get_default().newSetup_withID(account.getID());
+    			row.removeRow.connect(() => {
+    				removeRow(row, m_serviceList);
+    			});
+    			m_serviceList.add(row);
+    			row.reveal(false);
+            }
+        }
+
+        var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
+        addAccount.set_relief(Gtk.ReliefStyle.NONE);
+        addAccount.get_style_context().add_class("addServiceButton");
+        addAccount.set_size_request(0, 48);
+        addAccount.show();
+		m_serviceList.add(addAccount);
+
+		addAccount.clicked.connect(() => {
+			children = m_serviceList.get_children();
+			foreach(Gtk.Widget row in children)
+			{
+				var tmpRow = row as ServiceSetup;
+				if(tmpRow != null && !tmpRow.isLoggedIn())
+				{
+					Share.get_default().refreshAccounts();
+					removeRow(tmpRow, m_serviceList);
+				}
+			}
+
+			var popover = new ServiceSettingsPopover(addAccount);
+			popover.newAccount.connect((type) => {
+                ServiceSetup row = Share.get_default().newSetup(type);
+    			row.removeRow.connect(() => {
+    				removeRow(row, m_serviceList);
+    			});
+    			m_serviceList.add(row);
+    			row.reveal();
+			});
+		});
+	}
 
     public void removeRow(ServiceSetup row, Gtk.ListBox list)
 	{
@@ -332,7 +337,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     			return;
             }
         }
-		
+
 
 		var r2 = before as ServiceSetup;
         bool sys2 = r2.isSystemAccount();
@@ -346,4 +351,13 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
             }
         }
 	}
+
+    private Gtk.Label headline(string name)
+    {
+    	var headline = new Gtk.Label(name);
+        headline.margin_top = 15;
+        headline.set_alignment(0, 0.5f);
+        headline.get_style_context().add_class("bold");
+        return headline;
+    }
 }

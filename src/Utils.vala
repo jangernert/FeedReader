@@ -780,7 +780,7 @@ public class FeedReader.Utils : GLib.Object {
 			string filename = "/tmp/FeedReader_crashed_html.txt";
 			FileUtils.set_contents(filename, text);
 
-			string[] spawn_args = {"gedit", filename};
+			string[] spawn_args = {"xdg-open", filename};
 			string[] spawn_env = Environ.get();
 			Pid child_pid;
 

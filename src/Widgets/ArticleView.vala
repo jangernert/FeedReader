@@ -72,6 +72,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		crashLabelBox.pack_start(crashLabel);
 		crashLabelBox.pack_start(crashIcon);
 		var crashButton = new Gtk.Button.with_label("view HTML-code");
+		crashButton.get_style_context().add_class("preview");
+		crashButton.opacity = 0.7;
 		crashButton.set_relief(Gtk.ReliefStyle.NONE);
 		crashButton.set_focus_on_click(false);
 		crashButton.clicked.connect(() => {

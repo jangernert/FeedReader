@@ -36,7 +36,8 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 				var goaAccounts = client.get_accounts();
 				foreach(var object in goaAccounts)
 				{
-					if(object.account.provider_type == "pocket")
+					if(object.account.provider_type == "pocket"
+					&& !object.account.read_later_disabled)
 					{
 						accounts.add(
 							new ShareAccount(

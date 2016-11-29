@@ -112,6 +112,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_width = allocation.width;
 				m_height = allocation.height;
 				Logger.debug("ArticleView: size changed");
+				setBackgroundColor();
 				recalculate.begin((obj, res) => {
 					recalculate.end(res);
 				});
@@ -155,10 +156,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		this.add(m_videoOverlay);
 		this.add_overlay(m_overlayLabel);
-
-		this.size_allocate.connect((alloc) => {
-			setBackgroundColor();
-		});
 
 		Gtk.Settings.get_default().notify["gtk-theme-name"].connect(() => {
 			setBackgroundColor();
@@ -727,6 +724,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private void setBackgroundColor()
 	{
+		Logger.debug("ArticleView.setBackgroundColor()");
 		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{

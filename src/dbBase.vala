@@ -244,7 +244,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		int cols = stmt.column_count ();
-		while (stmt.step() == Sqlite.ROW)
+		while(stmt.step() == Sqlite.ROW)
 		{
 			for(int i = 0; i < cols; i++)
 			{
@@ -515,6 +515,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public article read_article(string articleID)
 	{
+		Logger.debug(@"dbBase.read_article(): $articleID");
 		article tmp = null;
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");

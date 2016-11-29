@@ -259,7 +259,7 @@ public class FeedReader.dbDaemon : dbBase {
             stmt.bind_text(label_position, tag_item.getTitle());
             stmt.bind_int (color_position, tag_item.getColor());
 
-            while (stmt.step () == Sqlite.ROW) {}
+            while(stmt.step() == Sqlite.ROW){}
             stmt.reset ();
         }
 
@@ -400,7 +400,7 @@ public class FeedReader.dbDaemon : dbBase {
         foreach(string id in ids)
         {
             stmt.bind_text(articleID_position, id);
-            while(stmt.step() != Sqlite.DONE) {}
+            while(stmt.step() != Sqlite.DONE){}
             stmt.reset();
         }
 
@@ -419,9 +419,9 @@ public class FeedReader.dbDaemon : dbBase {
         update_query.build();
 
         Sqlite.Statement stmt;
-        int ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
+        int ec = sqlite_db.prepare_v2(update_query.get(), update_query.get().length, out stmt);
 
-        if (ec != Sqlite.OK)
+        if(ec != Sqlite.OK)
         {
 			Logger.error(update_query.get());
 			Logger.error("update_articles: " + sqlite_db.errmsg());
@@ -436,7 +436,7 @@ public class FeedReader.dbDaemon : dbBase {
         stmt.bind_text(html_position, Article.getHTML());
         stmt.bind_text(preview_position, Article.getPreview());
 
-        while(stmt.step() != Sqlite.DONE) {}
+        while(stmt.step() != Sqlite.DONE){}
         stmt.reset();
 
         executeSQL("COMMIT TRANSACTION");
@@ -483,7 +483,7 @@ public class FeedReader.dbDaemon : dbBase {
             stmt.bind_int (modified_position, article.getLastModified());
             stmt.bind_text(articleID_position, article.getArticleID());
 
-            while(stmt.step() != Sqlite.DONE) {}
+            while(stmt.step() != Sqlite.DONE){}
             stmt.reset();
         }
 
@@ -574,7 +574,7 @@ public class FeedReader.dbDaemon : dbBase {
             stmt.bind_int (modified_position, article.getLastModified());
             stmt.bind_text(media_position, article.getMediaString());
 
-            while(stmt.step() != Sqlite.DONE) {}
+            while(stmt.step() != Sqlite.DONE){}
             stmt.reset();
         }
 

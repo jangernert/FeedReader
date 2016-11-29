@@ -896,6 +896,9 @@ namespace FeedReader {
 
 		Logger.info("FeedReader Daemon " + AboutInfo.version);
 
+		if(dbDaemon.get_default().uninitialized())
+			dbDaemon.get_default().init();
+
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,
 				      () => {

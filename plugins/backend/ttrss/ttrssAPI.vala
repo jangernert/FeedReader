@@ -73,7 +73,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		else if(error == ConnectionError.API_ERROR)
 		{
-			return LoginResponse.WRONG_LOGIN;
+			return LoginResponse.API_ERROR;
 		}
 		else if(error == ConnectionError.NO_RESPONSE)
 		{

@@ -536,6 +536,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case LoginResponse.UNKNOWN_ERROR:
 				m_ErrorMessage.set_label(_("Sorry, something went wrong."));
 				break;
+			case LoginResponse.API_ERROR:
+				m_ErrorMessage.set_label(_("The server reported an API-error."));
+				break;
 			case LoginResponse.WRONG_LOGIN:
 				m_ErrorMessage.set_label(_("Either your username or the password are not correct."));
 				break;

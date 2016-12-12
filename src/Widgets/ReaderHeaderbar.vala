@@ -30,6 +30,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private Gtk.HeaderBar m_header_right;
 	private Gtk.Label m_syncProgressText;
 	private Gtk.Popover m_syncPopover;
+	private SharePopover? m_sharePopover = null;
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
@@ -137,17 +138,20 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		shareStack.set_visible_child_name("button");
 
 		m_share_button.clicked.connect(() => {
-			var pop = new SharePopover(m_share_button);
-			pop.showSettings.connect((panel) => {
+			m_sharePopover = new SharePopover(m_share_button);
+			m_sharePopover.showSettings.connect((panel) => {
 				showSettings(panel);
 			});
-			pop.startShare.connect(() => {
+			m_sharePopover.startShare.connect(() => {
 				shareStack.set_visible_child_name("spinner");
 				shareSpinner.start();
 			});
-			pop.shareDone.connect(() => {
+			m_sharePopover.shareDone.connect(() => {
 				shareStack.set_visible_child_name("button");
 				shareSpinner.stop();
+			});
+			m_sharePopover.closed.connect(() => {
+				m_sharePopover = null;
 			});
 		});
 
@@ -374,5 +378,18 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void updateSyncProgress(string progress)
 	{
 		m_syncProgressText.set_text(progress);
+	}
+
+	public bool sharePopoverShown()
+	{
+		if(m_sharePopover != null)
+			return true;
+
+		return false;
+	}
+
+	public void refreshSahrePopover()
+	{
+		m_sharePopover.refreshList();
 	}
 }

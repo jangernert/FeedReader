@@ -29,7 +29,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
         m_list.row_activated.connect(clicked);
-        populateList();
+        refreshList();
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(150);
 		m_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
@@ -42,8 +42,15 @@ public class FeedReader.SharePopover : Gtk.Popover {
         this.show_all();
 	}
 
-    private void populateList()
+    public void refreshList()
     {
+		var children = m_list.get_children();
+		foreach(Gtk.Widget row in children)
+		{
+			m_list.remove(row);
+			row.destroy();
+		}
+
     	var list = Share.get_default().getAccounts();
 
         foreach(var account in list)
@@ -78,7 +85,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			addRow.add(addBox);
 		}
 
-
+		addRow.show_all();
 		m_list.add(addRow);
     }
 

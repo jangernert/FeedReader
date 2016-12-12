@@ -247,6 +247,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		if(m_dialog != null)
 			m_dialog.refreshAccounts();
+
+		if(m_headerbar.sharePopoverShown())
+			m_headerbar.refreshSahrePopover();
 	}
 
 	public void setRefreshButton(bool refreshing)

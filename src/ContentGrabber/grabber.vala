@@ -359,6 +359,7 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.repairURL("//a", "src", doc, m_articleURL);
         grabberUtils.repairURL("//a", "href", doc, m_articleURL);
         grabberUtils.repairURL("//object", "data", doc, m_articleURL);
+        grabberUtils.repairURL("//iframe", "src", doc, m_articleURL);
 
         // strip elements using Readability.com and Instapaper.com ignore class names
 		// .entry-unrelated and .instapaper_ignore

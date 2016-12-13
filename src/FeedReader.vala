@@ -67,6 +67,7 @@ namespace FeedReader {
 			}
 
 			m_window.show_all();
+			m_window.present();
 
 			try
 			{

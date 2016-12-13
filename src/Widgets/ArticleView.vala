@@ -369,7 +369,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public void open_link(WebKit.LoadEvent load_event)
 	{
-		Logger.debug("ArticleView: open_link");
 		switch (load_event)
 		{
 			case WebKit.LoadEvent.STARTED:

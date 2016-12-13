@@ -121,9 +121,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentScroll.scrolledBottom.disconnect(loadMore);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
-		bool newArticles = false;
-		if(Settings.state().get_int("articlelist-new-rows") > 0)
-			newArticles = true;
 		SourceFunc callback = newList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -166,8 +163,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			if(offset > 0)
 				loadNewAfterDelay(500, null);
 			m_currentScroll.scrolledBottom.connect(loadMore);
-			if(newArticles)
-				showNotification();
 
 			if(m_handlerID != 0)
 			{
@@ -235,6 +230,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		yield;
 
 		m_currentList.addTop(articles);
+		if(newCount > 0)
+			showNotification();
 	}
 
 	public async void updateArticleList(bool slideIN = true)

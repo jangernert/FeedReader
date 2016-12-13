@@ -352,6 +352,7 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
+        grabberUtils.addAttributes(doc, "a", "target", "_blank");
 
         // complete relative source urls of images
         Logger.debug("Grabber: complete urls");

@@ -385,6 +385,7 @@ public class FeedReader.FeedServer : GLib.Object {
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
+		grabberUtils.addAttributes(doc, "a", "target", "_blank");
 		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
 
 		string html = "";

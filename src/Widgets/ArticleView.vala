@@ -204,7 +204,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		view.key_press_event.connect(onKeyPress);
 		view.web_process_crashed.connect(onCrash);
 		view.notify["estimated-load-progress"].connect(printProgress);
-		view.load_failed.connect(loadFailed);
+		//view.load_failed.connect(loadFailed);
+		view.decide_policy.connect(decidePolicy);
 		if(m_color != null)
 			view.set_background_color(m_color);
 
@@ -368,6 +369,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public void open_link(WebKit.LoadEvent load_event)
 	{
+		Logger.debug("ArticleView: open_link");
 		switch (load_event)
 		{
 			case WebKit.LoadEvent.STARTED:
@@ -411,7 +413,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 	}
 
-	private bool loadFailed(WebKit.LoadEvent event, string failing_uri, void* error)
+	/*private bool loadFailed(WebKit.LoadEvent event, string failing_uri, void* error)
 	{
 		GLib.Error e = (GLib.Error)error;
 		Logger.error("ArticleView: load failed: message: \"%s\", domain \"%s\", code \"%i\"".printf(e.message, e.domain.to_string(), e.code));
@@ -422,7 +424,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			load();
 		}
 		return true;
-	}
+	}*/
 
 	public void setScrollPos(int pos)
 	{
@@ -992,6 +994,31 @@ public class FeedReader.articleView : Gtk.Overlay {
 		});
 
 		op.print();
+	}
+
+	private bool decidePolicy(WebKit.PolicyDecision decision, WebKit.PolicyDecisionType type)
+	{
+		Logger.debug("ArticleView: Policy decision");
+		if(type == WebKit.PolicyDecisionType.NEW_WINDOW_ACTION)
+		{
+			var des = (WebKit.NavigationPolicyDecision)decision;
+			if(des.frame_name == "_blank")
+			{
+				string url = des.get_navigation_action().get_request().get_uri();
+				Logger.debug(@"ArticleView: open $url in browser");
+				try
+				{
+					Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+				}
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 }

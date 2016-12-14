@@ -185,9 +185,24 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		m_articleList.newList.begin(transition, (obj, res) => {
-			m_articleList.newList.end(res);
-		});
+		int height = m_articleList.get_allocated_height();
+		if(height == 1)
+		{
+			ulong id = 0;
+			id = m_articleList.draw.connect_after(() => {
+				m_articleList.newList.begin(transition, (obj, res) => {
+					m_articleList.newList.end(res);
+				});
+				m_articleList.disconnect(id);
+				return false;
+			});
+		}
+		else
+		{
+			m_articleList.newList.begin(transition, (obj, res) => {
+				m_articleList.newList.end(res);
+			});
+		}
 	}
 
 	public void newFeedList(bool defaultSettings = false)

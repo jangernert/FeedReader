@@ -125,8 +125,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			int height = this.get_allocated_height();
-			if(height == 1)
-				height = 1200;
 			uint limit = height/100 + 5;
 			offset = getListOffset();
 
@@ -230,8 +228,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		yield;
 
 		m_currentList.addTop(articles);
-		if(newCount > 0)
-			showNotification();
 	}
 
 	public async void updateArticleList(bool slideIN = true)
@@ -301,7 +297,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			}
 			else
 			{
-				Logger.error(@"ArticleList.updateArticleList: id mismatch");
+				Logger.error("ArticleList.updateArticleList: id mismatch");
 			}
 		}
 
@@ -324,6 +320,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			int count = determineNewRowCount(newCount, out offset);
 			if(count > 0)
 			{
+				showNotification();
 				loadNewer.begin(count, offset, (obj, res) =>{
 					loadNewer.end(res);
 				});

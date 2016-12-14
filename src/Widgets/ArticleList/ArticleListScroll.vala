@@ -108,7 +108,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			scrolledBottom();
 			GLib.Timeout.add(m_scrollCooldown, () => {
 				m_scrolledBottomOnCooldown = false;
-				if(vadjustment.value >= max - 10)
+				if(vadjustment.value >= max - 5)
 					scrolledBottom();
 				return false;
 			});
@@ -192,7 +192,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			return -1;
 
 		// row is (additionalRows * rowHeight) below the current viewport
-		if(y > (additionalRows * rowHeight + scrollHeight))
+		if(y > additionalRows * rowHeight + scrollHeight)
 			return 1;
 
 		// row is visible

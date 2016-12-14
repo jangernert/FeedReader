@@ -183,10 +183,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		int after = dbDaemon.get_default().getHighestRowID();
 		int newArticles = after-before;
 		if(newArticles > 0)
-		{
 			Notification.send(newArticles);
-			showArticleListOverlay();
-		}
 
 		switch(Settings.general().get_enum("drop-articles-after"))
 		{

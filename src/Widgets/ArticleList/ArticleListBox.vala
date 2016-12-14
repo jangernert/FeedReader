@@ -97,12 +97,12 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			newRow.highlight_row.connect(highlightRow);
 			newRow.revert_highlight.connect(unHighlightRow);
 
+			this.insert(newRow, pos);
+
 			if(animate)
 				newRow.reveal(true, 150);
 			else
 				newRow.reveal(true, 0);
-
-			this.insert(newRow, pos);
 
 			checkQueue(item, balance, pos, reverse, animate);
 

@@ -33,7 +33,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private ArticleListBox m_List2;
 	private Gtk.Spinner m_syncSpinner;
 	private uint m_scrollChangedTimeout = 0;
-	private uint m_loadNewTimeout = 0;
 	private const int m_dynamicRowThreshold = 10;
 	private ulong m_handlerID = 0;
 
@@ -69,6 +68,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_List2 = new ArticleListBox();
 		m_List1.row_activated.connect(rowActivated);
 		m_List2.row_activated.connect(rowActivated);
+		m_List1.loadDone.connect(checkForNewRows);
+		m_List2.loadDone.connect(checkForNewRows);
 		m_List1.balanceNextScroll.connect(m_scroll1.balanceNextScroll);
 		m_List2.balanceNextScroll.connect(m_scroll2.balanceNextScroll);
 		m_List1.key_press_event.connect(keyPressed);
@@ -161,8 +162,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_handlerID = m_currentList.loadDone.connect(() => {
 			restoreSelectedRow();
 			restoreScrollPos();
-			if(offset > 0)
-				loadNewAfterDelay(500, null);
 			m_currentScroll.scrolledBottom.connect(loadMore);
 			if(newArticles)
 				showNotification();
@@ -173,6 +172,19 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				m_handlerID = 0;
 			}
 		});
+	}
+
+	private void checkForNewRows()
+	{
+		Logger.debug("ArticleList: checkForNewRows");
+		int offset;
+		int count = determineNewRowCount(null, out offset);
+		if(count > 0)
+		{
+			loadNewer.begin(count, offset, (obj, res) =>{
+				loadNewer.end(res);
+			});
+		}
 	}
 
 	private async void loadMore()
@@ -305,32 +317,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				Logger.error("ArticleList.updateArticleList: id mismatch");
 			}
 		}
-
-		loadNewAfterDelay(100, newCount);
-	}
-
-	private void loadNewAfterDelay(int delay, int? newCount = null)
-	{
-		Logger.debug(@"ArticleList: loadNewAfterDelay($delay, %s)".printf((newCount == null) ? "null" : newCount.to_string()));
-
-		if(m_loadNewTimeout != 0)
-		{
-			GLib.Source.remove(m_loadNewTimeout);
-			m_loadNewTimeout = 0;
-		}
-
-		m_loadNewTimeout = GLib.Timeout.add(delay, () => {
-			m_loadNewTimeout = 0;
-			int offset;
-			int count = determineNewRowCount(newCount, out offset);
-			if(count > 0)
-			{
-				loadNewer.begin(count, offset, (obj, res) =>{
-					loadNewer.end(res);
-				});
-			}
-			return false;
-		});
 	}
 
 	private int determineNewRowCount(int? newCount, out int? offset)

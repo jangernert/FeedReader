@@ -22,6 +22,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	private FeedListType m_selectedFeedListType = FeedListType.FEED;
 	private string m_selectedFeedListID = FeedID.ALL.to_string();
 	private string m_selectedArticle = "";
+	private Gee.HashSet<string> m_articles;
 
 	public signal void balanceNextScroll(ArticleListBalance mode);
 	public signal void loadDone();
@@ -29,6 +30,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public ArticleListBox()
 	{
 		m_lazyQeue = new Gee.LinkedList<article>();
+		m_articles = new Gee.HashSet<string>();
 		this.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		this.row_activated.connect(rowActivated);
 	}
@@ -82,11 +84,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				item = m_lazyQeue.first();
 
 			// check if row is already there
-			if((pos == -1 && getLastRowID() == item.getArticleID())
-			|| (pos == 0 && getFirstRowID() == item.getArticleID()))
-			{
+			if(m_articles.contains(item.getArticleID()))
 				checkQueue(item, balance, pos, reverse, animate);
-			}
 
 			balanceNextScroll(balance);
 
@@ -98,6 +97,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			newRow.revert_highlight.connect(unHighlightRow);
 
 			this.insert(newRow, pos);
+			m_articles.add(item.getArticleID());
 
 			if(animate)
 				newRow.reveal(true, 150);
@@ -133,6 +133,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			this.remove(row);
 			row.destroy();
 		}
+		m_articles.clear();
 	}
 
 	public void setSelectedFeed(string feedID)
@@ -290,6 +291,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public void removeRow(articleRow row, int animateDuration = 700)
 	{
 		row.reveal(false, animateDuration);
+		m_articles.remove(row.getID());
 		GLib.Timeout.add(animateDuration + 50, () => {
 			this.remove(row);
 			return false;

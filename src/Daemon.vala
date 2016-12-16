@@ -195,7 +195,6 @@ namespace FeedReader {
 				Settings.state().set_boolean("currently-updating", true);
 				FeedServer.get_default().syncContent();
 				updateBadge();
-				updateArticleList();
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();

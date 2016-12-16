@@ -294,8 +294,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			Logger.debug("FeedServer: new articles: %i".printf(newArticles));
 			writeInterfaceState();
-			updateFeedList();
-			updateArticleList();
+			//updateFeedList();
+			//updateArticleList();
 
 			if(Settings.state().get_boolean("no-animations"))
 			{

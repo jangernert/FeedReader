@@ -83,10 +83,17 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			else
 				item = m_lazyQeue.first();
 
+			Logger.debug("ArticleListBox: adding " + item.getArticleID());
+
 			// check if row is already there
 			if(m_articles.contains(item.getArticleID()))
+			{
+				Logger.warning("ArticleListBox: row with ID %s is already present".printf(item.getArticleID()));
 				checkQueue(item, balance, pos, reverse, animate);
+				return false;
+			}
 
+			m_articles.add(item.getArticleID());
 			balanceNextScroll(balance);
 
 			var newRow = new articleRow(item);
@@ -97,7 +104,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			newRow.revert_highlight.connect(unHighlightRow);
 
 			this.insert(newRow, pos);
-			m_articles.add(item.getArticleID());
 
 			if(animate)
 				newRow.reveal(true, 150);
@@ -105,7 +111,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				newRow.reveal(true, 0);
 
 			checkQueue(item, balance, pos, reverse, animate);
-
 			return false;
 		});
 	}
@@ -120,8 +125,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		else
 		{
 			m_lazyQeue = new Gee.LinkedList<article>();
-			m_idleID = 0;
 			loadDone();
+			m_idleID = 0;
 		}
 	}
 

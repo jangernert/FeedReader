@@ -82,6 +82,11 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_scaleRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT);
 		m_scaleRevealer.add(m_scale);
 
+		// Code for Gtk+ >= 3.22
+		//var geo = Gdk.Display.get_default().get_monitor_at_window(this.get_root_window()).get_geometry();
+		//double win_width  = (int)(geo.width*0.8);
+		//double win_height = (int)(geo.height*0.8);
+
 		double win_width  = (int)(Gdk.Screen.width()*0.8);
 		double win_height = (int)(Gdk.Screen.height()*0.8);
 		double min_height = 300;

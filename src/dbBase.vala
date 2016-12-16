@@ -1318,6 +1318,7 @@ public class FeedReader.dbBase : GLib.Object {
 		query.selectField("url");
 		query.selectField("preview");
 		query.selectField("html");
+		query.selectField("feedID");
 
 		query.addEqualsCondition("contentFetched", "0", true, false);
 		query.build();
@@ -1338,7 +1339,7 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(0),								// articleID
 								"",													// title
 								stmt.column_text(1),								// url
-								"",													// feedID
+								stmt.column_text(4),								// feedID
 								ArticleStatus.UNREAD,								// unread
 								ArticleStatus.UNMARKED,								// marked
 								stmt.column_text(3),								// html

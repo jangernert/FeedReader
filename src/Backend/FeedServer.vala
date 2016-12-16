@@ -400,6 +400,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return Settings.general().get_int("max-articles");
 	}
 
+	// Only used with command-line
 	public static void grabArticle(string url)
 	{
 		var grabber = new Grabber(url, null, null);
@@ -463,6 +464,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	// Only used with command-line
 	public static void grabImages(string htmlFile, string url)
 	{
 		var html_cntx = new Html.ParserCtxt();

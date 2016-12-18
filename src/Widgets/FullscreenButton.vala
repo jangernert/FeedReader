@@ -73,7 +73,7 @@ public class FeedReader.fullscreenButton : Gtk.EventBox {
 
 	public void reveal(bool show)
 	{
-		if (m_timeout_source_id > 0)
+		if(m_timeout_source_id > 0)
 		{
             GLib.Source.remove(m_timeout_source_id);
             m_timeout_source_id = 0;

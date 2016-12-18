@@ -31,6 +31,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private fullscreenHeaderbar m_fsHead;
 	private fullscreenButton m_prevButton;
 	private fullscreenButton m_nextButton;
+	private ArticleViewLoadProgress m_progress;
 	private string m_currentArticle;
 	private string? m_nextArticle = null;
 	private bool m_busy = false;
@@ -151,8 +152,15 @@ public class FeedReader.articleView : Gtk.Overlay {
 		nextOverlay.add(prevOverlay);
 		nextOverlay.add_overlay(m_nextButton);
 
+
+		m_progress = new ArticleViewLoadProgress();
+
+		var progressOverlay = new Gtk.Overlay();
+		progressOverlay.add(nextOverlay);
+		progressOverlay.add_overlay(m_progress);
+
 		m_videoOverlay = new Gtk.Overlay();
-		m_videoOverlay.add(nextOverlay);
+		m_videoOverlay.add(progressOverlay);
 
 		this.add(m_videoOverlay);
 		this.add_overlay(m_overlayLabel);
@@ -255,6 +263,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.setTitle(Article.getTitle());
 			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
 			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
+
+			m_progress.setPercentage(0);
+			m_progress.reveal(true);
 
 			m_currentView.load_html(
 				Utils.buildArticle(
@@ -908,7 +919,13 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private void printProgress()
 	{
-		Logger.debug("ArticleView: loading %i %%".printf((int)(m_currentView.estimated_load_progress*100)));
+		double progress = m_currentView.estimated_load_progress;
+		Logger.debug("ArticleView: loading %u %%".printf((uint)(progress*100)));
+
+		m_progress.setPercentageF(progress);
+
+		if(progress == 1.0)
+			m_progress.reveal(false);
 	}
 
 	public void setMarked(bool marked)

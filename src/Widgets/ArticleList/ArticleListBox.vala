@@ -528,4 +528,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				tmpRow.opacity = 1.0;
 		}
 	}
+
+	public int getSize()
+	{
+		return m_articles.size;
+	}
 }

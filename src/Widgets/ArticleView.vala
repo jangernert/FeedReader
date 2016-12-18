@@ -264,6 +264,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
 			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
 
+			m_progress.reset();
 			m_progress.setPercentage(0);
 			m_progress.reveal(true);
 

@@ -102,5 +102,17 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Box {
         });
 	}
 
+    public void reset()
+    {
+        if(m_timeout_source_id > 0)
+		{
+            GLib.Source.remove(m_timeout_source_id);
+            m_timeout_source_id = 0;
+        }
+
+        this.visible = false;
+        this.opacity = 0.0;
+    }
+
 
 }

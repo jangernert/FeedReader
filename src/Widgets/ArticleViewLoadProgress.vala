@@ -13,11 +13,11 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ArticleViewLoadProgress : Gtk.Box {
+public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 
     private Gtk.Label m_label;
     private Gtk.Spinner m_spinner;
-    private double m_opacityGoal = 1.0;
+    private Gtk.Box m_box;
     private uint m_timeout_source_id = 0;
 
     public ArticleViewLoadProgress()
@@ -28,14 +28,18 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Box {
         m_spinner.set_size_request(24, 24);
         m_spinner.margin = 10;
         m_label.margin_end = 10;
-        this.orientation = Gtk.Orientation.HORIZONTAL;
-        this.pack_start(m_spinner);
-        this.pack_start(m_label);
+
+        m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+        m_box.get_style_context().add_class("osd");
+        m_box.pack_start(m_spinner);
+        m_box.pack_start(m_label);
+
         this.valign = Gtk.Align.CENTER;
         this.halign = Gtk.Align.CENTER;
-        this.get_style_context().add_class("overlay");
+        this.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE);
+		this.set_transition_duration(300);
 		this.no_show_all = true;
-        this.opacity = 1.0;
+        this.add(m_box);
     }
 
     public void setPercentage(uint percentage)
@@ -59,59 +63,26 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Box {
 		if(show)
 		{
 			this.visible = true;
-			m_spinner.show();
-            m_label.show();
-            m_spinner.start();
-		}
-
-        m_timeout_source_id = Timeout.add(300, () => {
-            m_timeout_source_id = Timeout.add(15, () => {
-    			if(show)
-    			{
-    				if(this.opacity-m_opacityGoal <= 0.04)
-    				{
-    					this.opacity = m_opacityGoal;
-    					m_timeout_source_id = 0;
-    					return false;
-    				}
-
-    				if(this.opacity == 1.0)
-    				{
-    					m_timeout_source_id = 0;
-    					return false;
-    				}
-
-    				this.opacity += 0.04;
-    			}
-    			else
-    			{
-    				if(this.opacity == 0.0)
-    				{
-                        this.visible = false;
-                        m_spinner.stop();
-    					m_timeout_source_id = 0;
-    					return false;
-    				}
-
-    				this.opacity -= 0.04;
-    			}
-
-                return true;
+            m_timeout_source_id = Timeout.add(300, () => {
+                m_spinner.show();
+                m_label.show();
+                m_box.show();
+                m_spinner.start();
+                this.set_reveal_child(true);
+                m_timeout_source_id = 0;
+                return false;
             });
-            return false;
-        });
+		}
+        else
+        {
+            m_spinner.stop();
+            this.set_reveal_child(false);
+        }
 	}
 
     public void reset()
     {
-        if(m_timeout_source_id > 0)
-		{
-            GLib.Source.remove(m_timeout_source_id);
-            m_timeout_source_id = 0;
-        }
-
-        this.visible = false;
-        this.opacity = 0.0;
+        reveal(false);
     }
 
 

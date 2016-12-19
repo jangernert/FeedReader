@@ -26,7 +26,7 @@ public class FeedReader.fullscreenButton : Gtk.Revealer {
 		this.margin = 40;
 		this.no_show_all = true;
 		this.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE);
-		this.set_transition_duration(200);
+		this.set_transition_duration(300);
 
 		m_button = new Gtk.Button.from_icon_name(iconName, Gtk.IconSize.DIALOG);
 		m_button.clicked.connect(() => {

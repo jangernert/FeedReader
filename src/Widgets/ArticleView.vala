@@ -24,7 +24,7 @@ interface FeedReaderWebExtension : Object
 public class FeedReader.articleView : Gtk.Overlay {
 
 	private Gtk.Overlay m_videoOverlay;
-	private Gtk.Label m_overlayLabel;
+	private ArticleViewUrlOverlay m_UrlOverlay;
 	private Gtk.Stack m_stack;
 	private WebKit.WebView m_currentView;
 	private Gdk.RGBA? m_color = null;
@@ -45,8 +45,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private double m_momentum = 0;
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
-	private uint m_timeout_source_id;
-	private uint m_overlayFade = 200;
 	private FeedReaderWebExtension m_messenger = null;
 	private bool m_connected = false;
 	private int m_height = 0;
@@ -88,15 +86,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		crashView.pack_start(crashButton);
 
 
-		m_overlayLabel = new Gtk.Label("dummy URL");
-		m_overlayLabel.margin = 10;
-		m_overlayLabel.opacity = 0.0;
-		m_overlayLabel.height_request = 30;
-		m_overlayLabel.valign = Gtk.Align.END;
-		m_overlayLabel.halign = Gtk.Align.START;
-		m_overlayLabel.get_style_context().add_class("overlay");
-		m_overlayLabel.no_show_all = true;
-
+		m_UrlOverlay = new ArticleViewUrlOverlay();
 		m_stack = new Gtk.Stack();
 		m_stack.add_named(emptyView, "empty");
 		m_stack.add_named(crashView, "crash");
@@ -163,7 +153,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_videoOverlay.add(progressOverlay);
 
 		this.add(m_videoOverlay);
-		this.add_overlay(m_overlayLabel);
+		this.add_overlay(m_UrlOverlay);
 
 		Gtk.Settings.get_default().notify["gtk-theme-name"].connect(() => {
 			setBackgroundColor();
@@ -790,65 +780,19 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		if(hitTest.context_is_link())
 		{
-			var url = hitTest.get_link_uri();
-			int length = 45;
-
-			if(url.length >= length)
-			{
-				url = url.substring(0, length-3) + "...";
-			}
-			m_overlayLabel.label = url;
-			m_overlayLabel.width_chars = url.length;
-			m_overlayLabel.show();
-
-			if(m_timeout_source_id > 0)
-			{
-				GLib.Source.remove(m_timeout_source_id);
-				m_timeout_source_id = 0;
-			}
-
-			m_timeout_source_id = GLib.Timeout.add(m_overlayFade/10, () => {
-				if(m_overlayLabel.opacity == 1.0)
-				{
-					m_timeout_source_id = 0;
-					return false;
-				}
-
-			    m_overlayLabel.opacity += 0.1;
-				return true;
-			});
-
+			var align = Gtk.Align.START;
 			double relX = m_posX2/this.get_allocated_height();
 			double relY = m_posY2/this.get_allocated_width();
 
 			if(relY >= 0.85 && relX <= 0.5)
-			{
-				m_overlayLabel.halign = Gtk.Align.END;
-			}
-			else
-			{
-				m_overlayLabel.halign = Gtk.Align.START;
-			}
+				align = Gtk.Align.END;
+
+			m_UrlOverlay.setURL(hitTest.get_link_uri(), align);
+			m_UrlOverlay.reveal(true);
 		}
 		else
 		{
-			if(m_timeout_source_id > 0)
-			{
-				GLib.Source.remove(m_timeout_source_id);
-				m_timeout_source_id = 0;
-			}
-
-			m_timeout_source_id = GLib.Timeout.add(m_overlayFade/10, () => {
-				if(m_overlayLabel.opacity == 0.0)
-				{
-					m_timeout_source_id = 0;
-					m_overlayLabel.hide();
-					return false;
-				}
-
-			    m_overlayLabel.opacity -= 0.1;
-				return true;
-			});
+			m_UrlOverlay.reveal(false);
 		}
 	}
 

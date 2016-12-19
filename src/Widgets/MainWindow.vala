@@ -322,6 +322,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			if(Settings.state().get_boolean("spring-cleaning"))
 				return;
 
+			m_content.articleViewKillMedia();
 			int offset = 0;
 			double scrollPos = 0.0;
 			m_content.getArticleListState(out scrollPos, out offset);

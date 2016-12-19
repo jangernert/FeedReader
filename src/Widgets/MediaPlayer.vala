@@ -13,11 +13,10 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.MediaPlayer : Gtk.Overlay {
+public class FeedReader.MediaPlayer : Gtk.Box {
 
 	private Gst.Element m_player;
 	private Gtk.Widget m_videoWidget;
-	private Gtk.Box m_box;
 	private Gtk.Stack m_playStack;
 	private Gtk.Button m_playButton;
 	private Gtk.Spinner m_playSpinner;
@@ -129,9 +128,8 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 
 		m_playButton = new Gtk.Button();
 		m_playButton.set_image(m_playIcon);
-		m_playButton.set_relief(Gtk.ReliefStyle.NONE);
-		m_playButton.get_style_context().add_class("playerButton");
 		m_playButton.clicked.connect(togglePause);
+		m_playButton.set_tooltip_text(MediaButton.PLAY);
 		m_playButton.valign = Gtk.Align.CENTER;
 		m_playButton.halign = Gtk.Align.CENTER;
 		m_playButton.set_size_request(48, 48);
@@ -144,12 +142,21 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 
 		m_muteButton = new Gtk.Button();
 		m_muteButton.set_image(m_noiseIcon);
-		m_muteButton.set_relief(Gtk.ReliefStyle.NONE);
-		m_muteButton.get_style_context().add_class("playerButton");
+		m_muteButton.set_tooltip_text(MediaButton.MUTE);
 		m_muteButton.clicked.connect(toggleMute);
 		m_muteButton.valign = Gtk.Align.CENTER;
 		m_muteButton.halign = Gtk.Align.CENTER;
 		m_muteButton.set_size_request(48, 48);
+
+		m_closeButton = new Gtk.Button();
+		m_closeButton.set_image(m_closeIcon);
+		m_closeButton.clicked.connect(() => {
+			kill();
+		});
+		m_closeButton.set_tooltip_text(MediaButton.CLOSE);
+		m_closeButton.valign = Gtk.Align.CENTER;
+		m_closeButton.halign = Gtk.Align.CENTER;
+		m_closeButton.set_size_request(48, 48);
 
 		m_scale = new Gtk.Scale.with_range(Gtk.Orientation.HORIZONTAL, 0.0, 100.0, 5.0);
 		m_scale.draw_value = false;
@@ -158,7 +165,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 
 		m_labelButton = new Gtk.Button.with_label("00:00");
 		m_labelButton.set_relief(Gtk.ReliefStyle.NONE);
-		m_labelButton.get_style_context().add_class("playerButton");
+		m_labelButton.get_style_context().add_class("h3");
 		m_labelButton.clicked.connect(switchDisplay);
 		m_labelButton.valign = Gtk.Align.CENTER;
 		m_labelButton.halign = Gtk.Align.CENTER;
@@ -170,11 +177,11 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		hBox.pack_start(m_muteButton, false, false);
 		hBox.pack_start(m_scale);
 		hBox.pack_start(m_labelButton, false, false);
+		hBox.pack_start(m_closeButton, false, false);
 
 		m_bufferLabel = new Gtk.Label("0%");
 		m_bufferLabel.valign = Gtk.Align.CENTER;
 		m_bufferLabel.halign = Gtk.Align.CENTER;
-		m_bufferLabel.get_style_context().add_class("bufferLabel");
 		m_bufferLabel.set_size_request(48, 48);
 		m_bufferLabel.no_show_all = true;
 
@@ -182,29 +189,13 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		bufferOverlay.add(m_videoWidget);
 		bufferOverlay.add_overlay(m_bufferLabel);
 
-		m_closeButton = new Gtk.Button();
-		m_closeButton.set_image(m_closeIcon);
-		m_closeButton.set_relief(Gtk.ReliefStyle.NONE);
-		m_closeButton.get_style_context().add_class("playerClose");
-		m_closeButton.clicked.connect(() => {
-			kill();
-		});
-		m_closeButton.valign = Gtk.Align.START;
-		m_closeButton.halign = Gtk.Align.END;
-		m_closeButton.set_size_request(32, 32);
-		m_closeButton.margin = 28;
-
-		m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
-		m_box.get_style_context().add_class("player");
-		m_box.margin = 40;
+		this.orientation = Gtk.Orientation.VERTICAL;
+		this.get_style_context().add_class("osd");
+		this.margin = 40;
 		if(m_type == MediaType.VIDEO)
-			m_box.pack_start(bufferOverlay, true, true);
-		m_box.pack_start(hBox, false, false);
-
-
+			this.pack_start(bufferOverlay, true, true);
+		this.pack_start(hBox, false, false);
 		this.valign = Gtk.Align.END;
-		this.add(m_box);
-		this.add_overlay(m_closeButton);
 		this.show_all();
 	}
 
@@ -218,6 +209,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		{
 			case Gst.State.PLAYING:
 				m_playButton.set_image(m_playIcon);
+				m_playButton.set_tooltip_text(MediaButton.PLAY);
 				m_player.set_state(Gst.State.PAUSED);
 				break;
 
@@ -225,6 +217,7 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 			case Gst.State.READY:
 			default:
 				m_playButton.set_image(m_pauseIcon);
+				m_playButton.set_tooltip_text(MediaButton.PAUSE);
 				m_player.set_state(Gst.State.PLAYING);
 				break;
 		}
@@ -396,12 +389,14 @@ public class FeedReader.MediaPlayer : Gtk.Overlay {
 		if(m_muted)
 		{
 			m_muteButton.set_image(m_noiseIcon);
+			m_muteButton.set_tooltip_text(MediaButton.MUTE);
 			m_player["volume"] = 1.0;
 			m_muted = false;
 		}
 		else
 		{
 			m_muteButton.set_image(m_muteIcon);
+			m_muteButton.set_tooltip_text(MediaButton.UNMUTE);
 			m_player["volume"] = 0.0;
 			m_muted = true;
 		}

@@ -912,17 +912,17 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public void addMedia(MediaPlayer media)
 	{
-		if(m_currentMedia == null)
-		{
-			m_videoOverlay.add_overlay(media);
-		}
-		else
+		killMedia();
+		m_videoOverlay.add_overlay(media);
+		m_currentMedia = media;
+	}
+
+	public void killMedia()
+	{
+		if(m_currentMedia != null)
 		{
 			m_currentMedia.kill();
-			m_videoOverlay.add_overlay(media);
 		}
-
-		m_currentMedia = media;
 	}
 
 	public void print(string filename)

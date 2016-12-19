@@ -428,7 +428,16 @@ public class FeedReader.grabberUtils : GLib.Object {
                     || (node->get_prop("height") == null))
                 )
                 {
-                    node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
+                    string original = downloadImage(node->get_prop("src"), articleID, feedID, i+1);
+                    string resized = resizeImg(original);
+
+                    if(resized == null)
+                        node->set_prop("src", original);
+                    else
+                    {
+                        node->set_prop("src", resized);
+                        node->set_prop("FR_huge", original);
+                    }
                 }
             }
         }
@@ -497,6 +506,35 @@ public class FeedReader.grabberUtils : GLib.Object {
 		}
 
         return localFilename.replace("?", "%3F");
+    }
+
+    private static string? resizeImg(string path)
+    {
+        try
+        {
+            int height = 0;
+            int width = 0;
+            Gdk.Pixbuf.get_file_info(path, out width, out height);
+            if(width > 2000 || height > 2000)
+            {
+                int nHeight = 1000;
+                int nWidth = 1000;
+                if(width > height)
+                    nHeight = -1;
+                else if(height > width)
+                    nWidth = -1;
+
+                var img = new Gdk.Pixbuf.from_file_at_scale(path, nWidth, nHeight, true);
+                img.save(path + "_resized", "png");
+                return path + "_resized";
+            }
+        }
+        catch(GLib.Error e)
+        {
+            Logger.error("Error resizing image: %s".printf(e.message));
+            return null;
+        }
+        return null;
     }
 
     public static string postProcessing(ref string html)

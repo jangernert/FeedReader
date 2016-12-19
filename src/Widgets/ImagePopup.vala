@@ -96,7 +96,6 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_scroll.add(m_image);
 
 
-
 		if(img_width <= win_width)
 		{
 			if(img_width < min_widht)
@@ -114,7 +113,8 @@ public class FeedReader.imagePopup : Gtk.Window {
 			m_image.scale = m_initZoom;
 		}
 
-		if(img_height * m_initZoom <= win_height) {
+		if(img_height * m_initZoom <= win_height)
+		{
 			if(img_height < min_height)
 			{
 				win_height = min_height;

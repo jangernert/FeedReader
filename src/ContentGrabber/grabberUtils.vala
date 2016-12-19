@@ -508,6 +508,9 @@ public class FeedReader.grabberUtils : GLib.Object {
         return localFilename.replace("?", "%3F");
     }
 
+
+    // if image is >2000px then resize it to 1000px and add FR_huge attribute
+    // with url to original image
     private static string? resizeImg(string path)
     {
         try

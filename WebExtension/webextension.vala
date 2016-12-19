@@ -136,14 +136,20 @@ public class FeedReaderWebExtension : Object {
 		if(parent.tag_name == "A")
 			url = parent.get_attribute("href");
 
+
+        int height = (int)image.natural_height;
+        int width = (int)image.natural_width;
 		string src = image.src;
 		if(src.has_prefix("file://"))
             src = src.substring("file://".length);
 
         if(image.has_attribute("FR_huge"))
+        {
             src = image.get_attribute("FR_huge");
+            Gdk.Pixbuf.get_file_info(src, out width, out height);
+        }
 
-    	onClick(src, (int)image.natural_width, (int)image.natural_height, url);
+    	onClick(src, width, height, url);
     }
 }
 

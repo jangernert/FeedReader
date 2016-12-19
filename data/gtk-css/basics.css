@@ -33,12 +33,6 @@ row {
 .transparentBG {
     background: rgba(0, 0, 0, 0);
 }
-.overlay {
-    background: black;
-    color: white;
-    opacity: 0.8;
-    border-radius: 10px;
-}
 .servicebox {
     border: 1px solid alpha (#000, 0.30);
 }

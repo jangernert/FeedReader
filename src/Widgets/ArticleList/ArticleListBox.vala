@@ -83,8 +83,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			else
 				item = m_lazyQeue.first();
 
-			Logger.debug("ArticleListBox: adding " + item.getArticleID());
-
 			// check if row is already there
 			if(m_articles.contains(item.getArticleID()))
 			{

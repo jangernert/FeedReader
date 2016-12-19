@@ -13,111 +13,38 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.fullscreenButton : Gtk.EventBox {
+public class FeedReader.fullscreenButton : Gtk.Revealer {
 
-	private Gtk.Image m_icon;
-	private double m_opacity = 0.4;
-	private bool m_hover = false;
-	private uint m_timeout_source_id = 0;
+	private Gtk.Button m_button;
 	public signal void click();
 
 	public fullscreenButton(string iconName, Gtk.Align align)
 	{
 		this.valign = Gtk.Align.CENTER;
 		this.halign = align;
-		this.get_style_context().add_class("overlay");
+		this.get_style_context().add_class("osd");
 		this.margin = 40;
 		this.no_show_all = true;
+		this.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE);
+		this.set_transition_duration(200);
 
-		this.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
-		this.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		this.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-
-		this.enter_notify_event.connect(onEnter);
-		this.leave_notify_event.connect(onLeave);
-		this.button_press_event.connect(onClick);
-
-		m_icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DIALOG);
-		m_icon.margin = 20;
-		this.opacity = 0.0;
-		this.add(m_icon);
+		m_button = new Gtk.Button.from_icon_name(iconName, Gtk.IconSize.DIALOG);
+		m_button.clicked.connect(() => {
+			click();
+		});
+		m_button.margin = 20;
+		this.add(m_button);
 	}
-
-	private bool onEnter(Gdk.EventCrossing event)
-    {
-		this.opacity = 1.0;
-		m_hover = true;
-        return true;
-    }
-
-    private bool onLeave(Gdk.EventCrossing event)
-    {
-		this.opacity = m_opacity;
-		m_hover = false;
-        return true;
-    }
-
-	private bool onClick(Gdk.EventButton event)
-    {
-		switch(event.type)
-		{
-			case Gdk.EventType.BUTTON_RELEASE:
-			case Gdk.EventType.@2BUTTON_PRESS:
-			case Gdk.EventType.@3BUTTON_PRESS:
-				return false;
-		}
-
-		click();
-        return true;
-    }
 
 	public void reveal(bool show)
 	{
-		if(m_timeout_source_id > 0)
-		{
-            GLib.Source.remove(m_timeout_source_id);
-            m_timeout_source_id = 0;
-        }
-
 		if(show)
 		{
 			this.visible = true;
-			m_icon.show();
+			m_button.show();
 		}
 
-		m_timeout_source_id = Timeout.add(20, () => {
-
-			if(show)
-			{
-				if(!m_hover && this.opacity-m_opacity <= 0.02)
-				{
-					this.opacity = m_opacity;
-					m_timeout_source_id = 0;
-					return false;
-				}
-
-				if(m_hover && this.opacity == 1.0)
-				{
-					m_timeout_source_id = 0;
-					return false;
-				}
-
-				this.opacity += 0.02;
-			}
-			else
-			{
-				if(this.opacity == 0.0)
-				{
-					this.hide();
-					m_timeout_source_id = 0;
-					return false;
-				}
-
-				this.opacity -= 0.02;
-			}
-
-            return true;
-        });
+		this.set_reveal_child(show);
 	}
 
 }

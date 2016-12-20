@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>FeedReader - RSS desktop client</title>
+    <meta name="keywords" content="FeedReader, RSS, desktop, client">
+    <meta name="description" content="FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.
+">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="/FeedReader/images/feedreader.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="/FeedReader/styles/bootstrap.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <span class="scroll"><a class="navbar-brand" href="/FeedReader/#feedreader">FeedReader</a></span>
+            </div>
+
+            <div class="collapse navbar-right navbar-collapse" id="navigationbar">
+                <ul class="nav navbar-nav">
+                    <li class="scroll"><a href="/FeedReader/#features">Features</a></li>
+                    <li class="scroll"><a href="/FeedReader/#install">Installation</a></li>
+                    <li class="scroll"><a href="/FeedReader/#get-involved">Support &amp; Getting Involved</a></li>
+                    <li role="presentation" class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                      Changelog &nbsp; <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                     
+                        <li><a href="/FeedReader/changelog#1.6.2">1.6.2</a></li>
+                     
+                        <li><a href="/FeedReader/changelog#1.6.1">1.6.1</a></li>
+                     
+                        <li><a href="/FeedReader/changelog#1.6">1.6</a></li>
+                     
+                        <li><a href="/FeedReader/changelog#1.4">1.4</a></li>
+                     
+                        <li><a href="/FeedReader/changelog#1.2.1">1.2.1</a></li>
+                     
+                        <li><a href="/FeedReader/changelog#1.2">1.2</a></li>
+                     
+                        <li><a href="/FeedReader/changelog#1.0">1.0</a></li>
+                     
+                    </ul>
+                  </li>
+                    
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+     <p> &nbsp; </p>
+    <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
+<br>
+<br>
+    
+        <h2>1.6.2</h2>
+        <ul class="list-group" id="1.6.2">
+            
+            <li class="list-group-item">
+                Fix rendering issue with WebkitGtk+ 2.14.4
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/190">
+                        <span class="label label-primary">#190</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+        </ul>
+    
+        <h2>1.6.1</h2>
+        <ul class="list-group" id="1.6.1">
+            
+            <li class="list-group-item">
+                Save images
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/170">
+                        <span class="label label-primary">#170</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                FileChooser sidebar inherits theme from feedList
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/174">
+                        <span class="label label-primary">#174</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                FeedList&colon; left/right-key does not collapse/expand categories anymore
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/173">
+                        <span class="label label-primary">#173</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                FeedList&colon; collapse does not select parent anymore when cild is being collapsed
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/172">
+                        <span class="label label-primary">#172</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                ArticleView&colon; only images of second WebView clickable
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/171">
+                        <span class="label label-primary">#171</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                FeedReader displays article recieved date/time rather than article published date/time ( owncloud )
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/169">
+                        <span class="label label-primary">#169</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                add appdata to po files
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/166">
+                        <span class="label label-primary">#166</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Can't login to Tiny Tiny RSS&colon; "Please install the "api_feedreader"-plugin
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/165">
+                        <span class="label label-primary">#165</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+        </ul>
+    
+        <h2>1.6</h2>
+        <ul class="list-group" id="1.6">
+            
+            <li class="list-group-item">
+                Inoreader support
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/39">
+                        <span class="label label-primary">#39</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Offline Mode
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/35">
+                        <span class="label label-primary">#35</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Imageviewer-popup for large images
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/34">
+                        <span class="label label-primary">#34</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Add, remove and manipulate feeds and categories
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/74">
+                        <span class="label label-primary">#74</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Sidebar&colon; choose between different themes
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/116">
+                        <span class="label label-primary">#116</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Sidebar&colon; add hover effects
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/115">
+                        <span class="label label-primary">#115</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Article List&colon; double click to open in browser
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/75">
+                        <span class="label label-primary">#75</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Article List&colon; add time stamp
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/38">
+                        <span class="label label-primary">#38</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Support http-basic-auth
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/50">
+                        <span class="label label-primary">#50</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Show URL on mouseover
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/61">
+                        <span class="label label-primary">#61</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Right click URL to show menu with &quot;open&quot; and &quot;copy&quot;
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/62">
+                        <span class="label label-primary">#62</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Show commit in version string in about dialogue
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/67">
+                        <span class="label label-primary">#67</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Support Gtk+ 3.20
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/87">
+                        <span class="label label-primary">#87</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                HiDPI support
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/111">
+                        <span class="label label-primary">#111</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Full-screen-mode
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/10">
+                        <span class="label label-primary">#10</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Keyboard-shortcut-window
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/30">
+                        <span class="label label-primary">#30</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Add option for different font sizes in articles
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/107">
+                        <span class="label label-primary">#107</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Zooming with Ctrl + Mousewheel (or +/−)
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/137">
+                        <span class="label label-primary">#137</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Add posibility to select/copy text or images
+                <span  style="float:right">
+                    
+                    <span class="label label-info">
+                    Tweaks
+                    </span>
+                     
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/71">
+                        <span class="label label-primary">#71</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                only show unread since last sync
+                <span  style="float:right">
+                    
+                    <span class="label label-info">
+                    Tweaks
+                    </span>
+                     
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/86">
+                        <span class="label label-primary">#86</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                empty article content can cause crash
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/36">
+                        <span class="label label-primary">#36</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Using j/k after startup resets scroll of articleList to 0
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/44">
+                        <span class="label label-primary">#44</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Shortcuts triggers twice when ArticleView is focused
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/45">
+                        <span class="label label-primary">#45</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                ArticleView border appears transparent with some gtk themes
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/65">
+                        <span class="label label-primary">#65</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Removing a tag leads to crash
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/73">
+                        <span class="label label-primary">#73</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Uncategorized category in feedly
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/83">
+                        <span class="label label-primary">#83</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                focus jumps when deleting feed
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/88">
+                        <span class="label label-primary">#88</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                in-app notification always popping up
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/92">
+                        <span class="label label-primary">#92</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                properly reveal and hide feeds and categories (only-show-unread)
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/93">
+                        <span class="label label-primary">#93</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                behavior of in-app-notification
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/94">
+                        <span class="label label-primary">#94</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Articles get mixed up on startup
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/95">
+                        <span class="label label-primary">#95</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Articles can appear more than once in unread column
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/97">
+                        <span class="label label-primary">#97</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Articles missing in &quot;starred&quot; column after sync
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/98">
+                        <span class="label label-primary">#98</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Tables can be wider than the article
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/99">
+                        <span class="label label-primary">#99</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Code is unreadable with the midnight theme
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/100">
+                        <span class="label label-primary">#100</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Style gtk spinner
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/101">
+                        <span class="label label-primary">#101</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Images can be wider than the article
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/102">
+                        <span class="label label-primary">#102</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                ColorCircle HiDPI issues
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/103">
+                        <span class="label label-primary">#103</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Use svg for expander in FeedList
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/104">
+                        <span class="label label-primary">#104</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                HTML feed name in feeds list not expanded
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/105">
+                        <span class="label label-primary">#105</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Paragraphs with false text color
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/106">
+                        <span class="label label-primary">#106</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Inoreader&colon; rename Tags
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/108">
+                        <span class="label label-primary">#108</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Add translators credits
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/69">
+                        <span class="label label-primary">#69</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Unread articles don't disappear
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/43">
+                        <span class="label label-primary">#43</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Segmentation Fault
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/156">
+                        <span class="label label-primary">#156</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Articles not displayed
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/152">
+                        <span class="label label-primary">#152</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Article gets displayed multiple times
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/135">
+                        <span class="label label-primary">#135</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Menu in headerbar under GNOME Wayland
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/128">
+                        <span class="label label-primary">#128</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Transparent line
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/120">
+                        <span class="label label-primary">#120</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                daemon crashes on prosessing gimp.org
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/124">
+                        <span class="label label-primary">#124</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                All Articles-counter not updated
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/82">
+                        <span class="label label-primary">#82</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Empty window with 1.6 beta
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/122">
+                        <span class="label label-primary">#122</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Only show author/date if known
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/121">
+                        <span class="label label-primary">#121</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Article list scrolling down spontaneously
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/141">
+                        <span class="label label-primary">#141</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Can't update via git because of GitSHA1.vala
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/144">
+                        <span class="label label-primary">#144</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Untranslatable strings
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/127">
+                        <span class="label label-primary">#127</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Text not selectable in Article View
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/123">
+                        <span class="label label-primary">#123</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                automatically detect webkitgtk+ version
+                <span  style="float:right">
+                    
+                    <span class="label label-default">
+                    Buildsystem
+                    </span>    
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/113">
+                        <span class="label label-primary">#113</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                automatically detect libunity
+                <span  style="float:right">
+                    
+                    <span class="label label-default">
+                    Buildsystem
+                    </span>    
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/112">
+                        <span class="label label-primary">#112</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Build fails with more than one thread
+                <span  style="float:right">
+                    
+                    <span class="label label-default">
+                    Buildsystem
+                    </span>    
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/96">
+                        <span class="label label-primary">#96</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                Install prefix other than /usr
+                <span  style="float:right">
+                    
+                    <span class="label label-default">
+                    Buildsystem
+                    </span>    
+                    
+                    
+                    &nbsp;
+                    
+                    <a href="https://github.com/jangernert/FeedReader/issues/160">
+                        <span class="label label-primary">#160</span>
+                    </a>
+                    
+                </span>
+            </li>
+            
+            
+        </ul>
+    
+        <h2>1.4</h2>
+        <ul class="list-group" id="1.4">
+            
+            <li class="list-group-item">
+                ownCloud News support
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                sync more responsive
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                app fully operational during initial sync
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                overlay to indicate new articles
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                dynamic switch between GMenu in gnome and menu-button elsewhere
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                notifications are updated rather than creating new ones every time
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                respect notification settings of the DE
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                better font-styling on non-elementary distributions
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                proper fullscreen mode for videos
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                support multiple share accounts of the same kind (e.g. two different pocket accounts)
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                fixed memory leaks
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                option to ignore unknown CAs
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                updated GrabberConfig files to upstream from fivefilters
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+        </ul>
+    
+        <h2>1.2.1</h2>
+        <ul class="list-group" id="1.2.1">
+            
+            <li class="list-group-item">
+                built-time-switch for Webkit2Gtk 4.0
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                missing tooltips
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                remove articles from unread/marked list when it makes sense
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                active article removed from list after sync
+                <span  style="float:right">
+                    
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+        </ul>
+    
+        <h2>1.2</h2>
+        <ul class="list-group" id="1.2">
+            
+            <li class="list-group-item">
+                improved article-view
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                drag article with middle mouse click
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                updated UI and animations
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                global shortcuts
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                tag articles
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                article grabber (grabs full articles without ads from website for known sites)
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                option to use readability instead of article grabber (hidden feature)
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                support for themes other than elementary
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                basic full text search
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                support feeds without category (feedly)
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                support feeds with multiple categories (feedly)
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+            <li class="list-group-item">
+                share articles to &colon; readability, instapaper, pocket
+                <span  style="float:right">
+                    
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+        </ul>
+    
+        <h2>1.0</h2>
+        <ul class="list-group" id="1.0">
+            
+            <li class="list-group-item">
+                Initial release
+                <span  style="float:right">
+                    
+                    
+                    &nbsp;
+                    
+                </span>
+            </li>
+            
+            
+        </ul>
+    
+
+</div>
+<p> &nbsp; </p>
+    <hr>
+    <div class="navbar" role="navigation">
+        <div class="text-center">
+            <p>Designed by <a href="https://r3bl.me">Aleksandar Todorović</a> &amp; <a href="https://github.com/bil-elmoussaoui">Bilal Elmoussaoui</a> using the <a href="http://bootswatch.com/readable/">Readable Bootstrap theme</a>. </p>
+        </div>
+    </div>
+
+    <script src="/FeedReader/scripts/jquery-1.9.1.min.js"></script>
+    <script src="/FeedReader/scripts/jquery-ui.min.js"></script>
+    <script src="/FeedReader/scripts/bootstrap.min.js"></script>
+    <script>
+        $(function() {
+            $('.scroll a').bind('click', function(event) {
+                var $anchor = $(this);
+                var href = $anchor.attr("href").replace("\/FeedReader\/","");
+                if (href.length) {
+                    var element = href;
+                } else {
+                    var element = "body";
+                }
+                $('body,html').stop().animate({
+                    scrollTop: $(element).offset().top
+                }, 600, 'easeInOutExpo');
+                event.preventDefault();
+            });
+            $('.col-xs-12').each(function (index) {
+                var max_height = 0;
+                $(this).find('.list-group .list-group-item').each(function (index) {
+                    if($(this).outerHeight() > max_height)
+                  {
+                    max_height = $(this).outerHeight();
+                  }          
+                 });
+                $(this).find('.list-group .list-group-item').css('min-height', max_height);
+                max_height = 0;
+            });
+            var scrollTop = $(document).scrollTop();
+            if(scrollTop > 0){
+                $('nav .navbar').removeClass('navbar-static-top').addClass('navbar-fixed-top');
+            } else {
+                $('nav .navbar').removeClass('navbar-fixed-top').addClass('navbar-static-top');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,49 @@
+</div>
+<p> &nbsp; </p>
+    <hr>
+    <div class="navbar" role="navigation">
+        <div class="text-center">
+            <p>Designed by <a href="https://r3bl.me">Aleksandar Todorović</a> &amp; <a href="https://github.com/bil-elmoussaoui">Bilal Elmoussaoui</a> using the <a href="http://bootswatch.com/readable/">Readable Bootstrap theme</a>. </p>
+        </div>
+    </div>
+
+    <script src="{{site.baseurl}}/scripts/jquery-1.9.1.min.js"></script>
+    <script src="{{site.baseurl}}/scripts/jquery-ui.min.js"></script>
+    <script src="{{site.baseurl}}/scripts/bootstrap.min.js"></script>
+    <script>
+        $(function() {
+            $('.scroll a').bind('click', function(event) {
+                var $anchor = $(this);
+                var href = $anchor.attr("href").replace("\/FeedReader\/","");
+                if (href.length) {
+                    var element = href;
+                } else {
+                    var element = "body";
+                }
+                $('body,html').stop().animate({
+                    scrollTop: $(element).offset().top
+                }, 600, 'easeInOutExpo');
+                event.preventDefault();
+            });
+            $('.col-xs-12').each(function (index) {
+                var max_height = 0;
+                $(this).find('.list-group .list-group-item').each(function (index) {
+                    if($(this).outerHeight() > max_height)
+                  {
+                    max_height = $(this).outerHeight();
+                  }          
+                 });
+                $(this).find('.list-group .list-group-item').css('min-height', max_height);
+                max_height = 0;
+            });
+            var scrollTop = $(document).scrollTop();
+            if(scrollTop > 0){
+                $('nav .navbar').removeClass('navbar-static-top').addClass('navbar-fixed-top');
+            } else {
+                $('nav .navbar').removeClass('navbar-fixed-top').addClass('navbar-static-top');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,44 @@
+---
+---
+{% include header.html %}
+<br>
+<br>
+    {% for log in site.changelog reversed %}
+        <h2>{{log.version}}</h2>
+        <ul class="list-group" id="{{log.version}}">
+            {% for issue in log.issues %}
+            <li class="list-group-item">
+                {{issue.content}}
+                <span  style="float:right">
+                    {% if issue.category == "Feature" %}
+                    <span class="label label-success">
+                    Features
+                    </span>
+                    {% elsif issue.category == "Bugfixes" %}
+                    <span class="label label-warning">
+                    BugFixes
+                    </span>
+                    {% elsif issue.category == "Tweaks" %}
+                    <span class="label label-info">
+                    Tweaks
+                    </span>
+                     {% elsif issue.category == "Buildsystem" %}
+                    <span class="label label-default">
+                    Buildsystem
+                    </span>    
+                    {% endif %}
+                    
+                    &nbsp;
+                    {% if issue.github-id %}
+                    <a href="https://github.com/jangernert/FeedReader/issues/{{issue.github-id}}">
+                        <span class="label label-primary">#{{issue.github-id}}</span>
+                    </a>
+                    {% endif %}
+                </span>
+            </li>
+            {{issues}}
+            {% endfor %}
+        </ul>
+    {% endfor %}
+
+{% include footer.html %}

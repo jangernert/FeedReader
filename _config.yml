@@ -1,0 +1,21 @@
+baseurl: "/FeedReader"
+
+title: FeedReader - RSS desktop client
+description: > # this means to ignore newlines until "baseurl:"
+  FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.
+  
+exclude: [README.md]
+
+collections:
+    packages:
+        output: false
+    read-it-later:
+        output: false
+    services:
+        output: false
+    share:
+        output: false
+    features:
+        output: false
+    changelog:
+        output: false

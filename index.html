@@ -1,50 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
+---
 
-<head>
-    <meta charset="utf-8">
-    <title>FeedReader - RSS desktop client</title>
-    <meta name="keywords" content="FeedReader, RSS, desktop, client">
-    <meta name="description" content="FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" href="./images/feedreader.ico" type="image/x-icon" />
-    <link rel="stylesheet" href="./styles/bootstrap.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+---
+{% include header.html %}
 
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
-
-    <nav class="navbar navbar-default navbarg-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <span class="scroll"><a class="navbar-brand" href="#feedreader">FeedReader</a></span>
-            </div>
-
-            <div class="collapse navbar-right navbar-collapse" id="navigationbar">
-                <ul class="nav navbar-nav">
-                    <li class="scroll"><a href="#features">Features</a></li>
-                    <li class="scroll"><a href="#install">Installation</a></li>
-                    <li class="scroll"><a href="#get-involved">Support &amp; Getting Involved</a></li>
-                    <li><a href="./changelog.html">Changelog &nbsp; <i class="fa fa-external-link"></i></a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <p> &nbsp; </p>
-    <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
+   
         <div class="jumbotron">
             <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
             <br/>
@@ -54,21 +13,19 @@
 
                     <!-- Wrapper for slides -->
                     <div class="carousel-inner">
+                    {% assign counter = 0 %}
+                    {% for image in site.static_files %}
+                        {% if image.path contains 'images/gallery' %}
+                        {% if counter == 0 %}
                         <div class="item active">
-                            <img class="img-responsive" src="images/Screenshot1.png" alt="...">
-                        </div>
+                        {% else %}
                         <div class="item">
-                            <img src="images/Screenshot2.png" alt="...">
+                        {% endif %}
+                            <img class="img-responsive" src="{{site.baseurl}}{{image.path}}" alt="{{image.name | replace:'.png', ''}}">
                         </div>
-                        <div class="item">
-                            <img src="images/Screenshot3.png" alt="...">
-                        </div>
-                        <div class="item">
-                            <img src="images/Screenshot4.png" alt="...">
-                        </div>
-                        <div class="item">
-                            <img src="images/Screenshot5.png" alt="...">
-                        </div>
+                        {% assign counter = 1 %}
+                        {% endif %}
+                    {% endfor %}
                     </div>
 
                     <!-- Controls -->
@@ -98,205 +55,103 @@
 
         <h1 class="text-center"><small>FeedReader works with</small></h1>
         <br>
-        <div class="col-xs-12">
+            {% for service in site.services %}
+            {% assign loopindex = forloop.index | modulo: 3 %} 
+            {% if loopindex == 1 %} 
+            <div class="col-xs-12">
+            {% endif %}
             <div class="col-md-4 list-group ">
-                <a href="http://feedly.com/" class="list-group-item">
-                    <h4 class="list-group-item-heading">feedly</h4>
+                <a href="{{service.url}}" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{service.title}}</h4>
                     <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/feedly_logo.svg" alt="feedly">
-                        <br>One of the most popular online RSS services available.
+                        <img width="100" height="100" src="{{site.baseurl}}/images/{{service.logo}}" alt="{{service.title}}">
+                        {{service.content}}
                     </p>
                 </a>
             </div>
-            <div class="col-md-4 list-group ">
-                <a href="https://tt-rss.org/" class="list-group-item">
-                    <h4 class="list-group-item-heading">Tiny Tiny RSS</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/tt-rss_logo.svg" alt="Tiny Tiny RSS">
-                        <br>Self hosted powerful but lightweight RSS reader.
-                    </p>
-                </a>
+            {% if loopindex == 0 %}
             </div>
-            <div class="col-md-4 list-group ">
-                <a href="https://owncloud.org/" class="list-group-item">
-                    <h4 class="list-group-item-heading">OwnCloud</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/owncloud_logo.svg" alt="OwnCloud">
-                        <br>Self hosted cloud that can do RSS and much, much more.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a href="http://www.inoreader.com/" class="list-group-item">
-                    <h4 class="list-group-item-heading">InoReader</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/inoreader_logo.svg" alt="InoReader">
-                        <br>Popular alternative to feedly with similar features.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a href="https://feedbin.com/" class="list-group-item">
-                    <h4 class="list-group-item-heading">Feedbin</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/feedbin_logo.svg" alt="Feedbin">
-                        <br>A fast, simple service that delivers a great reading experience.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a href="https://freshrss.org/" class="list-group-item">
-                    <h4 class="list-group-item-heading">FreshRSS</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/fresh_logo.svg" alt="Feedbin">
-                        <br>A free, self-hostable aggregator. Probably the best, according to the develpers.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a href="https://theoldreader.com/" class="list-group-item">
-                    <h4 class="list-group-item-heading">The Old Reader</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/oldreader_logo.svg" alt="Feedbin">
-                        <br>Welcome to the ultimate social RSS reader for The Open Web.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a href="https://jangernert.github.io/FeedReader/" class="list-group-item">
-                    <h4 class="list-group-item-heading">Local RSS</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/local_logo.svg" alt="Feedbin">
-                        <br>No online account or server needed. All data on your own harddrive.
-                    </p>
-                </a>
-            </div>
-        </div>
+            {% endif %}
+            {% endfor %}
+            {% assign services_index = site.services.size | modulo: 3 %} 
+            {% if services_index != 0%}
+             </div>
+            {% endif %}
         <br />
 
         <h1 class="text-center"><small>Push to Read-it-later</small></h1>
         <br>
-        <div class="col-xs-12">
+        {% for read_it_later in site.read-it-later %}
+            {% assign loopindex = forloop.index | modulo: 3 %} 
+            {% if loopindex == 1 %} 
+            <div class="col-xs-12">
+            {% endif %}
             <div class="col-md-4 list-group">
-                <a href="https://getpocket.com/" class="list-group-item">
-                    <h4 class="list-group-item-heading">Pocket</h4>
+                <a href="{{read_it_later.url}}" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{read_it_later.title}}</h4>
                     <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/pocket_logo.png" alt="Pocket">
-                        <br>The world's leading save-for-later service.
+                        <img width="100" height="100" src="{{site.baseurl}}/images/{{read_it_later.logo}}" alt="{{read_it_later.title}}">
+                        {{read_it_later.content}}
                     </p>
                 </a>
             </div>
-            <div class="col-md-4 list-group">
-                <a href="https://www.instapaper.com/" class="list-group-item">
-                    <h4 class="list-group-item-heading">Instapaper</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/instapaper_logo.png" alt="Instapaper">
-                        <br>Save Anything. Read Anywhere.
-                    </p>
-                </a>
+            {% if loopindex == 0 %}
             </div>
-            <div class="col-md-4 list-group">
-                <a href="https://www.wallabag.org/" class="list-group-item">
-                    <h4 class="list-group-item-heading">Wallabag</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/wallabag_logo.svg" alt="Readability">
-                        <br>Save the web, freely.
-                    </p>
-                </a>
-            </div>
-        </div>
+            {% endif %}
+            {% endfor %}
+            {% assign read-it-later_index = site.read-it-later.size | modulo: 3 %} 
+            {% if read-it-later_index != 0%}
+             </div>
+            {% endif %}
         
         <h1 class="text-center"><small>Share with others</small></h1>
         <br>
+        {% for share_service in site.share %}
+        {% assign loopindex = forloop.index | modulo: 3 %} 
+        {% if loopindex == 1 %} 
         <div class="col-xs-12">
+        {% endif %}
             <div class="col-md-4 list-group">
-                <a href="https://twitter.com/" class="list-group-item">
-                    <h4 class="list-group-item-heading">Twitter</h4>
+                <a href="{{share_service.href}}" class="list-group-item">
+                    <h4 class="list-group-item-heading">{{share_service.title}}</h4>
                     <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/twitter_logo.svg" alt="Pocket">
-                        <br>Tweet about articles.
+                        <img width="100" height="100" src="{{ site.baseurl }}/images/{{share_service.icon}}" alt="{{share_service.title}}">
+                        {{share_service.content}}
                     </p>
                 </a>
             </div>
-            <div class="col-md-4 list-group">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Email</h4>
-                    <p class="list-group-item-text">
-                        <img width="100" height="100" src="./images/email_logo.png" alt="Instapaper">
-                        <br>Share via email right from FeedReader.
-                    </p>
-                </a>
-            </div>
+        {% if loopindex == 0%} 
         </div>
-
+        {% endif %}
+        {% endfor %}
+        {% assign share_index = site.share.size | modulo: 3 %} 
+        {% if share_index != 0%}
+        </div>
+        {% endif %}
         <h1 class="text-center"><small>What makes FeedReader special?</small></h1>
         <br>
+        {% for feature in site.features %}
+        {% assign loopindex = forloop.index | modulo: 3 %} 
+        {% if loopindex == 1 %} 
         <div class="col-xs-12">
-            <div class="col-md-4 list-group ">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Desktop notifications</h4>
+        {% endif %}
+            <div class="col-md-4 list-group">
+                <span class="list-group-item">
+                    <h4 class="list-group-item-heading">{{feature.title}}</h4>
                     <p class="list-group-item-text">
-                    	<img width="100" height="100" src="./images/notification_logo.svg" alt="Desktop notifications">
-                    	<br> Always stay up to date. FeedReader will notify you whenever there are new articles for you.
+                        <img width="100" height="100" src="{{ site.baseurl }}/images/{{feature.icon}}" alt="{{feature.title}}">
+                        {{feature.content}}
                     </p>
-                </a>
+                </span>
             </div>
-            <div class="col-md-4 list-group ">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Handy keyboard shortcuts</h4>
-                    <p class="list-group-item-text">
-                    	<img width="100" height="100" src="./images/shortcut_logo.svg" alt="Keyboard shortcuts">
-                    	<br> Don't like clicking? No problem! FeedReader has keyboard-shortcut's for most of it's actions.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Fast search and filters</h4>
-                    <p class="list-group-item-text">
-                    	<img width="100" height="100" src="./images/search_logo.svg" alt="Search and filters">
-                    	<br> Remember that one article from last week you can't find anymore? With FeedReader you can.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Consistent article formating</h4>
-                    <p class="list-group-item-text">
-                    	<img width="100" height="100" src="./images/format_logo.svg" alt="Article formating">
-                    	<br> Read the complete article nicely formated directly inside FeedReader and choose one of 4 themes.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Tagging</h4>
-                    <p class="list-group-item-text">
-                    	<img width="100" height="100" src="./images/tag_logo.svg" alt="Tagging">
-                    	<br> Keep track of all your articles. Create tags to categorize and sort articles.
-                    	<br> &nbsp;
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Customizability</h4>
-                    <p class="list-group-item-text">
-                    	<img width="100" height="100" src="./images/customize_logo.svg" alt="Customizability">
-                    	<br> FeedReader is more flexible than it might first seem. Just open up dconf-editor and start tweaking.
-                    </p>
-                </a>
-            </div>
-            <div class="col-md-4 list-group ">
-                <a class="list-group-item">
-                    <h4 class="list-group-item-heading">Podcasts</h4>
-                    <p class="list-group-item-text">
-                    	<img width="100" height="100" src="./images/podcast_logo.svg" alt="Customizability">
-                    	<br> Listen to podcasts right from within FeedReader.
-                    </p>
-                </a>
-            </div>
+        {% if loopindex == 0%} 
         </div>
+        {% endif %}
+        {% endfor %}
+        {% assign share_index = site.share.size | modulo: 3 %} 
+        {% if share_index != 0%}
+        </div>
+        {% endif %}
 
         <h2 class="text-center"><small>And much more ...</small></h2>
     </div>
@@ -307,64 +162,27 @@
         <h1 class="text-center">Installation</h1>
         <br/>
         <ul class="nav nav-tabs nav-justified">
-            <li role="presentation" class="active"><a data-toggle="tab" href="#ubuntu">Ubuntu / elementary OS</a></li>
-            <li role="presentation"><a data-toggle="tab" href="#arch">Arch Linux</a></li>
-            <li role="presentation"><a data-toggle="tab" href="#solus">Solus</a></li>
-            <li role="presentation"><a data-toggle="tab" href="#fedora">Fedora</a></li>
-            <li role="presentation"><a data-toggle="tab" href="#opensuse">openSUSE</a></li>
-            <li role="presentation"><a data-toggle="tab" href="#source">Build from source</a></li>
+            {% for package in site.packages %}
+            {% if forloop.index == 1 %}
+             <li role="presentation" class="active">
+            {% else %}
+            <li role="presentation">
+            {% endif %}
+                <a data-toggle="tab" href="#{{package.data-content}}">{{package.distro}}</a>
+            </li>
+            {% endfor %}
         </ul>
         <div class="tab-content">
-            <div id="ubuntu" class="tab-pane fade in active">
-            	<h3><small>Available in the FeedReader <a href="https://code.launchpad.net/~eviltwin1/+archive/ubuntu/feedreader-stable">Stable PPA</a></small></h3>
-                To install FeedReader in Ubuntu 15.04 (or newer) or in elementary OS Freya, paste these three commands into your terminal:
-                <pre>sudo add-apt-repository ppa:eviltwin1/feedreader-stable<br/>sudo apt-get update<br/>sudo apt-get install feedreader</pre> Note that FeedReader requires that you have Gtk+ 3.12 or newer installed. FeedReader can't run without it.
-                So Ubuntu 14.04 and Linux Mint 17.X are sadly not supported.
+            {% for package in site.packages %}
+            {% if forloop.index == 1 %}
+            <div id="{{package.data-content}}" class="tab-pane fade in active">
+            {% else %}
+            <div id="{{package.data-content}}" class="tab-pane fade">
+            {% endif %}
+                {{package.content}}
             </div>
-            <div id="arch" class="tab-pane fade">
-                <h3><small>FeedReader is available as an <a href="https://aur.archlinux.org/packages/feedreader/">AUR package</a>.</small></h3> To install the stable version using the command line
-                <pre>yaourt -S feedreader</pre> You can also install the latest source code version using
-                <pre>yaourt -S feedreader-git</pre>
-
-            </div>
-            <div id="solus" class="tab-pane fade">
-                <h3><small>FeedReader is already packaged in the software-center of Solus.</small></h3> To install it using the command line
-                <pre>sudo eopkg install feedreader</pre>
-            </div>
-            <div id="fedora" class="tab-pane fade">
-                <h3><small>Available in the default repository of Fedora 21 and newer.</small></h3> To install it using the command line
-                <pre>sudo dnf install feedreader</pre>
-            </div>
-            <div id="opensuse" class="tab-pane fade">
-                <h3><small>Available for 42.1, 42.2 and Tumbleweed in <a href='http://download.opensuse.org/repositories/home:/scujas/'>Jason Scurtu's repository</a>.</small></h3>
-                Add the repository to your sources (replace $VERSION with actual version of openSUSE)
-                <pre>sudo zypper ar -r http://download.opensuse.org/repositories/home:/scujas/$VERSION/home:scujas.repo</pre>
-                Refresh package sources
-                <pre>sudo zypper refresh</pre>
-                And install the package
-                <pre>sudo zypper install feedreader</pre>
-                <h3>1-Click-Install</h3>
-                <ul> 
-                    <li><a href="http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Tumbleweed/feedreader.ymp">openSUSE Tumbleweed</a></li>
-                    <li><a href="http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Leap_42.1/feedreader.ymp">openSUSE Leap 42.1</a></li>
-                    <li><a href="http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Leap_42.2/feedreader.ymp">openSUSE Leap 42.2</a></li>
-                </ul>
-            </div>
-            <div id="source" class="tab-pane fade">
-                <h3><small>You will need the following packages isntalled:</small></h3>
-                <h4><small>(names can differ depending on the distribution)</h4></small>
-                <pre><ul><li>build-essential</li><li>cmake</li><li>vala (>=0.26)</li><li>pkg-config</li><li>libgirepository1.0-dev</li><li>libgtk-3-dev (>= 3.12)</li><li>libsoup2.4-dev</li><li>libjson-glib-dev</li><li>libwebkit2gtk-4.0-dev (or 3.0)</li><li>libsqlite3-dev</li><li>libsecret-1-dev</li><li>libnotify-dev</li><li>libxml2-dev</li><li>libunity-dev (optional)</li><li>librest-dev</li><li>libgee-0.8-dev</li></ul></pre>
-                Navigate to the directory which contains the source and create a new folder for the build:
-                <pre>mkdir build</pre>
-                Then navigate to the just created build folder:
-                <pre>cd build</pre>
-                Run CMake to generate all the required build-files:
-                <pre>cmake ..</pre>
-                Compile the source-code:
-                <pre>make</pre>
-                And install the binaries:
-                <pre>make install</pre>
-            </div>
+            {% endfor %}
+            	
         </div>
         <br>
         <h4><small>NOTE: If you run FeedReader with the TinyTinyRSS-backend please install the "<a href="https://github.com/jangernert/FeedReader/tree/master/data/tt-rss-feedreader-plugin">api_feedreader</a>"-extension. Running FeedReader with the TinyTinyRSS-backend and without the extension is NOT supported.</small></h4>
@@ -414,35 +232,6 @@
             </ul>
 
         </div>
-    </div>
 
-    <p> &nbsp; </p>
-    <hr>
-    <div class="navbar" role="navigation">
-        <div class="text-center">
-            <p>Designed by <a href="https://r3bl.me">Aleksandar Todorović</a> &amp; <a href="https://github.com/bil-elmoussaoui">Bilal Elmoussaoui</a> using the <a href="http://bootswatch.com/readable/">Readable Bootstrap theme</a>. </p>
-        </div>
-    </div>
 
-    <script src="scripts/jquery-1.9.1.min.js"></script>
-    <script src="scripts/jquery-ui.min.js"></script>
-    <script src="scripts/bootstrap.min.js"></script>
-    <script>
-        $(function() {
-            $('.scroll a').bind('click', function(event) {
-                var $anchor = $(this);
-                if ($($anchor.attr("href")).length) {
-                    var element = $anchor.attr("href");
-                } else {
-                    var element = "body";
-                }
-                $('body,html').stop().animate({
-                    scrollTop: $(element).offset().top
-                }, 600, 'easeInOutExpo');
-                event.preventDefault();
-            });
-        });
-    </script>
-</body>
-
-</html>
+{% include footer.html %}

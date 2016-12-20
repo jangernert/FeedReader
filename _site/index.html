@@ -45,32 +45,44 @@
                     </a>
                     <ul class="dropdown-menu">
                      
-                        <li><a href="/FeedReader/changelog#1.6.2">1.6.2</a></li>
-                     
-                        <li><a href="/FeedReader/changelog#1.6.1">1.6.1</a></li>
-                     
-                        <li><a href="/FeedReader/changelog#1.6">1.6</a></li>
-                     
-                        <li><a href="/FeedReader/changelog#1.4">1.4</a></li>
-                     
-                        <li><a href="/FeedReader/changelog#1.2.1">1.2.1</a></li>
-                     
-                        <li><a href="/FeedReader/changelog#1.2">1.2</a></li>
-                     
-                        <li><a href="/FeedReader/changelog#1.0">1.0</a></li>
-                     
+                        
+                        <li><a href="/FeedReader/changelog#162">1.6.2</a></li>
+                        
+                    
+                        
+                        <li><a href="/FeedReader/changelog#161">1.6.1</a></li>
+                        
+                    
+                        
+                        <li><a href="/FeedReader/changelog#16">1.6</a></li>
+                        
+                    
+                        
+                        <li><a href="/FeedReader/changelog#14">1.4</a></li>
+                        
+                    
+                        
+                        <li><a href="/FeedReader/changelog#121">1.2.1</a></li>
+                        
+                    
+                        
+                        <li><a href="/FeedReader/changelog#12">1.2</a></li>
+                        
+                    
+                        
+                        <li><a href="/FeedReader/changelog#10">1.0</a></li>
+                        
+                    
                     </ul>
                   </li>
-                    
                 </ul>
             </div>
         </div>
     </nav>
-    
      <p> &nbsp; </p>
-    <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
 
-   
+
+    <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
         <div class="jumbotron">
             <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
             <br/>
@@ -218,7 +230,6 @@
     </div>
 
     <hr>
-
     <div class="container" id="features" style="padding-top: 60px; margin-top: -60px">
         <h1 class="text-center">Features</h1>
 
@@ -736,8 +747,7 @@ So Ubuntu 14.04 and Linux Mint 17.X are sadly not supported.</p>
 
         </div>
 
-
-</div>
+        </div>
 <p> &nbsp; </p>
     <hr>
     <div class="navbar" role="navigation">
@@ -754,6 +764,7 @@ So Ubuntu 14.04 and Linux Mint 17.X are sadly not supported.</p>
             $('.scroll a').bind('click', function(event) {
                 var $anchor = $(this);
                 var href = $anchor.attr("href").replace("\/FeedReader\/","");
+                var href = href.replace("changelog", "");
                 if (href.length) {
                     var element = href;
                 } else {
@@ -781,6 +792,7 @@ So Ubuntu 14.04 and Linux Mint 17.X are sadly not supported.</p>
             } else {
                 $('nav .navbar').removeClass('navbar-fixed-top').addClass('navbar-static-top');
             }
+    
         });
     </script>
 </body>

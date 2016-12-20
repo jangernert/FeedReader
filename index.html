@@ -1,9 +1,9 @@
 ---
 
 ---
-{% include header.html %}
+{% include header.html is_changelog="false" %}
 
-   
+    <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">
         <div class="jumbotron">
             <h1 class="text-center">FeedReader <small>RSS desktop client</small></h1>
             <br/>
@@ -49,7 +49,6 @@
     </div>
 
     <hr>
-
     <div class="container" id="features" style="padding-top: 60px; margin-top: -60px">
         <h1 class="text-center">Features</h1>
 
@@ -233,5 +232,5 @@
 
         </div>
 
-
-{% include footer.html %}
+        </div>
+{% include footer.html is_changelog="false" %}

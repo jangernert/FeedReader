@@ -44,15 +44,16 @@
                     </a>
                     <ul class="dropdown-menu">
                      {% for log in site.changelog reversed %}
-                        <li><a href="{{site.baseurl}}/changelog#{{log.version}}">{{log.version}}</a></li>
-                     {% endfor %}
+                        {% if include.is_changelog == "true" %}
+                        <li class="scroll"><a href="#{{log.version | replace:'.',''}}">{{log.version}}</a></li>
+                        {% else %}
+                        <li><a href="{{site.baseurl}}/changelog#{{log.version | replace:'.',''}}">{{log.version}}</a></li>
+                        {% endif %}
+                    {% endfor %}
                     </ul>
                   </li>
-                    
                 </ul>
             </div>
         </div>
     </nav>
-    
      <p> &nbsp; </p>
-    <div class="container" id="feedreader" style="padding-top: 100px; margin-top: -100px">

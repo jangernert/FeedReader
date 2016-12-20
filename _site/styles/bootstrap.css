@@ -17,13 +17,10 @@ html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
 }
-.badge a {
-    color:white;
-    text-decoration: none;
-}
-.badge a:hover, .badge a:focus{
-    color: rgba(255, 255,255, 0.7);
-    text-decoration: inherit;
+.scrolled-content {
+  overflow: auto;
+  height: 100%;
+  padding: 0;
 }
 body {
   margin: 0;

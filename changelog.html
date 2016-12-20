@@ -1,11 +1,14 @@
 ---
+permalink: /changelog
 ---
-{% include header.html %}
-<br>
-<br>
+{% include header.html is_changelog="true" %}
+
+<div class="container" style="padding-top: 100px; margin-top: -60px;">
+
     {% for log in site.changelog reversed %}
+    <div class="scrolled-content container-fluid" id='{{log.version | replace:".",""}}'>
         <h2>{{log.version}}</h2>
-        <ul class="list-group" id="{{log.version}}">
+        <ul class="list-group">
             {% for issue in log.issues %}
             <li class="list-group-item">
                 {{issue.content}}
@@ -36,9 +39,9 @@
                     {% endif %}
                 </span>
             </li>
-            {{issues}}
             {% endfor %}
         </ul>
+    </div>
     {% endfor %}
-
-{% include footer.html %}
+</div>
+{% include footer.html is_changelog="true" %}

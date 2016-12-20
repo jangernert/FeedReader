@@ -1,4 +1,3 @@
-</div>
 <p> &nbsp; </p>
     <hr>
     <div class="navbar" role="navigation">
@@ -15,6 +14,7 @@
             $('.scroll a').bind('click', function(event) {
                 var $anchor = $(this);
                 var href = $anchor.attr("href").replace("\/FeedReader\/","");
+                var href = href.replace("changelog", "");
                 if (href.length) {
                     var element = href;
                 } else {
@@ -42,6 +42,7 @@
             } else {
                 $('nav .navbar').removeClass('navbar-fixed-top').addClass('navbar-static-top');
             }
+    
         });
     </script>
 </body>

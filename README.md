@@ -6,7 +6,7 @@
 FeedReader is a modern desktop application designed to complement existing web-based RSS accounts. It combines all the advantages of web based services like synchronisation across all your devices with everything you expect from a modern desktop application.
 
 
-<div style="text-align:center"><img src ="https://raw.githubusercontent.com/jangernert/feedreader/gh-pages/images/Screenshot4.png" /></div>
+<div style="text-align:center"><img src ="https://raw.githubusercontent.com/jangernert/feedreader/gh-pages/images/gallery/Screenshot4.png" /></div>
 
 Website : http://jangernert.github.io/FeedReader/<br/>
 For translators : https://www.transifex.com/dev-feedreader/feedreader

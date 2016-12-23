@@ -20,36 +20,27 @@ namespace FeedReader {
 
 	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
 
-	dbUI dataBase;
-	GLib.Settings settings_general;
-	GLib.Settings settings_state;
-	GLib.Settings settings_tweaks;
-	GLib.Settings settings_keybindings;
-	FeedDaemon feedDaemon_interface;
-	Logger logger;
-	Share share;
-
-
 	public class FeedApp : Gtk.Application {
 
 		private readerUI m_window;
 		public signal void callback(string content);
+		public static bool m_online = true;
+
+		public static bool isOnline()
+		{
+			return m_online;
+		}
+
+		public static void setOnline(bool online)
+		{
+			m_online = online;
+		}
 
 		protected override void startup()
 		{
-			settings_general = new GLib.Settings("org.gnome.feedreader");
-			settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
-			settings_tweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-			settings_keybindings = new GLib.Settings("org.gnome.feedreader.keybindings");
+			Logger.init("ui");
+			Logger.info("FeedReader " + AboutInfo.version);
 
-			logger = new Logger("ui");
-			share = new Share();
-
-			logger.print(LogMessage.INFO, "FeedReader " + AboutInfo.version);
-			dataBase = new dbUI();
-
-
-			dataBase.init();
 			base.startup();
 
 			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
@@ -65,31 +56,37 @@ namespace FeedReader {
 		public override void activate()
 		{
 			base.activate();
-			DBusConnection.setup();
 
-			WebKit.WebContext.get_default().set_web_extensions_directory(InstallPrefix + "/share/FeedReader/");
+			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/share/FeedReader/");
 
-			if (m_window == null)
+			if(m_window == null)
 			{
 				m_window = new readerUI(this);
 				m_window.set_icon_name("feedreader");
-				if(settings_tweaks.get_boolean("sync-on-startup"))
-					sync();
+				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 			}
 
 			m_window.show_all();
-			DBusConnection.connectSignals(m_window);
-			feedDaemon_interface.updateBadge();
-			feedDaemon_interface.checkOnlineAsync();
+			m_window.present();
+
+			try
+			{
+				DBusConnection.connectSignals(m_window);
+				DBusConnection.get_default().updateBadge();
+				DBusConnection.get_default().checkOnlineAsync();
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("FeedReader.activate: %s".printf(e.message));
+			}
 		}
 
 		public override int command_line(ApplicationCommandLine command_line)
 		{
 			var args = command_line.get_arguments();
-			string verifier = "";
 			if(args.length > 1)
 			{
-				logger.print(LogMessage.DEBUG, "FeedReader: callback %s".printf(args[1]));
+				Logger.debug("FeedReader: callback %s".printf(args[1]));
 				callback(args[1]);
 			}
 
@@ -100,9 +97,8 @@ namespace FeedReader {
 
 		protected override void shutdown()
 		{
-			logger.print(LogMessage.DEBUG, "Shutdown!");
-			if(settings_tweaks.get_boolean("quit-daemon"))
-				feedDaemon_interface.quit();
+			Logger.debug("Shutdown!");
+			Gst.deinit();
 			base.shutdown();
 		}
 
@@ -110,10 +106,13 @@ namespace FeedReader {
 		{
 			SourceFunc callback = sync.callback;
 			ThreadFunc<void*> run = () => {
-				try{
-					feedDaemon_interface.startSync();
-				}catch (IOError e) {
-					logger.print(LogMessage.ERROR, e.message);
+				try
+				{
+					DBusConnection.get_default().startSync();
+				}
+				catch(IOError e)
+				{
+					Logger.error("FeedReader.sync: " + e.message);
 				}
 				Idle.add((owned) callback);
 				return null;
@@ -135,13 +134,17 @@ namespace FeedReader {
 	}
 
 
-	public static int main (string[] args) {
-		try {
+	public static int main (string[] args)
+	{
+		try
+		{
 			var opt_context = new OptionContext();
 			opt_context.set_help_enabled(true);
 			opt_context.add_main_entries(options, null);
 			opt_context.parse(ref args);
-		} catch (OptionError e) {
+		}
+		catch(OptionError e)
+		{
 			print(e.message + "\n");
 			return 0;
 		}
@@ -149,7 +152,7 @@ namespace FeedReader {
 		if(version)
 		{
 			stdout.printf("Version: %s\n", AboutInfo.version);
-			stdout.printf("Git Commit: %s\n", g_GIT_SHA1);
+			stdout.printf("Git Commit: %s\n", Constants.GIT_SHA1);
 			return 0;
 		}
 
@@ -165,9 +168,10 @@ namespace FeedReader {
 			return 0;
 		}
 
-		if(test)
+		if(pingURL != null)
 		{
-			UtilsUI.testGOA();
+			Logger.init("ui");
+			Utils.ping(pingURL);
 			return 0;
 		}
 
@@ -182,14 +186,14 @@ namespace FeedReader {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
-		{ "test", 0, 0, OptionArg.NONE, ref test, "test", null },
+		{ "ping", 0, 0, OptionArg.STRING, ref pingURL, "test the ping function with given URL", "URL" },
 		{ null }
 	};
 
 	private static bool version = false;
 	private static bool about = false;
 	private static string? media = null;
-	private static bool test = false;
+	private static string? pingURL = null;
 
 	static void show_about(string[] args)
 	{
@@ -214,8 +218,7 @@ namespace FeedReader {
 		dialog.wrap_license = true;
 
 		dialog.website = AboutInfo.website;
-		dialog.website_label = AboutInfo.websiteLabel;
-		dialog.present ();
+		dialog.present();
 
 		Gtk.main();
 	}

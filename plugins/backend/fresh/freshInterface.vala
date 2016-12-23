@@ -18,15 +18,10 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 	private freshAPI m_api;
 	private freshUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
-
 	public void init()
 	{
 		m_api = new freshAPI();
 		m_utils = new freshUtils();
-		logger = m_logger;
-		dataBase = m_dataBase;
 	}
 
 	public bool supportTags()
@@ -71,7 +66,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool supportFeedManipulation()
 	{
-		return false;
+		return true;
 	}
 
 	public bool supportMultiLevelCategories()
@@ -170,109 +165,83 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Subscribe to the URL "feedURL"
-	// "catID": the category the feed should be placed into, "null" otherwise
-	// "newCatName": the name of a new category the feed should be put in, "null" otherwise
-	//--------------------------------------------------------------------------------------
 	public string addFeed(string feedURL, string? catID, string? newCatName)
 	{
-		return "";
+		string? cat = null;
+		if(catID != null)
+			cat = catID;
+		else if(newCatName != null)
+			cat = newCatName;
+
+		cat = m_api.composeTagID(cat);
+
+		return m_api.editStream("subscribe", {"feed/" + feedURL}, null, cat, null);
 	}
 
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		string cat = "";
+		string[] urls = {};
 
-	//--------------------------------------------------------------------------------------
-	// Remove the feed with the id "feedID" completely
-	//--------------------------------------------------------------------------------------
+		foreach(feed f in feeds)
+		{
+			if(f.getCatIDs()[0] != cat)
+			{
+				m_api.editStream("subscribe", urls, null, cat, null);
+				urls = {};
+				cat = f.getCatIDs()[0];
+			}
+
+			urls += "feed/" + f.getXmlUrl();
+		}
+
+		m_api.editStream("subscribe", urls, null, cat, null);
+	}
+
 	public void removeFeed(string feedID)
 	{
-
+		m_api.editStream("unsubscribe", {feedID}, null, null, null);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Rename the feed with the id "feedID" to "title"
-	//--------------------------------------------------------------------------------------
 	public void renameFeed(string feedID, string title)
 	{
-
+		m_api.editStream("edit", {feedID}, title, null, null);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Move the feed with the id "feedID" from its current category
-	// to any other category. "currentCatID" is only needed if the
-	// feed can be part of multiple categories at once.
-	//--------------------------------------------------------------------------------------
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
-
+		m_api.editStream("edit", {feedID}, null, newCatID, currentCatID);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Create a new category
-	// "title": title of the new category
-	// "parentID": only needed if multi-level-categories are supported
-	// Hint: some services don't have API to create categories, but instead create them
-	// on the fly when movin feeds over to them. In this case just compose the categoryID
-	// following the schema tha service uses and return it.
-	//--------------------------------------------------------------------------------------
 	public string createCategory(string title, string? parentID)
 	{
-		return "";
+		return m_api.composeTagID(title);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Rename the category with the id "catID" to "title"
-	//--------------------------------------------------------------------------------------
 	public void renameCategory(string catID, string title)
 	{
-
+		m_api.renameTag(catID, title);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Move the category with the id "catID" into another category
-	// with the id "newParentID"
-	// This method is only used if multi-level-categories are supported
-	//--------------------------------------------------------------------------------------
 	public void moveCategory(string catID, string newParentID)
 	{
-
+		return;
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Delete the category with the id "catID"
-	//--------------------------------------------------------------------------------------
 	public void deleteCategory(string catID)
 	{
-
+		m_api.deleteTag(catID);
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Rename the feed with the id "feedID" from the category with the id "catID"
-	// Don't delete the feed entirely, just remove it from the category.
-	// Only useful if feed can be part of multiple categories.
-	//--------------------------------------------------------------------------------------
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-
+		return;
 	}
 
-
-	//--------------------------------------------------------------------------------------
-	// Import the content of "opml"
-	// If the service doesn't provide API to import OPML you can use the
-	// OPMLparser-class
-	//--------------------------------------------------------------------------------------
 	public void importOPML(string opml)
 	{
-
+		var parser = new OPMLparser(opml);
+		parser.parse();
 	}
 
 	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
@@ -329,7 +298,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 				left = 0;
 			}
 		}
-		writeArticlesInChunks(articles, 10);
+		writeArticles(articles);
 	}
 
 }

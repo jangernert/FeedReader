@@ -70,7 +70,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
@@ -84,6 +84,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
@@ -95,11 +96,11 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 
@@ -117,11 +118,13 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		string passwd = "";
 
-		try{
+		try
+		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
-		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+		catch(GLib.Error e)
+		{
+			Logger.error("oldReaderUtils: getPassword: " + e.message);
 		}
 
 		if(passwd == null)
@@ -141,11 +144,11 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: oldreader login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+			Logger.error("oldReaderUtils: setPassword: " + e.message);
 		}
 	}
 }

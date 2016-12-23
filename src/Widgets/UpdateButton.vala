@@ -20,44 +20,56 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private bool m_status;
 	private Gtk.Stack m_stack;
 
-	public UpdateButton(string iconname, string tooltip)
+	public UpdateButton.from_icon_name(string iconname, string tooltip)
+	{
+		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.SMALL_TOOLBAR);
+		setup(tooltip);
+	}
+
+	public UpdateButton.from_resource(string iconname, string tooltip)
+	{
+		m_icon = new Gtk.Image.from_resource(iconname);
+		setup(tooltip);
+	}
+
+	private void setup(string tooltip)
 	{
 
 		m_spinner = new Gtk.Spinner();
-		m_stack = new Gtk.Stack();
 		m_spinner.set_size_request(16,16);
-		m_spinner.get_style_context().add_class("feedlist-spinner");
-		this.set_relief(Gtk.ReliefStyle.NONE);
 
-		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.SMALL_TOOLBAR);
+		m_stack = new Gtk.Stack();
+		m_stack.set_transition_duration(100);
+		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.add_named(m_spinner, "spinner");
 		m_stack.add_named(m_icon, "icon");
+
 		this.add(m_stack);
+		this.set_relief(Gtk.ReliefStyle.NONE);
 		this.set_focus_on_click(false);
 		this.set_tooltip_text(tooltip);
 		this.show_all();
 
-		if(settings_state.get_boolean("currently-updating"))
+		if(Settings.state().get_boolean("currently-updating"))
 			updating(true);
 		else
 			updating(false);
 	}
 
-	public void updating(bool status)
+	public void updating(bool status, bool insensitive = true)
 	{
-
-		logger.print(LogMessage.DEBUG, "UpdateButton: update status");
+		Logger.debug("UpdateButton: update status");
 		m_status = status;
+		if(insensitive)
+			this.setSensitive(!status);
 		if(status)
 		{
 			m_stack.set_visible_child_name("spinner");
-			this.setSensitive(false);
 			m_spinner.start();
 		}
 		else
 		{
 			m_stack.set_visible_child_name("icon");
-			this.setSensitive(true);
 			m_spinner.stop();
 		}
 	}
@@ -69,7 +81,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 	public void setSensitive(bool sensitive)
 	{
-		logger.print(LogMessage.DEBUG, "UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
+		Logger.debug("UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
 		this.sensitive = sensitive;
 	}
 

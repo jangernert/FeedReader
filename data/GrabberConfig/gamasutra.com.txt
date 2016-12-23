@@ -16,5 +16,7 @@ body: //td[@class='newsText']
 
 strip: //h3[@class='title']
 
-single_page_link: //a[contains(@href, '?print=1')]
+single_page_link: concat(//meta[@property="og:url"]/@content, '?print=1')
+if_page_contains: //a[contains(@class, "articleNav")]
+
 test_url: http://www.gamasutra.com/view/feature/132559/staying_power_rethinking_feedback_.php

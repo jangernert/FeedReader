@@ -30,26 +30,12 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		this.relative_to = parent;
 		this.position = Gtk.PositionType.TOP;
 
-		Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
-		Gtk.TreeIter iter;
-		m_cats = dataBase.read_categories();
-
-		foreach(var cat in m_cats)
-		{
-			list_store.append(out iter);
-			list_store.set(iter, 0, cat.getTitle());
-		}
-
 		m_urlEntry = new Gtk.Entry();
 		m_urlEntry.activate.connect(() => {
 			m_catEntry.grab_focus();
 		});
 		m_catEntry = new Gtk.Entry();
-		m_complete = new Gtk.EntryCompletion();
-		m_complete.set_model(list_store);
-		m_complete.set_text_column(0);
 		m_catEntry.placeholder_text = _("Uncategorized");
-		m_catEntry.set_completion(m_complete);
 		m_catEntry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-clear");
 		m_catEntry.activate.connect(addFeed);
 		m_catEntry.icon_press.connect((pos, event) => {
@@ -88,6 +74,11 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		importButton.get_style_context().add_class("suggested-action");
 		importButton.halign = Gtk.Align.END;
 		importButton.clicked.connect(importOPML);
+		importButton.sensitive = false;
+
+		m_chooser.file_set.connect(() => {
+			importButton.sensitive = true;
+		});
 
 		m_opmlGrid = new Gtk.Grid();
 		m_opmlGrid.row_spacing = 10;
@@ -113,6 +104,23 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		this.add(m_box);
 		this.show_all();
 		m_urlEntry.grab_focus();
+
+		GLib.Idle.add(() => {
+			Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
+			Gtk.TreeIter iter;
+			m_cats = dbUI.get_default().read_categories();
+
+			foreach(var cat in m_cats)
+			{
+				list_store.append(out iter);
+				list_store.set(iter, 0, cat.getTitle());
+			}
+			m_complete = new Gtk.EntryCompletion();
+			m_complete.set_text_column(0);
+			m_complete.set_model(list_store);
+			m_catEntry.set_completion(m_complete);
+			return false;
+		});
 	}
 
 	private void addFeed()
@@ -126,7 +134,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		string catID = "";
 		bool isID = true;
 
-		catID = dataBase.getCategoryID(m_catEntry.text);
+		catID = dbUI.get_default().getCategoryID(m_catEntry.text);
 
 		if(catID == null)
 		{
@@ -134,19 +142,34 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			isID = false;
 		}
 
-		logger.print(LogMessage.DEBUG, "addFeed: %s, %s".printf(m_urlEntry.text, catID));
-		feedDaemon_interface.addFeed(m_urlEntry.text, catID, isID);
+		Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, catID));
+		try
+		{
+			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID);
+		}
+		catch(Error e)
+		{
+			Logger.error("AddPopover.addFeed: %s".printf(e.message));
+		}
+
 		setBusy();
 	}
 
 	private void importOPML()
 	{
-		logger.print(LogMessage.INFO, "selection_changed");
-		var file = m_chooser.get_file();
-		uint8[] contents;
-		file.load_contents (null, out contents, null);
-		logger.print(LogMessage.DEBUG, (string)contents);
-		feedDaemon_interface.importOPML((string)contents);
+		try
+		{
+			Logger.info("selection_changed");
+			var file = m_chooser.get_file();
+			uint8[] contents;
+			file.load_contents (null, out contents, null);
+			Logger.debug((string)contents);
+			DBusConnection.get_default().importOPML((string)contents);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("AddPopover.importOPML: %s".printf(e.message));
+		}
 		setBusy();
 	}
 

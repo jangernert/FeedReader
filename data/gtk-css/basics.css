@@ -33,12 +33,6 @@ row {
 .transparentBG {
     background: rgba(0, 0, 0, 0);
 }
-.overlay {
-    background: black;
-    color: white;
-    opacity: 0.8;
-    border-radius: 10px;
-}
 .servicebox {
     border: 1px solid alpha (#000, 0.30);
 }
@@ -69,9 +63,6 @@ row {
 }
 .h4 {
     font-weight: bold
-}
-.small {
-    font-size: x-small;
 }
 .preview {
     font-size: small;
@@ -104,63 +95,5 @@ row {
 }
 .header_left {
     border-top-left-radius: 0;
-}
-
-/******************/
-/*  media-player  */
-/******************/
-.player,
-.playerButton,
-.bufferLabel,
-.playerClose {
-	color: white;
-}
-
-.player,
-.bufferLabel {
-	background: black;
-}
-
-.player,
-.playerButton,
-.bufferLabel {
-	border-radius: 10px;
-	border-style: solid;
-}
-
-.player,
-.playerButton:hover,
-.bufferLabel,
-.playerClose {
-	border-color: white;
-	background-image: none;
-}
-
-.player,
-.playerClose {
-	border-width: 3px;
-}
-
-.playerButton,
-.bufferLabel {
-	border-width: 2px;
-}
-
-.player GtkScale {
-	background: white;
-}
-
-.playerButton,
-.bufferLabel {
-	font-weight: bold;
-	font-size: large;
-	box-shadow: none;
-	text-shadow: none;
-}
-
-.playerClose {
-	background: black;
-	border-radius: 999px;
-	box-shadow: none;
 }
 

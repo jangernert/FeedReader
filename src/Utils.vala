@@ -20,25 +20,25 @@ public class FeedReader.Utils : GLib.Object {
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
 		{
-			if(!dataBase.article_exists(Article.getArticleID()))
+			if(!dbBase.get_default().article_exists(Article.getArticleID()))
 			{
 				if(Article.getPreview() != null && Article.getPreview() != "")
 				{
 					continue;
 				}
-				if(!dataBase.preview_empty(Article.getArticleID()))
+				if(!dbBase.get_default().preview_empty(Article.getArticleID()))
 				{
 					continue;
 				}
 				else if(Article.getHTML() != "" && Article.getHTML() != null)
 				{
-					logger.print(LogMessage.DEBUG, "Utils: generate preview for article: " + Article.getArticleID());
+					Logger.debug("Utils: generate preview for article: " + Article.getArticleID());
 					string output = libVilistextum.parse(Article.getHTML(), 1);
 					output = output.strip();
 
 					if(output == "" || output == null)
 					{
-						logger.print(LogMessage.ERROR, "generatePreviews: no Preview");
+						Logger.error("generatePreviews: no Preview");
 						Article.setPreview(noPreview);
 						Article.setTitle(UTF8fix(Article.getTitle(), true));
 						continue;
@@ -60,7 +60,7 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				else
 				{
-					logger.print(LogMessage.DEBUG, "no html to create preview from");
+					Logger.debug("no html to create preview from");
 					Article.setPreview(noPreview);
 				}
 				Article.setTitle(UTF8fix(Article.getTitle(), true));
@@ -93,7 +93,7 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		foreach(var Article in articles)
 		{
-			if(!dataBase.article_exists(Article.getArticleID()))
+			if(!dbBase.get_default().article_exists(Article.getArticleID()))
 			{
 				string modified_html = _("No Text available for this article :(");
 				if(Article.getHTML() != "")
@@ -126,17 +126,17 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static bool springCleaningNecessary()
 	{
-		var lastClean = new DateTime.from_unix_local(settings_state.get_int("last-spring-cleaning"));
+		var lastClean = new DateTime.from_unix_local(Settings.state().get_int("last-spring-cleaning"));
 		var now = new DateTime.now_local();
 
 		var difference = now.difference(lastClean);
 		bool doCleaning = false;
 
-		logger.print(LogMessage.DEBUG, "last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
-		logger.print(LogMessage.DEBUG, "now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
-		logger.print(LogMessage.DEBUG, "difference: %f".printf(difference/GLib.TimeSpan.DAY));
+		Logger.debug("last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
+		Logger.debug("now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
+		Logger.debug("difference: %f".printf(difference/GLib.TimeSpan.DAY));
 
-		if((difference/GLib.TimeSpan.DAY) >= settings_general.get_int("spring-clean-after"))
+		if((difference/GLib.TimeSpan.DAY) >= Settings.general().get_int("spring-clean-after"))
 			doCleaning = true;
 
 		return doCleaning;
@@ -147,15 +147,15 @@ public class FeedReader.Utils : GLib.Object {
 		string[] selectedRow = {};
 		ArticleListState state = ArticleListState.ALL;
 		string searchTerm = "";
-		selectedRow = settings_state.get_string("feedlist-selected-row").split(" ", 2);
-		state = (ArticleListState)settings_state.get_enum("show-articles");
-		if(settings_tweaks.get_boolean("restore-searchterm"))
-			searchTerm = settings_state.get_string("search-term");
+		selectedRow = Settings.state().get_string("feedlist-selected-row").split(" ", 2);
+		state = (ArticleListState)Settings.state().get_enum("show-articles");
+		if(Settings.tweaks().get_boolean("restore-searchterm"))
+			searchTerm = Settings.state().get_string("search-term");
 
 		FeedListType IDtype = FeedListType.FEED;
 
-		logger.print(LogMessage.DEBUG, "selectedRow 0: %s".printf(selectedRow[0]));
-		logger.print(LogMessage.DEBUG, "selectedRow 1: %s".printf(selectedRow[1]));
+		Logger.debug("selectedRow 0: %s".printf(selectedRow[0]));
+		Logger.debug("selectedRow 1: %s".printf(selectedRow[1]));
 
 		switch(selectedRow[0])
 		{
@@ -172,33 +172,16 @@ public class FeedReader.Utils : GLib.Object {
 				break;
 		}
 
-
-		bool only_unread = false;
-		bool only_marked = false;
-
-		switch(state)
-		{
-			case ArticleListState.ALL:
-				break;
-			case ArticleListState.UNREAD:
-				only_unread = true;
-				break;
-			case ArticleListState.MARKED:
-				only_marked = true;
-				break;
-		}
-
-		var articles = dataBase.read_articles(
+		var articles = dbBase.get_default().read_articles(
 			selectedRow[1],
 			IDtype,
-			only_unread,
-			only_marked,
+			state,
 			searchTerm,
 			newArticlesCount,
 			0,
 			newArticlesCount);
 
-		logger.print(LogMessage.DEBUG, "getRelevantArticles: %u".printf(articles.size));
+		Logger.debug("getRelevantArticles: %u".printf(articles.size));
 		return articles.size;
 	}
 
@@ -226,9 +209,17 @@ public class FeedReader.Utils : GLib.Object {
 
 		author_date += date;
 
-        string template;
-		GLib.FileUtils.get_contents(InstallPrefix + "/share/FeedReader/ArticleView/article.html", out template);
-		article.assign(template);
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
+			file.load_contents(null, out contents, null);
+			article.assign((string)contents);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.buildArticle: %s".printf(e.message));
+		}
 
 		string html_id = "$HTML";
 		int html_pos = article.str.index_of(html_id);
@@ -253,11 +244,11 @@ public class FeedReader.Utils : GLib.Object {
 		string feed_id = "$FEED";
 		int feed_pos = article.str.index_of(feed_id);
 		article.erase(feed_pos, feed_id.length);
-		article.insert(feed_pos, dataBase.getFeedName(feedID));
+		article.insert(feed_pos, dbBase.get_default().getFeedName(feedID));
 
 
 		string theme = "theme ";
-		switch(settings_general.get_enum("article-theme"))
+		switch(Settings.general().get_enum("article-theme"))
 		{
 			case ArticleTheme.DEFAULT:
 				theme += "default";
@@ -284,7 +275,7 @@ public class FeedReader.Utils : GLib.Object {
 		string select_id = "$UNSELECTABLE";
 		int select_pos = article.str.index_of(select_id);
 
-		if(settings_tweaks.get_boolean("article-select-text"))
+		if(Settings.tweaks().get_boolean("article-select-text"))
 		{
 			article.erase(select_pos-1, select_id.length+1);
 		}
@@ -297,7 +288,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		string fontsize = "intial";
 		string sourcefontsize = "0.75rem";
-		switch(settings_general.get_enum("fontsize"))
+		switch(Settings.general().get_enum("fontsize"))
 		{
 			case FontSize.SMALL:
 				fontsize = "smaller";
@@ -333,17 +324,21 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 
-		string css;
-		try{
-			GLib.FileUtils.get_contents(InstallPrefix + "/share/FeedReader/ArticleView/style.css", out css);
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
+			file.load_contents(null, out contents, null);
+			string css_id = "$CSS";
+			int css_pos = article.str.index_of(css_id);
+			article.erase(css_pos, css_id.length);
+			article.insert(css_pos, (string)contents);
 		}
-		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.buildArticle: load CSS: " + e.message);
 		}
-		string css_id = "$CSS";
-		int css_pos = article.str.index_of(css_id);
-		article.erase(css_pos, css_id.length);
-		article.insert(css_pos, css);
+
 
 		return article.str;
 	}
@@ -363,11 +358,18 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		string filename = GLib.Environment.get_home_dir() + "/.config/autostart/feedreader-autostart.desktop";
 
-		if(settings_tweaks.get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
+		if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{
-			var origin = File.new_for_path(InstallPrefix + "/share/FeedReader/feedreader-autostart.desktop");
-			var destination = File.new_for_path(filename);
-        	origin.copy(destination, FileCopyFlags.NONE);
+			try
+			{
+				var origin = File.new_for_path(Constants.INSTALL_PREFIX + "/share/FeedReader/feedreader-autostart.desktop");
+				var destination = File.new_for_path(filename);
+	        	origin.copy(destination, FileCopyFlags.NONE);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("Utils.copyAutostart: %s".printf(e.message));
+			}
 		}
 	}
 
@@ -424,25 +426,28 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static bool ping(string link)
 	{
-		string url = link;
+		Logger.debug("Ping: " + link);
+		var uri = new Soup.URI(link);
 
-		if(url.has_prefix("https://"))
-			url = url.substring("https://".length);
-		else if(url.has_prefix("http://"))
-			url = url.substring("http://".length);
+		if(uri == null)
+		{
+			Logger.error("Ping failed: can't parse url! Seems to be not valid.");
+			return false;
+		}
 
-		if(url.has_suffix("/"))
-			url = url.substring(0, url.length-1);
+		string host = uri.get_host();
+
+		Logger.debug("Ping: modified URL " + host);
 
 	    try
 		{
 	        var resolver = GLib.Resolver.get_default();
-	        var addresses = resolver.lookup_by_name(url);
+	        var addresses = resolver.lookup_by_name(host);
 
-			// if can't resolve url to ip
+			// if can't resolve host to ip
 			if(addresses == null)
 			{
-				logger.print(LogMessage.ERROR, "Ping failed: can't resolve url " + url);
+				Logger.error("Ping failed: can't resolve url " + host);
 				return false;
 			}
 
@@ -452,7 +457,7 @@ public class FeedReader.Utils : GLib.Object {
 
 			foreach(InetAddress ip in addresses)
 			{
-				logger.print(LogMessage.DEBUG, "Ping: trying ip-address " + ip.to_string());
+				Logger.debug("Ping: trying ip-address " + ip.to_string());
 				conn = client.connect(new GLib.InetSocketAddress(ip, 80));
 
 				if(conn != null)
@@ -462,37 +467,40 @@ public class FeedReader.Utils : GLib.Object {
 			// if can't establish connection to ip
 			if(conn == null)
 			{
-				logger.print(LogMessage.ERROR, "Ping failed: can't establish connection to ip");
+				Logger.error("Ping failed: can't establish connection to ip");
 				return false;
 			}
 
 
-	        var message = @"GET / HTTP/1.1\r\nHost: $url\r\n\r\n";
+	        var message = @"HEAD / HTTP/1.1\r\nHost: $host\r\n\r\n";
 	        ssize_t bytesWritten = conn.output_stream.write(message.data);
 
 			// if can't write message
 			if(bytesWritten == -1)
 			{
-				logger.print(LogMessage.ERROR, "Ping failed: can't write message");
+				Logger.error("Ping failed: can't write message");
 				return false;
 			}
 
 	        var response = new GLib.DataInputStream(conn.input_stream);
-	        var status_line = response.read_line(null).strip();
+			size_t lenght = 0;
+	        var status_line = response.read_line_utf8(out lenght, null).strip();
 
 			// if no response received
 			if(status_line == null)
 			{
-				logger.print(LogMessage.ERROR, "Ping failed: no response received");
+				Logger.error("Ping failed: no response received");
 				return false;
 			}
+
+			Logger.debug(status_line);
+			Logger.debug("Ping: success!");
 
 			return true;
 	    }
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "Ping failed: %s".printf(url));
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("Ping failed: %s, message: %s".printf(host, e.message));
 	    }
 
 		return false;
@@ -531,7 +539,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "Utils - remove_directory: " + e.message);
+			Logger.error("Utils - remove_directory: " + e.message);
 		}
 
 
@@ -733,34 +741,67 @@ public class FeedReader.Utils : GLib.Object {
 		else if(feed_url.has_prefix("https://"))
 			url.replace("https://", "");
 
-		logger.print(LogMessage.DEBUG, "Utils: downloadIcon() url = \"%s\"".printf(url));
-
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
+			Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
+
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message ("GET", "http://f1.allesedv.com/32/%s".printf(url));
 
 			if(settingsTweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
-			var session = new Soup.Session ();
+			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{
-				try{
+				try
+				{
 					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 		// file already exists
 		return true;
+	}
+
+	public static void openInGedit(string text)
+	{
+		try
+		{
+			string filename = "/tmp/FeedReader_crashed_html.txt";
+			FileUtils.set_contents(filename, text);
+
+			try
+			{
+				string[] spawn_args = {"xdg-open", filename};
+				string[] spawn_env = Environ.get();
+				Pid child_pid;
+
+				Process.spawn_async("/",
+					spawn_args,
+					spawn_env,
+					SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD,
+					null,
+					out child_pid);
+			}
+			catch(GLib.SpawnError e)
+			{
+				Logger.error("Utils.openInGedit(): %s".printf(e.message));
+			}
+		}
+		catch(GLib.FileError e)
+		{
+			Logger.error("Utils.openInGedit(): %s".printf(e.message));
+		}
 	}
 
 }

@@ -13,34 +13,23 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace FeedReader{
-	Logger logger;
-
-	/*namespace WallabagSecrets {
-		const string base_uri				= "https://v2.wallabag.org/";
-		const string oauth_callback			= "feedreader://wallabag";
-		const string clientID				= "26_22ptghqq832880sww04s4kwww0wc4ok8cg0w88wokgw4sgscc8";
-		const string clientSecret			= "2qzxbatep7s48gsgww0k0gs8c4wscg4c4sgcgcso4o80g44sw0";
-	}*/
-}
-
 public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase {
-
-    public Logger m_logger { get; construct set; }
 
     public WallabagAPI()
     {
-		logger = m_logger;
 
-		this.addAccount.connect((id, type, username, iconName, accountName) => {
-			logger.print(LogMessage.INFO, "WallabagAPI: addAccount()");
-		});
+    }
+
+    public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+    {
+
     }
 
     public bool getAccessToken(string id, string username, string password, string clientID, string clientSecret, string baseURL)
     {
-		logger.print(LogMessage.DEBUG, "WallabagAPI getAccessToken");
+		Logger.debug("WallabagAPI getAccessToken");
         var session = new Soup.Session();
+        session.user_agent = Constants.USER_AGENT;
         string message = "grant_type=password"
 		 				+ "&client_id=" + clientID
 						+ "&client_secret=" + clientSecret
@@ -56,14 +45,14 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         if((string)message_soup.response_body.flatten().data == null
 		|| (string)message_soup.response_body.flatten().data == "")
 		{
-			logger.print(LogMessage.ERROR, "WallabagAPI - getAccessToken: no response");
-			logger.print(LogMessage.ERROR, url);
-			logger.print(LogMessage.ERROR, message);
+			Logger.error("WallabagAPI - getAccessToken: no response");
+			Logger.error(url);
+			Logger.error(message);
 			return false;
 		}
 
         string response = (string)message_soup.response_body.flatten().data;
-        logger.print(LogMessage.DEBUG, response);
+        Logger.debug(response);
 
 		var parser = new Json.Parser();
         try
@@ -72,8 +61,8 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         }
         catch (Error e)
         {
-            logger.print(LogMessage.ERROR, "Could not load response to Message from instapaper");
-            logger.print(LogMessage.ERROR, e.message);
+            Logger.error("Could not load response to Message from instapaper");
+            Logger.error(e.message);
         }
 
         var root_node = parser.get_root();
@@ -81,9 +70,9 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		string accessToken = root_object.get_string_member("access_token");
 		int64 now = (new DateTime.now_local()).to_unix();
 		int64 expires = root_object.get_int_member("expires_in");
-		string refreshToken = root_object.get_string_member("refresh_token");
+		//string refreshToken = root_object.get_string_member("refresh_token");
 
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
         settings.set_string("oauth-access-token", accessToken);
         settings.set_string("username", username);
 		settings.set_int("access-token-expires", (int)(now + expires));
@@ -92,18 +81,17 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		settings.set_string("client-secret", clientSecret);
 
 
-		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
-        var array = share_settings.get_strv("wallabag");
+        var array = Settings.share().get_strv("wallabag");
 		foreach(string i in array)
 		{
 			if(i == id)
 			{
-				logger.print(LogMessage.WARNING, "WallabagAPI - getAccessToken: id already part of array. Returning");
+				Logger.warning("WallabagAPI - getAccessToken: id already part of array. Returning");
 				return true;
 			}
 		}
         array += id;
-		share_settings.set_strv("wallabag", array);
+		Settings.share().set_strv("wallabag", array);
 
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.wallabag.password", Secret.SchemaFlags.NONE,
@@ -119,18 +107,18 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         }
         catch(GLib.Error e)
         {
-            m_logger.print(LogMessage.ERROR, "WallabagAPI - getAccessToken: " + e.message);
+            Logger.error("WallabagAPI - getAccessToken: " + e.message);
         }
 
         return true;
     }
 
 
-    public bool addBookmark(string id, string url)
+    public bool addBookmark(string id, string url, bool system)
     {
-		var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
 
-		logger.print(LogMessage.DEBUG, "WallabagAPI - addBookmark: " + url);
+		Logger.debug("WallabagAPI - addBookmark: " + url);
 		if(!accessTokenValid(id))
 		{
 			string username = getUsername(id);
@@ -142,9 +130,10 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			getAccessToken(id, username, password, clientID, clientSecret, baseURL);
 		}
 
-		logger.print(LogMessage.DEBUG, "WallabagAPI - addBookmark: token still valid");
+		Logger.debug("WallabagAPI - addBookmark: token still valid");
 
         var session = new Soup.Session();
+        session.user_agent = Constants.USER_AGENT;
         string message = "url=" + GLib.Uri.escape_string(url);
 		string baseURL = settings.get_string("url");
 
@@ -156,9 +145,9 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         if((string)message_soup.response_body.flatten().data == null
 		|| (string)message_soup.response_body.flatten().data == "")
 		{
-			logger.print(LogMessage.ERROR, "WallabagAPI - addBookmark: no response");
-			logger.print(LogMessage.ERROR, url);
-			logger.print(LogMessage.ERROR, message);
+			Logger.error("WallabagAPI - addBookmark: no response");
+			Logger.error(url);
+			Logger.error(message);
 			return false;
 		}
 
@@ -167,16 +156,15 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
     public bool logout(string id)
     {
-		logger.print(LogMessage.DEBUG, "WallabagAPI - logout");
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+		Logger.debug("WallabagAPI - logout");
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
     	var keys = settings.list_keys();
 		foreach(string key in keys)
 		{
 			settings.reset(key);
 		}
 
-		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
-        var array = share_settings.get_strv("wallabag");
+        var array = Settings.share().get_strv("wallabag");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -184,7 +172,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			if(i != id)
 				array2 += i;
 		}
-		share_settings.set_strv("wallabag", array2);
+		Settings.share().set_strv("wallabag", array2);
 		deletePassword(id);
 		deleteAccount(id);
 
@@ -193,13 +181,13 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
 	private bool accessTokenValid(string id)
 	{
-		var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
 		var now = new DateTime.now_local();
 		int expires = settings.get_int("access-token-expires");
 
 		if((int)now.to_unix() >  expires)
 		{
-			logger.print(LogMessage.WARNING, "WallabagAPI: access token expired");
+			Logger.warning("WallabagAPI: access token expired");
 			return false;
 		}
 
@@ -213,7 +201,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
     public string getUsername(string id)
     {
-        var settings = new Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
         return settings.get_string("username");
     }
 
@@ -229,11 +217,13 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
 		string passwd = "";
 
-		try{
+		try
+		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
-		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+		catch(GLib.Error e)
+		{
+			Logger.error(e.message);
 		}
 
 		if(passwd == null)
@@ -256,7 +246,14 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		attributes["id"] = id;
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			removed = Secret.password_clearv.end(async_res);
+			try
+			{
+				removed = Secret.password_clearv.end(async_res);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("WallabagAPI.deletePassword: %s".printf(e.message));
+			}
 		});
 		return removed;
 	}
@@ -265,6 +262,11 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 	{
 		return true;
 	}
+
+    public bool useSystemAccounts()
+    {
+        return false;
+    }
 
     public string pluginID()
     {
@@ -285,6 +287,11 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
     {
         return new WallabagSetup(null, this);
     }
+
+    public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return null;
+	}
 
 	public ShareForm? shareWidget(string url)
 	{

@@ -45,7 +45,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 					tmp_url = "https://" + tmp_url;
 		}
 
-		logger.print(LogMessage.DEBUG, "ttrss URL: " + tmp_url);
+		Logger.debug("ttrss URL: " + tmp_url);
 
 		return tmp_url;
 	}
@@ -96,7 +96,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error(e.message);
 		}
 
 		if(passwd == null)
@@ -117,11 +117,11 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: ttrss login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+			Logger.error("ttrssUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -142,7 +142,14 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			removed = Secret.password_clearv.end(async_res);
+			try
+			{
+				removed = Secret.password_clearv.end(async_res);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("ttrssUtils.deletePassword: %s".printf(e.message));
+			}
 		});
 		return removed;
 	}
@@ -165,7 +172,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, "ttrssUtils: getHtaccessPasswd: " + e.message);
+			Logger.error("ttrssUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		if(passwd == null)
@@ -188,11 +195,16 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		authAttributes["htaccess"] = "true";
 		try
 		{
-			Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", passwd, null);
+			Secret.password_storev_sync(pwAuthSchema,
+										authAttributes,
+										Secret.COLLECTION_DEFAULT,
+										"FeedReader: ttrss htaccess Authentication",
+										passwd,
+										null);
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setHtAccessPassword: " + e.message);
+			Logger.error("ttrssUtils: setHtAccessPassword: " + e.message);
 		}
 	}
 
@@ -205,7 +217,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.debug(e.message);
 		}
 
 		string remote_filename = icon_url + feed_id + ".ico";
@@ -222,6 +234,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
@@ -233,11 +246,11 @@ public class FeedReader.ttrssUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

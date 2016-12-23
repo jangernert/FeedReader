@@ -29,7 +29,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         m_list.margin = 10;
         m_list.set_selection_mode(Gtk.SelectionMode.NONE);
         m_list.row_activated.connect(clicked);
-        populateList();
+        refreshList();
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(150);
 		m_stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT);
@@ -42,9 +42,16 @@ public class FeedReader.SharePopover : Gtk.Popover {
         this.show_all();
 	}
 
-    private void populateList()
+    public void refreshList()
     {
-    	var list = share.getAccounts();
+		var children = m_list.get_children();
+		foreach(Gtk.Widget row in children)
+		{
+			m_list.remove(row);
+			row.destroy();
+		}
+
+    	var list = Share.get_default().getAccounts();
 
         foreach(var account in list)
         {
@@ -78,7 +85,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			addRow.add(addBox);
 		}
 
-
+		addRow.show_all();
 		m_list.add(addRow);
     }
 
@@ -90,7 +97,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		{
 			this.hide();
 			showSettings("service");
-			logger.print(LogMessage.DEBUG, "SharePopover: open Settings");
+			Logger.debug("SharePopover: open Settings");
 			return;
 		}
 
@@ -101,7 +108,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         if(window != null)
             url = window.getContent().getSelectedURL();
 
-		var widget = share.shareWidget(shareRow.getType(), url);
+		var widget = Share.get_default().shareWidget(shareRow.getType(), url);
 		if(widget == null)
 			shareURL(id, url);
 		else
@@ -122,7 +129,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 	{
 		SourceFunc callback = shareAsync.callback;
 		new GLib.Thread<void*>(null, () => {
-			share.addBookmark(id, url);
+			Share.get_default().addBookmark(id, url);
 			Idle.add((owned) callback);
 			return null;
 		});
@@ -137,7 +144,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			shareAsync.end(res);
 			shareDone();
 		});
-        logger.print(LogMessage.DEBUG, "bookmark: %s to %s".printf(url, id));
+        Logger.debug("bookmark: %s to %s".printf(url, id));
 	}
 }
 

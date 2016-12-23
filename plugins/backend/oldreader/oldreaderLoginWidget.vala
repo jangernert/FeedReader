@@ -1,9 +1,17 @@
-//--------------------------------------------------------------------------------------
-// This is the plugin that extends user-interface of FeedReader
-// It adds all the necessary widgets to the interface to log into the service.
-// User- and password-entries, or redirect to a website to log in.
-//--------------------------------------------------------------------------------------
-FeedReader.Logger logger;
+//	This file is part of FeedReader.
+//
+//	FeedReader is free software: you can redistribute it and/or modify
+//	it under the terms of the GNU General Public License as published by
+//	the Free Software Foundation, either version 3 of the License, or
+//	(at your option) any later version.
+//
+//	FeedReader is distributed in the hope that it will be useful,
+//	but WITHOUT ANY WARRANTY; without even the implied warranty of
+//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//	GNU General Public License for more details.
+//
+//	You should have received a copy of the GNU General Public License
+//	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterface {
 
@@ -11,9 +19,6 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 	private OldReaderUtils m_utils;
-
-	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 
 	public void init()
 	{
@@ -115,8 +120,8 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 
 	public void writeData()
 	{
-		m_utils.setUser(m_userEntry.get_text());
-		m_utils.setPassword(m_passwordEntry.get_text());
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
 	}
 
 	public void poastLoginAction()

@@ -15,24 +15,56 @@
 
 public class FeedReader.dbUI : dbBase {
 
-    public dbUI (string dbFile = "feedreader-04.db") {
+    private static dbUI? m_dataBase = null;
+
+    public static new dbUI get_default()
+    {
+        if(m_dataBase == null)
+        {
+            m_dataBase = new dbUI();
+            if(m_dataBase.uninitialized())
+                m_dataBase.init();
+        }
+
+
+		return m_dataBase;
+    }
+
+    public dbUI(string dbFile = "feedreader-04.db")
+    {
         base(dbFile);
     }
 
     protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
-        if(feedDaemon_interface.hideCagetoryWhenEmtpy(catID)
-        && !Utils.categoryIsPopulated(catID, feeds))
+        try
         {
-            return false;
+            if(DBusConnection.get_default().hideCagetoryWhenEmtpy(catID)
+            && !Utils.categoryIsPopulated(catID, feeds))
+            {
+                return false;
+            }
+        }
+        catch(GLib.Error e)
+        {
+            Logger.error("dbUI.showCategory: %s".printf(e.message));
         }
         return true;
 	}
 
     protected override string getUncategorizedQuery()
 	{
-		string catID = feedDaemon_interface.uncategorizedID();
-		return "category_id = \"%s\"".printf(catID);
+        try
+        {
+    		string catID = DBusConnection.get_default().uncategorizedID();
+    		return "category_id = \"%s\"".printf(catID);
+        }
+        catch(GLib.Error e)
+        {
+            Logger.error("dbUI.showCategory: %s".printf(e.message));
+        }
+
+        return "";
 	}
 
 }

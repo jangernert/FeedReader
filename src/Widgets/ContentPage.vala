@@ -18,7 +18,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	private Gtk.Paned m_pane1;
 	private Gtk.Paned m_pane2;
 	private articleView m_article_view;
-	private articleList m_articleList;
+	private ArticleList m_articleList;
 	private feedList m_feedList;
 	private FeedListFooter m_footer;
 	public signal void showArticleButtons(bool show);
@@ -27,7 +27,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public ContentPage()
 	{
-		logger.print(LogMessage.DEBUG, "ContentPage: setup FeedList");
+		Logger.debug("ContentPage: setup FeedList");
 
 		m_feedList = new feedList();
 		m_footer = new FeedListFooter();
@@ -37,7 +37,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 		m_pane2 = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
 		m_pane2.set_size_request(0, 300);
-		m_pane2.set_position(settings_state.get_int("feed-row-width"));
+		m_pane2.set_position(Settings.state().get_int("feed-row-width"));
 		m_pane2.pack1(feedListBox, false, false);
 
 		m_feedList.clearSelected.connect(() => {
@@ -47,8 +47,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.newFeedSelected.connect((feedID) => {
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
+			showArticleButtons(false);
 			m_articleList.setSelectedFeed(feedID);
-			m_articleList.newList();
+			newArticleList();
 
 			if(feedID == FeedID.ALL.to_string())
 			{
@@ -64,8 +65,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.newTagSelected.connect((tagID) => {
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
+			showArticleButtons(false);
 			m_articleList.setSelectedFeed(tagID);
-			m_articleList.newList();
+			newArticleList();
 			m_footer.setRemoveButtonSensitive(true);
 			m_footer.setSelectedRow(FeedListType.TAG, tagID);
 		});
@@ -73,8 +75,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.newCategorieSelected.connect((categorieID) => {
 			m_articleList.setSelectedType(FeedListType.CATEGORY);
 			m_article_view.clearContent();
+			showArticleButtons(false);
 			m_articleList.setSelectedFeed(categorieID);
-			m_articleList.newList();
+			newArticleList();
 
 			if(categorieID != CategoryID.MASTER.to_string()
 			&& categorieID != CategoryID.TAGS.to_string())
@@ -91,46 +94,37 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_feedList.markAllArticlesAsRead.connect(markAllArticlesAsRead);
 
 
-		m_articleList = new articleList();
+		m_articleList = new ArticleList();
 		m_articleList.drag_begin.connect((context) => {
 			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
 			m_feedList.addEmptyTagRow();
 		});
 		m_articleList.drag_end.connect((context) => {
-			logger.print(LogMessage.DEBUG, "ContentPage: articleList drag_end signal");
+			Logger.debug("ContentPage: articleList drag_end signal");
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), true);
 			m_feedList.removeEmptyTagRow();
 		});
-		m_articleList.drag_failed.connect((context, result) => {
-			logger.print(LogMessage.DEBUG, "ContentPage: articleList drag_failed signal");
-			return true;
-		});
-		setArticleListState((ArticleListState)settings_state.get_enum("show-articles"));
+		setArticleListState((ArticleListState)Settings.state().get_enum("show-articles"));
 
 		m_pane2.pack2(m_articleList, false, false);
 
 
 		m_articleList.row_activated.connect((row) => {
-			showArticleButtons(true);
-			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-			if(window != null)
-			{
-				var header = window.getHeaderBar();
-				logger.print(LogMessage.DEBUG, "ContentPage: set headerbar");
-				header.setRead(row.isUnread());
-				header.setMarked(row.isMarked());
-				header.showMediaButton(row.haveMedia());
-			}
-
 			if(m_article_view.getCurrentArticle() != row.getID())
 			{
-				m_article_view.fillContent(row.getID());
+				m_article_view.load(row.getID());
+				showArticleButtons(true);
+				var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+				if(window != null)
+				{
+					var header = window.getHeaderBar();
+					Logger.debug("ContentPage: set headerbar");
+					header.setRead(row.isUnread());
+					header.setMarked(row.isMarked());
+					header.showMediaButton(row.haveMedia());
+				}
 			}
-		});
-
-		m_articleList.noRowActive.connect(() => {
-			showArticleButtons(false);
 		});
 
 		m_article_view = new articleView();
@@ -139,7 +133,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 
 		m_pane1 = new Gtk.Paned(Gtk.Orientation.HORIZONTAL);
-		m_pane1.set_position(settings_state.get_int("feeds-and-articles-width"));
+		m_pane1.set_position(Settings.state().get_int("feeds-and-articles-width"));
 		m_pane1.pack1(m_pane2, false, false);
 		m_pane1.pack2(m_article_view, true, false);
 		m_pane1.notify["position"].connect(() => {
@@ -191,7 +185,24 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
-		m_articleList.newList(transition);
+		int height = m_articleList.get_allocated_height();
+		if(height == 1)
+		{
+			ulong id = 0;
+			id = m_articleList.draw.connect_after(() => {
+				m_articleList.newList.begin(transition, (obj, res) => {
+					m_articleList.newList.end(res);
+				});
+				m_articleList.disconnect(id);
+				return false;
+			});
+		}
+		else
+		{
+			m_articleList.newList.begin(transition, (obj, res) => {
+				m_articleList.newList.end(res);
+			});
+		}
 	}
 
 	public void newFeedList(bool defaultSettings = false)
@@ -206,33 +217,19 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void reloadArticleView()
 	{
-		m_article_view.reload();
+		m_article_view.load();
 	}
 
 	public void updateArticleList()
 	{
-		m_articleList.updateArticleList();
+		m_articleList.updateArticleList.begin((obj,res) => {
+			m_articleList.updateArticleList.end(res);
+		});
 	}
 
 	public void setArticleListState(ArticleListState state)
 	{
-		switch(state)
-		{
-			case ArticleListState.ALL:
-				m_articleList.setOnlyUnread(false);
-				m_articleList.setOnlyMarked(false);
-				break;
-
-			case ArticleListState.UNREAD:
-				m_articleList.setOnlyUnread(true);
-				m_articleList.setOnlyMarked(false);
-				break;
-
-			case ArticleListState.MARKED:
-				m_articleList.setOnlyUnread(false);
-				m_articleList.setOnlyMarked(true);
-				break;
-		}
+		m_articleList.setState(state);
 	}
 
 	public void setSearchTerm(string searchTerm)
@@ -243,6 +240,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void clearArticleView()
 	{
+		showArticleButtons(false);
 		m_article_view.clearContent();
 	}
 
@@ -253,7 +251,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public double getFeedListScrollPos()
 	{
-		return m_feedList.getScrollPos();
+		return m_feedList.vadjustment.value;
 	}
 
 	public string getSelectedFeedListRow()
@@ -345,15 +343,18 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public Gee.ArrayList<tag> getSelectedArticleTags()
 	{
-		string id = m_articleList.getSelectedArticle();
-		var article = dataBase.read_article(id);
-		unowned Gee.ArrayList<string> tagIDs = article.getTags();
-
 		var tags = new Gee.ArrayList<tag>();
+		string id = m_articleList.getSelectedArticle();
 
-		foreach(string tagID in tagIDs)
+		if(id != "" && id != "empty")
 		{
-			tags.add(dataBase.read_tag(tagID));
+			var article = dbUI.get_default().read_article(id);
+			unowned Gee.ArrayList<string> tagIDs = article.getTags();
+
+			foreach(string tagID in tagIDs)
+			{
+				tags.add(dbUI.get_default().read_tag(tagID));
+			}
 		}
 
 		return tags;
@@ -362,7 +363,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	public Gee.ArrayList<string> getSelectedArticleMedia()
 	{
 		string id = m_articleList.getSelectedArticle();
-		var article = dataBase.read_article(id);
+		var article = dbUI.get_default().read_article(id);
 		return article.getMedia();
 	}
 
@@ -473,5 +474,15 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	public void ArticleViewAddMedia(MediaPlayer media)
 	{
 		m_article_view.addMedia(media);
+	}
+
+	public void articleViewKillMedia()
+	{
+		m_article_view.killMedia();
+	}
+
+	public void print(string uri)
+	{
+		m_article_view.print(uri);
 	}
 }

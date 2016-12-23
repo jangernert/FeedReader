@@ -13,9 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
-
 public class FeedReader.OldReaderAPI : GLib.Object {
 
 	public enum OldreaderSubscriptionAction {
@@ -38,30 +35,35 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	{
 		if(m_utils.getAccessToken() == "")
 		{
-			m_connection.getToken();
+			var response = m_connection.getToken();
+			if(response != LoginResponse.SUCCESS)
+				return response;
 		}
 		if(getUserID())
 		{
 			return LoginResponse.SUCCESS;
 		}
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public bool ping() {
-		return Utils.ping("theoldreader.com");
+		return Utils.ping("https://theoldreader.com/");
 	}
 
 	private bool getUserID()
 	{
-		logger.print(LogMessage.ERROR, "getUserID: getting user info");
+		Logger.debug("getUserID: getting user info");
 		string response = m_connection.send_get_request("user-info?output=json");
 		var parser = new Json.Parser();
-		try{
+		try
+		{
 			parser.load_from_data(response, -1);
 		}
-		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getUserID: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+		catch(Error e)
+		{
+			Logger.error("getUserID: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -69,7 +71,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
-			logger.print(LogMessage.INFO, "Oldreader: userID = " + m_userID);
+			Logger.info("Oldreader: userID = " + m_userID);
 
 			return true;
 		}
@@ -88,8 +90,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getFeeds: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -149,8 +151,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -193,8 +195,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getTotalUnread: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTotalUnread: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -212,7 +214,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 		}
 
-		logger.print(LogMessage.DEBUG, "getTotalUnread %i".printf(count));
+		Logger.debug("getTotalUnread %i".printf(count));
 		return count;
 	}
 
@@ -230,8 +232,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "updateArticles: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("updateArticles: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -276,8 +278,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -302,7 +304,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dataBase.getTagName(cat) != null)
+				else if(cat.contains("/label/") && dbDaemon.get_default().getTagName(cat) != null)
 					tagString += cat;
 			}
 
@@ -361,14 +363,14 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 		message_string += tagID;
 		message_string += "&i=" + articleID;
-		string response = m_connection.send_post_request("edit-tag?output=json", message_string);
+		m_connection.send_post_request("edit-tag?output=json", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
-		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
+		m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -379,17 +381,17 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_post_request("disable-tag?output=json", message_string);
+		m_connection.send_post_request("disable-tag?output=json", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
+		m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
-	public void editSubscription(OldreaderSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	public void editSubscription(OldreaderSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
 
@@ -406,7 +408,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 				break;
 		}
 
-		message_string += "&s=" + feedID;
+		foreach(string s in feedID)
+			message_string += "&s=" + s;
 
 		if(title != null)
 			message_string += "&t=" + title;

@@ -17,13 +17,13 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 	private PocketAPI m_api;
 
-	public PocketSetup(string? id, PocketAPI api, string username = "")
+	public PocketSetup(string? id, PocketAPI api, string username = "", bool system = false)
 	{
 		bool loggedIN = false;
 		if(username != "")
 			loggedIN = true;
 
-		base("Pocket", "feed-share-pocket", loggedIN, username);
+		base("Pocket", "feed-share-pocket", loggedIN, username, system);
 
 		m_api = api;
 
@@ -37,7 +37,15 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		string id = Share.generateNewID();
 		string requestToken = m_api.getRequestToken();
 		string url = m_api.getURL(requestToken);
-		Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+		try
+		{
+			Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+		}
+		catch(GLib.Error e)
+		{
+
+		}
+
 
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);

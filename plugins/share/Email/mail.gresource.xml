@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+	<gresource prefix="/org/gnome/FeedReader">
+		<file preprocess="xml-stripblanks">icons/32x32/actions/feed-share-mail.svg</file>
+	</gresource>
+</gresources>

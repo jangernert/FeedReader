@@ -29,39 +29,43 @@ public class FeedReader.OldReaderConnection {
 
 	public LoginResponse getToken()
 	{
-		logger.print(LogMessage.DEBUG, "OldReader Connection: getToken()");
+		Logger.debug("OldReader Connection: getToken()");
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", "https://theoldreader.com/accounts/ClientLogin/");
-		string message_string = "Email=" + m_api_username + "&Passwd=" + m_passwd + "&service=reader&accountType=HOSTED_OR_GOOGLE&client=FeedReader";
+		string message_string = "Email=" + m_api_username
+								+ "&Passwd=" + m_passwd
+								+ "&service=reader"
+								+ "&accountType=HOSTED_OR_GOOGLE"
+								+ "&client=FeedReader";
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 		string response = (string)message.response_body.flatten().data;
-		try{
-
+		try
+		{
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
-				logger.print(LogMessage.ERROR, "Regex oldreader - %s".printf(response));
+				Logger.debug(@"Regex oldreader - $response");
 				string split = regex.replace( response, -1,0,"");
-				logger.print(LogMessage.ERROR, "authcode"+split);
+				Logger.debug(@"authcode: $split");
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}
 			else
 			{
-				logger.print(LogMessage.DEBUG, response);
+				Logger.debug(message_string);
+				Logger.error(response);
 				return LoginResponse.WRONG_LOGIN;
 			}
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "OldReaderConnection - getToken: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("OldReaderConnection - getToken: Could not load message response");
+			Logger.error(e.message);
 			return LoginResponse.UNKNOWN_ERROR;
 		}
-
-		return LoginResponse.SUCCESS;
 	}
 
 	public string send_get_request(string path, string? message_string = null)
@@ -78,6 +82,7 @@ public class FeedReader.OldReaderConnection {
 	{
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message(type, OldReaderSecret.base_uri + path);
 
 		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();

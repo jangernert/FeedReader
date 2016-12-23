@@ -18,15 +18,10 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 	private InoReaderAPI m_api;
 	private InoReaderUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
-
 	public void init()
 	{
 		m_api = new InoReaderAPI();
 		m_utils = new InoReaderUtils();
-		dataBase = m_dataBase;
-		logger = m_logger;
 	}
 
 	public bool supportTags()
@@ -51,7 +46,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public string? getServerURL()
 	{
-		return "inoreader.com";
+		return "http://www.inoreader.com/";
 	}
 
 	public string uncategorizedID()
@@ -137,13 +132,13 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void markAllItemsRead()
 	{
-		var categories = dataBase.read_categories();
+		var categories = dbDaemon.get_default().read_categories();
 		foreach(category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dataBase.read_feeds_without_cat();
+		var feeds = dbDaemon.get_default().read_feeds_without_cat();
 		foreach(feed Feed in feeds)
 		{
 			m_api.markAsRead(Feed.getFeedID());
@@ -186,28 +181,48 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
 		}
 		return "feed/" + feedURL;
 	}
 
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		string cat = "";
+		string[] urls = {};
+
+		foreach(feed f in feeds)
+		{
+			if(f.getCatIDs()[0] != cat)
+			{
+				m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat);
+				urls = {};
+				cat = f.getCatIDs()[0];
+			}
+
+			urls += "feed/" + f.getXmlUrl();
+		}
+
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat);
+	}
+
 	public void removeFeed(string feedID)
 	{
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.UNSUBSCRIBE, feedID);
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.UNSUBSCRIBE, {feedID});
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, feedID, title);
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, {feedID}, title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, {feedID}, null, newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID)
@@ -280,7 +295,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 					left = 0;
 				}
 			}
-			dataBase.updateArticlesByID(unreadIDs, "unread");
+			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
 		}
 
@@ -303,7 +318,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 				left = 0;
 			}
 		}
-		writeArticlesInChunks(articles, 10);
+		writeArticles(articles);
 	}
 
 }

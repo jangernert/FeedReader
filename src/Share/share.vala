@@ -17,24 +17,36 @@ public class FeedReader.Share : GLib.Object {
 
 	private Gee.ArrayList<ShareAccount> m_accounts;
 	private Peas.ExtensionSet m_plugins;
+	private static Share? m_share = null;
+	private Goa.Client? m_client = null;
 
-	public Share()
+	public static Share get_default()
+	{
+		if(m_share == null)
+			m_share = new Share();
+
+		return m_share;
+	}
+
+	private Share()
 	{
 		var engine = Peas.Engine.get_default();
-		engine.add_search_path(InstallPrefix + "/share/FeedReader/pluginsShare/", null);
+		engine.add_search_path(Constants.INSTALL_PREFIX + "/share/FeedReader/pluginsShare/", null);
 		engine.enable_loader("python3");
 
-		m_plugins = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface), "m_logger", logger);
+		m_plugins = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface));
 
 		m_plugins.extension_added.connect((info, extension) => {
 			var plugin = (extension as ShareAccountInterface);
 			plugin.addAccount.connect(accountAdded);
-			plugin.deleteAccount.connect(deleteAccount);
+			plugin.deleteAccount.connect(() => {
+				refreshAccounts();
+			});
 		});
 
-		m_plugins.extension_removed.connect((info, extension) => {
+		//m_plugins.extension_removed.connect((info, extension) => {});
 
-		});
+		checkSystemAccounts();
 
 		foreach(var plugin in engine.get_plugin_list())
 		{
@@ -44,12 +56,13 @@ public class FeedReader.Share : GLib.Object {
 		refreshAccounts();
 	}
 
-	private void refreshAccounts()
+	public void refreshAccounts()
 	{
-		logger.print(LogMessage.DEBUG, "Share: refreshAccounts");
+		Logger.debug("Share: refreshAccounts");
 		m_accounts = new Gee.ArrayList<ShareAccount>();
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
+			plugin.setupSystemAccounts(m_accounts);
 			if(plugin.needSetup())
 			{
 				var settings_share = new GLib.Settings("org.gnome.feedreader.share");
@@ -80,6 +93,9 @@ public class FeedReader.Share : GLib.Object {
 				);
 			}
 		});
+
+		// load gresource-icons from the plugins
+		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 	}
 
 	private ShareAccountInterface? getInterface(string type)
@@ -105,7 +121,7 @@ public class FeedReader.Share : GLib.Object {
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 
-			if(plugin.needSetup())
+			if(plugin.needSetup() && !plugin.useSystemAccounts())
 			{
 				accounts.add(new ShareAccount("", plugin.pluginID(), "", plugin.getIconName(), plugin.pluginName()));
 			}
@@ -118,18 +134,6 @@ public class FeedReader.Share : GLib.Object {
 	public Gee.ArrayList<ShareAccount> getAccounts()
 	{
 		return m_accounts;
-	}
-
-
-	public void deleteAccount(string accountID)
-	{
-		foreach(var account in m_accounts)
-		{
-			if(account.getID() == accountID)
-			{
-				m_accounts.remove(account);
-			}
-		}
 	}
 
 	public static string generateNewID()
@@ -157,7 +161,7 @@ public class FeedReader.Share : GLib.Object {
 
 	public void accountAdded(string id, string type, string username, string iconName, string accountName)
 	{
-		logger.print(LogMessage.DEBUG, "Share: %s account added for user: %s".printf(type, username));
+		Logger.debug("Share: %s account added for user: %s".printf(type, username));
 		m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
 	}
 
@@ -182,7 +186,7 @@ public class FeedReader.Share : GLib.Object {
 		{
 			if(account.getID() == accountID)
 			{
-				return getInterface(account.getType()).addBookmark(accountID, url);
+				return getInterface(account.getType()).addBookmark(accountID, url, account.isSystemAccount());
 			}
 		}
 
@@ -220,6 +224,19 @@ public class FeedReader.Share : GLib.Object {
 		return getInterface(type).newSetup();
 	}
 
+	public ServiceSetup? newSystemAccount(string accountID)
+	{
+		foreach(var account in m_accounts)
+		{
+			if(account.getID() == accountID)
+			{
+				return getInterface(account.getType()).newSystemAccount(account.getID(), account.getUsername());
+			}
+		}
+
+		return null;
+	}
+
 	public ShareForm? shareWidget(string type, string url)
 	{
 		ShareForm? form = null;
@@ -234,5 +251,44 @@ public class FeedReader.Share : GLib.Object {
 		});
 
 		return form;
+	}
+
+	private void checkSystemAccounts()
+	{
+		try
+		{
+			m_client = new Goa.Client.sync();
+			if(m_client != null)
+			{
+				m_client.account_added.connect((obj) => {
+					Logger.debug("share: account added");
+					accountsChanged(obj);
+				});
+				m_client.account_changed.connect((obj) => {
+					Logger.debug("share: account changed");
+					accountsChanged(obj);
+				});
+				m_client.account_removed.connect((obj) => {
+					Logger.debug("share: account removed");
+					accountsChanged(obj);
+				});
+			}
+			else
+			{
+				Logger.error("share: goa not available");
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("share.checkSystemAccounts: %s".printf(e.message));
+		}
+	}
+
+	private void accountsChanged(Goa.Object object)
+	{
+		refreshAccounts();
+		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		if(window != null)
+			window.settingsRefreshAccounts();
 	}
 }

@@ -63,6 +63,6 @@ public class FeedReader.category : GLib.Object {
 
 	public void print()
 	{
-		logger.print(LogMessage.DEBUG, "\ntitle: %s\nid: %s\nunread: %u".printf(m_title, m_categorieID, m_unread_count));
+		Logger.debug("\ntitle: %s\nid: %s\nunread: %u".printf(m_title, m_categorieID, m_unread_count));
 	}
 }

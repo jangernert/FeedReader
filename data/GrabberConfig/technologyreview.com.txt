@@ -1,5 +1,4 @@
-title: //header[@class='article-meta']/h1
-title: substring-before(//title, '|')
+title: //header[@class='article-topper__title']
 
 body: //section[contains(@class, 'body')]
 
@@ -11,6 +10,8 @@ date: substring-after(//ul[@class='byline']/li, 'on ')
 # Author & Date for "Views"
 author: //div[@class='view-byline']/div[@class='meta']/h2[1]
 date: //div[@class='view-byline']/div[@class='meta']/h2[2]
+
+strip_id_or_class: l-article-list
 
 next_page_link: //section[@class='pagination']/a[contains(@class, 'continue')]
 test_url: http://www.technologyreview.com/news/427567/facebooks-telescope-on-human-behavior/

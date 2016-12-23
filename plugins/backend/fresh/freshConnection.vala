@@ -27,16 +27,20 @@ public class FeedReader.freshConnection {
 	public LoginResponse getSID()
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
-		string message_string = "Email=" + m_utils.getUser()
-								+ "&Passwd=" + m_utils.getPasswd();
 
-		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
+		var msg = new freshMessage();
+		msg.add("Email", m_utils.getUser());
+		msg.add("Passwd", m_utils.getPasswd());
+
+		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, msg.get().data);
 		session.send_message(message);
 
 		if((string)message.response_body.flatten().data == null
 		|| (string)message.response_body.flatten().data == "")
 		{
+			Logger.error("No response from freshRSS to message getSID()");
 			return LoginResponse.NO_CONNECTION;
 		}
 
@@ -54,12 +58,10 @@ public class FeedReader.freshConnection {
 			int start = response.index_of("=")+1;
 			int end = response.index_of("\n");
 			string token = response.substring(start, end-start);
-			logger.print(LogMessage.DEBUG, "Token: " + token);
+			Logger.debug("Token: " + token);
 			m_utils.setToken(token);
 			return LoginResponse.SUCCESS;
 		}
-
-		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public string getToken()
@@ -70,6 +72,7 @@ public class FeedReader.freshConnection {
 	public string postRequest(string path, string input, string type)
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", m_utils.getURL()+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -78,7 +81,7 @@ public class FeedReader.freshConnection {
 		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 		message.request_headers.append("Content-Type", type);
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;
@@ -87,6 +90,7 @@ public class FeedReader.freshConnection {
 	public string getRequest(string path)
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("GET", m_utils.getURL()+path);
 		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 
@@ -95,5 +99,31 @@ public class FeedReader.freshConnection {
 
 		session.send_message(message);
 		return (string)message.response_body.data;
+	}
+}
+
+
+public class FeedReader.freshMessage {
+
+	string request = "";
+
+	public freshMessage()
+	{
+
+	}
+
+	public void add(string parameter, string val)
+	{
+		if(request != "")
+			request += "&";
+
+		request += parameter;
+		request += "=";
+		request += GLib.Uri.escape_string(val);
+	}
+
+	public string get()
+	{
+		return request;
 	}
 }

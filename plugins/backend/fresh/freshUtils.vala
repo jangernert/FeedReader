@@ -25,7 +25,8 @@ public class FeedReader.freshUtils : GLib.Object {
 	public string getURL()
 	{
 		string tmp_url = m_settings.get_string("url");
-		if(tmp_url != ""){
+		if(tmp_url != "")
+		{
 			if(!tmp_url.has_suffix("/"))
 				tmp_url = tmp_url + "/";
 
@@ -95,7 +96,7 @@ public class FeedReader.freshUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error(e.message);
 		}
 
 		if(passwd == null)
@@ -116,11 +117,11 @@ public class FeedReader.freshUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: freshRSS login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "freshUtils: setPassword: " + e.message);
+			Logger.error("freshUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -141,7 +142,14 @@ public class FeedReader.freshUtils : GLib.Object {
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
-			removed = Secret.password_clearv.end(async_res);
+			try
+			{
+				removed = Secret.password_clearv.end(async_res);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("freshUtils.deletePassword: %s".printf(e.message));
+			}
 		});
 		return removed;
 	}
@@ -164,7 +172,7 @@ public class FeedReader.freshUtils : GLib.Object {
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, "freshUtils: getHtaccessPasswd: " + e.message);
+			Logger.error("freshUtils: getHtaccessPasswd: " + e.message);
 		}
 
 		if(passwd == null)
@@ -187,11 +195,16 @@ public class FeedReader.freshUtils : GLib.Object {
 		authAttributes["htaccess"] = "true";
 		try
 		{
-			Secret.password_storev_sync(pwAuthSchema, authAttributes, Secret.COLLECTION_DEFAULT, "Feedserver htaccess Authentication", passwd, null);
+			Secret.password_storev_sync(pwAuthSchema,
+										authAttributes,
+										Secret.COLLECTION_DEFAULT,
+										"FeedReader: freshRSS htaccess Authentication",
+										passwd,
+										null);
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "freshUtils: setHtAccessPassword: " + e.message);
+			Logger.error("freshUtils: setHtAccessPassword: " + e.message);
 		}
 	}
 
@@ -212,6 +225,7 @@ public class FeedReader.freshUtils : GLib.Object {
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session ();
+			session.user_agent = Constants.USER_AGENT;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{
@@ -220,11 +234,11 @@ public class FeedReader.freshUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 		// file already exists

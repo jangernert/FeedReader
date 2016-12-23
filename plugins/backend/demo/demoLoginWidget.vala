@@ -7,20 +7,6 @@
 public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	//--------------------------------------------------------------------------------------
-	// Can be used to print messages to the commandline which are also
-	// written to the harddrive.
-	//--------------------------------------------------------------------------------------
-	public Logger m_logger { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
-	// The install prefix the user (or packager) chooses when building FeedReader
-	// Useful to load custom icons installed alongside the plugin.
-	//--------------------------------------------------------------------------------------
-	public string m_installPrefix { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
 	// Called when loading plugin. Setup all the widgets here and add them to
 	// m_stack and m_listStore.
 	// The signal "login()" can be emmited when try to log in.
@@ -132,7 +118,7 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	//--------------------------------------------------------------------------------------
 	public void poastLoginAction()
 	{
-		
+
 	}
 
 

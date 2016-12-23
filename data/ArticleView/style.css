@@ -128,50 +128,6 @@ div.pw {
     padding: 5% 0;
 }
 
-
-/* GENERAL & TYPOGRAPHY
--------------------------------------------------------------------------------------------------------------------------------------------*/
-/*
-@font-face {
-    font-family: 'Open Sans';
-    src: url('assets/opsn-itl-webfont.eot');
-    src: url('assets/opsn-itl-webfont.eot?#iefix') format('embedded-opentype'), url('assets/opsn-itl-webfont.woff2') format('woff2'), url('assets/opsn-itl-webfont.woff') format('woff'), url('assets/opsn-itl-webfont.ttf') format('truetype'), url('assets/opsn-itl-webfont.svg#open_sansitalic') format('svg');
-    font-weight: 300;
-    font-style: italic;
-}
-
-@font-face {
-    font-family: 'Open Sans';
-    src: url('assets/opsn-reg-webfont.eot');
-    src: url('assets/opsn-reg-webfont.eot?#iefix') format('embedded-opentype'), url('assets/opsn-reg-webfont.woff2') format('woff2'), url('assets/opsn-reg-webfont.woff') format('woff'), url('assets/opsn-reg-webfont.ttf') format('truetype'), url('assets/opsn-reg-webfont.svg#open_sansregular') format('svg');
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Open Sans';
-    src: url('assets/opsn-sem-webfont.eot');
-    src: url('assets/opsn-sem-webfont.eot?#iefix') format('embedded-opentype'), url('assets/opsn-sem-webfont.woff2') format('woff2'), url('assets/opsn-sem-webfont.woff') format('woff'), url('assets/opsn-sem-webfont.ttf') format('truetype'), url('assets/opsn-sem-webfont.svg#open_sanssemibold') format('svg');
-    font-weight: 500;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Droid Sans';
-    src: url('assets/DroidSans-webfont.eot');
-    src: url('assets/DroidSans-webfont.eot?#iefix') format('embedded-opentype'), url('assets/DroidSans-webfont.woff') format('woff'), url('assets/DroidSans-webfont.ttf') format('truetype'), url('assets/DroidSans-webfont.svg#droid_sansregular') format('svg');
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Droid Sans';
-    src: url('DroidSans-Bold-webfont.eot');
-    src: url('DroidSans-Bold-webfont.eot?#iefix') format('embedded-opentype'), url('DroidSans-Bold-webfont.woff') format('woff'), url('DroidSans-Bold-webfont.ttf') format('truetype'), url('DroidSans-Bold-webfont.svg#droid_sansbold') format('svg');
-    font-weight: 500;
-    font-style: normal;
-}
-*/
 body {
     padding: 3rem;
     cursor: default;

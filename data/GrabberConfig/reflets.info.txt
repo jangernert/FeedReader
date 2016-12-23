@@ -1,5 +1,6 @@
-body://div[@class='storycontent']
-date://div[@class='date']
+body://div[@class='maincontent']
+date://div[@class='meta-date']
 strip://li[@class='sharing_label']
 strip://a[@class='FlattrButton']
+strip://div[@class='jp-relatedposts']
 test_url: http://reflets.info/orange-nokia-siemens-deep-packet-inspection/

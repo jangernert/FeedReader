@@ -20,7 +20,6 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	private Gtk.Spinner m_addSpinner;
 	private AddButton m_addButton;
 	private RemoveButton m_removeButton;
-	private bool m_online = true;
 
 	public FeedListFooter()
 	{
@@ -49,10 +48,17 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		this.pack_start(sep2, false, false);
 		this.pack_start(m_box);
 
-		if(!feedDaemon_interface.supportFeedManipulation())
+		try
 		{
-			m_addButton.set_sensitive(false);
-			m_removeButton.set_sensitive(false);
+			if(!DBusConnection.get_default().supportFeedManipulation())
+			{
+				m_addButton.set_sensitive(false);
+				m_removeButton.set_sensitive(false);
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("FeedListFooter.constructor: %s".printf(e.message));
 		}
 	}
 
@@ -71,8 +77,15 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	public void setRemoveButtonSensitive(bool sensitive)
 	{
-		if(m_online && feedDaemon_interface.supportFeedManipulation())
-			m_removeButton.set_sensitive(sensitive);
+		try
+		{
+			if(FeedApp.isOnline() && DBusConnection.get_default().supportFeedManipulation())
+				m_removeButton.set_sensitive(sensitive);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("FeedListFooter.setRemoveButtonSensitive: %s".printf(e.message));
+		}
 	}
 
 	public void setSelectedRow(FeedListType type, string id)
@@ -82,11 +95,17 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 
 	public void setActive(bool active)
 	{
-		if(feedDaemon_interface.supportFeedManipulation())
+		try
 		{
-			m_online = active;
-			m_addButton.set_sensitive(active);
-			m_removeButton.set_sensitive(active);
+			if(DBusConnection.get_default().supportFeedManipulation())
+			{
+				m_addButton.set_sensitive(active);
+				m_removeButton.set_sensitive(active);
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("FeedListFooter.setActive: %s".printf(e.message));
 		}
 	}
 }

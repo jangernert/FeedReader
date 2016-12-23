@@ -19,7 +19,6 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private FeedlyUtils m_utils;
 	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 
 	public void init()
 	{
@@ -81,12 +80,12 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 		if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
 		{
-			logger.print(LogMessage.DEBUG, redirectURL);
+			Logger.debug(redirectURL);
 			int start = redirectURL.index_of("=")+1;
 			int end = redirectURL.index_of("&");
 			string code = redirectURL.substring(start, end-start);
 			m_utils.setApiCode(code);
-			logger.print(LogMessage.DEBUG, "feedlyLoginWidget: set feedly-api-code: " + code);
+			Logger.debug("feedlyLoginWidget: set feedly-api-code: " + code);
 			GLib.Thread.usleep(500000);
 			return true;
 		}

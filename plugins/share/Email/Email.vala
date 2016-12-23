@@ -16,16 +16,15 @@
 
 public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
-	public Logger m_logger { get; construct set; }
 	private string m_body;
 	private string m_to;
 
-	public bool addBookmark(string id, string url)
+	public bool addBookmark(string id, string url, bool system)
 	{
 		string subject = GLib.Uri.escape_string("Amazing article");
 		string body = GLib.Uri.escape_string(m_body.replace("$URL", url));
 		string mailto = "mailto:%s?subject=%s&body=%s".printf(m_to, subject, body);
-		m_logger.print(LogMessage.DEBUG, mailto);
+		Logger.debug(mailto);
 
 		string[] spawn_args = {"xdg-open", mailto};
 		try
@@ -35,10 +34,15 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 		}
 		catch(GLib.SpawnError e)
 		{
-			m_logger.print(LogMessage.ERROR, "spawning command line: " + e.message);
+			Logger.error("spawning command line: " + e.message);
 		}
 
 		return false;
+	}
+
+	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	{
+
 	}
 
 	public bool logout(string id)
@@ -48,7 +52,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public string getIconName()
     {
-        return "feed-share-email";
+        return "feed-share-mail";
     }
 
 	public string getUsername(string id)
@@ -60,6 +64,11 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	{
 		return false;
 	}
+
+	public bool useSystemAccounts()
+    {
+        return false;
+    }
 
 	public string pluginID()
     {
@@ -80,6 +89,11 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
     {
         return null;
     }
+
+	public ServiceSetup? newSystemAccount(string id, string username)
+	{
+		return null;
+	}
 
 	public ShareForm? shareWidget(string url)
 	{

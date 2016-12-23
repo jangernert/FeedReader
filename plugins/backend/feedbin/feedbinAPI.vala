@@ -13,9 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
-
 public class FeedReader.feedbinAPI : Object {
 
 	private feedbinConnection m_connection;
@@ -29,9 +26,9 @@ public class FeedReader.feedbinAPI : Object {
 
 	public LoginResponse login()
 	{
-		logger.print(LogMessage.DEBUG, "feedbin backend: login");
+		Logger.debug("feedbin backend: login");
 
-		if(!Utils.ping("feedbin.com"))
+		if(!Utils.ping("https://feedbin.com/"))
 			return LoginResponse.NO_CONNECTION;
 
 		return LoginResponse.SUCCESS;
@@ -51,8 +48,8 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -104,8 +101,8 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_array();
@@ -155,7 +152,7 @@ public class FeedReader.feedbinAPI : Object {
 		request += "&starred=%s".printf(starred ? "true" : "false");
 		if(timestamp != null)
 		{
-			var t = new GLib.TimeVal();
+			var t = GLib.TimeVal();
 			if(timestamp.to_timeval(out t))
 			{
 				request += "&since=%s".printf(t.to_iso8601());
@@ -167,7 +164,7 @@ public class FeedReader.feedbinAPI : Object {
 		if(feedID != null)
 			request = "feeds/%s/%s".printf(feedID, request);
 
-		logger.print(LogMessage.DEBUG, request);
+		Logger.debug(request);
 
 		string response = m_connection.getRequest(request);
 
@@ -178,23 +175,23 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "getEntries: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
-			logger.print(LogMessage.ERROR, response);
+			Logger.error("getEntries: Could not load message response");
+			Logger.error(e.message);
+			Logger.error(response);
 		}
 
 		var root = parser.get_root();
 
 		if(root.get_node_type() != Json.NodeType.ARRAY)
 		{
-			logger.print(LogMessage.ERROR, response);
+			Logger.error(response);
 			return 0;
 		}
 
 		var array = root.get_array();
 		uint length = array.get_length();
 
-		logger.print(LogMessage.DEBUG, "article count: %u".printf(length));
+		Logger.debug("article count: %u".printf(length));
 
 		for(uint i = 0; i < length; i++)
 		{
@@ -203,7 +200,7 @@ public class FeedReader.feedbinAPI : Object {
 
 			var time = new GLib.DateTime.now_local();
 
-			var t = new GLib.TimeVal();
+			var t = GLib.TimeVal();
 			if(t.from_iso8601(object.get_string_member("published")))
 			{
 				time = new DateTime.from_timeval_local(t);
@@ -327,12 +324,12 @@ public class FeedReader.feedbinAPI : Object {
 		gen.set_root(root);
 		string json = gen.to_data(null);
 
-		logger.print(LogMessage.DEBUG, json);
+		Logger.debug(json);
 
 		var response = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
 
-		logger.print(LogMessage.DEBUG, "subscriptions/%s/update.json".printf(feedID));
-		logger.print(LogMessage.DEBUG, response);
+		Logger.debug("subscriptions/%s/update.json".printf(feedID));
+		Logger.debug(response);
 	}
 
 }

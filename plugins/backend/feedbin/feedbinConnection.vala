@@ -29,6 +29,7 @@ public class FeedReader.feedbinConnection {
 	public string postRequest(string path, string input)
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		session.authenticate.connect((msg, auth, retrying) => {
 			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
 		});
@@ -39,7 +40,7 @@ public class FeedReader.feedbinConnection {
 
 		message.request_headers.append("Content-Type", "application/json; charset=utf-8");
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;
@@ -48,6 +49,7 @@ public class FeedReader.feedbinConnection {
 	public string deleteRequest(string path, string input)
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		session.authenticate.connect((msg, auth, retrying) => {
 			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
 		});
@@ -58,7 +60,7 @@ public class FeedReader.feedbinConnection {
 
 		message.request_headers.append("Content-Type", "application/json; charset=utf-8");
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;
@@ -67,6 +69,7 @@ public class FeedReader.feedbinConnection {
 	public string getRequest(string path)
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		session.authenticate.connect((msg, auth, retrying) => {
 			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
 		});

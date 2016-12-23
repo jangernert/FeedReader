@@ -28,12 +28,10 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	public LoginPage()
 	{
 		m_engine = Peas.Engine.get_default();
-		m_engine.add_search_path(InstallPrefix + "/share/FeedReader/pluginsUI/", null);
+		m_engine.add_search_path(Constants.INSTALL_PREFIX + "/share/FeedReader/pluginsUI/", null);
 		m_engine.enable_loader("python3");
 
-		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface),
-						"m_logger", logger,
-						"m_installPrefix", InstallPrefix);
+		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface));
 
 		m_extensions.extension_added.connect((info, extension) => {
 			var plugin = (extension as LoginInterface);
@@ -113,7 +111,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	{
 		var serviceRow = (row as LoginRow);
 		var extension = serviceRow.getExtension();
-		logger.print(LogMessage.DEBUG, "serviceSelected: %s".printf(serviceRow.getServiceName()));
+		Logger.debug("serviceSelected: %s".printf(serviceRow.getServiceName()));
 
 		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 		window.getSimpleHeader().showBackButton(true);
@@ -178,7 +176,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	public void writeLoginData()
 	{
-		logger.print(LogMessage.DEBUG, "write login data");
+		Logger.debug("write login data");
 		var ext = getActiveExtension();
 		ext.writeData();
 		login(ext.getID());
@@ -186,19 +184,33 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	private void login(string id)
 	{
-		LoginResponse status = feedDaemon_interface.login(id);
-		logger.print(LogMessage.DEBUG, "LoginPage: status = " + status.to_string());
-		if(status == LoginResponse.SUCCESS)
+		try
 		{
-			var ext = getActiveExtension();
-			ext.writeFeed.connect((url, cat) => {
-				feedDaemon_interface.addFeed(url, cat, false, false);
-			});
-			ext.poastLoginAction();
-			submit_data();
-			return;
-		}
+			LoginResponse status = DBusConnection.get_default().login(id);
+			Logger.debug("LoginPage: status = " + status.to_string());
+			if(status == LoginResponse.SUCCESS)
+			{
+				var ext = getActiveExtension();
+				ext.writeFeed.connect((url, cat) => {
+					try
+					{
+						DBusConnection.get_default().addFeed(url, cat, false, false);
+					}
+					catch(GLib.Error e)
+					{
+						Logger.error("LoginPage.login: %s".printf(e.message));
+					}
+				});
+				ext.poastLoginAction();
+				submit_data();
+				return;
+			}
 
-		loginError(status);
+			loginError(status);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("LoginPage.login: %s".printf(e.message));
+		}
 	}
 }

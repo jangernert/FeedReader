@@ -1,0 +1,11 @@
+body: //div[class='article-body']
+
+strip_id_or_class: tags
+strip_id_or_class: ad-below-tags
+strip_id_or_class: comments-overview
+strip_id_or_class: widget
+strip_id_or_class: featured-jobs-template
+strip_id_or_class: article-river
+strip_id_or_class: article-comments
+
+test_url: http://variety.com/2016/film/news/jake-gyllenhaal-carey-mulligan-wildlife-1201869072/

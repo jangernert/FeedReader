@@ -35,7 +35,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void moveUP();
 	public signal void deselectRow();
 
-	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
+	public FeedRow(string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		m_level = level;
 		m_catID = catID;
@@ -107,38 +107,45 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			set_unread_count(m_unread_count);
 
-			if(m_feedID != FeedID.ALL.to_string()
-			&& !settings_general.get_boolean("only-feeds")
-			&& UtilsUI.canManipulateContent()
-			&& feedDaemon_interface.supportCategories())
+			try
 			{
-				const Gtk.TargetEntry[] provided_targets = {
-				    { "text/plain",     0, DragTarget.FEED }
-				};
+				if(m_feedID != FeedID.ALL.to_string()
+				&& !Settings.general().get_boolean("only-feeds")
+				&& UtilsUI.canManipulateContent()
+				&& DBusConnection.get_default().supportCategories())
+				{
+					const Gtk.TargetEntry[] provided_targets = {
+					    { "text/plain",     0, DragTarget.FEED }
+					};
 
-				Gtk.drag_source_set (
-		                this,
-		                Gdk.ModifierType.BUTTON1_MASK,
-		                provided_targets,
-		                Gdk.DragAction.MOVE
-		        );
+					Gtk.drag_source_set (
+			                this,
+			                Gdk.ModifierType.BUTTON1_MASK,
+			                provided_targets,
+			                Gdk.DragAction.MOVE
+			        );
 
-				this.drag_begin.connect(onDragBegin);
-		        this.drag_data_get.connect(onDragDataGet);
+					this.drag_begin.connect(onDragBegin);
+			        this.drag_data_get.connect(onDragDataGet);
+				}
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("FeedRow.constructor: %s".printf(e.message));
 			}
 		}
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		logger.print(LogMessage.DEBUG, "FeedRow: onDragBegin");
+		Logger.debug("FeedRow: onDragBegin");
 		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
 
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
-		logger.print(LogMessage.DEBUG, "FeedRow: onDragDataGet");
+		Logger.debug("FeedRow: onDragDataGet");
 
 		if(target_type == DragTarget.FEED)
 		{
@@ -148,14 +155,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	private Gtk.Image getFeedIcon()
 	{
-		try{
-			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
-			{
-				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, true);
-				return new Gtk.Image.from_pixbuf(tmp_icon);
-			}
-		}
-		catch(GLib.Error e){}
+		var icon = FavIconCache.get_default().getIcon(m_feedID);
+		if(icon != null)
+			return new Gtk.Image.from_pixbuf(icon);
 
 		var defaultIcon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		defaultIcon.get_style_context().add_class("fr-sidebar-symbolic");
@@ -171,12 +173,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		window.add(getFeedIcon());
 		window.show_all();
 		return window;
-	}
-
-	private string getIconPath()
-	{
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		return icon_path + m_feedID.replace("/", "_").replace(".", "_") + ".ico";
 	}
 
 	private bool onClick(Gdk.EventButton event)
@@ -207,7 +203,14 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 			var notification = content.showNotification(_("Feed \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
-				feedDaemon_interface.removeFeed(m_feedID);
+				try
+				{
+					DBusConnection.get_default().removeFeed(m_feedID);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("FeedRow.onClick: %s".printf(e.message));
+				}
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -234,9 +237,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		app.add_action(rename_action);
 		app.add_action(remove_action);
 
-		var feed = dataBase.read_feed(m_feedID);
+		var feed = dbUI.get_default().read_feed(m_feedID);
 		var catCount = feed.getCatIDs().length;
-		var cat = dataBase.read_category(m_catID);
+		var cat = dbUI.get_default().read_category(m_catID);
 
 		var menu = new GLib.Menu();
 		menu.append(_("Mark as read"), "markFeedAsRead");
@@ -270,14 +273,20 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
 			popRename.hide();
-			feedDaemon_interface.renameFeed(m_feedID, renameEntry.get_text());
+			try
+			{
+				DBusConnection.get_default().renameFeed(m_feedID, renameEntry.get_text());
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("FeedRow.showRenamePopover: %s".printf(e.message));
+			}
 		});
 
 		var renameButton = new Gtk.Button.with_label(_("rename"));
 		renameButton.get_style_context().add_class("suggested-action");
 		renameButton.clicked.connect(() => {
-			popRename.hide();
-			feedDaemon_interface.renameFeed(m_feedID, renameEntry.get_text());
+			renameEntry.activate();
 		});
 
 		var renameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
@@ -407,7 +416,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			this.show();
 		}
 
-		if(settings_state.get_boolean("no-animations"))
+		if(Settings.state().get_boolean("no-animations"))
 		{
 			if(!reveal)
 			{

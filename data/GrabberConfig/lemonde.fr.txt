@@ -10,8 +10,10 @@ date: //time[@itemprop='datePublished']/@datetime
 
 
 body: //div[@id='articleBody']
-#Shoot the insane "conjugaison.lemonde.fr" links :
-#strip: //a[contains(@class, 'conjug')]
+
+# Remove the insane "conjugaison.lemonde.fr" links:
+find_string: <a target='_blank' onclick='return false;' class='lien_interne conjug'
+replace_string: <input type='hidden' style='display:none;' 
 
 prune: no
 

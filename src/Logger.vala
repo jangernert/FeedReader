@@ -18,9 +18,51 @@ public class FeedReader.Logger : GLib.Object {
 	private int m_LogLevel;
 	private GLib.FileOutputStream m_stream;
 
-	public Logger(string filename)
+	private static Logger? m_logger = null;
+	private static string? m_fileName = null;
+
+	public static void init(string filename)
 	{
-		var logLevel = settings_general.get_enum("log-level");
+		m_fileName = filename;
+	}
+
+	private static Logger get_default()
+	{
+		string name = "uninitialized";
+
+		if(m_fileName != null)
+			name = m_fileName;
+
+		if(m_logger == null)
+			m_logger = new Logger(name);
+
+		return m_logger;
+	}
+
+	public static void error(string message)
+	{
+		get_default().print(LogMessage.ERROR, message);
+	}
+
+	public static void warning(string message)
+	{
+		get_default().print(LogMessage.WARNING, message);
+	}
+
+	public static void info(string message)
+	{
+		get_default().print(LogMessage.INFO, message);
+	}
+
+	public static void debug(string message)
+	{
+		get_default().print(LogMessage.DEBUG, message);
+	}
+
+
+	private Logger(string filename)
+	{
+		var logLevel = Settings.general().get_enum("log-level");
 		m_LogLevel = LogLevel.DEBUG;
 
 		string path = "%s/.local/share/feedreader/%s.log".printf(GLib.Environment.get_home_dir(), filename);
@@ -29,7 +71,15 @@ public class FeedReader.Logger : GLib.Object {
 			GLib.FileUtils.remove(path);
 
 		var file = GLib.File.new_for_path(path);
-		m_stream = file.create(FileCreateFlags.NONE);
+		try
+		{
+			m_stream = file.create(FileCreateFlags.NONE);
+		}
+		catch(GLib.Error e)
+		{
+			stderr.printf("error creating log-file: %s\n", e.message);
+		}
+
 
 		switch(logLevel)
 		{
@@ -53,8 +103,7 @@ public class FeedReader.Logger : GLib.Object {
 		m_LogLevel = logLevel;
 	}
 
-
-	public void print(LogMessage level, string message)
+	private void print(LogMessage level, string message)
 	{
 		switch(m_LogLevel)
 		{
@@ -80,41 +129,31 @@ public class FeedReader.Logger : GLib.Object {
 			case LogMessage.ERROR:
 				set_color(ConsoleColor.RED);
 				stdout.printf("[ ERROR ] ");
-				m_stream.write("[ ERROR ] ".data);
+				write("[ ERROR ] ");
 				break;
 
 			case LogMessage.WARNING:
 				set_color(ConsoleColor.YELLOW);
 				stdout.printf("[WARNING] ");
-				m_stream.write("[WARNING] ".data);
+				write("[WARNING] ");
 				break;
 
 			case LogMessage.INFO:
 				set_color(ConsoleColor.GREEN);
 				stdout.printf("[ INFO  ] ");
-				m_stream.write("[ INFO  ] ".data);
+				write("[ INFO  ] ");
 				break;
 
 			case LogMessage.DEBUG:
 				set_color(ConsoleColor.BLUE);
 				stdout.printf("[ DEBUG ] ");
-				m_stream.write("[ DEBUG ] ".data);
+				write("[ DEBUG ] ");
 				break;
 		}
 
 		reset_color();
 		stdout.printf("%s\n", message);
-		try
-		{
-			m_stream.write("%s\n".printf(message).data);
-		}
-		catch(GLib.IOError e)
-		{
-			set_color(ConsoleColor.RED);
-			stdout.printf("[ ERROR ] ");
-			stdout.printf("%s\n", e.message);
-			reset_color();
-		}
+		write("%s\n".printf(message));
 	}
 
 	private void reset_color()
@@ -126,6 +165,20 @@ public class FeedReader.Logger : GLib.Object {
 	{
 		var color_code = color + 30 + 60;
 		stdout.printf("\x001b[%dm", color_code);
+	}
+
+	private void write(string text)
+	{
+		try
+		{
+			m_stream.write(text.data);
+		}
+		catch(GLib.Error e)
+		{
+			stderr.printf("[ ERROR ] error writing log to file: %s\n", e.message);
+			stderr.printf("[ ERROR ] %s\n", text);
+			reset_color();
+		}
 	}
 
 }

@@ -20,7 +20,6 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 	private InoReaderUtils m_utils;
 
 	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 
 	public void init()
 	{
@@ -67,10 +66,10 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 	{
 		if(redirectURL.has_prefix(InoReaderSecret.apiRedirectUri))
 		{
-			logger.print(LogMessage.DEBUG, redirectURL);
+			Logger.debug(redirectURL);
 			int csrf_start = redirectURL.index_of("state=")+6;
 			string csrf_code = redirectURL.substring(csrf_start);
-			logger.print(LogMessage.DEBUG, "InoReaderLoginWidget: csrf_code: " + csrf_code);
+			Logger.debug("InoReaderLoginWidget: csrf_code: " + csrf_code);
 
 			if(csrf_code == InoReaderSecret.csrf_protection)
 			{
@@ -78,16 +77,16 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 				int end = redirectURL.index_of("&", start);
 				string code = redirectURL.substring(start, end-start);
 				m_utils.setApiCode(code);
-				logger.print(LogMessage.DEBUG, "InoReaderLoginWidget: set inoreader-api-code: " + code);
+				Logger.debug("InoReaderLoginWidget: set inoreader-api-code: " + code);
 				GLib.Thread.usleep(500000);
 				return true;
 			}
 
-			logger.print(LogMessage.ERROR, "InoReaderLoginWidget: csrf_code mismatch");
+			Logger.error("InoReaderLoginWidget: csrf_code mismatch");
 		}
 		else
 		{
-			logger.print(LogMessage.WARNING, "InoReaderLoginWidget: wrong redirect_uri: " + redirectURL);
+			Logger.warning("InoReaderLoginWidget: wrong redirect_uri: " + redirectURL);
 		}
 
 		return false;

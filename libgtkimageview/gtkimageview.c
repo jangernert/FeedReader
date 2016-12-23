@@ -1117,7 +1117,7 @@ gtk_image_view_draw (GtkWidget *widget, cairo_t *ct)
                             priv->image_surface,
                             draw_x / scale ,
                             draw_y / scale);
-  cairo_pattern_set_filter (cairo_get_source (ct), CAIRO_FILTER_GOOD);
+  cairo_pattern_set_filter (cairo_get_source (ct), CAIRO_FILTER_BILINEAR);
   cairo_fill (ct);
 
   return GDK_EVENT_PROPAGATE;

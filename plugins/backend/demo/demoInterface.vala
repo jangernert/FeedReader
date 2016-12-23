@@ -7,27 +7,6 @@
 public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface {
 
 	//--------------------------------------------------------------------------------------
-	// The dataBase object. Use it to gather information like current unread counts,
-	// specific tags or if an article already exists.
-	// It can also be used to write the content directly from the plugin.
-	// But this is not necessary or recommended most of the time.
-	//--------------------------------------------------------------------------------------
-	public dbDaemon m_dataBase { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
-	// The logger is used to output debug-information, warnings and errors to the
-	// command line. All messages are also written to a log-file to make it easier
-	// to trace back bugs when the daemon was not started from the shell.
-	// Use like:
-	// logger.print(LogMessage.DEBUG, "message");
-	// Options are:
-	// DEBUG, WARNING, INFO, ERROR
-	//--------------------------------------------------------------------------------------
-	public Logger m_logger { get; construct set; }
-
-
-	//--------------------------------------------------------------------------------------
 	// This method gets executed right after the plugin is loaded. Do everything
 	// you need to set up the plugin here.
 	//--------------------------------------------------------------------------------------
@@ -460,7 +439,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// "isTagID":	false if "feedID" is a feed-ID, true if "feedID" is a tag-ID
 	//
 	// It is recommended after getting the articles from the server to use the signal
-	// "writeArticlesInChunks(Gee.LinkedList<article> articles, int chunksize)"
+	// "writeArticles(Gee.LinkedList<article> articles)"
 	// to automatically process them in the content-grabber, write them to the
 	// data-base and send all the signals to the UI to update accordingly.
 	// But if the API suggests a different approach you can everything on your

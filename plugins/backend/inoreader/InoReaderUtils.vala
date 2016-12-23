@@ -108,10 +108,10 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 	public bool accessTokenValid()
 	{
 		var now = new DateTime.now_local();
-		
+
 		if((int)now.to_unix() >  getExpiration())
 		{
-			logger.print(LogMessage.WARNING, "InoReaderUtils: access token expired");
+			Logger.warning("InoReaderUtils: access token expired");
 			return false;
 		}
 
@@ -127,7 +127,7 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
@@ -141,6 +141,7 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
@@ -152,11 +153,11 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

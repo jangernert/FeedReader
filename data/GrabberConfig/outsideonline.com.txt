@@ -1,0 +1,6 @@
+body: //div[@class="article__column--right"]
+strip_id_or_class: block-recirc
+strip_id_or_class: social
+strip: //a[@data-pin-custom="true"]
+
+test_url: http://www.outsideonline.com/2108066/emerald-citys-velo-thieves-have-problem-bike-batman

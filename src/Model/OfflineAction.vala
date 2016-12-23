@@ -61,16 +61,12 @@ public class FeedReader.OfflineAction : GLib.Object {
 		{
 			case OfflineActions.MARK_READ:
 				return OfflineActions.MARK_UNREAD;
-				break;
 			case OfflineActions.MARK_UNREAD:
 				return OfflineActions.MARK_READ;
-				break;
 			case OfflineActions.MARK_STARRED:
 				return OfflineActions.MARK_UNSTARRED;
-				break;
 			case OfflineActions.MARK_UNSTARRED:
 				return OfflineActions.MARK_STARRED;
-				break;
 		}
 
 		return OfflineActions.NONE;
@@ -78,6 +74,6 @@ public class FeedReader.OfflineAction : GLib.Object {
 
 	public void print()
 	{
-		logger.print(LogMessage.DEBUG, "OfflineAction: %s %s".printf(m_action.to_string(), m_id));
+		Logger.debug("OfflineAction: %s %s".printf(m_action.to_string(), m_id));
 	}
 }

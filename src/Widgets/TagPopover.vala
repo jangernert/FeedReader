@@ -52,7 +52,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		var tag_label = new Gtk.Label(_("Tags:"));
 		tag_label.get_style_context().add_class("h4");
 		tag_label.set_alignment(0, 0.5f);
-		var m_viewport = new Gtk.Viewport(null, null);
+		m_viewport = new Gtk.Viewport(null, null);
 		m_viewport.get_style_context().add_class("servicebox");
 		m_viewport.add(m_list);
 		m_viewport.margin_bottom = 10;
@@ -101,7 +101,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		m_complete.set_text_column(0);
 		Gtk.TreeIter iter;
 
-		var tags = dataBase.read_tags();
+		var tags = dbUI.get_default().read_tags();
 
 		foreach(tag Tag in tags)
 		{
@@ -124,7 +124,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 	private void setupEntry()
 	{
-		m_entry = new Gtk.Entry ();
+		m_entry = new Gtk.Entry();
 		m_entry.margin_top = 0;
 		m_entry.set_placeholder_text(_("add Tag"));
 		m_entry.set_icon_from_icon_name(Gtk.EntryIconPosition.SECONDARY, "edit-clear");
@@ -145,7 +145,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			{
 				if(str == Tag.getTitle())
 				{
-					logger.print(LogMessage.DEBUG, "TagPopover: article already tagged");
+					Logger.debug("TagPopover: article already tagged");
 					m_entry.set_text("");
 					return;
 				}
@@ -155,22 +155,29 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			{
 				if(str == Tag.getTitle())
 				{
-					logger.print(LogMessage.DEBUG, "TagPopover: tag available");
+					Logger.debug("TagPopover: tag available");
 					tagID = Tag.getTagID();
 					available = true;
 					break;
 				}
 			}
 
-			if(!available)
+			try
 			{
-				tagID = feedDaemon_interface.createTag(str);
-				logger.print(LogMessage.DEBUG, "TagPopover: " + str + " created with id " + tagID);
+				if(!available)
+				{
+					tagID = DBusConnection.get_default().createTag(str);
+					Logger.debug("TagPopover: " + str + " created with id " + tagID);
+				}
+				DBusConnection.get_default().tagArticle(getActiveArticleID(), tagID, true);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("TagPopover.setupEntry: %s".printf(e.message));
 			}
 
-			feedDaemon_interface.tagArticle(getActiveArticleID(), tagID, true);
 
-			var new_tag = dataBase.read_tag(tagID);
+			var new_tag = dbUI.get_default().read_tag(tagID);
 			var row = new TagPopoverRow(new_tag);
 			row.remove_tag.connect(removeTag);
 			m_list.add(row);
@@ -183,8 +190,15 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 	private void removeTag(TagPopoverRow row)
 	{
-		feedDaemon_interface.tagArticle(getActiveArticleID(), row.getTagID(), false);
-		m_list.remove(row);
+		try
+		{
+			DBusConnection.get_default().tagArticle(getActiveArticleID(), row.getTagID(), false);
+			m_list.remove(row);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("TagPopover.removeTag: %s".printf(e.message));
+		}
 
 		foreach(tag Tag in m_tags)
 		{

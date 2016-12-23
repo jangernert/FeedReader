@@ -31,7 +31,9 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 		label.set_alignment(0.0f, 0.5f);
 		label.get_style_context().add_class("h3");
 
-		var infoButton = new Gtk.Button.from_icon_name("fr-backend-info", Gtk.IconSize.LARGE_TOOLBAR);
+		var infoIcon = new Gtk.Image.from_icon_name("feed-backend-info", Gtk.IconSize.LARGE_TOOLBAR);
+		var infoButton = new Gtk.Button();
+		infoButton.set_image(infoIcon);
 		infoButton.set_relief(Gtk.ReliefStyle.NONE);
 		infoButton.set_focus_on_click(false);
 		infoButton.valign = Gtk.Align.CENTER;

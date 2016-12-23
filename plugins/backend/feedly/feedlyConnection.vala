@@ -27,6 +27,7 @@ public class FeedReader.FeedlyConnection {
 	public LoginResponse getToken()
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 		string message_string = "code=" + m_utils.getApiCode()
 								+ "&client_id=" + FeedlySecret.apiClientId
@@ -51,10 +52,10 @@ public class FeedReader.FeedlyConnection {
 				string refreshToken = root.get_string_member("refresh_token");
 				int64 now = (new DateTime.now_local()).to_unix();
 
-				logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
-				logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
-				logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
-				logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+				Logger.debug("access-token: " + accessToken);
+				Logger.debug("expires in: " + expires.to_string());
+				Logger.debug("refresh-token: " + refreshToken);
+				Logger.debug("now: " + now.to_string());
 
 				m_utils.setAccessToken(accessToken);
 				m_utils.setExpiration((int)(now + expires));
@@ -63,13 +64,13 @@ public class FeedReader.FeedlyConnection {
 			}
 			else if(root.has_member("errorCode"))
 			{
-				logger.print(LogMessage.ERROR, "Feedly: getToken response - " + root.get_string_member("errorMessage"));
+				Logger.error("Feedly: getToken response - " + root.get_string_member("errorMessage"));
 				return LoginResponse.UNKNOWN_ERROR;
 			}
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "Could not load response to Message from feedly - %s".printf(e.message));
+			Logger.error("Could not load response to Message from feedly - %s".printf(e.message));
 		}
 
 		return LoginResponse.UNKNOWN_ERROR;
@@ -79,6 +80,7 @@ public class FeedReader.FeedlyConnection {
 	public LoginResponse refreshToken()
 	{
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -105,10 +107,10 @@ public class FeedReader.FeedlyConnection {
 				string refreshToken = root.get_string_member("refresh_token");
 				int64 now = (new DateTime.now_local()).to_unix();
 
-				logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
-				logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
-				logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
-				logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+				Logger.debug("access-token: " + accessToken);
+				Logger.debug("expires in: " + expires.to_string());
+				Logger.debug("refresh-token: " + refreshToken);
+				Logger.debug("now: " + now.to_string());
 
 				m_utils.setAccessToken(accessToken);
 				m_utils.setExpiration((int)(now + expires));
@@ -117,13 +119,13 @@ public class FeedReader.FeedlyConnection {
 			}
 			else if(root.has_member("errorCode"))
 			{
-				logger.print(LogMessage.ERROR, "Feedly: refreshToken response - " + root.get_string_member("errorMessage"));
+				Logger.error("Feedly: refreshToken response - " + root.get_string_member("errorMessage"));
 				return LoginResponse.UNKNOWN_ERROR;
 			}
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "Could not load response to Message from feedly - %s".printf(e.message));
+			Logger.error("Could not load response to Message from feedly - %s".printf(e.message));
 		}
 
 		return LoginResponse.UNKNOWN_ERROR;
@@ -141,6 +143,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -153,7 +156,7 @@ public class FeedReader.FeedlyConnection {
 		size_t length;
 		string json;
 		json = gen.to_data(out length);
-		message.request_body.append(Soup.MemoryUse.COPY, json.data);
+		message.request_body.append_take(json.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;
@@ -165,6 +168,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -177,10 +181,10 @@ public class FeedReader.FeedlyConnection {
 		size_t length;
 		string json;
 		json = gen.to_data(out length);
-		logger.print(LogMessage.DEBUG, json);
-		message.request_body.append(Soup.MemoryUse.COPY, json.data);
+		Logger.debug(json);
+		message.request_body.append_take(json.data);
 		session.send_message(message);
-		logger.print(LogMessage.DEBUG, "Status Code: " + message.status_code.to_string());
+		Logger.debug("Status Code: " + message.status_code.to_string());
 		return (string)message.response_body.flatten().data;
 	}
 
@@ -190,6 +194,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -198,7 +203,7 @@ public class FeedReader.FeedlyConnection {
 		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
 		message.request_headers.append("Content-Type", type);
 
-		message.request_body.append(Soup.MemoryUse.COPY, input.data);
+		message.request_body.append_take(input.data);
 		session.send_message(message);
 
 		return (string)message.response_body.flatten().data;
@@ -215,6 +220,7 @@ public class FeedReader.FeedlyConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
 

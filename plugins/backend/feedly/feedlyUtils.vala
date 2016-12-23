@@ -91,7 +91,7 @@ public class FeedReader.FeedlyUtils : Object {
 
 		if((int)now.to_unix() >  getExpiration())
 		{
-			logger.print(LogMessage.WARNING, "FeedlyUtils: access token expired");
+			Logger.warning("FeedlyUtils: access token expired");
 			return false;
 		}
 
@@ -114,7 +114,8 @@ public class FeedReader.FeedlyUtils : Object {
 			if(settingsTweaks.get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
-			var session = new Soup.Session ();
+			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{
@@ -123,11 +124,11 @@ public class FeedReader.FeedlyUtils : Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 		// file already exists

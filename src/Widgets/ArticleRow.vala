@@ -16,20 +16,18 @@
 public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	private article m_article;
-	private Gtk.Box m_box;
 	private Gtk.Label m_label;
 	private Gtk.Revealer m_revealer;
-	private Gtk.Image m_icon;
-	private Gtk.EventBox m_row_eventbox;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private Gtk.Stack m_unread_stack;
 	private Gtk.Stack m_marked_stack;
-	private bool m_updated;
-	private bool m_hovering_unread;
-	private bool m_hovering_marked;
-	private bool m_hovering_row;
-	public signal void ArticleStateChanged(ArticleStatus status);
+	private bool m_updated = false;
+	private bool m_hovering_unread = false;
+	private bool m_hovering_marked = false;
+	private bool m_hovering_row = false;
+	private bool m_populated = false;
+	public signal void rowStateChanged(ArticleStatus status);
 	public signal void child_revealed();
 	public signal void highlight_row(string articleID);
 	public signal void revert_highlight();
@@ -37,22 +35,28 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public articleRow(article Article)
 	{
 		m_article = Article;
-		m_hovering_unread = false;
-		m_hovering_marked = false;
-		m_hovering_row = false;
-		m_updated = false;
+
+		m_revealer = new Gtk.Revealer();
+		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+		m_revealer.set_reveal_child(false);
+		m_revealer.notify["child_revealed"].connect(() => {
+			child_revealed();
+		});
+		this.set_size_request(0, 100);
+		this.add(m_revealer);
+		this.show_all();
+
+		GLib.Idle.add(populate);
+	}
+
+	private bool populate()
+	{
 		m_unread_stack = new Gtk.Stack();
 		m_marked_stack = new Gtk.Stack();
 		m_unread_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_marked_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_unread_stack.set_transition_duration(50);
 		m_marked_stack.set_transition_duration(50);
-
-		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		m_box.set_size_request(0, 100);
-		m_icon = getFeedIcon();
-
-
 
 		m_label = new Gtk.Label(m_article.getTitle());
 		m_label.set_line_wrap_mode(Pango.WrapMode.WORD);
@@ -113,18 +117,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_marked_eventbox.leave_notify_event.connect(markedIconLeave);
 		m_marked_eventbox.button_press_event.connect(markedIconClicked);
 
-
-		m_row_eventbox = new Gtk.EventBox();
-		m_row_eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
-		m_row_eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		m_row_eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		m_row_eventbox.enter_notify_event.connect(rowEnter);
-		m_row_eventbox.leave_notify_event.connect(rowLeave);
-		m_row_eventbox.button_press_event.connect(rowClick);
-
-
-
-		icon_box.pack_start(m_icon, true, true, 0);
+		icon_box.pack_start(getFeedIcon(), true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
 		icon_box.pack_end(m_marked_eventbox, false, false, 0);
 
@@ -152,7 +145,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		body_label.set_line_wrap(true);
 		body_label.set_lines(2);
 
-		var feedLabel = new Gtk.Label(dataBase.getFeedName(m_article.getFeedID()));
+		var feedLabel = new Gtk.Label(dbUI.get_default().getFeedName(m_article.getFeedID()));
 		feedLabel.get_style_context().add_class("preview");
 		feedLabel.opacity = 0.6;
 		feedLabel.set_alignment(0.0f, 0.5f);
@@ -160,7 +153,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		dateLabel.get_style_context().add_class("preview");
 		dateLabel.opacity = 0.6;
 		dateLabel.set_alignment(1.0f, 0.5f);
-		var date_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		var date_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);
 		date_box.pack_start(feedLabel, true, true, 0);
 		date_box.pack_end(dateLabel, true, true, 0);
 
@@ -173,50 +166,60 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		text_box.pack_start(m_label, true, true, 0);
 		text_box.pack_end(body_label, true, true, 0);
 
-		m_box.pack_start(icon_box, false, false, 8);
-		m_box.pack_start(text_box, true, true, 0);
+		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		box.pack_start(icon_box, false, false, 8);
+		box.pack_start(text_box, true, true, 0);
 
-		m_revealer = new Gtk.Revealer();
-		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-		m_revealer.add(m_box);
-		m_revealer.set_reveal_child(false);
-		m_revealer.notify["child_revealed"].connect(() => {
-			child_revealed();
-		});
-		m_row_eventbox.add(m_revealer);
-		this.add(m_row_eventbox);
-		this.show_all();
+		var eventbox = new Gtk.EventBox();
+		eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		eventbox.enter_notify_event.connect(rowEnter);
+		eventbox.leave_notify_event.connect(rowLeave);
+		eventbox.button_press_event.connect(rowClick);
+		eventbox.add(box);
+		eventbox.show_all();
 
-		// Make the this widget a DnD source.
-
-		if(!settings_general.get_boolean("only-feeds")
-		&& feedDaemon_interface.isOnline()
-		&& feedDaemon_interface.supportTags())
+		try
 		{
-			const Gtk.TargetEntry[] provided_targets = {
-			    { "STRING",     0, DragTarget.TAG }
-			};
+			// Make the this widget a DnD source.
+			if(!Settings.general().get_boolean("only-feeds")
+			&& DBusConnection.get_default().isOnline()
+			&& DBusConnection.get_default().supportTags())
+			{
+				const Gtk.TargetEntry[] provided_targets = {
+				    { "STRING",     0, DragTarget.TAG }
+				};
 
-			Gtk.drag_source_set (
-	                this,
-	                Gdk.ModifierType.BUTTON1_MASK,
-	                provided_targets,
-	                Gdk.DragAction.COPY
-	        );
+				Gtk.drag_source_set (
+		                this,
+		                Gdk.ModifierType.BUTTON1_MASK,
+		                provided_targets,
+		                Gdk.DragAction.COPY
+		        );
 
-			this.drag_begin.connect(onDragBegin);
-	        this.drag_data_get.connect(onDragDataGet);
-	        this.drag_end.connect(onDragEnd);
-			this.drag_failed.connect(onDragFail);
+				this.drag_begin.connect(onDragBegin);
+		        this.drag_data_get.connect(onDragDataGet);
+		        this.drag_end.connect(onDragEnd);
+				this.drag_failed.connect(onDragFail);
+			}
 		}
+		catch(GLib.Error e)
+		{
+			Logger.error("ArticleRow.constructor: %s".printf(e.message));
+		}
+
+		m_revealer.add(eventbox);
+		m_populated = true;
+		return false;
 	}
 
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleRow: onDragBegin");
+		Logger.debug("ArticleRow: onDragBegin");
 		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
 		highlight_row(m_article.getArticleID());
-		if(dataBase.read_tags().is_empty)
+		if(dbUI.get_default().read_tags().is_empty)
 		{
 			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 			var feedlist = window.getContent().getFeedList();
@@ -226,7 +229,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleRow: onDragDataGet");
+		Logger.debug("ArticleRow: onDragDataGet");
 
 		if(target_type == DragTarget.TAG)
 		{
@@ -240,14 +243,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleRow: onDragEnd");
+		Logger.debug("ArticleRow: onDragEnd");
 		revert_highlight();
 	}
 
 	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
 	{
-		logger.print(LogMessage.DEBUG, "ArticleRow: drag failed - " + result.to_string());
-		if(dataBase.read_tags().is_empty)
+		Logger.debug("ArticleRow: drag failed - " + result.to_string());
+		if(dbUI.get_default().read_tags().is_empty)
 		{
 			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
 			var feedlist = window.getContent().getFeedList();
@@ -258,14 +261,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	private Gtk.Image getFeedIcon()
 	{
-		try{
-			if(FileUtils.test(getIconPath(), GLib.FileTest.EXISTS))
-			{
-				var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(getIconPath(), 24, 24, true);
-				return new Gtk.Image.from_pixbuf(tmp_icon);
-			}
-		}
-		catch(GLib.Error e){}
+		var icon = FavIconCache.get_default().getIcon(m_article.getFeedID());
+		if(icon != null)
+			return new Gtk.Image.from_pixbuf(icon);
 
 		return new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 	}
@@ -280,13 +278,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		window.add(getFeedIcon());
 		window.show_all();
 		return window;
-	}
-
-
-	private string getIconPath()
-	{
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		return icon_path + m_article.getFeedID().replace("/", "_").replace(".", "_") + ".ico";
 	}
 
 
@@ -364,7 +355,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			Gtk.show_uri(Gdk.Screen.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
 		}
 		catch(GLib.Error e){
-			logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+			Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 		}
 
 		return true;
@@ -381,7 +372,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				return false;
 		}
 		toggleUnread();
-		ArticleStateChanged(m_article.getUnread());
+		rowStateChanged(m_article.getUnread());
 		return true;
 	}
 
@@ -415,8 +406,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-
-		feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getUnread());
+		try
+		{
+			DBusConnection.get_default().changeArticle(m_article.getArticleID(), m_article.getUnread());
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("ArticleRow.toggleUnread: %s".printf(e.message));
+		}
 		show_all();
 		return unread;
 	}
@@ -426,23 +423,26 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		if(m_article.getUnread() != unread)
 		{
 			m_article.setUnread(unread);
-			if(m_article.getUnread() == ArticleStatus.UNREAD)
+			if(m_populated)
 			{
-				m_label.get_style_context().remove_class("headline-read");
-				m_label.get_style_context().add_class("headline-unread");
-				m_unread_stack.set_visible_child_name("unread");
-			}
-			else
-			{
-				m_label.get_style_context().remove_class("headline-unread");
-				m_label.get_style_context().add_class("headline-read");
-				if(m_hovering_row)
+				if(m_article.getUnread() == ArticleStatus.UNREAD)
 				{
-					m_unread_stack.set_visible_child_name("read");
+					m_label.get_style_context().remove_class("headline-read");
+					m_label.get_style_context().add_class("headline-unread");
+					m_unread_stack.set_visible_child_name("unread");
 				}
 				else
 				{
-					m_unread_stack.set_visible_child_name("empty");
+					m_label.get_style_context().remove_class("headline-unread");
+					m_label.get_style_context().add_class("headline-read");
+					if(m_hovering_row)
+					{
+						m_unread_stack.set_visible_child_name("read");
+					}
+					else
+					{
+						m_unread_stack.set_visible_child_name("empty");
+					}
 				}
 			}
 		}
@@ -462,7 +462,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	}
 
 
-	public bool unreadIconLeave()
+	private bool unreadIconLeave()
 	{
 		m_hovering_unread = false;
 		if(m_article.getUnread() == ArticleStatus.READ){
@@ -475,14 +475,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-
-	public void removeUnreadIcon()
-	{
-		m_unread_stack.set_visible_child_name("read");
-		this.show_all();
-	}
-
-
 	private bool markedIconClicked(Gdk.EventButton event)
 	{
 		switch(event.type)
@@ -493,7 +485,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				return false;
 		}
 		toggleMarked();
-		ArticleStateChanged(m_article.getMarked());
+		rowStateChanged(m_article.getMarked());
 		return true;
 	}
 
@@ -528,7 +520,14 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-		feedDaemon_interface.changeArticle(m_article.getArticleID(), m_article.getMarked());
+		try
+		{
+			DBusConnection.get_default().changeArticle(m_article.getArticleID(), m_article.getMarked());
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("ArticleRow.toggleMarked: %s".printf(e.message));
+		}
 		this.show_all();
 		return marked;
 	}

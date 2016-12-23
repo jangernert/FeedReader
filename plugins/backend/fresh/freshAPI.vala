@@ -13,9 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
-
 public class FeedReader.freshAPI : Object {
 
 	private freshConnection m_connection;
@@ -29,7 +26,7 @@ public class FeedReader.freshAPI : Object {
 
 	public LoginResponse login()
 	{
-		logger.print(LogMessage.DEBUG, "fresh backend: login");
+		Logger.debug("fresh backend: login");
 
 		if(!Utils.ping(m_utils.getUnmodifiedURL()))
 			return LoginResponse.NO_CONNECTION;
@@ -51,8 +48,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("subscriptions");
@@ -118,8 +115,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("tags");
@@ -160,8 +157,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch (Error e)
 		{
-			logger.print(LogMessage.ERROR, "getTagList: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTagList: Could not load message response");
+			Logger.error(e.message);
 		}
 		Json.Array array = parser.get_root().get_object().get_array_member("unreadcounts");
 
@@ -188,28 +185,30 @@ public class FeedReader.freshAPI : Object {
 								)
 	{
 		var now = new DateTime.now_local();
-		string request = "reader/api/0/stream/contents";
+		string path = "reader/api/0/stream/contents";
 
 		if(feedID != null)
-			request += "/" + feedID;
+			path += "/" + feedID;
 		else if(labelID != null)
-			request += "/" + labelID;
+			path += "/" + labelID;
 
 
-		request += "?output=json";
+		var msg = new freshMessage();
+		msg.add("output", "json");
+		msg.add("r", order);
+		msg.add("n", count.to_string());
+		msg.add("client", "FeedReader");
+		msg.add("ck", now.to_unix().to_string());
 
 		if(exclude != null)
-			request += "&xt=" + exclude;
+			msg.add("xt", exclude);
 
-		request += "&r=" + order;
-		request += "&n=" + count.to_string();
-		request += "&client=FeedReader";
-		request += "&ck=" + now.to_unix().to_string();
-		request += "&c=" + checkpoint;
+		if(checkpoint != null)
+			msg.add("c", checkpoint);
 
-		logger.print(LogMessage.DEBUG, "getStreamContents: %s".printf(request));
+		Logger.debug("getStreamContents: %s".printf(msg.get()));
 
-		string response = m_connection.getRequest(request);
+		string response = m_connection.getRequest(path + "?" + msg.get());
 
 		var parser = new Json.Parser();
 		try
@@ -218,8 +217,8 @@ public class FeedReader.freshAPI : Object {
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "getStreamContents: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getStreamContents: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -256,13 +255,23 @@ public class FeedReader.freshAPI : Object {
 				for(int j = 0; j < mediaCount; ++j)
 				{
 					var attachment = attachments.get_object_element(j);
-					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
+					if(attachment.has_member("type"))
 					{
-						mediaString = mediaString + attachment.get_string_member("href") + ",";
+						if(attachment.get_string_member("type").contains("audio")
+						|| attachment.get_string_member("type").contains("video"))
+						{
+							mediaString = mediaString + attachment.get_string_member("href") + ",";
+						}
 					}
 				}
 			}
+
+			string? author = null;
+			if(object.has_member("author"))
+			{
+				author = (object.get_string_member("author") == "") ? null : object.get_string_member("author");
+			}
+
 
 			articles.add(new article(
 									id,
@@ -273,7 +282,7 @@ public class FeedReader.freshAPI : Object {
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
 									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+									author,
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									"",
@@ -294,34 +303,109 @@ public class FeedReader.freshAPI : Object {
 		string path = "reader/api/0/edit-tag";
 		string[] arrayID = articleIDs.split(",");
 
-		string request = "T=" + m_connection.getToken();
+		var msg = new freshMessage();
+		msg.add("T", m_connection.getToken());
 
 		if(addTag != null)
-		{
-			request += "&a=" + addTag;
-		}
+			msg.add("a", addTag);
 
 		if(removeTag != null)
-		{
-			request += "&r=" + removeTag;
-		}
+			msg.add("r", removeTag);
 
 		foreach(string id in arrayID)
 		{
-			request += "&i=-/" + id;
+			msg.add("r", "-/" + id);
 		}
 
-		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+		string response = m_connection.postRequest(path,  msg.get(), "application/x-www-form-urlencoded");
+
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
 	}
 
 	public void markAllAsRead(string streamID)
 	{
 		string path = "reader/api/0/mark-all-as-read";
 
-		string request = "T=" + m_connection.getToken();
-		request += "&s=" + streamID;
+		var msg = new freshMessage();
+		msg.add("T", m_connection.getToken());
+		msg.add("s", streamID);
+		msg.add("ts", dbDaemon.get_default().getNewestArticle());
 
-		string response = m_connection.postRequest(path, request, "application/x-www-form-urlencoded");
+		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
+
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
+	}
+
+	public string editStream(
+							string action,
+							string[]? streamID = null,
+							string? title = null,
+							string? add = null,
+							string? remove = null
+						)
+	{
+		string path = "reader/api/0/subscription/edit";
+
+		var msg = new freshMessage();
+		msg.add("T", m_connection.getToken());
+		msg.add("ac", action);
+
+		if(streamID != null)
+		{
+			foreach(string s in streamID)
+				msg.add("s", s);
+		}
+
+		if(title != null)
+			msg.add("t", title);
+
+		if(add != null)
+			msg.add("a", add);
+
+		if(remove != null)
+			msg.add("r", remove);
+
+		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
+
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
+		return response;
+	}
+
+	public string composeTagID(string title)
+	{
+		return "user/-/label/%s".printf(title);
+	}
+
+	public void renameTag(string tagID, string title)
+	{
+		string path = "reader/api/0/rename-tag";
+
+		var msg = new freshMessage();
+		msg.add("T", m_connection.getToken());
+		msg.add("s", tagID);
+		msg.add("dest", composeTagID(title));
+
+		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
+
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
+	}
+
+	public void deleteTag(string tagID)
+	{
+		string path = "reader/api/0/disable-tag";
+
+		var msg = new freshMessage();
+		msg.add("T", m_connection.getToken());
+		msg.add("s", tagID);
+
+		string response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
+
+		Logger.debug(path + " " + msg.get());
+		Logger.debug(response);
 	}
 
 }

@@ -28,11 +28,11 @@ CUSTOM_VAPIS
     ${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
 )
 
-add_library(${NAME} SHARED ${VALA_C})
+GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${NAME}.gresource.xml)
+
+add_library(${NAME} SHARED ${VALA_C} ${GRESOURCES})
 add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
 
 install(TARGETS ${NAME} DESTINATION ${PKGDATADIR}/pluginsShare)
 install(FILES ${NAME}.plugin DESTINATION ${PKGDATADIR}/pluginsShare)
-install (DIRECTORY icons/hicolor/ DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)
-install(CODE "execute_process (COMMAND gtk-update-icon-cache -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 

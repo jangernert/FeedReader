@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+	<gresource prefix="/org/gnome/FeedReader">
+		<file preprocess="xml-stripblanks">icons/64x64/places/feed-service-feedly.svg</file>
+		<file preprocess="xml-stripblanks">icons/64x64/places/feed-service-feedly-symbolic.svg</file>
+	</gresource>
+</gresources>

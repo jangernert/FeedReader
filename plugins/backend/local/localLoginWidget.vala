@@ -18,7 +18,6 @@ FeedReader.Logger logger;
 public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 	private Gtk.ListBox m_feedlist;
 
 	public void init()
@@ -80,8 +79,12 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 		try
 		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/recommendedFeeds.json");
+			file.load_contents(null, out contents, null);
+
 			var parser = new Json.Parser();
-			parser.load_from_file(m_installPrefix + "/share/FeedReader/recommendedFeeds.json");
+			parser.load_from_data((string)contents);
 
 			Json.Array array = parser.get_root().get_array();
 
@@ -102,8 +105,8 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "localLoginWidget: loading json filed");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("localLoginWidget: loading json filed");
+			Logger.error(e.message);
 		}
 
 		var scroll = new Gtk.ScrolledWindow(null, null);
@@ -180,7 +183,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 		var label = new Gtk.Label(cat1);
 		label.get_style_context().add_class("bold");
-		label.margin_top = 15;
+		label.margin_top = 20;
 		label.margin_bottom = 5;
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);

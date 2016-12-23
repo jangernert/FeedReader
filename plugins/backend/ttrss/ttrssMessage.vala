@@ -29,6 +29,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		m_utils = new ttrssUtils();
 		m_message_string = new GLib.StringBuilder();
 		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
 		m_session.ssl_strict = false;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
@@ -37,7 +38,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		m_session.authenticate.connect((msg, auth, retrying) => {
 			if(m_utils.getHtaccessUser() == "")
 			{
-				logger.print(LogMessage.ERROR, "TTRSS Session: need Authentication");
+				Logger.error("TTRSS Session: need Authentication");
 			}
 			else
 			{
@@ -89,7 +90,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 		if(m_message_soup.tls_errors != 0 && !settingsTweaks.get_boolean("ignore-tls-errors"))
 		{
-			logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
+			Logger.info("TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;
 		}
 
@@ -97,13 +98,13 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")
 		{
-			logger.print(LogMessage.ERROR, "TTRSS Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
+			Logger.error("TTRSS Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
 			return ConnectionError.NO_RESPONSE;
 		}
 
 		if(ping)
 		{
-			logger.print(LogMessage.DEBUG, "TTRSS Message: ping successfull");
+			Logger.debug("TTRSS Message: ping successfull");
 			return ConnectionError.SUCCESS;
 		}
 
@@ -111,8 +112,8 @@ public class FeedReader.ttrssMessage : GLib.Object {
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "Could not load response from Message to ttrss");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("Could not load response from Message to ttrss");
+			Logger.error(e.message);
 			return ConnectionError.NO_RESPONSE;
 		}
 
@@ -142,7 +143,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 			}
 		}
 
-		logger.print(LogMessage.ERROR, "unknown error while sending ttrss message");
+		Logger.error("unknown error while sending ttrss message");
 		return ConnectionError.UNKNOWN;
 	}
 
@@ -185,12 +186,12 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 	public void printMessage()
 	{
-		logger.print(LogMessage.DEBUG, m_message_string.str);
+		Logger.debug(m_message_string.str);
 	}
 
 	public void printResponse()
 	{
-		logger.print(LogMessage.DEBUG, (string)m_message_soup.response_body.flatten().data);
+		Logger.debug((string)m_message_soup.response_body.flatten().data);
 	}
 
 	private ConnectionError parseError(Json.Object err)
@@ -198,12 +199,12 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		string error = err.get_string_member("error");
 		if(error == "NOT_LOGGED_IN")
 		{
-			logger.print(LogMessage.ERROR, "invalid ttrss session id");
+			Logger.error("invalid ttrss session id");
 			return ConnectionError.INVALID_SESSIONID;
 		}
 		else if(error == "API_DISABLED")
 		{
-			logger.print(LogMessage.ERROR, "ttrss api is disabled: please enable it first");
+			Logger.error("ttrss api is disabled: please enable it first");
 			return ConnectionError.API_DISABLED;
 		}
 
@@ -212,7 +213,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 	private ConnectionError ApiError()
 	{
-		logger.print(LogMessage.ERROR, "ttrss api error");
+		Logger.error("ttrss api error");
 		printMessage();
 		printResponse();
 		return ConnectionError.API_ERROR;

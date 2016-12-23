@@ -54,21 +54,21 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 
 		if(BackendFlags.LOCAL in flags)
 		{
-			var icon = getIcon("fr-local-symbolic", "Local Files only");
+			var icon = getIcon("feed-local-symbolic", "Local Files only");
 			grid.attach(icon, 1, 0, 1, 1);
 		}
 		else
 		{
 			if(BackendFlags.HOSTED in flags)
 			{
-				var icon = getIcon("fr-cloud-symbolic", "Synced with Service");
+				var icon = getIcon("feed-cloud-symbolic", "Synced with Service");
 				grid.attach(icon, 1, 0, 1, 1);
 			}
 			else if(BackendFlags.SELF_HOSTED in flags)
 			{
 				var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
-				box.pack_start(getIcon("fr-cloud-symbolic", "Synced with Service"), true, false, 0);
-				box.pack_start(getIcon("fr-server-symbolic", "Self-hosted Service"), true, false, 0);
+				box.pack_start(getIcon("feed-cloud-symbolic", "Synced with Service"), true, false, 0);
+				box.pack_start(getIcon("feed-server-symbolic", "Self-hosted Service"), true, false, 0);
 				grid.attach(box, 1, 0, 1, 1);
 				space = 50;
 			}
@@ -77,28 +77,28 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 
 		if(BackendFlags.FREE_SOFTWARE in flags)
 		{
-			var icon = getIcon("fr-gpl-symbolic", "Free Software");
+			var icon = getIcon("feed-gpl-symbolic", "Free Software");
 			grid.attach(icon, 1, 1, 1, 1);
 		}
 		else if(BackendFlags.PROPRIETARY in flags)
 		{
-			var icon = getIcon("fr-copyright-symbolic", "Proprietary Software");
+			var icon = getIcon("feed-copyright-symbolic", "Proprietary Software");
 			grid.attach(icon, 1, 1, 1, 1);
 		}
 
 		if(BackendFlags.FREE in flags)
 		{
-			var icon = getIcon("fr-free-symbolic", "Free Service");
+			var icon = getIcon("feed-free-symbolic", "Free Service");
 			grid.attach(icon, 1, 2, 1, 1);
 		}
 		else if(BackendFlags.PAID in flags)
 		{
-			var icon = getIcon("fr-nonfree-symbolic", "Paid Service");
+			var icon = getIcon("feed-nonfree-symbolic", "Paid Service");
 			grid.attach(icon, 1, 2, 1, 1);
 		}
 		else if(BackendFlags.PAID_PREMIUM in flags)
 		{
-			var icon = getIcon("fr-nonfree-symbolic", "Free basic usage with paid Premium");
+			var icon = getIcon("feed-nonfree-symbolic", "Free basic usage with paid Premium");
 			grid.attach(icon, 1, 2, 1, 1);
 		}
 
@@ -107,14 +107,11 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		nameLabel.get_style_context().add_class("h2");
 		nameLabel.set_alignment(0.0f, 0.5f);
 
-		var websiteIcon = new Gtk.Image.from_icon_name("fr-website-symbolic", Gtk.IconSize.MENU);
-
 		var eventbox = new Gtk.EventBox();
 		eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		eventbox.button_press_event.connect(websiteClicked);
-		eventbox.set_tooltip_text(m_ext.getWebsite());
-		eventbox.add(websiteIcon);
 
+		eventbox.button_press_event.connect(websiteClicked);
+		eventbox.add(getIcon("feed-website-symbolic", m_ext.getWebsite()));
 		var nameBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, space);
 		nameBox.pack_start(nameLabel, true, false, 0);
 		nameBox.pack_end(eventbox, false, false, 0);
@@ -133,6 +130,9 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
 		this.show_all();
+
+		var cursor = new Gdk.Cursor.for_display(Gdk.Display.get_default(), Gdk.CursorType.HAND1);
+		eventbox.get_window().set_cursor(cursor);
 	}
 
 	private bool websiteClicked(Gdk.EventButton event)
@@ -155,7 +155,7 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.DEBUG, "could not open the link in an external browser: %s".printf(e.message));
+			Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 		}
 		return true;
 	}

@@ -5,7 +5,7 @@ include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
 include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)
 include_directories(${CMAKE_SOURCE_DIR})
 
-
+add_definitions("-w")
 
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set (PKGDATADIR "${DATADIR}/FeedReader")
@@ -15,11 +15,13 @@ set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
 set (VERSION "2.0-dev")
+set (GLIB_VERSION 2.40)
 
 find_package(PkgConfig)
 find_package(Vala REQUIRED)
 include(ValaVersion)
 include(ValaPrecompile)
+include(GResource)
 ensure_vala_version("0.30" MINIMUM)
 
 pkg_check_modules(LIBUNITY QUIET unity)
@@ -37,9 +39,8 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.appdata.xml.in" "${C
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader.desktop" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/feedreader-autostart.desktop" @ONLY)
 
-
 set(MODULES 
-	gtk+-3.0
+	gtk+-3.0>=3.20
 	json-glib-1.0
 	gee-0.8
 	libsoup-2.4
@@ -51,8 +52,9 @@ set(MODULES
 	webkit2gtk-4.0
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
-	goa-1.0
-	libpeas-1.0)
+	libpeas-1.0
+	libcurl
+	goa-1.0)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)
@@ -73,36 +75,36 @@ add_subdirectory(libgd)
 ################################################################################
 
 
-vala_precompile(LIBFR test123
-    src/Common.vala
-    src/Logger.vala
-    src/Enums.vala
-    src/dbBase.vala
-    src/Utils.vala
-    src/QueryBuilder.vala
-    src/ContentGrabber/stringPair.vala
-    src/Model/Feed.vala
-    src/Model/Category.vala
-    src/Model/Article.vala
-    src/Model/Tag.vala
-    src/Model/OfflineAction.vala
-    src/Model/InterfaceState.vala
-    src/Model/ShareAccount.vala
-    Constants.vala
+vala_precompile(LIBFR libFeedReader
+	src/Logger.vala
+	src/Enums.vala
+	src/dbBase.vala
+	src/Settings.vala
+	src/Utils.vala
+	src/QueryBuilder.vala
+	src/ContentGrabber/stringPair.vala
+	src/Model/Feed.vala
+	src/Model/Category.vala
+	src/Model/Article.vala
+	src/Model/Tag.vala
+	src/Model/OfflineAction.vala
+	src/Model/InterfaceState.vala
+	src/Model/ShareAccount.vala
+	Constants.vala
 
 PACKAGES
-    gee-0.8
-    libsecret-1
-    sqlite3
-    libsoup-2.4
+	gee-0.8
+	libsecret-1
+	sqlite3
+	libsoup-2.4
 
 OPTIONS
-    --target-glib=2.32
-    --vapi=FeedReaderCommon.vapi
-    --header=FeedReaderCommon.h
-    
+	--target-glib=${GLIB_VERSION}
+	--vapi=FeedReaderCommon.vapi
+	--header=FeedReaderCommon.h
+	
 CUSTOM_VAPIS
-    vapi/libvilistextum.vapi
+	vapi/libvilistextum.vapi
 )
 
 add_library(FeedReaderCommon STATIC ${LIBFR})
@@ -111,94 +113,98 @@ target_link_libraries(FeedReaderCommon vilistextum)
 
 ################################################################################
 
-
-set(UI_OPTIONS
-    --target-glib=2.32
-    --header=FeedReaderUI.h
-    --vapi=FeedReaderUI.vapi)
-
 set(UI_PACKAGES
-    glib-2.0>=2.32
-    gtk+-3.0
-    json-glib-1.0
-    libsoup-2.4
-    sqlite3
-    gee-0.8
-    libsecret-1
-    libnotify
-    rest-0.7
-    WebKit2-4.0
-    gstreamer-1.0
-    gstreamer-pbutils-1.0
-    goa-1.0
-    libpeas-1.0)
+	glib-2.0>=2.32
+	gtk+-3.0
+	json-glib-1.0
+	libsoup-2.4
+	sqlite3
+	gee-0.8
+	libsecret-1
+	libnotify
+	rest-0.7
+	WebKit2-4.0
+	gstreamer-1.0
+	gstreamer-pbutils-1.0
+	libpeas-1.0
+	goa-1.0)
 
 vala_precompile(UI ${UI_NAME}
-    Constants.vala
-    src/DBusConnection.vala
-    src/FeedReader.vala
-    src/LoginInterface.vala
-    src/dbUI.vala
-    src/UtilsUI.vala
-    src/Widgets/AddPopover.vala
-    src/Widgets/ArticleList.vala
-    src/Widgets/ArticleRow.vala
-    src/Widgets/ArticleView.vala
-    src/Widgets/BackendInfoPopover.vala
-    src/Widgets/CategorieRow.vala
-    src/Widgets/ColorCircle.vala
-    src/Widgets/ColorPopover.vala
-    src/Widgets/ContentPage.vala
-    src/Widgets/FeedList.vala
-    src/Widgets/FeedListFooter.vala
-    src/Widgets/FeedRow.vala
-    src/Widgets/FullscreenButton.vala
-    src/Widgets/FullscreenHeaderbar.vala
-    src/Widgets/HoverButton.vala
-    src/Widgets/ImagePopup.vala
-    src/Widgets/InAppNotification.vala
-    src/Widgets/LoginPage.vala
-    src/Widgets/LoginRow.vala
-    src/Widgets/MainWindow.vala
-    src/Widgets/MediaPlayer.vala
-    src/Widgets/MediaPopover.vala
-    src/Widgets/MediaRow.vala
-    src/Widgets/ModeButton.vala
-    src/Widgets/ReaderHeaderbar.vala
-    src/Widgets/RemovePopover.vala
-    src/Widgets/ResetPage.vala
-    src/Widgets/ServiceSettingsPopover.vala
-    src/Widgets/ShareRow.vala
-    src/Widgets/ShortcutsWindow.vala
-    src/Widgets/ServiceInfo.vala
-    src/Widgets/Setting.vala
-    src/Widgets/SettingsDialog.vala
-    src/Widgets/SharePopover.vala
-    src/Widgets/SimpleHeader.vala
-    src/Widgets/SpringCleanPage.vala
-    src/Widgets/TagRow.vala
-    src/Widgets/TagPopover.vala
-    src/Widgets/TagPopoverRow.vala
-    src/Widgets/UpdateButton.vala
-    src/Widgets/WebLoginPage.vala
-    src/Share/share.vala
-    src/Share/ServiceSetup.vala
-    src/Share/ShareAccountInterface.vala
+	src/DBusConnection.vala
+	src/FavIconCache.vala
+	src/FeedReader.vala
+	src/LoginInterface.vala
+	src/dbUI.vala
+	src/UtilsUI.vala
+	src/Widgets/AddPopover.vala
+	src/Widgets/ArticleRow.vala
+	src/Widgets/ArticleView.vala
+	src/Widgets/ArticleViewLoadProgress.vala
+	src/Widgets/ArticleViewUrlOverlay.vala
+	src/Widgets/BackendInfoPopover.vala
+	src/Widgets/CategorieRow.vala
+	src/Widgets/ColorCircle.vala
+	src/Widgets/ColorPopover.vala
+	src/Widgets/ContentPage.vala
+	src/Widgets/FeedList.vala
+	src/Widgets/FeedListFooter.vala
+	src/Widgets/FeedRow.vala
+	src/Widgets/FullscreenButton.vala
+	src/Widgets/FullscreenHeaderbar.vala
+	src/Widgets/HoverButton.vala
+	src/Widgets/ImagePopup.vala
+	src/Widgets/InAppNotification.vala
+	src/Widgets/LoginPage.vala
+	src/Widgets/LoginRow.vala
+	src/Widgets/MainWindow.vala
+	src/Widgets/MediaPlayer.vala
+	src/Widgets/MediaPopover.vala
+	src/Widgets/MediaRow.vala
+	src/Widgets/ModeButton.vala
+	src/Widgets/ReaderHeaderbar.vala
+	src/Widgets/RemovePopover.vala
+	src/Widgets/ResetPage.vala
+	src/Widgets/ServiceSettingsPopover.vala
+	src/Widgets/ShareRow.vala
+	src/Widgets/ShortcutsWindow.vala
+	src/Widgets/ServiceInfo.vala
+	src/Widgets/Setting.vala
+	src/Widgets/SettingsDialog.vala
+	src/Widgets/SharePopover.vala
+	src/Widgets/SimpleHeader.vala
+	src/Widgets/SpringCleanPage.vala
+	src/Widgets/TagRow.vala
+	src/Widgets/TagPopover.vala
+	src/Widgets/TagPopoverRow.vala
+	src/Widgets/UpdateButton.vala
+	src/Widgets/WebLoginPage.vala
+	src/Widgets/ArticleList/ArticleList.vala
+	src/Widgets/ArticleList/ArticleListBox.vala
+	src/Widgets/ArticleList/ArticleListEmptyLabel.vala
+	src/Widgets/ArticleList/ArticleListScroll.vala
+	src/Share/share.vala
+	src/Share/ServiceSetup.vala
+	src/Share/ShareAccountInterface.vala
 
 PACKAGES
-    ${UI_PACKAGES}
+	${UI_PACKAGES}
 
 OPTIONS
-    ${UI_OPTIONS}
+	--target-glib=${GLIB_VERSION}
+	--header=FeedReaderUI.h
+	--vapi=FeedReaderUI.vapi
+	--enable-experimental
 
 CUSTOM_VAPIS
-    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
-    vapi/libvilistextum.vapi
-    vapi/gtkimageview.vapi
-    vapi/gd-1.0.vapi
+	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	vapi/libvilistextum.vapi
+	vapi/gtkimageview.vapi
+	vapi/gd-1.0.vapi
 )
 
-add_executable(${UI_NAME} ${UI})
+GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE data/feedreader.gresource.xml)
+
+add_executable(${UI_NAME} ${UI} ${GRESOURCES})
 target_link_libraries(${UI_NAME} vilistextum gtkimageview gd FeedReaderCommon)
 
 
@@ -206,21 +212,21 @@ target_link_libraries(${UI_NAME} vilistextum gtkimageview gd FeedReaderCommon)
 
 
 set(DAEMON_OPTIONS
-    --target-glib=2.32
-    --header=FeedReader.h
-    --vapi=FeedReader.vapi)
+	--target-glib=${GLIB_VERSION}
+	--header=FeedReader.h
+	--vapi=FeedReader.vapi)
 set(DAEMON_PACKAGES
-    glib-2.0>=2.32
-    gio-2.0
-    sqlite3
-    gee-0.8
-    libsoup-2.4
-    json-glib-1.0
-    libnotify
-    libsecret-1
-    libxml-2.0
-    rest-0.7
-    libpeas-1.0)
+	glib-2.0>=2.32
+	gio-2.0
+	sqlite3
+	gee-0.8
+	libsoup-2.4
+	json-glib-1.0
+	libnotify
+	libsecret-1
+	libxml-2.0
+	rest-0.7
+	libpeas-1.0)
 
 if(LIBUNITY_FOUND)
 	list(APPEND DAEMON_OPTIONS --define WITH_LIBUNITY)
@@ -228,27 +234,27 @@ if(LIBUNITY_FOUND)
 endif(LIBUNITY_FOUND)
 
 vala_precompile(daemon ${DAEMON_NAME}
-    src/Daemon.vala
-    src/dbDaemon.vala
-    src/OfflineActionManager.vala
-    src/Backend/FeedServer.vala
-    src/Backend/FeedServerInterface.vala
-    src/Backend/OPMLparser.vala
-    src/ContentGrabber/grabberConfig.vala
-    src/ContentGrabber/grabber.vala
-    src/ContentGrabber/grabberUtils.vala
-    Constants.vala
+	src/Daemon.vala
+	src/dbDaemon.vala
+	src/Notification.vala
+	src/OfflineActionManager.vala
+	src/Backend/FeedServer.vala
+	src/Backend/FeedServerInterface.vala
+	src/Backend/OPMLparser.vala
+	src/ContentGrabber/grabberConfig.vala
+	src/ContentGrabber/grabber.vala
+	src/ContentGrabber/grabberUtils.vala
 
 
 PACKAGES
-    ${DAEMON_PACKAGES}
+	${DAEMON_PACKAGES}
 
 OPTIONS
-    ${DAEMON_OPTIONS}
+	${DAEMON_OPTIONS}
 
 CUSTOM_VAPIS
-    vapi/libvilistextum.vapi
-    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	vapi/libvilistextum.vapi
+	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
 )
 
 add_executable(${DAEMON_NAME} ${daemon})
@@ -271,21 +277,18 @@ add_subdirectory(plugins)
 
 # uninstall target
 configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
-    IMMEDIATE @ONLY)
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake/uninstall.cmake"
+	"${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake"
+	IMMEDIATE @ONLY)
 
-add_custom_target(uninstall
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake)
+add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/uninstall.cmake)
 
 install (TARGETS ${UI_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
 install (FILES ${PROJECT_BINARY_DIR}/WebExtension/libwebextension.so DESTINATION ${PKGDATADIR})
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.desktop DESTINATION ${DATADIR}/applications/)
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader.service DESTINATION ${DATADIR}/dbus-1/services/)
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/icons/hicolor DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/application-icons/hicolor DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/gtk-css DESTINATION ${PKGDATADIR})

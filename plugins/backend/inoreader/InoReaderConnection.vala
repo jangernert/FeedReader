@@ -27,9 +27,10 @@ public class FeedReader.InoReaderConnection {
 
 	public LoginResponse getToken()
 	{
-		logger.print(LogMessage.DEBUG, "InoReaderConnection: getToken()");
+		Logger.debug("InoReaderConnection: getToken()");
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "code=" + m_utils.getApiCode()
 								+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
@@ -52,10 +53,10 @@ public class FeedReader.InoReaderConnection {
 			string refreshToken = root.get_string_member("refresh_token");
 			int64 now = (new DateTime.now_local()).to_unix();
 
-			logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
-			logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
-			logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
-			logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+			Logger.debug("access-token: " + accessToken);
+			Logger.debug("expires in: " + expires.to_string());
+			Logger.debug("refresh-token: " + refreshToken);
+			Logger.debug("now: " + now.to_string());
 
 			m_utils.setAccessToken(accessToken);
 			m_utils.setExpiration((int)(now + expires));
@@ -63,8 +64,8 @@ public class FeedReader.InoReaderConnection {
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "InoReaderConnection - getToken: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("InoReaderConnection - getToken: Could not load message response");
+			Logger.error(e.message);
 			return LoginResponse.UNKNOWN_ERROR;
 		}
 
@@ -73,9 +74,10 @@ public class FeedReader.InoReaderConnection {
 
 	public LoginResponse refreshToken()
 	{
-		logger.print(LogMessage.DEBUG, "InoReaderConnection: refreshToken()");
+		Logger.debug("InoReaderConnection: refreshToken()");
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "client_id=" + InoReaderSecret.apiClientId
 								+ "&client_secret=" + InoReaderSecret.apiClientSecret
@@ -92,15 +94,18 @@ public class FeedReader.InoReaderConnection {
 			parser.load_from_data(response, -1);
 			var root = parser.get_root().get_object();
 
+			if(!root.has_member("access_token"))
+				return getToken();
+
 			string accessToken = root.get_string_member("access_token");
 			int64 expires = (int)root.get_int_member("expires_in");
 			string refreshToken = root.get_string_member("refresh_token");
 			int64 now = (new DateTime.now_local()).to_unix();
 
-			logger.print(LogMessage.DEBUG, "access-token: " + accessToken);
-			logger.print(LogMessage.DEBUG, "expires in: " + expires.to_string());
-			logger.print(LogMessage.DEBUG, "refresh-token: " + refreshToken);
-			logger.print(LogMessage.DEBUG, "now: " + now.to_string());
+			Logger.debug("access-token: " + accessToken);
+			Logger.debug("expires in: " + expires.to_string());
+			Logger.debug("refresh-token: " + refreshToken);
+			Logger.debug("now: " + now.to_string());
 
 			m_utils.setAccessToken(accessToken);
 			m_utils.setExpiration((int)(now + expires));
@@ -108,8 +113,8 @@ public class FeedReader.InoReaderConnection {
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "InoReaderConnection - getToken: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("InoReaderConnection - getToken: Could not load message response");
+			Logger.error(e.message);
 			return LoginResponse.UNKNOWN_ERROR;
 		}
 
@@ -127,6 +132,7 @@ public class FeedReader.InoReaderConnection {
 			refreshToken();
 
 		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 
 		string inoauth = "Bearer " + m_utils.getAccessToken();

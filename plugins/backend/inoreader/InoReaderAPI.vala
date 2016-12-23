@@ -13,9 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
-
 public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public enum InoSubscriptionAction {
@@ -26,7 +23,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	private InoReaderConnection m_connection;
 	private InoReaderUtils m_utils;
-	private string m_inoreader;
 	private string m_userID;
 
 	public InoReaderAPI ()
@@ -52,7 +48,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	}
 
 	public bool ping() {
-		return Utils.ping("inoreader.com");
+		return Utils.ping("http://www.inoreader.com/");
 	}
 
 	private bool getUserID()
@@ -63,8 +59,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getUserID: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getUserID: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -73,7 +69,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
-			logger.print(LogMessage.INFO, "Inoreader: userID = " + m_userID);
+			Logger.info("Inoreader: userID = " + m_userID);
 
 			if(root.has_member("userEmail"))
 				m_utils.setEmail(root.get_string_member("userEmail"));
@@ -99,8 +95,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getFeeds: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -165,8 +161,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -202,7 +198,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 						new tag(
 							id,
 							title,
-							dataBase.getTagColor()
+							dbDaemon.get_default().getTagColor()
 						)
 					);
 				}
@@ -223,8 +219,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getTotalUnread: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTotalUnread: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -242,7 +238,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		}
 
-		logger.print(LogMessage.DEBUG, "getTotalUnread %i".printf(count));
+		Logger.debug("getTotalUnread %i".printf(count));
 		return count;
 	}
 
@@ -260,11 +256,13 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
+		if(!root.has_member("itemRefs"))
+			return null;
 		var array = root.get_array_member("itemRefs");
 		uint length = array.get_length();
 
@@ -307,8 +305,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -333,7 +331,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dataBase.getTagName(cat) != null)
+				else if(cat.contains("/label/") && dbDaemon.get_default().getTagName(cat) != null)
 					tagString += cat;
 			}
 
@@ -397,15 +395,15 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		{
 			message_string += "&i=" + id;
 		}
-		string response = m_connection.send_request("edit-tag", message_string);
+		m_connection.send_request("edit-tag", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
-		logger.print(LogMessage.DEBUG, message_string);
-		string response = m_connection.send_request("mark-all-as-read", message_string);
+		Logger.debug(message_string);
+		m_connection.send_request("mark-all-as-read", message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -416,17 +414,17 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_request("disable-tag", message_string);
+		m_connection.send_request("disable-tag", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_request("rename-tag", message_string);
+		m_connection.send_request("rename-tag", message_string);
 	}
 
-	public void editSubscription(InoSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	public void editSubscription(InoSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
 
@@ -443,7 +441,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 				break;
 		}
 
-		message_string += "&s=" + feedID;
+		foreach(string s in feedID)
+			message_string += "&s=" + GLib.Uri.escape_string(s);
 
 		if(title != null)
 			message_string += "&t=" + title;

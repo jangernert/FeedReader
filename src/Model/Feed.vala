@@ -44,6 +44,11 @@ public class FeedReader.feed : GLib.Object {
 		return m_title;
 	}
 
+	public void setTitle(string title)
+	{
+		m_title = title;
+	}
+
 	public string getURL()
 	{
 		return m_url;
@@ -114,6 +119,6 @@ public class FeedReader.feed : GLib.Object {
 
 	public void print()
 	{
-		logger.print(LogMessage.DEBUG, "\ntitle: %s\nid: %s\nurl: %s\nunread: %u".printf(m_title, m_feedID, m_url, m_unread));
+		Logger.debug("\ntitle: %s\nid: %s\nurl: %s\nunread: %u".printf(m_title, m_feedID, m_url, m_unread));
 	}
 }

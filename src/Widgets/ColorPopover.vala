@@ -29,7 +29,7 @@ public class FeedReader.ColorPopover : Gtk.Popover {
 		m_grid.set_valign(Gtk.Align.CENTER);
 		m_grid.margin = 5;
 		int columns = 4;
-		int rows = COLORS.length/4;
+		int rows = Constants.COLORS.length/4;
 		int color = 0;
 		ColorCircle tmpCircle;
 

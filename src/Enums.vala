@@ -99,6 +99,7 @@ namespace FeedReader {
 		MISSING_PASSWD,
 		MISSING_URL,
 		ALL_EMPTY,
+		API_ERROR,
 		UNKNOWN_ERROR,
 		FIRST_TRY,
 		NO_BACKEND,
@@ -204,6 +205,17 @@ namespace FeedReader {
 		{
  			return ((int)this).to_string();
  		}
+	}
+
+	public enum ArticleListBalance {
+		NONE,
+		TOP,
+		BOTTOM
+	}
+
+	public enum ScrollDirection {
+		UP,
+		DOWN
 	}
 
 	[Flags] public enum BackendFlags {

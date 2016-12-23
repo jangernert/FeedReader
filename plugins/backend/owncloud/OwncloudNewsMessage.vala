@@ -30,6 +30,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
         m_message_string = new GLib.StringBuilder();
         m_method = method;
 		m_session = new Soup.Session();
+        m_session.user_agent = Constants.USER_AGENT;
         m_session.ssl_strict = false;
 		m_contenttype = "application/json";
 		m_parser = new Json.Parser();
@@ -42,7 +43,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
         m_session.authenticate.connect((msg, auth, retrying) => {
 			if(m_utils.getHtaccessUser() == "")
 			{
-				logger.print(LogMessage.ERROR, "ownCloud Session: need Authentication");
+				Logger.error("ownCloud Session: need Authentication");
 			}
 			else
 			{
@@ -93,20 +94,20 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
         if(m_message_soup.tls_errors != 0 && !settingsTweaks.get_boolean("ignore-tls-errors"))
 		{
-			logger.print(LogMessage.INFO, "TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
+			Logger.info("TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;
 		}
 
 		if((string)m_message_soup.response_body.flatten().data == null
 		|| (string)m_message_soup.response_body.flatten().data == "")
         {
-            logger.print(LogMessage.ERROR, "ownCloud Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
+            Logger.error("ownCloud Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
             return ConnectionError.NO_RESPONSE;
         }
 
         if(ping)
         {
-            logger.print(LogMessage.DEBUG, "ownCloud Message: ping successfull");
+            Logger.debug("ownCloud Message: ping successfull");
 			return ConnectionError.SUCCESS;
         }
 
@@ -114,9 +115,9 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "Could not load response from Message to owncloud");
+			Logger.error("Could not load response from Message to owncloud");
             printMessage();
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error(e.message);
 			return ConnectionError.UNKNOWN;
 		}
 
@@ -136,11 +137,11 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
     public void printMessage()
     {
-        logger.print(LogMessage.DEBUG, m_message_string.str);
+        Logger.debug(m_message_string.str);
     }
 
 	public void printResponse()
 	{
-		logger.print(LogMessage.DEBUG, (string)m_message_soup.response_body.flatten().data);
+		Logger.debug((string)m_message_soup.response_body.flatten().data);
 	}
 }

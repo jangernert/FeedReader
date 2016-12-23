@@ -22,7 +22,6 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 	private feedbinUtils m_utils;
 
 	public Logger m_logger { get; construct set; }
-	public string m_installPrefix { get; construct set; }
 
 	public void init()
 	{
@@ -126,8 +125,8 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 
 	public void writeData()
 	{
-		m_utils.setUser(m_userEntry.get_text());
-		m_utils.setPassword(m_passwordEntry.get_text());
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
 	}
 
 	public void poastLoginAction()

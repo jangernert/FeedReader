@@ -21,9 +21,9 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		//--------------------------------------------------
 		var general = newGroup(_("General"));
 		//--------------------------------------------------
-		string globalSync = settings_keybindings.get_string("global-sync");
-		string globalSearch = settings_keybindings.get_string("global-search");
-		string globalQuit = settings_keybindings.get_string("global-quit");
+		string globalSync = Settings.keybindings().get_string("global-sync");
+		string globalSearch = Settings.keybindings().get_string("global-search");
+		string globalQuit = Settings.keybindings().get_string("global-quit");
 		var refresh = newShortcut(_("Refresh"), globalSync);
 		var search = newShortcut(_("Search"), globalSearch);
 		var quit = newShortcut(_("Quit"), globalQuit);
@@ -36,7 +36,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		//--------------------------------------------------
 		var feedList = newGroup(_("Feed-List"));
 		//--------------------------------------------------
-		string feedListMarkRead = settings_keybindings.get_string("feedlist-mark-read");
+		string feedListMarkRead = Settings.keybindings().get_string("feedlist-mark-read");
 		var navigate = newShortcut(_("Navigate the feed-list"), "Up Down");
 		var expCol = newShortcut(_("Collapse/Expand categories"), "Left Right");
 		var flmark = newShortcut(_("Mark the currently selected as read"), feedListMarkRead);
@@ -49,13 +49,13 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		//--------------------------------------------------
 		var articleList = newGroup(_("Article-List"));
 		//--------------------------------------------------
-		string prev = settings_keybindings.get_string("articlelist-prev");
-		string next = settings_keybindings.get_string("articlelist-next");
+		string prev = Settings.keybindings().get_string("articlelist-prev");
+		string next = Settings.keybindings().get_string("articlelist-next");
 		string nextPrev = "%s %s".printf(prev, next);
-		string center = settings_keybindings.get_string("articlelist-center-selected");
-		string toggleRead = settings_keybindings.get_string("articlelist-toggle-read");
-		string toggleMarked = settings_keybindings.get_string("articlelist-toggle-marked");
-		string openUrl = settings_keybindings.get_string("articlelist-open-url");
+		string center = Settings.keybindings().get_string("articlelist-center-selected");
+		string toggleRead = Settings.keybindings().get_string("articlelist-toggle-read");
+		string toggleMarked = Settings.keybindings().get_string("articlelist-toggle-marked");
+		string openUrl = Settings.keybindings().get_string("articlelist-open-url");
 		var nextprev = newShortcut(_("Select next/previous article"), nextPrev);
 		var toggleread = newShortcut(_("Toggle the selected article un/read"), toggleRead);
 		var togglemarked = newShortcut(_("Toggle the selected article un/marked"), toggleMarked);

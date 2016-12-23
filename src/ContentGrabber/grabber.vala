@@ -55,18 +55,18 @@ public class FeedReader.Grabber : GLib.Object {
 
     private bool checkConfigFile()
     {
-        string filepath = InstallPrefix + "/share/FeedReader/GrabberConfig/";
+        string filepath = Constants.INSTALL_PREFIX + "/share/FeedReader/GrabberConfig/";
 
         string hostName = grabberUtils.buildHostName(m_articleURL, false);
         string filename = filepath + hostName + ".txt";
         if(FileUtils.test(filename, GLib.FileTest.EXISTS))
         {
             m_config = new GrabberConfig(filename);
-            logger.print(LogMessage.DEBUG, "Grabber: using config %s.txt".printf(hostName));
+            Logger.debug("Grabber: using config %s.txt".printf(hostName));
             return true;
         }
 
-        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) found for article: %s".printf(hostName, m_articleURL));
+        Logger.debug("Grabber: no config (%s.txt) found for article: %s".printf(hostName, m_articleURL));
 
         string newHostName = grabberUtils.buildHostName(m_articleURL, true);
         if(hostName != newHostName)
@@ -75,23 +75,23 @@ public class FeedReader.Grabber : GLib.Object {
             if(FileUtils.test("%s%s.txt".printf(filename, newHostName), GLib.FileTest.EXISTS))
             {
                 m_config = new GrabberConfig(filename);
-                logger.print(LogMessage.DEBUG, "Grabber: using config %s.txt".printf(newHostName));
+                Logger.debug("Grabber: using config %s.txt".printf(newHostName));
                 return true;
             }
         }
 
 
-        logger.print(LogMessage.DEBUG, "Grabber: no config (%s.txt) - cutSubdomain - found for article: %s".printf(newHostName, m_articleURL));
+        Logger.debug("Grabber: no config (%s.txt) - cutSubdomain - found for article: %s".printf(newHostName, m_articleURL));
         return false;
     }
 
     public bool process()
     {
-        logger.print(LogMessage.DEBUG, "Grabber: process article: " + m_articleURL);
+        Logger.debug("Grabber: process article: " + m_articleURL);
 
         if(m_articleURL == null || m_articleURL == "")
         {
-            logger.print(LogMessage.ERROR, "No valid article-url?!?");
+            Logger.error("No valid article-url?!?");
             return false;
         }
 
@@ -119,24 +119,24 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
-        logger.print(LogMessage.DEBUG, "Grabber: config found");
+        Logger.debug("Grabber: config found");
 
         if(!downloaded && !download())
             return false;
 
 
-        logger.print(LogMessage.DEBUG, "Grabber: download success");
+        Logger.debug("Grabber: download success");
 
         prepArticle();
 
-        logger.print(LogMessage.DEBUG, "Grabber: empty article preped");
+        Logger.debug("Grabber: empty article preped");
 
         if(!parse())
             return false;
 
         if(!m_foundSomething)
         {
-            logger.print(LogMessage.ERROR, "Grabber: no body found");
+            Logger.error("Grabber: no body found");
             return false;
         }
 
@@ -146,32 +146,33 @@ public class FeedReader.Grabber : GLib.Object {
     private bool download()
     {
         var session = new Soup.Session();
+        session.user_agent = Constants.USER_AGENT;
         session.timeout = 5;
         var msg = new Soup.Message("GET", m_articleURL.escape(""));
         msg.restarted.connect(() => {
-            logger.print(LogMessage.DEBUG, "Grabber: download redirected - " + msg.status_code.to_string());
+            Logger.debug("Grabber: download redirected - " + msg.status_code.to_string());
             if(msg.status_code == Soup.Status.MOVED_TEMPORARILY
             || msg.status_code == Soup.Status.MOVED_PERMANENTLY)
             {
                 m_articleURL = msg.uri.to_string(false);
-                logger.print(LogMessage.DEBUG, "Grabber: new url is: " + m_articleURL);
+                Logger.debug("Grabber: new url is: " + m_articleURL);
             }
         });
 
-        if(settings_tweaks.get_boolean("do-not-track"))
+        if(Settings.tweaks().get_boolean("do-not-track"))
 			msg.request_headers.append("DNT", "1");
 
         session.send_message(msg);
 
         if(msg.response_body == null)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: download failed - no response");
+            Logger.debug("Grabber: download failed - no response");
             return false;
         }
 
         if((string)msg.response_body.flatten().data == "")
         {
-            logger.print(LogMessage.DEBUG, "Grabber: download failed - empty response");
+            Logger.debug("Grabber: download failed - empty response");
             return false;
         }
 
@@ -202,14 +203,14 @@ public class FeedReader.Grabber : GLib.Object {
                 }
             }
 
-            logger.print(LogMessage.INFO, locale);
+            Logger.info(locale);
             try
             {
                 m_rawHtml = GLib.convert(m_rawHtml, -1, "utf-8", locale);
             }
             catch(ConvertError e)
             {
-                logger.print(LogMessage.ERROR, e.message);
+                Logger.error("grabber: failed to convert locale - " + e.message);
             }
         }
 
@@ -219,7 +220,7 @@ public class FeedReader.Grabber : GLib.Object {
     private bool parse()
     {
         m_nexPageURL = null;
-        logger.print(LogMessage.DEBUG, "Grabber: start parsing");
+        Logger.debug("Grabber: start parsing");
 
         // replace strings before parsing html
         unowned Gee.ArrayList<StringPair> replace = m_config.getReplace();
@@ -231,32 +232,32 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
-        logger.print(LogMessage.DEBUG, "Grabber: parse html");
+        Logger.debug("Grabber: parse html");
 
         // parse html
         var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
         var doc = html_cntx.read_doc(m_rawHtml, "");
-        if (doc == null)
+        if(doc == null)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: parsing failed");
+            Logger.debug("Grabber: parsing failed");
     		return false;
     	}
 
-        logger.print(LogMessage.DEBUG, "Grabber: html parsed");
+        Logger.debug("Grabber: html parsed");
 
 
         // get link to next page of article if there are more than one pages
         if(m_config.getXPathNextPageURL() != null)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: grab next page url");
+            Logger.debug("Grabber: grab next page url");
             m_nexPageURL = grabberUtils.getURL(doc, m_config.getXPathNextPageURL());
         }
 
         // get link to single-page view if it exists and download that page
         if(m_config.getXPathSinglePageURL() != null && m_nexPageURL == null)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: grab single page view");
+            Logger.debug("Grabber: grab single page view");
             string url = grabberUtils.getURL(doc, m_config.getXPathSinglePageURL());
             if(url != "" && url != null)
             {
@@ -264,7 +265,7 @@ public class FeedReader.Grabber : GLib.Object {
 		        {
 		            url = grabberUtils.completeURL(url, m_articleURL);
 		        }
-            	logger.print(LogMessage.DEBUG, "Grabber: single page url " + url);
+            	Logger.debug("Grabber: single page url " + url);
                 m_singlePage = true;
                 m_articleURL = url;
                 download();
@@ -277,7 +278,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned Gee.ArrayList<string> title = m_config.getXPathTitle();
         if(title.size != 0 && m_firstPage)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: get title");
+            Logger.debug("Grabber: get title");
             foreach(string xpath in title)
             {
                 string tmptitle = grabberUtils.getValue(doc, xpath, m_firstPage);
@@ -290,7 +291,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned Gee.ArrayList<string> author = m_config.getXPathAuthor();
         if(author.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: get author");
+            Logger.debug("Grabber: get author");
             foreach(string xpath in author)
             {
                 string tmpAuthor = grabberUtils.getValue(doc, xpath);
@@ -303,7 +304,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned Gee.ArrayList<string> date = m_config.getXPathDate();
         if(date.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: get date");
+            Logger.debug("Grabber: get date");
             foreach(string xpath in date)
             {
                 string tmpDate = grabberUtils.getValue(doc, xpath);
@@ -316,10 +317,10 @@ public class FeedReader.Grabber : GLib.Object {
         unowned Gee.ArrayList<string> strip = m_config.getXPathStrip();
         if(strip.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: strip junk");
+            Logger.debug("Grabber: strip junk");
             foreach(string xpath in strip)
             {
-                logger.print(LogMessage.DEBUG, "Grabber: strip %s".printf(xpath));
+                Logger.debug("Grabber: strip %s".printf(xpath));
                 grabberUtils.stripNode(doc, xpath);
             }
         }
@@ -328,7 +329,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned Gee.ArrayList<string> _stripIDorClass = m_config.getXPathStripIDorClass();
         if(_stripIDorClass.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: strip id's and class");
+            Logger.debug("Grabber: strip id's and class");
             foreach(string IDorClass in _stripIDorClass)
             {
                 grabberUtils.stripIDorClass(doc, IDorClass);
@@ -339,7 +340,7 @@ public class FeedReader.Grabber : GLib.Object {
         unowned Gee.ArrayList<string> stripImgSrc = m_config.getXPathStripImgSrc();
         if(stripImgSrc.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: strip img-tags");
+            Logger.debug("Grabber: strip img-tags");
             foreach(string ImgSrc in stripImgSrc)
             {
                 grabberUtils.stripNode(doc, "//img[contains(@src,'%s')]".printf(ImgSrc));
@@ -351,73 +352,75 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
+        grabberUtils.addAttributes(doc, "a", "target", "_blank");
 
         // complete relative source urls of images
-        logger.print(LogMessage.DEBUG, "Grabber: complete urls");
+        Logger.debug("Grabber: complete urls");
         grabberUtils.repairURL("//img", "src", doc, m_articleURL);
         grabberUtils.repairURL("//a", "src", doc, m_articleURL);
         grabberUtils.repairURL("//a", "href", doc, m_articleURL);
         grabberUtils.repairURL("//object", "data", doc, m_articleURL);
+        grabberUtils.repairURL("//iframe", "src", doc, m_articleURL);
 
         // strip elements using Readability.com and Instapaper.com ignore class names
 		// .entry-unrelated and .instapaper_ignore
 		// See https://www.readability.com/publishers/guidelines/#view-plainGuidelines
 		// and http://blog.instapaper.com/post/730281947
-        logger.print(LogMessage.DEBUG, "Grabber: strip instapaper and readability");
+        Logger.debug("Grabber: strip instapaper and readability");
         grabberUtils.stripNode(doc,
                 "//*[contains(concat(' ',normalize-space(@class),' '),' entry-unrelated ') or contains(concat(' ',normalize-space(@class),' '),' instapaper_ignore ')]");
 
 
         // strip elements that contain style="display: none;"
-        logger.print(LogMessage.DEBUG, "Grabber: strip invisible elements");
+        Logger.debug("Grabber: strip invisible elements");
         grabberUtils.stripNode(doc, "//*[contains(@style,'display:none')]");
 
         // strip all scripts
-        logger.print(LogMessage.DEBUG, "Grabber: strip all scripts");
+        Logger.debug("Grabber: strip all scripts");
         grabberUtils.stripNode(doc, "//script");
 
         // strip <noscript>
-        logger.print(LogMessage.DEBUG, "Grabber: strip all scripts");
+        Logger.debug("Grabber: strip all scripts");
         grabberUtils.stripNode(doc, "//noscript");
 
         // strip all comments
-        logger.print(LogMessage.DEBUG, "Grabber: strip all comments");
+        Logger.debug("Grabber: strip all comments");
         grabberUtils.stripNode(doc, "//comment()");
 
         // strip all empty url-tags <a/>
-        logger.print(LogMessage.DEBUG, "Grabber: strip all empty url-tags");
+        Logger.debug("Grabber: strip all empty url-tags");
         grabberUtils.stripNode(doc, "//a[not(node())]");
 
         // strip all external css and fonts
-        logger.print(LogMessage.DEBUG, "Grabber: strip all external css and fonts");
+        Logger.debug("Grabber: strip all external css and fonts");
         grabberUtils.stripNode(doc, "//*[@type='text/css']");
 
         // get the content of the article
         unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();
         if(bodyList.size != 0)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: get body");
+            Logger.debug("Grabber: get body");
             foreach(string bodyXPath in bodyList)
             {
                 if(grabberUtils.extractBody(doc, bodyXPath, m_root))
                     m_foundSomething = true;
                 else
-                    logger.print(LogMessage.ERROR, bodyXPath);
+                    Logger.error(bodyXPath);
             }
 
             if(m_foundSomething)
             {
-            	logger.print(LogMessage.DEBUG, "Grabber: body found");
+            	Logger.debug("Grabber: body found");
             }
             else
             {
-            	logger.print(LogMessage.DEBUG, "Grabber: no body found");
+            	Logger.debug("Grabber: no body found");
                 return false;
             }
         }
         else
         {
-            logger.print(LogMessage.ERROR, "Grabber: config file has no rule for 'body'");
+            Logger.error("Grabber: config file has no rule for 'body'");
         }
 
         delete doc;
@@ -426,19 +429,19 @@ public class FeedReader.Grabber : GLib.Object {
 
         if(m_nexPageURL != null && !m_singlePage)
         {
-            logger.print(LogMessage.DEBUG, "Grabber: load next page");
+            Logger.debug("Grabber: load next page");
             if(!m_nexPageURL.has_prefix("http"))
             {
                 m_nexPageURL = grabberUtils.completeURL(m_nexPageURL, m_articleURL);
             }
             m_articleURL = m_nexPageURL;
-            logger.print(LogMessage.DEBUG, "Grabber: next page url: %s".printf(m_nexPageURL));
+            Logger.debug("Grabber: next page url: %s".printf(m_nexPageURL));
             download();
             parse();
             return true;
         }
 
-        if(!settings_tweaks.get_boolean("dont-download-images"))
+        if(!Settings.tweaks().get_boolean("dont-download-images"))
         {
             if(m_articleID != null && m_feedID != null)
                 grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
@@ -468,13 +471,13 @@ public class FeedReader.Grabber : GLib.Object {
     public void print()
     {
         if(m_title != null)
-            logger.print(LogMessage.DEBUG, "Grabber: title: %s".printf(m_title));
+            Logger.debug("Grabber: title: %s".printf(m_title));
 
         if(m_author != null)
-            logger.print(LogMessage.DEBUG, "Grabber: author: %s".printf(m_author));
+            Logger.debug("Grabber: author: %s".printf(m_author));
 
         if(m_date != null)
-            logger.print(LogMessage.DEBUG, "Grabber: date: %s".printf(m_date));
+            Logger.debug("Grabber: date: %s".printf(m_date));
     }
 
     public string? getAuthor()

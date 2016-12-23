@@ -23,8 +23,6 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private ColorCircle m_circle;
 	private ColorPopover m_pop;
 	private Gtk.Revealer m_revealer;
-	private Gtk.Label m_unread;
-	private uint m_unread_count;
 	private Gtk.EventBox m_eventBox;
 	public string m_name { get; private set; }
 	public string m_tagID { get; private set; }
@@ -53,7 +51,14 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 		m_pop.newColorSelected.connect((color) => {
 			m_circle.newColor(color);
-			feedDaemon_interface.updateTagColor(m_tagID, color);
+			try
+			{
+				DBusConnection.get_default().updateTagColor(m_tagID, color);
+			}
+	        catch(GLib.Error e)
+	        {
+	            Logger.error("TagRow.constructor: %s".printf(e.message));
+	        }
 		});
 
 		m_label = new Gtk.Label(m_name);
@@ -127,21 +132,28 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
                                     Gtk.SelectionData selection_data, uint target_type, uint time)
     {
-		if(selection_data != null
-		&& selection_data.get_length() >= 0
-		&& target_type == DragTarget.TAG)
+		try
 		{
-			if(m_tagID != TagID.NEW)
+			if(selection_data != null
+			&& selection_data.get_length() >= 0
+			&& target_type == DragTarget.TAG)
 			{
-				logger.print(LogMessage.DEBUG, "drag articleID: " + (string)selection_data.get_data());
-				feedDaemon_interface.tagArticle((string)selection_data.get_data(), m_tagID, true);
-				Gtk.drag_finish(context, true, false, time);
-			}
-			else
-			{
-				showRenamePopover(context, time, (string)selection_data.get_data());
-			}
-        }
+				if(m_tagID != TagID.NEW)
+				{
+					Logger.debug("drag articleID: " + (string)selection_data.get_data());
+					DBusConnection.get_default().tagArticle((string)selection_data.get_data(), m_tagID, true);
+					Gtk.drag_finish(context, true, false, time);
+				}
+				else
+				{
+					showRenamePopover(context, time, (string)selection_data.get_data());
+				}
+	        }
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("TagRow.constructor: %s".printf(e.message));
+		}
     }
 
 	private bool onClick(Gdk.EventButton event)
@@ -172,7 +184,8 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 			var notification = content.showNotification(_("Tag \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
-				feedDaemon_interface.deleteTag(m_tagID);
+				try{DBusConnection.get_default().deleteTag(m_tagID);}
+				catch(GLib.Error e){Logger.error("TagRow.remove_action: %s".printf(e.message));}
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -233,7 +246,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal, uint duration = 500)
 	{
-		if(settings_state.get_boolean("no-animations"))
+		if(Settings.state().get_boolean("no-animations"))
 		{
 			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
 			m_revealer.set_transition_duration(0);
@@ -266,16 +279,31 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			if(m_tagID != TagID.NEW)
 			{
 				popRename.hide();
-				feedDaemon_interface.renameTag(m_tagID, renameEntry.get_text());
+				try
+				{
+					DBusConnection.get_default().renameTag(m_tagID, renameEntry.get_text());
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
+				}
 			}
 			else if(context != null)
 			{
-				m_tagID = feedDaemon_interface.createTag(renameEntry.get_text());
-				popRename.hide();
-				feedDaemon_interface.tagArticle(articleID, m_tagID, true);
-				Gtk.drag_finish(context, true, false, time);
+				try
+				{
+					m_tagID = DBusConnection.get_default().createTag(renameEntry.get_text());
+					popRename.hide();
+					DBusConnection.get_default().tagArticle(articleID, m_tagID, true);
+					Gtk.drag_finish(context, true, false, time);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
+				}
 			}
 		});
+
 
 		string label = _("rename");
 		if(m_tagID == TagID.NEW && context != null)

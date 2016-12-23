@@ -17,6 +17,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	private Gtk.Button m_share_button;
 	private Gtk.Button m_tag_button;
+	private Gtk.Button m_print_button;
 	private UpdateButton m_media_button;
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
@@ -27,7 +28,9 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
 	private Gtk.HeaderBar m_header_right;
-	private bool m_online = true;
+	private Gtk.Label m_syncProgressText;
+	private Gtk.Popover m_syncPopover;
+	private SharePopover? m_sharePopover = null;
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
@@ -44,7 +47,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		var read_icon = new Gtk.Image.from_icon_name("feed-read-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var fs_icon = new Gtk.Image.from_icon_name("view-fullscreen-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
-		m_state = (ArticleListState)settings_state.get_enum("show-articles");
+		m_state = (ArticleListState)Settings.state().get_enum("show-articles");
 
 
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
@@ -104,7 +107,18 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_tag_button.set_tooltip_text(_("Tag Article"));
 		m_tag_button.sensitive = false;
 		m_tag_button.clicked.connect(() => {
-			var pop = new TagPopover(m_tag_button);
+			new TagPopover(m_tag_button);
+		});
+
+
+		m_print_button = new Gtk.Button.from_icon_name("document-save-symbolic");
+		m_print_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_print_button.set_focus_on_click(false);
+		m_print_button.set_tooltip_text(_("Save Article as PDF"));
+		m_print_button.sensitive = false;
+		m_print_button.clicked.connect(() => {
+			var window = this.get_toplevel() as readerUI;
+			UtilsUI.printDialog(window);
 		});
 
 
@@ -124,21 +138,24 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		shareStack.set_visible_child_name("button");
 
 		m_share_button.clicked.connect(() => {
-			var pop = new SharePopover(m_share_button);
-			pop.showSettings.connect((panel) => {
+			m_sharePopover = new SharePopover(m_share_button);
+			m_sharePopover.showSettings.connect((panel) => {
 				showSettings(panel);
 			});
-			pop.startShare.connect(() => {
+			m_sharePopover.startShare.connect(() => {
 				shareStack.set_visible_child_name("spinner");
 				shareSpinner.start();
 			});
-			pop.shareDone.connect(() => {
+			m_sharePopover.shareDone.connect(() => {
 				shareStack.set_visible_child_name("button");
 				shareSpinner.stop();
 			});
+			m_sharePopover.closed.connect(() => {
+				m_sharePopover = null;
+			});
 		});
 
-		m_media_button = new UpdateButton("mail-attachment-symbolic", _("Attachments"));
+		m_media_button = new UpdateButton.from_icon_name("mail-attachment-symbolic", _("Attachments"));
 		m_media_button.no_show_all = true;
 		m_media_button.clicked.connect(() => {
 			var pop = new MediaPopover(m_media_button);
@@ -175,10 +192,19 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 
 
-		m_refresh_button = new UpdateButton("feed-refresh-symbolic", _("Update Feeds"));
+		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update Feeds"));
 		m_refresh_button.clicked.connect(() => {
-			refresh();
+			if(!m_refresh_button.getStatus())
+				refresh();
+			else
+				m_syncPopover.show_all();
 		});
+		m_syncProgressText = new Gtk.Label(_("Waiting for next update information"));
+		m_syncProgressText.margin = 20;
+		m_syncPopover = new Gtk.Popover(m_refresh_button);
+		m_syncPopover.add(m_syncProgressText);
+
+
 
 		m_search = new Gtk.SearchEntry();
 		m_search.placeholder_text = _("Search Articles");
@@ -186,8 +212,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			search_term(m_search.text);
 		});
 
-		if(settings_tweaks.get_boolean("restore-searchterm"))
-			m_search.text = settings_state.get_string("search-term");
+		if(Settings.tweaks().get_boolean("restore-searchterm"))
+			m_search.text = Settings.state().get_string("search-term");
 
 		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "gnome")
 		{
@@ -210,12 +236,14 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_header_right.pack_start(m_read_button);
 		m_header_right.pack_end(shareStack);
 		m_header_right.pack_end(m_tag_button);
+		m_header_right.pack_end(m_print_button);
 		m_header_right.pack_end(m_media_button);
+
 
 		this.pack1(m_header_left, true, false);
 		this.pack2(m_header_right, true, false);
 		this.get_style_context().add_class("headerbar_pane");
-		this.set_position(settings_state.get_int("feeds-and-articles-width"));
+		this.set_position(Settings.state().get_int("feeds-and-articles-width"));
 	}
 
 	private void set_window_buttons()
@@ -223,7 +251,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
         string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
         if (buttons.length < 2) {
 			buttons = {buttons[0], ""};
-			logger.print(LogMessage.WARNING, "gtk_decoration_layout in unexpected format");
+			Logger.warning("gtk_decoration_layout in unexpected format");
         }
 
 		m_header_left.set_decoration_layout(buttons[0] + ":");
@@ -232,12 +260,12 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void setRefreshButton(bool status)
 	{
-		m_refresh_button.updating(status);
+		m_refresh_button.updating(status, false);
 	}
 
 	public void setButtonsSensitive(bool sensitive)
 	{
-		logger.print(LogMessage.DEBUG, "HeaderBar: updatebutton status %s".printf(sensitive ? "true" : "false"));
+		Logger.debug("HeaderBar: setButtonsSensitive %s".printf(sensitive ? "true" : "false"));
 		m_modeButton.sensitive = sensitive;
 		m_refresh_button.setSensitive(sensitive);
 		m_search.sensitive = sensitive;
@@ -245,22 +273,27 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void showArticleButtons(bool show)
 	{
+		Logger.debug("HeaderBar: showArticleButtons %s".printf(sensitive ? "true" : "false"));
 		m_mark_button.sensitive = show;
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
 		m_media_button.visible = show;
+		m_share_button.sensitive = (show && FeedApp.isOnline());
+		m_print_button.sensitive = show;
 
-		if(m_online)
+		try
 		{
-			m_share_button.sensitive = show;
+			if(DBusConnection.get_default().supportTags()
+			&& UtilsUI.canManipulateContent())
+			{
+				m_tag_button.sensitive = (show && FeedApp.isOnline());
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("readerHeaderbar.showArticleButtons: %s".printf(e.message));
 		}
 
-		if(m_online
-		&& feedDaemon_interface.supportTags()
-		&& UtilsUI.canManipulateContent())
-		{
-			m_tag_button.sensitive = show;
-		}
 	}
 
 	public string getSearchTerm()
@@ -305,20 +338,36 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 	public void setOffline()
 	{
-		m_online = false;
-		if(UtilsUI.canManipulateContent()
-		&& feedDaemon_interface.supportTags())
-			m_tag_button.sensitive = false;
-		m_share_button.sensitive = false;
+		try
+		{
+			m_share_button.sensitive = false;
+			if(UtilsUI.canManipulateContent()
+			&& DBusConnection.get_default().supportTags())
+				m_tag_button.sensitive = false;
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Headerbar.setOffline: %s".printf(e.message));
+		}
 	}
 
 	public void setOnline()
 	{
-		m_online = true;
-		if(UtilsUI.canManipulateContent()
-		&& feedDaemon_interface.supportTags())
-			m_tag_button.sensitive = true;
-		m_share_button.sensitive = true;
+		try
+		{
+			if(m_mark_button.sensitive)
+			{
+				m_share_button.sensitive = true;
+				if(UtilsUI.canManipulateContent()
+				&& DBusConnection.get_default().supportTags())
+					m_tag_button.sensitive = true;
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Headerbar.setOnline: %s".printf(e.message));
+		}
+
 	}
 
 	public void showMediaButton(bool show)
@@ -326,4 +375,21 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_media_button.visible = show;
 	}
 
+	public void updateSyncProgress(string progress)
+	{
+		m_syncProgressText.set_text(progress);
+	}
+
+	public bool sharePopoverShown()
+	{
+		if(m_sharePopover != null)
+			return true;
+
+		return false;
+	}
+
+	public void refreshSahrePopover()
+	{
+		m_sharePopover.refreshList();
+	}
 }

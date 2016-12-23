@@ -19,7 +19,13 @@
 - libgstreamer1.0-dev
 - libgstreamer-plugins-base1.0-dev (gstreamer-pbutils-1.0)
 - libgoa-1.0-dev (>= 3.20)
+- libcurl-dev
+- libpeas-dev
 
+## Fedora dependencies install 
+```
+dnf install gtk3-devel gtk2-devel vala make automake gcc gcc-c++ cmake json-glib-devel libsoup-devel sqlite-devel libgee-devel libsecret-devel libxml-devel rest-devel gstreamer1-devel gstreamer1-plugins-base-devel libpeas-devel webkitgtk4-devel gnome-online-accounts-devel libcurl-devel
+```
 
 ## Compiling
 
@@ -27,7 +33,7 @@
 git clone https://github.com/jangernert/FeedReader
 cd ./FeedReader
 mkdir build
-cd build 
+cd build
 cmake ..
 make
 sudo make install

@@ -20,14 +20,16 @@ public class FeedReader.ShareAccount : GLib.Object {
 	private string m_accountName;
 	private string m_username;
 	private string m_iconName;
+	private bool m_systemAccount;
 
-	public ShareAccount(string id, string type, string username, string iconName, string accountName)
+	public ShareAccount(string id, string type, string username, string iconName, string accountName, bool system = false)
 	{
 		m_id = id;
 		m_type = type;
 		m_username = username;
 		m_iconName = iconName;
 		m_accountName = accountName;
+		m_systemAccount = system;
 	}
 
 	public string getID()
@@ -53,5 +55,10 @@ public class FeedReader.ShareAccount : GLib.Object {
 	public string getAccountName()
 	{
 		return m_accountName;
+	}
+
+	public bool isSystemAccount()
+	{
+		return m_systemAccount;
 	}
 }

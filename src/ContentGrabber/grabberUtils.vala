@@ -108,7 +108,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool repairURL(string xpath, string attr, Html.Doc* doc, string articleURL)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: repairURL xpath:\"%s\" attr:\"%s\"".printf(xpath, attr));
+        Logger.debug("GrabberUtils: repairURL xpath:\"%s\" attr:\"%s\"".printf(xpath, attr));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
@@ -135,7 +135,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool fixLazyImg(Html.Doc* doc, string className, string correctURL)
     {
-        logger.print(LogMessage.DEBUG, "grabberUtils: fixLazyImg");
+        Logger.debug("grabberUtils: fixLazyImg");
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img[contains(@class, '%s')]".printf(className));
 
@@ -237,6 +237,35 @@ public class FeedReader.grabberUtils : GLib.Object {
         {
         	Xml.Node* node = res->nodesetval->item(i);
             node->unset_prop(attribute);
+        }
+
+        delete res;
+        return true;
+    }
+
+    public static bool addAttributes(Html.Doc* doc, string? tag, string attribute, string val)
+    {
+        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+        Xml.XPath.Object* res;
+        if(tag == null)
+            res = cntx.eval_expression("//*[@%s]".printf(attribute));
+        else
+            res = cntx.eval_expression("//%s[@%s]".printf(tag, attribute));
+
+        if(res == null)
+        {
+            return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
+
+        for(int i = 0; i < res->nodesetval->length(); i++)
+        {
+        	Xml.Node* node = res->nodesetval->item(i);
+            node->set_prop(attribute, val);
         }
 
         delete res;
@@ -372,7 +401,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static bool saveImages(Html.Doc* doc, string articleID, string feedID)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
+        Logger.debug("GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
     	Xml.XPath.Object* res = cntx.eval_expression("//img");
 
@@ -399,7 +428,16 @@ public class FeedReader.grabberUtils : GLib.Object {
                     || (node->get_prop("height") == null))
                 )
                 {
-                    node->set_prop("src", downloadImage(node->get_prop("src"), articleID, feedID, i+1));
+                    string original = downloadImage(node->get_prop("src"), articleID, feedID, i+1);
+                    string resized = resizeImg(original);
+
+                    if(resized == null)
+                        node->set_prop("src", original);
+                    else
+                    {
+                        node->set_prop("src", resized);
+                        node->set_prop("FR_huge", original);
+                    }
                 }
             }
         }
@@ -411,7 +449,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string downloadImage(string url, string articleID, string feedID, int nr)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: download Image %s".printf(url));
+        Logger.debug("GrabberUtils: download Image %s".printf(url));
         string fixedURL = url;
         string imgPath = "";
 
@@ -430,20 +468,20 @@ public class FeedReader.grabberUtils : GLib.Object {
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.debug(e.message);
 		}
 
-        int start = fixedURL.last_index_of("/") + 1;
         string localFilename = imgPath + nr.to_string();
 
         if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
 		{
 			Soup.Message message_dlImg = new Soup.Message("GET", fixedURL);
 
-			if(settings_tweaks.get_boolean("do-not-track"))
+			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_dlImg.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+            session.user_agent = Constants.USER_AGENT;
             session.timeout = 8;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);
@@ -456,13 +494,13 @@ public class FeedReader.grabberUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing image: %s".printf(e.message));
+					Logger.error("Error writing image: %s".printf(e.message));
                     return url;
 				}
 			}
             else
             {
-                logger.print(LogMessage.ERROR, "Error downloading image: %s".printf(fixedURL));
+                Logger.error("Error downloading image: %s".printf(fixedURL));
                 return url;
             }
 		}
@@ -470,9 +508,41 @@ public class FeedReader.grabberUtils : GLib.Object {
         return localFilename.replace("?", "%3F");
     }
 
+
+    // if image is >2000px then resize it to 1000px and add FR_huge attribute
+    // with url to original image
+    private static string? resizeImg(string path)
+    {
+        try
+        {
+            int height = 0;
+            int width = 0;
+            Gdk.Pixbuf.get_file_info(path, out width, out height);
+            if(width > 2000 || height > 2000)
+            {
+                int nHeight = 1000;
+                int nWidth = 1000;
+                if(width > height)
+                    nHeight = -1;
+                else if(height > width)
+                    nWidth = -1;
+
+                var img = new Gdk.Pixbuf.from_file_at_scale(path, nWidth, nHeight, true);
+                img.save(path + "_resized", "png");
+                return path + "_resized";
+            }
+        }
+        catch(GLib.Error e)
+        {
+            Logger.error("Error resizing image: %s".printf(e.message));
+            return null;
+        }
+        return null;
+    }
+
     public static string postProcessing(ref string html)
     {
-        logger.print(LogMessage.DEBUG, "GrabberUtils: postProcessing");
+        Logger.debug("GrabberUtils: postProcessing");
         html = html.replace("<h3/>", "<h3></h3>");
 
     	int pos1 = html.index_of("<iframe", 0);
@@ -481,9 +551,9 @@ public class FeedReader.grabberUtils : GLib.Object {
     	{
     		pos2 = html.index_of("/>", pos1);
     		string broken_iframe = html.substring(pos1, pos2+2-pos1);
-            logger.print(LogMessage.DEBUG, "GrabberUtils: broken = %s".printf(broken_iframe));
+            Logger.debug("GrabberUtils: broken = %s".printf(broken_iframe));
     		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length-2) + "></iframe>";
-            logger.print(LogMessage.DEBUG, "GrabberUtils: fixed = %s".printf(fixed_iframe));
+            Logger.debug("GrabberUtils: fixed = %s".printf(fixed_iframe));
     		html = html.replace(broken_iframe, fixed_iframe);
     		int pos3 = html.index_of("<iframe", pos1+7);
     		if(pos3 == pos1 || pos3 > html.length)
@@ -491,7 +561,7 @@ public class FeedReader.grabberUtils : GLib.Object {
     		else
     			pos1 = pos3;
     	}
-        logger.print(LogMessage.DEBUG, "GrabberUtils: postProcessing done");
+        Logger.debug("GrabberUtils: postProcessing done");
         return html;
     }
 }

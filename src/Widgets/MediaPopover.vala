@@ -54,7 +54,7 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 
 		if(mRow != null)
 		{
-			if(settings_general.get_boolean("mediaplayer"))
+			if(Settings.general().get_boolean("mediaplayer"))
 			{
 				play(mRow.getURL());
 			}
@@ -67,7 +67,7 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 				}
 				catch(GLib.SpawnError e)
 				{
-					logger.print(LogMessage.ERROR, "spawning command line: %s".printf(e.message));
+					Logger.error("spawning command line: %s".printf(e.message));
 				}
 			}
 		}

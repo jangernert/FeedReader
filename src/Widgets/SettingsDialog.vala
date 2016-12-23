@@ -15,6 +15,8 @@
 
 public class FeedReader.SettingsDialog : Gtk.Dialog {
 
+    private Gtk.ListBox m_serviceList;
+
     public signal void newFeedList(bool defaultSettings = false);
     public signal void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE);
     public signal void reloadArticleView();
@@ -56,48 +58,48 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     {
         var feed_settings = headline(_("Feed List:"));
 
-        var only_feeds = new SettingSwitch(_("Only show feeds"), settings_general, "only-feeds");
+        var only_feeds = new SettingSwitch(_("Only show feeds"), Settings.general(), "only-feeds");
         only_feeds.changed.connect(() => {
-        	settings_state.set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
-        	settings_state.set_string("feedlist-selected-row", "feed -4");
+        	Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
+        	Settings.state().set_string("feedlist-selected-row", "feed -4");
         	newFeedList(true);
         });
 
-        var only_unread = new SettingSwitch(_("Only show unread"), settings_general, "feedlist-only-show-unread");
+        var only_unread = new SettingSwitch(_("Only show unread"), Settings.general(), "feedlist-only-show-unread");
         only_unread.changed.connect(() => {
         	newFeedList();
         });
 
-		var feedlist_sort = new SettingDropbox(_("Sort FeedList by"), settings_general, "feedlist-sort-by", {_("Received"), _("Alphabetically")});
+		var feedlist_sort = new SettingDropbox(_("Sort FeedList by"), Settings.general(), "feedlist-sort-by", {_("Received"), _("Alphabetically")});
         feedlist_sort.changed.connect(() => {
         	newFeedList();
         });
 
-        var feedlist_theme = new SettingDropbox(_("Theme"), settings_general, "feedlist-theme", {_("Gtk+"), _("Dark"), _("elementary")});
+        var feedlist_theme = new SettingDropbox(_("Theme"), Settings.general(), "feedlist-theme", {_("Gtk+"), _("Dark"), _("elementary")});
         feedlist_theme.changed.connect(() => {
         	reloadCSS();
         });
 
         var article_settings = headline(_("Article List:"));
 
-        var article_sort = new SettingDropbox(_("Sort articles by"), settings_general, "articlelist-sort-by", {_("Received"), _("Date")});
+        var article_sort = new SettingDropbox(_("Sort articles by"), Settings.general(), "articlelist-sort-by", {_("Received"), _("Date")});
         article_sort.changed.connect(() => {
         	newArticleList();
         });
 
-        var newest_first = new SettingSwitch(_("Newest first"), settings_general, "articlelist-newest-first");
+        var newest_first = new SettingSwitch(_("Newest first"), Settings.general(), "articlelist-newest-first");
         newest_first.changed.connect(() => {
         	newArticleList();
         });
 
         var articleview_settings = headline(_("Article View:"));
 
-        var article_theme = new SettingDropbox(_("Theme"), settings_general, "article-theme", {_("Default"), _("Spring"), _("Midnight"), _("Parchment")});
+        var article_theme = new SettingDropbox(_("Theme"), Settings.general(), "article-theme", {_("Default"), _("Spring"), _("Midnight"), _("Parchment")});
 		article_theme.changed.connect(() => {
 			reloadArticleView();
 		});
 
-        var fontsize = new SettingDropbox(_("Font Size"), settings_general, "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
+        var fontsize = new SettingDropbox(_("Font Size"), Settings.general(), "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
 		fontsize.changed.connect(() => {
 			reloadArticleView();
 		});
@@ -125,30 +127,44 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     {
 		var sync_settings = headline(_("Sync:"));
 
-		var sync_count = new SettingSpin(_("Number of articles"), settings_general, "max-articles", 10, 5000, 10);
+		var sync_count = new SettingSpin(_("Number of articles"), Settings.general(), "max-articles", 10, 5000, 10);
 
-		var sync_time = new SettingSpin(_("Every (Minutes)"), settings_general, "sync", 5, 600, 5);
+		var sync_time = new SettingSpin(_("Every (Minutes)"), Settings.general(), "sync", 5, 600, 5);
 		sync_time.changed.connect(() => {
-			feedDaemon_interface.scheduleSync(settings_general.get_int("sync"));
+            try
+            {
+                DBusConnection.get_default().scheduleSync(Settings.general().get_int("sync"));
+            }
+            catch(GLib.Error e)
+            {
+                Logger.error("SettingsDialog.setup_Internal: scheduleSync %s".printf(e.message));
+            }
 		});
 
 		var db_settings = headline(_("Database:"));
 
-        var drop_articles = new SettingDropbox(_("Delete articles after"), settings_general, "drop-articles-after",
+        var drop_articles = new SettingDropbox(_("Delete articles after"), Settings.general(), "drop-articles-after",
 												{_("Never"), _("1 Week"), _("1 Month"), _("6 Months")});
 
 		var service_settings = headline(_("Additional Functionality:"));
 
-        var grabber = new SettingSwitch(_("Content Grabber"), settings_general,"content-grabber");
+        var grabber = new SettingSwitch(_("Content Grabber"), Settings.general(),"content-grabber");
 
-        var mediaplayer = new SettingSwitch(_("Internal Media Player"), settings_general,"mediaplayer");
+        var mediaplayer = new SettingSwitch(_("Internal Media Player"), Settings.general(),"mediaplayer");
 
 
     	var internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         internalsBox.expand = true;
         internalsBox.pack_start(sync_settings, false, true, 0);
-        if(feedDaemon_interface.useMaxArticles())
-		      internalsBox.pack_start(sync_count, false, true, 0);
+        try
+        {
+            if(DBusConnection.get_default().useMaxArticles())
+    		      internalsBox.pack_start(sync_count, false, true, 0);
+        }
+        catch(GLib.Error e)
+        {
+            Logger.error("SettingsDialog.setup_Internal: useMaxArticles %s".printf(e.message));
+        }
     	internalsBox.pack_start(sync_time, false, true, 0);
     	internalsBox.pack_start(db_settings, false, true, 0);
         internalsBox.pack_start(drop_articles, false, true, 0);
@@ -162,62 +178,21 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private Gtk.Box setup_Service()
     {
-		var service_list = new Gtk.ListBox();
-        service_list.set_selection_mode(Gtk.SelectionMode.NONE);
+		m_serviceList = new Gtk.ListBox();
+        m_serviceList.set_selection_mode(Gtk.SelectionMode.NONE);
+        m_serviceList.set_sort_func(sortFunc);
 
         var service_scroll = new Gtk.ScrolledWindow(null, null);
         service_scroll.expand = true;
         service_scroll.margin_top = 10;
         service_scroll.margin_bottom = 10;
 
-        var viewport = new Gtk.Viewport (null, null);
+        var viewport = new Gtk.Viewport(null, null);
         viewport.get_style_context().add_class("servicebox");
-        viewport.add(service_list);
+        viewport.add(m_serviceList);
         service_scroll.add(viewport);
 
-        var list = share.getAccounts();
-
-        foreach(var account in list)
-        {
-            if(share.needSetup(account.getID()))
-            {
-                ServiceSetup row = share.newSetup_withID(account.getID());
-    			row.removeRow.connect(() => {
-    				removeRow(row, service_list);
-    			});
-    			service_list.add(row);
-    			row.reveal();
-            }
-        }
-
-        var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
-        addAccount.set_relief(Gtk.ReliefStyle.NONE);
-        addAccount.get_style_context().add_class("addServiceButton");
-        addAccount.set_size_request(0, 48);
-		service_list.add(addAccount);
-
-		addAccount.clicked.connect(() => {
-			var children = service_list.get_children();
-			foreach(Gtk.Widget row in children)
-			{
-				var tmpRow = row as ServiceSetup;
-				if(tmpRow != null && !tmpRow.isLoggedIn())
-				{
-					share.deleteAccount(tmpRow.getID());
-					removeRow(tmpRow, service_list);
-				}
-			}
-
-			var popover = new ServiceSettingsPopover(addAccount);
-			popover.newAccount.connect((type) => {
-                ServiceSetup row = share.newSetup(type);
-    			row.removeRow.connect(() => {
-    				removeRow(row, service_list);
-    			});
-    			service_list.insert(row, 0);
-    			row.reveal();
-			});
-		});
+        refreshAccounts();
 
     	var serviceBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         serviceBox.expand = true;
@@ -226,15 +201,69 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         return serviceBox;
     }
 
+    public void refreshAccounts()
+	{
+        m_serviceList.set_header_func(null);
+		var children = m_serviceList.get_children();
+		foreach(Gtk.Widget row in children)
+		{
+			m_serviceList.remove(row);
+			row.destroy();
+		}
 
-    private Gtk.Label headline(string name)
-    {
-    	var headline = new Gtk.Label(name);
-        headline.margin_top = 15;
-        headline.set_alignment(0, 0.5f);
-        headline.get_style_context().add_class("bold");
-        return headline;
-    }
+        var list = Share.get_default().getAccounts();
+
+        foreach(var account in list)
+        {
+            if(account.isSystemAccount())
+            {
+                ServiceSetup row = Share.get_default().newSystemAccount(account.getID());
+                m_serviceList.add(row);
+    			row.reveal(false);
+            }
+            else if(Share.get_default().needSetup(account.getID()))
+            {
+                ServiceSetup row = Share.get_default().newSetup_withID(account.getID());
+    			row.removeRow.connect(() => {
+    				removeRow(row, m_serviceList);
+    			});
+    			m_serviceList.add(row);
+    			row.reveal(false);
+            }
+        }
+
+        var addAccount = new Gtk.Button.from_icon_name("list-add-symbolic", Gtk.IconSize.DND);
+        addAccount.set_relief(Gtk.ReliefStyle.NONE);
+        addAccount.get_style_context().add_class("addServiceButton");
+        addAccount.set_size_request(0, 48);
+        addAccount.show();
+		m_serviceList.add(addAccount);
+
+		addAccount.clicked.connect(() => {
+			children = m_serviceList.get_children();
+			foreach(Gtk.Widget row in children)
+			{
+				var tmpRow = row as ServiceSetup;
+				if(tmpRow != null && !tmpRow.isLoggedIn())
+				{
+					Share.get_default().refreshAccounts();
+					removeRow(tmpRow, m_serviceList);
+				}
+			}
+
+			var popover = new ServiceSettingsPopover(addAccount);
+			popover.newAccount.connect((type) => {
+                ServiceSetup row = Share.get_default().newSetup(type);
+    			row.removeRow.connect(() => {
+    				removeRow(row, m_serviceList);
+    			});
+    			m_serviceList.add(row);
+    			row.reveal();
+			});
+		});
+
+        m_serviceList.set_header_func(headerFunc);
+	}
 
     public void removeRow(ServiceSetup row, Gtk.ListBox list)
 	{
@@ -244,4 +273,93 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			return false;
 		});
 	}
+
+    private int sortFunc(Gtk.ListBoxRow row1, Gtk.ListBoxRow row2)
+	{
+		var r1 = row1 as ServiceSetup;
+		var r2 = row2 as ServiceSetup;
+
+        if(r1 == null && r2 == null)
+            return 0;
+        else if(r1 == null)
+            return 1;
+        else if(r2 == null)
+            return -1;
+
+        if(r1.getUserName() == ""
+        && r2.getUserName() == "")
+            return 0;
+        else if(r1.getUserName() == "")
+            return 1;
+        else if(r2.getUserName() == "")
+            return -1;
+
+		bool sys1 = r1.isSystemAccount();
+		bool sys2 = r2.isSystemAccount();
+
+		if(sys1 && sys2)
+            return 0;
+        else if(sys1)
+            return -1;
+
+        return 1;
+	}
+
+	private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
+	{
+		var label = new Gtk.Label(_("System Accounts"));
+		label.get_style_context().add_class("bold");
+		label.margin_top = 20;
+		label.margin_bottom = 5;
+
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		box.pack_start(label, true, true, 0);
+		box.pack_end(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
+		box.show_all();
+
+        var r1 = row as ServiceSetup;
+
+        // this is the plus-button
+        if(r1 == null)
+            return;
+
+        bool sys1 = r1.isSystemAccount();
+
+        if(before == null)
+        {
+            if(sys1)
+    		{
+    			row.set_header(box);
+    			return;
+    		}
+            else
+            {
+                label.set_text(_("FeedReader Accounts"));
+                row.set_header(box);
+    			return;
+            }
+        }
+
+
+		var r2 = before as ServiceSetup;
+        bool sys2 = r2.isSystemAccount();
+
+        if(r1 != null && r2 != null)
+        {
+    		if(!sys1 && sys2)
+            {
+                label.set_text(_("FeedReader Accounts"));
+                row.set_header(box);
+            }
+        }
+	}
+
+    private Gtk.Label headline(string name)
+    {
+    	var headline = new Gtk.Label(name);
+        headline.margin_top = 15;
+        headline.set_alignment(0, 0.5f);
+        headline.get_style_context().add_class("bold");
+        return headline;
+    }
 }

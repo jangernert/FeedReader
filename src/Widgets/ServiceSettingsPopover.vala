@@ -28,7 +28,7 @@ public class FeedReader.ServiceSettingsPopover : Gtk.Popover {
 			this.hide();
         });
 
-		foreach(var account in share.getAccountTypes())
+		foreach(var account in Share.get_default().getAccountTypes())
 		{
 			var row = new ServiceSettingsPopoverRow(account.getAccountName(), account.getType(), account.getIconName());
 			list.add(row);
@@ -58,7 +58,7 @@ public class FeedReader.ServiceSettingsPopoverRow : Gtk.ListBoxRow {
         m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 3);
         m_box.margin = 3;
 
-        var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
+		var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.DND);
 
         m_label = new Gtk.Label(serviceName);
         m_label.set_line_wrap_mode(Pango.WrapMode.WORD);

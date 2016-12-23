@@ -26,31 +26,41 @@ public class FeedReader.localUtils : GLib.Object {
 		{
 			// download
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 	        session.timeout = 5;
 	        var msg = new Soup.Message("GET", xmlURL.escape(""));
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
+			bool hasIcon = true;
+			string url = "https://google.com";
 
 			// parse
 			Rss.Parser parser = new Rss.Parser();
 			parser.load_from_data(xml, xml.length);
 			var doc = parser.get_document();
 
+			if(doc.link != null
+			&& doc.link != "")
+				url = doc.link;
+
 			if(doc.image_url != null
 			&& doc.image_url != "")
 			{
 				downloadIcon(feedID, doc.image_url);
 			}
-			else
+			else if(doc.link != null
+			&& doc.link != "")
 			{
 				Utils.downloadIcon(feedID, doc.link);
 			}
+			else
+				hasIcon = false;
 
 			var Feed = new feed(
 						feedID,
 						doc.title,
-						doc.link,
-						true,
+						url,
+						hasIcon,
 						0,
 						catIDs,
 						xmlURL);
@@ -59,7 +69,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "localInterface - addFeed: " + e.message);
+			Logger.error("localInterface - addFeed " + xmlURL + " : " + e.message);
 		}
 
 		return null;
@@ -75,11 +85,11 @@ public class FeedReader.localUtils : GLib.Object {
 
 		try
 		{
-			return GLib.convert(text, -1, "utf-8", locale);
+			return Utils.UTF8fix(GLib.convert(text, -1, "utf-8", locale), false);
 		}
 		catch(ConvertError e)
 		{
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error(e.message);
 		}
 
 		return "";
@@ -96,7 +106,7 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "localUtils - deleteIcon: " + e.message);
+			Logger.error("localUtils - deleteIcon: " + e.message);
 		}
 		return false;
 	}
@@ -106,11 +116,13 @@ public class FeedReader.localUtils : GLib.Object {
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
-		try{
+		try
+		{
 			path.make_directory_with_parents();
 		}
-		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+		catch(GLib.Error e)
+		{
+			//Logger.debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id + ".ico";
@@ -124,6 +136,7 @@ public class FeedReader.localUtils : GLib.Object {
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.ssl_strict = false;
 			var status = session.send_message(message_dlIcon);
 			if(status == 200)
@@ -135,11 +148,11 @@ public class FeedReader.localUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 

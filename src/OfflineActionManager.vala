@@ -64,32 +64,32 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	private void addAction(OfflineAction action)
 	{
-		if(dataBase.offlineActionNecessary(action))
+		if(dbDaemon.get_default().offlineActionNecessary(action))
 		{
-			dataBase.addOfflineAction(action.getType(), action.getID());
+			dbDaemon.get_default().addOfflineAction(action.getType(), action.getID());
 		}
 		else
 		{
-			dataBase.deleteOppositeOfflineAction(action);
+			dbDaemon.get_default().deleteOppositeOfflineAction(action);
 		}
 	}
 
 	public void goOnline()
 	{
-		if(dataBase.isTableEmpty("OfflineActions"))
+		if(dbDaemon.get_default().isTableEmpty("OfflineActions"))
 		{
-			logger.print(LogMessage.DEBUG, "OfflineManager - goOnline: no actions to perform");
+			Logger.debug("OfflineManager - goOnline: no actions to perform");
 			return;
 		}
 
 
-		logger.print(LogMessage.DEBUG, "OfflineActionManager: goOnline");
+		Logger.debug("OfflineActionManager: goOnline");
 
-		var actions = dataBase.readOfflineActions();
+		var actions = dbDaemon.get_default().readOfflineActions();
 
 		foreach(OfflineAction action in actions)
 		{
-			logger.print(LogMessage.DEBUG, "OfflineActionManager: goOnline %s %s".printf(action.getID(), action.getType().to_string()));
+			Logger.debug("OfflineActionManager: goOnline %s %s".printf(action.getID(), action.getType().to_string()));
 			switch(action.getType())
 			{
 				case OfflineActions.MARK_READ:
@@ -107,19 +107,19 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 					}
 					break;
 				case OfflineActions.MARK_STARRED:
-					server.setArticleIsMarked(action.getID(), ArticleStatus.MARKED);
+					FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.MARKED);
 					break;
 				case OfflineActions.MARK_UNSTARRED:
-					server.setArticleIsMarked(action.getID(), ArticleStatus.UNMARKED);
+					FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.UNMARKED);
 					break;
 				case OfflineActions.MARK_READ_FEED:
-					server.setFeedRead(action.getID());
+					FeedServer.get_default().setFeedRead(action.getID());
 					break;
 				case OfflineActions.MARK_READ_CATEGORY:
-					server.setCategorieRead(action.getID());
+					FeedServer.get_default().setCategorieRead(action.getID());
 					break;
 				case OfflineActions.MARK_READ_ALL:
-					server.markAllItemsRead();
+					FeedServer.get_default().markAllItemsRead();
 					break;
 			}
 
@@ -134,14 +134,14 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	private void executeActions(string ids, OfflineActions action)
 	{
-		logger.print(LogMessage.DEBUG, "OfflineActionManager: executeActions %s %s".printf(ids, action.to_string()));
+		Logger.debug("OfflineActionManager: executeActions %s %s".printf(ids, action.to_string()));
 		switch(action)
 		{
 			case OfflineActions.MARK_READ:
-				server.setArticleIsRead(ids, ArticleStatus.READ);
+				FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.READ);
 				break;
 			case OfflineActions.MARK_UNREAD:
-				server.setArticleIsRead(ids, ArticleStatus.UNREAD);
+				FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.UNREAD);
 				break;
 		}
 	}

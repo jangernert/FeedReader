@@ -13,19 +13,13 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.Logger logger;
-
 public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface {
 
-	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
 	private localUtils m_utils;
-
 
 	public void init()
 	{
 		m_utils = new localUtils();
-		logger = m_logger;
 	}
 
 
@@ -111,7 +105,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool serverAvailable()
 	{
-		return Utils.ping("google.com");
+		return Utils.ping("https://www.google.com/");
 	}
 
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)
@@ -153,10 +147,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string tagID = "1";
 
-		if(!m_dataBase.isTableEmpty("tags"))
-			tagID = (int.parse(m_dataBase.getMaxID("tags", "tagID")) + 1).to_string();
+		if(!dbDaemon.get_default().isTableEmpty("tags"))
+			tagID = (int.parse(dbDaemon.get_default().getMaxID("tags", "tagID")) + 1).to_string();
 
-		logger.print(LogMessage.INFO, "createTag: ID = " + tagID);
+		Logger.info("createTag: ID = " + tagID);
 		return tagID;
 	}
 
@@ -180,7 +174,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var cat = new category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
 			var list = new Gee.LinkedList<category>();
 			list.add(cat);
-			m_dataBase.write_categories(list);
+			dbDaemon.get_default().write_categories(list);
 			catIDs += cID;
 		}
 		else if(catID != null && newCatName == null)
@@ -194,19 +188,55 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		string feedID = "feedID1";
 
-		if(!m_dataBase.isTableEmpty("feeds"))
+		if(!dbDaemon.get_default().isTableEmpty("feeds"))
 		{
-			feedID = "feedID%i".printf(int.parse(m_dataBase.getHighestFeedID().substring(6)) + 1);
+			feedID = "feedID%i".printf(int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1);
 		}
 
-		logger.print(LogMessage.INFO, "addFeed: ID = " + feedID);
-		var Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
+		Logger.info("addFeed: ID = " + feedID);
+		feed? Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
 
-		var list = new Gee.LinkedList<feed>();
-		list.add(Feed);
-		m_dataBase.write_feeds(list);
+		if(Feed != null)
+		{
+			var list = new Gee.LinkedList<feed>();
+			list.add(Feed);
+			dbDaemon.get_default().write_feeds(list);
+			return feedID;
+		}
 
-		return feedID;
+		return "";
+	}
+
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		var finishedFeeds = new Gee.LinkedList<feed>();
+
+		int highestID = 0;
+
+		if(!dbDaemon.get_default().isTableEmpty("feeds"))
+			highestID = int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1;
+
+		foreach(feed f in feeds)
+		{
+			string feedID = @"feedID$highestID";
+			highestID++;
+
+			Logger.info("addFeed: ID = " + feedID);
+			feed? Feed = m_utils.downloadFeed(f.getXmlUrl(), feedID, f.getCatIDs());
+
+			if(Feed != null)
+			{
+				if(Feed.getTitle() != "No Title")
+					Feed.setTitle(f.getTitle());
+
+				finishedFeeds.add(Feed);
+			}
+
+			else
+				Logger.error("Couldn't add Feed: " + f.getXmlUrl());
+		}
+
+		dbDaemon.get_default().write_feeds(finishedFeeds);
 	}
 
 	public void removeFeed(string feedID)
@@ -229,12 +259,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string catID = "catID1";
 
-		if(!m_dataBase.isTableEmpty("categories"))
+		if(!dbDaemon.get_default().isTableEmpty("categories"))
 		{
-			string? id = m_dataBase.getCategoryID(title);
+			string? id = dbDaemon.get_default().getCategoryID(title);
 			if(id == null)
 			{
-				catID = "catID%i".printf(int.parse(m_dataBase.getMaxID("categories", "categorieID").substring(5)) + 1);
+				catID = "catID%i".printf(int.parse(dbDaemon.get_default().getMaxID("categories", "categorieID").substring(5)) + 1);
 			}
 			else
 			{
@@ -242,7 +272,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			}
 		}
 
-		logger.print(LogMessage.INFO, "createCategory: ID = " + catID);
+		Logger.info("createCategory: ID = " + catID);
 		return catID;
 	}
 
@@ -274,22 +304,22 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		var cats = m_dataBase.read_categories();
+		var cats = dbDaemon.get_default().read_categories();
 		foreach(category cat in cats)
 		{
 			categories.add(cat);
 		}
 
-		var t = m_dataBase.read_tags();
+		var t = dbDaemon.get_default().read_tags();
 		foreach(tag Tag in t)
 		{
 			tags.add(Tag);
 		}
 
-		var f = m_dataBase.read_feeds();
+		var f = dbDaemon.get_default().read_feeds();
 		foreach(feed Feed in f)
 		{
-			feeds.add(m_utils.downloadFeed(Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs()));
+			feeds.add(Feed);
 		}
 
 		return true;
@@ -302,12 +332,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
 	{
-		var f = m_dataBase.read_feeds();
+		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
 
 		foreach(feed Feed in f)
 		{
+			Logger.debug("getArticles for feed: " + Feed.getTitle());
 			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
 			session.timeout = 5;
 			var msg = new Soup.Message("GET", Feed.getXmlUrl().escape(""));
 			session.send_message(msg);
@@ -315,7 +347,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 			// parse
 			Rss.Parser parser = new Rss.Parser();
-			parser.load_from_data(xml, xml.length);
+			try
+			{
+				parser.load_from_data(xml, xml.length);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("localInterface.getArticles: %s".printf(e.message));
+			}
 			var doc = parser.get_document();
 			string? locale = null;
 			if(doc.encoding != null
@@ -334,10 +373,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
                 	GLib.Time time = GLib.Time();
                 	time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
                 	date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
-				}
 
-				logger.print(LogMessage.INFO, item.title);
-				logger.print(LogMessage.INFO, m_utils.convert(item.title, locale));
+					if(date == null)
+						date = new GLib.DateTime.now_local();
+				}
 
 				string content = m_utils.convert(item.description, locale);
 
@@ -347,8 +386,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				var Article = new article
 				(
-									item.guid,
-									m_utils.convert(item.title, locale),
+									(item.guid != null) ? item.guid : Utils.string_random(16),
+									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
 									item.link,
 									Feed.getFeedID(),
 									ArticleStatus.UNREAD,
@@ -372,26 +411,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articleArray.size > 0)
 		{
-			var new_articles = new Gee.LinkedList<article>();
-			string last = articleArray.last().getArticleID();
-
-			foreach(article Article in articleArray)
-			{
-				int before = m_dataBase.getHighestRowID();
-				FeedServer.grabContent(Article);
-				new_articles.add(Article);
-
-				if(new_articles.size == 10 || Article.getArticleID() == last)
-				{
-					writeInterfaceState();
-					logger.print(LogMessage.DEBUG, "FeedServer: write batch of %i articles to db".printf(new_articles.size));
-					m_dataBase.write_articles(new_articles);
-					updateFeedList();
-					updateArticleList();
-					new_articles = new Gee.LinkedList<article>();
-					setNewRows(before);
-				}
-			}
+			int before = dbDaemon.get_default().getHighestRowID();
+			writeInterfaceState();
+			updateFeedList();
+			updateArticleList();
+			dbDaemon.get_default().write_articles(articleArray);
+			setNewRows(before);
 		}
 	}
 

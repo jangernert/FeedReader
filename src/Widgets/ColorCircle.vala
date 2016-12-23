@@ -23,15 +23,8 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 	public ColorCircle(int color, bool clickable = true)
 	{
 		m_color = color;
-
-		try{
-			m_icon = new Gtk.Image.from_surface(drawIcon());
-			m_icon_light = new Gtk.Image.from_surface(drawIcon(true));
-		}
-		catch(GLib.Error e)
-		{
-			logger.print(LogMessage.DEBUG, e.message);
-		}
+		m_icon = new Gtk.Image.from_surface(drawIcon());
+		m_icon_light = new Gtk.Image.from_surface(drawIcon(true));
 
 		this.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
 		this.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
@@ -52,15 +45,8 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 	public void newColor(int color)
 	{
 		m_color = color;
-
-		try{
-			m_icon.set_from_surface(drawIcon());
-			m_icon_light.set_from_surface(drawIcon(true));
-		}
-		catch(GLib.Error e)
-		{
-			logger.print(LogMessage.DEBUG, e.message);
-		}
+		m_icon.set_from_surface(drawIcon());
+		m_icon_light.set_from_surface(drawIcon(true));
 	}
 
 
@@ -93,7 +79,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 				return false;
 		}
 
-		logger.print(LogMessage.DEBUG, "ColorCircle: click");
+		Logger.debug("ColorCircle: click");
 		clicked(m_color);
 		return true;
 	}
@@ -104,7 +90,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		int scaleFactor = this.get_scale_factor();
 		int size = 16 * scaleFactor;
 		var color = Gdk.RGBA();
-		color.parse(COLORS[m_color]);
+		color.parse(Constants.COLORS[m_color]);
 		double lighten = 1.0;
 		if(light)
 			lighten = 0.7;

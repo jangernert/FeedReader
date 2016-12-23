@@ -13,10 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-
-FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
-
 public class FeedReader.ttrssAPI : GLib.Object {
 
 	public string m_ttrss_url { get; private set; }
@@ -34,7 +30,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		logger.print(LogMessage.DEBUG, "TTRSS: login");
+		Logger.debug("TTRSS: login");
 		string username = m_utils.getUser();
 		string passwd = m_utils.getPasswd();
 		m_ttrss_url = m_utils.getURL();
@@ -59,7 +55,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("user", username);
 		message.add_string("password", passwd);
 		int error = message.send();
-		message.printMessage();
 		if(error != ConnectionError.NO_RESPONSE)
 			message.printResponse();
 
@@ -68,8 +63,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			var response = message.get_response_object();
 			m_ttrss_sessionid = response.get_string_member("session_id");
 			m_ttrss_apilevel = response.get_int_member("api_level");
-			logger.print(LogMessage.INFO, "TTRSS Session ID: %s".printf(m_ttrss_sessionid));
-			logger.print(LogMessage.INFO, "TTRSS API Level: %lld".printf(m_ttrss_apilevel));
+			Logger.info("TTRSS Session ID: %s".printf(m_ttrss_sessionid));
+			Logger.info("TTRSS API Level: %lld".printf(m_ttrss_apilevel));
 
 			if(haveAPIplugin())
 				return LoginResponse.SUCCESS;
@@ -78,7 +73,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		else if(error == ConnectionError.API_ERROR)
 		{
-			return LoginResponse.WRONG_LOGIN;
+			return LoginResponse.API_ERROR;
 		}
 		else if(error == ConnectionError.NO_RESPONSE)
 		{
@@ -106,7 +101,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "logout");
 		int error = message.send();
-		logger.print(LogMessage.WARNING, "TTRSS: logout");
+		Logger.warning("TTRSS: logout");
 		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
@@ -126,7 +121,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("sid", m_ttrss_sessionid);
 		message.add_string("op", "isLoggedIn");
 		int error = message.send();
-		logger.print(LogMessage.DEBUG, "TTRSS: isloggedin?");
+		Logger.debug("TTRSS: isloggedin?");
 		message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
@@ -174,7 +169,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			var response = message.get_response_object();
 			unread = int.parse(response.get_string_member("unread"));
 		}
-		logger.print(LogMessage.INFO, "There are %i unread articles".printf(unread));
+		Logger.info("There are %i unread articles".printf(unread));
 
 		return unread;
 	}
@@ -286,7 +281,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					new tag(
 						tag_node.get_int_member("id").to_string(),
 						tag_node.get_string_member("caption"),
-						dataBase.getTagColor()
+						dbDaemon.get_default().getTagColor()
 					)
 				);
 			}
@@ -298,7 +293,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public string getIconDir()
+	public string? getIconDir()
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -907,7 +902,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	public bool ping()
 	{
 		var message = new ttrssMessage(m_ttrss_url);
-		logger.print(LogMessage.DEBUG, "TTRSS: ping");
+		Logger.debug("TTRSS: ping");
 		int error = message.send(true);
 
 		if(error == ConnectionError.SUCCESS)

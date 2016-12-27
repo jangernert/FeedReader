@@ -100,7 +100,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 			DBusConnection.get_default().resetDB();
 			DBusConnection.get_default().resetAccount();
 
-			Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+			Utils.remove_directory(GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
 
 			Settings.state().set_boolean("currently-updating", false);
 			DBusConnection.get_default().login("none");

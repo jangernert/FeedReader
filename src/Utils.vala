@@ -356,7 +356,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void copyAutostart()
 	{
-		string filename = GLib.Environment.get_home_dir() + "/.config/autostart/feedreader-autostart.desktop";
+		string filename = GLib.Environment.get_user_data_dir() + "/feedreader-autostart.desktop";
 
 		if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{
@@ -728,7 +728,7 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static bool downloadIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/")
+	public static bool downloadIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		var path = GLib.File.new_for_path(icon_path);

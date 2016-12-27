@@ -30,7 +30,7 @@ public class FeedReader.dbBase : GLib.Object {
 	protected dbBase(string dbFile = "feedreader-04.db")
 	{
 		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
-		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";
+		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/";
 		var path = GLib.File.new_for_path(db_path);
 		if(!path.query_exists())
 		{

@@ -65,7 +65,12 @@ public class FeedReader.Logger : GLib.Object {
 		var logLevel = Settings.general().get_enum("log-level");
 		m_LogLevel = LogLevel.DEBUG;
 
-		string path = "%s/.local/share/feedreader/%s.log".printf(GLib.Environment.get_home_dir(), filename);
+		string directory = GLib.Path.build_filename(GLib.Environment.get_user_data_dir(), "feedreader");
+		string path = "%s/%s.log".printf(directory, filename);
+		try {
+			GLib.File.new_for_path(directory).make_directory_with_parents();
+		}
+		catch {}
 
 		if(FileUtils.test(path, GLib.FileTest.EXISTS))
 			GLib.FileUtils.remove(path);

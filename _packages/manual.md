@@ -1,5 +1,5 @@
 ---
-distro: Build from source
+distro: Compile
 data-content: source
 ---
 <h3><small>You will need the following packages isntalled:</small></h3>

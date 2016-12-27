@@ -1,5 +1,5 @@
 ---
-distro: Ubuntu / elementary OS
+distro: Ubuntu / elementary
 data-content: ubuntu
 ---
 <h3><small>Available in the FeedReader <a href="https://code.launchpad.net/~eviltwin1/+archive/ubuntu/feedreader-stable">Stable PPA</a></small></h3>

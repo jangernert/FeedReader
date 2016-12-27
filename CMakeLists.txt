@@ -53,8 +53,7 @@ set(MODULES
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
 	libpeas-1.0
-	libcurl
-	goa-1.0)
+	libcurl)
 
 if(LIBUNITY_FOUND)
 	list(APPEND MODULES unity)
@@ -126,8 +125,7 @@ set(UI_PACKAGES
 	WebKit2-4.0
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
-	libpeas-1.0
-	goa-1.0)
+	libpeas-1.0)
 
 vala_precompile(UI ${UI_NAME}
 	src/DBusConnection.vala

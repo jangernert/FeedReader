@@ -130,7 +130,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		SourceFunc callback = shareAsync.callback;
 		new GLib.Thread<void*>(null, () => {
 			Share.get_default().addBookmark(id, url);
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		});
 		yield;

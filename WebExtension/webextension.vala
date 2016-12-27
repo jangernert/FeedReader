@@ -35,9 +35,9 @@ public class FeedReaderWebExtension : Object {
 
     public void recalculate()
     {
-    	message("recalculate");
-	       var images = m_doc.get_images();
-	          ulong count = images.get_length();
+        message("recalculate");
+        var images = m_doc.get_images();
+        ulong count = images.get_length();
 
     	for(ulong i = 0; i < count; i++)
     	{

@@ -75,7 +75,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 		    {
 				Logger.error("Unable discover_uri: " + e.message);
 			}
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 
@@ -98,7 +98,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 		m_player["uri"] = m_URL;
 
 		Gst.Bus bus = m_player.get_bus();
-		bus.add_watch(GLib.Priority.DEFAULT, busCallback);
+		bus.add_watch(GLib.Priority.LOW, busCallback);
 
 		GLib.Timeout.add(50, () => {
 			Gst.State state;

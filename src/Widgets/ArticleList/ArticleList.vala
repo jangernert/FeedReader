@@ -141,7 +141,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -214,7 +214,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -245,7 +245,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -301,7 +301,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														newCount);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------

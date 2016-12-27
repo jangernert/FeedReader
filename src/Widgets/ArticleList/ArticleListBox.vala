@@ -110,7 +110,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 			checkQueue(item, balance, pos, reverse, animate);
 			return false;
-		});
+		}, GLib.Priority.HIGH_IDLE);
 	}
 
 	private void checkQueue(article item, ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)

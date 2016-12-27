@@ -46,7 +46,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		this.add(m_revealer);
 		this.show_all();
 
-		GLib.Idle.add(populate);
+		GLib.Idle.add(populate, GLib.Priority.HIGH_IDLE);
 	}
 
 	private bool populate()

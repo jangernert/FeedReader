@@ -120,7 +120,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			m_complete.set_model(list_store);
 			m_catEntry.set_completion(m_complete);
 			return false;
-		});
+		}, GLib.Priority.HIGH_IDLE);
 	}
 
 	private void addFeed()

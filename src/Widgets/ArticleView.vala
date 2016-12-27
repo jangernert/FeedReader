@@ -26,7 +26,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private Gtk.Overlay m_videoOverlay;
 	private ArticleViewUrlOverlay m_UrlOverlay;
 	private Gtk.Stack m_stack;
-	private WebKit.WebView m_currentView;
+	private WebKit.WebView? m_currentView = null;
 	private Gdk.RGBA? m_color = null;
 	private fullscreenHeaderbar m_fsHead;
 	private fullscreenButton m_prevButton;
@@ -429,6 +429,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public void setScrollPos(int pos)
 	{
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
+			return;
+
 		m_busy = true;
 		m_currentView.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
 			try
@@ -446,7 +451,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private int getScollUpper()
 	{
 		if(m_stack.get_visible_child_name() == "empty"
-		|| m_stack.get_visible_child_name() == "crash")
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
 			return 0;
 
 		string javascript = """
@@ -483,7 +489,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	public int getScrollPos()
 	{
 		if(m_stack.get_visible_child_name() == "empty"
-		|| m_stack.get_visible_child_name() == "crash")
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
 			return 0;
 
 		// use mainloop to prevent app from shutting down before the result can be fetched
@@ -550,7 +557,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	    	{
 	    		if(m_connected
 				&& m_stack.get_visible_child_name() != "empty"
-				&& m_stack.get_visible_child_name() != "crash")
+				&& m_stack.get_visible_child_name() != "crash"
+				&& m_currentView != null)
 	    			m_messenger.recalculate();
 	    	}
 	    	catch(GLib.IOError e)

@@ -267,7 +267,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 						Article.getDateNice(),
 						Article.getFeedID()
 					)
-				, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+				, "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
 			this.show_all();
 			return false;
 		});
@@ -376,7 +376,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			case WebKit.LoadEvent.STARTED:
 				Logger.debug("ArticleView: load STARTED");
 				string url = m_currentView.get_uri();
-				if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
+				if(url != "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/")
 				{
 					Logger.debug(@"ArticleView: open external url: $url");
 					try

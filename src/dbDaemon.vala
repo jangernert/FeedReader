@@ -121,7 +121,7 @@ public class FeedReader.dbDaemon : dbBase {
     {
         Logger.info("Deleting article \"%s\"".printf(articleID));
         executeSQL("DELETE FROM main.articles WHERE articleID = \"" + articleID + "\"");
-        string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+        string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID, articleID);
         Utils.remove_directory(folder_path);
     }
 
@@ -711,7 +711,7 @@ public class FeedReader.dbDaemon : dbBase {
     {
         Logger.warning("dbDaemon: Deleting all articles of feed \"%s\"".printf(feedID));
         executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
-        string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/".printf(feedID);
+        string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/".printf(feedID);
         Utils.remove_directory(folder_path);
     }
 

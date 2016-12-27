@@ -32,7 +32,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 
 		try
 		{
-			var iconDirPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+			var iconDirPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
 			var iconDirectory = GLib.File.new_for_path(iconDirPath);
 			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
 			GLib.FileInfo? fileInfo = null;
@@ -55,7 +55,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 	{
 		try
 		{
-			var iconDirPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+			var iconDirPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
 			var iconDirectory = GLib.File.new_for_path(iconDirPath);
 			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
 			GLib.FileInfo? fileInfo = null;

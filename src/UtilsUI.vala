@@ -165,7 +165,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 														Gtk.ResponseType.ACCEPT);
 			save_dialog.set_do_overwrite_confirmation(true);
 			save_dialog.set_modal(true);
-			save_dialog.set_current_folder(GLib.Environment.get_home_dir());
+			save_dialog.set_current_folder(GLib.Environment.get_user_data_dir());
 			save_dialog.set_current_name("Article_Image" + map.get(mimeType));
 			save_dialog.set_filter(filter);
 			save_dialog.response.connect((dialog, response_id) => {
@@ -214,7 +214,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 													Gtk.ResponseType.ACCEPT);
 		save_dialog.set_do_overwrite_confirmation(true);
 		save_dialog.set_modal(true);
-		save_dialog.set_current_folder(GLib.Environment.get_home_dir());
+		save_dialog.set_current_folder(GLib.Environment.get_user_data_dir());
 		save_dialog.set_current_name("Article.pdf");
 		save_dialog.set_filter(filter);
 		save_dialog.response.connect((dialog, response_id) => {

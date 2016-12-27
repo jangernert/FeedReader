@@ -15,8 +15,8 @@
 
 public class FeedReader.MediaPlayer : Gtk.Box {
 
-	private Gst.Element m_player;
-	private Gtk.Widget m_videoWidget;
+	private dynamic Gst.Element m_player;
+	private dynamic Gtk.Widget m_videoWidget;
 	private Gtk.Stack m_playStack;
 	private Gtk.Button m_playButton;
 	private Gtk.Spinner m_playSpinner;

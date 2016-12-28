@@ -96,6 +96,8 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 		m_articleList = new ArticleList();
 		m_articleList.drag_begin.connect((context) => {
+			if(dbUI.get_default().read_tags().is_empty)
+				m_feedList.newFeedlist(false, true);
 			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
 			m_feedList.addEmptyTagRow();
@@ -103,7 +105,13 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_articleList.drag_end.connect((context) => {
 			Logger.debug("ContentPage: articleList drag_end signal");
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), true);
-			m_feedList.removeEmptyTagRow();
+			if(!dbUI.get_default().read_tags().is_empty)
+				m_feedList.removeEmptyTagRow();
+		});
+		m_articleList.drag_failed.connect((context, result) => {
+			if(dbUI.get_default().read_tags().is_empty)
+				m_feedList.newFeedlist(false, false);
+			return false;
 		});
 		setArticleListState((ArticleListState)Settings.state().get_enum("show-articles"));
 

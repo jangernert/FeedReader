@@ -78,6 +78,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_List2.drag_begin.connect((context) => {drag_begin(context);});
 		m_List1.drag_end.connect((context) => {drag_end(context);});
 		m_List2.drag_end.connect((context) => {drag_end(context);});
+		m_List1.drag_failed.connect((context, result) => {drag_failed(context, result); return false;});
+		m_List2.drag_failed.connect((context, result) => {drag_failed(context, result); return false;});
 		m_scroll1.add(m_List1);
 		m_scroll2.add(m_List2);
 

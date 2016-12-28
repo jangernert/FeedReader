@@ -548,6 +548,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_currentScroll.scrollDiff(pos);
 			Settings.state().set_double("articlelist-scrollpos",  0);
 		}
+		else
+			m_currentScroll.scrollToPos(0, false);
 	}
 
 	public void removeTagFromSelectedRow(string tagID)

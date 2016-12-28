@@ -269,7 +269,8 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
 			if(m_tagID == TagID.NEW && context != null)
 			{
-				Gtk.drag_finish(context, true, false, time);
+				Logger.debug("TagRow: cancel drag");
+				Gtk.drag_finish(context, false, false, time);
 			}
 		});
 

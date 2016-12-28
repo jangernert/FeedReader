@@ -1106,7 +1106,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private bool onDragEnd(Gdk.DragContext context, Gtk.DragResult result)
 	{
-		Logger.debug("FeedList: onDragBegin");
+		Logger.debug("FeedList: onDragEnd");
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{

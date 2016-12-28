@@ -198,6 +198,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 				this.drag_begin.connect(onDragBegin);
 		        this.drag_data_get.connect(onDragDataGet);
+				this.drag_failed.connect(onDragFailed);
 			}
 		}
 		catch(GLib.Error e)
@@ -228,6 +229,12 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		{
 			selection_data.set_text("ERROR!!!!!1111eleven", -1);
 		}
+	}
+
+	private bool onDragFailed(Gdk.DragContext context, Gtk.DragResult result)
+	{
+		Logger.debug("ArticleRow: onDragFailed " + result.to_string());
+		return false;
 	}
 
 	private Gtk.Image getFeedIcon()

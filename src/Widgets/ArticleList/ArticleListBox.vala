@@ -174,7 +174,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			}
 		}
 
-		if (m_selectSourceID > 0)
+		if(m_selectSourceID > 0)
 		{
             GLib.Source.remove(m_selectSourceID);
             m_selectSourceID = 0;

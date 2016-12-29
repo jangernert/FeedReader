@@ -59,6 +59,7 @@ namespace FeedReader {
 
         private int _selected = -1;
         private Gee.HashMap<int, Item> item_map;
+        private uint m_timeout_source_id = 0;
 
         /**
          * Makes new ModeButton
@@ -160,7 +161,17 @@ namespace FeedReader {
 
                 _selected = new_active_index;
 
-                mode_changed (new_item.get_child ());
+                if(m_timeout_source_id > 0)
+    			{
+    				GLib.Source.remove(m_timeout_source_id);
+    				m_timeout_source_id = 0;
+    			}
+
+    			m_timeout_source_id = GLib.Timeout.add(50, () => {
+    				mode_changed(new_item.get_child());
+                    m_timeout_source_id = 0;
+    				return false;
+    			});
             }
         }
 

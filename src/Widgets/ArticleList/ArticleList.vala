@@ -122,6 +122,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_loadThread.join();
 
 		m_currentScroll.scrolledBottom.disconnect(loadMore);
+		m_currentScroll.scrollToPos(0, false);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
 		bool newArticles = false;
@@ -550,8 +551,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_currentScroll.scrollDiff(pos);
 			Settings.state().set_double("articlelist-scrollpos",  0);
 		}
-		else
-			m_currentScroll.scrollToPos(0, false);
 	}
 
 	public void removeTagFromSelectedRow(string tagID)

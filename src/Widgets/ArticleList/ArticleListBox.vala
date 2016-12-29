@@ -301,8 +301,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public void removeRow(articleRow row, int animateDuration = 700)
 	{
+		var id = row.getID();
 		row.reveal(false, animateDuration);
-		m_articles.remove(row.getID());
+		m_articles.remove(id);
 		GLib.Timeout.add(animateDuration + 50, () => {
 			this.remove(row);
 			return false;
@@ -374,11 +375,14 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 						if((selectedRow != null && tmpRow.getID() != selectedRow.getID())
 						|| selectedRow == null)
 						{
-							if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
-							|| (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
+							if(m_articles.contains(tmpRow.getID()))
 							{
-								removeRow(tmpRow);
-								break;
+								if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
+								|| (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
+								{
+									removeRow(tmpRow);
+									break;
+								}
 							}
 						}
 					}

@@ -7,7 +7,6 @@ next_page_link: //div[@class="post-content"]/div[@class='row pagination']/a[cont
 
 strip_id_or_class: jdg-recommend
 strip_id_or_class: proofreader-bloc
-strip_id_or_class: single-test
 
 body: //div[contains(concat(' ',normalize-space(@class),' '),' post-content ')]
 test_url: http://news.pixelistes.com/pixelistes-partenaire-du-salon-de-la-photo-de-paris/

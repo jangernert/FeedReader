@@ -5,10 +5,11 @@ strip_id_or_class: teaserImTeaser
 strip_id_or_class: Comments
 strip_id_or_class: mediaInfo
 strip: //div[contains(@class, 'mediaCon')]//iframe
+strip_id_or_class: metablockwrapper
 
 prune: no
 
-test_url: http://www.tagesschau.de/ausland/snowden-dateien-entschluesselung-101.html
-test_contains: Snowden hatte zunächst für
+test_url: http://www.tagesschau.de/ausland/aleppo-477.html
+test_contains: bevor aus Aleppo ein einziger großer Friedhof wird
 
 test_url: http://www.tagesschau.de/xml/rss2

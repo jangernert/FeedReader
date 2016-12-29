@@ -7,4 +7,5 @@ strip: //p[@class="anzeige"]
 strip: //section[@class="authors"]
 strip: //div[contains(@class, "embed")]
 
-test_url: http://www.sueddeutsche.de/muenchen/mietshaus-am-gaertnerplatz-alles-muss-raus-1.1556693
+test_url: http://sz.de/1.1556693
+test_contains: ist selbst der alte Eigentümer erstaunt

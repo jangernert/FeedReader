@@ -483,7 +483,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		return m_currentList.toggleMarkedSelected();
 	}
 
-	public void getArticleListState(out double scrollPos, out int rowOffset)
+	public void getSavedState(out double scrollPos, out int rowOffset)
 	{
 		Logger.debug("ArticleList: get State");
 
@@ -604,6 +604,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_state = state;
 		m_List1.setState(state);
 		m_List2.setState(state);
+	}
+
+	public ArticleListState getState()
+	{
+		return m_state;
 	}
 
 	public void setSearchTerm(string searchTerm)

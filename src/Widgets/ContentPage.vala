@@ -236,9 +236,19 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		});
 	}
 
+	public ArticleListState getArticleListState()
+	{
+		return m_articleList.getState();
+	}
+
 	public void setArticleListState(ArticleListState state)
 	{
+		var oldState = m_articleList.getState();
 		m_articleList.setState(state);
+
+		if(oldState == ArticleListState.MARKED
+		|| state == ArticleListState.MARKED)
+			m_feedList.refreshCounters();
 	}
 
 	public void setSearchTerm(string searchTerm)
@@ -288,9 +298,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_pane1.set_position(pos);
 	}
 
-	public void getArticleListState(out double scrollPos, out int offset)
+	public void getArticleListSavedState(out double scrollPos, out int offset)
 	{
-		m_articleList.getArticleListState(out scrollPos, out offset);
+		m_articleList.getSavedState(out scrollPos, out offset);
 	}
 
 	public int getArticleViewScrollPos()

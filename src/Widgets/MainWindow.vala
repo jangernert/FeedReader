@@ -325,7 +325,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			m_content.articleViewKillMedia();
 			int offset = 0;
 			double scrollPos = 0.0;
-			m_content.getArticleListState(out scrollPos, out offset);
+			m_content.getArticleListSavedState(out scrollPos, out offset);
 
 			Settings.state().set_strv("expanded-categories", m_content.getExpandedCategories());
 			Settings.state().set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
@@ -335,7 +335,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			Settings.state().set_int("articlelist-row-offset", offset);
 			Settings.state().set_double("articlelist-scrollpos",  scrollPos);
 			Settings.state().set_string("articlelist-selected-row", m_content.getSelectedArticle());
-			Settings.state().set_enum("show-articles", m_headerbar.getArticleListState());
+			Settings.state().set_enum("show-articles", m_content.getArticleListState());
 			Settings.state().set_boolean("no-animations", true);
 			Settings.state().set_string("search-term", m_headerbar.getSearchTerm());
 			Settings.state().set_int("articleview-scrollpos", m_content.getArticleViewScrollPos());
@@ -351,7 +351,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		int offset = 0;
 		double scrollPos = 0.0;
-		m_content.getArticleListState(out scrollPos, out offset);
+		m_content.getArticleListSavedState(out scrollPos, out offset);
 
 		var state = new InterfaceState();
 		state.setWindowSize(windowHeight, windowWidth);

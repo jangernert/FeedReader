@@ -581,7 +581,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	public void refreshCounters()
 	{
-		var feeds = dbUI.get_default().read_feeds();
+		var state = ((FeedApp)GLib.Application.get_default()).getWindow().getContent().getArticleListState();
+
+		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
 		var categories = dbUI.get_default().read_categories(feeds);
 
 		var FeedChildList = m_list.get_children();
@@ -592,7 +594,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var tmpFeedRow = row as FeedRow;
 			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL.to_string())
 			{
-				tmpFeedRow.set_unread_count(dbUI.get_default().get_unread_total());
+				uint count = 0;
+				if(state == ArticleListState.MARKED)
+					count = dbUI.get_default().get_marked_total();
+				else
+					count = dbUI.get_default().get_unread_total();
+				tmpFeedRow.set_unread_count(count);
 				break;
 			}
 		}

@@ -446,4 +446,20 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		}
 	}
 
+	public void activateUnreadEventbox(bool activate)
+	{
+		if(activate)
+		{
+			m_unreadBox.button_press_event.connect(onUnreadClick);
+			m_unreadBox.enter_notify_event.connect(onUnreadEnter);
+			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
+		}
+		else
+		{
+			m_unreadBox.button_press_event.disconnect(onUnreadClick);
+			m_unreadBox.enter_notify_event.disconnect(onUnreadEnter);
+			m_unreadBox.leave_notify_event.disconnect(onUnreadLeave);
+		}
+	}
+
 }

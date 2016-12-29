@@ -328,6 +328,30 @@ public class FeedReader.dbBase : GLib.Object {
 		return unread;
 	}
 
+	public uint get_marked_uncategorized()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addEqualsCondition("makred", ArticleStatus.MARKED.to_string());
+		query.addCustomCondition(getUncategorizedFeedsQuery());
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		int marked = 0;
+		while (stmt.step() == Sqlite.ROW) {
+			marked = stmt.column_int(0);
+		}
+		stmt.reset();
+		return marked;
+	}
+
 	public int getTagColor()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.tags");

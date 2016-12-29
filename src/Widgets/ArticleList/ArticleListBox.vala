@@ -301,8 +301,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public void removeRow(articleRow row, int animateDuration = 700)
 	{
-		var id = row.getID();
-		Logger.debug(@"ArticleListBox.removeRow: id $id duration $animateDuration");
 		row.reveal(false, animateDuration);
 		m_articles.remove(row.getID());
 		GLib.Timeout.add(animateDuration + 50, () => {

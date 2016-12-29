@@ -1,0 +1,16 @@
+tidy: yes
+prune: yes
+autodetect_on_failure: no
+
+#Remove ads
+strip: //div[contains(@class, 'ph-ad')]
+strip: //p//a[@target='_blank']//em
+
+title: //h1[contains(@class, 'ph-article-title')]
+date: //time[contains(@class, 'ph-article-date')]
+author: //div[contains(@class, 'ph-article-authors-wrapper')]
+body: //div[contains(@class, 'ph-article-text-lead')] | //div[contains(@class, 'ph-article-text-body')] | //div[contains(@class, 'ph-article-image-wrapper')]
+
+test-url: http://ze.tt/fotograf-portraetiert-menschen-nach-12-und-3-glaesern-wein/
+test-url: http://ze.tt/fotoprojekt-menschen-in-mosambik-zeigen-selbst-wie-sie-der-duerre-trotzen/
+test-url: http://ze.tt/was-deine-tattoos-ueber-dich-aussagen/

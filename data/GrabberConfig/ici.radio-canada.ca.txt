@@ -1,0 +1,12 @@
+body: //article
+body: //p[@class='TexteChronique']
+body: //div[@class='src-content']
+
+strip: //header
+strip: //figure
+strip: //div[@class='framed']
+strip: //form
+
+test_url: http://ici.radio-canada.ca/nouvelle/1003322/lexique-mots-neige-hiver-guy-bertrand
+test_url: http://ici.radio-canada.ca/tele/deuxieme-chance/inscription/
+test_url: http://ici.radio-canada.ca/emissions/aujourd_hui_l_histoire/2016-2017/chronique.asp?idChronique=423294

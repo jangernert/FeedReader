@@ -1,0 +1,5 @@
+http_header(user-agent): Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/535.2 (KHTML, like Gecko) Chrome/15.0.874.92 Safari/535.2
+
+test_url: http://www.foley.com/rss/rss.aspx?id=2
+test_url: https://www.foley.com/solicitor-general-sides-with-sandoz-on-interpretation-of-biosimilar-statute-12-13-2016/
+test_contains: The Solicitor General of the United States

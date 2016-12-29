@@ -1,0 +1,7 @@
+body: //div[@class='article-page']//p[@class='amorce'] | //div[@class='article-page']//div[contains(@class, 'entry')]
+author: //div[@class='infosAuteur']
+
+strip: //ul[@class='stories']
+
+test_url:http://www.lapresse.ca/actualites/national/201611/30/01-5046565-coup-dur-pour-les-radars-photo-plusieurs-constats-pourraient-etre-annules.php
+test_url: http://www.lapresse.ca/le-soleil/vivre-ici/la-science-au-quotidien/201610/01/01-5026482-les-vertus-de-leau-degout.php

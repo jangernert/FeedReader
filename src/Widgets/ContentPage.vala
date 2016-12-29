@@ -97,7 +97,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_articleList = new ArticleList();
 		m_articleList.drag_begin.connect((context) => {
 			if(dbUI.get_default().read_tags().is_empty)
-				m_feedList.newFeedlist(false, true);
+				m_feedList.newFeedlist(m_articleList.getState(), false, true);
 			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
 			m_feedList.addEmptyTagRow();
@@ -109,7 +109,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_articleList.drag_failed.connect((context, result) => {
 			Logger.debug("ContentPage: articleList drag_failed signal");
 			if(dbUI.get_default().read_tags().is_empty)
-				m_feedList.newFeedlist(false, false);
+				m_feedList.newFeedlist(m_articleList.getState(), false, false);
 			else
 				m_feedList.removeEmptyTagRow();
 			return false;
@@ -216,12 +216,12 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void newFeedList(bool defaultSettings = false)
 	{
-		m_feedList.newFeedlist(defaultSettings);
+		m_feedList.newFeedlist(m_articleList.getState(), defaultSettings);
 	}
 
 	public void updateFeedList()
 	{
-		m_feedList.refreshCounters();
+		m_feedList.refreshCounters(m_articleList.getState());
 	}
 
 	public void reloadArticleView()
@@ -248,7 +248,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 		if(oldState == ArticleListState.MARKED
 		|| state == ArticleListState.MARKED)
-			m_feedList.refreshCounters();
+			m_feedList.refreshCounters(state);
 	}
 
 	public void setSearchTerm(string searchTerm)
@@ -418,7 +418,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		if(!UtilsUI.canManipulateContent(false))
 		{
 			m_footer.setActive(false);
-			m_feedList.newFeedlist(false);
+			m_feedList.newFeedlist(m_articleList.getState(), false);
 		}
 	}
 
@@ -429,7 +429,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		if(UtilsUI.canManipulateContent(true))
 		{
 			m_footer.setActive(true);
-			m_feedList.newFeedlist(false);
+			m_feedList.newFeedlist(m_articleList.getState(), false);
 
 			var selected_row = m_feedList.getSelectedRow();
 			string[] selected = selected_row.split(" ");

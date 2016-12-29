@@ -635,6 +635,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal, uint duration = 500)
 	{
+		if(!reveal)
+			this.set_size_request(0, 0);
 		m_revealer.set_transition_duration(duration);
 		m_revealer.set_reveal_child(reveal);
 	}

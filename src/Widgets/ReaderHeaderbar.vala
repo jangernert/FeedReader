@@ -98,7 +98,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_modeButton.append_text(_("All"), _("Show all articles"));
 		m_modeButton.append_text(_("Unread"), _("Show only unread articles"));
 		m_modeButton.append_text(_("Starred"), _("Show only starred articles"));
-		m_modeButton.set_active(m_state);
+		m_modeButton.set_active(m_state, true);
 
 		m_tag_button = new Gtk.Button();
 		m_tag_button.add(tag_icon);

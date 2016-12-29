@@ -45,6 +45,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		});
 
 		m_feedList.newFeedSelected.connect((feedID) => {
+			Logger.debug("ContentPage: new Feed selected");
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
 			showArticleButtons(false);
@@ -63,6 +64,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
  		});
 
 		m_feedList.newTagSelected.connect((tagID) => {
+			Logger.debug("ContentPage: new Tag selected");
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
 			showArticleButtons(false);
@@ -73,6 +75,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		});
 
 		m_feedList.newCategorieSelected.connect((categorieID) => {
+			Logger.debug("ContentPage: new Category selected");
 			m_articleList.setSelectedType(FeedListType.CATEGORY);
 			m_article_view.clearContent();
 			showArticleButtons(false);
@@ -194,6 +197,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
+		Logger.debug("ContentPage.newArticleList");
 		int height = m_articleList.get_allocated_height();
 		if(height == 1)
 		{

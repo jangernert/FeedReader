@@ -143,7 +143,7 @@ namespace FeedReader {
          *
          * @param new_active_index index of changed item
          */
-        public void set_active (int new_active_index) {
+        public void set_active (int new_active_index, bool initSet = false) {
             return_if_fail (item_map.has_key (new_active_index));
             var new_item = item_map[new_active_index] as Item;
 
@@ -161,17 +161,20 @@ namespace FeedReader {
 
                 _selected = new_active_index;
 
-                if(m_timeout_source_id > 0)
-    			{
-    				GLib.Source.remove(m_timeout_source_id);
-    				m_timeout_source_id = 0;
-    			}
+                if(!initSet)
+                {
+                    if(m_timeout_source_id > 0)
+        			{
+        				GLib.Source.remove(m_timeout_source_id);
+        				m_timeout_source_id = 0;
+        			}
 
-    			m_timeout_source_id = GLib.Timeout.add(50, () => {
-    				mode_changed(new_item.get_child());
-                    m_timeout_source_id = 0;
-    				return false;
-    			});
+        			m_timeout_source_id = GLib.Timeout.add(50, () => {
+        				mode_changed(new_item.get_child());
+                        m_timeout_source_id = 0;
+        				return false;
+        			});
+                }
             }
         }
 

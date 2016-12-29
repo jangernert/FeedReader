@@ -80,7 +80,6 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void newFeedList();
 		public signal void updateFeedList();
-		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();

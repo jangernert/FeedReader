@@ -62,9 +62,6 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
     {
         try
         {
-            if(!DBusConnection.get_default().isOnline())
-                return;
-
             string? service_icon = DBusConnection.get_default().symbolicIcon();
             string? user_name = DBusConnection.get_default().accountName();
             string? server = DBusConnection.get_default().getServerURL();

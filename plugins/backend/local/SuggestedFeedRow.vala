@@ -101,7 +101,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 			if(FileUtils.test(filename, GLib.FileTest.EXISTS))
 			{
 				success = true;
-				Idle.add((owned) callback);
+				Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 				return null;
 			}
 
@@ -149,7 +149,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 				if(Utils.downloadIcon(url, url, path))
 					success = true;
 			}
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		});
 		yield;

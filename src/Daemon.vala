@@ -399,7 +399,10 @@ namespace FeedReader {
 
 
 				asyncPayload pl = () => { dbDaemon.get_default().update_article(articleID, "marked", status); };
-				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
+				callAsync.begin((owned)pl, (obj, res) => {
+					callAsync.end(res);
+					updateFeedList();
+				});
 			}
 		}
 

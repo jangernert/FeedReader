@@ -29,8 +29,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	private bool m_populated = false;
 	public signal void rowStateChanged(ArticleStatus status);
 	public signal void child_revealed();
-	public signal void highlight_row(string articleID);
-	public signal void revert_highlight();
 
 	public articleRow(article Article)
 	{
@@ -46,7 +44,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		this.add(m_revealer);
 		this.show_all();
 
-		GLib.Idle.add(populate);
+		GLib.Idle.add(populate, GLib.Priority.HIGH_IDLE);
 	}
 
 	private bool populate()
@@ -200,8 +198,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 				this.drag_begin.connect(onDragBegin);
 		        this.drag_data_get.connect(onDragDataGet);
-		        this.drag_end.connect(onDragEnd);
-				this.drag_failed.connect(onDragFail);
+				this.drag_failed.connect(onDragFailed);
 			}
 		}
 		catch(GLib.Error e)
@@ -218,13 +215,6 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		Logger.debug("ArticleRow: onDragBegin");
 		Gtk.drag_set_icon_widget(context, getFeedIconWindow(), 0, 0);
-		highlight_row(m_article.getArticleID());
-		if(dbUI.get_default().read_tags().is_empty)
-		{
-			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-			var feedlist = window.getContent().getFeedList();
-			feedlist.newFeedlist(false, true);
-		}
 	}
 
 	public void onDragDataGet(Gtk.Widget widget, Gdk.DragContext context, Gtk.SelectionData selection_data, uint target_type, uint time)
@@ -241,21 +231,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		}
 	}
 
-	private void onDragEnd(Gtk.Widget widget, Gdk.DragContext context)
+	private bool onDragFailed(Gdk.DragContext context, Gtk.DragResult result)
 	{
-		Logger.debug("ArticleRow: onDragEnd");
-		revert_highlight();
-	}
-
-	private bool onDragFail(Gdk.DragContext context, Gtk.DragResult result)
-	{
-		Logger.debug("ArticleRow: drag failed - " + result.to_string());
-		if(dbUI.get_default().read_tags().is_empty)
-		{
-			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-			var feedlist = window.getContent().getFeedList();
-			feedlist.newFeedlist(false, false);
-		}
+		Logger.debug("ArticleRow: onDragFailed " + result.to_string());
 		return false;
 	}
 

@@ -49,6 +49,11 @@ public class FeedReader.InAppNotification : Gd.Notification {
 		this.set_show_close_button(false);
 		this.add(m_box);
 
+		this.unrealize.connect(() => {
+			Logger.debug("InAppNotification: destroy");
+			dismissed();
+		});
+
 		m_Button.clicked.connect(() => {
 			action();
 		});

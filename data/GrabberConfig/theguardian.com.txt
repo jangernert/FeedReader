@@ -1,6 +1,7 @@
 title: //h1[@itemprop='headline']
 
 body: //article
+body: //div[contains(concat(' ',normalize-space(@class),' '),' content__main ')]//div[contains(concat(' ',normalize-space(@class),' '),' gs-container ')]
 strip: //article/header/div[contains(@class, 'content__header')]
 strip: //article/header/div[contains(@class, 'content__logo-container')]
 strip: //article//div[contains(@class, 'content__secondary-column')]
@@ -36,6 +37,7 @@ test_contains: As the second most senior judge in the country, Lord Hoffmann, sa
 test_url: http://www.theguardian.com/commentisfree/2014/jun/15/britishness-search-identity-my-part-in-camerons-odyssey
 test_url: http://www.theguardian.com/world/2016/feb/17/ankara-explosion-turkey-injures-large-number-of-people-reports-say
 test_url: http://www.theguardian.com/uk-news/2016/feb/11/trident-the-british-question
+test_url: https://www.theguardian.com/books/live/2016/oct/13/nobel-prize-in-literature-2016-liveblog
 
 # Native ad
 test_url: http://www.theguardian.com/sustainable-business/fairtrade-partner-zone/chocolate-cocoa-production-risk

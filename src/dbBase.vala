@@ -280,6 +280,30 @@ public class FeedReader.dbBase : GLib.Object {
 		return unread;
 	}
 
+	public uint get_marked_total()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		uint makred = 0;
+		while (stmt.step () == Sqlite.ROW) {
+			makred = stmt.column_int(0);
+		}
+
+		stmt.reset ();
+		return makred;
+	}
+
 	public uint get_unread_uncategorized()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
@@ -1012,7 +1036,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<feed> read_feeds()
+	public Gee.ArrayList<feed> read_feeds(bool starredCount = false)
 	{
 		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
 		feed tmpfeed;
@@ -1041,9 +1065,17 @@ public class FeedReader.dbBase : GLib.Object {
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
 			string[] catVec = { "" };
+
 			if(catString != "")
 				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, name, url, has_icon, getFeedUnread(feedID), catVec, xmlURL);
+
+			uint count = 0;
+			if(starredCount)
+				count = getFeedStarred(feedID);
+			else
+				count = getFeedUnread(feedID);
+
+			tmpfeed = new feed(feedID, name, url, has_icon, count, catVec, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -1058,6 +1090,30 @@ public class FeedReader.dbBase : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
 		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+		query.addEqualsCondition("feedID", feedID, true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			count = (uint)stmt.column_int(0);
+		}
+		return count;
+	}
+
+	public uint getFeedStarred(string feedID)
+	{
+		uint count = 0;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
 		query.addEqualsCondition("feedID", feedID, true, true);
 		query.build();
 

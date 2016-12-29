@@ -78,6 +78,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_List2.drag_begin.connect((context) => {drag_begin(context);});
 		m_List1.drag_end.connect((context) => {drag_end(context);});
 		m_List2.drag_end.connect((context) => {drag_end(context);});
+		m_List1.drag_failed.connect((context, result) => {drag_failed(context, result); return false;});
+		m_List2.drag_failed.connect((context, result) => {drag_failed(context, result); return false;});
 		m_scroll1.add(m_List1);
 		m_scroll2.add(m_List2);
 
@@ -141,7 +143,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -214,7 +216,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -245,7 +247,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														offset);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -301,7 +303,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 														newCount);
 			Logger.debug("actual articles loaded: " + articles.size.to_string());
 
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -481,7 +483,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		return m_currentList.toggleMarkedSelected();
 	}
 
-	public void getArticleListState(out double scrollPos, out int rowOffset)
+	public void getSavedState(out double scrollPos, out int rowOffset)
 	{
 		Logger.debug("ArticleList: get State");
 
@@ -548,6 +550,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_currentScroll.scrollDiff(pos);
 			Settings.state().set_double("articlelist-scrollpos",  0);
 		}
+		else
+			m_currentScroll.scrollToPos(0, false);
 	}
 
 	public void removeTagFromSelectedRow(string tagID)
@@ -600,6 +604,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_state = state;
 		m_List1.setState(state);
 		m_List2.setState(state);
+	}
+
+	public ArticleListState getState()
+	{
+		return m_state;
 	}
 
 	public void setSearchTerm(string searchTerm)

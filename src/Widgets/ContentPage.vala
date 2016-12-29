@@ -96,6 +96,8 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 		m_articleList = new ArticleList();
 		m_articleList.drag_begin.connect((context) => {
+			if(dbUI.get_default().read_tags().is_empty)
+				m_feedList.newFeedlist(m_articleList.getState(), false, true);
 			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
 			m_feedList.addEmptyTagRow();
@@ -103,7 +105,14 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_articleList.drag_end.connect((context) => {
 			Logger.debug("ContentPage: articleList drag_end signal");
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), true);
-			m_feedList.removeEmptyTagRow();
+		});
+		m_articleList.drag_failed.connect((context, result) => {
+			Logger.debug("ContentPage: articleList drag_failed signal");
+			if(dbUI.get_default().read_tags().is_empty)
+				m_feedList.newFeedlist(m_articleList.getState(), false, false);
+			else
+				m_feedList.removeEmptyTagRow();
+			return false;
 		});
 		setArticleListState((ArticleListState)Settings.state().get_enum("show-articles"));
 
@@ -207,12 +216,12 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 
 	public void newFeedList(bool defaultSettings = false)
 	{
-		m_feedList.newFeedlist(defaultSettings);
+		m_feedList.newFeedlist(m_articleList.getState(), defaultSettings);
 	}
 
 	public void updateFeedList()
 	{
-		m_feedList.refreshCounters();
+		m_feedList.refreshCounters(m_articleList.getState());
 	}
 
 	public void reloadArticleView()
@@ -227,9 +236,19 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		});
 	}
 
+	public ArticleListState getArticleListState()
+	{
+		return m_articleList.getState();
+	}
+
 	public void setArticleListState(ArticleListState state)
 	{
+		var oldState = m_articleList.getState();
 		m_articleList.setState(state);
+
+		if(oldState == ArticleListState.MARKED
+		|| state == ArticleListState.MARKED)
+			m_feedList.refreshCounters(state);
 	}
 
 	public void setSearchTerm(string searchTerm)
@@ -279,9 +298,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		m_pane1.set_position(pos);
 	}
 
-	public void getArticleListState(out double scrollPos, out int offset)
+	public void getArticleListSavedState(out double scrollPos, out int offset)
 	{
-		m_articleList.getArticleListState(out scrollPos, out offset);
+		m_articleList.getSavedState(out scrollPos, out offset);
 	}
 
 	public int getArticleViewScrollPos()
@@ -399,7 +418,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		if(!UtilsUI.canManipulateContent(false))
 		{
 			m_footer.setActive(false);
-			m_feedList.newFeedlist(false);
+			m_feedList.newFeedlist(m_articleList.getState(), false);
 		}
 	}
 
@@ -410,7 +429,7 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 		if(UtilsUI.canManipulateContent(true))
 		{
 			m_footer.setActive(true);
-			m_feedList.newFeedlist(false);
+			m_feedList.newFeedlist(m_articleList.getState(), false);
 
 			var selected_row = m_feedList.getSelectedRow();
 			string[] selected = selected_row.split(" ");

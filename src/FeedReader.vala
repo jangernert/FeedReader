@@ -175,7 +175,15 @@ namespace FeedReader {
 			return 0;
 		}
 
-		Gst.init(ref args);
+		try
+		{
+			Gst.init_check(ref args);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Gst.init: " + e.message);
+		}
+
 		var app = new FeedApp();
 		app.run(args);
 

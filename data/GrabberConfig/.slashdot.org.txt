@@ -5,6 +5,8 @@ body: //div[starts-with(@id, 'fhbody-')]
 prune: no
 tidy: no
 
+http_header(user-agent): PHP/5.3
+
 # follow first link
 #single_page_link: (//div[starts-with(@id, 'fhbody-')]//a[contains(@href, '://')])[1]
 

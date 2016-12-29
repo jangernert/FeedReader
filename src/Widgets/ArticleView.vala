@@ -26,7 +26,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private Gtk.Overlay m_videoOverlay;
 	private ArticleViewUrlOverlay m_UrlOverlay;
 	private Gtk.Stack m_stack;
-	private WebKit.WebView m_currentView;
+	private WebKit.WebView? m_currentView = null;
 	private Gdk.RGBA? m_color = null;
 	private fullscreenHeaderbar m_fsHead;
 	private fullscreenButton m_prevButton;
@@ -234,7 +234,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		ThreadFunc<void*> run = () => {
 			Article = dbUI.get_default().read_article(articleID);
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 
@@ -270,7 +270,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				, "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
 			this.show_all();
 			return false;
-		});
+		}, GLib.Priority.HIGH_IDLE);
 	}
 
 	private void switchViews()
@@ -301,7 +301,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 					checkQueue();
 					return false;
-				});
+				}, GLib.Priority.HIGH);
 				break;
 
 			case "view2":
@@ -316,7 +316,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 					checkQueue();
 					return false;
-				});
+				}, GLib.Priority.HIGH);
 				break;
 		}
 
@@ -360,7 +360,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_stack.remove(oldView);
 			checkQueue();
 			return false;
-		});
+		}, GLib.Priority.HIGH);
 		m_currentArticle = "";
 	}
 
@@ -429,6 +429,12 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public void setScrollPos(int pos)
 	{
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
+			return;
+
+		m_busy = true;
 		m_currentView.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
 			try
 			{
@@ -438,13 +444,15 @@ public class FeedReader.articleView : Gtk.Overlay {
 			{
 				Logger.error("ArticleView.setScrollPos: %s".printf(e.message));
 			}
+			checkQueue();
 		});
 	}
 
 	private int getScollUpper()
 	{
 		if(m_stack.get_visible_child_name() == "empty"
-		|| m_stack.get_visible_child_name() == "crash")
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
 			return 0;
 
 		string javascript = """
@@ -459,6 +467,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		int upper = -1;
 		var loop = new MainLoop();
 
+		m_busy = true;
 		m_currentView.run_javascript.begin(javascript, null, (obj, res) => {
 			try
 			{
@@ -469,6 +478,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				Logger.error("ArticleView.setScrollPos: %s".printf(e.message));
 			}
 			upper = int.parse(m_currentView.get_title());
+			checkQueue();
 			loop.quit();
 		});
 
@@ -479,7 +489,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	public int getScrollPos()
 	{
 		if(m_stack.get_visible_child_name() == "empty"
-		|| m_stack.get_visible_child_name() == "crash")
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
 			return 0;
 
 		// use mainloop to prevent app from shutting down before the result can be fetched
@@ -489,6 +500,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		int scrollPos = -1;
 		var loop = new MainLoop();
 
+		m_busy = true;
 		m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
 			try
 			{
@@ -499,6 +511,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				Logger.error("ArticleView: could not get scroll-pos, javascript error: " + e.message);
 			}
 			scrollPos = int.parse(m_currentView.get_title());
+			checkQueue();
 			loop.quit();
 		});
 
@@ -544,14 +557,15 @@ public class FeedReader.articleView : Gtk.Overlay {
 	    	{
 	    		if(m_connected
 				&& m_stack.get_visible_child_name() != "empty"
-				&& m_stack.get_visible_child_name() != "crash")
+				&& m_stack.get_visible_child_name() != "crash"
+				&& m_currentView != null)
 	    			m_messenger.recalculate();
 	    	}
 	    	catch(GLib.IOError e)
 	    	{
 	    		Logger.warning("ArticleView: recalculate " + e.message);
 	    	}
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		new GLib.Thread<void*>("recalculate", run);
@@ -584,7 +598,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			);
 
 			Gtk.device_grab_add(this, pointer, false);
-			GLib.Timeout.add(10, updateDragMomentum);
+			GLib.Timeout.add(10, updateDragMomentum, GLib.Priority.HIGH);
 			m_currentView.motion_notify_event.connect(updateScroll);
 			return true;
 		}
@@ -598,7 +612,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		{
 			m_currentView.motion_notify_event.disconnect(updateScroll);
 			m_inDrag = false;
-			m_OngoingScrollID = GLib.Timeout.add(20, ScrollDragRelease);
+			m_OngoingScrollID = GLib.Timeout.add(20, ScrollDragRelease, GLib.Priority.HIGH);
 
 			var display = Gdk.Display.get_default();
 			var seat = display.get_default_seat();
@@ -905,7 +919,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_stack.remove(oldView);
 			checkQueue();
 			return false;
-		});
+		}, GLib.Priority.HIGH);
 		Logger.error("ArticleView: webview crashed");
 		return false;
 	}

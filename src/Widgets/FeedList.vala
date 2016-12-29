@@ -177,7 +177,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	}
 
 
-	public void newFeedlist(bool defaultSettings, bool masterCat = false)
+	public void newFeedlist(ArticleListState state, bool defaultSettings, bool masterCat = false)
 	{
 		Logger.debug("FeedList: new FeedList");
 
@@ -209,14 +209,14 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			m_list.remove(row);
 			row.destroy();
 		}
-		createFeedlist(defaultSettings, masterCat);
+		createFeedlist(state, defaultSettings, masterCat);
 		Settings.state().set_boolean("no-animations", false);
 		m_update = false;
 		m_busy = false;
 	}
 
 
-	private void createFeedlist(bool defaultSettings, bool masterCat)
+	private void createFeedlist(ArticleListState state, bool defaultSettings, bool masterCat)
 	{
 		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR.to_string(), "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
@@ -226,7 +226,11 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		row_separator1.sensitive = false;
 		m_list.add(row_separator1);
 
-		var unread = dbUI.get_default().get_unread_total();
+		uint unread = 0;
+		if(state == ArticleListState.MARKED)
+			unread = dbUI.get_default().get_marked_total();
+		else
+			unread = dbUI.get_default().get_unread_total();
 		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL.to_string(), "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
@@ -244,7 +248,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		//-------------------------------------------------------------------
 
-		var feeds = dbUI.get_default().read_feeds();
+		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
 
 		if(!UtilsUI.onlyShowFeeds())
 		{
@@ -579,9 +583,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 	}
 
-	public void refreshCounters()
+	public void refreshCounters(ArticleListState state)
 	{
-		var feeds = dbUI.get_default().read_feeds();
+		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
 		var categories = dbUI.get_default().read_categories(feeds);
 
 		var FeedChildList = m_list.get_children();
@@ -592,7 +596,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var tmpFeedRow = row as FeedRow;
 			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL.to_string())
 			{
-				tmpFeedRow.set_unread_count(dbUI.get_default().get_unread_total());
+				uint count = 0;
+				if(state == ArticleListState.MARKED)
+					count = dbUI.get_default().get_marked_total();
+				else
+					count = dbUI.get_default().get_unread_total();
+				tmpFeedRow.set_unread_count(count);
 				break;
 			}
 		}
@@ -1106,7 +1115,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private bool onDragEnd(Gdk.DragContext context, Gtk.DragResult result)
 	{
-		Logger.debug("FeedList: onDragBegin");
+		Logger.debug("FeedList: onDragEnd");
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{

@@ -15,8 +15,8 @@
 
 public class FeedReader.MediaPlayer : Gtk.Box {
 
-	private Gst.Element m_player;
-	private Gtk.Widget m_videoWidget;
+	private dynamic Gst.Element m_player;
+	private dynamic Gtk.Widget m_videoWidget;
 	private Gtk.Stack m_playStack;
 	private Gtk.Button m_playButton;
 	private Gtk.Spinner m_playSpinner;
@@ -75,7 +75,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 		    {
 				Logger.error("Unable discover_uri: " + e.message);
 			}
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 
@@ -98,9 +98,9 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 		m_player["uri"] = m_URL;
 
 		Gst.Bus bus = m_player.get_bus();
-		bus.add_watch(GLib.Priority.DEFAULT, busCallback);
+		bus.add_watch(GLib.Priority.LOW, busCallback);
 
-		GLib.Timeout.add(50, () => {
+		GLib.Timeout.add(200, () => {
 			Gst.State state;
 			Gst.State pending;
 			m_player.get_state(out state, out pending, 1000);
@@ -118,7 +118,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 				calcTime();
 			}
 			return true;
-		});
+		}, GLib.Priority.LOW);
 
 		m_playIcon = new Gtk.Image.from_icon_name("media-playback-start-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		m_pauseIcon = new Gtk.Image.from_icon_name("media-playback-pause-symbolic", Gtk.IconSize.LARGE_TOOLBAR);

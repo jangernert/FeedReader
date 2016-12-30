@@ -52,7 +52,6 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
 		((FeedApp)GLib.Application.get_default()).callback.connect((content) => {
-
 			if(content == PocketSecrets.oauth_callback)
 			{
 				if(m_api.getAccessToken(id, requestToken))
@@ -66,6 +65,10 @@ public class FeedReader.PocketSetup : ServiceSetup {
 					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
 					m_login_button.clicked.disconnect(login);
 					m_login_button.clicked.connect(logout);
+				}
+				else
+				{
+					m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 				}
 			}
 		});

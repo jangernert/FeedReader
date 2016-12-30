@@ -65,6 +65,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 
 		var loggedIN = new Gtk.Image.from_icon_name("feed-status-ok", Gtk.IconSize.LARGE_TOOLBAR);
 		m_spinner = new Gtk.Spinner();
+		m_spinner.set_size_request(24, 24);
 
 		m_iconStack.add_named(m_login_button, "button");
 		m_iconStack.add_named(loggedIN, "loggedIN");

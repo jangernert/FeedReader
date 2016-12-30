@@ -75,6 +75,10 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 						m_login_button.clicked.disconnect(login);
 						m_login_button.clicked.connect(logout);
 					}
+					else
+					{
+						m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
+					}
 				}
 
 			}

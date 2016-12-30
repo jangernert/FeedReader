@@ -152,6 +152,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			}
 			else
 			{
+				m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 				m_errorBar.set_visible(true);
 			}
 

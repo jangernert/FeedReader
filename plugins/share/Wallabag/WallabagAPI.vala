@@ -255,6 +255,10 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 				Logger.error("WallabagAPI.deletePassword: %s".printf(e.message));
 			}
 		});
+
+        if(!removed)
+            Logger.error(@"WallabagAPI: could not delete password of account $id");
+
 		return removed;
 	}
 

@@ -24,6 +24,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 	protected Gtk.Stack m_labelStack;
     protected Gtk.Button m_login_button;
 	protected Gtk.Button m_logout_button;
+	protected Gtk.Spinner m_spinner;
 	protected Gtk.EventBox m_eventbox;
 	protected Gtk.Box m_seperator_box;
 	protected bool m_isLoggedIN;
@@ -63,10 +64,12 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		m_logout_button.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
 
 		var loggedIN = new Gtk.Image.from_icon_name("feed-status-ok", Gtk.IconSize.LARGE_TOOLBAR);
+		m_spinner = new Gtk.Spinner();
 
 		m_iconStack.add_named(m_login_button, "button");
 		m_iconStack.add_named(loggedIN, "loggedIN");
 		m_iconStack.add_named(m_logout_button, "logOUT");
+		m_iconStack.add_named(m_spinner, "spinner");
 		m_iconStack.set_size_request(100, 0);
 
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);

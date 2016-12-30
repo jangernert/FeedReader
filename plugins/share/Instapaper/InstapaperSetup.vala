@@ -91,6 +91,8 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 	{
 		if(m_login_revealer.get_child_revealed())
 		{
+			m_spinner.start();
+			m_iconStack.set_visible_child_name("spinner");
 			string id = Share.generateNewID();
 			string username = m_userEntry.get_text();
 			string password = m_passEntry.get_text();
@@ -103,6 +105,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 				m_login_revealer.set_reveal_child(false);
 				m_isLoggedIN = true;
 				m_iconStack.set_visible_child_name("loggedIN");
+				m_spinner.stop();
 				m_label.set_label(username);
 				m_labelStack.set_visible_child_name("loggedIN");
 				m_login_button.clicked.disconnect(login);
@@ -124,6 +127,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 	public override void logout()
 	{
+		Logger.debug("InstapaperSetup.logout()");
 		m_isLoggedIN = false;
 		m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 		m_labelStack.set_visible_child_name("loggedOUT");

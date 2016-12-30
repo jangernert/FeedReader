@@ -939,6 +939,14 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 	}
 
+	public bool playingMedia()
+	{
+		if(m_currentMedia == null)
+			return false;
+
+		return true;
+	}
+
 	public void print(string filename)
 	{
 		if(m_currentView == null)

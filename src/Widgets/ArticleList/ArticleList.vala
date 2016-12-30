@@ -91,8 +91,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_stack.set_transition_duration(100);
 		m_stack.add_named(m_scroll1, "list1");
 		m_stack.add_named(m_scroll2, "list2");
-		m_stack.add_named(m_emptyList, "empty");
 		m_stack.add_named(syncingBox, "syncing");
+		m_stack.add_named(m_emptyList, "empty");
 		this.add(m_stack);
 		this.get_style_context().add_class("article-list");
 	}

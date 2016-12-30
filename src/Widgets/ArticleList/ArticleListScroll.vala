@@ -101,12 +101,15 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private void checkScrolledDown()
 	{
 		double max = vadjustment.upper - vadjustment.page_size;
-		if(vadjustment.value >= max - m_bottomThreshold
+		if(max > 0.0
+		&& vadjustment.value >= (max - m_bottomThreshold)
 		&& !m_scrolledBottomOnCooldown)
 		{
+			Logger.debug("ArticleListScroll: scrolled down");
 			m_scrolledBottomOnCooldown = true;
 			scrolledBottom();
 			GLib.Timeout.add(m_scrollCooldown, () => {
+				Logger.debug("ArticleListScroll: scrolled down off cooldown");
 				m_scrolledBottomOnCooldown = false;
 				if(vadjustment.value >= max - 5)
 					scrolledBottom();

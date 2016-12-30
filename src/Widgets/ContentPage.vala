@@ -508,4 +508,9 @@ public class FeedReader.ContentPage : Gtk.Overlay {
 	{
 		m_article_view.print(uri);
 	}
+
+	public bool playingMedia()
+	{
+		return m_article_view.playingMedia();
+	}
 }

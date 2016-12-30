@@ -71,6 +71,11 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		if(m_lazyQeue.size == 0)
 			return;
 
+		var priority = GLib.Priority.DEFAULT_IDLE;
+		var contentPage = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
+		if(contentPage.playingMedia())
+			priority = GLib.Priority.HIGH_IDLE;
+
 		m_idleID = GLib.Idle.add(() => {
 
 			if(m_lazyQeue == null || m_lazyQeue.size == 0)
@@ -109,6 +114,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				return false;
 			});
 
+			newRow.realize.connect(() => {
+				checkQueue(item, balance, pos, reverse, animate);
+			});
+
 			this.insert(newRow, pos);
 
 			if(animate)
@@ -116,9 +125,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			else
 				newRow.reveal(true, 0);
 
-			checkQueue(item, balance, pos, reverse, animate);
 			return false;
-		}, GLib.Priority.HIGH_IDLE);
+		}, priority);
 	}
 
 	private void checkQueue(article item, ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)
@@ -131,7 +139,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		else
 		{
 			m_lazyQeue = new Gee.LinkedList<article>();
-			loadDone();
+			GLib.Timeout.add(150, () => {
+				loadDone();
+				return false;
+			});
 			m_idleID = 0;
 		}
 	}

@@ -245,7 +245,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         attributes["username"] = getUsername(id);
 		attributes["id"] = id;
 
-		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
+		Secret.password_clearv.begin(pwSchema, attributes, null, (obj, async_res) => {
 			try
 			{
 				removed = Secret.password_clearv.end(async_res);

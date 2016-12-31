@@ -22,6 +22,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 	private Gtk.Entry m_passEntry;
 	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
+	private Gtk.Label m_errorLabel;
 	private WallabagAPI m_api;
 
 	public WallabagSetup(string? id, WallabagAPI api, string username = "")
@@ -46,9 +47,9 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		m_errorBar = new Gtk.InfoBar();
 		m_errorBar.no_show_all = true;
 		var error_content = m_errorBar.get_content_area();
-		var errorLabel = new Gtk.Label(_("You fucked up"));
-		errorLabel.show();
-		error_content.add(errorLabel);
+		m_errorLabel = new Gtk.Label("");
+		m_errorLabel.show();
+		error_content.add(m_errorLabel);
 		m_errorBar.set_message_type(Gtk.MessageType.WARNING);
 		m_errorBar.set_show_close_button(true);
 		m_errorBar.response.connect((response_id) => {
@@ -127,14 +128,58 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 	{
 		if(m_login_revealer.get_child_revealed())
 		{
-			m_spinner.start();
-			m_iconStack.set_visible_child_name("spinner");
 			string id = Share.generateNewID();
 			string username = m_userEntry.get_text();
 			string password = m_passEntry.get_text();
 			string clientID = m_idEntry.get_text();
 			string clientSecret = m_secretEntry.get_text();
 			string baseURL = m_urlEntry.get_text();
+
+			// check each and every value
+			if(baseURL == null || baseURL == "")
+			{
+				m_errorLabel.set_label(_("Please fill in the URL."));
+				m_errorBar.set_visible(true);
+				m_urlEntry.grab_focus();
+				return;
+			}
+			else if(!baseURL.has_suffix("/"))
+				baseURL += "/";
+
+			if(clientID == null || clientID == "")
+			{
+				m_errorLabel.set_label(_("Please fill in the clientID."));
+				m_errorBar.set_visible(true);
+				m_idEntry.grab_focus();
+				return;
+			}
+
+			if(clientSecret == null || clientSecret == "")
+			{
+				m_errorLabel.set_label(_("Please fill in the clientSecret."));
+				m_errorBar.set_visible(true);
+				m_secretEntry.grab_focus();
+				return;
+			}
+
+			if(password == null || password == "")
+			{
+				m_errorLabel.set_label(_("Please fill in the password."));
+				m_errorBar.set_visible(true);
+				m_passEntry.grab_focus();
+				return;
+			}
+
+			if(username == null || username == "")
+			{
+				m_errorLabel.set_label(_("Please fill in the username."));
+				m_errorBar.set_visible(true);
+				m_userEntry.grab_focus();
+				return;
+			}
+
+			m_spinner.start();
+			m_iconStack.set_visible_child_name("spinner");
 
 			if(m_api.getAccessToken(id, username, password, clientID, clientSecret, baseURL))
 			{
@@ -153,6 +198,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			else
 			{
 				m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
+				m_errorLabel.set_label(_("Something went wrong."));
 				m_errorBar.set_visible(true);
 			}
 

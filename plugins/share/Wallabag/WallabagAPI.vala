@@ -63,12 +63,26 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         {
             Logger.error("Could not load response to Message from instapaper");
             Logger.error(e.message);
+            return false;
         }
 
         var root_node = parser.get_root();
         var root_object = root_node.get_object();
+
+        if(!root_object.has_member("access_token"))
+        {
+            Logger.error("WallabagAPI.getAccessToken: no member access_token in response");
+            return false;
+        }
 		string accessToken = root_object.get_string_member("access_token");
+
+
 		int64 now = (new DateTime.now_local()).to_unix();
+        if(!root_object.has_member("expires_in"))
+        {
+            Logger.error("WallabagAPI.getAccessToken: no member expires_in in response");
+            return false;
+        }
 		int64 expires = root_object.get_int_member("expires_in");
 		//string refreshToken = root_object.get_string_member("refresh_token");
 

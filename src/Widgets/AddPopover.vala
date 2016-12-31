@@ -125,7 +125,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 	private void addFeed()
 	{
-		if(m_urlEntry.text == "")
+		if(m_urlEntry.text == "" || GLib.Uri.parse_scheme(m_urlEntry.text) == null)
 		{
 			m_urlEntry.grab_focus();
 			return;

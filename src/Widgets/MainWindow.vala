@@ -531,6 +531,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 			case LoginResponse.MISSING_PASSWD:
 				m_ErrorMessage.set_label(_("Please enter a valid password"));
 				break;
+			case LoginResponse.INVALID_URL:
 			case LoginResponse.MISSING_URL:
 				m_ErrorMessage.set_label(_("Please enter a valid URL"));
 				break;

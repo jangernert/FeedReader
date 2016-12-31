@@ -200,7 +200,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 
     public bool downloadIcon(string feed_id, string? icon_url)
 	{
-        if(icon_url == "" || icon_url == null)
+        if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
             return false;
 
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";

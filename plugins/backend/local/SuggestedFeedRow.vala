@@ -92,6 +92,9 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 
 	private async bool downloadIcon(string path, string url)
 	{
+		if(url == "" || url == null || GLib.Uri.parse_scheme(url) == null)
+            return false;
+
 		SourceFunc callback = downloadIcon.callback;
 		bool success = false;
 		string filename = "/tmp/" + m_url.replace("/", "_").replace(".", "_") + ".ico";
@@ -124,7 +127,8 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 			var doc = parser.get_document();
 
 			if(doc.image_url != ""
-			&& doc.image_url != null)
+			&& doc.image_url != null
+			&& GLib.Uri.parse_scheme(doc.image_url) != null)
 			{
 				Soup.Message message_dlIcon;
 				message_dlIcon = new Soup.Message("GET", doc.image_url);

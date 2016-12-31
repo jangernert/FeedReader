@@ -170,13 +170,13 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	private void selectAfter(articleRow row, int time)
 	{
-		row.updateUnread(ArticleStatus.READ);
 		this.select_row(row);
 
 		if(row.isUnread())
 		{
 			try
 			{
+				row.updateUnread(ArticleStatus.READ);
 				DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
 			}
 			catch(GLib.Error e)

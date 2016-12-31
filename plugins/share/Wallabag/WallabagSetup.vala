@@ -143,7 +143,15 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 				m_urlEntry.grab_focus();
 				return;
 			}
-			else if(!baseURL.has_suffix("/"))
+			else if(GLib.Uri.parse_scheme(baseURL) == null)
+			{
+				m_errorLabel.set_label(_("URL seems to not be valid."));
+				m_errorBar.set_visible(true);
+				m_urlEntry.grab_focus();
+				return;
+			}
+
+			if(!baseURL.has_suffix("/"))
 				baseURL += "/";
 
 			if(clientID == null || clientID == "")

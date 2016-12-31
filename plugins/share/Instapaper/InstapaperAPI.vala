@@ -208,15 +208,14 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			try
 			{
 				removed = Secret.password_clearv.end(async_res);
+				if(!removed)
+					Logger.error(@"Could not delete password of InstaAPI account $id");
 			}
 			catch(GLib.Error e)
 			{
 				Logger.error("InstaAPI.logout: %s".printf(e.message));
 			}
         });
-
-		if(!removed)
-			Logger.error(@"Could not delete password of InstaAPI account $id");
 
         var keys = settings.list_keys();
 		foreach(string key in keys)

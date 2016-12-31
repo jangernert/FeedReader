@@ -171,6 +171,8 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
     public bool logout(string id)
     {
 		Logger.debug("WallabagAPI - logout");
+        deletePassword(id);
+
         var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/wallabag/%s/".printf(id));
     	var keys = settings.list_keys();
 		foreach(string key in keys)
@@ -187,7 +189,6 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 				array2 += i;
 		}
 		Settings.share().set_strv("wallabag", array2);
-		deletePassword(id);
 		deleteAccount(id);
 
         return true;
@@ -248,7 +249,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		return passwd;
 	}
 
-	private bool deletePassword(string id)
+	private void deletePassword(string id)
 	{
 		bool removed = false;
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.wallabag.password", Secret.SchemaFlags.NONE,
@@ -259,21 +260,22 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         attributes["username"] = getUsername(id);
 		attributes["id"] = id;
 
+        Logger.debug(getUsername(id));
+        Logger.debug(id);
+
 		Secret.password_clearv.begin(pwSchema, attributes, null, (obj, async_res) => {
 			try
 			{
 				removed = Secret.password_clearv.end(async_res);
+
+                if(!removed)
+                    Logger.error(@"WallabagAPI: could not delete password of account $id");
 			}
 			catch(GLib.Error e)
 			{
 				Logger.error("WallabagAPI.deletePassword: %s".printf(e.message));
 			}
 		});
-
-        if(!removed)
-            Logger.error(@"WallabagAPI: could not delete password of account $id");
-
-		return removed;
 	}
 
     public bool needSetup()

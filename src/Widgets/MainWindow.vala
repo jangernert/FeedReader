@@ -20,6 +20,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 {
 	private readerHeaderbar m_headerbar;
 	private SimpleHeader m_simpleHeader;
+	private Gtk.Overlay m_overlay;
 	private Gtk.Stack m_stack;
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
@@ -38,6 +39,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.set_transition_duration(100);
+
+		m_overlay = new Gtk.Overlay();
+		m_overlay.add(m_stack);
 
 		setupCSS();
 		setupLoginPage();
@@ -170,7 +174,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 
 		this.window_state_event.connect(onStateEvent);
 		this.key_press_event.connect(shortcuts);
-		this.add(m_stack);
+		this.add(m_overlay);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		this.set_titlebar(m_simpleHeader);
 		this.set_title ("FeedReader");
@@ -817,6 +821,14 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	{
 		m_content.setOnline();
 		m_headerbar.setOnline();
+	}
+
+	public InAppNotification showNotification(string message, string buttonText = "undo")
+	{
+		var notification = new InAppNotification(message, buttonText);
+		m_overlay.add_overlay(notification);
+		this.show_all();
+		return notification;
 	}
 
 }

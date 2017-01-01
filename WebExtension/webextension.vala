@@ -49,6 +49,11 @@ public class FeedReaderWebExtension : Object {
                 addListener(image);
                 continue;
             }
+            else if(image.has_attribute("FR_parent"))
+            {
+                addListener(image);
+                continue;
+            }
 
     		long nHeight = image.get_natural_height();
     		long nWidth = image.get_natural_width();
@@ -146,6 +151,11 @@ public class FeedReaderWebExtension : Object {
         if(image.has_attribute("FR_huge"))
         {
             src = image.get_attribute("FR_huge");
+            Gdk.Pixbuf.get_file_info(src, out width, out height);
+        }
+        else if(image.has_attribute("FR_parent"))
+        {
+            src = image.get_attribute("FR_parent");
             Gdk.Pixbuf.get_file_info(src, out width, out height);
         }
 

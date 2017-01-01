@@ -429,14 +429,23 @@ public class FeedReader.grabberUtils : GLib.Object {
                 )
                 {
                     string original = downloadImage(node->get_prop("src"), articleID, feedID, i+1);
-                    string resized = resizeImg(original);
-
-                    if(resized == null)
+                    string? parentURL = checkParent(node);
+                    if(parentURL != null)
+                    {
+                        string parent = downloadImage(parentURL, articleID, feedID, i+1, true);
                         node->set_prop("src", original);
+                        node->set_prop("FR_parent", parent);
+                    }
                     else
                     {
-                        node->set_prop("src", resized);
-                        node->set_prop("FR_huge", original);
+                        string? resized = resizeImg(original);
+                        if(resized != null)
+                        {
+                            node->set_prop("src", resized);
+                            node->set_prop("FR_huge", original);
+                        }
+                        else
+                            node->set_prop("src", original);
                     }
                 }
             }
@@ -447,7 +456,7 @@ public class FeedReader.grabberUtils : GLib.Object {
     }
 
 
-    public static string downloadImage(string url, string articleID, string feedID, int nr)
+    public static string downloadImage(string url, string articleID, string feedID, int nr, bool parent = false)
     {
         Logger.debug("GrabberUtils: download Image %s".printf(url));
         string fixedURL = url;
@@ -472,6 +481,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 		}
 
         string localFilename = imgPath + nr.to_string();
+
+        if(parent)
+            localFilename += "_parent";
 
         if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
 		{
@@ -537,6 +549,40 @@ public class FeedReader.grabberUtils : GLib.Object {
             Logger.error("Error resizing image: %s".printf(e.message));
             return null;
         }
+        return null;
+    }
+
+    // check if the parent node is a link that points to a picture
+    // (most likely a bigger version of said picture)
+    private static string? checkParent(Xml.Node* node)
+    {
+        Logger.debug("Grabber: checkParent");
+        Xml.Node* parent = node->parent;
+        string name = parent->name;
+        Logger.debug(@"Grabber: parent $name");
+        if(name == "a")
+        {
+            string url = parent->get_prop("href");
+
+            if(url != "" && url != null)
+            {
+                Logger.debug(@"Grabber: url $url");
+                var session = new Soup.Session();
+                var message = new Soup.Message("HEAD", url);
+                session.send_message(message);
+                var params = new GLib.HashTable<string, string>(null, null);
+                string? contentType = message.response_headers.get_content_type(out params);
+                if(contentType != null)
+                {
+                    Logger.debug(@"Grabber: type $contentType");
+                    if(contentType.has_prefix("image/"))
+                    {
+                        return url;
+                    }
+                }
+            }
+        }
+
         return null;
     }
 

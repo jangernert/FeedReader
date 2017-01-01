@@ -9,11 +9,12 @@ title: //div[@class='Newsheader']/h1
 
 body: //div[@id='Newswrap']
 body: //div[@class='text']
-body: //article
+body: (//article)[1]
 
 strip: //div[@id='Newscontents']
 strip: //div[@class='Newsbanner']
 strip: //style
+strip: //a[@title='Share on Facebook']/parent::div
 
 
 

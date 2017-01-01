@@ -292,6 +292,10 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private void showReset(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)
 	{
 		Logger.debug("MainWindow: show reset");
+
+		// kill playing media
+		m_content.articleViewKillMedia();
+
 		m_stack.set_visible_child_full("reset", transition);
 		m_headerbar.setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);

@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.ContentPage : Gtk.Paned {
+public class FeedReader.ColumnView : Gtk.Paned {
 
 	private Gtk.Paned m_pane;
 	private articleView m_article_view;
@@ -24,7 +24,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 	public signal void panedPosChange(int pos);
 
 
-	public ContentPage()
+	public ColumnView()
 	{
 		Logger.debug("ContentPage: setup FeedList");
 

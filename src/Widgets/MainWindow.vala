@@ -25,7 +25,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
 	private Gtk.Button m_ignore_tls_errors;
-	private ContentPage m_content;
+	private ColumnView m_content;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
 	private Gtk.CssProvider m_cssProvider;
@@ -528,7 +528,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 	private void setupContentPage()
 	{
-		m_content = new ContentPage();
+		m_content = new ColumnView();
 		m_stack.add_named(m_content, "content");
 
 		m_content.panedPosChange.connect((pos) => {
@@ -807,7 +807,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		return m_headerbar.searchFocused();
 	}
 
-	public ContentPage getContent()
+	public ColumnView getContent()
 	{
 		return m_content;
 	}

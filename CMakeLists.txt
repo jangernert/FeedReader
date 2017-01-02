@@ -145,7 +145,7 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/CategorieRow.vala
 	src/Widgets/ColorCircle.vala
 	src/Widgets/ColorPopover.vala
-	src/Widgets/ContentPage.vala
+	src/Widgets/ColumnView.vala
 	src/Widgets/FeedList.vala
 	src/Widgets/FeedListFooter.vala
 	src/Widgets/FeedRow.vala

@@ -235,7 +235,11 @@ p:last-of-type {
 
 a {
     color: #318c34;
-    outline: none;
+    outline:none;
+    display:block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 ins,

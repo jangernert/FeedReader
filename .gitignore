@@ -4,3 +4,4 @@ feedreader.desktop
 feedreader-autostart.desktop
 feedreader.appdata.xml
 Constants.vala
+*.po~

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Данило Коростіль <ted.korostiled@gmail.com>, 2016
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2015
@@ -10,50 +10,100 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-29 21:32+0200\n"
+"POT-Creation-Date: 2017-01-02 05:43+0100\n"
 "PO-Revision-Date: 2016-09-29 19:33+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: Ukrainian (http://www.transifex.com/dev-feedreader/feedreader/language/uk/)\n"
+"Language-Team: Ukrainian (http://www.transifex.com/dev-feedreader/feedreader/"
+"language/uk/)\n"
+"Language: uk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: uk\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
-#: plugins/share/Pocket/PocketSetup.vala:42
-#: plugins/share/Twitter/TwitterSetup.vala:42
-msgid "waiting"
-msgstr "очікування"
-
-#: plugins/share/Instapaper/InstapaperSetup.vala:46
-msgid "Username or Password incorrect"
-msgstr "Користувач або пароль — неправильні"
-
+#: plugins/backend/feedbin/feedbinLoginWidget.vala:64
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:92
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:130
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:70
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:107
+#: plugins/backend/oldreader/oldreaderLoginWidget.vala:60
+#: plugins/backend/fresh/freshLoginWidget.vala:70
+#: plugins/backend/fresh/freshLoginWidget.vala:107
 #: plugins/share/Instapaper/InstapaperSetup.vala:71
-#: plugins/share/Wallabag/WallabagSetup.vala:91
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:93
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:131
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:65
-#: plugins/backend/fresh/freshLoginWidget.vala:71
-#: plugins/backend/fresh/freshLoginWidget.vala:108
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:55
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:71
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:108
+#: plugins/share/Wallabag/WallabagSetup.vala:92
 msgid "Username:"
 msgstr "Користувач:"
 
+#: plugins/backend/feedbin/feedbinLoginWidget.vala:65
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:93
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:131
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:71
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:108
+#: plugins/backend/oldreader/oldreaderLoginWidget.vala:61
+#: plugins/backend/fresh/freshLoginWidget.vala:71
+#: plugins/backend/fresh/freshLoginWidget.vala:108
 #: plugins/share/Instapaper/InstapaperSetup.vala:72
-#: plugins/share/Wallabag/WallabagSetup.vala:92
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:94
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:132
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:66
-#: plugins/backend/fresh/freshLoginWidget.vala:72
-#: plugins/backend/fresh/freshLoginWidget.vala:109
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:56
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:72
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:109
+#: plugins/share/Wallabag/WallabagSetup.vala:93
 msgid "Password:"
 msgstr "Пароль:"
+
+#: plugins/backend/feedbin/feedbinLoginWidget.vala:95
+msgid "Please log in to Feedbin to enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/feedbin/feedbinLoginWidget.vala:100
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:171
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:150
+#: plugins/backend/oldreader/oldreaderLoginWidget.vala:96
+#: plugins/backend/fresh/freshLoginWidget.vala:150
+#: src/Share/ServiceSetup.vala:55
+msgid "Login"
+msgstr "Увійти"
+
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:91
+msgid "OwnCloud URL:"
+msgstr "Посилання на OwnCloud:"
+
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:159
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:136
+#: plugins/backend/fresh/freshLoginWidget.vala:136
+msgid "HTTP Authorization"
+msgstr "Уповноваження HTTP"
+
+#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:166
+msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:69
+#, fuzzy
+msgid "Tiny Tiny RSS URL:"
+msgstr "Tiny Tiny RSS"
+
+#: plugins/backend/ttrss/ttrssLoginWidget.vala:145
+msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/local/localLoginWidget.vala:60
+msgid "Done"
+msgstr ""
+
+#: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
+msgid "Please log in to the Old Reader and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/fresh/freshLoginWidget.vala:69
+msgid "freshRSS URL:"
+msgstr ""
+
+#: plugins/backend/fresh/freshLoginWidget.vala:145
+msgid "Please log in to your freshRSS server and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/share/Pocket/PocketSetup.vala:52
+#: plugins/share/Twitter/TwitterSetup.vala:51
+msgid "waiting"
+msgstr "очікування"
 
 #: plugins/share/Email/EmailForm.vala:24
 msgid ""
@@ -76,22 +126,6 @@ msgstr ""
 msgid "Write Email"
 msgstr ""
 
-#: plugins/share/Wallabag/WallabagSetup.vala:49
-msgid "You fucked up"
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:88 src/Widgets/AddPopover.vala:61
-msgid "URL:"
-msgstr "Посилання:"
-
-#: plugins/share/Wallabag/WallabagSetup.vala:89
-msgid "Client ID:"
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:90
-msgid "Client Secret:"
-msgstr ""
-
 #: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
 "Hey,\n"
@@ -111,62 +145,818 @@ msgstr ""
 msgid "Tweet to Followers"
 msgstr ""
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:92
-msgid "OwnCloud URL:"
-msgstr "Посилання на OwnCloud:"
+#: plugins/share/Instapaper/InstapaperSetup.vala:46
+msgid "Username or Password incorrect"
+msgstr "Користувач або пароль — неправильні"
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:160
-#: plugins/backend/fresh/freshLoginWidget.vala:137
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:137
-msgid "HTTP Authorization"
-msgstr "Уповноваження HTTP"
+#: plugins/share/Wallabag/WallabagSetup.vala:89 src/Widgets/AddPopover.vala:47
+msgid "URL:"
+msgstr "Посилання:"
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:167
+#: plugins/share/Wallabag/WallabagSetup.vala:90
+#, fuzzy
+msgid "Client ID:"
+msgstr "Клієнт RSS"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:91
+msgid "Client Secret:"
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:141
+msgid "Please fill in the URL."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:148
+msgid "URL seems to not be valid."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:159
+msgid "Please fill in the clientID."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:167
+msgid "Please fill in the clientSecret."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:175
+#, fuzzy
+msgid "Please fill in the password."
+msgstr "Введіть дійсний пароль"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:183
+#, fuzzy
+msgid "Please fill in the username."
+msgstr "Введіть дійсного користувача"
+
+#: plugins/share/Wallabag/WallabagSetup.vala:209
+#, fuzzy
+msgid "Something went wrong."
+msgstr "Вибачте, щось пішло не так."
+
+#: src/Notification.vala:46 src/Widgets/ArticleList/ArticleList.vala:453
+msgid "New Articles"
+msgstr "Нові статті"
+
+#: src/Notification.vala:58
+#, fuzzy, c-format
+msgid "There is 1 new article (%u unread)"
+msgstr "Змінити мітку прочитано до статті"
+
+#: src/Notification.vala:60
+#, fuzzy, c-format
+msgid "There are %u new articles (%u unread)"
+msgstr "Змінити мітку прочитано до статті"
+
+#: src/Backend/FeedServer.vala:128 src/Backend/FeedServer.vala:222
+#, fuzzy
+msgid "Getting feeds and categories"
+msgstr "Показувати тільки непрочитані статті"
+
+#: src/Backend/FeedServer.vala:167
+#, fuzzy
+msgid "Getting articles"
+msgstr "Нові статті"
+
+#: src/Backend/FeedServer.vala:238
+#, fuzzy
+msgid "Getting starred articles"
+msgstr "Показувати тільки статті з зіркою"
+
+#: src/Backend/FeedServer.vala:242
+#, fuzzy
+msgid "Getting tagged articles"
+msgstr "Показувати тільки статті з зіркою"
+
+#: src/Backend/FeedServer.vala:255
+#, fuzzy
+msgid "Getting unread articles"
+msgstr "Показувати тільки непрочитані статті"
+
+#: src/dbBase.vala:503 src/Widgets/FeedList.vala:505
+#: src/Widgets/AddPopover.vala:38
+msgid "Uncategorized"
+msgstr "Некатегоризовано"
+
+#: src/Widgets/RemovePopover.vala:46
+#, c-format
+msgid "Remove \"%s\""
+msgstr "Вилучити «%s»"
+
+#: src/Widgets/RemovePopover.vala:80 src/Widgets/TagRow.vala:184
+#, c-format
+msgid "Tag \"%s\" removed"
+msgstr "Мітку «%s» вилучено"
+
+#: src/Widgets/RemovePopover.vala:102 src/Widgets/FeedRow.vala:203
+#, c-format
+msgid "Feed \"%s\" removed"
+msgstr "Подачу «%s» вилучено"
+
+#: src/Widgets/RemovePopover.vala:125 src/Widgets/CategorieRow.vala:393
+#, c-format
+msgid "Category \"%s\" removed"
+msgstr "Категорію «%s» вилучено"
+
+#: src/Widgets/FeedList.vala:234
+msgid "All Articles"
+msgstr "Всі статті"
+
+#: src/Widgets/FeedList.vala:433
+msgid "Tags"
+msgstr "Мітки"
+
+#: src/Widgets/FeedList.vala:481
+msgid "Categories"
+msgstr "Категорії"
+
+#: src/Widgets/FeedList.vala:486
+#, fuzzy
+msgid "Feeds"
+msgstr "Перелік подач:"
+
+#: src/Widgets/FeedList.vala:996
+msgid "New Tag"
+msgstr "Створити мітку"
+
+#: src/Widgets/FeedList.vala:1129
+msgid "New Category"
+msgstr "Створити категорію"
+
+#: src/Widgets/TagPopover.vala:36
+msgid "Add Tag:"
+msgstr "Додати мітку:"
+
+#: src/Widgets/TagPopover.vala:48
+msgid "Tags:"
+msgstr "Мітки:"
+
+#: src/Widgets/TagPopover.vala:125
+msgid "add Tag"
+msgstr "Додати мітку"
+
+#: src/Widgets/SpringCleanPage.vala:28
 msgid ""
-"Please log in to your ownCloud News instance and enjoy using FeedReader"
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr ""
+"FeedReader очищує базу даних.\n"
+"Це не має зайняти багато часу."
+
+#: src/Widgets/ArticleList/ArticleList.vala:45
+msgid "Sync is in progress. Articles should appear any second."
+msgstr "Відбувається синхронізування. Статті мають з'явитись у будь-яку мить."
+
+#: src/Widgets/ArticleList/ArticleList.vala:455
+msgid "scroll up"
+msgstr "Піднятись уверх"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
+#, fuzzy
+msgid "No Articles"
+msgstr "Нові статті"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:44
+#, c-format
+msgid "No unread articles that fit \"%s\" in the feed \"%s\" could be found"
+msgstr ""
+"Неможливо знайти жодної непрочитаної статті, яка відповідає «%s» у подачі "
+"«%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:46
+#, c-format
+msgid "No unread articles in the feed \"%s\" could be found"
+msgstr "Неможливо знайти непрочитані статті у подачі «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:51
+#, c-format
+msgid "No marked articles that fit \"%s\" in the feed \"%s\" could be found"
+msgstr ""
+"Неможливо знайти жодної позначеної статті, яка відповідає «%s» у подачі «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:53
+#, c-format
+msgid "No marked articles in the feed \"%s\" could be found"
+msgstr "Неможливо знайти позначені статті у подачі «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:58
+#, c-format
+msgid "No articles that fit \"%s\" in the feed \"%s\" could be found"
+msgstr "Неможливо знайти жодної статті, яка відповідає «%s» у подачі «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:60
+#, c-format
+msgid "No articles in the feed \"%s\" could be found"
+msgstr "Неможливо знайти статті у подачі «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:68
+#, c-format
+msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
+msgstr ""
+"Неможливо знайти жодної непрочитаної статті, яка відповідає «%s» з міткою "
+"«%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:70
+#, c-format
+msgid "No unread articles in the tag \"%s\" could be found"
+msgstr "Неможливо знайти непрочитані статті з міткою «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:75
+#, c-format
+msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
+msgstr ""
+"Неможливо знайти жодної позначеної статті, яка відповідає «%s» з міткою «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:77
+#, c-format
+msgid "No marked articles in the tag \"%s\" could be found"
+msgstr "Неможливо знайти позначені статті з міткою «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:82
+#, c-format
+msgid "No articles that fit \"%s\" in the tag \"%s\" could be found"
+msgstr "Неможливо знайти жодної статті, яка відповідає «%s» з міткою «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:84
+#, c-format
+msgid "No articles in the tag \"%s\" could be found"
+msgstr "Неможливо знайти статті з міткою «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:92
+#, c-format
+msgid ""
+"No unread articles that fit \"%s\" in the category \"%s\" could be found"
+msgstr ""
+"Неможливо знайти жодної непрочитаної статті, яка відповідає «%s» в категорії "
+"«%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:94
+#, c-format
+msgid "No unread articles in the category \"%s\" could be found"
+msgstr "Неможливо знайти непрочитані статті в категорії «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:99
+#, c-format
+msgid ""
+"No marked articles that fit \"%s\" in the category \"%s\" could be found"
+msgstr ""
+"Неможливо знайти жодної позначеної статті, яка відповідає «%s» в категорії "
+"«%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:101
+#, c-format
+msgid "No marked articles in the category \"%s\" could be found"
+msgstr "Неможливо знайти позначені статті в категорії «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:106
+#, c-format
+msgid "No articles that fit \"%s\" in the category \"%s\" could be found"
+msgstr "Неможливо знайти жодної статті, яка відповідає «%s» в категорії «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:108
+#, c-format
+msgid "No articles in the category \"%s\" could be found"
+msgstr "Неможливо знайти статті в категорії «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:118
+#, c-format
+msgid "No unread articles that fit \"%s\" could be found"
+msgstr "Неможливо знайти непрочитані статті, які відповідають «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:120
+msgid "No unread articles could be found"
+msgstr "Неможливо знайти непрочитані статті"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:125
+#, c-format
+msgid "No marked articles that fit \"%s\" could be found"
+msgstr "Неможливо знайти позначені статті, які відповідають «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:127
+msgid "No marked articles could be found"
+msgstr "Неможливо знайти позначені статті"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:132
+#, c-format
+msgid "No articles that fit \"%s\" could be found"
+msgstr "Неможливо знайти статті, які відповідають «%s»"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:134
+msgid "No articles could be found"
+msgstr "Неможливо знайти статті"
+
+#: src/Widgets/ReaderHeaderbar.vala:55 src/Widgets/FullscreenHeaderbar.vala:40
+msgid "Mark article (un)starred"
+msgstr "Змінити мітку зірки до статті"
+
+#: src/Widgets/ReaderHeaderbar.vala:61 src/Widgets/FullscreenHeaderbar.vala:45
+msgid "Mark article (un)read"
+msgstr "Змінити мітку прочитано до статті"
+
+#: src/Widgets/ReaderHeaderbar.vala:70
+msgid "Read article fullscreen"
+msgstr "Читати статті повноекранно"
+
+#: src/Widgets/ReaderHeaderbar.vala:98
+msgid "All"
+msgstr "Усі"
+
+#: src/Widgets/ReaderHeaderbar.vala:98
+msgid "Show all articles"
+msgstr "Показувати всі статті"
+
+#: src/Widgets/ReaderHeaderbar.vala:99
+msgid "Unread"
+msgstr "Непрочитані"
+
+#: src/Widgets/ReaderHeaderbar.vala:99
+msgid "Show only unread articles"
+msgstr "Показувати тільки непрочитані статті"
+
+#: src/Widgets/ReaderHeaderbar.vala:100
+msgid "Starred"
+msgstr "Із зіркою"
+
+#: src/Widgets/ReaderHeaderbar.vala:100
+msgid "Show only starred articles"
+msgstr "Показувати тільки статті з зіркою"
+
+#: src/Widgets/ReaderHeaderbar.vala:107 src/Widgets/FullscreenHeaderbar.vala:54
+msgid "Tag Article"
+msgstr "Залишити мітку на статті"
+
+#: src/Widgets/ReaderHeaderbar.vala:117
+#, fuzzy
+msgid "Save Article as PDF"
+msgstr "Оприлюднити статтю"
+
+#: src/Widgets/ReaderHeaderbar.vala:128 src/Widgets/FullscreenHeaderbar.vala:69
+msgid "Share Article"
+msgstr "Оприлюднити статтю"
+
+#: src/Widgets/ReaderHeaderbar.vala:157
+msgid "Attachments"
+msgstr "Долучення"
+
+#: src/Widgets/ReaderHeaderbar.vala:190
+msgid "Update Feeds"
+msgstr "Оновити подачі"
+
+#: src/Widgets/ReaderHeaderbar.vala:197
+msgid "Waiting for next update information"
 msgstr ""
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:172
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:101
-#: plugins/backend/fresh/freshLoginWidget.vala:151
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:151
-#: src/Share/ServiceSetup.vala:49
-msgid "Login"
-msgstr "Увійти"
+#: src/Widgets/ReaderHeaderbar.vala:205
+msgid "Search Articles"
+msgstr "Пошук статей"
 
-#: plugins/backend/local/localLoginWidget.vala:61
-msgid "Done"
+#: src/Widgets/ReaderHeaderbar.vala:220 src/Widgets/SettingsDialog.vala:28
+msgid "Settings"
+msgstr "Параметри"
+
+#: src/Widgets/TagRow.vala:207 src/Widgets/CategorieRow.vala:460
+#: src/Widgets/FeedRow.vala:245
+msgid "Rename"
+msgstr "Перейменувати"
+
+#: src/Widgets/TagRow.vala:208 src/Widgets/CategorieRow.vala:461
+#: src/Widgets/FeedRow.vala:248
+msgid "Remove"
+msgstr "Вилучити"
+
+#: src/Widgets/TagRow.vala:310 src/Widgets/CategorieRow.vala:522
+#: src/Widgets/FeedRow.vala:285
+msgid "rename"
+msgstr "Вилучити"
+
+#: src/Widgets/TagRow.vala:312 src/Widgets/CategorieRow.vala:524
+msgid "add"
+msgstr "Додати"
+
+#: src/Widgets/SharePopover.vala:65
+#, fuzzy
+msgid "Add accounts"
+msgstr "Створити обліковий запис"
+
+#: src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "Змінити обліковий запис?"
+
+#: src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
 msgstr ""
+"Ви збираєтесь змінити обліковий запис для FeedReader.\n"
+"Це означає, що всі локальні дані вашого старого облікового запису буде "
+"вилучено."
 
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:96
-msgid "Please log in to Feedbin to enjoy using FeedReader"
-msgstr ""
+#: src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Створити обліковий запис"
 
-#: plugins/backend/fresh/freshLoginWidget.vala:70
-msgid "freshRSS URL:"
-msgstr ""
+#: src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Очікування на синхронізування"
 
-#: plugins/backend/fresh/freshLoginWidget.vala:146
-msgid "Please log in to your freshRSS server and enjoy using FeedReader"
-msgstr ""
+#: src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "Я передумав"
 
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:86
-msgid "Please log in to the Old Reader and enjoy using FeedReader"
-msgstr ""
+#: src/Widgets/CategorieRow.vala:459 src/Widgets/FeedRow.vala:244
+msgid "Mark as read"
+msgstr "Зазначити як прочитане"
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:70
-msgid "Tiny Tiny RSS URL:"
-msgstr ""
+#: src/Widgets/CategorieRow.vala:462
+msgid "Remove (with Feeds)"
+msgstr "Вилучити (через подачі)"
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:146
-msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
-msgstr ""
-
-#: data/feedreader.desktop.in:3 data/feedreader.appdata.xml.in:6
-#: src/Widgets/MainWindow.vala:34
+#: src/Widgets/MainWindow.vala:46 data/feedreader.desktop.in:3
+#: data/feedreader.appdata.xml.in:6
 msgid "FeedReader"
 msgstr "FeedReader"
+
+#: src/Widgets/MainWindow.vala:460
+msgid "Ignore all tls errors from now on"
+msgstr "Відтепер нехтувати всіма помилками tls"
+
+#: src/Widgets/MainWindow.vala:545
+msgid "Please select a service first"
+msgstr "Вкажіть службу спочатку"
+
+#: src/Widgets/MainWindow.vala:548
+msgid "Please enter a valid username"
+msgstr "Введіть дійсного користувача"
+
+#: src/Widgets/MainWindow.vala:551
+msgid "Please enter a valid password"
+msgstr "Введіть дійсний пароль"
+
+#: src/Widgets/MainWindow.vala:555
+msgid "Please enter a valid URL"
+msgstr "Введіть дійсне посилання"
+
+#: src/Widgets/MainWindow.vala:558
+msgid "Please enter your Login details"
+msgstr "Введіть подробиці вашого входу"
+
+#: src/Widgets/MainWindow.vala:561
+msgid "Sorry, something went wrong."
+msgstr "Вибачте, щось пішло не так."
+
+#: src/Widgets/MainWindow.vala:564
+msgid "The server reported an API-error."
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:567
+msgid "Either your username or the password are not correct."
+msgstr "Користувача або пароль введено неправильно."
+
+#: src/Widgets/MainWindow.vala:570
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+"Немає зв'язку з сервером. Перевірте ваш інтернет і посилання на сервер."
+
+#: src/Widgets/MainWindow.vala:573
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "Доступ до API вимкнено з сервера. Спочатку ввімкніть його!"
+
+#: src/Widgets/MainWindow.vala:576
+msgid "Not authorized to access URL"
+msgstr "Не увійшли, щоб доступитись до посилання"
+
+#: src/Widgets/MainWindow.vala:580
+msgid "No valid CA certificate available!"
+msgstr "Немає доступного сертифікату СА!"
+
+#: src/Widgets/MainWindow.vala:584
+msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
+msgstr "Вкажіть \"api_feedreader\"-plugin до запущеної програми!"
+
+#: src/Widgets/ArticleView.vala:64
+msgid "No Article selected."
+msgstr "Не вибрано жодної статті."
+
+#: src/Widgets/ArticleView.vala:67
+msgid "WebKit has crashed"
+msgstr ""
+
+#: src/Widgets/ArticleView.vala:768
+msgid "Save image as"
+msgstr "Зберегти зображення як"
+
+#: src/Widgets/SettingsDialog.vala:38
+msgid "Interface"
+msgstr "Інтерфейс"
+
+#: src/Widgets/SettingsDialog.vala:39
+msgid "Internals"
+msgstr "Рушій"
+
+#: src/Widgets/SettingsDialog.vala:40
+msgid "Share"
+msgstr "Оприлюднення"
+
+#: src/Widgets/SettingsDialog.vala:59
+msgid "Feed List:"
+msgstr "Перелік подач:"
+
+#: src/Widgets/SettingsDialog.vala:61
+msgid "Only show feeds"
+msgstr "Показувати тільки подачі"
+
+#: src/Widgets/SettingsDialog.vala:68
+msgid "Only show unread"
+msgstr "Показувати тільки непрочитані"
+
+#: src/Widgets/SettingsDialog.vala:73
+msgid "Sort FeedList by"
+msgstr "Впорядковувати подачі"
+
+#: src/Widgets/SettingsDialog.vala:73 src/Widgets/SettingsDialog.vala:85
+msgid "Received"
+msgstr "За одержанням"
+
+#: src/Widgets/SettingsDialog.vala:73
+msgid "Alphabetically"
+msgstr "За абеткою"
+
+#: src/Widgets/SettingsDialog.vala:78 src/Widgets/SettingsDialog.vala:97
+msgid "Theme"
+msgstr "Тема"
+
+#: src/Widgets/SettingsDialog.vala:78
+msgid "Gtk+"
+msgstr "Gtk+"
+
+#: src/Widgets/SettingsDialog.vala:78
+msgid "Dark"
+msgstr "Темна"
+
+#: src/Widgets/SettingsDialog.vala:78
+msgid "elementary"
+msgstr "elementary"
+
+#: src/Widgets/SettingsDialog.vala:83
+msgid "Article List:"
+msgstr "Перелік статей:"
+
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Sort articles by"
+msgstr "Впорядкування статей"
+
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Date"
+msgstr "За датою"
+
+#: src/Widgets/SettingsDialog.vala:90
+msgid "Newest first"
+msgstr "Найновіші спочатку"
+
+#: src/Widgets/SettingsDialog.vala:95
+msgid "Article View:"
+msgstr "Огляд статей:"
+
+#: src/Widgets/SettingsDialog.vala:97
+msgid "Default"
+msgstr "Типовий"
+
+#: src/Widgets/SettingsDialog.vala:97
+msgid "Spring"
+msgstr "Весняний"
+
+#: src/Widgets/SettingsDialog.vala:97
+msgid "Midnight"
+msgstr "Вечірній"
+
+#: src/Widgets/SettingsDialog.vala:97
+msgid "Parchment"
+msgstr "Пергаментний"
+
+#: src/Widgets/SettingsDialog.vala:102
+msgid "Font Size"
+msgstr "Розмір шрифту"
+
+#: src/Widgets/SettingsDialog.vala:102
+msgid "Small"
+msgstr "Малий"
+
+#: src/Widgets/SettingsDialog.vala:102
+msgid "Normal"
+msgstr "Звичайний"
+
+#: src/Widgets/SettingsDialog.vala:102
+msgid "Large"
+msgstr "Великий"
+
+#: src/Widgets/SettingsDialog.vala:102
+msgid "Huge"
+msgstr "Здоровезний"
+
+#: src/Widgets/SettingsDialog.vala:128
+msgid "Sync:"
+msgstr "Синхронізування:"
+
+#: src/Widgets/SettingsDialog.vala:130
+msgid "Number of articles"
+msgstr "Кількість статей"
+
+#: src/Widgets/SettingsDialog.vala:132
+msgid "Every (Minutes)"
+msgstr "Кожні (хвилин)"
+
+#: src/Widgets/SettingsDialog.vala:144
+msgid "Database:"
+msgstr "База даних:"
+
+#: src/Widgets/SettingsDialog.vala:146
+msgid "Delete articles after"
+msgstr "Вилучати статті"
+
+#: src/Widgets/SettingsDialog.vala:147
+msgid "Never"
+msgstr "Ніколи"
+
+#: src/Widgets/SettingsDialog.vala:147
+msgid "1 Week"
+msgstr "Що тижня"
+
+#: src/Widgets/SettingsDialog.vala:147
+msgid "1 Month"
+msgstr "Що місяця"
+
+#: src/Widgets/SettingsDialog.vala:147
+msgid "6 Months"
+msgstr "Що шість місяців"
+
+#: src/Widgets/SettingsDialog.vala:149
+msgid "Additional Functionality:"
+msgstr "Додаткові можливості:"
+
+#: src/Widgets/SettingsDialog.vala:151
+msgid "Content Grabber"
+msgstr "Здиральник вмісту"
+
+#: src/Widgets/SettingsDialog.vala:153
+msgid "Internal Media Player"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:310
+#, fuzzy
+msgid "System Accounts"
+msgstr "Створити обліковий запис"
+
+#: src/Widgets/SettingsDialog.vala:337 src/Widgets/SettingsDialog.vala:351
+#, fuzzy
+msgid "FeedReader Accounts"
+msgstr "Автоматичний запуск FeedReader"
+
+#: src/Widgets/FullscreenHeaderbar.vala:84
+msgid "Leave fullscreen mode"
+msgstr "Покинути повноекранний режим"
+
+#: src/Widgets/LoginPage.vala:55
+msgid "Where are your feeds?"
+msgstr "Де ваші подачі?"
+
+#: src/Widgets/LoginPage.vala:59
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+"Виберіть службу RSS, яку ви використовуєте і ввійдіть у неї, щоб продовжити."
+
+#: src/Widgets/AddPopover.vala:48
+msgid "Category:"
+msgstr "Категорія:"
+
+#: src/Widgets/AddPopover.vala:51
+msgid "Add"
+msgstr "Додати"
+
+#: src/Widgets/AddPopover.vala:65
+msgid "OPML-File:"
+msgstr "Файл OPML:"
+
+#: src/Widgets/AddPopover.vala:67
+msgid "Select OPML-file"
+msgstr "Виберіть файл OPML"
+
+#: src/Widgets/AddPopover.vala:73
+msgid "Import"
+msgstr "Імпортувати"
+
+#: src/Widgets/AddPopover.vala:92
+msgid "Add feed"
+msgstr "Додати подачу"
+
+#: src/Widgets/AddPopover.vala:93
+msgid "Import OPML"
+msgstr "Імпортувати OPML"
+
+#: src/Widgets/FeedRow.vala:247
+#, c-format
+msgid "Remove only from %s"
+msgstr "Вилучити тільки з %s"
+
+#: src/Widgets/ShortcutsWindow.vala:22
+msgid "General"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:27
+msgid "Refresh"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:28
+msgid "Search"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:29
+msgid "Quit"
+msgstr "Вийти"
+
+#: src/Widgets/ShortcutsWindow.vala:37
+#, fuzzy
+msgid "Feed-List"
+msgstr "Перелік подач:"
+
+#: src/Widgets/ShortcutsWindow.vala:40
+msgid "Navigate the feed-list"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:41
+msgid "Collapse/Expand categories"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:42
+msgid "Mark the currently selected as read"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:50
+#, fuzzy
+msgid "Article-List"
+msgstr "Перелік статей:"
+
+#: src/Widgets/ShortcutsWindow.vala:59
+msgid "Select next/previous article"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:60
+#, fuzzy
+msgid "Toggle the selected article un/read"
+msgstr "Змінити мітку прочитано до статті"
+
+#: src/Widgets/ShortcutsWindow.vala:61
+msgid "Toggle the selected article un/marked"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:62
+msgid "Open the URL of the selected article"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:63
+msgid "Scroll all the way up/down"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:64
+msgid "Center the currently selected article"
+msgstr ""
+
+#: src/Model/Article.vala:165
+msgid "Today"
+msgstr "Сьогодні"
+
+#: src/Model/Article.vala:169
+msgid "Yesterday"
+msgstr "Учора"
+
+#: src/Share/ServiceSetup.vala:60
+msgid "Logout"
+msgstr "Вийти"
+
+#: src/FeedReader.vala:21 data/feedreader.desktop.in:19
+msgid "About FeedReader"
+msgstr "Про програму"
+
+#: src/UtilsUI.vala:158 src/UtilsUI.vala:207
+msgid "Cancel"
+msgstr ""
+
+#: src/UtilsUI.vala:160 src/UtilsUI.vala:209
+msgid "Save"
+msgstr ""
+
+#: src/Utils.vala:20
+msgid "No Preview Available"
+msgstr "Перегляд недоступний"
+
+#: src/Utils.vala:98
+msgid "No Text available for this article :("
+msgstr "Немає тексту в цій статті :("
+
+#: src/Utils.vala:208
+#, c-format
+msgid "posted by: %s, "
+msgstr "оприлюднив: %s, "
 
 #: data/feedreader.desktop.in:4 data/feedreader-autostart.desktop.in:4
 msgid "RSS Client"
@@ -180,9 +970,13 @@ msgstr "Читати подачі з інтернету"
 msgid "feedreader"
 msgstr "FeedReader"
 
-#: data/feedreader.desktop.in:19 src/FeedReader.vala:21
-msgid "About FeedReader"
-msgstr "Про програму"
+#: data/feedreader-autostart.desktop.in:3
+msgid "FeedReader Autostart"
+msgstr "Автоматичний запуск FeedReader"
+
+#: data/feedreader-autostart.desktop.in:6
+msgid "Categories=Network;Feed;"
+msgstr "Categories=Network;Feed;"
 
 #: data/feedreader.appdata.xml.in:7
 msgid "RSS client for various webservices"
@@ -190,9 +984,10 @@ msgstr "Клієнт RSS для різних служб"
 
 #: data/feedreader.appdata.xml.in:10
 msgid ""
-"FeedReader is a program designed to complement an already existing web-based"
-" RSS reader account."
-msgstr "FeedReader — програма розроблена доповнити наявні інтернетні клієнти RSS."
+"FeedReader is a program designed to complement an already existing web-based "
+"RSS reader account."
+msgstr ""
+"FeedReader — програма розроблена доповнити наявні інтернетні клієнти RSS."
 
 #: data/feedreader.appdata.xml.in:14
 msgid "Currently supported services:"
@@ -222,719 +1017,49 @@ msgid ""
 "sharing to \"read-it-later\" services like pocket and instapaper, handy "
 "keyboard shortcuts and a database that keeps all your old articles as long "
 "as you like."
-msgstr "Комбінує всі переваги інтернетних служб, як-от синхронізування між різними пристроями з усім, що ви можете очікувати від сучасної стільничної програми: сповіщення, швидкий пошук і фільтри, мітки, оприлюднення до служб «прочитаю пізніше», як-от Pocket і Instapaper, зручні клавіатурні скорочення і база даних, яка зберігає старі статті настільки довго, наскільки вам це потрібно."
-
-#: data/feedreader-autostart.desktop.in:3
-msgid "FeedReader Autostart"
-msgstr "Автоматичний запуск FeedReader"
-
-#: data/feedreader-autostart.desktop.in:6
-msgid "Categories=Network;Feed;"
-msgstr "Categories=Network;Feed;"
-
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr "Сьогодні"
-
-#: src/Model/Article.vala:169
-msgid "Yesterday"
-msgstr "Учора"
-
-#: src/Widgets/FeedList.vala:242
-msgid "All Articles"
-msgstr "Всі статті"
-
-#: src/Widgets/FeedList.vala:447
-msgid "Tags"
-msgstr "Мітки"
-
-#: src/Widgets/FeedList.vala:478
-msgid "Categories"
-msgstr "Категорії"
-
-#: src/Widgets/FeedList.vala:483
-msgid "Feeds"
 msgstr ""
-
-#: src/Widgets/FeedList.vala:502 src/Widgets/AddPopover.vala:51
-#: src/dbBase.vala:406
-msgid "Uncategorized"
-msgstr "Некатегоризовано"
-
-#: src/Widgets/FeedList.vala:970
-msgid "New Tag"
-msgstr "Створити мітку"
-
-#: src/Widgets/FeedList.vala:1097
-msgid "New Category"
-msgstr "Створити категорію"
-
-#: src/Widgets/SpringCleanPage.vala:28
-msgid ""
-"FeedReader is cleaning the database.\n"
-"This shouldn't take too long."
-msgstr "FeedReader очищує базу даних.\nЦе не має зайняти багато часу."
-
-#: src/Widgets/MainWindow.vala:439
-msgid "Ignore all tls errors from now on"
-msgstr "Відтепер нехтувати всіма помилками tls"
-
-#: src/Widgets/MainWindow.vala:517
-msgid "Please select a service first"
-msgstr "Вкажіть службу спочатку"
-
-#: src/Widgets/MainWindow.vala:520
-msgid "Please enter a valid username"
-msgstr "Введіть дійсного користувача"
-
-#: src/Widgets/MainWindow.vala:523
-msgid "Please enter a valid password"
-msgstr "Введіть дійсний пароль"
-
-#: src/Widgets/MainWindow.vala:526
-msgid "Please enter a valid URL"
-msgstr "Введіть дійсне посилання"
-
-#: src/Widgets/MainWindow.vala:529
-msgid "Please enter your Login details"
-msgstr "Введіть подробиці вашого входу"
-
-#: src/Widgets/MainWindow.vala:532
-msgid "Sorry, something went wrong."
-msgstr "Вибачте, щось пішло не так."
-
-#: src/Widgets/MainWindow.vala:535
-msgid "Either your username or the password are not correct."
-msgstr "Користувача або пароль введено неправильно."
-
-#: src/Widgets/MainWindow.vala:538
-msgid ""
-"No connection to the server. Check your internet connection and the server "
-"URL!"
-msgstr "Немає зв'язку з сервером. Перевірте ваш інтернет і посилання на сервер."
-
-#: src/Widgets/MainWindow.vala:541
-msgid "API access is disabled on the server. Please enable it first!"
-msgstr "Доступ до API вимкнено з сервера. Спочатку ввімкніть його!"
-
-#: src/Widgets/MainWindow.vala:544
-msgid "Not authorized to access URL"
-msgstr "Не увійшли, щоб доступитись до посилання"
-
-#: src/Widgets/MainWindow.vala:548
-msgid "No valid CA certificate available!"
-msgstr "Немає доступного сертифікату СА!"
-
-#: src/Widgets/MainWindow.vala:552
-msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr "Вкажіть \"api_feedreader\"-plugin до запущеної програми!"
-
-#: src/Widgets/SharePopover.vala:58
-msgid "Add accounts"
-msgstr ""
-
-#: src/Widgets/ArticleView.vala:112
-msgid "No Article selected."
-msgstr "Не вибрано жодної статті."
-
-#: src/Widgets/ArticleView.vala:621
-msgid "Save image as"
-msgstr "Зберегти зображення як"
-
-#: src/Widgets/ReaderHeaderbar.vala:52 src/Widgets/FullscreenHeaderbar.vala:39
-msgid "Mark article (un)starred"
-msgstr "Змінити мітку зірки до статті"
-
-#: src/Widgets/ReaderHeaderbar.vala:58 src/Widgets/FullscreenHeaderbar.vala:46
-msgid "Mark article (un)read"
-msgstr "Змінити мітку прочитано до статті"
-
-#: src/Widgets/ReaderHeaderbar.vala:67
-msgid "Read article fullscreen"
-msgstr "Читати статті повноекранно"
-
-#: src/Widgets/ReaderHeaderbar.vala:95
-msgid "All"
-msgstr "Усі"
-
-#: src/Widgets/ReaderHeaderbar.vala:95
-msgid "Show all articles"
-msgstr "Показувати всі статті"
-
-#: src/Widgets/ReaderHeaderbar.vala:96
-msgid "Unread"
-msgstr "Непрочитані"
-
-#: src/Widgets/ReaderHeaderbar.vala:96
-msgid "Show only unread articles"
-msgstr "Показувати тільки непрочитані статті"
-
-#: src/Widgets/ReaderHeaderbar.vala:97
-msgid "Starred"
-msgstr "Із зіркою"
-
-#: src/Widgets/ReaderHeaderbar.vala:97
-msgid "Show only starred articles"
-msgstr "Показувати тільки статті з зіркою"
-
-#: src/Widgets/ReaderHeaderbar.vala:104
-#: src/Widgets/FullscreenHeaderbar.vala:57
-msgid "Tag Article"
-msgstr "Залишити мітку на статті"
-
-#: src/Widgets/ReaderHeaderbar.vala:115
-#: src/Widgets/FullscreenHeaderbar.vala:72
-msgid "Share Article"
-msgstr "Оприлюднити статтю"
-
-#: src/Widgets/ReaderHeaderbar.vala:141
-msgid "Attachments"
-msgstr "Долучення"
-
-#: src/Widgets/ReaderHeaderbar.vala:178
-msgid "Update Feeds"
-msgstr "Оновити подачі"
-
-#: src/Widgets/ReaderHeaderbar.vala:184
-msgid "Search Articles"
-msgstr "Пошук статей"
-
-#: src/Widgets/ReaderHeaderbar.vala:199 src/Widgets/SettingsDialog.vala:26
-msgid "Settings"
-msgstr "Параметри"
-
-#: src/Widgets/LoginPage.vala:57
-msgid "Where are your feeds?"
-msgstr "Де ваші подачі?"
-
-#: src/Widgets/LoginPage.vala:61
-msgid "Please select the RSS service you are using and log in to get going."
-msgstr "Виберіть службу RSS, яку ви використовуєте і ввійдіть у неї, щоб продовжити."
-
-#: src/Widgets/CategorieRow.vala:374 src/Widgets/RemovePopover.vala:115
-#, c-format
-msgid "Category \"%s\" removed"
-msgstr "Категорію «%s» вилучено"
-
-#: src/Widgets/CategorieRow.vala:425 src/Widgets/FeedRow.vala:242
-msgid "Mark as read"
-msgstr "Зазначити як прочитане"
-
-#: src/Widgets/CategorieRow.vala:426 src/Widgets/TagRow.vala:193
-#: src/Widgets/FeedRow.vala:243
-msgid "Rename"
-msgstr "Перейменувати"
-
-#: src/Widgets/CategorieRow.vala:427 src/Widgets/TagRow.vala:194
-#: src/Widgets/FeedRow.vala:246
-msgid "Remove"
-msgstr "Вилучити"
-
-#: src/Widgets/CategorieRow.vala:428
-msgid "Remove (with Feeds)"
-msgstr "Вилучити (через подачі)"
-
-#: src/Widgets/CategorieRow.vala:480 src/Widgets/TagRow.vala:280
-#: src/Widgets/FeedRow.vala:276
-msgid "rename"
-msgstr "Вилучити"
-
-#: src/Widgets/CategorieRow.vala:482 src/Widgets/TagRow.vala:282
-msgid "add"
-msgstr "Додати"
-
-#: src/Widgets/SettingsDialog.vala:36
-msgid "Interface"
-msgstr "Інтерфейс"
-
-#: src/Widgets/SettingsDialog.vala:37
-msgid "Internals"
-msgstr "Рушій"
-
-#: src/Widgets/SettingsDialog.vala:38
-msgid "Share"
-msgstr "Оприлюднення"
-
-#: src/Widgets/SettingsDialog.vala:57
-msgid "Feed List:"
-msgstr "Перелік подач:"
-
-#: src/Widgets/SettingsDialog.vala:59
-msgid "Only show feeds"
-msgstr "Показувати тільки подачі"
-
-#: src/Widgets/SettingsDialog.vala:66
-msgid "Only show unread"
-msgstr "Показувати тільки непрочитані"
-
-#: src/Widgets/SettingsDialog.vala:71
-msgid "Sort FeedList by"
-msgstr "Впорядковувати подачі"
-
-#: src/Widgets/SettingsDialog.vala:71 src/Widgets/SettingsDialog.vala:83
-msgid "Received"
-msgstr "За одержанням"
-
-#: src/Widgets/SettingsDialog.vala:71
-msgid "Alphabetically"
-msgstr "За абеткою"
-
-#: src/Widgets/SettingsDialog.vala:76 src/Widgets/SettingsDialog.vala:95
-msgid "Theme"
-msgstr "Тема"
-
-#: src/Widgets/SettingsDialog.vala:76
-msgid "Gtk+"
-msgstr "Gtk+"
-
-#: src/Widgets/SettingsDialog.vala:76
-msgid "Dark"
-msgstr "Темна"
-
-#: src/Widgets/SettingsDialog.vala:76
-msgid "elementary"
-msgstr "elementary"
-
-#: src/Widgets/SettingsDialog.vala:81
-msgid "Article List:"
-msgstr "Перелік статей:"
-
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort articles by"
-msgstr "Впорядкування статей"
-
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Date"
-msgstr "За датою"
-
-#: src/Widgets/SettingsDialog.vala:88
-msgid "Newest first"
-msgstr "Найновіші спочатку"
-
-#: src/Widgets/SettingsDialog.vala:93
-msgid "Article View:"
-msgstr "Огляд статей:"
-
-#: src/Widgets/SettingsDialog.vala:95
-msgid "Default"
-msgstr "Типовий"
-
-#: src/Widgets/SettingsDialog.vala:95
-msgid "Spring"
-msgstr "Весняний"
-
-#: src/Widgets/SettingsDialog.vala:95
-msgid "Midnight"
-msgstr "Вечірній"
-
-#: src/Widgets/SettingsDialog.vala:95
-msgid "Parchment"
-msgstr "Пергаментний"
-
-#: src/Widgets/SettingsDialog.vala:100
-msgid "Font Size"
-msgstr "Розмір шрифту"
-
-#: src/Widgets/SettingsDialog.vala:100
-msgid "Small"
-msgstr "Малий"
-
-#: src/Widgets/SettingsDialog.vala:100
-msgid "Normal"
-msgstr "Звичайний"
-
-#: src/Widgets/SettingsDialog.vala:100
-msgid "Large"
-msgstr "Великий"
-
-#: src/Widgets/SettingsDialog.vala:100
-msgid "Huge"
-msgstr "Здоровезний"
-
-#: src/Widgets/SettingsDialog.vala:126
-msgid "Sync:"
-msgstr "Синхронізування:"
-
-#: src/Widgets/SettingsDialog.vala:128
-msgid "Number of articles"
-msgstr "Кількість статей"
-
-#: src/Widgets/SettingsDialog.vala:130
-msgid "Every (Minutes)"
-msgstr "Кожні (хвилин)"
-
-#: src/Widgets/SettingsDialog.vala:135
-msgid "Database:"
-msgstr "База даних:"
-
-#: src/Widgets/SettingsDialog.vala:137
-msgid "Delete articles after"
-msgstr "Вилучати статті"
-
-#: src/Widgets/SettingsDialog.vala:138
-msgid "Never"
-msgstr "Ніколи"
-
-#: src/Widgets/SettingsDialog.vala:138
-msgid "1 Week"
-msgstr "Що тижня"
-
-#: src/Widgets/SettingsDialog.vala:138
-msgid "1 Month"
-msgstr "Що місяця"
-
-#: src/Widgets/SettingsDialog.vala:138
-msgid "6 Months"
-msgstr "Що шість місяців"
-
-#: src/Widgets/SettingsDialog.vala:140
-msgid "Additional Functionality:"
-msgstr "Додаткові можливості:"
-
-#: src/Widgets/SettingsDialog.vala:142
-msgid "Content Grabber"
-msgstr "Здиральник вмісту"
-
-#: src/Widgets/SettingsDialog.vala:144
-msgid "Internal Media Player"
-msgstr ""
-
-#: src/Widgets/FullscreenHeaderbar.vala:88
-msgid "Leave fullscreen mode"
-msgstr "Покинути повноекранний режим"
-
-#: src/Widgets/AddPopover.vala:62
-msgid "Category:"
-msgstr "Категорія:"
-
-#: src/Widgets/AddPopover.vala:65
-msgid "Add"
-msgstr "Додати"
-
-#: src/Widgets/AddPopover.vala:79
-msgid "OPML-File:"
-msgstr "Файл OPML:"
-
-#: src/Widgets/AddPopover.vala:81
-msgid "Select OPML-file"
-msgstr "Виберіть файл OPML"
-
-#: src/Widgets/AddPopover.vala:87
-msgid "Import"
-msgstr "Імпортувати"
-
-#: src/Widgets/AddPopover.vala:101
-msgid "Add feed"
-msgstr "Додати подачу"
-
-#: src/Widgets/AddPopover.vala:102
-msgid "Import OPML"
-msgstr "Імпортувати OPML"
-
-#: src/Widgets/RemovePopover.vala:46
-#, c-format
-msgid "Remove \"%s\""
-msgstr "Вилучити «%s»"
-
-#: src/Widgets/RemovePopover.vala:82 src/Widgets/TagRow.vala:173
-#, c-format
-msgid "Tag \"%s\" removed"
-msgstr "Мітку «%s» вилучено"
-
-#: src/Widgets/RemovePopover.vala:98 src/Widgets/FeedRow.vala:208
-#, c-format
-msgid "Feed \"%s\" removed"
-msgstr "Подачу «%s» вилучено"
-
-#: src/Widgets/ResetPage.vala:33
-msgid "Change Account?"
-msgstr "Змінити обліковий запис?"
-
-#: src/Widgets/ResetPage.vala:37
-msgid ""
-"You are about to change the account you want FeedReader to use.\n"
-" This means deleting all local data of your old account."
-msgstr "Ви збираєтесь змінити обліковий запис для FeedReader.\nЦе означає, що всі локальні дані вашого старого облікового запису буде вилучено."
-
-#: src/Widgets/ResetPage.vala:41
-msgid "New account"
-msgstr "Створити обліковий запис"
-
-#: src/Widgets/ResetPage.vala:44
-msgid "Waiting for current sync to finish"
-msgstr "Очікування на синхронізування"
-
-#: src/Widgets/ResetPage.vala:54
-msgid "I changed my mind"
-msgstr "Я передумав"
-
-#: src/Widgets/TagPopover.vala:40
-msgid "Add Tag:"
-msgstr "Додати мітку:"
-
-#: src/Widgets/TagPopover.vala:52
-msgid "Tags:"
-msgstr "Мітки:"
-
-#: src/Widgets/TagPopover.vala:129
-msgid "add Tag"
-msgstr "Додати мітку"
-
-#: src/Widgets/ArticleList.vala:56
-#, c-format
-msgid "None of the %i Articles in the database fit the current filters."
-msgstr "Жодна з %i статей в базі даних не відповідає поточному фільтру."
-
-#: src/Widgets/ArticleList.vala:70
-msgid "Sync is in progress. Articles should appear any second."
-msgstr "Відбувається синхронізування. Статті мають з'явитись у будь-яку мить."
-
-#: src/Widgets/ArticleList.vala:170
-msgid "New Articles"
-msgstr "Нові статті"
-
-#: src/Widgets/ArticleList.vala:170
-msgid "scroll up"
-msgstr "Піднятись уверх"
-
-#: src/Widgets/ArticleList.vala:1053
-#, c-format
-msgid "No unread articles that fit \"%s\" in the feed \"%s\" could be found"
-msgstr "Неможливо знайти жодної непрочитаної статті, яка відповідає «%s» у подачі «%s»"
-
-#: src/Widgets/ArticleList.vala:1055
-#, c-format
-msgid "No unread articles in the feed \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані статті у подачі «%s»"
-
-#: src/Widgets/ArticleList.vala:1060
-#, c-format
-msgid ""
-"No unread and marked articles that fit \"%s\" in the feed \"%s\" could be "
-"found"
-msgstr "Неможливо знайти жодної непрочитаної і позначеною статті, яка відповідає «%s» у подачі «%s»."
-
-#: src/Widgets/ArticleList.vala:1062
-#, c-format
-msgid "No unread and marked articles in the feed \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані і позначені статті у подачі «%s»"
-
-#: src/Widgets/ArticleList.vala:1067
-#, c-format
-msgid "No marked articles that fit \"%s\" in the feed \"%s\" could be found"
-msgstr "Неможливо знайти жодної позначеної статті, яка відповідає «%s» у подачі «%s»"
-
-#: src/Widgets/ArticleList.vala:1069
-#, c-format
-msgid "No marked articles in the feed \"%s\" could be found"
-msgstr "Неможливо знайти позначені статті у подачі «%s»"
-
-#: src/Widgets/ArticleList.vala:1074
-#, c-format
-msgid "No articles that fit \"%s\" in the feed \"%s\" could be found"
-msgstr "Неможливо знайти жодної статті, яка відповідає «%s» у подачі «%s»"
-
-#: src/Widgets/ArticleList.vala:1076
-#, c-format
-msgid "No articles in the feed \"%s\" could be found"
-msgstr "Неможливо знайти статті у подачі «%s»"
-
-#: src/Widgets/ArticleList.vala:1084
-#, c-format
-msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
-msgstr "Неможливо знайти жодної непрочитаної статті, яка відповідає «%s» з міткою «%s»"
-
-#: src/Widgets/ArticleList.vala:1086
-#, c-format
-msgid "No unread articles in the tag \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані статті з міткою «%s»"
-
-#: src/Widgets/ArticleList.vala:1091
-#, c-format
-msgid "No unread and marked articles that fit \"%s\" in the tag \"%s\" could be found"
-msgstr "Неможливо знайти жодної непрочитаної і позначеною статті, яка відповідає «%s» з міткою «%s». "
-
-#: src/Widgets/ArticleList.vala:1093
-#, c-format
-msgid "No unread and marked articles in the tag \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані і позначені статті з міткою «%s»"
-
-#: src/Widgets/ArticleList.vala:1098
-#, c-format
-msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
-msgstr "Неможливо знайти жодної позначеної статті, яка відповідає «%s» з міткою «%s»"
-
-#: src/Widgets/ArticleList.vala:1100
-#, c-format
-msgid "No marked articles in the tag \"%s\" could be found"
-msgstr "Неможливо знайти позначені статті з міткою «%s»"
-
-#: src/Widgets/ArticleList.vala:1105
-#, c-format
-msgid "No articles that fit \"%s\" in the tag \"%s\" could be found"
-msgstr "Неможливо знайти жодної статті, яка відповідає «%s» з міткою «%s»"
-
-#: src/Widgets/ArticleList.vala:1107
-#, c-format
-msgid "No articles in the tag \"%s\" could be found"
-msgstr "Неможливо знайти статті з міткою «%s»"
-
-#: src/Widgets/ArticleList.vala:1115
-#, c-format
-msgid "No unread articles that fit \"%s\" in the category \"%s\" could be found"
-msgstr "Неможливо знайти жодної непрочитаної статті, яка відповідає «%s» в категорії «%s»"
-
-#: src/Widgets/ArticleList.vala:1117
-#, c-format
-msgid "No unread articles in the category \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані статті в категорії «%s»"
-
-#: src/Widgets/ArticleList.vala:1122
-#, c-format
-msgid ""
-"No unread and marked articles that fit \"%s\" in the category \"%s\" could "
-"be found"
-msgstr "Неможливо знайти жодної непрочитаної і позначеною статті, яка відповідає «%s» в категорії «%s». "
-
-#: src/Widgets/ArticleList.vala:1124
-#, c-format
-msgid "No unread and marked articles in the category \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані і позначені статті в категорії «%s»"
-
-#: src/Widgets/ArticleList.vala:1129
-#, c-format
-msgid "No marked articles that fit \"%s\" in the category \"%s\" could be found"
-msgstr "Неможливо знайти жодної позначеної статті, яка відповідає «%s» в категорії «%s»"
-
-#: src/Widgets/ArticleList.vala:1131
-#, c-format
-msgid "No marked articles in the category \"%s\" could be found"
-msgstr "Неможливо знайти позначені статті в категорії «%s»"
-
-#: src/Widgets/ArticleList.vala:1136
-#, c-format
-msgid "No articles that fit \"%s\" in the category \"%s\" could be found"
-msgstr "Неможливо знайти жодної статті, яка відповідає «%s» в категорії «%s»"
-
-#: src/Widgets/ArticleList.vala:1138
-#, c-format
-msgid "No articles in the category \"%s\" could be found"
-msgstr "Неможливо знайти статті в категорії «%s»"
-
-#: src/Widgets/ArticleList.vala:1148
-#, c-format
-msgid "No unread articles that fit \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані статті, які відповідають «%s»"
-
-#: src/Widgets/ArticleList.vala:1150
-msgid "No unread articles could be found"
-msgstr "Неможливо знайти непрочитані статті"
-
-#: src/Widgets/ArticleList.vala:1155
-#, c-format
-msgid "No unread and marked articles that fit \"%s\" could be found"
-msgstr "Неможливо знайти непрочитані і позначені статті, які відповідають «%s»"
-
-#: src/Widgets/ArticleList.vala:1157
-msgid "No unread and marked articles could be found"
-msgstr "Неможливо знайти непрочитані і позначені статті"
-
-#: src/Widgets/ArticleList.vala:1162
-#, c-format
-msgid "No marked articles that fit \"%s\" could be found"
-msgstr "Неможливо знайти позначені статті, які відповідають «%s»"
-
-#: src/Widgets/ArticleList.vala:1164
-msgid "No marked articles could be found"
-msgstr "Неможливо знайти позначені статті"
-
-#: src/Widgets/ArticleList.vala:1169
-#, c-format
-msgid "No articles that fit \"%s\" could be found"
-msgstr "Неможливо знайти статті, які відповідають «%s»"
-
-#: src/Widgets/ArticleList.vala:1171
-msgid "No articles could be found"
-msgstr "Неможливо знайти статті"
-
-#: src/Widgets/FeedRow.vala:245
-#, c-format
-msgid "Remove only from %s"
-msgstr "Вилучити тільки з %s"
-
-#: src/Widgets/ShortcutsWindow.vala:22
-msgid "General"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:27
-msgid "Refresh"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:28
-msgid "Search"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:29
-msgid "Quit"
-msgstr "Вийти"
-
-#: src/Widgets/ShortcutsWindow.vala:37
-msgid "Feed-List"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:40
-msgid "Navigate the feed-list"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:41
-msgid "Collapse/Expand categories"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:42
-msgid "Mark the currently selected as read"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:50
-msgid "Article-List"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:59
-msgid "Select next/previous article"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:60
-msgid "Toggle the selected article un/read"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:61
-msgid "Toggle the selected article un/marked"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:62
-msgid "Open the URL of the selected article"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:63
-msgid "Scroll all the way up/down"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:64
-msgid "Center the currently selected article"
-msgstr ""
-
-#: src/Share/ServiceSetup.vala:54
-msgid "Logout"
-msgstr "Вийти"
-
-#: src/Utils.vala:20
-msgid "No Preview Available"
-msgstr "Перегляд недоступний"
-
-#: src/Utils.vala:98
-msgid "No Text available for this article :("
-msgstr "Немає тексту в цій статті :("
-
-#: src/Utils.vala:225
-#, c-format
-msgid "posted by: %s, "
-msgstr "оприлюднив: %s, "
+"Комбінує всі переваги інтернетних служб, як-от синхронізування між різними "
+"пристроями з усім, що ви можете очікувати від сучасної стільничної програми: "
+"сповіщення, швидкий пошук і фільтри, мітки, оприлюднення до служб «прочитаю "
+"пізніше», як-от Pocket і Instapaper, зручні клавіатурні скорочення і база "
+"даних, яка зберігає старі статті настільки довго, наскільки вам це потрібно."
+
+#~ msgid "None of the %i Articles in the database fit the current filters."
+#~ msgstr "Жодна з %i статей в базі даних не відповідає поточному фільтру."
+
+#~ msgid ""
+#~ "No unread and marked articles that fit \"%s\" in the feed \"%s\" could be "
+#~ "found"
+#~ msgstr ""
+#~ "Неможливо знайти жодної непрочитаної і позначеною статті, яка відповідає "
+#~ "«%s» у подачі «%s»."
+
+#~ msgid "No unread and marked articles in the feed \"%s\" could be found"
+#~ msgstr "Неможливо знайти непрочитані і позначені статті у подачі «%s»"
+
+#~ msgid ""
+#~ "No unread and marked articles that fit \"%s\" in the tag \"%s\" could be "
+#~ "found"
+#~ msgstr ""
+#~ "Неможливо знайти жодної непрочитаної і позначеною статті, яка відповідає "
+#~ "«%s» з міткою «%s». "
+
+#~ msgid "No unread and marked articles in the tag \"%s\" could be found"
+#~ msgstr "Неможливо знайти непрочитані і позначені статті з міткою «%s»"
+
+#~ msgid ""
+#~ "No unread and marked articles that fit \"%s\" in the category \"%s\" "
+#~ "could be found"
+#~ msgstr ""
+#~ "Неможливо знайти жодної непрочитаної і позначеною статті, яка відповідає "
+#~ "«%s» в категорії «%s». "
+
+#~ msgid "No unread and marked articles in the category \"%s\" could be found"
+#~ msgstr "Неможливо знайти непрочитані і позначені статті в категорії «%s»"
+
+#~ msgid "No unread and marked articles that fit \"%s\" could be found"
+#~ msgstr ""
+#~ "Неможливо знайти непрочитані і позначені статті, які відповідають «%s»"
+
+#~ msgid "No unread and marked articles could be found"
+#~ msgstr "Неможливо знайти непрочитані і позначені статті"

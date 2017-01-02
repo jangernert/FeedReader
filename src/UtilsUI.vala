@@ -201,45 +201,6 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 	}
 
-	public static void printDialog()
-	{
-		var filter = new Gtk.FileFilter();
-		filter.add_mime_type("application/pdf");
-		string articleName = "Article.pdf";
-		string? articleID = ColumnView.get_default().displayedArticle();
-		if(articleID != null)
-			articleName = dbUI.get_default().read_article(articleID).getTitle();
-
-
-		var save_dialog = new Gtk.FileChooserDialog("Save Article",
-													MainWindow.get_default(),
-													Gtk.FileChooserAction.SAVE,
-													_("Cancel"),
-													Gtk.ResponseType.CANCEL,
-													_("Save"),
-													Gtk.ResponseType.ACCEPT);
-		save_dialog.set_do_overwrite_confirmation(true);
-		save_dialog.set_modal(true);
-		save_dialog.set_current_folder(GLib.Environment.get_user_data_dir());
-		save_dialog.set_current_name(articleName + ".pdf");
-		save_dialog.set_filter(filter);
-		save_dialog.response.connect((dialog, response_id) => {
-			switch(response_id)
-			{
-				case Gtk.ResponseType.ACCEPT:
-					var savefile = save_dialog.get_file();
-					ColumnView.get_default().print(savefile.get_uri());
-					break;
-
-				case Gtk.ResponseType.CANCEL:
-				default:
-					break;
-			}
-			save_dialog.destroy();
-		});
-		save_dialog.show();
-	}
-
 	public static void playMedia(string[] args, string url)
 	{
 		Gtk.init(ref args);

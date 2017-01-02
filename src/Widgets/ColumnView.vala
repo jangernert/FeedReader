@@ -500,9 +500,9 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_article_view.killMedia();
 	}
 
-	public void print(string uri)
+	public void print()
 	{
-		m_article_view.print(uri);
+		m_article_view.print();
 	}
 
 	public bool playingMedia()

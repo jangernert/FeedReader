@@ -932,16 +932,17 @@ public class FeedReader.articleView : Gtk.Overlay {
 		return true;
 	}
 
-	public void print(string filename)
+	public void print()
 	{
 		if(m_currentView == null)
 			return;
 
+		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle();
 
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");
 		settings.set("output-file-format", "pdf");
-		settings.set("output-uri", filename);
+		settings.set("output-uri", GLib.Environment.get_user_data_dir() + articleName);
 
 		var setup = new Gtk.PageSetup();
 		setup.set_left_margin(0, Gtk.Unit.MM);
@@ -961,7 +962,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 			Logger.debug("ArticleView: print finished");
 		});
 
-		op.print();
+		//op.print();
+		op.run_dialog(MainWindow.get_default());
 	}
 
 	private bool decidePolicy(WebKit.PolicyDecision decision, WebKit.PolicyDecisionType type)

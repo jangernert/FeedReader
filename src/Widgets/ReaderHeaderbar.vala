@@ -111,13 +111,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		});
 
 
-		m_print_button = new Gtk.Button.from_icon_name("document-save-symbolic");
+		m_print_button = new Gtk.Button.from_icon_name("printer-symbolic");
 		m_print_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_print_button.set_focus_on_click(false);
-		m_print_button.set_tooltip_text(_("Save Article as PDF"));
+		m_print_button.set_tooltip_text(_("Print Article"));
 		m_print_button.sensitive = false;
 		m_print_button.clicked.connect(() => {
-			UtilsUI.printDialog();
+			ColumnView.get_default().print();
 		});
 
 

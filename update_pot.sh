@@ -1,12 +1,11 @@
 #!/bin/sh
+# A modified code from the Terminix project<https://github.com/gnunn1/terminix/>. 
 DOMAIN=FeedReader
 BASEDIR=$(dirname $0)
 OUTPUT_FILE=${BASEDIR}/po/${DOMAIN}.pot
 
 echo "Extracting translatable strings... "
 
-# Extract the strings from D source code. Since xgettext does not support D
-# as a language we use Vala, which works reasonable well.
 find ${BASEDIR}/ -name '*.vala' | xgettext \
   --output $OUTPUT_FILE \
   --files-from=- \

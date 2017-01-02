@@ -509,4 +509,9 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	{
 		return m_article_view.playingMedia();
 	}
+
+	public string? displayedArticle()
+	{
+		return m_article_view.getCurrentArticle();
+	}
 }

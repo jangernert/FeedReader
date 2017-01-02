@@ -117,7 +117,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_print_button.set_tooltip_text(_("Save Article as PDF"));
 		m_print_button.sensitive = false;
 		m_print_button.clicked.connect(() => {
-			UtilsUI.printDialog(MainWindow.get_default());
+			UtilsUI.printDialog();
 		});
 
 

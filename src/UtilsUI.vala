@@ -136,11 +136,16 @@ public class FeedReader.UtilsUI : GLib.Object {
 		return false;
 	}
 
-	public static void saveImageDialog(string imagePath, Gtk.Window parent)
+	public static void saveImageDialog(string imagePath)
 	{
 
 		try
 		{
+			string articleName = "Article.pdf";
+			string? articleID = ColumnView.get_default().displayedArticle();
+			if(articleID != null)
+				articleName = dbUI.get_default().read_article(articleID).getTitle();
+
 			var file = GLib.File.new_for_path(imagePath);
 			var mimeType = file.query_info("standard::content-type", 0, null).get_content_type();
 			var filter = new Gtk.FileFilter();
@@ -153,7 +158,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			map.set("image/x-icon", ".ico");
 
 			var save_dialog = new Gtk.FileChooserDialog("Save Image",
-														parent,
+														MainWindow.get_default(),
 														Gtk.FileChooserAction.SAVE,
 														_("Cancel"),
 														Gtk.ResponseType.CANCEL,
@@ -162,7 +167,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			save_dialog.set_do_overwrite_confirmation(true);
 			save_dialog.set_modal(true);
 			save_dialog.set_current_folder(GLib.Environment.get_user_data_dir());
-			save_dialog.set_current_name("Article_Image" + map.get(mimeType));
+			save_dialog.set_current_name(articleName + map.get(mimeType));
 			save_dialog.set_filter(filter);
 			save_dialog.response.connect((dialog, response_id) => {
 				switch(response_id)
@@ -196,13 +201,18 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 	}
 
-	public static void printDialog(Gtk.Window parent)
+	public static void printDialog()
 	{
 		var filter = new Gtk.FileFilter();
 		filter.add_mime_type("application/pdf");
+		string articleName = "Article.pdf";
+		string? articleID = ColumnView.get_default().displayedArticle();
+		if(articleID != null)
+			articleName = dbUI.get_default().read_article(articleID).getTitle();
+
 
 		var save_dialog = new Gtk.FileChooserDialog("Save Article",
-													parent,
+													MainWindow.get_default(),
 													Gtk.FileChooserAction.SAVE,
 													_("Cancel"),
 													Gtk.ResponseType.CANCEL,
@@ -211,7 +221,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		save_dialog.set_do_overwrite_confirmation(true);
 		save_dialog.set_modal(true);
 		save_dialog.set_current_folder(GLib.Environment.get_user_data_dir());
-		save_dialog.set_current_name("Article.pdf");
+		save_dialog.set_current_name(articleName + ".pdf");
 		save_dialog.set_filter(filter);
 		save_dialog.response.connect((dialog, response_id) => {
 			switch(response_id)

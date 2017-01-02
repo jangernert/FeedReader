@@ -200,7 +200,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+			var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 			var notification = window.showNotification(_("Feed \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
 				try
@@ -232,7 +232,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var rename_action = new GLib.SimpleAction("renameFeed", null);
 		rename_action.activate.connect(showRenamePopover);
 
-		var app = (FeedApp)GLib.Application.get_default();
+		var app = (FeedReaderApp)GLib.Application.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);

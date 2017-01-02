@@ -20,7 +20,7 @@ namespace FeedReader {
 
 	public const string QUICKLIST_ABOUT_STOCK = N_("About FeedReader");
 
-	public class FeedApp : Gtk.Application {
+	public class FeedReaderApp : Gtk.Application {
 
 		private readerUI m_window;
 		public signal void callback(string content);
@@ -127,7 +127,7 @@ namespace FeedReader {
 			return m_window;
 		}
 
-		public FeedApp()
+		public FeedReaderApp()
 		{
 			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
@@ -184,7 +184,7 @@ namespace FeedReader {
 			Logger.error("Gst.init: " + e.message);
 		}
 
-		var app = new FeedApp();
+		var app = new FeedReaderApp();
 		app.run(args);
 
 		return 0;

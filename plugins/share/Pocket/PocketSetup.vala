@@ -51,7 +51,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
-		((FeedApp)GLib.Application.get_default()).callback.connect((content) => {
+		((FeedReaderApp)GLib.Application.get_default()).callback.connect((content) => {
 			if(content == PocketSecrets.oauth_callback)
 			{
 				if(m_api.getAccessToken(id, requestToken))

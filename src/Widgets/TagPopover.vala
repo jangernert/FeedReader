@@ -27,7 +27,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	public TagPopover(Gtk.Widget widget)
 	{
 		m_availableTags = new Gee.ArrayList<tag>();
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			m_tags = window.getContent().getSelectedArticleTags();
@@ -215,7 +215,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			this.show_all();
 		}
 
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			window.getContent().removeTagFromSelectedRow(row.getTagID());
@@ -225,7 +225,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	private string getActiveArticleID()
 	{
 		string articleID = "";
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			articleID = window.getContent().getSelectedArticle();

@@ -1066,7 +1066,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		Logger.debug("FeedList: onDragBegin");
 
 		// save current state
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		window.writeInterfaceState();
 
 		// collapse all feeds and show all Categories

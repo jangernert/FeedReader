@@ -175,7 +175,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 	private void setBusy()
 	{
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			window.getContent().footerSetBusy();

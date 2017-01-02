@@ -50,7 +50,7 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
-		((FeedApp)GLib.Application.get_default()).callback.connect((content) => {
+		((FeedReaderApp)GLib.Application.get_default()).callback.connect((content) => {
 
 			if(content.has_prefix(TwitterSecrets.callback))
 			{

@@ -53,7 +53,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	public void removeX()
 	{
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		m_feedlist = window.getContent().getFeedList();
 		m_feedlist.moveUP();
 		m_feedlist.revealRow(m_id, m_type, false, m_time);
@@ -78,7 +78,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	private void removeTag()
 	{
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		string text = _("Tag \"%s\" removed").printf(m_name);
 		var notification = window.showNotification(text);
 
@@ -101,7 +101,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	private void removeFeed()
 	{
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		string text = _("Feed \"%s\" removed").printf(m_name);
 		var notification = window.showNotification(text);
 
@@ -125,7 +125,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 	private void removeCategory()
 	{
 		m_feedlist.expand_collapse_category(m_id, false);
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		string text = _("Category \"%s\" removed").printf(m_name);
 		var notification = window.showNotification(text);
 

@@ -358,7 +358,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		bool unread = false;
 		string articleID = "";
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			articleID = window.getContent().getSelectedArticle();
@@ -471,7 +471,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	{
 		bool marked = false;
 		string articleID = "";
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
 		if(window != null)
 		{
 			articleID = window.getContent().getSelectedArticle();

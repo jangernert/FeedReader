@@ -234,8 +234,11 @@ p:last-of-type {
 }
 
 a :not(img){
-    color: #318c34;
     outline:none;
+}
+
+a {
+    color: #318c34;
     display:block;
     overflow: hidden;
     white-space: nowrap;

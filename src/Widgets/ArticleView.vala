@@ -937,12 +937,12 @@ public class FeedReader.articleView : Gtk.Overlay {
 		if(m_currentView == null)
 			return;
 
-		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle();
+		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle() + ".pdf";
 
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");
 		settings.set("output-file-format", "pdf");
-		settings.set("output-uri", GLib.Environment.get_user_data_dir() + articleName);
+		settings.set("output-uri", articleName);
 
 		var setup = new Gtk.PageSetup();
 		setup.set_left_margin(0, Gtk.Unit.MM);

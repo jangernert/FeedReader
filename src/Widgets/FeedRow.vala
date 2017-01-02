@@ -200,8 +200,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var window = FeedReaderApp.get_default().getWindow();
-			var notification = window.showNotification(_("Feed \"%s\" removed").printf(m_name));
+			var notification = MainWindow.get_default().showNotification(_("Feed \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
 				try
 				{

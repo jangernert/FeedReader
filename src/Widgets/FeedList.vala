@@ -901,7 +901,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					foreach(feed Feed in feeds)
 					{
 						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
-						Logger.debug("MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+						Logger.debug("FeedList: mark all articles as read feed: %s".printf(Feed.getTitle()));
 					}
 				}
 				else
@@ -1066,8 +1066,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		Logger.debug("FeedList: onDragBegin");
 
 		// save current state
-		var window = FeedReaderApp.get_default().getWindow();
-		window.writeInterfaceState();
+		MainWindow.get_default().writeInterfaceState();
 
 		// collapse all feeds and show all Categories
 		var FeedChildList = m_list.get_children();

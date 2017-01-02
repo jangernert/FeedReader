@@ -72,7 +72,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			return;
 
 		var priority = GLib.Priority.DEFAULT_IDLE;
-		var contentPage = FeedReaderApp.get_default().getWindow().getContent();
+		var contentPage = MainWindow.get_default().getContent();
 		if(contentPage.playingMedia())
 			priority = GLib.Priority.HIGH_IDLE;
 
@@ -192,8 +192,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
         }
 
         m_selectSourceID = Timeout.add(time, () => {
-			var window = this.get_toplevel() as MainWindow;
-			if(window != null && !window.searchFocused())
+			if(!MainWindow.get_default().searchFocused())
             	row.activate();
 			m_selectSourceID = 0;
             return false;

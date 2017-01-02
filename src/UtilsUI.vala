@@ -21,14 +21,10 @@ public class FeedReader.UtilsUI : GLib.Object {
 		string[] selectedRow = {};
 		ArticleListState state = ArticleListState.ALL;
 		string searchTerm = "";
-		var window = FeedReaderApp.get_default().getWindow();
-		if(window != null)
-		{
-			var interfacestate = window.getInterfaceState();
-			selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
-			state = interfacestate.getArticleListState();
-			searchTerm = interfacestate.getSearchTerm();
-		}
+		var interfacestate = MainWindow.get_default().getInterfaceState();
+		selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
+		state = interfacestate.getArticleListState();
+		searchTerm = interfacestate.getSearchTerm();
 
 		FeedListType IDtype = FeedListType.FEED;
 
@@ -222,7 +218,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			{
 				case Gtk.ResponseType.ACCEPT:
 					var savefile = save_dialog.get_file();
-					(parent as MainWindow).getContent().print(savefile.get_uri());
+					MainWindow.get_default().getContent().print(savefile.get_uri());
 					break;
 
 				case Gtk.ResponseType.CANCEL:

@@ -31,7 +31,17 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private Gtk.CssProvider m_cssProvider;
 	private SettingsDialog? m_dialog = null;
 
-	public MainWindow()
+	private static MainWindow? m_window = null;
+
+	public static MainWindow get_default()
+	{
+		if(m_window == null)
+			m_window = new MainWindow();
+
+		return m_window;
+	}
+
+	private MainWindow()
 	{
 		Object(application: FeedReaderApp.get_default(), title: _("FeedReader"));
 		this.window_position = WindowPosition.CENTER;

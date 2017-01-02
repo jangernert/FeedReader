@@ -126,15 +126,11 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			{
 				m_article_view.load(row.getID());
 				showArticleButtons(true);
-				var window = FeedReaderApp.get_default().getWindow();
-				if(window != null)
-				{
-					var header = window.getHeaderBar();
-					Logger.debug("ContentPage: set headerbar");
-					header.setRead(row.isUnread());
-					header.setMarked(row.isMarked());
-					header.showMediaButton(row.haveMedia());
-				}
+				var header = MainWindow.get_default().getHeaderBar();
+				Logger.debug("ContentPage: set headerbar");
+				header.setRead(row.isUnread());
+				header.setMarked(row.isMarked());
+				header.showMediaButton(row.haveMedia());
 			}
 		});
 

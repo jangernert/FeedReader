@@ -113,9 +113,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_fsHead = new fullscreenHeaderbar();
 		m_fsHead.close.connect(() => {
 			leaveFullscreen(false);
-			var window = this.get_toplevel() as MainWindow;
-			if(window != null && window.is_toplevel())
-				window.unfullscreen();
+			MainWindow.get_default().unfullscreen();
 		});
 
 		var fullscreenHeaderOverlay = new Gtk.Overlay();
@@ -124,9 +122,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
 		m_prevButton.click.connect(() => {
-			var window = this.get_toplevel() as MainWindow;
-			if(window != null && window.is_toplevel())
-				window.getContent().ArticleListPREV();
+			MainWindow.get_default().getContent().ArticleListPREV();
 		});
 		var prevOverlay = new Gtk.Overlay();
 		prevOverlay.add(fullscreenHeaderOverlay);
@@ -134,9 +130,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_nextButton = new fullscreenButton("go-next-symbolic", Gtk.Align.END);
 		m_nextButton.click.connect(() => {
-			var window = this.get_toplevel() as MainWindow;
-			if(window != null && window.is_toplevel())
-				window.getContent().ArticleListNEXT();
+			MainWindow.get_default().getContent().ArticleListNEXT();
 		});
 		var nextOverlay = new Gtk.Overlay();
 		nextOverlay.add(prevOverlay);
@@ -322,14 +316,14 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		if(m_FullscreenArticle)
 		{
-			var window = this.get_toplevel() as MainWindow;
+			var content = MainWindow.get_default().getContent();
 
-			if(window.getContent().ArticleListSelectedIsLast())
+			if(content.ArticleListSelectedIsLast())
 				m_prevButton.reveal(false);
 			else
 				m_prevButton.reveal(true);
 
-			if(window.getContent().ArticleListSelectedIsFirst())
+			if(content.ArticleListSelectedIsFirst())
 				m_nextButton.reveal(false);
 			else
 				m_nextButton.reveal(true);
@@ -533,7 +527,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_connected = true;
 			m_messenger = connection.get_proxy_sync("org.gnome.feedreader.FeedReaderArticleView", "/org/gnome/feedreader/FeedReaderArticleView", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
 			m_messenger.onClick.connect((path, width, height, url) => {
-				var window = this.get_toplevel() as MainWindow;
+				var window = MainWindow.get_default();
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
@@ -742,16 +736,12 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private void setBackgroundColor()
 	{
 		Logger.debug("ArticleView.setBackgroundColor()");
-		var window = FeedReaderApp.get_default().getWindow();
-		if(window != null)
-		{
-			var background = window.getContent().getBackgroundColor();
-            if(background.alpha == 1.0)
-            {
-				// Don't set a background color that is transparent.
-				m_color = background;
-            }
-		}
+		var background = MainWindow.get_default().getContent().getBackgroundColor();
+        if(background.alpha == 1.0)
+        {
+			// Don't set a background color that is transparent.
+			m_color = background;
+        }
 	}
 
 	private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitTestResult hitTest)
@@ -848,8 +838,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.show();
 			m_currentView.zoom_level = m_FullscreenZoomLevel;
 
-			var window = this.get_toplevel() as MainWindow;
-			var content = window.getContent();
+			var content = MainWindow.get_default().getContent();
 
 			if(!content.ArticleListSelectedIsFirst())
 				m_nextButton.reveal(true);

@@ -39,16 +39,12 @@ public class FeedReader.fullscreenHeaderbar : Gtk.EventBox {
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
 		m_mark_button.set_tooltip_text(_("Mark article (un)starred"));
 		m_mark_button.clicked.connect(() => {
-			var window = this.get_toplevel() as MainWindow;
-			if(window != null && window.is_toplevel())
-				window.getContent().toggleMarkedSelectedArticle();
+			MainWindow.get_default().getContent().toggleMarkedSelectedArticle();
 		});
 		m_read_button = new HoverButton(read_icon, unread_icon, false);
 		m_read_button.set_tooltip_text(_("Mark article (un)read"));
 		m_read_button.clicked.connect(() => {
-			var window = this.get_toplevel() as MainWindow;
-			if(window != null && window.is_toplevel())
-				window.getContent().toggleReadSelectedArticle();
+			MainWindow.get_default().getContent().toggleReadSelectedArticle();
 		});
 
 		m_tag_button = new Gtk.Button();

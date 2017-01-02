@@ -70,7 +70,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_fullscreen_button.set_tooltip_text(_("Read article fullscreen"));
 		m_fullscreen_button.sensitive = false;
 		m_fullscreen_button.clicked.connect(() => {
-			var window = this.get_toplevel() as MainWindow;
+			var window = MainWindow.get_default();
 			window.fullscreen();
 			window.getContent().enterFullscreen(false);
 		});
@@ -117,8 +117,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_print_button.set_tooltip_text(_("Save Article as PDF"));
 		m_print_button.sensitive = false;
 		m_print_button.clicked.connect(() => {
-			var window = this.get_toplevel() as MainWindow;
-			UtilsUI.printDialog(window);
+			UtilsUI.printDialog(MainWindow.get_default());
 		});
 
 
@@ -160,16 +159,12 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_media_button.clicked.connect(() => {
 			var pop = new MediaPopover(m_media_button);
 			pop.play.connect((url) => {
-				var window = this.get_toplevel() as MainWindow;
-		        if(window != null)
-				{
-					m_media_button.updating(true);
-					var media = new MediaPlayer(url);
-					media.loaded.connect(() => {
-						m_media_button.updating(false);
-					});
-					window.getContent().ArticleViewAddMedia(media);
-				}
+				m_media_button.updating(true);
+				var media = new MediaPlayer(url);
+				media.loaded.connect(() => {
+					m_media_button.updating(false);
+				});
+				MainWindow.get_default().getContent().ArticleViewAddMedia(media);
 			});
 		});
 

@@ -181,8 +181,8 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var window = FeedReaderApp.get_default().getWindow();
-			var notification = window.showNotification(_("Tag \"%s\" removed").printf(m_name));
+			string text = _("Tag \"%s\" removed").printf(m_name);
+			var notification = MainWindow.get_default().showNotification(text);
 			ulong eventID = notification.dismissed.connect(() => {
 				Logger.debug("TagRow: delete Tag");
 				try{DBusConnection.get_default().deleteTag(m_tagID);}

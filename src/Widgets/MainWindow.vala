@@ -25,7 +25,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
 	private Gtk.Button m_ignore_tls_errors;
-	private ColumnView m_content;
+	private ColumnView m_columnView;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
 	private Gtk.CssProvider m_cssProvider;
@@ -136,7 +136,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(() => {
-			m_content.syncStarted();
+			m_columnView.syncStarted();
 			var app = FeedReaderApp.get_default();
 			app.sync.begin((obj, res) => {
 				app.sync.end(res);
@@ -144,15 +144,15 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		});
 
 		m_headerbar.change_state.connect((state, transition) => {
-			m_content.setArticleListState(state);
-			m_content.clearArticleView();
-			m_content.newArticleList(transition);
+			m_columnView.setArticleListState(state);
+			m_columnView.clearArticleView();
+			m_columnView.newArticleList(transition);
 		});
 
 		m_headerbar.search_term.connect((searchTerm) => {
-			m_content.setSearchTerm(searchTerm);
-			m_content.clearArticleView();
-			m_content.newArticleList();
+			m_columnView.setSearchTerm(searchTerm);
+			m_columnView.clearArticleView();
+			m_columnView.newArticleList();
 		});
 
 		m_headerbar.showSettings.connect((panel) => {
@@ -160,20 +160,20 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		});
 
 		m_headerbar.notify["position"].connect(() => {
-        	m_content.setArticleListPosition(m_headerbar.get_position());
+        	m_columnView.setArticleListPosition(m_headerbar.get_position());
         });
 
 		m_headerbar.toggledMarked.connect(() => {
-			m_content.toggleMarkedSelectedArticle();
+			m_columnView.toggleMarkedSelectedArticle();
 		});
 
 		m_headerbar.toggledRead.connect(() => {
-			m_content.toggleReadSelectedArticle();
+			m_columnView.toggleReadSelectedArticle();
 		});
 
 		m_simpleHeader = new SimpleHeader();
 
-		m_content.showArticleButtons.connect((show) => {
+		m_columnView.showArticleButtons.connect((show) => {
 			m_headerbar.showArticleButtons(show);
 		});
 
@@ -229,17 +229,17 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		{
 			if(event.changed_mask == Gdk.WindowState.FULLSCREEN)
 			{
-				if(m_content.getSelectedArticle() == ""
-				|| m_content.getSelectedArticle() == "empty")
+				if(m_columnView.getSelectedArticle() == ""
+				|| m_columnView.getSelectedArticle() == "empty")
 					return true;
 
-				if(m_content.isFullscreenVideo())
+				if(m_columnView.isFullscreenVideo())
 					return true;
 
 				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
-					m_content.enterFullscreen(false);
+					m_columnView.enterFullscreen(false);
 				else
-					m_content.leaveFullscreen(false);
+					m_columnView.leaveFullscreen(false);
 			}
 		}
 		return false;
@@ -249,9 +249,9 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	{
 		m_dialog = new SettingsDialog(this, panel);
 
-		m_dialog.newFeedList.connect(m_content.newFeedList);
-		m_dialog.newArticleList.connect(m_content.newArticleList);
-		m_dialog.reloadArticleView.connect(m_content.reloadArticleView);
+		m_dialog.newFeedList.connect(m_columnView.newFeedList);
+		m_dialog.newArticleList.connect(m_columnView.newArticleList);
+		m_dialog.reloadArticleView.connect(m_columnView.reloadArticleView);
 		m_dialog.reloadCSS.connect(reloadCSS);
 		m_dialog.close.connect(() => {
 			m_dialog = null;
@@ -275,19 +275,19 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	public void showOfflineContent()
 	{
 		showContent();
-		m_content.setOffline();
+		m_columnView.setOffline();
 	}
 
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool noNewFeedList = false)
 	{
 		Logger.debug("MainWindow: show content");
 		if(!noNewFeedList)
-			m_content.newFeedList();
+			m_columnView.newFeedList();
 		m_stack.set_visible_child_full("content", transition);
 		m_headerbar.setButtonsSensitive(true);
-		m_content.updateAccountInfo();
+		m_columnView.updateAccountInfo();
 
-		if(!m_content.isFullscreen())
+		if(!m_columnView.isFullscreen())
 		{
 			m_headerbar.show_all();
 			this.set_titlebar(m_headerbar);
@@ -309,7 +309,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Logger.debug("MainWindow: show reset");
 
 		// kill playing media
-		m_content.articleViewKillMedia();
+		m_columnView.articleViewKillMedia();
 
 		m_stack.set_visible_child_full("reset", transition);
 		m_headerbar.setButtonsSensitive(false);
@@ -341,23 +341,23 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			if(Settings.state().get_boolean("spring-cleaning"))
 				return;
 
-			m_content.articleViewKillMedia();
+			m_columnView.articleViewKillMedia();
 			int offset = 0;
 			double scrollPos = 0.0;
-			m_content.getArticleListSavedState(out scrollPos, out offset);
+			m_columnView.getArticleListSavedState(out scrollPos, out offset);
 
-			Settings.state().set_strv("expanded-categories", m_content.getExpandedCategories());
-			Settings.state().set_double("feed-row-scrollpos",  m_content.getFeedListScrollPos());
-			Settings.state().set_string("feedlist-selected-row", m_content.getSelectedFeedListRow());
-			Settings.state().set_int("feed-row-width", m_content.getFeedListWidth());
-			Settings.state().set_int("feeds-and-articles-width", m_content.getArticlePlusFeedListWidth());
+			Settings.state().set_strv("expanded-categories", m_columnView.getExpandedCategories());
+			Settings.state().set_double("feed-row-scrollpos",  m_columnView.getFeedListScrollPos());
+			Settings.state().set_string("feedlist-selected-row", m_columnView.getSelectedFeedListRow());
+			Settings.state().set_int("feed-row-width", m_columnView.getFeedListWidth());
+			Settings.state().set_int("feeds-and-articles-width", m_columnView.getArticlePlusFeedListWidth());
 			Settings.state().set_int("articlelist-row-offset", offset);
 			Settings.state().set_double("articlelist-scrollpos",  scrollPos);
-			Settings.state().set_string("articlelist-selected-row", m_content.getSelectedArticle());
-			Settings.state().set_enum("show-articles", m_content.getArticleListState());
+			Settings.state().set_string("articlelist-selected-row", m_columnView.getSelectedArticle());
+			Settings.state().set_enum("show-articles", m_columnView.getArticleListState());
 			Settings.state().set_boolean("no-animations", true);
 			Settings.state().set_string("search-term", m_headerbar.getSearchTerm());
-			Settings.state().set_int("articleview-scrollpos", m_content.getArticleViewScrollPos());
+			Settings.state().set_int("articleview-scrollpos", m_columnView.getArticleViewScrollPos());
 			Settings.state().set_int("articlelist-new-rows", 0);
 		});
 	}
@@ -370,22 +370,22 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		int offset = 0;
 		double scrollPos = 0.0;
-		m_content.getArticleListSavedState(out scrollPos, out offset);
+		m_columnView.getArticleListSavedState(out scrollPos, out offset);
 
 		var state = new InterfaceState();
 		state.setWindowSize(windowHeight, windowWidth);
-		state.setFeedsAndArticleWidth(m_content.getArticlePlusFeedListWidth());
-		state.setFeedListWidth(m_content.getFeedListWidth());
-		state.setFeedListScrollPos(m_content.getFeedListScrollPos());
-		state.setArticleViewScrollPos(m_content.getArticleViewScrollPos());
+		state.setFeedsAndArticleWidth(m_columnView.getArticlePlusFeedListWidth());
+		state.setFeedListWidth(m_columnView.getFeedListWidth());
+		state.setFeedListScrollPos(m_columnView.getFeedListScrollPos());
+		state.setArticleViewScrollPos(m_columnView.getArticleViewScrollPos());
 		state.setArticleListScrollPos(scrollPos);
 		state.setArticleListRowOffset(offset);
-		state.setArticleListSelectedRow(m_content.getSelectedArticle());
+		state.setArticleListSelectedRow(m_columnView.getSelectedArticle());
 		state.setArticleListNewRowCount(0);
 		state.setWindowMaximized(this.is_maximized);
 		state.setSearchTerm(m_headerbar.getSearchTerm());
-		state.setFeedListSelectedRow(m_content.getSelectedFeedListRow());
-		state.setExpandedCategories(m_content.getExpandedCategories());
+		state.setFeedListSelectedRow(m_columnView.getSelectedFeedListRow());
+		state.setExpandedCategories(m_columnView.getExpandedCategories());
 		state.setArticleListState(m_headerbar.getArticleListState());
 
 		return state;
@@ -528,10 +528,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 	private void setupContentPage()
 	{
-		m_content = new ColumnView();
-		m_stack.add_named(m_content, "content");
+		m_columnView = ColumnView.get_default();
+		m_stack.add_named(m_columnView, "content");
 
-		m_content.panedPosChange.connect((pos) => {
+		m_columnView.panedPosChange.connect((pos) => {
         	m_headerbar.set_position(pos);
         });
 	}
@@ -619,8 +619,8 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	{
 		try
 		{
-			m_content.markAllArticlesAsRead();
-			string[] selectedRow = m_content.getSelectedFeedListRow().split(" ", 2);
+			m_columnView.markAllArticlesAsRead();
+			string[] selectedRow = m_columnView.getSelectedFeedListRow().split(" ", 2);
 
 			if(selectedRow[0] == "feed")
 			{
@@ -691,25 +691,25 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "articlelist-prev"))
 		{
 			Logger.debug("shortcut: down");
-			m_content.ArticleListPREV();
+			m_columnView.ArticleListPREV();
 			return true;
 		}
 
 		if(checkShortcut(event, "articlelist-next"))
 		{
 			Logger.debug("shortcut: up");
-			m_content.ArticleListNEXT();
+			m_columnView.ArticleListNEXT();
 			return true;
 		}
 
 		if(event.keyval == Gdk.Key.Left || event.keyval == Gdk.Key.Right)
 		{
-			if(m_content.isFullscreen())
+			if(m_columnView.isFullscreen())
 			{
 				if(event.keyval == Gdk.Key.Left)
-					m_content.ArticleListPREV();
+					m_columnView.ArticleListPREV();
 				else
-					m_content.ArticleListNEXT();
+					m_columnView.ArticleListNEXT();
 
 				return true;
 			}
@@ -720,7 +720,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "articlelist-toggle-read"))
 		{
 			Logger.debug("shortcut: toggle read");
-			m_content.toggleReadSelectedArticle();
+			m_columnView.toggleReadSelectedArticle();
 			m_headerbar.toggleRead();
 			return true;
 		}
@@ -728,7 +728,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "articlelist-toggle-marked"))
 		{
 			Logger.debug("shortcut: toggle marked");
-			m_content.toggleMarkedSelectedArticle();
+			m_columnView.toggleMarkedSelectedArticle();
 			m_headerbar.toggleMarked();
 			return true;
 		}
@@ -736,7 +736,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "articlelist-open-url"))
 		{
 			Logger.debug("shortcut: open in browser");
-			m_content.openSelectedArticle();
+			m_columnView.openSelectedArticle();
 			return true;
 		}
 
@@ -761,7 +761,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "articlelist-center-selected"))
 		{
 			Logger.debug("shortcut: scroll to selcted row");
-			m_content.centerSelectedRow();
+			m_columnView.centerSelectedRow();
 			return true;
 		}
 
@@ -779,10 +779,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			return true;
 		}
 
-		if(event.keyval == Gdk.Key.Escape && m_content.isFullscreen())
+		if(event.keyval == Gdk.Key.Escape && m_columnView.isFullscreen())
 		{
 			this.unfullscreen();
-			m_content.leaveFullscreen(false);
+			m_columnView.leaveFullscreen(false);
 			return true;
 		}
 
@@ -807,11 +807,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		return m_headerbar.searchFocused();
 	}
 
-	public ColumnView getContent()
-	{
-		return m_content;
-	}
-
 	public readerHeaderbar getHeaderBar()
 	{
 		return m_headerbar;
@@ -824,13 +819,13 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 	public void setOffline()
 	{
-		m_content.setOffline();
+		m_columnView.setOffline();
 		m_headerbar.setOffline();
 	}
 
 	public void setOnline()
 	{
-		m_content.setOnline();
+		m_columnView.setOnline();
 		m_headerbar.setOnline();
 	}
 

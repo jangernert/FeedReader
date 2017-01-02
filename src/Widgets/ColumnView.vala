@@ -23,8 +23,18 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	public signal void showArticleButtons(bool show);
 	public signal void panedPosChange(int pos);
 
+	private static ColumnView? m_columnView = null;
 
-	public ColumnView()
+	public static ColumnView get_default()
+	{
+		if(m_columnView == null)
+			m_columnView = new ColumnView();
+
+		return m_columnView;
+	}
+
+
+	private ColumnView()
 	{
 		Logger.debug("ContentPage: setup FeedList");
 

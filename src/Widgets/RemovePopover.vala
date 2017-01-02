@@ -53,7 +53,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	public void removeX()
 	{
-		m_feedlist = MainWindow.get_default().getContent().getFeedList();
+		m_feedlist = ColumnView.get_default().getFeedList();
 		m_feedlist.moveUP();
 		m_feedlist.revealRow(m_id, m_type, false, m_time);
 

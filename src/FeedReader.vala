@@ -81,7 +81,7 @@ namespace FeedReader {
 
 			try
 			{
-				DBusConnection.connectSignals(m_window);
+				DBusConnection.connectSignals();
 				DBusConnection.get_default().updateBadge();
 				DBusConnection.get_default().checkOnlineAsync();
 			}

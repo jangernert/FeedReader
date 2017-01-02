@@ -122,7 +122,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
 		m_prevButton.click.connect(() => {
-			MainWindow.get_default().getContent().ArticleListPREV();
+			ColumnView.get_default().ArticleListPREV();
 		});
 		var prevOverlay = new Gtk.Overlay();
 		prevOverlay.add(fullscreenHeaderOverlay);
@@ -130,7 +130,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_nextButton = new fullscreenButton("go-next-symbolic", Gtk.Align.END);
 		m_nextButton.click.connect(() => {
-			MainWindow.get_default().getContent().ArticleListNEXT();
+			ColumnView.get_default().ArticleListNEXT();
 		});
 		var nextOverlay = new Gtk.Overlay();
 		nextOverlay.add(prevOverlay);
@@ -316,14 +316,12 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		if(m_FullscreenArticle)
 		{
-			var content = MainWindow.get_default().getContent();
-
-			if(content.ArticleListSelectedIsLast())
+			if(ColumnView.get_default().ArticleListSelectedIsLast())
 				m_prevButton.reveal(false);
 			else
 				m_prevButton.reveal(true);
 
-			if(content.ArticleListSelectedIsFirst())
+			if(ColumnView.get_default().ArticleListSelectedIsFirst())
 				m_nextButton.reveal(false);
 			else
 				m_nextButton.reveal(true);
@@ -736,7 +734,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private void setBackgroundColor()
 	{
 		Logger.debug("ArticleView.setBackgroundColor()");
-		var background = MainWindow.get_default().getContent().getBackgroundColor();
+		var background = ColumnView.get_default().getBackgroundColor();
         if(background.alpha == 1.0)
         {
 			// Don't set a background color that is transparent.
@@ -838,12 +836,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.show();
 			m_currentView.zoom_level = m_FullscreenZoomLevel;
 
-			var content = MainWindow.get_default().getContent();
-
-			if(!content.ArticleListSelectedIsFirst())
+			if(!ColumnView.get_default().ArticleListSelectedIsFirst())
 				m_nextButton.reveal(true);
 
-			if(!content.ArticleListSelectedIsLast())
+			if(!ColumnView.get_default().ArticleListSelectedIsLast())
 				m_prevButton.reveal(true);
 
 		}

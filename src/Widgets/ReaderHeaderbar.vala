@@ -72,7 +72,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_fullscreen_button.clicked.connect(() => {
 			var window = MainWindow.get_default();
 			window.fullscreen();
-			window.getContent().enterFullscreen(false);
+			ColumnView.get_default().enterFullscreen(false);
 		});
 
 
@@ -164,7 +164,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 				media.loaded.connect(() => {
 					m_media_button.updating(false);
 				});
-				MainWindow.get_default().getContent().ArticleViewAddMedia(media);
+				ColumnView.get_default().ArticleViewAddMedia(media);
 			});
 		});
 

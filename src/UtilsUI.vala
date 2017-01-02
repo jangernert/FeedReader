@@ -218,7 +218,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			{
 				case Gtk.ResponseType.ACCEPT:
 					var savefile = save_dialog.get_file();
-					MainWindow.get_default().getContent().print(savefile.get_uri());
+					ColumnView.get_default().print(savefile.get_uri());
 					break;
 
 				case Gtk.ResponseType.CANCEL:

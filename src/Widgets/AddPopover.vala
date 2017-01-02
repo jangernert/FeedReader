@@ -175,7 +175,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 	private void setBusy()
 	{
-		MainWindow.get_default().getContent().footerSetBusy();
+		ColumnView.get_default().footerSetBusy();
 		this.hide();
 	}
 }

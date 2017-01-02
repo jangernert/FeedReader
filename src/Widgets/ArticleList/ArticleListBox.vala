@@ -72,8 +72,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			return;
 
 		var priority = GLib.Priority.DEFAULT_IDLE;
-		var contentPage = MainWindow.get_default().getContent();
-		if(contentPage.playingMedia())
+		if(ColumnView.get_default().playingMedia())
 			priority = GLib.Priority.HIGH_IDLE;
 
 		m_idleID = GLib.Idle.add(() => {

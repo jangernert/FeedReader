@@ -27,7 +27,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	public TagPopover(Gtk.Widget widget)
 	{
 		m_availableTags = new Gee.ArrayList<tag>();
-		m_tags = MainWindow.get_default().getContent().getSelectedArticleTags();
+		m_tags = ColumnView.get_default().getSelectedArticleTags();
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
@@ -211,12 +211,12 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			this.show_all();
 		}
 
-		MainWindow.get_default().getContent().removeTagFromSelectedRow(row.getTagID());
+		ColumnView.get_default().removeTagFromSelectedRow(row.getTagID());
 	}
 
 	private string getActiveArticleID()
 	{
-		return MainWindow.get_default().getContent().getSelectedArticle();
+		return ColumnView.get_default().getSelectedArticle();
 	}
 
 	public bool entryFocused()

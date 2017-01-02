@@ -133,7 +133,7 @@ namespace FeedReader {
 			}
 		}
 
-		public static void connectSignals(readerUI window)
+		public static void connectSignals(MainWindow window)
 		{
 			if(m_connection == null)
 				setup();

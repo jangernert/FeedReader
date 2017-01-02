@@ -104,7 +104,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         string url = "";
         string id = shareRow.getID();
 
-        var window = this.get_toplevel() as readerUI;
+        var window = this.get_toplevel() as MainWindow;
         if(window != null)
             url = window.getContent().getSelectedURL();
 

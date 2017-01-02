@@ -22,7 +22,7 @@ namespace FeedReader {
 
 	public class FeedReaderApp : Gtk.Application {
 
-		private readerUI m_window;
+		private MainWindow m_window;
 		private bool m_online = true;
 		private static FeedReaderApp? m_app = null;
 		public signal void callback(string content);
@@ -71,7 +71,7 @@ namespace FeedReader {
 
 			if(m_window == null)
 			{
-				m_window = new readerUI();
+				m_window = new MainWindow();
 				m_window.set_icon_name("feedreader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 			}
@@ -132,7 +132,7 @@ namespace FeedReader {
 			yield;
 		}
 
-		public readerUI getWindow()
+		public MainWindow getWindow()
 		{
 			return m_window;
 		}

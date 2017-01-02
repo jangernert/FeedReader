@@ -16,7 +16,7 @@
 using GLib;
 using Gtk;
 
-public class FeedReader.readerUI : Gtk.ApplicationWindow
+public class FeedReader.MainWindow : Gtk.ApplicationWindow
 {
 	private readerHeaderbar m_headerbar;
 	private SimpleHeader m_simpleHeader;
@@ -31,7 +31,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private Gtk.CssProvider m_cssProvider;
 	private SettingsDialog? m_dialog = null;
 
-	public readerUI()
+	public MainWindow()
 	{
 		Object(application: FeedReaderApp.get_default(), title: _("FeedReader"));
 		this.window_position = WindowPosition.CENTER;

@@ -192,7 +192,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
         }
 
         m_selectSourceID = Timeout.add(time, () => {
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 			if(window != null && !window.searchFocused())
             	row.activate();
 			m_selectSourceID = 0;

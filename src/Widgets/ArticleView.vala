@@ -113,7 +113,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_fsHead = new fullscreenHeaderbar();
 		m_fsHead.close.connect(() => {
 			leaveFullscreen(false);
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 			if(window != null && window.is_toplevel())
 				window.unfullscreen();
 		});
@@ -124,7 +124,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
 		m_prevButton.click.connect(() => {
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 			if(window != null && window.is_toplevel())
 				window.getContent().ArticleListPREV();
 		});
@@ -134,7 +134,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_nextButton = new fullscreenButton("go-next-symbolic", Gtk.Align.END);
 		m_nextButton.click.connect(() => {
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 			if(window != null && window.is_toplevel())
 				window.getContent().ArticleListNEXT();
 		});
@@ -322,7 +322,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		if(m_FullscreenArticle)
 		{
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 
 			if(window.getContent().ArticleListSelectedIsLast())
 				m_prevButton.reveal(false);
@@ -533,7 +533,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_connected = true;
 			m_messenger = connection.get_proxy_sync("org.gnome.feedreader.FeedReaderArticleView", "/org/gnome/feedreader/FeedReaderArticleView", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
 			m_messenger.onClick.connect((path, width, height, url) => {
-				var window = this.get_toplevel() as readerUI;
+				var window = this.get_toplevel() as MainWindow;
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
@@ -848,7 +848,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.show();
 			m_currentView.zoom_level = m_FullscreenZoomLevel;
 
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 			var content = window.getContent();
 
 			if(!content.ArticleListSelectedIsFirst())

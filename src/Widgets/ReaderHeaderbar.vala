@@ -70,7 +70,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_fullscreen_button.set_tooltip_text(_("Read article fullscreen"));
 		m_fullscreen_button.sensitive = false;
 		m_fullscreen_button.clicked.connect(() => {
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 			window.fullscreen();
 			window.getContent().enterFullscreen(false);
 		});
@@ -117,7 +117,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_print_button.set_tooltip_text(_("Save Article as PDF"));
 		m_print_button.sensitive = false;
 		m_print_button.clicked.connect(() => {
-			var window = this.get_toplevel() as readerUI;
+			var window = this.get_toplevel() as MainWindow;
 			UtilsUI.printDialog(window);
 		});
 
@@ -160,7 +160,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_media_button.clicked.connect(() => {
 			var pop = new MediaPopover(m_media_button);
 			pop.play.connect((url) => {
-				var window = this.get_toplevel() as readerUI;
+				var window = this.get_toplevel() as MainWindow;
 		        if(window != null)
 				{
 					m_media_button.updating(true);

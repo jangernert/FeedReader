@@ -188,18 +188,18 @@ namespace FeedReader {
 
 			m_connection.setOffline.connect(() => {
 				Logger.debug("DBusConnection: setOffline");
-				if(FeedReaderApp.isOnline())
+				if(FeedReaderApp.get_default().isOnline())
 				{
-					FeedReaderApp.setOnline(false);
+					FeedReaderApp.get_default().setOnline(false);
 					window.setOffline();
 				}
 			});
 
 			m_connection.setOnline.connect(() => {
 				Logger.debug("DBusConnection: setOnline");
-				if(!FeedReaderApp.isOnline())
+				if(!FeedReaderApp.get_default().isOnline())
 				{
-					FeedReaderApp.setOnline(true);
+					FeedReaderApp.get_default().setOnline(true);
 					window.setOnline();
 				}
 			});

@@ -278,7 +278,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_read_button.sensitive = show;
 		m_fullscreen_button.sensitive = show;
 		m_media_button.visible = show;
-		m_share_button.sensitive = (show && FeedReaderApp.isOnline());
+		m_share_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		m_print_button.sensitive = show;
 
 		try
@@ -286,7 +286,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			if(DBusConnection.get_default().supportTags()
 			&& UtilsUI.canManipulateContent())
 			{
-				m_tag_button.sensitive = (show && FeedReaderApp.isOnline());
+				m_tag_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 			}
 		}
 		catch(GLib.Error e)

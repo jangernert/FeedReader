@@ -23,15 +23,25 @@ namespace FeedReader {
 	public class FeedReaderApp : Gtk.Application {
 
 		private readerUI m_window;
+		private bool m_online = true;
+		private static FeedReaderApp? m_app = null;
 		public signal void callback(string content);
-		public static bool m_online = true;
 
-		public static bool isOnline()
+
+		public new static FeedReaderApp get_default()
+		{
+			if(m_app == null)
+				m_app = new FeedReaderApp();
+
+			return m_app;
+		}
+
+		public bool isOnline()
 		{
 			return m_online;
 		}
 
-		public static void setOnline(bool online)
+		public void setOnline(bool online)
 		{
 			m_online = online;
 		}
@@ -61,7 +71,7 @@ namespace FeedReader {
 
 			if(m_window == null)
 			{
-				m_window = new readerUI(this);
+				m_window = new readerUI();
 				m_window.set_icon_name("feedreader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 			}
@@ -127,7 +137,7 @@ namespace FeedReader {
 			return m_window;
 		}
 
-		public FeedReaderApp()
+		private FeedReaderApp()
 		{
 			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
@@ -184,7 +194,7 @@ namespace FeedReader {
 			Logger.error("Gst.init: " + e.message);
 		}
 
-		var app = new FeedReaderApp();
+		var app = FeedReaderApp.get_default();
 		app.run(args);
 
 		return 0;

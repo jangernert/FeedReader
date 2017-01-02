@@ -31,9 +31,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 	private Gtk.CssProvider m_cssProvider;
 	private SettingsDialog? m_dialog = null;
 
-	public readerUI(FeedReaderApp app)
+	public readerUI()
 	{
-		Object (application: app, title: _("FeedReader"));
+		Object(application: FeedReaderApp.get_default(), title: _("FeedReader"));
 		this.window_position = WindowPosition.CENTER;
 
 		m_stack = new Gtk.Stack();
@@ -127,6 +127,7 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		m_headerbar = new readerHeaderbar();
 		m_headerbar.refresh.connect(() => {
 			m_content.syncStarted();
+			var app = FeedReaderApp.get_default();
 			app.sync.begin((obj, res) => {
 				app.sync.end(res);
 			});
@@ -740,9 +741,9 @@ public class FeedReader.readerUI : Gtk.ApplicationWindow
 		if(checkShortcut(event, "global-sync"))
 		{
 			Logger.debug("shortcut: sync");
-			var window = ((FeedReaderApp)GLib.Application.get_default());
-			window.sync.begin((obj, res) => {
-				window.sync.end(res);
+			var app = FeedReaderApp.get_default();
+			app.sync.begin((obj, res) => {
+				app.sync.end(res);
 			});
 			return true;
 		}

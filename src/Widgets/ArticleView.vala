@@ -742,7 +742,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private void setBackgroundColor()
 	{
 		Logger.debug("ArticleView.setBackgroundColor()");
-		var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
+		var window = FeedReaderApp.get_default().getWindow();
 		if(window != null)
 		{
 			var background = window.getContent().getBackgroundColor();

@@ -126,7 +126,7 @@ public class FeedReader.ContentPage : Gtk.Paned {
 			{
 				m_article_view.load(row.getID());
 				showArticleButtons(true);
-				var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
+				var window = FeedReaderApp.get_default().getWindow();
 				if(window != null)
 				{
 					var header = window.getHeaderBar();

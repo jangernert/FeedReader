@@ -390,7 +390,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var window = ((FeedReaderApp)GLib.Application.get_default()).getWindow();
+			var window = FeedReaderApp.get_default().getWindow();
 			var notification = window.showNotification(_("Category \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
 				try
@@ -449,7 +449,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			showRenamePopover();
 		});
 
-		var app = (FeedReaderApp)GLib.Application.get_default();
+		var app = FeedReaderApp.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);

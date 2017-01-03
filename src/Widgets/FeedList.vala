@@ -632,7 +632,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						{
 							if(tmpFeedRow.getUnreadCount() == 0)
 								tmpFeedRow.reveal(false);
-							else if(isCategorieExpanded(tmpFeedRow.getCatID()))
+							else if(isCategorieExpanded(tmpFeedRow.getCatID()) || UtilsUI.onlyShowFeeds())
 								tmpFeedRow.reveal(true);
 						}
 

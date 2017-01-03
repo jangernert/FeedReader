@@ -64,8 +64,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			m_label.get_style_context().add_class("headline-unread");
 		else
 			m_label.get_style_context().add_class("headline-read");
-		m_label.set_ellipsize (Pango.EllipsizeMode.END);
+		m_label.set_ellipsize(Pango.EllipsizeMode.END);
 		m_label.set_alignment(0.0f, 0.2f);
+		m_label.set_tooltip_text(m_article.getTitle());
 
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);

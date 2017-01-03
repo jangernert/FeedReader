@@ -244,11 +244,6 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		});
 	}
 
-	public ArticleListState getArticleListState()
-	{
-		return m_articleList.getState();
-	}
-
 	public void setArticleListState(ArticleListState state)
 	{
 		var oldState = m_articleList.getState();
@@ -271,49 +266,9 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_article_view.clearContent();
 	}
 
-	public string[] getExpandedCategories()
-	{
-		return m_feedList.getExpandedCategories();
-	}
-
-	public double getFeedListScrollPos()
-	{
-		return m_feedList.vadjustment.value;
-	}
-
 	public string getSelectedFeedListRow()
 	{
 		return m_feedList.getSelectedRow();
-	}
-
-	public int getFeedListWidth()
-	{
-		return m_pane.get_position();
-	}
-
-	public void setFeedListWidth(int pos)
-	{
-		m_pane.set_position(pos);
-	}
-
-	public int getArticlePlusFeedListWidth()
-	{
-		return this.get_position();
-	}
-
-	public void setArticlePlusFeedListWidth(int pos)
-	{
-		this.set_position(pos);
-	}
-
-	public void getArticleListSavedState(out double scrollPos, out int offset)
-	{
-		m_articleList.getSavedState(out scrollPos, out offset);
-	}
-
-	public int getArticleViewScrollPos()
-	{
-		return m_article_view.getScrollPos();
 	}
 
 	public string getSelectedArticle()
@@ -513,5 +468,22 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	public string? displayedArticle()
 	{
 		return m_article_view.getCurrentArticle();
+	}
+
+	public void saveState(ref InterfaceState state)
+	{
+		int offset = 0;
+		double scrollPos = 0.0;
+		m_articleList.getSavedState(out scrollPos, out offset);
+
+		state.setArticleListScrollPos(scrollPos);
+		state.setArticleListRowOffset(offset);
+		state.setFeedListSelectedRow(m_feedList.getSelectedRow());
+		state.setExpandedCategories(m_feedList.getExpandedCategories());
+		state.setFeedsAndArticleWidth(this.get_position());
+		state.setFeedListWidth(m_pane.get_position());
+		state.setFeedListScrollPos(m_feedList.vadjustment.value);
+		state.setArticleViewScrollPos(m_article_view.getScrollPos());
+		state.setArticleListSelectedRow(m_articleList.getSelectedArticle());
 	}
 }

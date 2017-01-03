@@ -53,6 +53,7 @@ public class FeedReader.InterfaceState : GLib.Object {
         Settings.state().set_string   ("search-term",                 m_SearchTerm);
         Settings.state().set_int      ("articleview-scrollpos",       m_ArticleViewScrollPos);
         Settings.state().set_int      ("articlelist-new-rows",        m_ArticleListNewRowCount);
+        Settings.state().set_boolean  ("no-animations",               true);
     }
 
     public void setWindowSize(int height, int width)

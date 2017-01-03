@@ -203,12 +203,13 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 
 		m_search = new Gtk.SearchEntry();
 		m_search.placeholder_text = _("Search Articles");
+		if(Settings.tweaks().get_boolean("restore-searchterm"))
+			m_search.text = Settings.state().get_string("search-term");
+		
 		m_search.search_changed.connect(() => {
 			search_term(m_search.text);
 		});
 
-		if(Settings.tweaks().get_boolean("restore-searchterm"))
-			m_search.text = Settings.state().get_string("search-term");
 
 		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "gnome")
 		{
@@ -289,16 +290,6 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 			Logger.error("readerHeaderbar.showArticleButtons: %s".printf(e.message));
 		}
 
-	}
-
-	public string getSearchTerm()
-	{
-		return m_search.text;
-	}
-
-	public ArticleListState getArticleListState()
-	{
-		return m_state;
 	}
 
 	public bool searchFocused()
@@ -386,5 +377,11 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public void refreshSahrePopover()
 	{
 		m_sharePopover.refreshList();
+	}
+
+	public void saveState(ref InterfaceState state)
+	{
+		state.setSearchTerm(m_search.text);
+		state.setArticleListState(m_state);
 	}
 }

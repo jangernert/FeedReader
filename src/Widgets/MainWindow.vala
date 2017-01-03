@@ -150,6 +150,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		});
 
 		m_headerbar.search_term.connect((searchTerm) => {
+			Logger.debug("MainWindow: new search term");
 			m_columnView.setSearchTerm(searchTerm);
 			m_columnView.clearArticleView();
 			m_columnView.newArticleList();
@@ -327,38 +328,8 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private void onClose()
 	{
 		this.delete_event.connect(() => {
-			int windowWidth = 0;
-			int windowHeight = 0;
-			this.get_size(out windowWidth, out windowHeight);
-			Settings.state().set_int("window-width", windowWidth);
-			Settings.state().set_int("window-height", windowHeight);
-			Settings.state().set_boolean("window-maximized", this.is_maximized);
-
+			getInterfaceState().write();
 			return false;
-		});
-
-		this.destroy.connect(() => {
-			if(Settings.state().get_boolean("spring-cleaning"))
-				return;
-
-			m_columnView.articleViewKillMedia();
-			int offset = 0;
-			double scrollPos = 0.0;
-			m_columnView.getArticleListSavedState(out scrollPos, out offset);
-
-			Settings.state().set_strv("expanded-categories", m_columnView.getExpandedCategories());
-			Settings.state().set_double("feed-row-scrollpos",  m_columnView.getFeedListScrollPos());
-			Settings.state().set_string("feedlist-selected-row", m_columnView.getSelectedFeedListRow());
-			Settings.state().set_int("feed-row-width", m_columnView.getFeedListWidth());
-			Settings.state().set_int("feeds-and-articles-width", m_columnView.getArticlePlusFeedListWidth());
-			Settings.state().set_int("articlelist-row-offset", offset);
-			Settings.state().set_double("articlelist-scrollpos",  scrollPos);
-			Settings.state().set_string("articlelist-selected-row", m_columnView.getSelectedArticle());
-			Settings.state().set_enum("show-articles", m_columnView.getArticleListState());
-			Settings.state().set_boolean("no-animations", true);
-			Settings.state().set_string("search-term", m_headerbar.getSearchTerm());
-			Settings.state().set_int("articleview-scrollpos", m_columnView.getArticleViewScrollPos());
-			Settings.state().set_int("articlelist-new-rows", 0);
 		});
 	}
 
@@ -368,26 +339,12 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		int windowHeight = 0;
 		this.get_size(out windowWidth, out windowHeight);
 
-		int offset = 0;
-		double scrollPos = 0.0;
-		m_columnView.getArticleListSavedState(out scrollPos, out offset);
-
 		var state = new InterfaceState();
 		state.setWindowSize(windowHeight, windowWidth);
-		state.setFeedsAndArticleWidth(m_columnView.getArticlePlusFeedListWidth());
-		state.setFeedListWidth(m_columnView.getFeedListWidth());
-		state.setFeedListScrollPos(m_columnView.getFeedListScrollPos());
-		state.setArticleViewScrollPos(m_columnView.getArticleViewScrollPos());
-		state.setArticleListScrollPos(scrollPos);
-		state.setArticleListRowOffset(offset);
-		state.setArticleListSelectedRow(m_columnView.getSelectedArticle());
 		state.setArticleListNewRowCount(0);
 		state.setWindowMaximized(this.is_maximized);
-		state.setSearchTerm(m_headerbar.getSearchTerm());
-		state.setFeedListSelectedRow(m_columnView.getSelectedFeedListRow());
-		state.setExpandedCategories(m_columnView.getExpandedCategories());
-		state.setArticleListState(m_headerbar.getArticleListState());
-
+		m_columnView.saveState(ref state);
+		m_headerbar.saveState(ref state);
 		return state;
 	}
 

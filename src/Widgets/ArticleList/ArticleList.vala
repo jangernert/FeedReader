@@ -41,7 +41,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	public ArticleList()
 	{
 		m_emptyList = new ArticleListEmptyLabel();
-
+		m_searchTerm = Settings.state().get_string("search-term");
 		var syncingLabel = new Gtk.Label(_("Sync is in progress. Articles should appear any second."));
 		syncingLabel.get_style_context().add_class("h2");
 		syncingLabel.set_ellipsize (Pango.EllipsizeMode.END);

@@ -205,9 +205,12 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		m_search.placeholder_text = _("Search Articles");
 		if(Settings.tweaks().get_boolean("restore-searchterm"))
 			m_search.text = Settings.state().get_string("search-term");
-		
-		m_search.search_changed.connect(() => {
-			search_term(m_search.text);
+
+		GLib.Timeout.add(160, () => {
+			m_search.search_changed.connect(() => {
+				search_term(m_search.text);
+			});
+			return false;
 		});
 
 

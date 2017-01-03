@@ -18,7 +18,7 @@ using Gtk;
 
 public class FeedReader.MainWindow : Gtk.ApplicationWindow
 {
-	private readerHeaderbar m_headerbar;
+	private ColumnViewHeader m_headerbar;
 	private SimpleHeader m_simpleHeader;
 	private Gtk.Overlay m_overlay;
 	private Gtk.Stack m_stack;
@@ -134,7 +134,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.add_action(about_action);
 		about_action.set_enabled(true);
 
-		m_headerbar = new readerHeaderbar();
+		m_headerbar = new ColumnViewHeader();
 		m_headerbar.refresh.connect(() => {
 			m_columnView.syncStarted();
 			var app = FeedReaderApp.get_default();
@@ -764,7 +764,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		return m_headerbar.searchFocused();
 	}
 
-	public readerHeaderbar getHeaderBar()
+	public ColumnViewHeader getHeaderBar()
 	{
 		return m_headerbar;
 	}

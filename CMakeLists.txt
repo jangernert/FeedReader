@@ -146,6 +146,7 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/ColorCircle.vala
 	src/Widgets/ColorPopover.vala
 	src/Widgets/ColumnView.vala
+	src/Widgets/ColumnViewHeader.vala
 	src/Widgets/FeedList.vala
 	src/Widgets/FeedListFooter.vala
 	src/Widgets/FeedRow.vala
@@ -161,7 +162,6 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/MediaPopover.vala
 	src/Widgets/MediaRow.vala
 	src/Widgets/ModeButton.vala
-	src/Widgets/ReaderHeaderbar.vala
 	src/Widgets/RemovePopover.vala
 	src/Widgets/ResetPage.vala
 	src/Widgets/ServiceSettingsPopover.vala

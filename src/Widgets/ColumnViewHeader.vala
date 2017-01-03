@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.readerHeaderbar : Gtk.Paned {
+public class FeedReader.ColumnViewHeader : Gtk.Paned {
 
 	private Gtk.Button m_share_button;
 	private Gtk.Button m_tag_button;
@@ -39,7 +39,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 	public signal void toggledRead();
 
 
-	public readerHeaderbar () {
+	public ColumnViewHeader()
+	{
 		var share_icon = new Gtk.Image.from_icon_name("feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var marked_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
@@ -206,6 +207,8 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		if(Settings.tweaks().get_boolean("restore-searchterm"))
 			m_search.text = Settings.state().get_string("search-term");
 
+		// connect after 160ms because Gtk.SearchEntry fires search_changed with 150ms delay
+		// with the timeout the signal should not trigger a newList() when restoring the state at startup
 		GLib.Timeout.add(160, () => {
 			m_search.search_changed.connect(() => {
 				search_term(m_search.text);
@@ -290,7 +293,7 @@ public class FeedReader.readerHeaderbar : Gtk.Paned {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("readerHeaderbar.showArticleButtons: %s".printf(e.message));
+			Logger.error("ColumnViewHeader.showArticleButtons: %s".printf(e.message));
 		}
 
 	}

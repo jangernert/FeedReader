@@ -233,6 +233,10 @@ p:last-of-type {
     margin-bottom: 0;
 }
 
+not(h1) a {
+    white-space: nowrap;
+}
+
 a :not(img){
     outline:none;
     overflow: hidden;
@@ -241,7 +245,6 @@ a :not(img){
 a {
     color: #318c34;
     display:block;
-    white-space: nowrap;
     text-overflow: ellipsis;
 }
 

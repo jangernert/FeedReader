@@ -235,12 +235,12 @@ p:last-of-type {
 
 a :not(img){
     outline:none;
+    overflow: hidden;
 }
 
 a {
     color: #318c34;
     display:block;
-    overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }

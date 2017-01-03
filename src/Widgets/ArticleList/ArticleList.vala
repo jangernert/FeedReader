@@ -548,7 +548,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(pos > 0)
 		{
 			Logger.debug(@"ArticleList: restore ScrollPos $pos");
-			m_currentScroll.scrollDiff(pos);
+			m_currentScroll.scrollDiff(pos, false);
 			Settings.state().set_double("articlelist-scrollpos",  0);
 		}
 	}

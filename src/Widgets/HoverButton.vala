@@ -105,7 +105,7 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 
     private bool onLeave(Gdk.EventCrossing event)
     {
-        if(event.detail == Gdk.NotifyType.NONLINEAR_VIRTUAL)
+        if(event.detail == Gdk.NotifyType.INFERIOR)
             return false;
 
         if(m_just_clicked)

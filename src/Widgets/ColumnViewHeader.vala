@@ -52,13 +52,13 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 
 		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
 		m_mark_button.sensitive = false;
-		m_mark_button.set_tooltip_text(_("Mark article (un)starred"));
+		//m_mark_button.set_tooltip_text(_("Mark article (un)starred"));
 		m_mark_button.clicked.connect(() => {
 			toggledMarked();
 		});
 		m_read_button = new HoverButton(read_icon, unread_icon, false);
 		m_read_button.sensitive = false;
-		m_read_button.set_tooltip_text(_("Mark article (un)read"));
+		//m_read_button.set_tooltip_text(_("Mark article (un)read"));
 		m_read_button.clicked.connect(() => {
 			toggledRead();
 		});

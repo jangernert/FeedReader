@@ -139,6 +139,7 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/AddPopover.vala
 	src/Widgets/ArticleRow.vala
 	src/Widgets/ArticleView.vala
+	src/Widgets/ArticleViewHeader.vala
 	src/Widgets/ArticleViewLoadProgress.vala
 	src/Widgets/ArticleViewUrlOverlay.vala
 	src/Widgets/BackendInfoPopover.vala
@@ -151,7 +152,7 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/FeedListFooter.vala
 	src/Widgets/FeedRow.vala
 	src/Widgets/FullscreenButton.vala
-	src/Widgets/FullscreenHeaderbar.vala
+	src/Widgets/FullscreenHeader.vala
 	src/Widgets/HoverButton.vala
 	src/Widgets/ImagePopup.vala
 	src/Widgets/InAppNotification.vala

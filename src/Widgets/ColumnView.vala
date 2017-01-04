@@ -139,6 +139,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 				m_headerbar.setRead(row.isUnread());
 				m_headerbar.setMarked(row.isMarked());
 				m_headerbar.showMediaButton(row.haveMedia());
+				m_article_view.showMediaButton(row.haveMedia());
 			}
 		});
 

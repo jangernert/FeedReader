@@ -28,7 +28,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private Gtk.Stack m_stack;
 	private WebKit.WebView? m_currentView = null;
 	private Gdk.RGBA? m_color = null;
-	private fullscreenHeaderbar m_fsHead;
+	private FullscreenHeader m_fsHead;
 	private fullscreenButton m_prevButton;
 	private fullscreenButton m_nextButton;
 	private ArticleViewLoadProgress m_progress;
@@ -110,7 +110,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			}
         });
 
-		m_fsHead = new fullscreenHeaderbar();
+		m_fsHead = new FullscreenHeader();
 		m_fsHead.close.connect(() => {
 			leaveFullscreen(false);
 			MainWindow.get_default().unfullscreen();
@@ -989,6 +989,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 
 		return false;
+	}
+
+	public void showMediaButton(bool show)
+	{
+		m_fsHead.showMediaButton(show);
 	}
 
 }

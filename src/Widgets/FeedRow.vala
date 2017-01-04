@@ -80,7 +80,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
 
-			if(!UtilsUI.onlyShowFeeds())
+			if(!UtilsUI.onlyShowFeeds() && feedID != FeedID.ALL.to_string())
 				this.get_style_context().add_class("fr-sidebar-feed");
 			else
 				this.get_style_context().add_class("fr-sidebar-row");

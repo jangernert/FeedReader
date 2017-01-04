@@ -24,7 +24,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private Gtk.Label m_ErrorMessage;
 	private Gtk.InfoBar m_error_bar;
 	private Gtk.Button m_ignore_tls_errors;
-	private ColumnView m_columnView;
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
 	private Gtk.CssProvider m_cssProvider;
@@ -186,17 +185,17 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		{
 			if(event.changed_mask == Gdk.WindowState.FULLSCREEN)
 			{
-				if(m_columnView.getSelectedArticle() == ""
-				|| m_columnView.getSelectedArticle() == "empty")
+				if(ColumnView.get_default().getSelectedArticle() == ""
+				|| ColumnView.get_default().getSelectedArticle() == "empty")
 					return true;
 
-				if(m_columnView.isFullscreenVideo())
+				if(ColumnView.get_default().isFullscreenVideo())
 					return true;
 
 				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
-					m_columnView.enterFullscreen(false);
+					ColumnView.get_default().enterFullscreen(false);
 				else
-					m_columnView.leaveFullscreen(false);
+					ColumnView.get_default().leaveFullscreen(false);
 			}
 		}
 		return false;
@@ -205,22 +204,22 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	public void showOfflineContent()
 	{
 		showContent();
-		m_columnView.setOffline();
+		ColumnView.get_default().setOffline();
 	}
 
 	public void showContent(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE, bool noNewFeedList = false)
 	{
 		Logger.debug("MainWindow: show content");
 		if(!noNewFeedList)
-			m_columnView.newFeedList();
+			ColumnView.get_default().newFeedList();
 		m_stack.set_visible_child_full("content", transition);
-		m_columnView.getHeader().setButtonsSensitive(true);
-		m_columnView.updateAccountInfo();
+		ColumnView.get_default().getHeader().setButtonsSensitive(true);
+		ColumnView.get_default().updateAccountInfo();
 
-		if(!m_columnView.isFullscreen())
+		if(!ColumnView.get_default().isFullscreen())
 		{
-			m_columnView.getHeader().show_all();
-			this.set_titlebar(m_columnView.getHeader());
+			ColumnView.get_default().getHeader().show_all();
+			this.set_titlebar(ColumnView.get_default().getHeader());
 		}
 	}
 
@@ -230,7 +229,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		showErrorBar(LoginResponse.FIRST_TRY);
 		m_login.reset();
 		m_stack.set_visible_child_full("login", transition);
-		m_columnView.getHeader().setButtonsSensitive(false);
+		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -239,10 +238,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Logger.debug("MainWindow: show reset");
 
 		// kill playing media
-		m_columnView.articleViewKillMedia();
+		ColumnView.get_default().articleViewKillMedia();
 
 		m_stack.set_visible_child_full("reset", transition);
-		m_columnView.getHeader().setButtonsSensitive(false);
+		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -250,7 +249,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	{
 		Logger.debug("MainWindow: show springClean");
 		m_stack.set_visible_child_full("springClean", transition);
-		m_columnView.getHeader().setButtonsSensitive(false);
+		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -272,7 +271,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		state.setWindowSize(windowHeight, windowWidth);
 		state.setArticleListNewRowCount(0);
 		state.setWindowMaximized(this.is_maximized);
-		m_columnView.saveState(ref state);
+		ColumnView.get_default().saveState(ref state);
 		return state;
 	}
 
@@ -413,8 +412,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 	private void setupContentPage()
 	{
-		m_columnView = ColumnView.get_default();
-		m_stack.add_named(m_columnView, "content");
+		m_stack.add_named(ColumnView.get_default(), "content");
 	}
 
 	private void showErrorBar(int ErrorCode)
@@ -500,8 +498,8 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	{
 		try
 		{
-			m_columnView.markAllArticlesAsRead();
-			string[] selectedRow = m_columnView.getSelectedFeedListRow().split(" ", 2);
+			ColumnView.get_default().markAllArticlesAsRead();
+			string[] selectedRow = ColumnView.get_default().getSelectedFeedListRow().split(" ", 2);
 
 			if(selectedRow[0] == "feed")
 			{
@@ -566,31 +564,31 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(m_stack.get_visible_child_name() != "content")
 			return false;
 
-		if(m_columnView.searchFocused())
+		if(ColumnView.get_default().searchFocused())
 			return false;
 
 		if(checkShortcut(event, "articlelist-prev"))
 		{
 			Logger.debug("shortcut: down");
-			m_columnView.ArticleListPREV();
+			ColumnView.get_default().ArticleListPREV();
 			return true;
 		}
 
 		if(checkShortcut(event, "articlelist-next"))
 		{
 			Logger.debug("shortcut: up");
-			m_columnView.ArticleListNEXT();
+			ColumnView.get_default().ArticleListNEXT();
 			return true;
 		}
 
 		if(event.keyval == Gdk.Key.Left || event.keyval == Gdk.Key.Right)
 		{
-			if(m_columnView.isFullscreen())
+			if(ColumnView.get_default().isFullscreen())
 			{
 				if(event.keyval == Gdk.Key.Left)
-					m_columnView.ArticleListPREV();
+					ColumnView.get_default().ArticleListPREV();
 				else
-					m_columnView.ArticleListNEXT();
+					ColumnView.get_default().ArticleListNEXT();
 
 				return true;
 			}
@@ -601,21 +599,21 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "articlelist-toggle-read"))
 		{
 			Logger.debug("shortcut: toggle read");
-			m_columnView.toggleReadSelectedArticle();
+			ColumnView.get_default().toggleReadSelectedArticle();
 			return true;
 		}
 
 		if(checkShortcut(event, "articlelist-toggle-marked"))
 		{
 			Logger.debug("shortcut: toggle marked");
-			m_columnView.toggleMarkedSelectedArticle();
+			ColumnView.get_default().toggleMarkedSelectedArticle();
 			return true;
 		}
 
 		if(checkShortcut(event, "articlelist-open-url"))
 		{
 			Logger.debug("shortcut: open in browser");
-			m_columnView.openSelectedArticle();
+			ColumnView.get_default().openSelectedArticle();
 			return true;
 		}
 
@@ -639,14 +637,14 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "articlelist-center-selected"))
 		{
 			Logger.debug("shortcut: scroll to selcted row");
-			m_columnView.centerSelectedRow();
+			ColumnView.get_default().centerSelectedRow();
 			return true;
 		}
 
 		if(checkShortcut(event, "global-search"))
 		{
 			Logger.debug("shortcut: focus search");
-			m_columnView.getHeader().focusSearch();
+			ColumnView.get_default().getHeader().focusSearch();
 			return true;
 		}
 
@@ -657,10 +655,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			return true;
 		}
 
-		if(event.keyval == Gdk.Key.Escape && m_columnView.isFullscreen())
+		if(event.keyval == Gdk.Key.Escape && ColumnView.get_default().isFullscreen())
 		{
 			this.unfullscreen();
-			m_columnView.leaveFullscreen(false);
+			ColumnView.get_default().leaveFullscreen(false);
 			return true;
 		}
 

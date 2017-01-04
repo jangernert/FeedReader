@@ -60,8 +60,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2 = new ArticleListScroll();
 		m_scroll1.scrolledTop.connect(dismissOverlay);
 		m_scroll2.scrolledTop.connect(dismissOverlay);
-		m_scroll1.valueChanged.connect(removeInvisibleRows);
-		m_scroll2.valueChanged.connect(removeInvisibleRows);
+		m_scroll1.valueChanged.connect(updateVisibleRows);
+		m_scroll2.valueChanged.connect(updateVisibleRows);
 		m_scroll1.scrolledBottom.connect(loadMore);
 		m_scroll2.scrolledBottom.connect(loadMore);
 		m_List1 = new ArticleListBox();
@@ -401,6 +401,32 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				return false;
 			});
 		}
+	}
+
+	private void updateVisibleRows(ScrollDirection direction)
+	{
+		if(direction == ScrollDirection.DOWN && Settings.general().get_boolean("articlelist-mark-scrolling"))
+		{
+			var children = m_currentList.get_children();
+			children.reverse();
+			var visibleArticles = new Gee.HashSet<string>();
+
+			foreach(var r in children)
+			{
+				var row = r as articleRow;
+				if(row != null)
+				{
+					int visible = m_currentScroll.isVisible(row);
+					if(visible == 0 || visible == 1)
+						visibleArticles.add(row.getID());
+					else if(visible == -1)
+						break;
+				}
+			}
+			m_currentList.setVisibleRows(visibleArticles);
+		}
+
+		removeInvisibleRows(direction);
 	}
 
 	private bool keyPressed(Gdk.EventKey event)

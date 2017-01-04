@@ -53,6 +53,12 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			this.vadjustment.value += inc;
 			m_balance = ArticleListBalance.NONE;
 		}
+		else if(m_balance == ArticleListBalance.BOTTOM)
+		{
+			double inc = (m_upperCache - upper);
+			this.vadjustment.value -= inc;
+			m_balance = ArticleListBalance.NONE;
+		}
 
 		if(GLib.Math.fabs(vadjustment.upper - m_upperCache) > 2.0)
 			checkScrolledDown();
@@ -71,13 +77,6 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		checkScrolledTop();
 		checkScrolledDown();
 
-		double upper = vadjustment.upper;
-		if(m_balance == ArticleListBalance.BOTTOM)
-		{
-			double inc = (upper - m_upperCache);
-			this.vadjustment.value -= inc;
-			m_balance = ArticleListBalance.NONE;
-		}
 		m_upperCache = vadjustment.upper;
 		m_valueCache = vadjustment.value;
 	}

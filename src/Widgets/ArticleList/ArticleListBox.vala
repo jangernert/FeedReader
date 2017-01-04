@@ -23,6 +23,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	private string m_selectedFeedListID = FeedID.ALL.to_string();
 	private string m_selectedArticle = "";
 	private Gee.HashSet<string> m_articles;
+	private Gee.HashSet<string> m_visibleArticles;
 
 	public signal void balanceNextScroll(ArticleListBalance mode);
 	public signal void loadDone();
@@ -31,6 +32,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		m_lazyQeue = new Gee.LinkedList<article>();
 		m_articles = new Gee.HashSet<string>();
+		m_visibleArticles = new Gee.HashSet<string>();
 		this.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		this.row_activated.connect(rowActivated);
 	}
@@ -170,19 +172,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	private void selectAfter(articleRow row, int time)
 	{
 		this.select_row(row);
-
-		if(row.isUnread())
-		{
-			try
-			{
-				row.updateUnread(ArticleStatus.READ);
-				DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("ArticleList.selectAfter: %s".printf(e.message));
-			}
-		}
+		setRead(row);
 
 		if(m_selectSourceID > 0)
 		{
@@ -196,6 +186,22 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			m_selectSourceID = 0;
             return false;
         });
+	}
+
+	private void setRead(articleRow row)
+	{
+		try
+		{
+			if(row.isUnread())
+			{
+				row.updateUnread(ArticleStatus.READ);
+				DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("ArticleList.selectAfter: %s".printf(e.message));
+		}
 	}
 
 	public bool toggleReadSelected()
@@ -323,19 +329,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		var selectedRow = (articleRow)row;
 		string selectedID = selectedRow.getID();
-
-		try
-		{
-			if(selectedRow.isUnread())
-			{
-				DBusConnection.get_default().changeArticle(selectedID, ArticleStatus.READ);
-				selectedRow.updateUnread(ArticleStatus.READ);
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ArticleList.constructor: %s".printf(e.message));
-		}
+		setRead(selectedRow);
 
 		if(m_selectedArticle != selectedID)
 		{
@@ -397,6 +391,35 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 					}
 				}
 				break;
+		}
+	}
+
+	public void setVisibleRows(Gee.HashSet<string> visibleArticles)
+	{
+		var invisibleRows = new Gee.HashSet<string>();
+		// mark all rows that are not visible now and have been before as read
+		m_visibleArticles.foreach((id) => {
+			if(!visibleArticles.contains(id))
+				invisibleRows.add(id);
+			return true;
+		});
+
+		m_visibleArticles = visibleArticles;
+
+		var children = this.get_children();
+		foreach(var row in children)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && invisibleRows.contains(tmpRow.getID()))
+			{
+				setRead(tmpRow);
+				if(m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
+				{
+					balanceNextScroll(ArticleListBalance.BOTTOM);
+					removeRow(tmpRow, 0);
+				}
+			}
+
 		}
 	}
 

@@ -149,5 +149,13 @@
 				Sort articles in the ArticleList from new to old (either by article date or insert order).
 			</description>
 		</key>
+		
+		<key name='articlelist-mark-scrolling' type='b'>
+			<default>false</default>
+			<summary>mark read by scrolling</summary>
+			<description>
+				Articles that leave the ArticleList viewport to the top get automatically marked as read.
+			</description>
+		</key>
 	</schema>
 </schemalist>

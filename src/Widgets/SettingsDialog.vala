@@ -101,6 +101,8 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         	ColumnView.get_default().newArticleList();
         });
 
+        var scroll_marked = new SettingSwitch(_("Mark read by scrolling past"), Settings.general(), "articlelist-mark-scrolling");
+
         var articleview_settings = headline(_("Article View:"));
 
         var article_theme = new SettingDropbox(_("Theme"), Settings.general(), "article-theme", {_("Default"), _("Spring"), _("Midnight"), _("Parchment")});
@@ -124,6 +126,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         uiBox.pack_start(article_settings, false, true, 0);
         uiBox.pack_start(article_sort, false, true, 0);
         uiBox.pack_start(newest_first, false, true, 0);
+        uiBox.pack_start(scroll_marked, false, true, 0);
         uiBox.pack_start(articleview_settings, false, true, 0);
         uiBox.pack_start(article_theme, false, true, 0);
         uiBox.pack_start(fontsize, false, true, 0);

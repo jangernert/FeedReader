@@ -18,7 +18,6 @@ using Gtk;
 
 public class FeedReader.MainWindow : Gtk.ApplicationWindow
 {
-	private ColumnViewHeader m_headerbar;
 	private SimpleHeader m_simpleHeader;
 	private Gtk.Overlay m_overlay;
 	private Gtk.Stack m_stack;
@@ -134,49 +133,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.add_action(about_action);
 		about_action.set_enabled(true);
 
-		m_headerbar = new ColumnViewHeader();
-		m_headerbar.refresh.connect(() => {
-			m_columnView.syncStarted();
-			var app = FeedReaderApp.get_default();
-			app.sync.begin((obj, res) => {
-				app.sync.end(res);
-			});
-		});
-
-		m_headerbar.change_state.connect((state, transition) => {
-			m_columnView.setArticleListState(state);
-			m_columnView.clearArticleView();
-			m_columnView.newArticleList(transition);
-		});
-
-		m_headerbar.search_term.connect((searchTerm) => {
-			Logger.debug("MainWindow: new search term");
-			m_columnView.setSearchTerm(searchTerm);
-			m_columnView.clearArticleView();
-			m_columnView.newArticleList();
-		});
-
-		m_headerbar.showSettings.connect((panel) => {
-			showSettings(panel);
-		});
-
-		m_headerbar.notify["position"].connect(() => {
-        	m_columnView.setArticleListPosition(m_headerbar.get_position());
-        });
-
-		m_headerbar.toggledMarked.connect(() => {
-			m_columnView.toggleMarkedSelectedArticle();
-		});
-
-		m_headerbar.toggledRead.connect(() => {
-			m_columnView.toggleReadSelectedArticle();
-		});
-
 		m_simpleHeader = new SimpleHeader();
-
-		m_columnView.showArticleButtons.connect((show) => {
-			m_headerbar.showArticleButtons(show);
-		});
 
 		if(Settings.state().get_boolean("window-maximized"))
 		{
@@ -246,7 +203,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		return false;
 	}
 
-	private void showSettings(string panel)
+	public void showSettings(string panel)
 	{
 		m_dialog = new SettingsDialog(this, panel);
 
@@ -263,14 +220,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	{
 		if(m_dialog != null)
 			m_dialog.refreshAccounts();
-
-		if(m_headerbar.sharePopoverShown())
-			m_headerbar.refreshSahrePopover();
-	}
-
-	public void setRefreshButton(bool refreshing)
-	{
-		m_headerbar.setRefreshButton(refreshing);
 	}
 
 	public void showOfflineContent()
@@ -285,13 +234,13 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(!noNewFeedList)
 			m_columnView.newFeedList();
 		m_stack.set_visible_child_full("content", transition);
-		m_headerbar.setButtonsSensitive(true);
+		m_columnView.getHeader().setButtonsSensitive(true);
 		m_columnView.updateAccountInfo();
 
 		if(!m_columnView.isFullscreen())
 		{
-			m_headerbar.show_all();
-			this.set_titlebar(m_headerbar);
+			m_columnView.getHeader().show_all();
+			this.set_titlebar(m_columnView.getHeader());
 		}
 	}
 
@@ -301,7 +250,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		showErrorBar(LoginResponse.FIRST_TRY);
 		m_login.reset();
 		m_stack.set_visible_child_full("login", transition);
-		m_headerbar.setButtonsSensitive(false);
+		m_columnView.getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -313,7 +262,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		m_columnView.articleViewKillMedia();
 
 		m_stack.set_visible_child_full("reset", transition);
-		m_headerbar.setButtonsSensitive(false);
+		m_columnView.getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -321,7 +270,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	{
 		Logger.debug("MainWindow: show springClean");
 		m_stack.set_visible_child_full("springClean", transition);
-		m_headerbar.setButtonsSensitive(false);
+		m_columnView.getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
 	}
 
@@ -344,7 +293,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		state.setArticleListNewRowCount(0);
 		state.setWindowMaximized(this.is_maximized);
 		m_columnView.saveState(ref state);
-		m_headerbar.saveState(ref state);
 		return state;
 	}
 
@@ -487,10 +435,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	{
 		m_columnView = ColumnView.get_default();
 		m_stack.add_named(m_columnView, "content");
-
-		m_columnView.panedPosChange.connect((pos) => {
-        	m_headerbar.set_position(pos);
-        });
 	}
 
 	private void showErrorBar(int ErrorCode)
@@ -642,7 +586,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(m_stack.get_visible_child_name() != "content")
 			return false;
 
-		if(m_headerbar.searchFocused())
+		if(m_columnView.searchFocused())
 			return false;
 
 		if(checkShortcut(event, "articlelist-prev"))
@@ -678,7 +622,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		{
 			Logger.debug("shortcut: toggle read");
 			m_columnView.toggleReadSelectedArticle();
-			m_headerbar.toggleRead();
 			return true;
 		}
 
@@ -686,7 +629,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		{
 			Logger.debug("shortcut: toggle marked");
 			m_columnView.toggleMarkedSelectedArticle();
-			m_headerbar.toggleMarked();
 			return true;
 		}
 
@@ -701,7 +643,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		{
 			Logger.debug("shortcut: mark all as read");
 			markSelectedRead();
-			m_headerbar.setRead(false);
 			return true;
 		}
 
@@ -725,7 +666,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "global-search"))
 		{
 			Logger.debug("shortcut: focus search");
-			m_headerbar.focusSearch();
+			m_columnView.getHeader().focusSearch();
 			return true;
 		}
 
@@ -758,17 +699,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		new ShortcutsWindow(this);
 	}
 
-
-	public bool searchFocused()
-	{
-		return m_headerbar.searchFocused();
-	}
-
-	public ColumnViewHeader getHeaderBar()
-	{
-		return m_headerbar;
-	}
-
 	public SimpleHeader getSimpleHeader()
 	{
 		return m_simpleHeader;
@@ -777,13 +707,11 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	public void setOffline()
 	{
 		m_columnView.setOffline();
-		m_headerbar.setOffline();
 	}
 
 	public void setOnline()
 	{
 		m_columnView.setOnline();
-		m_headerbar.setOnline();
 	}
 
 	public InAppNotification showNotification(string message, string buttonText = "undo")

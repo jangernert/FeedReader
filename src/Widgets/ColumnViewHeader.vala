@@ -34,7 +34,6 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
-	public signal void showSettings(string panel);
 	public signal void toggledMarked();
 	public signal void toggledRead();
 
@@ -139,9 +138,6 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 
 		m_share_button.clicked.connect(() => {
 			m_sharePopover = new SharePopover(m_share_button);
-			m_sharePopover.showSettings.connect((panel) => {
-				showSettings(panel);
-			});
 			m_sharePopover.startShare.connect(() => {
 				shareStack.set_visible_child_name("spinner");
 				shareSpinner.start();

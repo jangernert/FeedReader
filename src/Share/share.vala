@@ -288,5 +288,6 @@ public class FeedReader.Share : GLib.Object {
 	{
 		refreshAccounts();
 		MainWindow.get_default().settingsRefreshAccounts();
+		ColumnView.get_default().getHeader().refreshSahrePopover();
 	}
 }

@@ -191,7 +191,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
         }
 
         m_selectSourceID = Timeout.add(time, () => {
-			if(!MainWindow.get_default().searchFocused())
+			if(!ColumnView.get_default().searchFocused())
             	row.activate();
 			m_selectSourceID = 0;
             return false;

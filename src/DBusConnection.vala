@@ -156,14 +156,14 @@ namespace FeedReader {
 			m_connection.syncStarted.connect(() => {
 				Logger.debug("DBusConnection: syncStarted");
 				MainWindow.get_default().writeInterfaceState();
-				MainWindow.get_default().setRefreshButton(true);
+				ColumnView.get_default().getHeader().setRefreshButton(true);
 			});
 
 			m_connection.syncFinished.connect(() => {
 				Logger.debug("DBusConnection: syncFinished");
 				ColumnView.get_default().syncFinished();
 				MainWindow.get_default().showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
-				MainWindow.get_default().setRefreshButton(false);
+				ColumnView.get_default().getHeader().setRefreshButton(false);
 			});
 
 			m_connection.springCleanStarted.connect(() => {
@@ -217,7 +217,7 @@ namespace FeedReader {
 
 			m_connection.updateSyncProgress.connect((progress) => {
 				Logger.debug("DBusConnection: updateSyncProgress");
-				MainWindow.get_default().getHeaderBar().updateSyncProgress(progress);
+				ColumnView.get_default().getHeader().updateSyncProgress(progress);
 			});
 		}
 

@@ -358,7 +358,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public bool toggleUnread()
 	{
 		bool unread = false;
-		var window = MainWindow.get_default();
+		var view = ColumnView.get_default();
 		string articleID = ColumnView.get_default().getSelectedArticle();
 
 		switch(m_article.getUnread())
@@ -368,7 +368,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				unread = true;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setRead(true);
+					view.getHeader().setRead(true);
 				}
 				break;
 			case ArticleStatus.UNREAD:
@@ -376,7 +376,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				unread = false;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setRead(false);
+					view.getHeader().setRead(false);
 				}
 				break;
 		}
@@ -467,7 +467,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public bool toggleMarked()
 	{
 		bool marked = false;
-		var window = MainWindow.get_default();
+		var view = ColumnView.get_default();
 		string articleID = ColumnView.get_default().getSelectedArticle();
 
 		switch(m_article.getMarked())
@@ -477,7 +477,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				marked = false;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setMarked(false);
+					view.getHeader().setMarked(false);
 				}
 				break;
 
@@ -486,7 +486,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				marked = true;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setMarked(true);
+					view.getHeader().setMarked(true);
 				}
 				break;
 		}

@@ -191,7 +191,7 @@ namespace FeedReader {
 				if(FeedReaderApp.get_default().isOnline())
 				{
 					FeedReaderApp.get_default().setOnline(false);
-					MainWindow.get_default().setOffline();
+					ColumnView.get_default().setOffline();
 				}
 			});
 
@@ -200,7 +200,7 @@ namespace FeedReader {
 				if(!FeedReaderApp.get_default().isOnline())
 				{
 					FeedReaderApp.get_default().setOnline(true);
-					MainWindow.get_default().setOnline();
+					ColumnView.get_default().setOnline();
 				}
 			});
 

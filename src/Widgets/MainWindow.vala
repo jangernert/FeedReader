@@ -684,16 +684,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		return m_simpleHeader;
 	}
 
-	public void setOffline()
-	{
-		m_columnView.setOffline();
-	}
-
-	public void setOnline()
-	{
-		m_columnView.setOnline();
-	}
-
 	public InAppNotification showNotification(string message, string buttonText = "undo")
 	{
 		var notification = new InAppNotification(message, buttonText);

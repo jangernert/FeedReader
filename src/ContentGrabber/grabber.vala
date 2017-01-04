@@ -348,6 +348,7 @@ public class FeedReader.Grabber : GLib.Object {
         }
 
         grabberUtils.fixLazyImg(doc, "lazyload", "data-src");
+        grabberUtils.fixIframeSize(doc, "youtube.com");
         grabberUtils.removeAttributes(doc, null, "style");
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");

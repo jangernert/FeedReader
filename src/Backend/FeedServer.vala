@@ -375,6 +375,7 @@ public class FeedReader.FeedServer : GLib.Object {
             Logger.debug("Grabber: parsing failed");
     		return;
     	}
+		grabberUtils.fixIframeSize(doc, "youtube.com");
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
 		grabberUtils.repairURL("//iframe", "src", doc, Article.getURL());
 		grabberUtils.stripNode(doc, "//a[not(node())]");

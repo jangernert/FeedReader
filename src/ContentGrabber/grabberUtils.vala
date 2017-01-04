@@ -159,6 +159,41 @@ public class FeedReader.grabberUtils : GLib.Object {
         return true;
     }
 
+    public static bool fixIframeSize(Html.Doc* doc, string siteName)
+    {
+        Logger.debug("grabberUtils: fixIframeSize");
+        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+    	Xml.XPath.Object* res = cntx.eval_expression(@"//iframe[contains(@src, '$siteName')]");
+
+        if(res == null)
+        {
+            return false;
+        }
+        else if(res->type != Xml.XPath.ObjectType.NODESET || res->nodesetval == null)
+        {
+            delete res;
+            return false;
+        }
+
+        for(int i = 0; i < res->nodesetval->length(); i++)
+        {
+        	Xml.Node* node = res->nodesetval->item(i);
+            Xml.Node* videoWrapper = new Xml.Node(null, "div");
+            Xml.Node* parent = node->parent;
+
+            videoWrapper->set_prop("class", "videoWrapper");
+            node->set_prop("width", "100%");
+            node->unset_prop("height");
+
+            node->unlink();
+            videoWrapper->add_child(node);
+            parent->add_child(videoWrapper);
+        }
+
+        delete res;
+        return true;
+    }
+
     public static void stripNode(Html.Doc* doc, string xpath)
     {
         string ancestor = xpath;

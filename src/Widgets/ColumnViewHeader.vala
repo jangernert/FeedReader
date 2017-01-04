@@ -368,16 +368,11 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_syncProgressText.set_text(progress);
 	}
 
-	public bool sharePopoverShown()
-	{
-		if(m_sharePopover != null)
-			return true;
-
-		return false;
-	}
-
 	public void refreshSahrePopover()
 	{
+		if(m_sharePopover == null)
+			return;
+
 		m_sharePopover.refreshList();
 	}
 

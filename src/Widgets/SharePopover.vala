@@ -95,7 +95,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		if(shareRow == null)
 		{
 			this.hide();
-			MainWindow.get_default().showSettings("service");
+			SettingsDialog.get_default().showDialog("service");
 			Logger.debug("SharePopover: open Settings");
 			return;
 		}

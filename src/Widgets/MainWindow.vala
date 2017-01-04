@@ -28,7 +28,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
 	private Gtk.CssProvider m_cssProvider;
-	private SettingsDialog? m_dialog = null;
 
 	private static MainWindow? m_window = null;
 
@@ -90,7 +89,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		var settingsAction = new SimpleAction("settings", null);
 		settingsAction.activate.connect(() => {
-			showSettings("ui");
+			SettingsDialog.get_default().showDialog("ui");
 		});
 		this.add_action(settingsAction);
 		settingsAction.set_enabled(true);
@@ -203,25 +202,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		return false;
 	}
 
-	public void showSettings(string panel)
-	{
-		m_dialog = new SettingsDialog(this, panel);
-
-		m_dialog.newFeedList.connect(m_columnView.newFeedList);
-		m_dialog.newArticleList.connect(m_columnView.newArticleList);
-		m_dialog.reloadArticleView.connect(m_columnView.reloadArticleView);
-		m_dialog.reloadCSS.connect(reloadCSS);
-		m_dialog.close.connect(() => {
-			m_dialog = null;
-		});
-	}
-
-	public void settingsRefreshAccounts()
-	{
-		if(m_dialog != null)
-			m_dialog.refreshAccounts();
-	}
-
 	public void showOfflineContent()
 	{
 		showContent();
@@ -301,7 +281,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		getInterfaceState().write();
 	}
 
-	private void reloadCSS()
+	public void reloadCSS()
 	{
 		Logger.debug("MainWindow: reloadCSS");
 		removeProvider(m_cssProvider);

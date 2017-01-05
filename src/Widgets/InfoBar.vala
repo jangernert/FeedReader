@@ -15,6 +15,9 @@
 
 public class FeedReader.InfoBar : Gtk.Revealer {
 
+    // THIS IS BASICALLY A WORKAROUND FOR THIS GTK+ BUG:
+    // https://bugzilla.gnome.org/show_bug.cgi?id=710888
+
     private Gtk.Label m_Label;
 
     public InfoBar(string text)

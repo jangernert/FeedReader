@@ -148,6 +148,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		feedLabel.get_style_context().add_class("preview");
 		feedLabel.opacity = 0.6;
 		feedLabel.set_alignment(0.0f, 0.5f);
+		feedLabel.set_ellipsize(Pango.EllipsizeMode.END);
 		var dateLabel = new Gtk.Label(m_article.getDateNice());
 		dateLabel.get_style_context().add_class("preview");
 		dateLabel.opacity = 0.6;

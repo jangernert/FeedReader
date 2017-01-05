@@ -50,7 +50,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 		m_errorBar.set_show_close_button(true);
 		m_errorBar.response.connect((response_id) => {
 			if(response_id == Gtk.ResponseType.CLOSE) {
-					m_errorBar.set_visible(false);
+					m_errorBar.hide();
 			}
 		});
 
@@ -113,8 +113,8 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 			}
 			else
 			{
+				m_errorBar.show();
 				m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
-				m_errorBar.set_visible(true);
 			}
 
 		}

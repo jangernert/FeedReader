@@ -297,7 +297,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			//updateFeedList();
 			//updateArticleList();
 
-			if(Settings.state().get_boolean("no-animations"))
+			if(Settings.state().get_boolean("no-animations") && !Settings.general().get_boolean("articlelist-newest-first"))
 			{
 				Logger.debug("UI NOT running: setting \"articlelist-new-rows\"");
 				int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);

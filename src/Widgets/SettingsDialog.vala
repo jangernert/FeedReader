@@ -17,6 +17,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private Gtk.ListBox m_serviceList;
     private Gtk.Stack m_stack;
+    private InfoBar m_errorBar;
     private static SettingsDialog? m_dialog = null;
 
 	public static SettingsDialog get_default()
@@ -194,10 +195,16 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_serviceList.set_selection_mode(Gtk.SelectionMode.NONE);
         m_serviceList.set_sort_func(sortFunc);
 
+        m_errorBar = new InfoBar("");
+
         var service_scroll = new Gtk.ScrolledWindow(null, null);
         service_scroll.expand = true;
         service_scroll.margin_top = 10;
         service_scroll.margin_bottom = 10;
+
+        var overlay = new Gtk.Overlay();
+        overlay.add(service_scroll);
+        overlay.add_overlay(m_errorBar);
 
         var viewport = new Gtk.Viewport(null, null);
         viewport.get_style_context().add_class("servicebox");
@@ -208,7 +215,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     	var serviceBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         serviceBox.expand = true;
-        serviceBox.pack_start(service_scroll, false, true, 0);
+        serviceBox.pack_start(overlay, false, true, 0);
 
         return serviceBox;
     }
@@ -266,6 +273,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			var popover = new ServiceSettingsPopover(addAccount);
 			popover.newAccount.connect((type) => {
                 ServiceSetup row = Share.get_default().newSetup(type);
+                row.showInfoBar.connect((text) => {
+                    Logger.debug("test ABC 123");
+                    m_errorBar.setText(text);
+                    m_errorBar.reveal();
+                });
     			row.removeRow.connect(() => {
     				removeRow(row, m_serviceList);
     			});

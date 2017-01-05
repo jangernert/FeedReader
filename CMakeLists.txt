@@ -156,6 +156,7 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/HoverButton.vala
 	src/Widgets/ImagePopup.vala
 	src/Widgets/InAppNotification.vala
+	src/Widgets/InfoBar.vala
 	src/Widgets/LoginPage.vala
 	src/Widgets/LoginRow.vala
 	src/Widgets/MainWindow.vala

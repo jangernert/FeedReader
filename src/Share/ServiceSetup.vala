@@ -31,6 +31,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 	protected string m_id;
 	protected bool m_systemAccount;
 	public signal void removeRow();
+	public signal void showInfoBar(string text);
 
 	public ServiceSetup(string name, string iconName, bool loggedIn, string username, bool system = false)
 	{

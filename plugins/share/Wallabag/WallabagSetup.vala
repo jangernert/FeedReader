@@ -20,9 +20,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 	private Gtk.Entry m_secretEntry;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passEntry;
-	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
-	private Gtk.Label m_errorLabel;
 	private WallabagAPI m_api;
 
 	public WallabagSetup(string? id, WallabagAPI api, string username = "")
@@ -43,20 +41,6 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		grid.set_halign(Gtk.Align.CENTER);
 		grid.margin_bottom = 10;
 		grid.margin_top = 5;
-
-		m_errorBar = new Gtk.InfoBar();
-		m_errorBar.no_show_all = true;
-		var error_content = m_errorBar.get_content_area();
-		m_errorLabel = new Gtk.Label("");
-		m_errorLabel.show();
-		error_content.add(m_errorLabel);
-		m_errorBar.set_message_type(Gtk.MessageType.WARNING);
-		m_errorBar.set_show_close_button(true);
-		m_errorBar.response.connect((response_id) => {
-			if(response_id == Gtk.ResponseType.CLOSE) {
-					m_errorBar.set_visible(false);
-			}
-		});
 
         m_urlEntry = new Gtk.Entry();
 		m_idEntry = new Gtk.Entry();
@@ -98,17 +82,16 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		userLabel.set_alignment(1.0f, 0.5f);
 		pwLabel.set_alignment(1.0f, 0.5f);
 
-		grid.attach(m_errorBar, 0, 0, 2, 1);
-		grid.attach(urlLabel, 0, 1, 1, 1);
-		grid.attach(idLabel, 0, 2, 1, 1);
-		grid.attach(secretLabel, 0, 3, 1, 1);
-        grid.attach(userLabel, 0, 4, 1, 1);
-        grid.attach(pwLabel, 0, 5, 1, 1);
-        grid.attach(m_urlEntry, 1, 1, 1, 1);
-		grid.attach(m_idEntry, 1, 2, 1, 1);
-		grid.attach(m_secretEntry, 1, 3, 1, 1);
-		grid.attach(m_userEntry, 1, 4, 1, 1);
-        grid.attach(m_passEntry, 1, 5, 1, 1);
+		grid.attach(urlLabel, 0, 0, 1, 1);
+		grid.attach(idLabel, 0, 1, 1, 1);
+		grid.attach(secretLabel, 0, 2, 1, 1);
+        grid.attach(userLabel, 0, 3, 1, 1);
+        grid.attach(pwLabel, 0, 4, 1, 1);
+        grid.attach(m_urlEntry, 1, 0, 1, 1);
+		grid.attach(m_idEntry, 1, 1, 1, 1);
+		grid.attach(m_secretEntry, 1, 2, 1, 1);
+		grid.attach(m_userEntry, 1, 3, 1, 1);
+        grid.attach(m_passEntry, 1, 4, 1, 1);
 
 		m_login_revealer = new Gtk.Revealer();
 		m_login_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -138,15 +121,13 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			// check each and every value
 			if(baseURL == null || baseURL == "")
 			{
-				m_errorLabel.set_label(_("Please fill in the URL."));
-				m_errorBar.set_visible(true);
+				showInfoBar(_("Please fill in the URL."));
 				m_urlEntry.grab_focus();
 				return;
 			}
 			else if(GLib.Uri.parse_scheme(baseURL) == null)
 			{
-				m_errorLabel.set_label(_("URL seems to not be valid."));
-				m_errorBar.set_visible(true);
+				showInfoBar(_("URL seems to not be valid."));
 				m_urlEntry.grab_focus();
 				return;
 			}
@@ -156,32 +137,28 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 
 			if(clientID == null || clientID == "")
 			{
-				m_errorLabel.set_label(_("Please fill in the clientID."));
-				m_errorBar.set_visible(true);
+				showInfoBar(_("Please fill in the clientID."));
 				m_idEntry.grab_focus();
 				return;
 			}
 
 			if(clientSecret == null || clientSecret == "")
 			{
-				m_errorLabel.set_label(_("Please fill in the clientSecret."));
-				m_errorBar.set_visible(true);
+				showInfoBar(_("Please fill in the clientSecret."));
 				m_secretEntry.grab_focus();
 				return;
 			}
 
 			if(password == null || password == "")
 			{
-				m_errorLabel.set_label(_("Please fill in the password."));
-				m_errorBar.set_visible(true);
+				showInfoBar(_("Please fill in the password."));
 				m_passEntry.grab_focus();
 				return;
 			}
 
 			if(username == null || username == "")
 			{
-				m_errorLabel.set_label(_("Please fill in the username."));
-				m_errorBar.set_visible(true);
+				showInfoBar(_("Please fill in the username."));
 				m_userEntry.grab_focus();
 				return;
 			}
@@ -206,8 +183,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			else
 			{
 				m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
-				m_errorLabel.set_label(_("Something went wrong."));
-				m_errorBar.set_visible(true);
+				showInfoBar(_("Something went wrong."));
 			}
 
 		}

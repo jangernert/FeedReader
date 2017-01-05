@@ -17,7 +17,6 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passEntry;
-	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
 	private InstaAPI m_api;
 
@@ -40,20 +39,6 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 		grid.margin_bottom = 10;
 		grid.margin_top = 5;
 
-		m_errorBar = new Gtk.InfoBar();
-		m_errorBar.no_show_all = true;
-		var error_content = m_errorBar.get_content_area();
-		var errorLabel = new Gtk.Label(_("Username or Password incorrect"));
-		errorLabel.show();
-		error_content.add(errorLabel);
-		m_errorBar.set_message_type(Gtk.MessageType.WARNING);
-		m_errorBar.set_show_close_button(true);
-		m_errorBar.response.connect((response_id) => {
-			if(response_id == Gtk.ResponseType.CLOSE) {
-					m_errorBar.hide();
-			}
-		});
-
         m_userEntry = new Gtk.Entry();
         m_passEntry = new Gtk.Entry();
 		m_passEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
@@ -67,11 +52,10 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 			login();
 		});
 
-		grid.attach(m_errorBar, 0, 0, 2, 1);
-        grid.attach(new Gtk.Label(_("Username:")), 0, 1, 1, 1);
-        grid.attach(new Gtk.Label(_("Password:")), 0, 2, 1, 1);
-        grid.attach(m_userEntry, 1, 1, 1, 1);
-        grid.attach(m_passEntry, 1, 2, 1, 1);
+        grid.attach(new Gtk.Label(_("Username:")), 0, 0, 1, 1);
+        grid.attach(new Gtk.Label(_("Password:")), 0, 1, 1, 1);
+        grid.attach(m_userEntry, 1, 0, 1, 1);
+        grid.attach(m_passEntry, 1, 1, 1, 1);
 
 		m_login_revealer = new Gtk.Revealer();
 		m_login_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -113,7 +97,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 			}
 			else
 			{
-				m_errorBar.show();
+				showInfoBar(_("Username or Password incorrect"));
 				m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 			}
 

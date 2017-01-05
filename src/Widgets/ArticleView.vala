@@ -163,6 +163,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private WebKit.WebView getNewView()
 	{
+		bool smoothScroll = Settings.tweaks().get_boolean("smooth-scrolling");
 		var settings = new WebKit.Settings();
 		settings.set_enable_accelerated_2d_canvas(true);
 		settings.set_enable_html5_database(false);
@@ -171,7 +172,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		settings.set_enable_media_stream(false);
 		settings.set_enable_page_cache(false);
 		settings.set_enable_plugins(false);
-		settings.set_enable_smooth_scrolling(true);
+		settings.set_enable_smooth_scrolling(smoothScroll);
 		settings.set_javascript_can_access_clipboard(false);
 		settings.set_javascript_can_open_windows_automatically(false);
 		settings.set_media_playback_requires_user_gesture(true);

@@ -1,0 +1,2 @@
+#! /usr/bin/sh
+(cd build && rm -rf * && cmake .. && make -j`nproc --all` && sudo make install)

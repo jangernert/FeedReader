@@ -198,6 +198,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         m_errorBar = new InfoBar("");
 
         var service_scroll = new Gtk.ScrolledWindow(null, null);
+        service_scroll.expand = true;
 
         var overlay = new Gtk.Overlay();
         overlay.add(service_scroll);

@@ -481,9 +481,11 @@ public class FeedReader.dbDaemon : dbBase {
             // 95% of the time this is an article that has been read in FeedReader during the sync
             // drawback: if something has been marked as unread on another device (or browser) this will not be synced to FeedReader
             if(article.getUnread() == ArticleStatus.UNREAD)
-                continue;
+                stmt.bind_text(unread_position, "SELECT unread FROM articles where articleID = \"%s\"".printf(article.getArticleID()));
+            else
+                stmt.bind_text(unread_position, article.getUnread().to_string());
 
-            stmt.bind_text(unread_position, article.getUnread().to_string());
+
             stmt.bind_text(marked_position, article.getMarked().to_string());
             stmt.bind_text(tags_position, article.getTagString());
             stmt.bind_int (modified_position, article.getLastModified());

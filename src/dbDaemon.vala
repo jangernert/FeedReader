@@ -477,6 +477,12 @@ public class FeedReader.dbDaemon : dbBase {
 
         foreach(var article in articles)
         {
+            // don't mark articles as unread
+            // 95% of the time this is an article that has been read in FeedReader during the sync
+            // drawback: if something has been marked as unread on another device (or browser) this will not be synced to FeedReader
+            if(article.getUnread() == ArticleStatus.UNREAD)
+                continue;
+
             stmt.bind_text(unread_position, article.getUnread().to_string());
             stmt.bind_text(marked_position, article.getMarked().to_string());
             stmt.bind_text(tags_position, article.getTagString());

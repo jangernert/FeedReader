@@ -117,7 +117,7 @@ namespace FeedReader {
 		DATE
 	}
 
-	public enum OfflineActions {
+	public enum CachedActions {
 		NONE,
 		MARK_READ,
 		MARK_UNREAD,

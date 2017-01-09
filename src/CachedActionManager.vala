@@ -13,12 +13,12 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.OfflineActionManager : GLib.Object {
+public class FeedReader.CachedActionManager : GLib.Object {
 
-	private OfflineActions m_lastAction = OfflineActions.NONE;
+	private CachedActions m_lastAction = CachedActions.NONE;
 	private string m_ids = "";
 
-	public OfflineActionManager()
+	public CachedActionManager()
 	{
 
 	}
@@ -26,79 +26,79 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 	public void markArticleRead(string id, ArticleStatus read)
 	{
-		var offlineAction = OfflineActions.MARK_READ;
+		var cachedAction = CachedActions.MARK_READ;
 		if(read == ArticleStatus.UNREAD)
-			offlineAction = OfflineActions.MARK_UNREAD;
+			cachedAction = CachedActions.MARK_UNREAD;
 
-		var action = new OfflineAction(offlineAction, id, "");
+		var action = new CachedAction(cachedAction, id, "");
 		addAction(action);
 	}
 
 	public void markArticleStarred(string id, ArticleStatus marked)
 	{
-		var offlineAction = OfflineActions.MARK_STARRED;
+		var cachedAction = CachedActions.MARK_STARRED;
 		if(marked == ArticleStatus.UNMARKED)
-			offlineAction = OfflineActions.MARK_UNSTARRED;
+			cachedAction = CachedActions.MARK_UNSTARRED;
 
-		var action = new OfflineAction(offlineAction, id, "");
+		var action = new CachedAction(cachedAction, id, "");
 		addAction(action);
 	}
 
 	public void markFeedRead(string id)
 	{
-		var action = new OfflineAction(OfflineActions.MARK_READ_FEED, id, "");
+		var action = new CachedAction(CachedActions.MARK_READ_FEED, id, "");
 		addAction(action);
 	}
 
 	public void markCategoryRead(string id)
 	{
-		var action = new OfflineAction(OfflineActions.MARK_READ_CATEGORY, id, "");
+		var action = new CachedAction(CachedActions.MARK_READ_CATEGORY, id, "");
 		addAction(action);
 	}
 
 	public void markAllRead()
 	{
-		var action = new OfflineAction(OfflineActions.MARK_READ_ALL, "", "");
+		var action = new CachedAction(CachedActions.MARK_READ_ALL, "", "");
 		addAction(action);
 	}
 
-	private void addAction(OfflineAction action)
+	private void addAction(CachedAction action)
 	{
-		if(dbDaemon.get_default().offlineActionNecessary(action))
+		if(dbDaemon.get_default().cachedActionNecessary(action))
 		{
-			dbDaemon.get_default().addOfflineAction(action.getType(), action.getID());
+			dbDaemon.get_default().addCachedAction(action.getType(), action.getID());
 		}
 		else
 		{
-			dbDaemon.get_default().deleteOppositeOfflineAction(action);
+			dbDaemon.get_default().deleteOppositeCachedAction(action);
 		}
 	}
 
-	public void goOnline()
+	public void executeActions()
 	{
-		if(dbDaemon.get_default().isTableEmpty("OfflineActions"))
+		if(dbDaemon.get_default().isTableEmpty("CachedActions"))
 		{
-			Logger.debug("OfflineManager - goOnline: no actions to perform");
+			Logger.debug("CachedActionManager - executeActions: no actions to perform");
 			return;
 		}
 
 
-		Logger.debug("OfflineActionManager: goOnline");
+		Logger.debug("CachedActionManager: executeActions");
 
-		var actions = dbDaemon.get_default().readOfflineActions();
+		var actions = dbDaemon.get_default().readCachedActions();
 
-		foreach(OfflineAction action in actions)
+		foreach(CachedAction action in actions)
 		{
-			Logger.debug("OfflineActionManager: goOnline %s %s".printf(action.getID(), action.getType().to_string()));
+			Logger.debug("CachedActionManager: executeActions %s %s".printf(action.getID(), action.getType().to_string()));
 			switch(action.getType())
 			{
-				case OfflineActions.MARK_READ:
-				case OfflineActions.MARK_UNREAD:
+				case CachedActions.MARK_READ:
+				case CachedActions.MARK_UNREAD:
 					if(action.getType() != m_lastAction && m_ids != "")
 					{
 						m_ids += action.getID();
-						executeActions(m_ids.substring(1), m_lastAction);
-						m_lastAction = OfflineActions.NONE;
+						execute(m_ids.substring(1), m_lastAction);
+						m_lastAction = CachedActions.NONE;
 						m_ids = "";
 					}
 					else
@@ -106,19 +106,19 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 						m_ids += "," + action.getID();
 					}
 					break;
-				case OfflineActions.MARK_STARRED:
+				case CachedActions.MARK_STARRED:
 					FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.MARKED);
 					break;
-				case OfflineActions.MARK_UNSTARRED:
+				case CachedActions.MARK_UNSTARRED:
 					FeedServer.get_default().setArticleIsMarked(action.getID(), ArticleStatus.UNMARKED);
 					break;
-				case OfflineActions.MARK_READ_FEED:
+				case CachedActions.MARK_READ_FEED:
 					FeedServer.get_default().setFeedRead(action.getID());
 					break;
-				case OfflineActions.MARK_READ_CATEGORY:
+				case CachedActions.MARK_READ_CATEGORY:
 					FeedServer.get_default().setCategorieRead(action.getID());
 					break;
-				case OfflineActions.MARK_READ_ALL:
+				case CachedActions.MARK_READ_ALL:
 					FeedServer.get_default().markAllItemsRead();
 					break;
 			}
@@ -128,19 +128,19 @@ public class FeedReader.OfflineActionManager : GLib.Object {
 
 		if(m_ids != "")
 		{
-			executeActions(m_ids.substring(1), m_lastAction);
+			execute(m_ids.substring(1), m_lastAction);
 		}
 	}
 
-	private void executeActions(string ids, OfflineActions action)
+	private void execute(string ids, CachedActions action)
 	{
-		Logger.debug("OfflineActionManager: executeActions %s %s".printf(ids, action.to_string()));
+		Logger.debug("CachedActionManager: execute %s %s".printf(ids, action.to_string()));
 		switch(action)
 		{
-			case OfflineActions.MARK_READ:
+			case CachedActions.MARK_READ:
 				FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.READ);
 				break;
-			case OfflineActions.MARK_UNREAD:
+			case CachedActions.MARK_UNREAD:
 				FeedServer.get_default().setArticleIsRead(ids, ArticleStatus.UNREAD);
 				break;
 		}

@@ -118,7 +118,7 @@ public class FeedReader.dbBase : GLib.Object {
 												"color" INTEGER
 											)""");
 
-			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."OfflineActions"
+			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
 											(
 												"action" INTEGER NOT NULL,
 												"id" TEXT NOT NULL,

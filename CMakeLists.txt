@@ -87,7 +87,7 @@ vala_precompile(LIBFR libFeedReader
 	src/Model/Category.vala
 	src/Model/Article.vala
 	src/Model/Tag.vala
-	src/Model/OfflineAction.vala
+	src/Model/CachedAction.vala
 	src/Model/InterfaceState.vala
 	src/Model/ShareAccount.vala
 	Constants.vala
@@ -239,7 +239,7 @@ vala_precompile(daemon ${DAEMON_NAME}
 	src/Daemon.vala
 	src/dbDaemon.vala
 	src/Notification.vala
-	src/OfflineActionManager.vala
+	src/CachedActionManager.vala
 	src/Backend/FeedServer.vala
 	src/Backend/FeedServerInterface.vala
 	src/Backend/OPMLparser.vala

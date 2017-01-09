@@ -899,11 +899,11 @@ public class FeedReader.dbDaemon : dbBase {
         delete_articles(feedID);
     }
 
-    public void addOfflineAction(OfflineActions action, string id, string? argument = "")
+    public void addCachedAction(CachedActions action, string id, string? argument = "")
     {
         executeSQL("BEGIN TRANSACTION");
 
-        var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.OfflineActions");
+        var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.CachedActions");
         query.insertValuePair("action", "$ACTION");
         query.insertValuePair("id", "$ID");
         query.insertValuePair("argument", "$ARGUMENT");
@@ -914,7 +914,7 @@ public class FeedReader.dbDaemon : dbBase {
         if (ec != Sqlite.OK)
         {
             Logger.error(query.get());
-            Logger.error("addOfflineAction: " + sqlite_db.errmsg());
+            Logger.error("addCachedAction: " + sqlite_db.errmsg());
         }
 
 
@@ -936,11 +936,11 @@ public class FeedReader.dbDaemon : dbBase {
     }
 
 
-    public Gee.ArrayList<OfflineAction> readOfflineActions()
+    public Gee.ArrayList<CachedAction> readCachedActions()
 	{
-		Gee.ArrayList<OfflineAction> tmp = new Gee.ArrayList<OfflineAction>();
+		Gee.ArrayList<CachedAction> tmp = new Gee.ArrayList<CachedAction>();
 
-		var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
+		var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
 		query.selectField("*");
 		query.build();
         query.print();
@@ -950,11 +950,11 @@ public class FeedReader.dbDaemon : dbBase {
 		if (ec != Sqlite.OK)
         {
             Logger.error(query.get());
-            Logger.error("readOfflineActions: " + sqlite_db.errmsg());
+            Logger.error("readCachedActions: " + sqlite_db.errmsg());
         }
 
 		while (stmt.step () == Sqlite.ROW) {
-            var action = new OfflineAction((OfflineActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
+            var action = new CachedAction((CachedActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
             action.print();
 			tmp.add(action);
 		}
@@ -962,15 +962,15 @@ public class FeedReader.dbDaemon : dbBase {
 		return tmp;
 	}
 
-    public void resetOfflineActions()
+    public void resetCachedActions()
     {
-        Logger.warning("resetOfflineActions");
-        executeSQL("DELETE FROM OfflineActions");
+        Logger.warning("resetCachedActions");
+        executeSQL("DELETE FROM CachedActions");
     }
 
-    public bool offlineActionNecessary(OfflineAction action)
+    public bool cachedActionNecessary(CachedAction action)
     {
-        var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
+        var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
         query.selectField("count(*)");
         query.addEqualsCondition("argument", action.getArgument(), true, true);
         query.addEqualsCondition("id", action.getID(), true, true);
@@ -981,7 +981,7 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-            Logger.error("offlineActionNecessary - %s".printf(sqlite_db.errmsg()));
+            Logger.error("cachedActionNecessary - %s".printf(sqlite_db.errmsg()));
             Logger.error(query.get());
         }
 
@@ -993,9 +993,9 @@ public class FeedReader.dbDaemon : dbBase {
         return true;
     }
 
-    public void deleteOppositeOfflineAction(OfflineAction action)
+    public void deleteOppositeCachedAction(CachedAction action)
     {
-        var query = new QueryBuilder(QueryType.DELETE, "OfflineActions");
+        var query = new QueryBuilder(QueryType.DELETE, "CachedActions");
         query.addEqualsCondition("argument", action.getArgument(), true, true);
         query.addEqualsCondition("id", action.getID(), true, true);
         query.addEqualsCondition("action", "%i".printf(action.opposite()));

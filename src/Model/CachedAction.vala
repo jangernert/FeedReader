@@ -13,13 +13,13 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.OfflineAction : GLib.Object {
+public class FeedReader.CachedAction : GLib.Object {
 
-	private OfflineActions m_action;
+	private CachedActions m_action;
 	private string m_id;
 	private string m_argument;
 
-	public OfflineAction(OfflineActions action, string id, string argument) {
+	public CachedAction(CachedActions action, string id, string argument) {
 		m_action = action;
 		m_id = id;
 		m_argument = argument;
@@ -35,12 +35,12 @@ public class FeedReader.OfflineAction : GLib.Object {
 		m_id = id;
 	}
 
-	public OfflineActions getType()
+	public CachedActions getType()
 	{
 		return m_action;
 	}
 
-	public void setType(OfflineActions action)
+	public void setType(CachedActions action)
 	{
 		m_action = action;
 	}
@@ -55,25 +55,25 @@ public class FeedReader.OfflineAction : GLib.Object {
 		m_argument = argument;
 	}
 
-	public OfflineActions opposite()
+	public CachedActions opposite()
 	{
 		switch(m_action)
 		{
-			case OfflineActions.MARK_READ:
-				return OfflineActions.MARK_UNREAD;
-			case OfflineActions.MARK_UNREAD:
-				return OfflineActions.MARK_READ;
-			case OfflineActions.MARK_STARRED:
-				return OfflineActions.MARK_UNSTARRED;
-			case OfflineActions.MARK_UNSTARRED:
-				return OfflineActions.MARK_STARRED;
+			case CachedActions.MARK_READ:
+				return CachedActions.MARK_UNREAD;
+			case CachedActions.MARK_UNREAD:
+				return CachedActions.MARK_READ;
+			case CachedActions.MARK_STARRED:
+				return CachedActions.MARK_UNSTARRED;
+			case CachedActions.MARK_UNSTARRED:
+				return CachedActions.MARK_STARRED;
 		}
 
-		return OfflineActions.NONE;
+		return CachedActions.NONE;
 	}
 
 	public void print()
 	{
-		Logger.debug("OfflineAction: %s %s".printf(m_action.to_string(), m_id));
+		Logger.debug("CachedAction: %s %s".printf(m_action.to_string(), m_id));
 	}
 }

@@ -424,7 +424,7 @@ public class FeedReader.dbDaemon : dbBase {
         if(ec != Sqlite.OK)
         {
 			Logger.error(update_query.get());
-			Logger.error("update_articles: " + sqlite_db.errmsg());
+			Logger.error("writeContent: " + sqlite_db.errmsg());
 		}
 
         int html_position = stmt.bind_parameter_index("$HTML");
@@ -477,16 +477,16 @@ public class FeedReader.dbDaemon : dbBase {
 
         foreach(var article in articles)
         {
-            // don't mark articles as unread
-            // 95% of the time this is an article that has been read in FeedReader during the sync
-            // drawback: if something has been marked as unread on another device (or browser) this will not be synced to FeedReader
-            if(article.getUnread() == ArticleStatus.UNREAD)
-                stmt.bind_text(unread_position, "SELECT unread FROM articles where articleID = \"%s\"".printf(article.getArticleID()));
+            if(article.getUnread() == ArticleStatus.UNREAD && markedReadDuringSync(article))
+                stmt.bind_text(unread_position, ArticleStatus.READ.to_string());
             else
                 stmt.bind_text(unread_position, article.getUnread().to_string());
 
+            if(article.getMarked() == ArticleStatus.UNMARKED && markedDuringSync(article))
+                stmt.bind_text(marked_position, ArticleStatus.MARKED.to_string());
+            else
+                stmt.bind_text(marked_position, article.getMarked().to_string());
 
-            stmt.bind_text(marked_position, article.getMarked().to_string());
             stmt.bind_text(tags_position, article.getTagString());
             stmt.bind_int (modified_position, article.getLastModified());
             stmt.bind_text(articleID_position, article.getArticleID());
@@ -496,6 +496,8 @@ public class FeedReader.dbDaemon : dbBase {
         }
 
         executeSQL("COMMIT TRANSACTION");
+
+        dbDaemon.get_default().resetCachedActions();
     }
 
 
@@ -946,14 +948,15 @@ public class FeedReader.dbDaemon : dbBase {
         query.print();
 
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
+		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
         {
             Logger.error(query.get());
             Logger.error("readCachedActions: " + sqlite_db.errmsg());
         }
 
-		while (stmt.step () == Sqlite.ROW) {
+		while(stmt.step () == Sqlite.ROW)
+        {
             var action = new CachedAction((CachedActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
             action.print();
 			tmp.add(action);
@@ -978,14 +981,15 @@ public class FeedReader.dbDaemon : dbBase {
         query.build();
 
         Sqlite.Statement stmt;
-        int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-        if (ec != Sqlite.OK)
+        int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+        if(ec != Sqlite.OK)
         {
             Logger.error("cachedActionNecessary - %s".printf(sqlite_db.errmsg()));
             Logger.error(query.get());
         }
 
-        while (stmt.step () == Sqlite.ROW) {
+        while(stmt.step () == Sqlite.ROW)
+        {
             if(stmt.column_int(0) > 0)
                 return false;
         }
@@ -1018,5 +1022,121 @@ public class FeedReader.dbDaemon : dbBase {
 		string catID = FeedServer.get_default().uncategorizedID();
 		return "category_id = \"%s\"".printf(catID);
 	}
+
+    private bool markedReadDuringSync(article a)
+    {
+        // first check if all articles have been marked read
+        var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
+        query.selectField("count(*)");
+        query.addEqualsCondition("action", "%i".printf(CachedActions.MARK_READ_ALL));
+        query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+        if(ec != Sqlite.OK)
+        {
+            Logger.error("makrUnreadDuringSync - %s".printf(sqlite_db.errmsg()));
+            Logger.error(query.get());
+        }
+
+        while(stmt.step() == Sqlite.ROW)
+        {
+            if(stmt.column_int(0) > 0)
+                return true;
+        }
+
+        // check if the category of the article has been marked as read
+        var feed = read_feed(a.getFeedID());
+        var catIDs = feed.getCatIDs();
+        foreach(string id in catIDs)
+        {
+            var query2 = new QueryBuilder(QueryType.SELECT, "CachedActions");
+            query2.selectField("count(*)");
+            query2.addEqualsCondition("action", "%i".printf(CachedActions.MARK_READ_CATEGORY));
+            query2.addEqualsCondition("id", id, true, true);
+            query2.build();
+
+            ec = sqlite_db.prepare_v2(query2.get(), query2.get().length, out stmt);
+            if(ec != Sqlite.OK)
+            {
+                Logger.error("makrUnreadDuringSync - %s".printf(sqlite_db.errmsg()));
+                Logger.error(query2.get());
+            }
+
+            while(stmt.step() == Sqlite.ROW)
+            {
+                if(stmt.column_int(0) > 0)
+                    return true;
+            }
+        }
+
+        // check if the feed of article has been marked as read
+        var query3 = new QueryBuilder(QueryType.SELECT, "CachedActions");
+        query3.selectField("count(*)");
+        query3.addEqualsCondition("action", "%i".printf(CachedActions.MARK_READ_FEED));
+        query3.addEqualsCondition("id", a.getFeedID(), true, true);
+        query3.build();
+
+        ec = sqlite_db.prepare_v2(query3.get(), query3.get().length, out stmt);
+        if(ec != Sqlite.OK)
+        {
+            Logger.error("makrUnreadDuringSync - %s".printf(sqlite_db.errmsg()));
+            Logger.error(query3.get());
+        }
+
+        while(stmt.step() == Sqlite.ROW)
+        {
+            if(stmt.column_int(0) > 0)
+                return true;
+        }
+
+        // check if article itself has been marked as read
+        var query4 = new QueryBuilder(QueryType.SELECT, "CachedActions");
+        query4.selectField("count(*)");
+        query4.addEqualsCondition("action", "%i".printf(CachedActions.MARK_READ));
+        query4.addEqualsCondition("id", a.getArticleID(), true, true);
+        query4.build();
+
+        ec = sqlite_db.prepare_v2(query4.get(), query4.get().length, out stmt);
+        if(ec != Sqlite.OK)
+        {
+            Logger.error("makrUnreadDuringSync - %s".printf(sqlite_db.errmsg()));
+            Logger.error(query4.get());
+        }
+
+        while(stmt.step() == Sqlite.ROW)
+        {
+            if(stmt.column_int(0) > 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    private bool markedDuringSync(article a)
+    {
+        // check if article has been marked
+        var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
+        query.selectField("count(*)");
+        query.addEqualsCondition("action", "%i".printf(CachedActions.MARK_STARRED));
+        query.addEqualsCondition("id", a.getArticleID(), true, true);
+        query.build();
+
+        Sqlite.Statement stmt;
+        int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+        if(ec != Sqlite.OK)
+        {
+            Logger.error("markedDuringSync - %s".printf(sqlite_db.errmsg()));
+            Logger.error(query.get());
+        }
+
+        while(stmt.step() == Sqlite.ROW)
+        {
+            if(stmt.column_int(0) > 0)
+                return true;
+        }
+
+        return false;
+    }
 
 }

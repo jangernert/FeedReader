@@ -25,6 +25,7 @@ namespace FeedReader {
 #endif
 		private LoginResponse m_loggedin;
 		private bool m_offline = true;
+		private bool m_cacheSync = false;
 		private CachedActionManager m_cachedActions;
 		private uint m_timeout_source_id = 0;
 		private delegate void asyncPayload();
@@ -192,9 +193,11 @@ namespace FeedReader {
 			if(m_loggedin == LoginResponse.SUCCESS && Settings.state().get_boolean("currently-updating") == false)
 			{
 				Logger.info("daemon: sync started");
+				m_cacheSync = true;
 				Settings.state().set_boolean("currently-updating", true);
 				FeedServer.get_default().syncContent();
 				updateBadge();
+				m_cacheSync = false;
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();
@@ -375,6 +378,14 @@ namespace FeedReader {
 				}
 				else
 				{
+					if(m_cacheSync)
+					{
+						var idArray = articleID.split(",");
+						foreach(string id in idArray)
+						{
+							m_cachedActions.markArticleRead(id, status);
+						}
+					}
 
 					asyncPayload pl = () => { FeedServer.get_default().setArticleIsRead(articleID, status); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
@@ -393,6 +404,8 @@ namespace FeedReader {
 					m_cachedActions.markArticleStarred(articleID, status);
 				else
 				{
+					if(m_cacheSync)
+						m_cachedActions.markArticleStarred(articleID, status);
 					asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(articleID, status); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -543,6 +556,8 @@ namespace FeedReader {
 				}
 				else
 				{
+					if(m_cacheSync)
+						m_cachedActions.markCategoryRead(feedID);
 					asyncPayload pl = () => { FeedServer.get_default().setCategorieRead(feedID); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -563,6 +578,8 @@ namespace FeedReader {
 				}
 				else
 				{
+					if(m_cacheSync)
+						m_cachedActions.markFeedRead(feedID);
 					asyncPayload pl = () => { FeedServer.get_default().setFeedRead(feedID); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -585,6 +602,8 @@ namespace FeedReader {
 			}
 			else
 			{
+				if(m_cacheSync)
+					m_cachedActions.markAllRead();
 				asyncPayload pl = () => { FeedServer.get_default().markAllItemsRead(); };
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}

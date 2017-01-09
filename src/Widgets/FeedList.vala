@@ -177,7 +177,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	}
 
 
-	public void newFeedlist(bool defaultSettings, bool masterCat = false)
+	public void newFeedlist(ArticleListState state, bool defaultSettings, bool masterCat = false)
 	{
 		Logger.debug("FeedList: new FeedList");
 
@@ -209,14 +209,14 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			m_list.remove(row);
 			row.destroy();
 		}
-		createFeedlist(defaultSettings, masterCat);
+		createFeedlist(state, defaultSettings, masterCat);
 		Settings.state().set_boolean("no-animations", false);
 		m_update = false;
 		m_busy = false;
 	}
 
 
-	private void createFeedlist(bool defaultSettings, bool masterCat)
+	private void createFeedlist(ArticleListState state, bool defaultSettings, bool masterCat)
 	{
 		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR.to_string(), "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
@@ -226,11 +226,16 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		row_separator1.sensitive = false;
 		m_list.add(row_separator1);
 
-		var unread = dbUI.get_default().get_unread_total();
+		uint unread = 0;
+		if(state == ArticleListState.MARKED)
+			unread = dbUI.get_default().get_marked_total();
+		else
+			unread = dbUI.get_default().get_unread_total();
 		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL.to_string(), "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
 		m_list.add(row_all);
+		row_all.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
 
@@ -244,11 +249,11 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		//-------------------------------------------------------------------
 
-		var feeds = dbUI.get_default().read_feeds();
+		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
 
 		if(!UtilsUI.onlyShowFeeds())
 		{
-			createCategories(ref feeds, masterCat);
+			createCategories(ref feeds, masterCat, state);
 			createTags();
 		}
 
@@ -288,6 +293,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 							feedrow.drag_failed.connect(onDragEnd);
 							if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 								feedrow.reveal(true);
+							feedrow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 							pos++;
 						}
 					}
@@ -314,6 +320,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				feedrow.drag_failed.connect(onDragEnd);
 				if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
 					feedrow.reveal(true);
+				feedrow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 			}
 		}
 
@@ -446,7 +453,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	}
 
 
-	private void createCategories(ref Gee.ArrayList<feed> feeds, bool masterCat)
+	private void createCategories(ref Gee.ArrayList<feed> feeds, bool masterCat, ArticleListState state)
 	{
 		int maxCatLevel = dbUI.get_default().getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
@@ -553,6 +560,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						CategoryRow.drag_failed.connect(onDragEnd);
 						if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnreadCount() != 0)
 							CategoryRow.reveal(true);
+						CategoryRow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 						break;
 					}
 				}
@@ -579,9 +587,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 	}
 
-	public void refreshCounters()
+	public void refreshCounters(ArticleListState state)
 	{
-		var feeds = dbUI.get_default().read_feeds();
+		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
 		var categories = dbUI.get_default().read_categories(feeds);
 
 		var FeedChildList = m_list.get_children();
@@ -592,7 +600,18 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var tmpFeedRow = row as FeedRow;
 			if(tmpFeedRow != null && tmpFeedRow.getID() == FeedID.ALL.to_string())
 			{
-				tmpFeedRow.set_unread_count(dbUI.get_default().get_unread_total());
+				uint count = 0;
+				if(state == ArticleListState.MARKED)
+				{
+					count = dbUI.get_default().get_marked_total();
+					tmpFeedRow.activateUnreadEventbox(false);
+				}
+				else
+				{
+					count = dbUI.get_default().get_unread_total();
+					tmpFeedRow.activateUnreadEventbox(true);
+				}
+				tmpFeedRow.set_unread_count(count);
 				break;
 			}
 		}
@@ -608,11 +627,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					if(tmpFeedRow.getID() == Feed.getFeedID())
 					{
 						tmpFeedRow.set_unread_count(Feed.getUnread());
+						tmpFeedRow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 						if(Settings.general().get_boolean("feedlist-only-show-unread"))
 						{
 							if(tmpFeedRow.getUnreadCount() == 0)
 								tmpFeedRow.reveal(false);
-							else if(isCategorieExpanded(tmpFeedRow.getCatID()))
+							else if(isCategorieExpanded(tmpFeedRow.getCatID()) || UtilsUI.onlyShowFeeds())
 								tmpFeedRow.reveal(true);
 						}
 
@@ -634,6 +654,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					if(tmpCatRow.getID() == cat.getCatID())
 					{
 						tmpCatRow.set_unread_count(cat.getUnreadCount());
+						tmpCatRow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 						if(Settings.general().get_boolean("feedlist-only-show-unread"))
 						{
 							if(tmpCatRow.getUnreadCount() == 0)
@@ -655,7 +676,16 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				var tmpCatRow = row as CategoryRow;
 				if(tmpCatRow != null && (tmpCatRow.getID() == "" || tmpCatRow.getID() == "0"))
 				{
-					tmpCatRow.set_unread_count(dbUI.get_default().get_unread_uncategorized());
+					if(state == ArticleListState.MARKED)
+					{
+						tmpCatRow.set_unread_count(dbUI.get_default().get_marked_uncategorized());
+						tmpCatRow.activateUnreadEventbox(false);
+					}
+					else
+					{
+						tmpCatRow.set_unread_count(dbUI.get_default().get_unread_uncategorized());
+						tmpCatRow.activateUnreadEventbox(true);
+					}
 					if(Settings.general().get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
 						tmpCatRow.reveal(true);
 
@@ -871,7 +901,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					foreach(feed Feed in feeds)
 					{
 						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
-						Logger.debug("MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+						Logger.debug("FeedList: mark all articles as read feed: %s".printf(Feed.getTitle()));
 					}
 				}
 				else
@@ -1036,8 +1066,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		Logger.debug("FeedList: onDragBegin");
 
 		// save current state
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		window.writeInterfaceState();
+		MainWindow.get_default().writeInterfaceState();
 
 		// collapse all feeds and show all Categories
 		var FeedChildList = m_list.get_children();
@@ -1106,7 +1135,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private bool onDragEnd(Gdk.DragContext context, Gtk.DragResult result)
 	{
-		Logger.debug("FeedList: onDragBegin");
+		Logger.debug("FeedList: onDragEnd");
 		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{

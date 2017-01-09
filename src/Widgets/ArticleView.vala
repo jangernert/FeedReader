@@ -24,13 +24,14 @@ interface FeedReaderWebExtension : Object
 public class FeedReader.articleView : Gtk.Overlay {
 
 	private Gtk.Overlay m_videoOverlay;
-	private Gtk.Label m_overlayLabel;
+	private ArticleViewUrlOverlay m_UrlOverlay;
 	private Gtk.Stack m_stack;
-	private WebKit.WebView m_currentView;
+	private WebKit.WebView? m_currentView = null;
 	private Gdk.RGBA? m_color = null;
-	private fullscreenHeaderbar m_fsHead;
+	private FullscreenHeader m_fsHead;
 	private fullscreenButton m_prevButton;
 	private fullscreenButton m_nextButton;
+	private ArticleViewLoadProgress m_progress;
 	private string m_currentArticle;
 	private string? m_nextArticle = null;
 	private bool m_busy = false;
@@ -44,8 +45,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private double m_momentum = 0;
 	private bool m_inDrag = false;
 	private uint m_OngoingScrollID = 0;
-	private uint m_timeout_source_id;
-	private uint m_overlayFade = 200;
 	private FeedReaderWebExtension m_messenger = null;
 	private bool m_connected = false;
 	private int m_height = 0;
@@ -53,7 +52,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool m_FullscreenVideo = false;
 	private bool m_FullscreenArticle = false;
 	private double m_FullscreenZoomLevel = 1.25;
-	private int m_animationDuration = 150;
+	private uint m_animationDuration = 150;
 	public signal void enterFullscreen(bool video);
 	public signal void leaveFullscreen(bool video);
 
@@ -65,17 +64,32 @@ public class FeedReader.articleView : Gtk.Overlay {
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("h2");
 
-		m_overlayLabel = new Gtk.Label("dummy URL");
-		m_overlayLabel.margin = 10;
-		m_overlayLabel.opacity = 0.0;
-		m_overlayLabel.height_request = 30;
-		m_overlayLabel.valign = Gtk.Align.END;
-		m_overlayLabel.halign = Gtk.Align.START;
-		m_overlayLabel.get_style_context().add_class("overlay");
-		m_overlayLabel.no_show_all = true;
+		var crashLabel = new Gtk.Label(_("WebKit has crashed"));
+		crashLabel.get_style_context().add_class("h2");
+		var crashIcon = new Gtk.Image.from_icon_name("face-crying-symbolic", Gtk.IconSize.BUTTON);
+		var crashLabelBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		crashLabelBox.pack_start(crashLabel);
+		crashLabelBox.pack_start(crashIcon);
+		var crashButton = new Gtk.Button.with_label("view HTML-code");
+		crashButton.get_style_context().add_class("preview");
+		crashButton.opacity = 0.7;
+		crashButton.set_relief(Gtk.ReliefStyle.NONE);
+		crashButton.set_focus_on_click(false);
+		crashButton.clicked.connect(() => {
+			var Article = dbUI.get_default().read_article(m_currentArticle);
+			Utils.openInGedit(Article.getHTML());
+		});
+		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		crashView.set_halign(Gtk.Align.CENTER);
+		crashView.set_valign(Gtk.Align.CENTER);
+		crashView.pack_start(crashLabelBox);
+		crashView.pack_start(crashButton);
 
+
+		m_UrlOverlay = new ArticleViewUrlOverlay();
 		m_stack = new Gtk.Stack();
 		m_stack.add_named(emptyView, "empty");
+		m_stack.add_named(crashView, "crash");
 
 		m_stack.set_visible_child_name("empty");
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
@@ -89,18 +103,17 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_width = allocation.width;
 				m_height = allocation.height;
 				Logger.debug("ArticleView: size changed");
+				setBackgroundColor();
 				recalculate.begin((obj, res) => {
 					recalculate.end(res);
 				});
 			}
         });
 
-		m_fsHead = new fullscreenHeaderbar();
+		m_fsHead = new FullscreenHeader();
 		m_fsHead.close.connect(() => {
 			leaveFullscreen(false);
-			var window = this.get_toplevel() as readerUI;
-			if(window != null && window.is_toplevel())
-				window.unfullscreen();
+			MainWindow.get_default().unfullscreen();
 		});
 
 		var fullscreenHeaderOverlay = new Gtk.Overlay();
@@ -109,9 +122,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
 		m_prevButton.click.connect(() => {
-			var window = this.get_toplevel() as readerUI;
-			if(window != null && window.is_toplevel())
-				window.getContent().ArticleListPREV();
+			ColumnView.get_default().ArticleListPREV();
 		});
 		var prevOverlay = new Gtk.Overlay();
 		prevOverlay.add(fullscreenHeaderOverlay);
@@ -119,23 +130,24 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_nextButton = new fullscreenButton("go-next-symbolic", Gtk.Align.END);
 		m_nextButton.click.connect(() => {
-			var window = this.get_toplevel() as readerUI;
-			if(window != null && window.is_toplevel())
-				window.getContent().ArticleListNEXT();
+			ColumnView.get_default().ArticleListNEXT();
 		});
 		var nextOverlay = new Gtk.Overlay();
 		nextOverlay.add(prevOverlay);
 		nextOverlay.add_overlay(m_nextButton);
 
+
+		m_progress = new ArticleViewLoadProgress();
+
+		var progressOverlay = new Gtk.Overlay();
+		progressOverlay.add(nextOverlay);
+		progressOverlay.add_overlay(m_progress);
+
 		m_videoOverlay = new Gtk.Overlay();
-		m_videoOverlay.add(nextOverlay);
+		m_videoOverlay.add(progressOverlay);
 
 		this.add(m_videoOverlay);
-		this.add_overlay(m_overlayLabel);
-
-		this.size_allocate.connect((alloc) => {
-			setBackgroundColor();
-		});
+		this.add_overlay(m_UrlOverlay);
 
 		Gtk.Settings.get_default().notify["gtk-theme-name"].connect(() => {
 			setBackgroundColor();
@@ -151,6 +163,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private WebKit.WebView getNewView()
 	{
+		bool smoothScroll = Settings.tweaks().get_boolean("smooth-scrolling");
 		var settings = new WebKit.Settings();
 		settings.set_enable_accelerated_2d_canvas(true);
 		settings.set_enable_html5_database(false);
@@ -159,7 +172,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		settings.set_enable_media_stream(false);
 		settings.set_enable_page_cache(false);
 		settings.set_enable_plugins(false);
-		settings.set_enable_smooth_scrolling(true);
+		settings.set_enable_smooth_scrolling(smoothScroll);
 		settings.set_javascript_can_access_clipboard(false);
 		settings.set_javascript_can_open_windows_automatically(false);
 		settings.set_media_playback_requires_user_gesture(true);
@@ -184,7 +197,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		view.key_press_event.connect(onKeyPress);
 		view.web_process_crashed.connect(onCrash);
 		view.notify["estimated-load-progress"].connect(printProgress);
-		view.load_failed.connect(loadFailed);
+		//view.load_failed.connect(loadFailed);
+		view.decide_policy.connect(decidePolicy);
 		if(m_color != null)
 			view.set_background_color(m_color);
 
@@ -215,7 +229,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		ThreadFunc<void*> run = () => {
 			Article = dbUI.get_default().read_article(articleID);
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 
@@ -235,6 +249,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
 			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
 
+			m_progress.reset();
+			m_progress.setPercentage(0);
+			m_progress.reveal(true);
+
 			m_currentView.load_html(
 				Utils.buildArticle(
 						Article.getHTML(),
@@ -244,10 +262,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 						Article.getDateNice(),
 						Article.getFeedID()
 					)
-				, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
+				, "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
 			this.show_all();
 			return false;
-		});
+		}, GLib.Priority.HIGH_IDLE);
 	}
 
 	private void switchViews()
@@ -257,7 +275,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		switch(m_stack.get_visible_child_name())
 		{
 			case "empty":
-				Logger.debug("ArticleView: empty -> view1");
+			case "crash":
+				Logger.debug("ArticleView: %s -> view1".printf(m_stack.get_visible_child_name()));
 				m_currentView = getNewView();
 				m_stack.add_named(m_currentView, "view1");
 				m_stack.set_visible_child_name("view1");
@@ -270,14 +289,14 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_currentView = getNewView();
 				m_stack.add_named(m_currentView, "view2");
 				m_stack.set_visible_child_name("view2");
-				GLib.Timeout.add(m_animationDuration + 10, () => {
+				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 					var oldView = m_stack.get_child_by_name("view1");
 					if(oldView != null)
 						m_stack.remove(oldView);
 
 					checkQueue();
 					return false;
-				});
+				}, GLib.Priority.HIGH);
 				break;
 
 			case "view2":
@@ -285,27 +304,25 @@ public class FeedReader.articleView : Gtk.Overlay {
 				m_currentView = getNewView();
 				m_stack.add_named(m_currentView, "view1");
 				m_stack.set_visible_child_name("view1");
-				GLib.Timeout.add(m_animationDuration + 10, () => {
+				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 					var oldView = m_stack.get_child_by_name("view2");
 					if(oldView != null)
 						m_stack.remove(oldView);
 
 					checkQueue();
 					return false;
-				});
+				}, GLib.Priority.HIGH);
 				break;
 		}
 
 		if(m_FullscreenArticle)
 		{
-			var window = this.get_toplevel() as readerUI;
-
-			if(window.getContent().ArticleListSelectedIsLast())
+			if(ColumnView.get_default().ArticleListSelectedIsLast())
 				m_prevButton.reveal(false);
 			else
 				m_prevButton.reveal(true);
 
-			if(window.getContent().ArticleListSelectedIsFirst())
+			if(ColumnView.get_default().ArticleListSelectedIsFirst())
 				m_nextButton.reveal(false);
 			else
 				m_nextButton.reveal(true);
@@ -327,15 +344,16 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		m_busy = true;
 		Gtk.Widget? oldView = null;
-		if(m_stack.get_visible_child_name() != "empty")
+		if(m_stack.get_visible_child_name() != "empty"
+		&& m_stack.get_visible_child_name() != "crash")
 			oldView = m_stack.get_visible_child();
 		m_stack.set_visible_child_name("empty");
-		GLib.Timeout.add(m_animationDuration + 10, () => {
+		GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 			if(oldView != null)
 				m_stack.remove(oldView);
 			checkQueue();
 			return false;
-		});
+		}, GLib.Priority.HIGH);
 		m_currentArticle = "";
 	}
 
@@ -351,13 +369,15 @@ public class FeedReader.articleView : Gtk.Overlay {
 			case WebKit.LoadEvent.STARTED:
 				Logger.debug("ArticleView: load STARTED");
 				string url = m_currentView.get_uri();
-				if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
+				if(url != "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/")
 				{
-					Logger.debug("ArticleView: open external url: %s".printf(url));
-					try{
+					Logger.debug(@"ArticleView: open external url: $url");
+					try
+					{
 						Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
 					}
-					catch(GLib.Error e){
+					catch(GLib.Error e)
+					{
 						Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 					}
 					m_currentView.stop_loading();
@@ -387,7 +407,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 	}
 
-	private bool loadFailed(WebKit.LoadEvent event, string failing_uri, void* error)
+	/*private bool loadFailed(WebKit.LoadEvent event, string failing_uri, void* error)
 	{
 		GLib.Error e = (GLib.Error)error;
 		Logger.error("ArticleView: load failed: message: \"%s\", domain \"%s\", code \"%i\"".printf(e.message, e.domain.to_string(), e.code));
@@ -398,10 +418,16 @@ public class FeedReader.articleView : Gtk.Overlay {
 			load();
 		}
 		return true;
-	}
+	}*/
 
 	public void setScrollPos(int pos)
 	{
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
+			return;
+
+		m_busy = true;
 		m_currentView.run_javascript.begin("window.scrollTo(0,%i);".printf(pos), null, (obj, res) => {
 			try
 			{
@@ -411,12 +437,15 @@ public class FeedReader.articleView : Gtk.Overlay {
 			{
 				Logger.error("ArticleView.setScrollPos: %s".printf(e.message));
 			}
+			checkQueue();
 		});
 	}
 
 	private int getScollUpper()
 	{
-		if(m_stack.get_visible_child_name() == "empty")
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
 			return 0;
 
 		string javascript = """
@@ -431,6 +460,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		int upper = -1;
 		var loop = new MainLoop();
 
+		m_busy = true;
 		m_currentView.run_javascript.begin(javascript, null, (obj, res) => {
 			try
 			{
@@ -441,6 +471,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				Logger.error("ArticleView.setScrollPos: %s".printf(e.message));
 			}
 			upper = int.parse(m_currentView.get_title());
+			checkQueue();
 			loop.quit();
 		});
 
@@ -450,7 +481,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public int getScrollPos()
 	{
-		if(m_stack.get_visible_child_name() == "empty")
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "crash"
+		|| m_currentView == null)
 			return 0;
 
 		// use mainloop to prevent app from shutting down before the result can be fetched
@@ -460,6 +493,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		int scrollPos = -1;
 		var loop = new MainLoop();
 
+		m_busy = true;
 		m_currentView.run_javascript.begin("document.title = window.scrollY;", null, (obj, res) => {
 			try
 			{
@@ -470,6 +504,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 				Logger.error("ArticleView: could not get scroll-pos, javascript error: " + e.message);
 			}
 			scrollPos = int.parse(m_currentView.get_title());
+			checkQueue();
 			loop.quit();
 		});
 
@@ -491,7 +526,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_connected = true;
 			m_messenger = connection.get_proxy_sync("org.gnome.feedreader.FeedReaderArticleView", "/org/gnome/feedreader/FeedReaderArticleView", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
 			m_messenger.onClick.connect((path, width, height, url) => {
-				var window = this.get_toplevel() as readerUI;
+				var window = MainWindow.get_default();
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
@@ -513,14 +548,17 @@ public class FeedReader.articleView : Gtk.Overlay {
 		ThreadFunc<void*> run = () => {
 			try
 	    	{
-	    		if(m_connected && m_stack.get_visible_child_name() != "empty")
+	    		if(m_connected
+				&& m_stack.get_visible_child_name() != "empty"
+				&& m_stack.get_visible_child_name() != "crash"
+				&& m_currentView != null)
 	    			m_messenger.recalculate();
 	    	}
 	    	catch(GLib.IOError e)
 	    	{
 	    		Logger.warning("ArticleView: recalculate " + e.message);
 	    	}
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
 		new GLib.Thread<void*>("recalculate", run);
@@ -553,7 +591,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			);
 
 			Gtk.device_grab_add(this, pointer, false);
-			GLib.Timeout.add(10, updateDragMomentum);
+			GLib.Timeout.add(10, updateDragMomentum, GLib.Priority.HIGH);
 			m_currentView.motion_notify_event.connect(updateScroll);
 			return true;
 		}
@@ -567,7 +605,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		{
 			m_currentView.motion_notify_event.disconnect(updateScroll);
 			m_inDrag = false;
-			m_OngoingScrollID = GLib.Timeout.add(20, ScrollDragRelease);
+			m_OngoingScrollID = GLib.Timeout.add(20, ScrollDragRelease, GLib.Priority.HIGH);
 
 			var display = Gdk.Display.get_default();
 			var seat = display.get_default_seat();
@@ -696,16 +734,13 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private void setBackgroundColor()
 	{
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		if(window != null)
-		{
-			var background = window.getContent().getBackgroundColor();
-            if(background.alpha == 1.0)
-            {
-				// Don't set a background color that is transparent.
-				m_color = background;
-            }
-		}
+		Logger.debug("ArticleView.setBackgroundColor()");
+		var background = ColumnView.get_default().getBackgroundColor();
+        if(background.alpha == 1.0)
+        {
+			// Don't set a background color that is transparent.
+			m_color = background;
+        }
 	}
 
 	private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitTestResult hitTest)
@@ -733,7 +768,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			var uri = hitTest.get_image_uri().substring("file://".length);
 			var action = new Gtk.Action("save", _("Save image as"), null, null);
 			action.activate.connect(() => {
-				UtilsUI.saveImageDialog(uri, this.get_toplevel() as Gtk.Window);
+				UtilsUI.saveImageDialog(uri);
 			});
 			menu.append(new WebKit.ContextMenuItem(action));
 		}
@@ -748,65 +783,19 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		if(hitTest.context_is_link())
 		{
-			var url = hitTest.get_link_uri();
-			int length = 45;
-
-			if(url.length >= length)
-			{
-				url = url.substring(0, length-3) + "...";
-			}
-			m_overlayLabel.label = url;
-			m_overlayLabel.width_chars = url.length;
-			m_overlayLabel.show();
-
-			if(m_timeout_source_id > 0)
-			{
-				GLib.Source.remove(m_timeout_source_id);
-				m_timeout_source_id = 0;
-			}
-
-			m_timeout_source_id = GLib.Timeout.add(m_overlayFade/10, () => {
-				if(m_overlayLabel.opacity == 1.0)
-				{
-					m_timeout_source_id = 0;
-					return false;
-				}
-
-			    m_overlayLabel.opacity += 0.1;
-				return true;
-			});
-
+			var align = Gtk.Align.START;
 			double relX = m_posX2/this.get_allocated_height();
 			double relY = m_posY2/this.get_allocated_width();
 
 			if(relY >= 0.85 && relX <= 0.5)
-			{
-				m_overlayLabel.halign = Gtk.Align.END;
-			}
-			else
-			{
-				m_overlayLabel.halign = Gtk.Align.START;
-			}
+				align = Gtk.Align.END;
+
+			m_UrlOverlay.setURL(hitTest.get_link_uri(), align);
+			m_UrlOverlay.reveal(true);
 		}
 		else
 		{
-			if(m_timeout_source_id > 0)
-			{
-				GLib.Source.remove(m_timeout_source_id);
-				m_timeout_source_id = 0;
-			}
-
-			m_timeout_source_id = GLib.Timeout.add(m_overlayFade/10, () => {
-				if(m_overlayLabel.opacity == 0.0)
-				{
-					m_timeout_source_id = 0;
-					m_overlayLabel.hide();
-					return false;
-				}
-
-			    m_overlayLabel.opacity -= 0.1;
-				return true;
-			});
+			m_UrlOverlay.reveal(false);
 		}
 	}
 
@@ -848,13 +837,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.show();
 			m_currentView.zoom_level = m_FullscreenZoomLevel;
 
-			var window = this.get_toplevel() as readerUI;
-			var content = window.getContent();
-
-			if(!content.ArticleListSelectedIsFirst())
+			if(!ColumnView.get_default().ArticleListSelectedIsFirst())
 				m_nextButton.reveal(true);
 
-			if(!content.ArticleListSelectedIsLast())
+			if(!ColumnView.get_default().ArticleListSelectedIsLast())
 				m_prevButton.reveal(true);
 
 		}
@@ -873,11 +859,18 @@ public class FeedReader.articleView : Gtk.Overlay {
 	{
 		m_stack.set_transition_type(trans);
 		m_stack.set_transition_duration(time);
+		m_animationDuration = time;
 	}
 
 	private void printProgress()
 	{
-		Logger.debug("ArticleView: loading %i %%".printf((int)(m_currentView.estimated_load_progress*100)));
+		double progress = m_currentView.estimated_load_progress;
+		Logger.debug("ArticleView: loading %u %%".printf((uint)(progress*100)));
+
+		m_progress.setPercentageF(progress);
+
+		if(progress == 1.0)
+			m_progress.reveal(false);
 	}
 
 	public void setMarked(bool marked)
@@ -902,35 +895,55 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private bool onCrash()
 	{
+		m_busy = true;
+		Gtk.Widget? oldView = null;
+		if(m_stack.get_visible_child_name() != "crash")
+			oldView = m_stack.get_visible_child();
+		m_stack.set_visible_child_name("crash");
+		GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
+			if(oldView != null)
+				m_stack.remove(oldView);
+			checkQueue();
+			return false;
+		}, GLib.Priority.HIGH);
 		Logger.error("ArticleView: webview crashed");
 		return false;
 	}
 
 	public void addMedia(MediaPlayer media)
 	{
-		if(m_currentMedia == null)
-		{
-			m_videoOverlay.add_overlay(media);
-		}
-		else
-		{
-			m_currentMedia.kill();
-			m_videoOverlay.add_overlay(media);
-		}
-
+		killMedia();
+		m_videoOverlay.add_overlay(media);
 		m_currentMedia = media;
 	}
 
-	public void print(string filename)
+	public void killMedia()
+	{
+		if(m_currentMedia != null)
+		{
+			m_currentMedia.kill();
+		}
+	}
+
+	public bool playingMedia()
+	{
+		if(m_currentMedia == null)
+			return false;
+
+		return true;
+	}
+
+	public void print()
 	{
 		if(m_currentView == null)
 			return;
 
+		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle() + ".pdf";
 
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");
 		settings.set("output-file-format", "pdf");
-		settings.set("output-uri", filename);
+		settings.set("output-uri", articleName);
 
 		var setup = new Gtk.PageSetup();
 		setup.set_left_margin(0, Gtk.Unit.MM);
@@ -950,7 +963,38 @@ public class FeedReader.articleView : Gtk.Overlay {
 			Logger.debug("ArticleView: print finished");
 		});
 
-		op.print();
+		//op.print();
+		op.run_dialog(MainWindow.get_default());
+	}
+
+	private bool decidePolicy(WebKit.PolicyDecision decision, WebKit.PolicyDecisionType type)
+	{
+		Logger.debug("ArticleView: Policy decision");
+		if(type == WebKit.PolicyDecisionType.NEW_WINDOW_ACTION)
+		{
+			var des = (WebKit.NavigationPolicyDecision)decision;
+			if(des.frame_name == "_blank")
+			{
+				string url = des.get_navigation_action().get_request().get_uri();
+				Logger.debug(@"ArticleView: open $url in browser");
+				try
+				{
+					Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+				}
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	public void showMediaButton(bool show)
+	{
+		m_fsHead.showMediaButton(show);
 	}
 
 }

@@ -1,0 +1,7 @@
+find_string:display:none
+replace_string: ..
+
+single_page_link: //div[@class='single-page-button']//a
+
+test_url:
+https://pjmedia.com/eddriscoll/2016/08/31/tom-wolfe-kingdom-of-speech/

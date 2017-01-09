@@ -53,7 +53,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         m_offline.margin_end = 40;
         m_offline.margin_top = 30;
         m_offline.margin_bottom = 10;
-        m_offline.get_style_context().add_class("overlay");
+        m_offline.get_style_context().add_class("osd");
         m_offline.no_show_all = true;
         this.add_overlay(m_offline);
     }
@@ -62,9 +62,6 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
     {
         try
         {
-            if(!DBusConnection.get_default().isOnline())
-                return;
-
             string? service_icon = DBusConnection.get_default().symbolicIcon();
             string? user_name = DBusConnection.get_default().accountName();
             string? server = DBusConnection.get_default().getServerURL();

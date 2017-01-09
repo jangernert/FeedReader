@@ -348,10 +348,12 @@ public class FeedReader.Grabber : GLib.Object {
         }
 
         grabberUtils.fixLazyImg(doc, "lazyload", "data-src");
+        grabberUtils.fixIframeSize(doc, "youtube.com");
         grabberUtils.removeAttributes(doc, null, "style");
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
+        grabberUtils.addAttributes(doc, "a", "target", "_blank");
 
         // complete relative source urls of images
         Logger.debug("Grabber: complete urls");
@@ -359,6 +361,7 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.repairURL("//a", "src", doc, m_articleURL);
         grabberUtils.repairURL("//a", "href", doc, m_articleURL);
         grabberUtils.repairURL("//object", "data", doc, m_articleURL);
+        grabberUtils.repairURL("//iframe", "src", doc, m_articleURL);
 
         // strip elements using Readability.com and Instapaper.com ignore class names
 		// .entry-unrelated and .instapaper_ignore

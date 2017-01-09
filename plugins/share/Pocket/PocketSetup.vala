@@ -37,6 +37,8 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		string id = Share.generateNewID();
 		string requestToken = m_api.getRequestToken();
 		string url = m_api.getURL(requestToken);
+		m_spinner.start();
+		m_iconStack.set_visible_child_name("spinner");
 		try
 		{
 			Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
@@ -49,8 +51,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
-		((FeedApp)GLib.Application.get_default()).callback.connect((content) => {
-
+		FeedReaderApp.get_default().callback.connect((content) => {
 			if(content == PocketSecrets.oauth_callback)
 			{
 				if(m_api.getAccessToken(id, requestToken))
@@ -58,11 +59,16 @@ public class FeedReader.PocketSetup : ServiceSetup {
 					m_id = id;
 					m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
 					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
+					m_spinner.stop();
 					m_isLoggedIN = true;
 					m_label.set_label(m_api.getUsername(id));
 					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
 					m_login_button.clicked.disconnect(login);
 					m_login_button.clicked.connect(logout);
+				}
+				else
+				{
+					m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 				}
 			}
 		});

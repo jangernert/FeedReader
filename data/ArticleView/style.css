@@ -233,9 +233,18 @@ p:last-of-type {
     margin-bottom: 0;
 }
 
+not(h1) a {
+    white-space: nowrap;
+}
+
+a :not(img){
+    outline:none;
+    overflow: hidden;
+}
+
 a {
     color: #318c34;
-    outline: none;
+    text-overflow: ellipsis;
 }
 
 ins,
@@ -351,6 +360,21 @@ blockquote {
 
 b {
     font-weight: bold;
+}
+
+.videoWrapper {
+	position: relative;
+	padding-bottom: 56.25%; /* 16:9 */
+	padding-top: 25px;
+	height: 0;
+}
+
+.videoWrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
 }
 
 

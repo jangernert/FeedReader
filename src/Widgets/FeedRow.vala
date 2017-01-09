@@ -35,7 +35,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void moveUP();
 	public signal void deselectRow();
 
-	public FeedRow (string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
+	public FeedRow(string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
 	{
 		m_level = level;
 		m_catID = catID;
@@ -80,7 +80,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
 
-			if(!UtilsUI.onlyShowFeeds())
+			if(!UtilsUI.onlyShowFeeds() && feedID != FeedID.ALL.to_string())
 				this.get_style_context().add_class("fr-sidebar-feed");
 			else
 				this.get_style_context().add_class("fr-sidebar-row");
@@ -200,8 +200,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
-			var notification = content.showNotification(_("Feed \"%s\" removed").printf(m_name));
+			var notification = MainWindow.get_default().showNotification(_("Feed \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
 				try
 				{
@@ -232,7 +231,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var rename_action = new GLib.SimpleAction("renameFeed", null);
 		rename_action.activate.connect(showRenamePopover);
 
-		var app = (FeedApp)GLib.Application.get_default();
+		var app = FeedReaderApp.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);
@@ -443,6 +442,22 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 					return false;
 				});
 			}
+		}
+	}
+
+	public void activateUnreadEventbox(bool activate)
+	{
+		if(activate)
+		{
+			m_unreadBox.button_press_event.connect(onUnreadClick);
+			m_unreadBox.enter_notify_event.connect(onUnreadEnter);
+			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
+		}
+		else
+		{
+			m_unreadBox.button_press_event.disconnect(onUnreadClick);
+			m_unreadBox.enter_notify_event.disconnect(onUnreadEnter);
+			m_unreadBox.leave_notify_event.disconnect(onUnreadLeave);
 		}
 	}
 

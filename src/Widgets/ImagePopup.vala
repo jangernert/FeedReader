@@ -82,6 +82,11 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_scaleRevealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_RIGHT);
 		m_scaleRevealer.add(m_scale);
 
+		// Code for Gtk+ >= 3.22
+		//var geo = Gdk.Display.get_default().get_monitor_at_window(this.get_root_window()).get_geometry();
+		//double win_width  = (int)(geo.width*0.8);
+		//double win_height = (int)(geo.height*0.8);
+
 		double win_width  = (int)(Gdk.Screen.width()*0.8);
 		double win_height = (int)(Gdk.Screen.height()*0.8);
 		double min_height = 300;
@@ -89,7 +94,6 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.add(m_image);
-
 
 
 		if(img_width <= win_width)
@@ -109,7 +113,8 @@ public class FeedReader.imagePopup : Gtk.Window {
 			m_image.scale = m_initZoom;
 		}
 
-		if(img_height * m_initZoom <= win_height) {
+		if(img_height * m_initZoom <= win_height)
+		{
 			if(img_height < min_height)
 			{
 				win_height = min_height;
@@ -122,7 +127,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 		m_saveButton = new Gtk.Button.from_icon_name("document-save-symbolic", Gtk.IconSize.BUTTON);
 		m_saveButton.clicked.connect(() => {
-			UtilsUI.saveImageDialog(m_imagePath, this.transient_for);
+			UtilsUI.saveImageDialog(m_imagePath);
 		});
 
 		m_image.notify["scale"].connect(onImageScrolled);

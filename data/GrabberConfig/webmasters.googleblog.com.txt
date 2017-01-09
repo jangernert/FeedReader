@@ -1,0 +1,9 @@
+body://div[@id='main']
+date://div[@class='publishdate']
+strip://div[@class='share']
+strip://div[@class='post-footer']
+strip://div[@class='cmt_iframe_holder']
+strip://div[@class='blog-pager']
+strip://div[@class='clear']
+replace_string(noscript>): div>
+test_url: https://webmasters.googleblog.com/2016/08/helping-users-easily-access-content-on.html

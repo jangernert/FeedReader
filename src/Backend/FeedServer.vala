@@ -183,10 +183,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		int after = dbDaemon.get_default().getHighestRowID();
 		int newArticles = after-before;
 		if(newArticles > 0)
-		{
 			Notification.send(newArticles);
-			showArticleListOverlay();
-		}
 
 		switch(Settings.general().get_enum("drop-articles-after"))
 		{
@@ -297,13 +294,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			Logger.debug("FeedServer: new articles: %i".printf(newArticles));
 			writeInterfaceState();
-			updateFeedList();
-			updateArticleList();
+			//updateFeedList();
+			//updateArticleList();
 
-			if(Settings.state().get_boolean("no-animations"))
+			if(Settings.state().get_boolean("no-animations") && Settings.general().get_boolean("articlelist-newest-first"))
 			{
-				Logger.debug("UI NOT running: setting \"articlelist-new-rows\"");
 				int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
 				Settings.state().set_int("articlelist-new-rows", newCount);
 			}
 		}
@@ -378,12 +375,15 @@ public class FeedReader.FeedServer : GLib.Object {
             Logger.debug("Grabber: parsing failed");
     		return;
     	}
+		grabberUtils.fixIframeSize(doc, "youtube.com");
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
+		grabberUtils.repairURL("//iframe", "src", doc, Article.getURL());
 		grabberUtils.stripNode(doc, "//a[not(node())]");
 		grabberUtils.removeAttributes(doc, null, "style");
         grabberUtils.removeAttributes(doc, "a", "onclick");
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
+		grabberUtils.addAttributes(doc, "a", "target", "_blank");
 		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
 
 		string html = "";
@@ -401,6 +401,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return Settings.general().get_int("max-articles");
 	}
 
+	// Only used with command-line
 	public static void grabArticle(string url)
 	{
 		var grabber = new Grabber(url, null, null);
@@ -418,7 +419,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				html = html.slice(end+1, html.length).chug();
 			}
 
-			string path = GLib.Environment.get_home_dir() + "/debug-article/%s.html".printf(title);
+			string path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.html".printf(title);
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
 				GLib.FileUtils.remove(path);
@@ -442,7 +443,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				output = output.replace("\n"," ");
 				output = output.replace("_"," ");
 
-				path = GLib.Environment.get_home_dir() + "/debug-article/%s.txt".printf(title);
+				path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.txt".printf(title);
 
 				if(FileUtils.test(path, GLib.FileTest.EXISTS))
 					GLib.FileUtils.remove(path);
@@ -464,6 +465,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
+	// Only used with command-line
 	public static void grabImages(string htmlFile, string url)
 	{
 		var html_cntx = new Html.ParserCtxt();
@@ -498,7 +500,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		try
 		{
-			var file = GLib.File.new_for_path(GLib.Environment.get_home_dir() + "/debug-article/ArticleLocalImages.html");
+			var file = GLib.File.new_for_path(GLib.Environment.get_user_data_dir() + "/debug-article/ArticleLocalImages.html");
 			var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 			stream.write(html.data);
 		}

@@ -35,13 +35,26 @@ public class FeedReaderWebExtension : Object {
 
     public void recalculate()
     {
-    	message("recalculate");
-	       var images = m_doc.get_images();
-	          ulong count = images.get_length();
+        message("recalculate");
+        var images = m_doc.get_images();
+        ulong count = images.get_length();
 
     	for(ulong i = 0; i < count; i++)
     	{
     		var image = (WebKit.DOM.HTMLImageElement)images.item(i);
+
+            // if image was so huge it had to be replaced with a downscaled version
+            if(image.has_attribute("FR_huge"))
+            {
+                addListener(image);
+                continue;
+            }
+            else if(image.has_attribute("FR_parent"))
+            {
+                addListener(image);
+                continue;
+            }
+
     		long nHeight = image.get_natural_height();
     		long nWidth = image.get_natural_width();
     		long height = image.get_height();
@@ -53,31 +66,40 @@ public class FeedReaderWebExtension : Object {
     			double wRatio = (double)width / (double)nWidth;
     			double threshold = 0.8;
 
-    			if(hRatio <= threshold || wRatio <= threshold)
-    			{
-    				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseover", on_enter, false);
-    				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mousemove", on_enter, false);
-    				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseout", on_leave, false);
-    				((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("click", on_click, false);
-    			}
+    			if(hRatio <= threshold
+                || wRatio <= threshold)
+    			    addListener(image);
     			else
-    			{
-    				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mouseover", on_enter, false);
-    				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mousemove", on_enter, false);
-    				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mouseout", on_leave, false);
-    				((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("click", on_click, false);
-
-                    try
-                    {
-                        image.set_attribute("class", "");
-                    }
-                    catch(GLib.Error e)
-                    {
-                        stderr.printf("WebExtension.recalculate: %s", e.message);
-                    }
-    			}
+        			removeListener(image);
     		}
     	}
+    }
+
+    [DBus (visible = false)]
+    private void addListener(WebKit.DOM.HTMLImageElement image)
+    {
+        ((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseover", on_enter, false);
+        ((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mousemove", on_enter, false);
+        ((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseout", on_leave, false);
+        ((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("click", on_click, false);
+    }
+
+    [DBus (visible = false)]
+    private void removeListener(WebKit.DOM.HTMLImageElement image)
+    {
+        ((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mouseover", on_enter, false);
+        ((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mousemove", on_enter, false);
+        ((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("mouseout", on_leave, false);
+        ((WebKit.DOM.EventTarget) image).remove_event_listener_with_closure("click", on_click, false);
+
+        try
+        {
+            image.set_attribute("class", "");
+        }
+        catch(GLib.Error e)
+        {
+            stderr.printf("WebExtension.recalculate: %s", e.message);
+        }
     }
 
     [DBus (visible = false)]
@@ -119,11 +141,25 @@ public class FeedReaderWebExtension : Object {
 		if(parent.tag_name == "A")
 			url = parent.get_attribute("href");
 
+
+        int height = (int)image.natural_height;
+        int width = (int)image.natural_width;
 		string src = image.src;
 		if(src.has_prefix("file://"))
             src = src.substring("file://".length);
 
-    	onClick(src, (int)image.natural_width, (int)image.natural_height, url);
+        if(image.has_attribute("FR_huge"))
+        {
+            src = image.get_attribute("FR_huge");
+            Gdk.Pixbuf.get_file_info(src, out width, out height);
+        }
+        else if(image.has_attribute("FR_parent"))
+        {
+            src = image.get_attribute("FR_parent");
+            Gdk.Pixbuf.get_file_info(src, out width, out height);
+        }
+
+    	onClick(src, width, height, url);
     }
 }
 

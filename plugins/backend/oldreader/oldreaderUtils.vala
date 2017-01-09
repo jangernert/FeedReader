@@ -63,6 +63,9 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 
 	public bool downloadIcon(string feed_id, string icon_url)
 	{
+		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
+            return false;
+
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
@@ -118,11 +121,13 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		string passwd = "";
 
-		try{
+		try
+		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
-		catch(GLib.Error e){
-			Logger.error(e.message);
+		catch(GLib.Error e)
+		{
+			Logger.error("oldReaderUtils: getPassword: " + e.message);
 		}
 
 		if(passwd == null)
@@ -146,7 +151,7 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("ttrssUtils: setPassword: " + e.message);
+			Logger.error("oldReaderUtils: setPassword: " + e.message);
 		}
 	}
 }

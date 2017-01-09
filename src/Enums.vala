@@ -98,7 +98,9 @@ namespace FeedReader {
 		MISSING_USER,
 		MISSING_PASSWD,
 		MISSING_URL,
+		INVALID_URL,
 		ALL_EMPTY,
+		API_ERROR,
 		UNKNOWN_ERROR,
 		FIRST_TRY,
 		NO_BACKEND,
@@ -115,7 +117,7 @@ namespace FeedReader {
 		DATE
 	}
 
-	public enum OfflineActions {
+	public enum CachedActions {
 		NONE,
 		MARK_READ,
 		MARK_UNREAD,

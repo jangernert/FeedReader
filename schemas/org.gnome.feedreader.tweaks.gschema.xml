@@ -58,6 +58,14 @@
 				Enable selecting text in the articleview, also copy text
 			</description>
 		</key>
+		
+		<key name="smooth-scrolling" type="b">
+			<default>true</default>
+			<summary>Enable smooth scrolling in ArticleView</summary>
+			<description>
+				Enable smooth scrolling in ArticleView
+			</description>
+		</key>
 
 	</schema>
 </schemalist>

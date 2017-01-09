@@ -22,6 +22,9 @@ public class FeedReader.localUtils : GLib.Object {
 
 	public feed? downloadFeed(string xmlURL, string feedID, string[] catIDs)
 	{
+		if(xmlURL == "" || xmlURL == null || GLib.Uri.parse_scheme(xmlURL) == null)
+            return null;
+
 		try
 		{
 			// download
@@ -113,6 +116,9 @@ public class FeedReader.localUtils : GLib.Object {
 
 	private bool downloadIcon(string feed_id, string icon_url)
 	{
+		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
+            return false;
+
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);

@@ -121,7 +121,7 @@ public class FeedReader.dbDaemon : dbBase {
     {
         Logger.info("Deleting article \"%s\"".printf(articleID));
         executeSQL("DELETE FROM main.articles WHERE articleID = \"" + articleID + "\"");
-        string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+        string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID, articleID);
         Utils.remove_directory(folder_path);
     }
 
@@ -259,7 +259,7 @@ public class FeedReader.dbDaemon : dbBase {
             stmt.bind_text(label_position, tag_item.getTitle());
             stmt.bind_int (color_position, tag_item.getColor());
 
-            while (stmt.step () == Sqlite.ROW) {}
+            while(stmt.step() == Sqlite.ROW){}
             stmt.reset ();
         }
 
@@ -400,7 +400,7 @@ public class FeedReader.dbDaemon : dbBase {
         foreach(string id in ids)
         {
             stmt.bind_text(articleID_position, id);
-            while(stmt.step() != Sqlite.DONE) {}
+            while(stmt.step() != Sqlite.DONE){}
             stmt.reset();
         }
 
@@ -419,9 +419,9 @@ public class FeedReader.dbDaemon : dbBase {
         update_query.build();
 
         Sqlite.Statement stmt;
-        int ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
+        int ec = sqlite_db.prepare_v2(update_query.get(), update_query.get().length, out stmt);
 
-        if (ec != Sqlite.OK)
+        if(ec != Sqlite.OK)
         {
 			Logger.error(update_query.get());
 			Logger.error("update_articles: " + sqlite_db.errmsg());
@@ -436,7 +436,7 @@ public class FeedReader.dbDaemon : dbBase {
         stmt.bind_text(html_position, Article.getHTML());
         stmt.bind_text(preview_position, Article.getPreview());
 
-        while(stmt.step() != Sqlite.DONE) {}
+        while(stmt.step() != Sqlite.DONE){}
         stmt.reset();
 
         executeSQL("COMMIT TRANSACTION");
@@ -477,13 +477,21 @@ public class FeedReader.dbDaemon : dbBase {
 
         foreach(var article in articles)
         {
-            stmt.bind_text(unread_position, article.getUnread().to_string());
+            // don't mark articles as unread
+            // 95% of the time this is an article that has been read in FeedReader during the sync
+            // drawback: if something has been marked as unread on another device (or browser) this will not be synced to FeedReader
+            if(article.getUnread() == ArticleStatus.UNREAD)
+                stmt.bind_text(unread_position, "SELECT unread FROM articles where articleID = \"%s\"".printf(article.getArticleID()));
+            else
+                stmt.bind_text(unread_position, article.getUnread().to_string());
+
+
             stmt.bind_text(marked_position, article.getMarked().to_string());
             stmt.bind_text(tags_position, article.getTagString());
             stmt.bind_int (modified_position, article.getLastModified());
             stmt.bind_text(articleID_position, article.getArticleID());
 
-            while(stmt.step() != Sqlite.DONE) {}
+            while(stmt.step() != Sqlite.DONE){}
             stmt.reset();
         }
 
@@ -574,7 +582,7 @@ public class FeedReader.dbDaemon : dbBase {
             stmt.bind_int (modified_position, article.getLastModified());
             stmt.bind_text(media_position, article.getMediaString());
 
-            while(stmt.step() != Sqlite.DONE) {}
+            while(stmt.step() != Sqlite.DONE){}
             stmt.reset();
         }
 
@@ -711,7 +719,7 @@ public class FeedReader.dbDaemon : dbBase {
     {
         Logger.warning("dbDaemon: Deleting all articles of feed \"%s\"".printf(feedID));
         executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
-        string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/".printf(feedID);
+        string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/".printf(feedID);
         Utils.remove_directory(folder_path);
     }
 
@@ -891,11 +899,11 @@ public class FeedReader.dbDaemon : dbBase {
         delete_articles(feedID);
     }
 
-    public void addOfflineAction(OfflineActions action, string id, string? argument = "")
+    public void addCachedAction(CachedActions action, string id, string? argument = "")
     {
         executeSQL("BEGIN TRANSACTION");
 
-        var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.OfflineActions");
+        var query = new QueryBuilder(QueryType.INSERT_OR_IGNORE, "main.CachedActions");
         query.insertValuePair("action", "$ACTION");
         query.insertValuePair("id", "$ID");
         query.insertValuePair("argument", "$ARGUMENT");
@@ -906,7 +914,7 @@ public class FeedReader.dbDaemon : dbBase {
         if (ec != Sqlite.OK)
         {
             Logger.error(query.get());
-            Logger.error("addOfflineAction: " + sqlite_db.errmsg());
+            Logger.error("addCachedAction: " + sqlite_db.errmsg());
         }
 
 
@@ -928,11 +936,11 @@ public class FeedReader.dbDaemon : dbBase {
     }
 
 
-    public Gee.ArrayList<OfflineAction> readOfflineActions()
+    public Gee.ArrayList<CachedAction> readCachedActions()
 	{
-		Gee.ArrayList<OfflineAction> tmp = new Gee.ArrayList<OfflineAction>();
+		Gee.ArrayList<CachedAction> tmp = new Gee.ArrayList<CachedAction>();
 
-		var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
+		var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
 		query.selectField("*");
 		query.build();
         query.print();
@@ -942,11 +950,11 @@ public class FeedReader.dbDaemon : dbBase {
 		if (ec != Sqlite.OK)
         {
             Logger.error(query.get());
-            Logger.error("readOfflineActions: " + sqlite_db.errmsg());
+            Logger.error("readCachedActions: " + sqlite_db.errmsg());
         }
 
 		while (stmt.step () == Sqlite.ROW) {
-            var action = new OfflineAction((OfflineActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
+            var action = new CachedAction((CachedActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
             action.print();
 			tmp.add(action);
 		}
@@ -954,15 +962,15 @@ public class FeedReader.dbDaemon : dbBase {
 		return tmp;
 	}
 
-    public void resetOfflineActions()
+    public void resetCachedActions()
     {
-        Logger.warning("resetOfflineActions");
-        executeSQL("DELETE FROM OfflineActions");
+        Logger.warning("resetCachedActions");
+        executeSQL("DELETE FROM CachedActions");
     }
 
-    public bool offlineActionNecessary(OfflineAction action)
+    public bool cachedActionNecessary(CachedAction action)
     {
-        var query = new QueryBuilder(QueryType.SELECT, "OfflineActions");
+        var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
         query.selectField("count(*)");
         query.addEqualsCondition("argument", action.getArgument(), true, true);
         query.addEqualsCondition("id", action.getID(), true, true);
@@ -973,7 +981,7 @@ public class FeedReader.dbDaemon : dbBase {
         int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
         if (ec != Sqlite.OK)
         {
-            Logger.error("offlineActionNecessary - %s".printf(sqlite_db.errmsg()));
+            Logger.error("cachedActionNecessary - %s".printf(sqlite_db.errmsg()));
             Logger.error(query.get());
         }
 
@@ -985,9 +993,9 @@ public class FeedReader.dbDaemon : dbBase {
         return true;
     }
 
-    public void deleteOppositeOfflineAction(OfflineAction action)
+    public void deleteOppositeCachedAction(CachedAction action)
     {
-        var query = new QueryBuilder(QueryType.DELETE, "OfflineActions");
+        var query = new QueryBuilder(QueryType.DELETE, "CachedActions");
         query.addEqualsCondition("argument", action.getArgument(), true, true);
         query.addEqualsCondition("id", action.getID(), true, true);
         query.addEqualsCondition("action", "%i".printf(action.opposite()));

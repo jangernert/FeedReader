@@ -390,8 +390,8 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
-			var notification = content.showNotification(_("Category \"%s\" removed").printf(m_name));
+			string text = _("Category \"%s\" removed").printf(m_name);
+			var notification = MainWindow.get_default().showNotification(text);
 			ulong eventID = notification.dismissed.connect(() => {
 				try
 				{
@@ -449,7 +449,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			showRenamePopover();
 		});
 
-		var app = (FeedApp)GLib.Application.get_default();
+		var app = FeedReaderApp.get_default();
 		app.add_action(markAsRead_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);
@@ -724,6 +724,22 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 
 			m_revealer.set_transition_duration(duration);
 			m_revealer.set_reveal_child(reveal);
+		}
+	}
+
+	public void activateUnreadEventbox(bool activate)
+	{
+		if(activate)
+		{
+			m_unreadBox.button_press_event.connect(onUnreadClick);
+			m_unreadBox.enter_notify_event.connect(onUnreadEnter);
+			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
+		}
+		else
+		{
+			m_unreadBox.button_press_event.disconnect(onUnreadClick);
+			m_unreadBox.enter_notify_event.disconnect(onUnreadEnter);
+			m_unreadBox.leave_notify_event.disconnect(onUnreadLeave);
 		}
 	}
 

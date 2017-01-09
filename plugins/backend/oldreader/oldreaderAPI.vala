@@ -35,12 +35,15 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	{
 		if(m_utils.getAccessToken() == "")
 		{
-			m_connection.getToken();
+			var response = m_connection.getToken();
+			if(response != LoginResponse.SUCCESS)
+				return response;
 		}
 		if(getUserID())
 		{
 			return LoginResponse.SUCCESS;
 		}
+
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
@@ -50,13 +53,15 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 	private bool getUserID()
 	{
-		Logger.error("getUserID: getting user info");
+		Logger.debug("getUserID: getting user info");
 		string response = m_connection.send_get_request("user-info?output=json");
 		var parser = new Json.Parser();
-		try{
+		try
+		{
 			parser.load_from_data(response, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getUserID: Could not load message response");
 			Logger.error(e.message);
 			return false;

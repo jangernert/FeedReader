@@ -356,7 +356,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void copyAutostart()
 	{
-		string filename = GLib.Environment.get_home_dir() + "/.config/autostart/feedreader-autostart.desktop";
+		string filename = GLib.Environment.get_user_data_dir() + "/feedreader-autostart.desktop";
 
 		if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{
@@ -728,7 +728,7 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static bool downloadIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/")
+	public static bool downloadIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		var path = GLib.File.new_for_path(icon_path);
@@ -744,7 +744,7 @@ public class FeedReader.Utils : GLib.Object {
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
 			Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
-			
+
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message ("GET", "http://f1.allesedv.com/32/%s".printf(url));
 
@@ -756,7 +756,8 @@ public class FeedReader.Utils : GLib.Object {
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{
-				try{
+				try
+				{
 					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
 				}
 				catch(GLib.FileError e)
@@ -770,6 +771,37 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		// file already exists
 		return true;
+	}
+
+	public static void openInGedit(string text)
+	{
+		try
+		{
+			string filename = "/tmp/FeedReader_crashed_html.txt";
+			FileUtils.set_contents(filename, text);
+
+			try
+			{
+				string[] spawn_args = {"xdg-open", filename};
+				string[] spawn_env = Environ.get();
+				Pid child_pid;
+
+				Process.spawn_async("/",
+					spawn_args,
+					spawn_env,
+					SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD,
+					null,
+					out child_pid);
+			}
+			catch(GLib.SpawnError e)
+			{
+				Logger.error("Utils.openInGedit(): %s".printf(e.message));
+			}
+		}
+		catch(GLib.FileError e)
+		{
+			Logger.error("Utils.openInGedit(): %s".printf(e.message));
+		}
 	}
 
 }

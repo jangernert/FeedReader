@@ -1,0 +1,5 @@
+body: //div[contains(concat(' ',normalize-space(@class),' '),' nmt-layout--sidebar-align-right ')]
+strip_id_or_class: article__footer
+strip_id_or_class: nmt-layout__sidebar
+
+test_url: http://www.nrc.nl/nieuws/2016/10/02/de-nederlandse-school-wanorde-onrust-en-lawaai-4566603-a1524441

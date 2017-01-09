@@ -24,15 +24,17 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private double m_bottomThreshold = 200.0;
 	private ArticleListBalance m_balance = ArticleListBalance.NONE;
 
+	private bool m_scrolledTopOnCooldown = false;
 	private bool m_scrolledBottomOnCooldown = false;
-	private int m_scrolledBottomCooldown = 200; // cooldown in ms
+	private int m_scrollCooldown = 500; // cooldown in ms
 
 	//Transition times
-    private int64 m_startTime;
-    private int64 m_endTime;
-    private double m_transitionDiff;
-    private double m_transitionStartValue;
+    private int64 m_startTime = 0;
+    private int64 m_endTime = 0;
+    private double m_transitionDiff = 0.0;
+    private double m_transitionStartValue = 0.0;
 	private int m_transitionDuration = 500 * 1000;
+	private uint m_scrollCallbackID = 0;
 
 
 	public ArticleListScroll()
@@ -51,6 +53,12 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			this.vadjustment.value += inc;
 			m_balance = ArticleListBalance.NONE;
 		}
+		else if(m_balance == ArticleListBalance.BOTTOM)
+		{
+			double inc = (m_upperCache - upper);
+			this.vadjustment.value -= inc;
+			m_balance = ArticleListBalance.NONE;
+		}
 
 		if(GLib.Math.fabs(vadjustment.upper - m_upperCache) > 2.0)
 			checkScrolledDown();
@@ -66,32 +74,44 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		else if(vadjustment.value < m_valueCache)
 			valueChanged(ScrollDirection.UP);
 
-		if(vadjustment.value < 2.0)
-			scrolledTop();
-
+		checkScrolledTop();
 		checkScrolledDown();
 
-		double upper = vadjustment.upper;
-		if(m_balance == ArticleListBalance.BOTTOM)
-		{
-			double inc = (upper - m_upperCache);
-			this.vadjustment.value -= inc;
-			m_balance = ArticleListBalance.NONE;
-		}
 		m_upperCache = vadjustment.upper;
 		m_valueCache = vadjustment.value;
+	}
+
+	private void checkScrolledTop()
+	{
+		if(vadjustment.value < 2.0
+		&& !m_scrolledTopOnCooldown)
+		{
+			m_scrolledTopOnCooldown = true;
+			scrolledTop();
+			GLib.Timeout.add(m_scrollCooldown, () => {
+				m_scrolledTopOnCooldown = false;
+				if(vadjustment.value < 2.0)
+					scrolledTop();
+				return false;
+			});
+		}
 	}
 
 	private void checkScrolledDown()
 	{
 		double max = vadjustment.upper - vadjustment.page_size;
-		if(vadjustment.value >= max - m_bottomThreshold
+		if(max > 0.0
+		&& vadjustment.value >= (max - m_bottomThreshold)
 		&& !m_scrolledBottomOnCooldown)
 		{
+			Logger.debug("ArticleListScroll: scrolled down");
 			m_scrolledBottomOnCooldown = true;
 			scrolledBottom();
-			GLib.Timeout.add(m_scrolledBottomCooldown, () => {
+			GLib.Timeout.add(m_scrollCooldown, () => {
+				Logger.debug("ArticleListScroll: scrolled down off cooldown");
 				m_scrolledBottomOnCooldown = false;
+				if(vadjustment.value >= max - 5)
+					scrolledBottom();
 				return false;
 			});
 		}
@@ -104,7 +124,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	public void scrollDiff(double diff, bool animate = true)
 	{
-		scrollToPos(vadjustment.value + diff, animate);
+		scrollToPos(this.vadjustment.value + diff, animate);
 	}
 
 	public void scrollToPos(double pos, bool animate = true)
@@ -119,14 +139,23 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		{
 			m_startTime = this.get_frame_clock().get_frame_time();
 			m_endTime = m_startTime + m_transitionDuration;
+			double leftOverScroll = 0.0;
+			if(m_transitionStartValue != 0.0)
+				leftOverScroll = m_transitionStartValue + m_transitionDiff - this.vadjustment.value;
+
+			if(m_scrollCallbackID != 0)
+			{
+				this.remove_tick_callback(m_scrollCallbackID);
+				m_scrollCallbackID = 0;
+			}
 
 			if(pos == -1)
-				m_transitionDiff =  (vadjustment.upper - vadjustment.page_size - vadjustment.value);
+				m_transitionDiff = (vadjustment.upper - vadjustment.page_size - vadjustment.value);
 			else
-				m_transitionDiff = pos-this.vadjustment.value;
+				m_transitionDiff = (pos-this.vadjustment.value)+leftOverScroll;
 
-			m_transitionStartValue = vadjustment.value;
-			this.add_tick_callback(scrollTick);
+			m_transitionStartValue = this.vadjustment.value;
+			m_scrollCallbackID = this.add_tick_callback(scrollTick);
 		}
 		else
 		{
@@ -165,7 +194,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			return -1;
 
 		// row is (additionalRows * rowHeight) below the current viewport
-		if(y > (additionalRows) * rowHeight + scrollHeight)
+		if(y > additionalRows * rowHeight + scrollHeight)
 			return 1;
 
 		// row is visible
@@ -193,6 +222,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		if(this.vadjustment.value <= 0 || now >= m_endTime)
 		{
 			this.queue_draw();
+			m_transitionStartValue = 0.0;
+			m_scrollCallbackID = 0;
 			return false;
 		}
 

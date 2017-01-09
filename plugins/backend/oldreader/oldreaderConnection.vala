@@ -47,15 +47,16 @@ public class FeedReader.OldReaderConnection {
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
-				Logger.error("Regex oldreader - %s".printf(response));
+				Logger.debug(@"Regex oldreader - $response");
 				string split = regex.replace( response, -1,0,"");
-				Logger.error("authcode"+split);
+				Logger.debug(@"authcode: $split");
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}
 			else
 			{
-				Logger.debug(response);
+				Logger.debug(message_string);
+				Logger.error(response);
 				return LoginResponse.WRONG_LOGIN;
 			}
 		}

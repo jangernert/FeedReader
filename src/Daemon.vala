@@ -25,7 +25,7 @@ namespace FeedReader {
 #endif
 		private LoginResponse m_loggedin;
 		private bool m_offline = true;
-		private OfflineActionManager m_offlineActions;
+		private CachedActionManager m_cachedActions;
 		private uint m_timeout_source_id = 0;
 		private delegate void asyncPayload();
 
@@ -35,7 +35,6 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void newFeedList();
 		public signal void updateFeedList();
-		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
@@ -58,7 +57,7 @@ namespace FeedReader {
 		private FeedDaemonServer()
 		{
 			Logger.debug("daemon: constructor");
-			m_offlineActions = new OfflineActionManager();
+			m_cachedActions = new CachedActionManager();
 			login(Settings.general().get_string("plugin"));
 
 #if WITH_LIBUNITY
@@ -292,8 +291,8 @@ namespace FeedReader {
 				m_offline = false;
 				if(dbDaemon.get_default().isTableEmpty("OfflineActions"))
 				{
-					m_offlineActions.goOnline();
-					dbDaemon.get_default().resetOfflineActions();
+					m_cachedActions.executeActions();
+					dbDaemon.get_default().resetCachedActions();
 				}
 			});
 
@@ -371,7 +370,7 @@ namespace FeedReader {
 					var idArray = articleID.split(",");
 					foreach(string id in idArray)
 					{
-						m_offlineActions.markArticleRead(id, status);
+						m_cachedActions.markArticleRead(id, status);
 					}
 				}
 				else
@@ -391,7 +390,7 @@ namespace FeedReader {
 			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
 			{
 				if(m_offline)
-					m_offlineActions.markArticleStarred(articleID, status);
+					m_cachedActions.markArticleStarred(articleID, status);
 				else
 				{
 					asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(articleID, status); };
@@ -400,7 +399,10 @@ namespace FeedReader {
 
 
 				asyncPayload pl = () => { dbDaemon.get_default().update_article(articleID, "marked", status); };
-				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
+				callAsync.begin((owned)pl, (obj, res) => {
+					callAsync.end(res);
+					updateFeedList();
+				});
 			}
 		}
 
@@ -537,7 +539,7 @@ namespace FeedReader {
 			{
 				if(m_offline)
 				{
-					m_offlineActions.markCategoryRead(feedID);
+					m_cachedActions.markCategoryRead(feedID);
 				}
 				else
 				{
@@ -557,7 +559,7 @@ namespace FeedReader {
 			{
 				if(m_offline)
 				{
-					m_offlineActions.markFeedRead(feedID);
+					m_cachedActions.markFeedRead(feedID);
 				}
 				else
 				{
@@ -579,7 +581,7 @@ namespace FeedReader {
 		{
 			if(m_offline)
 			{
-				m_offlineActions.markAllRead();
+				m_cachedActions.markAllRead();
 			}
 			else
 			{
@@ -895,6 +897,9 @@ namespace FeedReader {
 		Utils.copyAutostart();
 
 		Logger.info("FeedReader Daemon " + AboutInfo.version);
+
+		if(dbDaemon.get_default().uninitialized())
+			dbDaemon.get_default().init();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,

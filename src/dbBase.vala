@@ -30,7 +30,7 @@ public class FeedReader.dbBase : GLib.Object {
 	protected dbBase(string dbFile = "feedreader-04.db")
 	{
 		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
-		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";
+		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/";
 		var path = GLib.File.new_for_path(db_path);
 		if(!path.query_exists())
 		{
@@ -118,7 +118,7 @@ public class FeedReader.dbBase : GLib.Object {
 												"color" INTEGER
 											)""");
 
-			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."OfflineActions"
+			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
 											(
 												"action" INTEGER NOT NULL,
 												"id" TEXT NOT NULL,
@@ -244,7 +244,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		int cols = stmt.column_count ();
-		while (stmt.step() == Sqlite.ROW)
+		while(stmt.step() == Sqlite.ROW)
 		{
 			for(int i = 0; i < cols; i++)
 			{
@@ -280,6 +280,30 @@ public class FeedReader.dbBase : GLib.Object {
 		return unread;
 	}
 
+	public uint get_marked_total()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		uint makred = 0;
+		while (stmt.step () == Sqlite.ROW) {
+			makred = stmt.column_int(0);
+		}
+
+		stmt.reset ();
+		return makred;
+	}
+
 	public uint get_unread_uncategorized()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
@@ -302,6 +326,30 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 		stmt.reset();
 		return unread;
+	}
+
+	public uint get_marked_uncategorized()
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addEqualsCondition("makred", ArticleStatus.MARKED.to_string());
+		query.addCustomCondition(getUncategorizedFeedsQuery());
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		int marked = 0;
+		while (stmt.step() == Sqlite.ROW) {
+			marked = stmt.column_int(0);
+		}
+		stmt.reset();
+		return marked;
 	}
 
 	public int getTagColor()
@@ -515,6 +563,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public article read_article(string articleID)
 	{
+		Logger.debug(@"dbBase.read_article(): $articleID");
 		article tmp = null;
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");
@@ -1011,7 +1060,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<feed> read_feeds()
+	public Gee.ArrayList<feed> read_feeds(bool starredCount = false)
 	{
 		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
 		feed tmpfeed;
@@ -1040,9 +1089,17 @@ public class FeedReader.dbBase : GLib.Object {
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
 			string[] catVec = { "" };
+
 			if(catString != "")
 				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, name, url, has_icon, getFeedUnread(feedID), catVec, xmlURL);
+
+			uint count = 0;
+			if(starredCount)
+				count = getFeedStarred(feedID);
+			else
+				count = getFeedUnread(feedID);
+
+			tmpfeed = new feed(feedID, name, url, has_icon, count, catVec, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -1057,6 +1114,30 @@ public class FeedReader.dbBase : GLib.Object {
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
 		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+		query.addEqualsCondition("feedID", feedID, true, true);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			count = (uint)stmt.column_int(0);
+		}
+		return count;
+	}
+
+	public uint getFeedStarred(string feedID)
+	{
+		uint count = 0;
+
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
 		query.addEqualsCondition("feedID", feedID, true, true);
 		query.build();
 
@@ -1317,6 +1398,7 @@ public class FeedReader.dbBase : GLib.Object {
 		query.selectField("url");
 		query.selectField("preview");
 		query.selectField("html");
+		query.selectField("feedID");
 
 		query.addEqualsCondition("contentFetched", "0", true, false);
 		query.build();
@@ -1337,7 +1419,7 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(0),								// articleID
 								"",													// title
 								stmt.column_text(1),								// url
-								"",													// feedID
+								stmt.column_text(4),								// feedID
 								ArticleStatus.UNREAD,								// unread
 								ArticleStatus.UNMARKED,								// marked
 								stmt.column_text(3),								// html

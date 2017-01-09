@@ -20,7 +20,6 @@ public class FeedReader.HoverButton : Gtk.EventBox {
     private Gtk.Image m_inactive;
     private Gtk.Image m_active;
     private bool m_isActive;
-    private bool m_just_clicked;
     public signal void clicked(bool active);
 
 	public HoverButton(Gtk.Image inactive, Gtk.Image active, bool isActive)
@@ -33,7 +32,6 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 		m_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_button.set_focus_on_click(false);
         m_button.clicked.connect(() => {
-            m_just_clicked = true;
             toggle();
             clicked(m_isActive);
         });
@@ -105,23 +103,16 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 
     private bool onLeave(Gdk.EventCrossing event)
     {
-        if(event.detail == Gdk.NotifyType.NONLINEAR_VIRTUAL)
+        if(event.detail == Gdk.NotifyType.INFERIOR)
             return false;
 
-        if(m_just_clicked)
+        if(m_isActive)
         {
-            m_just_clicked = false;
+            setActiveIcon();
         }
         else
         {
-            if(m_isActive)
-            {
-                setActiveIcon();
-            }
-            else
-            {
-                setInactiveIcon();
-            }
+            setInactiveIcon();
         }
 
         return true;

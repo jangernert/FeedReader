@@ -42,6 +42,13 @@ namespace FeedReader {
 		public const string shortcuts = _("Shortcuts");
 	}
 
+	public class MediaButton : GLib.Object {
+		public const string PLAY = N_("Play");
+		public const string PAUSE = N_("Pause");
+		public const string MUTE = N_("Mute");
+		public const string UNMUTE = N_("Unmute");
+		public const string CLOSE = N_("Close");
+	}
 
 	public class Constants : GLib.Object {
 

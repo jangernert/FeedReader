@@ -15,42 +15,54 @@
 
 public class FeedReader.SettingsDialog : Gtk.Dialog {
 
-    public signal void newFeedList(bool defaultSettings = false);
-    public signal void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE);
-    public signal void reloadArticleView();
-    public signal void reloadCSS();
+    private Gtk.ListBox m_serviceList;
+    private Gtk.Stack m_stack;
+    private InfoBar m_errorBar;
+    private static SettingsDialog? m_dialog = null;
 
-    public SettingsDialog(Gtk.Window parent, string show)
+	public static SettingsDialog get_default()
+	{
+		if(m_dialog == null)
+			m_dialog = new SettingsDialog();
+
+		return m_dialog;
+	}
+
+    private SettingsDialog()
     {
     	Object(use_header_bar: 1);
         this.title = _("Settings");
 		this.border_width = 20;
-        this.set_transient_for(parent);
+        this.set_transient_for(MainWindow.get_default());
         this.set_modal(true);
+        this.delete_event.connect(hide_on_delete);
 		set_default_size(550, 550);
 
-        var stack = new Gtk.Stack();
-        stack.set_transition_duration(50);
-        stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-        stack.set_halign(Gtk.Align.FILL);
-        stack.add_titled(setup_UI(), "ui", _("Interface"));
-        stack.add_titled(setup_Internal(), "internal", _("Internals"));
-        stack.add_titled(setup_Service(), "service", _("Share"));
+        m_stack = new Gtk.Stack();
+        m_stack.set_transition_duration(50);
+        m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
+        m_stack.set_halign(Gtk.Align.FILL);
+        m_stack.add_titled(setup_UI(), "ui", _("Interface"));
+        m_stack.add_titled(setup_Internal(), "internal", _("Internals"));
+        m_stack.add_titled(setup_Service(), "service", _("Share"));
 
 		Gtk.StackSwitcher switcher = new Gtk.StackSwitcher();
         switcher.set_halign(Gtk.Align.CENTER);
         switcher.set_valign(Gtk.Align.CENTER);
-        switcher.set_stack(stack);
+        switcher.set_stack(m_stack);
 
         var content = get_content_area() as Gtk.Box;
         content.set_spacing(2);
         content.pack_start(switcher, false, false, 0);
-        content.add(stack);
-        this.show_all();
+        content.add(m_stack);
 
-        stack.set_visible_child_name(show);
     }
 
+    public void showDialog(string panel)
+    {
+        this.show_all();
+        m_stack.set_visible_child_name(panel);
+    }
 
     private Gtk.Box setup_UI()
     {
@@ -60,46 +72,48 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         only_feeds.changed.connect(() => {
         	Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
         	Settings.state().set_string("feedlist-selected-row", "feed -4");
-        	newFeedList(true);
+            ColumnView.get_default().newFeedList(true);
         });
 
         var only_unread = new SettingSwitch(_("Only show unread"), Settings.general(), "feedlist-only-show-unread");
         only_unread.changed.connect(() => {
-        	newFeedList();
+            ColumnView.get_default().newFeedList();
         });
 
 		var feedlist_sort = new SettingDropbox(_("Sort FeedList by"), Settings.general(), "feedlist-sort-by", {_("Received"), _("Alphabetically")});
         feedlist_sort.changed.connect(() => {
-        	newFeedList();
+            ColumnView.get_default().newFeedList();
         });
 
         var feedlist_theme = new SettingDropbox(_("Theme"), Settings.general(), "feedlist-theme", {_("Gtk+"), _("Dark"), _("elementary")});
         feedlist_theme.changed.connect(() => {
-        	reloadCSS();
+            MainWindow.get_default().reloadCSS();
         });
 
         var article_settings = headline(_("Article List:"));
 
         var article_sort = new SettingDropbox(_("Sort articles by"), Settings.general(), "articlelist-sort-by", {_("Received"), _("Date")});
         article_sort.changed.connect(() => {
-        	newArticleList();
+        	ColumnView.get_default().newArticleList();
         });
 
         var newest_first = new SettingSwitch(_("Newest first"), Settings.general(), "articlelist-newest-first");
         newest_first.changed.connect(() => {
-        	newArticleList();
+        	ColumnView.get_default().newArticleList();
         });
+
+        var scroll_marked = new SettingSwitch(_("Mark read by scrolling past"), Settings.general(), "articlelist-mark-scrolling");
 
         var articleview_settings = headline(_("Article View:"));
 
         var article_theme = new SettingDropbox(_("Theme"), Settings.general(), "article-theme", {_("Default"), _("Spring"), _("Midnight"), _("Parchment")});
 		article_theme.changed.connect(() => {
-			reloadArticleView();
+			ColumnView.get_default().reloadArticleView();
 		});
 
         var fontsize = new SettingDropbox(_("Font Size"), Settings.general(), "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
 		fontsize.changed.connect(() => {
-			reloadArticleView();
+			ColumnView.get_default().reloadArticleView();
 		});
 
 
@@ -113,6 +127,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         uiBox.pack_start(article_settings, false, true, 0);
         uiBox.pack_start(article_sort, false, true, 0);
         uiBox.pack_start(newest_first, false, true, 0);
+        uiBox.pack_start(scroll_marked, false, true, 0);
         uiBox.pack_start(articleview_settings, false, true, 0);
         uiBox.pack_start(article_theme, false, true, 0);
         uiBox.pack_start(fontsize, false, true, 0);
@@ -176,20 +191,44 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private Gtk.Box setup_Service()
     {
-		var service_list = new Gtk.ListBox();
-        service_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        service_list.set_sort_func(sortFunc);
-		service_list.set_header_func(headerFunc);
+		m_serviceList = new Gtk.ListBox();
+        m_serviceList.set_selection_mode(Gtk.SelectionMode.NONE);
+        m_serviceList.set_sort_func(sortFunc);
+
+        m_errorBar = new InfoBar("");
 
         var service_scroll = new Gtk.ScrolledWindow(null, null);
         service_scroll.expand = true;
-        service_scroll.margin_top = 10;
-        service_scroll.margin_bottom = 10;
 
-        var viewport = new Gtk.Viewport (null, null);
+        var overlay = new Gtk.Overlay();
+        overlay.add(service_scroll);
+        overlay.add_overlay(m_errorBar);
+        overlay.margin_top = 10;
+        overlay.margin_bottom = 10;
+
+        var viewport = new Gtk.Viewport(null, null);
         viewport.get_style_context().add_class("servicebox");
-        viewport.add(service_list);
+        viewport.add(m_serviceList);
         service_scroll.add(viewport);
+
+        refreshAccounts();
+
+    	var serviceBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
+        serviceBox.expand = true;
+        serviceBox.pack_start(overlay, false, true, 0);
+
+        return serviceBox;
+    }
+
+    public void refreshAccounts()
+	{
+        m_serviceList.set_header_func(null);
+		var children = m_serviceList.get_children();
+		foreach(Gtk.Widget row in children)
+		{
+			m_serviceList.remove(row);
+			row.destroy();
+		}
 
         var list = Share.get_default().getAccounts();
 
@@ -198,17 +237,17 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
             if(account.isSystemAccount())
             {
                 ServiceSetup row = Share.get_default().newSystemAccount(account.getID());
-                service_list.add(row);
-    			row.reveal();
+                m_serviceList.add(row);
+    			row.reveal(false);
             }
             else if(Share.get_default().needSetup(account.getID()))
             {
                 ServiceSetup row = Share.get_default().newSetup_withID(account.getID());
     			row.removeRow.connect(() => {
-    				removeRow(row, service_list);
+    				removeRow(row, m_serviceList);
     			});
-    			service_list.add(row);
-    			row.reveal();
+    			m_serviceList.add(row);
+    			row.reveal(false);
             }
         }
 
@@ -216,47 +255,39 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         addAccount.set_relief(Gtk.ReliefStyle.NONE);
         addAccount.get_style_context().add_class("addServiceButton");
         addAccount.set_size_request(0, 48);
-		service_list.add(addAccount);
+        addAccount.show();
+		m_serviceList.add(addAccount);
 
 		addAccount.clicked.connect(() => {
-			var children = service_list.get_children();
+			children = m_serviceList.get_children();
 			foreach(Gtk.Widget row in children)
 			{
 				var tmpRow = row as ServiceSetup;
 				if(tmpRow != null && !tmpRow.isLoggedIn())
 				{
 					Share.get_default().refreshAccounts();
-					removeRow(tmpRow, service_list);
+					removeRow(tmpRow, m_serviceList);
 				}
 			}
 
 			var popover = new ServiceSettingsPopover(addAccount);
 			popover.newAccount.connect((type) => {
                 ServiceSetup row = Share.get_default().newSetup(type);
+                row.showInfoBar.connect((text) => {
+                    Logger.debug("test ABC 123");
+                    m_errorBar.setText(text);
+                    m_errorBar.reveal();
+                });
     			row.removeRow.connect(() => {
-    				removeRow(row, service_list);
+    				removeRow(row, m_serviceList);
     			});
-    			service_list.add(row);
+    			m_serviceList.add(row);
     			row.reveal();
 			});
 		});
 
-    	var serviceBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
-        serviceBox.expand = true;
-        serviceBox.pack_start(service_scroll, false, true, 0);
-
-        return serviceBox;
-    }
-
-
-    private Gtk.Label headline(string name)
-    {
-    	var headline = new Gtk.Label(name);
-        headline.margin_top = 15;
-        headline.set_alignment(0, 0.5f);
-        headline.get_style_context().add_class("bold");
-        return headline;
-    }
+        m_serviceList.set_header_func(headerFunc);
+	}
 
     public void removeRow(ServiceSetup row, Gtk.ListBox list)
 	{
@@ -310,19 +341,35 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		box.pack_end(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
 		box.show_all();
 
-		if(before == null)
-		{
-			row.set_header(box);
-			return;
-		}
-
         var r1 = row as ServiceSetup;
+
+        // this is the plus-button
+        if(r1 == null)
+            return;
+
+        bool sys1 = r1.isSystemAccount();
+
+        if(before == null)
+        {
+            if(sys1)
+    		{
+    			row.set_header(box);
+    			return;
+    		}
+            else
+            {
+                label.set_text(_("FeedReader Accounts"));
+                row.set_header(box);
+    			return;
+            }
+        }
+
+
 		var r2 = before as ServiceSetup;
+        bool sys2 = r2.isSystemAccount();
+
         if(r1 != null && r2 != null)
         {
-            bool sys1 = r1.isSystemAccount();
-    		bool sys2 = r2.isSystemAccount();
-
     		if(!sys1 && sys2)
             {
                 label.set_text(_("FeedReader Accounts"));
@@ -330,4 +377,13 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
             }
         }
 	}
+
+    private Gtk.Label headline(string name)
+    {
+    	var headline = new Gtk.Label(name);
+        headline.margin_top = 15;
+        headline.set_alignment(0, 0.5f);
+        headline.get_style_context().add_class("bold");
+        return headline;
+    }
 }

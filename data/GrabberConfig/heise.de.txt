@@ -3,7 +3,6 @@
 
 prune: no
 
-title: //article/h1 | //h1
 date: //p[@class='news_datum']
 author: //span[@class='author']
 
@@ -47,11 +46,16 @@ replace_string(<span class="bild_rechts" style="width:): <p "
 replace_string(<div class="heisebox">): <blockquote>
 
 single_page_link: //a[contains(@href, '?view=print')]
+single_page_link: //a[contains(@title, 'Druck')]
 
 next_page_link: //a[@class='next']
 next_page_link: //a[@title='vor']
+next_page_link: //a[@rel='next']
 
 test_url: http://www.heise.de/open/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
 test_url: http://m.heise.de/open/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
 test_url: http://www.heise.de/newsticker/meldung/Ueberwachungstechnik-Die-globale-Handy-Standortueberwachung-2301494.html
 test_url: http://www.heise.de/newsticker/meldung/Bodenradar-fuer-selbstfahrende-Autos-horcht-unter-die-Strasse-3273941.html
+test_url: http://www.heise.de/tp/artikel/49/49473/1.html
+test_url: http://www.heise.de/ct/artikel/Die-Neuerungen-von-Linux-3-15-2196231.html
+test_url: http://heise.de/-3527918

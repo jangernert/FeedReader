@@ -107,7 +107,7 @@ public class FeedReader.TwitterForm : ShareForm {
 
 		new GLib.Thread<void*>(null, () => {
 			m_urlLength = api.getUrlLength();
-			Idle.add((owned) callback);
+			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		});
 

@@ -18,6 +18,7 @@ public class FeedReader.Share : GLib.Object {
 	private Gee.ArrayList<ShareAccount> m_accounts;
 	private Peas.ExtensionSet m_plugins;
 	private static Share? m_share = null;
+	private Goa.Client? m_client = null;
 
 	public static Share get_default()
 	{
@@ -43,9 +44,9 @@ public class FeedReader.Share : GLib.Object {
 			});
 		});
 
-		m_plugins.extension_removed.connect((info, extension) => {
+		//m_plugins.extension_removed.connect((info, extension) => {});
 
-		});
+		checkSystemAccounts();
 
 		foreach(var plugin in engine.get_plugin_list())
 		{
@@ -250,5 +251,43 @@ public class FeedReader.Share : GLib.Object {
 		});
 
 		return form;
+	}
+
+	private void checkSystemAccounts()
+	{
+		try
+		{
+			m_client = new Goa.Client.sync();
+			if(m_client != null)
+			{
+				m_client.account_added.connect((obj) => {
+					Logger.debug("share: account added");
+					accountsChanged(obj);
+				});
+				m_client.account_changed.connect((obj) => {
+					Logger.debug("share: account changed");
+					accountsChanged(obj);
+				});
+				m_client.account_removed.connect((obj) => {
+					Logger.debug("share: account removed");
+					accountsChanged(obj);
+				});
+			}
+			else
+			{
+				Logger.error("share: goa not available");
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("share.checkSystemAccounts: %s".printf(e.message));
+		}
+	}
+
+	private void accountsChanged(Goa.Object object)
+	{
+		refreshAccounts();
+		SettingsDialog.get_default().refreshAccounts();
+		ColumnView.get_default().getHeader().refreshSahrePopover();
 	}
 }

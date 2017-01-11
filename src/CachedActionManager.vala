@@ -18,7 +18,17 @@ public class FeedReader.CachedActionManager : GLib.Object {
 	private CachedActions m_lastAction = CachedActions.NONE;
 	private string m_ids = "";
 
-	public CachedActionManager()
+	private static CachedActionManager? m_manager = null;
+
+	public static CachedActionManager get_default()
+	{
+		if(m_manager == null)
+			m_manager = new CachedActionManager();
+
+		return m_manager;
+	}
+
+	private CachedActionManager()
 	{
 
 	}

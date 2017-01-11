@@ -868,7 +868,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	protected Gee.ArrayList<string> getFeedIDofCategorie(string categorieID)
+	public Gee.ArrayList<string> getFeedIDofCategorie(string categorieID)
 	{
 		var feedIDs = new Gee.ArrayList<string>();
 

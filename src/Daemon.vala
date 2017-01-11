@@ -26,7 +26,6 @@ namespace FeedReader {
 		private LoginResponse m_loggedin;
 		private bool m_offline = true;
 		private bool m_cacheSync = false;
-		private CachedActionManager m_cachedActions;
 		private uint m_timeout_source_id = 0;
 		private delegate void asyncPayload();
 
@@ -58,7 +57,6 @@ namespace FeedReader {
 		private FeedDaemonServer()
 		{
 			Logger.debug("daemon: constructor");
-			m_cachedActions = new CachedActionManager();
 			login(Settings.general().get_string("plugin"));
 
 #if WITH_LIBUNITY
@@ -292,9 +290,9 @@ namespace FeedReader {
 			});
 			this.setOnline.connect(() => {
 				m_offline = false;
-				if(dbDaemon.get_default().isTableEmpty("OfflineActions"))
+				if(dbDaemon.get_default().isTableEmpty("CachedActions"))
 				{
-					m_cachedActions.executeActions();
+					CachedActionManager.get_default().executeActions();
 					dbDaemon.get_default().resetCachedActions();
 				}
 			});
@@ -373,7 +371,7 @@ namespace FeedReader {
 					var idArray = articleID.split(",");
 					foreach(string id in idArray)
 					{
-						m_cachedActions.markArticleRead(id, status);
+						CachedActionManager.get_default().markArticleRead(id, status);
 					}
 				}
 				else
@@ -383,7 +381,7 @@ namespace FeedReader {
 						var idArray = articleID.split(",");
 						foreach(string id in idArray)
 						{
-							m_cachedActions.markArticleRead(id, status);
+							ActionCache.get_default().markArticleRead(id, status);
 						}
 					}
 
@@ -401,11 +399,11 @@ namespace FeedReader {
 			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
 			{
 				if(m_offline)
-					m_cachedActions.markArticleStarred(articleID, status);
+					CachedActionManager.get_default().markArticleStarred(articleID, status);
 				else
 				{
 					if(m_cacheSync)
-						m_cachedActions.markArticleStarred(articleID, status);
+						ActionCache.get_default().markArticleStarred(articleID, status);
 					asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(articleID, status); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -552,12 +550,12 @@ namespace FeedReader {
 			{
 				if(m_offline)
 				{
-					m_cachedActions.markCategoryRead(feedID);
+					CachedActionManager.get_default().markCategoryRead(feedID);
 				}
 				else
 				{
 					if(m_cacheSync)
-						m_cachedActions.markCategoryRead(feedID);
+						ActionCache.get_default().markCategoryRead(feedID);
 					asyncPayload pl = () => { FeedServer.get_default().setCategorieRead(feedID); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -574,12 +572,12 @@ namespace FeedReader {
 			{
 				if(m_offline)
 				{
-					m_cachedActions.markFeedRead(feedID);
+					CachedActionManager.get_default().markFeedRead(feedID);
 				}
 				else
 				{
 					if(m_cacheSync)
-						m_cachedActions.markFeedRead(feedID);
+						ActionCache.get_default().markFeedRead(feedID);
 					asyncPayload pl = () => { FeedServer.get_default().setFeedRead(feedID); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -598,12 +596,12 @@ namespace FeedReader {
 		{
 			if(m_offline)
 			{
-				m_cachedActions.markAllRead();
+				CachedActionManager.get_default().markAllRead();
 			}
 			else
 			{
 				if(m_cacheSync)
-					m_cachedActions.markAllRead();
+					ActionCache.get_default().markAllRead();
 				asyncPayload pl = () => { FeedServer.get_default().markAllItemsRead(); };
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}

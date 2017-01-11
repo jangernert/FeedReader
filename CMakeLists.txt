@@ -236,6 +236,7 @@ if(LIBUNITY_FOUND)
 endif(LIBUNITY_FOUND)
 
 vala_precompile(daemon ${DAEMON_NAME}
+	src/ActionCache.vala
 	src/Daemon.vala
 	src/dbDaemon.vala
 	src/Notification.vala

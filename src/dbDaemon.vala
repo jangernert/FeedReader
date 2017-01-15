@@ -455,9 +455,9 @@ public class FeedReader.dbDaemon : dbBase {
         update_query.build();
 
         Sqlite.Statement stmt;
-        int ec = sqlite_db.prepare_v2 (update_query.get(), update_query.get().length, out stmt);
+        int ec = sqlite_db.prepare_v2(update_query.get(), update_query.get().length, out stmt);
 
-        if (ec != Sqlite.OK)
+        if(ec != Sqlite.OK)
         {
 			Logger.error(update_query.get());
 			Logger.error("update_articles: " + sqlite_db.errmsg());
@@ -475,21 +475,22 @@ public class FeedReader.dbDaemon : dbBase {
         assert (articleID_position > 0);
 
 
-        foreach(var article in articles)
+        foreach(article a in articles)
         {
-            stmt.bind_text(unread_position, ActionCache.get_default().checkRead(article.getArticleID(), article.getMarked()).to_string());
-            stmt.bind_text(marked_position, ActionCache.get_default().checkStarred(article.getArticleID(), article.getMarked()).to_string());
-            stmt.bind_text(tags_position, article.getTagString());
-            stmt.bind_int (modified_position, article.getLastModified());
-            stmt.bind_text(articleID_position, article.getArticleID());
+            // FIXME
+            //stmt.bind_text(unread_position, ActionCache.get_default().checkRead(a.getArticleID(), a.getUnread()).to_string());
+            stmt.bind_text(unread_position, a.getUnread().to_string());
+            //stmt.bind_text(marked_position, ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked()).to_string());
+            stmt.bind_text(marked_position, a.getMarked().to_string());
+            stmt.bind_text(tags_position, a.getTagString());
+            stmt.bind_int (modified_position, a.getLastModified());
+            stmt.bind_text(articleID_position, a.getArticleID());
 
             while(stmt.step() != Sqlite.DONE){}
             stmt.reset();
         }
 
         executeSQL("COMMIT TRANSACTION");
-
-        dbDaemon.get_default().resetCachedActions();
     }
 
 

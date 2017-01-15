@@ -46,9 +46,9 @@ namespace FeedReader {
 		public abstract bool supportMultiLevelCategories() throws IOError;
 		public abstract bool supportTags() throws IOError;
 		public abstract bool useMaxArticles() throws IOError;
-		public abstract string? symbolicIcon() throws IOError;
-		public abstract string? accountName() throws IOError;
-		public abstract string? getServerURL() throws IOError;
+		public abstract string symbolicIcon() throws IOError;
+		public abstract string accountName() throws IOError;
+		public abstract string getServerURL() throws IOError;
 		public abstract string uncategorizedID() throws IOError;
 
 		// MANIPULATE TAGS

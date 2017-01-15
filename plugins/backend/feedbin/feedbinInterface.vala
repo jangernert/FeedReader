@@ -34,17 +34,17 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return true;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-feedbin-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return m_utils.getUser();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return "https://feedbin.com/";
 	}

@@ -528,28 +528,28 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.doInitSync();
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
-		if(!m_pluginLoaded)
-			return null;
-
 		Logger.debug("feedserver: symbolicIcon");
+
+		if(!m_pluginLoaded)
+			return "none";
 
 		return m_plugin.symbolicIcon();
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		if(!m_pluginLoaded)
-			return null;
+			return "none";
 
 		return m_plugin.accountName();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		if(!m_pluginLoaded)
-			return null;
+			return "none";
 
 		return m_plugin.getServerURL();
 	}

@@ -34,17 +34,17 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return true;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-oldreader-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return m_utils.getUser();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return "https://theoldreader.com/";
 	}

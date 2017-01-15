@@ -106,18 +106,18 @@ namespace FeedReader {
 			return FeedServer.get_default().supportMultiLevelCategories();
 		}
 
-		public string? symbolicIcon()
+		public string symbolicIcon()
 		{
 			Logger.debug("daemon: symbolicIcon");
 			return FeedServer.get_default().symbolicIcon();
 		}
 
-		public string? accountName()
+		public string accountName()
 		{
 			return FeedServer.get_default().accountName();
 		}
 
-		public string? getServerURL()
+		public string getServerURL()
 		{
 			return FeedServer.get_default().getServerURL();
 		}

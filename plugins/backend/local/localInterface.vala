@@ -33,17 +33,17 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return false;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-local-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return "Local RSS";
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return "http://localhorst/";
 	}

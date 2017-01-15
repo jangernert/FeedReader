@@ -68,7 +68,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
 
             if(this.is_visible())
             {
-                if(user_name == null || service_icon == null)
+                if(user_name == "none" || service_icon == "none")
                 {
                     m_spinner.start();
                     m_stack.set_visible_child_name("spinner");
@@ -79,7 +79,7 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
                     m_logo.get_style_context().add_class("fr-sidebar-symbolic");
                     m_label.set_label(user_name);
                     m_stack.set_visible_child_name("info");
-                    if(server != null)
+                    if(server != "none")
                         this.set_tooltip_text(Utils.shortenURL(server));
                 }
             }

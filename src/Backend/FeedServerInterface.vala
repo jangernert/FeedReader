@@ -29,11 +29,11 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool doInitSync();
 
-	public abstract string? symbolicIcon();
+	public abstract string symbolicIcon();
 
-	public abstract abstract string? accountName();
+	public abstract string accountName();
 
-	public abstract string? getServerURL();
+	public abstract string getServerURL();
 
 	public abstract string uncategorizedID();
 

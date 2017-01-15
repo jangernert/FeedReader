@@ -42,7 +42,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// Return a string with the name, not the complete path.
 	// For example: "feed-service-demo-symbolic"
 	//--------------------------------------------------------------------------------------
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 
 	}
@@ -53,7 +53,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// This can be the real name of the user, the email-address
 	// or any other personal information that identifies the account.
 	//--------------------------------------------------------------------------------------
-	public string? accountName()
+	public string accountName()
 	{
 
 	}
@@ -63,7 +63,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// If the service can be self-hosted or has multiple providers
 	// you can return the URL of the server here. Preferably without "http://www."
 	//--------------------------------------------------------------------------------------
-	public string? getServerURL()
+	public string getServerURL()
 	{
 
 	}

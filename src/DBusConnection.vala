@@ -46,9 +46,9 @@ namespace FeedReader {
 		public abstract bool supportMultiLevelCategories() throws IOError;
 		public abstract bool supportTags() throws IOError;
 		public abstract bool useMaxArticles() throws IOError;
-		public abstract string? symbolicIcon() throws IOError;
-		public abstract string? accountName() throws IOError;
-		public abstract string? getServerURL() throws IOError;
+		public abstract string symbolicIcon() throws IOError;
+		public abstract string accountName() throws IOError;
+		public abstract string getServerURL() throws IOError;
 		public abstract string uncategorizedID() throws IOError;
 
 		// MANIPULATE TAGS
@@ -80,7 +80,6 @@ namespace FeedReader {
 		public signal void springCleanFinished();
 		public signal void newFeedList();
 		public signal void updateFeedList();
-		public signal void newArticleList();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
@@ -134,91 +133,91 @@ namespace FeedReader {
 			}
 		}
 
-		public static void connectSignals(readerUI window)
+		public static void connectSignals()
 		{
 			if(m_connection == null)
 				setup();
 
 			m_connection.newFeedList.connect(() => {
 				Logger.debug("DBusConnection: newFeedList");
-				window.getContent().newFeedList();
+				ColumnView.get_default().newFeedList();
 			});
 
 			m_connection.updateFeedList.connect(() => {
 				Logger.debug("DBusConnection: updateFeedList");
-				window.getContent().updateFeedList();
+				ColumnView.get_default().updateFeedList();
 			});
 
 			m_connection.updateArticleList.connect(() => {
 				Logger.debug("DBusConnection: updateArticleList");
-				window.getContent().updateArticleList();
+				ColumnView.get_default().updateArticleList();
 			});
 
 			m_connection.syncStarted.connect(() => {
 				Logger.debug("DBusConnection: syncStarted");
-				window.writeInterfaceState();
-				window.setRefreshButton(true);
+				MainWindow.get_default().writeInterfaceState();
+				ColumnView.get_default().getHeader().setRefreshButton(true);
 			});
 
 			m_connection.syncFinished.connect(() => {
 				Logger.debug("DBusConnection: syncFinished");
-				window.getContent().syncFinished();
-				window.showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
-				window.setRefreshButton(false);
+				ColumnView.get_default().syncFinished();
+				MainWindow.get_default().showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
+				ColumnView.get_default().getHeader().setRefreshButton(false);
 			});
 
 			m_connection.springCleanStarted.connect(() => {
 				Logger.debug("DBusConnection: springCleanStarted");
-				window.showSpringClean();
+				MainWindow.get_default().showSpringClean();
 			});
 
 			m_connection.springCleanFinished.connect(() => {
 				Logger.debug("DBusConnection: springCleanFinished");
-				window.showContent();
+				MainWindow.get_default().showContent();
 			});
 
 			m_connection.writeInterfaceState.connect(() => {
 				Logger.debug("DBusConnection: writeInterfaceState");
-				window.writeInterfaceState();
+				MainWindow.get_default().writeInterfaceState();
 			});
 
 			m_connection.showArticleListOverlay.connect(() => {
 				Logger.debug("DBusConnection: showArticleListOverlay");
-				window.getContent().showArticleListOverlay();
+				ColumnView.get_default().showArticleListOverlay();
 			});
 
 			m_connection.setOffline.connect(() => {
 				Logger.debug("DBusConnection: setOffline");
-				if(FeedApp.isOnline())
+				if(FeedReaderApp.get_default().isOnline())
 				{
-					FeedApp.setOnline(false);
-					window.setOffline();
+					FeedReaderApp.get_default().setOnline(false);
+					ColumnView.get_default().setOffline();
 				}
 			});
 
 			m_connection.setOnline.connect(() => {
 				Logger.debug("DBusConnection: setOnline");
-				if(!FeedApp.isOnline())
+				if(!FeedReaderApp.get_default().isOnline())
 				{
-					FeedApp.setOnline(true);
-					window.setOnline();
+					FeedReaderApp.get_default().setOnline(true);
+					ColumnView.get_default().setOnline();
 				}
 			});
 
 			m_connection.feedAdded.connect(() => {
 				Logger.debug("DBusConnection: feedAdded");
-				window.getContent().footerSetReady();
+				ColumnView.get_default().footerSetReady();
 			});
 
 			m_connection.opmlImported.connect(() => {
 				Logger.debug("DBusConnection: opmlImported");
-				window.getContent().footerSetReady();
-				window.getContent().newFeedList();
+				ColumnView.get_default().footerSetReady();
+				ColumnView.get_default().newFeedList();
 			});
 
 			m_connection.updateSyncProgress.connect((progress) => {
 				Logger.debug("DBusConnection: updateSyncProgress");
-				window.getHeaderBar().updateSyncProgress(progress);
+				ColumnView.get_default().getHeader().updateSyncProgress(progress);
 			});
 		}
 

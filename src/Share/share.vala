@@ -287,8 +287,7 @@ public class FeedReader.Share : GLib.Object {
 	private void accountsChanged(Goa.Object object)
 	{
 		refreshAccounts();
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		if(window != null)
-			window.settingsRefreshAccounts();
+		SettingsDialog.get_default().refreshAccounts();
+		ColumnView.get_default().getHeader().refreshSahrePopover();
 	}
 }

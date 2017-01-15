@@ -41,7 +41,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	public ArticleList()
 	{
 		m_emptyList = new ArticleListEmptyLabel();
-
+		m_searchTerm = Settings.state().get_string("search-term");
 		var syncingLabel = new Gtk.Label(_("Sync is in progress. Articles should appear any second."));
 		syncingLabel.get_style_context().add_class("h2");
 		syncingLabel.set_ellipsize (Pango.EllipsizeMode.END);
@@ -60,8 +60,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2 = new ArticleListScroll();
 		m_scroll1.scrolledTop.connect(dismissOverlay);
 		m_scroll2.scrolledTop.connect(dismissOverlay);
-		m_scroll1.valueChanged.connect(removeInvisibleRows);
-		m_scroll2.valueChanged.connect(removeInvisibleRows);
+		m_scroll1.valueChanged.connect(updateVisibleRows);
+		m_scroll2.valueChanged.connect(updateVisibleRows);
 		m_scroll1.scrolledBottom.connect(loadMore);
 		m_scroll2.scrolledBottom.connect(loadMore);
 		m_List1 = new ArticleListBox();
@@ -91,8 +91,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_stack.set_transition_duration(100);
 		m_stack.add_named(m_scroll1, "list1");
 		m_stack.add_named(m_scroll2, "list2");
-		m_stack.add_named(m_emptyList, "empty");
 		m_stack.add_named(syncingBox, "syncing");
+		m_stack.add_named(m_emptyList, "empty");
 		this.add(m_stack);
 		this.get_style_context().add_class("article-list");
 	}
@@ -122,6 +122,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_loadThread.join();
 
 		m_currentScroll.scrolledBottom.disconnect(loadMore);
+		m_currentScroll.scrollToPos(0, false);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
 		bool newArticles = false;
@@ -402,6 +403,32 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		}
 	}
 
+	private void updateVisibleRows(ScrollDirection direction)
+	{
+		if(direction == ScrollDirection.DOWN && Settings.general().get_boolean("articlelist-mark-scrolling"))
+		{
+			var children = m_currentList.get_children();
+			children.reverse();
+			var visibleArticles = new Gee.HashSet<string>();
+
+			foreach(var r in children)
+			{
+				var row = r as articleRow;
+				if(row != null)
+				{
+					int visible = m_currentScroll.isVisible(row);
+					if(visible == 0 || visible == 1)
+						visibleArticles.add(row.getID());
+					else if(visible == -1)
+						break;
+				}
+			}
+			m_currentList.setVisibleRows(visibleArticles);
+		}
+
+		removeInvisibleRows(direction);
+	}
+
 	private bool keyPressed(Gdk.EventKey event)
 	{
 		switch(event.keyval)
@@ -523,7 +550,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private uint getListOffset()
 	{
 		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
-		if(m_state == ArticleListState.ALL)
+		Logger.debug("ArticleList: new-rows %i".printf(Settings.state().get_int("articlelist-new-rows")));
+		if(m_state == ArticleListState.ALL && Settings.general().get_boolean("articlelist-newest-first"))
 			offset += (uint)Settings.state().get_int("articlelist-new-rows");
 		Settings.state().set_int("articlelist-row-offset", 0);
 		Settings.state().set_int("articlelist-new-rows", 0);
@@ -547,11 +575,9 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(pos > 0)
 		{
 			Logger.debug(@"ArticleList: restore ScrollPos $pos");
-			m_currentScroll.scrollDiff(pos);
+			m_currentScroll.scrollDiff(pos, false);
 			Settings.state().set_double("articlelist-scrollpos",  0);
 		}
-		else
-			m_currentScroll.scrollToPos(0, false);
 	}
 
 	public void removeTagFromSelectedRow(string tagID)

@@ -34,17 +34,17 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		return true;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-ttrss-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return m_utils.getUser();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return m_utils.getURL();
 	}

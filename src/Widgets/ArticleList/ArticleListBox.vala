@@ -23,6 +23,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	private string m_selectedFeedListID = FeedID.ALL.to_string();
 	private string m_selectedArticle = "";
 	private Gee.HashSet<string> m_articles;
+	private Gee.HashSet<string> m_visibleArticles;
 
 	public signal void balanceNextScroll(ArticleListBalance mode);
 	public signal void loadDone();
@@ -31,6 +32,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		m_lazyQeue = new Gee.LinkedList<article>();
 		m_articles = new Gee.HashSet<string>();
+		m_visibleArticles = new Gee.HashSet<string>();
 		this.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		this.row_activated.connect(rowActivated);
 	}
@@ -71,6 +73,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		if(m_lazyQeue.size == 0)
 			return;
 
+		var priority = GLib.Priority.DEFAULT_IDLE;
+		if(ColumnView.get_default().playingMedia())
+			priority = GLib.Priority.HIGH_IDLE;
+
 		m_idleID = GLib.Idle.add(() => {
 
 			if(m_lazyQeue == null || m_lazyQeue.size == 0)
@@ -109,6 +115,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				return false;
 			});
 
+			newRow.realize.connect(() => {
+				checkQueue(item, balance, pos, reverse, animate);
+			});
+
 			this.insert(newRow, pos);
 
 			if(animate)
@@ -116,9 +126,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			else
 				newRow.reveal(true, 0);
 
-			checkQueue(item, balance, pos, reverse, animate);
 			return false;
-		}, GLib.Priority.HIGH_IDLE);
+		}, priority);
 	}
 
 	private void checkQueue(article item, ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)
@@ -131,7 +140,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		else
 		{
 			m_lazyQeue = new Gee.LinkedList<article>();
-			loadDone();
+			GLib.Timeout.add(150, () => {
+				loadDone();
+				return false;
+			});
 			m_idleID = 0;
 		}
 	}
@@ -159,34 +171,37 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	private void selectAfter(articleRow row, int time)
 	{
-		row.updateUnread(ArticleStatus.READ);
 		this.select_row(row);
+		setRead(row);
 
-		if(row.isUnread())
-		{
-			try
-			{
-				DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("ArticleList.selectAfter: %s".printf(e.message));
-			}
-		}
-
-		if (m_selectSourceID > 0)
+		if(m_selectSourceID > 0)
 		{
             GLib.Source.remove(m_selectSourceID);
             m_selectSourceID = 0;
         }
 
         m_selectSourceID = Timeout.add(time, () => {
-			var window = this.get_toplevel() as readerUI;
-			if(window != null && !window.searchFocused())
+			if(!ColumnView.get_default().searchFocused())
             	row.activate();
 			m_selectSourceID = 0;
             return false;
         });
+	}
+
+	private void setRead(articleRow row)
+	{
+		try
+		{
+			if(row.isUnread())
+			{
+				row.updateUnread(ArticleStatus.READ);
+				DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("ArticleList.selectAfter: %s".printf(e.message));
+		}
 	}
 
 	public bool toggleReadSelected()
@@ -301,8 +316,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public void removeRow(articleRow row, int animateDuration = 700)
 	{
+		var id = row.getID();
 		row.reveal(false, animateDuration);
-		m_articles.remove(row.getID());
+		m_articles.remove(id);
 		GLib.Timeout.add(animateDuration + 50, () => {
 			this.remove(row);
 			return false;
@@ -313,19 +329,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		var selectedRow = (articleRow)row;
 		string selectedID = selectedRow.getID();
-
-		try
-		{
-			if(selectedRow.isUnread())
-			{
-				DBusConnection.get_default().changeArticle(selectedID, ArticleStatus.READ);
-				selectedRow.updateUnread(ArticleStatus.READ);
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ArticleList.constructor: %s".printf(e.message));
-		}
+		setRead(selectedRow);
 
 		if(m_selectedArticle != selectedID)
 		{
@@ -374,16 +378,48 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 						if((selectedRow != null && tmpRow.getID() != selectedRow.getID())
 						|| selectedRow == null)
 						{
-							if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
-							|| (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
+							if(m_articles.contains(tmpRow.getID()))
 							{
-								removeRow(tmpRow);
-								break;
+								if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
+								|| (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
+								{
+									removeRow(tmpRow);
+									break;
+								}
 							}
 						}
 					}
 				}
 				break;
+		}
+	}
+
+	public void setVisibleRows(Gee.HashSet<string> visibleArticles)
+	{
+		var invisibleRows = new Gee.HashSet<string>();
+		// mark all rows that are not visible now and have been before as read
+		m_visibleArticles.foreach((id) => {
+			if(!visibleArticles.contains(id))
+				invisibleRows.add(id);
+			return true;
+		});
+
+		m_visibleArticles = visibleArticles;
+
+		var children = this.get_children();
+		foreach(var row in children)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && invisibleRows.contains(tmpRow.getID()))
+			{
+				setRead(tmpRow);
+				if(m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
+				{
+					balanceNextScroll(ArticleListBalance.BOTTOM);
+					removeRow(tmpRow, 0);
+				}
+			}
+
 		}
 	}
 

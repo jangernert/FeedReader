@@ -20,7 +20,6 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 	private Gtk.Entry m_secretEntry;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passEntry;
-	private Gtk.InfoBar m_errorBar;
 	private Gtk.Revealer m_login_revealer;
 	private WallabagAPI m_api;
 
@@ -42,20 +41,6 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		grid.set_halign(Gtk.Align.CENTER);
 		grid.margin_bottom = 10;
 		grid.margin_top = 5;
-
-		m_errorBar = new Gtk.InfoBar();
-		m_errorBar.no_show_all = true;
-		var error_content = m_errorBar.get_content_area();
-		var errorLabel = new Gtk.Label(_("You fucked up"));
-		errorLabel.show();
-		error_content.add(errorLabel);
-		m_errorBar.set_message_type(Gtk.MessageType.WARNING);
-		m_errorBar.set_show_close_button(true);
-		m_errorBar.response.connect((response_id) => {
-			if(response_id == Gtk.ResponseType.CLOSE) {
-					m_errorBar.set_visible(false);
-			}
-		});
 
         m_urlEntry = new Gtk.Entry();
 		m_idEntry = new Gtk.Entry();
@@ -97,17 +82,16 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		userLabel.set_alignment(1.0f, 0.5f);
 		pwLabel.set_alignment(1.0f, 0.5f);
 
-		grid.attach(m_errorBar, 0, 0, 2, 1);
-		grid.attach(urlLabel, 0, 1, 1, 1);
-		grid.attach(idLabel, 0, 2, 1, 1);
-		grid.attach(secretLabel, 0, 3, 1, 1);
-        grid.attach(userLabel, 0, 4, 1, 1);
-        grid.attach(pwLabel, 0, 5, 1, 1);
-        grid.attach(m_urlEntry, 1, 1, 1, 1);
-		grid.attach(m_idEntry, 1, 2, 1, 1);
-		grid.attach(m_secretEntry, 1, 3, 1, 1);
-		grid.attach(m_userEntry, 1, 4, 1, 1);
-        grid.attach(m_passEntry, 1, 5, 1, 1);
+		grid.attach(urlLabel, 0, 0, 1, 1);
+		grid.attach(idLabel, 0, 1, 1, 1);
+		grid.attach(secretLabel, 0, 2, 1, 1);
+        grid.attach(userLabel, 0, 3, 1, 1);
+        grid.attach(pwLabel, 0, 4, 1, 1);
+        grid.attach(m_urlEntry, 1, 0, 1, 1);
+		grid.attach(m_idEntry, 1, 1, 1, 1);
+		grid.attach(m_secretEntry, 1, 2, 1, 1);
+		grid.attach(m_userEntry, 1, 3, 1, 1);
+        grid.attach(m_passEntry, 1, 4, 1, 1);
 
 		m_login_revealer = new Gtk.Revealer();
 		m_login_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -134,6 +118,54 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			string clientSecret = m_secretEntry.get_text();
 			string baseURL = m_urlEntry.get_text();
 
+			// check each and every value
+			if(baseURL == null || baseURL == "")
+			{
+				showInfoBar(_("Please fill in the URL."));
+				m_urlEntry.grab_focus();
+				return;
+			}
+			else if(GLib.Uri.parse_scheme(baseURL) == null)
+			{
+				showInfoBar(_("URL seems to not be valid."));
+				m_urlEntry.grab_focus();
+				return;
+			}
+
+			if(!baseURL.has_suffix("/"))
+				baseURL += "/";
+
+			if(clientID == null || clientID == "")
+			{
+				showInfoBar(_("Please fill in the clientID."));
+				m_idEntry.grab_focus();
+				return;
+			}
+
+			if(clientSecret == null || clientSecret == "")
+			{
+				showInfoBar(_("Please fill in the clientSecret."));
+				m_secretEntry.grab_focus();
+				return;
+			}
+
+			if(password == null || password == "")
+			{
+				showInfoBar(_("Please fill in the password."));
+				m_passEntry.grab_focus();
+				return;
+			}
+
+			if(username == null || username == "")
+			{
+				showInfoBar(_("Please fill in the username."));
+				m_userEntry.grab_focus();
+				return;
+			}
+
+			m_spinner.start();
+			m_iconStack.set_visible_child_name("spinner");
+
 			if(m_api.getAccessToken(id, username, password, clientID, clientSecret, baseURL))
 			{
 				m_id = id;
@@ -142,6 +174,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 				m_login_revealer.set_reveal_child(false);
 				m_isLoggedIN = true;
 				m_iconStack.set_visible_child_name("loggedIN");
+				m_spinner.stop();
 				m_label.set_label(username);
 				m_labelStack.set_visible_child_name("loggedIN");
 				m_login_button.clicked.disconnect(login);
@@ -149,7 +182,8 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 			}
 			else
 			{
-				m_errorBar.set_visible(true);
+				m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
+				showInfoBar(_("Something went wrong."));
 			}
 
 		}

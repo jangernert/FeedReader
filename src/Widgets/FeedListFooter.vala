@@ -79,7 +79,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	{
 		try
 		{
-			if(FeedApp.isOnline() && DBusConnection.get_default().supportFeedManipulation())
+			if(FeedReaderApp.get_default().isOnline() && DBusConnection.get_default().supportFeedManipulation())
 				m_removeButton.set_sensitive(sensitive);
 		}
 		catch(GLib.Error e)

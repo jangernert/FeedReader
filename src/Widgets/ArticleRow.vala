@@ -64,8 +64,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			m_label.get_style_context().add_class("headline-unread");
 		else
 			m_label.get_style_context().add_class("headline-read");
-		m_label.set_ellipsize (Pango.EllipsizeMode.END);
+		m_label.set_ellipsize(Pango.EllipsizeMode.END);
 		m_label.set_alignment(0.0f, 0.2f);
+		m_label.set_tooltip_text(m_article.getTitle());
 
 		var icon_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		icon_box.set_size_request(24, 0);
@@ -147,6 +148,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		feedLabel.get_style_context().add_class("preview");
 		feedLabel.opacity = 0.6;
 		feedLabel.set_alignment(0.0f, 0.5f);
+		feedLabel.set_ellipsize(Pango.EllipsizeMode.END);
 		var dateLabel = new Gtk.Label(m_article.getDateNice());
 		dateLabel.get_style_context().add_class("preview");
 		dateLabel.opacity = 0.6;
@@ -357,12 +359,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public bool toggleUnread()
 	{
 		bool unread = false;
-		string articleID = "";
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		if(window != null)
-		{
-			articleID = window.getContent().getSelectedArticle();
-		}
+		var view = ColumnView.get_default();
+		string articleID = ColumnView.get_default().getSelectedArticle();
 
 		switch(m_article.getUnread())
 		{
@@ -371,7 +369,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				unread = true;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setRead(true);
+					view.getHeader().setRead(true);
 				}
 				break;
 			case ArticleStatus.UNREAD:
@@ -379,7 +377,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				unread = false;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setRead(false);
+					view.getHeader().setRead(false);
 				}
 				break;
 		}
@@ -470,12 +468,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public bool toggleMarked()
 	{
 		bool marked = false;
-		string articleID = "";
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		if(window != null)
-		{
-			articleID = window.getContent().getSelectedArticle();
-		}
+		var view = ColumnView.get_default();
+		string articleID = ColumnView.get_default().getSelectedArticle();
 
 		switch(m_article.getMarked())
 		{
@@ -484,7 +478,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				marked = false;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setMarked(false);
+					view.getHeader().setMarked(false);
 				}
 				break;
 
@@ -493,7 +487,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 				marked = true;
 				if(articleID != "" && articleID == m_article.getArticleID())
 				{
-					window.getHeaderBar().setMarked(true);
+					view.getHeader().setMarked(true);
 				}
 				break;
 		}
@@ -635,6 +629,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal, uint duration = 500)
 	{
+		if(!reveal)
+			this.set_size_request(0, 0);
 		m_revealer.set_transition_duration(duration);
 		m_revealer.set_reveal_child(reveal);
 	}

@@ -195,27 +195,27 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 
     public bool logout(string id)
     {
-        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/instapaper/%s/".printf(id));
-        var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password",
+		Logger.debug(@"InstaAPI.logout($id)");
+        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", @"/org/gnome/feedreader/share/instapaper/$id/");
+        var pwSchema = new Secret.Schema("org.gnome.feedreader.instapaper.password",
                                         Secret.SchemaFlags.NONE, "userID", Secret.SchemaAttributeType.STRING);
 
         var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
         attributes["userID"] = settings.get_string("user-id");
 		bool removed = false;
 
-        Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
+        Secret.password_clearv.begin(pwSchema, attributes, null, (obj, async_res) => {
 			try
 			{
 				removed = Secret.password_clearv.end(async_res);
+				if(!removed)
+					Logger.error(@"Could not delete password of InstaAPI account $id");
 			}
 			catch(GLib.Error e)
 			{
 				Logger.error("InstaAPI.logout: %s".printf(e.message));
 			}
         });
-
-		if(!removed)
-			return false;
 
         var keys = settings.list_keys();
 		foreach(string key in keys)

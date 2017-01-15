@@ -46,15 +46,14 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			m_OwnCloudURL = "example-host/owncloud";
 			return LoginResponse.ALL_EMPTY;
 		}
-		if(m_OwnCloudURL == ""){
+        if(m_OwnCloudURL == "")
 			return LoginResponse.MISSING_URL;
-		}
-		if(m_username == ""){
+        if(GLib.Uri.parse_scheme(m_OwnCloudURL) == null)
+            return LoginResponse.INVALID_URL;
+		if(m_username == "")
 			return LoginResponse.MISSING_USER;
-		}
-		if(m_password == ""){
+		if(m_password == "")
 			return LoginResponse.MISSING_PASSWD;
-		}
 
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + "status", m_username, m_password, "GET");
 		int error = message.send();

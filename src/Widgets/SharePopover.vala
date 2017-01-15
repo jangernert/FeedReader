@@ -17,7 +17,6 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 	private Gtk.ListBox m_list;
 	private Gtk.Stack m_stack;
-    public signal void showSettings(string panel);
 	public signal void startShare();
 	public signal void shareDone();
 
@@ -96,7 +95,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		if(shareRow == null)
 		{
 			this.hide();
-			showSettings("service");
+			SettingsDialog.get_default().showDialog("service");
 			Logger.debug("SharePopover: open Settings");
 			return;
 		}
@@ -104,10 +103,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
         string url = "";
         string id = shareRow.getID();
 
-        var window = this.get_toplevel() as readerUI;
-        if(window != null)
-            url = window.getContent().getSelectedURL();
-
+        url = ColumnView.get_default().getSelectedURL();
 		var widget = Share.get_default().shareWidget(shareRow.getType(), url);
 		if(widget == null)
 			shareURL(id, url);

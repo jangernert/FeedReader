@@ -34,17 +34,17 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return true;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-feedly-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return m_utils.getEmail();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return "http://feedly.com/";
 	}

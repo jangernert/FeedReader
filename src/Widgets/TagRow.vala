@@ -181,8 +181,8 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			uint time = 300;
 			this.reveal(false, time);
 
-			var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
-			var notification = content.showNotification(_("Tag \"%s\" removed").printf(m_name));
+			string text = _("Tag \"%s\" removed").printf(m_name);
+			var notification = MainWindow.get_default().showNotification(text);
 			ulong eventID = notification.dismissed.connect(() => {
 				Logger.debug("TagRow: delete Tag");
 				try{DBusConnection.get_default().deleteTag(m_tagID);}
@@ -199,7 +199,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			showRenamePopover();
 		});
 
-		var app = (FeedApp)GLib.Application.get_default();
+		var app = FeedReaderApp.get_default();
 		app.add_action(rename_action);
 		app.add_action(remove_action);
 

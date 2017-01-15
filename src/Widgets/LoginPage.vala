@@ -113,9 +113,8 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		var extension = serviceRow.getExtension();
 		Logger.debug("serviceSelected: %s".printf(serviceRow.getServiceName()));
 
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
+		var window = MainWindow.get_default();
 		window.getSimpleHeader().showBackButton(true);
-
 		m_activeExtension = extension.getID();
 
 		if(extension.needWebLogin())

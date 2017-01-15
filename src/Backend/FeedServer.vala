@@ -297,10 +297,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			//updateFeedList();
 			//updateArticleList();
 
-			if(Settings.state().get_boolean("no-animations"))
+			if(Settings.state().get_boolean("no-animations") && Settings.general().get_boolean("articlelist-newest-first"))
 			{
-				Logger.debug("UI NOT running: setting \"articlelist-new-rows\"");
 				int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+				Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
 				Settings.state().set_int("articlelist-new-rows", newCount);
 			}
 		}
@@ -375,6 +375,7 @@ public class FeedReader.FeedServer : GLib.Object {
             Logger.debug("Grabber: parsing failed");
     		return;
     	}
+		grabberUtils.fixIframeSize(doc, "youtube.com");
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
 		grabberUtils.repairURL("//iframe", "src", doc, Article.getURL());
 		grabberUtils.stripNode(doc, "//a[not(node())]");
@@ -527,28 +528,28 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.doInitSync();
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
-		if(!m_pluginLoaded)
-			return null;
-
 		Logger.debug("feedserver: symbolicIcon");
+
+		if(!m_pluginLoaded)
+			return "none";
 
 		return m_plugin.symbolicIcon();
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		if(!m_pluginLoaded)
-			return null;
+			return "none";
 
 		return m_plugin.accountName();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		if(!m_pluginLoaded)
-			return null;
+			return "none";
 
 		return m_plugin.getServerURL();
 	}

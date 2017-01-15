@@ -39,15 +39,14 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			m_ttrss_url = "example-host/tt-rss";
 			return LoginResponse.ALL_EMPTY;
 		}
-		if(m_ttrss_url == ""){
+		if(m_ttrss_url == "")
 			return LoginResponse.MISSING_URL;
-		}
-		if(username == ""){
+		if(GLib.Uri.parse_scheme(m_ttrss_url) == null)
+            return LoginResponse.INVALID_URL;
+		if(username == "")
 			return LoginResponse.MISSING_USER;
-		}
-		if(passwd == ""){
+		if(passwd == "")
 			return LoginResponse.MISSING_PASSWD;
-		}
 
 
 		var message = new ttrssMessage(m_ttrss_url);

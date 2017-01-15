@@ -35,11 +35,7 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 
     private void populateList()
     {
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		if(window != null)
-		{
-			m_media = window.getContent().getSelectedArticleMedia();
-		}
+		m_media = ColumnView.get_default().getSelectedArticleMedia();
 
         foreach(string media in m_media)
         {

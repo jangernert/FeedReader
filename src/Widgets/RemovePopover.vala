@@ -53,8 +53,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	public void removeX()
 	{
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		m_feedlist = window.getContent().getFeedList();
+		m_feedlist = ColumnView.get_default().getFeedList();
 		m_feedlist.moveUP();
 		m_feedlist.revealRow(m_id, m_type, false, m_time);
 
@@ -78,9 +77,8 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	private void removeTag()
 	{
-		var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 		string text = _("Tag \"%s\" removed").printf(m_name);
-		var notification = content.showNotification(text);
+		var notification = MainWindow.get_default().showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
 			try
@@ -101,9 +99,8 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 
 	private void removeFeed()
 	{
-		var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 		string text = _("Feed \"%s\" removed").printf(m_name);
-		var notification = content.showNotification(text);
+		var notification = MainWindow.get_default().showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
 			try
@@ -125,9 +122,8 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 	private void removeCategory()
 	{
 		m_feedlist.expand_collapse_category(m_id, false);
-		var content = ((FeedApp)GLib.Application.get_default()).getWindow().getContent();
 		string text = _("Category \"%s\" removed").printf(m_name);
-		var notification = content.showNotification(text);
+		var notification = MainWindow.get_default().showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
 			try

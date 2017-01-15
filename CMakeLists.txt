@@ -14,7 +14,7 @@ set (UI_NAME "feedreader")
 set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
-set (VERSION "2.0-dev")
+set (VERSION "2.0 beta1")
 set (GLIB_VERSION 2.40)
 
 find_package(PkgConfig)
@@ -87,7 +87,7 @@ vala_precompile(LIBFR libFeedReader
 	src/Model/Category.vala
 	src/Model/Article.vala
 	src/Model/Tag.vala
-	src/Model/OfflineAction.vala
+	src/Model/CachedAction.vala
 	src/Model/InterfaceState.vala
 	src/Model/ShareAccount.vala
 	Constants.vala
@@ -139,21 +139,24 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/AddPopover.vala
 	src/Widgets/ArticleRow.vala
 	src/Widgets/ArticleView.vala
+	src/Widgets/ArticleViewHeader.vala
 	src/Widgets/ArticleViewLoadProgress.vala
 	src/Widgets/ArticleViewUrlOverlay.vala
 	src/Widgets/BackendInfoPopover.vala
 	src/Widgets/CategorieRow.vala
 	src/Widgets/ColorCircle.vala
 	src/Widgets/ColorPopover.vala
-	src/Widgets/ContentPage.vala
+	src/Widgets/ColumnView.vala
+	src/Widgets/ColumnViewHeader.vala
 	src/Widgets/FeedList.vala
 	src/Widgets/FeedListFooter.vala
 	src/Widgets/FeedRow.vala
 	src/Widgets/FullscreenButton.vala
-	src/Widgets/FullscreenHeaderbar.vala
+	src/Widgets/FullscreenHeader.vala
 	src/Widgets/HoverButton.vala
 	src/Widgets/ImagePopup.vala
 	src/Widgets/InAppNotification.vala
+	src/Widgets/InfoBar.vala
 	src/Widgets/LoginPage.vala
 	src/Widgets/LoginRow.vala
 	src/Widgets/MainWindow.vala
@@ -161,7 +164,6 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/MediaPopover.vala
 	src/Widgets/MediaRow.vala
 	src/Widgets/ModeButton.vala
-	src/Widgets/ReaderHeaderbar.vala
 	src/Widgets/RemovePopover.vala
 	src/Widgets/ResetPage.vala
 	src/Widgets/ServiceSettingsPopover.vala
@@ -234,10 +236,11 @@ if(LIBUNITY_FOUND)
 endif(LIBUNITY_FOUND)
 
 vala_precompile(daemon ${DAEMON_NAME}
+	src/ActionCache.vala
 	src/Daemon.vala
 	src/dbDaemon.vala
 	src/Notification.vala
-	src/OfflineActionManager.vala
+	src/CachedActionManager.vala
 	src/Backend/FeedServer.vala
 	src/Backend/FeedServerInterface.vala
 	src/Backend/OPMLparser.vala

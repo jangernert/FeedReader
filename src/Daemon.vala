@@ -25,7 +25,7 @@ namespace FeedReader {
 #endif
 		private LoginResponse m_loggedin;
 		private bool m_offline = true;
-		private OfflineActionManager m_offlineActions;
+		private bool m_cacheSync = false;
 		private uint m_timeout_source_id = 0;
 		private delegate void asyncPayload();
 
@@ -57,7 +57,6 @@ namespace FeedReader {
 		private FeedDaemonServer()
 		{
 			Logger.debug("daemon: constructor");
-			m_offlineActions = new OfflineActionManager();
 			login(Settings.general().get_string("plugin"));
 
 #if WITH_LIBUNITY
@@ -107,18 +106,18 @@ namespace FeedReader {
 			return FeedServer.get_default().supportMultiLevelCategories();
 		}
 
-		public string? symbolicIcon()
+		public string symbolicIcon()
 		{
 			Logger.debug("daemon: symbolicIcon");
 			return FeedServer.get_default().symbolicIcon();
 		}
 
-		public string? accountName()
+		public string accountName()
 		{
 			return FeedServer.get_default().accountName();
 		}
 
-		public string? getServerURL()
+		public string getServerURL()
 		{
 			return FeedServer.get_default().getServerURL();
 		}
@@ -192,9 +191,11 @@ namespace FeedReader {
 			if(m_loggedin == LoginResponse.SUCCESS && Settings.state().get_boolean("currently-updating") == false)
 			{
 				Logger.info("daemon: sync started");
+				m_cacheSync = true;
 				Settings.state().set_boolean("currently-updating", true);
 				FeedServer.get_default().syncContent();
 				updateBadge();
+				m_cacheSync = false;
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
 				syncFinished();
@@ -289,10 +290,10 @@ namespace FeedReader {
 			});
 			this.setOnline.connect(() => {
 				m_offline = false;
-				if(dbDaemon.get_default().isTableEmpty("OfflineActions"))
+				if(dbDaemon.get_default().isTableEmpty("CachedActions"))
 				{
-					m_offlineActions.goOnline();
-					dbDaemon.get_default().resetOfflineActions();
+					CachedActionManager.get_default().executeActions();
+					dbDaemon.get_default().resetCachedActions();
 				}
 			});
 
@@ -370,11 +371,19 @@ namespace FeedReader {
 					var idArray = articleID.split(",");
 					foreach(string id in idArray)
 					{
-						m_offlineActions.markArticleRead(id, status);
+						CachedActionManager.get_default().markArticleRead(id, status);
 					}
 				}
 				else
 				{
+					if(m_cacheSync)
+					{
+						var idArray = articleID.split(",");
+						foreach(string id in idArray)
+						{
+							ActionCache.get_default().markArticleRead(id, status);
+						}
+					}
 
 					asyncPayload pl = () => { FeedServer.get_default().setArticleIsRead(articleID, status); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
@@ -390,9 +399,11 @@ namespace FeedReader {
 			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
 			{
 				if(m_offline)
-					m_offlineActions.markArticleStarred(articleID, status);
+					CachedActionManager.get_default().markArticleStarred(articleID, status);
 				else
 				{
+					if(m_cacheSync)
+						ActionCache.get_default().markArticleStarred(articleID, status);
 					asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(articleID, status); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -539,10 +550,12 @@ namespace FeedReader {
 			{
 				if(m_offline)
 				{
-					m_offlineActions.markCategoryRead(feedID);
+					CachedActionManager.get_default().markCategoryRead(feedID);
 				}
 				else
 				{
+					if(m_cacheSync)
+						ActionCache.get_default().markCategoryRead(feedID);
 					asyncPayload pl = () => { FeedServer.get_default().setCategorieRead(feedID); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -559,10 +572,12 @@ namespace FeedReader {
 			{
 				if(m_offline)
 				{
-					m_offlineActions.markFeedRead(feedID);
+					CachedActionManager.get_default().markFeedRead(feedID);
 				}
 				else
 				{
+					if(m_cacheSync)
+						ActionCache.get_default().markFeedRead(feedID);
 					asyncPayload pl = () => { FeedServer.get_default().setFeedRead(feedID); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
@@ -581,10 +596,12 @@ namespace FeedReader {
 		{
 			if(m_offline)
 			{
-				m_offlineActions.markAllRead();
+				CachedActionManager.get_default().markAllRead();
 			}
 			else
 			{
+				if(m_cacheSync)
+					ActionCache.get_default().markAllRead();
 				asyncPayload pl = () => { FeedServer.get_default().markAllItemsRead(); };
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}

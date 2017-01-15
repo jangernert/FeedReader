@@ -34,17 +34,17 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return true;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-owncloud-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return m_utils.getUser();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return m_utils.getURL();
 	}

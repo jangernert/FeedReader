@@ -28,7 +28,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private Gtk.Stack m_stack;
 	private WebKit.WebView? m_currentView = null;
 	private Gdk.RGBA? m_color = null;
-	private fullscreenHeaderbar m_fsHead;
+	private FullscreenHeader m_fsHead;
 	private fullscreenButton m_prevButton;
 	private fullscreenButton m_nextButton;
 	private ArticleViewLoadProgress m_progress;
@@ -110,12 +110,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 			}
         });
 
-		m_fsHead = new fullscreenHeaderbar();
+		m_fsHead = new FullscreenHeader();
 		m_fsHead.close.connect(() => {
 			leaveFullscreen(false);
-			var window = this.get_toplevel() as readerUI;
-			if(window != null && window.is_toplevel())
-				window.unfullscreen();
+			MainWindow.get_default().unfullscreen();
 		});
 
 		var fullscreenHeaderOverlay = new Gtk.Overlay();
@@ -124,9 +122,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
 		m_prevButton.click.connect(() => {
-			var window = this.get_toplevel() as readerUI;
-			if(window != null && window.is_toplevel())
-				window.getContent().ArticleListPREV();
+			ColumnView.get_default().ArticleListPREV();
 		});
 		var prevOverlay = new Gtk.Overlay();
 		prevOverlay.add(fullscreenHeaderOverlay);
@@ -134,9 +130,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		m_nextButton = new fullscreenButton("go-next-symbolic", Gtk.Align.END);
 		m_nextButton.click.connect(() => {
-			var window = this.get_toplevel() as readerUI;
-			if(window != null && window.is_toplevel())
-				window.getContent().ArticleListNEXT();
+			ColumnView.get_default().ArticleListNEXT();
 		});
 		var nextOverlay = new Gtk.Overlay();
 		nextOverlay.add(prevOverlay);
@@ -169,6 +163,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	private WebKit.WebView getNewView()
 	{
+		bool smoothScroll = Settings.tweaks().get_boolean("smooth-scrolling");
 		var settings = new WebKit.Settings();
 		settings.set_enable_accelerated_2d_canvas(true);
 		settings.set_enable_html5_database(false);
@@ -177,7 +172,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		settings.set_enable_media_stream(false);
 		settings.set_enable_page_cache(false);
 		settings.set_enable_plugins(false);
-		settings.set_enable_smooth_scrolling(true);
+		settings.set_enable_smooth_scrolling(smoothScroll);
 		settings.set_javascript_can_access_clipboard(false);
 		settings.set_javascript_can_open_windows_automatically(false);
 		settings.set_media_playback_requires_user_gesture(true);
@@ -322,14 +317,12 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 		if(m_FullscreenArticle)
 		{
-			var window = this.get_toplevel() as readerUI;
-
-			if(window.getContent().ArticleListSelectedIsLast())
+			if(ColumnView.get_default().ArticleListSelectedIsLast())
 				m_prevButton.reveal(false);
 			else
 				m_prevButton.reveal(true);
 
-			if(window.getContent().ArticleListSelectedIsFirst())
+			if(ColumnView.get_default().ArticleListSelectedIsFirst())
 				m_nextButton.reveal(false);
 			else
 				m_nextButton.reveal(true);
@@ -533,7 +526,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_connected = true;
 			m_messenger = connection.get_proxy_sync("org.gnome.feedreader.FeedReaderArticleView", "/org/gnome/feedreader/FeedReaderArticleView", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
 			m_messenger.onClick.connect((path, width, height, url) => {
-				var window = this.get_toplevel() as readerUI;
+				var window = MainWindow.get_default();
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
@@ -742,16 +735,12 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private void setBackgroundColor()
 	{
 		Logger.debug("ArticleView.setBackgroundColor()");
-		var window = ((FeedApp)GLib.Application.get_default()).getWindow();
-		if(window != null)
-		{
-			var background = window.getContent().getBackgroundColor();
-            if(background.alpha == 1.0)
-            {
-				// Don't set a background color that is transparent.
-				m_color = background;
-            }
-		}
+		var background = ColumnView.get_default().getBackgroundColor();
+        if(background.alpha == 1.0)
+        {
+			// Don't set a background color that is transparent.
+			m_color = background;
+        }
 	}
 
 	private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitTestResult hitTest)
@@ -779,7 +768,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 			var uri = hitTest.get_image_uri().substring("file://".length);
 			var action = new Gtk.Action("save", _("Save image as"), null, null);
 			action.activate.connect(() => {
-				UtilsUI.saveImageDialog(uri, this.get_toplevel() as Gtk.Window);
+				UtilsUI.saveImageDialog(uri);
 			});
 			menu.append(new WebKit.ContextMenuItem(action));
 		}
@@ -848,13 +837,10 @@ public class FeedReader.articleView : Gtk.Overlay {
 			m_fsHead.show();
 			m_currentView.zoom_level = m_FullscreenZoomLevel;
 
-			var window = this.get_toplevel() as readerUI;
-			var content = window.getContent();
-
-			if(!content.ArticleListSelectedIsFirst())
+			if(!ColumnView.get_default().ArticleListSelectedIsFirst())
 				m_nextButton.reveal(true);
 
-			if(!content.ArticleListSelectedIsLast())
+			if(!ColumnView.get_default().ArticleListSelectedIsLast())
 				m_prevButton.reveal(true);
 
 		}
@@ -939,16 +925,25 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 	}
 
-	public void print(string filename)
+	public bool playingMedia()
+	{
+		if(m_currentMedia == null)
+			return false;
+
+		return true;
+	}
+
+	public void print()
 	{
 		if(m_currentView == null)
 			return;
 
+		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle() + ".pdf";
 
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");
 		settings.set("output-file-format", "pdf");
-		settings.set("output-uri", filename);
+		settings.set("output-uri", articleName);
 
 		var setup = new Gtk.PageSetup();
 		setup.set_left_margin(0, Gtk.Unit.MM);
@@ -968,7 +963,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 			Logger.debug("ArticleView: print finished");
 		});
 
-		op.print();
+		//op.print();
+		op.run_dialog(MainWindow.get_default());
 	}
 
 	private bool decidePolicy(WebKit.PolicyDecision decision, WebKit.PolicyDecisionType type)
@@ -994,6 +990,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 
 		return false;
+	}
+
+	public void showMediaButton(bool show)
+	{
+		m_fsHead.showMediaButton(show);
 	}
 
 }

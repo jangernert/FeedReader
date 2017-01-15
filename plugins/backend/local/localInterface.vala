@@ -33,17 +33,17 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return false;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-local-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return "Local RSS";
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return "http://localhorst/";
 	}
@@ -338,10 +338,18 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		foreach(feed Feed in f)
 		{
 			Logger.debug("getArticles for feed: " + Feed.getTitle());
+			string url = Feed.getXmlUrl().escape("");
+
+			if(url == null || url == "" || GLib.Uri.parse_scheme(url) == null)
+			{
+				Logger.error("no valid URL");
+				continue;
+			}
+
 			var session = new Soup.Session();
 			session.user_agent = Constants.USER_AGENT;
 			session.timeout = 5;
-			var msg = new Soup.Message("GET", Feed.getXmlUrl().escape(""));
+			var msg = new Soup.Message("GET", url);
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
 

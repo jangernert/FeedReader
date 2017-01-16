@@ -31,6 +31,8 @@ FILE *in;
 
 CHAR* OUTPUT;
 CHAR LINEBREAK[1] = L"\n";
+size_t currentsize = 0;
+size_t outputsize = 0;
 long int count = 0;
 
 /* ------------------------------------------------ */
@@ -45,7 +47,8 @@ void open_files(char *input)
 
 	if(OUTPUT != NULL)
 		free(OUTPUT);
-	OUTPUT = (CHAR*)malloc(4*sizeof(CHAR)*strlen(input));
+	outputsize = strlen(input);
+	OUTPUT = malloc(sizeof(CHAR)*outputsize);
 	OUTPUT[0]='\0';
 }
 
@@ -53,6 +56,18 @@ void open_files(char *input)
 
 void output_string(CHAR *str)
 {
+	currentsize += wcslen(str) + wcslen(LINEBREAK);
+
+	if(currentsize > outputsize)
+	{
+		if(2*outputsize > currentsize)
+			outputsize *= 2;
+		else
+			outputsize += currentsize;
+
+		OUTPUT = realloc(OUTPUT, sizeof(CHAR)*outputsize);
+	}
+
 	wcscat(OUTPUT, str);
 	wcscat(OUTPUT, LINEBREAK);
 }
@@ -160,16 +175,6 @@ int read_char()
 	} else {
 		return c;
 	}
-}
-
-/* ------------------------------------------------ */
-
-/* set back stream p characters */
-void goback_char(int p)
-{
-	printf("\nACHTUNG\n");
-	fseek(in, -p, SEEK_CUR);
-	printf("\nACHTUNG\n");
 }
 
 /* ------------------------------------------------ */

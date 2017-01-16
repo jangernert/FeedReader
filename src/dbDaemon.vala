@@ -478,10 +478,10 @@ public class FeedReader.dbDaemon : dbBase {
         foreach(article a in articles)
         {
             // FIXME
-            //stmt.bind_text(unread_position, ActionCache.get_default().checkRead(a.getArticleID(), a.getUnread()).to_string());
-            stmt.bind_text(unread_position, a.getUnread().to_string());
-            //stmt.bind_text(marked_position, ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked()).to_string());
-            stmt.bind_text(marked_position, a.getMarked().to_string());
+            stmt.bind_text(unread_position, ActionCache.get_default().checkRead(a).to_string());
+            //stmt.bind_text(unread_position, a.getUnread().to_string());
+            stmt.bind_text(marked_position, ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked()).to_string());
+            //stmt.bind_text(marked_position, a.getMarked().to_string());
             stmt.bind_text(tags_position, a.getTagString());
             stmt.bind_int (modified_position, a.getLastModified());
             stmt.bind_text(articleID_position, a.getArticleID());

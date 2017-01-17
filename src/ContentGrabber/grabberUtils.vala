@@ -592,6 +592,9 @@ public class FeedReader.grabberUtils : GLib.Object {
     private static string? checkParent(Xml.Node* node)
     {
         Logger.debug("Grabber: checkParent");
+        string smallImgURL = node->get_prop("src");
+        int64 origSize = 0;
+        int64 size = 0;
         Xml.Node* parent = node->parent;
         string name = parent->name;
         Logger.debug(@"Grabber: parent $name");
@@ -607,12 +610,24 @@ public class FeedReader.grabberUtils : GLib.Object {
                 session.send_message(message);
                 var params = new GLib.HashTable<string, string>(null, null);
                 string? contentType = message.response_headers.get_content_type(out params);
+                size = message.response_headers.get_content_length();
+                var message2 = new Soup.Message("HEAD", smallImgURL);
+                session.send_message(message2);
+                origSize = message2.response_headers.get_content_length();
                 if(contentType != null)
                 {
                     Logger.debug(@"Grabber: type $contentType");
                     if(contentType.has_prefix("image/"))
                     {
-                        return url;
+                        if(size != 0 && origSize != 0)
+                        {
+                            if(size > origSize)
+                                return url;
+                            else
+                                return null;
+                        }
+                        else
+                            return url;
                     }
                 }
             }

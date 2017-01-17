@@ -122,7 +122,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 
 	private void parseFeed(Xml.Node* node, string? catID = null)
 	{
-		if(node->get_prop("type") == "rss")
+		if(node->get_prop("type") == "rss" || node->get_prop("type") == "atom")
 		{
 			string title = "No Title";
 			if(hasProp(node, "text"))

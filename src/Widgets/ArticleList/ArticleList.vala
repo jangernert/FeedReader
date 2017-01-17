@@ -472,7 +472,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	private void showNotification()
 	{
-		if(m_overlay != null)
+		if(m_overlay != null
+		|| !Settings.general().get_boolean("articlelist-newest-first"))
 			return;
 
 		m_overlay = new InAppNotification.withIcon(

@@ -64,7 +64,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			else
 				m_syncPopover.show_all();
 		});
-		m_syncProgressText = new Gtk.Label(_("Waiting for next update information"));
+		m_syncProgressText = new Gtk.Label(Settings.state().get_string("sync-status"));
 		m_syncProgressText.margin = 20;
 		m_syncPopover = new Gtk.Popover(m_refresh_button);
 		m_syncPopover.add(m_syncProgressText);

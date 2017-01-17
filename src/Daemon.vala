@@ -198,6 +198,7 @@ namespace FeedReader {
 				m_cacheSync = false;
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
+				Settings.state().set_string("sync-status", "");
 				syncFinished();
 				Logger.info("daemon: sync finished");
 			}
@@ -264,6 +265,7 @@ namespace FeedReader {
 				updateBadge();
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
+				Settings.state().set_string("sync-status", "");
 				syncFinished();
 				Logger.info("daemon: initSync finished");
 			}

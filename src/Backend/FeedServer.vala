@@ -125,7 +125,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
-		updateSyncProgress(_("Getting feeds and categories"));
+		syncProgress(_("Getting feeds and categories"));
 
 		if(!getFeedsAndCats(feeds, categories, tags))
 		{
@@ -164,7 +164,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
 
-		updateSyncProgress(_("Getting articles"));
+		syncProgress(_("Getting articles"));
 
 		if(unread > max && useMaxArticles())
 		{
@@ -219,7 +219,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
-		updateSyncProgress(_("Getting feeds and categories"));
+		syncProgress(_("Getting feeds and categories"));
 
 		getFeedsAndCats(feeds, categories, tags);
 
@@ -235,11 +235,11 @@ public class FeedReader.FeedServer : GLib.Object {
 		newFeedList();
 
 		// get marked articles
-		updateSyncProgress(_("Getting starred articles"));
+		syncProgress(_("Getting starred articles"));
 		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED);
 
 		// get articles for each tag
-		updateSyncProgress(_("Getting tagged articles"));
+		syncProgress(_("Getting tagged articles"));
 		foreach(var tag_item in tags)
 		{
 			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
@@ -252,7 +252,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 
 		// get unread articles
-		updateSyncProgress(_("Getting unread articles"));
+		syncProgress(_("Getting unread articles"));
 		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 		//update fulltext table
@@ -318,7 +318,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			foreach(var Article in articles)
 			{
 				++i;
-				updateSyncProgress(_(@"Grabbing full content: $i / $size"));
+				syncProgress(_(@"Grabbing full content: $i / $size"));
 				if(Settings.general().get_boolean("content-grabber"))
 				{
 					var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
@@ -840,6 +840,12 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		m_plugin.getArticles(count, whatToGet, feedID, isTagID);
+	}
+
+	private void syncProgress(string text)
+	{
+		updateSyncProgress(text);
+		Settings.state().set_string("sync-status", text);
 	}
 
 }

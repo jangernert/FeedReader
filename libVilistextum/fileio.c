@@ -46,7 +46,11 @@ void open_files(char *input)
 	}
 
 	if(OUTPUT != NULL)
+	{
+		currentsize = 0;
 		free(OUTPUT);
+	}
+
 	outputsize = strlen(input);
 	OUTPUT = malloc(sizeof(CHAR)*outputsize);
 	OUTPUT[0]='\0';

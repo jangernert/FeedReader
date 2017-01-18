@@ -138,7 +138,10 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 		if(catID == null)
 		{
-			catID = m_catEntry.text;
+			if(m_catEntry.text == "")
+				catID = m_catEntry.placeholder_text;
+			else
+				catID = m_catEntry.text;
 			isID = false;
 		}
 

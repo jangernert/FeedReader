@@ -134,7 +134,10 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		string catID = "";
 		bool isID = true;
 
-		catID = dbUI.get_default().getCategoryID(m_catEntry.text);
+		if(m_catEntry.text == "")
+			catID = dbUI.get_default().getCategoryID(m_catEntry.text);
+		else
+			catID = dbUI.get_default().getCategoryID(m_catEntry.placeholder_text);
 
 		if(catID == null)
 		{

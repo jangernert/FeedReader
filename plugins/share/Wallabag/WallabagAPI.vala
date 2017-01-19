@@ -295,7 +295,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 
     public string pluginName()
     {
-        return "Wallabag";
+        return "wallabag";
     }
 
     public ServiceSetup? newSetup_withID(string id, string username)

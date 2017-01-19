@@ -52,7 +52,7 @@ void open_files(char *input)
 	}
 
 	outputsize = strlen(input);
-	OUTPUT = malloc(sizeof(CHAR)*outputsize);
+	OUTPUT = malloc(sizeof(CHAR)*(outputsize+1));
 	OUTPUT[0]='\0';
 }
 
@@ -69,7 +69,7 @@ void output_string(CHAR *str)
 		else
 			outputsize += currentsize;
 
-		OUTPUT = realloc(OUTPUT, sizeof(CHAR)*outputsize);
+		OUTPUT = realloc(OUTPUT, sizeof(CHAR)*(outputsize+1));
 	}
 
 	wcscat(OUTPUT, str);

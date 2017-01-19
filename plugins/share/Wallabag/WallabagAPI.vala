@@ -33,8 +33,8 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
         string message = "grant_type=password"
 		 				+ "&client_id=" + clientID
 						+ "&client_secret=" + clientSecret
-						+ "&username=" + username
-						+ "&password=" + password;
+						+ "&username=" + GLib.Uri.escape_string(username)
+						+ "&password=" + GLib.Uri.escape_string(password);
 
 
 		string url = baseURL + "oauth/v2/token";

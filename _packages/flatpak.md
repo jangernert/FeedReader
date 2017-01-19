@@ -18,5 +18,5 @@ GNOME-Software can handle flatpak bundles, just open the downloaded feedreader.f
 You can also install the feedreader.flatpak from the commandline as so:
 
 <pre>
-	$ flatpak install --bundle feedreader.flatpak
+$ flatpak install --bundle feedreader.flatpak
 </pre>

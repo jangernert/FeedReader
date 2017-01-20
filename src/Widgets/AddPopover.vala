@@ -131,24 +131,18 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			return;
 		}
 
-		string catID = "";
+		string? catID = null;
 		bool isID = true;
 
-		if(m_catEntry.text == "")
-			catID = dbUI.get_default().getCategoryID(m_catEntry.text);
-		else
-			catID = dbUI.get_default().getCategoryID(m_catEntry.placeholder_text);
+		catID = dbUI.get_default().getCategoryID(m_catEntry.text);
 
-		if(catID == null)
+		if(catID == null && m_catEntry.text != "")
 		{
-			if(m_catEntry.text == "")
-				catID = m_catEntry.placeholder_text;
-			else
-				catID = m_catEntry.text;
+			catID = m_catEntry.text;
 			isID = false;
 		}
 
-		Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, catID));
+		Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, (catID == null) ? "null" : catID));
 		try
 		{
 			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID);

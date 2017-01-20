@@ -896,6 +896,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool onCrash()
 	{
 		m_busy = true;
+		m_progress.setPercentage(0);
+		m_progress.reveal(false);
 		Gtk.Widget? oldView = null;
 		if(m_stack.get_visible_child_name() != "crash")
 			oldView = m_stack.get_visible_child();

@@ -143,7 +143,10 @@ public class FeedReader.OPMLparser : GLib.Object {
 				Logger.debug(space() + "Feed: " + title + " feedURL: " + feedURL);
 			}
 
-			m_feeds.add(new feed("", title, website, false, 0,  { catID }, feedURL));
+			if(catID == null)
+				m_feeds.add(new feed("", title, website, false, 0,  {}, feedURL));
+			else
+				m_feeds.add(new feed("", title, website, false, 0,  { catID }, feedURL));
 		}
 	}
 

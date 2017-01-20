@@ -1,4 +1,4 @@
-[![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=39403833)](https://www.bountysource.com/teams/jangernert-feedreader/issues?tracker_ids=39403833)
+[![Bountysource](https://www.bountysource.com/badge/tracker?tracker_id=39403833)](https://www.bountysource.com/teams/jangernert-feedreader/issues)
 
 
 # [FeedReader](http://jangernert.github.io/FeedReader/)

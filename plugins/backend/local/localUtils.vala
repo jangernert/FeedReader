@@ -158,7 +158,7 @@ public class FeedReader.localUtils : GLib.Object {
 				}
 				return true;
 			}
-			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error(@"Error downloading icon for feed: $feed_id - $icon_url");
 			return false;
 		}
 

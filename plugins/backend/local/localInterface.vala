@@ -398,7 +398,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				var Article = new article
 				(
-									(item.guid != null) ? item.guid : Utils.string_random(16),
+									(item.guid != null) ? item.guid.replace(":", "_").replace("/", "_").replace(" ", "") : Utils.string_random(16),
 									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
 									item.link,
 									Feed.getFeedID(),

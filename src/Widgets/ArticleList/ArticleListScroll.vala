@@ -21,6 +21,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	private double m_upperCache = 0.0;
 	private double m_valueCache = 0.0;
+	private double m_valueThreshold = 20.0;
 	private double m_bottomThreshold = 200.0;
 	private ArticleListBalance m_balance = ArticleListBalance.NONE;
 
@@ -69,9 +70,9 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	private void trackValue()
 	{
-		if(vadjustment.value > m_valueCache)
+		if(vadjustment.value > (m_valueCache + m_valueThreshold))
 			valueChanged(ScrollDirection.DOWN);
-		else if(vadjustment.value < m_valueCache)
+		else if(vadjustment.value < (m_valueCache - m_valueThreshold))
 			valueChanged(ScrollDirection.UP);
 
 		checkScrolledTop();

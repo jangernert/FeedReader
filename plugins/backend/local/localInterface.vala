@@ -231,9 +231,13 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				finishedFeeds.add(Feed);
 			}
-
 			else
 				Logger.error("Couldn't add Feed: " + f.getXmlUrl());
+		}
+
+		foreach(var feed in finishedFeeds)
+		{
+			Logger.debug("finishedFeed: " + feed.getTitle());
 		}
 
 		dbDaemon.get_default().write_feeds(finishedFeeds);

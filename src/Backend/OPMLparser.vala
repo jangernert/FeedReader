@@ -144,7 +144,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			}
 
 			if(catID == null)
-				m_feeds.add(new feed("", title, website, false, 0,  {}, feedURL));
+				m_feeds.add(new feed("", title, website, false, 0,  { FeedServer.get_default().uncategorizedID() }, feedURL));
 			else
 				m_feeds.add(new feed("", title, website, false, 0,  { catID }, feedURL));
 		}

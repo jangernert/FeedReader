@@ -129,7 +129,7 @@ public class FeedReader.dbBase : GLib.Object {
 			executeSQL(						"""CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
 	}
 
-	protected void executeSQL(string sql)
+	protected void executeSQL(string sql, Sqlite.Callback? callback = null)
 	{
 		string errmsg;
 		int ec = sqlite_db.exec(sql, null, out errmsg);

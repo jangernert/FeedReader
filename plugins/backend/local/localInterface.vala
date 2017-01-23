@@ -424,9 +424,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		if(articleArray.size > 0)
 		{
 			dbDaemon.get_default().write_articles(articleArray);
+			Logger.debug("localInterface: %i articles written".printf(articleArray.size));
 			updateFeedList();
 			updateArticleList();
-			Logger.debug("localInterface: %i articles fetched".printf(articleArray.size));
 		}
 	}
 

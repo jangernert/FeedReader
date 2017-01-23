@@ -283,9 +283,15 @@ public class FeedReader.grabberUtils : GLib.Object {
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
         Xml.XPath.Object* res;
         if(tag == null)
-            res = cntx.eval_expression("//*[@%s]".printf(attribute));
+        {
+            Logger.debug(@"addAttributes: //* $attribute $val");
+            res = cntx.eval_expression(@"//*");
+        }
         else
-            res = cntx.eval_expression("//%s[@%s]".printf(tag, attribute));
+        {
+            Logger.debug(@"addAttributes: //$tag  $attribute $val");
+            res = cntx.eval_expression(@"//$tag");
+        }
 
         if(res == null)
         {

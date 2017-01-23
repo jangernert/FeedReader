@@ -208,10 +208,11 @@ public class FeedReader.articleView : Gtk.Overlay {
 
 	public async void fillContent(string articleID)
 	{
-		Logger.debug("ArticleView: load article %s".printf(articleID));
+		Logger.debug(@"ArticleView: load article $articleID");
 
 		if(m_busy)
 		{
+			Logger.debug(@"ArticleView: currently busy - next article in line is $articleID");
 			m_nextArticle = articleID;
 			return;
 		}
@@ -334,6 +335,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_busy = false;
 		if(m_nextArticle != null)
 		{
+			Logger.debug(@"ArticleView: load queued article $m_nextArticle");
 			var id = m_nextArticle;
 			m_nextArticle = null;
 			load(id);
@@ -368,20 +370,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 		{
 			case WebKit.LoadEvent.STARTED:
 				Logger.debug("ArticleView: load STARTED");
-				string url = m_currentView.get_uri();
-				if(url != "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/")
-				{
-					Logger.debug(@"ArticleView: open external url: $url");
-					try
-					{
-						Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
-					}
-					catch(GLib.Error e)
-					{
-						Logger.debug("could not open the link in an external browser: %s".printf(e.message));
-					}
-					m_currentView.stop_loading();
-				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
 				Logger.debug("ArticleView: load COMMITTED");
@@ -950,8 +938,6 @@ public class FeedReader.articleView : Gtk.Overlay {
 		var setup = new Gtk.PageSetup();
 		setup.set_left_margin(0, Gtk.Unit.MM);
 		setup.set_right_margin(0, Gtk.Unit.MM);
-		//setup.set_top_margin(0, Gtk.Unit.MM);
-		//setup.set_bottom_margin(0, Gtk.Unit.MM);
 
 		var op = new WebKit.PrintOperation(m_currentView);
 		op.set_print_settings(settings);
@@ -972,6 +958,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool decidePolicy(WebKit.PolicyDecision decision, WebKit.PolicyDecisionType type)
 	{
 		Logger.debug("ArticleView: Policy decision");
+		Logger.debug(type.to_string());
 		if(type == WebKit.PolicyDecisionType.NEW_WINDOW_ACTION)
 		{
 			var des = (WebKit.NavigationPolicyDecision)decision;

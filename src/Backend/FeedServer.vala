@@ -54,7 +54,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_plugin.updateArticleList.connect(() => { updateArticleList(); });
 			m_plugin.writeInterfaceState.connect(() => { writeInterfaceState(); });
 			m_plugin.showArticleListOverlay.connect(() => { showArticleListOverlay(); });
-			m_plugin.setNewRows.connect((before) => { setNewRows(before); });
 			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
 		});
 
@@ -183,7 +182,10 @@ public class FeedReader.FeedServer : GLib.Object {
 		int after = dbDaemon.get_default().getHighestRowID();
 		int newArticles = after-before;
 		if(newArticles > 0)
+		{
 			Notification.send(newArticles);
+			setNewRows(newArticles);
+		}
 
 		switch(Settings.general().get_enum("drop-articles-after"))
 		{
@@ -277,32 +279,22 @@ public class FeedReader.FeedServer : GLib.Object {
 			for (var has_next = it.last(); has_next; has_next = it.previous())
 				new_articles.add(it.get());
 
-			int before = dbDaemon.get_default().getHighestRowID();
 			dbDaemon.get_default().write_articles(new_articles);
 			updateFeedList();
 			updateArticleList();
-			setNewRows(before);
 		}
 	}
 
-	private void setNewRows(int before)
+	private void setNewRows(int newArticles)
 	{
-		int after = dbDaemon.get_default().getHighestRowID();
-		int newArticles = after-before;
+		Logger.debug("FeedServer: new articles: %i".printf(newArticles));
+		writeInterfaceState();
 
-		if(newArticles > 0)
+		if(Settings.state().get_boolean("no-animations") && Settings.general().get_boolean("articlelist-newest-first"))
 		{
-			Logger.debug("FeedServer: new articles: %i".printf(newArticles));
-			writeInterfaceState();
-			//updateFeedList();
-			//updateArticleList();
-
-			if(Settings.state().get_boolean("no-animations") && Settings.general().get_boolean("articlelist-newest-first"))
-			{
-				int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-				Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
-				Settings.state().set_int("articlelist-new-rows", newCount);
-			}
+			int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+			Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
+			Settings.state().set_int("articlelist-new-rows", newCount);
 		}
 	}
 

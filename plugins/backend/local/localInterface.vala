@@ -423,12 +423,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articleArray.size > 0)
 		{
-			int before = dbDaemon.get_default().getHighestRowID();
-			writeInterfaceState();
+			dbDaemon.get_default().write_articles(articleArray);
 			updateFeedList();
 			updateArticleList();
-			dbDaemon.get_default().write_articles(articleArray);
-			setNewRows(before);
+			Logger.debug("localInterface: %i articles fetched".printf(articleArray.size));
 		}
 	}
 

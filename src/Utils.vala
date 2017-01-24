@@ -68,8 +68,14 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
-	public static string UTF8fix(string old_string, bool removeHTML = false)
+	public static string UTF8fix(string? old_string, bool removeHTML = false)
 	{
+		if(old_string == null)
+		{
+			Logger.warning("Utils.UTF8fix: string is NULL");
+			return "NULL";
+		}
+
 		int rm_html = 0;
 		if(removeHTML)
 			rm_html = 1;

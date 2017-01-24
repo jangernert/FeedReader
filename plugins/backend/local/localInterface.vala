@@ -357,6 +357,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
 
+
+
 			// parse
 			Rss.Parser parser = new Rss.Parser();
 			try
@@ -389,8 +391,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					if(date == null)
 						date = new GLib.DateTime.now_local();
 				}
+				string? content = m_utils.convert(item.description, locale);
 
-				string content = m_utils.convert(item.description, locale);
+				if(content == null)
+					content = _("Nothing to read here.");
 
 				string media = "";
 				if(item.enclosure_url != null)

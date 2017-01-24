@@ -736,10 +736,13 @@ namespace FeedReader {
 			string catID = null;
 			string newCatName = null;
 
-			if(isID)
-				catID = cat;
-			else
-				newCatName = cat;
+			if(cat != "")
+			{
+				if(isID)
+					catID = cat;
+				else
+					newCatName = cat;
+			}
 
 			if(asynchron)
 			{

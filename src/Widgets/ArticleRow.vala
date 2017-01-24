@@ -94,6 +94,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			m_unread_stack.set_visible_child_name("unread");
 		else if(m_article.getUnread() == ArticleStatus.READ)
 			m_unread_stack.set_visible_child_name("empty");
+		else
+			Logger.warning("ArticleRow: id %s - unread status undefined %i".printf(m_article.getArticleID(), m_article.getUnread()));
 
 		m_unread_eventbox.enter_notify_event.connect(unreadIconEnter);
 		m_unread_eventbox.leave_notify_event.connect(unreadIconLeave);
@@ -111,6 +113,8 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			m_marked_stack.set_visible_child_name("marked");
 		else if(m_article.getMarked() == ArticleStatus.UNMARKED)
 			m_marked_stack.set_visible_child_name("empty");
+		else
+			Logger.warning("ArticleRow: id %s - unread status undefined %i".printf(m_article.getArticleID(), m_article.getMarked()));
 
 		m_marked_eventbox.enter_notify_event.connect(markedIconEnter);
 		m_marked_eventbox.leave_notify_event.connect(markedIconLeave);

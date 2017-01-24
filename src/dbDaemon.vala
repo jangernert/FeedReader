@@ -477,11 +477,17 @@ public class FeedReader.dbDaemon : dbBase {
 
         foreach(article a in articles)
         {
-            // FIXME
-            stmt.bind_text(unread_position, ActionCache.get_default().checkRead(a).to_string());
-            //stmt.bind_text(unread_position, a.getUnread().to_string());
-            stmt.bind_text(marked_position, ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked()).to_string());
-            //stmt.bind_text(marked_position, a.getMarked().to_string());
+            var unread = ActionCache.get_default().checkRead(a);
+            var marked = ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked());
+
+            if(unread != ArticleStatus.READ && unread != ArticleStatus.UNREAD)
+                Logger.warning(@"dbDaemon.update_articles: writing invalid unread status $unread for article " + a.getArticleID());
+
+            if(marked != ArticleStatus.MARKED && marked != ArticleStatus.UNMARKED)
+                Logger.warning(@"dbDaemon.update_articles: writing invalid marked status $marked for article " + a.getArticleID());
+
+            stmt.bind_int (unread_position, unread);
+            stmt.bind_int (marked_position, marked);
             stmt.bind_text(tags_position, a.getTagString());
             stmt.bind_int (modified_position, a.getLastModified());
             stmt.bind_text(articleID_position, a.getArticleID());

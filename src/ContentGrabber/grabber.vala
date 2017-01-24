@@ -100,6 +100,20 @@ public class FeedReader.Grabber : GLib.Object {
 
         if(!checkConfigFile())
         {
+            // special treatment for sites like youtube
+            string youtube = "youtube.com/watch?v=";
+            if(m_articleURL.contains(youtube))
+            {
+                Logger.debug("Grabber: special treatment - youtube video");
+                string ytHTML = "<div class=\"videoWrapper\"><iframe width=\"100%\" src=\"https://www.youtube.com/embed/%s\" frameborder=\"0\" allowfullscreen></iframe></div>";
+                int start = m_articleURL.index_of(youtube) + youtube.length;
+                int end = m_articleURL.index_of("?", start);
+                string id = m_articleURL.substring(start, (end == -1) ? -1 : end-start);
+
+                m_html = ytHTML.printf(id);
+                return true;
+            }
+
             string oldURL = m_articleURL;
 
             // download to check if website redirects

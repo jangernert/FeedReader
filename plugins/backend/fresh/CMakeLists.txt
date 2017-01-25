@@ -77,8 +77,8 @@ add_dependencies(${UINAME} ${EXEC_NAME} ${DAEMON_NAME})
 
 add_schema("org.gnome.feedreader.${NAME}.gschema.xml")
 
-install(TARGETS ${NAME} DESTINATION ${PKGDATADIR}/plugins)
-install(TARGETS ${UINAME} DESTINATION ${PKGDATADIR}/pluginsUI)
-install(FILES ${NAME}.plugin DESTINATION ${PKGDATADIR}/plugins)
-install(FILES ${UINAME}.plugin DESTINATION ${PKGDATADIR}/pluginsUI)
+install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/plugins)
+install(TARGETS ${UINAME} DESTINATION ${PKGLIBDIR}/pluginsUI)
+install(FILES ${NAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
+install(FILES ${UINAME}.plugin DESTINATION ${PKGLIBDIR}/pluginsUI)
 

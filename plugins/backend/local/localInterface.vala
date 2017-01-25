@@ -380,6 +380,13 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var articles = doc.get_items();
 			foreach(Rss.Item item in articles)
 			{
+				string? articleID = item.guid;
+
+				if(articleID != null)
+					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "");
+				else
+					articleID = Utils.string_random(16);
+
 				var date = new GLib.DateTime.now_local();
 
 				if(item.pub_date != null)
@@ -402,7 +409,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				var Article = new article
 				(
-									(item.guid != null) ? item.guid.replace(":", "_").replace("/", "_").replace(" ", "") : Utils.string_random(16),
+									articleID,
 									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
 									item.link,
 									Feed.getFeedID(),

@@ -66,9 +66,19 @@ public class FeedReader.localUtils : GLib.Object {
 			else
 				hasIcon = false;
 
+			string? title = doc.title;
+			if(title == null)
+			{
+				var uri = new Soup.URI(xmlURL);
+				if(uri == null)
+					title = _("unknown Feed");
+				else
+					title = uri.get_host();
+			}
+
 			var Feed = new feed(
 						feedID,
-						doc.title,
+						title,
 						url,
 						hasIcon,
 						0,

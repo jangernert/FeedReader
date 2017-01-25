@@ -8,6 +8,7 @@ include_directories(${CMAKE_SOURCE_DIR})
 add_definitions("-w")
 
 include(GNUInstallDirs)
+set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
 set (PKGDATADIR "${DATADIR}/FeedReader")
 set (PKGLIBDIR "${CMAKE_INSTALL_LIBDIR}/FeedReader")
 set (GETTEXT_PACKAGE ${CMAKE_PROJECT_NAME})

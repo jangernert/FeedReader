@@ -385,7 +385,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(articleID != null)
 					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "");
 				else
-					articleID = Utils.string_random(16);
+					continue;
 
 				var date = new GLib.DateTime.now_local();
 

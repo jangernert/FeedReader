@@ -53,7 +53,7 @@ namespace FeedReader {
 	public class Constants : GLib.Object {
 
 		public const string INSTALL_PREFIX	= "@CMAKE_INSTALL_PREFIX@";
-		public const string INSTALL_LIBDIR		= "@CMAKE_INSTALL_LIBDIR@";
+		public const string INSTALL_LIBDIR		= "@PKGLIBDIR@";
 		public const string GIT_SHA1		= "@GIT_SHA1@";
 		public const string USER_AGENT		= "FeedReader @VERSION@";
 		public const int DBusAPIVersion = 17;

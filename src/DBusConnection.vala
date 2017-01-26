@@ -15,7 +15,7 @@
 
 namespace FeedReader {
 
-	[DBus (name = "org.gnome.feedreader")]
+	[DBus (name = "org.gnome.feedreaderDaemon")]
 	public interface FeedDaemon : Object {
 
 		public abstract void scheduleSync(int time) throws IOError;
@@ -112,7 +112,7 @@ namespace FeedReader {
 		{
 			try
 			{
-				m_connection = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreader", "/org/gnome/feedreader");
+				m_connection = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreaderDaemon", "/org/gnome/feedreaderDaemon");
 			}
 			catch(IOError e)
 			{
@@ -127,7 +127,7 @@ namespace FeedReader {
 		{
 			Logger.info("FeedReader: start daemon");
 			try{
-				GLib.Process.spawn_async("/", {"feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+				GLib.Process.spawn_async("/", {"feedreaderDaemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 			}catch(GLib.SpawnError e){
 				Logger.error("spawning command line: %s".printf(e.message));
 			}

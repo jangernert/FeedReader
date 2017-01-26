@@ -31,7 +31,7 @@ public class FeedReader.Share : GLib.Object {
 	private Share()
 	{
 		var engine = Peas.Engine.get_default();
-		engine.add_search_path(Constants.INSTALL_PREFIX + "/share/FeedReader/pluginsShare/", null);
+		engine.add_search_path(Constants.INSTALL_LIBDIR + "/FeedReader/pluginsShare/", null);
 		engine.enable_loader("python3");
 
 		m_plugins = new Peas.ExtensionSet(engine, typeof(ShareAccountInterface));

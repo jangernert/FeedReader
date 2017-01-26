@@ -87,8 +87,8 @@ target_link_libraries(${UINAME} gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
 add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
 add_dependencies(${UINAME} ${EXEC_NAME} ${DAEMON_NAME})
 
-install(TARGETS ${NAME} DESTINATION ${PKGDATADIR}/plugins)
-install(TARGETS ${UINAME} DESTINATION ${PKGDATADIR}/pluginsUI)
-install(FILES ${NAME}.plugin DESTINATION ${PKGDATADIR}/plugins)
-install(FILES ${UINAME}.plugin DESTINATION ${PKGDATADIR}/pluginsUI)
+install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/plugins)
+install(TARGETS ${UINAME} DESTINATION ${PKGLIBDIR}/pluginsUI)
+install(FILES ${NAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
+install(FILES ${UINAME}.plugin DESTINATION ${PKGLIBDIR}/pluginsUI)
 

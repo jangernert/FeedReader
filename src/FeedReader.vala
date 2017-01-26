@@ -67,7 +67,7 @@ namespace FeedReader {
 		{
 			base.activate();
 
-			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/share/FeedReader/");
+			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_LIBDIR + "/FeedReader/");
 
 			if(m_window == null)
 			{

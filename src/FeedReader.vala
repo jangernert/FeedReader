@@ -134,7 +134,7 @@ namespace FeedReader {
 
 		private FeedReaderApp()
 		{
-			GLib.Object(application_id: "org.gnome.feedreader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
+			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
 	}
 

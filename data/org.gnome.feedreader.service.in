@@ -1,3 +1,0 @@
-[D-BUS Service]
-Name=org.gnome.feedreader
-Exec=@CMAKE_INSTALL_PREFIX@/bin/feedreader-daemon

@@ -1,4 +1,4 @@
-[DBus (name = "org.gnome.feedreader.articleview")]
+[DBus (name = "org.gnome.FeedReader.ArticleView")]
 public class FeedReaderWebExtension : Object {
 
     private WebKit.DOM.Document m_doc;
@@ -10,7 +10,7 @@ public class FeedReaderWebExtension : Object {
     {
     	try
     	{
-        	connection.register_object("/org/gnome/feedreader/articleview", this);
+        	connection.register_object("/org/gnome/FeedReader/ArticleView", this);
         }
         catch(GLib.IOError e)
         {
@@ -163,7 +163,7 @@ public class FeedReaderWebExtension : Object {
     }
 }
 
-[DBus (name = "org.gnome.feedreader.articleview")]
+[DBus (name = "org.gnome.FeedReader.ArticleView")]
 public errordomain FeedReaderWebExtensionError
 {
     ERROR
@@ -174,6 +174,6 @@ void webkit_web_extension_initialize(WebKit.WebExtension extension)
 {
     var server = new FeedReaderWebExtension();
     extension.page_created.connect(server.on_page_created);
-    Bus.own_name(BusType.SESSION, "org.gnome.feedreader.articleview", BusNameOwnerFlags.NONE,
+    Bus.own_name(BusType.SESSION, "org.gnome.FeedReader.ArticleView", BusNameOwnerFlags.NONE,
         server.on_bus_aquired, null, () => { warning("Could not aquire name"); });
 }

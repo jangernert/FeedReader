@@ -63,7 +63,7 @@ namespace FeedReader {
 			if(m_window == null)
 			{
 				m_window = MainWindow.get_default();
-				m_window.set_icon_name("org.gnome.feedreader");
+				m_window.set_icon_name("org.gnome.FeedReader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 			}
 
@@ -125,7 +125,7 @@ namespace FeedReader {
 
 		private FeedReaderApp()
 		{
-			GLib.Object(application_id: "org.gnome.feedreader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
+			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
 	}
 

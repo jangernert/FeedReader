@@ -36,10 +36,10 @@ add_subdirectory (libVilistextum)
 include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/Constants.vala.in" "${CMAKE_SOURCE_DIR}/Constants.vala" @ONLY)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader.daemon.service.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.feedreader.daemon.service" @ONLY)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader.appdata.xml.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.feedreader.appdata.xml" @ONLY)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.feedreader.desktop" @ONLY)
-configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.feedreader-autostart.desktop" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.Daemon.service.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader.Daemon.service" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.appdata.xml.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader.appdata.xml" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader.desktop" @ONLY)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop" @ONLY)
 
 set(MODULES 
 	gtk+-3.0>=3.20
@@ -206,7 +206,7 @@ CUSTOM_VAPIS
 	vapi/gd-1.0.vapi
 )
 
-GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE data/feedreader.gresource.xml)
+GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE data/org.gnome.FeedReader.gresource.xml)
 
 add_executable(${UI_NAME} ${UI} ${GRESOURCES})
 target_link_libraries(${UI_NAME} vilistextum gtkimageview gd FeedReaderCommon)
@@ -291,10 +291,10 @@ add_custom_target(uninstall COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_D
 install (TARGETS ${UI_NAME} RUNTIME DESTINATION bin)
 install (TARGETS ${DAEMON_NAME} RUNTIME DESTINATION bin)
 install (FILES ${PROJECT_BINARY_DIR}/WebExtension/libwebextension.so DESTINATION ${PKGLIBDIR})
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader.desktop DESTINATION ${DATADIR}/applications/)
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader-autostart.desktop DESTINATION ${PKGDATADIR})
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader.appdata.xml DESTINATION ${DATADIR}/appdata/)
-install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.feedreader.daemon.service DESTINATION ${DATADIR}/dbus-1/services/)
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.desktop DESTINATION ${DATADIR}/applications/)
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop DESTINATION ${PKGDATADIR})
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.appdata.xml DESTINATION ${DATADIR}/appdata/)
+install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.Daemon.service DESTINATION ${DATADIR}/dbus-1/services/)
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/application-icons/hicolor DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})

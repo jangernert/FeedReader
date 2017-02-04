@@ -52,27 +52,18 @@ namespace FeedReader {
 			Logger.info("FeedReader " + AboutInfo.version);
 
 			base.startup();
-
-			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
-			{
-				var quit_action = new SimpleAction("quit", null);
-				quit_action.activate.connect(this.quit);
-				this.add_action(quit_action);
-
-				this.app_menu = UtilsUI.getMenu();
-			}
 		}
 
 		public override void activate()
 		{
 			base.activate();
 
-			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/share/FeedReader/");
+			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR);
 
 			if(m_window == null)
 			{
 				m_window = MainWindow.get_default();
-				m_window.set_icon_name("feedreader");
+				m_window.set_icon_name("org.gnome.feedreader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 			}
 
@@ -134,7 +125,7 @@ namespace FeedReader {
 
 		private FeedReaderApp()
 		{
-			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
+			GLib.Object(application_id: "org.gnome.feedreader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
 	}
 

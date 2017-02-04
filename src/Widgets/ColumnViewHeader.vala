@@ -64,7 +64,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			else
 				m_syncPopover.show_all();
 		});
-		m_syncProgressText = new Gtk.Label(_("Waiting for next update information"));
+		m_syncProgressText = new Gtk.Label(Settings.state().get_string("sync-status"));
 		m_syncProgressText.margin = 20;
 		m_syncPopover = new Gtk.Popover(m_refresh_button);
 		m_syncPopover.add(m_syncProgressText);
@@ -100,6 +100,13 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			menubutton.set_menu_model(UtilsUI.getMenu());
 			menubutton.set_tooltip_text(_("Settings"));
 			m_header_left.pack_end(menubutton);
+		}
+		else if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
+		{
+			var quit_action = new SimpleAction("quit", null);
+			quit_action.activate.connect(FeedReaderApp.get_default().quit);
+			FeedReaderApp.get_default().add_action(quit_action);
+			FeedReaderApp.get_default().app_menu = UtilsUI.getMenu();
 		}
 
 

@@ -29,7 +29,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		if(username != "")
 			loggedIN = true;
 
-		base("Wallabag", "feed-share-wallabag", loggedIN, username);
+		base("wallabag", "feed-share-wallabag", loggedIN, username);
 
 		//------------------------------------------------
 		// XAuth revealer

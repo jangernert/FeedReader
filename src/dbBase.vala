@@ -129,7 +129,7 @@ public class FeedReader.dbBase : GLib.Object {
 			executeSQL(						"""CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
 	}
 
-	protected void executeSQL(string sql)
+	protected void executeSQL(string sql, Sqlite.Callback? callback = null)
 	{
 		string errmsg;
 		int ec = sqlite_db.exec(sql, null, out errmsg);
@@ -402,24 +402,26 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public string getFeedName(string feedID)
 	{
+		string result = _("unknown Feed");
+
 		if(feedID == "")
-			return "unknown Feed";
+			return result;
+
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("name");
 		query.addEqualsCondition("feed_id", feedID, true, true);
 		query.build();
 
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
+		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
 		{
 			Logger.error(query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		string result = "";
-
-		while (stmt.step () == Sqlite.ROW) {
+		while(stmt.step() == Sqlite.ROW)
+		{
 			result = stmt.column_text(0);
 		}
 

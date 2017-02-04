@@ -122,7 +122,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 
 	private void parseFeed(Xml.Node* node, string? catID = null)
 	{
-		if(node->get_prop("type") == "rss")
+		if(node->get_prop("type") == "rss" || node->get_prop("type") == "atom")
 		{
 			string title = "No Title";
 			if(hasProp(node, "text"))
@@ -143,7 +143,10 @@ public class FeedReader.OPMLparser : GLib.Object {
 				Logger.debug(space() + "Feed: " + title + " feedURL: " + feedURL);
 			}
 
-			m_feeds.add(new feed("", title, website, false, 0,  { catID }, feedURL));
+			if(catID == null)
+				m_feeds.add(new feed("", title, website, false, 0,  { FeedServer.get_default().uncategorizedID() }, feedURL));
+			else
+				m_feeds.add(new feed("", title, website, false, 0,  { catID }, feedURL));
 		}
 	}
 

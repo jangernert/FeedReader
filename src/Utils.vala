@@ -68,8 +68,14 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
-	public static string UTF8fix(string old_string, bool removeHTML = false)
+	public static string UTF8fix(string? old_string, bool removeHTML = false)
 	{
+		if(old_string == null)
+		{
+			Logger.warning("Utils.UTF8fix: string is NULL");
+			return "NULL";
+		}
+
 		int rm_html = 0;
 		if(removeHTML)
 			rm_html = 1;
@@ -98,7 +104,7 @@ public class FeedReader.Utils : GLib.Object {
 				string modified_html = _("No Text available for this article :(");
 				if(Article.getHTML() != "")
 				{
-					modified_html = Article.getHTML().replace("src=\"//","src=\"http://").replace("target=\"_blank\"", "");
+					modified_html = Article.getHTML().replace("src=\"//","src=\"http://");
 				}
 				Article.setHTML(modified_html);
 			}

@@ -316,12 +316,9 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articles.size > 0)
 		{
-			int before = dbDaemon.get_default().getHighestRowID();
-			writeInterfaceState();
 			dbDaemon.get_default().write_articles(articles);
 			updateFeedList();
 			updateArticleList();
-			setNewRows(before);
 		}
 	}
 

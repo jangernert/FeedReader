@@ -16,7 +16,7 @@
 namespace FeedReader {
 
 	public enum FeedID {
-		SEPARATOR,
+		SEPARATOR = -77,
 		ALL,
 		CATEGORIES;
 

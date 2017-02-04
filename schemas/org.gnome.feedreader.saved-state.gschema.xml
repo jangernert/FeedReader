@@ -166,6 +166,14 @@
                 String the user filtered the articles by.
             </description>
         </key>
+        
+        <key name="sync-status" type="s">
+            <default>""</default>
+            <summary>status of current sync</summary>
+            <description>
+                Last known status of the current sync the UI can pick up if just started
+            </description>
+        </key>
     </schema>
 
 </schemalist>

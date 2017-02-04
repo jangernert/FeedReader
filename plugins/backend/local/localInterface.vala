@@ -105,7 +105,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool serverAvailable()
 	{
-		return Utils.ping("https://www.google.com/");
+		return Utils.ping("https://duckduckgo.com/");
 	}
 
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)
@@ -231,9 +231,13 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				finishedFeeds.add(Feed);
 			}
-
 			else
 				Logger.error("Couldn't add Feed: " + f.getXmlUrl());
+		}
+
+		foreach(var feed in finishedFeeds)
+		{
+			Logger.debug("finishedFeed: " + feed.getTitle());
 		}
 
 		dbDaemon.get_default().write_feeds(finishedFeeds);
@@ -353,6 +357,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
 
+
+
 			// parse
 			Rss.Parser parser = new Rss.Parser();
 			try
@@ -374,6 +380,13 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var articles = doc.get_items();
 			foreach(Rss.Item item in articles)
 			{
+				string? articleID = item.guid;
+
+				if(articleID != null)
+					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "");
+				else
+					continue;
+
 				var date = new GLib.DateTime.now_local();
 
 				if(item.pub_date != null)
@@ -385,8 +398,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					if(date == null)
 						date = new GLib.DateTime.now_local();
 				}
+				string? content = m_utils.convert(item.description, locale);
 
-				string content = m_utils.convert(item.description, locale);
+				if(content == null)
+					content = _("Nothing to read here.");
 
 				string media = "";
 				if(item.enclosure_url != null)
@@ -394,7 +409,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				var Article = new article
 				(
-									(item.guid != null) ? item.guid : Utils.string_random(16),
+									articleID,
 									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
 									item.link,
 									Feed.getFeedID(),
@@ -419,12 +434,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articleArray.size > 0)
 		{
-			int before = dbDaemon.get_default().getHighestRowID();
-			writeInterfaceState();
+			dbDaemon.get_default().write_articles(articleArray);
+			Logger.debug("localInterface: %i articles written".printf(articleArray.size));
 			updateFeedList();
 			updateArticleList();
-			dbDaemon.get_default().write_articles(articleArray);
-			setNewRows(before);
 		}
 	}
 

@@ -17,7 +17,7 @@ extern void exit(int exit_code);
 
 namespace FeedReader {
 
-	[DBus (name = "org.gnome.feedreader")]
+	[DBus (name = "org.gnome.feedreader.daemon")]
 	public class FeedDaemonServer : GLib.Object {
 
 #if WITH_LIBUNITY
@@ -60,7 +60,7 @@ namespace FeedReader {
 			login(Settings.general().get_string("plugin"));
 
 #if WITH_LIBUNITY
-			m_launcher = Unity.LauncherEntry.get_for_desktop_id("feedreader.desktop");
+			m_launcher = Unity.LauncherEntry.get_for_desktop_id("org.gnome.feedreader.desktop");
 			updateBadge();
 #endif
 			scheduleSync(Settings.general().get_int("sync"));
@@ -198,6 +198,7 @@ namespace FeedReader {
 				m_cacheSync = false;
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
+				Settings.state().set_string("sync-status", "");
 				syncFinished();
 				Logger.info("daemon: sync finished");
 			}
@@ -264,6 +265,7 @@ namespace FeedReader {
 				updateBadge();
 				FeedServer.get_default().grabContent();
 				Settings.state().set_boolean("currently-updating", false);
+				Settings.state().set_string("sync-status", "");
 				syncFinished();
 				Logger.info("daemon: initSync finished");
 			}
@@ -734,10 +736,13 @@ namespace FeedReader {
 			string catID = null;
 			string newCatName = null;
 
-			if(isID)
-				catID = cat;
-			else
-				newCatName = cat;
+			if(cat != "")
+			{
+				if(isID)
+					catID = cat;
+				else
+					newCatName = cat;
+			}
 
 			if(asynchron)
 			{
@@ -827,7 +832,7 @@ namespace FeedReader {
 
 	}
 
-	[DBus (name = "org.gnome.feedreaderError")]
+	[DBus (name = "org.gnome.feedreader.daemonError")]
 	public errordomain FeedError
 	{
 		SOME_ERROR
@@ -837,7 +842,7 @@ namespace FeedReader {
 	{
 		try
 		{
-		    conn.register_object("/org/gnome/feedreader", FeedDaemonServer.get_default());
+		    conn.register_object("/org/gnome/feedreader/daemon", FeedDaemonServer.get_default());
 		}
 		catch (IOError e)
 		{
@@ -918,7 +923,7 @@ namespace FeedReader {
 		if(dbDaemon.get_default().uninitialized())
 			dbDaemon.get_default().init();
 
-		Bus.own_name (BusType.SESSION, "org.gnome.feedreader", BusNameOwnerFlags.NONE,
+		Bus.own_name (BusType.SESSION, "org.gnome.feedreader.daemon", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,
 				      () => {
 				      			Settings.state().set_boolean("currently-updating", false);

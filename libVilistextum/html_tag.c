@@ -299,7 +299,7 @@ void html_tag()
 	}
 
 	/* Skip attributes */
-	while (ch!='>')
+	while (ch!='>' && ch!=EOF)
 	{
 		ch = get_attr();
 	}

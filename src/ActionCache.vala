@@ -34,6 +34,11 @@ public class FeedReader.ActionCache : GLib.Object {
 		return m_cache;
 	}
 
+    private ActionCache()
+    {
+        m_list = new Gee.ArrayList<CachedAction>();
+    }
+
     public void markArticleRead(string id, ArticleStatus read)
 	{
 		var cachedAction = CachedActions.MARK_READ;
@@ -186,37 +191,36 @@ public class FeedReader.ActionCache : GLib.Object {
         return marked;
     }
 
-    public ArticleStatus checkRead(string articleID, ArticleStatus read)
+    public ArticleStatus checkRead(article a)
     {
-        if(read == ArticleStatus.READ)
+        if(a.getUnread() == ArticleStatus.READ)
         {
-            foreach(CachedAction a in m_list)
+            foreach(CachedAction action in m_list)
             {
-                if(a.getType() == CachedActions.MARK_UNREAD
-                && a.getID() == articleID)
+                if(action.getType() == CachedActions.MARK_UNREAD
+                && action.getID() == a.getArticleID())
                     return ArticleStatus.UNREAD;
             }
         }
-        else if(read == ArticleStatus.UNREAD)
+        else if(a.getUnread() == ArticleStatus.UNREAD)
         {
-            var article = dbDaemon.get_default().read_article(articleID);
-            foreach(CachedAction a in m_list)
+            foreach(CachedAction action in m_list)
             {
-                switch(a.getType())
+                switch(action.getType())
                 {
                     case CachedActions.MARK_READ_ALL:
                         return ArticleStatus.READ;
 
                     case CachedActions.MARK_READ_FEED:
-                        if(a.getID() == article.getFeedID())
+                        if(action.getID() == a.getFeedID())
                             return ArticleStatus.READ;
                         break;
 
                     case CachedActions.MARK_READ_CATEGORY:
-                        var feedIDs = dbDaemon.get_default().getFeedIDofCategorie(a.getID());
+                        var feedIDs = dbDaemon.get_default().getFeedIDofCategorie(a.getArticleID());
                         foreach(string feedID in feedIDs)
                         {
-                            if(feedID == article.getFeedID())
+                            if(feedID == a.getFeedID())
                                 return ArticleStatus.READ;
                         }
                         break;
@@ -224,6 +228,6 @@ public class FeedReader.ActionCache : GLib.Object {
             }
         }
 
-        return read;
+        return a.getUnread();
     }
 }

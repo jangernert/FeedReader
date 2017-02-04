@@ -219,7 +219,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             {
                 var article_array = response.get_array_member("items");
                 var article_count = article_array.get_length();
-                Logger.debug("%u articles returned".printf(article_count));
+                Logger.debug("getNewArticles: %u articles returned".printf(article_count));
 
                 for(uint i = 0; i < article_count; i++)
                 {
@@ -291,7 +291,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
             {
                 var article_array = response.get_array_member("items");
                 var article_count = article_array.get_length();
-                Logger.debug("%u articles returned".printf(article_count));
+                Logger.debug("getArticles: %u articles returned".printf(article_count));
 
                 for(uint i = 0; i < article_count; i++)
                 {

@@ -85,7 +85,7 @@ int get_attr()
 	i=1;
 	attr_name[0] = ch;
 
-	while ((ch!='=') && (ch!='>')) {
+	while ((ch!='=') && (ch!='>') && (ch!=EOF)) {
 		ch=read_char();
 		if (i<DEF_STR_LEN) { attr_name[i++] = ch; }
 	} /* post cond: i<=DEF_STR_LEN */
@@ -108,6 +108,7 @@ int get_attr()
 		i=0;
 		ch=read_char();
 		while(quote!=ch) {
+			if(ch == EOF) { temp[i++] = quote; ch=quote; break; }
 			if (i<DEF_STR_LEN-1) { temp[i++] = ch; }
 			ch=read_char();
 		} /* post cond: i<=DEF_STR_LEN-1 */
@@ -119,7 +120,7 @@ int get_attr()
 		/* attribute looks like alt=bla */
 		i=1;
 		temp[0] = ch;
-		while ((ch!='>') && (!isspace(ch))) {
+		while ((ch!='>') && (!isspace(ch)) && (ch!=EOF)){
 			ch=read_char();
 			if (i<DEF_STR_LEN) { temp[i++] = ch; }
 		} /* post cond: i<=DEF_STR_LEN */
@@ -305,7 +306,7 @@ void html(int extractText)
 void check_for_center()
 {
 	int found=0;
-	while (ch!='>')
+	while (ch!='>' && ch!=EOF)
 	{
 		ch=get_attr();
 		if CMP("ALIGN", attr_name)
@@ -374,7 +375,7 @@ char *schemes[] = {"ftp://","file://" ,"http://" ,"gopher://" ,"mailto:" ,"news:
 void image(CHAR *alt_text, int show_alt)
 {
 	int found_alt=0;
-	while (ch!='>')
+	while (ch!='>' && ch!=EOF)
 	{
 		ch=get_attr();
 		if CMP("ALT", attr_name)
@@ -410,7 +411,7 @@ void find_encoding()
 	CHAR temp_locale[DEF_STR_LEN];
 
 	if (!processed_meta) {
-		while (ch!='>') {
+		while (ch!='>' && ch!=EOF) {
 			ch=get_attr();
 			if ((CMP("HTTP-EQUIV", attr_name)) || (CMP("NAME", attr_name))) {
 				if STRCASECMP("Content-Type", attr_ctnt) { found_ctnt=1; }
@@ -491,7 +492,7 @@ void start_nooutput()
 	print_zeile();
 	nooutput = 1;
 
-	while (ch!='>')
+	while (ch!='>' && ch!=EOF)
 	{
 		ch=get_attr();
 		if CMP("/", attr_name)

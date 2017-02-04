@@ -40,7 +40,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	private FeedServer()
 	{
 		m_engine = Peas.Engine.get_default();
-		m_engine.add_search_path(Constants.INSTALL_PREFIX + "/share/FeedReader/plugins/", null);
+		m_engine.add_search_path(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR + "/plugins/", null);
 		m_engine.enable_loader("python3");
 
 		m_extensions = new Peas.ExtensionSet(m_engine, typeof(FeedServerInterface));
@@ -54,7 +54,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_plugin.updateArticleList.connect(() => { updateArticleList(); });
 			m_plugin.writeInterfaceState.connect(() => { writeInterfaceState(); });
 			m_plugin.showArticleListOverlay.connect(() => { showArticleListOverlay(); });
-			m_plugin.setNewRows.connect((before) => { setNewRows(before); });
 			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
 		});
 
@@ -125,7 +124,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
-		updateSyncProgress(_("Getting feeds and categories"));
+		syncProgress(_("Getting feeds and categories"));
 
 		if(!getFeedsAndCats(feeds, categories, tags))
 		{
@@ -164,7 +163,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
 
-		updateSyncProgress(_("Getting articles"));
+		syncProgress(_("Getting articles"));
 
 		if(unread > max && useMaxArticles())
 		{
@@ -183,7 +182,10 @@ public class FeedReader.FeedServer : GLib.Object {
 		int after = dbDaemon.get_default().getHighestRowID();
 		int newArticles = after-before;
 		if(newArticles > 0)
+		{
 			Notification.send(newArticles);
+			setNewRows(newArticles);
+		}
 
 		switch(Settings.general().get_enum("drop-articles-after"))
 		{
@@ -219,7 +221,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
-		updateSyncProgress(_("Getting feeds and categories"));
+		syncProgress(_("Getting feeds and categories"));
 
 		getFeedsAndCats(feeds, categories, tags);
 
@@ -235,11 +237,11 @@ public class FeedReader.FeedServer : GLib.Object {
 		newFeedList();
 
 		// get marked articles
-		updateSyncProgress(_("Getting starred articles"));
+		syncProgress(_("Getting starred articles"));
 		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED);
 
 		// get articles for each tag
-		updateSyncProgress(_("Getting tagged articles"));
+		syncProgress(_("Getting tagged articles"));
 		foreach(var tag_item in tags)
 		{
 			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
@@ -252,7 +254,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 
 		// get unread articles
-		updateSyncProgress(_("Getting unread articles"));
+		syncProgress(_("Getting unread articles"));
 		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
 
 		//update fulltext table
@@ -277,32 +279,22 @@ public class FeedReader.FeedServer : GLib.Object {
 			for (var has_next = it.last(); has_next; has_next = it.previous())
 				new_articles.add(it.get());
 
-			int before = dbDaemon.get_default().getHighestRowID();
 			dbDaemon.get_default().write_articles(new_articles);
 			updateFeedList();
 			updateArticleList();
-			setNewRows(before);
 		}
 	}
 
-	private void setNewRows(int before)
+	private void setNewRows(int newArticles)
 	{
-		int after = dbDaemon.get_default().getHighestRowID();
-		int newArticles = after-before;
+		Logger.debug("FeedServer: new articles: %i".printf(newArticles));
+		writeInterfaceState();
 
-		if(newArticles > 0)
+		if(Settings.state().get_boolean("no-animations") && Settings.general().get_boolean("articlelist-newest-first"))
 		{
-			Logger.debug("FeedServer: new articles: %i".printf(newArticles));
-			writeInterfaceState();
-			//updateFeedList();
-			//updateArticleList();
-
-			if(Settings.state().get_boolean("no-animations") && Settings.general().get_boolean("articlelist-newest-first"))
-			{
-				int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
-				Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
-				Settings.state().set_int("articlelist-new-rows", newCount);
-			}
+			int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+			Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
+			Settings.state().set_int("articlelist-new-rows", newCount);
 		}
 	}
 
@@ -318,7 +310,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			foreach(var Article in articles)
 			{
 				++i;
-				updateSyncProgress(_(@"Grabbing full content: $i / $size"));
+				syncProgress(_(@"Grabbing full content: $i / $size"));
 				if(Settings.general().get_boolean("content-grabber"))
 				{
 					var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
@@ -840,6 +832,12 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		m_plugin.getArticles(count, whatToGet, feedID, isTagID);
+	}
+
+	private void syncProgress(string text)
+	{
+		updateSyncProgress(text);
+		Settings.state().set_string("sync-status", text);
 	}
 
 }

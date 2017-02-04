@@ -27,7 +27,7 @@ namespace FeedReader {
 		public const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" ,null };
 		public const string[] documenters = { "nobody", null };
 		public const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
-		public const string iconName      = "feedreader";
+		public const string iconName      = "org.gnome.feedreader";
 		public const string translators   = N_("translator-credits");
 		public const string website       = "http://jangernert.github.io/FeedReader/";
 	}
@@ -53,6 +53,7 @@ namespace FeedReader {
 	public class Constants : GLib.Object {
 
 		public const string INSTALL_PREFIX	= "@CMAKE_INSTALL_PREFIX@";
+		public const string INSTALL_LIBDIR		= "@PKGLIBDIR@";
 		public const string GIT_SHA1		= "@GIT_SHA1@";
 		public const string USER_AGENT		= "FeedReader @VERSION@";
 		public const int DBusAPIVersion = 17;

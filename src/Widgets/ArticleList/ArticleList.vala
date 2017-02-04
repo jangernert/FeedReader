@@ -226,7 +226,19 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		yield;
 
 		if(articles.size > 0)
+		{
+			m_scroll2.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addBottom(articles);
+			m_handlerID = m_currentList.loadDone.connect(() => {
+				m_scroll2.valueChanged.connect(updateVisibleRows);
+
+				if(m_handlerID != 0)
+				{
+					m_currentList.disconnect(m_handlerID);
+					m_handlerID = 0;
+				}
+			});
+		}
 	}
 
 	private async void loadNewer(int newCount, int offset)
@@ -257,7 +269,20 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		yield;
 
 		if(articles.size > 0)
+		{
+			m_scroll2.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addTop(articles);
+			m_handlerID = m_currentList.loadDone.connect(() => {
+				m_scroll2.valueChanged.connect(updateVisibleRows);
+
+				if(m_handlerID != 0)
+				{
+					m_currentList.disconnect(m_handlerID);
+					m_handlerID = 0;
+				}
+			});
+		}
+
 	}
 
 	public async void updateArticleList()
@@ -472,7 +497,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	private void showNotification()
 	{
-		if(m_overlay != null)
+		if(m_overlay != null
+		|| !Settings.general().get_boolean("articlelist-newest-first"))
 			return;
 
 		m_overlay = new InAppNotification.withIcon(

@@ -5,9 +5,6 @@
     "runtime-version": "3.22",
     "sdk": "org.gnome.Sdk",
     "command": "feedreader",
-    "rename-appdata-file": "feedreader.appdata.xml",
-    "rename-desktop-file": "feedreader.desktop",
-    "rename-icon": "feedreader",
     "copy-icon": true,
     "tags": ["nightly"],
     "desktop-file-name-prefix": "(nightly) ",
@@ -23,8 +20,8 @@
         "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
 	"--talk-name=org.gnome.OnlineAccounts",
-        "--own-name=org.gnome.FeedReader",
-        "--own-name=org.gnome.feedreader.FeedReaderArticleView",
+        "--own-name=org.gnome.feedreader.daemon",
+        "--own-name=org.gnome.feedreader.articleview",
         "--talk-name=org.freedesktop.Notifications",
         "--talk-name=org.freedesktop.secrets"
     ],
@@ -94,10 +91,7 @@
                     "type": "git",
                     "url": "https://github.com/jangernert/FeedReader.git",
 		    "branch": "master"
-                }	
-            ],
-            "post-install": [
-                "mv /app/share/dbus-1/services/feedreader.service /app/share/dbus-1/services/org.gnome.feedreader.service"
+                }
             ]
         }
     ]

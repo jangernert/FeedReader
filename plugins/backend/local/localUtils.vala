@@ -49,7 +49,14 @@ public class FeedReader.localUtils : GLib.Object {
 			if(doc.image_url != null
 			&& doc.image_url != "")
 			{
-				downloadIcon(feedID, doc.image_url);
+				if(downloadIcon(feedID, doc.image_url))
+				{
+					// success
+				}
+				else
+				{
+					Utils.downloadIcon(feedID, doc.link);
+				}
 			}
 			else if(doc.link != null
 			&& doc.link != "")
@@ -59,9 +66,19 @@ public class FeedReader.localUtils : GLib.Object {
 			else
 				hasIcon = false;
 
+			string? title = doc.title;
+			if(title == null)
+			{
+				var uri = new Soup.URI(xmlURL);
+				if(uri == null)
+					title = _("unknown Feed");
+				else
+					title = uri.get_host();
+			}
+
 			var Feed = new feed(
 						feedID,
-						doc.title,
+						title,
 						url,
 						hasIcon,
 						0,
@@ -158,7 +175,11 @@ public class FeedReader.localUtils : GLib.Object {
 				}
 				return true;
 			}
-			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
+			else
+			{
+				Logger.error(@"Error downloading icon for feed: $feed_id - $icon_url");
+			}
+
 			return false;
 		}
 

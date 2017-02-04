@@ -20,8 +20,6 @@ public class FeedReader.SharePopover : Gtk.Popover {
 	public signal void startShare();
 	public signal void shareDone();
 
-	// TODO: add stack that can slide over to a gtk.entry to type a message for plugins like mail
-
 	public SharePopover(Gtk.Widget widget)
 	{
         m_list = new Gtk.ListBox();

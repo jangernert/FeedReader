@@ -55,7 +55,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		setupResetPage();
 		setupContentPage();
 		setupSpringCleanPage();
-		onClose();
 
 		var shortcutsAction = new SimpleAction("shortcuts", null);
 		shortcutsAction.activate.connect(showShortcutWindow);
@@ -77,7 +76,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		var bountyAction = new SimpleAction("bounty", null);
 		bountyAction.activate.connect(() => {
 			try{
-				Gtk.show_uri(Gdk.Screen.get_default(), "https://www.bountysource.com/teams/feedreader-gtk/issues?tracker_ids=16778038", Gdk.CURRENT_TIME);
+				Gtk.show_uri(Gdk.Screen.get_default(), "https://www.bountysource.com/teams/jangernert-feedreader/issues", Gdk.CURRENT_TIME);
 			}
 			catch(GLib.Error e){
 				Logger.debug("could not open the link in an external browser: %s".printf(e.message));
@@ -144,8 +143,12 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.add(m_overlay);
 		this.set_events(Gdk.EventMask.KEY_PRESS_MASK);
 		this.set_titlebar(m_simpleHeader);
-		this.set_title ("FeedReader");
+		this.set_title("FeedReader");
 		this.set_default_size(Settings.state().get_int("window-width"), Settings.state().get_int("window-height"));
+		this.delete_event.connect(() => {
+			getInterfaceState().write();
+			return false;
+		});
 		this.show_all();
 
 		Logger.debug("MainWindow: determining state");
@@ -251,14 +254,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		m_stack.set_visible_child_full("springClean", transition);
 		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
-	}
-
-	private void onClose()
-	{
-		this.delete_event.connect(() => {
-			getInterfaceState().write();
-			return false;
-		});
 	}
 
 	public InterfaceState getInterfaceState()

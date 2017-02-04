@@ -52,15 +52,6 @@ namespace FeedReader {
 			Logger.info("FeedReader " + AboutInfo.version);
 
 			base.startup();
-
-			if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
-			{
-				var quit_action = new SimpleAction("quit", null);
-				quit_action.activate.connect(this.quit);
-				this.add_action(quit_action);
-
-				this.app_menu = UtilsUI.getMenu();
-			}
 		}
 
 		public override void activate()

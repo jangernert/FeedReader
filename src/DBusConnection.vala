@@ -15,7 +15,7 @@
 
 namespace FeedReader {
 
-	[DBus (name = "org.gnome.feedreaderDaemon")]
+	[DBus (name = "org.gnome.feedreader.daemon")]
 	public interface FeedDaemon : Object {
 
 		public abstract void scheduleSync(int time) throws IOError;
@@ -112,7 +112,7 @@ namespace FeedReader {
 		{
 			try
 			{
-				m_connection = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreaderDaemon", "/org/gnome/feedreaderDaemon");
+				m_connection = Bus.get_proxy_sync(BusType.SESSION, "org.gnome.feedreader.daemon", "/org/gnome/feedreader/daemon");
 			}
 			catch(IOError e)
 			{

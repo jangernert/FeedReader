@@ -512,7 +512,7 @@ public class FeedReader.articleView : Gtk.Overlay {
     	try
     	{
 			m_connected = true;
-			m_messenger = connection.get_proxy_sync("org.gnome.feedreader.FeedReaderArticleView", "/org/gnome/feedreader/FeedReaderArticleView", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
+			m_messenger = connection.get_proxy_sync("org.gnome.feedreader.articleview", "/org/gnome/feedreader/articleview", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
 			m_messenger.onClick.connect((path, width, height, url) => {
 				var window = MainWindow.get_default();
 				new imagePopup(path, url, window, height, width);

@@ -1,5 +1,5 @@
-PACKAGE   = feedreader
-JSON	  = org.gnome.feedreader.json
+PACKAGE   = FeedReader
+JSON	  = org.gnome.FeedReader.json
 ARCH	  = x86_64
 BRANCH	  = master
 VERSION   = $(BRANCH)-` date +"%Y%m%d" `

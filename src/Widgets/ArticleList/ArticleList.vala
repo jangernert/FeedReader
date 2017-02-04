@@ -104,25 +104,9 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_overlay != null)
 			m_overlay.dismiss();
 
-		// switch up lists
-		if(m_currentList == m_List1)
-		{
-			m_currentList = m_List2;
-			m_currentScroll = m_scroll2;
-			m_stack.set_visible_child_full("list2", transition);
-		}
-		else
-		{
-			m_currentList = m_List1;
-			m_currentScroll = m_scroll1;
-			m_stack.set_visible_child_full("list1", transition);
-		}
-
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		m_currentScroll.scrolledBottom.disconnect(loadMore);
-		m_currentScroll.scrollToPos(0, false);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
 		bool newArticles = false;
@@ -160,6 +144,22 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		}
 		else
 		{
+			// switch up lists
+			if(m_currentList == m_List1)
+			{
+				m_currentList = m_List2;
+				m_currentScroll = m_scroll2;
+				m_stack.set_visible_child_full("list2", transition);
+			}
+			else
+			{
+				m_currentList = m_List1;
+				m_currentScroll = m_scroll1;
+				m_stack.set_visible_child_full("list1", transition);
+			}
+
+			m_currentScroll.scrolledBottom.disconnect(loadMore);
+			m_currentScroll.scrollToPos(0, false);
 			m_currentList.newList(articles);
 
 			// restore the previous selected row

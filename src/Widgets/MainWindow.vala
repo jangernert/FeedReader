@@ -55,7 +55,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		setupResetPage();
 		setupContentPage();
 		setupSpringCleanPage();
-		onClose();
 
 		var shortcutsAction = new SimpleAction("shortcuts", null);
 		shortcutsAction.activate.connect(showShortcutWindow);
@@ -146,6 +145,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.set_titlebar(m_simpleHeader);
 		this.set_title("FeedReader");
 		this.set_default_size(Settings.state().get_int("window-width"), Settings.state().get_int("window-height"));
+		this.delete_event.connect(() => {
+			getInterfaceState().write();
+			return false;
+		});
 		this.show_all();
 
 		Logger.debug("MainWindow: determining state");
@@ -251,14 +254,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		m_stack.set_visible_child_full("springClean", transition);
 		ColumnView.get_default().getHeader().setButtonsSensitive(false);
 		this.set_titlebar(m_simpleHeader);
-	}
-
-	private void onClose()
-	{
-		this.delete_event.connect(() => {
-			getInterfaceState().write();
-			return false;
-		});
 	}
 
 	public InterfaceState getInterfaceState()

@@ -20,7 +20,7 @@
         "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf",
 	"--talk-name=org.gnome.OnlineAccounts",
-        "--own-name=org.gnome.FeedReader",
+        "--own-name=org.gnome.feedreaderDaemon",
         "--own-name=org.gnome.feedreader.FeedReaderArticleView",
         "--talk-name=org.freedesktop.Notifications",
         "--talk-name=org.freedesktop.secrets"

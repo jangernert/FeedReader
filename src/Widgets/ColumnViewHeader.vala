@@ -127,9 +127,9 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			toggledRead();
 		});
 		m_header_right.fsClick.connect(() => {
-			var window = MainWindow.get_default();
-			window.fullscreen();
-			ColumnView.get_default().enterFullscreen(false);
+			ColumnView.get_default().hidePane();
+			ColumnView.get_default().enterFullscreenArticle();
+			MainWindow.get_default().fullscreen();
 		});
 
 		Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);

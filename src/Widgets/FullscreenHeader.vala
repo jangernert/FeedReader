@@ -20,7 +20,6 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 	private bool m_hover = false;
 	private bool m_popover = false;
 	private uint m_timeout_source_id = 0;
-	public signal void close();
 
 	public FullscreenHeader()
 	{
@@ -35,7 +34,9 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 			ColumnView.get_default().toggleReadSelectedArticle();
 		});
 		m_header.fsClick.connect(() => {
-			close();
+			ColumnView.get_default().showPane();
+			ColumnView.get_default().leaveFullscreenArticle();
+			MainWindow.get_default().unfullscreen();
 		});
 		m_header.popOpened.connect(() => {
 			m_popover = true;

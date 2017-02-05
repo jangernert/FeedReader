@@ -182,25 +182,40 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 	private bool onStateEvent(Gdk.EventWindowState event)
 	{
-		base.window_state_event(event);
-
 		if(event.type == Gdk.EventType.WINDOW_STATE)
 		{
 			if(event.changed_mask == Gdk.WindowState.FULLSCREEN)
 			{
+				Logger.debug("MainWindow: fullscreen event");
 				if(ColumnView.get_default().getSelectedArticle() == ""
 				|| ColumnView.get_default().getSelectedArticle() == "empty")
 					return true;
 
 				if(ColumnView.get_default().isFullscreenVideo())
+				{
+					if((event.new_window_state & Gdk.WindowState.FULLSCREEN) != Gdk.WindowState.FULLSCREEN)
+						ColumnView.get_default().exitFullscreenVideo();
+					
+					base.window_state_event(event);
 					return true;
+				}
+
 
 				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
-					ColumnView.get_default().enterFullscreen(false);
+				{
+					Logger.debug("MainWindow: fullscreen event");
+					ColumnView.get_default().hidePane();
+					ColumnView.get_default().enterFullscreenArticle();
+				}
 				else
-					ColumnView.get_default().leaveFullscreen(false);
+				{
+					ColumnView.get_default().showPane();
+					ColumnView.get_default().leaveFullscreenArticle();
+				}
 			}
 		}
+
+		base.window_state_event(event);
 		return false;
 	}
 
@@ -653,7 +668,8 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(event.keyval == Gdk.Key.Escape && ColumnView.get_default().isFullscreen())
 		{
 			this.unfullscreen();
-			ColumnView.get_default().leaveFullscreen(false);
+			ColumnView.get_default().showPane();
+			ColumnView.get_default().leaveFullscreenArticle();
 			return true;
 		}
 

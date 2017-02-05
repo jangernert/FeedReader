@@ -16,7 +16,7 @@
 public class FeedReader.ColumnView : Gtk.Paned {
 
 	private Gtk.Paned m_pane;
-	private articleView m_article_view;
+	private ArticleView m_article_view;
 	private ArticleList m_articleList;
 	private feedList m_feedList;
 	private FeedListFooter m_footer;
@@ -143,9 +143,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 			}
 		});
 
-		m_article_view = new articleView();
-		m_article_view.enterFullscreen.connect(enterFullscreen);
-		m_article_view.leaveFullscreen.connect(leaveFullscreen);
+		m_article_view = new ArticleView();
 
 
 		this.orientation = Gtk.Orientation.HORIZONTAL;
@@ -191,32 +189,19 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		});
 	}
 
-	public void enterFullscreen(bool video)
+	public void hidePane()
 	{
-		// fullscreen not requested by video -> go to fullscreen-article-mode
-		if(!video)
-		{
-			m_article_view.setFullscreenArticle(true);
-		}
-
 		m_pane.set_visible(false);
 	}
 
-	public void leaveFullscreen(bool video)
+	public void showPane()
 	{
-		if(!video)
-		{
-			m_article_view.setFullscreenArticle(false);
-		}
-
 		m_pane.set_visible(true);
 	}
 
 	public void ArticleListNEXT()
 	{
-		if(!m_article_view.fullscreenArticle())
-			leaveFullscreen(true);
-		else
+		if(m_article_view.fullscreenArticle())
 			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_LEFT, 500);
 
 		m_articleList.move(false);
@@ -224,9 +209,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 
 	public void ArticleListPREV()
 	{
-		if(!m_article_view.fullscreenArticle())
-			leaveFullscreen(true);
-		else
+		if(m_article_view.fullscreenArticle())
 			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_RIGHT, 500);
 
 		m_articleList.move(true);
@@ -458,9 +441,24 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		return m_feedList;
 	}
 
+	public void enterFullscreenArticle()
+	{
+		m_article_view.enterFullscreenArticle();
+	}
+
+	public void leaveFullscreenArticle()
+	{
+		m_article_view.leaveFullscreenArticle();
+	}
+
 	public bool isFullscreen()
 	{
 		return m_article_view.fullscreenArticle();
+	}
+
+	public void exitFullscreenVideo()
+	{
+		m_article_view.exitFullscreenVideo();
 	}
 
 	public bool isFullscreenVideo()

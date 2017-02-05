@@ -523,6 +523,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	public string getSelectedArticle()
 	{
+		if(m_stack.get_visible_child_name() == "empty"
+		|| m_stack.get_visible_child_name() == "syncing")
+			return "empty";
+
 		return m_currentList.getSelectedArticle();
 	}
 

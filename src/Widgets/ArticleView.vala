@@ -21,7 +21,7 @@ interface FeedReaderWebExtension : Object
 	public signal void message(string message);
 }
 
-public class FeedReader.articleView : Gtk.Overlay {
+public class FeedReader.ArticleView : Gtk.Overlay {
 
 	private Gtk.Overlay m_videoOverlay;
 	private ArticleViewUrlOverlay m_UrlOverlay;
@@ -53,11 +53,9 @@ public class FeedReader.articleView : Gtk.Overlay {
 	private bool m_FullscreenArticle = false;
 	private double m_FullscreenZoomLevel = 1.25;
 	private uint m_animationDuration = 50;
-	public signal void enterFullscreen(bool video);
-	public signal void leaveFullscreen(bool video);
 
 
-	public articleView()
+	public ArticleView()
 	{
 		WebKit.WebContext.get_default().set_cache_model(WebKit.CacheModel.DOCUMENT_BROWSER);
 
@@ -92,8 +90,7 @@ public class FeedReader.articleView : Gtk.Overlay {
 		m_stack.add_named(crashView, "crash");
 
 		m_stack.set_visible_child_name("empty");
-		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_stack.set_transition_duration(m_animationDuration);
+		setTransition(Gtk.StackTransitionType.CROSSFADE, m_animationDuration);
 		m_stack.set_size_request(450, 0);
 
 		this.size_allocate.connect((allocation) => {
@@ -111,10 +108,6 @@ public class FeedReader.articleView : Gtk.Overlay {
         });
 
 		m_fsHead = new FullscreenHeader();
-		m_fsHead.close.connect(() => {
-			leaveFullscreen(false);
-			MainWindow.get_default().unfullscreen();
-		});
 
 		var fullscreenHeaderOverlay = new Gtk.Overlay();
 		fullscreenHeaderOverlay.add(m_stack);
@@ -191,8 +184,8 @@ public class FeedReader.articleView : Gtk.Overlay {
 		view.button_press_event.connect(onClick);
 		view.button_release_event.connect(onRelease);
 		view.motion_notify_event.connect(onMouseMotion);
-		view.enter_fullscreen.connect(enter_fullscreen);
-		view.leave_fullscreen.connect(leave_fullscreen);
+		view.enter_fullscreen.connect(enterFullscreenVideo);
+		view.leave_fullscreen.connect(leaveFullscreenVideo);
 		view.scroll_event.connect(onScroll);
 		view.key_press_event.connect(onKeyPress);
 		view.web_process_crashed.connect(onCrash);
@@ -787,23 +780,34 @@ public class FeedReader.articleView : Gtk.Overlay {
 		}
 	}
 
-	private bool leave_fullscreen()
+	private bool leaveFullscreenVideo()
 	{
+		Logger.debug("ArticleView: leave fullscreen Video");
 		m_FullscreenVideo = false;
 		m_connected = true;
-		leaveFullscreen(true);
+		ColumnView.get_default().showPane();
 		return false;
 	}
 
-	private bool enter_fullscreen()
+	private bool enterFullscreenVideo()
 	{
+		Logger.debug("ArticleView: enter fullscreen Video");
 		m_FullscreenVideo = true;
+
+		// don't try to recalculate imagesizes when playing fullscreen video
 		m_connected = false;
-		enterFullscreen(true);
+
+		ColumnView.get_default().hidePane();
 		m_fsHead.hide();
 		m_prevButton.reveal(false);
 		m_nextButton.reveal(false);
 		return false;
+	}
+
+	public void exitFullscreenVideo()
+	{
+		if(m_currentView != null)
+			m_currentView.leave_fullscreen();
 	}
 
 	public bool fullscreenVideo()
@@ -816,31 +820,29 @@ public class FeedReader.articleView : Gtk.Overlay {
 		return m_FullscreenArticle;
 	}
 
-	public void setFullscreenArticle(bool fs)
+	public void enterFullscreenArticle()
 	{
-		m_FullscreenArticle = fs;
+		Logger.debug("ArticleView: enter fullscreen Article");
+		m_FullscreenArticle = true;
+		m_fsHead.show();
+		m_currentView.zoom_level = m_FullscreenZoomLevel;
 
-		if(fs)
-		{
-			m_fsHead.show();
-			m_currentView.zoom_level = m_FullscreenZoomLevel;
+		if(!ColumnView.get_default().ArticleListSelectedIsFirst())
+			m_nextButton.reveal(true);
 
-			if(!ColumnView.get_default().ArticleListSelectedIsFirst())
-				m_nextButton.reveal(true);
+		if(!ColumnView.get_default().ArticleListSelectedIsLast())
+			m_prevButton.reveal(true);
+	}
 
-			if(!ColumnView.get_default().ArticleListSelectedIsLast())
-				m_prevButton.reveal(true);
-
-		}
-		else
-		{
-			m_currentView.zoom_level = 1.0;
-			m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-			m_stack.set_transition_duration(100);
-			m_fsHead.hide();
-			m_prevButton.reveal(false);
-			m_nextButton.reveal(false);
-		}
+	public void leaveFullscreenArticle()
+	{
+		Logger.debug("ArticleView: enter fullscreen Article");
+		m_FullscreenArticle = false;
+		m_currentView.zoom_level = 1.0;
+		setTransition(Gtk.StackTransitionType.CROSSFADE, m_animationDuration);
+		m_fsHead.hide();
+		m_prevButton.reveal(false);
+		m_nextButton.reveal(false);
 	}
 
 	public void setTransition(Gtk.StackTransitionType trans, uint time)

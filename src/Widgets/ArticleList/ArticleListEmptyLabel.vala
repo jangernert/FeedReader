@@ -48,9 +48,9 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
-							message = _("No marked articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _("No starred articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
-							message = _("No marked articles in the feed \"%s\" could be found").printf(name);
+							message = _("No starred articles in the feed \"%s\" could be found").printf(name);
 					}
 					else if(state == ArticleListState.ALL)
 					{
@@ -72,9 +72,9 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
-							message = _("No marked articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _("No starred articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
-							message = _("No marked articles in the tag \"%s\" could be found").printf(name);
+							message = _("No starred articles in the tag \"%s\" could be found").printf(name);
 					}
 					else if(state == ArticleListState.ALL)
 					{
@@ -96,9 +96,9 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
-							message = _("No marked articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _("No starred articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
 						else
-							message = _("No marked articles in the category \"%s\" could be found").printf(name);
+							message = _("No starred articles in the category \"%s\" could be found").printf(name);
 					}
 					else if(state == ArticleListState.ALL)
 					{
@@ -122,9 +122,9 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 			else if(state == ArticleListState.MARKED)
 			{
 				if(searchTerm != "")
-					message = _("No marked articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
+					message = _("No starred articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
 				else
-					message = _("No marked articles could be found");
+					message = _("No starred articles could be found");
 			}
 			else if(state == ArticleListState.ALL)
 			{

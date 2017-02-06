@@ -195,7 +195,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				{
 					if((event.new_window_state & Gdk.WindowState.FULLSCREEN) != Gdk.WindowState.FULLSCREEN)
 						ColumnView.get_default().exitFullscreenVideo();
-					
+
 					base.window_state_event(event);
 					return true;
 				}

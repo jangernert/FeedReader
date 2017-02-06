@@ -673,7 +673,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			return true;
 		}
 
-		if(event.keyval == Gdk.Key.F1)
+		if(checkShortcut(event, "global-help"))
 		{
 			Logger.debug("shortcut: showShortcutWindow");
 			showShortcutWindow();

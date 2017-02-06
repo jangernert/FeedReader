@@ -32,6 +32,8 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 	public void build(string selectedFeed, FeedListType type, ArticleListState state, string searchTerm)
 	{
 		string message = "";
+		string name = "";
+		string search = Utils.parseSearchTerm(searchTerm);
 		if(selectedFeed != FeedID.ALL.to_string() && selectedFeed != FeedID.CATEGORIES.to_string())
 		{
 			switch(type)
@@ -41,23 +43,23 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
-							message = _("No unread articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No unread articles that fit \"$search\" in feed \"$name\"");
 						else
-							message = _("No unread articles in the feed \"%s\" could be found").printf(name);
+							message = _(@"No unread articles in feed \"$name\"");
 					}
 					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
-							message = _("No starred articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No starred articles that fit \"$search\" in feed \"$name\"");
 						else
-							message = _("No starred articles in the feed \"%s\" could be found").printf(name);
+							message = _(@"No starred articles in feed \"$name\"");
 					}
 					else if(state == ArticleListState.ALL)
 					{
 						if(searchTerm != "")
-							message = _("No articles that fit \"%s\" in the feed \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No articles that fit \"$search\" in feed \"$name\"");
 						else
-							message = _("No articles in the feed \"%s\" could be found").printf(name);
+							message = _(@"No articles in feed \"$name\"");
 					}
 					break;
 				case FeedListType.TAG:
@@ -65,23 +67,23 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
-							message = _("No unread articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No unread articles that fit \"$search\" in tag \"$name\"");
 						else
-							message = _("No unread articles in the tag \"%s\" could be found").printf(name);
+							message = _(@"No unread articles in tag \"$name\"");
 					}
 					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
-							message = _("No starred articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No starred articles that fit \"$search\" in tag \"$name\"");
 						else
-							message = _("No starred articles in the tag \"%s\" could be found").printf(name);
+							message = _(@"No starred articles in tag \"$name\"");
 					}
 					else if(state == ArticleListState.ALL)
 					{
 						if(searchTerm != "")
-							message = _("No articles that fit \"%s\" in the tag \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No articles that fit \"$search\" in tag \"$name\"");
 						else
-							message = _("No articles in the tag \"%s\" could be found").printf(name);
+							message = _(@"No articles in tag \"$name\"");
 					}
 					break;
 				case FeedListType.CATEGORY:
@@ -89,23 +91,23 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
-							message = _("No unread articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No unread articles that fit \"$search\" in category \"$name\"");
 						else
-							message = _("No unread articles in the category \"%s\" could be found").printf(name);
+							message = _(@"No unread articles in category \"$name\"");
 					}
 					else if(state == ArticleListState.MARKED)
 					{
 						if(searchTerm != "")
-							message = _("No starred articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No starred articles that fit \"$search\" in category \"$name\"");
 						else
-							message = _("No starred articles in the category \"%s\" could be found").printf(name);
+							message = _(@"No starred articles in category \"$name\"");
 					}
 					else if(state == ArticleListState.ALL)
 					{
 						if(searchTerm != "")
-							message = _("No articles that fit \"%s\" in the category \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm), name);
+							message = _(@"No articles that fit \"$search\" in category \"$name\"");
 						else
-							message = _("No articles in the category \"%s\" could be found").printf(name);
+							message = _(@"No articles in category \"$name\"");
 					}
 					break;
 			}
@@ -115,26 +117,27 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 			if(state == ArticleListState.UNREAD)
 			{
 				if(searchTerm != "")
-					message = _("No unread articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
+					message = _(@"No unread articles that fit \"$search\"");
 				else
-					message = _("No unread articles could be found");
+					message = _("No unread articles");
 			}
 			else if(state == ArticleListState.MARKED)
 			{
 				if(searchTerm != "")
-					message = _("No starred articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
+					message = _(@"No starred articles that fit \"$search\"");
 				else
-					message = _("No starred articles could be found");
+					message = _("No starred articles");
 			}
 			else if(state == ArticleListState.ALL)
 			{
 				if(searchTerm != "")
-					message = _("No articles that fit \"%s\" could be found").printf(Utils.parseSearchTerm(searchTerm));
+					message = _(@"No articles that fit \"$search\"");
 				else
-					message = _("No articles could be found");
+					message = _("No articles");
 			}
 
 		}
+		this.get_style_context().add_class("dim-label");
 		this.set_text(message);
 	}
 

@@ -34,7 +34,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 
 
 		//--------------------------------------------------
-		var feedList = newGroup(_("Feed-List"));
+		var feedList = newGroup(_("Feed List"));
 		//--------------------------------------------------
 		string feedListMarkRead = Settings.keybindings().get_string("feedlist-mark-read");
 		var navigate = newShortcut(_("Navigate the feed-list"), "Up Down");
@@ -47,7 +47,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 
 
 		//--------------------------------------------------
-		var articleList = newGroup(_("Article-List"));
+		var articleList = newGroup(_("Article List"));
 		//--------------------------------------------------
 		string prev = Settings.keybindings().get_string("articlelist-prev");
 		string next = Settings.keybindings().get_string("articlelist-next");

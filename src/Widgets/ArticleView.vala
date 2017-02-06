@@ -61,6 +61,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 
 		var emptyView = new Gtk.Label(_("No Article selected."));
 		emptyView.get_style_context().add_class("h2");
+		emptyView.get_style_context().add_class("dim-label");
 
 		var crashLabel = new Gtk.Label(_("WebKit has crashed"));
 		crashLabel.get_style_context().add_class("h2");

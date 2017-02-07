@@ -1,0 +1,8 @@
+[Plugin]
+Module=browser
+Loader=C
+Name=Browser
+Description=Open URL in default Browser.
+Authors=Jan Lukas Gernert <jangernert@gmail.com>
+Copyright=Copyright © 2015-16 Jan Lukas Gernert
+Website=http://jangernert.github.io/FeedReader/

@@ -84,7 +84,7 @@ public class FeedReader.Share : GLib.Object {
 			{
 				m_accounts.add(
 					new ShareAccount(
-						"",
+						plugin.pluginID(),
 						plugin.pluginID(),
 						plugin.pluginName(),
 						plugin.getIconName(),

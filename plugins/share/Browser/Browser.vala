@@ -14,10 +14,11 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 
-public class FeedReader.ShareBrowser : ShareAccountInterface, Peas.ExtensionBase {
+public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool addBookmark(string id, string url, bool system)
 	{
+		Logger.debug("url: " + url);
 		string[] spawn_args = {"xdg-open", url};
 		try
 		{
@@ -100,5 +101,5 @@ public class FeedReader.ShareBrowser : ShareAccountInterface, Peas.ExtensionBase
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.ShareAccountInterface), typeof(FeedReader.ShareBrowser));
+	objmodule.register_extension_type(typeof(FeedReader.ShareAccountInterface), typeof(FeedReader.Browser));
 }

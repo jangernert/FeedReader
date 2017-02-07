@@ -225,6 +225,17 @@ public class FeedReader.UtilsUI : GLib.Object {
 		Gtk.main();
 	}
 
+	public static Gtk.Image checkIcon(string name, string fallback, Gtk.IconSize size)
+	{
+		Gtk.Image icon = null;
+		if(Gtk.IconTheme.get_default().lookup_icon(name, 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+            icon = new Gtk.Image.from_icon_name(name, size);
+        else
+            icon = new Gtk.Image.from_icon_name(fallback, size);
+
+		return icon;
+	}
+
 	/*public static void testGOA()
 	{
 		try

@@ -11,9 +11,9 @@
     "finish-args": [
         /* Play sounds */
         "--socket=pulseaudio",
-        /* Access to feedreader configuration and cache files */
-        "--share=ipc",
+        /* Access to X11 and XShm (video playback) */
         "--socket=x11",
+        "--share=ipc",
         "--socket=wayland",
         "--share=network",
         /* Needed for dconf to work */

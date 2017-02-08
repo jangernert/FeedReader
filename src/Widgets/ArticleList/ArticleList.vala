@@ -720,7 +720,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	public void syncFinished()
 	{
 		m_syncing = false;
-		if(m_stack.get_visible_child_name() == "syncing")
+		if(m_stack.get_visible_child_name() == "syncing" && UtilsUI.getRelevantArticles(20) == 0)
 		{
 			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 		}

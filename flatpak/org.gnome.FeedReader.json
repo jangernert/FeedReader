@@ -16,6 +16,8 @@
         "--share=ipc",
         /* Access to Wayland */
         "--socket=wayland",
+        /* Access to OpenGL */
+        "--device=dri",
         /* Access to Network */
         "--share=network",
         /* Needed for dconf to work */

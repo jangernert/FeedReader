@@ -52,7 +52,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 	private bool m_FullscreenVideo = false;
 	private bool m_FullscreenArticle = false;
 	private double m_FullscreenZoomLevel = 1.25;
-	private uint m_animationDuration = 50;
+	private uint m_animationDuration = 150;
 
 
 	public ArticleView()

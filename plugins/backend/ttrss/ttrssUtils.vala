@@ -211,13 +211,17 @@ public class FeedReader.ttrssUtils : GLib.Object {
 	public bool downloadIcon(string feed_id, string icon_url)
 	{
 		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
+		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
-		try{
-			path.make_directory_with_parents();
-		}
-		catch(GLib.Error e){
-			//Logger.debug(e.message);
+		if(!path.query_exists())
+		{
+			try
+			{
+				path.make_directory_with_parents();
+			}
+			catch(GLib.Error e){
+				Logger.debug(e.message);
+			}
 		}
 
 		string remote_filename = icon_url + feed_id + ".ico";

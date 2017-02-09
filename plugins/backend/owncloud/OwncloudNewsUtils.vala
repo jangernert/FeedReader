@@ -203,14 +203,18 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
         if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
             return false;
 
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		var path = GLib.File.new_for_path(icon_path);
-		try{
-			path.make_directory_with_parents();
-		}
-		catch(GLib.Error e){
-			//Logger.debug(e.message);
-		}
+        string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+    	var path = GLib.File.new_for_path(icon_path);
+    	if(!path.query_exists())
+    	{
+    		try
+    		{
+    			path.make_directory_with_parents();
+    		}
+    		catch(GLib.Error e){
+    			Logger.debug(e.message);
+    		}
+    	}
 
 		string local_filename = icon_path + feed_id + ".ico";
 

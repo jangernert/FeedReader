@@ -7,6 +7,13 @@ BUNDLE 	  = $(PACKAGE)-$(VERSION).$(ARCH)
 
 all:
 	rm -rf $(PACKAGE)
-	flatpak-builder --force-clean --repo=repo $(PACKAGE) $(JSON)
+	JSON=$(JSON) ;								\
+	if [ $(BRANCH) != "master" ]; then					\
+		NEW_JSON=`basename $(JSON) .json`-$(BRANCH).json ;		\
+		cat $(JSON) | sed -e 's!"url": "https://github.com/jangernert/FeedReader.git"!"url": "https://github.com/jangernert/FeedReader.git", "branch": "$(BRANCH)"!' > $$NEW_JSON ;	\
+		JSON=$$NEW_JSON ;						\
+	fi ;									\
+	flatpak-builder --force-clean --repo=repo $(PACKAGE) $$JSON
+
 dist:
 	flatpak build-bundle repo/ $(BUNDLE).flatpak org.gnome.$(PACKAGE) $(BRANCH)

@@ -93,8 +93,7 @@
 	    "config-opts": ["-DCMAKE_INSTALL_PREFIX=/app"],
             "sources": [{
                     "type": "git",
-                    "url": "https://github.com/jangernert/FeedReader.git",
-		    "branch": "master"
+                    "url": "https://github.com/jangernert/FeedReader.git"
                 }
             ]
         }

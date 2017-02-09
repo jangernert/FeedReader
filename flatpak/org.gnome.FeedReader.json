@@ -11,10 +11,14 @@
     "finish-args": [
         /* Play sounds */
         "--socket=pulseaudio",
-        /* Access to feedreader configuration and cache files */
-        "--share=ipc",
+        /* Access to X11 and XShm (video playback) */
         "--socket=x11",
+        "--share=ipc",
+        /* Access to Wayland */
         "--socket=wayland",
+        /* Access to OpenGL */
+        "--device=dri",
+        /* Access to Network */
         "--share=network",
         /* Needed for dconf to work */
         "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",

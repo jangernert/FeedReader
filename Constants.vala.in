@@ -27,7 +27,7 @@ namespace FeedReader {
 		public const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" ,null };
 		public const string[] documenters = { "nobody", null };
 		public const string[] artists     = {"Jan Lukas Gernert", "Harvey Cabaguio", "Jorge Marques", "Andrew Joyce", null};
-		public const string iconName      = "org.gnome.feedreader";
+		public const string iconName      = "org.gnome.FeedReader";
 		public const string translators   = N_("translator-credits");
 		public const string website       = "http://jangernert.github.io/FeedReader/";
 	}

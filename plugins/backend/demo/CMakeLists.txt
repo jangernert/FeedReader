@@ -67,8 +67,8 @@ add_library(${UINAME} SHARED ${VALA_C2} ${GRESOURCES})
 # ----------------------------------------------------------
 
 
-add_dependencies(${NAME} ${EXEC_NAME} ${DAEMON_NAME})
-add_dependencies(${UINAME} ${EXEC_NAME} ${DAEMON_NAME})
+add_dependencies(${NAME} ${UI_NAME} ${DAEMON_NAME})
+add_dependencies(${UINAME} ${UI_NAME} ${DAEMON_NAME})
 
 
 add_schema("org.gnome.feedreader.${NAME}.gschema.xml")

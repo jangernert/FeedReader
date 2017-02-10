@@ -34,6 +34,17 @@ public class FeedReader.FavIconCache : GLib.Object {
 		{
 			var iconDirPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
 			var iconDirectory = GLib.File.new_for_path(iconDirPath);
+			if(!iconDirectory.query_exists())
+			{
+				try
+				{
+					iconDirectory.make_directory_with_parents();
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("FavIconCache: Can't create directory: %s".printf(e.message));
+				}
+			}
 			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
 			GLib.FileInfo? fileInfo = null;
 

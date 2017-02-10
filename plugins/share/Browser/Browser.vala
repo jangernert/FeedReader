@@ -14,19 +14,12 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 
-public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
-
-	private string m_body;
-	private string m_to;
+public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool addBookmark(string id, string url, bool system)
 	{
-		string subject = GLib.Uri.escape_string("Amazing article");
-		string body = GLib.Uri.escape_string(m_body.replace("$URL", url));
-		string mailto = "mailto:%s?subject=%s&body=%s".printf(m_to, subject, body);
-		Logger.debug(mailto);
-
-		string[] spawn_args = {"xdg-open", mailto};
+		Logger.debug("url: " + url);
+		string[] spawn_args = {"xdg-open", url};
 		try
 		{
 			GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
@@ -52,15 +45,15 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public string getIconName()
     {
-		if(Gtk.IconTheme.get_default().lookup_icon("mail-send", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
-			return "mail-send";
-		
-        return "feed-share-mail";
+		if(Gtk.IconTheme.get_default().lookup_icon("applications-internet", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+			return "applications-internet";
+
+        return "feed-share-browser";
     }
 
 	public string getUsername(string id)
 	{
-		return "Email";
+		return "Browser";
 	}
 
 	public bool needSetup()
@@ -75,12 +68,12 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public string pluginID()
     {
-        return "mail";
+        return "browser";
     }
 
 	public string pluginName()
 	{
-		return "Email";
+		return _("Open in Browser");
 	}
 
 	public ServiceSetup? newSetup_withID(string id, string username)
@@ -100,12 +93,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	public ShareForm? shareWidget(string url)
 	{
-		var widget = new EmailForm(url);
-		widget.share.connect(() => {
-			m_to = widget.getTo();
-			m_body = widget.getBody();
-		});
-		return widget;
+		return null;
 	}
 }
 
@@ -113,5 +101,5 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.ShareAccountInterface), typeof(FeedReader.ShareMail));
+	objmodule.register_extension_type(typeof(FeedReader.ShareAccountInterface), typeof(FeedReader.Browser));
 }

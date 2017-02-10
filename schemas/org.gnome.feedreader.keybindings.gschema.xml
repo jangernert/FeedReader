@@ -42,7 +42,7 @@
 		</key>
 		
 		<key name="global-help" type="s">
-			<default>'F1'</default>
+			<default>'&lt;Control&gt;F1'</default>
 		</key>
 
 	</schema>

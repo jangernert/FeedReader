@@ -17,7 +17,7 @@ extern void exit(int exit_code);
 
 namespace FeedReader {
 
-	[DBus (name = "org.gnome.feedreader.daemon")]
+	[DBus (name = "org.gnome.FeedReader.Daemon")]
 	public class FeedDaemonServer : GLib.Object {
 
 #if WITH_LIBUNITY
@@ -60,7 +60,7 @@ namespace FeedReader {
 			login(Settings.general().get_string("plugin"));
 
 #if WITH_LIBUNITY
-			m_launcher = Unity.LauncherEntry.get_for_desktop_id("org.gnome.feedreader.desktop");
+			m_launcher = Unity.LauncherEntry.get_for_desktop_id("org.gnome.FeedReader.desktop");
 			updateBadge();
 #endif
 			scheduleSync(Settings.general().get_int("sync"));
@@ -832,7 +832,7 @@ namespace FeedReader {
 
 	}
 
-	[DBus (name = "org.gnome.feedreader.daemonError")]
+	[DBus (name = "org.gnome.FeedReader.DaemonError")]
 	public errordomain FeedError
 	{
 		SOME_ERROR
@@ -842,7 +842,7 @@ namespace FeedReader {
 	{
 		try
 		{
-		    conn.register_object("/org/gnome/feedreader/daemon", FeedDaemonServer.get_default());
+		    conn.register_object("/org/gnome/FeedReader/Daemon", FeedDaemonServer.get_default());
 		}
 		catch (IOError e)
 		{
@@ -923,7 +923,7 @@ namespace FeedReader {
 		if(dbDaemon.get_default().uninitialized())
 			dbDaemon.get_default().init();
 
-		Bus.own_name (BusType.SESSION, "org.gnome.feedreader.daemon", BusNameOwnerFlags.NONE,
+		Bus.own_name (BusType.SESSION, "org.gnome.FeedReader.Daemon", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,
 				      () => {
 				      			Settings.state().set_boolean("currently-updating", false);

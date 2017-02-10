@@ -44,6 +44,7 @@ public class FeedReader.dbBase : GLib.Object {
 			}
 		}
 
+		Logger.debug(@"Opening Database: $db_path$dbFile");
 		int rc = Sqlite.Database.open_v2(db_path + dbFile, out sqlite_db);
 		if(rc != Sqlite.OK)
 			Logger.error("Can't open database: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));

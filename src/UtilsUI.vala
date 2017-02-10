@@ -91,10 +91,6 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 	public static GLib.Menu getMenu()
 	{
-		var settingMenu = new GLib.Menu();
-		settingMenu.append(Menu.settings, "win.settings");
-		settingMenu.append(Menu.reset, "win.reset");
-
 		var urlMenu = new GLib.Menu();
 		urlMenu.append(Menu.bugs, "win.bugs");
 		urlMenu.append(Menu.bounty, "win.bounty");
@@ -105,7 +101,8 @@ public class FeedReader.UtilsUI : GLib.Object {
 		aboutMenu.append(Menu.quit, "app.quit");
 
 		var menu = new GLib.Menu();
-		menu.append_section("", settingMenu);
+		menu.append(Menu.settings, "win.settings");
+		menu.append(Menu.reset, "win.reset");
 		menu.append_section("", urlMenu);
 
 		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "pantheon")
@@ -226,6 +223,17 @@ public class FeedReader.UtilsUI : GLib.Object {
 		window.show_all();
 
 		Gtk.main();
+	}
+
+	public static Gtk.Image checkIcon(string name, string fallback, Gtk.IconSize size)
+	{
+		Gtk.Image icon = null;
+		if(Gtk.IconTheme.get_default().lookup_icon(name, 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+            icon = new Gtk.Image.from_icon_name(name, size);
+        else
+            icon = new Gtk.Image.from_icon_name(fallback, size);
+
+		return icon;
 	}
 
 	/*public static void testGOA()

@@ -138,7 +138,8 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			shareAsync.end(res);
 			shareDone();
 		});
-        Logger.debug("bookmark: %s to %s".printf(url, id));
+		string idString = (id == null || id == "") ? "" : @" to $id";
+        Logger.debug(@"bookmark: $url$idString");
 	}
 }
 

@@ -5,7 +5,7 @@ ARCH	  = x86_64
 BRANCH	  = master
 GIT	  = master
 BUILD     = $(GIT)-` date +"%Y%m%d" `
-BUNDLE 	  = $(PACKAGE)-$(BUILD)-$(VERSION).$(ARCH)
+BUNDLE 	  = $(PACKAGE)-$(VERSION)-$(BUILD).$(ARCH)
 
 all:
 	rm -rf $(PACKAGE)

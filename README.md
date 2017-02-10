@@ -103,4 +103,4 @@ sudo make install
 ```
 Arch users can build the latest version using `yaourt -S feedreader-git`
 
-You can also create a Flatpak bundle running `make` in the `flatpak/` sub-directory.
+You can also create a Flatpak bundle running `make` then `make dist` in the `flatpak/` sub-directory.

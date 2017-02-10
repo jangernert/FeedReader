@@ -263,7 +263,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
 			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
 			dbDaemon.get_default().updateArticlesByID(markedIDs, "marked");
-			updateArticleList();
+			//updateArticleList();
 		}
 
 		string articleIDs = "";

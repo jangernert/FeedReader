@@ -138,9 +138,18 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size == 0)
 		{
-			m_emptyList.build(m_selectedFeedListID, m_selectedFeedListType, m_state, m_searchTerm);
-			m_stack.set_visible_child_full("empty", transition);
-			m_currentScroll.scrolledBottom.connect(loadMore);
+			if(offset == 0)
+			{
+				m_emptyList.build(m_selectedFeedListID, m_selectedFeedListType, m_state, m_searchTerm);
+				m_stack.set_visible_child_full("empty", transition);
+				m_currentScroll.scrolledBottom.connect(loadMore);
+			}
+			else
+			{
+				loadNewer.begin((int)offset, 0, (obj, res) =>{
+					loadNewer.end(res);
+				});
+			}
 		}
 		else
 		{
@@ -184,6 +193,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		Logger.debug("ArticleList: checkForNewRows");
 		int offset;
 		int count = determineNewRowCount(null, out offset);
+		Logger.debug(@"new rowCount: $count");
 		if(count > 0)
 		{
 			loadNewer.begin(count, offset, (obj, res) =>{
@@ -270,6 +280,14 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size > 0)
 		{
+			if(m_stack.get_visible_child_name() == "empty")
+			{
+				if(m_currentList == m_List1)
+					m_stack.set_visible_child_full("list1", Gtk.StackTransitionType.CROSSFADE);
+				else
+					m_stack.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
+			}
+
 			m_scroll2.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addTop(articles);
 			m_handlerID = m_currentList.loadDone.connect(() => {
@@ -281,6 +299,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 					m_handlerID = 0;
 				}
 			});
+		}
+		else if(m_currentList.getSize() == 0)
+		{
+			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 		}
 
 	}
@@ -337,27 +359,31 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_loadThread = new GLib.Thread<void*>("create", run);
 		yield;
 
-		if(articles.size == 0)
-			return;
-
-		var iterator = articles.list_iterator();
-
-		foreach(var row in children)
+		if(articles.size != 0)
 		{
-			iterator.next();
-			var articleRow = row as articleRow;
-			var article = iterator.get();
+			var iterator = articles.list_iterator();
 
-			if(articleRow.getID() == article.getArticleID())
+			foreach(var row in children)
 			{
-				articleRow.updateUnread(article.getUnread());
-				articleRow.updateMarked(article.getMarked());
-			}
-			else
-			{
-				Logger.error("ArticleList.updateArticleList: id mismatch");
+				iterator.next();
+				var articleRow = row as articleRow;
+				var article = iterator.get();
+
+				if(articleRow.getID() == article.getArticleID())
+				{
+					articleRow.updateUnread(article.getUnread());
+					articleRow.updateMarked(article.getMarked());
+				}
+				else
+				{
+					Logger.error("ArticleList.updateArticleList: id mismatch");
+				}
 			}
 		}
+
+
+
+		Logger.debug(@"ArticleList.updateArticleList: newCount $newCount");
 
 		if(newCount > 0)
 			checkForNewRows();
@@ -491,6 +517,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	public void showOverlay()
 	{
+		Logger.debug("ArticleList: showOverlay");
 		if(m_currentScroll.getScroll() > 0.0)
 			showNotification();
 	}
@@ -498,7 +525,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private void showNotification()
 	{
 		if(m_overlay != null
-		|| !Settings.general().get_boolean("articlelist-newest-first"))
+		|| !Settings.general().get_boolean("articlelist-newest-first")
+		|| m_state == ArticleListState.UNREAD)
 			return;
 
 		m_overlay = new InAppNotification.withIcon(

@@ -67,9 +67,9 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
    - [openSUSE Leap 42.1](http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Leap_42.1/feedreader.ymp)
    - [openSUSE Leap 42.2](http://software.opensuse.org/ymp/home:scujas:feedreader/openSUSE_Leap_42.2/feedreader.ymp)
 
-#### Flatpak Bundle (testing) 
+#### Flatpak Bundle
 
-FeedReader is now availble as a standalone Flatpak file and should be installable on all Linux distributions that support the Flatpak Application Framework. This is still a WIP and might not work as expected, please report any Flatpak related issues [HERE](https://github.com/jscurtu/feedreader-flatpak/issues). 
+FeedReader is now availble as a standalone Flatpak file and should be installable on all Linux distributions that support the Flatpak Application Framework. This is still a WIP and might not work as expected, please report any Flatpak related issues. 
 
 For more information about Flatpak and how to use or install it for your distribution see the [Flatpak webpage](http://flatpak.org).
 
@@ -102,4 +102,5 @@ make
 sudo make install
 ```
 Arch users can build the latest version using `yaourt -S feedreader-git`
-You can also create a Flatpak bundle running `make dist` in the `flatpak/` sub-directory.
+
+You can also create a Flatpak bundle running `make` in the `flatpak/` sub-directory.

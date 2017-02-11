@@ -64,7 +64,7 @@
             }]
         }, {
             "name": "libpeas",
-            "config-opts": ["--disable-introspection", "--disable-gtk-doc", "--disable-gtk-doc-html", "--disable-gtk"],
+            "config-opts": ["--disable-gtk-doc", "--disable-gtk-doc-html", "--disable-gtk"],
 	    "cleanup": ["/include", "*.la", "/lib/pkgconfig"],
             "build-options": {
                 "env": {

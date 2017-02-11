@@ -65,8 +65,7 @@ public class FeedReader.Share : GLib.Object {
 			plugin.setupSystemAccounts(m_accounts);
 			if(plugin.needSetup())
 			{
-				var settings_share = new GLib.Settings("org.gnome.feedreader.share");
-				var accounts = settings_share.get_strv(plugin.pluginID());
+				var accounts = Settings.share().get_strv(plugin.pluginID());
 				foreach(string id in accounts)
 				{
 					m_accounts.add(
@@ -141,12 +140,11 @@ public class FeedReader.Share : GLib.Object {
 		string id = Utils.string_random(12);
 
 
-		var share_settings = new GLib.Settings("org.gnome.feedreader.share");
-		string[] keys = share_settings.list_keys();
+		string[] keys = Settings.share().list_keys();
 
 		foreach(string key in keys)
 		{
-			string[] ids = share_settings.get_strv(key);
+			string[] ids = Settings.share().get_strv(key);
 			foreach(string i in ids)
 			{
 				if(i == id)

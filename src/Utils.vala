@@ -736,7 +736,6 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static bool downloadIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
-		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
@@ -754,7 +753,7 @@ public class FeedReader.Utils : GLib.Object {
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message ("GET", "http://f1.allesedv.com/32/%s".printf(url));
 
-			if(settingsTweaks.get_boolean("do-not-track"))
+			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();

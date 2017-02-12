@@ -57,7 +57,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
       sudo eopkg install feedreader
     </pre>
 
-#### Flatpak Bundle
+### Flatpak
 
 FeedReader is now availble as Flatpak and should be installable on all Linux distributions that support the Flatpak Application Framework. This is still a WIP and might not work as expected, please report any Flatpak related issues.
 

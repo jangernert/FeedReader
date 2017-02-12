@@ -24,4 +24,10 @@ dist:
 	if [ x$(ARCH) != x`uname -p` -a ! -z "$(ARCH)" ]; then						\
 		ARCH_OPT="--arch=$(ARCH)" ;								\
 	fi ;												\
-	flatpak build-bundle $$ARCH_OPT repo/ $(BUNDLE).flatpak org.gnome.$(PACKAGE) $(BRANCH)		
+	flatpak build-bundle $$ARCH_OPT repo/ $(BUNDLE).flatpak org.gnome.$(PACKAGE) $(BRANCH)
+install:
+	file=$(BUNDLE).flatpak ;									\
+	if [ -a $$file ] ; 										\
+	then 												\
+	     flatpak install --bundle $$file ;								\
+	fi;

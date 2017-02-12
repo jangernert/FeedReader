@@ -1,0 +1,6 @@
+[Flatpak Repo]
+Title=FeedReader Repo
+Description=Nope
+Url=@URL@
+GPGKey=@GPG@
+Homepage=https://jangernert.github.io/FeedReader/

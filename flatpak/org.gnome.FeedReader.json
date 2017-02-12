@@ -6,8 +6,6 @@
     "sdk": "org.gnome.Sdk",
     "command": "feedreader",
     "copy-icon": true,
-    "tags": ["nightly"],
-    "desktop-file-name-prefix": "(nightly) ",
     "finish-args": [
         /* Play sounds */
         "--socket=pulseaudio",
@@ -93,7 +91,8 @@
 	    "config-opts": ["-DCMAKE_INSTALL_PREFIX=/app"],
             "sources": [{
                     "type": "git",
-                    "url": "https://github.com/jangernert/FeedReader.git"
+                    "url": "https://github.com/jangernert/FeedReader.git",
+		    "branch": "master"
                 }
             ]
         }

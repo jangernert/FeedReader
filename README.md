@@ -71,7 +71,7 @@ For FeedReader to properly work, you will also need to install the following por
 ####Install FeedReader Flatpak via repository:
 
 <pre>
-flatpak install https://s3.eu-central-1.amazonaws.com/feedreader.xarbit.net/feedreader-repo/feedreader.flatpakref
+flatpak install http://feedreader.xarbit.net/feedreader-repo/feedreader.flatpakref
 </pre>
 
 ####Install FeedReader Flatpak via standalone bundle:

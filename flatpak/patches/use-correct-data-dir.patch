@@ -1,0 +1,205 @@
+From 5c0896e25cdf9c5153d8be473f5205edd5190728 Mon Sep 17 00:00:00 2001
+From: Patrick Griffis <tingping@tingping.se>
+Date: Fri, 23 Dec 2016 03:07:33 -0500
+Subject: [PATCH] Use correct data directory
+
+---
+ src/Backends/feedly/FeedlyAPI.vala            | 2 +-
+ src/Backends/inoreader/InoReader_Utils.vala   | 2 +-
+ src/Backends/owncloud/OwncloudNews_Utils.vala | 2 +-
+ src/Backends/ttrss/TTRSS_Utils.vala           | 2 +-
+ src/ContentGrabber/grabberUtils.vala          | 4 ++--
+ src/Logger.vala                               | 7 ++++++-
+ src/Widgets/ArticleRow.vala                   | 2 +-
+ src/Widgets/ArticleView.vala                  | 4 ++--
+ src/Widgets/FeedRow.vala                      | 2 +-
+ src/Widgets/ResetPage.vala                    | 2 +-
+ src/dbDaemon.vala                             | 4 ++--
+ src/dbUI.vala                                 | 2 +-
+ 12 files changed, 20 insertions(+), 15 deletions(-)
+
+diff --git a/src/Backends/feedly/FeedlyAPI.vala b/src/Backends/feedly/FeedlyAPI.vala
+index 73dc1db5..75f2c285 100644
+--- a/src/Backends/feedly/FeedlyAPI.vala
++++ b/src/Backends/feedly/FeedlyAPI.vala
+@@ -388,7 +388,7 @@ public class FeedReader.FeedlyAPI : Object {
+ 
+ 	private bool downloadIcon(string feed_id, string icon_url)
+ 	{
+-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
++		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+ 		var path = GLib.File.new_for_path(icon_path);
+ 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
+ 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
+diff --git a/src/Backends/inoreader/InoReader_Utils.vala b/src/Backends/inoreader/InoReader_Utils.vala
+index 27ed4906..5ecf9ee0 100644
+--- a/src/Backends/inoreader/InoReader_Utils.vala
++++ b/src/Backends/inoreader/InoReader_Utils.vala
+@@ -55,7 +55,7 @@ public class FeedReader.inoreader_utils : GLib.Object {
+ 
+ 	public static bool downloadIcon(string feed_id, string icon_url)
+ 	{
+-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
++		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+ 		var path = GLib.File.new_for_path(icon_path);
+ 		try{
+ 			path.make_directory_with_parents();
+diff --git a/src/Backends/owncloud/OwncloudNews_Utils.vala b/src/Backends/owncloud/OwncloudNews_Utils.vala
+index 93fc69a2..03995417 100644
+--- a/src/Backends/owncloud/OwncloudNews_Utils.vala
++++ b/src/Backends/owncloud/OwncloudNews_Utils.vala
+@@ -115,7 +115,7 @@ public class FeedReader.OwncloudNews_Utils : GLib.Object {
+         if(icon_url == "")
+             return false;
+ 
+-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
++		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+ 		var path = GLib.File.new_for_path(icon_path);
+ 		try{
+ 			path.make_directory_with_parents();
+diff --git a/src/Backends/ttrss/TTRSS_Utils.vala b/src/Backends/ttrss/TTRSS_Utils.vala
+index cc3e837f..dc1eb911 100644
+--- a/src/Backends/ttrss/TTRSS_Utils.vala
++++ b/src/Backends/ttrss/TTRSS_Utils.vala
+@@ -127,7 +127,7 @@ public class FeedReader.ttrss_utils : GLib.Object {
+ 
+ 	public static bool downloadIcon(string feed_id, string icon_url)
+ 	{
+-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
++		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+ 		var path = GLib.File.new_for_path(icon_path);
+ 		try{
+ 			path.make_directory_with_parents();
+diff --git a/src/ContentGrabber/grabberUtils.vala b/src/ContentGrabber/grabberUtils.vala
+index e2c66028..a165f264 100644
+--- a/src/ContentGrabber/grabberUtils.vala
++++ b/src/ContentGrabber/grabberUtils.vala
+@@ -418,9 +418,9 @@ public class FeedReader.grabberUtils : GLib.Object {
+         }
+ 
+         if(articleID == "" && feedID == "")
+-            imgPath = GLib.Environment.get_home_dir() + "/debug-article/ArticleImages/";
++            imgPath = GLib.Environment.get_user_data_dir() + "/debug-article/ArticleImages/";
+         else
+-            imgPath = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
++            imgPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
+ 
+         var path = GLib.File.new_for_path(imgPath);
+ 		try{
+diff --git a/src/Logger.vala b/src/Logger.vala
+index d9c3f941..aacfbaf2 100644
+--- a/src/Logger.vala
++++ b/src/Logger.vala
+@@ -23,7 +23,12 @@ public class FeedReader.Logger : GLib.Object {
+ 		var logLevel = settings_general.get_enum("log-level");
+ 		m_LogLevel = LogLevel.DEBUG;
+ 
+-		string path = "%s/.local/share/feedreader/%s.log".printf(GLib.Environment.get_home_dir(), filename);
++		string directory = GLib.Path.build_filename(GLib.Environment.get_user_data_dir(), "feedreader");
++		string path = "%s/%s.log".printf(directory, filename);
++		try {
++			GLib.File.new_for_path(directory).make_directory_with_parents();
++		}
++		catch {}
+ 
+ 		if(FileUtils.test(path, GLib.FileTest.EXISTS))
+ 			GLib.FileUtils.remove(path);
+diff --git a/src/Widgets/ArticleRow.vala b/src/Widgets/ArticleRow.vala
+index 3ad98a4d..ea45921a 100644
+--- a/src/Widgets/ArticleRow.vala
++++ b/src/Widgets/ArticleRow.vala
+@@ -279,7 +279,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
+ 
+ 	private string getIconPath()
+ 	{
+-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
++		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+ 		return icon_path + m_article.getFeedID().replace("/", "_").replace(".", "_") + ".ico";
+ 	}
+ 
+diff --git a/src/Widgets/ArticleView.vala b/src/Widgets/ArticleView.vala
+index aa9f8155..a8260dfe 100644
+--- a/src/Widgets/ArticleView.vala
++++ b/src/Widgets/ArticleView.vala
+@@ -388,7 +388,7 @@ public class FeedReader.articleView : Gtk.Overlay {
+ 					Article.getDateNice(),
+ 					Article.getFeedID()
+ 				)
+-			, "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
++			, "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
+ 		this.show_all();
+ 	}
+ 
+@@ -410,7 +410,7 @@ public class FeedReader.articleView : Gtk.Overlay {
+ 			case WebKit.LoadEvent.STARTED:
+ 				logger.print(LogMessage.DEBUG, "ArticleView: load STARTED");
+ 				string url = m_currentView.get_uri();
+-				if(url != "file://" + GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/")
++				if(url != "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/")
+ 				{
+ 					logger.print(LogMessage.DEBUG, "ArticleView: open external url: %s".printf(url));
+ 					try{
+diff --git a/src/Widgets/FeedRow.vala b/src/Widgets/FeedRow.vala
+index 8c7f1372..9df4fe80 100644
+--- a/src/Widgets/FeedRow.vala
++++ b/src/Widgets/FeedRow.vala
+@@ -178,7 +178,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
+ 
+ 	private string getIconPath()
+ 	{
+-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
++		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+ 		return icon_path + m_feedID.replace("/", "_").replace(".", "_") + ".ico";
+ 	}
+ 
+diff --git a/src/Widgets/ResetPage.vala b/src/Widgets/ResetPage.vala
+index e896dcf1..f946ef8d 100644
+--- a/src/Widgets/ResetPage.vala
++++ b/src/Widgets/ResetPage.vala
+@@ -99,7 +99,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
+ 		resetSettings(settings_ttrss);
+ 		resetSettings(settings_owncloud);
+ 
+-		Utils.remove_directory(GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/");
++		Utils.remove_directory(GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
+ 
+ 		settings_state.set_boolean("currently-updating", false);
+ 		feedDaemon_interface.login(Backend.NONE);
+diff --git a/src/dbDaemon.vala b/src/dbDaemon.vala
+index 671987b4..85ba13e9 100644
+--- a/src/dbDaemon.vala
++++ b/src/dbDaemon.vala
+@@ -100,7 +100,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
+     {
+         logger.print(LogMessage.INFO, "Deleting article \"%s\"".printf(articleID));
+         executeSQL("DELETE FROM main.articles WHERE articleID = \"" + articleID + "\"");
+-        string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/%s/".printf(feedID, articleID);
++        string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+         Utils.remove_directory(folder_path);
+     }
+ 
+@@ -679,7 +679,7 @@ public class FeedReader.dbDaemon : FeedReader.dbUI {
+     {
+         logger.print(LogMessage.WARNING, "dbDaemon: Deleting all articles of feed \"%s\"".printf(feedID));
+         executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
+-        string folder_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/images/%s/".printf(feedID);
++        string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/".printf(feedID);
+         Utils.remove_directory(folder_path);
+     }
+ 
+diff --git a/src/dbUI.vala b/src/dbUI.vala
+index b859ff5f..f7fa5ff2 100644
+--- a/src/dbUI.vala
++++ b/src/dbUI.vala
+@@ -20,7 +20,7 @@ public class FeedReader.dbUI : GLib.Object {
+ 
+ 	public dbUI(string dbFile = "feedreader-03.db")
+ 	{
+-		string db_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/";
++		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/";
+ 		var path = GLib.File.new_for_path(db_path);
+ 		if(!path.query_exists())
+ 		{
+-- 
+2.11.0
+

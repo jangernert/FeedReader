@@ -76,7 +76,7 @@ flatpak install http://feedreader.xarbit.net/feedreader-repo/feedreader.flatpakr
 
 ####Install FeedReader Flatpak via standalone bundle:
 
-- [FeedReader Flatpak](https://github.com/jscurtu/feedreader-flatpak/releases)
+- [FeedReader Flatpak Bundle](https://github.com/jangernert/FeedReader/releases)
 
 GNOME-Software can handle flatpak bundles, just open the downloaded feedreader.flatpak file with GNOME-Software and click on install. Thats it..
 

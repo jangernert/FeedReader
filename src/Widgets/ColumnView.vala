@@ -529,4 +529,9 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	{
 		return m_headerbar;
 	}
+
+	public void ArticleViewSendEvent(Gdk.EventKey event)
+	{
+		m_article_view.sendEvent(event);
+	}
 }

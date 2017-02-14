@@ -72,11 +72,23 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 
 
 		//--------------------------------------------------
+		var articleView = newGroup(_("Article View"));
+		//--------------------------------------------------
+		string up = Settings.keybindings().get_string("articleview-up");
+		string down = Settings.keybindings().get_string("articleview-down");
+		string AVupDown = "%s %s".printf(up, down);
+		var AVupdown = newShortcut(_("Scroll up/down"), AVupDown);
+		articleView.add(AVupdown);
+		//--------------------------------------------------
+
+
+		//--------------------------------------------------
 		var section = newSection("test", "section", 10);
 		//--------------------------------------------------
 		section.add(general);
 		section.add(feedList);
 		section.add(articleList);
+		section.add(articleView);
 		//--------------------------------------------------
 
 

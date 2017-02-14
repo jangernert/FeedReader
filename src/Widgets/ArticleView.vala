@@ -990,4 +990,9 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		m_fsHead.showMediaButton(show);
 	}
 
+	public void sendEvent(Gdk.EventKey event)
+	{
+		m_currentView.key_press_event(event);
+	}
+
 }

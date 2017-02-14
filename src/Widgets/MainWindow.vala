@@ -606,6 +606,20 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				return false;
 		}
 
+		if(checkShortcut(event, "articleview-up"))
+		{
+			event.keyval = Gdk.Key.Up;
+			ColumnView.get_default().ArticleViewSendEvent(event);
+			return true;
+		}
+
+		if(checkShortcut(event, "articleview-down"))
+		{
+			event.keyval = Gdk.Key.Down;
+			ColumnView.get_default().ArticleViewSendEvent(event);
+			return true;
+		}
+
 		if(checkShortcut(event, "articlelist-toggle-read"))
 		{
 			Logger.debug("shortcut: toggle read");

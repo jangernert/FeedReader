@@ -9,6 +9,14 @@
 			<default>'k'</default>
 		</key>
 		
+		<key name="articleview-up" type="s">
+			<default>'i'</default>
+		</key>
+		
+		<key name="articleview-down" type="s">
+			<default>'u'</default>
+		</key>
+		
 		<key name="articlelist-toggle-read" type="s">
 			<default>'r'</default>
 		</key>

@@ -71,7 +71,7 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return;
 	}
 
-	public void poastLoginAction()
+	public void postLoginAction()
 	{
 		return;
 	}

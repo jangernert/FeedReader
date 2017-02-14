@@ -116,7 +116,7 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	//--------------------------------------------------------------------------------------
 	// Do stuff after a successful login
 	//--------------------------------------------------------------------------------------
-	public void poastLoginAction()
+	public void postLoginAction()
 	{
 
 	}

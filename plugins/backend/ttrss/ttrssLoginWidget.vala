@@ -186,7 +186,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		}
 	}
 
-	public void poastLoginAction()
+	public void postLoginAction()
 	{
 		return;
 	}

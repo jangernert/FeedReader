@@ -136,7 +136,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return;
 	}
 
-	public void poastLoginAction()
+	public void postLoginAction()
 	{
 		var children = m_feedlist.get_children();
 		foreach(var r in children)

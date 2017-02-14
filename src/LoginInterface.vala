@@ -38,7 +38,7 @@ public interface FeedReader.LoginInterface : GLib.Object {
 
 	public abstract void writeData();
 
-	public abstract void poastLoginAction();
+	public abstract void postLoginAction();
 
 	public abstract bool extractCode(string redirectURL);
 

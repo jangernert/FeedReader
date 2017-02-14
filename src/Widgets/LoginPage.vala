@@ -200,7 +200,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 						Logger.error("LoginPage.login: %s".printf(e.message));
 					}
 				});
-				ext.poastLoginAction();
+				ext.postLoginAction();
 				submit_data();
 				return;
 			}

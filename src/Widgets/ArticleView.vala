@@ -343,6 +343,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		if(m_stack.get_visible_child_name() != "empty"
 		&& m_stack.get_visible_child_name() != "crash")
 			oldView = m_stack.get_visible_child();
+		m_progress.reveal(false);
 		m_stack.set_visible_child_name("empty");
 		GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
 			if(oldView != null)

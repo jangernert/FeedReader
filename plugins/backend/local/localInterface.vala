@@ -186,14 +186,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			catIDs += "0";
 		}
 
-		string feedID = "feedID1";
+		string feedID = "feedID00001";
 
 		if(!dbDaemon.get_default().isTableEmpty("feeds"))
 		{
-			feedID = "feedID%i".printf(int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1);
+			feedID = "feedID%05d".printf(int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1);
 		}
 
-		Logger.info("addFeed: ID = " + feedID);
+		Logger.info(@"addFeed: ID = $feedID");
 		feed? Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
 
 		if(Feed != null)
@@ -218,10 +218,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		foreach(feed f in feeds)
 		{
-			string feedID = @"feedID$highestID";
+			string feedID = "feedID" + highestID.to_string("%05d");
 			highestID++;
 
-			Logger.info("addFeed: ID = " + feedID);
+			Logger.info(@"addFeed: ID = $feedID");
 			feed? Feed = m_utils.downloadFeed(f.getXmlUrl(), feedID, f.getCatIDs());
 
 			if(Feed != null)

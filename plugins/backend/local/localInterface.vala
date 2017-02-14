@@ -261,14 +261,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public string createCategory(string title, string? parentID)
 	{
-		string catID = "catID1";
+		string catID = "catID00001";
 
 		if(!dbDaemon.get_default().isTableEmpty("categories"))
 		{
 			string? id = dbDaemon.get_default().getCategoryID(title);
 			if(id == null)
 			{
-				catID = "catID%i".printf(int.parse(dbDaemon.get_default().getMaxID("categories", "categorieID").substring(5)) + 1);
+				catID = "catID%05d".printf(int.parse(dbDaemon.get_default().getMaxID("categories", "categorieID").substring(5)) + 1);
 			}
 			else
 			{
@@ -356,8 +356,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var msg = new Soup.Message("GET", url);
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
-
-
 
 			// parse
 			Rss.Parser parser = new Rss.Parser();

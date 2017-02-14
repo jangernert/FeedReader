@@ -383,7 +383,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				string? articleID = item.guid;
 
 				if(articleID != null)
-					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "");
+					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
 				else
 					continue;
 

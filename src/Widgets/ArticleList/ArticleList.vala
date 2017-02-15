@@ -720,7 +720,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		string selectedURL = m_currentList.selectedURL();
 		try
 		{
-			Gtk.show_uri(Gdk.Screen.get_default(), selectedURL, Gdk.CURRENT_TIME);
+			Gtk.show_uri_on_window(MainWindow.get_default(), selectedURL, Gdk.CURRENT_TIME);
 		}
 		catch(GLib.Error e)
 		{

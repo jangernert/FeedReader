@@ -64,7 +64,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		var reportBugAction = new SimpleAction("bugs", null);
 		reportBugAction.activate.connect(() => {
 			try{
-				Gtk.show_uri(Gdk.Screen.get_default(), "https://github.com/jangernert/FeedReader/issues", Gdk.CURRENT_TIME);
+				Gtk.show_uri_on_window(this.get_default(), "https://github.com/jangernert/FeedReader/issues", Gdk.CURRENT_TIME);
 			}
 			catch(GLib.Error e){
 				Logger.debug("could not open the link in an external browser: %s".printf(e.message));
@@ -76,7 +76,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		var bountyAction = new SimpleAction("bounty", null);
 		bountyAction.activate.connect(() => {
 			try{
-				Gtk.show_uri(Gdk.Screen.get_default(), "https://www.bountysource.com/teams/jangernert-feedreader/issues", Gdk.CURRENT_TIME);
+				Gtk.show_uri_on_window(this.get_default(), "https://www.bountysource.com/teams/jangernert-feedreader/issues", Gdk.CURRENT_TIME);
 			}
 			catch(GLib.Error e){
 				Logger.debug("could not open the link in an external browser: %s".printf(e.message));

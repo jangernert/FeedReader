@@ -151,7 +151,7 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 
 		try
 		{
-			Gtk.show_uri(Gdk.Screen.get_default(), m_ext.getWebsite(), Gdk.CURRENT_TIME);
+			Gtk.show_uri_on_window(MainWindow.get_default(), m_ext.getWebsite(), Gdk.CURRENT_TIME);
 		}
 		catch(GLib.Error e)
 		{

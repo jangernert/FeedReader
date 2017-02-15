@@ -62,8 +62,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2.scrolledTop.connect(dismissOverlay);
 		m_scroll1.valueChanged.connect(updateVisibleRows);
 		m_scroll2.valueChanged.connect(updateVisibleRows);
-		m_scroll1.scrolledBottom.connect(loadMore);
-		m_scroll2.scrolledBottom.connect(loadMore);
 		m_List1 = new ArticleListBox();
 		m_List2 = new ArticleListBox();
 		m_List1.row_activated.connect(rowActivated);
@@ -107,6 +105,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
+		m_currentScroll.scrolledBottom.disconnect(loadMore);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
 		bool newArticles = false;
@@ -138,11 +137,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size == 0)
 		{
+			m_currentScroll.scrolledBottom.connect(loadMore);
 			if(offset == 0)
 			{
 				m_emptyList.build(m_selectedFeedListID, m_selectedFeedListType, m_state, m_searchTerm);
 				m_stack.set_visible_child_full("empty", transition);
-				m_currentScroll.scrolledBottom.connect(loadMore);
 			}
 			else
 			{
@@ -153,6 +152,12 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		}
 		else
 		{
+			if(m_handlerID != 0)
+			{
+				m_currentList.disconnect(m_handlerID);
+				m_handlerID = 0;
+			}
+			
 			// switch up lists
 			if(m_currentList == m_List1)
 			{
@@ -167,7 +172,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				m_stack.set_visible_child_full("list1", transition);
 			}
 
-			m_currentScroll.scrolledBottom.disconnect(loadMore);
 			m_currentScroll.scrollToPos(0, false);
 			m_currentList.newList(articles);
 

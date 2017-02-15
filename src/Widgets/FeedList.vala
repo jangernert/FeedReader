@@ -189,9 +189,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		m_busy = true;
 		m_branding.refresh();
-		var FeedChildList = m_list.get_children();
 
-		if(FeedChildList != null)
+		if(!isEmpty())
 		{
 			if(!defaultSettings)
 			{
@@ -204,15 +203,30 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			m_update = true;
 		}
 
+		clear();
+		createFeedlist(state, defaultSettings, masterCat);
+		Settings.state().set_boolean("no-animations", false);
+		m_update = false;
+		m_busy = false;
+	}
+
+	public void clear()
+	{
+		var FeedChildList = m_list.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{
 			m_list.remove(row);
 			row.destroy();
 		}
-		createFeedlist(state, defaultSettings, masterCat);
-		Settings.state().set_boolean("no-animations", false);
-		m_update = false;
-		m_busy = false;
+	}
+
+	private bool isEmpty()
+	{
+		var FeedChildList = m_list.get_children();
+		if(FeedChildList == null)
+			return true;
+
+		return false;
 	}
 
 

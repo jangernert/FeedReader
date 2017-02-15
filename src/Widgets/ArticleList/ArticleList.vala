@@ -758,4 +758,9 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	{
 		row_activated((articleRow)row);
 	}
+
+	public void clear()
+	{
+		m_currentList.emptyList();
+	}
 }

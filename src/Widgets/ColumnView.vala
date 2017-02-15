@@ -534,4 +534,11 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	{
 		m_article_view.sendEvent(event);
 	}
+
+	public void clear()
+	{
+		m_articleList.clear();
+		m_article_view.clearContent();
+		m_feedList.clear();
+	}
 }

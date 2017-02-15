@@ -95,6 +95,9 @@ public class FeedReader.ResetPage : Gtk.Bin {
 			// set "currently-updating" ourself to prevent the daemon to start sync
 			Settings.state().set_boolean("currently-updating", true);
 
+			// clear all data from UI
+			ColumnView.get_default().clear();
+
 			Utils.resetSettings(Settings.general());
 			Utils.resetSettings(Settings.state());
 			DBusConnection.get_default().resetDB();

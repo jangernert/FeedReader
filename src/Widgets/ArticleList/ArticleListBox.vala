@@ -148,7 +148,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 	}
 
-	private void emptyList()
+	public void emptyList()
 	{
 		var children = get_children();
 		foreach(Gtk.Widget row in children)

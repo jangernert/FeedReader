@@ -41,7 +41,7 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 		m_iconStack.set_visible_child_name("spinner");
 		try
 		{
-			Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+			Gtk.show_uri_on_window(SettingsDialog.get_default(), url, Gdk.CURRENT_TIME);
 		}
 		catch(GLib.Error e)
 		{

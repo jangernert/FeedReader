@@ -282,7 +282,7 @@ namespace FeedReader {
 
 			if(!FeedServer.get_default().pluginLoaded())
 			{
-				Logger.error("daemon: plugin '%s' couldn't be loaded by feedserver".printf(plugName));
+				Logger.error(@"daemon: plugin '$plugName' couldn't be loaded by feedserver");
 				m_loggedin = LoginResponse.NO_BACKEND;
 				return m_loggedin;
 			}

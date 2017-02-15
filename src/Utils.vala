@@ -443,7 +443,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		string host = uri.get_host();
 
-		Logger.debug("Ping: modified URL " + host);
+		Logger.debug(@"Ping: modified URL $host");
 
 	    try
 		{

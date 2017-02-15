@@ -972,7 +972,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				Logger.debug(@"ArticleView: open $url in browser");
 				try
 				{
-					Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+					Gtk.show_uri_on_window(MainWindow.get_default(), url, Gdk.CURRENT_TIME);
 				}
 				catch(GLib.Error e)
 				{

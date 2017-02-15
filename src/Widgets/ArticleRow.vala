@@ -336,7 +336,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			return false;
 
 		try{
-			Gtk.show_uri(Gdk.Screen.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
+			Gtk.show_uri_on_window(MainWindow.get_default(), m_article.getURL(), Gdk.CURRENT_TIME);
 		}
 		catch(GLib.Error e){
 			Logger.debug("could not open the link in an external browser: %s".printf(e.message));

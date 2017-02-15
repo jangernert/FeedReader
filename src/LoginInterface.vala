@@ -16,7 +16,6 @@
 public interface FeedReader.LoginInterface : GLib.Object {
 
 	public signal void login();
-	public signal void writeFeed(string url, string category);
 
 	public abstract void init();
 
@@ -38,7 +37,7 @@ public interface FeedReader.LoginInterface : GLib.Object {
 
 	public abstract void writeData();
 
-	public abstract void postLoginAction();
+	public abstract async void postLoginAction();
 
 	public abstract bool extractCode(string redirectURL);
 

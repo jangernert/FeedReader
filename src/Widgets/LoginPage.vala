@@ -190,18 +190,11 @@ public class FeedReader.LoginPage : Gtk.Stack {
 			if(status == LoginResponse.SUCCESS)
 			{
 				var ext = getActiveExtension();
-				ext.writeFeed.connect((url, cat) => {
-					try
-					{
-						DBusConnection.get_default().addFeed(url, cat, false, false);
-					}
-					catch(GLib.Error e)
-					{
-						Logger.error("LoginPage.login: %s".printf(e.message));
-					}
+				ext.postLoginAction.begin((ob, res) => {
+					ext.postLoginAction.end(res);
+					submit_data();
 				});
-				ext.postLoginAction();
-				submit_data();
+
 				return;
 			}
 

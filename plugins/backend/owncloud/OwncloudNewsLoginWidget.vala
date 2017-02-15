@@ -71,7 +71,7 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		}
 	}
 
-	public void postLoginAction()
+	public async void postLoginAction()
 	{
 		return;
 	}

@@ -57,11 +57,28 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	public Gtk.Box? getWidget()
 	{
-		var loginButton = new Gtk.Button.with_label(_("Done"));
+		var doneLabel = new Gtk.Label(_("Done"));
+		var waitingLabel = new Gtk.Label(_("Adding Feeds"));
+		var waitingSpinner = new Gtk.Spinner();
+		var waitingBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		waitingBox.pack_start(waitingSpinner, false, false, 0);
+		waitingBox.pack_start(waitingLabel, true, false, 0);
+		var loginStack = new Gtk.Stack();
+		loginStack.add_named(doneLabel, "label");
+		loginStack.add_named(waitingBox, "waiting");
+		var loginButton = new Gtk.Button();
+		loginButton.add(loginStack);
 		loginButton.halign = Gtk.Align.END;
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-		loginButton.clicked.connect(() => { login(); });
+		loginButton.clicked.connect(() => {
+			login();
+			loginButton.set_sensitive(false);
+			waitingSpinner.start();
+			loginButton.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+			loginStack.set_visible_child_name("waiting");
+		});
+		loginButton.show_all();
 
 		var headlineLabel = new Gtk.Label("Recommended Feeds:");
 		headlineLabel.get_style_context().add_class("h1");
@@ -136,17 +153,30 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return;
 	}
 
-	public void postLoginAction()
+	public async void postLoginAction()
 	{
-		var children = m_feedlist.get_children();
-		foreach(var r in children)
-		{
-			var row = r as SuggestedFeedRow;
-			if(row.checked())
+		SourceFunc callback = postLoginAction.callback;
+		new GLib.Thread<void*>(null, () => {
+			var children = m_feedlist.get_children();
+			foreach(var r in children)
 			{
-				writeFeed(row.getURL(), row.getCategory());
+				var row = r as SuggestedFeedRow;
+				if(row.checked())
+				{
+					try
+					{
+						DBusConnection.get_default().addFeed(row.getURL(), row.getCategory(), false, false);
+					}
+					catch(GLib.Error e)
+					{
+						Logger.error("localLoginWidget.postLoginAction: %s".printf(e.message));
+					}
+				}
 			}
-		}
+			Idle.add((owned) callback);
+			return null;
+		});
+		yield;
 	}
 
 	public string buildLoginURL()

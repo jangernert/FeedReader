@@ -57,7 +57,7 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		return;
 	}
 
-	public void postLoginAction()
+	public async void postLoginAction()
 	{
 		return;
 	}

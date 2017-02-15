@@ -186,7 +186,7 @@ public class FeedReader.freshLoginWidget : Peas.ExtensionBase, LoginInterface {
 		}
 	}
 
-	public void postLoginAction()
+	public async void postLoginAction()
 	{
 		return;
 	}

@@ -129,7 +129,7 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		m_utils.setPassword(m_passwordEntry.get_text().strip());
 	}
 
-	public void postLoginAction()
+	public async void postLoginAction()
 	{
 		return;
 	}

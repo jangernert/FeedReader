@@ -383,7 +383,18 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(articleID != null)
 					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
 				else
-					continue;
+				{
+					Logger.warning("no valid ID - using URL as ID");
+					if(item.link == null)
+					{
+						Logger.warning("no valid URL as well? what the hell man? I'm giving up");
+						continue;
+					}
+
+					articleID = item.link;
+
+				}
+
 
 				var date = new GLib.DateTime.now_local();
 

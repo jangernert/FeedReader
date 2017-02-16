@@ -105,6 +105,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
+		Logger.debug("ArticleList: disconnect scrolledBottom-signal");
 		m_currentScroll.scrolledBottom.disconnect(loadMore);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
@@ -137,6 +138,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size == 0)
 		{
+			Logger.debug("ArticleList: no content, so connecting scrolledBottom-signal again");
 			m_currentScroll.scrolledBottom.connect(loadMore);
 			if(offset == 0)
 			{
@@ -157,7 +159,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				m_currentList.disconnect(m_handlerID);
 				m_handlerID = 0;
 			}
-			
+
 			// switch up lists
 			if(m_currentList == m_List1)
 			{
@@ -179,6 +181,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_handlerID = m_currentList.loadDone.connect(() => {
 				restoreSelectedRow();
 				restoreScrollPos();
+				Logger.debug("ArticleList: connect scrolledBottom-signal again");
 				m_currentScroll.scrolledBottom.connect(loadMore);
 				if(newArticles)
 					showNotification();

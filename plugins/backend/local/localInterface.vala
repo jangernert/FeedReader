@@ -392,7 +392,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					}
 
 					articleID = item.link;
-
 				}
 
 

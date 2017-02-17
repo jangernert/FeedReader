@@ -38,12 +38,6 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 
 
 ### How to install
-  - elementary OS / Ubuntu :<br/>
-    <pre>
-    sudo add-apt-repository ppa:eviltwin1/feedreader-stable
-    sudo apt-get update
-    sudo apt-get install feedreader
-    </pre>
   - Arch : <br/>
     <pre>
       yaourt -S feedreader

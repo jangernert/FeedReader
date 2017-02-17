@@ -199,20 +199,30 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_pane.set_visible(true);
 	}
 
-	public void ArticleListNEXT()
+	public int ArticleListNEXT()
 	{
 		if(m_article_view.fullscreenArticle())
 			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_LEFT, 500);
 
-		m_articleList.move(false);
+		return m_articleList.move(false);
 	}
 
-	public void ArticleListPREV()
+	public int ArticleListPREV()
 	{
 		if(m_article_view.fullscreenArticle())
 			m_article_view.setTransition(Gtk.StackTransitionType.SLIDE_RIGHT, 500);
 
-		m_articleList.move(true);
+		return m_articleList.move(true);
+	}
+
+	public void FeedListNEXT()
+	{
+		m_feedList.move(false);
+	}
+
+	public void FeedListPREV()
+	{
+		m_feedList.move(true);
 	}
 
 	public void newArticleList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)

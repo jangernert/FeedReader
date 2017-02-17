@@ -33,6 +33,14 @@
 			<default>'&lt;Shift&gt;a'</default>
 		</key>
 		
+		<key name="feedlist-prev" type="s">
+			<default>'&lt;Control&gt;j'</default>
+		</key>
+		
+		<key name="feedlist-next" type="s">
+			<default>'&lt;Control&gt;k'</default>
+		</key>
+		
 		<key name="global-sync" type="s">
 			<default>'F5'</default>
 		</key>

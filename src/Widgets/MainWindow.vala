@@ -579,16 +579,30 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(ColumnView.get_default().searchFocused())
 			return false;
 
+		if(checkShortcut(event, "feedlist-prev"))
+		{
+			Logger.debug("shortcut: feedlist prev");
+			ColumnView.get_default().FeedListPREV();
+			return true;
+		}
+
+		if(checkShortcut(event, "feedlist-next"))
+		{
+			Logger.debug("shortcut: feedlist next");
+			ColumnView.get_default().FeedListNEXT();
+			return true;
+		}
+
 		if(checkShortcut(event, "articlelist-prev"))
 		{
-			Logger.debug("shortcut: down");
+			Logger.debug("shortcut: articlelist prev");
 			ColumnView.get_default().ArticleListPREV();
 			return true;
 		}
 
 		if(checkShortcut(event, "articlelist-next"))
 		{
-			Logger.debug("shortcut: up");
+			Logger.debug("shortcut: articlelist next");
 			ColumnView.get_default().ArticleListNEXT();
 			return true;
 		}

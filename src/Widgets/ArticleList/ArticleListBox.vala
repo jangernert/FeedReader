@@ -208,7 +208,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("ArticleList.selectAfter: %s".printf(e.message));
+			Logger.error("ArticleListBox.setRead: %s".printf(e.message));
 		}
 	}
 
@@ -291,10 +291,29 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public int move(bool down)
 	{
+		int time = 300;
+		var sel = getSelectedArticle();
+		if(sel == "empty")
+		{
+			Logger.debug("ArticleListBox is empty -> do nothing");
+			return 0;
+		}
+		else if(sel == "")
+		{
+			Logger.debug("ArticleListBox: no row selected -> select first");
+			var firstRow = getFirstRow();
+			if(firstRow == null)
+				return 0;
+			else
+			{
+				selectAfter(firstRow, time);
+				return 0;
+			}
+		}
+
 		var selectedRow = this.get_selected_row() as articleRow;
 		var height = selectedRow.get_allocated_height();
 		articleRow nextRow = null;
-		int time = 300;
 
 		var rows = this.get_children();
 
@@ -454,6 +473,21 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			return null;
 
 		return firstRow.getID();
+	}
+
+	private articleRow? getFirstRow()
+	{
+		var children = this.get_children();
+
+		if(children == null)
+			return null;
+
+		var firstRow = children.first().data as articleRow;
+
+		if(firstRow == null)
+			return null;
+
+		return firstRow;
 	}
 
 	public string? getLastRowID()

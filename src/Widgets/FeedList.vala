@@ -107,7 +107,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 	}
 
-	private void move(bool down)
+	public void move(bool down)
 	{
 		FeedRow selected_feed = m_list.get_selected_row() as FeedRow;
 		CategoryRow selected_categorie = m_list.get_selected_row() as CategoryRow;
@@ -124,7 +124,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		if(selected_feed != null)
 		{
 			current = FeedListChildren.index(selected_feed);
-
 		}
 		else if(selected_categorie != null)
 		{

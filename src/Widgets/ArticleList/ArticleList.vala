@@ -519,12 +519,14 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		return true;
 	}
 
-	public void move(bool down)
+	public int move(bool down)
 	{
 		int diff = m_currentList.move(down);
 
 		if(m_state != ArticleListState.UNREAD)
 			m_currentScroll.scrollDiff(diff);
+
+		return diff;
 	}
 
 	public void showOverlay()

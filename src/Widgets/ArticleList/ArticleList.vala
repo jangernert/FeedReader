@@ -34,7 +34,9 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private Gtk.Spinner m_syncSpinner;
 	private uint m_scrollChangedTimeout = 0;
 	private const int m_dynamicRowThreshold = 10;
-	private ulong m_handlerID = 0;
+	private ulong m_handlerID1 = 0;
+	private ulong m_handlerID2 = 0;
+	private ulong m_handlerID3 = 0;
 
 	public signal void row_activated(articleRow? row);
 
@@ -62,8 +64,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2.scrolledTop.connect(dismissOverlay);
 		m_scroll1.valueChanged.connect(updateVisibleRows);
 		m_scroll2.valueChanged.connect(updateVisibleRows);
-		m_List1 = new ArticleListBox();
-		m_List2 = new ArticleListBox();
+		m_List1 = new ArticleListBox("1");
+		m_List2 = new ArticleListBox("2");
 		m_List1.row_activated.connect(rowActivated);
 		m_List2.row_activated.connect(rowActivated);
 		m_List1.loadDone.connect(checkForNewRows);
@@ -154,31 +156,32 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		}
 		else
 		{
-			if(m_handlerID != 0)
+			if(m_handlerID1 != 0)
 			{
-				m_currentList.disconnect(m_handlerID);
-				m_handlerID = 0;
+				m_currentList.disconnect(m_handlerID1);
+				m_handlerID1 = 0;
 			}
 
 			// switch up lists
 			if(m_currentList == m_List1)
 			{
+				Logger.debug("ArticleList: switch to list2");
 				m_currentList = m_List2;
 				m_currentScroll = m_scroll2;
 				m_stack.set_visible_child_full("list2", transition);
 			}
 			else
 			{
+				Logger.debug("ArticleList: switch to list1");
 				m_currentList = m_List1;
 				m_currentScroll = m_scroll1;
 				m_stack.set_visible_child_full("list1", transition);
 			}
 
 			m_currentScroll.scrollToPos(0, false);
-			m_currentList.newList(articles);
 
 			// restore the previous selected row
-			m_handlerID = m_currentList.loadDone.connect(() => {
+			m_handlerID1 = m_currentList.loadDone.connect(() => {
 				restoreSelectedRow();
 				restoreScrollPos();
 				Logger.debug("ArticleList: connect scrolledBottom-signal again");
@@ -186,12 +189,14 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				if(newArticles)
 					showNotification();
 
-				if(m_handlerID != 0)
+				if(m_handlerID1 != 0)
 				{
-					m_currentList.disconnect(m_handlerID);
-					m_handlerID = 0;
+					m_currentList.disconnect(m_handlerID1);
+					m_handlerID1 = 0;
 				}
 			});
+
+			m_currentList.newList(articles);
 		}
 	}
 
@@ -246,13 +251,13 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		{
 			m_scroll2.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addBottom(articles);
-			m_handlerID = m_currentList.loadDone.connect(() => {
+			m_handlerID2 = m_currentList.loadDone.connect(() => {
 				m_scroll2.valueChanged.connect(updateVisibleRows);
 
-				if(m_handlerID != 0)
+				if(m_handlerID2 != 0)
 				{
-					m_currentList.disconnect(m_handlerID);
-					m_handlerID = 0;
+					m_currentList.disconnect(m_handlerID2);
+					m_handlerID2 = 0;
 				}
 			});
 		}
@@ -297,13 +302,13 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 			m_scroll2.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addTop(articles);
-			m_handlerID = m_currentList.loadDone.connect(() => {
+			m_handlerID3 = m_currentList.loadDone.connect(() => {
 				m_scroll2.valueChanged.connect(updateVisibleRows);
 
-				if(m_handlerID != 0)
+				if(m_handlerID3 != 0)
 				{
-					m_currentList.disconnect(m_handlerID);
-					m_handlerID = 0;
+					m_currentList.disconnect(m_handlerID3);
+					m_handlerID3 = 0;
 				}
 			});
 		}

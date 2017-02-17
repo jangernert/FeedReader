@@ -17,6 +17,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	private Gee.LinkedList<article> m_lazyQeue;
 	private uint m_idleID = 0;
+	private string m_name;
 	private uint m_selectSourceID = 0;
 	private ArticleListState m_state = ArticleListState.ALL;
 	private FeedListType m_selectedFeedListType = FeedListType.FEED;
@@ -28,8 +29,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public signal void balanceNextScroll(ArticleListBalance mode);
 	public signal void loadDone();
 
-	public ArticleListBox()
+	public ArticleListBox(string name)
 	{
+		m_name = name;
 		m_lazyQeue = new Gee.LinkedList<article>();
 		m_articles = new Gee.HashSet<string>();
 		m_visibleArticles = new Gee.HashSet<string>();
@@ -65,14 +67,17 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		{
 			GLib.Source.remove(m_idleID);
 			m_idleID = 0;
-			loadDone();
 		}
 	}
 
 	private void addRow(ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)
 	{
 		if(m_lazyQeue.size == 0)
+		{
+			Logger.debug(@"ArticleListbox$m_name: lazyQueu == 0 -> return");
 			return;
+		}
+
 
 		var priority = GLib.Priority.DEFAULT_IDLE;
 		if(ColumnView.get_default().playingMedia())
@@ -93,7 +98,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			// check if row is already there
 			if(m_articles.contains(item.getArticleID()))
 			{
-				Logger.warning("ArticleListBox: row with ID %s is already present".printf(item.getArticleID()));
+				Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
 				checkQueue(item, balance, pos, reverse, animate);
 				return false;
 			}
@@ -140,8 +145,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 		else
 		{
+			Logger.debug(@"ArticleListbox$m_name: all articles added to the list");
 			m_lazyQeue = new Gee.LinkedList<article>();
 			GLib.Timeout.add(150, () => {
+				Logger.debug(@"ArticleListbox$m_name: loadDone()");
 				loadDone();
 				return false;
 			});

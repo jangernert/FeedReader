@@ -19,7 +19,7 @@ public class FeedReader.Setting : Gtk.Box {
 	private Gtk.Label m_label;
 
 
-	public Setting(string name)
+	public Setting(string name, string? tooltip = null)
 	{
 		this.orientation = Gtk.Orientation.HORIZONTAL;
 		this.spacing = 0;
@@ -27,6 +27,8 @@ public class FeedReader.Setting : Gtk.Box {
 		m_label = new Gtk.Label(name);
         m_label.set_alignment(0, 0.5f);
         m_label.margin_start = 15;
+		m_label.set_tooltip_text(tooltip);
+
 		this.pack_start(m_label, true, true, 0);
 	}
 
@@ -36,9 +38,9 @@ public class FeedReader.Setting : Gtk.Box {
 
 public class FeedReader.SettingDropbox : FeedReader.Setting {
 
-	public SettingDropbox(string name, GLib.Settings settings, string key, string[] values)
+	public SettingDropbox(string name, GLib.Settings settings, string key, string[] values, string? tooltip = null)
 	{
-		base(name);
+		base(name, tooltip);
 		var liststore = new Gtk.ListStore(1, typeof(string));
 
         foreach(string val in values)
@@ -65,9 +67,9 @@ public class FeedReader.SettingDropbox : FeedReader.Setting {
 
 public class FeedReader.SettingSwitch : FeedReader.Setting {
 
-	public SettingSwitch(string name, GLib.Settings settings, string key)
+	public SettingSwitch(string name, GLib.Settings settings, string key, string? tooltip = null)
 	{
-		base(name);
+		base(name, tooltip);
 
         var Switch = new Gtk.Switch();
         Switch.active = settings.get_boolean(key);
@@ -84,9 +86,9 @@ public class FeedReader.SettingSwitch : FeedReader.Setting {
 
 public class FeedReader.SettingSpin : FeedReader.Setting {
 
-	public SettingSpin(string name, GLib.Settings settings, string key, int min, int max, int step)
+	public SettingSpin(string name, GLib.Settings settings, string key, int min, int max, int step, string? tooltip = null)
 	{
-		base(name);
+		base(name, tooltip);
 
         var spin = new Gtk.SpinButton.with_range(min, max, step);
         spin.set_value(settings.get_int(key));

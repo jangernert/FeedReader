@@ -785,10 +785,10 @@ public class FeedReader.dbBase : GLib.Object {
 		var query2 = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query2.selectField("count(*)");
 
-		if(Settings.general().get_boolean("articlelist-newest-first"))
-			query2.addCustomCondition("rowid > (%s)".printf(query.get()));
-		else
+		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
 			query2.addCustomCondition("rowid < (%s)".printf(query.get()));
+		else
+			query2.addCustomCondition("rowid > (%s)".printf(query.get()));
 
 		if(selectedType == FeedListType.FEED && ID != FeedID.ALL.to_string())
 		{
@@ -847,19 +847,18 @@ public class FeedReader.dbBase : GLib.Object {
 				break;
 		}
 
-		bool desc = false;
-		if(Settings.general().get_boolean("articlelist-newest-first"))
-			desc = true;
+		bool desc = true;
+		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+			desc = false;
 
-		query.orderBy(order_field, desc);
-
+		query2.orderBy(order_field, desc);
 		query2.build();
 
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query2.get(), query2.get().length, out stmt);
+		int ec = sqlite_db.prepare_v2(query2.get(), query2.get().length, out stmt);
 		if (ec != Sqlite.OK)
 		{
-			Logger.error(query.get());
+			Logger.error(query2.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
@@ -1518,9 +1517,9 @@ public class FeedReader.dbBase : GLib.Object {
 				break;
 		}
 
-		bool desc = false;
-		if(Settings.general().get_boolean("articlelist-newest-first"))
-			desc = true;
+		bool desc = true;
+		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+			desc = false;
 
 		query.orderBy(order_field, desc);
 		query.limit(limit);

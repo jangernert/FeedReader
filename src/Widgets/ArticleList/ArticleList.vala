@@ -539,8 +539,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private void showNotification()
 	{
 		if(m_overlay != null
-		|| !Settings.general().get_boolean("articlelist-newest-first")
-		|| m_state == ArticleListState.UNREAD)
+		|| m_state != ArticleListState.ALL)
 			return;
 
 		m_overlay = new InAppNotification.withIcon(
@@ -623,7 +622,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	{
 		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
 		Logger.debug("ArticleList: new-rows %i".printf(Settings.state().get_int("articlelist-new-rows")));
-		if(m_state == ArticleListState.ALL && Settings.general().get_boolean("articlelist-newest-first"))
+		if(m_state == ArticleListState.ALL)
 			offset += (uint)Settings.state().get_int("articlelist-new-rows");
 		Settings.state().set_int("articlelist-row-offset", 0);
 		Settings.state().set_int("articlelist-new-rows", 0);

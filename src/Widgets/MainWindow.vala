@@ -27,6 +27,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
 	private Gtk.CssProvider m_cssProvider;
+	private uint m_stackTransitionTime = 100;
 
 	private static MainWindow? m_window = null;
 
@@ -45,7 +46,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_stack.set_transition_duration(100);
+		m_stack.set_transition_duration(m_stackTransitionTime);
 
 		m_overlay = new Gtk.Overlay();
 		m_overlay.add(m_stack);
@@ -500,8 +501,9 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			}
 
 		});
-
+		m_stack.set_transition_duration(0);
 		showContent(Gtk.StackTransitionType.NONE);
+		m_stack.set_transition_duration(m_stackTransitionTime);
 	}
 
 	private void markSelectedRead()

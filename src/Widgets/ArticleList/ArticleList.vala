@@ -112,7 +112,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
 		bool newArticles = false;
-		if(Settings.state().get_int("articlelist-new-rows") > 0)
+		if(Settings.state().get_int("articlelist-new-rows") > 0 && m_state == ArticleListState.ALL)
 			newArticles = true;
 		SourceFunc callback = newList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------

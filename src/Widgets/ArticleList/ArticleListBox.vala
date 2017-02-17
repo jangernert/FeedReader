@@ -65,6 +65,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		{
 			GLib.Source.remove(m_idleID);
 			m_idleID = 0;
+			loadDone();
 		}
 	}
 

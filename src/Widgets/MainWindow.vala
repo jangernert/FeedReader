@@ -554,17 +554,18 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Gdk.ModifierType? mod;
 		string setting = Settings.keybindings().get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
+		Logger.debug(gsettingKey);
 
 		if(key != null && Gdk.keyval_to_lower(event.keyval) == key)
 		{
-			if(mod == null && event.state == 0)
+			if(mod == null || mod == 0)
+			{
+				if(event.state == 16)
+					return true;
+			}
+			else if(mod in event.state)
 			{
 				return true;
-			}
-			else
-			{
-				if((event.state & mod) == mod)
-					return true;
 			}
 		}
 
@@ -579,20 +580,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(ColumnView.get_default().searchFocused())
 			return false;
 
-		if(checkShortcut(event, "feedlist-prev"))
-		{
-			Logger.debug("shortcut: feedlist prev");
-			ColumnView.get_default().FeedListPREV();
-			return true;
-		}
-
-		if(checkShortcut(event, "feedlist-next"))
-		{
-			Logger.debug("shortcut: feedlist next");
-			ColumnView.get_default().FeedListNEXT();
-			return true;
-		}
-
 		if(checkShortcut(event, "articlelist-prev"))
 		{
 			Logger.debug("shortcut: articlelist prev");
@@ -604,6 +591,20 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		{
 			Logger.debug("shortcut: articlelist next");
 			ColumnView.get_default().ArticleListNEXT();
+			return true;
+		}
+
+		if(checkShortcut(event, "feedlist-prev"))
+		{
+			Logger.debug("shortcut: feedlist prev");
+			ColumnView.get_default().FeedListPREV();
+			return true;
+		}
+
+		if(checkShortcut(event, "feedlist-next"))
+		{
+			Logger.debug("shortcut: feedlist next");
+			ColumnView.get_default().FeedListNEXT();
 			return true;
 		}
 

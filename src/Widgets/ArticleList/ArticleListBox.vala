@@ -335,6 +335,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 		selectAfter(nextRow, time);
 
+		Logger.debug(@"ArticleListBox.move: height: $height");
+
 		if(down)
 			return height;
 

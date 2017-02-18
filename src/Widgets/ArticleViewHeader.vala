@@ -65,7 +65,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_tag_button.add(tag_icon);
 		m_tag_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_tag_button.set_focus_on_click(false);
-		m_tag_button.set_tooltip_text(_("Tag Article"));
+		m_tag_button.set_tooltip_text(_("Tag article"));
 		m_tag_button.sensitive = false;
 		m_tag_button.clicked.connect(() => {
             popOpened();
@@ -79,7 +79,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_print_button = new Gtk.Button.from_icon_name("printer-symbolic");
 		m_print_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_print_button.set_focus_on_click(false);
-		m_print_button.set_tooltip_text(_("Print Article"));
+		m_print_button.set_tooltip_text(_("Print article"));
 		m_print_button.sensitive = false;
 		m_print_button.clicked.connect(() => {
 			ColumnView.get_default().print();
@@ -90,7 +90,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_share_button.add(share_icon);
 		m_share_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_share_button.set_focus_on_click(false);
-		m_share_button.set_tooltip_text(_("Share Article"));
+		m_share_button.set_tooltip_text(_("Share article"));
 		m_share_button.sensitive = false;
 
 		var shareSpinner = new Gtk.Spinner();

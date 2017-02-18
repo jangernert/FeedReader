@@ -17,6 +17,7 @@ public class FeedReader.Logger : GLib.Object {
 
 	private int m_LogLevel;
 	private GLib.FileOutputStream m_stream;
+	private Gee.LinkedList<string> m_pendingWrites;
 
 	private static Logger? m_logger = null;
 	private static string? m_fileName = null;
@@ -62,6 +63,7 @@ public class FeedReader.Logger : GLib.Object {
 
 	private Logger(string filename)
 	{
+		m_pendingWrites = new Gee.LinkedList<string>();
 		var logLevel = Settings.general().get_enum("log-level");
 		m_LogLevel = LogLevel.DEBUG;
 
@@ -134,31 +136,30 @@ public class FeedReader.Logger : GLib.Object {
 			case LogMessage.ERROR:
 				set_color(ConsoleColor.RED);
 				stdout.printf("[ ERROR ] ");
-				write("[ ERROR ] ");
+				write(@"[ ERROR ] $message\n");
 				break;
 
 			case LogMessage.WARNING:
 				set_color(ConsoleColor.YELLOW);
 				stdout.printf("[WARNING] ");
-				write("[WARNING] ");
+				write(@"[WARNING] $message\n");
 				break;
 
 			case LogMessage.INFO:
 				set_color(ConsoleColor.GREEN);
 				stdout.printf("[ INFO  ] ");
-				write("[ INFO  ] ");
+				write(@"[ INFO  ] $message\n");
 				break;
 
 			case LogMessage.DEBUG:
 				set_color(ConsoleColor.BLUE);
 				stdout.printf("[ DEBUG ] ");
-				write("[ DEBUG ] ");
+				write(@"[ DEBUG ] $message\n");
 				break;
 		}
 
 		reset_color();
 		stdout.printf("%s\n", message);
-		write("%s\n".printf(message));
 	}
 
 	private void reset_color()
@@ -174,16 +175,35 @@ public class FeedReader.Logger : GLib.Object {
 
 	private void write(string text)
 	{
-		try
+
+		if(m_stream.has_pending())
 		{
-			m_stream.write(text.data);
+			m_pendingWrites.add(text);
 		}
-		catch(GLib.Error e)
+		else
 		{
-			stderr.printf("[ ERROR ] error writing log to file: %s\n", e.message);
-			stderr.printf("[ ERROR ] %s\n", text);
-			reset_color();
+			m_stream.write_async.begin(text.data, GLib.Priority.DEFAULT, null, (obj, res) => {
+
+				try
+				{
+					m_stream.write_async.end(res);
+				}
+				catch(GLib.Error e)
+				{
+					stderr.printf("[ ERROR ] error writing log to file: %s\n", e.message);
+					stderr.printf("[ ERROR ] %s\n", text);
+					reset_color();
+				}
+
+				if(m_pendingWrites.size > 0)
+				{
+					string item = m_pendingWrites.first();
+					m_pendingWrites.remove(item);
+					write(item);
+				}
+			});
 		}
+
 	}
 
 }

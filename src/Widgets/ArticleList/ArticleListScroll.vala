@@ -125,7 +125,6 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	public void balanceNextScroll(ArticleListBalance mode)
 	{
-		Logger.debug("balance next scroll " + mode.to_string());
 		m_balance = mode;
     }
 

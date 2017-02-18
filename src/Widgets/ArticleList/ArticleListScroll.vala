@@ -25,6 +25,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private double m_bottomThreshold = 200.0;
 	private ArticleListBalance m_balance = ArticleListBalance.NONE;
 
+	private bool m_allowSignals = true;
 	private bool m_scrolledTopOnCooldown = false;
 	private bool m_scrolledBottomOnCooldown = false;
 	private int m_scrollCooldown = 500; // cooldown in ms
@@ -51,12 +52,14 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		if(m_balance == ArticleListBalance.TOP)
 		{
 			double inc = (upper - m_upperCache);
+			Logger.debug(@"Balance TOP $inc");
 			this.vadjustment.value += inc;
 			m_balance = ArticleListBalance.NONE;
 		}
 		else if(m_balance == ArticleListBalance.BOTTOM)
 		{
 			double inc = (m_upperCache - upper);
+			Logger.debug(@"Balance BOTTOM $inc");
 			this.vadjustment.value -= inc;
 			m_balance = ArticleListBalance.NONE;
 		}
@@ -84,7 +87,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	private void checkScrolledTop()
 	{
-		if(vadjustment.value < 2.0
+		if(m_allowSignals
+		&& vadjustment.value < 2.0
 		&& !m_scrolledTopOnCooldown)
 		{
 			m_scrolledTopOnCooldown = true;
@@ -101,7 +105,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private void checkScrolledDown()
 	{
 		double max = vadjustment.upper - vadjustment.page_size;
-		if(max > 0.0
+		if(m_allowSignals
+		&& max > 0.0
 		&& vadjustment.value >= (max - m_bottomThreshold)
 		&& !m_scrolledBottomOnCooldown)
 		{
@@ -120,6 +125,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	public void balanceNextScroll(ArticleListBalance mode)
 	{
+		Logger.debug("balance next scroll " + mode.to_string());
 		m_balance = mode;
     }
 
@@ -240,6 +246,11 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	{
 		double p = t - 1;
 		return p * p * p +1;
+	}
+
+	public void allowSignals(bool allow)
+	{
+		m_allowSignals = allow;
 	}
 
 }

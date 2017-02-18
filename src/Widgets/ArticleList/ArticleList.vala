@@ -64,6 +64,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_scroll2.scrolledTop.connect(dismissOverlay);
 		m_scroll1.valueChanged.connect(updateVisibleRows);
 		m_scroll2.valueChanged.connect(updateVisibleRows);
+		m_scroll1.scrolledBottom.connect(loadMore);
+		m_scroll2.scrolledBottom.connect(loadMore);
 		m_List1 = new ArticleListBox("1");
 		m_List2 = new ArticleListBox("2");
 		m_List1.row_activated.connect(rowActivated);
@@ -107,8 +109,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		Logger.debug("ArticleList: disconnect scrolledBottom-signal");
-		m_currentScroll.scrolledBottom.disconnect(loadMore);
+		Logger.debug("ArticleList: disallow signals from scroll");
+		m_currentScroll.allowSignals(false);
 		var articles = new Gee.LinkedList<article>();
 		uint offset = 0;
 		bool newArticles = false;
@@ -140,8 +142,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size == 0)
 		{
-			Logger.debug("ArticleList: no content, so connecting scrolledBottom-signal again");
-			m_currentScroll.scrolledBottom.connect(loadMore);
+			Logger.debug("ArticleList: no content, so allow signals from scroll again");
+			m_currentScroll.allowSignals(true);
 			if(offset == 0)
 			{
 				m_emptyList.build(m_selectedFeedListID, m_selectedFeedListType, m_state, m_searchTerm);
@@ -184,8 +186,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_handlerID1 = m_currentList.loadDone.connect(() => {
 				restoreSelectedRow();
 				restoreScrollPos();
-				Logger.debug("ArticleList: connect scrolledBottom-signal again");
-				m_currentScroll.scrolledBottom.connect(loadMore);
+				Logger.debug("ArticleList: allow signals from scroll");
+				m_currentScroll.allowSignals(true);
 				if(newArticles)
 					showNotification();
 

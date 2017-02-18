@@ -57,7 +57,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			change_state(m_state, transition);
 		});
 
-		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update Feeds"));
+		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update feeds"));
 		m_refresh_button.clicked.connect(() => {
 			if(!m_refresh_button.getStatus())
 				refresh();

@@ -352,7 +352,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		m_ignore_tls_errors = m_error_bar.add_button("Ignore", Gtk.ResponseType.APPLY);
 		m_ignore_tls_errors.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
-		m_ignore_tls_errors.set_tooltip_text(_("Ignore all tls errors from now on"));
+		m_ignore_tls_errors.set_tooltip_text(_("Ignore all TLS errors from now on"));
 		m_ignore_tls_errors.set_visible(false);
 
 		m_error_bar.response.connect((response_id) => {

@@ -388,10 +388,12 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_articleList.syncFinished();
 	}
 
+	/*
 	public void updateAccountInfo()
 	{
 		m_feedList.updateAccountInfo();
 	}
+	*/
 
 	public Gdk.RGBA getBackgroundColor()
 	{

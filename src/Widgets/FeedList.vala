@@ -944,10 +944,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		return false;
 	}
 
+	/*
 	public void updateAccountInfo()
 	{
 		m_branding.refresh();
 	}
+	*/
 
 	public void setOffline()
 	{

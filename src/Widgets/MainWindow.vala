@@ -233,7 +233,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			ColumnView.get_default().newFeedList();
 		m_stack.set_visible_child_full("content", transition);
 		ColumnView.get_default().getHeader().setButtonsSensitive(true);
-		ColumnView.get_default().updateAccountInfo();
+		//ColumnView.get_default().updateAccountInfo();
 
 		if(!ColumnView.get_default().isFullscreen())
 		{

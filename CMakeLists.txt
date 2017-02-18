@@ -16,7 +16,7 @@ set (UI_NAME "feedreader")
 set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
-set (VERSION "2.0")
+set (VERSION "2.0.1")
 set (GLIB_VERSION 2.40)
 
 find_package(PkgConfig)

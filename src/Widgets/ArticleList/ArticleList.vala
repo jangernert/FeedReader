@@ -34,6 +34,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private Gtk.Spinner m_syncSpinner;
 	private uint m_scrollChangedTimeout = 0;
 	private const int m_dynamicRowThreshold = 10;
+	private int m_height = 0;
 	private ulong m_handlerID1 = 0;
 	private ulong m_handlerID2 = 0;
 	private ulong m_handlerID3 = 0;
@@ -97,6 +98,22 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_stack.add_named(m_emptyList, "empty");
 		this.add(m_stack);
 		this.get_style_context().add_class("article-list");
+		this.size_allocate.connect((allocation) => {
+			if(allocation.height != m_height)
+			{
+				if(allocation.height > m_height
+				&& m_stack.get_visible_child_name() != "empty"
+				&& m_stack.get_visible_child_name() != "syncing")
+				{
+					Logger.debug("ArticleList: size changed");
+					if(m_currentList.needLoadMore(allocation.height))
+						loadMore.begin((obj, res) =>{
+							loadMore.end(res);
+						});
+				}
+				m_height = allocation.height;
+			}
+        });
 	}
 
 	public async void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)

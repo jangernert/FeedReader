@@ -619,4 +619,22 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		return m_articles.size;
 	}
+
+	public bool needLoadMore(int height)
+	{
+		int rowHeight = 0;
+
+		var FeedChildList = this.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && tmpRow.isRevealed())
+				rowHeight += tmpRow.get_allocated_height();
+		}
+
+		if(rowHeight < height + 100)
+			return true;
+
+		return false;
+	}
 }

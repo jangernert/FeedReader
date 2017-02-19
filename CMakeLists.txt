@@ -42,7 +42,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.desktop.in
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop" @ONLY)
 
 set(MODULES 
-	gtk+-3.0>=3.20
+	gtk+-3.0>=3.22
 	json-glib-1.0
 	gee-0.8
 	libsoup-2.4

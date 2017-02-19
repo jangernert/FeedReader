@@ -292,7 +292,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(Settings.state().get_boolean("no-animations") && Settings.state().get_enum("show-articles") == ArticleListState.ALL)
 		{
-			int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+			int newCount = Settings.state().get_int("articlelist-new-rows") + (int)UtilsDaemon.getRelevantArticles(newArticles);
 			Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
 			Settings.state().set_int("articlelist-new-rows", newCount);
 		}

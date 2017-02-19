@@ -241,6 +241,7 @@ vala_precompile(daemon ${DAEMON_NAME}
 	src/ActionCache.vala
 	src/Daemon.vala
 	src/dbDaemon.vala
+	src/UtilsDaemon.vala
 	src/Notification.vala
 	src/CachedActionManager.vala
 	src/Backend/FeedServer.vala

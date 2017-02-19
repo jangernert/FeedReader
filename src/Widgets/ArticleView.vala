@@ -249,7 +249,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_progress.reveal(true);
 
 			m_currentView.load_html(
-				Utils.buildArticle(
+				UtilsUI.buildArticle(
 						Article.getHTML(),
 						Article.getTitle(),
 						Article.getURL(),

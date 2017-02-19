@@ -95,6 +95,9 @@ public class FeedReader.Grabber : GLib.Object {
             return false;
         }
 
+        if(!checkContentType())
+            return false;
+
 
         bool downloaded = false;
 
@@ -155,6 +158,26 @@ public class FeedReader.Grabber : GLib.Object {
         }
 
         return true;
+    }
+
+    private bool checkContentType()
+    {
+        Logger.debug("Grabber: check contentType");
+        var session = new Soup.Session();
+        var message = new Soup.Message("HEAD", m_articleURL.escape(""));
+        session.send_message(message);
+        var params = new GLib.HashTable<string, string>(null, null);
+        string? contentType = message.response_headers.get_content_type(out params);
+        if(contentType != null)
+        {
+            if(contentType == "text/html")
+                return true;
+        }
+
+        Logger.debug(@"Grabber: type $contentType");
+        Logger.debug(@"Grabber: type != text/html so not going to proceed further");
+
+        return false;
     }
 
     private bool download()

@@ -117,20 +117,9 @@ namespace FeedReader {
 			catch(IOError e)
 			{
 				Logger.error("Failed to connect to daemon! " + e.message);
-				startDaemon();
 			}
 
 			checkDaemonVersion();
-		}
-
-		private static void startDaemon()
-		{
-			Logger.info("FeedReader: start daemon");
-			try{
-				GLib.Process.spawn_async("/", {"feedreader-daemon"}, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-			}catch(GLib.SpawnError e){
-				Logger.error("spawning command line: %s".printf(e.message));
-			}
 		}
 
 		public static void connectSignals()
@@ -228,7 +217,9 @@ namespace FeedReader {
 				if(m_connection.getVersion() < Constants.DBusAPIVersion)
 				{
 					m_connection.quit();
-					startDaemon();
+
+					// call random method on dbus-server of daemon to spawn the process again
+					m_connection.isOnline();
 				}
 			}
 			catch(GLib.Error e)

@@ -58,12 +58,11 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 			{
 				try
 				{
-					string[] spawn_args = {"xdg-open", mRow.getURL()};
-					GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+					Gtk.show_uri_on_window(MainWindow.get_default(), mRow.getURL(), Gdk.CURRENT_TIME);
 				}
-				catch(GLib.SpawnError e)
+				catch(GLib.Error e)
 				{
-					Logger.error("spawning command line: %s".printf(e.message));
+					Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 				}
 			}
 		}

@@ -379,6 +379,20 @@ public class FeedReader.UtilsUI : GLib.Object {
 		return icon;
 	}
 
+	public static void openInGedit(string text)
+	{
+		try
+		{
+			string filename = "file:///tmp/FeedReader_crashed_html.txt";
+			FileUtils.set_contents(filename, text);
+			Gtk.show_uri_on_window(MainWindow.get_default(), filename, Gdk.CURRENT_TIME);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.openInGedit(): %s".printf(e.message));
+		}
+	}
+
 	/*public static void testGOA()
 	{
 		try

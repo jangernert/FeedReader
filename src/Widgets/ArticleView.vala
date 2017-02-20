@@ -76,7 +76,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		crashButton.set_focus_on_click(false);
 		crashButton.clicked.connect(() => {
 			var Article = dbUI.get_default().read_article(m_currentArticle);
-			Utils.openInGedit(Article.getHTML());
+			UtilsUI.openInGedit(Article.getHTML());
 		});
 		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		crashView.set_halign(Gtk.Align.CENTER);

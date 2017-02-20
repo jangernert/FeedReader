@@ -520,36 +520,4 @@ public class FeedReader.Utils : GLib.Object {
 		// file already exists
 		return true;
 	}
-
-	public static void openInGedit(string text)
-	{
-		try
-		{
-			string filename = "/tmp/FeedReader_crashed_html.txt";
-			FileUtils.set_contents(filename, text);
-
-			try
-			{
-				string[] spawn_args = {"xdg-open", filename};
-				string[] spawn_env = Environ.get();
-				Pid child_pid;
-
-				Process.spawn_async("/",
-					spawn_args,
-					spawn_env,
-					SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD,
-					null,
-					out child_pid);
-			}
-			catch(GLib.SpawnError e)
-			{
-				Logger.error("Utils.openInGedit(): %s".printf(e.message));
-			}
-		}
-		catch(GLib.FileError e)
-		{
-			Logger.error("Utils.openInGedit(): %s".printf(e.message));
-		}
-	}
-
 }

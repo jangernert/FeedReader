@@ -30,4 +30,4 @@ feedreader.flatpakrepo: feedreader.flatpakrepo.in
 	sed -e 's|@URL@|${URL}|g' -e 's|@GPG@|$(shell gpg2 --homedir=gpg --export ${RELEASE_GPG_KEY} | base64 | tr -d '\n')|' $< > $@
 
 bundle:
-	flatpak build-bundle release-repo/ ${BUNDLE}.flatpak org.gnome.${PACKAGE} ${BRANCH}
+	flatpak build-bundle repo/ ${BUNDLE}.flatpak org.gnome.${PACKAGE} ${BRANCH}

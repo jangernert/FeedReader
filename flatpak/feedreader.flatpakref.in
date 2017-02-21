@@ -2,7 +2,7 @@
 Title=FeedReader
 Name=org.gnome.FeedReader
 Homepage=https://jangernert.github.io/FeedReader/
-Branch=master
+Branch=@BRANCH@
 Url=@URL@
 IsRuntime=False
 GPGKey=@GPG@

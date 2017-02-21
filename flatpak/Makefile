@@ -14,7 +14,7 @@ release: release-repo ${JSON} feedreader.flatpakref feedreader.flatpakrepo
 rsync-release:
 	cp feedreader.flatpakrepo release-repo/
 	cp feedreader.flatpakref release-repo/
-	rsync -avh --update release-repo/ ${SSH_USER}:${RSYNC_PATH}
+	rsync -rvh --update release-repo/ ${SSH_USER}:${RSYNC_PATH}
 
 repo:
 	ostree init --mode=archive-z2 --repo=repo

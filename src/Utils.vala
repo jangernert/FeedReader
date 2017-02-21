@@ -172,7 +172,6 @@ public class FeedReader.Utils : GLib.Object {
 		return errors;
 	}
 
-
 	public static bool ping(string link)
 	{
 		Logger.debug("Ping: " + link);
@@ -184,76 +183,22 @@ public class FeedReader.Utils : GLib.Object {
 			return false;
 		}
 
-		string host = uri.get_host();
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		session.ssl_strict = false;
 
-		Logger.debug(@"Ping: modified URL $host");
+		var message = new Soup.Message.from_uri("HEAD", uri);
+		var status = session.send_message(message);
 
-	    try
+		Logger.debug(@"Ping: status $status");
+
+		if(status >= 200 && status <= 208)
 		{
-	        var resolver = GLib.Resolver.get_default();
-	        var addresses = resolver.lookup_by_name(host);
-
-			// if can't resolve host to ip
-			if(addresses == null)
-			{
-				Logger.error("Ping failed: can't resolve url " + host);
-				return false;
-			}
-
-
-			var client = new GLib.SocketClient();
-			bool enableProxy = client.enable_proxy;
-			Logger.debug(@"enabling proxies: $enableProxy");
-
-			SocketConnection? conn = null;
-
-			foreach(InetAddress ip in addresses)
-			{
-				Logger.debug("Ping: trying ip-address " + ip.to_string());
-				conn = client.connect(new GLib.InetSocketAddress(ip, 80));
-
-				if(conn != null)
-					break;
-			}
-
-			// if can't establish connection to ip
-			if(conn == null)
-			{
-				Logger.error("Ping failed: can't establish connection to ip");
-				return false;
-			}
-
-
-	        var message = @"HEAD / HTTP/1.1\r\nHost: $host\r\n\r\n";
-	        ssize_t bytesWritten = conn.output_stream.write(message.data);
-
-			// if can't write message
-			if(bytesWritten == -1)
-			{
-				Logger.error("Ping failed: can't write message");
-				return false;
-			}
-
-	        var response = new GLib.DataInputStream(conn.input_stream);
-			size_t lenght = 0;
-	        var status_line = response.read_line_utf8(out lenght, null).strip();
-
-			// if no response received
-			if(status_line == null)
-			{
-				Logger.error("Ping failed: no response received");
-				return false;
-			}
-
-			Logger.debug(status_line);
-			Logger.debug("Ping: success!");
-
+			Logger.debug("Ping successfull");
 			return true;
-	    }
-		catch (Error e)
-		{
-			Logger.error("Ping failed: %s, message: %s".printf(host, e.message));
-	    }
+		}
+
+		Logger.error(@"Ping: failed - %s".printf(Soup.Status.get_phrase(status)));
 
 		return false;
 	}

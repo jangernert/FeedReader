@@ -1,6 +1,6 @@
 [Flatpak Repo]
 Title=FeedReader Repo
-Description=Nope
+Description=FeedReader is a modern desktop application designed to complement existing web-based RSS accounts.
 Url=@URL@
 GPGKey=@GPG@
 Homepage=https://jangernert.github.io/FeedReader/

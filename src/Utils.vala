@@ -202,6 +202,9 @@ public class FeedReader.Utils : GLib.Object {
 
 
 			var client = new GLib.SocketClient();
+			bool enableProxy = client.enable_proxy;
+			Logger.debug(@"enabling proxies: $enableProxy");
+
 			SocketConnection? conn = null;
 
 			foreach(InetAddress ip in addresses)

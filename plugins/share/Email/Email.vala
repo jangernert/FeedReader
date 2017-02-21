@@ -23,18 +23,17 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	{
 		string subject = GLib.Uri.escape_string("Amazing article");
 		string body = GLib.Uri.escape_string(m_body.replace("$URL", url));
-		string mailto = "mailto:%s?subject=%s&body=%s".printf(m_to, subject, body);
+		string mailto = @"mailto:$m_to?subject=$subject&body=$body";
 		Logger.debug(mailto);
 
-		string[] spawn_args = {"xdg-open", mailto};
 		try
 		{
-			GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+			Gtk.show_uri_on_window(MainWindow.get_default(), mailto, Gdk.CURRENT_TIME);
 			return true;
 		}
-		catch(GLib.SpawnError e)
+		catch(GLib.Error e)
 		{
-			Logger.error("spawning command line: " + e.message);
+			Logger.error("share via mail failed: %s".printf(e.message));
 		}
 
 		return false;
@@ -54,7 +53,7 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
     {
 		if(Gtk.IconTheme.get_default().lookup_icon("mail-send", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
 			return "mail-send";
-		
+
         return "feed-share-mail";
     }
 

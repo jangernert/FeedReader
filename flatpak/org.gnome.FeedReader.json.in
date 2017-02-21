@@ -1,8 +1,8 @@
 {
     "app-id": "org.gnome.FeedReader",
-    "branch": "master",
+    "branch": "@BRANCH@",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "3.22",
+    "runtime-version": "@RUNTIME_VERSION@",
     "sdk": "org.gnome.Sdk",
     "command": "feedreader",
     "copy-icon": true,
@@ -92,7 +92,7 @@
             "sources": [{
                     "type": "git",
                     "url": "https://github.com/jangernert/FeedReader.git",
-		    "branch": "master"
+		    "branch": "@GIT@"
                 }
             ]
         }

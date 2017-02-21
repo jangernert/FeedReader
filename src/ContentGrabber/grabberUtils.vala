@@ -610,6 +610,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 
             if(url != "" && url != null)
             {
+                if(url.has_prefix("//"))
+                    url = "http:" + url;
+
                 Logger.debug(@"Grabber: url $url");
                 var session = new Soup.Session();
                 var message = new Soup.Message("HEAD", url);

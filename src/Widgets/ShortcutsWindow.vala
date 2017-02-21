@@ -36,11 +36,15 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		//--------------------------------------------------
 		var feedList = newGroup(_("Feed List"));
 		//--------------------------------------------------
+		string flprev = Settings.keybindings().get_string("feedlist-prev");
+		string flnext = Settings.keybindings().get_string("feedlist-next");
 		string feedListMarkRead = Settings.keybindings().get_string("feedlist-mark-read");
-		var navigate = newShortcut(_("Navigate the feed-list"), "Up Down");
+		var flNext = newShortcut(_("Select next item"), flnext);
+		var flPrev = newShortcut(_("Select previous item"), flprev);
 		var expCol = newShortcut(_("Collapse/Expand categories"), "Left Right");
 		var flmark = newShortcut(_("Mark the currently selected as read"), feedListMarkRead);
-		feedList.add(navigate);
+		feedList.add(flNext);
+		feedList.add(flPrev);
 		feedList.add(expCol);
 		feedList.add(flmark);
 		//--------------------------------------------------

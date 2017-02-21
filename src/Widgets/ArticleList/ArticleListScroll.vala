@@ -25,6 +25,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private double m_bottomThreshold = 200.0;
 	private ArticleListBalance m_balance = ArticleListBalance.NONE;
 
+	private bool m_allowSignals = true;
 	private bool m_scrolledTopOnCooldown = false;
 	private bool m_scrolledBottomOnCooldown = false;
 	private int m_scrollCooldown = 500; // cooldown in ms
@@ -51,12 +52,14 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		if(m_balance == ArticleListBalance.TOP)
 		{
 			double inc = (upper - m_upperCache);
+			Logger.debug(@"Balance TOP $inc");
 			this.vadjustment.value += inc;
 			m_balance = ArticleListBalance.NONE;
 		}
 		else if(m_balance == ArticleListBalance.BOTTOM)
 		{
 			double inc = (m_upperCache - upper);
+			Logger.debug(@"Balance BOTTOM $inc");
 			this.vadjustment.value -= inc;
 			m_balance = ArticleListBalance.NONE;
 		}
@@ -84,7 +87,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	private void checkScrolledTop()
 	{
-		if(vadjustment.value < 2.0
+		if(m_allowSignals
+		&& vadjustment.value < 2.0
 		&& !m_scrolledTopOnCooldown)
 		{
 			m_scrolledTopOnCooldown = true;
@@ -101,7 +105,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private void checkScrolledDown()
 	{
 		double max = vadjustment.upper - vadjustment.page_size;
-		if(max > 0.0
+		if(m_allowSignals
+		&& max > 0.0
 		&& vadjustment.value >= (max - m_bottomThreshold)
 		&& !m_scrolledBottomOnCooldown)
 		{
@@ -125,6 +130,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	public void scrollDiff(double diff, bool animate = true)
 	{
+		Logger.debug("ArticleListScroll.scrollDiff: value: %f - diff: %f".printf(this.vadjustment.value, diff));
 		scrollToPos(this.vadjustment.value + diff, animate);
 	}
 
@@ -138,17 +144,20 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 		if(Gtk.Settings.get_default().gtk_enable_animations && animate)
 		{
+			Logger.debug(@"ArticleListScroll.scrollToPos: $pos");
 			m_startTime = this.get_frame_clock().get_frame_time();
 			m_endTime = m_startTime + m_transitionDuration;
-			double leftOverScroll = 0.0;
-			if(m_transitionStartValue != 0.0)
-				leftOverScroll = m_transitionStartValue + m_transitionDiff - this.vadjustment.value;
 
+			double leftOverScroll = 0.0;
 			if(m_scrollCallbackID != 0)
 			{
+				leftOverScroll = m_transitionStartValue + m_transitionDiff - this.vadjustment.value;
 				this.remove_tick_callback(m_scrollCallbackID);
 				m_scrollCallbackID = 0;
 			}
+
+			Logger.debug(@"ArticleListScroll.scrollToPos: leftOverScroll $leftOverScroll");
+			Logger.debug(@"ArticleListScroll.scrollToPos: %f".printf(pos+leftOverScroll));
 
 			if(pos == -1)
 				m_transitionDiff = (vadjustment.upper - vadjustment.page_size - vadjustment.value);
@@ -156,6 +165,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 				m_transitionDiff = (pos-this.vadjustment.value)+leftOverScroll;
 
 			m_transitionStartValue = this.vadjustment.value;
+			Logger.debug(@"ArticleListScroll.scrollDiff: startValue $m_transitionStartValue");
 			m_scrollCallbackID = this.add_tick_callback(scrollTick);
 		}
 		else
@@ -235,6 +245,11 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	{
 		double p = t - 1;
 		return p * p * p +1;
+	}
+
+	public void allowSignals(bool allow)
+	{
+		m_allowSignals = allow;
 	}
 
 }

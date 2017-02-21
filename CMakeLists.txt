@@ -16,7 +16,7 @@ set (UI_NAME "feedreader")
 set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
-set (VERSION "2.0")
+set (VERSION "2.0.1")
 set (GLIB_VERSION 2.40)
 
 find_package(PkgConfig)
@@ -42,7 +42,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.desktop.in
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop" @ONLY)
 
 set(MODULES 
-	gtk+-3.0>=3.20
+	gtk+-3.0>=3.22
 	json-glib-1.0
 	gee-0.8
 	libsoup-2.4
@@ -241,6 +241,7 @@ vala_precompile(daemon ${DAEMON_NAME}
 	src/ActionCache.vala
 	src/Daemon.vala
 	src/dbDaemon.vala
+	src/UtilsDaemon.vala
 	src/Notification.vala
 	src/CachedActionManager.vala
 	src/Backend/FeedServer.vala

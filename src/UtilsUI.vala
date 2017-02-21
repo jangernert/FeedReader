@@ -58,6 +58,149 @@ public class FeedReader.UtilsUI : GLib.Object {
 		return articles.size;
 	}
 
+	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
+	{
+		var article = new GLib.StringBuilder();
+		string author_date = "";
+		if(author != null)
+			author_date +=  _("posted by: %s, ").printf(author);
+
+		author_date += date;
+
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
+			file.load_contents(null, out contents, null);
+			article.assign((string)contents);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.buildArticle: %s".printf(e.message));
+		}
+
+		string html_id = "$HTML";
+		int html_pos = article.str.index_of(html_id);
+		article.erase(html_pos, html_id.length);
+		article.insert(html_pos, html);
+
+		string author_id = "$AUTHOR";
+		int author_pos = article.str.index_of(author_id);
+		article.erase(author_pos, author_id.length);
+		article.insert(author_pos, author_date);
+
+		string title_id = "$TITLE";
+		int title_pos = article.str.index_of(title_id);
+		article.erase(title_pos, title_id.length);
+		article.insert(title_pos, title);
+
+		string url_id = "$URL";
+		int url_pos = article.str.index_of(url_id);
+		article.erase(url_pos, url_id.length);
+		article.insert(url_pos, url);
+
+		string feed_id = "$FEED";
+		int feed_pos = article.str.index_of(feed_id);
+		article.erase(feed_pos, feed_id.length);
+		article.insert(feed_pos, dbUI.get_default().getFeedName(feedID));
+
+
+		string theme = "theme ";
+		switch(Settings.general().get_enum("article-theme"))
+		{
+			case ArticleTheme.DEFAULT:
+				theme += "default";
+				break;
+
+			case ArticleTheme.SPRING:
+				theme += "spring";
+				break;
+
+			case ArticleTheme.MIDNIGHT:
+				theme += "midnight";
+				break;
+
+			case ArticleTheme.PARCHMENT:
+				theme += "parchment";
+				break;
+		}
+
+		string theme_id = "$THEME";
+		int theme_pos = article.str.index_of(theme_id);
+		article.erase(theme_pos, theme_id.length);
+		article.insert(theme_pos, theme);
+
+		string select_id = "$UNSELECTABLE";
+		int select_pos = article.str.index_of(select_id);
+
+		if(Settings.tweaks().get_boolean("article-select-text"))
+		{
+			article.erase(select_pos-1, select_id.length+1);
+		}
+		else
+		{
+			article.erase(select_pos, select_id.length);
+			article.insert(select_pos, "unselectable");
+		}
+
+
+		string fontsize = "intial";
+		string sourcefontsize = "0.75rem";
+		switch(Settings.general().get_enum("fontsize"))
+		{
+			case FontSize.SMALL:
+				fontsize = "smaller";
+				sourcefontsize = "0.5rem";
+				break;
+
+			case FontSize.NORMAL:
+				fontsize = "medium";
+				sourcefontsize = "0.75rem";
+				break;
+
+			case FontSize.LARGE:
+				fontsize = "large";
+				sourcefontsize = "1.0rem";
+				break;
+
+			case FontSize.HUGE:
+				fontsize = "xx-large";
+				sourcefontsize = "1.2rem";
+				break;
+		}
+
+		string fontsize_id = "$FONTSIZE";
+		string sourcefontsize_id = "$SOURCEFONTSIZE";
+		int fontsize_pos = article.str.index_of(fontsize_id);
+		article.erase(fontsize_pos, fontsize_id.length);
+		article.insert(fontsize_pos, fontsize);
+
+		for(int i = article.str.index_of(sourcefontsize_id, 0); i != -1; i = article.str.index_of(sourcefontsize_id, i))
+		{
+			article.erase(i, sourcefontsize_id.length);
+			article.insert(i, sourcefontsize);
+		}
+
+
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
+			file.load_contents(null, out contents, null);
+			string css_id = "$CSS";
+			int css_pos = article.str.index_of(css_id);
+			article.erase(css_pos, css_id.length);
+			article.insert(css_pos, (string)contents);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.buildArticle: load CSS: " + e.message);
+		}
+
+
+		return article.str;
+	}
+
 	public static bool canManipulateContent(bool? online = null)
 	{
 		try
@@ -234,6 +377,20 @@ public class FeedReader.UtilsUI : GLib.Object {
             icon = new Gtk.Image.from_icon_name(fallback, size);
 
 		return icon;
+	}
+
+	public static void openInGedit(string text)
+	{
+		try
+		{
+			string filename = "file:///tmp/FeedReader_crashed_html.txt";
+			FileUtils.set_contents(filename, text);
+			Gtk.show_uri_on_window(MainWindow.get_default(), filename, Gdk.CURRENT_TIME);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.openInGedit(): %s".printf(e.message));
+		}
 	}
 
 	/*public static void testGOA()

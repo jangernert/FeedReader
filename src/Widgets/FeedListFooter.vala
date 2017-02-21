@@ -121,6 +121,7 @@ public class FeedReader.AddButton : Gtk.Button {
 		this.image.opacity = 0.8;
 		this.clicked.connect(onClick);
 		this.relief = Gtk.ReliefStyle.NONE;
+		this.set_tooltip_text(_("Add feed"));
 	}
 
 	public void onClick()
@@ -149,6 +150,7 @@ public class FeedReader.RemoveButton : Gtk.Button {
 		this.image.opacity = 0.8;
 		this.clicked.connect(onClick);
 		this.relief = Gtk.ReliefStyle.NONE;
+		this.set_tooltip_text(_("Remove feed"));
 	}
 
 	public void onClick()

@@ -31,8 +31,6 @@ public class FeedReader.ServiceInfo : Gtk.Overlay {
         m_label.margin_end = 10;
         m_label.set_ellipsize(Pango.EllipsizeMode.END);
 
-        refresh();
-
         m_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
         m_box.pack_start(m_logo, false, false, 0);
         m_box.pack_start(m_label, false, false, 5);

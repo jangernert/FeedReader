@@ -15,59 +15,6 @@
 
 public class FeedReader.Utils : GLib.Object {
 
-	public static void generatePreviews(Gee.LinkedList<article> articles)
-	{
-		string noPreview = _("No Preview Available");
-		foreach(var Article in articles)
-		{
-			if(!dbBase.get_default().article_exists(Article.getArticleID()))
-			{
-				if(Article.getPreview() != null && Article.getPreview() != "")
-				{
-					continue;
-				}
-				if(!dbBase.get_default().preview_empty(Article.getArticleID()))
-				{
-					continue;
-				}
-				else if(Article.getHTML() != "" && Article.getHTML() != null)
-				{
-					Logger.debug("Utils: generate preview for article: " + Article.getArticleID());
-					string output = libVilistextum.parse(Article.getHTML(), 1);
-					output = output.strip();
-
-					if(output == "" || output == null)
-					{
-						Logger.error("generatePreviews: no Preview");
-						Article.setPreview(noPreview);
-						Article.setTitle(UTF8fix(Article.getTitle(), true));
-						continue;
-					}
-
-					string xml = "<?xml";
-
-					while(output.has_prefix(xml))
-					{
-						int end = output.index_of_char('>');
-						output = output.slice(end+1, output.length).chug();
-						output = output.strip();
-					}
-
-					output = output.replace("\n"," ");
-					output = output.replace("_"," ");
-
-					Article.setPreview(output.chug());
-				}
-				else
-				{
-					Logger.debug("no html to create preview from");
-					Article.setPreview(noPreview);
-				}
-				Article.setTitle(UTF8fix(Article.getTitle(), true));
-			}
-		}
-	}
-
 	public static string UTF8fix(string? old_string, bool removeHTML = false)
 	{
 		if(old_string == null)
@@ -93,24 +40,6 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		return old_string;
 	}
-
-
-	public static void checkHTML(Gee.LinkedList<article> articles)
-	{
-		foreach(var Article in articles)
-		{
-			if(!dbBase.get_default().article_exists(Article.getArticleID()))
-			{
-				string modified_html = _("No Text available for this article :(");
-				if(Article.getHTML() != "")
-				{
-					modified_html = Article.getHTML().replace("src=\"//","src=\"http://");
-				}
-				Article.setHTML(modified_html);
-			}
-		}
-	}
-
 
 	public static string[] getDefaultExpandedCategories()
 	{
@@ -148,49 +77,6 @@ public class FeedReader.Utils : GLib.Object {
 		return doCleaning;
 	}
 
-	public static uint getRelevantArticles(int newArticlesCount)
-	{
-		string[] selectedRow = {};
-		ArticleListState state = ArticleListState.ALL;
-		string searchTerm = "";
-		selectedRow = Settings.state().get_string("feedlist-selected-row").split(" ", 2);
-		state = (ArticleListState)Settings.state().get_enum("show-articles");
-		if(Settings.tweaks().get_boolean("restore-searchterm"))
-			searchTerm = Settings.state().get_string("search-term");
-
-		FeedListType IDtype = FeedListType.FEED;
-
-		Logger.debug("selectedRow 0: %s".printf(selectedRow[0]));
-		Logger.debug("selectedRow 1: %s".printf(selectedRow[1]));
-
-		switch(selectedRow[0])
-		{
-			case "feed":
-				IDtype = FeedListType.FEED;
-				break;
-
-			case "cat":
-				IDtype = FeedListType.CATEGORY;
-				break;
-
-			case "tag":
-				IDtype = FeedListType.TAG;
-				break;
-		}
-
-		var articles = dbBase.get_default().read_articles(
-			selectedRow[1],
-			IDtype,
-			state,
-			searchTerm,
-			newArticlesCount,
-			0,
-			newArticlesCount);
-
-		Logger.debug("getRelevantArticles: %u".printf(articles.size));
-		return articles.size;
-	}
-
 	// thanks to
 	// http://kuikie.com/snippet/79-8/vala/strings/vala-generate-random-string/%7B$ROOT_URL%7D/terms/
 	public static string string_random(int length = 8, string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
@@ -204,149 +90,6 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 		return random;
-	}
-
-	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
-	{
-		var article = new GLib.StringBuilder();
-		string author_date = "";
-		if(author != null)
-			author_date +=  _("posted by: %s, ").printf(author);
-
-		author_date += date;
-
-		try
-		{
-			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
-			file.load_contents(null, out contents, null);
-			article.assign((string)contents);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Utils.buildArticle: %s".printf(e.message));
-		}
-
-		string html_id = "$HTML";
-		int html_pos = article.str.index_of(html_id);
-		article.erase(html_pos, html_id.length);
-		article.insert(html_pos, html);
-
-		string author_id = "$AUTHOR";
-		int author_pos = article.str.index_of(author_id);
-		article.erase(author_pos, author_id.length);
-		article.insert(author_pos, author_date);
-
-		string title_id = "$TITLE";
-		int title_pos = article.str.index_of(title_id);
-		article.erase(title_pos, title_id.length);
-		article.insert(title_pos, title);
-
-		string url_id = "$URL";
-		int url_pos = article.str.index_of(url_id);
-		article.erase(url_pos, url_id.length);
-		article.insert(url_pos, url);
-
-		string feed_id = "$FEED";
-		int feed_pos = article.str.index_of(feed_id);
-		article.erase(feed_pos, feed_id.length);
-		article.insert(feed_pos, dbBase.get_default().getFeedName(feedID));
-
-
-		string theme = "theme ";
-		switch(Settings.general().get_enum("article-theme"))
-		{
-			case ArticleTheme.DEFAULT:
-				theme += "default";
-				break;
-
-			case ArticleTheme.SPRING:
-				theme += "spring";
-				break;
-
-			case ArticleTheme.MIDNIGHT:
-				theme += "midnight";
-				break;
-
-			case ArticleTheme.PARCHMENT:
-				theme += "parchment";
-				break;
-		}
-
-		string theme_id = "$THEME";
-		int theme_pos = article.str.index_of(theme_id);
-		article.erase(theme_pos, theme_id.length);
-		article.insert(theme_pos, theme);
-
-		string select_id = "$UNSELECTABLE";
-		int select_pos = article.str.index_of(select_id);
-
-		if(Settings.tweaks().get_boolean("article-select-text"))
-		{
-			article.erase(select_pos-1, select_id.length+1);
-		}
-		else
-		{
-			article.erase(select_pos, select_id.length);
-			article.insert(select_pos, "unselectable");
-		}
-
-
-		string fontsize = "intial";
-		string sourcefontsize = "0.75rem";
-		switch(Settings.general().get_enum("fontsize"))
-		{
-			case FontSize.SMALL:
-				fontsize = "smaller";
-				sourcefontsize = "0.5rem";
-				break;
-
-			case FontSize.NORMAL:
-				fontsize = "medium";
-				sourcefontsize = "0.75rem";
-				break;
-
-			case FontSize.LARGE:
-				fontsize = "large";
-				sourcefontsize = "1.0rem";
-				break;
-
-			case FontSize.HUGE:
-				fontsize = "xx-large";
-				sourcefontsize = "1.2rem";
-				break;
-		}
-
-		string fontsize_id = "$FONTSIZE";
-		string sourcefontsize_id = "$SOURCEFONTSIZE";
-		int fontsize_pos = article.str.index_of(fontsize_id);
-		article.erase(fontsize_pos, fontsize_id.length);
-		article.insert(fontsize_pos, fontsize);
-
-		for(int i = article.str.index_of(sourcefontsize_id, 0); i != -1; i = article.str.index_of(sourcefontsize_id, i))
-		{
-			article.erase(i, sourcefontsize_id.length);
-			article.insert(i, sourcefontsize);
-		}
-
-
-		try
-		{
-			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
-			file.load_contents(null, out contents, null);
-			string css_id = "$CSS";
-			int css_pos = article.str.index_of(css_id);
-			article.erase(css_pos, css_id.length);
-			article.insert(css_pos, (string)contents);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Utils.buildArticle: load CSS: " + e.message);
-		}
-
-
-		return article.str;
 	}
 
 	public static bool arrayContains(string[] array, string key)
@@ -443,7 +186,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		string host = uri.get_host();
 
-		Logger.debug("Ping: modified URL " + host);
+		Logger.debug(@"Ping: modified URL $host");
 
 	    try
 		{
@@ -459,6 +202,9 @@ public class FeedReader.Utils : GLib.Object {
 
 
 			var client = new GLib.SocketClient();
+			bool enableProxy = client.enable_proxy;
+			Logger.debug(@"enabling proxies: $enableProxy");
+
 			SocketConnection? conn = null;
 
 			foreach(InetAddress ip in addresses)
@@ -777,36 +523,4 @@ public class FeedReader.Utils : GLib.Object {
 		// file already exists
 		return true;
 	}
-
-	public static void openInGedit(string text)
-	{
-		try
-		{
-			string filename = "/tmp/FeedReader_crashed_html.txt";
-			FileUtils.set_contents(filename, text);
-
-			try
-			{
-				string[] spawn_args = {"xdg-open", filename};
-				string[] spawn_env = Environ.get();
-				Pid child_pid;
-
-				Process.spawn_async("/",
-					spawn_args,
-					spawn_env,
-					SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD,
-					null,
-					out child_pid);
-			}
-			catch(GLib.SpawnError e)
-			{
-				Logger.error("Utils.openInGedit(): %s".printf(e.message));
-			}
-		}
-		catch(GLib.FileError e)
-		{
-			Logger.error("Utils.openInGedit(): %s".printf(e.message));
-		}
-	}
-
 }

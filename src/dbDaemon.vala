@@ -502,8 +502,8 @@ public class FeedReader.dbDaemon : dbBase {
 
     public void write_articles(Gee.LinkedList<article> articles)
     {
-        FeedReader.Utils.generatePreviews(articles);
-        FeedReader.Utils.checkHTML(articles);
+        FeedReader.UtilsDaemon.generatePreviews(articles);
+        FeedReader.UtilsDaemon.checkHTML(articles);
 
         executeSQL("BEGIN TRANSACTION");
 

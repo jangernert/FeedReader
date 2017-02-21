@@ -27,6 +27,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private LoginPage m_login;
 	private SpringCleanPage m_SpringClean;
 	private Gtk.CssProvider m_cssProvider;
+	private uint m_stackTransitionTime = 100;
 
 	private static MainWindow? m_window = null;
 
@@ -45,7 +46,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
-		m_stack.set_transition_duration(100);
+		m_stack.set_transition_duration(m_stackTransitionTime);
 
 		m_overlay = new Gtk.Overlay();
 		m_overlay.add(m_stack);
@@ -232,7 +233,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			ColumnView.get_default().newFeedList();
 		m_stack.set_visible_child_full("content", transition);
 		ColumnView.get_default().getHeader().setButtonsSensitive(true);
-		ColumnView.get_default().updateAccountInfo();
+		//ColumnView.get_default().updateAccountInfo();
 
 		if(!ColumnView.get_default().isFullscreen())
 		{
@@ -351,7 +352,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		m_ignore_tls_errors = m_error_bar.add_button("Ignore", Gtk.ResponseType.APPLY);
 		m_ignore_tls_errors.get_style_context().add_class(Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
-		m_ignore_tls_errors.set_tooltip_text(_("Ignore all tls errors from now on"));
+		m_ignore_tls_errors.set_tooltip_text(_("Ignore all TLS errors from now on"));
 		m_ignore_tls_errors.set_visible(false);
 
 		m_error_bar.response.connect((response_id) => {
@@ -500,8 +501,9 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			}
 
 		});
-
+		m_stack.set_transition_duration(0);
 		showContent(Gtk.StackTransitionType.NONE);
+		m_stack.set_transition_duration(m_stackTransitionTime);
 	}
 
 	private void markSelectedRead()
@@ -552,17 +554,18 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Gdk.ModifierType? mod;
 		string setting = Settings.keybindings().get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
+		Logger.debug(gsettingKey);
 
 		if(key != null && Gdk.keyval_to_lower(event.keyval) == key)
 		{
-			if(mod == null && event.state == 0)
+			if(mod == null || mod == 0)
+			{
+				if(event.state == 16)
+					return true;
+			}
+			else if(mod in event.state)
 			{
 				return true;
-			}
-			else
-			{
-				if((event.state & mod) == mod)
-					return true;
 			}
 		}
 
@@ -579,15 +582,29 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		if(checkShortcut(event, "articlelist-prev"))
 		{
-			Logger.debug("shortcut: down");
+			Logger.debug("shortcut: articlelist prev");
 			ColumnView.get_default().ArticleListPREV();
 			return true;
 		}
 
 		if(checkShortcut(event, "articlelist-next"))
 		{
-			Logger.debug("shortcut: up");
+			Logger.debug("shortcut: articlelist next");
 			ColumnView.get_default().ArticleListNEXT();
+			return true;
+		}
+
+		if(checkShortcut(event, "feedlist-prev"))
+		{
+			Logger.debug("shortcut: feedlist prev");
+			ColumnView.get_default().FeedListPREV();
+			return true;
+		}
+
+		if(checkShortcut(event, "feedlist-next"))
+		{
+			Logger.debug("shortcut: feedlist next");
+			ColumnView.get_default().FeedListNEXT();
 			return true;
 		}
 

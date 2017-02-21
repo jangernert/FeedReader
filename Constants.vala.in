@@ -37,7 +37,7 @@ namespace FeedReader {
 		public const string settings = _("Settings");
 		public const string reset = _("Change Account");
 		public const string quit = _("Quit");
-		public const string bugs = _("Report a bug");
+		public const string bugs = _("Report a Bug");
 		public const string bounty = _("Bounties");
 		public const string shortcuts = _("Shortcuts");
 	}

@@ -76,7 +76,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		crashButton.set_focus_on_click(false);
 		crashButton.clicked.connect(() => {
 			var Article = dbUI.get_default().read_article(m_currentArticle);
-			Utils.openInGedit(Article.getHTML());
+			UtilsUI.openInGedit(Article.getHTML());
 		});
 		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		crashView.set_halign(Gtk.Align.CENTER);
@@ -249,7 +249,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_progress.reveal(true);
 
 			m_currentView.load_html(
-				Utils.buildArticle(
+				UtilsUI.buildArticle(
 						Article.getHTML(),
 						Article.getTitle(),
 						Article.getURL(),
@@ -901,6 +901,10 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			return false;
 		}, GLib.Priority.HIGH);
 		Logger.error("ArticleView: webview crashed");
+		uint major = WebKit.get_major_version();
+		uint minor = WebKit.get_minor_version();
+		uint micro = WebKit.get_micro_version();
+		Logger.debug(@"Running WebKit $major.$minor.$micro");
 		return false;
 	}
 

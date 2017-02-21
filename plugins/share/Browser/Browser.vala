@@ -18,16 +18,14 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool addBookmark(string id, string url, bool system)
 	{
-		Logger.debug("url: " + url);
-		string[] spawn_args = {"xdg-open", url};
 		try
 		{
-			GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
+			Gtk.show_uri_on_window(MainWindow.get_default(), url, Gdk.CURRENT_TIME);
 			return true;
 		}
 		catch(GLib.SpawnError e)
 		{
-			Logger.error("spawning command line: " + e.message);
+			Logger.error("BrowserPlugin: Error opening url: " + e.message);
 		}
 
 		return false;

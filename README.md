@@ -19,7 +19,7 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 - vala (>=0.26)
 - pkg-config
 - libgirepository1.0-dev
-- libgtk-3-dev (>= 3.20)
+- libgtk-3-dev (>= 3.22)
 - libsoup2.4-dev
 - libjson-glib-dev
 - libwebkit2gtk-4.0-dev
@@ -38,12 +38,6 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 
 
 ### How to install
-  - elementary OS / Ubuntu :<br/>
-    <pre>
-    sudo add-apt-repository ppa:eviltwin1/feedreader-stable
-    sudo apt-get update
-    sudo apt-get install feedreader
-    </pre>
   - Arch : <br/>
     <pre>
       yaourt -S feedreader

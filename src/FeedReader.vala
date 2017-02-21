@@ -167,7 +167,8 @@ namespace FeedReader {
 		if(pingURL != null)
 		{
 			Logger.init("ui");
-			Utils.ping(pingURL);
+			if(!Utils.ping(pingURL))
+				Logger.error("Ping failed");
 			return 0;
 		}
 

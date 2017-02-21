@@ -100,7 +100,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 		Gst.Bus bus = m_player.get_bus();
 		bus.add_watch(GLib.Priority.LOW, busCallback);
 
-		GLib.Timeout.add(200, () => {
+		GLib.Timeout.add(500, () => {
 			Gst.State state;
 			Gst.State pending;
 			m_player.get_state(out state, out pending, 1000);

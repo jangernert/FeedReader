@@ -17,6 +17,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	private Gee.LinkedList<article> m_lazyQeue;
 	private uint m_idleID = 0;
+	private string m_name;
 	private uint m_selectSourceID = 0;
 	private ArticleListState m_state = ArticleListState.ALL;
 	private FeedListType m_selectedFeedListType = FeedListType.FEED;
@@ -28,8 +29,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public signal void balanceNextScroll(ArticleListBalance mode);
 	public signal void loadDone();
 
-	public ArticleListBox()
+	public ArticleListBox(string name)
 	{
+		m_name = name;
 		m_lazyQeue = new Gee.LinkedList<article>();
 		m_articles = new Gee.HashSet<string>();
 		m_visibleArticles = new Gee.HashSet<string>();
@@ -71,7 +73,11 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	private void addRow(ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)
 	{
 		if(m_lazyQeue.size == 0)
+		{
+			Logger.debug(@"ArticleListbox$m_name: lazyQueu == 0 -> return");
 			return;
+		}
+
 
 		var priority = GLib.Priority.DEFAULT_IDLE;
 		if(ColumnView.get_default().playingMedia())
@@ -92,7 +98,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			// check if row is already there
 			if(m_articles.contains(item.getArticleID()))
 			{
-				Logger.warning("ArticleListBox: row with ID %s is already present".printf(item.getArticleID()));
+				Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
 				checkQueue(item, balance, pos, reverse, animate);
 				return false;
 			}
@@ -139,8 +145,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 		else
 		{
+			Logger.debug(@"ArticleListbox$m_name: all articles added to the list");
 			m_lazyQeue = new Gee.LinkedList<article>();
 			GLib.Timeout.add(150, () => {
+				Logger.debug(@"ArticleListbox$m_name: loadDone()");
 				loadDone();
 				return false;
 			});
@@ -200,7 +208,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("ArticleList.selectAfter: %s".printf(e.message));
+			Logger.error("ArticleListBox.setRead: %s".printf(e.message));
 		}
 	}
 
@@ -283,10 +291,29 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public int move(bool down)
 	{
+		int time = 300;
+		var sel = getSelectedArticle();
+		if(sel == "empty")
+		{
+			Logger.debug("ArticleListBox is empty -> do nothing");
+			return 0;
+		}
+		else if(sel == "")
+		{
+			Logger.debug("ArticleListBox: no row selected -> select first");
+			var firstRow = getFirstRow();
+			if(firstRow == null)
+				return 0;
+			else
+			{
+				selectAfter(firstRow, time);
+				return 0;
+			}
+		}
+
 		var selectedRow = this.get_selected_row() as articleRow;
 		var height = selectedRow.get_allocated_height();
 		articleRow nextRow = null;
-		int time = 300;
 
 		var rows = this.get_children();
 
@@ -307,6 +334,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		while(!nextRow.isBeingRevealed());
 
 		selectAfter(nextRow, time);
+
+		Logger.debug(@"ArticleListBox.move: height: $height");
 
 		if(down)
 			return height;
@@ -448,6 +477,21 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return firstRow.getID();
 	}
 
+	private articleRow? getFirstRow()
+	{
+		var children = this.get_children();
+
+		if(children == null)
+			return null;
+
+		var firstRow = children.first().data as articleRow;
+
+		if(firstRow == null)
+			return null;
+
+		return firstRow;
+	}
+
 	public string? getLastRowID()
 	{
 		var children = this.get_children();
@@ -574,5 +618,23 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public int getSize()
 	{
 		return m_articles.size;
+	}
+
+	public bool needLoadMore(int height)
+	{
+		int rowHeight = 0;
+
+		var FeedChildList = this.get_children();
+		foreach(Gtk.Widget row in FeedChildList)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && tmpRow.isRevealed())
+				rowHeight += tmpRow.get_allocated_height();
+		}
+
+		if(rowHeight < height + 100)
+			return true;
+
+		return false;
 	}
 }

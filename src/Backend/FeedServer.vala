@@ -290,9 +290,9 @@ public class FeedReader.FeedServer : GLib.Object {
 		Logger.debug("FeedServer: new articles: %i".printf(newArticles));
 		writeInterfaceState();
 
-		if(Settings.state().get_boolean("no-animations") && Settings.general().get_boolean("articlelist-newest-first"))
+		if(Settings.state().get_boolean("no-animations") && Settings.state().get_enum("show-articles") == ArticleListState.ALL)
 		{
-			int newCount = Settings.state().get_int("articlelist-new-rows") + (int)Utils.getRelevantArticles(newArticles);
+			int newCount = Settings.state().get_int("articlelist-new-rows") + (int)UtilsDaemon.getRelevantArticles(newArticles);
 			Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
 			Settings.state().set_int("articlelist-new-rows", newCount);
 		}

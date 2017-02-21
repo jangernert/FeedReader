@@ -97,7 +97,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         	ColumnView.get_default().newArticleList();
         });
 
-        var newest_first = new SettingSwitch(_("Newest first"), Settings.general(), "articlelist-newest-first");
+        var newest_first = new SettingSwitch(_("Oldest first"), Settings.general(), "articlelist-oldest-first", _("Only affects \"Unread\" column"));
         newest_first.changed.connect(() => {
         	ColumnView.get_default().newArticleList();
         });

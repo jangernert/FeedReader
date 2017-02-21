@@ -34,7 +34,6 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 	private void setup(string tooltip)
 	{
-
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(16,16);
 
@@ -49,11 +48,6 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		this.set_focus_on_click(false);
 		this.set_tooltip_text(tooltip);
 		this.show_all();
-
-		if(Settings.state().get_boolean("currently-updating"))
-			updating(true);
-		else
-			updating(false);
 	}
 
 	public void updating(bool status, bool insensitive = true)

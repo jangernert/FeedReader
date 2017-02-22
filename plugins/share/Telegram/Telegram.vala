@@ -16,19 +16,38 @@
 
 public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
+
+	public bool addTelegram(string id, string username)
+	{
+        	var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/telegram/%s/".printf(id));
+		settings.set_string("username", username);
+		var array = Settings.share().get_strv("telegram");
+		foreach(string i in array)
+		{
+			if(i == id)
+			{
+				Logger.warning("Telegram: id already added. Returning");
+				return false;
+			}
+		}
+        	array += id;
+		Settings.share().set_strv("telegram", array);
+
+		return true;
+	}
+
 	public bool addBookmark(string id, string url, bool system)
 	{
-		string tg = @"tg://msg_url?url=%s&text=".printf (url);
+		string tg_msg = @"tg://msg_url?url=%s&text=".printf (url);
 		try
 		{
-			Gtk.show_uri_on_window(MainWindow.get_default(), tg, Gdk.CURRENT_TIME);
+			Gtk.show_uri_on_window(MainWindow.get_default(), tg_msg, Gdk.CURRENT_TIME);
 			return true;
 		}
 		catch(GLib.SpawnError e)
 		{
 			Logger.error("TelegramPlugin: Error opening url: " + e.message);
 		}
-
 		return false;
 	}
 
@@ -39,7 +58,25 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool logout(string id)
 	{
-		return false;
+		Logger.debug(@"Telegram.remove($id)");
+		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/telegram/%s/".printf(id));
+    		var keys = settings.list_keys();
+		foreach(string key in keys)
+		{
+			settings.reset(key);
+		}
+
+        	var array = Settings.share().get_strv("telegram");
+    		string[] array2 = {};
+
+    		foreach(string i in array)
+		{
+			if(i != id)
+				array2 += i;
+		}
+		Settings.share().set_strv("telegram", array2);
+		deleteAccount(id);
+		return true;
 	}
 
 	public string getIconName()
@@ -54,18 +91,18 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool needSetup()
 	{
-		return false;
+		return true;
 	}
 
 	public bool useSystemAccounts()
-    {
-        return false;
-    }
+    	{
+        	return false;
+    	}
 
 	public string pluginID()
-    {
-        return "telegram";
-    }
+    	{
+        	return "telegram";
+    	}
 
 	public string pluginName()
 	{
@@ -73,14 +110,14 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public ServiceSetup? newSetup_withID(string id, string username)
-    {
-        return null;
-    }
+    	{
+        	return new TelegramSetup(id, this, username);
+    	}
 
-    public ServiceSetup? newSetup()
-    {
-        return null;
-    }
+    	public ServiceSetup? newSetup()
+    	{
+        	return new TelegramSetup(null, this);
+    	}
 
 	public ServiceSetup? newSystemAccount(string id, string username)
 	{

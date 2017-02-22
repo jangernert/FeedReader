@@ -9,6 +9,13 @@
             </description>
         </key>
 
+	<key name="telegram" type="as">
+            <default>[]</default>
+            <summary>Telegram accounts</summary>
+            <description>
+                all the telegram account ids
+            </description>
+        </key>
 
 	<key name="pocket" type="as">
             <default>[]</default>

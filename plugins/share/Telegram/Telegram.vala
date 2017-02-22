@@ -15,7 +15,8 @@
 
 
 public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
-
+	
+	string tg_text;
 
 	public bool addTelegram(string id, string username)
 	{
@@ -38,7 +39,8 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool addBookmark(string id, string url, bool system)
 	{
-		string tg_msg = @"tg://msg_url?url=%s&text=".printf (url);
+		string tg_msg = @"tg://msg_url?url=%s&text=%s".printf (url, tg_text);
+		
 		try
 		{
 			Gtk.show_uri_on_window(MainWindow.get_default(), tg_msg, Gdk.CURRENT_TIME);
@@ -126,7 +128,12 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	public ShareForm? shareWidget(string url)
 	{
-		return null;
+		var widget = new TelegramForm(url);
+		widget.share.connect(() => {
+			tg_text = widget.getMessage();
+		});
+		return widget;
+		//return null;
 	}
 }
 

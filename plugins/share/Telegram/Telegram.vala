@@ -15,7 +15,7 @@
 
 
 public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
-	
+
 	string tg_text;
 
 	public bool addTelegram(string id, string username)
@@ -39,14 +39,14 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool addBookmark(string id, string url, bool system)
 	{
-		string tg_msg = @"tg://msg_url?url=%s&text=%s".printf (url, tg_text);
-		
+		string tg_msg = @"tg://msg_url?url=$url&text=$tg_text";
+
 		try
 		{
 			Gtk.show_uri_on_window(MainWindow.get_default(), tg_msg, Gdk.CURRENT_TIME);
 			return true;
 		}
-		catch(GLib.SpawnError e)
+		catch(GLib.Error e)
 		{
 			Logger.error("TelegramPlugin: Error opening url: " + e.message);
 		}

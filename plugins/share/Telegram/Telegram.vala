@@ -128,12 +128,11 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	public ShareForm? shareWidget(string url)
 	{
-		var widget = new TelegramForm(url);
+		var widget = new TelegramForm();
 		widget.share.connect(() => {
 			tg_text = widget.getMessage();
 		});
 		return widget;
-		//return null;
 	}
 }
 

@@ -19,7 +19,7 @@ public class FeedReader.TelegramForm : ShareForm {
 	private Gtk.Entry m_entry;
 	private Gtk.TextView m_textView;
 
-	public TelegramForm(string url)
+	public TelegramForm()
 	{
 		string tg_msg_text = _("Hey, Check out this interesting article I just read - sent by FeedReader");
 		var box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);

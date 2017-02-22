@@ -1,0 +1,8 @@
+[Plugin]
+Module=telegram
+Loader=C
+Name=Telegram
+Description=Share via telegram.
+Authors=Jason Scurtu <jscurtu@t-online.de>
+Copyright=Copyright © 2017 Jason Scurtu
+Website=http://jangernert.github.io/FeedReader/

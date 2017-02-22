@@ -7,6 +7,7 @@ set (PLUGTARGET ${NAME}_target)
 
 vala_precompile(VALA_C ${PLUGTARGET}
     Telegram.vala
+    TelegramSetup.vala
 
 PACKAGES
     libpeas-1.0

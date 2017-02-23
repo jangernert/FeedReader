@@ -53,32 +53,22 @@ For translators : https://www.transifex.com/dev-feedreader/feedreader
 
 ### Flatpak
 
-FeedReader is now availble as Flatpak and should be installable on all Linux distributions that support the Flatpak Application Framework. This is still a WIP and might not work as expected, please report any Flatpak related issues.
+FeedReader is now availble as Flatpak and should be installable on all major Linux distributions that support the Flatpak Application Framework eg. Fedora, Debian, Ubuntu, elementaryOS, Arch, openSuSE, Mageia and many more.
 
 For more information about Flatpak and how to use or install it for your distribution see the [Flatpak webpage](http://flatpak.org).
 
-For FeedReader to properly work, you will also need to install the following portal packages, look in your distributions packagemanager:
-
+Besides installing the Flatpak Framework, you should also install the following portal packages using your distributions paket manager:
+(names can differ depending on the distribution)
 <pre>xdg-desktop-portal</pre>
 <pre>xdg-desktop-portal-gtk</pre>
 
-####Install FeedReader Flatpak via repository:
-
+####Install FeedReader Flatpak via repository, this enables OTA updates and is the recommended way:
+Defaults to the stable branch.
 <pre>
 flatpak install http://feedreader.xarbit.net/feedreader-repo/feedreader.flatpakref
 </pre>
 
-####Install FeedReader Flatpak via standalone bundle:
-
-- [FeedReader Flatpak Bundle](https://github.com/jangernert/FeedReader/releases)
-
-GNOME-Software can handle flatpak bundles, just open the downloaded feedreader.flatpak file with GNOME-Software and click on install. Thats it..
-
-You can also install the feedreader.flatpak from the commandline as so:
-
-<pre>
-$ flatpak install --bundle feedreader.flatpak
-</pre>
+You can also create your own Flatpak bundle running `make bundle` command in the `flatpak/` sub-directory.
 
 
 ### How to build the latest version
@@ -93,4 +83,3 @@ sudo make install
 ```
 Arch users can build the latest version using `yaourt -S feedreader-git`
 
-You can also create a Flatpak bundle running `make` then `make dist` in the `flatpak/` sub-directory.

@@ -34,7 +34,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 	public override void login()
 	{
-		string id = Share.generateNewID();
+		string id = Share.get_default().generateNewID();
 		string requestToken = m_api.getRequestToken();
 		string url = m_api.getURL(requestToken);
 		m_spinner.start();

@@ -77,7 +77,7 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 		{
 			m_spinner.start();
 			m_iconStack.set_visible_child_name("spinner");
-			string id = Share.generateNewID();
+			string id = Share.get_default().generateNewID();
 			string username = m_userEntry.get_text();
 			string password = m_passEntry.get_text();
 

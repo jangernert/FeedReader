@@ -111,7 +111,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 	{
 		if(m_login_revealer.get_child_revealed())
 		{
-			string id = Share.generateNewID();
+			string id = Share.get_default().generateNewID();
 			string username = m_userEntry.get_text();
 			string password = m_passEntry.get_text();
 			string clientID = m_idEntry.get_text();

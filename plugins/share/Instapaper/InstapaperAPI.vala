@@ -128,9 +128,9 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
         settings.set_string("username", username);
         settings.set_string("user-id", userID);
 
-        var array = Settings.share().get_strv("instapaper");
+        var array = Settings.share("instapaper").get_strv("account-ids");
         array += id;
-		Settings.share().set_strv("instapaper", array);
+		Settings.share("instapaper").set_strv("account-ids", array);
 
         var pwSchema = new Secret.Schema ("org.gnome.feedreader.instapaper.password", Secret.SchemaFlags.NONE,
                                         "userID", Secret.SchemaAttributeType.STRING);
@@ -223,7 +223,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			settings.reset(key);
 		}
 
-        var array = Settings.share().get_strv("instapaper");
+        var array = Settings.share("instapaper").get_strv("account-ids");
 
     	string[] array2 = {};
     	foreach(string i in array)
@@ -231,7 +231,7 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 			if(i != id)
 				array2 += i;
 		}
-		Settings.share().set_strv("instapaper", array2);
+		Settings.share("instapaper").set_strv("account-ids", array2);
 		deleteAccount(id);
 
         return true;

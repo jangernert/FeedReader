@@ -36,4 +36,5 @@ add_dependencies(${NAME} ${UI_NAME} ${DAEMON_NAME})
 
 install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/pluginsShare)
 install(FILES ${NAME}.plugin DESTINATION ${PKGLIBDIR}/pluginsShare)
+add_schema ("org.gnome.feedreader.share.telegram.gschema.xml")
 

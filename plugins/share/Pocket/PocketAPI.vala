@@ -112,9 +112,9 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
         settings.set_string("oauth-access-token", accessToken);
         settings.set_string("username", user);
 
-        var array = Settings.share().get_strv("pocket");
+        var array = Settings.share("pocket").get_strv("account-ids");
         array += id;
-		Settings.share().set_strv("pocket", array);
+		Settings.share("pocket").set_strv("account-ids", array);
 
         return true;
     }
@@ -194,7 +194,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 			settings.reset(key);
 		}
 
-        var array = Settings.share().get_strv("pocket");
+        var array = Settings.share("pocket").get_strv("account-ids");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -202,7 +202,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 			if(i != id)
 				array2 += i;
 		}
-		Settings.share().set_strv("pocket", array2);
+		Settings.share("pocket").set_strv("account-ids", array2);
 		deleteAccount(id);
 
         return true;

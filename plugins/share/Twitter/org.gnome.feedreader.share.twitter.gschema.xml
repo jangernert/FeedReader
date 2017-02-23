@@ -1,0 +1,13 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.share.twitter" path="/org/gnome/feedreader/share/twitter/" gettext-domain="feedreader">
+    
+	<key name="account-ids" type="as">
+            <default>[]</default>
+            <summary>twitter accounts</summary>
+            <description>
+                all the twitter account ids
+            </description>
+        </key>
+
+    </schema>
+</schemalist>

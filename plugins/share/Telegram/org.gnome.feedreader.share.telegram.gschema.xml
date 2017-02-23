@@ -1,0 +1,13 @@
+<schemalist>
+    <schema id="org.gnome.feedreader.share.telegram" path="/org/gnome/feedreader/share/telegram/" gettext-domain="feedreader">
+    
+	<key name="account-ids" type="as">
+            <default>[]</default>
+            <summary>Telegram accounts</summary>
+            <description>
+                all the telegram account ids
+            </description>
+        </key>
+
+    </schema>
+</schemalist>

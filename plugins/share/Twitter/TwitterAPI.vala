@@ -116,9 +116,9 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 
 
-        var array = Settings.share().get_strv("twitter");
+        var array = Settings.share("twitter").get_strv("account-ids");
         array += id;
-		Settings.share().set_strv("twitter", array);
+		Settings.share("twitter").set_strv("account-ids", array);
 
         return true;
     }
@@ -165,7 +165,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			settings.reset(key);
 		}
 
-        var array = Settings.share().get_strv("twitter");
+        var array = Settings.share("twitter").get_strv("account-ids");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -173,7 +173,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 			if(i != id)
 				array2 += i;
 		}
-		Settings.share().set_strv("twitter", array2);
+		Settings.share("twitter").set_strv("account-ids", array2);
 		deleteAccount(id);
 
         return true;
@@ -250,7 +250,7 @@ public class FeedReader.TwitterAPI : ShareAccountInterface, Peas.ExtensionBase {
 		if(m_urlLength > 0)
 			return m_urlLength;
 
-        var array = Settings.share().get_strv("twitter");
+        var array = Settings.share("twitter").get_strv("account-ids");
 		string id = array[0];
 
 		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/twitter/%s/".printf(id));

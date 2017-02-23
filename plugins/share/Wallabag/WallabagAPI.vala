@@ -95,7 +95,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 		settings.set_string("client-secret", clientSecret);
 
 
-        var array = Settings.share().get_strv("wallabag");
+        var array = Settings.share("wallabag").get_strv("wallabag");
 		foreach(string i in array)
 		{
 			if(i == id)
@@ -105,7 +105,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			}
 		}
         array += id;
-		Settings.share().set_strv("wallabag", array);
+		Settings.share("wallabag").set_strv("wallabag", array);
 
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.wallabag.password", Secret.SchemaFlags.NONE,
@@ -180,7 +180,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			settings.reset(key);
 		}
 
-        var array = Settings.share().get_strv("wallabag");
+        var array = Settings.share("wallabag").get_strv("wallabag");
     	string[] array2 = {};
 
     	foreach(string i in array)
@@ -188,7 +188,7 @@ public class FeedReader.WallabagAPI : ShareAccountInterface, Peas.ExtensionBase 
 			if(i != id)
 				array2 += i;
 		}
-		Settings.share().set_strv("wallabag", array2);
+		Settings.share("wallabag").set_strv("wallabag", array2);
 		deleteAccount(id);
 
         return true;

@@ -16,7 +16,6 @@
 
 public class FeedReader.TelegramForm : ShareForm {
 
-	private Gtk.Entry m_entry;
 	private Gtk.TextView m_textView;
 
 	public TelegramForm()

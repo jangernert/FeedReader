@@ -19,7 +19,7 @@ public class FeedReader.Settings : GLib.Object {
 	private static GLib.Settings? m_tweaks = null;
 	private static GLib.Settings? m_state = null;
 	private static GLib.Settings? m_keys = null;
-	private static GLib.Settings? m_share = null;
+	private static Gee.HashMap<string, GLib.Settings>? m_share = null;
 
 	public static GLib.Settings general()
 	{
@@ -53,12 +53,19 @@ public class FeedReader.Settings : GLib.Object {
 		return m_keys;
 	}
 
-	public static GLib.Settings share()
+	public static GLib.Settings? share(string pluginName)
 	{
 		if(m_share == null)
-			m_share = new GLib.Settings("org.gnome.feedreader.share");
+			m_share = new Gee.HashMap<string, GLib.Settings>();
 
-		return m_share;
+		if(m_share.has_key(pluginName))
+			return m_share.get(pluginName);
+		else
+		{
+			var settings = new GLib.Settings(@"org.gnome.feedreader.share.$pluginName");
+			m_share.set(pluginName, settings);
+			return settings;
+		}
 	}
 
 	private Settings()

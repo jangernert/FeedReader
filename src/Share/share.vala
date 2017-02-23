@@ -65,14 +65,15 @@ public class FeedReader.Share : GLib.Object {
 			plugin.setupSystemAccounts(m_accounts);
 			if(plugin.needSetup())
 			{
-				var accounts = Settings.share().get_strv(plugin.pluginID());
-				foreach(string id in accounts)
+				var plugID = plugin.pluginID();
+				var accounts = Settings.share(plugID).get_strv("account-ids");
+				foreach(string accountID in accounts)
 				{
 					m_accounts.add(
 						new ShareAccount(
-							id,
+							accountID,
 							plugin.pluginID(),
-							plugin.getUsername(id),
+							plugin.getUsername(accountID),
 							plugin.getIconName(),
 							plugin.pluginName()
 						)
@@ -135,24 +136,30 @@ public class FeedReader.Share : GLib.Object {
 		return m_accounts;
 	}
 
-	public static string generateNewID()
+	public string generateNewID()
 	{
 		string id = Utils.string_random(12);
+		bool unique = true;
 
-
-		string[] keys = Settings.share().list_keys();
-
-		foreach(string key in keys)
-		{
-			string[] ids = Settings.share().get_strv(key);
-			foreach(string i in ids)
+		m_plugins.foreach((@set, info, exten) => {
+			var plugin = (exten as ShareAccountInterface);
+			var plugID = plugin.pluginID();
+			if(plugin.needSetup())
 			{
-				if(i == id)
+				string[] ids = Settings.share(plugID).get_strv("account-ids");
+				foreach(string i in ids)
 				{
-					return generateNewID();
+					if(i == id)
+					{
+						unique = false;
+						return;
+					}
 				}
 			}
-		}
+		});
+
+		if(!unique)
+			return generateNewID();
 
 		return id;
 	}

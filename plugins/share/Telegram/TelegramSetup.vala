@@ -24,7 +24,7 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 			loggedIN = true;
 
 		base("Telegram", "feed-share-telegram", loggedIN, username);
-		
+
 		m_tg = tg;
 		//no login, so change the labels
 		m_login_button.set_label(_("Add"));
@@ -37,7 +37,7 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 
 	public override void login()
 	{
-		showInfoBar(_("Telegram needs to be installed on your system!."));
+		showInfoBar(_("Telegram needs to be installed on your system."));
 		//use static id to determin if already added
 		string id = "X-URL-SCHEME-TELEGRAM";
 		string username = m_tg.getUsername(id);

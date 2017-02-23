@@ -1,49 +1,4 @@
 <schemalist>
-    <schema id="org.gnome.feedreader.share" path="/org/gnome/feedreader/share/" gettext-domain="feedreader">
-    
-	<key name="instapaper" type="as">
-            <default>[]</default>
-            <summary>instapaper accounts</summary>
-            <description>
-                all the instapaper account ids
-            </description>
-        </key>
-
-	<key name="telegram" type="as">
-            <default>[]</default>
-            <summary>Telegram accounts</summary>
-            <description>
-                all the telegram account ids
-            </description>
-        </key>
-
-	<key name="pocket" type="as">
-            <default>[]</default>
-            <summary>pocket accounts</summary>
-            <description>
-                all the pocket account ids
-            </description>
-        </key>
-        
-        <key name="wallabag" type="as">
-            <default>[]</default>
-            <summary>wallabag accounts</summary>
-            <description>
-                all the wallabag account ids
-            </description>
-        </key>
-        
-        <key name="twitter" type="as">
-            <default>[]</default>
-            <summary>twitter accounts</summary>
-            <description>
-                all the twitter account ids
-            </description>
-        </key>
-        
-    </schema>
-
-
     <schema id="org.gnome.feedreader.share.account" gettext-domain="feedreader">
 
         <key name="oauth-access-token-secret" type="s">

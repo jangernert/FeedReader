@@ -1,11 +1,11 @@
 <schemalist>
     <schema id="org.gnome.feedreader.share.telegram" path="/org/gnome/feedreader/share/telegram/" gettext-domain="feedreader">
     
-	<key name="account-ids" type="as">
-            <default>[]</default>
-            <summary>Telegram accounts</summary>
+	<key name="enabled" type="b">
+            <default>false</default>
+            <summary>Telegram account activated</summary>
             <description>
-                all the telegram account ids
+                If the Telegram account has been manually activated.
             </description>
         </key>
 

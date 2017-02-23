@@ -253,6 +253,11 @@ public class FeedReader.InstaAPI : ShareAccountInterface, Peas.ExtensionBase {
 		return true;
 	}
 
+	public bool singleInstance()
+	{
+		return false;
+	}
+
 	public bool useSystemAccounts()
     {
         return false;

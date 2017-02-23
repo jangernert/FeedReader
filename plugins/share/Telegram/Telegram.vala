@@ -18,26 +18,6 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	string tg_text;
 
-	public bool addTelegram(string id, string username)
-	{
-        var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/telegram/%s/".printf(id));
-		settings.set_string("username", username);
-		var array = Settings.share("telegram").get_strv("account-ids");
-		foreach(string i in array)
-		{
-			if(i == id)
-			{
-				Logger.warning("Telegram: id already added. Returning");
-				return false;
-			}
-		}
-
-        array += id;
-		Settings.share("telegram").set_strv("account-ids", array);
-
-		return true;
-	}
-
 	public bool addBookmark(string id, string url, bool system)
 	{
 		string tg_msg = @"tg://msg_url?url=$url&text=$tg_text";
@@ -61,24 +41,7 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	public bool logout(string id)
 	{
-		Logger.debug(@"Telegram.remove($id)");
-		var settings = new GLib.Settings.with_path("org.gnome.feedreader.share.account", "/org/gnome/feedreader/share/telegram/%s/".printf(id));
-    	var keys = settings.list_keys();
-		foreach(string key in keys)
-		{
-			settings.reset(key);
-		}
-
-        var array = Settings.share("telegram").get_strv("account-ids");
-    	string[] array2 = {};
-
-    	foreach(string i in array)
-		{
-			if(i != id)
-				array2 += i;
-		}
-		Settings.share("telegram").set_strv("account-ids", array2);
-		deleteAccount(id);
+		Settings.share("telegram").set_boolean("enabled", false);
 		return true;
 	}
 
@@ -93,6 +56,11 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public bool needSetup()
+	{
+		return true;
+	}
+
+	public bool singleInstance()
 	{
 		return true;
 	}

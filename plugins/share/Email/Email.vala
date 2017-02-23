@@ -67,6 +67,11 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 		return false;
 	}
 
+	public bool singleInstance()
+	{
+		return true;
+	}
+
 	public bool useSystemAccounts()
     {
         return false;

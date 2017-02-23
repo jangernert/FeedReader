@@ -59,6 +59,11 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 		return false;
 	}
 
+	public bool singleInstance()
+	{
+		return true;
+	}
+
 	public bool useSystemAccounts()
     {
         return false;

@@ -62,17 +62,17 @@ public class FeedReader.Share : GLib.Object {
 		m_accounts = new Gee.ArrayList<ShareAccount>();
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
+			var plugID = plugin.pluginID();
 			plugin.setupSystemAccounts(m_accounts);
-			if(plugin.needSetup())
+			if(!plugin.singleInstance())
 			{
-				var plugID = plugin.pluginID();
 				var accounts = Settings.share(plugID).get_strv("account-ids");
 				foreach(string accountID in accounts)
 				{
 					m_accounts.add(
 						new ShareAccount(
 							accountID,
-							plugin.pluginID(),
+							plugID,
 							plugin.getUsername(accountID),
 							plugin.getIconName(),
 							plugin.pluginName()
@@ -80,12 +80,13 @@ public class FeedReader.Share : GLib.Object {
 					);
 				}
 			}
-			else
+			else if(!plugin.needSetup()
+			|| (plugin.needSetup() && Settings.share(plugID).get_boolean("enabled")))
 			{
 				m_accounts.add(
 					new ShareAccount(
-						plugin.pluginID(),
-						plugin.pluginID(),
+						plugID,
+						plugID,
 						plugin.pluginName(),
 						plugin.getIconName(),
 						plugin.pluginName()
@@ -120,10 +121,20 @@ public class FeedReader.Share : GLib.Object {
 
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
+			var pluginID = plugin.pluginID();
 
-			if(plugin.needSetup() && !plugin.useSystemAccounts())
+			bool singleInstance = false;
+			if(plugin.singleInstance())
 			{
-				accounts.add(new ShareAccount("", plugin.pluginID(), "", plugin.getIconName(), plugin.pluginName()));
+				if(plugin.needSetup() && !Settings.share(pluginID).get_boolean("enabled"))
+					singleInstance = true;
+			}
+			else
+				singleInstance = true;
+
+			if(plugin.needSetup() && !plugin.useSystemAccounts() && singleInstance)
+			{
+				accounts.add(new ShareAccount("", pluginID, "", plugin.getIconName(), plugin.pluginName()));
 			}
 		});
 

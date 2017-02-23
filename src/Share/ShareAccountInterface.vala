@@ -37,6 +37,8 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public abstract bool needSetup();
 
+	public abstract bool singleInstance();
+
 	public abstract ServiceSetup? newSetup_withID(string id, string username);
 
 	public abstract ServiceSetup? newSetup();

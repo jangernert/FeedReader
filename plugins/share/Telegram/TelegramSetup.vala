@@ -35,7 +35,7 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 
 	public override void login()
 	{
-		showInfoBar(_("Telegram needs to be installed on your system."));
+		showInfoBar(_("Info: Telegram would need to be installed for this plugin to work."));
 		m_login_button.set_sensitive(false);
 		Settings.share("telegram").set_boolean("enabled", true);
 		m_tg.addAccount(m_id, m_tg.pluginID(), m_tg.getUsername(m_id), m_tg.getIconName(), m_tg.pluginName());

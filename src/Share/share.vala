@@ -155,7 +155,7 @@ public class FeedReader.Share : GLib.Object {
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 			var plugID = plugin.pluginID();
-			if(plugin.needSetup())
+			if(plugin.needSetup() && !plugin.singleInstance())
 			{
 				string[] ids = Settings.share(plugID).get_strv("account-ids");
 				foreach(string i in ids)

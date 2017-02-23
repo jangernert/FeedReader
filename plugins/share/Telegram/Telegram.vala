@@ -42,6 +42,7 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 	public bool logout(string id)
 	{
 		Settings.share("telegram").set_boolean("enabled", false);
+		deleteAccount(id);
 		return true;
 	}
 

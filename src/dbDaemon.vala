@@ -635,6 +635,7 @@ public class FeedReader.dbDaemon : dbBase {
         query.updateValuePair(field, field_value.to_string());
         query.addRangeConditionString("articleID", id_list);
         executeSQL(query.build());
+        query.print();
     }
 
     public void markCategorieRead(string catID)

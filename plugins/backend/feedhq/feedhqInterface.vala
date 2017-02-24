@@ -18,15 +18,10 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 	private FeedHQAPI m_api;
 	private FeedHQUtils m_utils;
 
-	public dbDaemon m_dataBase { get; construct set; }
-	public Logger m_logger { get; construct set; }
-
 	public void init()
 	{
 		m_api = new FeedHQAPI();
 		m_utils = new FeedHQUtils();
-		dataBase = m_dataBase;
-		logger = m_logger;
 	}
 
 	public bool supportTags()
@@ -34,22 +29,27 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		return false;
 	}
 
+	public bool supportFeedManipulation()
+	{
+		return true;
+	}
+
 	public bool doInitSync()
 	{
 		return true;
 	}
 
-	public string? symbolicIcon()
+	public string symbolicIcon()
 	{
 		return "feed-service-feedhq-symbolic";
 	}
 
-	public string? accountName()
+	public string accountName()
 	{
 		return m_utils.getUser();
 	}
 
-	public string? getServerURL()
+	public string getServerURL()
 	{
 		return "FeedHQ.org";
 	}
@@ -58,7 +58,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 	{
 		return "";
 	}
-	
+
 	public bool supportCategories()
 	{
 		return true;
@@ -132,13 +132,13 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void markAllItemsRead()
 	{
-		var categories = dataBase.read_categories();
+		var categories = dbDaemon.get_default().read_categories();
 		foreach(category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dataBase.read_feeds_without_cat();
+		var feeds = dbDaemon.get_default().read_feeds_without_cat();
 		foreach(feed Feed in feeds)
 		{
 			m_api.markAsRead(Feed.getFeedID());
@@ -175,7 +175,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 	{
 		return m_api.ping();
 	}
-	
+
 	public string addFeed(string feedURL, string? catID, string? newCatName)
 	{
 		if(catID == null && newCatName != null)
@@ -188,6 +188,11 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 			m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
 		}
 		return "feed/" + feedURL;
+	}
+
+	public void addFeeds(Gee.LinkedList<feed> feeds)
+	{
+		// FIXME
 	}
 
 	public void removeFeed(string feedID)
@@ -254,7 +259,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		{
 			return;
 		}
-		else if(whatToGet == ArticleStatus.ALL)
+		/*else if(whatToGet == ArticleStatus.ALL)
 		{
 			var unreadIDs = new Gee.LinkedList<string>();
 			string? continuation = null;
@@ -273,9 +278,9 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 					left = 0;
 				}
 			}
-			dataBase.updateArticlesByID(unreadIDs, "unread");
+			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
-		}
+		}*/
 
 		var articles = new Gee.LinkedList<article>();
 		string? continuation = null;
@@ -296,7 +301,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 				left = 0;
 			}
 		}
-		writeArticlesInChunks(articles, 10);
+		writeArticles(articles);
 	}
 
 }

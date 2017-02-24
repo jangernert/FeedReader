@@ -13,9 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.dbDaemon dataBase;
-FeedReader.Logger logger;
-
 public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public enum FeedHQSubscriptionAction {
@@ -37,10 +34,10 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		logger.print( LogMessage.ERROR, " FeedHQ Login" );
+		Logger.debug("FeedHQ Login");
 
 		if(m_utils.getAccessToken() == "")
-			m_connection.getToken();
+			return m_connection.getToken();
 
 		if(getUserID())
 			return LoginResponse.SUCCESS;
@@ -48,8 +45,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-	public bool ping() {
-		return Utils.ping("feedhq.org");
+	public bool ping()
+	{
+		return Utils.ping("https://feedhq.org");
 	}
 
 	private bool getUserID()
@@ -60,8 +58,8 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getUserID: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getUserID: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -70,7 +68,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		{
 			m_userID = root.get_string_member("userId");
 			m_utils.setUserID(m_userID);
-			logger.print(LogMessage.INFO, "FeedHQ: userID = " + m_userID);
+			Logger.info("FeedHQ: userID = " + m_userID);
 
 			if(root.has_member("userName"))
 				m_utils.setUser(root.get_string_member("userName"));
@@ -86,14 +84,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		string response = m_connection.send_get_request("subscription/list?output=json");
 		if(response == "" || response == null)
 			return false;
-		
+
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getFeeds: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getFeeds: Could not load message response");
+			Logger.error(e.message);
 			return true;
 		}
 		var root = parser.get_root().get_object();
@@ -109,9 +107,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
 
 			if(icon_url != "" && !m_utils.downloadIcon(feedID, "https:"+icon_url))
-			{
 				icon_url = "";
-			}
+			else if(!Utils.downloadIcon(feedID, url))
+				icon_url = "something";
 
 			string title = "No Title";
 			if(object.has_member("title"))
@@ -154,8 +152,8 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 			return false;
 		}
 		var root = parser.get_root().get_object();
@@ -198,8 +196,8 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getTotalUnread: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getTotalUnread: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -217,7 +215,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 		}
 
-		logger.print(LogMessage.DEBUG, "getTotalUnread %i".printf(count));
+		Logger.debug("getTotalUnread %i".printf(count));
 		return count;
 	}
 
@@ -235,8 +233,8 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "updateArticles: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("updateArticles: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -275,16 +273,13 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
 		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
 
-		// logger.print(LogMessage.DEBUG, message_string);
-		// logger.print(LogMessage.DEBUG, response);
-
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			logger.print(LogMessage.ERROR, "getCategoriesAndTags: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
@@ -295,7 +290,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		{
 
 			Json.Object object = array.get_object_element(i);
-			string id = object.get_string_member("id");
+			string id = object.get_string_member("id").replace(",", "_");
 			string tagString = "";
 			bool marked = false;
 			bool read = false;
@@ -366,16 +361,16 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			message_string += "r=";
 
 		message_string += tagID;
-		message_string += "&i=" + articleID;
-		string response = m_connection.send_post_request("edit-tag?output=json", message_string);
+		message_string += "&i=" + articleID.replace("_", ",");
+		m_connection.send_post_request("edit-tag?output=json", message_string);
 	}
 
 	public void markAsRead(string? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
-		logger.print(LogMessage.DEBUG, message_string);
-		string response = m_connection.send_post_request("mark-all-as-read?output=json", message_string);
+		Logger.debug(message_string);
+		m_connection.send_post_request("mark-all-as-read?output=json", message_string);
 	}
 
 	public string composeTagID(string tagName)
@@ -386,14 +381,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var message_string = "s=" + tagID;
-		string response = m_connection.send_post_request("disable-tag?output=json", message_string);
+		m_connection.send_post_request("disable-tag?output=json", message_string);
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var message_string = "s=" + tagID;
 		message_string += "&dest=" + composeTagID(title);
-		string response = m_connection.send_post_request("rename-tag?output=json", message_string);
+		m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
 	public void editSubscription(FeedHQSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)

@@ -13,19 +13,14 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.Logger logger;
-
 public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 	private feedbinUtils m_utils;
 
-	public Logger m_logger { get; construct set; }
-
 	public void init()
 	{
-		logger = m_logger;
 		m_utils = new feedbinUtils();
 	}
 

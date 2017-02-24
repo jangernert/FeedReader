@@ -13,8 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.Logger logger;
-
 public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private Gtk.Entry m_urlEntry;
@@ -26,11 +24,8 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 	private bool m_need_htaccess = false;
 	private ttrssUtils m_utils;
 
-	public Logger m_logger { get; construct set; }
-
 	public void init()
 	{
-		logger = m_logger;
 		m_utils = new ttrssUtils();
 	}
 

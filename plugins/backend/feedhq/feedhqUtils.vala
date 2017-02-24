@@ -82,14 +82,14 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 
 	public bool downloadIcon(string feed_id, string icon_url)
 	{
-		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+		Logger.debug(@"FeedHQUtils.downloadIcon: $icon_url");
 		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
 		var path = GLib.File.new_for_path(icon_path);
 		try{
 			path.make_directory_with_parents();
 		}
 		catch(GLib.Error e){
-			//logger.print(LogMessage.DEBUG, e.message);
+			//Logger.debug(e.message);
 		}
 
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
@@ -99,7 +99,7 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 			Soup.Message message_dlIcon;
 			message_dlIcon = new Soup.Message("GET", icon_url);
 
-			if(settingsTweaks.get_boolean("do-not-track"))
+			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
 			var session = new Soup.Session();
@@ -114,11 +114,11 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 				}
 				catch(GLib.FileError e)
 				{
-					logger.print(LogMessage.ERROR, "Error writing icon: %s".printf(e.message));
+					Logger.error("Error writing icon: %s".printf(e.message));
 				}
 				return true;
 			}
-			logger.print(LogMessage.ERROR, "Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
 			return false;
 		}
 
@@ -142,18 +142,21 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
-		                                  "type", "FeedHQ",
+		                                  "type", Secret.SchemaAttributeType.STRING,
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["type"] = "FeedHQ";
 		attributes["Username"] = getUser();
 		string passwd = "";
 
-		try{
+		try
+		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
-		catch(GLib.Error e){
-			logger.print(LogMessage.ERROR, e.message);
+		catch(GLib.Error e)
+		{
+			Logger.error(e.message);
 		}
 
 		if(passwd == null)
@@ -167,9 +170,11 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	public void setPassword(string passwd)
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
-										  "type", "FeedHQ",
+										  "type", Secret.SchemaAttributeType.STRING,
 										  "Username", Secret.SchemaAttributeType.STRING);
+
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		attributes["type"] = "FeedHQ";
 		attributes["Username"] = getUser();
 		try
 		{
@@ -177,7 +182,7 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			logger.print(LogMessage.ERROR, "ttrssUtils: setPassword: " + e.message);
+			Logger.error("feedhqUtils: setPassword: " + e.message);
 		}
 	}
 }

@@ -6,6 +6,7 @@ option(OLDREADER "Enable The Old Reader backend" ON)
 option(LOCAL "Enable local RSS backend" ON)
 option(FRESH "Enable FreshRSS backend" ON)
 option(FEEDBIN "Enable Feedbin backend" ON)
+option(FEEDHQ "Enable Feedbin backend" ON)
 
 MESSAGE(STATUS "Backend TTRSS:	" ${TTRSS})
 MESSAGE(STATUS "Backend OWNCLOUD:	" ${OWNCLOUD})
@@ -15,6 +16,7 @@ MESSAGE(STATUS "Backend OLDREADER:	" ${OLDREADER})
 MESSAGE(STATUS "Backend LOCAL:	" ${LOCAL})
 MESSAGE(STATUS "Backend FRESH:	" ${FRESH})
 MESSAGE(STATUS "Backend FEEDBIN:	" ${FEEDBIN})
+MESSAGE(STATUS "Backend FEEDHQ:	" ${FEEDHQ})
 
 
 if(TTRSS)
@@ -48,3 +50,7 @@ endif(FRESH)
 if(FEEDBIN)
 	add_subdirectory(feedbin)
 endif(FEEDBIN)
+
+if(FEEDHQ)
+	add_subdirectory(feedhq)
+endif(FEEDHQ)

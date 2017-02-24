@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.FeedHQConnection {
-	private string m_api_username;
+	private string m_username;
 	private string m_api_code;
 	private string m_passwd;
 	private FeedHQUtils m_utils;
@@ -22,18 +22,25 @@ public class FeedReader.FeedHQConnection {
 	public FeedHQConnection()
 	{
 		m_utils = new FeedHQUtils();
-		m_api_username = m_utils.getUser();
+		m_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 		m_passwd = m_utils.getPasswd();
 	}
 
 	public LoginResponse getToken()
 	{
-		logger.print(LogMessage.DEBUG, "FeedHQ Connection: getToken()");
+		Logger.debug("FeedHQ Connection: getToken()");
+
+		if(m_username == "" && m_passwd == "")
+			return LoginResponse.ALL_EMPTY;
+		if(m_username == "")
+			return LoginResponse.MISSING_USER;
+		if(m_passwd == "")
+			return LoginResponse.MISSING_PASSWD;
 
 		var session = new Soup.Session();
 		var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin");
-		string message_string = "Email=" + m_api_username + "&Passwd=" + m_passwd;
+		string message_string = "Email=" + m_username + "&Passwd=" + m_passwd;
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		session.send_message(message);
 		string response = (string)message.response_body.flatten().data;
@@ -43,30 +50,28 @@ public class FeedReader.FeedHQConnection {
 			if(regex.match(response))
 			{
 				string split = regex.replace( response, -1,0,"");
-				logger.print(LogMessage.ERROR, "FeedHQ Authcode : "+split);
+				Logger.debug("FeedHQ Authcode : "+split);
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}
 			else
 			{
-				logger.print(LogMessage.DEBUG, response);
+				Logger.debug(response);
 				return LoginResponse.WRONG_LOGIN;
 			}
 		}
 		catch(Error e)
 		{
-			logger.print(LogMessage.ERROR, "FeedHQConnection - getToken: Could not load message response");
-			logger.print(LogMessage.ERROR, e.message);
+			Logger.error("FeedHQConnection - getToken: Could not load message response");
+			Logger.error(e.message);
 			return LoginResponse.UNKNOWN_ERROR;
 		}
-
-		return LoginResponse.SUCCESS;
 	}
 
 
 	public bool postToken()
 	{
-		logger.print(LogMessage.DEBUG, "FeedHQ Connection: postToken()");
+		Logger.debug("FeedHQ Connection: postToken()");
 
 		var session = new Soup.Session();
 		var message = new Soup.Message("GET", FeedHQSecret.base_uri + "token?output=json");
@@ -76,10 +81,10 @@ public class FeedReader.FeedHQConnection {
 		session.send_message(message);
 
 		string response =  (string)message.response_body.data;
-		
-		logger.print( LogMessage.DEBUG, "FeedHQ post token : " +  response );
+
+		Logger.debug("FeedHQ post token : " +  response );
 		m_utils.setPostToken(response);
-		
+
 		return true;
 
 	}
@@ -106,13 +111,13 @@ public class FeedReader.FeedHQConnection {
 		var message_string_post = message_string + "&T=" + m_utils.getPostToken();
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string_post.data);
-		
+
 		session.send_message(message);
 		if((uint)message.status_code == 401){
-			logger.print(LogMessage.DEBUG, "FeedHQ Post Token Expired");
+			Logger.debug("FeedHQ Post Token Expired");
 			postToken();
 		}
-		
+
 		return (string)message.response_body.data;
 	}
 

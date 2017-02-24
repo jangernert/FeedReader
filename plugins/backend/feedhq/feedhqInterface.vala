@@ -181,33 +181,48 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+			m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+			m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
 		}
 		return "feed/" + feedURL;
 	}
 
 	public void addFeeds(Gee.LinkedList<feed> feeds)
 	{
-		// FIXME
+		string cat = "";
+		string[] urls = {};
+
+		foreach(feed f in feeds)
+		{
+			if(f.getCatIDs()[0] != cat)
+			{
+				m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, urls, null, cat);
+				urls = {};
+				cat = f.getCatIDs()[0];
+			}
+
+			urls += "feed/" + f.getXmlUrl();
+		}
+
+		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, urls, null, cat);
 	}
 
 	public void removeFeed(string feedID)
 	{
-		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.UNSUBSCRIBE, feedID);
+		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.UNSUBSCRIBE, {feedID});
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.EDIT, feedID, title);
+		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.EDIT, {feedID}, title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
-		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
+		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.EDIT, {feedID}, null, newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID)

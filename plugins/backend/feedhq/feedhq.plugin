@@ -1,0 +1,8 @@
+[Plugin]
+Module=feedhq
+Loader=C
+Name=FeedHQ
+Description=Add FeedHQ backend to FeedReader
+Authors=Anwesh Reddy <kanishkablack@gmx.com>
+Copyright=Copyright © 2015-16 Anwesh Reddy
+Website=http://jangernert.github.io/FeedReader/

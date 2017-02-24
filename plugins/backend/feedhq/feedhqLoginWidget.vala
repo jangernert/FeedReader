@@ -1,32 +1,24 @@
-//	This file is part of FeedReader.
-//
-//	FeedReader is free software: you can redistribute it and/or modify
-//	it under the terms of the GNU General Public License as published by
-//	the Free Software Foundation, either version 3 of the License, or
-//	(at your option) any later version.
-//
-//	FeedReader is distributed in the hope that it will be useful,
-//	but WITHOUT ANY WARRANTY; without even the implied warranty of
-//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//	GNU General Public License for more details.
-//
-//	You should have received a copy of the GNU General Public License
-//	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
+//--------------------------------------------------------------------------------------
+// This is the plugin that extends user-interface of FeedReader
+// It adds all the necessary widgets to the interface to log into the service.
+// User- and password-entries, or redirect to a website to log in.
+//--------------------------------------------------------------------------------------
 
-public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface {
+public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
+
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
-	private feedbinUtils m_utils;
+	private FeedHQUtils m_utils;
 
 	public void init()
 	{
-		m_utils = new feedbinUtils();
+		m_utils = new FeedHQUtils();
 	}
 
 	public string getWebsite()
 	{
-		return "https://feedbin.com/";
+		return "https://feedhq.org/";
 	}
 
 	public BackendFlags getFlags()
@@ -36,17 +28,17 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 
 	public string getID()
 	{
-		return "feedbin";
+		return "feedhq";
 	}
 
 	public string iconName()
 	{
-		return "feed-service-feedbin";
+		return "feed-service-feedhq";
 	}
 
 	public string serviceName()
 	{
-		return "Feedbin";
+		return "FeedHQ";
 	}
 
 	public bool needWebLogin()
@@ -71,7 +63,7 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		m_userEntry.activate.connect(() => { login(); });
 		m_passwordEntry.activate.connect(() => { login(); });
 
-		m_passwordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
+		m_passwordEntry.set_invisible_char('*');
 		m_passwordEntry.set_visibility(false);
 
 		var grid = new Gtk.Grid();
@@ -85,9 +77,9 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		grid.attach(password_label, 0, 1, 1, 1);
 		grid.attach(m_passwordEntry, 1, 1, 1, 1);
 
-		var logo = new Gtk.Image.from_icon_name("feed-service-feedbin", Gtk.IconSize.MENU);
+		var logo = new Gtk.Image.from_icon_name("feed-service-feedhq", Gtk.IconSize.MENU);
 
-		var loginLabel = new Gtk.Label(_("Please log in to Feedbin to enjoy using FeedReader"));
+		var loginLabel = new Gtk.Label(_("Please log in to FeedHQ and enjoy using FeedReader"));
 		loginLabel.get_style_context().add_class("h2");
 		loginLabel.set_justify(Gtk.Justification.CENTER);
 		loginLabel.set_lines(3);
@@ -97,7 +89,6 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		loginButton.clicked.connect(() => { login(); });
-
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.valign = Gtk.Align.CENTER;
@@ -115,14 +106,15 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 
 	public void showHtAccess()
 	{
-		return;
+
 	}
 
 	public void writeData()
 	{
-		m_utils.setUser(m_userEntry.get_text().strip());
-		m_utils.setPassword(m_passwordEntry.get_text().strip());
+		m_utils.setUser(m_userEntry.get_text());
+		m_utils.setPassword(m_passwordEntry.get_text());
 	}
+
 
 	public async void postLoginAction()
 	{
@@ -145,5 +137,5 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.feedbinLoginWidget));
+	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.FeedHQLoginWidget));
 }

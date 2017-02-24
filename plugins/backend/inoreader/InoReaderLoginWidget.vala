@@ -13,17 +13,12 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.Logger logger;
-
 public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private InoReaderUtils m_utils;
 
-	public Logger m_logger { get; construct set; }
-
 	public void init()
 	{
-		logger = m_logger;
 		m_utils = new InoReaderUtils();
 	}
 

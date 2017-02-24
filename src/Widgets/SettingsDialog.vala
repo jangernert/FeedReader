@@ -274,7 +274,6 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			popover.newAccount.connect((type) => {
                 ServiceSetup row = Share.get_default().newSetup(type);
                 row.showInfoBar.connect((text) => {
-                    Logger.debug("test ABC 123");
                     m_errorBar.setText(text);
                     m_errorBar.reveal();
                 });

@@ -13,8 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-FeedReader.Logger logger;
-
 public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private Gtk.Entry m_urlEntry;
@@ -26,11 +24,8 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 	private OwncloudNewsUtils m_utils;
 	private bool m_need_htaccess = false;
 
-	public Logger m_logger { get; construct set; }
-
 	public void init()
 	{
-		logger = m_logger;
 		m_utils = new OwncloudNewsUtils();
 	}
 

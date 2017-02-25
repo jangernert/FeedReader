@@ -198,7 +198,7 @@ public class FeedReader.Utils : GLib.Object {
 			return true;
 		}
 
-		Logger.error(@"Ping: failed - %s".printf(Soup.Status.get_phrase(status)));
+		Logger.error(@"Ping: failed %u - %s".printf(status, Soup.Status.get_phrase(status)));
 
 		return false;
 	}

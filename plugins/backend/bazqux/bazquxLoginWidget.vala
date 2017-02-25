@@ -13,21 +13,21 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
+public class FeedReader.bazquxLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
-	private FeedHQUtils m_utils;
+	private bazquxUtils m_utils;
 
 	public void init()
 	{
-		m_utils = new FeedHQUtils();
+		m_utils = new bazquxUtils();
 	}
 
 	public string getWebsite()
 	{
-		return "https://feedhq.org/";
+		return "https://bazqux.com/";
 	}
 
 	public BackendFlags getFlags()
@@ -37,17 +37,17 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	public string getID()
 	{
-		return "feedhq";
+		return "bazqux";
 	}
 
 	public string iconName()
 	{
-		return "feed-service-feedhq";
+		return "feed-service-bazqux";
 	}
 
 	public string serviceName()
 	{
-		return "FeedHQ";
+		return "BazQux";
 	}
 
 	public bool needWebLogin()
@@ -86,7 +86,7 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 		grid.attach(password_label, 0, 1, 1, 1);
 		grid.attach(m_passwordEntry, 1, 1, 1, 1);
 
-		var logo = new Gtk.Image.from_icon_name("feed-service-feedhq", Gtk.IconSize.MENU);
+		var logo = new Gtk.Image.from_icon_name("feed-service-bazqux", Gtk.IconSize.MENU);
 
 		var loginLabel = new Gtk.Label(_("Please log in to FeedHQ and enjoy using FeedReader"));
 		loginLabel.get_style_context().add_class("h2");
@@ -124,6 +124,10 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 		m_utils.setPassword(m_passwordEntry.get_text());
 	}
 
+	public string buildLoginURL()
+	{
+		return "";
+	}
 
 	public async void postLoginAction()
 	{
@@ -134,11 +138,6 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 		return false;
 	}
-
-	public string buildLoginURL()
-	{
-		return "";
-	}
 }
 
 
@@ -146,5 +145,5 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.FeedHQLoginWidget));
+	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.bazquxLoginWidget));
 }

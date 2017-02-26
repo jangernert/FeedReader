@@ -143,7 +143,6 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		{
 			m_api.markAsRead(Feed.getFeedID());
 		}
-		m_api.markAsRead();
 	}
 
 	public void tagArticle(string articleID, string tagID)
@@ -181,6 +180,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
+			Logger.debug(newCatID);
 			m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
 		}
 		else
@@ -274,7 +274,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		{
 			return;
 		}
-		/*else if(whatToGet == ArticleStatus.ALL)
+		else if(whatToGet == ArticleStatus.ALL)
 		{
 			var unreadIDs = new Gee.LinkedList<string>();
 			string? continuation = null;
@@ -294,8 +294,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 				}
 			}
 			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
-			updateArticleList();
-		}*/
+		}
 
 		var articles = new Gee.LinkedList<article>();
 		string? continuation = null;

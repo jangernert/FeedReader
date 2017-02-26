@@ -37,9 +37,12 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		Logger.debug("FeedHQ Login");
 
 		if(m_utils.getAccessToken() == "")
-			return m_connection.getToken();
-
-		if(getUserID())
+		{
+			var result = m_connection.getToken();
+			if(m_connection.postToken() && getUserID())
+				return result;
+		}
+		else if(getUserID())
 			return LoginResponse.SUCCESS;
 
 		return LoginResponse.UNKNOWN_ERROR;
@@ -86,13 +89,15 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			return false;
 
 		var parser = new Json.Parser();
-		try{
+		try
+		{
 			parser.load_from_data(response, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getFeeds: Could not load message response");
 			Logger.error(e.message);
-			return true;
+			return false;
 		}
 		var root = parser.get_root().get_object();
 		var array = root.get_array_member("subscriptions");
@@ -102,7 +107,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		{
 			Json.Object object = array.get_object_element(i);
 
-			string feedID = object.get_string_member("id");
+			string feedID = object.get_string_member("id").replace("/", "_");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
 
@@ -126,7 +131,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 			for(uint j = 0; j < catCount; ++j)
 			{
-				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
+				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id").replace("/", "_");
 			}
 			feeds.add(
 				new feed (
@@ -147,11 +152,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		string response = m_connection.send_get_request("tag/list?output=json");
 		if(response == "" || response == null)
 			return false;
+
 		var parser = new Json.Parser();
-		try{
+		try
+		{
 			parser.load_from_data(response, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getCategoriesAndTags: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -172,7 +180,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			{
 					categories.add(
 						new category(
-							id,
+							id.replace("/", "_"),
 							title,
 							0,
 							orderID,
@@ -222,14 +230,17 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public string? updateArticles(Gee.LinkedList<string> ids, int count, string? continuation = null)
 	{
-		var message_string = "n=" + count.to_string();
-		message_string += "&s=user/-/state/com.google/read";
+		var msg = new feedhqMessage();
+		msg.add("n", count.to_string());
+		msg.add("s", "user/-/state/com.google/read");
 		if(continuation != null)
-			message_string += "&c=" + continuation;
-		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
+			msg.add("c", continuation);
+
+		string response = m_connection.send_get_request("stream/items/ids?output=json&" + msg.get());
 
 		var parser = new Json.Parser();
-		try{
+		try
+		{
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
@@ -244,7 +255,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		for (uint i = 0; i < length; i++)
 		{
 			Json.Object object = array.get_object_element(i);
-			ids.add(object.get_string_member("id"));
+			ids.add(object.get_string_member("id").replace(",", "_").replace("/", "~"));
 		}
 
 		if(root.has_member("continuation") && root.get_string_member("continuation") != "")
@@ -255,23 +266,25 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public string? getArticles(Gee.LinkedList<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
 	{
-		var message_string = "n=" + count.to_string();
+		var msg = new feedhqMessage();
+		msg.add("n", count.to_string());
 
 		if(whatToGet == ArticleStatus.UNREAD)
-			message_string += "&xt=user/-/state/com.google/read";
+			msg.add("xt", "user/-/state/com.google/read");
 		if(whatToGet == ArticleStatus.READ)
-			message_string += "&s=user/-/state/com.google/read";
+			msg.add("s", "user/-/state/com.google/read");
 		else if(whatToGet == ArticleStatus.MARKED)
-			message_string += "&s=user/-/state/com.google/starred";
+			msg.add("s", "user/-/state/com.google/starred");
+
 		if(continuation != null)
-			message_string += "&c=" + continuation;
+			msg.add("c", continuation);
 
 		string api_endpoint = "stream/contents";
 		if(feed_id != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
+			api_endpoint += "/" + GLib.Uri.escape_string(feed_id.replace("_", "/"));
 		else if(tagID != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
-		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
+			api_endpoint += "/" + GLib.Uri.escape_string(tagID.replace("_", "/"));
+		string response = m_connection.send_get_request(api_endpoint+"?output=json&" + msg.get());
 
 		var parser = new Json.Parser();
 		try{
@@ -290,7 +303,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		{
 
 			Json.Object object = array.get_object_element(i);
-			string id = object.get_string_member("id").replace(",", "_");
+			string id = object.get_string_member("id").replace(",", "_").replace("/", "~");
 			string tagString = "";
 			bool marked = false;
 			bool read = false;
@@ -331,7 +344,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 									id,
 									object.get_string_member("title"),
 									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
-									object.get_object_member("origin").get_string_member("streamId"),
+									object.get_object_member("origin").get_string_member("streamId").replace("/", "_"),
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									"",
@@ -354,74 +367,77 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public void edidTag(string articleID, string tagID, bool add = true)
 	{
-		var message_string = "";
-		if(add)
-			message_string += "a=";
-		else
-			message_string += "r=";
+		var msg = new feedhqMessage();
 
-		message_string += tagID;
-		message_string += "&i=" + articleID.replace("_", ",");
-		m_connection.send_post_request("edit-tag?output=json", message_string);
+		if(add)
+			msg.add("a", tagID);
+		else
+			msg.add("r", tagID);
+
+		msg.add("i", articleID.replace("_", ",").replace("~", "/"));
+		m_connection.send_post_request("edit-tag?output=json", msg.get());
 	}
 
-	public void markAsRead(string? streamID = null)
+	public void markAsRead(string streamID)
 	{
-		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
-		string message_string = "s=%s&ts=%i000000".printf(streamID, settingsState.get_int("last-sync"));
-		Logger.debug(message_string);
-		m_connection.send_post_request("mark-all-as-read?output=json", message_string);
+		var msg = new feedhqMessage();
+		msg.add("s", streamID.replace("_", "/"));
+		msg.add("ts", "%i000000".printf(Settings.state().get_int("last-sync")));
+		Logger.debug(msg.get());
+		m_connection.send_post_request("mark-all-as-read?output=json", msg.get());
 	}
 
 	public string composeTagID(string tagName)
 	{
-		return "user/%s/label/%s".printf(m_userID, tagName);
+		return "user/%s/label/%s".printf(m_userID, tagName).replace("/", "_");
 	}
 
 	public void deleteTag(string tagID)
 	{
-		var message_string = "s=" + tagID;
-		m_connection.send_post_request("disable-tag?output=json", message_string);
+		var msg = new feedhqMessage();
+		msg.add("s", tagID);
+		m_connection.send_post_request("disable-tag?output=json", msg.get());
 	}
 
 	public void renameTag(string tagID, string title)
 	{
-		var message_string = "s=" + tagID;
-		message_string += "&dest=" + composeTagID(title);
-		m_connection.send_post_request("rename-tag?output=json", message_string);
+		var msg = new feedhqMessage();
+		msg.add("s", tagID.replace("_", "/"));
+		msg.add("dest", composeTagID(title).replace("_", "/"));
+		m_connection.send_post_request("rename-tag?output=json", msg.get());
 	}
 
 	public void editSubscription(FeedHQSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
 	{
-		var message_string = "ac=";
+		var msg = new feedhqMessage();
 
 		switch(action)
 		{
 			case FeedHQSubscriptionAction.EDIT:
-				message_string += "edit";
+				msg.add("ac", "edit");
 				break;
 			case FeedHQSubscriptionAction.SUBSCRIBE:
-				message_string += "subscribe";
+				msg.add("ac", "subscribe");
 				break;
 			case FeedHQSubscriptionAction.UNSUBSCRIBE:
-				message_string += "unsubscribe";
+				msg.add("ac", "unsubscribe");
 				break;
 		}
 
 		foreach(string s in feedID)
-			message_string += "&s=" + s;
+			msg.add("s", s.replace("_", "/"));
 
 		if(title != null)
-			message_string += "&t=" + title;
+			msg.add("t", title);
 
-		string id = add;
-		id = id.substring(id.last_index_of_char('/')+1);
-		if(id != null && id != "")
-			message_string += "&a=" + add;
+		if(add != null && add != "")
+			msg.add("a", add.replace("_", "/"));
+
 
 		if(remove != null && remove != "")
-			message_string += "&r=" + remove;
+			msg.add("r", remove.replace("_", "/"));
 
-		m_connection.send_post_request("subscription/edit?output=json", message_string);
+		Logger.debug(msg.get());
+		m_connection.send_post_request("subscription/edit?output=json", msg.get());
 	}
 }

@@ -49,8 +49,8 @@ public class FeedReader.FeedHQConnection {
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
-				string split = regex.replace( response, -1,0,"");
-				Logger.debug("FeedHQ Authcode : "+split);
+				string split = regex.replace(response, -1,0,"");
+				Logger.debug("FeedHQ Authcode : " + split);
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}
@@ -102,7 +102,6 @@ public class FeedReader.FeedHQConnection {
 
 	private string send_request(string path, string type, string? message_string = null)
 	{
-
 		var session = new Soup.Session();
 		var message = new Soup.Message(type, FeedHQSecret.base_uri + path);
 
@@ -113,7 +112,8 @@ public class FeedReader.FeedHQConnection {
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string_post.data);
 
 		session.send_message(message);
-		if((uint)message.status_code == 401){
+		if((uint)message.status_code == 401)
+		{
 			Logger.debug("FeedHQ Post Token Expired");
 			postToken();
 		}
@@ -121,4 +121,30 @@ public class FeedReader.FeedHQConnection {
 		return (string)message.response_body.data;
 	}
 
+}
+
+
+public class FeedReader.feedhqMessage {
+
+	string request = "";
+
+	public feedhqMessage()
+	{
+
+	}
+
+	public void add(string parameter, string val)
+	{
+		if(request != "")
+			request += "&";
+
+		request += parameter;
+		request += "=";
+		request += GLib.Uri.escape_string(val);
+	}
+
+	public string get()
+	{
+		return request;
+	}
 }

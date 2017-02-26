@@ -133,30 +133,21 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 
 		// write categories
-		if(categories.size != 0)
-		{
-			dbDaemon.get_default().reset_exists_flag();
-			dbDaemon.get_default().write_categories(categories);
-			dbDaemon.get_default().delete_nonexisting_categories();
-		}
+		dbDaemon.get_default().reset_exists_flag();
+		dbDaemon.get_default().write_categories(categories);
+		dbDaemon.get_default().delete_nonexisting_categories();
 
 		// write feeds
-		if(feeds.size != 0)
-		{
-			dbDaemon.get_default().reset_subscribed_flag();
-			dbDaemon.get_default().write_feeds(feeds);
-			dbDaemon.get_default().delete_articles_without_feed();
-			dbDaemon.get_default().delete_unsubscribed_feeds();
-		}
+		dbDaemon.get_default().reset_subscribed_flag();
+		dbDaemon.get_default().write_feeds(feeds);
+		dbDaemon.get_default().delete_articles_without_feed();
+		dbDaemon.get_default().delete_unsubscribed_feeds();
 
 		// write tags
-		if(tags.size != 0)
-		{
-			dbDaemon.get_default().reset_exists_tag();
-			dbDaemon.get_default().write_tags(tags);
-			dbDaemon.get_default().update_tags(tags);
-			dbDaemon.get_default().delete_nonexisting_tags();
-		}
+		dbDaemon.get_default().reset_exists_tag();
+		dbDaemon.get_default().write_tags(tags);
+		dbDaemon.get_default().update_tags(tags);
+		dbDaemon.get_default().delete_nonexisting_tags();
 
 		newFeedList();
 

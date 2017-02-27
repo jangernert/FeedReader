@@ -41,11 +41,9 @@ public class FeedReader.SettingFont : FeedReader.Setting {
 	public SettingFont(string name, GLib.Settings settings, string key){
 		base(name, null);
 		var font_button = new Gtk.FontButton.with_font(settings.get_string(key));
-		//font_button.get_style_context().add_class("flat");
 		font_button.set_use_size(false);
 		font_button.set_show_size(true);
 		font_button.font_set.connect(() => {
-			Logger.debug(font_button.get_font_name());
 			settings.set_string(key, font_button.get_font_name());
 			changed();
 		});

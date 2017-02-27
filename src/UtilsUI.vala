@@ -143,7 +143,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			article.insert(select_pos, "unselectable");
 		}
 
-		string fontfamily_id = "$FONTFAMILLY";
+		string fontfamily_id = "$FONTFAMILY";
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
 		string fontfamilly = desc.get_family();
@@ -151,7 +151,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		int fontfamilly_pos = article.str.index_of(fontfamily_id);
 		article.erase(fontfamilly_pos, fontfamily_id.length);
 		article.insert(fontfamilly_pos, fontfamilly);
-		Logger.debug("font familly is : " + fontfamilly);
+		Logger.debug("fontsize: %i".printf(desc.get_size()));
 
 		string sourcefontsize = "0.75rem";
 		string fontsize_id = "$FONTSIZE";
@@ -181,7 +181,6 @@ public class FeedReader.UtilsUI : GLib.Object {
 		{
 			Logger.error("Utils.buildArticle: load CSS: " + e.message);
 		}
-
 
 		return article.str;
 	}

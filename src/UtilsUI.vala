@@ -151,6 +151,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		int fontfamilly_pos = article.str.index_of(fontfamily_id);
 		article.erase(fontfamilly_pos, fontfamily_id.length);
 		article.insert(fontfamilly_pos, fontfamilly);
+		Logger.debug(font);
 		Logger.debug("fontsize: %i".printf(desc.get_size()));
 
 		string sourcefontsize = "0.75rem";

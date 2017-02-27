@@ -131,7 +131,6 @@ div.pw {
 body {
     padding: 3rem;
     cursor: default;
-    font-family: 'Droid Sans', 'Open Sans';
     font-weight: 300;
     max-width: 1200px;
     margin: auto;
@@ -154,7 +153,6 @@ h5,
 h6 {
     color: #318c34;
     font-weight: 500;
-    font-family: 'Open Sans', Arial, sans-serif, sans;
     text-align: left;
     line-height: 120%;
 }

@@ -18,6 +18,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     private Gtk.ListBox m_serviceList;
     private Gtk.Stack m_stack;
     private InfoBar m_errorBar;
+    private Gtk.HeaderBar m_headerbar;
     private static SettingsDialog? m_dialog = null;
 
 	public static SettingsDialog get_default()
@@ -30,13 +31,15 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private SettingsDialog()
     {
-    	Object(use_header_bar: 1);
-        this.title = _("Settings");
-		this.border_width = 20;
+        this.border_width = 20;
         this.set_transient_for(MainWindow.get_default());
         this.set_modal(true);
         this.delete_event.connect(hide_on_delete);
 		set_default_size(550, 550);
+
+        m_headerbar = new Gtk.HeaderBar();
+        m_headerbar.set_show_close_button(true);
+        set_titlebar(m_headerbar);
 
         m_stack = new Gtk.Stack();
         m_stack.set_transition_duration(50);
@@ -51,11 +54,10 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         switcher.set_valign(Gtk.Align.CENTER);
         switcher.set_stack(m_stack);
 
-        var content = get_content_area() as Gtk.Box;
-        content.set_spacing(2);
-        content.pack_start(switcher, false, false, 0);
-        content.add(m_stack);
+        m_headerbar.set_custom_title(switcher);
 
+        var content = get_content_area() as Gtk.Box;
+        content.add(m_stack);
     }
 
     public void showDialog(string panel)
@@ -80,7 +82,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
             ColumnView.get_default().newFeedList();
         });
 
-		var feedlist_sort = new SettingDropbox(_("Sort FeedList by"), Settings.general(), "feedlist-sort-by", {_("Received"), _("Alphabetically")});
+		var feedlist_sort = new SettingDropbox(_("Sort Feed List by"), Settings.general(), "feedlist-sort-by", {_("Received"), _("Alphabetically")});
         feedlist_sort.changed.connect(() => {
             ColumnView.get_default().newFeedList();
         });
@@ -111,11 +113,10 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			ColumnView.get_default().reloadArticleView();
 		});
 
-        var fontsize = new SettingDropbox(_("Font Size"), Settings.general(), "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
-		fontsize.changed.connect(() => {
-			ColumnView.get_default().reloadArticleView();
-		});
-
+       var fontfamilly = new SettingFont(_("Font Familly"), Settings.general(), "font");
+       fontfamilly.changed.connect(() => {
+            ColumnView.get_default().reloadArticleView();
+       });
 
 		var uiBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         uiBox.expand = true;
@@ -130,8 +131,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         uiBox.pack_start(scroll_marked, false, true, 0);
         uiBox.pack_start(articleview_settings, false, true, 0);
         uiBox.pack_start(article_theme, false, true, 0);
-        uiBox.pack_start(fontsize, false, true, 0);
-
+        uiBox.pack_start(fontfamilly, false, true, 0);
         return uiBox;
     }
 

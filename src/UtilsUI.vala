@@ -147,12 +147,10 @@ public class FeedReader.UtilsUI : GLib.Object {
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
 		string fontfamilly = desc.get_family();
-		string fontsize = desc.get_size().to_string();
+		string fontsize = desc.get_size().to_string().substring(0, 2) + "pt";
 		int fontfamilly_pos = article.str.index_of(fontfamily_id);
 		article.erase(fontfamilly_pos, fontfamily_id.length);
 		article.insert(fontfamilly_pos, fontfamilly);
-		Logger.debug(font);
-		Logger.debug("fontsize: %i".printf(desc.get_size()));
 
 		string sourcefontsize = "0.75rem";
 		string fontsize_id = "$FONTSIZE";

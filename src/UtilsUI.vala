@@ -147,7 +147,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
 		string fontfamilly = desc.get_family();
-		string fontsize = GLib.Math.roundf(desc.get_size()/Pango.SCALE).to_string() + "px";
+		string fontsize = GLib.Math.roundf(desc.get_size()/Pango.SCALE).to_string();
 		int fontfamilly_pos = article.str.index_of(fontfamily_id);
 		article.erase(fontfamilly_pos, fontfamily_id.length);
 		article.insert(fontfamilly_pos, fontfamilly);

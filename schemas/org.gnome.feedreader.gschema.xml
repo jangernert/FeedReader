@@ -14,13 +14,6 @@
 		<value nick="PARCHMENT" value="3"/>
 	</enum>
 
-	<enum id="org.gnome.feedreader.fontsize">
-		<value nick="SMALL" value="0"/>
-		<value nick="NORMAL" value="1"/>
-		<value nick="LARGE" value="2"/>
-		<value nick="HUGE" value="3"/>
-	</enum>
-
 	<enum id="org.gnome.feedreader.drop-articles-duration">
 		<value nick="NEVER" value="0"/>
 		<value nick="1 Week" value="1"/>
@@ -86,12 +79,8 @@
 			<default>'DARK'</default>
 		</key>
 
-		<key name='fontsize' enum='org.gnome.feedreader.fontsize'>
-			<default>'NORMAL'</default>
-		</key>
-
-		<key name='fontfamilly' type="s">
-			<default>'Sans Regular'</default>
+		<key name='font' type="s">
+			<default>'Sans Regular 12'</default>
 		</key>
 
 		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>

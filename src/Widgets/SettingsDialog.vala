@@ -113,15 +113,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			ColumnView.get_default().reloadArticleView();
 		});
 
-        var fontsize = new SettingDropbox(_("Font Size"), Settings.general(), "fontsize", {_("Small"), _("Normal"), _("Large"), _("Huge")});
-		fontsize.changed.connect(() => {
-			ColumnView.get_default().reloadArticleView();
-		});
-
-       var fontfamilly = new SettingFont(_("Font Familly"), Settings.general(), "fontfamilly");
+       var fontfamilly = new SettingFont(_("Font Familly"), Settings.general(), "font");
        fontfamilly.changed.connect(() => {
             ColumnView.get_default().reloadArticleView();
        });
+
 		var uiBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
         uiBox.expand = true;
         uiBox.pack_start(feed_settings, false, true, 0);
@@ -135,7 +131,6 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         uiBox.pack_start(scroll_marked, false, true, 0);
         uiBox.pack_start(articleview_settings, false, true, 0);
         uiBox.pack_start(article_theme, false, true, 0);
-        uiBox.pack_start(fontsize, false, true, 0);
         uiBox.pack_start(fontfamilly, false, true, 0);
         return uiBox;
     }

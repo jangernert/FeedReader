@@ -97,3 +97,28 @@ public class FeedReader.bazquxConnection {
 	}
 
 }
+
+public class FeedReader.bazquxMessage {
+
+	string request = "";
+
+	public bazquxMessage()
+	{
+
+	}
+
+	public void add(string parameter, string val)
+	{
+		if(request != "")
+			request += "&";
+
+		request += parameter;
+		request += "=";
+		request += GLib.Uri.escape_string(val);
+	}
+
+	public string get()
+	{
+		return request;
+	}
+}

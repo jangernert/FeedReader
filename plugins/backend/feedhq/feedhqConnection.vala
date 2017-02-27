@@ -116,6 +116,7 @@ public class FeedReader.FeedHQConnection {
 		{
 			Logger.debug("FeedHQ Post Token Expired");
 			postToken();
+			return send_request(path, type, message_string);
 		}
 
 		return (string)message.response_body.data;

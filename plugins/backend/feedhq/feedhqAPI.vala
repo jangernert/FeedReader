@@ -55,7 +55,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	private bool getUserID()
 	{
-		string response = m_connection.send_get_request("user-info?output=json");
+		var msg = new feedhqMessage();
+		msg.add("output", "json");
+		string response = m_connection.send_get_request("user-info", msg.get());
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -83,8 +85,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public bool getFeeds(Gee.LinkedList<feed> feeds)
 	{
-
-		string response = m_connection.send_get_request("subscription/list?output=json");
+		var msg = new feedhqMessage();
+		msg.add("output", "json");
+		string response = m_connection.send_get_request("subscription/list", msg.get());
 		if(response == "" || response == null)
 			return false;
 
@@ -149,7 +152,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public bool getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
-		string response = m_connection.send_get_request("tag/list?output=json");
+		string response = m_connection.send_get_request("tag/list", msg.get());
 		if(response == "" || response == null)
 			return false;
 
@@ -197,7 +200,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public int getTotalUnread()
 	{
-		string response = m_connection.send_get_request("unread-count?output=json");
+		var msg = new feedhqMessage();
+		msg.add("output", "json");
+		string response = m_connection.send_get_request("unread-count", msg.get());
 
 		var parser = new Json.Parser();
 		try{
@@ -231,12 +236,13 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public string? updateArticles(Gee.LinkedList<string> ids, int count, string? continuation = null)
 	{
 		var msg = new feedhqMessage();
+		msg.add("output", "json");
 		msg.add("n", count.to_string());
 		msg.add("s", "user/-/state/com.google/read");
 		if(continuation != null)
 			msg.add("c", continuation);
 
-		string response = m_connection.send_get_request("stream/items/ids?output=json&" + msg.get());
+		string response = m_connection.send_get_request("stream/items/ids", msg.get());
 
 		var parser = new Json.Parser();
 		try
@@ -267,6 +273,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public string? getArticles(Gee.LinkedList<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
 	{
 		var msg = new feedhqMessage();
+		msg.add("output", "json");
 		msg.add("n", count.to_string());
 
 		if(whatToGet == ArticleStatus.UNREAD)
@@ -284,7 +291,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id.replace("_", "/"));
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID.replace("_", "/"));
-		string response = m_connection.send_get_request(api_endpoint+"?output=json&" + msg.get());
+		string response = m_connection.send_get_request(api_endpoint, msg.get());
 
 		var parser = new Json.Parser();
 		try{
@@ -368,6 +375,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public void edidTag(string articleID, string tagID, bool add = true)
 	{
 		var msg = new feedhqMessage();
+		msg.add("output", "json");
 
 		if(add)
 			msg.add("a", tagID);
@@ -375,16 +383,17 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			msg.add("r", tagID);
 
 		msg.add("i", articleID.replace("_", ",").replace("~", "/"));
-		m_connection.send_post_request("edit-tag?output=json", msg.get());
+		m_connection.send_post_request("edit-tag", msg.get());
 	}
 
 	public void markAsRead(string streamID)
 	{
 		var msg = new feedhqMessage();
+		msg.add("output", "json");
 		msg.add("s", streamID.replace("_", "/"));
 		msg.add("ts", "%i000000".printf(Settings.state().get_int("last-sync")));
 		Logger.debug(msg.get());
-		m_connection.send_post_request("mark-all-as-read?output=json", msg.get());
+		m_connection.send_post_request("mark-all-as-read", msg.get());
 	}
 
 	public string composeTagID(string tagName)
@@ -395,21 +404,24 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	public void deleteTag(string tagID)
 	{
 		var msg = new feedhqMessage();
+		msg.add("output", "json");
 		msg.add("s", tagID);
-		m_connection.send_post_request("disable-tag?output=json", msg.get());
+		m_connection.send_post_request("disable-tag", msg.get());
 	}
 
 	public void renameTag(string tagID, string title)
 	{
 		var msg = new feedhqMessage();
+		msg.add("output", "json");
 		msg.add("s", tagID.replace("_", "/"));
 		msg.add("dest", composeTagID(title).replace("_", "/"));
-		m_connection.send_post_request("rename-tag?output=json", msg.get());
+		m_connection.send_post_request("rename-tag", msg.get());
 	}
 
 	public void editSubscription(FeedHQSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var msg = new feedhqMessage();
+		msg.add("output", "json");
 
 		switch(action)
 		{
@@ -438,6 +450,12 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			msg.add("r", remove.replace("_", "/"));
 
 		Logger.debug(msg.get());
-		m_connection.send_post_request("subscription/edit?output=json", msg.get());
+		m_connection.send_post_request("subscription/edit", msg.get());
+	}
+
+	public void import(string opml)
+	{
+		string response = m_connection.send_post_request("subscription/import", opml);
+		Logger.debug("feedhq.import: " + response);
 	}
 }

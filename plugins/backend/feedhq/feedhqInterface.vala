@@ -192,22 +192,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void addFeeds(Gee.LinkedList<feed> feeds)
 	{
-		string cat = "";
-		string[] urls = {};
-
-		foreach(feed f in feeds)
-		{
-			if(f.getCatIDs()[0] != cat)
-			{
-				m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, urls, null, cat);
-				urls = {};
-				cat = f.getCatIDs()[0];
-			}
-
-			urls += "feed/" + f.getXmlUrl();
-		}
-
-		m_api.editSubscription(FeedHQAPI.FeedHQSubscriptionAction.SUBSCRIBE, urls, null, cat);
+		return;
 	}
 
 	public void removeFeed(string feedID)
@@ -252,8 +237,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void importOPML(string opml)
 	{
-		var parser = new OPMLparser(opml);
-		parser.parse();
+		m_api.import(opml);
 	}
 
 	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)

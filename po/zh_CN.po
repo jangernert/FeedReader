@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
+"POT-Creation-Date: 2017-02-27 14:25+0100\n"
 "PO-Revision-Date: 2016-09-29 19:33+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Chinese (China) (http://www.transifex.com/dev-feedreader/"
@@ -238,6 +238,7 @@ msgid "Search Articles"
 msgstr "搜索文章"
 
 #: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: Constants.vala:37
 msgid "Settings"
 msgstr "设置"
 
@@ -432,7 +433,7 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: src/Widgets/ShortcutsWindow.vala:29
+#: src/Widgets/ShortcutsWindow.vala:29 Constants.vala:39
 msgid "Quit"
 msgstr "退出"
 
@@ -512,177 +513,177 @@ msgstr "内容源 \"%s\" 已被移除"
 msgid "Remove only from %s"
 msgstr "仅从 %s 中移除"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:51
 msgid "Interface"
 msgstr "界面"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:52
 msgid "Internals"
 msgstr "内部"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:53
 msgid "Share"
 msgstr "分享"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:76
 msgid "Feed List:"
 msgstr "内容源列表:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:78
 msgid "Only show feeds"
 msgstr "仅显示内容源"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Only show unread"
 msgstr "仅显示唯独"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Sort FeedList by"
 msgstr "内容源列表排序"
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:102
 msgid "Received"
 msgstr "已接收"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Alphabetically"
 msgstr "按字母顺序"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:95 src/Widgets/SettingsDialog.vala:116
 msgid "Theme"
 msgstr "主题"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Gtk+"
 msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Dark"
 msgstr "暗色"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "elementary"
 msgstr "elementary"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:100
 msgid "Article List:"
 msgstr "文章列表:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Sort articles by"
 msgstr "文章排序"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Date"
 msgstr "日期"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:107
 #, fuzzy
 msgid "Oldest first"
 msgstr "最新在前"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:107
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
+#: src/Widgets/SettingsDialog.vala:112
 msgid "Mark read by scrolling past"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:107
+#: src/Widgets/SettingsDialog.vala:114
 msgid "Article View:"
 msgstr "阅读视图:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Default"
 msgstr "默认"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Spring"
 msgstr "初春"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Midnight"
 msgstr "暗夜"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Parchment"
 msgstr "复古"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Font Size"
 msgstr "字体大小"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Small"
 msgstr "小"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Normal"
 msgstr "正常"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Large"
 msgstr "大"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Huge"
 msgstr "最大"
 
-#: src/Widgets/SettingsDialog.vala:141
+#: src/Widgets/SettingsDialog.vala:148
 msgid "Sync:"
 msgstr "同步:"
 
-#: src/Widgets/SettingsDialog.vala:143
+#: src/Widgets/SettingsDialog.vala:150
 msgid "Number of articles"
 msgstr "文章数"
 
-#: src/Widgets/SettingsDialog.vala:145
+#: src/Widgets/SettingsDialog.vala:152
 msgid "Every (Minutes)"
 msgstr "每 (分钟)"
 
-#: src/Widgets/SettingsDialog.vala:157
+#: src/Widgets/SettingsDialog.vala:164
 msgid "Database:"
 msgstr "数据库:"
 
-#: src/Widgets/SettingsDialog.vala:159
+#: src/Widgets/SettingsDialog.vala:166
 msgid "Delete articles after"
 msgstr "何时删除文章"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "Never"
 msgstr "从不"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "1 Week"
 msgstr "1 周后"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "1 Month"
 msgstr "1 个月后"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "6 Months"
 msgstr "6 个月后"
 
-#: src/Widgets/SettingsDialog.vala:162
+#: src/Widgets/SettingsDialog.vala:169
 msgid "Additional Functionality:"
 msgstr "其他功能:"
 
-#: src/Widgets/SettingsDialog.vala:164
+#: src/Widgets/SettingsDialog.vala:171
 msgid "Content Grabber"
 msgstr "内容抓取"
 
-#: src/Widgets/SettingsDialog.vala:166
+#: src/Widgets/SettingsDialog.vala:173
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
+#: src/Widgets/SettingsDialog.vala:340
 #, fuzzy
 msgid "System Accounts"
 msgstr "新账户"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
+#: src/Widgets/SettingsDialog.vala:367 src/Widgets/SettingsDialog.vala:381
 #, fuzzy
 msgid "FeedReader Accounts"
 msgstr "FeedReader"
@@ -705,6 +706,55 @@ msgstr "标记文章为 (未)已读"
 #, fuzzy, c-format
 msgid "There are %u new articles (%u unread)"
 msgstr "标记文章为 (未)已读"
+
+#: Constants.vala:26
+msgid "Desktop Client for various RSS Services"
+msgstr ""
+
+#: Constants.vala:31
+msgid "translator-credits"
+msgstr ""
+
+#: Constants.vala:36
+msgid "About"
+msgstr ""
+
+#: Constants.vala:38
+#, fuzzy
+msgid "Change Account"
+msgstr "更换账户?"
+
+#: Constants.vala:40
+msgid "Report a Bug"
+msgstr ""
+
+#: Constants.vala:41
+msgid "Bounties"
+msgstr ""
+
+#: Constants.vala:42
+msgid "Shortcuts"
+msgstr ""
+
+#: Constants.vala:46
+msgid "Play"
+msgstr ""
+
+#: Constants.vala:47
+msgid "Pause"
+msgstr ""
+
+#: Constants.vala:48
+msgid "Mute"
+msgstr ""
+
+#: Constants.vala:49
+msgid "Unmute"
+msgstr ""
+
+#: Constants.vala:50
+msgid "Close"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76

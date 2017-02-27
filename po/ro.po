@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
+"POT-Creation-Date: 2017-02-27 14:25+0100\n"
 "PO-Revision-Date: 2016-09-29 19:33+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Romanian (http://www.transifex.com/dev-feedreader/feedreader/"
@@ -242,6 +242,7 @@ msgid "Search Articles"
 msgstr "Caută articole"
 
 #: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: Constants.vala:37
 msgid "Settings"
 msgstr "Setări"
 
@@ -436,7 +437,7 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: src/Widgets/ShortcutsWindow.vala:29
+#: src/Widgets/ShortcutsWindow.vala:29 Constants.vala:39
 msgid "Quit"
 msgstr "Ieși"
 
@@ -516,177 +517,177 @@ msgstr "Feed-ul \"%s\" a fost șters"
 msgid "Remove only from %s"
 msgstr "Șterge doar din %s"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:51
 msgid "Interface"
 msgstr "Interfață"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:52
 msgid "Internals"
 msgstr "Interne"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:53
 msgid "Share"
 msgstr "Distribuie"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:76
 msgid "Feed List:"
 msgstr "Lista cu feed-uri:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:78
 msgid "Only show feeds"
 msgstr "Arată doar feed-uri"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Only show unread"
 msgstr "Arată doar necitit"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Sort FeedList by"
 msgstr "Sortează lista de feed-uri in funcție de"
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:102
 msgid "Received"
 msgstr "Primit"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Alphabetically"
 msgstr "Alfabetic"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:95 src/Widgets/SettingsDialog.vala:116
 msgid "Theme"
 msgstr "Temă"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Gtk+"
 msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Dark"
 msgstr "Întuneric"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "elementary"
 msgstr "Elementar"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:100
 msgid "Article List:"
 msgstr "Lista articolelor "
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Sort articles by"
 msgstr "Sortează articolele in funcție de"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Date"
 msgstr "Data"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:107
 #, fuzzy
 msgid "Oldest first"
 msgstr "Cel mai nou primul"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:107
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
+#: src/Widgets/SettingsDialog.vala:112
 msgid "Mark read by scrolling past"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:107
+#: src/Widgets/SettingsDialog.vala:114
 msgid "Article View:"
 msgstr "Perspectiva articolului:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Default"
 msgstr "Mod implicit"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Spring"
 msgstr "Primăvară"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Midnight"
 msgstr "Miezul nopții"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Parchment"
 msgstr "Pergament"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Font Size"
 msgstr "Dimensiunea fontului"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Small"
 msgstr "Mic"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Normal"
 msgstr "Normal"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Large"
 msgstr "Mare"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Huge"
 msgstr "Uriaș"
 
-#: src/Widgets/SettingsDialog.vala:141
+#: src/Widgets/SettingsDialog.vala:148
 msgid "Sync:"
 msgstr "Sincronizare:"
 
-#: src/Widgets/SettingsDialog.vala:143
+#: src/Widgets/SettingsDialog.vala:150
 msgid "Number of articles"
 msgstr "Numărul de articole"
 
-#: src/Widgets/SettingsDialog.vala:145
+#: src/Widgets/SettingsDialog.vala:152
 msgid "Every (Minutes)"
 msgstr "Fiecare (minut)"
 
-#: src/Widgets/SettingsDialog.vala:157
+#: src/Widgets/SettingsDialog.vala:164
 msgid "Database:"
 msgstr "Bază de date:"
 
-#: src/Widgets/SettingsDialog.vala:159
+#: src/Widgets/SettingsDialog.vala:166
 msgid "Delete articles after"
 msgstr "Șterge articolul după"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "Never"
 msgstr "Niciodată"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "1 Week"
 msgstr "1 săptămână"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "1 Month"
 msgstr "1 lună"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "6 Months"
 msgstr "6 luni"
 
-#: src/Widgets/SettingsDialog.vala:162
+#: src/Widgets/SettingsDialog.vala:169
 msgid "Additional Functionality:"
 msgstr "Funcționalitate adițională:"
 
-#: src/Widgets/SettingsDialog.vala:164
+#: src/Widgets/SettingsDialog.vala:171
 msgid "Content Grabber"
 msgstr "Acaparator pentru conținut"
 
-#: src/Widgets/SettingsDialog.vala:166
+#: src/Widgets/SettingsDialog.vala:173
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
+#: src/Widgets/SettingsDialog.vala:340
 #, fuzzy
 msgid "System Accounts"
 msgstr "Cont nou"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
+#: src/Widgets/SettingsDialog.vala:367 src/Widgets/SettingsDialog.vala:381
 #, fuzzy
 msgid "FeedReader Accounts"
 msgstr "Autostart pentru FeedReader"
@@ -709,6 +710,56 @@ msgstr "Marchează articolul citit sau necitit"
 #, fuzzy, c-format
 msgid "There are %u new articles (%u unread)"
 msgstr "Marchează articolul citit sau necitit"
+
+#: Constants.vala:26
+#, fuzzy
+msgid "Desktop Client for various RSS Services"
+msgstr "Client RSS pentru diferite servicii web"
+
+#: Constants.vala:31
+msgid "translator-credits"
+msgstr ""
+
+#: Constants.vala:36
+msgid "About"
+msgstr ""
+
+#: Constants.vala:38
+#, fuzzy
+msgid "Change Account"
+msgstr "Schimbă contul?"
+
+#: Constants.vala:40
+msgid "Report a Bug"
+msgstr ""
+
+#: Constants.vala:41
+msgid "Bounties"
+msgstr ""
+
+#: Constants.vala:42
+msgid "Shortcuts"
+msgstr ""
+
+#: Constants.vala:46
+msgid "Play"
+msgstr ""
+
+#: Constants.vala:47
+msgid "Pause"
+msgstr ""
+
+#: Constants.vala:48
+msgid "Mute"
+msgstr ""
+
+#: Constants.vala:49
+msgid "Unmute"
+msgstr ""
+
+#: Constants.vala:50
+msgid "Close"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
@@ -1032,9 +1083,6 @@ msgstr ""
 
 #~ msgid "Categories=Network;Feed;"
 #~ msgstr "Categorii=Rețea;Feed;"
-
-#~ msgid "RSS client for various webservices"
-#~ msgstr "Client RSS pentru diferite servicii web"
 
 #~ msgid ""
 #~ "FeedReader is a program designed to complement an already existing web-"

@@ -68,8 +68,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		var filter = new Gtk.FileFilter();
 		filter.add_mime_type("text/x-opml");
 		m_chooser.set_filter(filter);
-		m_chooser.expand = false;
-		m_chooser.get_style_context().add_class("flat");
+		m_chooser.expand = true;
 
 		var importButton = new Gtk.Button.with_label(_("Import"));
 		importButton.get_style_context().add_class("suggested-action");

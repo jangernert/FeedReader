@@ -35,7 +35,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         this.set_transient_for(MainWindow.get_default());
         this.set_modal(true);
         this.delete_event.connect(hide_on_delete);
-		set_default_size(550, 550);
+		set_default_size(550, 450);
 
         m_headerbar = new Gtk.HeaderBar();
         m_headerbar.set_show_close_button(true);

@@ -36,6 +36,24 @@ public class FeedReader.Setting : Gtk.Box {
 }
 
 
+public class FeedReader.SettingFont : FeedReader.Setting {
+
+	public SettingFont(string name, GLib.Settings settings, string key){
+		base(name, null);
+		var font_button = new Gtk.FontButton.with_font(settings.get_string(key));
+		font_button.get_style_context().add_class("flat");
+		font_button.set_use_size(false);
+		font_button.set_show_size(false);
+		font_button.font_set.connect(() => {
+			settings.set_string(key, font_button.get_font_name());
+			changed();
+		});
+
+		this.pack_end(font_button, false, false, 0);
+	}
+
+}
+
 public class FeedReader.SettingDropbox : FeedReader.Setting {
 
 	public SettingDropbox(string name, GLib.Settings settings, string key, string[] values, string? tooltip = null)

@@ -143,6 +143,12 @@ public class FeedReader.UtilsUI : GLib.Object {
 			article.insert(select_pos, "unselectable");
 		}
 
+		string fontfamilly_id = "$FONTFAMILLY";
+		string fontfamilly = Settings.general().get_string("fontfamilly");
+		int fontfamilly_pos = article.str.index_of(fontfamilly_id);
+		article.erase(fontfamilly_pos, fontfamilly_id.length);
+		article.insert(fontfamilly_pos, fontfamilly);
+		Logger.debug("font familly is : " + fontfamilly);
 
 		string fontsize = "intial";
 		string sourcefontsize = "0.75rem";

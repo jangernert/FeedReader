@@ -90,6 +90,10 @@
 			<default>'NORMAL'</default>
 		</key>
 
+		<key name='fontfamilly' type="s">
+			<default>'Sans Regular'</default>
+		</key>
+
 		<key name='drop-articles-after' enum='org.gnome.feedreader.drop-articles-duration'>
 			<default>'6 Months'</default>
 		</key>

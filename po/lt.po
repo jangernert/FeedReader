@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:43+0100\n"
+"POT-Creation-Date: 2017-02-27 14:25+0100\n"
 "PO-Revision-Date: 2017-02-15 22:43+0000\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://www.transifex.com/dev-feedreader/"
@@ -231,6 +231,7 @@ msgid "Search Articles"
 msgstr "Ieškoti straipsnius"
 
 #: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: Constants.vala:37
 msgid "Settings"
 msgstr "Nustatymai"
 
@@ -425,7 +426,7 @@ msgstr "Įkelti iš naujo"
 msgid "Search"
 msgstr "Ieškoti"
 
-#: src/Widgets/ShortcutsWindow.vala:29
+#: src/Widgets/ShortcutsWindow.vala:29 Constants.vala:39
 msgid "Quit"
 msgstr "Išeiti"
 
@@ -506,176 +507,176 @@ msgstr "Kanalas \"%s\" pašalintas"
 msgid "Remove only from %s"
 msgstr "Šalinti tik iš %s"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:51
 msgid "Interface"
 msgstr "Sąsaja"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:52
 msgid "Internals"
 msgstr "Vidus"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:53
 msgid "Share"
 msgstr "Dalinimasis"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:76
 msgid "Feed List:"
 msgstr "Kanalų sąrašas:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:78
 msgid "Only show feeds"
 msgstr "Rodyti tik kanalus"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Only show unread"
 msgstr "Rodyti tik neskaitytus"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Sort FeedList by"
 msgstr "Rikiuoti kanalų sąrašą pagal"
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:102
 msgid "Received"
 msgstr "Gauta"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Alphabetically"
 msgstr "Abėcėlė"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:95 src/Widgets/SettingsDialog.vala:116
 msgid "Theme"
 msgstr "Tema"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Gtk+"
 msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Dark"
 msgstr "Tamsi"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:95
 msgid "elementary"
 msgstr "elementary"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:100
 msgid "Article List:"
 msgstr "Straipsnių sąrašas:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Sort articles by"
 msgstr "Rikiuoti straipsnius pagal"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Date"
 msgstr "Data"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:107
 #, fuzzy
 msgid "Oldest first"
 msgstr "Iš pradžių, naujausi"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:107
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
+#: src/Widgets/SettingsDialog.vala:112
 msgid "Mark read by scrolling past"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:107
+#: src/Widgets/SettingsDialog.vala:114
 msgid "Article View:"
 msgstr "Straipsnio rodinys:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Default"
 msgstr "Numatytasis"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Spring"
 msgstr "Pavasaris"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Midnight"
 msgstr "Vidurnaktis"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:116
 msgid "Parchment"
 msgstr "Pergamentas"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Font Size"
 msgstr "Šrifto dydis"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Small"
 msgstr "Mažas"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Normal"
 msgstr "Normalus"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Large"
 msgstr "Didelis"
 
-#: src/Widgets/SettingsDialog.vala:114
+#: src/Widgets/SettingsDialog.vala:121
 msgid "Huge"
 msgstr "Didžiulis"
 
-#: src/Widgets/SettingsDialog.vala:141
+#: src/Widgets/SettingsDialog.vala:148
 msgid "Sync:"
 msgstr "Sinchronizavimas:"
 
-#: src/Widgets/SettingsDialog.vala:143
+#: src/Widgets/SettingsDialog.vala:150
 msgid "Number of articles"
 msgstr "Straipsnių skaičius"
 
-#: src/Widgets/SettingsDialog.vala:145
+#: src/Widgets/SettingsDialog.vala:152
 msgid "Every (Minutes)"
 msgstr "Kas (minučių)"
 
-#: src/Widgets/SettingsDialog.vala:157
+#: src/Widgets/SettingsDialog.vala:164
 msgid "Database:"
 msgstr "Duomenų bazė:"
 
-#: src/Widgets/SettingsDialog.vala:159
+#: src/Widgets/SettingsDialog.vala:166
 msgid "Delete articles after"
 msgstr "Ištrinti straipsnius po"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "Never"
 msgstr "Niekada"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "1 Week"
 msgstr "1 savaitė"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "1 Month"
 msgstr "1 mėnesis"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:167
 msgid "6 Months"
 msgstr "6 mėnesiai"
 
-#: src/Widgets/SettingsDialog.vala:162
+#: src/Widgets/SettingsDialog.vala:169
 msgid "Additional Functionality:"
 msgstr "Papildomas funkcionalumas:"
 
-#: src/Widgets/SettingsDialog.vala:164
+#: src/Widgets/SettingsDialog.vala:171
 msgid "Content Grabber"
 msgstr "Turinio glemžikas"
 
-#: src/Widgets/SettingsDialog.vala:166
+#: src/Widgets/SettingsDialog.vala:173
 msgid "Internal Media Player"
 msgstr "Vidinis medijos grotuvas"
 
-#: src/Widgets/SettingsDialog.vala:333
+#: src/Widgets/SettingsDialog.vala:340
 msgid "System Accounts"
 msgstr "Sistemos paskyros"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
+#: src/Widgets/SettingsDialog.vala:367 src/Widgets/SettingsDialog.vala:381
 msgid "FeedReader Accounts"
 msgstr "FeedReader paskyros"
 
@@ -697,6 +698,56 @@ msgstr "Yra 1 naujas straipsnis (%u neskaitytų)"
 #, c-format
 msgid "There are %u new articles (%u unread)"
 msgstr "Yra %u nauji straipsniai(-ių) (%u neskaitytų)"
+
+#: Constants.vala:26
+#, fuzzy
+msgid "Desktop Client for various RSS Services"
+msgstr "RSS klientas, skirtas įvairioms saityno tarnyboms"
+
+#: Constants.vala:31
+msgid "translator-credits"
+msgstr ""
+
+#: Constants.vala:36
+msgid "About"
+msgstr ""
+
+#: Constants.vala:38
+#, fuzzy
+msgid "Change Account"
+msgstr "Pakeisti paskyrą?"
+
+#: Constants.vala:40
+msgid "Report a Bug"
+msgstr ""
+
+#: Constants.vala:41
+msgid "Bounties"
+msgstr ""
+
+#: Constants.vala:42
+msgid "Shortcuts"
+msgstr ""
+
+#: Constants.vala:46
+msgid "Play"
+msgstr ""
+
+#: Constants.vala:47
+msgid "Pause"
+msgstr ""
+
+#: Constants.vala:48
+msgid "Mute"
+msgstr ""
+
+#: Constants.vala:49
+msgid "Unmute"
+msgstr ""
+
+#: Constants.vala:50
+msgid "Close"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
@@ -1023,9 +1074,6 @@ msgstr "Norint mėgautis FeedReader naudojimusi, prašome prisijungti"
 
 #~ msgid "Categories=Network;Feed;"
 #~ msgstr "Categories=Network;Feed;"
-
-#~ msgid "RSS client for various webservices"
-#~ msgstr "RSS klientas, skirtas įvairioms saityno tarnyboms"
 
 #~ msgid ""
 #~ "FeedReader is a program designed to complement an already existing web-"

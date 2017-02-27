@@ -20,7 +20,6 @@
 		
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-article-read.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-article-unread.svg</file>
-		<file preprocess="xml-stripblanks">icons/16x16/status/feed-backend-info.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-marked-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-non-starred.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-read-symbolic.svg</file>
@@ -30,7 +29,6 @@
 		
 		<file preprocess="xml-stripblanks">icons/24x24/actions/feed-mark-read-symbolic.svg</file>
 		
-		<file preprocess="xml-stripblanks">icons/24x24/status/feed-backend-info.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-cloud-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-copyright-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-free-symbolic.svg</file>
@@ -39,7 +37,6 @@
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-nonfree-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-rss-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-server-symbolic.svg</file>
-		<file preprocess="xml-stripblanks">icons/24x24/status/feed-status-ok.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-website-symbolic.svg</file>
 	</gresource>
 </gresources>

@@ -18,6 +18,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
     private Gtk.ListBox m_serviceList;
     private Gtk.Stack m_stack;
     private InfoBar m_errorBar;
+    private Gtk.HeaderBar headerbar;
     private static SettingsDialog? m_dialog = null;
 
 	public static SettingsDialog get_default()
@@ -30,13 +31,18 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
     private SettingsDialog()
     {
-    	Object(use_header_bar: 1);
         this.title = _("Settings");
 		this.border_width = 20;
         this.set_transient_for(MainWindow.get_default());
         this.set_modal(true);
         this.delete_event.connect(hide_on_delete);
 		set_default_size(550, 550);
+
+        headerbar = new Gtk.HeaderBar();
+        headerbar.set_show_close_button(true);
+
+        set_titlebar(headerbar);
+
 
         m_stack = new Gtk.Stack();
         m_stack.set_transition_duration(50);
@@ -51,9 +57,10 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
         switcher.set_valign(Gtk.Align.CENTER);
         switcher.set_stack(m_stack);
 
+        headerbar.set_custom_title(switcher);
+
         var content = get_content_area() as Gtk.Box;
         content.set_spacing(2);
-        content.pack_start(switcher, false, false, 0);
         content.add(m_stack);
 
     }

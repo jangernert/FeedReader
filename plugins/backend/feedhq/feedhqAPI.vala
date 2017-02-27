@@ -152,6 +152,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public bool getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
 	{
+		var msg = new feedhqMessage();
 		string response = m_connection.send_get_request("tag/list", msg.get());
 		if(response == "" || response == null)
 			return false;

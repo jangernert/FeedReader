@@ -96,6 +96,21 @@ public class FeedReader.bazquxConnection {
 		return (string)message.response_body.data;
 	}
 
+	public bool ping()
+	{
+		var session = new Soup.Session();
+		var message = new Soup.Message("GET", "https://www.bazqux.com/reader/ping");
+
+		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
+		message.request_headers.append("Authorization", oldauth);
+		session.send_message(message);
+
+		if((string)message.response_body.data == "OK")
+			return true;
+
+		return false;
+	}
+
 }
 
 public class FeedReader.bazquxMessage {

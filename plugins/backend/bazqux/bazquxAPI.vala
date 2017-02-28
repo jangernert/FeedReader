@@ -47,7 +47,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 	public bool ping()
 	{
-		return Utils.ping("https://google.com/");
+		return m_connection.ping();
 	}
 
 	private bool getUserID()

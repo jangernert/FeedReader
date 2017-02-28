@@ -386,7 +386,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 		else
 			msg.add("r", tagID);
 
-		msg.add("i", articleID);
+		msg.add("i", "tag:google.com,2005:reader/item/" + articleID);
 		m_connection.send_post_request("edit-tag", msg.get());
 	}
 

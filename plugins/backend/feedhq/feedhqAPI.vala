@@ -57,7 +57,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("user-info", msg.get());
+		string response = m_connection.send_get_request("user-info?" + msg.get());
 		var parser = new Json.Parser();
 		try{
 			parser.load_from_data(response, -1);
@@ -87,7 +87,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("subscription/list", msg.get());
+		string response = m_connection.send_get_request("subscription/list?" + msg.get());
 		if(response == "" || response == null)
 			return false;
 
@@ -154,7 +154,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("tag/list", msg.get());
+		string response = m_connection.send_get_request("tag/list?" + msg.get());
 		if(response == "" || response == null)
 			return false;
 
@@ -204,7 +204,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("unread-count", msg.get());
+		string response = m_connection.send_get_request("unread-count?" + msg.get());
 
 		var parser = new Json.Parser();
 		try{
@@ -244,23 +244,31 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		if(continuation != null)
 			msg.add("c", continuation);
 
-		string response = m_connection.send_get_request("stream/items/ids", msg.get());
+		string response = m_connection.send_get_request("stream/items/ids?" + msg.get());
 
 		var parser = new Json.Parser();
 		try
 		{
 			parser.load_from_data(response, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("updateArticles: Could not load message response");
 			Logger.error(e.message);
 		}
 
 		var root = parser.get_root().get_object();
+
+		if(!root.has_member("itemRefs"))
+		{
+			Logger.error("updateArticles: wrong response?");
+			return null;
+		}
+
 		var array = root.get_array_member("itemRefs");
 		uint length = array.get_length();
 
-		for (uint i = 0; i < length; i++)
+		for(uint i = 0; i < length; i++)
 		{
 			Json.Object object = array.get_object_element(i);
 			ids.add(object.get_string_member("id").replace(",", "_").replace("/", "~"));
@@ -293,7 +301,10 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id.replace("_", "/"));
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID.replace("_", "/"));
-		string response = m_connection.send_get_request(api_endpoint, msg.get());
+		string response = m_connection.send_get_request(api_endpoint + "?" + msg.get());
+
+		Logger.debug(api_endpoint + "?" + msg.get());
+		//Logger.debug(response);
 
 		var parser = new Json.Parser();
 		try{

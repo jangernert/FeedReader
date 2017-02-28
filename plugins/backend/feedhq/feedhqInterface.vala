@@ -262,43 +262,26 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		{
 			var unreadIDs = new Gee.LinkedList<string>();
 			string? continuation = null;
-			int left = 4*count;
 
-			while(left > 0)
+			do
 			{
-				if(left > 1000)
-				{
-					continuation = m_api.updateArticles(unreadIDs, 1000, continuation);
-					left -= 1000;
-				}
-				else
-				{
-					m_api.updateArticles(unreadIDs, left, continuation);
-					left = 0;
-				}
+				continuation = m_api.updateArticles(unreadIDs, 1000, continuation);
 			}
+			while(continuation != null);
 			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
 		}
 
 		var articles = new Gee.LinkedList<article>();
 		string? continuation = null;
-		int left = count;
 		string? FeedHQ_feedID = (isTagID) ? null : feedID;
 		string? FeedHQ_tagID = (isTagID) ? feedID : null;
 
-		while(left > 0)
+		do
 		{
-			if(left > 1000)
-			{
-				continuation = m_api.getArticles(articles, 1000, whatToGet, continuation, FeedHQ_tagID, FeedHQ_feedID);
-				left -= 1000;
-			}
-			else
-			{
-				continuation = m_api.getArticles(articles, left, whatToGet, continuation, FeedHQ_tagID, FeedHQ_feedID);
-				left = 0;
-			}
+			continuation = m_api.getArticles(articles, count, whatToGet, continuation, FeedHQ_tagID, FeedHQ_feedID);
 		}
+		while(continuation != null);
+
 		writeArticles(articles);
 	}
 

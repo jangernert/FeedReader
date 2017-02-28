@@ -147,22 +147,29 @@ public class FeedReader.UtilsUI : GLib.Object {
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
 		string fontfamilly = desc.get_family();
-		string fontsize = GLib.Math.roundf(desc.get_size()/Pango.SCALE).to_string();
+		int fontsize = int.parse(GLib.Math.roundf(desc.get_size()/Pango.SCALE).to_string());
+		string small_size = (fontsize - 2).to_string();
+		string large_size = (fontsize + 2).to_string();
+		string normal_size = fontsize.to_string();
 		int fontfamilly_pos = article.str.index_of(fontfamily_id);
 		article.erase(fontfamilly_pos, fontfamily_id.length);
 		article.insert(fontfamilly_pos, fontfamilly);
 
-		string sourcefontsize = "0.75rem";
 		string fontsize_id = "$FONTSIZE";
-		string sourcefontsize_id = "$SOURCEFONTSIZE";
+		string sourcefontsize_id = "$SMALLSIZE";
 		int fontsize_pos = article.str.index_of(fontsize_id);
 		article.erase(fontsize_pos, fontsize_id.length);
-		article.insert(fontsize_pos, fontsize);
+		article.insert(fontsize_pos, normal_size);
+
+		string largesize_id = "$LARGESIZE";
+		int largesize_pos = article.str.index_of(largesize_id);
+		article.erase(largesize_pos, largesize_id.length);
+		article.insert(largesize_pos, large_size);
 
 		for(int i = article.str.index_of(sourcefontsize_id, 0); i != -1; i = article.str.index_of(sourcefontsize_id, i))
 		{
 			article.erase(i, sourcefontsize_id.length);
-			article.insert(i, sourcefontsize);
+			article.insert(i, small_size);
 		}
 
 

@@ -154,6 +154,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 		string response = m_connection.send_get_request("tag/list", msg.get());
 		if(response == "" || response == null)
 			return false;
+		Logger.debug(response);
 		var parser = new Json.Parser();
 		try
 		{
@@ -179,6 +180,8 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 			if(id.contains("/label/"))
 			{
+				if(m_utils.tagIsCat(id, feeds))
+				{
 					categories.add(
 						new category(
 							id,
@@ -189,7 +192,18 @@ public class FeedReader.bazquxAPI : GLib.Object {
 							1
 						)
 					);
-				++orderID;
+					++orderID;
+				}
+				else
+				{
+					tags.add(
+						new tag(
+							id,
+							title,
+							dbDaemon.get_default().getTagColor()
+						)
+					);
+				}
 			}
 		}
 		return true;
@@ -301,7 +315,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 		}
 		catch(Error e)
 		{
-			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error("getArticles: Could not load message response");
 			Logger.error(e.message);
 		}
 

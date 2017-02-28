@@ -256,7 +256,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error("updateArticles: Could not load message response");
 			Logger.error(e.message);
 		}
 
@@ -305,7 +305,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			parser.load_from_data(response, -1);
 		}
 		catch (Error e) {
-			Logger.error("getCategoriesAndTags: Could not load message response");
+			Logger.error("getArticles: Could not load message response");
 			Logger.error(e.message);
 		}
 

@@ -154,4 +154,16 @@ public class FeedReader.bazquxUtils : GLib.Object {
 			Logger.error("bazquxUtils.setPassword: " + e.message);
 		}
 	}
+
+	public bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
+	{
+		foreach(feed Feed in feeds)
+		{
+			if(Feed.hasCat(tagID))
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 }

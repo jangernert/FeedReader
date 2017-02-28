@@ -278,7 +278,6 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 				}
 			}
 			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
-			updateArticleList();
 		}
 
 		var articles = new Gee.LinkedList<article>();

@@ -154,7 +154,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 		string response = m_connection.send_get_request("tag/list", msg.get());
 		if(response == "" || response == null)
 			return false;
-		Logger.debug(response);
+
 		var parser = new Json.Parser();
 		try
 		{

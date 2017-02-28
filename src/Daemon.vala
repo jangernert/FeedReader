@@ -682,6 +682,8 @@ namespace FeedReader {
 					removeCategoryWithChildren(catID);
 				}
 			}
+
+			removeCategory(catID);
 		}
 
 		private void deleteFeedsofCat(string catID, Gee.ArrayList<feed> feeds)

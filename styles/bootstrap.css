@@ -5229,7 +5229,8 @@ button.list-group-item .list-group-item-heading {
 a.list-group-item:hover,
 button.list-group-item:hover,
 a.list-group-item:focus,
-button.list-group-item:focus {
+button.list-group-item:focus,
+div.list-group-item:hover {
   text-decoration: none;
   color: #555555;
   background-color: #f5f5f5;

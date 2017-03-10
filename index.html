@@ -60,13 +60,21 @@
             <div class="col-xs-12">
             {% endif %}
             <div class="col-md-4 list-group ">
-                <a href="{{service.url}}" class="list-group-item">
+                {% if service.link != nil %}
+                <a href="{{service.link}}" class="list-group-item">
+                {% else %}
+                <div class="list-group-item">
+                {% endif %}
                     <h4 class="list-group-item-heading">{{service.title}}</h4>
                     <p class="list-group-item-text">
                         <img width="100" height="100" src="{{site.baseurl}}/images/{{service.logo}}" alt="{{service.title}}">
                         {{service.content}}
                     </p>
+                {% if service.link != nil %}
                 </a>
+                {% else %}
+                </div>
+                {% endif %}
             </div>
             {% if loopindex == 0 %}
             </div>
@@ -86,13 +94,21 @@
             <div class="col-xs-12">
             {% endif %}
             <div class="col-md-4 list-group">
-                <a href="{{read_it_later.url}}" class="list-group-item">
+                {% if read_it_later.link != nil %}
+                <a href="{{read_it_later.link}}" class="list-group-item">
+                {% else %}
+                <div class="list-group-item">
+                {% endif %}
                     <h4 class="list-group-item-heading">{{read_it_later.title}}</h4>
                     <p class="list-group-item-text">
                         <img width="100" height="100" src="{{site.baseurl}}/images/{{read_it_later.logo}}" alt="{{read_it_later.title}}">
                         {{read_it_later.content}}
                     </p>
+                {% if read_it_later.link != nil %}
                 </a>
+                {% else %}
+                </div>
+                {% endif %}
             </div>
             {% if loopindex == 0 %}
             </div>
@@ -111,13 +127,21 @@
         <div class="col-xs-12">
         {% endif %}
             <div class="col-md-4 list-group">
-                <a href="{{share_service.href}}" class="list-group-item">
+                {% if share_service.link == nil %}
+                <div class="list-group-item">
+                {% else %}
+                <a href="{{share_service.link}}" class="list-group-item">
+                {% endif %}
                     <h4 class="list-group-item-heading">{{share_service.title}}</h4>
                     <p class="list-group-item-text">
                         <img width="100" height="100" src="{{ site.baseurl }}/images/{{share_service.icon}}" alt="{{share_service.title}}">
                         {{share_service.content}}
                     </p>
+                {% if share_service.link == nil %}
+                </div>
+                {% else %}
                 </a>
+                {% endif %}
             </div>
         {% if loopindex == 0%} 
         </div>
@@ -135,19 +159,19 @@
         <div class="col-xs-12">
         {% endif %}
             <div class="col-md-4 list-group">
-                <span class="list-group-item">
+                <div class="list-group-item">
                     <h4 class="list-group-item-heading">{{feature.title}}</h4>
                     <p class="list-group-item-text">
                         <img width="100" height="100" src="{{ site.baseurl }}/images/{{feature.icon}}" alt="{{feature.title}}">
                         {{feature.content}}
                     </p>
-                </span>
+                </div>
             </div>
         {% if loopindex == 0%} 
         </div>
         {% endif %}
         {% endfor %}
-        {% assign share_index = site.share.size | modulo: 3 %} 
+        {% assign share_index = site.features.size | modulo: 3 %} 
         {% if share_index != 0%}
         </div>
         {% endif %}

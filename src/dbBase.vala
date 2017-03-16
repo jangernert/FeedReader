@@ -287,13 +287,13 @@ public class FeedReader.dbBase : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		uint makred = 0;
+		uint marked = 0;
 		while (stmt.step () == Sqlite.ROW) {
-			makred = stmt.column_int(0);
+			marked = stmt.column_int(0);
 		}
 
 		stmt.reset ();
-		return makred;
+		return marked;
 	}
 
 	public uint get_unread_uncategorized()
@@ -324,7 +324,7 @@ public class FeedReader.dbBase : GLib.Object {
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
-		query.addEqualsCondition("makred", ArticleStatus.MARKED.to_string());
+		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
 		query.addCustomCondition(getUncategorizedFeedsQuery());
 		query.build();
 

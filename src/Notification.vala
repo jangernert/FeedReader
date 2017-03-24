@@ -65,7 +65,7 @@ public class FeedReader.Notification : GLib.Object {
 					m_notification = new Notify.Notification(summary, message, AboutInfo.iconName);
 					m_notification.set_urgency(Notify.Urgency.NORMAL);
 					m_notification.set_app_name(AboutInfo.programmName);
-					m_notification.set_hint("desktop-entry", new Variant ("(s)", "feedreader"));
+					m_notification.set_hint("desktop-entry", new Variant ("(s)", "org.gnome.FeedReader"));
 
 					if(Notification.supportAction())
 					{

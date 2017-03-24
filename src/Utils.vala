@@ -105,7 +105,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void copyAutostart()
 	{
-		string filename = GLib.Environment.get_user_data_dir() + "/feedreader-autostart.desktop";
+		string filename = GLib.Environment.get_user_data_dir() + "/org.gnome.FeedReader-autostart.desktop";
 
 		if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{

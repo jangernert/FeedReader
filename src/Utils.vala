@@ -105,13 +105,13 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void copyAutostart()
 	{
-		string filename = GLib.Environment.get_user_data_dir() + "/feedreader-autostart.desktop";
+		string filename = GLib.Environment.get_user_data_dir() + "/FeedReader-autostart.desktop";
 
 		if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{
 			try
 			{
-				var origin = File.new_for_path(Constants.INSTALL_PREFIX + "/share/FeedReader/feedreader-autostart.desktop");
+				var origin = File.new_for_path(Constants.INSTALL_PREFIX + "/share/FeedReader/FeedReader-autostart.desktop");
 				var destination = File.new_for_path(filename);
 	        	origin.copy(destination, FileCopyFlags.NONE);
 			}

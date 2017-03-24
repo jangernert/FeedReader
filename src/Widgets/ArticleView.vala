@@ -365,6 +365,20 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		{
 			case WebKit.LoadEvent.STARTED:
 				Logger.debug("ArticleView: load STARTED");
+				string url = m_currentView.get_uri();
+				if(url != "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/")
+				{
+					Logger.debug(@"ArticleView: open external url: $url");
+					try
+					{
+						Gtk.show_uri(Gdk.Screen.get_default(), url, Gdk.CURRENT_TIME);
+					}
+					catch(GLib.Error e)
+					{
+						Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+					}
+					m_currentView.stop_loading();
+				}
 				break;
 			case WebKit.LoadEvent.COMMITTED:
 				Logger.debug("ArticleView: load COMMITTED");

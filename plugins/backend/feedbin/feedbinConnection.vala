@@ -17,68 +17,58 @@ public class FeedReader.feedbinConnection {
 
 	private feedbinUtils m_utils;
 	private GLib.Settings m_settingsTweaks;
+	private Soup.Session m_session;
 
 	private const string BASE_URI = "https://api.feedbin.com/v2/";
+
+	public struct Response {
+		uint status;
+		string data;
+	}
 
 	public feedbinConnection()
 	{
 		m_utils = new feedbinUtils();
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
+		m_session.authenticate.connect((msg, auth, retrying) => {
+			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
+		});
 	}
 
-	public string postRequest(string path, string input)
+	public Response request(string method, string path, string? input = null)
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		session.authenticate.connect((msg, auth, retrying) => {
-			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
-		});
-
-		var message = new Soup.Message("POST", BASE_URI+path);
+		var message = new Soup.Message(method, BASE_URI+path);
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
-		message.request_headers.append("Content-Type", "application/json; charset=utf-8");
+		if(method == "POST" || method == "PUT")
+			message.request_headers.append("Content-Type", "application/json; charset=utf-8");
 
-		message.request_body.append_take(input.data);
-		session.send_message(message);
+		if(input != null)
+			message.request_body.append_take(input.data);
 
-		return (string)message.response_body.flatten().data;
+		m_session.send_message(message);
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
+	}
+
+	public Response postRequest(string path, string input)
+	{
+		return request("POST", path, input);
     }
 
-	public string deleteRequest(string path, string input)
+	public Response deleteRequest(string path, string? input = null)
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		session.authenticate.connect((msg, auth, retrying) => {
-			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
-		});
-
-		var message = new Soup.Message("DELETE", BASE_URI+path);
-		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
-
-		message.request_headers.append("Content-Type", "application/json; charset=utf-8");
-
-		message.request_body.append_take(input.data);
-		session.send_message(message);
-
-		return (string)message.response_body.flatten().data;
+		return request("DELETE", path, input);
     }
 
-	public string getRequest(string path)
+	public Response getRequest(string path)
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		session.authenticate.connect((msg, auth, retrying) => {
-			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
-		});
-
-		var message = new Soup.Message("GET", BASE_URI+path);
-		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
-
-		session.send_message(message);
-		return (string)message.response_body.data;
+		return request("GET", path);
 	}
 }

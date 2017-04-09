@@ -54,6 +54,11 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		Json.Array array = parser.get_root().get_array();
 
+		// We don't want to use the same session as FeedbinConnection, because
+		// it does authentication, and we don't want to accidentally send our
+		// Feedbin credentials to random websites.
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
@@ -77,7 +82,7 @@ public class FeedReader.feedbinAPI : Object {
 					id,
 					title,
 					url,
-					Utils.downloadIcon(id, url),
+					Utils.downloadIconWithSession(session, id, url),
 					0,
 					{ "0" },
 					xmlURL)

@@ -426,7 +426,7 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static bool downloadIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static bool downloadIconWithSession(Soup.Session session, string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
@@ -434,22 +434,20 @@ public class FeedReader.Utils : GLib.Object {
 
 		string url = feed_url;
 		if(feed_url.has_prefix("http://"))
-			url.replace("http://", "");
+			url = url.replace("http://", "");
 		else if(feed_url.has_prefix("https://"))
-			url.replace("https://", "");
+			url = url.replace("https://", "");
 
 		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
 			Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
 
 			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message ("GET", "http://f1.allesedv.com/32/%s".printf(url));
+			message_dlIcon = new Soup.Message ("GET", "https://f1.allesedv.com/32/%s".printf(url));
 
 			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_dlIcon.request_headers.append("DNT", "1");
 
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
 			var status = session.send_message(message_dlIcon);
 			if (status == 200)
 			{
@@ -468,5 +466,15 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		// file already exists
 		return true;
+	}
+
+	public static bool downloadIcon(string feed_id, string feed_url, string? icon_path = null)
+	{
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		if(icon_path == null)
+			return downloadIconWithSession(session, feed_id, feed_url);
+		else
+			return downloadIconWithSession(session, feed_id, feed_url, icon_path);
 	}
 }

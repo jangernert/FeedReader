@@ -33,7 +33,8 @@ public class FeedReader.feedbinConnection {
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
 		m_session.authenticate.connect((msg, auth, retrying) => {
-			auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
+			if(!retrying)
+				auth.authenticate(m_utils.getUser(), m_utils.getPasswd());
 		});
 	}
 

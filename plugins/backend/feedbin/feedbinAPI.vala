@@ -31,7 +31,14 @@ public class FeedReader.feedbinAPI : Object {
 		if(!Utils.ping("https://feedbin.com/"))
 			return LoginResponse.NO_CONNECTION;
 
-		return LoginResponse.SUCCESS;
+		var status = m_connection.getRequest("authentication.json").status;
+		if(status == 200)
+			return LoginResponse.SUCCESS;
+		else if(status == 401)
+			return LoginResponse.WRONG_LOGIN;
+
+		Logger.error("Got status %u from Feedbin authentication.json".printf(status));
+		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public bool getSubscriptionList(Gee.LinkedList<feed> feeds)

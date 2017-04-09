@@ -28,7 +28,7 @@ public class FeedReader.feedbinAPI : Object {
 	{
 		Logger.debug("feedbin backend: login");
 
-		if(!Utils.ping("https://feedbin.com/"))
+		if(!Utils.ping("https://api.feedbin.com/"))
 			return LoginResponse.NO_CONNECTION;
 
 		var status = m_connection.getRequest("authentication.json").status;

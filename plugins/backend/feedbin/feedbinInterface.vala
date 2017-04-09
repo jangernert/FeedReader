@@ -106,7 +106,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool serverAvailable()
 	{
-		return Utils.ping("https://feedbin.com/");
+		return Utils.ping("https://api.feedbin.com/");
 	}
 
 	public void setArticleIsRead(string articleIDs, ArticleStatus read)

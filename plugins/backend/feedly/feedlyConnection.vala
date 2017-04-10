@@ -17,17 +17,18 @@ public class FeedReader.FeedlyConnection {
 
 	private FeedlyUtils m_utils;
 	private GLib.Settings m_settingsTweaks;
+	private Soup.Session m_session;
 
 	public FeedlyConnection()
 	{
 		m_utils = new FeedlyUtils();
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 	}
 
 	public LoginResponse getToken()
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 		string message_string = "code=" + m_utils.getApiCode()
 								+ "&client_id=" + FeedlySecret.apiClientId
@@ -37,7 +38,10 @@ public class FeedReader.FeedlyConnection {
 								+ "&state=getting_token";
 
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-		session.send_message(message);
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+			return LoginResponse.NO_CONNECTION;
 
 		try
 		{
@@ -79,8 +83,6 @@ public class FeedReader.FeedlyConnection {
 
 	public LoginResponse refreshToken()
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -92,7 +94,10 @@ public class FeedReader.FeedlyConnection {
 								+ "&grant_type=refresh_token";
 
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-		session.send_message(message);
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+			return LoginResponse.NO_CONNECTION;
 
 		try
 		{
@@ -132,18 +137,16 @@ public class FeedReader.FeedlyConnection {
 	}
 
 
-	public string send_get_request_to_feedly(string path)
+	public Response send_get_request_to_feedly(string path)
 	{
 		return send_request(path, "GET");
 	}
 
-	public string send_put_request_to_feedly(string path, Json.Node root)
+	public Response send_put_request_to_feedly(string path, Json.Node root)
 	{
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -157,18 +160,24 @@ public class FeedReader.FeedlyConnection {
 		string json;
 		json = gen.to_data(out length);
 		message.request_body.append_take(json.data);
-		session.send_message(message);
+		m_session.send_message(message);
 
-		return (string)message.response_body.flatten().data;
+		if(message.status_code != 200)
+		{
+			Logger.warning(@"FeedlyConnection: message unexpected response");
+		}
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
 	}
 
-	public string send_post_request_to_feedly(string path, Json.Node root)
+	public Response send_post_request_to_feedly(string path, Json.Node root)
 	{
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -183,18 +192,25 @@ public class FeedReader.FeedlyConnection {
 		json = gen.to_data(out length);
 		Logger.debug(json);
 		message.request_body.append_take(json.data);
-		session.send_message(message);
-		Logger.debug("Status Code: " + message.status_code.to_string());
-		return (string)message.response_body.flatten().data;
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+		{
+			Logger.warning(@"FeedlyConnection: message unexpected response");
+			Logger.debug("Status Code: " + message.status_code.to_string());
+		}
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
 	}
 
-	public string send_post_string_request_to_feedly(string path, string input, string type)
+	public Response send_post_string_request_to_feedly(string path, string input, string type)
 	{
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -204,30 +220,45 @@ public class FeedReader.FeedlyConnection {
 		message.request_headers.append("Content-Type", type);
 
 		message.request_body.append_take(input.data);
-		session.send_message(message);
+		m_session.send_message(message);
 
-		return (string)message.response_body.flatten().data;
+		if(message.status_code != 200)
+		{
+			Logger.warning(@"FeedlyConnection: message unexpected response - $input");
+		}
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
     }
 
-	public string send_delete_request_to_feedly(string path)
+	public Response send_delete_request_to_feedly(string path)
 	{
 		return send_request (path, "DELETE");
 	}
 
-	private string send_request(string path, string type)
+	private Response send_request(string path, string type)
 	{
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
 		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
-		session.send_message(message);
-		return (string)message.response_body.data;
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+		{
+			Logger.warning(@"FeedlyConnection: message unexpected response");
+		}
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
 	}
 }

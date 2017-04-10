@@ -54,11 +54,15 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	private bool getUserID()
 	{
 		Logger.debug("getUserID: getting user info");
-		string response = m_connection.send_get_request("user-info?output=json");
+		var response = m_connection.send_get_request("user-info?output=json");
+
+		if(response.status != 200)
+			return false;
+
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch(Error e)
 		{
@@ -82,14 +86,18 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	public bool getFeeds(Gee.List<feed> feeds)
 	{
 
-		string response = m_connection.send_get_request("subscription/list?output=json");
-		if(response == "" || response == null)
+		var response = m_connection.send_get_request("subscription/list?output=json");
+
+		if(response.status != 200)
 			return false;
+
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getFeeds: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -143,14 +151,18 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
-		string response = m_connection.send_get_request("tag/list?output=json");
-		if(response == "" || response == null)
+		var response = m_connection.send_get_request("tag/list?output=json");
+
+		if(response.status != 200)
 			return false;
+
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getCategoriesAndTags: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -188,13 +200,18 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 	public int getTotalUnread()
 	{
-		string response = m_connection.send_get_request("unread-count?output=json");
+		var response = m_connection.send_get_request("unread-count?output=json");
+
+		if(response.status != 200)
+			return 0;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getTotalUnread: Could not load message response");
 			Logger.error(e.message);
 		}
@@ -225,15 +242,22 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		message_string += "&xt=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-		string response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
+
+		var response = m_connection.send_get_request("stream/items/ids?output=json&"+message_string);
+
+		if(response.status != 200)
+			return null;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("updateArticles: Could not load message response");
 			Logger.error(e.message);
+			return null;
 		}
 
 		var root = parser.get_root().get_object();
@@ -271,13 +295,18 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
-		string response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
+		var response = m_connection.send_get_request(api_endpoint+"?output=json&"+message_string);
+
+		if(response.status != 200)
+			return null;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getCategoriesAndTags: Could not load message response");
 			Logger.error(e.message);
 		}

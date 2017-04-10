@@ -17,20 +17,21 @@ public class FeedReader.InoReaderConnection {
 	private string m_api_username;
 	private string m_api_code;
 	private InoReaderUtils m_utils;
+	private Soup.Session m_session;
 
 	public InoReaderConnection()
 	{
 		m_utils = new InoReaderUtils();
 		m_api_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
 	}
 
 	public LoginResponse getToken()
 	{
 		Logger.debug("InoReaderConnection: getToken()");
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "code=" + m_utils.getApiCode()
 								+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
@@ -39,7 +40,11 @@ public class FeedReader.InoReaderConnection {
 								+ "&scope="
 								+ "&grant_type=authorization_code";
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-		session.send_message(message);
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+			return LoginResponse.NO_CONNECTION;
+
 		string response = (string)message.response_body.flatten().data;
 
 		try
@@ -76,8 +81,6 @@ public class FeedReader.InoReaderConnection {
 	{
 		Logger.debug("InoReaderConnection: refreshToken()");
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "client_id=" + InoReaderSecret.apiClientId
 								+ "&client_secret=" + InoReaderSecret.apiClientSecret
@@ -85,7 +88,11 @@ public class FeedReader.InoReaderConnection {
 								+ "&refresh_token=" + m_utils.getRefreshToken();
 
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-		session.send_message(message);
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+			return LoginResponse.NO_CONNECTION;
+
 		string response = (string)message.response_body.flatten().data;
 
 		try
@@ -121,18 +128,16 @@ public class FeedReader.InoReaderConnection {
 		return LoginResponse.SUCCESS;
 	}
 
-	public string send_request(string path, string? message_string = null)
+	public Response send_request(string path, string? message_string = null)
 	{
 		return send_post_request(path, "POST", message_string);
 	}
 
-	private string send_post_request(string path, string type, string? message_string = null)
+	private Response send_post_request(string path, string type, string? message_string = null)
 	{
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message(type, InoReaderSecret.base_uri + path);
 
 		string inoauth = "Bearer " + m_utils.getAccessToken();
@@ -141,8 +146,18 @@ public class FeedReader.InoReaderConnection {
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 
-		session.send_message(message);
-		return (string)message.response_body.data;
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+		{
+			Logger.warning("InoReaderConnection: unexpected response");
+			Logger.debug(message.status_code.to_string());
+		}
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
 	}
 
 }

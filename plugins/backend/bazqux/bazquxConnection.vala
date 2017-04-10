@@ -18,6 +18,7 @@ public class FeedReader.bazquxConnection {
 	private string m_api_code;
 	private string m_passwd;
 	private bazquxUtils m_utils;
+	private Soup.Session m_session;
 
 	public bazquxConnection()
 	{
@@ -25,6 +26,8 @@ public class FeedReader.bazquxConnection {
 		m_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 		m_passwd = m_utils.getPasswd();
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
 	}
 
 	public LoginResponse getToken()
@@ -38,11 +41,10 @@ public class FeedReader.bazquxConnection {
 		if(m_passwd == "")
 			return LoginResponse.MISSING_PASSWD;
 
-		var session = new Soup.Session();
 		var message = new Soup.Message("POST", "https://bazqux.com/accounts/ClientLogin/");
 		string message_string = "Email=" + m_username + "&Passwd=" + m_passwd;
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-		session.send_message(message);
+		m_session.send_message(message);
 		string response = (string)message.response_body.flatten().data;
 		try{
 
@@ -69,20 +71,19 @@ public class FeedReader.bazquxConnection {
 		}
 	}
 
-	public string send_get_request(string path, string? message_string = null)
+	public Response send_get_request(string path, string? message_string = null)
 	{
 		return send_request(path, "GET", message_string);
 	}
 
-	public string send_post_request(string path, string? message_string = null)
+	public Response send_post_request(string path, string? message_string = null)
 	{
 		return send_request(path, "POST", message_string);
 	}
 
-	private string send_request(string path, string type, string? message_string = null)
+	private Response send_request(string path, string type, string? message_string = null)
 	{
 
-		var session = new Soup.Session();
 		var message = new Soup.Message(type, bazquxSecret.base_uri + path);
 
 		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
@@ -91,19 +92,21 @@ public class FeedReader.bazquxConnection {
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 
-		session.send_message(message);
+		m_session.send_message(message);
 
-		return (string)message.response_body.data;
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
 	}
 
 	public bool ping()
 	{
-		var session = new Soup.Session();
 		var message = new Soup.Message("GET", "https://www.bazqux.com/reader/ping");
 
 		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
 		message.request_headers.append("Authorization", oldauth);
-		session.send_message(message);
+		m_session.send_message(message);
 
 		if((string)message.response_body.data == "OK")
 			return true;

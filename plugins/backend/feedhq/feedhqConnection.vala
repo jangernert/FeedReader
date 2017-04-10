@@ -18,6 +18,7 @@ public class FeedReader.FeedHQConnection {
 	private string m_api_code;
 	private string m_passwd;
 	private FeedHQUtils m_utils;
+	private Soup.Session m_session;
 
 	public FeedHQConnection()
 	{
@@ -25,6 +26,8 @@ public class FeedReader.FeedHQConnection {
 		m_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 		m_passwd = m_utils.getPasswd();
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
 	}
 
 	public LoginResponse getToken()
@@ -38,11 +41,10 @@ public class FeedReader.FeedHQConnection {
 		if(m_passwd == "")
 			return LoginResponse.MISSING_PASSWD;
 
-		var session = new Soup.Session();
 		var message = new Soup.Message("POST", "https://feedhq.org/accounts/ClientLogin");
 		string message_string = "Email=" + m_username + "&Passwd=" + m_passwd;
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
-		session.send_message(message);
+		m_session.send_message(message);
 		string response = (string)message.response_body.flatten().data;
 		try{
 
@@ -73,36 +75,39 @@ public class FeedReader.FeedHQConnection {
 	{
 		Logger.debug("FeedHQ Connection: postToken()");
 
-		var session = new Soup.Session();
 		var message = new Soup.Message("GET", FeedHQSecret.base_uri + "token?output=json");
 
 		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
 		message.request_headers.append("Authorization", oldauth);
-		session.send_message(message);
+		m_session.send_message(message);
 
-		string response =  (string)message.response_body.data;
+		if(message.status_code != 200)
+		{
+			Logger.debug("FeedHQ post token failed");
+			return false;
+		}
 
-		Logger.debug("FeedHQ post token : " +  response );
+		string response = (string)message.response_body.data;
+		Logger.debug("FeedHQ post token : " + response);
 		m_utils.setPostToken(response);
 
 		return true;
 
 	}
-	public string send_get_request(string path, string? message_string = null)
+	public Response send_get_request(string path, string? message_string = null)
 	{
 		return send_request(path, "GET", message_string);
 	}
 
-	public string send_post_request(string path, string? message_string = null)
+	public Response send_post_request(string path, string? message_string = null)
 	{
 		return send_request(path, "POST", message_string);
 	}
 
 
 
-	private string send_request(string path, string type, string? message_string = null)
+	private Response send_request(string path, string type, string? message_string = null)
 	{
-		var session = new Soup.Session();
 		var message = new Soup.Message(type, FeedHQSecret.base_uri + path);
 
 		string oldauth = "GoogleLogin auth=" + m_utils.getAccessToken();
@@ -111,7 +116,13 @@ public class FeedReader.FeedHQConnection {
 		if(message_string != null)
 			message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string_post.data);
 
-		session.send_message(message);
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+		{
+			Logger.warning(@"feedHQConnection: message unexpected response - $message_string");
+		}
+
 		if((uint)message.status_code == 401)
 		{
 			Logger.debug("FeedHQ Post Token Expired");
@@ -119,7 +130,10 @@ public class FeedReader.FeedHQConnection {
 			return send_request(path, type, message_string);
 		}
 
-		return (string)message.response_body.data;
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
 	}
 
 }

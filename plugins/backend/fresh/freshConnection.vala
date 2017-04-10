@@ -17,17 +17,18 @@ public class FeedReader.freshConnection {
 
 	private freshUtils m_utils;
 	private GLib.Settings m_settingsTweaks;
+	private Soup.Session m_session;
 
 	public freshConnection()
 	{
 		m_utils = new freshUtils();
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
 	}
 
 	public LoginResponse getSID()
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
 
 		var msg = new freshMessage();
@@ -35,10 +36,9 @@ public class FeedReader.freshConnection {
 		msg.add("Passwd", m_utils.getPasswd());
 
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, msg.get().data);
-		session.send_message(message);
+		m_session.send_message(message);
 
-		if((string)message.response_body.flatten().data == null
-		|| (string)message.response_body.flatten().data == "")
+		if(message.status_code != 200)
 		{
 			Logger.error("No response from freshRSS to message getSID()");
 			return LoginResponse.NO_CONNECTION;
@@ -66,13 +66,11 @@ public class FeedReader.freshConnection {
 
 	public string getToken()
 	{
-		return getRequest("reader/api/0/token").replace("\n", "");
+		return getRequest("reader/api/0/token").data.replace("\n", "");
 	}
 
-	public string postRequest(string path, string input, string type)
+	public Response postRequest(string path, string input, string type)
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("POST", m_utils.getURL()+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
@@ -82,23 +80,38 @@ public class FeedReader.freshConnection {
 		message.request_headers.append("Content-Type", type);
 
 		message.request_body.append_take(input.data);
-		session.send_message(message);
+		m_session.send_message(message);
 
-		return (string)message.response_body.flatten().data;
+		if(message.status_code != 200)
+		{
+			Logger.warning("freshConnection: message unexpected response %u".printf(message.status_code));
+		}
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
     }
 
-	public string getRequest(string path)
+	public Response getRequest(string path)
 	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
 		var message = new Soup.Message("GET", m_utils.getURL()+path);
 		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 				message.request_headers.append("DNT", "1");
 
-		session.send_message(message);
-		return (string)message.response_body.data;
+		m_session.send_message(message);
+
+		if(message.status_code != 200)
+		{
+			Logger.warning("freshConnection: message unexpected response %u".printf(message.status_code));
+		}
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
+		};
 	}
 }
 

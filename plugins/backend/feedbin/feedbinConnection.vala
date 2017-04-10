@@ -21,11 +21,6 @@ public class FeedReader.feedbinConnection {
 
 	private const string BASE_URI = "https://api.feedbin.com/v2/";
 
-	public struct Response {
-		uint status;
-		string data;
-	}
-
 	public feedbinConnection()
 	{
 		m_utils = new feedbinUtils();

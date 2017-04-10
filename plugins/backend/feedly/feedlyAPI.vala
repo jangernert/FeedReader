@@ -68,12 +68,18 @@ public class FeedReader.FeedlyAPI : Object {
 
 	private bool getUserID()
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+		var response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+
+		if(response.status != 200)
+			return false;
+
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getUserID: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -110,14 +116,20 @@ public class FeedReader.FeedlyAPI : Object {
 		return false;
 	}
 
-	private int tokenStillValid()
+	private ConnectionError tokenStillValid()
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+		var response = m_connection.send_get_request_to_feedly ("/v3/profile/");
+
+		if(response.status != 200)
+			return ConnectionError.NO_RESPONSE;
+
 		var parser = new Json.Parser ();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("tokenStillValid: Could not load message response");
 			Logger.error(e.message);
 			return ConnectionError.NO_RESPONSE;
@@ -135,15 +147,15 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public bool getCategories(Gee.List<category> categories)
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/categories/");
+		var response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e)
 		{
@@ -180,16 +192,18 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public bool getFeeds(Gee.List<feed> feeds)
 	{
-		string response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
+		var response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getFeeds: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -260,14 +274,14 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public bool getTags(Gee.List<tag> tags)
 	{
-		string response = m_connection.send_get_request_to_feedly("/v3/tags/");
+		var response = m_connection.send_get_request_to_feedly("/v3/tags/");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e) {
 			Logger.error("getTags: Could not load message response");
@@ -294,10 +308,9 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public string getArticles(Gee.List<article> articles, int count, string continuation = "", ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public string? getArticles(Gee.List<article> articles, int count, string? continuation = null, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "user/" + m_userID + "/category/global.all";
-		string cont = "";
 		string onlyUnread = "false";
 		string marked_tag = "user/" + m_userID + "/tag/global.saved";
 
@@ -315,34 +328,46 @@ public class FeedReader.FeedlyAPI : Object {
 
 		var parser = new Json.Parser();
 
-		string streamCall = "/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, continuation);
-		string entry_id_response = m_connection.send_get_request_to_feedly(streamCall);
-		try{
-			parser.load_from_data(entry_id_response, -1);
+		string streamCall = "/v3/streams/ids?streamId=%s&unreadOnly=%s&count=%i&ranked=newest&continuation=%s".printf(steamID, onlyUnread, count, (continuation == null) ? "" : continuation);
+		var entry_id_response = m_connection.send_get_request_to_feedly(streamCall);
+
+		if(entry_id_response.status != 200)
+			return null;
+
+		try
+		{
+			parser.load_from_data(entry_id_response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getArticles: Could not load message response");
 			Logger.error(e.message);
 		}
+
 		var root = parser.get_root().get_object();
-		if(root.has_member("continuation"))
+		if(!root.has_member("continuation"))
+			return null;
+
+		string cont = root.get_string_member("continuation");
+
+		var response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response.data,"application/json");
+
+		if(response.status != 200)
+			return null;
+
+		try
 		{
-			cont = root.get_string_member("continuation");
+			parser.load_from_data(response.data, -1);
 		}
-
-		string response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response,"application/json");
-		//Logger.debug(response);
-
-		try{
-			parser.load_from_data(response, -1);
-		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getArticles: Could not load message response");
 			Logger.error(e.message);
 		}
 		var array = parser.get_root().get_array();
 
-		for(int i = 0; i < array.get_length(); i++) {
+		for(int i = 0; i < array.get_length(); i++)
+		{
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
 			string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
@@ -433,13 +458,18 @@ public class FeedReader.FeedlyAPI : Object {
 	/** Returns the number of unread articles for an ID (may be a feed, subscription, category or tag */
 	public void getUnreadCounts()
 	{
-		string response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
+		var response = m_connection.send_get_request_to_feedly ("/v3/markers/counts");
+
+		if(response.status != 200)
+			return;
 
 		var parser = new Json.Parser ();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getUnreadCounts: Could not load message response");
 			Logger.error(e.message);
 		}
@@ -453,13 +483,14 @@ public class FeedReader.FeedlyAPI : Object {
 	{
 		int unread_count = -1;
 
-		for (int i = 0; i < m_unreadcounts.get_length (); i++) {
+		for(int i = 0; i < m_unreadcounts.get_length (); i++)
+		{
 			var unread = m_unreadcounts.get_object_element(i);
+			string unread_id = unread.get_string_member("id");
 
-			string unread_id = unread.get_string_member ("id");
-
-			if (id == unread_id) {
-				unread_count = (int)unread.get_int_member ("count");
+			if(id == unread_id)
+			{
+				unread_count = (int)unread.get_int_member("count");
 				break;
 			}
 		}

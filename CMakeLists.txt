@@ -82,6 +82,7 @@ vala_precompile(LIBFR libFeedReader
 	src/Enums.vala
 	src/dbBase.vala
 	src/Settings.vala
+	src/Structs.vala
 	src/Utils.vala
 	src/QueryBuilder.vala
 	src/ContentGrabber/stringPair.vala

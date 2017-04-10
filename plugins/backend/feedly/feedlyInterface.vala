@@ -272,7 +272,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
 	{
-		string continuation = "";
+		string continuation = null;
 		string feedly_tagID = "";
 		string feedly_feedID = "";
 		if(feedID != null)
@@ -305,7 +305,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 			continuation = m_api.getArticles(articles, amount, continuation, whatToGet, feedly_tagID, feedly_feedID);
 
-			if(continuation == "")
+			if(continuation == null)
 				break;
 		}
 

@@ -53,12 +53,18 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	private bool getUserID()
 	{
-		string response = m_connection.send_request("user-info");
+		var response = m_connection.send_request("user-info");
+
+		if(response.status != 200)
+			return false;
+
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getUserID: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -85,16 +91,18 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public bool getFeeds(Gee.List<feed> feeds)
 	{
-		string response = m_connection.send_request("subscription/list");
+		var response = m_connection.send_request("subscription/list");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getFeeds: Could not load message response");
 			Logger.error(e.message);
 			return false;
@@ -151,14 +159,14 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
-		string response = m_connection.send_request("tag/list");
+		var response = m_connection.send_request("tag/list");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e) {
 			Logger.error("getCategoriesAndTags: Could not load message response");
@@ -212,11 +220,14 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 	public int getTotalUnread()
 	{
-		string response = m_connection.send_request("unread-count");
+		var response = m_connection.send_request("unread-count");
+
+		if(response.status != 200)
+			return 0;
 
 		var parser = new Json.Parser();
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e) {
 			Logger.error("getTotalUnread: Could not load message response");
@@ -249,13 +260,18 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		message_string += "&xt=user/-/state/com.google/read";
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-		string response = m_connection.send_request("stream/items/ids", message_string);
+		var response = m_connection.send_request("stream/items/ids", message_string);
+
+		if(response.status != 200)
+			return null;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("updateArticles: Could not load message response");
 			Logger.error(e.message);
 		}
@@ -298,13 +314,18 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
-		string response = m_connection.send_request(api_endpoint, message_string);
+		var response = m_connection.send_request(api_endpoint, message_string);
+
+		if(response.status != 200)
+			return null;
 
 		var parser = new Json.Parser();
-		try{
-			parser.load_from_data(response, -1);
+		try
+		{
+			parser.load_from_data(response.data, -1);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("getArticles: Could not load message response");
 			Logger.error(e.message);
 		}

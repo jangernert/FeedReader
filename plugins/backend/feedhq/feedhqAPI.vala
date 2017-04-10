@@ -57,10 +57,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("user-info?" + msg.get());
+		var response = m_connection.send_get_request("user-info?" + msg.get());
+
+		if(response.status != 200)
+			return false;
+
 		var parser = new Json.Parser();
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e) {
 			Logger.error("getUserID: Could not load message response");
@@ -87,14 +91,15 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("subscription/list?" + msg.get());
-		if(response == "" || response == null)
+		var response = m_connection.send_get_request("subscription/list?" + msg.get());
+
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch(Error e)
 		{
@@ -154,14 +159,15 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("tag/list?" + msg.get());
-		if(response == "" || response == null)
+		var response = m_connection.send_get_request("tag/list?" + msg.get());
+
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch(Error e)
 		{
@@ -204,11 +210,11 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		string response = m_connection.send_get_request("unread-count?" + msg.get());
+		var response = m_connection.send_get_request("unread-count?" + msg.get());
 
 		var parser = new Json.Parser();
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e) {
 			Logger.error("getTotalUnread: Could not load message response");
@@ -244,12 +250,15 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		if(continuation != null)
 			msg.add("c", continuation);
 
-		string response = m_connection.send_get_request("stream/items/ids?" + msg.get());
+		var response = m_connection.send_get_request("stream/items/ids?" + msg.get());
+
+		if(response.status != 200)
+			return null;
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch(Error e)
 		{
@@ -301,14 +310,16 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			api_endpoint += "/" + GLib.Uri.escape_string(feed_id.replace("_", "/"));
 		else if(tagID != null)
 			api_endpoint += "/" + GLib.Uri.escape_string(tagID.replace("_", "/"));
-		string response = m_connection.send_get_request(api_endpoint + "?" + msg.get());
+		var response = m_connection.send_get_request(api_endpoint + "?" + msg.get());
+
+		if(response.status != 200)
+			return null;
 
 		Logger.debug(api_endpoint + "?" + msg.get());
-		//Logger.debug(response);
 
 		var parser = new Json.Parser();
 		try{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e) {
 			Logger.error("getCategoriesAndTags: Could not load message response");
@@ -468,7 +479,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public void import(string opml)
 	{
-		string response = m_connection.send_post_request("subscription/import", opml);
-		Logger.debug("feedhq.import: " + response);
+		var response = m_connection.send_post_request("subscription/import", opml);
+		Logger.debug("feedhq.import: " + response.data);
 	}
 }

@@ -95,8 +95,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		}
 
 
-		if((string)m_message_soup.response_body.flatten().data == null
-		|| (string)m_message_soup.response_body.flatten().data == "")
+		if(m_message_soup.status_code != 200)
 		{
 			Logger.error("TTRSS Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
 			return ConnectionError.NO_RESPONSE;
@@ -108,10 +107,12 @@ public class FeedReader.ttrssMessage : GLib.Object {
 			return ConnectionError.SUCCESS;
 		}
 
-		try{
+		try
+		{
 			m_parser.load_from_data((string)m_message_soup.response_body.flatten().data);
 		}
-		catch (Error e) {
+		catch(Error e)
+		{
 			Logger.error("Could not load response from Message to ttrss");
 			Logger.error(e.message);
 			return ConnectionError.NO_RESPONSE;

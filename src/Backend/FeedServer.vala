@@ -264,11 +264,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(articles.size > 0)
 		{
 			dbDaemon.get_default().update_articles(articles);
-			var new_articles = new Gee.LinkedList<article>();
 
-			var it = articles.bidir_list_iterator();
-			for (var has_next = it.last(); has_next; has_next = it.previous())
-				new_articles.add(it.get());
+			// Reverse the list
+			var new_articles = new Gee.LinkedList<article>();
+			foreach(var article in articles)
+			{
+				new_articles.insert(0, article);
+			}
 
 			dbDaemon.get_default().write_articles(new_articles);
 			updateFeedList();

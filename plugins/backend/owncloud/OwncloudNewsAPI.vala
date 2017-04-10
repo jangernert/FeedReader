@@ -99,7 +99,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-    public bool getFeeds(Gee.LinkedList<feed> feeds)
+    public bool getFeeds(Gee.List<feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -154,7 +154,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-    public bool getCategories(Gee.LinkedList<category> categories, Gee.LinkedList<feed> feeds)
+    public bool getCategories(Gee.List<category> categories, Gee.List<feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -204,7 +204,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-    public void getNewArticles(Gee.LinkedList<article> articles, int lastModified, OwnCloudType type, int id)
+    public void getNewArticles(Gee.List<article> articles, int lastModified, OwnCloudType type, int id)
 	{
 		var message = new OwnCloudNewsMessage(m_OwnCloudURL + "/items/updated", m_username, m_password, "GET");
         message.add_int("lastModified", lastModified);
@@ -273,7 +273,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 
 
-    public void getArticles(Gee.LinkedList<article> articles, int skip, int count, bool read, OwnCloudType type, int id)
+    public void getArticles(Gee.List<article> articles, int skip, int count, bool read, OwnCloudType type, int id)
 	{
         var message = new OwnCloudNewsMessage(m_OwnCloudURL + "items", m_username, m_password, "GET");
         message.add_bool("oldestFirst", false);

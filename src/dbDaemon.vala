@@ -165,7 +165,7 @@ public class FeedReader.dbDaemon : dbBase {
         }
     }
 
-    public void write_feeds(Gee.LinkedList<feed> feeds)
+    public void write_feeds(Gee.List<feed> feeds)
     {
         executeSQL("BEGIN TRANSACTION");
 
@@ -226,7 +226,7 @@ public class FeedReader.dbDaemon : dbBase {
         executeSQL("COMMIT TRANSACTION");
     }
 
-    public void write_tags(Gee.LinkedList<tag> tags)
+    public void write_tags(Gee.List<tag> tags)
     {
         executeSQL("BEGIN TRANSACTION");
 
@@ -266,7 +266,7 @@ public class FeedReader.dbDaemon : dbBase {
         executeSQL("COMMIT TRANSACTION");
     }
 
-    public void update_tags(Gee.LinkedList<tag> tags)
+    public void update_tags(Gee.List<tag> tags)
     {
         executeSQL("BEGIN TRANSACTION");
 
@@ -312,7 +312,7 @@ public class FeedReader.dbDaemon : dbBase {
 
 
 
-    public void write_categories(Gee.LinkedList<category> categories)
+    public void write_categories(Gee.List<category> categories)
     {
         executeSQL("BEGIN TRANSACTION");
 
@@ -360,7 +360,7 @@ public class FeedReader.dbDaemon : dbBase {
         executeSQL("COMMIT TRANSACTION");
     }
 
-    public void updateArticlesByID(Gee.LinkedList<string> ids, string field)
+    public void updateArticlesByID(Gee.List<string> ids, string field)
     {
         // first reset all articles
         var reset_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
@@ -442,7 +442,7 @@ public class FeedReader.dbDaemon : dbBase {
         executeSQL("COMMIT TRANSACTION");
     }
 
-    public void update_articles(Gee.LinkedList<article> articles)
+    public void update_articles(Gee.List<article> articles)
     {
         executeSQL("BEGIN TRANSACTION");
 
@@ -500,7 +500,7 @@ public class FeedReader.dbDaemon : dbBase {
     }
 
 
-    public void write_articles(Gee.LinkedList<article> articles)
+    public void write_articles(Gee.List<article> articles)
     {
         FeedReader.UtilsDaemon.generatePreviews(articles);
         FeedReader.UtilsDaemon.checkHTML(articles);

@@ -1384,7 +1384,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	public Gee.LinkedList<article> readUnfetchedArticles()
+	public Gee.List<article> readUnfetchedArticles()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("articleID");
@@ -1429,7 +1429,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	public Gee.LinkedList<article> read_articles(string ID, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	public Gee.List<article> read_articles(string ID, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("ROWID");

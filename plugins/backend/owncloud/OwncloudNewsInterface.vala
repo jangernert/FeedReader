@@ -170,7 +170,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return m_api.addFeed(feedURL, catID).to_string();
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<feed> feeds)
 	{
 		foreach(feed f in feeds)
 		{
@@ -224,7 +224,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		if(m_api.getFeeds(feeds)
 		&& m_api.getCategories(categories, feeds))

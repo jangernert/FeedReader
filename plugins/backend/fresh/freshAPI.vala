@@ -34,7 +34,7 @@ public class FeedReader.freshAPI : Object {
 		return m_connection.getSID();
 	}
 
-	public bool getSubscriptionList(Gee.LinkedList<feed> feeds)
+	public bool getSubscriptionList(Gee.List<feed> feeds)
 	{
 		string response = m_connection.getRequest("reader/api/0/subscription/list?output=json");
 
@@ -100,7 +100,7 @@ public class FeedReader.freshAPI : Object {
 		return true;
 	}
 
-	public bool getTagList(Gee.LinkedList<category> categories)
+	public bool getTagList(Gee.List<category> categories)
 	{
 		string response = m_connection.getRequest("reader/api/0/tag/list?output=json");
 		string prefix = "user/-/label/";

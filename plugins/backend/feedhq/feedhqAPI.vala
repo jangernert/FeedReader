@@ -83,7 +83,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.LinkedList<feed> feeds)
+	public bool getFeeds(Gee.List<feed> feeds)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -150,7 +150,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -235,7 +235,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	}
 
 
-	public string? updateArticles(Gee.LinkedList<string> ids, int count, string? continuation = null)
+	public string? updateArticles(Gee.List<string> ids, int count, string? continuation = null)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -280,7 +280,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return null;
 	}
 
-	public string? getArticles(Gee.LinkedList<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
+	public string? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");

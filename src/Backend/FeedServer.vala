@@ -259,16 +259,18 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	private void writeArticles(Gee.LinkedList<article> articles)
+	private void writeArticles(Gee.List<article> articles)
 	{
 		if(articles.size > 0)
 		{
 			dbDaemon.get_default().update_articles(articles);
-			var new_articles = new Gee.LinkedList<article>();
 
-			var it = articles.bidir_list_iterator();
-			for (var has_next = it.last(); has_next; has_next = it.previous())
-				new_articles.add(it.get());
+			// Reverse the list
+			var new_articles = new Gee.LinkedList<article>();
+			foreach(var article in articles)
+			{
+				new_articles.insert(0, article);
+			}
 
 			dbDaemon.get_default().write_articles(new_articles);
 			updateFeedList();
@@ -721,7 +723,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.addFeed(feedURL, catID, newCatName);
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<feed> feeds)
 	{
 		if(!m_pluginLoaded)
 			return;
@@ -801,7 +803,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		if(!m_pluginLoaded)
 			return false;

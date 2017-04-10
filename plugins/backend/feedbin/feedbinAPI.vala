@@ -28,23 +28,30 @@ public class FeedReader.feedbinAPI : Object {
 	{
 		Logger.debug("feedbin backend: login");
 
-		if(!Utils.ping("https://feedbin.com/"))
+		if(!Utils.ping("https://api.feedbin.com/"))
 			return LoginResponse.NO_CONNECTION;
 
-		return LoginResponse.SUCCESS;
+		var status = m_connection.getRequest("authentication.json").status;
+		if(status == 200)
+			return LoginResponse.SUCCESS;
+		else if(status == 401)
+			return LoginResponse.WRONG_LOGIN;
+
+		Logger.error("Got status %u from Feedbin authentication.json".printf(status));
+		return LoginResponse.UNKNOWN_ERROR;
 	}
 
 	public bool getSubscriptionList(Gee.LinkedList<feed> feeds)
 	{
-		string response = m_connection.getRequest("subscriptions.json");
+		var response = m_connection.getRequest("subscriptions.json");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e)
 		{
@@ -54,6 +61,11 @@ public class FeedReader.feedbinAPI : Object {
 		}
 		Json.Array array = parser.get_root().get_array();
 
+		// We don't want to use the same session as FeedbinConnection, because
+		// it does authentication, and we don't want to accidentally send our
+		// Feedbin credentials to random websites.
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
@@ -77,7 +89,7 @@ public class FeedReader.feedbinAPI : Object {
 					id,
 					title,
 					url,
-					Utils.downloadIcon(id, url),
+					Utils.downloadIconWithSession(session, id, url),
 					0,
 					{ "0" },
 					xmlURL)
@@ -89,15 +101,15 @@ public class FeedReader.feedbinAPI : Object {
 
 	public bool getTaggings(Gee.LinkedList<category> categories, Gee.LinkedList<feed> feeds)
 	{
-		string response = m_connection.getRequest("taggings.json");
+		var response = m_connection.getRequest("taggings.json");
 
-		if(response == "" || response == null)
+		if(response.status != 200)
 			return false;
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch (Error e)
 		{
@@ -166,7 +178,7 @@ public class FeedReader.feedbinAPI : Object {
 
 		Logger.debug(request);
 
-		string response = m_connection.getRequest(request);
+		string response = m_connection.getRequest(request).data;
 
 		var parser = new Json.Parser();
 		try
@@ -229,7 +241,7 @@ public class FeedReader.feedbinAPI : Object {
 
 	public Gee.LinkedList<string> unreadEntries()
 	{
-		string response = m_connection.getRequest("unread_entries.json");
+		string response = m_connection.getRequest("unread_entries.json").data;
 		response = response.substring(1, response.length-2);
 		var a = response.split(",");
 		var ids = new Gee.LinkedList<string>();
@@ -244,7 +256,7 @@ public class FeedReader.feedbinAPI : Object {
 
 	public Gee.LinkedList<string> starredEntries()
 	{
-		string response = m_connection.getRequest("starred_entries.json");
+		string response = m_connection.getRequest("starred_entries.json").data;
 		response = response.substring(1, response.length-2);
 		var a = response.split(",");
 		var ids = new Gee.LinkedList<string>();
@@ -276,12 +288,10 @@ public class FeedReader.feedbinAPI : Object {
 		gen.set_root(root);
 		string json = gen.to_data(null);
 
-		string response = "";
-
 		if(!read)
-			response = m_connection.postRequest("unread_entries.json", json);
+			m_connection.postRequest("unread_entries.json", json);
 		else
-			response = m_connection.deleteRequest("unread_entries.json", json);
+			m_connection.deleteRequest("unread_entries.json", json);
 	}
 
 	public void createStarredEntries(string articleID, bool starred)
@@ -299,17 +309,15 @@ public class FeedReader.feedbinAPI : Object {
 		gen.set_root(root);
 		string json = gen.to_data(null);
 
-		string response = "";
-
 		if(starred)
-			response = m_connection.postRequest("starred_entries.json", json);
+			m_connection.postRequest("starred_entries.json", json);
 		else
-			response = m_connection.deleteRequest("starred_entries.json", json);
+			m_connection.deleteRequest("starred_entries.json", json);
 	}
 
 	public void deleteFeed(string feedID)
 	{
-		m_connection.deleteRequest("subscriptions/%s.json".printf(feedID), "");
+		m_connection.deleteRequest("subscriptions/%s.json".printf(feedID));
 	}
 
 	public void renameFeed(string feedID, string title)
@@ -329,7 +337,7 @@ public class FeedReader.feedbinAPI : Object {
 		var response = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
 
 		Logger.debug("subscriptions/%s/update.json".printf(feedID));
-		Logger.debug(response);
+		Logger.debug(response.data);
 	}
 
 }

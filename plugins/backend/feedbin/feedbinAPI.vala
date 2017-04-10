@@ -41,7 +41,7 @@ public class FeedReader.feedbinAPI : Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-	public bool getSubscriptionList(Gee.LinkedList<feed> feeds)
+	public bool getSubscriptionList(Gee.List<feed> feeds)
 	{
 		var response = m_connection.getRequest("subscriptions.json");
 
@@ -99,7 +99,7 @@ public class FeedReader.feedbinAPI : Object {
 		return true;
 	}
 
-	public bool getTaggings(Gee.LinkedList<category> categories, Gee.LinkedList<feed> feeds)
+	public bool getTaggings(Gee.List<category> categories, Gee.List<feed> feeds)
 	{
 		var response = m_connection.getRequest("taggings.json");
 
@@ -157,7 +157,7 @@ public class FeedReader.feedbinAPI : Object {
 
 
 
-	public int getEntries(Gee.LinkedList<article> articles, int page, bool starred, DateTime? timestamp, string? feedID = null)
+	public int getEntries(Gee.List<article> articles, int page, bool starred, DateTime? timestamp, string? feedID = null)
 	{
 		string request = "entries.json?per_page=100";
 		request += "&page=%i".printf(page);
@@ -239,7 +239,7 @@ public class FeedReader.feedbinAPI : Object {
 		return (int)length;
 	}
 
-	public Gee.LinkedList<string> unreadEntries()
+	public Gee.List<string> unreadEntries()
 	{
 		string response = m_connection.getRequest("unread_entries.json").data;
 		response = response.substring(1, response.length-2);
@@ -254,7 +254,7 @@ public class FeedReader.feedbinAPI : Object {
 		return ids;
 	}
 
-	public Gee.LinkedList<string> starredEntries()
+	public Gee.List<string> starredEntries()
 	{
 		string response = m_connection.getRequest("starred_entries.json").data;
 		response = response.substring(1, response.length-2);

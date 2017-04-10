@@ -15,7 +15,7 @@
 
 public class FeedReader.ArticleListBox : Gtk.ListBox {
 
-	private Gee.LinkedList<article> m_lazyQeue;
+	private Gee.List<article> m_lazyQeue;
 	private uint m_idleID = 0;
 	private string m_name;
 	private uint m_selectSourceID = 0;
@@ -39,7 +39,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		this.row_activated.connect(rowActivated);
 	}
 
-	public void newList(Gee.LinkedList<article> articles)
+	public void newList(Gee.List<article> articles)
 	{
 		stopLoading();
 		emptyList();
@@ -47,14 +47,14 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		addRow(ArticleListBalance.NONE);
 	}
 
-	public void addTop(Gee.LinkedList<article> articles)
+	public void addTop(Gee.List<article> articles)
 	{
 		stopLoading();
 		m_lazyQeue = articles;
 		addRow(ArticleListBalance.TOP, 0, true);
 	}
 
-	public void addBottom(Gee.LinkedList<article> articles)
+	public void addBottom(Gee.List<article> articles)
 	{
 		stopLoading();
 		m_lazyQeue = articles;

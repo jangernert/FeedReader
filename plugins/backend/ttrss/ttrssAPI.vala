@@ -174,7 +174,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool getFeeds(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories)
+	public bool getFeeds(Gee.List<feed> feeds, Gee.List<category> categories)
 	{
 		foreach(var item in categories)
 		{
@@ -222,7 +222,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool getUncategorizedFeeds(Gee.LinkedList<feed> feeds)
+	public bool getUncategorizedFeeds(Gee.List<feed> feeds)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -261,7 +261,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getTags(Gee.LinkedList<tag> tags)
+	public bool getTags(Gee.List<tag> tags)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -309,7 +309,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool getCategories(Gee.LinkedList<category> categories)
+	public bool getCategories(Gee.List<category> categories)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -331,7 +331,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	private void getSubCategories(Gee.LinkedList<category> categories, Json.Object categorie, int level, string parent)
+	private void getSubCategories(Gee.List<category> categories, Json.Object categorie, int level, string parent)
 	{
 		level++;
 		int orderID = 0;
@@ -407,7 +407,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public void getHeadlines(Gee.LinkedList<article> articles, int skip, int limit, ArticleStatus whatToGet, int feedID)
+	public void getHeadlines(Gee.List<article> articles, int skip, int limit, ArticleStatus whatToGet, int feedID)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -500,7 +500,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 	// tt-rss server needs newsplusplus extention
-	public Gee.LinkedList<string>? NewsPlus(ArticleStatus type, int limit)
+	public Gee.List<string>? NewsPlus(ArticleStatus type, int limit)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -534,7 +534,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public void getArticles(string articleIDs, Gee.LinkedList<article> articles)
+	public void getArticles(string articleIDs, Gee.List<article> articles)
 	{
 		var message = new ttrssMessage(m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);

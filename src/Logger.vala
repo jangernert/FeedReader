@@ -17,7 +17,7 @@ public class FeedReader.Logger : GLib.Object {
 
 	private int m_LogLevel;
 	private GLib.FileOutputStream m_stream;
-	private Gee.LinkedList<string> m_pendingWrites;
+	private Gee.List<string> m_pendingWrites;
 
 	private static Logger? m_logger = null;
 	private static string? m_fileName = null;

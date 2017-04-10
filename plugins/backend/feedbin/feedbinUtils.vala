@@ -106,7 +106,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		return removed;
 	}
 
-	public string? catExists(Gee.LinkedList<category> categories, string name)
+	public string? catExists(Gee.List<category> categories, string name)
 	{
 		foreach(category cat in categories)
 		{
@@ -117,7 +117,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		return null;
 	}
 
-	public void addFeedToCat(Gee.LinkedList<feed> feeds, string feedID, string catID)
+	public void addFeedToCat(Gee.List<feed> feeds, string feedID, string catID)
 	{
 		foreach(feed f in feeds)
 		{

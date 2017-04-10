@@ -20,7 +20,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 	public signal void updateArticleList();
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
-	public signal void writeArticles(Gee.LinkedList<article> articles);
+	public signal void writeArticles(Gee.List<article> articles);
 
 	public abstract void init();
 
@@ -83,7 +83,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract string addFeed(string feedURL, string? catID = null, string? newCatName = null);
 
-	public abstract void addFeeds(Gee.LinkedList<feed> feeds);
+	public abstract void addFeeds(Gee.List<feed> feeds);
 
 	public abstract void removeFeed(string feedID);
 
@@ -103,7 +103,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void importOPML(string opml);
 
-	public abstract bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags);
+	public abstract bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags);
 
 	public abstract int getUnreadCount();
 

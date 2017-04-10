@@ -207,7 +207,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return "";
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<feed> feeds)
 	{
 		var finishedFeeds = new Gee.LinkedList<feed>();
 
@@ -306,7 +306,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		var cats = dbDaemon.get_default().read_categories();
 		foreach(category cat in cats)

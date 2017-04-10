@@ -173,7 +173,7 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 	}
 
 
-	public bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
+	public bool tagIsCat(string tagID, Gee.List<feed> feeds)
 	{
 		foreach(feed Feed in feeds)
 		{

@@ -255,7 +255,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 	}
 
 
-    public int countUnread(Gee.LinkedList<feed> feeds, string id)
+    public int countUnread(Gee.List<feed> feeds, string id)
     {
         int unread = 0;
 

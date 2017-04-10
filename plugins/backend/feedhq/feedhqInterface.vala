@@ -190,7 +190,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		return "feed/" + feedURL;
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<feed> feeds)
 	{
 		return;
 	}
@@ -240,7 +240,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.import(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		if(m_api.getFeeds(feeds) && m_api.getCategoriesAndTags(feeds, categories, tags))
 			return true;

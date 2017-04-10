@@ -128,7 +128,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		Logger.debug("ArticleList: disallow signals from scroll");
 		m_currentScroll.allowSignals(false);
-		var articles = new Gee.LinkedList<article>();
+		Gee.List<article> articles = new Gee.LinkedList<article>();
 		uint offset = 0;
 		bool newArticles = false;
 		if(Settings.state().get_int("articlelist-new-rows") > 0 && m_state == ArticleListState.ALL)
@@ -243,7 +243,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		var articles = new Gee.LinkedList<article>();
+		Gee.List<article> articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadMore.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -288,7 +288,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		var articles = new Gee.LinkedList<article>();
+		Gee.List<article> articles = new Gee.LinkedList<article>();
 		SourceFunc callback = loadNewer.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -362,7 +362,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(firstRowID == null)
 			return;
 
-		var articles = new Gee.LinkedList<article>();
+		Gee.List<article> articles = new Gee.LinkedList<article>();
 		SourceFunc callback = updateArticleList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {

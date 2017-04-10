@@ -178,7 +178,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return m_api.editStream("subscribe", {"feed/" + feedURL}, null, cat, null);
 	}
 
-	public void addFeeds(Gee.LinkedList<feed> feeds)
+	public void addFeeds(Gee.List<feed> feeds)
 	{
 		string cat = "";
 		string[] urls = {};
@@ -244,7 +244,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		if(m_api.getSubscriptionList(feeds)
 		&& m_api.getTagList(categories))

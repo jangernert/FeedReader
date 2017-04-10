@@ -127,7 +127,7 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	}
 
 
-	public bool tagIsCat(string tagID, Gee.LinkedList<feed> feeds)
+	public bool tagIsCat(string tagID, Gee.List<feed> feeds)
 	{
 		foreach(feed Feed in feeds)
 		{

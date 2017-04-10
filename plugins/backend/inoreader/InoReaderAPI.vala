@@ -83,7 +83,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.LinkedList<feed> feeds)
+	public bool getFeeds(Gee.List<feed> feeds)
 	{
 		string response = m_connection.send_request("subscription/list");
 
@@ -149,7 +149,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.LinkedList<feed> feeds, Gee.LinkedList<category> categories, Gee.LinkedList<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		string response = m_connection.send_request("tag/list");
 
@@ -243,7 +243,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	}
 
 
-	public string? updateArticles(Gee.LinkedList<string> ids, int count, string? continuation = null)
+	public string? updateArticles(Gee.List<string> ids, int count, string? continuation = null)
 	{
 		var message_string = "n=" + count.to_string();
 		message_string += "&xt=user/-/state/com.google/read";
@@ -278,7 +278,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return null;
 	}
 
-	public string? getArticles(Gee.LinkedList<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
+	public string? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
 	{
 		var message_string = "n=" + count.to_string();
 

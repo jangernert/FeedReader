@@ -51,6 +51,10 @@ public class FeedReader.FavIconCache : GLib.Object {
 			while((fileInfo = enumerator.next_file()) != null)
 			{
 				string fileName = fileInfo.get_name();
+
+				if(fileName.has_suffix(".txt"))
+					continue;
+
 				var pixbuf = new Gdk.Pixbuf.from_file_at_scale(iconDirPath + fileName, 24, 24, true);
 				fileName = fileName.substring(0, fileName.length - ".ico".length);
 				m_map.set(fileName, pixbuf);
@@ -74,6 +78,10 @@ public class FeedReader.FavIconCache : GLib.Object {
 			while((fileInfo = enumerator.next_file()) != null)
 			{
 				string fileName = fileInfo.get_name();
+
+				if(fileName.has_suffix(".txt"))
+					continue;
+
 				if(!hasIcon(fileName))
 				{
 					var pixbuf = new Gdk.Pixbuf.from_file_at_scale(iconDirPath + fileName, 24, 24, true);

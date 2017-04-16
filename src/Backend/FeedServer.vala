@@ -300,13 +300,18 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(size > 0)
 		{
+			var session = new Soup.Session();
+            session.user_agent = Constants.USER_AGENT;
+            session.timeout = 5;
+			session.ssl_strict = false;
+
 			foreach(var Article in articles)
 			{
 				++i;
 				syncProgress(_(@"Grabbing full content: $i / $size"));
 				if(Settings.general().get_boolean("content-grabber"))
 				{
-					var grabber = new Grabber(Article.getURL(), Article.getArticleID(), Article.getFeedID());
+					var grabber = new Grabber(session, Article.getURL(), Article.getArticleID(), Article.getFeedID());
 					if(grabber.process())
 					{
 						grabber.print();
@@ -331,12 +336,12 @@ public class FeedReader.FeedServer : GLib.Object {
 					}
 					else
 					{
-						downloadImages(Article);
+						downloadImages(session, Article);
 					}
 				}
 				else
 				{
-					downloadImages(Article);
+					downloadImages(session, Article);
 				}
 
 				dbDaemon.get_default().writeContent(Article);
@@ -347,7 +352,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	private void downloadImages(article Article)
+	private void downloadImages(Soup.Session session, article Article)
 	{
 		if(Settings.tweaks().get_boolean("dont-download-images"))
 			return;
@@ -369,7 +374,7 @@ public class FeedReader.FeedServer : GLib.Object {
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
 		grabberUtils.addAttributes(doc, "a", "target", "_blank");
-		grabberUtils.saveImages(doc, Article.getArticleID(), Article.getFeedID());
+		grabberUtils.saveImages(session, doc, Article.getArticleID(), Article.getFeedID());
 
 		string html = "";
 		doc->dump_memory_enc(out html);
@@ -453,6 +458,11 @@ public class FeedReader.FeedServer : GLib.Object {
 	// Only used with command-line
 	public static void grabImages(string htmlFile, string url)
 	{
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		session.timeout = 5;
+		session.ssl_strict = false;
+
 		var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
         Html.Doc* doc = html_cntx.read_file(htmlFile);
@@ -462,7 +472,7 @@ public class FeedReader.FeedServer : GLib.Object {
     		return;
     	}
 		grabberUtils.repairURL("//img", "src", doc, url);
-		grabberUtils.saveImages(doc, "", "");
+		grabberUtils.saveImages(session, doc, "", "");
 
 		string html = "";
 		doc->dump_memory_enc(out html);

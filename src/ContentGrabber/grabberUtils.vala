@@ -440,7 +440,7 @@ public class FeedReader.grabberUtils : GLib.Object {
     }
 
 
-    public static bool saveImages(Html.Doc* doc, string articleID, string feedID)
+    public static bool saveImages(Soup.Session session, Html.Doc* doc, string articleID, string feedID)
     {
         Logger.debug("GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
@@ -469,11 +469,11 @@ public class FeedReader.grabberUtils : GLib.Object {
                     || (node->get_prop("height") == null))
                 )
                 {
-                    string original = downloadImage(node->get_prop("src"), articleID, feedID, i+1);
-                    string? parentURL = checkParent(node);
+                    string original = downloadImage(session, node->get_prop("src"), articleID, feedID, i+1);
+                    string? parentURL = checkParent(session, node);
                     if(parentURL != null)
                     {
-                        string parent = downloadImage(parentURL, articleID, feedID, i+1, true);
+                        string parent = downloadImage(session, parentURL, articleID, feedID, i+1, true);
                         node->set_prop("src", original);
                         node->set_prop("FR_parent", parent);
                     }
@@ -497,7 +497,7 @@ public class FeedReader.grabberUtils : GLib.Object {
     }
 
 
-    public static string downloadImage(string url, string articleID, string feedID, int nr, bool parent = false)
+    public static string downloadImage(Soup.Session session, string url, string articleID, string feedID, int nr, bool parent = false)
     {
         Logger.debug("GrabberUtils: download Image %s".printf(url));
         string fixedURL = url;
@@ -533,10 +533,6 @@ public class FeedReader.grabberUtils : GLib.Object {
 			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_dlImg.request_headers.append("DNT", "1");
 
-			var session = new Soup.Session();
-            session.user_agent = Constants.USER_AGENT;
-            session.timeout = 8;
-			session.ssl_strict = false;
 			var status = session.send_message(message_dlImg);
 			if(status == 200)
 			{
@@ -595,7 +591,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     // check if the parent node is a link that points to a picture
     // (most likely a bigger version of said picture)
-    private static string? checkParent(Xml.Node* node)
+    private static string? checkParent(Soup.Session session, Xml.Node* node)
     {
         Logger.debug("Grabber: checkParent");
         string smallImgURL = node->get_prop("src");
@@ -614,7 +610,6 @@ public class FeedReader.grabberUtils : GLib.Object {
                     url = "http:" + url;
 
                 Logger.debug(@"Grabber: url $url");
-                var session = new Soup.Session();
                 var message = new Soup.Message("HEAD", url);
                 session.send_message(message);
                 var params = new GLib.HashTable<string, string>(null, null);

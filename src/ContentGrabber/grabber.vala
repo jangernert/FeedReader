@@ -20,6 +20,7 @@ public class FeedReader.Grabber : GLib.Object {
     private string m_rawHtml;
     private string m_nexPageURL;
     private GrabberConfig m_config;
+    private Soup.Session m_session;
     private bool m_firstPage;
     private Html.Doc* m_doc;
     private Xml.Node* m_root;
@@ -33,7 +34,7 @@ public class FeedReader.Grabber : GLib.Object {
     public string m_date;
     public string m_html;
 
-    public Grabber(string articleURL, string? articleID, string? feedID)
+    public Grabber(Soup.session, string articleURL, string? articleID, string? feedID)
     {
         m_articleURL = articleURL;
         m_articleID = articleID;
@@ -41,6 +42,7 @@ public class FeedReader.Grabber : GLib.Object {
         m_firstPage = true;
         m_foundSomething = false;
         m_singlePage = false;
+        m_session = session;
 
         if(m_articleURL.has_prefix("//"))
             m_articleURL = "http:" + m_articleURL;
@@ -164,9 +166,8 @@ public class FeedReader.Grabber : GLib.Object {
     private bool checkContentType()
     {
         Logger.debug("Grabber: check contentType");
-        var session = new Soup.Session();
         var message = new Soup.Message("HEAD", m_articleURL.escape(""));
-        session.send_message(message);
+        m_session.send_message(message);
         var params = new GLib.HashTable<string, string>(null, null);
         string? contentType = message.response_headers.get_content_type(out params);
         if(contentType != null)
@@ -183,9 +184,6 @@ public class FeedReader.Grabber : GLib.Object {
 
     private bool download()
     {
-        var session = new Soup.Session();
-        session.user_agent = Constants.USER_AGENT;
-        session.timeout = 5;
         var msg = new Soup.Message("GET", m_articleURL.escape(""));
         msg.restarted.connect(() => {
             Logger.debug("Grabber: download redirected - " + msg.status_code.to_string());
@@ -200,7 +198,7 @@ public class FeedReader.Grabber : GLib.Object {
         if(Settings.tweaks().get_boolean("do-not-track"))
 			msg.request_headers.append("DNT", "1");
 
-        session.send_message(msg);
+        m_session.send_message(msg);
 
         if(msg.response_body == null)
         {
@@ -483,9 +481,9 @@ public class FeedReader.Grabber : GLib.Object {
         if(!Settings.tweaks().get_boolean("dont-download-images"))
         {
             if(m_articleID != null && m_feedID != null)
-                grabberUtils.saveImages(m_doc, m_articleID, m_feedID);
+                grabberUtils.saveImages(m_session, m_doc, m_articleID, m_feedID);
             else
-                grabberUtils.saveImages(m_doc, "", "");
+                grabberUtils.saveImages(m_session, m_doc, "", "");
         }
 
         m_doc->dump_memory_enc(out m_html);

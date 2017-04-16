@@ -89,11 +89,12 @@ public class FeedReader.Grabber : GLib.Object {
     {
         Logger.debug("Grabber: process article: " + m_articleURL);
 
-        if(m_articleURL == null || m_articleURL == "")
-        {
-            Logger.error("No valid article-url?!?");
-            return false;
-        }
+        var uri = new Soup.URI(m_articleURL);
+		if(uri == null)
+		{
+			Logger.error("No valid article-url?!?");
+			return false;
+		}
 
         if(!checkContentType())
             return false;

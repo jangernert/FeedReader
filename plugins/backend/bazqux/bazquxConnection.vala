@@ -30,11 +30,6 @@ public class FeedReader.bazquxConnection {
 		m_session.user_agent = Constants.USER_AGENT;
 	}
 
-	public Soup.Session getSession()
-	{
-		return m_session;
-	}
-
 	public LoginResponse getToken()
 	{
 		Logger.debug("bazqux Connection: getToken()");

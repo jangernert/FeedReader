@@ -227,7 +227,7 @@ public class FeedReader.FeedlyAPI : Object {
 				icon_url = object.get_string_member("visualUrl");
 			}
 
-			if(icon_url != "" && !Utils.downloadIcon(m_connection.getSession(), feedID, icon_url))
+			if(icon_url != "" && !Utils.downloadIcon(feedID, icon_url))
 			{
 				icon_url = "";
 			}

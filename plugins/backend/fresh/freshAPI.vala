@@ -78,7 +78,7 @@ public class FeedReader.freshAPI : Object {
 			{
 				icon_url = object.get_string_member("iconUrl");
 			}
-			if(icon_url != "" && !Utils.downloadIcon(m_connection.getSession(), id, icon_url))
+			if(icon_url != "" && !Utils.downloadIcon(id, icon_url))
 			{
 				icon_url = "";
 			}

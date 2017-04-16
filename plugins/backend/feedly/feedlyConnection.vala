@@ -27,11 +27,6 @@ public class FeedReader.FeedlyConnection {
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 	}
 
-	public Soup.Session getSession()
-	{
-		return m_session;
-	}
-
 	public LoginResponse getToken()
 	{
 		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");

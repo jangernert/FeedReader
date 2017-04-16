@@ -15,6 +15,20 @@
 
 public class FeedReader.Utils : GLib.Object {
 
+	private static Soup.Session? m_session;
+
+	private static Soup.Session getSession()
+	{
+		if(m_session == null)
+		{
+			m_session = new Soup.Session();
+			m_session.user_agent = Constants.USER_AGENT;
+			m_session.ssl_strict = false;
+		}
+
+		return m_session;
+	}
+
 	public static string UTF8fix(string? old_string, bool removeHTML = false)
 	{
 		if(old_string == null)
@@ -185,12 +199,8 @@ public class FeedReader.Utils : GLib.Object {
 			return false;
 		}
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		session.ssl_strict = false;
-
 		var message = new Soup.Message.from_uri("HEAD", uri);
-		var status = session.send_message(message);
+		var status = getSession().send_message(message);
 
 		Logger.debug(@"Ping: status $status");
 
@@ -427,13 +437,13 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static bool downloadFavIcon(Soup.Session session, string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static bool downloadFavIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		// download html and parse to find location of favicon
 		var message_html = new Soup.Message ("GET", feed_url);
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_html.request_headers.append("DNT", "1");
-		var status = session.send_message(message_html);
+		var status = getSession().send_message(message_html);
 		if(status == 200)
 		{
 			var html = (string)message_html.response_body.flatten().data;
@@ -443,7 +453,7 @@ public class FeedReader.Utils : GLib.Object {
 	        Html.Doc* doc = html_cntx.read_doc(html, "");
 	        if (doc == null)
 	        {
-	            Logger.debug("Utils.downloadIconWithSession: parsing html failed");
+	            Logger.debug("Utils.downloadFavIcon: parsing html failed");
 	    		return false;
 	    	}
 
@@ -457,7 +467,7 @@ public class FeedReader.Utils : GLib.Object {
 			if(xpath != null)
 			{
 				xpath = grabberUtils.completeURL(xpath, feed_url);
-				if(downloadIcon(session, feed_id, xpath, icon_path))
+				if(downloadIcon(feed_id, xpath, icon_path))
 					return true;
 			}
 
@@ -469,7 +479,7 @@ public class FeedReader.Utils : GLib.Object {
 		if(icon_url.has_suffix("/"))
 			icon_url += "/";
 		icon_url += "favicon.ico";
-		if(downloadIcon(session, feed_id, icon_url, icon_path))
+		if(downloadIcon(feed_id, icon_url, icon_path))
 			return true;
 
 
@@ -481,10 +491,10 @@ public class FeedReader.Utils : GLib.Object {
 			allesedv_url = allesedv_url.replace("https://", "");
 		allesedv_url = "https://f1.allesedv.com/32/%s".printf(allesedv_url);
 
-		return downloadIcon(session, feed_id, allesedv_url, icon_path);
+		return downloadIcon(feed_id, allesedv_url, icon_path);
 	}
 
-	public static bool downloadIcon(Soup.Session session, string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static bool downloadIcon(string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{
@@ -505,7 +515,7 @@ public class FeedReader.Utils : GLib.Object {
 			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_head.request_headers.append("DNT", "1");
 
-			var status = session.send_message(message_head);
+			var status = getSession().send_message(message_head);
 			if(status == 200)
 			{
 				etag = message_head.response_headers.get_one("ETag");
@@ -538,7 +548,7 @@ public class FeedReader.Utils : GLib.Object {
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_dlIcon.request_headers.append("DNT", "1");
 
-		var status = session.send_message(message_dlIcon);
+		var status = getSession().send_message(message_dlIcon);
 		if(status == 200)
 		{
 			string data = (string)message_dlIcon.response_body.flatten().data;

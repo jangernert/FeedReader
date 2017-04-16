@@ -61,7 +61,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		this.set_tooltip_text(m_desc);
 		show_all();
 
-		downloadIcon.begin("/tmp/",m_url, (obj, res) => {
+		downloadIcon.begin("/tmp/", m_url, (obj, res) => {
 			bool success = downloadIcon.end(res);
 			Gtk.Image? icon = null;
 
@@ -97,62 +97,10 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 
 		SourceFunc callback = downloadIcon.callback;
 		bool success = false;
-		string filename = "/tmp/" + m_url.replace("/", "_").replace(".", "_") + ".ico";
 
 		new GLib.Thread<void*>(null, () => {
-
-			if(FileUtils.test(filename, GLib.FileTest.EXISTS))
-			{
-				success = true;
-				Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-				return null;
-			}
-
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-			session.timeout = 5;
-			var msg = new Soup.Message("GET", m_url.escape(""));
-			session.send_message(msg);
-			string xml = (string)msg.response_body.flatten().data;
-
-			Rss.Parser parser = new Rss.Parser();
-			try
-			{
-				parser.load_from_data(xml, xml.length);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("SuggestedFeedRow.downloadIcon: %s".printf(e.message));
-			}
-			var doc = parser.get_document();
-
-			if(doc.image_url != ""
-			&& doc.image_url != null
-			&& GLib.Uri.parse_scheme(doc.image_url) != null)
-			{
-				Soup.Message message_dlIcon;
-				message_dlIcon = new Soup.Message("GET", doc.image_url);
-				var status = session.send_message(message_dlIcon);
-				if(status == 200)
-				{
-					try{
-						FileUtils.set_contents(	filename,
-												(string)message_dlIcon.response_body.flatten().data,
-												(long)message_dlIcon.response_body.length);
-					}
-					catch(GLib.FileError e)
-					{
-						Logger.error("Error writing icon: %s".printf(e.message));
-					}
+				if(Utils.downloadFavIcon(url, url, path))
 					success = true;
-				}
-				Logger.error("Error downloading icon for feed: %s".printf(m_url));
-			}
-			else
-			{
-				if(Utils.downloadFavIcon(session, url, url, path))
-					success = true;
-			}
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		});

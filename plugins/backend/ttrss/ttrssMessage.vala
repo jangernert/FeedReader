@@ -33,16 +33,6 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		m_parser = new Json.Parser();
 
 		m_message_soup = new Soup.Message("POST", destination);
-		m_session.authenticate.connect((msg, auth, retrying) => {
-			if(m_utils.getHtaccessUser() == "")
-			{
-				Logger.error("TTRSS Session: need Authentication");
-			}
-			else
-			{
-				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
-			}
-		});
 	}
 
 

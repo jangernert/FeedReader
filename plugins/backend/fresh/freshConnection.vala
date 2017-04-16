@@ -25,11 +25,16 @@ public class FeedReader.freshConnection {
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
-	}
-
-	public Soup.Session getSession()
-	{
-		return m_session;
+		m_session.authenticate.connect((msg, auth, retrying) => {
+			if(m_utils.getHtaccessUser() == "")
+			{
+				Logger.error("fresh Session: need Authentication");
+			}
+			else
+			{
+				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
+			}
+		});
 	}
 
 	public LoginResponse getSID()

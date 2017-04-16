@@ -46,19 +46,19 @@ public class FeedReader.localUtils : GLib.Object {
 			if(doc.image_url != null
 			&& doc.image_url != "")
 			{
-				if(Utils.downloadIcon(session, feedID, doc.image_url))
+				if(Utils.downloadIcon(feedID, doc.image_url))
 				{
 					// success
 				}
 				else
 				{
-					Utils.downloadFavIcon(session, feedID, doc.link);
+					Utils.downloadFavIcon(feedID, doc.link);
 				}
 			}
 			else if(doc.link != null
 			&& doc.link != "")
 			{
-				Utils.downloadFavIcon(session, feedID, doc.link);
+				Utils.downloadFavIcon(feedID, doc.link);
 			}
 			else
 				hasIcon = false;

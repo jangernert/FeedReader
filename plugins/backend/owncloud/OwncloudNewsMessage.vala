@@ -24,14 +24,12 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
     private string m_method;
     private OwncloudNewsUtils m_utils;
 
-    public OwnCloudNewsMessage(string destination, string username, string password, string method)
+    public OwnCloudNewsMessage(Soup.Session session, string destination, string username, string password, string method)
     {
         m_utils = new OwncloudNewsUtils();
         m_message_string = new GLib.StringBuilder();
         m_method = method;
-		m_session = new Soup.Session();
-        m_session.user_agent = Constants.USER_AGENT;
-        m_session.ssl_strict = false;
+		m_session = session;
 		m_contenttype = "application/json";
 		m_parser = new Json.Parser();
 		m_message_soup = new Soup.Message(m_method, destination);
@@ -39,17 +37,6 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
         string credentials = username + ":" + password;
         string base64 = GLib.Base64.encode(credentials.data);
         m_message_soup.request_headers.append("Authorization","Basic %s".printf(base64));
-
-        m_session.authenticate.connect((msg, auth, retrying) => {
-			if(m_utils.getHtaccessUser() == "")
-			{
-				Logger.error("ownCloud Session: need Authentication");
-			}
-			else
-			{
-				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
-			}
-		});
 	}
 
     public void add_int(string type, int val)

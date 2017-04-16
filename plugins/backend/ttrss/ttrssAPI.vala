@@ -30,6 +30,16 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
 		m_session.ssl_strict = false;
+		m_session.authenticate.connect((msg, auth, retrying) => {
+			if(m_utils.getHtaccessUser() == "")
+			{
+				Logger.error("TTRSS Session: need Authentication");
+			}
+			else
+			{
+				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
+			}
+		});
 	}
 
 
@@ -204,7 +214,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						string feed_id = feed_node.get_int_member("id").to_string();
 
 						if(feed_node.get_boolean_member("has_icon"))
-							Utils.downloadIcon(m_session, feed_id, m_iconDir + feed_id + ".ico");
+							Utils.downloadIcon(feed_id, m_iconDir + feed_id + ".ico");
 
 						feeds.add(
 							new feed (
@@ -247,7 +257,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				string feed_id = feed_node.get_int_member("id").to_string();
 
 				if(feed_node.get_boolean_member("has_icon"))
-					Utils.downloadIcon(m_session, feed_id, m_iconDir + feed_id + ".ico");
+					Utils.downloadIcon(feed_id, m_iconDir + feed_id + ".ico");
 
 				feeds.add(
 					new feed (

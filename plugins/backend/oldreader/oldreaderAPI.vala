@@ -113,7 +113,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
-			if(icon_url != "" && Utils.downloadIcon(m_connection.getSession(), feedID, "https:"+icon_url))
+			if(icon_url != "" && Utils.downloadIcon(feedID, "https:"+icon_url))
 			{
 				icon_url = "";
 			}

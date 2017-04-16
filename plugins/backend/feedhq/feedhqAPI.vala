@@ -119,9 +119,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
 
-			if(icon_url != "" && !Utils.downloadIcon(m_connection.getSession(), feedID, "https:"+icon_url))
+			if(icon_url != "" && !Utils.downloadIcon(feedID, "https:"+icon_url))
 				icon_url = "";
-			else if(!Utils.downloadFavIcon(new Soup.Session(), feedID, url))
+			else if(!Utils.downloadFavIcon(feedID, url))
 				icon_url = "something";
 
 			string title = "No Title";

@@ -427,45 +427,157 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static bool downloadIconWithSession(Soup.Session session, string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static bool downloadFavIcon(Soup.Session session, string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
+		// download html and parse to find location of favicon
+		var message_html = new Soup.Message ("GET", feed_url);
+		if(Settings.tweaks().get_boolean("do-not-track"))
+			message_html.request_headers.append("DNT", "1");
+		var status = session.send_message(message_html);
+		if(status == 200)
+		{
+			var html = (string)message_html.response_body.flatten().data;
+
+			var html_cntx = new Html.ParserCtxt();
+	        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+	        Html.Doc* doc = html_cntx.read_doc(html, "");
+	        if (doc == null)
+	        {
+	            Logger.debug("Utils.downloadIconWithSession: parsing html failed");
+	    		return false;
+	    	}
+
+			// check for <link rel="shortcut icon">
+			var xpath = grabberUtils.getValue(doc, "//link[@rel='shortcut icon']/@href");
+
+			if(xpath == null)
+				// check for <link rel="icon">
+				xpath = grabberUtils.getValue(doc, "//link[@rel='icon']/@href");
+
+			if(xpath != null)
+			{
+				xpath = grabberUtils.completeURL(xpath, feed_url);
+				if(downloadIcon(session, feed_id, xpath, icon_path))
+					return true;
+			}
+
+			delete doc;
+		}
+
+		// try domainname/favicon.ico
+		var icon_url = feed_id;
+		if(icon_url.has_suffix("/"))
+			icon_url += "/";
+		icon_url += "favicon.ico";
+		if(downloadIcon(session, feed_id, icon_url, icon_path))
+			return true;
+
+
+		// last chance: try allesedv service
+		string allesedv_url = feed_url;
+		if(feed_url.has_prefix("http://"))
+			allesedv_url = allesedv_url.replace("http://", "");
+		else if(feed_url.has_prefix("https://"))
+			allesedv_url = allesedv_url.replace("https://", "");
+		allesedv_url = "https://f1.allesedv.com/32/%s".printf(allesedv_url);
+
+		return downloadIcon(session, feed_id, allesedv_url, icon_path);
+	}
+
+	public static bool downloadIcon(Soup.Session session, string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	{
+		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
+		{
+			Logger.warning("Utils.downloadIcon: icon_url not valid");
+			return false;
+		}
+
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
+		string etag_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".txt";
+		string? etag = null;
 
-		string url = feed_url;
-		if(feed_url.has_prefix("http://"))
-			url = url.replace("http://", "");
-		else if(feed_url.has_prefix("https://"))
-			url = url.replace("https://", "");
-
-		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+		// file already exists
+		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
-			Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
-
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message ("GET", "https://f1.allesedv.com/32/%s".printf(url));
-
+			var message_head = new Soup.Message("HEAD", icon_url);
 			if(Settings.tweaks().get_boolean("do-not-track"))
-				message_dlIcon.request_headers.append("DNT", "1");
+				message_head.request_headers.append("DNT", "1");
 
-			var status = session.send_message(message_dlIcon);
-			if (status == 200)
+			var status = session.send_message(message_head);
+			if(status == 200)
 			{
-				try
+				etag = message_head.response_headers.get_one("ETag");
+				if(etag != null)
 				{
-					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
+					if(FileUtils.test(etag_filename, GLib.FileTest.EXISTS)
+					&& etag == getFileContent(etag_filename))
+					{
+						// file exists and is identical to remote file
+						Logger.debug(@"Utils.downloadIcon: etag identical -> icon unchanged $feed_id");
+						return true;
+					}
+					else
+					{
+						try
+						{
+							FileUtils.set_contents(etag_filename, etag);
+						}
+						catch(GLib.FileError e)
+						{
+							Logger.error("Error writing etag: %s".printf(e.message));
+						}
+					}
 				}
-				catch(GLib.FileError e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-				}
+			}
+		}
+
+		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
+		var message_dlIcon = new Soup.Message("GET", icon_url);
+		if(Settings.tweaks().get_boolean("do-not-track"))
+			message_dlIcon.request_headers.append("DNT", "1");
+
+		var status = session.send_message(message_dlIcon);
+		if(status == 200)
+		{
+			string data = (string)message_dlIcon.response_body.flatten().data;
+
+			if(GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, data) == GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, getFileContent(local_filename)))
+			{
+				// file exists and is identical to remote file
+				// we already downloaded it, but there is no need to write to the disc
+				Logger.debug("Utils.downloadIcon: md5 identical -> icon unchanged");
 				return true;
 			}
-			Logger.error(@"Error downloading icon for feed: $feed_id");
-			return false;
+
+			try
+			{
+				FileUtils.set_contents(local_filename, data);
+			}
+			catch(GLib.FileError e)
+			{
+				Logger.error("Error writing icon: %s".printf(e.message));
+			}
+			return true;
 		}
-		// file already exists
-		return true;
+		Logger.error(@"Error downloading icon for feed: $feed_id");
+		return false;
+	}
+
+	private static string? getFileContent(string filename)
+	{
+		try
+		{
+			string? contents = null;
+			FileUtils.get_contents(filename, out contents);
+			return contents;
+		}
+		catch(Error e)
+		{
+			Logger.warning(@"Utils.checksumForFile: could not read file $filename");
+		}
+
+		return null;
 	}
 }

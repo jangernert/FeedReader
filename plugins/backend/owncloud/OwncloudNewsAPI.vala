@@ -28,11 +28,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     private string m_username;
     private string m_password;
     private OwncloudNewsUtils m_utils;
+    private Soup.Session m_session;
 
     public OwncloudNewsAPI()
     {
         m_parser = new Json.Parser ();
         m_utils = new OwncloudNewsUtils();
+        m_session = new Soup.Session();
+        m_session.user_agent = Constants.USER_AGENT;
+        m_session.ssl_strict = false;
     }
 
     public LoginResponse login()
@@ -122,7 +126,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     					if(feed_node.has_member("faviconLink"))
                         {
-                            hasIcon = m_utils.downloadIcon(feed_id, feed_node.get_string_member("faviconLink"));
+                            string icon_url = feed_node.get_string_member("faviconLink");
+                            if(icon_url != "" && icon_url != null && GLib.Uri.parse_scheme(icon_url) != null)
+                                hasIcon = Utils.downloadIcon(m_session, feed_id, icon_url);
                         }
 
     					feeds.add(

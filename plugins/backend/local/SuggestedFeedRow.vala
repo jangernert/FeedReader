@@ -150,7 +150,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 			}
 			else
 			{
-				if(Utils.downloadIconWithSession(session, url, url, path))
+				if(Utils.downloadFavIcon(session, url, url, path))
 					success = true;
 			}
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);

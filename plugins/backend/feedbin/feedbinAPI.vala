@@ -89,7 +89,7 @@ public class FeedReader.feedbinAPI : Object {
 					id,
 					title,
 					url,
-					Utils.downloadIconWithSession(session, id, url),
+					Utils.downloadFavIcon(session, id, url),
 					0,
 					{ "0" },
 					xmlURL)

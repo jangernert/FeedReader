@@ -394,7 +394,12 @@ public class FeedReader.FeedServer : GLib.Object {
 	// Only used with command-line
 	public static void grabArticle(string url)
 	{
-		var grabber = new Grabber(url, null, null);
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		session.timeout = 5;
+		session.ssl_strict = false;
+
+		var grabber = new Grabber(session, url, null, null);
 		if(grabber.process())
 		{
 			grabber.print();

@@ -85,6 +85,7 @@ vala_precompile(LIBFR libFeedReader
 	src/Structs.vala
 	src/Utils.vala
 	src/QueryBuilder.vala
+	src/ContentGrabber/grabberUtils.vala
 	src/ContentGrabber/stringPair.vala
 	src/Model/Feed.vala
 	src/Model/Category.vala
@@ -96,10 +97,12 @@ vala_precompile(LIBFR libFeedReader
 	Constants.vala
 
 PACKAGES
+	gdk-pixbuf-2.0
 	gee-0.8
 	libsecret-1
 	sqlite3
 	libsoup-2.4
+	libxml-2.0
 
 OPTIONS
 	--target-glib=${GLIB_VERSION}
@@ -130,6 +133,7 @@ set(UI_PACKAGES
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
 	libpeas-1.0
+	libxml-2.0
 	goa-1.0)
 
 vala_precompile(UI ${UI_NAME}
@@ -250,7 +254,6 @@ vala_precompile(daemon ${DAEMON_NAME}
 	src/Backend/OPMLparser.vala
 	src/ContentGrabber/grabberConfig.vala
 	src/ContentGrabber/grabber.vala
-	src/ContentGrabber/grabberUtils.vala
 
 
 PACKAGES

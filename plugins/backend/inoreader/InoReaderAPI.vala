@@ -119,7 +119,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
 
-			if(icon_url != "" && !m_utils.downloadIcon(feedID, icon_url))
+			if(icon_url != "" && !Utils.downloadIcon(m_connection.getSession(), feedID, icon_url))
 			{
 				icon_url = "";
 			}

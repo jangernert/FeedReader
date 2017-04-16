@@ -30,6 +30,11 @@ public class FeedReader.FeedHQConnection {
 		m_session.user_agent = Constants.USER_AGENT;
 	}
 
+	public Soup.Session getSession()
+	{
+		return m_session;
+	}
+
 	public LoginResponse getToken()
 	{
 		Logger.debug("FeedHQ Connection: getToken()");

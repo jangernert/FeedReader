@@ -537,7 +537,6 @@ public class FeedReader.Utils : GLib.Object {
 			if(status == 200)
 			{
 				string etag = message_head.response_headers.get_one("ETag");
-				long length = (long)message_head.response_body.length;
 
 				if(etag != null)
 				{
@@ -550,10 +549,10 @@ public class FeedReader.Utils : GLib.Object {
 					}
 					else
 					{
-						Logger.debug("Utils.downloadIcon: write etag");
+						Logger.debug(@"Utils.downloadIcon: write etag $etag");
 						try
 						{
-							FileUtils.set_contents(etag_filename, etag, length);
+							FileUtils.set_contents(etag_filename, etag);
 						}
 						catch(GLib.FileError e)
 						{

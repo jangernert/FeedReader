@@ -43,6 +43,8 @@ public class FeedReader.localUtils : GLib.Object {
 			&& doc.link != "")
 				url = doc.link;
 
+			var uri = new Soup.URI(url);
+
 			if(doc.image_url != null
 			&& doc.image_url != "")
 			{
@@ -50,15 +52,14 @@ public class FeedReader.localUtils : GLib.Object {
 				{
 					// success
 				}
-				else
+				else if(uri != null)
 				{
-					Utils.downloadFavIcon(feedID, doc.link);
+					Utils.downloadFavIcon(feedID, uri.get_scheme() + "://" + uri.get_host());
 				}
 			}
-			else if(doc.link != null
-			&& doc.link != "")
+			else if(uri != null)
 			{
-				Utils.downloadFavIcon(feedID, doc.link);
+				Utils.downloadFavIcon(feedID, uri.get_scheme() + "://" + uri.get_host());
 			}
 			else
 				hasIcon = false;
@@ -66,7 +67,6 @@ public class FeedReader.localUtils : GLib.Object {
 			string? title = doc.title;
 			if(title == null)
 			{
-				var uri = new Soup.URI(xmlURL);
 				if(uri == null)
 					title = _("unknown Feed");
 				else

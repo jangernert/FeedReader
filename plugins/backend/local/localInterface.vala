@@ -327,6 +327,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var f = dbDaemon.get_default().read_feeds();
 		foreach(feed Feed in f)
 		{
+			m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs());
 			feeds.add(Feed);
 		}
 

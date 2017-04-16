@@ -439,8 +439,17 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static bool downloadFavIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
+
+		var uri = new Soup.URI(feed_url);
+		string hostname = uri.get_host();
+		int first = hostname.index_of_char('.', 0);
+		int second = hostname.index_of_char('.', first+1);
+		if(second != -1 && first != second)
+			hostname = hostname.substring(first+1);
+		string siteURL = uri.get_scheme() + "://" + hostname;
+
 		// download html and parse to find location of favicon
-		var message_html = new Soup.Message ("GET", feed_url);
+		var message_html = new Soup.Message("GET", siteURL);
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_html.request_headers.append("DNT", "1");
 		var status = getSession().send_message(message_html);
@@ -450,33 +459,42 @@ public class FeedReader.Utils : GLib.Object {
 
 			var html_cntx = new Html.ParserCtxt();
 	        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-	        Html.Doc* doc = html_cntx.read_doc(html, "");
-	        if (doc == null)
+	        Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+	        if(doc == null)
 	        {
 	            Logger.debug("Utils.downloadFavIcon: parsing html failed");
 	    		return false;
 	    	}
 
+			// check for <link rel="apple-touch-icon">
+			var xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+
+			if(xpath == null)
 			// check for <link rel="shortcut icon">
-			var xpath = grabberUtils.getValue(doc, "//link[@rel='shortcut icon']/@href");
+				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
 
 			if(xpath == null)
 				// check for <link rel="icon">
-				xpath = grabberUtils.getValue(doc, "//link[@rel='icon']/@href");
+				xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
 
 			if(xpath != null)
 			{
-				xpath = grabberUtils.completeURL(xpath, feed_url);
+				Logger.debug(@"Utils.downloadFavIcon: xpath success $xpath");
+				xpath = grabberUtils.completeURL(xpath, siteURL);
 				if(downloadIcon(feed_id, xpath, icon_path))
 					return true;
+			}
+			else
+			{
+				Logger.debug("Utils.downloadFavIcon: xpath failed");
 			}
 
 			delete doc;
 		}
 
 		// try domainname/favicon.ico
-		var icon_url = feed_id;
-		if(icon_url.has_suffix("/"))
+		var icon_url = siteURL;
+		if(!icon_url.has_suffix("/"))
 			icon_url += "/";
 		icon_url += "favicon.ico";
 		if(downloadIcon(feed_id, icon_url, icon_path))
@@ -484,10 +502,10 @@ public class FeedReader.Utils : GLib.Object {
 
 
 		// last chance: try allesedv service
-		string allesedv_url = feed_url;
-		if(feed_url.has_prefix("http://"))
+		string allesedv_url = siteURL;
+		if(allesedv_url.has_prefix("http://"))
 			allesedv_url = allesedv_url.replace("http://", "");
-		else if(feed_url.has_prefix("https://"))
+		else if(allesedv_url.has_prefix("https://"))
 			allesedv_url = allesedv_url.replace("https://", "");
 		allesedv_url = "https://f1.allesedv.com/32/%s".printf(allesedv_url);
 
@@ -498,7 +516,7 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{
-			Logger.warning("Utils.downloadIcon: icon_url not valid");
+			Logger.warning(@"Utils.downloadIcon: icon_url not valid $icon_url");
 			return false;
 		}
 
@@ -506,10 +524,10 @@ public class FeedReader.Utils : GLib.Object {
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
 		string etag_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".txt";
-		string? etag = null;
 
 		// file already exists
-		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
+		|| !FileUtils.test(etag_filename, GLib.FileTest.EXISTS))
 		{
 			var message_head = new Soup.Message("HEAD", icon_url);
 			if(Settings.tweaks().get_boolean("do-not-track"))
@@ -518,7 +536,9 @@ public class FeedReader.Utils : GLib.Object {
 			var status = getSession().send_message(message_head);
 			if(status == 200)
 			{
-				etag = message_head.response_headers.get_one("ETag");
+				string etag = message_head.response_headers.get_one("ETag");
+				long length = (long)message_head.response_body.length;
+
 				if(etag != null)
 				{
 					if(FileUtils.test(etag_filename, GLib.FileTest.EXISTS)
@@ -530,9 +550,10 @@ public class FeedReader.Utils : GLib.Object {
 					}
 					else
 					{
+						Logger.debug("Utils.downloadIcon: write etag");
 						try
 						{
-							FileUtils.set_contents(etag_filename, etag);
+							FileUtils.set_contents(etag_filename, etag, length);
 						}
 						catch(GLib.FileError e)
 						{
@@ -540,6 +561,15 @@ public class FeedReader.Utils : GLib.Object {
 						}
 					}
 				}
+				else
+				{
+					Logger.warning(@"no etag for $icon_url");
+				}
+			}
+			else
+			{
+				Logger.warning(@"HEAD-request failed $icon_url");
+				return false;
 			}
 		}
 
@@ -551,19 +581,22 @@ public class FeedReader.Utils : GLib.Object {
 		var status = getSession().send_message(message_dlIcon);
 		if(status == 200)
 		{
-			string data = (string)message_dlIcon.response_body.flatten().data;
-
-			if(GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, data) == GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, getFileContent(local_filename)))
+			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 			{
-				// file exists and is identical to remote file
-				// we already downloaded it, but there is no need to write to the disc
-				Logger.debug("Utils.downloadIcon: md5 identical -> icon unchanged");
-				return true;
+				var remoteMd5 = GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, (string)message_dlIcon.response_body.flatten().data);
+				var localMd5 = GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, getFileContent(local_filename));
+				if(remoteMd5 == localMd5)
+				{
+					// file exists and is identical to remote file
+					// we already downloaded it, but there is no need to write to the disc
+					Logger.debug("Utils.downloadIcon: md5 identical -> icon unchanged");
+					return true;
+				}
 			}
 
 			try
 			{
-				FileUtils.set_contents(local_filename, data);
+				FileUtils.set_data(local_filename, message_dlIcon.response_body.flatten().data);
 			}
 			catch(GLib.FileError e)
 			{
@@ -571,7 +604,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			return true;
 		}
-		Logger.error(@"Error downloading icon for feed: $feed_id");
+		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url");
 		return false;
 	}
 

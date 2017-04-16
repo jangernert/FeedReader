@@ -20,7 +20,7 @@ public class FeedReader.localUtils : GLib.Object {
 
 	}
 
-	public feed? downloadFeed(string xmlURL, string feedID, string[] catIDs)
+	public feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs)
 	{
 		if(xmlURL == "" || xmlURL == null || GLib.Uri.parse_scheme(xmlURL) == null)
             return null;
@@ -28,9 +28,6 @@ public class FeedReader.localUtils : GLib.Object {
 		try
 		{
 			// download
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-	        session.timeout = 5;
 	        var msg = new Soup.Message("GET", xmlURL.escape(""));
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
@@ -55,13 +52,13 @@ public class FeedReader.localUtils : GLib.Object {
 				}
 				else
 				{
-					Utils.downloadIcon(feedID, doc.link);
+					Utils.downloadIconWithSession(session, feedID, doc.link);
 				}
 			}
 			else if(doc.link != null
 			&& doc.link != "")
 			{
-				Utils.downloadIcon(feedID, doc.link);
+				Utils.downloadIconWithSession(session, feedID, doc.link);
 			}
 			else
 				hasIcon = false;

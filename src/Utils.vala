@@ -462,20 +462,10 @@ public class FeedReader.Utils : GLib.Object {
 				}
 				return true;
 			}
-			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
+			Logger.error(@"Error downloading icon for feed: $feed_id");
 			return false;
 		}
 		// file already exists
 		return true;
-	}
-
-	public static bool downloadIcon(string feed_id, string feed_url, string? icon_path = null)
-	{
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		if(icon_path == null)
-			return downloadIconWithSession(session, feed_id, feed_url);
-		else
-			return downloadIconWithSession(session, feed_id, feed_url, icon_path);
 	}
 }

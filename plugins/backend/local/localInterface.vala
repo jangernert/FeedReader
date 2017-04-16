@@ -194,7 +194,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
-		feed? Feed = m_utils.downloadFeed(feedURL, feedID, catIDs);
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		session.timeout = 5;
+		feed? Feed = m_utils.downloadFeed(session, feedURL, feedID, catIDs);
 
 		if(Feed != null)
 		{
@@ -222,7 +225,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			highestID++;
 
 			Logger.info(@"addFeed: ID = $feedID");
-			feed? Feed = m_utils.downloadFeed(f.getXmlUrl(), feedID, f.getCatIDs());
+			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
+	        session.timeout = 5;
+			feed? Feed = m_utils.downloadFeed(session, f.getXmlUrl(), feedID, f.getCatIDs());
 
 			if(Feed != null)
 			{
@@ -339,6 +345,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
 
+		var session = new Soup.Session();
+		session.user_agent = Constants.USER_AGENT;
+		session.timeout = 5;
+
 		foreach(feed Feed in f)
 		{
 			Logger.debug("getArticles for feed: " + Feed.getTitle());
@@ -350,9 +360,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				continue;
 			}
 
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-			session.timeout = 5;
 			var msg = new Soup.Message("GET", url);
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;

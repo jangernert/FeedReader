@@ -121,7 +121,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 			if(icon_url != "" && !m_utils.downloadIcon(feedID, "https:"+icon_url))
 				icon_url = "";
-			else if(!Utils.downloadIcon(feedID, url))
+			else if(!Utils.downloadIconWithSession(new Soup.Session(), feedID, url))
 				icon_url = "something";
 
 			string title = "No Title";

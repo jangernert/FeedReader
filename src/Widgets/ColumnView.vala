@@ -57,6 +57,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 			m_articleList.setSelectedType(FeedListType.FEED);
 			m_article_view.clearContent();
 			m_headerbar.showArticleButtons(false);
+                        m_headerbar.clearTitle();
 			m_articleList.setSelectedFeed(feedID);
 			newArticleList();
 
@@ -76,6 +77,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 			m_articleList.setSelectedType(FeedListType.TAG);
 			m_article_view.clearContent();
 			m_headerbar.showArticleButtons(false);
+                        m_headerbar.clearTitle();
 			m_articleList.setSelectedFeed(tagID);
 			newArticleList();
 			m_footer.setRemoveButtonSensitive(true);
@@ -87,6 +89,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 			m_articleList.setSelectedType(FeedListType.CATEGORY);
 			m_article_view.clearContent();
 			m_headerbar.showArticleButtons(false);
+                        m_headerbar.clearTitle();
 			m_articleList.setSelectedFeed(categorieID);
 			newArticleList();
 
@@ -135,6 +138,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 			{
 				m_article_view.load(row.getID());
 				m_headerbar.showArticleButtons(true);
+                                m_headerbar.setTitle(row.getName());
 				Logger.debug("ContentPage: set headerbar");
 				m_headerbar.setRead(row.isUnread());
 				m_headerbar.setMarked(row.isMarked());
@@ -289,6 +293,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	private void clearArticleView()
 	{
 		m_headerbar.showArticleButtons(false);
+                m_headerbar.clearTitle();
 		m_article_view.clearContent();
 	}
 

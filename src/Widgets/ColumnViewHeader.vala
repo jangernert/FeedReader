@@ -119,7 +119,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_header_right.show_close_button = true;
 		m_header_right.get_style_context().add_class("header_left");
 		m_header_right.get_style_context().add_class("titlebar");
-		m_header_right.set_title("FeedReader");
+		this.clearTitle();
 		m_header_right.set_size_request(450, 0);
 		m_header_right.toggledMarked.connect(() => {
 			toggledMarked();
@@ -234,4 +234,13 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		state.setSearchTerm(m_search.text);
 		state.setArticleListState(m_state);
 	}
+	public void setTitle(string title)
+	{
+		m_header_right.set_title(title);
+	}
+	public void clearTitle()
+	{
+		m_header_right.set_title("FeedReader");
+	}
+
 }

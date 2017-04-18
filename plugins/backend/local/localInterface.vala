@@ -16,10 +16,14 @@
 public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface {
 
 	private localUtils m_utils;
+	private Soup.Session m_session;
 
 	public void init()
 	{
 		m_utils = new localUtils();
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
+		m_session.timeout = 5;
 	}
 
 
@@ -194,10 +198,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		session.timeout = 5;
-		feed? Feed = m_utils.downloadFeed(session, feedURL, feedID, catIDs);
+		feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs);
 
 		if(Feed != null)
 		{
@@ -225,10 +226,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			highestID++;
 
 			Logger.info(@"addFeed: ID = $feedID");
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-	        session.timeout = 5;
-			feed? Feed = m_utils.downloadFeed(session, f.getXmlUrl(), feedID, f.getCatIDs());
+			feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs());
 
 			if(Feed != null)
 			{
@@ -329,6 +327,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var f = dbDaemon.get_default().read_feeds();
 		foreach(feed Feed in f)
 		{
+			m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs());
 			feeds.add(Feed);
 		}
 
@@ -345,10 +344,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		session.timeout = 5;
-
 		foreach(feed Feed in f)
 		{
 			Logger.debug("getArticles for feed: " + Feed.getTitle());
@@ -361,7 +356,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			}
 
 			var msg = new Soup.Message("GET", url);
-			session.send_message(msg);
+			m_session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
 
 			// parse

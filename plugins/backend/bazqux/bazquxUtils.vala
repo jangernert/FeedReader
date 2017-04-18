@@ -61,54 +61,6 @@ public class FeedReader.bazquxUtils : GLib.Object {
 		Utils.resetSettings(m_settings);
 	}
 
-	public bool downloadIcon(string feed_id, string icon_url)
-	{
-		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-		string icon_path = GLib.Environment.get_home_dir() + "/.local/share/feedreader/data/feed_icons/";
-		var path = GLib.File.new_for_path(icon_path);
-		try
-		{
-			path.make_directory_with_parents();
-		}
-		catch(GLib.Error e)
-		{
-			//Logger.debug(e.message);
-		}
-
-		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
-
-		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
-		{
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message("GET", icon_url);
-
-			if(settingsTweaks.get_boolean("do-not-track"))
-				message_dlIcon.request_headers.append("DNT", "1");
-
-			var session = new Soup.Session();
-			session.ssl_strict = false;
-			var status = session.send_message(message_dlIcon);
-			if (status == 200)
-			{
-				try{
-					FileUtils.set_contents(	local_filename,
-											(string)message_dlIcon.response_body.flatten().data,
-											(long)message_dlIcon.response_body.length);
-				}
-				catch(GLib.FileError e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-				}
-				return true;
-			}
-			Logger.error("Error downloading icon for feed: %s".printf(feed_id));
-			return false;
-		}
-
-		// file already exists
-		return true;
-	}
-
 	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.bazqux", Secret.SchemaFlags.NONE,

@@ -15,6 +15,21 @@
 
 public class FeedReader.Utils : GLib.Object {
 
+	private static Soup.Session? m_session;
+
+	private static Soup.Session getSession()
+	{
+		if(m_session == null)
+		{
+			m_session = new Soup.Session();
+			m_session.user_agent = Constants.USER_AGENT;
+			m_session.ssl_strict = false;
+			m_session.timeout = 1;
+		}
+
+		return m_session;
+	}
+
 	public static string UTF8fix(string? old_string, bool removeHTML = false)
 	{
 		if(old_string == null)
@@ -185,12 +200,8 @@ public class FeedReader.Utils : GLib.Object {
 			return false;
 		}
 
-		var session = new Soup.Session();
-		session.user_agent = Constants.USER_AGENT;
-		session.ssl_strict = false;
-
 		var message = new Soup.Message.from_uri("HEAD", uri);
-		var status = session.send_message(message);
+		var status = getSession().send_message(message);
 
 		Logger.debug(@"Ping: status $status");
 
@@ -427,45 +438,175 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static bool downloadIconWithSession(Soup.Session session, string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static bool downloadFavIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
+
+		var uri = new Soup.URI(feed_url);
+		string hostname = uri.get_host();
+		int first = hostname.index_of_char('.', 0);
+		int second = hostname.index_of_char('.', first+1);
+		if(second != -1 && first != second)
+			hostname = hostname.substring(first+1);
+		string siteURL = uri.get_scheme() + "://" + hostname;
+
+		// download html and parse to find location of favicon
+		var message_html = new Soup.Message("GET", siteURL);
+		if(Settings.tweaks().get_boolean("do-not-track"))
+			message_html.request_headers.append("DNT", "1");
+		var status = getSession().send_message(message_html);
+		if(status == 200)
+		{
+			var html = (string)message_html.response_body.flatten().data;
+
+			var html_cntx = new Html.ParserCtxt();
+	        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+	        Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+	        if(doc == null)
+	        {
+	            Logger.debug("Utils.downloadFavIcon: parsing html failed");
+	    		return false;
+	    	}
+
+			// check for <link rel="icon">
+			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
+
+			if(xpath == null)
+			// check for <link rel="shortcut icon">
+				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
+
+			if(xpath == null)
+				// check for <link rel="apple-touch-icon">
+				xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+
+			if(xpath != null)
+			{
+				Logger.debug(@"Utils.downloadFavIcon: xpath success $xpath");
+				xpath = grabberUtils.completeURL(xpath, siteURL);
+				if(downloadIcon(feed_id, xpath, icon_path))
+					return true;
+			}
+			else
+			{
+				Logger.debug("Utils.downloadFavIcon: xpath failed");
+			}
+
+			delete doc;
+		}
+
+		// try domainname/favicon.ico
+		var icon_url = siteURL;
+		if(!icon_url.has_suffix("/"))
+			icon_url += "/";
+		icon_url += "favicon.ico";
+		return downloadIcon(feed_id, icon_url, icon_path);
+	}
+
+	public static bool downloadIcon(string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	{
+		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
+		{
+			Logger.warning(@"Utils.downloadIcon: icon_url not valid $icon_url");
+			return false;
+		}
+
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
+		string etag_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".txt";
 
-		string url = feed_url;
-		if(feed_url.has_prefix("http://"))
-			url = url.replace("http://", "");
-		else if(feed_url.has_prefix("https://"))
-			url = url.replace("https://", "");
-
-		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
-		{
-			Logger.debug("Utils: downloadIcon() url = \"%s\"".printf(url));
-
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message ("GET", "https://f1.allesedv.com/32/%s".printf(url));
-
-			if(Settings.tweaks().get_boolean("do-not-track"))
-				message_dlIcon.request_headers.append("DNT", "1");
-
-			var status = session.send_message(message_dlIcon);
-			if (status == 200)
-			{
-				try
-				{
-					FileUtils.set_contents(local_filename, (string)message_dlIcon.response_body.flatten().data, (long)message_dlIcon.response_body.length);
-				}
-				catch(GLib.FileError e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-				}
-				return true;
-			}
-			Logger.error(@"Error downloading icon for feed: $feed_id");
-			return false;
-		}
 		// file already exists
-		return true;
+		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
+		|| !FileUtils.test(etag_filename, GLib.FileTest.EXISTS))
+		{
+			var message_head = new Soup.Message("HEAD", icon_url);
+			if(Settings.tweaks().get_boolean("do-not-track"))
+				message_head.request_headers.append("DNT", "1");
+
+			var status = getSession().send_message(message_head);
+			if(status == 200)
+			{
+				string etag = message_head.response_headers.get_one("ETag");
+
+				if(etag != null)
+				{
+					if(FileUtils.test(etag_filename, GLib.FileTest.EXISTS)
+					&& etag == getFileContent(etag_filename))
+					{
+						// file exists and is identical to remote file
+						Logger.debug(@"Utils.downloadIcon: etag identical -> icon unchanged $feed_id");
+						return true;
+					}
+					else
+					{
+						Logger.debug(@"Utils.downloadIcon: write etag $etag");
+						try
+						{
+							FileUtils.set_contents(etag_filename, etag);
+						}
+						catch(GLib.FileError e)
+						{
+							Logger.error("Error writing etag: %s".printf(e.message));
+						}
+					}
+				}
+				else
+				{
+					Logger.warning(@"no etag for $icon_url");
+				}
+			}
+			else
+			{
+				Logger.warning(@"HEAD-request failed $icon_url");
+				return false;
+			}
+		}
+
+		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
+		var message_dlIcon = new Soup.Message("GET", icon_url);
+		if(Settings.tweaks().get_boolean("do-not-track"))
+			message_dlIcon.request_headers.append("DNT", "1");
+
+		var status = getSession().send_message(message_dlIcon);
+		if(status == 200)
+		{
+			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+			{
+				if((string)message_dlIcon.response_body.flatten().data == getFileContent(local_filename))
+				{
+					// file exists and is identical to remote file
+					// we already downloaded it, but there is no need to write to the disc
+					Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
+					return true;
+				}
+			}
+
+			try
+			{
+				FileUtils.set_data(local_filename, message_dlIcon.response_body.flatten().data);
+			}
+			catch(GLib.FileError e)
+			{
+				Logger.error("Error writing icon: %s".printf(e.message));
+			}
+			return true;
+		}
+		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url");
+		return false;
+	}
+
+	private static string? getFileContent(string filename)
+	{
+		try
+		{
+			string? contents = null;
+			FileUtils.get_contents(filename, out contents);
+			return contents;
+		}
+		catch(Error e)
+		{
+			Logger.warning(@"Utils.getFileContent: could not read file $filename");
+		}
+
+		return null;
 	}
 }

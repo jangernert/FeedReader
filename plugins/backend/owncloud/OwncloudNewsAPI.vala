@@ -28,11 +28,25 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     private string m_username;
     private string m_password;
     private OwncloudNewsUtils m_utils;
+    private Soup.Session m_session;
 
     public OwncloudNewsAPI()
     {
         m_parser = new Json.Parser ();
         m_utils = new OwncloudNewsUtils();
+        m_session = new Soup.Session();
+        m_session.user_agent = Constants.USER_AGENT;
+        m_session.ssl_strict = false;
+        m_session.authenticate.connect((msg, auth, retrying) => {
+			if(m_utils.getHtaccessUser() == "")
+			{
+				Logger.error("ownCloud Session: need Authentication");
+			}
+			else if(!retrying)
+			{
+				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
+			}
+		});
     }
 
     public LoginResponse login()
@@ -55,7 +69,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		if(m_password == "")
 			return LoginResponse.MISSING_PASSWD;
 
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + "status", m_username, m_password, "GET");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "status", m_username, m_password, "GET");
 		int error = message.send();
 
         if(error == ConnectionError.SUCCESS)
@@ -88,7 +102,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool isloggedin()
 	{
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + "version", m_username, m_password, "GET");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "version", m_username, m_password, "GET");
 
 		if(message.send() == ConnectionError.SUCCESS)
         {
@@ -103,7 +117,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		if(isloggedin())
 		{
-			var message = new OwnCloudNewsMessage(m_OwnCloudURL + "feeds", m_username, m_password, "GET");
+			var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "feeds", m_username, m_password, "GET");
 			int error = message.send();
 
 			if(error == ConnectionError.SUCCESS)
@@ -122,7 +136,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     					if(feed_node.has_member("faviconLink"))
                         {
-                            hasIcon = m_utils.downloadIcon(feed_id, feed_node.get_string_member("faviconLink"));
+                            string icon_url = feed_node.get_string_member("faviconLink");
+                            if(icon_url != "" && icon_url != null && GLib.Uri.parse_scheme(icon_url) != null)
+                                hasIcon = Utils.downloadIcon(feed_id, icon_url);
                         }
 
     					feeds.add(
@@ -158,7 +174,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		if(isloggedin())
 		{
-			var message = new OwnCloudNewsMessage(m_OwnCloudURL + "folders", m_username, m_password, "GET");
+			var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "folders", m_username, m_password, "GET");
 			int error = message.send();
             int orderID = 0;
 
@@ -206,7 +222,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public void getNewArticles(Gee.List<article> articles, int lastModified, OwnCloudType type, int id)
 	{
-		var message = new OwnCloudNewsMessage(m_OwnCloudURL + "/items/updated", m_username, m_password, "GET");
+		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "/items/updated", m_username, m_password, "GET");
         message.add_int("lastModified", lastModified);
         message.add_int("type", type);
         message.add_int("id", id);
@@ -275,7 +291,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public void getArticles(Gee.List<article> articles, int skip, int count, bool read, OwnCloudType type, int id)
 	{
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + "items", m_username, m_password, "GET");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "items", m_username, m_password, "GET");
         message.add_bool("oldestFirst", false);
         message.add_int("type", type);
         message.add_bool("getRead", read);
@@ -346,7 +362,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	public bool markFeedRead(string feedID, bool isCatID)
 	{
 		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
-		var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
+		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_int("newestItemId", int.parse(dbDaemon.get_default().getNewestArticle()));
 		int error = message.send();
 
@@ -360,7 +376,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	public bool markAllItemsRead()
 	{
         string url = "items/read";
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_int("newestItemId", int.parse(dbDaemon.get_default().getNewestArticle()));
         int error = message.send();
 
@@ -381,7 +397,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		else if(unread == ArticleStatus.READ)
 			url = "/items/read/multiple";
 
-		var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
+		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_int_array("items", articleIDs);
 		int error = message.send();
 
@@ -403,7 +419,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
         else if(marked == ArticleStatus.UNMARKED)
             url += "unstar";
 
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
         int error = message.send();
 
         if(error == ConnectionError.SUCCESS)
@@ -416,7 +432,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     public int64 addFeed(string feedURL, string? catID = null)
     {
         string url = "/feeds";
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "POST");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "POST");
         message.add_string("url", feedURL);
         message.add_int("folderId", (catID != null) ? int.parse(catID) : 0);
         int error = message.send();
@@ -440,7 +456,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     public void removeFeed(string feedID)
     {
         string url = "/feeds/%s".printf(feedID);
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "DELETE");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "DELETE");
         int error = message.send();
 
         if(error != ConnectionError.SUCCESS)
@@ -452,7 +468,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     public void renameFeed(string feedID, string title)
     {
         string url = "/feeds/%s/rename".printf(feedID);
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_string("feedTitle", title);
         int error = message.send();
 
@@ -465,7 +481,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     public void moveFeed(string feedID, string? newCatID = null)
     {
         string url = "/feeds/%s/move".printf(feedID);
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_int("folderId", (newCatID != null) ? int.parse(newCatID) : 0);
         int error = message.send();
 
@@ -478,7 +494,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     public int64 addFolder(string title)
     {
         string url = "/folders";
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "POST");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "POST");
         message.add_string("name", title);
         int error = message.send();
 
@@ -502,7 +518,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     {
         string url = "/folders/%s".printf(catID);
 
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "DELETE");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "DELETE");
         int error = message.send();
 
         if(error == ConnectionError.SUCCESS)
@@ -515,7 +531,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     public void renameCategory(string catID, string title)
     {
         string url = "/folders/%s".printf(catID);
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL + url, m_username, m_password, "PUT");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
         message.add_string("name", title);
         int error = message.send();
 
@@ -525,7 +541,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
     public bool ping()
     {
-        var message = new OwnCloudNewsMessage(m_OwnCloudURL, m_username, m_password, "PUT");
+        var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL, m_username, m_password, "PUT");
         int error = message.send(true);
 
         if(error == ConnectionError.NO_RESPONSE)

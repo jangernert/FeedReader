@@ -43,22 +43,23 @@ public class FeedReader.localUtils : GLib.Object {
 			&& doc.link != "")
 				url = doc.link;
 
+			var uri = new Soup.URI(url);
+
 			if(doc.image_url != null
 			&& doc.image_url != "")
 			{
-				if(downloadIcon(feedID, doc.image_url))
+				if(Utils.downloadIcon(feedID, doc.image_url))
 				{
 					// success
 				}
-				else
+				else if(uri != null)
 				{
-					Utils.downloadIconWithSession(session, feedID, doc.link);
+					Utils.downloadFavIcon(feedID, uri.get_scheme() + "://" + uri.get_host());
 				}
 			}
-			else if(doc.link != null
-			&& doc.link != "")
+			else if(uri != null)
 			{
-				Utils.downloadIconWithSession(session, feedID, doc.link);
+				Utils.downloadFavIcon(feedID, uri.get_scheme() + "://" + uri.get_host());
 			}
 			else
 				hasIcon = false;
@@ -66,7 +67,6 @@ public class FeedReader.localUtils : GLib.Object {
 			string? title = doc.title;
 			if(title == null)
 			{
-				var uri = new Soup.URI(xmlURL);
 				if(uri == null)
 					title = _("unknown Feed");
 				else
@@ -126,63 +126,5 @@ public class FeedReader.localUtils : GLib.Object {
 			Logger.error("localUtils - deleteIcon: " + e.message);
 		}
 		return false;
-	}
-
-	private bool downloadIcon(string feed_id, string icon_url)
-	{
-		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
-            return false;
-
-		var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-		string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
-    	var path = GLib.File.new_for_path(icon_path);
-    	if(!path.query_exists())
-    	{
-    		try
-    		{
-    			path.make_directory_with_parents();
-    		}
-    		catch(GLib.Error e){
-    			Logger.debug(e.message);
-    		}
-    	}
-
-		string local_filename = icon_path + feed_id + ".ico";
-
-		if(!FileUtils.test(local_filename, GLib.FileTest.EXISTS))
-		{
-			Soup.Message message_dlIcon;
-			message_dlIcon = new Soup.Message("GET", icon_url);
-
-			if(settingsTweaks.get_boolean("do-not-track"))
-				message_dlIcon.request_headers.append("DNT", "1");
-
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-			session.ssl_strict = false;
-			var status = session.send_message(message_dlIcon);
-			if(status == 200)
-			{
-				try{
-					FileUtils.set_contents(	local_filename,
-											(string)message_dlIcon.response_body.flatten().data,
-											(long)message_dlIcon.response_body.length);
-				}
-				catch(GLib.FileError e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-				}
-				return true;
-			}
-			else
-			{
-				Logger.error(@"Error downloading icon for feed: $feed_id - $icon_url");
-			}
-
-			return false;
-		}
-
-		// file already exists
-		return true;
 	}
 }

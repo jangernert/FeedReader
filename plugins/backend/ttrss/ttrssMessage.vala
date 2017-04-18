@@ -24,27 +24,15 @@ public class FeedReader.ttrssMessage : GLib.Object {
 	private ttrssUtils m_utils;
 
 
-	public ttrssMessage(string destination)
+	public ttrssMessage(Soup.Session session, string destination)
 	{
 		m_utils = new ttrssUtils();
 		m_message_string = new GLib.StringBuilder();
-		m_session = new Soup.Session();
-		m_session.user_agent = Constants.USER_AGENT;
-		m_session.ssl_strict = false;
+		m_session = session;
 		m_contenttype = "application/x-www-form-urlencoded";
 		m_parser = new Json.Parser();
 
 		m_message_soup = new Soup.Message("POST", destination);
-		m_session.authenticate.connect((msg, auth, retrying) => {
-			if(m_utils.getHtaccessUser() == "")
-			{
-				Logger.error("TTRSS Session: need Authentication");
-			}
-			else
-			{
-				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
-			}
-		});
 	}
 
 

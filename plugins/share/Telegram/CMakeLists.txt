@@ -18,6 +18,7 @@ PACKAGES
     sqlite3
     libsoup-2.4
     WebKit2-4.0
+    libxml-2.0
 
 OPTIONS
     --target-glib=2.32

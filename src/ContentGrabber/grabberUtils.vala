@@ -23,7 +23,7 @@ public class FeedReader.grabberUtils : GLib.Object {
     public static bool extractBody(Html.Doc* doc, string xpath, Xml.Node* destination)
     {
         bool foundSomething = false;
-        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+        var cntx = new Xml.XPath.Context(doc);
         var res = cntx.eval_expression(xpath);
 
         if(res == null)
@@ -56,8 +56,8 @@ public class FeedReader.grabberUtils : GLib.Object {
 
     public static string? getURL(Html.Doc* doc, string xpath)
     {
-        Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
-    	Xml.XPath.Object* res = cntx.eval_expression(xpath);
+        var cntx = new Xml.XPath.Context(doc);
+    	var res = cntx.eval_expression(xpath);
 
         if(res == null)
         {

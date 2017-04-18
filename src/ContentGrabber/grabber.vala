@@ -34,7 +34,7 @@ public class FeedReader.Grabber : GLib.Object {
     public string m_date;
     public string m_html;
 
-    public Grabber(Soup.session, string articleURL, string? articleID, string? feedID)
+    public Grabber(Soup.Session session, string articleURL, string? articleID, string? feedID)
     {
         m_articleURL = articleURL;
         m_articleID = articleID;

@@ -467,16 +467,16 @@ public class FeedReader.Utils : GLib.Object {
 	    		return false;
 	    	}
 
-			// check for <link rel="apple-touch-icon">
-			var xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+			// check for <link rel="icon">
+			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
 
 			if(xpath == null)
 			// check for <link rel="shortcut icon">
 				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
 
 			if(xpath == null)
-				// check for <link rel="icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
+				// check for <link rel="apple-touch-icon">
+				xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
 
 			if(xpath != null)
 			{
@@ -498,19 +498,7 @@ public class FeedReader.Utils : GLib.Object {
 		if(!icon_url.has_suffix("/"))
 			icon_url += "/";
 		icon_url += "favicon.ico";
-		if(downloadIcon(feed_id, icon_url, icon_path))
-			return true;
-
-
-		// last chance: try allesedv service
-		string allesedv_url = siteURL;
-		if(allesedv_url.has_prefix("http://"))
-			allesedv_url = allesedv_url.replace("http://", "");
-		else if(allesedv_url.has_prefix("https://"))
-			allesedv_url = allesedv_url.replace("https://", "");
-		allesedv_url = "https://f1.allesedv.com/32/%s".printf(allesedv_url);
-
-		return downloadIcon(feed_id, allesedv_url, icon_path);
+		return downloadIcon(feed_id, icon_url, icon_path);
 	}
 
 	public static bool downloadIcon(string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
@@ -583,13 +571,11 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 			{
-				var remoteMd5 = GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, (string)message_dlIcon.response_body.flatten().data);
-				var localMd5 = GLib.Checksum.compute_for_string(GLib.ChecksumType.MD5, getFileContent(local_filename));
-				if(remoteMd5 == localMd5)
+				if((string)message_dlIcon.response_body.flatten().data == getFileContent(local_filename))
 				{
 					// file exists and is identical to remote file
 					// we already downloaded it, but there is no need to write to the disc
-					Logger.debug("Utils.downloadIcon: md5 identical -> icon unchanged");
+					Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
 					return true;
 				}
 			}
@@ -618,7 +604,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		catch(Error e)
 		{
-			Logger.warning(@"Utils.checksumForFile: could not read file $filename");
+			Logger.warning(@"Utils.getFileContent: could not read file $filename");
 		}
 
 		return null;

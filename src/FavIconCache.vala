@@ -29,7 +29,11 @@ public class FeedReader.FavIconCache : GLib.Object {
 	private FavIconCache()
 	{
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
+		refresh();
+	}
 
+	private void refresh()
+	{
 		try
 		{
 			var iconDirPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
@@ -58,60 +62,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 
 					string fileName = fileInfo.get_name();
 
-					if(fileName.has_suffix(".txt"))
-						continue;
-
-					try
-					{
-						var pixbuf = new Gdk.Pixbuf.from_file(iconDirPath + fileName);
-
-						if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
-						{
-							Logger.warning(@"$fileName too small");
-							continue;
-						}
-
-						pixbuf = new Gdk.Pixbuf.from_file_at_scale(iconDirPath + fileName, 24, 24, true);
-						fileName = fileName.substring(0, fileName.length - ".ico".length);
-						m_map.set(fileName, pixbuf);
-					}
-					catch(GLib.Error e)
-					{
-						Logger.warning("Error loading favicon " + fileInfo.get_name());
-					}
-				}
-				else
-				{
-					Logger.warning("Error loading favicon " + fileInfo.get_name());
-				}
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("FavIconCache: %s".printf(e.message));
-		}
-	}
-
-	private void refresh()
-	{
-		try
-		{
-			var iconDirPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
-			var iconDirectory = GLib.File.new_for_path(iconDirPath);
-			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
-			GLib.FileInfo? fileInfo = null;
-			GLib.File? file = null;
-
-			while(true)
-			{
-				if(enumerator.iterate(out fileInfo, out file))
-				{
-					if(fileInfo == null)
-						break;
-
-					string fileName = fileInfo.get_name();
-
-					if(fileName.has_suffix(".txt"))
+					if(!fileName.has_suffix(".ico"))
 						continue;
 
 					if(!hasIcon(fileName))
@@ -151,7 +102,10 @@ public class FeedReader.FavIconCache : GLib.Object {
 	private bool hasIcon(string iconName)
 	{
 		if(m_map == null)
-		 return false;
+		{
+			m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
+			return false;
+		}
 
 		return m_map.has_key(iconName);
 	}

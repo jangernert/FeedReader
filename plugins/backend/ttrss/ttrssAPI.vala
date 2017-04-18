@@ -35,7 +35,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				Logger.error("TTRSS Session: need Authentication");
 			}
-			else
+			else if(!retrying)
 			{
 				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}

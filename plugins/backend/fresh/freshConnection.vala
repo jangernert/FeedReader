@@ -30,7 +30,7 @@ public class FeedReader.freshConnection {
 			{
 				Logger.error("fresh Session: need Authentication");
 			}
-			else
+			else if(!retrying)
 			{
 				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}

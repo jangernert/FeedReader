@@ -42,7 +42,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			{
 				Logger.error("ownCloud Session: need Authentication");
 			}
-			else
+			else if(!retrying)
 			{
 				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}

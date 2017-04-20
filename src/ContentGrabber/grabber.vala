@@ -167,6 +167,10 @@ public class FeedReader.Grabber : GLib.Object {
     {
         Logger.debug("Grabber: check contentType");
         var message = new Soup.Message("HEAD", m_articleURL.escape(""));
+
+        if(message == null)
+            return false;
+
         m_session.send_message(message);
         var params = new GLib.HashTable<string, string>(null, null);
         string? contentType = message.response_headers.get_content_type(out params);
@@ -194,6 +198,9 @@ public class FeedReader.Grabber : GLib.Object {
                 Logger.debug("Grabber: new url is: " + m_articleURL);
             }
         });
+
+        if(msg == null)
+            return false;
 
         if(Settings.tweaks().get_boolean("do-not-track"))
 			msg.request_headers.append("DNT", "1");

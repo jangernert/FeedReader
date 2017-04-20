@@ -530,7 +530,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		{
 			var message_dlImg = new Soup.Message("GET", fixedURL);
 
-            if(msg == null)
+            if(message_dlImg == null)
                 return url;
 
 			if(Settings.tweaks().get_boolean("do-not-track"))

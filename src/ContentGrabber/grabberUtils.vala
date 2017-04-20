@@ -528,7 +528,10 @@ public class FeedReader.grabberUtils : GLib.Object {
 
         if(!FileUtils.test(localFilename, GLib.FileTest.EXISTS))
 		{
-			Soup.Message message_dlImg = new Soup.Message("GET", fixedURL);
+			var message_dlImg = new Soup.Message("GET", fixedURL);
+
+            if(msg == null)
+                return url;
 
 			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_dlImg.request_headers.append("DNT", "1");
@@ -611,11 +614,15 @@ public class FeedReader.grabberUtils : GLib.Object {
 
                 Logger.debug(@"Grabber: url $url");
                 var message = new Soup.Message("HEAD", url);
+                if(message == null)
+                    return null;
                 session.send_message(message);
                 var params = new GLib.HashTable<string, string>(null, null);
                 string? contentType = message.response_headers.get_content_type(out params);
                 size = message.response_headers.get_content_length();
                 var message2 = new Soup.Message("HEAD", smallImgURL);
+                if(message2 == null)
+                    return null;
                 session.send_message(message2);
                 origSize = message2.response_headers.get_content_length();
                 if(contentType != null)

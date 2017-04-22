@@ -511,51 +511,130 @@ public class FeedReader.Utils : GLib.Object {
 
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
-		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
-		string etag_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".txt";
+		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
+		string local_filename = filename_prefix + ".ico";
+		string metadata_filename = filename_prefix + ".txt";
+		string cache_group = "cache";
+		string etag_key = "etag";
+		string last_modified_key = "last_modified";
 
-		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
-		var message_dlIcon = new Soup.Message("GET", icon_url);
-		if(Settings.tweaks().get_boolean("do-not-track"))
-			message_dlIcon.request_headers.append("DNT", "1");
-
-		// Use cached icon if the etag matches
-		// TODO: Also send If-Modified-Since
+		string? etag = null;
+		// Normally, we would store a last modified time as a datetime type, but
+		// servers aren't consistent about the format so we need to treat it as a
+		// black box.
+		string? last_modified = null;
 		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
-		&& FileUtils.test(etag_filename, GLib.FileTest.EXISTS))
+		&& FileUtils.test(metadata_filename, GLib.FileTest.EXISTS))
 		{
-			string? etag = getFileContent(etag_filename);
-			if(etag != null)
-				message_dlIcon.request_headers.append("If-None-Match", etag);
+			var metadata = new KeyFile();
+			try
+			{
+				try
+				{
+					metadata.load_from_file(metadata_filename, KeyFileFlags.NONE);
+					try { etag = metadata.get_string(cache_group, etag_key); }
+					catch (KeyFileError.KEY_NOT_FOUND e) {}
+					catch (KeyFileError.GROUP_NOT_FOUND e) {}
+					try { last_modified = metadata.get_string(cache_group, last_modified_key); }
+					catch (KeyFileError.KEY_NOT_FOUND e) {}
+					catch (KeyFileError.GROUP_NOT_FOUND e) {}
+				}
+				catch (KeyFileError.PARSE e)
+				{
+					// Try to load old-style etag metadata
+					// TODO: At some point we should remove this backwards compatibility
+					// Removing it will cause old clients to re-download all favicons,
+					// so for efficiency it might be nice to leave this for one release
+					Logger.warning(@"Utils.downloadIcon: Failed to load $metadata_filename as an INI. Treating it like an etag file instead.");
+					etag = getFileContent(metadata_filename);
+				}
+				catch (KeyFileError e)
+				{
+					var message = e.message;
+					Logger.warning(@"Utils.downloadIcon: Failed to read favicon metadata file $metadata_filename: $message");
+				}
+			}
+			catch (FileError e)
+			{
+				var message = e.message;
+				Logger.warning(@"Utils.downloadIcon: Failed to read favicon metadata file $metadata_filename: $message");
+			}
 		}
 
-		var status = getSession().send_message(message_dlIcon);
+		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
+		var message = new Soup.Message("GET", icon_url);
+		if(Settings.tweaks().get_boolean("do-not-track"))
+			message.request_headers.append("DNT", "1");
+
+		if(etag != null)
+			message.request_headers.append("If-None-Match", etag);
+		if(last_modified != null)
+			message.request_headers.append("If-Modified-Since", last_modified);
+
+		var status = getSession().send_message(message);
 		if(status == 304)
 		{
-			Logger.debug(@"Utils.downloadIcon: etag identical -> icon unchanged $feed_id");
+			var log = "Utils.downloadIcon: ";
+			if(etag != null)
+				log += @"etag ($etag) ";
+			if(last_modified != null)
+			{
+				if(etag != null)
+					log += "and ";
+				log += @"last modified ($last_modified) ";
+			}
+			log += @"matched -> icon unchanged $feed_id";
+			Logger.debug(log);
 			return true;
 		}
 		else if(status == 200)
 		{
-			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+			var data = message.response_body.flatten().data;
+			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
+			&& (string)data == getFileContent(local_filename))
 			{
-				if((string)message_dlIcon.response_body.flatten().data == getFileContent(local_filename))
+				// file exists and is identical to remote file
+				// we already downloaded it, but there is no need to write to the disc
+				Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
+			}
+			else
+			{
+				try
 				{
-					// file exists and is identical to remote file
-					// we already downloaded it, but there is no need to write to the disc
-					Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
-					return true;
+					FileUtils.set_data(local_filename, data);
+				}
+				catch(GLib.FileError e)
+				{
+					Logger.error("Error writing icon: %s".printf(e.message));
+					return false;
 				}
 			}
 
-			try
+			etag = message.response_headers.get_one("ETag");
+			last_modified = message.response_headers.get_one("Last-Modified");
+			// File downloaded successfully; time to save the caching metadata
+			if(etag == null && last_modified == null)
 			{
-				FileUtils.set_data(local_filename, message_dlIcon.response_body.flatten().data);
+				if(FileUtils.unlink(metadata_filename) != 0)
+					Logger.warning(@"Error deleting metadata file $metadata_filename");
 			}
-			catch(GLib.FileError e)
+			else
 			{
-				Logger.error("Error writing icon: %s".printf(e.message));
+				var metadata = new KeyFile();
+				if(etag != null)
+					metadata.set_string(cache_group, etag_key, etag);
+				if(last_modified != null)
+					metadata.set_string(cache_group, last_modified_key, last_modified);
+				try
+				{
+					metadata.save_to_file(metadata_filename);
+				}
+				catch (FileError e)
+				{
+					Logger.warning(@"Failed to save metadata file $metadata_filename: " + e.message);
+				}
 			}
+
 			return true;
 		}
 		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url, got response code $status");

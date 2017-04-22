@@ -41,7 +41,7 @@ CUSTOM_VAPIS
 )
 
 add_library(${NAME} SHARED ${VALA_C})
-target_link_libraries(${NAME} gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
+target_link_libraries(${NAME} FeedReaderCommon gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
 
 
 # ----------------------------------------------------------
@@ -92,4 +92,3 @@ install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/plugins)
 install(TARGETS ${UINAME} DESTINATION ${PKGLIBDIR}/pluginsUI)
 install(FILES ${NAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
 install(FILES ${UINAME}.plugin DESTINATION ${PKGLIBDIR}/pluginsUI)
-

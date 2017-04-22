@@ -514,60 +514,28 @@ public class FeedReader.Utils : GLib.Object {
 		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
 		string etag_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".txt";
 
-		// file already exists
-		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
-		|| !FileUtils.test(etag_filename, GLib.FileTest.EXISTS))
-		{
-			var message_head = new Soup.Message("HEAD", icon_url);
-			if(Settings.tweaks().get_boolean("do-not-track"))
-				message_head.request_headers.append("DNT", "1");
-
-			var status = getSession().send_message(message_head);
-			if(status == 200)
-			{
-				string etag = message_head.response_headers.get_one("ETag");
-
-				if(etag != null)
-				{
-					if(FileUtils.test(etag_filename, GLib.FileTest.EXISTS)
-					&& etag == getFileContent(etag_filename))
-					{
-						// file exists and is identical to remote file
-						Logger.debug(@"Utils.downloadIcon: etag identical -> icon unchanged $feed_id");
-						return true;
-					}
-					else
-					{
-						Logger.debug(@"Utils.downloadIcon: write etag $etag");
-						try
-						{
-							FileUtils.set_contents(etag_filename, etag);
-						}
-						catch(GLib.FileError e)
-						{
-							Logger.error("Error writing etag: %s".printf(e.message));
-						}
-					}
-				}
-				else
-				{
-					Logger.warning(@"no etag for $icon_url");
-				}
-			}
-			else
-			{
-				Logger.warning(@"HEAD-request failed $icon_url");
-				return false;
-			}
-		}
-
 		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
 		var message_dlIcon = new Soup.Message("GET", icon_url);
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_dlIcon.request_headers.append("DNT", "1");
 
+		// Use cached icon if the etag matches
+		// TODO: Also send If-Modified-Since
+		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
+		&& FileUtils.test(etag_filename, GLib.FileTest.EXISTS))
+		{
+			string? etag = getFileContent(etag_filename);
+			if(etag != null)
+				message_dlIcon.request_headers.append("If-None-Match", etag);
+		}
+
 		var status = getSession().send_message(message_dlIcon);
-		if(status == 200)
+		if(status == 304)
+		{
+			Logger.debug(@"Utils.downloadIcon: etag identical -> icon unchanged $feed_id");
+			return true;
+		}
+		else if(status == 200)
 		{
 			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 			{
@@ -590,7 +558,7 @@ public class FeedReader.Utils : GLib.Object {
 			}
 			return true;
 		}
-		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url");
+		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url, got response code $status");
 		return false;
 	}
 

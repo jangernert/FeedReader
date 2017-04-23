@@ -90,14 +90,23 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public bool loadPlugin(string plugName)
 	{
-		Logger.debug("feedserver: load plugin \"%s\"".printf(plugName));
+		Logger.debug(@"feedserver: load plugin \"$plugName\"");
 		m_plugName = plugName;
 		var plugin = m_engine.get_plugin_info(plugName);
 
-		if(plugin != null)
-			m_pluginLoaded = m_engine.try_load_plugin(plugin);
-		else
+		if(plugin == null)
+		{
+			Logger.error(@"feedserver: failed to load info for \"$plugName\"");
 			m_pluginLoaded = false;
+			return false;
+		}
+
+		Logger.info("Plugin Name: " + plugin.get_name());
+		Logger.info("Plugin Version: " + plugin.get_version());
+		Logger.info("Plugin Website: " + plugin.get_website());
+		Logger.info("Plugin Dir: " + plugin.get_module_dir());
+
+		m_pluginLoaded = m_engine.try_load_plugin(plugin);
 
 		if(!m_pluginLoaded)
 			Logger.error("feedserver: couldn't load plugin %s".printf(m_plugName));

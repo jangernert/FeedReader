@@ -14,7 +14,6 @@ vala_precompile(VALA_C ${DAEMONTARGET}
     feedbinConnection.vala
     feedbinUtils.vala
 
-
 PACKAGES
     libpeas-1.0
     json-glib-1.0

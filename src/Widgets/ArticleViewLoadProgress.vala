@@ -15,67 +15,50 @@
 
 public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 
-    private Gtk.Label m_label;
-    private Gtk.Spinner m_spinner;
-    private Gtk.Box m_box;
+    private Gtk.ProgressBar m_progress;
     private uint m_timeout_source_id = 0;
 
     public ArticleViewLoadProgress()
     {
-        m_label = new Gtk.Label("0%");
-        m_label.get_style_context().add_class("h2");
-        m_spinner = new Gtk.Spinner();
-        m_spinner.set_size_request(24, 24);
-        m_spinner.margin = 10;
-        m_label.margin_end = 10;
-
-        m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-        m_box.get_style_context().add_class("osd");
-        m_box.pack_start(m_spinner);
-        m_box.pack_start(m_label);
-
-        this.valign = Gtk.Align.CENTER;
-        this.halign = Gtk.Align.CENTER;
-        this.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE);
-		this.set_transition_duration(300);
-		this.no_show_all = true;
-        this.add(m_box);
+        m_progress = new Gtk.ProgressBar();
+        m_progress.set_show_text(false);
+        this.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+        this.set_transition_duration(100);
+        this.valign = Gtk.Align.START;
+        this.no_show_all = true;
+        this.add(m_progress);
     }
 
     public void setPercentage(uint percentage)
     {
-        m_label.set_text("%u %%".printf(percentage));
+        m_progress.set_fraction(percentage);
     }
 
     public void setPercentageF(double percentage)
     {
-        m_label.set_text("%u %%".printf((uint)(percentage*100)));
+        m_progress.set_fraction(percentage);
     }
 
     public void reveal(bool show)
 	{
         if(m_timeout_source_id > 0)
-		{
+        {
             GLib.Source.remove(m_timeout_source_id);
             m_timeout_source_id = 0;
         }
 
-		if(show)
-		{
-			this.visible = true;
+        if(show)
+        {
+            this.visible = true;
+            m_progress.show();
             m_timeout_source_id = Timeout.add(300, () => {
-                m_spinner.show();
-                m_label.show();
-                m_box.show();
-                m_spinner.start();
-                this.set_reveal_child(true);
-                m_timeout_source_id = 0;
-                return false;
+                  this.set_reveal_child(true);
+                  m_timeout_source_id = 0;
+                  return false;
             });
-		}
+        }
         else
         {
-            m_spinner.stop();
             this.set_reveal_child(false);
         }
 	}

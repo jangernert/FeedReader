@@ -110,8 +110,13 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 
 		m_fsHead = new FullscreenHeader();
 
+		m_progress = new ArticleViewLoadProgress();
+		var progressOverlay = new Gtk.Overlay();
+		progressOverlay.add(m_stack);
+		progressOverlay.add_overlay(m_progress);
+
 		var fullscreenHeaderOverlay = new Gtk.Overlay();
-		fullscreenHeaderOverlay.add(m_stack);
+		fullscreenHeaderOverlay.add(progressOverlay);
 		fullscreenHeaderOverlay.add_overlay(m_fsHead);
 
 		m_prevButton = new fullscreenButton("go-previous-symbolic", Gtk.Align.START);
@@ -130,15 +135,8 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		nextOverlay.add(prevOverlay);
 		nextOverlay.add_overlay(m_nextButton);
 
-
-		m_progress = new ArticleViewLoadProgress();
-
-		var progressOverlay = new Gtk.Overlay();
-		progressOverlay.add(nextOverlay);
-		progressOverlay.add_overlay(m_progress);
-
 		m_videoOverlay = new Gtk.Overlay();
-		m_videoOverlay.add(progressOverlay);
+		m_videoOverlay.add(nextOverlay);
 
 		this.add(m_videoOverlay);
 		this.add_overlay(m_UrlOverlay);

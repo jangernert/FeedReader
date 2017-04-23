@@ -22,8 +22,9 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
     {
         m_progress = new Gtk.ProgressBar();
         m_progress.set_show_text(false);
-        this.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE);
-        this.set_transition_duration(300);
+        this.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
+        this.set_transition_duration(100);
+        this.valign = Gtk.Align.START;
         this.no_show_all = true;
         this.add(m_progress);
     }
@@ -49,6 +50,7 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
         if(show)
         {
             this.visible = true;
+            m_progress.show();
             m_timeout_source_id = Timeout.add(300, () => {
                   this.set_reveal_child(true);
                   m_timeout_source_id = 0;

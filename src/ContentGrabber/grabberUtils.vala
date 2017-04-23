@@ -474,8 +474,20 @@ public class FeedReader.grabberUtils : GLib.Object {
                     if(parentURL != null)
                     {
                         string parent = downloadImage(session, parentURL, articleID, feedID, i+1, true);
-                        node->set_prop("src", original);
-                        node->set_prop("FR_parent", parent);
+
+                        if(compareImageSize(parent, original) > 0)
+                        {
+                            // parent is bigger than orignal image
+                            node->set_prop("src", original);
+                            node->set_prop("FR_parent", parent);
+                        }
+                        else
+                        {
+                            // parent is no improvement over orignal image
+                            // just delete parent again and only set orignal
+                            GLib.FileUtils.remove(parent);
+                            node->set_prop("src", original);
+                        }
                     }
                     else
                     {
@@ -590,6 +602,38 @@ public class FeedReader.grabberUtils : GLib.Object {
             return null;
         }
         return null;
+    }
+
+    // receives 2 paths to images stored on the hdd and compares the size
+    // 1: file1 > file2
+    // 0: file1 = file2
+    // -1: file1 < file2
+    private static int compareImageSize(string file1, string file2)
+    {
+        int? height1 = 0;
+        int? width1 = 0;
+        Gdk.Pixbuf.get_file_info(file1, out width1, out height1);
+
+        int? height2 = 0;
+        int? width2 = 0;
+        Gdk.Pixbuf.get_file_info(file2, out width2, out height2);
+
+        if(height1 == null
+        || width1 == null
+        || height2 == null
+        || width2 == null)
+        {
+            Logger.warning("Utils.compareImageSize: couldn't read image sizes");
+            return 0;
+        }
+
+        if(height1 == height2
+        && width1 == width2)
+            return 0;
+        else if(height1*width1 > height2*width2)
+            return 1;
+        else
+            return -1;
     }
 
     // check if the parent node is a link that points to a picture

@@ -41,7 +41,7 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.appdata.xm
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader.desktop" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop.in" "${CMAKE_SOURCE_DIR}/data/org.gnome.FeedReader-autostart.desktop" @ONLY)
 
-set(MODULES 
+set(MODULES
 	gtk+-3.0>=3.22
 	json-glib-1.0
 	gee-0.8
@@ -106,14 +106,14 @@ PACKAGES
 
 OPTIONS
 	--target-glib=${GLIB_VERSION}
-	--vapi=FeedReaderCommon.vapi
-	--header=FeedReaderCommon.h
-	
+GENERATE_VAPI
+	FeedReaderCommon
 CUSTOM_VAPIS
 	vapi/libvilistextum.vapi
 )
 
 add_library(FeedReaderCommon STATIC ${LIBFR})
+set_property(TARGET FeedReaderCommon PROPERTY POSITION_INDEPENDENT_CODE ON)
 target_link_libraries(FeedReaderCommon vilistextum)
 
 

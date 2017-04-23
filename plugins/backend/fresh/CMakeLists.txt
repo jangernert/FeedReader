@@ -34,6 +34,7 @@ CUSTOM_VAPIS
 )
 
 add_library(${NAME} SHARED ${VALA_C})
+target_link_libraries(${NAME} FeedReaderCommon)
 
 
 # ----------------------------------------------------------
@@ -82,4 +83,3 @@ install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/plugins)
 install(TARGETS ${UINAME} DESTINATION ${PKGLIBDIR}/pluginsUI)
 install(FILES ${NAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
 install(FILES ${UINAME}.plugin DESTINATION ${PKGLIBDIR}/pluginsUI)
-

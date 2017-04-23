@@ -1,0 +1,29 @@
+Source: feedreader
+Section: x11
+Priority: extra
+Maintainer: Jan Lukas Gernert <jangernert@gmail.com>
+Build-Depends: 	cmake (>= 2.8),
+               	debhelper (>= 8.0.0),
+               	valac-0.30 | valac (>= 0.30),
+               	libgirepository1.0-dev,
+               	libgtk-3-dev,
+		libsoup2.4-dev,
+		libjson-glib-dev,
+		libwebkit2gtk-4.0-dev,
+		libsqlite3-dev,
+		libsecret-1-dev,
+		libnotify-dev,
+		libunity-dev,
+		libgee-0.8-dev,
+		librest-dev,
+		libgstreamer1.0-dev,
+		libgstreamer-plugins-base1.0-dev,
+		libgoa-1.0-dev,
+		libcurl-dev,
+		libpeas-dev
+Standards-Version: 3.9.3
+
+Package: feedreader
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A simple client for online RSS services like tt-rss and others.

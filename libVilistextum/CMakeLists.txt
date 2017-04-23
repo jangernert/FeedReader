@@ -22,3 +22,4 @@ add_library(vilistextum STATIC
 	util.c
 	vilistextum.h
 	vilistextum.c)
+set_property(TARGET vilistextum PROPERTY POSITION_INDEPENDENT_CODE ON)

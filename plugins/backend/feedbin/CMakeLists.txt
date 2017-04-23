@@ -33,6 +33,7 @@ CUSTOM_VAPIS
 )
 
 add_library(${NAME} SHARED ${VALA_C})
+target_link_libraries(${NAME} FeedReaderCommon)
 
 
 # ----------------------------------------------------------

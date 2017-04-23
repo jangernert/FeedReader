@@ -501,6 +501,75 @@ public class FeedReader.Utils : GLib.Object {
 		return downloadIcon(feed_id, icon_url, icon_path);
 	}
 
+	private struct ResourceMetadata
+	{
+		private const string CACHE_GROUP = "cache";
+		private const string ETAG_KEY = "etag";
+		private const string LAST_MODIFIED_KEY = "last_modified";
+
+		string? etag;
+		string? last_modified;
+
+		public ResourceMetadata()
+		{
+		}
+
+		public ResourceMetadata.from_file(string filename)
+		{
+			var config = new KeyFile();
+			try
+			{
+				config.load_from_file(filename, KeyFileFlags.NONE);
+				try { this.etag = config.get_string(CACHE_GROUP, ETAG_KEY); }
+				catch (KeyFileError.KEY_NOT_FOUND e) {}
+				catch (KeyFileError.GROUP_NOT_FOUND e) {}
+				try { this.last_modified = config.get_string(CACHE_GROUP, LAST_MODIFIED_KEY); }
+				catch (KeyFileError.KEY_NOT_FOUND e) {}
+				catch (KeyFileError.GROUP_NOT_FOUND e) {}
+			}
+			catch (KeyFileError.PARSE e)
+			{
+				// Try to load old-style etag metadata
+				// TODO: At some point we should remove this backwards compatibility
+				// Removing it will cause old clients to re-download all favicons,
+				// so for efficiency it might be nice to leave this for one release
+				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename as an INI. Treating it like an etag file instead.");
+				this.etag = getFileContent(filename);
+			}
+			catch (KeyFileError e)
+			{
+				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);
+			}
+			catch (FileError e)
+			{
+				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);
+			}
+		}
+
+		public void save_to_file(string filename)
+		{
+			if(this.etag == null && this.last_modified == null)
+			{
+				if(FileUtils.unlink(filename) != 0)
+					Logger.warning(@"FaviconMetadata.save_to_file: Error deleting metadata file $filename");
+			}
+			else
+			{
+				var config = new KeyFile();
+				config.set_string(CACHE_GROUP, ETAG_KEY, this.etag);
+				config.set_string(CACHE_GROUP, LAST_MODIFIED_KEY, this.last_modified);
+				try
+				{
+					config.save_to_file(filename);
+				}
+				catch (FileError e)
+				{
+					Logger.warning(@"FaviconMetadata.save_to_file: Failed to save metadata file $filename: " + e.message);
+				}
+			}
+		}
+	}
+
 	public static bool downloadIcon(string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
@@ -511,86 +580,78 @@ public class FeedReader.Utils : GLib.Object {
 
 		var path = GLib.File.new_for_path(icon_path);
 		try{path.make_directory_with_parents();}catch(GLib.Error e){}
-		string local_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".ico";
-		string etag_filename = icon_path + feed_id.replace("/", "_").replace(".", "_") + ".txt";
+		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
+		string local_filename = filename_prefix + ".ico";
+		string metadata_filename = filename_prefix + ".txt";
 
-		// file already exists
-		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
-		|| !FileUtils.test(etag_filename, GLib.FileTest.EXISTS))
+		string? etag = null;
+		// Normally, we would store a last modified time as a datetime type, but
+		// servers aren't consistent about the format so we need to treat it as a
+		// black box.
+		string? last_modified = null;
+		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
 		{
-			var message_head = new Soup.Message("HEAD", icon_url);
-			if(Settings.tweaks().get_boolean("do-not-track"))
-				message_head.request_headers.append("DNT", "1");
-
-			var status = getSession().send_message(message_head);
-			if(status == 200)
-			{
-				string etag = message_head.response_headers.get_one("ETag");
-
-				if(etag != null)
-				{
-					if(FileUtils.test(etag_filename, GLib.FileTest.EXISTS)
-					&& etag == getFileContent(etag_filename))
-					{
-						// file exists and is identical to remote file
-						Logger.debug(@"Utils.downloadIcon: etag identical -> icon unchanged $feed_id");
-						return true;
-					}
-					else
-					{
-						Logger.debug(@"Utils.downloadIcon: write etag $etag");
-						try
-						{
-							FileUtils.set_contents(etag_filename, etag);
-						}
-						catch(GLib.FileError e)
-						{
-							Logger.error("Error writing etag: %s".printf(e.message));
-						}
-					}
-				}
-				else
-				{
-					Logger.warning(@"no etag for $icon_url");
-				}
-			}
-			else
-			{
-				Logger.warning(@"HEAD-request failed $icon_url");
-				return false;
-			}
+			var metadata = ResourceMetadata.from_file(metadata_filename);
+			etag = metadata.etag;
+			last_modified = metadata.last_modified;
 		}
 
 		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
-		var message_dlIcon = new Soup.Message("GET", icon_url);
+		var message = new Soup.Message("GET", icon_url);
 		if(Settings.tweaks().get_boolean("do-not-track"))
-			message_dlIcon.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
-		var status = getSession().send_message(message_dlIcon);
-		if(status == 200)
+		if(etag != null)
+			message.request_headers.append("If-None-Match", etag);
+		if(last_modified != null)
+			message.request_headers.append("If-Modified-Since", last_modified);
+
+		var status = getSession().send_message(message);
+		if(status == 304)
 		{
-			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+			var log = "Utils.downloadIcon: ";
+			if(etag != null)
+				log += @"etag ($etag) ";
+			if(last_modified != null)
 			{
-				if((string)message_dlIcon.response_body.flatten().data == getFileContent(local_filename))
+				if(etag != null)
+					log += "and ";
+				log += @"last modified ($last_modified) ";
+			}
+			log += @"matched -> icon unchanged $feed_id";
+			Logger.debug(log);
+			return true;
+		}
+		else if(status == 200)
+		{
+			var data = message.response_body.flatten().data;
+			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
+			&& (string)data == getFileContent(local_filename))
+			{
+				// file exists and is identical to remote file
+				// we already downloaded it, but there is no need to write to the disc
+				Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
+			}
+			else
+			{
+				try
 				{
-					// file exists and is identical to remote file
-					// we already downloaded it, but there is no need to write to the disc
-					Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
-					return true;
+					FileUtils.set_data(local_filename, data);
+				}
+				catch(GLib.FileError e)
+				{
+					Logger.error("Error writing icon: %s".printf(e.message));
+					return false;
 				}
 			}
 
-			try
-			{
-				FileUtils.set_data(local_filename, message_dlIcon.response_body.flatten().data);
-			}
-			catch(GLib.FileError e)
-			{
-				Logger.error("Error writing icon: %s".printf(e.message));
-			}
+			var metadata = ResourceMetadata();
+			metadata.etag = message.response_headers.get_one("ETag");
+			metadata.last_modified = message.response_headers.get_one("Last-Modified");
+			metadata.save_to_file(metadata_filename);
 			return true;
 		}
-		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url");
+		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url, got response code $status");
 		return false;
 	}
 

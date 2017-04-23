@@ -58,6 +58,7 @@ namespace FeedReader {
 		public const string USER_AGENT		= "FeedReader @VERSION@";
 		public const int DBusAPIVersion = 17;
 		public const int DB_SCHEMA_VERSION = 5;
+		public const int REDOWNLOAD_FAVICONS_AFTER_DAYS = 7;
 
 		// tango colors
 		public const string[] COLORS = {

@@ -543,15 +543,28 @@ public class FeedReader.Utils : GLib.Object {
 		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
+		bool icon_exists = FileUtils.test(local_filename, GLib.FileTest.EXISTS);
 
 		string? etag = null;
 		// Normally, we would store a last modified time as a datetime type, but
 		// servers aren't consistent about the format so we need to treat it as a
 		// black box.
 		string? last_modified = null;
-		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+		if(icon_exists)
 		{
 			var metadata = ResourceMetadata.from_file(metadata_filename);
+			GLib.DateTime? lastMod = metadata.lastModifiedDateTime();
+
+			if(lastMod != null)
+			{
+				var now = new DateTime.now_local();
+				var difference = now.difference(lastMod);
+
+				// icon was already downloaded a few days ago, don't even check if it was updated
+				if((difference/GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
+					return true;
+			}
+
 			etag = metadata.etag;
 			last_modified = metadata.last_modified;
 		}
@@ -585,7 +598,7 @@ public class FeedReader.Utils : GLib.Object {
 		else if(status == 200)
 		{
 			var data = message.response_body.flatten().data;
-			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
+			if(icon_exists
 			&& (string)data == getFileContent(local_filename))
 			{
 				// file exists and is identical to remote file

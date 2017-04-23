@@ -19,18 +19,18 @@ public class FeedReader.feed : GLib.Object {
 	private string m_title;
 	private string m_url;
 	private string? m_xmlURL;
-	private bool m_hasIcon;
 	private uint m_unread;
 	private string[] m_catIDs;
+	private string? m_iconURL;
 
-	public feed(string feedID, string title, string url, bool hasIcon, uint unread, string[] catIDs, string? xmlURL = null)
+	public feed(string feedID, string title, string url, uint unread, string[] catIDs, string? iconURL = null, string? xmlURL = null)
 	{
 		m_feedID = feedID;
 		m_title = title;
 		m_url = url;
 		m_unread = unread;
 		m_catIDs = catIDs;
-		m_hasIcon = hasIcon;
+		m_iconURL = (iconURL == "") ? null : iconURL;
 		m_xmlURL = xmlURL;
 	}
 
@@ -52,11 +52,6 @@ public class FeedReader.feed : GLib.Object {
 	public string getURL()
 	{
 		return m_url;
-	}
-
-	public bool hasIcon()
-	{
-		return m_hasIcon;
 	}
 
 	public uint getUnread()
@@ -112,7 +107,12 @@ public class FeedReader.feed : GLib.Object {
 		return false;
 	}
 
-	public string getXmlUrl()
+	public string? getIconURL()
+	{
+		return m_iconURL;
+	}
+
+	public string? getXmlUrl()
 	{
 		return m_xmlURL;
 	}

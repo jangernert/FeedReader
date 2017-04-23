@@ -132,23 +132,16 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
     				{
     					var feed_node = feed_array.get_object_element(i);
     					string feed_id = feed_node.get_int_member("id").to_string();
-                        bool hasIcon = false;
-
-    					if(feed_node.has_member("faviconLink"))
-                        {
-                            string icon_url = feed_node.get_string_member("faviconLink");
-                            if(icon_url != "" && icon_url != null && GLib.Uri.parse_scheme(icon_url) != null)
-                                hasIcon = Utils.downloadIcon(feed_id, icon_url);
-                        }
+                        string? icon_url = feed_node.has_member("faviconLink") ? feed_node.get_string_member("faviconLink") : null;
 
     					feeds.add(
     						new feed (
     								feed_id,
     								feed_node.get_string_member("title"),
     								feed_node.get_string_member("link"),
-    								hasIcon,
     								(int)feed_node.get_int_member("unreadCount"),
-    								{ feed_node.get_int_member("folderId").to_string() }
+    								{ feed_node.get_int_member("folderId").to_string() },
+                                    icon_url
     							)
     					);
     				}

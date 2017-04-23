@@ -141,6 +141,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 		}
 
+		// download favicons for all feeds
+		Utils.getFavIcons(feeds);
+
 		// write categories
 		dbDaemon.get_default().reset_exists_flag();
 		dbDaemon.get_default().write_categories(categories);
@@ -224,6 +227,9 @@ public class FeedReader.FeedServer : GLib.Object {
 		syncProgress(_("Getting feeds and categories"));
 
 		getFeedsAndCats(feeds, categories, tags);
+
+		// download favicons for all feeds
+		Utils.getFavIcons(feeds);
 
 		// write categories
 		dbDaemon.get_default().write_categories(categories);

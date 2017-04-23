@@ -29,7 +29,7 @@ public class FeedReader.dbDaemon : dbBase {
 		return m_dataBase;
     }
 
-    private dbDaemon(string dbFile = "feedreader-04.db")
+    private dbDaemon(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
     {
         base(dbFile);
     }
@@ -173,7 +173,6 @@ public class FeedReader.dbDaemon : dbBase {
         query.insertValuePair("feed_id", "$FEEDID");
         query.insertValuePair("name", "$FEEDNAME");
         query.insertValuePair("url", "$FEEDURL");
-        query.insertValuePair("has_icon", "$HASICON");
         query.insertValuePair("category_id", "$CATID");
         query.insertValuePair("subscribed", "1");
         query.insertValuePair("xmlURL", "$XMLURL");
@@ -192,13 +191,11 @@ public class FeedReader.dbDaemon : dbBase {
         int feedID_pos   = stmt.bind_parameter_index("$FEEDID");
         int feedName_pos = stmt.bind_parameter_index("$FEEDNAME");
         int feedURL_pos  = stmt.bind_parameter_index("$FEEDURL");
-        int hasIcon_pos  = stmt.bind_parameter_index("$HASICON");
         int catID_pos    = stmt.bind_parameter_index("$CATID");
         int xmlURL_pos    = stmt.bind_parameter_index("$XMLURL");
         assert (feedID_pos > 0);
         assert (feedName_pos > 0);
         assert (feedURL_pos > 0);
-        assert (hasIcon_pos > 0);
         assert (catID_pos > 0);
         assert (xmlURL_pos > 0);
 
@@ -215,7 +212,6 @@ public class FeedReader.dbDaemon : dbBase {
             stmt.bind_text(feedID_pos, feed_item.getFeedID());
             stmt.bind_text(feedName_pos, Utils.UTF8fix(feed_item.getTitle()));
             stmt.bind_text(feedURL_pos, feed_item.getURL());
-            stmt.bind_int (hasIcon_pos, feed_item.hasIcon() ? 1 : 0);
             stmt.bind_text(catID_pos, catString);
             stmt.bind_text(xmlURL_pos, feed_item.getXmlUrl());
 

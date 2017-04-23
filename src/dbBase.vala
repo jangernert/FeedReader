@@ -18,7 +18,7 @@ public class FeedReader.dbBase : GLib.Object {
 	protected Sqlite.Database sqlite_db;
 	public signal void updateBadge();
 
-	protected dbBase(string dbFile = "feedreader-04.db")
+	protected dbBase(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
 		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
 		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/";
@@ -68,7 +68,6 @@ public class FeedReader.dbBase : GLib.Object {
 											"feed_id" TEXT PRIMARY KEY NOT NULL UNIQUE,
 											"name" TEXT NOT NULL,
 											"url" TEXT NOT NULL,
-											"has_icon" INTEGER NOT NULL,
 											"category_id" TEXT,
 											"subscribed" INTEGER DEFAULT 1,
 											"xmlURL" TEXT
@@ -1042,15 +1041,21 @@ public class FeedReader.dbBase : GLib.Object {
 		query.build();
 
 		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
+		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
 		{
 			Logger.error(query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		while (stmt.step () == Sqlite.ROW) {
-			var tmpfeed = new feed(feedID, stmt.column_text(1), stmt.column_text(2), ((stmt.column_int(3) == 1) ? true : false), getFeedUnread(feedID), stmt.column_text(4).split(","));
+		while(stmt.step () == Sqlite.ROW)
+		{
+			var tmpfeed = new feed(
+				feedID,
+				stmt.column_text(1),
+				stmt.column_text(2),
+				getFeedUnread(feedID),
+				stmt.column_text(3).split(","));
 			return tmpfeed;
 		}
 
@@ -1081,9 +1086,8 @@ public class FeedReader.dbBase : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
-			string catString = stmt.column_text(4);
-			string xmlURL = stmt.column_text(6);
-			bool has_icon = ((stmt.column_int(3) == 1) ? true : false);
+			string catString = stmt.column_text(3);
+			string xmlURL = stmt.column_text(5);
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
 			string[] catVec = { "" };
@@ -1097,7 +1101,7 @@ public class FeedReader.dbBase : GLib.Object {
 			else
 				count = getFeedUnread(feedID);
 
-			tmpfeed = new feed(feedID, name, url, has_icon, count, catVec, xmlURL);
+			tmpfeed = new feed(feedID, name, url, count, catVec, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -1178,15 +1182,14 @@ public class FeedReader.dbBase : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
-			string catString = stmt.column_text(4);
-			string xmlURL = stmt.column_text(6);
-			bool has_icon = ((stmt.column_int(3) == 1) ? true : false);
+			string catString = stmt.column_text(3);
+			string xmlURL = stmt.column_text(5);
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
 			string[] catVec = { "" };
 			if(catString != "")
 				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, name, url, has_icon, getFeedUnread(feedID), catVec, xmlURL);
+			tmpfeed = new feed(feedID, name, url, getFeedUnread(feedID), catVec, xmlURL);
 			tmp.add(tmpfeed);
 		}
 

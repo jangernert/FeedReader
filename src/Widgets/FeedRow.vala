@@ -35,7 +35,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void moveUP();
 	public signal void deselectRow();
 
-	public FeedRow(string? text, uint unread_count, bool has_icon, string feedID, string catID, int level)
+	public FeedRow(string? text, uint unread_count, string feedID, string catID, int level)
 	{
 		m_level = level;
 		m_catID = catID;

@@ -217,20 +217,11 @@ public class FeedReader.FeedlyAPI : Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("website") ? object.get_string_member("website") : "";
-			string icon_url = "";
+			string? icon_url = null;
 			if(object.has_member("iconUrl"))
-			{
 				icon_url = object.get_string_member("iconUrl");
-			}
 			else if(object.has_member("visualUrl"))
-			{
 				icon_url = object.get_string_member("visualUrl");
-			}
-
-			if(icon_url != "" && !Utils.downloadIcon(feedID, icon_url))
-			{
-				icon_url = "";
-			}
 
 			string title = "No Title";
 			if(object.has_member("title"))
@@ -261,9 +252,9 @@ public class FeedReader.FeedlyAPI : Object {
 						feedID,
 						title,
 						url,
-						(icon_url == "") ? false : true,
 						getUnreadCountforID(object.get_string_member("id")),
-						categories
+						categories,
+						icon_url
 					)
 			);
 		}

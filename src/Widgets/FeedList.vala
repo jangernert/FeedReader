@@ -231,7 +231,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private void createFeedlist(ArticleListState state, bool defaultSettings, bool masterCat)
 	{
-		var row_separator1 = new FeedRow(null, 0, false, FeedID.SEPARATOR.to_string(), "-1", 0);
+		var row_separator1 = new FeedRow(null, 0, FeedID.SEPARATOR.to_string(), "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator1.get_style_context().add_class("fr-sidebar-separator");
 		separator1.margin_top = 8;
@@ -244,7 +244,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			unread = dbUI.get_default().get_marked_total();
 		else
 			unread = dbUI.get_default().get_unread_total();
-		var row_all = new FeedRow(_("All Articles"), unread, false, FeedID.ALL.to_string(), "-1", 0);
+		var row_all = new FeedRow(_("All Articles"), unread, FeedID.ALL.to_string(), "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
 		m_list.add(row_all);
@@ -252,7 +252,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true);
 
-		var row_separator = new FeedRow(null, 0, false, FeedID.SEPARATOR.to_string(), "-1", 0);
+		var row_separator = new FeedRow(null, 0, FeedID.SEPARATOR.to_string(), "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.get_style_context().add_class("fr-sidebar-separator");
 		separator.margin_bottom = 8;
@@ -290,7 +290,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 							var feedrow = new FeedRow(
 													   item.getTitle(),
 													   item.getUnread(),
-													   item.hasIcon(),
 													   item.getFeedID(),
 									                   tmpRow.getID(),
 									                   tmpRow.getLevel()
@@ -317,7 +316,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				var feedrow = new FeedRow	(
 												item.getTitle(),
 												item.getUnread(),
-												item.hasIcon(),
 												item.getFeedID(),
 												item.getCatIDs()[0],
 												0

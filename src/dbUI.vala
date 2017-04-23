@@ -30,7 +30,7 @@ public class FeedReader.dbUI : dbBase {
 		return m_dataBase;
     }
 
-    public dbUI(string dbFile = "feedreader-04.db")
+    public dbUI(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
     {
         base(dbFile);
     }

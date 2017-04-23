@@ -31,7 +31,6 @@ public class FeedReader.localUtils : GLib.Object {
 	        var msg = new Soup.Message("GET", xmlURL.escape(""));
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
-			bool hasIcon = true;
 			string url = "https://google.com";
 
 			// parse
@@ -44,26 +43,7 @@ public class FeedReader.localUtils : GLib.Object {
 				url = doc.link;
 
 			var uri = new Soup.URI(url);
-
-			if(doc.image_url != null
-			&& doc.image_url != "")
-			{
-				if(Utils.downloadIcon(feedID, doc.image_url))
-				{
-					// success
-				}
-				else if(uri != null)
-				{
-					Utils.downloadFavIcon(feedID, uri.get_scheme() + "://" + uri.get_host());
-				}
-			}
-			else if(uri != null)
-			{
-				Utils.downloadFavIcon(feedID, uri.get_scheme() + "://" + uri.get_host());
-			}
-			else
-				hasIcon = false;
-
+			string? icon_url = (doc.image_url != "") ? doc.image_url : null;
 			string? title = doc.title;
 			if(title == null)
 			{
@@ -77,9 +57,9 @@ public class FeedReader.localUtils : GLib.Object {
 						feedID,
 						title,
 						url,
-						hasIcon,
 						0,
 						catIDs,
+						icon_url,
 						xmlURL);
 
 			return Feed;

@@ -84,9 +84,9 @@ public class FeedReader.feedbinAPI : Object {
 					id,
 					title,
 					url,
-					Utils.downloadFavIcon(id, url),
 					0,
 					{ "0" },
+					null,
 					xmlURL)
 			);
 		}

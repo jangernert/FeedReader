@@ -115,11 +115,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
-			if(icon_url != "" && !Utils.downloadIcon(feedID, "https:"+icon_url))
-				icon_url = "";
-			else if(!Utils.downloadFavIcon(feedID, url))
-				icon_url = "something";
+			string? icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : null;
 
 			string title = "No Title";
 			if(object.has_member("title"))
@@ -143,9 +139,9 @@ public class FeedReader.bazquxAPI : GLib.Object {
 						feedID,
 						title,
 						url,
-						(icon_url == "") ? false : true,
 						0,
-						categories
+						categories,
+						icon_url
 					)
 			);
 		}

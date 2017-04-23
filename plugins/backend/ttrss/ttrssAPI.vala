@@ -212,22 +212,16 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					{
 						var feed_node = response.get_object_element(i);
 						string feed_id = feed_node.get_int_member("id").to_string();
-
-						bool hasIcon = feed_node.get_boolean_member("has_icon");
-
-						if(hasIcon)
-							Utils.downloadIcon(feed_id, m_iconDir + feed_id + ".ico");
-						else
-							hasIcon = Utils.downloadFavIcon(feed_id, feed_node.get_string_member("feed_url"));
+						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
 
 						feeds.add(
 							new feed (
 									feed_id,
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("feed_url"),
-									hasIcon,
 									(int)feed_node.get_int_member("unread"),
-									{ feed_node.get_int_member("cat_id").to_string() }
+									{ feed_node.get_int_member("cat_id").to_string() },
+									icon_url
 								)
 						);
 					}
@@ -259,21 +253,16 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				var feed_node = response.get_object_element(i);
 				string feed_id = feed_node.get_int_member("id").to_string();
-				bool hasIcon = feed_node.get_boolean_member("has_icon");
-
-				if(feed_node.get_boolean_member("has_icon"))
-					Utils.downloadIcon(feed_id, m_iconDir + feed_id + ".ico");
-				else
-					hasIcon = Utils.downloadFavIcon(feed_id, feed_node.get_string_member("feed_url"));
+				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
 
 				feeds.add(
 					new feed (
 							feed_id,
 							feed_node.get_string_member("title"),
 							feed_node.get_string_member("feed_url"),
-							hasIcon,
 							(int)feed_node.get_int_member("unread"),
-							{ feed_node.get_int_member("cat_id").to_string() }
+							{ feed_node.get_int_member("cat_id").to_string() },
+							icon_url
 						)
 				);
 			}

@@ -117,12 +117,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
-
-			if(icon_url != "" && !Utils.downloadIcon(feedID, icon_url))
-			{
-				icon_url = "";
-			}
+			string? icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : null;
 
 			string title = "No Title";
 			if(object.has_member("title"))
@@ -147,9 +142,9 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 						feedID,
 						title,
 						url,
-						(icon_url == "") ? false : true,
 						0,
-						categories
+						categories,
+						icon_url
 					)
 			);
 		}

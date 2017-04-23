@@ -445,9 +445,31 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
+	public static void getFavIcons(Gee.List<feed> feeds)
+	{
+		foreach(feed f in feeds)
+		{
+			// first check if the feed provides a valid url for the favicon
+			if(f.getIconURL() != null && downloadIcon(f.getFeedID(), f.getIconURL()))
+			{
+				// download of provided url successfull
+				continue;
+			}
+			// try to find favicon on the website
+			else if(downloadFavIcon(f.getFeedID(), f.getURL()))
+			{
+				// found an icon on the website of the feed
+				continue;
+			}
+			else
+			{
+				Logger.warning("Couldn't find a favicon for feed " + f.getTitle());
+			}
+		}
+	}
+
 	public static bool downloadFavIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
-
 		var uri = new Soup.URI(feed_url);
 		string hostname = uri.get_host();
 		int first = hostname.index_of_char('.', 0);
@@ -508,66 +530,6 @@ public class FeedReader.Utils : GLib.Object {
 		return downloadIcon(feed_id, icon_url, icon_path);
 	}
 
-	private struct ResourceMetadata
-	{
-		private const string CACHE_GROUP = "cache";
-		private const string ETAG_KEY = "etag";
-		private const string LAST_MODIFIED_KEY = "last_modified";
-
-		string? etag;
-		string? last_modified;
-
-		public ResourceMetadata()
-		{
-		}
-
-		public ResourceMetadata.from_file(string filename)
-		{
-			var config = new KeyFile();
-			try
-			{
-				config.load_from_file(filename, KeyFileFlags.NONE);
-				try { this.etag = config.get_string(CACHE_GROUP, ETAG_KEY); }
-				catch (KeyFileError.KEY_NOT_FOUND e) {}
-				catch (KeyFileError.GROUP_NOT_FOUND e) {}
-				try { this.last_modified = config.get_string(CACHE_GROUP, LAST_MODIFIED_KEY); }
-				catch (KeyFileError.KEY_NOT_FOUND e) {}
-				catch (KeyFileError.GROUP_NOT_FOUND e) {}
-			}
-			catch (KeyFileError e)
-			{
-				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);
-			}
-			catch (FileError e)
-			{
-				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);
-			}
-		}
-
-		public void save_to_file(string filename)
-		{
-			if(this.etag == null && this.last_modified == null)
-			{
-				if(FileUtils.unlink(filename) != 0)
-					Logger.warning(@"FaviconMetadata.save_to_file: Error deleting metadata file $filename");
-			}
-			else
-			{
-				var config = new KeyFile();
-				config.set_string(CACHE_GROUP, ETAG_KEY, this.etag);
-				config.set_string(CACHE_GROUP, LAST_MODIFIED_KEY, this.last_modified);
-				try
-				{
-					config.save_to_file(filename);
-				}
-				catch (FileError e)
-				{
-					Logger.warning(@"FaviconMetadata.save_to_file: Failed to save metadata file $filename: " + e.message);
-				}
-			}
-		}
-	}
-
 	public static bool downloadIcon(string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
@@ -581,15 +543,28 @@ public class FeedReader.Utils : GLib.Object {
 		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
+		bool icon_exists = FileUtils.test(local_filename, GLib.FileTest.EXISTS);
 
 		string? etag = null;
 		// Normally, we would store a last modified time as a datetime type, but
 		// servers aren't consistent about the format so we need to treat it as a
 		// black box.
 		string? last_modified = null;
-		if(FileUtils.test(local_filename, GLib.FileTest.EXISTS))
+		if(icon_exists)
 		{
 			var metadata = ResourceMetadata.from_file(metadata_filename);
+			GLib.DateTime? lastMod = metadata.lastModifiedDateTime();
+
+			if(lastMod != null)
+			{
+				var now = new DateTime.now_local();
+				var difference = now.difference(lastMod);
+
+				// icon was already downloaded a few days ago, don't even check if it was updated
+				if((difference/GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
+					return true;
+			}
+
 			etag = metadata.etag;
 			last_modified = metadata.last_modified;
 		}
@@ -623,7 +598,7 @@ public class FeedReader.Utils : GLib.Object {
 		else if(status == 200)
 		{
 			var data = message.response_body.flatten().data;
-			if(FileUtils.test(local_filename, GLib.FileTest.EXISTS)
+			if(icon_exists
 			&& (string)data == getFileContent(local_filename))
 			{
 				// file exists and is identical to remote file

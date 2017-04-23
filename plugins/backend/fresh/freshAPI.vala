@@ -73,26 +73,18 @@ public class FeedReader.freshAPI : Object {
 				title = Utils.URLtoFeedName(url);
 			}
 
-			string icon_url = "";
+			string? icon_url = null;
 			if(object.has_member("iconUrl"))
-			{
 				icon_url = object.get_string_member("iconUrl");
-			}
-			if(icon_url != "" && !Utils.downloadIcon(id, icon_url))
-			{
-				icon_url = "";
-			}
-
-			bool hasIcon = (icon_url == "") ? false : true;
 
 			feeds.add(
 				new feed(
 					id,
 					title,
 					url,
-					hasIcon,
 					0,
 					{ catID },
+					icon_url,
 					xmlURL)
 			);
 		}

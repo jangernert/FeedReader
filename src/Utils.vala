@@ -466,6 +466,14 @@ public class FeedReader.Utils : GLib.Object {
 				Logger.warning("Couldn't find a favicon for feed " + f.getTitle());
 			}
 		}
+
+		// update last-favicon-update timestamp
+		var lastDownload = new DateTime.from_unix_local(Settings.state().get_int("last-favicon-update"));
+		var now = new DateTime.now_local();
+		var difference = now.difference(lastDownload);
+
+		if((difference/GLib.TimeSpan.DAY) >= Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
+			Settings.state().set_int("last-favicon-update", (int)now.to_unix());
 	}
 
 	public static bool downloadFavIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
@@ -552,19 +560,15 @@ public class FeedReader.Utils : GLib.Object {
 		string? last_modified = null;
 		if(icon_exists)
 		{
+			var lastDownload = new DateTime.from_unix_local(Settings.state().get_int("last-favicon-update"));
+			var now = new DateTime.now_local();
+			var difference = now.difference(lastDownload);
+
+			// icon was already downloaded a few days ago, don't even check if it was updated
+			if((difference/GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
+				return true;
+
 			var metadata = ResourceMetadata.from_file(metadata_filename);
-			GLib.DateTime? lastMod = metadata.lastModifiedDateTime();
-
-			if(lastMod != null)
-			{
-				var now = new DateTime.now_local();
-				var difference = now.difference(lastMod);
-
-				// icon was already downloaded a few days ago, don't even check if it was updated
-				if((difference/GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
-					return true;
-			}
-
 			etag = metadata.etag;
 			last_modified = metadata.last_modified;
 		}

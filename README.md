@@ -2,6 +2,7 @@
 
 [![Join the chat at https://gitter.im/Feedreader-dev/Lobby](https://badges.gitter.im/Feedreader-dev/Lobby.svg)](https://gitter.im/Feedreader-dev/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+[![CircleCI](https://circleci.com/gh/jangernert/FeedReader.svg?style=shield)](https://circleci.com/gh/jangernert/FeedReader)
 
 # [FeedReader](http://jangernert.github.io/FeedReader/)
 
@@ -84,4 +85,3 @@ make
 sudo make install
 ```
 Arch users can build the latest version using `yaourt -S feedreader-git`
-

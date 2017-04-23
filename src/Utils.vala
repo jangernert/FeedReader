@@ -527,15 +527,6 @@ public class FeedReader.Utils : GLib.Object {
 				catch (KeyFileError.KEY_NOT_FOUND e) {}
 				catch (KeyFileError.GROUP_NOT_FOUND e) {}
 			}
-			catch (KeyFileError.PARSE e)
-			{
-				// Try to load old-style etag metadata
-				// TODO: At some point we should remove this backwards compatibility
-				// Removing it will cause old clients to re-download all favicons,
-				// so for efficiency it might be nice to leave this for one release
-				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename as an INI. Treating it like an etag file instead.");
-				this.etag = getFileContent(filename);
-			}
 			catch (KeyFileError e)
 			{
 				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);

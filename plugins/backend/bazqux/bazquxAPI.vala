@@ -115,7 +115,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : "";
+			string? icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : null;
 
 			string title = "No Title";
 			if(object.has_member("title"))

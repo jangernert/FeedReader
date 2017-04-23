@@ -922,8 +922,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 	public bool ping()
 	{
-		var message = new ttrssMessage(m_session, m_ttrss_url);
 		Logger.debug("TTRSS: ping");
+		var message = new ttrssMessage(m_session, m_ttrss_url);
 		int error = message.send(true);
 
 		if(error == ConnectionError.SUCCESS)

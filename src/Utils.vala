@@ -196,11 +196,18 @@ public class FeedReader.Utils : GLib.Object {
 
 		if(uri == null)
 		{
-			Logger.error("Ping failed: can't parse url! Seems to be not valid.");
+			Logger.error(@"Ping failed: can't parse url $link! Seems to be not valid.");
 			return false;
 		}
 
 		var message = new Soup.Message.from_uri("HEAD", uri);
+
+		if(message == null)
+		{
+			Logger.error(@"Ping failed: can't send message to $link! Seems to be not valid.");
+			return false;
+		}
+
 		var status = getSession().send_message(message);
 
 		Logger.debug(@"Ping: status $status");

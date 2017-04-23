@@ -130,16 +130,9 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		nextOverlay.add(prevOverlay);
 		nextOverlay.add_overlay(m_nextButton);
 
-
-		m_progress = new ArticleViewLoadProgress();
-
-		var progressOverlay = new Gtk.Overlay();
-		progressOverlay.add(nextOverlay);
-		progressOverlay.add_overlay(m_progress);
+    m_progress = new ArticleViewLoadProgress();
 
 		m_videoOverlay = new Gtk.Overlay();
-		m_videoOverlay.add(progressOverlay);
-
 		this.add(m_videoOverlay);
 		this.add_overlay(m_UrlOverlay);
 
@@ -266,7 +259,6 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 	private void switchViews()
 	{
 		m_busy = true;
-
 		switch(m_stack.get_visible_child_name())
 		{
 			case "empty":
@@ -278,32 +270,24 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				m_busy = false;
 				break;
 
-
 			case "view1":
+      case "view2":
+        var article_box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+        article_box.add(m_progress);
+        var visible_child = m_stack.get_visible_child_name();
+        var old_child = "view2";
+        if (visible_child == "view2"){
+          old_child = "view1";
+        }
 				Logger.debug("ArticleView: view1 -> view2");
 				m_currentView = getNewView();
-				m_stack.add_named(m_currentView, "view2");
-				m_stack.set_visible_child_name("view2");
+        article_box.add(m_currentView);
+				m_stack.add_named(article_box, visible_child);
+				m_stack.set_visible_child_name(visible_child);
 				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
-					var oldView = m_stack.get_child_by_name("view1");
+					var oldView = m_stack.get_child_by_name(old_child);
 					if(oldView != null)
 						m_stack.remove(oldView);
-
-					checkQueue();
-					return false;
-				}, GLib.Priority.HIGH);
-				break;
-
-			case "view2":
-				Logger.debug("ArticleView: view2 -> view1");
-				m_currentView = getNewView();
-				m_stack.add_named(m_currentView, "view1");
-				m_stack.set_visible_child_name("view1");
-				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
-					var oldView = m_stack.get_child_by_name("view2");
-					if(oldView != null)
-						m_stack.remove(oldView);
-
 					checkQueue();
 					return false;
 				}, GLib.Priority.HIGH);

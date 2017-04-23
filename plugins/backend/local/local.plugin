@@ -2,6 +2,7 @@
 Module=local
 Loader=C
 Name=Local RSS Backend
+Version=0.1
 Description=Adds a local RSS back-end to FeedReader. No RSS-service required.
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

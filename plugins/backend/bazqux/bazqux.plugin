@@ -2,6 +2,7 @@
 Module=bazqux
 Loader=C
 Name=bazqux
+Version=0.1
 Description=Add bazqux backend to FeedReader
 Authors=Anwesh Reddy <kanishkablack@gmx.com>
 Copyright=Copyright © 2015-16 Anwesh Reddy

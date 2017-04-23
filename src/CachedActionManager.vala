@@ -140,6 +140,8 @@ public class FeedReader.CachedActionManager : GLib.Object {
 		{
 			execute(m_ids.substring(1), m_lastAction);
 		}
+
+		dbDaemon.get_default().resetCachedActions();
 	}
 
 	private void execute(string ids, CachedActions action)

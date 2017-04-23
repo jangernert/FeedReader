@@ -76,7 +76,6 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 		if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
 		{
-			Logger.debug(redirectURL);
 			int start = redirectURL.index_of("=")+1;
 			int end = redirectURL.index_of("&");
 			string code = redirectURL.substring(start, end-start);

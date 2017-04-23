@@ -377,30 +377,16 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		loginBox.pack_start(m_error_bar, false, false, 0);
 		loginBox.pack_start(m_login, true, true, 0);
 
-		m_login.submit_data.connect(login);
+		m_login.submit_data.connect(() => {
+			Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
+			Settings.state().set_string("feedlist-selected-row", "feed -4");
+			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
+		});
 		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);
 		});
 		m_stack.add_named(loginBox, "login");
 		m_error_bar.set_visible(false);
-	}
-
-	private void login()
-	{
-		Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
-		Settings.state().set_string("feedlist-selected-row", "feed -4");
-		try
-		{
-			if(dbUI.get_default().isEmpty())
-				DBusConnection.get_default().startInitSync();
-			else
-				DBusConnection.get_default().startSync();
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("MainWindow.login: %s".printf(e.message));
-		}
-		showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
 	}
 
 	private void setupResetPage()

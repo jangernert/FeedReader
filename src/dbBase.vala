@@ -59,66 +59,67 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public void init()
 	{
-			executeSQL("PRAGMA journal_mode = WAL");
-			executeSQL("PRAGMA page_size = 4096");
+		Logger.debug("init database");
+		executeSQL("PRAGMA journal_mode = WAL");
+		executeSQL("PRAGMA page_size = 4096");
 
-			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds"
-											(
-												"feed_id" TEXT PRIMARY KEY NOT NULL UNIQUE,
-												"name" TEXT NOT NULL,
-												"url" TEXT NOT NULL,
-												"has_icon" INTEGER NOT NULL,
-												"category_id" TEXT,
-												"subscribed" INTEGER DEFAULT 1,
-												"xmlURL" TEXT
+		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds"
+										(
+											"feed_id" TEXT PRIMARY KEY NOT NULL UNIQUE,
+											"name" TEXT NOT NULL,
+											"url" TEXT NOT NULL,
+											"has_icon" INTEGER NOT NULL,
+											"category_id" TEXT,
+											"subscribed" INTEGER DEFAULT 1,
+											"xmlURL" TEXT
+										)""");
+
+		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
+										(
+											"categorieID" TEXT PRIMARY KEY NOT NULL UNIQUE,
+											"title" TEXT NOT NULL,
+											"orderID" INTEGER,
+											"exists" INTEGER,
+											"Parent" TEXT,
+											"Level" INTEGER
 											)""");
 
-			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
-											(
-												"categorieID" TEXT PRIMARY KEY NOT NULL UNIQUE,
-												"title" TEXT NOT NULL,
-												"orderID" INTEGER,
-												"exists" INTEGER,
-												"Parent" TEXT,
-												"Level" INTEGER
-												)""");
+		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
+										(
+											"articleID" TEXT PRIMARY KEY NOT NULL UNIQUE,
+											"feedID" TEXT NOT NULL,
+											"title" TEXT NOT NULL,
+											"author" TEXT,
+											"url" TEXT NOT NULL,
+											"html" TEXT NOT NULL,
+											"preview" TEXT NOT NULL,
+											"unread" INTEGER NOT NULL,
+											"marked" INTEGER NOT NULL,
+											"tags" TEXT,
+											"date" DATETIME NOT NULL,
+											"guidHash" TEXT,
+											"lastModified" INTEGER,
+											"media" TEXT,
+											"contentFetched" INTEGER NOT NULL
+										)""");
 
-			executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
-											(
-												"articleID" TEXT PRIMARY KEY NOT NULL UNIQUE,
-												"feedID" TEXT NOT NULL,
-												"title" TEXT NOT NULL,
-												"author" TEXT,
-												"url" TEXT NOT NULL,
-												"html" TEXT NOT NULL,
-												"preview" TEXT NOT NULL,
-												"unread" INTEGER NOT NULL,
-												"marked" INTEGER NOT NULL,
-												"tags" TEXT,
-												"date" DATETIME NOT NULL,
-												"guidHash" TEXT,
-												"lastModified" INTEGER,
-												"media" TEXT,
-												"contentFetched" INTEGER NOT NULL
-											)""");
+		executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
+										(
+											"tagID" TEXT PRIMARY KEY NOT NULL UNIQUE,
+											"title" TEXT NOT NULL,
+											"exists" INTEGER,
+											"color" INTEGER
+										)""");
 
-			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
-											(
-												"tagID" TEXT PRIMARY KEY NOT NULL UNIQUE,
-												"title" TEXT NOT NULL,
-												"exists" INTEGER,
-												"color" INTEGER
-											)""");
+		executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
+										(
+											"action" INTEGER NOT NULL,
+											"id" TEXT NOT NULL,
+											"argument" INTEGER
+										)""");
 
-			executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
-											(
-												"action" INTEGER NOT NULL,
-												"id" TEXT NOT NULL,
-												"argument" INTEGER
-											)""");
-
-			executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
-			executeSQL(						"""CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
+		executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
+		executeSQL(						"""CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
 	}
 
 	protected void executeSQL(string sql, Sqlite.Callback? callback = null)
@@ -192,10 +193,9 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public bool isTableEmpty(string table)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "main.%s".printf(table));
+		var query = new QueryBuilder(QueryType.SELECT, table);
 		query.selectField("count(*)");
 		query.build();
-		query.print();
 
 		int count = -1;
 		Sqlite.Statement stmt;
@@ -210,13 +210,18 @@ public class FeedReader.dbBase : GLib.Object {
 		{
 			count = stmt.column_int(0);
 		}
-		Logger.debug("count %i".printf(count));
 		stmt.reset();
 
 		if(count > 0)
+		{
+			Logger.debug(@"Table $table is not empty");
 			return false;
+		}
 		else
+		{
+			Logger.debug(@"Table $table is empty");
 			return true;
+		}
 	}
 
 	public int getArticelCount()

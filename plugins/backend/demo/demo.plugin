@@ -2,6 +2,7 @@
 Module=demo
 Loader=C
 Name=Demo Backend
+Version=0.1
 Description=This is just a demo
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

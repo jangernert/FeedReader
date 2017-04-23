@@ -57,7 +57,12 @@ namespace FeedReader {
 		private FeedDaemonServer()
 		{
 			Logger.debug("daemon: constructor");
-			login(Settings.general().get_string("plugin"));
+			var plugID = Settings.general().get_string("plugin");
+
+			if(plugID == "none")
+				m_loggedin = LoginResponse.NO_BACKEND;
+			else
+				login(plugID);
 
 #if WITH_LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("org.gnome.FeedReader.desktop");
@@ -75,6 +80,12 @@ namespace FeedReader {
 
 		public void startInitSync()
 		{
+			if(!dbDaemon.get_default().isEmpty())
+			{
+				Logger.debug("Daemon.startInitSync: db is not empty -> do normal sync instead");
+				startSync();
+			}
+
 			callAsync.begin(initSync, (obj, res) => {
 				callAsync.begin.end(res);
 			});
@@ -231,6 +242,9 @@ namespace FeedReader {
 
 		public async bool checkOnlineAsync()
 		{
+			if(!FeedServer.get_default().pluginLoaded())
+				return false;
+
 			Logger.debug("Daemon: checkOnlineAsync");
 			bool online = false;
 			SourceFunc callback = checkOnlineAsync.callback;
@@ -277,7 +291,8 @@ namespace FeedReader {
 		{
 			Logger.debug("daemon: new FeedServer and login");
 
-			FeedServer.get_default().unloadPlugin();
+			if(FeedServer.get_default().pluginLoaded())
+				FeedServer.get_default().unloadPlugin();
 			FeedServer.get_default().loadPlugin(plugName);
 
 			if(!FeedServer.get_default().pluginLoaded())
@@ -292,11 +307,7 @@ namespace FeedReader {
 			});
 			this.setOnline.connect(() => {
 				m_offline = false;
-				if(dbDaemon.get_default().isTableEmpty("CachedActions"))
-				{
-					CachedActionManager.get_default().executeActions();
-					dbDaemon.get_default().resetCachedActions();
-				}
+				CachedActionManager.get_default().executeActions();
 			});
 
 			FeedServer.get_default().newFeedList.connect(() => {
@@ -922,8 +933,8 @@ namespace FeedReader {
 
 		Logger.info("FeedReader Daemon " + AboutInfo.version);
 
-		if(dbDaemon.get_default().uninitialized())
-			dbDaemon.get_default().init();
+		// just here to trigger initialization
+		dbDaemon.get_default();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.FeedReader.Daemon", BusNameOwnerFlags.NONE,
 				      on_bus_aquired,

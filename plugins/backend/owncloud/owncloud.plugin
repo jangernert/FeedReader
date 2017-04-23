@@ -2,6 +2,7 @@
 Module=owncloud
 Loader=C
 Name=OwnCloud News
+Version=0.1
 Description=Add OwnCloud News backend to FeedReader
 Authors=Jan Lukas Gernert <jangernert@gmail.com>
 Copyright=Copyright © 2015-16 Jan Lukas Gernert

@@ -22,13 +22,16 @@ public class FeedReader.localUtils : GLib.Object {
 
 	public feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs)
 	{
-		if(xmlURL == "" || xmlURL == null || GLib.Uri.parse_scheme(xmlURL) == null)
-            return null;
-
 		try
 		{
 			// download
-	        var msg = new Soup.Message("GET", xmlURL.escape(""));
+			Logger.warning(@"Requesting: $xmlURL");
+			var msg = new Soup.Message("GET", xmlURL);
+			if (msg == null)
+			{
+				Logger.warning(@"Couldn't parse feed URL: $xmlURL");
+				return null;
+			}
 			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
 			bool hasIcon = true;

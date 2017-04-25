@@ -224,11 +224,16 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		if(m_api.getFeeds(feeds)
-		&& m_api.getCategories(categories, feeds))
-			return true;
+		if(m_api.getFeeds(feeds))
+		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
+			if(m_api.getCategories(categories, feeds))
+				return true;
+		}
 
 		return false;
 	}
@@ -238,7 +243,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return (int)dbDaemon.get_default().get_unread_total();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		var type = OwncloudNewsAPI.OwnCloudType.ALL;
 		bool read = true;

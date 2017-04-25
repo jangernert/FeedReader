@@ -240,10 +240,17 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.import(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		if(m_api.getFeeds(feeds) && m_api.getCategoriesAndTags(feeds, categories, tags))
-			return true;
+		if(m_api.getFeeds(feeds))
+		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
+			if(m_api.getCategoriesAndTags(feeds, categories, tags))
+				return true;
+		}
+
 		return false;
 	}
 
@@ -252,7 +259,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		return m_api.getTotalUnread();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{
@@ -265,6 +272,9 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 			do
 			{
+				if(cancellable != null && cancellable.is_cancelled())
+					return;
+
 				continuation = m_api.updateArticles(unreadIDs, 1000, continuation);
 			}
 			while(continuation != null);
@@ -278,6 +288,9 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 		do
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+			
 			continuation = m_api.getArticles(articles, count, whatToGet, continuation, FeedHQ_tagID, FeedHQ_feedID);
 		}
 		while(continuation != null);

@@ -19,11 +19,24 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private Gtk.Spinner m_spinner;
 	private bool m_status;
 	private Gtk.Stack m_stack;
+	private Gtk.Label m_ProgressText;
+	private bool m_hasPopup;
+	private Gtk.Popover m_Popover;
 
-	public UpdateButton.from_icon_name(string iconname, string tooltip)
+	public UpdateButton.from_icon_name(string iconname, string tooltip, bool progressPopup = false)
 	{
+		m_hasPopup = progressPopup;
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.SMALL_TOOLBAR);
 		setup(tooltip);
+
+		if(m_hasPopup)
+		{
+			m_ProgressText = new Gtk.Label(Settings.state().get_string("sync-status"));
+			m_ProgressText.margin = 20;
+			m_Popover = new Gtk.Popover(this);
+			m_Popover.add(m_ProgressText);
+			this.enter_notify_event.connect(onEnter);
+		}
 	}
 
 	public UpdateButton.from_resource(string iconname, string tooltip)
@@ -45,6 +58,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 		this.add(m_stack);
 		this.set_relief(Gtk.ReliefStyle.NONE);
+		this.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		this.set_focus_on_click(false);
 		this.set_tooltip_text(tooltip);
 		this.show_all();
@@ -54,6 +68,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	{
 		Logger.debug("UpdateButton: update status");
 		m_status = status;
+		this.set_has_tooltip(!status);
 		if(insensitive)
 			this.setSensitive(!status);
 		if(status)
@@ -75,8 +90,23 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 	public void setSensitive(bool sensitive)
 	{
+		// FIXME: dont set sensitive if canceling
 		Logger.debug("UpdateButton: setSensitive %s".printf(sensitive ? "true" : "false"));
 		this.sensitive = sensitive;
 	}
+
+	public void setProgress(string text)
+	{
+		if(m_hasPopup)
+			m_ProgressText.set_text(text);
+	}
+
+	private bool onEnter(Gdk.EventCrossing event)
+    {
+		if(m_status && !m_Popover.get_visible())
+			m_Popover.show_all();
+
+        return false;
+    }
 
 }

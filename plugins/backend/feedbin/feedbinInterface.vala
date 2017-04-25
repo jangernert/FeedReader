@@ -266,11 +266,16 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		if(m_api.getSubscriptionList(feeds)
-		&& m_api.getTaggings(categories, feeds))
-			return true;
+		if(m_api.getSubscriptionList(feeds))
+		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
+			if(m_api.getTaggings(categories, feeds))
+				return true;
+		}
 
 		return false;
 	}
@@ -280,7 +285,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return 0; // =( feedbin
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{
@@ -307,6 +312,9 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 		do
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+			
 			articleCount = m_api.getEntries(articles, page, starred, time, fID);
 
 			if(articleCount == 0)

@@ -103,10 +103,10 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void importOPML(string opml);
 
-	public abstract bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags);
+	public abstract bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null);
 
 	public abstract int getUnreadCount();
 
-	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false);
+	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null);
 
 }

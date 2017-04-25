@@ -119,7 +119,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_pluginLoaded;
 	}
 
-	public void syncContent()
+	public void syncContent(GLib.Cancellable? cancellable = null)
 	{
 		if(!serverAvailable())
 		{
@@ -133,16 +133,25 @@ public class FeedReader.FeedServer : GLib.Object {
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
 
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
+
 		syncProgress(_("Getting feeds and categories"));
 
-		if(!getFeedsAndCats(feeds, categories, tags))
+		if(!getFeedsAndCats(feeds, categories, tags, cancellable))
 		{
 			Logger.error("FeedServer: something went wrong getting categories and feeds");
 			return;
 		}
 
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
+
 		// download favicons for all feeds
-		Utils.getFavIcons(feeds);
+		Utils.getFavIcons(feeds, cancellable);
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		// write categories
 		dbDaemon.get_default().reset_exists_flag();
@@ -163,6 +172,9 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		newFeedList();
 
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
+
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
 
@@ -170,14 +182,16 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(unread > max && useMaxArticles())
 		{
-			getArticles(20, ArticleStatus.MARKED);
-			getArticles(unread, ArticleStatus.UNREAD);
+			getArticles(20, ArticleStatus.MARKED, null, false, cancellable);
+			getArticles(unread, ArticleStatus.UNREAD, null, false, cancellable);
 		}
 		else
 		{
-			getArticles(max);
+			getArticles(max, ArticleStatus.ALL, null, false, cancellable);
 		}
 
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		//update fulltext table
 		dbDaemon.get_default().updateFTS();
@@ -216,7 +230,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	public void InitSyncContent()
+	public void InitSyncContent(GLib.Cancellable? cancellable = null)
 	{
 		Logger.debug("FeedServer: initial sync");
 
@@ -226,10 +240,16 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		syncProgress(_("Getting feeds and categories"));
 
-		getFeedsAndCats(feeds, categories, tags);
+		getFeedsAndCats(feeds, categories, tags, cancellable);
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		// download favicons for all feeds
-		Utils.getFavIcons(feeds);
+		Utils.getFavIcons(feeds, cancellable);
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		// write categories
 		dbDaemon.get_default().write_categories(categories);
@@ -242,26 +262,40 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		newFeedList();
 
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
+
 		// get marked articles
 		syncProgress(_("Getting starred articles"));
-		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED);
+		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED, null, false, cancellable);
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		// get articles for each tag
 		syncProgress(_("Getting tagged articles"));
 		foreach(var tag_item in tags)
 		{
-			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true);
+			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true, cancellable);
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
 		}
 
 		if(useMaxArticles())
 		{
 			//get max-articls amunt like normal sync
-			getArticles(Settings.general().get_int("max-articles"));
+			getArticles(Settings.general().get_int("max-articles"), ArticleStatus.ALL, null, false, cancellable);
 		}
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		// get unread articles
 		syncProgress(_("Getting unread articles"));
-		getArticles(getUnreadCount(), ArticleStatus.UNREAD);
+		getArticles(getUnreadCount(), ArticleStatus.UNREAD, null, false, cancellable);
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return;
 
 		//update fulltext table
 		dbDaemon.get_default().updateFTS();
@@ -306,7 +340,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	public void grabContent()
+	public void grabContent(GLib.Cancellable? cancellable = null)
 	{
 		Logger.debug("FeedServer: grabContent");
 		var articles = dbDaemon.get_default().readUnfetchedArticles();
@@ -322,12 +356,15 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			foreach(var Article in articles)
 			{
+				if(cancellable != null && cancellable.is_cancelled())
+					break;
+
 				++i;
 				syncProgress(_(@"Grabbing full content: $i / $size"));
 				if(Settings.general().get_boolean("content-grabber"))
 				{
 					var grabber = new Grabber(session, Article.getURL(), Article.getArticleID(), Article.getFeedID());
-					if(grabber.process())
+					if(grabber.process(cancellable))
 					{
 						grabber.print();
 						if(Article.getAuthor() != "" && grabber.getAuthor() != null)
@@ -351,15 +388,16 @@ public class FeedReader.FeedServer : GLib.Object {
 					}
 					else
 					{
-						downloadImages(session, Article);
+						downloadImages(session, Article, cancellable);
 					}
 				}
 				else
 				{
-					downloadImages(session, Article);
+					downloadImages(session, Article, cancellable);
 				}
 
-				dbDaemon.get_default().writeContent(Article);
+				if(cancellable == null || !cancellable.is_cancelled())
+					dbDaemon.get_default().writeContent(Article);
 			}
 
 			//update fulltext table
@@ -367,7 +405,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	private void downloadImages(Soup.Session session, article Article)
+	private void downloadImages(Soup.Session session, article Article, GLib.Cancellable? cancellable = null)
 	{
 		if(Settings.tweaks().get_boolean("dont-download-images"))
 			return;
@@ -375,7 +413,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		var html_cntx = new Html.ParserCtxt();
         html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
         Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
-        if (doc == null)
+        if(doc == null)
         {
             Logger.debug("Grabber: parsing failed");
     		return;
@@ -389,7 +427,14 @@ public class FeedReader.FeedServer : GLib.Object {
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
 		grabberUtils.addAttributes(doc, "a", "target", "_blank");
-		grabberUtils.saveImages(session, doc, Article.getArticleID(), Article.getFeedID());
+
+		if(cancellable != null && cancellable.is_cancelled())
+		{
+			delete doc;
+			return;
+		}
+
+		grabberUtils.saveImages(session, doc, Article.getArticleID(), Article.getFeedID(), cancellable);
 
 		string html = "";
 		doc->dump_memory_enc(out html);
@@ -833,7 +878,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return false;
@@ -849,7 +894,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.getUnreadCount();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false)
+	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return;

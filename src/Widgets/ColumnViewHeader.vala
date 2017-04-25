@@ -21,8 +21,6 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 	private ArticleListState m_state;
 	private Gtk.HeaderBar m_header_left;
 	private ArticleViewHeader m_header_right;
-	private Gtk.Label m_syncProgressText;
-	private Gtk.Popover m_syncPopover;
 	public signal void refresh();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
@@ -57,18 +55,17 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			change_state(m_state, transition);
 		});
 
-		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update feeds"));
-		m_refresh_button.updating(Settings.state().get_boolean("currently-updating"));
+		bool updating = Settings.state().get_boolean("currently-updating");
+		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update feeds"), true);
+		m_refresh_button.updating(updating);
 		m_refresh_button.clicked.connect(() => {
 			if(!m_refresh_button.getStatus())
 				refresh();
 			else
-				m_syncPopover.show_all();
+			{
+				m_refresh_button.setSensitive(false);
+			}
 		});
-		m_syncProgressText = new Gtk.Label(Settings.state().get_string("sync-status"));
-		m_syncProgressText.margin = 20;
-		m_syncPopover = new Gtk.Popover(m_refresh_button);
-		m_syncPopover.add(m_syncProgressText);
 
 
 
@@ -221,7 +218,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 
 	public void updateSyncProgress(string progress)
 	{
-		m_syncProgressText.set_text(progress);
+		m_refresh_button.setProgress(progress);
 	}
 
 	public void refreshSahrePopover()

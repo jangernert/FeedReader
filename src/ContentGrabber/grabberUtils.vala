@@ -440,7 +440,7 @@ public class FeedReader.grabberUtils : GLib.Object {
     }
 
 
-    public static bool saveImages(Soup.Session session, Html.Doc* doc, string articleID, string feedID)
+    public static bool saveImages(Soup.Session session, Html.Doc* doc, string articleID, string feedID, GLib.Cancellable? cancellable = null)
     {
         Logger.debug("GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
         Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
@@ -458,6 +458,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 
         for(int i = 0; i < res->nodesetval->length(); i++)
         {
+            if(cancellable != null && cancellable.is_cancelled())
+                break;
+
         	Xml.Node* node = res->nodesetval->item(i);
             if(node->get_prop("src") != null)
             {

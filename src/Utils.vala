@@ -445,10 +445,13 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static void getFavIcons(Gee.List<feed> feeds)
+	public static void getFavIcons(Gee.List<feed> feeds, GLib.Cancellable? cancellable = null)
 	{
 		foreach(feed f in feeds)
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+			
 			// first check if the feed provides a valid url for the favicon
 			if(f.getIconURL() != null && downloadIcon(f.getFeedID(), f.getIconURL()))
 			{

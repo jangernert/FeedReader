@@ -29,10 +29,10 @@ public class FeedReader.FavIconCache : GLib.Object {
 	private FavIconCache()
 	{
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
-		refresh();
+		refresh(true);
 	}
 
-	private void refresh()
+	private void refresh(bool logs = false)
 	{
 		try
 		{
@@ -46,7 +46,8 @@ public class FeedReader.FavIconCache : GLib.Object {
 				}
 				catch(GLib.Error e)
 				{
-					Logger.error("FavIconCache: Can't create directory: %s".printf(e.message));
+					if(logs)
+						Logger.error("FavIconCache: Can't create directory: %s".printf(e.message));
 				}
 			}
 			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
@@ -73,7 +74,8 @@ public class FeedReader.FavIconCache : GLib.Object {
 
 							if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
 							{
-								Logger.warning(@"$fileName too small");
+								if(logs)
+									Logger.warning(@"$fileName too small");
 								continue;
 							}
 
@@ -83,19 +85,22 @@ public class FeedReader.FavIconCache : GLib.Object {
 						}
 						catch(GLib.Error e)
 						{
-							Logger.warning("Error loading favicon " + fileInfo.get_name());
+							if(logs)
+								Logger.warning("Error loading favicon " + fileInfo.get_name());
 						}
 					}
 				}
 				else
 				{
-					Logger.warning("Error loading favicon " + fileInfo.get_name());
+					if(logs)
+						Logger.warning("Error loading favicon " + fileInfo.get_name());
 				}
 			}
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("FavIconCache: %s".printf(e.message));
+			if(logs)
+				Logger.error("FavIconCache: %s".printf(e.message));
 		}
 	}
 

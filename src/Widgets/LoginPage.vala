@@ -194,7 +194,15 @@ public class FeedReader.LoginPage : Gtk.Stack {
 				ext.postLoginAction.begin((ob, res) => {
 					ext.postLoginAction.end(res);
 					submit_data();
-					DBusConnection.get_default().startInitSync();
+					try
+					{
+						DBusConnection.get_default().startSync(true);
+					}
+					catch(GLib.Error e)
+					{
+						Logger.error("LoginPage: failed to start the initial sync - " + e.message);
+					}
+
 				});
 
 				return;

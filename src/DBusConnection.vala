@@ -19,8 +19,8 @@ namespace FeedReader {
 	public interface FeedDaemon : Object {
 
 		public abstract void scheduleSync(int time) throws IOError;
-		public abstract void startSync() throws IOError;
-		public abstract void startInitSync() throws IOError;
+		public abstract void startSync(bool initSync = false) throws IOError;
+		public abstract void cancelSync() throws IOError;
 		public abstract void changeArticle(string articleID, ArticleStatus status) throws IOError;
 		public abstract void markFeedAsRead(string feedID, bool isCat) throws IOError;
 		public abstract void markAllItemsRead() throws IOError;

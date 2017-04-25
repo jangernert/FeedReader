@@ -87,7 +87,7 @@ public class FeedReader.Grabber : GLib.Object {
         return false;
     }
 
-    public bool process()
+    public bool process(GLib.Cancellable? cancellable = null)
     {
         Logger.debug("Grabber: process article: " + m_articleURL);
 
@@ -101,6 +101,8 @@ public class FeedReader.Grabber : GLib.Object {
         if(!checkContentType())
             return false;
 
+        if(cancellable != null && cancellable.is_cancelled())
+            return false;
 
         bool downloaded = false;
 
@@ -139,6 +141,9 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        if(cancellable != null && cancellable.is_cancelled())
+            return false;
+
         Logger.debug("Grabber: config found");
 
         if(!downloaded && !download())
@@ -151,7 +156,7 @@ public class FeedReader.Grabber : GLib.Object {
 
         Logger.debug("Grabber: empty article preped");
 
-        if(!parse())
+        if(!parse(cancellable))
             return false;
 
         if(!m_foundSomething)
@@ -195,7 +200,7 @@ public class FeedReader.Grabber : GLib.Object {
             || msg.status_code == Soup.Status.MOVED_PERMANENTLY)
             {
                 m_articleURL = msg.uri.to_string(false);
-                Logger.debug("Grabber: new url is: " + m_articleURL);
+                Logger.debug(@"Grabber: new url is: $m_articleURL");
             }
         });
 
@@ -260,7 +265,7 @@ public class FeedReader.Grabber : GLib.Object {
         return true;
     }
 
-    private bool parse()
+    private bool parse(GLib.Cancellable? cancellable = null)
     {
         m_nexPageURL = null;
         Logger.debug("Grabber: start parsing");
@@ -330,6 +335,12 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
+        }
+
         // get the author from the html (useful if feed doesn't provide one)
         unowned Gee.ArrayList<string> author = m_config.getXPathAuthor();
         if(author.size != 0)
@@ -341,6 +352,12 @@ public class FeedReader.Grabber : GLib.Object {
                 if(tmpAuthor != null)
                     m_author = tmpAuthor.chomp().chug();
             }
+        }
+
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
         }
 
         // get the date from the html (useful if feed doesn't provide one)
@@ -356,6 +373,12 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
+        }
+
         // strip junk
         unowned Gee.ArrayList<string> strip = m_config.getXPathStrip();
         if(strip.size != 0)
@@ -366,6 +389,12 @@ public class FeedReader.Grabber : GLib.Object {
                 Logger.debug("Grabber: strip %s".printf(xpath));
                 grabberUtils.stripNode(doc, xpath);
             }
+        }
+
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
         }
 
         // strip any element whose @id or @class contains this substring
@@ -379,6 +408,12 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
+        }
+
         //strip any <img> element where @src attribute contains this substring
         unowned Gee.ArrayList<string> stripImgSrc = m_config.getXPathStripImgSrc();
         if(stripImgSrc.size != 0)
@@ -390,6 +425,12 @@ public class FeedReader.Grabber : GLib.Object {
             }
         }
 
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
+        }
+
         grabberUtils.fixLazyImg(doc, "lazyload", "data-src");
         grabberUtils.fixIframeSize(doc, "youtube.com");
         grabberUtils.removeAttributes(doc, null, "style");
@@ -397,6 +438,12 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.removeAttributes(doc, "img", "srcset");
         grabberUtils.removeAttributes(doc, "img", "sizes");
         grabberUtils.addAttributes(doc, "a", "target", "_blank");
+
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
+        }
 
         // complete relative source urls of images
         Logger.debug("Grabber: complete urls");
@@ -414,6 +461,11 @@ public class FeedReader.Grabber : GLib.Object {
         grabberUtils.stripNode(doc,
                 "//*[contains(concat(' ',normalize-space(@class),' '),' entry-unrelated ') or contains(concat(' ',normalize-space(@class),' '),' instapaper_ignore ')]");
 
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
+        }
 
         // strip elements that contain style="display: none;"
         Logger.debug("Grabber: strip invisible elements");
@@ -438,6 +490,12 @@ public class FeedReader.Grabber : GLib.Object {
         // strip all external css and fonts
         Logger.debug("Grabber: strip all external css and fonts");
         grabberUtils.stripNode(doc, "//*[@type='text/css']");
+
+        if(cancellable != null && cancellable.is_cancelled())
+        {
+            delete doc;
+            return false;
+        }
 
         // get the content of the article
         unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();
@@ -469,6 +527,9 @@ public class FeedReader.Grabber : GLib.Object {
 
         delete doc;
 
+        if(cancellable != null && cancellable.is_cancelled())
+            return false;
+
         m_firstPage = false;
 
         if(m_nexPageURL != null && !m_singlePage)
@@ -481,17 +542,20 @@ public class FeedReader.Grabber : GLib.Object {
             m_articleURL = m_nexPageURL;
             Logger.debug("Grabber: next page url: %s".printf(m_nexPageURL));
             download();
-            parse();
+            parse(cancellable);
             return true;
         }
 
         if(!Settings.tweaks().get_boolean("dont-download-images"))
         {
             if(m_articleID != null && m_feedID != null)
-                grabberUtils.saveImages(m_session, m_doc, m_articleID, m_feedID);
+                grabberUtils.saveImages(m_session, m_doc, m_articleID, m_feedID, cancellable);
             else
-                grabberUtils.saveImages(m_session, m_doc, "", "");
+                grabberUtils.saveImages(m_session, m_doc, "", "", cancellable);
         }
+
+        if(cancellable != null && cancellable.is_cancelled())
+            return false;
 
         m_doc->dump_memory_enc(out m_html);
         m_html = grabberUtils.postProcessing(ref m_html);

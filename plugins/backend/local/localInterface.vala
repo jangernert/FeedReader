@@ -310,7 +310,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		var cats = dbDaemon.get_default().read_categories();
 		foreach(category cat in cats)
@@ -327,6 +327,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var f = dbDaemon.get_default().read_feeds();
 		foreach(feed Feed in f)
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
 			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs());
 			feeds.add((tmpFeed == null) ? Feed : tmpFeed);
 		}
@@ -339,13 +342,16 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return 0;
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
 
 		foreach(feed Feed in f)
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
 			Logger.debug("getArticles for feed: " + Feed.getTitle());
 			string url = Feed.getXmlUrl().escape("");
 

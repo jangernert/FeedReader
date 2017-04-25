@@ -244,11 +244,16 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		if(m_api.getSubscriptionList(feeds)
-		&& m_api.getTagList(categories))
-			return true;
+		if(m_api.getSubscriptionList(feeds))
+		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
+			if(m_api.getTagList(categories))
+				return true;
+		}
 
 		return false;
 	}
@@ -258,7 +263,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return m_api.getUnreadCounts();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{
@@ -287,6 +292,9 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 		while(left > 0)
 		{
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+			
 			if(left > 1000)
 			{
 				continuation = m_api.getStreamContents(articles, null, labelID, exclude, 1000, "d");

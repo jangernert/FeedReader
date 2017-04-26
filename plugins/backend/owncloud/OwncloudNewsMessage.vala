@@ -22,6 +22,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
     private string m_method;
+    private string m_destination;
     private OwncloudNewsUtils m_utils;
 
     public OwnCloudNewsMessage(Soup.Session session, string destination, string username, string password, string method)
@@ -30,9 +31,15 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
         m_message_string = new GLib.StringBuilder();
         m_method = method;
 		m_session = session;
-		m_contenttype = "application/json";
+        m_destination = destination;
+
+        if(method == "GET")
+		    m_contenttype = "application/x-www-form-urlencoded";
+        else
+            m_contenttype = "application/json";
+
 		m_parser = new Json.Parser();
-		m_message_soup = new Soup.Message(m_method, destination);
+		m_message_soup = new Soup.Message(m_method, m_destination);
 
         string credentials = username + ":" + password;
         string base64 = GLib.Base64.encode(credentials.data);
@@ -41,33 +48,68 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
     public void add_int(string type, int val)
 	{
-		m_message_string.append(",\"" + type + "\":" + val.to_string());
+        if(m_method == "GET")
+        {
+            if(m_message_string.len > 0)
+    			m_message_string.append("&");
+
+            m_message_string.append(type + "=" + val.to_string());
+        }
+        else
+            m_message_string.append(",\"" + type + "\":" + val.to_string());
 	}
 
 	public void add_int_array(string type, string values)
 	{
-		m_message_string.append(",\"" + type + "\":[" + values + "]");
+        if(m_method == "GET")
+            Logger.warning("OwnCloudNewsMessage.add_int_array: this should not happen");
+        else
+		    m_message_string.append(",\"" + type + "\":[" + values + "]");
 	}
 
 	public void add_bool(string type, bool val)
 	{
-		m_message_string.append(",\"" + type + "\":");
-		if(val)
-			m_message_string.append("true");
-		else
-			m_message_string.append("false");
+        if(m_method == "GET")
+        {
+            if(m_message_string.len > 0)
+    			m_message_string.append("&");
+
+            m_message_string.append(type + "=" + (val ? "true" : "false"));
+        }
+        else
+            m_message_string.append(",\"" + type + "\":" + (val ? "true" : "false"));
 	}
 
 	public void add_string(string type, string val)
 	{
-		m_message_string.append(",\"" + type + "\":\"" + val + "\"");
+        if(m_method == "GET")
+        {
+            if(m_message_string.len > 0)
+    			m_message_string.append("&");
+
+            m_message_string.append(type + "=" + val);
+        }
+        else
+		    m_message_string.append(",\"" + type + "\":\"" + val + "\"");
 	}
 
     public ConnectionError send(bool ping = false)
 	{
         var settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
-        m_message_string.overwrite(0, "{").append("}");
-		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
+
+        if(m_method == "GET")
+        {
+            string destination = m_destination;
+            if(m_message_string.len > 0)
+                destination += "?" + m_message_string.str;
+            m_message_soup.set_uri(new Soup.URI(destination));
+            Logger.debug(destination);
+        }
+        else
+        {
+            m_message_string.overwrite(0, "{").append("}");
+        	m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
+        }
 
 		if(settingsTweaks.get_boolean("do-not-track"))
 				m_message_soup.request_headers.append("DNT", "1");
@@ -87,7 +129,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
 		if(m_message_soup.status_code != 200)
         {
-            Logger.error("ownCloud Message: No response - status code: %s".printf(Soup.Status.get_phrase(m_message_soup.status_code)));
+            Logger.error("ownCloud Message: No response - status code: %u %s".printf(m_message_soup.status_code, Soup.Status.get_phrase(m_message_soup.status_code)));
             return ConnectionError.NO_RESPONSE;
         }
 

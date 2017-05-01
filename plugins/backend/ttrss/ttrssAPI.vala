@@ -50,7 +50,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		string passwd = m_utils.getPasswd();
 		m_ttrss_url = m_utils.getURL();
 
-		if(m_ttrss_url == "" && username == "" && passwd == ""){
+		if(m_ttrss_url == "" && username == "" && passwd == "")
+		{
 			m_ttrss_url = "example-host/tt-rss";
 			return LoginResponse.ALL_EMPTY;
 		}
@@ -58,15 +59,14 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			return LoginResponse.MISSING_URL;
 		if(GLib.Uri.parse_scheme(m_ttrss_url) == null)
             return LoginResponse.INVALID_URL;
-		if(username == "")
-			return LoginResponse.MISSING_USER;
 		if(passwd == "")
 			return LoginResponse.MISSING_PASSWD;
 
 
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("op", "login");
-		message.add_string("user", username);
+		if(username != "")
+			message.add_string("user", username);
 		message.add_string("password", passwd);
 		int error = message.send();
 		if(error != ConnectionError.NO_RESPONSE)

@@ -24,7 +24,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 
     public string getURL()
 	{
-		string tmp_url = m_settings.get_string("url");
+        string tmp_url = Utils.gsettingReadString(m_settings, "url");
 		if(tmp_url != ""){
 			if(!tmp_url.has_suffix("/"))
 				tmp_url = tmp_url + "/";
@@ -43,32 +43,32 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 
     public void setURL(string url)
     {
-        m_settings.set_string ("url", url);
+        Utils.gsettingWriteString(m_settings, "url", url);
     }
 
     public string getUser()
 	{
-		return m_settings.get_string ("username");
+        return Utils.gsettingReadString(m_settings, "username");
 	}
 
     public void setUser(string user)
 	{
-		m_settings.set_string ("username", user);
+        Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
     public string getHtaccessUser()
 	{
-		return m_settings.get_string ("htaccess-username");
+        return Utils.gsettingReadString(m_settings, "htaccess-username");
 	}
 
     public void setHtaccessUser(string ht_user)
 	{
-		m_settings.set_string ("htaccess-username", ht_user);
+        Utils.gsettingWriteString(m_settings, "htaccess-username", ht_user);
 	}
 
     public string getUnmodifiedURL()
     {
-        return m_settings.get_string("url");
+        return Utils.gsettingReadString(m_settings, "url");
     }
 
 	public string getPasswd()
@@ -81,16 +81,19 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		attributes["URL"] = getURL();
 		attributes["Username"] = getUser();
 
-		string passwd = "";
-		try{
+		string? passwd = "";
+		try
+        {
             passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
         }
-        catch(GLib.Error e){
-			Logger.error("OwncloudNewsUtils: getPasswd: " + e.message);
+        catch(GLib.Error e)
+        {
+			Logger.error("OwncloudNewsUtils.getPasswd: " + e.message);
 		}
 
 		if(passwd == null)
 		{
+            Logger.warning("OwncloudNewsUtils.getPasswd: could not load password");
 			return "";
 		}
 
@@ -156,16 +159,19 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		attributes["Username"] = getHtaccessUser();
         attributes["Username"] = "true";
 
-		string passwd = "";
-		try{
+		string? passwd = "";
+		try
+        {
             passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
         }
-        catch(GLib.Error e){
-			Logger.error("OwncloudNewsUtils: getHtaccessPasswd: " + e.message);
+        catch(GLib.Error e)
+        {
+			Logger.error("OwncloudNewsUtils.getHtaccessPasswd: " + e.message);
 		}
 
 		if(passwd == null)
 		{
+            Logger.warning("OwncloudNewsUtils.getHtaccessPasswd: could not load password");
 			return "";
 		}
 

@@ -32,42 +32,42 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 
 	public string getUser()
 	{
-		return m_settings.get_string("username");
+		return Utils.gsettingReadString(m_settings, "username");
 	}
 
 	public void setUser(string user)
 	{
-		m_settings.set_string("username", user);
+		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
 	public string getRefreshToken()
 	{
-		return m_settings.get_string("refresh-token");
+		return Utils.gsettingReadString(m_settings, "refresh-token");
 	}
 
 	public void setRefreshToken(string token)
 	{
-		m_settings.set_string("refresh-token", token);
+		Utils.gsettingWriteString(m_settings, "refresh-token", token);
 	}
 
 	public string getAccessToken()
 	{
-		return m_settings.get_string("access-token");
+		return Utils.gsettingReadString(m_settings, "access-token");
 	}
 
 	public void setAccessToken(string token)
 	{
-		m_settings.set_string("access-token", token);
+		Utils.gsettingWriteString(m_settings, "access-token", token);
 	}
 
 	public string getApiCode()
 	{
-		return m_settings.get_string("api-code");
+		return Utils.gsettingReadString(m_settings, "api-code");
 	}
 
 	public void setApiCode(string code)
 	{
-		m_settings.set_string("api-code", code);
+		Utils.gsettingWriteString(m_settings, "api-code", code);
 	}
 
 	public int getExpiration()
@@ -82,22 +82,22 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 
 	public string getUserID()
 	{
-		return m_settings.get_string("user-id");
+		return Utils.gsettingReadString(m_settings, "user-id");
 	}
 
 	public void setUserID(string id)
 	{
-		m_settings.set_string("user-id", id);
+		Utils.gsettingWriteString(m_settings, "user-id", id);
 	}
 
 	public string getEmail()
 	{
-		return m_settings.get_string("user-email");
+		return Utils.gsettingReadString(m_settings, "user-email");
 	}
 
 	public void setEmail(string email)
 	{
-		m_settings.set_string("user-email", email);
+		Utils.gsettingWriteString(m_settings, "user-email", email);
 	}
 
 	public void resetAccount()

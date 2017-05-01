@@ -28,51 +28,51 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 
 	public string getUser()
 	{
-		return m_settings.get_string("username");
+		return Utils.gsettingReadString(m_settings, "username");
 	}
 
 	public void setUser(string user)
 	{
-		m_settings.set_string("username", user);
+		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
 	public string getAccessToken()
 	{
-		return m_settings.get_string("access-token");
+		return Utils.gsettingReadString(m_settings, "access-token");
 	}
 
 	public void setAccessToken(string token)
 	{
-		m_settings.set_string("access-token", token);
+		Utils.gsettingWriteString(m_settings, "access-token", token);
 	}
 
 	public string getPostToken()
 	{
-		return m_settings.get_string("post-token");
+		return Utils.gsettingReadString(m_settings, "post-token");
 	}
 
 	public void setPostToken(string token)
 	{
-		m_settings.set_string("post-token", token);
+		Utils.gsettingWriteString(m_settings, "post-token", token);
 	}
 	public string getUserID()
 	{
-		return m_settings.get_string("user-id");
+		return Utils.gsettingReadString(m_settings, "user-id");
 	}
 
 	public void setUserID(string id)
 	{
-		m_settings.set_string("user-id", id);
+		Utils.gsettingWriteString(m_settings, "user-id", id);
 	}
 
 	public string getEmail()
 	{
-		return m_settings.get_string("user-email");
+		return Utils.gsettingReadString(m_settings, "user-email");
 	}
 
 	public void setEmail(string email)
 	{
-		m_settings.set_string("user-email", email);
+		Utils.gsettingWriteString(m_settings, "user-email", email);
 	}
 
 	public void resetAccount()
@@ -101,7 +101,7 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["type"] = "FeedHQ";
 		attributes["Username"] = getUser();
-		string passwd = "";
+		string? passwd = "";
 
 		try
 		{
@@ -109,11 +109,12 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error(e.message);
+			Logger.error("feedhqUtils.getPasswd: " + e.message);
 		}
 
 		if(passwd == null)
 		{
+			Logger.warning("feedhqUtils.getPasswd: failed to read password");
 			return "";
 		}
 

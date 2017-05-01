@@ -24,12 +24,12 @@ public class FeedReader.feedbinUtils : GLib.Object {
 
 	public string getUser()
 	{
-		return m_settings.get_string("username");
+		return Utils.gsettingReadString(m_settings, "username");
 	}
 
 	public void setUser(string user)
 	{
-		m_settings.set_string("username", user);
+		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
 	public string getPasswd()

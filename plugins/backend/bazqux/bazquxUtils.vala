@@ -28,32 +28,32 @@ public class FeedReader.bazquxUtils : GLib.Object {
 
 	public string getUser()
 	{
-		return m_settings.get_string("username");
+		return Utils.gsettingReadString(m_settings, "username");
 	}
 
 	public void setUser(string user)
 	{
-		m_settings.set_string("username", user);
+		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
 	public string getAccessToken()
 	{
-		return m_settings.get_string("access-token");
+		return Utils.gsettingReadString(m_settings, "access-token");
 	}
 
 	public void setAccessToken(string token)
 	{
-		m_settings.set_string("access-token", token);
+		Utils.gsettingWriteString(m_settings, "access-token", token);
 	}
 
 	public string getUserID()
 	{
-		return m_settings.get_string("user-id");
+		return Utils.gsettingReadString(m_settings, "user-id");
 	}
 
 	public void setUserID(string id)
 	{
-		m_settings.set_string("user-id", id);
+		Utils.gsettingWriteString(m_settings, "user-id", id);
 	}
 
 	public void resetAccount()
@@ -70,7 +70,7 @@ public class FeedReader.bazquxUtils : GLib.Object {
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["type"] = "BazQux";
 		attributes["Username"] = getUser();
-		string passwd = "";
+		string? passwd = "";
 
 		try
 		{
@@ -78,11 +78,12 @@ public class FeedReader.bazquxUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error(e.message);
+			Logger.error("bazquxUtils.getPasswd: " + e.message);
 		}
 
 		if(passwd == null)
 		{
+			Logger.warning("bazquxUtils.getPasswd: failed to read password");
 			return "";
 		}
 

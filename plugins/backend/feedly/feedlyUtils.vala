@@ -32,42 +32,42 @@ public class FeedReader.FeedlyUtils : Object {
 
 	public string getRefreshToken()
 	{
-		return m_settings.get_string("refresh-token");
+		return Utils.gsettingReadString(m_settings, "refresh-token");
 	}
 
 	public void setRefreshToken(string token)
 	{
-		m_settings.set_string("refresh-token", token);
+		Utils.gsettingWriteString(m_settings, "refresh-token", token);
 	}
 
 	public string getAccessToken()
 	{
-		return m_settings.get_string("access-token");
+		return Utils.gsettingReadString(m_settings, "access-token");
 	}
 
 	public void setAccessToken(string token)
 	{
-		m_settings.set_string("access-token", token);
+		Utils.gsettingWriteString(m_settings, "access-token", token);
 	}
 
 	public string getApiCode()
 	{
-		return m_settings.get_string("api-code");
+		return Utils.gsettingReadString(m_settings, "api-code");
 	}
 
 	public void setApiCode(string code)
 	{
-		m_settings.set_string("api-code", code);
+		Utils.gsettingWriteString(m_settings, "api-code", code);
 	}
 
 	public string getEmail()
 	{
-		return m_settings.get_string("email");
+		return Utils.gsettingReadString(m_settings, "email");
 	}
 
 	public void setEmail(string email)
 	{
-		m_settings.set_string("email", email);
+		Utils.gsettingWriteString(m_settings, "email", email);
 	}
 
 	public int getExpiration()

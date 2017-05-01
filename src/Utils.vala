@@ -451,7 +451,7 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
-			
+
 			// first check if the feed provides a valid url for the favicon
 			if(f.getIconURL() != null && downloadIcon(f.getFeedID(), f.getIconURL()))
 			{
@@ -649,5 +649,23 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 		return null;
+	}
+
+	public static string gsettingReadString(GLib.Settings setting, string key)
+	{
+		string val = setting.get_string(key);
+		if(val == "")
+			Logger.warning("Utils.gsettingReadString: failed to read %s %s".printf(setting.schema_id, key));
+
+		return val;
+	}
+
+	public static void gsettingWriteString(GLib.Settings setting, string key, string val)
+	{
+		if(val == "" || val == null)
+			Logger.warning("Utils.gsettingWriteString: resetting %s %s".printf(setting.schema_id, key));
+
+		if(!setting.set_string(key, val))
+			Logger.error("Utils.gsettingWriteString: writing %s %s failed".printf(setting.schema_id, key));
 	}
 }

@@ -145,14 +145,18 @@ public class FeedReader.article : GLib.Object {
 		return m_date.format("%Y-%m-%d %H:%M:%S");
 	}
 
-	public string getDateNice()
+	public string getDateNice(bool addTime = false)
 	{
 		var now = new GLib.DateTime.now_local();
 		var now_year = now.get_year();
 		var now_day = now.get_day_of_year();
+		var now_week = now.get_week_of_year();
 
 		var date_year = m_date.get_year();
 		var date_day = m_date.get_day_of_year();
+		var date_week = m_date.get_week_of_year();
+
+		string time = (addTime) ? ", %H:%M" : "";
 
 		if(date_year == 1900)
 		{
@@ -162,15 +166,23 @@ public class FeedReader.article : GLib.Object {
 		{
 			if(date_day == now_day)
 			{
-				return _("Today") + m_date.format(" %H:%M");
+				return m_date.format("%H:%M");
 			}
 			else if(date_day == now_day-1)
 			{
-				return _("Yesterday") + m_date.format(" %H:%M");
+				return _("Yesterday") + m_date.format(", %H:%M");
+			}
+			else if(date_week == now_week)
+			{
+				return m_date.format("%A" + time);
+			}
+			else
+			{
+				return m_date.format("%B %d" + time);
 			}
 		}
 
-		return m_date.format("%d.%m.%Y %H:%M");
+		return m_date.format("%Y-%m-%d" + time);
 	}
 
 	public string getFeedID()

@@ -252,7 +252,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 						Article.getTitle(),
 						Article.getURL(),
 						Article.getAuthor(),
-						Article.getDateNice(),
+						Article.getDateNice(true),
 						Article.getFeedID()
 					)
 				, "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");

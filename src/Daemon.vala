@@ -71,6 +71,17 @@ namespace FeedReader {
 #endif
 			m_cancellable = new GLib.Cancellable();
 			scheduleSync(Settings.general().get_int("sync"));
+
+			GLib.NetworkMonitor.get_default().network_changed.connect((available) => {
+				if(available)
+				{
+					checkOnline();
+				}
+				else
+				{
+					setOffline();
+				}
+			});
 		}
 
 		public void startSync(bool initSync = false)
@@ -226,6 +237,12 @@ namespace FeedReader {
 		public bool checkOnline()
 		{
 			Logger.debug("Daemon: checkOnline");
+
+			if(GLib.NetworkMonitor.get_default().get_connectivity() != GLib.NetworkConnectivity.FULL)
+			{
+				Logger.error("Daemon: no network available");
+			}
+
 			if(!FeedServer.get_default().serverAvailable())
 			{
 				m_loggedin = LoginResponse.UNKNOWN_ERROR;

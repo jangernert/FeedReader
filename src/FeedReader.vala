@@ -172,6 +172,21 @@ namespace FeedReader {
 			return 0;
 		}
 
+		if(feedURL != null)
+		{
+			Logger.init("ui");
+			Logger.debug(@"Adding feed $feedURL");
+			try
+			{
+				DBusConnection.get_default().addFeed(feedURL, "", false);
+			}
+			catch(Error e)
+			{
+				Logger.error(@"Adding feed $feedURL failed");
+			}
+			return 0;
+		}
+
 		try
 		{
 			Gst.init_check(ref args);
@@ -192,6 +207,7 @@ namespace FeedReader {
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
 		{ "ping", 0, 0, OptionArg.STRING, ref pingURL, "test the ping function with given URL", "URL" },
+		{ "addFeed", 0, 0, OptionArg.STRING, ref feedURL, "add the feed to the collection", "URL" },
 		{ null }
 	};
 
@@ -199,6 +215,7 @@ namespace FeedReader {
 	private static bool about = false;
 	private static string? media = null;
 	private static string? pingURL = null;
+	private static string? feedURL = null;
 
 	static void show_about(string[] args)
 	{

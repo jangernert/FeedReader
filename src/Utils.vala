@@ -419,7 +419,7 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static void resetSettings(GLib.Settings settings)
 	{
-		Logger.warning("Resetting setting " + setting.schema_id);
+		Logger.warning("Resetting setting " + settings.schema_id);
 		var keys = settings.list_keys();
 		foreach(string key in keys)
 		{

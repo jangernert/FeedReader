@@ -357,7 +357,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				string catID = categorie_node.get_string_member("id");
 				string categorieID = catID.slice(4, catID.length);
 
-				if(int.parse(categorieID) >= 0)
+				if(int.parse(categorieID) > 0)
 				{
 					string title = categorie_node.get_string_member("name");
 					int unread_count = (int)categorie_node.get_int_member("unread");

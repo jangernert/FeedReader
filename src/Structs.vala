@@ -78,17 +78,6 @@ namespace FeedReader {
 				}
 			}
 		}
-
-        public GLib.DateTime? lastModifiedDateTime()
-        {
-            if(last_modified == null)
-                return null;
-
-            GLib.Time time = GLib.Time();
-            time.strptime(last_modified, "%a, %d %b %Y %H:%M:%S %Z");
-
-            return new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
-        }
 	}
 
 }

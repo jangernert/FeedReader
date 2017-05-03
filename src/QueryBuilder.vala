@@ -120,7 +120,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
         return false;
     }
 
-    public bool addRangeConditionString(string field, Gee.ArrayList<string> values, bool instr = false)
+    public bool addRangeConditionString(string field, Gee.List<string> values, bool instr = false)
     {
         if(!instr)
         {

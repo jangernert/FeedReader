@@ -349,7 +349,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		row.reveal(false, animateDuration);
 		m_articles.remove(id);
 		GLib.Timeout.add(animateDuration + 50, () => {
-			this.remove(row);
+			if(row.get_parent() != null)
+				this.remove(row);
 			return false;
 		});
 	}
@@ -636,5 +637,40 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			return true;
 
 		return false;
+	}
+
+	public Gee.List<string> getIDs()
+	{
+		var tmp = new Gee.LinkedList<string>();
+		foreach(string id in m_articles)
+		{
+			tmp.add(id);
+		}
+		return tmp;
+	}
+
+	public void setAllUpdated(bool updated = false)
+	{
+		var children = this.get_children();
+		foreach(var row in children)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null)
+				tmpRow.setUpdated(updated);
+		}
+	}
+
+	public void removeObsoleteRows()
+	{
+		var children = this.get_children();
+		var removedRows = new Gee.LinkedList<articleRow>();
+		foreach(var row in children)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && !tmpRow.getUpdated())
+			{
+				removeRow(tmpRow, 50);
+			}
+		}
 	}
 }

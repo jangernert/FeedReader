@@ -355,64 +355,34 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
+		m_currentList.setAllUpdated(false);
+		var articles = dbUI.get_default().read_article_stats(m_currentList.getIDs());
 		var children = m_currentList.get_children();
-		uint listSize = children.length();
-		string? firstRowID = m_currentList.getFirstRowID();
-		int newCount = 0;
-		if(firstRowID == null)
-			return;
 
-		Gee.List<article> articles = new Gee.LinkedList<article>();
-		SourceFunc callback = updateArticleList.callback;
-		//-----------------------------------------------------------------------------------------------------------------------------------------------------
-		ThreadFunc<void*> run = () => {
-			Logger.debug("load articles from db");
-			newCount = dbUI.get_default().getArticleCountNewerThanID(
-														firstRowID,
-														m_selectedFeedListID,
-														m_selectedFeedListType,
-														m_state,
-														m_searchTerm);
-
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
-														m_selectedFeedListType,
-														m_state,
-														m_searchTerm,
-														listSize,
-														newCount);
-			Logger.debug("actual articles loaded: " + articles.size.to_string());
-
-			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-			return null;
-		};
-		//-----------------------------------------------------------------------------------------------------------------------------------------------------
-
-		m_loadThread = new GLib.Thread<void*>("create", run);
-		yield;
-
-		if(articles.size != 0)
+		foreach(var row in children)
 		{
-			var iterator = articles.list_iterator();
-
-			foreach(var row in children)
+			var tmpRow = row as articleRow;
+			if(tmpRow != null && articles.has_key(tmpRow.getID()))
 			{
-				iterator.next();
-				var articleRow = row as articleRow;
-				var article = iterator.get();
-
-				if(articleRow.getID() == article.getArticleID())
-				{
-					articleRow.updateUnread(article.getUnread());
-					articleRow.updateMarked(article.getMarked());
-				}
-				else
-				{
-					Logger.error("ArticleList.updateArticleList: id mismatch");
-				}
+				var a = articles.get(tmpRow.getID());
+				tmpRow.updateUnread(a.getUnread());
+				tmpRow.updateMarked(a.getMarked());
+				tmpRow.setUpdated(true);
 			}
 		}
 
+		m_currentList.removeObsoleteRows();
 
+
+		string? firstRowID = m_currentList.getFirstRowID();
+		if(firstRowID == null)
+			return;
+		int newCount = dbUI.get_default().getArticleCountNewerThanID(
+													firstRowID,
+													m_selectedFeedListID,
+													m_selectedFeedListType,
+													m_state,
+													m_searchTerm);
 
 		Logger.debug(@"ArticleList.updateArticleList: newCount $newCount");
 

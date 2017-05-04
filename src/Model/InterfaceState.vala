@@ -28,6 +28,7 @@ public class FeedReader.InterfaceState : GLib.Object {
     private string m_SearchTerm = "";
     private string m_FeedListSelectedRow = "feed -4";
     private string m_ArticleListSelectedRow = "0";
+    private string m_ArticleListTopRow = "0";
     private string[] m_ExpandedCategories = {};
     private ArticleListState m_ArticleListState = ArticleListState.ALL;
 
@@ -49,6 +50,7 @@ public class FeedReader.InterfaceState : GLib.Object {
         Settings.state().set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
         Settings.state().set_double   ("articlelist-scrollpos",       m_ArticleListScrollPos);
         Settings.state().set_string   ("articlelist-selected-row",    m_ArticleListSelectedRow);
+        Settings.state().set_string   ("articlelist-top-row",         m_ArticleListTopRow);
         Settings.state().set_enum     ("show-articles",               m_ArticleListState);
         Settings.state().set_string   ("search-term",                 m_SearchTerm);
         Settings.state().set_int      ("articleview-scrollpos",       m_ArticleViewScrollPos);
@@ -140,6 +142,16 @@ public class FeedReader.InterfaceState : GLib.Object {
     public string getArticleListSelectedRow()
     {
         return m_ArticleListSelectedRow;
+    }
+
+    public void setArticleListTopRow(string articleID)
+    {
+        m_ArticleListTopRow = articleID;
+    }
+
+    public string getArticleListTopRow()
+    {
+        return m_ArticleListTopRow;
     }
 
     public void setArticleListNewRowCount(int count)

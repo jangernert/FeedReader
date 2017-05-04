@@ -18,13 +18,11 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 	public static uint getRelevantArticles(int newArticlesCount)
 	{
-		string[] selectedRow = {};
-		ArticleListState state = ArticleListState.ALL;
-		string searchTerm = "";
 		var interfacestate = MainWindow.get_default().getInterfaceState();
-		selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
-		state = interfacestate.getArticleListState();
-		searchTerm = interfacestate.getSearchTerm();
+		string[] selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
+		ArticleListState state = interfacestate.getArticleListState();
+		string searchTerm = interfacestate.getSearchTerm();
+		string topRow = interfacestate.getArticleListTopRow();
 
 		FeedListType IDtype = FeedListType.FEED;
 
@@ -46,16 +44,10 @@ public class FeedReader.UtilsUI : GLib.Object {
 				break;
 		}
 
-		var articles = dbUI.get_default().read_articles(
-			selectedRow[1],
-			IDtype,
-			state,
-			searchTerm,
-			newArticlesCount,
-			0,
-			newArticlesCount);
+		int count = dbUI.get_default().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
 
-		return articles.size;
+		Logger.debug(@"getRelevantArticles: $count");
+		return count;
 	}
 
 	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)

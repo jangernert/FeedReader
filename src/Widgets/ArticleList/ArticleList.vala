@@ -560,6 +560,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		return m_currentList.getSelectedArticle();
 	}
 
+	public string getFirstArticle()
+	{
+		return m_currentList.getFirstRowID();
+	}
+
 	public bool toggleReadSelected()
 	{
 		return m_currentList.toggleReadSelected();

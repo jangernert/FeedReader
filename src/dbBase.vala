@@ -795,18 +795,19 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public int getArticleCountNewerThanID(string id, string ID, FeedListType selectedType, ArticleListState state, string searchTerm)
+	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm)
 	{
 		int result = 0;
+
+		var query = new QueryBuilder(QueryType.SELECT, "articles");
+		query.addEqualsCondition("articleID", articleID, true, true);
 
 		var query2 = new QueryBuilder(QueryType.SELECT, "articles");
 		query2.selectField("count(*)");
 
 		if((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED)
 		{
-			var query = new QueryBuilder(QueryType.SELECT, "articles");
 			query.selectField("rowid");
-			query.addEqualsCondition("articleID", id, true, true);
 			query.build();
 
 			if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
@@ -816,9 +817,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 		else
 		{
-			var query = new QueryBuilder(QueryType.SELECT, "articles");
 			query.selectField("date");
-			query.addEqualsCondition("articleID", id, true, true);
 			query.build();
 
 			if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
@@ -827,21 +826,21 @@ public class FeedReader.dbBase : GLib.Object {
 				query2.addCustomCondition("date > (%s)".printf(query.get()));
 		}
 
-		if(selectedType == FeedListType.FEED && ID != FeedID.ALL.to_string())
+		if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
 		{
-			query2.addEqualsCondition("feedID", ID, true, true);
+			query2.addEqualsCondition("feedID", feedID, true, true);
 		}
-		else if(selectedType == FeedListType.CATEGORY && ID != CategoryID.MASTER.to_string() && ID != CategoryID.TAGS.to_string())
+		else if(selectedType == FeedListType.CATEGORY && feedID != CategoryID.MASTER.to_string() && feedID != CategoryID.TAGS.to_string())
 		{
-			query2.addRangeConditionString("feedID", getFeedIDofCategorie(ID));
+			query2.addRangeConditionString("feedID", getFeedIDofCategorie(feedID));
 		}
-		else if(ID == CategoryID.TAGS.to_string())
+		else if(feedID == CategoryID.TAGS.to_string())
 		{
 			query2.addCustomCondition(getAllTagsCondition());
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query2.addCustomCondition("instr(tags, \"%s\") > 0".printf(ID));
+			query2.addCustomCondition("instr(tags, \"%s\") > 0".printf(feedID));
 		}
 
 		if(state == ArticleListState.UNREAD)

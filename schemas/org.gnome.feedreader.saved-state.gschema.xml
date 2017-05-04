@@ -94,6 +94,14 @@
                 The artcile selected when the app closes so it can be restored on open.
             </description>
         </key>
+        
+        <key name="articlelist-top-row" type="s">
+            <default>""</default>
+            <summary>ArticleList top row</summary>
+            <description>
+                The article sorted on top of the article-list.
+            </description>
+        </key>
 
         <key name="articlelist-row-offset" type="i">
             <default>0</default>

@@ -89,6 +89,7 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 		string[] selectedRow = {};
 		ArticleListState state = ArticleListState.ALL;
 		string searchTerm = "";
+		string topRow = Settings.state().get_string("articlelist-top-row");
 		selectedRow = Settings.state().get_string("feedlist-selected-row").split(" ", 2);
 		state = (ArticleListState)Settings.state().get_enum("show-articles");
 		if(Settings.tweaks().get_boolean("restore-searchterm"))
@@ -114,17 +115,10 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 				break;
 		}
 
-		var articles = dbDaemon.get_default().read_articles(
-			selectedRow[1],
-			IDtype,
-			state,
-			searchTerm,
-			newArticlesCount,
-			0,
-			newArticlesCount);
+		int count = dbDaemon.get_default().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
 
-		Logger.debug("getRelevantArticles: %u".printf(articles.size));
-		return articles.size;
+		Logger.debug(@"getRelevantArticles: $count");
+		return count;
 	}
 
 }

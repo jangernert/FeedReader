@@ -799,18 +799,33 @@ public class FeedReader.dbBase : GLib.Object {
 	{
 		int result = 0;
 
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("rowid");
-		query.addEqualsCondition("articleID", id, true, true);
-		query.build();
-
 		var query2 = new QueryBuilder(QueryType.SELECT, "articles");
 		query2.selectField("count(*)");
 
-		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
-			query2.addCustomCondition("rowid < (%s)".printf(query.get()));
+		if((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED)
+		{
+			var query = new QueryBuilder(QueryType.SELECT, "articles");
+			query.selectField("rowid");
+			query.addEqualsCondition("articleID", id, true, true);
+			query.build();
+
+			if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+				query2.addCustomCondition("rowid < (%s)".printf(query.get()));
+			else
+				query2.addCustomCondition("rowid > (%s)".printf(query.get()));
+		}
 		else
-			query2.addCustomCondition("rowid > (%s)".printf(query.get()));
+		{
+			var query = new QueryBuilder(QueryType.SELECT, "articles");
+			query.selectField("date");
+			query.addEqualsCondition("articleID", id, true, true);
+			query.build();
+
+			if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+				query2.addCustomCondition("date < (%s)".printf(query.get()));
+			else
+				query2.addCustomCondition("date > (%s)".printf(query.get()));
+		}
 
 		if(selectedType == FeedListType.FEED && ID != FeedID.ALL.to_string())
 		{
@@ -857,17 +872,9 @@ public class FeedReader.dbBase : GLib.Object {
 			}
 		}
 
-		string order_field = "";
-		switch(Settings.general().get_enum("articlelist-sort-by"))
-		{
-			case ArticleListSort.RECEIVED:
-				order_field = "rowid";
-				break;
-
-			case ArticleListSort.DATE:
-				order_field = "date";
-				break;
-		}
+		string order_field = "rowid";
+		if((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.DATE)
+			order_field = "date";
 
 		bool desc = true;
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
@@ -875,6 +882,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 		query2.orderBy(order_field, desc);
 		query2.build();
+		query2.print();
 
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2(query2.get(), query2.get().length, out stmt);

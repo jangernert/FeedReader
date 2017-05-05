@@ -140,11 +140,6 @@ public class FeedReader.article : GLib.Object {
 		return m_date;
 	}
 
-	public string getDateStr()
-	{
-		return m_date.format("%Y-%m-%d %H:%M:%S");
-	}
-
 	public string getDateNice(bool addTime = false)
 	{
 		var now = new GLib.DateTime.now_local();

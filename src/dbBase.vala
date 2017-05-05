@@ -95,7 +95,7 @@ public class FeedReader.dbBase : GLib.Object {
 											"unread" INTEGER NOT NULL,
 											"marked" INTEGER NOT NULL,
 											"tags" TEXT,
-											"date" DATETIME NOT NULL,
+											"date" INTEGER NOT NULL,
 											"guidHash" TEXT,
 											"lastModified" INTEGER,
 											"media" TEXT,
@@ -617,7 +617,7 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(6),
 								stmt.column_text(7),
 								author,
-								Utils.convertStringToDate(stmt.column_text(11)),
+								new GLib.DateTime.from_unix_local(stmt.column_int(11)),
 								stmt.column_int(0), // rowid (sortid)
 								stmt.column_text(10), // tags
 								stmt.column_text(14), // media
@@ -1460,7 +1460,7 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(3),								// html
 								stmt.column_text(2),								// preview
 								"",													// author
-								Utils.convertStringToDate("2016-10-08 22:57:00"),	// date
+								new GLib.DateTime.now_local(),						// date
 								0,													// sortID
 								"",													// tags
 								"",													// media
@@ -1583,7 +1583,7 @@ public class FeedReader.dbBase : GLib.Object {
 								"",													// html
 								stmt.column_text(6),								// preview
 								stmt.column_text(4),								// author
-								Utils.convertStringToDate(stmt.column_text(10)),	// date
+								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
 								stmt.column_int(0),									// sortID
 								stmt.column_text(9),								// tags
 								stmt.column_text(12),								// media

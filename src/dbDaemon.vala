@@ -574,7 +574,7 @@ public class FeedReader.dbDaemon : dbBase {
             stmt.bind_text(html_position, article.getHTML());
             stmt.bind_text(preview_position, article.getPreview());
             stmt.bind_text(author_position, article.getAuthor());
-            stmt.bind_text(date_position, article.getDateStr());
+            stmt.bind_int64(date_position, article.getDate().to_unix());
             stmt.bind_text(guidHash_position, article.getHash());
             stmt.bind_int (modified_position, article.getLastModified());
             stmt.bind_text(media_position, article.getMediaString());

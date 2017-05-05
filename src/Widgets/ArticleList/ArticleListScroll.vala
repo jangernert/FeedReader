@@ -117,6 +117,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			// reset cooldown after 5s if something went wrong
 			m_savetyFallbackID = GLib.Timeout.add_seconds(5, () => {
 				m_scrolledBottomOnCooldown = false;
+				m_savetyFallbackID = 0;
 				return GLib.Source.REMOVE;
 			});
 		}
@@ -131,7 +132,6 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			{
 				GLib.Source.remove(m_savetyFallbackID);
 				m_savetyFallbackID = 0;
-			}
 			double max = vadjustment.upper - vadjustment.page_size;
 			if(vadjustment.value >= max - 5)
 				scrolledBottom();

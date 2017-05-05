@@ -61,7 +61,7 @@ public class FeedReader.Utils : GLib.Object {
 		return {CategoryID.MASTER.to_string(), CategoryID.TAGS.to_string()};
 	}
 
-	public static GLib.DateTime convertStringToDate(string date)
+	/*public static GLib.DateTime convertStringToDate(string date)
 	{
 		return new GLib.DateTime(
 			new TimeZone.local(),
@@ -72,7 +72,7 @@ public class FeedReader.Utils : GLib.Object {
 			int.parse(date.substring(date.index_of_nth_char(14), date.index_of_nth_char(16) - date.index_of_nth_char(14))),		// min
 			int.parse(date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17)))		// sec
 		);
-	}
+	}*/
 
 	public static bool springCleaningNecessary()
 	{

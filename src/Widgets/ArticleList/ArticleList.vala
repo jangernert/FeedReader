@@ -268,10 +268,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size > 0)
 		{
-			m_scroll2.valueChanged.disconnect(updateVisibleRows);
+			m_currentScroll.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addBottom(articles);
 			m_handlerID2 = m_currentList.loadDone.connect(() => {
-				m_scroll2.valueChanged.connect(updateVisibleRows);
+				m_currentScroll.startScrolledDownCooldown();
+				m_currentScroll.valueChanged.connect(updateVisibleRows);
 
 				if(m_handlerID2 != 0)
 				{
@@ -319,10 +320,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 					m_stack.set_visible_child_full("list2", Gtk.StackTransitionType.CROSSFADE);
 			}
 
-			m_scroll2.valueChanged.disconnect(updateVisibleRows);
+			m_currentScroll.valueChanged.disconnect(updateVisibleRows);
 			m_currentList.addTop(articles);
 			m_handlerID3 = m_currentList.loadDone.connect(() => {
-				m_scroll2.valueChanged.connect(updateVisibleRows);
+				m_currentScroll.valueChanged.connect(updateVisibleRows);
 
 				if(m_handlerID3 != 0)
 				{

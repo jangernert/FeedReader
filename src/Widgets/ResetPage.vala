@@ -98,7 +98,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 			// clear all data from UI
 			ColumnView.get_default().clear();
 
-			Utils.resetSettings(Settings.general());
+			Settings.general().reset("plugin");
 			Utils.resetSettings(Settings.state());
 			DBusConnection.get_default().resetDB();
 			DBusConnection.get_default().resetAccount();

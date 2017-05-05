@@ -98,9 +98,9 @@ namespace FeedReader {
 			m_cancellable.cancel();
 		}
 
-		public int getVersion()
+		public string getVersion()
 		{
-			return Constants.DBusAPIVersion;
+			return AboutInfo.version;
 		}
 
 

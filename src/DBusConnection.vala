@@ -36,7 +36,7 @@ namespace FeedReader {
 		// GENERAL
 		public abstract void resetAccount() throws IOError;
 		public abstract void resetDB() throws IOError;
-		public abstract int getVersion() throws IOError;
+		public abstract string getVersion() throws IOError;
 		public abstract void quit() throws IOError;
 
 		// BACKEND INFOS
@@ -214,7 +214,7 @@ namespace FeedReader {
 		{
 			try
 			{
-				if(m_connection.getVersion() < Constants.DBusAPIVersion)
+				if(m_connection.getVersion() != AboutInfo.version)
 				{
 					m_connection.quit();
 

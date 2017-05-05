@@ -132,6 +132,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			{
 				GLib.Source.remove(m_savetyFallbackID);
 				m_savetyFallbackID = 0;
+			}
 			double max = vadjustment.upper - vadjustment.page_size;
 			if(vadjustment.value >= max - 5)
 				scrolledBottom();

@@ -370,7 +370,7 @@ namespace FeedReader {
 
 		public void changeArticle(string articleID, ArticleStatus status)
 		{
-			Logger.debug("Daemon: changeArticle %s %s".printf(articleID, status.to_string()));
+			Logger.debug("daemon: changeArticle %s %s".printf(articleID, status.to_string()));
 			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
 			{
 				bool increase = true;
@@ -882,6 +882,8 @@ namespace FeedReader {
 
 	int main(string[] args)
 	{
+		Ivy.Stacktrace.register_handlers();
+
 		try
 		{
 			var opt_context = new GLib.OptionContext();

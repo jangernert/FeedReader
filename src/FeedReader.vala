@@ -132,6 +132,8 @@ namespace FeedReader {
 
 	public static int main (string[] args)
 	{
+		Ivy.Stacktrace.register_handlers();
+
 		try
 		{
 			var opt_context = new OptionContext();

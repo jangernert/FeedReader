@@ -3,9 +3,11 @@ cmake_minimum_required (VERSION 2.6)
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
 include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)
+include_directories(${CMAKE_BINARY_DIR}/libIvy)
 include_directories(${CMAKE_SOURCE_DIR})
 
 add_definitions("-w")
+ADD_DEFINITIONS(-rdynamic)
 
 include(GNUInstallDirs)
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")
@@ -28,10 +30,10 @@ ensure_vala_version("0.30" MINIMUM)
 
 pkg_check_modules(LIBUNITY QUIET unity)
 
-add_definitions (-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
-add_subdirectory (po)
-add_subdirectory (schemas)
-add_subdirectory (libVilistextum)
+add_definitions(-DGETTEXT_PACKAGE=\"${GETTEXT_PACKAGE}\")
+add_subdirectory(po)
+add_subdirectory(schemas)
+add_subdirectory(libVilistextum)
 
 include(GetGitRevisionDescription)
 get_git_head_revision(GIT_REFSPEC GIT_SHA1)
@@ -72,6 +74,8 @@ link_directories(${DEPS_LIBRARY_DIRS})
 add_subdirectory(WebExtension)
 add_subdirectory(libgtkimageview)
 add_subdirectory(libgd)
+add_subdirectory(libIvy)
+
 
 
 ################################################################################
@@ -114,7 +118,7 @@ CUSTOM_VAPIS
 
 add_library(FeedReaderCommon STATIC ${LIBFR})
 set_property(TARGET FeedReaderCommon PROPERTY POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(FeedReaderCommon vilistextum)
+target_link_libraries(FeedReaderCommon vilistextum ivy)
 
 
 ################################################################################
@@ -206,6 +210,7 @@ OPTIONS
 
 CUSTOM_VAPIS
 	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	${CMAKE_BINARY_DIR}/libIvy/ivy.vapi
 	vapi/libvilistextum.vapi
 	vapi/gtkimageview.vapi
 	vapi/gd-1.0.vapi
@@ -265,6 +270,7 @@ OPTIONS
 CUSTOM_VAPIS
 	vapi/libvilistextum.vapi
 	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	${CMAKE_BINARY_DIR}/libIvy/ivy.vapi
 )
 
 add_executable(${DAEMON_NAME} ${daemon})

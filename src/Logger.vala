@@ -15,8 +15,6 @@
 
 public class FeedReader.Logger : GLib.Object {
 
-	private static int? m_LogLevel = null;
-
 	public static void error(string message)
 	{
 		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_CRITICAL, "MESSAGE", message);

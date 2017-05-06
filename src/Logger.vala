@@ -15,195 +15,46 @@
 
 public class FeedReader.Logger : GLib.Object {
 
-	private int m_LogLevel;
-	private GLib.FileOutputStream m_stream;
-	private Gee.List<string> m_pendingWrites;
-
-	private static Logger? m_logger = null;
-	private static string? m_fileName = null;
-
-	public static void init(string filename)
-	{
-		m_fileName = filename;
-	}
-
-	private static Logger get_default()
-	{
-		string name = "uninitialized";
-
-		if(m_fileName != null)
-			name = m_fileName;
-
-		if(m_logger == null)
-			m_logger = new Logger(name);
-
-		return m_logger;
-	}
+	private static int? m_LogLevel = null;
 
 	public static void error(string message)
 	{
-		get_default().print(LogMessage.ERROR, message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_CRITICAL, "MESSAGE", message);
 	}
 
 	public static void warning(string message)
 	{
-		get_default().print(LogMessage.WARNING, message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_WARNING, "MESSAGE", message);
 	}
 
 	public static void info(string message)
 	{
-		get_default().print(LogMessage.INFO, message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_INFO, "MESSAGE", message);
 	}
 
 	public static void debug(string message)
 	{
-		get_default().print(LogMessage.DEBUG, message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_DEBUG, "MESSAGE", message);
 	}
 
-
-	private Logger(string filename)
+	public static void init()
 	{
-		m_pendingWrites = new Gee.LinkedList<string>();
-		var logLevel = Settings.general().get_enum("log-level");
-		m_LogLevel = LogLevel.DEBUG;
-
-		string directory = GLib.Path.build_filename(GLib.Environment.get_user_data_dir(), "feedreader");
-		string path = "%s/%s.log".printf(directory, filename);
-		try {
-			GLib.File.new_for_path(directory).make_directory_with_parents();
-		}
-		catch {}
-
-		if(FileUtils.test(path, GLib.FileTest.EXISTS))
-			GLib.FileUtils.remove(path);
-
-		var file = GLib.File.new_for_path(path);
-		try
-		{
-			m_stream = file.create(FileCreateFlags.NONE);
-		}
-		catch(GLib.Error e)
-		{
-			stderr.printf("error creating log-file: %s\n", e.message);
-		}
-
-
-		switch(logLevel)
+		GLib.Log.set_writer_func((LogWriterFunc)GLib.Log.writer_standard_streams);
+		switch(Settings.general().get_enum("log-level"))
 		{
 			case LogLevel.OFF:
-				print(LogMessage.INFO, "Logs are deactivated!");
+				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "", true);
 				break;
-
 			case LogLevel.ERROR:
-				print(LogMessage.INFO, "Only critical Errors are logged!");
+				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "all", true);
 				break;
-
 			case LogLevel.MORE:
-				print(LogMessage.INFO, "Errors and some general information is logged!");
+				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "all", true);
 				break;
-
 			case LogLevel.DEBUG:
-				print(LogMessage.INFO, "Everything is logged. Used to debug!");
+				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "all", true);
 				break;
 		}
 
-		m_LogLevel = logLevel;
 	}
-
-	private void print(LogMessage level, string message)
-	{
-		switch(m_LogLevel)
-		{
-			case LogLevel.OFF:
-				return;
-
-			case LogLevel.ERROR:
-				if(level != LogMessage.ERROR)
-					return;
-				break;
-
-			case LogLevel.MORE:
-				if(level > LogMessage.INFO)
-					return;
-				break;
-
-			case LogLevel.DEBUG:
-				break;
-		}
-
-		switch(level)
-		{
-			case LogMessage.ERROR:
-				set_color(ConsoleColor.RED);
-				stdout.printf("[ ERROR ] ");
-				write(@"[ ERROR ] $message\n");
-				break;
-
-			case LogMessage.WARNING:
-				set_color(ConsoleColor.YELLOW);
-				stdout.printf("[WARNING] ");
-				write(@"[WARNING] $message\n");
-				break;
-
-			case LogMessage.INFO:
-				set_color(ConsoleColor.GREEN);
-				stdout.printf("[ INFO  ] ");
-				write(@"[ INFO  ] $message\n");
-				break;
-
-			case LogMessage.DEBUG:
-				set_color(ConsoleColor.BLUE);
-				stdout.printf("[ DEBUG ] ");
-				write(@"[ DEBUG ] $message\n");
-				break;
-		}
-
-		reset_color();
-		stdout.printf("%s\n", message);
-	}
-
-	private void reset_color()
-	{
-		stdout.printf("\x001b[0m");
-	}
-
-	private void set_color(ConsoleColor color)
-	{
-		var color_code = color + 30 + 60;
-		stdout.printf("\x001b[%dm", color_code);
-	}
-
-	private void write(string text)
-	{
-
-		if(m_stream.has_pending())
-		{
-			m_pendingWrites.add(text);
-		}
-		else
-		{
-			m_stream.write_async.begin(text.data, GLib.Priority.DEFAULT, null, (obj, res) => {
-
-				try
-				{
-					m_stream.write_async.end(res);
-				}
-				catch(GLib.Error e)
-				{
-					stderr.printf("[ ERROR ] error writing log to file: %s\n", e.message);
-					stderr.printf("[ ERROR ] %s\n", text);
-					reset_color();
-				}
-
-				if(m_pendingWrites.size > 0)
-				{
-					string item = m_pendingWrites.first();
-					m_pendingWrites.remove(item);
-					write(item);
-				}
-			});
-		}
-
-	}
-
 }

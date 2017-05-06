@@ -38,6 +38,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private int m_transitionDuration = 500 * 1000;
 	private uint m_scrollCallbackID = 0;
 	private uint m_savetyFallbackID = 0;
+	private uint m_scrollCooldownID = 0;
+
 
 
 	public ArticleListScroll()
@@ -125,12 +127,18 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 	public void startScrolledDownCooldown()
 	{
-		GLib.Timeout.add(m_scrollCooldown, () => {
+		if(m_scrollCooldownID != 0)
+		{
+			GLib.Source.remove(m_scrollCooldownID);
+			m_scrollCooldownID = 0;
+		}
+
+		m_scrollCooldownID = GLib.Timeout.add(m_scrollCooldown, () => {
 			Logger.debug("ArticleListScroll: scrolled down off cooldown");
+			m_scrollCooldownID = 0;
 			m_scrolledBottomOnCooldown = false;
 			if(m_savetyFallbackID != 0)
 			{
-				Logger.debug("ArticleListScroll: remove source m_savetyFallbackID");
 				GLib.Source.remove(m_savetyFallbackID);
 				m_savetyFallbackID = 0;
 			}

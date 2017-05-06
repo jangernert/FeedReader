@@ -905,7 +905,7 @@ namespace FeedReader {
 		{
 			var old_stdout =(owned)stdout;
 			stdout = FileStream.open("/dev/null", "w");
-			Logger.init("daemon");
+			Logger.init();
 			stdout =(owned)old_stdout;
 			stdout.printf("%u\n", dbDaemon.get_default().get_unread_total());
 			return 0;
@@ -913,19 +913,19 @@ namespace FeedReader {
 
 		if(grabImages != null && articleUrl != null)
 		{
-			Logger.init("daemon");
+			Logger.init();
 			FeedServer.grabImages(grabImages, articleUrl);
 			return 0;
 		}
 
 		if(grabArticle != null)
 		{
-			Logger.init("daemon");
+			Logger.init();
 			FeedServer.grabArticle(grabArticle);
 			return 0;
 		}
 
-		Logger.init("daemon");
+		Logger.init();
 		Notification.init();
 		Utils.copyAutostart();
 

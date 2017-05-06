@@ -327,7 +327,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 	{
 		Gtk.init(ref args);
 		Gst.init(ref args);
-		Logger.init("mediaPlayer");
+		Logger.init();
 
 		var window = new Gtk.Window();
 		window.set_size_request(800, 600);

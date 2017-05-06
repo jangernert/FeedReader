@@ -48,7 +48,7 @@ namespace FeedReader {
 
 		protected override void startup()
 		{
-			Logger.init("ui");
+			Logger.init();
 			Logger.info("FeedReader " + AboutInfo.version);
 
 			base.startup();
@@ -166,7 +166,7 @@ namespace FeedReader {
 
 		if(pingURL != null)
 		{
-			Logger.init("ui");
+			Logger.init();
 			if(!Utils.ping(pingURL))
 				Logger.error("Ping failed");
 			return 0;
@@ -174,7 +174,7 @@ namespace FeedReader {
 
 		if(feedURL != null)
 		{
-			Logger.init("ui");
+			Logger.init();
 			Logger.debug(@"Adding feed $feedURL");
 			try
 			{

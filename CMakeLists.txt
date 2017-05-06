@@ -17,7 +17,7 @@ set (DAEMON_NAME ${UI_NAME}-daemon)
 set (WEBEXTENSION_NAME webextension)
 set (RELEASE_NAME "FeedReader")
 set (VERSION "2.0.2")
-set (GLIB_VERSION 2.40)
+set (GLIB_VERSION 2.50)
 
 find_package(PkgConfig)
 find_package(Vala REQUIRED)
@@ -120,7 +120,7 @@ target_link_libraries(FeedReaderCommon vilistextum)
 ################################################################################
 
 set(UI_PACKAGES
-	glib-2.0>=2.32
+	glib-2.0>=${GLIB_VERSION}
 	gtk+-3.0
 	json-glib-1.0
 	libsoup-2.4
@@ -225,7 +225,7 @@ set(DAEMON_OPTIONS
 	--header=FeedReader.h
 	--vapi=FeedReader.vapi)
 set(DAEMON_PACKAGES
-	glib-2.0>=2.32
+	glib-2.0>=${GLIB_VERSION}
 	gio-2.0
 	sqlite3
 	gee-0.8

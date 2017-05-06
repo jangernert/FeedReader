@@ -116,8 +116,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			scrolledBottom();
 			// reset cooldown after 5s if something went wrong
 			m_savetyFallbackID = GLib.Timeout.add_seconds(5, () => {
-				m_scrolledBottomOnCooldown = false;
 				m_savetyFallbackID = 0;
+				m_scrolledBottomOnCooldown = false;
 				return GLib.Source.REMOVE;
 			});
 		}
@@ -130,12 +130,17 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			m_scrolledBottomOnCooldown = false;
 			if(m_savetyFallbackID != 0)
 			{
+				Logger.debug("ArticleListScroll: remove source m_savetyFallbackID");
 				GLib.Source.remove(m_savetyFallbackID);
 				m_savetyFallbackID = 0;
 			}
 			double max = vadjustment.upper - vadjustment.page_size;
 			if(vadjustment.value >= max - 5)
+			{
+				Logger.debug("ArticleListScroll: trigger scrolledBottom()");
 				scrolledBottom();
+			}
+
 			return GLib.Source.REMOVE;
 		});
 	}

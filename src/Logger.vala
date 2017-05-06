@@ -40,21 +40,5 @@ public class FeedReader.Logger : GLib.Object {
 	public static void init()
 	{
 		GLib.Log.set_writer_func((LogWriterFunc)GLib.Log.writer_standard_streams);
-		switch(Settings.general().get_enum("log-level"))
-		{
-			case LogLevel.OFF:
-				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "", true);
-				break;
-			case LogLevel.ERROR:
-				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "all", true);
-				break;
-			case LogLevel.MORE:
-				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "all", true);
-				break;
-			case LogLevel.DEBUG:
-				GLib.Environment.set_variable("G_MESSAGES_DEBUG", "all", true);
-				break;
-		}
-
 	}
 }

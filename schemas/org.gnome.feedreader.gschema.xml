@@ -1,12 +1,5 @@
 <schemalist>
 
-	<enum id="org.gnome.feedreader.loglevel">
-		<value nick="OFF" value="0"/>
-		<value nick="ERROR" value="1"/>
-		<value nick="MORE" value="2"/>
-		<value nick="DEBUG" value="3"/>
-	</enum>
-
 	<enum id="org.gnome.feedreader.article-theme">
 		<value nick="DEFAULT" value="0"/>
 		<value nick="SPRING" value="1"/>
@@ -65,10 +58,6 @@
 		
 		<key name='plugin' type="s">
 			<default>'none'</default>
-		</key>
-
-		<key name='log-level' enum='org.gnome.feedreader.loglevel'>
-			<default>'DEBUG'</default>
 		</key>
 
 		<key name='article-theme' enum='org.gnome.feedreader.article-theme'>

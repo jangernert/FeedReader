@@ -26,13 +26,6 @@ namespace FeedReader {
  		}
 	}
 
-	public enum LogLevel {
-		OFF,
-		ERROR,
-		MORE,
-		DEBUG
-	}
-
 	public enum ArticleListState {
 		ALL,
 		UNREAD,

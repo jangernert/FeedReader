@@ -113,7 +113,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				}
 				m_height = allocation.height;
 			}
-        });
+		});
 	}
 
 	public async void newList(Gtk.StackTransitionType transition = Gtk.StackTransitionType.CROSSFADE)

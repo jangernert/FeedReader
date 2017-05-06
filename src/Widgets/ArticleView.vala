@@ -17,7 +17,7 @@
 interface FeedReaderWebExtension : Object
 {
 	public abstract void recalculate() throws IOError;
-    public signal void onClick(string path, int width, int height, string url);
+	public signal void onClick(string path, int width, int height, string url);
 	public signal void message(string message);
 }
 
@@ -106,7 +106,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 					recalculate.end(res);
 				});
 			}
-        });
+		});
 
 		m_fsHead = new FullscreenHeader();
 
@@ -213,9 +213,9 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 
 		if(m_OngoingScrollID > 0)
 		{
-            GLib.Source.remove(m_OngoingScrollID);
-            m_OngoingScrollID = 0;
-        }
+			GLib.Source.remove(m_OngoingScrollID);
+			m_OngoingScrollID = 0;
+		}
 
 		article Article = null;
 		SourceFunc callback = fillContent.callback;
@@ -515,9 +515,9 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 
 
 	private void on_extension_appeared(GLib.DBusConnection connection, string name, string owner)
-    {
-    	try
-    	{
+	{
+		try
+		{
 			m_connected = true;
 			m_messenger = connection.get_proxy_sync("org.gnome.FeedReader.ArticleView", "/org/gnome/FeedReader/ArticleView", GLib.DBusProxyFlags.DO_NOT_AUTO_START, null);
 			m_messenger.onClick.connect((path, width, height, url) => {
@@ -535,10 +535,10 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		{
 			Logger.error("ArticleView.on_extension_appeared: " + e.message);
 		}
-    }
+	}
 
 	private async void recalculate()
-    {
+	{
 		SourceFunc callback = recalculate.callback;
 		ThreadFunc<void*> run = () => {
 			try
@@ -558,7 +558,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		};
 		new GLib.Thread<void*>("recalculate", run);
 		yield;
-    }
+	}
 
 	private bool onClick(Gdk.EventButton event)
 	{
@@ -731,11 +731,11 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 	{
 		Logger.debug("ArticleView.setBackgroundColor()");
 		var background = ColumnView.get_default().getBackgroundColor();
-        if(background.alpha == 1.0)
-        {
+		if(background.alpha == 1.0)
+		{
 			// Don't set a background color that is transparent.
 			m_color = background;
-        }
+		}
 	}
 
 	private bool onContextMenu(WebKit.ContextMenu menu, Gdk.Event event, WebKit.HitTestResult hitTest)

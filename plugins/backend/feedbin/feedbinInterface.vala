@@ -314,7 +314,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
-			
+
 			articleCount = m_api.getEntries(articles, page, starred, time, fID);
 
 			if(articleCount == 0)

@@ -294,7 +294,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
-			
+
 			if(left > 1000)
 			{
 				continuation = m_api.getStreamContents(articles, null, labelID, exclude, 1000, "d");

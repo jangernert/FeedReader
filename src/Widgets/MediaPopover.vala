@@ -21,32 +21,32 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 
 	public MediaPopover(Gtk.Widget widget)
 	{
-        m_list = new Gtk.ListBox();
-        m_list.margin = 10;
-        m_list.set_selection_mode(Gtk.SelectionMode.NONE);
-        m_list.row_activated.connect(playMedia);
-        populateList();
+		m_list = new Gtk.ListBox();
+		m_list.margin = 10;
+		m_list.set_selection_mode(Gtk.SelectionMode.NONE);
+		m_list.row_activated.connect(playMedia);
+		populateList();
 		this.add(m_list);
 		this.set_modal(true);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
-        this.show_all();
+		this.show_all();
 	}
 
-    private void populateList()
-    {
+	private void populateList()
+	{
 		m_media = ColumnView.get_default().getSelectedArticleMedia();
 
-        foreach(string media in m_media)
-        {
-        	m_list.add(new mediaRow(media));
-        }
-    }
+		foreach(string media in m_media)
+		{
+			m_list.add(new mediaRow(media));
+		}
+	}
 
 	private void playMedia(Gtk.ListBoxRow row)
-    {
-        this.hide();
-        mediaRow? mRow = row as mediaRow;
+	{
+		this.hide();
+		mediaRow? mRow = row as mediaRow;
 
 		if(mRow != null)
 		{
@@ -66,5 +66,5 @@ public class FeedReader.MediaPopover : Gtk.Popover {
 				}
 			}
 		}
-    }
+	}
 }

@@ -39,15 +39,15 @@ namespace FeedReader {
 	}
 
 	public enum ConsoleColor {
-        BLACK,
-        RED,
-        GREEN,
-        YELLOW,
-        BLUE,
-        MAGENTA,
-        CYAN,
-        WHITE,
-    }
+		BLACK,
+		RED,
+		GREEN,
+		YELLOW,
+		BLUE,
+		MAGENTA,
+		CYAN,
+		WHITE,
+	}
 
 	public enum LogMessage {
 		ERROR,

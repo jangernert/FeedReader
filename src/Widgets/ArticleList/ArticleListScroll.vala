@@ -31,10 +31,10 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private int m_scrollCooldown = 500; // cooldown in ms
 
 	//Transition times
-    private int64 m_startTime = 0;
-    private int64 m_endTime = 0;
-    private double m_transitionDiff = 0.0;
-    private double m_transitionStartValue = 0.0;
+	private int64 m_startTime = 0;
+	private int64 m_endTime = 0;
+	private double m_transitionDiff = 0.0;
+	private double m_transitionStartValue = 0.0;
 	private int m_transitionDuration = 500 * 1000;
 	private uint m_scrollCallbackID = 0;
 	private uint m_savetyFallbackID = 0;
@@ -47,7 +47,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		vadjustment.notify["upper"].connect(trackUpper);
 		vadjustment.notify["value"].connect(trackValue);
 		this.set_size_request(250, 0);
-    }
+	}
 
 	private void trackUpper()
 	{
@@ -72,7 +72,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 
 		m_upperCache = vadjustment.upper;
 		m_valueCache = vadjustment.value;
-    }
+	}
 
 	private void trackValue()
 	{
@@ -156,7 +156,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	public void balanceNextScroll(ArticleListBalance mode)
 	{
 		m_balance = mode;
-    }
+	}
 
 	public void scrollDiff(double diff, bool animate = true)
 	{

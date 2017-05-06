@@ -95,7 +95,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 	private async bool downloadIcon(string id, string path, string url)
 	{
 		if(url == "" || url == null || GLib.Uri.parse_scheme(url) == null)
-            return false;
+			return false;
 
 		SourceFunc callback = downloadIcon.callback;
 		bool success = false;

@@ -85,9 +85,9 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 	}
 
 	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
+	{
+		m_utils.resetAccount();
+	}
 
 	public bool useMaxArticles()
 	{

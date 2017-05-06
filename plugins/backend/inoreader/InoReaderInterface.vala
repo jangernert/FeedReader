@@ -85,9 +85,9 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 	}
 
 	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
+	{
+		m_utils.resetAccount();
+	}
 
 	public bool useMaxArticles()
 	{

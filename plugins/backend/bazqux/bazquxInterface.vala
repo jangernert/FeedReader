@@ -84,9 +84,9 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 	}
 
 	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
+	{
+		m_utils.resetAccount();
+	}
 
 	public bool useMaxArticles()
 	{
@@ -299,7 +299,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
-			
+
 			if(left > 1000)
 			{
 				continuation = m_api.getArticles(articles, 1000, whatToGet, continuation, bazqux_tagID, bazqux_feedID);

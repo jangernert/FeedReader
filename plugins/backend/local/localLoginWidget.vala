@@ -19,7 +19,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	public void init()
 	{
-		
+
 	}
 
 	public string getWebsite()

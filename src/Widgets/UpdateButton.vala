@@ -102,11 +102,11 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	}
 
 	private bool onEnter(Gdk.EventCrossing event)
-    {
+	{
 		if(m_status && !m_Popover.get_visible())
 			m_Popover.show_all();
 
-        return false;
-    }
+		return false;
+	}
 
 }

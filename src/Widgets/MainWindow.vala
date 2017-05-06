@@ -327,7 +327,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Gtk.CssProvider provider = new Gtk.CssProvider();
 		provider.load_from_resource(path);
 		weak Gdk.Display display = Gdk.Display.get_default();
-        weak Gdk.Screen screen = display.get_default_screen();
+		weak Gdk.Screen screen = display.get_default_screen();
 		Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 		return provider;
 	}
@@ -335,7 +335,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private void removeProvider(Gtk.CssProvider provider)
 	{
 		weak Gdk.Display display = Gdk.Display.get_default();
-        weak Gdk.Screen screen = display.get_default_screen();
+		weak Gdk.Screen screen = display.get_default_screen();
 		Gtk.StyleContext.remove_provider_for_screen(screen, provider);
 	}
 

@@ -85,9 +85,9 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 	}
 
 	public void resetAccount()
-    {
-        m_utils.resetAccount();
-    }
+	{
+		m_utils.resetAccount();
+	}
 
 	public bool useMaxArticles()
 	{
@@ -318,7 +318,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
-			
+
 			if(left > 1000)
 			{
 				continuation = m_api.getArticles(articles, 1000, whatToGet, continuation, OldReader_tagID, OldReader_feedID);

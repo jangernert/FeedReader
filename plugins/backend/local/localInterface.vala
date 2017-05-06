@@ -407,9 +407,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				if(item.pub_date != null)
 				{
-                	GLib.Time time = GLib.Time();
-                	time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
-                	date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
+					GLib.Time time = GLib.Time();
+					time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
+					date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
 
 					if(date == null)
 						date = new GLib.DateTime.now_local();

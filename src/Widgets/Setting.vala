@@ -25,8 +25,8 @@ public class FeedReader.Setting : Gtk.Box {
 		this.spacing = 0;
 
 		m_label = new Gtk.Label(name);
-        m_label.set_alignment(0, 0.5f);
-        m_label.margin_start = 15;
+		m_label.set_alignment(0, 0.5f);
+		m_label.margin_start = 15;
 		m_label.set_tooltip_text(tooltip);
 
 		this.pack_start(m_label, true, true, 0);
@@ -60,12 +60,12 @@ public class FeedReader.SettingDropbox : FeedReader.Setting {
 		base(name, tooltip);
 		var liststore = new Gtk.ListStore(1, typeof(string));
 
-        foreach(string val in values)
-        {
-        	Gtk.TreeIter iter;
-        	liststore.append(out iter);
-        	liststore.set(iter, 0, val);
-        }
+		foreach(string val in values)
+		{
+			Gtk.TreeIter iter;
+			liststore.append(out iter);
+			liststore.set(iter, 0, val);
+		}
 
 		var dropbox = new Gtk.ComboBox.with_model(liststore);
 		var renderer = new Gtk.CellRendererText();
@@ -75,9 +75,9 @@ public class FeedReader.SettingDropbox : FeedReader.Setting {
 		dropbox.changed.connect(() => {
 			settings.set_enum(key, dropbox.get_active());
 			changed();
-        });
+		});
 
-        this.pack_end(dropbox, false, false, 0);
+		this.pack_end(dropbox, false, false, 0);
 	}
 }
 
@@ -88,15 +88,15 @@ public class FeedReader.SettingSwitch : FeedReader.Setting {
 	{
 		base(name, tooltip);
 
-        var Switch = new Gtk.Switch();
-        Switch.active = settings.get_boolean(key);
+		var Switch = new Gtk.Switch();
+		Switch.active = settings.get_boolean(key);
 
-        Switch.notify["active"].connect(() => {
-            settings.set_boolean(key, Switch.active);
-            changed();
-        });
+		Switch.notify["active"].connect(() => {
+			settings.set_boolean(key, Switch.active);
+			changed();
+		});
 
-        this.pack_end(Switch, false, false, 0);
+		this.pack_end(Switch, false, false, 0);
 	}
 }
 
@@ -107,14 +107,14 @@ public class FeedReader.SettingSpin : FeedReader.Setting {
 	{
 		base(name, tooltip);
 
-        var spin = new Gtk.SpinButton.with_range(min, max, step);
-        spin.set_value(settings.get_int(key));
+		var spin = new Gtk.SpinButton.with_range(min, max, step);
+		spin.set_value(settings.get_int(key));
 
-        spin.value_changed.connect(() => {
-            settings.set_int(key, spin.get_value_as_int());
-            changed();
-        });
+		spin.value_changed.connect(() => {
+			settings.set_int(key, spin.get_value_as_int());
+			changed();
+		});
 
-        this.pack_end(spin, false, false, 0);
+		this.pack_end(spin, false, false, 0);
 	}
 }

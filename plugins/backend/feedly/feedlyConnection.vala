@@ -231,7 +231,7 @@ public class FeedReader.FeedlyConnection {
 			status = message.status_code,
 			data = (string)message.response_body.flatten().data
 		};
-    }
+	}
 
 	public Response send_delete_request_to_feedly(string path)
 	{

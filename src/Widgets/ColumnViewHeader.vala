@@ -143,15 +143,15 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 
 	private void set_window_buttons()
 	{
-        string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
-        if (buttons.length < 2) {
+		string[] buttons = Gtk.Settings.get_default().gtk_decoration_layout.split(":");
+		if (buttons.length < 2) {
 			buttons = {buttons[0], ""};
 			Logger.warning("gtk_decoration_layout in unexpected format");
-        }
+		}
 
 		m_header_left.set_decoration_layout(buttons[0] + ":");
 		m_header_right.set_decoration_layout(":" + buttons[1]);
-    }
+	}
 
 	public void setRefreshButton(bool status)
 	{

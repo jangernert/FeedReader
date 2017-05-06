@@ -265,92 +265,92 @@ public class FeedReader.Utils : GLib.Object {
 
 
 	public static string shortenURL(string url)
-    {
-        string longURL = url;
-        if(longURL.has_prefix("https://"))
-        {
-            longURL = longURL.substring(8);
-        }
-        else if(longURL.has_prefix("http://"))
-        {
-            longURL = longURL.substring(7);
-        }
+	{
+		string longURL = url;
+		if(longURL.has_prefix("https://"))
+		{
+			longURL = longURL.substring(8);
+		}
+		else if(longURL.has_prefix("http://"))
+		{
+			longURL = longURL.substring(7);
+		}
 
-        if(longURL.has_prefix("www."))
-        {
-            longURL = longURL.substring(4);
-        }
+		if(longURL.has_prefix("www."))
+		{
+			longURL = longURL.substring(4);
+		}
 
-        if(longURL.has_suffix("api/"))
-        {
-            longURL = longURL.substring(0, longURL.length - 4);
-        }
+		if(longURL.has_suffix("api/"))
+		{
+			longURL = longURL.substring(0, longURL.length - 4);
+		}
 
-        return longURL;
-    }
+		return longURL;
+	}
 
 	// thx to geary :)
 	public static string prepareSearchQuery(string raw_query)
 	{
-        // Two goals here:
-        //   1) append an * after every term so it becomes a prefix search
-        //      (see <https://www.sqlite.org/fts3.html#section_3>), and
-        //   2) strip out common words/operators that might get interpreted as
-        //      search operators.
-        // We ignore everything inside quotes to give the user a way to
-        // override our algorithm here.  The idea is to offer one search query
-        // syntax for Geary that we can use locally and via IMAP, etc.
+		// Two goals here:
+		//   1) append an * after every term so it becomes a prefix search
+		//      (see <https://www.sqlite.org/fts3.html#section_3>), and
+		//   2) strip out common words/operators that might get interpreted as
+		//      search operators.
+		// We ignore everything inside quotes to give the user a way to
+		// override our algorithm here.  The idea is to offer one search query
+		// syntax for Geary that we can use locally and via IMAP, etc.
 
-        string quote_balanced = parseSearchTerm(raw_query).replace("'", " ");
-        if(countChar(raw_query, '"') % 2 != 0)
+		string quote_balanced = parseSearchTerm(raw_query).replace("'", " ");
+		if(countChar(raw_query, '"') % 2 != 0)
 		{
-            // Remove the last quote if it's not balanced.  This has the
-            // benefit of showing decent results as you type a quoted phrase.
-            int last_quote = raw_query.last_index_of_char('"');
-            assert(last_quote >= 0);
-            quote_balanced = raw_query.splice(last_quote, last_quote + 1, " ");
-        }
+			// Remove the last quote if it's not balanced.  This has the
+			// benefit of showing decent results as you type a quoted phrase.
+			int last_quote = raw_query.last_index_of_char('"');
+			assert(last_quote >= 0);
+			quote_balanced = raw_query.splice(last_quote, last_quote + 1, " ");
+		}
 
-        string[] words = quote_balanced.split_set(" \t\r\n:()%*\\");
-        bool in_quote = false;
-        StringBuilder prepared_query = new StringBuilder();
-        foreach(string s in words)
+		string[] words = quote_balanced.split_set(" \t\r\n:()%*\\");
+		bool in_quote = false;
+		StringBuilder prepared_query = new StringBuilder();
+		foreach(string s in words)
 		{
-            s = s.strip();
+			s = s.strip();
 
-            int quotes = countChar(s, '"');
-            if(!in_quote && quotes > 0)
+			int quotes = countChar(s, '"');
+			if(!in_quote && quotes > 0)
 			{
-                in_quote = true;
-                --quotes;
-            }
+				in_quote = true;
+				--quotes;
+			}
 
-            if(!in_quote)
+			if(!in_quote)
 			{
-                string lower = s.down();
-                if(lower == "" || lower == "and" || lower == "or" || lower == "not" || lower == "near" || lower.has_prefix("near/"))
-                    continue;
+				string lower = s.down();
+				if(lower == "" || lower == "and" || lower == "or" || lower == "not" || lower == "near" || lower.has_prefix("near/"))
+					continue;
 
-                if(s.has_prefix("-"))
-                    s = s.substring(1);
+				if(s.has_prefix("-"))
+					s = s.substring(1);
 
-                if(s == "")
-                    continue;
+				if(s == "")
+					continue;
 
-                s = "\"" + s + "*\"";
-            }
+				s = "\"" + s + "*\"";
+			}
 
-            if(in_quote && quotes % 2 != 0)
-                in_quote = false;
+			if(in_quote && quotes % 2 != 0)
+				in_quote = false;
 
-            prepared_query.append(s);
-            prepared_query.append(" ");
-        }
+			prepared_query.append(s);
+			prepared_query.append(" ");
+		}
 
-        assert(!in_quote);
+		assert(!in_quote);
 
-        return prepared_query.str.strip();
-    }
+		return prepared_query.str.strip();
+	}
 
 	public static int countChar(string s, unichar c)
 	{

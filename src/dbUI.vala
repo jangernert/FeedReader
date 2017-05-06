@@ -15,56 +15,56 @@
 
 public class FeedReader.dbUI : dbBase {
 
-    private static dbUI? m_dataBase = null;
+	private static dbUI? m_dataBase = null;
 
-    public static new dbUI get_default()
-    {
-        if(m_dataBase == null)
-        {
-            m_dataBase = new dbUI();
-            if(m_dataBase.uninitialized())
-                m_dataBase.init();
-        }
+	public static new dbUI get_default()
+	{
+		if(m_dataBase == null)
+		{
+			m_dataBase = new dbUI();
+			if(m_dataBase.uninitialized())
+				m_dataBase.init();
+		}
 
 
 		return m_dataBase;
-    }
-
-    public dbUI(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
-    {
-        base(dbFile);
-    }
-
-    protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
-	{
-        try
-        {
-            if(DBusConnection.get_default().hideCagetoryWhenEmtpy(catID)
-            && !Utils.categoryIsPopulated(catID, feeds))
-            {
-                return false;
-            }
-        }
-        catch(GLib.Error e)
-        {
-            Logger.error("dbUI.showCategory: %s".printf(e.message));
-        }
-        return true;
 	}
 
-    protected override string getUncategorizedQuery()
+	public dbUI(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
-        try
-        {
-    		string catID = DBusConnection.get_default().uncategorizedID();
-    		return "category_id = \"%s\"".printf(catID);
-        }
-        catch(GLib.Error e)
-        {
-            Logger.error("dbUI.showCategory: %s".printf(e.message));
-        }
+		base(dbFile);
+	}
 
-        return "";
+	protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
+	{
+		try
+		{
+			if(DBusConnection.get_default().hideCagetoryWhenEmtpy(catID)
+			&& !Utils.categoryIsPopulated(catID, feeds))
+			{
+				return false;
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("dbUI.showCategory: %s".printf(e.message));
+		}
+		return true;
+	}
+
+	protected override string getUncategorizedQuery()
+	{
+		try
+		{
+			string catID = DBusConnection.get_default().uncategorizedID();
+			return "category_id = \"%s\"".printf(catID);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("dbUI.showCategory: %s".printf(e.message));
+		}
+
+		return "";
 	}
 
 }

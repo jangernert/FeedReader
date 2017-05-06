@@ -101,7 +101,7 @@ public class FeedReader.freshConnection {
 			status = message.status_code,
 			data = (string)message.response_body.flatten().data
 		};
-    }
+	}
 
 	public Response getRequest(string path)
 	{

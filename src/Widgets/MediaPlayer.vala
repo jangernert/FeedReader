@@ -400,7 +400,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 			m_player["volume"] = 0.0;
 			m_muted = true;
 		}
-    }
+	}
 
 	private bool busCallback(Gst.Bus bus, Gst.Message message)
 	{

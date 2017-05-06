@@ -184,16 +184,16 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 		if(m_selectSourceID > 0)
 		{
-            GLib.Source.remove(m_selectSourceID);
-            m_selectSourceID = 0;
-        }
-
-        m_selectSourceID = Timeout.add(time, () => {
-			if(!ColumnView.get_default().searchFocused())
-            	row.activate();
+			GLib.Source.remove(m_selectSourceID);
 			m_selectSourceID = 0;
-            return false;
-        });
+		}
+
+		m_selectSourceID = Timeout.add(time, () => {
+			if(!ColumnView.get_default().searchFocused())
+				row.activate();
+			m_selectSourceID = 0;
+			return false;
+		});
 	}
 
 	private void setRead(articleRow row)
@@ -663,7 +663,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public void removeObsoleteRows()
 	{
 		var children = this.get_children();
-		var removedRows = new Gee.LinkedList<articleRow>();
 		foreach(var row in children)
 		{
 			var tmpRow = row as articleRow;

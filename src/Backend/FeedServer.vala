@@ -350,8 +350,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(size > 0)
 		{
 			var session = new Soup.Session();
-            session.user_agent = Constants.USER_AGENT;
-            session.timeout = 5;
+			session.user_agent = Constants.USER_AGENT;
+			session.timeout = 5;
 			session.ssl_strict = false;
 
 			foreach(var Article in articles)
@@ -411,21 +411,21 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		var html_cntx = new Html.ParserCtxt();
-        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-        Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
-        if(doc == null)
-        {
-            Logger.debug("Grabber: parsing failed");
-    		return;
-    	}
+		html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+		Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
+		if(doc == null)
+		{
+			Logger.debug("Grabber: parsing failed");
+			return;
+		}
 		grabberUtils.fixIframeSize(doc, "youtube.com");
 		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
 		grabberUtils.repairURL("//iframe", "src", doc, Article.getURL());
 		grabberUtils.stripNode(doc, "//a[not(node())]");
 		grabberUtils.removeAttributes(doc, null, "style");
-        grabberUtils.removeAttributes(doc, "a", "onclick");
-        grabberUtils.removeAttributes(doc, "img", "srcset");
-        grabberUtils.removeAttributes(doc, "img", "sizes");
+		grabberUtils.removeAttributes(doc, "a", "onclick");
+		grabberUtils.removeAttributes(doc, "img", "srcset");
+		grabberUtils.removeAttributes(doc, "img", "sizes");
 		grabberUtils.addAttributes(doc, "a", "target", "_blank");
 
 		if(cancellable != null && cancellable.is_cancelled())
@@ -438,7 +438,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		string html = "";
 		doc->dump_memory_enc(out html);
-        html = grabberUtils.postProcessing(ref html);
+		html = grabberUtils.postProcessing(ref html);
 		Article.setHTML(html);
 		delete doc;
 	}
@@ -529,34 +529,34 @@ public class FeedReader.FeedServer : GLib.Object {
 		session.ssl_strict = false;
 
 		var html_cntx = new Html.ParserCtxt();
-        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-        Html.Doc* doc = html_cntx.read_file(htmlFile);
-        if (doc == null)
-        {
-            Logger.debug("Grabber: parsing failed");
-    		return;
-    	}
+		html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+		Html.Doc* doc = html_cntx.read_file(htmlFile);
+		if (doc == null)
+		{
+			Logger.debug("Grabber: parsing failed");
+			return;
+		}
 		grabberUtils.repairURL("//img", "src", doc, url);
 		grabberUtils.saveImages(session, doc, "", "");
 
 		string html = "";
 		doc->dump_memory_enc(out html);
-        html = html.replace("<h3/>", "<h3></h3>");
+		html = html.replace("<h3/>", "<h3></h3>");
 
-    	int pos1 = html.index_of("<iframe", 0);
-    	int pos2 = -1;
-    	while(pos1 != -1)
-    	{
-    		pos2 = html.index_of("/>", pos1);
-    		string broken_iframe = html.substring(pos1, pos2+2-pos1);
-    		string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
-    		html = html.replace(broken_iframe, fixed_iframe);
-    		int pos3 = html.index_of("<iframe", pos1+7);
-    		if(pos3 == pos1)
-    			break;
-    		else
-    			pos1 = pos3;
-    	}
+		int pos1 = html.index_of("<iframe", 0);
+		int pos2 = -1;
+		while(pos1 != -1)
+		{
+			pos2 = html.index_of("/>", pos1);
+			string broken_iframe = html.substring(pos1, pos2+2-pos1);
+			string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
+			html = html.replace(broken_iframe, fixed_iframe);
+			int pos3 = html.index_of("<iframe", pos1+7);
+			if(pos3 == pos1)
+				break;
+			else
+				pos1 = pos3;
+		}
 
 		try
 		{

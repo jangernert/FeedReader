@@ -15,44 +15,44 @@
 
 public class FeedReader.ArticleViewUrlOverlay : Gtk.Revealer {
 
-    private Gtk.Label m_label;
+	private Gtk.Label m_label;
 
-    public ArticleViewUrlOverlay()
-    {
-        m_label = new Gtk.Label("dummy");
-        m_label.get_style_context().add_class("osd");
-        m_label.height_request = 30;
+	public ArticleViewUrlOverlay()
+	{
+		m_label = new Gtk.Label("dummy");
+		m_label.get_style_context().add_class("osd");
+		m_label.height_request = 30;
 
-        this.valign = Gtk.Align.END;
-        this.halign = Gtk.Align.START;
-        this.margin = 10;
-        this.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE);
+		this.valign = Gtk.Align.END;
+		this.halign = Gtk.Align.START;
+		this.margin = 10;
+		this.set_transition_type(Gtk.RevealerTransitionType.CROSSFADE);
 		this.set_transition_duration(300);
 		this.no_show_all = true;
-        this.add(m_label);
-    }
+		this.add(m_label);
+	}
 
-    public void setURL(string uri, Gtk.Align align)
-    {
-        int length = 45;
-        string url = uri;
-        if(url.length >= length)
-        {
-            url = url.substring(0, length-3) + "...";
-        }
-        m_label.label = url;
-        m_label.width_chars = url.length;
-        this.halign = align;
-    }
+	public void setURL(string uri, Gtk.Align align)
+	{
+		int length = 45;
+		string url = uri;
+		if(url.length >= length)
+		{
+			url = url.substring(0, length-3) + "...";
+		}
+		m_label.label = url;
+		m_label.width_chars = url.length;
+		this.halign = align;
+	}
 
-    public void reveal(bool show)
+	public void reveal(bool show)
 	{
 		if(show)
-        {
-            this.visible = true;
-            m_label.show();
-        }
+		{
+			this.visible = true;
+			m_label.show();
+		}
 
-        this.set_reveal_child(show);
+		this.set_reveal_child(show);
 	}
 }

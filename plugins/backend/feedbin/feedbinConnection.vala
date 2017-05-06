@@ -56,12 +56,12 @@ public class FeedReader.feedbinConnection {
 	public Response postRequest(string path, string input)
 	{
 		return request("POST", path, input);
-    }
+	}
 
 	public Response deleteRequest(string path, string? input = null)
 	{
 		return request("DELETE", path, input);
-    }
+	}
 
 	public Response getRequest(string path)
 	{

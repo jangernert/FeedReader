@@ -15,7 +15,7 @@
 
 public class FeedReader.UtilsDaemon : GLib.Object {
 
-    public static void generatePreviews(Gee.List<article> articles)
+	public static void generatePreviews(Gee.List<article> articles)
 	{
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
@@ -68,7 +68,7 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 		}
 	}
 
-    public static void checkHTML(Gee.List<article> articles)
+	public static void checkHTML(Gee.List<article> articles)
 	{
 		foreach(var Article in articles)
 		{
@@ -84,7 +84,7 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 		}
 	}
 
-    public static uint getRelevantArticles(int newArticlesCount)
+	public static uint getRelevantArticles(int newArticlesCount)
 	{
 		string[] selectedRow = {};
 		ArticleListState state = ArticleListState.ALL;

@@ -206,10 +206,10 @@ public class FeedReader.UtilsUI : GLib.Object {
 			// otherwise check if online
 			return DBusConnection.get_default().isOnline();
 		}
-        catch(GLib.Error e)
-        {
-            Logger.error("UtilsUI.canManipulateContent: %s".printf(e.message));
-        }
+		catch(GLib.Error e)
+		{
+			Logger.error("UtilsUI.canManipulateContent: %s".printf(e.message));
+		}
 
 		return false;
 	}
@@ -338,7 +338,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		Gtk.CssProvider provider = new Gtk.CssProvider();
 		provider.load_from_resource("/org/gnome/FeedReader/gtk-css/basics.css");
 		weak Gdk.Display display = Gdk.Display.get_default();
-        weak Gdk.Screen screen = display.get_default_screen();
+		weak Gdk.Screen screen = display.get_default_screen();
 		Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
 
 		var player = new FeedReader.MediaPlayer(url);
@@ -354,9 +354,9 @@ public class FeedReader.UtilsUI : GLib.Object {
 	{
 		Gtk.Image icon = null;
 		if(Gtk.IconTheme.get_default().lookup_icon(name, 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
-            icon = new Gtk.Image.from_icon_name(name, size);
-        else
-            icon = new Gtk.Image.from_icon_name(fallback, size);
+			icon = new Gtk.Image.from_icon_name(name, size);
+		else
+			icon = new Gtk.Image.from_icon_name(fallback, size);
 
 		return icon;
 	}

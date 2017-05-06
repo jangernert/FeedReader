@@ -58,7 +58,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		if(m_ttrss_url == "")
 			return LoginResponse.MISSING_URL;
 		if(GLib.Uri.parse_scheme(m_ttrss_url) == null)
-            return LoginResponse.INVALID_URL;
+			return LoginResponse.INVALID_URL;
 		if(passwd == "")
 			return LoginResponse.MISSING_PASSWD;
 
@@ -100,9 +100,9 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			return LoginResponse.NO_API_ACCESS;
 		}
 		else if(error == ConnectionError.CA_ERROR)
-        {
-            return LoginResponse.CA_ERROR;
-        }
+		{
+			return LoginResponse.CA_ERROR;
+		}
 		else if(error == ConnectionError.UNAUTHORIZED)
 		{
 			return LoginResponse.UNAUTHORIZED;

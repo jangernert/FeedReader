@@ -222,8 +222,8 @@ namespace FeedReader {
 	static void show_about(string[] args)
 	{
 		Gtk.init(ref args);
-        Gtk.AboutDialog dialog = new Gtk.AboutDialog();
-        dialog.response.connect ((response_id) => {
+		Gtk.AboutDialog dialog = new Gtk.AboutDialog();
+		dialog.response.connect ((response_id) => {
 			if(response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
 				Gtk.main_quit();
 		});

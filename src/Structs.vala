@@ -15,12 +15,12 @@
 
 namespace FeedReader {
 
-    public struct Response {
-        uint status;
-        string data;
-    }
+	public struct Response {
+		uint status;
+		string data;
+	}
 
-    private struct ResourceMetadata
+	private struct ResourceMetadata
 	{
 		private const string CACHE_GROUP = "cache";
 		private const string ETAG_KEY = "etag";

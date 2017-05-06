@@ -795,9 +795,10 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm)
+	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm, int searchRows = 0)
 	{
 		int result = 0;
+		string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
 
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.addEqualsCondition("articleID", articleID, true, true);
@@ -805,26 +806,15 @@ public class FeedReader.dbBase : GLib.Object {
 		var query2 = new QueryBuilder(QueryType.SELECT, "articles");
 		query2.selectField("count(*)");
 
-		if((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED)
-		{
-			query.selectField("rowid");
-			query.build();
 
-			if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
-				query2.addCustomCondition("rowid < (%s)".printf(query.get()));
-			else
-				query2.addCustomCondition("rowid > (%s)".printf(query.get()));
-		}
+		query.selectField(orderBy);
+		query.build();
+
+		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+			query2.addCustomCondition(@"$orderBy < (%s)".printf(query.get()));
 		else
-		{
-			query.selectField("date");
-			query.build();
+			query2.addCustomCondition(@"$orderBy > (%s)".printf(query.get()));
 
-			if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
-				query2.addCustomCondition("date < (%s)".printf(query.get()));
-			else
-				query2.addCustomCondition("date > (%s)".printf(query.get()));
-		}
 
 		if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
 		{
@@ -871,15 +861,18 @@ public class FeedReader.dbBase : GLib.Object {
 			}
 		}
 
-		string order_field = "rowid";
-		if((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.DATE)
-			order_field = "date";
-
 		bool desc = true;
+		string asc = "DESC";
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+		{
 			desc = false;
+			asc = "ASC";
+		}
 
-		query2.orderBy(order_field, desc);
+		if(searchRows != 0)
+			query.addCustomCondition(@"articleID in (SELECT articleID FROM articles ORDER BY $orderBy $asc LIMIT $searchRows)");
+
+		query2.orderBy(orderBy, desc);
 		query2.build();
 		query2.print();
 
@@ -1473,6 +1466,8 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public Gee.List<article> read_articles(string ID, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
+		string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
+
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("ROWID");
 		query.selectField("feedID");
@@ -1533,28 +1528,18 @@ public class FeedReader.dbBase : GLib.Object {
 			}
 		}
 
-		if(searchRows != 0)
-		{
-			query.addCustomCondition("articleID in (SELECT articleID FROM articles ORDER BY rowid DESC LIMIT %i)".printf(searchRows));
-		}
-
-		string order_field = "";
-		switch(Settings.general().get_enum("articlelist-sort-by"))
-		{
-			case ArticleListSort.RECEIVED:
-				order_field = "rowid";
-				break;
-
-			case ArticleListSort.DATE:
-				order_field = "date";
-				break;
-		}
-
 		bool desc = true;
+		string asc = "DESC";
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+		{
 			desc = false;
+			asc = "ASC";
+		}
 
-		query.orderBy(order_field, desc);
+		if(searchRows != 0)
+			query.addCustomCondition(@"articleID in (SELECT articleID FROM articles ORDER BY $orderBy $asc LIMIT $searchRows)");
+
+		query.orderBy(orderBy, desc);
 		query.limit(limit);
 		query.offset(offset);
 		query.build();

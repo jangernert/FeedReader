@@ -22,6 +22,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 	private Gtk.HeaderBar m_header_left;
 	private ArticleViewHeader m_header_right;
 	public signal void refresh();
+	public signal void cancel();
 	public signal void change_state(ArticleListState state, Gtk.StackTransitionType transition);
 	public signal void search_term(string searchTerm);
 	public signal void toggledMarked();
@@ -56,13 +57,14 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		});
 
 		bool updating = Settings.state().get_boolean("currently-updating");
-		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update feeds"), true);
+		m_refresh_button = new UpdateButton.from_icon_name("feed-refresh-symbolic", _("Update feeds"), true, true);
 		m_refresh_button.updating(updating);
 		m_refresh_button.clicked.connect(() => {
 			if(!m_refresh_button.getStatus())
 				refresh();
 			else
 			{
+				cancel();
 				m_refresh_button.setSensitive(false);
 			}
 		});

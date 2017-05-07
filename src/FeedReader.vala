@@ -123,6 +123,18 @@ namespace FeedReader {
 			yield;
 		}
 
+		public void cancelSync()
+		{
+			try
+			{
+				DBusConnection.get_default().cancelSync();
+			}
+			catch(IOError e)
+			{
+				Logger.error("FeedReader.sync: " + e.message);
+			}
+		}
+
 		private FeedReaderApp()
 		{
 			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);

@@ -16,6 +16,7 @@
 public class FeedReader.UpdateButton : Gtk.Button {
 
 	private Gtk.Image m_icon;
+	private Gtk.Image m_cancel;
 	private Gtk.Spinner m_spinner;
 	private bool m_status;
 	private Gtk.Stack m_stack;
@@ -23,7 +24,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	private bool m_hasPopup;
 	private Gtk.Popover m_Popover;
 
-	public UpdateButton.from_icon_name(string iconname, string tooltip, bool progressPopup = false)
+	public UpdateButton.from_icon_name(string iconname, string tooltip, bool progressPopup = false, bool cancelable = false)
 	{
 		m_hasPopup = progressPopup;
 		m_icon = new Gtk.Image.from_icon_name(iconname, Gtk.IconSize.SMALL_TOOLBAR);
@@ -35,7 +36,13 @@ public class FeedReader.UpdateButton : Gtk.Button {
 			m_ProgressText.margin = 20;
 			m_Popover = new Gtk.Popover(this);
 			m_Popover.add(m_ProgressText);
+			this.button_press_event.connect(onClick);
+		}
+
+		if(cancelable)
+		{
 			this.enter_notify_event.connect(onEnter);
+			this.leave_notify_event.connect(onLeave);
 		}
 	}
 
@@ -49,11 +56,13 @@ public class FeedReader.UpdateButton : Gtk.Button {
 	{
 		m_spinner = new Gtk.Spinner();
 		m_spinner.set_size_request(16,16);
+		m_cancel = new Gtk.Image.from_icon_name("process-stop-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(100);
 		m_stack.set_transition_type(Gtk.StackTransitionType.CROSSFADE);
 		m_stack.add_named(m_spinner, "spinner");
+		m_stack.add_named(m_cancel, "cancel");
 		m_stack.add_named(m_icon, "icon");
 
 		this.add(m_stack);
@@ -103,8 +112,34 @@ public class FeedReader.UpdateButton : Gtk.Button {
 
 	private bool onEnter(Gdk.EventCrossing event)
 	{
+		if(m_status)
+		{
+			m_stack.set_visible_child_name("cancel");
+			m_spinner.stop();
+		}
+		return false;
+	}
+
+	private bool onLeave(Gdk.EventCrossing event)
+	{
+		if(m_status)
+		{
+			m_stack.set_visible_child_name("spinner");
+			m_spinner.start();
+		}
+		return false;
+	}
+
+	private bool onClick(Gdk.EventButton event)
+	{
+		if(event.button != 3)
+			return false;
+
 		if(m_status && !m_Popover.get_visible())
+		{
 			m_Popover.show_all();
+			return true;
+		}
 
 		return false;
 	}

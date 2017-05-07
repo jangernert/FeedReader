@@ -167,6 +167,10 @@ public class FeedReader.ColumnView : Gtk.Paned {
 			});
 		});
 
+		m_headerbar.cancel.connect(() => {
+			FeedReaderApp.get_default().cancelSync();
+		});
+
 		m_headerbar.change_state.connect((state, transition) => {
 			setArticleListState(state);
 			clearArticleView();

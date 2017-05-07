@@ -84,7 +84,7 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 		}
 	}
 
-	public static uint getRelevantArticles(int newArticlesCount)
+	public static uint getRelevantArticles()
 	{
 		string[] selectedRow = {};
 		ArticleListState state = ArticleListState.ALL;

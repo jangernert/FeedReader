@@ -21,7 +21,7 @@ namespace FeedReader {
 
 	public class AboutInfo : GLib.Object {
 		public const string programmName  = "FeedReader";
-		public const string copyright     = "Copyright © 2016 Jan Lukas Gernert";
+		public const string copyright     = "Copyright © 2014-2017 Jan Lukas Gernert";
 		public const string version       = "@VERSION@";
 		public const string comments      = N_("Desktop Client for various RSS Services");
 		public const string[] authors     = { "Jan Lukas Gernert", "Bilal Elmoussaoui", "Anwesh Reddy" , "Jason Scurtu", null };

@@ -6,8 +6,9 @@ include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)
 include_directories(${CMAKE_BINARY_DIR}/libIvy)
 include_directories(${CMAKE_SOURCE_DIR})
 
-add_definitions("-w")
-ADD_DEFINITIONS(-rdynamic)
+add_definitions(-g)
+add_definitions(-w)
+add_definitions(-rdynamic)
 
 include(GNUInstallDirs)
 set (DATADIR "${CMAKE_INSTALL_PREFIX}/share")

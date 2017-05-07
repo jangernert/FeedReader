@@ -90,7 +90,7 @@ public class FeedReader.dbDaemon : dbBase {
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("articleID");
 		query.selectField("feedID");
-		query.addCustomCondition("date <= datetime('now', '-%i days')".printf(weeks*7));
+		query.addCustomCondition("datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-%i days')".printf(weeks*7));
 		query.addEqualsCondition("marked", ArticleStatus.UNMARKED.to_string());
 		if(FeedServer.get_default().useMaxArticles())
 		{

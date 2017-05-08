@@ -476,8 +476,8 @@ public class FeedReader.Grabber : GLib.Object {
 		grabberUtils.stripNode(doc, "//script");
 
 		// strip <noscript>
-		Logger.debug("Grabber: strip all scripts");
-		grabberUtils.stripNode(doc, "//noscript");
+		//Logger.debug("Grabber: strip all scripts");
+		//grabberUtils.stripNode(doc, "//noscript");
 
 		// strip all comments
 		Logger.debug("Grabber: strip all comments");

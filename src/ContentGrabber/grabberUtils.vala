@@ -529,10 +529,12 @@ public class FeedReader.grabberUtils : GLib.Object {
 			imgPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
 
 		var path = GLib.File.new_for_path(imgPath);
-		try{
+		try
+		{
 			path.make_directory_with_parents();
 		}
-		catch(GLib.Error e){
+		catch(GLib.Error e)
+		{
 			//Logger.debug(e.message);
 		}
 
@@ -546,7 +548,10 @@ public class FeedReader.grabberUtils : GLib.Object {
 			var message_dlImg = new Soup.Message("GET", fixedURL);
 
 			if(message_dlImg == null)
+			{
+				Logger.warning(@"grabberUtils.downloadImage: could not create soup message $fixedURL");
 				return url;
+			}
 
 			if(Settings.tweaks().get_boolean("do-not-track"))
 				message_dlImg.request_headers.append("DNT", "1");
@@ -554,6 +559,17 @@ public class FeedReader.grabberUtils : GLib.Object {
 			var status = session.send_message(message_dlImg);
 			if(status == 200)
 			{
+				var params = new GLib.HashTable<string, string>(null, null);
+				string? contentType = message_dlImg.response_headers.get_content_type(out params);
+				if(contentType != null)
+				{
+					Logger.debug(@"Grabber: type $contentType");
+					if(contentType.has_prefix("image/svg"))
+					{
+						localFilename += ".svg";
+					}
+				}
+
 				try{
 					FileUtils.set_contents(	localFilename,
 											(string)message_dlImg.response_body.flatten().data,

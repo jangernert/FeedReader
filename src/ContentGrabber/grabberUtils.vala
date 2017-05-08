@@ -213,11 +213,40 @@ public class FeedReader.grabberUtils : GLib.Object {
 			for(int i = 0; i < res->nodesetval->length(); ++i)
 			{
 				Xml.Node* node = res->nodesetval->item(i);
-				if(node != null)
-				{
-					node->unlink();
-					node->free_list();
-				}
+				if(node == null)
+					continue;
+
+				node->unlink();
+				node->free_list();
+			}
+		}
+
+		delete res;
+	}
+
+	public static void onlyRemoveNode(Html.Doc* doc, string xpath)
+	{
+		var cntx = new Xml.XPath.Context(doc);
+		var res = cntx.eval_expression(xpath);
+
+		if(res != null
+		&& res->type == Xml.XPath.ObjectType.NODESET
+		&& res->nodesetval != null)
+		{
+			for(int i = 0; i < res->nodesetval->length(); i++)
+			{
+				Xml.Node* node = res->nodesetval->item(i);
+				if(node == null)
+					continue;
+
+				Xml.Node* parent = node->parent;
+				Xml.Node* children = node->children;
+
+				children->unlink();
+				parent->add_child(children);
+
+				node->unlink();
+				node->free_list();
 			}
 		}
 

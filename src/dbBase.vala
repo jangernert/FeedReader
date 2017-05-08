@@ -559,6 +559,77 @@ public class FeedReader.dbBase : GLib.Object {
 		return true;
 	}
 
+	public Gee.List<article> read_article_between(string id1, GLib.DateTime date1, string id2, GLib.DateTime date2, ArticleListState state)
+	{
+		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
+		string orderBy = (sorting == ArticleListSort.RECEIVED) ? "rowid" : "date";
+		bool desc = true;
+		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+			desc = false;
+
+		var query = new QueryBuilder(QueryType.SELECT, "articles");
+		query.selectField("ROWID");
+		query.selectField("feedID");
+		query.selectField("articleID");
+		query.selectField("title");
+		query.selectField("author");
+		query.selectField("url");
+		query.selectField("preview");
+		query.selectField("unread");
+		query.selectField("marked");
+		query.selectField("tags");
+		query.selectField("date");
+		query.selectField("guidHash");
+		query.selectField("media");
+		if(sorting == ArticleListSort.RECEIVED)
+			query.addCustomCondition(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = $id1) AND (SELECT rowid FROM articles WHERE articleID = $id2)");
+		else
+		{
+			bool bigger = (date1.to_unix() > date2.to_unix());
+			var biggerDate = (bigger) ? date1.to_unix() : date2.to_unix();
+			var smallerDate = (bigger) ? date2.to_unix() : date1.to_unix();
+			query.addCustomCondition(@"date BETWEEN $smallerDate AND $biggerDate");
+		}
+
+		query.orderBy(orderBy, desc);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
+		if(ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error(sqlite_db.errmsg());
+		}
+
+		var tmp = new Gee.LinkedList<article>();
+		while (stmt.step () == Sqlite.ROW)
+		{
+			if(stmt.column_text(2) == id1
+			|| stmt.column_text(2) == id2)
+				continue;
+
+			tmp.add(new article(
+								stmt.column_text(2),								// articleID
+								stmt.column_text(3),								// title
+								stmt.column_text(5),								// url
+								stmt.column_text(1),								// feedID
+								(ArticleStatus)stmt.column_int(7),					// unread
+								(ArticleStatus)stmt.column_int(8),					// marked
+								"",													// html
+								stmt.column_text(6),								// preview
+								stmt.column_text(4),								// author
+								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
+								stmt.column_int(0),									// sortID
+								stmt.column_text(9),								// tags
+								stmt.column_text(12),								// media
+								stmt.column_text(11)								// guid
+							));
+		}
+		stmt.reset();
+		return tmp;
+	}
+
 	public Gee.HashMap<string, article> read_article_stats(Gee.List<string> ids)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");

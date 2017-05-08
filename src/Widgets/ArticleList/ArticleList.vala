@@ -373,6 +373,22 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		}
 
 		m_currentList.removeObsoleteRows();
+		int length = (int)m_currentList.get_children().length();
+
+		for(int i = 1; i < length; i++)
+		{
+			var first = m_currentList.get_row_at_index(i-1) as articleRow;
+			var second = m_currentList.get_row_at_index(i) as articleRow;
+
+			var insertArticles = dbUI.get_default().read_article_between(first.getID(), first.getDate(), second.getID(), second.getDate(), m_state);
+
+			foreach(article a in insertArticles)
+			{
+				m_currentList.insertArticle(a, i);
+				i++;
+				length++;
+			}
+		}
 
 
 		string? firstRowID = m_currentList.getFirstRowID();

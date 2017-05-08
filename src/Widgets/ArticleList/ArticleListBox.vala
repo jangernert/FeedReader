@@ -672,4 +672,25 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			}
 		}
 	}
+
+	public void insertArticle(article a, int pos)
+	{
+		var newRow = new articleRow(a);
+		newRow.rowStateChanged.connect(rowStateChanged);
+		newRow.drag_begin.connect((widget, context) => {
+			highlightRow((widget as articleRow).getID());
+			drag_begin(context);
+		});
+		newRow.drag_end.connect((widget, context) => {
+			unHighlightRow();
+			drag_end(context);
+		});
+		newRow.drag_failed.connect((context, result) => {
+			drag_failed(context, result);
+			return false;
+		});
+
+		this.insert(newRow, pos);
+		newRow.reveal(true, 0);
+	}
 }

@@ -380,7 +380,14 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			var first = m_currentList.get_row_at_index(i-1) as articleRow;
 			var second = m_currentList.get_row_at_index(i) as articleRow;
 
-			var insertArticles = dbUI.get_default().read_article_between(first.getID(), first.getDate(), second.getID(), second.getDate(), m_state);
+			var insertArticles = dbUI.get_default().read_article_between(	m_selectedFeedListID,
+																			m_selectedFeedListType,
+																			m_state,
+																			m_searchTerm,
+																			first.getID(),
+																			first.getDate(),
+																			second.getID(),
+																			second.getDate());
 
 			foreach(article a in insertArticles)
 			{

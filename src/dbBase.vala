@@ -559,28 +559,20 @@ public class FeedReader.dbBase : GLib.Object {
 		return true;
 	}
 
-	public Gee.List<article> read_article_between(string id1, GLib.DateTime date1, string id2, GLib.DateTime date2, ArticleListState state)
+	public Gee.List<article> read_article_between(
+		string id,
+		FeedListType selectedType,
+		ArticleListState state,
+		string searchTerm,
+		string id1,
+		GLib.DateTime date1,
+		string id2,
+		GLib.DateTime date2)
 	{
+		var query = articleQuery(id, selectedType, state, searchTerm);
 		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
 		string orderBy = (sorting == ArticleListSort.RECEIVED) ? "rowid" : "date";
-		bool desc = true;
-		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
-			desc = false;
 
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("ROWID");
-		query.selectField("feedID");
-		query.selectField("articleID");
-		query.selectField("title");
-		query.selectField("author");
-		query.selectField("url");
-		query.selectField("preview");
-		query.selectField("unread");
-		query.selectField("marked");
-		query.selectField("tags");
-		query.selectField("date");
-		query.selectField("guidHash");
-		query.selectField("media");
 		if(sorting == ArticleListSort.RECEIVED)
 			query.addCustomCondition(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = $id1) AND (SELECT rowid FROM articles WHERE articleID = $id2)");
 		else
@@ -590,8 +582,6 @@ public class FeedReader.dbBase : GLib.Object {
 			var smallerDate = (bigger) ? date2.to_unix() : date1.to_unix();
 			query.addCustomCondition(@"date BETWEEN $smallerDate AND $biggerDate");
 		}
-
-		query.orderBy(orderBy, desc);
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1535,7 +1525,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	public Gee.List<article> read_articles(string ID, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	public QueryBuilder articleQuery(string id, FeedListType selectedType, ArticleListState state, string searchTerm)
 	{
 		string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
 
@@ -1554,21 +1544,21 @@ public class FeedReader.dbBase : GLib.Object {
 		query.selectField("guidHash");
 		query.selectField("media");
 
-		if(selectedType == FeedListType.FEED && ID != FeedID.ALL.to_string())
+		if(selectedType == FeedListType.FEED && id != FeedID.ALL.to_string())
 		{
-			query.addEqualsCondition("feedID", ID, true, true);
+			query.addEqualsCondition("feedID", id, true, true);
 		}
-		else if(selectedType == FeedListType.CATEGORY && ID != CategoryID.MASTER.to_string() && ID != CategoryID.TAGS.to_string())
+		else if(selectedType == FeedListType.CATEGORY && id != CategoryID.MASTER.to_string() && id != CategoryID.TAGS.to_string())
 		{
-			query.addRangeConditionString("feedID", getFeedIDofCategorie(ID));
+			query.addRangeConditionString("feedID", getFeedIDofCategorie(id));
 		}
-		else if(ID == CategoryID.TAGS.to_string())
+		else if(id == CategoryID.TAGS.to_string())
 		{
 			query.addCustomCondition(getAllTagsCondition());
 		}
 		else if(selectedType == FeedListType.TAG)
 		{
-			query.addCustomCondition("instr(tags, \"%s\") > 0".printf(ID));
+			query.addCustomCondition("instr(tags, \"%s\") > 0".printf(id));
 		}
 
 		if(state == ArticleListState.UNREAD)
@@ -1600,17 +1590,28 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		bool desc = true;
-		string asc = "DESC";
 		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
-		{
 			desc = false;
-			asc = "ASC";
-		}
-
-		if(searchRows != 0)
-			query.addCustomCondition(@"articleID in (SELECT articleID FROM articles ORDER BY $orderBy $asc LIMIT $searchRows)");
 
 		query.orderBy(orderBy, desc);
+
+		return query;
+	}
+
+	public Gee.List<article> read_articles(string id, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	{
+		var query = articleQuery(id, selectedType, state, searchTerm);
+
+		string desc = "DESC";
+		if(Settings.general().get_boolean("articlelist-oldest-first") && state == ArticleListState.UNREAD)
+			desc = "ASC";
+
+		if(searchRows != 0)
+		{
+			string orderBy = ((ArticleListSort)Settings.general().get_enum("articlelist-sort-by") == ArticleListSort.RECEIVED) ? "rowid" : "date";
+			query.addCustomCondition(@"articleID in (SELECT articleID FROM articles ORDER BY $orderBy $desc LIMIT $searchRows)");
+		}
+
 		query.limit(limit);
 		query.offset(offset);
 		query.build();

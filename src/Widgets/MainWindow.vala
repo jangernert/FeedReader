@@ -546,7 +546,8 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			if(mod == null || mod == 0)
 			{
 				Logger.debug("no modifier " + ((int)event.state).to_string());
-				if(event.state == 16)
+				if(event.state == 16
+				|| event.state == 0)
 					return true;
 			}
 			else if(mod in event.state)

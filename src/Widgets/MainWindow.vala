@@ -539,13 +539,11 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Gdk.ModifierType? mod;
 		string setting = Settings.keybindings().get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
-		Logger.debug(@"$gsettingKey key $key");
 
 		if(key != null && Gdk.keyval_to_lower(event.keyval) == key)
 		{
 			if(mod == null || mod == 0)
 			{
-				Logger.debug("no modifier " + ((int)event.state).to_string());
 				if(event.state == 16
 				|| event.state == 0)
 					return true;

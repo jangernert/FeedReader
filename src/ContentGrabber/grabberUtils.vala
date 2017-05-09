@@ -501,7 +501,11 @@ public class FeedReader.grabberUtils : GLib.Object {
 					|| (node->get_prop("height") == null))
 				)
 				{
-					string original = downloadImage(session, node->get_prop("src"), articleID, feedID, i+1);
+					string? original = downloadImage(session, node->get_prop("src"), articleID, feedID, i+1);
+
+					if(original == null)
+						continue;
+
 					string? parentURL = checkParent(session, node);
 					if(parentURL != null)
 					{
@@ -541,9 +545,12 @@ public class FeedReader.grabberUtils : GLib.Object {
 	}
 
 
-	public static string downloadImage(Soup.Session session, string url, string articleID, string feedID, int nr, bool parent = false)
+	public static string? downloadImage(Soup.Session session, string? url, string articleID, string feedID, int nr, bool parent = false)
 	{
-		Logger.debug("GrabberUtils: download Image %s".printf(url));
+		if(url == null)
+			return null;
+
+		Logger.debug(@"GrabberUtils: download Image $url");
 		string fixedURL = url;
 		string imgPath = "";
 

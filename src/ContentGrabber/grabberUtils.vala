@@ -550,7 +550,6 @@ public class FeedReader.grabberUtils : GLib.Object {
 		if(url == null)
 			return null;
 
-		Logger.debug(@"GrabberUtils: download Image $url");
 		string fixedURL = url;
 		string imgPath = "";
 
@@ -711,7 +710,6 @@ public class FeedReader.grabberUtils : GLib.Object {
 				if(url.has_prefix("//"))
 					url = "http:" + url;
 
-				Logger.debug(@"Grabber: url $url");
 				var message = new Soup.Message("HEAD", url);
 				if(message == null)
 					return null;

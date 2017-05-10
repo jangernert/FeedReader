@@ -625,10 +625,21 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 	{
 		if((event.state & Gdk.ModifierType.CONTROL_MASK) == Gdk.ModifierType.CONTROL_MASK)
 		{
-			if(event.delta_y > 0)
-				m_currentView.zoom_level -= 0.25;
-			else if(event.delta_y < 0)
-				m_currentView.zoom_level += 0.25;
+			switch(event.direction)
+			{
+				case Gdk.ScrollDirection.UP:
+					m_currentView.zoom_level -= 0.25;
+					break;
+
+				case Gdk.ScrollDirection.DOWN:
+					m_currentView.zoom_level += 0.25;
+					break;
+
+				case Gdk.ScrollDirection.SMOOTH:
+					m_currentView.zoom_level -= 10 * (event.delta_y / event.y_root);
+					break;
+			}
+
 			return true;
 		}
 

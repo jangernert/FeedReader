@@ -281,6 +281,10 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				}
 			});
 		}
+		else
+		{
+			m_currentScroll.startScrolledDownCooldown();
+		}
 	}
 
 	private async void loadNewer(int newCount, int offset)

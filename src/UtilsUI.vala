@@ -22,7 +22,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		string[] selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
 		ArticleListState state = interfacestate.getArticleListState();
 		string searchTerm = interfacestate.getSearchTerm();
-		string topRow = interfacestate.getArticleListTopRow();
+		string? topRow = interfacestate.getArticleListTopRow();
 
 		FeedListType IDtype = FeedListType.FEED;
 
@@ -44,7 +44,10 @@ public class FeedReader.UtilsUI : GLib.Object {
 				break;
 		}
 
-		int count = dbUI.get_default().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
+		int count = 0;
+
+		if(topRow != null)
+			count = dbUI.get_default().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
 
 		Logger.debug(@"getRelevantArticles: $count");
 		return count;

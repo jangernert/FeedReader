@@ -584,7 +584,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		return m_currentList.getSelectedArticle();
 	}
 
-	public string getFirstArticle()
+	public string? getFirstArticle()
 	{
 		return m_currentList.getFirstRowID();
 	}

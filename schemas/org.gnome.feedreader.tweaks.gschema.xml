@@ -66,6 +66,14 @@
 				Enable smooth scrolling in ArticleView
 			</description>
 		</key>
+		
+		<key name="allow-javascript" type="b">
+			<default>true</default>
+			<summary>Allow javascript to be executed in the ArticleView</summary>
+			<description>
+				Allow javascript to be executed in the ArticleView. Disabling javascript will break some functionality!!!!
+			</description>
+		</key>
 
 	</schema>
 </schemalist>

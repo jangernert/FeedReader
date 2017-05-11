@@ -165,6 +165,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		settings.set_enable_page_cache(false);
 		settings.set_enable_plugins(false);
 		settings.set_enable_smooth_scrolling(smoothScroll);
+		settings.set_enable_javascript(Settings.tweaks().get_boolean("allow-javascript"));
 		settings.set_javascript_can_access_clipboard(false);
 		settings.set_javascript_can_open_windows_automatically(false);
 		settings.set_media_playback_requires_user_gesture(true);

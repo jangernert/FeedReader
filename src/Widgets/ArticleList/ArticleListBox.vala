@@ -675,6 +675,12 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public void insertArticle(article a, int pos)
 	{
+		if(m_articles.contains(a.getArticleID()))
+		{
+			Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
+			return;
+		}
+
 		var newRow = new articleRow(a);
 		newRow.rowStateChanged.connect(rowStateChanged);
 		newRow.drag_begin.connect((widget, context) => {

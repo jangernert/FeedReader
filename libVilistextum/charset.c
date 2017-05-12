@@ -9,7 +9,8 @@
  *  14.10.2001: creation of this file
  *
  */
-
+ 
+#define _POSIX_C_SOURCE 2 /* for popen, pclose */
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
@@ -25,14 +26,54 @@ char *default_charset = "iso-8859-1";
 char iconv_charset[DEF_STR_LEN];
 int usr=0;
 iconv_t conv;
+char internal_locale[256];
 
 /* ------------------------------------------------ */
 
+static int suffix(const char * str, const char * suffix)
+{
+	if ( strlen(str) < strlen(suffix) ) return 0;
+	if ( ! strcmp(suffix, str + ( strlen(str) - strlen(suffix) ) ) ) return 1;
+	return 0;
+}
+
+static int utf_8_locale(const char * locale)
+{
+	if (!locale) return 0;
+	return suffix(locale,".utf8") || suffix(locale, ".UTF-8");
+}
+
 int init_multibyte()
 {
-	char *ret;
-	ret = setlocale(LC_CTYPE, "");
-	if (ret==NULL)
+	char *locale_found;
+	
+	FILE *fp = popen("locale -a", "r");
+	if (fp)
+	{
+		while (!feof(fp) && !locale_found)
+		{
+			char buf[256];
+			if (fgets(buf, sizeof(buf), fp) != NULL)
+			{
+				/* remove newline */
+				buf[strlen(buf)-1] = '\0';
+				/* check for a working UTF-8 locale */
+				if (utf_8_locale(buf) &&
+				(locale_found = setlocale(LC_CTYPE, buf)))
+				{
+					strcpy(internal_locale, buf);
+				}
+			}
+		}
+	}
+	
+	if (locale_found == NULL)
+	{
+		locale_found = setlocale(LC_CTYPE, "");
+	}
+	
+	
+	if (locale_found == NULL)
 	{
 		fprintf(stderr, "setlocale failed with: \"\"\n\n");
 		error = 1;

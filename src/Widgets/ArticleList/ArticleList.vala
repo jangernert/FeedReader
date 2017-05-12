@@ -395,9 +395,11 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 			foreach(article a in insertArticles)
 			{
-				m_currentList.insertArticle(a, i);
-				i++;
-				length++;
+				if(m_currentList.insertArticle(a, i))
+				{
+					i++;
+					length++;
+				}
 			}
 		}
 

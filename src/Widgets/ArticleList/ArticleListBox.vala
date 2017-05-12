@@ -673,12 +673,12 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 	}
 
-	public void insertArticle(article a, int pos)
+	public bool insertArticle(article a, int pos)
 	{
 		if(m_articles.contains(a.getArticleID()))
 		{
 			Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(a.getArticleID()));
-			return;
+			return false;
 		}
 
 		m_articles.add(a.getArticleID());
@@ -699,5 +699,6 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 		this.insert(newRow, pos);
 		newRow.reveal(true, 0);
+		return true;
 	}
 }

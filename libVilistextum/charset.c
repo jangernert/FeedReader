@@ -46,30 +46,29 @@ static int utf_8_locale(const char * locale)
 int init_multibyte()
 {
 	char *locale_found;
-	
-	FILE *fp = popen("locale -a", "r");
-	if (fp)
-	{
-		while (!feof(fp) && !locale_found)
-		{
-			char buf[256];
-			if (fgets(buf, sizeof(buf), fp) != NULL)
-			{
-				/* remove newline */
-				buf[strlen(buf)-1] = '\0';
-				/* check for a working UTF-8 locale */
-				if (utf_8_locale(buf) &&
-				(locale_found = setlocale(LC_CTYPE, buf)))
-				{
-					strcpy(internal_locale, buf);
-				}
-			}
-		}
-	}
+	locale_found = setlocale(LC_CTYPE, "");
 	
 	if (locale_found == NULL)
 	{
-		locale_found = setlocale(LC_CTYPE, "");
+		FILE *fp = popen("locale -a", "r");
+		if (fp)
+		{
+			while (!feof(fp) && !locale_found)
+			{
+				char buf[256];
+				if (fgets(buf, sizeof(buf), fp) != NULL)
+				{
+					/* remove newline */
+					buf[strlen(buf)-1] = '\0';
+					/* check for a working UTF-8 locale */
+					if (utf_8_locale(buf) &&
+					(locale_found = setlocale(LC_CTYPE, buf)))
+					{
+						strcpy(internal_locale, buf);
+					}
+				}
+			}
+		}
 	}
 	
 	

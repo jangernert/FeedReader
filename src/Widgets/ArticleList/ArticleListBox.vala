@@ -681,6 +681,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			return;
 		}
 
+		m_articles.add(a.getArticleID());
 		var newRow = new articleRow(a);
 		newRow.rowStateChanged.connect(rowStateChanged);
 		newRow.drag_begin.connect((widget, context) => {

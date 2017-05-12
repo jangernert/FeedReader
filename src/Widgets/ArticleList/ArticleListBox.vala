@@ -677,7 +677,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		if(m_articles.contains(a.getArticleID()))
 		{
-			Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
+			Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(a.getArticleID()));
 			return;
 		}
 

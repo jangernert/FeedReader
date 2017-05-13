@@ -1,3 +1,4 @@
+using Gee;
 //	This file is part of FeedReader.
 //
 //	FeedReader is free software: you can redistribute it and/or modify
@@ -61,8 +62,12 @@ public class FeedReader.ArticleThemeSetting : FeedReader.Setting {
       int active = 0;
       bool was_found = false;
       string current_theme = settings.get_string(key);
-      foreach (HashMap theme in themes){
+
+
+      HashMap<string, string> ? theme = null;
+      for(var i = 0; i < themes.length; i ++){
         Gtk.TreeIter iter;
+        theme = themes.index(i);
         string theme_name = theme.get("name");
         string path = theme.get("path");
         if (current_theme == path){
@@ -82,11 +87,11 @@ public class FeedReader.ArticleThemeSetting : FeedReader.Setting {
       dropbox.add_attribute(renderer, "text", 0);
       dropbox.set_active(active);
       dropbox.changed.connect(() => {
-        Value theme;
+        Value selected_theme;
         Gtk.TreeIter iter;
         dropbox.get_active_iter(out iter);
-        liststore.get_value(iter, 1, out theme);
-        settings.set_string(key, (string)theme);
+        liststore.get_value(iter, 1, out selected_theme);
+        settings.set_string(key, (string)selected_theme);
         changed();
       });
 

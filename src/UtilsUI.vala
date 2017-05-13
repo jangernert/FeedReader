@@ -64,21 +64,43 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		author_date += date;
 
-		try
-		{
-			string template;
-      GLib.FileUtils.get_contents(theme + "/article.html", out template);
-			article.assign(template);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Utils.buildArticle: %s".printf(e.message));
-		}
+    string template = "";
+    string css = "";
+    try
+    {
+        if (ArticleTheme.isExists(theme) == false) {
+          // only when none of the themes are found!
+            uint8[] templateContents;
+            var htmlFile = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/default/article.html");
+            htmlFile.load_contents(null, out templateContents, null);
+            template = (string)templateContents;
+            uint8[] cssContents;
+            var cssFile = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/default/style.css");
+            cssFile.load_contents(null, out cssContents, null);
+            css = (string)cssContents;
+        } else {
+
+          GLib.FileUtils.get_contents(theme + "/article.html", out template);
+          GLib.FileUtils.get_contents(theme + "/style.css", out css);
+      }
+    }
+    catch(GLib.Error e)
+    {
+      Logger.error("Utils.buildArticle: load article theme: " + e.message);
+    }
+
+    article.assign(template);
+
 
 		string html_id = "$HTML";
 		int html_pos = article.str.index_of(html_id);
 		article.erase(html_pos, html_id.length);
 		article.insert(html_pos, html);
+
+    string css_id = "$CSS";
+    int css_pos = article.str.index_of(css_id);
+    article.erase(css_pos, css_id.length);
+    article.insert(css_pos, css);
 
 		string author_id = "$AUTHOR";
 		int author_pos = article.str.index_of(author_id);
@@ -144,19 +166,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		}
 
 
-		try
-		{
-			string css;
-      GLib.FileUtils.get_contents(theme + "/style.css", out css);
-			string css_id = "$CSS";
-			int css_pos = article.str.index_of(css_id);
-			article.erase(css_pos, css_id.length);
-			article.insert(css_pos, css);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Utils.buildArticle: load CSS: " + e.message);
-		}
+
 
 		return article.str;
 	}

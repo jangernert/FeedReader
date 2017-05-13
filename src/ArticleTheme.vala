@@ -1,24 +1,21 @@
 using Gee;
 
 public class  FeedReader.ArticleTheme {
-    static Array<HashMap> ? themes = null;
+    public static Array<HashMap> ? themes = null;
 
-    static Array<HashMap> getThemes(){
-        if(!ArticleTheme.themes){
+    public static Array<HashMap> getThemes(){
+        if(ArticleTheme.themes == null){
             // Local themes
-            string theme_dir = GLib.Environment.get_home_dir() + "/.feedreader/themes/";
-            ArticleTheme.themes += grabThemes(theme_dir);
+            string local_dir = GLib.Environment.get_user_data_dir() + "/feedreader/themes/";
+            ArticleTheme.grabThemes(local_dir);
             // Global themes
             string global_dir = Constants.INSTALL_PREFIX + "/share/ArticleView/";
-            ArticleTheme.themes += grabThemes(theme_dir);
+            ArticleTheme.grabThemes(global_dir);
         }
         return ArticleTheme.themes;
     }
 
-    private HashMap<string, string> getThemeInfo (string theme_path) {
-      """
-        Parse a theme directory, and check if it's a valid theme
-      """
+    public static HashMap<string, string> getThemeInfo (string theme_path) {
       var themeInfo = new HashMap<string, string> ();
       bool corrupted_theme = true;
       string theme_name = "";
@@ -65,26 +62,33 @@ public class  FeedReader.ArticleTheme {
       return themeInfo;
     }
 
-    private Array<HashMap> grabThemes(string location) {
-      """
-        Return a list of themes on a specific location (global/local)
-      """
-      Array<HashMap> themes = new Array<HashMap> ();
+    public static void grabThemes(string location) {
       try{
           Dir dir = Dir.open(location, 0);
           string ? name = null;
           while ((name = dir.read_name()) != null){
             string path = Path.build_filename(location, name);
             if(FileUtils.test(path, FileTest.IS_DIR)){
-              var themeInfo = getThemeInfo(path);
-              if (!"corrupted" in themeInfo.keys){
-                themes.append_val(themeInfo);
+              stdout.printf("New theme found " + name);
+              var themeInfo = ArticleTheme.getThemeInfo(path);
+              if (("corrupted" in themeInfo.keys) == false){
+                ArticleTheme.themes.append_val(themeInfo);
               }
             }
           }
       } catch (GLib.FileError err){
 
       }
-      return themes;
+    }
+
+    public static bool isExists(string theme_location){
+      // Check wether a theme exists or not
+      bool exists = true;
+      try {
+        Dir.open(theme_location, 0);
+      } catch(GLib.FileError err) {
+        exists = false;
+      }
+      return exists;
     }
 }

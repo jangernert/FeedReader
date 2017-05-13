@@ -1,4 +1,3 @@
-using Gee;
 //	This file is part of FeedReader.
 //
 //	FeedReader is free software: you can redistribute it and/or modify
@@ -13,6 +12,7 @@ using Gee;
 //
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
+using Gee;
 
 public class FeedReader.Setting : Gtk.Box {
 
@@ -59,7 +59,7 @@ public class FeedReader.ArticleThemeSetting : FeedReader.Setting {
   public ArticleThemeSetting (string name, GLib.Settings settings, string key, ArrayList<HashMap> ? themes = null, string ? tooltip = null){
       base (name, tooltip);
       if (themes != null) {
-        var liststore = new Gtk.ListStore(1, typeof(string));
+        var liststore = new Gtk.ListStore(2, typeof(string), typeof(string));
         int active = 0;
         bool was_found = false;
         string current_theme = settings.get_string(key);

@@ -1,21 +1,37 @@
+//	This file is part of FeedReader.
+//
+//	FeedReader is free software: you can redistribute it and/or modify
+//	it under the terms of the GNU General Public License as published by
+//	the Free Software Foundation, either version 3 of the License, or
+//	(at your option) any later version.
+//
+//	FeedReader is distributed in the hope that it will be useful,
+//	but WITHOUT ANY WARRANTY; without even the implied warranty of
+//	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//	GNU General Public License for more details.
+//
+//	You should have received a copy of the GNU General Public License
+//	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 using Gee;
 
 public class  FeedReader.ArticleTheme {
-    public static ArrayList<HashMap<string, string>> ? themes = null;
+    private static ArrayList<HashMap<string, string>> ? themes = null;
+
 
     public static ArrayList<HashMap> getThemes(){
-        if(ArticleTheme.themes == null){
+        if(themes == null){
             // Local themes
+            themes = new ArrayList<HashMap<string, string>> ();
             string local_dir = GLib.Environment.get_user_data_dir() + "/feedreader/themes/";
-            ArticleTheme.grabThemes(local_dir);
+            grabThemes(local_dir);
             // Global themes
             string global_dir = Constants.INSTALL_PREFIX + "/share/FeedReader/ArticleView/";
-            ArticleTheme.grabThemes(global_dir);
+            grabThemes(global_dir);
         }
-        return ArticleTheme.themes;
+        return themes;
     }
 
-    public static HashMap<string, string> getThemeInfo (string theme_path) {
+    private static HashMap<string, string> getThemeInfo (string theme_path) {
       var themeInfo = new HashMap<string, string> ();
       bool corrupted_theme = true;
       string theme_name = "";
@@ -69,9 +85,9 @@ public class  FeedReader.ArticleTheme {
           while ((name = dir.read_name()) != null){
             string path = Path.build_filename(location, name);
             if(FileUtils.test(path, FileTest.IS_DIR)){
-              var themeInfo = ArticleTheme.getThemeInfo(path);
-              if (("corrupted" in themeInfo.keys) == false){
-                ArticleTheme.themes.add(themeInfo);
+              var themeInfo = getThemeInfo(path);
+              if (themeInfo.has_key("corrupted") == false){
+                themes.add(themeInfo);
               }
             }
           }

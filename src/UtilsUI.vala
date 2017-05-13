@@ -66,10 +66,9 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		try
 		{
-			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/" + theme + "/article.html");
-			file.load_contents(null, out contents, null);
-			article.assign((string)contents);
+			string template;
+      GLib.FileUtils.get_contents(theme + "/article.html", out template);
+			article.assign(template);
 		}
 		catch(GLib.Error e)
 		{
@@ -147,13 +146,12 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		try
 		{
-			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/" + theme + "/style.css");
-			file.load_contents(null, out contents, null);
+			string css;
+      GLib.FileUtils.get_contents(theme + "/style.css", out css);
 			string css_id = "$CSS";
 			int css_pos = article.str.index_of(css_id);
 			article.erase(css_pos, css_id.length);
-			article.insert(css_pos, (string)contents);
+			article.insert(css_pos, css);
 		}
 		catch(GLib.Error e)
 		{

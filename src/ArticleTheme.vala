@@ -1,15 +1,18 @@
 using Gee;
 
 public class  FeedReader.ArticleTheme {
-    static Array<HashMap> themes = new Array<HashMap> ();
+    static Array<HashMap> ? themes = null;
 
-    public FeedReader.ArticleTheme() {
-      // Local themes
-      string theme_dir = GLib.Environment.get_home_dir() + "/.feedreader/themes/";
-      FeedReader.ArticleTheme.themes += grabThemes(theme_dir);
-      // Global themes
-      string global_dir = Constants.INSTALL_PREFIX + "/share/ArticleView/";
-      FeedReader.ArticleTheme.themes += grabThemes(theme_dir);
+    static Array<HashMap> getThemes(){
+        if(!ArticleTheme.themes){
+            // Local themes
+            string theme_dir = GLib.Environment.get_home_dir() + "/.feedreader/themes/";
+            ArticleTheme.themes += grabThemes(theme_dir);
+            // Global themes
+            string global_dir = Constants.INSTALL_PREFIX + "/share/ArticleView/";
+            ArticleTheme.themes += grabThemes(theme_dir);
+        }
+        return ArticleTheme.themes;
     }
 
     private HashMap<string, string> getThemeInfo (string theme_path) {

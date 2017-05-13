@@ -146,6 +146,7 @@ vala_precompile(UI ${UI_NAME}
 	src/FavIconCache.vala
 	src/FeedReader.vala
 	src/LoginInterface.vala
+  src/ArticleTheme.vala
 	src/dbUI.vala
 	src/UtilsUI.vala
 	src/Widgets/AddPopover.vala
@@ -310,3 +311,4 @@ install (FILES ${CMAKE_CURRENT_SOURCE_DIR}/data/org.gnome.FeedReader.Daemon.serv
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/application-icons/hicolor DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons)
 install (CODE "execute_process (COMMAND gtk-update-icon-cache -t ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor)")
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/GrabberConfig DESTINATION ${PKGDATADIR})
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/data/ArticleView DESTINATION ${PKGDATADIR})

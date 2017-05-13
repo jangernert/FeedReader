@@ -55,20 +55,22 @@ public class FeedReader.SettingFont : FeedReader.Setting {
 
 public class FeedReader.ArticleThemeSetting : FeedReader.Setting {
 
-  public ArticleThemeSetting (string name, GLib.Settings settings, string key, string [] values, string ? tooltip = null){
+  public ArticleThemeSetting (string name, GLib.Settings settings, string key, Array<HashMap> themes, string ? tooltip = null){
       base (name, tooltip);
       var liststore = new Gtk.ListStore(1, typeof(string));
       int active = 0;
       bool was_found = false;
       string current_theme = settings.get_string(key);
-      foreach (string val in values){
+      foreach (HashMap theme in themes){
         Gtk.TreeIter iter;
-        if (current_theme == val.down()){
+        string theme_name = theme.get("name");
+        string path = theme.get("path");
+        if (current_theme == path){
           was_found = true;
         }
         liststore.append(out iter);
-        liststore.set(iter, 0, val);
-        liststore.set(iter, 1, val.down());
+        liststore.set(iter, 0, theme_name);
+        liststore.set(iter, 1, path);
         if(!was_found){
           active += 1;
         }

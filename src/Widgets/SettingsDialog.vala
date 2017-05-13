@@ -108,8 +108,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var articleview_settings = headline(_("Article View:"));
 
-		var article_theme = new ArticleThemeSetting(_("Theme"), Settings.general(), "article-theme",
-                {_("Default"), _("Midnight")});
+		var article_theme = new ArticleThemeSetting(_("Theme"), Settings.general(), "article-theme", FeedReader.ArticleTheme.themes);
 		article_theme.changed.connect(() => {
 			ColumnView.get_default().reloadArticleView();
 		});

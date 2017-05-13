@@ -669,4 +669,6 @@ public class FeedReader.Utils : GLib.Object {
 		if(!setting.set_string(key, val))
 			Logger.error("Utils.gsettingWriteString: writing %s %s failed".printf(setting.schema_id, key));
 	}
+
+
 }

@@ -6,11 +6,6 @@
 		<file compressed="true">gtk-css/gtk.css</file>
 		<file compressed="true">gtk-css/elementary.css</file>
 
-		<file compressed="true">ArticleView/default/style.css</file>
-		<file compressed="true">ArticleView/default/article.html</file>
-		<file compressed="true">ArticleView/midnight/style.css</file>
-		<file compressed="true">ArticleView/midnight/article.html</file>
-
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-add-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-arrow-up-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-refresh-symbolic.svg</file>

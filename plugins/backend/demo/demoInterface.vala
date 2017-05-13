@@ -88,7 +88,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// Argument: ID of a category
 	// Return: wheather the category should be visible when empty
 	//--------------------------------------------------------------------------------------
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 
 	}
@@ -241,7 +241,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	//--------------------------------------------------------------------------------------
 	// Mark all articles of the feeds that are part of the category as read
 	//--------------------------------------------------------------------------------------
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 
 	}

@@ -1001,7 +1001,7 @@ public class FeedReader.dbDaemon : dbBase {
 
 	protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
-		if(FeedServer.get_default().hideCagetoryWhenEmtpy(catID)
+		if(FeedServer.get_default().hideCategoryWhenEmpty(catID)
 		&& !Utils.categoryIsPopulated(catID, feeds))
 		{
 			return false;

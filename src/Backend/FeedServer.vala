@@ -621,12 +621,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.uncategorizedID();
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		if(!m_pluginLoaded)
 			return false;
 
-		return m_plugin.hideCagetoryWhenEmtpy(catID);
+		return m_plugin.hideCategoryWhenEmpty(catID);
 	}
 
 	public bool supportCategories()
@@ -725,12 +725,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.setFeedRead(feedID);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.setCategorieRead(catID);
+		m_plugin.setCategoryRead(catID);
 	}
 
 	public void markAllItemsRead()

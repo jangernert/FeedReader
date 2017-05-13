@@ -40,7 +40,7 @@ namespace FeedReader {
 		public abstract void quit() throws IOError;
 
 		// BACKEND INFOS
-		public abstract bool hideCagetoryWhenEmtpy(string catID) throws IOError;
+		public abstract bool hideCategoryWhenEmpty(string catID) throws IOError;
 		public abstract bool supportCategories() throws IOError;
 		public abstract bool supportFeedManipulation() throws IOError;
 		public abstract bool supportMultiLevelCategories() throws IOError;

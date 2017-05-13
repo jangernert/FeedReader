@@ -64,7 +64,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return false;
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		return false;
 	}
@@ -146,7 +146,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		}
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		for(uint i = 0; i < 3; ++i)
 		{

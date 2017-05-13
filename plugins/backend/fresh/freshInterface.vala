@@ -54,7 +54,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return "1";
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		return false;
 	}
@@ -130,7 +130,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.markAllAsRead(feedID);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		m_api.markAllAsRead(catID);
 	}

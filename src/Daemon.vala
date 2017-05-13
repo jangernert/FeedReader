@@ -146,9 +146,9 @@ namespace FeedReader {
 			return FeedServer.get_default().uncategorizedID();
 		}
 
-		public bool hideCagetoryWhenEmtpy(string catID)
+		public bool hideCategoryWhenEmpty(string catID)
 		{
-			return FeedServer.get_default().hideCagetoryWhenEmtpy(catID);
+			return FeedServer.get_default().hideCategoryWhenEmpty(catID);
 		}
 
 		public bool useMaxArticles()
@@ -571,7 +571,7 @@ namespace FeedReader {
 				{
 					if(m_cacheSync)
 						ActionCache.get_default().markCategoryRead(feedID);
-					asyncPayload pl = () => { FeedServer.get_default().setCategorieRead(feedID); };
+					asyncPayload pl = () => { FeedServer.get_default().setCategoryRead(feedID); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 

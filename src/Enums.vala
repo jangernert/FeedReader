@@ -147,13 +147,6 @@ namespace FeedReader {
 		DELETE
 	}
 
-	public enum ArticleTheme {
-		DEFAULT,
-		SPRING,
-		MIDNIGHT,
-		PARCHMENT
-	}
-
 	public enum FeedListTheme {
 		GTK,
 		DARK,

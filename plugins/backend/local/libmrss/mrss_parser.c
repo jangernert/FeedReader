@@ -365,7 +365,7 @@ __mrss_parser_atom_entry (nxml_t * doc, nxml_data_t * cur, mrss_t * data)
 	  {
 	  	if (item->description)
 	  	{
-	  	  nxml_free(item->description);
+	  	  free(item->description);
 	  	  item->description = NULL;
 	  	}
 	    __mrss_parser_atom_string (doc, cur, &item->description,
@@ -641,6 +641,17 @@ __mrss_parser_rss_item (nxml_t * doc, nxml_data_t * cur, mrss_t * data)
 	  else if (!strcmp (cur->value, "link") && !item->link
 		   && (c = nxmle_get_string (cur, NULL)))
 	    item->link = c;
+
+	  /* content:encoded
+	   * FIXME: We are ignoring the namespace.
+	  /* Note: We intentionally override description with content:encoded */
+	  else if (!strcmp (cur->value, "encoded")
+	      && (c = nxmle_get_string (cur, NULL)))
+	  {
+	    if (item->description)
+	      free(item->description);
+	    item->description = c;
+	  }
 
 	  /* description */
 	  else if (!strcmp (cur->value, "description") && !item->description

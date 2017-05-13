@@ -109,8 +109,9 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return Utils.ping("https://api.feedbin.com/");
 	}
 
-	public void setArticleIsRead(string articleIDs, ArticleStatus read)
+	public void setArticleIsRead(string articleID, ArticleStatus read)
 	{
+		var articleIDs = new Gee.ArrayList<string>.wrap(new string[] { articleID });
 		if(read == ArticleStatus.UNREAD)
 			m_api.createUnreadEntries(articleIDs, false);
 		else if(read == ArticleStatus.READ)
@@ -119,12 +120,12 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
+		var articleIDs = new Gee.ArrayList<string>.wrap(new string[] { articleID });
 		if(marked == ArticleStatus.MARKED)
-			m_api.createStarredEntries(articleID, true);
+			m_api.createStarredEntries(articleIDs, true);
 		else if(marked == ArticleStatus.UNMARKED)
-			m_api.createStarredEntries(articleID, false);
+			m_api.createStarredEntries(articleIDs, false);
 	}
-
 
 	public void setFeedRead(string feedID)
 	{
@@ -134,14 +135,8 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			uint offset = i*1000;
 			var articles = dbDaemon.get_default().read_articles(feedID, FeedListType.FEED, ArticleListState.ALL, "", count, offset);
 
-			string articleIDs = "";
-
-			foreach(article a in articles)
-			{
-				articleIDs += a.getArticleID() + ",";
-			}
-
-			articleIDs = articleIDs.substring(0, articleIDs.length-1);
+			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
+			var articleIDs = FuncUtils.map(articles, articleToID);
 			m_api.createUnreadEntries(articleIDs, true);
 		}
 	}
@@ -154,14 +149,8 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			uint offset = i*1000;
 			var articles = dbDaemon.get_default().read_articles(catID, FeedListType.CATEGORY, ArticleListState.ALL, "", count, offset);
 
-			string articleIDs = "";
-
-			foreach(article a in articles)
-			{
-				articleIDs += a.getArticleID() + ",";
-			}
-
-			articleIDs = articleIDs.substring(0, articleIDs.length-1);
+			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
+			var articleIDs = FuncUtils.map(articles, articleToID);
 			m_api.createUnreadEntries(articleIDs, true);
 		}
 	}
@@ -174,14 +163,8 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			uint offset = i*1000;
 			var articles = dbDaemon.get_default().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, ArticleListState.ALL, "", count, offset);
 
-			string articleIDs = "";
-
-			foreach(article a in articles)
-			{
-				articleIDs += a.getArticleID() + ",";
-			}
-
-			articleIDs = articleIDs.substring(0, articleIDs.length-1);
+			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
+			var articleIDs = FuncUtils.map(articles, articleToID);
 			m_api.createUnreadEntries(articleIDs, true);
 		}
 	}

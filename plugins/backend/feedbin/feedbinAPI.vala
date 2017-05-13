@@ -264,11 +264,10 @@ public class FeedReader.feedbinAPI : Object {
 		return ids;
 	}
 
-	public void createUnreadEntries(string articleIDs, bool read)
+	public void createUnreadEntries(Gee.List<string> articleIDs, bool read)
 	{
-		var ids = articleIDs.split(",");
 		Json.Array array = new Json.Array();
-		foreach(string id in ids)
+		foreach(string id in articleIDs)
 		{
 			array.add_int_element(int64.parse(id));
 		}
@@ -289,10 +288,13 @@ public class FeedReader.feedbinAPI : Object {
 			m_connection.deleteRequest("unread_entries.json", json);
 	}
 
-	public void createStarredEntries(string articleID, bool starred)
+	public void createStarredEntries(Gee.List<string> articleIDs, bool starred)
 	{
 		Json.Array array = new Json.Array();
-		array.add_int_element(int64.parse(articleID));
+		foreach(string id in articleIDs)
+		{
+			array.add_int_element(int64.parse(id));
+		}
 
 		Json.Object object = new Json.Object();
 		object.set_array_member("starred_entries", array);

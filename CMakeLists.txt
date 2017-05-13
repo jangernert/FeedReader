@@ -85,6 +85,7 @@ add_subdirectory(libIvy)
 vala_precompile(LIBFR libFeedReader
 	src/Logger.vala
 	src/Enums.vala
+	src/FuncUtils.vala
 	src/dbBase.vala
 	src/Settings.vala
 	src/Structs.vala

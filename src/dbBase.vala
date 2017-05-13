@@ -571,7 +571,6 @@ public class FeedReader.dbBase : GLib.Object {
 	{
 		var query = articleQuery(id, selectedType, state, searchTerm);
 		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
-		string orderBy = (sorting == ArticleListSort.RECEIVED) ? "rowid" : "date";
 
 		if(sorting == ArticleListSort.RECEIVED)
 			query.addCustomCondition(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = $id1) AND (SELECT rowid FROM articles WHERE articleID = $id2)");

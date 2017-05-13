@@ -209,6 +209,7 @@ public class FeedReader.dbDaemon : dbBase {
 			stmt.bind_text(feedName_pos, Utils.UTF8fix(feed_item.getTitle()));
 			stmt.bind_text(feedURL_pos, feed_item.getURL());
 			stmt.bind_text(catID_pos, catString);
+			Logger.debug("dbDaemon.write_feeds: xmlURL " + feed_item.getXmlUrl());
 			stmt.bind_text(xmlURL_pos, feed_item.getXmlUrl());
 
 			while(stmt.step() == Sqlite.ROW){}

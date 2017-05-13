@@ -1143,7 +1143,9 @@ public class FeedReader.dbBase : GLib.Object {
 				stmt.column_text(1),
 				stmt.column_text(2),
 				getFeedUnread(feedID),
-				stmt.column_text(3).split(","));
+				stmt.column_text(3).split(","),
+				null,
+				stmt.column_text(5));
 			return tmpfeed;
 		}
 
@@ -1189,7 +1191,7 @@ public class FeedReader.dbBase : GLib.Object {
 			else
 				count = getFeedUnread(feedID);
 
-			tmpfeed = new feed(feedID, name, url, count, catVec, xmlURL);
+			tmpfeed = new feed(feedID, name, url, count, catVec, null, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -1277,7 +1279,7 @@ public class FeedReader.dbBase : GLib.Object {
 			string[] catVec = { "" };
 			if(catString != "")
 				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, name, url, getFeedUnread(feedID), catVec, xmlURL);
+			tmpfeed = new feed(feedID, name, url, getFeedUnread(feedID), catVec, null, xmlURL);
 			tmp.add(tmpfeed);
 		}
 

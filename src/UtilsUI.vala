@@ -56,6 +56,8 @@ public class FeedReader.UtilsUI : GLib.Object {
 	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
 	{
 		var article = new GLib.StringBuilder();
+    string theme = Settings.general().get_string("article-theme");
+
 		string author_date = "";
 		if(author != null)
 			author_date +=  _("posted by: %s, ").printf(author);
@@ -65,7 +67,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		try
 		{
 			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/" + theme + "/article.html");
 			file.load_contents(null, out contents, null);
 			article.assign((string)contents);
 		}
@@ -99,31 +101,6 @@ public class FeedReader.UtilsUI : GLib.Object {
 		article.erase(feed_pos, feed_id.length);
 		article.insert(feed_pos, dbUI.get_default().getFeedName(feedID));
 
-
-		string theme = "theme ";
-		switch(Settings.general().get_enum("article-theme"))
-		{
-			case ArticleTheme.DEFAULT:
-				theme += "default";
-				break;
-
-			case ArticleTheme.SPRING:
-				theme += "spring";
-				break;
-
-			case ArticleTheme.MIDNIGHT:
-				theme += "midnight";
-				break;
-
-			case ArticleTheme.PARCHMENT:
-				theme += "parchment";
-				break;
-		}
-
-		string theme_id = "$THEME";
-		int theme_pos = article.str.index_of(theme_id);
-		article.erase(theme_pos, theme_id.length);
-		article.insert(theme_pos, theme);
 
 		string select_id = "$UNSELECTABLE";
 		int select_pos = article.str.index_of(select_id);
@@ -171,7 +148,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		try
 		{
 			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/" + theme + "/style.css");
 			file.load_contents(null, out contents, null);
 			string css_id = "$CSS";
 			int css_pos = article.str.index_of(css_id);

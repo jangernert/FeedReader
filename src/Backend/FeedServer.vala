@@ -406,7 +406,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void downloadImages(Soup.Session session, article Article, GLib.Cancellable? cancellable = null)
 	{
-		if(Settings.tweaks().get_boolean("dont-download-images"))
+		if(!Settings.general().get_boolean("download-images"))
 			return;
 
 		var html_cntx = new Html.ParserCtxt();

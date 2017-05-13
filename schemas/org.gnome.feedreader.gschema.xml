@@ -123,6 +123,15 @@
 				Sort articles in the ArticleList by date not by insert order.
 			</description>
 		</key>
+		
+		<key name="download-images" type="b">
+			<default>true</default>
+			<summary>Download images of articles (offline mode)</summary>
+			<description>
+				Download of images of articles. If disabled this will speed up the snyc process, 
+				but obviously the images will not be available when in offline-mode.
+			</description>
+		</key>
 
 		<key name='articlelist-oldest-first' type='b'>
 			<default>false</default>

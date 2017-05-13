@@ -56,46 +56,48 @@ public class FeedReader.SettingFont : FeedReader.Setting {
 
 public class FeedReader.ArticleThemeSetting : FeedReader.Setting {
 
-  public ArticleThemeSetting (string name, GLib.Settings settings, string key, Array<HashMap> themes, string ? tooltip = null){
+  public ArticleThemeSetting (string name, GLib.Settings settings, string key, ArrayList<HashMap> ? themes = null, string ? tooltip = null){
       base (name, tooltip);
-      var liststore = new Gtk.ListStore(1, typeof(string));
-      int active = 0;
-      bool was_found = false;
-      string current_theme = settings.get_string(key);
-
-
-      HashMap<string, string> ? theme = null;
-      for(var i = 0; i < themes.length; i ++){
-        Gtk.TreeIter iter;
-        theme = themes.index(i);
-        string theme_name = theme.get("name");
-        string path = theme.get("path");
-        if (current_theme == path){
-          was_found = true;
+      if (themes != null) {
+        var liststore = new Gtk.ListStore(1, typeof(string));
+        int active = 0;
+        bool was_found = false;
+        string current_theme = settings.get_string(key);
+        foreach(HashMap<string, string> theme in themes) {
+          Gtk.TreeIter iter;
+          string theme_name = theme.get("name");
+          string path = theme.get("path");
+          if (current_theme == path){
+            was_found = true;
+          }
+          liststore.append(out iter);
+          liststore.set(iter, 0, theme_name);
+          liststore.set(iter, 1, path);
+          if(!was_found){
+            active += 1;
+          }
         }
-        liststore.append(out iter);
-        liststore.set(iter, 0, theme_name);
-        liststore.set(iter, 1, path);
-        if(!was_found){
-          active += 1;
-        }
+
+        var dropbox = new Gtk.ComboBox.with_model(liststore);
+        var renderer = new Gtk.CellRendererText();
+        dropbox.pack_start(renderer, false);
+        dropbox.add_attribute(renderer, "text", 0);
+        dropbox.set_active(active);
+        dropbox.changed.connect(() => {
+          Value selected_theme;
+          Gtk.TreeIter iter;
+          dropbox.get_active_iter(out iter);
+          liststore.get_value(iter, 1, out selected_theme);
+          settings.set_string(key, (string)selected_theme);
+          changed();
+        });
+
+        this.pack_end(dropbox, false, false, 0);
+      } else {
+        var theme_label = new Gtk.Label(_("Default"));
+
+        this.pack_end(theme_label, false, false, 0);
       }
-
-      var dropbox = new Gtk.ComboBox.with_model(liststore);
-      var renderer = new Gtk.CellRendererText();
-      dropbox.pack_start(renderer, false);
-      dropbox.add_attribute(renderer, "text", 0);
-      dropbox.set_active(active);
-      dropbox.changed.connect(() => {
-        Value selected_theme;
-        Gtk.TreeIter iter;
-        dropbox.get_active_iter(out iter);
-        liststore.get_value(iter, 1, out selected_theme);
-        settings.set_string(key, (string)selected_theme);
-        changed();
-      });
-
-      this.pack_end(dropbox, false, false, 0);
   }
 
 }

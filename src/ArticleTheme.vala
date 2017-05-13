@@ -1,15 +1,15 @@
 using Gee;
 
 public class  FeedReader.ArticleTheme {
-    public static Array<HashMap> ? themes = null;
+    public static ArrayList<HashMap<string, string>> ? themes = null;
 
-    public static Array<HashMap> getThemes(){
+    public static ArrayList<HashMap> getThemes(){
         if(ArticleTheme.themes == null){
             // Local themes
             string local_dir = GLib.Environment.get_user_data_dir() + "/feedreader/themes/";
             ArticleTheme.grabThemes(local_dir);
             // Global themes
-            string global_dir = Constants.INSTALL_PREFIX + "/share/ArticleView/";
+            string global_dir = Constants.INSTALL_PREFIX + "/share/FeedReader/ArticleView/";
             ArticleTheme.grabThemes(global_dir);
         }
         return ArticleTheme.themes;
@@ -69,10 +69,9 @@ public class  FeedReader.ArticleTheme {
           while ((name = dir.read_name()) != null){
             string path = Path.build_filename(location, name);
             if(FileUtils.test(path, FileTest.IS_DIR)){
-              stdout.printf("New theme found " + name);
               var themeInfo = ArticleTheme.getThemeInfo(path);
               if (("corrupted" in themeInfo.keys) == false){
-                ArticleTheme.themes.append_val(themeInfo);
+                ArticleTheme.themes.add(themeInfo);
               }
             }
           }

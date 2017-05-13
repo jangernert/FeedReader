@@ -427,6 +427,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(articleURL.has_prefix("/"))
 					articleURL = Feed.getURL() + articleURL.substring(1);
 
+				if(item.title != null)
+					Logger.debug(item.title);
+
 				var Article = new article
 				(
 									articleID,

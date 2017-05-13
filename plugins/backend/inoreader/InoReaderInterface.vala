@@ -54,7 +54,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return "";
 	}
 
-	public bool hideCagetoryWhenEmtpy(string cadID)
+	public bool hideCategoryWhenEmpty(string cadID)
 	{
 		return false;
 	}
@@ -125,7 +125,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		m_api.markAsRead(feedID);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		m_api.markAsRead(catID);
 	}

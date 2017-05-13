@@ -36,7 +36,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract string uncategorizedID();
 
-	public abstract bool hideCagetoryWhenEmtpy(string catID);
+	public abstract bool hideCategoryWhenEmpty(string catID);
 
 	public abstract bool supportCategories();
 
@@ -65,7 +65,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void setFeedRead(string feedID);
 
-	public abstract void setCategorieRead(string catID);
+	public abstract void setCategoryRead(string catID);
 
 	public abstract void markAllItemsRead();
 

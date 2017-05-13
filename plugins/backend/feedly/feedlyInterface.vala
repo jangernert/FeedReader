@@ -54,7 +54,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return "";
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		return catID.has_suffix("global.must");
 	}
@@ -126,7 +126,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.mark_as_read(feedID, "feeds", ArticleStatus.READ);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		m_api.mark_as_read(catID, "categories", ArticleStatus.READ);
 	}

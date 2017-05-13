@@ -39,7 +39,7 @@ public class FeedReader.dbUI : dbBase {
 	{
 		try
 		{
-			if(DBusConnection.get_default().hideCagetoryWhenEmtpy(catID)
+			if(DBusConnection.get_default().hideCategoryWhenEmpty(catID)
 			&& !Utils.categoryIsPopulated(catID, feeds))
 			{
 				return false;

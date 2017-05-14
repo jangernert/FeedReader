@@ -257,7 +257,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public int getUnreadCount()
 	{
-		return 0; // =( feedbin
+		return m_api.unreadEntries().size;
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)

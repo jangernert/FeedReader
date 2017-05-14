@@ -214,22 +214,29 @@ public class FeedReader.feedbinAPI : Object {
 				time = new DateTime.from_timeval_local(t);
 			}
 
-			articles.add(new article(
-								id,
-								object.get_string_member("title"),
-								object.get_string_member("url"),
-								object.get_int_member("feed_id").to_string(),
-								unreadIDs.contains(id) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-								starredIDs.contains(id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-								object.get_string_member("content"),
-								object.get_string_member("summary"),
-								object.get_string_member("author"),
-								time,
-								-1,
-								"",
-								""
-							)
-						);
+			var article = new article(
+					id,
+					object.get_string_member("title") == null ? "" : object.get_string_member("title"),
+					object.get_string_member("url"),
+					object.get_int_member("feed_id").to_string(),
+					unreadIDs.contains(id) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+					starredIDs.contains(id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+					object.get_string_member("content") == null ? "" : object.get_string_member("content"),
+					object.get_string_member("summary"),
+					object.get_string_member("author"),
+					time,
+					-1,
+					"",
+					""
+				);
+			if(article != null)
+				articles.add(article);
+			else
+			{
+				var node = new Json.Node(Json.NodeType.OBJECT);
+				node.set_object(object);
+				Logger.error("Failed to create article from " + Json.to_string(node, true));
+			}
 		}
 
 		return articles;

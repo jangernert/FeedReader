@@ -34,11 +34,12 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 				{
 					Logger.debug("Utils: generate preview for article: " + Article.getArticleID());
 					string output = libVilistextum.parse(Article.getHTML(), 1);
-					output = output.strip();
+					if(output != null)
+						output = output.strip();
 
 					if(output == "" || output == null)
 					{
-						Logger.error("generatePreviews: no Preview");
+						Logger.info("generatePreviews: no Preview");
 						Article.setPreview(noPreview);
 						Article.setTitle(Utils.UTF8fix(Article.getTitle(), true));
 						continue;

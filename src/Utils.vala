@@ -446,21 +446,22 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static void getFavIcons(Gee.List<feed> feeds, GLib.Cancellable? cancellable = null)
+	public static async void getFavIcons(Gee.List<feed> feeds, GLib.Cancellable? cancellable = null)
 	{
+		// TODO: It would be nice if we could queue these in parallel
 		foreach(feed f in feeds)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 
 			// first check if the feed provides a valid url for the favicon
-			if(f.getIconURL() != null && downloadIcon(f.getFeedID(), f.getIconURL()))
+			if(f.getIconURL() != null && yield downloadIcon(f.getFeedID(), f.getIconURL(), cancellable))
 			{
-				// download of provided url successfull
+				// download of provided url successful
 				continue;
 			}
 			// try to find favicon on the website
-			else if(downloadFavIcon(f.getFeedID(), f.getURL()))
+			else if(yield downloadFavIcon(f.getFeedID(), f.getURL(), cancellable))
 			{
 				// found an icon on the website of the feed
 				continue;
@@ -480,7 +481,7 @@ public class FeedReader.Utils : GLib.Object {
 			Settings.state().set_int("last-favicon-update", (int)now.to_unix());
 	}
 
-	public static bool downloadFavIcon(string feed_id, string feed_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static async bool downloadFavIcon(string feed_id, string feed_url, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		var uri = new Soup.URI(feed_url);
 		string hostname = uri.get_host();
@@ -494,19 +495,37 @@ public class FeedReader.Utils : GLib.Object {
 		var message_html = new Soup.Message("GET", siteURL);
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_html.request_headers.append("DNT", "1");
-		var status = getSession().send_message(message_html);
-		if(status == 200)
+		InputStream bodyStream;
+		try
 		{
-			var html = (string)message_html.response_body.flatten().data;
+			bodyStream = yield getSession().send_async(message_html);
+		}
+		catch (Error e)
+		{
+			Logger.error(@"Request for $siteURL failed: " + e.message);
+			return false;
+		}
+		if(message_html.status_code == 200)
+		{
+			string html;
+			try
+			{
+				html = (string)yield inputStreamToArray(bodyStream, cancellable);
+			}
+			catch(Error e)
+			{
+				Logger.error(@"Failed to load body of $siteURL: " + e.message);
+				return false;
+			}
 
 			var html_cntx = new Html.ParserCtxt();
-	        html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-	        Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-	        if(doc == null)
-	        {
-	            Logger.debug("Utils.downloadFavIcon: parsing html failed");
-	    		return false;
-	    	}
+      html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+      Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+      if(doc == null)
+      {
+        Logger.debug("Utils.downloadFavIcon: parsing html failed");
+    		return false;
+    	}
 
 			// check for <link rel="icon">
 			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
@@ -523,7 +542,7 @@ public class FeedReader.Utils : GLib.Object {
 			{
 				Logger.debug(@"Utils.downloadFavIcon: xpath success $xpath");
 				xpath = grabberUtils.completeURL(xpath, siteURL);
-				if(downloadIcon(feed_id, xpath, icon_path))
+				if(yield downloadIcon(feed_id, xpath, cancellable, icon_path))
 					return true;
 			}
 			else
@@ -539,10 +558,10 @@ public class FeedReader.Utils : GLib.Object {
 		if(!icon_url.has_suffix("/"))
 			icon_url += "/";
 		icon_url += "favicon.ico";
-		return downloadIcon(feed_id, icon_url, icon_path);
+		return yield downloadIcon(feed_id, icon_url, cancellable, icon_path);
 	}
 
-	public static bool downloadIcon(string feed_id, string? icon_url, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static async bool downloadIcon(string feed_id, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{
@@ -587,7 +606,17 @@ public class FeedReader.Utils : GLib.Object {
 		if(last_modified != null)
 			message.request_headers.append("If-Modified-Since", last_modified);
 
-		var status = getSession().send_message(message);
+		InputStream bodyStream;
+		try
+		{
+			bodyStream = yield getSession().send_async(message, cancellable);
+		}
+		catch (Error e)
+		{
+			Logger.error(@"Request for $icon_url failed: " + e.message);
+			return false;
+		}
+		var status = message.status_code;
 		if(status == 304)
 		{
 			var log = "Utils.downloadIcon: ";
@@ -605,7 +634,16 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		else if(status == 200)
 		{
-			var data = message.response_body.flatten().data;
+			uint8[] data;
+			try
+			{
+				data = yield inputStreamToArray(bodyStream, cancellable);
+			}
+			catch (Error e)
+			{
+				Logger.error(@"Failed to read body of $icon_url: " + e.message);
+				return false;
+			}
 			if(icon_exists
 			&& (string)data == getFileContent(local_filename))
 			{
@@ -668,5 +706,21 @@ public class FeedReader.Utils : GLib.Object {
 
 		if(!setting.set_string(key, val))
 			Logger.error("Utils.gsettingWriteString: writing %s %s failed".printf(setting.schema_id, key));
+	}
+
+	public static async uint8[] inputStreamToArray(InputStream stream, Cancellable? cancellable=null) throws Error
+	{
+		Array<uint8> result = new Array<uint8>();
+		uint8[] buffer = new uint8[1024];
+		while(true)
+		{
+			size_t bytesRead = 0;
+			yield stream.read_all_async(buffer, Priority.DEFAULT_IDLE, cancellable, out bytesRead);
+			if (bytesRead  == 0)
+				break;
+			result.append_vals(buffer, (uint)bytesRead);
+		}
+
+		return result.data;
 	}
 }

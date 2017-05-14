@@ -148,7 +148,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		// download favicons for all feeds
-		Utils.getFavIcons(feeds, cancellable);
+		Utils.getFavIcons.begin(feeds, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -246,7 +246,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		// download favicons for all feeds
-		Utils.getFavIcons(feeds, cancellable);
+		Utils.getFavIcons.begin(feeds, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;

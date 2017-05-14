@@ -164,6 +164,9 @@ namespace FeedReader {
 				m_timeout_source_id = 0;
 			}
 
+			if(time == 0)
+				return;
+
 			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time*60, () => {
 				if(!Settings.state().get_boolean("currently-updating")
 				&& FeedServer.get_default().pluginLoaded())

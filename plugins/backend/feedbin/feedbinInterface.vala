@@ -127,46 +127,38 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			m_api.createStarredEntries(articleIDs, false);
 	}
 
-	public void setFeedRead(string feedID)
+	private void setRead(string id, FeedListType type)
 	{
-		for(uint i = 0; i < 3; ++i)
+		int numArticles = 0;
+		uint count = 1000;
+		uint offset = 0;
+		do
 		{
-			uint count = (i+1)*1000;
-			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(feedID, FeedListType.FEED, ArticleListState.ALL, "", count, offset);
+			var articles = dbDaemon.get_default().read_articles(id, type, ArticleListState.ALL, "", count, offset);
 
 			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
 			var articleIDs = FuncUtils.map(articles, articleToID);
 			m_api.createUnreadEntries(articleIDs, true);
+
+			offset += count;
+			numArticles = articles.size;
 		}
+		while(numArticles > 0);
+	}
+
+	public void setFeedRead(string feedID)
+	{
+		setRead(feedID, FeedListType.FEED);
 	}
 
 	public void setCategoryRead(string catID)
 	{
-		for(uint i = 0; i < 3; ++i)
-		{
-			uint count = (i+1)*1000;
-			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(catID, FeedListType.CATEGORY, ArticleListState.ALL, "", count, offset);
-
-			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
-			var articleIDs = FuncUtils.map(articles, articleToID);
-			m_api.createUnreadEntries(articleIDs, true);
-		}
+		setRead(catID, FeedListType.CATEGORY);
 	}
 
 	public void markAllItemsRead()
 	{
-		for(uint i = 0; i < 5; ++i)
-		{
-			uint count = (i+1)*1000;
-			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, ArticleListState.ALL, "", count, offset);
-
-			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
-			var articleIDs = FuncUtils.map(articles, articleToID);
-			m_api.createUnreadEntries(articleIDs, true);
-		}
+		setRead(FeedID.ALL.to_string(), FeedListType.FEED);
 	}
 
 	public void tagArticle(string articleID, string tagID)

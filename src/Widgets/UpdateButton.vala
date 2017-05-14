@@ -121,4 +121,9 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		return false;
 	}
 
+	public void setIcon(Gtk.Image icon)
+	{
+		m_icon = icon;
+	}
+
 }

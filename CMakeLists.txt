@@ -173,7 +173,7 @@ vala_precompile(UI ${UI_NAME}
 	src/Widgets/LoginRow.vala
 	src/Widgets/MainWindow.vala
 	src/Widgets/MediaPlayer.vala
-	src/Widgets/MediaPopover.vala
+	src/Widgets/MediaButton.vala
 	src/Widgets/MediaRow.vala
 	src/Widgets/ModeButton.vala
 	src/Widgets/RemovePopover.vala

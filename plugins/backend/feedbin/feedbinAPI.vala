@@ -152,11 +152,12 @@ public class FeedReader.feedbinAPI : Object {
 
 
 
-	public int getEntries(Gee.List<article> articles, int page, bool starred, DateTime? timestamp, string? feedID = null)
+	public Gee.List<article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)
 	{
+		Gee.List<article> articles = new Gee.ArrayList<article>();
 		string request = "entries.json?per_page=100";
 		request += "&page=%i".printf(page);
-		request += "&starred=%s".printf(starred ? "true" : "false");
+		request += "&starred=%s".printf(onlyStarred ? "true" : "false");
 		if(timestamp != null)
 		{
 			var t = GLib.TimeVal();
@@ -185,14 +186,14 @@ public class FeedReader.feedbinAPI : Object {
 			Logger.error("getEntries: Could not load message response");
 			Logger.error(e.message);
 			Logger.error(response);
+			return articles;
 		}
 
 		var root = parser.get_root();
-
 		if(root.get_node_type() != Json.NodeType.ARRAY)
 		{
 			Logger.error(response);
-			return 0;
+			return articles;
 		}
 
 		var array = root.get_array();
@@ -218,8 +219,8 @@ public class FeedReader.feedbinAPI : Object {
 								object.get_string_member("title"),
 								object.get_string_member("url"),
 								object.get_int_member("feed_id").to_string(),
-								ArticleStatus.READ,
-								ArticleStatus.UNMARKED,
+								unreadIDs.contains(id) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+								starredIDs.contains(id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 								object.get_string_member("content"),
 								object.get_string_member("summary"),
 								object.get_string_member("author"),
@@ -231,7 +232,7 @@ public class FeedReader.feedbinAPI : Object {
 						);
 		}
 
-		return (int)length;
+		return articles;
 	}
 
 	public Gee.List<string> unreadEntries()

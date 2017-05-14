@@ -267,48 +267,34 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			return;
 		}
 
-		var articles = new Gee.LinkedList<article>();
 		var settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 		DateTime? time = null;
 		if(!dbDaemon.get_default().isTableEmpty("articles"))
 			time = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
 
-		bool starred = false;
 		string? fID = isTagID ? null : feedID;
+		bool onlyStarred = (whatToGet == ArticleStatus.MARKED);
 
+		// The Feedbin API doesn't include read/unread/starred status in the entries.json
+		var unreadIDs = new Gee.HashSet<string>();
+		unreadIDs.add_all(m_api.unreadEntries());
 
-		if(whatToGet == ArticleStatus.MARKED)
-		{
-			starred = true;
-		}
+		var starredIDs = new Gee.HashSet<string>();
+		starredIDs.add_all(m_api.starredEntries());
 
-		int articleCount = 0;
-		int page = 1;
-
-		do
+		for(int page = 1; ; ++page)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 
-			articleCount = m_api.getEntries(articles, page, starred, time, fID);
-
-			if(articleCount == 0)
+			var articles = m_api.getEntries(page, onlyStarred, unreadIDs, starredIDs, time, fID);
+			if(articles.size == 0)
 				break;
 
-			page++;
+			writeArticles(articles);
 		}
-		while(articleCount == 100);
-
-		writeArticles(articles);
-
-		dbDaemon.get_default().updateArticlesByID(m_api.unreadEntries(), "unread");
-		dbDaemon.get_default().updateArticlesByID(m_api.starredEntries(), "marked");
-		updateArticleList();
-		updateFeedList();
 	}
-
 }
-
 
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)

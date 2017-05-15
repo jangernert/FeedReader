@@ -115,18 +115,18 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 				&& DBusConnection.get_default().supportCategories())
 				{
 					const Gtk.TargetEntry[] provided_targets = {
-					    { "text/plain",     0, DragTarget.FEED }
+						{ "text/plain",     0, DragTarget.FEED }
 					};
 
 					Gtk.drag_source_set (
-			                this,
-			                Gdk.ModifierType.BUTTON1_MASK,
-			                provided_targets,
-			                Gdk.DragAction.MOVE
-			        );
+							this,
+							Gdk.ModifierType.BUTTON1_MASK,
+							provided_targets,
+							Gdk.DragAction.MOVE
+					);
 
 					this.drag_begin.connect(onDragBegin);
-			        this.drag_data_get.connect(onDragDataGet);
+					this.drag_data_get.connect(onDragDataGet);
 				}
 			}
 			catch(GLib.Error e)
@@ -459,6 +459,11 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.enter_notify_event.disconnect(onUnreadEnter);
 			m_unreadBox.leave_notify_event.disconnect(onUnreadLeave);
 		}
+	}
+
+	public void reloadFavIcon()
+	{
+		m_icon = getFeedIcon();
 	}
 
 }

@@ -800,4 +800,9 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	{
 		m_currentList.emptyList();
 	}
+
+	public void reloadFavIcons()
+	{
+		m_currentList.reloadFavIcons();
+	}
 }

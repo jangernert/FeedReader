@@ -90,7 +90,7 @@ namespace FeedReader {
 			m_cancellable.reset();
 			asyncPayload pl = () => { sync(initSync, m_cancellable); };
 			callAsync.begin((owned)pl, (obj, res) => {
-				callAsync.begin.end(res);
+				callAsync.end(res);
 			});
 		}
 

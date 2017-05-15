@@ -142,7 +142,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		// download favicons for all feeds
-		Utils.getFavIcons.begin(feeds, cancellable);
+		Utils.getFavIcons.begin(feeds, cancellable, (obj, res) => {
+			Utils.getFavIcons.end(res);
+			FeedDaemonServer.get_default().reloadFavIcons();
+		});
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;

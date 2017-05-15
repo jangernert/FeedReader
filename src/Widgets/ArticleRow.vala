@@ -17,6 +17,7 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	private article m_article;
 	private Gtk.Label m_label;
+	private Gtk.Image m_icon;
 	private Gtk.Revealer m_revealer;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
@@ -120,7 +121,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 		m_marked_eventbox.leave_notify_event.connect(markedIconLeave);
 		m_marked_eventbox.button_press_event.connect(markedIconClicked);
 
-		icon_box.pack_start(getFeedIcon(), true, true, 0);
+
+		m_icon = getFeedIcon();
+		icon_box.pack_start(m_icon, true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
 		icon_box.pack_end(m_marked_eventbox, false, false, 0);
 
@@ -192,18 +195,18 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 			&& DBusConnection.get_default().supportTags())
 			{
 				const Gtk.TargetEntry[] provided_targets = {
-				    { "STRING",     0, DragTarget.TAG }
+					{ "STRING",     0, DragTarget.TAG }
 				};
 
-				Gtk.drag_source_set (
-		                this,
-		                Gdk.ModifierType.BUTTON1_MASK,
-		                provided_targets,
-		                Gdk.DragAction.COPY
-		        );
+				Gtk.drag_source_set(
+						this,
+						Gdk.ModifierType.BUTTON1_MASK,
+						provided_targets,
+						Gdk.DragAction.COPY
+				);
 
 				this.drag_begin.connect(onDragBegin);
-		        this.drag_data_get.connect(onDragDataGet);
+				this.drag_data_get.connect(onDragDataGet);
 				this.drag_failed.connect(onDragFailed);
 			}
 		}
@@ -673,6 +676,11 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public bool haveMedia()
 	{
 		return m_article.haveMedia();
+	}
+
+	public void reloadFavIcon()
+	{
+		m_icon = getFeedIcon();
 	}
 
 }

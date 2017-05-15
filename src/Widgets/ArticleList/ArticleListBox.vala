@@ -701,4 +701,15 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		newRow.reveal(true, 0);
 		return true;
 	}
+
+	public void reloadFavIcons()
+	{
+		var children = this.get_children();
+		foreach(var row in children)
+		{
+			var tmpRow = row as articleRow;
+			if(tmpRow != null)
+				tmpRow.reloadFavIcon();
+		}
+	}
 }

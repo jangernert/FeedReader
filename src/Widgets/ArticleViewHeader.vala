@@ -19,7 +19,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	private Gtk.Button m_share_button;
 	private Gtk.Button m_tag_button;
 	private Gtk.Button m_print_button;
-	private UpdateButton m_media_button;
+	private AttachedMediaButton m_media_button;
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
 	private Gtk.Button m_fullscreen_button;
@@ -118,24 +118,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			});
 		});
 
-		m_media_button = new UpdateButton.from_icon_name("mail-attachment-symbolic", _("Attachments"));
-		m_media_button.updating(false);
-		m_media_button.no_show_all = true;
-		m_media_button.clicked.connect(() => {
-			popOpened();
-			var pop = new MediaPopover(m_media_button);
-			pop.play.connect((url) => {
-				m_media_button.updating(true);
-				var media = new MediaPlayer(url);
-				media.loaded.connect(() => {
-					m_media_button.updating(false);
-				});
-				ColumnView.get_default().ArticleViewAddMedia(media);
-			});
-			pop.closed.connect(() => {
-				popClosed();
-			});
-		});
+		m_media_button = new AttachedMediaButton();
 
 		this.pack_start(m_fullscreen_button);
 		this.pack_start(m_mark_button);
@@ -226,6 +209,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 
 	public void showMediaButton(bool show)
 	{
+		m_media_button.update();
 		m_media_button.visible = show;
 	}
 

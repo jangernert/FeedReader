@@ -35,8 +35,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 
 	private ColumnView()
 	{
-		Logger.debug("ContentPage: setup FeedList");
-
+		Logger.debug("ColumnView: setup");
 		m_feedList = new feedList();
 		m_footer = new FeedListFooter();
 		var feedListBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);

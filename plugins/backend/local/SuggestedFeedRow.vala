@@ -62,8 +62,8 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		show_all();
 
 		var uri = new Soup.URI(url);
-		downloadIcon.begin(uri.get_host(), "/tmp/", uri.get_scheme() + "://" + uri.get_host(), (obj, res) => {
-			bool success = downloadIcon.end(res);
+		Utils.downloadIcon.begin(uri.get_host(), uri.get_scheme() + "://" + uri.get_host(), null, "/tmp/", (obj, res) => {
+			bool success = Utils.downloadIcon.end(res);
 			Gtk.Image? icon = null;
 
 			if(success)
@@ -90,25 +90,6 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
    			show_all();
    			iconStack.set_visible_child_name("icon");
 		});
-	}
-
-	private async bool downloadIcon(string id, string path, string url)
-	{
-		if(url == "" || url == null || GLib.Uri.parse_scheme(url) == null)
-			return false;
-
-		SourceFunc callback = downloadIcon.callback;
-		bool success = false;
-
-		new GLib.Thread<void*>(null, () => {
-			if(Utils.downloadFavIcon(id, url, path))
-				success = true;
-			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
-			return null;
-		});
-		yield;
-
-		return success;
 	}
 
 	public bool checked()

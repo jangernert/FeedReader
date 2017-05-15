@@ -148,7 +148,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		// download favicons for all feeds
-		Utils.getFavIcons(feeds, cancellable);
+		Utils.getFavIcons.begin(feeds, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -246,7 +246,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		// download favicons for all feeds
-		Utils.getFavIcons(feeds, cancellable);
+		Utils.getFavIcons.begin(feeds, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -406,7 +406,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void downloadImages(Soup.Session session, article Article, GLib.Cancellable? cancellable = null)
 	{
-		if(Settings.tweaks().get_boolean("dont-download-images"))
+		if(!Settings.general().get_boolean("download-images"))
 			return;
 
 		var html_cntx = new Html.ParserCtxt();
@@ -621,12 +621,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.uncategorizedID();
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		if(!m_pluginLoaded)
 			return false;
 
-		return m_plugin.hideCagetoryWhenEmtpy(catID);
+		return m_plugin.hideCategoryWhenEmpty(catID);
 	}
 
 	public bool supportCategories()
@@ -725,12 +725,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.setFeedRead(feedID);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.setCategorieRead(catID);
+		m_plugin.setCategoryRead(catID);
 	}
 
 	public void markAllItemsRead()

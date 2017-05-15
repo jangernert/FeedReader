@@ -546,7 +546,7 @@ public class FeedReader.Grabber : GLib.Object {
 			return true;
 		}
 
-		if(!Settings.tweaks().get_boolean("dont-download-images"))
+		if(Settings.general().get_boolean("download-images"))
 		{
 			if(m_articleID != null && m_feedID != null)
 				grabberUtils.saveImages(m_session, m_doc, m_articleID, m_feedID, cancellable);

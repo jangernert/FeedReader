@@ -142,7 +142,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var sync_count = new SettingSpin(_("Number of articles"), Settings.general(), "max-articles", 10, 5000, 10);
 
-		var sync_time = new SettingSpin(_("Every (Minutes)"), Settings.general(), "sync", 5, 600, 5);
+		var sync_time = new SettingSpin(_("Interval in Minutes (0 = OFF)"), Settings.general(), "sync", 5, 600, 5);
 		sync_time.changed.connect(() => {
 			try
 			{
@@ -162,6 +162,8 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		var service_settings = headline(_("Additional Functionality:"));
 
 		var grabber = new SettingSwitch(_("Content Grabber"), Settings.general(),"content-grabber");
+
+		var images = new SettingSwitch(_("Download Images"), Settings.general(),"download-images");
 
 		var mediaplayer = new SettingSwitch(_("Internal Media Player"), Settings.general(),"mediaplayer");
 
@@ -183,6 +185,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		internalsBox.pack_start(drop_articles, false, true, 0);
 		internalsBox.pack_start(service_settings, false, true, 0);
 		internalsBox.pack_start(grabber, false, true, 0);
+		internalsBox.pack_start(images, false, true, 0);
 		internalsBox.pack_start(mediaplayer, false, true, 0);
 
 		return internalsBox;

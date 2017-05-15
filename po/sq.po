@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
+"POT-Creation-Date: 2017-05-15 10:52+0200\n"
 "PO-Revision-Date: 2015-08-10 09:06+0000\n"
 "Last-Translator: Indrit Bashkimi <indrit.bashkimi@gmail.com>\n"
 "Language-Team: Albanian <sq@li.org>\n"
@@ -22,60 +22,56 @@ msgstr ""
 msgid "No Preview Available"
 msgstr ""
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "S'ka tekst për këtë artikull :("
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
 msgstr ""
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr ""
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
 msgstr ""
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr ""
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
 msgstr ""
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr ""
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
 msgstr ""
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
 msgstr ""
 
-#: src/Backend/FeedServer.vala:157
+#: src/Backend/FeedServer.vala:181
 #, fuzzy
 msgid "Getting articles"
 msgstr "Artikuj të ri"
 
-#: src/Backend/FeedServer.vala:231
+#: src/Backend/FeedServer.vala:269
 #, fuzzy
 msgid "Getting starred articles"
 msgstr "Artikuj të ri"
 
-#: src/Backend/FeedServer.vala:235
+#: src/Backend/FeedServer.vala:276
 #, fuzzy
 msgid "Getting tagged articles"
 msgstr "Artikuj të ri"
 
-#: src/Backend/FeedServer.vala:248
+#: src/Backend/FeedServer.vala:294
 #, fuzzy
 msgid "Getting unread articles"
 msgstr "Artikuj të ri"
@@ -198,33 +194,33 @@ msgstr "Asnjë artikull i zgjedhur."
 msgid "WebKit has crashed"
 msgstr ""
 
-#: src/Widgets/ArticleView.vala:752
+#: src/Widgets/ArticleView.vala:776
 #, fuzzy
 msgid "Save image as"
 msgstr "Kërko artikuj"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 #, fuzzy
 msgid "Show all articles"
 msgstr "Artikuj të ri"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr ""
 
@@ -232,15 +228,15 @@ msgstr ""
 msgid "Update feeds"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
 msgstr "Kërko artikuj"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Parametrat"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
 msgstr ""
 
@@ -248,63 +244,63 @@ msgstr ""
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: src/Widgets/MainWindow.vala:355
+#: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Zgjidhni një shërbim së pari"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Ju lutemi vendosni një emër përdoruesi të vlefshëm"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Shkruani një fjalëkalim të vlefshëm"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 #, fuzzy
 msgid "Please enter a valid URL"
 msgstr "Ju lutemi vendosni një emër përdoruesi të vlefshëm"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 #, fuzzy
 msgid "Please enter your Login details"
 msgstr "Ju lutemi vendosni një emër përdoruesi të vlefshëm"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "O emri juaj i përdoruesit o fjalëkalimi juaj janë të pasaktë."
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
 
@@ -322,10 +318,6 @@ msgstr "Artikuj të ri"
 #, fuzzy
 msgid "Share article"
 msgstr "Kërko artikuj"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-msgid "Attachments"
-msgstr ""
 
 #: src/Widgets/ResetPage.vala:33
 #, fuzzy
@@ -363,11 +355,11 @@ msgid "Add"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
+msgid "OPML File:"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
+msgid "Select OPML File"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
@@ -387,25 +379,29 @@ msgstr ""
 msgid "All Articles"
 msgstr "Artikuj të ri"
 
-#: src/Widgets/FeedList.vala:446
+#: src/Widgets/FeedList.vala:444
 msgid "Tags"
 msgstr ""
 
-#: src/Widgets/FeedList.vala:494
+#: src/Widgets/FeedList.vala:492
 msgid "Categories"
 msgstr ""
 
-#: src/Widgets/FeedList.vala:499
+#: src/Widgets/FeedList.vala:497
 #, fuzzy
 msgid "Feeds"
 msgstr "Feedly"
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
 msgstr ""
 
-#: src/Widgets/FeedList.vala:1146
+#: src/Widgets/FeedList.vala:1144
 msgid "New Category"
+msgstr ""
+
+#: src/Widgets/MediaButton.vala:95
+msgid "Attachments"
 msgstr ""
 
 #: src/Widgets/TagPopover.vala:36
@@ -511,125 +507,110 @@ msgstr ""
 msgid "Remove only from %s"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Ndërfaqja"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 #, fuzzy
 msgid "Internals"
 msgstr "Ndërfaqja"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 #, fuzzy
 msgid "Feed List:"
 msgstr "Feedly"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
-msgstr ""
+#: src/Widgets/SettingsDialog.vala:85
+#, fuzzy
+msgid "Sort Feed List by"
+msgstr "Feedly"
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Tema"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 #, fuzzy
 msgid "Article List:"
 msgstr "Artikuj të ri"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 #, fuzzy
 msgid "Sort articles by"
 msgstr "Artikuj të ri"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
+#: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:107
+#: src/Widgets/SettingsDialog.vala:109
 #, fuzzy
 msgid "Article View:"
 msgstr "Artikuj të ri"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
@@ -642,7 +623,7 @@ msgid "Number of articles"
 msgstr "Artikuj të ri"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
+msgid "Interval in Minutes (0 = OFF)"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
@@ -678,15 +659,19 @@ msgid "Content Grabber"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:166
+msgid "Download Images"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
+#: src/Widgets/SettingsDialog.vala:336
 #, fuzzy
 msgid "System Accounts"
 msgstr "Ndrysho llogarinë"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 #, fuzzy
 msgid "FeedReader Accounts"
 msgstr "FeedReader"
@@ -877,7 +862,7 @@ msgstr ""
 msgid "Adding Feeds"
 msgstr ""
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
 msgstr ""
 

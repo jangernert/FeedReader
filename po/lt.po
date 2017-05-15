@@ -1,5 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
-# This file is put in the public domain.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
 # Moo, 2017
@@ -7,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:43+0100\n"
-"PO-Revision-Date: 2017-02-15 22:43+0000\n"
-"Last-Translator: Moo\n"
+"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"PO-Revision-Date: 2017-05-15 08:53+0000\n"
+"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Lithuanian (http://www.transifex.com/dev-feedreader/"
 "feedreader/language/lt/)\n"
 "Language: lt\n"
@@ -23,57 +24,53 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Peržiūra neprieinama"
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "Šiam straipsniui tekstas neprieinamas :("
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
-msgstr ""
+msgstr "Nežinomas kanalas"
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr "Be kategorijos"
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
 msgstr "paskelbė: %s, "
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr "Atsisakyti"
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
 msgstr "Įrašyti"
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr "Šiandien"
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
 msgstr "Vakar"
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
 msgstr "Gaunami kanalai ir kategorijos"
 
-#: src/Backend/FeedServer.vala:157
+#: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
 msgstr "Gaunami straipsniai"
 
-#: src/Backend/FeedServer.vala:231
+#: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
 msgstr "Gaunami žvaigždute pažymėti straipsniai"
 
-#: src/Backend/FeedServer.vala:235
+#: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
 msgstr "Gaunami pažymėti straipsniai"
 
-#: src/Backend/FeedServer.vala:248
+#: src/Backend/FeedServer.vala:294
 msgid "Getting unread articles"
 msgstr "Gaunami neskaityti straipsniai"
 
@@ -118,17 +115,14 @@ msgid "No Articles"
 msgstr "Nėra straipsnių"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-#, fuzzy
 msgid "No unread articles"
-msgstr "Rodyti tik neskaitytus straipsnius"
+msgstr "Nėra neskaitytų straipsnių"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-#, fuzzy
 msgid "No starred articles"
-msgstr "Rodyti tik žvaigždute pažymėtus straipsnius"
+msgstr "Nėra žvaigždute pažymėtų straipsnių"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-#, fuzzy
 msgid "No articles"
 msgstr "Nėra straipsnių"
 
@@ -137,9 +131,8 @@ msgid "Add feed"
 msgstr "Pridėti kanalą"
 
 #: src/Widgets/FeedListFooter.vala:153
-#, fuzzy
 msgid "Remove feed"
-msgstr "Šalinti"
+msgstr "Šalinti kanalą"
 
 #: src/Widgets/SharePopover.vala:62
 msgid "Add accounts"
@@ -193,48 +186,47 @@ msgstr "Nepasirinktas joks straipsnis."
 msgid "WebKit has crashed"
 msgstr "WebKit užstrigo"
 
-#: src/Widgets/ArticleView.vala:752
+#: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
 msgstr "Įrašyti paveikslą kaip"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
 msgstr "Visi"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
 msgstr "Rodyti visus straipsnius"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
 msgstr "Neskaityti"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr "Rodyti tik neskaitytus straipsnius"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
 msgstr "Pažymėti žvaigždute"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Rodyti tik žvaigždute pažymėtus straipsnius"
 
 #: src/Widgets/ColumnViewHeader.vala:60
-#, fuzzy
 msgid "Update feeds"
 msgstr "Atnaujinti kanalus"
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
 msgstr "Ieškoti straipsnius"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Nustatymai"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
 msgstr "Skaityti straipsnį viso ekrano veiksenoje"
 
@@ -242,84 +234,76 @@ msgstr "Skaityti straipsnį viso ekrano veiksenoje"
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: src/Widgets/MainWindow.vala:355
-#, fuzzy
+#: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr "Nuo šiol, nepaisyti visų tls klaidų"
+msgstr "Nuo šiol, nepaisyti visų TLS klaidų"
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Prašome, iš pradžių, pasirinkti tarnybą"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Prašome įvesti teisingą naudotojo vardą"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Prašome įvesti teisingą slaptažodį"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 msgid "Please enter a valid URL"
 msgstr "Prašome įvesti teisingą URL"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 msgid "Please enter your Login details"
 msgstr "Prašome įvesti savo prisijungimo informaciją"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr "Atleiskite, kažkas nutiko."
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
 msgstr "Serveris pranešė apie API klaidą."
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "Jūsų naudotojo vardas arba slaptažodis yra neteisingas."
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 "Nėra ryšio su serveriu. Patikrinkite savo interneto ryšį ir serverio URL!"
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "API prieiga serveryje yra išjungta. Prašome, iš pradžių, ją įjungti!"
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
 msgstr "Nesuteikta teisių URL prieigai"
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr "Neprieinamas joks teisingas liudijimų įstaigos liudijimas!"
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr "Prašome savo tt-rss egzemplioriuje įdiegti \"api_feedreader\" įskiepį!"
 
 #: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
 msgid "Tag article"
 msgstr "Pridėti straipsniui žymę"
 
 #: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
 msgid "Print article"
-msgstr "Rikiuoti straipsnius pagal"
+msgstr "Spausdinti straipsnį"
 
 #: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
 msgid "Share article"
 msgstr "Dalintis straipsniu"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-msgid "Attachments"
-msgstr "Priedai"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -358,12 +342,12 @@ msgid "Add"
 msgstr "Pridėti"
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
-msgstr "OPML failas:"
+msgid "OPML File:"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
-msgstr "Pasirinkite OPML failą"
+msgid "Select OPML File"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -381,25 +365,29 @@ msgstr "Išeiti iš viso ekrano veiksenos"
 msgid "All Articles"
 msgstr "Visi straipsniai"
 
-#: src/Widgets/FeedList.vala:446
+#: src/Widgets/FeedList.vala:444
 msgid "Tags"
 msgstr "Žymės"
 
-#: src/Widgets/FeedList.vala:494
+#: src/Widgets/FeedList.vala:492
 msgid "Categories"
 msgstr "Kategorijos"
 
-#: src/Widgets/FeedList.vala:499
+#: src/Widgets/FeedList.vala:497
 msgid "Feeds"
 msgstr "Kanalai"
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
 msgstr "Nauja žymė"
 
-#: src/Widgets/FeedList.vala:1146
+#: src/Widgets/FeedList.vala:1144
 msgid "New Category"
 msgstr "Nauja kategorija"
+
+#: src/Widgets/MediaButton.vala:95
+msgid "Attachments"
+msgstr "Priedai"
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
@@ -430,19 +418,16 @@ msgid "Quit"
 msgstr "Išeiti"
 
 #: src/Widgets/ShortcutsWindow.vala:37
-#, fuzzy
 msgid "Feed List"
-msgstr "Kanalų sąrašas:"
+msgstr "Kanalų sąrašas"
 
 #: src/Widgets/ShortcutsWindow.vala:42
-#, fuzzy
 msgid "Select next item"
-msgstr "Pasirinkti ankstesnį/kitą straipsnį"
+msgstr "Pasirinkti kitą elementą"
 
 #: src/Widgets/ShortcutsWindow.vala:43
-#, fuzzy
 msgid "Select previous item"
-msgstr "Pasirinkti ankstesnį/kitą straipsnį"
+msgstr "Pasirinkti ankstesnį elementą"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
@@ -453,9 +438,8 @@ msgid "Mark the currently selected as read"
 msgstr "Žymėti šiuo metu pasirinktą kaip skaitytą"
 
 #: src/Widgets/ShortcutsWindow.vala:54
-#, fuzzy
 msgid "Article List"
-msgstr "Straipsnių sąrašas:"
+msgstr "Straipsnių sąrašas"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
@@ -482,14 +466,12 @@ msgid "Center the currently selected article"
 msgstr "Centruoti šiuo metu pasirinktą straipsnį"
 
 #: src/Widgets/ShortcutsWindow.vala:79
-#, fuzzy
 msgid "Article View"
-msgstr "Straipsnio rodinys:"
+msgstr "Straipsnio rodinys"
 
 #: src/Widgets/ShortcutsWindow.vala:84
-#, fuzzy
 msgid "Scroll up/down"
-msgstr "Slinkti į patį viršų/apačią"
+msgstr "Slinkti aukštyn/žemyn"
 
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format
@@ -506,122 +488,105 @@ msgstr "Kanalas \"%s\" pašalintas"
 msgid "Remove only from %s"
 msgstr "Šalinti tik iš %s"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Sąsaja"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
 msgstr "Vidus"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
 msgstr "Dalinimasis"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr "Kanalų sąrašas:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr "Rodyti tik kanalus"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr "Rodyti tik neskaitytus"
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
-msgstr "Rikiuoti kanalų sąrašą pagal"
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Sort Feed List by"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr "Gauta"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr "Abėcėlė"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Tema"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
 msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
 msgstr "Tamsi"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
 msgstr "elementary"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
 msgstr "Straipsnių sąrašas:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
 msgstr "Rikiuoti straipsnius pagal"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr "Data"
 
-#: src/Widgets/SettingsDialog.vala:100
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr "Iš pradžių, naujausi"
+msgstr "Iš pradžių, seniausi"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:105
-msgid "Mark read by scrolling past"
-msgstr ""
+msgstr "Įtakoja tik stulpelį \"Neskaityti\""
 
 #: src/Widgets/SettingsDialog.vala:107
+msgid "Mark read by scrolling past"
+msgstr "Praslinkus, žymėti kaip skaitytus"
+
+#: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
 msgstr "Straipsnio rodinys:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr "Numatytasis"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr "Pavasaris"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr "Vidurnaktis"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr "Pergamentas"
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr "Šrifto dydis"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr "Mažas"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr "Normalus"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr "Didelis"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
-msgstr "Didžiulis"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -632,8 +597,8 @@ msgid "Number of articles"
 msgstr "Straipsnių skaičius"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
-msgstr "Kas (minučių)"
+msgid "Interval in Minutes (0 = OFF)"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -668,14 +633,18 @@ msgid "Content Grabber"
 msgstr "Turinio glemžikas"
 
 #: src/Widgets/SettingsDialog.vala:166
+msgid "Download Images"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
 msgstr "Vidinis medijos grotuvas"
 
-#: src/Widgets/SettingsDialog.vala:333
+#: src/Widgets/SettingsDialog.vala:336
 msgid "System Accounts"
 msgstr "Sistemos paskyros"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
 msgstr "FeedReader paskyros"
 
@@ -735,21 +704,18 @@ msgstr "Neteisingas naudotojo vardas ar slaptažodis"
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
 msgstr ""
+"Informacija: Tam, kad šis įskiepis veiktų, reikės įdiegti programą Telegram."
 
 #: plugins/share/Telegram/Telegram.vala:81
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid ""
 "Hey, Check out this interesting article I just read - sent by FeedReader"
 msgstr ""
-"Labas,\n"
-"\n"
-"Pasižiūrėk šį įdomų straipsnį, kurį ką perskaičiau: $URL\n"
-"\n"
-"- išsiųsta per FeedReader"
+"Labas, pasižiūrėk šį įdomų straipsnį, kurį ką tik perskaičiau - išsiųsta per "
+"FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:42
 #: plugins/share/Email/EmailForm.vala:52
@@ -758,7 +724,7 @@ msgstr "Siųsti"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr ""
+msgstr "Siųsti Telegram"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -847,13 +813,12 @@ msgstr "Siųsti tauškalą sekėjams"
 
 #: plugins/share/Browser/Browser.vala:79
 msgid "Open in Browser"
-msgstr ""
+msgstr "Atverti naršyklėje"
 
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:91
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:91
-#, fuzzy
 msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr "Norint mėgautis FeedReader naudojimusi, prašome prisijungti"
+msgstr "Prašome prisijungti prie FeedHQ ir mėgautis, naudojantis FeedReader"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:64
 msgid "freshRSS URL:"
@@ -877,11 +842,11 @@ msgstr "Atlikta"
 
 #: plugins/backend/local/localLoginWidget.vala:58
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Pridedami kanalai"
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
-msgstr ""
+msgstr "Čia nėra ką skaityti."
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
@@ -911,156 +876,3 @@ msgstr ""
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr "Norint mėgautis FeedReader naudojimusi, prašome prisijungti"
-
-#~ msgid "No unread articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr "Jokių \"%s\" atitinkančių neskaitytų straipsnių, kanale \"%s\" nėra"
-
-#~ msgid "No unread articles in the feed \"%s\" could be found"
-#~ msgstr "Kanale \"%s\" nepavyko rasti jokių neskaitytų straipsnių"
-
-#~ msgid "No marked articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr "Jokių \"%s\" atitinkančių pažymėtų straipsnių, kanale \"%s\" nėra"
-
-#~ msgid "No marked articles in the feed \"%s\" could be found"
-#~ msgstr "Kanale \"%s\" nepavyko rasti jokių pažymėtų straipsnių"
-
-#~ msgid "No articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr "Jokių \"%s\" atitinkančių straipsnių, kanale \"%s\" nėra"
-
-#~ msgid "No articles in the feed \"%s\" could be found"
-#~ msgstr "Kanale \"%s\" nepavyko rasti jokių straipsnių"
-
-#~ msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr "Jokių \"%s\" atitinkančių neskaitytų straipsnių, žymėje \"%s\" nėra"
-
-#~ msgid "No unread articles in the tag \"%s\" could be found"
-#~ msgstr "Žymėje \"%s\" nepavyko rasti jokių neskaitytų straipsnių"
-
-#~ msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr "Jokių \"%s\" atitinkančių pažymėtų straipsnių, žymėje \"%s\" nėra"
-
-#~ msgid "No marked articles in the tag \"%s\" could be found"
-#~ msgstr "Žymėje \"%s\" nepavyko rasti jokių pažymėtų straipsnių"
-
-#~ msgid "No articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr "Jokių \"%s\" atitinkančių straipsnių, žymėje \"%s\" nėra"
-
-#~ msgid "No articles in the tag \"%s\" could be found"
-#~ msgstr "Žymėje \"%s\" nepavyko rasti jokių straipsnių"
-
-#~ msgid ""
-#~ "No unread articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr ""
-#~ "Jokių \"%s\" atitinkančių neskaitytų straipsnių, kategorijoje \"%s\" nėra"
-
-#~ msgid "No unread articles in the category \"%s\" could be found"
-#~ msgstr "Kategorijoje \"%s\" nepavyko rasti jokių neskaitytų straipsnių"
-
-#~ msgid ""
-#~ "No marked articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr ""
-#~ "Jokių \"%s\" atitinkančių pažymėtų straipsnių, kategorijoje \"%s\" nėra"
-
-#~ msgid "No marked articles in the category \"%s\" could be found"
-#~ msgstr "Kategorijoje \"%s\" nepavyko rasti jokių pažymėtų straipsnių"
-
-#~ msgid "No articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr "Jokių \"%s\" atitinkančių straipsnių, kategorijoje \"%s\" nėra"
-
-#~ msgid "No articles in the category \"%s\" could be found"
-#~ msgstr "Kategorijoje \"%s\" nepavyko rasti jokių straipsnių"
-
-#~ msgid "No unread articles that fit \"%s\" could be found"
-#~ msgstr "Nepavyko rasti jokių neskaitytų straipsnių, kurie atitiktų \"%s\""
-
-#~ msgid "No unread articles could be found"
-#~ msgstr "Nepavyko rasti jokių neskaitytų straipsnių"
-
-#~ msgid "No marked articles that fit \"%s\" could be found"
-#~ msgstr "Nepavyko rasti jokių pažymėtų straipsnių, kurie atitiktų \"%s\""
-
-#~ msgid "No marked articles could be found"
-#~ msgstr "Nepavyko rasti jokių pažymėtų straipsnių"
-
-#~ msgid "No articles that fit \"%s\" could be found"
-#~ msgstr "Nepavyko rasti jokių straipsnių, kurie atitiktų \"%s\""
-
-#~ msgid "No articles could be found"
-#~ msgstr "Nepavyko rasti straipsnių"
-
-#~ msgid "Mark article (un)starred"
-#~ msgstr "(Ne)žymėti straipsnį žvaigždute"
-
-#~ msgid "Mark article (un)read"
-#~ msgstr "Žymėti straipsnį kaip (ne)skaitytą"
-
-#~ msgid "Save Article as PDF"
-#~ msgstr "Įrašyti straipsnį kaip PDF"
-
-#~ msgid "Waiting for next update information"
-#~ msgstr "Laukiama kito atnaujinimo informacijos"
-
-#~ msgid "Feed-List"
-#~ msgstr "Kanalų sąrašas"
-
-#~ msgid "Navigate the feed-list"
-#~ msgstr "Naršyti po kanalų sąrašą"
-
-#~ msgid "Article-List"
-#~ msgstr "Straipsnių sąrašas"
-
-#~ msgid "RSS Client"
-#~ msgstr "RSS klientas"
-
-#~ msgid "Read feeds from web services"
-#~ msgstr "Skaityti kanalus iš saityno tarnybų"
-
-#~ msgid "feedreader"
-#~ msgstr "feedreader"
-
-#~ msgid "FeedReader Autostart"
-#~ msgstr "FeedReader automatinis paleidimas"
-
-#~ msgid "Categories=Network;Feed;"
-#~ msgstr "Categories=Network;Feed;"
-
-#~ msgid "RSS client for various webservices"
-#~ msgstr "RSS klientas, skirtas įvairioms saityno tarnyboms"
-
-#~ msgid ""
-#~ "FeedReader is a program designed to complement an already existing web-"
-#~ "based RSS reader account."
-#~ msgstr ""
-#~ "FeedReader yra programa, kuri yra sukurta, kad papildytų jūsų esamą, "
-#~ "saitynu pagrįstą, RSS skaitytuvės paskyrą."
-
-#~ msgid "Currently supported services:"
-#~ msgstr "Šiuo metu palaikomos tarnybos:"
-
-#~ msgid "Tiny Tiny RSS"
-#~ msgstr "Tiny Tiny RSS"
-
-#~ msgid "feedly"
-#~ msgstr "feedly"
-
-#~ msgid "ownCloud"
-#~ msgstr "ownCloud"
-
-#~ msgid "Inoreader"
-#~ msgstr "Inoreader"
-
-#~ msgid ""
-#~ "It combines all the advantages of web based services like synchronisation "
-#~ "across all your devices with everything you expect from a modern desktop "
-#~ "application: Desktop notifications, fast search and filters, tagging, "
-#~ "sharing to \"read-it-later\" services like pocket and instapaper, handy "
-#~ "keyboard shortcuts and a database that keeps all your old articles as "
-#~ "long as you like."
-#~ msgstr ""
-#~ "Ji sutelkia visus saitynu pagrįstų tarnybų privalumus, tokius kaip "
-#~ "sinchronizavimas tarp visų jūsų įrenginių, su viskuo ko galėtumėte "
-#~ "tikėtis iš šiuolaikinės darbalaukio programos: Darbalaukio pranešimais, "
-#~ "greita paieška ir filtrais, žymėjimu, dalinimusi su \"skaitymo vėliau\" "
-#~ "paslaugomis, tokiomis kaip pocket ir instapaper, patogiais sparčiaisiais "
-#~ "klaviatūros klavišais ir duomenų baze, kuri saugo visus jūsų senus "
-#~ "straipsnius tiek, kiek panorėsite."

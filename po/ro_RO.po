@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
-"PO-Revision-Date: 2016-09-29 19:33+0000\n"
+"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"PO-Revision-Date: 2017-05-15 08:53+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Romanian (Romania) (http://www.transifex.com/dev-feedreader/"
 "feedreader/language/ro_RO/)\n"
@@ -24,64 +24,55 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Nici o previzualizare disponibilă"
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "Nici un text disponibil pentru acest articol :("
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
 msgstr ""
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr "Necategorizat"
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
 msgstr "postat de către: %s, "
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr ""
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
 msgstr ""
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr "Astăzi"
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
 msgstr "Ieri"
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
-#, fuzzy
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
-msgstr "Arată doar articolele necitite"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:157
-#, fuzzy
+#: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
-msgstr "Articole noi"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:231
-#, fuzzy
+#: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
-msgstr "Arată doar articolele marcate cu stea"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:235
-#, fuzzy
+#: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
-msgstr "Arată doar articolele marcate cu stea"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:248
-#, fuzzy
+#: src/Backend/FeedServer.vala:294
 msgid "Getting unread articles"
-msgstr "Arată doar articolele necitite"
+msgstr ""
 
 #: src/Share/ServiceSetup.vala:56
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:96
@@ -120,38 +111,32 @@ msgid "scroll up"
 msgstr "Derulați in sus"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-#, fuzzy
 msgid "No Articles"
-msgstr "Articole noi"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-#, fuzzy
 msgid "No unread articles"
-msgstr "Arată doar articolele necitite"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-#, fuzzy
 msgid "No starred articles"
-msgstr "Arată doar articolele marcate cu stea"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-#, fuzzy
 msgid "No articles"
-msgstr "Articole noi"
+msgstr ""
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
 msgstr "Adaugă feed"
 
 #: src/Widgets/FeedListFooter.vala:153
-#, fuzzy
 msgid "Remove feed"
-msgstr "Elimină"
+msgstr ""
 
 #: src/Widgets/SharePopover.vala:62
-#, fuzzy
 msgid "Add accounts"
-msgstr "Cont nou"
+msgstr ""
 
 #: src/Widgets/LoginPage.vala:55
 msgid "Where are your feeds?"
@@ -203,48 +188,47 @@ msgstr "Nu a fost selectat nici un articol"
 msgid "WebKit has crashed"
 msgstr ""
 
-#: src/Widgets/ArticleView.vala:752
+#: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
 msgstr "Salvează imaginea ca"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
 msgstr "Totul"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
 msgstr "Arată toate articolele"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
 msgstr "Necitit"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr "Arată doar articolele necitite"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
 msgstr "Marcat cu stea"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Arată doar articolele marcate cu stea"
 
 #: src/Widgets/ColumnViewHeader.vala:60
-#, fuzzy
 msgid "Update feeds"
-msgstr "Actualizați Feed-urile"
+msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
 msgstr "Caută articole"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Setări"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
 msgstr "Citește articolul pe tot ecranul"
 
@@ -252,83 +236,75 @@ msgstr "Citește articolul pe tot ecranul"
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: src/Widgets/MainWindow.vala:355
-#, fuzzy
+#: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr "Ignoră toate erorile tls incepând de acum"
+msgstr ""
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Te rog selectează mai întăi un serviciu"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Te rog introdu un nume de utilizator valid"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Te rog introdu o parolă valid"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 msgid "Please enter a valid URL"
 msgstr "Te rog introdu un URL valid"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 msgid "Please enter your Login details"
 msgstr "Te rog introdu datele pentru login"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr "Scuze, ceva a mers prost."
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "Nume de utilizator sau parolă incorectă"
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr "Nici o conexiune la server. Verifică conexiunea la internet și URL-ul!"
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "Accesul API este dezactivat pe acest server. Te rog activeazăl!"
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
 msgstr "Neautorizat pentru accesul la URL"
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr "Nu este nici un certificat CA valabil!"
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr "Te rog instalează plugin-ul \"api_feedreader\" în instanța tt-rss"
 
 #: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
 msgid "Tag article"
-msgstr "Tăguiește articolul"
+msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
 msgid "Print article"
-msgstr "Sortează articolele in funcție de"
+msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
 msgid "Share article"
-msgstr "Dă share articolului"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-msgid "Attachments"
-msgstr "Atașări"
+msgstr ""
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -367,12 +343,12 @@ msgid "Add"
 msgstr "Adaugă"
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
-msgstr "Fișier OPML:"
+msgid "OPML File:"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
-msgstr "Selectează fișierul OPML"
+msgid "Select OPML File"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -390,26 +366,29 @@ msgstr "Părăsește modul de vizualizare pe tot ecranul"
 msgid "All Articles"
 msgstr "Toate articolele"
 
-#: src/Widgets/FeedList.vala:446
+#: src/Widgets/FeedList.vala:444
 msgid "Tags"
 msgstr "Taguri"
 
-#: src/Widgets/FeedList.vala:494
+#: src/Widgets/FeedList.vala:492
 msgid "Categories"
 msgstr "Categori"
 
-#: src/Widgets/FeedList.vala:499
-#, fuzzy
+#: src/Widgets/FeedList.vala:497
 msgid "Feeds"
-msgstr "Lista cu feed-uri:"
+msgstr ""
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
 msgstr "Tag nou"
 
-#: src/Widgets/FeedList.vala:1146
+#: src/Widgets/FeedList.vala:1144
 msgid "New Category"
 msgstr "Categorie nouă"
+
+#: src/Widgets/MediaButton.vala:95
+msgid "Attachments"
+msgstr "Atașări"
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
@@ -440,9 +419,8 @@ msgid "Quit"
 msgstr "Ieși"
 
 #: src/Widgets/ShortcutsWindow.vala:37
-#, fuzzy
 msgid "Feed List"
-msgstr "Lista cu feed-uri:"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
@@ -461,18 +439,16 @@ msgid "Mark the currently selected as read"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:54
-#, fuzzy
 msgid "Article List"
-msgstr "Lista articolelor "
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle the selected article un/read"
-msgstr "Marchează articolul citit sau necitit"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:65
 msgid "Toggle the selected article un/marked"
@@ -491,14 +467,12 @@ msgid "Center the currently selected article"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:79
-#, fuzzy
 msgid "Article View"
-msgstr "Perspectiva articolului:"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:84
-#, fuzzy
 msgid "Scroll up/down"
-msgstr "Derulați in sus"
+msgstr ""
 
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format
@@ -515,122 +489,105 @@ msgstr "Feed-ul \"%s\" a fost eliminat"
 msgid "Remove only from %s"
 msgstr "Elimină doar din %s"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Interfață"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
 msgstr "Interne"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
 msgstr "Distribuie"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr "Lista cu feed-uri:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr "Arată doar feed-uri"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr "Arată doar necitit"
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
-msgstr "Sortează lista de feed-uri in funcție de"
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Sort Feed List by"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr "Primit"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr "Alfabetic"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Temă"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
 msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
 msgstr "Întuneric"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
 msgstr "Elementar"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
 msgstr "Lista articolelor "
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
 msgstr "Sortează articolele in funcție de"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr "Data"
 
-#: src/Widgets/SettingsDialog.vala:100
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr "Cel mai nou primul"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
+#: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:107
+#: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
 msgstr "Perspectiva articolului:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr "Mod implicit"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr "Primăvară"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr "Miezul nopții"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr "Pergament"
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr "Dimensiunea fontului"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr "Mic"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr "Normal"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr "Mare"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
-msgstr "Uriaș"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -641,8 +598,8 @@ msgid "Number of articles"
 msgstr "Numărul de articole"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
-msgstr "Fiecare (minut)"
+msgid "Interval in Minutes (0 = OFF)"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -677,18 +634,20 @@ msgid "Content Grabber"
 msgstr "Acaparator pentru conținut"
 
 #: src/Widgets/SettingsDialog.vala:166
+msgid "Download Images"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:336
 msgid "System Accounts"
-msgstr "Cont nou"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
-msgstr "Autostart pentru FeedReader"
+msgstr ""
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
@@ -700,14 +659,14 @@ msgid "About FeedReader"
 msgstr "Despre FeedReader"
 
 #: src/Notification.vala:58
-#, fuzzy, c-format
+#, c-format
 msgid "There is 1 new article (%u unread)"
-msgstr "Marchează articolul citit sau necitit"
+msgstr ""
 
 #: src/Notification.vala:60
-#, fuzzy, c-format
+#, c-format
 msgid "There are %u new articles (%u unread)"
-msgstr "Marchează articolul citit sau necitit"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
@@ -722,7 +681,7 @@ msgstr "Marchează articolul citit sau necitit"
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:59
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:60
 msgid "Username:"
-msgstr "Numele utilizatorului:"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
@@ -737,11 +696,11 @@ msgstr "Numele utilizatorului:"
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:60
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:61
 msgid "Password:"
-msgstr "Parola:"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:100
 msgid "Username or Password incorrect"
-msgstr "Numele utilizatorului sau parolă incorectă"
+msgstr ""
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
@@ -766,9 +725,8 @@ msgid "Send Telegram"
 msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
-#, fuzzy
 msgid "Client ID:"
-msgstr "Client RSS"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:75
 msgid "Client Secret:"
@@ -791,19 +749,16 @@ msgid "Please fill in the clientSecret."
 msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:154
-#, fuzzy
 msgid "Please fill in the password."
-msgstr "Te rog introdu o parolă valid"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:161
-#, fuzzy
 msgid "Please fill in the username."
-msgstr "Te rog introdu un nume de utilizator valid"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:186
-#, fuzzy
 msgid "Something went wrong."
-msgstr "Scuze, ceva a mers prost."
+msgstr ""
 
 #: plugins/share/Email/EmailForm.vala:24
 msgid ""
@@ -825,7 +780,7 @@ msgstr ""
 #: plugins/share/Pocket/PocketSetup.vala:52
 #: plugins/share/Twitter/TwitterSetup.vala:51
 msgid "waiting"
-msgstr "în așteptare"
+msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
@@ -863,7 +818,7 @@ msgstr ""
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:131
 msgid "HTTP Authorization"
-msgstr "Autorizare HTTP"
+msgstr ""
 
 #: plugins/backend/fresh/freshLoginWidget.vala:140
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
@@ -877,22 +832,21 @@ msgstr ""
 msgid "Adding Feeds"
 msgstr ""
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
 msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
-msgstr "OwnCloud URL:"
+msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
 msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
 msgstr ""
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:64
-#, fuzzy
 msgid "Tiny Tiny RSS URL:"
-msgstr "Tiny Tiny RSS"
+msgstr ""
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:140
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
@@ -905,215 +859,3 @@ msgstr ""
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr ""
-
-#~ msgid "No unread articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a fost găsit nici un articol care să se potrivească cu \"%s\" din feed-"
-#~ "ul \"%s\""
-
-#~ msgid "No unread articles in the feed \"%s\" could be found"
-#~ msgstr "Nu a putut fi găsit nici un articol necitit in feed-ul \"%s"
-
-#~ msgid "No marked articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol marcat care să se potriveasca cu \"%s"
-#~ "\" în feed-ul \"%s\""
-
-#~ msgid "No marked articles in the feed \"%s\" could be found"
-#~ msgstr "Nu a putut fi găsit nici un articol marcat \"%s\""
-
-#~ msgid "No articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol care să se potriveasca cu \"%s\" in "
-#~ "feed-ul \"%s\""
-
-#~ msgid "No articles in the feed \"%s\" could be found"
-#~ msgstr "Nu a putut fi găsit nici un articol în feed-ul \"%s\""
-
-#~ msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol necitit care să se potrivească cu \"%s"
-#~ "\" din tag-ul \"%s\""
-
-#~ msgid "No unread articles in the tag \"%s\" could be found"
-#~ msgstr "Nu a putut fi găsit nici un articol necitit în tag-ul \"%s\""
-
-#~ msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol marcat care să se potrivească cu \"%s"
-#~ "\" în tag-ul \"%s\""
-
-#~ msgid "No marked articles in the tag \"%s\" could be found"
-#~ msgstr "Nu a putut fi găsit nici un articol în tag-ul \"%s\""
-
-#~ msgid "No articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol care să se potrivească cu \"%s\" în "
-#~ "tag-ul \"%s\""
-
-#~ msgid "No articles in the tag \"%s\" could be found"
-#~ msgstr "Nu au putut fi găsite articole în tag-ul \"%s\""
-
-#~ msgid ""
-#~ "No unread articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu au putut fi găsite articole necitite care să se potrivească cu \"%s\" "
-#~ "în categoria \"%s\""
-
-#~ msgid "No unread articles in the category \"%s\" could be found"
-#~ msgstr "Nu au putut fi găsite articole necitite în categoria \"%s\""
-
-#~ msgid ""
-#~ "No marked articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu au putut fi găsite articole marcate care să se potrivească cu \"%s\" "
-#~ "în categoria \"%s\""
-
-#~ msgid "No marked articles in the category \"%s\" could be found"
-#~ msgstr "Nu au putut fi găsite articole marcate în categoria \"%s\""
-
-#~ msgid "No articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu au putut fi găsite articole care să se potrivească cu \"%s\" în "
-#~ "categoria \"%s\""
-
-#~ msgid "No articles in the category \"%s\" could be found"
-#~ msgstr "Nu au fost găsite articole in categoria \"%s\""
-
-#~ msgid "No unread articles that fit \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu au fost găsite articole necitite care să se potrivească cu \"%s\""
-
-#~ msgid "No unread articles could be found"
-#~ msgstr "Nu a fost găsit nici un articol necitit"
-
-#~ msgid "No marked articles that fit \"%s\" could be found"
-#~ msgstr "Nu au fost găsite articole marcate care să se potrivească cu \"%s\""
-
-#~ msgid "No marked articles could be found"
-#~ msgstr "Nu a fost găsit nici un articol marcat"
-
-#~ msgid "No articles that fit \"%s\" could be found"
-#~ msgstr "Nu au fost găsite articole care să se potrivească cu \"%s\""
-
-#~ msgid "No articles could be found"
-#~ msgstr "Nu au fost găsite articole"
-
-#~ msgid "Mark article (un)starred"
-#~ msgstr "Marchează articolul  cu sau fără stea"
-
-#~ msgid "Mark article (un)read"
-#~ msgstr "Marchează articolul citit sau necitit"
-
-#, fuzzy
-#~ msgid "Save Article as PDF"
-#~ msgstr "Dă share articolului"
-
-#, fuzzy
-#~ msgid "Feed-List"
-#~ msgstr "Lista cu feed-uri:"
-
-#, fuzzy
-#~ msgid "Article-List"
-#~ msgstr "Lista articolelor "
-
-#~ msgid "RSS Client"
-#~ msgstr "Client RSS"
-
-#~ msgid "Read feeds from web services"
-#~ msgstr "Citește feed-uri din servicii web"
-
-#~ msgid "feedreader"
-#~ msgstr "FeedReader"
-
-#~ msgid "FeedReader Autostart"
-#~ msgstr "Autostart pentru FeedReader"
-
-#~ msgid "Categories=Network;Feed;"
-#~ msgstr "Categorii=Rețea;Feed;"
-
-#~ msgid "RSS client for various webservices"
-#~ msgstr "Client RSS pentru diferite servicii web"
-
-#~ msgid ""
-#~ "FeedReader is a program designed to complement an already existing web-"
-#~ "based RSS reader account."
-#~ msgstr ""
-#~ "FeedReader este un program creat pentru a completa un cont RSS web-based "
-#~ "deja existent."
-
-#~ msgid "Currently supported services:"
-#~ msgstr "Servicii curente suportate:"
-
-#~ msgid "Tiny Tiny RSS"
-#~ msgstr "Tiny Tiny RSS"
-
-#~ msgid "feedly"
-#~ msgstr "feedly"
-
-#~ msgid "ownCloud"
-#~ msgstr "ownCloud"
-
-#~ msgid "Inoreader"
-#~ msgstr "Inoreader"
-
-#~ msgid ""
-#~ "It combines all the advantages of web based services like synchronisation "
-#~ "across all your devices with everything you expect from a modern desktop "
-#~ "application: Desktop notifications, fast search and filters, tagging, "
-#~ "sharing to \"read-it-later\" services like pocket and instapaper, handy "
-#~ "keyboard shortcuts and a database that keeps all your old articles as "
-#~ "long as you like."
-#~ msgstr ""
-#~ "Combină toate avantajele unui serviciu web-based cum ar fi sincronizarea "
-#~ "pe toate dispozitivele cu tot ce aștepți de la o aplicație desktop "
-#~ "modernă: notificări pentru Desktop, căutare rapidă si filtre, tagging, "
-#~ "sharing pentru servicii de tip ,,read-it-later\" precum pocket sau "
-#~ "instapaper, comenzi rapide la îndemână și o bază de date în care poți "
-#~ "păstra articolele vechi atât timp cât  dorești."
-
-#~ msgid "None of the %i Articles in the database fit the current filters."
-#~ msgstr ""
-#~ "Nici unul dintre articolele %i din baza de date nu se potrivește cu "
-#~ "filtrul curent"
-
-#~ msgid ""
-#~ "No unread and marked articles that fit \"%s\" in the feed \"%s\" could be "
-#~ "found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol necitit sau marcat care să se "
-#~ "potrivească cu \"%s în feed-ul \"%s\""
-
-#~ msgid "No unread and marked articles in the feed \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol necitit sau marcat în feed-ul \"%s\""
-
-#~ msgid ""
-#~ "No unread and marked articles that fit \"%s\" in the tag \"%s\" could be "
-#~ "found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol necitit și marcat care să se "
-#~ "potrivească cu \"%s\" în tag-u \"%s\""
-
-#~ msgid "No unread and marked articles in the tag \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu a putut fi găsit nici un articol necitit si marcat in tag-ul \"%s\""
-
-#~ msgid ""
-#~ "No unread and marked articles that fit \"%s\" in the category \"%s\" "
-#~ "could be found"
-#~ msgstr ""
-#~ "Nu au putut fi găsite articole necitite sau marcate care să se "
-#~ "potrivească cu \"%s\" în categoria \"%s\""
-
-#~ msgid "No unread and marked articles in the category \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu au putut fi găsite articole necitite sau marcate în categoria \"%s\""
-
-#~ msgid "No unread and marked articles that fit \"%s\" could be found"
-#~ msgstr ""
-#~ "Nu au putut fi găsite articole necitite sau marcate care să se "
-#~ "potrivească cu \"%s\""
-
-#~ msgid "No unread and marked articles could be found"
-#~ msgstr "Nu a fost găsit nici un articol necitit sau marcat"

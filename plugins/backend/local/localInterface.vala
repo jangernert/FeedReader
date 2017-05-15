@@ -459,7 +459,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			dbDaemon.get_default().write_articles(articleArray);
 			Logger.debug("localInterface: %i articles written".printf(articleArray.size));
-			updateFeedList();
+			refreshFeedListCounter();
 			updateArticleList();
 		}
 	}

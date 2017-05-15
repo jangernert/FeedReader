@@ -119,6 +119,12 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		});
 
 		m_media_button = new AttachedMediaButton();
+		m_media_button.popOpened.connect(() => {
+			popOpened();
+		});
+		m_media_button.popClosed.connect(() => {
+			popClosed();
+		});
 
 		this.pack_start(m_fullscreen_button);
 		this.pack_start(m_mark_button);

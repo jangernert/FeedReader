@@ -16,7 +16,7 @@
 public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public signal void newFeedList();
-	public signal void updateFeedList();
+	public signal void refreshFeedListCounter();
 	public signal void updateArticleList();
 	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();

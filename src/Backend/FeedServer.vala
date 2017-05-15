@@ -20,12 +20,6 @@ public class FeedReader.FeedServer : GLib.Object {
 	private Peas.ExtensionSet m_extensions;
 	private FeedServerInterface? m_plugin;
 	private Peas.Engine m_engine;
-	public signal void newFeedList();
-	public signal void updateFeedList();
-	public signal void updateArticleList();
-	public signal void writeInterfaceState();
-	public signal void showArticleListOverlay();
-	public signal void updateSyncProgress(string progress);
 
 	private static FeedServer? m_server;
 
@@ -49,11 +43,11 @@ public class FeedReader.FeedServer : GLib.Object {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
 			m_plugin = (extension as FeedServerInterface);
 			m_plugin.init();
-			m_plugin.newFeedList.connect(() => { newFeedList(); });
-			m_plugin.updateFeedList.connect(() => { updateFeedList(); });
-			m_plugin.updateArticleList.connect(() => { updateArticleList(); });
-			m_plugin.writeInterfaceState.connect(() => { writeInterfaceState(); });
-			m_plugin.showArticleListOverlay.connect(() => { showArticleListOverlay(); });
+			m_plugin.newFeedList.connect(() => { FeedDaemonServer.get_default().newFeedList(); });
+			m_plugin.refreshFeedListCounter.connect(() => { FeedDaemonServer.get_default().refreshFeedListCounter(); });
+			m_plugin.updateArticleList.connect(() => { FeedDaemonServer.get_default().updateArticleList(); });
+			m_plugin.writeInterfaceState.connect(() => { FeedDaemonServer.get_default().writeInterfaceState(); });
+			m_plugin.showArticleListOverlay.connect(() => { FeedDaemonServer.get_default().showArticleListOverlay(); });
 			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
 		});
 
@@ -170,7 +164,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		dbDaemon.get_default().update_tags(tags);
 		dbDaemon.get_default().delete_nonexisting_tags();
 
-		newFeedList();
+		FeedDaemonServer.get_default().newFeedList();
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -260,7 +254,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		// write tags
 		dbDaemon.get_default().write_tags(tags);
 
-		newFeedList();
+		FeedDaemonServer.get_default().newFeedList();
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -322,14 +316,14 @@ public class FeedReader.FeedServer : GLib.Object {
 			}
 
 			dbDaemon.get_default().write_articles(new_articles);
-			updateFeedList();
-			updateArticleList();
+			FeedDaemonServer.get_default().refreshFeedListCounter();
+			FeedDaemonServer.get_default().updateArticleList();
 		}
 	}
 
 	private void setNewRows()
 	{
-		writeInterfaceState();
+		FeedDaemonServer.get_default().writeInterfaceState();
 
 		if(Settings.state().get_boolean("no-animations") && Settings.state().get_enum("show-articles") == ArticleListState.ALL)
 		{
@@ -903,7 +897,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void syncProgress(string text)
 	{
-		updateSyncProgress(text);
+		FeedDaemonServer.get_default().updateSyncProgress(text);
 		Settings.state().set_string("sync-status", text);
 	}
 

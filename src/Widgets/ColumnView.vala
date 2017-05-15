@@ -260,7 +260,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_feedList.newFeedlist(m_articleList.getState(), defaultSettings);
 	}
 
-	public void updateFeedList()
+	public void refreshFeedListCounter()
 	{
 		m_feedList.refreshCounters(m_articleList.getState());
 	}

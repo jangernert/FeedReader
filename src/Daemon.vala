@@ -35,8 +35,9 @@ namespace FeedReader {
 		public signal void springCleanStarted();
 		public signal void springCleanFinished();
 		public signal void newFeedList();
-		public signal void updateFeedList();
+		public signal void refreshFeedListCounter();
 		public signal void updateArticleList();
+		public signal void reloadFavIcons();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
@@ -312,30 +313,6 @@ namespace FeedReader {
 				CachedActionManager.get_default().executeActions();
 			});
 
-			FeedServer.get_default().newFeedList.connect(() => {
-				newFeedList();
-			});
-
-			FeedServer.get_default().updateFeedList.connect(() => {
-				updateFeedList();
-			});
-
-			FeedServer.get_default().updateArticleList.connect(() => {
-				updateArticleList();
-			});
-
-			FeedServer.get_default().writeInterfaceState.connect(() => {
-				writeInterfaceState();
-			});
-
-			FeedServer.get_default().showArticleListOverlay.connect(() => {
-				showArticleListOverlay();
-			});
-
-			FeedServer.get_default().updateSyncProgress.connect((progress) => {
-				updateSyncProgress(progress);
-			});
-
 			m_loggedin = FeedServer.get_default().login();
 
 			if(m_loggedin == LoginResponse.SUCCESS)
@@ -407,7 +384,7 @@ namespace FeedReader {
 				asyncPayload pl = () => { dbDaemon.get_default().update_article(articleID, "unread", status); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
-					updateFeedList();
+					refreshFeedListCounter();
 					updateBadge();
 				});
 			}
@@ -427,7 +404,7 @@ namespace FeedReader {
 				asyncPayload pl = () => { dbDaemon.get_default().update_article(articleID, "marked", status); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
-					updateFeedList();
+					refreshFeedListCounter();
 				});
 			}
 		}

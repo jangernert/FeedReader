@@ -79,7 +79,7 @@ namespace FeedReader {
 		public signal void springCleanStarted();
 		public signal void springCleanFinished();
 		public signal void newFeedList();
-		public signal void updateFeedList();
+		public signal void refreshFeedListCounter();
 		public signal void updateArticleList();
 		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
@@ -132,9 +132,9 @@ namespace FeedReader {
 				ColumnView.get_default().newFeedList();
 			});
 
-			m_connection.updateFeedList.connect(() => {
-				Logger.debug("DBusConnection: updateFeedList");
-				ColumnView.get_default().updateFeedList();
+			m_connection.refreshFeedListCounter.connect(() => {
+				Logger.debug("DBusConnection: refreshFeedListCounter");
+				ColumnView.get_default().refreshFeedListCounter();
 			});
 
 			m_connection.updateArticleList.connect(() => {

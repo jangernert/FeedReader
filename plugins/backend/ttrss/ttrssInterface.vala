@@ -344,7 +344,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		if(articles.size > 0)
 		{
 			dbDaemon.get_default().write_articles(articles);
-			updateFeedList();
+			refreshFeedListCounter();
 			updateArticleList();
 		}
 	}

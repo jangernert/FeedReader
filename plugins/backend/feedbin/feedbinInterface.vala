@@ -329,7 +329,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		dbDaemon.get_default().updateArticlesByID(m_api.unreadEntries(), "unread");
 		dbDaemon.get_default().updateArticlesByID(m_api.starredEntries(), "marked");
 		updateArticleList();
-		refreshFeedListCounter();
+		updateFeedList();
 	}
 
 }

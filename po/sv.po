@@ -4,14 +4,14 @@
 #
 # Translators:
 # FIRST AUTHOR <EMAIL@ADDRESS>, 2014
-# Mikael Nyberg, 2016
+# Mikael Nyberg, 2016-2017
 # Mikael Nyberg, 2016
 msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
-"PO-Revision-Date: 2016-09-29 19:33+0000\n"
+"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"PO-Revision-Date: 2017-05-15 08:53+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Swedish (http://www.transifex.com/dev-feedreader/feedreader/"
 "language/sv/)\n"
@@ -25,64 +25,55 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Ingen förhandsvisning tillgänglig"
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "Ingen text tillgänglig för den här artikeln :("
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
 msgstr ""
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr "Okategoriserade"
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
 msgstr "av: %s,"
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr ""
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
 msgstr ""
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr "Idag"
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
 msgstr "Igår"
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
-#, fuzzy
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
-msgstr "Visa endast olästa artiklar"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:157
-#, fuzzy
+#: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
-msgstr "Nya artiklar"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:231
-#, fuzzy
+#: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
-msgstr "Visa endast favoriserade artiklar"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:235
-#, fuzzy
+#: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
-msgstr "Visa endast favoriserade artiklar"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:248
-#, fuzzy
+#: src/Backend/FeedServer.vala:294
 msgid "Getting unread articles"
-msgstr "Visa endast olästa artiklar"
+msgstr ""
 
 #: src/Share/ServiceSetup.vala:56
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:96
@@ -120,38 +111,32 @@ msgid "scroll up"
 msgstr "skrolla upp"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-#, fuzzy
 msgid "No Articles"
-msgstr "Nya artiklar"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-#, fuzzy
 msgid "No unread articles"
-msgstr "Visa endast olästa artiklar"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-#, fuzzy
 msgid "No starred articles"
-msgstr "Visa endast favoriserade artiklar"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-#, fuzzy
 msgid "No articles"
-msgstr "Nya artiklar"
+msgstr ""
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
 msgstr "Lägg till flöde"
 
 #: src/Widgets/FeedListFooter.vala:153
-#, fuzzy
 msgid "Remove feed"
-msgstr "Ta bort"
+msgstr ""
 
 #: src/Widgets/SharePopover.vala:62
-#, fuzzy
 msgid "Add accounts"
-msgstr "Nytt konto"
+msgstr ""
 
 #: src/Widgets/LoginPage.vala:55
 msgid "Where are your feeds?"
@@ -201,49 +186,47 @@ msgstr "Ingen artikel vald."
 msgid "WebKit has crashed"
 msgstr ""
 
-#: src/Widgets/ArticleView.vala:752
-#, fuzzy
+#: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
-msgstr "Dela artikel"
+msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
 msgstr "Alla"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
 msgstr "Visa alla artiklar"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
 msgstr "Olästa"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr "Visa endast olästa artiklar"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
 msgstr "Favoriter"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Visa endast favoriserade artiklar"
 
 #: src/Widgets/ColumnViewHeader.vala:60
-#, fuzzy
 msgid "Update feeds"
-msgstr "Uppdatera nyhetsflöden"
+msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
 msgstr "Sök artiklar"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Inställningar"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
 msgstr ""
 
@@ -251,44 +234,43 @@ msgstr ""
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: src/Widgets/MainWindow.vala:355
-#, fuzzy
+#: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr "Ignorera alla TLS-fel från och med nu"
+msgstr ""
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Välj en tjänst först"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Ange ett giltigt användarnamn"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Ange ett giltigt lösenord"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 msgid "Please enter a valid URL"
 msgstr "Ange en giltig URL"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 msgid "Please enter your Login details"
 msgstr "Ange dina inloggningsuppgifter"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr "Tyvärr gick något fel."
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "Antingen är ditt användarnamn eller lösenord fel."
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -296,41 +278,33 @@ msgstr ""
 "Ingen anslutning till servern. Kontrollera din internetanslutning och "
 "serverns URL!"
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "API-åtkomst är inaktiverat på servern. Vänligen aktivera det först!"
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
 msgstr "Ingen behörighet att komma åt URL"
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr "Inget giltigt CA-certifikat tillgängligt!"
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
 msgid "Tag article"
 msgstr "Etikettera artikel"
 
 #: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
 msgid "Print article"
-msgstr "Sortera artiklar efter"
+msgstr "Skriv ut artikel"
 
 #: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
 msgid "Share article"
 msgstr "Dela artikel"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-#, fuzzy
-msgid "Attachments"
-msgstr "Pergament"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -369,12 +343,12 @@ msgid "Add"
 msgstr "Lägg till"
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
-msgstr "OPML-fil:"
+msgid "OPML File:"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
-msgstr "Välj OPML-fil"
+msgid "Select OPML File"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -386,32 +360,35 @@ msgstr "Importera OPML"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
-msgstr ""
+msgstr "Lämna helskärmsläget"
 
 #: src/Widgets/FeedList.vala:247
 msgid "All Articles"
 msgstr "Alla artiklar"
 
-#: src/Widgets/FeedList.vala:446
+#: src/Widgets/FeedList.vala:444
 msgid "Tags"
 msgstr "Taggar"
 
-#: src/Widgets/FeedList.vala:494
+#: src/Widgets/FeedList.vala:492
 msgid "Categories"
 msgstr "Kategorier"
 
-#: src/Widgets/FeedList.vala:499
-#, fuzzy
+#: src/Widgets/FeedList.vala:497
 msgid "Feeds"
-msgstr "Flödeslista:"
+msgstr "Flöden"
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
 msgstr "Ny tagg"
 
-#: src/Widgets/FeedList.vala:1146
+#: src/Widgets/FeedList.vala:1144
 msgid "New Category"
 msgstr "Ny kategori"
+
+#: src/Widgets/MediaButton.vala:95
+msgid "Attachments"
+msgstr "Bilagor"
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
@@ -435,16 +412,15 @@ msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:28
 msgid "Search"
-msgstr ""
+msgstr "Sök"
 
 #: src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
 msgstr "Avsluta"
 
 #: src/Widgets/ShortcutsWindow.vala:37
-#, fuzzy
 msgid "Feed List"
-msgstr "Flödeslista:"
+msgstr "Flödeslista"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
@@ -463,18 +439,16 @@ msgid "Mark the currently selected as read"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:54
-#, fuzzy
 msgid "Article List"
-msgstr "Artikellista:"
+msgstr "Artikellista"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle the selected article un/read"
-msgstr "Markera artikeln som läst/oläst"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:65
 msgid "Toggle the selected article un/marked"
@@ -493,14 +467,12 @@ msgid "Center the currently selected article"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:79
-#, fuzzy
 msgid "Article View"
-msgstr "Artikelvy:"
+msgstr "Artikelvy"
 
 #: src/Widgets/ShortcutsWindow.vala:84
-#, fuzzy
 msgid "Scroll up/down"
-msgstr "skrolla upp"
+msgstr "skrolla upp/ner"
 
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format
@@ -517,121 +489,105 @@ msgstr "Nyhetsflödet \"%s\" borttaget"
 msgid "Remove only from %s"
 msgstr "Ta endast bort från %s"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Gränssnitt"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
 msgstr "Inställningar"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
 msgstr "Dela"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr "Flödeslista:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr "Visa endast nyhetsflöden"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr "Visa endast olästa"
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
-msgstr "Sortera flödeslista efter"
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Sort Feed List by"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr "Mottaget"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr "Alfabetiskt"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Tema"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
 msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
 msgstr "Mörk"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
 msgstr "elementary"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
 msgstr "Artikellista:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
 msgstr "Sortera artiklar efter"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr "Datum"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr ""
+msgstr "Äldsta först"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
-msgid "Mark read by scrolling past"
-msgstr ""
-
 #: src/Widgets/SettingsDialog.vala:107
+msgid "Mark read by scrolling past"
+msgstr "Markera som läst vid bläddring"
+
+#: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
 msgstr "Artikelvy:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr "Standard"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr "Vår"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr "Midnatt"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr "Pergament"
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr "Teckenstorlek"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr "Liten"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr "Normal"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr "Stor"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
-msgstr "Enorm"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -642,8 +598,8 @@ msgid "Number of articles"
 msgstr "Antal artiklar"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
-msgstr "Varje (minuter)"
+msgid "Interval in Minutes (0 = OFF)"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -678,18 +634,20 @@ msgid "Content Grabber"
 msgstr "Artikelhämtare"
 
 #: src/Widgets/SettingsDialog.vala:166
-msgid "Internal Media Player"
+msgid "Download Images"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
-#, fuzzy
-msgid "System Accounts"
-msgstr "Nytt konto"
+#: src/Widgets/SettingsDialog.vala:168
+msgid "Internal Media Player"
+msgstr "Inbyggd mediaspelare"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:336
+msgid "System Accounts"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
-msgstr "FeedReader"
+msgstr ""
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
@@ -701,14 +659,14 @@ msgid "About FeedReader"
 msgstr "Om FeedReader"
 
 #: src/Notification.vala:58
-#, fuzzy, c-format
+#, c-format
 msgid "There is 1 new article (%u unread)"
-msgstr "Markera artikeln som läst/oläst"
+msgstr "Det finns 1 ny artikel (%u olästa)"
 
 #: src/Notification.vala:60
-#, fuzzy, c-format
+#, c-format
 msgid "There are %u new articles (%u unread)"
-msgstr "Markera artikeln som läst/oläst"
+msgstr "Det finns %u nya artikel (%u olästa)"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
@@ -750,7 +708,7 @@ msgstr ""
 
 #: plugins/share/Telegram/Telegram.vala:81
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
 msgid ""
@@ -791,19 +749,16 @@ msgid "Please fill in the clientSecret."
 msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:154
-#, fuzzy
 msgid "Please fill in the password."
-msgstr "Ange ett giltigt lösenord"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:161
-#, fuzzy
 msgid "Please fill in the username."
-msgstr "Ange ett giltigt användarnamn"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:186
-#, fuzzy
 msgid "Something went wrong."
-msgstr "Tyvärr gick något fel."
+msgstr ""
 
 #: plugins/share/Email/EmailForm.vala:24
 msgid ""
@@ -825,7 +780,7 @@ msgstr ""
 #: plugins/share/Pocket/PocketSetup.vala:52
 #: plugins/share/Twitter/TwitterSetup.vala:51
 msgid "waiting"
-msgstr "väntar"
+msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
@@ -863,7 +818,7 @@ msgstr ""
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:131
 msgid "HTTP Authorization"
-msgstr "HTTP-Autentisering"
+msgstr ""
 
 #: plugins/backend/fresh/freshLoginWidget.vala:140
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
@@ -877,22 +832,21 @@ msgstr ""
 msgid "Adding Feeds"
 msgstr ""
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
 msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
-msgstr "OwnCloud URL:"
+msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
 msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
 msgstr ""
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:64
-#, fuzzy
 msgid "Tiny Tiny RSS URL:"
-msgstr "Tiny Tiny RSS"
+msgstr ""
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:140
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
@@ -905,27 +859,3 @@ msgstr ""
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr ""
-
-#~ msgid "Mark article (un)starred"
-#~ msgstr "Markera artikeln som favoriserad/icke favoriserad"
-
-#~ msgid "Mark article (un)read"
-#~ msgstr "Markera artikeln som läst/oläst"
-
-#, fuzzy
-#~ msgid "Save Article as PDF"
-#~ msgstr "Dela artikel"
-
-#, fuzzy
-#~ msgid "Feed-List"
-#~ msgstr "Flödeslista:"
-
-#, fuzzy
-#~ msgid "Article-List"
-#~ msgstr "Artikellista:"
-
-#~ msgid "Tiny Tiny RSS"
-#~ msgstr "Tiny Tiny RSS"
-
-#~ msgid "None of the %i Articles in the database fit the current filters."
-#~ msgstr "Ingen av de %i artiklarna i databasen matchar de aktuella filtren."

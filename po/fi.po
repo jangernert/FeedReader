@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
+"POT-Creation-Date: 2017-05-15 10:52+0200\n"
 "PO-Revision-Date: 2015-11-14 10:23+0000\n"
 "Last-Translator: Jiri Grönroos <Unknown>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -22,61 +22,57 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Esikatselua ei ole saatavilla"
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "Tälle artikkelille ei ole tekstiä tarjolla"
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
 msgstr ""
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr "Luokittelematon"
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
 msgstr ""
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr ""
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
 msgstr ""
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr ""
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
 msgstr ""
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 #, fuzzy
 msgid "Getting feeds and categories"
 msgstr "Näytä vain lukemattomat artikkelit"
 
-#: src/Backend/FeedServer.vala:157
+#: src/Backend/FeedServer.vala:181
 #, fuzzy
 msgid "Getting articles"
 msgstr "Uudet artikkelit"
 
-#: src/Backend/FeedServer.vala:231
+#: src/Backend/FeedServer.vala:269
 #, fuzzy
 msgid "Getting starred articles"
 msgstr "Näytä vain vain tähdellä varustetut artikkelit"
 
-#: src/Backend/FeedServer.vala:235
+#: src/Backend/FeedServer.vala:276
 #, fuzzy
 msgid "Getting tagged articles"
 msgstr "Näytä vain vain tähdellä varustetut artikkelit"
 
-#: src/Backend/FeedServer.vala:248
+#: src/Backend/FeedServer.vala:294
 #, fuzzy
 msgid "Getting unread articles"
 msgstr "Näytä vain lukemattomat artikkelit"
@@ -201,32 +197,32 @@ msgstr "Ei artikkelia valittuna"
 msgid "WebKit has crashed"
 msgstr ""
 
-#: src/Widgets/ArticleView.vala:752
+#: src/Widgets/ArticleView.vala:776
 #, fuzzy
 msgid "Save image as"
 msgstr "Jaa artikkeli"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
 msgstr "Näytä kaikki artikkelit"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr "Näytä vain lukemattomat artikkelit"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
 msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Näytä vain vain tähdellä varustetut artikkelit"
 
@@ -235,15 +231,15 @@ msgstr "Näytä vain vain tähdellä varustetut artikkelit"
 msgid "Update feeds"
 msgstr "Päivitä syötteet"
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
 msgstr "Etsi artikkeleja"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Asetukset"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
 msgstr ""
 
@@ -251,64 +247,64 @@ msgstr ""
 msgid "FeedReader"
 msgstr "Syötteenlukija"
 
-#: src/Widgets/MainWindow.vala:355
+#: src/Widgets/MainWindow.vala:354
 #, fuzzy
 msgid "Ignore all TLS errors from now on"
 msgstr "Älä huomioi TLS-virheitä jatkossa"
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Valitse palvelu ensin"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Anna kelvollinen käyttäjätunnus"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Anna kelvollinen salasana"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 msgid "Please enter a valid URL"
 msgstr "Anna kelvollinen osoite"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 msgid "Please enter your Login details"
 msgstr "Anna kirjautumistietosi"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr "Valitettavasti jokin meni vikaan"
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "Joko käyttäjätunnus tai salasana on väärin."
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 "Ei yhteyttä palvelimeen. Tarkista verkkoyhteytesi ja palvelimen osoite!"
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr ""
 "API-käyttö on poistettu käytöstä palvelinpuolella. Salli API-käyttö ensin!"
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr "Kelvollista CA-varmennetta ei ole saatavilla!"
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
 
@@ -326,11 +322,6 @@ msgstr "Artikkelien järjestysperuste"
 #, fuzzy
 msgid "Share article"
 msgstr "Jaa artikkeli"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-#, fuzzy
-msgid "Attachments"
-msgstr "Pergamentti"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -371,11 +362,11 @@ msgid "Add"
 msgstr "lisää tunniste"
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
+msgid "OPML File:"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
+msgid "Select OPML File"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
@@ -395,29 +386,34 @@ msgstr ""
 msgid "All Articles"
 msgstr "Uudet artikkelit"
 
-#: src/Widgets/FeedList.vala:446
+#: src/Widgets/FeedList.vala:444
 #, fuzzy
 msgid "Tags"
 msgstr "Tunnisteet:"
 
-#: src/Widgets/FeedList.vala:494
+#: src/Widgets/FeedList.vala:492
 #, fuzzy
 msgid "Categories"
 msgstr "Luokittelematon"
 
-#: src/Widgets/FeedList.vala:499
+#: src/Widgets/FeedList.vala:497
 #, fuzzy
 msgid "Feeds"
 msgstr "Feedly"
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
 msgstr ""
 
-#: src/Widgets/FeedList.vala:1146
+#: src/Widgets/FeedList.vala:1144
 #, fuzzy
 msgid "New Category"
 msgstr "Luokittelematon"
+
+#: src/Widgets/MediaButton.vala:95
+#, fuzzy
+msgid "Attachments"
+msgstr "Pergamentti"
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
@@ -522,121 +518,106 @@ msgstr ""
 msgid "Remove only from %s"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Käyttöliittymä"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
 msgstr "Sisäiset"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr "Syöteluettelo:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr "Näytä vain syötteet"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr "Näytä vain lukemattomat"
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
+#: src/Widgets/SettingsDialog.vala:85
+#, fuzzy
+msgid "Sort Feed List by"
 msgstr "Järjestä syötelista"
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr "Vastaanotettu"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr "Aakkosjärjestyksessä"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Teema"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
 msgstr "Artikkelilista:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
 msgstr "Artikkelien järjestysperuste"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr "Päiväys"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 #, fuzzy
 msgid "Oldest first"
 msgstr "Uusin ensin"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
+#: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:107
+#: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
 msgstr "Artikkelinäkymä:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr "Oletus"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr "Kevät"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr "Keskiyö"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr "Pergamentti"
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
@@ -648,7 +629,7 @@ msgid "Number of articles"
 msgstr "Artikkelien lukumäärä"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
+msgid "Interval in Minutes (0 = OFF)"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
@@ -684,15 +665,19 @@ msgid "Content Grabber"
 msgstr "Sisällön noutaja"
 
 #: src/Widgets/SettingsDialog.vala:166
+msgid "Download Images"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
+#: src/Widgets/SettingsDialog.vala:336
 #, fuzzy
 msgid "System Accounts"
 msgstr "Vaihda käyttäjätiliä"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 #, fuzzy
 msgid "FeedReader Accounts"
 msgstr "Syötteenlukija"
@@ -884,7 +869,7 @@ msgstr ""
 msgid "Adding Feeds"
 msgstr ""
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
 msgstr ""
 

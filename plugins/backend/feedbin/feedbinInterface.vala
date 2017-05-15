@@ -64,7 +64,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return false;
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		return false;
 	}
@@ -109,8 +109,9 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return Utils.ping("https://api.feedbin.com/");
 	}
 
-	public void setArticleIsRead(string articleIDs, ArticleStatus read)
+	public void setArticleIsRead(string articleID, ArticleStatus read)
 	{
+		var articleIDs = new Gee.ArrayList<string>.wrap(new string[] { articleID });
 		if(read == ArticleStatus.UNREAD)
 			m_api.createUnreadEntries(articleIDs, false);
 		else if(read == ArticleStatus.READ)
@@ -119,71 +120,45 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
+		var articleIDs = new Gee.ArrayList<string>.wrap(new string[] { articleID });
 		if(marked == ArticleStatus.MARKED)
-			m_api.createStarredEntries(articleID, true);
+			m_api.createStarredEntries(articleIDs, true);
 		else if(marked == ArticleStatus.UNMARKED)
-			m_api.createStarredEntries(articleID, false);
+			m_api.createStarredEntries(articleIDs, false);
 	}
 
+	private void setRead(string id, FeedListType type)
+	{
+		int numArticles = 0;
+		uint count = 1000;
+		uint offset = 0;
+		do
+		{
+			var articles = dbDaemon.get_default().read_articles(id, type, ArticleListState.ALL, "", count, offset);
+
+			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
+			var articleIDs = FuncUtils.map(articles, articleToID);
+			m_api.createUnreadEntries(articleIDs, true);
+
+			offset += count;
+			numArticles = articles.size;
+		}
+		while(numArticles > 0);
+	}
 
 	public void setFeedRead(string feedID)
 	{
-		for(uint i = 0; i < 3; ++i)
-		{
-			uint count = (i+1)*1000;
-			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(feedID, FeedListType.FEED, ArticleListState.ALL, "", count, offset);
-
-			string articleIDs = "";
-
-			foreach(article a in articles)
-			{
-				articleIDs += a.getArticleID() + ",";
-			}
-
-			articleIDs = articleIDs.substring(0, articleIDs.length-1);
-			m_api.createUnreadEntries(articleIDs, true);
-		}
+		setRead(feedID, FeedListType.FEED);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
-		for(uint i = 0; i < 3; ++i)
-		{
-			uint count = (i+1)*1000;
-			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(catID, FeedListType.CATEGORY, ArticleListState.ALL, "", count, offset);
-
-			string articleIDs = "";
-
-			foreach(article a in articles)
-			{
-				articleIDs += a.getArticleID() + ",";
-			}
-
-			articleIDs = articleIDs.substring(0, articleIDs.length-1);
-			m_api.createUnreadEntries(articleIDs, true);
-		}
+		setRead(catID, FeedListType.CATEGORY);
 	}
 
 	public void markAllItemsRead()
 	{
-		for(uint i = 0; i < 5; ++i)
-		{
-			uint count = (i+1)*1000;
-			uint offset = i*1000;
-			var articles = dbDaemon.get_default().read_articles(FeedID.ALL.to_string(), FeedListType.FEED, ArticleListState.ALL, "", count, offset);
-
-			string articleIDs = "";
-
-			foreach(article a in articles)
-			{
-				articleIDs += a.getArticleID() + ",";
-			}
-
-			articleIDs = articleIDs.substring(0, articleIDs.length-1);
-			m_api.createUnreadEntries(articleIDs, true);
-		}
+		setRead(FeedID.ALL.to_string(), FeedListType.FEED);
 	}
 
 	public void tagArticle(string articleID, string tagID)
@@ -282,7 +257,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public int getUnreadCount()
 	{
-		return 0; // =( feedbin
+		return m_api.unreadEntries().size;
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
@@ -292,48 +267,34 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			return;
 		}
 
-		var articles = new Gee.LinkedList<article>();
 		var settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 		DateTime? time = null;
 		if(!dbDaemon.get_default().isTableEmpty("articles"))
 			time = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
 
-		bool starred = false;
 		string? fID = isTagID ? null : feedID;
+		bool onlyStarred = (whatToGet == ArticleStatus.MARKED);
 
+		// The Feedbin API doesn't include read/unread/starred status in the entries.json
+		var unreadIDs = new Gee.HashSet<string>();
+		unreadIDs.add_all(m_api.unreadEntries());
 
-		if(whatToGet == ArticleStatus.MARKED)
-		{
-			starred = true;
-		}
+		var starredIDs = new Gee.HashSet<string>();
+		starredIDs.add_all(m_api.starredEntries());
 
-		int articleCount = 0;
-		int page = 1;
-
-		do
+		for(int page = 1; ; ++page)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 
-			articleCount = m_api.getEntries(articles, page, starred, time, fID);
-
-			if(articleCount == 0)
+			var articles = m_api.getEntries(page, onlyStarred, unreadIDs, starredIDs, time, fID);
+			if(articles.size == 0)
 				break;
 
-			page++;
+			writeArticles(articles);
 		}
-		while(articleCount == 100);
-
-		writeArticles(articles);
-
-		dbDaemon.get_default().updateArticlesByID(m_api.unreadEntries(), "unread");
-		dbDaemon.get_default().updateArticlesByID(m_api.starredEntries(), "marked");
-		updateArticleList();
-		updateFeedList();
 	}
-
 }
-
 
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)

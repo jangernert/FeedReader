@@ -54,7 +54,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return "0";
 	}
 
-	public bool hideCagetoryWhenEmtpy(string cadID)
+	public bool hideCategoryWhenEmpty(string cadID)
 	{
 		return false;
 	}
@@ -119,7 +119,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		m_api.markFeedRead(feedID, false);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		m_api.markFeedRead(catID, true);
 	}

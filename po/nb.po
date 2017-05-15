@@ -1,85 +1,78 @@
-# Norwegian Bokmal translation for feedreader
-# Copyright (c) 2014 Rosetta Contributors and Canonical Ltd 2014
-# This file is distributed under the same license as the feedreader package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2014.
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
+# Translators:
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2014
+# Martin Myrvold <myrvold.martin@gmail.com>, 2017
 msgid ""
 msgstr ""
-"Project-Id-Version: feedreader\n"
+"Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
-"PO-Revision-Date: 2015-10-05 17:35+0000\n"
-"Last-Translator: Harald H. <haarektrans@gmail.com>\n"
-"Language-Team: Norwegian Bokmal <nb@li.org>\n"
+"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"PO-Revision-Date: 2017-05-15 08:53+0000\n"
+"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
+"Language-Team: Norwegian Bokmål (http://www.transifex.com/dev-feedreader/"
+"feedreader/language/nb/)\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Launchpad-Export-Date: 2016-01-13 05:53+0000\n"
-"X-Generator: Launchpad (build 17886)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: src/UtilsDaemon.vala:20
 msgid "No Preview Available"
 msgstr "Ingen forhåndsvisning tilgjengelig"
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "Ingen tekst tilgjengelig for denne artikkelen :("
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
-msgstr ""
+msgstr "ukjent feed"
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr "Ukategorisert"
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
-msgstr ""
+msgstr "publisert av: %s"
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
-msgstr ""
+msgstr "Lagre"
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr ""
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
-msgstr ""
+msgstr "I går"
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
-#, fuzzy
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
-msgstr "Vis kun uleste artikler"
+msgstr "Henter feeds og kategorier"
 
-#: src/Backend/FeedServer.vala:157
-#, fuzzy
+#: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
-msgstr "Nye artikler"
+msgstr "Henter artikler"
 
-#: src/Backend/FeedServer.vala:231
-#, fuzzy
+#: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
-msgstr "Vis kun stjernemerkede artikler"
+msgstr "Henter stjernemerkede artikler"
 
-#: src/Backend/FeedServer.vala:235
-#, fuzzy
+#: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
-msgstr "Vis kun stjernemerkede artikler"
+msgstr "Henter merkte artikler"
 
-#: src/Backend/FeedServer.vala:248
-#, fuzzy
+#: src/Backend/FeedServer.vala:294
 msgid "Getting unread articles"
-msgstr "Vis kun uleste artikler"
+msgstr "Henter uleste artikler"
 
 #: src/Share/ServiceSetup.vala:56
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:96
@@ -114,40 +107,35 @@ msgstr "Nye artikler"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567
 msgid "scroll up"
-msgstr ""
+msgstr "rull opp"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-#, fuzzy
 msgid "No Articles"
-msgstr "Nye artikler"
+msgstr "Ingen artikler"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-#, fuzzy
 msgid "No unread articles"
-msgstr "Vis kun uleste artikler"
+msgstr "Ingen uleste artikler"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-#, fuzzy
 msgid "No starred articles"
-msgstr "Vis kun stjernemerkede artikler"
+msgstr "Ingen stjernemerkede artikler"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-#, fuzzy
 msgid "No articles"
-msgstr "Nye artikler"
+msgstr "Ingen artikler"
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
-msgstr ""
+msgstr "Legg til feed"
 
 #: src/Widgets/FeedListFooter.vala:153
 msgid "Remove feed"
-msgstr ""
+msgstr "Fjern feed"
 
 #: src/Widgets/SharePopover.vala:62
-#, fuzzy
 msgid "Add accounts"
-msgstr "Ny konto"
+msgstr "Legg til kontoer"
 
 #: src/Widgets/LoginPage.vala:55
 msgid "Where are your feeds?"
@@ -160,38 +148,34 @@ msgstr "Velg RSS-tjenesten du bruker og logg inn for å komme i gang."
 #: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:125
 #, c-format
 msgid "Category \"%s\" removed"
-msgstr ""
+msgstr "Kategorien \"%s\" er fjernet"
 
 #: src/Widgets/CategorieRow.vala:459 src/Widgets/FeedRow.vala:244
-#, fuzzy
 msgid "Mark as read"
-msgstr "Merk artikkel som (u)lest"
+msgstr "Merk som lest"
 
 #: src/Widgets/CategorieRow.vala:460 src/Widgets/TagRow.vala:207
 #: src/Widgets/FeedRow.vala:245
-#, fuzzy
 msgid "Rename"
-msgstr "Brukernavn:"
+msgstr "Endre navn"
 
 #: src/Widgets/CategorieRow.vala:461 src/Widgets/TagRow.vala:208
 #: src/Widgets/FeedRow.vala:248 plugins/share/Telegram/TelegramSetup.vala:31
 msgid "Remove"
-msgstr ""
+msgstr "Fjern"
 
 #: src/Widgets/CategorieRow.vala:462
 msgid "Remove (with Feeds)"
-msgstr ""
+msgstr "Fjern (med feed)"
 
 #: src/Widgets/CategorieRow.vala:522 src/Widgets/TagRow.vala:310
 #: src/Widgets/FeedRow.vala:285
-#, fuzzy
 msgid "rename"
-msgstr "Brukernavn:"
+msgstr "endre navn"
 
 #: src/Widgets/CategorieRow.vala:524 src/Widgets/TagRow.vala:312
-#, fuzzy
 msgid "add"
-msgstr "legg til merkelapp"
+msgstr "legg til"
 
 #: src/Widgets/ArticleView.vala:62
 msgid "No Article selected."
@@ -199,95 +183,93 @@ msgstr "Ingen artikkel valgt."
 
 #: src/Widgets/ArticleView.vala:66
 msgid "WebKit has crashed"
-msgstr ""
+msgstr "WebKit har krasjet"
 
-#: src/Widgets/ArticleView.vala:752
-#, fuzzy
+#: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
-msgstr "Del artikkel"
+msgstr "Lagre bildet som"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
-msgstr ""
+msgstr "Alle"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
 msgstr "Vis alle artikler"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
-msgstr ""
+msgstr "Ulest"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr "Vis kun uleste artikler"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
-msgstr ""
+msgstr "Stjernemerket"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Vis kun stjernemerkede artikler"
 
 #: src/Widgets/ColumnViewHeader.vala:60
-#, fuzzy
 msgid "Update feeds"
-msgstr "Oppdater nyhetskilder"
+msgstr "Oppdater feed"
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
-msgstr "Søk artikler"
+msgstr "Søk i artikler"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Innstillinger"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
-msgstr ""
+msgstr "Les artikkelen i fullskjerm"
 
 #: src/Widgets/MainWindow.vala:44
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: src/Widgets/MainWindow.vala:355
+#: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr ""
+msgstr "Ignorer alle TLS-feil fra nå av"
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Velg først en tjeneste"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Angi et gyldig brukernavn"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Angi et gyldig passord"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 msgid "Please enter a valid URL"
 msgstr "Angi en gyldig nettadresse"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 msgid "Please enter your Login details"
 msgstr "Angi dine innloggingsdetaljer"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr "Beklager, noe gikk galt."
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
-msgstr ""
+msgstr "Serveren meldte om en API-feil."
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "Enten er ditt brukernavn eller passord feil."
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
@@ -295,41 +277,33 @@ msgstr ""
 "Ingen forbindelse til tjeneren. Kontroller internettforbindelsen din og "
 "lenken til tjeneren."
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "API-tilgang er deaktivert på tjeneren. Vennligst aktiver dette først!"
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
-msgstr ""
+msgstr "Ikke autorisert til å besøke denne URLen"
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr "Ingen gyldig CA-sertifikat tilgjengelig!"
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
 msgid "Tag article"
 msgstr "Merk artikkel"
 
 #: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
 msgid "Print article"
-msgstr "Sorter artikler etter"
+msgstr "Skriv ut artikkel"
 
 #: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
 msgid "Share article"
 msgstr "Del artikkel"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-#, fuzzy
-msgid "Attachments"
-msgstr "Pergament"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -357,66 +331,63 @@ msgstr "Jeg har ombestemt meg"
 
 #: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #: src/Widgets/AddPopover.vala:48
-#, fuzzy
 msgid "Category:"
-msgstr "Ukategorisert"
+msgstr "Kategori:"
 
 #: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
-#, fuzzy
 msgid "Add"
-msgstr "legg til merkelapp"
+msgstr "Legg til"
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
+msgid "OPML File:"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
+msgid "Select OPML File"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
-msgstr ""
+msgstr "Importer"
 
 #: src/Widgets/AddPopover.vala:93
 msgid "Import OPML"
-msgstr ""
+msgstr "Importer OPML"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
-msgstr ""
+msgstr "Gå ut av fullskjerm"
 
 #: src/Widgets/FeedList.vala:247
-#, fuzzy
 msgid "All Articles"
-msgstr "Nye artikler"
+msgstr "Alle artikler"
 
-#: src/Widgets/FeedList.vala:446
-#, fuzzy
+#: src/Widgets/FeedList.vala:444
 msgid "Tags"
-msgstr "Merkelapper:"
+msgstr "Merkelapper"
 
-#: src/Widgets/FeedList.vala:494
-#, fuzzy
+#: src/Widgets/FeedList.vala:492
 msgid "Categories"
-msgstr "Ukategorisert"
+msgstr "Kategorier"
 
-#: src/Widgets/FeedList.vala:499
-#, fuzzy
+#: src/Widgets/FeedList.vala:497
 msgid "Feeds"
-msgstr "Feedly"
+msgstr "Feeds"
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
-msgstr ""
+msgstr "Ny merkelapp"
 
-#: src/Widgets/FeedList.vala:1146
-#, fuzzy
+#: src/Widgets/FeedList.vala:1144
 msgid "New Category"
-msgstr "Ukategorisert"
+msgstr "Ny kategori"
+
+#: src/Widgets/MediaButton.vala:95
+msgid "Attachments"
+msgstr "Vedlegg"
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
@@ -432,54 +403,51 @@ msgstr "legg til merkelapp"
 
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
-msgstr ""
+msgstr "Generellt"
 
 #: src/Widgets/ShortcutsWindow.vala:27
 msgid "Refresh"
-msgstr ""
+msgstr "Last inn på nytt"
 
 #: src/Widgets/ShortcutsWindow.vala:28
 msgid "Search"
-msgstr ""
+msgstr "Søk"
 
 #: src/Widgets/ShortcutsWindow.vala:29
 msgid "Quit"
-msgstr ""
+msgstr "Avslutt"
 
 #: src/Widgets/ShortcutsWindow.vala:37
-#, fuzzy
 msgid "Feed List"
-msgstr "Nyhetsliste:"
+msgstr "Feed-liste"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr ""
+msgstr "Velg neste element"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr ""
+msgstr "Velg forrige element"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
-msgstr ""
+msgstr "Kollaps/utvid kategorier"
 
 #: src/Widgets/ShortcutsWindow.vala:45
 msgid "Mark the currently selected as read"
-msgstr ""
+msgstr "Merk den valgte som lest"
 
 #: src/Widgets/ShortcutsWindow.vala:54
-#, fuzzy
 msgid "Article List"
-msgstr "Artikkelliste:"
+msgstr "Artikkel-liste"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
-msgstr ""
+msgstr "Velg neste/forrige artikkel"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle the selected article un/read"
-msgstr "Det er 1 ny artikkel"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:65
 msgid "Toggle the selected article un/marked"
@@ -498,144 +466,126 @@ msgid "Center the currently selected article"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:79
-#, fuzzy
 msgid "Article View"
-msgstr "Artikkelvisning:"
+msgstr "Artikkelvisning"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
-msgstr ""
+msgstr "Rull opp/ned"
 
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format
 msgid "Tag \"%s\" removed"
-msgstr ""
+msgstr "Merkelappen \"%s\" er fjernet"
 
 #: src/Widgets/FeedRow.vala:203 src/Widgets/RemovePopover.vala:102
 #, c-format
 msgid "Feed \"%s\" removed"
-msgstr ""
+msgstr "Feeden \"%s\" er fjernet"
 
 #: src/Widgets/FeedRow.vala:247
 #, c-format
 msgid "Remove only from %s"
-msgstr ""
+msgstr "Fjern kun fra %s"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Grensesnitt"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
 msgstr "Interne"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
-msgstr ""
+msgstr "Del"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr "Nyhetsliste:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr "Vis kun nyhetskilder"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr "Vis kun uleste"
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
-msgstr "Sorter nyhetsliste etter"
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Sort Feed List by"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr "Mottatt"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr "Alfabetisk"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Utseende"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
-msgstr ""
+msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
-msgstr ""
+msgstr "Mørk"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
-msgstr ""
+msgstr "elementary"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
 msgstr "Artikkelliste:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
 msgstr "Sorter artikler etter"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr "Dato"
 
-#: src/Widgets/SettingsDialog.vala:100
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr "Nyeste først"
+msgstr "Eldste først"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
-msgid "Mark read by scrolling past"
-msgstr ""
-
 #: src/Widgets/SettingsDialog.vala:107
+msgid "Mark read by scrolling past"
+msgstr "Merk som lest ved å rulle forbi"
+
+#: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
 msgstr "Artikkelvisning:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr "Standard"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr "Vår"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr "Midnatt"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr "Pergament"
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
@@ -647,7 +597,7 @@ msgid "Number of articles"
 msgstr "Antall artikler"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
+msgid "Interval in Minutes (0 = OFF)"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
@@ -656,7 +606,7 @@ msgstr "Database:"
 
 #: src/Widgets/SettingsDialog.vala:159
 msgid "Delete articles after"
-msgstr ""
+msgstr "Slett artikler etter"
 
 #: src/Widgets/SettingsDialog.vala:160
 msgid "Never"
@@ -683,37 +633,39 @@ msgid "Content Grabber"
 msgstr "Innholdsskraper"
 
 #: src/Widgets/SettingsDialog.vala:166
-msgid "Internal Media Player"
+msgid "Download Images"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
-#, fuzzy
-msgid "System Accounts"
-msgstr "Endre konto"
+#: src/Widgets/SettingsDialog.vala:168
+msgid "Internal Media Player"
+msgstr "Innebygd medieavspiller"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:336
+msgid "System Accounts"
+msgstr "Systemkontoer"
+
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
-msgstr "FeedReader"
+msgstr "FeedReader-kontoer"
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
 msgid "Remove \"%s\""
-msgstr ""
+msgstr "Fjern \"%s\""
 
 #: src/FeedReader.vala:21
 msgid "About FeedReader"
 msgstr "Om FeedReader"
 
 #: src/Notification.vala:58
-#, fuzzy, c-format
+#, c-format
 msgid "There is 1 new article (%u unread)"
-msgstr "Det er 1 ny artikkel"
+msgstr "Det er 1 ny artikkel (%u ulest)"
 
 #: src/Notification.vala:60
-#, fuzzy, c-format
+#, c-format
 msgid "There are %u new articles (%u unread)"
-msgstr "Det er %u nye artikler"
+msgstr "Det er %u nye artikler (%u uleste)"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
@@ -727,7 +679,6 @@ msgstr "Det er %u nye artikler"
 #: plugins/backend/oldreader/oldreaderLoginWidget.vala:60
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:59
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:60
-#, fuzzy
 msgid "Username:"
 msgstr "Brukernavn:"
 
@@ -748,33 +699,36 @@ msgstr "Passord:"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:100
 msgid "Username or Password incorrect"
-msgstr "Brukernavn eller passord er feil"
+msgstr "Brukernavn og passord er feil"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
 msgstr ""
+"Info: Telegram må være installert for at denne utvidelsen skal fungere."
 
 #: plugins/share/Telegram/Telegram.vala:81
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
 msgid ""
 "Hey, Check out this interesting article I just read - sent by FeedReader"
 msgstr ""
+"Hei, sjekk ut denne interessante artikkelen jeg nettopp leste - sent av "
+"FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:42
 #: plugins/share/Email/EmailForm.vala:52
 msgid "Send"
-msgstr ""
+msgstr "Send"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr ""
+msgstr "Send Telegram"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
-msgstr ""
+msgstr "Klient ID:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:75
 msgid "Client Secret:"
@@ -782,11 +736,11 @@ msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:124
 msgid "Please fill in the URL."
-msgstr ""
+msgstr "Skriv inn URL."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:130
 msgid "URL seems to not be valid."
-msgstr ""
+msgstr "URL er ikke gyldig."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:140
 msgid "Please fill in the clientID."
@@ -797,19 +751,16 @@ msgid "Please fill in the clientSecret."
 msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:154
-#, fuzzy
 msgid "Please fill in the password."
-msgstr "Angi et gyldig passord"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:161
-#, fuzzy
 msgid "Please fill in the username."
-msgstr "Angi et gyldig brukernavn"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:186
-#, fuzzy
 msgid "Something went wrong."
-msgstr "Beklager, noe gikk galt."
+msgstr "Noe gikk galt."
 
 #: plugins/share/Email/EmailForm.vala:24
 msgid ""
@@ -822,11 +773,11 @@ msgstr ""
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
-msgstr ""
+msgstr "Til:"
 
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
-msgstr ""
+msgstr "Skriv epost"
 
 #: plugins/share/Pocket/PocketSetup.vala:52
 #: plugins/share/Twitter/TwitterSetup.vala:51
@@ -842,19 +793,19 @@ msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:47
 msgid "Limit: "
-msgstr ""
+msgstr "Grense:"
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
-msgstr ""
+msgstr "Tvitre"
 
 #: plugins/share/Twitter/TwitterForm.vala:80
 msgid "Tweet to Followers"
-msgstr ""
+msgstr "Tvitre til følgere"
 
 #: plugins/share/Browser/Browser.vala:79
 msgid "Open in Browser"
-msgstr ""
+msgstr "Åpne i nettleseren"
 
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:91
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:91
@@ -877,15 +828,15 @@ msgstr ""
 
 #: plugins/backend/local/localLoginWidget.vala:57
 msgid "Done"
-msgstr ""
+msgstr "Ferdig"
 
 #: plugins/backend/local/localLoginWidget.vala:58
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Legger til feeds"
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
-msgstr ""
+msgstr "Ingenting å lese her."
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
@@ -896,9 +847,8 @@ msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
 msgstr ""
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:64
-#, fuzzy
 msgid "Tiny Tiny RSS URL:"
-msgstr "TinyTinyRSS URL:"
+msgstr "Tiny Tiny RSS URL:"
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:140
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
@@ -911,91 +861,3 @@ msgstr ""
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr ""
-
-#~ msgid "Mark article (un)starred"
-#~ msgstr "Merk eller fjern stjerne fra artikkel"
-
-#~ msgid "Mark article (un)read"
-#~ msgstr "Merk artikkel som (u)lest"
-
-#, fuzzy
-#~ msgid "Save Article as PDF"
-#~ msgstr "Del artikkel"
-
-#, fuzzy
-#~ msgid "Feed-List"
-#~ msgstr "Nyhetsliste:"
-
-#, fuzzy
-#~ msgid "Article-List"
-#~ msgstr "Artikkelliste:"
-
-#, fuzzy
-#~ msgid "feedreader"
-#~ msgstr "FeedReader"
-
-#, fuzzy
-#~ msgid "FeedReader Autostart"
-#~ msgstr "FeedReader"
-
-#, fuzzy
-#~ msgid "RSS client for various webservices"
-#~ msgstr "Skrivebordsklient for ulike RSS-tjenester"
-
-#~ msgid "Tiny Tiny RSS"
-#~ msgstr "Tiny Tiny RSS"
-
-#, fuzzy
-#~ msgid "feedly"
-#~ msgstr "Feedly"
-
-#, fuzzy
-#~ msgid "ownCloud"
-#~ msgstr "OwnCloud"
-
-#~ msgid "no Author"
-#~ msgstr "ingen forfatter"
-
-#~ msgid "no Title"
-#~ msgstr "ingen tittel"
-
-#~ msgid "no Preview"
-#~ msgstr "ingen forhåndsvisning"
-
-#~ msgid "no content"
-#~ msgstr "uten innhold"
-
-#~ msgid "Not available"
-#~ msgstr "Ikke tilgjengelig"
-
-#~ msgid "No service selected."
-#~ msgstr "Ingen tjeneste valgt."
-
-#~ msgid ""
-#~ "You will be redirected to the feedly website where you can use your "
-#~ "Facebook-, Google-, Twitter-, Microsoft- or Evernote-Account to log in."
-#~ msgstr ""
-#~ "Du vil bli videresendt til Feedlys nettside hvor du kan bruke din "
-#~ "Facebook-, Google-, Twitter-, Microsoft- eller Evernote-konto for å logge "
-#~ "inn."
-
-#~ msgid "Services"
-#~ msgstr "Tjenester"
-
-#~ msgid "None"
-#~ msgstr "Ingen"
-
-#~ msgid "Built in grabber"
-#~ msgstr "Innebygget innholdsskraper"
-
-#~ msgid "None of the %i Articles in the database fit the current filters."
-#~ msgstr "Ingen av de %i artiklene i databasen passer med gjeldende filtre."
-
-#~ msgid "Please"
-#~ msgstr "Vennligst"
-
-#~ msgid "to a service to share this article."
-#~ msgstr "til en tjeneste for å dele denne artikkelen."
-
-#~ msgid "not found"
-#~ msgstr "ikke funnet"

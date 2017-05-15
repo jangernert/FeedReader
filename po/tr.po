@@ -1,5 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
-# This file is put in the public domain.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
 # Emin Tufan <etcetin@gmail.com>, 2016-2017
@@ -7,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:43+0100\n"
-"PO-Revision-Date: 2017-01-09 07:35+0000\n"
-"Last-Translator: Emin Tufan <etcetin@gmail.com>\n"
+"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"PO-Revision-Date: 2017-05-15 08:53+0000\n"
+"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/dev-feedreader/feedreader/"
 "language/tr/)\n"
 "Language: tr\n"
@@ -22,57 +23,53 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Ön İzleme Yok"
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "Bu yazı için metin yok :("
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
-msgstr ""
+msgstr "bilinmeyen Besleme"
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr "Ulamlanmamış"
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
 msgstr "gönderen: %s,"
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr "İptal"
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
 msgstr "Kaydet"
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr "Bugün"
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
 msgstr "Dün"
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
 msgstr "Beslemeler ve ulamlar alınıyor"
 
-#: src/Backend/FeedServer.vala:157
+#: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
 msgstr "Yazılar alınıyor"
 
-#: src/Backend/FeedServer.vala:231
+#: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
 msgstr "Yıldızlı yazılar alınıyor"
 
-#: src/Backend/FeedServer.vala:235
+#: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
 msgstr "Etiketli yazılar alınıyor"
 
-#: src/Backend/FeedServer.vala:248
+#: src/Backend/FeedServer.vala:294
 msgid "Getting unread articles"
 msgstr "Okunmamış yazılar alınıyor"
 
@@ -116,28 +113,24 @@ msgid "No Articles"
 msgstr "Yazı Yok"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-#, fuzzy
 msgid "No unread articles"
-msgstr "Yalnızca okunmamış yazıları göster"
+msgstr "Okunmamış yazı yok"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-#, fuzzy
 msgid "No starred articles"
-msgstr "Yalnızca yıldızlı yazıları göster"
+msgstr "Yıldızlı yazı yok"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-#, fuzzy
 msgid "No articles"
-msgstr "Yazı Yok"
+msgstr "Yazı yok"
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
 msgstr "Besleme ekle"
 
 #: src/Widgets/FeedListFooter.vala:153
-#, fuzzy
 msgid "Remove feed"
-msgstr "Kaldır"
+msgstr "Beslemeyi kaldır"
 
 #: src/Widgets/SharePopover.vala:62
 msgid "Add accounts"
@@ -192,48 +185,47 @@ msgstr "Yazı seçilmedi."
 msgid "WebKit has crashed"
 msgstr "WebKit bozuldu"
 
-#: src/Widgets/ArticleView.vala:752
+#: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
 msgstr "Resmi şöyle kaydet"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
 msgstr "Tüm"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
 msgstr "Tüm yazıları göster"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
 msgstr "Okunmamış"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr "Yalnızca okunmamış yazıları göster"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
 msgstr "Yıldızlı"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Yalnızca yıldızlı yazıları göster"
 
 #: src/Widgets/ColumnViewHeader.vala:60
-#, fuzzy
 msgid "Update feeds"
-msgstr "Beslemeleri Güncelle"
+msgstr "Beslemeleri güncelle"
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
 msgstr "Yazı Ara"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Ayarlar"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
 msgstr "Yazıyı tam ekranda oku"
 
@@ -241,84 +233,76 @@ msgstr "Yazıyı tam ekranda oku"
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: src/Widgets/MainWindow.vala:355
-#, fuzzy
+#: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr "Şimdiden sonra tüm TLS hatalarını yoksay"
+msgstr "Artık tüm TLS hatalarını görmezden gel"
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Lütfen önce bir hizmet seçin"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Lütfen geçerli bir kullanıcı adı girin"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Lütfen geçerli bir parola girin"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 msgid "Please enter a valid URL"
 msgstr "Lütfen geçerli bir adres girin"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 msgid "Please enter your Login details"
 msgstr "Lütfen Giriş bilgilerinizi girin"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr "Üzgünüz, bir şeyler yanlış gitti."
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
 msgstr "Sunucu bir API hatası bildirdi."
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "Kullanıcı adı veya parolanızdan herhangi biri yanlış."
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 "Sunucu bağlantısı yok. İnternet bağlantınızı ve sunucu adresini denetleyin!"
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "Bu sunucuda API erişimi devre dışı. Lütfen önce etkinleştirin!"
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
 msgstr "Adrese erişim için yetkilendirilmemiş"
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr "Geçerli CA sertifikası yok!"
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr "Lütfen \"api_feedreader\" yan uygulamasını tt-rss oluşumunuza kurun."
 
 #: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
 msgid "Tag article"
-msgstr "Yazıyı Etiketle"
+msgstr "Yazıyı etiketle"
 
 #: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
 msgid "Print article"
-msgstr "Yazıları şöyle sırala"
+msgstr "Yazıyı yazdır"
 
 #: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
 msgid "Share article"
-msgstr "Yazıyı Paylaş"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-msgid "Attachments"
-msgstr "Ekler"
+msgstr "Yazıyı paylaş"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -357,12 +341,12 @@ msgid "Add"
 msgstr "Ekle"
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
-msgstr "OPML dosyası:"
+msgid "OPML File:"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
-msgstr "OPML dosyası seç"
+msgid "Select OPML File"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -380,25 +364,29 @@ msgstr "Tam ekran kipinden çık"
 msgid "All Articles"
 msgstr "Tüm Yazılar"
 
-#: src/Widgets/FeedList.vala:446
+#: src/Widgets/FeedList.vala:444
 msgid "Tags"
 msgstr "Etiketler"
 
-#: src/Widgets/FeedList.vala:494
+#: src/Widgets/FeedList.vala:492
 msgid "Categories"
 msgstr "Ulamlar"
 
-#: src/Widgets/FeedList.vala:499
+#: src/Widgets/FeedList.vala:497
 msgid "Feeds"
 msgstr "Beslemeler"
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
 msgstr "Yeni Etiket"
 
-#: src/Widgets/FeedList.vala:1146
+#: src/Widgets/FeedList.vala:1144
 msgid "New Category"
 msgstr "Yeni Ulam"
+
+#: src/Widgets/MediaButton.vala:95
+msgid "Attachments"
+msgstr "Ekler"
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
@@ -429,19 +417,16 @@ msgid "Quit"
 msgstr "Çık"
 
 #: src/Widgets/ShortcutsWindow.vala:37
-#, fuzzy
 msgid "Feed List"
-msgstr "Besleme Dizelgesi:"
+msgstr "Besleme Listesi"
 
 #: src/Widgets/ShortcutsWindow.vala:42
-#, fuzzy
 msgid "Select next item"
-msgstr "Önceki/sonraki yazıyı seç"
+msgstr "Sonraki ögeyi seç"
 
 #: src/Widgets/ShortcutsWindow.vala:43
-#, fuzzy
 msgid "Select previous item"
-msgstr "Önceki/sonraki yazıyı seç"
+msgstr "Önceki ögeyi seç"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
@@ -452,9 +437,8 @@ msgid "Mark the currently selected as read"
 msgstr "Seçileni okundu olarak imle"
 
 #: src/Widgets/ShortcutsWindow.vala:54
-#, fuzzy
 msgid "Article List"
-msgstr "Yazı Dizelgesi:"
+msgstr "Yazı Listesi"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
@@ -481,14 +465,12 @@ msgid "Center the currently selected article"
 msgstr "Seçilen yazıyı ortala"
 
 #: src/Widgets/ShortcutsWindow.vala:79
-#, fuzzy
 msgid "Article View"
-msgstr "Yazı Görünümü:"
+msgstr "Yazı Görünümü"
 
 #: src/Widgets/ShortcutsWindow.vala:84
-#, fuzzy
 msgid "Scroll up/down"
-msgstr "En aşağıya/en yukarıya kaydır"
+msgstr "Aşağı/yukarı kaydır"
 
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format
@@ -505,122 +487,105 @@ msgstr "\"%s\" beslemesi kaldırıldı"
 msgid "Remove only from %s"
 msgstr "Yalnızca %s'den kaldır"
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Arayüz"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
 msgstr "İç"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
 msgstr "Paylaş"
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr "Besleme Dizelgesi:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr "Yalnızca beslemeleri göster"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr "Yalnızca okunmamışları göster"
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
-msgstr "Besleme dizelgesini şöyle sırala"
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Sort Feed List by"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr "Alındı"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr "Alfabetik"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Gövde"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
 msgstr "Gtk+"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
 msgstr "Karanlık"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
 msgstr "elementary"
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
 msgstr "Yazı Dizelgesi:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
 msgstr "Yazıları şöyle sırala"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr "Tarih"
 
-#: src/Widgets/SettingsDialog.vala:100
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr "Önce yeniler"
+msgstr "Önce eski olan"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
-msgstr ""
-
-#: src/Widgets/SettingsDialog.vala:105
-msgid "Mark read by scrolling past"
-msgstr ""
+msgstr "Yalnızca \"Okunmamış\" sütununu etkiler"
 
 #: src/Widgets/SettingsDialog.vala:107
+msgid "Mark read by scrolling past"
+msgstr "Geçmişe sürüklerken okundu olarak imle"
+
+#: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
 msgstr "Yazı Görünümü:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr "Varsayılan"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr "İlkbahar"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr "Gece yarısı"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr "Tirşe"
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr "Yazı Boyutu"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr "Küçük"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr "Olağan"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr "Büyük"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
-msgstr "İri"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -631,8 +596,8 @@ msgid "Number of articles"
 msgstr "Yazıların sayısı"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
-msgstr "Her (Dakika)"
+msgid "Interval in Minutes (0 = OFF)"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -667,14 +632,18 @@ msgid "Content Grabber"
 msgstr "İçerik Elde Edici"
 
 #: src/Widgets/SettingsDialog.vala:166
+msgid "Download Images"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
 msgstr "İç Ortam Oynatıcı"
 
-#: src/Widgets/SettingsDialog.vala:333
+#: src/Widgets/SettingsDialog.vala:336
 msgid "System Accounts"
 msgstr "Sistem Hesapları"
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
 msgstr "FeedReader Hesapları"
 
@@ -733,22 +702,16 @@ msgstr "Kullanıcı Adı ya da Parola yanlış"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr ""
+msgstr "Bilgi: Bu eklentinin çalışması için Telegram yüklenmiş olmalıdır."
 
 #: plugins/share/Telegram/Telegram.vala:81
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
-#, fuzzy
 msgid ""
 "Hey, Check out this interesting article I just read - sent by FeedReader"
-msgstr ""
-"Hey,\n"
-"\n"
-"Okuduğum şu ilgi çekici yazıya göz at: $URL\n"
-"\n"
-"- FeedReader ile gönderildi"
+msgstr "Hey, Okuduğum şu ilgi çekici yazıya göz at - FeedReader ile gönderildi"
 
 #: plugins/share/Telegram/TelegramForm.vala:42
 #: plugins/share/Email/EmailForm.vala:52
@@ -757,7 +720,7 @@ msgstr "Gönder"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr ""
+msgstr "Telegram'a Gönder"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -846,13 +809,12 @@ msgstr "Takipçilere Tweetle"
 
 #: plugins/share/Browser/Browser.vala:79
 msgid "Open in Browser"
-msgstr ""
+msgstr "Tarayıcıda Aç"
 
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:91
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:91
-#, fuzzy
 msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr "FeedReader'in tadını çıkarmak için lütfen Feedbin'e giriş yap"
+msgstr "FeedReader'in tadını çıkarmak için lütfen FeedHQ'ya giriş yap"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:64
 msgid "freshRSS URL:"
@@ -875,11 +837,11 @@ msgstr "Bitti"
 
 #: plugins/backend/local/localLoginWidget.vala:58
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Beslemeler Ekleniyor"
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
-msgstr ""
+msgstr "Burada okunacak bir şey yok."
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
@@ -907,153 +869,3 @@ msgstr "FeedReader'in tadını çıkarmak için lütfen Old Reader'a giriş yap"
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr "FeedReader'in tadını çıkarmak için lütfen Feedbin'e giriş yap"
-
-#~ msgid "No unread articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan okunmamış yazı \"%s\" beslemesinde bulunamadı"
-
-#~ msgid "No unread articles in the feed \"%s\" could be found"
-#~ msgstr "\"%s\" beslemesinde okunmamış yazı bulunamadı"
-
-#~ msgid "No marked articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan imli yazı \"%s\" beslemesinde bulunamadı"
-
-#~ msgid "No marked articles in the feed \"%s\" could be found"
-#~ msgstr "\"%s\" beslemesinde imli yazı bulunamadı"
-
-#~ msgid "No articles that fit \"%s\" in the feed \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan yazı \"%s\" beslemesinde bulunamadı"
-
-#~ msgid "No articles in the feed \"%s\" could be found"
-#~ msgstr "\"%s\" beslemesinde yazı bulunamadı"
-
-#~ msgid "No unread articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan okunmamış yazı \"%s\" etiketinde bulunamadı"
-
-#~ msgid "No unread articles in the tag \"%s\" could be found"
-#~ msgstr "\"%s\" etiketinde okunmamış yazı bulunamadı"
-
-#~ msgid "No marked articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan imli yazı \"%s\" etiketinde bulunamadı"
-
-#~ msgid "No marked articles in the tag \"%s\" could be found"
-#~ msgstr "\"%s\" etiketinde imli yazı bulunamadı"
-
-#~ msgid "No articles that fit \"%s\" in the tag \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan yazı \"%s\" etiketinde bulunamadı"
-
-#~ msgid "No articles in the tag \"%s\" could be found"
-#~ msgstr "\"%s\" etiketinde yazı bulunamadı"
-
-#~ msgid ""
-#~ "No unread articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan okunmamış yazı \"%s\" ulamında bulunamadı"
-
-#~ msgid "No unread articles in the category \"%s\" could be found"
-#~ msgstr "\"%s\" ulamında okunmamış yazı bulunamadı"
-
-#~ msgid ""
-#~ "No marked articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan imli yazı \"%s\" ulamında bulunamadı"
-
-#~ msgid "No marked articles in the category \"%s\" could be found"
-#~ msgstr "\"%s\" ulamında imlenmiş yazı bulunamadı"
-
-#~ msgid "No articles that fit \"%s\" in the category \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan yazı \"%s\" ulamında bulunamadı"
-
-#~ msgid "No articles in the category \"%s\" could be found"
-#~ msgstr "\"%s\" ulamında bir yazı bulunamadı"
-
-#~ msgid "No unread articles that fit \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan okunmamış yazı bulunamadı"
-
-#~ msgid "No unread articles could be found"
-#~ msgstr "Okunmamış yazı bulunamadı"
-
-#~ msgid "No marked articles that fit \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan imli yazı bulunamadı"
-
-#~ msgid "No marked articles could be found"
-#~ msgstr "İmli yazı bulunamadı"
-
-#~ msgid "No articles that fit \"%s\" could be found"
-#~ msgstr "\"%s\"'e uyan yazı bulunamadı"
-
-#~ msgid "No articles could be found"
-#~ msgstr "Yazı bulunamadı"
-
-#~ msgid "Mark article (un)starred"
-#~ msgstr "Yazıyı yıldızla imle(me)"
-
-#~ msgid "Mark article (un)read"
-#~ msgstr "Yazıyı okundu olarak imle(me)"
-
-#~ msgid "Save Article as PDF"
-#~ msgstr "Yazıyı PDF olarak kaydet"
-
-#~ msgid "Waiting for next update information"
-#~ msgstr "Sonraki güncelleme bilgisi için bekleniyor"
-
-#~ msgid "Feed-List"
-#~ msgstr "Besleme Dizelgesi"
-
-#~ msgid "Navigate the feed-list"
-#~ msgstr "Besleme dizelgesini gez"
-
-#~ msgid "Article-List"
-#~ msgstr "Yazı Dizelgesi"
-
-#~ msgid "RSS Client"
-#~ msgstr "RSS İstemci"
-
-#~ msgid "Read feeds from web services"
-#~ msgstr "Web hizmetlerinden beslemeleri oku"
-
-#~ msgid "feedreader"
-#~ msgstr "feedreader"
-
-#~ msgid "FeedReader Autostart"
-#~ msgstr "FeedReader'i kendiliğinden başlat"
-
-#~ msgid "Categories=Network;Feed;"
-#~ msgstr "Categories=Network;Feed;"
-
-#~ msgid "RSS client for various webservices"
-#~ msgstr "Türlü web hizmetleri için RSS istemcisi"
-
-#~ msgid ""
-#~ "FeedReader is a program designed to complement an already existing web-"
-#~ "based RSS reader account."
-#~ msgstr ""
-#~ "FeedReader, zaten var olan web tabanlı RSS okuyucu hesabını tümlemek için "
-#~ "tasarlanan bir yazılımdır."
-
-#~ msgid "Currently supported services:"
-#~ msgstr "Şu anda desteklenen hizmetler:"
-
-#~ msgid "Tiny Tiny RSS"
-#~ msgstr "Tiny Tiny RSS"
-
-#~ msgid "feedly"
-#~ msgstr "feedly"
-
-#~ msgid "ownCloud"
-#~ msgstr "ownCloud"
-
-#~ msgid "Inoreader"
-#~ msgstr "Inoreader"
-
-#~ msgid ""
-#~ "It combines all the advantages of web based services like synchronisation "
-#~ "across all your devices with everything you expect from a modern desktop "
-#~ "application: Desktop notifications, fast search and filters, tagging, "
-#~ "sharing to \"read-it-later\" services like pocket and instapaper, handy "
-#~ "keyboard shortcuts and a database that keeps all your old articles as "
-#~ "long as you like."
-#~ msgstr ""
-#~ "Çağdaş bir masaüstü uygulamasından beklediğiniz herşeyi, tüm aygıtlarınız "
-#~ "arasında eşzamanlama gibi web tabanlı hizmetlerin tüm yararlarını "
-#~ "birleştirir: Masaüstü bildirimleri, hızlı arama ve süzgeçler, etiketleme, "
-#~ "pocket ve instapaper gibi \"sonra oku\" hizmetleriyle paylaşma, "
-#~ "kullanışlı klavye kısa yolları ve eski yazılarınızı istediğiniz kadar "
-#~ "saklayabileceğiniz bir veri tabanı."

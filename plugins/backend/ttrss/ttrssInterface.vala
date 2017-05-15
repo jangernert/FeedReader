@@ -54,7 +54,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		return "0";
 	}
 
-	public bool hideCagetoryWhenEmtpy(string catID)
+	public bool hideCategoryWhenEmpty(string catID)
 	{
 		return catID == "0";
 	}
@@ -124,7 +124,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.catchupFeed(feedID, false);
 	}
 
-	public void setCategorieRead(string catID)
+	public void setCategoryRead(string catID)
 	{
 		m_api.catchupFeed(catID, true);
 	}

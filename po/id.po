@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Mohamad Hasan Al Banna <se7entime@protonmail.com>, 2016
+# Mohamad Hasan Al Banna <se7entime@openmailbox.org>, 2016
+# Nino agus <ninoagoes4@gmail.com>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-27 13:40+0100\n"
-"PO-Revision-Date: 2016-09-29 19:33+0000\n"
+"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"PO-Revision-Date: 2017-05-15 08:53+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/dev-feedreader/"
 "feedreader/language/id/)\n"
@@ -23,64 +24,55 @@ msgstr ""
 msgid "No Preview Available"
 msgstr "Tidak ada Pratinjau yang Tersedia"
 
-#: src/UtilsDaemon.vala:77
+#: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("
 msgstr "Tidak ada Teks yang tersedia untuk artikel ini :("
 
-#: src/dbBase.vala:397 plugins/backend/local/localUtils.vala:74
+#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
 msgstr ""
 
-#: src/dbBase.vala:497 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:518
+#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:516
 msgid "Uncategorized"
 msgstr "Tidak berkategori"
 
-#: src/UtilsUI.vala:66
+#: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
 msgstr ""
 
-#: src/UtilsUI.vala:303
+#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
 msgstr ""
 
-#: src/UtilsUI.vala:305
+#: src/UtilsUI.vala:290
 msgid "Save"
 msgstr ""
 
-#: src/Model/Article.vala:165
-msgid "Today"
-msgstr "Hari ini"
-
-#: src/Model/Article.vala:169
+#: src/Model/Article.vala:168
 msgid "Yesterday"
 msgstr "Kemarin"
 
-#: src/Backend/FeedServer.vala:127 src/Backend/FeedServer.vala:215
-#, fuzzy
+#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
-msgstr "Tampilkan hanya artikel belum terbaca"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:157
-#, fuzzy
+#: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
-msgstr "Artikel Baru"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:231
-#, fuzzy
+#: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
-msgstr "Tampilkan hanya artikel berbintang"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:235
-#, fuzzy
+#: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
-msgstr "Tampilkan hanya artikel berbintang"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:248
-#, fuzzy
+#: src/Backend/FeedServer.vala:294
 msgid "Getting unread articles"
-msgstr "Tampilkan hanya artikel belum terbaca"
+msgstr ""
 
 #: src/Share/ServiceSetup.vala:56
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:96
@@ -91,7 +83,7 @@ msgstr "Tampilkan hanya artikel belum terbaca"
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:95
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:96
 msgid "Login"
-msgstr "Masuk log"
+msgstr "Masuk "
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"
@@ -119,24 +111,20 @@ msgid "scroll up"
 msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-#, fuzzy
 msgid "No Articles"
-msgstr "Artikel Baru"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-#, fuzzy
 msgid "No unread articles"
-msgstr "Tampilkan hanya artikel belum terbaca"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-#, fuzzy
 msgid "No starred articles"
-msgstr "Tampilkan hanya artikel berbintang"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-#, fuzzy
 msgid "No articles"
-msgstr "Artikel Baru"
+msgstr "Tidak Ada Artikel"
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
@@ -147,9 +135,8 @@ msgid "Remove feed"
 msgstr ""
 
 #: src/Widgets/SharePopover.vala:62
-#, fuzzy
 msgid "Add accounts"
-msgstr "Akun Baru"
+msgstr ""
 
 #: src/Widgets/LoginPage.vala:55
 msgid "Where are your feeds?"
@@ -166,15 +153,13 @@ msgid "Category \"%s\" removed"
 msgstr ""
 
 #: src/Widgets/CategorieRow.vala:459 src/Widgets/FeedRow.vala:244
-#, fuzzy
 msgid "Mark as read"
-msgstr "Tandai artikel (tidak)terbaca"
+msgstr ""
 
 #: src/Widgets/CategorieRow.vala:460 src/Widgets/TagRow.vala:207
 #: src/Widgets/FeedRow.vala:245
-#, fuzzy
 msgid "Rename"
-msgstr "Nama Pengguna:"
+msgstr ""
 
 #: src/Widgets/CategorieRow.vala:461 src/Widgets/TagRow.vala:208
 #: src/Widgets/FeedRow.vala:248 plugins/share/Telegram/TelegramSetup.vala:31
@@ -187,14 +172,12 @@ msgstr ""
 
 #: src/Widgets/CategorieRow.vala:522 src/Widgets/TagRow.vala:310
 #: src/Widgets/FeedRow.vala:285
-#, fuzzy
 msgid "rename"
-msgstr "Nama Pengguna:"
+msgstr ""
 
 #: src/Widgets/CategorieRow.vala:524 src/Widgets/TagRow.vala:312
-#, fuzzy
 msgid "add"
-msgstr "tambahkan Tag"
+msgstr ""
 
 #: src/Widgets/ArticleView.vala:62
 msgid "No Article selected."
@@ -204,49 +187,47 @@ msgstr "Tidak ada Artikel yang dipilih."
 msgid "WebKit has crashed"
 msgstr ""
 
-#: src/Widgets/ArticleView.vala:752
-#, fuzzy
+#: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
-msgstr "Bagikan Artikel"
+msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
 msgstr "Semua"
 
-#: src/Widgets/ColumnViewHeader.vala:38
+#: src/Widgets/ColumnViewHeader.vala:37
 msgid "Show all articles"
 msgstr "Tampilkan semua artikel"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
 msgstr "Belum dibaca"
 
-#: src/Widgets/ColumnViewHeader.vala:39
+#: src/Widgets/ColumnViewHeader.vala:38
 msgid "Show only unread articles"
 msgstr "Tampilkan hanya artikel belum terbaca"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
 msgstr "Berbintang"
 
-#: src/Widgets/ColumnViewHeader.vala:40
+#: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
 msgstr "Tampilkan hanya artikel berbintang"
 
 #: src/Widgets/ColumnViewHeader.vala:60
-#, fuzzy
 msgid "Update feeds"
-msgstr "Perbarui Umpan"
+msgstr ""
 
-#: src/Widgets/ColumnViewHeader.vala:76
+#: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
 msgstr "Cari Artikel"
 
-#: src/Widgets/ColumnViewHeader.vala:102 src/Widgets/SettingsDialog.vala:34
+#: src/Widgets/ColumnViewHeader.vala:101
 msgid "Settings"
 msgstr "Pengaturan"
 
-#: src/Widgets/ColumnViewHeader.vala:118
+#: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
 msgstr ""
 
@@ -254,85 +235,76 @@ msgstr ""
 msgid "FeedReader"
 msgstr "FeedReader"
 
-#: src/Widgets/MainWindow.vala:355
-#, fuzzy
+#: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr "Diamkan semua galat tls mulai dari sekarang"
+msgstr ""
 
-#: src/Widgets/MainWindow.vala:435
+#: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
 msgstr "Harap pilih layanan untuk pertama kali"
 
-#: src/Widgets/MainWindow.vala:438
+#: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
 msgstr "Harap masukkan nama pengguna yang benar"
 
-#: src/Widgets/MainWindow.vala:441
+#: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
 msgstr "Harap masukkan kata sandi yang benar"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:430
 msgid "Please enter a valid URL"
 msgstr "Harap masukkan tautan yang benar"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:433
 msgid "Please enter your Login details"
 msgstr "Harap masukkan rincian Masuk log anda"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:436
 msgid "Sorry, something went wrong."
 msgstr "Maaf, ada sesuatu yang salah."
 
-#: src/Widgets/MainWindow.vala:454
+#: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:457
+#: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
 msgstr "Baik nama pengguna kamu atau kata sandi tidak benar"
 
-#: src/Widgets/MainWindow.vala:460
+#: src/Widgets/MainWindow.vala:445
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 "Tidak ada koneksi ke server. Periksa koneksi internet anda dan URL server!"
 
-#: src/Widgets/MainWindow.vala:463
+#: src/Widgets/MainWindow.vala:448
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "Akses API dimatikan diserver. Harap aktifkan terlebih dahulu!"
 
-#: src/Widgets/MainWindow.vala:466
+#: src/Widgets/MainWindow.vala:451
 msgid "Not authorized to access URL"
 msgstr "Tidak diizinkan untuk mengakses URL"
 
-#: src/Widgets/MainWindow.vala:470
+#: src/Widgets/MainWindow.vala:455
 msgid "No valid CA certificate available!"
 msgstr "Tidak ada sertifikat CA valid yang tersedia!"
 
-#: src/Widgets/MainWindow.vala:474
+#: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
 msgid "Tag article"
-msgstr "Tag Artikel"
+msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
 msgid "Print article"
-msgstr "Urutkan artikel sesuai"
+msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
 msgid "Share article"
-msgstr "Bagikan Artikel"
-
-#: src/Widgets/ArticleViewHeader.vala:121
-#, fuzzy
-msgid "Attachments"
-msgstr "Parchment"
+msgstr ""
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -363,20 +335,19 @@ msgid "URL:"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:48
-#, fuzzy
 msgid "Category:"
-msgstr "Kategori"
+msgstr ""
 
 #: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
 msgid "Add"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:65
-msgid "OPML-File:"
+msgid "OPML File:"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:67
-msgid "Select OPML-file"
+msgid "Select OPML File"
 msgstr ""
 
 #: src/Widgets/AddPopover.vala:73
@@ -395,27 +366,29 @@ msgstr ""
 msgid "All Articles"
 msgstr "Semua Artikel"
 
-#: src/Widgets/FeedList.vala:446
+#: src/Widgets/FeedList.vala:444
 msgid "Tags"
-msgstr "Tag"
+msgstr "Label"
 
-#: src/Widgets/FeedList.vala:494
+#: src/Widgets/FeedList.vala:492
 msgid "Categories"
 msgstr "Kategori"
 
-#: src/Widgets/FeedList.vala:499
-#, fuzzy
+#: src/Widgets/FeedList.vala:497
 msgid "Feeds"
-msgstr "Daftar Umpan:"
+msgstr ""
 
-#: src/Widgets/FeedList.vala:1013
+#: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
 msgstr ""
 
-#: src/Widgets/FeedList.vala:1146
-#, fuzzy
+#: src/Widgets/FeedList.vala:1144
 msgid "New Category"
-msgstr "Kategori"
+msgstr ""
+
+#: src/Widgets/MediaButton.vala:95
+msgid "Attachments"
+msgstr ""
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
@@ -446,9 +419,8 @@ msgid "Quit"
 msgstr "Keluar"
 
 #: src/Widgets/ShortcutsWindow.vala:37
-#, fuzzy
 msgid "Feed List"
-msgstr "Daftar Umpan:"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
@@ -467,18 +439,16 @@ msgid "Mark the currently selected as read"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:54
-#, fuzzy
 msgid "Article List"
-msgstr "Daftar Artikel:"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle the selected article un/read"
-msgstr "Tandai artikel (tidak)terbaca"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:65
 msgid "Toggle the selected article un/marked"
@@ -497,9 +467,8 @@ msgid "Center the currently selected article"
 msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:79
-#, fuzzy
 msgid "Article View"
-msgstr "Tampilan Artikel:"
+msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
@@ -520,121 +489,105 @@ msgstr ""
 msgid "Remove only from %s"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:45
+#: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
 msgstr "Tampilan"
 
-#: src/Widgets/SettingsDialog.vala:46
+#: src/Widgets/SettingsDialog.vala:49
 msgid "Internals"
 msgstr "Internal"
 
-#: src/Widgets/SettingsDialog.vala:47
+#: src/Widgets/SettingsDialog.vala:50
 msgid "Share"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:69
+#: src/Widgets/SettingsDialog.vala:71
 msgid "Feed List:"
 msgstr "Daftar Umpan:"
 
-#: src/Widgets/SettingsDialog.vala:71
+#: src/Widgets/SettingsDialog.vala:73
 msgid "Only show feeds"
 msgstr "Hanya tampilkan umpan"
 
-#: src/Widgets/SettingsDialog.vala:78
+#: src/Widgets/SettingsDialog.vala:80
 msgid "Only show unread"
 msgstr "Hanya tampikan belum dibaca"
 
-#: src/Widgets/SettingsDialog.vala:83
-msgid "Sort FeedList by"
-msgstr "Urutkan FeedList sesuai"
+#: src/Widgets/SettingsDialog.vala:85
+msgid "Sort Feed List by"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:83 src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
 msgstr "Diterima"
 
-#: src/Widgets/SettingsDialog.vala:83
+#: src/Widgets/SettingsDialog.vala:85
 msgid "Alphabetically"
 msgstr "Sesuai Abjad"
 
-#: src/Widgets/SettingsDialog.vala:88 src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:90 src/Widgets/SettingsDialog.vala:111
 msgid "Theme"
 msgstr "Tema"
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Gtk+"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "Dark"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:88
+#: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:93
+#: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
 msgstr "Daftar Artikel:"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
 msgstr "Urutkan artikel sesuai"
 
-#: src/Widgets/SettingsDialog.vala:95
+#: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
 msgstr "Tanggal"
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:100
+#: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:105
+#: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:107
+#: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
 msgstr "Tampilan Artikel:"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
 msgstr "Standar"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Spring"
 msgstr "Spring"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Midnight"
 msgstr "Midnight"
 
-#: src/Widgets/SettingsDialog.vala:109
+#: src/Widgets/SettingsDialog.vala:111
 msgid "Parchment"
 msgstr "Parchment"
 
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Font Size"
-msgstr "Ukuran Font"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Small"
-msgstr "Kecil"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Normal"
-msgstr "Normal"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Large"
-msgstr "Besar"
-
-#: src/Widgets/SettingsDialog.vala:114
-msgid "Huge"
-msgstr "Lebih Besar"
+#: src/Widgets/SettingsDialog.vala:116
+msgid "Font Familly"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -645,8 +598,8 @@ msgid "Number of articles"
 msgstr "Jumlah artikel"
 
 #: src/Widgets/SettingsDialog.vala:145
-msgid "Every (Minutes)"
-msgstr "Setiap (Menit)"
+msgid "Interval in Minutes (0 = OFF)"
+msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -674,25 +627,27 @@ msgstr "6 Bulan"
 
 #: src/Widgets/SettingsDialog.vala:162
 msgid "Additional Functionality:"
-msgstr "Fungsionalitas Tambahan:"
+msgstr "Kegunaan Tambahan:"
 
 #: src/Widgets/SettingsDialog.vala:164
 msgid "Content Grabber"
 msgstr "Pengambil Konten"
 
 #: src/Widgets/SettingsDialog.vala:166
+msgid "Download Images"
+msgstr ""
+
+#: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:333
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:336
 msgid "System Accounts"
-msgstr "Akun Baru"
+msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:360 src/Widgets/SettingsDialog.vala:374
-#, fuzzy
+#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
-msgstr "FeedReader"
+msgstr ""
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
@@ -704,14 +659,14 @@ msgid "About FeedReader"
 msgstr "Tentang FeedReader"
 
 #: src/Notification.vala:58
-#, fuzzy, c-format
+#, c-format
 msgid "There is 1 new article (%u unread)"
-msgstr "Tandai artikel (tidak)terbaca"
+msgstr ""
 
 #: src/Notification.vala:60
-#, fuzzy, c-format
+#, c-format
 msgid "There are %u new articles (%u unread)"
-msgstr "Tandai artikel (tidak)terbaca"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
@@ -726,7 +681,7 @@ msgstr "Tandai artikel (tidak)terbaca"
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:59
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:60
 msgid "Username:"
-msgstr "Nama Pengguna:"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
@@ -741,11 +696,11 @@ msgstr "Nama Pengguna:"
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:60
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:61
 msgid "Password:"
-msgstr "Kata Sandi:"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:100
 msgid "Username or Password incorrect"
-msgstr "Nama Pengguna ata Kata sandi salah"
+msgstr ""
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
@@ -794,19 +749,16 @@ msgid "Please fill in the clientSecret."
 msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:154
-#, fuzzy
 msgid "Please fill in the password."
-msgstr "Harap masukkan kata sandi yang benar"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:161
-#, fuzzy
 msgid "Please fill in the username."
-msgstr "Harap masukkan nama pengguna yang benar"
+msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:186
-#, fuzzy
 msgid "Something went wrong."
-msgstr "Maaf, ada sesuatu yang salah."
+msgstr ""
 
 #: plugins/share/Email/EmailForm.vala:24
 msgid ""
@@ -828,7 +780,7 @@ msgstr ""
 #: plugins/share/Pocket/PocketSetup.vala:52
 #: plugins/share/Twitter/TwitterSetup.vala:51
 msgid "waiting"
-msgstr "menunggu"
+msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
@@ -866,7 +818,7 @@ msgstr ""
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:131
 msgid "HTTP Authorization"
-msgstr "Otorisasi HTTP"
+msgstr ""
 
 #: plugins/backend/fresh/freshLoginWidget.vala:140
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
@@ -880,22 +832,21 @@ msgstr ""
 msgid "Adding Feeds"
 msgstr ""
 
-#: plugins/backend/local/localInterface.vala:412
+#: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
 msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
-msgstr "URL OwnCloud:"
+msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
 msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
 msgstr ""
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:64
-#, fuzzy
 msgid "Tiny Tiny RSS URL:"
-msgstr "Tiny Tiny RSS"
+msgstr ""
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:140
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
@@ -908,28 +859,3 @@ msgstr ""
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr ""
-
-#~ msgid "Mark article (un)starred"
-#~ msgstr "Tandai artikel (tidak)berbintang"
-
-#~ msgid "Mark article (un)read"
-#~ msgstr "Tandai artikel (tidak)terbaca"
-
-#, fuzzy
-#~ msgid "Save Article as PDF"
-#~ msgstr "Bagikan Artikel"
-
-#, fuzzy
-#~ msgid "Feed-List"
-#~ msgstr "Daftar Umpan:"
-
-#, fuzzy
-#~ msgid "Article-List"
-#~ msgstr "Daftar Artikel:"
-
-#~ msgid "Tiny Tiny RSS"
-#~ msgstr "Tiny Tiny RSS"
-
-#~ msgid "None of the %i Articles in the database fit the current filters."
-#~ msgstr ""
-#~ "Tidak ada Artikel %i yang sesuai dibasis data untuk penyaringan saat ini"

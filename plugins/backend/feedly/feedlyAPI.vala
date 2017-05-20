@@ -594,7 +594,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public void addSubscription(string feedURL, string? title = null, string? catIDs = null)
+	public bool addSubscription(string feedURL, string? title = null, string? catIDs = null)
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("id", "feed/" + feedURL);
@@ -624,7 +624,12 @@ public class FeedReader.FeedlyAPI : Object {
 		var root = new Json.Node(Json.NodeType.OBJECT);
 		root.set_object(object);
 
-		m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
+		var response = m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
+
+		if(response.status == 200)
+			return true;
+
+		return false;
 	}
 
 	public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)

@@ -42,7 +42,7 @@ namespace FeedReader {
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
-		public signal void feedAdded();
+		public signal void feedAdded(string? errmsg);
 		public signal void opmlImported();
 		public signal void updateSyncProgress(string progress);
 
@@ -723,10 +723,13 @@ namespace FeedReader {
 			});
 		}
 
-		public void addFeed(string feedURL, string cat, bool isID, bool asynchron = true)
+		public void addFeed(string feedURL, string cat, bool isID, bool asynchron)
 		{
-			string catID = null;
-			string newCatName = null;
+			string? catID = null;
+			string? newCatName = null;
+			string? feedID = null;
+			bool success = false;
+			string? errmsg = null;
 
 			if(cat != "")
 			{
@@ -738,16 +741,20 @@ namespace FeedReader {
 
 			if(asynchron)
 			{
-				asyncPayload pl = () => { FeedServer.get_default().addFeed(feedURL, catID, newCatName); };
-				callAsync.begin((owned)pl, (obj, res) => {
-					callAsync.end(res);
-					feedAdded();
-					startSync();
+				new GLib.Thread<void*>(null, () => {
+					success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
+					errmsg = (success) ? null : errmsg; // just to be sure :P
+					feedAdded(errmsg);
+
+					if(success)
+						startSync();
+					return null;
 				});
 			}
 			else
 			{
-				FeedServer.get_default().addFeed(feedURL, catID, newCatName);
+				success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
+				feedAdded(errmsg);
 			}
 		}
 

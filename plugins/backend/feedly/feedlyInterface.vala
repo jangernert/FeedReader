@@ -183,19 +183,26 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return Utils.ping("http://feedly.com/");
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
+		feedID = "feed/" + feedURL;
+		bool success = false;
+		errmsg = null;
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.createCatID(newCatName);
-			m_api.addSubscription(feedURL, null, newCatID);
+			success = m_api.addSubscription(feedURL, null, newCatID);
 		}
 		else
 		{
-			m_api.addSubscription(feedURL, null, catID);
+			success = m_api.addSubscription(feedURL, null, catID);
 		}
 
-		return "feed/" + feedURL;
+		if(!success)
+			errmsg = "feedly could not add %s";
+
+		return success;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)

@@ -416,7 +416,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		m_connection.send_post_request("rename-tag?output=json", message_string);
 	}
 
-	public void editSubscription(OldreaderSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
+	public bool editSubscription(OldreaderSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var message_string = "ac=";
 
@@ -446,6 +446,11 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			message_string += "&r=" + remove;
 
 
-		m_connection.send_post_request("subscription/edit?output=json", message_string);
+		var response = m_connection.send_post_request("subscription/edit?output=json", message_string);
+
+		if(response.status == 200)
+			return true;
+
+		return false;
 	}
 }

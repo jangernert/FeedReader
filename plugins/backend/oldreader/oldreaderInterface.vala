@@ -176,18 +176,26 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
+		feedID = "feed/" + feedURL;
+		errmsg = null;
+		bool success = false;
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
+			success = m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
+			success = m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
 		}
-		return "feed/" + feedURL;
+
+		if(!success)
+			errmsg = "The old reader could not add %s";
+
+		return success;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)

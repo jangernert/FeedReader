@@ -163,26 +163,34 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.renameLabel(int.parse(tagID), title);
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
+		bool success = false;
 		if(catID == null && newCatName != null)
 		{
 			var newCatID = m_api.createCategory(newCatName);
-			m_api.subscribeToFeed(feedURL, newCatID);
+			success = m_api.subscribeToFeed(feedURL, newCatID, null, null, out errmsg);
 		}
 		else
 		{
-			m_api.subscribeToFeed(feedURL, catID);
+			success = m_api.subscribeToFeed(feedURL, catID, null, null, out errmsg);
 		}
 
-		return (int.parse(dbDaemon.get_default().getHighestFeedID()) + 1).to_string();
+		if(success)
+			feedID = (int.parse(dbDaemon.get_default().getHighestFeedID()) + 1).to_string();
+		else
+			feedID = "-98";
+
+
+		return success;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)
 	{
+		string? errmsg = null;
 		foreach(feed f in feeds)
 		{
-			m_api.subscribeToFeed(f.getXmlUrl(), f.getCatIDs()[0]);
+			m_api.subscribeToFeed(f.getXmlUrl(), f.getCatIDs()[0], null, null, out errmsg);
 		}
 	}
 

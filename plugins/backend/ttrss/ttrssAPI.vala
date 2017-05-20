@@ -762,7 +762,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool subscribeToFeed(string feedURL, string? catID = null, string? username = null, string? password = null)
+	public bool subscribeToFeed(string feedURL, string? catID, string? username, string? password, out string? errmsg)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -779,12 +779,37 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 		int error = message.send();
 		message.printMessage();
+		message.printResponse();
+		Logger.debug(message.getStatusCode().to_string());
 
 		if(error == ConnectionError.SUCCESS)
 		{
-			return true;
+			var response = message.get_response_object();
+			if(response.has_member("status"))
+			{
+				var status = response.get_object_member("status");
+				if(status.has_member("code"))
+				{
+					switch(status.get_int_member("code"))
+					{
+						case 0:
+						case 1:
+							errmsg = null;
+							return true;
+						case 2: // Invalid URL
+						case 3: // URL content is HTML, no feeds available
+						case 4: // URL content is HTML which contains multiple feeds.
+						case 5: // Couldn't download the URL content.
+						case 6: // Content is an invalid XML.
+						default:
+							errmsg = status.get_string_member("message");
+							return false;
+					}
+				}
+			}
 		}
 
+		errmsg = "Error reaching tt-rss";
 		return false;
 	}
 

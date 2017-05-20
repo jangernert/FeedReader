@@ -310,7 +310,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// "catID": the category the feed should be placed into, "null" otherwise
 	// "newCatName": the name of a new category the feed should be put in, "null" otherwise
 	//--------------------------------------------------------------------------------------
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 
 	}

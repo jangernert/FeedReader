@@ -165,8 +165,9 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
+		errmsg = null;
 		string? cat = null;
 		if(catID != null)
 			cat = catID;
@@ -175,7 +176,15 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 		cat = m_api.composeTagID(cat);
 
-		return m_api.editStream("subscribe", {"feed/" + feedURL}, null, cat, null);
+		var response = m_api.editStream("subscribe", {"feed/" + feedURL}, null, cat, null);
+		if(response.status != 200)
+		{
+			errmsg = response.data;
+			return false;
+		}
+
+		feedID = response.data;
+		return true;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)

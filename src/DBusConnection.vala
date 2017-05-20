@@ -66,7 +66,7 @@ namespace FeedReader {
 		public abstract void renameCategory(string catID, string newName) throws IOError;
 
 		// MANIPULATE FEEDS
-		public abstract void addFeed(string feedURL, string cat, bool isID, bool asynchron = true) throws IOError;
+		public abstract void addFeed(string feedURL, string cat, bool isID, bool asynchron) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
 		public abstract void moveFeed(string feedID, string currentCatID, string? newCatID = null) throws IOError;
@@ -86,7 +86,7 @@ namespace FeedReader {
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
-		public signal void feedAdded();
+		public signal void feedAdded(string? errmsg);
 		public signal void opmlImported();
 		public signal void updateSyncProgress(string progress);
 	}
@@ -199,9 +199,11 @@ namespace FeedReader {
 				}
 			});
 
-			m_connection.feedAdded.connect(() => {
+			m_connection.feedAdded.connect((errmsg) => {
 				Logger.debug("DBusConnection: feedAdded");
 				ColumnView.get_default().footerSetReady();
+				if(errmsg != null)
+					ColumnView.get_default().footerShowError(errmsg);
 			});
 
 			m_connection.opmlImported.connect(() => {

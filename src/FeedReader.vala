@@ -192,7 +192,7 @@ namespace FeedReader {
 			Logger.debug(@"Adding feed $feedURL");
 			try
 			{
-				DBusConnection.get_default().addFeed(feedURL, "", false);
+				DBusConnection.get_default().addFeed(feedURL, "", false, true);
 			}
 			catch(Error e)
 			{

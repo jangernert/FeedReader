@@ -456,6 +456,11 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_footer.setReady();
 	}
 
+	public void footerShowError(string errmsg)
+	{
+		m_footer.showError(errmsg);
+	}
+
 	public feedList getFeedList()
 	{
 		return m_feedList;

@@ -446,7 +446,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 		m_connection.send_post_request("rename-tag", msg.get());
 	}
 
-	public void editSubscription(bazquxSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
+	public bool editSubscription(bazquxSubscriptionAction action, string feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var msg = new bazquxMessage();
 		msg.add("output", "json");
@@ -476,6 +476,11 @@ public class FeedReader.bazquxAPI : GLib.Object {
 			msg.add("r", remove);
 
 
-		m_connection.send_post_request("subscription/edit", msg.get());
+		var response = m_connection.send_post_request("subscription/edit", msg.get());
+
+		if(response.status == 200)
+			return true;
+
+		return false;
 	}
 }

@@ -168,7 +168,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return;
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
 		string[] catIDs = {};
 
@@ -190,7 +190,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			catIDs += "0";
 		}
 
-		string feedID = "feedID00001";
+		feedID = "feedID00001";
 
 		if(!dbDaemon.get_default().isTableEmpty("feeds"))
 		{
@@ -198,17 +198,17 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
-		feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs);
+		feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
 
 		if(Feed != null)
 		{
 			var list = new Gee.LinkedList<feed>();
 			list.add(Feed);
 			dbDaemon.get_default().write_feeds(list);
-			return feedID;
+			return true;
 		}
 
-		return "";
+		return false;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)
@@ -226,7 +226,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			highestID++;
 
 			Logger.info(@"addFeed: ID = $feedID");
-			feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs());
+			string? errmsg = null;
+			feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
 
 			if(Feed != null)
 			{
@@ -330,7 +331,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			if(cancellable != null && cancellable.is_cancelled())
 				return false;
 
-			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs());
+			string? errmsg = null;
+			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
 			feeds.add((tmpFeed == null) ? Feed : tmpFeed);
 		}
 

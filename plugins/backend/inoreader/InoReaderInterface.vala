@@ -176,18 +176,26 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
+		bool success = false;
+		feedID = "feed/" + feedURL;
+		errmsg = null;
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
+			success = m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID, null);
 		}
 		else
 		{
-			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
+			success = m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID, null);
 		}
-		return "feed/" + feedURL;
+
+		if(!success)
+			errmsg = "Inoreader could not add %s";
+
+		return success;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)
@@ -199,7 +207,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		{
 			if(f.getCatIDs()[0] != cat)
 			{
-				m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat);
+				m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat, null);
 				urls = {};
 				cat = f.getCatIDs()[0];
 			}
@@ -207,17 +215,17 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 			urls += "feed/" + f.getXmlUrl();
 		}
 
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat);
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat, null);
 	}
 
 	public void removeFeed(string feedID)
 	{
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.UNSUBSCRIBE, {feedID});
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.UNSUBSCRIBE, {feedID}, null, null, null);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, {feedID}, title);
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, {feedID}, title, null, null);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)

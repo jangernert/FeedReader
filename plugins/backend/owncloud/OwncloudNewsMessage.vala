@@ -155,6 +155,11 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		return ConnectionError.SUCCESS;
 	}
 
+	public uint getStatusCode()
+	{
+		return m_message_soup.status_code;
+	}
+
 	public Json.Object? get_response_object()
 	{
 		return m_root_object;

@@ -125,7 +125,8 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 	private void addFeed()
 	{
-		if(m_urlEntry.text == "" || GLib.Uri.parse_scheme(m_urlEntry.text) == null)
+		if(m_urlEntry.text == ""
+		|| GLib.Uri.parse_scheme(m_urlEntry.text) == null)
 		{
 			m_urlEntry.grab_focus();
 			return;
@@ -143,7 +144,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, (catID == "") ? "null" : catID));
 		try
 		{
-			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID);
+			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID, true);
 		}
 		catch(Error e)
 		{

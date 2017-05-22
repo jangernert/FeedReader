@@ -108,6 +108,16 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 			Logger.error("FeedListFooter.setActive: %s".printf(e.message));
 		}
 	}
+
+	public void showError(string errmsg)
+	{
+		var label = new Gtk.Label(errmsg);
+		label.margin = 20;
+
+		var pop = new Gtk.Popover(m_addStack);
+		pop.add(label);
+		pop.show_all();
+	}
 }
 
 

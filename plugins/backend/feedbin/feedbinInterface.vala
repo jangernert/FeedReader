@@ -186,9 +186,11 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return;
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
-		return "";
+		feedID = "-98";
+		errmsg = "feedbin backend does not support subcribing to feeds";
+		return false;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)

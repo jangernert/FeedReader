@@ -786,12 +786,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.serverAvailable();
 	}
 
-	public void addFeed(string feedURL, string? catID = null, string? newCatName = null)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
 		if(!m_pluginLoaded)
-			return;
+			return false;
 
-		m_plugin.addFeed(feedURL, catID, newCatName);
+		return m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)

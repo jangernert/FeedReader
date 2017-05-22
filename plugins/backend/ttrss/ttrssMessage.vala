@@ -182,6 +182,11 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		return null;
 	}
 
+	public uint getStatusCode()
+	{
+		return m_message_soup.status_code;
+	}
+
 	public void printMessage()
 	{
 		Logger.debug(m_message_string.str);

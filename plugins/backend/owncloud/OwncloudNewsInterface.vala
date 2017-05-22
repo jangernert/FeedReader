@@ -159,22 +159,32 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
+		bool success = false;
+		int64 id = 0;
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.addFolder(newCatName).to_string();
-			return m_api.addFeed(feedURL, newCatID).to_string();
+			success = m_api.addFeed(feedURL, newCatID, out id, out errmsg);
+		}
+		else
+		{
+			success = m_api.addFeed(feedURL, catID, out id, out errmsg);
 		}
 
-		return m_api.addFeed(feedURL, catID).to_string();
+
+		feedID = id.to_string();
+		return success;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)
 	{
+		int64 id = 0;
+		string? errmsg = null;
 		foreach(feed f in feeds)
 		{
-			m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0]);
+			m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0], out id, out errmsg);
 		}
 	}
 

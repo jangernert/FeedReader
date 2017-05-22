@@ -343,7 +343,7 @@ public class FeedReader.freshAPI : Object {
 		}
 	}
 
-	public string editStream(
+	public Response editStream(
 							string action,
 							string[]? streamID = null,
 							string? title = null,
@@ -380,7 +380,7 @@ public class FeedReader.freshAPI : Object {
 			Logger.debug(response.status.to_string());
 		}
 
-		return response.data;
+		return response;
 	}
 
 	public string composeTagID(string title)

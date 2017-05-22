@@ -437,7 +437,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		m_connection.send_post_request("rename-tag", msg.get());
 	}
 
-	public void editSubscription(FeedHQSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
+	public bool editSubscription(FeedHQSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -469,7 +469,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			msg.add("r", remove.replace("_", "/"));
 
 		Logger.debug(msg.get());
-		m_connection.send_post_request("subscription/edit", msg.get());
+		var response = m_connection.send_post_request("subscription/edit", msg.get());
+
+		return response.status == 200;
 	}
 
 	public void import(string opml)

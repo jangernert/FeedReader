@@ -175,18 +175,26 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
 	{
+		feedID = "feed/" + feedURL;
+		bool success = false;
+		errmsg = null;
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
+			success = m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
+			success = m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
 		}
-		return "feed/" + feedURL;
+
+		if(!success)
+			errmsg = @"bazqux could not subscribe to $feedURL";
+
+		return success;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)

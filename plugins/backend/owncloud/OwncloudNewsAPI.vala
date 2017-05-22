@@ -422,7 +422,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-	public int64 addFeed(string feedURL, string? catID = null)
+	public bool addFeed(string feedURL, string? catID, out int64 feedID, out string? errmsg)
 	{
 		string url = "/feeds";
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "POST");
@@ -435,7 +435,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			var response = message.get_response_object();
 			if(response.has_member("feeds"))
 			{
-				return response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+				errmsg = null;
+				feedID = response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+				return true;
 			}
 		}
 		else
@@ -443,7 +445,21 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			Logger.error("OwncloudNewsAPI.addFeed");
 		}
 
-		return 0;
+
+		errmsg = "ownCloud could not add the feed";
+		feedID = 0;
+
+		switch(message.getStatusCode())
+		{
+			case 409:
+				errmsg = "Feed already added (409)";
+				return true;
+			case 422:
+				errmsg = "ownCloud can't read the feed (422)";
+				break;
+		}
+
+		return false;
 	}
 
 	public void removeFeed(string feedID)

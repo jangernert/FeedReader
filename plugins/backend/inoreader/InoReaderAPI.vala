@@ -440,7 +440,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		m_connection.send_request("rename-tag", message_string);
 	}
 
-	public void editSubscription(InoSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
+	public bool editSubscription(InoSubscriptionAction action, string[] feedID, string? title, string? add, string? remove)
 	{
 		var message_string = "ac=";
 
@@ -470,6 +470,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			message_string += "&r=" + remove;
 
 
-		m_connection.send_request("subscription/edit", message_string);
+		return m_connection.send_request("subscription/edit", message_string).status == 200;
 	}
 }

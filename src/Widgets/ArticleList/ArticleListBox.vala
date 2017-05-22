@@ -635,6 +635,24 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return m_articles.size;
 	}
 
+	public int getSizeForState()
+	{
+		if(m_state == ArticleListState.UNREAD)
+		{
+			int unread = 0;
+			var children = this.get_children();
+			foreach(var row in children)
+			{
+				var tmpRow = row as articleRow;
+				if(tmpRow != null && tmpRow.isUnread())
+					unread += 1;
+			}
+			return unread;
+		}
+
+		return getSize();
+	}
+
 	public bool needLoadMore(int height)
 	{
 		int rowHeight = 0;

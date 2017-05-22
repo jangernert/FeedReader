@@ -249,7 +249,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			Logger.debug("load articles from db");
-			uint offset = m_currentList.getSize() + determineNewRowCount(null, null);
+			uint offset = m_currentList.getSizeForState() + determineNewRowCount(null, null);
 
 			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,

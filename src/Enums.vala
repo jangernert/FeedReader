@@ -176,11 +176,8 @@ namespace FeedReader {
 
 	public enum FeedListType {
 		ALL_FEEDS,
-		SPACER,
-		SEPERATOR,
 		CATEGORY,
 		FEED,
-		HEADLINE,
 		TAG
 	}
 

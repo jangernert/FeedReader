@@ -16,12 +16,12 @@
 public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private Gtk.ListBox m_list;
-	private Gtk.ListBoxRow? m_selected = null;
+	private string? m_selectedID = null;
+	private FeedListType m_selectedType = FeedListType.ALL_FEEDS;
 	private TagRow? m_emptyTagRow = null;
 	private Gtk.Spinner m_spinner;
 	private ServiceInfo m_branding;
 	private uint m_expand_collapse_time = 150;
-	private bool m_update = false;
 	private bool m_busy = false;
 	private bool m_TagsDisplayed = false;
 	public signal void newFeedSelected(string feedID);
@@ -44,37 +44,42 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		this.add(feedlist_box);
 
 		m_list.row_activated.connect(() => {
-			FeedRow selected_row = m_list.get_selected_row() as FeedRow;
-			if(selected_row != null)
+			FeedRow selected_feed = m_list.get_selected_row() as FeedRow;
+			if(selected_feed != null)
 			{
-				if(selected_row.getName() == "")
-				{
-					// don't select seperator
-					m_list.select_row(m_selected);
+				if(selected_feed.getID() == m_selectedID
+				&& m_selectedType == FeedListType.FEED)
 					return;
-				}
-				if(selected_row != m_selected)
-				{
-					m_selected = selected_row;
-					if(!m_update)
-						newFeedSelected(selected_row.getID());
-					return;
-				}
-			}
-			CategoryRow selected_categorie = m_list.get_selected_row() as CategoryRow;
-			if(selected_categorie != null && selected_categorie != m_selected)
-			{
-				m_selected = selected_categorie;
-				if(!m_update)
-					newCategorieSelected(selected_categorie.getID());
+
+				m_selectedID = selected_feed.getID();
+				m_selectedType = FeedListType.FEED;
+				newFeedSelected(selected_feed.getID());
 				return;
 			}
-			TagRow selected_tag = m_list.get_selected_row() as TagRow;
-			if(selected_tag != null && selected_tag != m_selected)
+
+			CategoryRow selected_categorie = m_list.get_selected_row() as CategoryRow;
+			if(selected_categorie != null)
 			{
-				m_selected = selected_tag;
-				if(!m_update)
-					newTagSelected(selected_tag.getID());
+				if(selected_categorie.getID() == m_selectedID
+				&& m_selectedType == FeedListType.CATEGORY)
+					return;
+
+				m_selectedID = selected_categorie.getID();
+				m_selectedType = FeedListType.CATEGORY;
+				newCategorieSelected(selected_categorie.getID());
+				return;
+			}
+
+			TagRow selected_tag = m_list.get_selected_row() as TagRow;
+			if(selected_tag != null)
+			{
+				if(selected_tag.getID() == m_selectedID
+				&& m_selectedType == FeedListType.TAG)
+					return;
+
+				m_selectedID = selected_tag.getID();
+				m_selectedType = FeedListType.TAG;
+				newTagSelected(selected_tag.getID());
 				return;
 			}
 		});
@@ -198,12 +203,10 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 
 			Settings.state().set_double("feed-row-scrollpos",  vadjustment.value);
-			m_update = true;
 		}
 
 		clear();
 		createFeedlist(state, defaultSettings, masterCat);
-		m_update = false;
 		m_busy = false;
 	}
 
@@ -248,7 +251,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		m_list.add(row_all);
 		row_all.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 		row_all.setAsRead.connect(markSelectedRead);
-		row_all.reveal(true);
+		row_all.reveal(true, 0);
 
 		var row_separator = new FeedRow(null, 0, FeedID.SEPARATOR.to_string(), "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
@@ -302,7 +305,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 							});
 							feedrow.drag_failed.connect(onDragEnd);
 							if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
-								feedrow.reveal(true);
+								feedrow.reveal(true, 0);
 							feedrow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 							pos++;
 						}
@@ -328,20 +331,20 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				});
 				feedrow.drag_failed.connect(onDragEnd);
 				if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnread() != 0)
-					feedrow.reveal(true);
+					feedrow.reveal(true, 0);
 				feedrow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 			}
 		}
 
 		initCollapseCategories();
-		restoreSelectedRow(defaultSettings);
+		restoreSelectedRow();
 		this.show_all();
 		vadjustment.notify["upper"].connect(restoreScrollPos);
 	}
 
-	private void restoreSelectedRow(bool defaultSettings)
+	private void restoreSelectedRow()
 	{
-		Logger.debug("FeedList: restore selected row: " + Settings.state().get_string("feedlist-selected-row"));
+		Logger.debug("FeedList.restoreSelectedRow: " + Settings.state().get_string("feedlist-selected-row"));
 		string[] selectedRow = Settings.state().get_string("feedlist-selected-row").split(" ", 2);
 
 		var FeedChildList = m_list.get_children();
@@ -354,7 +357,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				if(tmpRow != null && tmpRow.getID() == selectedRow[1])
 				{
 					m_list.select_row(tmpRow);
-					tmpRow.activate();
+					if(m_selectedID != selectedRow[1])
+						tmpRow.activate();
 					return;
 				}
 			}
@@ -368,7 +372,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				if(tmpRow != null && tmpRow.getID() == selectedRow[1])
 				{
 					m_list.select_row(tmpRow);
-					tmpRow.activate();
+					if(m_selectedID != selectedRow[1])
+						tmpRow.activate();
 					return;
 				}
 			}
@@ -382,7 +387,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				if(tmpRow != null && tmpRow.getID() == selectedRow[1])
 				{
 					m_list.select_row(tmpRow);
-					tmpRow.activate();
+					if(m_selectedID != selectedRow[1])
+						tmpRow.activate();
 					return;
 				}
 			}
@@ -433,7 +439,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		m_list.insert(CategoryRow, length+1);
 		CategoryRow.setAsRead.connect(markSelectedRead);
 		CategoryRow.moveUP.connect(moveUP);
-		CategoryRow.reveal(true);
+		CategoryRow.reveal(true, 0);
 	}
 
 	private void addTagCategory(int length)
@@ -457,7 +463,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		});
 		m_list.insert(tagrow, length+2);
 		tagrow.setAsRead.connect(markSelectedRead);
-		tagrow.reveal(true);
+		tagrow.reveal(true, 0);
 		m_TagsDisplayed = true;
 	}
 
@@ -568,7 +574,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						});
 						CategoryRow.drag_failed.connect(onDragEnd);
 						if(!Settings.general().get_boolean("feedlist-only-show-unread") || item.getUnreadCount() != 0)
-							CategoryRow.reveal(true);
+							CategoryRow.reveal(true, 0);
 						CategoryRow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 						break;
 					}
@@ -591,7 +597,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					removeRow(tagrow);
 				});
 				m_list.insert(tagrow, -1);
-				tagrow.reveal(true);
+				tagrow.reveal(true, 0);
 			}
 		}
 	}
@@ -717,13 +723,13 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var tmpCatRow = row as CategoryRow;
 			if(tmpCatRow != null && !tmpCatRow.isExpanded())
 			{
-				collapseCategorieInternal(tmpCatRow.getID());
+				collapseCategorieInternal(tmpCatRow.getID(), true, false);
 			}
 		}
 	}
 
 
-	private void collapseCategorieInternal(string catID, bool selectParent = true)
+	private void collapseCategorieInternal(string catID, bool selectParent, bool animate = true)
 	{
 		var FeedChildList = m_list.get_children();
 		var selected_row = m_list.get_selected_row();
@@ -733,18 +739,19 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var tmpFeedRow = row as FeedRow;
 			var tmpCatRow = row as CategoryRow;
 			var tmpTagRow = row as TagRow;
+			var animationTime = (animate) ? m_expand_collapse_time : 0;
 			if(tmpFeedRow != null && tmpFeedRow.getCatID() == catID)
 			{
-				tmpFeedRow.reveal(false, m_expand_collapse_time);
+				tmpFeedRow.reveal(false, animationTime);
 			}
 			if(tmpCatRow != null && tmpCatRow.getParent() == catID)
 			{
-				tmpCatRow.reveal(false, m_expand_collapse_time);
-				collapseCategorieInternal(tmpCatRow.getID(), selectParent);
+				tmpCatRow.reveal(false, animationTime);
+				collapseCategorieInternal(tmpCatRow.getID(), selectParent, animate);
 			}
 			if(tmpTagRow != null && catID == CategoryID.TAGS.to_string())
 			{
-				tmpTagRow.reveal(false, m_expand_collapse_time);
+				tmpTagRow.reveal(false, animationTime);
 			}
 		}
 
@@ -764,7 +771,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					if(tmpCatRow != null && tmpCatRow.getID() == catID)
 					{
 						m_list.select_row(tmpCatRow);
-						m_selected = tmpCatRow;
+						m_selectedID = tmpCatRow.getID();
+						m_selectedType = FeedListType.CATEGORY;
 						newCategorieSelected(catID);
 					}
 				}

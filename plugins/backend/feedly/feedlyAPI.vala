@@ -626,10 +626,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 		var response = m_connection.send_post_request_to_feedly("/v3/subscriptions", root);
 
-		if(response.status == 200)
-			return true;
-
-		return false;
+		return response.status == 200;
 	}
 
 	public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)

@@ -478,9 +478,6 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 		var response = m_connection.send_post_request("subscription/edit", msg.get());
 
-		if(response.status == 200)
-			return true;
-
-		return false;
+		return response.status == 200;
 	}
 }

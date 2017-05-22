@@ -448,9 +448,6 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 
 		var response = m_connection.send_post_request("subscription/edit?output=json", message_string);
 
-		if(response.status == 200)
-			return true;
-
-		return false;
+		return response.status == 200;
 	}
 }

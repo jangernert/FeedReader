@@ -471,10 +471,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		Logger.debug(msg.get());
 		var response = m_connection.send_post_request("subscription/edit", msg.get());
 
-		if(response.status == 200)
-			return true;
-
-		return false;
+		return response.status == 200;
 	}
 
 	public void import(string opml)

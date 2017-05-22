@@ -192,7 +192,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		}
 
 		if(!success)
-			errmsg = "feedHQ could not subscribe to %s";
+			errmsg = @"feedHQ could not subscribe to $feedURL";
 
 		return success;
 	}

@@ -470,11 +470,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			message_string += "&r=" + remove;
 
 
-		if(m_connection.send_request("subscription/edit", message_string).status == 200)
-		{
-			return true;
-		}
-
-		return false;
+		return m_connection.send_request("subscription/edit", message_string).status == 200;
 	}
 }

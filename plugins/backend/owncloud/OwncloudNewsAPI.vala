@@ -452,10 +452,10 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		switch(message.getStatusCode())
 		{
 			case 409:
-				errmsg = "Feed already added";
+				errmsg = "Feed already added (409)";
 				return true;
 			case 422:
-				errmsg = "ownCloud can't read the feed";
+				errmsg = "ownCloud can't read the feed (422)";
 				break;
 		}
 

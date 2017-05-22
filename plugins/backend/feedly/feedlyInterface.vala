@@ -200,7 +200,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		}
 
 		if(!success)
-			errmsg = "feedly could not add %s";
+			errmsg = @"feedly could not add $feedURL";
 
 		return success;
 	}

@@ -51,6 +51,8 @@ namespace FeedReader {
 			Logger.init();
 			Logger.info("FeedReader " + AboutInfo.version);
 
+			Settings.state().set_boolean("ui-running", true);
+
 			base.startup();
 		}
 
@@ -98,6 +100,7 @@ namespace FeedReader {
 
 		protected override void shutdown()
 		{
+			Settings.state().set_boolean("ui-running", false);
 			Logger.debug("Shutdown!");
 			Gst.deinit();
 			base.shutdown();
@@ -145,6 +148,9 @@ namespace FeedReader {
 	public static int main (string[] args)
 	{
 		Ivy.Stacktrace.register_handlers();
+		Process.@signal(ProcessSignal.SEGV, onCrash);
+		Process.@signal(ProcessSignal.TRAP, onCrash);
+		Process.@signal(ProcessSignal.ABRT, onCrash);
 
 		try
 		{
@@ -214,6 +220,14 @@ namespace FeedReader {
 		app.run(args);
 
 		return 0;
+	}
+
+	private static void onCrash(int sig)
+	{
+		stdout.printf("onCrash\n");
+		Settings.state().set_boolean("ui-running", false);
+
+		Logger.debug("ooops! Looks like FeedReader crashed");
 	}
 
 	private const GLib.OptionEntry[] options = {

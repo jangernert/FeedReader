@@ -147,7 +147,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.set_title("FeedReader");
 		this.set_default_size(Settings.state().get_int("window-width"), Settings.state().get_int("window-height"));
 		this.delete_event.connect(() => {
-			getInterfaceState().write();
+			writeInterfaceState(true);
 			return false;
 		});
 		this.show_all();
@@ -285,9 +285,9 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		return state;
 	}
 
-	public void writeInterfaceState()
+	public void writeInterfaceState(bool shutdown = false)
 	{
-		getInterfaceState().write();
+		getInterfaceState().write(shutdown);
 	}
 
 	public void reloadCSS()

@@ -46,7 +46,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			m_plugin.newFeedList.connect(() => { FeedDaemonServer.get_default().newFeedList(); });
 			m_plugin.refreshFeedListCounter.connect(() => { FeedDaemonServer.get_default().refreshFeedListCounter(); });
 			m_plugin.updateArticleList.connect(() => { FeedDaemonServer.get_default().updateArticleList(); });
-			m_plugin.writeInterfaceState.connect(() => { FeedDaemonServer.get_default().writeInterfaceState(); });
 			m_plugin.showArticleListOverlay.connect(() => { FeedDaemonServer.get_default().showArticleListOverlay(); });
 			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
 		});
@@ -326,9 +325,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void setNewRows()
 	{
-		FeedDaemonServer.get_default().writeInterfaceState();
-
-		if(Settings.state().get_boolean("no-animations") && Settings.state().get_enum("show-articles") == ArticleListState.ALL)
+		if(!Settings.state().get_boolean("ui-running") && Settings.state().get_enum("show-articles") == ArticleListState.ALL)
 		{
 			int newCount = (int)UtilsDaemon.getRelevantArticles();
 			Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");

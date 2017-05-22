@@ -560,7 +560,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 	public Gee.List<article> read_article_between(
-		string id,
+		string feedID,
 		FeedListType selectedType,
 		ArticleListState state,
 		string searchTerm,
@@ -569,7 +569,7 @@ public class FeedReader.dbBase : GLib.Object {
 		string id2,
 		GLib.DateTime date2)
 	{
-		var query = articleQuery(id, selectedType, state, searchTerm);
+		var query = articleQuery(feedID, selectedType, state, searchTerm);
 		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
 
 		if(sorting == ArticleListSort.RECEIVED)

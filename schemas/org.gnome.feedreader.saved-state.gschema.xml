@@ -7,28 +7,19 @@
     </enum>
 
     <schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
-        <key name="no-animations" type="b">
+    	<key name="ui-running" type="b">
             <default>false</default>
-            <summary>no animations on startup</summary>
-            <description>
-                Dont animate all inserted rows on startup so the list can instantly jump to the correct scroll-pos
-            </description>
+            <summary>if feedreader UI is running</summary>
         </key>
-
+    	
         <key name="window-width" type="i">
             <default>1600</default>
-            <summary>window width</summary>
-            <description>
-                saved with of the window
-            </description>
+            <summary>saved with of the window</summary>
         </key>
 
         <key name="window-height" type="i">
             <default>900</default>
-            <summary>window height</summary>
-            <description>
-                saved height of the window
-            </description>
+            <summary>saved height of the window</summary>
         </key>
 
         <key name="window-maximized" type="b">
@@ -41,10 +32,7 @@
 
         <key name="feed-row-width" type="i">
             <default>200</default>
-            <summary>FeedRow width</summary>
-            <description>
-                Width of the first paned, the feed-row
-            </description>
+            <summary>Width of the first paned, the feed-row</summary>
         </key>
 
         <key name="feed-row-scrollpos" type="d">
@@ -65,10 +53,7 @@
 
         <key name="feeds-and-articles-width" type="i">
             <default>400</default>
-            <summary>Width of Feeds and Articles</summary>
-            <description>
-                Width of the two first panes, feed-row + article-row
-            </description>
+            <summary>Width of the two first panes, feed-row + article-row</summary>
         </key>
 
         <key name="articlelist-scrollpos" type="d">

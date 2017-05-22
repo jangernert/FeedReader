@@ -247,19 +247,8 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	public void reveal(bool reveal, uint duration = 500)
 	{
-		if(Settings.state().get_boolean("no-animations"))
-		{
-			m_revealer.set_transition_type(Gtk.RevealerTransitionType.NONE);
-			m_revealer.set_transition_duration(0);
-			m_revealer.set_reveal_child(reveal);
-			m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
-			m_revealer.set_transition_duration(500);
-		}
-		else
-		{
-			m_revealer.set_transition_duration(duration);
-			m_revealer.set_reveal_child(reveal);
-		}
+		m_revealer.set_transition_duration(duration);
+		m_revealer.set_reveal_child(reveal);
 	}
 
 	private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, string? articleID = null)

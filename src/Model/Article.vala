@@ -30,6 +30,7 @@ public class FeedReader.article : GLib.Object {
 	private GLib.DateTime m_date;
 	private string m_guidHash;
 	private int m_lastModified;
+	private int m_pos;
 
 
 
@@ -273,5 +274,15 @@ public class FeedReader.article : GLib.Object {
 	public int getLastModified()
 	{
 		return m_lastModified;
+	}
+
+	public int getPos()
+	{
+		return m_pos;
+	}
+
+	public void setPos(int pos)
+	{
+		m_pos = pos;
 	}
 }

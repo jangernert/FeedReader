@@ -198,13 +198,11 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 
 			Settings.state().set_double("feed-row-scrollpos",  vadjustment.value);
-			Settings.state().set_boolean("no-animations", true);
 			m_update = true;
 		}
 
 		clear();
 		createFeedlist(state, defaultSettings, masterCat);
-		Settings.state().set_boolean("no-animations", false);
 		m_update = false;
 		m_busy = false;
 	}

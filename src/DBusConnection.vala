@@ -82,7 +82,6 @@ namespace FeedReader {
 		public signal void refreshFeedListCounter();
 		public signal void reloadFavIcons();
 		public signal void updateArticleList();
-		public signal void writeInterfaceState();
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
@@ -169,11 +168,6 @@ namespace FeedReader {
 			m_connection.springCleanFinished.connect(() => {
 				Logger.debug("DBusConnection: springCleanFinished");
 				MainWindow.get_default().showContent();
-			});
-
-			m_connection.writeInterfaceState.connect(() => {
-				Logger.debug("DBusConnection: writeInterfaceState");
-				MainWindow.get_default().writeInterfaceState();
 			});
 
 			m_connection.showArticleListOverlay.connect(() => {

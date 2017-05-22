@@ -43,6 +43,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		stopLoading();
 		emptyList();
+		setPos(articles, -1);
 		m_lazyQeue = articles;
 		addRow(ArticleListBalance.NONE);
 	}
@@ -50,27 +51,40 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public void addTop(Gee.List<article> articles)
 	{
 		stopLoading();
+		setPos(articles, 0);
 		m_lazyQeue = articles;
-		addRow(ArticleListBalance.TOP, 0, true);
+		addRow(ArticleListBalance.TOP, true);
 	}
 
 	public void addBottom(Gee.List<article> articles)
 	{
 		stopLoading();
+		setPos(articles, -1);
 		m_lazyQeue = articles;
 		addRow(ArticleListBalance.NONE);
 	}
 
-	private void stopLoading()
+	private bool stopLoading()
 	{
 		if(m_idleID > 0)
 		{
 			GLib.Source.remove(m_idleID);
 			m_idleID = 0;
+			return true;
+		}
+
+		return false;
+	}
+
+	private void setPos(Gee.List<article> articles, int pos)
+	{
+		foreach(article a in articles)
+		{
+			a.setPos(pos);
 		}
 	}
 
-	private void addRow(ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)
+	private void addRow(ArticleListBalance balance, bool reverse = false, bool animate = false)
 	{
 		if(m_lazyQeue.size == 0)
 		{
@@ -99,7 +113,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			if(m_articles.contains(item.getArticleID()))
 			{
 				Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
-				checkQueue(item, balance, pos, reverse, animate);
+				checkQueue(item, balance, reverse, animate);
 				return false;
 			}
 
@@ -122,10 +136,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			});
 
 			newRow.realize.connect(() => {
-				checkQueue(item, balance, pos, reverse, animate);
+				checkQueue(item, balance, reverse, animate);
 			});
 
-			this.insert(newRow, pos);
+			this.insert(newRow, item.getPos());
 
 			if(animate)
 				newRow.reveal(true, 150);
@@ -136,12 +150,12 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}, priority);
 	}
 
-	private void checkQueue(article item, ArticleListBalance balance, int pos = -1, bool reverse = false, bool animate = false)
+	private void checkQueue(article item, ArticleListBalance balance, bool reverse = false, bool animate = false)
 	{
 		if(m_lazyQeue.size > 1)
 		{
 			m_lazyQeue.remove(item);
-			addRow(balance, pos, reverse, animate);
+			addRow(balance, reverse, animate);
 		}
 		else
 		{
@@ -681,24 +695,12 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			return false;
 		}
 
-		m_articles.add(a.getArticleID());
-		var newRow = new articleRow(a);
-		newRow.rowStateChanged.connect(rowStateChanged);
-		newRow.drag_begin.connect((widget, context) => {
-			highlightRow((widget as articleRow).getID());
-			drag_begin(context);
-		});
-		newRow.drag_end.connect((widget, context) => {
-			unHighlightRow();
-			drag_end(context);
-		});
-		newRow.drag_failed.connect((context, result) => {
-			drag_failed(context, result);
-			return false;
-		});
-
-		this.insert(newRow, pos);
-		newRow.reveal(true, 0);
+		a.setPos(pos);
+		stopLoading();
+		var list = new Gee.LinkedList<article>();
+		list.add(a);
+		m_lazyQeue = list;
+		addRow(ArticleListBalance.NONE, false, false);
 		return true;
 	}
 

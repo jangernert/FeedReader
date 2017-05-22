@@ -159,6 +159,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(articles.size == 0)
 		{
+			m_currentList.emptyList();
 			Logger.debug("ArticleList: no content, so allow signals from scroll again");
 			m_currentScroll.allowSignals(true);
 			if(offset == 0)
@@ -381,8 +382,12 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		for(int i = 1; i < length; i++)
 		{
-			var first = m_currentList.get_row_at_index(i-1) as articleRow;
-			var second = m_currentList.get_row_at_index(i) as articleRow;
+			articleRow? first = m_currentList.get_row_at_index(i-1) as articleRow;
+			articleRow? second = m_currentList.get_row_at_index(i) as articleRow;
+
+			if(first == null
+			|| second == null)
+				continue;
 
 			var insertArticles = dbUI.get_default().read_article_between(	m_selectedFeedListID,
 																			m_selectedFeedListType,
@@ -403,21 +408,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			}
 		}
 
-
-		string? firstRowID = m_currentList.getFirstRowID();
-		if(firstRowID == null)
-			return;
-		int newCount = dbUI.get_default().getArticleCountNewerThanID(
-													firstRowID,
-													m_selectedFeedListID,
-													m_selectedFeedListType,
-													m_state,
-													m_searchTerm);
-
-		Logger.debug(@"ArticleList.updateArticleList: newCount $newCount");
-
-		if(newCount > 0)
-			checkForNewRows();
+		checkForNewRows();
 	}
 
 	private int determineNewRowCount(int? newCount, out int? offset)

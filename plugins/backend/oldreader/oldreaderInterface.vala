@@ -193,7 +193,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		}
 
 		if(!success)
-			errmsg = "The old reader could not add %s";
+			errmsg = @"The old reader could not add $feedURL";
 
 		return success;
 	}

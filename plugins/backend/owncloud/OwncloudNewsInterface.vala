@@ -159,7 +159,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return m_api.ping();
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		bool success = false;
 		int64 id = 0;
@@ -181,7 +181,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 	public void addFeeds(Gee.List<feed> feeds)
 	{
 		int64 id = 0;
-		string? errmsg = null;
+		string errmsg = "";
 		foreach(feed f in feeds)
 		{
 			m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0], out id, out errmsg);

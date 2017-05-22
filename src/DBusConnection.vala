@@ -85,7 +85,7 @@ namespace FeedReader {
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
-		public signal void feedAdded(string? errmsg);
+		public signal void feedAdded(bool error, string errmsg);
 		public signal void opmlImported();
 		public signal void updateSyncProgress(string progress);
 	}
@@ -193,10 +193,10 @@ namespace FeedReader {
 				}
 			});
 
-			m_connection.feedAdded.connect((errmsg) => {
+			m_connection.feedAdded.connect((error, errmsg) => {
 				Logger.debug("DBusConnection: feedAdded");
 				ColumnView.get_default().footerSetReady();
-				if(errmsg != null)
+				if(error)
 					ColumnView.get_default().footerShowError(errmsg);
 			});
 

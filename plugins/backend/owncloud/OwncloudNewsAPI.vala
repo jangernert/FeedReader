@@ -422,7 +422,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-	public bool addFeed(string feedURL, string? catID, out int64 feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, out int64 feedID, out string errmsg)
 	{
 		string url = "/feeds";
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "POST");
@@ -435,7 +435,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			var response = message.get_response_object();
 			if(response.has_member("feeds"))
 			{
-				errmsg = null;
+				errmsg = "";
 				feedID = response.get_array_member("feeds").get_object_element(0).get_int_member("id");
 				return true;
 			}

@@ -163,7 +163,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.renameLabel(int.parse(tagID), title);
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		bool success = false;
 		if(catID == null && newCatName != null)

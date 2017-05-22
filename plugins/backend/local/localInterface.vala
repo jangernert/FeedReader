@@ -168,7 +168,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return;
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		string[] catIDs = {};
 
@@ -226,7 +226,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			highestID++;
 
 			Logger.info(@"addFeed: ID = $feedID");
-			string? errmsg = null;
+			string errmsg = "";
 			feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
 
 			if(Feed != null)
@@ -331,7 +331,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			if(cancellable != null && cancellable.is_cancelled())
 				return false;
 
-			string? errmsg = null;
+			string errmsg = "";
 			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
 			feeds.add((tmpFeed == null) ? Feed : tmpFeed);
 		}

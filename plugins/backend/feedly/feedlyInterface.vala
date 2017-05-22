@@ -183,11 +183,11 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return Utils.ping("http://feedly.com/");
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		feedID = "feed/" + feedURL;
 		bool success = false;
-		errmsg = null;
+		errmsg = "";
 
 		if(catID == null && newCatName != null)
 		{

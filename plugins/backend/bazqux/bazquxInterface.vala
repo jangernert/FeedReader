@@ -175,11 +175,11 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		return m_api.ping();
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		feedID = "feed/" + feedURL;
 		bool success = false;
-		errmsg = null;
+		errmsg = "";
 
 		if(catID == null && newCatName != null)
 		{

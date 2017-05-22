@@ -165,9 +165,9 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
-		errmsg = null;
+		errmsg = "";
 		string? cat = null;
 		if(catID != null)
 			cat = catID;

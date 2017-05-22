@@ -41,7 +41,7 @@ namespace FeedReader {
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();
-		public signal void feedAdded(string? errmsg);
+		public signal void feedAdded(bool error, string errmsg);
 		public signal void opmlImported();
 		public signal void updateSyncProgress(string progress);
 
@@ -728,7 +728,7 @@ namespace FeedReader {
 			string? newCatName = null;
 			string? feedID = null;
 			bool success = false;
-			string? errmsg = null;
+			string errmsg = "";
 
 			if(cat != "")
 			{
@@ -742,8 +742,7 @@ namespace FeedReader {
 			{
 				new GLib.Thread<void*>(null, () => {
 					success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
-					errmsg = (success) ? null : errmsg; // just to be sure :P
-					feedAdded(errmsg);
+					feedAdded(!success, errmsg);
 
 					if(success)
 						startSync();
@@ -753,7 +752,7 @@ namespace FeedReader {
 			else
 			{
 				success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
-				feedAdded(errmsg);
+				feedAdded(!success, errmsg);
 			}
 		}
 

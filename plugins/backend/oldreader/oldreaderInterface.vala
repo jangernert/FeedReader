@@ -176,10 +176,10 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.ping();
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		feedID = "feed/" + feedURL;
-		errmsg = null;
+		errmsg = "";
 		bool success = false;
 
 		if(catID == null && newCatName != null)

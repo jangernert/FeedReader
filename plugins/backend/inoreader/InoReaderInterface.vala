@@ -176,11 +176,11 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.ping();
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		bool success = false;
 		feedID = "feed/" + feedURL;
-		errmsg = null;
+		errmsg = "";
 
 		if(catID == null && newCatName != null)
 		{

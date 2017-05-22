@@ -80,7 +80,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool serverAvailable();
 
-	public abstract bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg);
+	public abstract bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg);
 
 	public abstract void addFeeds(Gee.List<feed> feeds);
 

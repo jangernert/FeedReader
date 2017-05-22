@@ -20,9 +20,9 @@ public class FeedReader.localUtils : GLib.Object {
 
 	}
 
-	public feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs, out string? errmsg)
+	public feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs, out string errmsg)
 	{
-		errmsg = null;
+		errmsg = "";
 
 		// download
 		Logger.debug(@"Requesting: $xmlURL");

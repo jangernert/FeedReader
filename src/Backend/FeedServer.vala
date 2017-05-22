@@ -783,7 +783,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.serverAvailable();
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string? errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		if(!m_pluginLoaded)
 			return false;

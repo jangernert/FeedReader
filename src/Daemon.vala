@@ -742,6 +742,7 @@ namespace FeedReader {
 			{
 				new GLib.Thread<void*>(null, () => {
 					success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
+					errmsg = (success) ? "" : errmsg; // just to be sure :P
 					feedAdded(!success, errmsg);
 
 					if(success)
@@ -752,6 +753,7 @@ namespace FeedReader {
 			else
 			{
 				success = FeedServer.get_default().addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
+				errmsg = (success) ? "" : errmsg;
 				feedAdded(!success, errmsg);
 			}
 		}

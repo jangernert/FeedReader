@@ -20,8 +20,8 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	private Gtk.Button m_tag_button;
 	private Gtk.Button m_print_button;
 	private AttachedMediaButton m_media_button;
-	private HoverButton m_mark_button;
-	private HoverButton m_read_button;
+	private Gtk.ToggleButton m_mark_button;
+	private Gtk.ToggleButton m_read_button;
 	private Gtk.Button m_fullscreen_button;
 	private SharePopover? m_sharePopover = null;
 	public signal void toggledMarked();
@@ -29,6 +29,15 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	public signal void fsClick();
 	public signal void popClosed();
 	public signal void popOpened();
+
+	private void onMarkButton()
+	{
+		toggledMarked();
+	}
+	private void onReadButton()
+	{
+		toggledRead();
+	}
 
 	public ArticleViewHeader(string fsIcon, string fsTooltip)
 	{
@@ -40,16 +49,25 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		var unread_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var fs_icon = new Gtk.Image.from_icon_name(fsIcon, Gtk.IconSize.SMALL_TOOLBAR);
 
-		m_mark_button = new HoverButton(unmarked_icon, marked_icon, false);
+		m_mark_button = new Gtk.ToggleButton();
+		var mark_button_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		m_mark_button.add(mark_button_icon);
+		m_mark_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_mark_button.set_tooltip_text(_("Favorite article"));
 		m_mark_button.sensitive = false;
-		m_mark_button.clicked.connect(() => {
-			toggledMarked();
-		});
-		m_read_button = new HoverButton(read_icon, unread_icon, false);
+		m_mark_button.get_style_context().add_class("marked-button");
+		m_mark_button.get_style_context().add_class("image-button");
+		m_mark_button.toggled.connect(onMarkButton);
+
+		m_read_button = new Gtk.ToggleButton();
+		var read_button_icon = new Gtk.Image.from_icon_name("feed-unread-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		m_read_button.add(read_button_icon);
+		m_read_button.set_relief(Gtk.ReliefStyle.NONE);
+		m_read_button.set_tooltip_text(_("Mark unread"));
 		m_read_button.sensitive = false;
-		m_read_button.clicked.connect(() => {
-			toggledRead();
-		});
+		m_read_button.get_style_context().add_class("unread-button");
+		m_read_button.get_style_context().add_class("image-button");
+		m_read_button.toggled.connect(onReadButton);
 
 		m_fullscreen_button = new Gtk.Button();
 		m_fullscreen_button.add(fs_icon);
@@ -161,22 +179,30 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 
 	public void setMarked(bool marked)
 	{
-		m_mark_button.setActive(marked);
+		m_mark_button.toggled.disconnect(onMarkButton);
+		m_mark_button.set_active(marked);
+		m_mark_button.toggled.connect(onMarkButton);
 	}
 
 	public void toggleMarked()
 	{
-		m_mark_button.toggle();
+		m_mark_button.toggled.disconnect(onMarkButton);
+		m_mark_button.set_active(!m_mark_button.get_active());
+		m_mark_button.toggled.connect(onMarkButton);
 	}
 
 	public void setRead(bool read)
 	{
-		m_read_button.setActive(read);
+		m_read_button.toggled.disconnect(onReadButton);
+		m_read_button.set_active(read);
+		m_read_button.toggled.connect(onReadButton);
 	}
 
 	public void toggleRead()
 	{
-		m_read_button.toggle();
+		m_read_button.toggled.disconnect(onReadButton);
+		m_read_button.set_active(!m_read_button.get_active());
+		m_read_button.toggled.connect(onReadButton);
 	}
 
 	public void setOffline()

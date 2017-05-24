@@ -14,14 +14,20 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 using Gee;
 
+public struct ThemeInfo {
+    string name;
+    string author;
+    string path;
+}
+
 public class  FeedReader.ArticleTheme {
-    private static ArrayList<HashMap<string, string>> ? themes = null;
+    private static HashMap<string, ThemeInfo?> ? themes = null;
 
 
-    public static ArrayList<HashMap> getThemes(){
+    public static HashMap<string, ThemeInfo?> getThemes(){
         if(themes == null){
             // Local themes
-            themes = new ArrayList<HashMap<string, string>> ();
+            themes = new HashMap<string, ThemeInfo?> ();
             string local_dir = GLib.Environment.get_user_data_dir() + "/feedreader/themes/";
             grabThemes(local_dir);
             // Global themes
@@ -31,50 +37,37 @@ public class  FeedReader.ArticleTheme {
         return themes;
     }
 
-    private static HashMap<string, string> getThemeInfo (string theme_path) {
-      var themeInfo = new HashMap<string, string> ();
-      bool corrupted_theme = true;
-      string theme_name = "";
-      string author = "";
+    private static ThemeInfo? getTheme (string theme_path) {
+      var themeInfo = ThemeInfo ();
+      bool corrupted_theme = false;
       try {
-        Dir theme_dir = Dir.open(theme_path, 0);
-        string ? name = null;
-        while ((name = theme_dir.read_name()) != null){
-          if (name == "theme.json"){
-              corrupted_theme = false;
-              string path = Path.build_filename(theme_path, name);
-              Json.Parser parser = new Json.Parser();
-              try {
-                parser.load_from_file(path);
-                Json.Object obj = parser.get_root().get_object();
+        string path = Path.build_filename(theme_path, "theme.json");
+        Json.Parser parser = new Json.Parser();
+        parser.load_from_file(path);
+        Json.Object obj = parser.get_root().get_object();
 
-                Value val;
-                foreach (unowned string nname in obj.get_members()){
-                  val = obj.get_member(nname).get_value();
-                  switch(nname) {
-                    case "author":
-                      author = (string) val;
-                    break;
-                    case "name":
-                      theme_name = (string) val;
-                    break;
-                  }
-                }
-              }catch(Error err){
-                corrupted_theme = true;
-              }
+        Value val;
+        foreach (unowned string node_name in obj.get_members()){
+          val = obj.get_member(node_name).get_value();
+          switch(node_name) {
+            case "author":
+              themeInfo.author = (string) val;
+            break;
+            case "name":
+              themeInfo.name = (string) val;
+            break;
           }
         }
-      }catch(GLib.FileError err){
+        themeInfo.path = theme_path;
 
+      } catch(GLib.FileError err){
+        Logger.error("A theme must be corrupted :" + theme_path);
+        corrupted_theme = true;
       }
-      if (!corrupted_theme){
-        themeInfo.set("name", theme_name);
-        themeInfo.set("author", author);
-        themeInfo.set("path", theme_path);
-      } else {
-        themeInfo.set("corrupted", "true");
-      }
+
+      if (corrupted_theme)
+        return null;
+
       return themeInfo;
     }
 
@@ -85,18 +78,17 @@ public class  FeedReader.ArticleTheme {
           while ((name = dir.read_name()) != null){
             string path = Path.build_filename(location, name);
             if(FileUtils.test(path, FileTest.IS_DIR)){
-              var themeInfo = getThemeInfo(path);
-              if (themeInfo.has_key("corrupted") == false){
-                themes.add(themeInfo);
-              }
+              var themeInfo = getTheme(path);
+              if(themeInfo != null)
+                themes.set(name, themeInfo);
             }
           }
       } catch (GLib.FileError err){
-
+        Logger.debug("Couldn't reach the location of themes : " + location);
       }
     }
 
-    public static bool isExists(string theme_location){
+    public static bool exists(string theme_location){
       // Check wether a theme exists or not
       bool exists = true;
       try {

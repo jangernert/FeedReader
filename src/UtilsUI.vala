@@ -68,7 +68,7 @@ public class FeedReader.UtilsUI : GLib.Object {
     string css = "";
     try
     {
-        if (ArticleTheme.isExists(theme) == false) {
+        if (!ArticleTheme.exists(theme)) {
           // only when none of the themes are found!
             uint8[] templateContents;
             var htmlFile = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/default/article.html");

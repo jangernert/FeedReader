@@ -58,8 +58,8 @@ FeedReader is now availble as Flatpak and should be installable on all major Lin
 For more information about Flatpak and how to use or install it for your distribution see the [Flatpak webpage](http://flatpak.org).
 
 Besides installing the Flatpak Framework, you should also install the following portal packages using your distributions paket manager:
-- <pre>xdg-desktop-portal</pre>
-- <pre>xdg-desktop-portal-gtk</pre>
+- `xdg-desktop-portal`
+- `xdg-desktop-portal-gtk`
 
 #### Via repository
 This enables OTA updates and is the recommended way. Defaults to the stable branch.

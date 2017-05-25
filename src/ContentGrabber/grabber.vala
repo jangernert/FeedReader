@@ -310,9 +310,9 @@ public class FeedReader.Grabber : GLib.Object {
 			if(url != "" && url != null)
 			{
 				if(!url.has_prefix("http"))
-		        {
-		            url = grabberUtils.completeURL(url, m_articleURL);
-		        }
+				{
+					url = grabberUtils.completeURL(url, m_articleURL);
+				}
 				Logger.debug("Grabber: single page url " + url);
 				m_singlePage = true;
 				m_articleURL = url;

@@ -226,8 +226,8 @@ public class FeedReader.grabberUtils : GLib.Object {
 
 	public static void onlyRemoveNode(Html.Doc* doc, string xpath)
 	{
-		var cntx = new Xml.XPath.Context(doc);
-		var res = cntx.eval_expression(xpath);
+		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+		Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
 		if(res != null
 		&& res->type == Xml.XPath.ObjectType.NODESET
@@ -633,9 +633,13 @@ public class FeedReader.grabberUtils : GLib.Object {
 	{
 		try
 		{
-			int height = 0;
-			int width = 0;
-			Gdk.Pixbuf.get_file_info(path, out width, out height);
+			int? height = 0;
+			int? width = 0;
+			Gdk.PixbufFormat? format = Gdk.Pixbuf.get_file_info(path, out width, out height);
+
+			if(format == null || height == null || width == null)
+				return null;
+
 			if(width > 2000 || height > 2000)
 			{
 				int nHeight = 1000;

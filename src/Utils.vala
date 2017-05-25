@@ -519,31 +519,31 @@ public class FeedReader.Utils : GLib.Object {
 			}
 
 			var html_cntx = new Html.ParserCtxt();
-      html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-      Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-      if(doc == null)
-      {
-        Logger.debug("Utils.downloadFavIcon: parsing html failed");
-    		return false;
-    	}
+			html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+			Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+			if(doc == null)
+			{
+				Logger.debug("Utils.downloadFavIcon: parsing html failed");
+				return false;
+			}
 
 			// check for <link rel="icon">
 			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
 
 			if(xpath == null)
 			// check for <link rel="shortcut icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
+			xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
 
 			if(xpath == null)
-				// check for <link rel="apple-touch-icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+			// check for <link rel="apple-touch-icon">
+			xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
 
 			if(xpath != null)
 			{
 				Logger.debug(@"Utils.downloadFavIcon: xpath success $xpath");
 				xpath = grabberUtils.completeURL(xpath, siteURL);
 				if(yield downloadIcon(feed_id, xpath, cancellable, icon_path))
-					return true;
+				return true;
 			}
 			else
 			{

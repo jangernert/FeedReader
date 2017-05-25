@@ -1,3 +1,0 @@
-body: //div[contains(concat(' ',normalize-space(@class),' '),' story-text ')]
-
-test_url: http://www.palmbeachpost.com/news/local/voted-from-space-lone-american-off-planet-casts-ballot/eXKHtCfugZ1ulykswYp9kO/

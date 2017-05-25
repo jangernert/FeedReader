@@ -1,3 +1,0 @@
-strip_id_or_class: sharing
-
-test_url: http://soundcity.tv/feed/

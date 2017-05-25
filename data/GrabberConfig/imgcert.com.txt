@@ -1,3 +1,0 @@
-body: //div[@id='image-viewer-container']//img
-
-test_url: https://imgcert.com/image/fgX1

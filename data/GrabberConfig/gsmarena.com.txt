@@ -1,3 +1,0 @@
-next_page_link: //a[@class='pages-next']
-
-test_url: http://www.gsmarena.com/samsung_galaxy_j2-review-1348.php

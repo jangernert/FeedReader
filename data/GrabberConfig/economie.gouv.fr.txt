@@ -1,4 +1,0 @@
-body: //div[contains(@class, 'txtVisu')]
-prune: no
-
-test_url: http://www.economie.gouv.fr/dgccrf/Publications/Vie-pratique/Fiches-pratiques/Assurance

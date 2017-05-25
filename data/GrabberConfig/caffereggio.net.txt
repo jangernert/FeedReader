@@ -1,3 +1,0 @@
-body: //div[@class="pf-content"]
-
-test_url: http://www.caffereggio.net/2016/01/16/115327/

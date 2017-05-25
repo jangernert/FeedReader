@@ -1,2 +1,0 @@
-title: //div[@class="title"]/h3
-date: substring-after(//div[@class="meta"], ": ")

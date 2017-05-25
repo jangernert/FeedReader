@@ -1,2 +1,0 @@
-body: //*[(@id = "mid")]
-test_url: http://ganglia.info/

@@ -1,3 +1,0 @@
-next_page_link: //a[@class='nextChapter']
-
-test_url: http://mobilenet.cz/clanky/recenze-apple-ipad-pro-tesne-pod-vrcholem-28955

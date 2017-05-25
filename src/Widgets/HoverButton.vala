@@ -118,5 +118,10 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 		return true;
 	}
 
+    public void set_tooltip_text(string tooltip_text)
+    {
+        m_button.set_tooltip_text(tooltip_text);
+    }
+
 
 }

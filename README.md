@@ -72,7 +72,7 @@ You can also create your own Flatpak bundle running `make bundle` command in the
 
 ### Manual installation
 ```
-git clone https://github.com/jangernert/FeedReader
+git clone --recursive https://github.com/jangernert/FeedReader
 cd ./FeedReader
 mkdir build
 cd ./build

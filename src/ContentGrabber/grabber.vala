@@ -313,7 +313,6 @@ public class FeedReader.Grabber : GLib.Object {
 				{
 					url = grabberUtils.completeURL(url, m_articleURL);
 				}
-				Logger.debug("Grabber: single page url " + url);
 				m_singlePage = true;
 				m_articleURL = url;
 				download();

@@ -5,6 +5,7 @@
 # Translators:
 # Fabio Iacovino <fabio.iacovino99@gmail.com>, 2016
 # Gianvito Cavasoli <gianvito@gmx.it>, 2016-2017
+# Luca Trevisani <luke3v>, 2017
 msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
@@ -30,7 +31,7 @@ msgstr "Nessun testo disponibile per questo articolo"
 
 #: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
-msgstr ""
+msgstr "Notiziario sconosciuto"
 
 #: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
 #: src/Widgets/FeedList.vala:516
@@ -56,7 +57,7 @@ msgstr "Ieri"
 
 #: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
-msgstr "Ottenendo notizie e categorie"
+msgstr "Ottenendo notiziari e categorie"
 
 #: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
@@ -115,15 +116,15 @@ msgstr "Nessun articolo"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
 msgid "No unread articles"
-msgstr ""
+msgstr "Nessun articolo da leggere"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
 msgid "No starred articles"
-msgstr ""
+msgstr "Nessun articolo preferito"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
 msgid "No articles"
-msgstr ""
+msgstr "Nessun articolo"
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
@@ -131,7 +132,7 @@ msgstr "Aggiungi notiziario"
 
 #: src/Widgets/FeedListFooter.vala:153
 msgid "Remove feed"
-msgstr ""
+msgstr "Rimuovi notiziario"
 
 #: src/Widgets/SharePopover.vala:62
 msgid "Add accounts"
@@ -207,15 +208,15 @@ msgstr "Mostra solo gli articoli non letti"
 
 #: src/Widgets/ColumnViewHeader.vala:39
 msgid "Starred"
-msgstr "Speciali"
+msgstr "Preferiti"
 
 #: src/Widgets/ColumnViewHeader.vala:39
 msgid "Show only starred articles"
-msgstr "Mostra solo gli articoli speciali"
+msgstr "Mostra solo gli articoli preferiti"
 
 #: src/Widgets/ColumnViewHeader.vala:60
 msgid "Update feeds"
-msgstr ""
+msgstr "Aggiorna notiziari"
 
 #: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
@@ -235,7 +236,7 @@ msgstr "FeedReader"
 
 #: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr ""
+msgstr "Ignora tutti gli errori TLS da ora in poi"
 
 #: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
@@ -296,15 +297,15 @@ msgstr ""
 
 #: src/Widgets/ArticleViewHeader.vala:68
 msgid "Tag article"
-msgstr ""
+msgstr "Tagga articolo"
 
 #: src/Widgets/ArticleViewHeader.vala:82
 msgid "Print article"
-msgstr ""
+msgstr "Stampa articolo"
 
 #: src/Widgets/ArticleViewHeader.vala:93
 msgid "Share article"
-msgstr ""
+msgstr "Condividi articolo"
 
 #: src/Widgets/ResetPage.vala:33
 msgid "Change Account?"
@@ -344,11 +345,11 @@ msgstr "Aggiungi"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "File OPML"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "Seleziona file OPML"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -368,7 +369,7 @@ msgstr "Tutti gli articoli"
 
 #: src/Widgets/FeedList.vala:444
 msgid "Tags"
-msgstr "Etichette"
+msgstr "Tags"
 
 #: src/Widgets/FeedList.vala:492
 msgid "Categories"
@@ -376,11 +377,11 @@ msgstr "Categorie"
 
 #: src/Widgets/FeedList.vala:497
 msgid "Feeds"
-msgstr "Notizie"
+msgstr "Notiziari"
 
 #: src/Widgets/FeedList.vala:1011
 msgid "New Tag"
-msgstr "Nuova etichetta"
+msgstr "Nuovo Tag"
 
 #: src/Widgets/FeedList.vala:1144
 msgid "New Category"
@@ -392,15 +393,15 @@ msgstr "Allegati"
 
 #: src/Widgets/TagPopover.vala:36
 msgid "Add Tag:"
-msgstr "Aggiungi etichetta:"
+msgstr "Aggiungi Tag:"
 
 #: src/Widgets/TagPopover.vala:48
 msgid "Tags:"
-msgstr "Etichette:"
+msgstr "Tags:"
 
 #: src/Widgets/TagPopover.vala:125
 msgid "add Tag"
-msgstr "aggiungi etichetta"
+msgstr "aggiungi Tag"
 
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
@@ -420,15 +421,15 @@ msgstr "Esci"
 
 #: src/Widgets/ShortcutsWindow.vala:37
 msgid "Feed List"
-msgstr ""
+msgstr "Elenco Notiziari"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr ""
+msgstr "Seleziona l'elemento successivo"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr ""
+msgstr "Seleziona l'elemento precedente"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
@@ -436,11 +437,11 @@ msgstr "Riduci/Espandi categorie"
 
 #: src/Widgets/ShortcutsWindow.vala:45
 msgid "Mark the currently selected as read"
-msgstr "Segna quello attualmente selezionato come letto"
+msgstr "Contrassegna l'elemento selezionato come letto"
 
 #: src/Widgets/ShortcutsWindow.vala:54
 msgid "Article List"
-msgstr ""
+msgstr "Lista articoli"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
@@ -456,11 +457,11 @@ msgstr "Commuta l'articolo selezionato contrassegnato/non contrassegnato"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
-msgstr "Apri l URL dell'articolo selezionato"
+msgstr "Apri l'URL dell'articolo selezionato"
 
 #: src/Widgets/ShortcutsWindow.vala:67
 msgid "Scroll all the way up/down"
-msgstr "Scorre tutto sotto/sopra"
+msgstr "Scorri tutto sopra/sotto"
 
 #: src/Widgets/ShortcutsWindow.vala:68
 msgid "Center the currently selected article"
@@ -468,16 +469,16 @@ msgstr "Centra l'attuale articolo selezionato"
 
 #: src/Widgets/ShortcutsWindow.vala:79
 msgid "Article View"
-msgstr ""
+msgstr "Visualizzazione articoli"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
-msgstr ""
+msgstr "Scorri sopra/sotto"
 
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format
 msgid "Tag \"%s\" removed"
-msgstr "Etichetta «%s» rimossa"
+msgstr "Tag «%s» rimosso"
 
 #: src/Widgets/FeedRow.vala:203 src/Widgets/RemovePopover.vala:102
 #, c-format
@@ -515,7 +516,7 @@ msgstr "Mostrare solo i non letti"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Ordina Elenco Notiziari per"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -555,15 +556,15 @@ msgstr "Data"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr ""
+msgstr "I più vecchi prima"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
-msgstr ""
+msgstr "Riguarda solo la colonna \"Non letti"\"
 
 #: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
-msgstr ""
+msgstr "Contrassegna come letto scorrendo oltre"
 
 #: src/Widgets/SettingsDialog.vala:109
 msgid "Article View:"
@@ -587,7 +588,7 @@ msgstr "Pergamena"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "Famiglia di Font"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -599,7 +600,7 @@ msgstr "Numero di articoli"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Intervallo in Minuti (0 = MAI)"
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -631,11 +632,11 @@ msgstr "Funzionalità aggiuntive:"
 
 #: src/Widgets/SettingsDialog.vala:164
 msgid "Content Grabber"
-msgstr "Contenuti grabber"
+msgstr "Contenuti Grabber"
 
 #: src/Widgets/SettingsDialog.vala:166
 msgid "Download Images"
-msgstr ""
+msgstr "Scarica immagini"
 
 #: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
@@ -647,7 +648,7 @@ msgstr "Account di sistema"
 
 #: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
-msgstr "FeedReader Account"
+msgstr "Account FeedReader"
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
@@ -704,16 +705,16 @@ msgstr "Nome utente o password non corretti"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr ""
+msgstr "Informazione: Telegram deve essere installato per far funzionare il plugin"
 
 #: plugins/share/Telegram/Telegram.vala:81
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
 msgid ""
 "Hey, Check out this interesting article I just read - sent by FeedReader"
-msgstr ""
+msgstr "Ciao, guarda questo interessante articolo che ho letto - inviato da FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:42
 #: plugins/share/Email/EmailForm.vala:52
@@ -722,7 +723,7 @@ msgstr "Invia"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr ""
+msgstr "Invia a Telegram"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -811,12 +812,12 @@ msgstr "Tweet ai seguaci"
 
 #: plugins/share/Browser/Browser.vala:79
 msgid "Open in Browser"
-msgstr ""
+msgstr "Apri nel Browser"
 
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:91
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:91
 msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr ""
+msgstr "Per favore, accedi a FeedHQ e divertiti usando FeedReader"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:64
 msgid "freshRSS URL:"
@@ -830,7 +831,7 @@ msgstr "Autorizzazione HTTP"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:140
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
-msgstr "Accedi al server freshRSS per godere dell'uso di FeedReader"
+msgstr "Per favore, accedi al tuo server freshRSS e divertiti usando FeedReader"
 
 #: plugins/backend/local/localLoginWidget.vala:57
 msgid "Done"
@@ -838,11 +839,11 @@ msgstr "Fatto"
 
 #: plugins/backend/local/localLoginWidget.vala:58
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Aggiungendo Notiziari"
 
 #: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
-msgstr ""
+msgstr "Niente da leggere qui"
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
@@ -850,7 +851,7 @@ msgstr "URL OwnCloud:"
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
 msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
-msgstr "Accedi all'istanza di ownCloud News per godere dell'uso di FeedReader"
+msgstr "Per favore, accedi al tuo server ownCloud News e divertiti usando FeedReader"
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:64
 msgid "Tiny Tiny RSS URL:"
@@ -858,12 +859,12 @@ msgstr "URL Tiny Tiny RSS:"
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:140
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
-msgstr "Accedi al server Tiny Tiny RSS per godere dell'uso di FeedReader"
+msgstr "Per favore, accedi al tuo server Tiny Tiny RSS e divertiti usando FeedReader"
 
 #: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
 msgid "Please log in to the Old Reader and enjoy using FeedReader"
-msgstr "Accedi in Old Reader per godere dell'uso di FeedReader"
+msgstr "Per favore, accedi ad Old Reader e divertiti usando FeedReader"
 
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
-msgstr "Accedi a Feedbin per godere dell'uso di FeedReader"
+msgstr "Per favore, accedi a Feedbin e divertiti usando FeedReader"

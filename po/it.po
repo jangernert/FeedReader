@@ -548,7 +548,7 @@ msgstr "Elenco articoli:"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
-msgstr "Ordinare articoli"
+msgstr "Ordina articoli per"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
@@ -556,7 +556,7 @@ msgstr "Data"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Oldest first"
-msgstr "I più vecchi prima"
+msgstr "Visualizza i più vecchi prima"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"

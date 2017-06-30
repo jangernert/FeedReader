@@ -538,11 +538,14 @@ public class FeedReader.Grabber : GLib.Object {
 			{
 				m_nexPageURL = grabberUtils.completeURL(m_nexPageURL, m_articleURL);
 			}
-			m_articleURL = m_nexPageURL;
-			Logger.debug("Grabber: next page url: %s".printf(m_nexPageURL));
-			download();
-			parse(cancellable);
-			return true;
+			if(m_articleURL != m_nexPageURL)
+			{
+				m_articleURL = m_nexPageURL;
+				Logger.debug("Grabber: next page url: %s".printf(m_nexPageURL));
+				download();
+				parse(cancellable);
+				return true;
+			}
 		}
 
 		if(Settings.general().get_boolean("download-images"))

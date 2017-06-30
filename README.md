@@ -51,6 +51,11 @@ sudo dnf install feedreader
 sudo eopkg install feedreader
 ```
 
+### openSUSE : <br/>
+```bash
+sudo zypper install feedreader
+```
+
 ### Flatpak
 
 FeedReader is now availble as Flatpak and should be installable on all major Linux distributions that support the Flatpak Application Framework eg. Fedora, Debian, Ubuntu, elementaryOS, Arch, openSuSE, Mageia and many more.

@@ -669,7 +669,7 @@ public class FeedReader.dbDaemon : dbBase {
 
 	public void delete_unsubscribed_feeds()
 	{
-		Logger.warning("dbDaemon: Deleting unsibscribed feeds");
+		Logger.warning("dbDaemon: Deleting unsubscribed feeds");
 		executeSQL("DELETE FROM main.feeds WHERE \"subscribed\" = 0");
 	}
 

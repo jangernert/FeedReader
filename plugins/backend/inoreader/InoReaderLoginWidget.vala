@@ -81,7 +81,7 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		}
 		else
 		{
-			Logger.warning("InoReaderLoginWidget: wrong redirect_uri: " + redirectURL);
+			Logger.warning("InoReaderLoginWidget: wrong redirect_uri");
 		}
 
 		return false;

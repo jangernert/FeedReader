@@ -148,9 +148,9 @@ namespace FeedReader {
 	public static int main (string[] args)
 	{
 		Ivy.Stacktrace.register_handlers();
-		Process.@signal(ProcessSignal.SEGV, onCrash);
-		Process.@signal(ProcessSignal.TRAP, onCrash);
-		Process.@signal(ProcessSignal.ABRT, onCrash);
+		Posix.atexit(() => {
+			Settings.state().set_boolean("ui-running", false);
+		});
 
 		try
 		{
@@ -220,14 +220,6 @@ namespace FeedReader {
 		app.run(args);
 
 		return 0;
-	}
-
-	private static void onCrash(int sig)
-	{
-		stdout.printf("onCrash\n");
-		Settings.state().set_boolean("ui-running", false);
-
-		Logger.debug("ooops! Looks like FeedReader crashed");
 	}
 
 	private const GLib.OptionEntry[] options = {

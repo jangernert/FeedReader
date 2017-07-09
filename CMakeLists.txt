@@ -140,7 +140,8 @@ set(UI_PACKAGES
 	gstreamer-pbutils-1.0
 	libpeas-1.0
 	libxml-2.0
-	goa-1.0)
+	goa-1.0
+	posix)
 
 vala_precompile(UI ${UI_NAME}
 	src/DBusConnection.vala

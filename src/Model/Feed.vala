@@ -54,6 +54,11 @@ public class FeedReader.feed : GLib.Object {
 		return m_url;
 	}
 
+	public void setURL(string url)
+	{
+		m_url = url;
+	}
+
 	public uint getUnread()
 	{
 		return m_unread;
@@ -110,6 +115,11 @@ public class FeedReader.feed : GLib.Object {
 	public string? getIconURL()
 	{
 		return m_iconURL;
+	}
+
+	public void setIconURL(string? url)
+	{
+		m_iconURL = url;
 	}
 
 	public string? getXmlUrl()

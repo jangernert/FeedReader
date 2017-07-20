@@ -333,7 +333,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 			string errmsg = "";
 			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
-			feeds.add((tmpFeed == null) ? Feed : tmpFeed);
+			if(tmpFeed != null)
+			{
+				Feed.setIconURL(tmpFeed.getIconURL());
+				Feed.setURL(tmpFeed.getURL());
+			}
+			feeds.add(Feed);
 		}
 
 		return true;

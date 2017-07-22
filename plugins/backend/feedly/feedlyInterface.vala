@@ -149,8 +149,8 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 			feedArray += Feed.getFeedID() + ",";
 		}
 
-		m_api.mark_as_read(catArray.substring(0, catArray.length-1), "categories", ArticleStatus.READ);
-		m_api.mark_as_read(feedArray.substring(0, feedArray.length-1), "feeds", ArticleStatus.READ);
+		m_api.mark_as_read(catArray.substring(0, catArray.length - 1), "categories", ArticleStatus.READ);
+		m_api.mark_as_read(feedArray.substring(0, feedArray.length - 1), "feeds", ArticleStatus.READ);
 	}
 
 	public void tagArticle(string articleID, string tagID)
@@ -183,7 +183,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return Utils.ping("http://feedly.com/");
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
 	{
 		feedID = "feed/" + feedURL;
 		bool success = false;
@@ -224,12 +224,12 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 	}
 
-	public void moveFeed(string feedID, string newCatID, string? currentCatID )
+	public void moveFeed(string feedID, string newCatID, string ? currentCatID )
 	{
 		m_api.moveSubscription(feedID, newCatID, currentCatID);
 	}
 
-	public string createCategory(string title, string? parentID)
+	public string createCategory(string title, string ? parentID)
 	{
 		return m_api.createCatID(title);
 	}
@@ -260,7 +260,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
 	{
 		m_api.getUnreadCounts();
 
@@ -287,7 +287,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return m_api.getTotalUnread();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
 	{
 		string continuation = null;
 		string feedly_tagID = "";

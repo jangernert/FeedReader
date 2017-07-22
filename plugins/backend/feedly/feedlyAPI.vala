@@ -144,7 +144,6 @@ public class FeedReader.FeedlyAPI : Object {
 		return ConnectionError.SUCCESS;
 	}
 
-
 	public bool getCategories(Gee.List<category> categories)
 	{
 		var response = m_connection.send_get_request_to_feedly ("/v3/categories/");
@@ -171,7 +170,7 @@ public class FeedReader.FeedlyAPI : Object {
 			string categorieID = object.get_string_member("id");
 
 			if(categorieID.has_suffix("global.all")
-			|| categorieID.has_suffix("global.uncategorized"))
+			   || categorieID.has_suffix("global.uncategorized"))
 				continue;
 
 			categories.add(
@@ -179,16 +178,15 @@ public class FeedReader.FeedlyAPI : Object {
 					categorieID,
 					object.get_string_member("label"),
 					getUnreadCountforID(categorieID),
-					i+1,
+					i + 1,
 					CategoryID.MASTER.to_string(),
 					1
-				)
-			);
+					)
+				);
 		}
 
 		return true;
 	}
-
 
 	public bool getFeeds(Gee.List<feed> feeds)
 	{
@@ -214,10 +212,9 @@ public class FeedReader.FeedlyAPI : Object {
 		for (uint i = 0; i < length; i++) {
 			Json.Object object = array.get_object_element(i);
 
-
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("website") ? object.get_string_member("website") : "";
-			string? icon_url = null;
+			string ? icon_url = null;
 			if(object.has_member("iconUrl"))
 				icon_url = object.get_string_member("iconUrl");
 			else if(object.has_member("visualUrl"))
@@ -241,7 +238,7 @@ public class FeedReader.FeedlyAPI : Object {
 				string categorieID = object.get_array_member("categories").get_object_element(j).get_string_member("id");
 
 				if(categorieID.has_suffix("global.all")
-				|| categorieID.has_suffix("global.uncategorized"))
+				   || categorieID.has_suffix("global.uncategorized"))
 					continue;
 
 				categories += categorieID;
@@ -249,19 +246,18 @@ public class FeedReader.FeedlyAPI : Object {
 
 			feeds.add(
 				new feed (
-						feedID,
-						title,
-						url,
-						getUnreadCountforID(object.get_string_member("id")),
-						categories,
-						icon_url
+					feedID,
+					title,
+					url,
+					getUnreadCountforID(object.get_string_member("id")),
+					categories,
+					icon_url
 					)
-			);
+				);
 		}
 
 		return true;
 	}
-
 
 	public bool getTags(Gee.List<tag> tags)
 	{
@@ -290,16 +286,14 @@ public class FeedReader.FeedlyAPI : Object {
 					object.get_string_member("id"),
 					object.has_member("label") ? object.get_string_member("label") : "",
 					dbDaemon.get_default().getTagColor()
-				)
-			);
+					)
+				);
 		}
 
 		return true;
 	}
 
-
-
-	public string? getArticles(Gee.List<article> articles, int count, string? continuation = null, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public string ? getArticles(Gee.List<article> articles, int count, string ? continuation = null, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "user/" + m_userID + "/category/global.all";
 		string onlyUnread = "false";
@@ -309,7 +303,6 @@ public class FeedReader.FeedlyAPI : Object {
 			steamID = marked_tag;
 		else if(whatToGet == ArticleStatus.UNREAD)
 			onlyUnread = "true";
-
 
 		if(tagID != "" && whatToGet == ArticleStatus.ALL)
 			steamID = tagID;
@@ -341,7 +334,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 		string cont = root.get_string_member("continuation");
 
-		var response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response.data,"application/json");
+		var response = m_connection.send_post_string_request_to_feedly("/v3/entries/.mget", entry_id_response.data, "application/json");
 
 		if(response.status != 200)
 			return null;
@@ -362,7 +355,7 @@ public class FeedReader.FeedlyAPI : Object {
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
 			string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
-			string? author = object.has_member("author") ? object.get_string_member("author") : null;
+			string ? author = object.has_member("author") ? object.get_string_member("author") : null;
 			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
 			string content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
 			bool unread = object.get_boolean_member("unread");
@@ -372,15 +365,15 @@ public class FeedReader.FeedlyAPI : Object {
 			DateTime date = new DateTime.now_local();
 			if(object.has_member("updated") && object.get_int_member("updated") > 0)
 			{
-				date = new DateTime.from_unix_local(object.get_int_member("updated")/1000);
+				date = new DateTime.from_unix_local(object.get_int_member("updated") / 1000);
 			}
 			else if(object.has_member("published") && object.get_int_member("published") > 0)
 			{
-				date = new DateTime.from_unix_local(object.get_int_member("published")/1000);
+				date = new DateTime.from_unix_local(object.get_int_member("published") / 1000);
 			}
 			else if(object.has_member("crawled") && object.get_int_member("crawled") > 0)
 			{
-				date = new DateTime.from_unix_local(object.get_int_member("crawled")/1000);
+				date = new DateTime.from_unix_local(object.get_int_member("crawled") / 1000);
 			}
 
 			string tagString = "";
@@ -417,7 +410,7 @@ public class FeedReader.FeedlyAPI : Object {
 				{
 					var attachment = attachments.get_object_element(j);
 					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
+					   || attachment.get_string_member("type").contains("video"))
 					{
 						mediaString = mediaString + attachment.get_string_member("href") + ",";
 					}
@@ -425,21 +418,21 @@ public class FeedReader.FeedlyAPI : Object {
 			}
 
 			var Article = new article(
-								id,
-								title,
-								url,
-								feedID,
-								(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-								marked,
-								content,
-								//summaryContent,
-								"",
-								author,
-								date, // timestamp includes msecs so divide by 1000 to get rid of them
-								-1,
-								tagString,
-								mediaString
-						);
+				id,
+				title,
+				url,
+				feedID,
+				(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+				marked,
+				content,
+				//summaryContent,
+				"",
+				author,
+				date,                 // timestamp includes msecs so divide by 1000 to get rid of them
+				-1,
+				tagString,
+				mediaString
+				);
 			articles.add(Article);
 		}
 
@@ -499,7 +492,6 @@ public class FeedReader.FeedlyAPI : Object {
 		return getUnreadCountforID("user/" + m_userID + "/category/global.all");
 	}
 
-
 	public void mark_as_read(string ids_string, string type, ArticleStatus read)
 	{
 		var id_array = ids_string.split(",");
@@ -540,10 +532,10 @@ public class FeedReader.FeedlyAPI : Object {
 		object.set_array_member(type_id_identificator, ids);
 
 		if(type == "feeds"
-		|| type == "categories")
+		   || type == "categories")
 		{
 			var now = new DateTime.now_local();
-			object.set_int_member("asOf", now.to_unix()*1000);
+			object.set_int_member("asOf", now.to_unix() * 1000);
 		}
 
 		var root = new Json.Node(Json.NodeType.OBJECT);
@@ -593,8 +585,7 @@ public class FeedReader.FeedlyAPI : Object {
 		m_connection.send_delete_request_to_feedly("/v3/tags/" + GLib.Uri.escape_string(tagID));
 	}
 
-
-	public bool addSubscription(string feedURL, string? title = null, string? catIDs = null)
+	public bool addSubscription(string feedURL, string ? title = null, string ? catIDs = null)
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("id", "feed/" + feedURL);
@@ -629,14 +620,13 @@ public class FeedReader.FeedlyAPI : Object {
 		return response.status == 200;
 	}
 
-	public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)
+	public void moveSubscription(string feedID, string newCatID, string ? oldCatID = null)
 	{
 		var Feed = dbDaemon.get_default().read_feed(feedID);
 
 		Json.Object object = new Json.Object();
 		object.set_string_member("id", feedID);
 		object.set_string_member("title", Feed.getTitle());
-
 
 		var catArray = Feed.getCatIDs();
 		Json.Array cats = new Json.Array();

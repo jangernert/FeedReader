@@ -31,7 +31,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		m_utils = new FeedHQUtils();
 	}
 
-
 	public LoginResponse login()
 	{
 		Logger.debug("FeedHQ Login");
@@ -117,7 +116,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id").replace("/", "_");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string? icon_url = object.has_member("iconUrl") ? "https:"+object.get_string_member("iconUrl") : null;
+			string ? icon_url = object.has_member("iconUrl") ? "https:" + object.get_string_member("iconUrl") : null;
 
 			string title = "No Title";
 			if(object.has_member("title"))
@@ -138,14 +137,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			}
 			feeds.add(
 				new feed (
-						feedID,
-						title,
-						url,
-						0,
-						categories,
-						icon_url
+					feedID,
+					title,
+					url,
+					0,
+					categories,
+					icon_url
 					)
-			);
+				);
 		}
 		return true;
 	}
@@ -184,14 +183,14 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 			if(id.contains("/label/"))
 			{
-					categories.add(
-						new category(
-							id.replace("/", "_"),
-							title,
-							0,
-							orderID,
-							CategoryID.MASTER.to_string(),
-							1
+				categories.add(
+					new category(
+						id.replace("/", "_"),
+						title,
+						0,
+						orderID,
+						CategoryID.MASTER.to_string(),
+						1
 						)
 					);
 				++orderID;
@@ -199,7 +198,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		}
 		return true;
 	}
-
 
 	public int getTotalUnread()
 	{
@@ -235,8 +233,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return count;
 	}
 
-
-	public string? updateArticles(Gee.List<string> ids, int count, string? continuation = null)
+	public string ? updateArticles(Gee.List<string> ids, int count, string ? continuation = null)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -284,7 +281,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return null;
 	}
 
-	public string? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
+	public string ? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string ? continuation = null, string ? tagID = null, string ? feed_id = null)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -359,7 +356,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 				{
 					var attachment = attachments.get_object_element(j);
 					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
+					   || attachment.get_string_member("type").contains("video"))
 					{
 						mediaString = mediaString + attachment.get_string_member("href") + ",";
 					}
@@ -367,21 +364,21 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			}
 
 			articles.add(new article(
-									id,
-									object.get_string_member("title"),
-									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
-									object.get_object_member("origin").get_string_member("streamId").replace("/", "_"),
-									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
-									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-									"",
-									"",
-									"",
-									new DateTime.from_unix_local(object.get_int_member("published")),
-									-1,
-									tagString,
-									mediaString
-							)
-						);
+							 id,
+							 object.get_string_member("title"),
+							 object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
+							 object.get_object_member("origin").get_string_member("streamId").replace("/", "_"),
+							 read ? ArticleStatus.READ : ArticleStatus.UNREAD,
+							 marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+							 "",
+							 "",
+							 "",
+							 new DateTime.from_unix_local(object.get_int_member("published")),
+							 -1,
+							 tagString,
+							 mediaString
+							 )
+			             );
 		}
 
 		if(root.has_member("continuation") && root.get_string_member("continuation") != "")
@@ -389,7 +386,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 		return null;
 	}
-
 
 	public void edidTag(string articleID, string tagID, bool add = true)
 	{
@@ -437,22 +433,22 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		m_connection.send_post_request("rename-tag", msg.get());
 	}
 
-	public bool editSubscription(FeedHQSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
+	public bool editSubscription(FeedHQSubscriptionAction action, string[] feedID, string ? title = null, string ? add = null, string ? remove = null)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
 
 		switch(action)
 		{
-			case FeedHQSubscriptionAction.EDIT:
-				msg.add("ac", "edit");
-				break;
-			case FeedHQSubscriptionAction.SUBSCRIBE:
-				msg.add("ac", "subscribe");
-				break;
-			case FeedHQSubscriptionAction.UNSUBSCRIBE:
-				msg.add("ac", "unsubscribe");
-				break;
+		case FeedHQSubscriptionAction.EDIT:
+			msg.add("ac", "edit");
+			break;
+		case FeedHQSubscriptionAction.SUBSCRIBE:
+			msg.add("ac", "subscribe");
+			break;
+		case FeedHQSubscriptionAction.UNSUBSCRIBE:
+			msg.add("ac", "unsubscribe");
+			break;
 		}
 
 		foreach(string s in feedID)
@@ -463,7 +459,6 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 		if(add != null && add != "")
 			msg.add("a", add.replace("_", "/"));
-
 
 		if(remove != null && remove != "")
 			msg.add("r", remove.replace("_", "/"));

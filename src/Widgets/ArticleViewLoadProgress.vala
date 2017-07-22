@@ -52,9 +52,9 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 			this.visible = true;
 			m_progress.show();
 			m_timeout_source_id = Timeout.add(300, () => {
-				  this.set_reveal_child(true);
-				  m_timeout_source_id = 0;
-				  return false;
+				this.set_reveal_child(true);
+				m_timeout_source_id = 0;
+				return false;
 			});
 		}
 		else
@@ -67,6 +67,5 @@ public class FeedReader.ArticleViewLoadProgress : Gtk.Revealer {
 	{
 		reveal(false);
 	}
-
 
 }

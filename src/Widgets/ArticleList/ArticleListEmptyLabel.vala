@@ -38,78 +38,78 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 		{
 			switch(type)
 			{
-				case FeedListType.FEED:
-					name = dbUI.get_default().getFeedName(selectedFeed);
-					if(state == ArticleListState.UNREAD)
-					{
-						if(searchTerm != "")
-							message = _(@"No unread articles that fit \"$search\" in feed \"$name\"");
-						else
-							message = _(@"No unread articles in feed \"$name\"");
-					}
-					else if(state == ArticleListState.MARKED)
-					{
-						if(searchTerm != "")
-							message = _(@"No starred articles that fit \"$search\" in feed \"$name\"");
-						else
-							message = _(@"No starred articles in feed \"$name\"");
-					}
-					else if(state == ArticleListState.ALL)
-					{
-						if(searchTerm != "")
-							message = _(@"No articles that fit \"$search\" in feed \"$name\"");
-						else
-							message = _(@"No articles in feed \"$name\"");
-					}
-					break;
-				case FeedListType.TAG:
-					name = dbUI.get_default().getTagName(selectedFeed);
-					if(state == ArticleListState.UNREAD)
-					{
-						if(searchTerm != "")
-							message = _(@"No unread articles that fit \"$search\" in tag \"$name\"");
-						else
-							message = _(@"No unread articles in tag \"$name\"");
-					}
-					else if(state == ArticleListState.MARKED)
-					{
-						if(searchTerm != "")
-							message = _(@"No starred articles that fit \"$search\" in tag \"$name\"");
-						else
-							message = _(@"No starred articles in tag \"$name\"");
-					}
-					else if(state == ArticleListState.ALL)
-					{
-						if(searchTerm != "")
-							message = _(@"No articles that fit \"$search\" in tag \"$name\"");
-						else
-							message = _(@"No articles in tag \"$name\"");
-					}
-					break;
-				case FeedListType.CATEGORY:
-					name = dbUI.get_default().getCategoryName(selectedFeed);
-					if(state == ArticleListState.UNREAD)
-					{
-						if(searchTerm != "")
-							message = _(@"No unread articles that fit \"$search\" in category \"$name\"");
-						else
-							message = _(@"No unread articles in category \"$name\"");
-					}
-					else if(state == ArticleListState.MARKED)
-					{
-						if(searchTerm != "")
-							message = _(@"No starred articles that fit \"$search\" in category \"$name\"");
-						else
-							message = _(@"No starred articles in category \"$name\"");
-					}
-					else if(state == ArticleListState.ALL)
-					{
-						if(searchTerm != "")
-							message = _(@"No articles that fit \"$search\" in category \"$name\"");
-						else
-							message = _(@"No articles in category \"$name\"");
-					}
-					break;
+			case FeedListType.FEED:
+				name = dbUI.get_default().getFeedName(selectedFeed);
+				if(state == ArticleListState.UNREAD)
+				{
+					if(searchTerm != "")
+						message = _(@"No unread articles that fit \"$search\" in feed \"$name\"");
+					else
+						message = _(@"No unread articles in feed \"$name\"");
+				}
+				else if(state == ArticleListState.MARKED)
+				{
+					if(searchTerm != "")
+						message = _(@"No starred articles that fit \"$search\" in feed \"$name\"");
+					else
+						message = _(@"No starred articles in feed \"$name\"");
+				}
+				else if(state == ArticleListState.ALL)
+				{
+					if(searchTerm != "")
+						message = _(@"No articles that fit \"$search\" in feed \"$name\"");
+					else
+						message = _(@"No articles in feed \"$name\"");
+				}
+				break;
+			case FeedListType.TAG:
+				name = dbUI.get_default().getTagName(selectedFeed);
+				if(state == ArticleListState.UNREAD)
+				{
+					if(searchTerm != "")
+						message = _(@"No unread articles that fit \"$search\" in tag \"$name\"");
+					else
+						message = _(@"No unread articles in tag \"$name\"");
+				}
+				else if(state == ArticleListState.MARKED)
+				{
+					if(searchTerm != "")
+						message = _(@"No starred articles that fit \"$search\" in tag \"$name\"");
+					else
+						message = _(@"No starred articles in tag \"$name\"");
+				}
+				else if(state == ArticleListState.ALL)
+				{
+					if(searchTerm != "")
+						message = _(@"No articles that fit \"$search\" in tag \"$name\"");
+					else
+						message = _(@"No articles in tag \"$name\"");
+				}
+				break;
+			case FeedListType.CATEGORY:
+				name = dbUI.get_default().getCategoryName(selectedFeed);
+				if(state == ArticleListState.UNREAD)
+				{
+					if(searchTerm != "")
+						message = _(@"No unread articles that fit \"$search\" in category \"$name\"");
+					else
+						message = _(@"No unread articles in category \"$name\"");
+				}
+				else if(state == ArticleListState.MARKED)
+				{
+					if(searchTerm != "")
+						message = _(@"No starred articles that fit \"$search\" in category \"$name\"");
+					else
+						message = _(@"No starred articles in category \"$name\"");
+				}
+				else if(state == ArticleListState.ALL)
+				{
+					if(searchTerm != "")
+						message = _(@"No articles that fit \"$search\" in category \"$name\"");
+					else
+						message = _(@"No articles in category \"$name\"");
+				}
+				break;
 			}
 		}
 		else

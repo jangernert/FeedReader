@@ -14,11 +14,11 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace FeedReader.InoReaderSecret {
-	 const string base_uri        = "https://www.inoreader.com/reader/api/0/";
-	 const string apiClientId     = "1000001384";
-	 const string apiClientSecret = "3AA9IyNTFL_Mgu77WPpWbawx9loERRdf";
-	 const string apiRedirectUri  = "http://localhost";
-	 const string csrf_protection = "123456";
+	const string base_uri        = "https://www.inoreader.com/reader/api/0/";
+	const string apiClientId     = "1000001384";
+	const string apiClientSecret = "3AA9IyNTFL_Mgu77WPpWbawx9loERRdf";
+	const string apiRedirectUri  = "http://localhost";
+	const string csrf_protection = "123456";
 }
 
 public class FeedReader.InoReaderUtils : GLib.Object {

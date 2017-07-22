@@ -31,7 +31,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		m_utils = new InoReaderUtils();
 	}
 
-
 	public LoginResponse login()
 	{
 		if(m_utils.getAccessToken() == "")
@@ -117,7 +116,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string? icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : null;
+			string ? icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : null;
 
 			string title = "No Title";
 			if(object.has_member("title"))
@@ -139,14 +138,14 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 			feeds.add(
 				new feed (
-						feedID,
-						title,
-						url,
-						0,
-						categories,
-						icon_url
+					feedID,
+					title,
+					url,
+					0,
+					categories,
+					icon_url
 					)
-			);
+				);
 		}
 
 		return true;
@@ -192,8 +191,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 							orderID,
 							CategoryID.MASTER.to_string(),
 							1
-						)
-					);
+							)
+						);
 				}
 				else
 				{
@@ -202,8 +201,8 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 							id,
 							title,
 							dbDaemon.get_default().getTagColor()
-						)
-					);
+							)
+						);
 				}
 
 				++orderID;
@@ -211,7 +210,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		}
 		return true;
 	}
-
 
 	public int getTotalUnread()
 	{
@@ -248,8 +246,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return count;
 	}
 
-
-	public string? updateArticles(Gee.List<string> ids, int count, string? continuation = null)
+	public string ? updateArticles(Gee.List<string> ids, int count, string ? continuation = null)
 	{
 		var message_string = "n=" + count.to_string();
 		message_string += "&xt=user/-/state/com.google/read";
@@ -289,7 +286,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return null;
 	}
 
-	public string? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
+	public string ? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string ? continuation = null, string ? tagID = null, string ? feed_id = null)
 	{
 		var message_string = "n=" + count.to_string();
 
@@ -302,7 +299,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		if(continuation != null)
 			message_string += "&c=" + continuation;
-
 
 		string api_endpoint = "stream/contents";
 		if(feed_id != null)
@@ -333,7 +329,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		{
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
-			id = id.substring(id.last_index_of_char('/')+1);
+			id = id.substring(id.last_index_of_char('/') + 1);
 			string tagString = "";
 			bool marked = false;
 			bool read = false;
@@ -364,7 +360,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 				{
 					var attachment = attachments.get_object_element(j);
 					if(attachment.get_string_member("type").contains("audio")
-					|| attachment.get_string_member("type").contains("video"))
+					   || attachment.get_string_member("type").contains("video"))
 					{
 						mediaString = mediaString + attachment.get_string_member("href") + ",";
 					}
@@ -372,21 +368,21 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			}
 
 			articles.add(new article(
-									id,
-									object.get_string_member("title"),
-									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
-									object.get_object_member("origin").get_string_member("streamId"),
-									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
-									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-									object.get_object_member("summary").get_string_member("content"),
-									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
-									new DateTime.from_unix_local(object.get_int_member("published")),
-									-1,
-									tagString,
-									mediaString
-							)
-						);
+							 id,
+							 object.get_string_member("title"),
+							 object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
+							 object.get_object_member("origin").get_string_member("streamId"),
+							 read ? ArticleStatus.READ : ArticleStatus.UNREAD,
+							 marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+							 object.get_object_member("summary").get_string_member("content"),
+							 "",
+							 (object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+							 new DateTime.from_unix_local(object.get_int_member("published")),
+							 -1,
+							 tagString,
+							 mediaString
+							 )
+			             );
 		}
 
 		if(root.has_member("continuation") && root.get_string_member("continuation") != "")
@@ -394,7 +390,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		return null;
 	}
-
 
 	public void edidTag(string articleIDs, string tagID, bool add = true)
 	{
@@ -414,7 +409,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		m_connection.send_request("edit-tag", message_string);
 	}
 
-	public void markAsRead(string? streamID = null)
+	public void markAsRead(string ? streamID = null)
 	{
 		var settingsState = new GLib.Settings("org.gnome.feedreader.saved-state");
 		string message_string = "s=%s&ts=%i".printf(streamID, settingsState.get_int("last-sync"));
@@ -440,21 +435,21 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		m_connection.send_request("rename-tag", message_string);
 	}
 
-	public bool editSubscription(InoSubscriptionAction action, string[] feedID, string? title, string? add, string? remove)
+	public bool editSubscription(InoSubscriptionAction action, string[] feedID, string ? title, string ? add, string ? remove)
 	{
 		var message_string = "ac=";
 
 		switch(action)
 		{
-			case InoSubscriptionAction.EDIT:
-				message_string += "edit";
-				break;
-			case InoSubscriptionAction.SUBSCRIBE:
-				message_string += "subscribe";
-				break;
-			case InoSubscriptionAction.UNSUBSCRIBE:
-				message_string += "unsubscribe";
-				break;
+		case InoSubscriptionAction.EDIT:
+			message_string += "edit";
+			break;
+		case InoSubscriptionAction.SUBSCRIBE:
+			message_string += "subscribe";
+			break;
+		case InoSubscriptionAction.UNSUBSCRIBE:
+			message_string += "unsubscribe";
+			break;
 		}
 
 		foreach(string s in feedID)
@@ -468,7 +463,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 		if(remove != null)
 			message_string += "&r=" + remove;
-
 
 		return m_connection.send_request("subscription/edit", message_string).status == 200;
 	}

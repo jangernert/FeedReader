@@ -17,7 +17,7 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 
 	private TwitterAPI m_api;
 
-	public TwitterSetup(string? id, TwitterAPI api, string username = "")
+	public TwitterSetup(string ? id, TwitterAPI api, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -30,7 +30,6 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 		if(id != null)
 			m_id = id;
 	}
-
 
 	public override void login()
 	{
@@ -54,30 +53,30 @@ public class FeedReader.TwitterSetup : ServiceSetup {
 
 			if(content.has_prefix(TwitterSecrets.callback))
 			{
-				int token_start = content.index_of("token=")+6;
-				int token_end = content.index_of("&", token_start);
-				string token = content.substring(token_start, token_end-token_start);
+			    int token_start = content.index_of("token=") + 6;
+			    int token_end = content.index_of("&", token_start);
+			    string token = content.substring(token_start, token_end - token_start);
 
-				int verifier_start = content.index_of("verifier=")+9;
-				string verifier = content.substring(verifier_start);
+			    int verifier_start = content.index_of("verifier=") + 9;
+			    string verifier = content.substring(verifier_start);
 
-				if(token == requestToken)
-				{
-					if(m_api.getAccessToken(id, verifier))
-					{
-						m_id = id;
-						m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
-						m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
-						m_isLoggedIN = true;
-						m_spinner.stop();
-						m_label.set_label(m_api.getUsername(id));
-						m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
-						m_login_button.clicked.disconnect(login);
-						m_login_button.clicked.connect(logout);
+			    if(token == requestToken)
+			    {
+			        if(m_api.getAccessToken(id, verifier))
+			        {
+			            m_id = id;
+			            m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
+			            m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
+			            m_isLoggedIN = true;
+			            m_spinner.stop();
+			            m_label.set_label(m_api.getUsername(id));
+			            m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
+			            m_login_button.clicked.disconnect(login);
+			            m_login_button.clicked.connect(logout);
 					}
-					else
-					{
-						m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
+			        else
+			        {
+			            m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 					}
 				}
 

@@ -40,11 +40,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		m_session.authenticate.connect((msg, auth, retrying) => {
 			if(m_utils.getHtaccessUser() == "")
 			{
-				Logger.error("ownCloud Session: need Authentication");
+			    Logger.error("ownCloud Session: need Authentication");
 			}
 			else if(!retrying)
 			{
-				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
+			    auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}
 		});
 	}
@@ -56,7 +56,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		m_password = m_utils.getPasswd();
 		m_OwnCloudURL = m_utils.getURL();
 
-		if(m_OwnCloudURL == "" && m_username == "" && m_password == ""){
+		if(m_OwnCloudURL == "" && m_username == "" && m_password == "") {
 			m_OwnCloudURL = "example-host/owncloud";
 			return LoginResponse.ALL_EMPTY;
 		}
@@ -99,7 +99,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-
 	public bool isloggedin()
 	{
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "version", m_username, m_password, "GET");
@@ -132,18 +131,18 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 					{
 						var feed_node = feed_array.get_object_element(i);
 						string feed_id = feed_node.get_int_member("id").to_string();
-						string? icon_url = feed_node.has_member("faviconLink") ? feed_node.get_string_member("faviconLink") : null;
+						string ? icon_url = feed_node.has_member("faviconLink") ? feed_node.get_string_member("faviconLink") : null;
 
 						feeds.add(
 							new feed (
-									feed_id,
-									feed_node.get_string_member("title"),
-									feed_node.get_string_member("link"),
-									(int)feed_node.get_int_member("unreadCount"),
-									{ feed_node.get_int_member("folderId").to_string() },
-									icon_url
+								feed_id,
+								feed_node.get_string_member("title"),
+								feed_node.get_string_member("link"),
+								(int)feed_node.get_int_member("unreadCount"),
+								{ feed_node.get_int_member("folderId").to_string() },
+								icon_url
 								)
-						);
+							);
 					}
 
 					return true;
@@ -161,7 +160,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 		return false;
 	}
-
 
 	public bool getCategories(Gee.List<category> categories, Gee.List<feed> feeds)
 	{
@@ -194,8 +192,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 								orderID,
 								CategoryID.MASTER.to_string(),
 								1
-							)
-						);
+								)
+							);
 					}
 					return true;
 				}
@@ -211,7 +209,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		}
 		return false;
 	}
-
 
 	public void getNewArticles(Gee.List<article> articles, int lastModified, OwnCloudType type, int id)
 	{
@@ -237,34 +234,34 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
+					string ? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
 					string media = "";
 
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
-					&& article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
+					   && article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 					{
 						if(article_node.get_string_member("enclosureMime").contains("audio")
-						|| article_node.get_string_member("enclosureMime").contains("video"))
+						   || article_node.get_string_member("enclosureMime").contains("video"))
 						{
 							media = article_node.get_string_member("enclosureLink");
 						}
 					}
 
-					var Article = new article(	article_node.get_int_member("id").to_string(),
-												article_node.get_string_member("title"),
-												article_node.get_string_member("url"),
-												article_node.get_int_member("feedId").to_string(),
-												unread,
-												marked,
-												article_node.get_string_member("body"),
-												"",
-												author,
-												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
-												-1,
-												"", // tags
-												media, // media
-												article_node.get_string_member("guidHash"),
-												(int)article_node.get_int_member("lastModified"));
+					var Article = new article(  article_node.get_int_member("id").to_string(),
+					                            article_node.get_string_member("title"),
+					                            article_node.get_string_member("url"),
+					                            article_node.get_int_member("feedId").to_string(),
+					                            unread,
+					                            marked,
+					                            article_node.get_string_member("body"),
+					                            "",
+					                            author,
+					                            new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
+					                            -1,
+					                            "", // tags
+					                            media, // media
+					                            article_node.get_string_member("guidHash"),
+					                            (int)article_node.get_int_member("lastModified"));
 
 					articles.add(Article);
 				}
@@ -279,8 +276,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			Logger.error("OwncloudNewsAPI.getNewArticles");
 		}
 	}
-
-
 
 	public void getArticles(Gee.List<article> articles, int skip, int count, bool read, OwnCloudType type, int id)
 	{
@@ -308,34 +303,34 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
+					string ? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
 					string media = "";
 
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
-					&& article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
+					   && article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 					{
 						if(article_node.get_string_member("enclosureMime").contains("audio")
-						|| article_node.get_string_member("enclosureMime").contains("video"))
+						   || article_node.get_string_member("enclosureMime").contains("video"))
 						{
 							media = article_node.get_string_member("enclosureLink");
 						}
 					}
 
-					var Article = new article(	article_node.get_int_member("id").to_string(),
-												article_node.get_string_member("title"),
-												article_node.get_string_member("url"),
-												article_node.get_int_member("feedId").to_string(),
-												unread,
-												marked,
-												article_node.get_string_member("body"),
-												"",
-												author,
-												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
-												-1,
-												"", // tags
-												media,
-												article_node.get_string_member("guidHash"),
-												(int)article_node.get_int_member("lastModified"));
+					var Article = new article(  article_node.get_int_member("id").to_string(),
+					                            article_node.get_string_member("title"),
+					                            article_node.get_string_member("url"),
+					                            article_node.get_int_member("feedId").to_string(),
+					                            unread,
+					                            marked,
+					                            article_node.get_string_member("body"),
+					                            "",
+					                            author,
+					                            new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
+					                            -1,
+					                            "", // tags
+					                            media,
+					                            article_node.get_string_member("guidHash"),
+					                            (int)article_node.get_int_member("lastModified"));
 
 					articles.add(Article);
 				}
@@ -351,7 +346,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		}
 	}
 
-
 	public bool markFeedRead(string feedID, bool isCatID)
 	{
 		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
@@ -360,7 +354,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.markFeedRead");
 		return false;
@@ -374,12 +368,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.markAllItemsRead");
 		return false;
 	}
-
 
 	public bool updateArticleUnread(string articleIDs, ArticleStatus unread)
 	{
@@ -395,12 +388,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.updateArticleUnread");
 		return false;
 	}
-
 
 	public bool updateArticleMarked(string articleID, ArticleStatus marked)
 	{
@@ -416,13 +408,13 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.updateArticleMarked");
 		return false;
 	}
 
-	public bool addFeed(string feedURL, string? catID, out int64 feedID, out string errmsg)
+	public bool addFeed(string feedURL, string ? catID, out int64 feedID, out string errmsg)
 	{
 		string url = "/feeds";
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "POST");
@@ -445,18 +437,17 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			Logger.error("OwncloudNewsAPI.addFeed");
 		}
 
-
 		errmsg = "ownCloud could not add the feed";
 		feedID = 0;
 
 		switch(message.getStatusCode())
 		{
-			case 409:
-				errmsg = "Feed already added (409)";
-				return true;
-			case 422:
-				errmsg = "ownCloud can't read the feed (422)";
-				break;
+		case 409:
+			errmsg = "Feed already added (409)";
+			return true;
+		case 422:
+			errmsg = "ownCloud can't read the feed (422)";
+			break;
 		}
 
 		return false;
@@ -487,7 +478,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		}
 	}
 
-	public void moveFeed(string feedID, string? newCatID = null)
+	public void moveFeed(string feedID, string ? newCatID = null)
 	{
 		string url = "/feeds/%s/move".printf(feedID);
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
@@ -531,7 +522,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.removeFolder");
 		return false;

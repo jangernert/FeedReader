@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
- /**
-  * Provides services to display vala stacktraces
-  */
+/**
+ * Provides services to display vala stacktraces
+ */
 namespace Ivy {
 
 	internal enum Style {
@@ -128,7 +128,7 @@ namespace Ivy {
 		 *
 		 * Default is ``true``
 		 */
-		public static bool enabled { get;set;default = true;}
+		public static bool enabled { get; set; default = true;}
 
 		/**
 		 * Hides frames located in external system libraries (like ``libgc``) without
@@ -243,7 +243,7 @@ namespace Ivy {
 		 *         at /home/cran/Documents/Projects/i-hate-farms/app/exocron/build/src/Application.c:304
 		 * }}}
 		 */
-		public static bool hide_installed_libraries { get;set;default = true;}
+		public static bool hide_installed_libraries { get; set; default = true;}
 
 		/**
 		 * Sets the default higlighted text color for stacktrace that are created
@@ -251,7 +251,7 @@ namespace Ivy {
 		 *
 		 * Default is ``Color.WHITE``
 		 */
-		public static Color default_highlight_color { get;set;default = Color.WHITE;}
+		public static Color default_highlight_color { get; set; default = Color.WHITE;}
 
 		/**
 		 * Sets the default background color for stacktrace that are created
@@ -259,21 +259,21 @@ namespace Ivy {
 		 *
 		 * Default is ``Color.RED``
 		 */
-		 public static Color default_error_background { get;set;default = Color.RED;}
+		public static Color default_error_background { get; set; default = Color.RED;}
 
 		/**
 		 * Sets the stacktrace higlighted text color when printed on ``stdout``
 		 *
 		 * Default is ``Color.WHITE``
 		 */
-		 public Color highlight_color { get;set;default = Color.WHITE;}
+		public Color highlight_color { get; set; default = Color.WHITE;}
 
 		/**
 		 * Sets the stacktrace background color when printed on ``stdout``
 		 *
 		 * Default is ``Color.RED``
 		 */
-		public Color error_background { get;set;default = Color.RED;}
+		public Color error_background { get; set; default = Color.RED;}
 
 		/**
 		 * Collection of frames
@@ -332,7 +332,7 @@ namespace Ivy {
 		 *
 		 */
 		public void print () {
-		   printer.print (this);
+			printer.print (this);
 		}
 
 		/**
@@ -372,18 +372,18 @@ namespace Ivy {
 		 *
 		 * Default is ``CriticalHandler.PRINT_STACKTRACE``.
 		 */
-		public static CriticalHandler critical_handling  { get;set;default = CriticalHandler.PRINT_STACKTRACE;}
+		public static CriticalHandler critical_handling  { get; set; default = CriticalHandler.PRINT_STACKTRACE;}
 
 		/*{
-			set {
-				_critical_handling = value;
-				if( value == CriticalHandler.CRASH )
-				//var variables = Environ.get ();
-				//Environ.set_variable (variables, "G_DEBUG", "fatal-criticals" );
-				Log.set_always_fatal (LogLevelFlags.LEVEL_CRITICAL);
-			}
-			get {
-			}
+		    set {
+		        _critical_handling = value;
+		        if( value == CriticalHandler.CRASH )
+		        //var variables = Environ.get ();
+		        //Environ.set_variable (variables, "G_DEBUG", "fatal-criticals" );
+		        Log.set_always_fatal (LogLevelFlags.LEVEL_CRITICAL);
+		    }
+		    get {
+		    }
 
 		   }*/
 
@@ -393,7 +393,7 @@ namespace Ivy {
 			Stacktrace stack = new Stacktrace ((ProcessSignal) sig);
 			stack.print ();
 			if (sig != ProcessSignal.TRAP ||
-				(sig == ProcessSignal.TRAP && critical_handling == CriticalHandler.CRASH))
+			    (sig == ProcessSignal.TRAP && critical_handling == CriticalHandler.CRASH))
 				Process.exit (1);
 		}
 

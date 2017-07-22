@@ -68,13 +68,12 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 				return false;
 
 			if(event.detail == Gdk.NotifyType.NONLINEAR_VIRTUAL)
-		        return false;
+				return false;
 
 			m_hover = false;
 
 			if(m_popover)
 				return false;
-
 
 			removeTimeout();
 			m_timeout_source_id = GLib.Timeout.add(500, () => {

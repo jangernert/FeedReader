@@ -15,7 +15,6 @@
 
 public class FeedReader.bazquxLoginWidget : Peas.ExtensionBase, LoginInterface {
 
-
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 	private bazquxUtils m_utils;
@@ -55,7 +54,7 @@ public class FeedReader.bazquxLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return false;
 	}
 
-	public Gtk.Box? getWidget()
+	public Gtk.Box ? getWidget()
 	{
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
@@ -139,7 +138,6 @@ public class FeedReader.bazquxLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return false;
 	}
 }
-
 
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)

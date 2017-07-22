@@ -20,7 +20,7 @@ public class FeedReader.localUtils : GLib.Object {
 
 	}
 
-	public feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs, out string errmsg)
+	public feed ? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs, out string errmsg)
 	{
 		errmsg = "";
 
@@ -60,12 +60,12 @@ public class FeedReader.localUtils : GLib.Object {
 		var doc = parser.get_document();
 
 		if(doc.link != null
-		&& doc.link != "")
+		   && doc.link != "")
 			url = doc.link;
 
 		var uri = new Soup.URI(url);
-		string? icon_url = (doc.image_url != "") ? doc.image_url : null;
-		string? title = doc.title;
+		string ? icon_url = (doc.image_url != "") ? doc.image_url : null;
+		string ? title = doc.title;
 		if(title == null)
 		{
 			if(uri == null)
@@ -75,18 +75,18 @@ public class FeedReader.localUtils : GLib.Object {
 		}
 
 		var Feed = new feed(
-					feedID,
-					title,
-					url,
-					0,
-					catIDs,
-					icon_url,
-					xmlURL);
+			feedID,
+			title,
+			url,
+			0,
+			catIDs,
+			icon_url,
+			xmlURL);
 
 		return Feed;
 	}
 
-	public string? convert(string? text, string? locale)
+	public string ? convert(string ? text, string ? locale)
 	{
 		if(text == null)
 			return null;

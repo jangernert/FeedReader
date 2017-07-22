@@ -17,7 +17,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Return the the website/homepage of the project
 	//--------------------------------------------------------------------------------------
@@ -25,7 +24,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Return an unique id for the backend. Basically a short form of the name:
@@ -36,7 +34,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Return flags describing the type of Service
@@ -54,16 +51,14 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Return the login UI inside a Gtk.Box (username- and password-entries)
 	// Return 'null' if use web-login
 	//--------------------------------------------------------------------------------------
-	public Gtk.Box? getWidget()
+	public Gtk.Box ? getWidget()
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Return the name of the service-icon (non-symbolic).
@@ -73,7 +68,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Return the name of the service as displayed to the user
 	//--------------------------------------------------------------------------------------
@@ -82,7 +76,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Return wheather the plugin needs a webview to log in via oauth.
 	//--------------------------------------------------------------------------------------
@@ -90,7 +83,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Only important for self-hosted services.
@@ -112,7 +104,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Do stuff after a successful login
 	//--------------------------------------------------------------------------------------
@@ -120,7 +111,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Only needed if "needWebLogin()" retruned true. Return URL that should be
@@ -130,7 +120,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Extract access-key from redirect-URL from webview after loggin in with
@@ -142,7 +131,6 @@ public class FeedReader.demoLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	}
 }
-
 
 //--------------------------------------------------------------------------------------
 // Boilerplate code for the plugin. Replace "demoLoginWidget" with the name

@@ -54,7 +54,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		return foundSomething;
 	}
 
-	public static string? getURL(Html.Doc* doc, string xpath)
+	public static string ? getURL(Html.Doc * doc, string xpath)
 	{
 		var cntx = new Xml.XPath.Context(doc);
 		var res = cntx.eval_expression(xpath);
@@ -78,7 +78,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		return URL;
 	}
 
-	public static string? getValue(Html.Doc* doc, string xpath, bool remove = false)
+	public static string ? getValue(Html.Doc * doc, string xpath, bool remove = false)
 	{
 		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
 		Xml.XPath.Object* res = cntx.eval_expression(xpath);
@@ -207,8 +207,8 @@ public class FeedReader.grabberUtils : GLib.Object {
 		Xml.XPath.Object* res = cntx.eval_expression(query);
 
 		if(res != null
-		&& res->type == Xml.XPath.ObjectType.NODESET
-		&& res->nodesetval != null)
+		   && res->type == Xml.XPath.ObjectType.NODESET
+		   && res->nodesetval != null)
 		{
 			for(int i = 0; i < res->nodesetval->length(); ++i)
 			{
@@ -230,8 +230,8 @@ public class FeedReader.grabberUtils : GLib.Object {
 		Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
 		if(res != null
-		&& res->type == Xml.XPath.ObjectType.NODESET
-		&& res->nodesetval != null)
+		   && res->type == Xml.XPath.ObjectType.NODESET
+		   && res->nodesetval != null)
 		{
 			for(int i = 0; i < res->nodesetval->length(); i++)
 			{
@@ -278,7 +278,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		return true;
 	}
 
-	public static bool removeAttributes(Html.Doc* doc, string? tag, string attribute)
+	public static bool removeAttributes(Html.Doc* doc, string ? tag, string attribute)
 	{
 		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
 		Xml.XPath.Object* res;
@@ -307,7 +307,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		return true;
 	}
 
-	public static bool addAttributes(Html.Doc* doc, string? tag, string attribute, string val)
+	public static bool addAttributes(Html.Doc* doc, string ? tag, string attribute, string val)
 	{
 		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
 		Xml.XPath.Object* res;
@@ -349,15 +349,15 @@ public class FeedReader.grabberUtils : GLib.Object {
 		Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
 		if(res != null
-		&& res->type == Xml.XPath.ObjectType.NODESET
-		&& res->nodesetval != null)
+		   && res->type == Xml.XPath.ObjectType.NODESET
+		   && res->nodesetval != null)
 		{
 			for(int i = 0; i < res->nodesetval->length(); i++)
 			{
 				Xml.Node* node = res->nodesetval->item(i);
 				if(node->get_prop("class") != null
-				|| node->get_prop("id") != null
-				|| node->get_prop("src") != null)
+				   || node->get_prop("id") != null
+				   || node->get_prop("src") != null)
 				{
 					node->unlink();
 					node->free_list();
@@ -368,7 +368,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		delete res;
 	}
 
-	public static string cleanString(string? text)
+	public static string cleanString(string ? text)
 	{
 		if(text == null)
 			return "";
@@ -406,7 +406,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 			baseURL = articleURL.substring(0, index);
 			if(baseURL.has_suffix("/"))
 			{
-				baseURL = baseURL.substring(0, baseURL.char_count()-1);
+				baseURL = baseURL.substring(0, baseURL.char_count() - 1);
 			}
 			return baseURL + incompleteURL;
 		}
@@ -417,8 +417,8 @@ public class FeedReader.grabberUtils : GLib.Object {
 			return baseURL + incompleteURL;
 		}
 		else if(!incompleteURL.has_prefix("http")
-		&& !incompleteURL.has_prefix("www")
-		&& !incompleteURL.has_prefix("//"))
+		        && !incompleteURL.has_prefix("www")
+		        && !incompleteURL.has_prefix("//"))
 		{
 			index = articleURL.index_of_char('/', index);
 			baseURL = articleURL.substring(0, index);
@@ -459,7 +459,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		if(cutSubdomain)
 		{
 			index = hostname.index_of_char('.');
-			if(index != -1 && hostname.index_of_char('.', index+1) != -1)
+			if(index != -1 && hostname.index_of_char('.', index + 1) != -1)
 			{
 				hostname = hostname.substring(index);
 			}
@@ -468,8 +468,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		return hostname;
 	}
 
-
-	public static bool saveImages(Soup.Session session, Html.Doc* doc, string articleID, string feedID, GLib.Cancellable? cancellable = null)
+	public static bool saveImages(Soup.Session session, Html.Doc* doc, string articleID, string feedID, GLib.Cancellable ? cancellable = null)
 	{
 		Logger.debug("GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
 		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
@@ -495,21 +494,21 @@ public class FeedReader.grabberUtils : GLib.Object {
 			{
 				if(
 					((node->get_prop("width") != null && int.parse(node->get_prop("width")) > 1)
-					|| (node->get_prop("width") == null))
-				&&
+					 || (node->get_prop("width") == null))
+					&&
 					((node->get_prop("height") != null && int.parse(node->get_prop("height")) > 1)
-					|| (node->get_prop("height") == null))
-				)
+					 || (node->get_prop("height") == null))
+					)
 				{
-					string? original = downloadImage(session, node->get_prop("src"), articleID, feedID, i+1);
+					string ? original = downloadImage(session, node->get_prop("src"), articleID, feedID, i + 1);
 
 					if(original == null)
 						continue;
 
-					string? parentURL = checkParent(session, node);
+					string ? parentURL = checkParent(session, node);
 					if(parentURL != null)
 					{
-						string parent = downloadImage(session, parentURL, articleID, feedID, i+1, true);
+						string parent = downloadImage(session, parentURL, articleID, feedID, i + 1, true);
 
 						if(compareImageSize(parent, original) > 0)
 						{
@@ -527,7 +526,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 					}
 					else
 					{
-						string? resized = resizeImg(original);
+						string ? resized = resizeImg(original);
 						if(resized != null)
 						{
 							node->set_prop("src", resized);
@@ -544,8 +543,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 		return true;
 	}
 
-
-	public static string? downloadImage(Soup.Session session, string? url, string articleID, string feedID, int nr, bool parent = false)
+	public static string ? downloadImage(Soup.Session session, string ? url, string articleID, string feedID, int nr, bool parent = false)
 	{
 		if(url == null)
 			return null;
@@ -595,7 +593,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 			if(status == 200)
 			{
 				var params = new GLib.HashTable<string, string>(null, null);
-				string? contentType = message_dlImg.response_headers.get_content_type(out params);
+				string ? contentType = message_dlImg.response_headers.get_content_type(out params);
 				if(contentType != null)
 				{
 					Logger.debug(@"Grabber: type $contentType");
@@ -606,9 +604,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 				}
 
 				try{
-					FileUtils.set_contents(	localFilename,
-											(string)message_dlImg.response_body.flatten().data,
-											(long)message_dlImg.response_body.length);
+					FileUtils.set_contents( localFilename,
+					                        (string)message_dlImg.response_body.flatten().data,
+					                        (long)message_dlImg.response_body.length);
 				}
 				catch(GLib.FileError e)
 				{
@@ -626,16 +624,15 @@ public class FeedReader.grabberUtils : GLib.Object {
 		return localFilename.replace("?", "%3F");
 	}
 
-
 	// if image is >2000px then resize it to 1000px and add FR_huge attribute
 	// with url to original image
-	private static string? resizeImg(string path)
+	private static string ? resizeImg(string path)
 	{
 		try
 		{
-			int? height = 0;
-			int? width = 0;
-			Gdk.PixbufFormat? format = Gdk.Pixbuf.get_file_info(path, out width, out height);
+			int ? height = 0;
+			int ? width = 0;
+			Gdk.PixbufFormat ? format = Gdk.Pixbuf.get_file_info(path, out width, out height);
 
 			if(format == null || height == null || width == null)
 				return null;
@@ -668,27 +665,27 @@ public class FeedReader.grabberUtils : GLib.Object {
 	// -1: file1 < file2
 	private static int compareImageSize(string file1, string file2)
 	{
-		int? height1 = 0;
-		int? width1 = 0;
+		int ? height1 = 0;
+		int ? width1 = 0;
 		Gdk.Pixbuf.get_file_info(file1, out width1, out height1);
 
-		int? height2 = 0;
-		int? width2 = 0;
+		int ? height2 = 0;
+		int ? width2 = 0;
 		Gdk.Pixbuf.get_file_info(file2, out width2, out height2);
 
 		if(height1 == null
-		|| width1 == null
-		|| height2 == null
-		|| width2 == null)
+		   || width1 == null
+		   || height2 == null
+		   || width2 == null)
 		{
 			Logger.warning("Utils.compareImageSize: couldn't read image sizes");
 			return 0;
 		}
 
 		if(height1 == height2
-		&& width1 == width2)
+		   && width1 == width2)
 			return 0;
-		else if(height1*width1 > height2*width2)
+		else if(height1 * width1 > height2 * width2)
 			return 1;
 		else
 			return -1;
@@ -696,7 +693,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
 	// check if the parent node is a link that points to a picture
 	// (most likely a bigger version of said picture)
-	private static string? checkParent(Soup.Session session, Xml.Node* node)
+	private static string ? checkParent(Soup.Session session, Xml.Node * node)
 	{
 		Logger.debug("Grabber: checkParent");
 		string smallImgURL = node->get_prop("src");
@@ -719,7 +716,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 					return null;
 				session.send_message(message);
 				var params = new GLib.HashTable<string, string>(null, null);
-				string? contentType = message.response_headers.get_content_type(out params);
+				string ? contentType = message.response_headers.get_content_type(out params);
 				size = message.response_headers.get_content_length();
 				var message2 = new Soup.Message("HEAD", smallImgURL);
 				if(message2 == null)
@@ -758,12 +755,12 @@ public class FeedReader.grabberUtils : GLib.Object {
 		while(pos1 != -1)
 		{
 			pos2 = html.index_of("/>", pos1);
-			string broken_iframe = html.substring(pos1, pos2+2-pos1);
+			string broken_iframe = html.substring(pos1, pos2 + 2 - pos1);
 			Logger.debug("GrabberUtils: broken = %s".printf(broken_iframe));
-			string fixed_iframe = broken_iframe.substring(0, broken_iframe.length-2) + "></iframe>";
+			string fixed_iframe = broken_iframe.substring(0, broken_iframe.length - 2) + "></iframe>";
 			Logger.debug("GrabberUtils: fixed = %s".printf(fixed_iframe));
 			html = html.replace(broken_iframe, fixed_iframe);
-			int pos3 = html.index_of("<iframe", pos1+7);
+			int pos3 = html.index_of("<iframe", pos1 + 7);
 			if(pos3 == pos1 || pos3 > html.length)
 				break;
 			else

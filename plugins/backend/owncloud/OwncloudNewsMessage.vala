@@ -34,7 +34,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		m_destination = destination;
 
 		if(method == "GET")
-		    m_contenttype = "application/x-www-form-urlencoded";
+			m_contenttype = "application/x-www-form-urlencoded";
 		else
 			m_contenttype = "application/json";
 
@@ -43,7 +43,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
 		string credentials = username + ":" + password;
 		string base64 = GLib.Base64.encode(credentials.data);
-		m_message_soup.request_headers.append("Authorization","Basic %s".printf(base64));
+		m_message_soup.request_headers.append("Authorization", "Basic %s".printf(base64));
 	}
 
 	public void add_int(string type, int val)
@@ -64,7 +64,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		if(m_method == "GET")
 			Logger.warning("OwnCloudNewsMessage.add_int_array: this should not happen");
 		else
-		    m_message_string.append(",\"" + type + "\":[" + values + "]");
+			m_message_string.append(",\"" + type + "\":[" + values + "]");
 	}
 
 	public void add_bool(string type, bool val)
@@ -90,7 +90,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 			m_message_string.append(type + "=" + val);
 		}
 		else
-		    m_message_string.append(",\"" + type + "\":\"" + val + "\"");
+			m_message_string.append(",\"" + type + "\":\"" + val + "\"");
 	}
 
 	public ConnectionError send(bool ping = false)
@@ -112,7 +112,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		}
 
 		if(settingsTweaks.get_boolean("do-not-track"))
-				m_message_soup.request_headers.append("DNT", "1");
+			m_message_soup.request_headers.append("DNT", "1");
 
 		var status = m_session.send_message(m_message_soup);
 
@@ -160,7 +160,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		return m_message_soup.status_code;
 	}
 
-	public Json.Object? get_response_object()
+	public Json.Object ? get_response_object()
 	{
 		return m_root_object;
 	}

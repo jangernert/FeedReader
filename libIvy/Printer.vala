@@ -27,7 +27,7 @@ namespace Ivy {
 
 		private Stacktrace stacktrace;
 
-	   private string get_reset_code () {
+		private string get_reset_code () {
 			// return get_color_code (Style.RESET, Colors.WHITE, Colors.BLACK);
 			return "\x1b[0m";
 		}
@@ -150,7 +150,7 @@ namespace Ivy {
 			this.stacktrace = trace;
 			background_color = stacktrace.error_background;
 			var header = "%s%s\n".printf (get_printable_title (),
-										  get_reset_code ());
+			                              get_reset_code ());
 			var first_vala = trace.first_vala;
 
 			if (trace.first_vala != null) {
@@ -160,8 +160,8 @@ namespace Ivy {
 					get_printable_line_number (first_vala, false),
 					get_printable_function (first_vala) + get_reset_code ());
 				title_length += first_vala.line_number.length +
-								first_vala.function.length +
-								first_vala.file_short_path.length;
+				                first_vala.function.length +
+				                first_vala.file_short_path.length;
 			}
 			stdout.printf (header);
 			background_color = Color.BLACK;

@@ -57,22 +57,22 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 
 		ThreadFunc<void*> run = () => {
 			try
-		    {
-		        var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10*Gst.SECOND));
-		        var info = discoverer.discover_uri(m_URL);
+			{
+				var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10 * Gst.SECOND));
+				var info = discoverer.discover_uri(m_URL);
 
-		        foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
+				foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
 				{
 					if(i is Gst.PbUtils.DiscovererVideoInfo)
 					{
 						var v = (Gst.PbUtils.DiscovererVideoInfo)i;
-						m_aspectRatio = ((double)v.get_width())/((double)v.get_height());
+						m_aspectRatio = ((double)v.get_width()) / ((double)v.get_height());
 						m_type = MediaType.VIDEO;
 					}
 				}
-		    }
-		    catch (Error e)
-		    {
+			}
+			catch (Error e)
+			{
 				Logger.error("Unable discover_uri: " + e.message);
 			}
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
@@ -106,16 +106,16 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 			m_player.get_state(out state, out pending, 1000);
 			if(state == Gst.State.PLAYING)
 			{
-				int64 pos;
-				int64 dur;
-				m_player.query_position(Gst.Format.TIME, out pos);
-				m_player.query_duration(Gst.Format.TIME, out dur);
-				double position = (double)pos/1000000000;
-				double duration = (double)dur/1000000000;
-				double percent = position*100.0/duration;
-				if(m_seek_source_id == 0)
+			    int64 pos;
+			    int64 dur;
+			    m_player.query_position(Gst.Format.TIME, out pos);
+			    m_player.query_duration(Gst.Format.TIME, out dur);
+			    double position = (double)pos / 1000000000;
+			    double duration = (double)dur / 1000000000;
+			    double percent = position * 100.0 / duration;
+			    if(m_seek_source_id == 0)
 					m_scale.set_value(percent);
-				calcTime();
+			    calcTime();
 			}
 			return true;
 		}, GLib.Priority.LOW);
@@ -207,19 +207,19 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 
 		switch(state)
 		{
-			case Gst.State.PLAYING:
-				m_playButton.set_image(m_playIcon);
-				m_playButton.set_tooltip_text(MediaButton.PLAY);
-				m_player.set_state(Gst.State.PAUSED);
-				break;
+		case Gst.State.PLAYING:
+			m_playButton.set_image(m_playIcon);
+			m_playButton.set_tooltip_text(MediaButton.PLAY);
+			m_player.set_state(Gst.State.PAUSED);
+			break;
 
-			case Gst.State.PAUSED:
-			case Gst.State.READY:
-			default:
-				m_playButton.set_image(m_pauseIcon);
-				m_playButton.set_tooltip_text(MediaButton.PAUSE);
-				m_player.set_state(Gst.State.PLAYING);
-				break;
+		case Gst.State.PAUSED:
+		case Gst.State.READY:
+		default:
+			m_playButton.set_image(m_pauseIcon);
+			m_playButton.set_tooltip_text(MediaButton.PAUSE);
+			m_player.set_state(Gst.State.PLAYING);
+			break;
 		}
 
 		if(m_muted)
@@ -232,17 +232,17 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 	{
 		switch(m_display)
 		{
-			case DisplayPosition.ALL:
-				m_display = DisplayPosition.POS;
-				break;
+		case DisplayPosition.ALL:
+			m_display = DisplayPosition.POS;
+			break;
 
-			case DisplayPosition.POS:
-				m_display = DisplayPosition.LEFT;
-				break;
+		case DisplayPosition.POS:
+			m_display = DisplayPosition.LEFT;
+			break;
 
-			case DisplayPosition.LEFT:
-				m_display = DisplayPosition.ALL;
-				break;
+		case DisplayPosition.LEFT:
+			m_display = DisplayPosition.ALL;
+			break;
 		}
 		calcTime();
 	}
@@ -253,56 +253,54 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 		int64 dur;
 		m_player.query_position(Gst.Format.TIME, out pos);
 		m_player.query_duration(Gst.Format.TIME, out dur);
-		double position = (int)((double)pos/1000000000);
-		double duration = (int)((double)dur/1000000000);
+		double position = (int)((double)pos / 1000000000);
+		double duration = (int)((double)dur / 1000000000);
 
-
-
-		double? sd = duration;
-		double? md = null;
-		double? hd = null;
+		double ? sd = duration;
+		double ? md = null;
+		double ? hd = null;
 
 		if( ((int)sd) >= 60)
 		{
-			md = (int)(sd/60);
-			sd = sd - (md*60);
+			md = (int)(sd / 60);
+			sd = sd - (md * 60);
 
 			if( ((int)md) >= 60)
 			{
-				hd = (int)(md/60);
-				md = md - (hd*60);
+				hd = (int)(md / 60);
+				md = md - (hd * 60);
 			}
 		}
 
-		double? sp = position;
-		double? mp = null;
-		double? hp = null;
+		double ? sp = position;
+		double ? mp = null;
+		double ? hp = null;
 
 		if( ((int)sp) >= 60)
 		{
-			mp = (int)(sp/60);
-			sp = sp - (mp*60);
+			mp = (int)(sp / 60);
+			sp = sp - (mp * 60);
 
 			if( ((int)mp) >= 60)
 			{
-				hp = (int)(mp/60);
-				mp = mp - (hp*60);
+				hp = (int)(mp / 60);
+				mp = mp - (hp * 60);
 			}
 		}
 
-		double? sr = duration - position;
-		double? mr = null;
-		double? hr = null;
+		double ? sr = duration - position;
+		double ? mr = null;
+		double ? hr = null;
 
 		if( ((int)sr) >= 60)
 		{
-			mr = (int)(sr/60);
-			sr = sr - (mr*60);
+			mr = (int)(sr / 60);
+			sr = sr - (mr * 60);
 
 			if( ((int)mr) >= 60)
 			{
-				hr = (int)(mr/60);
-				mr = mr - (hr*60);
+				hr = (int)(mr / 60);
+				mr = mr - (hr * 60);
 			}
 		}
 
@@ -330,20 +328,19 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 			return;
 		}
 
-
 		switch(m_display)
 		{
-			case DisplayPosition.ALL:
-				m_labelButton.set_label(pLabel + " / " + dLabel);
-				break;
+		case DisplayPosition.ALL:
+			m_labelButton.set_label(pLabel + " / " + dLabel);
+			break;
 
-			case DisplayPosition.POS:
-				m_labelButton.set_label(pLabel);
-				break;
+		case DisplayPosition.POS:
+			m_labelButton.set_label(pLabel);
+			break;
 
-			case DisplayPosition.LEFT:
-				m_labelButton.set_label(rLabel);
-				break;
+		case DisplayPosition.LEFT:
+			m_labelButton.set_label(rLabel);
+			break;
 		}
 	}
 
@@ -358,14 +355,14 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 			m_seek_source_id = GLib.Timeout.add_full(GLib.Priority.DEFAULT, 500, () => {
 				if(m_scale.get_value() != startValue)
 				{
-					startValue = m_scale.get_value();
-					return true;
+				    startValue = m_scale.get_value();
+				    return true;
 				}
 				else
 				{
-					m_seek_source_id = 0;
-					seek(startValue);
-					return false;
+				    m_seek_source_id = 0;
+				    seek(startValue);
+				    return false;
 				}
 			});
 		}
@@ -375,7 +372,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 	private void seek(double new_value)
 	{
 		int64 dur;
-		double percent = new_value/100.0;
+		double percent = new_value / 100.0;
 		m_player.query_duration(Gst.Format.TIME, out dur);
 		int64 pos = (int64)(percent * (double)dur);
 		m_player.seek_simple(Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,  pos);
@@ -406,53 +403,53 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 	{
 		switch (message.type)
 		{
-			case Gst.MessageType.ERROR:
-				GLib.Error err;
-				string debug;
-				message.parse_error(out err, out debug);
-				Logger.error("MediaPlayer: " + err.message);
-				m_player.set_state(Gst.State.NULL);
-				break;
+		case Gst.MessageType.ERROR:
+			GLib.Error err;
+			string debug;
+			message.parse_error(out err, out debug);
+			Logger.error("MediaPlayer: " + err.message);
+			m_player.set_state(Gst.State.NULL);
+			break;
 
-			case Gst.MessageType.EOS:
-				m_player.set_state(Gst.State.READY);
-				m_playButton.set_image(m_playIcon);
-				break;
+		case Gst.MessageType.EOS:
+			m_player.set_state(Gst.State.READY);
+			m_playButton.set_image(m_playIcon);
+			break;
 
-			case Gst.MessageType.BUFFERING:
-				int percent = 0;
-				message.parse_buffering(out percent);
-				if(percent < 100)
+		case Gst.MessageType.BUFFERING:
+			int percent = 0;
+			message.parse_buffering(out percent);
+			if(percent < 100)
+			{
+				m_player.set_state(Gst.State.PAUSED);
+
+				if(m_type == MediaType.VIDEO)
 				{
-					m_player.set_state(Gst.State.PAUSED);
-
-					if(m_type == MediaType.VIDEO)
-					{
-						m_bufferLabel.set_text(percent.to_string() + "%");
-						m_bufferLabel.show();
-					}
-					else
-					{
-						m_playStack.set_visible_child_name("spinner");
-						m_playSpinner.start();
-					}
+					m_bufferLabel.set_text(percent.to_string() + "%");
+					m_bufferLabel.show();
 				}
 				else
 				{
-					m_player.set_state(Gst.State.PLAYING);
-					if(m_type == MediaType.VIDEO)
-						m_bufferLabel.hide();
-					else
-						m_playStack.set_visible_child_name("button");
+					m_playStack.set_visible_child_name("spinner");
+					m_playSpinner.start();
 				}
-				break;
+			}
+			else
+			{
+				m_player.set_state(Gst.State.PLAYING);
+				if(m_type == MediaType.VIDEO)
+					m_bufferLabel.hide();
+				else
+					m_playStack.set_visible_child_name("button");
+			}
+			break;
 
-			case Gst.MessageType.STATE_CHANGED:
-				Gst.State oldstate;
-				Gst.State newstate;
-				Gst.State pending;
-				message.parse_state_changed(out oldstate, out newstate, out pending);
-		        break;
+		case Gst.MessageType.STATE_CHANGED:
+			Gst.State oldstate;
+			Gst.State newstate;
+			Gst.State pending;
+			message.parse_state_changed(out oldstate, out newstate, out pending);
+			break;
 		}
 		return true;
 	}
@@ -462,7 +459,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 		if(m_aspectRatio != 0)
 		{
 			double width = (double)allocation.width;
-			int height = (int)(width/m_aspectRatio);
+			int height = (int)(width / m_aspectRatio);
 			m_videoWidget.set_size_request(-1, height);
 		}
 	}

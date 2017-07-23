@@ -186,7 +186,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return;
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
 	{
 		feedID = "-98";
 		errmsg = "feedbin backend does not support subcribing to feeds";
@@ -208,12 +208,12 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		//m_api.renameFeed(feedID, title);
 	}
 
-	public void moveFeed(string feedID, string newCatID, string? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string ? currentCatID)
 	{
 
 	}
 
-	public string createCategory(string title, string? parentID)
+	public string createCategory(string title, string ? parentID)
 	{
 		return "";
 	}
@@ -243,7 +243,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
 	{
 		if(m_api.getSubscriptionList(feeds))
 		{
@@ -262,7 +262,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return m_api.unreadEntries().size;
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{
@@ -270,11 +270,11 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		}
 
 		var settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
-		DateTime? time = null;
+		DateTime ? time = null;
 		if(!dbDaemon.get_default().isTableEmpty("articles"))
 			time = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
 
-		string? fID = isTagID ? null : feedID;
+		string ? fID = isTagID ? null : feedID;
 		bool onlyStarred = (whatToGet == ArticleStatus.MARKED);
 
 		// The Feedbin API doesn't include read/unread/starred status in the entries.json
@@ -284,7 +284,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		var starredIDs = new Gee.HashSet<string>();
 		starredIDs.add_all(m_api.starredEntries());
 
-		for(int page = 1; ; ++page)
+		for(int page = 1;; ++page)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;

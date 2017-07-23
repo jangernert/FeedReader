@@ -15,10 +15,10 @@
 
 public class FeedReader.Settings : GLib.Object {
 
-	private static GLib.Settings? m_general = null;
-	private static GLib.Settings? m_tweaks = null;
-	private static GLib.Settings? m_state = null;
-	private static GLib.Settings? m_keys = null;
+	private static GLib.Settings ? m_general = null;
+	private static GLib.Settings ? m_tweaks = null;
+	private static GLib.Settings ? m_state = null;
+	private static GLib.Settings ? m_keys = null;
 	private static Gee.HashMap<string, GLib.Settings>? m_share = null;
 
 	public static GLib.Settings general()
@@ -53,7 +53,7 @@ public class FeedReader.Settings : GLib.Object {
 		return m_keys;
 	}
 
-	public static GLib.Settings? share(string pluginName)
+	public static GLib.Settings ? share(string pluginName)
 	{
 		if(m_share == null)
 			m_share = new Gee.HashMap<string, GLib.Settings>();

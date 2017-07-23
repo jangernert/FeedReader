@@ -39,11 +39,11 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public abstract bool singleInstance();
 
-	public abstract ServiceSetup? newSetup_withID(string id, string username);
+	public abstract ServiceSetup ? newSetup_withID(string id, string username);
 
-	public abstract ServiceSetup? newSetup();
+	public abstract ServiceSetup ? newSetup();
 
-	public abstract ServiceSetup? newSystemAccount(string id, string username);
+	public abstract ServiceSetup ? newSystemAccount(string id, string username);
 
-	public abstract ShareForm? shareWidget(string url);
+	public abstract ShareForm ? shareWidget(string url);
 }

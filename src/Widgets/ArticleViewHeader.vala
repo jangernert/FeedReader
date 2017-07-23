@@ -13,7 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-
 public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 
 	private Gtk.Button m_share_button;
@@ -23,7 +22,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	private HoverButton m_mark_button;
 	private HoverButton m_read_button;
 	private Gtk.Button m_fullscreen_button;
-	private SharePopover? m_sharePopover = null;
+	private SharePopover ? m_sharePopover = null;
 	public signal void toggledMarked();
 	public signal void toggledRead();
 	public signal void fsClick();
@@ -75,7 +74,6 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			});
 		});
 
-
 		m_print_button = new Gtk.Button.from_icon_name("printer-symbolic");
 		m_print_button.set_relief(Gtk.ReliefStyle.NONE);
 		m_print_button.set_focus_on_click(false);
@@ -84,7 +82,6 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_print_button.clicked.connect(() => {
 			ColumnView.get_default().print();
 		});
-
 
 		m_share_button = new Gtk.Button();
 		m_share_button.add(share_icon);
@@ -148,7 +145,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		try
 		{
 			if(DBusConnection.get_default().supportTags()
-			&& UtilsUI.canManipulateContent())
+			   && UtilsUI.canManipulateContent())
 			{
 				m_tag_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 			}
@@ -185,7 +182,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		{
 			m_share_button.sensitive = false;
 			if(UtilsUI.canManipulateContent()
-			&& DBusConnection.get_default().supportTags())
+			   && DBusConnection.get_default().supportTags())
 				m_tag_button.sensitive = false;
 		}
 		catch(GLib.Error e)
@@ -202,7 +199,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 			{
 				m_share_button.sensitive = true;
 				if(UtilsUI.canManipulateContent()
-				&& DBusConnection.get_default().supportTags())
+				   && DBusConnection.get_default().supportTags())
 					m_tag_button.sensitive = true;
 			}
 		}

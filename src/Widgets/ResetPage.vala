@@ -61,14 +61,12 @@ public class FeedReader.ResetPage : Gtk.Bin {
 		m_layout.pack_start(describtionText, true, true, 0);
 		m_layout.pack_end(buttonBox, false, true, 0);
 
-
 		this.set_halign(Gtk.Align.CENTER);
 		this.set_valign(Gtk.Align.CENTER);
 		this.margin = 20;
 		this.add(m_layout);
 		this.show_all();
 	}
-
 
 	private void resetAllData()
 	{

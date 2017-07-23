@@ -40,8 +40,6 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private uint m_savetyFallbackID = 0;
 	private uint m_scrollCooldownID = 0;
 
-
-
 	public ArticleListScroll()
 	{
 		vadjustment.notify["upper"].connect(trackUpper);
@@ -91,8 +89,8 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	private void checkScrolledTop()
 	{
 		if(m_allowSignals
-		&& vadjustment.value < 2.0
-		&& !m_scrolledTopOnCooldown)
+		   && vadjustment.value < 2.0
+		   && !m_scrolledTopOnCooldown)
 		{
 			m_scrolledTopOnCooldown = true;
 			scrolledTop();
@@ -109,9 +107,9 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	{
 		double max = vadjustment.upper - vadjustment.page_size;
 		if(m_allowSignals
-		&& max > 0.0
-		&& vadjustment.value >= (max - m_bottomThreshold)
-		&& !m_scrolledBottomOnCooldown)
+		   && max > 0.0
+		   && vadjustment.value >= (max - m_bottomThreshold)
+		   && !m_scrolledBottomOnCooldown)
 		{
 			Logger.debug("ArticleListScroll: scrolled down");
 			m_scrolledBottomOnCooldown = true;
@@ -139,14 +137,14 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			m_scrolledBottomOnCooldown = false;
 			if(m_savetyFallbackID != 0)
 			{
-				GLib.Source.remove(m_savetyFallbackID);
-				m_savetyFallbackID = 0;
+			    GLib.Source.remove(m_savetyFallbackID);
+			    m_savetyFallbackID = 0;
 			}
 			double max = vadjustment.upper - vadjustment.page_size;
 			if(vadjustment.value >= max - 5)
 			{
-				Logger.debug("ArticleListScroll: trigger scrolledBottom()");
-				scrolledBottom();
+			    Logger.debug("ArticleListScroll: trigger scrolledBottom()");
+			    scrolledBottom();
 			}
 
 			return GLib.Source.REMOVE;
@@ -187,12 +185,12 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 			}
 
 			Logger.debug(@"ArticleListScroll.scrollToPos: leftOverScroll $leftOverScroll");
-			Logger.debug(@"ArticleListScroll.scrollToPos: %f".printf(pos+leftOverScroll));
+			Logger.debug(@"ArticleListScroll.scrollToPos: %f".printf(pos + leftOverScroll));
 
 			if(pos == -1)
 				m_transitionDiff = (vadjustment.upper - vadjustment.page_size - vadjustment.value);
 			else
-				m_transitionDiff = (pos-this.vadjustment.value)+leftOverScroll;
+				m_transitionDiff = (pos - this.vadjustment.value) + leftOverScroll;
 
 			m_transitionStartValue = this.vadjustment.value;
 			Logger.debug(@"ArticleListScroll.scrollDiff: startValue $m_transitionStartValue");
@@ -231,7 +229,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 		row.translate_coordinates(this, 0, 0, out x, out y);
 
 		// row is (additionalRows * rowHeight) above the current viewport
-		if(y < -( (1+additionalRows) * rowHeight))
+		if(y < -( (1 + additionalRows) * rowHeight))
 			return -1;
 
 		// row is (additionalRows * rowHeight) below the current viewport
@@ -274,7 +272,7 @@ public class FeedReader.ArticleListScroll : Gtk.ScrolledWindow {
 	inline double easeOutCubic(double t)
 	{
 		double p = t - 1;
-		return p * p * p +1;
+		return p * p * p + 1;
 	}
 
 	public void allowSignals(bool allow)

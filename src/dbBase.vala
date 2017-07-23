@@ -63,7 +63,7 @@ public class FeedReader.dbBase : GLib.Object {
 		executeSQL("PRAGMA journal_mode = WAL");
 		executeSQL("PRAGMA page_size = 4096");
 
-		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds"
+		executeSQL(                 """CREATE  TABLE  IF NOT EXISTS "main"."feeds"
 										(
 											"feed_id" TEXT PRIMARY KEY NOT NULL UNIQUE,
 											"name" TEXT NOT NULL,
@@ -73,7 +73,7 @@ public class FeedReader.dbBase : GLib.Object {
 											"xmlURL" TEXT
 										)""");
 
-		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
+		executeSQL(                 """CREATE  TABLE  IF NOT EXISTS "main"."categories"
 										(
 											"categorieID" TEXT PRIMARY KEY NOT NULL UNIQUE,
 											"title" TEXT NOT NULL,
@@ -83,7 +83,7 @@ public class FeedReader.dbBase : GLib.Object {
 											"Level" INTEGER
 											)""");
 
-		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
+		executeSQL(                 """CREATE  TABLE  IF NOT EXISTS "main"."articles"
 										(
 											"articleID" TEXT PRIMARY KEY NOT NULL UNIQUE,
 											"feedID" TEXT NOT NULL,
@@ -102,7 +102,7 @@ public class FeedReader.dbBase : GLib.Object {
 											"contentFetched" INTEGER NOT NULL
 										)""");
 
-		executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
+		executeSQL(                    """CREATE  TABLE  IF NOT EXISTS "main"."tags"
 										(
 											"tagID" TEXT PRIMARY KEY NOT NULL UNIQUE,
 											"title" TEXT NOT NULL,
@@ -110,18 +110,18 @@ public class FeedReader.dbBase : GLib.Object {
 											"color" INTEGER
 										)""");
 
-		executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
+		executeSQL(                    """CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
 										(
 											"action" INTEGER NOT NULL,
 											"id" TEXT NOT NULL,
 											"argument" INTEGER
 										)""");
 
-		executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
-		executeSQL(						"""CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
+		executeSQL(                     """CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
+		executeSQL(                     """CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
 	}
 
-	protected void executeSQL(string sql, Sqlite.Callback? callback = null)
+	protected void executeSQL(string sql, Sqlite.Callback ? callback = null)
 	{
 		string errmsg;
 		int ec = sqlite_db.exec(sql, null, out errmsg);
@@ -424,8 +424,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
 	}
 
-
-	public string? getTagName(string tagID)
+	public string ? getTagName(string tagID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "tags");
 		query.selectField("title");
@@ -472,7 +471,6 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
 	}
 
-
 	public string getCategoryName(string catID)
 	{
 		if(catID == CategoryID.TAGS.to_string())
@@ -503,8 +501,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
 	}
 
-
-	public string? getCategoryID(string catname)
+	public string ? getCategoryID(string catname)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "categories");
 		query.selectField("categorieID");
@@ -519,7 +516,7 @@ public class FeedReader.dbBase : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		string? result = null;
+		string ? result = null;
 
 		while (stmt.step () == Sqlite.ROW) {
 			result = stmt.column_text(0);
@@ -527,7 +524,6 @@ public class FeedReader.dbBase : GLib.Object {
 
 		return result;
 	}
-
 
 	public bool preview_empty(string articleID)
 	{
@@ -595,25 +591,25 @@ public class FeedReader.dbBase : GLib.Object {
 		while (stmt.step () == Sqlite.ROW)
 		{
 			if(stmt.column_text(2) == id1
-			|| stmt.column_text(2) == id2)
+			   || stmt.column_text(2) == id2)
 				continue;
 
 			tmp.add(new article(
-								stmt.column_text(2),								// articleID
-								stmt.column_text(3),								// title
-								stmt.column_text(5),								// url
-								stmt.column_text(1),								// feedID
-								(ArticleStatus)stmt.column_int(7),					// unread
-								(ArticleStatus)stmt.column_int(8),					// marked
-								"",													// html
-								stmt.column_text(6),								// preview
-								stmt.column_text(4),								// author
-								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
-								stmt.column_int(0),									// sortID
-								stmt.column_text(9),								// tags
-								stmt.column_text(12),								// media
-								stmt.column_text(11)								// guid
-							));
+						stmt.column_text(2),                                        // articleID
+						stmt.column_text(3),                                        // title
+						stmt.column_text(5),                                        // url
+						stmt.column_text(1),                                        // feedID
+						(ArticleStatus)stmt.column_int(7),                          // unread
+						(ArticleStatus)stmt.column_int(8),                          // marked
+						"",                                                         // html
+						stmt.column_text(6),                                        // preview
+						stmt.column_text(4),                                        // author
+						new GLib.DateTime.from_unix_local(stmt.column_int(10)),         // date
+						stmt.column_int(0),                                         // sortID
+						stmt.column_text(9),                                        // tags
+						stmt.column_text(12),                                       // media
+						stmt.column_text(11)                                        // guid
+						));
 		}
 		stmt.reset();
 		return tmp;
@@ -639,17 +635,17 @@ public class FeedReader.dbBase : GLib.Object {
 		while(stmt.step() == Sqlite.ROW)
 		{
 			articles.set(stmt.column_text(0),
-								new article(stmt.column_text(0), "", "", "", (ArticleStatus)stmt.column_int(1),
-								(ArticleStatus)stmt.column_int(2), "", "", null, new GLib.DateTime.now_local(), 0, "", ""));
+			             new article(stmt.column_text(0), "", "", "", (ArticleStatus)stmt.column_int(1),
+			                         (ArticleStatus)stmt.column_int(2), "", "", null, new GLib.DateTime.now_local(), 0, "", ""));
 		}
 		stmt.reset();
 		return articles;
 	}
 
-	public article? read_article(string articleID)
+	public article ? read_article(string articleID)
 	{
 		Logger.debug(@"dbBase.read_article(): $articleID");
-		article? tmp = null;
+		article ? tmp = null;
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("ROWID");
 		query.selectField("*");
@@ -666,28 +662,27 @@ public class FeedReader.dbBase : GLib.Object {
 
 		while(stmt.step() == Sqlite.ROW)
 		{
-			string? author = (stmt.column_text(4) == "") ? null : stmt.column_text(4);
+			string ? author = (stmt.column_text(4) == "") ? null : stmt.column_text(4);
 			tmp = new article(
-								articleID,
-								stmt.column_text(3),
-								stmt.column_text(5),
-								stmt.column_text(2),
-								(ArticleStatus)stmt.column_int(8),
-								(ArticleStatus)stmt.column_int(9),
-								stmt.column_text(6),
-								stmt.column_text(7),
-								author,
-								new GLib.DateTime.from_unix_local(stmt.column_int(11)),
-								stmt.column_int(0), // rowid (sortid)
-								stmt.column_text(10), // tags
-								stmt.column_text(14), // media
-								stmt.column_text(12)  // guid
-							);
+				articleID,
+				stmt.column_text(3),
+				stmt.column_text(5),
+				stmt.column_text(2),
+				(ArticleStatus)stmt.column_int(8),
+				(ArticleStatus)stmt.column_int(9),
+				stmt.column_text(6),
+				stmt.column_text(7),
+				author,
+				new GLib.DateTime.from_unix_local(stmt.column_int(11)),
+				stmt.column_int(0),                 // rowid (sortid)
+				stmt.column_text(10),                 // tags
+				stmt.column_text(14),                 // media
+				stmt.column_text(12)                  // guid
+				);
 		}
 		stmt.reset();
 		return tmp;
 	}
-
 
 	public string read_article_tags(string articleID)
 	{
@@ -829,7 +824,6 @@ public class FeedReader.dbBase : GLib.Object {
 		return false;
 	}
 
-
 	public int getRowCountHeadlineByDate(string date)
 	{
 		int result = 0;
@@ -854,7 +848,6 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
 	}
 
-
 	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm, int searchRows = 0)
 	{
 		int result = 0;
@@ -866,7 +859,6 @@ public class FeedReader.dbBase : GLib.Object {
 		var query2 = new QueryBuilder(QueryType.SELECT, "articles");
 		query2.selectField("count(*)");
 
-
 		query.selectField(orderBy);
 		query.build();
 
@@ -874,7 +866,6 @@ public class FeedReader.dbBase : GLib.Object {
 			query2.addCustomCondition(@"$orderBy < (%s)".printf(query.get()));
 		else
 			query2.addCustomCondition(@"$orderBy > (%s)".printf(query.get()));
-
 
 		if(selectedType == FeedListType.FEED && feedID != FeedID.ALL.to_string())
 		{
@@ -902,7 +893,7 @@ public class FeedReader.dbBase : GLib.Object {
 			query2.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
 		}
 
-		if(searchTerm != ""){
+		if(searchTerm != "") {
 			if(searchTerm.has_prefix("title: "))
 			{
 				query2.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
@@ -951,7 +942,6 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
 	}
 
-
 	public Gee.ArrayList<string> getFeedIDofCategorie(string categorieID)
 	{
 		var feedIDs = new Gee.ArrayList<string>();
@@ -975,7 +965,7 @@ public class FeedReader.dbBase : GLib.Object {
 			if(categorieID == "")
 			{
 				if((categories.length == 0)
-				||(categories.length == 1 && categories[0].contains("global.must")))
+				   || (categories.length == 1 && categories[0].contains("global.must")))
 				{
 					feedIDs.add(stmt.column_text(0));
 				}
@@ -1001,7 +991,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	protected virtual bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
-        return true;
+		return true;
 	}
 
 	protected string getUncategorizedFeedsQuery()
@@ -1026,9 +1016,8 @@ public class FeedReader.dbBase : GLib.Object {
 			feedIDs += "\"" + stmt.column_text(0) + "\"" + ",";
 		}
 
-		return sql.printf(feedIDs.substring(0, feedIDs.length-1));
+		return sql.printf(feedIDs.substring(0, feedIDs.length - 1));
 	}
-
 
 	public string getFeedIDofArticle(string articleID)
 	{
@@ -1047,7 +1036,6 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 		return id;
 	}
-
 
 	public string getNewestArticle()
 	{
@@ -1119,8 +1107,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
 	}
 
-
-	public feed? read_feed(string feedID)
+	public feed ? read_feed(string feedID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("*");
@@ -1150,7 +1137,6 @@ public class FeedReader.dbBase : GLib.Object {
 
 		return null;
 	}
-
 
 	public Gee.ArrayList<feed> read_feeds(bool starredCount = false)
 	{
@@ -1196,7 +1182,6 @@ public class FeedReader.dbBase : GLib.Object {
 
 		return tmp;
 	}
-
 
 	public uint getFeedUnread(string feedID)
 	{
@@ -1246,7 +1231,6 @@ public class FeedReader.dbBase : GLib.Object {
 		return count;
 	}
 
-
 	public Gee.ArrayList<feed> read_feeds_without_cat()
 	{
 		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
@@ -1285,7 +1269,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	public category? read_category(string catID)
+	public category ? read_category(string catID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "categories");
 		query.selectField("*");
@@ -1307,7 +1291,6 @@ public class FeedReader.dbBase : GLib.Object {
 
 		return null;
 	}
-
 
 	public Gee.ArrayList<tag> read_tags()
 	{
@@ -1368,7 +1351,7 @@ public class FeedReader.dbBase : GLib.Object {
 			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(Tag.getTagID());
 		}
 
-		int or = query.char_count()-4;
+		int or = query.char_count() - 4;
 		return query.substring(0, or) + ")";
 	}
 
@@ -1433,7 +1416,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmpCategories;
 	}
 
-    public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
+	public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
 	{
 		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
 		category tmpcategory;
@@ -1472,7 +1455,7 @@ public class FeedReader.dbBase : GLib.Object {
 					stmt.column_int(3),
 					stmt.column_text(4),
 					stmt.column_int(5)
-				);
+					);
 
 				tmp.add(tmpcategory);
 			}
@@ -1501,26 +1484,25 @@ public class FeedReader.dbBase : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-
 		var tmp = new Gee.LinkedList<article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
 			tmp.add(new article(
-								stmt.column_text(0),								// articleID
-								"",													// title
-								stmt.column_text(1),								// url
-								stmt.column_text(4),								// feedID
-								ArticleStatus.UNREAD,								// unread
-								ArticleStatus.UNMARKED,								// marked
-								stmt.column_text(3),								// html
-								stmt.column_text(2),								// preview
-								"",													// author
-								new GLib.DateTime.now_local(),						// date
-								0,													// sortID
-								"",													// tags
-								"",													// media
-								""													// guid
-							));
+						stmt.column_text(0),                                        // articleID
+						"",                                                         // title
+						stmt.column_text(1),                                        // url
+						stmt.column_text(4),                                        // feedID
+						ArticleStatus.UNREAD,                                       // unread
+						ArticleStatus.UNMARKED,                                     // marked
+						stmt.column_text(3),                                        // html
+						stmt.column_text(2),                                        // preview
+						"",                                                         // author
+						new GLib.DateTime.now_local(),                              // date
+						0,                                                          // sortID
+						"",                                                         // tags
+						"",                                                         // media
+						""                                                          // guid
+						));
 		}
 
 		return tmp;
@@ -1571,7 +1553,7 @@ public class FeedReader.dbBase : GLib.Object {
 			query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
 		}
 
-		if(searchTerm != ""){
+		if(searchTerm != "") {
 			if(searchTerm.has_prefix("title: "))
 			{
 				query.addCustomCondition("articleID IN (SELECT articleID FROM fts_table WHERE title MATCH '%s')".printf(Utils.prepareSearchQuery(searchTerm)));
@@ -1618,7 +1600,6 @@ public class FeedReader.dbBase : GLib.Object {
 		query.build();
 		query.print();
 
-
 		Sqlite.Statement stmt;
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
 		if(ec != Sqlite.OK)
@@ -1627,26 +1608,25 @@ public class FeedReader.dbBase : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-
 		var tmp = new Gee.LinkedList<article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
 			tmp.add(new article(
-								stmt.column_text(2),								// articleID
-								stmt.column_text(3),								// title
-								stmt.column_text(5),								// url
-								stmt.column_text(1),								// feedID
-								(ArticleStatus)stmt.column_int(7),					// unread
-								(ArticleStatus)stmt.column_int(8),					// marked
-								"",													// html
-								stmt.column_text(6),								// preview
-								stmt.column_text(4),								// author
-								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
-								stmt.column_int(0),									// sortID
-								stmt.column_text(9),								// tags
-								stmt.column_text(12),								// media
-								stmt.column_text(11)								// guid
-							));
+						stmt.column_text(2),                                        // articleID
+						stmt.column_text(3),                                        // title
+						stmt.column_text(5),                                        // url
+						stmt.column_text(1),                                        // feedID
+						(ArticleStatus)stmt.column_int(7),                          // unread
+						(ArticleStatus)stmt.column_int(8),                          // marked
+						"",                                                         // html
+						stmt.column_text(6),                                        // preview
+						stmt.column_text(4),                                        // author
+						new GLib.DateTime.from_unix_local(stmt.column_int(10)),         // date
+						stmt.column_int(0),                                         // sortID
+						stmt.column_text(9),                                        // tags
+						stmt.column_text(12),                                       // media
+						stmt.column_text(11)                                        // guid
+						));
 		}
 
 		return tmp;

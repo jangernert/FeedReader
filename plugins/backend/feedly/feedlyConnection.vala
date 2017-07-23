@@ -29,13 +29,13 @@ public class FeedReader.FeedlyConnection {
 
 	public LoginResponse getToken()
 	{
-		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
+		var message = new Soup.Message("POST", FeedlySecret.base_uri + "/v3/auth/token");
 		string message_string = "code=" + m_utils.getApiCode()
-								+ "&client_id=" + FeedlySecret.apiClientId
-								+ "&client_secret=" + FeedlySecret.apiClientSecret
-								+ "&redirect_uri=" + FeedlySecret.apiRedirectUri
-								+ "&grant_type=authorization_code"
-								+ "&state=getting_token";
+		                        + "&client_id=" + FeedlySecret.apiClientId
+		                        + "&client_secret=" + FeedlySecret.apiClientSecret
+		                        + "&redirect_uri=" + FeedlySecret.apiRedirectUri
+		                        + "&grant_type=authorization_code"
+		                        + "&state=getting_token";
 
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		m_session.send_message(message);
@@ -80,18 +80,17 @@ public class FeedReader.FeedlyConnection {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-
 	public LoginResponse refreshToken()
 	{
-		var message = new Soup.Message("POST", FeedlySecret.base_uri+"/v3/auth/token");
+		var message = new Soup.Message("POST", FeedlySecret.base_uri + "/v3/auth/token");
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
 		string message_string = "refresh_token=" + m_utils.getRefreshToken()
-								+ "&client_id=" + FeedlySecret.apiClientId
-								+ "&client_secret=" + FeedlySecret.apiClientSecret
-								+ "&grant_type=refresh_token";
+		                        + "&client_id=" + FeedlySecret.apiClientId
+		                        + "&client_secret=" + FeedlySecret.apiClientSecret
+		                        + "&grant_type=refresh_token";
 
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		m_session.send_message(message);
@@ -136,7 +135,6 @@ public class FeedReader.FeedlyConnection {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-
 	public Response send_get_request_to_feedly(string path)
 	{
 		return send_request(path, "GET");
@@ -147,14 +145,14 @@ public class FeedReader.FeedlyConnection {
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var message = new Soup.Message("PUT", FeedlySecret.base_uri+path);
+		var message = new Soup.Message("PUT", FeedlySecret.base_uri + path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
 		var gen = new Json.Generator();
 		gen.set_root(root);
-		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
+		message.request_headers.append("Authorization", "OAuth %s".printf(m_utils.getAccessToken()));
 
 		size_t length;
 		string json;
@@ -168,8 +166,8 @@ public class FeedReader.FeedlyConnection {
 		}
 
 		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data
+				   status = message.status_code,
+				   data = (string)message.response_body.flatten().data
 		};
 	}
 
@@ -178,14 +176,14 @@ public class FeedReader.FeedlyConnection {
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
+		var message = new Soup.Message("POST", FeedlySecret.base_uri + path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
 		var gen = new Json.Generator();
 		gen.set_root(root);
-		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
+		message.request_headers.append("Authorization", "OAuth %s".printf(m_utils.getAccessToken()));
 
 		size_t length;
 		string json;
@@ -201,8 +199,8 @@ public class FeedReader.FeedlyConnection {
 		}
 
 		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data
+				   status = message.status_code,
+				   data = (string)message.response_body.flatten().data
 		};
 	}
 
@@ -211,12 +209,12 @@ public class FeedReader.FeedlyConnection {
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var message = new Soup.Message("POST", FeedlySecret.base_uri+path);
+		var message = new Soup.Message("POST", FeedlySecret.base_uri + path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
-		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
+		message.request_headers.append("Authorization", "OAuth %s".printf(m_utils.getAccessToken()));
 		message.request_headers.append("Content-Type", type);
 
 		message.request_body.append_take(input.data);
@@ -228,8 +226,8 @@ public class FeedReader.FeedlyConnection {
 		}
 
 		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data
+				   status = message.status_code,
+				   data = (string)message.response_body.flatten().data
 		};
 	}
 
@@ -243,11 +241,11 @@ public class FeedReader.FeedlyConnection {
 		if(!m_utils.accessTokenValid())
 			refreshToken();
 
-		var message = new Soup.Message(type, FeedlySecret.base_uri+path);
-		message.request_headers.append("Authorization","OAuth %s".printf(m_utils.getAccessToken()));
+		var message = new Soup.Message(type, FeedlySecret.base_uri + path);
+		message.request_headers.append("Authorization", "OAuth %s".printf(m_utils.getAccessToken()));
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-				message.request_headers.append("DNT", "1");
+			message.request_headers.append("DNT", "1");
 
 		m_session.send_message(message);
 
@@ -257,8 +255,8 @@ public class FeedReader.FeedlyConnection {
 		}
 
 		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data
+				   status = message.status_code,
+				   data = (string)message.response_body.flatten().data
 		};
 	}
 }

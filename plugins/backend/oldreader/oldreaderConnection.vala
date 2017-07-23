@@ -36,10 +36,10 @@ public class FeedReader.OldReaderConnection {
 
 		var message = new Soup.Message("POST", "https://theoldreader.com/accounts/ClientLogin/");
 		string message_string = "Email=" + m_api_username
-								+ "&Passwd=" + m_passwd
-								+ "&service=reader"
-								+ "&accountType=HOSTED_OR_GOOGLE"
-								+ "&client=FeedReader";
+		                        + "&Passwd=" + m_passwd
+		                        + "&service=reader"
+		                        + "&accountType=HOSTED_OR_GOOGLE"
+		                        + "&client=FeedReader";
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		m_session.send_message(message);
 
@@ -53,7 +53,7 @@ public class FeedReader.OldReaderConnection {
 			if(regex.match(response))
 			{
 				Logger.debug(@"Regex oldreader - $response");
-				string split = regex.replace( response, -1,0,"");
+				string split = regex.replace( response, -1, 0, "");
 				Logger.debug(@"authcode: $split");
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
@@ -73,17 +73,17 @@ public class FeedReader.OldReaderConnection {
 		}
 	}
 
-	public Response send_get_request(string path, string? message_string = null)
+	public Response send_get_request(string path, string ? message_string = null)
 	{
 		return send_request(path, "GET", message_string);
 	}
 
-	public Response send_post_request(string path, string? message_string = null)
+	public Response send_post_request(string path, string ? message_string = null)
 	{
 		return send_request(path, "POST", message_string);
 	}
 
-	private Response send_request(string path, string type, string? message_string = null)
+	private Response send_request(string path, string type, string ? message_string = null)
 	{
 		var message = new Soup.Message(type, OldReaderSecret.base_uri + path);
 
@@ -101,8 +101,8 @@ public class FeedReader.OldReaderConnection {
 		}
 
 		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data
+				   status = message.status_code,
+				   data = (string)message.response_body.flatten().data
 		};
 	}
 

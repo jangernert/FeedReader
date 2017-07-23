@@ -17,8 +17,8 @@ public class FeedReader.Share : GLib.Object {
 
 	private Gee.ArrayList<ShareAccount> m_accounts;
 	private Peas.ExtensionSet m_plugins;
-	private static Share? m_share = null;
-	private Goa.Client? m_client = null;
+	private static Share ? m_share = null;
+	private Goa.Client ? m_client = null;
 
 	public static Share get_default()
 	{
@@ -66,51 +66,51 @@ public class FeedReader.Share : GLib.Object {
 			plugin.setupSystemAccounts(m_accounts);
 			if(!plugin.singleInstance())
 			{
-				var accounts = Settings.share(plugID).get_strv("account-ids");
-				foreach(string accountID in accounts)
-				{
-					m_accounts.add(
+			    var accounts = Settings.share(plugID).get_strv("account-ids");
+			    foreach(string accountID in accounts)
+			    {
+			        m_accounts.add(
 						new ShareAccount(
 							accountID,
 							plugID,
 							plugin.getUsername(accountID),
 							plugin.getIconName(),
 							plugin.pluginName()
-						)
-					);
+							)
+						);
 				}
 			}
 			else if(!plugin.needSetup()
-			|| (plugin.needSetup() && Settings.share(plugID).get_boolean("enabled")))
+			        || (plugin.needSetup() && Settings.share(plugID).get_boolean("enabled")))
 			{
-				m_accounts.add(
+			    m_accounts.add(
 					new ShareAccount(
 						plugID,
 						plugID,
 						plugin.pluginName(),
 						plugin.getIconName(),
 						plugin.pluginName()
-					)
-				);
+						)
+					);
 			}
-		});
+		}) ;
 
 		// load gresource-icons from the plugins
 		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
 	}
 
-	private ShareAccountInterface? getInterface(string type)
+	private ShareAccountInterface ? getInterface(string type)
 	{
-		ShareAccountInterface? plug = null;
+		ShareAccountInterface ? plug = null;
 
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 
 			if(plugin.pluginID() == type)
 			{
-				plug = plugin;
+			    plug = plugin;
 			}
-		});
+		}) ;
 
 		return plug;
 	}
@@ -126,7 +126,7 @@ public class FeedReader.Share : GLib.Object {
 			bool singleInstance = false;
 			if(plugin.singleInstance())
 			{
-				if(plugin.needSetup() && !Settings.share(pluginID).get_boolean("enabled"))
+			    if(plugin.needSetup() && !Settings.share(pluginID).get_boolean("enabled"))
 					singleInstance = true;
 			}
 			else
@@ -134,13 +134,12 @@ public class FeedReader.Share : GLib.Object {
 
 			if(plugin.needSetup() && !plugin.useSystemAccounts() && singleInstance)
 			{
-				accounts.add(new ShareAccount("", pluginID, "", plugin.getIconName(), plugin.pluginName()));
+			    accounts.add(new ShareAccount("", pluginID, "", plugin.getIconName(), plugin.pluginName()));
 			}
-		});
+		}) ;
 
 		return accounts;
 	}
-
 
 	public Gee.ArrayList<ShareAccount> getAccounts()
 	{
@@ -157,17 +156,17 @@ public class FeedReader.Share : GLib.Object {
 			var plugID = plugin.pluginID();
 			if(plugin.needSetup() && !plugin.singleInstance())
 			{
-				string[] ids = Settings.share(plugID).get_strv("account-ids");
-				foreach(string i in ids)
-				{
-					if(i == id)
-					{
-						unique = false;
-						return;
+			    string[] ids = Settings.share(plugID).get_strv("account-ids");
+			    foreach(string i in ids)
+			    {
+			        if(i == id)
+			        {
+			            unique = false;
+			            return;
 					}
 				}
 			}
-		});
+		}) ;
 
 		if(!unique)
 			return generateNewID();
@@ -181,7 +180,6 @@ public class FeedReader.Share : GLib.Object {
 		m_accounts.add(new ShareAccount(id, type, username, iconName, accountName));
 	}
 
-
 	public string getUsername(string accountID)
 	{
 		foreach(var account in m_accounts)
@@ -194,7 +192,6 @@ public class FeedReader.Share : GLib.Object {
 
 		return "";
 	}
-
 
 	public bool addBookmark(string accountID, string url)
 	{
@@ -222,7 +219,7 @@ public class FeedReader.Share : GLib.Object {
 		return false;
 	}
 
-	public ServiceSetup? newSetup_withID(string accountID)
+	public ServiceSetup ? newSetup_withID(string accountID)
 	{
 		foreach(var account in m_accounts)
 		{
@@ -235,12 +232,12 @@ public class FeedReader.Share : GLib.Object {
 		return null;
 	}
 
-	public ServiceSetup? newSetup(string type)
+	public ServiceSetup ? newSetup(string type)
 	{
 		return getInterface(type).newSetup();
 	}
 
-	public ServiceSetup? newSystemAccount(string accountID)
+	public ServiceSetup ? newSystemAccount(string accountID)
 	{
 		foreach(var account in m_accounts)
 		{
@@ -253,18 +250,18 @@ public class FeedReader.Share : GLib.Object {
 		return null;
 	}
 
-	public ShareForm? shareWidget(string type, string url)
+	public ShareForm ? shareWidget(string type, string url)
 	{
-		ShareForm? form = null;
+		ShareForm ? form = null;
 
 		m_plugins.foreach((@set, info, exten) => {
 			var plugin = (exten as ShareAccountInterface);
 
 			if(plugin.pluginID() == type)
 			{
-				form = plugin.shareWidget(url);
+			    form = plugin.shareWidget(url);
 			}
-		});
+		}) ;
 
 		return form;
 	}

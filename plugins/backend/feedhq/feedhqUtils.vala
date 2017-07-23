@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace FeedReader.FeedHQSecret {
-	 const string base_uri        = "https://feedhq.org/reader/api/0/";
+	const string base_uri        = "https://feedhq.org/reader/api/0/";
 }
 
 public class FeedReader.FeedHQUtils : GLib.Object {
@@ -98,10 +98,10 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		                                  "type", Secret.SchemaAttributeType.STRING,
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
 		attributes["type"] = "FeedHQ";
 		attributes["Username"] = getUser();
-		string? passwd = "";
+		string ? passwd = "";
 
 		try
 		{
@@ -124,10 +124,10 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	public void setPassword(string passwd)
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
-										  "type", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
+		                                  "type", Secret.SchemaAttributeType.STRING,
+		                                  "Username", Secret.SchemaAttributeType.STRING);
 
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
 		attributes["type"] = "FeedHQ";
 		attributes["Username"] = getUser();
 		try

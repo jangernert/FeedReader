@@ -13,7 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-
 public class FeedReader.EmailForm : ShareForm {
 
 	private Gtk.Entry m_entry;

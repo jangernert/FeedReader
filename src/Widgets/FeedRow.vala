@@ -35,7 +35,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	public signal void moveUP();
 	public signal void deselectRow();
 
-	public FeedRow(string? text, uint unread_count, string feedID, string catID, int level)
+	public FeedRow(string ? text, uint unread_count, string feedID, string catID, int level)
 	{
 		m_level = level;
 		m_catID = catID;
@@ -79,7 +79,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.enter_notify_event.connect(onUnreadEnter);
 			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
-
 			if(!UtilsUI.onlyShowFeeds() && feedID != FeedID.ALL.to_string())
 				this.get_style_context().add_class("fr-sidebar-feed");
 			else
@@ -110,20 +109,20 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			try
 			{
 				if(m_feedID != FeedID.ALL.to_string()
-				&& !Settings.general().get_boolean("only-feeds")
-				&& UtilsUI.canManipulateContent()
-				&& DBusConnection.get_default().supportCategories())
+				   && !Settings.general().get_boolean("only-feeds")
+				   && UtilsUI.canManipulateContent()
+				   && DBusConnection.get_default().supportCategories())
 				{
 					const Gtk.TargetEntry[] provided_targets = {
 						{ "text/plain",     0, DragTarget.FEED }
 					};
 
 					Gtk.drag_source_set (
-							this,
-							Gdk.ModifierType.BUTTON1_MASK,
-							provided_targets,
-							Gdk.DragAction.MOVE
-					);
+						this,
+						Gdk.ModifierType.BUTTON1_MASK,
+						provided_targets,
+						Gdk.DragAction.MOVE
+						);
 
 					this.drag_begin.connect(onDragBegin);
 					this.drag_data_get.connect(onDragDataGet);
@@ -186,10 +185,10 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 		switch(event.type)
 		{
-			case Gdk.EventType.BUTTON_RELEASE:
-			case Gdk.EventType.@2BUTTON_PRESS:
-			case Gdk.EventType.@3BUTTON_PRESS:
-				return false;
+		case Gdk.EventType.BUTTON_RELEASE:
+		case Gdk.EventType.@2BUTTON_PRESS:
+		case Gdk.EventType.@3BUTTON_PRESS:
+			return false;
 		}
 
 		var remove_action = new GLib.SimpleAction("deleteFeed", null);
@@ -204,11 +203,11 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			ulong eventID = notification.dismissed.connect(() => {
 				try
 				{
-					DBusConnection.get_default().removeFeed(m_feedID);
+				    DBusConnection.get_default().removeFeed(m_feedID);
 				}
 				catch(GLib.Error e)
 				{
-					Logger.error("FeedRow.onClick: %s".printf(e.message));
+				    Logger.error("FeedRow.onClick: %s".printf(e.message));
 				}
 			});
 			notification.action.connect(() => {
@@ -256,7 +255,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		pop.show();
 		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
 
-
 		return true;
 	}
 
@@ -274,11 +272,11 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			popRename.hide();
 			try
 			{
-				DBusConnection.get_default().renameFeed(m_feedID, renameEntry.get_text());
+			    DBusConnection.get_default().renameFeed(m_feedID, renameEntry.get_text());
 			}
 			catch(GLib.Error e)
 			{
-				Logger.error("FeedRow.showRenamePopover: %s".printf(e.message));
+			    Logger.error("FeedRow.showRenamePopover: %s".printf(e.message));
 			}
 		});
 
@@ -352,18 +350,18 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public void upUnread()
 	{
-		set_unread_count(m_unread_count+1);
+		set_unread_count(m_unread_count + 1);
 	}
 
 	public void downUnread()
 	{
 		if(m_unread_count > 0)
-			set_unread_count(m_unread_count-1);
+			set_unread_count(m_unread_count - 1);
 	}
 
 	public void update(string text, uint unread_count)
 	{
-		m_label.set_text(text.replace("&","&amp;"));
+		m_label.set_text(text.replace("&", "&amp;"));
 		set_unread_count(unread_count);
 	}
 

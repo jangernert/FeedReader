@@ -20,7 +20,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	private string m_ttrss_sessionid;
 	private uint64 m_ttrss_apilevel;
 	private Json.Parser m_parser;
-	private string? m_iconDir = null;
+	private string ? m_iconDir = null;
 	private Soup.Session m_session;
 
 	public ttrssAPI ()
@@ -33,15 +33,14 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		m_session.authenticate.connect((msg, auth, retrying) => {
 			if(m_utils.getHtaccessUser() == "")
 			{
-				Logger.error("TTRSS Session: need Authentication");
+			    Logger.error("TTRSS Session: need Authentication");
 			}
 			else if(!retrying)
 			{
-				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
+			    auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}
 		});
 	}
-
 
 	public LoginResponse login()
 	{
@@ -61,7 +60,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			return LoginResponse.INVALID_URL;
 		if(passwd == "")
 			return LoginResponse.MISSING_PASSWD;
-
 
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("op", "login");
@@ -130,7 +128,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return false;
 	}
 
-
 	public bool isloggedin()
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -171,7 +168,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return false;
 	}
 
-
 	public int getUnreadCount()
 	{
 		int unread = 0;
@@ -189,7 +185,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 		return unread;
 	}
-
 
 	public bool getFeeds(Gee.List<feed> feeds, Gee.List<category> categories)
 	{
@@ -212,18 +207,18 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					{
 						var feed_node = response.get_object_element(i);
 						string feed_id = feed_node.get_int_member("id").to_string();
-						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
+						string ? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 						feeds.add(
 							new feed (
-									feed_id,
-									feed_node.get_string_member("title"),
-									feed_node.get_string_member("feed_url"),
-									(int)feed_node.get_int_member("unread"),
-									{ feed_node.get_int_member("cat_id").to_string() },
-									icon_url
+								feed_id,
+								feed_node.get_string_member("title"),
+								feed_node.get_string_member("feed_url"),
+								(int)feed_node.get_int_member("unread"),
+								{ feed_node.get_int_member("cat_id").to_string() },
+								icon_url
 								)
-						);
+							);
 					}
 				}
 				else
@@ -234,7 +229,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		return true;
 	}
-
 
 	public bool getUncategorizedFeeds(Gee.List<feed> feeds)
 	{
@@ -253,18 +247,18 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				var feed_node = response.get_object_element(i);
 				string feed_id = feed_node.get_int_member("id").to_string();
-				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
+				string ? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 				feeds.add(
 					new feed (
-							feed_id,
-							feed_node.get_string_member("title"),
-							feed_node.get_string_member("feed_url"),
-							(int)feed_node.get_int_member("unread"),
-							{ feed_node.get_int_member("cat_id").to_string() },
-							icon_url
+						feed_id,
+						feed_node.get_string_member("title"),
+						feed_node.get_string_member("feed_url"),
+						(int)feed_node.get_int_member("unread"),
+						{ feed_node.get_int_member("cat_id").to_string() },
+						icon_url
 						)
-				);
+					);
 			}
 			return true;
 		}
@@ -292,8 +286,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						tag_node.get_int_member("id").to_string(),
 						tag_node.get_string_member("caption"),
 						dbDaemon.get_default().getTagColor()
-					)
-				);
+						)
+					);
 			}
 
 			return true;
@@ -302,8 +296,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return false;
 	}
 
-
-	public string? getIconDir()
+	public string ? getIconDir()
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -318,7 +311,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 		return null;
 	}
-
 
 	public bool getCategories(Gee.List<category> categories)
 	{
@@ -340,7 +332,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		return false;
 	}
-
 
 	private void getSubCategories(Gee.List<category> categories, Json.Object categorie, int level, string parent)
 	{
@@ -375,15 +366,14 @@ public class FeedReader.ttrssAPI : GLib.Object {
 							orderID,
 							parent,
 							level
-						)
-					);
+							)
+						);
 				}
 
 				getSubCategories(categories, categorie_node, level, categorieID);
 			}
 		}
 	}
-
 
 	private int getUncategorizedUnread()
 	{
@@ -417,7 +407,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return 0;
 	}
 
-
 	public void getHeadlines(Gee.List<article> articles, int skip, int limit, ArticleStatus whatToGet, int feedID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -429,17 +418,17 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 		switch(whatToGet)
 		{
-			case ArticleStatus.ALL:
-				message.add_string("view_mode", "all_articles");
-				break;
+		case ArticleStatus.ALL:
+			message.add_string("view_mode", "all_articles");
+			break;
 
-			case ArticleStatus.UNREAD:
-				message.add_string("view_mode", "unread");
-				break;
+		case ArticleStatus.UNREAD:
+			message.add_string("view_mode", "unread");
+			break;
 
-			case ArticleStatus.MARKED:
-				message.add_string("view_mode", "marked");
-				break;
+		case ArticleStatus.MARKED:
+			message.add_string("view_mode", "marked");
+			break;
 		}
 
 		int error = message.send();
@@ -482,7 +471,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					{
 						var attachment = attachments.get_object_element(j);
 						if(attachment.get_string_member("content_type").contains("audio")
-						|| attachment.get_string_member("content_type").contains("video"))
+						   || attachment.get_string_member("content_type").contains("video"))
 						{
 							mediaString = mediaString + attachment.get_string_member("content_url") + ",";
 						}
@@ -490,20 +479,20 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				}
 
 				var Article = new article(
-										headline_node.get_int_member("id").to_string(),
-										headline_node.get_string_member("title"),
-										headline_node.get_string_member("link"),
-										headline_node.get_string_member("feed_id"),
-										(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-										(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-										"",
-										"",
-										(headline_node.get_string_member("author") == "") ? null : headline_node.get_string_member("author"),
-										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
-										-1,
-										tagString,
-										mediaString
-								);
+					headline_node.get_int_member("id").to_string(),
+					headline_node.get_string_member("title"),
+					headline_node.get_string_member("link"),
+					headline_node.get_string_member("feed_id"),
+					(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+					(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+					"",
+					"",
+					(headline_node.get_string_member("author") == "") ? null : headline_node.get_string_member("author"),
+					new DateTime.from_unix_local(headline_node.get_int_member("updated")),
+					-1,
+					tagString,
+					mediaString
+					);
 
 				articles.add(Article);
 			}
@@ -543,7 +532,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		}
 		return null;
 	}
-
 
 	public void getArticles(string articleIDs, Gee.List<article> articles)
 	{
@@ -592,7 +580,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					{
 						var attachment = attachments.get_object_element(j);
 						if(attachment.get_string_member("content_type").contains("audio")
-						|| attachment.get_string_member("content_type").contains("video"))
+						   || attachment.get_string_member("content_type").contains("video"))
 						{
 							mediaString = mediaString + attachment.get_string_member("content_url") + ",";
 						}
@@ -600,20 +588,20 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				}
 
 				var Article = new article(
-										article_node.get_string_member("id"),
-										article_node.get_string_member("title"),
-										article_node.get_string_member("link"),
-										article_node.get_string_member("feed_id"),
-										(article_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-										(article_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-										article_node.get_string_member("content"),
-										"",
-										(article_node.get_string_member("author") == "") ? null : article_node.get_string_member("author"),
-										new DateTime.from_unix_local(article_node.get_int_member("updated")),
-										-1,
-										tagString,
-										mediaString
-								);
+					article_node.get_string_member("id"),
+					article_node.get_string_member("title"),
+					article_node.get_string_member("link"),
+					article_node.get_string_member("feed_id"),
+					(article_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+					(article_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+					article_node.get_string_member("content"),
+					"",
+					(article_node.get_string_member("author") == "") ? null : article_node.get_string_member("author"),
+					new DateTime.from_unix_local(article_node.get_int_member("updated")),
+					-1,
+					tagString,
+					mediaString
+					);
 
 				articles.add(Article);
 			}
@@ -667,7 +655,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return return_value;
 	}
 
-
 	public bool updateArticleMarked(int articleID, ArticleStatus marked)
 	{
 		bool return_value = false;
@@ -706,7 +693,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		{
 			var response = message.get_response_object();
 			if(response.get_string_member("status") == "OK")
-			return true;
+				return true;
 		}
 
 		return false;
@@ -761,8 +748,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return false;
 	}
 
-
-	public bool subscribeToFeed(string feedURL, string? catID, string? username, string? password, out string errmsg)
+	public bool subscribeToFeed(string feedURL, string ? catID, string ? username, string ? password, out string errmsg)
 	{
 		errmsg = "";
 		var message = new ttrssMessage(m_session, m_ttrss_url);
@@ -793,30 +779,30 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				{
 					switch(status.get_int_member("code"))
 					{
-						case 0:
-						case 1:
-							return true;
-						case 2:
-							errmsg = _("Invalid URL");
-							return false;
-						case 3:
-							errmsg = _("URL content is HTML, no feeds available");
-							return false;
-						case 4:
-							errmsg = _("URL content is HTML which contains multiple feeds.");
-							return false;
-						case 5:
-							errmsg = _("Couldn't download the URL content.");
-							return false;
-						case 6:
-							errmsg = _("Content is an invalid XML.");
-							return false;
-						default:
-							if(status.has_member("message"))
-								errmsg = status.get_string_member("message");
-							else
-								errmsg = "ttrss error";
-							return false;
+					case 0:
+					case 1:
+						return true;
+					case 2:
+						errmsg = _("Invalid URL");
+						return false;
+					case 3:
+						errmsg = _("URL content is HTML, no feeds available");
+						return false;
+					case 4:
+						errmsg = _("URL content is HTML which contains multiple feeds.");
+						return false;
+					case 5:
+						errmsg = _("Couldn't download the URL content.");
+						return false;
+					case 6:
+						errmsg = _("Content is an invalid XML.");
+						return false;
+					default:
+						if(status.has_member("message"))
+							errmsg = status.get_string_member("message");
+						else
+							errmsg = "ttrss error";
+						return false;
 					}
 				}
 			}
@@ -842,7 +828,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return false;
 	}
 
-	public string? createCategory(string title, int? parentID = null)
+	public string ? createCategory(string title, int ? parentID = null)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -852,7 +838,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			message.add_int("parent_id", parentID);
 		int error = message.send();
 		message.printMessage();
-
 
 		if(error == ConnectionError.SUCCESS)
 		{

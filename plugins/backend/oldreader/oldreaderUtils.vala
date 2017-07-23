@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace FeedReader.OldReaderSecret {
-	 const string base_uri        = "https://theoldreader.com/reader/api/0/";
+	const string base_uri        = "https://theoldreader.com/reader/api/0/";
 }
 
 public class FeedReader.OldReaderUtils : GLib.Object {
@@ -67,9 +67,9 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 		                                  "type", "oldreader",
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
 		attributes["Username"] = getUser();
-		string? passwd = "";
+		string ? passwd = "";
 
 		try
 		{
@@ -92,9 +92,9 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 	public void setPassword(string passwd)
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
-										  "type", "oldreader",
-										  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		                                  "type", "oldreader",
+		                                  "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
 		attributes["Username"] = getUser();
 		try
 		{

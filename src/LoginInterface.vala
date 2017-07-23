@@ -25,7 +25,7 @@ public interface FeedReader.LoginInterface : GLib.Object {
 
 	public abstract string getID();
 
-	public abstract Gtk.Box? getWidget();
+	public abstract Gtk.Box ? getWidget();
 
 	public abstract string iconName();
 

@@ -43,13 +43,13 @@ public class FeedReader.OPMLparser : GLib.Object {
 			{
 				switch(node->name)
 				{
-					case "head":
-						parseHead(node);
-						break;
+				case "head":
+					parseHead(node);
+					break;
 
-					case "body":
-						parseTree(node);
-						break;
+				case "body":
+					parseTree(node);
+					break;
 				}
 			}
 		}
@@ -69,23 +69,23 @@ public class FeedReader.OPMLparser : GLib.Object {
 			{
 				switch(node->name)
 				{
-					case "title":
-						Logger.debug("Title: " + node->get_content());
-						break;
+				case "title":
+					Logger.debug("Title: " + node->get_content());
+					break;
 
-					case "dateCreated":
-						Logger.debug("dateCreated: " + node->get_content());
-						break;
+				case "dateCreated":
+					Logger.debug("dateCreated: " + node->get_content());
+					break;
 
-					case "dateModified":
-						Logger.debug("dateModified: " + node->get_content());
-						break;
+				case "dateModified":
+					Logger.debug("dateModified: " + node->get_content());
+					break;
 				}
 			}
 		}
 	}
 
-	private void parseTree(Xml.Node* root, string? catID = null)
+	private void parseTree(Xml.Node* root, string ? catID = null)
 	{
 		m_level++;
 		Logger.debug(@"Parse OPML tree level $m_level");
@@ -107,7 +107,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 		m_level--;
 	}
 
-	private void parseCat(Xml.Node* node, string? parentCatID = null)
+	private void parseCat(Xml.Node* node, string ? parentCatID = null)
 	{
 		string title = "No Title";
 		if(hasProp(node, "text"))
@@ -120,7 +120,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 		parseTree(node, catID);
 	}
 
-	private void parseFeed(Xml.Node* node, string? catID = null)
+	private void parseFeed(Xml.Node* node, string ? catID = null)
 	{
 		if(node->get_prop("type") == "rss" || node->get_prop("type") == "atom")
 		{

@@ -19,11 +19,10 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	private Peas.ExtensionSet m_extensions;
 	private Peas.Engine m_engine;
 	private WebLoginPage m_page;
-	private string? m_activeExtension = null;
-	private Gtk.Box? m_activeWidget = null;
+	private string ? m_activeExtension = null;
+	private Gtk.Box ? m_activeWidget = null;
 	public signal void submit_data();
 	public signal void loginError(LoginResponse errorCode);
-
 
 	public LoginPage()
 	{
@@ -44,7 +43,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 			m_engine.try_load_plugin(plugin);
 		}
 
-
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
 		m_layout.set_halign(Gtk.Align.CENTER);
@@ -61,21 +59,19 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		welcomeText2.set_justify(Gtk.Justification.CENTER);
 		welcomeText2.set_lines(3);
 
-
 		var accountList = new Gtk.ListBox();
 		accountList.set_selection_mode(Gtk.SelectionMode.NONE);
 		accountList.row_activated.connect(serviceSelected);
 
 		m_extensions.foreach((extSet, info, ext) => {
 			accountList.add(new LoginRow(ext as LoginInterface));
-		});
+		}) ;
 
 		var scroll = new Gtk.ScrolledWindow(null, null);
 		scroll.set_size_request(450, 0);
 		scroll.set_halign(Gtk.Align.CENTER);
 		scroll.get_style_context().add_class(Gtk.STYLE_CLASS_FRAME);
 		scroll.add(accountList);
-
 
 		m_layout.pack_start(welcomeText, false, true, 0);
 		m_layout.pack_start(welcomeText2, false, true, 2);
@@ -96,7 +92,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		m_activeExtension = null;
 
 		if(visible == "loginWidget"
-		&& m_activeWidget != null)
+		   && m_activeWidget != null)
 		{
 			this.remove(m_activeWidget);
 			m_activeWidget = null;
@@ -147,30 +143,29 @@ public class FeedReader.LoginPage : Gtk.Stack {
 				window.getSimpleHeader().showBackButton(false);
 				if(m_activeWidget != null)
 				{
-					this.remove(m_activeWidget);
-					m_activeWidget = null;
+				    this.remove(m_activeWidget);
+				    m_activeWidget = null;
 				}
 				m_activeExtension = null;
 			});
 		}
 	}
 
-
 	public void showHtAccess()
 	{
 		getActiveExtension().showHtAccess();
 	}
 
-	private LoginInterface? getActiveExtension()
+	private LoginInterface ? getActiveExtension()
 	{
-		LoginInterface? e = null;
+		LoginInterface ? e = null;
 		m_extensions.foreach((extSet, info, ext) => {
 			var extension = (ext as LoginInterface);
 			if(extension.getID() == m_activeExtension)
 			{
-				e = extension;
+			    e = extension;
 			}
-		});
+		}) ;
 		return e;
 	}
 
@@ -196,11 +191,11 @@ public class FeedReader.LoginPage : Gtk.Stack {
 					submit_data();
 					try
 					{
-						DBusConnection.get_default().startSync(true);
+					    DBusConnection.get_default().startSync(true);
 					}
 					catch(GLib.Error e)
 					{
-						Logger.error("LoginPage: failed to start the initial sync - " + e.message);
+					    Logger.error("LoginPage: failed to start the initial sync - " + e.message);
 					}
 
 				});

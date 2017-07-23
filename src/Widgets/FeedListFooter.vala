@@ -120,7 +120,6 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 	}
 }
 
-
 public class FeedReader.AddButton : Gtk.Button {
 	public AddButton()
 	{

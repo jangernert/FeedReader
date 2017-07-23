@@ -88,7 +88,7 @@ public class FeedReader.feedbinAPI : Object {
 					{ "0" },
 					null,
 					xmlURL)
-			);
+				);
 		}
 
 		return true;
@@ -122,7 +122,7 @@ public class FeedReader.feedbinAPI : Object {
 			string name = object.get_string_member("name");
 			string feedID = object.get_int_member("feed_id").to_string();
 
-			string? id2 = m_utils.catExists(categories, name);
+			string ? id2 = m_utils.catExists(categories, name);
 
 			if(id2 == null)
 			{
@@ -131,11 +131,11 @@ public class FeedReader.feedbinAPI : Object {
 						id,
 						name,
 						0,
-						i+1,
+						i + 1,
 						CategoryID.MASTER.to_string(),
 						1
-					)
-				);
+						)
+					);
 
 				m_utils.addFeedToCat(feeds, feedID, id);
 			}
@@ -144,15 +144,12 @@ public class FeedReader.feedbinAPI : Object {
 				m_utils.addFeedToCat(feeds, feedID, id2);
 			}
 
-
 		}
 
 		return true;
 	}
 
-
-
-	public Gee.List<article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)
+	public Gee.List<article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime ? timestamp, string ? feedID = null)
 	{
 		Gee.List<article> articles = new Gee.ArrayList<article>();
 		string request = "entries.json?per_page=100";
@@ -215,19 +212,19 @@ public class FeedReader.feedbinAPI : Object {
 			}
 
 			var article = new article(
-					id,
-					object.get_string_member("title") == null ? "" : object.get_string_member("title"),
-					object.get_string_member("url"),
-					object.get_int_member("feed_id").to_string(),
-					unreadIDs.contains(id) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-					starredIDs.contains(id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-					object.get_string_member("content") == null ? "" : object.get_string_member("content"),
-					object.get_string_member("summary"),
-					object.get_string_member("author"),
-					time,
-					-1,
-					"",
-					""
+				id,
+				object.get_string_member("title") == null ? "" : object.get_string_member("title"),
+				object.get_string_member("url"),
+				object.get_int_member("feed_id").to_string(),
+				unreadIDs.contains(id) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+				starredIDs.contains(id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+				object.get_string_member("content") == null ? "" : object.get_string_member("content"),
+				object.get_string_member("summary"),
+				object.get_string_member("author"),
+				time,
+				-1,
+				"",
+				""
 				);
 			if(article != null)
 				articles.add(article);
@@ -245,7 +242,7 @@ public class FeedReader.feedbinAPI : Object {
 	public Gee.List<string> unreadEntries()
 	{
 		string response = m_connection.getRequest("unread_entries.json").data;
-		response = response.substring(1, response.length-2);
+		response = response.substring(1, response.length - 2);
 		var a = response.split(",");
 		var ids = new Gee.LinkedList<string>();
 
@@ -260,7 +257,7 @@ public class FeedReader.feedbinAPI : Object {
 	public Gee.List<string> starredEntries()
 	{
 		string response = m_connection.getRequest("starred_entries.json").data;
-		response = response.substring(1, response.length-2);
+		response = response.substring(1, response.length - 2);
 		var a = response.split(",");
 		var ids = new Gee.LinkedList<string>();
 

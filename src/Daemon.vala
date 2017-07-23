@@ -45,7 +45,7 @@ namespace FeedReader {
 		public signal void opmlImported();
 		public signal void updateSyncProgress(string progress);
 
-		private static FeedDaemonServer? m_daemon;
+		private static FeedDaemonServer ? m_daemon;
 
 		public static FeedDaemonServer get_default()
 		{
@@ -75,11 +75,11 @@ namespace FeedReader {
 			GLib.NetworkMonitor.get_default().network_changed.connect((available) => {
 				if(available)
 				{
-					checkOnline();
+				    checkOnline();
 				}
 				else
 				{
-					setOffline();
+				    setOffline();
 				}
 			});
 		}
@@ -103,7 +103,6 @@ namespace FeedReader {
 		{
 			return AboutInfo.version;
 		}
-
 
 		public bool supportTags()
 		{
@@ -167,21 +166,21 @@ namespace FeedReader {
 			if(time == 0)
 				return;
 
-			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time*60, () => {
+			m_timeout_source_id = GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, time * 60, () => {
 				if(!Settings.state().get_boolean("currently-updating")
-				&& FeedServer.get_default().pluginLoaded())
+				   && FeedServer.get_default().pluginLoaded())
 				{
-			   		Logger.debug("daemon: Timeout!");
-					startSync(false);
+				    Logger.debug("daemon: Timeout!");
+				    startSync(false);
 				}
 				return true;
 			});
 		}
 
-		private void sync(bool initSync = false, GLib.Cancellable? cancellable = null)
+		private void sync(bool initSync = false, GLib.Cancellable ? cancellable = null)
 		{
 			if(Settings.state().get_boolean("currently-updating")
-			|| Settings.state().get_boolean("spring-cleaning"))
+			   || Settings.state().get_boolean("spring-cleaning"))
 			{
 				Logger.debug("Cant sync because login failed or sync/clean already ongoing");
 				return;
@@ -205,7 +204,7 @@ namespace FeedReader {
 			Settings.state().set_boolean("currently-updating", true);
 
 			if(!checkOnline()
-			|| (cancellable != null && cancellable.is_cancelled()))
+			   || (cancellable != null && cancellable.is_cancelled()))
 			{
 				finishSync();
 				return;
@@ -269,7 +268,6 @@ namespace FeedReader {
 			return true;
 		}
 
-
 		public async bool checkOnlineAsync()
 		{
 			if(!FeedServer.get_default().pluginLoaded())
@@ -327,7 +325,6 @@ namespace FeedReader {
 			{
 				setOffline();
 			}
-
 
 			Logger.debug("daemon: login status = " + m_loggedin.to_string());
 			return m_loggedin;
@@ -399,7 +396,6 @@ namespace FeedReader {
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-
 				asyncPayload pl = () => { dbDaemon.get_default().update_article(articleID, "marked", status); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
@@ -407,7 +403,6 @@ namespace FeedReader {
 				});
 			}
 		}
-
 
 		public string createTag(string caption)
 		{
@@ -630,14 +625,14 @@ namespace FeedReader {
 			});
 		}
 
-		public string addCategory(string title, string? parentID = null, bool createLocally = false)
+		public string addCategory(string title, string ? parentID = null, bool createLocally = false)
 		{
 			Logger.debug("daemon: addCategory " + title);
 			string catID = FeedServer.get_default().createCategory(title, parentID);
 
 			if(createLocally)
 			{
-				string? parent = parentID;
+				string ? parent = parentID;
 				int level = 1;
 				if(parentID == null || parentID == "")
 				{
@@ -646,7 +641,7 @@ namespace FeedReader {
 				else
 				{
 					var parentCat = dbDaemon.get_default().read_category(parentID);
-					level = parentCat.getLevel()+1;
+					level = parentCat.getLevel() + 1;
 				}
 
 				var cat = new category(catID, title, 0, 99, parent, level);
@@ -710,7 +705,7 @@ namespace FeedReader {
 			});
 		}
 
-		public void moveFeed(string feedID, string currentCatID, string? newCatID = null)
+		public void moveFeed(string feedID, string currentCatID, string ? newCatID = null)
 		{
 			asyncPayload pl = () => { FeedServer.get_default().moveFeed(feedID, newCatID, currentCatID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
@@ -724,9 +719,9 @@ namespace FeedReader {
 
 		public void addFeed(string feedURL, string cat, bool isID, bool asynchron)
 		{
-			string? catID = null;
-			string? newCatName = null;
-			string? feedID = null;
+			string ? catID = null;
+			string ? newCatName = null;
+			string ? feedID = null;
 			bool success = false;
 			string errmsg = "";
 
@@ -796,7 +791,7 @@ namespace FeedReader {
 		{
 #if WITH_LIBUNITY
 			if(!Settings.state().get_boolean("spring-cleaning")
-			&& Settings.tweaks().get_boolean("show-badge"))
+			   && Settings.tweaks().get_boolean("show-badge"))
 			{
 				var count = dbDaemon.get_default().get_unread_total();
 				Logger.debug("daemon: update badge count %u".printf(count));
@@ -841,13 +836,13 @@ namespace FeedReader {
 	{
 		try
 		{
-		    conn.register_object("/org/gnome/FeedReader/Daemon", FeedDaemonServer.get_default());
+			conn.register_object("/org/gnome/FeedReader/Daemon", FeedDaemonServer.get_default());
 		}
 		catch (IOError e)
 		{
-		    Logger.warning("daemon: Could not register service. Will shut down!");
-		    Logger.warning(e.message);
-		    exit(-1);
+			Logger.warning("daemon: Could not register service. Will shut down!");
+			Logger.warning(e.message);
+			exit(-1);
 		}
 		Logger.debug("daemon: bus aquired");
 	}
@@ -863,10 +858,9 @@ namespace FeedReader {
 
 	private static bool version = false;
 	private static bool unreadCount = false;
-	private static string? grabArticle = null;
-	private static string? grabImages = null;
-	private static string? articleUrl = null;
-
+	private static string ? grabArticle = null;
+	private static string ? grabImages = null;
+	private static string ? articleUrl = null;
 
 	int main(string[] args)
 	{
@@ -893,10 +887,10 @@ namespace FeedReader {
 
 		if(unreadCount)
 		{
-			var old_stdout =(owned)stdout;
+			var old_stdout = (owned)stdout;
 			stdout = FileStream.open("/dev/null", "w");
 			Logger.init();
-			stdout =(owned)old_stdout;
+			stdout = (owned)old_stdout;
 			stdout.printf("%u\n", dbDaemon.get_default().get_unread_total());
 			return 0;
 		}
@@ -925,16 +919,16 @@ namespace FeedReader {
 		dbDaemon.get_default();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.FeedReader.Daemon", BusNameOwnerFlags.NONE,
-				      on_bus_aquired,
-				      () => {
-				      			Settings.state().set_boolean("currently-updating", false);
-								Settings.state().set_boolean("spring-cleaning", false);
-				      },
-				      () => {
-				      			Logger.warning("daemon: Could not aquire name (already running). Will shut down!");
-				          		exit(-1);
-				          	}
-				      );
+		              on_bus_aquired,
+		              () => {
+			Settings.state().set_boolean("currently-updating", false);
+			Settings.state().set_boolean("spring-cleaning", false);
+		},
+		              () => {
+			Logger.warning("daemon: Could not aquire name (already running). Will shut down!");
+			exit(-1);
+		}
+		              );
 		var mainloop = new GLib.MainLoop();
 		mainloop.run();
 		return 0;

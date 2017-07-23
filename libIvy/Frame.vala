@@ -33,7 +33,7 @@ namespace Ivy {
 		 *
 		 * Ex: ``0x309``
 		 **/
-		public string address  { get;private set;default = "";}
+		public string address  { get; private set; default = "";}
 
 		/**
 		 * Line of code of the frame
@@ -44,7 +44,7 @@ namespace Ivy {
 		 *
 		 * Ex:
 		 **/
-		public string line { get;private set;default = "";}
+		public string line { get; private set; default = "";}
 
 		/**
 		 * Line number in the code file.
@@ -53,7 +53,7 @@ namespace Ivy {
 		 *
 		 * Ex: ``25``
 		 **/
-		public string line_number { get;private set;default = "";}
+		public string line_number { get; private set; default = "";}
 
 		/**
 		 * Full path to the code file as it was stored on the building machine
@@ -64,7 +64,7 @@ namespace Ivy {
 		 *
 		 * Ex: ``/lib/x86_64-linux-gnu/libc.so.6`` if no code information is available
 		 **/
-		public string file_path { get;private set;default = "";}
+		public string file_path { get; private set; default = "";}
 
 		/**
 		 * Path the code file relative to the current path
@@ -73,7 +73,7 @@ namespace Ivy {
 		 *
 		 * Ex: ``/stuff/to/stuff/``
 		 **/
-		public string file_short_path { get;private set;default = "";}
+		public string file_short_path { get; private set; default = "";}
 
 		/**
 		 * C function name
@@ -85,7 +85,7 @@ namespace Ivy {
 		 *
 		 * Ex: ``namespace_someclass_method``
 		 **/
-		public string function { get;private set;default = "";}
+		public string function { get; private set; default = "";}
 
 		public Frame (string address, string line, string function, string file_path, string file_short_path, string line_number) {
 			this._address = address;

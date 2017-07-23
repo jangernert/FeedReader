@@ -50,12 +50,12 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 					while(output.has_prefix(xml))
 					{
 						int end = output.index_of_char('>');
-						output = output.slice(end+1, output.length).chug();
+						output = output.slice(end + 1, output.length).chug();
 						output = output.strip();
 					}
 
-					output = output.replace("\n"," ");
-					output = output.replace("_"," ");
+					output = output.replace("\n", " ");
+					output = output.replace("_", " ");
 
 					Article.setPreview(output.chug());
 				}
@@ -78,7 +78,7 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 				string modified_html = _("No Text available for this article :(");
 				if(Article.getHTML() != "")
 				{
-					modified_html = Article.getHTML().replace("src=\"//","src=\"http://");
+					modified_html = Article.getHTML().replace("src=\"//", "src=\"http://");
 				}
 				Article.setHTML(modified_html);
 			}
@@ -103,17 +103,17 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 
 		switch(selectedRow[0])
 		{
-			case "feed":
-				IDtype = FeedListType.FEED;
-				break;
+		case "feed":
+			IDtype = FeedListType.FEED;
+			break;
 
-			case "cat":
-				IDtype = FeedListType.CATEGORY;
-				break;
+		case "cat":
+			IDtype = FeedListType.CATEGORY;
+			break;
 
-			case "tag":
-				IDtype = FeedListType.TAG;
-				break;
+		case "tag":
+			IDtype = FeedListType.TAG;
+			break;
 		}
 
 		int count = dbDaemon.get_default().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);

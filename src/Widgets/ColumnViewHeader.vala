@@ -28,7 +28,6 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 	public signal void toggledMarked();
 	public signal void toggledRead();
 
-
 	public ColumnViewHeader()
 	{
 		m_state = (ArticleListState)Settings.state().get_enum("show-articles");
@@ -42,14 +41,14 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_modeButton.mode_changed.connect(() => {
 			var transition = Gtk.StackTransitionType.CROSSFADE;
 			if(m_state == ArticleListState.ALL
-			|| (ArticleListState)m_modeButton.selected == ArticleListState.MARKED)
+			   || (ArticleListState)m_modeButton.selected == ArticleListState.MARKED)
 			{
-				transition = Gtk.StackTransitionType.SLIDE_LEFT;
+			    transition = Gtk.StackTransitionType.SLIDE_LEFT;
 			}
 			else if(m_state == ArticleListState.MARKED
-			|| (ArticleListState)m_modeButton.selected == ArticleListState.ALL)
+			        || (ArticleListState)m_modeButton.selected == ArticleListState.ALL)
 			{
-				transition = Gtk.StackTransitionType.SLIDE_RIGHT;
+			    transition = Gtk.StackTransitionType.SLIDE_RIGHT;
 			}
 
 			m_state = (ArticleListState)m_modeButton.selected;
@@ -64,12 +63,10 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 				refresh();
 			else
 			{
-				cancel();
-				m_refresh_button.setSensitive(false);
+			    cancel();
+			    m_refresh_button.setSensitive(false);
 			}
 		});
-
-
 
 		m_search = new Gtk.SearchEntry();
 		m_search.placeholder_text = _("Search Articles");
@@ -109,7 +106,6 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			FeedReaderApp.get_default().app_menu = UtilsUI.getMenu();
 		}
 
-
 		m_header_left.pack_end(m_search);
 		m_header_left.pack_start(m_modeButton);
 		m_header_left.pack_start(m_refresh_button);
@@ -135,7 +131,6 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		Gtk.Settings.get_default().notify["gtk-decoration-layout"].connect(set_window_buttons);
 		realize.connect(set_window_buttons);
 		set_window_buttons();
-
 
 		this.pack1(m_header_left, true, false);
 		this.pack2(m_header_right, true, false);

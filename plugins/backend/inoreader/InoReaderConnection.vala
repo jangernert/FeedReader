@@ -34,11 +34,11 @@ public class FeedReader.InoReaderConnection {
 
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "code=" + m_utils.getApiCode()
-								+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
-								+ "&client_id=" + InoReaderSecret.apiClientId
-								+ "&client_secret=" + InoReaderSecret.apiClientSecret
-								+ "&scope="
-								+ "&grant_type=authorization_code";
+		                        + "&redirect_uri=" + InoReaderSecret.apiRedirectUri
+		                        + "&client_id=" + InoReaderSecret.apiClientId
+		                        + "&client_secret=" + InoReaderSecret.apiClientSecret
+		                        + "&scope="
+		                        + "&grant_type=authorization_code";
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		m_session.send_message(message);
 
@@ -83,9 +83,9 @@ public class FeedReader.InoReaderConnection {
 
 		var message = new Soup.Message("POST", "https://www.inoreader.com/oauth2/token");
 		string message_string = "client_id=" + InoReaderSecret.apiClientId
-								+ "&client_secret=" + InoReaderSecret.apiClientSecret
-								+ "&grant_type=refresh_token"
-								+ "&refresh_token=" + m_utils.getRefreshToken();
+		                        + "&client_secret=" + InoReaderSecret.apiClientSecret
+		                        + "&grant_type=refresh_token"
+		                        + "&refresh_token=" + m_utils.getRefreshToken();
 
 		message.set_request("application/x-www-form-urlencoded", Soup.MemoryUse.COPY, message_string.data);
 		m_session.send_message(message);
@@ -128,12 +128,12 @@ public class FeedReader.InoReaderConnection {
 		return LoginResponse.SUCCESS;
 	}
 
-	public Response send_request(string path, string? message_string = null)
+	public Response send_request(string path, string ? message_string = null)
 	{
 		return send_post_request(path, "POST", message_string);
 	}
 
-	private Response send_post_request(string path, string type, string? message_string = null)
+	private Response send_post_request(string path, string type, string ? message_string = null)
 	{
 		if(!m_utils.accessTokenValid())
 			refreshToken();
@@ -155,8 +155,8 @@ public class FeedReader.InoReaderConnection {
 		}
 
 		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data
+				   status = message.status_code,
+				   data = (string)message.response_body.flatten().data
 		};
 	}
 

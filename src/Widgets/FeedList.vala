@@ -16,9 +16,9 @@
 public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private Gtk.ListBox m_list;
-	private string? m_selectedID = null;
+	private string ? m_selectedID = null;
 	private FeedListType m_selectedType = FeedListType.ALL_FEEDS;
-	private TagRow? m_emptyTagRow = null;
+	private TagRow ? m_emptyTagRow = null;
 	private Gtk.Spinner m_spinner;
 	private ServiceInfo m_branding;
 	private uint m_expand_collapse_time = 150;
@@ -47,43 +47,42 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			FeedRow selected_feed = m_list.get_selected_row() as FeedRow;
 			if(selected_feed != null)
 			{
-				if(selected_feed.getID() == m_selectedID
-				&& m_selectedType == FeedListType.FEED)
+			    if(selected_feed.getID() == m_selectedID
+			       && m_selectedType == FeedListType.FEED)
 					return;
 
-				m_selectedID = selected_feed.getID();
-				m_selectedType = FeedListType.FEED;
-				newFeedSelected(selected_feed.getID());
-				return;
+			    m_selectedID = selected_feed.getID();
+			    m_selectedType = FeedListType.FEED;
+			    newFeedSelected(selected_feed.getID());
+			    return;
 			}
 
 			CategoryRow selected_categorie = m_list.get_selected_row() as CategoryRow;
 			if(selected_categorie != null)
 			{
-				if(selected_categorie.getID() == m_selectedID
-				&& m_selectedType == FeedListType.CATEGORY)
+			    if(selected_categorie.getID() == m_selectedID
+			       && m_selectedType == FeedListType.CATEGORY)
 					return;
 
-				m_selectedID = selected_categorie.getID();
-				m_selectedType = FeedListType.CATEGORY;
-				newCategorieSelected(selected_categorie.getID());
-				return;
+			    m_selectedID = selected_categorie.getID();
+			    m_selectedType = FeedListType.CATEGORY;
+			    newCategorieSelected(selected_categorie.getID());
+			    return;
 			}
 
 			TagRow selected_tag = m_list.get_selected_row() as TagRow;
 			if(selected_tag != null)
 			{
-				if(selected_tag.getID() == m_selectedID
-				&& m_selectedType == FeedListType.TAG)
+			    if(selected_tag.getID() == m_selectedID
+			       && m_selectedType == FeedListType.TAG)
 					return;
 
-				m_selectedID = selected_tag.getID();
-				m_selectedType = FeedListType.TAG;
-				newTagSelected(selected_tag.getID());
-				return;
+			    m_selectedID = selected_tag.getID();
+			    m_selectedType = FeedListType.TAG;
+			    newTagSelected(selected_tag.getID());
+			    return;
 			}
 		});
-
 
 		m_list.key_press_event.connect((event) => {
 			if(event.keyval == Gdk.Key.Down)
@@ -92,10 +91,10 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				move(false);
 			else if(event.keyval == Gdk.Key.Left || event.keyval == Gdk.Key.Right)
 			{
-				CategoryRow selected_categorie = m_list.get_selected_row() as CategoryRow;
-				if(selected_categorie != null)
-				{
-					selected_categorie.expand_collapse();
+			    CategoryRow selected_categorie = m_list.get_selected_row() as CategoryRow;
+			    if(selected_categorie != null)
+			    {
+			        selected_categorie.expand_collapse();
 				}
 
 			}
@@ -120,10 +119,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		var FeedListChildren = m_list.get_children();
 
-		if(!down){
+		if(!down) {
 			FeedListChildren.reverse();
 		}
-
 
 		int current = -1;
 		if(selected_feed != null)
@@ -180,7 +178,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 	}
 
-
 	public void newFeedlist(ArticleListState state, bool defaultSettings, bool masterCat = false)
 	{
 		Logger.debug("FeedList: new FeedList");
@@ -228,7 +225,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		return false;
 	}
-
 
 	private void createFeedlist(ArticleListState state, bool defaultSettings, bool masterCat)
 	{
@@ -286,15 +282,15 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					if(tmpRow != null)
 					{
 						if(Utils.arrayContains(item.getCatIDs(), tmpRow.getID())
-						|| tmpRow.getID() == "" && item.isUncategorized())
+						   || tmpRow.getID() == "" && item.isUncategorized())
 						{
 							var feedrow = new FeedRow(
-													   item.getTitle(),
-													   item.getUnread(),
-													   item.getFeedID(),
-									                   tmpRow.getID(),
-									                   tmpRow.getLevel()
-													  );
+								item.getTitle(),
+								item.getUnread(),
+								item.getFeedID(),
+								tmpRow.getID(),
+								tmpRow.getLevel()
+								);
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.moveUP.connect(moveUP);
@@ -314,13 +310,13 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 			else
 			{
-				var feedrow = new FeedRow	(
-												item.getTitle(),
-												item.getUnread(),
-												item.getFeedID(),
-												item.getCatIDs()[0],
-												0
-											);
+				var feedrow = new FeedRow   (
+					item.getTitle(),
+					item.getUnread(),
+					item.getFeedID(),
+					item.getCatIDs()[0],
+					0
+					);
 				m_list.insert(feedrow, 3);
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.moveUP.connect(moveUP);
@@ -394,7 +390,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 		}
 
-
 		// row not found: default select "ALL ARTICLES"
 		Logger.debug("FeedList: restoreSelectedRow: no selected row found, selectin default");
 		foreach(Gtk.Widget row in FeedChildList)
@@ -410,7 +405,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 	}
 
-
 	void restoreScrollPos(Object sender, ParamSpec property)
 	{
 		vadjustment.notify["upper"].disconnect(restoreScrollPos);
@@ -420,23 +414,23 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	private void addMasterCategory(int length, string name)
 	{
 		var CategoryRow = new CategoryRow(
-												name,
-												CategoryID.MASTER.to_string(),
-												0,
-												0,
-												CategoryID.NONE.to_string(),
-												1,
-												// expand the category "categories" if either it is inserted for the first time (no tag before)
-												// or if it has to be done to restore the state of the feedrow
-												getCatState(CategoryID.MASTER.to_string())
-												);
+			name,
+			CategoryID.MASTER.to_string(),
+			0,
+			0,
+			CategoryID.NONE.to_string(),
+			1,
+			// expand the category "categories" if either it is inserted for the first time (no tag before)
+			// or if it has to be done to restore the state of the feedrow
+			getCatState(CategoryID.MASTER.to_string())
+			);
 		CategoryRow.collapse.connect((collapse, catID, selectParent) => {
 			if(collapse)
 				collapseCategorieInternal(catID, selectParent);
 			else
 				expandCategorieInternal(catID);
 		});
-		m_list.insert(CategoryRow, length+1);
+		m_list.insert(CategoryRow, length + 1);
 		CategoryRow.setAsRead.connect(markSelectedRead);
 		CategoryRow.moveUP.connect(moveUP);
 		CategoryRow.reveal(true, 0);
@@ -445,28 +439,27 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	private void addTagCategory(int length)
 	{
 		var tagrow = new CategoryRow(
-												_("Tags"),
-												CategoryID.TAGS.to_string(),
-												0,
-												0,
-												CategoryID.NONE.to_string(),
-												1,
-												// expand the category "tags" if either it is inserted for the first time (no tag before)
-												// or if it has to be done to restore the state of the feedrow
-												getCatState(CategoryID.TAGS.to_string())
-												);
+			_("Tags"),
+			CategoryID.TAGS.to_string(),
+			0,
+			0,
+			CategoryID.NONE.to_string(),
+			1,
+			// expand the category "tags" if either it is inserted for the first time (no tag before)
+			// or if it has to be done to restore the state of the feedrow
+			getCatState(CategoryID.TAGS.to_string())
+			);
 		tagrow.collapse.connect((collapse, catID, selectParent) => {
 			if(collapse)
 				collapseCategorieInternal(catID, selectParent);
 			else
 				expandCategorieInternal(catID);
 		});
-		m_list.insert(tagrow, length+2);
+		m_list.insert(tagrow, length + 2);
 		tagrow.setAsRead.connect(markSelectedRead);
 		tagrow.reveal(true, 0);
 		m_TagsDisplayed = true;
 	}
-
 
 	private void createCategories(ref Gee.ArrayList<feed> feeds, bool masterCat, ArticleListState state)
 	{
@@ -490,8 +483,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 
 		if((supportTags
-		&& !dbUI.get_default().isTableEmpty("tags"))
-		|| masterCat)
+		    && !dbUI.get_default().isTableEmpty("tags"))
+		   || masterCat)
 		{
 			addMasterCategory(length, _("Categories"));
 			addTagCategory(length);
@@ -522,8 +515,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						(int)(categories.size + 10),
 						CategoryID.MASTER.to_string(),
 						1
-					)
-				);
+						)
+					);
 			}
 
 			foreach(var item in categories)
@@ -535,8 +528,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					pos++;
 					var tmpRow = existing_row as CategoryRow;
 					if((tmpRow != null && tmpRow.getID() == item.getParent()) ||
-						(item.getParent() == CategoryID.MASTER.to_string() && pos > length-1 && !m_TagsDisplayed) ||
-						(item.getParent() == CategoryID.MASTER.to_string() && pos > length && m_TagsDisplayed))
+					   (item.getParent() == CategoryID.MASTER.to_string() && pos > length - 1 && !m_TagsDisplayed) ||
+					   (item.getParent() == CategoryID.MASTER.to_string() && pos > length && m_TagsDisplayed))
 					{
 						int level = item.getLevel();
 						string parent = item.getParent();
@@ -548,15 +541,15 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						}
 
 						var CategoryRow = new CategoryRow(
-					                                item.getTitle(),
-					                                item.getCatID(),
-					                                item.getOrderID(),
-					                                item.getUnreadCount(),
-					                                parent,
-							                        level,
-							                        getCatState(item.getCatID())
-					                                );
-					    expand = false;
+							item.getTitle(),
+							item.getCatID(),
+							item.getOrderID(),
+							item.getUnreadCount(),
+							parent,
+							level,
+							getCatState(item.getCatID())
+							);
+						expand = false;
 						CategoryRow.collapse.connect((collapse, catID, selectParent) => {
 							if(collapse)
 								collapseCategorieInternal(catID, selectParent);
@@ -582,7 +575,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 		}
 	}
-
 
 	private void createTags()
 	{
@@ -653,7 +645,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 								tmpFeedRow.reveal(true);
 						}
 
-
 						break;
 					}
 				}
@@ -712,8 +703,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 	}
 
-
-
 	private void initCollapseCategories()
 	{
 		Logger.debug("initCollapseCategories");
@@ -727,7 +716,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 		}
 	}
-
 
 	private void collapseCategorieInternal(string catID, bool selectParent, bool animate = true)
 	{
@@ -762,8 +750,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var selected_tag = selected_row as TagRow;
 
 			if((selected_feed != null && !selected_feed.isRevealed())
-			|| (selected_cat != null && !selected_cat.isRevealed())
-			|| (selected_tag != null && !selected_tag.isRevealed()))
+			   || (selected_cat != null && !selected_cat.isRevealed())
+			   || (selected_tag != null && !selected_tag.isRevealed()))
 			{
 				foreach(Gtk.Widget row in FeedChildList)
 				{
@@ -779,7 +767,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 		}
 	}
-
 
 	private void expandCategorieInternal(string catID)
 	{
@@ -820,12 +807,11 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			if(tmpCatRow != null && tmpCatRow.getID() == catID)
 			{
 				if((!expand && tmpCatRow.isExpanded())
-				||(expand && !tmpCatRow.isExpanded()))
+				   || (expand && !tmpCatRow.isExpanded()))
 					tmpCatRow.expand_collapse(false);
 			}
 		}
 	}
-
 
 	private bool isCategorieExpanded(string catID)
 	{
@@ -841,7 +827,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		return false;
 	}
 
-
 	public string getSelectedFeed()
 	{
 		FeedRow selected_row = m_list.get_selected_row() as FeedRow;
@@ -850,7 +835,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		return "";
 	}
-
 
 	public string[] getExpandedCategories()
 	{
@@ -870,7 +854,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 		return e;
 	}
-
 
 	public string getSelectedRow()
 	{
@@ -893,7 +876,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		return "";
 	}
-
 
 	private void markSelectedRead(FeedListType type, string id)
 	{
@@ -949,11 +931,11 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	}
 
 	/*
-	public void updateAccountInfo()
-	{
-		m_branding.refresh();
-	}
-	*/
+	   public void updateAccountInfo()
+	   {
+	    m_branding.refresh();
+	   }
+	 */
 
 	public void setOffline()
 	{
@@ -976,39 +958,39 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		switch(type)
 		{
-			case FeedListType.CATEGORY:
-				foreach(Gtk.Widget row in FeedChildList)
+		case FeedListType.CATEGORY:
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as CategoryRow;
+				if(tmpRow != null && tmpRow.getID() == id)
 				{
-					var tmpRow = row as CategoryRow;
-					if(tmpRow != null && tmpRow.getID() == id)
-					{
-						tmpRow.reveal(reveal, time);
-						return;
-					}
+					tmpRow.reveal(reveal, time);
+					return;
 				}
-				break;
-			case FeedListType.FEED:
-				foreach(Gtk.Widget row in FeedChildList)
+			}
+			break;
+		case FeedListType.FEED:
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as FeedRow;
+				if(tmpRow != null && tmpRow.getID() == id)
 				{
-					var tmpRow = row as FeedRow;
-					if(tmpRow != null && tmpRow.getID() == id)
-					{
-						tmpRow.reveal(reveal, time);
-						return;
-					}
+					tmpRow.reveal(reveal, time);
+					return;
 				}
-				break;
-			case FeedListType.TAG:
-				foreach(Gtk.Widget row in FeedChildList)
+			}
+			break;
+		case FeedListType.TAG:
+			foreach(Gtk.Widget row in FeedChildList)
+			{
+				var tmpRow = row as TagRow;
+				if(tmpRow != null && tmpRow.getID() == id)
 				{
-					var tmpRow = row as TagRow;
-					if(tmpRow != null && tmpRow.getID() == id)
-					{
-						tmpRow.reveal(reveal, time);
-						return;
-					}
+					tmpRow.reveal(reveal, time);
+					return;
 				}
-				break;
+			}
+			break;
 		}
 	}
 
@@ -1047,7 +1029,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		clearSelected();
 	}
 
-	private void removeRow(Gtk.Widget? row, int duration = 700)
+	private void removeRow(Gtk.Widget ? row, int duration = 700)
 	{
 		if(row != null)
 		{
@@ -1059,7 +1041,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			{
 				tagRow.reveal(false, duration);
 				GLib.Timeout.add(duration + 20, () => {
-				    m_list.remove(tagRow);
+					m_list.remove(tagRow);
 					return false;
 				});
 			}
@@ -1067,7 +1049,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			{
 				catRow.reveal(false, duration);
 				GLib.Timeout.add(duration + 20, () => {
-				    m_list.remove(catRow);
+					m_list.remove(catRow);
 					return false;
 				});
 			}
@@ -1075,7 +1057,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			{
 				feedRow.reveal(false, duration);
 				GLib.Timeout.add(duration + 20, () => {
-				    m_list.remove(feedRow);
+					m_list.remove(feedRow);
 					return false;
 				});
 			}
@@ -1104,7 +1086,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			else if(tmpFeed != null)
 			{
 				if(tmpFeed.getID() != FeedID.SEPARATOR.to_string()
-				&& tmpFeed.getID() != FeedID.ALL.to_string())
+				   && tmpFeed.getID() != FeedID.ALL.to_string())
 				{
 					tmpFeed.reveal(false);
 				}
@@ -1173,9 +1155,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				}
 
 				if(tmpCat.getID() != CategoryID.MASTER.to_string()
-				&& tmpCat.getID() != CategoryID.TAGS.to_string()
-				&& tmpCat.getParent() != CategoryID.MASTER.to_string()
-				&& !isCategorieExpanded(tmpCat.getParent()))
+				   && tmpCat.getID() != CategoryID.TAGS.to_string()
+				   && tmpCat.getParent() != CategoryID.MASTER.to_string()
+				   && !isCategorieExpanded(tmpCat.getParent()))
 				{
 					tmpCat.reveal(false);
 				}
@@ -1183,7 +1165,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			else if(tmpFeed != null)
 			{
 				if(tmpFeed.getID() != FeedID.SEPARATOR.to_string()
-				&& tmpFeed.getID() != FeedID.ALL.to_string())
+				   && tmpFeed.getID() != FeedID.ALL.to_string())
 				{
 					if(isCategorieExpanded(tmpFeed.getCatID()))
 						tmpFeed.reveal(true);

@@ -165,10 +165,10 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
 	{
 		errmsg = "";
-		string? cat = null;
+		string ? cat = null;
 		if(catID != null)
 			cat = catID;
 		else if(newCatName != null)
@@ -217,12 +217,12 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.editStream("edit", {feedID}, title, null, null);
 	}
 
-	public void moveFeed(string feedID, string newCatID, string? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string ? currentCatID)
 	{
 		m_api.editStream("edit", {feedID}, null, newCatID, currentCatID);
 	}
 
-	public string createCategory(string title, string? parentID)
+	public string createCategory(string title, string ? parentID)
 	{
 		return m_api.composeTagID(title);
 	}
@@ -253,7 +253,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
 	{
 		if(m_api.getSubscriptionList(feeds))
 		{
@@ -272,7 +272,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return m_api.getUnreadCounts();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{
@@ -280,9 +280,9 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		var articles = new Gee.LinkedList<article>();
-		string? continuation = null;
-		string? exclude = null;
-		string? labelID = null;
+		string ? continuation = null;
+		string ? exclude = null;
+		string ? labelID = null;
 		int left = count;
 		if(whatToGet == ArticleStatus.ALL)
 		{
@@ -297,7 +297,6 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 			labelID = "user/-/state/com.google/reading-list";
 			exclude = "user/-/state/com.google/read";
 		}
-
 
 		while(left > 0)
 		{

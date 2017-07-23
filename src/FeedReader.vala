@@ -24,9 +24,8 @@ namespace FeedReader {
 
 		private MainWindow m_window;
 		private bool m_online = true;
-		private static FeedReaderApp? m_app = null;
-		public signal void callback(string content);
-
+		private static FeedReaderApp ? m_app = null;
+		public signal void callback (string content);
 
 		public new static FeedReaderApp get_default()
 		{
@@ -90,7 +89,7 @@ namespace FeedReader {
 			if(args.length > 1)
 			{
 				Logger.debug("FeedReader: callback %s".printf(args[1]));
-				callback(args[1]);
+				callback (args[1]);
 			}
 
 			activate();
@@ -140,10 +139,9 @@ namespace FeedReader {
 
 		private FeedReaderApp()
 		{
-			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
+			GLib.Object(application_id: "org.gnome.FeedReader", flags : ApplicationFlags.HANDLES_COMMAND_LINE);
 		}
 	}
-
 
 	public static int main (string[] args)
 	{
@@ -233,9 +231,9 @@ namespace FeedReader {
 
 	private static bool version = false;
 	private static bool about = false;
-	private static string? media = null;
-	private static string? pingURL = null;
-	private static string? feedURL = null;
+	private static string ? media = null;
+	private static string ? pingURL = null;
+	private static string ? feedURL = null;
 
 	static void show_about(string[] args)
 	{

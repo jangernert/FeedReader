@@ -28,7 +28,7 @@ public class FeedReader.InterfaceState : GLib.Object {
 	private string m_SearchTerm = "";
 	private string m_FeedListSelectedRow = "feed -4";
 	private string m_ArticleListSelectedRow = "0";
-	private string? m_ArticleListTopRow = null;
+	private string ? m_ArticleListTopRow = null;
 	private string[] m_ExpandedCategories = {};
 	private ArticleListState m_ArticleListState = ArticleListState.ALL;
 
@@ -146,7 +146,7 @@ public class FeedReader.InterfaceState : GLib.Object {
 		return m_ArticleListSelectedRow;
 	}
 
-	public void setArticleListTopRow(string? articleID)
+	public void setArticleListTopRow(string ? articleID)
 	{
 		m_ArticleListTopRow = articleID;
 	}

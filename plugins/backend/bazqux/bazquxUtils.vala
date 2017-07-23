@@ -14,7 +14,7 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace FeedReader.bazquxSecret {
-	 const string base_uri        = "https://www.bazqux.com/reader/api/0/";
+	const string base_uri        = "https://www.bazqux.com/reader/api/0/";
 }
 
 public class FeedReader.bazquxUtils : GLib.Object {
@@ -67,10 +67,10 @@ public class FeedReader.bazquxUtils : GLib.Object {
 		                                  "type", Secret.SchemaAttributeType.STRING,
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
 		attributes["type"] = "BazQux";
 		attributes["Username"] = getUser();
-		string? passwd = "";
+		string ? passwd = "";
 
 		try
 		{
@@ -93,9 +93,9 @@ public class FeedReader.bazquxUtils : GLib.Object {
 	public void setPassword(string passwd)
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.bazqux", Secret.SchemaFlags.NONE,
-										  "type", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+		                                  "type", Secret.SchemaAttributeType.STRING,
+		                                  "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
 		attributes["type"] = "BazQux";
 		attributes["Username"] = getUser();
 		try

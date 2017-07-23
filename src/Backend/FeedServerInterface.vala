@@ -80,7 +80,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool serverAvailable();
 
-	public abstract bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg);
+	public abstract bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg);
 
 	public abstract void addFeeds(Gee.List<feed> feeds);
 
@@ -88,9 +88,9 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void renameFeed(string feedID, string title);
 
-	public abstract void moveFeed(string feedID, string newCatID, string? currentCatID = null);
+	public abstract void moveFeed(string feedID, string newCatID, string ? currentCatID = null);
 
-	public abstract string createCategory(string title, string? parentID = null);
+	public abstract string createCategory(string title, string ? parentID = null);
 
 	public abstract void renameCategory(string catID, string title);
 
@@ -102,10 +102,10 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void importOPML(string opml);
 
-	public abstract bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null);
+	public abstract bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null);
 
 	public abstract int getUnreadCount();
 
-	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null);
+	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string ? feedID = null, bool isTagID = false, GLib.Cancellable ? cancellable = null);
 
 }

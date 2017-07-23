@@ -15,7 +15,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Does the service you are implementing support tags?
 	// If so return "true", otherwise return "false".
@@ -24,7 +23,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// If the daemon should to an initial sync after logging in.
@@ -36,7 +34,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// What is the symbolic icon-name of the service-logo?
 	// Return a string with the name, not the complete path.
@@ -46,7 +43,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Return a name the account of the user can be identified with.
@@ -58,7 +54,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// If the service can be self-hosted or has multiple providers
 	// you can return the URL of the server here. Preferably without "http://www."
@@ -67,7 +62,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Many services have different ways of telling if a feed is uncategorized.
@@ -80,7 +74,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Sone services have special categories that should not be visible when empty
@@ -109,7 +102,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Does the service allow categories as children of other categories?
 	// If so return "true", otherwise return "false".
@@ -119,7 +111,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Can one feed be part of more than one category?
 	// If so return "true", otherwise return "false".
@@ -128,7 +119,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Does changing the name of a tag also change it's ID?
@@ -142,7 +132,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Delete all passwords, keys and user-information.
 	// Do not delete feeds or articles from the data-base.
@@ -151,7 +140,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// State wheater the service syncs articles based on a maximum count
@@ -186,7 +174,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// If it is possible to log out of the account of the service, do so here.
 	// If not, do nothing and return "true".
@@ -196,7 +183,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Check if the service is reachable.
 	// You can use the method Utils.ping() if the service doesn't provide anything.
@@ -205,7 +191,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Method to set the state of articles to read or unread
@@ -217,7 +202,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Method to set the state of articles to marked or unmarked
 	// "articleID": single articleID
@@ -228,7 +212,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Mark all articles of the feed as read
 	//--------------------------------------------------------------------------------------
@@ -236,7 +219,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Mark all articles of the feeds that are part of the category as read
@@ -246,7 +228,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Mark ALL articles as read
 	//--------------------------------------------------------------------------------------
@@ -254,7 +235,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Add an existing tag to the article
@@ -264,7 +244,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Remove an existing tag from the article
 	//--------------------------------------------------------------------------------------
@@ -272,7 +251,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Create a new tag with the title of "caption" and return the id of the
@@ -286,7 +264,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Delete a tag completely
 	//--------------------------------------------------------------------------------------
@@ -294,7 +271,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Rename the tag with the id "tagID" to the new name "title"
@@ -304,17 +280,15 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Subscribe to the URL "feedURL"
 	// "catID": the category the feed should be placed into, "null" otherwise
 	// "newCatName": the name of a new category the feed should be put in, "null" otherwise
 	//--------------------------------------------------------------------------------------
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Remove the feed with the id "feedID" completely
@@ -324,7 +298,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Rename the feed with the id "feedID" to "title"
 	//--------------------------------------------------------------------------------------
@@ -333,17 +306,15 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Move the feed with the id "feedID" from its current category
 	// to any other category. "currentCatID" is only needed if the
 	// feed can be part of multiple categories at once.
 	//--------------------------------------------------------------------------------------
-	public void moveFeed(string feedID, string newCatID, string? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string ? currentCatID)
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Create a new category
@@ -353,11 +324,10 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// on the fly when movin feeds over to them. In this case just compose the categoryID
 	// following the schema tha service uses and return it.
 	//--------------------------------------------------------------------------------------
-	public string createCategory(string title, string? parentID)
+	public string createCategory(string title, string ? parentID)
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Rename the category with the id "catID" to "title"
@@ -366,7 +336,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Move the category with the id "catID" into another category
@@ -378,7 +347,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Delete the category with the id "catID"
 	//--------------------------------------------------------------------------------------
@@ -386,7 +354,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Rename the feed with the id "feedID" from the category with the id "catID"
@@ -398,7 +365,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Import the content of "opml"
 	// If the service doesn't provide API to import OPML you can use the
@@ -409,17 +375,15 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
-
 	//--------------------------------------------------------------------------------------
 	// Get all feeds, categories and tags from the service
 	// Fill up the emtpy LinkedList's that are provided with instances of the
 	// model-classes category, feed and article
 	//--------------------------------------------------------------------------------------
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Return the total count of unread articles on the server
@@ -428,7 +392,6 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	{
 
 	}
-
 
 	//--------------------------------------------------------------------------------------
 	// Get the requested articles and write them to the data-base
@@ -445,13 +408,12 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// But if the API suggests a different approach you can everything on your
 	// own (see ttrss-backend).
 	//--------------------------------------------------------------------------------------
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
 	{
 
 	}
 
 }
-
 
 //--------------------------------------------------------------------------------------
 // Boilerplate code for the plugin. Replace "demoInterface" with the name

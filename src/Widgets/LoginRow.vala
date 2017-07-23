@@ -90,13 +90,12 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 	private bool rowLeave(Gdk.EventCrossing event)
 	{
 		if(event.detail == Gdk.NotifyType.INFERIOR
-		|| event.detail == Gdk.NotifyType.VIRTUAL)
+		   || event.detail == Gdk.NotifyType.VIRTUAL)
 		{
 			if(event.detail == Gdk.NotifyType.VIRTUAL)
 				m_hovered = false;
 			return true;
 		}
-
 
 		m_hovered = false;
 		m_infoStack.set_visible_child_name("empty");

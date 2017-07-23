@@ -15,8 +15,8 @@
 
 public class FeedReader.Grabber : GLib.Object {
 	private string m_articleURL;
-	private string? m_articleID;
-	private string? m_feedID;
+	private string ? m_articleID;
+	private string ? m_feedID;
 	private string m_rawHtml;
 	private string m_nexPageURL;
 	private GrabberConfig m_config;
@@ -28,13 +28,12 @@ public class FeedReader.Grabber : GLib.Object {
 	private bool m_foundSomething;
 	private bool m_singlePage;
 
-
 	public string m_author;
 	public string m_title;
 	public string m_date;
 	public string m_html;
 
-	public Grabber(Soup.Session session, string articleURL, string? articleID, string? feedID)
+	public Grabber(Soup.Session session, string articleURL, string ? articleID, string ? feedID)
 	{
 		m_articleURL = articleURL;
 		m_articleID = articleID;
@@ -82,12 +81,11 @@ public class FeedReader.Grabber : GLib.Object {
 			}
 		}
 
-
 		Logger.debug("Grabber: no config (%s.txt) - cutSubdomain - found for article: %s".printf(newHostName, m_articleURL));
 		return false;
 	}
 
-	public bool process(GLib.Cancellable? cancellable = null)
+	public bool process(GLib.Cancellable ? cancellable = null)
 	{
 		Logger.debug("Grabber: process article: " + m_articleURL);
 
@@ -116,7 +114,7 @@ public class FeedReader.Grabber : GLib.Object {
 				string ytHTML = "<div class=\"videoWrapper\"><iframe width=\"100%\" src=\"https://www.youtube.com/embed/%s\" frameborder=\"0\" allowfullscreen></iframe></div>";
 				int start = m_articleURL.index_of(youtube) + youtube.length;
 				int end = m_articleURL.index_of("?", start);
-				string id = m_articleURL.substring(start, (end == -1) ? -1 : end-start);
+				string id = m_articleURL.substring(start, (end == -1) ? -1 : end - start);
 
 				m_html = ytHTML.printf(id);
 				return true;
@@ -149,7 +147,6 @@ public class FeedReader.Grabber : GLib.Object {
 		if(!downloaded && !download())
 			return false;
 
-
 		Logger.debug("Grabber: download success");
 
 		prepArticle();
@@ -178,7 +175,7 @@ public class FeedReader.Grabber : GLib.Object {
 
 		m_session.send_message(message);
 		var params = new GLib.HashTable<string, string>(null, null);
-		string? contentType = message.response_headers.get_content_type(out params);
+		string ? contentType = message.response_headers.get_content_type(out params);
 		if(contentType != null)
 		{
 			if(contentType == "text/html")
@@ -197,10 +194,10 @@ public class FeedReader.Grabber : GLib.Object {
 		msg.restarted.connect(() => {
 			Logger.debug("Grabber: download redirected - " + msg.status_code.to_string());
 			if(msg.status_code == Soup.Status.MOVED_TEMPORARILY
-			|| msg.status_code == Soup.Status.MOVED_PERMANENTLY)
+			   || msg.status_code == Soup.Status.MOVED_PERMANENTLY)
 			{
-				m_articleURL = msg.uri.to_string(false);
-				Logger.debug(@"Grabber: new url is: $m_articleURL");
+			    m_articleURL = msg.uri.to_string(false);
+			    Logger.debug(@"Grabber: new url is: $m_articleURL");
 			}
 		});
 
@@ -234,7 +231,7 @@ public class FeedReader.Grabber : GLib.Object {
 			if(start != -1)
 			{
 				int end = m_rawHtml.index_of("\"", start);
-				locale = m_rawHtml.substring(start, end-start);
+				locale = m_rawHtml.substring(start, end - start);
 			}
 			else
 			{
@@ -243,7 +240,7 @@ public class FeedReader.Grabber : GLib.Object {
 				if(start != -1)
 				{
 					int end = m_rawHtml.index_of("\"", start);
-					locale = m_rawHtml.substring(start, end-start);
+					locale = m_rawHtml.substring(start, end - start);
 				}
 				else
 				{
@@ -265,7 +262,7 @@ public class FeedReader.Grabber : GLib.Object {
 		return true;
 	}
 
-	private bool parse(GLib.Cancellable? cancellable = null)
+	private bool parse(GLib.Cancellable ? cancellable = null)
 	{
 		m_nexPageURL = null;
 		Logger.debug("Grabber: start parsing");
@@ -293,7 +290,6 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		Logger.debug("Grabber: html parsed");
-
 
 		// get link to next page of article if there are more than one pages
 		if(m_config.getXPathNextPageURL() != null)
@@ -458,7 +454,7 @@ public class FeedReader.Grabber : GLib.Object {
 		// and http://blog.instapaper.com/post/730281947
 		Logger.debug("Grabber: strip instapaper and readability");
 		grabberUtils.stripNode(doc,
-				"//*[contains(concat(' ',normalize-space(@class),' '),' entry-unrelated ') or contains(concat(' ',normalize-space(@class),' '),' instapaper_ignore ')]");
+		                       "//*[contains(concat(' ',normalize-space(@class),' '),' entry-unrelated ') or contains(concat(' ',normalize-space(@class),' '),' instapaper_ignore ')]");
 
 		if(cancellable != null && cancellable.is_cancelled())
 		{
@@ -590,12 +586,12 @@ public class FeedReader.Grabber : GLib.Object {
 			Logger.debug("Grabber: date: %s".printf(m_date));
 	}
 
-	public string? getAuthor()
+	public string ? getAuthor()
 	{
 		return m_author;
 	}
 
-	public string? getTitle()
+	public string ? getTitle()
 	{
 		return m_title;
 	}

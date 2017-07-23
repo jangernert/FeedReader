@@ -59,14 +59,14 @@ public class FeedReader.CachedAction : GLib.Object {
 	{
 		switch(m_action)
 		{
-			case CachedActions.MARK_READ:
-				return CachedActions.MARK_UNREAD;
-			case CachedActions.MARK_UNREAD:
-				return CachedActions.MARK_READ;
-			case CachedActions.MARK_STARRED:
-				return CachedActions.MARK_UNSTARRED;
-			case CachedActions.MARK_UNSTARRED:
-				return CachedActions.MARK_STARRED;
+		case CachedActions.MARK_READ:
+			return CachedActions.MARK_UNREAD;
+		case CachedActions.MARK_UNREAD:
+			return CachedActions.MARK_READ;
+		case CachedActions.MARK_STARRED:
+			return CachedActions.MARK_UNSTARRED;
+		case CachedActions.MARK_UNSTARRED:
+			return CachedActions.MARK_STARRED;
 		}
 
 		return CachedActions.NONE;

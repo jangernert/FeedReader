@@ -51,7 +51,7 @@ public class FeedReader.FeedHQConnection {
 			var regex = new Regex(".*\\w\\s.*\\w\\sAuth=");
 			if(regex.match(response))
 			{
-				string split = regex.replace(response, -1, 0, "");
+				string split = regex.replace(response, -1,0,"");
 				Logger.debug("FeedHQ Authcode : " + split);
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
@@ -69,6 +69,7 @@ public class FeedReader.FeedHQConnection {
 			return LoginResponse.UNKNOWN_ERROR;
 		}
 	}
+
 
 	public bool postToken()
 	{
@@ -93,17 +94,19 @@ public class FeedReader.FeedHQConnection {
 		return true;
 
 	}
-	public Response send_get_request(string path, string ? message_string = null)
+	public Response send_get_request(string path, string? message_string = null)
 	{
 		return send_request(path, "GET", message_string);
 	}
 
-	public Response send_post_request(string path, string ? message_string = null)
+	public Response send_post_request(string path, string? message_string = null)
 	{
 		return send_request(path, "POST", message_string);
 	}
 
-	private Response send_request(string path, string type, string ? message_string = null)
+
+
+	private Response send_request(string path, string type, string? message_string = null)
 	{
 		var message = new Soup.Message(type, FeedHQSecret.base_uri + path);
 
@@ -128,12 +131,13 @@ public class FeedReader.FeedHQConnection {
 		}
 
 		return Response() {
-				   status = message.status_code,
-				   data = (string)message.response_body.flatten().data
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
 		};
 	}
 
 }
+
 
 public class FeedReader.feedhqMessage {
 

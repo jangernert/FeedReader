@@ -62,15 +62,15 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		if(redirectURL.has_prefix(InoReaderSecret.apiRedirectUri))
 		{
 			Logger.debug(redirectURL);
-			int csrf_start = redirectURL.index_of("state=") + 6;
+			int csrf_start = redirectURL.index_of("state=")+6;
 			string csrf_code = redirectURL.substring(csrf_start);
 			Logger.debug("InoReaderLoginWidget: csrf_code: " + csrf_code);
 
 			if(csrf_code == InoReaderSecret.csrf_protection)
 			{
-				int start = redirectURL.index_of("code=") + 5;
+				int start = redirectURL.index_of("code=")+5;
 				int end = redirectURL.index_of("&", start);
-				string code = redirectURL.substring(start, end - start);
+				string code = redirectURL.substring(start, end-start);
 				m_utils.setApiCode(code);
 				Logger.debug("InoReaderLoginWidget: set inoreader-api-code: " + code);
 				GLib.Thread.usleep(500000);
@@ -90,11 +90,11 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 	public string buildLoginURL()
 	{
 		return "https://www.inoreader.com/oauth2/auth"
-		       + "?client_id=" + InoReaderSecret.apiClientId
-		       + "&redirect_uri=" + InoReaderSecret.apiRedirectUri
-		       + "&response_type=code"
-		       + "&scope=read+write"
-		       + "&state=" + InoReaderSecret.csrf_protection;
+			+ "?client_id=" + InoReaderSecret.apiClientId
+			+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
+			+ "&response_type=code"
+			+ "&scope=read+write"
+			+ "&state=" + InoReaderSecret.csrf_protection;
 	}
 
 	public bool needWebLogin()
@@ -102,7 +102,7 @@ public class FeedReader.InoReaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		return true;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		return null;
 	}

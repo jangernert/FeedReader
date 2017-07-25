@@ -38,7 +38,7 @@ public class FeedReader.ArticleViewUrlOverlay : Gtk.Revealer {
 		string url = uri;
 		if(url.length >= length)
 		{
-			url = url.substring(0, length - 3) + "...";
+			url = url.substring(0, length-3) + "...";
 		}
 		m_label.label = url;
 		m_label.width_chars = url.length;

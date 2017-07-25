@@ -20,6 +20,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	public signal bool getApiCode(string url);
 	public signal void success();
 
+
 	public WebLoginPage()
 	{
 		var settings = new WebKit.Settings();
@@ -32,6 +33,7 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 		this.show_all();
 	}
 
+
 	public void loadPage(string url)
 	{
 		Logger.debug("WebLoginPage: load URL: " + url);
@@ -42,16 +44,16 @@ public class FeedReader.WebLoginPage : Gtk.Bin {
 	{
 		switch(load_event)
 		{
-		case WebKit.LoadEvent.STARTED:
-			check();
-			break;
-		case WebKit.LoadEvent.REDIRECTED:
-			check();
-			break;
-		case WebKit.LoadEvent.COMMITTED:
-			break;
-		case WebKit.LoadEvent.FINISHED:
-			break;
+			case WebKit.LoadEvent.STARTED:
+				check();
+				break;
+			case WebKit.LoadEvent.REDIRECTED:
+				check();
+				break;
+			case WebKit.LoadEvent.COMMITTED:
+				break;
+			case WebKit.LoadEvent.FINISHED:
+				break;
 		}
 	}
 

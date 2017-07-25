@@ -114,7 +114,7 @@ namespace FeedReader {
 		 */
 		public int append (Gtk.Widget w, string tooltip) {
 			int index;
-			for (index = item_map.size; item_map.has_key (index); index++) ;
+			for (index = item_map.size; item_map.has_key (index); index++);
 			assert (item_map[index] == null);
 
 			w.set_tooltip_text(tooltip);
@@ -231,16 +231,16 @@ namespace FeedReader {
 			int offset;
 
 			switch (ev.direction) {
-			case Gdk.ScrollDirection.DOWN:
-			case Gdk.ScrollDirection.RIGHT:
-				offset = 1;
-				break;
-			case Gdk.ScrollDirection.UP:
-			case Gdk.ScrollDirection.LEFT:
-				offset = -1;
-				break;
-			default:
-				return false;
+				case Gdk.ScrollDirection.DOWN:
+				case Gdk.ScrollDirection.RIGHT:
+					offset = 1;
+					break;
+				case Gdk.ScrollDirection.UP:
+				case Gdk.ScrollDirection.LEFT:
+					offset = -1;
+					break;
+				default:
+					return false;
 			}
 
 			// Try to find a valid item, since there could be invisible items in

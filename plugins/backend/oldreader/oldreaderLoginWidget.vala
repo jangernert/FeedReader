@@ -15,6 +15,7 @@
 
 public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterface {
 
+
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 	private OldReaderUtils m_utils;
@@ -54,7 +55,7 @@ public class FeedReader.oldreaderLoginWidget : Peas.ExtensionBase, LoginInterfac
 		return false;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));

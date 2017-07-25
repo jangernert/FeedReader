@@ -32,6 +32,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		general.add(quit);
 		//--------------------------------------------------
 
+
 		//--------------------------------------------------
 		var feedList = newGroup(_("Feed List"));
 		//--------------------------------------------------
@@ -47,6 +48,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		feedList.add(expCol);
 		feedList.add(flmark);
 		//--------------------------------------------------
+
 
 		//--------------------------------------------------
 		var articleList = newGroup(_("Article List"));
@@ -72,6 +74,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		articleList.add(centerSelected);
 		//--------------------------------------------------
 
+
 		//--------------------------------------------------
 		var articleView = newGroup(_("Article View"));
 		//--------------------------------------------------
@@ -82,6 +85,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		articleView.add(AVupdown);
 		//--------------------------------------------------
 
+
 		//--------------------------------------------------
 		var section = newSection("test", "section", 10);
 		//--------------------------------------------------
@@ -91,6 +95,7 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		section.add(articleView);
 		//--------------------------------------------------
 
+
 		this.add(section);
 		this.set_transient_for(parent);
 		this.set_modal(true);
@@ -99,21 +104,21 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 
 	private Gtk.ShortcutsSection newSection(string title, string section_name, int maxHeight)
 	{
-		var section = (Gtk.ShortcutsSection)Object.new(typeof(Gtk.ShortcutsSection), title : title, section_name : section_name, max_height : maxHeight);
+		var section = (Gtk.ShortcutsSection)Object.new(typeof(Gtk.ShortcutsSection), title: title, section_name: section_name, max_height: maxHeight);
 		section.show();
 		return section;
 	}
 
 	private Gtk.ShortcutsGroup newGroup(string title)
 	{
-		var group = (Gtk.ShortcutsGroup)Object.new(typeof(Gtk.ShortcutsGroup), title : title);
+		var group = (Gtk.ShortcutsGroup)Object.new(typeof(Gtk.ShortcutsGroup), title: title);
 		group.show();
 		return group;
 	}
 
 	private Gtk.ShortcutsShortcut newShortcut(string title, string key)
 	{
-		var shortcut = (Gtk.ShortcutsShortcut)Object.new(typeof(Gtk.ShortcutsShortcut), title : title, accelerator : key);
+		var shortcut = (Gtk.ShortcutsShortcut)Object.new(typeof(Gtk.ShortcutsShortcut), title: title, accelerator: key);
 		shortcut.show();
 		return shortcut;
 	}

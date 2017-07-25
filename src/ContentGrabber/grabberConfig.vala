@@ -264,6 +264,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 			Logger.debug("testURL: " + m_testURL);
 	}
 
+
 	public string getXPathNextPageURL()
 	{
 		return m_nextPageLink;

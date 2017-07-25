@@ -23,7 +23,7 @@ public class FeedReader.article : GLib.Object {
 	private string m_feedID;
 	private Gee.ArrayList<string> m_tags;
 	private Gee.ArrayList<string> m_media;
-	private string ? m_author;
+	private string? m_author;
 	private ArticleStatus m_unread;
 	private ArticleStatus m_marked;
 	private int m_sortID;
@@ -32,21 +32,23 @@ public class FeedReader.article : GLib.Object {
 	private int m_lastModified;
 	private int m_pos;
 
-	public article (    string articleID,
-	                    string title,
-	                    string url,
-	                    string feedID,
-	                    ArticleStatus unread,
-	                    ArticleStatus marked,
-	                    string html,
-	                    string preview,
-	                    string ? author,
-	                    GLib.DateTime date,
-	                    int sortID,
-	                    string tags,
-	                    string media,
-	                    string guidHash = "",
-	                    int lastModified = 0)
+
+
+	public article (	string articleID,
+						string title,
+						string url,
+						string feedID,
+						ArticleStatus unread,
+						ArticleStatus marked,
+						string html,
+						string preview,
+						string? author,
+						GLib.DateTime date,
+						int sortID,
+						string tags,
+						string media,
+						string guidHash = "",
+						int lastModified = 0)
 	{
 		m_articleID = articleID;
 		m_title = title;
@@ -114,12 +116,12 @@ public class FeedReader.article : GLib.Object {
 		m_preview = preview;
 	}
 
-	public string ? getAuthor()
+	public string? getAuthor()
 	{
 		return m_author;
 	}
 
-	public void setAuthor(string ? author)
+	public void setAuthor(string? author)
 	{
 		m_author = author;
 	}
@@ -162,7 +164,7 @@ public class FeedReader.article : GLib.Object {
 			{
 				return m_date.format("%H:%M");
 			}
-			else if(date_day == now_day - 1)
+			else if(date_day == now_day-1)
 			{
 				return _("Yesterday") + m_date.format(", %H:%M");
 			}

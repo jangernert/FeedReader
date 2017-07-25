@@ -74,7 +74,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		{
 			var seperatorBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
 			seperatorBox.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
-			seperatorBox.pack_start(addBox, true, true, 0);
+	        seperatorBox.pack_start(addBox, true, true, 0);
 			addRow.add(seperatorBox);
 		}
 		else
@@ -88,7 +88,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 
 	private void clicked(Gtk.ListBoxRow row)
 	{
-		ShareRow ? shareRow = row as ShareRow;
+		ShareRow? shareRow = row as ShareRow;
 
 		if(shareRow == null)
 		{

@@ -73,7 +73,7 @@ public class FeedReader.freshAPI : Object {
 				title = Utils.URLtoFeedName(url);
 			}
 
-			string ? icon_url = null;
+			string? icon_url = null;
 			if(object.has_member("iconUrl"))
 				icon_url = object.get_string_member("iconUrl");
 
@@ -86,7 +86,7 @@ public class FeedReader.freshAPI : Object {
 					{ catID },
 					icon_url,
 					xmlURL)
-				);
+			);
 		}
 
 		return true;
@@ -118,6 +118,7 @@ public class FeedReader.freshAPI : Object {
 			Json.Object object = array.get_object_element(i);
 			string categorieID = object.get_string_member("id");
 
+
 			if(!categorieID.has_prefix(prefix))
 				continue;
 
@@ -126,11 +127,11 @@ public class FeedReader.freshAPI : Object {
 					categorieID,
 					categorieID.substring(prefix.length),
 					0,
-					i + 1,
+					i+1,
 					CategoryID.MASTER.to_string(),
 					1
-					)
-				);
+				)
+			);
 		}
 
 		return true;
@@ -169,15 +170,15 @@ public class FeedReader.freshAPI : Object {
 		return count;
 	}
 
-	public string ? getStreamContents(
-		Gee.LinkedList<article> articles,
-		string ? feedID = null,
-		string ? labelID = null,
-		string ? exclude = null,
-		int count = 400,
-		string order = "d",
-		string ? checkpoint = null
-		)
+	public string? getStreamContents(
+										Gee.LinkedList<article> articles,
+										string? feedID = null,
+										string? labelID = null,
+										string? exclude = null,
+										int count = 400,
+										string order = "d",
+										string? checkpoint = null
+								)
 	{
 		var now = new DateTime.now_local();
 		string path = "reader/api/0/stream/contents";
@@ -186,6 +187,7 @@ public class FeedReader.freshAPI : Object {
 			path += "/" + feedID;
 		else if(labelID != null)
 			path += "/" + labelID;
+
 
 		var msg = new freshMessage();
 		msg.add("output", "json");
@@ -255,7 +257,7 @@ public class FeedReader.freshAPI : Object {
 					if(attachment.has_member("type"))
 					{
 						if(attachment.get_string_member("type").contains("audio")
-						   || attachment.get_string_member("type").contains("video"))
+						|| attachment.get_string_member("type").contains("video"))
 						{
 							mediaString = mediaString + attachment.get_string_member("href") + ",";
 						}
@@ -263,29 +265,31 @@ public class FeedReader.freshAPI : Object {
 				}
 			}
 
-			string ? author = null;
+			string? author = null;
 			if(object.has_member("author"))
 			{
 				author = (object.get_string_member("author") == "") ? null : object.get_string_member("author");
 			}
 
+
 			articles.add(new article(
-							 id,
-							 object.get_string_member("title"),
-							 object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
-							 object.get_object_member("origin").get_string_member("streamId"),
-							 read ? ArticleStatus.READ : ArticleStatus.UNREAD,
-							 marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-							 object.get_object_member("summary").get_string_member("content"),
-							 "",
-							 author,
-							 new DateTime.from_unix_local(object.get_int_member("published")),
-							 -1,
-							 "",
-							 mediaString
-							 )
-			             );
+									id,
+									object.get_string_member("title"),
+									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
+									object.get_object_member("origin").get_string_member("streamId"),
+									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
+									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+									object.get_object_member("summary").get_string_member("content"),
+									"",
+									author,
+									new DateTime.from_unix_local(object.get_int_member("published")),
+									-1,
+									"",
+									mediaString
+							)
+						);
 		}
+
 
 		if(root.has_member("continuation") && root.get_string_member("continuation") != "")
 			return root.get_string_member("continuation");
@@ -293,7 +297,7 @@ public class FeedReader.freshAPI : Object {
 		return null;
 	}
 
-	public void editTags(string articleIDs, string ? addTag = null, string ? removeTag = null)
+	public void editTags(string articleIDs, string? addTag = null, string? removeTag = null)
 	{
 		string path = "reader/api/0/edit-tag";
 		string[] arrayID = articleIDs.split(",");
@@ -340,12 +344,12 @@ public class FeedReader.freshAPI : Object {
 	}
 
 	public Response editStream(
-		string action,
-		string[] ? streamID = null,
-		string ? title = null,
-		string ? add = null,
-		string ? remove = null
-		)
+							string action,
+							string[]? streamID = null,
+							string? title = null,
+							string? add = null,
+							string? remove = null
+						)
 	{
 		string path = "reader/api/0/subscription/edit";
 
@@ -394,6 +398,7 @@ public class FeedReader.freshAPI : Object {
 		msg.add("dest", composeTagID(title));
 
 		var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
+
 
 		if(response.status != 200)
 		{

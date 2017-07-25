@@ -104,6 +104,7 @@ public class FeedReader.ServiceSetup : Gtk.ListBoxRow {
 		m_seperator_box.pack_start(m_box, true, true, 0);
 		m_seperator_box.pack_end(separator, false, false, 0);
 
+
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.add(m_seperator_box);

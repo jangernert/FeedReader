@@ -15,6 +15,7 @@
 
 public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 
+
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 	private FeedHQUtils m_utils;
@@ -54,7 +55,7 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return false;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
@@ -123,6 +124,7 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 		m_utils.setPassword(m_passwordEntry.get_text());
 	}
 
+
 	public async void postLoginAction()
 	{
 		return;
@@ -138,6 +140,7 @@ public class FeedReader.FeedHQLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return "";
 	}
 }
+
 
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)

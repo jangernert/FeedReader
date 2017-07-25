@@ -29,7 +29,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private Gtk.CssProvider m_cssProvider;
 	private uint m_stackTransitionTime = 100;
 
-	private static MainWindow ? m_window = null;
+	private static MainWindow? m_window = null;
 
 	public static MainWindow get_default()
 	{
@@ -65,10 +65,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		var reportBugAction = new SimpleAction("bugs", null);
 		reportBugAction.activate.connect(() => {
 			try{
-			    Gtk.show_uri_on_window(this, "https://github.com/jangernert/FeedReader/issues", Gdk.CURRENT_TIME);
+				Gtk.show_uri_on_window(this, "https://github.com/jangernert/FeedReader/issues", Gdk.CURRENT_TIME);
 			}
-			catch(GLib.Error e) {
-			    Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+			catch(GLib.Error e){
+				Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 			}
 		});
 		this.add_action(reportBugAction);
@@ -77,10 +77,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		var bountyAction = new SimpleAction("bounty", null);
 		bountyAction.activate.connect(() => {
 			try{
-			    Gtk.show_uri_on_window(this, "https://www.bountysource.com/teams/jangernert-feedreader/issues", Gdk.CURRENT_TIME);
+				Gtk.show_uri_on_window(this, "https://www.bountysource.com/teams/jangernert-feedreader/issues", Gdk.CURRENT_TIME);
 			}
-			catch(GLib.Error e) {
-			    Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+			catch(GLib.Error e){
+				Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 			}
 		});
 		this.add_action(bountyAction);
@@ -122,7 +122,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			dialog.response.connect((response_id) => {
 				if (response_id == Gtk.ResponseType.CANCEL || response_id == Gtk.ResponseType.DELETE_EVENT)
 				{
-				    dialog.hide_on_delete();
+					dialog.hide_on_delete();
 				}
 			});
 
@@ -189,7 +189,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			{
 				Logger.debug("MainWindow: fullscreen event");
 				if(ColumnView.get_default().getSelectedArticle() == ""
-				   || ColumnView.get_default().getSelectedArticle() == "empty")
+				|| ColumnView.get_default().getSelectedArticle() == "empty")
 					return true;
 
 				if(ColumnView.get_default().isFullscreenVideo())
@@ -200,6 +200,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 					base.window_state_event(event);
 					return true;
 				}
+
 
 				if((event.new_window_state & Gdk.WindowState.FULLSCREEN) == Gdk.WindowState.FULLSCREEN)
 				{
@@ -307,21 +308,21 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		switch(theme)
 		{
-		case FeedListTheme.GTK:
-			m_cssProvider = addProvider(path + "gtk.css");
-			break;
+			case FeedListTheme.GTK:
+				m_cssProvider = addProvider(path + "gtk.css");
+				break;
 
-		case FeedListTheme.DARK:
-			m_cssProvider = addProvider(path + "dark.css");
-			break;
+			case FeedListTheme.DARK:
+				m_cssProvider = addProvider(path + "dark.css");
+				break;
 
-		case FeedListTheme.ELEMENTARY:
-			m_cssProvider = addProvider(path + "elementary.css");
-			break;
+			case FeedListTheme.ELEMENTARY:
+				m_cssProvider = addProvider(path + "elementary.css");
+				break;
 		}
 	}
 
-	private Gtk.CssProvider ? addProvider(string path)
+	private Gtk.CssProvider? addProvider(string path)
 	{
 		Gtk.CssProvider provider = new Gtk.CssProvider();
 		provider.load_from_resource(path);
@@ -356,15 +357,15 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		m_error_bar.response.connect((response_id) => {
 			switch(response_id)
 			{
-			case Gtk.ResponseType.CLOSE:
-				m_error_bar.set_visible(false);
-				break;
-			case Gtk.ResponseType.APPLY:
-				Settings.tweaks().set_boolean("ignore-tls-errors", true);
-				m_ignore_tls_errors.set_visible(false);
-				m_error_bar.set_visible(false);
-				m_login.writeLoginData();
-				break;
+				case Gtk.ResponseType.CLOSE:
+					m_error_bar.set_visible(false);
+					break;
+				case Gtk.ResponseType.APPLY:
+					Settings.tweaks().set_boolean("ignore-tls-errors", true);
+					m_ignore_tls_errors.set_visible(false);
+					m_error_bar.set_visible(false);
+					m_login.writeLoginData();
+					break;
 			}
 		});
 
@@ -415,55 +416,55 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		Logger.debug("MainWindow: show error bar - errorCode = " + ErrorCode.to_string());
 		switch(ErrorCode)
 		{
-		case LoginResponse.NO_BACKEND:
-			m_ErrorMessage.set_label(_("Please select a service first"));
-			break;
-		case LoginResponse.MISSING_USER:
-			m_ErrorMessage.set_label(_("Please enter a valid username"));
-			break;
-		case LoginResponse.MISSING_PASSWD:
-			m_ErrorMessage.set_label(_("Please enter a valid password"));
-			break;
-		case LoginResponse.INVALID_URL:
-		case LoginResponse.MISSING_URL:
-			m_ErrorMessage.set_label(_("Please enter a valid URL"));
-			break;
-		case LoginResponse.ALL_EMPTY:
-			m_ErrorMessage.set_label(_("Please enter your Login details"));
-			break;
-		case LoginResponse.UNKNOWN_ERROR:
-			m_ErrorMessage.set_label(_("Sorry, something went wrong."));
-			break;
-		case LoginResponse.API_ERROR:
-			m_ErrorMessage.set_label(_("The server reported an API-error."));
-			break;
-		case LoginResponse.WRONG_LOGIN:
-			m_ErrorMessage.set_label(_("Either your username or the password are not correct."));
-			break;
-		case LoginResponse.NO_CONNECTION:
-			m_ErrorMessage.set_label(_("No connection to the server. Check your internet connection and the server URL!"));
-			break;
-		case LoginResponse.NO_API_ACCESS:
-			m_ErrorMessage.set_label(_("API access is disabled on the server. Please enable it first!"));
-			break;
-		case LoginResponse.UNAUTHORIZED:
-			m_ErrorMessage.set_label(_("Not authorized to access URL"));
-			m_login.showHtAccess();
-			break;
-		case LoginResponse.CA_ERROR:
-			m_ErrorMessage.set_label(_("No valid CA certificate available!"));
-			m_ignore_tls_errors.set_visible(true);
-			break;
-		case LoginResponse.PLUGIN_NEEDED:
-			m_ErrorMessage.set_label(_("Please install the \"api_feedreader\"-plugin on your tt-rss instance!"));
-			m_ignore_tls_errors.set_visible(true);
-			break;
-		case LoginResponse.SUCCESS:
-		case LoginResponse.FIRST_TRY:
-		default:
-			Logger.debug("MainWindow: dont show error bar");
-			m_error_bar.set_visible(false);
-			return;
+			case LoginResponse.NO_BACKEND:
+				m_ErrorMessage.set_label(_("Please select a service first"));
+				break;
+			case LoginResponse.MISSING_USER:
+				m_ErrorMessage.set_label(_("Please enter a valid username"));
+				break;
+			case LoginResponse.MISSING_PASSWD:
+				m_ErrorMessage.set_label(_("Please enter a valid password"));
+				break;
+			case LoginResponse.INVALID_URL:
+			case LoginResponse.MISSING_URL:
+				m_ErrorMessage.set_label(_("Please enter a valid URL"));
+				break;
+			case LoginResponse.ALL_EMPTY:
+				m_ErrorMessage.set_label(_("Please enter your Login details"));
+				break;
+			case LoginResponse.UNKNOWN_ERROR:
+				m_ErrorMessage.set_label(_("Sorry, something went wrong."));
+				break;
+			case LoginResponse.API_ERROR:
+				m_ErrorMessage.set_label(_("The server reported an API-error."));
+				break;
+			case LoginResponse.WRONG_LOGIN:
+				m_ErrorMessage.set_label(_("Either your username or the password are not correct."));
+				break;
+			case LoginResponse.NO_CONNECTION:
+				m_ErrorMessage.set_label(_("No connection to the server. Check your internet connection and the server URL!"));
+				break;
+			case LoginResponse.NO_API_ACCESS:
+				m_ErrorMessage.set_label(_("API access is disabled on the server. Please enable it first!"));
+				break;
+			case LoginResponse.UNAUTHORIZED:
+				m_ErrorMessage.set_label(_("Not authorized to access URL"));
+				m_login.showHtAccess();
+				break;
+			case LoginResponse.CA_ERROR:
+				m_ErrorMessage.set_label(_("No valid CA certificate available!"));
+				m_ignore_tls_errors.set_visible(true);
+				break;
+			case LoginResponse.PLUGIN_NEEDED:
+				m_ErrorMessage.set_label(_("Please install the \"api_feedreader\"-plugin on your tt-rss instance!"));
+				m_ignore_tls_errors.set_visible(true);
+				break;
+			case LoginResponse.SUCCESS:
+			case LoginResponse.FIRST_TRY:
+			default:
+				Logger.debug("MainWindow: dont show error bar");
+				m_error_bar.set_visible(false);
+				return;
 		}
 
 		Logger.debug("MainWindow: show error bar");
@@ -477,11 +478,11 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		dbUI.get_default().updateBadge.connect(() => {
 			try
 			{
-			    DBusConnection.get_default().updateBadge();
+				DBusConnection.get_default().updateBadge();
 			}
 			catch(Error e)
 			{
-			    Logger.error("MainWindow.loadContent: %s".printf(e.message));
+				Logger.error("MainWindow.loadContent: %s".printf(e.message));
 			}
 
 		});
@@ -531,10 +532,11 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		}
 	}
 
+
 	private bool checkShortcut(Gdk.EventKey event, string gsettingKey)
 	{
-		uint ? key;
-		Gdk.ModifierType ? mod;
+		uint? key;
+		Gdk.ModifierType? mod;
 		string setting = Settings.keybindings().get_string(gsettingKey);
 		Gtk.accelerator_parse(setting, out key, out mod);
 
@@ -543,7 +545,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			if(mod == null || mod == 0)
 			{
 				if(event.state == 16
-				   || event.state == 0)
+				|| event.state == 0)
 					return true;
 			}
 			else if(mod in event.state)

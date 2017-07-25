@@ -23,6 +23,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 	private Json.Object m_root_object;
 	private ttrssUtils m_utils;
 
+
 	public ttrssMessage(Soup.Session session, string destination)
 	{
 		m_utils = new ttrssUtils();
@@ -36,6 +37,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		if(m_message_soup == null)
 			Logger.error(@"ttrssMessage: can't send message to $destination");
 	}
+
 
 	public void add_int(string type, int val)
 	{
@@ -74,7 +76,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		m_message_soup.set_request(m_contenttype, Soup.MemoryUse.COPY, m_message_string.str.data);
 
 		if(settingsTweaks.get_boolean("do-not-track"))
-			m_message_soup.request_headers.append("DNT", "1");
+				m_message_soup.request_headers.append("DNT", "1");
 
 		var status = m_session.send_message(m_message_soup);
 
@@ -88,6 +90,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 			Logger.info("TLS errors: " + Utils.printTlsCertificateFlags(m_message_soup.tls_errors));
 			return ConnectionError.CA_ERROR;
 		}
+
 
 		if(m_message_soup.status_code != 200)
 		{
@@ -114,8 +117,10 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 		m_root_object = m_parser.get_root().get_object();
 
+
 		if(m_root_object.has_member("error"))
 			parseError(m_root_object);
+
 
 		if(m_root_object.has_member("status"))
 		{
@@ -140,7 +145,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		return ConnectionError.UNKNOWN;
 	}
 
-	public Json.Object ? get_response_object()
+	public Json.Object? get_response_object()
 	{
 		if(m_root_object.has_member("content"))
 		{
@@ -149,7 +154,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		return null;
 	}
 
-	public int64 ? get_response_int()
+	public int64? get_response_int()
 	{
 		if(m_root_object.has_member("content"))
 		{
@@ -158,7 +163,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		return null;
 	}
 
-	public string ? get_response_string()
+	public string? get_response_string()
 	{
 		if(m_root_object.has_member("content"))
 		{
@@ -167,7 +172,8 @@ public class FeedReader.ttrssMessage : GLib.Object {
 		return null;
 	}
 
-	public Json.Array ? get_response_array()
+
+	public Json.Array? get_response_array()
 	{
 		if(m_root_object.has_member("content"))
 		{

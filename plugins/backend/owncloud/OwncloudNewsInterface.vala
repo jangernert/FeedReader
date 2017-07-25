@@ -159,7 +159,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return m_api.ping();
 	}
 
-	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		bool success = false;
 		int64 id = 0;
@@ -172,6 +172,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		{
 			success = m_api.addFeed(feedURL, catID, out id, out errmsg);
 		}
+
 
 		feedID = id.to_string();
 		return success;
@@ -197,12 +198,12 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		m_api.renameFeed(feedID, title);
 	}
 
-	public void moveFeed(string feedID, string newCatID, string ? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
 		m_api.moveFeed(feedID, newCatID);
 	}
 
-	public string createCategory(string title, string ? parentID)
+	public string createCategory(string title, string? parentID)
 	{
 		return m_api.addFolder(title).to_string();
 	}
@@ -233,7 +234,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{
@@ -252,7 +253,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return (int)dbDaemon.get_default().get_unread_total();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		var type = OwncloudNewsAPI.OwnCloudType.ALL;
 		bool read = true;
@@ -260,14 +261,14 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 		switch(whatToGet)
 		{
-		case ArticleStatus.ALL:
-			break;
-		case ArticleStatus.UNREAD:
-			read = false;
-			break;
-		case ArticleStatus.MARKED:
-			type = OwncloudNewsAPI.OwnCloudType.STARRED;
-			break;
+			case ArticleStatus.ALL:
+				break;
+			case ArticleStatus.UNREAD:
+				read = false;
+				break;
+			case ArticleStatus.MARKED:
+				type = OwncloudNewsAPI.OwnCloudType.STARRED;
+				break;
 		}
 
 		if(feedID != null)

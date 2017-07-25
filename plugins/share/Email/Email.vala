@@ -13,6 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+
 public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 
 	private string m_body;
@@ -49,12 +50,12 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public string getIconName()
-	{
+    {
 		if(Gtk.IconTheme.get_default().lookup_icon("mail-send", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
 			return "mail-send";
 
-		return "feed-share-mail";
-	}
+        return "feed-share-mail";
+    }
 
 	public string getUsername(string id)
 	{
@@ -72,36 +73,36 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public bool useSystemAccounts()
-	{
-		return false;
-	}
+    {
+        return false;
+    }
 
 	public string pluginID()
-	{
-		return "mail";
-	}
+    {
+        return "mail";
+    }
 
 	public string pluginName()
 	{
 		return "Email";
 	}
 
-	public ServiceSetup ? newSetup_withID(string id, string username)
+	public ServiceSetup? newSetup_withID(string id, string username)
+    {
+        return null;
+    }
+
+    public ServiceSetup? newSetup()
+    {
+        return null;
+    }
+
+	public ServiceSetup? newSystemAccount(string id, string username)
 	{
 		return null;
 	}
 
-	public ServiceSetup ? newSetup()
-	{
-		return null;
-	}
-
-	public ServiceSetup ? newSystemAccount(string id, string username)
-	{
-		return null;
-	}
-
-	public ShareForm ? shareWidget(string url)
+	public ShareForm? shareWidget(string url)
 	{
 		var widget = new EmailForm(url);
 		widget.share.connect(() => {

@@ -15,7 +15,7 @@
 
 public class FeedReader.Utils : GLib.Object {
 
-	private static Soup.Session ? m_session;
+	private static Soup.Session? m_session;
 
 	private static Soup.Session getSession()
 	{
@@ -30,7 +30,7 @@ public class FeedReader.Utils : GLib.Object {
 		return m_session;
 	}
 
-	public static string UTF8fix(string ? old_string, bool removeHTML = false)
+	public static string UTF8fix(string? old_string, bool removeHTML = false)
 	{
 		if(old_string == null)
 		{
@@ -42,12 +42,12 @@ public class FeedReader.Utils : GLib.Object {
 		if(removeHTML)
 			rm_html = 1;
 
-		string ? output = old_string.replace("\n", " ").strip();
+		string? output = old_string.replace("\n"," ").strip();
 		output = libVilistextum.parse(old_string, rm_html);
 
 		if(output != null)
 		{
-			output = output.replace("\n", " ").strip();
+			output = output.replace("\n"," ").strip();
 			if(output != "")
 			{
 				return output;
@@ -62,17 +62,17 @@ public class FeedReader.Utils : GLib.Object {
 	}
 
 	/*public static GLib.DateTime convertStringToDate(string date)
-	   {
-	    return new GLib.DateTime(
-	        new TimeZone.local(),
-	        int.parse(date.substring(0, date.index_of_nth_char(4))),															// year
-	        int.parse(date.substring(date.index_of_nth_char(5), date.index_of_nth_char(7) - date.index_of_nth_char(5))),		// month
-	        int.parse(date.substring(date.index_of_nth_char(8), date.index_of_nth_char(10) - date.index_of_nth_char(8))),		// day
-	        int.parse(date.substring(date.index_of_nth_char(11), date.index_of_nth_char(13) - date.index_of_nth_char(11))),		// hour
-	        int.parse(date.substring(date.index_of_nth_char(14), date.index_of_nth_char(16) - date.index_of_nth_char(14))),		// min
-	        int.parse(date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17)))		// sec
-	    );
-	   }*/
+	{
+		return new GLib.DateTime(
+			new TimeZone.local(),
+			int.parse(date.substring(0, date.index_of_nth_char(4))),															// year
+			int.parse(date.substring(date.index_of_nth_char(5), date.index_of_nth_char(7) - date.index_of_nth_char(5))),		// month
+			int.parse(date.substring(date.index_of_nth_char(8), date.index_of_nth_char(10) - date.index_of_nth_char(8))),		// day
+			int.parse(date.substring(date.index_of_nth_char(11), date.index_of_nth_char(13) - date.index_of_nth_char(11))),		// hour
+			int.parse(date.substring(date.index_of_nth_char(14), date.index_of_nth_char(16) - date.index_of_nth_char(14))),		// min
+			int.parse(date.substring(date.index_of_nth_char(17), date.index_of_nth_char(19) - date.index_of_nth_char(17)))		// sec
+		);
+	}*/
 
 	public static bool springCleaningNecessary()
 	{
@@ -84,9 +84,9 @@ public class FeedReader.Utils : GLib.Object {
 
 		Logger.debug("last clean: %s".printf(lastClean.format("%Y-%m-%d %H:%M:%S")));
 		Logger.debug("now: %s".printf(now.format("%Y-%m-%d %H:%M:%S")));
-		Logger.debug("difference: %f".printf(difference / GLib.TimeSpan.DAY));
+		Logger.debug("difference: %f".printf(difference/GLib.TimeSpan.DAY));
 
-		if((difference / GLib.TimeSpan.DAY) >= Settings.general().get_int("spring-clean-after"))
+		if((difference/GLib.TimeSpan.DAY) >= Settings.general().get_int("spring-clean-after"))
 			doCleaning = true;
 
 		return doCleaning;
@@ -98,8 +98,8 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		string random = "";
 
-		for(int i = 0; i<length; i++) {
-			int random_index = Random.int_range(0, charset.length);
+		for(int i=0;i<length;i++){
+			int random_index = Random.int_range(0,charset.length);
 			string ch = charset.get_char(charset.index_of_nth_char(random_index)).to_string();
 			random += ch;
 		}
@@ -123,13 +123,14 @@ public class FeedReader.Utils : GLib.Object {
 		string desktop = "org.gnome.FeedReader-autostart.desktop";
 		string filename = GLib.Environment.get_user_data_dir() + "/" + desktop;
 
+
 		if(Settings.tweaks().get_boolean("feedreader-autostart") && !FileUtils.test(filename, GLib.FileTest.EXISTS))
 		{
 			try
 			{
 				var origin = File.new_for_path(Constants.INSTALL_PREFIX + "/share/FeedReader/" + desktop);
 				var destination = File.new_for_path(filename);
-				origin.copy(destination, FileCopyFlags.NONE);
+	        	origin.copy(destination, FileCopyFlags.NONE);
 			}
 			catch(GLib.Error e)
 			{
@@ -222,6 +223,7 @@ public class FeedReader.Utils : GLib.Object {
 		return false;
 	}
 
+
 	public static bool remove_directory(string path, uint level = 0)
 	{
 		++level;
@@ -241,7 +243,7 @@ public class FeedReader.Utils : GLib.Object {
 				if((file_info.get_file_type()) == GLib.FileType.DIRECTORY)
 				{
 					remove_directory(path + file_name + "/", level);
-				}
+		    	}
 
 				var file = directory.get_child(file_name);
 				file.delete();
@@ -257,8 +259,10 @@ public class FeedReader.Utils : GLib.Object {
 			Logger.error("Utils - remove_directory: " + e.message);
 		}
 
+
 		return flag;
 	}
+
 
 	public static string shortenURL(string url)
 	{
@@ -350,10 +354,10 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static int countChar(string s, unichar c)
 	{
-		int count = 0;
-		for (int index = 0; (index = s.index_of_char(c, index)) >= 0; ++index, ++count)
-			;
-		return count;
+	    int count = 0;
+	    for (int index = 0; (index = s.index_of_char(c, index)) >= 0; ++index, ++count)
+	        ;
+	    return count;
 	}
 
 	public static string parseSearchTerm(string searchTerm)
@@ -428,7 +432,7 @@ public class FeedReader.Utils : GLib.Object {
 		var feedname = new GLib.StringBuilder(url);
 
 		if(feedname.str.has_suffix("/"))
-			feedname.erase(feedname.str.char_count() - 1);
+			feedname.erase(feedname.str.char_count()-1);
 
 		if(feedname.str.has_prefix("https://"))
 			feedname.erase(0, 8);
@@ -442,7 +446,7 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static async void getFavIcons(Gee.List<feed> feeds, GLib.Cancellable ? cancellable = null)
+	public static async void getFavIcons(Gee.List<feed> feeds, GLib.Cancellable? cancellable = null)
 	{
 		// TODO: It would be nice if we could queue these in parallel
 		foreach(feed f in feeds)
@@ -473,18 +477,18 @@ public class FeedReader.Utils : GLib.Object {
 		var now = new DateTime.now_local();
 		var difference = now.difference(lastDownload);
 
-		if((difference / GLib.TimeSpan.DAY) >= Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
+		if((difference/GLib.TimeSpan.DAY) >= Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
 			Settings.state().set_int("last-favicon-update", (int)now.to_unix());
 	}
 
-	public static async bool downloadFavIcon(string feed_id, string feed_url, GLib.Cancellable ? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static async bool downloadFavIcon(string feed_id, string feed_url, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		var uri = new Soup.URI(feed_url);
 		string hostname = uri.get_host();
 		int first = hostname.index_of_char('.', 0);
-		int second = hostname.index_of_char('.', first + 1);
+		int second = hostname.index_of_char('.', first+1);
 		if(second != -1 && first != second)
-			hostname = hostname.substring(first + 1);
+			hostname = hostname.substring(first+1);
 		string siteURL = uri.get_scheme() + "://" + hostname;
 
 		// download html and parse to find location of favicon
@@ -527,19 +531,19 @@ public class FeedReader.Utils : GLib.Object {
 			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
 
 			if(xpath == null)
-				// check for <link rel="shortcut icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
+			// check for <link rel="shortcut icon">
+			xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
 
 			if(xpath == null)
-				// check for <link rel="apple-touch-icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+			// check for <link rel="apple-touch-icon">
+			xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
 
 			if(xpath != null)
 			{
 				Logger.debug(@"Utils.downloadFavIcon: xpath success $xpath");
 				xpath = grabberUtils.completeURL(xpath, siteURL);
 				if(yield downloadIcon(feed_id, xpath, cancellable, icon_path))
-					return true;
+				return true;
 			}
 			else
 			{
@@ -557,7 +561,7 @@ public class FeedReader.Utils : GLib.Object {
 		return yield downloadIcon(feed_id, icon_url, cancellable, icon_path);
 	}
 
-	public static async bool downloadIcon(string feed_id, string ? icon_url, Cancellable ? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static async bool downloadIcon(string feed_id, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{
@@ -566,17 +570,17 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 		var path = GLib.File.new_for_path(icon_path);
-		try{path.make_directory_with_parents();}catch(GLib.Error e) {}
+		try{path.make_directory_with_parents();}catch(GLib.Error e){}
 		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
 		bool icon_exists = FileUtils.test(local_filename, GLib.FileTest.EXISTS);
 
-		string ? etag = null;
+		string? etag = null;
 		// Normally, we would store a last modified time as a datetime type, but
 		// servers aren't consistent about the format so we need to treat it as a
 		// black box.
-		string ? last_modified = null;
+		string? last_modified = null;
 		if(icon_exists)
 		{
 			var lastDownload = new DateTime.from_unix_local(Settings.state().get_int("last-favicon-update"));
@@ -584,7 +588,7 @@ public class FeedReader.Utils : GLib.Object {
 			var difference = now.difference(lastDownload);
 
 			// icon was already downloaded a few days ago, don't even check if it was updated
-			if((difference / GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
+			if((difference/GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
 				return true;
 
 			var metadata = ResourceMetadata.from_file(metadata_filename);
@@ -641,7 +645,7 @@ public class FeedReader.Utils : GLib.Object {
 				return false;
 			}
 			if(icon_exists
-			   && (string)data == getFileContent(local_filename))
+			&& (string)data == getFileContent(local_filename))
 			{
 				// file exists and is identical to remote file
 				// we already downloaded it, but there is no need to write to the disc
@@ -670,11 +674,11 @@ public class FeedReader.Utils : GLib.Object {
 		return false;
 	}
 
-	private static string ? getFileContent(string filename)
+	private static string? getFileContent(string filename)
 	{
 		try
 		{
-			string ? contents = null;
+			string? contents = null;
 			FileUtils.get_contents(filename, out contents);
 			return contents;
 		}
@@ -704,7 +708,7 @@ public class FeedReader.Utils : GLib.Object {
 			Logger.error("Utils.gsettingWriteString: writing %s %s failed".printf(setting.schema_id, key));
 	}
 
-	public static async uint8[] inputStreamToArray(InputStream stream, Cancellable ? cancellable = null) throws Error
+	public static async uint8[] inputStreamToArray(InputStream stream, Cancellable? cancellable=null) throws Error
 	{
 		Array<uint8> result = new Array<uint8>();
 		uint8[] buffer = new uint8[1024];

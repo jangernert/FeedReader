@@ -26,8 +26,8 @@ namespace FeedReader {
 		private const string ETAG_KEY = "etag";
 		private const string LAST_MODIFIED_KEY = "last_modified";
 
-		string ? etag;
-		string ? last_modified;
+		string? etag;
+		string? last_modified;
 
 		public ResourceMetadata()
 		{

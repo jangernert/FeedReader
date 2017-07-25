@@ -16,12 +16,12 @@
 public class FeedReader.FeedServer : GLib.Object {
 
 	private bool m_pluginLoaded = false;
-	private string ? m_plugName = null;
+	private string? m_plugName = null;
 	private Peas.ExtensionSet m_extensions;
-	private FeedServerInterface ? m_plugin;
+	private FeedServerInterface? m_plugin;
 	private Peas.Engine m_engine;
 
-	private static FeedServer ? m_server;
+	private static FeedServer? m_server;
 
 	public static FeedServer get_default()
 	{
@@ -71,6 +71,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return false;
 		}
 
+
 		Logger.debug("feedserver: unload plugin %s".printf(m_plugName));
 		if(m_pluginLoaded)
 		{
@@ -111,7 +112,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_pluginLoaded;
 	}
 
-	public void syncContent(GLib.Cancellable ? cancellable = null)
+	public void syncContent(GLib.Cancellable? cancellable = null)
 	{
 		if(!serverAvailable())
 		{
@@ -192,7 +193,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		dbDaemon.get_default().updateFTS();
 
 		int after = dbDaemon.get_default().getHighestRowID();
-		int newArticles = after - before;
+		int newArticles = after-before;
 		if(newArticles > 0)
 		{
 			Notification.send(newArticles);
@@ -201,20 +202,20 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		switch(Settings.general().get_enum("drop-articles-after"))
 		{
-		case DropArticles.NEVER:
-			break;
+			case DropArticles.NEVER:
+	            break;
 
-		case DropArticles.ONE_WEEK:
-			dbDaemon.get_default().dropOldArtilces(1);
-			break;
+			case DropArticles.ONE_WEEK:
+				dbDaemon.get_default().dropOldArtilces(1);
+				break;
 
-		case DropArticles.ONE_MONTH:
-			dbDaemon.get_default().dropOldArtilces(4);
-			break;
+			case DropArticles.ONE_MONTH:
+				dbDaemon.get_default().dropOldArtilces(4);
+				break;
 
-		case DropArticles.SIX_MONTHS:
-			dbDaemon.get_default().dropOldArtilces(24);
-			break;
+			case DropArticles.SIX_MONTHS:
+				dbDaemon.get_default().dropOldArtilces(24);
+				break;
 		}
 
 		var now = new DateTime.now_local();
@@ -225,7 +226,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	public void InitSyncContent(GLib.Cancellable ? cancellable = null)
+	public void InitSyncContent(GLib.Cancellable? cancellable = null)
 	{
 		Logger.debug("FeedServer: initial sync");
 
@@ -271,7 +272,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		syncProgress(_("Getting tagged articles"));
 		foreach(var tag_item in tags)
 		{
-			getArticles((Settings.general().get_int("max-articles") / 8), ArticleStatus.ALL, tag_item.getTagID(), true, cancellable);
+			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true, cancellable);
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 		}
@@ -332,7 +333,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	public void grabContent(GLib.Cancellable ? cancellable = null)
+	public void grabContent(GLib.Cancellable? cancellable = null)
 	{
 		Logger.debug("FeedServer: grabContent");
 		var articles = dbDaemon.get_default().readUnfetchedArticles();
@@ -373,7 +374,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						while(html.has_prefix(xml))
 						{
 							int end = html.index_of_char('>');
-							html = html.slice(end + 1, html.length).chug();
+							html = html.slice(end+1, html.length).chug();
 						}
 
 						Article.setHTML(html);
@@ -397,7 +398,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	private void downloadImages(Soup.Session session, article Article, GLib.Cancellable ? cancellable = null)
+	private void downloadImages(Soup.Session session, article Article, GLib.Cancellable? cancellable = null)
 	{
 		if(!Settings.general().get_boolean("download-images"))
 			return;
@@ -463,7 +464,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			while(html.has_prefix(xml))
 			{
 				int end = html.index_of_char('>');
-				html = html.slice(end + 1, html.length).chug();
+				html = html.slice(end+1, html.length).chug();
 			}
 
 			string path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.html".printf(title);
@@ -487,8 +488,8 @@ public class FeedReader.FeedServer : GLib.Object {
 					return;
 				}
 
-				output = output.replace("\n", " ");
-				output = output.replace("_", " ");
+				output = output.replace("\n"," ");
+				output = output.replace("_"," ");
 
 				path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.txt".printf(title);
 
@@ -540,10 +541,10 @@ public class FeedReader.FeedServer : GLib.Object {
 		while(pos1 != -1)
 		{
 			pos2 = html.index_of("/>", pos1);
-			string broken_iframe = html.substring(pos1, pos2 + 2 - pos1);
+			string broken_iframe = html.substring(pos1, pos2+2-pos1);
 			string fixed_iframe = broken_iframe.substring(0, broken_iframe.length) + "></iframe>";
 			html = html.replace(broken_iframe, fixed_iframe);
-			int pos3 = html.index_of("<iframe", pos1 + 7);
+			int pos3 = html.index_of("<iframe", pos1+7);
 			if(pos3 == pos1)
 				break;
 			else
@@ -782,7 +783,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.serverAvailable();
 	}
 
-	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		if(!m_pluginLoaded)
 			return false;
@@ -814,7 +815,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.renameFeed(feedID, title);
 	}
 
-	public void moveFeed(string feedID, string newCatID, string ? currentCatID = null)
+	public void moveFeed(string feedID, string newCatID, string? currentCatID = null)
 	{
 		if(!m_pluginLoaded)
 			return;
@@ -822,7 +823,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.moveFeed(feedID, newCatID, currentCatID);
 	}
 
-	public string createCategory(string title, string ? parentID = null)
+	public string createCategory(string title, string? parentID = null)
 	{
 		if(!m_pluginLoaded)
 			return "";
@@ -870,7 +871,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return false;
@@ -886,7 +887,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.getUnreadCount();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string ? feedID = null, bool isTagID = false, GLib.Cancellable ? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return;

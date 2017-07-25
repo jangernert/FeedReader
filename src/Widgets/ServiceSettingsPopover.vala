@@ -17,6 +17,7 @@ public class FeedReader.ServiceSettingsPopover : Gtk.Popover {
 
 	public signal void newAccount(string type);
 
+
 	public ServiceSettingsPopover(Gtk.Widget widget)
 	{
 		var list = new Gtk.ListBox();
@@ -41,6 +42,7 @@ public class FeedReader.ServiceSettingsPopover : Gtk.Popover {
 	}
 
 }
+
 
 public class FeedReader.ServiceSettingsPopoverRow : Gtk.ListBoxRow {
 

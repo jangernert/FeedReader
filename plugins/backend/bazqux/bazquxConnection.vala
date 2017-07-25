@@ -52,8 +52,8 @@ public class FeedReader.bazquxConnection {
 			if(regex.match(response))
 			{
 				Logger.error("Regex bazqux - %s".printf(response));
-				string split = regex.replace( response, -1, 0, "");
-				Logger.error("authcode" + split);
+				string split = regex.replace( response, -1,0,"");
+				Logger.error("authcode"+split);
 				m_utils.setAccessToken(split.strip());
 				return LoginResponse.SUCCESS;
 			}
@@ -71,17 +71,17 @@ public class FeedReader.bazquxConnection {
 		}
 	}
 
-	public Response send_get_request(string path, string ? message_string = null)
+	public Response send_get_request(string path, string? message_string = null)
 	{
 		return send_request(path, "GET", message_string);
 	}
 
-	public Response send_post_request(string path, string ? message_string = null)
+	public Response send_post_request(string path, string? message_string = null)
 	{
 		return send_request(path, "POST", message_string);
 	}
 
-	private Response send_request(string path, string type, string ? message_string = null)
+	private Response send_request(string path, string type, string? message_string = null)
 	{
 
 		var message = new Soup.Message(type, bazquxSecret.base_uri + path);
@@ -95,8 +95,8 @@ public class FeedReader.bazquxConnection {
 		m_session.send_message(message);
 
 		return Response() {
-				   status = message.status_code,
-				   data = (string)message.response_body.flatten().data
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
 		};
 	}
 

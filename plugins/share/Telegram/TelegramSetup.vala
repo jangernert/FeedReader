@@ -17,7 +17,7 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 
 	private Telegram m_tg;
 
-	public TelegramSetup(string ? id, Telegram tg, string username = "")
+	public TelegramSetup(string? id, Telegram tg, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -31,6 +31,7 @@ public class FeedReader.TelegramSetup : ServiceSetup {
 		m_logout_button.set_label(_("Remove"));
 		m_id = m_tg.pluginID();
 	}
+
 
 	public override void login()
 	{

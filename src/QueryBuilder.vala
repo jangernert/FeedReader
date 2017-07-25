@@ -48,12 +48,12 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	{
 		switch(m_type)
 		{
-		case QueryType.INSERT:
-		case QueryType.INSERT_OR_IGNORE:
-		case QueryType.INSERT_OR_REPLACE:
-			m_fields.add(field);
-			m_values.add(value);
-			return true;
+			case QueryType.INSERT:
+			case QueryType.INSERT_OR_IGNORE:
+			case QueryType.INSERT_OR_REPLACE:
+				m_fields.add(field);
+				m_values.add(value);
+				return true;
 		}
 		Logger.error("insertValuePair");
 		return false;
@@ -89,8 +89,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	public bool addEqualsCondition(string field, string value, bool positive = true, bool isString = false)
 	{
 		if(m_type == QueryType.UPDATE
-		   || m_type == QueryType.SELECT
-		   || m_type == QueryType.DELETE)
+		|| m_type == QueryType.SELECT
+		|| m_type == QueryType.DELETE)
 		{
 			string condition = "%s = %s";
 
@@ -110,8 +110,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	public bool addCustomCondition(string condition)
 	{
 		if(m_type == QueryType.UPDATE
-		   || m_type == QueryType.SELECT
-		   || m_type == QueryType.DELETE)
+		|| m_type == QueryType.SELECT
+		|| m_type == QueryType.DELETE)
 		{
 			m_conditions.add(condition);
 			return true;
@@ -125,8 +125,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		if(!instr)
 		{
 			if(m_type == QueryType.UPDATE
-			   || m_type == QueryType.SELECT
-			   || m_type == QueryType.DELETE)
+			|| m_type == QueryType.SELECT
+			|| m_type == QueryType.DELETE)
 			{
 				var compound_values = new GLib.StringBuilder();
 				foreach(string value in values)
@@ -135,7 +135,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 					compound_values.append(value);
 					compound_values.append("\",");
 				}
-				compound_values.erase(compound_values.len - 1);
+				compound_values.erase(compound_values.len-1);
 				m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
 				return true;
 			}
@@ -143,8 +143,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		else
 		{
 			if(m_type == QueryType.UPDATE
-			   || m_type == QueryType.SELECT
-			   || m_type == QueryType.DELETE)
+			|| m_type == QueryType.SELECT
+			|| m_type == QueryType.DELETE)
 			{
 				foreach(string value in values)
 				{
@@ -161,8 +161,8 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	public bool addRangeConditionInt(string field, Gee.ArrayList<int> values)
 	{
 		if(m_type == QueryType.UPDATE
-		   || m_type == QueryType.SELECT
-		   || m_type == QueryType.DELETE)
+		|| m_type == QueryType.SELECT
+		|| m_type == QueryType.DELETE)
 		{
 			var compound_values = new GLib.StringBuilder();
 			foreach(int value in values)
@@ -170,7 +170,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 				compound_values.append(value.to_string());
 				compound_values.append(",");
 			}
-			compound_values.erase(compound_values.len - 1);
+			compound_values.erase(compound_values.len-1);
 			m_conditions.add("%s IN (%s)".printf(field, compound_values.str));
 			return true;
 		}
@@ -229,77 +229,80 @@ public class FeedReader.QueryBuilder : GLib.Object {
 
 		switch(m_type)
 		{
-		case QueryType.INSERT:
-		case QueryType.INSERT_OR_IGNORE:
-		case QueryType.INSERT_OR_REPLACE:
-			m_query.append("INSERT ");
+			case QueryType.INSERT:
+			case QueryType.INSERT_OR_IGNORE:
+			case QueryType.INSERT_OR_REPLACE:
+				m_query.append("INSERT ");
 
-			if(m_type == QueryType.INSERT_OR_IGNORE)
-				m_query.append("OR IGNORE ");
-			else if(m_type == QueryType.INSERT_OR_REPLACE)
-				m_query.append("OR REPLACE ");
+				if(m_type == QueryType.INSERT_OR_IGNORE)
+					m_query.append("OR IGNORE ");
+				else if(m_type == QueryType.INSERT_OR_REPLACE)
+					m_query.append("OR REPLACE ");
 
-			m_query.append("INTO ");
-			m_query.append(m_table);
-			m_query.append(" ");
+				m_query.append("INTO ");
+				m_query.append(m_table);
+				m_query.append(" ");
 
-			foreach(string field in m_fields)
-			{
-				m_insert_fields.append(",");
-				m_insert_fields.append(field);
-			}
-			m_insert_fields.overwrite(0, "(").append(")");
-			m_query.append(m_insert_fields.str);
+				foreach(string field in m_fields)
+				{
+					m_insert_fields.append(",");
+					m_insert_fields.append(field);
+				}
+				m_insert_fields.overwrite(0, "(").append(")");
+				m_query.append(m_insert_fields.str);
 
-			m_query.append(" VALUES ");
+				m_query.append(" VALUES ");
 
-			foreach(string value in m_values)
-			{
-				m_insert_values.append(",");
-				m_insert_values.append(value);
-			}
-			m_insert_values.overwrite(0, "(").append(")");
-			m_query.append(m_insert_values.str);
-			break;
+				foreach(string value in m_values)
+				{
+					m_insert_values.append(",");
+					m_insert_values.append(value);
+				}
+				m_insert_values.overwrite(0, "(").append(")");
+				m_query.append(m_insert_values.str);
+				break;
 
-		case QueryType.UPDATE:
-			m_query.append("UPDATE ");
-			m_query.append(m_table);
-			m_query.append(" SET ");
 
-			for(int i = 0; i < m_fields.size; i++)
-			{
-				m_query.append(m_fields.get(i));
-				m_query.append(" = ");
-				m_query.append(m_values.get(i));
-				m_query.append(", ");
-			}
+			case QueryType.UPDATE:
+				m_query.append("UPDATE ");
+				m_query.append(m_table);
+				m_query.append(" SET ");
 
-			m_query.erase(m_query.len - 2);
-			m_query.append(buildConditions());
-			break;
+				for(int i = 0; i < m_fields.size; i++)
+				{
+					m_query.append(m_fields.get(i));
+					m_query.append(" = ");
+					m_query.append(m_values.get(i));
+					m_query.append(", ");
+				}
 
-		case QueryType.DELETE:
-			m_query.append("DELETE FROM ");
-			m_query.append(m_table);
-			m_query.append(buildConditions());
-			break;
+				m_query.erase(m_query.len-2);
+				m_query.append(buildConditions());
+				break;
 
-		case QueryType.SELECT:
-			m_query.append("SELECT ");
-			foreach(string field in m_fields)
-			{
-				m_query.append(field);
-				m_query.append(", ");
-			}
-			m_query.erase(m_query.len - 2);
-			m_query.append(" FROM ");
-			m_query.append(m_table);
-			m_query.append(buildConditions());
-			m_query.append(m_orderBy);
-			m_query.append(m_limit);
-			m_query.append(m_offset);
-			break;
+
+			case QueryType.DELETE:
+				m_query.append("DELETE FROM ");
+				m_query.append(m_table);
+				m_query.append(buildConditions());
+				break;
+
+
+			case QueryType.SELECT:
+				m_query.append("SELECT ");
+				foreach(string field in m_fields)
+				{
+					m_query.append(field);
+					m_query.append(", ");
+				}
+				m_query.erase(m_query.len-2);
+				m_query.append(" FROM ");
+				m_query.append(m_table);
+				m_query.append(buildConditions());
+				m_query.append(m_orderBy);
+				m_query.append(m_limit);
+				m_query.append(m_offset);
+				break;
 		}
 
 		//print();
@@ -319,7 +322,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 			conditions.append(condition);
 			conditions.append(" AND ");
 		}
-		conditions.erase(conditions.len - 4);
+		conditions.erase(conditions.len-4);
 		return conditions.str;
 	}
 

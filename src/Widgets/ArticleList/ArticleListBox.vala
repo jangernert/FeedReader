@@ -92,6 +92,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			return;
 		}
 
+
 		var priority = GLib.Priority.DEFAULT_IDLE;
 		if(ColumnView.get_default().playingMedia())
 			priority = GLib.Priority.HIGH_IDLE;
@@ -111,9 +112,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			// check if row is already there
 			if(m_articles.contains(item.getArticleID()))
 			{
-			    Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
-			    checkQueue(item, balance, reverse, animate);
-			    return false;
+				Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
+				checkQueue(item, balance, reverse, animate);
+				return false;
 			}
 
 			m_articles.add(item.getArticleID());
@@ -385,8 +386,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 					if(tmpRow != null && tmpRow.isBeingRevealed())
 					{
 						if((!tmpRow.isUnread() && m_state == ArticleListState.UNREAD)
-						   || (!tmpRow.isMarked() && m_state == ArticleListState.MARKED)
-						   || (m_selectedFeedListType == FeedListType.TAG && !tmpRow.hasTag(m_selectedFeedListID)))
+						|| (!tmpRow.isMarked() && m_state == ArticleListState.MARKED)
+						|| (m_selectedFeedListType == FeedListType.TAG && !tmpRow.hasTag(m_selectedFeedListID)))
 						{
 							if(tmpRow.getID() != selectedID)
 							{
@@ -406,34 +407,34 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		Logger.debug("state changed");
 		switch(status)
 		{
-		case ArticleStatus.UNREAD:
-		case ArticleStatus.MARKED:
-			return;
-		case ArticleStatus.READ:
-		case ArticleStatus.UNMARKED:
-			var selectedRow = this.get_selected_row() as articleRow;
-			var articleChildList = this.get_children();
-			foreach(Gtk.Widget row in articleChildList)
-			{
-				var tmpRow = row as articleRow;
-				if(tmpRow != null)
+			case ArticleStatus.UNREAD:
+			case ArticleStatus.MARKED:
+				return;
+			case ArticleStatus.READ:
+			case ArticleStatus.UNMARKED:
+				var selectedRow = this.get_selected_row() as articleRow;
+				var articleChildList = this.get_children();
+				foreach(Gtk.Widget row in articleChildList)
 				{
-					if((selectedRow != null && tmpRow.getID() != selectedRow.getID())
-					   || selectedRow == null)
+					var tmpRow = row as articleRow;
+					if(tmpRow != null)
 					{
-						if(m_articles.contains(tmpRow.getID()))
+						if((selectedRow != null && tmpRow.getID() != selectedRow.getID())
+						|| selectedRow == null)
 						{
-							if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
-							   || (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
+							if(m_articles.contains(tmpRow.getID()))
 							{
-								removeRow(tmpRow);
-								break;
+								if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
+								|| (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
+								{
+									removeRow(tmpRow);
+									break;
+								}
 							}
 						}
 					}
 				}
-			}
-			break;
+				break;
 		}
 	}
 
@@ -445,7 +446,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			if(!visibleArticles.contains(id))
 				invisibleRows.add(id);
 			return true;
-		}) ;
+		});
 
 		m_visibleArticles = visibleArticles;
 
@@ -476,7 +477,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		selectedRow.removeTag(tagID);
 	}
 
-	public string ? getFirstRowID()
+	public string? getFirstRowID()
 	{
 		var children = this.get_children();
 
@@ -491,7 +492,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return firstRow.getID();
 	}
 
-	private articleRow ? getFirstRow()
+	private articleRow? getFirstRow()
 	{
 		var children = this.get_children();
 
@@ -506,7 +507,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return firstRow;
 	}
 
-	public string ? getLastRowID()
+	public string? getLastRowID()
 	{
 		var children = this.get_children();
 
@@ -580,7 +581,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			{
 				if(tmpRow.getID() == selectedRow.getID())
 				{
-					scroll += tmpRow.get_allocated_height() / 2;
+					scroll += tmpRow.get_allocated_height()/2;
 					Logger.debug("scroll: %i".printf(scroll));
 					break;
 				}

@@ -23,7 +23,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 	private Gtk.Revealer m_login_revealer;
 	private WallabagAPI m_api;
 
-	public WallabagSetup(string ? id, WallabagAPI api, string username = "")
+	public WallabagSetup(string? id, WallabagAPI api, string username = "")
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -42,11 +42,11 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		grid.margin_bottom = 10;
 		grid.margin_top = 5;
 
-		m_urlEntry = new Gtk.Entry();
+        m_urlEntry = new Gtk.Entry();
 		m_idEntry = new Gtk.Entry();
 		m_secretEntry = new Gtk.Entry();
 		m_userEntry = new Gtk.Entry();
-		m_passEntry = new Gtk.Entry();
+        m_passEntry = new Gtk.Entry();
 		m_passEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
 		m_passEntry.set_visibility(false);
 
@@ -85,13 +85,13 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		grid.attach(urlLabel, 0, 0, 1, 1);
 		grid.attach(idLabel, 0, 1, 1, 1);
 		grid.attach(secretLabel, 0, 2, 1, 1);
-		grid.attach(userLabel, 0, 3, 1, 1);
-		grid.attach(pwLabel, 0, 4, 1, 1);
-		grid.attach(m_urlEntry, 1, 0, 1, 1);
+        grid.attach(userLabel, 0, 3, 1, 1);
+        grid.attach(pwLabel, 0, 4, 1, 1);
+        grid.attach(m_urlEntry, 1, 0, 1, 1);
 		grid.attach(m_idEntry, 1, 1, 1, 1);
 		grid.attach(m_secretEntry, 1, 2, 1, 1);
 		grid.attach(m_userEntry, 1, 3, 1, 1);
-		grid.attach(m_passEntry, 1, 4, 1, 1);
+        grid.attach(m_passEntry, 1, 4, 1, 1);
 
 		m_login_revealer = new Gtk.Revealer();
 		m_login_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
@@ -105,6 +105,7 @@ public class FeedReader.WallabagSetup : ServiceSetup {
 		if(id != null)
 			m_id = id;
 	}
+
 
 	public override void login()
 	{

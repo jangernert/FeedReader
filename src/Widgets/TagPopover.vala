@@ -57,8 +57,10 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		box.pack_start(m_viewport);
 		m_stack.add_named(box, "tags");
 
+
 		setupEntry();
 		populateList();
+
 
 		m_box.pack_start(m_stack);
 		m_box.pack_start(m_entry);
@@ -73,6 +75,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		else
 			m_stack.set_visible_child_name("tags");
 	}
+
 
 	private void populateList()
 	{
@@ -124,7 +127,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		m_entry.icon_press.connect((pos, event) => {
 			if(pos == Gtk.EntryIconPosition.SECONDARY)
 			{
-			    m_entry.set_text("");
+				m_entry.set_text("");
 			}
 		});
 		m_entry.activate.connect(() => {
@@ -136,38 +139,39 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 			foreach(tag Tag in m_tags)
 			{
-			    if(str == Tag.getTitle())
-			    {
-			        Logger.debug("TagPopover: article already tagged");
-			        m_entry.set_text("");
-			        return;
+				if(str == Tag.getTitle())
+				{
+					Logger.debug("TagPopover: article already tagged");
+					m_entry.set_text("");
+					return;
 				}
 			}
 
 			foreach(tag Tag in m_availableTags)
 			{
-			    if(str == Tag.getTitle())
-			    {
-			        Logger.debug("TagPopover: tag available");
-			        tagID = Tag.getTagID();
-			        available = true;
-			        break;
+				if(str == Tag.getTitle())
+				{
+					Logger.debug("TagPopover: tag available");
+					tagID = Tag.getTagID();
+					available = true;
+					break;
 				}
 			}
 
 			try
 			{
-			    if(!available)
-			    {
-			        tagID = DBusConnection.get_default().createTag(str);
-			        Logger.debug("TagPopover: " + str + " created with id " + tagID);
+				if(!available)
+				{
+					tagID = DBusConnection.get_default().createTag(str);
+					Logger.debug("TagPopover: " + str + " created with id " + tagID);
 				}
-			    DBusConnection.get_default().tagArticle(getActiveArticleID(), tagID, true);
+				DBusConnection.get_default().tagArticle(getActiveArticleID(), tagID, true);
 			}
 			catch(GLib.Error e)
 			{
-			    Logger.error("TagPopover.setupEntry: %s".printf(e.message));
+				Logger.error("TagPopover.setupEntry: %s".printf(e.message));
 			}
+
 
 			var new_tag = dbUI.get_default().read_tag(tagID);
 			var row = new TagPopoverRow(new_tag);

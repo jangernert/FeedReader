@@ -15,7 +15,7 @@
 
 public class FeedReader.dbDaemon : dbBase {
 
-	private static dbDaemon ? m_dataBase = null;
+	private static dbDaemon? m_dataBase = null;
 
 	public static new dbDaemon get_default()
 	{
@@ -58,6 +58,7 @@ public class FeedReader.dbDaemon : dbBase {
 			Logger.error(sqlite_db.errmsg());
 		}
 
+
 		int cols = stmt.column_count ();
 		while (stmt.step () == Sqlite.ROW) {
 			for (int i = 0; i < cols; i++) {
@@ -89,7 +90,7 @@ public class FeedReader.dbDaemon : dbBase {
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("articleID");
 		query.selectField("feedID");
-		query.addCustomCondition("datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-%i days')".printf(weeks * 7));
+		query.addCustomCondition("datetime(date, 'unixepoch', 'localtime') <= datetime('now', '-%i days')".printf(weeks*7));
 		query.addEqualsCondition("marked", ArticleStatus.UNMARKED.to_string());
 		if(FeedServer.get_default().useMaxArticles())
 		{
@@ -181,6 +182,8 @@ public class FeedReader.dbDaemon : dbBase {
 			Logger.error(sqlite_db.errmsg());
 		}
 
+
+
 		int feedID_pos   = stmt.bind_parameter_index("$FEEDID");
 		int feedName_pos = stmt.bind_parameter_index("$FEEDNAME");
 		int feedURL_pos  = stmt.bind_parameter_index("$FEEDURL");
@@ -200,7 +203,7 @@ public class FeedReader.dbDaemon : dbBase {
 				catString += category + ",";
 			}
 
-			catString = catString.substring(0, catString.length - 1);
+			catString = catString.substring(0, catString.length-1);
 
 			stmt.bind_text(feedID_pos, feed_item.getFeedID());
 			stmt.bind_text(feedName_pos, Utils.UTF8fix(feed_item.getTitle()));
@@ -208,7 +211,7 @@ public class FeedReader.dbDaemon : dbBase {
 			stmt.bind_text(catID_pos, catString);
 			stmt.bind_text(xmlURL_pos, feed_item.getXmlUrl());
 
-			while(stmt.step() == Sqlite.ROW) {}
+			while(stmt.step() == Sqlite.ROW){}
 			stmt.reset();
 		}
 
@@ -248,7 +251,7 @@ public class FeedReader.dbDaemon : dbBase {
 			stmt.bind_text(label_position, tag_item.getTitle());
 			stmt.bind_int (color_position, tag_item.getColor());
 
-			while(stmt.step() == Sqlite.ROW) {}
+			while(stmt.step() == Sqlite.ROW){}
 			stmt.reset ();
 		}
 
@@ -289,6 +292,7 @@ public class FeedReader.dbDaemon : dbBase {
 		executeSQL("COMMIT TRANSACTION");
 	}
 
+
 	public void update_tag_color(string tagID, int color)
 	{
 		var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
@@ -296,6 +300,9 @@ public class FeedReader.dbDaemon : dbBase {
 		query.addEqualsCondition("tagID", tagID, true, true);
 		executeSQL(query.build());
 	}
+
+
+
 
 	public void write_categories(Gee.List<category> categories)
 	{
@@ -317,6 +324,7 @@ public class FeedReader.dbDaemon : dbBase {
 			Logger.error("dbDaemon: write_categories - " + query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
+
 
 		int catID_position       = stmt.bind_parameter_index("$CATID");
 		int feedName_position    = stmt.bind_parameter_index("$FEEDNAME");
@@ -354,6 +362,7 @@ public class FeedReader.dbDaemon : dbBase {
 			reset_query.updateValuePair(field, ArticleStatus.UNMARKED.to_string());
 		executeSQL(reset_query.build());
 
+
 		executeSQL("BEGIN TRANSACTION");
 
 		// then reapply states of the synced articles
@@ -379,10 +388,11 @@ public class FeedReader.dbDaemon : dbBase {
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		assert (articleID_position > 0);
 
+
 		foreach(string id in ids)
 		{
 			stmt.bind_text(articleID_position, id);
-			while(stmt.step() != Sqlite.DONE) {}
+			while(stmt.step() != Sqlite.DONE){}
 			stmt.reset();
 		}
 
@@ -414,10 +424,11 @@ public class FeedReader.dbDaemon : dbBase {
 		assert (html_position > 0);
 		assert (preview_position > 0);
 
+
 		stmt.bind_text(html_position, Article.getHTML());
 		stmt.bind_text(preview_position, Article.getPreview());
 
-		while(stmt.step() != Sqlite.DONE) {}
+		while(stmt.step() != Sqlite.DONE){}
 		stmt.reset();
 
 		executeSQL("COMMIT TRANSACTION");
@@ -455,6 +466,7 @@ public class FeedReader.dbDaemon : dbBase {
 		assert (modified_position > 0);
 		assert (articleID_position > 0);
 
+
 		foreach(article a in articles)
 		{
 			var unread = ActionCache.get_default().checkRead(a);
@@ -472,12 +484,13 @@ public class FeedReader.dbDaemon : dbBase {
 			stmt.bind_int (modified_position, a.getLastModified());
 			stmt.bind_text(articleID_position, a.getArticleID());
 
-			while(stmt.step() != Sqlite.DONE) {}
+			while(stmt.step() != Sqlite.DONE){}
 			stmt.reset();
 		}
 
 		executeSQL("COMMIT TRANSACTION");
 	}
+
 
 	public void write_articles(Gee.List<article> articles)
 	{
@@ -512,6 +525,8 @@ public class FeedReader.dbDaemon : dbBase {
 			Logger.error(query.get());
 			Logger.error("write_articles: " + sqlite_db.errmsg());
 		}
+
+
 
 		int articleID_position = stmt.bind_parameter_index("$ARTICLEID");
 		int feedID_position = stmt.bind_parameter_index("$FEEDID");
@@ -560,7 +575,7 @@ public class FeedReader.dbDaemon : dbBase {
 			stmt.bind_int (modified_position, article.getLastModified());
 			stmt.bind_text(media_position, article.getMediaString());
 
-			while(stmt.step() != Sqlite.DONE) {}
+			while(stmt.step() != Sqlite.DONE){}
 			stmt.reset();
 		}
 
@@ -657,6 +672,7 @@ public class FeedReader.dbDaemon : dbBase {
 		Logger.warning("dbDaemon: Deleting unsubscribed feeds");
 		executeSQL("DELETE FROM main.feeds WHERE \"subscribed\" = 0");
 	}
+
 
 	public void delete_nonexisting_categories()
 	{
@@ -770,6 +786,7 @@ public class FeedReader.dbDaemon : dbBase {
 			executeSQL(query.build());
 		}
 
+
 	}
 
 	public void move_category(string catID, string newParentID)
@@ -777,7 +794,7 @@ public class FeedReader.dbDaemon : dbBase {
 		var parent = read_category(newParentID);
 		var query = new QueryBuilder(QueryType.UPDATE, "categories");
 		query.updateValuePair("Parent", newParentID);
-		query.updateValuePair("Level", "%i".printf(parent.getLevel() + 1));
+		query.updateValuePair("Level", "%i".printf(parent.getLevel()+1));
 		query.addEqualsCondition("categorieID", catID);
 		executeSQL(query.build());
 	}
@@ -790,7 +807,7 @@ public class FeedReader.dbDaemon : dbBase {
 		executeSQL(query.build());
 	}
 
-	public void move_feed(string feedID, string currentCatID, string ? newCatID = null)
+	public void move_feed(string feedID, string currentCatID, string? newCatID = null)
 	{
 		var Feed = dbDaemon.get_default().read_feed(feedID);
 		var catArray = Feed.getCatIDs();
@@ -818,7 +835,7 @@ public class FeedReader.dbDaemon : dbBase {
 		for(int i = 0; i < catArray.length; i++)
 		{
 			catString += catArray[i];
-			if(i < catArray.length - 1)
+			if(i < catArray.length-1)
 				catString += ",";
 		}
 
@@ -875,7 +892,7 @@ public class FeedReader.dbDaemon : dbBase {
 		delete_articles(feedID);
 	}
 
-	public void addCachedAction(CachedActions action, string id, string ? argument = "")
+	public void addCachedAction(CachedActions action, string id, string? argument = "")
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -893,6 +910,7 @@ public class FeedReader.dbDaemon : dbBase {
 			Logger.error("addCachedAction: " + sqlite_db.errmsg());
 		}
 
+
 		int action_position = stmt.bind_parameter_index("$ACTION");
 		int id_position = stmt.bind_parameter_index("$ID");
 		int argument_position = stmt.bind_parameter_index("$ARGUMENT");
@@ -909,6 +927,7 @@ public class FeedReader.dbDaemon : dbBase {
 
 		executeSQL("COMMIT TRANSACTION");
 	}
+
 
 	public Gee.ArrayList<CachedAction> readCachedActions()
 	{
@@ -982,7 +1001,7 @@ public class FeedReader.dbDaemon : dbBase {
 	protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
 		if(FeedServer.get_default().hideCategoryWhenEmpty(catID)
-		   && !Utils.categoryIsPopulated(catID, feeds))
+		&& !Utils.categoryIsPopulated(catID, feeds))
 		{
 			return false;
 		}

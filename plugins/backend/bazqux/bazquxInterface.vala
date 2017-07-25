@@ -175,7 +175,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		return m_api.ping();
 	}
 
-	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		feedID = "feed/" + feedURL;
 		bool success = false;
@@ -184,11 +184,11 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			success = m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/" + feedURL, null, newCatID);
+			success = m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, newCatID);
 		}
 		else
 		{
-			success = m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/" + feedURL, null, catID);
+			success = m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.SUBSCRIBE, "feed/"+feedURL, null, catID);
 		}
 
 		if(!success)
@@ -212,12 +212,12 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.EDIT, feedID, title);
 	}
 
-	public void moveFeed(string feedID, string newCatID, string ? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
 		m_api.editSubscription(bazquxAPI.bazquxSubscriptionAction.EDIT, feedID, null, newCatID, currentCatID);
 	}
 
-	public string createCategory(string title, string ? parentID)
+	public string createCategory(string title, string? parentID)
 	{
 		return m_api.composeTagID(title);
 	}
@@ -248,7 +248,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{
@@ -266,7 +266,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		return m_api.getTotalUnread();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{
@@ -275,8 +275,8 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		else if(whatToGet == ArticleStatus.ALL)
 		{
 			var unreadIDs = new Gee.LinkedList<string>();
-			string ? continuation = null;
-			int left = 4 * count;
+			string? continuation = null;
+			int left = 4*count;
 
 			while(left > 0)
 			{
@@ -298,10 +298,10 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		}
 
 		var articles = new Gee.LinkedList<article>();
-		string ? continuation = null;
+		string? continuation = null;
 		int left = count;
-		string ? bazqux_feedID = (isTagID) ? null : feedID;
-		string ? bazqux_tagID = (isTagID) ? feedID : null;
+		string? bazqux_feedID = (isTagID) ? null : feedID;
+		string? bazqux_tagID = (isTagID) ? feedID : null;
 
 		while(left > 0)
 		{

@@ -28,18 +28,18 @@ public class FeedReader.freshConnection {
 		m_session.authenticate.connect((msg, auth, retrying) => {
 			if(m_utils.getHtaccessUser() == "")
 			{
-			    Logger.error("fresh Session: need Authentication");
+				Logger.error("fresh Session: need Authentication");
 			}
 			else if(!retrying)
 			{
-			    auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
+				auth.authenticate(m_utils.getHtaccessUser(), m_utils.getHtaccessPasswd());
 			}
 		});
 	}
 
 	public LoginResponse getSID()
 	{
-		var message = new Soup.Message("POST", m_utils.getURL() + "accounts/ClientLogin");
+		var message = new Soup.Message("POST", m_utils.getURL()+"accounts/ClientLogin");
 
 		var msg = new freshMessage();
 		msg.add("Email", m_utils.getUser());
@@ -65,9 +65,9 @@ public class FeedReader.freshConnection {
 		}
 		else
 		{
-			int start = response.index_of("=") + 1;
+			int start = response.index_of("=")+1;
 			int end = response.index_of("\n");
-			string token = response.substring(start, end - start);
+			string token = response.substring(start, end-start);
 			Logger.debug("Token: " + token);
 			m_utils.setToken(token);
 			return LoginResponse.SUCCESS;
@@ -81,12 +81,12 @@ public class FeedReader.freshConnection {
 
 	public Response postRequest(string path, string input, string type)
 	{
-		var message = new Soup.Message("POST", m_utils.getURL() + path);
+		var message = new Soup.Message("POST", m_utils.getURL()+path);
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-			message.request_headers.append("DNT", "1");
+				message.request_headers.append("DNT", "1");
 
-		message.request_headers.append("Authorization", "GoogleLogin auth=%s".printf(m_utils.getToken()));
+		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 		message.request_headers.append("Content-Type", type);
 
 		message.request_body.append_take(input.data);
@@ -98,18 +98,18 @@ public class FeedReader.freshConnection {
 		}
 
 		return Response() {
-				   status = message.status_code,
-				   data = (string)message.response_body.flatten().data
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
 		};
 	}
 
 	public Response getRequest(string path)
 	{
-		var message = new Soup.Message("GET", m_utils.getURL() + path);
-		message.request_headers.append("Authorization", "GoogleLogin auth=%s".printf(m_utils.getToken()));
+		var message = new Soup.Message("GET", m_utils.getURL()+path);
+		message.request_headers.append("Authorization","GoogleLogin auth=%s".printf(m_utils.getToken()));
 
 		if(m_settingsTweaks.get_boolean("do-not-track"))
-			message.request_headers.append("DNT", "1");
+				message.request_headers.append("DNT", "1");
 
 		m_session.send_message(message);
 
@@ -119,11 +119,12 @@ public class FeedReader.freshConnection {
 		}
 
 		return Response() {
-				   status = message.status_code,
-				   data = (string)message.response_body.flatten().data
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
 		};
 	}
 }
+
 
 public class FeedReader.freshMessage {
 

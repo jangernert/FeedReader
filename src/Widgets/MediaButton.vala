@@ -32,7 +32,7 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 		m_filesIcon = new Gtk.Image.from_icon_name("mail-attachment-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_playIcon = new Gtk.Image.from_icon_name("media-playback-start-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		m_spinner = new Gtk.Spinner();
-		m_spinner.set_size_request(16, 16);
+		m_spinner.set_size_request(16,16);
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(100);
@@ -51,7 +51,7 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 		m_list.row_activated.connect((row) => {
 			m_spinner.start();
 			m_pop.hide();
-			mediaRow ? mRow = row as mediaRow;
+			mediaRow? mRow = row as mediaRow;
 			if(mRow != null)
 				playMedia(mRow.getURL());
 			else

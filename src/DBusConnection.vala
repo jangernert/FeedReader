@@ -26,6 +26,7 @@ namespace FeedReader {
 		public abstract void markAllItemsRead() throws IOError;
 		public abstract void updateBadge() throws IOError;
 
+
 		// OFFLINE / ONLINE
 		public abstract LoginResponse login(string plugin) throws IOError;
 		public abstract LoginResponse isLoggedIn() throws IOError;
@@ -68,7 +69,7 @@ namespace FeedReader {
 		public abstract void addFeed(string feedURL, string cat, bool isID, bool asynchron) throws IOError;
 		public abstract void removeFeed(string feedID) throws IOError;
 		public abstract void removeFeedOnlyFromCat(string m_feedID, string m_catID) throws IOError;
-		public abstract void moveFeed(string feedID, string currentCatID, string ? newCatID = null) throws IOError;
+		public abstract void moveFeed(string feedID, string currentCatID, string? newCatID = null) throws IOError;
 		public abstract void renameFeed(string feedID, string newName) throws IOError;
 		public abstract void importOPML(string opml) throws IOError;
 
@@ -89,9 +90,10 @@ namespace FeedReader {
 		public signal void updateSyncProgress(string progress);
 	}
 
+
 	public class DBusConnection : GLib.Object {
 
-		private static FeedDaemon ? m_connection = null;
+		private static FeedDaemon? m_connection = null;
 
 		public static FeedDaemon get_default()
 		{
@@ -177,8 +179,8 @@ namespace FeedReader {
 				Logger.debug("DBusConnection: setOffline");
 				if(FeedReaderApp.get_default().isOnline())
 				{
-				    FeedReaderApp.get_default().setOnline(false);
-				    ColumnView.get_default().setOffline();
+					FeedReaderApp.get_default().setOnline(false);
+					ColumnView.get_default().setOffline();
 				}
 			});
 
@@ -186,8 +188,8 @@ namespace FeedReader {
 				Logger.debug("DBusConnection: setOnline");
 				if(!FeedReaderApp.get_default().isOnline())
 				{
-				    FeedReaderApp.get_default().setOnline(true);
-				    ColumnView.get_default().setOnline();
+					FeedReaderApp.get_default().setOnline(true);
+					ColumnView.get_default().setOnline();
 				}
 			});
 

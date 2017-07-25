@@ -163,7 +163,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.renameLabel(int.parse(tagID), title);
 	}
 
-	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		bool success = false;
 		if(catID == null && newCatName != null)
@@ -181,12 +181,13 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		else
 			feedID = "-98";
 
+
 		return success;
 	}
 
 	public void addFeeds(Gee.List<feed> feeds)
 	{
-		string ? errmsg = null;
+		string? errmsg = null;
 		foreach(feed f in feeds)
 		{
 			m_api.subscribeToFeed(f.getXmlUrl(), f.getCatIDs()[0], null, null, out errmsg);
@@ -203,12 +204,12 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		m_api.renameFeed(int.parse(feedID), title);
 	}
 
-	public void moveFeed(string feedID, string newCatID, string ? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
 		m_api.moveFeed(int.parse(feedID), int.parse(newCatID));
 	}
 
-	public string createCategory(string title, string ? parentID)
+	public string createCategory(string title, string? parentID)
 	{
 		if(parentID != null)
 			return m_api.createCategory(title, int.parse(parentID));
@@ -242,7 +243,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getCategories(categories))
 		{
@@ -273,12 +274,12 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		return m_api.getUnreadCount();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		var settings_general = new GLib.Settings("org.gnome.feedreader");
 
 		// first use newsPlus plugin to update states of 10x as much articles as we would normaly do
-		var unreadIDs = m_api.NewsPlus(ArticleStatus.UNREAD, 10 * settings_general.get_int("max-articles"));
+		var unreadIDs = m_api.NewsPlus(ArticleStatus.UNREAD, 10*settings_general.get_int("max-articles"));
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -334,7 +335,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		if(articleIDs.length > 0)
-			articleIDs = articleIDs.substring(0, articleIDs.length - 1);
+			articleIDs = articleIDs.substring(0, articleIDs.length -1);
 
 		var articles = new Gee.LinkedList<article>();
 
@@ -342,7 +343,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			m_api.getArticles(articleIDs, articles);
 
 		articles.sort((a, b) => {
-			return strcmp(a.getArticleID(), b.getArticleID());
+				return strcmp(a.getArticleID(), b.getArticleID());
 		});
 
 		if(cancellable != null && cancellable.is_cancelled())

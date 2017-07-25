@@ -45,6 +45,8 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 		else
 			m_stack.set_visible_child_name("inactive");
 
+
+
 		this.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		this.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		this.set_size_request(16, 16);
@@ -85,6 +87,7 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 		}
 	}
 
+
 	private bool onEnter(Gdk.EventCrossing event)
 	{
 		if(m_isActive)
@@ -114,5 +117,6 @@ public class FeedReader.HoverButton : Gtk.EventBox {
 
 		return true;
 	}
+
 
 }

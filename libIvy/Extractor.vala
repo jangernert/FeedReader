@@ -30,7 +30,7 @@ namespace Ivy {
 		private string l = "";
 		private string file_line = "";
 		private string func_line = "";
-		private string lib_address = "";
+		private string lib_address ="";
 
 		private static Gee.ArrayList<string> libraries_with_no_info = new Gee.ArrayList<string>();
 
@@ -49,8 +49,8 @@ namespace Ivy {
 
 			int l_sameCounter = 0;
 			while ((l_sameCounter < l_startPathParts.length) &&
-			       (l_sameCounter < l_destinationPathParts.length) &&
-			       l_startPathParts[l_sameCounter] == l_destinationPathParts[l_sameCounter]) {
+				   (l_sameCounter < l_destinationPathParts.length) &&
+				   l_startPathParts[l_sameCounter] == l_destinationPathParts[l_sameCounter]) {
 				l_sameCounter++;
 			}
 
@@ -59,11 +59,11 @@ namespace Ivy {
 			}
 
 			StringBuilder l_builder = new StringBuilder ();
-			for (int i = l_sameCounter; i < l_startPathParts.length; i++) {
+			for (int i = l_sameCounter ; i < l_startPathParts.length ; i++) {
 				l_builder.append ("../");
 			}
 
-			for (int i = l_sameCounter; i < l_destinationPathParts.length; i++) {
+			for (int i = l_sameCounter ; i < l_destinationPathParts.length ; i++) {
 				l_builder.append (l_destinationPathParts[i] + "/");
 			}
 
@@ -78,7 +78,7 @@ namespace Ivy {
 			var path = Environment.get_current_dir ();
 			/*var i = file_path.index_of ( path );
 			   if( i>=0 )
-			    return file_path.substring ( path.length, file_path.length - path.length );
+				return file_path.substring ( path.length, file_path.length - path.length );
 			   return file_path; */
 			var result = get_relative_path (file_path, path);
 			return result;
@@ -92,7 +92,7 @@ namespace Ivy {
 			if (start >= 0) {
 				var end = line.last_index_of (")");
 				if( end > start ) {
-					var text = line.substring (start + 3, end - start - 3);
+					var text = line.substring (start+3,end-start-3);
 					text.scanf("%x",  &result);
 				}
 			}
@@ -138,21 +138,21 @@ namespace Ivy {
 			var addr1_s = "";
 			var lib_addr = "";
 			var cmd2 = "";
-			lib_address = "";
+			lib_address ="";
 			lock( libraries_with_no_info)
-			{
-				if( libraries_with_no_info.index_of (file_path) == -1 ) {
-					// The library is not on the black list
+			 {
+				if( libraries_with_no_info.index_of (file_path) == -1 ){
+					 // The library is not on the black list
 					cmd2 = "nm %s".printf(file_path);
 
-					addr1_s = execute_command_sync_get_output (cmd2);
-					if( addr1_s == null || addr1_s == "" )
-					{
+					 addr1_s = execute_command_sync_get_output (cmd2);
+					 if( addr1_s == null || addr1_s == "" )
+					 {
 						// stdout.printf( "ADDED TO NO INFO: '%s'\n", file_path);
 						libraries_with_no_info.add (file_path);
 						has_info = false;
 
-					}
+					 }
 				}
 				else
 					has_info = false;
@@ -160,15 +160,15 @@ namespace Ivy {
 			if( has_info && func != "" )
 			{
 				MatchInfo info;
-				var expression = "\\n[^ ]* T " + func;
+				var expression = "\\n[^ ]* T "+func;
 				try {
 
 					Regex regex = new Regex (expression);
 					int count = 0;
 					string matches = "";
 					if( regex.match (addr1_s, 0, out info) )
-					{
-						while( info.matches() ) {
+					 {
+						while( info.matches() ){
 							var lll = info.fetch(0);
 							// stdout.printf ( "lll '%s'\n", lll );
 							lib_addr = lll.substring(0, lll.index_of(" "));
@@ -178,9 +178,9 @@ namespace Ivy {
 						}
 						if( count >1 )
 						{
-							stdout.printf ("  XX %d matches for '%s'. Command: '%s'. Matches: '%s'\n", count, func, cmd2, matches);
+						   stdout.printf ("  XX %d matches for '%s'. Command: '%s'. Matches: '%s'\n", count, func, cmd2, matches);
 						}
-						// stdout.printf ("  YY %d matches for '%s'. Command: '%s'. Matches: '%s'\n", count, func, cmd2, matches);
+						 // stdout.printf ("  YY %d matches for '%s'. Command: '%s'. Matches: '%s'\n", count, func, cmd2, matches);
 					}
 
 				} catch (RegexError e)
@@ -192,7 +192,7 @@ namespace Ivy {
 				lib_addr.scanf("%x",  &addr1);
 				if( addr1 != 0 ) {
 					int addr2 = extract_base_address (str);
-					string addr3 = "%#08x".printf (addr1 + addr2);
+					string addr3 = "%#08x".printf (addr1+addr2);
 					lib_address = addr3;
 					// stdout.printf ("lib_address : %s\n", lib_address);
 					var new_full_line = process_line (file_path, addr3);
@@ -233,8 +233,8 @@ namespace Ivy {
 			if (str == "")
 				return "";
 			/*if( str.index_of("??") >= 0)
-			    //result = result.substring (4, line.length - 4 );
-			    stdout.printf ("ERR2?? : %s\n", str ) ; */
+				//result = result.substring (4, line.length - 4 );
+				stdout.printf ("ERR2?? : %s\n", str ) ; */
 			var start = str.index_of ("(");
 			if (start >= 0) {
 				return str.substring (0, start).strip ();
@@ -305,7 +305,7 @@ namespace Ivy {
 
 			}
 			catch (Error e) {
-				print ("Error while executing '%s': %s\n".printf(cmd, e.message));
+				print ("Error while executing '%s': %s\n".printf(cmd,e.message));
 			}
 			return "";
 		}
@@ -322,17 +322,17 @@ namespace Ivy {
 			return result;
 		}
 
-		/**
-		 * Populates the stacktrace with frames
-		 *
-		 * The frames are extracted from ``Linux.Backtrace`` and enriched
-		 * via calls to unix tools ``nm`` and ``addr2line``.
-		 *
-		 * ''Warning:'' because this methods calls synchronously other applications (nm and addr2line), it
-		 * can have a significant impact on performance.
-		 *
-		 * @param trace the stacktrace
-		 */
+	/**
+	 * Populates the stacktrace with frames
+	 *
+	 * The frames are extracted from ``Linux.Backtrace`` and enriched
+	 * via calls to unix tools ``nm`` and ``addr2line``.
+	 *
+	 * ''Warning:'' because this methods calls synchronously other applications (nm and addr2line), it
+	 * can have a significant impact on performance.
+	 *
+	 * @param trace the stacktrace
+	 */
 		public void create_stacktrace (Stacktrace trace) {
 			int frame_count = 100;
 			int skipped_frames_count = 5;
@@ -362,11 +362,11 @@ namespace Ivy {
 			int[] addresses = (int[])array;
 			string module = get_module_name ();
 			// First ones are the handler
-			for (int i = skipped_frames_count; i < size; i++) {
+			for (int i = skipped_frames_count ; i < size ; i++) {
 				int address = addresses[i];
 				string str = strings[i];
 				var addr = extract_address (str);
-				lib_address = "";
+				lib_address ="";
 				//stdout.printf ("9 '%s'. Addr: '%s' \n", func, addr);
 				var full_line = process_line (module, addr);
 				//stdout.printf ("10 '%s'\n", func);
@@ -397,7 +397,7 @@ namespace Ivy {
 				if( show_debug_frames )
 				{
 					stdout.printf ("\nFrame %d \n--------\n  . addr: [%s]\n  . full_line: '%s'\n  . file_line: '%s'\n  . func_line: '%s'\n  . str : '%s'\n  . func: '%s'\n  . file: '%s'\n  . line: '%s'\n  . address: '%#08x'\n  . lib_address: '%s'\n",
-					               i, addr, full_line, file_line, func_line, str, func, file_path, l, address, lib_address);
+					i, addr, full_line, file_line, func_line, str, func, file_path, l, address, lib_address);
 				}
 				if (func != "" && file_path.has_suffix (".vala") && trace.is_all_function_name_blank)
 					trace.is_all_function_name_blank = false;

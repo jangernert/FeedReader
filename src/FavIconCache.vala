@@ -16,7 +16,7 @@
 public class FeedReader.FavIconCache : GLib.Object {
 
 	private Gee.HashMap<string, Gdk.Pixbuf> m_map;
-	private static FavIconCache ? m_cache = null;
+	private static FavIconCache? m_cache = null;
 
 	public static FavIconCache get_default()
 	{
@@ -51,8 +51,8 @@ public class FeedReader.FavIconCache : GLib.Object {
 				}
 			}
 			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
-			GLib.FileInfo ? fileInfo = null;
-			GLib.File ? file = null;
+			GLib.FileInfo? fileInfo = null;
+			GLib.File? file = null;
 
 			while(true)
 			{
@@ -115,7 +115,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 		return m_map.has_key(iconName);
 	}
 
-	public Gdk.Pixbuf ? getIcon(string name, bool firstTry = true)
+	public Gdk.Pixbuf? getIcon(string name, bool firstTry = true)
 	{
 		string fixedName = name.replace("/", "_").replace(".", "_");
 

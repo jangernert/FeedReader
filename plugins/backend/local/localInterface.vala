@@ -26,6 +26,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		m_session.timeout = 5;
 	}
 
+
 	public bool supportTags()
 	{
 		return true;
@@ -167,7 +168,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return;
 	}
 
-	public bool addFeed(string feedURL, string ? catID, string ? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
 		string[] catIDs = {};
 
@@ -197,7 +198,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
-		feed ? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
+		feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
 
 		if(Feed != null)
 		{
@@ -226,7 +227,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 			Logger.info(@"addFeed: ID = $feedID");
 			string errmsg = "";
-			feed ? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
+			feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
 
 			if(Feed != null)
 			{
@@ -258,18 +259,18 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return;
 	}
 
-	public void moveFeed(string feedID, string newCatID, string ? currentCatID)
+	public void moveFeed(string feedID, string newCatID, string? currentCatID)
 	{
 		return;
 	}
 
-	public string createCategory(string title, string ? parentID)
+	public string createCategory(string title, string? parentID)
 	{
 		string catID = "catID00001";
 
 		if(!dbDaemon.get_default().isTableEmpty("categories"))
 		{
-			string ? id = dbDaemon.get_default().getCategoryID(title);
+			string? id = dbDaemon.get_default().getCategoryID(title);
 			if(id == null)
 			{
 				catID = "catID%05d".printf(int.parse(dbDaemon.get_default().getMaxID("categories", "categorieID").substring(5)) + 1);
@@ -310,7 +311,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable ? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		var cats = dbDaemon.get_default().read_categories();
 		foreach(category cat in cats)
@@ -331,7 +332,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				return false;
 
 			string errmsg = "";
-			feed ? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
+			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
 			if(tmpFeed != null)
 			{
 				Feed.setIconURL(tmpFeed.getIconURL());
@@ -348,7 +349,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return 0;
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string ? feedID, bool isTagID, GLib.Cancellable ? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
@@ -382,9 +383,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				Logger.error("localInterface.getArticles: %s".printf(e.message));
 			}
 			var doc = parser.get_document();
-			string ? locale = null;
+			string? locale = null;
 			if(doc.encoding != null
-			   && doc.encoding != "")
+			&& doc.encoding != "")
 			{
 				locale = doc.encoding;
 			}
@@ -392,7 +393,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var articles = doc.get_items();
 			foreach(Rss.Item item in articles)
 			{
-				string ? articleID = item.guid;
+				string? articleID = item.guid;
 
 				if(articleID != null)
 					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
@@ -408,6 +409,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					articleID = item.link;
 				}
 
+
 				var date = new GLib.DateTime.now_local();
 
 				if(item.pub_date != null)
@@ -419,7 +421,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					if(date == null)
 						date = new GLib.DateTime.now_local();
 				}
-				string ? content = m_utils.convert(item.description, locale);
+				string? content = m_utils.convert(item.description, locale);
 
 				if(content == null)
 					content = _("Nothing to read here.");
@@ -436,28 +438,28 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					Logger.debug(item.title);
 
 				var Article = new article
-					          (
-					articleID,
-					(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
-					articleURL,
-					Feed.getFeedID(),
-					ArticleStatus.UNREAD,
-					ArticleStatus.UNMARKED,
-					content,
-					Utils.UTF8fix(content, true),
-					m_utils.convert(item.author, locale),
-					date,
-					0,
-					"",
-					media
-				              );
+				(
+									articleID,
+									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
+									articleURL,
+									Feed.getFeedID(),
+									ArticleStatus.UNREAD,
+									ArticleStatus.UNMARKED,
+									content,
+									Utils.UTF8fix(content, true),
+									m_utils.convert(item.author, locale),
+									date,
+									0,
+									"",
+									media
+				);
 
 				articleArray.add(Article);
 			}
 		}
 
 		articleArray.sort((a, b) => {
-			return strcmp(a.getArticleID(), b.getArticleID());
+				return strcmp(a.getArticleID(), b.getArticleID());
 		});
 
 		if(articleArray.size > 0)

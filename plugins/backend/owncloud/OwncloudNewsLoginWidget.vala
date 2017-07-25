@@ -81,7 +81,7 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		return false;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		var urlLabel = new Gtk.Label(_("OwnCloud URL:"));
 		var userLabel = new Gtk.Label(_("Username:"));
@@ -177,6 +177,7 @@ public class FeedReader.OwnCloudNewsLoginWidget : Peas.ExtensionBase, LoginInter
 		box.pack_start(grid, true, true, 10);
 		box.pack_start(m_revealer, true, true, 10);
 		box.pack_end(loginButton, false, false, 20);
+
 
 		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
 		m_userEntry.set_text(m_utils.getUser());

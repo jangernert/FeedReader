@@ -25,7 +25,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 	public string getURL()
 	{
 		string tmp_url = Utils.gsettingReadString(m_settings, "url");
-		if(tmp_url != "") {
+		if(tmp_url != ""){
 			if(!tmp_url.has_suffix("/"))
 				tmp_url = tmp_url + "/";
 
@@ -33,7 +33,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 				tmp_url = tmp_url + "index.php/apps/news/api/v1-2/";
 
 			if(!tmp_url.has_prefix("http://") && !tmp_url.has_prefix("https://"))
-				tmp_url = "https://" + tmp_url;
+					tmp_url = "https://" + tmp_url;
 		}
 
 		Logger.debug("OwnCloud URL: " + tmp_url);
@@ -77,11 +77,11 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		                                  "URL", Secret.SchemaAttributeType.STRING,
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
-		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = getURL();
 		attributes["Username"] = getUser();
 
-		string ? passwd = "";
+		string? passwd = "";
 		try
 		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
@@ -103,9 +103,9 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 	public void setPassword(string passwd)
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+										  "URL", Secret.SchemaAttributeType.STRING,
+										  "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = getURL();
 		attributes["Username"] = getUser();
 		try
@@ -128,20 +128,20 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 	{
 		bool removed = false;
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+										"URL", Secret.SchemaAttributeType.STRING,
+										"Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = getURL();
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
 			try
 			{
-			    removed = Secret.password_clearv.end(async_res);
+				removed = Secret.password_clearv.end(async_res);
 			}
 			catch(GLib.Error e)
 			{
-			    Logger.error("OwncloudNewsUtils.deletePassword: %s".printf(e.message));
+				Logger.error("OwncloudNewsUtils.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;
@@ -152,14 +152,14 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 		                                  "URL", Secret.SchemaAttributeType.STRING,
 		                                  "Username", Secret.SchemaAttributeType.STRING,
-		                                  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
+										  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
 
-		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = getURL();
 		attributes["Username"] = getHtaccessUser();
 		attributes["Username"] = "true";
 
-		string ? passwd = "";
+		string? passwd = "";
 		try
 		{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
@@ -181,21 +181,21 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 	public void setHtAccessPassword(string passwd)
 	{
 		var pwAuthSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                      "URL", Secret.SchemaAttributeType.STRING,
-		                                      "Username", Secret.SchemaAttributeType.STRING,
-		                                      "htaccess", Secret.SchemaAttributeType.BOOLEAN);
-		var authAttributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+											  "URL", Secret.SchemaAttributeType.STRING,
+											  "Username", Secret.SchemaAttributeType.STRING,
+											  "htaccess", Secret.SchemaAttributeType.BOOLEAN);
+		var authAttributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		authAttributes["URL"] = getURL();
 		authAttributes["Username"] = getHtaccessUser();
 		authAttributes["htaccess"] = "true";
 		try
 		{
 			Secret.password_storev_sync(pwAuthSchema,
-			                            authAttributes,
-			                            Secret.COLLECTION_DEFAULT,
-			                            "FeedReader: ownCloud htaccess Authentication",
-			                            passwd,
-			                            null);
+										authAttributes,
+										Secret.COLLECTION_DEFAULT,
+										"FeedReader: ownCloud htaccess Authentication",
+										passwd,
+										null);
 		}
 		catch(GLib.Error e)
 		{

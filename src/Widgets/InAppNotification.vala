@@ -19,26 +19,27 @@ public class FeedReader.InAppNotification : Gd.Notification {
 	private Gtk.Button m_Button;
 	public signal void action();
 
-	public InAppNotification(string message, string buttonText, string ? tooltip = null, int timeout = 5)
+	public InAppNotification(string message, string buttonText, string? tooltip = null, int timeout = 5)
 	{
 		m_Button = new Gtk.Button.with_label(buttonText);
 		setup(message, tooltip);
 	}
 
-	public InAppNotification.withIcon(string message, string icon, string ? tooltip = null, int timeout = 5)
+	public InAppNotification.withIcon(string message, string icon, string? tooltip = null, int timeout = 5)
 	{
 		m_Button = new Gtk.Button.from_icon_name(icon, Gtk.IconSize.BUTTON);
 		setup(message, tooltip);
 	}
 
-	public InAppNotification.withIcon_from_resource(string message, string icon, string ? tooltip = null, int timeout = 5)
+	public InAppNotification.withIcon_from_resource(string message, string icon, string? tooltip = null, int timeout = 5)
 	{
 		m_Button = new Gtk.Button();
 		m_Button.set_image(new Gtk.Image.from_resource(icon));
 		setup(message, tooltip);
 	}
 
-	private void setup(string message, string ? tooltip)
+
+	private void setup(string message, string? tooltip)
 	{
 		m_Button.set_tooltip_text(tooltip);
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 10);

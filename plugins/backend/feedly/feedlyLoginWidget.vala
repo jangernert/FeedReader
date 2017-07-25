@@ -52,7 +52,7 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return true;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		return null;
 	}
@@ -76,9 +76,9 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 	{
 		if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
 		{
-			int start = redirectURL.index_of("=") + 1;
+			int start = redirectURL.index_of("=")+1;
 			int end = redirectURL.index_of("&");
-			string code = redirectURL.substring(start, end - start);
+			string code = redirectURL.substring(start, end-start);
 			m_utils.setApiCode(code);
 			Logger.debug("feedlyLoginWidget: set feedly-api-code: " + code);
 			GLib.Thread.usleep(500000);
@@ -91,7 +91,7 @@ public class FeedReader.feedlyLoginWidget : Peas.ExtensionBase, LoginInterface {
 	public string buildLoginURL()
 	{
 		return FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
-		       + "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
 	}
 }
 

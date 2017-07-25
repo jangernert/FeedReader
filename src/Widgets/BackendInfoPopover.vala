@@ -29,15 +29,18 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		typeLabel.get_style_context().add_class("h3");
 		typeLabel.set_alignment(0.0f, 0.5f);
 
+
 		var licenseLabel = new Gtk.Label("License:");
 		licenseLabel.hexpand = true;
 		licenseLabel.get_style_context().add_class("h3");
 		licenseLabel.set_alignment(0.0f, 0.5f);
 
+
 		var priceLabel = new Gtk.Label("Price:");
 		priceLabel.hexpand = true;
 		priceLabel.get_style_context().add_class("h3");
 		priceLabel.set_alignment(0.0f, 0.5f);
+
 
 		var grid = new Gtk.Grid();
 		grid.set_column_spacing(20);
@@ -46,6 +49,8 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		grid.attach(typeLabel, 0, 0, 1, 1);
 		grid.attach(licenseLabel, 0, 1, 1, 1);
 		grid.attach(priceLabel, 0, 2, 1, 1);
+
+
 
 		if(BackendFlags.LOCAL in flags)
 		{
@@ -68,6 +73,7 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 				space = 50;
 			}
 		}
+
 
 		if(BackendFlags.FREE_SOFTWARE in flags)
 		{
@@ -96,6 +102,7 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 			grid.attach(icon, 1, 2, 1, 1);
 		}
 
+
 		var nameLabel = new Gtk.Label(m_ext.serviceName());
 		nameLabel.get_style_context().add_class("h2");
 		nameLabel.set_alignment(0.0f, 0.5f);
@@ -118,6 +125,7 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		box.pack_start(separator, false, false, 0);
 		box.pack_start(grid, true, true, 0);
 
+
 		this.add(box);
 		this.set_relative_to(widget);
 		this.set_position(Gtk.PositionType.BOTTOM);
@@ -135,10 +143,10 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 
 		switch(event.type)
 		{
-		case Gdk.EventType.BUTTON_RELEASE:
-		case Gdk.EventType.@2BUTTON_PRESS:
-		case Gdk.EventType.@3BUTTON_PRESS:
-			return false;
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
 		}
 
 		try
@@ -159,5 +167,6 @@ public class FeedReader.BackendInfoPopover : Gtk.Popover {
 		icon.set_tooltip_text(tooltip);
 		return icon;
 	}
+
 
 }

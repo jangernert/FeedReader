@@ -19,7 +19,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 	private Gtk.Stack m_stack;
 	private InfoBar m_errorBar;
 	private Gtk.HeaderBar m_headerbar;
-	private static SettingsDialog ? m_dialog = null;
+	private static SettingsDialog? m_dialog = null;
 
 	public static SettingsDialog get_default()
 	{
@@ -113,10 +113,10 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			ColumnView.get_default().reloadArticleView();
 		});
 
-		var fontfamilly = new SettingFont(_("Font Familly"), Settings.general(), "font");
-		fontfamilly.changed.connect(() => {
+	   var fontfamilly = new SettingFont(_("Font Familly"), Settings.general(), "font");
+	   fontfamilly.changed.connect(() => {
 			ColumnView.get_default().reloadArticleView();
-		});
+	   });
 
 		var uiBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
 		uiBox.expand = true;
@@ -135,6 +135,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		return uiBox;
 	}
 
+
 	private Gtk.Box setup_Internal()
 	{
 		var sync_settings = headline(_("Sync:"));
@@ -145,26 +146,27 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		sync_time.changed.connect(() => {
 			try
 			{
-			    DBusConnection.get_default().scheduleSync(Settings.general().get_int("sync"));
+				DBusConnection.get_default().scheduleSync(Settings.general().get_int("sync"));
 			}
 			catch(GLib.Error e)
 			{
-			    Logger.error("SettingsDialog.setup_Internal: scheduleSync %s".printf(e.message));
+				Logger.error("SettingsDialog.setup_Internal: scheduleSync %s".printf(e.message));
 			}
 		});
 
 		var db_settings = headline(_("Database:"));
 
 		var drop_articles = new SettingDropbox(_("Delete articles after"), Settings.general(), "drop-articles-after",
-		                                       {_("Never"), _("1 Week"), _("1 Month"), _("6 Months")});
+												{_("Never"), _("1 Week"), _("1 Month"), _("6 Months")});
 
 		var service_settings = headline(_("Additional Functionality:"));
 
-		var grabber = new SettingSwitch(_("Content Grabber"), Settings.general(), "content-grabber");
+		var grabber = new SettingSwitch(_("Content Grabber"), Settings.general(),"content-grabber");
 
-		var images = new SettingSwitch(_("Download Images"), Settings.general(), "download-images");
+		var images = new SettingSwitch(_("Download Images"), Settings.general(),"download-images");
 
-		var mediaplayer = new SettingSwitch(_("Internal Media Player"), Settings.general(), "mediaplayer");
+		var mediaplayer = new SettingSwitch(_("Internal Media Player"), Settings.general(),"mediaplayer");
+
 
 		var internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
 		internalsBox.expand = true;
@@ -172,7 +174,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		try
 		{
 			if(DBusConnection.get_default().useMaxArticles())
-				internalsBox.pack_start(sync_count, false, true, 0);
+			      internalsBox.pack_start(sync_count, false, true, 0);
 		}
 		catch(GLib.Error e)
 		{
@@ -188,6 +190,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		return internalsBox;
 	}
+
 
 	private Gtk.Box setup_Service()
 	{
@@ -262,11 +265,11 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			children = m_serviceList.get_children();
 			foreach(Gtk.Widget row in children)
 			{
-			    var tmpRow = row as ServiceSetup;
-			    if(tmpRow != null && !tmpRow.isLoggedIn())
-			    {
-			        Share.get_default().refreshAccounts();
-			        removeRow(tmpRow, m_serviceList);
+				var tmpRow = row as ServiceSetup;
+				if(tmpRow != null && !tmpRow.isLoggedIn())
+				{
+					Share.get_default().refreshAccounts();
+					removeRow(tmpRow, m_serviceList);
 				}
 			}
 
@@ -292,7 +295,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 	{
 		row.unreveal();
 		GLib.Timeout.add(700, () => {
-			list.remove(row);
+		    list.remove(row);
 			return false;
 		});
 	}
@@ -310,7 +313,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 			return -1;
 
 		if(r1.getUserName() == ""
-		   && r2.getUserName() == "")
+		&& r2.getUserName() == "")
 			return 0;
 		else if(r1.getUserName() == "")
 			return 1;
@@ -328,7 +331,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		return 1;
 	}
 
-	private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow ? before)
+	private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
 	{
 		var label = new Gtk.Label(_("System Accounts"));
 		label.get_style_context().add_class("bold");
@@ -362,6 +365,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 				return;
 			}
 		}
+
 
 		var r2 = before as ServiceSetup;
 		bool sys2 = r2.isSystemAccount();

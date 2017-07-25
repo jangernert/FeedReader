@@ -22,8 +22,8 @@ namespace FeedReader {
 
 		public string to_string()
 		{
-			return ((int)this).to_string();
-		}
+ 			return ((int)this).to_string();
+ 		}
 	}
 
 	public enum ArticleListState {
@@ -33,8 +33,8 @@ namespace FeedReader {
 	}
 
 	public enum DragTarget {
-		TAG,
-		FEED,
+	    TAG,
+	    FEED,
 		CAT
 	}
 
@@ -194,8 +194,8 @@ namespace FeedReader {
 
 		public string to_string()
 		{
-			return ((int)this).to_string();
-		}
+ 			return ((int)this).to_string();
+ 		}
 	}
 
 	public enum ArticleListBalance {

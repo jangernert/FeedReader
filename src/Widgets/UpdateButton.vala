@@ -43,7 +43,7 @@ public class FeedReader.UpdateButton : Gtk.Button {
 		m_isCancellable = cancellable;
 		m_tooltip = tooltip;
 		m_spinner = new Gtk.Spinner();
-		m_spinner.set_size_request(16, 16);
+		m_spinner.set_size_request(16,16);
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_duration(100);

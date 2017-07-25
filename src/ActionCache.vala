@@ -24,7 +24,7 @@ public class FeedReader.ActionCache : GLib.Object {
 
 	private Gee.ArrayList<CachedAction> m_list;
 
-	private static ActionCache ? m_cache = null;
+	private static ActionCache? m_cache = null;
 
 	public static ActionCache get_default()
 	{
@@ -81,24 +81,24 @@ public class FeedReader.ActionCache : GLib.Object {
 	{
 		switch(action.getType())
 		{
-		case CachedActions.MARK_READ:
-		case CachedActions.MARK_UNREAD:
-		case CachedActions.MARK_STARRED:
-		case CachedActions.MARK_UNSTARRED:
-			removeOpposite(action);
-			break;
+			case CachedActions.MARK_READ:
+			case CachedActions.MARK_UNREAD:
+			case CachedActions.MARK_STARRED:
+			case CachedActions.MARK_UNSTARRED:
+				removeOpposite(action);
+				break;
 
-		case CachedActions.MARK_READ_FEED:
-			removeForFeed(action.getID());
-			break;
+			case CachedActions.MARK_READ_FEED:
+				removeForFeed(action.getID());
+				break;
 
-		case CachedActions.MARK_READ_CATEGORY:
-			removeForCategory(action.getID());
-			break;
+			case CachedActions.MARK_READ_CATEGORY:
+				removeForCategory(action.getID());
+				break;
 
-		case CachedActions.MARK_READ_ALL:
-			removeForALL();
-			break;
+			case CachedActions.MARK_READ_ALL:
+				removeForALL();
+				break;
 		}
 
 		m_list.add(action);
@@ -109,7 +109,7 @@ public class FeedReader.ActionCache : GLib.Object {
 		foreach(CachedAction a in m_list)
 		{
 			if(a.getID() == action.getID()
-			   && a.getType() == action.opposite())
+			&& a.getType() == action.opposite())
 			{
 				m_list.remove(a);
 				break;
@@ -122,7 +122,7 @@ public class FeedReader.ActionCache : GLib.Object {
 		foreach(CachedAction a in m_list)
 		{
 			if(a.getType() == CachedActions.MARK_READ
-			   || a.getType() == CachedActions.MARK_UNREAD)
+			|| a.getType() == CachedActions.MARK_UNREAD)
 			{
 				if(feedID == dbDaemon.get_default().getFeedIDofArticle(a.getID()))
 				{
@@ -140,7 +140,7 @@ public class FeedReader.ActionCache : GLib.Object {
 			foreach(CachedAction a in m_list)
 			{
 				if(a.getType() == CachedActions.MARK_READ_FEED
-				   && a.getID() == feedID)
+				&& a.getID() == feedID)
 				{
 					m_list.remove(a);
 				}
@@ -156,13 +156,13 @@ public class FeedReader.ActionCache : GLib.Object {
 		{
 			switch(a.getType())
 			{
-			case CachedActions.MARK_READ:
-			case CachedActions.MARK_UNREAD:
-			case CachedActions.MARK_READ_FEED:
-			case CachedActions.MARK_READ_CATEGORY:
-			case CachedActions.MARK_READ_ALL:
-				m_list.remove(a);
-				break;
+				case CachedActions.MARK_READ:
+				case CachedActions.MARK_UNREAD:
+				case CachedActions.MARK_READ_FEED:
+				case CachedActions.MARK_READ_CATEGORY:
+				case CachedActions.MARK_READ_ALL:
+					m_list.remove(a);
+					break;
 			}
 		}
 	}
@@ -178,7 +178,7 @@ public class FeedReader.ActionCache : GLib.Object {
 		foreach(CachedAction a in m_list)
 		{
 			if(a.getType() == type
-			   && a.getID() == articleID)
+			&& a.getID() == articleID)
 			{
 				if(type == CachedActions.MARK_STARRED)
 					return ArticleStatus.MARKED;
@@ -198,7 +198,7 @@ public class FeedReader.ActionCache : GLib.Object {
 			foreach(CachedAction action in m_list)
 			{
 				if(action.getType() == CachedActions.MARK_UNREAD
-				   && action.getID() == a.getArticleID())
+				&& action.getID() == a.getArticleID())
 					return ArticleStatus.UNREAD;
 			}
 		}
@@ -208,22 +208,22 @@ public class FeedReader.ActionCache : GLib.Object {
 			{
 				switch(action.getType())
 				{
-				case CachedActions.MARK_READ_ALL:
-					return ArticleStatus.READ;
-
-				case CachedActions.MARK_READ_FEED:
-					if(action.getID() == a.getFeedID())
+					case CachedActions.MARK_READ_ALL:
 						return ArticleStatus.READ;
-					break;
 
-				case CachedActions.MARK_READ_CATEGORY:
-					var feedIDs = dbDaemon.get_default().getFeedIDofCategorie(a.getArticleID());
-					foreach(string feedID in feedIDs)
-					{
-						if(feedID == a.getFeedID())
+					case CachedActions.MARK_READ_FEED:
+						if(action.getID() == a.getFeedID())
 							return ArticleStatus.READ;
-					}
-					break;
+						break;
+
+					case CachedActions.MARK_READ_CATEGORY:
+						var feedIDs = dbDaemon.get_default().getFeedIDofCategorie(a.getArticleID());
+						foreach(string feedID in feedIDs)
+						{
+							if(feedID == a.getFeedID())
+								return ArticleStatus.READ;
+						}
+						break;
 				}
 			}
 		}

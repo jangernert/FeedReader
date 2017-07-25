@@ -17,7 +17,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 	private PocketAPI m_api;
 
-	public PocketSetup(string ? id, PocketAPI api, string username = "", bool system = false)
+	public PocketSetup(string? id, PocketAPI api, string username = "", bool system = false)
 	{
 		bool loggedIN = false;
 		if(username != "")
@@ -30,6 +30,7 @@ public class FeedReader.PocketSetup : ServiceSetup {
 		if(id != null)
 			m_id = id;
 	}
+
 
 	public override void login()
 	{
@@ -47,26 +48,27 @@ public class FeedReader.PocketSetup : ServiceSetup {
 
 		}
 
+
 		m_login_button.set_label(_("waiting"));
 		m_login_button.set_sensitive(false);
 		FeedReaderApp.get_default().callback.connect((content) => {
 			if(content == PocketSecrets.oauth_callback)
 			{
-			    if(m_api.getAccessToken(id, requestToken))
-			    {
-			        m_id = id;
-			        m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
-			        m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
-			        m_spinner.stop();
-			        m_isLoggedIN = true;
-			        m_label.set_label(m_api.getUsername(id));
-			        m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
-			        m_login_button.clicked.disconnect(login);
-			        m_login_button.clicked.connect(logout);
+				if(m_api.getAccessToken(id, requestToken))
+				{
+					m_id = id;
+					m_api.addAccount(id, m_api.pluginID(), m_api.getUsername(id), m_api.getIconName(), m_api.pluginName());
+					m_iconStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.SLIDE_LEFT);
+					m_spinner.stop();
+					m_isLoggedIN = true;
+					m_label.set_label(m_api.getUsername(id));
+					m_labelStack.set_visible_child_full("loggedIN", Gtk.StackTransitionType.CROSSFADE);
+					m_login_button.clicked.disconnect(login);
+					m_login_button.clicked.connect(logout);
 				}
-			    else
-			    {
-			        m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
+				else
+				{
+					m_iconStack.set_visible_child_full("button", Gtk.StackTransitionType.SLIDE_RIGHT);
 				}
 			}
 		});

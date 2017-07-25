@@ -13,6 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+
 public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 
 	string tg_text;
@@ -46,9 +47,9 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public string getIconName()
-	{
-		return "feed-share-telegram";
-	}
+    {
+        return "feed-share-telegram";
+    }
 
 	public string getUsername(string id)
 	{
@@ -66,36 +67,36 @@ public class FeedReader.Telegram : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public bool useSystemAccounts()
-	{
-		return false;
-	}
+    {
+        return false;
+    }
 
 	public string pluginID()
-	{
-		return "telegram";
-	}
+    {
+        return "telegram";
+    }
 
 	public string pluginName()
 	{
 		return _("Telegram");
 	}
 
-	public ServiceSetup ? newSetup_withID(string id, string username)
+	public ServiceSetup? newSetup_withID(string id, string username)
+    {
+    	return new TelegramSetup(id, this, username);
+    }
+
+    public ServiceSetup? newSetup()
 	{
-		return new TelegramSetup(id, this, username);
+    	return new TelegramSetup(null, this);
 	}
 
-	public ServiceSetup ? newSetup()
-	{
-		return new TelegramSetup(null, this);
-	}
-
-	public ServiceSetup ? newSystemAccount(string id, string username)
+	public ServiceSetup? newSystemAccount(string id, string username)
 	{
 		return null;
 	}
 
-	public ShareForm ? shareWidget(string url)
+	public ShareForm? shareWidget(string url)
 	{
 		var widget = new TelegramForm();
 		widget.share.connect(() => {

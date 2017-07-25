@@ -59,6 +59,7 @@ public class FeedReader.Notification : GLib.Object {
 				else
 					message = _("There are %u new articles (%u unread)").printf(newArticles, unread);
 
+
 				if(m_notification == null)
 				{
 					m_notification = new Notify.Notification(summary, message, AboutInfo.iconName);
@@ -73,13 +74,13 @@ public class FeedReader.Notification : GLib.Object {
 
 							try
 							{
-							    m_notification.close();
-							    string[] spawn_args = {"feedreader"};
-							    GLib.Process.spawn_async("/", spawn_args, null, GLib.SpawnFlags.SEARCH_PATH, null, null);
+								m_notification.close();
+								string[] spawn_args = {"feedreader"};
+								GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
 							}
 							catch(Error e)
 							{
-							    Logger.error("Notification: close - " + e.message);
+								Logger.error("Notification: close - " + e.message);
 							}
 						});
 					}

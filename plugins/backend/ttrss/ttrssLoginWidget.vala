@@ -59,7 +59,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return false;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		var url_label = new Gtk.Label(_("Tiny Tiny RSS URL:"));
 		var user_label = new Gtk.Label(_("Username:"));
@@ -96,6 +96,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		grid.attach(m_userEntry, 1, 1, 1, 1);
 		grid.attach(password_label, 0, 2, 1, 1);
 		grid.attach(m_passwordEntry, 1, 2, 1, 1);
+
 
 		// http auth stuff ----------------------------------------------------
 		var auth_user_label = new Gtk.Label(_("Username:"));
@@ -195,6 +196,7 @@ public class FeedReader.ttrssLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return "";
 	}
 }
+
 
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)

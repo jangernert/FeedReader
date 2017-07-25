@@ -64,31 +64,31 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		var uri = new Soup.URI(url);
 		Utils.downloadIcon.begin(uri.get_host(), uri.get_scheme() + "://" + uri.get_host(), null, "/tmp/", (obj, res) => {
 			bool success = Utils.downloadIcon.end(res);
-			Gtk.Image ? icon = null;
+			Gtk.Image? icon = null;
 
 			if(success)
 			{
-			    try
-			    {
-			        string filename = "/tmp/" + uri.get_host().replace("/", "_").replace(".", "_") + ".ico";
-			        Logger.debug("load icon %s".printf(filename));
-			        var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
-			        icon = new Gtk.Image.from_pixbuf(tmp_icon);
+				try
+				{
+					string filename = "/tmp/" + uri.get_host().replace("/", "_").replace(".", "_") + ".ico";
+					Logger.debug("load icon %s".printf(filename));
+					var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
+					icon = new Gtk.Image.from_pixbuf(tmp_icon);
 				}
-			    catch(GLib.Error e)
-			    {
-			        Logger.error("SuggestedFeedRow.constructor: %s".printf(e.message));
-			        icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+				catch(GLib.Error e)
+				{
+					Logger.error("SuggestedFeedRow.constructor: %s".printf(e.message));
+					icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 				}
 			}
 			else
 			{
-			    icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+				icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 			}
 
 			iconStack.add_named(icon, "icon");
-			show_all();
-			iconStack.set_visible_child_name("icon");
+   			show_all();
+   			iconStack.set_visible_child_name("icon");
 		});
 	}
 

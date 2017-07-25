@@ -14,11 +14,11 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 namespace FeedReader.FeedlySecret {
-	const string base_uri        = "http://cloud.feedly.com";
-	const string apiClientId     = "boutroue";
-	const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
-	const string apiRedirectUri  = "http://localhost";
-	const string apiAuthScope    = "https://cloud.feedly.com/subscriptions";
+	 const string base_uri        = "http://cloud.feedly.com";
+	 const string apiClientId     = "boutroue";
+	 const string apiClientSecret = "FE012EGICU4ZOBDRBEOVAJA1JZYH";
+	 const string apiRedirectUri  = "http://localhost";
+	 const string apiAuthScope    = "https://cloud.feedly.com/subscriptions";
 }
 
 public class FeedReader.FeedlyUtils : Object {

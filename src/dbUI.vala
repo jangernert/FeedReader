@@ -15,7 +15,7 @@
 
 public class FeedReader.dbUI : dbBase {
 
-	private static dbUI ? m_dataBase = null;
+	private static dbUI? m_dataBase = null;
 
 	public static new dbUI get_default()
 	{
@@ -25,6 +25,7 @@ public class FeedReader.dbUI : dbBase {
 			if(m_dataBase.uninitialized())
 				m_dataBase.init();
 		}
+
 
 		return m_dataBase;
 	}
@@ -39,7 +40,7 @@ public class FeedReader.dbUI : dbBase {
 		try
 		{
 			if(DBusConnection.get_default().hideCategoryWhenEmpty(catID)
-			   && !Utils.categoryIsPopulated(catID, feeds))
+			&& !Utils.categoryIsPopulated(catID, feeds))
 			{
 				return false;
 			}

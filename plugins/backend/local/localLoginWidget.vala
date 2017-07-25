@@ -52,7 +52,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return false;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		var doneLabel = new Gtk.Label(_("Done"));
 		var waitingLabel = new Gtk.Label(_("Adding Feeds"));
@@ -114,7 +114,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 						object.get_string_member("description"),
 						object.get_string_member("language")
 						)
-					);
+				);
 			}
 		}
 		catch(GLib.Error e)
@@ -157,16 +157,16 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 			var children = m_feedlist.get_children();
 			foreach(var r in children)
 			{
-			    var row = r as SuggestedFeedRow;
-			    if(row.checked())
-			    {
-			        try
-			        {
-			            DBusConnection.get_default().addFeed(row.getURL(), row.getCategory(), false, false);
+				var row = r as SuggestedFeedRow;
+				if(row.checked())
+				{
+					try
+					{
+						DBusConnection.get_default().addFeed(row.getURL(), row.getCategory(), false, false);
 					}
-			        catch(GLib.Error e)
-			        {
-			            Logger.error("localLoginWidget.postLoginAction: %s".printf(e.message));
+					catch(GLib.Error e)
+					{
+						Logger.error("localLoginWidget.postLoginAction: %s".printf(e.message));
 					}
 				}
 			}
@@ -203,7 +203,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 		return name1.collate(name2);
 	}
 
-	private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow ? before)
+	private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
 	{
 		var r1 = row as SuggestedFeedRow;
 		string cat1 = r1.getCategory();
@@ -231,6 +231,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 			row.set_header(box);
 	}
 }
+
 
 //--------------------------------------------------------------------------------------
 // Boilerplate code for the plugin. Replace "demoLoginWidget" with the name

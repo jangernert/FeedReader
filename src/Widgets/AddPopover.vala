@@ -41,7 +41,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		m_catEntry.icon_press.connect((pos, event) => {
 			if(pos == Gtk.EntryIconPosition.SECONDARY)
 			{
-			    m_catEntry.set_text("");
+				m_catEntry.set_text("");
 			}
 		});
 		var urlLabel = new Gtk.Label(_("URL:"));
@@ -87,6 +87,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		m_opmlGrid.attach(m_chooser, 1, 0, 1, 1);
 		m_opmlGrid.attach(importButton, 0, 1, 2, 1);
 
+
 		m_stack = new Gtk.Stack();
 		m_stack.add_titled(m_feedGrid, "feeds", _("Add feed"));
 		m_stack.add_titled(m_opmlGrid, "opml", _("Import OPML"));
@@ -111,8 +112,8 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 			foreach(var cat in m_cats)
 			{
-			    list_store.append(out iter);
-			    list_store.set(iter, 0, cat.getTitle());
+				list_store.append(out iter);
+				list_store.set(iter, 0, cat.getTitle());
 			}
 			m_complete = new Gtk.EntryCompletion();
 			m_complete.set_text_column(0);
@@ -125,13 +126,13 @@ public class FeedReader.AddPopover : Gtk.Popover {
 	private void addFeed()
 	{
 		if(m_urlEntry.text == ""
-		   || GLib.Uri.parse_scheme(m_urlEntry.text) == null)
+		|| GLib.Uri.parse_scheme(m_urlEntry.text) == null)
 		{
 			m_urlEntry.grab_focus();
 			return;
 		}
 
-		string ? catID = dbUI.get_default().getCategoryID(m_catEntry.text);
+		string? catID = dbUI.get_default().getCategoryID(m_catEntry.text);
 		bool isID = true;
 
 		if(catID == null)

@@ -34,7 +34,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		this.get_style_context().add_class("fr-sidebar-row");
 		m_exits = true;
 		m_color = color;
-		m_name = name.replace("&", "&amp;");
+		m_name = name.replace("&","&amp;");
 		m_tagID = tagID;
 		m_catID = CategoryID.TAGS.to_string();
 
@@ -53,12 +53,12 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			m_circle.newColor(color);
 			try
 			{
-			    DBusConnection.get_default().updateTagColor(m_tagID, color);
+				DBusConnection.get_default().updateTagColor(m_tagID, color);
 			}
-			catch(GLib.Error e)
-			{
-			    Logger.error("TagRow.constructor: %s".printf(e.message));
-			}
+	        catch(GLib.Error e)
+	        {
+	            Logger.error("TagRow.constructor: %s".printf(e.message));
+	        }
 		});
 
 		m_label = new Gtk.Label(m_name);
@@ -86,20 +86,20 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		if(UtilsUI.canManipulateContent())
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
-				{ "STRING",     0, DragTarget.TAG }
+			    { "STRING",     0, DragTarget.TAG }
 			};
 
-			Gtk.drag_dest_set (
-				this,
-				Gtk.DestDefaults.MOTION,
-				accepted_targets,
-				Gdk.DragAction.COPY
-				);
+	        Gtk.drag_dest_set (
+	                this,
+	                Gtk.DestDefaults.MOTION,
+	                accepted_targets,
+	                Gdk.DragAction.COPY
+	        );
 
-			this.drag_motion.connect(onDragMotion);
-			this.drag_leave.connect(onDragLeave);
-			this.drag_drop.connect(onDragDrop);
-			this.drag_data_received.connect(onDragDataReceived);
+	        this.drag_motion.connect(onDragMotion);
+	        this.drag_leave.connect(onDragLeave);
+	        this.drag_drop.connect(onDragDrop);
+	        this.drag_data_received.connect(onDragDataReceived);
 		}
 	}
 
@@ -130,13 +130,13 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	}
 
 	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
-	                                Gtk.SelectionData selection_data, uint target_type, uint time)
+									Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
 		try
 		{
 			if(selection_data != null
-			   && selection_data.get_length() >= 0
-			   && target_type == DragTarget.TAG)
+			&& selection_data.get_length() >= 0
+			&& target_type == DragTarget.TAG)
 			{
 				if(m_tagID != TagID.NEW)
 				{
@@ -148,7 +148,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 				{
 					showRenamePopover(context, time, (string)selection_data.get_data());
 				}
-			}
+	        }
 		}
 		catch(GLib.Error e)
 		{
@@ -167,10 +167,10 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 		switch(event.type)
 		{
-		case Gdk.EventType.BUTTON_RELEASE:
-		case Gdk.EventType.@2BUTTON_PRESS:
-		case Gdk.EventType.@3BUTTON_PRESS:
-			return false;
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
 		}
 
 		var remove_action = new GLib.SimpleAction("deleteTag", null);
@@ -186,7 +186,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			ulong eventID = notification.dismissed.connect(() => {
 				Logger.debug("TagRow: delete Tag");
 				try{DBusConnection.get_default().deleteTag(m_tagID);}
-				catch(GLib.Error e) {Logger.error("TagRow.remove_action: %s".printf(e.message));}
+				catch(GLib.Error e){Logger.error("TagRow.remove_action: %s".printf(e.message));}
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -221,7 +221,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 	public void update(string name)
 	{
-		m_label.set_text(name.replace("&", "&amp;"));
+		m_label.set_text(name.replace("&","&amp;"));
 		m_label.set_use_markup (true);
 	}
 
@@ -251,7 +251,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		m_revealer.set_reveal_child(reveal);
 	}
 
-	private void showRenamePopover(Gdk.DragContext ? context = null, uint time = 0, string ? articleID = null)
+	private void showRenamePopover(Gdk.DragContext? context = null, uint time = 0, string? articleID = null)
 	{
 		var popRename = new Gtk.Popover(this);
 		popRename.set_position(Gtk.PositionType.BOTTOM);
@@ -259,8 +259,8 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
 			if(m_tagID == TagID.NEW && context != null)
 			{
-			    Logger.debug("TagRow: cancel drag");
-			    Gtk.drag_finish(context, false, false, time);
+				Logger.debug("TagRow: cancel drag");
+				Gtk.drag_finish(context, false, false, time);
 			}
 		});
 
@@ -269,31 +269,32 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		renameEntry.activate.connect(() => {
 			if(m_tagID != TagID.NEW)
 			{
-			    popRename.hide();
-			    try
-			    {
-			        DBusConnection.get_default().renameTag(m_tagID, renameEntry.get_text());
+				popRename.hide();
+				try
+				{
+					DBusConnection.get_default().renameTag(m_tagID, renameEntry.get_text());
 				}
-			    catch(GLib.Error e)
-			    {
-			        Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
+				catch(GLib.Error e)
+				{
+					Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
 				}
 			}
 			else if(context != null)
 			{
-			    try
-			    {
-			        m_tagID = DBusConnection.get_default().createTag(renameEntry.get_text());
-			        popRename.hide();
-			        DBusConnection.get_default().tagArticle(articleID, m_tagID, true);
-			        Gtk.drag_finish(context, true, false, time);
+				try
+				{
+					m_tagID = DBusConnection.get_default().createTag(renameEntry.get_text());
+					popRename.hide();
+					DBusConnection.get_default().tagArticle(articleID, m_tagID, true);
+					Gtk.drag_finish(context, true, false, time);
 				}
-			    catch(GLib.Error e)
-			    {
-			        Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
+				catch(GLib.Error e)
+				{
+					Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
 				}
 			}
 		});
+
 
 		string label = _("rename");
 		if(m_tagID == TagID.NEW && context != null)

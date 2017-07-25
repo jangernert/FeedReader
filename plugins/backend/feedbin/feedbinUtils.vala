@@ -38,7 +38,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		                                  "URL", Secret.SchemaAttributeType.STRING,
 		                                  "Username", Secret.SchemaAttributeType.STRING);
 
-		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
 		attributes["Username"] = getUser();
 
@@ -47,7 +47,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		try{
 			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
 		}
-		catch(GLib.Error e) {
+		catch(GLib.Error e){
 			Logger.error(e.message);
 		}
 
@@ -62,9 +62,9 @@ public class FeedReader.feedbinUtils : GLib.Object {
 	public void setPassword(string passwd)
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+										  "URL", Secret.SchemaAttributeType.STRING,
+										  "Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
 		attributes["Username"] = getUser();
 		try
@@ -87,26 +87,26 @@ public class FeedReader.feedbinUtils : GLib.Object {
 	{
 		bool removed = false;
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string, string>(str_hash, str_equal);
+										"URL", Secret.SchemaAttributeType.STRING,
+										"Username", Secret.SchemaAttributeType.STRING);
+		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
 		attributes["Username"] = getUser();
 
 		Secret.password_clearv.begin (pwSchema, attributes, null, (obj, async_res) => {
 			try
 			{
-			    removed = Secret.password_clearv.end(async_res);
+				removed = Secret.password_clearv.end(async_res);
 			}
 			catch(GLib.Error e)
 			{
-			    Logger.error("feedbinUtils.deletePassword: %s".printf(e.message));
+				Logger.error("feedbinUtils.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;
 	}
 
-	public string ? catExists(Gee.List<category> categories, string name)
+	public string? catExists(Gee.List<category> categories, string name)
 	{
 		foreach(category cat in categories)
 		{

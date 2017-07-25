@@ -44,7 +44,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 	private double m_minZoom = 0.2;
 	private double m_initZoom = 1.0;
 
-	public imagePopup(string imagePath, string ? url, Gtk.Window parent, double img_height, double img_width)
+	public imagePopup(string imagePath, string? url, Gtk.Window parent, double img_height, double img_width)
 	{
 		this.title = "";
 		this.decorated = false;
@@ -56,8 +56,8 @@ public class FeedReader.imagePopup : Gtk.Window {
 		this.button_press_event.connect((evt) => {
 			if(!m_hoverImage && !m_hoverHeader)
 			{
-			    closeWindow();
-			    return true;
+				closeWindow();
+				return true;
 			}
 			return false;
 		});
@@ -83,13 +83,14 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_scaleRevealer.add(m_scale);
 
 		var geo = Gdk.Display.get_default().get_monitor_at_window(this.get_root_window()).get_geometry();
-		double win_width  = (int)(geo.width * 0.8);
-		double win_height = (int)(geo.height * 0.8);
+		double win_width  = (int)(geo.width*0.8);
+		double win_height = (int)(geo.height*0.8);
 		double min_height = 300;
 		double min_widht = 500;
 
 		m_scroll = new Gtk.ScrolledWindow(null, null);
 		m_scroll.add(m_image);
+
 
 		if(img_width <= win_width)
 		{
@@ -104,7 +105,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		}
 		else if(img_width > win_width)
 		{
-			m_initZoom = win_width / img_width;
+			m_initZoom = win_width/img_width;
 			m_image.scale = m_initZoom;
 		}
 
@@ -133,19 +134,19 @@ public class FeedReader.imagePopup : Gtk.Window {
 				m_image.notify["scale"].disconnect(onImageScrolled);
 			if(m_zoomButton.get_active())
 			{
-			    m_scale.set_value(m_image.scale);
-			    m_scaleRevealer.set_reveal_child(true);
+				m_scale.set_value(m_image.scale);
+				m_scaleRevealer.set_reveal_child(true);
 			}
 			else
 			{
-			    m_image.scale = m_initZoom;
-			    m_scaleRevealer.set_reveal_child(false);
+				m_image.scale = m_initZoom;
+				m_scaleRevealer.set_reveal_child(false);
 			}
 
 			if(!m_zoomButton.get_active())
 			{
-			    GLib.Timeout.add(150, () => {
-					m_image.notify["scale"].connect(onImageScrolled);
+				GLib.Timeout.add(150, () => {
+				    m_image.notify["scale"].connect(onImageScrolled);
 					return false;
 				});
 			}
@@ -182,10 +183,10 @@ public class FeedReader.imagePopup : Gtk.Window {
 			urlButton.get_style_context().add_class("headerbutton");
 			urlButton.clicked.connect(() => {
 				try{
-				    Gtk.show_uri_on_window(MainWindow.get_default(), url, Gdk.CURRENT_TIME);
+					Gtk.show_uri_on_window(MainWindow.get_default(), url, Gdk.CURRENT_TIME);
 				}
-				catch(GLib.Error e) {
-				    Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+				catch(GLib.Error e){
+					Logger.debug("could not open the link in an external browser: %s".printf(e.message));
 				}
 			});
 			header.pack_start(urlButton);
@@ -199,6 +200,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		m_overlay = new Gtk.Overlay();
 		m_overlay.add(m_scroll);
 		m_overlay.add_overlay(m_revealer);
+
 
 		m_eventBox = new Gtk.EventBox();
 		m_eventBox.button_press_event.connect(eventButtonPressed);
@@ -266,9 +268,9 @@ public class FeedReader.imagePopup : Gtk.Window {
 			{
 				if(m_OngoingScrollID > 0)
 				{
-					GLib.Source.remove(m_OngoingScrollID);
-					m_OngoingScrollID = 0;
-				}
+		            GLib.Source.remove(m_OngoingScrollID);
+		            m_OngoingScrollID = 0;
+		        }
 				m_posX = evt.x;
 				m_posY = evt.y;
 				for(int i = 0; i < 10; ++i)
@@ -289,7 +291,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 					cursor,
 					null,
 					null
-					);
+				);
 
 				Gtk.device_grab_add(m_eventBox, pointer, false);
 
@@ -328,6 +330,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 		return false;
 	}
 
+
 	private bool keyPressed(Gdk.EventKey evt)
 	{
 		if(evt.keyval == Gdk.Key.Escape)
@@ -365,14 +368,14 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 		for(int i = 9; i > 0; --i)
 		{
-			m_dragBufferX[i] = m_dragBufferX[i - 1];
-			m_dragBufferY[i] = m_dragBufferY[i - 1];
+			m_dragBufferX[i] = m_dragBufferX[i-1];
+			m_dragBufferY[i] = m_dragBufferY[i-1];
 		}
 
 		m_dragBufferX[0] = m_posX;
 		m_dragBufferY[0] = m_posY;
-		m_momentumX = (m_dragBufferX[9] - m_dragBufferX[0]) / 2;
-		m_momentumY = (m_dragBufferY[9] - m_dragBufferY[0]) / 2;
+		m_momentumX = (m_dragBufferX[9] - m_dragBufferX[0])/2;
+		m_momentumY = (m_dragBufferY[9] - m_dragBufferY[0])/2;
 
 		return true;
 	}
@@ -393,7 +396,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 			double oldhAdj = m_scroll.hadjustment.value;
 			double upperH = m_scroll.hadjustment.upper;
 			if ((oldhAdj + adjhValue) > (upperH - pageWidth)
-			    || (oldhAdj + adjhValue) < 0)
+			|| (oldhAdj + adjhValue) < 0)
 			{
 				m_momentumX = 0;
 			}
@@ -409,7 +412,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 			double oldvAdj = m_scroll.vadjustment.value;
 			double upperV = m_scroll.vadjustment.upper;
 			if ((oldvAdj + adjvValue) > (upperV - pageHeight)
-			    || (oldvAdj + adjvValue) < 0)
+			|| (oldvAdj + adjvValue) < 0)
 			{
 				m_momentumY = 0;
 			}

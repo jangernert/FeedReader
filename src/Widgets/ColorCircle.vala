@@ -49,6 +49,7 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		m_icon_light.set_from_surface(drawIcon(true));
 	}
 
+
 	private bool IconEnter()
 	{
 		this.remove(m_icon);
@@ -72,16 +73,17 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 
 		switch(event.type)
 		{
-		case Gdk.EventType.BUTTON_RELEASE:
-		case Gdk.EventType.@2BUTTON_PRESS:
-		case Gdk.EventType.@3BUTTON_PRESS:
-			return false;
+			case Gdk.EventType.BUTTON_RELEASE:
+			case Gdk.EventType.@2BUTTON_PRESS:
+			case Gdk.EventType.@3BUTTON_PRESS:
+				return false;
 		}
 
 		Logger.debug("ColorCircle: click");
 		clicked(m_color);
 		return true;
 	}
+
 
 	private Cairo.Surface drawIcon(bool light = false)
 	{
@@ -99,13 +101,13 @@ public class FeedReader.ColorCircle : Gtk.EventBox {
 		context.set_line_width(2);
 		context.set_fill_rule(Cairo.FillRule.EVEN_ODD);
 
-		double half = size / (2 * scaleFactor);
-		context.set_source_rgba(color.red, color.green, color.blue, 0.6 * lighten);
-		context.arc(half, half, half, 0, 2 * Math.PI);
+		double half = size/(2*scaleFactor);
+		context.set_source_rgba(color.red, color.green, color.blue, 0.6*lighten);
+		context.arc(half, half, half, 0, 2*Math.PI);
 		context.fill_preserve();
 
-		context.arc(half, half, half - (half / 4), 0, 2 * Math.PI);
-		context.set_source_rgba(color.red, color.green, color.blue, 0.6 * lighten);
+		context.arc(half, half, half-(half/4), 0, 2*Math.PI);
+		context.set_source_rgba(color.red, color.green, color.blue, 0.6*lighten);
 		context.fill_preserve();
 
 		return surface;

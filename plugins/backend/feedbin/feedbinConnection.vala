@@ -33,9 +33,9 @@ public class FeedReader.feedbinConnection {
 		});
 	}
 
-	public Response request(string method, string path, string ? input = null)
+	public Response request(string method, string path, string? input = null)
 	{
-		var message = new Soup.Message(method, BASE_URI + path);
+		var message = new Soup.Message(method, BASE_URI+path);
 		if(m_settingsTweaks.get_boolean("do-not-track"))
 			message.request_headers.append("DNT", "1");
 
@@ -48,8 +48,8 @@ public class FeedReader.feedbinConnection {
 		m_session.send_message(message);
 
 		return Response() {
-				   status = message.status_code,
-				   data = (string)message.response_body.flatten().data
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data
 		};
 	}
 
@@ -58,7 +58,7 @@ public class FeedReader.feedbinConnection {
 		return request("POST", path, input);
 	}
 
-	public Response deleteRequest(string path, string ? input = null)
+	public Response deleteRequest(string path, string? input = null)
 	{
 		return request("DELETE", path, input);
 	}

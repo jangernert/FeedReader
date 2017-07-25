@@ -13,6 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
+
 public class FeedReader.TwitterForm : ShareForm {
 
 	private Gtk.TextView m_textView;
@@ -120,9 +121,9 @@ public class FeedReader.TwitterForm : ShareForm {
 		if(text.contains("$URL"))
 		{
 			if(m_url.length >= m_urlLength)
-				return (text.length - 3) + m_urlLength;
+				return (text.length-3) + m_urlLength;
 			else
-				return (text.length - 3) + m_url.length;
+				return (text.length-3) + m_url.length;
 		}
 
 		return text.length;

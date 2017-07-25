@@ -54,7 +54,7 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		return false;
 	}
 
-	public Gtk.Box ? getWidget()
+	public Gtk.Box? getWidget()
 	{
 		var user_label = new Gtk.Label(_("Username:"));
 		var password_label = new Gtk.Label(_("Password:"));
@@ -98,6 +98,7 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		loginButton.clicked.connect(() => { login(); });
 
+
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.valign = Gtk.Align.CENTER;
 		box.halign = Gtk.Align.CENTER;
@@ -138,6 +139,7 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 		return "";
 	}
 }
+
 
 [ModuleInit]
 public void peas_register_types(GLib.TypeModule module)

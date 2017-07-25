@@ -15,13 +15,14 @@
 
 public class FeedReader.UtilsUI : GLib.Object {
 
+
 	public static uint getRelevantArticles(int newArticlesCount)
 	{
 		var interfacestate = MainWindow.get_default().getInterfaceState();
 		string[] selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
 		ArticleListState state = interfacestate.getArticleListState();
 		string searchTerm = interfacestate.getSearchTerm();
-		string ? topRow = interfacestate.getArticleListTopRow();
+		string? topRow = interfacestate.getArticleListTopRow();
 
 		FeedListType IDtype = FeedListType.FEED;
 
@@ -30,17 +31,17 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		switch(selectedRow[0])
 		{
-		case "feed":
-			IDtype = FeedListType.FEED;
-			break;
+			case "feed":
+				IDtype = FeedListType.FEED;
+				break;
 
-		case "cat":
-			IDtype = FeedListType.CATEGORY;
-			break;
+			case "cat":
+				IDtype = FeedListType.CATEGORY;
+				break;
 
-		case "tag":
-			IDtype = FeedListType.TAG;
-			break;
+			case "tag":
+				IDtype = FeedListType.TAG;
+				break;
 		}
 
 		int count = 0;
@@ -52,7 +53,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		return count;
 	}
 
-	public static string buildArticle(string html, string title, string url, string ? author, string date, string feedID)
+	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
 	{
 		var article = new GLib.StringBuilder();
 		string author_date = "";
@@ -98,24 +99,25 @@ public class FeedReader.UtilsUI : GLib.Object {
 		article.erase(feed_pos, feed_id.length);
 		article.insert(feed_pos, dbUI.get_default().getFeedName(feedID));
 
+
 		string theme = "theme ";
 		switch(Settings.general().get_enum("article-theme"))
 		{
-		case ArticleTheme.DEFAULT:
-			theme += "default";
-			break;
+			case ArticleTheme.DEFAULT:
+				theme += "default";
+				break;
 
-		case ArticleTheme.SPRING:
-			theme += "spring";
-			break;
+			case ArticleTheme.SPRING:
+				theme += "spring";
+				break;
 
-		case ArticleTheme.MIDNIGHT:
-			theme += "midnight";
-			break;
+			case ArticleTheme.MIDNIGHT:
+				theme += "midnight";
+				break;
 
-		case ArticleTheme.PARCHMENT:
-			theme += "parchment";
-			break;
+			case ArticleTheme.PARCHMENT:
+				theme += "parchment";
+				break;
 		}
 
 		string theme_id = "$THEME";
@@ -128,7 +130,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 		if(Settings.tweaks().get_boolean("article-select-text"))
 		{
-			article.erase(select_pos - 1, select_id.length + 1);
+			article.erase(select_pos-1, select_id.length+1);
 		}
 		else
 		{
@@ -140,7 +142,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
 		string fontfamilly = desc.get_family();
-		uint fontsize = (uint)GLib.Math.roundf(desc.get_size() / Pango.SCALE);
+		uint fontsize = (uint)GLib.Math.roundf(desc.get_size()/Pango.SCALE);
 		string small_size = (fontsize - 2).to_string();
 		string large_size = (fontsize * 2).to_string();
 		string normal_size = fontsize.to_string();
@@ -165,6 +167,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 			article.insert(i, small_size);
 		}
 
+
 		try
 		{
 			uint8[] contents;
@@ -183,7 +186,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		return article.str;
 	}
 
-	public static bool canManipulateContent(bool ? online = null)
+	public static bool canManipulateContent(bool? online = null)
 	{
 		try
 		{
@@ -246,8 +249,8 @@ public class FeedReader.UtilsUI : GLib.Object {
 		try
 		{
 			if(!dbUI.get_default().haveCategories()
-			   && !DBusConnection.get_default().supportTags()
-			   && !dbUI.get_default().haveFeedsWithoutCat())
+			&& !DBusConnection.get_default().supportTags()
+			&& !dbUI.get_default().haveFeedsWithoutCat())
 				return true;
 		}
 		catch(GLib.Error e)
@@ -264,7 +267,7 @@ public class FeedReader.UtilsUI : GLib.Object {
 		try
 		{
 			string articleName = "Article.pdf";
-			string ? articleID = ColumnView.get_default().displayedArticle();
+			string? articleID = ColumnView.get_default().displayedArticle();
 			if(articleID != null)
 				articleName = dbUI.get_default().read_article(articleID).getTitle();
 
@@ -280,12 +283,12 @@ public class FeedReader.UtilsUI : GLib.Object {
 			map.set("image/x-icon", ".ico");
 
 			var save_dialog = new Gtk.FileChooserDialog("Save Image",
-			                                            MainWindow.get_default(),
-			                                            Gtk.FileChooserAction.SAVE,
-			                                            _("Cancel"),
-			                                            Gtk.ResponseType.CANCEL,
-			                                            _("Save"),
-			                                            Gtk.ResponseType.ACCEPT);
+														MainWindow.get_default(),
+														Gtk.FileChooserAction.SAVE,
+														_("Cancel"),
+														Gtk.ResponseType.CANCEL,
+														_("Save"),
+														Gtk.ResponseType.ACCEPT);
 			save_dialog.set_do_overwrite_confirmation(true);
 			save_dialog.set_modal(true);
 			save_dialog.set_current_folder(GLib.Environment.get_user_data_dir());
@@ -294,24 +297,24 @@ public class FeedReader.UtilsUI : GLib.Object {
 			save_dialog.response.connect((dialog, response_id) => {
 				switch(response_id)
 				{
-				case Gtk.ResponseType.ACCEPT:
-					try
-					{
-					    var savefile = save_dialog.get_file();
-					    uint8[] data;
-					    string etag;
-					    file.load_contents(null, out data, out etag);
-					    savefile.replace_contents(data, null, false, GLib.FileCreateFlags.REPLACE_DESTINATION, null, null);
-					}
-					catch(Error e)
-					{
-					    Logger.debug("imagePopup: save file: " + e.message);
-					}
-					break;
+					case Gtk.ResponseType.ACCEPT:
+						try
+						{
+							var savefile = save_dialog.get_file();
+							uint8[] data;
+							string etag;
+							file.load_contents(null, out data, out etag);
+							savefile.replace_contents(data, null, false, GLib.FileCreateFlags.REPLACE_DESTINATION, null, null);
+						}
+						catch(Error e)
+						{
+							Logger.debug("imagePopup: save file: " + e.message);
+						}
+						break;
 
-				case Gtk.ResponseType.CANCEL:
-				default:
-					break;
+					case Gtk.ResponseType.CANCEL:
+					default:
+						break;
 				}
 				save_dialog.destroy();
 			});
@@ -376,59 +379,59 @@ public class FeedReader.UtilsUI : GLib.Object {
 	}
 
 	/*public static void testGOA()
-	   {
-	    try
-	    {
-	        Goa.Client? client = new Goa.Client.sync();
+	{
+		try
+		{
+			Goa.Client? client = new Goa.Client.sync();
 
-	        if(client != null)
-	        {
-	            var accounts = client.get_accounts();
-	            foreach(var object in accounts)
-	            {
-	                stdout.printf("account type: %s\n", object.account.provider_type);
-	                stdout.printf("account name: %s\n", object.account.provider_name);
-	                stdout.printf("account identity: %s\n", object.account.identity);
-	                stdout.printf("account id: %s\n", object.account.id);
+			if(client != null)
+			{
+				var accounts = client.get_accounts();
+				foreach(var object in accounts)
+				{
+					stdout.printf("account type: %s\n", object.account.provider_type);
+					stdout.printf("account name: %s\n", object.account.provider_name);
+					stdout.printf("account identity: %s\n", object.account.identity);
+					stdout.printf("account id: %s\n", object.account.id);
 
-	                if(object.oauth2_based != null)
-	                {
-	                    string access_token = "";
-	                    int expires = -1;
-	                    object.oauth2_based.call_get_access_token_sync(out access_token, out expires);
-	                    stdout.printf("access token 2: %s\n", access_token);
-	                    stdout.printf("expires in: %i\n", expires);
-	                    stdout.printf("client id: %s\n", object.oauth2_based.client_id);
-	                    stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
-	                }
-	                else if(object.oauth_based != null)
-	                {
-	                    string access_token = "";
-	                    string access_token_secret = "";
-	                    int expires = -1;
-	                    object.oauth_based.call_get_access_token_sync(out access_token, out access_token_secret, out expires);
-	                    stdout.printf("access token: %s\n", access_token);
-	                    stdout.printf("access token secret: %s\n", access_token_secret);
-	                    stdout.printf("expires in: %i\n", expires);
-	                }
-	                else if(object.password_based != null)
-	                {
-	                    string password = "";
-	                    object.password_based.call_get_password_sync ("abc", out password);
-	                    stdout.printf("password: %s\n", password);
-	                    stdout.printf("presentation identity: %s\n", object.account.presentation_identity);
-	                }
-	                stdout.printf("\n");
-	            }
-	        }
-	        else
-	        {
-	            stdout.printf("goa not available");
-	        }
-	    }
-	    catch(GLib.Error e)
-	    {
-	        Logger.error("UtilsUI.testGOA: %s".printf(e.message));
-	    }
-	   }*/
+					if(object.oauth2_based != null)
+					{
+						string access_token = "";
+						int expires = -1;
+						object.oauth2_based.call_get_access_token_sync(out access_token, out expires);
+						stdout.printf("access token 2: %s\n", access_token);
+						stdout.printf("expires in: %i\n", expires);
+						stdout.printf("client id: %s\n", object.oauth2_based.client_id);
+						stdout.printf("client secret: %s\n", object.oauth2_based.client_secret);
+					}
+					else if(object.oauth_based != null)
+					{
+						string access_token = "";
+						string access_token_secret = "";
+						int expires = -1;
+						object.oauth_based.call_get_access_token_sync(out access_token, out access_token_secret, out expires);
+						stdout.printf("access token: %s\n", access_token);
+						stdout.printf("access token secret: %s\n", access_token_secret);
+						stdout.printf("expires in: %i\n", expires);
+					}
+					else if(object.password_based != null)
+					{
+						string password = "";
+						object.password_based.call_get_password_sync ("abc", out password);
+						stdout.printf("password: %s\n", password);
+						stdout.printf("presentation identity: %s\n", object.account.presentation_identity);
+					}
+					stdout.printf("\n");
+				}
+			}
+			else
+			{
+				stdout.printf("goa not available");
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("UtilsUI.testGOA: %s".printf(e.message));
+		}
+	}*/
 }

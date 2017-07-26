@@ -77,7 +77,7 @@
 		</key>
 
 		<key name='content-grabber' type="b">
-			<default>true</default>
+			<default>false</default>
 			<summary>grab full content of articles</summary>
 			<description>
 				Whether to use the content-grabber to download the full content of articles.
@@ -125,7 +125,7 @@
 		</key>
 		
 		<key name="download-images" type="b">
-			<default>true</default>
+			<default>false</default>
 			<summary>Download images of articles (offline mode)</summary>
 			<description>
 				Download of images of articles. If disabled this will speed up the snyc process, 

@@ -25,7 +25,7 @@ public class FeedReader.localUtils : GLib.Object {
 		errmsg = "";
 
 		// download
-		Logger.debug(@"Requesting: $xmlURL");
+		//Logger.debug(@"Requesting: $xmlURL");
 		var msg = new Soup.Message("GET", xmlURL);
 		if (msg == null)
 		{

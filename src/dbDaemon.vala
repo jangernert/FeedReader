@@ -373,7 +373,7 @@ public class FeedReader.dbDaemon : dbBase {
 		else if(field == "marked")
 			update_query.updateValuePair(field, ArticleStatus.MARKED.to_string());
 
-		update_query.addEqualsCondition("articleID", "$ARTICLEID", true, true);
+		update_query.addEqualsCondition("articleID", "$ARTICLEID");
 		update_query.build();
 
 		Sqlite.Statement stmt;

@@ -27,9 +27,13 @@ public class FeedReader.OPMLparser : GLib.Object {
 
 	public bool parse()
 	{
-		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, Xml.ParserOption.NOERROR + Xml.ParserOption.NOWARNING);
+		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, 0);
 		if(doc == null)
+		{
+			Logger.error("OPML: parsing xml failed");
 			return false;
+		}
+
 
 		Xml.Node* root = doc->get_root_element();
 		if(root->name != "opml")
@@ -144,9 +148,9 @@ public class FeedReader.OPMLparser : GLib.Object {
 			}
 
 			if(catID == null)
-				m_feeds.add(new feed("", title, website, 0,  { FeedServer.get_default().uncategorizedID() }, feedURL));
+				m_feeds.add(new feed("", title, website, 0,  { FeedServer.get_default().uncategorizedID() }, null, feedURL));
 			else
-				m_feeds.add(new feed("", title, website, 0,  { catID }, feedURL));
+				m_feeds.add(new feed("", title, website, 0,  { catID }, null, feedURL));
 		}
 	}
 

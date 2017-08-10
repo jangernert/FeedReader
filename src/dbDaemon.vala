@@ -560,6 +560,11 @@ public class FeedReader.dbDaemon : dbBase {
 
 		foreach(var article in articles)
 		{
+			// if article time is in the future
+			var now = new GLib.DateTime.now_local();
+			if(article.getDate().compare(now) == 1)
+				article.SetDate(now);
+
 			stmt.bind_text(articleID_position, article.getArticleID());
 			stmt.bind_text(feedID_position, article.getFeedID());
 			stmt.bind_text(url_position, article.getURL());

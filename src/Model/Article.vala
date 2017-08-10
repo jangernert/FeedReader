@@ -141,6 +141,11 @@ public class FeedReader.article : GLib.Object {
 		return m_date;
 	}
 
+	public void SetDate(GLib.DateTime date)
+	{
+		m_date = date;
+	}
+
 	public string getDateNice(bool addTime = false)
 	{
 		var now = new GLib.DateTime.now_local();

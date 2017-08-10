@@ -443,7 +443,7 @@ public class FeedReader.dbDaemon : dbBase {
 		update_query.updateValuePair("marked", "$MARKED");
 		update_query.updateValuePair("tags", "$TAGS");
 		update_query.updateValuePair("lastModified", "$LASTMODIFIED");
-		update_query.addEqualsCondition("articleID", "$ARTICLEID", true, true);
+		update_query.addEqualsCondition("articleID", "$ARTICLEID", true, false);
 		update_query.build();
 
 		Sqlite.Statement stmt;

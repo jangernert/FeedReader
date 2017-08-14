@@ -331,13 +331,13 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			if(cancellable != null && cancellable.is_cancelled())
 				return false;
 
-			string errmsg = "";
-			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
-			if(tmpFeed != null)
-			{
-				Feed.setIconURL(tmpFeed.getIconURL());
-				Feed.setURL(tmpFeed.getURL());
-			}
+			// string errmsg = "";
+			// feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
+			// if(tmpFeed != null)
+			// {
+			// 	Feed.setIconURL(tmpFeed.getIconURL());
+			// 	Feed.setURL(tmpFeed.getURL());
+			// }
 			feeds.add(Feed);
 		}
 

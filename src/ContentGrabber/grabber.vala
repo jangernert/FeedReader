@@ -51,7 +51,6 @@ public class FeedReader.Grabber : GLib.Object {
 	~Grabber()
 	{
 		delete m_doc;
-		delete m_root;
 		delete m_ns;
 	}
 
@@ -194,7 +193,7 @@ public class FeedReader.Grabber : GLib.Object {
 	private bool download()
 	{
 		var msg = new Soup.Message("GET", m_articleURL.escape(""));
-		msg.restarted.connect(() => {
+		ulong handlerID = msg.restarted.connect(() => {
 			Logger.debug("Grabber: download redirected - " + msg.status_code.to_string());
 			if(msg.status_code == Soup.Status.MOVED_TEMPORARILY
 			|| msg.status_code == Soup.Status.MOVED_PERMANENTLY)
@@ -211,6 +210,7 @@ public class FeedReader.Grabber : GLib.Object {
 			msg.request_headers.append("DNT", "1");
 
 		m_session.send_message(msg);
+		msg.disconnect(handlerID);
 
 		if(msg.response_body == null)
 		{

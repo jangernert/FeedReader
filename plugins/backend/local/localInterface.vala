@@ -381,6 +381,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			catch(GLib.Error e)
 			{
 				Logger.error("localInterface.getArticles: %s".printf(e.message));
+				continue;
 			}
 			var doc = parser.get_document();
 			string? locale = null;
@@ -409,8 +410,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				}
 
 
-				var date = new GLib.DateTime.now_local();
 
+				var date = new GLib.DateTime.now_local();
 				if(item.pub_date != null)
 				{
 					GLib.Time time = GLib.Time();
@@ -420,8 +421,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					if(date == null)
 						date = new GLib.DateTime.now_local();
 				}
-				string? content = m_utils.convert(item.description, locale);
 
+
+
+				string? content = m_utils.convert(item.description, locale);
 				if(content == null)
 					content = _("Nothing to read here.");
 
@@ -433,8 +436,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(articleURL.has_prefix("/"))
 					articleURL = Feed.getURL() + articleURL.substring(1);
 
-				//if(item.title != null)
-				//	Logger.debug(item.title);
 
 				var Article = new article
 				(
@@ -454,6 +455,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				);
 
 				articleArray.add(Article);
+				
 			}
 		}
 

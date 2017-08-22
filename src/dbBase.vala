@@ -573,7 +573,7 @@ public class FeedReader.dbBase : GLib.Object {
 		var sorting = (ArticleListSort)Settings.general().get_enum("articlelist-sort-by");
 
 		if(sorting == ArticleListSort.RECEIVED)
-			query.addCustomCondition(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = $id1) AND (SELECT rowid FROM articles WHERE articleID = $id2)");
+			query.addCustomCondition(@"date BETWEEN (SELECT rowid FROM articles WHERE articleID = \"$id1\") AND (SELECT rowid FROM articles WHERE articleID = \"$id2\")");
 		else
 		{
 			bool bigger = (date1.to_unix() > date2.to_unix());

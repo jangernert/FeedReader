@@ -399,10 +399,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
 				else
 				{
-					Logger.warning("no valid ID - using URL as ID");
 					if(item.link == null)
 					{
-						Logger.warning("no valid URL as well? what the hell man? I'm giving up");
+						Logger.warning("no valid id and no valid URL as well? what the hell man? I'm giving up");
 						continue;
 					}
 

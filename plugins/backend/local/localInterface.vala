@@ -384,6 +384,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				continue;
 			}
 			var doc = parser.get_document();
+
 			string? locale = null;
 			if(doc.encoding != null
 			&& doc.encoding != "")
@@ -436,7 +437,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(articleURL.has_prefix("/"))
 					articleURL = Feed.getURL() + articleURL.substring(1);
 
-
 				var Article = new article
 				(
 									articleID,
@@ -455,8 +455,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				);
 
 				articleArray.add(Article);
-				
 			}
+
 		}
 
 		articleArray.sort((a, b) => {

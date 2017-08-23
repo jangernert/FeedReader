@@ -29,7 +29,7 @@
 
 FILE *in;
 
-CHAR* OUTPUT;
+CHAR* OUTPUT = NULL;
 CHAR LINEBREAK[1] = L"\n";
 size_t currentsize = 0;
 size_t outputsize = 0;
@@ -39,16 +39,11 @@ long int count = 0;
 
 void open_files(char *input)
 {
-	if((in = fmemopen(input, strlen(input), "r"))==0)
+	in = fmemopen(input, strlen(input), "r");
+	if(in == NULL)
 	{
 		fprintf(stderr, "Couldn't open input file %s!\n",input);
 		error = 1;
-	}
-
-	if(OUTPUT != NULL)
-	{
-		currentsize = 0;
-		free(OUTPUT);
 	}
 
 	outputsize = strlen(input);
@@ -78,9 +73,34 @@ void output_string(CHAR *str)
 
 /* ------------------------------------------------ */
 
-CHAR* getOutput()
+void cleanup()
 {
-	return OUTPUT;
+	currentsize = 0;
+	free(OUTPUT);
+	OUTPUT = NULL;
+	fclose(in);
+}
+
+/* ------------------------------------------------ */
+
+char* getOutput(size_t input_length)
+{
+	if(!error)
+	{
+		size_t buffersize = 2*sizeof(char)*input_length;
+		char* buffer = malloc(buffersize);
+		int ret = wcstombs ( buffer, OUTPUT, buffersize );
+		if (ret==buffersize) buffer[buffersize-1]='\0';
+		cleanup();
+		if (ret)
+			return buffer;
+		
+		return NULL;
+	}
+
+	
+	cleanup();
+	return NULL;
 }
 
 /* ------------------------------------------------ */

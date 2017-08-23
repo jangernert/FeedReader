@@ -18,9 +18,6 @@
 #include "fileio.h"
 #include "charset.h"
 
-char* buffer;
-size_t length;
-
 /* ------------------------------------------------ */
 
 void set_options()
@@ -43,7 +40,6 @@ char* vilistextum(char* text, int extractText)
 	if(text == NULL)
 		return NULL;
 
-	length = strlen(text);
 	error = 0;
 	set_options();
 
@@ -54,18 +50,6 @@ char* vilistextum(char* text, int extractText)
 		quit();
 	}
 
-	if(!error)
-	{
-		CHAR* output = getOutput();
-		size_t buffersize = 2*sizeof(char)*length;
-		buffer = malloc(buffersize);
-		int ret = wcstombs ( buffer, output, buffersize );
-		if (ret==buffersize) buffer[buffersize-1]='\0';
-		if (ret)
-			return buffer;
-		else
-			return NULL;
-	}
-	else
-		return NULL;
+	char* output = getOutput(strlen(text));
+	return output;
 }

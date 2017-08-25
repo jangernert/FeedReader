@@ -164,7 +164,7 @@ public class FeedReader.dbDaemon : dbBase {
     public bool feed_exists(string feed_url){
         var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("count(*)");
-		query.addCustomCondition("url = \"%s\"".printf(feed_url));
+		query.addEqualsCondition("url", feed_url, true, true);
 		query.limit(1);
 		query.build();
 

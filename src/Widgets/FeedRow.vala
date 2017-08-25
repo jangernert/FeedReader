@@ -31,7 +31,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	private uint m_timeout_source_id;
 	private string m_name { get; private set; }
 	private string m_feedID { get; private set; }
-	public signal void setAsRead(FeedListType type, string id);
+    public signal void setAsRead(FeedListType type, string id);
+    public signal void copyFeedURL(string id);
 	public signal void moveUP();
 	public signal void deselectRow();
 
@@ -221,7 +222,12 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var markAsRead_action = new GLib.SimpleAction("markFeedAsRead", null);
 		markAsRead_action.activate.connect(() => {
 			setAsRead(FeedListType.FEED, m_feedID);
-		});
+        });
+
+        var copyFeedURL_action = new GLib.SimpleAction("copyFeedURL", null);
+        copyFeedURL_action.activate.connect(() => {
+            copyFeedURL(m_feedID);
+        });
 
 		if(m_unread_count != 0)
 			markAsRead_action.set_enabled(true);
@@ -241,7 +247,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var cat = dbUI.get_default().read_category(m_catID);
 
 		var menu = new GLib.Menu();
-		menu.append(_("Mark as read"), "markFeedAsRead");
+        menu.append(_("Mark as read"), "markFeedAsRead");
+        menu.append(_("Copy URL"), "copyFeedURL");
 		menu.append(_("Rename"), "renameFeed");
 		if(catCount > 1)
 			menu.append(_("Remove only from %s").printf(cat.getTitle()), "deleteFeed");

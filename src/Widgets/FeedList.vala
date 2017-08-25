@@ -283,7 +283,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					pos++;
 					var tmpRow = row as CategoryRow;
 
-					if(tmpRow != null)
+                    if(tmpRow != null)
 					{
 						if(Utils.arrayContains(item.getCatIDs(), tmpRow.getID())
 						|| tmpRow.getID() == "" && item.isUncategorized())
@@ -297,7 +297,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 													  );
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
-							feedrow.moveUP.connect(moveUP);
+                            feedrow.moveUP.connect(moveUP);
+                            feedrow.copyFeedURL.connect(copySelectedFeedURL);
 							feedrow.deselectRow.connect(deselectRow);
 							feedrow.drag_begin.connect((context) => {
 								onDragBegin(context);
@@ -963,7 +964,21 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	public void setOnline()
 	{
 		m_branding.setOnline();
-	}
+    }
+
+    public void copySelectedFeedURL(string feed_id){
+        /*
+            Copy selected feed url to clipboard
+        */
+        if (feed_id != ""){
+            string feed_url = dbUI.get_default().getFeedURL(feed_id);
+
+            Gdk.Display display = MainWindow.get_default().get_display ();
+            Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
+
+            clipboard.set_text(feed_url, feed_url.length);
+        }
+    }
 
 	public void moveUP()
 	{

@@ -238,7 +238,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		rename_action.activate.connect(showRenamePopover);
 
 		var app = FeedReaderApp.get_default();
-		app.add_action(markAsRead_action);
+        app.add_action(markAsRead_action);
+        app.add_action(copyFeedURL_action);
 		app.add_action(rename_action);
 		app.add_action(remove_action);
 

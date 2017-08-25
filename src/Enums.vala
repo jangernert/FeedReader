@@ -33,8 +33,8 @@ namespace FeedReader {
 	}
 
 	public enum DragTarget {
-	    TAG,
-	    FEED,
+		TAG,
+		FEED,
 		CAT
 	}
 

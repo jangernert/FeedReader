@@ -23,13 +23,13 @@
 		<value nick="RECEIVED" value="0"/>
 		<value nick="DATE" value="1"/>
 	</enum>
-	
+
 	<enum id="org.gnome.feedreader.feedlist-theme">
 		<value nick="GTK" value="0"/>
 		<value nick="DARK" value="1"/>
 		<value nick="ELEMENTARY" value="2"/>
 	</enum>
-	
+
 	<enum id="org.gnome.feedreader.media-player">
 		<value nick="INTERNAL" value="0"/>
 		<value nick="SYSTEM" value="1"/>
@@ -55,7 +55,7 @@
 				The maximum of articles that are fetched from the server.
 			</description>
 		</key>
-		
+
 		<key name='plugin' type="s">
 			<default>'none'</default>
 		</key>
@@ -63,7 +63,7 @@
 		<key name='article-theme' enum='org.gnome.feedreader.article-theme'>
 			<default>'DEFAULT'</default>
 		</key>
-		
+
 		<key name='feedlist-theme' enum='org.gnome.feedreader.feedlist-theme'>
 			<default>'DARK'</default>
 		</key>
@@ -111,7 +111,7 @@
 		<key name='feedlist-sort-by' enum='org.gnome.feedreader.feedlist-sort'>
 			<default>'RECEIVED'</default>
 		</key>
-		
+
 		<key name='mediaplayer' type="b">
 			<default>true</default>
 		</key>
@@ -123,12 +123,12 @@
 				Sort articles in the ArticleList by date not by insert order.
 			</description>
 		</key>
-		
+
 		<key name="download-images" type="b">
 			<default>false</default>
 			<summary>Download images of articles (offline mode)</summary>
 			<description>
-				Download of images of articles. If disabled this will speed up the snyc process, 
+				Download of images of articles. If disabled this will speed up the snyc process,
 				but obviously the images will not be available when in offline-mode.
 			</description>
 		</key>
@@ -140,7 +140,7 @@
 				Sort articles in the ArticleList from old to new (either by article date or insert order).
 			</description>
 		</key>
-		
+
 		<key name='articlelist-mark-scrolling' type='b'>
 			<default>false</default>
 			<summary>mark read by scrolling</summary>

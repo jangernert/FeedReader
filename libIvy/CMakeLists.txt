@@ -8,7 +8,7 @@ PACKAGES
 	linux
 	gee-0.8
 	posix
-	
+
 GENERATE_VAPI
 	ivy
 )

@@ -543,17 +543,17 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		SourceFunc callback = recalculate.callback;
 		ThreadFunc<void*> run = () => {
 			try
-	    	{
-	    		if(m_connected
+			{
+				if(m_connected
 				&& m_stack.get_visible_child_name() != "empty"
 				&& m_stack.get_visible_child_name() != "crash"
 				&& m_currentView != null)
-	    			m_messenger.recalculate();
-	    	}
-	    	catch(GLib.IOError e)
-	    	{
-	    		Logger.warning("ArticleView: recalculate " + e.message);
-	    	}
+					m_messenger.recalculate();
+			}
+			catch(GLib.IOError e)
+			{
+				Logger.warning("ArticleView: recalculate " + e.message);
+			}
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};

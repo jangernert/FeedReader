@@ -360,7 +360,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.markFeedRead");
 		return false;
@@ -374,7 +374,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.markAllItemsRead");
 		return false;
@@ -395,7 +395,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.updateArticleUnread");
 		return false;
@@ -416,7 +416,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.updateArticleMarked");
 		return false;
@@ -531,7 +531,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.removeFolder");
 		return false;

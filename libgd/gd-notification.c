@@ -75,31 +75,31 @@ enum {
 static guint notification_signals[LAST_SIGNAL] = { 0 };
 
 static gboolean gd_notification_draw                           (GtkWidget       *widget,
-                                                                 cairo_t         *cr);
+																 cairo_t         *cr);
 static void     gd_notification_get_preferred_width            (GtkWidget       *widget,
-                                                                 gint            *minimum_size,
-                                                                 gint            *natural_size);
+																 gint            *minimum_size,
+																 gint            *natural_size);
 static void     gd_notification_get_preferred_height_for_width (GtkWidget       *widget,
-                                                                 gint             width,
-                                                                 gint            *minimum_height,
-                                                                 gint            *natural_height);
+																 gint             width,
+																 gint            *minimum_height,
+																 gint            *natural_height);
 static void     gd_notification_get_preferred_height           (GtkWidget       *widget,
-                                                                 gint            *minimum_size,
-                                                                 gint            *natural_size);
+																 gint            *minimum_size,
+																 gint            *natural_size);
 static void     gd_notification_get_preferred_width_for_height (GtkWidget       *widget,
-                                                                 gint             height,
-                                                                 gint            *minimum_width,
-                                                                 gint            *natural_width);
+																 gint             height,
+																 gint            *minimum_width,
+																 gint            *natural_width);
 static void     gd_notification_size_allocate                  (GtkWidget       *widget,
-                                                                 GtkAllocation   *allocation);
+																 GtkAllocation   *allocation);
 static gboolean gd_notification_timeout_cb                     (gpointer         user_data);
 static void     gd_notification_show                           (GtkWidget       *widget);
 static void     gd_notification_add                            (GtkContainer    *container,
-                                                                 GtkWidget       *child);
+																 GtkWidget       *child);
 
 /* signals handlers */
 static void     gd_notification_close_button_clicked_cb        (GtkWidget       *widget,
-                                                                 gpointer         user_data);
+																 gpointer         user_data);
 
 G_DEFINE_TYPE(GdNotification, gd_notification, GTK_TYPE_BIN);
 
@@ -120,22 +120,22 @@ gd_notification_init (GdNotification *notification)
   gtk_widget_set_has_window (GTK_WIDGET (notification), TRUE);
 
   priv = notification->priv =
-    G_TYPE_INSTANCE_GET_PRIVATE (notification,
-                                 GD_TYPE_NOTIFICATION,
-                                 GdNotificationPrivate);
+	G_TYPE_INSTANCE_GET_PRIVATE (notification,
+								 GD_TYPE_NOTIFICATION,
+								 GdNotificationPrivate);
 
   priv->animate_y = 0;
   priv->close_button = gtk_button_new ();
   gtk_widget_set_parent (priv->close_button, GTK_WIDGET (notification));
   gtk_widget_show (priv->close_button);
   g_object_set (priv->close_button,
-                "relief", GTK_RELIEF_NONE,
-                "focus-on-click", FALSE,
-                NULL);
+				"relief", GTK_RELIEF_NONE,
+				"focus-on-click", FALSE,
+				NULL);
   g_signal_connect (priv->close_button,
-                    "clicked",
-                    G_CALLBACK (gd_notification_close_button_clicked_cb),
-                    notification);
+					"clicked",
+					G_CALLBACK (gd_notification_close_button_clicked_cb),
+					notification);
   close_button_image = gtk_image_new_from_icon_name ("window-close-symbolic", GTK_ICON_SIZE_BUTTON);
   gtk_button_set_image (GTK_BUTTON (notification->priv->close_button), close_button_image);
 
@@ -154,10 +154,10 @@ gd_notification_finalize (GObject *object)
   priv = notification->priv;
 
   if (priv->animate_timeout != 0)
-    g_source_remove (priv->animate_timeout);
+	g_source_remove (priv->animate_timeout);
 
   if (priv->timeout_source_id != 0)
-    g_source_remove (priv->timeout_source_id);
+	g_source_remove (priv->timeout_source_id);
 
   G_OBJECT_CLASS (gd_notification_parent_class)->finalize (object);
 }
@@ -169,16 +169,16 @@ gd_notification_destroy (GtkWidget *widget)
   GdNotificationPrivate *priv = notification->priv;
 
   if (!priv->sent_dismissed)
-    {
-      g_signal_emit (notification, notification_signals[DISMISSED], 0);
-      priv->sent_dismissed = TRUE;
-    }
+	{
+	  g_signal_emit (notification, notification_signals[DISMISSED], 0);
+	  priv->sent_dismissed = TRUE;
+	}
 
   if (priv->close_button)
-    {
-      gtk_widget_unparent (priv->close_button);
-      priv->close_button = NULL;
-    }
+	{
+	  gtk_widget_unparent (priv->close_button);
+	  priv->close_button = NULL;
+	}
 
   GTK_WIDGET_CLASS (gd_notification_parent_class)->destroy (widget);
 }
@@ -212,24 +212,24 @@ gd_notification_realize (GtkWidget *widget)
   attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
 
   window = gdk_window_new (gtk_widget_get_parent_window (widget),
-                           &attributes, attributes_mask);
+						   &attributes, attributes_mask);
   gtk_widget_set_window (widget, window);
   gtk_widget_register_window (widget, window);
 
   attributes.x = 0;
   attributes.y = attributes.height + priv->animate_y;
   attributes.event_mask = gtk_widget_get_events (widget) |
-                          GDK_EXPOSURE_MASK |
-                          GDK_VISIBILITY_NOTIFY_MASK |
-                          GDK_ENTER_NOTIFY_MASK |
-                          GDK_LEAVE_NOTIFY_MASK;
+						  GDK_EXPOSURE_MASK |
+						  GDK_VISIBILITY_NOTIFY_MASK |
+						  GDK_ENTER_NOTIFY_MASK |
+						  GDK_LEAVE_NOTIFY_MASK;
 
   priv->bin_window = gdk_window_new (window, &attributes, attributes_mask);
   gtk_widget_register_window (widget, priv->bin_window);
 
   child = gtk_bin_get_child (bin);
   if (child)
-    gtk_widget_set_parent_window (child, priv->bin_window);
+	gtk_widget_set_parent_window (child, priv->bin_window);
   gtk_widget_set_parent_window (priv->close_button, priv->bin_window);
 
   gdk_window_show (priv->bin_window);
@@ -255,10 +255,10 @@ animation_target (GdNotification *notification)
   GtkAllocation allocation;
 
   if (priv->revealed) {
-    gtk_widget_get_allocation (GTK_WIDGET (notification), &allocation);
-    return allocation.height;
+	gtk_widget_get_allocation (GTK_WIDGET (notification), &allocation);
+	return allocation.height;
   } else {
-    return 0;
+	return 0;
   }
 }
 
@@ -273,26 +273,26 @@ animation_timeout_cb (gpointer user_data)
   target = animation_target (notification);
 
   if (priv->animate_y != target) {
-    gtk_widget_get_allocation (GTK_WIDGET (notification), &allocation);
+	gtk_widget_get_allocation (GTK_WIDGET (notification), &allocation);
 
-    delta = allocation.height * ANIMATION_STEP / ANIMATION_TIME;
+	delta = allocation.height * ANIMATION_STEP / ANIMATION_TIME;
 
-    if (priv->revealed)
-      priv->animate_y += delta;
-    else
-      priv->animate_y -= delta;
+	if (priv->revealed)
+	  priv->animate_y += delta;
+	else
+	  priv->animate_y -= delta;
 
-    priv->animate_y = CLAMP (priv->animate_y, 0, allocation.height);
+	priv->animate_y = CLAMP (priv->animate_y, 0, allocation.height);
 
-    if (priv->bin_window != NULL)
-      gdk_window_move (priv->bin_window,
-                       0,
-                       -allocation.height + priv->animate_y);
-    return G_SOURCE_CONTINUE;
+	if (priv->bin_window != NULL)
+	  gdk_window_move (priv->bin_window,
+					   0,
+					   -allocation.height + priv->animate_y);
+	return G_SOURCE_CONTINUE;
   }
 
   if (priv->dismissed && priv->animate_y == 0)
-    gtk_widget_destroy (GTK_WIDGET (notification));
+	gtk_widget_destroy (GTK_WIDGET (notification));
 
   priv->animate_timeout = 0;
   return G_SOURCE_REMOVE;
@@ -305,14 +305,14 @@ start_animation (GdNotification *notification)
   int target;
 
   if (priv->animate_timeout != 0)
-    return; /* Already running */
+	return; /* Already running */
 
   target = animation_target (notification);
   if (priv->animate_y != target)
-    notification->priv->animate_timeout =
-      gdk_threads_add_timeout (ANIMATION_STEP,
-                               animation_timeout_cb,
-                               notification);
+	notification->priv->animate_timeout =
+	  gdk_threads_add_timeout (ANIMATION_STEP,
+							   animation_timeout_cb,
+							   notification);
 }
 
 static void
@@ -346,16 +346,16 @@ gd_notification_set_property (GObject *object, guint prop_id, const GValue *valu
 
   switch (prop_id) {
   case PROP_TIMEOUT:
-    gd_notification_set_timeout (notification,
-                                 g_value_get_int (value));
-    break;
+	gd_notification_set_timeout (notification,
+								 g_value_get_int (value));
+	break;
   case PROP_SHOW_CLOSE_BUTTON:
-    gd_notification_set_show_close_button (notification,
-                                           g_value_get_boolean (value));
-    break;
+	gd_notification_set_show_close_button (notification,
+										   g_value_get_boolean (value));
+	break;
   default:
-    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    break;
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+	break;
   }
 }
 
@@ -367,23 +367,23 @@ gd_notification_get_property (GObject *object, guint prop_id, GValue *value, GPa
 
   switch (prop_id) {
   case PROP_TIMEOUT:
-    g_value_set_int (value, notification->priv->timeout);
-    break;
+	g_value_set_int (value, notification->priv->timeout);
+	break;
   case PROP_SHOW_CLOSE_BUTTON:
-    g_value_set_boolean (value,
-                         notification->priv->show_close_button);
-    break;
+	g_value_set_boolean (value,
+						 notification->priv->show_close_button);
+	break;
   default:
-    G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    break;
+	G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+	break;
   }
 }
 
 static void
 gd_notification_forall (GtkContainer *container,
-                         gboolean      include_internals,
-                         GtkCallback   callback,
-                         gpointer      callback_data)
+						 gboolean      include_internals,
+						 GtkCallback   callback,
+						 gpointer      callback_data)
 {
   GtkBin *bin = GTK_BIN (container);
   GdNotification *notification = GD_NOTIFICATION (container);
@@ -392,10 +392,10 @@ gd_notification_forall (GtkContainer *container,
 
   child = gtk_bin_get_child (bin);
   if (child)
-    (* callback) (child, callback_data);
+	(* callback) (child, callback_data);
 
   if (include_internals)
-    (* callback) (priv->close_button, callback_data);
+	(* callback) (priv->close_button, callback_data);
 }
 
 static void
@@ -404,10 +404,10 @@ unqueue_autohide (GdNotification *notification)
   GdNotificationPrivate *priv = notification->priv;
 
   if (priv->timeout_source_id)
-    {
-      g_source_remove (priv->timeout_source_id);
-      priv->timeout_source_id = 0;
-    }
+	{
+	  g_source_remove (priv->timeout_source_id);
+	  priv->timeout_source_id = 0;
+	}
 }
 
 static void
@@ -416,28 +416,28 @@ queue_autohide (GdNotification *notification)
   GdNotificationPrivate *priv = notification->priv;
 
   if (priv->timeout_source_id == 0 &&
-      priv->timeout != -1)
-    priv->timeout_source_id =
-      gdk_threads_add_timeout (priv->timeout * 1000,
-                               gd_notification_timeout_cb,
-                               notification);
+	  priv->timeout != -1)
+	priv->timeout_source_id =
+	  gdk_threads_add_timeout (priv->timeout * 1000,
+							   gd_notification_timeout_cb,
+							   notification);
 }
 
 static gboolean
 gd_notification_visibility_notify_event (GtkWidget          *widget,
-                                          GdkEventVisibility  *event)
+										  GdkEventVisibility  *event)
 {
   GdNotification *notification = GD_NOTIFICATION (widget);
   GdNotificationPrivate *priv = notification->priv;
 
   if (!gtk_widget_get_visible (widget))
-    return FALSE;
+	return FALSE;
 
   if (priv->waiting_for_viewable)
-    {
-      start_animation (notification);
-      priv->waiting_for_viewable = FALSE;
-    }
+	{
+	  start_animation (notification);
+	  priv->waiting_for_viewable = FALSE;
+	}
 
   queue_autohide (notification);
 
@@ -446,32 +446,32 @@ gd_notification_visibility_notify_event (GtkWidget          *widget,
 
 static gboolean
 gd_notification_enter_notify (GtkWidget        *widget,
-                              GdkEventCrossing *event)
+							  GdkEventCrossing *event)
 {
   GdNotification *notification = GD_NOTIFICATION (widget);
   GdNotificationPrivate *priv = notification->priv;
 
   if ((event->window == priv->bin_window) &&
-      (event->detail != GDK_NOTIFY_INFERIOR))
-    {
-      unqueue_autohide (notification);
-    }
+	  (event->detail != GDK_NOTIFY_INFERIOR))
+	{
+	  unqueue_autohide (notification);
+	}
 
   return FALSE;
 }
 
 static gboolean
 gd_notification_leave_notify (GtkWidget        *widget,
-                              GdkEventCrossing *event)
+							  GdkEventCrossing *event)
 {
   GdNotification *notification = GD_NOTIFICATION (widget);
   GdNotificationPrivate *priv = notification->priv;
 
   if ((event->window == priv->bin_window) &&
-      (event->detail != GDK_NOTIFY_INFERIOR))
-    {
-      queue_autohide (notification);
-    }
+	  (event->detail != GDK_NOTIFY_INFERIOR))
+	{
+	  queue_autohide (notification);
+	}
 
   return FALSE;
 }
@@ -515,34 +515,34 @@ gd_notification_class_init (GdNotificationClass *klass)
    * Since: 0.1
    */
   g_object_class_install_property (object_class,
-                                   PROP_TIMEOUT,
-                                   g_param_spec_int("timeout", "timeout",
-                                                    "The time it takes to hide the widget, in seconds",
-                                                    -1, G_MAXINT, -1,
-                                                    GTK_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+								   PROP_TIMEOUT,
+								   g_param_spec_int("timeout", "timeout",
+													"The time it takes to hide the widget, in seconds",
+													-1, G_MAXINT, -1,
+													GTK_PARAM_READWRITE | G_PARAM_CONSTRUCT));
   g_object_class_install_property (object_class,
-                                   PROP_SHOW_CLOSE_BUTTON,
-                                   g_param_spec_boolean("show-close-button", "show-close-button",
-                                                        "Whether to show a stock close button that dismisses the notification",
-                                                        TRUE,
-                                                        GTK_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+								   PROP_SHOW_CLOSE_BUTTON,
+								   g_param_spec_boolean("show-close-button", "show-close-button",
+														"Whether to show a stock close button that dismisses the notification",
+														TRUE,
+														GTK_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
   notification_signals[DISMISSED] = g_signal_new ("dismissed",
-                                                  G_OBJECT_CLASS_TYPE (klass),
-                                                  G_SIGNAL_RUN_LAST,
-                                                  G_STRUCT_OFFSET (GdNotificationClass, dismissed),
-                                                  NULL,
-                                                  NULL,
-                                                  g_cclosure_marshal_VOID__VOID,
-                                                  G_TYPE_NONE,
-                                                  0);
+												  G_OBJECT_CLASS_TYPE (klass),
+												  G_SIGNAL_RUN_LAST,
+												  G_STRUCT_OFFSET (GdNotificationClass, dismissed),
+												  NULL,
+												  NULL,
+												  g_cclosure_marshal_VOID__VOID,
+												  G_TYPE_NONE,
+												  0);
 
   g_type_class_add_private (object_class, sizeof (GdNotificationPrivate));
 }
 
 static void
 get_padding_and_border (GdNotification *notification,
-                        GtkBorder *border)
+						GtkBorder *border)
 {
   GtkStyleContext *context;
   GtkStateFlags state;
@@ -568,29 +568,29 @@ gd_notification_draw (GtkWidget *widget, cairo_t *cr)
   GtkStyleContext *context;
 
   if (gtk_cairo_should_draw_window (cr, priv->bin_window))
-    {
-      context = gtk_widget_get_style_context (widget);
+	{
+	  context = gtk_widget_get_style_context (widget);
 
-      gtk_render_background (context,  cr,
-                             0, 0,
-                             gtk_widget_get_allocated_width (widget),
-                             gtk_widget_get_allocated_height (widget));
-      gtk_render_frame (context,cr,
-                        0, 0,
-                        gtk_widget_get_allocated_width (widget),
-                        gtk_widget_get_allocated_height (widget));
+	  gtk_render_background (context,  cr,
+							 0, 0,
+							 gtk_widget_get_allocated_width (widget),
+							 gtk_widget_get_allocated_height (widget));
+	  gtk_render_frame (context,cr,
+						0, 0,
+						gtk_widget_get_allocated_width (widget),
+						gtk_widget_get_allocated_height (widget));
 
 
-      if (GTK_WIDGET_CLASS (gd_notification_parent_class)->draw)
-        GTK_WIDGET_CLASS (gd_notification_parent_class)->draw(widget, cr);
-    }
+	  if (GTK_WIDGET_CLASS (gd_notification_parent_class)->draw)
+		GTK_WIDGET_CLASS (gd_notification_parent_class)->draw(widget, cr);
+	}
 
   return FALSE;
 }
 
 static void
 gd_notification_add (GtkContainer *container,
-                      GtkWidget    *child)
+					  GtkWidget    *child)
 {
   GtkBin *bin = GTK_BIN (container);
   GdNotification *notification = GD_NOTIFICATION (bin);
@@ -622,36 +622,36 @@ gd_notification_get_preferred_width (GtkWidget *widget, gint *minimum_size, gint
 
   child = gtk_bin_get_child (bin);
   if (child && gtk_widget_get_visible (child))
-    {
-      gtk_widget_get_preferred_width (child,
-                                      &child_min, &child_nat);
-      minimum += child_min;
-      natural += child_nat;
-    }
+	{
+	  gtk_widget_get_preferred_width (child,
+									  &child_min, &child_nat);
+	  minimum += child_min;
+	  natural += child_nat;
+	}
 
   if (priv->show_close_button)
-    {
-      gtk_widget_get_preferred_width (priv->close_button,
-                                      &child_min, &child_nat);
-      minimum += child_min;
-      natural += child_nat;
-    }
+	{
+	  gtk_widget_get_preferred_width (priv->close_button,
+									  &child_min, &child_nat);
+	  minimum += child_min;
+	  natural += child_nat;
+	}
 
   minimum += padding.left + padding.right + 2 * SHADOW_OFFSET_X;
   natural += padding.left + padding.right + 2 * SHADOW_OFFSET_X;
 
  if (minimum_size)
-    *minimum_size = minimum;
+	*minimum_size = minimum;
 
   if (natural_size)
-    *natural_size = natural;
+	*natural_size = natural;
 }
 
 static void
 gd_notification_get_preferred_width_for_height (GtkWidget *widget,
-                                                 gint height,
-                                                 gint *minimum_width,
-                                                 gint *natural_width)
+												 gint height,
+												 gint *minimum_width,
+												 gint *natural_width)
 {
   GdNotification *notification = GD_NOTIFICATION (widget);
   GdNotificationPrivate *priv = notification->priv;
@@ -670,36 +670,36 @@ gd_notification_get_preferred_width_for_height (GtkWidget *widget,
 
   child = gtk_bin_get_child (bin);
   if (child && gtk_widget_get_visible (child))
-    {
-      gtk_widget_get_preferred_width_for_height (child, child_height,
-                                                 &child_min, &child_nat);
-      minimum += child_min;
-      natural += child_nat;
-    }
+	{
+	  gtk_widget_get_preferred_width_for_height (child, child_height,
+												 &child_min, &child_nat);
+	  minimum += child_min;
+	  natural += child_nat;
+	}
 
   if (priv->show_close_button)
-    {
-      gtk_widget_get_preferred_width_for_height (priv->close_button, child_height,
-                                                 &child_min, &child_nat);
-      minimum += child_min;
-      natural += child_nat;
-    }
+	{
+	  gtk_widget_get_preferred_width_for_height (priv->close_button, child_height,
+												 &child_min, &child_nat);
+	  minimum += child_min;
+	  natural += child_nat;
+	}
 
   minimum += padding.left + padding.right + 2 * SHADOW_OFFSET_X;
   natural += padding.left + padding.right + 2 * SHADOW_OFFSET_X;
 
  if (minimum_width)
-    *minimum_width = minimum;
+	*minimum_width = minimum;
 
   if (natural_width)
-    *natural_width = natural;
+	*natural_width = natural;
 }
 
 static void
 gd_notification_get_preferred_height_for_width (GtkWidget *widget,
-                                                 gint width,
-                                                 gint *minimum_height,
-                                                 gint *natural_height)
+												 gint width,
+												 gint *minimum_height,
+												 gint *natural_height)
 {
   GdNotification *notification = GD_NOTIFICATION (widget);
   GdNotificationPrivate *priv = notification->priv;
@@ -712,50 +712,50 @@ gd_notification_get_preferred_height_for_width (GtkWidget *widget,
   get_padding_and_border (notification, &padding);
 
   if (priv->show_close_button)
-    {
-      gtk_widget_get_preferred_height (priv->close_button,
-                                       &minimum, &natural);
-      gtk_widget_get_preferred_width (priv->close_button,
-                                      NULL, &button_width);
-    }
+	{
+	  gtk_widget_get_preferred_height (priv->close_button,
+									   &minimum, &natural);
+	  gtk_widget_get_preferred_width (priv->close_button,
+									  NULL, &button_width);
+	}
 
   child = gtk_bin_get_child (bin);
   if (child && gtk_widget_get_visible (child))
-    {
-      child_width = width - button_width -
-        2 * SHADOW_OFFSET_X - padding.left - padding.right;
+	{
+	  child_width = width - button_width -
+		2 * SHADOW_OFFSET_X - padding.left - padding.right;
 
-      gtk_widget_get_preferred_height_for_width (child, child_width,
-                                                 &child_min, &child_nat);
-      minimum = MAX (minimum, child_min);
-      natural = MAX (natural, child_nat);
-    }
+	  gtk_widget_get_preferred_height_for_width (child, child_width,
+												 &child_min, &child_nat);
+	  minimum = MAX (minimum, child_min);
+	  natural = MAX (natural, child_nat);
+	}
 
   minimum += padding.top + padding.bottom + SHADOW_OFFSET_Y;
   natural += padding.top + padding.bottom + SHADOW_OFFSET_Y;
 
  if (minimum_height)
-    *minimum_height = minimum;
+	*minimum_height = minimum;
 
   if (natural_height)
-    *natural_height = natural;
+	*natural_height = natural;
 }
 
 static void
-gd_notification_get_preferred_height (GtkWidget *widget, 
-                                      gint *minimum_height, 
-                                      gint *natural_height)
+gd_notification_get_preferred_height (GtkWidget *widget,
+									  gint *minimum_height,
+									  gint *natural_height)
 {
   gint width;
 
   gd_notification_get_preferred_width (widget, &width, NULL);
   gd_notification_get_preferred_height_for_width (widget, width,
-                                                  minimum_height, natural_height);
+												  minimum_height, natural_height);
 }
 
 static void
 gd_notification_size_allocate (GtkWidget *widget,
-                                GtkAllocation *allocation)
+								GtkAllocation *allocation)
 {
   GdNotification *notification = GD_NOTIFICATION (widget);
   GdNotificationPrivate *priv = notification->priv;
@@ -768,52 +768,52 @@ gd_notification_size_allocate (GtkWidget *widget,
   gtk_widget_set_allocation (widget, allocation);
 
   /* If somehow the notification changes while not hidden
-     and we're not animating, immediately follow the resize */
+	 and we're not animating, immediately follow the resize */
   if (priv->animate_y > 0 &&
-      !priv->animate_timeout)
-    priv->animate_y = allocation->height;
+	  !priv->animate_timeout)
+	priv->animate_y = allocation->height;
 
   get_padding_and_border (notification, &padding);
 
   if (gtk_widget_get_realized (widget))
-    {
-      gdk_window_move_resize (gtk_widget_get_window (widget),
-                              allocation->x,
-                              allocation->y,
-                              allocation->width,
-                              allocation->height);
-      gdk_window_move_resize (priv->bin_window,
-                              0,
-                              -allocation->height + priv->animate_y,
-                              allocation->width,
-                              allocation->height);
-    }
+	{
+	  gdk_window_move_resize (gtk_widget_get_window (widget),
+							  allocation->x,
+							  allocation->y,
+							  allocation->width,
+							  allocation->height);
+	  gdk_window_move_resize (priv->bin_window,
+							  0,
+							  -allocation->height + priv->animate_y,
+							  allocation->width,
+							  allocation->height);
+	}
 
   child_allocation.x = SHADOW_OFFSET_X + padding.left;
   child_allocation.y = padding.top;
 
   if (priv->show_close_button)
-    gtk_widget_get_preferred_size (priv->close_button, &button_req, NULL);
+	gtk_widget_get_preferred_size (priv->close_button, &button_req, NULL);
   else
-    button_req.width = button_req.height = 0;
+	button_req.width = button_req.height = 0;
 
   child_allocation.height = MAX (1, allocation->height - SHADOW_OFFSET_Y - padding.top - padding.bottom);
   child_allocation.width = MAX (1, (allocation->width - button_req.width -
-                                    2 * SHADOW_OFFSET_X - padding.left - padding.right));
+									2 * SHADOW_OFFSET_X - padding.left - padding.right));
 
   child = gtk_bin_get_child (bin);
   if (child && gtk_widget_get_visible (child))
-    gtk_widget_size_allocate (child, &child_allocation);
+	gtk_widget_size_allocate (child, &child_allocation);
 
   if (priv->show_close_button)
-    {
-      child_allocation.x += child_allocation.width;
-      child_allocation.width = button_req.width;
-      child_allocation.y += (child_allocation.height - button_req.height) / 2;
-      child_allocation.height = button_req.height;
+	{
+	  child_allocation.x += child_allocation.width;
+	  child_allocation.width = button_req.width;
+	  child_allocation.y += (child_allocation.height - button_req.height) / 2;
+	  child_allocation.height = button_req.height;
 
-      gtk_widget_size_allocate (priv->close_button, &child_allocation);
-    }
+	  gtk_widget_size_allocate (priv->close_button, &child_allocation);
+	}
 }
 
 static gboolean
@@ -828,7 +828,7 @@ gd_notification_timeout_cb (gpointer user_data)
 
 void
 gd_notification_set_timeout (GdNotification *notification,
-                             gint            timeout_sec)
+							 gint            timeout_sec)
 {
   GdNotificationPrivate *priv = notification->priv;
 
@@ -838,7 +838,7 @@ gd_notification_set_timeout (GdNotification *notification,
 
 void
 gd_notification_set_show_close_button (GdNotification *notification,
-                                       gboolean show_close_button)
+									   gboolean show_close_button)
 {
   GdNotificationPrivate *priv = notification->priv;
 

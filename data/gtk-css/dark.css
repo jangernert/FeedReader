@@ -6,56 +6,56 @@
 
 .fr-sidebar,
 .fr-sidebar .scrollbar {
-    background-color: @feedlist-bg;
+	background-color: @feedlist-bg;
 }
 .fr-sidebar .slider {
-    background: @feedlist-slider;
+	background: @feedlist-slider;
 }
 .fr-sidebar-row:selected,
 .fr-sidebar-feed:selected {
-    background: @feedlist-selected;
+	background: @feedlist-selected;
 }
 .fr-sidebar label {
-    color: @feedlist-label;
-    font-weight: bold;
-    text-shadow: none;
+	color: @feedlist-label;
+	font-weight: bold;
+	text-shadow: none;
 }
 .fr-sidebar-row:hover {
-    background: shade(@feedlist-bg, 1.1);
+	background: shade(@feedlist-bg, 1.1);
 }
 .fr-sidebar-row:selected:hover,
 .fr-sidebar-feed:selected:hover {
-    background: shade(@feedlist-selected, 1.1);
+	background: shade(@feedlist-selected, 1.1);
 }
 .fr-sidebar-feed {
-    background: @feedrow-bg;
+	background: @feedrow-bg;
 }
 .fr-sidebar-feed:hover {
-    background: shade(@feedrow-bg, 1.1);
+	background: shade(@feedrow-bg, 1.1);
 }
 .fr-sidebar-separator {
-    color: shade(@feedlist-bg, 0.82);
-    border: none;
+	color: shade(@feedlist-bg, 0.82);
+	border: none;
 }
 .fr-sidebar-symbolic {
-    color: @feedlist-label;
+	color: @feedlist-label;
 }
 /******************/
 /* sidebar footer */
 /******************/
 
 .footer {
-    background: shade(@feedlist-bg, 0.9);
+	background: shade(@feedlist-bg, 0.9);
 }
 .footer button:hover,
 .footer-popover {
-    background: shade(@feedlist-bg, 1.1);
+	background: shade(@feedlist-bg, 1.1);
 }
 .footer button {
-    border: 0;
-    border-radius:0;
-    -gtk-icon-shadow: none;
-    box-shadow: none;
+	border: 0;
+	border-radius:0;
+	-gtk-icon-shadow: none;
+	box-shadow: none;
 }
 .footer button:disabled {
 	color:shade(@feedlist-label, 0.9);

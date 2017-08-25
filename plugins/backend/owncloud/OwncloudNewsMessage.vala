@@ -34,7 +34,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		m_destination = destination;
 
 		if(method == "GET")
-		    m_contenttype = "application/x-www-form-urlencoded";
+			m_contenttype = "application/x-www-form-urlencoded";
 		else
 			m_contenttype = "application/json";
 
@@ -64,7 +64,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		if(m_method == "GET")
 			Logger.warning("OwnCloudNewsMessage.add_int_array: this should not happen");
 		else
-		    m_message_string.append(",\"" + type + "\":[" + values + "]");
+			m_message_string.append(",\"" + type + "\":[" + values + "]");
 	}
 
 	public void add_bool(string type, bool val)
@@ -90,7 +90,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 			m_message_string.append(type + "=" + val);
 		}
 		else
-		    m_message_string.append(",\"" + type + "\":\"" + val + "\"");
+			m_message_string.append(",\"" + type + "\":\"" + val + "\"");
 	}
 
 	public ConnectionError send(bool ping = false)

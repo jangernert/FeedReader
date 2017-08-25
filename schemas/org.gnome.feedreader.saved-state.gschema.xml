@@ -1,110 +1,110 @@
 <schemalist>
 
-    <enum id="org.gnome.feedreader.show-articles">
-        <value nick="ALL" value="0"/>
-        <value nick="UNREAD" value="1"/>
-        <value nick="MARKED" value="2"/>
-    </enum>
+	<enum id="org.gnome.feedreader.show-articles">
+		<value nick="ALL" value="0"/>
+		<value nick="UNREAD" value="1"/>
+		<value nick="MARKED" value="2"/>
+	</enum>
 
-    <schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
-    	<key name="ui-running" type="b">
-            <default>false</default>
-            <summary>if feedreader UI is running</summary>
-        </key>
-    	
-        <key name="window-width" type="i">
-            <default>1600</default>
-            <summary>saved with of the window</summary>
-        </key>
+	<schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
+		<key name="ui-running" type="b">
+			<default>false</default>
+			<summary>if feedreader UI is running</summary>
+		</key>
 
-        <key name="window-height" type="i">
-            <default>900</default>
-            <summary>saved height of the window</summary>
-        </key>
+		<key name="window-width" type="i">
+			<default>1600</default>
+			<summary>saved with of the window</summary>
+		</key>
 
-        <key name="window-maximized" type="b">
-            <default>false</default>
-            <summary>if window is maximized</summary>
-            <description>
-                Weather the window was maximized on close so it can be restored in the same way on startup.
-            </description>
-        </key>
+		<key name="window-height" type="i">
+			<default>900</default>
+			<summary>saved height of the window</summary>
+		</key>
 
-        <key name="feed-row-width" type="i">
-            <default>200</default>
-            <summary>Width of the first paned, the feed-row</summary>
-        </key>
+		<key name="window-maximized" type="b">
+			<default>false</default>
+			<summary>if window is maximized</summary>
+			<description>
+				Weather the window was maximized on close so it can be restored in the same way on startup.
+			</description>
+		</key>
 
-        <key name="feed-row-scrollpos" type="d">
-            <default>0</default>
-            <summary>FeedList Scroll Position</summary>
-            <description>
-                The position of the FeedList the user scrolled to at the time the app closes
-            </description>
-        </key>
+		<key name="feed-row-width" type="i">
+			<default>200</default>
+			<summary>Width of the first paned, the feed-row</summary>
+		</key>
 
-        <key name="feedlist-selected-row" type="s">
-            <default>""</default>
-            <summary>FeedList selected row</summary>
-            <description>
-                The feedrow selected when the app closes so it can be restored on open.
-            </description>
-        </key>
+		<key name="feed-row-scrollpos" type="d">
+			<default>0</default>
+			<summary>FeedList Scroll Position</summary>
+			<description>
+				The position of the FeedList the user scrolled to at the time the app closes
+			</description>
+		</key>
 
-        <key name="feeds-and-articles-width" type="i">
-            <default>400</default>
-            <summary>Width of the two first panes, feed-row + article-row</summary>
-        </key>
+		<key name="feedlist-selected-row" type="s">
+			<default>""</default>
+			<summary>FeedList selected row</summary>
+			<description>
+				The feedrow selected when the app closes so it can be restored on open.
+			</description>
+		</key>
 
-        <key name="articlelist-scrollpos" type="d">
-            <default>0</default>
-            <summary>ArticleList Scroll Position</summary>
-            <description>
-                The position of the ArticleList the user scrolled to at the time the app closes
-            </description>
-        </key>
+		<key name="feeds-and-articles-width" type="i">
+			<default>400</default>
+			<summary>Width of the two first panes, feed-row + article-row</summary>
+		</key>
 
-        <key name="articleview-scrollpos" type="i">
-            <default>0</default>
-            <summary>ArticleView Scroll Position</summary>
-            <description>
-                The position of the ArticleView the user scrolled to at the time the app closes
-            </description>
-        </key>
+		<key name="articlelist-scrollpos" type="d">
+			<default>0</default>
+			<summary>ArticleList Scroll Position</summary>
+			<description>
+				The position of the ArticleList the user scrolled to at the time the app closes
+			</description>
+		</key>
 
-        <key name="articlelist-selected-row" type="s">
-            <default>""</default>
-            <summary>ArticleList selected row</summary>
-            <description>
-                The artcile selected when the app closes so it can be restored on open.
-            </description>
-        </key>
-        
-        <key name="articlelist-top-row" type="s">
-            <default>""</default>
-            <summary>ArticleList top row</summary>
-            <description>
-                The article sorted on top of the article-list.
-            </description>
-        </key>
+		<key name="articleview-scrollpos" type="i">
+			<default>0</default>
+			<summary>ArticleView Scroll Position</summary>
+			<description>
+				The position of the ArticleView the user scrolled to at the time the app closes
+			</description>
+		</key>
 
-        <key name="articlelist-row-offset" type="i">
-            <default>0</default>
-            <summary>ArticleList number of rows</summary>
-            <description>
-                How much articles to load on startup
-            </description>
-        </key>
+		<key name="articlelist-selected-row" type="s">
+			<default>""</default>
+			<summary>ArticleList selected row</summary>
+			<description>
+				The artcile selected when the app closes so it can be restored on open.
+			</description>
+		</key>
 
-        <key name="articlelist-new-rows" type="i">
-            <default>0</default>
-            <summary>ArticleList number of new rows added during close</summary>
-            <description>
-                How much articles got added to the db while the app was closed
-            </description>
-        </key>
+		<key name="articlelist-top-row" type="s">
+			<default>""</default>
+			<summary>ArticleList top row</summary>
+			<description>
+				The article sorted on top of the article-list.
+			</description>
+		</key>
 
-        <key name='show-articles' enum='org.gnome.feedreader.show-articles'>
+		<key name="articlelist-row-offset" type="i">
+			<default>0</default>
+			<summary>ArticleList number of rows</summary>
+			<description>
+				How much articles to load on startup
+			</description>
+		</key>
+
+		<key name="articlelist-new-rows" type="i">
+			<default>0</default>
+			<summary>ArticleList number of new rows added during close</summary>
+			<description>
+				How much articles got added to the db while the app was closed
+			</description>
+		</key>
+
+		<key name='show-articles' enum='org.gnome.feedreader.show-articles'>
 			<default>'ALL'</default>
 			<summary>what articles to show</summary>
 			<description>
@@ -112,69 +112,69 @@
 			</description>
 		</key>
 
-        <key name="expanded-categories" type="as">
-            <default>['Categories', 'Labels']</default>
-            <summary>expaneded categories</summary>
-            <description>
-                all the categories that are expanded, showing their feeds and subcategories
-            </description>
-        </key>
+		<key name="expanded-categories" type="as">
+			<default>['Categories', 'Labels']</default>
+			<summary>expaneded categories</summary>
+			<description>
+				all the categories that are expanded, showing their feeds and subcategories
+			</description>
+		</key>
 
-        <key name="currently-updating" type="b">
-            <default>false</default>
-            <summary>currently updating</summary>
-            <description>
-                If the FeedReader is currently updating.
-            </description>
-        </key>
+		<key name="currently-updating" type="b">
+			<default>false</default>
+			<summary>currently updating</summary>
+			<description>
+				If the FeedReader is currently updating.
+			</description>
+		</key>
 
-        <key name="spring-cleaning" type="b">
-            <default>false</default>
-            <summary>Clean up the DB</summary>
-            <description>
-                Do a vacuum of the db. No other operation can access the db during this.
-            </description>
-        </key>
+		<key name="spring-cleaning" type="b">
+			<default>false</default>
+			<summary>Clean up the DB</summary>
+			<description>
+				Do a vacuum of the db. No other operation can access the db during this.
+			</description>
+		</key>
 
-        <key name="last-spring-cleaning" type="i">
-            <default>946684800</default>
-            <summary>timestamp of the last spring cleaning</summary>
-            <description>
-                Timestamp of the last time the db got vacuumed.
-            </description>
-        </key>
+		<key name="last-spring-cleaning" type="i">
+			<default>946684800</default>
+			<summary>timestamp of the last spring cleaning</summary>
+			<description>
+				Timestamp of the last time the db got vacuumed.
+			</description>
+		</key>
 
-        <key name="last-sync" type="i">
-            <default>946684800</default>
-            <summary>timestamp of the last sync</summary>
-            <description>
-                Timestamp of the last time the data got updated.
-            </description>
-        </key>
-        
-        <key name="last-favicon-update" type="i">
-            <default>946684800</default>
-            <summary>timestamp of the last favicon update</summary>
-            <description>
-                Timestamp of the last time nonexisting favicon got updated.
-            </description>
-        </key>
+		<key name="last-sync" type="i">
+			<default>946684800</default>
+			<summary>timestamp of the last sync</summary>
+			<description>
+				Timestamp of the last time the data got updated.
+			</description>
+		</key>
 
-        <key name="search-term" type="s">
-            <default>""</default>
-            <summary>search term</summary>
-            <description>
-                String the user filtered the articles by.
-            </description>
-        </key>
-        
-        <key name="sync-status" type="s">
-            <default>""</default>
-            <summary>status of current sync</summary>
-            <description>
-                Last known status of the current sync the UI can pick up if just started
-            </description>
-        </key>
-    </schema>
+		<key name="last-favicon-update" type="i">
+			<default>946684800</default>
+			<summary>timestamp of the last favicon update</summary>
+			<description>
+				Timestamp of the last time nonexisting favicon got updated.
+			</description>
+		</key>
+
+		<key name="search-term" type="s">
+			<default>""</default>
+			<summary>search term</summary>
+			<description>
+				String the user filtered the articles by.
+			</description>
+		</key>
+
+		<key name="sync-status" type="s">
+			<default>""</default>
+			<summary>status of current sync</summary>
+			<description>
+				Last known status of the current sync the UI can pick up if just started
+			</description>
+		</key>
+	</schema>
 
 </schemalist>

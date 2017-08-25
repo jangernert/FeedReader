@@ -41,7 +41,7 @@
 				On startup of the daemon copy the desktop file in the autostart folder
 			</description>
 		</key>
-		
+
 		<key name="article-select-text" type="b">
 			<default>false</default>
 			<summary>Select text of articles</summary>
@@ -49,7 +49,7 @@
 				Enable selecting text in the articleview, also copy text
 			</description>
 		</key>
-		
+
 		<key name="smooth-scrolling" type="b">
 			<default>true</default>
 			<summary>Enable smooth scrolling in ArticleView</summary>
@@ -57,7 +57,7 @@
 				Enable smooth scrolling in ArticleView
 			</description>
 		</key>
-		
+
 		<key name="allow-javascript" type="b">
 			<default>true</default>
 			<summary>Allow javascript to be executed in the ArticleView</summary>

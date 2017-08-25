@@ -1,5 +1,5 @@
 #!/bin/sh
-# A modified code from the Terminix project<https://github.com/gnunn1/terminix/>. 
+# A modified code from the Terminix project<https://github.com/gnunn1/terminix/>.
 DOMAIN=FeedReader
 BASEDIR=$(dirname $0)
 OUTPUT_FILE=${BASEDIR}/po/${DOMAIN}.pot

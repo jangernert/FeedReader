@@ -64,8 +64,8 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
-		                                  "type", "oldreader",
-		                                  "Username", Secret.SchemaAttributeType.STRING);
+										  "type", "oldreader",
+										  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["Username"] = getUser();

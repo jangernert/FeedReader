@@ -202,12 +202,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(Feed != null)
 		{
-            if(!dbDaemon.get_default().feed_exists(Feed.getURL())) {
-                var list = new Gee.LinkedList<feed>();
-                list.add(Feed);
-                dbDaemon.get_default().write_feeds(list);
-                return true;
-            }
+			if(!dbDaemon.get_default().feed_exists(Feed.getURL())) {
+				var list = new Gee.LinkedList<feed>();
+				list.add(Feed);
+				dbDaemon.get_default().write_feeds(list);
+				return true;
+			}
 		}
 
 		return false;

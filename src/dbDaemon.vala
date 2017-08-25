@@ -159,10 +159,10 @@ public class FeedReader.dbDaemon : dbBase {
 			query.addEqualsCondition("articleID", articleID, true, true);
 			executeSQL(query.build());
 		}
-    }
+	}
 
-    public bool feed_exists(string feed_url){
-        var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+	public bool feed_exists(string feed_url){
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("count(*)");
 		query.addEqualsCondition("url", feed_url, true, true);
 		query.limit(1);
@@ -182,7 +182,7 @@ public class FeedReader.dbDaemon : dbBase {
 		}
 
 		return false;
-    }
+	}
 
 	public void write_feeds(Gee.List<feed> feeds)
 	{

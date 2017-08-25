@@ -203,7 +203,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		switch(Settings.general().get_enum("drop-articles-after"))
 		{
 			case DropArticles.NEVER:
-	            break;
+				break;
 
 			case DropArticles.ONE_WEEK:
 				dbDaemon.get_default().dropOldArtilces(1);

@@ -394,7 +394,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		return result;
-    }
+	}
 
 	public string getFeedName(string feedID)
 	{
@@ -1001,7 +1001,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	protected virtual bool showCategory(string catID, Gee.ArrayList<feed> feeds)
 	{
-        return true;
+		return true;
 	}
 
 	protected string getUncategorizedFeedsQuery()
@@ -1433,7 +1433,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmpCategories;
 	}
 
-    public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
+	public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
 	{
 		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
 		category tmpcategory;

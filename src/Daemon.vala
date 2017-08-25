@@ -841,13 +841,13 @@ namespace FeedReader {
 	{
 		try
 		{
-		    conn.register_object("/org/gnome/FeedReader/Daemon", FeedDaemonServer.get_default());
+			conn.register_object("/org/gnome/FeedReader/Daemon", FeedDaemonServer.get_default());
 		}
 		catch (IOError e)
 		{
-		    Logger.warning("daemon: Could not register service. Will shut down!");
-		    Logger.warning(e.message);
-		    exit(-1);
+			Logger.warning("daemon: Could not register service. Will shut down!");
+			Logger.warning(e.message);
+			exit(-1);
 		}
 		Logger.debug("daemon: bus aquired");
 	}
@@ -925,16 +925,16 @@ namespace FeedReader {
 		dbDaemon.get_default();
 
 		Bus.own_name (BusType.SESSION, "org.gnome.FeedReader.Daemon", BusNameOwnerFlags.NONE,
-				      on_bus_aquired,
-				      () => {
-				      			Settings.state().set_boolean("currently-updating", false);
+					  on_bus_aquired,
+					  () => {
+					  			Settings.state().set_boolean("currently-updating", false);
 								Settings.state().set_boolean("spring-cleaning", false);
-				      },
-				      () => {
-				      			Logger.warning("daemon: Could not aquire name (already running). Will shut down!");
-				          		exit(-1);
-				          	}
-				      );
+					  },
+					  () => {
+					  			Logger.warning("daemon: Could not aquire name (already running). Will shut down!");
+						  		exit(-1);
+						  	}
+					  );
 		var mainloop = new GLib.MainLoop();
 		mainloop.run();
 		return 0;

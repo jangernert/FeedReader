@@ -396,33 +396,6 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
     }
 
-    public string getFeedURL(string feedID)
-    {
-        /*
-            Return feed URL.
-        */
-        string result = "";
-        var query = new QueryBuilder(QueryType.SELECT, "feeds");
-        query.selectField("url");
-        query.addEqualsCondition("feed_id", feedID, true, true);
-        query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while(stmt.step() == Sqlite.ROW)
-		{
-			result = stmt.column_text(0);
-		}
-
-		return result;
-    }
-
 	public string getFeedName(string feedID)
 	{
 		string result = _("unknown Feed");

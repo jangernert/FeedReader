@@ -973,7 +973,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
         if (feed_id != ""){
             var feed =  dbUI.get_default().read_feed(feed_id);
             if (feed != null){
-                string feed_url = feed.getURL();
+                string feed_url = feed.getXmlUrl();
                 Gdk.Display display = MainWindow.get_default().get_display ();
                 Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
 

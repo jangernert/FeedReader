@@ -588,6 +588,26 @@ public class FeedReader.dbDaemon : dbBase {
 			if(article.getDate().compare(now) == 1)
 				article.SetDate(now);
 
+
+				switch(Settings.general().get_enum("drop-articles-after"))
+				{
+					case DropArticles.ONE_WEEK:
+						if(article.getDate().compare(now.add_weeks(-1)) == -1)
+							continue;
+						break;
+
+					case DropArticles.ONE_MONTH:
+						if(article.getDate().compare(now.add_weeks(-4)) == -1)
+							continue;
+						break;
+
+					case DropArticles.SIX_MONTHS:
+						if(article.getDate().compare(now.add_weeks(-24)) == -1)
+							continue;
+						break;
+				}
+
+
 			stmt.bind_text(articleID_position, article.getArticleID());
 			stmt.bind_text(feedID_position, article.getFeedID());
 			stmt.bind_text(url_position, article.getURL());

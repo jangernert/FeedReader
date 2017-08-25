@@ -159,7 +159,30 @@ public class FeedReader.dbDaemon : dbBase {
 			query.addEqualsCondition("articleID", articleID, true, true);
 			executeSQL(query.build());
 		}
-	}
+    }
+
+    public bool feed_exists(string feed_url){
+        var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("count(*)");
+		query.addCustomCondition("url = \"%s\"".printf(feed_url));
+		query.limit(1);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error("feed_exists: " + sqlite_db.errmsg());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			if(stmt.column_int(0) > 1)
+				return true;
+		}
+
+		return false;
+    }
 
 	public void write_feeds(Gee.List<feed> feeds)
 	{

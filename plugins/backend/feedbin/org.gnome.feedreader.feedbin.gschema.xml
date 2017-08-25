@@ -1,6 +1,6 @@
 <schemalist>
-    <schema id="org.gnome.feedreader.feedbin" path="/org/gnome/feedreader/feedbin/" gettext-domain="feedreader">
-		
+	<schema id="org.gnome.feedreader.feedbin" path="/org/gnome/feedreader/feedbin/" gettext-domain="feedreader">
+
 		<key name="username" type="s">
 			<default>""</default>
 			<summary>Username for feedbin</summary>
@@ -8,6 +8,6 @@
 				Username for feedbin
 			</description>
 		</key>
-		
+
 	</schema>
 </schemalist>

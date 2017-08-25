@@ -1,23 +1,23 @@
 #fake-example *:selected *:visited {
-    opacity: 1;
+	opacity: 1;
 }
 .feedlist-spinner {
-    color: mix(@theme_bg_color, @theme_fg_color, 0.5);
+	color: mix(@theme_bg_color, @theme_fg_color, 0.5);
 }
 FeedReaderUpdateButton:disabled * {
-    opacity: 1;
+	opacity: 1;
 }
 GtkEventBox {
-    background: none;
+	background: none;
 }
 .addServiceButton,
 row {
-    outline: none;
-    padding: 0px;
-    border: none;
-    border-radius: 0px;
-    background-image: none;
-    padding: 0;
+	outline: none;
+	padding: 0px;
+	border: none;
+	border-radius: 0px;
+	background-image: none;
+	padding: 0;
 }
 .article-list row {
 	border-bottom-width: 1px;
@@ -25,75 +25,75 @@ row {
 	border-bottom-color: rgba(128, 128, 128, 0.3);
 }
 .destructive-action spinner {
-    color: white;
+	color: white;
 }
 .FeedListFooter button {
-    box-shadow: none;
+	box-shadow: none;
 }
 .transparentBG {
-    background: rgba(0, 0, 0, 0);
+	background: rgba(0, 0, 0, 0);
 }
 .servicebox {
-    border: 1px solid alpha (#000, 0.30);
+	border: 1px solid alpha (#000, 0.30);
 }
 .fr-sidebar-row {
-    text-shadow: none;
-    -gtk-icon-shadow: none;
-    background: none;
+	text-shadow: none;
+	-gtk-icon-shadow: none;
+	background: none;
 }
 .imageOverlay {
-    border-radius: 0;
+	border-radius: 0;
 }
 /***************/
 /* text styles */
 /***************/
 
 .bold {
-    font-weight: bold
+	font-weight: bold
 }
 .h1 {
-    font-weight: bold;
-    font-size: xx-large;
+	font-weight: bold;
+	font-size: xx-large;
 }
 .h2 {
-    font-size: x-large;
+	font-size: x-large;
 }
 .h3 {
-    font-size: large;
+	font-size: large;
 }
 .h4 {
-    font-weight: bold
+	font-weight: bold
 }
 .preview {
-    font-size: small;
+	font-size: small;
 }
 .headline-read,
 .headline-unread {
-    font-style: normal;
-    font-size: large;
+	font-style: normal;
+	font-size: large;
 }
 .headline-read {
-    font-weight: normal;
+	font-weight: normal;
 }
 .headline-unread {
-    font-weight: bold;
+	font-weight: bold;
 }
 /*******************/
 /* split headerbar */
 /*******************/
 
 .headerbar_pane.pane-separator {
-    border-radius: 0;
-    border-width: 0 1px 1px 0;
+	border-radius: 0;
+	border-width: 0 1px 1px 0;
 }
 .titlebar .pane-separator {
-    background-color: shade(@theme_bg_color, 0.4);
-    background-image: none;
+	background-color: shade(@theme_bg_color, 0.4);
+	background-image: none;
 }
 .header_right {
-    border-top-right-radius: 0;
+	border-top-right-radius: 0;
 }
 .header_left {
-    border-top-left-radius: 0;
+	border-top-left-radius: 0;
 }
 

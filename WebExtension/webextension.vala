@@ -1,43 +1,43 @@
 [DBus (name = "org.gnome.FeedReader.ArticleView")]
 public class FeedReaderWebExtension : Object {
 
-    private WebKit.DOM.Document m_doc;
-    public signal void onClick(string path, int width, int height, string url);
-    public signal void message(string message);
+	private WebKit.DOM.Document m_doc;
+	public signal void onClick(string path, int width, int height, string url);
+	public signal void message(string message);
 
-    [DBus (visible = false)]
-    public void on_bus_aquired(DBusConnection connection)
-    {
-    	try
-    	{
-        	connection.register_object("/org/gnome/FeedReader/ArticleView", this);
-        }
-        catch(GLib.IOError e)
-        {
-        	warning("Could not register object");
-        }
-    }
+	[DBus (visible = false)]
+	public void on_bus_aquired(DBusConnection connection)
+	{
+		try
+		{
+			connection.register_object("/org/gnome/FeedReader/ArticleView", this);
+		}
+		catch(GLib.IOError e)
+		{
+			warning("Could not register object");
+		}
+	}
 
-    [DBus (visible = false)]
-    public void on_page_created(WebKit.WebExtension extension, WebKit.WebPage page)
-    {
-        page.document_loaded.connect(() => {
-        	onDocLoaded(page);
-        });
-        message("on_page_created");
-    }
+	[DBus (visible = false)]
+	public void on_page_created(WebKit.WebExtension extension, WebKit.WebPage page)
+	{
+		page.document_loaded.connect(() => {
+			onDocLoaded(page);
+		});
+		message("on_page_created");
+	}
 
-    private void onDocLoaded(WebKit.WebPage page)
-    {
-    	m_doc = page.get_dom_document();
-    	message("onDocLoaded");
-    }
+	private void onDocLoaded(WebKit.WebPage page)
+	{
+		m_doc = page.get_dom_document();
+		message("onDocLoaded");
+	}
 
-    public void recalculate()
-    {
-        message("recalculate");
-        var images = m_doc.get_images();
-        ulong count = images.get_length();
+	public void recalculate()
+	{
+		message("recalculate");
+		var images = m_doc.get_images();
+		ulong count = images.get_length();
 
 		for(ulong i = 0; i < count; i++)
 		{

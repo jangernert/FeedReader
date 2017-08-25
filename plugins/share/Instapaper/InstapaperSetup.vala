@@ -39,8 +39,8 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 		grid.margin_bottom = 10;
 		grid.margin_top = 5;
 
-        m_userEntry = new Gtk.Entry();
-        m_passEntry = new Gtk.Entry();
+		m_userEntry = new Gtk.Entry();
+		m_passEntry = new Gtk.Entry();
 		m_passEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
 		m_passEntry.set_visibility(false);
 
@@ -52,10 +52,10 @@ public class FeedReader.InstapaperSetup : ServiceSetup {
 			login();
 		});
 
-        grid.attach(new Gtk.Label(_("Username:")), 0, 0, 1, 1);
-        grid.attach(new Gtk.Label(_("Password:")), 0, 1, 1, 1);
-        grid.attach(m_userEntry, 1, 0, 1, 1);
-        grid.attach(m_passEntry, 1, 1, 1, 1);
+		grid.attach(new Gtk.Label(_("Username:")), 0, 0, 1, 1);
+		grid.attach(new Gtk.Label(_("Password:")), 0, 1, 1, 1);
+		grid.attach(m_userEntry, 1, 0, 1, 1);
+		grid.attach(m_passEntry, 1, 1, 1, 1);
 
 		m_login_revealer = new Gtk.Revealer();
 		m_login_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);

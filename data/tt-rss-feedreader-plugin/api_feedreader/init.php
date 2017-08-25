@@ -11,12 +11,12 @@ class Api_feedreader extends Plugin {
 			true
 			);
 	}
-	
+
 	function api_version()
 	{
 		return 2;
 	}
-	
+
 	function init($host)
 	{
 		$this->host = $host;
@@ -31,7 +31,7 @@ class Api_feedreader extends Plugin {
 		$this->host->add_api_method("renameFeed", $this);
 		$this->host->add_api_method("moveFeed", $this);
 	}
-	
+
 	function removeLabel()
 	{
 		$label_id = (int)db_escape_string($_REQUEST["label_id"]);
@@ -45,7 +45,7 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function addLabel()
 	{
 		$caption = db_escape_string($_REQUEST["caption"]);
@@ -60,12 +60,12 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function renameLabel()
 	{
 		$caption = db_escape_string($_REQUEST["caption"]);
 		$label_id = feed_to_label_id((int)db_escape_string($_REQUEST["label_id"]));
-		
+
 		if($label_id != "" && $caption != "")
 		{
 			$this->dbh->query("UPDATE ttrss_labels2 SET caption = '$caption' WHERE id = '$label_id' AND owner_uid = " . $_SESSION["uid"]);
@@ -76,7 +76,7 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function removeCategory()
 	{
 		$category_id = (int)db_escape_string($_REQUEST["category_id"]);
@@ -91,12 +91,12 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function moveCategory()
 	{
 		$category_id = (int)db_escape_string($_REQUEST["category_id"]);
 		$parent_id = (int)db_escape_string($_REQUEST["parent_id"]);
-		
+
 		if($category_id != "")
 		{
 			if($parent_id == "")
@@ -114,7 +114,7 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function addCategory()
 	{
 		$caption = db_escape_string($_REQUEST["caption"]);
@@ -129,7 +129,7 @@ class Api_feedreader extends Plugin {
 			{
 				add_feed_category($caption);
 			}
-			
+
 			return array(API::STATUS_OK, get_feed_category($caption));
 		}
 		else
@@ -137,7 +137,7 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function renameCategory() {
 		$cat_id = (int)db_escape_string($_REQUEST["category_id"]);
 		$caption = db_escape_string($_REQUEST["caption"]);
@@ -152,7 +152,7 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function renameFeed() {
 		$feed_id = (int)db_escape_string($_REQUEST["feed_id"]);
 		$caption = db_escape_string($_REQUEST["caption"]);
@@ -167,7 +167,7 @@ class Api_feedreader extends Plugin {
 			return array(API::STATUS_ERR, array("error" => 'INCORRECT_USAGE'));
 		}
 	}
-	
+
 	function moveFeed() {
 		$feed_id = (int)db_escape_string($_REQUEST["feed_id"]);
 		$cat_id = (int)db_escape_string($_REQUEST["category_id"]);

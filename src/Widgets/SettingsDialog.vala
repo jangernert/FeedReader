@@ -174,7 +174,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		try
 		{
 			if(DBusConnection.get_default().useMaxArticles())
-			      internalsBox.pack_start(sync_count, false, true, 0);
+				  internalsBox.pack_start(sync_count, false, true, 0);
 		}
 		catch(GLib.Error e)
 		{
@@ -295,7 +295,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 	{
 		row.unreveal();
 		GLib.Timeout.add(700, () => {
-		    list.remove(row);
+			list.remove(row);
 			return false;
 		});
 	}

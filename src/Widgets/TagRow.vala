@@ -55,10 +55,10 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			{
 				DBusConnection.get_default().updateTagColor(m_tagID, color);
 			}
-	        catch(GLib.Error e)
-	        {
-	            Logger.error("TagRow.constructor: %s".printf(e.message));
-	        }
+			catch(GLib.Error e)
+			{
+				Logger.error("TagRow.constructor: %s".printf(e.message));
+			}
 		});
 
 		m_label = new Gtk.Label(m_name);
@@ -86,20 +86,20 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		if(UtilsUI.canManipulateContent())
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
-			    { "STRING",     0, DragTarget.TAG }
+				{ "STRING",     0, DragTarget.TAG }
 			};
 
-	        Gtk.drag_dest_set (
-	                this,
-	                Gtk.DestDefaults.MOTION,
-	                accepted_targets,
-	                Gdk.DragAction.COPY
-	        );
+			Gtk.drag_dest_set (
+					this,
+					Gtk.DestDefaults.MOTION,
+					accepted_targets,
+					Gdk.DragAction.COPY
+			);
 
-	        this.drag_motion.connect(onDragMotion);
-	        this.drag_leave.connect(onDragLeave);
-	        this.drag_drop.connect(onDragDrop);
-	        this.drag_data_received.connect(onDragDataReceived);
+			this.drag_motion.connect(onDragMotion);
+			this.drag_leave.connect(onDragLeave);
+			this.drag_drop.connect(onDragDrop);
+			this.drag_data_received.connect(onDragDataReceived);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 				{
 					showRenamePopover(context, time, (string)selection_data.get_data());
 				}
-	        }
+			}
 		}
 		catch(GLib.Error e)
 		{

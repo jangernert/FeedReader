@@ -68,7 +68,7 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 				return false;
 
 			if(event.detail == Gdk.NotifyType.NONLINEAR_VIRTUAL)
-		        return false;
+				return false;
 
 			m_hover = false;
 

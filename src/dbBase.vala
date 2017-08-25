@@ -394,7 +394,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		return result;
-	}
+    }
 
 	public string getFeedName(string feedID)
 	{

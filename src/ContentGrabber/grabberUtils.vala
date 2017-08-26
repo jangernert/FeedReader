@@ -547,7 +547,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 
 	public static string? downloadImage(Soup.Session session, string? url, string articleID, string feedID, int nr, bool parent = false)
 	{
-		if(url == null || url.down().index_of("data:image") != -1)
+		if(url == null || url.down().has_prefix("data:image"))
 			return null;
 
 		string fixedURL = url;

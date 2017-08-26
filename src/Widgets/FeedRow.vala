@@ -456,7 +456,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public void reloadFavIcon()
 	{
-		m_icon = getFeedIcon();
+		m_icon.set_from_pixbuf(getFeedIcon().get_pixbuf());
 	}
 
 }

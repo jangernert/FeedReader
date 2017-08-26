@@ -1,52 +1,52 @@
 <schemalist>
-    <schema id="org.gnome.feedreader.share.account" gettext-domain="feedreader">
+	<schema id="org.gnome.feedreader.share.account" gettext-domain="feedreader">
 
-        <key name="oauth-access-token-secret" type="s">
-            <default>""</default>
-            <summary>Acces key to API</summary>
-            <description>
-                Acces key to reader-API
-            </description>
-        </key>
+		<key name="oauth-access-token-secret" type="s">
+			<default>""</default>
+			<summary>Acces key to API</summary>
+			<description>
+				Acces key to reader-API
+			</description>
+		</key>
 
-        <key name="oauth-access-token" type="s">
-            <default>""</default>
-            <summary>Acces key to reader-API</summary>
-            <description>
-                Acces key to reader-API
-            </description>
-        </key>
-        
-        <key name="access-token-expires" type="i">
+		<key name="oauth-access-token" type="s">
+			<default>""</default>
+			<summary>Acces key to reader-API</summary>
+			<description>
+				Acces key to reader-API
+			</description>
+		</key>
+
+		<key name="access-token-expires" type="i">
 		<default>0</default>
 	</key>
 
-        <key name="username" type="s">
-            <default>""</default>
-            <summary></summary>
-            <description>
-            </description>
-        </key>
+		<key name="username" type="s">
+			<default>""</default>
+			<summary></summary>
+			<description>
+			</description>
+		</key>
 
 	<key name="user-id" type="s">
-            <default>""</default>
-            <summary></summary>
-            <description>
+			<default>""</default>
+			<summary></summary>
+			<description>
 
-            </description>
-        </key>
-        
-        <key name="url" type="s">
-            <default>""</default>
-        </key>
-        
-        <key name="client-id" type="s">
-            <default>""</default>
-        </key>
-        
-        <key name="client-secret" type="s">
-            <default>""</default>
-        </key>
+			</description>
+		</key>
 
-    </schema>
+		<key name="url" type="s">
+			<default>""</default>
+		</key>
+
+		<key name="client-id" type="s">
+			<default>""</default>
+		</key>
+
+		<key name="client-secret" type="s">
+			<default>""</default>
+		</key>
+
+	</schema>
 </schemalist>

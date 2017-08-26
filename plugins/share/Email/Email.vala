@@ -50,12 +50,12 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public string getIconName()
-    {
+	{
 		if(Gtk.IconTheme.get_default().lookup_icon("mail-send", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
 			return "mail-send";
 
-        return "feed-share-mail";
-    }
+		return "feed-share-mail";
+	}
 
 	public string getUsername(string id)
 	{
@@ -73,14 +73,14 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public bool useSystemAccounts()
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 
 	public string pluginID()
-    {
-        return "mail";
-    }
+	{
+		return "mail";
+	}
 
 	public string pluginName()
 	{
@@ -88,14 +88,14 @@ public class FeedReader.ShareMail : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public ServiceSetup? newSetup_withID(string id, string username)
-    {
-        return null;
-    }
+	{
+		return null;
+	}
 
-    public ServiceSetup? newSetup()
-    {
-        return null;
-    }
+	public ServiceSetup? newSetup()
+	{
+		return null;
+	}
 
 	public ServiceSetup? newSystemAccount(string id, string username)
 	{

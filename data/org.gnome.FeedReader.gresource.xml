@@ -5,10 +5,10 @@
 		<file compressed="true">gtk-css/dark.css</file>
 		<file compressed="true">gtk-css/gtk.css</file>
 		<file compressed="true">gtk-css/elementary.css</file>
-		
+
 		<file compressed="true">ArticleView/style.css</file>
 		<file compressed="true">ArticleView/article.html</file>
-		
+
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-add-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-arrow-up-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-refresh-symbolic.svg</file>
@@ -17,7 +17,7 @@
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-sidebar-arrow-down-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-sidebar-arrow-side-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/actions/feed-tag-symbolic.svg</file>
-		
+
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-article-read.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-article-unread.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-backend-info.svg</file>
@@ -27,9 +27,9 @@
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-starred.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-unmarked-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/16x16/status/feed-unread-symbolic.svg</file>
-		
+
 		<file preprocess="xml-stripblanks">icons/24x24/actions/feed-mark-read-symbolic.svg</file>
-		
+
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-backend-info.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-cloud-symbolic.svg</file>
 		<file preprocess="xml-stripblanks">icons/24x24/status/feed-copyright-symbolic.svg</file>

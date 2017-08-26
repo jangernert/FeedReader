@@ -146,28 +146,28 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			&& m_categorieID != CategoryID.TAGS.to_string())
 			{
 				const Gtk.TargetEntry[] accepted_targets = {
-				    { "text/plain",	0, DragTarget.FEED },
+					{ "text/plain",	0, DragTarget.FEED },
 					{ "STRING",		0, DragTarget.CAT }
 				};
 
 				Gtk.drag_dest_set (
-			            this,
-			            Gtk.DestDefaults.MOTION,
-			            accepted_targets,
-			            Gdk.DragAction.MOVE
-			    );
+						this,
+						Gtk.DestDefaults.MOTION,
+						accepted_targets,
+						Gdk.DragAction.MOVE
+				);
 
-			    this.drag_motion.connect(onDragMotion);
-			    this.drag_leave.connect(onDragLeave);
-			    this.drag_drop.connect(onDragDrop);
-			    this.drag_data_received.connect(onDragDataReceived);
+				this.drag_motion.connect(onDragMotion);
+				this.drag_leave.connect(onDragLeave);
+				this.drag_drop.connect(onDragDrop);
+				this.drag_data_received.connect(onDragDataReceived);
 
 				try
 				{
 					if(DBusConnection.get_default().supportMultiLevelCategories())
 					{
 						const Gtk.TargetEntry[] provided_targets = {
-						    { "STRING",     0, DragTarget.CAT }
+							{ "STRING",     0, DragTarget.CAT }
 						};
 
 						Gtk.drag_source_set (
@@ -189,20 +189,20 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 			else if(m_categorieID == CategoryID.MASTER.to_string())
 			{
 				const Gtk.TargetEntry[] accepted_targets = {
-				    { "STRING",     0, DragTarget.CAT }
+					{ "STRING",     0, DragTarget.CAT }
 				};
 
 				Gtk.drag_dest_set (
-			            this,
-			            Gtk.DestDefaults.MOTION,
-			            accepted_targets,
-			            Gdk.DragAction.MOVE
-			    );
+						this,
+						Gtk.DestDefaults.MOTION,
+						accepted_targets,
+						Gdk.DragAction.MOVE
+				);
 
-			    this.drag_motion.connect(onDragMotion);
-			    this.drag_leave.connect(onDragLeave);
-			    this.drag_drop.connect(onDragDrop);
-			    this.drag_data_received.connect(onDragDataReceived);
+				this.drag_motion.connect(onDragMotion);
+				this.drag_leave.connect(onDragLeave);
+				this.drag_drop.connect(onDragDrop);
+				this.drag_data_received.connect(onDragDataReceived);
 			}
 		}
 	}
@@ -311,7 +311,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 					}
 
 					Gtk.drag_finish(context, true, false, time);
-		        }
+				}
 				else if(target_type == DragTarget.CAT)
 				{
 					Logger.debug("drag catID: " + dataString);

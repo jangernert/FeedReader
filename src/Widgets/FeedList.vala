@@ -283,7 +283,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 					pos++;
 					var tmpRow = row as CategoryRow;
 
-                    if(tmpRow != null)
+					if(tmpRow != null)
 					{
 						if(Utils.arrayContains(item.getCatIDs(), tmpRow.getID())
 						|| tmpRow.getID() == "" && item.isUncategorized())
@@ -292,13 +292,13 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 													   item.getTitle(),
 													   item.getUnread(),
 													   item.getFeedID(),
-									                   tmpRow.getID(),
-									                   tmpRow.getLevel()
+													   tmpRow.getID(),
+													   tmpRow.getLevel()
 													  );
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
-                            feedrow.moveUP.connect(moveUP);
-                            feedrow.copyFeedURL.connect(copySelectedFeedURL);
+							feedrow.moveUP.connect(moveUP);
+							feedrow.copyFeedURL.connect(copySelectedFeedURL);
 							feedrow.deselectRow.connect(deselectRow);
 							feedrow.drag_begin.connect((context) => {
 								onDragBegin(context);
@@ -549,15 +549,15 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						}
 
 						var CategoryRow = new CategoryRow(
-					                                item.getTitle(),
-					                                item.getCatID(),
-					                                item.getOrderID(),
-					                                item.getUnreadCount(),
-					                                parent,
-							                        level,
-							                        getCatState(item.getCatID())
-					                                );
-					    expand = false;
+													item.getTitle(),
+													item.getCatID(),
+													item.getOrderID(),
+													item.getUnreadCount(),
+													parent,
+													level,
+													getCatState(item.getCatID())
+													);
+						expand = false;
 						CategoryRow.collapse.connect((collapse, catID, selectParent) => {
 							if(collapse)
 								collapseCategorieInternal(catID, selectParent);
@@ -964,23 +964,23 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	public void setOnline()
 	{
 		m_branding.setOnline();
-    }
+	}
 
-    public void copySelectedFeedURL(string feed_id){
-        /*
-            Copy selected feed url to clipboard
-        */
-        if (feed_id != ""){
-            var feed =  dbUI.get_default().read_feed(feed_id);
-            if (feed != null){
-                string feed_url = feed.getXmlUrl();
-                Gdk.Display display = MainWindow.get_default().get_display ();
-                Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
+	public void copySelectedFeedURL(string feed_id){
+		/*
+			Copy selected feed url to clipboard
+		*/
+		if (feed_id != ""){
+			var feed =  dbUI.get_default().read_feed(feed_id);
+			if (feed != null){
+				string feed_url = feed.getXmlUrl();
+				Gdk.Display display = MainWindow.get_default().get_display ();
+				Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (display, Gdk.SELECTION_CLIPBOARD);
 
-                clipboard.set_text(feed_url, feed_url.length);
-            }
-        }
-    }
+				clipboard.set_text(feed_url, feed_url.length);
+			}
+		}
+	}
 
 	public void moveUP()
 	{
@@ -1076,7 +1076,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			{
 				tagRow.reveal(false, duration);
 				GLib.Timeout.add(duration + 20, () => {
-				    m_list.remove(tagRow);
+					m_list.remove(tagRow);
 					return false;
 				});
 			}
@@ -1084,7 +1084,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			{
 				catRow.reveal(false, duration);
 				GLib.Timeout.add(duration + 20, () => {
-				    m_list.remove(catRow);
+					m_list.remove(catRow);
 					return false;
 				});
 			}
@@ -1092,7 +1092,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			{
 				feedRow.reveal(false, duration);
 				GLib.Timeout.add(duration + 20, () => {
-				    m_list.remove(feedRow);
+					m_list.remove(feedRow);
 					return false;
 				});
 			}

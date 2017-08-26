@@ -6,7 +6,7 @@
 		<summary>apiCode</summary>
 		<description>Authenticated username to InoReader throught API</description>
 	</key>
-	
+
 	<key name="access-token" type="s">
 		<default>""</default>
 		<summary>Acces key to InoReader-API</summary>
@@ -14,7 +14,7 @@
 			Acces key to InoReader-API. Will time out at some point.
 		</description>
 	</key>
-	
+
 	<key name="access-token-expires" type="i">
 		<default>0</default>
 	</key>
@@ -26,7 +26,7 @@
 			Token to generate new access key to InoReader-API.
 		</description>
 	</key>
-	
+
 	<key name="api-code" type="s">
 		<default>""</default>
 		<summary>apiCode</summary>
@@ -34,12 +34,12 @@
 			Code to get access token for the first time. Gets returned after logging in via google/facebook.
 		</description>
 	</key>
-	
+
 	<key name="user-id" type="s">
 		<default>""</default>
 		<description>Interneal User ID</description>
 	</key>
-	
+
 	<key name="user-email" type="s">
 		<default>""</default>
 	</key>

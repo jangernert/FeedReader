@@ -57,11 +57,11 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 
 		ThreadFunc<void*> run = () => {
 			try
-		    {
-		        var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10*Gst.SECOND));
-		        var info = discoverer.discover_uri(m_URL);
+			{
+				var discoverer = new Gst.PbUtils.Discoverer((Gst.ClockTime)(10*Gst.SECOND));
+				var info = discoverer.discover_uri(m_URL);
 
-		        foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
+				foreach(Gst.PbUtils.DiscovererStreamInfo i in info.get_stream_list())
 				{
 					if(i is Gst.PbUtils.DiscovererVideoInfo)
 					{
@@ -70,9 +70,9 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 						m_type = MediaType.VIDEO;
 					}
 				}
-		    }
-		    catch (Error e)
-		    {
+			}
+			catch (Error e)
+			{
 				Logger.error("Unable discover_uri: " + e.message);
 			}
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
@@ -452,7 +452,7 @@ public class FeedReader.MediaPlayer : Gtk.Box {
 				Gst.State newstate;
 				Gst.State pending;
 				message.parse_state_changed(out oldstate, out newstate, out pending);
-		        break;
+				break;
 		}
 		return true;
 	}

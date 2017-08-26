@@ -1,5 +1,5 @@
 <schemalist>
-    <schema id="org.gnome.feedreader.ttrss" path="/org/gnome/feedreader/ttrss/" gettext-domain="feedreader">
+	<schema id="org.gnome.feedreader.ttrss" path="/org/gnome/feedreader/ttrss/" gettext-domain="feedreader">
 		<key name="url" type="s">
 			<default>""</default>
 			<summary>Link to your tt-rss instance</summary>
@@ -15,7 +15,7 @@
 				Username to log into tt-rss
 			</description>
 		</key>
-		
+
 		<key name="htaccess-username" type="s">
 			<default>""</default>
 			<summary>Username to grant http access</summary>

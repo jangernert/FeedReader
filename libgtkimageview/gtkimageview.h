@@ -53,71 +53,71 @@ GType         gtk_image_view_get_type (void) G_GNUC_CONST;
 GtkWidget *   gtk_image_view_new      (void);
 
 void gtk_image_view_set_pixbuf (GtkImageView    *image_view,
-                                const GdkPixbuf *pixbuf,
-                                int              scale_factor);
+								const GdkPixbuf *pixbuf,
+								int              scale_factor);
 
 void gtk_image_view_set_surface (GtkImageView    *image_view,
-                                 cairo_surface_t *surface);
+								 cairo_surface_t *surface);
 
 void gtk_image_view_set_animation (GtkImageView       *image_view,
-                                   GdkPixbufAnimation *animation,
-                                   int                 scale_factor);
+								   GdkPixbufAnimation *animation,
+								   int                 scale_factor);
 
 
 void gtk_image_view_load_from_file_async (GtkImageView        *image_view,
-                                          GFile               *file,
-                                          int                  scale_factor,
-                                          GCancellable        *cancellable,
-                                          GAsyncReadyCallback  callback,
-                                          gpointer             user_data);
+										  GFile               *file,
+										  int                  scale_factor,
+										  GCancellable        *cancellable,
+										  GAsyncReadyCallback  callback,
+										  gpointer             user_data);
 gboolean gtk_image_view_load_from_file_finish (GtkImageView  *image_view,
-                                               GAsyncResult  *result,
-                                               GError       **error);
+											   GAsyncResult  *result,
+											   GError       **error);
 void gtk_image_view_load_from_stream_async (GtkImageView        *image_view,
-                                            GInputStream        *input_stream,
-                                            int                  scale_factor,
-                                            GCancellable        *cancellable,
-                                            GAsyncReadyCallback  callback,
-                                            gpointer             user_data);
+											GInputStream        *input_stream,
+											int                  scale_factor,
+											GCancellable        *cancellable,
+											GAsyncReadyCallback  callback,
+											gpointer             user_data);
 
 gboolean gtk_image_view_load_from_stream_finish (GtkImageView  *image_view,
-                                                 GAsyncResult  *result,
-                                                 GError       **error);
+												 GAsyncResult  *result,
+												 GError       **error);
 
 void   gtk_image_view_set_scale (GtkImageView *image_view,
-                                 double        scale);
+								 double        scale);
 
 double gtk_image_view_get_scale (GtkImageView *image_view);
 
 void  gtk_image_view_set_angle (GtkImageView *image_view,
-                                double        angle);
+								double        angle);
 
 double gtk_image_view_get_angle (GtkImageView *image_view);
 
 void gtk_image_view_set_snap_angle (GtkImageView *image_view,
-                                    gboolean      snap_angle);
+									gboolean      snap_angle);
 
 gboolean gtk_image_view_get_snap_angle (GtkImageView *image_view);
 
 void gtk_image_view_set_fit_allocation (GtkImageView *image_view,
-                                        gboolean      fit_allocation);
+										gboolean      fit_allocation);
 
 gboolean gtk_image_view_get_fit_allocation (GtkImageView *image_view);
 
 void gtk_image_view_set_rotatable (GtkImageView *image_view,
-                                   gboolean      rotatable);
+								   gboolean      rotatable);
 
 gboolean gtk_image_view_get_rotatable (GtkImageView *image_view);
 
 void gtk_image_view_set_zoomable (GtkImageView *image_view,
-                                  gboolean      zoomable);
+								  gboolean      zoomable);
 
 gboolean gtk_image_view_get_zoomable (GtkImageView *image_view);
 
 gboolean gtk_image_view_get_scale_set (GtkImageView *image_view);
 
 void gtk_image_view_set_transitions_enabled (GtkImageView *image_view,
-                                             gboolean      transitions_enabled);
+											 gboolean      transitions_enabled);
 
 gboolean gtk_image_view_get_transitions_enabled (GtkImageView *image_view);
 

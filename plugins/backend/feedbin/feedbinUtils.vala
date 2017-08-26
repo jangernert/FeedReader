@@ -35,8 +35,8 @@ public class FeedReader.feedbinUtils : GLib.Object {
 	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
+										  "URL", Secret.SchemaAttributeType.STRING,
+										  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";

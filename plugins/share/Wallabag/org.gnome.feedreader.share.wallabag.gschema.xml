@@ -1,13 +1,13 @@
 <schemalist>
-    <schema id="org.gnome.feedreader.share.wallabag" path="/org/gnome/feedreader/share/wallabag/" gettext-domain="feedreader">
-    
-	<key name="account-ids" type="as">
-            <default>[]</default>
-            <summary>wallabag accounts</summary>
-            <description>
-                all the wallabag account ids
-            </description>
-        </key>
+	<schema id="org.gnome.feedreader.share.wallabag" path="/org/gnome/feedreader/share/wallabag/" gettext-domain="feedreader">
 
-    </schema>
+	<key name="account-ids" type="as">
+			<default>[]</default>
+			<summary>wallabag accounts</summary>
+			<description>
+				all the wallabag account ids
+			</description>
+		</key>
+
+	</schema>
 </schemalist>

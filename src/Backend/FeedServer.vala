@@ -336,7 +336,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	public void grabContent(GLib.Cancellable? cancellable = null)
+	public async void grabContent(GLib.Cancellable? cancellable = null)
 	{
 		Logger.debug("FeedServer: grabContent");
 		var articles = dbDaemon.get_default().readUnfetchedArticles();
@@ -350,50 +350,55 @@ public class FeedReader.FeedServer : GLib.Object {
 			session.timeout = 5;
 			session.ssl_strict = false;
 
-			foreach(var Article in articles)
-			{
+			var threads = new ThreadPool<article>.with_owned_data((a) => {
 				if(cancellable != null && cancellable.is_cancelled())
-					break;
+					return;
 
-				++i;
-				syncProgress(_(@"Grabbing full content: $i / $size"));
-				if(Settings.general().get_boolean("content-grabber"))
-				{
-					var grabber = new Grabber(session, Article.getURL(), Article.getArticleID(), Article.getFeedID());
-					if(grabber.process(cancellable))
+					if(Settings.general().get_boolean("content-grabber"))
 					{
-						grabber.print();
-						if(Article.getAuthor() != "" && grabber.getAuthor() != null)
+						var grabber = new Grabber(session, a.getURL(), a.getArticleID(), a.getFeedID());
+						if(grabber.process(cancellable))
 						{
-							Article.setAuthor(grabber.getAuthor());
-						}
-						if(Article.getTitle() != "" && grabber.getTitle() != null)
-						{
-							Article.setTitle(grabber.getTitle());
-						}
-						string html = grabber.getArticle();
-						string xml = "<?xml";
+							grabber.print();
+							if(a.getAuthor() != "" && grabber.getAuthor() != null)
+							{
+								a.setAuthor(grabber.getAuthor());
+							}
+							if(a.getTitle() != "" && grabber.getTitle() != null)
+							{
+								a.setTitle(grabber.getTitle());
+							}
+							string html = grabber.getArticle();
+							string xml = "<?xml";
 
-						while(html.has_prefix(xml))
-						{
-							int end = html.index_of_char('>');
-							html = html.slice(end+1, html.length).chug();
-						}
+							while(html.has_prefix(xml))
+							{
+								int end = html.index_of_char('>');
+								html = html.slice(end+1, html.length).chug();
+							}
 
-						Article.setHTML(html);
+							a.setHTML(html);
+						}
+						else
+						{
+							downloadImages(session, a, cancellable);
+						}
 					}
 					else
 					{
-						downloadImages(session, Article, cancellable);
+						downloadImages(session, a, cancellable);
 					}
-				}
-				else
-				{
-					downloadImages(session, Article, cancellable);
-				}
 
-				if(cancellable == null || !cancellable.is_cancelled())
-					dbDaemon.get_default().writeContent(Article);
+					if(cancellable == null || !cancellable.is_cancelled())
+						dbDaemon.get_default().writeContent(a);
+
+					++i;
+					syncProgress(_(@"Grabbing full content: $i / $size"));
+			}, GLib.get_num_processors(), true);
+
+			foreach(var Article in articles)
+			{
+				threads.add(Article);
 			}
 
 			//update fulltext table

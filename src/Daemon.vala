@@ -226,8 +226,10 @@ namespace FeedReader {
 
 			updateBadge();
 			m_cacheSync = false;
-			FeedServer.get_default().grabContent(cancellable);
-			finishSync();
+			FeedServer.get_default().grabContent.begin(cancellable, (obj, res) => {
+				FeedServer.get_default().grabContent.end(res);
+				finishSync();
+			});
 		}
 
 		private void finishSync()

@@ -120,8 +120,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 		}
 
-		int before = dbDaemon.get_default().getHighestRowID();
-
 		var categories = new Gee.LinkedList<category>();
 		var feeds      = new Gee.LinkedList<feed>();
 		var tags       = new Gee.LinkedList<tag>();
@@ -174,7 +172,9 @@ public class FeedReader.FeedServer : GLib.Object {
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
 
+
 		syncProgress(_("Getting articles"));
+		int before = dbDaemon.get_default().getHighestRowID();
 
 		if(unread > max && useMaxArticles())
 		{

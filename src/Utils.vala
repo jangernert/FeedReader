@@ -130,7 +130,7 @@ public class FeedReader.Utils : GLib.Object {
 			{
 				var origin = File.new_for_path(Constants.INSTALL_PREFIX + "/share/FeedReader/" + desktop);
 				var destination = File.new_for_path(filename);
-				origin.copy(destination, FileCopyFlags.NONE);
+	        	origin.copy(destination, FileCopyFlags.NONE);
 			}
 			catch(GLib.Error e)
 			{
@@ -243,7 +243,7 @@ public class FeedReader.Utils : GLib.Object {
 				if((file_info.get_file_type()) == GLib.FileType.DIRECTORY)
 				{
 					remove_directory(path + file_name + "/", level);
-				}
+		    	}
 
 				var file = directory.get_child(file_name);
 				file.delete();
@@ -354,10 +354,10 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static int countChar(string s, unichar c)
 	{
-		int count = 0;
-		for (int index = 0; (index = s.index_of_char(c, index)) >= 0; ++index, ++count)
-			;
-		return count;
+	    int count = 0;
+	    for (int index = 0; (index = s.index_of_char(c, index)) >= 0; ++index, ++count)
+	        ;
+	    return count;
 	}
 
 	public static string parseSearchTerm(string searchTerm)

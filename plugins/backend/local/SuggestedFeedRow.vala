@@ -21,7 +21,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 	private string m_desc;
 	private Gtk.CheckButton m_check;
 
-	public SuggestedFeedRow(string url, string category, string name, string desc, string lang)
+	public SuggestedFeedRow(string url, string iconURL, string category, string name, string desc, string lang)
 	{
 		m_name = name;
 		m_url = url;
@@ -62,7 +62,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		show_all();
 
 		var uri = new Soup.URI(url);
-		Utils.downloadIcon.begin(uri.get_host(), uri.get_scheme() + "://" + uri.get_host(), null, "/tmp/", (obj, res) => {
+		Utils.downloadIcon.begin(uri.get_host(), iconURL, null, "/tmp/", (obj, res) => {
 			bool success = Utils.downloadIcon.end(res);
 			Gtk.Image? icon = null;
 
@@ -87,8 +87,8 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 			}
 
 			iconStack.add_named(icon, "icon");
-   			show_all();
-   			iconStack.set_visible_child_name("icon");
+				show_all();
+				iconStack.set_visible_child_name("icon");
 		});
 	}
 

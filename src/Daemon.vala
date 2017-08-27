@@ -171,7 +171,7 @@ namespace FeedReader {
 				if(!Settings.state().get_boolean("currently-updating")
 				&& FeedServer.get_default().pluginLoaded())
 				{
-			   		Logger.debug("daemon: Timeout!");
+					Logger.debug("daemon: Timeout!");
 					startSync(false);
 				}
 				return true;

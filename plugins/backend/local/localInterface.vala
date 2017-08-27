@@ -340,6 +340,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			// 	Feed.setIconURL(tmpFeed.getIconURL());
 			// 	Feed.setURL(tmpFeed.getURL());
 			// }
+			Logger.debug("just checking: " + Feed.getTitle());
+
 			feeds.add(Feed);
 		}
 
@@ -356,8 +358,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
 
-		foreach(feed Feed in f)
-		{
+		var threads = new ThreadPool<feed>.with_owned_data((Feed) => {
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 
@@ -367,7 +368,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			if(url == null || url == "" || GLib.Uri.parse_scheme(url) == null)
 			{
 				Logger.error("no valid URL");
-				continue;
+				return;
 			}
 
 			var msg = new Soup.Message("GET", url);
@@ -383,7 +384,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			catch(GLib.Error e)
 			{
 				Logger.error("localInterface.getArticles: %s".printf(e.message));
-				continue;
+				return;
 			}
 			var doc = parser.get_document();
 
@@ -412,8 +413,6 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					articleID = item.link;
 				}
 
-
-
 				var date = new GLib.DateTime.now_local();
 				if(item.pub_date != null)
 				{
@@ -425,11 +424,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 						date = new GLib.DateTime.now_local();
 				}
 
-
-
-				string? content = m_utils.convert(item.description, locale);
-				if(content == null)
-					content = _("Nothing to read here.");
+			string? content = m_utils.convert(item.description, locale);
+			if(content == null)
+				content = _("Nothing to read here.");
 
 				string media = "";
 				if(item.enclosure_url != null)
@@ -448,7 +445,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 									ArticleStatus.UNREAD,
 									ArticleStatus.UNMARKED,
 									content,
-									Utils.UTF8fix(content, true),
+									//Utils.UTF8fix(content, true),
+									content,
 									m_utils.convert(item.author, locale),
 									date,
 									0,
@@ -458,7 +456,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 				articleArray.add(Article);
 			}
+		}, (int)GLib.get_num_processors(), true);
 
+
+		foreach(feed Feed in f)
+		{
+			threads.add(Feed);
 		}
 
 		articleArray.sort((a, b) => {

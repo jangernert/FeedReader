@@ -394,11 +394,18 @@ public class FeedReader.FeedServer : GLib.Object {
 
 					++i;
 					syncProgress(_(@"Grabbing full content: $i / $size"));
-			}, GLib.get_num_processors(), true);
+			}, (int)GLib.get_num_processors(), true);
 
 			foreach(var Article in articles)
 			{
-				threads.add(Article);
+				try
+				{
+					threads.add(Article);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("FeedServer.grabContent: " + e.message);
+				}
 			}
 
 			//update fulltext table

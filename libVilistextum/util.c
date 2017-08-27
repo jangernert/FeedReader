@@ -63,8 +63,7 @@ void push_align(int a)
 		}
 	}
 
-	/*	if (div_test!=0) { align[align_nr]=div_test; } else {  */
-	align[align_nr]=a; /*} */
+	align[align_nr]=a;
 }
 
 void pop_align()

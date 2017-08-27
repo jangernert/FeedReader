@@ -468,6 +468,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				return strcmp(a.getArticleID(), b.getArticleID());
 		});
 
+		while(threads.unprocessed() > 0)
+		{
+			Thread.usleep(100);
+		}
+
 		if(articleArray.size > 0)
 		{
 			dbDaemon.get_default().write_articles(articleArray);

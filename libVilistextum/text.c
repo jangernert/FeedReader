@@ -20,20 +20,17 @@
 #include "fileio.h"
 #include "util.h"
 
-int LEFT = 1,
-CENTER = 2,
-RIGHT  = 3;
+const int LEFT = 1;
+const int CENTER = 2;
+const int RIGHT = 3;
+
+const int tab = 4; /* tabulator */
+const int hr_breite = 76;
 
 int breite=76,
-hr_breite=76,
 paragraph=0,
-
-tab=4,         /* tabulator */
 spaces=0,      /* spaces at beginning of line */
-nooutput=0,    /* for SCRIPT, etc: no output */
-orderedlist=0, /* OL */
-
-div_test=0;
+nooutput=0;    /* for SCRIPT, etc: no output */
 
 CHAR wort[DEF_STR_LEN];
 
@@ -163,13 +160,6 @@ int is_zeile_empty()
 
 /* ------------------------------------------------ */
 
-void status()
-{
-	printf(" paragraph: %d; div_test: %d; align[align_nr]: %d; z_o: %d\n",paragraph, div_test, get_align(), zeilen_len_old);
-}
-
-/* ------------------------------------------------ */
-
 void zeile_plus_wort(CHAR *s, int wl, int wp)
 {
 	int i=zeilen_pos,
@@ -240,7 +230,7 @@ void wort_ende()
 			print_zeile();
 			i=0;
 			while (i<spaces) { zeile_plus_wort(ONESPACE,1,1); i++; }
-			if (orderedlist>0) { zeile_plus_wort(ONESPACE,1,1); }
+			zeile_plus_wort(ONESPACE,1,1);
 			zeile_plus_wort(wort, wort_len, wort_pos);
 		}
 		else if (zeilen_len != 0)
@@ -253,7 +243,7 @@ void wort_ende()
 		{
 			i=0;
 			while (i<spaces) { zeile_plus_wort(ONESPACE,1,1); i++; }
-			if (orderedlist>0) { zeile_plus_wort(ONESPACE,1,1); }
+			zeile_plus_wort(ONESPACE,1,1);
 			zeile_plus_wort(wort,wort_len, wort_pos);
 		}
 		wort_pos = 0;

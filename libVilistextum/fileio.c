@@ -37,7 +37,7 @@ long int count = 0;
 
 /* ------------------------------------------------ */
 
-void open_files(char *input)
+void init_buffer(char *input)
 {
 	in = fmemopen(input, strlen(input), "r");
 	if(in == NULL)
@@ -105,7 +105,7 @@ char* getOutput(size_t input_length)
 
 /* ------------------------------------------------ */
 
-void quit()
+void finalize()
 {
 	if (!is_zeile_empty())
 	{

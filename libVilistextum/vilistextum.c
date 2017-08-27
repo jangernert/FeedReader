@@ -45,11 +45,13 @@ char* vilistextum(char* text, int extractText)
 
 	if(init_multibyte())
 	{
-		open_files(text);
+		init_buffer(text);
 		html(extractText);
-		quit();
+		finalize();
+		
+		char* output = getOutput(strlen(text));
+		return output;
 	}
 
-	char* output = getOutput(strlen(text));
-	return output;
+	return NULL;
 }

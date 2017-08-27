@@ -3,13 +3,19 @@
 
 #include "multibyte.h"
 
-void open_files(char *input);
+void init_buffer(char *input);
 void output_string(CHAR *str);
 
 int get_current_char();
 int read_char();
 void putback_char(CHAR c);
-void quit();
-CHAR* getOutput();
+void finalize();
+char* getOutput();
+
+struct TextBuffer
+{
+	FILE* input;
+	CHAR* output;
+};
 
 #endif

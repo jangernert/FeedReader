@@ -5,22 +5,19 @@
 
 #include "multibyte.h"
 
-int LEFT;
-int CENTER;
-int RIGHT;
+const int LEFT;
+const int CENTER;
+const int RIGHT;
+const int tab;
+const int hr_breite;
 
 CHAR ch;
 
 int paragraph;
-int div_test;
 int nooutput;
 
 int breite;
-int hr_breite;
 
-void status();
-
-int tab;
 int spaces;
 
 void print_zeile();

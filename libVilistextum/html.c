@@ -338,7 +338,7 @@ void start_p()
 void start_div(int a)
 {
 	line_break();
-	if (a!=0) { div_test=a; push_align(div_test); }
+	if (a!=0) { push_align(a); }
 	else { check_for_center(); }
 }
 
@@ -351,7 +351,6 @@ void end_div()
 	if (paragraph!=0) { paragraphen_ende(); }
 	else { print_zeile(); }
 	pop_align(); /* einer für start_div */
-	div_test = 0;
 }
 
 /* ------------------------------------------------ */

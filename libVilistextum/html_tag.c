@@ -61,12 +61,34 @@ void html_tag()
 	else if CMP("/SCRIPT", str) { end_nooutput(); }
 	else if CMP("STYLE", str)   { start_nooutput(); }
 	else if CMP("/STYLE", str)  { end_nooutput(); }
-	else if CMP("TITLE", str) {
-		if (option_title) { push_align(LEFT); neuer_paragraph(); }
-		else { wort_ende(); print_zeile(); nooutput = 1; }
-	} else if CMP("/TITLE", str) {
-		if (option_title) { paragraphen_ende(); print_zeile(); }
-		else { wort_ende(); clear_line(); print_zeile(); nooutput = 0; }
+	else if CMP("TITLE", str)
+	{
+		if (option_title)
+		{
+			push_align(LEFT);
+			neuer_paragraph();
+		}
+		else
+		{
+			wort_ende();
+			print_zeile();
+			nooutput = 1;
+		}
+	}
+	else if CMP("/TITLE", str)
+	{
+		if (option_title)
+		{
+			paragraphen_ende();
+			print_zeile();
+		}
+		else
+		{
+			wort_ende();
+			clear_line();
+			print_zeile();
+			nooutput = 0;
+		}
 	}
 
 	if (nooutput==0) {

@@ -468,10 +468,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				return strcmp(a.getArticleID(), b.getArticleID());
 		});
 
-		while(threads.unprocessed() > 0)
-		{
-			Thread.usleep(100);
-		}
+		bool immediate = false; // allow to queue up additional tasks
+		bool wait = true; // function will block until all tasks are done
+		ThreadPool.free((owned)threads, immediate, wait);
 
 		if(articleArray.size > 0)
 		{

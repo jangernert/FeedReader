@@ -222,7 +222,6 @@ public class FeedReader.FeedServer : GLib.Object {
 		Settings.state().set_int("last-sync", (int)now.to_unix());
 
 		dbDaemon.get_default().checkpoint();
-
 		return;
 	}
 
@@ -407,6 +406,10 @@ public class FeedReader.FeedServer : GLib.Object {
 					Logger.error("FeedServer.grabContent: " + e.message);
 				}
 			}
+
+			bool immediate = false; // allow to queue up additional tasks
+			bool wait = true; // function will block until all tasks are done
+			ThreadPool.free((owned)threads, immediate, wait);
 
 			//update fulltext table
 			dbDaemon.get_default().updateFTS();

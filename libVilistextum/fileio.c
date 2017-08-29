@@ -30,10 +30,9 @@
 FILE *in;
 
 CHAR* OUTPUT = NULL;
-CHAR LINEBREAK[1] = L"\n";
+const CHAR LINEBREAK[1] = L"\n";
 size_t currentsize = 0;
 size_t outputsize = 0;
-long int count = 0;
 
 /* ------------------------------------------------ */
 
@@ -105,12 +104,12 @@ char* getOutput(size_t input_length, int error)
 
 /* ------------------------------------------------ */
 
-void finalize(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void finalize(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
 	if (!is_zeile_empty())
 	{
-		wort_ende(nooutput, spaces, breite, error, zeilen_len);
-		print_zeile(nooutput, breite, error, zeilen_len);
+		wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
+		print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old);
 	}
 }
 
@@ -118,7 +117,6 @@ void finalize(int nooutput, int spaces, int breite, int error, int zeilen_len)
 
 int read_char(int error)
 {
-	count = count + 1;
 	int c = ' ';
 	int fehlernr=0; /* tmp variable for errno */
 	static int i=0;
@@ -145,7 +143,6 @@ int read_char(int error)
 		printf("read_char: iconv_open failed, wrong character set?\n");
 		printf("iconv_open(\"utf-8\", \"%s\");\n", get_iconv_charset());
 		perror(get_iconv_charset());
-		printf("count: %li\n", count);
 		error = 1;
 		return EOF;
 	}

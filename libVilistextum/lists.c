@@ -20,9 +20,9 @@ CHAR bullet_style=' ';
 
 /* ------------------------------------------------ */
 
-void start_uls(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void start_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
-	line_break(nooutput, spaces, breite, error, zeilen_len);
+	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
 
 	push_align(LEFT);
 
@@ -41,10 +41,10 @@ void start_uls(int nooutput, int spaces, int breite, int error, int zeilen_len)
 	spaces += tab;
 }
 
-void end_uls(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void end_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
 	spaces -= tab;
-	line_break(nooutput, spaces, breite, error, zeilen_len);
+	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
 
 	if (bullet_style=='%') { bullet_style='$'; }
 	else if (bullet_style=='$') { bullet_style='~'; }
@@ -63,32 +63,32 @@ void end_uls(int nooutput, int spaces, int breite, int error, int zeilen_len)
 
 /* ------------------------------------------------ */
 
-void start_ols(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void start_ols(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
-	start_uls(nooutput, spaces, breite, error, zeilen_len);
+	start_uls(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
 }
 
 /* ------------------------------------------------ */
 
-void end_ols(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void end_ols(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
-	end_uls(nooutput, spaces, breite, error, zeilen_len);
+	end_uls(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
 }
 
 /* ------------------------------------------------ */
 
-void start_lis(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void start_lis(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
 	spaces-=2;
 
 	/* don't output line break, if this list item is immediately
 	after a start or end list tag. start_uls and end_uls have
 	already take care of the line break */
-	if (!is_zeile_empty()) { line_break(nooutput, spaces, breite, error, zeilen_len); }
+	if (!is_zeile_empty()) { line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old); }
 
 	wort_plus_ch(bullet_style);
 
-	wort_ende(nooutput, spaces, breite, error, zeilen_len);
+	wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
 	spaces+=2;
 }
 
@@ -108,19 +108,19 @@ void start_dl(int nooutput, int spaces, int paragraph, int breite, int error, in
 	start_p(nooutput, spaces, paragraph, breite, error, zeilen_len);
 }
 
-void end_dl(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len)
+void end_dl(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
-	paragraphen_ende(nooutput, spaces, paragraph, breite, error, zeilen_len);
+	paragraphen_ende(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old);
 
 	end_dd();
 }
 
 /* Definition Title */
-void start_dt(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void start_dt(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
 	end_dd();
 
-	line_break(nooutput, spaces, breite, error, zeilen_len);
+	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
 }
 
 void end_dt()
@@ -128,11 +128,11 @@ void end_dt()
 }
 
 /* Definition Description */
-void start_dd(int nooutput, int spaces, int breite, int error, int zeilen_len)
+void start_dd(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
 {
 	end_dd();
 
-	line_break(nooutput, spaces, breite, error, zeilen_len);
+	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
 	spaces+=tab;
 
 	definition_list=1;

@@ -1,17 +1,17 @@
 #ifndef lists_h
 #define lists_h       1
 
-void start_uls();
-void end_uls();
-void start_ols();
-void end_ols();
-void start_lis();
+void start_uls(int nooutput);
+void end_uls(int nooutput);
+void start_ols(int nooutput);
+void end_ols(int nooutput);
+void start_lis(int nooutput);
 void end_lis();
-void start_dl();
-void end_dl();
-void start_dt();
+void start_dl(int nooutput);
+void end_dl(int nooutput);
+void start_dt(int nooutput);
 void end_dt();
-void start_dd();
+void start_dd(int nooutput);
 void end_dd();
 
 #endif 

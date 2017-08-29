@@ -9,7 +9,7 @@ void output_string(CHAR *str);
 int get_current_char();
 int read_char();
 void putback_char(CHAR c);
-void finalize();
+void finalize(int nooutput);
 char* getOutput();
 
 struct TextBuffer

@@ -136,7 +136,7 @@ int get_attr()
 
 /* ------------------------------------------------  */
 
-void html(int extractText)
+void html(int extractText, int nooutput)
 {
 	int i;
 	CHAR str[DEF_STR_LEN];
@@ -151,13 +151,13 @@ void html(int extractText)
 			//printf("'%ls'\n", &ch);
 			if(ch == EOF)
 			{
-				wort_ende();
+				wort_ende(nooutput);
 				return;
 			}
 			switch (ch)
 			{
 				case '<':
-					html_tag();
+					html_tag(nooutput);
 					break;
 
 				/* Entities  */
@@ -194,14 +194,14 @@ void html(int extractText)
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende();
+						wort_ende(nooutput);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende();
-					if (pre) { line_break(); }
+					wort_ende(nooutput);
+					if (pre) { line_break(nooutput); }
 					break;
 
 				/* Microsoft ... */
@@ -215,7 +215,7 @@ void html(int extractText)
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(); }
+						if (ch==' ') { wort_ende(nooutput); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -230,7 +230,7 @@ void html(int extractText)
 			ch = read_char();
 			if(ch == EOF)
 			{
-				wort_ende();
+				wort_ende(nooutput);
 				return;
 			}
 			switch (ch)
@@ -269,14 +269,14 @@ void html(int extractText)
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende();
+						wort_ende(nooutput);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende();
-					if (pre) { line_break(); }
+					wort_ende(nooutput);
+					if (pre) { line_break(nooutput); }
 					break;
 
 				/* Microsoft ... */
@@ -290,7 +290,7 @@ void html(int extractText)
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(); }
+						if (ch==' ') { wort_ende(nooutput); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -326,30 +326,30 @@ void check_for_center()
 
 /* ------------------------------------------------ */
 
-void start_p()
+void start_p(int nooutput)
 {
 	push_align(LEFT);
-	neuer_paragraph();
+	neuer_paragraph(nooutput);
 	check_for_center();
 }
 
 /* ------------------------------------------------ */
 
-void start_div(int a)
+void start_div(int a, int nooutput)
 {
-	line_break();
+	line_break(nooutput);
 	if (a!=0) { push_align(a); }
 	else { check_for_center(); }
 }
 
 /* ------------------------------------------------ */
 
-void end_div()
+void end_div(int nooutput)
 {
-	wort_ende();
+	wort_ende(nooutput);
 
-	if (paragraph!=0) { paragraphen_ende(); }
-	else { print_zeile(); }
+	if (paragraph!=0) { paragraphen_ende(nooutput); }
+	else { print_zeile(nooutput); }
 	pop_align(); /* einer für start_div */
 }
 
@@ -485,10 +485,10 @@ CHAR friss_kommentar()
 
 /* ------------------------------------------------ */
 
-void start_nooutput()
+int start_nooutput(int nooutput)
 {
-	wort_ende();
-	print_zeile();
+	wort_ende(nooutput);
+	print_zeile(nooutput);
 	nooutput = 1;
 
 	while (ch!='>' && ch!=EOF)
@@ -500,13 +500,15 @@ void start_nooutput()
 			nooutput = 0;
 		}
 	}
+	return nooutput;
 }
 
-void end_nooutput()
+int end_nooutput(int nooutput)
 {
-	wort_ende();
-	print_zeile();
+	wort_ende(nooutput);
+	print_zeile(nooutput);
 	nooutput = 0;
+	return nooutput;
 }
 
 /* ------------------------------------------------ */

@@ -14,28 +14,24 @@ const int hr_breite;
 CHAR ch;
 
 int paragraph;
-int nooutput;
-
 int breite;
-
 int spaces;
 
-void print_zeile();
+void print_zeile(int nooutput);
 int is_zeile_empty();
 void clear_line();
 
 void push_align(int a);
-void pop_align();
 
 void wort_plus_string(CHAR *s);
 void wort_plus_ch(int c);
-void wort_ende();
+void wort_ende(int nooutput);
 
-void line_break();
+void line_break(int nooutput);
 
-void paragraphen_ende();
-void neuer_paragraph();
+void paragraphen_ende(int nooutput);
+void neuer_paragraph(int nooutput);
 
-void hr();
+void hr(int nooutput);
 
 #endif 

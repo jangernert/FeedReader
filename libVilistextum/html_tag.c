@@ -29,7 +29,7 @@
 #include "charset.h"
 #include "util.h"
 
-void html_tag()
+void html_tag(int nooutput)
 {
 	CHAR str[DEF_STR_LEN];
 	int i=0;
@@ -57,21 +57,21 @@ void html_tag()
 	str[i] = '\0';
 
 	/* first all tags, that affect if there is any output at all */
-	if CMP("SCRIPT", str)       { start_nooutput(); }
-	else if CMP("/SCRIPT", str) { end_nooutput(); }
-	else if CMP("STYLE", str)   { start_nooutput(); }
-	else if CMP("/STYLE", str)  { end_nooutput(); }
+	if CMP("SCRIPT", str)       { start_nooutput(nooutput); }
+	else if CMP("/SCRIPT", str) { end_nooutput(nooutput); }
+	else if CMP("STYLE", str)   { start_nooutput(nooutput); }
+	else if CMP("/STYLE", str)  { end_nooutput(nooutput); }
 	else if CMP("TITLE", str)
 	{
 		if (option_title)
 		{
 			push_align(LEFT);
-			neuer_paragraph();
+			neuer_paragraph(nooutput);
 		}
 		else
 		{
-			wort_ende();
-			print_zeile();
+			wort_ende(nooutput);
+			print_zeile(nooutput);
 			nooutput = 1;
 		}
 	}
@@ -79,14 +79,14 @@ void html_tag()
 	{
 		if (option_title)
 		{
-			paragraphen_ende();
-			print_zeile();
+			paragraphen_ende(nooutput);
+			print_zeile(nooutput);
 		}
 		else
 		{
-			wort_ende();
+			wort_ende(nooutput);
 			clear_line();
-			print_zeile();
+			print_zeile(nooutput);
 			nooutput = 0;
 		}
 	}
@@ -98,13 +98,13 @@ void html_tag()
 		else if CMP("?XML", str)      { find_xml_encoding(); }
 
 		/* Linebreak */
-		else if CMP("BR", str)  { line_break(); }
-		else if CMP("BR/", str) { line_break(); } /* xhtml */
+		else if CMP("BR", str)  { line_break(nooutput); }
+		else if CMP("BR/", str) { line_break(nooutput); } /* xhtml */
 
-		else if CMP("P", str)  { start_p(); }
-		else if CMP("/P", str) { paragraphen_ende(); }
-		else if CMP("BLOCKQUOTE", str)  { start_p(); }
-		else if CMP("/BLOCKQUOTE", str) { paragraphen_ende(); }
+		else if CMP("P", str)  { start_p(nooutput); }
+		else if CMP("/P", str) { paragraphen_ende(nooutput); }
+		else if CMP("BLOCKQUOTE", str)  { start_p(nooutput); }
+		else if CMP("/BLOCKQUOTE", str) { paragraphen_ende(nooutput); }
 		else if CMP("Q", str)  { wort_plus_ch('"'); }
 		else if CMP("/Q", str) { wort_plus_ch('"'); }
 
@@ -124,39 +124,39 @@ void html_tag()
 
 
 		/* headings */
-		else if CMP("H1", str)  { start_p();          }
-		else if CMP("/H1", str) { paragraphen_ende(); }
-		else if CMP("H2", str)  { start_p();          }
-		else if CMP("/H2", str) { paragraphen_ende(); }
-		else if CMP("H3", str)  { start_p();          }
-		else if CMP("/H3", str) { paragraphen_ende(); }
-		else if CMP("H4", str)  { start_p();          }
-		else if CMP("/H4", str) { paragraphen_ende(); }
-		else if CMP("H5", str)  { start_p();          }
-		else if CMP("/H5", str) { paragraphen_ende(); }
-		else if CMP("H6", str)  { start_p();          }
-		else if CMP("/H6", str) { paragraphen_ende(); }
+		else if CMP("H1", str)  { start_p(nooutput);          }
+		else if CMP("/H1", str) { paragraphen_ende(nooutput); }
+		else if CMP("H2", str)  { start_p(nooutput);          }
+		else if CMP("/H2", str) { paragraphen_ende(nooutput); }
+		else if CMP("H3", str)  { start_p(nooutput);          }
+		else if CMP("/H3", str) { paragraphen_ende(nooutput); }
+		else if CMP("H4", str)  { start_p(nooutput);          }
+		else if CMP("/H4", str) { paragraphen_ende(nooutput); }
+		else if CMP("H5", str)  { start_p(nooutput);          }
+		else if CMP("/H5", str) { paragraphen_ende(nooutput); }
+		else if CMP("H6", str)  { start_p(nooutput);          }
+		else if CMP("/H6", str) { paragraphen_ende(nooutput); }
 
-		else if CMP("HR", str)  { hr(); }
-		else if CMP("HR/", str) { hr(); } /* xhtml */
+		else if CMP("HR", str)  { hr(nooutput); }
+		else if CMP("HR/", str) { hr(nooutput); } /* xhtml */
 
-		else if CMP("LI", str)    { start_lis(); }
+		else if CMP("LI", str)    { start_lis(nooutput); }
 		else if CMP("/LI", str)   { end_lis(); }
-		else if CMP("UL", str)    { start_uls(); }
-		else if CMP("/UL", str)   { end_uls(); return; }
-		else if CMP("DIR", str)   { start_uls(); }       /* deprecated */
-		else if CMP("/DIR", str)  { end_uls(); return; } /* deprecated */
-		else if CMP("MENU", str)  { start_uls(); }       /* deprecated */
-		else if CMP("/MENU", str) { end_uls(); return; } /* deprecated */
-		else if CMP("OL", str)    { start_ols(); }
-		else if CMP("/OL", str)   { end_ols(); }
+		else if CMP("UL", str)    { start_uls(nooutput); }
+		else if CMP("/UL", str)   { end_uls(nooutput); return; }
+		else if CMP("DIR", str)   { start_uls(nooutput); }       /* deprecated */
+		else if CMP("/DIR", str)  { end_uls(nooutput); return; } /* deprecated */
+		else if CMP("MENU", str)  { start_uls(nooutput); }       /* deprecated */
+		else if CMP("/MENU", str) { end_uls(nooutput); return; } /* deprecated */
+		else if CMP("OL", str)    { start_ols(nooutput); }
+		else if CMP("/OL", str)   { end_ols(nooutput); }
 
-		else if CMP("DIV", str)      { start_div(0); }
-		else if CMP("/DIV", str)     { end_div(); }
-		else if CMP("CENTER", str)   { start_div(CENTER); } /* deprecated */
-		else if CMP("/CENTER", str)  { end_div(); }         /* deprecated */
-		else if CMP("RIGHT", str)    { start_div(RIGHT); }
-		else if CMP("/RIGHT", str)   { end_div(); }
+		else if CMP("DIV", str)      { start_div(0, nooutput); }
+		else if CMP("/DIV", str)     { end_div(nooutput); }
+		else if CMP("CENTER", str)   { start_div(CENTER, nooutput); } /* deprecated */
+		else if CMP("/CENTER", str)  { end_div(nooutput); }         /* deprecated */
+		else if CMP("RIGHT", str)    { start_div(RIGHT, nooutput); }
+		else if CMP("/RIGHT", str)   { end_div(nooutput); }
 
 		/* tags with alt attribute */
 		else if CMP("IMG", str)    { image(default_image, 1); }
@@ -165,25 +165,25 @@ void html_tag()
 		else if CMP("INPUT", str)  { image(STRING("Input"), 0); }
 
 		/* table */
-		else if CMP("TABLE", str)    { /*start_p();*/ push_align(LEFT); neuer_paragraph(); }
-		else if CMP("/TABLE", str)   { paragraphen_ende(); }
+		else if CMP("TABLE", str)    { /*start_p();*/ push_align(LEFT); neuer_paragraph(nooutput); }
+		else if CMP("/TABLE", str)   { paragraphen_ende(nooutput); }
 		else if CMP("TD", str)       { wort_plus_ch(' '); }
 		else if CMP("/TD", str)      {}
 		else if CMP("TH", str)       { wort_plus_ch(' '); }
 		else if CMP("/TH", str)      {}
-		else if CMP("TR", str)       { line_break(); } /* start_p();  */
+		else if CMP("TR", str)       { line_break(nooutput); } /* start_p();  */
 		else if CMP("/TR", str)      { /*paragraphen_ende();*/ }
 		else if CMP("CAPTION", str)  {}
 		else if CMP("/CAPTION", str) {}
 
-		else if CMP("PRE", str)   { start_p();  pre=1; }
-		else if CMP("/PRE", str)  { paragraphen_ende(); pre=0; }
+		else if CMP("PRE", str)   { start_p(nooutput);  pre=1; }
+		else if CMP("/PRE", str)  { paragraphen_ende(nooutput); pre=0; }
 
-		else if CMP("DL", str)  { start_dl();} /* Definition List */
-		else if CMP("/DL", str) { end_dl(); }
-		else if CMP("DT", str)  { start_dt(); } /* Definition Title */
+		else if CMP("DL", str)  { start_dl(nooutput);} /* Definition List */
+		else if CMP("/DL", str) { end_dl(nooutput); }
+		else if CMP("DT", str)  { start_dt(nooutput); } /* Definition Title */
 		else if CMP("/DT", str) { end_dt(); }
-		else if CMP("DD", str)  { start_dd(); } /* Definition Description */
+		else if CMP("DD", str)  { start_dd(nooutput); } /* Definition Description */
 		else if CMP("/DD", str) { end_dd(); }
 
 		/* tags for forms */

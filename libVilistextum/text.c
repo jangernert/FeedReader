@@ -29,8 +29,7 @@ const int hr_breite = 76;
 
 int breite=76,
 paragraph=0,
-spaces=0,      /* spaces at beginning of line */
-nooutput=0;    /* for SCRIPT, etc: no output */
+spaces=0;      /* spaces at beginning of line */
 
 CHAR wort[DEF_STR_LEN];
 
@@ -112,7 +111,7 @@ void clear_line() {
 /* ------------------------------------------------ */
 
 /* print line */
-void print_zeile()
+void print_zeile(int nooutput)
 {
 	int printzeile;
 
@@ -217,7 +216,7 @@ void wort_plus_ch(int c)
 
 /* ------------------------------------------------ */
 
-void wort_ende()
+void wort_ende(int nooutput)
 {
 	int i=0;
 
@@ -227,7 +226,7 @@ void wort_ende()
 
 		if (zeilen_len+wort_len+1 > breite)
 		{
-			print_zeile();
+			print_zeile(nooutput);
 			i=0;
 			while (i<spaces) { zeile_plus_wort(ONESPACE,1,1); i++; }
 			zeile_plus_wort(ONESPACE,1,1);
@@ -253,20 +252,20 @@ void wort_ende()
 
 /* ------------------------------------------------ */
 
-void line_break()
+void line_break(int nooutput)
 {
-	wort_ende();
-	print_zeile();
+	wort_ende(nooutput);
+	print_zeile(nooutput);
 }
 
 /* ------------------------------------------------ */
 
-void paragraphen_ende()
+void paragraphen_ende(int nooutput)
 {
 	if (paragraph!=0)
 	{
-		line_break();
-		print_zeile();
+		line_break(nooutput);
+		print_zeile(nooutput);
 		paragraph--;
 		pop_align();
 	}
@@ -274,17 +273,17 @@ void paragraphen_ende()
 
 /* ------------------------------------------------ */
 
-void neuer_paragraph()
+void neuer_paragraph(int nooutput)
 {
-	if (paragraph!=0) { paragraphen_ende(); }
-	line_break();
-	print_zeile();
+	if (paragraph!=0) { paragraphen_ende(nooutput); }
+	line_break(nooutput);
+	print_zeile(nooutput);
 	paragraph++;
 }
 
 /* ------------------------------------------------ */
 
-void hr()
+void hr(int nooutput)
 {
 	int i, hr_width=hr_breite-4, hr_align=CENTER;
 	while (ch!='>')
@@ -314,8 +313,8 @@ void hr()
 		}
 	}
 
-	neuer_paragraph();
+	neuer_paragraph(nooutput);
 	push_align(hr_align);
 	for (i=0; i<hr_width; i++) { wort_plus_ch('-'); }
-	paragraphen_ende();
+	paragraphen_ende(nooutput);
 }

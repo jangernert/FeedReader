@@ -105,12 +105,12 @@ char* getOutput(size_t input_length)
 
 /* ------------------------------------------------ */
 
-void finalize()
+void finalize(int nooutput)
 {
 	if (!is_zeile_empty())
 	{
-		wort_ende();
-		print_zeile();
+		wort_ende(nooutput);
+		print_zeile(nooutput);
 	}
 }
 

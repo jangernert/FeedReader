@@ -67,9 +67,6 @@ void parse_entity(CHAR *str)
 		/* if true entity was known */
 		CPYSS(str, tmpstr);
 	}
-	else {
-		if (errorlevel>=1) { print_error("entity unknown: ", tmpstr); }
-	}
 }
 
 /* ------------------------------------------------ */

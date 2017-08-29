@@ -17,7 +17,6 @@ void check_for_center();
 void start_p(int nooutput, int spaces, int paragraph, int breite);
 void start_div(int a, int nooutput, int spaces, int breite);
 void end_div(int nooutput, int spaces, int paragraph, int breite);
-void image(CHAR *, int);
 CHAR friss_kommentar();
 
 void find_encoding();

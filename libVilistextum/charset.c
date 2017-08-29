@@ -103,7 +103,7 @@ void set_iconv_charset(char *charset)
 {
 	/* set charset for iconv conversion */
 	strcpy(iconv_charset, charset);
-	if (transliteration) { strcat(iconv_charset, "//TRANSLIT");}
+	strcat(iconv_charset, "//TRANSLIT");
 }
 
 /* ------------------------------------------------ */

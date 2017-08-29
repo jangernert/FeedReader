@@ -68,8 +68,7 @@ void push_align(int a)
 
 void pop_align()
 {
-	if (align_nr==0) { if (errorlevel>=5) { fprintf(stdout, "Error: align_nr=0\n");} }
-	else { align_nr--; }
+	if (align_nr!=0) { align_nr--; }
 }
 
 /* ------------------------------------------------ */

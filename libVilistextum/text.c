@@ -44,22 +44,19 @@ void center_zeile(int breite)
 {
 	int i,j;
 
-	if (!palm)
+	/* ensure that the string is not the empty string */
+	if (zeilen_len!=0)
 	{
-		/* ensure that the string is not the empty string */
-		if (zeilen_len!=0)
+		/* ensure that centering is possible */
+		if (zeilen_pos<breite)
 		{
-			/* ensure that centering is possible */
-			if (zeilen_pos<breite)
-			{
-				j=(breite-zeilen_len)/2;
+			j=(breite-zeilen_len)/2;
 
-				for (i=zeilen_pos+j; i>=0; i--)
-				{
-					zeile[i+j]=zeile[i];
-				}
-				for (i=0; i<j; i++) { zeile[i]=' '; }
+			for (i=zeilen_pos+j; i>=0; i--)
+			{
+				zeile[i+j]=zeile[i];
 			}
+			for (i=0; i<j; i++) { zeile[i]=' '; }
 		}
 	}
 }
@@ -70,17 +67,14 @@ void right_zeile(int breite)
 {
 	int i,j;
 
-	if (!palm)
+	if (zeilen_len!=0)
 	{
-		if (zeilen_len!=0)
+		j=breite-zeilen_len;
+		for (i=zeilen_pos+j+2; i>=0; i--)
 		{
-			j=breite-zeilen_len;
-			for (i=zeilen_pos+j+2; i>=0; i--)
-			{
-				zeile[i+j]=zeile[i];
-			}
-			for (i=0; i<j; i++) { zeile[i]=' '; }
+			zeile[i+j]=zeile[i];
 		}
+		for (i=0; i<j; i++) { zeile[i]=' '; }
 	}
 }
 
@@ -111,7 +105,7 @@ void print_zeile(int nooutput, int breite)
 {
 	int printzeile;
 
-	if ((shrink_lines) && only_spaces(zeile))
+	if (only_spaces(zeile))
 	{
 		clear_line();
 		anz_leere_zeilen++;
@@ -123,12 +117,7 @@ void print_zeile(int nooutput, int breite)
 	That means the first line of the output is never an empty line */
 	if (noleadingblanks==0) { noleadingblanks = !only_spaces(zeile); }
 
-	if (shrink_lines==0)
-	{
-		printzeile = (!((zeilen_len==0)&&(zeilen_len_old==0)));
-	} else {
-		printzeile = (!((anz_leere_zeilen>shrink_lines)||(noleadingblanks==0)));
-	}
+	printzeile = (!(noleadingblanks==0));
 
 	if (printzeile)
 	{
@@ -175,13 +164,10 @@ void wort_plus_string_nocount(CHAR *s)
 	i=wort_pos,
 	j=0;
 
-	if (!palm)
-	{
-		if (wort_pos+len<DEF_STR_LEN-1) {
-			while (i<wort_pos+len) { wort[i] = s[j]; j++; i++; }
-			wort[i] = '\0';
-			wort_pos += len;
-		}
+	if (wort_pos+len<DEF_STR_LEN-1) {
+		while (i<wort_pos+len) { wort[i] = s[j]; j++; i++; }
+		wort[i] = '\0';
+		wort_pos += len;
 	}
 }
 
@@ -292,7 +278,6 @@ void hr(int nooutput, int spaces, int paragraph, int breite)
 			else if CMP("CENTER",  attr_ctnt) { hr_align=CENTER; }
 			else if CMP("RIGHT",   attr_ctnt) { hr_align=RIGHT;  }
 			else if CMP("JUSTIFY", attr_ctnt) { hr_align=LEFT;  }
-			else { if (errorlevel>=2) { fprintf(stderr, "No LEFT|CENTER|RIGHT found!\n");} }
 		}
 		else if CMP("WIDTH", attr_name)
 		{

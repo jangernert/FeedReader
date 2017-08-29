@@ -63,32 +63,16 @@ void html_tag(int nooutput, int spaces, int paragraph, int breite)
 	else if CMP("/STYLE", str)  { end_nooutput(nooutput, spaces, breite); }
 	else if CMP("TITLE", str)
 	{
-		if (option_title)
-		{
-			push_align(LEFT);
-			neuer_paragraph(nooutput, spaces, paragraph, breite);
-		}
-		else
-		{
-			wort_ende(nooutput, spaces, breite);
-			print_zeile(nooutput, breite);
-			nooutput = 1;
-		}
+		wort_ende(nooutput, spaces, breite);
+		print_zeile(nooutput, breite);
+		nooutput = 1;
 	}
 	else if CMP("/TITLE", str)
 	{
-		if (option_title)
-		{
-			paragraphen_ende(nooutput, spaces, paragraph, breite);
-			print_zeile(nooutput, breite);
-		}
-		else
-		{
 			wort_ende(nooutput, spaces, breite);
 			clear_line();
 			print_zeile(nooutput, breite);
 			nooutput = 0;
-		}
 	}
 
 	if (nooutput==0) {
@@ -107,20 +91,6 @@ void html_tag(int nooutput, int spaces, int paragraph, int breite)
 		else if CMP("/BLOCKQUOTE", str) { paragraphen_ende(nooutput, spaces, paragraph, breite); }
 		else if CMP("Q", str)  { wort_plus_ch('"'); }
 		else if CMP("/Q", str) { wort_plus_ch('"'); }
-
-		/* Convert these Tags */
-		else if CMP("B", str)       { if (convert_tags) { wort_plus_ch('*'); } }
-		else if CMP("/B", str)      { if (convert_tags) { wort_plus_ch('*'); } }
-		else if CMP("I", str)       { if (convert_tags) { wort_plus_ch('/'); } }
-		else if CMP("/I", str)      { if (convert_tags) { wort_plus_ch('/'); } }
-		else if CMP("U", str)       { if (convert_tags) { wort_plus_ch('_'); } } /* deprecated */
-		else if CMP("/U", str)      { if (convert_tags) { wort_plus_ch('_'); } } /* deprecated */
-		else if CMP("STRONG", str)  { if (convert_tags) { wort_plus_ch('*'); } }
-		else if CMP("/STRONG", str) { if (convert_tags) { wort_plus_ch('*'); } }
-		else if CMP("EM", str)      { if (convert_tags) { wort_plus_ch('/'); } }
-		else if CMP("/EM", str)     { if (convert_tags) { wort_plus_ch('/'); } }
-		else if CMP("EMPH", str)    { if (convert_tags) { wort_plus_ch('/'); } } /* sometimes used, but doesn't really exist */
-		else if CMP("/EMPH", str)   { if (convert_tags) { wort_plus_ch('/'); } } /* sometimes used, but doesn't really exist */
 
 
 		/* headings */
@@ -157,12 +127,6 @@ void html_tag(int nooutput, int spaces, int paragraph, int breite)
 		else if CMP("/CENTER", str)  { end_div(nooutput, spaces, paragraph, breite); }         /* deprecated */
 		else if CMP("RIGHT", str)    { start_div(RIGHT, nooutput, spaces, breite); }
 		else if CMP("/RIGHT", str)   { end_div(nooutput, spaces, paragraph, breite); }
-
-		/* tags with alt attribute */
-		else if CMP("IMG", str)    { image(default_image, 1); }
-		else if CMP("APPLET", str) { image(STRING("Applet"), 1); } /* deprecated */
-		else if CMP("AREA", str)   { image(STRING("Area"), 0); }
-		else if CMP("INPUT", str)  { image(STRING("Input"), 0); }
 
 		/* table */
 		else if CMP("TABLE", str)    { /*start_p();*/ push_align(LEFT); neuer_paragraph(nooutput, spaces, paragraph, breite); }
@@ -317,7 +281,6 @@ void html_tag(int nooutput, int spaces, int paragraph, int breite)
 		else if CMP("/STYLE", str)    {}
 		else if CMP("TITLE", str)     {}
 		else if CMP("/TITLE", str)    {}
-		else { if (errorlevel>=2) { print_error("tag ignored: ", str);} }
 	}
 
 	/* Skip attributes */

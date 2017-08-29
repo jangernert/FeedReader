@@ -20,21 +20,6 @@
 
 /* ------------------------------------------------ */
 
-void set_options()
-{
-	convert_characters = 1;
-	shrink_lines = 1;
-	remove_empty_alt = 1;
-	option_no_image = 1;
-	option_no_alt = 1;
-	convert_tags = 0;
-	option_links = 0;
-	option_links_inline = 0;
-	option_title = 0;
-	set_iconv_charset("utf-8");
-	errorlevel = 0;
-}
-
 char* vilistextum(char* text, int extractText)
 {
 	int nooutput = 0;
@@ -46,7 +31,7 @@ char* vilistextum(char* text, int extractText)
 		return NULL;
 
 	error = 0;
-	set_options();
+	set_iconv_charset("utf-8");
 
 	if(init_multibyte())
 	{

@@ -209,8 +209,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 				case 0x88: case 0x89: case 0x8a: case 0x8b: case 0x8c: case 0x8d:	case 0x8e: case 0x8f:
 				case 0x90: case 0x91: case 0x92: case 0x93: case 0x94: case 0x95: case 0x96: case 0x97:
 				case 0x98: case 0x99: case 0x9a: case 0x9b: case 0x9c: case 0x9d: case 0x9e: case 0x9f:
-					if (convert_characters) { microsoft_character(ch); }
-					else wort_plus_ch(ch);
+					microsoft_character(ch);
 					break;
 
 				default:
@@ -284,8 +283,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 				case 0x88: case 0x89: case 0x8a: case 0x8b: case 0x8c: case 0x8d:	case 0x8e: case 0x8f:
 				case 0x90: case 0x91: case 0x92: case 0x93: case 0x94: case 0x95: case 0x96: case 0x97:
 				case 0x98: case 0x99: case 0x9a: case 0x9b: case 0x9c: case 0x9d: case 0x9e: case 0x9f:
-					if (convert_characters) { microsoft_character(ch); }
-					else wort_plus_ch(ch);
+					microsoft_character(ch);
 					break;
 
 				default:
@@ -317,7 +315,6 @@ void check_for_center()
 			else if CMP("CENTER", attr_ctnt) { push_align(CENTER); }
 			else if CMP("RIGHT",  attr_ctnt) { push_align(RIGHT); }
 			else if CMP("JUSTIFY", attr_ctnt) { push_align(LEFT); }
-			else { if (errorlevel>=2) { fprintf(stderr, "No LEFT|CENTER|RIGHT found!\n"); push_align(LEFT); } }
 		}
 	}
 	/* found no ALIGN  */
@@ -367,35 +364,6 @@ void construct_footnote(CHAR *temp, int number, CHAR *link)
 /* ------------------------------------------------ */
 
 char *schemes[] = {"ftp://","file://" ,"http://" ,"gopher://" ,"mailto:" ,"news:" ,"nntp://" ,"telnet://" ,"wais://" ,"prospero://" };
-
-/* ------------------------------------------------ */
-
-/* find alt attribute in current tag */
-void image(CHAR *alt_text, int show_alt)
-{
-	int found_alt=0;
-	while (ch!='>' && ch!=EOF)
-	{
-		ch=get_attr();
-		if CMP("ALT", attr_name)
-		{
-			/*printf("+1+\n"); */
-			if (!(remove_empty_alt && CMP("", attr_ctnt))) {
-				/*printf("+2+\n"); */
-				if (!option_no_alt)
-				{ wort_plus_ch('['); wort_plus_string(attr_ctnt); wort_plus_ch(']');}
-			}
-			found_alt=1;
-		}
-	}
-
-	if ((found_alt==0) && (show_alt)) {
-		if (!option_no_image)
-		{
-			wort_plus_ch('['); wort_plus_string(alt_text); wort_plus_ch(']');
-		}
-	}
-}
 
 /* ------------------------------------------------ */
 

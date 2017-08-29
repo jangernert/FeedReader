@@ -136,7 +136,7 @@ int get_attr()
 
 /* ------------------------------------------------  */
 
-void html(int extractText, int nooutput, int spaces)
+void html(int extractText, int nooutput, int spaces, int paragraph)
 {
 	int i;
 	CHAR str[DEF_STR_LEN];
@@ -157,7 +157,7 @@ void html(int extractText, int nooutput, int spaces)
 			switch (ch)
 			{
 				case '<':
-					html_tag(nooutput, spaces);
+					html_tag(nooutput, spaces, paragraph);
 					break;
 
 				/* Entities  */
@@ -326,10 +326,10 @@ void check_for_center()
 
 /* ------------------------------------------------ */
 
-void start_p(int nooutput, int spaces)
+void start_p(int nooutput, int spaces, int paragraph)
 {
 	push_align(LEFT);
-	neuer_paragraph(nooutput, spaces);
+	neuer_paragraph(nooutput, spaces, paragraph);
 	check_for_center();
 }
 
@@ -344,11 +344,11 @@ void start_div(int a, int nooutput, int spaces)
 
 /* ------------------------------------------------ */
 
-void end_div(int nooutput, int spaces)
+void end_div(int nooutput, int spaces, int paragraph)
 {
 	wort_ende(nooutput, spaces);
 
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces); }
+	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph); }
 	else { print_zeile(nooutput); }
 	pop_align(); /* einer für start_div */
 }

@@ -119,15 +119,15 @@ int definition_list=0;
 void end_dd();
 
 /* Definition List */
-void start_dl(int nooutput, int spaces)
+void start_dl(int nooutput, int spaces, int paragraph)
 {
 	end_dd();
-	start_p(nooutput, spaces);
+	start_p(nooutput, spaces, paragraph);
 }
 
-void end_dl(int nooutput, int spaces)
+void end_dl(int nooutput, int spaces, int paragraph)
 {
-	paragraphen_ende(nooutput, spaces);
+	paragraphen_ende(nooutput, spaces, paragraph);
 
 	end_dd();
 }

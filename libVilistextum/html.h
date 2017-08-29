@@ -12,11 +12,11 @@ int get_new_attr(CHAR *name, CHAR *content);
 CHAR attr_name[DEF_STR_LEN];
 CHAR attr_ctnt[DEF_STR_LEN];
 
-void html(int extractText, int nooutput, int spaces);
+void html(int extractText, int nooutput, int spaces, int paragraph);
 void check_for_center();
-void start_p(int nooutput, int spaces);
+void start_p(int nooutput, int spaces, int paragraph);
 void start_div(int a, int nooutput, int spaces);
-void end_div(int nooutput, int spaces);
+void end_div(int nooutput, int spaces, int paragraph);
 void image(CHAR *, int);
 CHAR friss_kommentar();
 

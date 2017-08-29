@@ -27,8 +27,7 @@ const int RIGHT = 3;
 const int tab = 4; /* tabulator */
 const int hr_breite = 76;
 
-int breite=76,
-paragraph=0;
+int breite=76;
 
 CHAR wort[DEF_STR_LEN];
 
@@ -259,7 +258,7 @@ void line_break(int nooutput, int spaces)
 
 /* ------------------------------------------------ */
 
-void paragraphen_ende(int nooutput, int spaces)
+void paragraphen_ende(int nooutput, int spaces, int paragraph)
 {
 	if (paragraph!=0)
 	{
@@ -272,9 +271,9 @@ void paragraphen_ende(int nooutput, int spaces)
 
 /* ------------------------------------------------ */
 
-void neuer_paragraph(int nooutput, int spaces)
+void neuer_paragraph(int nooutput, int spaces, int paragraph)
 {
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces); }
+	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph); }
 	line_break(nooutput, spaces);
 	print_zeile(nooutput);
 	paragraph++;
@@ -282,7 +281,7 @@ void neuer_paragraph(int nooutput, int spaces)
 
 /* ------------------------------------------------ */
 
-void hr(int nooutput, int spaces)
+void hr(int nooutput, int spaces, int paragraph)
 {
 	int i, hr_width=hr_breite-4, hr_align=CENTER;
 	while (ch!='>')
@@ -312,8 +311,8 @@ void hr(int nooutput, int spaces)
 		}
 	}
 
-	neuer_paragraph(nooutput, spaces);
+	neuer_paragraph(nooutput, spaces, paragraph);
 	push_align(hr_align);
 	for (i=0; i<hr_width; i++) { wort_plus_ch('-'); }
-	paragraphen_ende(nooutput, spaces);
+	paragraphen_ende(nooutput, spaces, paragraph);
 }

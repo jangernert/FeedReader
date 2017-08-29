@@ -13,7 +13,6 @@ const int hr_breite;
 
 CHAR ch;
 
-int paragraph;
 int breite;
 
 void print_zeile(int nooutput);
@@ -28,9 +27,9 @@ void wort_ende(int nooutput, int spaces);
 
 void line_break(int nooutput, int spaces);
 
-void paragraphen_ende(int nooutput, int spaces);
-void neuer_paragraph(int nooutput, int spaces);
+void paragraphen_ende(int nooutput, int spaces, int paragraph);
+void neuer_paragraph(int nooutput, int spaces, int paragraph);
 
-void hr(int nooutput, int spaces);
+void hr(int nooutput, int spaces, int paragraph);
 
 #endif 

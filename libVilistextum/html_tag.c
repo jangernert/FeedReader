@@ -29,7 +29,7 @@
 #include "charset.h"
 #include "util.h"
 
-void html_tag(int nooutput, int spaces)
+void html_tag(int nooutput, int spaces, int paragraph)
 {
 	CHAR str[DEF_STR_LEN];
 	int i=0;
@@ -66,7 +66,7 @@ void html_tag(int nooutput, int spaces)
 		if (option_title)
 		{
 			push_align(LEFT);
-			neuer_paragraph(nooutput, spaces);
+			neuer_paragraph(nooutput, spaces, paragraph);
 		}
 		else
 		{
@@ -79,7 +79,7 @@ void html_tag(int nooutput, int spaces)
 	{
 		if (option_title)
 		{
-			paragraphen_ende(nooutput, spaces);
+			paragraphen_ende(nooutput, spaces, paragraph);
 			print_zeile(nooutput);
 		}
 		else
@@ -101,10 +101,10 @@ void html_tag(int nooutput, int spaces)
 		else if CMP("BR", str)  { line_break(nooutput, spaces); }
 		else if CMP("BR/", str) { line_break(nooutput, spaces); } /* xhtml */
 
-		else if CMP("P", str)  { start_p(nooutput, spaces); }
-		else if CMP("/P", str) { paragraphen_ende(nooutput, spaces); }
-		else if CMP("BLOCKQUOTE", str)  { start_p(nooutput, spaces); }
-		else if CMP("/BLOCKQUOTE", str) { paragraphen_ende(nooutput, spaces); }
+		else if CMP("P", str)  { start_p(nooutput, spaces, paragraph); }
+		else if CMP("/P", str) { paragraphen_ende(nooutput, spaces, paragraph); }
+		else if CMP("BLOCKQUOTE", str)  { start_p(nooutput, spaces, paragraph); }
+		else if CMP("/BLOCKQUOTE", str) { paragraphen_ende(nooutput, spaces, paragraph); }
 		else if CMP("Q", str)  { wort_plus_ch('"'); }
 		else if CMP("/Q", str) { wort_plus_ch('"'); }
 
@@ -124,21 +124,21 @@ void html_tag(int nooutput, int spaces)
 
 
 		/* headings */
-		else if CMP("H1", str)  { start_p(nooutput, spaces);          }
-		else if CMP("/H1", str) { paragraphen_ende(nooutput, spaces); }
-		else if CMP("H2", str)  { start_p(nooutput, spaces);          }
-		else if CMP("/H2", str) { paragraphen_ende(nooutput, spaces); }
-		else if CMP("H3", str)  { start_p(nooutput, spaces);          }
-		else if CMP("/H3", str) { paragraphen_ende(nooutput, spaces); }
-		else if CMP("H4", str)  { start_p(nooutput, spaces);          }
-		else if CMP("/H4", str) { paragraphen_ende(nooutput, spaces); }
-		else if CMP("H5", str)  { start_p(nooutput, spaces);          }
-		else if CMP("/H5", str) { paragraphen_ende(nooutput, spaces); }
-		else if CMP("H6", str)  { start_p(nooutput, spaces);          }
-		else if CMP("/H6", str) { paragraphen_ende(nooutput, spaces); }
+		else if CMP("H1", str)  { start_p(nooutput, spaces, paragraph);          }
+		else if CMP("/H1", str) { paragraphen_ende(nooutput, spaces, paragraph); }
+		else if CMP("H2", str)  { start_p(nooutput, spaces, paragraph);          }
+		else if CMP("/H2", str) { paragraphen_ende(nooutput, spaces, paragraph); }
+		else if CMP("H3", str)  { start_p(nooutput, spaces, paragraph);          }
+		else if CMP("/H3", str) { paragraphen_ende(nooutput, spaces, paragraph); }
+		else if CMP("H4", str)  { start_p(nooutput, spaces, paragraph);          }
+		else if CMP("/H4", str) { paragraphen_ende(nooutput, spaces, paragraph); }
+		else if CMP("H5", str)  { start_p(nooutput, spaces, paragraph);          }
+		else if CMP("/H5", str) { paragraphen_ende(nooutput, spaces, paragraph); }
+		else if CMP("H6", str)  { start_p(nooutput, spaces, paragraph);          }
+		else if CMP("/H6", str) { paragraphen_ende(nooutput, spaces, paragraph); }
 
-		else if CMP("HR", str)  { hr(nooutput, spaces); }
-		else if CMP("HR/", str) { hr(nooutput, spaces); } /* xhtml */
+		else if CMP("HR", str)  { hr(nooutput, spaces, paragraph); }
+		else if CMP("HR/", str) { hr(nooutput, spaces, paragraph); } /* xhtml */
 
 		else if CMP("LI", str)    { start_lis(nooutput, spaces); }
 		else if CMP("/LI", str)   { end_lis(); }
@@ -152,11 +152,11 @@ void html_tag(int nooutput, int spaces)
 		else if CMP("/OL", str)   { end_ols(nooutput, spaces); }
 
 		else if CMP("DIV", str)      { start_div(0, nooutput, spaces); }
-		else if CMP("/DIV", str)     { end_div(nooutput, spaces); }
+		else if CMP("/DIV", str)     { end_div(nooutput, spaces, paragraph); }
 		else if CMP("CENTER", str)   { start_div(CENTER, nooutput, spaces); } /* deprecated */
-		else if CMP("/CENTER", str)  { end_div(nooutput, spaces); }         /* deprecated */
+		else if CMP("/CENTER", str)  { end_div(nooutput, spaces, paragraph); }         /* deprecated */
 		else if CMP("RIGHT", str)    { start_div(RIGHT, nooutput, spaces); }
-		else if CMP("/RIGHT", str)   { end_div(nooutput, spaces); }
+		else if CMP("/RIGHT", str)   { end_div(nooutput, spaces, paragraph); }
 
 		/* tags with alt attribute */
 		else if CMP("IMG", str)    { image(default_image, 1); }
@@ -165,8 +165,8 @@ void html_tag(int nooutput, int spaces)
 		else if CMP("INPUT", str)  { image(STRING("Input"), 0); }
 
 		/* table */
-		else if CMP("TABLE", str)    { /*start_p();*/ push_align(LEFT); neuer_paragraph(nooutput, spaces); }
-		else if CMP("/TABLE", str)   { paragraphen_ende(nooutput, spaces); }
+		else if CMP("TABLE", str)    { /*start_p();*/ push_align(LEFT); neuer_paragraph(nooutput, spaces, paragraph); }
+		else if CMP("/TABLE", str)   { paragraphen_ende(nooutput, spaces, paragraph); }
 		else if CMP("TD", str)       { wort_plus_ch(' '); }
 		else if CMP("/TD", str)      {}
 		else if CMP("TH", str)       { wort_plus_ch(' '); }
@@ -176,11 +176,11 @@ void html_tag(int nooutput, int spaces)
 		else if CMP("CAPTION", str)  {}
 		else if CMP("/CAPTION", str) {}
 
-		else if CMP("PRE", str)   { start_p(nooutput, spaces);  pre=1; }
-		else if CMP("/PRE", str)  { paragraphen_ende(nooutput, spaces); pre=0; }
+		else if CMP("PRE", str)   { start_p(nooutput, spaces, paragraph);  pre=1; }
+		else if CMP("/PRE", str)  { paragraphen_ende(nooutput, spaces, paragraph); pre=0; }
 
-		else if CMP("DL", str)  { start_dl(nooutput, spaces);} /* Definition List */
-		else if CMP("/DL", str) { end_dl(nooutput, spaces); }
+		else if CMP("DL", str)  { start_dl(nooutput, spaces, paragraph);} /* Definition List */
+		else if CMP("/DL", str) { end_dl(nooutput, spaces, paragraph); }
 		else if CMP("DT", str)  { start_dt(nooutput, spaces); } /* Definition Title */
 		else if CMP("/DT", str) { end_dt(); }
 		else if CMP("DD", str)  { start_dd(nooutput, spaces); } /* Definition Description */

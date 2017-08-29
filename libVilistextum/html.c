@@ -136,7 +136,7 @@ int get_attr()
 
 /* ------------------------------------------------  */
 
-void html(int extractText, int nooutput, int spaces, int paragraph)
+void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 {
 	int i;
 	CHAR str[DEF_STR_LEN];
@@ -151,13 +151,13 @@ void html(int extractText, int nooutput, int spaces, int paragraph)
 			//printf("'%ls'\n", &ch);
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces);
+				wort_ende(nooutput, spaces, breite);
 				return;
 			}
 			switch (ch)
 			{
 				case '<':
-					html_tag(nooutput, spaces, paragraph);
+					html_tag(nooutput, spaces, paragraph, breite);
 					break;
 
 				/* Entities  */
@@ -194,14 +194,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph)
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces);
+						wort_ende(nooutput, spaces, breite);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces);
-					if (pre) { line_break(nooutput, spaces); }
+					wort_ende(nooutput, spaces, breite);
+					if (pre) { line_break(nooutput, spaces, breite); }
 					break;
 
 				/* Microsoft ... */
@@ -215,7 +215,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph)
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces); }
+						if (ch==' ') { wort_ende(nooutput, spaces, breite); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -230,7 +230,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph)
 			ch = read_char();
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces);
+				wort_ende(nooutput, spaces, breite);
 				return;
 			}
 			switch (ch)
@@ -269,14 +269,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph)
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces);
+						wort_ende(nooutput, spaces, breite);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces);
-					if (pre) { line_break(nooutput, spaces); }
+					wort_ende(nooutput, spaces, breite);
+					if (pre) { line_break(nooutput, spaces, breite); }
 					break;
 
 				/* Microsoft ... */
@@ -290,7 +290,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph)
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces); }
+						if (ch==' ') { wort_ende(nooutput, spaces, breite); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -326,30 +326,30 @@ void check_for_center()
 
 /* ------------------------------------------------ */
 
-void start_p(int nooutput, int spaces, int paragraph)
+void start_p(int nooutput, int spaces, int paragraph, int breite)
 {
 	push_align(LEFT);
-	neuer_paragraph(nooutput, spaces, paragraph);
+	neuer_paragraph(nooutput, spaces, paragraph, breite);
 	check_for_center();
 }
 
 /* ------------------------------------------------ */
 
-void start_div(int a, int nooutput, int spaces)
+void start_div(int a, int nooutput, int spaces, int breite)
 {
-	line_break(nooutput, spaces);
+	line_break(nooutput, spaces, breite);
 	if (a!=0) { push_align(a); }
 	else { check_for_center(); }
 }
 
 /* ------------------------------------------------ */
 
-void end_div(int nooutput, int spaces, int paragraph)
+void end_div(int nooutput, int spaces, int paragraph, int breite)
 {
-	wort_ende(nooutput, spaces);
+	wort_ende(nooutput, spaces, breite);
 
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph); }
-	else { print_zeile(nooutput); }
+	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite); }
+	else { print_zeile(nooutput, breite); }
 	pop_align(); /* einer für start_div */
 }
 
@@ -485,10 +485,10 @@ CHAR friss_kommentar()
 
 /* ------------------------------------------------ */
 
-int start_nooutput(int nooutput, int spaces)
+int start_nooutput(int nooutput, int spaces, int breite)
 {
-	wort_ende(nooutput, spaces);
-	print_zeile(nooutput);
+	wort_ende(nooutput, spaces, breite);
+	print_zeile(nooutput, breite);
 	nooutput = 1;
 
 	while (ch!='>' && ch!=EOF)
@@ -503,10 +503,10 @@ int start_nooutput(int nooutput, int spaces)
 	return nooutput;
 }
 
-int end_nooutput(int nooutput, int spaces)
+int end_nooutput(int nooutput, int spaces, int breite)
 {
-	wort_ende(nooutput, spaces);
-	print_zeile(nooutput);
+	wort_ende(nooutput, spaces, breite);
+	print_zeile(nooutput, breite);
 	nooutput = 0;
 	return nooutput;
 }

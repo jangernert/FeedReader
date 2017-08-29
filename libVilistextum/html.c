@@ -70,7 +70,7 @@ static int wcscasecmp(const wchar_t *s1, const wchar_t *s2)
 
 /* get the next attribute and writes it to attr_name and attr_ctnt. */
 /* attr_name is converted to uppercase.  */
-int get_attr()
+int get_attr(int error)
 {
 	int i;
 	CHAR temp[DEF_STR_LEN];
@@ -78,7 +78,7 @@ int get_attr()
 	attr_ctnt[0] = '\0';
 
 	/* skip whitespace */
-	while ((isspace(ch)) && (ch!='>')) { ch=read_char(); }
+	while ((isspace(ch)) && (ch!='>')) { ch=read_char(error); }
 	if (ch=='>') { return '>'; };
 
 	/* read attribute's name */
@@ -86,7 +86,7 @@ int get_attr()
 	attr_name[0] = ch;
 
 	while ((ch!='=') && (ch!='>') && (ch!=EOF)) {
-		ch=read_char();
+		ch=read_char(error);
 		if (i<DEF_STR_LEN) { attr_name[i++] = ch; }
 	} /* post cond: i<=DEF_STR_LEN */
 	attr_name[i-1] = '\0';
@@ -94,9 +94,9 @@ int get_attr()
 	if (ch=='>') { attr_ctnt[0]='\0'; return '>'; }
 
 	/* content of attribute */
-	ch=read_char();
+	ch=read_char(error);
 	/* skip white_space */
-	while ((isspace(ch)) && (ch!='>')) { ch=read_char(); }
+	while ((isspace(ch)) && (ch!='>')) { ch=read_char(error); }
 	temp[0] = '\0';
 
 	/* if quoted */
@@ -106,14 +106,14 @@ int get_attr()
 		/* we'll have to remember what the quote was. */
 		int quote=ch;
 		i=0;
-		ch=read_char();
+		ch=read_char(error);
 		while(quote!=ch) {
 			if(ch == EOF) { temp[i++] = quote; ch=quote; break; }
 			if (i<DEF_STR_LEN-1) { temp[i++] = ch; }
-			ch=read_char();
+			ch=read_char(error);
 		} /* post cond: i<=DEF_STR_LEN-1 */
 		temp[i] = '\0';
-		ch=read_char();
+		ch=read_char(error);
 	}
 	else
 	{
@@ -121,7 +121,7 @@ int get_attr()
 		i=1;
 		temp[0] = ch;
 		while ((ch!='>') && (!isspace(ch)) && (ch!=EOF)){
-			ch=read_char();
+			ch=read_char(error);
 			if (i<DEF_STR_LEN) { temp[i++] = ch; }
 		} /* post cond: i<=DEF_STR_LEN */
 		temp[i-1] = '\0';
@@ -136,7 +136,7 @@ int get_attr()
 
 /* ------------------------------------------------  */
 
-void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
+void html(int extractText, int nooutput, int spaces, int paragraph, int breite, int error)
 {
 	int i;
 	CHAR str[DEF_STR_LEN];
@@ -147,17 +147,17 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 	{
 		for (;;)
 		{
-			ch = read_char();
+			ch = read_char(error);
 			//printf("'%ls'\n", &ch);
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces, breite);
+				wort_ende(nooutput, spaces, breite, error);
 				return;
 			}
 			switch (ch)
 			{
 				case '<':
-					html_tag(nooutput, spaces, paragraph, breite);
+					html_tag(nooutput, spaces, paragraph, breite, error);
 					break;
 
 				/* Entities  */
@@ -165,7 +165,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 					i=1;
 					str[0] = ch;
 					do {
-						ch = read_char();
+						ch = read_char(error);
 						str[i++] = ch;
 					}
 					while ((isalnum(ch)) || (ch=='#'));
@@ -194,14 +194,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces, breite);
+						wort_ende(nooutput, spaces, breite, error);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces, breite);
-					if (pre) { line_break(nooutput, spaces, breite); }
+					wort_ende(nooutput, spaces, breite, error);
+					if (pre) { line_break(nooutput, spaces, breite, error); }
 					break;
 
 				/* Microsoft ... */
@@ -214,7 +214,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces, breite); }
+						if (ch==' ') { wort_ende(nooutput, spaces, breite, error); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -226,10 +226,10 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 	{
 		for (;;)
 		{
-			ch = read_char();
+			ch = read_char(error);
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces, breite);
+				wort_ende(nooutput, spaces, breite, error);
 				return;
 			}
 			switch (ch)
@@ -239,7 +239,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 					i=1;
 					str[0] = ch;
 					do {
-						ch = read_char();
+						ch = read_char(error);
 						str[i++] = ch;
 					}
 					while ((isalnum(ch)) || (ch=='#'));
@@ -268,14 +268,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces, breite);
+						wort_ende(nooutput, spaces, breite, error);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces, breite);
-					if (pre) { line_break(nooutput, spaces, breite); }
+					wort_ende(nooutput, spaces, breite, error);
+					if (pre) { line_break(nooutput, spaces, breite, error); }
 					break;
 
 				/* Microsoft ... */
@@ -288,7 +288,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces, breite); }
+						if (ch==' ') { wort_ende(nooutput, spaces, breite, error); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -301,12 +301,12 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite)
 /* ------------------------------------------------ */
 
 /* used when there's only the align-attribut to be checked  */
-void check_for_center()
+void check_for_center(int error)
 {
 	int found=0;
 	while (ch!='>' && ch!=EOF)
 	{
-		ch=get_attr();
+		ch=get_attr(error);
 		if CMP("ALIGN", attr_name)
 		{
 			found=1;
@@ -323,30 +323,30 @@ void check_for_center()
 
 /* ------------------------------------------------ */
 
-void start_p(int nooutput, int spaces, int paragraph, int breite)
+void start_p(int nooutput, int spaces, int paragraph, int breite, int error)
 {
 	push_align(LEFT);
-	neuer_paragraph(nooutput, spaces, paragraph, breite);
-	check_for_center();
+	neuer_paragraph(nooutput, spaces, paragraph, breite, error);
+	check_for_center(error);
 }
 
 /* ------------------------------------------------ */
 
-void start_div(int a, int nooutput, int spaces, int breite)
+void start_div(int a, int nooutput, int spaces, int breite, int error)
 {
-	line_break(nooutput, spaces, breite);
+	line_break(nooutput, spaces, breite, error);
 	if (a!=0) { push_align(a); }
-	else { check_for_center(); }
+	else { check_for_center(error); }
 }
 
 /* ------------------------------------------------ */
 
-void end_div(int nooutput, int spaces, int paragraph, int breite)
+void end_div(int nooutput, int spaces, int paragraph, int breite, int error)
 {
-	wort_ende(nooutput, spaces, breite);
+	wort_ende(nooutput, spaces, breite, error);
 
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite); }
-	else { print_zeile(nooutput, breite); }
+	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite, error); }
+	else { print_zeile(nooutput, breite, error); }
 	pop_align(); /* einer für start_div */
 }
 
@@ -368,7 +368,7 @@ char *schemes[] = {"ftp://","file://" ,"http://" ,"gopher://" ,"mailto:" ,"news:
 /* ------------------------------------------------ */
 
 /* extract encoding information from META or ?xml tags */
-void find_encoding()
+void find_encoding(int error)
 {
 	int found_ctnt=0;
 	int found_chst=0;
@@ -379,7 +379,7 @@ void find_encoding()
 
 	if (!processed_meta) {
 		while (ch!='>' && ch!=EOF) {
-			ch=get_attr();
+			ch=get_attr(error);
 			if ((CMP("HTTP-EQUIV", attr_name)) || (CMP("NAME", attr_name))) {
 				if STRCASECMP("Content-Type", attr_ctnt) { found_ctnt=1; }
 				else if STRCASECMP("charset", attr_ctnt) { found_chst=1; }
@@ -419,30 +419,30 @@ void find_encoding()
 /* ------------------------------------------------ */
 
 /* extract encoding information ?xml tags */
-void find_xml_encoding()
+void find_xml_encoding(int error)
 {
 	if (!processed_meta) {
 		/* xml default charset is utf-8 */
 		set_iconv_charset("utf-8");
-		find_encoding();
+		find_encoding(error);
 	}
 }
 
 /* ------------------------------------------------ */
 
 /* simple finite state machine to eat up complete comment '!--' */
-CHAR friss_kommentar()
+CHAR friss_kommentar(int error)
 {
 	int c, dontquit=1;
 	while (dontquit)
 	{
-		c=read_char();
+		c=read_char(error);
 		if (c=='-')
 		{
-			c=read_char();
+			c=read_char(error);
 			while (c=='-')
 			{
-				c=read_char();
+				c=read_char(error);
 				if (c=='>') { dontquit=0; }
 			}
 		}
@@ -453,15 +453,15 @@ CHAR friss_kommentar()
 
 /* ------------------------------------------------ */
 
-int start_nooutput(int nooutput, int spaces, int breite)
+int start_nooutput(int nooutput, int spaces, int breite, int error)
 {
-	wort_ende(nooutput, spaces, breite);
-	print_zeile(nooutput, breite);
+	wort_ende(nooutput, spaces, breite, error);
+	print_zeile(nooutput, breite, error);
 	nooutput = 1;
 
 	while (ch!='>' && ch!=EOF)
 	{
-		ch=get_attr();
+		ch=get_attr(error);
 		if CMP("/", attr_name)
 		{
 			printf("Empty tag\n");
@@ -471,10 +471,10 @@ int start_nooutput(int nooutput, int spaces, int breite)
 	return nooutput;
 }
 
-int end_nooutput(int nooutput, int spaces, int breite)
+int end_nooutput(int nooutput, int spaces, int breite, int error)
 {
-	wort_ende(nooutput, spaces, breite);
-	print_zeile(nooutput, breite);
+	wort_ende(nooutput, spaces, breite, error);
+	print_zeile(nooutput, breite, error);
 	nooutput = 0;
 	return nooutput;
 }

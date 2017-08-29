@@ -3,8 +3,6 @@
 
 #include "multibyte.h"
 
-int error;
-
 char* vilistextum(char* text, int extractText);
 
 #endif

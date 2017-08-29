@@ -3,13 +3,13 @@
 
 #include "multibyte.h"
 
-void init_buffer(char *input);
-void output_string(CHAR *str);
+void init_buffer(char *input, int error);
+void output_string(CHAR *str, int error);
 
 int get_current_char();
-int read_char();
+int read_char(int error);
 void putback_char(CHAR c);
-void finalize(int nooutput, int spaces, int breite);
+void finalize(int nooutput, int spaces, int breite, int error);
 char* getOutput();
 
 struct TextBuffer

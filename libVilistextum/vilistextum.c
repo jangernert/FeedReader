@@ -30,14 +30,14 @@ char* vilistextum(char* text, int extractText)
 	if(text == NULL)
 		return NULL;
 
-	error = 0;
+	int error = 0;
 	set_iconv_charset("utf-8");
 
-	if(init_multibyte())
+	if(init_multibyte(error))
 	{
-		init_buffer(text);
-		html(extractText, nooutput, spaces, paragraph, breite);
-		finalize(nooutput, spaces, breite);
+		init_buffer(text, error);
+		html(extractText, nooutput, spaces, paragraph, breite, error);
+		finalize(nooutput, spaces, breite, error);
 		
 		char* output = getOutput(strlen(text));
 		return output;

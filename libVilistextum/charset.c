@@ -43,7 +43,7 @@ static int utf_8_locale(const char * locale)
 	return suffix(locale,".utf8") || suffix(locale, ".UTF-8");
 }
 
-int init_multibyte()
+int init_multibyte(int error)
 {
 	char *locale_found;
 	locale_found = setlocale(LC_CTYPE, "");

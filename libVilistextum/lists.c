@@ -20,26 +20,9 @@ CHAR bullet_style=' ';
 
 /* ------------------------------------------------ */
 
-int check_style()
+void start_uls(int nooutput, int spaces, int breite, int error)
 {
-	while (ch!='>')
-	{
-		ch=get_attr();
-		if CMP("TYPE", attr_name)
-		{
-			if CMP("disc", attr_ctnt)   { return '*'; }
-			if CMP("square", attr_ctnt) { return '+'; }
-			if CMP("circle", attr_ctnt) { return 'o'; }
-		}
-	}
-	return 0;
-}
-
-/* ------------------------------------------------ */
-
-void start_uls(int nooutput, int spaces, int breite)
-{
-	line_break(nooutput, spaces, breite);
+	line_break(nooutput, spaces, breite, error);
 
 	push_align(LEFT);
 
@@ -58,10 +41,10 @@ void start_uls(int nooutput, int spaces, int breite)
 	spaces += tab;
 }
 
-void end_uls(int nooutput, int spaces, int breite)
+void end_uls(int nooutput, int spaces, int breite, int error)
 {
 	spaces -= tab;
-	line_break(nooutput, spaces, breite);
+	line_break(nooutput, spaces, breite, error);
 
 	if (bullet_style=='%') { bullet_style='$'; }
 	else if (bullet_style=='$') { bullet_style='~'; }
@@ -80,32 +63,32 @@ void end_uls(int nooutput, int spaces, int breite)
 
 /* ------------------------------------------------ */
 
-void start_ols(int nooutput, int spaces, int breite)
+void start_ols(int nooutput, int spaces, int breite, int error)
 {
-	start_uls(nooutput, spaces, breite);
+	start_uls(nooutput, spaces, breite, error);
 }
 
 /* ------------------------------------------------ */
 
-void end_ols(int nooutput, int spaces, int breite)
+void end_ols(int nooutput, int spaces, int breite, int error)
 {
-	end_uls(nooutput, spaces, breite);
+	end_uls(nooutput, spaces, breite, error);
 }
 
 /* ------------------------------------------------ */
 
-void start_lis(int nooutput, int spaces, int breite)
+void start_lis(int nooutput, int spaces, int breite, int error)
 {
 	spaces-=2;
 
 	/* don't output line break, if this list item is immediately
 	after a start or end list tag. start_uls and end_uls have
 	already take care of the line break */
-	if (!is_zeile_empty()) { line_break(nooutput, spaces, breite); }
+	if (!is_zeile_empty()) { line_break(nooutput, spaces, breite, error); }
 
 	wort_plus_ch(bullet_style);
 
-	wort_ende(nooutput, spaces, breite);
+	wort_ende(nooutput, spaces, breite, error);
 	spaces+=2;
 }
 
@@ -119,25 +102,25 @@ int definition_list=0;
 void end_dd();
 
 /* Definition List */
-void start_dl(int nooutput, int spaces, int paragraph, int breite)
+void start_dl(int nooutput, int spaces, int paragraph, int breite, int error)
 {
 	end_dd();
-	start_p(nooutput, spaces, paragraph, breite);
+	start_p(nooutput, spaces, paragraph, breite, error);
 }
 
-void end_dl(int nooutput, int spaces, int paragraph, int breite)
+void end_dl(int nooutput, int spaces, int paragraph, int breite, int error)
 {
-	paragraphen_ende(nooutput, spaces, paragraph, breite);
+	paragraphen_ende(nooutput, spaces, paragraph, breite, error);
 
 	end_dd();
 }
 
 /* Definition Title */
-void start_dt(int nooutput, int spaces, int breite)
+void start_dt(int nooutput, int spaces, int breite, int error)
 {
 	end_dd();
 
-	line_break(nooutput, spaces, breite);
+	line_break(nooutput, spaces, breite, error);
 }
 
 void end_dt()
@@ -145,11 +128,11 @@ void end_dt()
 }
 
 /* Definition Description */
-void start_dd(int nooutput, int spaces, int breite)
+void start_dd(int nooutput, int spaces, int breite, int error)
 {
 	end_dd();
 
-	line_break(nooutput, spaces, breite);
+	line_break(nooutput, spaces, breite, error);
 	spaces+=tab;
 
 	definition_list=1;

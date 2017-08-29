@@ -37,7 +37,7 @@ long int count = 0;
 
 /* ------------------------------------------------ */
 
-void init_buffer(char *input)
+void init_buffer(char *input, int error)
 {
 	in = fmemopen(input, strlen(input), "r");
 	if(in == NULL)
@@ -83,7 +83,7 @@ void cleanup()
 
 /* ------------------------------------------------ */
 
-char* getOutput(size_t input_length)
+char* getOutput(size_t input_length, int error)
 {
 	if(!error)
 	{
@@ -105,18 +105,18 @@ char* getOutput(size_t input_length)
 
 /* ------------------------------------------------ */
 
-void finalize(int nooutput, int spaces, int breite)
+void finalize(int nooutput, int spaces, int breite, int error)
 {
 	if (!is_zeile_empty())
 	{
-		wort_ende(nooutput, spaces, breite);
-		print_zeile(nooutput, breite);
+		wort_ende(nooutput, spaces, breite, error);
+		print_zeile(nooutput, breite, error);
 	}
 }
 
 /* ------------------------------------------------ */
 
-int read_char()
+int read_char(int error)
 {
 	count = count + 1;
 	int c = ' ';

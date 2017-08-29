@@ -101,7 +101,7 @@ void clear_line() {
 /* ------------------------------------------------ */
 
 /* print line */
-void print_zeile(int nooutput, int breite)
+void print_zeile(int nooutput, int breite, int error)
 {
 	int printzeile;
 
@@ -127,7 +127,7 @@ void print_zeile(int nooutput, int breite)
 
 		if (!nooutput)
 		{
-			output_string(zeile);
+			output_string(zeile, error);
 		}
 
 		zeilen_len_old=zeilen_len;
@@ -198,7 +198,7 @@ void wort_plus_ch(int c)
 
 /* ------------------------------------------------ */
 
-void wort_ende(int nooutput, int spaces, int breite)
+void wort_ende(int nooutput, int spaces, int breite, int error)
 {
 	int i=0;
 
@@ -208,7 +208,7 @@ void wort_ende(int nooutput, int spaces, int breite)
 
 		if (zeilen_len+wort_len+1 > breite)
 		{
-			print_zeile(nooutput, breite);
+			print_zeile(nooutput, breite, error);
 			i=0;
 			while (i<spaces) { zeile_plus_wort(ONESPACE,1,1); i++; }
 			zeile_plus_wort(ONESPACE,1,1);
@@ -234,20 +234,20 @@ void wort_ende(int nooutput, int spaces, int breite)
 
 /* ------------------------------------------------ */
 
-void line_break(int nooutput, int spaces, int breite)
+void line_break(int nooutput, int spaces, int breite, int error)
 {
-	wort_ende(nooutput, spaces, breite);
-	print_zeile(nooutput, breite);
+	wort_ende(nooutput, spaces, breite, error);
+	print_zeile(nooutput, breite, error);
 }
 
 /* ------------------------------------------------ */
 
-void paragraphen_ende(int nooutput, int spaces, int paragraph, int breite)
+void paragraphen_ende(int nooutput, int spaces, int paragraph, int breite, int error)
 {
 	if (paragraph!=0)
 	{
-		line_break(nooutput, spaces, breite);
-		print_zeile(nooutput, breite);
+		line_break(nooutput, spaces, breite, error);
+		print_zeile(nooutput, breite, error);
 		paragraph--;
 		pop_align();
 	}
@@ -255,22 +255,22 @@ void paragraphen_ende(int nooutput, int spaces, int paragraph, int breite)
 
 /* ------------------------------------------------ */
 
-void neuer_paragraph(int nooutput, int spaces, int paragraph, int breite)
+void neuer_paragraph(int nooutput, int spaces, int paragraph, int breite, int error)
 {
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite); }
-	line_break(nooutput, spaces, breite);
-	print_zeile(nooutput, breite);
+	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite, error); }
+	line_break(nooutput, spaces, breite, error);
+	print_zeile(nooutput, breite, error);
 	paragraph++;
 }
 
 /* ------------------------------------------------ */
 
-void hr(int nooutput, int spaces, int paragraph, int breite)
+void hr(int nooutput, int spaces, int paragraph, int breite, int error)
 {
 	int i, hr_width=hr_breite-4, hr_align=CENTER;
 	while (ch!='>')
 	{
-		ch=get_attr();
+		ch=get_attr(error);
 		if CMP("ALIGN", attr_name)
 		{
 			uppercase_str(attr_ctnt);
@@ -294,8 +294,8 @@ void hr(int nooutput, int spaces, int paragraph, int breite)
 		}
 	}
 
-	neuer_paragraph(nooutput, spaces, paragraph, breite);
+	neuer_paragraph(nooutput, spaces, paragraph, breite, error);
 	push_align(hr_align);
 	for (i=0; i<hr_width; i++) { wort_plus_ch('-'); }
-	paragraphen_ende(nooutput, spaces, paragraph, breite);
+	paragraphen_ende(nooutput, spaces, paragraph, breite, error);
 }

@@ -29,7 +29,6 @@ const int hr_breite = 76;
 
 CHAR wort[DEF_STR_LEN];
 
-CHAR zeile[DEF_STR_LEN];
 int zeilen_pos=0,   /* true length of line */
 wort_len=0,         /* apparent length of the word */
 wort_pos=0,         /* true length of word */

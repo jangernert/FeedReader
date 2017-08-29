@@ -28,8 +28,7 @@ const int tab = 4; /* tabulator */
 const int hr_breite = 76;
 
 int breite=76,
-paragraph=0,
-spaces=0;      /* spaces at beginning of line */
+paragraph=0;
 
 CHAR wort[DEF_STR_LEN];
 
@@ -216,7 +215,7 @@ void wort_plus_ch(int c)
 
 /* ------------------------------------------------ */
 
-void wort_ende(int nooutput)
+void wort_ende(int nooutput, int spaces)
 {
 	int i=0;
 
@@ -252,19 +251,19 @@ void wort_ende(int nooutput)
 
 /* ------------------------------------------------ */
 
-void line_break(int nooutput)
+void line_break(int nooutput, int spaces)
 {
-	wort_ende(nooutput);
+	wort_ende(nooutput, spaces);
 	print_zeile(nooutput);
 }
 
 /* ------------------------------------------------ */
 
-void paragraphen_ende(int nooutput)
+void paragraphen_ende(int nooutput, int spaces)
 {
 	if (paragraph!=0)
 	{
-		line_break(nooutput);
+		line_break(nooutput, spaces);
 		print_zeile(nooutput);
 		paragraph--;
 		pop_align();
@@ -273,17 +272,17 @@ void paragraphen_ende(int nooutput)
 
 /* ------------------------------------------------ */
 
-void neuer_paragraph(int nooutput)
+void neuer_paragraph(int nooutput, int spaces)
 {
-	if (paragraph!=0) { paragraphen_ende(nooutput); }
-	line_break(nooutput);
+	if (paragraph!=0) { paragraphen_ende(nooutput, spaces); }
+	line_break(nooutput, spaces);
 	print_zeile(nooutput);
 	paragraph++;
 }
 
 /* ------------------------------------------------ */
 
-void hr(int nooutput)
+void hr(int nooutput, int spaces)
 {
 	int i, hr_width=hr_breite-4, hr_align=CENTER;
 	while (ch!='>')
@@ -313,8 +312,8 @@ void hr(int nooutput)
 		}
 	}
 
-	neuer_paragraph(nooutput);
+	neuer_paragraph(nooutput, spaces);
 	push_align(hr_align);
 	for (i=0; i<hr_width; i++) { wort_plus_ch('-'); }
-	paragraphen_ende(nooutput);
+	paragraphen_ende(nooutput, spaces);
 }

@@ -15,7 +15,6 @@ CHAR ch;
 
 int paragraph;
 int breite;
-int spaces;
 
 void print_zeile(int nooutput);
 int is_zeile_empty();
@@ -25,13 +24,13 @@ void push_align(int a);
 
 void wort_plus_string(CHAR *s);
 void wort_plus_ch(int c);
-void wort_ende(int nooutput);
+void wort_ende(int nooutput, int spaces);
 
-void line_break(int nooutput);
+void line_break(int nooutput, int spaces);
 
-void paragraphen_ende(int nooutput);
-void neuer_paragraph(int nooutput);
+void paragraphen_ende(int nooutput, int spaces);
+void neuer_paragraph(int nooutput, int spaces);
 
-void hr(int nooutput);
+void hr(int nooutput, int spaces);
 
 #endif 

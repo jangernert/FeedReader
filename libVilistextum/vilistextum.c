@@ -38,6 +38,7 @@ void set_options()
 char* vilistextum(char* text, int extractText)
 {
 	int nooutput = 0;
+	int spaces = 0;
 	
 	if(text == NULL)
 		return NULL;
@@ -48,8 +49,8 @@ char* vilistextum(char* text, int extractText)
 	if(init_multibyte())
 	{
 		init_buffer(text);
-		html(extractText, nooutput);
-		finalize(nooutput);
+		html(extractText, nooutput, spaces);
+		finalize(nooutput, spaces);
 		
 		char* output = getOutput(strlen(text));
 		return output;

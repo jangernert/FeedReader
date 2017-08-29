@@ -37,9 +37,9 @@ int check_style()
 
 /* ------------------------------------------------ */
 
-void start_uls(int nooutput)
+void start_uls(int nooutput, int spaces)
 {
-	line_break(nooutput);
+	line_break(nooutput, spaces);
 
 	push_align(LEFT);
 
@@ -58,10 +58,10 @@ void start_uls(int nooutput)
 	spaces += tab;
 }
 
-void end_uls(int nooutput)
+void end_uls(int nooutput, int spaces)
 {
 	spaces -= tab;
-	line_break(nooutput);
+	line_break(nooutput, spaces);
 
 	if (bullet_style=='%') { bullet_style='$'; }
 	else if (bullet_style=='$') { bullet_style='~'; }
@@ -80,32 +80,32 @@ void end_uls(int nooutput)
 
 /* ------------------------------------------------ */
 
-void start_ols(int nooutput)
+void start_ols(int nooutput, int spaces)
 {
-	start_uls(nooutput);
+	start_uls(nooutput, spaces);
 }
 
 /* ------------------------------------------------ */
 
-void end_ols(int nooutput)
+void end_ols(int nooutput, int spaces)
 {
-	end_uls(nooutput);
+	end_uls(nooutput, spaces);
 }
 
 /* ------------------------------------------------ */
 
-void start_lis(int nooutput)
+void start_lis(int nooutput, int spaces)
 {
-  spaces-=2;
+	spaces-=2;
 
 	/* don't output line break, if this list item is immediately
 	after a start or end list tag. start_uls and end_uls have
 	already take care of the line break */
-	if (!is_zeile_empty()) { line_break(nooutput); }
+	if (!is_zeile_empty()) { line_break(nooutput, spaces); }
 
 	wort_plus_ch(bullet_style);
 
-	wort_ende(nooutput);
+	wort_ende(nooutput, spaces);
 	spaces+=2;
 }
 
@@ -119,25 +119,25 @@ int definition_list=0;
 void end_dd();
 
 /* Definition List */
-void start_dl(int nooutput)
+void start_dl(int nooutput, int spaces)
 {
 	end_dd();
-	start_p(nooutput);
+	start_p(nooutput, spaces);
 }
 
-void end_dl(int nooutput)
+void end_dl(int nooutput, int spaces)
 {
-	paragraphen_ende(nooutput);
+	paragraphen_ende(nooutput, spaces);
 
 	end_dd();
 }
 
 /* Definition Title */
-void start_dt(int nooutput)
+void start_dt(int nooutput, int spaces)
 {
 	end_dd();
 
-	line_break(nooutput);
+	line_break(nooutput, spaces);
 }
 
 void end_dt()
@@ -145,17 +145,17 @@ void end_dt()
 }
 
 /* Definition Description */
-void start_dd(int nooutput)
+void start_dd(int nooutput, int spaces)
 {
 	end_dd();
 
-	line_break(nooutput);
+	line_break(nooutput, spaces);
 	spaces+=tab;
 
 	definition_list=1;
 }
 
-void end_dd()
+void end_dd(int spaces)
 {
 	if (definition_list==1)
 	{

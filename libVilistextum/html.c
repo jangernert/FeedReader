@@ -136,7 +136,7 @@ int get_attr(int error)
 
 /* ------------------------------------------------  */
 
-void html(int extractText, int nooutput, int spaces, int paragraph, int breite, int error)
+void html(int extractText, int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len)
 {
 	int i;
 	CHAR str[DEF_STR_LEN];
@@ -151,13 +151,13 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 			//printf("'%ls'\n", &ch);
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces, breite, error);
+				wort_ende(nooutput, spaces, breite, error, zeilen_len);
 				return;
 			}
 			switch (ch)
 			{
 				case '<':
-					html_tag(nooutput, spaces, paragraph, breite, error);
+					html_tag(nooutput, spaces, paragraph, breite, error, zeilen_len);
 					break;
 
 				/* Entities  */
@@ -194,14 +194,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces, breite, error);
+						wort_ende(nooutput, spaces, breite, error, zeilen_len);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces, breite, error);
-					if (pre) { line_break(nooutput, spaces, breite, error); }
+					wort_ende(nooutput, spaces, breite, error, zeilen_len);
+					if (pre) { line_break(nooutput, spaces, breite, error, zeilen_len); }
 					break;
 
 				/* Microsoft ... */
@@ -214,7 +214,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces, breite, error); }
+						if (ch==' ') { wort_ende(nooutput, spaces, breite, error, zeilen_len); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -229,7 +229,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 			ch = read_char(error);
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces, breite, error);
+				wort_ende(nooutput, spaces, breite, error, zeilen_len);
 				return;
 			}
 			switch (ch)
@@ -268,14 +268,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces, breite, error);
+						wort_ende(nooutput, spaces, breite, error, zeilen_len);
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces, breite, error);
-					if (pre) { line_break(nooutput, spaces, breite, error); }
+					wort_ende(nooutput, spaces, breite, error, zeilen_len);
+					if (pre) { line_break(nooutput, spaces, breite, error, zeilen_len); }
 					break;
 
 				/* Microsoft ... */
@@ -288,7 +288,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces, breite, error); }
+						if (ch==' ') { wort_ende(nooutput, spaces, breite, error, zeilen_len); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -323,30 +323,30 @@ void check_for_center(int error)
 
 /* ------------------------------------------------ */
 
-void start_p(int nooutput, int spaces, int paragraph, int breite, int error)
+void start_p(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len)
 {
 	push_align(LEFT);
-	neuer_paragraph(nooutput, spaces, paragraph, breite, error);
+	neuer_paragraph(nooutput, spaces, paragraph, breite, error, zeilen_len);
 	check_for_center(error);
 }
 
 /* ------------------------------------------------ */
 
-void start_div(int a, int nooutput, int spaces, int breite, int error)
+void start_div(int a, int nooutput, int spaces, int breite, int error, int zeilen_len)
 {
-	line_break(nooutput, spaces, breite, error);
+	line_break(nooutput, spaces, breite, error, zeilen_len);
 	if (a!=0) { push_align(a); }
 	else { check_for_center(error); }
 }
 
 /* ------------------------------------------------ */
 
-void end_div(int nooutput, int spaces, int paragraph, int breite, int error)
+void end_div(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len)
 {
-	wort_ende(nooutput, spaces, breite, error);
+	wort_ende(nooutput, spaces, breite, error, zeilen_len);
 
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite, error); }
-	else { print_zeile(nooutput, breite, error); }
+	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite, error, zeilen_len); }
+	else { print_zeile(nooutput, breite, error, zeilen_len); }
 	pop_align(); /* einer für start_div */
 }
 
@@ -453,10 +453,10 @@ CHAR friss_kommentar(int error)
 
 /* ------------------------------------------------ */
 
-int start_nooutput(int nooutput, int spaces, int breite, int error)
+int start_nooutput(int nooutput, int spaces, int breite, int error, int zeilen_len)
 {
-	wort_ende(nooutput, spaces, breite, error);
-	print_zeile(nooutput, breite, error);
+	wort_ende(nooutput, spaces, breite, error, zeilen_len);
+	print_zeile(nooutput, breite, error, zeilen_len);
 	nooutput = 1;
 
 	while (ch!='>' && ch!=EOF)
@@ -471,10 +471,10 @@ int start_nooutput(int nooutput, int spaces, int breite, int error)
 	return nooutput;
 }
 
-int end_nooutput(int nooutput, int spaces, int breite, int error)
+int end_nooutput(int nooutput, int spaces, int breite, int error, int zeilen_len)
 {
-	wort_ende(nooutput, spaces, breite, error);
-	print_zeile(nooutput, breite, error);
+	wort_ende(nooutput, spaces, breite, error, zeilen_len);
+	print_zeile(nooutput, breite, error, zeilen_len);
 	nooutput = 0;
 	return nooutput;
 }

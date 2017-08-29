@@ -25,7 +25,8 @@ char* vilistextum(char* text, int extractText)
 	int nooutput = 0;
 	int spaces = 0;
 	int paragraph = 0;
-	int breite=76;
+	int breite = 76;
+	int zeilen_len = 0;
 	
 	if(text == NULL)
 		return NULL;
@@ -36,8 +37,8 @@ char* vilistextum(char* text, int extractText)
 	if(init_multibyte(error))
 	{
 		init_buffer(text, error);
-		html(extractText, nooutput, spaces, paragraph, breite, error);
-		finalize(nooutput, spaces, breite, error);
+		html(extractText, nooutput, spaces, paragraph, breite, error, zeilen_len);
+		finalize(nooutput, spaces, breite, error, zeilen_len);
 		
 		char* output = getOutput(strlen(text));
 		return output;

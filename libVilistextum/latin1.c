@@ -28,6 +28,7 @@
 #include "microsoft.h"
 #include "unicode_entities.h"
 #include "charset.h"
+#include "latin1.h"
 
 #include "multibyte.h"
 

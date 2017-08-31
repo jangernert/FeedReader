@@ -21,6 +21,7 @@
 
 #include "vilistextum.h"
 #include "multibyte.h"
+#include "util.h"
 
 /* Dynamic align added by autophile@starband.net 29 Mar 2002 */
 int *align = NULL;

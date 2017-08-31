@@ -21,6 +21,7 @@
 #include "vilistextum.h"
 #include "text.h"
 #include "multibyte.h"
+#include "charset.h"
 
 char *default_charset = "iso-8859-1";
 char iconv_charset[DEF_STR_LEN];

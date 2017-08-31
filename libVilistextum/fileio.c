@@ -23,6 +23,7 @@
 #include "charset.h"
 #include "multibyte.h"
 #include "vilistextum.h"
+#include "fileio.h"
 
 #include <iconv.h>
 #include <locale.h>
@@ -104,12 +105,12 @@ char* getOutput(size_t input_length, int error)
 
 /* ------------------------------------------------ */
 
-void finalize(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old)
+void finalize(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
 {
 	if (!is_zeile_empty())
 	{
-		wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old);
-		print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old);
+		wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+		print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
 	}
 }
 

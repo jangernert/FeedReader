@@ -14,6 +14,7 @@
 #include "vilistextum.h"
 #include "util.h"
 #include "multibyte.h"
+#include "microsoft.h"
 
 /* ------------------------------------------------ */
 

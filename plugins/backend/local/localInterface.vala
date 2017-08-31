@@ -357,6 +357,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		var f = dbDaemon.get_default().read_feeds();
 		var articleArray = new Gee.LinkedList<article>();
+		GLib.Mutex mutex = GLib.Mutex();
 
 		var threads = new ThreadPool<feed>.with_owned_data((Feed) => {
 			if(cancellable != null && cancellable.is_cancelled())
@@ -454,23 +455,32 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 									media
 				);
 
+				mutex.lock();
 				articleArray.add(Article);
+				mutex.unlock();
 			}
 		}, (int)GLib.get_num_processors(), true);
 
 
 		foreach(feed Feed in f)
 		{
-			threads.add(Feed);
+			try
+			{
+				threads.add(Feed);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("Error creating thread to download Feed %s: %s".printf(Feed.getTitle(), e.message));
+			}
 		}
-
-		articleArray.sort((a, b) => {
-				return strcmp(a.getArticleID(), b.getArticleID());
-		});
 
 		bool immediate = false; // allow to queue up additional tasks
 		bool wait = true; // function will block until all tasks are done
 		ThreadPool.free((owned)threads, immediate, wait);
+
+		articleArray.sort((a, b) => {
+				return strcmp(a.getArticleID(), b.getArticleID());
+		});
 
 		if(articleArray.size > 0)
 		{

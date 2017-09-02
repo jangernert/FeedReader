@@ -21,7 +21,6 @@
 #include "vilistextum.h"
 #include "text.h"
 #include "multibyte.h"
-#include "charset.h"
 
 char *default_charset = "iso-8859-1";
 char iconv_charset[DEF_STR_LEN];
@@ -44,7 +43,7 @@ static int utf_8_locale(const char * locale)
 	return suffix(locale,".utf8") || suffix(locale, ".UTF-8");
 }
 
-int init_multibyte(int error)
+int init_multibyte()
 {
 	char *locale_found;
 	locale_found = setlocale(LC_CTYPE, "");
@@ -104,7 +103,7 @@ void set_iconv_charset(char *charset)
 {
 	/* set charset for iconv conversion */
 	strcpy(iconv_charset, charset);
-	strcat(iconv_charset, "//TRANSLIT");
+	if (transliteration) { strcat(iconv_charset, "//TRANSLIT");}
 }
 
 /* ------------------------------------------------ */

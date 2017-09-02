@@ -19,60 +19,76 @@
 #include "html.h"
 #include "fileio.h"
 #include "util.h"
-#include "text.h"
 
-const int LEFT = 1;
-const int CENTER = 2;
-const int RIGHT = 3;
+int LEFT = 1,
+CENTER = 2,
+RIGHT  = 3;
 
-const int tab = 4; /* tabulator */
-const int hr_breite = 76;
+int breite=76,
+hr_breite=76,
+paragraph=0,
+
+tab=4,         /* tabulator */
+spaces=0,      /* spaces at beginning of line */
+nooutput=0,    /* for SCRIPT, etc: no output */
+orderedlist=0, /* OL */
+
+div_test=0;
 
 CHAR wort[DEF_STR_LEN];
-CHAR zeile[DEF_STR_LEN];
 
-int wort_len=0,         /* apparent length of the word */
+CHAR zeile[DEF_STR_LEN];
+int  zeilen_len=0,       /* apparent length of the line  */
+zeilen_len_old=0,
+zeilen_pos=0,       /* true length of line */
+wort_len=0,         /* apparent length of the word */
 wort_pos=0,         /* true length of word */
 anz_leere_zeilen=0, /* how many line were blank */
 noleadingblanks=0;  /* remove blanks lines at the start of the output */
 
 /* ------------------------------------------------ */
 
-void center_zeile(int breite, int zeilen_len, int zeilen_pos)
+void center_zeile()
 {
 	int i,j;
 
-	/* ensure that the string is not the empty string */
-	if (zeilen_len!=0)
+	if (!palm)
 	{
-		/* ensure that centering is possible */
-		if (zeilen_pos<breite)
+		/* ensure that the string is not the empty string */
+		if (zeilen_len!=0)
 		{
-			j=(breite-zeilen_len)/2;
-
-			for (i=zeilen_pos+j; i>=0; i--)
+			/* ensure that centering is possible */
+			if (zeilen_pos<breite)
 			{
-				zeile[i+j]=zeile[i];
+				j=(breite-zeilen_len)/2;
+
+				for (i=zeilen_pos+j; i>=0; i--)
+				{
+					zeile[i+j]=zeile[i];
+				}
+				for (i=0; i<j; i++) { zeile[i]=' '; }
 			}
-			for (i=0; i<j; i++) { zeile[i]=' '; }
 		}
 	}
 }
 
 /* ------------------------------------------------ */
 
-void right_zeile(int breite, int zeilen_len, int zeilen_pos)
+void right_zeile()
 {
 	int i,j;
 
-	if (zeilen_len!=0)
+	if (!palm)
 	{
-		j=breite-zeilen_len;
-		for (i=zeilen_pos+j+2; i>=0; i--)
+		if (zeilen_len!=0)
 		{
-			zeile[i+j]=zeile[i];
+			j=breite-zeilen_len;
+			for (i=zeilen_pos+j+2; i>=0; i--)
+			{
+				zeile[i+j]=zeile[i];
+			}
+			for (i=0; i<j; i++) { zeile[i]=' '; }
 		}
-		for (i=0; i<j; i++) { zeile[i]=' '; }
 	}
 }
 
@@ -91,8 +107,7 @@ int only_spaces(CHAR *z)
 
 /* ------------------------------------------------ */
 
-void clear_line(int zeilen_len, int zeilen_pos)
-{
+void clear_line() {
 	zeile[0]='\0';
 	zeilen_len=0; zeilen_pos=0;
 }
@@ -100,13 +115,13 @@ void clear_line(int zeilen_len, int zeilen_pos)
 /* ------------------------------------------------ */
 
 /* print line */
-void print_zeile(int nooutput, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void print_zeile()
 {
 	int printzeile;
 
-	if (only_spaces(zeile))
+	if ((shrink_lines) && only_spaces(zeile))
 	{
-		clear_line(zeilen_len, zeilen_pos);
+		clear_line();
 		anz_leere_zeilen++;
 	} else {
 		anz_leere_zeilen=0;
@@ -116,13 +131,18 @@ void print_zeile(int nooutput, int breite, int error, int zeilen_len, int zeilen
 	That means the first line of the output is never an empty line */
 	if (noleadingblanks==0) { noleadingblanks = !only_spaces(zeile); }
 
-	printzeile = (!(noleadingblanks==0));
+	if (shrink_lines==0)
+	{
+		printzeile = (!((zeilen_len==0)&&(zeilen_len_old==0)));
+	} else {
+		printzeile = (!((anz_leere_zeilen>shrink_lines)||(noleadingblanks==0)));
+	}
 
 	if (printzeile)
 	{
 		if (get_align()==LEFT)   {}
-		if (get_align()==CENTER) { center_zeile(breite, zeilen_len, zeilen_pos); }
-		if (get_align()==RIGHT)  { right_zeile(breite, zeilen_len, zeilen_pos); }
+		if (get_align()==CENTER) { center_zeile(); }
+		if (get_align()==RIGHT)  { right_zeile(); }
 
 		if (!nooutput)
 		{
@@ -130,7 +150,7 @@ void print_zeile(int nooutput, int breite, int error, int zeilen_len, int zeilen
 		}
 
 		zeilen_len_old=zeilen_len;
-		clear_line(zeilen_len, zeilen_pos);
+		clear_line();
 	}
 }
 
@@ -143,7 +163,14 @@ int is_zeile_empty()
 
 /* ------------------------------------------------ */
 
-void zeile_plus_wort(CHAR *s, int wl, int wp, int zeilen_len, int zeilen_pos)
+void status()
+{
+	printf(" paragraph: %d; div_test: %d; align[align_nr]: %d; z_o: %d\n",paragraph, div_test, get_align(), zeilen_len_old);
+}
+
+/* ------------------------------------------------ */
+
+void zeile_plus_wort(CHAR *s, int wl, int wp)
 {
 	int i=zeilen_pos,
 	j=0;
@@ -163,10 +190,13 @@ void wort_plus_string_nocount(CHAR *s)
 	i=wort_pos,
 	j=0;
 
-	if (wort_pos+len<DEF_STR_LEN-1) {
-		while (i<wort_pos+len) { wort[i] = s[j]; j++; i++; }
-		wort[i] = '\0';
-		wort_pos += len;
+	if (!palm)
+	{
+		if (wort_pos+len<DEF_STR_LEN-1) {
+			while (i<wort_pos+len) { wort[i] = s[j]; j++; i++; }
+			wort[i] = '\0';
+			wort_pos += len;
+		}
 	}
 }
 
@@ -197,7 +227,7 @@ void wort_plus_ch(int c)
 
 /* ------------------------------------------------ */
 
-void wort_ende(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void wort_ende()
 {
 	int i=0;
 
@@ -207,24 +237,24 @@ void wort_ende(int nooutput, int spaces, int breite, int error, int zeilen_len, 
 
 		if (zeilen_len+wort_len+1 > breite)
 		{
-			print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+			print_zeile();
 			i=0;
-			while (i<spaces) { zeile_plus_wort(ONESPACE,1,1, zeilen_len, zeilen_pos); i++; }
-			zeile_plus_wort(ONESPACE, 1, 1, zeilen_len, zeilen_pos);
-			zeile_plus_wort(wort, wort_len, wort_pos, zeilen_len, zeilen_pos);
+			while (i<spaces) { zeile_plus_wort(ONESPACE,1,1); i++; }
+			if (orderedlist>0) { zeile_plus_wort(ONESPACE,1,1); }
+			zeile_plus_wort(wort, wort_len, wort_pos);
 		}
 		else if (zeilen_len != 0)
 		{
 			/* add space + word */
-			zeile_plus_wort(ONESPACE, 1, 1, zeilen_len, zeilen_pos);
-			zeile_plus_wort(wort, wort_len, wort_pos, zeilen_len, zeilen_pos);
+			zeile_plus_wort(ONESPACE,1,1);
+			zeile_plus_wort(wort,wort_len, wort_pos);
 		}
 		else /* zeilen_len==0 => new beginning of a paragraph */
 		{
 			i=0;
-			while (i<spaces) { zeile_plus_wort(ONESPACE, 1, 1, zeilen_len, zeilen_pos); i++; }
-			zeile_plus_wort(ONESPACE, 1, 1, zeilen_len, zeilen_pos);
-			zeile_plus_wort(wort, wort_len, wort_pos, zeilen_len, zeilen_pos);
+			while (i<spaces) { zeile_plus_wort(ONESPACE,1,1); i++; }
+			if (orderedlist>0) { zeile_plus_wort(ONESPACE,1,1); }
+			zeile_plus_wort(wort,wort_len, wort_pos);
 		}
 		wort_pos = 0;
 		wort_len = 0;
@@ -233,20 +263,20 @@ void wort_ende(int nooutput, int spaces, int breite, int error, int zeilen_len, 
 
 /* ------------------------------------------------ */
 
-void line_break(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void line_break()
 {
-	wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-	print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	wort_ende();
+	print_zeile();
 }
 
 /* ------------------------------------------------ */
 
-void paragraphen_ende(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void paragraphen_ende()
 {
 	if (paragraph!=0)
 	{
-		line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-		print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+		line_break();
+		print_zeile();
 		paragraph--;
 		pop_align();
 	}
@@ -254,22 +284,22 @@ void paragraphen_ende(int nooutput, int spaces, int paragraph, int breite, int e
 
 /* ------------------------------------------------ */
 
-void neuer_paragraph(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void neuer_paragraph()
 {
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
-	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-	print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	if (paragraph!=0) { paragraphen_ende(); }
+	line_break();
+	print_zeile();
 	paragraph++;
 }
 
 /* ------------------------------------------------ */
 
-void hr(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void hr()
 {
 	int i, hr_width=hr_breite-4, hr_align=CENTER;
 	while (ch!='>')
 	{
-		ch=get_attr(error);
+		ch=get_attr();
 		if CMP("ALIGN", attr_name)
 		{
 			uppercase_str(attr_ctnt);
@@ -277,6 +307,7 @@ void hr(int nooutput, int spaces, int paragraph, int breite, int error, int zeil
 			else if CMP("CENTER",  attr_ctnt) { hr_align=CENTER; }
 			else if CMP("RIGHT",   attr_ctnt) { hr_align=RIGHT;  }
 			else if CMP("JUSTIFY", attr_ctnt) { hr_align=LEFT;  }
+			else { if (errorlevel>=2) { fprintf(stderr, "No LEFT|CENTER|RIGHT found!\n");} }
 		}
 		else if CMP("WIDTH", attr_name)
 		{
@@ -293,8 +324,8 @@ void hr(int nooutput, int spaces, int paragraph, int breite, int error, int zeil
 		}
 	}
 
-	neuer_paragraph(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	neuer_paragraph();
 	push_align(hr_align);
 	for (i=0; i<hr_width; i++) { wort_plus_ch('-'); }
-	paragraphen_ende(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	paragraphen_ende();
 }

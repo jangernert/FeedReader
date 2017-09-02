@@ -23,7 +23,6 @@
 #include "charset.h"
 #include "multibyte.h"
 #include "vilistextum.h"
-#include "fileio.h"
 
 #include <iconv.h>
 #include <locale.h>
@@ -31,13 +30,14 @@
 FILE *in;
 
 CHAR* OUTPUT = NULL;
-const CHAR LINEBREAK[1] = L"\n";
+CHAR LINEBREAK[1] = L"\n";
 size_t currentsize = 0;
 size_t outputsize = 0;
+long int count = 0;
 
 /* ------------------------------------------------ */
 
-void init_buffer(char *input, int error)
+void open_files(char *input)
 {
 	in = fmemopen(input, strlen(input), "r");
 	if(in == NULL)
@@ -83,7 +83,7 @@ void cleanup()
 
 /* ------------------------------------------------ */
 
-char* getOutput(size_t input_length, int error)
+char* getOutput(size_t input_length)
 {
 	if(!error)
 	{
@@ -105,19 +105,20 @@ char* getOutput(size_t input_length, int error)
 
 /* ------------------------------------------------ */
 
-void finalize(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void quit()
 {
 	if (!is_zeile_empty())
 	{
-		wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-		print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+		wort_ende();
+		print_zeile();
 	}
 }
 
 /* ------------------------------------------------ */
 
-int read_char(int error)
+int read_char()
 {
+	count = count + 1;
 	int c = ' ';
 	int fehlernr=0; /* tmp variable for errno */
 	static int i=0;
@@ -144,6 +145,7 @@ int read_char(int error)
 		printf("read_char: iconv_open failed, wrong character set?\n");
 		printf("iconv_open(\"utf-8\", \"%s\");\n", get_iconv_charset());
 		perror(get_iconv_charset());
+		printf("count: %li\n", count);
 		error = 1;
 		return EOF;
 	}

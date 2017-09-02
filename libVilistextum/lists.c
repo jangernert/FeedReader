@@ -15,17 +15,31 @@
 
 #include "html.h"
 #include "text.h"
-#include "util.h"
-#include "lists.h"
 
 CHAR bullet_style=' ';
-int definition_list=0;
 
 /* ------------------------------------------------ */
 
-void start_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+int check_style()
 {
-	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	while (ch!='>')
+	{
+		ch=get_attr();
+		if CMP("TYPE", attr_name)
+		{
+			if CMP("disc", attr_ctnt)   { return '*'; }
+			if CMP("square", attr_ctnt) { return '+'; }
+			if CMP("circle", attr_ctnt) { return 'o'; }
+		}
+	}
+	return 0;
+}
+
+/* ------------------------------------------------ */
+
+void start_uls()
+{
+	line_break();
 
 	push_align(LEFT);
 
@@ -44,10 +58,10 @@ void start_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, 
 	spaces += tab;
 }
 
-void end_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void end_uls()
 {
 	spaces -= tab;
-	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	line_break();
 
 	if (bullet_style=='%') { bullet_style='$'; }
 	else if (bullet_style=='$') { bullet_style='~'; }
@@ -66,32 +80,32 @@ void end_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, in
 
 /* ------------------------------------------------ */
 
-void start_ols(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_ols()
 {
-	start_uls(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	start_uls();
 }
 
 /* ------------------------------------------------ */
 
-void end_ols(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void end_ols()
 {
-	end_uls(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	end_uls();
 }
 
 /* ------------------------------------------------ */
 
-void start_lis(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_lis()
 {
-	spaces-=2;
+  spaces-=2;
 
 	/* don't output line break, if this list item is immediately
 	after a start or end list tag. start_uls and end_uls have
 	already take care of the line break */
-	if (!is_zeile_empty()) { line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
+	if (!is_zeile_empty()) { line_break(); }
 
 	wort_plus_ch(bullet_style);
 
-	wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	wort_ende();
 	spaces+=2;
 }
 
@@ -101,28 +115,29 @@ void end_lis() { }
 
 /* ------------------------------------------------ */
 
+int definition_list=0;
 void end_dd();
 
 /* Definition List */
-void start_dl(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_dl()
 {
-	end_dd(spaces);
-	start_p(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	end_dd();
+	start_p();
 }
 
-void end_dl(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void end_dl()
 {
-	paragraphen_ende(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	paragraphen_ende();
 
-	end_dd(spaces);
+	end_dd();
 }
 
 /* Definition Title */
-void start_dt(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_dt()
 {
-	end_dd(spaces);
+	end_dd();
 
-	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	line_break();
 }
 
 void end_dt()
@@ -130,17 +145,17 @@ void end_dt()
 }
 
 /* Definition Description */
-void start_dd(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_dd()
 {
-	end_dd(spaces);
+	end_dd();
 
-	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	line_break();
 	spaces+=tab;
 
 	definition_list=1;
 }
 
-void end_dd(int spaces)
+void end_dd()
 {
 	if (definition_list==1)
 	{

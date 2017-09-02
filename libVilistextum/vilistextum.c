@@ -20,31 +20,36 @@
 
 /* ------------------------------------------------ */
 
+void set_options()
+{
+	convert_characters = 1;
+	shrink_lines = 1;
+	remove_empty_alt = 1;
+	option_no_image = 1;
+	option_no_alt = 1;
+	convert_tags = 0;
+	option_links = 0;
+	option_links_inline = 0;
+	option_title = 0;
+	set_iconv_charset("utf-8");
+	errorlevel = 0;
+}
+
 char* vilistextum(char* text, int extractText)
 {
-	int nooutput = 0;
-	int spaces = 0;
-	int paragraph = 0;
-	int breite = 76;
-	int zeilen_len = 0;
-	int zeilen_len_old = 0;
-	int zeilen_pos=0;   /* true length of line */
-	
 	if(text == NULL)
 		return NULL;
 
-	int error = 0;
-	set_iconv_charset("utf-8");
+	error = 0;
+	set_options();
 
-	if(init_multibyte(error))
+	if(init_multibyte())
 	{
-		init_buffer(text, error);
-		html(extractText, nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-		finalize(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-		
-		char* output = getOutput(strlen(text));
-		return output;
+		open_files(text);
+		html(extractText);
+		quit();
 	}
 
-	return NULL;
+	char* output = getOutput(strlen(text));
+	return output;
 }

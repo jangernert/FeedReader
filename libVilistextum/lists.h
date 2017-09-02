@@ -1,17 +1,17 @@
 #ifndef lists_h
 #define lists_h       1
 
-void start_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
-void end_uls(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
-void start_ols(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
-void end_ols(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
-void start_lis(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
+void start_uls();
+void end_uls();
+void start_ols();
+void end_ols();
+void start_lis();
 void end_lis();
-void start_dl(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
-void end_dl(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
-void start_dt(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
+void start_dl();
+void end_dl();
+void start_dt();
 void end_dt();
-void start_dd(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos);
+void start_dd();
 void end_dd();
 
 #endif 

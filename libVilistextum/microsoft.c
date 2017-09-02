@@ -14,7 +14,6 @@
 #include "vilistextum.h"
 #include "util.h"
 #include "multibyte.h"
-#include "microsoft.h"
 
 /* ------------------------------------------------ */
 
@@ -22,8 +21,9 @@ int microsoft_entities(CHAR *s)
 {
 	int number = extract_entity_number(s);
 
+	if (!convert_characters) { return(0); }
 	/* Euro */
-	if (number==128)       	    { CPYSL(s, "EUR"); }
+	else if (number==128)       { CPYSL(s, "EUR"); }
 	else if CMP("&euro;", s)    { CPYSL(s, "EUR"); }
 	else if (number==8364)      { CPYSL(s, "EUR"); }
 

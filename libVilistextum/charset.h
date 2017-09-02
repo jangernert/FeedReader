@@ -3,7 +3,7 @@ void use_default_charset();
 
 void strip_wchar(CHAR *locale, char *stripped_locale);
 
-int init_multibyte(int error);
+int init_multibyte();
 
 char* get_iconv_charset();
 void set_iconv_charset(char*);

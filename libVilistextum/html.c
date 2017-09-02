@@ -30,7 +30,6 @@
 #include "fileio.h"
 #include "charset.h"
 #include "util.h"
-#include "html.h"
 
 int pre=0; /* for PRE-Tag */
 int processed_meta=0; /* only parse meta tags once */
@@ -71,7 +70,7 @@ static int wcscasecmp(const wchar_t *s1, const wchar_t *s2)
 
 /* get the next attribute and writes it to attr_name and attr_ctnt. */
 /* attr_name is converted to uppercase.  */
-int get_attr(int error)
+int get_attr()
 {
 	int i;
 	CHAR temp[DEF_STR_LEN];
@@ -79,7 +78,7 @@ int get_attr(int error)
 	attr_ctnt[0] = '\0';
 
 	/* skip whitespace */
-	while ((isspace(ch)) && (ch!='>')) { ch=read_char(error); }
+	while ((isspace(ch)) && (ch!='>')) { ch=read_char(); }
 	if (ch=='>') { return '>'; };
 
 	/* read attribute's name */
@@ -87,7 +86,7 @@ int get_attr(int error)
 	attr_name[0] = ch;
 
 	while ((ch!='=') && (ch!='>') && (ch!=EOF)) {
-		ch=read_char(error);
+		ch=read_char();
 		if (i<DEF_STR_LEN) { attr_name[i++] = ch; }
 	} /* post cond: i<=DEF_STR_LEN */
 	attr_name[i-1] = '\0';
@@ -95,9 +94,9 @@ int get_attr(int error)
 	if (ch=='>') { attr_ctnt[0]='\0'; return '>'; }
 
 	/* content of attribute */
-	ch=read_char(error);
+	ch=read_char();
 	/* skip white_space */
-	while ((isspace(ch)) && (ch!='>')) { ch=read_char(error); }
+	while ((isspace(ch)) && (ch!='>')) { ch=read_char(); }
 	temp[0] = '\0';
 
 	/* if quoted */
@@ -107,14 +106,14 @@ int get_attr(int error)
 		/* we'll have to remember what the quote was. */
 		int quote=ch;
 		i=0;
-		ch=read_char(error);
+		ch=read_char();
 		while(quote!=ch) {
 			if(ch == EOF) { temp[i++] = quote; ch=quote; break; }
 			if (i<DEF_STR_LEN-1) { temp[i++] = ch; }
-			ch=read_char(error);
+			ch=read_char();
 		} /* post cond: i<=DEF_STR_LEN-1 */
 		temp[i] = '\0';
-		ch=read_char(error);
+		ch=read_char();
 	}
 	else
 	{
@@ -122,7 +121,7 @@ int get_attr(int error)
 		i=1;
 		temp[0] = ch;
 		while ((ch!='>') && (!isspace(ch)) && (ch!=EOF)){
-			ch=read_char(error);
+			ch=read_char();
 			if (i<DEF_STR_LEN) { temp[i++] = ch; }
 		} /* post cond: i<=DEF_STR_LEN */
 		temp[i-1] = '\0';
@@ -137,7 +136,7 @@ int get_attr(int error)
 
 /* ------------------------------------------------  */
 
-void html(int extractText, int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void html(int extractText)
 {
 	int i;
 	CHAR str[DEF_STR_LEN];
@@ -148,17 +147,17 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 	{
 		for (;;)
 		{
-			ch = read_char(error);
+			ch = read_char();
 			//printf("'%ls'\n", &ch);
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+				wort_ende();
 				return;
 			}
 			switch (ch)
 			{
 				case '<':
-					html_tag(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+					html_tag();
 					break;
 
 				/* Entities  */
@@ -166,7 +165,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 					i=1;
 					str[0] = ch;
 					do {
-						ch = read_char(error);
+						ch = read_char();
 						str[i++] = ch;
 					}
 					while ((isalnum(ch)) || (ch=='#'));
@@ -195,14 +194,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+						wort_ende();
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-					if (pre) { line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
+					wort_ende();
+					if (pre) { line_break(); }
 					break;
 
 				/* Microsoft ... */
@@ -210,12 +209,13 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 				case 0x88: case 0x89: case 0x8a: case 0x8b: case 0x8c: case 0x8d:	case 0x8e: case 0x8f:
 				case 0x90: case 0x91: case 0x92: case 0x93: case 0x94: case 0x95: case 0x96: case 0x97:
 				case 0x98: case 0x99: case 0x9a: case 0x9b: case 0x9c: case 0x9d: case 0x9e: case 0x9f:
-					microsoft_character(ch);
+					if (convert_characters) { microsoft_character(ch); }
+					else wort_plus_ch(ch);
 					break;
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
+						if (ch==' ') { wort_ende(); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -227,10 +227,10 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 	{
 		for (;;)
 		{
-			ch = read_char(error);
+			ch = read_char();
 			if(ch == EOF)
 			{
-				wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+				wort_ende();
 				return;
 			}
 			switch (ch)
@@ -240,7 +240,7 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 					i=1;
 					str[0] = ch;
 					do {
-						ch = read_char(error);
+						ch = read_char();
 						str[i++] = ch;
 					}
 					while ((isalnum(ch)) || (ch=='#'));
@@ -269,14 +269,14 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 					if (pre) {
 						wort_plus_ch(0x09);
 					} else {
-						wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+						wort_ende();
 					}
 					break;
 
 				case  13: /* CR */
 				case '\n':
-					wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-					if (pre) { line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
+					wort_ende();
+					if (pre) { line_break(); }
 					break;
 
 				/* Microsoft ... */
@@ -284,12 +284,13 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 				case 0x88: case 0x89: case 0x8a: case 0x8b: case 0x8c: case 0x8d:	case 0x8e: case 0x8f:
 				case 0x90: case 0x91: case 0x92: case 0x93: case 0x94: case 0x95: case 0x96: case 0x97:
 				case 0x98: case 0x99: case 0x9a: case 0x9b: case 0x9c: case 0x9d: case 0x9e: case 0x9f:
-					microsoft_character(ch);
+					if (convert_characters) { microsoft_character(ch); }
+					else wort_plus_ch(ch);
 					break;
 
 				default:
 					if (pre==0) {
-						if (ch==' ') { wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
+						if (ch==' ') { wort_ende(); }
 						else { wort_plus_ch(ch); }
 					}
 					else { wort_plus_ch(ch); }
@@ -302,12 +303,12 @@ void html(int extractText, int nooutput, int spaces, int paragraph, int breite, 
 /* ------------------------------------------------ */
 
 /* used when there's only the align-attribut to be checked  */
-void check_for_center(int error)
+void check_for_center()
 {
 	int found=0;
 	while (ch!='>' && ch!=EOF)
 	{
-		ch=get_attr(error);
+		ch=get_attr();
 		if CMP("ALIGN", attr_name)
 		{
 			found=1;
@@ -316,6 +317,7 @@ void check_for_center(int error)
 			else if CMP("CENTER", attr_ctnt) { push_align(CENTER); }
 			else if CMP("RIGHT",  attr_ctnt) { push_align(RIGHT); }
 			else if CMP("JUSTIFY", attr_ctnt) { push_align(LEFT); }
+			else { if (errorlevel>=2) { fprintf(stderr, "No LEFT|CENTER|RIGHT found!\n"); push_align(LEFT); } }
 		}
 	}
 	/* found no ALIGN  */
@@ -324,31 +326,32 @@ void check_for_center(int error)
 
 /* ------------------------------------------------ */
 
-void start_p(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_p()
 {
 	push_align(LEFT);
-	neuer_paragraph(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-	check_for_center(error);
+	neuer_paragraph();
+	check_for_center();
 }
 
 /* ------------------------------------------------ */
 
-void start_div(int a, int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_div(int a)
 {
-	line_break(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-	if (a!=0) { push_align(a); }
-	else { check_for_center(error); }
+	line_break();
+	if (a!=0) { div_test=a; push_align(div_test); }
+	else { check_for_center(); }
 }
 
 /* ------------------------------------------------ */
 
-void end_div(int nooutput, int spaces, int paragraph, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void end_div()
 {
-	wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	wort_ende();
 
-	if (paragraph!=0) { paragraphen_ende(nooutput, spaces, paragraph, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
-	else { print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos); }
+	if (paragraph!=0) { paragraphen_ende(); }
+	else { print_zeile(); }
 	pop_align(); /* einer für start_div */
+	div_test = 0;
 }
 
 /* ------------------------------------------------ */
@@ -368,8 +371,37 @@ char *schemes[] = {"ftp://","file://" ,"http://" ,"gopher://" ,"mailto:" ,"news:
 
 /* ------------------------------------------------ */
 
+/* find alt attribute in current tag */
+void image(CHAR *alt_text, int show_alt)
+{
+	int found_alt=0;
+	while (ch!='>' && ch!=EOF)
+	{
+		ch=get_attr();
+		if CMP("ALT", attr_name)
+		{
+			/*printf("+1+\n"); */
+			if (!(remove_empty_alt && CMP("", attr_ctnt))) {
+				/*printf("+2+\n"); */
+				if (!option_no_alt)
+				{ wort_plus_ch('['); wort_plus_string(attr_ctnt); wort_plus_ch(']');}
+			}
+			found_alt=1;
+		}
+	}
+
+	if ((found_alt==0) && (show_alt)) {
+		if (!option_no_image)
+		{
+			wort_plus_ch('['); wort_plus_string(alt_text); wort_plus_ch(']');
+		}
+	}
+}
+
+/* ------------------------------------------------ */
+
 /* extract encoding information from META or ?xml tags */
-void find_encoding(int error)
+void find_encoding()
 {
 	int found_ctnt=0;
 	int found_chst=0;
@@ -380,7 +412,7 @@ void find_encoding(int error)
 
 	if (!processed_meta) {
 		while (ch!='>' && ch!=EOF) {
-			ch=get_attr(error);
+			ch=get_attr();
 			if ((CMP("HTTP-EQUIV", attr_name)) || (CMP("NAME", attr_name))) {
 				if STRCASECMP("Content-Type", attr_ctnt) { found_ctnt=1; }
 				else if STRCASECMP("charset", attr_ctnt) { found_chst=1; }
@@ -420,30 +452,30 @@ void find_encoding(int error)
 /* ------------------------------------------------ */
 
 /* extract encoding information ?xml tags */
-void find_xml_encoding(int error)
+void find_xml_encoding()
 {
 	if (!processed_meta) {
 		/* xml default charset is utf-8 */
 		set_iconv_charset("utf-8");
-		find_encoding(error);
+		find_encoding();
 	}
 }
 
 /* ------------------------------------------------ */
 
 /* simple finite state machine to eat up complete comment '!--' */
-CHAR friss_kommentar(int error)
+CHAR friss_kommentar()
 {
 	int c, dontquit=1;
 	while (dontquit)
 	{
-		c=read_char(error);
+		c=read_char();
 		if (c=='-')
 		{
-			c=read_char(error);
+			c=read_char();
 			while (c=='-')
 			{
-				c=read_char(error);
+				c=read_char();
 				if (c=='>') { dontquit=0; }
 			}
 		}
@@ -454,30 +486,28 @@ CHAR friss_kommentar(int error)
 
 /* ------------------------------------------------ */
 
-int start_nooutput(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void start_nooutput()
 {
-	wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-	print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	wort_ende();
+	print_zeile();
 	nooutput = 1;
 
 	while (ch!='>' && ch!=EOF)
 	{
-		ch=get_attr(error);
+		ch=get_attr();
 		if CMP("/", attr_name)
 		{
 			printf("Empty tag\n");
 			nooutput = 0;
 		}
 	}
-	return nooutput;
 }
 
-int end_nooutput(int nooutput, int spaces, int breite, int error, int zeilen_len, int zeilen_len_old, int zeilen_pos)
+void end_nooutput()
 {
-	wort_ende(nooutput, spaces, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
-	print_zeile(nooutput, breite, error, zeilen_len, zeilen_len_old, zeilen_pos);
+	wort_ende();
+	print_zeile();
 	nooutput = 0;
-	return nooutput;
 }
 
 /* ------------------------------------------------ */

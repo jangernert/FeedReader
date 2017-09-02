@@ -7,7 +7,7 @@ int get_align();
 void push_align(int a);
 void pop_align();
 
-wint_t uppercase(wint_t c);
+int uppercase(int c);
 void uppercase_str(CHAR *s);
 
 void set_char(CHAR *s, CHAR c);

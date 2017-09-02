@@ -28,7 +28,6 @@
 #include "microsoft.h"
 #include "unicode_entities.h"
 #include "charset.h"
-#include "latin1.h"
 
 #include "multibyte.h"
 
@@ -67,6 +66,9 @@ void parse_entity(CHAR *str)
 	{
 		/* if true entity was known */
 		CPYSS(str, tmpstr);
+	}
+	else {
+		if (errorlevel>=1) { print_error("entity unknown: ", tmpstr); }
 	}
 }
 

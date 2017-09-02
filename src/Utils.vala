@@ -16,7 +16,6 @@
 public class FeedReader.Utils : GLib.Object {
 
 	private static Soup.Session? m_session;
-	private static GLib.Mutex mutex = GLib.Mutex();
 
 	private static Soup.Session getSession()
 	{
@@ -45,9 +44,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		string? output = old_string.replace("\n"," ").strip();
 
-		mutex.lock();
 		output = libVilistextum.parse(old_string, rm_html);
-		mutex.unlock();
 
 		if(output != null)
 		{

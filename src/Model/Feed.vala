@@ -26,7 +26,7 @@ public class FeedReader.feed : GLib.Object {
 	public feed(string feedID, string title, string url, uint unread, string[] catIDs, string? iconURL = null, string? xmlURL = null)
 	{
 		m_feedID = feedID;
-		m_title = title;
+		m_title = Utils.UTF8fix(title);
 		m_url = url;
 		m_unread = unread;
 		m_catIDs = catIDs;

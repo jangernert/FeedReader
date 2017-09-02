@@ -229,7 +229,7 @@ public class FeedReader.dbDaemon : dbBase {
 			catString = catString.substring(0, catString.length-1);
 
 			stmt.bind_text(feedID_pos, feed_item.getFeedID());
-			stmt.bind_text(feedName_pos, Utils.UTF8fix(feed_item.getTitle()));
+			stmt.bind_text(feedName_pos, feed_item.getTitle());
 			stmt.bind_text(feedURL_pos, feed_item.getURL());
 			stmt.bind_text(catID_pos, catString);
 			stmt.bind_text(xmlURL_pos, feed_item.getXmlUrl());

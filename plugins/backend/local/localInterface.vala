@@ -82,6 +82,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return false;
 	}
 
+	public bool syncFeedsAndCategories()
+	{
+		return false;
+	}
+
 	public bool tagIDaffectedByNameChange()
 	{
 		return false;
@@ -315,35 +320,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		var cats = dbDaemon.get_default().read_categories();
-		foreach(category cat in cats)
-		{
-			categories.add(cat);
-		}
-
-		var t = dbDaemon.get_default().read_tags();
-		foreach(tag Tag in t)
-		{
-			tags.add(Tag);
-		}
-
-		var f = dbDaemon.get_default().read_feeds();
-		foreach(feed Feed in f)
-		{
-			if(cancellable != null && cancellable.is_cancelled())
-				return false;
-
-			// string errmsg = "";
-			// feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs(), out errmsg);
-			// if(tmpFeed != null)
-			// {
-			// 	Feed.setIconURL(tmpFeed.getIconURL());
-			// 	Feed.setURL(tmpFeed.getURL());
-			// }
-			Logger.debug("just checking: " + Feed.getTitle());
-
-			feeds.add(Feed);
-		}
+		return;
+	}
 
 		return true;
 	}
@@ -373,7 +351,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			}
 
 			var msg = new Soup.Message("GET", url);
-			m_session.send_message(msg);
+			var session = new Soup.Session();
+			session.user_agent = Constants.USER_AGENT;
+			session.timeout = 5;
+			session.send_message(msg);
 			string xml = (string)msg.response_body.flatten().data;
 
 			// parse

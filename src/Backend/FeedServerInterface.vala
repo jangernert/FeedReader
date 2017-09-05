@@ -45,6 +45,8 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool supportMultiCategoriesPerFeed();
 
+	public abstract bool syncFeedsAndCategories();
+
 	// some backends (inoreader, feedly) have the tag-name as part of the ID
 	// but for some of them the tagID changes when the name was changed (inoreader)
 	public abstract bool tagIDaffectedByNameChange();

@@ -79,6 +79,11 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		return false;
 	}
 
+	public bool syncFeedsAndCategories()
+	{
+		return true;
+	}
+
 	public bool tagIDaffectedByNameChange()
 	{
 		return true;

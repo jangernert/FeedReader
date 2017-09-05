@@ -120,54 +120,67 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 		}
 
-		var categories = new Gee.LinkedList<category>();
-		var feeds      = new Gee.LinkedList<feed>();
-		var tags       = new Gee.LinkedList<tag>();
-
-		if(cancellable != null && cancellable.is_cancelled())
-			return;
-
-		syncProgress(_("Getting feeds and categories"));
-
-		if(!getFeedsAndCats(feeds, categories, tags, cancellable))
+		if(syncFeedsAndCategories())
 		{
-			Logger.error("FeedServer: something went wrong getting categories and feeds");
-			return;
+			var categories = new Gee.LinkedList<category>();
+			var feeds      = new Gee.LinkedList<feed>();
+			var tags       = new Gee.LinkedList<tag>();
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
+			syncProgress(_("Getting feeds and categories"));
+
+			if(!getFeedsAndCats(feeds, categories, tags, cancellable))
+			{
+				Logger.error("FeedServer: something went wrong getting categories and feeds");
+				return;
+			}
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
+
+			// write categories
+			dbDaemon.get_default().reset_exists_flag();
+			dbDaemon.get_default().write_categories(categories);
+			dbDaemon.get_default().delete_nonexisting_categories();
+
+			// write feeds
+			dbDaemon.get_default().reset_subscribed_flag();
+			dbDaemon.get_default().write_feeds(feeds);
+			dbDaemon.get_default().delete_articles_without_feed();
+			dbDaemon.get_default().delete_unsubscribed_feeds();
+
+			// write tags
+			dbDaemon.get_default().reset_exists_tag();
+			dbDaemon.get_default().write_tags(tags);
+			dbDaemon.get_default().update_tags(tags);
+			dbDaemon.get_default().delete_nonexisting_tags();
+
+			FeedDaemonServer.get_default().newFeedList();
+
+			// download favicons for all feeds
+			Utils.getFavIcons.begin(feeds, cancellable, (obj, res) => {
+				Utils.getFavIcons.end(res);
+				FeedDaemonServer.get_default().reloadFavIcons();
+			});
+		}
+		else
+		{
+			// download favicons for all feeds
+			Utils.getFavIcons.begin(dbDaemon.get_default().read_feeds(), cancellable, (obj, res) => {
+				Utils.getFavIcons.end(res);
+				FeedDaemonServer.get_default().reloadFavIcons();
+			});
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
 
-		// download favicons for all feeds
-		Utils.getFavIcons.begin(feeds, cancellable, (obj, res) => {
-			Utils.getFavIcons.end(res);
-			FeedDaemonServer.get_default().reloadFavIcons();
-		});
 
-		if(cancellable != null && cancellable.is_cancelled())
-			return;
-
-		// write categories
-		dbDaemon.get_default().reset_exists_flag();
-		dbDaemon.get_default().write_categories(categories);
-		dbDaemon.get_default().delete_nonexisting_categories();
-
-		// write feeds
-		dbDaemon.get_default().reset_subscribed_flag();
-		dbDaemon.get_default().write_feeds(feeds);
-		dbDaemon.get_default().delete_articles_without_feed();
-		dbDaemon.get_default().delete_unsubscribed_feeds();
-
-		// write tags
-		dbDaemon.get_default().reset_exists_tag();
-		dbDaemon.get_default().write_tags(tags);
-		dbDaemon.get_default().update_tags(tags);
-		dbDaemon.get_default().delete_nonexisting_tags();
-
-		FeedDaemonServer.get_default().newFeedList();
-
-		if(cancellable != null && cancellable.is_cancelled())
-			return;
 
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
@@ -229,36 +242,47 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		Logger.debug("FeedServer: initial sync");
 
-		var categories = new Gee.LinkedList<category>();
-		var feeds      = new Gee.LinkedList<feed>();
-		var tags       = new Gee.LinkedList<tag>();
+		if(syncFeedsAndCategories())
+		{
+			var categories = new Gee.LinkedList<category>();
+			var feeds      = new Gee.LinkedList<feed>();
+			var tags       = new Gee.LinkedList<tag>();
 
-		syncProgress(_("Getting feeds and categories"));
+			syncProgress(_("Getting feeds and categories"));
 
-		getFeedsAndCats(feeds, categories, tags, cancellable);
+			getFeedsAndCats(feeds, categories, tags, cancellable);
 
-		if(cancellable != null && cancellable.is_cancelled())
-			return;
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
 
-		// download favicons for all feeds
-		Utils.getFavIcons.begin(feeds, cancellable, (obj, res) => {
-			Utils.getFavIcons.end(res);
-			FeedDaemonServer.get_default().reloadFavIcons();
-		});
+			if(cancellable != null && cancellable.is_cancelled())
+				return;
 
-		if(cancellable != null && cancellable.is_cancelled())
-			return;
+			// write categories
+			dbDaemon.get_default().write_categories(categories);
 
-		// write categories
-		dbDaemon.get_default().write_categories(categories);
+			// write feeds
+			dbDaemon.get_default().write_feeds(feeds);
 
-		// write feeds
-		dbDaemon.get_default().write_feeds(feeds);
+			// write tags
+			dbDaemon.get_default().write_tags(tags);
 
-		// write tags
-		dbDaemon.get_default().write_tags(tags);
+			FeedDaemonServer.get_default().newFeedList();
 
-		FeedDaemonServer.get_default().newFeedList();
+			// download favicons for all feeds
+			Utils.getFavIcons.begin(feeds, cancellable, (obj, res) => {
+				Utils.getFavIcons.end(res);
+				FeedDaemonServer.get_default().reloadFavIcons();
+			});
+		}
+		else
+		{
+			// download favicons for all feeds
+			Utils.getFavIcons.begin(dbDaemon.get_default().read_feeds(), cancellable, (obj, res) => {
+				Utils.getFavIcons.end(res);
+				FeedDaemonServer.get_default().reloadFavIcons();
+			});
+		}
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -272,7 +296,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		// get articles for each tag
 		syncProgress(_("Getting tagged articles"));
-		foreach(var tag_item in tags)
+		foreach(var tag_item in dbDaemon.get_default().read_tags())
 		{
 			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true, cancellable);
 			if(cancellable != null && cancellable.is_cancelled())
@@ -671,6 +695,14 @@ public class FeedReader.FeedServer : GLib.Object {
 			return false;
 
 		return m_plugin.supportMultiCategoriesPerFeed();
+	}
+
+	public bool syncFeedsAndCategories()
+	{
+		if(!m_pluginLoaded)
+			return false;
+
+		return m_plugin.syncFeedsAndCategories();
 	}
 
 	// some backends (inoreader, feedly) have the tag-name as part of the ID

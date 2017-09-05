@@ -129,6 +129,11 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 
 	}
 
+	public bool syncFeedsAndCategories()
+	{
+
+	}
+
 
 	//--------------------------------------------------------------------------------------
 	// Does changing the name of a tag also change it's ID?

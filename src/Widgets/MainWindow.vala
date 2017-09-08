@@ -380,6 +380,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			Settings.state().set_strv("expanded-categories", Utils.getDefaultExpandedCategories());
 			Settings.state().set_string("feedlist-selected-row", "feed -4");
 			showContent(Gtk.StackTransitionType.SLIDE_RIGHT);
+			ColumnView.get_default().setOnline();
 		});
 		m_login.loginError.connect((errorCode) => {
 			showErrorBar(errorCode);

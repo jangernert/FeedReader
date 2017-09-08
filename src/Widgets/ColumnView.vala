@@ -420,7 +420,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 
 		if(!UtilsUI.canManipulateContent(false))
 		{
-			m_footer.setActive(false);
+			m_footer.setAddButtonSensitive(false);
 			m_feedList.newFeedlist(m_articleList.getState(), false);
 		}
 	}
@@ -432,7 +432,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 
 		if(UtilsUI.canManipulateContent(true))
 		{
-			m_footer.setActive(true);
+			m_footer.setAddButtonSensitive(true);
 			m_feedList.newFeedlist(m_articleList.getState(), false);
 
 			var selected_row = m_feedList.getSelectedRow();

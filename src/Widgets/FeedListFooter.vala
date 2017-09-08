@@ -93,7 +93,7 @@ public class FeedReader.FeedListFooter : Gtk.Box {
 		m_removeButton.setSelectedRow(type, id);
 	}
 
-	public void setActive(bool active)
+	public void setAddButtonSensitive(bool active)
 	{
 		try
 		{

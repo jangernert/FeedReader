@@ -602,7 +602,8 @@ public class FeedReader.dbDaemon : dbBase {
 						break;
 				}
 
-				if(article.getDate().compare(now.add_weeks(-weeks)) == -1)
+				if(Settings.general().get_enum("drop-articles-after") != DropArticles.NEVER
+				&& article.getDate().compare(now.add_weeks(-weeks)) == -1)
 					continue;
 
 

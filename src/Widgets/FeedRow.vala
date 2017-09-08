@@ -160,6 +160,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		if(icon != null)
 			return new Gtk.Image.from_pixbuf(icon);
 
+		Logger.debug("use default icon instead");
 		var defaultIcon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		defaultIcon.get_style_context().add_class("fr-sidebar-symbolic");
 		return defaultIcon;
@@ -456,7 +457,18 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public void reloadFavIcon()
 	{
-		m_icon.set_from_pixbuf(getFeedIcon().get_pixbuf());
+		var favicon = getFeedIcon();
+
+		switch(favicon.get_storage_type())
+		{
+			case Gtk.ImageType.PIXBUF:
+				m_icon.set_from_pixbuf(favicon.get_pixbuf());
+				break;
+
+			case Gtk.ImageType.STOCK:
+				m_icon.set_from_icon_name(favicon.icon_name, Gtk.IconSize.LARGE_TOOLBAR);
+				break;
+		}
 	}
 
 }

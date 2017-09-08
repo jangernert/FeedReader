@@ -680,7 +680,18 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 
 	public void reloadFavIcon()
 	{
-		m_icon.set_from_pixbuf(getFeedIcon().get_pixbuf());
+		var favicon = getFeedIcon();
+
+		switch(favicon.get_storage_type())
+		{
+			case Gtk.ImageType.PIXBUF:
+				m_icon.set_from_pixbuf(favicon.get_pixbuf());
+				break;
+
+			case Gtk.ImageType.STOCK:
+				m_icon.set_from_icon_name(favicon.icon_name, Gtk.IconSize.LARGE_TOOLBAR);
+				break;
+		}
 	}
 
 }

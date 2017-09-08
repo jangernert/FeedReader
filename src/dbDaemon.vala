@@ -424,8 +424,6 @@ public class FeedReader.dbDaemon : dbBase {
 
 	public void writeContent(article Article)
 	{
-		executeSQL("BEGIN TRANSACTION");
-
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		update_query.updateValuePair("html", "$HTML");
 		update_query.updateValuePair("preview", "$PREVIEW");
@@ -453,8 +451,6 @@ public class FeedReader.dbDaemon : dbBase {
 
 		while(stmt.step() != Sqlite.DONE){}
 		stmt.reset();
-
-		executeSQL("COMMIT TRANSACTION");
 	}
 
 	public void update_articles(Gee.List<article> articles)

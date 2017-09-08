@@ -361,6 +361,10 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	public async void grabContent(GLib.Cancellable? cancellable = null)
 	{
+		if(!Settings.general().get_boolean("download-images")
+		&& !Settings.general().get_boolean("content-grabber"))
+			return;
+
 		Logger.debug("FeedServer: grabContent");
 		var articles = dbDaemon.get_default().readUnfetchedArticles();
 		int size = articles.size;

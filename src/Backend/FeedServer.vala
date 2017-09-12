@@ -235,6 +235,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		Settings.state().set_int("last-sync", (int)now.to_unix());
 
 		dbDaemon.get_default().checkpoint();
+		FeedDaemonServer.get_default().newFeedList();
 		return;
 	}
 

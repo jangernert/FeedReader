@@ -748,7 +748,11 @@ namespace FeedReader {
 					feedAdded(!success, errmsg);
 
 					if(success)
+					{
+						Settings.state().reset("last-favicon-update");
 						startSync();
+					}
+
 					return null;
 				});
 			}

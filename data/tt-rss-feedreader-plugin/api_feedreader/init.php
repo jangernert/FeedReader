@@ -37,7 +37,7 @@ class Api_feedreader extends Plugin {
 		$label_id = (int)db_escape_string($_REQUEST["label_id"]);
 		if($label_id != "")
 		{
-			label_remove(feed_to_label_id($label_id), $_SESSION["uid"]);
+			Labels::remove(Labels::feed_to_label_id($label_id), $_SESSION["uid"]);
 			return array(API::STATUS_OK);
 		}
 		else
@@ -51,9 +51,9 @@ class Api_feedreader extends Plugin {
 		$caption = db_escape_string($_REQUEST["caption"]);
 		if($caption != "")
 		{
-			label_create($caption);
-			$id = label_find_id($caption, $_SESSION["uid"]);
-			return array(API::STATUS_OK, label_to_feed_id($id));
+			Labels::create($caption);
+			$id = Labels::find_id($caption, $_SESSION["uid"]);
+			return array(API::STATUS_OK, Labels::label_to_feed_id($id));
 		}
 		else
 		{
@@ -64,7 +64,7 @@ class Api_feedreader extends Plugin {
 	function renameLabel()
 	{
 		$caption = db_escape_string($_REQUEST["caption"]);
-		$label_id = feed_to_label_id((int)db_escape_string($_REQUEST["label_id"]));
+		$label_id = Labels::feed_to_label_id((int)db_escape_string($_REQUEST["label_id"]));
 
 		if($label_id != "" && $caption != "")
 		{
@@ -124,13 +124,16 @@ class Api_feedreader extends Plugin {
 			if($parent_id != "")
 			{
 				add_feed_category($caption, $parent_id);
+				$parent_qpart = "parent_cat = '$parent_id'";
 			}
 			else
 			{
 				add_feed_category($caption);
+				$parent_qpart = "parent_cat IS NULL";
 			}
-
-			return array(API::STATUS_OK, get_feed_category($caption));
+			$result = $this->dbh->query("SELECT id FROM ttrss_feed_categories WHERE $parent_qpart AND title = '$caption' AND owner_uid = ".$_SESSION["uid"]);
+			$id = $this->dbh->fetch_result($result, 0, "id");
+			return array(API::STATUS_OK, $id);
 		}
 		else
 		{
@@ -183,4 +186,3 @@ class Api_feedreader extends Plugin {
 		}
 	}
 }
-?>

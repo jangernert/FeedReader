@@ -80,6 +80,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 			m_waitingBox.show_all();
 			m_spinner.start();
 			m_newAccountButton.set_sensitive(false);
+			DBusConnection.get_default().cancelSync();
 
 			while(Settings.state().get_boolean("currently-updating"))
 			{

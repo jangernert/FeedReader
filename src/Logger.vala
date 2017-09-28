@@ -17,22 +17,22 @@ public class FeedReader.Logger : GLib.Object {
 
 	public static void error(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_CRITICAL, "MESSAGE", message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_CRITICAL, "MESSAGE", "%s", message);
 	}
 
 	public static void warning(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_WARNING, "MESSAGE", message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_WARNING, "MESSAGE", "%s", message);
 	}
 
 	public static void info(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_INFO, "MESSAGE", message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_INFO, "MESSAGE", "%s", message);
 	}
 
 	public static void debug(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_DEBUG, "MESSAGE", message);
+		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_DEBUG, "MESSAGE", "%s", message);
 	}
 
 	public static void init()

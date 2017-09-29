@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.article : GLib.Object {
+public class FeedReader.Article : GLib.Object {
 
 	private string m_articleID;
 	private string m_title;
@@ -32,7 +32,7 @@ public class FeedReader.article : GLib.Object {
 	private int m_lastModified;
 	private int m_pos;
 
-	public article (string articleID,
+	public Article (string articleID,
 					string title,
 					string url,
 					string feedID,

@@ -15,7 +15,7 @@
 
 public class FeedReader.UtilsDaemon : GLib.Object {
 
-	public static void generatePreviews(Gee.List<article> articles)
+	public static void generatePreviews(Gee.List<Article> articles)
 	{
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
@@ -69,7 +69,7 @@ public class FeedReader.UtilsDaemon : GLib.Object {
 		}
 	}
 
-	public static void checkHTML(Gee.List<article> articles)
+	public static void checkHTML(Gee.List<Article> articles)
 	{
 		foreach(var Article in articles)
 		{

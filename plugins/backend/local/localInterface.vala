@@ -331,7 +331,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		var f = dbDaemon.get_default().read_feeds();
-		var articleArray = new Gee.LinkedList<article>();
+		var articleArray = new Gee.LinkedList<Article>();
 		GLib.Mutex mutex = GLib.Mutex();
 
 		try
@@ -420,7 +420,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					if(articleURL.has_prefix("/"))
 						articleURL = Feed.getURL() + articleURL.substring(1);
 
-					var Article = new article
+					var Article = new Article
 					(
 										articleID,
 										(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",

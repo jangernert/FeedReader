@@ -171,7 +171,7 @@ public class FeedReader.freshAPI : Object {
 	}
 
 	public string? getStreamContents(
-										Gee.LinkedList<article> articles,
+										Gee.LinkedList<Article> articles,
 										string? feedID = null,
 										string? labelID = null,
 										string? exclude = null,
@@ -272,7 +272,7 @@ public class FeedReader.freshAPI : Object {
 			}
 
 
-			articles.add(new article(
+			articles.add(new Article(
 									id,
 									object.get_string_member("title"),
 									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),

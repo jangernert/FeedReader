@@ -299,7 +299,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 
 
-	public string? getArticles(Gee.List<article> articles, int count, string? continuation = null, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
+	public string? getArticles(Gee.List<Article> articles, int count, string? continuation = null, ArticleStatus whatToGet = ArticleStatus.ALL, string tagID = "", string feed_id = "")
 	{
 		string steamID = "user/" + m_userID + "/category/global.all";
 		string onlyUnread = "false";
@@ -423,7 +423,7 @@ public class FeedReader.FeedlyAPI : Object {
 				}
 			}
 
-			var Article = new article(
+			var Article = new Article(
 								id,
 								title,
 								url,

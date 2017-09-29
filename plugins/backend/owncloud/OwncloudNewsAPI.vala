@@ -213,7 +213,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-	public void getNewArticles(Gee.List<article> articles, int lastModified, OwnCloudType type, int id)
+	public void getNewArticles(Gee.List<Article> articles, int lastModified, OwnCloudType type, int id)
 	{
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "/items/updated", m_username, m_password, "GET");
 		message.add_int("lastModified", lastModified);
@@ -250,7 +250,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 						}
 					}
 
-					var Article = new article(	article_node.get_int_member("id").to_string(),
+					var Article = new Article(	article_node.get_int_member("id").to_string(),
 												article_node.get_string_member("title"),
 												article_node.get_string_member("url"),
 												article_node.get_int_member("feedId").to_string(),
@@ -282,7 +282,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 
 
-	public void getArticles(Gee.List<article> articles, int skip, int count, bool read, OwnCloudType type, int id)
+	public void getArticles(Gee.List<Article> articles, int skip, int count, bool read, OwnCloudType type, int id)
 	{
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "items", m_username, m_password, "GET");
 		message.add_bool("oldestFirst", false);
@@ -321,7 +321,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 						}
 					}
 
-					var Article = new article(	article_node.get_int_member("id").to_string(),
+					var Article = new Article(	article_node.get_int_member("id").to_string(),
 												article_node.get_string_member("title"),
 												article_node.get_string_member("url"),
 												article_node.get_int_member("feedId").to_string(),

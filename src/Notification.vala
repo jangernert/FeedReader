@@ -43,7 +43,7 @@ public class FeedReader.Notification : GLib.Object {
 		try
 		{
 			string message = "";
-			string summary = _("New Articles");
+			string summary = _("new Articles");
 			uint unread = dbDaemon.get_default().get_unread_total();
 
 			if(!Notify.is_initted())
@@ -55,9 +55,9 @@ public class FeedReader.Notification : GLib.Object {
 			if(newArticles > 0)
 			{
 				if(unread == 1)
-					message = _("There is 1 new article (%u unread)").printf(unread);
+					message = _("There is 1 new Article (%u unread)").printf(unread);
 				else
-					message = _("There are %u new articles (%u unread)").printf(newArticles, unread);
+					message = _("There are %u new Articles (%u unread)").printf(newArticles, unread);
 
 
 				if(m_notification == null)

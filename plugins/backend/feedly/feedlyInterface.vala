@@ -311,7 +311,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 		int skip = count;
 		int amount = 200;
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 
 		while(skip > 0)
 		{

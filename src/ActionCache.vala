@@ -191,7 +191,7 @@ public class FeedReader.ActionCache : GLib.Object {
 		return marked;
 	}
 
-	public ArticleStatus checkRead(article a)
+	public ArticleStatus checkRead(Article a)
 	{
 		if(a.getUnread() == ArticleStatus.READ)
 		{

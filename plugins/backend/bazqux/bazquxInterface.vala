@@ -302,7 +302,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 		string? continuation = null;
 		int left = count;
 		string? bazqux_feedID = (isTagID) ? null : feedID;

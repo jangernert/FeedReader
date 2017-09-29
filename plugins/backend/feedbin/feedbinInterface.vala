@@ -141,7 +141,7 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		{
 			var articles = dbDaemon.get_default().read_articles(id, type, ArticleListState.ALL, "", count, offset);
 
-			FuncUtils.MapFunction<article, string> articleToID = (article) => { return article.getArticleID(); };
+			FuncUtils.MapFunction<Article, string> articleToID = (article) => { return article.getArticleID(); };
 			var articleIDs = FuncUtils.map(articles, articleToID);
 			m_api.createUnreadEntries(articleIDs, true);
 

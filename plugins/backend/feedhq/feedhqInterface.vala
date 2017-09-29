@@ -295,7 +295,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 		string? continuation = null;
 		string? FeedHQ_feedID = (isTagID) ? null : feedID;
 		string? FeedHQ_tagID = (isTagID) ? feedID : null;

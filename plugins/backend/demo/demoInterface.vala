@@ -444,7 +444,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// "isTagID":	false if "feedID" is a feed-ID, true if "feedID" is a tag-ID
 	//
 	// It is recommended after getting the articles from the server to use the signal
-	// "writeArticles(Gee.List<article> articles)"
+	// "writeArticles(Gee.List<Article> articles)"
 	// to automatically process them in the content-grabber, write them to the
 	// data-base and send all the signals to the UI to update accordingly.
 	// But if the API suggests a different approach you can everything on your

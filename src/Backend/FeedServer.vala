@@ -331,14 +331,14 @@ public class FeedReader.FeedServer : GLib.Object {
 		return;
 	}
 
-	private void writeArticles(Gee.List<article> articles)
+	private void writeArticles(Gee.List<Article> articles)
 	{
 		if(articles.size > 0)
 		{
 			dbDaemon.get_default().update_articles(articles);
 
 			// Reverse the list
-			var new_articles = new Gee.LinkedList<article>();
+			var new_articles = new Gee.LinkedList<Article>();
 			foreach(var article in articles)
 			{
 				new_articles.insert(0, article);
@@ -380,7 +380,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			try
 			{
-				var threads = new ThreadPool<article>.with_owned_data((a) => {
+				var threads = new ThreadPool<Article>.with_owned_data((a) => {
 					if(cancellable != null && cancellable.is_cancelled())
 						return;
 
@@ -445,22 +445,22 @@ public class FeedReader.FeedServer : GLib.Object {
 		}
 	}
 
-	private void downloadImages(Soup.Session session, article Article, GLib.Cancellable? cancellable = null)
+	private void downloadImages(Soup.Session session, Article article, GLib.Cancellable? cancellable = null)
 	{
 		if(!Settings.general().get_boolean("download-images"))
 			return;
 
 		var html_cntx = new Html.ParserCtxt();
 		html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-		Html.Doc* doc = html_cntx.read_doc(Article.getHTML(), "");
+		Html.Doc* doc = html_cntx.read_doc(article.getHTML(), "");
 		if(doc == null)
 		{
 			Logger.debug("Grabber: parsing failed");
 			return;
 		}
 		grabberUtils.fixIframeSize(doc, "youtube.com");
-		grabberUtils.repairURL("//img", "src", doc, Article.getURL());
-		grabberUtils.repairURL("//iframe", "src", doc, Article.getURL());
+		grabberUtils.repairURL("//img", "src", doc, article.getURL());
+		grabberUtils.repairURL("//iframe", "src", doc, article.getURL());
 		grabberUtils.stripNode(doc, "//a[not(node())]");
 		grabberUtils.removeAttributes(doc, null, "style");
 		grabberUtils.removeAttributes(doc, "a", "onclick");
@@ -474,12 +474,12 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 		}
 
-		grabberUtils.saveImages(session, doc, Article.getArticleID(), Article.getFeedID(), cancellable);
+		grabberUtils.saveImages(session, doc, article.getArticleID(), article.getFeedID(), cancellable);
 
 		string html = "";
 		doc->dump_memory_enc(out html);
 		html = grabberUtils.postProcessing(ref html);
-		Article.setHTML(html);
+		article.setHTML(html);
 		delete doc;
 	}
 

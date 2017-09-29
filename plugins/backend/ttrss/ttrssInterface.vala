@@ -320,7 +320,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 				skip = 0;
 			}
 
-			var articles = new Gee.LinkedList<article>();
+			var articles = new Gee.LinkedList<Article>();
 			m_api.getHeadlines(articles, skip, amount, whatToGet, (feedID == null) ? ttrssUtils.TTRSSSpecialID.ALL : int.parse(feedID));
 
 			// only update article states if they haven't been updated by the newsPlus-plugin
@@ -330,11 +330,12 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 				updateArticleList();
 			}
 
-			foreach(article Article in articles)
+			foreach(Article article in articles)
 			{
-				if(!dbDaemon.get_default().article_exists(Article.getArticleID()))
+				var id = article.getArticleID();
+				if(!dbDaemon.get_default().article_exists(id))
 				{
-					articleIDs += Article.getArticleID() + ",";
+					articleIDs += id + ",";
 				}
 			}
 		}
@@ -342,7 +343,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		if(articleIDs.length > 0)
 			articleIDs = articleIDs.substring(0, articleIDs.length -1);
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 
 		if(articleIDs != "")
 			m_api.getArticles(articleIDs, articles);

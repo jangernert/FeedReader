@@ -152,9 +152,9 @@ public class FeedReader.feedbinAPI : Object {
 
 
 
-	public Gee.List<article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)
+	public Gee.List<Article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)
 	{
-		Gee.List<article> articles = new Gee.ArrayList<article>();
+		Gee.List<Article> articles = new Gee.ArrayList<Article>();
 		string request = "entries.json?per_page=100";
 		request += "&page=%i".printf(page);
 		request += "&starred=%s".printf(onlyStarred ? "true" : "false");
@@ -214,7 +214,7 @@ public class FeedReader.feedbinAPI : Object {
 				time = new DateTime.from_timeval_local(t);
 			}
 
-			var article = new article(
+			var article = new Article(
 					id,
 					object.get_string_member("title") == null ? "" : object.get_string_member("title"),
 					object.get_string_member("url"),

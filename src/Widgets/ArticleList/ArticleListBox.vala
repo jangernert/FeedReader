@@ -15,7 +15,7 @@
 
 public class FeedReader.ArticleListBox : Gtk.ListBox {
 
-	private Gee.List<article> m_lazyQeue;
+	private Gee.List<Article> m_lazyQeue;
 	private uint m_idleID = 0;
 	private string m_name;
 	private uint m_selectSourceID = 0;
@@ -32,14 +32,14 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public ArticleListBox(string name)
 	{
 		m_name = name;
-		m_lazyQeue = new Gee.LinkedList<article>();
+		m_lazyQeue = new Gee.LinkedList<Article>();
 		m_articles = new Gee.HashSet<string>();
 		m_visibleArticles = new Gee.HashSet<string>();
 		this.set_selection_mode(Gtk.SelectionMode.BROWSE);
 		this.row_activated.connect(rowActivated);
 	}
 
-	public void newList(Gee.List<article> articles)
+	public void newList(Gee.List<Article> articles)
 	{
 		stopLoading();
 		emptyList();
@@ -48,7 +48,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		addRow(ArticleListBalance.NONE);
 	}
 
-	public void addTop(Gee.List<article> articles)
+	public void addTop(Gee.List<Article> articles)
 	{
 		stopLoading();
 		setPos(articles, 0);
@@ -56,7 +56,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		addRow(ArticleListBalance.TOP, true);
 	}
 
-	public void addBottom(Gee.List<article> articles)
+	public void addBottom(Gee.List<Article> articles)
 	{
 		stopLoading();
 		setPos(articles, -1);
@@ -76,9 +76,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return false;
 	}
 
-	private void setPos(Gee.List<article> articles, int pos)
+	private void setPos(Gee.List<Article> articles, int pos)
 	{
-		foreach(article a in articles)
+		foreach(Article a in articles)
 		{
 			a.setPos(pos);
 		}
@@ -102,7 +102,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			if(m_lazyQeue == null || m_lazyQeue.size == 0)
 				return false;
 
-			article item;
+			Article item;
 
 			if(reverse)
 				item = m_lazyQeue.last();
@@ -120,10 +120,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			m_articles.add(item.getArticleID());
 			balanceNextScroll(balance);
 
-			var newRow = new articleRow(item);
+			var newRow = new ArticleRow(item);
 			newRow.rowStateChanged.connect(rowStateChanged);
 			newRow.drag_begin.connect((widget, context) => {
-				highlightRow((widget as articleRow).getID());
+				highlightRow((widget as ArticleRow).getID());
 				drag_begin(context);
 			});
 			newRow.drag_end.connect((widget, context) => {
@@ -150,7 +150,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}, priority);
 	}
 
-	private void checkQueue(article item, ArticleListBalance balance, bool reverse = false, bool animate = false)
+	private void checkQueue(Article item, ArticleListBalance balance, bool reverse = false, bool animate = false)
 	{
 		if(m_lazyQeue.size > 1)
 		{
@@ -160,7 +160,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		else
 		{
 			Logger.debug(@"ArticleListbox$m_name: all articles added to the list");
-			m_lazyQeue = new Gee.LinkedList<article>();
+			m_lazyQeue = new Gee.LinkedList<Article>();
 			GLib.Timeout.add(150, () => {
 				Logger.debug(@"ArticleListbox$m_name: loadDone()");
 				loadDone();
@@ -191,7 +191,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		m_selectedFeedListType = type;
 	}
 
-	private void selectAfter(articleRow row, int time)
+	private void selectAfter(ArticleRow row, int time)
 	{
 		this.select_row(row);
 		setRead(row);
@@ -210,7 +210,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		});
 	}
 
-	private void setRead(articleRow row)
+	private void setRead(ArticleRow row)
 	{
 		try
 		{
@@ -228,7 +228,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public bool toggleReadSelected()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 		if(selectedRow == null)
 			return false;
@@ -238,7 +238,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public bool toggleMarkedSelected()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 		if(selectedRow == null)
 			return false;
@@ -248,7 +248,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public string selectedURL()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 		if(selectedRow == null)
 			return "";
@@ -263,7 +263,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public string getSelectedArticle()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 		if(selectedRow != null)
 			return selectedRow.getID();
 
@@ -275,7 +275,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public ArticleStatus getSelectedArticleMarked()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 		if(selectedRow != null)
 			return selectedRow.getMarked();
 
@@ -284,7 +284,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public ArticleStatus getSelectedArticleRead()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 		if(selectedRow != null)
 			return selectedRow.getUnread();
 
@@ -293,7 +293,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public string getSelectedURL()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 		if(selectedRow != null)
 			return selectedRow.getURL();
 
@@ -325,9 +325,9 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			}
 		}
 
-		var selectedRow = this.get_selected_row() as articleRow;
+		var selectedRow = this.get_selected_row() as ArticleRow;
 		var height = selectedRow.get_allocated_height();
-		articleRow nextRow = null;
+		ArticleRow nextRow = null;
 
 		var rows = this.get_children();
 
@@ -343,7 +343,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			if(current >= length)
 				return 0;
 
-			nextRow = rows.nth_data(current) as articleRow;
+			nextRow = rows.nth_data(current) as ArticleRow;
 		}
 		while(!nextRow.isBeingRevealed());
 
@@ -357,7 +357,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return -height;
 	}
 
-	public void removeRow(articleRow row, int animateDuration = 700)
+	public void removeRow(ArticleRow row, int animateDuration = 700)
 	{
 		var id = row.getID();
 		row.reveal(false, animateDuration);
@@ -371,7 +371,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	private void rowActivated(Gtk.ListBoxRow row)
 	{
-		var selectedRow = (articleRow)row;
+		var selectedRow = (ArticleRow)row;
 		string selectedID = selectedRow.getID();
 		setRead(selectedRow);
 
@@ -382,7 +382,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				var articleChildList = this.get_children();
 				foreach(Gtk.Widget r in articleChildList)
 				{
-					var tmpRow = r as articleRow;
+					var tmpRow = r as ArticleRow;
 					if(tmpRow != null && tmpRow.isBeingRevealed())
 					{
 						if((!tmpRow.isUnread() && m_state == ArticleListState.UNREAD)
@@ -412,11 +412,11 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 				return;
 			case ArticleStatus.READ:
 			case ArticleStatus.UNMARKED:
-				var selectedRow = this.get_selected_row() as articleRow;
+				var selectedRow = this.get_selected_row() as ArticleRow;
 				var articleChildList = this.get_children();
 				foreach(Gtk.Widget row in articleChildList)
 				{
-					var tmpRow = row as articleRow;
+					var tmpRow = row as ArticleRow;
 					if(tmpRow != null)
 					{
 						if((selectedRow != null && tmpRow.getID() != selectedRow.getID())
@@ -453,7 +453,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var children = this.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null && invisibleRows.contains(tmpRow.getID()))
 			{
 				setRead(tmpRow);
@@ -469,7 +469,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public void removeTagFromSelectedRow(string tagID)
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 		if(selectedRow == null)
 			return;
@@ -484,7 +484,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		if(children == null)
 			return null;
 
-		var firstRow = children.first().data as articleRow;
+		var firstRow = children.first().data as ArticleRow;
 
 		if(firstRow == null)
 			return null;
@@ -492,14 +492,14 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return firstRow.getID();
 	}
 
-	private articleRow? getFirstRow()
+	private ArticleRow? getFirstRow()
 	{
 		var children = this.get_children();
 
 		if(children == null)
 			return null;
 
-		var firstRow = children.first().data as articleRow;
+		var firstRow = children.first().data as ArticleRow;
 
 		if(firstRow == null)
 			return null;
@@ -514,7 +514,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		if(children == null)
 			return null;
 
-		var lastRow = children.last().data as articleRow;
+		var lastRow = children.last().data as ArticleRow;
 
 		if(lastRow != null)
 			return lastRow.getID();
@@ -524,10 +524,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public bool selectedIsFirst()
 	{
-		var selectedRow = this.get_selected_row() as articleRow;
+		var selectedRow = this.get_selected_row() as ArticleRow;
 		var children = this.get_children();
 		int n = children.index(selectedRow);
-		var lastRow = children.first().data as articleRow;
+		var lastRow = children.first().data as ArticleRow;
 
 		if(n == 0)
 			return true;
@@ -539,11 +539,11 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public bool selectedIsLast()
 	{
-		var selectedRow = this.get_selected_row() as articleRow;
+		var selectedRow = this.get_selected_row() as ArticleRow;
 		var children = this.get_children();
 		int n = children.index(selectedRow);
 		uint length = children.length();
-		var lastRow = children.last().data as articleRow;
+		var lastRow = children.last().data as ArticleRow;
 
 		if(n + 1 == length)
 			return true;
@@ -559,7 +559,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
 				tmpRow.updateUnread(ArticleStatus.READ);
 		}
@@ -567,7 +567,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	public int selectedRowPosition()
 	{
-		articleRow selectedRow = this.get_selected_row() as articleRow;
+		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 		int scroll = 0;
 		if(selectedRow == null)
@@ -576,7 +576,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var FeedChildList = this.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
 			{
 				if(tmpRow.getID() == selectedRow.getID())
@@ -600,7 +600,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var children = this.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null && tmpRow.getID() == articleID)
 			{
 				selectAfter(tmpRow, time);
@@ -613,7 +613,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var children = this.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null && tmpRow.getID() != articleID)
 				tmpRow.opacity = 0.5;
 		}
@@ -624,7 +624,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var children = this.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
 				tmpRow.opacity = 1.0;
 		}
@@ -643,7 +643,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			var children = this.get_children();
 			foreach(var row in children)
 			{
-				var tmpRow = row as articleRow;
+				var tmpRow = row as ArticleRow;
 				if(tmpRow != null && tmpRow.isUnread())
 					unread += 1;
 			}
@@ -660,7 +660,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var FeedChildList = this.get_children();
 		foreach(Gtk.Widget row in FeedChildList)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null && tmpRow.isRevealed())
 				rowHeight += tmpRow.get_allocated_height();
 		}
@@ -686,7 +686,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var children = this.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
 				tmpRow.setUpdated(updated);
 		}
@@ -697,7 +697,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var children = this.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null && !tmpRow.getUpdated())
 			{
 				removeRow(tmpRow, 50);
@@ -705,7 +705,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		}
 	}
 
-	public bool insertArticle(article a, int pos)
+	public bool insertArticle(Article a, int pos)
 	{
 		if(m_articles.contains(a.getArticleID()))
 		{
@@ -715,7 +715,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 		a.setPos(pos);
 		stopLoading();
-		var list = new Gee.LinkedList<article>();
+		var list = new Gee.LinkedList<Article>();
 		list.add(a);
 		m_lazyQeue = list;
 		addRow(ArticleListBalance.NONE, false, false);
@@ -727,7 +727,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		var children = this.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
 				tmpRow.reloadFavIcon();
 		}

@@ -559,7 +559,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return true;
 	}
 
-	public Gee.List<article> read_article_between(
+	public Gee.List<Article> read_article_between(
 		string feedID,
 		FeedListType selectedType,
 		ArticleListState state,
@@ -591,14 +591,14 @@ public class FeedReader.dbBase : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		var articles = new Gee.ArrayList<article>();
+		var articles = new Gee.ArrayList<Article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
 			if(stmt.column_text(2) == id1
 			|| stmt.column_text(2) == id2)
 				continue;
 
-			articles.add(new article(
+			articles.add(new Article(
 								stmt.column_text(2),								// articleID
 								stmt.column_text(3),								// title
 								stmt.column_text(5),								// url
@@ -619,7 +619,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return articles;
 	}
 
-	public Gee.HashMap<string, article> read_article_stats(Gee.List<string> ids)
+	public Gee.HashMap<string, Article> read_article_stats(Gee.List<string> ids)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("articleID, unread, marked");
@@ -634,22 +634,22 @@ public class FeedReader.dbBase : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		var articles = new Gee.HashMap<string, article>();
+		var articles = new Gee.HashMap<string, Article>();
 
 		while(stmt.step() == Sqlite.ROW)
 		{
 			articles.set(stmt.column_text(0),
-								new article(stmt.column_text(0), "", "", "", (ArticleStatus)stmt.column_int(1),
+								new Article(stmt.column_text(0), "", "", "", (ArticleStatus)stmt.column_int(1),
 								(ArticleStatus)stmt.column_int(2), "", "", null, new GLib.DateTime.now_local()));
 		}
 		stmt.reset();
 		return articles;
 	}
 
-	public article? read_article(string articleID)
+	public Article? read_article(string articleID)
 	{
 		Logger.debug(@"dbBase.read_article(): $articleID");
-		article? tmp = null;
+		Article? tmp = null;
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("ROWID");
 		query.selectField("*");
@@ -667,7 +667,7 @@ public class FeedReader.dbBase : GLib.Object {
 		while(stmt.step() == Sqlite.ROW)
 		{
 			string? author = (stmt.column_text(4) == "") ? null : stmt.column_text(4);
-			tmp = new article(
+			tmp = new Article(
 								articleID,
 								stmt.column_text(3),
 								stmt.column_text(5),
@@ -1481,7 +1481,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmp;
 	}
 
-	public Gee.List<article> readUnfetchedArticles()
+	public Gee.List<Article> readUnfetchedArticles()
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("articleID");
@@ -1502,10 +1502,10 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 
-		var tmp = new Gee.LinkedList<article>();
+		var tmp = new Gee.LinkedList<Article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
-			tmp.add(new article(
+			tmp.add(new Article(
 								stmt.column_text(0),								// articleID
 								"",													// title
 								stmt.column_text(1),								// url
@@ -1595,7 +1595,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return query;
 	}
 
-	public Gee.List<article> read_articles(string id, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
+	public Gee.List<Article> read_articles(string id, FeedListType selectedType, ArticleListState state, string searchTerm, uint limit = 20, uint offset = 0, int searchRows = 0)
 	{
 		var query = articleQuery(id, selectedType, state, searchTerm);
 
@@ -1624,10 +1624,10 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 
-		var tmp = new Gee.LinkedList<article>();
+		var tmp = new Gee.LinkedList<Article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
-			tmp.add(new article(
+			tmp.add(new Article(
 								stmt.column_text(2),								// articleID
 								stmt.column_text(3),								// title
 								stmt.column_text(5),								// url

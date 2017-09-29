@@ -39,7 +39,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private ulong m_handlerID2 = 0;
 	private ulong m_handlerID3 = 0;
 
-	public signal void row_activated(articleRow? row);
+	public signal void row_activated(ArticleRow? row);
 
 	public ArticleList()
 	{
@@ -128,7 +128,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		Logger.debug("ArticleList: disallow signals from scroll");
 		m_currentScroll.allowSignals(false);
-		Gee.List<article> articles = new Gee.LinkedList<article>();
+		Gee.List<Article> articles = new Gee.LinkedList<Article>();
 		uint offset = 0;
 		bool newArticles = false;
 		if(Settings.state().get_int("articlelist-new-rows") > 0 && m_state == ArticleListState.ALL)
@@ -244,7 +244,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		Gee.List<article> articles = new Gee.LinkedList<article>();
+		Gee.List<Article> articles = new Gee.LinkedList<Article>();
 		SourceFunc callback = loadMore.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -294,7 +294,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		if(m_loadThread != null)
 			m_loadThread.join();
 
-		Gee.List<article> articles = new Gee.LinkedList<article>();
+		Gee.List<Article> articles = new Gee.LinkedList<Article>();
 		SourceFunc callback = loadNewer.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -367,7 +367,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null && articles.has_key(tmpRow.getID()))
 			{
 				var a = articles.get(tmpRow.getID());
@@ -382,8 +382,8 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		for(int i = 1; i < length; i++)
 		{
-			articleRow? first = m_currentList.get_row_at_index(i-1) as articleRow;
-			articleRow? second = m_currentList.get_row_at_index(i) as articleRow;
+			ArticleRow? first = m_currentList.get_row_at_index(i-1) as ArticleRow;
+			ArticleRow? second = m_currentList.get_row_at_index(i) as ArticleRow;
 
 			if(first == null
 			|| second == null)
@@ -398,7 +398,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 																			second.getID(),
 																			second.getDate());
 
-			foreach(article a in insertArticles)
+			foreach(Article a in insertArticles)
 			{
 				if(m_currentList.insertArticle(a, i))
 				{
@@ -447,7 +447,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_scrollChangedTimeout = 0;
 		}
 
-		// remove lower articleRows only after scrolling up
+		// remove lower ArticleRows only after scrolling up
 		if(direction == ScrollDirection.UP)
 		{
 			m_scrollChangedTimeout = GLib.Timeout.add(500, () => {
@@ -457,7 +457,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 				foreach(var r in children)
 				{
-					var row = r as articleRow;
+					var row = r as ArticleRow;
 					if(row != null)
 					{
 						if(m_currentScroll.isVisible(row, m_dynamicRowThreshold) == 1)
@@ -486,7 +486,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 			foreach(var r in children)
 			{
-				var row = r as articleRow;
+				var row = r as ArticleRow;
 				if(row != null)
 				{
 					int visible = m_currentScroll.isVisible(row);
@@ -553,7 +553,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			return;
 
 		m_overlay = new InAppNotification.withIcon(
-			_("New Articles"),
+			_("new Articles"),
 			"feed-arrow-up-symbolic",
 			_("scroll up"));
 		m_overlay.action.connect(() => {
@@ -611,7 +611,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		var children = m_currentList.get_children();
 		foreach(var row in children)
 		{
-			var tmpRow = row as articleRow;
+			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
 			{
 				var height = tmpRow.get_allocated_height();
@@ -784,7 +784,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 	private void rowActivated(Gtk.ListBoxRow row)
 	{
-		row_activated((articleRow)row);
+		row_activated((ArticleRow)row);
 	}
 
 	public void clear()

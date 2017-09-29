@@ -320,7 +320,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 			updateArticleList();
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 		string? continuation = null;
 		int left = count;
 		string? inoreader_feedID = (isTagID) ? null : feedID;

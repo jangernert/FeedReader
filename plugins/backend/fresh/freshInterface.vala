@@ -285,7 +285,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 			return;
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 		string? continuation = null;
 		string? exclude = null;
 		string? labelID = null;

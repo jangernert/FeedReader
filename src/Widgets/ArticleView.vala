@@ -218,11 +218,11 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_OngoingScrollID = 0;
 		}
 
-		article Article = null;
+		Article article = null;
 		SourceFunc callback = fillContent.callback;
 
 		ThreadFunc<void*> run = () => {
-			Article = dbUI.get_default().read_article(articleID);
+			article = dbUI.get_default().read_article(articleID);
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
@@ -239,9 +239,9 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			else
 				m_currentView.zoom_level = 1.0;
 
-			m_fsHead.setTitle(Article.getTitle());
-			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
-			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
+			m_fsHead.setTitle(article.getTitle());
+			m_fsHead.setMarked((article.getMarked() == ArticleStatus.MARKED) ? true : false);
+			m_fsHead.setUnread((article.getUnread() == ArticleStatus.UNREAD) ? true : false);
 
 			m_progress.reset();
 			m_progress.setPercentage(0);
@@ -249,12 +249,12 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 
 			m_currentView.load_html(
 				UtilsUI.buildArticle(
-						Article.getHTML(),
-						Article.getTitle(),
-						Article.getURL(),
-						Article.getAuthor(),
-						Article.getDateNice(true),
-						Article.getFeedID()
+						article.getHTML(),
+						article.getTitle(),
+						article.getURL(),
+						article.getAuthor(),
+						article.getDateNice(true),
+						article.getFeedID()
 					)
 				, "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
 			this.show_all();

@@ -13,9 +13,9 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.articleRow : Gtk.ListBoxRow {
+public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
-	private article m_article;
+	private Article m_article;
 	private Gtk.Label m_label;
 	private Gtk.Image m_icon;
 	private Gtk.Revealer m_revealer;
@@ -31,9 +31,9 @@ public class FeedReader.articleRow : Gtk.ListBoxRow {
 	public signal void rowStateChanged(ArticleStatus status);
 	public signal void child_revealed();
 
-	public articleRow(article Article)
+	public ArticleRow(Article article)
 	{
-		m_article = Article;
+		m_article = article;
 
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);

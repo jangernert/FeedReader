@@ -285,7 +285,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 			type = OwncloudNewsAPI.OwnCloudType.FEED;
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 
 		if(count == -1)
 			m_api.getNewArticles(articles, dbDaemon.get_default().getLastModified(), type, id);

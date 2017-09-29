@@ -19,7 +19,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 	public signal void refreshFeedListCounter();
 	public signal void updateArticleList();
 	public signal void showArticleListOverlay();
-	public signal void writeArticles(Gee.List<article> articles);
+	public signal void writeArticles(Gee.List<Article> articles);
 
 	public abstract void init();
 

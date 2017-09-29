@@ -418,7 +418,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public void getHeadlines(Gee.List<article> articles, int skip, int limit, ArticleStatus whatToGet, int feedID)
+	public void getHeadlines(Gee.List<Article> articles, int skip, int limit, ArticleStatus whatToGet, int feedID)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -494,7 +494,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					}
 				}
 
-				var Article = new article(
+				var Article = new Article(
 										headline_node.get_int_member("id").to_string(),
 										headline_node.get_string_member("title"),
 										headline_node.get_string_member("link"),
@@ -550,7 +550,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public void getArticles(string articleIDs, Gee.List<article> articles)
+	public void getArticles(string articleIDs, Gee.List<Article> articles)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -610,7 +610,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					}
 				}
 
-				var Article = new article(
+				var Article = new Article(
 										article_node.get_string_member("id"),
 										article_node.get_string_member("title"),
 										article_node.get_string_member("link"),

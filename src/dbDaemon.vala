@@ -422,13 +422,13 @@ public class FeedReader.dbDaemon : dbBase {
 		executeSQL("COMMIT TRANSACTION");
 	}
 
-	public void writeContent(article Article)
+	public void writeContent(Article article)
 	{
 		var update_query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		update_query.updateValuePair("html", "$HTML");
 		update_query.updateValuePair("preview", "$PREVIEW");
 		update_query.updateValuePair("contentFetched", "1");
-		update_query.addEqualsCondition("articleID", Article.getArticleID(), true, true);
+		update_query.addEqualsCondition("articleID", article.getArticleID(), true, true);
 		update_query.build();
 
 		Sqlite.Statement stmt;
@@ -446,14 +446,14 @@ public class FeedReader.dbDaemon : dbBase {
 		assert (preview_position > 0);
 
 
-		stmt.bind_text(html_position, Article.getHTML());
-		stmt.bind_text(preview_position, Article.getPreview());
+		stmt.bind_text(html_position, article.getHTML());
+		stmt.bind_text(preview_position, article.getPreview());
 
 		while(stmt.step() != Sqlite.DONE){}
 		stmt.reset();
 	}
 
-	public void update_articles(Gee.List<article> articles)
+	public void update_articles(Gee.List<Article> articles)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -486,7 +486,7 @@ public class FeedReader.dbDaemon : dbBase {
 		assert (articleID_position > 0);
 
 
-		foreach(article a in articles)
+		foreach(Article a in articles)
 		{
 			var unread = ActionCache.get_default().checkRead(a);
 			var marked = ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked());
@@ -511,7 +511,7 @@ public class FeedReader.dbDaemon : dbBase {
 	}
 
 
-	public void write_articles(Gee.List<article> articles)
+	public void write_articles(Gee.List<Article> articles)
 	{
 		FeedReader.UtilsDaemon.generatePreviews(articles);
 		FeedReader.UtilsDaemon.checkHTML(articles);

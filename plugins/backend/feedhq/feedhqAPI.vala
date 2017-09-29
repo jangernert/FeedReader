@@ -284,7 +284,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return null;
 	}
 
-	public string? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
+	public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -367,7 +367,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 				}
 			}
 
-			articles.add(new article(
+			articles.add(new Article(
 									id,
 									object.get_string_member("title"),
 									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),

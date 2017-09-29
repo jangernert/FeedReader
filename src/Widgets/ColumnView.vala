@@ -360,7 +360,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_articleList.removeTagFromSelectedRow(tagID);
 	}
 
-	public Gee.ArrayList<tag> getSelectedArticleTags()
+	public Gee.List<tag> getSelectedArticleTags()
 	{
 		var tags = new Gee.ArrayList<tag>();
 		string id = m_articleList.getSelectedArticle();
@@ -368,7 +368,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		if(id != "" && id != "empty")
 		{
 			var article = dbUI.get_default().read_article(id);
-			unowned Gee.ArrayList<string> tagIDs = article.getTags();
+			unowned Gee.List<string> tagIDs = article.getTags();
 
 			foreach(string tagID in tagIDs)
 			{
@@ -379,7 +379,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		return tags;
 	}
 
-	public Gee.ArrayList<string> getSelectedArticleMedia()
+	public Gee.List<string> getSelectedArticleMedia()
 	{
 		string id = m_articleList.getSelectedArticle();
 		var article = dbUI.get_default().read_article(id);

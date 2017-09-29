@@ -20,9 +20,9 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	private Gtk.Viewport m_viewport;
 	private Gtk.Entry m_entry;
 	private Gtk.Stack m_stack;
-	private Gee.ArrayList<tag> m_tags;
+	private Gee.List<tag> m_tags;
 	private Gtk.EntryCompletion m_complete;
-	private Gee.ArrayList<tag> m_availableTags;
+	private Gee.List<tag> m_availableTags;
 
 	public TagPopover(Gtk.Widget widget)
 	{

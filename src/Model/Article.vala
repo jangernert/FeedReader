@@ -21,8 +21,8 @@ public class FeedReader.article : GLib.Object {
 	private string m_html;
 	private string m_preview;
 	private string m_feedID;
-	private Gee.ArrayList<string> m_tags;
-	private Gee.ArrayList<string> m_media;
+	private Gee.List<string> m_tags;
+	private Gee.List<string> m_media;
 	private string? m_author;
 	private ArticleStatus m_unread;
 	private ArticleStatus m_marked;
@@ -64,21 +64,8 @@ public class FeedReader.article : GLib.Object {
 		m_guidHash = guidHash;
 		m_lastModified = lastModified;
 
-		m_tags = new Gee.ArrayList<string>();
-		var tagArray = tags.split(",");
-		foreach(string tag in tagArray)
-		{
-			if(tag.strip() != "")
-				m_tags.add(tag);
-		}
-
-		m_media = new Gee.ArrayList<string>();
-		var mediaArray = media.split(",");
-		foreach(string m in mediaArray)
-		{
-			if(m.strip() != "")
-				m_media.add(m);
-		}
+		m_tags = StringUtils.split(tags, ",", true);
+		m_media = StringUtils.split(media, ",", true);
 	}
 
 	public string getArticleID()
@@ -211,22 +198,17 @@ public class FeedReader.article : GLib.Object {
 		m_marked = marked;
 	}
 
-	public unowned Gee.ArrayList<string> getTags()
+	public unowned Gee.List<string> getTags()
 	{
 		return m_tags;
 	}
 
 	public string getTagString()
 	{
-		string tags = "";
-		foreach(string tag in m_tags)
-		{
-			tags += tag + ",";
-		}
-		return tags;
+		return StringUtils.join(m_tags, ",");
 	}
 
-	public void setTags(Gee.ArrayList<string> tags)
+	public void setTags(Gee.List<string> tags)
 	{
 		m_tags = tags;
 	}
@@ -237,19 +219,14 @@ public class FeedReader.article : GLib.Object {
 			m_tags.add(tag);
 	}
 
-	public unowned Gee.ArrayList<string> getMedia()
+	public unowned Gee.List<string> getMedia()
 	{
 		return m_media;
 	}
 
 	public string getMediaString()
 	{
-		string media = "";
-		foreach(string m in m_media)
-		{
-			media += m + ",";
-		}
-		return media;
+		return StringUtils.join(m_media, ",");
 	}
 
 	public void setMedia(Gee.ArrayList<string> media)

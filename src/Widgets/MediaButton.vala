@@ -20,7 +20,7 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 	private Gtk.Image m_filesIcon;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Stack m_stack;
-	private Gee.ArrayList<string> m_media;
+	private Gee.List<string> m_media;
 	private Gtk.Popover m_pop;
 	private ulong m_signalID = 0;
 	public signal void play(string url);

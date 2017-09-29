@@ -246,30 +246,14 @@ public class FeedReader.feedbinAPI : Object {
 	{
 		string response = m_connection.getRequest("unread_entries.json").data;
 		response = response.substring(1, response.length-2);
-		var a = response.split(",");
-		var ids = new Gee.LinkedList<string>();
-
-		foreach(string s in a)
-		{
-			ids.add(s);
-		}
-
-		return ids;
+		return StringUtils.split(response, ",");
 	}
 
 	public Gee.List<string> starredEntries()
 	{
 		string response = m_connection.getRequest("starred_entries.json").data;
 		response = response.substring(1, response.length-2);
-		var a = response.split(",");
-		var ids = new Gee.LinkedList<string>();
-
-		foreach(string s in a)
-		{
-			ids.add(s);
-		}
-
-		return ids;
+		return StringUtils.split(response, ",");
 	}
 
 	public void createUnreadEntries(Gee.List<string> articleIDs, bool read)

@@ -88,6 +88,7 @@ vala_precompile(LIBFR libFeedReader
 	src/FuncUtils.vala
 	src/dbBase.vala
 	src/Settings.vala
+	src/StringUtils.vala
 	src/Structs.vala
 	src/Utils.vala
 	src/QueryBuilder.vala

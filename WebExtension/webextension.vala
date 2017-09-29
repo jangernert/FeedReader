@@ -175,7 +175,7 @@ public errordomain FeedReaderWebExtensionError
 }
 
 [CCode (cname = "G_MODULE_EXPORT webkit_web_extension_initialize", instance_pos = -1)]
-void webkit_web_extension_initialize(WebKit.WebExtension extension)
+public void webkit_web_extension_initialize(WebKit.WebExtension extension)
 {
 	var server = new FeedReaderWebExtension();
 	extension.page_created.connect(server.on_page_created);

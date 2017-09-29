@@ -80,7 +80,11 @@ public class FeedReader.ResetPage : Gtk.Bin {
 			m_waitingBox.show_all();
 			m_spinner.start();
 			m_newAccountButton.set_sensitive(false);
-			DBusConnection.get_default().cancelSync();
+			try {
+				DBusConnection.get_default().cancelSync();
+			} catch (IOError e) {
+				Logger.error("ResetPage.resetAllData cancel sync failed: %s".printf(e.message));
+			}
 
 			while(Settings.state().get_boolean("currently-updating"))
 			{

@@ -172,7 +172,6 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
-		errmsg = "";
 		string? cat = null;
 		if(catID != null)
 			cat = catID;
@@ -184,10 +183,12 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		var response = m_api.editStream("subscribe", {"feed/" + feedURL}, null, cat, null);
 		if(response.status != 200)
 		{
+			feedID = "";
 			errmsg = response.data;
 			return false;
 		}
 
+		errmsg = "";
 		feedID = response.data;
 		return true;
 	}

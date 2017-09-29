@@ -378,67 +378,67 @@ public class FeedReader.FeedServer : GLib.Object {
 			session.timeout = 5;
 			session.ssl_strict = false;
 
-			var threads = new ThreadPool<article>.with_owned_data((a) => {
-				if(cancellable != null && cancellable.is_cancelled())
-					return;
+			try
+			{
+				var threads = new ThreadPool<article>.with_owned_data((a) => {
+					if(cancellable != null && cancellable.is_cancelled())
+						return;
 
-					if(Settings.general().get_boolean("content-grabber"))
-					{
-						var grabber = new Grabber(session, a.getURL(), a.getArticleID(), a.getFeedID());
-						if(grabber.process(cancellable))
+						if(Settings.general().get_boolean("content-grabber"))
 						{
-							grabber.print();
-							if(a.getAuthor() != "" && grabber.getAuthor() != null)
+							var grabber = new Grabber(session, a.getURL(), a.getArticleID(), a.getFeedID());
+							if(grabber.process(cancellable))
 							{
-								a.setAuthor(grabber.getAuthor());
-							}
-							if(a.getTitle() != "" && grabber.getTitle() != null)
-							{
-								a.setTitle(grabber.getTitle());
-							}
-							string html = grabber.getArticle();
-							string xml = "<?xml";
+								grabber.print();
+								if(a.getAuthor() != "" && grabber.getAuthor() != null)
+								{
+									a.setAuthor(grabber.getAuthor());
+								}
+								if(a.getTitle() != "" && grabber.getTitle() != null)
+								{
+									a.setTitle(grabber.getTitle());
+								}
+								string html = grabber.getArticle();
+								string xml = "<?xml";
 
-							while(html.has_prefix(xml))
-							{
-								int end = html.index_of_char('>');
-								html = html.slice(end+1, html.length).chug();
-							}
+								while(html.has_prefix(xml))
+								{
+									int end = html.index_of_char('>');
+									html = html.slice(end+1, html.length).chug();
+								}
 
-							a.setHTML(html);
+								a.setHTML(html);
+							}
+							else
+							{
+								downloadImages(session, a, cancellable);
+							}
 						}
 						else
 						{
 							downloadImages(session, a, cancellable);
 						}
-					}
-					else
-					{
-						downloadImages(session, a, cancellable);
-					}
 
-					if(cancellable == null || !cancellable.is_cancelled())
-						dbDaemon.get_default().writeContent(a);
+						if(cancellable == null || !cancellable.is_cancelled())
+							dbDaemon.get_default().writeContent(a);
 
-					++i;
-					syncProgress(_(@"Grabbing full content: $i / $size"));
-			}, (int)GLib.get_num_processors(), true);
+						++i;
+						syncProgress(_(@"Grabbing full content: $i / $size"));
+				}, (int)GLib.get_num_processors(), true);
 
-			foreach(var Article in articles)
-			{
-				try
+				foreach(var Article in articles)
 				{
 					threads.add(Article);
 				}
-				catch(GLib.Error e)
-				{
-					Logger.error("FeedServer.grabContent: " + e.message);
-				}
-			}
 
-			bool immediate = false; // allow to queue up additional tasks
-			bool wait = true; // function will block until all tasks are done
-			ThreadPool.free((owned)threads, immediate, wait);
+				bool immediate = false; // allow to queue up additional tasks
+				bool wait = true; // function will block until all tasks are done
+				ThreadPool.free((owned)threads, immediate, wait);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("FeedServer.grabContent: " + e.message);
+			}
 
 			//update fulltext table
 			dbDaemon.get_default().updateFTS();
@@ -838,10 +838,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.serverAvailable();
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string? feedID, out string errmsg)
 	{
-		if(!m_pluginLoaded)
+		if(!m_pluginLoaded) {
+			feedID = null;
+			errmsg = "Plugin not loaded";
 			return false;
+		}
 
 		return m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
 	}

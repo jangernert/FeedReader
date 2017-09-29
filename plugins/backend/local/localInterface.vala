@@ -334,127 +334,134 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		var articleArray = new Gee.LinkedList<article>();
 		GLib.Mutex mutex = GLib.Mutex();
 
-		var threads = new ThreadPool<feed>.with_owned_data((Feed) => {
-			if(cancellable != null && cancellable.is_cancelled())
-				return;
+		try
+		{
+			var threads = new ThreadPool<feed>.with_owned_data((Feed) => {
+				if(cancellable != null && cancellable.is_cancelled())
+					return;
 
-			Logger.debug("getArticles for feed: " + Feed.getTitle());
-			string url = Feed.getXmlUrl().escape("");
+				Logger.debug("getArticles for feed: " + Feed.getTitle());
+				string url = Feed.getXmlUrl().escape("");
 
-			if(url == null || url == "" || GLib.Uri.parse_scheme(url) == null)
-			{
-				Logger.error("no valid URL");
-				return;
-			}
-
-			var msg = new Soup.Message("GET", url);
-			var session = new Soup.Session();
-			session.user_agent = Constants.USER_AGENT;
-			session.timeout = 5;
-			session.send_message(msg);
-			string xml = (string)msg.response_body.flatten().data;
-
-			// parse
-			Rss.Parser parser = new Rss.Parser();
-			try
-			{
-				parser.load_from_data(xml, xml.length);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("localInterface.getArticles: %s".printf(e.message));
-				return;
-			}
-			var doc = parser.get_document();
-
-			string? locale = null;
-			if(doc.encoding != null
-			&& doc.encoding != "")
-			{
-				locale = doc.encoding;
-			}
-
-			var articles = doc.get_items();
-			foreach(Rss.Item item in articles)
-			{
-				string? articleID = item.guid;
-
-				if(articleID != null)
-					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
-				else
+				if(url == null || url == "" || GLib.Uri.parse_scheme(url) == null)
 				{
-					if(item.link == null)
+					Logger.error("no valid URL");
+					return;
+				}
+
+				var msg = new Soup.Message("GET", url);
+				var session = new Soup.Session();
+				session.user_agent = Constants.USER_AGENT;
+				session.timeout = 5;
+				session.send_message(msg);
+				string xml = (string)msg.response_body.flatten().data;
+
+				// parse
+				Rss.Parser parser = new Rss.Parser();
+				try
+				{
+					parser.load_from_data(xml, xml.length);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("localInterface.getArticles: %s".printf(e.message));
+					return;
+				}
+				var doc = parser.get_document();
+
+				string? locale = null;
+				if(doc.encoding != null
+				&& doc.encoding != "")
+				{
+					locale = doc.encoding;
+				}
+
+				var articles = doc.get_items();
+				foreach(Rss.Item item in articles)
+				{
+					string? articleID = item.guid;
+
+					if(articleID != null)
+						articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
+					else
 					{
-						Logger.warning("no valid id and no valid URL as well? what the hell man? I'm giving up");
-						continue;
+						if(item.link == null)
+						{
+							Logger.warning("no valid id and no valid URL as well? what the hell man? I'm giving up");
+							continue;
+						}
+
+						articleID = item.link;
 					}
 
-					articleID = item.link;
-				}
+					var date = new GLib.DateTime.now_local();
+					if(item.pub_date != null)
+					{
+						GLib.Time time = GLib.Time();
+						time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
+						date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
 
-				var date = new GLib.DateTime.now_local();
-				if(item.pub_date != null)
+						if(date == null)
+							date = new GLib.DateTime.now_local();
+					}
+
+				string? content = m_utils.convert(item.description, locale);
+				if(content == null)
+					content = _("Nothing to read here.");
+
+					string media = "";
+					if(item.enclosure_url != null)
+						media = item.enclosure_url;
+
+					string articleURL = item.link;
+					if(articleURL.has_prefix("/"))
+						articleURL = Feed.getURL() + articleURL.substring(1);
+
+					var Article = new article
+					(
+										articleID,
+										(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
+										articleURL,
+										Feed.getFeedID(),
+										ArticleStatus.UNREAD,
+										ArticleStatus.UNMARKED,
+										content,
+										//Utils.UTF8fix(content, true),
+										content,
+										m_utils.convert(item.author, locale),
+										date,
+										0,
+										"",
+										media
+					);
+
+					mutex.lock();
+					articleArray.add(Article);
+					mutex.unlock();
+				}
+			}, (int)GLib.get_num_processors(), true);
+
+
+			foreach(feed Feed in f)
+			{
+				try
 				{
-					GLib.Time time = GLib.Time();
-					time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
-					date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
-
-					if(date == null)
-						date = new GLib.DateTime.now_local();
+					threads.add(Feed);
 				}
-
-			string? content = m_utils.convert(item.description, locale);
-			if(content == null)
-				content = _("Nothing to read here.");
-
-				string media = "";
-				if(item.enclosure_url != null)
-					media = item.enclosure_url;
-
-				string articleURL = item.link;
-				if(articleURL.has_prefix("/"))
-					articleURL = Feed.getURL() + articleURL.substring(1);
-
-				var Article = new article
-				(
-									articleID,
-									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
-									articleURL,
-									Feed.getFeedID(),
-									ArticleStatus.UNREAD,
-									ArticleStatus.UNMARKED,
-									content,
-									//Utils.UTF8fix(content, true),
-									content,
-									m_utils.convert(item.author, locale),
-									date,
-									0,
-									"",
-									media
-				);
-
-				mutex.lock();
-				articleArray.add(Article);
-				mutex.unlock();
+				catch(GLib.Error e)
+				{
+					Logger.error("Error creating thread to download Feed %s: %s".printf(Feed.getTitle(), e.message));
+				}
 			}
-		}, (int)GLib.get_num_processors(), true);
 
-
-		foreach(feed Feed in f)
-		{
-			try
-			{
-				threads.add(Feed);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("Error creating thread to download Feed %s: %s".printf(Feed.getTitle(), e.message));
-			}
+			bool immediate = false; // allow to queue up additional tasks
+			bool wait = true; // function will block until all tasks are done
+			ThreadPool.free((owned)threads, immediate, wait);
 		}
-
-		bool immediate = false; // allow to queue up additional tasks
-		bool wait = true; // function will block until all tasks are done
-		ThreadPool.free((owned)threads, immediate, wait);
+		catch(Error e)
+		{
+			Logger.error("Error creating threads to download Feeds: " + e.message);
+		}
 
 		articleArray.sort((a, b) => {
 				return strcmp(a.getArticleID(), b.getArticleID());

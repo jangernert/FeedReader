@@ -83,7 +83,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.List<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
 
 		var response = m_connection.send_get_request("subscription/list?output=json");
@@ -132,7 +132,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
 			}
 			feeds.add(
-				new feed (
+				new Feed(
 						feedID,
 						title,
 						url,
@@ -145,7 +145,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		var response = m_connection.send_get_request("tag/list?output=json");
 

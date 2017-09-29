@@ -144,9 +144,9 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		}
 
 		var feeds = dbDaemon.get_default().read_feeds_without_cat();
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			m_api.markAsRead(Feed.getFeedID());
+			m_api.markAsRead(feed.getFeedID());
 		}
 		m_api.markAsRead();
 	}
@@ -203,12 +203,12 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		string cat = "";
 		string[] urls = {};
 
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			if(f.getCatIDs()[0] != cat)
 			{
@@ -270,7 +270,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{

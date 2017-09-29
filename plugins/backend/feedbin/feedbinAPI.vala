@@ -41,7 +41,7 @@ public class FeedReader.feedbinAPI : Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-	public bool getSubscriptionList(Gee.List<feed> feeds)
+	public bool getSubscriptionList(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.getRequest("subscriptions.json");
 
@@ -80,7 +80,7 @@ public class FeedReader.feedbinAPI : Object {
 			}
 
 			feeds.add(
-				new feed(
+				new Feed(
 					id,
 					title,
 					url,
@@ -94,7 +94,7 @@ public class FeedReader.feedbinAPI : Object {
 		return true;
 	}
 
-	public bool getTaggings(Gee.List<category> categories, Gee.List<feed> feeds)
+	public bool getTaggings(Gee.List<category> categories, Gee.List<Feed> feeds)
 	{
 		var response = m_connection.getRequest("taggings.json");
 

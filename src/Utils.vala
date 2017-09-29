@@ -381,11 +381,11 @@ public class FeedReader.Utils : GLib.Object {
 		return searchTerm;
 	}
 
-	public static bool categoryIsPopulated(string catID, Gee.ArrayList<feed> feeds)
+	public static bool categoryIsPopulated(string catID, Gee.ArrayList<Feed> feeds)
 	{
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			var ids = Feed.getCatIDs();
+			var ids = feed.getCatIDs();
 			foreach(string id in ids)
 			{
 				if(id == catID)
@@ -398,18 +398,18 @@ public class FeedReader.Utils : GLib.Object {
 		return false;
 	}
 
-	public static uint categoryGetUnread(string catID, Gee.ArrayList<feed> feeds)
+	public static uint categoryGetUnread(string catID, Gee.ArrayList<Feed> feeds)
 	{
 		uint unread = 0;
 
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			var ids = Feed.getCatIDs();
+			var ids = feed.getCatIDs();
 			foreach(string id in ids)
 			{
 				if(id == catID)
 				{
-					unread += Feed.getUnread();
+					unread += feed.getUnread();
 					break;
 				}
 			}
@@ -447,7 +447,7 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static async void getFavIcons(Gee.List<feed> feeds, GLib.Cancellable? cancellable = null)
+	public static async void getFavIcons(Gee.List<Feed> feeds, GLib.Cancellable? cancellable = null)
 	{
 		var lastDownload = new DateTime.from_unix_local(Settings.state().get_int("last-favicon-update"));
 		var now = new DateTime.now_local();
@@ -460,7 +460,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 		// TODO: It would be nice if we could queue these in parallel
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;

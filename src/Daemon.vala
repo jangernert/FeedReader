@@ -677,13 +677,13 @@ namespace FeedReader {
 			removeCategory(catID);
 		}
 
-		private void deleteFeedsofCat(string catID, Gee.ArrayList<feed> feeds)
+		private void deleteFeedsofCat(string catID, Gee.ArrayList<Feed> feeds)
 		{
-			foreach(feed Feed in feeds)
+			foreach(Feed feed in feeds)
 			{
-				if(Feed.hasCat(catID))
+				if(feed.hasCat(catID))
 				{
-					removeFeed(Feed.getFeedID());
+					removeFeed(feed.getFeedID());
 				}
 			}
 		}

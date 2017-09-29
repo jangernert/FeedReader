@@ -184,7 +184,7 @@ public class FeedReader.dbDaemon : dbBase {
 		return false;
 	}
 
-	public void write_feeds(Gee.List<feed> feeds)
+	public void write_feeds(Gee.List<Feed> feeds)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -1041,7 +1041,7 @@ public class FeedReader.dbDaemon : dbBase {
 		query.print();
 	}
 
-	protected override bool showCategory(string catID, Gee.ArrayList<feed> feeds)
+	protected override bool showCategory(string catID, Gee.ArrayList<Feed> feeds)
 	{
 		if(FeedServer.get_default().hideCategoryWhenEmpty(catID)
 		&& !Utils.categoryIsPopulated(catID, feeds))

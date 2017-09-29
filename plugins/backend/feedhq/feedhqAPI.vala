@@ -87,7 +87,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.List<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
@@ -137,7 +137,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id").replace("/", "_");
 			}
 			feeds.add(
-				new feed (
+				new Feed(
 						feedID,
 						title,
 						url,
@@ -150,7 +150,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");

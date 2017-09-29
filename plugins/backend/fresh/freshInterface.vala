@@ -193,12 +193,12 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return true;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		string cat = "";
 		string[] urls = {};
 
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			if(f.getCatIDs()[0] != cat)
 			{
@@ -259,7 +259,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getSubscriptionList(feeds))
 		{

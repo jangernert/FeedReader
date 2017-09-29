@@ -203,18 +203,18 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		}
 	}
 
-	public int countUnread(Gee.List<feed> feeds, string id)
+	public int countUnread(Gee.List<Feed> feeds, string id)
 	{
 		int unread = 0;
 
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			var ids = Feed.getCatIDs();
+			var ids = feed.getCatIDs();
 			foreach(string ID in ids)
 			{
 				if(ID == id)
 				{
-					unread += (int)Feed.getUnread();
+					unread += (int)feed.getUnread();
 					break;
 				}
 			}

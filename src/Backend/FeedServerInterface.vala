@@ -84,7 +84,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg);
 
-	public abstract void addFeeds(Gee.List<feed> feeds);
+	public abstract void addFeeds(Gee.List<Feed> feeds);
 
 	public abstract void removeFeed(string feedID);
 
@@ -104,7 +104,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void importOPML(string opml);
 
-	public abstract bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null);
+	public abstract bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null);
 
 	public abstract int getUnreadCount();
 

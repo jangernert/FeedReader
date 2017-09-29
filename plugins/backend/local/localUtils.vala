@@ -20,7 +20,7 @@ public class FeedReader.localUtils : GLib.Object {
 
 	}
 
-	public feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs, out string errmsg)
+	public Feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs, out string errmsg)
 	{
 		errmsg = "";
 
@@ -74,7 +74,7 @@ public class FeedReader.localUtils : GLib.Object {
 				title = uri.get_host();
 		}
 
-		var Feed = new feed(
+		var Feed = new Feed(
 					feedID,
 					title,
 					url,

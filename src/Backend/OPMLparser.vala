@@ -17,12 +17,12 @@ public class FeedReader.OPMLparser : GLib.Object {
 
 	private string m_opmlString;
 	private uint m_level = 0;
-	private Gee.List<feed> m_feeds;
+	private Gee.List<Feed> m_feeds;
 
 	public OPMLparser(string opml)
 	{
 		m_opmlString = opml;
-		m_feeds = new Gee.LinkedList<feed>();
+		m_feeds = new Gee.LinkedList<Feed>();
 	}
 
 	public bool parse()
@@ -148,9 +148,9 @@ public class FeedReader.OPMLparser : GLib.Object {
 			}
 
 			if(catID == null)
-				m_feeds.add(new feed("", title, website, 0,  { FeedServer.get_default().uncategorizedID() }, null, feedURL));
+				m_feeds.add(new Feed("", title, website, 0,  { FeedServer.get_default().uncategorizedID() }, null, feedURL));
 			else
-				m_feeds.add(new feed("", title, website, 0,  { catID }, null, feedURL));
+				m_feeds.add(new Feed("", title, website, 0,  { catID }, null, feedURL));
 		}
 	}
 

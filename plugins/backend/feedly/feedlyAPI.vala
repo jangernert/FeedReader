@@ -190,7 +190,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public bool getFeeds(Gee.List<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.send_get_request_to_feedly("/v3/subscriptions/");
 
@@ -248,7 +248,7 @@ public class FeedReader.FeedlyAPI : Object {
 			}
 
 			feeds.add(
-				new feed (
+				new Feed(
 						feedID,
 						title,
 						url,

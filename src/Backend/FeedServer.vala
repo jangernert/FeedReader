@@ -123,7 +123,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(syncFeedsAndCategories())
 		{
 			var categories = new Gee.LinkedList<category>();
-			var feeds      = new Gee.LinkedList<feed>();
+			var feeds      = new Gee.LinkedList<Feed>();
 			var tags       = new Gee.LinkedList<tag>();
 
 			if(cancellable != null && cancellable.is_cancelled())
@@ -246,7 +246,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(syncFeedsAndCategories())
 		{
 			var categories = new Gee.LinkedList<category>();
-			var feeds      = new Gee.LinkedList<feed>();
+			var feeds      = new Gee.LinkedList<Feed>();
 			var tags       = new Gee.LinkedList<tag>();
 
 			syncProgress(_("Getting feeds and categories"));
@@ -849,7 +849,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		if(!m_pluginLoaded)
 			return;
@@ -929,7 +929,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return false;

@@ -117,9 +117,9 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		return null;
 	}
 
-	public void addFeedToCat(Gee.List<feed> feeds, string feedID, string catID)
+	public void addFeedToCat(Gee.List<Feed> feeds, string feedID, string catID)
 	{
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			if(f.getFeedID() == feedID)
 			{

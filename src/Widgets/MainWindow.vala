@@ -511,10 +511,10 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 					}
 
 					var feeds = dbUI.get_default().read_feeds_without_cat();
-					foreach(feed Feed in feeds)
+					foreach(Feed feed in feeds)
 					{
-						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
-						Logger.debug("MainWindow: mark all articles as read feed: %s".printf(Feed.getTitle()));
+						DBusConnection.get_default().markFeedAsRead(feed.getFeedID(), false);
+						Logger.debug("MainWindow: mark all articles as read feed: %s".printf(feed.getTitle()));
 					}
 				}
 				else

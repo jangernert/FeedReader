@@ -190,10 +190,10 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		string? errmsg = null;
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			m_api.subscribeToFeed(f.getXmlUrl(), f.getCatIDs()[0], null, null, out errmsg);
 		}
@@ -248,7 +248,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getCategories(categories))
 		{

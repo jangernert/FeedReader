@@ -191,7 +191,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool getFeeds(Gee.List<feed> feeds, Gee.List<category> categories)
+	public bool getFeeds(Gee.List<Feed> feeds, Gee.List<category> categories)
 	{
 		foreach(var item in categories)
 		{
@@ -215,7 +215,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
 
 						feeds.add(
-							new feed (
+							new Feed(
 									feed_id,
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("feed_url"),
@@ -236,7 +236,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool getUncategorizedFeeds(Gee.List<feed> feeds)
+	public bool getUncategorizedFeeds(Gee.List<Feed> feeds)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -256,7 +256,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
 
 				feeds.add(
-					new feed (
+					new Feed(
 							feed_id,
 							feed_node.get_string_member("title"),
 							feed_node.get_string_member("feed_url"),

@@ -183,11 +183,11 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		int64 id = 0;
 		string errmsg = "";
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0], out id, out errmsg);
 		}
@@ -239,7 +239,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{

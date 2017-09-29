@@ -149,9 +149,9 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 			catArray += cat.getCatID() + ",";
 		}
 
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			feedArray += Feed.getFeedID() + ",";
+			feedArray += feed.getFeedID() + ",";
 		}
 
 		m_api.mark_as_read(catArray.substring(0, catArray.length-1), "categories", ArticleStatus.READ);
@@ -210,9 +210,9 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			m_api.addSubscription(f.getXmlUrl(), null, f.getCatIDs()[0]);
 		}
@@ -265,7 +265,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		m_api.getUnreadCounts();
 

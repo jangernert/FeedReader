@@ -999,7 +999,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return "";
 	}
 
-	protected virtual bool showCategory(string catID, Gee.ArrayList<feed> feeds)
+	protected virtual bool showCategory(string catID, Gee.ArrayList<Feed> feeds)
 	{
 		return true;
 	}
@@ -1120,7 +1120,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public feed? read_feed(string feedID)
+	public Feed? read_feed(string feedID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("*");
@@ -1137,7 +1137,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 		while(stmt.step () == Sqlite.ROW)
 		{
-			var tmpfeed = new feed(
+			var tmpfeed = new Feed(
 				feedID,
 				stmt.column_text(1),
 				stmt.column_text(2),
@@ -1152,10 +1152,10 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<feed> read_feeds(bool starredCount = false)
+	public Gee.ArrayList<Feed> read_feeds(bool starredCount = false)
 	{
-		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
-		feed tmpfeed;
+		Gee.ArrayList<Feed> tmp = new Gee.ArrayList<Feed>();
+		Feed tmpfeed;
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("*");
@@ -1190,7 +1190,7 @@ public class FeedReader.dbBase : GLib.Object {
 			else
 				count = getFeedUnread(feedID);
 
-			tmpfeed = new feed(feedID, name, url, count, catVec, null, xmlURL);
+			tmpfeed = new Feed(feedID, name, url, count, catVec, null, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -1247,10 +1247,10 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<feed> read_feeds_without_cat()
+	public Gee.ArrayList<Feed> read_feeds_without_cat()
 	{
-		Gee.ArrayList<feed> tmp = new Gee.ArrayList<feed>();
-		feed tmpfeed;
+		Gee.ArrayList<Feed> tmp = new Gee.ArrayList<Feed>();
+		Feed tmpfeed;
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("*");
@@ -1278,7 +1278,7 @@ public class FeedReader.dbBase : GLib.Object {
 			string[] catVec = { "" };
 			if(catString != "")
 				catVec = catString.split(",");
-			tmpfeed = new feed(feedID, name, url, getFeedUnread(feedID), catVec, null, xmlURL);
+			tmpfeed = new Feed(feedID, name, url, getFeedUnread(feedID), catVec, null, xmlURL);
 			tmp.add(tmpfeed);
 		}
 
@@ -1417,7 +1417,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return maxID;
 	}
 
-	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<feed>? feeds = null)
+	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<Feed>? feeds = null)
 	{
 		var categories = read_categories(feeds);
 		var tmpCategories = new Gee.ArrayList<category>();
@@ -1433,7 +1433,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmpCategories;
 	}
 
-	public Gee.ArrayList<category> read_categories(Gee.ArrayList<feed>? feeds = null)
+	public Gee.ArrayList<category> read_categories(Gee.ArrayList<Feed>? feeds = null)
 	{
 		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
 		category tmpcategory;

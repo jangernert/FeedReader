@@ -108,11 +108,11 @@ public class FeedReader.bazquxUtils : GLib.Object {
 		}
 	}
 
-	public bool tagIsCat(string tagID, Gee.List<feed> feeds)
+	public bool tagIsCat(string tagID, Gee.List<Feed> feeds)
 	{
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			if(Feed.hasCat(tagID))
+			if(feed.hasCat(tagID))
 			{
 				return true;
 			}

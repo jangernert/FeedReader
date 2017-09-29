@@ -113,7 +113,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.List<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -135,7 +135,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 						string? icon_url = feed_node.has_member("faviconLink") ? feed_node.get_string_member("faviconLink") : null;
 
 						feeds.add(
-							new feed (
+							new Feed(
 									feed_id,
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("link"),
@@ -163,7 +163,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-	public bool getCategories(Gee.List<category> categories, Gee.List<feed> feeds)
+	public bool getCategories(Gee.List<category> categories, Gee.List<Feed> feeds)
 	{
 		if(isloggedin())
 		{

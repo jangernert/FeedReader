@@ -469,7 +469,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	}
 
 
-	private void createCategories(ref Gee.ArrayList<feed> feeds, bool masterCat, ArticleListState state)
+	private void createCategories(ref Gee.ArrayList<Feed> feeds, bool masterCat, ArticleListState state)
 	{
 		int maxCatLevel = dbUI.get_default().getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
@@ -640,11 +640,11 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var tmpFeedRow = row as FeedRow;
 			if(tmpFeedRow != null)
 			{
-				foreach(feed Feed in feeds)
+				foreach(Feed feed in feeds)
 				{
-					if(tmpFeedRow.getID() == Feed.getFeedID())
+					if(tmpFeedRow.getID() == feed.getFeedID())
 					{
-						tmpFeedRow.set_unread_count(Feed.getUnread());
+						tmpFeedRow.set_unread_count(feed.getUnread());
 						tmpFeedRow.activateUnreadEventbox((state == ArticleListState.MARKED) ? false : true);
 						if(Settings.general().get_boolean("feedlist-only-show-unread"))
 						{
@@ -918,10 +918,10 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				if(id == "")
 				{
 					var feeds = dbUI.get_default().read_feeds_without_cat();
-					foreach(feed Feed in feeds)
+					foreach(Feed feed in feeds)
 					{
-						DBusConnection.get_default().markFeedAsRead(Feed.getFeedID(), false);
-						Logger.debug("FeedList: mark all articles as read feed: %s".printf(Feed.getTitle()));
+						DBusConnection.get_default().markFeedAsRead(feed.getFeedID(), false);
+						Logger.debug("FeedList: mark all articles as read feed: %s".printf(feed.getTitle()));
 					}
 				}
 				else

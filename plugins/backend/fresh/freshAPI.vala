@@ -34,7 +34,7 @@ public class FeedReader.freshAPI : Object {
 		return m_connection.getSID();
 	}
 
-	public bool getSubscriptionList(Gee.List<feed> feeds)
+	public bool getSubscriptionList(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.getRequest("reader/api/0/subscription/list?output=json");
 
@@ -78,7 +78,7 @@ public class FeedReader.freshAPI : Object {
 				icon_url = object.get_string_member("iconUrl");
 
 			feeds.add(
-				new feed(
+				new Feed(
 					id,
 					title,
 					url,

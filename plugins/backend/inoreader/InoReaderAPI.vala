@@ -89,7 +89,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.List<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.send_request("subscription/list");
 
@@ -138,7 +138,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			}
 
 			feeds.add(
-				new feed (
+				new Feed(
 						feedID,
 						title,
 						url,
@@ -152,7 +152,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
 	{
 		var response = m_connection.send_request("tag/list");
 

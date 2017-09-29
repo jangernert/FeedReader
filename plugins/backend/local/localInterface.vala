@@ -203,12 +203,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
-		feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
+		Feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
 
 		if(Feed != null)
 		{
 			if(!dbDaemon.get_default().feed_exists(Feed.getURL())) {
-				var list = new Gee.LinkedList<feed>();
+				var list = new Gee.LinkedList<Feed>();
 				list.add(Feed);
 				dbDaemon.get_default().write_feeds(list);
 				return true;
@@ -218,23 +218,23 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return false;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
-		var finishedFeeds = new Gee.LinkedList<feed>();
+		var finishedFeeds = new Gee.LinkedList<Feed>();
 
 		int highestID = 0;
 
 		if(!dbDaemon.get_default().isTableEmpty("feeds"))
 			highestID = int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1;
 
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			string feedID = "feedID" + highestID.to_string("%05d");
 			highestID++;
 
 			Logger.info(@"addFeed: ID = $feedID");
 			string errmsg = "";
-			feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
+			Feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
 
 			if(Feed != null)
 			{
@@ -318,7 +318,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		return true;
 	}
@@ -336,7 +336,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		try
 		{
-			var threads = new ThreadPool<feed>.with_owned_data((Feed) => {
+			var threads = new ThreadPool<Feed>.with_owned_data((Feed) => {
 				if(cancellable != null && cancellable.is_cancelled())
 					return;
 
@@ -445,15 +445,15 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			}, (int)GLib.get_num_processors(), true);
 
 
-			foreach(feed Feed in f)
+			foreach(Feed feed in f)
 			{
 				try
 				{
-					threads.add(Feed);
+					threads.add(feed);
 				}
 				catch(GLib.Error e)
 				{
-					Logger.error("Error creating thread to download Feed %s: %s".printf(Feed.getTitle(), e.message));
+					Logger.error("Error creating thread to download Feed %s: %s".printf(feed.getTitle(), e.message));
 				}
 			}
 

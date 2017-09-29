@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feed : GLib.Object {
+public class FeedReader.Feed : GLib.Object {
 
 	private string m_feedID;
 	private string m_title;
@@ -23,7 +23,7 @@ public class FeedReader.feed : GLib.Object {
 	private string[] m_catIDs;
 	private string? m_iconURL;
 
-	public feed(string feedID, string title, string url, uint unread, string[] catIDs, string? iconURL = null, string? xmlURL = null)
+	public Feed(string feedID, string title, string url, uint unread, string[] catIDs, string? iconURL = null, string? xmlURL = null)
 	{
 		m_feedID = feedID;
 		m_title = Utils.UTF8fix(title);

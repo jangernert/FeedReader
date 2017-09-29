@@ -217,6 +217,7 @@ CUSTOM_VAPIS
 	vapi/libvilistextum.vapi
 	vapi/gtkimageview.vapi
 	vapi/gd-1.0.vapi
+	vapi/webkit2gtk-4.0.vapi
 )
 
 GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE data/org.gnome.FeedReader.gresource.xml)

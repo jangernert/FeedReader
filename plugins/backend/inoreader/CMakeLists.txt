@@ -62,6 +62,7 @@ CUSTOM_VAPIS
 	${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
 	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
 	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
+	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 )
 
 GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${NAME}.gresource.xml)

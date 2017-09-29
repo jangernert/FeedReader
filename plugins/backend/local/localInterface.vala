@@ -409,9 +409,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				if(content == null)
 					content = _("Nothing to read here.");
 
-					string media = "";
+					Gee.List<string>? media = null;
 					if(item.enclosure_url != null)
-						media = item.enclosure_url;
+					{
+						media = new Gee.ArrayList<string>();
+						media.add(item.enclosure_url);
+					}
 
 					string articleURL = item.link;
 					if(articleURL.has_prefix("/"))
@@ -431,7 +434,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 										m_utils.convert(item.author, locale),
 										date,
 										0,
-										"",
+										null,
 										media
 					);
 

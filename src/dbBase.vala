@@ -591,14 +591,14 @@ public class FeedReader.dbBase : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		var tmp = new Gee.LinkedList<article>();
+		var articles = new Gee.ArrayList<article>();
 		while (stmt.step () == Sqlite.ROW)
 		{
 			if(stmt.column_text(2) == id1
 			|| stmt.column_text(2) == id2)
 				continue;
 
-			tmp.add(new article(
+			articles.add(new article(
 								stmt.column_text(2),								// articleID
 								stmt.column_text(3),								// title
 								stmt.column_text(5),								// url
@@ -610,13 +610,13 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(4),								// author
 								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
 								stmt.column_int(0),									// sortID
-								stmt.column_text(9),								// tags
-								stmt.column_text(12),								// media
+								StringUtils.split(stmt.column_text(9), ",", true),  // tags
+								StringUtils.split(stmt.column_text(12), ",", true), // media
 								stmt.column_text(11)								// guid
 							));
 		}
 		stmt.reset();
-		return tmp;
+		return articles;
 	}
 
 	public Gee.HashMap<string, article> read_article_stats(Gee.List<string> ids)
@@ -640,7 +640,7 @@ public class FeedReader.dbBase : GLib.Object {
 		{
 			articles.set(stmt.column_text(0),
 								new article(stmt.column_text(0), "", "", "", (ArticleStatus)stmt.column_int(1),
-								(ArticleStatus)stmt.column_int(2), "", "", null, new GLib.DateTime.now_local(), 0, "", ""));
+								(ArticleStatus)stmt.column_int(2), "", "", null, new GLib.DateTime.now_local()));
 		}
 		stmt.reset();
 		return articles;
@@ -679,8 +679,8 @@ public class FeedReader.dbBase : GLib.Object {
 								author,
 								new GLib.DateTime.from_unix_local(stmt.column_int(11)),
 								stmt.column_int(0), // rowid (sortid)
-								stmt.column_text(10), // tags
-								stmt.column_text(14), // media
+								StringUtils.split(stmt.column_text(10), ",", true), // tags
+								StringUtils.split(stmt.column_text(14), ",", true), // media
 								stmt.column_text(12)  // guid
 							);
 		}
@@ -1515,11 +1515,7 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(3),								// html
 								stmt.column_text(2),								// preview
 								"",													// author
-								new GLib.DateTime.now_local(),						// date
-								0,													// sortID
-								"",													// tags
-								"",													// media
-								""													// guid
+								new GLib.DateTime.now_local()						// date
 							));
 		}
 
@@ -1643,8 +1639,8 @@ public class FeedReader.dbBase : GLib.Object {
 								stmt.column_text(4),								// author
 								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
 								stmt.column_int(0),									// sortID
-								stmt.column_text(9),								// tags
-								stmt.column_text(12),								// media
+								StringUtils.split(stmt.column_text(9), ",", true),  // tags
+								StringUtils.split(stmt.column_text(12), ",", true), // media
 								stmt.column_text(11)								// guid
 							));
 		}

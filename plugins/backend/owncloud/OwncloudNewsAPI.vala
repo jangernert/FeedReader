@@ -238,15 +238,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
 					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
-					string media = "";
 
+					var media = new Gee.ArrayList<string>();
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
 					&& article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 					{
 						if(article_node.get_string_member("enclosureMime").contains("audio")
 						|| article_node.get_string_member("enclosureMime").contains("video"))
 						{
-							media = article_node.get_string_member("enclosureLink");
+							media.add(article_node.get_string_member("enclosureLink"));
 						}
 					}
 
@@ -261,7 +261,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 												author,
 												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
 												-1,
-												"", // tags
+												null, // tags
 												media, // media
 												article_node.get_string_member("guidHash"),
 												(int)article_node.get_int_member("lastModified"));
@@ -309,7 +309,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
 					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
-					string media = "";
+					var media = new Gee.ArrayList<string>();
 
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
 					&& article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
@@ -317,7 +317,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 						if(article_node.get_string_member("enclosureMime").contains("audio")
 						|| article_node.get_string_member("enclosureMime").contains("video"))
 						{
-							media = article_node.get_string_member("enclosureLink");
+							media.add(article_node.get_string_member("enclosureLink"));
 						}
 					}
 
@@ -332,7 +332,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 												author,
 												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
 												-1,
-												"", // tags
+												null, // tags
 												media,
 												article_node.get_string_member("guidHash"),
 												(int)article_node.get_int_member("lastModified"));

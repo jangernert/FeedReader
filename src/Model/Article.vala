@@ -32,23 +32,21 @@ public class FeedReader.article : GLib.Object {
 	private int m_lastModified;
 	private int m_pos;
 
-
-
-	public article (	string articleID,
-						string title,
-						string url,
-						string feedID,
-						ArticleStatus unread,
-						ArticleStatus marked,
-						string html,
-						string preview,
-						string? author,
-						GLib.DateTime date,
-						int sortID,
-						string tags,
-						string media,
-						string guidHash = "",
-						int lastModified = 0)
+	public article (string articleID,
+					string title,
+					string url,
+					string feedID,
+					ArticleStatus unread,
+					ArticleStatus marked,
+					string html,
+					string preview,
+					string? author,
+					GLib.DateTime date,
+					int sortID = 0,
+					Gee.List<string>? tags = null,
+					Gee.List<string>? media = null,
+					string guidHash = "",
+					int lastModified = 0)
 	{
 		m_articleID = articleID;
 		m_title = title;
@@ -64,8 +62,8 @@ public class FeedReader.article : GLib.Object {
 		m_guidHash = guidHash;
 		m_lastModified = lastModified;
 
-		m_tags = StringUtils.split(tags, ",", true);
-		m_media = StringUtils.split(media, ",", true);
+		m_tags = tags == null ? Gee.List.empty<string>() : tags;
+		m_media = media == null ? Gee.List.empty<string>() : media;
 	}
 
 	public string getArticleID()

@@ -383,28 +383,27 @@ public class FeedReader.FeedlyAPI : Object {
 				date = new DateTime.from_unix_local(object.get_int_member("crawled")/1000);
 			}
 
-			string tagString = "";
-			string tmpTag = "";
 			var marked = ArticleStatus.UNMARKED;
 
+			var tags = new Gee.ArrayList<string>();
 			if(object.has_member("tags"))
 			{
-				var tags = object.get_array_member("tags");
-				uint tagCount = tags.get_length();
+				var tag_array = object.get_array_member("tags");
+				uint tagCount = tag_array.get_length();
 
 				for(int j = 0; j < tagCount; ++j)
 				{
-					tmpTag = tags.get_object_element(j).get_string_member("id");
-					if(tmpTag == marked_tag)
+					var tag = tag_array.get_object_element(j).get_string_member("id");
+					if(tag == marked_tag)
 						marked = ArticleStatus.MARKED;
-					else if(tmpTag.contains("global."))
+					else if(tag.contains("global."))
 						continue;
 					else
-						tagString = tagString + tmpTag + ",";
+						tags.add(tag);
 				}
 			}
 
-			string mediaString = "";
+			var media = new Gee.ArrayList<string>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -419,7 +418,7 @@ public class FeedReader.FeedlyAPI : Object {
 					if(attachment.get_string_member("type").contains("audio")
 					|| attachment.get_string_member("type").contains("video"))
 					{
-						mediaString = mediaString + attachment.get_string_member("href") + ",";
+						media.add(attachment.get_string_member("href"));
 					}
 				}
 			}
@@ -437,8 +436,8 @@ public class FeedReader.FeedlyAPI : Object {
 								author,
 								date, // timestamp includes msecs so divide by 1000 to get rid of them
 								-1,
-								tagString,
-								mediaString
+								tags,
+								media
 						);
 			articles.add(Article);
 		}

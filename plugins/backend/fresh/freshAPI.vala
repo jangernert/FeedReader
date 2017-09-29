@@ -242,7 +242,7 @@ public class FeedReader.freshAPI : Object {
 					read = true;
 			}
 
-			string mediaString = "";
+			var media = new Gee.ArrayList<string>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -259,7 +259,7 @@ public class FeedReader.freshAPI : Object {
 						if(attachment.get_string_member("type").contains("audio")
 						|| attachment.get_string_member("type").contains("video"))
 						{
-							mediaString = mediaString + attachment.get_string_member("href") + ",";
+							media.add(attachment.get_string_member("href"));
 						}
 					}
 				}
@@ -284,8 +284,8 @@ public class FeedReader.freshAPI : Object {
 									author,
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
-									"",
-									mediaString
+									null,
+									media
 							)
 						);
 		}

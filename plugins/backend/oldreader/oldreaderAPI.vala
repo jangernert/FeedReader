@@ -315,13 +315,13 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		{
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
-			id = id.substring(id.last_index_of_char('/')+1);
-			string tagString = "";
+			id = id.substring(id.last_index_of_char('/') + 1);
 			bool marked = false;
 			bool read = false;
 			var cats = object.get_array_member("categories");
 			uint cat_length = cats.get_length();
 
+			var tags = new Gee.ArrayList<string>();
 			for (uint j = 0; j < cat_length; j++)
 			{
 				string cat = cats.get_string_element(j);
@@ -330,10 +330,10 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
 				else if(cat.contains("/label/") && dbDaemon.get_default().getTagName(cat) != null)
-					tagString += cat;
+					tags.add(cat);
 			}
 
-			string mediaString = "";
+			var media = new Gee.ArrayList<string>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -348,7 +348,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 					if(attachment.get_string_member("type").contains("audio")
 					|| attachment.get_string_member("type").contains("video"))
 					{
-						mediaString = mediaString + attachment.get_string_member("href") + ",";
+						media.add(attachment.get_string_member("href"));
 					}
 				}
 			}
@@ -365,8 +365,8 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
-									tagString,
-									mediaString
+									tags,
+									media
 							)
 						);
 		}

@@ -454,22 +454,25 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				var headline_node = response.get_object_element(i);
 
-				string tagString = "";
+				Gee.List<string>? tags = null;
 				if(headline_node.has_member("labels"))
 				{
-					var tags = headline_node.get_array_member("labels");
+					var labels = headline_node.get_array_member("labels");
 
-					uint tagCount = 0;
-					if(tags != null)
-						tagCount = tags.get_length();
+					uint tag_count = 0;
+					if(labels != null)
+						tag_count = labels.get_length();
 
-					for(int j = 0; j < tagCount; ++j)
-					{
-						tagString = tagString + tags.get_array_element(j).get_int_element(0).to_string() + ",";
+					if(tag_count > 0) {
+						tags = new Gee.ArrayList<string>();
+						for(int j = 0; j < tag_count; ++j)
+						{
+							tags.add(labels.get_array_element(j).get_int_element(0).to_string());
+						}
 					}
 				}
 
-				string mediaString = "";
+				Gee.List<string>? media = null;
 				if(headline_node.has_member("attachments"))
 				{
 					var attachments = headline_node.get_array_member("attachments");
@@ -478,13 +481,15 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					if(attachments != null)
 						mediaCount = attachments.get_length();
 
+					if(mediaCount > 0)
+					 	media = new Gee.ArrayList<string>();
 					for(int j = 0; j < mediaCount; ++j)
 					{
 						var attachment = attachments.get_object_element(j);
 						if(attachment.get_string_member("content_type").contains("audio")
 						|| attachment.get_string_member("content_type").contains("video"))
 						{
-							mediaString = mediaString + attachment.get_string_member("content_url") + ",";
+							media.add(attachment.get_string_member("content_url"));
 						}
 					}
 				}
@@ -501,8 +506,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 										(headline_node.get_string_member("author") == "") ? null : headline_node.get_string_member("author"),
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
-										tagString,
-										mediaString
+										tags,
+										media
 								);
 
 				articles.add(Article);
@@ -564,22 +569,25 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				var article_node = response.get_object_element(i);
 
-				string tagString = "";
+				Gee.List<string>? tags = null;
 				if(article_node.has_member("labels"))
 				{
-					var tags = article_node.get_array_member("labels");
+					var labels = article_node.get_array_member("labels");
 
-					uint tagCount = 0;
-					if(tags != null)
-						tagCount = tags.get_length();
+					uint tag_count = 0;
+					if(labels != null)
+						tag_count = labels.get_length();
 
-					for(int j = 0; j < tagCount; ++j)
+					if(tag_count > 0)
+						tags = new Gee.ArrayList<string>();
+
+					for(int j = 0; j < tag_count; ++j)
 					{
-						tagString = tagString + tags.get_array_element(j).get_int_element(0).to_string() + ",";
+						tags.add(labels.get_array_element(j).get_int_element(0).to_string());
 					}
 				}
 
-				string mediaString = "";
+				Gee.List<string>? media = null;
 				if(article_node.has_member("attachments"))
 				{
 					var attachments = article_node.get_array_member("attachments");
@@ -588,13 +596,16 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					if(attachments != null)
 						mediaCount = attachments.get_length();
 
+					if(mediaCount > 0)
+						media = new Gee.ArrayList<string>();
+
 					for(int j = 0; j < mediaCount; ++j)
 					{
 						var attachment = attachments.get_object_element(j);
 						if(attachment.get_string_member("content_type").contains("audio")
 						|| attachment.get_string_member("content_type").contains("video"))
 						{
-							mediaString = mediaString + attachment.get_string_member("content_url") + ",";
+							media.add(attachment.get_string_member("content_url"));
 						}
 					}
 				}
@@ -611,8 +622,8 @@ public class FeedReader.ttrssAPI : GLib.Object {
 										(article_node.get_string_member("author") == "") ? null : article_node.get_string_member("author"),
 										new DateTime.from_unix_local(article_node.get_int_member("updated")),
 										-1,
-										tagString,
-										mediaString
+										tags,
+										media
 								);
 
 				articles.add(Article);

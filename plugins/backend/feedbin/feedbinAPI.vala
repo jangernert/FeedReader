@@ -226,8 +226,8 @@ public class FeedReader.feedbinAPI : Object {
 					object.get_string_member("author"),
 					time,
 					-1,
-					"",
-					""
+					null,
+					null
 				);
 			if(article != null)
 				articles.add(article);

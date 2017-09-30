@@ -171,12 +171,28 @@ public class FeedReader.FeedbinAPI : Object {
 		var response = m_connection.postRequest("taggings.json", json);
 		if(!response.is_ok())
 		{
-			Logger.error(@"addTagging: Unexpected response status %s, data %s when adding tag '$tag_name' for feed $feed_id".printf(response.status, response.data));
+			Logger.error(@"addTagging: Unexpected response status %u when adding tag '$tag_name' for feed $feed_id".printf(response.status));
 		}
 	}
 
+	public void deleteTagging(int64 tagging_id)
+	{
+		var response = m_connection.deleteRequest(@"taggings/$tagging_id.json");
+		if(!response.is_ok())
+		{
+			Logger.error(@"deleteTagging: Unexpected response status %u when deleting tagging '$tagging_id'".printf(response.status));
+		}
+	}
+
+	public struct Tagging
+	{
+		int64 id;
+		string feed_id;
+		string name;
+	}
+
 	// returns a map from feed ID to category name
-	public Gee.Map<string, string>? getTaggings()
+	public Gee.List<Tagging?>? getTaggings()
 	{
 		var response = m_connection.getRequest("taggings.json");
 		if(!response.is_ok())
@@ -198,17 +214,16 @@ public class FeedReader.FeedbinAPI : Object {
 		}
 		Json.Array array = parser.get_root().get_array();
 
-		var taggings = new Gee.HashMap<string, string>();
+		var taggings = new Gee.ArrayList<Tagging?>();
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
 
-			/* Note: We use the name as the tag ID, since Feedbin doesn't
-			 * keep track of tags separately from their names */
-			string category_id = object.get_string_member("name");
-			string feed_id = object.get_int_member("feed_id").to_string();
-
-			taggings.set(feed_id, category_id);
+			taggings.add(Tagging() {
+				id = object.get_int_member("id"),
+				feed_id = object.get_int_member("feed_id").to_string(),
+				name = object.get_string_member("name")
+			});
 		}
 
 		Logger.debug("getTaggings: Got %d taggings".printf(taggings.size));
@@ -320,7 +335,7 @@ public class FeedReader.FeedbinAPI : Object {
 		var response = m_connection.getRequest("unread_entries.json");
 		if(!response.is_ok())
 		{
-			Logger.error("unreadEntries: Unexpected status %u with response: %s".printf(response.status, response.data));
+			Logger.error("unreadEntries: Unexpected status %u".printf(response.status));
 			return Gee.List.empty<string>();
 		}
 		var data = response.data;
@@ -333,7 +348,7 @@ public class FeedReader.FeedbinAPI : Object {
 		var response = m_connection.getRequest("starred_entries.json");
 		if(!response.is_ok())
 		{
-			Logger.error("unreadEntries: Unexpected status %u with response: %s".printf(response.status, response.data));
+			Logger.error("unreadEntries: Unexpected status %u".printf(response.status));
 			return Gee.List.empty<string>();
 		}
 		var data = response.data;

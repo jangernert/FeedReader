@@ -84,9 +84,10 @@ public class FeedReader.Feed : GLib.Object {
 		m_catIDs.add(catID);
 	}
 
-	public void setCats(Gee.List<string> catIDs)
+	public void setCats(Gee.Collection<string> catIDs)
 	{
-		m_catIDs = catIDs;
+		m_catIDs.clear();
+		m_catIDs.add_all(catIDs);
 	}
 
 	// Helper function for backends that only support one category per feed

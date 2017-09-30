@@ -61,7 +61,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool supportFeedManipulation()
 	{
-		return false;
+		return true;
 	}
 
 	public bool hideCategoryWhenEmpty(string catID)
@@ -224,22 +224,36 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		m_api.renameFeed(feedID, title);
 	}
 
-	public void moveFeed(string feed_id, string new_category_id, string? old_category_id)
+	public void moveFeed(string feed_id, string new_category, string? old_category)
 	{
-		m_api.addTagging(feed_id, new_category_id);
+		Logger.debug(@"moveFeed: $feed_id from $old_category to $new_category");
+		if(old_category != null)
+		{
+			var taggings = m_api.getTaggings();
+			foreach(var tagging in taggings)
+			{
+				if(tagging.name != old_category || tagging.feed_id != feed_id)
+					continue;
+				Logger.debug(@"moveFeed: Deleting tag $old_category from $feed_id");
+				m_api.deleteTagging(tagging.id);
+				break;
+			}
+		}
+		Logger.debug(@"moveFeed: Adding tag $new_category to $feed_id");
+		m_api.addTagging(feed_id, new_category);
 	}
 
 	public void renameCategory(string old_category, string new_category)
 	{
 		Logger.debug(@"renameCategory: From $old_category to $new_category");
-		Gee.Map<string, string> feed_category_map = m_api.getTaggings();
-		foreach(var entry in feed_category_map.entries)
+		var taggings = m_api.getTaggings();
+		foreach(var tagging in taggings)
 		{
-			var feed_id = entry.key;
-			var feed_category = entry.value;
-			if(feed_category != old_category)
+			if(tagging.name != old_category)
 				continue;
+			var feed_id = tagging.feed_id;
 			Logger.debug(@"renameCategory: Tagging $feed_id with $new_category");
+			m_api.deleteTagging(tagging.id);
 			m_api.addTagging(feed_id, new_category);
 		}
 	}
@@ -257,13 +271,33 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return "";
 	}
 
-	public void deleteCategory(string catID)
+	public void deleteCategory(string category)
 	{
+		Logger.debug(@"deleteCategory: $category");
+		var taggings = m_api.getTaggings();
+		foreach(var tagging in taggings)
+		{
+			if(tagging.name != category)
+				continue;
+			var feed_id = tagging.feed_id;
+			Logger.debug(@"deleteCategory: Deleting category $category from feed $feed_id");
+			m_api.deleteTagging(tagging.id);
+		}
 	}
 
-	public void removeCatFromFeed(string feedID, string catID)
+	public void removeCatFromFeed(string feed_id, string category)
 	{
-		// TODO: Add delete tagging to m_api
+		Logger.debug(@"removeCatFromFeed: Feed $feed_id, category $category");
+		var taggings = m_api.getTaggings();
+		foreach(var tagging in taggings)
+		{
+			if(tagging.feed_id != feed_id || tagging.name != category)
+				continue;
+
+			Logger.debug(@"removeCatFromFeed: Deleting category $category from feed $feed_id");
+			m_api.deleteTagging(tagging.id);
+			break;
+		}
 	}
 
 	public void importOPML(string opml)
@@ -287,7 +321,10 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 		// It's easier to rebuild the category list than to update it
 		var category_names = new Gee.HashSet<string>();
-		category_names.add_all(taggings.values);
+		foreach(var tagging in taggings)
+		{
+			category_names.add(tagging.name);
+		}
 		Logger.debug("getFeedsAndCats: Got %d categories: %s".printf(category_names.size, StringUtils.join(category_names, ", ")));
 
 		categories.clear();
@@ -308,13 +345,21 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			);
 		}
 
-		// Each feed can only have one "tag" in Feedbin, so either set or
-		// remove the tag
+		var tag_map = new Gee.HashMultiMap<string, string>();
+		foreach(var tagging in taggings)
+		{
+			tag_map.set(tagging.feed_id, tagging.name);
+		}
+
 		foreach(Feed feed in feeds)
 		{
 			var feed_id = feed.getFeedID();
-			if(taggings.has_key(feed_id))
-				feed.setCategory(taggings.get(feed_id));
+
+			if(tag_map.contains(feed_id))
+			{
+				var feed_categories = tag_map.get(feed_id);
+				feed.setCats(feed_categories);
+			}
 			else
 				feed.setCategory(uncategorizedID());
 		}

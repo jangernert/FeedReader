@@ -13,15 +13,15 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterface {
+public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterface {
 
-	private feedbinAPI m_api;
-	private feedbinUtils m_utils;
+	private FeedbinAPI m_api;
+	private FeedbinUtils m_utils;
 
 	public void init()
 	{
-		m_api = new feedbinAPI();
-		m_utils = new feedbinUtils();
+		m_api = new FeedbinAPI();
+		m_utils = new FeedbinUtils();
 	}
 
 	public bool supportTags()
@@ -307,5 +307,5 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.FeedServerInterface), typeof(FeedReader.feedbinInterface));
+	objmodule.register_extension_type(typeof(FeedReader.FeedServerInterface), typeof(FeedReader.FeedbinInterface));
 }

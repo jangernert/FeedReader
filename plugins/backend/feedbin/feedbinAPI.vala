@@ -13,15 +13,15 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedbinAPI : Object {
+public class FeedReader.FeedbinAPI : Object {
 
-	private feedbinConnection m_connection;
-	private feedbinUtils m_utils;
+	private FeedbinConnection m_connection;
+	private FeedbinUtils m_utils;
 
-	public feedbinAPI()
+	public FeedbinAPI()
 	{
-		m_connection = new feedbinConnection();
-		m_utils = new feedbinUtils();
+		m_connection = new FeedbinConnection();
+		m_utils = new FeedbinUtils();
 	}
 
 	public LoginResponse login()
@@ -264,7 +264,7 @@ public class FeedReader.feedbinAPI : Object {
 
 		Json.Object object = new Json.Object();
 		object.set_array_member("unread_entries", array);
-		string json = feedbinUtils.json_object_to_string(object);
+		string json = FeedbinUtils.json_object_to_string(object);
 
 		if(!read)
 			m_connection.postRequest("unread_entries.json", json);
@@ -283,7 +283,7 @@ public class FeedReader.feedbinAPI : Object {
 		Json.Object object = new Json.Object();
 		object.set_array_member("starred_entries", array);
 
-		string json = feedbinUtils.json_object_to_string(object);
+		string json = FeedbinUtils.json_object_to_string(object);
 
 		if(starred)
 			m_connection.postRequest("starred_entries.json", json);
@@ -300,7 +300,7 @@ public class FeedReader.feedbinAPI : Object {
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("title", title);
-		string json = feedbinUtils.json_object_to_string(object);
+		string json = FeedbinUtils.json_object_to_string(object);
 
 		Logger.debug("Renaming feed %s: %s".printf(feedID, json));
 		var response = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);

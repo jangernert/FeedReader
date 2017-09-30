@@ -13,15 +13,15 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface {
+public class FeedReader.FeedbinLoginWidget : Peas.ExtensionBase, LoginInterface {
 
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
-	private feedbinUtils m_utils;
+	private FeedbinUtils m_utils;
 
 	public void init()
 	{
-		m_utils = new feedbinUtils();
+		m_utils = new FeedbinUtils();
 	}
 
 	public string getWebsite()
@@ -145,5 +145,5 @@ public class FeedReader.feedbinLoginWidget : Peas.ExtensionBase, LoginInterface 
 public void peas_register_types(GLib.TypeModule module)
 {
 	var objmodule = module as Peas.ObjectModule;
-	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.feedbinLoginWidget));
+	objmodule.register_extension_type(typeof(FeedReader.LoginInterface), typeof(FeedReader.FeedbinLoginWidget));
 }

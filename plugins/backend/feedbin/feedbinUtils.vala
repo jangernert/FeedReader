@@ -13,11 +13,11 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedbinUtils : GLib.Object {
+public class FeedReader.FeedbinUtils : GLib.Object {
 
 	GLib.Settings m_settings;
 
-	public feedbinUtils()
+	public FeedbinUtils()
 	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.feedbin");
 	}
@@ -73,7 +73,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("feedbinUtils: setPassword: " + e.message);
+			Logger.error("FeedbinUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -100,7 +100,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.error("feedbinUtils.deletePassword: %s".printf(e.message));
+				Logger.error("FeedbinUtils.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;

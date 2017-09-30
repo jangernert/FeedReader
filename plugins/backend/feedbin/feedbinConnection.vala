@@ -13,17 +13,17 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedbinConnection {
+public class FeedReader.FeedbinConnection {
 
-	private feedbinUtils m_utils;
+	private FeedbinUtils m_utils;
 	private GLib.Settings m_settingsTweaks;
 	private Soup.Session m_session;
 
 	private const string BASE_URI = "https://api.feedbin.com/v2/";
 
-	public feedbinConnection()
+	public FeedbinConnection()
 	{
-		m_utils = new feedbinUtils();
+		m_utils = new FeedbinUtils();
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;

@@ -61,7 +61,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool supportFeedManipulation()
 	{
-		return true;
+		return false;
 	}
 
 	public bool hideCategoryWhenEmpty(string catID)

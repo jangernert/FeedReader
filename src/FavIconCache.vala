@@ -31,27 +31,31 @@ public class FeedReader.FavIconCache : GLib.Object {
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
 	}
 
-	private void refresh(string icon_name)
+	private async void load(string icon_name)
 	{
 		try
 		{
 			var fileName = icon_name + ".ico";
-			var path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName;
-			if(!FileUtils.test(path, FileTest.EXISTS))
+			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);
+			try
 			{
-				Logger.debug(@"FavIconCache: Icon $path does not exist");
+				var stream = yield file.read_async();
+				var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+				stream.close();
+				if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
+				{
+					Logger.warning(@"FavIconCache: $fileName is too small");
+					return;
+				}
+
+				pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
+				m_map.set(icon_name, pixbuf);
+			}
+			catch (FileError.NOENT e)
+			{
+				Logger.debug(@"FavIconCache: Icon $fileName does not exist");
 				return;
 			}
-
-			var pixbuf = new Gdk.Pixbuf.from_file(path);
-			if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
-			{
-				Logger.warning(@"FavIconCache: $fileName is too small");
-				return;
-			}
-
-			pixbuf = new Gdk.Pixbuf.from_file_at_scale(path, 24, 24, true);
-			m_map.set(icon_name, pixbuf);
 		}
 		catch(GLib.Error e)
 		{
@@ -70,7 +74,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 		return m_map.has_key(iconName);
 	}
 
-	public Gdk.Pixbuf? getIcon(string name, bool firstTry = true)
+	public async Gdk.Pixbuf? getIcon(string name, bool firstTry = true)
 	{
 		string fixedName = name.replace("/", "_").replace(".", "_");
 
@@ -80,8 +84,8 @@ public class FeedReader.FavIconCache : GLib.Object {
 		}
 		else if(firstTry)
 		{
-			refresh(name);
-			return getIcon(name, false);
+			yield load(name);
+			return yield getIcon(name, false);
 		}
 
 		return null;

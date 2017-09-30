@@ -1223,7 +1223,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		{
 			var tmpRow = row as FeedRow;
 			if(tmpRow != null)
-				tmpRow.reloadFavIcon();
+				tmpRow.reloadFavIcon.begin();
 		}
 	}
 

@@ -729,7 +729,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		{
 			var tmpRow = row as ArticleRow;
 			if(tmpRow != null)
-				tmpRow.reloadFavIcon();
+				tmpRow.reloadFavIcon.begin();
 		}
 	}
 }

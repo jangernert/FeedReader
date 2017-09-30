@@ -122,7 +122,9 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		m_marked_eventbox.button_press_event.connect(markedIconClicked);
 
 
-		m_icon = getFeedIcon();
+		m_icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		reloadFavIcon.begin();
+
 		icon_box.pack_start(m_icon, true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
 		icon_box.pack_end(m_marked_eventbox, false, false, 0);
@@ -246,13 +248,11 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		return false;
 	}
 
-	private Gtk.Image getFeedIcon()
+	public async void reloadFavIcon()
 	{
-		var icon = FavIconCache.get_default().getIcon(m_article.getFeedID());
+		var icon = yield FavIconCache.get_default().getIcon(m_article.getFeedID());
 		if(icon != null)
-			return new Gtk.Image.from_pixbuf(icon);
-
-		return new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+			m_icon.pixbuf = icon;
 	}
 
 
@@ -262,7 +262,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		var visual = window.get_screen().get_rgba_visual();
 		window.set_visual(visual);
 		window.get_style_context().add_class("transparentBG");
-		window.add(getFeedIcon());
+		window.add(m_icon);
 		window.show_all();
 		return window;
 	}
@@ -677,21 +677,4 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	{
 		return m_article.haveMedia();
 	}
-
-	public void reloadFavIcon()
-	{
-		var favicon = getFeedIcon();
-
-		switch(favicon.get_storage_type())
-		{
-			case Gtk.ImageType.PIXBUF:
-				m_icon.set_from_pixbuf(favicon.get_pixbuf());
-				break;
-
-			case Gtk.ImageType.STOCK:
-				m_icon.set_from_icon_name(favicon.icon_name, Gtk.IconSize.LARGE_TOOLBAR);
-				break;
-		}
-	}
-
 }

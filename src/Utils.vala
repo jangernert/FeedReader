@@ -511,7 +511,7 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		catch (Error e)
 		{
-			Logger.error(@"Request for $siteURL failed: " + e.message);
+			Logger.warning(@"Request for $siteURL failed: " + e.message);
 			return false;
 		}
 		if(message_html.status_code == 200)
@@ -532,7 +532,7 @@ public class FeedReader.Utils : GLib.Object {
 			Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
 			if(doc == null)
 			{
-				Logger.debug("Utils.downloadFavIcon: parsing html failed");
+				Logger.debug(@"Utils.downloadFavIcon: parsing html on $siteURL failed");
 				return false;
 			}
 
@@ -540,23 +540,18 @@ public class FeedReader.Utils : GLib.Object {
 			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
 
 			if(xpath == null)
-			// check for <link rel="shortcut icon">
-			xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
+				// check for <link rel="shortcut icon">
+				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
 
 			if(xpath == null)
-			// check for <link rel="apple-touch-icon">
-			xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+				// check for <link rel="apple-touch-icon">
+				xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
 
 			if(xpath != null)
 			{
-				Logger.debug(@"Utils.downloadFavIcon: xpath success $xpath");
 				xpath = grabberUtils.completeURL(xpath, siteURL);
 				if(yield downloadIcon(feed_id, xpath, cancellable, icon_path))
 				return true;
-			}
-			else
-			{
-				Logger.debug("Utils.downloadFavIcon: xpath failed");
 			}
 
 			delete doc;
@@ -599,19 +594,13 @@ public class FeedReader.Utils : GLib.Object {
 		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
-		bool icon_exists = FileUtils.test(local_filename, GLib.FileTest.EXISTS);
 
-		string? etag = null;
+		var metadata = yield ResourceMetadata.from_file_async(metadata_filename);
+		string? etag = metadata.etag;
 		// Normally, we would store a last modified time as a datetime type, but
 		// servers aren't consistent about the format so we need to treat it as a
 		// black box.
-		string? last_modified = null;
-		if(icon_exists)
-		{
-			var metadata = yield ResourceMetadata.from_file_async(metadata_filename);
-			etag = metadata.etag;
-			last_modified = metadata.last_modified;
-		}
+		string? last_modified = metadata.last_modified;
 
 		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
 		var message = new Soup.Message("GET", icon_url);
@@ -636,18 +625,11 @@ public class FeedReader.Utils : GLib.Object {
 		var status = message.status_code;
 		if(status == 304)
 		{
-			var log = "Utils.downloadIcon: ";
-			if(etag != null)
-				log += @"etag ($etag) ";
-			if(last_modified != null)
-			{
-				if(etag != null)
-					log += "and ";
-				log += @"last modified ($last_modified) ";
-			}
-			log += @"matched -> icon unchanged $feed_id";
-			Logger.debug(log);
 			return true;
+		}
+		else if(status == 404)
+		{
+			return false;
 		}
 		else if(status == 200)
 		{
@@ -661,27 +643,41 @@ public class FeedReader.Utils : GLib.Object {
 				Logger.error(@"Failed to read body of $icon_url: " + e.message);
 				return false;
 			}
-			if(icon_exists
-			&& (string)data == getFileContent(local_filename))
+
+			var local_file = File.new_for_path(local_filename);
+			uint8[]? local_data = null;
+			try
 			{
-				// file exists and is identical to remote file
-				// we already downloaded it, but there is no need to write to the disc
-				Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
+				uint8[] contents;
+				yield local_file.load_contents_async(null, out contents, null);
+				local_data = contents;
 			}
-			else
+			catch(IOError.NOT_FOUND e)
+			{}
+			catch(Error e)
+			{
+				Logger.error(@"Error reading icon $local_filename: %s".printf(e.message));
+			}
+
+			if(local_data != null && data != local_data)
 			{
 				try
 				{
+					yield local_file.replace_contents_async(data, null, false, FileCreateFlags.NONE, null, null);
 					FileUtils.set_data(local_filename, data);
 				}
-				catch(GLib.FileError e)
+				catch(IOError e)
+				{
+					Logger.error("Error writing icon: %s".printf(e.message));
+					return false;
+				}
+				catch(Error e)
 				{
 					Logger.error("Error writing icon: %s".printf(e.message));
 					return false;
 				}
 			}
 
-			var metadata = ResourceMetadata();
 			metadata.etag = message.response_headers.get_one("ETag");
 			metadata.last_modified = message.response_headers.get_one("Last-Modified");
 			yield metadata.save_to_file_async(metadata_filename);
@@ -689,22 +685,6 @@ public class FeedReader.Utils : GLib.Object {
 		}
 		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url, got response code $status");
 		return false;
-	}
-
-	private static string? getFileContent(string filename)
-	{
-		try
-		{
-			string? contents = null;
-			FileUtils.get_contents(filename, out contents);
-			return contents;
-		}
-		catch(Error e)
-		{
-			Logger.warning(@"Utils.getFileContent: could not read file $filename");
-		}
-
-		return null;
 	}
 
 	public static string gsettingReadString(GLib.Settings setting, string key)

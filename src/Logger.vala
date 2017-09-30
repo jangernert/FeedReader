@@ -13,26 +13,26 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.Logger : GLib.Object {
+public class FeedReader.Logger {
 
 	public static void error(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_CRITICAL, "MESSAGE", "%s", message);
+		GLib.log(null, GLib.LogLevelFlags.LEVEL_CRITICAL, "%s", message);
 	}
 
 	public static void warning(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_WARNING, "MESSAGE", "%s", message);
+		GLib.log(null, GLib.LogLevelFlags.LEVEL_WARNING, "%s", message);
 	}
 
 	public static void info(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_INFO, "MESSAGE", "%s", message);
+		GLib.log(null, GLib.LogLevelFlags.LEVEL_INFO, "%s", message);
 	}
 
 	public static void debug(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_DEBUG, "MESSAGE", "%s", message);
+		GLib.log(null, GLib.LogLevelFlags.LEVEL_DEBUG, "%s", message);
 	}
 
 	public static void init()

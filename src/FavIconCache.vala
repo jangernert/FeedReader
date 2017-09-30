@@ -29,78 +29,33 @@ public class FeedReader.FavIconCache : GLib.Object {
 	private FavIconCache()
 	{
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
-		refresh(true);
 	}
 
-	private void refresh(bool logs = false)
+	private void refresh(string icon_name)
 	{
 		try
 		{
-			var iconDirPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
-			var iconDirectory = GLib.File.new_for_path(iconDirPath);
-			if(!iconDirectory.query_exists())
+			var fileName = icon_name + ".ico";
+			var path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName;
+			if(!FileUtils.test(path, FileTest.EXISTS))
 			{
-				try
-				{
-					iconDirectory.make_directory_with_parents();
-				}
-				catch(GLib.Error e)
-				{
-					if(logs)
-						Logger.error("FavIconCache: Can't create directory: %s".printf(e.message));
-				}
+				Logger.debug(@"FavIconCache: Icon $path does not exist");
+				return;
 			}
-			var enumerator = iconDirectory.enumerate_children(GLib.FileAttribute.STANDARD_NAME, 0);
-			GLib.FileInfo? fileInfo = null;
-			GLib.File? file = null;
 
-			while(true)
+			var pixbuf = new Gdk.Pixbuf.from_file(path);
+			if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
 			{
-				if(enumerator.iterate(out fileInfo, out file))
-				{
-					if(fileInfo == null)
-						break;
-
-					string fileName = fileInfo.get_name();
-
-					if(!fileName.has_suffix(".ico"))
-						continue;
-
-					if(!hasIcon(fileName))
-					{
-						try
-						{
-							var pixbuf = new Gdk.Pixbuf.from_file(iconDirPath + fileName);
-
-							if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
-							{
-								if(logs)
-									Logger.warning(@"$fileName too small");
-								continue;
-							}
-
-							pixbuf = new Gdk.Pixbuf.from_file_at_scale(iconDirPath + fileName, 24, 24, true);
-							fileName = fileName.substring(0, fileName.length - ".ico".length);
-							m_map.set(fileName, pixbuf);
-						}
-						catch(GLib.Error e)
-						{
-							if(logs)
-								Logger.warning("Error loading favicon " + fileInfo.get_name());
-						}
-					}
-				}
-				else
-				{
-					if(logs)
-						Logger.warning("Error loading favicon " + fileInfo.get_name());
-				}
+				Logger.warning(@"FavIconCache: $fileName is too small");
+				return;
 			}
+
+			pixbuf = new Gdk.Pixbuf.from_file_at_scale(path, 24, 24, true);
+			m_map.set(icon_name, pixbuf);
 		}
 		catch(GLib.Error e)
 		{
-			if(logs)
-				Logger.error("FavIconCache: %s".printf(e.message));
+			Logger.error("FavIconCache.refresh: %s".printf(e.message));
 		}
 	}
 
@@ -125,8 +80,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 		}
 		else if(firstTry)
 		{
-			Logger.warning(@"FavIconCache: does not contain icon $fixedName");
-			refresh();
+			refresh(name);
 			return getIcon(name, false);
 		}
 

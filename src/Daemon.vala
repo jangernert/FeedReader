@@ -677,7 +677,7 @@ namespace FeedReader {
 			removeCategory(catID);
 		}
 
-		private void deleteFeedsofCat(string catID, Gee.ArrayList<Feed> feeds)
+		private void deleteFeedsofCat(string catID, Gee.List<Feed> feeds)
 		{
 			foreach(Feed feed in feeds)
 			{

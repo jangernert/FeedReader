@@ -952,7 +952,7 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<string> getFeedIDofCategorie(string categorieID)
+	public Gee.List<string> getFeedIDofCategorie(string categorieID)
 	{
 		var feedIDs = new Gee.ArrayList<string>();
 
@@ -999,7 +999,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return "";
 	}
 
-	protected virtual bool showCategory(string catID, Gee.ArrayList<Feed> feeds)
+	protected virtual bool showCategory(string catID, Gee.List<Feed> feeds)
 	{
 		return true;
 	}
@@ -1152,9 +1152,9 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<Feed> read_feeds(bool starredCount = false)
+	public Gee.List<Feed> read_feeds(bool starredCount = false)
 	{
-		Gee.ArrayList<Feed> feeds = new Gee.ArrayList<Feed>();
+		Gee.List<Feed> feeds = new Gee.ArrayList<Feed>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("*");
@@ -1302,9 +1302,9 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<tag> read_tags()
+	public Gee.List<tag> read_tags()
 	{
-		Gee.ArrayList<tag> tmp = new Gee.ArrayList<tag>();
+		Gee.List<tag> tmp = new Gee.ArrayList<tag>();
 		tag tmpTag;
 
 		var query = new QueryBuilder(QueryType.SELECT, "tags");
@@ -1410,7 +1410,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return maxID;
 	}
 
-	public Gee.ArrayList<Category> read_categories_level(int level, Gee.ArrayList<Feed>? feeds = null)
+	public Gee.List<Category> read_categories_level(int level, Gee.List<Feed>? feeds = null)
 	{
 		var categories = read_categories(feeds);
 		var tmpCategories = new Gee.ArrayList<Category>();
@@ -1426,9 +1426,9 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmpCategories;
 	}
 
-	public Gee.ArrayList<Category> read_categories(Gee.ArrayList<Feed>? feeds = null)
+	public Gee.List<Category> read_categories(Gee.List<Feed>? feeds = null)
 	{
-		Gee.ArrayList<Category> tmp = new Gee.ArrayList<Category>();
+		Gee.List<Category> tmp = new Gee.ArrayList<Category>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "categories");
 		query.selectField("*");

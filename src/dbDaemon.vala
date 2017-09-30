@@ -951,7 +951,7 @@ public class FeedReader.dbDaemon : dbBase {
 	}
 
 
-	public Gee.ArrayList<CachedAction> readCachedActions()
+	public Gee.List<CachedAction> readCachedActions()
 	{
 		Gee.ArrayList<CachedAction> tmp = new Gee.ArrayList<CachedAction>();
 
@@ -1020,7 +1020,7 @@ public class FeedReader.dbDaemon : dbBase {
 		query.print();
 	}
 
-	protected override bool showCategory(string catID, Gee.ArrayList<Feed> feeds)
+	protected override bool showCategory(string catID, Gee.List<Feed> feeds)
 	{
 		if(FeedServer.get_default().hideCategoryWhenEmpty(catID)
 		&& !Utils.categoryIsPopulated(catID, feeds))

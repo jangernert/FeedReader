@@ -19,9 +19,9 @@ public class FeedReader.QueryBuilder : GLib.Object {
 	private QueryType m_type;
 	private string m_table;
 	private bool m_noError;
-	private Gee.ArrayList<string> m_fields;
-	private Gee.ArrayList<string> m_values;
-	private Gee.ArrayList<string> m_conditions;
+	private Gee.List<string> m_fields;
+	private Gee.List<string> m_values;
+	private Gee.List<string> m_conditions;
 	private GLib.StringBuilder m_insert_fields;
 	private GLib.StringBuilder m_insert_values;
 	private string m_orderBy;
@@ -158,7 +158,7 @@ public class FeedReader.QueryBuilder : GLib.Object {
 		return false;
 	}
 
-	public bool addRangeConditionInt(string field, Gee.ArrayList<int> values)
+	public bool addRangeConditionInt(string field, Gee.List<int> values)
 	{
 		if(m_type == QueryType.UPDATE
 		|| m_type == QueryType.SELECT

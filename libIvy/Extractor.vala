@@ -32,7 +32,7 @@ namespace Ivy {
 		private string func_line = "";
 		private string lib_address ="";
 
-		private static Gee.ArrayList<string> libraries_with_no_info = new Gee.ArrayList<string>();
+		private static Gee.List<string> libraries_with_no_info = new Gee.ArrayList<string>();
 
 		private string get_module_name () {
 			var path = new char[1024];

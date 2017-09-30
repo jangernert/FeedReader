@@ -31,7 +31,7 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 		return false;
 	}
 
-	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
 	{
 
 	}

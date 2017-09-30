@@ -171,7 +171,7 @@ public class FeedReader.freshAPI : Object {
 	}
 
 	public string? getStreamContents(
-										Gee.LinkedList<Article> articles,
+										Gee.List<Article> articles,
 										string? feedID = null,
 										string? labelID = null,
 										string? exclude = null,

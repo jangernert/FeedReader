@@ -107,7 +107,7 @@ namespace Ivy {
 
 		internal bool is_all_file_name_blank = true;
 
-		private Gee.ArrayList<Frame> _frames = new Gee.ArrayList<Frame>();
+		private Gee.List<Frame> _frames = new Gee.ArrayList<Frame>();
 
 		/**
 		 * Unix signal being intercepted
@@ -279,7 +279,7 @@ namespace Ivy {
 		 * Collection of frames
 		 *
 		 */
-		public Gee.ArrayList<Frame> frames {
+		public Gee.List<Frame> frames {
 			get {
 				return _frames;
 			}

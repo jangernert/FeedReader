@@ -35,7 +35,7 @@ public class FeedReader.dbUI : dbBase {
 		base(dbFile);
 	}
 
-	protected override bool showCategory(string catID, Gee.ArrayList<Feed> feeds)
+	protected override bool showCategory(string catID, Gee.List<Feed> feeds)
 	{
 		try
 		{

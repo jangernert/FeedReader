@@ -381,7 +381,7 @@ public class FeedReader.Utils : GLib.Object {
 		return searchTerm;
 	}
 
-	public static bool categoryIsPopulated(string catID, Gee.ArrayList<Feed> feeds)
+	public static bool categoryIsPopulated(string catID, Gee.List<Feed> feeds)
 	{
 		foreach(Feed feed in feeds)
 		{
@@ -398,7 +398,7 @@ public class FeedReader.Utils : GLib.Object {
 		return false;
 	}
 
-	public static uint categoryGetUnread(string catID, Gee.ArrayList<Feed> feeds)
+	public static uint categoryGetUnread(string catID, Gee.List<Feed> feeds)
 	{
 		uint unread = 0;
 

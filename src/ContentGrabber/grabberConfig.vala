@@ -15,19 +15,19 @@
 
 public class FeedReader.GrabberConfig : GLib.Object {
 
-	private Gee.ArrayList<string> m_xpath_title;
-	private Gee.ArrayList<string> m_xpath_author;
-	private Gee.ArrayList<string> m_xpath_date;
-	private Gee.ArrayList<string> m_xpath_body;
-	private Gee.ArrayList<string> m_xpath_strip;
-	private Gee.ArrayList<string> m_xpath_stripIDorClass;
-	private Gee.ArrayList<string> m_xpath_stripImgSrc;
+	private Gee.List<string> m_xpath_title;
+	private Gee.List<string> m_xpath_author;
+	private Gee.List<string> m_xpath_date;
+	private Gee.List<string> m_xpath_body;
+	private Gee.List<string> m_xpath_strip;
+	private Gee.List<string> m_xpath_stripIDorClass;
+	private Gee.List<string> m_xpath_stripImgSrc;
 	private bool m_tidy;
 	private bool m_prune;
 	private bool m_autodetectOnFailure;
 	private string m_singlePageLink;
 	private string m_nextPageLink;
-	private Gee.ArrayList<StringPair> m_replace;
+	private Gee.List<StringPair> m_replace;
 	private string m_testURL;
 
 	public GrabberConfig(string filename)
@@ -154,7 +154,7 @@ public class FeedReader.GrabberConfig : GLib.Object {
 		return res.chug().chomp();
 	}
 
-	private void splitValues(ref Gee.ArrayList<string> list, string line)
+	private void splitValues(ref Gee.List<string> list, string line)
 	{
 		var array = line.split(" | ");
 		foreach(string tmp in array)
@@ -275,42 +275,42 @@ public class FeedReader.GrabberConfig : GLib.Object {
 		return m_singlePageLink;
 	}
 
-	public unowned Gee.ArrayList<string> getXPathTitle()
+	public unowned Gee.List<string> getXPathTitle()
 	{
 		return m_xpath_title;
 	}
 
-	public unowned Gee.ArrayList<string> getXPathAuthor()
+	public unowned Gee.List<string> getXPathAuthor()
 	{
 		return m_xpath_author;
 	}
 
-	public unowned Gee.ArrayList<string> getXPathDate()
+	public unowned Gee.List<string> getXPathDate()
 	{
 		return m_xpath_date;
 	}
 
-	public unowned Gee.ArrayList<string> getXPathStrip()
+	public unowned Gee.List<string> getXPathStrip()
 	{
 		return m_xpath_strip;
 	}
 
-	public unowned Gee.ArrayList<string> getXPathStripIDorClass()
+	public unowned Gee.List<string> getXPathStripIDorClass()
 	{
 		return m_xpath_stripIDorClass;
 	}
 
-	public unowned Gee.ArrayList<string> getXPathStripImgSrc()
+	public unowned Gee.List<string> getXPathStripImgSrc()
 	{
 		return m_xpath_stripImgSrc;
 	}
 
-	public unowned Gee.ArrayList<string> getXPathBody()
+	public unowned Gee.List<string> getXPathBody()
 	{
 		return m_xpath_body;
 	}
 
-	public unowned Gee.ArrayList<StringPair> getReplace()
+	public unowned Gee.List<StringPair> getReplace()
 	{
 		return m_replace;
 	}

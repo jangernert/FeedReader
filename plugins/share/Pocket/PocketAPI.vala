@@ -26,7 +26,7 @@ public class FeedReader.PocketAPI : ShareAccountInterface, Peas.ExtensionBase {
 
 	}
 
-	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
 	{
 		try
 		{

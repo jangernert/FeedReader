@@ -227,7 +227,7 @@ public class FeedReader.Article : GLib.Object {
 		return StringUtils.join(m_media, ",");
 	}
 
-	public void setMedia(Gee.ArrayList<string> media)
+	public void setMedia(Gee.List<string> media)
 	{
 		m_media = media;
 	}

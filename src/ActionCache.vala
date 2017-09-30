@@ -22,7 +22,7 @@ public class FeedReader.ActionCache : GLib.Object {
 	// this prevents articles that were marked as read after the sync began but before the data was written to the database
 	// to suddenly become unread again after the sync (and similar issues)
 
-	private Gee.ArrayList<CachedAction> m_list;
+	private Gee.List<CachedAction> m_list;
 
 	private static ActionCache? m_cache = null;
 

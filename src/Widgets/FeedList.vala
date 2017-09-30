@@ -469,7 +469,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	}
 
 
-	private void createCategories(ref Gee.ArrayList<Feed> feeds, bool masterCat, ArticleListState state)
+	private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleListState state)
 	{
 		int maxCatLevel = dbUI.get_default().getMaxCatLevel();
 		int length = (int)m_list.get_children().length();

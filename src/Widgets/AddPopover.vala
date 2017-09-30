@@ -23,7 +23,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 	private Gtk.Entry m_catEntry;
 	private Gtk.FileChooserButton m_chooser;
 	private Gtk.EntryCompletion m_complete;
-	private Gee.ArrayList<Category> m_cats;
+	private Gee.List<Category> m_cats;
 
 	public AddPopover(Gtk.Widget parent)
 	{

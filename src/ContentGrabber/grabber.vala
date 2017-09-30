@@ -271,7 +271,7 @@ public class FeedReader.Grabber : GLib.Object {
 		Logger.debug("Grabber: start parsing");
 
 		// replace strings before parsing html
-		unowned Gee.ArrayList<StringPair> replace = m_config.getReplace();
+		unowned Gee.List<StringPair> replace = m_config.getReplace();
 		if(replace.size != 0)
 		{
 			foreach(StringPair pair in replace)
@@ -322,7 +322,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the title from the html (useful if feed doesn't provide one)
-		unowned Gee.ArrayList<string> title = m_config.getXPathTitle();
+		unowned Gee.List<string> title = m_config.getXPathTitle();
 		if(title.size != 0 && m_firstPage)
 		{
 			Logger.debug("Grabber: get title");
@@ -341,7 +341,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the author from the html (useful if feed doesn't provide one)
-		unowned Gee.ArrayList<string> author = m_config.getXPathAuthor();
+		unowned Gee.List<string> author = m_config.getXPathAuthor();
 		if(author.size != 0)
 		{
 			Logger.debug("Grabber: get author");
@@ -360,7 +360,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the date from the html (useful if feed doesn't provide one)
-		unowned Gee.ArrayList<string> date = m_config.getXPathDate();
+		unowned Gee.List<string> date = m_config.getXPathDate();
 		if(date.size != 0)
 		{
 			Logger.debug("Grabber: get date");
@@ -379,7 +379,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// strip junk
-		unowned Gee.ArrayList<string> strip = m_config.getXPathStrip();
+		unowned Gee.List<string> strip = m_config.getXPathStrip();
 		if(strip.size != 0)
 		{
 			Logger.debug("Grabber: strip junk");
@@ -397,7 +397,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// strip any element whose @id or @class contains this substring
-		unowned Gee.ArrayList<string> _stripIDorClass = m_config.getXPathStripIDorClass();
+		unowned Gee.List<string> _stripIDorClass = m_config.getXPathStripIDorClass();
 		if(_stripIDorClass.size != 0)
 		{
 			Logger.debug("Grabber: strip id's and class");
@@ -414,7 +414,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		//strip any <img> element where @src attribute contains this substring
-		unowned Gee.ArrayList<string> stripImgSrc = m_config.getXPathStripImgSrc();
+		unowned Gee.List<string> stripImgSrc = m_config.getXPathStripImgSrc();
 		if(stripImgSrc.size != 0)
 		{
 			Logger.debug("Grabber: strip img-tags");
@@ -497,7 +497,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the content of the article
-		unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();
+		unowned Gee.List<string> bodyList = m_config.getXPathBody();
 		if(bodyList.size != 0)
 		{
 			Logger.debug("Grabber: get body");

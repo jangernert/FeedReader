@@ -205,12 +205,12 @@ public class FeedReader.feedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void removeFeed(string feedID)
 	{
-		//m_api.deleteFeed(feedID);
+		m_api.deleteFeed(feedID);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		//m_api.renameFeed(feedID, title);
+		m_api.renameFeed(feedID, title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)

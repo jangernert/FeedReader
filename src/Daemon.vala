@@ -651,8 +651,8 @@ namespace FeedReader {
 					level = parentCat.getLevel()+1;
 				}
 
-				var cat = new category(catID, title, 0, 99, parent, level);
-				var list = new Gee.LinkedList<category>();
+				var cat = new Category(catID, title, 0, 99, parent, level);
+				var list = new Gee.LinkedList<Category>();
 				list.add(cat);
 				dbDaemon.get_default().write_categories(list);
 			}

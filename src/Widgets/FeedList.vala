@@ -516,7 +516,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			{
 				categories.insert(
 					0,
-					new category(
+					new Category(
 						uncategorizedID,
 						_("Uncategorized"),
 						(int)dbUI.get_default().get_unread_uncategorized(),
@@ -667,7 +667,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			var tmpCatRow = row as CategoryRow;
 			if(tmpCatRow != null)
 			{
-				foreach(category cat in categories)
+				foreach(Category cat in categories)
 				{
 					if(tmpCatRow.getID() == cat.getCatID())
 					{

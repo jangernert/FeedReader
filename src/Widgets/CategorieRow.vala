@@ -496,7 +496,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 				}
 				else if(context != null)
 				{
-					Logger.debug("categoryRow: create new category " + renameEntry.get_text());
+					Logger.debug("categoryRow: create new Category " + renameEntry.get_text());
 					m_categorieID = DBusConnection.get_default().addCategory(renameEntry.get_text(), "", true);
 
 					if(id2 == null) // move feed

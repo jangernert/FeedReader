@@ -327,7 +327,7 @@ public class FeedReader.dbDaemon : dbBase {
 
 
 
-	public void write_categories(Gee.List<category> categories)
+	public void write_categories(Gee.List<Category> categories)
 	{
 		executeSQL("BEGIN TRANSACTION");
 

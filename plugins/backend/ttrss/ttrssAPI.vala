@@ -191,7 +191,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool getFeeds(Gee.List<Feed> feeds, Gee.List<category> categories)
+	public bool getFeeds(Gee.List<Feed> feeds, Gee.List<Category> categories)
 	{
 		foreach(var item in categories)
 		{
@@ -320,7 +320,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	public bool getCategories(Gee.List<category> categories)
+	public bool getCategories(Gee.List<Category> categories)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -342,7 +342,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	}
 
 
-	private void getSubCategories(Gee.List<category> categories, Json.Object categorie, int level, string parent)
+	private void getSubCategories(Gee.List<Category> categories, Json.Object categorie, int level, string parent)
 	{
 		level++;
 		int orderID = 0;
@@ -368,7 +368,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					}
 
 					categories.add(
-						new category (
+						new Category (
 							categorieID,
 							title,
 							unread_count,

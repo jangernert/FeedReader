@@ -144,7 +144,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags)
 	{
 		var response = m_connection.send_get_request("tag/list?output=json");
 
@@ -177,7 +177,7 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 			if(id.contains("/label/"))
 			{
 					categories.add(
-						new category(
+						new Category(
 							id,
 							title,
 							0,

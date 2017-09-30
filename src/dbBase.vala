@@ -1278,7 +1278,7 @@ public class FeedReader.dbBase : GLib.Object {
 		return feeds;
 	}
 
-	public category? read_category(string catID)
+	public Category? read_category(string catID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "categories");
 		query.selectField("*");
@@ -1294,7 +1294,7 @@ public class FeedReader.dbBase : GLib.Object {
 		}
 
 		while (stmt.step () == Sqlite.ROW) {
-			var tmpcategory = new category(catID, stmt.column_text(1), 0, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
+			var tmpcategory = new Category(catID, stmt.column_text(1), 0, stmt.column_int(3), stmt.column_text(4), stmt.column_int(5));
 			return tmpcategory;
 		}
 
@@ -1410,12 +1410,12 @@ public class FeedReader.dbBase : GLib.Object {
 		return maxID;
 	}
 
-	public Gee.ArrayList<category> read_categories_level(int level, Gee.ArrayList<Feed>? feeds = null)
+	public Gee.ArrayList<Category> read_categories_level(int level, Gee.ArrayList<Feed>? feeds = null)
 	{
 		var categories = read_categories(feeds);
-		var tmpCategories = new Gee.ArrayList<category>();
+		var tmpCategories = new Gee.ArrayList<Category>();
 
-		foreach(category cat in categories)
+		foreach(Category cat in categories)
 		{
 			if(cat.getLevel() == level)
 			{
@@ -1426,10 +1426,9 @@ public class FeedReader.dbBase : GLib.Object {
 		return tmpCategories;
 	}
 
-	public Gee.ArrayList<category> read_categories(Gee.ArrayList<Feed>? feeds = null)
+	public Gee.ArrayList<Category> read_categories(Gee.ArrayList<Feed>? feeds = null)
 	{
-		Gee.ArrayList<category> tmp = new Gee.ArrayList<category>();
-		category tmpcategory;
+		Gee.ArrayList<Category> tmp = new Gee.ArrayList<Category>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "categories");
 		query.selectField("*");
@@ -1459,7 +1458,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 			if(feeds == null || showCategory(catID, feeds))
 			{
-				tmpcategory = new category(
+				var tmpcategory = new Category(
 					catID, stmt.column_text(1),
 					(feeds == null) ? 0 : Utils.categoryGetUnread(catID, feeds),
 					stmt.column_int(3),

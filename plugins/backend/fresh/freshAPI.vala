@@ -92,7 +92,7 @@ public class FeedReader.freshAPI : Object {
 		return true;
 	}
 
-	public bool getTagList(Gee.List<category> categories)
+	public bool getTagList(Gee.List<Category> categories)
 	{
 		var response = m_connection.getRequest("reader/api/0/tag/list?output=json");
 		string prefix = "user/-/label/";
@@ -123,7 +123,7 @@ public class FeedReader.freshAPI : Object {
 				continue;
 
 			categories.add(
-				new category (
+				new Category (
 					categorieID,
 					categorieID.substring(prefix.length),
 					0,

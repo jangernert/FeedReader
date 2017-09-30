@@ -147,7 +147,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags)
 	{
 		var msg = new bazquxMessage();
 		msg.add("output", "json");
@@ -184,7 +184,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 				if(m_utils.tagIsCat(id, feeds))
 				{
 					categories.add(
-						new category(
+						new Category(
 							id,
 							title,
 							0,

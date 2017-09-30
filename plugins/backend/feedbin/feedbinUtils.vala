@@ -106,9 +106,9 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		return removed;
 	}
 
-	public string? catExists(Gee.List<category> categories, string name)
+	public string? catExists(Gee.List<Category> categories, string name)
 	{
-		foreach(category cat in categories)
+		foreach(Category cat in categories)
 		{
 			if(cat.getTitle() == name)
 				return cat.getCatID();

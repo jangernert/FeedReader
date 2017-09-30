@@ -144,7 +144,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		var categories = dbDaemon.get_default().read_categories();
 		var feeds = dbDaemon.get_default().read_feeds_without_cat();
 
-		foreach(category cat in categories)
+		foreach(Category cat in categories)
 		{
 			catArray += cat.getCatID() + ",";
 		}
@@ -265,7 +265,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		m_api.getUnreadCounts();
 

@@ -152,7 +152,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags)
 	{
 		var response = m_connection.send_request("tag/list");
 
@@ -185,7 +185,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 				if(m_utils.tagIsCat(id, feeds))
 				{
 					categories.add(
-						new category(
+						new Category(
 							id,
 							title,
 							0,

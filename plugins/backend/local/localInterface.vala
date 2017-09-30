@@ -179,8 +179,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		if(catID == null && newCatName != null)
 		{
 			string cID = createCategory(newCatName, null);
-			var cat = new category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-			var list = new Gee.LinkedList<category>();
+			var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
+			var list = new Gee.LinkedList<Category>();
 			list.add(cat);
 			dbDaemon.get_default().write_categories(list);
 			catIDs.add(cID);
@@ -317,7 +317,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		return true;
 	}

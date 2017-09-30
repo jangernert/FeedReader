@@ -137,7 +137,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 	public void markAllItemsRead()
 	{
 		var categories = dbDaemon.get_default().read_categories();
-		foreach(category cat in categories)
+		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
@@ -253,7 +253,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{

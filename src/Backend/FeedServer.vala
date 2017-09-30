@@ -122,7 +122,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(syncFeedsAndCategories())
 		{
-			var categories = new Gee.LinkedList<category>();
+			var categories = new Gee.LinkedList<Category>();
 			var feeds      = new Gee.LinkedList<Feed>();
 			var tags       = new Gee.LinkedList<tag>();
 
@@ -245,7 +245,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(syncFeedsAndCategories())
 		{
-			var categories = new Gee.LinkedList<category>();
+			var categories = new Gee.LinkedList<Category>();
 			var feeds      = new Gee.LinkedList<Feed>();
 			var tags       = new Gee.LinkedList<tag>();
 
@@ -929,7 +929,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return false;

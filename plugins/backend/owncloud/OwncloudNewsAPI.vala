@@ -163,7 +163,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-	public bool getCategories(Gee.List<category> categories, Gee.List<Feed> feeds)
+	public bool getCategories(Gee.List<Category> categories, Gee.List<Feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -187,7 +187,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 						string id = folder_node.get_int_member("id").to_string();
 
 						categories.add(
-							new category (
+							new Category (
 								id,
 								folder_node.get_string_member("name"),
 								m_utils.countUnread(feeds, id),

@@ -145,7 +145,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public bool getCategories(Gee.List<category> categories)
+	public bool getCategories(Gee.List<Category> categories)
 	{
 		var response = m_connection.send_get_request_to_feedly ("/v3/categories/");
 
@@ -175,7 +175,7 @@ public class FeedReader.FeedlyAPI : Object {
 				continue;
 
 			categories.add(
-				new category (
+				new Category (
 					categorieID,
 					object.get_string_member("label"),
 					getUnreadCountforID(categorieID),

@@ -504,7 +504,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 				if(selectedRow[1] == FeedID.ALL.to_string())
 				{
 					var categories = dbUI.get_default().read_categories();
-					foreach(category cat in categories)
+					foreach(Category cat in categories)
 					{
 						DBusConnection.get_default().markFeedAsRead(cat.getCatID(), true);
 						Logger.debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));

@@ -94,7 +94,7 @@ public class FeedReader.FeedbinAPI : Object {
 		return true;
 	}
 
-	public bool getTaggings(Gee.List<category> categories, Gee.List<Feed> feeds)
+	public bool getTaggings(Gee.List<Category> categories, Gee.List<Feed> feeds)
 	{
 		var response = m_connection.getRequest("taggings.json");
 
@@ -127,7 +127,7 @@ public class FeedReader.FeedbinAPI : Object {
 			if(id2 == null)
 			{
 				categories.add(
-					new category (
+					new Category (
 						id,
 						name,
 						0,

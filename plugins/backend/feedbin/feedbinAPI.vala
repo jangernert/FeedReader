@@ -44,9 +44,11 @@ public class FeedReader.FeedbinAPI : Object {
 	public bool getSubscriptionList(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.getRequest("subscriptions.json");
-
-		if(response.status != 200)
+		if(!response.is_ok())
+		{
+			Logger.error("getSubscriptionList: Unexpected status: %u".printf(response.status));
 			return false;
+		}
 
 		var parser = new Json.Parser();
 		try
@@ -69,7 +71,7 @@ public class FeedReader.FeedbinAPI : Object {
 			string id = object.get_int_member("feed_id").to_string();
 			string xmlURL = object.get_string_member("feed_url");
 
-			string title = "No Title";
+			string title;
 			if(object.has_member("title"))
 			{
 				title = object.get_string_member("title");
@@ -98,10 +100,9 @@ public class FeedReader.FeedbinAPI : Object {
 	public Gee.Map<string, string>? getTaggings()
 	{
 		var response = m_connection.getRequest("taggings.json");
-
-		if(response.status != 200)
+		if(!response.is_ok())
 		{
-			Logger.error("getTaggings: Got unexpected response code: %u".printf(response.status));
+			Logger.error("getTaggings: Got unexpected status: %u".printf(response.status));
 			return null;
 		}
 
@@ -137,7 +138,6 @@ public class FeedReader.FeedbinAPI : Object {
 
 	public Gee.List<Article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)
 	{
-		Gee.List<Article> articles = new Gee.ArrayList<Article>();
 		string request = "entries.json?per_page=100";
 		request += "&page=%i".printf(page);
 		request += "&starred=%s".printf(onlyStarred ? "true" : "false");
@@ -157,26 +157,36 @@ public class FeedReader.FeedbinAPI : Object {
 
 		Logger.debug(request);
 
-		string response = m_connection.getRequest(request).data;
+		var response = m_connection.getRequest(request);
+		// Feedbin returns 404 when there are no more articles to load
+		if(response.status == 404)
+		{
+			return Gee.List.empty<Article>();
+		}
+		if(!response.is_ok())
+		{
+			Logger.error("getEntries: Unexpected status code: %u".printf(response.status));
+			return Gee.List.empty<Article>();
+		}
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response, -1);
+			parser.load_from_data(response.data, -1);
 		}
 		catch(Error e)
 		{
 			Logger.error("getEntries: Could not load message response");
 			Logger.error(e.message);
-			Logger.error(response);
-			return articles;
+			Logger.error(response.data);
+			return Gee.List.empty<Article>();
 		}
 
 		var root = parser.get_root();
 		if(root.get_node_type() != Json.NodeType.ARRAY)
 		{
-			Logger.error(response);
-			return articles;
+			Logger.error("getEntries: Expected JSON object but got: " + response.data);
+			return Gee.List.empty<Article>();
 		}
 
 		var array = root.get_array();
@@ -184,6 +194,7 @@ public class FeedReader.FeedbinAPI : Object {
 
 		Logger.debug("article count: %u".printf(length));
 
+		var articles = new Gee.ArrayList<Article>();
 		for(uint i = 0; i < length; i++)
 		{
 			Json.Object object = array.get_object_element(i);
@@ -227,16 +238,28 @@ public class FeedReader.FeedbinAPI : Object {
 
 	public Gee.List<string> unreadEntries()
 	{
-		string response = m_connection.getRequest("unread_entries.json").data;
-		response = response.substring(1, response.length-2);
-		return StringUtils.split(response, ",");
+		var response = m_connection.getRequest("unread_entries.json");
+		if(!response.is_ok())
+		{
+			Logger.error("unreadEntries: Unexpected status %u with response: %s".printf(response.status, response.data));
+			return Gee.List.empty<string>();
+		}
+		var data = response.data;
+		data = data.substring(1, data.length - 2);
+		return StringUtils.split(data, ",");
 	}
 
 	public Gee.List<string> starredEntries()
 	{
-		string response = m_connection.getRequest("starred_entries.json").data;
-		response = response.substring(1, response.length-2);
-		return StringUtils.split(response, ",");
+		var response = m_connection.getRequest("starred_entries.json");
+		if(!response.is_ok())
+		{
+			Logger.error("unreadEntries: Unexpected status %u with response: %s".printf(response.status, response.data));
+			return Gee.List.empty<string>();
+		}
+		var data = response.data;
+		data = data.substring(1, data.length - 2);
+		return StringUtils.split(data, ",");
 	}
 
 	public void createUnreadEntries(Gee.List<string> articleIDs, bool read)
@@ -256,7 +279,7 @@ public class FeedReader.FeedbinAPI : Object {
 			res = m_connection.postRequest("unread_entries.json", json);
 		else
 			res = m_connection.postRequest("unread_entries/delete.json", json);
-		if(res.status != 200)
+		if(!res.is_ok())
 			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), read ? "read" : "unread", res.status, res.data));
 	}
 
@@ -273,15 +296,20 @@ public class FeedReader.FeedbinAPI : Object {
 
 		string json = FeedbinUtils.json_object_to_string(object);
 
+		Response res;
 		if(starred)
-			m_connection.postRequest("starred_entries.json", json);
+			res = m_connection.postRequest("starred_entries.json", json);
 		else
-			m_connection.deleteRequest("starred_entries.json", json);
+			res = m_connection.deleteRequest("starred_entries.json", json);
+		if(!res.is_ok())
+			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), starred ? "starred" : "unstarred", res.status, res.data));
 	}
 
 	public void deleteSubscription(string feedID)
 	{
-		m_connection.deleteRequest("subscriptions/%s.json".printf(feedID));
+		var res = m_connection.deleteRequest("subscriptions/%s.json".printf(feedID));
+		if(!res.is_ok())
+			Logger.error("deleteSubscription: Failed for feed %s with status %u, response %s".printf(feedID, res.status, res.data));
 	}
 
 	public string? addSubscription(string url, out string? error)
@@ -326,9 +354,11 @@ public class FeedReader.FeedbinAPI : Object {
 		string json = FeedbinUtils.json_object_to_string(object);
 
 		Logger.debug("Renaming feed %s: %s".printf(feedID, json));
-		var response = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
-
-		Logger.debug("subscriptions/%s/update.json: %s".printf(feedID, response.data));
+		var res = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
+		if(!res.is_ok())
+		{
+			Logger.error("renameFeed: Failed to rename feed %s to %s, status %u, response %s".printf(feedID, title, res.status, res.data));
+		}
 	}
 
 }

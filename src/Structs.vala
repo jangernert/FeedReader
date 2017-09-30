@@ -19,6 +19,11 @@ namespace FeedReader {
 		uint status;
 		string data;
 		Soup.MessageHeaders headers;
+
+		public bool is_ok()
+		{
+			return status >= 200 && status < 400;
+		}
 	}
 
 	private struct ResourceMetadata

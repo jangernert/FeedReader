@@ -116,7 +116,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void setArticleIsRead(string articleID, ArticleStatus read)
 	{
-		var articleIDs = new Gee.ArrayList<string>.wrap(new string[] { articleID });
+		var articleIDs = ListUtils.single<string>(articleID);
 		if(read == ArticleStatus.UNREAD)
 			m_api.createUnreadEntries(articleIDs, false);
 		else if(read == ArticleStatus.READ)
@@ -125,7 +125,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
 	{
-		var articleIDs = new Gee.ArrayList<string>.wrap(new string[] { articleID });
+		var articleIDs = ListUtils.single<string>(articleID);
 		if(marked == ArticleStatus.MARKED)
 			m_api.createStarredEntries(articleIDs, true);
 		else if(marked == ArticleStatus.UNMARKED)

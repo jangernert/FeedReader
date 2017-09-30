@@ -280,8 +280,28 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 		var settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 		DateTime? time = null;
+		switch(Settings.general().get_enum("drop-articles-after"))
+		{
+			case DropArticles.ONE_WEEK:
+				time = new DateTime.now_utc().add_weeks(-1);
+				break;
+
+			case DropArticles.ONE_MONTH:
+				time = new DateTime.now_utc().add_months(-1);
+				break;
+
+			case DropArticles.SIX_MONTHS:
+				time = new DateTime.now_utc().add_months(-6);
+				break;
+		}
 		if(!dbDaemon.get_default().isTableEmpty("articles"))
-			time = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
+		{
+			var last_sync = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
+			if(time == null || last_sync.to_unix() > time.to_unix())
+			{
+				time = last_sync;
+			}
+		}
 
 		string? fID = isTagID ? null : feedID;
 		bool onlyStarred = (whatToGet == ArticleStatus.MARKED);

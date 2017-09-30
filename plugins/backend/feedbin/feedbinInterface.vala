@@ -224,39 +224,50 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		m_api.renameFeed(feedID, title);
 	}
 
-	public void moveFeed(string feedID, string newCatID, string? currentCatID)
+	public void moveFeed(string feed_id, string new_category_id, string? old_category_id)
 	{
-
+		m_api.addTagging(feed_id, new_category_id);
 	}
 
-	public string createCategory(string title, string? parentID)
+	public void renameCategory(string old_category, string new_category)
 	{
-		return "";
-	}
-
-	public void renameCategory(string catID, string title)
-	{
-
+		Logger.debug(@"renameCategory: From $old_category to $new_category");
+		Gee.Map<string, string> feed_category_map = m_api.getTaggings();
+		foreach(var entry in feed_category_map.entries)
+		{
+			var feed_id = entry.key;
+			var feed_category = entry.value;
+			if(feed_category != old_category)
+				continue;
+			Logger.debug(@"renameCategory: Tagging $feed_id with $new_category");
+			m_api.addTagging(feed_id, new_category);
+		}
 	}
 
 	public void moveCategory(string catID, string newParentID)
 	{
+		// Feedbin doesn't have multi-level categories
 		return;
+	}
+
+	public string createCategory(string title, string? parentID)
+	{
+		// Categories are created and destroyed based on feeds having them.
+		// There are no empty categories in Feedbin
+		return "";
 	}
 
 	public void deleteCategory(string catID)
 	{
-
 	}
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-
+		// TODO: Add delete tagging to m_api
 	}
 
 	public void importOPML(string opml)
 	{
-
 	}
 
 	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)

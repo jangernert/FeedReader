@@ -41,6 +41,35 @@ public class FeedReader.FeedbinAPI : Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
+	public string? getFeedIDForSubscription(string subscription_id)
+	{
+		var response = m_connection.getRequest(@"subscriptions/$subscription_id.json");
+		if(response.status == 404)
+		{
+			Logger.warning(@"getFeedIDForSubscription: subscription %subscription_id does not exist");
+			return null;
+		}
+		if(!response.is_ok())
+		{
+			Logger.error("getFeedIDForSubscription: Unexpected status: %u".printf(response.status));
+			return null;
+		}
+
+		var parser = new Json.Parser();
+		try
+		{
+			parser.load_from_data(response.data, -1);
+		}
+		catch (Error e)
+		{
+			Logger.error("getFeedIDForSubscription: Could not load JSON message " + response.data);
+			Logger.error(e.message);
+			return null;
+		}
+		Json.Object object = parser.get_root().get_object();
+		return object.get_int_member("feed_id").to_string();
+	}
+
 	public Gee.List<Feed>? getFeeds()
 	{
 		var response = m_connection.getRequest("subscriptions.json");
@@ -130,6 +159,20 @@ public class FeedReader.FeedbinAPI : Object {
 			map.set(feed_id, subscription_id);
 		}
 		return map;
+	}
+
+	public void addTagging(string feed_id, string tag_name)
+	{
+		Json.Object object = new Json.Object();
+		object.set_string_member("feed_id", feed_id);
+		object.set_string_member("name", tag_name);
+		string json = FeedbinUtils.json_object_to_string(object);
+
+		var response = m_connection.postRequest("taggings.json", json);
+		if(!response.is_ok())
+		{
+			Logger.error(@"addTagging: Unexpected response status %s, data %s when adding tag '$tag_name' for feed $feed_id".printf(response.status, response.data));
+		}
 	}
 
 	// returns a map from feed ID to category name

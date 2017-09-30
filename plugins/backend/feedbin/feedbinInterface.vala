@@ -191,14 +191,21 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		return;
 	}
 
-	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
+	public bool addFeed(string feed_url, string? cat_id, string? category_name, out string feed_id, out string errmsg)
 	{
-		feedID = "";
-		var newFeedID = m_api.addSubscription(feedURL, out errmsg);
-		if(newFeedID == null || errmsg != "")
+		feed_id = "";
+		var subscription_id = m_api.addSubscription(feed_url, out errmsg);
+		if(subscription_id == null || errmsg != "")
 			return false;
 
-		feedID = newFeedID;
+		var new_feed_id = m_api.getFeedIDForSubscription(subscription_id);
+		if(new_feed_id == null)
+			return false;
+
+		feed_id = new_feed_id;
+		if(category_name != null)
+			m_api.addTagging(feed_id, category_name);
+
 		return true;
 	}
 

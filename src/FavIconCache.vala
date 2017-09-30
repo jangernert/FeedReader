@@ -51,7 +51,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 				pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
 				m_map.set(icon_name, pixbuf);
 			}
-			catch (FileError.NOENT e)
+			catch (IOError.NOT_FOUND e)
 			{
 				Logger.debug(@"FavIconCache: Icon $fileName does not exist");
 				return;
@@ -59,7 +59,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("FavIconCache.refresh: %s".printf(e.message));
+			Logger.error("FavIconCache.load: %s".printf(e.message));
 		}
 	}
 

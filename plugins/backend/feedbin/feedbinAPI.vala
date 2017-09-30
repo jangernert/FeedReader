@@ -264,10 +264,13 @@ public class FeedReader.FeedbinAPI : Object {
 		object.set_array_member("unread_entries", array);
 		string json = FeedbinUtils.json_object_to_string(object);
 
+		Response res;
 		if(!read)
-			m_connection.postRequest("unread_entries.json", json);
+			res = m_connection.postRequest("unread_entries.json", json);
 		else
-			m_connection.deleteRequest("unread_entries.json", json);
+			res = m_connection.postRequest("unread_entries/delete.json", json);
+		if(res.status != 200)
+			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), read ? "read" : "unread", res.status, res.data));
 	}
 
 	public void createStarredEntries(Gee.List<string> articleIDs, bool starred)

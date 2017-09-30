@@ -127,4 +127,14 @@ public class FeedReader.feedbinUtils : GLib.Object {
 			}
 		}
 	}
+
+	public static string json_object_to_string(Json.Object obj)
+	{
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(obj);
+
+		var gen = new Json.Generator();
+		gen.set_root(root);
+		return gen.to_data(null);
+	}
 }

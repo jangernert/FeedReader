@@ -143,8 +143,6 @@ public class FeedReader.feedbinAPI : Object {
 			{
 				m_utils.addFeedToCat(feeds, feedID, id2);
 			}
-
-
 		}
 
 		return true;
@@ -266,13 +264,7 @@ public class FeedReader.feedbinAPI : Object {
 
 		Json.Object object = new Json.Object();
 		object.set_array_member("unread_entries", array);
-
-		var root = new Json.Node(Json.NodeType.OBJECT);
-		root.set_object(object);
-
-		var gen = new Json.Generator();
-		gen.set_root(root);
-		string json = gen.to_data(null);
+		string json = feedbinUtils.json_object_to_string(object);
 
 		if(!read)
 			m_connection.postRequest("unread_entries.json", json);
@@ -291,12 +283,7 @@ public class FeedReader.feedbinAPI : Object {
 		Json.Object object = new Json.Object();
 		object.set_array_member("starred_entries", array);
 
-		var root = new Json.Node(Json.NodeType.OBJECT);
-		root.set_object(object);
-
-		var gen = new Json.Generator();
-		gen.set_root(root);
-		string json = gen.to_data(null);
+		string json = feedbinUtils.json_object_to_string(object);
 
 		if(starred)
 			m_connection.postRequest("starred_entries.json", json);
@@ -313,20 +300,12 @@ public class FeedReader.feedbinAPI : Object {
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("title", title);
+		string json = feedbinUtils.json_object_to_string(object);
 
-		var root = new Json.Node(Json.NodeType.OBJECT);
-		root.set_object(object);
-
-		var gen = new Json.Generator();
-		gen.set_root(root);
-		string json = gen.to_data(null);
-
-		Logger.debug(json);
-
+		Logger.debug("Renaming feed %s: %s".printf(feedID, json));
 		var response = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
 
-		Logger.debug("subscriptions/%s/update.json".printf(feedID));
-		Logger.debug(response.data);
+		Logger.debug("subscriptions/%s/update.json: %s".printf(feedID, response.data));
 	}
 
 }

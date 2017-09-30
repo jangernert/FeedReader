@@ -49,6 +49,7 @@ PACKAGES
 	libpeas-1.0
 	gtk+-3.0
 	gee-0.8
+	json-glib-1.0
 	libsecret-1
 	sqlite3
 	libsoup-2.4

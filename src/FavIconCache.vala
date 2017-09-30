@@ -33,9 +33,9 @@ public class FeedReader.FavIconCache : GLib.Object {
 
 	private async void load(string icon_name)
 	{
+		var fileName = icon_name + ".ico";
 		try
 		{
-			var fileName = icon_name + ".ico";
 			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);
 			try
 			{
@@ -59,7 +59,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("FavIconCache.load: %s".printf(e.message));
+			Logger.error(@"FavIconCache.load: $fileName: %s".printf(e.message));
 		}
 	}
 

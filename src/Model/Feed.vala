@@ -89,6 +89,13 @@ public class FeedReader.Feed : GLib.Object {
 		m_catIDs = catIDs;
 	}
 
+	// Helper function for backends that only support one category per feed
+	public void setCategory(string id)
+	{
+		m_catIDs.clear();
+		m_catIDs.add(id);
+	}
+
 	public bool isUncategorized()
 	{
 		if(m_catIDs.size == 0)

@@ -254,16 +254,50 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		if(m_api.getSubscriptionList(feeds))
-		{
-			if(cancellable != null && cancellable.is_cancelled())
-				return false;
+		if(!m_api.getSubscriptionList(feeds))
+			return false;
 
-			if(m_api.getTaggings(categories, feeds))
-				return true;
+		if(cancellable != null && cancellable.is_cancelled())
+			return false;
+
+		var taggings = m_api.getTaggings();
+		if(taggings == null || (cancellable != null && cancellable.is_cancelled()))
+			return false;
+
+		// It's easier to rebuild the category list than to update it
+		var category_names = new Gee.HashSet<string>();
+		category_names.add_all(taggings.values);
+		Logger.debug("getFeedsAndCats: Got %d categories: %s".printf(category_names.size, StringUtils.join(category_names, ", ")));
+
+		categories.clear();
+		foreach(string name in category_names)
+		{
+			// Note: Feedbin categories *are* case sensitive, so we don't need
+			// to change the case here. "articles" and "Articles" are different
+			// tags.
+			categories.add(
+				new Category (
+					name,
+					name,
+					0,
+					0,
+					CategoryID.MASTER.to_string(),
+					1
+				)
+			);
 		}
 
-		return false;
+		// Each feed can only have one "tag" in Feedbin, so either set or
+		// remove the tag
+		foreach(Feed feed in feeds)
+		{
+			var feed_id = feed.getFeedID();
+			if(taggings.has_key(feed_id))
+				feed.setCategory(taggings.get(feed_id));
+			else
+				feed.setCategory(uncategorizedID());
+		}
+		return true;
 	}
 
 	public int getUnreadCount()

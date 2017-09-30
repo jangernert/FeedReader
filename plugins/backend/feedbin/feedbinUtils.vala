@@ -106,28 +106,6 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		return removed;
 	}
 
-	public string? catExists(Gee.List<Category> categories, string name)
-	{
-		foreach(Category cat in categories)
-		{
-			if(cat.getTitle() == name)
-				return cat.getCatID();
-		}
-
-		return null;
-	}
-
-	public void addFeedToCat(Gee.List<Feed> feeds, string feedID, string catID)
-	{
-		foreach(Feed f in feeds)
-		{
-			if(f.getFeedID() == feedID)
-			{
-				f.setCats(ListUtils.single(catID));
-			}
-		}
-	}
-
 	public static string json_object_to_string(Json.Object obj)
 	{
 		var root = new Json.Node(Json.NodeType.OBJECT);

@@ -29,7 +29,7 @@ public class FeedReader.StringUtils {
 		return res;
 	}
 
-	public static string join(Gee.List<string> l, string sep)
+	public static string join(Gee.Collection<string> l, string sep)
 	{
 		return string.joinv(sep, l.to_array());
 	}

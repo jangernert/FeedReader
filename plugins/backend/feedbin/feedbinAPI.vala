@@ -94,12 +94,16 @@ public class FeedReader.FeedbinAPI : Object {
 		return true;
 	}
 
-	public bool getTaggings(Gee.List<Category> categories, Gee.List<Feed> feeds)
+	// returns a map from feed ID to category name
+	public Gee.Map<string, string>? getTaggings()
 	{
 		var response = m_connection.getRequest("taggings.json");
 
 		if(response.status != 200)
-			return false;
+		{
+			Logger.error("getTaggings: Got unexpected response code: %u".printf(response.status));
+			return null;
+		}
 
 		var parser = new Json.Parser();
 		try
@@ -108,44 +112,27 @@ public class FeedReader.FeedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.error("getTagList: Could not load message response");
+			Logger.error("getTaggings: Could not load message response");
 			Logger.error(e.message);
-			return false;
+			return null;
 		}
 		Json.Array array = parser.get_root().get_array();
 
+		var taggings = new Gee.HashMap<string, string>();
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
 
-			string id = "catID%i".printf(i);
-			string name = object.get_string_member("name");
-			string feedID = object.get_int_member("feed_id").to_string();
+			/* Note: We use the name as the tag ID, since Feedbin doesn't
+			 * keep track of tags separately from their names */
+			string category_id = object.get_string_member("name");
+			string feed_id = object.get_int_member("feed_id").to_string();
 
-			string? id2 = m_utils.catExists(categories, name);
-
-			if(id2 == null)
-			{
-				categories.add(
-					new Category (
-						id,
-						name,
-						0,
-						i+1,
-						CategoryID.MASTER.to_string(),
-						1
-					)
-				);
-
-				m_utils.addFeedToCat(feeds, feedID, id);
-			}
-			else
-			{
-				m_utils.addFeedToCat(feeds, feedID, id2);
-			}
+			taggings.set(feed_id, category_id);
 		}
 
-		return true;
+		Logger.debug("getTaggings: Got %d taggings".printf(taggings.size));
+		return taggings;
 	}
 
 	public Gee.List<Article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)

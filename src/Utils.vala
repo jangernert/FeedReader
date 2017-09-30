@@ -255,6 +255,9 @@ public class FeedReader.Utils : GLib.Object {
 				directory.delete();
 			}
 		}
+		catch (IOError.NOT_FOUND e)
+		{
+		}
 		catch(GLib.Error e)
 		{
 			Logger.error("Utils - remove_directory: " + e.message);
@@ -576,7 +579,23 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 		var path = GLib.File.new_for_path(icon_path);
-		try{path.make_directory_with_parents();}catch(GLib.Error e){}
+		try
+		{
+			yield path.query_info_async("", FileQueryInfoFlags.NONE);
+		}
+		catch (IOError.NOT_FOUND e)
+		{
+			try
+			{
+				path.make_directory_with_parents();
+			}
+			catch(GLib.Error e){}
+		}
+		catch(Error e)
+		{
+			Logger.error("downloadIcon: Unknown error: " + e.message);
+			return false;
+		}
 		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
@@ -589,7 +608,7 @@ public class FeedReader.Utils : GLib.Object {
 		string? last_modified = null;
 		if(icon_exists)
 		{
-			var metadata = ResourceMetadata.from_file(metadata_filename);
+			var metadata = yield ResourceMetadata.from_file_async(metadata_filename);
 			etag = metadata.etag;
 			last_modified = metadata.last_modified;
 		}
@@ -665,7 +684,7 @@ public class FeedReader.Utils : GLib.Object {
 			var metadata = ResourceMetadata();
 			metadata.etag = message.response_headers.get_one("ETag");
 			metadata.last_modified = message.response_headers.get_one("Last-Modified");
-			metadata.save_to_file(metadata_filename);
+			yield metadata.save_to_file_async(metadata_filename);
 			return true;
 		}
 		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url, got response code $status");

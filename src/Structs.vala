@@ -39,12 +39,12 @@ namespace FeedReader {
 		{
 		}
 
-		public ResourceMetadata.from_file(string filename)
+		public ResourceMetadata.from_data(string data)
 		{
-			var config = new KeyFile();
 			try
 			{
-				config.load_from_file(filename, KeyFileFlags.NONE);
+				var config = new KeyFile();
+				config.load_from_data(data, data.length, KeyFileFlags.NONE);
 				try { this.etag = config.get_string(CACHE_GROUP, ETAG_KEY); }
 				catch (KeyFileError.KEY_NOT_FOUND e) {}
 				catch (KeyFileError.GROUP_NOT_FOUND e) {}
@@ -54,33 +54,61 @@ namespace FeedReader {
 			}
 			catch (KeyFileError e)
 			{
-				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);
-			}
-			catch (FileError e)
-			{
-				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);
+				Logger.warning(@"FaviconMetadata.from_file: Failed to load from $data");
 			}
 		}
 
-		public void save_to_file(string filename)
+		public static async ResourceMetadata from_file_async(string filename)
 		{
+			try
+			{
+				var file = File.new_for_path(filename);
+				uint8[] contents;
+				yield file.load_contents_async(null, out contents, null);
+				return ResourceMetadata.from_data((string)contents);
+			}
+			catch (IOError.NOT_FOUND e)
+			{
+			}
+			catch (Error e)
+			{
+				Logger.warning(@"FaviconMetadata.from_file: Failed to load $filename: " + e.message);
+			}
+			return ResourceMetadata();
+		}
+
+		public async void save_to_file_async(string filename)
+		{
+			var file = File.new_for_path(filename);
 			if(this.etag == null && this.last_modified == null)
 			{
-				if(FileUtils.unlink(filename) != 0)
-					Logger.warning(@"FaviconMetadata.save_to_file: Error deleting metadata file $filename");
+				try
+				{
+					yield file.delete_async();
+				}
+				catch (IOError.NOT_FOUND e)
+				{
+				}
+				catch (Error e)
+				{
+					Logger.warning(@"FaviconMetadata.save_to_file: Error deleting metadata file $filename: " + e.message);
+				}
 			}
 			else
 			{
 				var config = new KeyFile();
-				config.set_string(CACHE_GROUP, ETAG_KEY, this.etag);
-				config.set_string(CACHE_GROUP, LAST_MODIFIED_KEY, this.last_modified);
+				if(this.etag != null)
+					config.set_string(CACHE_GROUP, ETAG_KEY, this.etag);
+				if(this.last_modified != null)
+					config.set_string(CACHE_GROUP, LAST_MODIFIED_KEY, this.last_modified);
+				var data = config.to_data();
 				try
 				{
-					config.save_to_file(filename);
+					yield file.replace_contents_async(data.data, null, false, FileCreateFlags.NONE, null, null);
 				}
-				catch (FileError e)
+				catch (Error e)
 				{
-					Logger.warning(@"FaviconMetadata.save_to_file: Failed to save metadata file $filename: " + e.message);
+					Logger.warning(@"FaviconMetadata.save_to_file: Failed to save metadata file $filename,  $data:\n" + e.message);
 				}
 			}
 		}

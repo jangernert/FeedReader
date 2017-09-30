@@ -254,8 +254,11 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		if(!m_api.getSubscriptionList(feeds))
+		var new_feeds = m_api.getFeeds();
+		if(new_feeds == null)
 			return false;
+		feeds.clear();
+		feeds.add_all(new_feeds);
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return false;

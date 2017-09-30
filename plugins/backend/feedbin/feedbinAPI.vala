@@ -41,13 +41,13 @@ public class FeedReader.FeedbinAPI : Object {
 		return LoginResponse.UNKNOWN_ERROR;
 	}
 
-	public bool getSubscriptionList(Gee.List<Feed> feeds)
+	public Gee.List<Feed>? getFeeds()
 	{
 		var response = m_connection.getRequest("subscriptions.json");
 		if(!response.is_ok())
 		{
-			Logger.error("getSubscriptionList: Unexpected status: %u".printf(response.status));
-			return false;
+			Logger.error("getFeeds: Unexpected status: %u".printf(response.status));
+			return null;
 		}
 
 		var parser = new Json.Parser();
@@ -57,12 +57,13 @@ public class FeedReader.FeedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			Logger.error("getTagList: Could not load message response");
+			Logger.error("getFeeds: Could not load message response");
 			Logger.error(e.message);
-			return false;
+			return null;
 		}
 		Json.Array array = parser.get_root().get_array();
 
+		var feeds = new Gee.ArrayList<Feed>();
 		for (int i = 0; i < array.get_length (); i++)
 		{
 			Json.Object object = array.get_object_element(i);
@@ -93,7 +94,42 @@ public class FeedReader.FeedbinAPI : Object {
 			);
 		}
 
-		return true;
+		return feeds;
+	}
+
+	// maps from feed ID to subscription ID
+	private Gee.Map<string, string>? getFeedSubscriptionMap()
+	{
+		var response = m_connection.getRequest("subscriptions.json");
+		if(!response.is_ok())
+		{
+			Logger.error("getFeedSubscriptionMap: Unexpected status: %u".printf(response.status));
+			return null;
+		}
+
+		var parser = new Json.Parser();
+		try
+		{
+			parser.load_from_data(response.data, -1);
+		}
+		catch (Error e)
+		{
+			Logger.error("getFeedSubscriptionMap: Could not load message response");
+			Logger.error(e.message);
+			return null;
+		}
+		Json.Array array = parser.get_root().get_array();
+
+		var map = new Gee.HashMap<string, string>();
+		for (int i = 0; i < array.get_length (); i++)
+		{
+			Json.Object object = array.get_object_element(i);
+
+			string subscription_id = object.get_int_member("id").to_string();
+			string feed_id = object.get_int_member("feed_id").to_string();
+			map.set(feed_id, subscription_id);
+		}
+		return map;
 	}
 
 	// returns a map from feed ID to category name
@@ -305,16 +341,27 @@ public class FeedReader.FeedbinAPI : Object {
 			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), starred ? "starred" : "unstarred", res.status, res.data));
 	}
 
-	public void deleteSubscription(string feedID)
+	public void deleteSubscription(string feed_id)
 	{
-		var res = m_connection.deleteRequest("subscriptions/%s.json".printf(feedID));
+		var map = getFeedSubscriptionMap();
+		if(map == null)
+			return;
+
+		if(!map.has_key(feed_id))
+		{
+			Logger.error(@"deleteSubscription: Subscription to feed $feed_id doesn't exist.");
+			return;
+		}
+
+		var subscription_id = map.get(feed_id);
+		var res = m_connection.deleteRequest("subscriptions/%s.json".printf(subscription_id));
 		if(!res.is_ok())
-			Logger.error("deleteSubscription: Failed for feed %s with status %u, response %s".printf(feedID, res.status, res.data));
+			Logger.error("deleteSubscription: Failed for feed %s with status %u, response %s".printf(feed_id, res.status, res.data));
 	}
 
-	public string? addSubscription(string url, out string? error)
+	public string? addSubscription(string url, out string error)
 	{
-		error = null;
+		error = "";
 
 		Json.Object object = new Json.Object();
 		object.set_string_member("feed_url", url);
@@ -343,21 +390,39 @@ public class FeedReader.FeedbinAPI : Object {
 			error = "Feedbin API error adding feed %s, no Location header".printf(url);
 			return null;
 		}
-		Logger.info("Location: %s".printf(location));
-		return null;
+		Logger.info(@"Location: $location");
+		var last_slash = location.last_index_of_char('/');
+		location = location.substring(last_slash + 1);
+		Logger.debug(location);
+		var last_dot = location.last_index_of_char('.');
+		location = location.substring(0, last_dot);
+		Logger.debug(location);
+		return location;
 	}
 
-	public void renameFeed(string feedID, string title)
+	public void renameFeed(string feed_id, string title)
 	{
+		var map = getFeedSubscriptionMap();
+		if(map == null)
+			return;
+
+		if(!map.has_key(feed_id))
+		{
+			Logger.error(@"deleteSubscription: Subscription to feed $feed_id doesn't exist.");
+			return;
+		}
+
+		var subscription_id = map.get(feed_id);
+
 		Json.Object object = new Json.Object();
 		object.set_string_member("title", title);
 		string json = FeedbinUtils.json_object_to_string(object);
 
-		Logger.debug("Renaming feed %s: %s".printf(feedID, json));
-		var res = m_connection.postRequest("subscriptions/%s/update.json".printf(feedID), json);
+		Logger.debug(@"Renaming feed $feed_id (subscription: $subscription_id): $json");
+		var res = m_connection.postRequest("subscriptions/%s/update.json".printf(subscription_id), json);
 		if(!res.is_ok())
 		{
-			Logger.error("renameFeed: Failed to rename feed %s to %s, status %u, response %s".printf(feedID, title, res.status, res.data));
+			Logger.error("renameFeed: Failed to rename feed %s to %s, status %u, response %s".printf(feed_id, title, res.status, res.data));
 		}
 	}
 

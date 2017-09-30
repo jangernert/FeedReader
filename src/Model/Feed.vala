@@ -20,17 +20,17 @@ public class FeedReader.Feed : GLib.Object {
 	private string m_url;
 	private string? m_xmlURL;
 	private uint m_unread;
-	private string[] m_catIDs;
+	private Gee.List<string> m_catIDs;
 	private string? m_iconURL;
 
-	public Feed(string feedID, string title, string url, uint unread, string[] catIDs, string? iconURL = null, string? xmlURL = null)
+	public Feed(string feedID, string title, string url, uint unread, Gee.List<string>? catIDs = null, string? iconURL = null, string? xmlURL = null)
 	{
 		m_feedID = feedID;
 		m_title = Utils.UTF8fix(title);
 		m_url = url;
 		m_unread = unread;
-		m_catIDs = catIDs;
-		m_iconURL = (iconURL == "") ? null : iconURL;
+		m_catIDs = catIDs == null ? Gee.List.empty<string>() : catIDs;
+		m_iconURL = iconURL == "" ? null : iconURL;
 		m_xmlURL = xmlURL;
 	}
 
@@ -64,49 +64,37 @@ public class FeedReader.Feed : GLib.Object {
 		return m_unread;
 	}
 
-	public string[] getCatIDs()
+	public Gee.List<string> getCatIDs()
 	{
 		return m_catIDs;
 	}
 
 	public string getCatString()
 	{
-		string catIDs = "";
-		foreach(string id in m_catIDs)
-		{
-			catIDs += id + ",";
-		}
-
-		return catIDs;
+		return StringUtils.join(m_catIDs, ",");
 	}
 
 	public bool hasCat(string catID)
 	{
-		foreach(string cat in m_catIDs)
-		{
-			if(cat == catID)
-				return true;
-		}
-
-		return false;
+		return m_catIDs.contains(catID);
 	}
 
 	public void addCat(string catID)
 	{
-		m_catIDs += catID;
+		m_catIDs.add(catID);
 	}
 
-	public void setCats(string[] catIDs)
+	public void setCats(Gee.List<string> catIDs)
 	{
 		m_catIDs = catIDs;
 	}
 
 	public bool isUncategorized()
 	{
-		if(m_catIDs.length == 0)
+		if(m_catIDs.size == 0)
 			return true;
 
-		if(m_catIDs.length == 1 && m_catIDs[0].contains("global.must"))
+		if(m_catIDs.size == 1 && m_catIDs[0].contains("global.must"))
 			return true;
 
 		return false;

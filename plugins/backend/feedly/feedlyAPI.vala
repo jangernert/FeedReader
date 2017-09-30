@@ -234,17 +234,17 @@ public class FeedReader.FeedlyAPI : Object {
 			}
 
 			uint catCount = object.get_array_member("categories").get_length();
-			string[] categories = {};
 
+			var categories = new Gee.ArrayList<string>();
 			for(uint j = 0; j < catCount; ++j)
 			{
-				string categorieID = object.get_array_member("categories").get_object_element(j).get_string_member("id");
+				string categoryID = object.get_array_member("categories").get_object_element(j).get_string_member("id");
 
-				if(categorieID.has_suffix("global.all")
-				|| categorieID.has_suffix("global.uncategorized"))
+				if(categoryID.has_suffix("global.all")
+				|| categoryID.has_suffix("global.uncategorized"))
 					continue;
 
-				categories += categorieID;
+				categories.add(categoryID);
 			}
 
 			feeds.add(

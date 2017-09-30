@@ -1142,7 +1142,7 @@ public class FeedReader.dbBase : GLib.Object {
 				stmt.column_text(1),
 				stmt.column_text(2),
 				getFeedUnread(feedID),
-				stmt.column_text(3).split(","),
+				StringUtils.split(stmt.column_text(3), ",", true),
 				null,
 				stmt.column_text(5));
 			return tmpfeed;
@@ -1154,8 +1154,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public Gee.ArrayList<Feed> read_feeds(bool starredCount = false)
 	{
-		Gee.ArrayList<Feed> tmp = new Gee.ArrayList<Feed>();
-		Feed tmpfeed;
+		Gee.ArrayList<Feed> feeds = new Gee.ArrayList<Feed>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("*");
@@ -1179,10 +1178,7 @@ public class FeedReader.dbBase : GLib.Object {
 			string xmlURL = stmt.column_text(5);
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
-			string[] catVec = { "" };
-
-			if(catString != "")
-				catVec = catString.split(",");
+			var categories = StringUtils.split(catString, ",", true);
 
 			uint count = 0;
 			if(starredCount)
@@ -1190,11 +1186,11 @@ public class FeedReader.dbBase : GLib.Object {
 			else
 				count = getFeedUnread(feedID);
 
-			tmpfeed = new Feed(feedID, name, url, count, catVec, null, xmlURL);
-			tmp.add(tmpfeed);
+			var feed = new Feed(feedID, name, url, count, categories, null, xmlURL);
+			feeds.add(feed);
 		}
 
-		return tmp;
+		return feeds;
 	}
 
 
@@ -1247,10 +1243,9 @@ public class FeedReader.dbBase : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<Feed> read_feeds_without_cat()
+	public Gee.List<Feed> read_feeds_without_cat()
 	{
-		Gee.ArrayList<Feed> tmp = new Gee.ArrayList<Feed>();
-		Feed tmpfeed;
+		var feeds = new Gee.ArrayList<Feed>();
 
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("*");
@@ -1275,14 +1270,12 @@ public class FeedReader.dbBase : GLib.Object {
 			string xmlURL = stmt.column_text(5);
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
-			string[] catVec = { "" };
-			if(catString != "")
-				catVec = catString.split(",");
-			tmpfeed = new Feed(feedID, name, url, getFeedUnread(feedID), catVec, null, xmlURL);
-			tmp.add(tmpfeed);
+			var categories = StringUtils.split(catString, ",", true);
+			var feed = new Feed(feedID, name, url, getFeedUnread(feedID), categories, null, xmlURL);
+			feeds.add(feed);
 		}
 
-		return tmp;
+		return feeds;
 	}
 
 	public category? read_category(string catID)

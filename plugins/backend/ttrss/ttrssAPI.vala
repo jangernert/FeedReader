@@ -220,7 +220,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("feed_url"),
 									(int)feed_node.get_int_member("unread"),
-									{ feed_node.get_int_member("cat_id").to_string() },
+									ListUtils.single(feed_node.get_int_member("cat_id").to_string()),
 									icon_url
 								)
 						);
@@ -261,7 +261,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 							feed_node.get_string_member("title"),
 							feed_node.get_string_member("feed_url"),
 							(int)feed_node.get_int_member("unread"),
-							{ feed_node.get_int_member("cat_id").to_string() },
+							ListUtils.single(feed_node.get_int_member("cat_id").to_string()),
 							icon_url
 						)
 				);

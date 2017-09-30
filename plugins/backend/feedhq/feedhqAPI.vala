@@ -130,11 +130,11 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			}
 
 			uint catCount = object.get_array_member("categories").get_length();
-			string[] categories = {};
 
+			var categories = new Gee.ArrayList<string>();
 			for(uint j = 0; j < catCount; ++j)
 			{
-				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id").replace("/", "_");
+				categories.add(object.get_array_member("categories").get_object_element(j).get_string_member("id").replace("/", "_"));
 			}
 			feeds.add(
 				new Feed(

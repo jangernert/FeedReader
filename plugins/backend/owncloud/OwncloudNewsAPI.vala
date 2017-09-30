@@ -140,7 +140,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("link"),
 									(int)feed_node.get_int_member("unreadCount"),
-									{ feed_node.get_int_member("folderId").to_string() },
+									ListUtils.single(feed_node.get_int_member("folderId").to_string()),
 									icon_url
 								)
 						);

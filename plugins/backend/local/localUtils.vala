@@ -20,7 +20,7 @@ public class FeedReader.localUtils : GLib.Object {
 
 	}
 
-	public Feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs, out string errmsg)
+	public Feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, Gee.List<string> catIDs, out string errmsg)
 	{
 		errmsg = "";
 

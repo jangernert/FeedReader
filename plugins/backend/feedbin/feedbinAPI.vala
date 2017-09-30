@@ -85,7 +85,7 @@ public class FeedReader.feedbinAPI : Object {
 					title,
 					url,
 					0,
-					{ "0" },
+					ListUtils.single("0"),
 					null,
 					xmlURL)
 			);

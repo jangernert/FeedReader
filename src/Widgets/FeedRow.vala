@@ -245,7 +245,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		app.add_action(remove_action);
 
 		var feed = dbUI.get_default().read_feed(m_feedID);
-		var catCount = feed.getCatIDs().length;
+		var catCount = feed.getCatIDs().size;
 		var cat = dbUI.get_default().read_category(m_catID);
 
 		var menu = new GLib.Menu();

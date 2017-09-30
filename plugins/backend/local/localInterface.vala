@@ -175,8 +175,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
-		string[] catIDs = {};
-
+	 	var catIDs = new Gee.ArrayList<string>();
 		if(catID == null && newCatName != null)
 		{
 			string cID = createCategory(newCatName, null);
@@ -184,15 +183,15 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var list = new Gee.LinkedList<category>();
 			list.add(cat);
 			dbDaemon.get_default().write_categories(list);
-			catIDs += cID;
+			catIDs.add(cID);
 		}
 		else if(catID != null && newCatName == null)
 		{
-			catIDs += catID;
+			catIDs.add(catID);
 		}
 		else
 		{
-			catIDs += "0";
+			catIDs.add("0");
 		}
 
 		feedID = "feedID00001";

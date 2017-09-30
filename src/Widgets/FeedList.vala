@@ -285,7 +285,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 					if(tmpRow != null)
 					{
-						if(Utils.arrayContains(item.getCatIDs(), tmpRow.getID())
+						if(item.getCatIDs().contains(tmpRow.getID())
 						|| tmpRow.getID() == "" && item.isUncategorized())
 						{
 							var feedrow = new FeedRow(

@@ -147,10 +147,13 @@ public class FeedReader.OPMLparser : GLib.Object {
 				Logger.debug(space() + "Feed: " + title + " feedURL: " + feedURL);
 			}
 
+			var categories = new Gee.ArrayList<string>();
 			if(catID == null)
-				m_feeds.add(new Feed("", title, website, 0,  { FeedServer.get_default().uncategorizedID() }, null, feedURL));
+				categories.add(FeedServer.get_default().uncategorizedID());
 			else
-				m_feeds.add(new Feed("", title, website, 0,  { catID }, null, feedURL));
+				categories.add(catID);
+
+			m_feeds.add(new Feed("", title, website, 0, categories, null, feedURL));
 		}
 	}
 

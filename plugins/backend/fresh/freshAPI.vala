@@ -83,7 +83,7 @@ public class FeedReader.freshAPI : Object {
 					title,
 					url,
 					0,
-					{ catID },
+					ListUtils.single(catID),
 					icon_url,
 					xmlURL)
 			);

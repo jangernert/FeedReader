@@ -123,19 +123,8 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		{
 			if(f.getFeedID() == feedID)
 			{
-				f.setCats( {catID} );
+				f.setCats(ListUtils.single(catID));
 			}
 		}
-	}
-
-	public bool isIDinArray(string[] arrayID, string id)
-	{
-		foreach(string i in arrayID)
-		{
-			if(i == id)
-				return true;
-		}
-
-		return false;
 	}
 }

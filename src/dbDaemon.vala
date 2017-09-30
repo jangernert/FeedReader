@@ -853,34 +853,13 @@ public class FeedReader.dbDaemon : dbBase {
 	public void move_feed(string feedID, string currentCatID, string? newCatID = null)
 	{
 		var Feed = dbDaemon.get_default().read_feed(feedID);
-		var catArray = Feed.getCatIDs();
-
-		if(Feed.hasCat(currentCatID))
-		{
-			string[] newCatArray = {};
-
-			foreach(string catID in catArray)
-			{
-				if(catID != currentCatID)
-				{
-					newCatArray += catID;
-				}
-			}
-
-			catArray = newCatArray;
-		}
+		var categories = Feed.getCatIDs();
+		categories.remove(currentCatID);
 
 		if(newCatID != null)
-			catArray += newCatID;
+			categories.add(newCatID);
 
-		string catString = "";
-
-		for(int i = 0; i < catArray.length; i++)
-		{
-			catString += catArray[i];
-			if(i < catArray.length-1)
-				catString += ",";
-		}
+		string catString = StringUtils.join(categories, ",");
 
 		var query = new QueryBuilder(QueryType.UPDATE, "feeds");
 		query.updateValuePair("category_id", catString, true);

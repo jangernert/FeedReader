@@ -61,7 +61,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool supportFeedManipulation()
 	{
-		return false;
+		return true;
 	}
 
 	public bool hideCategoryWhenEmpty(string catID)
@@ -193,9 +193,13 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
-		feedID = "-98";
-		errmsg = "feedbin backend does not support subcribing to feeds";
-		return false;
+		feedID = "";
+		var newFeedID = m_api.addSubscription(feedURL, out errmsg);
+		if(newFeedID == null || errmsg != "")
+			return false;
+
+		feedID = newFeedID;
+		return true;
 	}
 
 	public void addFeeds(Gee.List<Feed> feeds)
@@ -205,7 +209,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void removeFeed(string feedID)
 	{
-		m_api.deleteFeed(feedID);
+		m_api.deleteSubscription(feedID);
 	}
 
 	public void renameFeed(string feedID, string title)

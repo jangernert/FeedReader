@@ -18,6 +18,7 @@ namespace FeedReader {
 	public struct Response {
 		uint status;
 		string data;
+		Soup.MessageHeaders headers;
 	}
 
 	private struct ResourceMetadata

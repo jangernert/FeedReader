@@ -148,8 +148,6 @@ public class FeedReader.FeedbinAPI : Object {
 		return true;
 	}
 
-
-
 	public Gee.List<Article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)
 	{
 		Gee.List<Article> articles = new Gee.ArrayList<Article>();
@@ -291,9 +289,44 @@ public class FeedReader.FeedbinAPI : Object {
 			m_connection.deleteRequest("starred_entries.json", json);
 	}
 
-	public void deleteFeed(string feedID)
+	public void deleteSubscription(string feedID)
 	{
 		m_connection.deleteRequest("subscriptions/%s.json".printf(feedID));
+	}
+
+	public string? addSubscription(string url, out string? error)
+	{
+		error = null;
+
+		Json.Object object = new Json.Object();
+		object.set_string_member("feed_url", url);
+		string json = FeedbinUtils.json_object_to_string(object);
+
+	 	var response = m_connection.postRequest("subscriptions.json", json);
+		switch(response.status) {
+			case 200:
+			case 201:
+			case 302:
+			break;
+			case 404:
+			error = "No RSS feed found at location %s".printf(url);
+			return null;
+			case 300:
+			// TODO: Parse the JSON response and list the options
+			error = "Multiple choices for feeds at location %s".printf(url);
+			return null;
+			default:
+			error = "Unknown error subscribing to feed %s, status = %u".printf(url, response.status);
+			return null;
+		}
+
+		var location = response.headers.get_one("Location");
+		if(location == null) {
+			error = "Feedbin API error adding feed %s, no Location header".printf(url);
+			return null;
+		}
+		Logger.info("Location: %s".printf(location));
+		return null;
 	}
 
 	public void renameFeed(string feedID, string title)

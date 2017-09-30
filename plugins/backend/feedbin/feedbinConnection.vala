@@ -49,7 +49,8 @@ public class FeedReader.FeedbinConnection {
 
 		return Response() {
 			status = message.status_code,
-			data = (string)message.response_body.flatten().data
+			data = (string)message.response_body.flatten().data,
+			headers = message.response_headers
 		};
 	}
 

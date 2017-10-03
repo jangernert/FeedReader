@@ -550,7 +550,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool ping()
 	{
-		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL, m_username, m_password, "PUT");
+		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "version", m_username, m_password, "GET");
 		int error = message.send(true);
 
 		if(error == ConnectionError.NO_RESPONSE)

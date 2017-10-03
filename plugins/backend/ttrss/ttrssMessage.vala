@@ -100,7 +100,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 		if(ping)
 		{
-			Logger.debug("TTRSS Message: ping successfull");
+			Logger.debug("TTRSS Message: ping successful");
 			return ConnectionError.SUCCESS;
 		}
 

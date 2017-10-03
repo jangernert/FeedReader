@@ -215,7 +215,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		if(status >= 200 && status <= 208)
 		{
-			Logger.debug("Ping successfull");
+			Logger.debug("Ping successful");
 			return true;
 		}
 

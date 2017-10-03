@@ -181,6 +181,12 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		}
 	}
 
+	public override bool delete_event (Gdk.EventAny event)
+	{
+		this.hide();
+		return true;
+	}
+
 	private bool onStateEvent(Gdk.EventWindowState event)
 	{
 		if(event.type == Gdk.EventType.WINDOW_STATE)
@@ -678,7 +684,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "global-quit"))
 		{
 			Logger.debug("shortcut: quit");
-			this.close();
+			FeedReaderApp.get_default().quit();
 			return true;
 		}
 

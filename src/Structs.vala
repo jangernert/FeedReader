@@ -15,6 +15,14 @@
 
 namespace FeedReader {
 
+	public struct BackendInfo {
+		string ID;
+		string name;
+		BackendFlags flags;
+		string website;
+		string iconName;
+	}
+
 	public struct Response {
 		uint status;
 		string data;

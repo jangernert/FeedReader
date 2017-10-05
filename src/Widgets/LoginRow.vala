@@ -15,19 +15,17 @@
 
 public class FeedReader.LoginRow : Gtk.ListBoxRow {
 
-	private FeedServerInterface m_ext;
+	private BackendInfo m_info;
 	private Gtk.Stack m_infoStack;
 	private bool m_hovered = false;
 
-	public LoginRow(FeedServerInterface ext)
+	public LoginRow(BackendInfo info)
 	{
-		m_ext = ext;
-		string iconName = (ext as FeedServerInterface).iconName();
-		string serviceName = (ext as FeedServerInterface).serviceName();
+		m_info = info;
 
-		var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.MENU);
+		var icon = new Gtk.Image.from_icon_name(info.iconName, Gtk.IconSize.MENU);
 		icon.margin_start = 10;
-		var label = new Gtk.Label(serviceName);
+		var label = new Gtk.Label(info.name);
 		label.set_alignment(0.0f, 0.5f);
 		label.get_style_context().add_class("h3");
 
@@ -67,14 +65,9 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 		this.add(eventbox);
 	}
 
-	public string getServiceName()
+	public BackendInfo getInfo()
 	{
-		return m_ext.serviceName();
-	}
-
-	public FeedServerInterface getExtension()
-	{
-		return m_ext;
+		return m_info;
 	}
 
 	private bool rowEnter(Gdk.EventCrossing event)
@@ -105,7 +98,7 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 
 	private void infoClicked()
 	{
-		var pop = new BackendInfoPopover(m_infoStack, m_ext);
+		var pop = new BackendInfoPopover(m_infoStack, m_info);
 		pop.show_all();
 		pop.closed.connect_after(() => {
 			GLib.Timeout.add(50, () => {

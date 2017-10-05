@@ -50,7 +50,19 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		accountList.row_activated.connect(serviceSelected);
 
 		FeedServer.get_default().getPlugins().foreach((extSet, info, ext) => {
-			accountList.add(new LoginRow(ext as FeedServerInterface));
+			var plug = ext as FeedServerInterface;
+			if(plug != null)
+			{
+				BackendInfo pluginfo = BackendInfo()
+				{
+					ID = plug.getID(),
+					name = plug.serviceName(),
+					flags = plug.getFlags(),
+					website = plug.getWebsite(),
+					iconName = plug.iconName()
+				};
+				accountList.add(new LoginRow(pluginfo));
+			}
 		});
 
 		var scroll = new Gtk.ScrolledWindow(null, null);
@@ -92,46 +104,49 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	private void serviceSelected(Gtk.ListBoxRow row)
 	{
 		var serviceRow = (row as LoginRow);
-		var extension = serviceRow.getExtension();
-		Logger.debug("serviceSelected: %s".printf(serviceRow.getServiceName()));
+		Logger.debug("serviceSelected: %s".printf(serviceRow.getInfo().name));
 
 		var window = MainWindow.get_default();
 		window.getSimpleHeader().showBackButton(true);
-		FeedServer.get_default().setActivePlugin(extension.getID());
+		FeedServer.get_default().setActivePlugin(serviceRow.getInfo().ID);
+		FeedServerInterface? plug = FeedServer.get_default().getActivePlugin();
 
-		if(extension.needWebLogin())
+		if(plug != null)
 		{
-			m_page.reset();
-			m_page.loadPage(extension.buildLoginURL());
-			m_page.getApiCode.connect(extension.extractCode);
-			m_page.success.connect(() => {
-				login(extension.getID());
-			});
-			this.set_visible_child_name("web");
-
-			window.getSimpleHeader().back.connect(() => {
-				this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
-				window.getSimpleHeader().showBackButton(false);
+			if(plug.needWebLogin())
+			{
 				m_page.reset();
-			});
-		}
-		else
-		{
-			m_activeWidget = extension.getWidget();
-			m_activeWidget.show_all();
+				m_page.loadPage(plug.buildLoginURL());
+				m_page.getApiCode.connect(plug.extractCode);
+				m_page.success.connect(() => {
+					login(plug.getID());
+				});
+				this.set_visible_child_name("web");
 
-			this.add_named(m_activeWidget, "loginWidget");
-			this.set_visible_child_name("loginWidget");
+				window.getSimpleHeader().back.connect(() => {
+					this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
+					window.getSimpleHeader().showBackButton(false);
+					m_page.reset();
+				});
+			}
+			else
+			{
+				m_activeWidget = plug.getWidget();
+				m_activeWidget.show_all();
 
-			window.getSimpleHeader().back.connect(() => {
-				this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
-				window.getSimpleHeader().showBackButton(false);
-				if(m_activeWidget != null)
-				{
-					this.remove(m_activeWidget);
-					m_activeWidget = null;
-				}
-			});
+				this.add_named(m_activeWidget, "loginWidget");
+				this.set_visible_child_name("loginWidget");
+
+				window.getSimpleHeader().back.connect(() => {
+					this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
+					window.getSimpleHeader().showBackButton(false);
+					if(m_activeWidget != null)
+					{
+						this.remove(m_activeWidget);
+						m_activeWidget = null;
+					}
+				});
+			}
 		}
 	}
 

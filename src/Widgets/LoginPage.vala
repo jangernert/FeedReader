@@ -16,10 +16,7 @@
 public class FeedReader.LoginPage : Gtk.Stack {
 
 	private Gtk.Box m_layout;
-	private Peas.ExtensionSet m_extensions;
-	private Peas.Engine m_engine;
 	private WebLoginPage m_page;
-	private string? m_activeExtension = null;
 	private Gtk.Box? m_activeWidget = null;
 	public signal void submit_data();
 	public signal void loginError(LoginResponse errorCode);
@@ -27,23 +24,9 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	public LoginPage()
 	{
-		m_engine = Peas.Engine.get_default();
-		m_engine.add_search_path(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR + "/pluginsUI/", null);
-		m_engine.enable_loader("python3");
-
-		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface));
-
-		m_extensions.extension_added.connect((info, extension) => {
-			var plugin = (extension as LoginInterface);
-			plugin.init();
-			plugin.login.connect(() => { writeLoginData(); });
+		FeedReaderBackend.get_default().tryLogin.connect(() => {
+			writeLoginData();
 		});
-
-		foreach(var plugin in m_engine.get_plugin_list())
-		{
-			m_engine.try_load_plugin(plugin);
-		}
-
 
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
@@ -66,8 +49,8 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		accountList.set_selection_mode(Gtk.SelectionMode.NONE);
 		accountList.row_activated.connect(serviceSelected);
 
-		m_extensions.foreach((extSet, info, ext) => {
-			accountList.add(new LoginRow(ext as LoginInterface));
+		FeedServer.get_default().getPlugins().foreach((extSet, info, ext) => {
+			accountList.add(new LoginRow(ext as FeedServerInterface));
 		});
 
 		var scroll = new Gtk.ScrolledWindow(null, null);
@@ -93,7 +76,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	{
 		var visible = this.get_visible_child_name();
 		this.set_visible_child_name("selectScreen");
-		m_activeExtension = null;
 
 		if(visible == "loginWidget"
 		&& m_activeWidget != null)
@@ -115,7 +97,7 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 		var window = MainWindow.get_default();
 		window.getSimpleHeader().showBackButton(true);
-		m_activeExtension = extension.getID();
+		FeedServer.get_default().setActivePlugin(extension.getID());
 
 		if(extension.needWebLogin())
 		{
@@ -131,7 +113,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 				this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
 				window.getSimpleHeader().showBackButton(false);
 				m_page.reset();
-				m_activeExtension = null;
 			});
 		}
 		else
@@ -150,7 +131,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 					this.remove(m_activeWidget);
 					m_activeWidget = null;
 				}
-				m_activeExtension = null;
 			});
 		}
 	}
@@ -158,28 +138,18 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	public void showHtAccess()
 	{
-		getActiveExtension().showHtAccess();
-	}
-
-	private LoginInterface? getActiveExtension()
-	{
-		LoginInterface? e = null;
-		m_extensions.foreach((extSet, info, ext) => {
-			var extension = (ext as LoginInterface);
-			if(extension.getID() == m_activeExtension)
-			{
-				e = extension;
-			}
-		});
-		return e;
+		FeedServer.get_default().getActivePlugin().showHtAccess();
 	}
 
 	public void writeLoginData()
 	{
 		Logger.debug("write login data");
-		var ext = getActiveExtension();
-		ext.writeData();
-		login(ext.getID());
+		var ext = FeedServer.get_default().getActivePlugin();
+		if(ext != null)
+		{
+			ext.writeData();
+			login(ext.getID());
+		}
 	}
 
 	private void login(string id)
@@ -188,12 +158,16 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		Logger.debug("LoginPage: status = " + status.to_string());
 		if(status == LoginResponse.SUCCESS)
 		{
-			var ext = getActiveExtension();
-			ext.postLoginAction.begin((ob, res) => {
-				ext.postLoginAction.end(res);
-				submit_data();
-				FeedReaderBackend.get_default().startSync(true);
-			});
+			var ext = FeedServer.get_default().getActivePlugin();
+			if(ext != null)
+			{
+				ext.postLoginAction.begin((ob, res) => {
+					ext.postLoginAction.end(res);
+					submit_data();
+					FeedReaderBackend.get_default().startSync(true);
+				});
+			}
+
 
 			return;
 		}

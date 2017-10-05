@@ -15,9 +15,9 @@
 
 public class FeedReader.BackendInfoPopover : Gtk.Popover {
 
-	private LoginInterface m_ext;
+	private FeedServerInterface m_ext;
 
-	public BackendInfoPopover(Gtk.Widget widget, LoginInterface ext)
+	public BackendInfoPopover(Gtk.Widget widget, FeedServerInterface ext)
 	{
 		m_ext = ext;
 		var flags = m_ext.getFlags();

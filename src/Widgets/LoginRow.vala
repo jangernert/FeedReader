@@ -15,15 +15,15 @@
 
 public class FeedReader.LoginRow : Gtk.ListBoxRow {
 
-	private LoginInterface m_ext;
+	private FeedServerInterface m_ext;
 	private Gtk.Stack m_infoStack;
 	private bool m_hovered = false;
 
-	public LoginRow(LoginInterface ext)
+	public LoginRow(FeedServerInterface ext)
 	{
 		m_ext = ext;
-		string iconName = (ext as LoginInterface).iconName();
-		string serviceName = (ext as LoginInterface).serviceName();
+		string iconName = (ext as FeedServerInterface).iconName();
+		string serviceName = (ext as FeedServerInterface).serviceName();
 
 		var icon = new Gtk.Image.from_icon_name(iconName, Gtk.IconSize.MENU);
 		icon.margin_start = 10;
@@ -72,7 +72,7 @@ public class FeedReader.LoginRow : Gtk.ListBoxRow {
 		return m_ext.serviceName();
 	}
 
-	public LoginInterface getExtension()
+	public FeedServerInterface getExtension()
 	{
 		return m_ext;
 	}

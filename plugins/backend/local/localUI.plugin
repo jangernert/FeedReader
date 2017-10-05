@@ -1,8 +1,0 @@
-[Plugin]
-Module=localUI
-Loader=C
-Name=Local RSS Backend
-Description=Adds a local RSS back-end to FeedReader. No RSS-service required.
-Authors=Jan Lukas Gernert <jangernert@gmail.com>
-Copyright=Copyright © 2015-16 Jan Lukas Gernert
-Website=http://jangernert.github.io/FeedReader/

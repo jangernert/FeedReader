@@ -41,6 +41,7 @@ namespace FeedReader {
 		public signal void feedAdded(bool error, string errmsg);
 		public signal void opmlImported();
 		public signal void updateSyncProgress(string progress);
+		public signal void tryLogin();
 
 		private static FeedReaderBackend? m_daemon;
 
@@ -54,7 +55,7 @@ namespace FeedReader {
 
 		private FeedReaderBackend()
 		{
-			Logger.debug("daemon: constructor");
+			Logger.debug("backend: constructor");
 			var plugID = Settings.general().get_string("plugin");
 
 			if(plugID == "none")
@@ -92,7 +93,7 @@ namespace FeedReader {
 
 		public void cancelSync()
 		{
-			Logger.warning("Daemon: Cancel current sync");
+			Logger.warning("backend: Cancel current sync");
 			m_cancellable.cancel();
 		}
 
@@ -124,7 +125,7 @@ namespace FeedReader {
 
 		public string symbolicIcon()
 		{
-			Logger.debug("daemon: symbolicIcon");
+			Logger.debug("backend: symbolicIcon");
 			return FeedServer.get_default().symbolicIcon();
 		}
 
@@ -168,7 +169,7 @@ namespace FeedReader {
 				if(!Settings.state().get_boolean("currently-updating")
 				&& FeedServer.get_default().pluginLoaded())
 				{
-					Logger.debug("daemon: Timeout!");
+					Logger.debug("backend: Timeout!");
 					startSync(false);
 				}
 				return true;
@@ -186,7 +187,7 @@ namespace FeedReader {
 
 			if(Utils.springCleaningNecessary())
 			{
-				Logger.info("daemon: spring cleaning");
+				Logger.info("backend: spring cleaning");
 				Settings.state().set_boolean("spring-cleaning", true);
 				springCleanStarted();
 				dbDaemon.get_default().springCleaning();
@@ -197,7 +198,7 @@ namespace FeedReader {
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 
-			Logger.info("daemon: sync started");
+			Logger.info("backend: sync started");
 			syncStarted();
 			Settings.state().set_boolean("currently-updating", true);
 
@@ -233,17 +234,17 @@ namespace FeedReader {
 		{
 			Settings.state().set_boolean("currently-updating", false);
 			Settings.state().set_string("sync-status", "");
-			Logger.info("daemon: sync finished/cancelled");
+			Logger.info("backend: sync finished/cancelled");
 			syncFinished();
 		}
 
 		public bool checkOnline()
 		{
-			Logger.debug("Daemon: checkOnline");
+			Logger.debug("backend: checkOnline");
 
 			if(GLib.NetworkMonitor.get_default().get_connectivity() != GLib.NetworkConnectivity.FULL)
 			{
-				Logger.error("Daemon: no network available");
+				Logger.error("backend: no network available");
 			}
 
 			if(!FeedServer.get_default().serverAvailable())
@@ -274,7 +275,7 @@ namespace FeedReader {
 			if(!FeedServer.get_default().pluginLoaded())
 				return false;
 
-			Logger.debug("Daemon: checkOnlineAsync");
+			Logger.debug("backend: checkOnlineAsync");
 			bool online = false;
 			SourceFunc callback = checkOnlineAsync.callback;
 			ThreadFunc<void*> run = () => {
@@ -290,15 +291,11 @@ namespace FeedReader {
 
 		public LoginResponse login(string plugName)
 		{
-			Logger.debug("daemon: new FeedServer and login");
-
-			if(FeedServer.get_default().pluginLoaded())
-				FeedServer.get_default().unloadPlugin();
-			FeedServer.get_default().loadPlugin(plugName);
+			Logger.debug("backend: new FeedServer and login");
 
 			if(!FeedServer.get_default().pluginLoaded())
 			{
-				Logger.error(@"daemon: plugin '$plugName' couldn't be loaded by feedserver");
+				Logger.error(@"backend: no active plugin");
 				m_loggedin = LoginResponse.NO_BACKEND;
 				return m_loggedin;
 			}
@@ -328,7 +325,7 @@ namespace FeedReader {
 			}
 
 
-			Logger.debug("daemon: login status = " + m_loggedin.to_string());
+			Logger.debug("backend: login status = " + m_loggedin.to_string());
 			return m_loggedin;
 		}
 
@@ -349,7 +346,7 @@ namespace FeedReader {
 
 		public void changeArticle(string articleID, ArticleStatus status)
 		{
-			Logger.debug("daemon: changeArticle %s %s".printf(articleID, status.to_string()));
+			Logger.debug("backend: changeArticle %s %s".printf(articleID, status.to_string()));
 			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
 			{
 				bool increase = true;
@@ -442,12 +439,12 @@ namespace FeedReader {
 			}
 			else
 			{
-				Logger.debug("daemon: remove tag: " + tagID + " from article: " + articleID);
+				Logger.debug("backend: remove tag: " + tagID + " from article: " + articleID);
 
 				asyncPayload pl = () => { FeedServer.get_default().removeArticleTag(articleID, tagID); };
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-				Logger.debug("daemon: tagstring = " + tags);
+				Logger.debug("backend: tagstring = " + tags);
 
 				if(tags == tagID)
 				{
@@ -464,14 +461,14 @@ namespace FeedReader {
 					if(part2.has_prefix(","))
 					{
 						part2 = part2.substring(1);
-						Logger.error("daemon: tagArticle");
+						Logger.error("backend: tagArticle");
 					}
 
 					tags = part1 + part2;
 
 					if(!dbDaemon.get_default().tag_still_used(tagID))
 					{
-						Logger.debug("daemon: remove tag completely");
+						Logger.debug("backend: remove tag completely");
 						asyncPayload pl2 = () => { FeedServer.get_default().deleteTag(tagID); };
 						callAsync.begin((owned)pl2, (obj, res) => { callAsync.end(res); });
 
@@ -484,7 +481,7 @@ namespace FeedReader {
 				}
 			}
 
-			Logger.debug("daemon: set tag string: " + tags);
+			Logger.debug("backend: set tag string: " + tags);
 			dbDaemon.get_default().set_article_tags(articleID, tags);
 		}
 
@@ -631,7 +628,7 @@ namespace FeedReader {
 
 		public string addCategory(string title, string? parentID = null, bool createLocally = false)
 		{
-			Logger.debug("daemon: addCategory " + title);
+			Logger.debug("backend: addCategory " + title);
 			string catID = FeedServer.get_default().createCategory(title, parentID);
 
 			if(createLocally)
@@ -802,7 +799,7 @@ namespace FeedReader {
 			&& Settings.tweaks().get_boolean("show-badge"))
 			{
 				var count = dbDaemon.get_default().get_unread_total();
-				Logger.debug("daemon: update badge count %u".printf(count));
+				Logger.debug("backend: update badge count %u".printf(count));
 				m_launcher.count = count;
 				if(count > 0)
 					m_launcher.count_visible = true;

@@ -16,8 +16,8 @@
 public class FeedReader.FeedServer : GLib.Object {
 
 	private bool m_pluginLoaded = false;
-	private string? m_plugName = null;
 	private Peas.ExtensionSet m_extensions;
+	private string? m_activeExtension = null;
 	private FeedServerInterface? m_plugin;
 	private Peas.Engine m_engine;
 
@@ -41,13 +41,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		m_extensions.extension_added.connect((info, extension) => {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
-			m_plugin = (extension as FeedServerInterface);
 			m_plugin.init();
-			m_plugin.newFeedList.connect(() => { FeedReaderBackend.get_default().newFeedList(); });
-			m_plugin.refreshFeedListCounter.connect(() => { FeedReaderBackend.get_default().refreshFeedListCounter(); });
-			m_plugin.updateArticleList.connect(() => { FeedReaderBackend.get_default().updateArticleList(); });
-			m_plugin.showArticleListOverlay.connect(() => { FeedReaderBackend.get_default().showArticleListOverlay(); });
-			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
 		});
 
 		m_extensions.extension_removed.connect((info, extension) => {
@@ -61,37 +55,34 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_engine.unload_plugin.connect((info) => {
 			Logger.debug("feedserver: engine unload %s".printf(info.get_name()));
 		});
+
+		foreach(var plugin in m_engine.get_plugin_list())
+		{
+			m_engine.try_load_plugin(plugin);
+		}
 	}
 
-	public bool unloadPlugin()
+	public bool pluginLoaded()
 	{
-		if(m_plugName == null)
-		{
-			Logger.warning("feedserver.unloadPlugin: no plugin loaded");
-			return false;
-		}
-
-
-		Logger.debug("feedserver: unload plugin %s".printf(m_plugName));
-		if(m_pluginLoaded)
-		{
-			var plugin = m_engine.get_plugin_info(m_plugName);
-			return m_engine.try_unload_plugin(plugin);
-		}
-		return false;
+		return m_pluginLoaded;
 	}
 
-	public bool loadPlugin(string plugName)
+	public Peas.ExtensionSet getPlugins()
 	{
-		Logger.debug(@"feedserver: load plugin \"$plugName\"");
-		m_plugName = plugName;
-		var plugin = m_engine.get_plugin_info(plugName);
+		return m_extensions;
+	}
+
+	public bool setActivePlugin(string pluginID)
+	{
+		m_pluginLoaded = false;
+		m_plugin = null;
+
+		var plugin = m_engine.get_plugin_info(pluginID);
 
 		if(plugin == null)
 		{
-			Logger.error(@"feedserver: failed to load info for \"$plugName\"");
-			m_pluginLoaded = false;
-			return false;
+			Logger.error(@"feedserver: failed to load info for \"$pluginID\"");
+			return m_pluginLoaded;
 		}
 
 		Logger.info("Plugin Name: " + plugin.get_name());
@@ -99,17 +90,29 @@ public class FeedReader.FeedServer : GLib.Object {
 		Logger.info("Plugin Website: " + plugin.get_website());
 		Logger.info("Plugin Dir: " + plugin.get_module_dir());
 
-		m_pluginLoaded = m_engine.try_load_plugin(plugin);
 
-		if(!m_pluginLoaded)
-			Logger.error("feedserver: couldn't load plugin %s".printf(m_plugName));
+		m_activeExtension = pluginID;
+		m_extensions.foreach((extSet, info, ext) => {
+			var plug = ext as FeedServerInterface;
+			if(plug != null && plug.getID() == pluginID)
+			{
+				plug.tryLogin.connect(() => { FeedReaderBackend.get_default().tryLogin(); });
+				plug.newFeedList.connect(() => { FeedReaderBackend.get_default().newFeedList(); });
+				plug.refreshFeedListCounter.connect(() => { FeedReaderBackend.get_default().refreshFeedListCounter(); });
+				plug.updateArticleList.connect(() => { FeedReaderBackend.get_default().updateArticleList(); });
+				plug.showArticleListOverlay.connect(() => { FeedReaderBackend.get_default().showArticleListOverlay(); });
+				plug.writeArticles.connect((articles) => { writeArticles(articles); });
 
+				m_plugin = plug;
+				m_pluginLoaded = true;
+			}
+		});
 		return m_pluginLoaded;
 	}
 
-	public bool pluginLoaded()
+	public FeedServerInterface? getActivePlugin()
 	{
-		return m_pluginLoaded;
+		return m_plugin;
 	}
 
 	public void syncContent(GLib.Cancellable? cancellable = null)

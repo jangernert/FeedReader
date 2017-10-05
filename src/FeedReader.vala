@@ -58,8 +58,6 @@ namespace FeedReader {
 
 		public override void activate()
 		{
-			base.activate();
-
 			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR);
 
 			if(m_window == null)
@@ -67,21 +65,99 @@ namespace FeedReader {
 				m_window = MainWindow.get_default();
 				m_window.set_icon_name("org.gnome.FeedReader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
+
+				FeedReaderBackend.get_default().newFeedList.connect(() => {
+					Logger.debug("FeedReader: newFeedList");
+					ColumnView.get_default().newFeedList();
+				});
+
+				FeedReaderBackend.get_default().refreshFeedListCounter.connect(() => {
+					Logger.debug("FeedReader: refreshFeedListCounter");
+					ColumnView.get_default().refreshFeedListCounter();
+				});
+
+				FeedReaderBackend.get_default().reloadFavIcons.connect(() => {
+					Logger.debug("FeedReader: reloadFavIcons");
+					ColumnView.get_default().reloadFavIcons();
+				});
+
+				FeedReaderBackend.get_default().updateArticleList.connect(() => {
+					Logger.debug("FeedReader: updateArticleList");
+					ColumnView.get_default().updateArticleList();
+				});
+
+				FeedReaderBackend.get_default().syncStarted.connect(() => {
+					Logger.debug("FeedReader: syncStarted");
+					MainWindow.get_default().writeInterfaceState();
+					ColumnView.get_default().getHeader().setRefreshButton(true);
+				});
+
+				FeedReaderBackend.get_default().syncFinished.connect(() => {
+					Logger.debug("FeedReader: syncFinished");
+					ColumnView.get_default().syncFinished();
+					MainWindow.get_default().showContent(Gtk.StackTransitionType.SLIDE_LEFT, true);
+					ColumnView.get_default().getHeader().setRefreshButton(false);
+				});
+
+				FeedReaderBackend.get_default().springCleanStarted.connect(() => {
+					Logger.debug("FeedReader: springCleanStarted");
+					MainWindow.get_default().showSpringClean();
+				});
+
+				FeedReaderBackend.get_default().springCleanFinished.connect(() => {
+					Logger.debug("FeedReader: springCleanFinished");
+					MainWindow.get_default().showContent();
+				});
+
+				FeedReaderBackend.get_default().showArticleListOverlay.connect(() => {
+					Logger.debug("FeedReader: showArticleListOverlay");
+					ColumnView.get_default().showArticleListOverlay();
+				});
+
+				FeedReaderBackend.get_default().setOffline.connect(() => {
+					Logger.debug("FeedReader: setOffline");
+					if(FeedReaderApp.get_default().isOnline())
+					{
+						FeedReaderApp.get_default().setOnline(false);
+						ColumnView.get_default().setOffline();
+					}
+				});
+
+				FeedReaderBackend.get_default().setOnline.connect(() => {
+					Logger.debug("FeedReader: setOnline");
+					if(!FeedReaderApp.get_default().isOnline())
+					{
+						FeedReaderApp.get_default().setOnline(true);
+						ColumnView.get_default().setOnline();
+					}
+				});
+
+				FeedReaderBackend.get_default().feedAdded.connect((error, errmsg) => {
+					Logger.debug("FeedReader: feedAdded");
+					ColumnView.get_default().footerSetReady();
+					if(error)
+						ColumnView.get_default().footerShowError(errmsg);
+				});
+
+				FeedReaderBackend.get_default().opmlImported.connect(() => {
+					Logger.debug("FeedReader: opmlImported");
+					ColumnView.get_default().footerSetReady();
+					ColumnView.get_default().newFeedList();
+				});
+
+				FeedReaderBackend.get_default().updateSyncProgress.connect((progress) => {
+					Logger.debug("FeedReader: updateSyncProgress");
+					ColumnView.get_default().getHeader().updateSyncProgress(progress);
+				});
+
+				FeedReaderBackend.get_default().updateBadge();
+				FeedReaderBackend.get_default().checkOnlineAsync.begin();
 			}
 
 			m_window.show_all();
 			m_window.present();
 
-			try
-			{
-				DBusConnection.connectSignals();
-				DBusConnection.get_default().updateBadge();
-				DBusConnection.get_default().checkOnlineAsync();
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("FeedReader.activate: %s".printf(e.message));
-			}
+			base.activate();
 		}
 
 		public override int command_line(ApplicationCommandLine command_line)
@@ -110,14 +186,7 @@ namespace FeedReader {
 		{
 			SourceFunc callback = sync.callback;
 			ThreadFunc<void*> run = () => {
-				try
-				{
-					DBusConnection.get_default().startSync();
-				}
-				catch(IOError e)
-				{
-					Logger.error("FeedReader.sync: " + e.message);
-				}
+				FeedReaderBackend.get_default().startSync();
 				Idle.add((owned) callback);
 				return null;
 			};
@@ -128,14 +197,7 @@ namespace FeedReader {
 
 		public void cancelSync()
 		{
-			try
-			{
-				DBusConnection.get_default().cancelSync();
-			}
-			catch(IOError e)
-			{
-				Logger.error("FeedReader.sync: " + e.message);
-			}
+			FeedReaderBackend.get_default().cancelSync();
 		}
 
 		private FeedReaderApp()
@@ -196,14 +258,31 @@ namespace FeedReader {
 		{
 			Logger.init();
 			Logger.debug(@"Adding feed $feedURL");
-			try
-			{
-				DBusConnection.get_default().addFeed(feedURL, "", false, true);
-			}
-			catch(Error e)
-			{
-				Logger.error(@"Adding feed $feedURL failed");
-			}
+			FeedReaderBackend.get_default().addFeed(feedURL, "", false, true);
+			return 0;
+		}
+
+		if(grabImages != null && articleUrl != null)
+		{
+			Logger.init();
+			FeedServer.grabImages(grabImages, articleUrl);
+			return 0;
+		}
+
+		if(grabArticle != null)
+		{
+			Logger.init();
+			FeedServer.grabArticle(grabArticle);
+			return 0;
+		}
+
+		if(unreadCount)
+		{
+			var old_stdout =(owned)stdout;
+			stdout = FileStream.open("/dev/null", "w");
+			Logger.init();
+			stdout =(owned)old_stdout;
+			stdout.printf("%u\n", dbDaemon.get_default().get_unread_total());
 			return 0;
 		}
 
@@ -228,6 +307,10 @@ namespace FeedReader {
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
 		{ "ping", 0, 0, OptionArg.STRING, ref pingURL, "test the ping function with given URL", "URL" },
 		{ "addFeed", 0, 0, OptionArg.STRING, ref feedURL, "add the feed to the collection", "URL" },
+		{ "grabArticle", 0, 0, OptionArg.STRING, ref grabArticle, "use the ContentGrabber to grab the given URL", "URL" },
+		{ "grabImages", 0, 0, OptionArg.STRING, ref grabImages, "download all images of the html-document", "PATH" },
+		{ "url", 0, 0, OptionArg.STRING, ref articleUrl, "url of the article needed to do grabImages", "URL" },
+		{ "unreadCount", 0, 0, OptionArg.NONE, ref unreadCount, "current count of unread articles in the database", null },
 		{ null }
 	};
 
@@ -236,6 +319,10 @@ namespace FeedReader {
 	private static string? media = null;
 	private static string? pingURL = null;
 	private static string? feedURL = null;
+	private static string? grabArticle = null;
+	private static string? grabImages = null;
+	private static string? articleUrl = null;
+	private static bool unreadCount = false;
 
 	static void show_about(string[] args)
 	{

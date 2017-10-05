@@ -13,12 +13,9 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-extern void exit(int exit_code);
-
 namespace FeedReader {
 
-	[DBus (name = "org.gnome.FeedReader.Daemon")]
-	public class FeedDaemonServer : GLib.Object {
+	public class FeedReaderBackend : GLib.Object {
 
 #if WITH_LIBUNITY
 		private Unity.LauncherEntry m_launcher;
@@ -45,17 +42,17 @@ namespace FeedReader {
 		public signal void opmlImported();
 		public signal void updateSyncProgress(string progress);
 
-		private static FeedDaemonServer? m_daemon;
+		private static FeedReaderBackend? m_daemon;
 
-		public static FeedDaemonServer get_default()
+		public static FeedReaderBackend get_default()
 		{
 			if(m_daemon == null)
-				m_daemon = new FeedDaemonServer();
+				m_daemon = new FeedReaderBackend();
 
 			return m_daemon;
 		}
 
-		private FeedDaemonServer()
+		private FeedReaderBackend()
 		{
 			Logger.debug("daemon: constructor");
 			var plugID = Settings.general().get_string("plugin");
@@ -815,15 +812,6 @@ namespace FeedReader {
 #endif
 		}
 
-		public void quit()
-		{
-			Logger.debug("Quit!");
-			GLib.Timeout.add_seconds_full(GLib.Priority.DEFAULT, 1, () => {
-				exit(-1);
-				return false;
-			});
-		}
-
 		private async void callAsync(owned asyncPayload func)
 		{
 			SourceFunc callback = callAsync.callback;
@@ -835,114 +823,5 @@ namespace FeedReader {
 			yield;
 		}
 
-	}
-
-	[DBus (name = "org.gnome.FeedReader.DaemonError")]
-	public errordomain FeedError
-	{
-		SOME_ERROR
-	}
-
-	void on_bus_aquired(DBusConnection conn)
-	{
-		try
-		{
-			conn.register_object("/org/gnome/FeedReader/Daemon", FeedDaemonServer.get_default());
-		}
-		catch (IOError e)
-		{
-			Logger.warning("daemon: Could not register service. Will shut down!");
-			Logger.warning(e.message);
-			exit(-1);
-		}
-		Logger.debug("daemon: bus aquired");
-	}
-
-	private const GLib.OptionEntry[] options = {
-		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
-		{ "grabArticle", 0, 0, OptionArg.STRING, ref grabArticle, "use the ContentGrabber to grab the given URL", "URL" },
-		{ "grabImages", 0, 0, OptionArg.STRING, ref grabImages, "download all images of the html-document", "PATH" },
-		{ "url", 0, 0, OptionArg.STRING, ref articleUrl, "url of the article needed to do grabImages", "URL" },
-		{ "unreadCount", 0, 0, OptionArg.NONE, ref unreadCount, "current count of unread articles in the database", null },
-		{ null }
-	};
-
-	private static bool version = false;
-	private static bool unreadCount = false;
-	private static string? grabArticle = null;
-	private static string? grabImages = null;
-	private static string? articleUrl = null;
-
-
-	int main(string[] args)
-	{
-		Ivy.Stacktrace.register_handlers();
-
-		try
-		{
-			var opt_context = new GLib.OptionContext();
-			opt_context.set_help_enabled(true);
-			opt_context.add_main_entries(options, null);
-			opt_context.parse(ref args);
-		}
-		catch(OptionError e)
-		{
-			print(e.message + "\n");
-			return 0;
-		}
-
-		if(version)
-		{
-			stdout.printf("Version: %s\n", AboutInfo.version);
-			return 0;
-		}
-
-		if(unreadCount)
-		{
-			var old_stdout =(owned)stdout;
-			stdout = FileStream.open("/dev/null", "w");
-			Logger.init();
-			stdout =(owned)old_stdout;
-			stdout.printf("%u\n", dbDaemon.get_default().get_unread_total());
-			return 0;
-		}
-
-		if(grabImages != null && articleUrl != null)
-		{
-			Logger.init();
-			FeedServer.grabImages(grabImages, articleUrl);
-			return 0;
-		}
-
-		if(grabArticle != null)
-		{
-			Logger.init();
-			FeedServer.grabArticle(grabArticle);
-			return 0;
-		}
-
-		Logger.init();
-		Notification.init();
-		Utils.copyAutostart();
-
-		Logger.info("FeedReader Daemon " + AboutInfo.version);
-
-		// just here to trigger initialization
-		dbDaemon.get_default();
-
-		Bus.own_name (BusType.SESSION, "org.gnome.FeedReader.Daemon", BusNameOwnerFlags.NONE,
-					  on_bus_aquired,
-					  () => {
-					  			Settings.state().set_boolean("currently-updating", false);
-								Settings.state().set_boolean("spring-cleaning", false);
-					  },
-					  () => {
-					  			Logger.warning("daemon: Could not aquire name (already running). Will shut down!");
-						  		exit(-1);
-						  	}
-					  );
-		var mainloop = new GLib.MainLoop();
-		mainloop.run();
-		return 0;
 	}
 }

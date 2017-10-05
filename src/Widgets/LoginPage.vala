@@ -184,35 +184,20 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	private void login(string id)
 	{
-		try
+		LoginResponse status = FeedReaderBackend.get_default().login(id);
+		Logger.debug("LoginPage: status = " + status.to_string());
+		if(status == LoginResponse.SUCCESS)
 		{
-			LoginResponse status = DBusConnection.get_default().login(id);
-			Logger.debug("LoginPage: status = " + status.to_string());
-			if(status == LoginResponse.SUCCESS)
-			{
-				var ext = getActiveExtension();
-				ext.postLoginAction.begin((ob, res) => {
-					ext.postLoginAction.end(res);
-					submit_data();
-					try
-					{
-						DBusConnection.get_default().startSync(true);
-					}
-					catch(GLib.Error e)
-					{
-						Logger.error("LoginPage: failed to start the initial sync - " + e.message);
-					}
+			var ext = getActiveExtension();
+			ext.postLoginAction.begin((ob, res) => {
+				ext.postLoginAction.end(res);
+				submit_data();
+				FeedReaderBackend.get_default().startSync(true);
+			});
 
-				});
-
-				return;
-			}
-
-			loginError(status);
+			return;
 		}
-		catch(GLib.Error e)
-		{
-			Logger.error("LoginPage.login: %s".printf(e.message));
-		}
+
+		loginError(status);
 	}
 }

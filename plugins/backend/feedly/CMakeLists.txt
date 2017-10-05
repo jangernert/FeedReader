@@ -17,6 +17,7 @@ vala_precompile(VALA_C ${DAEMONTARGET}
 
 PACKAGES
 	libpeas-1.0
+	gtk+-3.0
 	json-glib-1.0
 	libsoup-2.4
 	gee-0.8
@@ -30,11 +31,11 @@ OPTIONS
 
 CUSTOM_VAPIS
 	${CMAKE_BINARY_DIR}/FeedReader.vapi
-	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
+	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 )
 
 add_library(${NAME} SHARED ${VALA_C})
-target_link_libraries(${NAME} FeedReaderCommon)
 
 
 # ----------------------------------------------------------
@@ -61,8 +62,7 @@ OPTIONS
 	--library ${NAME}
 
 CUSTOM_VAPIS
-	${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
-	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	${CMAKE_BINARY_DIR}/FeedReader.vapi
 	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
 	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 )
@@ -74,8 +74,8 @@ add_library(${UINAME} SHARED ${VALA_C2} ${GRESOURCES})
 
 # ----------------------------------------------------------
 
-add_dependencies(${NAME} ${UI_NAME} ${DAEMON_NAME})
-add_dependencies(${UINAME} ${UI_NAME} ${DAEMON_NAME})
+add_dependencies(${NAME} ${UI_NAME} ${FEEDREADER_NAME})
+add_dependencies(${UINAME} ${UI_NAME} ${FEEDREADER_NAME})
 
 
 add_schema("org.gnome.feedreader.${NAME}.gschema.xml")

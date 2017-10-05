@@ -32,8 +32,7 @@ OPTIONS
 	--library ${NAME}
 
 CUSTOM_VAPIS
-	${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
-	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	${CMAKE_BINARY_DIR}/FeedReader.vapi
 	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
 	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 )
@@ -41,8 +40,7 @@ CUSTOM_VAPIS
 GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${NAME}.gresource.xml)
 
 add_library(${NAME} SHARED ${VALA_C} ${GRESOURCES})
-target_link_libraries(${NAME} FeedReaderCommon)
-add_dependencies(${NAME} ${UI_NAME} ${DAEMON_NAME})
+add_dependencies(${NAME} ${UI_NAME} ${FEEDREADER_NAME})
 
 install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/pluginsShare)
 install(FILES ${NAME}.plugin DESTINATION ${PKGLIBDIR}/pluginsShare)

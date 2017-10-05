@@ -37,34 +37,18 @@ public class FeedReader.dbUI : dbBase {
 
 	protected override bool showCategory(string catID, Gee.List<Feed> feeds)
 	{
-		try
+		if(FeedReaderBackend.get_default().hideCategoryWhenEmpty(catID)
+		&& !Utils.categoryIsPopulated(catID, feeds))
 		{
-			if(DBusConnection.get_default().hideCategoryWhenEmpty(catID)
-			&& !Utils.categoryIsPopulated(catID, feeds))
-			{
-				return false;
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("dbUI.showCategory: %s".printf(e.message));
+			return false;
 		}
 		return true;
 	}
 
 	protected override string getUncategorizedQuery()
 	{
-		try
-		{
-			string catID = DBusConnection.get_default().uncategorizedID();
-			return "category_id = \"%s\"".printf(catID);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("dbUI.showCategory: %s".printf(e.message));
-		}
-
-		return "";
+		string catID = FeedReaderBackend.get_default().uncategorizedID();
+		return "category_id = \"%s\"".printf(catID);
 	}
 
 }

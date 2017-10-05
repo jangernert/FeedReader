@@ -24,6 +24,7 @@ vala_precompile(VALA_C ${DAEMONTARGET}
 PACKAGES
 	libpeas-1.0
 	json-glib-1.0
+	gtk+-3.0
 	libsoup-2.4
 	gee-0.8
 	libxml-2.0
@@ -36,12 +37,13 @@ OPTIONS
 
 CUSTOM_VAPIS
 	${CMAKE_BINARY_DIR}/FeedReader.vapi
-	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
+	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 	rss-glib/rss-glib-1.0.vapi
 )
 
 add_library(${NAME} SHARED ${VALA_C})
-target_link_libraries(${NAME} FeedReaderCommon gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
+target_link_libraries(${NAME} gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
 
 
 # ----------------------------------------------------------
@@ -70,8 +72,7 @@ OPTIONS
 	--library ${NAME}
 
 CUSTOM_VAPIS
-	${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
-	${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	${CMAKE_BINARY_DIR}/FeedReader.vapi
 	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
 	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 	rss-glib/rss-glib-1.0.vapi
@@ -86,8 +87,8 @@ target_link_libraries(${UINAME} gobject-2.0 glib-2.0 curl rss-glib mrss nxml)
 # ----------------------------------------------------------
 
 
-add_dependencies(${NAME} ${UI_NAME} ${DAEMON_NAME})
-add_dependencies(${UINAME} ${UI_NAME} ${DAEMON_NAME})
+add_dependencies(${NAME} ${UI_NAME} ${FEEDREADER_NAME})
+add_dependencies(${UINAME} ${UI_NAME} ${FEEDREADER_NAME})
 
 install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/plugins)
 install(TARGETS ${UINAME} DESTINATION ${PKGLIBDIR}/pluginsUI)

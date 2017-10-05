@@ -142,14 +142,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		}
 
 		Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, (catID == "") ? "null" : catID));
-		try
-		{
-			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID, true);
-		}
-		catch(Error e)
-		{
-			Logger.error("AddPopover.addFeed: %s".printf(e.message));
-		}
+		FeedReaderBackend.get_default().addFeed(m_urlEntry.text, catID, isID, true);
 
 		setBusy();
 	}
@@ -163,7 +156,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			uint8[] contents;
 			file.load_contents (null, out contents, null);
 			Logger.debug((string)contents);
-			DBusConnection.get_default().importOPML((string)contents);
+			FeedReaderBackend.get_default().importOPML((string)contents);
 		}
 		catch(GLib.Error e)
 		{

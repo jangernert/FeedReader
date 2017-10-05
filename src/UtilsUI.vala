@@ -188,33 +188,24 @@ public class FeedReader.UtilsUI : GLib.Object {
 
 	public static bool canManipulateContent(bool? online = null)
 	{
-		try
+		// if backend = local RSS -> return true;
+		if(Settings.general().get_string("plugin") == "local")
+			return true;
+
+		if(!FeedReaderBackend.get_default().supportFeedManipulation())
+			return false;
+
+		// when we already know wheather feedreader is online or offline
+		if(online != null)
 		{
-			// if backend = local RSS -> return true;
-			if(Settings.general().get_string("plugin") == "local")
+			if(online)
 				return true;
-
-			if(!DBusConnection.get_default().supportFeedManipulation())
+			else
 				return false;
-
-			// when we already know wheather feedreader is online or offline
-			if(online != null)
-			{
-				if(online)
-					return true;
-				else
-					return false;
-			}
-
-			// otherwise check if online
-			return DBusConnection.get_default().isOnline();
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("UtilsUI.canManipulateContent: %s".printf(e.message));
 		}
 
-		return false;
+		// otherwise check if online
+		return FeedReaderBackend.get_default().isOnline();
 	}
 
 	public static GLib.Menu getMenu()
@@ -246,17 +237,10 @@ public class FeedReader.UtilsUI : GLib.Object {
 		if(Settings.general().get_boolean("only-feeds"))
 			return true;
 
-		try
-		{
-			if(!dbUI.get_default().haveCategories()
-			&& !DBusConnection.get_default().supportTags()
-			&& !dbUI.get_default().haveFeedsWithoutCat())
-				return true;
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("UtilsUI.onlyShowFeeds: %s".printf(e.message));
-		}
+		if(!dbUI.get_default().haveCategories()
+		&& !FeedReaderBackend.get_default().supportTags()
+		&& !dbUI.get_default().haveFeedsWithoutCat())
+			return true;
 
 		return false;
 	}

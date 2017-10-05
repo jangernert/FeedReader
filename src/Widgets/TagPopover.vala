@@ -158,19 +158,12 @@ public class FeedReader.TagPopover : Gtk.Popover {
 				}
 			}
 
-			try
+			if(!available)
 			{
-				if(!available)
-				{
-					tagID = DBusConnection.get_default().createTag(str);
-					Logger.debug("TagPopover: " + str + " created with id " + tagID);
-				}
-				DBusConnection.get_default().tagArticle(getActiveArticleID(), tagID, true);
+				tagID = FeedReaderBackend.get_default().createTag(str);
+				Logger.debug("TagPopover: " + str + " created with id " + tagID);
 			}
-			catch(GLib.Error e)
-			{
-				Logger.error("TagPopover.setupEntry: %s".printf(e.message));
-			}
+			FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), tagID, true);
 
 
 			var new_tag = dbUI.get_default().read_tag(tagID);
@@ -186,15 +179,8 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 	private void removeTag(TagPopoverRow row)
 	{
-		try
-		{
-			DBusConnection.get_default().tagArticle(getActiveArticleID(), row.getTagID(), false);
-			m_list.remove(row);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("TagPopover.removeTag: %s".printf(e.message));
-		}
+		FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), row.getTagID(), false);
+		m_list.remove(row);
 
 		foreach(tag Tag in m_tags)
 		{

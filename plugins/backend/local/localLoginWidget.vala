@@ -163,7 +163,7 @@ public class FeedReader.localLoginWidget : Peas.ExtensionBase, LoginInterface {
 				{
 					try
 					{
-						DBusConnection.get_default().addFeed(row.getURL(), row.getCategory(), false, false);
+						FeedReaderBackend.get_default().addFeed(row.getURL(), row.getCategory(), false, false);
 					}
 					catch(GLib.Error e)
 					{

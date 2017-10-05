@@ -478,17 +478,10 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		bool supportMultiLevelCategories = false;
 		string uncategorizedID = "";
 
-		try
-		{
-			supportTags = DBusConnection.get_default().supportTags();
-			supportCategories = DBusConnection.get_default().supportCategories();
-			uncategorizedID = DBusConnection.get_default().uncategorizedID();
-			supportMultiLevelCategories = DBusConnection.get_default().supportMultiLevelCategories();
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("FeedList.createCategories: %s".printf(e.message));
-		}
+		supportTags = FeedReaderBackend.get_default().supportTags();
+		supportCategories = FeedReaderBackend.get_default().supportCategories();
+		uncategorizedID = FeedReaderBackend.get_default().uncategorizedID();
+		supportMultiLevelCategories = FeedReaderBackend.get_default().supportMultiLevelCategories();
 
 		if((supportTags
 		&& !dbUI.get_default().isTableEmpty("tags"))
@@ -900,39 +893,32 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	{
 		Logger.debug("FeedList: mark all articles as read");
 
-		try
+		if(type == FeedListType.FEED)
 		{
-			if(type == FeedListType.FEED)
+			if(id == FeedID.ALL.to_string())
 			{
-				if(id == FeedID.ALL.to_string())
-				{
-					DBusConnection.get_default().markAllItemsRead();
-				}
-				else
-				{
-					DBusConnection.get_default().markFeedAsRead(id, false);
-				}
+				FeedReaderBackend.get_default().markAllItemsRead();
 			}
-			else if(type == FeedListType.CATEGORY)
+			else
 			{
-				if(id == "")
-				{
-					var feeds = dbUI.get_default().read_feeds_without_cat();
-					foreach(Feed feed in feeds)
-					{
-						DBusConnection.get_default().markFeedAsRead(feed.getFeedID(), false);
-						Logger.debug("FeedList: mark all articles as read feed: %s".printf(feed.getTitle()));
-					}
-				}
-				else
-				{
-					DBusConnection.get_default().markFeedAsRead(id, true);
-				}
+				FeedReaderBackend.get_default().markFeedAsRead(id, false);
 			}
 		}
-		catch(GLib.Error e)
+		else if(type == FeedListType.CATEGORY)
 		{
-			Logger.error("FeedList.markSelectedRead: %s".printf(e.message));
+			if(id == "")
+			{
+				var feeds = dbUI.get_default().read_feeds_without_cat();
+				foreach(Feed feed in feeds)
+				{
+					FeedReaderBackend.get_default().markFeedAsRead(feed.getFeedID(), false);
+					Logger.debug("FeedList: mark all articles as read feed: %s".printf(feed.getTitle()));
+				}
+			}
+			else
+			{
+				FeedReaderBackend.get_default().markFeedAsRead(id, true);
+			}
 		}
 	}
 
@@ -1138,30 +1124,23 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		int level = 1;
 		int pos = -1;
 
-		try
+		if(FeedReaderBackend.get_default().supportTags())
 		{
-			if(DBusConnection.get_default().supportTags())
+			var FeedChildList = m_list.get_children();
+			foreach(Gtk.Widget row in FeedChildList)
 			{
-				var FeedChildList = m_list.get_children();
-				foreach(Gtk.Widget row in FeedChildList)
+				pos++;
+				var tmpCat = row as CategoryRow;
+				if(tmpCat != null && tmpCat.getID() == CategoryID.TAGS.to_string())
 				{
-					pos++;
-					var tmpCat = row as CategoryRow;
-					if(tmpCat != null && tmpCat.getID() == CategoryID.TAGS.to_string())
-					{
-						level = 2;
-						break;
-					}
+					level = 2;
+					break;
 				}
 			}
-			else
-			{
-				level = 1;
-			}
 		}
-		catch(GLib.Error e)
+		else
 		{
-			Logger.error("FeedList.showNewCategory: %s".printf(e.message));
+			level = 1;
 		}
 
 		var newRow = new CategoryRow(_("New Category"), CategoryID.NEW.to_string(), 99, 0, CategoryID.MASTER.to_string(), level, false);

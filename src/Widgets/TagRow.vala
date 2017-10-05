@@ -51,14 +51,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 
 		m_pop.newColorSelected.connect((color) => {
 			m_circle.newColor(color);
-			try
-			{
-				DBusConnection.get_default().updateTagColor(m_tagID, color);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("TagRow.constructor: %s".printf(e.message));
-			}
+			FeedReaderBackend.get_default().updateTagColor(m_tagID, color);
 		});
 
 		m_label = new Gtk.Label(m_name);
@@ -132,27 +125,20 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 	private void onDragDataReceived(Gtk.Widget widget, Gdk.DragContext context, int x, int y,
 									Gtk.SelectionData selection_data, uint target_type, uint time)
 	{
-		try
+		if(selection_data != null
+		&& selection_data.get_length() >= 0
+		&& target_type == DragTarget.TAG)
 		{
-			if(selection_data != null
-			&& selection_data.get_length() >= 0
-			&& target_type == DragTarget.TAG)
+			if(m_tagID != TagID.NEW)
 			{
-				if(m_tagID != TagID.NEW)
-				{
-					Logger.debug("drag articleID: " + (string)selection_data.get_data());
-					DBusConnection.get_default().tagArticle((string)selection_data.get_data(), m_tagID, true);
-					Gtk.drag_finish(context, true, false, time);
-				}
-				else
-				{
-					showRenamePopover(context, time, (string)selection_data.get_data());
-				}
+				Logger.debug("drag articleID: " + (string)selection_data.get_data());
+				FeedReaderBackend.get_default().tagArticle((string)selection_data.get_data(), m_tagID, true);
+				Gtk.drag_finish(context, true, false, time);
 			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("TagRow.constructor: %s".printf(e.message));
+			else
+			{
+				showRenamePopover(context, time, (string)selection_data.get_data());
+			}
 		}
 	}
 
@@ -185,8 +171,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			var notification = MainWindow.get_default().showNotification(text);
 			ulong eventID = notification.dismissed.connect(() => {
 				Logger.debug("TagRow: delete Tag");
-				try{DBusConnection.get_default().deleteTag(m_tagID);}
-				catch(GLib.Error e){Logger.error("TagRow.remove_action: %s".printf(e.message));}
+				FeedReaderBackend.get_default().deleteTag(m_tagID);
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -270,28 +255,14 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 			if(m_tagID != TagID.NEW)
 			{
 				popRename.hide();
-				try
-				{
-					DBusConnection.get_default().renameTag(m_tagID, renameEntry.get_text());
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
-				}
+				FeedReaderBackend.get_default().renameTag(m_tagID, renameEntry.get_text());
 			}
 			else if(context != null)
 			{
-				try
-				{
-					m_tagID = DBusConnection.get_default().createTag(renameEntry.get_text());
-					popRename.hide();
-					DBusConnection.get_default().tagArticle(articleID, m_tagID, true);
-					Gtk.drag_finish(context, true, false, time);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("TagRow.showRenamePopover: %s".printf(e.message));
-				}
+				m_tagID = FeedReaderBackend.get_default().createTag(renameEntry.get_text());
+				popRename.hide();
+				FeedReaderBackend.get_default().tagArticle(articleID, m_tagID, true);
+				Gtk.drag_finish(context, true, false, time);
 			}
 		});
 

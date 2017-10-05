@@ -110,31 +110,24 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			set_unread_count(m_unread_count);
 
-			try
+			if(m_feedID != FeedID.ALL.to_string()
+			&& !Settings.general().get_boolean("only-feeds")
+			&& UtilsUI.canManipulateContent()
+			&& FeedReaderBackend.get_default().supportCategories())
 			{
-				if(m_feedID != FeedID.ALL.to_string()
-				&& !Settings.general().get_boolean("only-feeds")
-				&& UtilsUI.canManipulateContent()
-				&& DBusConnection.get_default().supportCategories())
-				{
-					const Gtk.TargetEntry[] provided_targets = {
-						{ "text/plain",     0, DragTarget.FEED }
-					};
+				const Gtk.TargetEntry[] provided_targets = {
+					{ "text/plain",     0, DragTarget.FEED }
+				};
 
-					Gtk.drag_source_set (
-							this,
-							Gdk.ModifierType.BUTTON1_MASK,
-							provided_targets,
-							Gdk.DragAction.MOVE
-					);
+				Gtk.drag_source_set (
+						this,
+						Gdk.ModifierType.BUTTON1_MASK,
+						provided_targets,
+						Gdk.DragAction.MOVE
+				);
 
-					this.drag_begin.connect(onDragBegin);
-					this.drag_data_get.connect(onDragDataGet);
-				}
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("FeedRow.constructor: %s".printf(e.message));
+				this.drag_begin.connect(onDragBegin);
+				this.drag_data_get.connect(onDragDataGet);
 			}
 		}
 	}
@@ -204,14 +197,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			var notification = MainWindow.get_default().showNotification(_("Feed \"%s\" removed").printf(m_name));
 			ulong eventID = notification.dismissed.connect(() => {
-				try
-				{
-					DBusConnection.get_default().removeFeed(m_feedID);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("FeedRow.onClick: %s".printf(e.message));
-				}
+				FeedReaderBackend.get_default().removeFeed(m_feedID);
 			});
 			notification.action.connect(() => {
 				notification.disconnect(eventID);
@@ -281,14 +267,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		renameEntry.set_text(m_name);
 		renameEntry.activate.connect(() => {
 			popRename.hide();
-			try
-			{
-				DBusConnection.get_default().renameFeed(m_feedID, renameEntry.get_text());
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("FeedRow.showRenamePopover: %s".printf(e.message));
-			}
+			FeedReaderBackend.get_default().renameFeed(m_feedID, renameEntry.get_text());
 		});
 
 		var renameButton = new Gtk.Button.with_label(_("rename"));

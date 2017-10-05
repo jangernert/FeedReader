@@ -189,32 +189,25 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		eventbox.add(box);
 		eventbox.show_all();
 
-		try
+		// Make the this widget a DnD source.
+		if(!Settings.general().get_boolean("only-feeds")
+		&& FeedReaderBackend.get_default().isOnline()
+		&& FeedReaderBackend.get_default().supportTags())
 		{
-			// Make the this widget a DnD source.
-			if(!Settings.general().get_boolean("only-feeds")
-			&& DBusConnection.get_default().isOnline()
-			&& DBusConnection.get_default().supportTags())
-			{
-				const Gtk.TargetEntry[] provided_targets = {
-					{ "STRING",     0, DragTarget.TAG }
-				};
+			const Gtk.TargetEntry[] provided_targets = {
+				{ "STRING",     0, DragTarget.TAG }
+			};
 
-				Gtk.drag_source_set(
-						this,
-						Gdk.ModifierType.BUTTON1_MASK,
-						provided_targets,
-						Gdk.DragAction.COPY
-				);
+			Gtk.drag_source_set(
+					this,
+					Gdk.ModifierType.BUTTON1_MASK,
+					provided_targets,
+					Gdk.DragAction.COPY
+			);
 
-				this.drag_begin.connect(onDragBegin);
-				this.drag_data_get.connect(onDragDataGet);
-				this.drag_failed.connect(onDragFailed);
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ArticleRow.constructor: %s".printf(e.message));
+			this.drag_begin.connect(onDragBegin);
+			this.drag_data_get.connect(onDragDataGet);
+			this.drag_failed.connect(onDragFailed);
 		}
 
 		m_revealer.add(eventbox);
@@ -389,14 +382,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-		try
-		{
-			DBusConnection.get_default().changeArticle(m_article.getArticleID(), m_article.getUnread());
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ArticleRow.toggleUnread: %s".printf(e.message));
-		}
+		FeedReaderBackend.get_default().changeArticle(m_article.getArticleID(), m_article.getUnread());
 		show_all();
 		return unread;
 	}
@@ -499,14 +485,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-		try
-		{
-			DBusConnection.get_default().changeArticle(m_article.getArticleID(), m_article.getMarked());
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ArticleRow.toggleMarked: %s".printf(e.message));
-		}
+		FeedReaderBackend.get_default().changeArticle(m_article.getArticleID(), m_article.getMarked());
 		this.show_all();
 		return marked;
 	}

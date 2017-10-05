@@ -120,7 +120,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			title = node->get_prop("title");
 
 		Logger.debug(space() + "Category: " + title);
-		string catID = FeedDaemonServer.get_default().addCategory(title, parentCatID, true);
+		string catID = FeedReaderBackend.get_default().addCategory(title, parentCatID, true);
 		parseTree(node, catID);
 	}
 

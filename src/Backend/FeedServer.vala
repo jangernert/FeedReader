@@ -43,10 +43,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
 			m_plugin = (extension as FeedServerInterface);
 			m_plugin.init();
-			m_plugin.newFeedList.connect(() => { FeedDaemonServer.get_default().newFeedList(); });
-			m_plugin.refreshFeedListCounter.connect(() => { FeedDaemonServer.get_default().refreshFeedListCounter(); });
-			m_plugin.updateArticleList.connect(() => { FeedDaemonServer.get_default().updateArticleList(); });
-			m_plugin.showArticleListOverlay.connect(() => { FeedDaemonServer.get_default().showArticleListOverlay(); });
+			m_plugin.newFeedList.connect(() => { FeedReaderBackend.get_default().newFeedList(); });
+			m_plugin.refreshFeedListCounter.connect(() => { FeedReaderBackend.get_default().refreshFeedListCounter(); });
+			m_plugin.updateArticleList.connect(() => { FeedReaderBackend.get_default().updateArticleList(); });
+			m_plugin.showArticleListOverlay.connect(() => { FeedReaderBackend.get_default().showArticleListOverlay(); });
 			m_plugin.writeArticles.connect((articles) => { writeArticles(articles); });
 		});
 
@@ -160,12 +160,12 @@ public class FeedReader.FeedServer : GLib.Object {
 			dbDaemon.get_default().update_tags(tags);
 			dbDaemon.get_default().delete_nonexisting_tags();
 
-			FeedDaemonServer.get_default().newFeedList();
+			FeedReaderBackend.get_default().newFeedList();
 
 			// download favicons for all feeds
 			Utils.getFavIcons.begin(feeds, cancellable, (obj, res) => {
 				Utils.getFavIcons.end(res);
-				FeedDaemonServer.get_default().reloadFavIcons();
+				FeedReaderBackend.get_default().reloadFavIcons();
 			});
 		}
 		else
@@ -173,7 +173,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			// download favicons for all feeds
 			Utils.getFavIcons.begin(dbDaemon.get_default().read_feeds(), cancellable, (obj, res) => {
 				Utils.getFavIcons.end(res);
-				FeedDaemonServer.get_default().reloadFavIcons();
+				FeedReaderBackend.get_default().reloadFavIcons();
 			});
 		}
 
@@ -235,7 +235,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		Settings.state().set_int("last-sync", (int)now.to_unix());
 
 		dbDaemon.get_default().checkpoint();
-		FeedDaemonServer.get_default().newFeedList();
+		FeedReaderBackend.get_default().newFeedList();
 		return;
 	}
 
@@ -268,12 +268,12 @@ public class FeedReader.FeedServer : GLib.Object {
 			// write tags
 			dbDaemon.get_default().write_tags(tags);
 
-			FeedDaemonServer.get_default().newFeedList();
+			FeedReaderBackend.get_default().newFeedList();
 
 			// download favicons for all feeds
 			Utils.getFavIcons.begin(feeds, cancellable, (obj, res) => {
 				Utils.getFavIcons.end(res);
-				FeedDaemonServer.get_default().reloadFavIcons();
+				FeedReaderBackend.get_default().reloadFavIcons();
 			});
 		}
 		else
@@ -281,7 +281,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			// download favicons for all feeds
 			Utils.getFavIcons.begin(dbDaemon.get_default().read_feeds(), cancellable, (obj, res) => {
 				Utils.getFavIcons.end(res);
-				FeedDaemonServer.get_default().reloadFavIcons();
+				FeedReaderBackend.get_default().reloadFavIcons();
 			});
 		}
 
@@ -345,8 +345,8 @@ public class FeedReader.FeedServer : GLib.Object {
 			}
 
 			dbDaemon.get_default().write_articles(new_articles);
-			FeedDaemonServer.get_default().refreshFeedListCounter();
-			FeedDaemonServer.get_default().updateArticleList();
+			FeedReaderBackend.get_default().refreshFeedListCounter();
+			FeedReaderBackend.get_default().updateArticleList();
 		}
 	}
 
@@ -955,7 +955,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 	private void syncProgress(string text)
 	{
-		FeedDaemonServer.get_default().updateSyncProgress(text);
+		FeedReaderBackend.get_default().updateSyncProgress(text);
 		Settings.state().set_string("sync-status", text);
 	}
 

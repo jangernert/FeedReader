@@ -80,6 +80,14 @@ namespace FeedReader {
 					setOffline();
 				}
 			});
+
+			this.setOffline.connect(() => {
+				m_offline = true;
+			});
+			this.setOnline.connect(() => {
+				m_offline = false;
+				CachedActionManager.get_default().executeActions();
+			});
 		}
 
 		public void startSync(bool initSync = false)
@@ -293,20 +301,14 @@ namespace FeedReader {
 		{
 			Logger.debug("backend: new FeedServer and login");
 
+			FeedServer.get_default().setActivePlugin(plugName);
+
 			if(!FeedServer.get_default().pluginLoaded())
 			{
 				Logger.error(@"backend: no active plugin");
 				m_loggedin = LoginResponse.NO_BACKEND;
 				return m_loggedin;
 			}
-
-			this.setOffline.connect(() => {
-				m_offline = true;
-			});
-			this.setOnline.connect(() => {
-				m_offline = false;
-				CachedActionManager.get_default().executeActions();
-			});
 
 			m_loggedin = FeedServer.get_default().login();
 

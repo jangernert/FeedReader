@@ -43,14 +43,14 @@ namespace FeedReader {
 		public signal void updateSyncProgress(string progress);
 		public signal void tryLogin();
 
-		private static FeedReaderBackend? m_daemon;
+		private static FeedReaderBackend? m_backend;
 
 		public static FeedReaderBackend get_default()
 		{
-			if(m_daemon == null)
-				m_daemon = new FeedReaderBackend();
+			if(m_backend == null)
+				m_backend = new FeedReaderBackend();
 
-			return m_daemon;
+			return m_backend;
 		}
 
 		private FeedReaderBackend()

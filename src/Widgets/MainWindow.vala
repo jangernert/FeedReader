@@ -146,10 +146,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.set_titlebar(m_simpleHeader);
 		this.set_title("FeedReader");
 		this.set_default_size(Settings.state().get_int("window-width"), Settings.state().get_int("window-height"));
-		this.delete_event.connect(() => {
-			writeInterfaceState(true);
-			return false;
-		});
 		this.show_all();
 
 		Logger.debug("MainWindow: determining state");
@@ -658,7 +654,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "global-quit"))
 		{
 			Logger.debug("shortcut: quit");
-			FeedReaderApp.get_default().quit();
+			FeedReaderApp.get_default().activate_action("quit", null);
 			return true;
 		}
 

@@ -91,7 +91,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 				return;
 		}
 
-		// set "currently-updating" ourself to prevent the daemon to start sync
+		// set "currently-updating" ourself to prevent the backend to start sync
 		Settings.state().set_boolean("currently-updating", true);
 
 		// clear all data from UI

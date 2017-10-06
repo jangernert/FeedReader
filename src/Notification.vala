@@ -30,9 +30,10 @@ public class FeedReader.Notification : GLib.Object {
 
 			var notification = new GLib.Notification(summary);
 			notification.set_body(message);
-			notification.set_default_action("app.present");
 			notification.set_priority(GLib.NotificationPriority.NORMAL);
 			notification.set_icon(new GLib.ThemedIcon("org.gnome.FeedReader"));
+
+			GLib.Application.get_default().send_notification("feedreader_default", notification);
 		}
 	}
 

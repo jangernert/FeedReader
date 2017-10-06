@@ -52,7 +52,6 @@ namespace FeedReader {
 			Logger.info("FeedReader " + AboutInfo.version);
 
 			Settings.state().set_boolean("currently-updating", false);
-			SetupActions();
 
 			base.startup();
 		}
@@ -64,6 +63,7 @@ namespace FeedReader {
 
 			if(m_window == null)
 			{
+				SetupActions();
 				m_window = MainWindow.get_default();
 				m_window.set_icon_name("org.gnome.FeedReader");
 				Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
@@ -249,15 +249,30 @@ namespace FeedReader {
 		private void SetupActions()
 		{
 			var quit_action = new SimpleAction("quit", null);
-			quit_action.activate.connect(FeedReaderApp.get_default().quit);
-			this.add_action(quit_action);
+			quit_action.activate.connect(() => {
 
-			var present_action = new SimpleAction ("app.present", null);
-			present_action.activate.connect (() => {
-				if (m_window != null)
-					m_window.present_with_time((uint32)GLib.get_monotonic_time());
+				MainWindow.get_default().writeInterfaceState(true);
+				m_window.close();
+
+				if(Settings.state().get_boolean("currently-updating"))
+				{
+					Logger.debug("Quit: FeedReader seems to be syncing -> trying to cancel");
+					FeedReaderBackend.get_default().cancelSync();
+					while(Settings.state().get_boolean("currently-updating"))
+					{
+						Gtk.main_iteration();
+					}
+
+					Logger.debug("Quit: Sync cancelled -> shutting down");
+				}
+				else
+				{
+					Logger.debug("No Sync ongoing -> Quit right away");
+				}
+
+				FeedReaderApp.get_default().quit();
 			});
-			this.add_action (present_action);
+			this.add_action(quit_action);
 		}
 	}
 

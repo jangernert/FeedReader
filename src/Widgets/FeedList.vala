@@ -265,7 +265,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
 
-		if(!UtilsUI.onlyShowFeeds())
+		if(!Utils.onlyShowFeeds())
 		{
 			createCategories(ref feeds, masterCat, state);
 			createTags();
@@ -274,7 +274,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		foreach(var item in feeds)
 		{
 
-			if(!UtilsUI.onlyShowFeeds())
+			if(!Utils.onlyShowFeeds())
 			{
 				var FeedChildList = m_list.get_children();
 				int pos = 0;
@@ -643,7 +643,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						{
 							if(tmpFeedRow.getUnreadCount() == 0)
 								tmpFeedRow.reveal(false);
-							else if(isCategorieExpanded(tmpFeedRow.getCatID()) || UtilsUI.onlyShowFeeds())
+							else if(isCategorieExpanded(tmpFeedRow.getCatID()) || Utils.onlyShowFeeds())
 								tmpFeedRow.reveal(true);
 						}
 

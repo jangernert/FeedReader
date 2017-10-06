@@ -213,7 +213,6 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(newArticles > 0)
 		{
 			Notification.send(newArticles);
-			setNewRows();
 		}
 
 		switch(Settings.general().get_enum("drop-articles-after"))
@@ -350,16 +349,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			dbDaemon.get_default().write_articles(new_articles);
 			FeedReaderBackend.get_default().refreshFeedListCounter();
 			FeedReaderBackend.get_default().updateArticleList();
-		}
-	}
-
-	private void setNewRows()
-	{
-		if(!Settings.state().get_boolean("ui-running") && Settings.state().get_enum("show-articles") == ArticleListState.ALL)
-		{
-			int newCount = (int)UtilsDaemon.getRelevantArticles();
-			Logger.debug(@"UI NOT running: setting \"articlelist-new-rows\" to $newCount");
-			Settings.state().set_int("articlelist-new-rows", newCount);
 		}
 	}
 

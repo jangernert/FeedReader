@@ -7,11 +7,6 @@
 	</enum>
 
 	<schema id="org.gnome.feedreader.saved-state" path="/org/gnome/feedreader/saved-state/" gettext-domain="feedreader">
-		<key name="ui-running" type="b">
-			<default>false</default>
-			<summary>if feedreader UI is running</summary>
-		</key>
-
 		<key name="window-width" type="i">
 			<default>1600</default>
 			<summary>saved with of the window</summary>
@@ -93,14 +88,6 @@
 			<summary>ArticleList number of rows</summary>
 			<description>
 				How much articles to load on startup
-			</description>
-		</key>
-
-		<key name="articlelist-new-rows" type="i">
-			<default>0</default>
-			<summary>ArticleList number of new rows added during close</summary>
-			<description>
-				How much articles got added to the db while the app was closed
 			</description>
 		</key>
 

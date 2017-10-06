@@ -76,7 +76,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		crashButton.set_focus_on_click(false);
 		crashButton.clicked.connect(() => {
 			var Article = dbUI.get_default().read_article(m_currentArticle);
-			UtilsUI.openInGedit(Article.getHTML());
+			Utils.openInGedit(Article.getHTML());
 		});
 		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		crashView.set_halign(Gtk.Align.CENTER);
@@ -248,7 +248,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_progress.reveal(true);
 
 			m_currentView.load_html(
-				UtilsUI.buildArticle(
+				Utils.buildArticle(
 						article.getHTML(),
 						article.getTitle(),
 						article.getURL(),
@@ -775,7 +775,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			var uri = hitTest.get_image_uri().substring("file://".length);
 			var action = new Gtk.Action("save", _("Save image as"), null, null);
 			action.activate.connect(() => {
-				UtilsUI.saveImageDialog(uri);
+				Utils.saveImageDialog(uri);
 			});
 			menu.append(new WebKit.ContextMenuItem(action));
 		}

@@ -140,7 +140,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		else
 			m_stack.set_visible_child_name("expanded");
 
-		if(UtilsUI.canManipulateContent())
+		if(Utils.canManipulateContent())
 		{
 			if(m_categorieID != CategoryID.MASTER.to_string()
 			&& m_categorieID != CategoryID.TAGS.to_string())
@@ -341,7 +341,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		if(event.button != 3)
 			return false;
 
-		if(!UtilsUI.canManipulateContent())
+		if(!Utils.canManipulateContent())
 			return false;
 
 

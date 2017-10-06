@@ -32,7 +32,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 
 	public ArticleViewHeader(string fsIcon, string fsTooltip)
 	{
-		var share_icon = UtilsUI.checkIcon("emblem-shared-symbolic", "feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var share_icon = Utils.checkIcon("emblem-shared-symbolic", "feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var marked_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
@@ -146,7 +146,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_print_button.sensitive = show;
 
 		if(FeedReaderBackend.get_default().supportTags()
-		&& UtilsUI.canManipulateContent())
+		&& Utils.canManipulateContent())
 		{
 			m_tag_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		}
@@ -175,7 +175,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 	public void setOffline()
 	{
 		m_share_button.sensitive = false;
-		if(UtilsUI.canManipulateContent()
+		if(Utils.canManipulateContent()
 		&& FeedReaderBackend.get_default().supportTags())
 			m_tag_button.sensitive = false;
 	}
@@ -185,7 +185,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		if(m_mark_button.sensitive)
 		{
 			m_share_button.sensitive = true;
-			if(UtilsUI.canManipulateContent()
+			if(Utils.canManipulateContent()
 			&& FeedReaderBackend.get_default().supportTags())
 				m_tag_button.sensitive = true;
 		}

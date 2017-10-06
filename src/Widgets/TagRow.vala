@@ -76,7 +76,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		this.add(m_eventBox);
 		this.show_all();
 
-		if(UtilsUI.canManipulateContent())
+		if(Utils.canManipulateContent())
 		{
 			const Gtk.TargetEntry[] accepted_targets = {
 				{ "STRING",     0, DragTarget.TAG }
@@ -148,7 +148,7 @@ public class FeedReader.TagRow : Gtk.ListBoxRow {
 		if(event.button != 3)
 			return false;
 
-		if(!UtilsUI.canManipulateContent())
+		if(!Utils.canManipulateContent())
 			return false;
 
 		switch(event.type)

@@ -97,13 +97,13 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
 			menubutton.set_size_request(32, 32);
 			menubutton.set_use_popover(true);
-			menubutton.set_menu_model(UtilsUI.getMenu());
+			menubutton.set_menu_model(Utils.getMenu());
 			menubutton.set_tooltip_text(_("Settings"));
 			m_header_left.pack_end(menubutton);
 		}
 		else if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
 		{
-			FeedReaderApp.get_default().app_menu = UtilsUI.getMenu();
+			FeedReaderApp.get_default().app_menu = Utils.getMenu();
 		}
 
 

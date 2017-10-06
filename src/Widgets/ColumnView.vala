@@ -418,7 +418,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_headerbar.setOffline();
 		m_feedList.setOffline();
 
-		if(!UtilsUI.canManipulateContent(false))
+		if(!Utils.canManipulateContent(false))
 		{
 			m_footer.setAddButtonSensitive(false);
 			m_feedList.newFeedlist(m_articleList.getState(), false);
@@ -430,7 +430,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_headerbar.setOnline();
 		m_feedList.setOnline();
 
-		if(UtilsUI.canManipulateContent(true))
+		if(Utils.canManipulateContent(true))
 		{
 			m_footer.setAddButtonSensitive(true);
 			m_feedList.newFeedlist(m_articleList.getState(), false);

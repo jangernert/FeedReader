@@ -83,7 +83,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
 
 
-			if(!UtilsUI.onlyShowFeeds() && feedID != FeedID.ALL.to_string())
+			if(!Utils.onlyShowFeeds() && feedID != FeedID.ALL.to_string())
 				this.get_style_context().add_class("fr-sidebar-feed");
 			else
 				this.get_style_context().add_class("fr-sidebar-row");
@@ -112,7 +112,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 			if(m_feedID != FeedID.ALL.to_string()
 			&& !Settings.general().get_boolean("only-feeds")
-			&& UtilsUI.canManipulateContent()
+			&& Utils.canManipulateContent()
 			&& FeedReaderBackend.get_default().supportCategories())
 			{
 				const Gtk.TargetEntry[] provided_targets = {
@@ -176,7 +176,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		if(event.button != 3)
 			return false;
 
-		if(!UtilsUI.canManipulateContent())
+		if(!Utils.canManipulateContent())
 			return false;
 
 		switch(event.type)

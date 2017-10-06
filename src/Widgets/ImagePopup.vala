@@ -123,7 +123,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 		m_saveButton = new Gtk.Button.from_icon_name("document-save-symbolic", Gtk.IconSize.BUTTON);
 		m_saveButton.clicked.connect(() => {
-			UtilsUI.saveImageDialog(m_imagePath);
+			Utils.saveImageDialog(m_imagePath);
 		});
 
 		m_image.notify["scale"].connect(onImageScrolled);

@@ -278,7 +278,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		var state = new InterfaceState();
 		state.setWindowSize(windowHeight, windowWidth);
-		state.setArticleListNewRowCount(0);
 		state.setWindowMaximized(this.is_maximized);
 		ColumnView.get_default().saveState(ref state);
 		return state;

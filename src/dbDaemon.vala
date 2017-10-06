@@ -513,8 +513,8 @@ public class FeedReader.dbDaemon : dbBase {
 
 	public void write_articles(Gee.List<Article> articles)
 	{
-		FeedReader.UtilsDaemon.generatePreviews(articles);
-		FeedReader.UtilsDaemon.checkHTML(articles);
+		Utils.generatePreviews(articles);
+		Utils.checkHTML(articles);
 
 		executeSQL("BEGIN TRANSACTION");
 

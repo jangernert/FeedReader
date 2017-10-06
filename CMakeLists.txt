@@ -99,7 +99,6 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/FavIconCache.vala
 	src/FeedReader.vala
 	src/dbUI.vala
-	src/UtilsUI.vala
 	src/Widgets/AddPopover.vala
 	src/Widgets/ArticleRow.vala
 	src/Widgets/ArticleView.vala
@@ -173,7 +172,6 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/ActionCache.vala
 	src/Backend/Backend.vala
 	src/dbDaemon.vala
-	src/UtilsDaemon.vala
 	src/Notification.vala
 	src/CachedActionManager.vala
 	src/Backend/FeedServer.vala

@@ -51,7 +51,6 @@ namespace FeedReader {
 			Logger.init();
 			Logger.info("FeedReader " + AboutInfo.version);
 
-			Settings.state().set_boolean("ui-running", true);
 			Settings.state().set_boolean("currently-updating", false);
 			SetupActions();
 
@@ -219,7 +218,6 @@ namespace FeedReader {
 
 		protected override void shutdown()
 		{
-			Settings.state().set_boolean("ui-running", false);
 			Logger.debug("Shutdown!");
 			Gst.deinit();
 			base.shutdown();
@@ -267,9 +265,6 @@ namespace FeedReader {
 	public static int main (string[] args)
 	{
 		Ivy.Stacktrace.register_handlers();
-		Posix.atexit(() => {
-			Settings.state().set_boolean("ui-running", false);
-		});
 
 		try
 		{
@@ -299,7 +294,7 @@ namespace FeedReader {
 
 		if(media != null)
 		{
-			UtilsUI.playMedia(args, media);
+			Utils.playMedia(args, media);
 			return 0;
 		}
 

@@ -52,12 +52,15 @@ namespace FeedReader {
 			Logger.info("FeedReader " + AboutInfo.version);
 
 			Settings.state().set_boolean("ui-running", true);
+			Settings.state().set_boolean("currently-updating", false);
+			SetupActions();
 
 			base.startup();
 		}
 
 		public override void activate()
 		{
+			base.activate();
 			WebKit.WebContext.get_default().set_web_extensions_directory(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR);
 
 			if(m_window == null)
@@ -198,8 +201,6 @@ namespace FeedReader {
 
 			m_window.show_all();
 			m_window.present();
-
-			base.activate();
 		}
 
 		public override int command_line(ApplicationCommandLine command_line)
@@ -245,6 +246,20 @@ namespace FeedReader {
 		private FeedReaderApp()
 		{
 			GLib.Object(application_id: "org.gnome.FeedReader", flags: ApplicationFlags.HANDLES_COMMAND_LINE);
+		}
+
+		private void SetupActions()
+		{
+			var quit_action = new SimpleAction("quit", null);
+			quit_action.activate.connect(FeedReaderApp.get_default().quit);
+			this.add_action(quit_action);
+
+			var present_action = new SimpleAction ("app.present", null);
+			present_action.activate.connect (() => {
+				if (m_window != null)
+					m_window.present_with_time((uint32)GLib.get_monotonic_time());
+			});
+			this.add_action (present_action);
 		}
 	}
 
@@ -337,7 +352,6 @@ namespace FeedReader {
 			Logger.error("Gst.init: " + e.message);
 		}
 
-		Notification.init();
 		var app = FeedReaderApp.get_default();
 		app.run(args);
 

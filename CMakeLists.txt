@@ -49,7 +49,6 @@ set(MODULES
 	libsoup-2.4
 	sqlite3
 	libsecret-1
-	libnotify
 	libxml-2.0
 	rest-0.7
 	webkit2gtk-4.0
@@ -86,7 +85,6 @@ set(UI_PACKAGES
 	sqlite3
 	gee-0.8
 	libsecret-1
-	libnotify
 	rest-0.7
 	WebKit2-4.0
 	gstreamer-1.0

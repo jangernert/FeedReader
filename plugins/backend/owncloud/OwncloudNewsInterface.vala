@@ -429,7 +429,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public int getUnreadCount()
 	{
-		return (int)dbDaemon.get_default().get_unread_total();
+		return (int)DataBase.readOnly().get_unread_total();
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
@@ -462,7 +462,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		var articles = new Gee.LinkedList<Article>();
 
 		if(count == -1)
-			m_api.getNewArticles(articles, dbDaemon.get_default().getLastModified(), type, id);
+			m_api.getNewArticles(articles, DataBase.readOnly().getLastModified(), type, id);
 		else
 			m_api.getArticles(articles, 0, -1, read, type, id);
 

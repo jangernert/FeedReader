@@ -39,7 +39,7 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 			switch(type)
 			{
 				case FeedListType.FEED:
-					name = dbUI.get_default().getFeedName(selectedFeed);
+					name = DataBase.readOnly().getFeedName(selectedFeed);
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
@@ -63,7 +63,7 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					}
 					break;
 				case FeedListType.TAG:
-					name = dbUI.get_default().getTagName(selectedFeed);
+					name = DataBase.readOnly().getTagName(selectedFeed);
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")
@@ -87,7 +87,7 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 					}
 					break;
 				case FeedListType.CATEGORY:
-					name = dbUI.get_default().getCategoryName(selectedFeed);
+					name = DataBase.readOnly().getCategoryName(selectedFeed);
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")

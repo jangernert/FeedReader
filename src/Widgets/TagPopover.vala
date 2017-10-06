@@ -97,7 +97,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		m_complete.set_text_column(0);
 		Gtk.TreeIter iter;
 
-		var tags = dbUI.get_default().read_tags();
+		var tags = DataBase.readOnly().read_tags();
 
 		foreach(tag Tag in tags)
 		{
@@ -166,7 +166,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), tagID, true);
 
 
-			var new_tag = dbUI.get_default().read_tag(tagID);
+			var new_tag = DataBase.readOnly().read_tag(tagID);
 			var row = new TagPopoverRow(new_tag);
 			row.remove_tag.connect(removeTag);
 			m_list.add(row);

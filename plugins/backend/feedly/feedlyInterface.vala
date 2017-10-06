@@ -213,8 +213,8 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		string catArray = "";
 		string feedArray = "";
 
-		var categories = dbDaemon.get_default().read_categories();
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
+		var categories = DataBase.readOnly().read_categories();
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
 
 		foreach(Category cat in categories)
 		{
@@ -297,7 +297,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void renameFeed(string feedID, string title)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = DataBase.readOnly().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 	}
 
@@ -328,7 +328,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = DataBase.readOnly().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
 	}
 

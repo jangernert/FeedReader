@@ -291,7 +291,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					new tag(
 						tag_node.get_int_member("id").to_string(),
 						tag_node.get_string_member("caption"),
-						dbDaemon.get_default().getTagColor()
+						DataBase.readOnly().getTagColor()
 					)
 				);
 			}

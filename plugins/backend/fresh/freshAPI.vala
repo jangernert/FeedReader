@@ -332,7 +332,7 @@ public class FeedReader.freshAPI : Object {
 		var msg = new freshMessage();
 		msg.add("T", m_connection.getToken());
 		msg.add("s", streamID);
-		msg.add("ts", dbDaemon.get_default().getNewestArticle());
+		msg.add("ts", DataBase.readOnly().getNewestArticle());
 
 		var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 

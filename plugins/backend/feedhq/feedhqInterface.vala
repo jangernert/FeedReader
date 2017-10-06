@@ -254,13 +254,13 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void markAllItemsRead()
 	{
-		var categories = dbDaemon.get_default().read_categories();
+		var categories = DataBase.readOnly().read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
 		foreach(Feed feed in feeds)
 		{
 			m_api.markAsRead(feed.getFeedID());
@@ -409,7 +409,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 				continuation = m_api.updateArticles(unreadIDs, 1000, continuation);
 			}
 			while(continuation != null);
-			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
+			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
 		}
 
 		var articles = new Gee.LinkedList<Article>();

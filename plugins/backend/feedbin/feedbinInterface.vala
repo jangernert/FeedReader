@@ -256,7 +256,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		uint offset = 0;
 		do
 		{
-			var articles = dbDaemon.get_default().read_articles(id, type, ArticleListState.ALL, "", count, offset);
+			var articles = DataBase.readOnly().read_articles(id, type, ArticleListState.ALL, "", count, offset);
 
 			FuncUtils.MapFunction<Article, string> articleToID = (article) => { return article.getArticleID(); };
 			var articleIDs = FuncUtils.map(articles, articleToID);
@@ -511,7 +511,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 				time = new DateTime.now_utc().add_months(-6);
 				break;
 		}
-		if(!dbDaemon.get_default().isTableEmpty("articles"))
+		if(!DataBase.readOnly().isTableEmpty("articles"))
 		{
 			var last_sync = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
 			if(time == null || last_sync.to_unix() > time.to_unix())

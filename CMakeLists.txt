@@ -98,7 +98,6 @@ set(UI_PACKAGES
 vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/FavIconCache.vala
 	src/FeedReader.vala
-	src/dbUI.vala
 	src/Widgets/AddPopover.vala
 	src/Widgets/ArticleRow.vala
 	src/Widgets/ArticleView.vala
@@ -153,7 +152,7 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/Logger.vala
 	src/Enums.vala
 	src/FuncUtils.vala
-	src/dbBase.vala
+	src/DataBaseReadOnly.vala
 	src/ListUtils.vala
 	src/Settings.vala
 	src/StringUtils.vala
@@ -171,7 +170,7 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/Model/ShareAccount.vala
 	src/ActionCache.vala
 	src/Backend/Backend.vala
-	src/dbDaemon.vala
+	src/DataBaseWriteAccess.vala
 	src/Notification.vala
 	src/CachedActionManager.vala
 	src/Backend/FeedServer.vala

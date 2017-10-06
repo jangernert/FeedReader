@@ -13,15 +13,15 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.dbDaemon : dbBase {
+public class FeedReader.DataBase : DataBaseReadOnly {
 
-	private static dbDaemon? m_dataBase = null;
+	private static DataBase? m_dataBase = null;
 
-	public static new dbDaemon get_default()
+	public static new DataBase writeAccess()
 	{
 		if(m_dataBase == null)
 		{
-			m_dataBase = new dbDaemon();
+			m_dataBase = new DataBase();
 			if(m_dataBase.uninitialized())
 				m_dataBase.init();
 		}
@@ -29,7 +29,12 @@ public class FeedReader.dbDaemon : dbBase {
 		return m_dataBase;
 	}
 
-	private dbDaemon(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
+	public static new DataBaseReadOnly readOnly()
+	{
+		return writeAccess() as DataBaseReadOnly;
+	}
+
+	private DataBase(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
 		base(dbFile);
 	}
@@ -161,29 +166,6 @@ public class FeedReader.dbDaemon : dbBase {
 		}
 	}
 
-	public bool feed_exists(string feed_url){
-		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
-		query.selectField("count(*)");
-		query.addEqualsCondition("url", feed_url, true, true);
-		query.limit(1);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error("feed_exists: " + sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			if(stmt.column_int(0) > 1)
-				return true;
-		}
-
-		return false;
-	}
-
 	public void write_feeds(Gee.List<Feed> feeds)
 	{
 		executeSQL("BEGIN TRANSACTION");
@@ -201,7 +183,7 @@ public class FeedReader.dbDaemon : dbBase {
 		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
 		if(ec != Sqlite.OK)
 		{
-			Logger.error("dbDaemon: write_feeds - " + query.get());
+			Logger.error("DataBase: write_feeds - " + query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
@@ -256,7 +238,7 @@ public class FeedReader.dbDaemon : dbBase {
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
 		if (ec != Sqlite.OK)
 		{
-			Logger.error("dbDaemon: write_tags - " + query.get());
+			Logger.error("DataBase: write_tags - " + query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
@@ -295,7 +277,7 @@ public class FeedReader.dbDaemon : dbBase {
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
 		if (ec != Sqlite.OK)
 		{
-			Logger.error("dbDaemon: update_tags - " + query.get());
+			Logger.error("DataBase: update_tags - " + query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
@@ -344,7 +326,7 @@ public class FeedReader.dbDaemon : dbBase {
 		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
 		if (ec != Sqlite.OK)
 		{
-			Logger.error("dbDaemon: write_categories - " + query.get());
+			Logger.error("DataBase: write_categories - " + query.get());
 			Logger.error(sqlite_db.errmsg());
 		}
 
@@ -492,10 +474,10 @@ public class FeedReader.dbDaemon : dbBase {
 			var marked = ActionCache.get_default().checkStarred(a.getArticleID(), a.getMarked());
 
 			if(unread != ArticleStatus.READ && unread != ArticleStatus.UNREAD)
-				Logger.warning(@"dbDaemon.update_articles: writing invalid unread status $unread for article " + a.getArticleID());
+				Logger.warning(@"DataBase.update_articles: writing invalid unread status $unread for article " + a.getArticleID());
 
 			if(marked != ArticleStatus.MARKED && marked != ArticleStatus.UNMARKED)
-				Logger.warning(@"dbDaemon.update_articles: writing invalid marked status $marked for article " + a.getArticleID());
+				Logger.warning(@"DataBase.update_articles: writing invalid marked status $marked for article " + a.getArticleID());
 
 			stmt.bind_int (unread_position, unread);
 			stmt.bind_int (marked_position, marked);
@@ -633,30 +615,6 @@ public class FeedReader.dbDaemon : dbBase {
 		executeSQL(query.build());
 	}
 
-	public bool tag_still_used(string tagID)
-	{
-		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
-		query.selectField("count(*)");
-		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
-		query.limit(2);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error("tag_still_used: " + sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			if(stmt.column_int(0) > 1)
-				return true;
-		}
-
-		return false;
-	}
-
 	public void update_article(string articleIDs, string field, int field_value)
 	{
 		var id_array = articleIDs.split(",");
@@ -712,26 +670,26 @@ public class FeedReader.dbDaemon : dbBase {
 
 	public void delete_unsubscribed_feeds()
 	{
-		Logger.warning("dbDaemon: Deleting unsubscribed feeds");
+		Logger.warning("DataBase: Deleting unsubscribed feeds");
 		executeSQL("DELETE FROM main.feeds WHERE \"subscribed\" = 0");
 	}
 
 
 	public void delete_nonexisting_categories()
 	{
-		Logger.warning("dbDaemon: Deleting nonexisting categories");
+		Logger.warning("DataBase: Deleting nonexisting categories");
 		executeSQL("DELETE FROM main.categories WHERE \"exists\" = 0");
 	}
 
 	public void delete_nonexisting_tags()
 	{
-		Logger.warning("dbDaemon: Deleting nonexisting tags");
+		Logger.warning("DataBase: Deleting nonexisting tags");
 		executeSQL("DELETE FROM main.tags WHERE \"exists\" = 0");
 	}
 
 	public void delete_articles_without_feed()
 	{
-		Logger.warning("dbDaemon: Deleting articles without feed");
+		Logger.warning("DataBase: Deleting articles without feed");
 		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
 		query.selectField("feed_id");
 		query.addEqualsCondition("subscribed", "0", true, false);
@@ -742,7 +700,7 @@ public class FeedReader.dbDaemon : dbBase {
 		if(ec != Sqlite.OK)
 		{
 			Logger.error(query.get());
-			Logger.error("dbDaemon: delete_articles_without_feed: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
+			Logger.error("DataBase: delete_articles_without_feed: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
 		}
 
 		while(stmt.step () == Sqlite.ROW)
@@ -753,7 +711,7 @@ public class FeedReader.dbDaemon : dbBase {
 
 	public void delete_articles(string feedID)
 	{
-		Logger.warning("dbDaemon: Deleting all articles of feed \"%s\"".printf(feedID));
+		Logger.warning("DataBase: Deleting all articles of feed \"%s\"".printf(feedID));
 		executeSQL("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
 		string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/".printf(feedID);
 		Utils.remove_directory(folder_path);
@@ -852,7 +810,7 @@ public class FeedReader.dbDaemon : dbBase {
 
 	public void move_feed(string feedID, string currentCatID, string? newCatID = null)
 	{
-		var Feed = dbDaemon.get_default().read_feed(feedID);
+		var Feed = read_feed(feedID);
 		var categories = Feed.getCatIDs();
 		categories.remove(currentCatID);
 
@@ -1018,22 +976,6 @@ public class FeedReader.dbDaemon : dbBase {
 		query.addEqualsCondition("action", "%i".printf(action.opposite()));
 		executeSQL(query.build());
 		query.print();
-	}
-
-	protected override bool showCategory(string catID, Gee.List<Feed> feeds)
-	{
-		if(FeedServer.get_default().hideCategoryWhenEmpty(catID)
-		&& !Utils.categoryIsPopulated(catID, feeds))
-		{
-			return false;
-		}
-		return true;
-	}
-
-	protected override string getUncategorizedQuery()
-	{
-		string catID = FeedServer.get_default().uncategorizedID();
-		return "category_id = \"%s\"".printf(catID);
 	}
 
 }

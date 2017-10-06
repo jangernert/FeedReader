@@ -147,21 +147,21 @@ public class FeedReader.FeedServer : GLib.Object {
 				return;
 
 			// write categories
-			dbDaemon.get_default().reset_exists_flag();
-			dbDaemon.get_default().write_categories(categories);
-			dbDaemon.get_default().delete_nonexisting_categories();
+			DataBase.writeAccess().reset_exists_flag();
+			DataBase.writeAccess().write_categories(categories);
+			DataBase.writeAccess().delete_nonexisting_categories();
 
 			// write feeds
-			dbDaemon.get_default().reset_subscribed_flag();
-			dbDaemon.get_default().write_feeds(feeds);
-			dbDaemon.get_default().delete_articles_without_feed();
-			dbDaemon.get_default().delete_unsubscribed_feeds();
+			DataBase.writeAccess().reset_subscribed_flag();
+			DataBase.writeAccess().write_feeds(feeds);
+			DataBase.writeAccess().delete_articles_without_feed();
+			DataBase.writeAccess().delete_unsubscribed_feeds();
 
 			// write tags
-			dbDaemon.get_default().reset_exists_tag();
-			dbDaemon.get_default().write_tags(tags);
-			dbDaemon.get_default().update_tags(tags);
-			dbDaemon.get_default().delete_nonexisting_tags();
+			DataBase.writeAccess().reset_exists_tag();
+			DataBase.writeAccess().write_tags(tags);
+			DataBase.writeAccess().update_tags(tags);
+			DataBase.writeAccess().delete_nonexisting_tags();
 
 			FeedReaderBackend.get_default().newFeedList();
 
@@ -174,7 +174,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		else
 		{
 			// download favicons for all feeds
-			Utils.getFavIcons.begin(dbDaemon.get_default().read_feeds(), cancellable, (obj, res) => {
+			Utils.getFavIcons.begin(DataBase.readOnly().read_feeds(), cancellable, (obj, res) => {
 				Utils.getFavIcons.end(res);
 				FeedReaderBackend.get_default().reloadFavIcons();
 			});
@@ -190,7 +190,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 
 		syncProgress(_("Getting articles"));
-		int before = dbDaemon.get_default().getHighestRowID();
+		int before = DataBase.readOnly().getHighestRowID();
 
 		if(unread > max && useMaxArticles())
 		{
@@ -206,9 +206,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		//update fulltext table
-		dbDaemon.get_default().updateFTS();
+		DataBase.writeAccess().updateFTS();
 
-		int after = dbDaemon.get_default().getHighestRowID();
+		int after = DataBase.readOnly().getHighestRowID();
 		int newArticles = after-before;
 		if(newArticles > 0)
 		{
@@ -221,22 +221,22 @@ public class FeedReader.FeedServer : GLib.Object {
 				break;
 
 			case DropArticles.ONE_WEEK:
-				dbDaemon.get_default().dropOldArtilces(1);
+				DataBase.writeAccess().dropOldArtilces(1);
 				break;
 
 			case DropArticles.ONE_MONTH:
-				dbDaemon.get_default().dropOldArtilces(4);
+				DataBase.writeAccess().dropOldArtilces(4);
 				break;
 
 			case DropArticles.SIX_MONTHS:
-				dbDaemon.get_default().dropOldArtilces(24);
+				DataBase.writeAccess().dropOldArtilces(24);
 				break;
 		}
 
 		var now = new DateTime.now_local();
 		Settings.state().set_int("last-sync", (int)now.to_unix());
 
-		dbDaemon.get_default().checkpoint();
+		DataBase.writeAccess().checkpoint();
 		FeedReaderBackend.get_default().newFeedList();
 		return;
 	}
@@ -262,13 +262,13 @@ public class FeedReader.FeedServer : GLib.Object {
 				return;
 
 			// write categories
-			dbDaemon.get_default().write_categories(categories);
+			DataBase.writeAccess().write_categories(categories);
 
 			// write feeds
-			dbDaemon.get_default().write_feeds(feeds);
+			DataBase.writeAccess().write_feeds(feeds);
 
 			// write tags
-			dbDaemon.get_default().write_tags(tags);
+			DataBase.writeAccess().write_tags(tags);
 
 			FeedReaderBackend.get_default().newFeedList();
 
@@ -281,7 +281,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		else
 		{
 			// download favicons for all feeds
-			Utils.getFavIcons.begin(dbDaemon.get_default().read_feeds(), cancellable, (obj, res) => {
+			Utils.getFavIcons.begin(DataBase.readOnly().read_feeds(), cancellable, (obj, res) => {
 				Utils.getFavIcons.end(res);
 				FeedReaderBackend.get_default().reloadFavIcons();
 			});
@@ -299,7 +299,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		// get articles for each tag
 		syncProgress(_("Getting tagged articles"));
-		foreach(var tag_item in dbDaemon.get_default().read_tags())
+		foreach(var tag_item in DataBase.readOnly().read_tags())
 		{
 			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true, cancellable);
 			if(cancellable != null && cancellable.is_cancelled())
@@ -323,7 +323,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		//update fulltext table
-		dbDaemon.get_default().updateFTS();
+		DataBase.writeAccess().updateFTS();
 
 		Settings.general().reset("content-grabber");
 
@@ -337,7 +337,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		if(articles.size > 0)
 		{
-			dbDaemon.get_default().update_articles(articles);
+			DataBase.writeAccess().update_articles(articles);
 
 			// Reverse the list
 			var new_articles = new Gee.LinkedList<Article>();
@@ -346,7 +346,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				new_articles.insert(0, article);
 			}
 
-			dbDaemon.get_default().write_articles(new_articles);
+			DataBase.writeAccess().write_articles(new_articles);
 			FeedReaderBackend.get_default().refreshFeedListCounter();
 			FeedReaderBackend.get_default().updateArticleList();
 		}
@@ -359,7 +359,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 
 		Logger.debug("FeedServer: grabContent");
-		var articles = dbDaemon.get_default().readUnfetchedArticles();
+		var articles = DataBase.readOnly().readUnfetchedArticles();
 		int size = articles.size;
 		int i = 0;
 
@@ -412,7 +412,7 @@ public class FeedReader.FeedServer : GLib.Object {
 						}
 
 						if(cancellable == null || !cancellable.is_cancelled())
-							dbDaemon.get_default().writeContent(a);
+							DataBase.writeAccess().writeContent(a);
 
 						++i;
 						syncProgress(_(@"Grabbing full content: $i / $size"));
@@ -433,7 +433,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			}
 
 			//update fulltext table
-			dbDaemon.get_default().updateFTS();
+			DataBase.writeAccess().updateFTS();
 		}
 	}
 

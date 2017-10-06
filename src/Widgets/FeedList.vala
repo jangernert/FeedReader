@@ -242,9 +242,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		uint unread = 0;
 		if(state == ArticleListState.MARKED)
-			unread = dbUI.get_default().get_marked_total();
+			unread = DataBase.readOnly().get_marked_total();
 		else
-			unread = dbUI.get_default().get_unread_total();
+			unread = DataBase.readOnly().get_unread_total();
 		var row_all = new FeedRow(_("All Articles"), unread, FeedID.ALL.to_string(), "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
@@ -263,7 +263,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		//-------------------------------------------------------------------
 
-		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
+		var feeds = DataBase.readOnly().read_feeds((state == ArticleListState.MARKED) ? true : false);
 
 		if(!Utils.onlyShowFeeds())
 		{
@@ -471,7 +471,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleListState state)
 	{
-		int maxCatLevel = dbUI.get_default().getMaxCatLevel();
+		int maxCatLevel = DataBase.readOnly().getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
 		bool supportTags = false;
 		bool supportCategories = true;
@@ -484,7 +484,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		supportMultiLevelCategories = FeedReaderBackend.get_default().supportMultiLevelCategories();
 
 		if((supportTags
-		&& !dbUI.get_default().isTableEmpty("tags"))
+		&& !DataBase.readOnly().isTableEmpty("tags"))
 		|| masterCat)
 		{
 			addMasterCategory(length, _("Categories"));
@@ -503,16 +503,16 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		for(int i = 1; i <= maxCatLevel; i++)
 		{
-			var categories = dbUI.get_default().read_categories_level(i, feeds);
+			var categories = DataBase.readOnly().read_categories_level(i, feeds);
 
-			if(dbUI.get_default().haveFeedsWithoutCat())
+			if(DataBase.readOnly().haveFeedsWithoutCat())
 			{
 				categories.insert(
 					0,
 					new Category(
 						uncategorizedID,
 						_("Uncategorized"),
-						(int)dbUI.get_default().get_unread_uncategorized(),
+						(int)DataBase.readOnly().get_unread_uncategorized(),
 						(int)(categories.size + 10),
 						CategoryID.MASTER.to_string(),
 						1
@@ -582,7 +582,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	{
 		if(!Settings.general().get_boolean("only-feeds"))
 		{
-			var tags = dbUI.get_default().read_tags();
+			var tags = DataBase.readOnly().read_tags();
 			foreach(var Tag in tags)
 			{
 				var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
@@ -598,9 +598,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	public void refreshCounters(ArticleListState state)
 	{
-		uint allCount = (state == ArticleListState.MARKED) ? dbUI.get_default().get_marked_total() : dbUI.get_default().get_unread_total();
-		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
-		var categories = dbUI.get_default().read_categories(feeds);
+		uint allCount = (state == ArticleListState.MARKED) ? DataBase.readOnly().get_marked_total() : DataBase.readOnly().get_unread_total();
+		var feeds = DataBase.readOnly().read_feeds((state == ArticleListState.MARKED) ? true : false);
+		var categories = DataBase.readOnly().read_categories(feeds);
 
 		// double-check
 		uint feedCount = 0;
@@ -680,7 +680,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 		}
 
-		if(dbUI.get_default().haveFeedsWithoutCat())
+		if(DataBase.readOnly().haveFeedsWithoutCat())
 		{
 			foreach(Gtk.Widget row in FeedChildList)
 			{
@@ -689,12 +689,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				{
 					if(state == ArticleListState.MARKED)
 					{
-						tmpCatRow.set_unread_count(dbUI.get_default().get_marked_uncategorized());
+						tmpCatRow.set_unread_count(DataBase.readOnly().get_marked_uncategorized());
 						tmpCatRow.activateUnreadEventbox(false);
 					}
 					else
 					{
-						tmpCatRow.set_unread_count(dbUI.get_default().get_unread_uncategorized());
+						tmpCatRow.set_unread_count(DataBase.readOnly().get_unread_uncategorized());
 						tmpCatRow.activateUnreadEventbox(true);
 					}
 					if(Settings.general().get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
@@ -908,7 +908,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		{
 			if(id == "")
 			{
-				var feeds = dbUI.get_default().read_feeds_without_cat();
+				var feeds = DataBase.readOnly().read_feeds_without_cat();
 				foreach(Feed feed in feeds)
 				{
 					FeedReaderBackend.get_default().markFeedAsRead(feed.getFeedID(), false);
@@ -957,7 +957,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			Copy selected feed url to clipboard
 		*/
 		if (feed_id != ""){
-			var feed =  dbUI.get_default().read_feed(feed_id);
+			var feed =  DataBase.readOnly().read_feed(feed_id);
 			if (feed != null){
 				string feed_url = feed.getXmlUrl();
 				Gdk.Display display = MainWindow.get_default().get_display ();

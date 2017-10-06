@@ -75,7 +75,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		crashButton.set_relief(Gtk.ReliefStyle.NONE);
 		crashButton.set_focus_on_click(false);
 		crashButton.clicked.connect(() => {
-			var Article = dbUI.get_default().read_article(m_currentArticle);
+			var Article = DataBase.readOnly().read_article(m_currentArticle);
 			Utils.openInGedit(Article.getHTML());
 		});
 		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
@@ -222,7 +222,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		SourceFunc callback = fillContent.callback;
 
 		ThreadFunc<void*> run = () => {
-			article = dbUI.get_default().read_article(articleID);
+			article = DataBase.readOnly().read_article(articleID);
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
@@ -960,7 +960,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		if(m_currentView == null)
 			return;
 
-		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle() + ".pdf";
+		string articleName = DataBase.readOnly().read_article(m_currentArticle).getTitle() + ".pdf";
 
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");

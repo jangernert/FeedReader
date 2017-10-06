@@ -360,8 +360,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string tagID = "1";
 
-		if(!dbDaemon.get_default().isTableEmpty("tags"))
-			tagID = (int.parse(dbDaemon.get_default().getMaxID("tags", "tagID")) + 1).to_string();
+		if(!DataBase.readOnly().isTableEmpty("tags"))
+			tagID = (int.parse(DataBase.readOnly().getMaxID("tags", "tagID")) + 1).to_string();
 
 		Logger.info("createTag: ID = " + tagID);
 		return tagID;
@@ -386,7 +386,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
 			var list = new Gee.LinkedList<Category>();
 			list.add(cat);
-			dbDaemon.get_default().write_categories(list);
+			DataBase.writeAccess().write_categories(list);
 			catIDs.add(cID);
 		}
 		else if(catID != null && newCatName == null)
@@ -400,9 +400,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		feedID = "feedID00001";
 
-		if(!dbDaemon.get_default().isTableEmpty("feeds"))
+		if(!DataBase.readOnly().isTableEmpty("feeds"))
 		{
-			feedID = "feedID%05d".printf(int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1);
+			feedID = "feedID%05d".printf(int.parse(DataBase.readOnly().getHighestFeedID().substring(6)) + 1);
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
@@ -410,10 +410,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(Feed != null)
 		{
-			if(!dbDaemon.get_default().feed_exists(Feed.getURL())) {
+			if(!DataBase.readOnly().feed_exists(Feed.getURL())) {
 				var list = new Gee.LinkedList<Feed>();
 				list.add(Feed);
-				dbDaemon.get_default().write_feeds(list);
+				DataBase.writeAccess().write_feeds(list);
 				return true;
 			}
 		}
@@ -427,8 +427,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		int highestID = 0;
 
-		if(!dbDaemon.get_default().isTableEmpty("feeds"))
-			highestID = int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1;
+		if(!DataBase.readOnly().isTableEmpty("feeds"))
+			highestID = int.parse(DataBase.readOnly().getHighestFeedID().substring(6)) + 1;
 
 		foreach(Feed f in feeds)
 		{
@@ -455,7 +455,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			Logger.debug("finishedFeed: " + feed.getTitle());
 		}
 
-		dbDaemon.get_default().write_feeds(finishedFeeds);
+		DataBase.writeAccess().write_feeds(finishedFeeds);
 	}
 
 	public void removeFeed(string feedID)
@@ -478,12 +478,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string catID = "catID00001";
 
-		if(!dbDaemon.get_default().isTableEmpty("categories"))
+		if(!DataBase.readOnly().isTableEmpty("categories"))
 		{
-			string? id = dbDaemon.get_default().getCategoryID(title);
+			string? id = DataBase.readOnly().getCategoryID(title);
 			if(id == null)
 			{
-				catID = "catID%05d".printf(int.parse(dbDaemon.get_default().getMaxID("categories", "categorieID").substring(5)) + 1);
+				catID = "catID%05d".printf(int.parse(DataBase.readOnly().getMaxID("categories", "categorieID").substring(5)) + 1);
 			}
 			else
 			{
@@ -533,7 +533,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
-		var f = dbDaemon.get_default().read_feeds();
+		var f = DataBase.readOnly().read_feeds();
 		var articleArray = new Gee.LinkedList<Article>();
 		GLib.Mutex mutex = GLib.Mutex();
 
@@ -675,7 +675,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articleArray.size > 0)
 		{
-			dbDaemon.get_default().write_articles(articleArray);
+			DataBase.writeAccess().write_articles(articleArray);
 			Logger.debug("localInterface: %i articles written".printf(articleArray.size));
 			refreshFeedListCounter();
 			updateArticleList();

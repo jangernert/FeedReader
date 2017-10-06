@@ -153,7 +153,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		body_label.set_line_wrap(true);
 		body_label.set_lines(2);
 
-		var feedLabel = new Gtk.Label(dbUI.get_default().getFeedName(m_article.getFeedID()));
+		var feedLabel = new Gtk.Label(DataBase.readOnly().getFeedName(m_article.getFeedID()));
 		feedLabel.get_style_context().add_class("preview");
 		feedLabel.opacity = 0.6;
 		feedLabel.set_alignment(0.0f, 0.5f);

@@ -13,12 +13,11 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.dbBase : GLib.Object {
+public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	protected Sqlite.Database sqlite_db;
-	public signal void updateBadge();
 
-	protected dbBase(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
+	public DataBaseReadOnly(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
 		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
 		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/";
@@ -372,6 +371,30 @@ public class FeedReader.dbBase : GLib.Object {
 		return (tagCount % Constants.COLORS.length);
 	}
 
+	public bool tag_still_used(string tagID)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
+		query.selectField("count(*)");
+		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
+		query.limit(2);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error("tag_still_used: " + sqlite_db.errmsg());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			if(stmt.column_int(0) > 1)
+				return true;
+		}
+
+		return false;
+	}
+
 	public string read_preview(string articleID)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
@@ -648,7 +671,7 @@ public class FeedReader.dbBase : GLib.Object {
 
 	public Article? read_article(string articleID)
 	{
-		Logger.debug(@"dbBase.read_article(): $articleID");
+		Logger.debug(@"DataBaseReadOnly.read_article(): $articleID");
 		Article? tmp = null;
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("ROWID");
@@ -994,13 +1017,19 @@ public class FeedReader.dbBase : GLib.Object {
 		return feedIDs;
 	}
 
-	protected virtual string getUncategorizedQuery()
+	protected string getUncategorizedQuery()
 	{
-		return "";
+		string catID = FeedServer.get_default().uncategorizedID();
+		return "category_id = \"%s\"".printf(catID);
 	}
 
-	protected virtual bool showCategory(string catID, Gee.List<Feed> feeds)
+	protected bool showCategory(string catID, Gee.List<Feed> feeds)
 	{
+		if(FeedServer.get_default().hideCategoryWhenEmpty(catID)
+		&& !Utils.categoryIsPopulated(catID, feeds))
+		{
+			return false;
+		}
 		return true;
 	}
 
@@ -1119,6 +1148,29 @@ public class FeedReader.dbBase : GLib.Object {
 		return result;
 	}
 
+	public bool feed_exists(string feed_url)
+	{
+		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
+		query.selectField("count(*)");
+		query.addEqualsCondition("url", feed_url, true, true);
+		query.limit(1);
+		query.build();
+
+		Sqlite.Statement stmt;
+		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
+		if (ec != Sqlite.OK)
+		{
+			Logger.error(query.get());
+			Logger.error("feed_exists: " + sqlite_db.errmsg());
+		}
+
+		while (stmt.step () == Sqlite.ROW) {
+			if(stmt.column_int(0) > 1)
+				return true;
+		}
+
+		return false;
+	}
 
 	public Feed? read_feed(string feedID)
 	{

@@ -163,7 +163,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			{
 				showSpringClean();
 			}
-			else if(!dbUI.get_default().isEmpty())
+			else if(!DataBase.readOnly().isEmpty())
 			{
 				showOfflineContent();
 			}
@@ -474,9 +474,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private void loadContent()
 	{
 		Logger.debug("MainWindow: load content");
-		dbUI.get_default().updateBadge.connect(() => {
-			FeedReaderBackend.get_default().updateBadge();
-		});
 		m_stack.set_transition_duration(0);
 		showContent(Gtk.StackTransitionType.NONE);
 		m_stack.set_transition_duration(m_stackTransitionTime);
@@ -491,14 +488,14 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		{
 			if(selectedRow[1] == FeedID.ALL.to_string())
 			{
-				var categories = dbUI.get_default().read_categories();
+				var categories = DataBase.readOnly().read_categories();
 				foreach(Category cat in categories)
 				{
 					FeedReaderBackend.get_default().markFeedAsRead(cat.getCatID(), true);
 					Logger.debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
 				}
 
-				var feeds = dbUI.get_default().read_feeds_without_cat();
+				var feeds = DataBase.readOnly().read_feeds_without_cat();
 				foreach(Feed feed in feeds)
 				{
 					FeedReaderBackend.get_default().markFeedAsRead(feed.getFeedID(), false);

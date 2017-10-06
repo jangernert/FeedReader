@@ -310,7 +310,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void markAllItemsRead()
 	{
-		var categories = dbDaemon.get_default().read_categories();
+		var categories = DataBase.readOnly().read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.catchupFeed(cat.getCatID(), true);
@@ -356,7 +356,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		if(success)
-			feedID = (int.parse(dbDaemon.get_default().getHighestFeedID()) + 1).to_string();
+			feedID = (int.parse(DataBase.readOnly().getHighestFeedID()) + 1).to_string();
 		else
 			feedID = "-98";
 
@@ -467,8 +467,8 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			Logger.debug("getArticles: newsplus plugin active");
 			var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
-			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
-			dbDaemon.get_default().updateArticlesByID(markedIDs, "marked");
+			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
+			DataBase.writeAccess().updateArticlesByID(markedIDs, "marked");
 			//updateArticleList();
 		}
 
@@ -500,14 +500,14 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			// only update article states if they haven't been updated by the newsPlus-plugin
 			if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
 			{
-				dbDaemon.get_default().update_articles(articles);
+				DataBase.writeAccess().update_articles(articles);
 				updateArticleList();
 			}
 
 			foreach(Article article in articles)
 			{
 				var id = article.getArticleID();
-				if(!dbDaemon.get_default().article_exists(id))
+				if(!DataBase.readOnly().article_exists(id))
 				{
 					articleIDs += id + ",";
 				}
@@ -531,7 +531,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articles.size > 0)
 		{
-			dbDaemon.get_default().write_articles(articles);
+			DataBase.writeAccess().write_articles(articles);
 			refreshFeedListCounter();
 			updateArticleList();
 		}

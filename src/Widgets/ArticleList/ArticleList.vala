@@ -138,7 +138,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			offset = getListOffset();
 
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -246,7 +246,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			Logger.debug("load articles from db");
 			uint offset = m_currentList.getSizeForState() + determineNewRowCount(null, null);
 
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -294,7 +294,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -357,7 +357,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_loadThread.join();
 
 		m_currentList.setAllUpdated(false);
-		var articles = dbUI.get_default().read_article_stats(m_currentList.getIDs());
+		var articles = DataBase.readOnly().read_article_stats(m_currentList.getIDs());
 		var children = m_currentList.get_children();
 
 		foreach(var row in children)
@@ -384,7 +384,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			|| second == null)
 				continue;
 
-			var insertArticles = dbUI.get_default().read_article_between(	m_selectedFeedListID,
+			var insertArticles = DataBase.readOnly().read_article_between(	m_selectedFeedListID,
 																			m_selectedFeedListType,
 																			m_state,
 																			m_searchTerm,
@@ -413,7 +413,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(firstRowID != null)
 		{
-			count = dbUI.get_default().getArticleCountNewerThanID(
+			count = DataBase.readOnly().getArticleCountNewerThanID(
 														firstRowID,
 														m_selectedFeedListID,
 														m_selectedFeedListType,

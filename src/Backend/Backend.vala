@@ -198,7 +198,7 @@ namespace FeedReader {
 				Logger.info("backend: spring cleaning");
 				Settings.state().set_boolean("spring-cleaning", true);
 				springCleanStarted();
-				dbDaemon.get_default().springCleaning();
+				DataBase.writeAccess().springCleaning();
 				Settings.state().set_boolean("spring-cleaning", false);
 				springCleanFinished();
 			}
@@ -378,7 +378,7 @@ namespace FeedReader {
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-				asyncPayload pl = () => { dbDaemon.get_default().update_article(articleID, "unread", status); };
+				asyncPayload pl = () => { DataBase.writeAccess().update_article(articleID, "unread", status); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
 					refreshFeedListCounter();
@@ -398,7 +398,7 @@ namespace FeedReader {
 				}
 
 
-				asyncPayload pl = () => { dbDaemon.get_default().update_article(articleID, "marked", status); };
+				asyncPayload pl = () => { DataBase.writeAccess().update_article(articleID, "marked", status); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
 					refreshFeedListCounter();
@@ -416,7 +416,7 @@ namespace FeedReader {
 			var Tag = new tag(tagID, caption, 0);
 			var taglist = new Gee.LinkedList<tag>();
 			taglist.add(Tag);
-			dbDaemon.get_default().write_tags(taglist);
+			DataBase.writeAccess().write_tags(taglist);
 			newFeedList();
 
 			return tagID;
@@ -427,7 +427,7 @@ namespace FeedReader {
 			if(m_offline)
 				return;
 
-			string tags = dbDaemon.get_default().read_article_tags(articleID);
+			string tags = DataBase.readOnly().read_article_tags(articleID);
 
 			if(add)
 			{
@@ -468,13 +468,13 @@ namespace FeedReader {
 
 					tags = part1 + part2;
 
-					if(!dbDaemon.get_default().tag_still_used(tagID))
+					if(!DataBase.readOnly().tag_still_used(tagID))
 					{
 						Logger.debug("backend: remove tag completely");
 						asyncPayload pl2 = () => { FeedServer.get_default().deleteTag(tagID); };
 						callAsync.begin((owned)pl2, (obj, res) => { callAsync.end(res); });
 
-						asyncPayload pl3 = () => { dbDaemon.get_default().dropTag(tagID); };
+						asyncPayload pl3 = () => { DataBase.writeAccess().dropTag(tagID); };
 						callAsync.begin((owned)pl3, (obj, res) => {
 							callAsync.end(res);
 							newFeedList();
@@ -484,7 +484,7 @@ namespace FeedReader {
 			}
 
 			Logger.debug("backend: set tag string: " + tags);
-			dbDaemon.get_default().set_article_tags(articleID, tags);
+			DataBase.writeAccess().set_article_tags(articleID, tags);
 		}
 
 		public void renameTag(string tagID, string newName)
@@ -495,7 +495,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().renameTag(tagID, newName); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().rename_tag(tagID, newName); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().rename_tag(tagID, newName); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -510,7 +510,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().deleteTag(tagID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().dropTag(tagID); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().dropTag(tagID); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -519,13 +519,13 @@ namespace FeedReader {
 
 		public void updateTagColor(string tagID, int color)
 		{
-			dbDaemon.get_default().update_tag_color(tagID, color);
+			DataBase.writeAccess().update_tag_color(tagID, color);
 		}
 
 		public void resetDB()
 		{
-			dbDaemon.get_default().resetDB();
-			dbDaemon.get_default().init();
+			DataBase.writeAccess().resetDB();
+			DataBase.writeAccess().init();
 		}
 
 		public void resetAccount()
@@ -549,7 +549,7 @@ namespace FeedReader {
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-				asyncPayload pl = () => { dbDaemon.get_default().markCategorieRead(feedID); };
+				asyncPayload pl = () => { DataBase.writeAccess().markCategorieRead(feedID); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
 					updateBadge();
@@ -571,7 +571,7 @@ namespace FeedReader {
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-				asyncPayload pl = () => { dbDaemon.get_default().markFeedRead(feedID); };
+				asyncPayload pl = () => { DataBase.writeAccess().markFeedRead(feedID); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
 					updateBadge();
@@ -595,7 +595,7 @@ namespace FeedReader {
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 			}
 
-			asyncPayload pl = () => { dbDaemon.get_default().markAllRead(); };
+			asyncPayload pl = () => { DataBase.writeAccess().markAllRead(); };
 			callAsync.begin((owned)pl, (obj, res) => {
 				callAsync.end(res);
 				updateBadge();
@@ -609,7 +609,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().deleteCategory(catID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().delete_category(catID); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().delete_category(catID); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -621,7 +621,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().moveCategory(catID, newParentID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().move_category(catID, newParentID); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().move_category(catID, newParentID); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -643,14 +643,14 @@ namespace FeedReader {
 				}
 				else
 				{
-					var parentCat = dbDaemon.get_default().read_category(parentID);
+					var parentCat = DataBase.readOnly().read_category(parentID);
 					level = parentCat.getLevel()+1;
 				}
 
 				var cat = new Category(catID, title, 0, 99, parent, level);
 				var list = new Gee.LinkedList<Category>();
 				list.add(cat);
-				dbDaemon.get_default().write_categories(list);
+				DataBase.writeAccess().write_categories(list);
 			}
 
 			return catID;
@@ -658,10 +658,10 @@ namespace FeedReader {
 
 		public void removeCategoryWithChildren(string catID)
 		{
-			var feeds = dbDaemon.get_default().read_feeds();
+			var feeds = DataBase.readOnly().read_feeds();
 			deleteFeedsofCat(catID, feeds);
 
-			var cats = dbDaemon.get_default().read_categories(feeds);
+			var cats = DataBase.readOnly().read_categories(feeds);
 			foreach(var cat in cats)
 			{
 				if(cat.getParent() == catID)
@@ -689,7 +689,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().renameCategory(catID, newName); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().rename_category(catID, newName); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().rename_category(catID, newName); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -701,7 +701,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().renameFeed(feedID, newName); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().rename_feed(feedID, newName); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().rename_feed(feedID, newName); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -713,7 +713,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().moveFeed(feedID, newCatID, currentCatID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().move_feed(feedID, currentCatID, newCatID); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().move_feed(feedID, currentCatID, newCatID); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -765,7 +765,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().removeFeed(feedID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().delete_feed(feedID); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().delete_feed(feedID); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -778,7 +778,7 @@ namespace FeedReader {
 			asyncPayload pl = () => { FeedServer.get_default().removeCatFromFeed(feedID, catID); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { dbDaemon.get_default().removeCatFromFeed(feedID, catID); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().removeCatFromFeed(feedID, catID); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
@@ -800,7 +800,7 @@ namespace FeedReader {
 			if(!Settings.state().get_boolean("spring-cleaning")
 			&& Settings.tweaks().get_boolean("show-badge"))
 			{
-				var count = dbDaemon.get_default().get_unread_total();
+				var count = DataBase.readOnly().get_unread_total();
 				Logger.debug("backend: update badge count %u".printf(count));
 				m_launcher.count = count;
 				if(count > 0)

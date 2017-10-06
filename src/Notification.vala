@@ -19,7 +19,7 @@ public class FeedReader.Notification : GLib.Object {
 	{
 		string message = "";
 		string summary = _("new Articles");
-		uint unread = dbDaemon.get_default().get_unread_total();
+		uint unread = DataBase.readOnly().get_unread_total();
 
 		if(newArticles > 0)
 		{

@@ -35,13 +35,13 @@ public class FeedReader.Utils : GLib.Object {
 		string noPreview = _("No Preview Available");
 		foreach(var Article in articles)
 		{
-			if(!dbDaemon.get_default().article_exists(Article.getArticleID()))
+			if(!DataBase.readOnly().article_exists(Article.getArticleID()))
 			{
 				if(Article.getPreview() != null && Article.getPreview() != "")
 				{
 					continue;
 				}
-				if(!dbDaemon.get_default().preview_empty(Article.getArticleID()))
+				if(!DataBase.readOnly().preview_empty(Article.getArticleID()))
 				{
 					continue;
 				}
@@ -88,7 +88,7 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		foreach(var Article in articles)
 		{
-			if(!dbUI.get_default().article_exists(Article.getArticleID()))
+			if(!DataBase.readOnly().article_exists(Article.getArticleID()))
 			{
 				string modified_html = _("No Text available for this article :(");
 				if(Article.getHTML() != "")
@@ -835,7 +835,7 @@ public class FeedReader.Utils : GLib.Object {
 		string feed_id = "$FEED";
 		int feed_pos = article.str.index_of(feed_id);
 		article.erase(feed_pos, feed_id.length);
-		article.insert(feed_pos, dbUI.get_default().getFeedName(feedID));
+		article.insert(feed_pos, DataBase.readOnly().getFeedName(feedID));
 
 
 		string theme = "theme ";
@@ -975,9 +975,9 @@ public class FeedReader.Utils : GLib.Object {
 		if(Settings.general().get_boolean("only-feeds"))
 			return true;
 
-		if(!dbUI.get_default().haveCategories()
+		if(!DataBase.readOnly().haveCategories()
 		&& !FeedReaderBackend.get_default().supportTags()
-		&& !dbUI.get_default().haveFeedsWithoutCat())
+		&& !DataBase.readOnly().haveFeedsWithoutCat())
 			return true;
 
 		return false;
@@ -991,7 +991,7 @@ public class FeedReader.Utils : GLib.Object {
 			string articleName = "Article.pdf";
 			string? articleID = ColumnView.get_default().displayedArticle();
 			if(articleID != null)
-				articleName = dbUI.get_default().read_article(articleID).getTitle();
+				articleName = DataBase.readOnly().read_article(articleID).getTitle();
 
 			var file = GLib.File.new_for_path(imagePath);
 			var mimeType = file.query_info("standard::content-type", 0, null).get_content_type();
@@ -1131,7 +1131,7 @@ public class FeedReader.Utils : GLib.Object {
 		int count = 0;
 
 		if(topRow != null)
-			count = dbUI.get_default().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
+			count = DataBase.readOnly().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
 
 		Logger.debug(@"getRelevantArticles: $count");
 		return count;

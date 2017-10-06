@@ -334,7 +334,7 @@ namespace FeedReader {
 			stdout = FileStream.open("/dev/null", "w");
 			Logger.init();
 			stdout =(owned)old_stdout;
-			stdout.printf("%u\n", dbDaemon.get_default().get_unread_total());
+			stdout.printf("%u\n", DataBase.readOnly().get_unread_total());
 			return 0;
 		}
 

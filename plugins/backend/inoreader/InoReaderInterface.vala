@@ -227,13 +227,13 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void markAllItemsRead()
 	{
-		var categories = dbDaemon.get_default().read_categories();
+		var categories = DataBase.readOnly().read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
 		foreach(Feed feed in feeds)
 		{
 			m_api.markAsRead(feed.getFeedID());
@@ -406,7 +406,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 					left = 0;
 				}
 			}
-			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
+			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
 		}
 

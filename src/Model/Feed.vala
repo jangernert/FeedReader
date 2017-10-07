@@ -25,7 +25,7 @@ public class FeedReader.Feed : GLib.Object {
 
 	public Feed(string feedID, string title, string url, uint unread, Gee.List<string>? catIDs = null, string? iconURL = null, string? xmlURL = null)
 	{
-		m_feedID = feedID;
+		m_feedID = GLib.Base64.encode(feedID.data);
 		m_title = Utils.UTF8fix(title);
 		m_url = url;
 		m_unread = unread;
@@ -37,6 +37,11 @@ public class FeedReader.Feed : GLib.Object {
 	public string getFeedID()
 	{
 		return m_feedID;
+	}
+
+	public string getRawFeedID()
+	{
+		return (string)GLib.Base64.decode(m_feedID);
 	}
 
 	public string getTitle()

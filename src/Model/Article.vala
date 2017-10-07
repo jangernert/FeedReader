@@ -48,12 +48,12 @@ public class FeedReader.Article : GLib.Object {
 					string guidHash = "",
 					int lastModified = 0)
 	{
-		m_articleID = articleID;
+		m_articleID = GLib.Base64.encode(articleID.data);
 		m_title = title;
 		m_url = url;
 		m_html = html;
 		m_preview = preview;
-		m_feedID = feedID;
+		m_feedID = GLib.Base64.encode(feedID.data);
 		m_author = author;
 		m_unread = unread;
 		m_marked = marked;
@@ -69,6 +69,11 @@ public class FeedReader.Article : GLib.Object {
 	public string getArticleID()
 	{
 		return m_articleID;
+	}
+
+	public string getRawArticleID()
+	{
+		return (string)GLib.Base64.decode(m_articleID);
 	}
 
 	public string getTitle()
@@ -174,6 +179,11 @@ public class FeedReader.Article : GLib.Object {
 	public string getFeedID()
 	{
 		return m_feedID;
+	}
+
+	public string getRawFeedID()
+	{
+		return (string)GLib.Base64.decode(m_feedID);
 	}
 
 	public ArticleStatus getUnread()

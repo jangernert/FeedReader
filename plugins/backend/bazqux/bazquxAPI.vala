@@ -310,9 +310,9 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 		string api_endpoint = "stream/contents";
 		if(feed_id != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
+			api_endpoint += "/" + feed_id;
 		else if(tagID != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
+			api_endpoint += "/" + tagID;
 		var response = m_connection.send_get_request(api_endpoint, msg.get());
 
 		if(response.status != 200)

@@ -273,7 +273,6 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		foreach(var item in feeds)
 		{
-
 			if(!Utils.onlyShowFeeds())
 			{
 				var FeedChildList = m_list.get_children();
@@ -289,12 +288,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						|| tmpRow.getID() == "" && item.isUncategorized())
 						{
 							var feedrow = new FeedRow(
-													   item.getTitle(),
-													   item.getUnread(),
-													   item.getFeedID(),
-													   tmpRow.getID(),
-													   tmpRow.getLevel()
-													  );
+													item.getTitle(),
+													item.getUnread(),
+													item.getFeedID(),
+													tmpRow.getID(),
+													tmpRow.getLevel()
+													);
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.moveUP.connect(moveUP);

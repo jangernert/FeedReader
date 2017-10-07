@@ -584,9 +584,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 				{
 					string? articleID = item.guid;
 
-					if(articleID != null)
-						articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
-					else
+					if(articleID == null)
 					{
 						if(item.link == null)
 						{
@@ -628,11 +626,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 										articleID,
 										(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
 										articleURL,
-										Feed.getFeedID(),
+										Feed.getRawFeedID(),
 										ArticleStatus.UNREAD,
 										ArticleStatus.UNMARKED,
 										content,
-										//Utils.UTF8fix(content, true),
 										content,
 										m_utils.convert(item.author, locale),
 										date,

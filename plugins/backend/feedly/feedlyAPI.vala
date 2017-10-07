@@ -513,7 +513,6 @@ public class FeedReader.FeedlyAPI : Object {
 		Json.Array ids = new Json.Array();
 		foreach(string id in id_array)
 		{
-			//ids.add_string_element(GLib.Uri.escape_string(id));
 			ids.add_string_element(id);
 		}
 

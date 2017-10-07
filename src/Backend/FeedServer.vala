@@ -747,7 +747,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.setArticleIsRead(articleIDs, read);
+		m_plugin.setArticleIsRead((string)GLib.Base64.decode(articleIDs), read);
 	}
 
 	public void setArticleIsMarked(string articleID, ArticleStatus marked)
@@ -755,7 +755,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.setArticleIsMarked(articleID, marked);
+		m_plugin.setArticleIsMarked((string)GLib.Base64.decode(articleID), marked);
 	}
 
 	public void setFeedRead(string feedID)
@@ -763,7 +763,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.setFeedRead(feedID);
+		m_plugin.setFeedRead((string)GLib.Base64.decode(feedID));
 	}
 
 	public void setCategoryRead(string catID)
@@ -787,7 +787,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.tagArticle(articleID, tagID);
+		m_plugin.tagArticle((string)GLib.Base64.decode(articleID), tagID);
 	}
 
 	public void removeArticleTag(string articleID, string tagID)
@@ -795,7 +795,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.removeArticleTag(articleID, tagID);
+		m_plugin.removeArticleTag((string)GLib.Base64.decode(articleID), tagID);
 	}
 
 	public string createTag(string caption)
@@ -854,7 +854,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.removeFeed(feedID);
+		m_plugin.removeFeed((string)GLib.Base64.decode(feedID));
 	}
 
 	public void renameFeed(string feedID, string title)
@@ -862,7 +862,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.renameFeed(feedID, title);
+		m_plugin.renameFeed((string)GLib.Base64.decode(feedID), title);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID = null)
@@ -870,7 +870,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.moveFeed(feedID, newCatID, currentCatID);
+		m_plugin.moveFeed((string)GLib.Base64.decode(feedID), newCatID, currentCatID);
 	}
 
 	public string createCategory(string title, string? parentID = null)
@@ -910,7 +910,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.removeCatFromFeed(feedID, catID);
+		m_plugin.removeCatFromFeed((string)GLib.Base64.decode(feedID), catID);
 	}
 
 	public void importOPML(string opml)
@@ -942,7 +942,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.getArticles(count, whatToGet, feedID, isTagID);
+		m_plugin.getArticles(count, whatToGet, (string)GLib.Base64.decode(feedID), isTagID);
 	}
 
 	private void syncProgress(string text)

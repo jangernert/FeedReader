@@ -661,7 +661,8 @@ public class FeedReader.Utils : GLib.Object {
 			Logger.error("downloadIcon: Unknown error: " + e.message);
 			return false;
 		}
-		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
+		//string filename_prefix = icon_path + GLib.Base64.encode(feed_id.data);
+		string filename_prefix = icon_path + feed_id;
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
 
@@ -722,14 +723,14 @@ public class FeedReader.Utils : GLib.Object {
 				yield local_file.load_contents_async(null, out contents, null);
 				local_data = contents;
 			}
-			catch(IOError.NOT_FOUND e)
-			{}
+			catch(IOError.NOT_FOUND e){}
 			catch(Error e)
 			{
 				Logger.error(@"Error reading icon $local_filename: %s".printf(e.message));
 			}
 
-			if(local_data != null && data != local_data)
+			if(local_data == null
+			||(local_data != null && data != local_data))
 			{
 				try
 				{

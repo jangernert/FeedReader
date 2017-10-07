@@ -1000,7 +1000,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				if((categories.length == 0)
 				||(categories.length == 1 && categories[0].contains("global.must")))
 				{
-					feedIDs.add((string)GLib.Base64.decode(stmt.column_text(0)));
+					feedIDs.add(stmt.column_text(0));
 				}
 			}
 			else
@@ -1009,7 +1009,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				{
 					if(cat == categorieID)
 					{
-						feedIDs.add((string)GLib.Base64.decode(stmt.column_text(0)));
+						feedIDs.add(stmt.column_text(0));
 					}
 				}
 			}

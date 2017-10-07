@@ -13,27 +13,39 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.FeedbinAPI : Object {
+// TODO: Make a general-purpose HttpClient module with these errors
+public errordomain FeedbinError {
+	INVALID_FORMAT,
+	MULTIPLE_CHOICES,
+	NO_CONNECTION,
+	NOT_AUTHORIZED,
+	NOT_FOUND,
+	UNKNOWN_ERROR
+}
 
+public class FeedbinAPI : Object {
 	private const string BASE_URI = "https://api.feedbin.com/v2/";
 
 	private Soup.Session m_session;
 	public string username { get ; set; }
 	public string password { get ; set; }
 
-	public FeedbinAPI(string username, string password)
+	public FeedbinAPI(string username, string password, string? user_agent = null)
 	{
 		this.username = username;
 		this.password = password;
 		m_session = new Soup.Session();
-		m_session.user_agent = Constants.USER_AGENT;
+
+		if(user_agent != null)
+			m_session.user_agent = user_agent;
+
 		m_session.authenticate.connect((msg, auth, retrying) => {
 			if(!retrying)
 				auth.authenticate(this.username, this.password);
 		});
 	}
 
-	private Response request(string method, string path, string? input = null)
+	private Soup.Message request(string method, string path, string? input = null) throws FeedbinError
 	{
 		var message = new Soup.Message(method, BASE_URI+path);
 
@@ -44,491 +56,317 @@ public class FeedReader.FeedbinAPI : Object {
 			message.request_body.append_take(input.data);
 
 		m_session.send_message(message);
-
-		return Response() {
-			status = message.status_code,
-			data = (string)message.response_body.flatten().data,
-			headers = message.response_headers
-		};
+		var status = message.status_code;
+		if(status < 200 || status >= 400)
+		{
+			switch(status)
+			{
+			case Soup.Status.CANT_RESOLVE:
+			case Soup.Status.CANT_RESOLVE_PROXY:
+			case Soup.Status.CANT_CONNECT:
+			case Soup.Status.CANT_CONNECT_PROXY:
+				throw new FeedbinError.NO_CONNECTION(@"Connection to $BASE_URI failed");
+			case Soup.Status.UNAUTHORIZED:
+				throw new FeedbinError.NOT_AUTHORIZED(@"Not authorized to $method $path");
+			case Soup.Status.NOT_FOUND:
+				throw new FeedbinError.NOT_FOUND(@"$method $path not found");
+			}
+			throw new FeedbinError.UNKNOWN_ERROR(@"Unexpected status $status for $method $path");
+		}
+		return message;
 	}
 
-	private Response postRequest(string path, string input)
+	// TODO: Move to DateUtils
+	private static DateTime string_to_datetime(string s) throws FeedbinError
+	{
+		var time = TimeVal();
+		if(!time.from_iso8601(s))
+			throw new FeedbinError.INVALID_FORMAT(@"Expected date but got $s");
+		return new DateTime.from_timeval_utc(time);
+	}
+
+	// TODO: JSON utils?
+	private static DateTime get_datetime_member(Json.Object obj, string name) throws FeedbinError
+	{
+		var s = obj.get_string_member(name);
+		return string_to_datetime(s);
+	}
+
+	private Soup.Message post_request(string path, string input) throws FeedbinError
 	{
 		return request("POST", path, input);
 	}
 
-	private Response deleteRequest(string path, string? input = null)
+	private Soup.Message delete_request(string path, string? input = null) throws FeedbinError
 	{
 		return request("DELETE", path, input);
 	}
 
-	private Response getRequest(string path)
+	private Soup.Message get_request(string path) throws FeedbinError
 	{
 		return request("GET", path);
 	}
 
-	public LoginResponse login()
+	private Json.Node get_json(string path) throws FeedbinError
 	{
-		Logger.debug("feedbin backend: login");
-
-		var status = getRequest("authentication.json").status;
-		switch(status) {
-		case Soup.Status.CANT_RESOLVE:
-		case Soup.Status.CANT_RESOLVE_PROXY:
-		case Soup.Status.CANT_CONNECT:
-		case Soup.Status.CANT_CONNECT_PROXY:
-			return LoginResponse.NO_CONNECTION;
-		case Soup.Status.OK:
-			return LoginResponse.SUCCESS;
-		case Soup.Status.UNAUTHORIZED:
-			return LoginResponse.WRONG_LOGIN;
-		}
-
-		Logger.error("Got status %u from Feedbin authentication.json".printf(status));
-		return LoginResponse.UNKNOWN_ERROR;
-	}
-
-	public string? getFeedIDForSubscription(string subscription_id)
-	{
-		var response = getRequest(@"subscriptions/$subscription_id.json");
-		if(response.status == 404)
+		string content;
+		var response = get_request(path);
+		content = (string)response.response_body.flatten().data;
+		if(content == null)
 		{
-			Logger.warning(@"getFeedIDForSubscription: subscription %subscription_id does not exist");
-			return null;
-		}
-		if(!response.is_ok())
-		{
-			Logger.error("getFeedIDForSubscription: Unexpected status: %u".printf(response.status));
-			return null;
+			throw new FeedbinError.INVALID_FORMAT(@"GET $path returned no content but expected JSON");
 		}
 
 		var parser = new Json.Parser();
 		try
 		{
-			parser.load_from_data(response.data, -1);
+			parser.load_from_data(content, -1);
 		}
 		catch (Error e)
 		{
-			Logger.error("getFeedIDForSubscription: Could not load JSON message " + response.data);
-			Logger.error(e.message);
-			return null;
+			throw new FeedbinError.INVALID_FORMAT(@"GET $path returned invalid JSON: " + e.message + "\nContent is: $content");
 		}
-		Json.Object object = parser.get_root().get_object();
-		return object.get_int_member("feed_id").to_string();
+		return parser.get_root();
 	}
 
-	public Gee.List<Feed>? getFeeds()
+	private Soup.Message post_json_object(string path, Json.Object obj) throws FeedbinError
 	{
-		var response = getRequest("subscriptions.json");
-		if(!response.is_ok())
-		{
-			Logger.error("getFeeds: Unexpected status: %u".printf(response.status));
-			return null;
-		}
+		var root = new Json.Node(Json.NodeType.OBJECT);
+		root.set_object(obj);
 
-		var parser = new Json.Parser();
-		try
-		{
-			parser.load_from_data(response.data, -1);
-		}
-		catch (Error e)
-		{
-			Logger.error("getFeeds: Could not load message response");
-			Logger.error(e.message);
-			return null;
-		}
-		Json.Array array = parser.get_root().get_array();
+		var gen = new Json.Generator();
+		gen.set_root(root);
+		var data = gen.to_data(null);
 
-		var feeds = new Gee.ArrayList<Feed>();
-		for (int i = 0; i < array.get_length (); i++)
-		{
-			Json.Object object = array.get_object_element(i);
-
-			string url = object.get_string_member("site_url");
-			string id = object.get_int_member("feed_id").to_string();
-			string xmlURL = object.get_string_member("feed_url");
-
-			string title;
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
-
-			feeds.add(
-				new Feed(
-					id,
-					title,
-					url,
-					0,
-					ListUtils.single("0"),
-					null,
-					xmlURL)
-			);
-		}
-
-		return feeds;
+		return post_request(path, data);
 	}
 
-	// maps from feed ID to subscription ID
-	private Gee.Map<string, string>? getFeedSubscriptionMap()
+	public bool login() throws FeedbinError
 	{
-		var response = getRequest("subscriptions.json");
-		if(!response.is_ok())
-		{
-			Logger.error("getFeedSubscriptionMap: Unexpected status: %u".printf(response.status));
-			return null;
-		}
-
-		var parser = new Json.Parser();
-		try
-		{
-			parser.load_from_data(response.data, -1);
-		}
-		catch (Error e)
-		{
-			Logger.error("getFeedSubscriptionMap: Could not load message response");
-			Logger.error(e.message);
-			return null;
-		}
-		Json.Array array = parser.get_root().get_array();
-
-		var map = new Gee.HashMap<string, string>();
-		for (int i = 0; i < array.get_length (); i++)
-		{
-			Json.Object object = array.get_object_element(i);
-
-			string subscription_id = object.get_int_member("id").to_string();
-			string feed_id = object.get_int_member("feed_id").to_string();
-			map.set(feed_id, subscription_id);
-		}
-		return map;
+		var res = get_request("authentication.json");
+		return res.status_code == Soup.Status.OK;
 	}
 
-	public void addTagging(string feed_id, string tag_name)
+	public struct Subscription {
+		int64 id;
+		DateTime created_at;
+		int64 feed_id;
+		string? title;
+		string? feed_url;
+		string? site_url;
+
+		public Subscription.from_json(Json.Object object) throws FeedbinError
+		{
+			id = object.get_int_member("id");
+			created_at = get_datetime_member(object, "created_at");
+			feed_id = object.get_int_member("feed_id");
+			title = object.get_string_member("title");
+			feed_url = object.get_string_member("feed_url");
+			site_url = object.get_string_member("site_url");
+		}
+	}
+
+	public Subscription get_subscription(int64 subscription_id) throws FeedbinError
+	{
+		var root = get_json(@"subscriptions/$subscription_id.json");
+		return Subscription.from_json(root.get_object());
+	}
+
+	public Gee.List<Subscription?> get_subscriptions() throws FeedbinError
+	{
+		var root = get_json("subscriptions.json");
+		var subscriptions = new Gee.ArrayList<Subscription?>();
+		var array = root.get_array();
+		for(var i = 0; i < array.get_length(); ++i)
+		{
+			var node = array.get_object_element(i);
+			subscriptions.add(Subscription.from_json(node));
+		}
+		return subscriptions;
+	}
+
+	public void delete_subscription(int64 subscription_id) throws FeedbinError
+	{
+		delete_request(@"subscriptions/$subscription_id.json");
+	}
+
+	public int64 add_subscription(string url) throws FeedbinError
 	{
 		Json.Object object = new Json.Object();
-		object.set_string_member("feed_id", feed_id);
-		object.set_string_member("name", tag_name);
-		string json = FeedbinUtils.json_object_to_string(object);
+		object.set_string_member("feed_url", url);
 
-		var response = postRequest("taggings.json", json);
-		if(!response.is_ok())
-		{
-			Logger.error(@"addTagging: Unexpected response status %u when adding tag '$tag_name' for feed $feed_id".printf(response.status));
+		var response = post_json_object("subscriptions.json", object);
+		if(response.status_code == 300)
+			throw new FeedbinError.MULTIPLE_CHOICES("Site $url has multiple feeds to subscribe to");
+
+		var location = response.response_headers.get_one("Location");
+		if(location == null) {
+			throw new FeedbinError.UNKNOWN_ERROR(@"Feedbin API error adding feed $url: no Location header");
 		}
+
+		var last_slash = location.last_index_of_char('/');
+		location = location.substring(last_slash + 1);
+		var last_dot = location.last_index_of_char('.');
+		location = location.substring(0, last_dot);
+		return int64.parse(location);
 	}
 
-	public void deleteTagging(int64 tagging_id)
+	public void rename_subscription(int64 subscription_id, string title) throws FeedbinError
 	{
-		var response = deleteRequest(@"taggings/$tagging_id.json");
-		if(!response.is_ok())
-		{
-			Logger.error(@"deleteTagging: Unexpected response status %u when deleting tagging '$tagging_id'".printf(response.status));
-		}
+		Json.Object object = new Json.Object();
+		object.set_string_member("title", title);
+		post_json_object(@"subscriptions/$subscription_id/update.json", object);
 	}
 
 	public struct Tagging
 	{
 		int64 id;
-		string feed_id;
+		int64 feed_id;
 		string name;
+
+		public Tagging.from_json(Json.Object object)
+		{
+			id = object.get_int_member("id");
+			feed_id = object.get_int_member("feed_id");
+			name = object.get_string_member("name");
+		}
 	}
 
-	// returns a map from feed ID to category name
-	public Gee.List<Tagging?>? getTaggings()
+	public void add_tagging(int64 feed_id, string tag_name) throws FeedbinError
 	{
-		var response = getRequest("taggings.json");
-		if(!response.is_ok())
-		{
-			Logger.error("getTaggings: Got unexpected status: %u".printf(response.status));
-			return null;
-		}
+		Json.Object object = new Json.Object();
+		object.set_int_member("feed_id", feed_id);
+		object.set_string_member("name", tag_name);
 
-		var parser = new Json.Parser();
-		try
-		{
-			parser.load_from_data(response.data, -1);
-		}
-		catch (Error e)
-		{
-			Logger.error("getTaggings: Could not load message response");
-			Logger.error(e.message);
-			return null;
-		}
-		Json.Array array = parser.get_root().get_array();
+		post_json_object("taggings.json", object);
+		// TODO: Return id
+	}
 
+	public void delete_tagging(int64 tagging_id) throws FeedbinError
+	{
+		delete_request(@"taggings/$tagging_id.json");
+	}
+
+	public Gee.List<Tagging?> get_taggings() throws FeedbinError
+	{
+		var root = get_json("taggings.json");
 		var taggings = new Gee.ArrayList<Tagging?>();
-		for (int i = 0; i < array.get_length (); i++)
+		var array = root.get_array();
+		for(var i = 0; i < array.get_length(); ++i)
 		{
-			Json.Object object = array.get_object_element(i);
-
-			taggings.add(Tagging() {
-				id = object.get_int_member("id"),
-				feed_id = object.get_int_member("feed_id").to_string(),
-				name = object.get_string_member("name")
-			});
+			var object = array.get_object_element(i);
+			taggings.add(Tagging.from_json(object));
 		}
-
-		Logger.debug("getTaggings: Got %d taggings".printf(taggings.size));
 		return taggings;
 	}
 
-	public Gee.List<Article> getEntries(int page, bool onlyStarred, Gee.Set<string> unreadIDs, Gee.Set<string> starredIDs, DateTime? timestamp, string? feedID = null)
+	public struct Entry
 	{
-		string request = "entries.json?per_page=100";
-		request += "&page=%i".printf(page);
-		request += "&starred=%s".printf(onlyStarred ? "true" : "false");
-		if(timestamp != null)
+		int64 id;
+		int64 feed_id;
+		string? title;
+		string? url;
+		string? author;
+		string? content;
+		string? summary;
+		DateTime published;
+		DateTime created_at;
+
+		public Entry.from_json(Json.Object object) throws FeedbinError
+		{
+			id = object.get_int_member("id");
+			feed_id = object.get_int_member("feed_id");
+			title = object.get_string_member("title");
+			url = object.get_string_member("url");
+			author = object.get_string_member("author");
+			content = object.get_string_member("content");
+			summary = object.get_string_member("summary");
+			published = get_datetime_member(object, "published");
+			created_at = get_datetime_member(object, "created_at");
+		}
+	}
+
+	public Gee.List<Entry?> get_entries(int page, bool only_starred, DateTime? since, int64? feed_id = null) throws FeedbinError
+	{
+		string starred = only_starred ? "true" : "false";
+		string path = @"entries.json?per_page=100&page=$page&starred=$starred&include_enclosure=true";
+		if(since != null)
 		{
 			var t = GLib.TimeVal();
-			if(timestamp.to_timeval(out t))
+			if(since.to_timeval(out t))
 			{
-				request += "&since=%s".printf(t.to_iso8601());
+				path += "&since=" + t.to_iso8601();
 			}
 		}
 
-		request += "&include_enclosure=true";
+		if(feed_id != null)
+			path = @"feeds/$feed_id/$path";
 
-		if(feedID != null)
-			request = "feeds/%s/%s".printf(feedID, request);
-
-		Logger.debug(request);
-
-		var response = getRequest(request);
-		// Feedbin returns 404 when there are no more articles to load
-		if(response.status == 404)
-		{
-			return Gee.List.empty<Article>();
-		}
-		if(!response.is_ok())
-		{
-			Logger.error("getEntries: Unexpected status code: %u".printf(response.status));
-			return Gee.List.empty<Article>();
-		}
-
-		var parser = new Json.Parser();
+		Json.Node root;
 		try
 		{
-			parser.load_from_data(response.data, -1);
+			root = get_json(path);
 		}
-		catch(Error e)
+		catch(FeedbinError.NOT_FOUND e)
 		{
-			Logger.error("getEntries: Could not load message response");
-			Logger.error(e.message);
-			Logger.error(response.data);
-			return Gee.List.empty<Article>();
+			return Gee.List.empty<Entry?>();
 		}
 
-		var root = parser.get_root();
-		if(root.get_node_type() != Json.NodeType.ARRAY)
-		{
-			Logger.error("getEntries: Expected JSON object but got: " + response.data);
-			return Gee.List.empty<Article>();
-		}
-
+		var entries = new Gee.ArrayList<Entry?>();
 		var array = root.get_array();
-		uint length = array.get_length();
-
-		Logger.debug("article count: %u".printf(length));
-
-		var articles = new Gee.ArrayList<Article>();
-		for(uint i = 0; i < length; i++)
+		for(var i = 0; i < array.get_length(); ++i)
 		{
-			Json.Object object = array.get_object_element(i);
-			string id = object.get_int_member("id").to_string();
-
-			var time = new GLib.DateTime.now_local();
-
-			var t = GLib.TimeVal();
-			if(t.from_iso8601(object.get_string_member("published")))
-			{
-				time = new DateTime.from_timeval_local(t);
-			}
-
-			var article = new Article(
-					id,
-					object.get_string_member("title") == null ? "" : object.get_string_member("title"),
-					object.get_string_member("url"),
-					object.get_int_member("feed_id").to_string(),
-					unreadIDs.contains(id) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-					starredIDs.contains(id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-					object.get_string_member("content") == null ? "" : object.get_string_member("content"),
-					object.get_string_member("summary"),
-					object.get_string_member("author"),
-					time,
-					-1,
-					null,
-					null
-				);
-			if(article != null)
-				articles.add(article);
-			else
-			{
-				var node = new Json.Node(Json.NodeType.OBJECT);
-				node.set_object(object);
-				Logger.error("Failed to create article from " + Json.to_string(node, true));
-			}
+			var object = array.get_object_element(i);
+			entries.add(Entry.from_json(object));
 		}
-
-		return articles;
+		return entries;
 	}
 
-	public Gee.List<string> unreadEntries()
+	private Gee.List<int64?> get_x_entries(string path) throws FeedbinError
 	{
-		var response = getRequest("unread_entries.json");
-		if(!response.is_ok())
+		var root = get_json(path);
+		var entries = new Gee.ArrayList<int64?>();
+		var array = root.get_array();
+		for(var i = 0; i < array.get_length(); ++i)
 		{
-			Logger.error("unreadEntries: Unexpected status %u".printf(response.status));
-			return Gee.List.empty<string>();
+			entries.add(array.get_int_element(i));
 		}
-		var data = response.data;
-		data = data.substring(1, data.length - 2);
-		return StringUtils.split(data, ",");
+		return entries;
 	}
 
-	public Gee.List<string> starredEntries()
+	public Gee.List<int64?> get_unread_entries() throws FeedbinError
 	{
-		var response = getRequest("starred_entries.json");
-		if(!response.is_ok())
-		{
-			Logger.error("unreadEntries: Unexpected status %u".printf(response.status));
-			return Gee.List.empty<string>();
-		}
-		var data = response.data;
-		data = data.substring(1, data.length - 2);
-		return StringUtils.split(data, ",");
+		return get_x_entries("unread_entries.json");
 	}
 
-	public void createUnreadEntries(Gee.List<string> articleIDs, bool read)
+	public Gee.List<int64?> get_starred_entries() throws FeedbinError
+	{
+		return get_x_entries("starred_entries.json");
+	}
+
+	private void set_entries_status(string type, Gee.List<int64?> entry_ids, bool create) throws FeedbinError
 	{
 		Json.Array array = new Json.Array();
-		foreach(string id in articleIDs)
+		foreach(var id in entry_ids)
 		{
-			array.add_int_element(int64.parse(id));
+			array.add_int_element(id);
 		}
 
 		Json.Object object = new Json.Object();
-		object.set_array_member("unread_entries", array);
-		string json = FeedbinUtils.json_object_to_string(object);
+		object.set_array_member(type, array);
 
-		Response res;
-		if(!read)
-			res = postRequest("unread_entries.json", json);
-		else
-			res = postRequest("unread_entries/delete.json", json);
-		if(!res.is_ok())
-			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), read ? "read" : "unread", res.status, res.data));
+		string path = create ? @"$type.json" : @"$type/delete.json";
+		post_json_object(path, object);
 	}
 
-	public void createStarredEntries(Gee.List<string> articleIDs, bool starred)
+	public void set_entries_read(Gee.List<int64?> entry_ids, bool read) throws FeedbinError
 	{
-		Json.Array array = new Json.Array();
-		foreach(string id in articleIDs)
-		{
-			array.add_int_element(int64.parse(id));
-		}
-
-		Json.Object object = new Json.Object();
-		object.set_array_member("starred_entries", array);
-
-		string json = FeedbinUtils.json_object_to_string(object);
-
-		Response res;
-		if(starred)
-			res = postRequest("starred_entries.json", json);
-		else
-			res = deleteRequest("starred_entries.json", json);
-		if(!res.is_ok())
-			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), starred ? "starred" : "unstarred", res.status, res.data));
+		set_entries_status("unread_entries", entry_ids, !read);
 	}
 
-	public void deleteSubscription(string feed_id)
+	public void set_entries_starred(Gee.List<int64?> entry_ids, bool starred) throws FeedbinError
 	{
-		var map = getFeedSubscriptionMap();
-		if(map == null)
-			return;
-
-		if(!map.has_key(feed_id))
-		{
-			Logger.error(@"deleteSubscription: Subscription to feed $feed_id doesn't exist.");
-			return;
-		}
-
-		var subscription_id = map.get(feed_id);
-		var res = deleteRequest("subscriptions/%s.json".printf(subscription_id));
-		if(!res.is_ok())
-			Logger.error("deleteSubscription: Failed for feed %s with status %u, response %s".printf(feed_id, res.status, res.data));
-	}
-
-	public string? addSubscription(string url, out string error)
-	{
-		error = "";
-
-		Json.Object object = new Json.Object();
-		object.set_string_member("feed_url", url);
-		string json = FeedbinUtils.json_object_to_string(object);
-
-	 	var response = postRequest("subscriptions.json", json);
-		switch(response.status) {
-			case 200:
-			case 201:
-			case 302:
-			break;
-			case 404:
-			error = "No RSS feed found at location %s".printf(url);
-			return null;
-			case 300:
-			// TODO: Parse the JSON response and list the options
-			error = "Multiple choices for feeds at location %s".printf(url);
-			return null;
-			default:
-			error = "Unknown error subscribing to feed %s, status = %u".printf(url, response.status);
-			return null;
-		}
-
-		var location = response.headers.get_one("Location");
-		if(location == null) {
-			error = "Feedbin API error adding feed %s, no Location header".printf(url);
-			return null;
-		}
-		Logger.info(@"Location: $location");
-		var last_slash = location.last_index_of_char('/');
-		location = location.substring(last_slash + 1);
-		Logger.debug(location);
-		var last_dot = location.last_index_of_char('.');
-		location = location.substring(0, last_dot);
-		Logger.debug(location);
-		return location;
-	}
-
-	public void renameFeed(string feed_id, string title)
-	{
-		var map = getFeedSubscriptionMap();
-		if(map == null)
-			return;
-
-		if(!map.has_key(feed_id))
-		{
-			Logger.error(@"deleteSubscription: Subscription to feed $feed_id doesn't exist.");
-			return;
-		}
-
-		var subscription_id = map.get(feed_id);
-
-		Json.Object object = new Json.Object();
-		object.set_string_member("title", title);
-		string json = FeedbinUtils.json_object_to_string(object);
-
-		Logger.debug(@"Renaming feed $feed_id (subscription: $subscription_id): $json");
-		var res = postRequest("subscriptions/%s/update.json".printf(subscription_id), json);
-		if(!res.is_ok())
-		{
-			Logger.error("renameFeed: Failed to rename feed %s to %s, status %u, response %s".printf(feed_id, title, res.status, res.data));
-		}
+		set_entries_status("starred_entries", entry_ids, starred);
 	}
 
 }

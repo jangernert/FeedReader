@@ -8,7 +8,6 @@ set (PLUGTARGET ${PLUGNAME}_target)
 vala_precompile(VALA_C ${DAEMONTARGET}
 	feedbinInterface.vala
 	feedbinAPI.vala
-	feedbinConnection.vala
 	feedbinUtils.vala
 
 PACKAGES

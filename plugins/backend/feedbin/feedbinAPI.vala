@@ -15,27 +15,74 @@
 
 public class FeedReader.FeedbinAPI : Object {
 
-	private FeedbinConnection m_connection;
-	private FeedbinUtils m_utils;
+	private const string BASE_URI = "https://api.feedbin.com/v2/";
 
-	public FeedbinAPI()
+	private Soup.Session m_session;
+	public string username { get ; set; }
+	public string password { get ; set; }
+
+	public FeedbinAPI(string username, string password)
 	{
-		m_connection = new FeedbinConnection();
-		m_utils = new FeedbinUtils();
+		this.username = username;
+		this.password = password;
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
+		m_session.authenticate.connect((msg, auth, retrying) => {
+			if(!retrying)
+				auth.authenticate(this.username, this.password);
+		});
+	}
+
+	private Response request(string method, string path, string? input = null)
+	{
+		var message = new Soup.Message(method, BASE_URI+path);
+
+		if(method == "POST" || method == "PUT")
+			message.request_headers.append("Content-Type", "application/json; charset=utf-8");
+
+		if(input != null)
+			message.request_body.append_take(input.data);
+
+		m_session.send_message(message);
+
+		return Response() {
+			status = message.status_code,
+			data = (string)message.response_body.flatten().data,
+			headers = message.response_headers
+		};
+	}
+
+	private Response postRequest(string path, string input)
+	{
+		return request("POST", path, input);
+	}
+
+	private Response deleteRequest(string path, string? input = null)
+	{
+		return request("DELETE", path, input);
+	}
+
+	private Response getRequest(string path)
+	{
+		return request("GET", path);
 	}
 
 	public LoginResponse login()
 	{
 		Logger.debug("feedbin backend: login");
 
-		if(!Utils.ping("https://api.feedbin.com/"))
+		var status = getRequest("authentication.json").status;
+		switch(status) {
+		case Soup.Status.CANT_RESOLVE:
+		case Soup.Status.CANT_RESOLVE_PROXY:
+		case Soup.Status.CANT_CONNECT:
+		case Soup.Status.CANT_CONNECT_PROXY:
 			return LoginResponse.NO_CONNECTION;
-
-		var status = m_connection.getRequest("authentication.json").status;
-		if(status == 200)
+		case Soup.Status.OK:
 			return LoginResponse.SUCCESS;
-		else if(status == 401)
+		case Soup.Status.UNAUTHORIZED:
 			return LoginResponse.WRONG_LOGIN;
+		}
 
 		Logger.error("Got status %u from Feedbin authentication.json".printf(status));
 		return LoginResponse.UNKNOWN_ERROR;
@@ -43,7 +90,7 @@ public class FeedReader.FeedbinAPI : Object {
 
 	public string? getFeedIDForSubscription(string subscription_id)
 	{
-		var response = m_connection.getRequest(@"subscriptions/$subscription_id.json");
+		var response = getRequest(@"subscriptions/$subscription_id.json");
 		if(response.status == 404)
 		{
 			Logger.warning(@"getFeedIDForSubscription: subscription %subscription_id does not exist");
@@ -72,7 +119,7 @@ public class FeedReader.FeedbinAPI : Object {
 
 	public Gee.List<Feed>? getFeeds()
 	{
-		var response = m_connection.getRequest("subscriptions.json");
+		var response = getRequest("subscriptions.json");
 		if(!response.is_ok())
 		{
 			Logger.error("getFeeds: Unexpected status: %u".printf(response.status));
@@ -129,7 +176,7 @@ public class FeedReader.FeedbinAPI : Object {
 	// maps from feed ID to subscription ID
 	private Gee.Map<string, string>? getFeedSubscriptionMap()
 	{
-		var response = m_connection.getRequest("subscriptions.json");
+		var response = getRequest("subscriptions.json");
 		if(!response.is_ok())
 		{
 			Logger.error("getFeedSubscriptionMap: Unexpected status: %u".printf(response.status));
@@ -168,7 +215,7 @@ public class FeedReader.FeedbinAPI : Object {
 		object.set_string_member("name", tag_name);
 		string json = FeedbinUtils.json_object_to_string(object);
 
-		var response = m_connection.postRequest("taggings.json", json);
+		var response = postRequest("taggings.json", json);
 		if(!response.is_ok())
 		{
 			Logger.error(@"addTagging: Unexpected response status %u when adding tag '$tag_name' for feed $feed_id".printf(response.status));
@@ -177,7 +224,7 @@ public class FeedReader.FeedbinAPI : Object {
 
 	public void deleteTagging(int64 tagging_id)
 	{
-		var response = m_connection.deleteRequest(@"taggings/$tagging_id.json");
+		var response = deleteRequest(@"taggings/$tagging_id.json");
 		if(!response.is_ok())
 		{
 			Logger.error(@"deleteTagging: Unexpected response status %u when deleting tagging '$tagging_id'".printf(response.status));
@@ -194,7 +241,7 @@ public class FeedReader.FeedbinAPI : Object {
 	// returns a map from feed ID to category name
 	public Gee.List<Tagging?>? getTaggings()
 	{
-		var response = m_connection.getRequest("taggings.json");
+		var response = getRequest("taggings.json");
 		if(!response.is_ok())
 		{
 			Logger.error("getTaggings: Got unexpected status: %u".printf(response.status));
@@ -251,7 +298,7 @@ public class FeedReader.FeedbinAPI : Object {
 
 		Logger.debug(request);
 
-		var response = m_connection.getRequest(request);
+		var response = getRequest(request);
 		// Feedbin returns 404 when there are no more articles to load
 		if(response.status == 404)
 		{
@@ -332,7 +379,7 @@ public class FeedReader.FeedbinAPI : Object {
 
 	public Gee.List<string> unreadEntries()
 	{
-		var response = m_connection.getRequest("unread_entries.json");
+		var response = getRequest("unread_entries.json");
 		if(!response.is_ok())
 		{
 			Logger.error("unreadEntries: Unexpected status %u".printf(response.status));
@@ -345,7 +392,7 @@ public class FeedReader.FeedbinAPI : Object {
 
 	public Gee.List<string> starredEntries()
 	{
-		var response = m_connection.getRequest("starred_entries.json");
+		var response = getRequest("starred_entries.json");
 		if(!response.is_ok())
 		{
 			Logger.error("unreadEntries: Unexpected status %u".printf(response.status));
@@ -370,9 +417,9 @@ public class FeedReader.FeedbinAPI : Object {
 
 		Response res;
 		if(!read)
-			res = m_connection.postRequest("unread_entries.json", json);
+			res = postRequest("unread_entries.json", json);
 		else
-			res = m_connection.postRequest("unread_entries/delete.json", json);
+			res = postRequest("unread_entries/delete.json", json);
 		if(!res.is_ok())
 			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), read ? "read" : "unread", res.status, res.data));
 	}
@@ -392,9 +439,9 @@ public class FeedReader.FeedbinAPI : Object {
 
 		Response res;
 		if(starred)
-			res = m_connection.postRequest("starred_entries.json", json);
+			res = postRequest("starred_entries.json", json);
 		else
-			res = m_connection.deleteRequest("starred_entries.json", json);
+			res = deleteRequest("starred_entries.json", json);
 		if(!res.is_ok())
 			Logger.error("Setting articles %s to %s failed with status %u and response %s".printf(StringUtils.join(articleIDs, ","), starred ? "starred" : "unstarred", res.status, res.data));
 	}
@@ -412,7 +459,7 @@ public class FeedReader.FeedbinAPI : Object {
 		}
 
 		var subscription_id = map.get(feed_id);
-		var res = m_connection.deleteRequest("subscriptions/%s.json".printf(subscription_id));
+		var res = deleteRequest("subscriptions/%s.json".printf(subscription_id));
 		if(!res.is_ok())
 			Logger.error("deleteSubscription: Failed for feed %s with status %u, response %s".printf(feed_id, res.status, res.data));
 	}
@@ -425,7 +472,7 @@ public class FeedReader.FeedbinAPI : Object {
 		object.set_string_member("feed_url", url);
 		string json = FeedbinUtils.json_object_to_string(object);
 
-	 	var response = m_connection.postRequest("subscriptions.json", json);
+	 	var response = postRequest("subscriptions.json", json);
 		switch(response.status) {
 			case 200:
 			case 201:
@@ -477,7 +524,7 @@ public class FeedReader.FeedbinAPI : Object {
 		string json = FeedbinUtils.json_object_to_string(object);
 
 		Logger.debug(@"Renaming feed $feed_id (subscription: $subscription_id): $json");
-		var res = m_connection.postRequest("subscriptions/%s/update.json".printf(subscription_id), json);
+		var res = postRequest("subscriptions/%s/update.json".printf(subscription_id), json);
 		if(!res.is_ok())
 		{
 			Logger.error("renameFeed: Failed to rename feed %s to %s, status %u, response %s".printf(feed_id, title, res.status, res.data));

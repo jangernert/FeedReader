@@ -22,8 +22,8 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void init()
 	{
-		m_api = new FeedbinAPI();
 		m_utils = new FeedbinUtils();
+		m_api = new FeedbinAPI(m_utils.getUser(), m_utils.getPassword());
 	}
 
 	public string getWebsite()
@@ -110,7 +110,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		box.pack_end(loginButton, false, false, 20);
 
 		m_userEntry.set_text(m_utils.getUser());
-		m_passwordEntry.set_text(m_utils.getPasswd());
+		m_passwordEntry.set_text(m_utils.getPassword());
 
 		return box;
 	}

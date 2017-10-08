@@ -7,6 +7,7 @@ project('FeedReader', ['vala', 'c'],
 
 # Constants (paths)
 VAPI_DIR              = join_paths(meson.current_source_dir(), 'vapi')
+PO_DIR                = join_paths(meson.current_source_dir(), 'po')
 SHARE_DIR			        = join_paths(get_option('prefix'),
                                     get_option('datadir'))
 DATA_DIR              = join_paths(get_option('prefix'),
@@ -53,17 +54,6 @@ posix               = vala_compiler.find_library('posix')
 rest                = dependency('rest-0.7')
 sqlite3             = dependency('sqlite3')
 webkit2gtk          = dependency('webkit2gtk-4.0')
-# VAPI's
-libgd_vapi          = vala_compiler.find_library('gd-1.0', dirs: VAPI_DIR)
-gtkimageview_vapi   = vala_compiler.find_library('gtkimageview', dirs: VAPI_DIR)
-libvilistextum_vapi = vala_compiler.find_library('libvilistextum', dirs: VAPI_DIR)
-libivy_vapi         = vala_compiler.find_library('ivy', required: false,
-                                                  dirs: join_paths(meson.build_root(), 'libIvy'))
-
-libvilistextum  = declare_dependency(dependencies: libvilistextum_vapi)
-libgd           = declare_dependency(dependencies: libgd_vapi)
-libgtkimageview = declare_dependency(dependencies: gtkimageview_vapi)
-libivy          = declare_dependency(dependencies: libivy_vapi)
 
 # Configuration
 conf = configuration_data()
@@ -81,12 +71,26 @@ c_args = [
 ]
 
 # Build libraries
-subdir('libgd')
-subdir('libgtkimageview')
-subdir('libIvy')
-subdir('libVilistextum')
-subdir('WebExtension')
+subdir('libraries/libgd')
+subdir('libraries/libgtkimageview')
+subdir('libraries/libIvy')
+subdir('libraries/libVilistextum')
+subdir('libraries/WebExtension')
 subdir('data')
+
+
+# VAPI's
+libgd_vapi          = vala_compiler.find_library('gd-1.0', dirs: VAPI_DIR)
+gtkimageview_vapi   = vala_compiler.find_library('gtkimageview', dirs: VAPI_DIR)
+libvilistextum_vapi = vala_compiler.find_library('libvilistextum', dirs: VAPI_DIR)
+libivy_vapi         = vala_compiler.find_library('ivy', required: false,
+                                                  dirs: join_paths(meson.build_root(),
+                                                                    'libraries/libIvy'))
+
+libvilistextum  = declare_dependency(dependencies: libvilistextum_vapi)
+libgd           = declare_dependency(dependencies: libgd_vapi)
+libgtkimageview = declare_dependency(dependencies: gtkimageview_vapi)
+libivy          = declare_dependency(dependencies: libivy_vapi)
 
 vala_sources = [
   'src/FavIconCache.vala',
@@ -189,8 +193,6 @@ executable(
   ],
   vala_args: [
     '--target-glib=2.38',
-    '--pkg=config',
-    '--pkg=gd-1.0',
     '--pkg=posix',
     '--vapidir=' + VAPI_DIR,
     '--header=FeedReader.h',
@@ -214,7 +216,10 @@ executable(
     libxml,
     goa,
     posix,
-    goa
+    goa,
+    libgtkimageview,
+    libgd,
+    libvilistextum
   ]
 )
 

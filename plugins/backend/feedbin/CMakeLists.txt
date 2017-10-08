@@ -67,9 +67,8 @@ target_link_libraries(${PLUGNAME} ${API_NAME})
 # ----------------------------------------------------------
 
 add_dependencies(${PLUGNAME} ${UI_NAME} ${FEEDREADER_NAME})
-
-
 add_schema("org.gnome.feedreader.${PLUGNAME}.gschema.xml")
+
 # ----------------------------------------------------------
 # Tests
 # ----------------------------------------------------------
@@ -94,4 +93,4 @@ CUSTOM_VAPIS
 add_executable(${TEST_NAME} ${VALA_C})
 target_link_libraries(${TEST_NAME} ${API_NAME})
 
-add_test(FeedbinAPI ${TEST_NAME})
+add_test(${PLUGNAME} gtester -k -o ${CMAKE_BINARY_DIR}/${PLUGNAME}.gtester.log ${TEST_NAME})

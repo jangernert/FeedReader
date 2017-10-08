@@ -21,7 +21,7 @@ plugins/share/Telegram/TelegramForm.vala
 plugins/share/Telegram/TelegramSetup.vala
 plugins/share/Twitter/TwitterForm.vala
 plugins/share/Twitter/TwitterSetup.vala
-plugins/share/Wallabag/WalabagSetup.vala
+plugins/share/Wallabag/WallabagSetup.vala
 src/Backend/FeedServer.vala
 src/DataBaseReadOnly.vala
 src/FeedReader.vala
@@ -39,7 +39,7 @@ src/Widgets/ColumnViewHeader.vala
 src/Widgets/FeedList.vala
 src/Widgets/FeedListFooter.vala
 src/Widgets/FeedRow.vala
-src/Widgets/FullScreenHeader.vala
+src/Widgets/FullscreenHeader.vala
 src/Widgets/LoginPage.vala
 src/Widgets/MainWindow.vala
 src/Widgets/MediaButton.vala
@@ -48,7 +48,7 @@ src/Widgets/ResetPage.vala
 src/Widgets/SettingsDialog.vala
 src/Widgets/SharePopover.vala
 src/Widgets/ShortcutsWindow.vala
-src/Widgets/SpingCleanPage.vala
+src/Widgets/SpringCleanPage.vala
 src/Widgets/TagPopover.vala
 src/Widgets/TagRow.vala
 src/Widgets/UpdateButton.vala

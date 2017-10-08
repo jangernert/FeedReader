@@ -14,7 +14,5 @@ vilistextum_lib = static_library(
     'unicode_entities.c',
     'util.c',
     'vilistextum.c'
-  ],
-  install: true,
-  install_dir: [true, true, true]
+  ]
 )

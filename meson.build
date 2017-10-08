@@ -247,7 +247,7 @@ feedreader_lib = library(
     libgd
   ],
   install: true,
-  install_dir: [true, true, true]
+  install_dir: [false, true, true]
 )
 
 feedreader = declare_dependency(

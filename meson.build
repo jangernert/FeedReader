@@ -273,7 +273,6 @@ subdir('plugins')
 subdir('schemas')
 subdir('po')
 
-
 # Create an executable file
 
 

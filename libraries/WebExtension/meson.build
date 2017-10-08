@@ -3,7 +3,7 @@ webkit2gtk_vapi    = vala_compiler.find_library('webkit2gtk-web-extension-4.0',
 webkit2gtk_ext_lib = declare_dependency(dependencies: webkit2gtk_vapi)
 
 
-shared_library('webextension',
+webextension_lib = shared_library('webextension',
   [
     'webextension.vala'
   ],
@@ -11,5 +11,11 @@ shared_library('webextension',
     gtk,
     libsoup,
     webkit2gtk_ext_lib
+  ]
+)
+
+lib_webextension = declare_dependency(
+  link_with: [
+    webextension_lib
   ]
 )

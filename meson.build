@@ -59,25 +59,21 @@ webkit2gtk          = dependency('webkit2gtk-4.0')
 
 # Configuration
 conf = configuration_data()
-conf.set('GETTEXT_PACKAGE', meson.project_name())
+conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set('PREFIX', get_option('prefix'))
 conf.set('VERSION', meson.project_version())
 conf.set('PKGDATADIR', DATA_DIR)
 conf.set('PKGLIBDIR', PKGLIBDIR)
 
-
 configure_file(output: 'config.h', configuration: conf)
 config_h_dir = include_directories('.')
-c_args = [
-  '-include', 'config.h'
-]
 
 # Build libraries
 subdir('libraries/libgd')
 subdir('libraries/libgtkimageview')
 subdir('libraries/libIvy')
 subdir('libraries/libVilistextum')
-#subdir('libraries/WebExtension')
+subdir('libraries/WebExtension')
 subdir('data')
 
 
@@ -209,6 +205,7 @@ executable(
     '-g',
     '-w',
     '-rdynamic',
+    '-include','config.h',
     '-DVERSION="' + meson.project_version() + '"',
     '-DGETTEXT_PACKAGE="'+ meson.project_name() +'"',
     '-DGNOMELOCALEDIR="' + LOCALE_DIR + '"',

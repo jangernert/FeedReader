@@ -212,41 +212,31 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	private void setRead(ArticleRow row)
 	{
-		if(row.isUnread())
+		if(row.getArticle().getUnread() == ArticleStatus.UNREAD)
 		{
 			row.updateUnread(ArticleStatus.READ);
-			FeedReaderBackend.get_default().changeArticle(row.getArticle(), ArticleStatus.READ);
+			FeedReaderBackend.get_default().updateArticleRead(row.getArticle());
 		}
 	}
 
-	public bool toggleReadSelected()
+	public ArticleStatus toggleReadSelected()
 	{
 		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 		if(selectedRow == null)
-			return false;
+			return ArticleStatus.READ;
 
 		return selectedRow.toggleUnread();
 	}
 
-	public bool toggleMarkedSelected()
+	public ArticleStatus toggleMarkedSelected()
 	{
 		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 
 		if(selectedRow == null)
-			return false;
+			return ArticleStatus.UNMARKED;
 
 		return selectedRow.toggleMarked();
-	}
-
-	public string selectedURL()
-	{
-		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
-
-		if(selectedRow == null)
-			return "";
-
-		return selectedRow.getURL();
 	}
 
 	public void setState(ArticleListState state)
@@ -254,34 +244,13 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		m_state = state;
 	}
 
-	public string getSelectedArticle()
+	public Article? getSelectedArticle()
 	{
 		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
 		if(selectedRow != null)
-			return selectedRow.getID();
+			return selectedRow.getArticle();
 
-		if(this.get_children().length() == 0)
-			return "empty";
-
-		return "";
-	}
-
-	public ArticleStatus getSelectedArticleMarked()
-	{
-		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
-		if(selectedRow != null)
-			return selectedRow.getMarked();
-
-		return ArticleStatus.UNMARKED;
-	}
-
-	public ArticleStatus getSelectedArticleRead()
-	{
-		ArticleRow selectedRow = this.get_selected_row() as ArticleRow;
-		if(selectedRow != null)
-			return selectedRow.getUnread();
-
-		return ArticleStatus.READ;
+		return null;
 	}
 
 	public string getSelectedURL()
@@ -299,16 +268,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	public int move(bool down)
 	{
 		int time = 300;
-		var sel = getSelectedArticle();
-		if(sel == "empty")
+		Article? sel = getSelectedArticle();
+		if(sel == null)
 		{
-			Logger.debug("ArticleListBox is empty -> do nothing");
-			return 0;
-		}
-		else if(sel == "")
-		{
-			Logger.debug("ArticleListBox: no row selected -> select first");
-			var firstRow = getFirstRow();
+			ArticleRow? firstRow = getFirstRow();
 			if(firstRow == null)
 				return 0;
 			else
@@ -378,8 +341,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 					var tmpRow = r as ArticleRow;
 					if(tmpRow != null && tmpRow.isBeingRevealed())
 					{
-						if((!tmpRow.isUnread() && m_state == ArticleListState.UNREAD)
-						|| (!tmpRow.isMarked() && m_state == ArticleListState.MARKED)
+						if((tmpRow.getArticle().getUnread() == ArticleStatus.READ && m_state == ArticleListState.UNREAD)
+						|| (tmpRow.getArticle().getMarked() == ArticleStatus.UNMARKED && m_state == ArticleListState.MARKED)
 						|| (m_selectedFeedListType == FeedListType.TAG && !tmpRow.hasTag(m_selectedFeedListID)))
 						{
 							if(tmpRow.getID() != selectedID)
@@ -417,8 +380,8 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 						{
 							if(m_articles.contains(tmpRow.getID()))
 							{
-								if((m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
-								|| (m_state == ArticleListState.MARKED && !tmpRow.isMarked()))
+								if((m_state == ArticleListState.UNREAD && tmpRow.getArticle().getUnread() == ArticleStatus.READ)
+								|| (m_state == ArticleListState.MARKED && tmpRow.getArticle().getMarked() == ArticleStatus.UNMARKED))
 								{
 									removeRow(tmpRow);
 									break;
@@ -450,7 +413,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			if(tmpRow != null && invisibleRows.contains(tmpRow.getID()))
 			{
 				setRead(tmpRow);
-				if(m_state == ArticleListState.UNREAD && !tmpRow.isUnread())
+				if(m_state == ArticleListState.UNREAD && tmpRow.getArticle().getUnread() == ArticleStatus.READ)
 				{
 					balanceNextScroll(ArticleListBalance.BOTTOM);
 					removeRow(tmpRow, 0);
@@ -470,22 +433,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		selectedRow.removeTag(tagID);
 	}
 
-	public string? getFirstRowID()
-	{
-		var children = this.get_children();
-
-		if(children == null)
-			return null;
-
-		var firstRow = children.first().data as ArticleRow;
-
-		if(firstRow == null)
-			return null;
-
-		return firstRow.getID();
-	}
-
-	private ArticleRow? getFirstRow()
+	public ArticleRow? getFirstRow()
 	{
 		var children = this.get_children();
 
@@ -500,7 +448,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		return firstRow;
 	}
 
-	public string? getLastRowID()
+	public ArticleRow? getLastRow()
 	{
 		var children = this.get_children();
 
@@ -509,10 +457,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 		var lastRow = children.last().data as ArticleRow;
 
-		if(lastRow != null)
-			return lastRow.getID();
+		if(lastRow == null)
+			return null;
 
-		return null;
+		return lastRow;
 	}
 
 	public bool selectedIsFirst()
@@ -637,7 +585,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			foreach(var row in children)
 			{
 				var tmpRow = row as ArticleRow;
-				if(tmpRow != null && tmpRow.isUnread())
+				if(tmpRow != null && tmpRow.getArticle().getUnread() == ArticleStatus.UNREAD)
 					unread += 1;
 			}
 			return unread;

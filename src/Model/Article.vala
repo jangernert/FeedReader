@@ -211,7 +211,7 @@ public class FeedReader.Article : GLib.Object {
 		m_marked = marked;
 	}
 
-	public unowned Gee.List<string> getTags()
+	public unowned Gee.List<string> getTagIDs()
 	{
 		return m_tags;
 	}
@@ -226,10 +226,16 @@ public class FeedReader.Article : GLib.Object {
 		m_tags = tags;
 	}
 
-	public void addTag(string tag)
+	public void addTag(string tagID)
 	{
-		if(!m_tags.contains(tag))
-			m_tags.add(tag);
+		if(!m_tags.contains(tagID))
+			m_tags.add(tagID);
+	}
+
+	public void removeTag(string tagID)
+	{
+		if(m_tags.contains(tagID))
+			m_tags.remove(tagID);
 	}
 
 	public unowned Gee.List<string> getMedia()

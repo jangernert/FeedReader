@@ -127,7 +127,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			var categories = new Gee.LinkedList<Category>();
 			var feeds      = new Gee.LinkedList<Feed>();
-			var tags       = new Gee.LinkedList<tag>();
+			var tags       = new Gee.LinkedList<Tag>();
 
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
@@ -249,7 +249,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		{
 			var categories = new Gee.LinkedList<Category>();
 			var feeds      = new Gee.LinkedList<Feed>();
-			var tags       = new Gee.LinkedList<tag>();
+			var tags       = new Gee.LinkedList<Tag>();
 
 			syncProgress(_("Getting feeds and categories"));
 
@@ -806,20 +806,20 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.markAllItemsRead();
 	}
 
-	public void tagArticle(string articleID, string tagID)
+	public void tagArticle(Article article, Tag tag)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.tagArticle(articleID, tagID);
+		m_plugin.tagArticle(article.getArticleID(), tag.getTagID());
 	}
 
-	public void removeArticleTag(string articleID, string tagID)
+	public void removeArticleTag(Article article, Tag tag)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.removeArticleTag(articleID, tagID);
+		m_plugin.removeArticleTag(article.getArticleID(), tag.getTagID());
 	}
 
 	public string createTag(string caption)
@@ -945,7 +945,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_plugin.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return false;

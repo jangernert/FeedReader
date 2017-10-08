@@ -346,172 +346,137 @@ namespace FeedReader {
 			return true;
 		}
 
-		public void changeArticle(Article article, ArticleStatus status)
-		{
-			Logger.debug("backend: changeArticle %s %s".printf(article.getArticleID(), status.to_string()));
-			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
-			{
-				bool increase = true;
-				if(status == ArticleStatus.READ)
-					increase = false;
-
-				if(m_offline)
-				{
-					CachedActionManager.get_default().markArticleRead(article.getArticleID(), status);
-				}
-				else
-				{
-					if(m_cacheSync)
-					{
-						ActionCache.get_default().markArticleRead(article.getArticleID(), status);
-					}
-
-					asyncPayload pl = () => { FeedServer.get_default().setArticleIsRead(article.getArticleID(), status); };
-					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
-				}
-
-				asyncPayload pl = () => { DataBase.writeAccess().update_article(article, "unread", status); };
-				callAsync.begin((owned)pl, (obj, res) => {
-					callAsync.end(res);
-					refreshFeedListCounter();
-					updateBadge();
-				});
-			}
-			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
-			{
-				if(m_offline)
-					CachedActionManager.get_default().markArticleStarred(article.getArticleID(), status);
-				else
-				{
-					if(m_cacheSync)
-						ActionCache.get_default().markArticleStarred(article.getArticleID(), status);
-					asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(article.getArticleID(), status); };
-					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
-				}
-
-
-				asyncPayload pl = () => { DataBase.writeAccess().update_article(article, "marked", status); };
-				callAsync.begin((owned)pl, (obj, res) => {
-					callAsync.end(res);
-					refreshFeedListCounter();
-				});
-			}
-		}
-
-
-		public string createTag(string caption)
+		public void updateArticleRead(Article article)
 		{
 			if(m_offline)
-				return ":(";
+				CachedActionManager.get_default().markArticleRead(article.getArticleID(), article.getUnread());
+			else
+			{
+				if(m_cacheSync)
+					ActionCache.get_default().markArticleRead(article.getArticleID(), article.getUnread());
 
-			string tagID = FeedServer.get_default().createTag(caption);
-			var Tag = new tag(tagID, caption, 0);
-			var taglist = new Gee.LinkedList<tag>();
-			taglist.add(Tag);
-			DataBase.writeAccess().write_tags(taglist);
-			newFeedList();
+				asyncPayload pl = () => { FeedServer.get_default().setArticleIsRead(article.getArticleID(), article.getUnread()); };
+				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
+			}
 
-			return tagID;
+			asyncPayload pl = () => { DataBase.writeAccess().update_article(article); };
+			callAsync.begin((owned)pl, (obj, res) => {
+				callAsync.end(res);
+				refreshFeedListCounter();
+				updateBadge();
+			});
 		}
 
-		public void tagArticle(string articleID, string tagID, bool add)
+		public void updateArticleMarked(Article article)
+		{
+			if(m_offline)
+				CachedActionManager.get_default().markArticleStarred(article.getArticleID(), article.getMarked());
+			else
+			{
+				if(m_cacheSync)
+					ActionCache.get_default().markArticleStarred(article.getArticleID(), article.getMarked());
+				asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(article.getArticleID(), article.getMarked()); };
+				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
+			}
+
+
+			asyncPayload pl = () => { DataBase.writeAccess().update_article(article); };
+			callAsync.begin((owned)pl, (obj, res) => {
+				callAsync.end(res);
+				refreshFeedListCounter();
+			});
+		}
+
+
+		public Tag? createTag(string caption)
+		{
+			if(m_offline)
+				return null;
+
+			string tagID = FeedServer.get_default().createTag(caption);
+			var tag = new Tag(tagID, caption, 0);
+			DataBase.writeAccess().write_tag(tag);
+			newFeedList();
+
+			return tag;
+		}
+
+		public void tagArticle(Article article, Tag tag, bool add)
 		{
 			if(m_offline)
 				return;
-
-			string tags = DataBase.readOnly().read_article_tags(articleID);
 
 			if(add)
 			{
-				asyncPayload pl = () => { FeedServer.get_default().tagArticle(articleID, tagID); };
+				asyncPayload pl = () => { FeedServer.get_default().tagArticle(article, tag); };
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-				if(!tags.contains(tagID))
-				{
-					tags = tags + tagID + ",";
-				}
+				article.addTag(tag.getTagID());
+
 			}
 			else
 			{
-				Logger.debug("backend: remove tag: " + tagID + " from article: " + articleID);
+				Logger.debug("backend: remove tag: " + tag.getTagID() + " from article: " + article.getArticleID());
 
-				asyncPayload pl = () => { FeedServer.get_default().removeArticleTag(articleID, tagID); };
+				asyncPayload pl = () => { FeedServer.get_default().removeArticleTag(article, tag); };
 				callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-				Logger.debug("backend: tagstring = " + tags);
-
-				if(tags == tagID)
-				{
-					tags = "";
-				}
-				else if(tags.contains(tagID))
-				{
-					int start = tags.index_of(tagID);
-					int end = start + tagID.length + 1;
-
-					string part1 = tags.substring(0, start);
-					string part2 = tags.substring(end);
-
-					if(part2.has_prefix(","))
-					{
-						part2 = part2.substring(1);
-						Logger.error("backend: tagArticle");
-					}
-
-					tags = part1 + part2;
-
-					if(!DataBase.readOnly().tag_still_used(tagID))
-					{
-						Logger.debug("backend: remove tag completely");
-						asyncPayload pl2 = () => { FeedServer.get_default().deleteTag(tagID); };
-						callAsync.begin((owned)pl2, (obj, res) => { callAsync.end(res); });
-
-						asyncPayload pl3 = () => { DataBase.writeAccess().dropTag(tagID); };
-						callAsync.begin((owned)pl3, (obj, res) => {
-							callAsync.end(res);
-							newFeedList();
-						});
-					}
-				}
+				article.removeTag(tag.getTagID());
 			}
 
-			Logger.debug("backend: set tag string: " + tags);
-			DataBase.writeAccess().set_article_tags(articleID, tags);
+			DataBase.writeAccess().update_article(article);
+
+			if(!DataBase.readOnly().tag_still_used(tag))
+			{
+				Logger.debug("backend: remove tag completely");
+				asyncPayload pl2 = () => { FeedServer.get_default().deleteTag(tag.getTagID()); };
+				callAsync.begin((owned)pl2, (obj, res) => { callAsync.end(res); });
+
+				asyncPayload pl3 = () => { DataBase.writeAccess().dropTag(tag); };
+				callAsync.begin((owned)pl3, (obj, res) => {
+					callAsync.end(res);
+					newFeedList();
+				});
+			}
 		}
 
-		public void renameTag(string tagID, string newName)
+		public Tag renameTag(Tag tag, string newName)
+		{
+			if(m_offline)
+				return tag;
+
+			tag.setTitle(newName);
+
+			asyncPayload pl = () => { FeedServer.get_default().renameTag(tag.getTagID(), newName); };
+			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
+
+			asyncPayload pl2 = () => { DataBase.writeAccess().update_tag(tag); };
+			callAsync.begin((owned)pl2, (obj, res) => {
+				callAsync.end(res);
+				newFeedList();
+			});
+
+			return tag;
+		}
+
+		public void deleteTag(Tag tag)
 		{
 			if(m_offline)
 				return;
 
-			asyncPayload pl = () => { FeedServer.get_default().renameTag(tagID, newName); };
+			asyncPayload pl = () => { FeedServer.get_default().deleteTag(tag.getTagID()); };
 			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 
-			asyncPayload pl2 = () => { DataBase.writeAccess().rename_tag(tagID, newName); };
+			asyncPayload pl2 = () => { DataBase.writeAccess().dropTag(tag); };
 			callAsync.begin((owned)pl2, (obj, res) => {
 				callAsync.end(res);
 				newFeedList();
 			});
 		}
 
-		public void deleteTag(string tagID)
+		public void updateTagColor(Tag tag)
 		{
-			if(m_offline)
-				return;
-
-			asyncPayload pl = () => { FeedServer.get_default().deleteTag(tagID); };
-			callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
-
-			asyncPayload pl2 = () => { DataBase.writeAccess().dropTag(tagID); };
-			callAsync.begin((owned)pl2, (obj, res) => {
-				callAsync.end(res);
-				newFeedList();
-			});
-		}
-
-		public void updateTagColor(string tagID, int color)
-		{
-			DataBase.writeAccess().update_tag_color(tagID, color);
+			DataBase.writeAccess().update_tag(tag);
 		}
 
 		public void resetDB()

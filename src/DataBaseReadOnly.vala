@@ -371,11 +371,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return (tagCount % Constants.COLORS.length);
 	}
 
-	public bool tag_still_used(string tagID)
+	public bool tag_still_used(Tag tag)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("count(*)");
-		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
+		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tag.getTagID()));
 		query.limit(2);
 		query.build();
 
@@ -709,29 +709,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		stmt.reset();
 		return tmp;
-	}
-
-
-	public string read_article_tags(string articleID)
-	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("tags");
-		query.addEqualsCondition("articleID", articleID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			return stmt.column_text(0);
-		}
-		stmt.reset ();
-		return "";
 	}
 
 	public int getMaxCatLevel()
@@ -1361,10 +1338,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	}
 
 
-	public Gee.List<tag> read_tags()
+	public Gee.List<Tag> read_tags()
 	{
-		Gee.List<tag> tmp = new Gee.ArrayList<tag>();
-		tag tmpTag;
+		Gee.List<Tag> tmp = new Gee.ArrayList<Tag>();
+		Tag tmpTag;
 
 		var query = new QueryBuilder(QueryType.SELECT, "tags");
 		query.selectField("*");
@@ -1380,16 +1357,16 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
+			tmpTag = new Tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
 			tmp.add(tmpTag);
 		}
 
 		return tmp;
 	}
 
-	public tag read_tag(string tagID)
+	public Tag? read_tag(string tagID)
 	{
-		tag tmpTag = null;
+		Tag tmpTag = null;
 
 		var query = new QueryBuilder(QueryType.SELECT, "tags");
 		query.selectField("*");
@@ -1405,7 +1382,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
+			tmpTag = new Tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
 		}
 
 		return tmpTag;
@@ -1415,9 +1392,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	{
 		var tags = read_tags();
 		string query = "(";
-		foreach(var Tag in tags)
+		foreach(Tag tag in tags)
 		{
-			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(Tag.getTagID());
+			query += "instr(\"tags\", \"%s\") > 0 OR ".printf(tag.getTagID());
 		}
 
 		int or = query.char_count()-4;

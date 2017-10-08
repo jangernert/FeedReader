@@ -272,7 +272,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getTags(Gee.List<tag> tags)
+	public bool getTags(Gee.List<Tag> tags)
 	{
 		var message = new ttrssMessage(m_session, m_ttrss_url);
 		message.add_string("sid", m_ttrss_sessionid);
@@ -288,7 +288,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				var tag_node = response.get_object_element(i);
 				tags.add(
-					new tag(
+					new Tag(
 						tag_node.get_int_member("id").to_string(),
 						tag_node.get_string_member("caption"),
 						DataBase.readOnly().getTagColor()

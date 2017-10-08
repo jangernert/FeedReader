@@ -69,7 +69,12 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 
 	public void update()
 	{
-		m_media = ColumnView.get_default().getSelectedArticleMedia();
+		m_media = new Gee.ArrayList<string>();
+		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
+		if(selectedArticle != null)
+		{
+			m_media = selectedArticle.getMedia();
+		}
 
 		if(m_signalID != 0)
 		{
@@ -105,7 +110,10 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 				popOpened();
 				m_pop.show_all();
 			});
-
+		}
+		else
+		{
+			// no media
 		}
 	}
 

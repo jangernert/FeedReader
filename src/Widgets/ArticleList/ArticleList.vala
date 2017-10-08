@@ -409,12 +409,12 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private int determineNewRowCount(int? newCount, out int? offset)
 	{
 		int count = 0;
-		string? firstRowID = m_currentList.getFirstRowID();
+		ArticleRow? firstRow = m_currentList.getFirstRow();
 
-		if(firstRowID != null)
+		if(firstRow != null)
 		{
 			count = DataBase.readOnly().getArticleCountNewerThanID(
-														firstRowID,
+														firstRow.getArticle().getArticleID(),
 														m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
@@ -567,26 +567,30 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_overlay.dismiss();
 	}
 
-	public string getSelectedArticle()
+	public Article? getSelectedArticle()
 	{
 		if(m_stack.get_visible_child_name() == "empty"
 		|| m_stack.get_visible_child_name() == "syncing")
-			return "empty";
+			return null;
 
 		return m_currentList.getSelectedArticle();
 	}
 
-	public string? getFirstArticle()
+	public Article? getFirstArticle()
 	{
-		return m_currentList.getFirstRowID();
+		ArticleRow? selectedRow = m_currentList.getFirstRow();
+		if(selectedRow == null)
+			return null;
+
+		return selectedRow.getArticle();
 	}
 
-	public bool toggleReadSelected()
+	public ArticleStatus toggleReadSelected()
 	{
 		return m_currentList.toggleReadSelected();
 	}
 
-	public bool toggleMarkedSelected()
+	public ArticleStatus toggleMarkedSelected()
 	{
 		return m_currentList.toggleMarkedSelected();
 	}
@@ -724,26 +728,19 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentList.markAllAsRead();
 	}
 
-	public ArticleStatus getSelectedArticleMarked()
-	{
-		return m_currentList.getSelectedArticleMarked();
-	}
-
-	public ArticleStatus getSelectedArticleRead()
-	{
-		return m_currentList.getSelectedArticleRead();
-	}
-
 	public void openSelected()
 	{
-		string selectedURL = m_currentList.selectedURL();
-		try
+		Article? selectedArticle = m_currentList.getSelectedArticle();
+		if(selectedArticle != null)
 		{
-			Gtk.show_uri_on_window(MainWindow.get_default(), selectedURL, Gdk.CURRENT_TIME);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+			try
+			{
+				Gtk.show_uri_on_window(MainWindow.get_default(), selectedArticle.getURL(), Gdk.CURRENT_TIME);
+			}
+			catch(GLib.Error e)
+			{
+				Logger.debug("could not open the link in an external browser: %s".printf(e.message));
+			}
 		}
 	}
 

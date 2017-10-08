@@ -144,9 +144,12 @@ public class FeedReader.InterfaceState : GLib.Object {
 		return m_ArticleListSelectedRow;
 	}
 
-	public void setArticleListTopRow(string? articleID)
+	public void setArticleListTopRow(Article? article)
 	{
-		m_ArticleListTopRow = articleID;
+		if(article == null)
+			m_ArticleListTopRow = null;
+
+		m_ArticleListTopRow = article.getArticleID();
 	}
 
 	public string getArticleListTopRow()

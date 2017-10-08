@@ -263,7 +263,7 @@ public class FeedReader.FeedlyAPI : Object {
 	}
 
 
-	public bool getTags(Gee.List<tag> tags)
+	public bool getTags(Gee.List<Tag> tags)
 	{
 		var response = m_connection.send_get_request_to_feedly("/v3/tags/");
 
@@ -286,7 +286,7 @@ public class FeedReader.FeedlyAPI : Object {
 			Json.Object object = array.get_object_element(i);
 
 			tags.add(
-				new tag(
+				new Tag(
 					object.get_string_member("id"),
 					object.has_member("label") ? object.get_string_member("label") : "",
 					DataBase.readOnly().getTagColor()

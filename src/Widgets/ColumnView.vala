@@ -139,8 +139,8 @@ public class FeedReader.ColumnView : Gtk.Paned {
 				m_headerbar.showArticleButtons(true);
 								m_headerbar.setTitle(row.getName());
 				Logger.debug("ContentPage: set headerbar");
-				m_headerbar.setRead(row.isUnread());
-				m_headerbar.setMarked(row.isMarked());
+				m_headerbar.setRead(row.getArticle().getUnread());
+				m_headerbar.setMarked(row.getArticle().getMarked());
 				m_headerbar.showMediaButton(row.haveMedia());
 				m_article_view.showMediaButton(row.haveMedia());
 			}
@@ -305,44 +305,27 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		return m_feedList.getSelectedRow();
 	}
 
-	public string getSelectedArticle()
+	public Article getSelectedArticle()
 	{
 		return m_articleList.getSelectedArticle();
 	}
 
-	public ArticleStatus getSelectedArticleMarked()
-	{
-		return m_articleList.getSelectedArticleMarked();
-	}
-
-	public ArticleStatus getSelectedArticleRead()
-	{
-		return m_articleList.getSelectedArticleRead();
-	}
-
-	public string getSelectedURL()
-	{
-		return m_articleList.getSelectedURL();
-	}
-
 	public void markAllArticlesAsRead()
 	{
-		m_headerbar.setRead(false);
+		m_headerbar.setRead(ArticleStatus.READ);
 		m_articleList.markAllAsRead();
 	}
 
 	public void toggleReadSelectedArticle()
 	{
 		m_headerbar.toggleRead();
-		bool unread = m_articleList.toggleReadSelected();
-		m_article_view.setUnread(unread);
+		m_article_view.setRead(m_articleList.toggleReadSelected());
 	}
 
 	public void toggleMarkedSelectedArticle()
 	{
 		m_headerbar.toggleMarked();
-		bool marked = m_articleList.toggleMarkedSelected();
-		m_article_view.setMarked(marked);
+		m_article_view.setMarked(m_articleList.toggleMarkedSelected());
 	}
 
 	public void openSelectedArticle()
@@ -360,32 +343,6 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_articleList.removeTagFromSelectedRow(tagID);
 	}
 
-	public Gee.List<tag> getSelectedArticleTags()
-	{
-		var tags = new Gee.ArrayList<tag>();
-		string id = m_articleList.getSelectedArticle();
-
-		if(id != "" && id != "empty")
-		{
-			var article = DataBase.readOnly().read_article(id);
-			unowned Gee.List<string> tagIDs = article.getTags();
-
-			foreach(string tagID in tagIDs)
-			{
-				tags.add(DataBase.readOnly().read_tag(tagID));
-			}
-		}
-
-		return tags;
-	}
-
-	public Gee.List<string> getSelectedArticleMedia()
-	{
-		string id = m_articleList.getSelectedArticle();
-		var article = DataBase.readOnly().read_article(id);
-		return article.getMedia();
-	}
-
 	public void syncStarted()
 	{
 		m_articleList.syncStarted();
@@ -395,13 +352,6 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	{
 		m_articleList.syncFinished();
 	}
-
-	/*
-	public void updateAccountInfo()
-	{
-		m_feedList.updateAccountInfo();
-	}
-	*/
 
 	public Gdk.RGBA getBackgroundColor()
 	{
@@ -540,7 +490,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		state.setFeedListWidth(m_pane.get_position());
 		state.setFeedListScrollPos(m_feedList.vadjustment.value);
 		state.setArticleViewScrollPos(m_article_view.getScrollPos());
-		state.setArticleListSelectedRow(m_articleList.getSelectedArticle());
+		state.setArticleListSelectedRow(m_articleList.getSelectedArticle().getArticleID());
 		state.setArticleListTopRow(m_articleList.getFirstArticle());
 
 		m_headerbar.saveState(ref state);

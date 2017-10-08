@@ -183,8 +183,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 			if(event.changed_mask == Gdk.WindowState.FULLSCREEN)
 			{
 				Logger.debug("MainWindow: fullscreen event");
-				if(ColumnView.get_default().getSelectedArticle() == ""
-				|| ColumnView.get_default().getSelectedArticle() == "empty")
+				if(ColumnView.get_default().getSelectedArticle() == null)
 					return true;
 
 				if(ColumnView.get_default().isFullscreenVideo())

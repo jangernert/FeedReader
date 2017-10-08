@@ -95,14 +95,14 @@ public class FeedReader.FullscreenHeader : Gtk.EventBox {
 		m_header.set_title(title);
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
 		m_header.setMarked(marked);
 	}
 
-	public void setUnread(bool unread)
+	public void setRead(ArticleStatus read)
 	{
-		m_header.setRead(unread);
+		m_header.setRead(read);
 	}
 
 	private void removeTimeout()

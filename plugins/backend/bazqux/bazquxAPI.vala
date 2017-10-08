@@ -147,7 +147,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags)
 	{
 		var msg = new bazquxMessage();
 		msg.add("output", "json");
@@ -198,7 +198,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 				else
 				{
 					tags.add(
-						new tag(
+						new Tag(
 							id,
 							title,
 							DataBase.readOnly().getTagColor()

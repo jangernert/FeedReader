@@ -126,16 +126,16 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		Utils.remove_directory(folder_path);
 	}
 
-	public void dropTag(string tagID)
+	public void dropTag(Tag tag)
 	{
 		var query = new QueryBuilder(QueryType.DELETE, "main.tags");
-		query.addEqualsCondition("tagID", tagID, true, true);
+		query.addEqualsCondition("tagID", tag.getTagID(), true, true);
 		executeSQL(query.build());
 
 		query = new QueryBuilder(QueryType.SELECT, "main.articles");
 		query.selectField("tags");
 		query.selectField("articleID");
-		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tagID));
+		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tag.getTagID()));
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -148,19 +148,13 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 		while(stmt.step () == Sqlite.ROW)
 		{
-			string old_tags = stmt.column_text(0);
 			string articleID = stmt.column_text(1);
-			string new_tags = "";
-			var tagArray = old_tags.split(",");
-			foreach(string tag in tagArray)
-			{
-				tag = tag.strip();
-				if(tag != "" && tag != tagID)
-					new_tags += "tag" + ",";
-			}
+			Gee.List<string> tags = StringUtils.split(stmt.column_text(0), "s", true);
+			if(tags.contains(tag.getTagID()))
+				tags.remove(tag.getTagID());
 
 			query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-			query.updateValuePair("tags", "\"%s\"".printf(new_tags));
+			query.updateValuePair("tags", "\"%s\"".printf(StringUtils.join(tags, ",")));
 			query.addEqualsCondition("articleID", articleID, true, true);
 			executeSQL(query.build());
 		}
@@ -223,7 +217,14 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		executeSQL("COMMIT TRANSACTION");
 	}
 
-	public void write_tags(Gee.List<tag> tags)
+	public void write_tag(Tag tag)
+	{
+		var list = new Gee.ArrayList<Tag>();
+		list.add(tag);
+		write_tags(list);
+	}
+
+	public void write_tags(Gee.List<Tag> tags)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -263,7 +264,30 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		executeSQL("COMMIT TRANSACTION");
 	}
 
-	public void update_tags(Gee.List<tag> tags)
+	public void update_tag(Tag tag)
+	{
+		var list = new Gee.ArrayList<Tag>();
+		list.add(tag);
+		update_tags(list);
+
+		if(FeedServer.get_default().tagIDaffectedByNameChange())
+		{
+			string newID = tag.getTagID().replace(tag.getTitle(), tag.getTitle());
+			var query2 = new QueryBuilder(QueryType.UPDATE, "tags");
+			query2.updateValuePair("tagID", newID, true);
+			query2.addEqualsCondition("tagID", tag.getTagID(), true, true);
+			executeSQL(query2.build());
+			query2.print();
+
+			var query3 = new QueryBuilder(QueryType.UPDATE, "articles");
+			query3.updateValuePair("tags", "replace(tags, '%s', '%s')".printf(tag.getTagID(), newID));
+			query3.addCustomCondition("instr(tags, '%s')".printf(tag.getTagID()));
+			executeSQL(query3.build());
+			query3.print();
+		}
+	}
+
+	public void update_tags(Gee.List<Tag> tags)
 	{
 		executeSQL("BEGIN TRANSACTION");
 
@@ -296,17 +320,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 		executeSQL("COMMIT TRANSACTION");
 	}
-
-
-	public void update_tag_color(string tagID, int color)
-	{
-		var query = new QueryBuilder(QueryType.UPDATE, "main.tags");
-		query.updateValuePair("color", color.to_string());
-		query.addEqualsCondition("tagID", tagID, true, true);
-		executeSQL(query.build());
-	}
-
-
 
 
 	public void write_categories(Gee.List<Category> categories)
@@ -434,6 +447,21 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		while(stmt.step() != Sqlite.DONE){}
 		stmt.reset();
 	}
+
+	public void update_article(Article article)
+	{
+		var list = new Gee.ArrayList<Article>();
+		list.add(article);
+		update_articles(list);
+	}
+
+	// public void update_article(Article article, string field, int field_value)
+	// {
+	// 	var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
+	// 	query.updateValuePair(field, field_value.to_string());
+	// 	query.addEqualsCondition("articleID", article.getArticleID(), true, true);
+	// 	executeSQL(query.build());
+	// }
 
 	public void update_articles(Gee.List<Article> articles)
 	{
@@ -605,22 +633,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		}
 
 		executeSQL("COMMIT TRANSACTION");
-	}
-
-	public void set_article_tags(string articleID, string tags)
-	{
-		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		query.updateValuePair("tags", "\"%s\"".printf(tags));
-		query.addEqualsCondition("articleID", articleID, true, true);
-		executeSQL(query.build());
-	}
-
-	public void update_article(Article article, string field, int field_value)
-	{
-		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		query.updateValuePair(field, field_value.to_string());
-		query.addEqualsCondition("articleID", article.getArticleID(), true, true);
-		executeSQL(query.build());
 	}
 
 	public void markCategorieRead(string catID)
@@ -816,38 +828,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.updateValuePair("category_id", catString, true);
 		query.addEqualsCondition("feed_id", feedID, true, true);
 		executeSQL(query.build());
-	}
-
-	public void rename_tag(string tagID, string newName)
-	{
-		if(FeedServer.get_default().tagIDaffectedByNameChange())
-		{
-			var tag = read_tag(tagID);
-			string newID = tagID.replace(tag.getTitle(), newName);
-			var query2 = new QueryBuilder(QueryType.UPDATE, "tags");
-			query2.updateValuePair("tagID", newID, true);
-			query2.addEqualsCondition("tagID", tagID, true, true);
-			executeSQL(query2.build());
-			query2.print();
-
-			var query3 = new QueryBuilder(QueryType.UPDATE, "articles");
-			query3.updateValuePair("tags", "replace(tags, '%s', '%s')".printf(tagID, newID));
-			query3.addCustomCondition("instr(tags, '%s')".printf(tagID));
-			executeSQL(query3.build());
-			query3.print();
-
-			var query = new QueryBuilder(QueryType.UPDATE, "tags");
-			query.updateValuePair("title", newName, true);
-			query.addEqualsCondition("tagID", newID, true, true);
-			executeSQL(query.build());
-		}
-		else
-		{
-			var query = new QueryBuilder(QueryType.UPDATE, "tags");
-			query.updateValuePair("title", newName, true);
-			query.addEqualsCondition("tagID", tagID, true, true);
-			executeSQL(query.build());
-		}
 	}
 
 	public void removeCatFromFeed(string feedID, string catID)

@@ -152,9 +152,18 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		}
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
-		m_mark_button.setActive(marked);
+		switch(marked)
+		{
+			case ArticleStatus.MARKED:
+				m_mark_button.setActive(true);
+				break;
+			case ArticleStatus.UNMARKED:
+			default:
+				m_read_button.setActive(false);
+				break;
+		}
 	}
 
 	public void toggleMarked()
@@ -162,9 +171,18 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_mark_button.toggle();
 	}
 
-	public void setRead(bool read)
+	public void setRead(ArticleStatus read)
 	{
-		m_read_button.setActive(read);
+		switch(read)
+		{
+			case ArticleStatus.UNREAD:
+				m_read_button.setActive(true);
+				break;
+			case ArticleStatus.READ:
+			default:
+				m_read_button.setActive(false);
+				break;
+		}
 	}
 
 	public void toggleRead()

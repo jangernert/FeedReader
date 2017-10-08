@@ -81,7 +81,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		var notification = MainWindow.get_default().showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
-			FeedReaderBackend.get_default().deleteTag(m_id);
+			FeedReaderBackend.get_default().deleteTag(DataBase.readOnly().read_tag(m_id));
 		});
 		notification.action.connect(() => {
 			notification.disconnect(eventID);

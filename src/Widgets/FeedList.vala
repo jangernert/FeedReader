@@ -73,13 +73,13 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			TagRow selected_tag = m_list.get_selected_row() as TagRow;
 			if(selected_tag != null)
 			{
-				if(selected_tag.getID() == m_selectedID
+				if(selected_tag.getTag().getTagID() == m_selectedID
 				&& m_selectedType == FeedListType.TAG)
 					return;
 
-				m_selectedID = selected_tag.getID();
+				m_selectedID = selected_tag.getTag().getTagID();
 				m_selectedType = FeedListType.TAG;
-				newTagSelected(selected_tag.getID());
+				newTagSelected(selected_tag.getTag().getTagID());
 				return;
 			}
 		});
@@ -171,7 +171,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				if(current_tag.isRevealed())
 				{
 					m_list.select_row(current_tag);
-					newTagSelected(current_tag.getID());
+					newTagSelected(current_tag.getTag().getTagID());
 					break;
 				}
 			}
@@ -384,7 +384,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			foreach(Gtk.Widget row in FeedChildList)
 			{
 				var tmpRow = row as TagRow;
-				if(tmpRow != null && tmpRow.getID() == selectedRow[1])
+				if(tmpRow != null && tmpRow.getTag().getTagID() == selectedRow[1])
 				{
 					m_list.select_row(tmpRow);
 					if(m_selectedID != selectedRow[1])
@@ -582,9 +582,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		if(!Settings.general().get_boolean("only-feeds"))
 		{
 			var tags = DataBase.readOnly().read_tags();
-			foreach(var Tag in tags)
+			foreach(Tag tag in tags)
 			{
-				var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
+				var tagrow = new TagRow(tag);
 				tagrow.moveUP.connect(moveUP);
 				tagrow.removeRow.connect(() => {
 					removeRow(tagrow);
@@ -881,7 +881,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		}
 		else if(tagrow != null)
 		{
-			return "tag " + tagrow.getID();
+			return "tag " + tagrow.getTag().getTagID();
 		}
 
 		return "";
@@ -1004,7 +1004,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				foreach(Gtk.Widget row in FeedChildList)
 				{
 					var tmpRow = row as TagRow;
-					if(tmpRow != null && tmpRow.getID() == id)
+					if(tmpRow != null && tmpRow.getTag().getTagID() == id)
 					{
 						tmpRow.reveal(reveal, time);
 						return;
@@ -1016,7 +1016,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	public void addEmptyTagRow()
 	{
-		m_emptyTagRow = new TagRow (_("New Tag"), TagID.NEW, 0);
+		var newTag = new Tag(TagID.NEW, _("New Tag"), 0);
+		m_emptyTagRow = new TagRow(newTag);
 		m_emptyTagRow.moveUP.connect(moveUP);
 		m_emptyTagRow.removeRow.connect(() => {
 			removeRow(m_emptyTagRow);

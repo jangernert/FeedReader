@@ -175,7 +175,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		return m_search.has_focus;
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
 		m_header_right.setMarked(marked);
 	}
@@ -185,7 +185,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_header_right.toggleMarked();
 	}
 
-	public void setRead(bool read)
+	public void setRead(ArticleStatus read)
 	{
 		m_header_right.setRead(read);
 	}

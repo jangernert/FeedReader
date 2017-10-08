@@ -356,35 +356,29 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	public bool toggleUnread()
+	public ArticleStatus toggleUnread()
 	{
-		bool unread = false;
 		var view = ColumnView.get_default();
-		string articleID = ColumnView.get_default().getSelectedArticle();
+		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
 
 		switch(m_article.getUnread())
 		{
 			case ArticleStatus.READ:
 				updateUnread(ArticleStatus.UNREAD);
-				unread = true;
-				if(articleID != "" && articleID == m_article.getArticleID())
-				{
-					view.getHeader().setRead(true);
-				}
 				break;
 			case ArticleStatus.UNREAD:
 				updateUnread(ArticleStatus.READ);
-				unread = false;
-				if(articleID != "" && articleID == m_article.getArticleID())
-				{
-					view.getHeader().setRead(false);
-				}
 				break;
 		}
 
-		FeedReaderBackend.get_default().changeArticle(m_article, m_article.getUnread());
+		if(selectedArticle != null && selectedArticle.getArticleID() == m_article.getArticleID())
+		{
+			view.getHeader().setRead(m_article.getUnread());
+		}
+
+		FeedReaderBackend.get_default().updateArticleRead(m_article);
 		show_all();
-		return unread;
+		return m_article.getUnread();
 	}
 
 	public void updateUnread(ArticleStatus unread)
@@ -458,36 +452,29 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	public bool toggleMarked()
+	public ArticleStatus toggleMarked()
 	{
-		bool marked = false;
 		var view = ColumnView.get_default();
-		string articleID = ColumnView.get_default().getSelectedArticle();
+		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
 
 		switch(m_article.getMarked())
 		{
 			case ArticleStatus.MARKED:
 				updateMarked(ArticleStatus.UNMARKED);
-				marked = false;
-				if(articleID != "" && articleID == m_article.getArticleID())
-				{
-					view.getHeader().setMarked(false);
-				}
 				break;
-
 			case ArticleStatus.UNMARKED:
 				updateMarked(ArticleStatus.MARKED);
-				marked = true;
-				if(articleID != "" && articleID == m_article.getArticleID())
-				{
-					view.getHeader().setMarked(true);
-				}
 				break;
 		}
 
-		FeedReaderBackend.get_default().changeArticle(m_article, m_article.getMarked());
+		if(selectedArticle != null && selectedArticle.getArticleID() == m_article.getArticleID())
+		{
+			view.getHeader().setMarked(m_article.getMarked());
+		}
+
+		FeedReaderBackend.get_default().updateArticleMarked(m_article);
 		this.show_all();
-		return marked;
+		return m_article.getMarked();
 	}
 
 	public void updateMarked(ArticleStatus marked)
@@ -542,35 +529,9 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		return true;
 	}
 
-	public bool isUnread()
-	{
-		if(m_article.getUnread() == ArticleStatus.UNREAD)
-			return true;
-
-		return false;
-	}
-
-	public bool isMarked()
-	{
-		if(m_article.getMarked() == ArticleStatus.MARKED)
-			return true;
-
-		return false;
-	}
-
 	public Article getArticle()
 	{
 		return m_article;
-	}
-
-	public ArticleStatus getUnread()
-	{
-		return m_article.getUnread();
-	}
-
-	public ArticleStatus getMarked()
-	{
-		return m_article.getMarked();
 	}
 
 	public string getName()
@@ -638,7 +599,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
 	public bool hasTag(string tagID)
 	{
-		foreach(string tag in m_article.getTags())
+		foreach(string tag in m_article.getTagIDs())
 		{
 			if(tag == tagID)
 				return true;
@@ -649,7 +610,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
 	public void removeTag(string tagID)
 	{
-		m_article.getTags().remove(tagID);
+		m_article.getTagIDs().remove(tagID);
 	}
 
 	public int getSortID()

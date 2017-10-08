@@ -20,14 +20,23 @@ public class FeedReader.TagPopover : Gtk.Popover {
 	private Gtk.Viewport m_viewport;
 	private Gtk.Entry m_entry;
 	private Gtk.Stack m_stack;
-	private Gee.List<tag> m_tags;
+	private Gee.List<Tag> m_tags;
 	private Gtk.EntryCompletion m_complete;
-	private Gee.List<tag> m_availableTags;
+	private Gee.List<Tag> m_availableTags;
 
 	public TagPopover(Gtk.Widget widget)
 	{
-		m_availableTags = new Gee.ArrayList<tag>();
-		m_tags = ColumnView.get_default().getSelectedArticleTags();
+		m_availableTags = new Gee.ArrayList<Tag>();
+		m_tags = new Gee.ArrayList<Tag>();
+		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
+		if(selectedArticle != null)
+		{
+			Gee.List<string> tagIDs = selectedArticle.getTagIDs();
+			foreach(string tagID in tagIDs)
+			{
+				m_tags.add(DataBase.readOnly().read_tag(tagID));
+			}
+		}
 
 		m_stack = new Gtk.Stack();
 		m_stack.set_transition_type(Gtk.StackTransitionType.NONE);
@@ -79,9 +88,9 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 	private void populateList()
 	{
-		foreach(tag Tag in m_tags)
+		foreach(Tag t in m_tags)
 		{
-			var row = new TagPopoverRow(Tag);
+			var row = new TagPopoverRow(t);
 			row.remove_tag.connect(removeTag);
 			m_list.add(row);
 		}
@@ -99,21 +108,21 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 		var tags = DataBase.readOnly().read_tags();
 
-		foreach(tag Tag in tags)
+		foreach(Tag tag in tags)
 		{
 			bool alreadyHasTag = false;
 
-			foreach(tag Tag2 in m_tags)
+			foreach(Tag tag2 in m_tags)
 			{
-				if(Tag2.getTitle() == Tag.getTitle())
+				if(tag2.getTitle() == tag.getTitle())
 					alreadyHasTag = true;
 			}
 
 			if(!alreadyHasTag)
 			{
 				list_store.append(out iter);
-				list_store.set(iter, 0, Tag.getTitle());
-				m_availableTags.add(Tag);
+				list_store.set(iter, 0, tag.getTitle());
+				m_availableTags.add(tag);
 			}
 		}
 	}
@@ -135,11 +144,11 @@ public class FeedReader.TagPopover : Gtk.Popover {
 			if(str == "")
 				return;
 			bool available = false;
-			string tagID = "";
+			Tag? selectedTag = null;
 
-			foreach(tag Tag in m_tags)
+			foreach(Tag tag in m_tags)
 			{
-				if(str == Tag.getTitle())
+				if(str == tag.getTitle())
 				{
 					Logger.debug("TagPopover: article already tagged");
 					m_entry.set_text("");
@@ -147,12 +156,12 @@ public class FeedReader.TagPopover : Gtk.Popover {
 				}
 			}
 
-			foreach(tag Tag in m_availableTags)
+			foreach(Tag tag in m_availableTags)
 			{
-				if(str == Tag.getTitle())
+				if(str == tag.getTitle())
 				{
 					Logger.debug("TagPopover: tag available");
-					tagID = Tag.getTagID();
+					selectedTag = tag;
 					available = true;
 					break;
 				}
@@ -160,14 +169,13 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 			if(!available)
 			{
-				tagID = FeedReaderBackend.get_default().createTag(str);
-				Logger.debug("TagPopover: " + str + " created with id " + tagID);
+				selectedTag = FeedReaderBackend.get_default().createTag(str);
+				Logger.debug("TagPopover: %s created with id %s".printf(str, selectedTag.getTagID()));
 			}
-			FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), tagID, true);
+			FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), selectedTag, true);
 
 
-			var new_tag = DataBase.readOnly().read_tag(tagID);
-			var row = new TagPopoverRow(new_tag);
+			var row = new TagPopoverRow(selectedTag);
 			row.remove_tag.connect(removeTag);
 			m_list.add(row);
 			m_stack.set_visible_child_name("tags");
@@ -179,14 +187,14 @@ public class FeedReader.TagPopover : Gtk.Popover {
 
 	private void removeTag(TagPopoverRow row)
 	{
-		FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), row.getTagID(), false);
+		FeedReaderBackend.get_default().tagArticle(getActiveArticleID(), row.getTag(), false);
 		m_list.remove(row);
 
-		foreach(tag Tag in m_tags)
+		foreach(Tag tag in m_tags)
 		{
-			if(Tag.getTagID() == row.getTagID())
+			if(tag.getTagID() == row.getTagID())
 			{
-				m_tags.remove(Tag);
+				m_tags.remove(tag);
 				break;
 			}
 		}
@@ -200,7 +208,7 @@ public class FeedReader.TagPopover : Gtk.Popover {
 		ColumnView.get_default().removeTagFromSelectedRow(row.getTagID());
 	}
 
-	private string getActiveArticleID()
+	private Article getActiveArticleID()
 	{
 		return ColumnView.get_default().getSelectedArticle();
 	}

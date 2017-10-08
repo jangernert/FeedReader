@@ -240,8 +240,8 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				m_currentView.zoom_level = 1.0;
 
 			m_fsHead.setTitle(article.getTitle());
-			m_fsHead.setMarked((article.getMarked() == ArticleStatus.MARKED) ? true : false);
-			m_fsHead.setUnread((article.getUnread() == ArticleStatus.UNREAD) ? true : false);
+			m_fsHead.setMarked(article.getMarked());
+			m_fsHead.setRead(article.getUnread());
 
 			m_progress.reset();
 			m_progress.setPercentage(0);
@@ -889,14 +889,14 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_progress.reveal(false);
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
 		m_fsHead.setMarked(marked);
 	}
 
-	public void setUnread(bool unread)
+	public void setRead(ArticleStatus read)
 	{
-		m_fsHead.setUnread(unread);
+		m_fsHead.setRead(read);
 	}
 
 	public void nextButtonVisible(bool vis)

@@ -72,7 +72,6 @@ namespace FeedReader {
 		UNREAD,
 		UNMARKED,
 		MARKED,
-		TOGGLE,
 		ALL;
 
 		public string to_string()

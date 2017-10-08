@@ -69,9 +69,14 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 		m_userEntry = new Gtk.Entry();
 		m_passwordEntry = new Gtk.Entry();
+		var loginButton = new Gtk.Button.with_label(_("Login"));
 
-		m_userEntry.activate.connect(() => { login(); });
-		m_passwordEntry.activate.connect(() => { login(); });
+		m_userEntry.activate.connect(() => {
+			loginButton.activate();
+		});
+		m_passwordEntry.activate.connect(() => {
+			loginButton.activate();
+		});
 
 		m_passwordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
 		m_passwordEntry.set_visibility(false);
@@ -94,12 +99,14 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		loginLabel.set_justify(Gtk.Justification.CENTER);
 		loginLabel.set_lines(3);
 
-		var loginButton = new Gtk.Button.with_label(_("Login"));
 		loginButton.halign = Gtk.Align.END;
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-		loginButton.clicked.connect(() => { login(); });
-
+		loginButton.clicked.connect(() => {
+			m_api.username = m_userEntry.get_text().strip();
+			m_api.password = m_userEntry.get_text().strip();
+			login();
+		});
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.valign = Gtk.Align.CENTER;

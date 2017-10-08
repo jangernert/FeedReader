@@ -646,22 +646,11 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 			// The Feedbin API doesn't include read/unread/starred status in the entries.json
 			// so look them up.
-
-			// We have to get the hash and equals types explictly here or contains()
-			// is always false. I'm guessing it tries to do pointer comparisons if
-			// we don't specify.
-			var unread_ids = new Gee.HashSet<int64?>(
-				(n) => { return int64_hash(n); },
-				(a, b) => { return int64_equal(a, b); });
-			unread_ids.add_all(m_api.get_unread_entries());
-
+			var unread_ids = m_api.get_unread_entries();
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 
-			var starred_ids = new Gee.HashSet<int64?>(
-				(n) => { return int64_hash(n); },
-				(a, b) => { return int64_equal(a, b); });
-			starred_ids.add_all(m_api.get_starred_entries());
+			var starred_ids = m_api.get_starred_entries();
 
 			for(int page = 1; ; ++page)
 			{

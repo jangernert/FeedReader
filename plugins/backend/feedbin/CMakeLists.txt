@@ -85,6 +85,7 @@ PACKAGES
 
 OPTIONS
 	--target-glib=2.32
+	--disable-warnings # since we frequently want to not catch errors
 
 CUSTOM_VAPIS
 	${CMAKE_BINARY_DIR}/plugins/backend/feedbin/feedbinAPI.vapi

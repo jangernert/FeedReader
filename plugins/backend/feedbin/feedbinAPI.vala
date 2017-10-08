@@ -143,8 +143,15 @@ public class FeedbinAPI : Object {
 
 	public bool login() throws FeedbinError
 	{
-		var res = get_request("authentication.json");
-		return res.status_code == Soup.Status.OK;
+		try
+		{
+			var res = get_request("authentication.json");
+			return res.status_code == Soup.Status.OK;
+		}
+		catch(FeedbinError.NOT_AUTHORIZED e)
+		{
+			return false;
+		}
 	}
 
 	public struct Subscription {
@@ -322,29 +329,33 @@ public class FeedbinAPI : Object {
 		return entries;
 	}
 
-	private Gee.List<int64?> get_x_entries(string path) throws FeedbinError
+	private Gee.Set<int64?> get_x_entries(string path) throws FeedbinError
 	{
 		var root = get_json(path);
-		var entries = new Gee.ArrayList<int64?>();
 		var array = root.get_array();
+		// We have to set the hash function here manually or contains() won't
+		// work right -- presumably because it's trying to do pointer comparisons?
+		var ids = new Gee.HashSet<int64?>(
+			(n) => { return int64_hash(n); },
+			(a, b) => { return int64_equal(a, b); });
 		for(var i = 0; i < array.get_length(); ++i)
 		{
-			entries.add(array.get_int_element(i));
+			ids.add(array.get_int_element(i));
 		}
-		return entries;
+		return ids;
 	}
 
-	public Gee.List<int64?> get_unread_entries() throws FeedbinError
+	public Gee.Set<int64?> get_unread_entries() throws FeedbinError
 	{
 		return get_x_entries("unread_entries.json");
 	}
 
-	public Gee.List<int64?> get_starred_entries() throws FeedbinError
+	public Gee.Set<int64?> get_starred_entries() throws FeedbinError
 	{
 		return get_x_entries("starred_entries.json");
 	}
 
-	private void set_entries_status(string type, Gee.List<int64?> entry_ids, bool create) throws FeedbinError
+	private void set_entries_status(string type, Gee.Collection<int64?> entry_ids, bool create) throws FeedbinError
 	{
 		Json.Array array = new Json.Array();
 		foreach(var id in entry_ids)
@@ -359,12 +370,12 @@ public class FeedbinAPI : Object {
 		post_json_object(path, object);
 	}
 
-	public void set_entries_read(Gee.List<int64?> entry_ids, bool read) throws FeedbinError
+	public void set_entries_read(Gee.Collection<int64?> entry_ids, bool read) throws FeedbinError
 	{
 		set_entries_status("unread_entries", entry_ids, !read);
 	}
 
-	public void set_entries_starred(Gee.List<int64?> entry_ids, bool starred) throws FeedbinError
+	public void set_entries_starred(Gee.Collection<int64?> entry_ids, bool starred) throws FeedbinError
 	{
 		set_entries_status("starred_entries", entry_ids, starred);
 	}

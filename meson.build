@@ -92,7 +92,7 @@ libgd = declare_dependency(
   dependencies: libgd_vapi
 )
 
-# GtkImageView 
+# GtkImageView
 libgtkimageview = declare_dependency(
   link_with: gtkimageview_lib,
   include_directories: gtkimageview_inc,
@@ -208,7 +208,7 @@ c_args = [
   '-DGETTEXT_PACKAGE="'+ meson.project_name() +'"',
   '-DGNOMELOCALEDIR="' + LOCALE_DIR + '"',
   '-DGOA_API_IS_SUBJECT_TO_CHANGE'
-]     
+]
 vala_args = [
   '--enable-experimental',
   '--target-glib','2.50'
@@ -222,7 +222,7 @@ feedreader_lib = library(
   vala_sources,
   UI_RESOURCES,
   c_args: c_args,
-  vala_args: vala_args,  
+  vala_args: vala_args,
   vala_header: 'FeedReader.h',
   vala_vapi: 'FeedReader.vapi',
   dependencies: [
@@ -257,7 +257,8 @@ feedreader = declare_dependency(
   dependencies: [
     libgd_vapi,
     gtkimageview_vapi,
-    libvilistextum_vapi
+    libvilistextum_vapi,
+    webkit2gtk
   ],
   include_directories: include_directories('.')
 )

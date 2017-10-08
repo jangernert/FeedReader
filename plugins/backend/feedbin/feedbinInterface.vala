@@ -103,9 +103,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		loginButton.clicked.connect(() => {
-			m_api.username = m_userEntry.get_text().strip();
-			m_api.password = m_userEntry.get_text().strip();
-			login();
+			tryLogin();
 		});
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
@@ -129,8 +127,11 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void writeData()
 	{
-		m_utils.setUser(m_userEntry.get_text().strip());
-		m_utils.setPassword(m_passwordEntry.get_text().strip());
+		m_api.username = m_userEntry.get_text().strip();
+		m_utils.setUser(m_api.username);
+
+		m_api.password = m_passwordEntry.get_text().strip();
+		m_utils.setPassword(m_api.password);
 	}
 
 	public async void postLoginAction()

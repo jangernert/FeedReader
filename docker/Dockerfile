@@ -1,4 +1,4 @@
-FROM fedora:latest
+FROM docker.io/fedora:26
 
 RUN dnf -y install \
         cmake \

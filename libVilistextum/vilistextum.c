@@ -20,6 +20,11 @@
 
 /* ------------------------------------------------ */
 
+// Need this lock because libvilistextum uses a bunch of globals and isn't
+// threadsafe
+pthread_mutex_t lock;
+int needs_init = 1;
+
 void set_options()
 {
 	convert_characters = 1;
@@ -40,6 +45,15 @@ char* vilistextum(char* text, int extractText)
 	if(text == NULL)
 		return NULL;
 
+	if(needs_init && pthread_mutex_init(&lock, NULL) != 0)
+    {
+        printf("\n mutex init failed\n");
+        return NULL;
+	}
+	needs_init = 0;
+
+	pthread_mutex_lock(&lock);
+
 	error = 0;
 	set_options();
 
@@ -51,5 +65,7 @@ char* vilistextum(char* text, int extractText)
 	}
 
 	char* output = getOutput(strlen(text));
+
+	pthread_mutex_unlock(&lock);
 	return output;
 }

@@ -215,7 +215,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		if(row.isUnread())
 		{
 			row.updateUnread(ArticleStatus.READ);
-			FeedReaderBackend.get_default().changeArticle(row.getID(), ArticleStatus.READ);
+			FeedReaderBackend.get_default().changeArticle(row.getArticle(), ArticleStatus.READ);
 		}
 	}
 

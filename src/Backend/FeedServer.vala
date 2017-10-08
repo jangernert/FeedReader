@@ -378,7 +378,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 						if(Settings.general().get_boolean("content-grabber"))
 						{
-							var grabber = new Grabber(session, a.getURL(), a.getArticleID(), a.getFeedID());
+							var grabber = new Grabber(session, a);
 							if(grabber.process(cancellable))
 							{
 								grabber.print();
@@ -466,7 +466,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			return;
 		}
 
-		grabberUtils.saveImages(session, doc, article.getArticleID(), article.getFeedID(), cancellable);
+		grabberUtils.saveImages(session, doc, article, cancellable);
 
 		string html = "";
 		doc->dump_memory_enc(out html);
@@ -491,7 +491,18 @@ public class FeedReader.FeedServer : GLib.Object {
 		session.timeout = 5;
 		session.ssl_strict = false;
 
-		var grabber = new Grabber(session, url, null, null);
+		var a = new Article ("",
+						"",
+						url,
+						"",
+						ArticleStatus.UNREAD,
+						ArticleStatus.UNMARKED,
+						"",
+						"",
+						null,
+						new GLib.DateTime.now_local());
+
+		var grabber = new Grabber(session, a);
 		if(grabber.process())
 		{
 			grabber.print();
@@ -568,8 +579,21 @@ public class FeedReader.FeedServer : GLib.Object {
 			Logger.debug("Grabber: parsing failed");
 			return;
 		}
+
+		var a = new Article ("",
+						"",
+						url,
+						"",
+						ArticleStatus.UNREAD,
+						ArticleStatus.UNMARKED,
+						"",
+						"",
+						null,
+						new GLib.DateTime.now_local());
+
+
 		grabberUtils.repairURL("//img", "src", doc, url);
-		grabberUtils.saveImages(session, doc, "", "");
+		grabberUtils.saveImages(session, doc, a);
 
 		string html = "";
 		doc->dump_memory_enc(out html);

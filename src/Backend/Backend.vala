@@ -346,9 +346,9 @@ namespace FeedReader {
 			return true;
 		}
 
-		public void changeArticle(string articleID, ArticleStatus status)
+		public void changeArticle(Article article, ArticleStatus status)
 		{
-			Logger.debug("backend: changeArticle %s %s".printf(articleID, status.to_string()));
+			Logger.debug("backend: changeArticle %s %s".printf(article.getArticleID(), status.to_string()));
 			if(status == ArticleStatus.READ || status == ArticleStatus.UNREAD)
 			{
 				bool increase = true;
@@ -357,28 +357,20 @@ namespace FeedReader {
 
 				if(m_offline)
 				{
-					var idArray = articleID.split(",");
-					foreach(string id in idArray)
-					{
-						CachedActionManager.get_default().markArticleRead(id, status);
-					}
+					CachedActionManager.get_default().markArticleRead(article.getArticleID(), status);
 				}
 				else
 				{
 					if(m_cacheSync)
 					{
-						var idArray = articleID.split(",");
-						foreach(string id in idArray)
-						{
-							ActionCache.get_default().markArticleRead(id, status);
-						}
+						ActionCache.get_default().markArticleRead(article.getArticleID(), status);
 					}
 
-					asyncPayload pl = () => { FeedServer.get_default().setArticleIsRead(articleID, status); };
+					asyncPayload pl = () => { FeedServer.get_default().setArticleIsRead(article.getArticleID(), status); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
-				asyncPayload pl = () => { DataBase.writeAccess().update_article(articleID, "unread", status); };
+				asyncPayload pl = () => { DataBase.writeAccess().update_article(article, "unread", status); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
 					refreshFeedListCounter();
@@ -388,17 +380,17 @@ namespace FeedReader {
 			else if(status == ArticleStatus.MARKED || status == ArticleStatus.UNMARKED)
 			{
 				if(m_offline)
-					CachedActionManager.get_default().markArticleStarred(articleID, status);
+					CachedActionManager.get_default().markArticleStarred(article.getArticleID(), status);
 				else
 				{
 					if(m_cacheSync)
-						ActionCache.get_default().markArticleStarred(articleID, status);
-					asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(articleID, status); };
+						ActionCache.get_default().markArticleStarred(article.getArticleID(), status);
+					asyncPayload pl = () => { FeedServer.get_default().setArticleIsMarked(article.getArticleID(), status); };
 					callAsync.begin((owned)pl, (obj, res) => { callAsync.end(res); });
 				}
 
 
-				asyncPayload pl = () => { DataBase.writeAccess().update_article(articleID, "marked", status); };
+				asyncPayload pl = () => { DataBase.writeAccess().update_article(article, "marked", status); };
 				callAsync.begin((owned)pl, (obj, res) => {
 					callAsync.end(res);
 					refreshFeedListCounter();

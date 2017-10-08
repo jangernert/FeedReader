@@ -39,7 +39,7 @@ public class FeedReader.Feed : GLib.Object {
 		return m_feedID;
 	}
 
-	public string getFileName()
+	public string getFeedFileName()
 	{
 		return GLib.Base64.encode(m_feedID.data);
 	}

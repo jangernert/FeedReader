@@ -71,7 +71,12 @@ public class FeedReader.Article : GLib.Object {
 		return m_articleID;
 	}
 
-	public string getFileName()
+	public string getArticleFileName()
+	{
+		return GLib.Base64.encode(m_articleID.data);
+	}
+
+	public string getFeedFileName()
 	{
 		return GLib.Base64.encode(m_articleID.data);
 	}
@@ -119,6 +124,11 @@ public class FeedReader.Article : GLib.Object {
 	public string getURL()
 	{
 		return m_url;
+	}
+
+	public void setURL(string url)
+	{
+		m_url = url;
 	}
 
 	public int getSortID()

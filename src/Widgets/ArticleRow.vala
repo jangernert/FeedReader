@@ -382,7 +382,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-		FeedReaderBackend.get_default().changeArticle(m_article.getArticleID(), m_article.getUnread());
+		FeedReaderBackend.get_default().changeArticle(m_article, m_article.getUnread());
 		show_all();
 		return unread;
 	}
@@ -485,7 +485,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 				break;
 		}
 
-		FeedReaderBackend.get_default().changeArticle(m_article.getArticleID(), m_article.getMarked());
+		FeedReaderBackend.get_default().changeArticle(m_article, m_article.getMarked());
 		this.show_all();
 		return marked;
 	}
@@ -556,6 +556,11 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 			return true;
 
 		return false;
+	}
+
+	public Article getArticle()
+	{
+		return m_article;
 	}
 
 	public ArticleStatus getUnread()

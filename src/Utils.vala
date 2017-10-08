@@ -539,13 +539,13 @@ public class FeedReader.Utils : GLib.Object {
 				return;
 
 			// first check if the feed provides a valid url for the favicon
-			if(f.getIconURL() != null && yield downloadIcon(f.getFeedID(), f.getIconURL(), cancellable))
+			if(f.getIconURL() != null && yield downloadIcon(f, f.getIconURL(), cancellable))
 			{
 				// download of provided url successful
 				continue;
 			}
 			// try to find favicon on the website
-			else if(yield downloadFavIcon(f.getFeedID(), f.getURL(), cancellable))
+			else if(yield downloadFavIcon(f, cancellable))
 			{
 				// found an icon on the website of the feed
 				continue;
@@ -560,9 +560,9 @@ public class FeedReader.Utils : GLib.Object {
 		Settings.state().set_int("last-favicon-update", (int)now.to_unix());
 	}
 
-	public static async bool downloadFavIcon(string feed_id, string feed_url, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static async bool downloadFavIcon(Feed feed, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
-		var uri = new Soup.URI(feed_url);
+		var uri = new Soup.URI(feed.getURL());
 		string hostname = uri.get_host();
 		int first = hostname.index_of_char('.', 0);
 		int second = hostname.index_of_char('.', first+1);
@@ -620,7 +620,7 @@ public class FeedReader.Utils : GLib.Object {
 			if(xpath != null)
 			{
 				xpath = grabberUtils.completeURL(xpath, siteURL);
-				if(yield downloadIcon(feed_id, xpath, cancellable, icon_path))
+				if(yield downloadIcon(feed, xpath, cancellable, icon_path))
 				return true;
 			}
 
@@ -632,10 +632,10 @@ public class FeedReader.Utils : GLib.Object {
 		if(!icon_url.has_suffix("/"))
 			icon_url += "/";
 		icon_url += "favicon.ico";
-		return yield downloadIcon(feed_id, icon_url, cancellable, icon_path);
+		return yield downloadIcon(feed, icon_url, cancellable, icon_path);
 	}
 
-	public static async bool downloadIcon(string feed_id, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	public static async bool downloadIcon(Feed feed, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{
@@ -661,8 +661,7 @@ public class FeedReader.Utils : GLib.Object {
 			Logger.error("downloadIcon: Unknown error: " + e.message);
 			return false;
 		}
-		string filename_prefix = icon_path + GLib.Base64.encode(feed_id.data);
-		//string filename_prefix = icon_path + feed_id;
+		string filename_prefix = icon_path + feed.getFeedFileName();
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
 
@@ -754,7 +753,7 @@ public class FeedReader.Utils : GLib.Object {
 			yield metadata.save_to_file_async(metadata_filename);
 			return true;
 		}
-		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url, got response code $status");
+		Logger.warning(@"Could not download icon for feed: %s $icon_url, got response code $status".printf(feed.getFeedID()));
 		return false;
 	}
 

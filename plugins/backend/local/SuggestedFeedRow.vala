@@ -62,7 +62,8 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		show_all();
 
 		var uri = new Soup.URI(url);
-		Utils.downloadIcon.begin(uri.get_host(), iconURL, null, "/tmp/", (obj, res) => {
+		var fakeFeed = new Feed(uri.get_host(), "", "", 0);
+		Utils.downloadIcon.begin(fakeFeed, iconURL, null, "/tmp/", (obj, res) => {
 			bool success = Utils.downloadIcon.end(res);
 			Gtk.Image? icon = null;
 

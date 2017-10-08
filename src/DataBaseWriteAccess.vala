@@ -615,18 +615,11 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		executeSQL(query.build());
 	}
 
-	public void update_article(string articleIDs, string field, int field_value)
+	public void update_article(Article article, string field, int field_value)
 	{
-		var id_array = articleIDs.split(",");
-		var id_list = new Gee.ArrayList<string>();
-		foreach(string id in id_array)
-		{
-			id_list.add(id);
-		}
-
 		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
 		query.updateValuePair(field, field_value.to_string());
-		query.addRangeConditionString("articleID", id_list);
+		query.addEqualsCondition("articleID", article.getArticleID(), true, true);
 		executeSQL(query.build());
 	}
 

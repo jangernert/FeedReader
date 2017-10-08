@@ -44,6 +44,21 @@ row {
 .imageOverlay {
 	border-radius: 0;
 }
+.marked-button:hover,
+.marked-button:checked {
+    color: #FFA000;
+}
+.unread-button:hover,
+.unread-button:checked {
+    color: #0080FF;
+}
+.marked-button:checked:not(:hover),
+.unread-button:checked:not(:hover) {
+    background-image: none;
+    background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
 /***************/
 /* text styles */
 /***************/

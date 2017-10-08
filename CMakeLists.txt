@@ -115,7 +115,6 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/Widgets/FeedRow.vala
 	src/Widgets/FullscreenButton.vala
 	src/Widgets/FullscreenHeader.vala
-	src/Widgets/HoverButton.vala
 	src/Widgets/ImagePopup.vala
 	src/Widgets/InAppNotification.vala
 	src/Widgets/InfoBar.vala

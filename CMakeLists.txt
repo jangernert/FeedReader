@@ -1,5 +1,7 @@
 project (FeedReader C)
 cmake_minimum_required (VERSION 2.6)
+enable_testing()
+
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include_directories(${CMAKE_SOURCE_DIR}/libVilistextum)
 include_directories(${CMAKE_SOURCE_DIR}/libgtkimageview)

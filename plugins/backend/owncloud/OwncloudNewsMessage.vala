@@ -135,7 +135,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
 		if(ping)
 		{
-			Logger.debug("ownCloud Message: ping successfull");
+			Logger.debug("ownCloud Message: ping successful");
 			return ConnectionError.SUCCESS;
 		}
 

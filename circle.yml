@@ -7,5 +7,5 @@ jobs:
     working_directory: ~/FeedReader
     steps:
       - checkout
-      - run: cmake .
-      - run: make
+      - run: meson builddir
+      - run: ninja -C builddir

@@ -23,7 +23,7 @@ public class FeedReader.Category : GLib.Object {
 	private int m_level;
 
 	public Category (string categorieID, string title, uint unread_count, int orderID, string parent, int level) {
-		m_categorieID = GLib.Base64.encode(categorieID.data);
+		m_categorieID = categorieID;
 		m_title = title;
 		m_unread_count = unread_count;
 		m_orderID = orderID;
@@ -36,9 +36,9 @@ public class FeedReader.Category : GLib.Object {
 		return m_categorieID;
 	}
 
-	public string getRawCatID()
+	public string getFileName()
 	{
-		return (string)GLib.Base64.decode(m_categorieID);
+		return GLib.Base64.encode(m_categorieID.data);
 	}
 
 	public string getTitle()

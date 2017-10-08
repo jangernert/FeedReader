@@ -33,8 +33,8 @@ public class FeedReader.FavIconCache : GLib.Object {
 
 	private async void load(string icon_name)
 	{
-		//var fileName = GLib.Base64.encode(icon_name.data) + ".ico";
-		var fileName = icon_name + ".ico";
+		var fileName = GLib.Base64.encode(icon_name.data) + ".ico";
+		//var fileName = icon_name + ".ico";
 		try
 		{
 			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);

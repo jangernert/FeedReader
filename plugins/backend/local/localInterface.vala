@@ -626,7 +626,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 										articleID,
 										(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
 										articleURL,
-										Feed.getRawFeedID(),
+										Feed.getFeedID(),
 										ArticleStatus.UNREAD,
 										ArticleStatus.UNMARKED,
 										content,

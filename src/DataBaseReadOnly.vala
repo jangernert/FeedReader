@@ -548,7 +548,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			result = stmt.column_text(0);
 		}
 
-		return (string)GLib.Base64.decode(result);
+		return result;
 	}
 
 
@@ -622,10 +622,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				continue;
 
 			articles.add(new Article(
-								(string)GLib.Base64.decode(stmt.column_text(2)),				// articleID
+								stmt.column_text(2),																		// articleID
 								stmt.column_text(3),																		// title
 								stmt.column_text(5),																		// url
-								(string)GLib.Base64.decode(stmt.column_text(1)),				// feedID
+								stmt.column_text(1),																		// feedID
 								(ArticleStatus)stmt.column_int(7),											// unread
 								(ArticleStatus)stmt.column_int(8),											// marked
 								"",																											// html
@@ -662,7 +662,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		while(stmt.step() == Sqlite.ROW)
 		{
 			articles.set(stmt.column_text(0),
-								new Article((string)GLib.Base64.decode(stmt.column_text(0)), "", "", "", (ArticleStatus)stmt.column_int(1),
+								new Article(stmt.column_text(0), "", "", "", (ArticleStatus)stmt.column_int(1),
 								(ArticleStatus)stmt.column_int(2), "", "", null, new GLib.DateTime.now_local()));
 		}
 		stmt.reset();
@@ -691,10 +691,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		{
 			string? author = (stmt.column_text(4) == "") ? null : stmt.column_text(4);
 			tmp = new Article(
-								(string)GLib.Base64.decode(articleID),
+								articleID,
 								stmt.column_text(3),
 								stmt.column_text(5),
-								(string)GLib.Base64.decode(stmt.column_text(2)),
+								stmt.column_text(2),
 								(ArticleStatus)stmt.column_int(8),
 								(ArticleStatus)stmt.column_int(9),
 								stmt.column_text(6),
@@ -1074,7 +1074,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		while (stmt.step () == Sqlite.ROW) {
 			id = stmt.column_text(0);
 		}
-		return (string)GLib.Base64.decode(id);
+		return id;
 	}
 
 
@@ -1190,7 +1190,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		while(stmt.step () == Sqlite.ROW)
 		{
 			var tmpfeed = new Feed(
-				(string)GLib.Base64.decode(feedID),
+				feedID,
 				stmt.column_text(1),
 				stmt.column_text(2),
 				getFeedUnread(feedID),
@@ -1238,7 +1238,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			else
 				count = getFeedUnread(feedID);
 
-			var feed = new Feed((string)GLib.Base64.decode(feedID), name, url, count, categories, null, xmlURL);
+			var feed = new Feed(feedID, name, url, count, categories, null, xmlURL);
 			feeds.add(feed);
 		}
 
@@ -1317,7 +1317,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		while (stmt.step () == Sqlite.ROW) {
-			string feedID = (string)GLib.Base64.decode(stmt.column_text(0));
+			string feedID = stmt.column_text(0);
 			string catString = stmt.column_text(3);
 			string xmlURL = stmt.column_text(5);
 			string url = stmt.column_text(2);
@@ -1347,7 +1347,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		while (stmt.step () == Sqlite.ROW) {
 			var tmpcategory = new Category(
-				(string)GLib.Base64.decode(catID),
+				catID,
 				stmt.column_text(1),
 				0,
 				stmt.column_int(3),
@@ -1380,7 +1380,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpTag = new tag((string)GLib.Base64.decode(stmt.column_text(0)), stmt.column_text(1), stmt.column_int(3));
+			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
 			tmp.add(tmpTag);
 		}
 
@@ -1405,7 +1405,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		while (stmt.step () == Sqlite.ROW) {
-			tmpTag = new tag((string)GLib.Base64.decode(stmt.column_text(0)), stmt.column_text(1), stmt.column_int(3));
+			tmpTag = new tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
 		}
 
 		return tmpTag;
@@ -1518,7 +1518,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			if(feeds == null || showCategory(catID, feeds))
 			{
 				var tmpcategory = new Category(
-					(string)GLib.Base64.decode(catID),
+					catID,
 					stmt.column_text(1),
 					(feeds == null) ? 0 : Utils.categoryGetUnread(catID, feeds),
 					stmt.column_int(3),
@@ -1558,10 +1558,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		while (stmt.step () == Sqlite.ROW)
 		{
 			tmp.add(new Article(
-								(string)GLib.Base64.decode(stmt.column_text(0)),		// articleID
+								stmt.column_text(0),																// articleID
 								"",																									// title
 								stmt.column_text(1),																// url
-								(string)GLib.Base64.decode(stmt.column_text(4)),		// feedID
+								stmt.column_text(4),																// feedID
 								ArticleStatus.UNREAD,																// unread
 								ArticleStatus.UNMARKED,															// marked
 								stmt.column_text(3),																// html
@@ -1680,10 +1680,10 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		while (stmt.step () == Sqlite.ROW)
 		{
 			tmp.add(new Article(
-								(string)GLib.Base64.decode(stmt.column_text(2)),				// articleID
+								stmt.column_text(2),																		// articleID
 								stmt.column_text(3),																		// title
 								stmt.column_text(5),																		// url
-								(string)GLib.Base64.decode(stmt.column_text(1)),				// feedID
+								stmt.column_text(1),																		// feedID
 								(ArticleStatus)stmt.column_int(7),											// unread
 								(ArticleStatus)stmt.column_int(8),											// marked
 								"",																											// html

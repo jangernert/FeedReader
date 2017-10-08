@@ -661,8 +661,8 @@ public class FeedReader.Utils : GLib.Object {
 			Logger.error("downloadIcon: Unknown error: " + e.message);
 			return false;
 		}
-		//string filename_prefix = icon_path + GLib.Base64.encode(feed_id.data);
-		string filename_prefix = icon_path + feed_id;
+		string filename_prefix = icon_path + GLib.Base64.encode(feed_id.data);
+		//string filename_prefix = icon_path + feed_id;
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
 

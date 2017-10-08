@@ -551,7 +551,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 			return null;
 
 		string fixedURL = url;
-		string imgPath = "";
+		string imgPath = GLib.Environment.get_user_data_dir();
 
 		if(fixedURL.has_prefix("//"))
 		{
@@ -559,9 +559,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 		}
 
 		if(articleID == "" && feedID == "")
-			imgPath = GLib.Environment.get_user_data_dir() + "/debug-article/ArticleImages/";
+			imgPath += "/debug-article/ArticleImages/";
 		else
-			imgPath = GLib.Environment.get_user_data_dir() + @"/feedreader/data/images/$feedID/$articleID/";
+			imgPath += "/feedreader/data/images/%s/%s/".printf(GLib.Base64.encode(feedID.data), GLib.Base64.encode(articleID.data));
 
 		var path = GLib.File.new_for_path(imgPath);
 		try

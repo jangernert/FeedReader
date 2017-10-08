@@ -20,7 +20,7 @@ public class FeedReader.tag : GLib.Object {
 	private int m_color;
 
 	public tag (string tagID, string title, int color) {
-		m_tagID = GLib.Base64.encode(tagID.data);
+		m_tagID = tagID;
 		m_title = title;
 		m_color = color;
 	}
@@ -28,11 +28,6 @@ public class FeedReader.tag : GLib.Object {
 	public string getTagID()
 	{
 		return m_tagID;
-	}
-
-	public string getRawTagID()
-	{
-		return (string)GLib.Base64.decode(m_tagID);
 	}
 
 	public string getTitle()

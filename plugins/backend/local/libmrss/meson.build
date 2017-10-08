@@ -11,5 +11,7 @@ mrss_lib = static_library(
     'mrss_search.c',
     'mrss_write.c'
   ],
-  include_directories: mrss_inc
+  include_directories: mrss_inc,
+  install: true,
+  install_dir: [true, true, true]
 )

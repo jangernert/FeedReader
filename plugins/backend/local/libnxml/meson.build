@@ -15,5 +15,7 @@ nxml_lib = static_library(
     'nxml_utf.c',
     'nxml_write.c'
   ],
-  include_directories: nxml_inc
+  include_directories: nxml_inc,
+  install: true,
+  install_dir: [true, true, true]
 )

@@ -8,5 +8,7 @@ gd_lib = static_library(
   dependencies: [
     glib,
     gtk
-  ]
+  ],
+  install: true,
+  install_dir: [true, true, true]
 )

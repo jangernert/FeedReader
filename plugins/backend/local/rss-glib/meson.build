@@ -8,5 +8,7 @@ rss_glib_lib = static_library(
     'rss-parser.c'
   ],
   include_directories: rss_glib_inc,
-  dependencies: glib
+  dependencies: glib,
+  install: true,
+  install_dir: [true, true, true]
 )

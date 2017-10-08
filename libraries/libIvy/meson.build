@@ -12,5 +12,7 @@ ivy_lib = static_library(
     linux,
     posix,
   ],
-  vala_vapi: 'ivy.vapi'
+  vala_vapi: 'ivy.vapi',
+  install: true,
+  install_dir: [true, true, true]
 )

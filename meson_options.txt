@@ -1,0 +1,10 @@
+option('share-plugins',
+        type: 'string',
+        value: 'browser,email,instapaper,pocket,telegram,twitter,wallabag',
+        description: 'List of share plugins to install'
+)
+option('backend-plugins',
+        type: 'string',
+        value: 'bazqux,demo,feedbin,feedhq,feedly,fresh,inoreader,local,oldreader,owncloud,ttrss',
+        description: 'Listo of backend plugins to install'
+)

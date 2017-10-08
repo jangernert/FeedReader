@@ -1,8 +1,12 @@
 FROM docker.io/fedora:26
 
 RUN dnf -y install \
+        meson \
+		ninja-build \
+		gcc \
         cmake \
-        gcc \
+        appstream-glib \
+        gettext-devel \
         gettext \
         git \
         gnome-online-accounts-devel \

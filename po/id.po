@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"POT-Creation-Date: 2017-10-08 17:48+0200\n"
 "PO-Revision-Date: 2017-05-15 08:53+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Indonesian (http://www.transifex.com/dev-feedreader/"
@@ -20,93 +20,466 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: src/UtilsDaemon.vala:20
-msgid "No Preview Available"
-msgstr "Tidak ada Pratinjau yang Tersedia"
+#: Constants.vala.in:26
+msgid "Desktop Client for various RSS Services"
+msgstr ""
 
-#: src/UtilsDaemon.vala:78
-msgid "No Text available for this article :("
-msgstr "Tidak ada Teks yang tersedia untuk artikel ini :("
+#: Constants.vala.in:31
+msgid "translator-credits"
+msgstr ""
 
-#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
+#: Constants.vala.in:36
+msgid "About"
+msgstr ""
+
+#: Constants.vala.in:37 src/Widgets/ColumnViewHeader.vala:101
+msgid "Settings"
+msgstr "Pengaturan"
+
+#: Constants.vala.in:38
+#, fuzzy
+msgid "Change Account"
+msgstr "Ganti Akun?"
+
+#: Constants.vala.in:39 src/Widgets/ShortcutsWindow.vala:29
+msgid "Quit"
+msgstr "Keluar"
+
+#: Constants.vala.in:40
+msgid "Report a Bug"
+msgstr ""
+
+#: Constants.vala.in:41
+msgid "Bounties"
+msgstr ""
+
+#: Constants.vala.in:42
+msgid "Shortcuts"
+msgstr ""
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:3
+#, fuzzy
+msgid "FeedReader Autostart"
+msgstr "FeedReader"
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:4
+#: data/org.gnome.FeedReader.desktop.in:4
+msgid "RSS Client"
+msgstr ""
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:6
+msgid "Categories=Network;Feed;"
+msgstr ""
+
+#: data/org.gnome.FeedReader-autostart.desktop.in:8
+#: data/org.gnome.FeedReader.desktop.in:8
+#, fuzzy
+msgid "org.gnome.FeedReader"
+msgstr "FeedReader"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:6
+#: data/org.gnome.FeedReader.desktop.in:3 src/Widgets/MainWindow.vala:44
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:7
+msgid "RSS client for various webservices"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:10
+msgid ""
+"FeedReader is a program designed to complement an already existing web-based "
+"RSS reader account."
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:14
+msgid "Currently supported services:"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:16
+msgid "Tiny Tiny RSS"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:17
+msgid "feedly"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:18
+msgid "ownCloud"
+msgstr ""
+
+#: data/org.gnome.FeedReader.appdata.xml.in:19
+#, fuzzy
+msgid "Inoreader"
+msgstr "Belum dibaca"
+
+#: data/org.gnome.FeedReader.appdata.xml.in:21
+msgid ""
+"It combines all the advantages of web based services like synchronisation "
+"across all your devices with everything you expect from a modern desktop "
+"application: Desktop notifications, fast search and filters, tagging, "
+"sharing to \"read-it-later\" services like pocket and instapaper, handy "
+"keyboard shortcuts and a database that keeps all your old articles as long "
+"as you like."
+msgstr ""
+
+#: data/org.gnome.FeedReader.desktop.in:5
+msgid "Read feeds from web services"
+msgstr ""
+
+#: data/org.gnome.FeedReader.desktop.in:19 src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "Tentang FeedReader"
+
+#. http auth stuff ----------------------------------------------------
+#: plugins/backend/bazqux/bazquxInterface.vala:61
+#: plugins/backend/feedbin/feedbinInterface.vala:61
+#: plugins/backend/feedhq/feedhqInterface.vala:61
+#: plugins/backend/fresh/freshInterface.vala:67
+#: plugins/backend/fresh/freshInterface.vala:104
+#: plugins/backend/oldreader/oldreaderInterface.vala:61
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:89
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:127
+#: plugins/backend/ttrss/ttrssInterface.vala:67
+#: plugins/backend/ttrss/ttrssInterface.vala:104
+#: plugins/share/Instapaper/InstapaperSetup.vala:55
+#: plugins/share/Wallabag/WallabagSetup.vala:76
+msgid "Username:"
+msgstr ""
+
+#: plugins/backend/bazqux/bazquxInterface.vala:62
+#: plugins/backend/feedbin/feedbinInterface.vala:62
+#: plugins/backend/feedhq/feedhqInterface.vala:62
+#: plugins/backend/fresh/freshInterface.vala:68
+#: plugins/backend/fresh/freshInterface.vala:105
+#: plugins/backend/oldreader/oldreaderInterface.vala:62
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:90
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:128
+#: plugins/backend/ttrss/ttrssInterface.vala:68
+#: plugins/backend/ttrss/ttrssInterface.vala:105
+#: plugins/share/Instapaper/InstapaperSetup.vala:56
+#: plugins/share/Wallabag/WallabagSetup.vala:77
+msgid "Password:"
+msgstr ""
+
+#: plugins/backend/bazqux/bazquxInterface.vala:92
+#: plugins/backend/feedhq/feedhqInterface.vala:92
+msgid "Please log in to FeedHQ and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/bazqux/bazquxInterface.vala:97
+#: plugins/backend/feedbin/feedbinInterface.vala:97
+#: plugins/backend/feedhq/feedhqInterface.vala:97
+#: plugins/backend/fresh/freshInterface.vala:147
+#: plugins/backend/oldreader/oldreaderInterface.vala:97
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:168
+#: plugins/backend/ttrss/ttrssInterface.vala:147 src/Share/ServiceSetup.vala:56
+msgid "Login"
+msgstr "Masuk "
+
+#: plugins/backend/feedbin/feedbinInterface.vala:92
+msgid "Please log in to Feedbin to enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/fresh/freshInterface.vala:66
+msgid "freshRSS URL:"
+msgstr ""
+
+#: plugins/backend/fresh/freshInterface.vala:133
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:156
+#: plugins/backend/ttrss/ttrssInterface.vala:133
+msgid "HTTP Authorization"
+msgstr ""
+
+#: plugins/backend/fresh/freshInterface.vala:142
+msgid "Please log in to your freshRSS server and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/local/localInterface.vala:62
+msgid "Done"
+msgstr ""
+
+#: plugins/backend/local/localInterface.vala:63
+msgid "Adding Feeds"
+msgstr ""
+
+#: plugins/backend/local/localInterface.vala:611
+msgid "Nothing to read here."
+msgstr ""
+
+#: plugins/backend/local/localUtils.vala:72 src/DataBaseReadOnly.vala:424
 msgid "unknown Feed"
 msgstr ""
 
-#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:516
-msgid "Uncategorized"
-msgstr "Tidak berkategori"
-
-#: src/UtilsUI.vala:61
-#, c-format
-msgid "posted by: %s, "
+#: plugins/backend/oldreader/oldreaderInterface.vala:92
+msgid "Please log in to the Old Reader and enjoy using FeedReader"
 msgstr ""
 
-#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
-msgid "Cancel"
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:88
+msgid "OwnCloud URL:"
 msgstr ""
 
-#: src/UtilsUI.vala:290
-msgid "Save"
+#. ---------------------------------------------------------------------
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:163
+msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
 msgstr ""
 
-#: src/Model/Article.vala:168
-msgid "Yesterday"
-msgstr "Kemarin"
+#: plugins/backend/ttrss/ttrssAPI.vala:811
+msgid "Invalid URL"
+msgstr ""
 
-#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
+#: plugins/backend/ttrss/ttrssAPI.vala:814
+msgid "URL content is HTML, no feeds available"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:817
+msgid "URL content is HTML which contains multiple feeds."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:820
+msgid "Couldn't download the URL content."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:823
+msgid "Content is an invalid XML."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:836
+msgid "Error reaching tt-rss"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssInterface.vala:66
+msgid "Tiny Tiny RSS URL:"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssInterface.vala:142
+msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/share/Browser/Browser.vala:79
+msgid "Open in Browser"
+msgstr ""
+
+#: plugins/share/Email/EmailForm.vala:24
+msgid ""
+"Hey,\n"
+"\n"
+"Check out this interesting article I just read: $URL\n"
+"\n"
+"- sent by FeedReader"
+msgstr ""
+
+#: plugins/share/Email/EmailForm.vala:27
+msgid "To:"
+msgstr ""
+
+#: plugins/share/Email/EmailForm.vala:52
+#: plugins/share/Telegram/TelegramForm.vala:42
+msgid "Send"
+msgstr ""
+
+#: plugins/share/Email/EmailForm.vala:65
+msgid "Write Email"
+msgstr ""
+
+#: plugins/share/Instapaper/InstapaperSetup.vala:100
+msgid "Username or Password incorrect"
+msgstr ""
+
+#: plugins/share/Pocket/PocketSetup.vala:52
+#: plugins/share/Twitter/TwitterSetup.vala:51
+msgid "waiting"
+msgstr ""
+
+#: plugins/share/Telegram/Telegram.vala:81
+msgid "Telegram"
+msgstr ""
+
+#: plugins/share/Telegram/TelegramForm.vala:23
+msgid ""
+"Hey, Check out this interesting article I just read - sent by FeedReader"
+msgstr ""
+
+#: plugins/share/Telegram/TelegramForm.vala:55
+msgid "Send Telegram"
+msgstr ""
+
+#. no login, so change the labels
+#: plugins/share/Telegram/TelegramSetup.vala:30 src/Widgets/AddPopover.vala:51
+msgid "Add"
+msgstr ""
+
+#: plugins/share/Telegram/TelegramSetup.vala:31
+#: src/Widgets/CategorieRow.vala:426 src/Widgets/FeedRow.vala:243
+#: src/Widgets/TagRow.vala:193
+msgid "Remove"
+msgstr ""
+
+#: plugins/share/Telegram/TelegramSetup.vala:38
+msgid "Info: Telegram would need to be installed for this plugin to work."
+msgstr ""
+
+#: plugins/share/Twitter/TwitterForm.vala:29
+msgid ""
+"Hey,\n"
+"\n"
+"Check out this interesting article I just read: $URL"
+msgstr ""
+
+#: plugins/share/Twitter/TwitterForm.vala:47
+msgid "Limit: "
+msgstr ""
+
+#: plugins/share/Twitter/TwitterForm.vala:63
+msgid "Tweet"
+msgstr ""
+
+#: plugins/share/Twitter/TwitterForm.vala:80
+msgid "Tweet to Followers"
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:73 src/Widgets/AddPopover.vala:47
+msgid "URL:"
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:74
+msgid "Client ID:"
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:75
+msgid "Client Secret:"
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:124
+msgid "Please fill in the URL."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:130
+msgid "URL seems to not be valid."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:140
+msgid "Please fill in the clientID."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:147
+msgid "Please fill in the clientSecret."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:154
+msgid "Please fill in the password."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:161
+msgid "Please fill in the username."
+msgstr ""
+
+#: plugins/share/Wallabag/WallabagSetup.vala:186
+msgid "Something went wrong."
+msgstr ""
+
+#: src/Backend/FeedServer.vala:135 src/Backend/FeedServer.vala:254
 msgid "Getting feeds and categories"
 msgstr ""
 
-#: src/Backend/FeedServer.vala:181
+#: src/Backend/FeedServer.vala:192
 msgid "Getting articles"
 msgstr ""
 
-#: src/Backend/FeedServer.vala:269
+#. get marked articles
+#: src/Backend/FeedServer.vala:294
 msgid "Getting starred articles"
 msgstr ""
 
-#: src/Backend/FeedServer.vala:276
+#. get articles for each tag
+#: src/Backend/FeedServer.vala:301
 msgid "Getting tagged articles"
 msgstr ""
 
-#: src/Backend/FeedServer.vala:294
+#. get unread articles
+#: src/Backend/FeedServer.vala:319
 msgid "Getting unread articles"
 msgstr ""
 
-#: src/Share/ServiceSetup.vala:56
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:96
-#: plugins/backend/fresh/freshLoginWidget.vala:145
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:166
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:145
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:96
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:95
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:96
-msgid "Login"
-msgstr "Masuk "
+#: src/DataBaseReadOnly.vala:524 src/Widgets/AddPopover.vala:38
+#: src/Widgets/FeedList.vala:513
+msgid "Uncategorized"
+msgstr "Tidak berkategori"
+
+#: src/Model/Article.vala:174
+msgid "Yesterday"
+msgstr "Kemarin"
+
+#: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
+#, fuzzy
+msgid "new Articles"
+msgstr "Artikel Baru"
+
+#: src/Notification.vala:27
+#, c-format
+msgid "There is 1 new Article (%u unread)"
+msgstr ""
+
+#: src/Notification.vala:29
+#, c-format
+msgid "There are %u new Articles (%u unread)"
+msgstr ""
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"
 msgstr "Keluar log"
 
-#: src/Widgets/SpringCleanPage.vala:28
-msgid ""
-"FeedReader is cleaning the database.\n"
-"This shouldn't take too long."
+#: src/Utils.vala:35
+msgid "No Preview Available"
+msgstr "Tidak ada Pratinjau yang Tersedia"
+
+#: src/Utils.vala:93
+msgid "No Text available for this article :("
+msgstr "Tidak ada Teks yang tersedia untuk artikel ini :("
+
+#: src/Utils.vala:799
+#, c-format
+msgid "posted by: %s, "
 msgstr ""
-"FeedReader sedang membersihkan basis data.\n"
-"Ini seharusnya tidak terlalu lama."
+
+#: src/Utils.vala:1010 src/Widgets/UpdateButton.vala:80
+msgid "Cancel"
+msgstr ""
+
+#: src/Utils.vala:1012
+msgid "Save"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:48
+msgid "Category:"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:65
+msgid "OPML File:"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:67
+msgid "Select OPML File"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:73
+msgid "Import"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
+msgid "Add feed"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:93
+msgid "Import OPML"
+msgstr ""
 
 #: src/Widgets/ArticleList/ArticleList.vala:48
 msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
 "Sinkronisasi sedang berjalan. Artikel seharusnya tampil dalam beberapa detik."
 
-#: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
-msgstr "Artikel Baru"
-
-#: src/Widgets/ArticleList/ArticleList.vala:567
+#: src/Widgets/ArticleList/ArticleList.vala:553
 msgid "scroll up"
 msgstr ""
 
@@ -126,59 +499,6 @@ msgstr ""
 msgid "No articles"
 msgstr "Tidak Ada Artikel"
 
-#: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
-msgid "Add feed"
-msgstr ""
-
-#: src/Widgets/FeedListFooter.vala:153
-msgid "Remove feed"
-msgstr ""
-
-#: src/Widgets/SharePopover.vala:62
-msgid "Add accounts"
-msgstr ""
-
-#: src/Widgets/LoginPage.vala:55
-msgid "Where are your feeds?"
-msgstr "Dimana umpan anda?"
-
-#: src/Widgets/LoginPage.vala:59
-msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
-"Harap pilih layanan RSS yang kamu gunakan dan masuk log untuk selanjutnya."
-
-#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:125
-#, c-format
-msgid "Category \"%s\" removed"
-msgstr ""
-
-#: src/Widgets/CategorieRow.vala:459 src/Widgets/FeedRow.vala:244
-msgid "Mark as read"
-msgstr ""
-
-#: src/Widgets/CategorieRow.vala:460 src/Widgets/TagRow.vala:207
-#: src/Widgets/FeedRow.vala:245
-msgid "Rename"
-msgstr ""
-
-#: src/Widgets/CategorieRow.vala:461 src/Widgets/TagRow.vala:208
-#: src/Widgets/FeedRow.vala:248 plugins/share/Telegram/TelegramSetup.vala:31
-msgid "Remove"
-msgstr ""
-
-#: src/Widgets/CategorieRow.vala:462
-msgid "Remove (with Feeds)"
-msgstr ""
-
-#: src/Widgets/CategorieRow.vala:522 src/Widgets/TagRow.vala:310
-#: src/Widgets/FeedRow.vala:285
-msgid "rename"
-msgstr ""
-
-#: src/Widgets/CategorieRow.vala:524 src/Widgets/TagRow.vala:312
-msgid "add"
-msgstr ""
-
 #: src/Widgets/ArticleView.vala:62
 msgid "No Article selected."
 msgstr "Tidak ada Artikel yang dipilih."
@@ -189,6 +509,45 @@ msgstr ""
 
 #: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
+msgstr ""
+
+#: src/Widgets/ArticleViewHeader.vala:68
+msgid "Tag article"
+msgstr ""
+
+#: src/Widgets/ArticleViewHeader.vala:82
+msgid "Print article"
+msgstr ""
+
+#: src/Widgets/ArticleViewHeader.vala:93
+msgid "Share article"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:372 src/Widgets/RemovePopover.vala:111
+#, c-format
+msgid "Category \"%s\" removed"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:424 src/Widgets/FeedRow.vala:238
+msgid "Mark as read"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:425 src/Widgets/FeedRow.vala:240
+#: src/Widgets/TagRow.vala:192
+msgid "Rename"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:427
+msgid "Remove (with Feeds)"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:480 src/Widgets/FeedRow.vala:273
+#: src/Widgets/TagRow.vala:270
+msgid "rename"
+msgstr ""
+
+#: src/Widgets/CategorieRow.vala:482 src/Widgets/TagRow.vala:272
+msgid "add"
 msgstr ""
 
 #: src/Widgets/ColumnViewHeader.vala:37
@@ -223,87 +582,136 @@ msgstr ""
 msgid "Search Articles"
 msgstr "Cari Artikel"
 
-#: src/Widgets/ColumnViewHeader.vala:101
-msgid "Settings"
-msgstr "Pengaturan"
-
-#: src/Widgets/ColumnViewHeader.vala:117
+#: src/Widgets/ColumnViewHeader.vala:114
 msgid "Read article fullscreen"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:44
-msgid "FeedReader"
-msgstr "FeedReader"
+#: src/Widgets/FeedList.vala:248
+msgid "All Articles"
+msgstr "Semua Artikel"
 
-#: src/Widgets/MainWindow.vala:354
+#: src/Widgets/FeedList.vala:448
+msgid "Tags"
+msgstr "Label"
+
+#: src/Widgets/FeedList.vala:489
+msgid "Categories"
+msgstr "Kategori"
+
+#: src/Widgets/FeedList.vala:494
+msgid "Feeds"
+msgstr ""
+
+#: src/Widgets/FeedList.vala:1019
+msgid "New Tag"
+msgstr ""
+
+#: src/Widgets/FeedList.vala:1145
+msgid "New Category"
+msgstr ""
+
+#: src/Widgets/FeedListFooter.vala:142
+msgid "Remove feed"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:198 src/Widgets/RemovePopover.vala:95
+#, c-format
+msgid "Feed \"%s\" removed"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:239
+msgid "Copy URL"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:242
+#, c-format
+msgid "Remove only from %s"
+msgstr ""
+
+#: src/Widgets/FullscreenHeader.vala:26
+msgid "Leave fullscreen mode"
+msgstr ""
+
+#: src/Widgets/LoginPage.vala:38
+msgid "Where are your feeds?"
+msgstr "Dimana umpan anda?"
+
+#: src/Widgets/LoginPage.vala:42
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+"Harap pilih layanan RSS yang kamu gunakan dan masuk log untuk selanjutnya."
+
+#: src/Widgets/MainWindow.vala:348
 msgid "Ignore all TLS errors from now on"
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:420
+#: src/Widgets/MainWindow.vala:415
 msgid "Please select a service first"
 msgstr "Harap pilih layanan untuk pertama kali"
 
-#: src/Widgets/MainWindow.vala:423
+#: src/Widgets/MainWindow.vala:418
 msgid "Please enter a valid username"
 msgstr "Harap masukkan nama pengguna yang benar"
 
-#: src/Widgets/MainWindow.vala:426
+#: src/Widgets/MainWindow.vala:421
 msgid "Please enter a valid password"
 msgstr "Harap masukkan kata sandi yang benar"
 
-#: src/Widgets/MainWindow.vala:430
+#: src/Widgets/MainWindow.vala:425
 msgid "Please enter a valid URL"
 msgstr "Harap masukkan tautan yang benar"
 
-#: src/Widgets/MainWindow.vala:433
+#: src/Widgets/MainWindow.vala:428
 msgid "Please enter your Login details"
 msgstr "Harap masukkan rincian Masuk log anda"
 
-#: src/Widgets/MainWindow.vala:436
+#: src/Widgets/MainWindow.vala:431
 msgid "Sorry, something went wrong."
 msgstr "Maaf, ada sesuatu yang salah."
 
-#: src/Widgets/MainWindow.vala:439
+#: src/Widgets/MainWindow.vala:434
 msgid "The server reported an API-error."
 msgstr ""
 
-#: src/Widgets/MainWindow.vala:442
+#: src/Widgets/MainWindow.vala:437
 msgid "Either your username or the password are not correct."
 msgstr "Baik nama pengguna kamu atau kata sandi tidak benar"
 
-#: src/Widgets/MainWindow.vala:445
+#: src/Widgets/MainWindow.vala:440
 msgid ""
 "No connection to the server. Check your internet connection and the server "
 "URL!"
 msgstr ""
 "Tidak ada koneksi ke server. Periksa koneksi internet anda dan URL server!"
 
-#: src/Widgets/MainWindow.vala:448
+#: src/Widgets/MainWindow.vala:443
 msgid "API access is disabled on the server. Please enable it first!"
 msgstr "Akses API dimatikan diserver. Harap aktifkan terlebih dahulu!"
 
-#: src/Widgets/MainWindow.vala:451
+#: src/Widgets/MainWindow.vala:446
 msgid "Not authorized to access URL"
 msgstr "Tidak diizinkan untuk mengakses URL"
 
-#: src/Widgets/MainWindow.vala:455
+#: src/Widgets/MainWindow.vala:450
 msgid "No valid CA certificate available!"
 msgstr "Tidak ada sertifikat CA valid yang tersedia!"
 
-#: src/Widgets/MainWindow.vala:459
+#: src/Widgets/MainWindow.vala:454
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
 
-#: src/Widgets/ArticleViewHeader.vala:68
-msgid "Tag article"
+#: src/Widgets/MediaButton.vala:94
+msgid "Attachments"
 msgstr ""
 
-#: src/Widgets/ArticleViewHeader.vala:82
-msgid "Print article"
+#: src/Widgets/RemovePopover.vala:46
+#, c-format
+msgid "Remove \"%s\""
 msgstr ""
 
-#: src/Widgets/ArticleViewHeader.vala:93
-msgid "Share article"
+#: src/Widgets/RemovePopover.vala:80 src/Widgets/TagRow.vala:170
+#, c-format
+msgid "Tag \"%s\" removed"
 msgstr ""
 
 #: src/Widgets/ResetPage.vala:33
@@ -329,165 +737,6 @@ msgstr "Menunggu sinkronisasi saat ini untuk selesai"
 #: src/Widgets/ResetPage.vala:54
 msgid "I changed my mind"
 msgstr "Saya berubah pikiran"
-
-#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
-msgid "URL:"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:48
-msgid "Category:"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
-msgid "Add"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:65
-msgid "OPML File:"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:67
-msgid "Select OPML File"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:73
-msgid "Import"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:93
-msgid "Import OPML"
-msgstr ""
-
-#: src/Widgets/FullscreenHeader.vala:26
-msgid "Leave fullscreen mode"
-msgstr ""
-
-#: src/Widgets/FeedList.vala:247
-msgid "All Articles"
-msgstr "Semua Artikel"
-
-#: src/Widgets/FeedList.vala:444
-msgid "Tags"
-msgstr "Label"
-
-#: src/Widgets/FeedList.vala:492
-msgid "Categories"
-msgstr "Kategori"
-
-#: src/Widgets/FeedList.vala:497
-msgid "Feeds"
-msgstr ""
-
-#: src/Widgets/FeedList.vala:1011
-msgid "New Tag"
-msgstr ""
-
-#: src/Widgets/FeedList.vala:1144
-msgid "New Category"
-msgstr ""
-
-#: src/Widgets/MediaButton.vala:95
-msgid "Attachments"
-msgstr ""
-
-#: src/Widgets/TagPopover.vala:36
-msgid "Add Tag:"
-msgstr "Tambahkan Tag:"
-
-#: src/Widgets/TagPopover.vala:48
-msgid "Tags:"
-msgstr "Tag:"
-
-#: src/Widgets/TagPopover.vala:125
-msgid "add Tag"
-msgstr "tambahkan Tag"
-
-#: src/Widgets/ShortcutsWindow.vala:22
-msgid "General"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:27
-msgid "Refresh"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:28
-msgid "Search"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:29
-msgid "Quit"
-msgstr "Keluar"
-
-#: src/Widgets/ShortcutsWindow.vala:37
-msgid "Feed List"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:42
-msgid "Select next item"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:43
-msgid "Select previous item"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:44
-msgid "Collapse/Expand categories"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:45
-msgid "Mark the currently selected as read"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:54
-msgid "Article List"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:63
-msgid "Select next/previous article"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:64
-msgid "Toggle the selected article un/read"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:65
-msgid "Toggle the selected article un/marked"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:66
-msgid "Open the URL of the selected article"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:67
-msgid "Scroll all the way up/down"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:68
-msgid "Center the currently selected article"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:79
-msgid "Article View"
-msgstr ""
-
-#: src/Widgets/ShortcutsWindow.vala:84
-msgid "Scroll up/down"
-msgstr ""
-
-#: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
-#, c-format
-msgid "Tag \"%s\" removed"
-msgstr ""
-
-#: src/Widgets/FeedRow.vala:203 src/Widgets/RemovePopover.vala:102
-#, c-format
-msgid "Feed \"%s\" removed"
-msgstr ""
-
-#: src/Widgets/FeedRow.vala:247
-#, c-format
-msgid "Remove only from %s"
-msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
@@ -601,261 +850,149 @@ msgstr "Jumlah artikel"
 msgid "Interval in Minutes (0 = OFF)"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:157
+#: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
 msgstr "Basis data:"
 
-#: src/Widgets/SettingsDialog.vala:159
+#: src/Widgets/SettingsDialog.vala:152
 msgid "Delete articles after"
 msgstr "Hapus artikel setelah"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "Never"
 msgstr "Tidak pernah"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Week"
 msgstr "1 Minggu"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Month"
 msgstr "1 Bulan"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "6 Months"
 msgstr "6 Bulan"
 
-#: src/Widgets/SettingsDialog.vala:162
+#: src/Widgets/SettingsDialog.vala:155
 msgid "Additional Functionality:"
 msgstr "Kegunaan Tambahan:"
 
-#: src/Widgets/SettingsDialog.vala:164
+#: src/Widgets/SettingsDialog.vala:157
 msgid "Content Grabber"
 msgstr "Pengambil Konten"
 
-#: src/Widgets/SettingsDialog.vala:166
+#: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:168
+#: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:336
+#: src/Widgets/SettingsDialog.vala:322
 msgid "System Accounts"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
+#: src/Widgets/SettingsDialog.vala:349 src/Widgets/SettingsDialog.vala:363
 msgid "FeedReader Accounts"
 msgstr ""
 
-#: src/Widgets/RemovePopover.vala:46
-#, c-format
-msgid "Remove \"%s\""
+#: src/Widgets/SharePopover.vala:62
+msgid "Add accounts"
 msgstr ""
 
-#: src/FeedReader.vala:21
-msgid "About FeedReader"
-msgstr "Tentang FeedReader"
-
-#: src/Notification.vala:58
-#, c-format
-msgid "There is 1 new article (%u unread)"
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:22
+msgid "General"
 msgstr ""
 
-#: src/Notification.vala:60
-#, c-format
-msgid "There are %u new articles (%u unread)"
+#: src/Widgets/ShortcutsWindow.vala:27
+msgid "Refresh"
 msgstr ""
 
-#: plugins/share/Instapaper/InstapaperSetup.vala:55
-#: plugins/share/Wallabag/WallabagSetup.vala:76
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:60
-#: plugins/backend/fresh/freshLoginWidget.vala:65
-#: plugins/backend/fresh/freshLoginWidget.vala:102
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:87
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:125
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:65
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:102
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:60
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:59
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:60
-msgid "Username:"
+#: src/Widgets/ShortcutsWindow.vala:28
+msgid "Search"
 msgstr ""
 
-#: plugins/share/Instapaper/InstapaperSetup.vala:56
-#: plugins/share/Wallabag/WallabagSetup.vala:77
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:61
-#: plugins/backend/fresh/freshLoginWidget.vala:66
-#: plugins/backend/fresh/freshLoginWidget.vala:103
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:88
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:126
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:66
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:103
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:61
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:60
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:61
-msgid "Password:"
+#. --------------------------------------------------
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:37
+msgid "Feed List"
 msgstr ""
 
-#: plugins/share/Instapaper/InstapaperSetup.vala:100
-msgid "Username or Password incorrect"
+#: src/Widgets/ShortcutsWindow.vala:42
+msgid "Select next item"
 msgstr ""
 
-#: plugins/share/Telegram/TelegramSetup.vala:38
-msgid "Info: Telegram would need to be installed for this plugin to work."
+#: src/Widgets/ShortcutsWindow.vala:43
+msgid "Select previous item"
 msgstr ""
 
-#: plugins/share/Telegram/Telegram.vala:81
-msgid "Telegram"
+#: src/Widgets/ShortcutsWindow.vala:44
+msgid "Collapse/Expand categories"
 msgstr ""
 
-#: plugins/share/Telegram/TelegramForm.vala:23
+#: src/Widgets/ShortcutsWindow.vala:45
+msgid "Mark the currently selected as read"
+msgstr ""
+
+#. --------------------------------------------------
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:54
+msgid "Article List"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:63
+msgid "Select next/previous article"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:64
+msgid "Toggle the selected article un/read"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:65
+msgid "Toggle the selected article un/marked"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:66
+msgid "Open the URL of the selected article"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:67
+msgid "Scroll all the way up/down"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:68
+msgid "Center the currently selected article"
+msgstr ""
+
+#. --------------------------------------------------
+#. --------------------------------------------------
+#: src/Widgets/ShortcutsWindow.vala:79
+msgid "Article View"
+msgstr ""
+
+#: src/Widgets/ShortcutsWindow.vala:84
+msgid "Scroll up/down"
+msgstr ""
+
+#: src/Widgets/SpringCleanPage.vala:28
 msgid ""
-"Hey, Check out this interesting article I just read - sent by FeedReader"
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
 msgstr ""
+"FeedReader sedang membersihkan basis data.\n"
+"Ini seharusnya tidak terlalu lama."
 
-#: plugins/share/Telegram/TelegramForm.vala:42
-#: plugins/share/Email/EmailForm.vala:52
-msgid "Send"
-msgstr ""
+#: src/Widgets/TagPopover.vala:36
+msgid "Add Tag:"
+msgstr "Tambahkan Tag:"
 
-#: plugins/share/Telegram/TelegramForm.vala:55
-msgid "Send Telegram"
-msgstr ""
+#: src/Widgets/TagPopover.vala:48
+msgid "Tags:"
+msgstr "Tag:"
 
-#: plugins/share/Wallabag/WallabagSetup.vala:74
-msgid "Client ID:"
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:75
-msgid "Client Secret:"
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:124
-msgid "Please fill in the URL."
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:130
-msgid "URL seems to not be valid."
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:140
-msgid "Please fill in the clientID."
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:147
-msgid "Please fill in the clientSecret."
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:154
-msgid "Please fill in the password."
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:161
-msgid "Please fill in the username."
-msgstr ""
-
-#: plugins/share/Wallabag/WallabagSetup.vala:186
-msgid "Something went wrong."
-msgstr ""
-
-#: plugins/share/Email/EmailForm.vala:24
-msgid ""
-"Hey,\n"
-"\n"
-"Check out this interesting article I just read: $URL\n"
-"\n"
-"- sent by FeedReader"
-msgstr ""
-
-#: plugins/share/Email/EmailForm.vala:27
-msgid "To:"
-msgstr ""
-
-#: plugins/share/Email/EmailForm.vala:65
-msgid "Write Email"
-msgstr ""
-
-#: plugins/share/Pocket/PocketSetup.vala:52
-#: plugins/share/Twitter/TwitterSetup.vala:51
-msgid "waiting"
-msgstr ""
-
-#: plugins/share/Twitter/TwitterForm.vala:29
-msgid ""
-"Hey,\n"
-"\n"
-"Check out this interesting article I just read: $URL"
-msgstr ""
-
-#: plugins/share/Twitter/TwitterForm.vala:47
-msgid "Limit: "
-msgstr ""
-
-#: plugins/share/Twitter/TwitterForm.vala:63
-msgid "Tweet"
-msgstr ""
-
-#: plugins/share/Twitter/TwitterForm.vala:80
-msgid "Tweet to Followers"
-msgstr ""
-
-#: plugins/share/Browser/Browser.vala:79
-msgid "Open in Browser"
-msgstr ""
-
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:91
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:91
-msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr ""
-
-#: plugins/backend/fresh/freshLoginWidget.vala:64
-msgid "freshRSS URL:"
-msgstr ""
-
-#: plugins/backend/fresh/freshLoginWidget.vala:131
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:131
-msgid "HTTP Authorization"
-msgstr ""
-
-#: plugins/backend/fresh/freshLoginWidget.vala:140
-msgid "Please log in to your freshRSS server and enjoy using FeedReader"
-msgstr ""
-
-#: plugins/backend/local/localLoginWidget.vala:57
-msgid "Done"
-msgstr ""
-
-#: plugins/backend/local/localLoginWidget.vala:58
-msgid "Adding Feeds"
-msgstr ""
-
-#: plugins/backend/local/localInterface.vala:420
-msgid "Nothing to read here."
-msgstr ""
-
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
-msgid "OwnCloud URL:"
-msgstr ""
-
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
-msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:64
-msgid "Tiny Tiny RSS URL:"
-msgstr ""
-
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:140
-msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
-msgstr ""
-
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
-msgid "Please log in to the Old Reader and enjoy using FeedReader"
-msgstr ""
-
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:90
-msgid "Please log in to Feedbin to enjoy using FeedReader"
-msgstr ""
+#: src/Widgets/TagPopover.vala:125
+msgid "add Tag"
+msgstr "tambahkan Tag"

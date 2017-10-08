@@ -280,6 +280,8 @@ namespace FeedReader {
 	public static int main (string[] args)
 	{
 		Ivy.Stacktrace.register_handlers();
+		GLib.Intl.bindtextdomain ("FeedReader", Constants.LOCALE_DIR);
+		GLib.Intl.textdomain ("FeedReader");
 
 		try
 		{

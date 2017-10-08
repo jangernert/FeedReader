@@ -5,6 +5,12 @@ project('FeedReader', ['vala', 'c'],
   default_options: ['prefix=/usr']
 )
 
+# TODO:
+# Create an executable file
+# Add git sha1
+# Mark libunity as an optional dependency
+# Fix WebExtension build
+
 # Constants (paths)
 VAPI_DIR               = join_paths(meson.current_source_dir(), 'vapi')
 PO_DIR                 = join_paths(meson.current_source_dir(), 'po')
@@ -58,6 +64,7 @@ conf = configuration_data()
 conf.set_quoted('GETTEXT_PACKAGE', meson.project_name())
 conf.set('PREFIX', get_option('prefix'))
 conf.set('VERSION', meson.project_version())
+conf.set('LOCALE_DIR', LOCALE_DIR)
 conf.set('PKGDATADIR', DATA_DIR)
 conf.set('PKGLIBDIR', PKGLIBDIR)
 
@@ -214,9 +221,7 @@ vala_args = [
   '--target-glib','2.50'
 ]
 
-
 # Creating an executable file
-
 feedreader_lib = library(
   'FeedReader',
   vala_sources,
@@ -263,13 +268,14 @@ feedreader = declare_dependency(
   include_directories: include_directories('.')
 )
 
-
-
-
-
-
-
 # Build plugins and data files
 subdir('plugins')
 subdir('schemas')
 subdir('po')
+
+
+# Create an executable file
+
+
+# Post install script
+meson.add_install_script('meson_post_install.py')

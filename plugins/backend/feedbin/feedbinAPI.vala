@@ -71,7 +71,8 @@ public class FeedbinAPI : Object {
 			case Soup.Status.NOT_FOUND:
 				throw new FeedbinError.NOT_FOUND(@"$method $path not found");
 			}
-			throw new FeedbinError.UNKNOWN_ERROR(@"Unexpected status $status for $method $path");
+			string phrase = Soup.Status.get_phrase(status);
+			throw new FeedbinError.UNKNOWN_ERROR(@"Unexpected status $status ($phrase) for $method $path");
 		}
 		return message;
 	}

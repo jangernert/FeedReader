@@ -274,7 +274,11 @@ subdir('schemas')
 subdir('po')
 
 # Create an executable file
-
+executable(
+  'feedreader',
+  objects: feedreader_lib.extract_all_objects(),
+  install: true
+)
 
 # Post install script
 meson.add_install_script('meson_post_install.py')

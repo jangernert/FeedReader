@@ -7,5 +7,24 @@ jobs:
     working_directory: ~/FeedReader
     steps:
       - checkout
-      - run: cmake .
-      - run: make
+      - run:
+          name: Build
+          command: |
+              cmake .
+              make
+      - run:
+          name: Test
+          command: make test
+      - run:
+          name: Generate JUnit XML
+          command: |
+              mkdir -p /tmp/test-results/junit/
+              for f in *.gtester.log; do
+                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml gtester-to-junit-4.xsl $f;
+              done
+          when: always
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results/junit
+          destination: test-results

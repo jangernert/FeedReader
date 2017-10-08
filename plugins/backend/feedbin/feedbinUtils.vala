@@ -14,6 +14,10 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.FeedbinUtils : GLib.Object {
+	static Secret.Schema m_pwSchema =
+		new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+						   "URL", Secret.SchemaAttributeType.STRING,
+						   "Username", Secret.SchemaAttributeType.STRING);
 
 	GLib.Settings m_settings;
 
@@ -32,11 +36,8 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
-	public string getPasswd()
+	public string getPassword()
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-										  "URL", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
@@ -45,7 +46,7 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		string passwd = "";
 
 		try{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
+			passwd = Secret.password_lookupv_sync(m_pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
 			Logger.error(e.message);
@@ -61,15 +62,12 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 
 	public void setPassword(string passwd)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-										  "URL", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd, null);
+			Secret.password_storev_sync(m_pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{
@@ -104,15 +102,5 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 			}
 		});
 		return removed;
-	}
-
-	public static string json_object_to_string(Json.Object obj)
-	{
-		var root = new Json.Node(Json.NodeType.OBJECT);
-		root.set_object(obj);
-
-		var gen = new Json.Generator();
-		gen.set_root(root);
-		return gen.to_data(null);
 	}
 }

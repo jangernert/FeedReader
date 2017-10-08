@@ -50,12 +50,12 @@ public class FeedReaderWebExtension : Object {
 			// if image was so huge it had to be replaced with a downscaled version
 			if(image.has_attribute("FR_huge"))
 			{
-				addListener(image);
+				addListener(image, image.get_attribute("FR_huge"));
 				continue;
 			}
 			else if(image.has_attribute("FR_parent"))
 			{
-				addListener(image);
+				addListener(image, image.get_attribute("FR_parent"));
 				continue;
 			}
 
@@ -72,7 +72,7 @@ public class FeedReaderWebExtension : Object {
 
 				if(hRatio <= threshold
 				|| wRatio <= threshold)
-					addListener(image);
+					addListener(image, image.src);
 				else
 					removeListener(image);
 			}
@@ -80,12 +80,16 @@ public class FeedReaderWebExtension : Object {
 	}
 
 	[DBus (visible = false)]
-	private void addListener(WebKit.DOM.HTMLImageElement image)
+	private void addListener(WebKit.DOM.HTMLImageElement image, string url)
 	{
-		((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseover", on_enter, false);
-		((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mousemove", on_enter, false);
-		((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseout", on_leave, false);
-		((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("click", on_click, false);
+		// check if url exists
+		if(GLib.FileUtils.test(url, GLib.FileTest.EXISTS))
+		{
+			((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseover", on_enter, false);
+			((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mousemove", on_enter, false);
+			((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("mouseout", on_leave, false);
+			((WebKit.DOM.EventTarget) image).add_event_listener_with_closure("click", on_click, false);
+		}
 	}
 
 	[DBus (visible = false)]

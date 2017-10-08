@@ -469,9 +469,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 	}
 
 
-	public static bool saveImages(Soup.Session session, Html.Doc* doc, string articleID, string feedID, GLib.Cancellable? cancellable = null)
+	public static bool saveImages(Soup.Session session, Html.Doc* doc, Article article, GLib.Cancellable? cancellable = null)
 	{
-		Logger.debug("GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
+		Logger.debug("GrabberUtils: save Images: %s, %s".printf(article.getArticleID(), article.getFeedID()));
 		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
 		Xml.XPath.Object* res = cntx.eval_expression("//img");
 
@@ -501,7 +501,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 					|| (node->get_prop("height") == null))
 				)
 				{
-					string? original = downloadImage(session, node->get_prop("src"), articleID, feedID, i+1);
+					string? original = downloadImage(session, node->get_prop("src"), article, i+1);
 
 					if(original == null)
 						continue;
@@ -509,7 +509,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 					string? parentURL = checkParent(session, node);
 					if(parentURL != null)
 					{
-						string parent = downloadImage(session, parentURL, articleID, feedID, i+1, true);
+						string parent = downloadImage(session, parentURL, article, i+1, true);
 
 						if(compareImageSize(parent, original) > 0)
 						{
@@ -545,23 +545,23 @@ public class FeedReader.grabberUtils : GLib.Object {
 	}
 
 
-	public static string? downloadImage(Soup.Session session, string? url, string articleID, string feedID, int nr, bool parent = false)
+	public static string? downloadImage(Soup.Session session, string? url, Article article, int nr, bool parent = false)
 	{
 		if(url == null || url.down().has_prefix("data:image"))
 			return null;
 
 		string fixedURL = url;
-		string imgPath = "";
+		string imgPath = GLib.Environment.get_user_data_dir();
 
 		if(fixedURL.has_prefix("//"))
 		{
 			fixedURL = "http:" + fixedURL;
 		}
 
-		if(articleID == "" && feedID == "")
-			imgPath = GLib.Environment.get_user_data_dir() + "/debug-article/ArticleImages/";
+		if(article.getArticleID() == "" && article.getFeedID() == "")
+			imgPath += "/debug-article/ArticleImages/";
 		else
-			imgPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
+			imgPath += "/feedreader/data/images/%s/%s/".printf(article.getFeedFileName(), article.getArticleFileName());
 
 		var path = GLib.File.new_for_path(imgPath);
 		try

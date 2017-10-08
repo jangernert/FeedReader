@@ -15,87 +15,25 @@
 
 public class FeedReader.Notification : GLib.Object {
 
-	private static bool m_notifyActionSupport = false;
-	private static Notify.Notification m_notification;
-
-	public static void init()
-	{
-		Notify.init(AboutInfo.programmName);
-		GLib.List<string> notify_server_caps = Notify.get_server_caps();
-		foreach(string str in notify_server_caps)
-		{
-			if(str == "actions")
-			{
-				m_notifyActionSupport = true;
-				Logger.info("daemon: Notification actions supported");
-				break;
-			}
-		}
-	}
-
-	public static bool supportAction()
-	{
-		return m_notifyActionSupport;
-	}
-
 	public static void send(uint newArticles)
 	{
-		try
+		string message = "";
+		string summary = _("new Articles");
+		uint unread = DataBase.readOnly().get_unread_total();
+
+		if(newArticles > 0)
 		{
-			string message = "";
-			string summary = _("new Articles");
-			uint unread = dbDaemon.get_default().get_unread_total();
+			if(unread == 1)
+				message = _("There is 1 new Article (%u unread)").printf(unread);
+			else
+				message = _("There are %u new Articles (%u unread)").printf(newArticles, unread);
 
-			if(!Notify.is_initted())
-			{
-				Logger.error("notification: libnotifiy not initialized");
-				return;
-			}
+			var notification = new GLib.Notification(summary);
+			notification.set_body(message);
+			notification.set_priority(GLib.NotificationPriority.NORMAL);
+			notification.set_icon(new GLib.ThemedIcon("org.gnome.FeedReader"));
 
-			if(newArticles > 0)
-			{
-				if(unread == 1)
-					message = _("There is 1 new Article (%u unread)").printf(unread);
-				else
-					message = _("There are %u new Articles (%u unread)").printf(newArticles, unread);
-
-
-				if(m_notification == null)
-				{
-					m_notification = new Notify.Notification(summary, message, AboutInfo.iconName);
-					m_notification.set_urgency(Notify.Urgency.NORMAL);
-					m_notification.set_app_name(AboutInfo.programmName);
-					m_notification.set_hint("desktop-entry", new Variant ("(s)", "org.gnome.FeedReader"));
-
-					if(Notification.supportAction())
-					{
-						m_notification.add_action ("default", "Show FeedReader", (notification, action) => {
-							Logger.debug("notification: default action");
-
-							try
-							{
-								m_notification.close();
-								string[] spawn_args = {"feedreader"};
-								GLib.Process.spawn_async("/", spawn_args, null , GLib.SpawnFlags.SEARCH_PATH, null, null);
-							}
-							catch(Error e)
-							{
-								Logger.error("Notification: close - " + e.message);
-							}
-						});
-					}
-				}
-				else
-				{
-					m_notification.update(summary, message, AboutInfo.iconName);
-				}
-
-				m_notification.show();
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Notification: send - " + e.message);
+			GLib.Application.get_default().send_notification("feedreader_default", notification);
 		}
 	}
 

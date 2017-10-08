@@ -75,8 +75,8 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		crashButton.set_relief(Gtk.ReliefStyle.NONE);
 		crashButton.set_focus_on_click(false);
 		crashButton.clicked.connect(() => {
-			var Article = dbUI.get_default().read_article(m_currentArticle);
-			UtilsUI.openInGedit(Article.getHTML());
+			var Article = DataBase.readOnly().read_article(m_currentArticle);
+			Utils.openInGedit(Article.getHTML());
 		});
 		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		crashView.set_halign(Gtk.Align.CENTER);
@@ -222,7 +222,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		SourceFunc callback = fillContent.callback;
 
 		ThreadFunc<void*> run = () => {
-			article = dbUI.get_default().read_article(articleID);
+			article = DataBase.readOnly().read_article(articleID);
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
@@ -248,7 +248,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_progress.reveal(true);
 
 			m_currentView.load_html(
-				UtilsUI.buildArticle(
+				Utils.buildArticle(
 						article.getHTML(),
 						article.getTitle(),
 						article.getURL(),
@@ -526,7 +526,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
-				Logger.info("ArticleView: webextension-message: " + message);
+				Logger.info(@"ArticleView: webextension-message: $message");
 			});
 			recalculate.begin((obj, res) => {
 				recalculate.end(res);
@@ -775,7 +775,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			var uri = hitTest.get_image_uri().substring("file://".length);
 			var action = new Gtk.Action("save", _("Save image as"), null, null);
 			action.activate.connect(() => {
-				UtilsUI.saveImageDialog(uri);
+				Utils.saveImageDialog(uri);
 			});
 			menu.append(new WebKit.ContextMenuItem(action));
 		}
@@ -960,7 +960,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		if(m_currentView == null)
 			return;
 
-		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle() + ".pdf";
+		string articleName = DataBase.readOnly().read_article(m_currentArticle).getTitle() + ".pdf";
 
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");

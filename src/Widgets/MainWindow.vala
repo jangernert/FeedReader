@@ -146,39 +146,34 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		this.set_titlebar(m_simpleHeader);
 		this.set_title("FeedReader");
 		this.set_default_size(Settings.state().get_int("window-width"), Settings.state().get_int("window-height"));
-		this.delete_event.connect(() => {
-			writeInterfaceState(true);
-			return false;
-		});
 		this.show_all();
 
 		Logger.debug("MainWindow: determining state");
-		try
+		if(FeedReaderBackend.get_default().isOnline() && !Settings.state().get_boolean("spring-cleaning"))
 		{
-			if(DBusConnection.get_default().isOnline() && !Settings.state().get_boolean("spring-cleaning"))
+			loadContent();
+		}
+		else
+		{
+			if(Settings.state().get_boolean("spring-cleaning"))
 			{
-				loadContent();
+				showSpringClean();
+			}
+			else if(!DataBase.readOnly().isEmpty())
+			{
+				showOfflineContent();
 			}
 			else
 			{
-				if(Settings.state().get_boolean("spring-cleaning"))
-				{
-					showSpringClean();
-				}
-				else if(!dbUI.get_default().isEmpty())
-				{
-					showOfflineContent();
-				}
-				else
-				{
-					showLogin();
-				}
+				showLogin();
 			}
 		}
-		catch(GLib.Error e)
-		{
-			Logger.error("MainWindow.constructor: %s".printf(e.message));
-		}
+	}
+
+	public override bool delete_event(Gdk.EventAny event)
+	{
+		this.hide();
+		return true;
 	}
 
 	private bool onStateEvent(Gdk.EventWindowState event)
@@ -279,7 +274,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 		var state = new InterfaceState();
 		state.setWindowSize(windowHeight, windowWidth);
-		state.setArticleListNewRowCount(0);
 		state.setWindowMaximized(this.is_maximized);
 		ColumnView.get_default().saveState(ref state);
 		return state;
@@ -476,17 +470,6 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 	private void loadContent()
 	{
 		Logger.debug("MainWindow: load content");
-		dbUI.get_default().updateBadge.connect(() => {
-			try
-			{
-				DBusConnection.get_default().updateBadge();
-			}
-			catch(Error e)
-			{
-				Logger.error("MainWindow.loadContent: %s".printf(e.message));
-			}
-
-		});
 		m_stack.set_transition_duration(0);
 		showContent(Gtk.StackTransitionType.NONE);
 		m_stack.set_transition_duration(m_stackTransitionTime);
@@ -494,42 +477,35 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 	private void markSelectedRead()
 	{
-		try
+		ColumnView.get_default().markAllArticlesAsRead();
+		string[] selectedRow = ColumnView.get_default().getSelectedFeedListRow().split(" ", 2);
+
+		if(selectedRow[0] == "feed")
 		{
-			ColumnView.get_default().markAllArticlesAsRead();
-			string[] selectedRow = ColumnView.get_default().getSelectedFeedListRow().split(" ", 2);
-
-			if(selectedRow[0] == "feed")
+			if(selectedRow[1] == FeedID.ALL.to_string())
 			{
-				if(selectedRow[1] == FeedID.ALL.to_string())
+				var categories = DataBase.readOnly().read_categories();
+				foreach(Category cat in categories)
 				{
-					var categories = dbUI.get_default().read_categories();
-					foreach(Category cat in categories)
-					{
-						DBusConnection.get_default().markFeedAsRead(cat.getCatID(), true);
-						Logger.debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
-					}
-
-					var feeds = dbUI.get_default().read_feeds_without_cat();
-					foreach(Feed feed in feeds)
-					{
-						DBusConnection.get_default().markFeedAsRead(feed.getFeedID(), false);
-						Logger.debug("MainWindow: mark all articles as read feed: %s".printf(feed.getTitle()));
-					}
+					FeedReaderBackend.get_default().markFeedAsRead(cat.getCatID(), true);
+					Logger.debug("MainWindow: mark all articles as read cat: %s".printf(cat.getTitle()));
 				}
-				else
+
+				var feeds = DataBase.readOnly().read_feeds_without_cat();
+				foreach(Feed feed in feeds)
 				{
-					DBusConnection.get_default().markFeedAsRead(selectedRow[1], false);
+					FeedReaderBackend.get_default().markFeedAsRead(feed.getFeedID(), false);
+					Logger.debug("MainWindow: mark all articles as read feed: %s".printf(feed.getTitle()));
 				}
 			}
-			else if(selectedRow[0] == "cat")
+			else
 			{
-				DBusConnection.get_default().markFeedAsRead(selectedRow[1], true);
+				FeedReaderBackend.get_default().markFeedAsRead(selectedRow[1], false);
 			}
 		}
-		catch(GLib.Error e)
+		else if(selectedRow[0] == "cat")
 		{
-			Logger.error("MainWindow.markSelectedRead: %s".printf(e.message));
+			FeedReaderBackend.get_default().markFeedAsRead(selectedRow[1], true);
 		}
 	}
 
@@ -678,7 +654,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 		if(checkShortcut(event, "global-quit"))
 		{
 			Logger.debug("shortcut: quit");
-			this.close();
+			FeedReaderApp.get_default().activate_action("quit", null);
 			return true;
 		}
 

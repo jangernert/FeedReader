@@ -212,17 +212,10 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 
 	private void setRead(ArticleRow row)
 	{
-		try
+		if(row.isUnread())
 		{
-			if(row.isUnread())
-			{
-				row.updateUnread(ArticleStatus.READ);
-				DBusConnection.get_default().changeArticle(row.getID(), ArticleStatus.READ);
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ArticleListBox.setRead: %s".printf(e.message));
+			row.updateUnread(ArticleStatus.READ);
+			FeedReaderBackend.get_default().changeArticle(row.getArticle(), ArticleStatus.READ);
 		}
 	}
 

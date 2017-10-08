@@ -14,9 +14,8 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Grabber : GLib.Object {
+	private Article m_article;
 	private string m_articleURL;
-	private string? m_articleID;
-	private string? m_feedID;
 	private string m_rawHtml;
 	private string m_nexPageURL;
 	private GrabberConfig m_config;
@@ -34,18 +33,17 @@ public class FeedReader.Grabber : GLib.Object {
 	public string m_date;
 	public string m_html;
 
-	public Grabber(Soup.Session session, string articleURL, string? articleID, string? feedID)
+	public Grabber(Soup.Session session, Article article)
 	{
-		m_articleURL = articleURL;
-		m_articleID = articleID;
-		m_feedID = feedID;
+		m_article = article;
+		if(m_article.getURL().has_prefix("//"))
+			m_article.setURL("http:" + m_article.getURL());
+
+		m_articleURL = m_article.getURL();
 		m_firstPage = true;
 		m_foundSomething = false;
 		m_singlePage = false;
 		m_session = session;
-
-		if(m_articleURL.has_prefix("//"))
-			m_articleURL = "http:" + m_articleURL;
 	}
 
 	~Grabber()
@@ -199,7 +197,8 @@ public class FeedReader.Grabber : GLib.Object {
 			|| msg.status_code == Soup.Status.MOVED_PERMANENTLY)
 			{
 				m_articleURL = msg.uri.to_string(false);
-				Logger.debug(@"Grabber: new url is: $m_articleURL");
+				m_article.setURL(m_articleURL);
+				Logger.debug("Grabber: new url is: " + m_articleURL);
 			}
 		});
 
@@ -550,10 +549,7 @@ public class FeedReader.Grabber : GLib.Object {
 
 		if(Settings.general().get_boolean("download-images"))
 		{
-			if(m_articleID != null && m_feedID != null)
-				grabberUtils.saveImages(m_session, m_doc, m_articleID, m_feedID, cancellable);
-			else
-				grabberUtils.saveImages(m_session, m_doc, "", "", cancellable);
+				grabberUtils.saveImages(m_session, m_doc, m_article, cancellable);
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())

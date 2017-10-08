@@ -144,14 +144,7 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 
 		var sync_time = new SettingSpin(_("Interval in Minutes (0 = OFF)"), Settings.general(), "sync", 5, 600, 5);
 		sync_time.changed.connect(() => {
-			try
-			{
-				DBusConnection.get_default().scheduleSync(Settings.general().get_int("sync"));
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("SettingsDialog.setup_Internal: scheduleSync %s".printf(e.message));
-			}
+			FeedReaderBackend.get_default().scheduleSync(Settings.general().get_int("sync"));
 		});
 
 		var db_settings = headline(_("Database:"));
@@ -171,15 +164,8 @@ public class FeedReader.SettingsDialog : Gtk.Dialog {
 		var internalsBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
 		internalsBox.expand = true;
 		internalsBox.pack_start(sync_settings, false, true, 0);
-		try
-		{
-			if(DBusConnection.get_default().useMaxArticles())
-				  internalsBox.pack_start(sync_count, false, true, 0);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("SettingsDialog.setup_Internal: useMaxArticles %s".printf(e.message));
-		}
+		if(FeedReaderBackend.get_default().useMaxArticles())
+				internalsBox.pack_start(sync_count, false, true, 0);
 		internalsBox.pack_start(sync_time, false, true, 0);
 		internalsBox.pack_start(db_settings, false, true, 0);
 		internalsBox.pack_start(drop_articles, false, true, 0);

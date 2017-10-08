@@ -109,7 +109,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 
 		m_articleList = new ArticleList();
 		m_articleList.drag_begin.connect((context) => {
-			if(dbUI.get_default().read_tags().is_empty)
+			if(DataBase.readOnly().read_tags().is_empty)
 				m_feedList.newFeedlist(m_articleList.getState(), false, true);
 			m_feedList.expand_collapse_category(CategoryID.TAGS.to_string(), true);
 			m_feedList.expand_collapse_category(CategoryID.MASTER.to_string(), false);
@@ -121,7 +121,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		});
 		m_articleList.drag_failed.connect((context, result) => {
 			Logger.debug("ContentPage: articleList drag_failed signal");
-			if(dbUI.get_default().read_tags().is_empty)
+			if(DataBase.readOnly().read_tags().is_empty)
 				m_feedList.newFeedlist(m_articleList.getState(), false, false);
 			else
 				m_feedList.removeEmptyTagRow();
@@ -367,12 +367,12 @@ public class FeedReader.ColumnView : Gtk.Paned {
 
 		if(id != "" && id != "empty")
 		{
-			var article = dbUI.get_default().read_article(id);
+			var article = DataBase.readOnly().read_article(id);
 			unowned Gee.List<string> tagIDs = article.getTags();
 
 			foreach(string tagID in tagIDs)
 			{
-				tags.add(dbUI.get_default().read_tag(tagID));
+				tags.add(DataBase.readOnly().read_tag(tagID));
 			}
 		}
 
@@ -382,7 +382,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 	public Gee.List<string> getSelectedArticleMedia()
 	{
 		string id = m_articleList.getSelectedArticle();
-		var article = dbUI.get_default().read_article(id);
+		var article = DataBase.readOnly().read_article(id);
 		return article.getMedia();
 	}
 
@@ -418,7 +418,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_headerbar.setOffline();
 		m_feedList.setOffline();
 
-		if(!UtilsUI.canManipulateContent(false))
+		if(!Utils.canManipulateContent(false))
 		{
 			m_footer.setAddButtonSensitive(false);
 			m_feedList.newFeedlist(m_articleList.getState(), false);
@@ -430,7 +430,7 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_headerbar.setOnline();
 		m_feedList.setOnline();
 
-		if(UtilsUI.canManipulateContent(true))
+		if(Utils.canManipulateContent(true))
 		{
 			m_footer.setAddButtonSensitive(true);
 			m_feedList.newFeedlist(m_articleList.getState(), false);

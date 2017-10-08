@@ -110,4 +110,31 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null);
 
+	// UI stuff
+	public signal void tryLogin();
+
+	public abstract string getWebsite();
+
+	public abstract BackendFlags getFlags();
+
+	public abstract string getID();
+
+	public abstract Gtk.Box? getWidget();
+
+	public abstract string iconName();
+
+	public abstract string serviceName();
+
+	public abstract bool needWebLogin();
+
+	public abstract void showHtAccess();
+
+	public abstract void writeData();
+
+	public abstract async void postLoginAction();
+
+	public abstract bool extractCode(string redirectURL);
+
+	public abstract string buildLoginURL();
+
 }

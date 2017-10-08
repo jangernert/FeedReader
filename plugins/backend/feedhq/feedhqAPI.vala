@@ -115,7 +115,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		{
 			Json.Object object = array.get_object_element(i);
 
-			string feedID = object.get_string_member("id").replace("/", "_");
+			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
 			string? icon_url = object.has_member("iconUrl") ? "https:"+object.get_string_member("iconUrl") : null;
 
@@ -134,7 +134,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			var categories = new Gee.ArrayList<string>();
 			for(uint j = 0; j < catCount; ++j)
 			{
-				categories.add(object.get_array_member("categories").get_object_element(j).get_string_member("id").replace("/", "_"));
+				categories.add(object.get_array_member("categories").get_object_element(j).get_string_member("id"));
 			}
 			feeds.add(
 				new Feed(
@@ -186,7 +186,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			{
 					categories.add(
 						new Category(
-							id.replace("/", "_"),
+							id,
 							title,
 							0,
 							orderID,
@@ -275,7 +275,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		for(uint i = 0; i < length; i++)
 		{
 			Json.Object object = array.get_object_element(i);
-			ids.add(object.get_string_member("id").replace(",", "_").replace("/", "~"));
+			ids.add(object.get_string_member("id"));
 		}
 
 		if(root.has_member("continuation") && root.get_string_member("continuation") != "")
@@ -302,9 +302,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 		string api_endpoint = "stream/contents";
 		if(feed_id != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(feed_id.replace("_", "/"));
+			api_endpoint += "/" + feed_id;
 		else if(tagID != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(tagID.replace("_", "/"));
+			api_endpoint += "/" + tagID;
 		var response = m_connection.send_get_request(api_endpoint + "?" + msg.get());
 
 		if(response.status != 200)
@@ -329,7 +329,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		{
 
 			Json.Object object = array.get_object_element(i);
-			string id = object.get_string_member("id").replace(",", "_").replace("/", "~");
+			string id = object.get_string_member("id");
 			bool marked = false;
 			bool read = false;
 			var cats = object.get_array_member("categories");
@@ -371,7 +371,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 									id,
 									object.get_string_member("title"),
 									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
-									object.get_object_member("origin").get_string_member("streamId").replace("/", "_"),
+									object.get_object_member("origin").get_string_member("streamId"),
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									"",
@@ -402,7 +402,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		else
 			msg.add("r", tagID);
 
-		msg.add("i", articleID.replace("_", ",").replace("~", "/"));
+		msg.add("i", articleID);
 		m_connection.send_post_request("edit-tag", msg.get());
 	}
 
@@ -410,7 +410,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		msg.add("s", streamID.replace("_", "/"));
+		msg.add("s", streamID);
 		msg.add("ts", "%i000000".printf(Settings.state().get_int("last-sync")));
 		Logger.debug(msg.get());
 		m_connection.send_post_request("mark-all-as-read", msg.get());
@@ -418,7 +418,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 	public string composeTagID(string tagName)
 	{
-		return "user/%s/label/%s".printf(m_userID, tagName).replace("/", "_");
+		return "user/%s/label/%s".printf(m_userID, tagName);
 	}
 
 	public void deleteTag(string tagID)
@@ -433,8 +433,8 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");
-		msg.add("s", tagID.replace("_", "/"));
-		msg.add("dest", composeTagID(title).replace("_", "/"));
+		msg.add("s", tagID);
+		msg.add("dest", composeTagID(title));
 		m_connection.send_post_request("rename-tag", msg.get());
 	}
 
@@ -457,17 +457,17 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		}
 
 		foreach(string s in feedID)
-			msg.add("s", s.replace("_", "/"));
+			msg.add("s", s);
 
 		if(title != null)
 			msg.add("t", title);
 
 		if(add != null && add != "")
-			msg.add("a", add.replace("_", "/"));
+			msg.add("a", add);
 
 
 		if(remove != null && remove != "")
-			msg.add("r", remove.replace("_", "/"));
+			msg.add("r", remove);
 
 		Logger.debug(msg.get());
 		var response = m_connection.send_post_request("subscription/edit", msg.get());

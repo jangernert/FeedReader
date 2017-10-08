@@ -130,9 +130,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		m_currentScroll.allowSignals(false);
 		Gee.List<Article> articles = new Gee.LinkedList<Article>();
 		uint offset = 0;
-		bool newArticles = false;
-		if(Settings.state().get_int("articlelist-new-rows") > 0 && m_state == ArticleListState.ALL)
-			newArticles = true;
 		SourceFunc callback = newList.callback;
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
@@ -141,7 +138,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			offset = getListOffset();
 
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -206,8 +203,6 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 				restoreScrollPos();
 				Logger.debug("ArticleList: allow signals from scroll");
 				m_currentScroll.allowSignals(true);
-				if(newArticles)
-					showNotification();
 
 				if(m_handlerID1 != 0)
 				{
@@ -251,7 +246,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			Logger.debug("load articles from db");
 			uint offset = m_currentList.getSizeForState() + determineNewRowCount(null, null);
 
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -299,7 +294,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------
 		ThreadFunc<void*> run = () => {
 			Logger.debug("load articles from db");
-			articles = dbUI.get_default().read_articles(m_selectedFeedListID,
+			articles = DataBase.readOnly().read_articles(m_selectedFeedListID,
 														m_selectedFeedListType,
 														m_state,
 														m_searchTerm,
@@ -362,7 +357,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			m_loadThread.join();
 
 		m_currentList.setAllUpdated(false);
-		var articles = dbUI.get_default().read_article_stats(m_currentList.getIDs());
+		var articles = DataBase.readOnly().read_article_stats(m_currentList.getIDs());
 		var children = m_currentList.get_children();
 
 		foreach(var row in children)
@@ -389,7 +384,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 			|| second == null)
 				continue;
 
-			var insertArticles = dbUI.get_default().read_article_between(	m_selectedFeedListID,
+			var insertArticles = DataBase.readOnly().read_article_between(	m_selectedFeedListID,
 																			m_selectedFeedListType,
 																			m_state,
 																			m_searchTerm,
@@ -418,7 +413,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 
 		if(firstRowID != null)
 		{
-			count = dbUI.get_default().getArticleCountNewerThanID(
+			count = DataBase.readOnly().getArticleCountNewerThanID(
 														firstRowID,
 														m_selectedFeedListID,
 														m_selectedFeedListType,
@@ -636,11 +631,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	private uint getListOffset()
 	{
 		uint offset = (uint)Settings.state().get_int("articlelist-row-offset");
-		Logger.debug("ArticleList: new-rows %i".printf(Settings.state().get_int("articlelist-new-rows")));
-		if(m_state == ArticleListState.ALL)
-			offset += (uint)Settings.state().get_int("articlelist-new-rows");
 		Settings.state().set_int("articlelist-row-offset", 0);
-		Settings.state().set_int("articlelist-new-rows", 0);
 		return offset;
 	}
 
@@ -776,7 +767,7 @@ public class FeedReader.ArticleList : Gtk.Overlay {
 	public void syncFinished()
 	{
 		m_syncing = false;
-		if(m_stack.get_visible_child_name() == "syncing" && UtilsUI.getRelevantArticles(20) == 0)
+		if(m_stack.get_visible_child_name() == "syncing" && Utils.getRelevantArticles() == 0)
 		{
 			m_stack.set_visible_child_full("empty", Gtk.StackTransitionType.CROSSFADE);
 		}

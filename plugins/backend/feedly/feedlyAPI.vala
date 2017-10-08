@@ -289,7 +289,7 @@ public class FeedReader.FeedlyAPI : Object {
 				new tag(
 					object.get_string_member("id"),
 					object.has_member("label") ? object.get_string_member("label") : "",
-					dbDaemon.get_default().getTagColor()
+					DataBase.readOnly().getTagColor()
 				)
 			);
 		}
@@ -513,7 +513,6 @@ public class FeedReader.FeedlyAPI : Object {
 		Json.Array ids = new Json.Array();
 		foreach(string id in id_array)
 		{
-			//ids.add_string_element(GLib.Uri.escape_string(id));
 			ids.add_string_element(id);
 		}
 
@@ -610,7 +609,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 			foreach(string catID in catArray)
 			{
-				string catName = dbDaemon.get_default().getCategoryName(catID);
+				string catName = DataBase.readOnly().getCategoryName(catID);
 				Json.Object catObject = new Json.Object();
 				catObject.set_string_member("id", catID);
 				catObject.set_string_member("label", catName);
@@ -630,7 +629,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)
 	{
-		var Feed = dbDaemon.get_default().read_feed(feedID);
+		var Feed = DataBase.readOnly().read_feed(feedID);
 
 		Json.Object object = new Json.Object();
 		object.set_string_member("id", feedID);
@@ -644,7 +643,7 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			if(catID != oldCatID)
 			{
-				string catName = dbDaemon.get_default().getCategoryName(catID);
+				string catName = DataBase.readOnly().getCategoryName(catID);
 				Json.Object catObject = new Json.Object();
 				catObject.set_string_member("id", catID);
 				catObject.set_string_member("label", catName);
@@ -652,7 +651,7 @@ public class FeedReader.FeedlyAPI : Object {
 			}
 		}
 
-		string newCatName = dbDaemon.get_default().getCategoryName(newCatID);
+		string newCatName = DataBase.readOnly().getCategoryName(newCatID);
 		Json.Object catObject = new Json.Object();
 		catObject.set_string_member("id", newCatID);
 		catObject.set_string_member("label", newCatName);

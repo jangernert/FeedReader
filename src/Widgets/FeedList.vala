@@ -242,9 +242,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		uint unread = 0;
 		if(state == ArticleListState.MARKED)
-			unread = dbUI.get_default().get_marked_total();
+			unread = DataBase.readOnly().get_marked_total();
 		else
-			unread = dbUI.get_default().get_unread_total();
+			unread = DataBase.readOnly().get_unread_total();
 		var row_all = new FeedRow(_("All Articles"), unread, FeedID.ALL.to_string(), "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
@@ -263,9 +263,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		//-------------------------------------------------------------------
 
-		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
+		var feeds = DataBase.readOnly().read_feeds((state == ArticleListState.MARKED) ? true : false);
 
-		if(!UtilsUI.onlyShowFeeds())
+		if(!Utils.onlyShowFeeds())
 		{
 			createCategories(ref feeds, masterCat, state);
 			createTags();
@@ -273,8 +273,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		foreach(var item in feeds)
 		{
-
-			if(!UtilsUI.onlyShowFeeds())
+			if(!Utils.onlyShowFeeds())
 			{
 				var FeedChildList = m_list.get_children();
 				int pos = 0;
@@ -289,12 +288,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						|| tmpRow.getID() == "" && item.isUncategorized())
 						{
 							var feedrow = new FeedRow(
-													   item.getTitle(),
-													   item.getUnread(),
-													   item.getFeedID(),
-													   tmpRow.getID(),
-													   tmpRow.getLevel()
-													  );
+													item.getTitle(),
+													item.getUnread(),
+													item.getFeedID(),
+													tmpRow.getID(),
+													tmpRow.getLevel()
+													);
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.moveUP.connect(moveUP);
@@ -471,27 +470,20 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private void createCategories(ref Gee.List<Feed> feeds, bool masterCat, ArticleListState state)
 	{
-		int maxCatLevel = dbUI.get_default().getMaxCatLevel();
+		int maxCatLevel = DataBase.readOnly().getMaxCatLevel();
 		int length = (int)m_list.get_children().length();
 		bool supportTags = false;
 		bool supportCategories = true;
 		bool supportMultiLevelCategories = false;
 		string uncategorizedID = "";
 
-		try
-		{
-			supportTags = DBusConnection.get_default().supportTags();
-			supportCategories = DBusConnection.get_default().supportCategories();
-			uncategorizedID = DBusConnection.get_default().uncategorizedID();
-			supportMultiLevelCategories = DBusConnection.get_default().supportMultiLevelCategories();
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("FeedList.createCategories: %s".printf(e.message));
-		}
+		supportTags = FeedReaderBackend.get_default().supportTags();
+		supportCategories = FeedReaderBackend.get_default().supportCategories();
+		uncategorizedID = FeedReaderBackend.get_default().uncategorizedID();
+		supportMultiLevelCategories = FeedReaderBackend.get_default().supportMultiLevelCategories();
 
 		if((supportTags
-		&& !dbUI.get_default().isTableEmpty("tags"))
+		&& !DataBase.readOnly().isTableEmpty("tags"))
 		|| masterCat)
 		{
 			addMasterCategory(length, _("Categories"));
@@ -510,16 +502,16 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		for(int i = 1; i <= maxCatLevel; i++)
 		{
-			var categories = dbUI.get_default().read_categories_level(i, feeds);
+			var categories = DataBase.readOnly().read_categories_level(i, feeds);
 
-			if(dbUI.get_default().haveFeedsWithoutCat())
+			if(DataBase.readOnly().haveFeedsWithoutCat())
 			{
 				categories.insert(
 					0,
 					new Category(
 						uncategorizedID,
 						_("Uncategorized"),
-						(int)dbUI.get_default().get_unread_uncategorized(),
+						(int)DataBase.readOnly().get_unread_uncategorized(),
 						(int)(categories.size + 10),
 						CategoryID.MASTER.to_string(),
 						1
@@ -589,7 +581,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	{
 		if(!Settings.general().get_boolean("only-feeds"))
 		{
-			var tags = dbUI.get_default().read_tags();
+			var tags = DataBase.readOnly().read_tags();
 			foreach(var Tag in tags)
 			{
 				var tagrow = new TagRow (Tag.getTitle(), Tag.getTagID(), Tag.getColor());
@@ -605,9 +597,9 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	public void refreshCounters(ArticleListState state)
 	{
-		uint allCount = (state == ArticleListState.MARKED) ? dbUI.get_default().get_marked_total() : dbUI.get_default().get_unread_total();
-		var feeds = dbUI.get_default().read_feeds((state == ArticleListState.MARKED) ? true : false);
-		var categories = dbUI.get_default().read_categories(feeds);
+		uint allCount = (state == ArticleListState.MARKED) ? DataBase.readOnly().get_marked_total() : DataBase.readOnly().get_unread_total();
+		var feeds = DataBase.readOnly().read_feeds((state == ArticleListState.MARKED) ? true : false);
+		var categories = DataBase.readOnly().read_categories(feeds);
 
 		// double-check
 		uint feedCount = 0;
@@ -650,7 +642,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						{
 							if(tmpFeedRow.getUnreadCount() == 0)
 								tmpFeedRow.reveal(false);
-							else if(isCategorieExpanded(tmpFeedRow.getCatID()) || UtilsUI.onlyShowFeeds())
+							else if(isCategorieExpanded(tmpFeedRow.getCatID()) || Utils.onlyShowFeeds())
 								tmpFeedRow.reveal(true);
 						}
 
@@ -687,7 +679,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 		}
 
-		if(dbUI.get_default().haveFeedsWithoutCat())
+		if(DataBase.readOnly().haveFeedsWithoutCat())
 		{
 			foreach(Gtk.Widget row in FeedChildList)
 			{
@@ -696,12 +688,12 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 				{
 					if(state == ArticleListState.MARKED)
 					{
-						tmpCatRow.set_unread_count(dbUI.get_default().get_marked_uncategorized());
+						tmpCatRow.set_unread_count(DataBase.readOnly().get_marked_uncategorized());
 						tmpCatRow.activateUnreadEventbox(false);
 					}
 					else
 					{
-						tmpCatRow.set_unread_count(dbUI.get_default().get_unread_uncategorized());
+						tmpCatRow.set_unread_count(DataBase.readOnly().get_unread_uncategorized());
 						tmpCatRow.activateUnreadEventbox(true);
 					}
 					if(Settings.general().get_boolean("feedlist-only-show-unread") && tmpCatRow.getUnreadCount() != 0)
@@ -900,39 +892,32 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 	{
 		Logger.debug("FeedList: mark all articles as read");
 
-		try
+		if(type == FeedListType.FEED)
 		{
-			if(type == FeedListType.FEED)
+			if(id == FeedID.ALL.to_string())
 			{
-				if(id == FeedID.ALL.to_string())
-				{
-					DBusConnection.get_default().markAllItemsRead();
-				}
-				else
-				{
-					DBusConnection.get_default().markFeedAsRead(id, false);
-				}
+				FeedReaderBackend.get_default().markAllItemsRead();
 			}
-			else if(type == FeedListType.CATEGORY)
+			else
 			{
-				if(id == "")
-				{
-					var feeds = dbUI.get_default().read_feeds_without_cat();
-					foreach(Feed feed in feeds)
-					{
-						DBusConnection.get_default().markFeedAsRead(feed.getFeedID(), false);
-						Logger.debug("FeedList: mark all articles as read feed: %s".printf(feed.getTitle()));
-					}
-				}
-				else
-				{
-					DBusConnection.get_default().markFeedAsRead(id, true);
-				}
+				FeedReaderBackend.get_default().markFeedAsRead(id, false);
 			}
 		}
-		catch(GLib.Error e)
+		else if(type == FeedListType.CATEGORY)
 		{
-			Logger.error("FeedList.markSelectedRead: %s".printf(e.message));
+			if(id == "")
+			{
+				var feeds = DataBase.readOnly().read_feeds_without_cat();
+				foreach(Feed feed in feeds)
+				{
+					FeedReaderBackend.get_default().markFeedAsRead(feed.getFeedID(), false);
+					Logger.debug("FeedList: mark all articles as read feed: %s".printf(feed.getTitle()));
+				}
+			}
+			else
+			{
+				FeedReaderBackend.get_default().markFeedAsRead(id, true);
+			}
 		}
 	}
 
@@ -971,7 +956,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			Copy selected feed url to clipboard
 		*/
 		if (feed_id != ""){
-			var feed =  dbUI.get_default().read_feed(feed_id);
+			var feed =  DataBase.readOnly().read_feed(feed_id);
 			if (feed != null){
 				string feed_url = feed.getXmlUrl();
 				Gdk.Display display = MainWindow.get_default().get_display ();
@@ -1138,30 +1123,23 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		int level = 1;
 		int pos = -1;
 
-		try
+		if(FeedReaderBackend.get_default().supportTags())
 		{
-			if(DBusConnection.get_default().supportTags())
+			var FeedChildList = m_list.get_children();
+			foreach(Gtk.Widget row in FeedChildList)
 			{
-				var FeedChildList = m_list.get_children();
-				foreach(Gtk.Widget row in FeedChildList)
+				pos++;
+				var tmpCat = row as CategoryRow;
+				if(tmpCat != null && tmpCat.getID() == CategoryID.TAGS.to_string())
 				{
-					pos++;
-					var tmpCat = row as CategoryRow;
-					if(tmpCat != null && tmpCat.getID() == CategoryID.TAGS.to_string())
-					{
-						level = 2;
-						break;
-					}
+					level = 2;
+					break;
 				}
 			}
-			else
-			{
-				level = 1;
-			}
 		}
-		catch(GLib.Error e)
+		else
 		{
-			Logger.error("FeedList.showNewCategory: %s".printf(e.message));
+			level = 1;
 		}
 
 		var newRow = new CategoryRow(_("New Category"), CategoryID.NEW.to_string(), 99, 0, CategoryID.MASTER.to_string(), level, false);

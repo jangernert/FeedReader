@@ -201,7 +201,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 						new tag(
 							id,
 							title,
-							dbDaemon.get_default().getTagColor()
+							DataBase.readOnly().getTagColor()
 						)
 					);
 				}
@@ -347,7 +347,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dbDaemon.get_default().getTagName(cat) != null)
+				else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
 					tags.add(cat);
 			}
 

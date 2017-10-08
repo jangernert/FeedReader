@@ -24,6 +24,96 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		m_utils = new InoReaderUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "http://www.inoreader.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
+	public string getID()
+	{
+		return "inoreader";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-inoreader";
+	}
+
+	public string serviceName()
+	{
+		return "InoReader";
+	}
+
+	public void writeData()
+	{
+		return;
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		if(redirectURL.has_prefix(InoReaderSecret.apiRedirectUri))
+		{
+			Logger.debug(redirectURL);
+			int csrf_start = redirectURL.index_of("state=")+6;
+			string csrf_code = redirectURL.substring(csrf_start);
+			Logger.debug("InoReaderLoginWidget: csrf_code: " + csrf_code);
+
+			if(csrf_code == InoReaderSecret.csrf_protection)
+			{
+				int start = redirectURL.index_of("code=")+5;
+				int end = redirectURL.index_of("&", start);
+				string code = redirectURL.substring(start, end-start);
+				m_utils.setApiCode(code);
+				Logger.debug("InoReaderLoginWidget: set inoreader-api-code: " + code);
+				GLib.Thread.usleep(500000);
+				return true;
+			}
+
+			Logger.error("InoReaderLoginWidget: csrf_code mismatch");
+		}
+		else
+		{
+			Logger.warning("InoReaderLoginWidget: wrong redirect_uri");
+		}
+
+		return false;
+	}
+
+	public string buildLoginURL()
+	{
+		return "https://www.inoreader.com/oauth2/auth"
+			+ "?client_id=" + InoReaderSecret.apiClientId
+			+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
+			+ "&response_type=code"
+			+ "&scope=read+write"
+			+ "&state=" + InoReaderSecret.csrf_protection;
+	}
+
+	public bool needWebLogin()
+	{
+		return true;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		return null;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
 	public bool supportTags()
 	{
 		return true;
@@ -137,13 +227,13 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void markAllItemsRead()
 	{
-		var categories = dbDaemon.get_default().read_categories();
+		var categories = DataBase.readOnly().read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
 		foreach(Feed feed in feeds)
 		{
 			m_api.markAsRead(feed.getFeedID());
@@ -316,7 +406,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 					left = 0;
 				}
 			}
-			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
+			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
 		}
 

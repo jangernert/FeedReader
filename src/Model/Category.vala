@@ -36,6 +36,11 @@ public class FeedReader.Category : GLib.Object {
 		return m_categorieID;
 	}
 
+	public string getFileName()
+	{
+		return GLib.Base64.encode(m_categorieID.data);
+	}
+
 	public string getTitle()
 	{
 		return m_title;

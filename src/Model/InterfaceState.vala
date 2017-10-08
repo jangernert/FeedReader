@@ -20,7 +20,6 @@ public class FeedReader.InterfaceState : GLib.Object {
 	private int m_FeedsAndArticleWidth = 600;
 	private int m_FeedListWidth = 200;
 	private int m_ArticleListRowOffset = 15;
-	private int m_ArticleListNewRowCount = 0;
 	private int m_ArticleViewScrollPos = 0;
 	private bool m_WindowMaximized = false;
 	private double m_ArticleListScrollPos = 0.0;
@@ -55,7 +54,6 @@ public class FeedReader.InterfaceState : GLib.Object {
 		Settings.state().set_int      ("articleview-scrollpos",       m_ArticleViewScrollPos);
 		if(shutdown)
 		{
-			Settings.state().set_int      ("articlelist-new-rows",        m_ArticleListNewRowCount);
 			Settings.state().set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
 		}
 	}
@@ -154,16 +152,6 @@ public class FeedReader.InterfaceState : GLib.Object {
 	public string getArticleListTopRow()
 	{
 		return m_ArticleListTopRow;
-	}
-
-	public void setArticleListNewRowCount(int count)
-	{
-		m_ArticleListNewRowCount = count;
-	}
-
-	public int getArticleListNewRowCount()
-	{
-		return m_ArticleListNewRowCount;
 	}
 
 	public void setWindowMaximized(bool max)

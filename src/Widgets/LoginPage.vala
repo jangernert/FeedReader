@@ -16,10 +16,7 @@
 public class FeedReader.LoginPage : Gtk.Stack {
 
 	private Gtk.Box m_layout;
-	private Peas.ExtensionSet m_extensions;
-	private Peas.Engine m_engine;
 	private WebLoginPage m_page;
-	private string? m_activeExtension = null;
 	private Gtk.Box? m_activeWidget = null;
 	public signal void submit_data();
 	public signal void loginError(LoginResponse errorCode);
@@ -27,23 +24,9 @@ public class FeedReader.LoginPage : Gtk.Stack {
 
 	public LoginPage()
 	{
-		m_engine = Peas.Engine.get_default();
-		m_engine.add_search_path(Constants.INSTALL_PREFIX + "/" + Constants.INSTALL_LIBDIR + "/pluginsUI/", null);
-		m_engine.enable_loader("python3");
-
-		m_extensions = new Peas.ExtensionSet(m_engine, typeof(LoginInterface));
-
-		m_extensions.extension_added.connect((info, extension) => {
-			var plugin = (extension as LoginInterface);
-			plugin.init();
-			plugin.login.connect(() => { writeLoginData(); });
+		FeedReaderBackend.get_default().tryLogin.connect(() => {
+			writeLoginData();
 		});
-
-		foreach(var plugin in m_engine.get_plugin_list())
-		{
-			m_engine.try_load_plugin(plugin);
-		}
-
 
 		m_layout = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
 		m_layout.set_size_request(700, 410);
@@ -66,8 +49,20 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		accountList.set_selection_mode(Gtk.SelectionMode.NONE);
 		accountList.row_activated.connect(serviceSelected);
 
-		m_extensions.foreach((extSet, info, ext) => {
-			accountList.add(new LoginRow(ext as LoginInterface));
+		FeedServer.get_default().getPlugins().foreach((extSet, info, ext) => {
+			var plug = ext as FeedServerInterface;
+			if(plug != null)
+			{
+				BackendInfo pluginfo = BackendInfo()
+				{
+					ID = plug.getID(),
+					name = plug.serviceName(),
+					flags = plug.getFlags(),
+					website = plug.getWebsite(),
+					iconName = plug.iconName()
+				};
+				accountList.add(new LoginRow(pluginfo));
+			}
 		});
 
 		var scroll = new Gtk.ScrolledWindow(null, null);
@@ -93,7 +88,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	{
 		var visible = this.get_visible_child_name();
 		this.set_visible_child_name("selectScreen");
-		m_activeExtension = null;
 
 		if(visible == "loginWidget"
 		&& m_activeWidget != null)
@@ -110,109 +104,89 @@ public class FeedReader.LoginPage : Gtk.Stack {
 	private void serviceSelected(Gtk.ListBoxRow row)
 	{
 		var serviceRow = (row as LoginRow);
-		var extension = serviceRow.getExtension();
-		Logger.debug("serviceSelected: %s".printf(serviceRow.getServiceName()));
+		Logger.debug("serviceSelected: %s".printf(serviceRow.getInfo().name));
 
 		var window = MainWindow.get_default();
 		window.getSimpleHeader().showBackButton(true);
-		m_activeExtension = extension.getID();
+		FeedServer.get_default().setActivePlugin(serviceRow.getInfo().ID);
+		FeedServerInterface? plug = FeedServer.get_default().getActivePlugin();
 
-		if(extension.needWebLogin())
+		if(plug != null)
 		{
-			m_page.reset();
-			m_page.loadPage(extension.buildLoginURL());
-			m_page.getApiCode.connect(extension.extractCode);
-			m_page.success.connect(() => {
-				login(extension.getID());
-			});
-			this.set_visible_child_name("web");
-
-			window.getSimpleHeader().back.connect(() => {
-				this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
-				window.getSimpleHeader().showBackButton(false);
+			if(plug.needWebLogin())
+			{
 				m_page.reset();
-				m_activeExtension = null;
-			});
-		}
-		else
-		{
-			m_activeWidget = extension.getWidget();
-			m_activeWidget.show_all();
+				m_page.loadPage(plug.buildLoginURL());
+				m_page.getApiCode.connect(plug.extractCode);
+				m_page.success.connect(() => {
+					login(plug.getID());
+				});
+				this.set_visible_child_name("web");
 
-			this.add_named(m_activeWidget, "loginWidget");
-			this.set_visible_child_name("loginWidget");
+				window.getSimpleHeader().back.connect(() => {
+					this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
+					window.getSimpleHeader().showBackButton(false);
+					m_page.reset();
+				});
+			}
+			else
+			{
+				m_activeWidget = plug.getWidget();
+				m_activeWidget.show_all();
 
-			window.getSimpleHeader().back.connect(() => {
-				this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
-				window.getSimpleHeader().showBackButton(false);
-				if(m_activeWidget != null)
-				{
-					this.remove(m_activeWidget);
-					m_activeWidget = null;
-				}
-				m_activeExtension = null;
-			});
+				this.add_named(m_activeWidget, "loginWidget");
+				this.set_visible_child_name("loginWidget");
+
+				window.getSimpleHeader().back.connect(() => {
+					this.set_visible_child_full("selectScreen", Gtk.StackTransitionType.SLIDE_RIGHT);
+					window.getSimpleHeader().showBackButton(false);
+					if(m_activeWidget != null)
+					{
+						this.remove(m_activeWidget);
+						m_activeWidget = null;
+					}
+				});
+			}
 		}
 	}
 
 
 	public void showHtAccess()
 	{
-		getActiveExtension().showHtAccess();
-	}
-
-	private LoginInterface? getActiveExtension()
-	{
-		LoginInterface? e = null;
-		m_extensions.foreach((extSet, info, ext) => {
-			var extension = (ext as LoginInterface);
-			if(extension.getID() == m_activeExtension)
-			{
-				e = extension;
-			}
-		});
-		return e;
+		FeedServer.get_default().getActivePlugin().showHtAccess();
 	}
 
 	public void writeLoginData()
 	{
 		Logger.debug("write login data");
-		var ext = getActiveExtension();
-		ext.writeData();
-		login(ext.getID());
+		var ext = FeedServer.get_default().getActivePlugin();
+		if(ext != null)
+		{
+			ext.writeData();
+			login(ext.getID());
+		}
 	}
 
 	private void login(string id)
 	{
-		try
+		LoginResponse status = FeedReaderBackend.get_default().login(id);
+		Logger.debug("LoginPage: status = " + status.to_string());
+		if(status == LoginResponse.SUCCESS)
 		{
-			LoginResponse status = DBusConnection.get_default().login(id);
-			Logger.debug("LoginPage: status = " + status.to_string());
-			if(status == LoginResponse.SUCCESS)
+			var ext = FeedServer.get_default().getActivePlugin();
+			if(ext != null)
 			{
-				var ext = getActiveExtension();
 				ext.postLoginAction.begin((ob, res) => {
 					ext.postLoginAction.end(res);
 					submit_data();
-					try
-					{
-						DBusConnection.get_default().startSync(true);
-					}
-					catch(GLib.Error e)
-					{
-						Logger.error("LoginPage: failed to start the initial sync - " + e.message);
-					}
-
+					FeedReaderBackend.get_default().startSync(true);
 				});
-
-				return;
 			}
 
-			loginError(status);
+
+			return;
 		}
-		catch(GLib.Error e)
-		{
-			Logger.error("LoginPage.login: %s".printf(e.message));
-		}
+
+		loginError(status);
 	}
 }

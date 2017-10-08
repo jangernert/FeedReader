@@ -1,8 +1,0 @@
-[Plugin]
-Module=owncloudUI
-Loader=C
-Name=OwnCloud News
-Description=Add OwnCloud News backend to FeedReader
-Authors=Jan Lukas Gernert <jangernert@gmail.com>
-Copyright=Copyright © 2015-16 Jan Lukas Gernert
-Website=http://jangernert.github.io/FeedReader/

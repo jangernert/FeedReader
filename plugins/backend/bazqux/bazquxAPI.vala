@@ -201,7 +201,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 						new tag(
 							id,
 							title,
-							dbDaemon.get_default().getTagColor()
+							DataBase.readOnly().getTagColor()
 						)
 					);
 				}
@@ -310,9 +310,9 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 		string api_endpoint = "stream/contents";
 		if(feed_id != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(feed_id);
+			api_endpoint += "/" + feed_id;
 		else if(tagID != null)
-			api_endpoint += "/" + GLib.Uri.escape_string(tagID);
+			api_endpoint += "/" + tagID;
 		var response = m_connection.send_get_request(api_endpoint, msg.get());
 
 		if(response.status != 200)
@@ -351,7 +351,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dbDaemon.get_default().getTagName(cat) != null)
+				else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
 					tags.add(cat);
 			}
 

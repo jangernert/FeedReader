@@ -24,7 +24,10 @@ public class FeedReader.StringUtils {
 		foreach(string item in items)
 		{
 			if(!ignore_empty || item.strip() != "")
-				res.add(item);
+			{
+					res.add(item);
+			}
+
 		}
 		return res;
 	}

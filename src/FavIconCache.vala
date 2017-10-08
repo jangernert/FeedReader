@@ -33,7 +33,8 @@ public class FeedReader.FavIconCache : GLib.Object {
 
 	private async void load(string icon_name)
 	{
-		var fileName = icon_name + ".ico";
+		var fileName = GLib.Base64.encode(icon_name.data) + ".ico";
+		//var fileName = icon_name + ".ico";
 		try
 		{
 			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);
@@ -76,11 +77,9 @@ public class FeedReader.FavIconCache : GLib.Object {
 
 	public async Gdk.Pixbuf? getIcon(string name, bool firstTry = true)
 	{
-		string fixedName = name.replace("/", "_").replace(".", "_");
-
-		if(hasIcon(fixedName))
+		if(hasIcon(name))
 		{
-			return m_map.get(fixedName).copy();
+			return m_map.get(name).copy();
 		}
 		else if(firstTry)
 		{

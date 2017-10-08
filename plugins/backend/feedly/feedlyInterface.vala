@@ -24,6 +24,78 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_utils = new FeedlyUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "http://feedly.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
+	public string getID()
+	{
+		return "feedly";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-feedly";
+	}
+
+	public string serviceName()
+	{
+		return "feedly";
+	}
+
+	public bool needWebLogin()
+	{
+		return true;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		return null;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
+	public void writeData()
+	{
+		return;
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
+		{
+			int start = redirectURL.index_of("=")+1;
+			int end = redirectURL.index_of("&");
+			string code = redirectURL.substring(start, end-start);
+			m_utils.setApiCode(code);
+			Logger.debug("feedlyLoginWidget: set feedly-api-code: " + code);
+			GLib.Thread.usleep(500000);
+			return true;
+		}
+
+		return false;
+	}
+
+	public string buildLoginURL()
+	{
+		return FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
+					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+	}
+
 	public bool supportTags()
 	{
 		return true;
@@ -141,8 +213,8 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		string catArray = "";
 		string feedArray = "";
 
-		var categories = dbDaemon.get_default().read_categories();
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
+		var categories = DataBase.readOnly().read_categories();
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
 
 		foreach(Category cat in categories)
 		{
@@ -225,7 +297,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void renameFeed(string feedID, string title)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = DataBase.readOnly().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 	}
 
@@ -256,7 +328,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = DataBase.readOnly().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
 	}
 

@@ -74,7 +74,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
 		loginButton.clicked.connect(() => {
-			login();
+			tryLogin();
 			loginButton.set_sensitive(false);
 			waitingSpinner.start();
 			loginButton.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);

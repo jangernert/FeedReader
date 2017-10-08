@@ -169,7 +169,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		loginButton.halign = Gtk.Align.END;
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-		loginButton.clicked.connect(() => { login(); });
+		loginButton.clicked.connect(() => { tryLogin(); });
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.valign = Gtk.Align.CENTER;

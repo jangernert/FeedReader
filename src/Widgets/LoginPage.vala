@@ -182,8 +182,6 @@ public class FeedReader.LoginPage : Gtk.Stack {
 					FeedReaderBackend.get_default().startSync(true);
 				});
 			}
-
-
 			return;
 		}
 

@@ -70,8 +70,8 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_userEntry = new Gtk.Entry();
 		m_passwordEntry = new Gtk.Entry();
 
-		m_userEntry.activate.connect(() => { login(); });
-		m_passwordEntry.activate.connect(() => { login(); });
+		m_userEntry.activate.connect(() => { tryLogin(); });
+		m_passwordEntry.activate.connect(() => { tryLogin(); });
 
 		m_passwordEntry.set_invisible_char('*');
 		m_passwordEntry.set_visibility(false);
@@ -98,7 +98,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 		loginButton.halign = Gtk.Align.END;
 		loginButton.set_size_request(80, 30);
 		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-		loginButton.clicked.connect(() => { login(); });
+		loginButton.clicked.connect(() => { tryLogin(); });
 
 		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		box.valign = Gtk.Align.CENTER;

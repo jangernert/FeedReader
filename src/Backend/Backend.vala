@@ -426,7 +426,7 @@ namespace FeedReader {
 
 			DataBase.writeAccess().update_article(article);
 
-			if(!DataBase.readOnly().tag_still_used(tag))
+			if(!add && !DataBase.readOnly().tag_still_used(tag))
 			{
 				Logger.debug("backend: remove tag completely");
 				asyncPayload pl2 = () => { FeedServer.get_default().deleteTag(tag.getTagID()); };

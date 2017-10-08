@@ -6,28 +6,23 @@ project('FeedReader', ['vala', 'c'],
 )
 
 # Constants (paths)
-VAPI_DIR              = join_paths(meson.current_source_dir(), 'vapi')
-PO_DIR                = join_paths(meson.current_source_dir(), 'po')
-SHARE_DIR			        = join_paths(get_option('prefix'),
+VAPI_DIR               = join_paths(meson.current_source_dir(), 'vapi')
+PO_DIR                 = join_paths(meson.current_source_dir(), 'po')
+SHARE_DIR			         = join_paths(get_option('prefix'),
                                     get_option('datadir'))
-DATA_DIR              = join_paths(get_option('prefix'),
+DATA_DIR               = join_paths(get_option('prefix'),
                                     get_option('datadir'),
                                     meson.project_name())
-LOCALE_DIR            = join_paths(get_option('prefix'),
+LOCALE_DIR             = join_paths(get_option('prefix'),
                                     get_option('localedir'))
-PKGLIBDIR             = join_paths(get_option('prefix'),
+PKGLIBDIR              = join_paths(get_option('prefix'),
                                     get_option('libdir'),
                                     meson.project_name())
 SHARE_PLUGINS_DIR      = join_paths(PKGLIBDIR, 'pluginsShare')
 BACKEND_PLUGINS_DIR    = join_paths(PKGLIBDIR, 'plugins')
 
 # Define the vapi dir
-add_project_arguments(
-  [
-    '--vapidir=' + VAPI_DIR,
-  ],
-  language: 'vala'
-)
+add_project_arguments(['--vapidir=' + VAPI_DIR], language: 'vala')
 
 # Modules
 gnome = import('gnome')
@@ -36,6 +31,7 @@ i18n = import('i18n')
 # Compilers
 vala_compiler = meson.get_compiler('vala')
 c_compiler = meson.get_compiler('c')
+
 # Dependencies
 gdk_pixbuf          = dependency('gdk-pixbuf-2.0')
 gee                 = dependency('gee-0.8')
@@ -46,7 +42,7 @@ gstreamer_pbutils   = dependency('gstreamer-pbutils-1.0')
 gtk                 = dependency('gtk+-3.0', version: '>=3.22')
 json_glib           = dependency('json-glib-1.0')
 libcurl             = c_compiler.find_library('libcurl')
-libnotify           =  dependency('libnotify')
+libnotify           = dependency('libnotify')
 libpeas             = dependency('libpeas-1.0')
 libsecret           = dependency('libsecret-1')
 libsoup             = dependency('libsoup-2.4')
@@ -65,15 +61,15 @@ conf.set('VERSION', meson.project_version())
 conf.set('PKGDATADIR', DATA_DIR)
 conf.set('PKGLIBDIR', PKGLIBDIR)
 
+# Creating config.h file
 configure_file(output: 'config.h', configuration: conf)
-config_h_dir = include_directories('.')
 
 # Build libraries
 subdir('libraries/libgd')
 subdir('libraries/libgtkimageview')
 subdir('libraries/libIvy')
 subdir('libraries/libVilistextum')
-subdir('libraries/WebExtension')
+#subdir('libraries/WebExtension')
 subdir('data')
 
 
@@ -82,31 +78,36 @@ libgd_vapi          = vala_compiler.find_library('gd-1.0', dirs: VAPI_DIR)
 gtkimageview_vapi   = vala_compiler.find_library('gtkimageview', dirs: VAPI_DIR)
 libvilistextum_vapi = vala_compiler.find_library('libvilistextum', dirs: VAPI_DIR)
 
+# libVilistextum
 libvilistextum  = declare_dependency(
   link_with: vilistextum_lib,
   include_directories: vilistextum_inc,
   dependencies: libvilistextum_vapi
 )
-libgd           = declare_dependency(
+
+# libgd
+libgd = declare_dependency(
   link_with: gd_lib,
   include_directories: gd_inc,
   dependencies: libgd_vapi
 )
+
+# GtkImageView 
 libgtkimageview = declare_dependency(
-  link_with: [
-    gtkimageview_lib
-  ],
+  link_with: gtkimageview_lib,
   include_directories: gtkimageview_inc,
   dependencies: [
     gtkimageview_vapi,
     c_compiler.find_library('m', required: false)
-    ]
-
+  ]
 )
-libivy          = declare_dependency(
+
+# libIvy
+libivy = declare_dependency(
   link_with: ivy_lib,
   include_directories: ivy_inc
 )
+
 vala_sources = [
   'src/FavIconCache.vala',
   'src/FeedReader.vala',
@@ -197,27 +198,33 @@ vala_sources = [
   )
 ]
 
-executable(
-  'feedreader',
+
+c_args = [
+  '-g',
+  '-w',
+  '-rdynamic',
+  '-include','config.h',
+  '-DVERSION="' + meson.project_version() + '"',
+  '-DGETTEXT_PACKAGE="'+ meson.project_name() +'"',
+  '-DGNOMELOCALEDIR="' + LOCALE_DIR + '"',
+  '-DGOA_API_IS_SUBJECT_TO_CHANGE'
+]     
+vala_args = [
+  '--enable-experimental',
+  '--target-glib','2.50'
+]
+
+
+# Creating an executable file
+
+feedreader_lib = library(
+  'FeedReader',
   vala_sources,
   UI_RESOURCES,
-  c_args: [
-    '-g',
-    '-w',
-    '-rdynamic',
-    '-include','config.h',
-    '-DVERSION="' + meson.project_version() + '"',
-    '-DGETTEXT_PACKAGE="'+ meson.project_name() +'"',
-    '-DGNOMELOCALEDIR="' + LOCALE_DIR + '"',
-    '-DGOA_API_IS_SUBJECT_TO_CHANGE'
-  ],
-  vala_args: [
-    '--header=FeedReader.h',
-    '--vapi=FeedReader.vapi',
-    '--enable-experimental',
-    '--target-glib=2.50'
-  ],
-  install: true,
+  c_args: c_args,
+  vala_args: vala_args,  
+  vala_header: 'FeedReader.h',
+  vala_vapi: 'FeedReader.vapi',
   dependencies: [
     glib,
     gtk,
@@ -238,8 +245,28 @@ executable(
     libgtkimageview,
     libvilistextum,
     libgd
-  ]
+  ],
+  install: true,
+  install_dir: [true, true, true]
 )
+
+feedreader = declare_dependency(
+  link_with: [
+    feedreader_lib
+  ],
+  dependencies: [
+    libgd_vapi,
+    gtkimageview_vapi,
+    libvilistextum_vapi
+  ],
+  include_directories: include_directories('.')
+)
+
+
+
+
+
+
 
 # Build plugins and data files
 subdir('plugins')

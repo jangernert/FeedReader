@@ -7,6 +7,6 @@ jobs:
     working_directory: ~/FeedReader
     steps:
       - checkout
-      - run: dnf install meson ninja-build appstream-glib
+      - run: dnf install meson ninja-build libappstream-glib-devel
       - run: meson builddir
       - run: ninja -C builddir

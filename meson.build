@@ -23,7 +23,9 @@ BACKEND_PLUGINS_DIR    = join_paths(PKGLIBDIR, 'plugins')
 
 # Define the vapi dir
 add_project_arguments(
-  ['--vapidir', VAPI_DIR],
+  [
+    '--vapidir=' + VAPI_DIR,
+  ],
   language: 'vala'
 )
 
@@ -75,7 +77,7 @@ subdir('libraries/libgd')
 subdir('libraries/libgtkimageview')
 subdir('libraries/libIvy')
 subdir('libraries/libVilistextum')
-subdir('libraries/WebExtension')
+#subdir('libraries/WebExtension')
 subdir('data')
 
 
@@ -83,15 +85,32 @@ subdir('data')
 libgd_vapi          = vala_compiler.find_library('gd-1.0', dirs: VAPI_DIR)
 gtkimageview_vapi   = vala_compiler.find_library('gtkimageview', dirs: VAPI_DIR)
 libvilistextum_vapi = vala_compiler.find_library('libvilistextum', dirs: VAPI_DIR)
-libivy_vapi         = vala_compiler.find_library('ivy', required: false,
-                                                  dirs: join_paths(meson.build_root(),
-                                                                    'libraries/libIvy'))
 
-libvilistextum  = declare_dependency(dependencies: libvilistextum_vapi)
-libgd           = declare_dependency(dependencies: libgd_vapi)
-libgtkimageview = declare_dependency(dependencies: gtkimageview_vapi)
-libivy          = declare_dependency(dependencies: libivy_vapi)
+libvilistextum  = declare_dependency(
+  link_with: vilistextum_lib,
+  include_directories: vilistextum_inc,
+  dependencies: libvilistextum_vapi
+)
+libgd           = declare_dependency(
+  link_with: gd_lib,
+  include_directories: gd_inc,
+  dependencies: libgd_vapi
+)
+libgtkimageview = declare_dependency(
+  link_with: [
+    gtkimageview_lib
+  ],
+  include_directories: gtkimageview_inc,
+  dependencies: [
+    gtkimageview_vapi,
+    c_compiler.find_library('m', required: false)
+    ]
 
+)
+libivy          = declare_dependency(
+  link_with: ivy_lib,
+  include_directories: ivy_inc
+)
 vala_sources = [
   'src/FavIconCache.vala',
   'src/FeedReader.vala',
@@ -187,17 +206,19 @@ executable(
   vala_sources,
   UI_RESOURCES,
   c_args: [
+    '-g',
+    '-w',
+    '-rdynamic',
     '-DVERSION="' + meson.project_version() + '"',
     '-DGETTEXT_PACKAGE="'+ meson.project_name() +'"',
-    '-DGNOMELOCALEDIR="' + LOCALE_DIR + '"'
+    '-DGNOMELOCALEDIR="' + LOCALE_DIR + '"',
+    '-DGOA_API_IS_SUBJECT_TO_CHANGE'
   ],
   vala_args: [
-    '--target-glib=2.38',
-    '--pkg=posix',
-    '--vapidir=' + VAPI_DIR,
     '--header=FeedReader.h',
     '--vapi=FeedReader.vapi',
-    '--enable-experimental'
+    '--enable-experimental',
+    '--target-glib=2.50'
   ],
   install: true,
   dependencies: [
@@ -216,10 +237,10 @@ executable(
     libxml,
     goa,
     posix,
-    goa,
+    libivy,
     libgtkimageview,
-    libgd,
-    libvilistextum
+    libvilistextum,
+    libgd
   ]
 )
 

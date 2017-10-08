@@ -2,7 +2,7 @@
 
 [CCode (cprefix = "Gd", gir_namespace = "Gd", gir_version = "1.0", lower_case_cprefix = "gd_")]
 namespace Gd {
-	[CCode (cheader_filename = "libgd/gd.h", type_id = "gd_notification_get_type ()")]
+	[CCode (cheader_filename = "libraries/libgd/gd.h", type_id = "gd_notification_get_type ()")]
 	public class Notification : Gtk.Bin, Atk.Implementor, Gtk.Buildable {
 		[CCode (has_construct_function = false, type = "GtkWidget*")]
 		public Notification ();

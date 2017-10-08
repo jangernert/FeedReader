@@ -1,4 +1,5 @@
-lib_vilistextum = static_library(
+vilistextum_inc = include_directories('.')
+vilistextum_lib = static_library(
   'vilistextum',
   [
     'charset.c',

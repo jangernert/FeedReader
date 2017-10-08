@@ -1,4 +1,5 @@
-lib_ivy = static_library(
+ivy_inc = include_directories('.')
+ivy_lib = static_library(
   'ivy',
   [
     'Extractor.vala',

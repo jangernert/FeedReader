@@ -1,4 +1,5 @@
-lib_gd = static_library(
+gd_inc = include_directories('.')
+gd_lib = static_library(
   'gd',
   [
     'gd-notification.c',

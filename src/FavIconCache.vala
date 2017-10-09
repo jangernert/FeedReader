@@ -52,7 +52,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 		}
 		catch (IOError.NOT_FOUND e)
 		{
-			Logger.debug(@"FavIconCache: Icon $fileName does not exist");
+			//Logger.debug(@"FavIconCache: Icon $fileName does not exist");
 		}
 		catch(Gdk.PixbufError.UNKNOWN_TYPE e)
 		{

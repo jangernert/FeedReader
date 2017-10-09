@@ -32,16 +32,23 @@ public class FeedReader.Article : GLib.Object {
 	private int m_lastModified;
 	private int m_pos;
 
-	private static GLib.Settings gnome_settings;
-	private static string clock_format;
+	private static GLib.Settings? gnome_settings;
+	private static bool clock_12_hour = false;
 
 	static construct
 	{
-		gnome_settings = new GLib.Settings("org.gnome.desktop.interface");
-		clock_format = gnome_settings.get_string("clock-format");
-		gnome_settings.changed["clock-format"].connect(() => {
-			clock_format = gnome_settings.get_string("clock-format");
-		});
+		// Lookup the schema in a complicated way so we don't require users
+		// to be running GNOME Shell
+		var schema_source = SettingsSchemaSource.get_default();
+		var schema = schema_source.lookup("org.gnome.desktop.interface", true);
+		if(schema != null)
+		{
+			gnome_settings = new GLib.Settings.full(schema, null, null);
+			clock_12_hour = gnome_settings.get_string("clock-format") == "12h";
+			gnome_settings.changed["clock-format"].connect(() => {
+				clock_12_hour = gnome_settings.get_string("clock-format") == "12h";
+			});
+		}
 	}
 
 	public Article (string articleID,
@@ -195,7 +202,7 @@ public class FeedReader.Article : GLib.Object {
 
 		if(addTime)
 		{
-			if(clock_format == "12h")
+			if(clock_12_hour)
 				formats.add("%l:%M %p");
 			else
 				formats.add("%H:%M");

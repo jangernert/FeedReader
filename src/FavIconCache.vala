@@ -38,27 +38,27 @@ public class FeedReader.FavIconCache : GLib.Object {
 		try
 		{
 			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);
-			try
+			var stream = yield file.read_async();
+			var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+			stream.close();
+			if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
 			{
-				var stream = yield file.read_async();
-				var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
-				stream.close();
-				if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
-				{
-					Logger.warning(@"FavIconCache: $fileName is too small");
-					return;
-				}
-
-				pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
-				m_map.set(icon_name, pixbuf);
-			}
-			catch (IOError.NOT_FOUND e)
-			{
-				Logger.debug(@"FavIconCache: Icon $fileName does not exist");
+				Logger.warning(@"FavIconCache: $fileName is too small");
 				return;
 			}
+
+			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
+			m_map.set(icon_name, pixbuf);
 		}
-		catch(GLib.Error e)
+		catch (IOError.NOT_FOUND e)
+		{
+			Logger.debug(@"FavIconCache: Icon $fileName does not exist");
+		}
+		catch(Gdk.PixbufError.UNKNOWN_TYPE e)
+		{
+			Logger.warning(@"FavIconCache.load: Icon $fileName is an unknown type");
+		}
+		catch(Error e)
 		{
 			Logger.error(@"FavIconCache.load: $fileName: %s".printf(e.message));
 		}

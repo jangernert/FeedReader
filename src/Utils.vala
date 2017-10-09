@@ -564,10 +564,6 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		var uri = new Soup.URI(feed.getURL());
 		string hostname = uri.get_host();
-		int first = hostname.index_of_char('.', 0);
-		int second = hostname.index_of_char('.', first+1);
-		if(second != -1 && first != second)
-			hostname = hostname.substring(first+1);
 		string siteURL = uri.get_scheme() + "://" + hostname;
 
 		// download html and parse to find location of favicon

@@ -32,6 +32,25 @@ public class FeedReader.Article : GLib.Object {
 	private int m_lastModified;
 	private int m_pos;
 
+	private static GLib.Settings? gnome_settings;
+	private static bool clock_12_hour = false;
+
+	static construct
+	{
+		// Lookup the schema in a complicated way so we don't require users
+		// to be running GNOME Shell
+		var schema_source = SettingsSchemaSource.get_default();
+		var schema = schema_source.lookup("org.gnome.desktop.interface", true);
+		if(schema != null)
+		{
+			gnome_settings = new GLib.Settings.full(schema, null, null);
+			clock_12_hour = gnome_settings.get_string("clock-format") == "12h";
+			gnome_settings.changed["clock-format"].connect(() => {
+				clock_12_hour = gnome_settings.get_string("clock-format") == "12h";
+			});
+		}
+	}
+
 	public Article (string articleID,
 					string title,
 					string url,
@@ -157,33 +176,40 @@ public class FeedReader.Article : GLib.Object {
 		var date_day = m_date.get_day_of_year();
 		var date_week = m_date.get_week_of_year();
 
-		string time = (addTime) ? ", %H:%M" : "";
-
-		if(date_year == 1900)
-		{
-			//return _("no date available");
-		}
-		else if(date_year == now_year)
+		var formats = new Gee.ArrayList<string>();
+		if(date_year == now_year)
 		{
 			if(date_day == now_day)
 			{
-				return m_date.format("%H:%M");
+				addTime = true;
 			}
-			else if(date_day == now_day-1)
+			else if(date_day == now_day -1)
 			{
-				return _("Yesterday") + m_date.format(", %H:%M");
+				formats.add("Yesterday");
+				addTime = true;
 			}
 			else if(date_week == now_week)
 			{
-				return m_date.format("%A" + time);
+				formats.add("%A");
 			}
 			else
 			{
-				return m_date.format("%B %d" + time);
+				formats.add("%B %d");
 			}
 		}
+		else
+			formats.add("%Y-%m-%d");
 
-		return m_date.format("%Y-%m-%d" + time);
+		if(addTime)
+		{
+			if(clock_12_hour)
+				formats.add("%l:%M %p");
+			else
+				formats.add("%H:%M");
+		}
+
+		string format = StringUtils.join(formats, ", ");
+		return m_date.format(format);
 	}
 
 	public string getFeedID()

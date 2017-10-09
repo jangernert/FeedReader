@@ -123,17 +123,16 @@ section {
 
 div.pw {
     width: 90%;
-    max-width: 1100px;
     margin: 0 auto;
     padding: 5% 0;
 }
 
 body {
-    padding: 3rem;
     cursor: default;
-    font-weight: 300;
-    max-width: 1200px;
-    margin: auto;
+    font-weight: normal;
+    max-width: 50em;
+	margin: auto;
+	text-rendering: optimizeLegibility;
 }
 
 .tlblue {
@@ -151,41 +150,52 @@ h3,
 h4,
 h5,
 h6 {
-    color: #318c34;
     font-weight: 500;
     text-align: left;
     line-height: 120%;
 }
 
+h1 a,
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+    color: #1d1f1c;
+}
+
+h1 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    font-weight: normal;
+}
+
 h2 {
     margin-top: 2rem;
     margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 2px solid #318c34;
-    font-size: 2.5rem;
-    font-weight: 300;
+    font-size: 1.5rem;
+    font-weight: normal;
 }
 
 h3 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
 }
 
 h4 {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
-    font-weight: 300;
+    font-weight: normal;
 }
 
 h5 {
-    color: #000;
     font-size: 1.2rem;
     margin-bottom: 0.25rem;
 }
 
 h6 {
-    color: #000;
     font-size: 1rem;
     margin-bottom: 0.25rem;
     text-transform: uppercase;
@@ -241,7 +251,6 @@ a :not(img){
 }
 
 a {
-    color: #318c34;
     text-overflow: ellipsis;
 }
 
@@ -295,8 +304,7 @@ figure:first-child {
 }
 
 header.post {
-    padding: 2rem;
-    background: rgba(0, 0, 0, 0.05);
+    margin: 2rem;
 }
 
 div.introtext {
@@ -304,7 +312,6 @@ div.introtext {
 }
 
 header.post h1 {
-    color: #000;
     font-weight: 600;
 }
 
@@ -325,9 +332,8 @@ header.post span.author {
 }
 
 div.frcontent {
-    padding: 2rem;
+    margin: 2rem;
     margin-bottom: 3rem;
-    border: 1px solid rgba(0, 0, 0, 0.05);
     text-align: justify;
     font-size: inherit;
 }

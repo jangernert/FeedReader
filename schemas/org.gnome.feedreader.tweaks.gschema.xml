@@ -43,7 +43,7 @@
 		</key>
 
 		<key name="article-select-text" type="b">
-			<default>false</default>
+			<default>true</default>
 			<summary>Select text of articles</summary>
 			<description>
 				Enable selecting text in the articleview, also copy text

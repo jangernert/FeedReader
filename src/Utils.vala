@@ -876,7 +876,6 @@ public class FeedReader.Utils : GLib.Object {
 			article.insert(select_pos, "unselectable");
 		}
 
-		string fontfamily_id = "$FONTFAMILY";
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
 		string fontfamilly = desc.get_family();
@@ -884,6 +883,8 @@ public class FeedReader.Utils : GLib.Object {
 		string small_size = (fontsize - 2).to_string();
 		string large_size = (fontsize * 2).to_string();
 		string normal_size = fontsize.to_string();
+
+		string fontfamily_id = "$FONTFAMILY";
 		int fontfamilly_pos = article.str.index_of(fontfamily_id);
 		article.erase(fontfamilly_pos, fontfamily_id.length);
 		article.insert(fontfamilly_pos, fontfamilly);

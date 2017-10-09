@@ -185,7 +185,7 @@ public class FeedReader.Article : GLib.Object {
 			}
 			else if(date_day == now_day -1)
 			{
-				formats.add("Yesterday");
+				formats.add(_("Yesterday").replace("%", "%%"));
 				addTime = true;
 			}
 			else if(date_week == now_week)

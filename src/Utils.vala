@@ -644,23 +644,29 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 		var path = GLib.File.new_for_path(icon_path);
+		bool folder_exists = false;
 		try
 		{
-			yield path.query_info_async("", FileQueryInfoFlags.NONE);
-		}
-		catch (IOError.NOT_FOUND e)
-		{
-			try
-			{
-				path.make_directory_with_parents();
-			}
-			catch(GLib.Error e){}
+			var info = yield path.query_info_async("standard::type", FileQueryInfoFlags.NONE);
+			folder_exists = info.get_file_type () == FileType.DIRECTORY;
 		}
 		catch(Error e)
 		{
 			Logger.error("downloadIcon: Unknown error: " + e.message);
 			return false;
 		}
+		if(!folder_exists)
+		{
+			try
+			{
+				path.make_directory_with_parents();
+			}
+			catch(Error e)
+			{
+				Logger.error(@"downloadIcon: Failed to create folder $icon_path: " + e.message);
+			}
+		}
+
 		string filename_prefix = icon_path + feed.getFeedFileName();
 		string local_filename = filename_prefix + ".ico";
 		string metadata_filename = filename_prefix + ".txt";
@@ -735,11 +741,6 @@ public class FeedReader.Utils : GLib.Object {
 				{
 					yield local_file.replace_contents_async(data, null, false, FileCreateFlags.NONE, null, null);
 					FileUtils.set_data(local_filename, data);
-				}
-				catch(IOError e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-					return false;
 				}
 				catch(Error e)
 				{

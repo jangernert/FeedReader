@@ -522,51 +522,107 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static async void getFavIcons(Gee.List<Feed> feeds, GLib.Cancellable? cancellable = null)
 	{
-		var lastDownload = new DateTime.from_unix_local(Settings.state().get_int("last-favicon-update"));
-		var now = new DateTime.now_local();
-		var difference = now.difference(lastDownload);
-
-		if((difference/GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
-		{
-			Logger.debug("FavIcons already downloaded recently, skipping this time");
-			return;
-		}
-
 		// TODO: It would be nice if we could queue these in parallel
 		foreach(Feed f in feeds)
 		{
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 
-			// first check if the feed provides a valid url for the favicon
-			if(f.getIconURL() != null && yield downloadIcon(f, f.getIconURL(), cancellable))
-			{
-				// download of provided url successful
-				continue;
-			}
 			// try to find favicon on the website
-			else if(yield downloadFavIcon(f, cancellable))
-			{
-				// found an icon on the website of the feed
-				continue;
-			}
-			else
+			if(!yield downloadFavIcon(f, null, cancellable))
 			{
 				Logger.warning("Couldn't find a favicon for feed " + f.getTitle());
 			}
 		}
-
-		// update last-favicon-update timestamp
-		Settings.state().set_int("last-favicon-update", (int)now.to_unix());
 	}
 
-	public static async bool downloadFavIcon(Feed feed, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	private static async bool file_exists(string path_str, FileType expected_type)
 	{
+		var path = GLib.File.new_for_path(path_str);
+		try
+		{
+			var info = yield path.query_info_async("standard::type", FileQueryInfoFlags.NONE);
+			return info.get_file_type () == expected_type;
+		}
+		catch(Error e)
+		{
+			return false;
+		}
+	}
+
+	private static async bool ensure_path(string path_str)
+	{
+		var path = GLib.File.new_for_path(path_str);
+		if(yield file_exists(path_str, FileType.DIRECTORY))
+			return true;
+
+		try
+		{
+			path.make_directory_with_parents();
+			return true;
+		}
+		catch(Error e)
+		{
+			Logger.error(@"ensure_path: Failed to create folder $path_str: " + e.message);
+			return false;
+		}
+	}
+
+	public static async bool downloadFavIcon(Feed feed, string? hint_url = null, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	{
+		string filename_prefix = icon_path + feed.getFeedFileName();
+		string local_filename = @"$filename_prefix.ico";
+		string metadata_filename = @"$filename_prefix.txt";
+
+		var metadata = yield ResourceMetadata.from_file_async(metadata_filename);
+		DateTime? expires = metadata.expires;
+
+		if(cancellable != null && cancellable.is_cancelled())
+			return false;
+
+		var now = new DateTime.now_utc();
+		if(expires != null)
+		{
+			if(expires.to_unix() > now.to_unix())
+			{
+				Logger.debug("Favicon for %s is valid until %s, skipping this time".printf(feed.getTitle(), expires.to_string()));
+				return yield file_exists(local_filename, FileType.REGULAR);
+			}
+		}
+
+		metadata.expires = now.add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
+		yield metadata.save_to_file_async(metadata_filename);
+
+		var obvious_icons = new Gee.ArrayList<string>();
+
+		if(hint_url != null)
+			obvious_icons.add(hint_url);
+
+		if(feed.getIconURL() != null)
+			obvious_icons.add(feed.getIconURL());
+
+		// try domainname/favicon.ico
 		var uri = new Soup.URI(feed.getURL());
 		string hostname = uri.get_host();
 		string siteURL = uri.get_scheme() + "://" + hostname;
 
-		// download html and parse to find location of favicon
+		var icon_url = siteURL;
+		if(!icon_url.has_suffix("/"))
+			icon_url += "/";
+		icon_url += "favicon.ico";
+		obvious_icons.add(icon_url);
+
+		// Try to find one of those icons
+		foreach(var url in obvious_icons)
+		{
+			if(yield downloadIcon(feed, url, cancellable, icon_path))
+				return true;
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+		}
+
+		// If all else fails, download html and parse to find location of favicon
 		var message_html = new Soup.Message("GET", siteURL);
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_html.request_headers.append("DNT", "1");
@@ -608,18 +664,13 @@ public class FeedReader.Utils : GLib.Object {
 			{
 				xpath = grabberUtils.completeURL(xpath, siteURL);
 				if(yield downloadIcon(feed, xpath, cancellable, icon_path))
-				return true;
+					return true;
 			}
 
 			delete doc;
 		}
 
-		// try domainname/favicon.ico
-		var icon_url = siteURL;
-		if(!icon_url.has_suffix("/"))
-			icon_url += "/";
-		icon_url += "favicon.ico";
-		return yield downloadIcon(feed, icon_url, cancellable, icon_path);
+		return false;
 	}
 
 	public static async bool downloadIcon(Feed feed, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
@@ -630,40 +681,16 @@ public class FeedReader.Utils : GLib.Object {
 			return false;
 		}
 
-		var path = GLib.File.new_for_path(icon_path);
-		bool folder_exists = false;
-		try
-		{
-			var info = yield path.query_info_async("standard::type", FileQueryInfoFlags.NONE);
-			folder_exists = info.get_file_type () == FileType.DIRECTORY;
-		}
-		catch(Error e)
-		{
-			Logger.error("downloadIcon: Unknown error: " + e.message);
+		if(!yield ensure_path(icon_path))
 			return false;
-		}
-		if(!folder_exists)
-		{
-			try
-			{
-				path.make_directory_with_parents();
-			}
-			catch(Error e)
-			{
-				Logger.error(@"downloadIcon: Failed to create folder $icon_path: " + e.message);
-			}
-		}
 
 		string filename_prefix = icon_path + feed.getFeedFileName();
-		string local_filename = filename_prefix + ".ico";
-		string metadata_filename = filename_prefix + ".txt";
+		string local_filename = @"$filename_prefix.ico";
+		string metadata_filename = @"$filename_prefix.txt";
 
 		var metadata = yield ResourceMetadata.from_file_async(metadata_filename);
-		string? etag = metadata.etag;
-		// Normally, we would store a last modified time as a datetime type, but
-		// servers aren't consistent about the format so we need to treat it as a
-		// black box.
-		string? last_modified = metadata.last_modified;
+		string etag = metadata.etag;
+		string last_modified = metadata.last_modified;
 
 		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
 		var message = new Soup.Message("GET", icon_url);
@@ -727,6 +754,24 @@ public class FeedReader.Utils : GLib.Object {
 			}
 
 			metadata.etag = message.response_headers.get_one("ETag");
+			metadata.last_modified = message.response_headers.get_one("Last-Modified");
+
+			var cache_control = message.response_headers.get_list("Cache-Control");
+			if(cache_control != null)
+			{
+				foreach(var header in message.response_headers.get_list("Cache-Control").split(","))
+				{
+					var parts = header.split("=");
+					if(parts.length < 2 || parts[0] != "max-age")
+						continue;
+					Logger.debug(parts[1]);
+					var seconds = int64.parse(parts[1]);
+					var expires = new DateTime.now_utc();
+					expires.add_seconds(seconds);
+					if(metadata.expires == null || expires.to_unix() > metadata.expires.to_unix())
+						metadata.expires = expires;
+				}
+			}
 			metadata.last_modified = message.response_headers.get_one("Last-Modified");
 			yield metadata.save_to_file_async(metadata_filename);
 			return true;

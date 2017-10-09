@@ -32,6 +32,18 @@ public class FeedReader.Article : GLib.Object {
 	private int m_lastModified;
 	private int m_pos;
 
+	private static GLib.Settings gnome_settings;
+	private static string clock_format;
+
+	static construct
+	{
+		gnome_settings = new GLib.Settings("org.gnome.desktop.interface");
+		clock_format = gnome_settings.get_string("clock-format");
+		gnome_settings.changed["clock-format"].connect(() => {
+			clock_format = gnome_settings.get_string("clock-format");
+		});
+	}
+
 	public Article (string articleID,
 					string title,
 					string url,
@@ -157,33 +169,40 @@ public class FeedReader.Article : GLib.Object {
 		var date_day = m_date.get_day_of_year();
 		var date_week = m_date.get_week_of_year();
 
-		string time = (addTime) ? ", %H:%M" : "";
-
-		if(date_year == 1900)
-		{
-			//return _("no date available");
-		}
-		else if(date_year == now_year)
+		var formats = new Gee.ArrayList<string>();
+		if(date_year == now_year)
 		{
 			if(date_day == now_day)
 			{
-				return m_date.format("%H:%M");
+				addTime = true;
 			}
-			else if(date_day == now_day-1)
+			else if(date_day == now_day -1)
 			{
-				return _("Yesterday") + m_date.format(", %H:%M");
+				formats.add("Yesterday");
+				addTime = true;
 			}
 			else if(date_week == now_week)
 			{
-				return m_date.format("%A" + time);
+				formats.add("%A");
 			}
 			else
 			{
-				return m_date.format("%B %d" + time);
+				formats.add("%B %d");
 			}
 		}
+		else
+			formats.add("%Y-%m-%d");
 
-		return m_date.format("%Y-%m-%d" + time);
+		if(addTime)
+		{
+			if(clock_format == "12h")
+				formats.add("%l:%M %p");
+			else
+				formats.add("%H:%M");
+		}
+
+		string format = StringUtils.join(formats, ", ");
+		return m_date.format(format);
 	}
 
 	public string getFeedID()

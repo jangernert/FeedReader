@@ -15,19 +15,14 @@
 
 public class FeedReader.Utils : GLib.Object {
 
-	private static Soup.Session? m_session;
+	private static Soup.Session m_session;
 
-	private static Soup.Session getSession()
+	static construct
 	{
-		if(m_session == null)
-		{
-			m_session = new Soup.Session();
-			m_session.user_agent = Constants.USER_AGENT;
-			m_session.ssl_strict = false;
-			m_session.timeout = 1;
-		}
-
-		return m_session;
+		m_session = new Soup.Session();
+		m_session.user_agent = Constants.USER_AGENT;
+		m_session.ssl_strict = false;
+		m_session.timeout = 1;
 	}
 
 	public static void generatePreviews(Gee.List<Article> articles)
@@ -279,7 +274,7 @@ public class FeedReader.Utils : GLib.Object {
 			return false;
 		}
 
-		var status = getSession().send_message(message);
+		var status = m_session.send_message(message);
 
 		Logger.debug(@"Ping: status $status");
 
@@ -577,7 +572,7 @@ public class FeedReader.Utils : GLib.Object {
 		InputStream bodyStream;
 		try
 		{
-			bodyStream = yield getSession().send_async(message_html);
+			bodyStream = yield m_session.send_async(message_html);
 		}
 		catch (Error e)
 		{
@@ -691,7 +686,7 @@ public class FeedReader.Utils : GLib.Object {
 		InputStream bodyStream;
 		try
 		{
-			bodyStream = yield getSession().send_async(message, cancellable);
+			bodyStream = yield m_session.send_async(message, cancellable);
 		}
 		catch (Error e)
 		{

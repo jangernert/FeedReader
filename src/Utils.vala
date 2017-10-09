@@ -574,29 +574,20 @@ public class FeedReader.Utils : GLib.Object {
 		var message_html = new Soup.Message("GET", siteURL);
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_html.request_headers.append("DNT", "1");
-		InputStream bodyStream;
+
+		string html;
 		try
 		{
-			bodyStream = yield getSession().send_async(message_html);
+			var bodyStream = yield getSession().send_async(message_html);
+			html = (string)yield inputStreamToArray(bodyStream, cancellable);
 		}
 		catch (Error e)
 		{
 			Logger.warning(@"Request for $siteURL failed: " + e.message);
 			return false;
 		}
-		if(message_html.status_code == 200)
+		if(html != null && message_html.status_code == 200)
 		{
-			string html;
-			try
-			{
-				html = (string)yield inputStreamToArray(bodyStream, cancellable);
-			}
-			catch(Error e)
-			{
-				Logger.error(@"Failed to load body of $siteURL: " + e.message);
-				return false;
-			}
-
 			var html_cntx = new Html.ParserCtxt();
 			html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
 			Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
@@ -688,10 +679,11 @@ public class FeedReader.Utils : GLib.Object {
 		if(last_modified != null)
 			message.request_headers.append("If-Modified-Since", last_modified);
 
-		InputStream bodyStream;
+		uint8[]? data;
 		try
 		{
-			bodyStream = yield getSession().send_async(message, cancellable);
+			var bodyStream = yield getSession().send_async(message, cancellable);
+			data = yield inputStreamToArray(bodyStream, cancellable);
 		}
 		catch (Error e)
 		{
@@ -703,23 +695,12 @@ public class FeedReader.Utils : GLib.Object {
 		{
 			return true;
 		}
-		else if(status == 404)
+		else if(status == 404 || data == null)
 		{
 			return false;
 		}
 		else if(status == 200)
 		{
-			uint8[] data;
-			try
-			{
-				data = yield inputStreamToArray(bodyStream, cancellable);
-			}
-			catch (Error e)
-			{
-				Logger.error(@"Failed to read body of $icon_url: " + e.message);
-				return false;
-			}
-
 			var local_file = File.new_for_path(local_filename);
 			uint8[]? local_data = null;
 			try

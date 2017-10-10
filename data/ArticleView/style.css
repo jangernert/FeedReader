@@ -399,6 +399,12 @@ body.theme.default {
     background: white;
 }
 
+footer,
+iframe,
+img,
+figure {
+	border: none;
+}
 
 /* MIDNIGHT THEME -- also default dark */
 

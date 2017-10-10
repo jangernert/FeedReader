@@ -209,7 +209,14 @@ public class FeedbinAPI : Object {
 
 		var location = response.response_headers.get_one("Location");
 		if(location == null) {
-			throw new FeedbinError.UNKNOWN_ERROR(@"Feedbin API error adding feed $url: no Location header");
+			// Lookup the subscription ID if Feedbin doesn't return it.
+			// This seems to be a bug in the Feedbin API if a subscription already exists
+			foreach(var subscription in get_subscriptions())
+			{
+				if(subscription.feed_url == url)
+					return subscription.id;
+			}
+			throw new FeedbinError.UNKNOWN_ERROR(@"Feedbin API error adding feed $url: couldn't figure out the created subscription ID");
 		}
 
 		var last_slash = location.last_index_of_char('/');

@@ -18,7 +18,11 @@ void add_login_tests()
     string? username = Environment.get_variable(user_env);
     string? password = Environment.get_variable(password_env);
     if(username == null || password == null)
-        return;
+		return;
+
+	// Stick a random number at the end of Feed URL's to ensure that they're
+	// unique, even if we run two tests against the same account
+	uint nonce = Random.next_int();
 
     Test.add_data_func ("/feedbinapi/login", () => {
 
@@ -44,7 +48,7 @@ void add_login_tests()
 
         var api = new FeedbinAPI(username, password);
 
-        var url = "https://www.brendanlong.com/feeds/all.atom.xml?subscribe";
+        var url = "https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-subscribe-$nonce";
         delete_subscription(api, url);
 
         var subscription_id = api.add_subscription(url);
@@ -86,7 +90,7 @@ void add_login_tests()
 
         var api = new FeedbinAPI(username, password);
 
-        var url = "https://www.brendanlong.com/feeds/all.atom.xml?taggings";
+        var url = @"https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-taggings-$nonce";
         delete_subscription(api, url);
 
         var subscription_id = api.add_subscription(url);
@@ -123,7 +127,10 @@ void add_login_tests()
         foreach(var tagging in api.get_taggings())
         {
             assert(tagging.feed_id != created_subscription.feed_id);
-        }
+		}
+
+		// cleanup
+		api.delete_subscription(subscription_id);
     });
 
     Test.add_data_func ("/feedbinapi/entries", () => {
@@ -135,8 +142,8 @@ void add_login_tests()
 
         var api = new FeedbinAPI(username, password);
 
-        var url = "https://www.brendanlong.com/feeds/all.atom.xml?entries";
-        delete_subscription(api, url);
+		// Note: This one shouldn't be deleted or recreated, since we want the entries to be available
+        var url = "https://www.brendanlong.com/feeds/all.atom.xml?feed-reader-test-entries";
 
         var subscription_id = api.add_subscription(url);
         assert(subscription_id != 0);
@@ -144,15 +151,15 @@ void add_login_tests()
         var subscription = api.get_subscription(subscription_id);
         assert(subscription.id == subscription_id);
 
-        // The subscription is new so it shouldn't have any taggings
         var entries = api.get_entries(1, false, new DateTime.from_unix_utc(0), subscription.feed_id);
         foreach(var entry in entries)
         {
             assert(entry.feed_id == subscription.feed_id);
         }
 
-        assert(entries.size > 0);
-        var entry = entries.to_array()[0];
+		assert(entries.size > 0);
+		int i = Random.int_range(0, entries.size);
+        var entry = entries.to_array()[i];
         var entry_ids = new Gee.ArrayList<int64?>();
         entry_ids.add(entry.id);
 

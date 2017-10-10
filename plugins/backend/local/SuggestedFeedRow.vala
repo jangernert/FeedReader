@@ -63,34 +63,31 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 
 		var uri = new Soup.URI(url);
 		var fakeFeed = new Feed(uri.get_host(), "", "", 0);
-		Utils.downloadIcon.begin(fakeFeed, iconURL, null, "/tmp/", (obj, res) => {
-			bool success = Utils.downloadIcon.end(res);
-			Gtk.Image? icon = null;
-
-			if(success)
-			{
-				try
-				{
-					string filename = "/tmp/" + uri.get_host().replace("/", "_").replace(".", "_") + ".ico";
-					Logger.debug("load icon %s".printf(filename));
-					var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
-					icon = new Gtk.Image.from_pixbuf(tmp_icon);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("SuggestedFeedRow.constructor: %s".printf(e.message));
-					icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-				}
-			}
-			else
-			{
-				icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-			}
-
-			iconStack.add_named(icon, "icon");
-				show_all();
-				iconStack.set_visible_child_name("icon");
+		load_favicon.begin(iconStack, fakeFeed, iconURL, (obj, res) => {
+			load_favicon.end(res);
 		});
+	}
+
+	private async void load_favicon(Gtk.Stack iconStack, Feed feed, string iconURL)
+	{
+		bool success = yield Utils.downloadFavIcon(feed, iconURL);
+
+		Gtk.Image? icon = null;
+		if(success)
+		{
+			var pixBuf = yield FavIconCache.get_default().getIcon(feed.getFeedID());
+			if(pixBuf != null)
+				icon = new Gtk.Image.from_pixbuf(pixBuf);
+		}
+
+		if(icon == null)
+		{
+			icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		}
+
+		iconStack.add_named(icon, "icon");
+		show_all();
+		iconStack.set_visible_child_name("icon");
 	}
 
 	public bool checked()

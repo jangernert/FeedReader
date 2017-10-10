@@ -702,7 +702,6 @@ namespace FeedReader {
 
 					if(success)
 					{
-						Settings.state().reset("last-favicon-update");
 						startSync();
 					}
 

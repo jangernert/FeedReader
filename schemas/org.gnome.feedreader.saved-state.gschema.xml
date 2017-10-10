@@ -139,14 +139,6 @@
 			</description>
 		</key>
 
-		<key name="last-favicon-update" type="i">
-			<default>946684800</default>
-			<summary>timestamp of the last favicon update</summary>
-			<description>
-				Timestamp of the last time nonexisting favicon got updated.
-			</description>
-		</key>
-
 		<key name="search-term" type="s">
 			<default>""</default>
 			<summary>search term</summary>

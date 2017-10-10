@@ -48,8 +48,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		{
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-			m_icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-			m_icon.get_style_context().add_class("fr-sidebar-symbolic");
+			m_icon = createFavIcon();
 			reloadFavIcon.begin();
 
 			m_icon.margin_start = level * 24;
@@ -149,23 +148,41 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		}
 	}
 
-	public async void reloadFavIcon()
+	public async void reloadFavIcon(Gtk.Image? inIcon = null)
 	{
 		var icon = yield FavIconCache.get_default().getIcon(m_feedID);
 		if(icon == null)
 			return;
 
-		m_icon.pixbuf = icon;
-		m_icon.get_style_context().remove_class("fr-sidebar-symbolic");
+		if(inIcon == null)
+		{
+			m_icon.pixbuf = icon;
+			m_icon.get_style_context().remove_class("fr-sidebar-symbolic");
+		}
+		else
+		{
+			inIcon.pixbuf = icon;
+			inIcon.get_style_context().remove_class("fr-sidebar-symbolic");
+		}
+	}
+
+	public Gtk.Image createFavIcon()
+	{
+		var icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+		icon.get_style_context().add_class("fr-sidebar-symbolic");
+		reloadFavIcon.begin(icon);
+
+		return icon;
 	}
 
 	private Gtk.Window getFeedIconWindow()
 	{
+		var icon = createFavIcon();
 		var window = new Gtk.Window(Gtk.WindowType.POPUP);
 		var visual = window.get_screen().get_rgba_visual();
 		window.set_visual(visual);
 		window.get_style_context().add_class("transparentBG");
-		window.add(m_icon);
+		window.add(icon);
 		window.show_all();
 		return window;
 	}

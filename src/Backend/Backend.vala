@@ -616,7 +616,7 @@ namespace FeedReader {
 		public void removeCategoryWithChildren(string catID)
 		{
 			var feeds = DataBase.readOnly().read_feeds();
-			deleteFeedsofCat(catID, feeds);
+			deleteFeedsInCategory(catID, feeds);
 
 			var cats = DataBase.readOnly().read_categories(feeds);
 			foreach(var cat in cats)
@@ -630,7 +630,7 @@ namespace FeedReader {
 			removeCategory(catID);
 		}
 
-		private void deleteFeedsofCat(string catID, Gee.List<Feed> feeds)
+		private void deleteFeedsInCategory(string catID, Gee.List<Feed> feeds)
 		{
 			foreach(Feed feed in feeds)
 			{

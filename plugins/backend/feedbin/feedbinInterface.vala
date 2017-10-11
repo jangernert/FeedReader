@@ -611,14 +611,9 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public void getArticles(int count, ArticleStatus what_to_get, string? feed_id_str, bool is_tag_id, GLib.Cancellable? cancellable = null)
 	{
-		if(what_to_get == ArticleStatus.READ)
-		{
-			Logger.warning("FeedbinInterface.getArticles: READ status not supported");
-			return;
-		}
-
 		try
 		{
+			var settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
 			DateTime? since = null;
 			switch(Settings.general().get_enum("drop-articles-after"))
 			{
@@ -634,9 +629,17 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 					since = new DateTime.now_utc().add_months(-6);
 					break;
 			}
+			if(!DataBase.readOnly().isTableEmpty("articles"))
+			{
+				var last_sync = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
+				if(since == null || last_sync.to_unix() > since.to_unix())
+				{
+					since = last_sync;
+				}
+			}
 
 			int64? feed_id = null;
-			if(!is_tag_id && feed_id != null)
+			if(!is_tag_id && feed_id_str != null)
 				feed_id = int64.parse(feed_id_str);
 			bool only_starred = what_to_get == ArticleStatus.MARKED;
 
@@ -651,6 +654,57 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 			var starred_ids = m_api.get_starred_entries();
 
+			{
+				// Update read/unread status of existing entries
+				string search_feed_id;
+				FeedListType search_type;
+				if(feed_id == null)
+				{
+					search_feed_id = FeedID.ALL.to_string();
+					search_type = FeedListType.ALL_FEEDS;
+				}
+				else if(is_tag_id)
+				{
+					search_feed_id = feed_id_str;
+					search_type = FeedListType.TAG;
+				}
+				else
+				{
+					search_feed_id = feed_id_str;
+					search_type = FeedListType.FEED;
+				}
+
+				Logger.debug(@"Checking if any articles in $search_type $search_feed_id changed state");
+				for(var offset = 0, c = 1000; ; offset += c)
+				{
+					var articles = new Gee.ArrayList<Article>();
+					var existing_articles = DataBase.readOnly().read_articles(search_feed_id, search_type, ArticleListState.ALL, "", c, offset);
+					if(existing_articles.size == 0)
+						break;
+
+					foreach(var article in existing_articles)
+					{
+						var id = int64.parse(article.getArticleID());
+						var marked = starred_ids.contains(id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
+						var unread = unread_ids.contains(id) ? ArticleStatus.UNREAD : ArticleStatus.READ;
+						var changed = false;
+						if(article.getMarked() != marked)
+						{
+							article.setMarked(marked);
+							changed = true;
+						}
+						if(article.getUnread() != unread)
+						{
+							article.setUnread(unread);
+							changed = true;
+						}
+						articles.add(article);
+					}
+					writeArticles(articles);
+				}
+			}
+
+			// Add new articles
 			for(int page = 1; ; ++page)
 			{
 				if(cancellable != null && cancellable.is_cancelled())

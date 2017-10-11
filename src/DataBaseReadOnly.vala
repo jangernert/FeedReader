@@ -395,30 +395,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return false;
 	}
 
-	public string read_preview(string articleID)
-	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("preview");
-		query.addEqualsCondition("articleID", articleID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		string result = "";
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_text(0);
-		}
-
-		return result;
-	}
-
 	public string getFeedName(string feedID)
 	{
 		string result = _("unknown Feed");
@@ -1061,7 +1037,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("articleID");
-		query.addEqualsCondition("rowid", "%i".printf(getHighestRowID()));
+		query.addEqualsCondition("rowid", "%s".printf(getMaxID("articles", "rowid")));
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1078,12 +1054,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return result;
 	}
 
-	public int getHighestRowID()
+	public string getMaxID(string table, string field)
 	{
-		int result = 0;
-
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("max(rowid)");
+		string maxID = "0";
+		var query = new QueryBuilder(QueryType.SELECT, table);
+		query.selectField("max(%s)".printf(field));
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -1094,35 +1069,12 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			Logger.error(sqlite_db.errmsg());
 		}
 
-		while(stmt.step() == Sqlite.ROW)
+		while (stmt.step () == Sqlite.ROW)
 		{
-			result = stmt.column_int(0);
-		}
-		return result;
-	}
-
-	public string getHighestFeedID()
-	{
-		string result = "0";
-
-		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("max(feed_id)");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
+			maxID = stmt.column_text(0);
 		}
 
-		while(stmt.step() == Sqlite.ROW)
-		{
-			result = stmt.column_text(0);
-		}
-
-		return result;
+		return maxID;
 	}
 
 	public bool feed_exists(string feed_url)
@@ -1422,28 +1374,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 
 		return count;
-	}
-
-	public string getMaxID(string table, string field)
-	{
-		string maxID = "0";
-		var query = new QueryBuilder(QueryType.SELECT, table);
-		query.selectField("max(%s)".printf(field));
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			maxID = stmt.column_text(0);
-		}
-
-		return maxID;
 	}
 
 	public Gee.List<Category> read_categories_level(int level, Gee.List<Feed>? feeds = null)

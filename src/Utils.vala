@@ -858,7 +858,7 @@ public class FeedReader.Utils : GLib.Object {
 		string feed_id = "$FEED";
 		int feed_pos = article.str.index_of(feed_id);
 		article.erase(feed_pos, feed_id.length);
-		article.insert(feed_pos, DataBase.readOnly().getFeedName(feedID));
+		article.insert(feed_pos, DataBase.readOnly().read_feed(feedID).getTitle());
 
 
 		string theme = "theme ";

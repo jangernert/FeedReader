@@ -356,7 +356,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		if(success)
-			feedID = (int.parse(DataBase.readOnly().getHighestFeedID()) + 1).to_string();
+			feedID = (int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id")) + 1).to_string();
 		else
 			feedID = "-98";
 

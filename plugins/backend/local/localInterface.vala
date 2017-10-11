@@ -402,7 +402,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(!DataBase.readOnly().isTableEmpty("feeds"))
 		{
-			feedID = "feedID%05d".printf(int.parse(DataBase.readOnly().getHighestFeedID().substring(6)) + 1);
+			feedID = "feedID%05d".printf(int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1);
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
@@ -428,7 +428,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		int highestID = 0;
 
 		if(!DataBase.readOnly().isTableEmpty("feeds"))
-			highestID = int.parse(DataBase.readOnly().getHighestFeedID().substring(6)) + 1;
+			highestID = int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1;
 
 		foreach(Feed f in feeds)
 		{

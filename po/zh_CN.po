@@ -103,7 +103,7 @@ msgid "Sync is in progress. Articles should appear any second."
 msgstr "同步中. 即将显示新内容."
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "新文章"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

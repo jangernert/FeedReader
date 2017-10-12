@@ -102,7 +102,7 @@ msgid "Sync is in progress. Articles should appear any second."
 msgstr "Sincronizzazione in corso. Gli articoli appariranno a momenti."
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "Nuovi articoli"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

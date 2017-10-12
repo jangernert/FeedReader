@@ -101,7 +101,7 @@ msgid "Sync is in progress. Articles should appear any second."
 msgstr "Eşzamanlama sürüyor. Yazılar her an görüntülenebilir."
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "Yeni Yazılar"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

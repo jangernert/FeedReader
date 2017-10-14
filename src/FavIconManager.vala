@@ -13,20 +13,20 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.FavIconCache : GLib.Object {
+public class FeedReader.FavIconManager : GLib.Object {
 
 	private Gee.HashMap<string, Gdk.Pixbuf> m_map;
-	private static FavIconCache? m_cache = null;
+	private static FavIconManager? m_cache = null;
 
-	public static FavIconCache get_default()
+	public static FavIconManager get_default()
 	{
 		if(m_cache == null)
-			m_cache = new FavIconCache();
+			m_cache = new FavIconManager();
 
 		return m_cache;
 	}
 
-	private FavIconCache()
+	private FavIconManager()
 	{
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
 	}
@@ -43,7 +43,7 @@ public class FeedReader.FavIconCache : GLib.Object {
 			stream.close();
 			if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
 			{
-				Logger.warning(@"FavIconCache: $fileName is too small");
+				Logger.warning(@"FavIconManager: $fileName is too small");
 				return;
 			}
 
@@ -52,15 +52,15 @@ public class FeedReader.FavIconCache : GLib.Object {
 		}
 		catch (IOError.NOT_FOUND e)
 		{
-			//Logger.debug(@"FavIconCache: Icon $fileName does not exist");
+			//Logger.debug(@"FavIconManager: Icon $fileName does not exist");
 		}
 		catch(Gdk.PixbufError.UNKNOWN_TYPE e)
 		{
-			Logger.warning(@"FavIconCache.load: Icon $fileName is an unknown type");
+			Logger.warning(@"FavIconManager.load: Icon $fileName is an unknown type");
 		}
 		catch(Error e)
 		{
-			Logger.error(@"FavIconCache.load: $fileName: %s".printf(e.message));
+			Logger.error(@"FavIconManager.load: $fileName: %s".printf(e.message));
 		}
 	}
 

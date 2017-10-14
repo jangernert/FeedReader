@@ -150,7 +150,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public async void reloadFavIcon(Gtk.Image? inIcon = null)
 	{
-		var icon = yield FavIconCache.get_default().getIcon(m_feedID);
+		var icon = yield FavIconManager.get_default().getIcon(m_feedID);
 		if(icon == null)
 			return;
 

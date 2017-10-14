@@ -75,7 +75,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		Gtk.Image? icon = null;
 		if(success)
 		{
-			var pixBuf = yield FavIconManager.get_default().getIcon(feed.getFeedID());
+			var pixBuf = yield FavIconManager.get_default().getIcon(feed);
 			if(pixBuf != null)
 				icon = new Gtk.Image.from_pixbuf(pixBuf);
 		}

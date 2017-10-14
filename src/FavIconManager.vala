@@ -31,9 +31,9 @@ public class FeedReader.FavIconManager : GLib.Object {
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
 	}
 
-	private async void load(string feedID)
+	private async void load(Feed feed)
 	{
-		var fileName = GLib.Base64.encode(feedID.data) + ".ico";
+		var fileName = GLib.Base64.encode(feed.getFeedID().data) + ".ico";
 		try
 		{
 			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);
@@ -47,7 +47,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 			}
 
 			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
-			m_map.set(feedID, pixbuf);
+			m_map.set(feed.getFeedID(), pixbuf);
 		}
 		catch (IOError.NOT_FOUND e)
 		{
@@ -63,7 +63,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		}
 	}
 
-	private bool hasIcon(string iconName)
+	private bool hasIcon(Feed feed)
 	{
 		if(m_map == null)
 		{
@@ -71,19 +71,19 @@ public class FeedReader.FavIconManager : GLib.Object {
 			return false;
 		}
 
-		return m_map.has_key(iconName);
+		return m_map.has_key(feed.getFeedID());
 	}
 
-	public async Gdk.Pixbuf? getIcon(string name, bool firstTry = true)
+	public async Gdk.Pixbuf? getIcon(Feed feed, bool firstTry = true)
 	{
-		if(hasIcon(name))
+		if(hasIcon(feed))
 		{
-			return m_map.get(name).copy();
+			return m_map.get(feed.getFeedID()).copy();
 		}
 		else if(firstTry)
 		{
-			yield load(name);
-			return yield getIcon(name, false);
+			yield load(feed);
+			return yield getIcon(feed, false);
 		}
 
 		return null;

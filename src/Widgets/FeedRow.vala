@@ -44,7 +44,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 			m_icon = createFavIcon();
-			reloadFavIcon.begin();
 
 			m_icon.margin_start = level * 24;
 
@@ -71,9 +70,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 			m_unreadBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 			m_unreadBox.add(m_unreadStack);
-			m_unreadBox.button_press_event.connect(onUnreadClick);
-			m_unreadBox.enter_notify_event.connect(onUnreadEnter);
-			m_unreadBox.leave_notify_event.connect(onUnreadLeave);
+			activateUnreadEventbox(true);
 
 
 			if(!Utils.onlyShowFeeds() && m_feed.getFeedID() != FeedID.ALL.to_string())

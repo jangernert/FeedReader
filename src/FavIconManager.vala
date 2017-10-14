@@ -18,6 +18,8 @@ public class FeedReader.FavIconManager : GLib.Object {
 	private Gee.HashMap<string, Gdk.Pixbuf> m_map;
 	private static FavIconManager? m_cache = null;
 
+	public signal void ReloadFavIcon(Feed feed);
+
 	public static FavIconManager get_default()
 	{
 		if(m_cache == null)
@@ -31,7 +33,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
 	}
 
-	private async void load(Feed feed)
+	private async void load(Feed feed, bool firstTry = true)
 	{
 		var fileName = GLib.Base64.encode(feed.getFeedID().data) + ".ico";
 		try
@@ -48,10 +50,18 @@ public class FeedReader.FavIconManager : GLib.Object {
 
 			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
 			m_map.set(feed.getFeedID(), pixbuf);
+			ReloadFavIcon(feed);
 		}
 		catch (IOError.NOT_FOUND e)
 		{
 			//Logger.debug(@"FavIconManager: Icon $fileName does not exist");
+
+			if(!firstTry)
+				return;
+
+			bool success = yield downloadFavIcon(feed);
+			if(success)
+				yield load(feed, false);
 		}
 		catch(Gdk.PixbufError.UNKNOWN_TYPE e)
 		{
@@ -89,22 +99,6 @@ public class FeedReader.FavIconManager : GLib.Object {
 		return null;
 	}
 
-	private async void getFavIcons(Gee.List<Feed> feeds, GLib.Cancellable? cancellable = null)
-	{
-		// TODO: It would be nice if we could queue these in parallel
-		foreach(Feed f in feeds)
-		{
-			if(cancellable != null && cancellable.is_cancelled())
-				return;
-
-			// try to find favicon on the website
-			if(!yield downloadFavIcon(f, null, cancellable))
-			{
-				Logger.warning("Couldn't find a favicon for feed " + f.getTitle());
-			}
-		}
-	}
-
 	private async bool downloadFavIcon(Feed feed, string? hint_url = null, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		string filename_prefix = icon_path + feed.getFeedFileName();
@@ -140,14 +134,19 @@ public class FeedReader.FavIconManager : GLib.Object {
 
 		// try domainname/favicon.ico
 		var uri = new Soup.URI(feed.getURL());
-		string hostname = uri.get_host();
-		string siteURL = uri.get_scheme() + "://" + hostname;
+		string? siteURL = null;
+		if(uri != null)
+		{
+			string hostname = uri.get_host();
+			siteURL = uri.get_scheme() + "://" + hostname;
 
-		var icon_url = siteURL;
-		if(!icon_url.has_suffix("/"))
-			icon_url += "/";
-		icon_url += "favicon.ico";
-		obvious_icons.add(icon_url);
+			var icon_url = siteURL;
+			if(!icon_url.has_suffix("/"))
+				icon_url += "/";
+			icon_url += "favicon.ico";
+			obvious_icons.add(icon_url);
+		}
+
 
 		// Try to find one of those icons
 		foreach(var url in obvious_icons)
@@ -160,6 +159,9 @@ public class FeedReader.FavIconManager : GLib.Object {
 		}
 
 		// If all else fails, download html and parse to find location of favicon
+		if(siteURL == null)
+			return false;
+
 		var message_html = new Soup.Message("GET", siteURL);
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message_html.request_headers.append("DNT", "1");

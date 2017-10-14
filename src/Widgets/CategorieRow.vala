@@ -109,9 +109,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		m_unreadBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_unreadBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_unreadBox.add(m_unreadStack);
-		m_unreadBox.button_press_event.connect(onUnreadClick);
-		m_unreadBox.enter_notify_event.connect(onUnreadEnter);
-		m_unreadBox.leave_notify_event.connect(onUnreadLeave);
+		activateUnreadEventbox(true);
 
 		m_box.pack_start(m_expandBox, false, false, 0);
 		m_box.pack_start(m_label, true, true, 0);

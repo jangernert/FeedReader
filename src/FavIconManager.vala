@@ -89,7 +89,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		return null;
 	}
 
-	public async void getFavIcons(Gee.List<Feed> feeds, GLib.Cancellable? cancellable = null)
+	private async void getFavIcons(Gee.List<Feed> feeds, GLib.Cancellable? cancellable = null)
 	{
 		// TODO: It would be nice if we could queue these in parallel
 		foreach(Feed f in feeds)
@@ -105,7 +105,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		}
 	}
 
-	public async bool downloadFavIcon(Feed feed, string? hint_url = null, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	private async bool downloadFavIcon(Feed feed, string? hint_url = null, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		string filename_prefix = icon_path + feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
@@ -210,7 +210,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		return false;
 	}
 
-	public async bool downloadIcon(Feed feed, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	private async bool downloadIcon(Feed feed, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{

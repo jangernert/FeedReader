@@ -164,20 +164,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			DataBase.writeAccess().delete_nonexisting_tags();
 
 			FeedReaderBackend.get_default().newFeedList();
-
-			// download favicons for all feeds
-			FavIconManager.get_default().getFavIcons.begin(feeds, cancellable, (obj, res) => {
-				FavIconManager.get_default().getFavIcons.end(res);
-				FeedReaderBackend.get_default().reloadFavIcons();
-			});
-		}
-		else
-		{
-			// download favicons for all feeds
-			FavIconManager.get_default().getFavIcons.begin(DataBase.readOnly().read_feeds(), cancellable, (obj, res) => {
-				FavIconManager.get_default().getFavIcons.end(res);
-				FeedReaderBackend.get_default().reloadFavIcons();
-			});
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())
@@ -271,20 +257,6 @@ public class FeedReader.FeedServer : GLib.Object {
 			DataBase.writeAccess().write_tags(tags);
 
 			FeedReaderBackend.get_default().newFeedList();
-
-			// download favicons for all feeds
-			FavIconManager.get_default().getFavIcons.begin(feeds, cancellable, (obj, res) => {
-				FavIconManager.get_default().getFavIcons.end(res);
-				FeedReaderBackend.get_default().reloadFavIcons();
-			});
-		}
-		else
-		{
-			// download favicons for all feeds
-			FavIconManager.get_default().getFavIcons.begin(DataBase.readOnly().read_feeds(), cancellable, (obj, res) => {
-				FavIconManager.get_default().getFavIcons.end(res);
-				FeedReaderBackend.get_default().reloadFavIcons();
-			});
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())

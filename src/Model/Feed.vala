@@ -69,6 +69,11 @@ public class FeedReader.Feed : GLib.Object {
 		return m_unread;
 	}
 
+	public void setUnread(uint unread)
+	{
+		m_unread = unread;
+	}
+
 	public Gee.List<string> getCatIDs()
 	{
 		return m_catIDs;

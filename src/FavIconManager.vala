@@ -31,10 +31,9 @@ public class FeedReader.FavIconManager : GLib.Object {
 		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
 	}
 
-	private async void load(string icon_name)
+	private async void load(string feedID)
 	{
-		var fileName = GLib.Base64.encode(icon_name.data) + ".ico";
-		//var fileName = icon_name + ".ico";
+		var fileName = GLib.Base64.encode(feedID.data) + ".ico";
 		try
 		{
 			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);
@@ -48,7 +47,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 			}
 
 			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
-			m_map.set(icon_name, pixbuf);
+			m_map.set(feedID, pixbuf);
 		}
 		catch (IOError.NOT_FOUND e)
 		{

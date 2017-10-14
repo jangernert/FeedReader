@@ -232,7 +232,16 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 	private void createFeedlist(ArticleListState state, bool defaultSettings, bool masterCat)
 	{
-		var row_separator1 = new FeedRow(null, 0, FeedID.SEPARATOR.to_string(), "-1", 0);
+		var separatorFeed = new Feed(FeedID.SEPARATOR.to_string(), "", "", 0);
+
+		uint unread = 0;
+		if(state == ArticleListState.MARKED)
+			unread = DataBase.readOnly().get_marked_total();
+		else
+			unread = DataBase.readOnly().get_unread_total();
+		var allFeed = new Feed(FeedID.ALL.to_string(), _("All Articles"), "", unread);
+
+		var row_separator1 = new FeedRow(separatorFeed, "-1", 0);
 		var separator1 = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator1.get_style_context().add_class("fr-sidebar-separator");
 		separator1.margin_top = 8;
@@ -240,12 +249,8 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		row_separator1.sensitive = false;
 		m_list.add(row_separator1);
 
-		uint unread = 0;
-		if(state == ArticleListState.MARKED)
-			unread = DataBase.readOnly().get_marked_total();
-		else
-			unread = DataBase.readOnly().get_unread_total();
-		var row_all = new FeedRow(_("All Articles"), unread, FeedID.ALL.to_string(), "-1", 0);
+
+		var row_all = new FeedRow(allFeed, "-1", 0);
 		row_all.margin_top = 8;
 		row_all.margin_bottom = 8;
 		m_list.add(row_all);
@@ -253,7 +258,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 		row_all.setAsRead.connect(markSelectedRead);
 		row_all.reveal(true, 0);
 
-		var row_separator = new FeedRow(null, 0, FeedID.SEPARATOR.to_string(), "-1", 0);
+		var row_separator = new FeedRow(separatorFeed, "-1", 0);
 		var separator = new Gtk.Separator(Gtk.Orientation.HORIZONTAL);
 		separator.get_style_context().add_class("fr-sidebar-separator");
 		separator.margin_bottom = 8;
@@ -287,13 +292,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 						if(item.getCatIDs().contains(tmpRow.getID())
 						|| tmpRow.getID() == "" && item.isUncategorized())
 						{
-							var feedrow = new FeedRow(
-													item.getTitle(),
-													item.getUnread(),
-													item.getFeedID(),
-													tmpRow.getID(),
-													tmpRow.getLevel()
-													);
+							var feedrow = new FeedRow(item, tmpRow.getID(), tmpRow.getLevel());
 							m_list.insert(feedrow, pos);
 							feedrow.setAsRead.connect(markSelectedRead);
 							feedrow.moveUP.connect(moveUP);
@@ -314,13 +313,7 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 			}
 			else
 			{
-				var feedrow = new FeedRow	(
-												item.getTitle(),
-												item.getUnread(),
-												item.getFeedID(),
-												item.getCatIDs()[0],
-												0
-											);
+				var feedrow = new FeedRow(item, item.getCatIDs()[0], 0);
 				m_list.insert(feedrow, 3);
 				feedrow.setAsRead.connect(markSelectedRead);
 				feedrow.moveUP.connect(moveUP);

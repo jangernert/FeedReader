@@ -29,7 +29,6 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	private bool m_hovering_row = false;
 	private bool m_populated = false;
 	public signal void rowStateChanged(ArticleStatus status);
-	public signal void child_revealed();
 
 	public ArticleRow(Article article)
 	{
@@ -38,14 +37,16 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.set_reveal_child(false);
-		m_revealer.notify["child_revealed"].connect(() => {
-			child_revealed();
-		});
 		this.set_size_request(0, 100);
 		this.add(m_revealer);
 		this.show_all();
 
 		GLib.Idle.add(populate, GLib.Priority.HIGH_IDLE);
+	}
+
+	~ArticleRow()
+	{
+
 	}
 
 	private bool populate()

@@ -19,6 +19,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	private Gtk.Label m_label;
 	private Gtk.Image m_icon;
 	private Gtk.Revealer m_revealer;
+	private Gtk.EventBox m_eventBox;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private Gtk.Stack m_unread_stack;
@@ -46,7 +47,21 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
 	~ArticleRow()
 	{
+		m_unread_eventbox.enter_notify_event.disconnect(unreadIconEnter);
+		m_unread_eventbox.leave_notify_event.disconnect(unreadIconLeave);
+		m_unread_eventbox.button_press_event.disconnect(unreadIconClicked);
 
+		m_marked_eventbox.enter_notify_event.disconnect(markedIconEnter);
+		m_marked_eventbox.leave_notify_event.disconnect(markedIconLeave);
+		m_marked_eventbox.button_press_event.disconnect(markedIconClicked);
+
+		m_eventBox.enter_notify_event.disconnect(rowEnter);
+		m_eventBox.leave_notify_event.disconnect(rowLeave);
+		m_eventBox.button_press_event.disconnect(rowClick);
+
+		this.drag_begin.disconnect(onDragBegin);
+		this.drag_data_get.disconnect(onDragDataGet);
+		this.drag_failed.disconnect(onDragFailed);
 	}
 
 	private bool populate()
@@ -179,15 +194,15 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		box.pack_start(icon_box, false, false, 8);
 		box.pack_start(text_box, true, true, 0);
 
-		var eventbox = new Gtk.EventBox();
-		eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
-		eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		eventbox.enter_notify_event.connect(rowEnter);
-		eventbox.leave_notify_event.connect(rowLeave);
-		eventbox.button_press_event.connect(rowClick);
-		eventbox.add(box);
-		eventbox.show_all();
+		m_eventBox = new Gtk.EventBox();
+		m_eventBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_eventBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_eventBox.enter_notify_event.connect(rowEnter);
+		m_eventBox.leave_notify_event.connect(rowLeave);
+		m_eventBox.button_press_event.connect(rowClick);
+		m_eventBox.add(box);
+		m_eventBox.show_all();
 
 		// Make the this widget a DnD source.
 		if(!Settings.general().get_boolean("only-feeds")
@@ -210,7 +225,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 			this.drag_failed.connect(onDragFailed);
 		}
 
-		m_revealer.add(eventbox);
+		m_revealer.add(m_eventBox);
 		m_populated = true;
 		return false;
 	}

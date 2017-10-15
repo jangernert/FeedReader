@@ -122,6 +122,14 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		}
 	}
 
+	~FeedRow()
+	{
+		activateUnreadEventbox(false);
+		m_eventBox.button_press_event.disconnect(onClick);
+		this.drag_begin.disconnect(onDragBegin);
+		this.drag_data_get.disconnect(onDragDataGet);
+	}
+
 	private void onDragBegin(Gtk.Widget widget, Gdk.DragContext context)
 	{
 		Logger.debug("FeedRow: onDragBegin");
@@ -196,23 +204,7 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		}
 
 		var remove_action = new GLib.SimpleAction("deleteFeed", null);
-		remove_action.activate.connect(() => {
-			if(this.is_selected())
-				moveUP();
-
-			uint time = 300;
-			this.reveal(false, time);
-
-			var notification = MainWindow.get_default().showNotification(_("Feed \"%s\" removed").printf(m_feed.getTitle()));
-			ulong eventID = notification.dismissed.connect(() => {
-				FeedReaderBackend.get_default().removeFeed(m_feed.getFeedID());
-			});
-			notification.action.connect(() => {
-				notification.disconnect(eventID);
-				this.reveal(true, time);
-				notification.dismiss();
-			});
-		});
+		remove_action.activate.connect(RemoveThisFeed);
 
 		var markAsRead_action = new GLib.SimpleAction("markFeedAsRead", null);
 		markAsRead_action.activate.connect(() => {
@@ -232,11 +224,10 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var rename_action = new GLib.SimpleAction("renameFeed", null);
 		rename_action.activate.connect(showRenamePopover);
 
-		var app = FeedReaderApp.get_default();
-		app.add_action(markAsRead_action);
-		app.add_action(copyFeedURL_action);
-		app.add_action(rename_action);
-		app.add_action(remove_action);
+		FeedReaderApp.get_default().add_action(markAsRead_action);
+		FeedReaderApp.get_default().add_action(copyFeedURL_action);
+		FeedReaderApp.get_default().add_action(rename_action);
+		FeedReaderApp.get_default().add_action(remove_action);
 
 
 
@@ -257,10 +248,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		pop.closed.connect(() => {
 			this.unset_state_flags(Gtk.StateFlags.PRELIGHT);
 		});
+
 		pop.show();
 		this.set_state_flags(Gtk.StateFlags.PRELIGHT, false);
-
-
 		return true;
 	}
 
@@ -441,5 +431,24 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_unreadBox.enter_notify_event.disconnect(onUnreadEnter);
 			m_unreadBox.leave_notify_event.disconnect(onUnreadLeave);
 		}
+	}
+
+	private void RemoveThisFeed(Variant? parameter)
+	{
+		if(this.is_selected())
+			moveUP();
+
+		uint time = 300;
+		this.reveal(false, time);
+
+		var notification = MainWindow.get_default().showNotification(_("Feed removed: %s").printf(m_feed.getTitle()));
+		ulong eventID = notification.dismissed.connect(() => {
+			FeedReaderBackend.get_default().removeFeed(m_feed.getFeedID());
+		});
+		notification.action.connect(() => {
+			notification.disconnect(eventID);
+			this.reveal(true, time);
+			notification.dismiss();
+		});
 	}
 }

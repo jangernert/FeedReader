@@ -755,15 +755,34 @@ public class FeedReader.grabberUtils : GLib.Object {
 
 		int pos1 = html.index_of("<iframe", 0);
 		int pos2 = -1;
+		int pos3 = -1;
 		while(pos1 != -1)
 		{
 			pos2 = html.index_of("/>", pos1);
+			pos3 = html.index_of("</iframe>", pos1);
+
+			if(pos3 == -1 && pos2 == -1)
+			{
+				Logger.error("GrabberUtils.postProcessing: could not find closing for iframe tag");
+				pos1 = html.index_of("<iframe", pos1+7);
+				continue;
+			}
+
+			if((pos2 != -1 && pos3 != -1 && pos3 < pos2) || pos2 == -1)
+			{
+				Logger.debug("GrabberUtils.postProcessing: iframe not broken");
+				pos1 = html.index_of("<iframe", pos1+7);
+				continue;
+			}
+
+
+
 			string broken_iframe = html.substring(pos1, pos2+2-pos1);
 			Logger.debug("GrabberUtils: broken = %s".printf(broken_iframe));
 			string fixed_iframe = broken_iframe.substring(0, broken_iframe.length-2) + "></iframe>";
 			Logger.debug("GrabberUtils: fixed = %s".printf(fixed_iframe));
 			html = html.replace(broken_iframe, fixed_iframe);
-			int pos3 = html.index_of("<iframe", pos1+7);
+			pos3 = html.index_of("<iframe", pos1+7);
 			if(pos3 == pos1 || pos3 > html.length)
 				break;
 			else

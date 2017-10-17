@@ -23,11 +23,11 @@ public class FeedReader.Feed : GLib.Object {
 	private Gee.List<string> m_catIDs;
 	private string? m_iconURL;
 
-	public Feed(string feedID, string title, string url, uint unread, Gee.List<string>? catIDs = null, string? iconURL = null, string? xmlURL = null)
+	public Feed(string feedID, string? title, string? url, uint unread, Gee.List<string>? catIDs = null, string? iconURL = null, string? xmlURL = null)
 	{
 		m_feedID = feedID;
-		m_title = Utils.UTF8fix(title);
-		m_url = url;
+		m_url = url != null ? url : "";
+		m_title = title != null ? Utils.UTF8fix(title) : Utils.URLtoFeedName(url);
 		m_unread = unread;
 		m_catIDs = catIDs == null ? Gee.List.empty<string>() : catIDs;
 		m_iconURL = iconURL == "" ? null : iconURL;

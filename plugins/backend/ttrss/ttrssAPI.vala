@@ -212,7 +212,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					{
 						var feed_node = response.get_object_element(i);
 						string feed_id = feed_node.get_int_member("id").to_string();
-						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
+						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 						feeds.add(
 							new Feed(
@@ -253,7 +253,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				var feed_node = response.get_object_element(i);
 				string feed_id = feed_node.get_int_member("id").to_string();
-				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
+				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 				feeds.add(
 					new Feed(

@@ -501,8 +501,11 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
-	public static string URLtoFeedName(string url)
+	public static string URLtoFeedName(string? url)
 	{
+		if(url == null)
+			return "";
+
 		var feedname = new GLib.StringBuilder(url);
 
 		if(feedname.str.has_suffix("/"))

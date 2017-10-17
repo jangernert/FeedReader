@@ -115,17 +115,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string? icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : null;
-
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
+			string? icon_url = object.get_string_member("iconUrl");
 
 			uint catCount = object.get_array_member("categories").get_length();
 			var categories = new Gee.ArrayList<string>();
@@ -136,7 +126,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 			feeds.add(
 				new Feed(
 						feedID,
-						title,
+						object.get_string_member("title"),
 						url,
 						0,
 						categories,

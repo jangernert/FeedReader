@@ -131,17 +131,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 					for(uint i = 0; i < feed_count; i++)
 					{
 						var feed_node = feed_array.get_object_element(i);
-						string feed_id = feed_node.get_int_member("id").to_string();
-						string? icon_url = feed_node.has_member("faviconLink") ? feed_node.get_string_member("faviconLink") : null;
 
 						feeds.add(
 							new Feed(
-									feed_id,
+									feed_node.get_int_member("id").to_string(),
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("link"),
 									(int)feed_node.get_int_member("unreadCount"),
 									ListUtils.single(feed_node.get_int_member("folderId").to_string()),
-									icon_url
+									feed_node.get_string_member("faviconLink")
 								)
 						);
 					}

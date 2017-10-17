@@ -579,12 +579,12 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 				feeds.add(
 					new Feed(
 						feed_id,
-						subscription.title == null ? "" : subscription.title,
-						subscription.site_url == null ? "" : subscription.site_url,
+						subscription.title,
+						subscription.site_url,
 						0,
 						feed_categories,
 						null,
-						subscription.feed_url == null ? "" : subscription.feed_url)
+						subscription.feed_url)
 				);
 			}
 		}

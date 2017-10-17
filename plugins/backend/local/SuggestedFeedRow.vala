@@ -62,7 +62,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		show_all();
 
 		var uri = new Soup.URI(url);
-		var fakeFeed = new Feed(uri.get_host(), "", "", 0);
+		var fakeFeed = new Feed(uri.get_host(), null, null, 0);
 		load_favicon.begin(iconStack, fakeFeed, iconURL, (obj, res) => {
 			load_favicon.end(res);
 		});

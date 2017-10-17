@@ -1118,7 +1118,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		while(stmt.step () == Sqlite.ROW)
 		{
-			var tmpfeed = new Feed(
+			var feed = new Feed(
 				feedID,
 				stmt.column_text(1),
 				stmt.column_text(2),
@@ -1126,7 +1126,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				StringUtils.split(stmt.column_text(3), ",", true),
 				null,
 				stmt.column_text(5));
-			return tmpfeed;
+			return feed;
 		}
 
 		return null;

@@ -214,24 +214,13 @@ public class FeedReader.FeedlyAPI : Object {
 		for (uint i = 0; i < length; i++) {
 			Json.Object object = array.get_object_element(i);
 
-
 			string feedID = object.get_string_member("id");
-			string url = object.has_member("website") ? object.get_string_member("website") : "";
+
 			string? icon_url = null;
 			if(object.has_member("iconUrl"))
 				icon_url = object.get_string_member("iconUrl");
 			else if(object.has_member("visualUrl"))
 				icon_url = object.get_string_member("visualUrl");
-
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
 
 			uint catCount = object.get_array_member("categories").get_length();
 
@@ -250,8 +239,8 @@ public class FeedReader.FeedlyAPI : Object {
 			feeds.add(
 				new Feed(
 						feedID,
-						title,
-						url,
+						object.get_string_member("title"),
+						object.get_string_member("website"),
 						getUnreadCountforID(object.get_string_member("id")),
 						categories,
 						icon_url

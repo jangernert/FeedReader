@@ -237,7 +237,6 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
 
 					var media = new Gee.ArrayList<string>();
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
@@ -257,8 +256,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 												unread,
 												marked,
 												article_node.get_string_member("body"),
-												"",
-												author,
+												null,
+												article_node.get_string_member("author"),
 												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
 												-1,
 												null, // tags
@@ -308,9 +307,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
-					var media = new Gee.ArrayList<string>();
 
+					var media = new Gee.ArrayList<string>();
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
 					&& article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 					{
@@ -328,8 +326,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 												unread,
 												marked,
 												article_node.get_string_member("body"),
-												"",
-												author,
+												null,
+												article_node.get_string_member("author"),
 												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
 												-1,
 												null, // tags

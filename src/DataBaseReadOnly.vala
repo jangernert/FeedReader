@@ -604,7 +604,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 								stmt.column_text(1),																		// feedID
 								(ArticleStatus)stmt.column_int(7),											// unread
 								(ArticleStatus)stmt.column_int(8),											// marked
-								"",																											// html
+								null,																											// html
 								stmt.column_text(6),																		// preview
 								stmt.column_text(4),																		// author
 								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date
@@ -638,8 +638,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		while(stmt.step() == Sqlite.ROW)
 		{
 			articles.set(stmt.column_text(0),
-								new Article(stmt.column_text(0), "", "", "", (ArticleStatus)stmt.column_int(1),
-								(ArticleStatus)stmt.column_int(2), "", "", null, new GLib.DateTime.now_local()));
+								new Article(stmt.column_text(0), null, null, null, (ArticleStatus)stmt.column_int(1),
+								(ArticleStatus)stmt.column_int(2), null, null, null, new GLib.DateTime.now_local()));
 		}
 		stmt.reset();
 		return articles;
@@ -1466,14 +1466,14 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		{
 			tmp.add(new Article(
 								stmt.column_text(0),																// articleID
-								"",																									// title
+								null,																									// title
 								stmt.column_text(1),																// url
 								stmt.column_text(4),																// feedID
 								ArticleStatus.UNREAD,																// unread
 								ArticleStatus.UNMARKED,															// marked
 								stmt.column_text(3),																// html
 								stmt.column_text(2),																// preview
-								"",																									// author
+								null,																									// author
 								new GLib.DateTime.now_local()												// date
 							));
 		}
@@ -1593,7 +1593,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 								stmt.column_text(1),																		// feedID
 								(ArticleStatus)stmt.column_int(7),											// unread
 								(ArticleStatus)stmt.column_int(8),											// marked
-								"",																											// html
+								null,																											// html
 								stmt.column_text(6),																		// preview
 								stmt.column_text(4),																		// author
 								new GLib.DateTime.from_unix_local(stmt.column_int(10)),	// date

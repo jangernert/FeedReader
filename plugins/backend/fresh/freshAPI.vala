@@ -265,13 +265,6 @@ public class FeedReader.freshAPI : Object {
 				}
 			}
 
-			string? author = null;
-			if(object.has_member("author"))
-			{
-				author = (object.get_string_member("author") == "") ? null : object.get_string_member("author");
-			}
-
-
 			articles.add(new Article(
 									id,
 									object.get_string_member("title"),
@@ -280,8 +273,8 @@ public class FeedReader.freshAPI : Object {
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
-									"",
-									author,
+									null,
+									object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									null,

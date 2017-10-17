@@ -384,7 +384,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
 									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+									object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									tags,

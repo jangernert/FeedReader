@@ -52,15 +52,15 @@ public class FeedReader.Article : GLib.Object {
 	}
 
 	public Article (string articleID,
-					string title,
-					string url,
-					string feedID,
+					string? title,
+					string? url,
+					string? feedID,
 					ArticleStatus unread,
 					ArticleStatus marked,
-					string html,
-					string preview,
+					string? html,
+					string? preview,
 					string? author,
-					GLib.DateTime date,
+					GLib.DateTime? date,
 					int sortID = 0,
 					Gee.List<string>? tags = null,
 					Gee.List<string>? media = null,
@@ -68,16 +68,16 @@ public class FeedReader.Article : GLib.Object {
 					int lastModified = 0)
 	{
 		m_articleID = articleID;
-		m_title = title;
-		m_url = url;
-		m_html = html;
-		m_preview = preview;
-		m_feedID = feedID;
-		m_author = author;
+		m_title = title != null ? title : "";
+		m_url = url != null ? url : "";
+		m_html = html != null ? html : "";
+		m_preview = preview != null ? preview : "";
+		m_feedID = feedID != null ? feedID : "";
+		m_author = author != "" ? author : null; // This one is actually nullable
 		m_unread = unread;
 		m_marked = marked;
 		m_sortID = sortID;
-		m_date = date;
+		m_date = date != null ? date : new DateTime.now_utc();
 		m_guidHash = guidHash;
 		m_lastModified = lastModified;
 

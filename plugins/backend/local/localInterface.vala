@@ -621,10 +621,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					if(articleURL.has_prefix("/"))
 						articleURL = Feed.getURL() + articleURL.substring(1);
 
-					var Article = new Article
-					(
+					var Article = new Article(
 										articleID,
-										(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
+										(item.title != null) ? m_utils.convert(item.title, locale) : null,
 										articleURL,
 										Feed.getFeedID(),
 										ArticleStatus.UNREAD,

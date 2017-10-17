@@ -720,15 +720,15 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 					articles.add(
 						new Article(
 							entry.id.to_string(),
-							entry.title == null ? "" : entry.title,
-							entry.url == null ? "" : entry.url,
+							entry.title != null ? entry.title : "",
+							entry.url != null ? entry.url : "",
 							entry.feed_id.to_string(),
 							unread_ids.contains(entry.id) ? ArticleStatus.UNREAD : ArticleStatus.READ,
 							starred_ids.contains(entry.id) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-							entry.content == null ? "" : entry.content,
-							entry.summary == null ? "" : entry.summary,
-							entry.author == null ? "" : entry.author,
-							entry.published,
+							entry.content != null ? entry.content : "",
+							entry.summary != null ? entry.summary : "",
+							entry.author != null ? entry.author : "",
+							entry.published != null ? entry.published : (entry.created_at != null ? entry.created_at : new DateTime.now_utc()),
 							-1,
 							null,
 							null)

@@ -23,7 +23,7 @@ public class FeedReader.Notification : GLib.Object {
 
 		if(newArticles > 0)
 		{
-			if(unread == 1)
+			if(newArticles == 1)
 				message = _("There is 1 new article (%u unread)").printf(unread);
 			else
 				message = _("There are %u new articles (%u unread)").printf(newArticles, unread);

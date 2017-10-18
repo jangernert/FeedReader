@@ -63,28 +63,14 @@ public class FeedReader.freshAPI : Object {
 			string catID = object.get_array_member("categories").get_object_element(0).get_string_member("id");
 			string xmlURL = object.get_string_member("url");
 
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
-
-			string? icon_url = null;
-			if(object.has_member("iconUrl"))
-				icon_url = object.get_string_member("iconUrl");
-
 			feeds.add(
 				new Feed(
 					id,
-					title,
+					object.get_string_member("title"),
 					url,
 					0,
 					ListUtils.single(catID),
-					icon_url,
+					object.get_string_member("iconUrl"),
 					xmlURL)
 			);
 		}
@@ -265,13 +251,6 @@ public class FeedReader.freshAPI : Object {
 				}
 			}
 
-			string? author = null;
-			if(object.has_member("author"))
-			{
-				author = (object.get_string_member("author") == "") ? null : object.get_string_member("author");
-			}
-
-
 			articles.add(new Article(
 									id,
 									object.get_string_member("title"),
@@ -280,8 +259,8 @@ public class FeedReader.freshAPI : Object {
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
-									"",
-									author,
+									null,
+									object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									null,

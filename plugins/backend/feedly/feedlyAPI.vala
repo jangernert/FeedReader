@@ -214,24 +214,13 @@ public class FeedReader.FeedlyAPI : Object {
 		for (uint i = 0; i < length; i++) {
 			Json.Object object = array.get_object_element(i);
 
-
 			string feedID = object.get_string_member("id");
-			string url = object.has_member("website") ? object.get_string_member("website") : "";
+
 			string? icon_url = null;
 			if(object.has_member("iconUrl"))
 				icon_url = object.get_string_member("iconUrl");
 			else if(object.has_member("visualUrl"))
 				icon_url = object.get_string_member("visualUrl");
-
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
 
 			uint catCount = object.get_array_member("categories").get_length();
 
@@ -250,8 +239,8 @@ public class FeedReader.FeedlyAPI : Object {
 			feeds.add(
 				new Feed(
 						feedID,
-						title,
-						url,
+						object.get_string_member("title"),
+						object.get_string_member("website"),
 						getUnreadCountforID(object.get_string_member("id")),
 						categories,
 						icon_url
@@ -361,12 +350,12 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
-			string title = object.has_member("title") ? object.get_string_member("title") : "No title specified";
-			string? author = object.has_member("author") ? object.get_string_member("author") : null;
-			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : "";
+			string title = object.get_string_member("title");
+			string? author = object.get_string_member("author");
+			string summaryContent = object.has_member("summary") ? object.get_object_member("summary").get_string_member("content") : null;
 			string content = object.has_member("content") ? object.get_object_member("content").get_string_member("content") : summaryContent;
 			bool unread = object.get_boolean_member("unread");
-			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : "";
+			string url = object.has_member("alternate") ? object.get_array_member("alternate").get_object_element(0).get_string_member("href") : null;
 			string feedID = object.get_object_member("origin").get_string_member("streamId");
 
 			DateTime date = new DateTime.now_local();
@@ -428,11 +417,11 @@ public class FeedReader.FeedlyAPI : Object {
 								title,
 								url,
 								feedID,
-								(unread) ? ArticleStatus.UNREAD : ArticleStatus.READ,
+								unread ? ArticleStatus.UNREAD : ArticleStatus.READ,
 								marked,
 								content,
 								//summaryContent,
-								"",
+								null,
 								author,
 								date, // timestamp includes msecs so divide by 1000 to get rid of them
 								-1,

@@ -103,7 +103,7 @@ msgstr ""
 "Sincronizare în desfășurare. Articolul trebuie să apară in orice secundă"
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "Articole noi"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

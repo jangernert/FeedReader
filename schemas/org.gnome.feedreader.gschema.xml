@@ -50,9 +50,9 @@
 
 		<key name="max-articles" type="i">
 			<default>400</default>
-			<summary>Maximum of new Articles</summary>
+			<summary>Max new articles</summary>
 			<description>
-				The maximum of articles that are fetched from the server.
+				The maximum number of articles that are fetched from the server.
 			</description>
 		</key>
 

@@ -212,7 +212,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					{
 						var feed_node = response.get_object_element(i);
 						string feed_id = feed_node.get_int_member("id").to_string();
-						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
+						string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 						feeds.add(
 							new Feed(
@@ -253,7 +253,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			{
 				var feed_node = response.get_object_element(i);
 				string feed_id = feed_node.get_int_member("id").to_string();
-				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir+feed_id+".ico" : null;
+				string? icon_url = feed_node.get_boolean_member("has_icon") ? m_iconDir + feed_id + ".ico" : null;
 
 				feeds.add(
 					new Feed(
@@ -499,11 +499,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 										headline_node.get_string_member("title"),
 										headline_node.get_string_member("link"),
 										headline_node.get_string_member("feed_id"),
-										(headline_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-										(headline_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-										"",
-										"",
-										(headline_node.get_string_member("author") == "") ? null : headline_node.get_string_member("author"),
+										headline_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ,
+										headline_node.get_boolean_member("marked") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+										null,
+										null,
+										headline_node.get_string_member("author"),
 										new DateTime.from_unix_local(headline_node.get_int_member("updated")),
 										-1,
 										tags,
@@ -615,11 +615,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 										article_node.get_string_member("title"),
 										article_node.get_string_member("link"),
 										article_node.get_string_member("feed_id"),
-										(article_node.get_boolean_member("unread")) ? ArticleStatus.UNREAD : ArticleStatus.READ,
-										(article_node.get_boolean_member("marked")) ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
+										article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ,
+										article_node.get_boolean_member("marked") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 										article_node.get_string_member("content"),
-										"",
-										(article_node.get_string_member("author") == "") ? null : article_node.get_string_member("author"),
+										null,
+										article_node.get_string_member("author"),
 										new DateTime.from_unix_local(article_node.get_int_member("updated")),
 										-1,
 										tags,

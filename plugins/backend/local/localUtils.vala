@@ -63,24 +63,13 @@ public class FeedReader.localUtils : GLib.Object {
 		&& doc.link != "")
 			url = doc.link;
 
-		var uri = new Soup.URI(url);
-		string? icon_url = (doc.image_url != "") ? doc.image_url : null;
-		string? title = doc.title;
-		if(title == null)
-		{
-			if(uri == null)
-				title = _("unknown Feed");
-			else
-				title = uri.get_host();
-		}
-
 		var Feed = new Feed(
 					feedID,
-					title,
+					doc.title,
 					url,
 					0,
 					catIDs,
-					icon_url,
+					doc.image_url,
 					xmlURL);
 
 		return Feed;

@@ -18,15 +18,15 @@ public class FeedReader.Notification : GLib.Object {
 	public static void send(uint newArticles)
 	{
 		string message = "";
-		string summary = _("new Articles");
+		string summary = _("New articles");
 		uint unread = DataBase.readOnly().get_unread_total();
 
 		if(newArticles > 0)
 		{
-			if(unread == 1)
-				message = _("There is 1 new Article (%u unread)").printf(unread);
+			if(newArticles == 1)
+				message = _("There is 1 new article (%u unread)").printf(unread);
 			else
-				message = _("There are %u new Articles (%u unread)").printf(newArticles, unread);
+				message = _("There are %u new articles (%u unread)").printf(newArticles, unread);
 
 			var notification = new GLib.Notification(summary);
 			notification.set_body(message);

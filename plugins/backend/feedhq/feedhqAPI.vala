@@ -117,17 +117,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string? icon_url = object.has_member("iconUrl") ? "https:"+object.get_string_member("iconUrl") : null;
-
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
+			string? icon_url = object.has_member("iconUrl") ? "https:" + object.get_string_member("iconUrl") : null;
 
 			uint catCount = object.get_array_member("categories").get_length();
 
@@ -139,7 +129,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 			feeds.add(
 				new Feed(
 						feedID,
-						title,
+						object.get_string_member("title"),
 						url,
 						0,
 						categories,
@@ -374,9 +364,9 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 									object.get_object_member("origin").get_string_member("streamId"),
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
-									"",
-									"",
-									"",
+									null,
+									null,
+									null,
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
 									tags,

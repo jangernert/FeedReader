@@ -100,7 +100,7 @@ msgid "Sync is in progress. Articles should appear any second."
 msgstr "동기화하고 있습니다. 기사가 곧 보일 겁니다."
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "새 기사"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

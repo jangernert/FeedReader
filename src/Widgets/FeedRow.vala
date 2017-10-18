@@ -44,6 +44,10 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 			m_icon = createFavIcon();
+			FavIconManager.get_default().ReloadFavIcon.connect(feed => {
+				if(m_feed.getFeedID() == feed.getFeedID())
+					reloadFavIcon.begin();
+			});
 
 			m_icon.margin_start = level * 24;
 

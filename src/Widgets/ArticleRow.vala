@@ -139,6 +139,10 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
 
 		m_icon = createFavIcon();
+		FavIconManager.get_default().ReloadFavIcon.connect(feed => {
+			if(m_article.getFeedID() == feed.getFeedID())
+				reloadFavIcon.begin();
+		});
 
 		icon_box.pack_start(m_icon, true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);

@@ -517,10 +517,4 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		m_article_view.clearContent();
 		m_feedList.clear();
 	}
-
-	public void reloadFavIcons()
-	{
-		m_articleList.reloadFavIcons();
-		m_feedList.reloadFavIcons();
-	}
 }

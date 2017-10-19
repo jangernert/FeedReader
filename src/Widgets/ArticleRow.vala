@@ -137,12 +137,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		m_marked_eventbox.leave_notify_event.connect(markedIconLeave);
 		m_marked_eventbox.button_press_event.connect(markedIconClicked);
 
-
 		m_icon = createFavIcon();
-		FavIconManager.get_default().ReloadFavIcon.connect(feed => {
-			if(m_article.getFeedID() == feed.getFeedID())
-				reloadFavIcon.begin();
-		});
 
 		icon_box.pack_start(m_icon, true, true, 0);
 		icon_box.pack_end(m_unread_eventbox, false, false, 10);
@@ -260,23 +255,20 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		return false;
 	}
 
-	public async void reloadFavIcon(Gtk.Image? inIcon = null)
-	{
-		Feed feed = DataBase.readOnly().read_feed(m_article.getFeedID());
-		var icon = yield FavIconManager.get_default().getIcon(feed);
-		if(icon != null)
-		{
-			if(inIcon == null)
-				m_icon.pixbuf = icon;
-			else
-				inIcon.pixbuf = icon;
-		}
-	}
-
 	private Gtk.Image createFavIcon()
 	{
 		var icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		reloadFavIcon.begin(icon);
+
+		var manager = FavIconManager.get_default();
+		Feed feed = DataBase.readOnly().read_feed(m_article.getFeedID());
+		manager.getIcon.begin(feed, (obj, res) => {
+			var pixbuf = manager.getIcon.end(res);
+			if(pixbuf != null)
+			{
+				icon.pixbuf = pixbuf;
+			}
+		});
+
 		return icon;
 	}
 

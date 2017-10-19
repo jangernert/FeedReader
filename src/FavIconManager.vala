@@ -15,10 +15,8 @@
 
 public class FeedReader.FavIconManager : GLib.Object {
 
-	private Gee.HashMap<string, Gdk.Pixbuf> m_map;
+	private Gee.Map<string, Gee.Future<Gdk.Pixbuf?>> m_map = new Gee.HashMap<string, Gee.Future<Gdk.Pixbuf?>>();
 	private static FavIconManager? m_cache = null;
-
-	public signal void ReloadFavIcon(Feed feed);
 
 	public static FavIconManager get_default()
 	{
@@ -30,76 +28,54 @@ public class FeedReader.FavIconManager : GLib.Object {
 
 	private FavIconManager()
 	{
-		m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
 	}
 
-	private async void load(Feed feed, bool firstTry = true)
+	public async Gdk.Pixbuf? getIcon(Feed feed)
 	{
-		var fileName = GLib.Base64.encode(feed.getFeedID().data) + ".ico";
 		try
 		{
-			var file = File.new_for_path(GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/" + fileName);
-			var stream = yield file.read_async();
-			var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
-			stream.close();
-			if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
+			var feed_id = feed.getFeedID();
+			var future = m_map.get(feed_id);
+			if(future == null)
 			{
-				Logger.warning(@"FavIconManager: $fileName is too small");
-				return;
+				var promise = new Gee.Promise<Gdk.Pixbuf?>();
+				try
+				{
+					future = promise.future;
+					m_map.set(feed_id, future);
+
+					var stream = yield downloadFavIcon(feed);
+					if(stream == null)
+						return null;
+
+					var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+					stream.close();
+
+					if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
+					{
+						Logger.warning(@"FavIconManager: Icon for feed %s is too small".printf(feed.getTitle()));
+						return null;
+					}
+					pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
+
+					promise.set_value(pixbuf);
+				}
+				finally
+				{
+					if(!future.ready)
+						promise.set_value(null);
+				}
 			}
-
-			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
-			m_map.set(feed.getFeedID(), pixbuf);
-			ReloadFavIcon(feed);
-		}
-		catch (IOError.NOT_FOUND e)
-		{
-			//Logger.debug(@"FavIconManager: Icon $fileName does not exist");
-
-			if(!firstTry)
-				return;
-
-			bool success = yield downloadFavIcon(feed);
-			if(success)
-				yield load(feed, false);
-		}
-		catch(Gdk.PixbufError.UNKNOWN_TYPE e)
-		{
-			Logger.warning(@"FavIconManager.load: Icon $fileName is an unknown type");
+			return yield future.wait_async();
 		}
 		catch(Error e)
 		{
-			Logger.error(@"FavIconManager.load: $fileName: %s".printf(e.message));
+			Logger.error("FavIconManager.getIcon: %s".printf(e.message));
+			return null;
 		}
 	}
 
-	private bool hasIcon(Feed feed)
-	{
-		if(m_map == null)
-		{
-			m_map = new Gee.HashMap<string, Gdk.Pixbuf>();
-			return false;
-		}
-
-		return m_map.has_key(feed.getFeedID());
-	}
-
-	public async Gdk.Pixbuf? getIcon(Feed feed, bool firstTry = true)
-	{
-		if(hasIcon(feed))
-		{
-			return m_map.get(feed.getFeedID()).copy();
-		}
-		else if(firstTry)
-		{
-			yield load(feed);
-			return yield getIcon(feed, false);
-		}
-
-		return null;
-	}
-
-	private async bool downloadFavIcon(Feed feed, string? hint_url = null, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	private async InputStream? downloadFavIcon(Feed feed, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/") throws GLib.Error
 	{
 		string filename_prefix = icon_path + feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
@@ -109,7 +85,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		DateTime? expires = metadata.expires;
 
 		if(cancellable != null && cancellable.is_cancelled())
-			return false;
+			return null;
 
 		var now = new DateTime.now_utc();
 		if(expires != null)
@@ -117,7 +93,15 @@ public class FeedReader.FavIconManager : GLib.Object {
 			if(expires.to_unix() > now.to_unix())
 			{
 				Logger.debug("Favicon for %s is valid until %s, skipping this time".printf(feed.getTitle(), expires.to_string()));
-				return yield Utils.file_exists(local_filename, FileType.REGULAR);
+				var file = File.new_for_path(local_filename);
+				try
+				{
+					return yield file.read_async();
+				}
+				catch(FileError.NOENT e)
+				{
+					return null;
+				}
 			}
 		}
 
@@ -125,9 +109,6 @@ public class FeedReader.FavIconManager : GLib.Object {
 		yield metadata.save_to_file_async(metadata_filename);
 
 		var obvious_icons = new Gee.ArrayList<string>();
-
-		if(hint_url != null)
-			obvious_icons.add(hint_url);
 
 		if(feed.getIconURL() != null)
 			obvious_icons.add(feed.getIconURL());
@@ -147,20 +128,20 @@ public class FeedReader.FavIconManager : GLib.Object {
 			obvious_icons.add(icon_url);
 		}
 
-
 		// Try to find one of those icons
 		foreach(var url in obvious_icons)
 		{
-			if(yield downloadIcon(feed, url, cancellable, icon_path))
-				return true;
+			var stream = yield downloadIcon(feed, url, cancellable, icon_path);
+			if(stream != null)
+				return stream;
 
 			if(cancellable != null && cancellable.is_cancelled())
-				return false;
+				return null;
 		}
 
 		// If all else fails, download html and parse to find location of favicon
 		if(siteURL == null)
-			return false;
+			return null;
 
 		var message_html = new Soup.Message("GET", siteURL);
 		if(Settings.tweaks().get_boolean("do-not-track"))
@@ -175,7 +156,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		catch (Error e)
 		{
 			Logger.warning(@"Request for $siteURL failed: " + e.message);
-			return false;
+			return null;
 		}
 		if(html != null && message_html.status_code == 200)
 		{
@@ -185,43 +166,47 @@ public class FeedReader.FavIconManager : GLib.Object {
 			if(doc == null)
 			{
 				Logger.debug(@"Utils.downloadFavIcon: parsing html on $siteURL failed");
-				return false;
+				return null;
 			}
 
-			// check for <link rel="icon">
-			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
-
-			if(xpath == null)
-				// check for <link rel="shortcut icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
-
-			if(xpath == null)
-				// check for <link rel="apple-touch-icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
-
-			if(xpath != null)
+			try
 			{
-				xpath = grabberUtils.completeURL(xpath, siteURL);
-				if(yield downloadIcon(feed, xpath, cancellable, icon_path))
-					return true;
-			}
+				// check for <link rel="icon">
+				var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
 
-			delete doc;
+				if(xpath == null)
+					// check for <link rel="shortcut icon">
+					xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
+
+				if(xpath == null)
+					// check for <link rel="apple-touch-icon">
+					xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+
+				if(xpath != null)
+				{
+					xpath = grabberUtils.completeURL(xpath, siteURL);
+					return yield downloadIcon(feed, xpath, cancellable, icon_path);
+				}
+			}
+			finally
+			{
+				delete doc;
+			}
 		}
 
-		return false;
+		return null;
 	}
 
-	private async bool downloadIcon(Feed feed, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
+	private async InputStream? downloadIcon(Feed feed, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/") throws GLib.Error
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{
 			Logger.warning(@"Utils.downloadIcon: icon_url not valid $icon_url");
-			return false;
+			return null;
 		}
 
 		if(!yield Utils.ensure_path(icon_path))
-			return false;
+			return null;
 
 		string filename_prefix = icon_path + feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
@@ -250,46 +235,29 @@ public class FeedReader.FavIconManager : GLib.Object {
 		catch (Error e)
 		{
 			Logger.error(@"Request for $icon_url failed: " + e.message);
-			return false;
+			return null;
 		}
 		var status = message.status_code;
 		if(status == 304)
 		{
-			return true;
+			var file = File.new_for_path(local_filename);
+			return yield file.read_async();
 		}
 		else if(status == 404 || data == null)
 		{
-			return false;
+			return null;
 		}
 		else if(status == 200)
 		{
 			var local_file = File.new_for_path(local_filename);
-			uint8[]? local_data = null;
 			try
 			{
-				uint8[] contents;
-				yield local_file.load_contents_async(null, out contents, null);
-				local_data = contents;
+				yield local_file.replace_contents_async(data, null, false, FileCreateFlags.NONE, null, null);
 			}
-			catch(IOError.NOT_FOUND e){}
 			catch(Error e)
 			{
-				Logger.error(@"Error reading icon $local_filename: %s".printf(e.message));
-			}
-
-			if(local_data == null
-			||(local_data != null && data != local_data))
-			{
-				try
-				{
-					yield local_file.replace_contents_async(data, null, false, FileCreateFlags.NONE, null, null);
-					FileUtils.set_data(local_filename, data);
-				}
-				catch(Error e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-					return false;
-				}
+				Logger.error("Error writing icon: %s".printf(e.message));
+				return null;
 			}
 
 			metadata.etag = message.response_headers.get_one("ETag");
@@ -303,7 +271,6 @@ public class FeedReader.FavIconManager : GLib.Object {
 					var parts = header.split("=");
 					if(parts.length < 2 || parts[0] != "max-age")
 						continue;
-					Logger.debug(parts[1]);
 					var seconds = int64.parse(parts[1]);
 					var expires = new DateTime.now_utc();
 					expires.add_seconds(seconds);
@@ -313,9 +280,10 @@ public class FeedReader.FavIconManager : GLib.Object {
 			}
 			metadata.last_modified = message.response_headers.get_one("Last-Modified");
 			yield metadata.save_to_file_async(metadata_filename);
-			return true;
+			return new MemoryInputStream.from_data(data);
 		}
+
 		Logger.warning(@"Could not download icon for feed: %s $icon_url, got response code $status".printf(feed.getFeedID()));
-		return false;
+		return null;
 	}
 }

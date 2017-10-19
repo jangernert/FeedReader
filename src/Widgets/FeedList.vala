@@ -1186,17 +1186,4 @@ public class FeedReader.feedList : Gtk.ScrolledWindow {
 
 		return false;
 	}
-
-	public void reloadFavIcons()
-	{
-		var FeedChildList = m_list.get_children();
-
-		foreach(Gtk.Widget row in FeedChildList)
-		{
-			var tmpRow = row as FeedRow;
-			if(tmpRow != null)
-				tmpRow.reloadFavIcon.begin();
-		}
-	}
-
 }

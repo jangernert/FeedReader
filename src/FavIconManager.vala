@@ -105,8 +105,12 @@ public class FeedReader.FavIconManager : GLib.Object {
 			}
 		}
 
-		metadata.expires = now.add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
-		yield metadata.save_to_file_async(metadata_filename);
+		var default_expires = now.add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
+		if(metadata.expires == null || metadata.expires.to_unix() < default_expires.to_unix())
+		{
+			metadata.expires = default_expires;
+			yield metadata.save_to_file_async(metadata_filename);
+		}
 
 		var obvious_icons = new Gee.ArrayList<string>();
 
@@ -264,6 +268,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 			metadata.last_modified = message.response_headers.get_one("Last-Modified");
 
 			var cache_control = message.response_headers.get_list("Cache-Control");
+			metadata.expires = new DateTime.now_utc().add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);;
 			if(cache_control != null)
 			{
 				foreach(var header in message.response_headers.get_list("Cache-Control").split(","))
@@ -274,10 +279,11 @@ public class FeedReader.FavIconManager : GLib.Object {
 					var seconds = int64.parse(parts[1]);
 					var expires = new DateTime.now_utc();
 					expires.add_seconds(seconds);
-					if(metadata.expires == null || expires.to_unix() > metadata.expires.to_unix())
+					if(expires.to_unix() > metadata.expires.to_unix())
 						metadata.expires = expires;
 				}
 			}
+
 			metadata.last_modified = message.response_headers.get_one("Last-Modified");
 			yield metadata.save_to_file_async(metadata_filename);
 			return new MemoryInputStream.from_data(data);

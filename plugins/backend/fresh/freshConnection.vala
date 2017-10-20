@@ -142,7 +142,7 @@ public class FeedReader.freshMessage {
 
 		request += parameter;
 		request += "=";
-		request += GLib.Uri.escape_string(val);
+		request += GLib.Uri.escape_string(val, "/");
 	}
 
 	public string get()

@@ -84,14 +84,6 @@ namespace FeedReader {
 					});
 				});
 
-				FeedReaderBackend.get_default().reloadFavIcons.connect(() => {
-					GLib.Idle.add(() => {
-						Logger.debug("FeedReader: reloadFavIcons");
-						ColumnView.get_default().reloadFavIcons();
-						return GLib.Source.REMOVE;
-					});
-				});
-
 				FeedReaderBackend.get_default().updateArticleList.connect(() => {
 					GLib.Idle.add(() => {
 						Logger.debug("FeedReader: updateArticleList");

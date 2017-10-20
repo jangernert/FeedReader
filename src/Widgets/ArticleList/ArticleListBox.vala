@@ -662,15 +662,4 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 		addRow(ArticleListBalance.NONE, false, false);
 		return true;
 	}
-
-	public void reloadFavIcons()
-	{
-		var children = this.get_children();
-		foreach(var row in children)
-		{
-			var tmpRow = row as ArticleRow;
-			if(tmpRow != null)
-				tmpRow.reloadFavIcon.begin();
-		}
-	}
 }

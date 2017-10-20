@@ -171,6 +171,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		query.insertValuePair("category_id", "$CATID");
 		query.insertValuePair("subscribed", "1");
 		query.insertValuePair("xmlURL", "$XMLURL");
+		query.insertValuePair("iconURL", "$ICONURL");
 		query.build();
 
 		Sqlite.Statement stmt;
@@ -187,12 +188,14 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		int feedName_pos = stmt.bind_parameter_index("$FEEDNAME");
 		int feedURL_pos  = stmt.bind_parameter_index("$FEEDURL");
 		int catID_pos    = stmt.bind_parameter_index("$CATID");
-		int xmlURL_pos    = stmt.bind_parameter_index("$XMLURL");
+		int xmlURL_pos   = stmt.bind_parameter_index("$XMLURL");
+		int iconURL_pos  = stmt.bind_parameter_index("$ICONURL");
 		assert (feedID_pos > 0);
 		assert (feedName_pos > 0);
 		assert (feedURL_pos > 0);
 		assert (catID_pos > 0);
 		assert (xmlURL_pos > 0);
+		assert (iconURL_pos > 0);
 
 		foreach(var feed_item in feeds)
 		{
@@ -209,6 +212,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 			stmt.bind_text(feedURL_pos, feed_item.getURL());
 			stmt.bind_text(catID_pos, catString);
 			stmt.bind_text(xmlURL_pos, feed_item.getXmlUrl());
+			stmt.bind_text(iconURL_pos, feed_item.getIconURL());
 
 			while(stmt.step() == Sqlite.ROW){}
 			stmt.reset();

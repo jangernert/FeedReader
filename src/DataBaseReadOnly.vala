@@ -69,7 +69,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 											"url" TEXT NOT NULL,
 											"category_id" TEXT,
 											"subscribed" INTEGER DEFAULT 1,
-											"xmlURL" TEXT
+											"xmlURL" TEXT,
+											"iconURL" TEXT
 										)""");
 
 		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
@@ -1124,7 +1125,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 				stmt.column_text(2),
 				getFeedUnread(feedID),
 				StringUtils.split(stmt.column_text(3), ",", true),
-				null,
+				stmt.column_text(6),
 				stmt.column_text(5));
 			return feed;
 		}
@@ -1157,6 +1158,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			string feedID = stmt.column_text(0);
 			string catString = stmt.column_text(3);
 			string xmlURL = stmt.column_text(5);
+			string iconURL = stmt.column_text(6);
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
 			var categories = StringUtils.split(catString, ",", true);
@@ -1167,7 +1169,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			else
 				count = getFeedUnread(feedID);
 
-			var feed = new Feed(feedID, name, url, count, categories, null, xmlURL);
+			var feed = new Feed(feedID, name, url, count, categories, iconURL, xmlURL);
 			feeds.add(feed);
 		}
 
@@ -1249,10 +1251,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 			string feedID = stmt.column_text(0);
 			string catString = stmt.column_text(3);
 			string xmlURL = stmt.column_text(5);
+			string iconURL = stmt.column_text(6);
 			string url = stmt.column_text(2);
 			string name = stmt.column_text(1);
 			var categories = StringUtils.split(catString, ",", true);
-			var feed = new Feed(feedID, name, url, getFeedUnread(feedID), categories, null, xmlURL);
+			var feed = new Feed(feedID, name, url, getFeedUnread(feedID), categories, iconURL, xmlURL);
 			feeds.add(feed);
 		}
 

@@ -19,6 +19,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	private Gtk.Label m_label;
 	private Gtk.Image m_icon;
 	private Gtk.Revealer m_revealer;
+	private Gtk.EventBox m_eventBox;
 	private Gtk.EventBox m_unread_eventbox;
 	private Gtk.EventBox m_marked_eventbox;
 	private Gtk.Stack m_unread_stack;
@@ -29,7 +30,6 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	private bool m_hovering_row = false;
 	private bool m_populated = false;
 	public signal void rowStateChanged(ArticleStatus status);
-	public signal void child_revealed();
 
 	public ArticleRow(Article article)
 	{
@@ -38,14 +38,39 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		m_revealer = new Gtk.Revealer();
 		m_revealer.set_transition_type(Gtk.RevealerTransitionType.SLIDE_DOWN);
 		m_revealer.set_reveal_child(false);
-		m_revealer.notify["child_revealed"].connect(() => {
-			child_revealed();
-		});
 		this.set_size_request(0, 100);
 		this.add(m_revealer);
 		this.show_all();
 
 		GLib.Idle.add(populate, GLib.Priority.HIGH_IDLE);
+	}
+
+	~ArticleRow()
+	{
+		if(m_unread_eventbox != null)
+		{
+			m_unread_eventbox.enter_notify_event.disconnect(unreadIconEnter);
+			m_unread_eventbox.leave_notify_event.disconnect(unreadIconLeave);
+			m_unread_eventbox.button_press_event.disconnect(unreadIconClicked);
+		}
+
+		if(m_marked_eventbox != null)
+		{
+			m_marked_eventbox.enter_notify_event.disconnect(markedIconEnter);
+			m_marked_eventbox.leave_notify_event.disconnect(markedIconLeave);
+			m_marked_eventbox.button_press_event.disconnect(markedIconClicked);
+		}
+
+		if(m_eventBox != null)
+		{
+			m_eventBox.enter_notify_event.disconnect(rowEnter);
+			m_eventBox.leave_notify_event.disconnect(rowLeave);
+			m_eventBox.button_press_event.disconnect(rowClick);
+		}
+
+		this.drag_begin.disconnect(onDragBegin);
+		this.drag_data_get.disconnect(onDragDataGet);
+		this.drag_failed.disconnect(onDragFailed);
 	}
 
 	private bool populate()
@@ -121,7 +146,6 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		m_marked_eventbox.leave_notify_event.connect(markedIconLeave);
 		m_marked_eventbox.button_press_event.connect(markedIconClicked);
 
-
 		m_icon = createFavIcon();
 
 		icon_box.pack_start(m_icon, true, true, 0);
@@ -178,15 +202,15 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		box.pack_start(icon_box, false, false, 8);
 		box.pack_start(text_box, true, true, 0);
 
-		var eventbox = new Gtk.EventBox();
-		eventbox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
-		eventbox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
-		eventbox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
-		eventbox.enter_notify_event.connect(rowEnter);
-		eventbox.leave_notify_event.connect(rowLeave);
-		eventbox.button_press_event.connect(rowClick);
-		eventbox.add(box);
-		eventbox.show_all();
+		m_eventBox = new Gtk.EventBox();
+		m_eventBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
+		m_eventBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
+		m_eventBox.set_events(Gdk.EventMask.BUTTON_PRESS_MASK);
+		m_eventBox.enter_notify_event.connect(rowEnter);
+		m_eventBox.leave_notify_event.connect(rowLeave);
+		m_eventBox.button_press_event.connect(rowClick);
+		m_eventBox.add(box);
+		m_eventBox.show_all();
 
 		// Make the this widget a DnD source.
 		if(!Settings.general().get_boolean("only-feeds")
@@ -209,7 +233,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 			this.drag_failed.connect(onDragFailed);
 		}
 
-		m_revealer.add(eventbox);
+		m_revealer.add(m_eventBox);
 		m_populated = true;
 		return false;
 	}
@@ -240,22 +264,20 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		return false;
 	}
 
-	public async void reloadFavIcon(Gtk.Image? inIcon = null)
-	{
-		var icon = yield FavIconCache.get_default().getIcon(m_article.getFeedID());
-		if(icon != null)
-		{
-			if(inIcon == null)
-				m_icon.pixbuf = icon;
-			else
-				inIcon.pixbuf = icon;
-		}
-	}
-
 	private Gtk.Image createFavIcon()
 	{
 		var icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-		reloadFavIcon.begin(icon);
+
+		var manager = FavIconManager.get_default();
+		Feed feed = DataBase.readOnly().read_feed(m_article.getFeedID());
+		manager.getIcon.begin(feed, (obj, res) => {
+			var pixbuf = manager.getIcon.end(res);
+			if(pixbuf != null)
+			{
+				icon.pixbuf = pixbuf;
+			}
+		});
+
 		return icon;
 	}
 

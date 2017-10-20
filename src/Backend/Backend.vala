@@ -34,7 +34,6 @@ namespace FeedReader {
 		public signal void newFeedList();
 		public signal void refreshFeedListCounter();
 		public signal void updateArticleList();
-		public signal void reloadFavIcons();
 		public signal void showArticleListOverlay();
 		public signal void setOffline();
 		public signal void setOnline();

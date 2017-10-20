@@ -45,7 +45,6 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 
 	public CategoryRow(string name, string categorieID, int orderID, uint unread_count, string parentID, int level, bool expanded)
 	{
-
 		this.get_style_context().add_class("fr-sidebar-row");
 		m_level = level;
 		m_parentID = parentID;
@@ -109,9 +108,7 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 		m_unreadBox.set_events(Gdk.EventMask.ENTER_NOTIFY_MASK);
 		m_unreadBox.set_events(Gdk.EventMask.LEAVE_NOTIFY_MASK);
 		m_unreadBox.add(m_unreadStack);
-		m_unreadBox.button_press_event.connect(onUnreadClick);
-		m_unreadBox.enter_notify_event.connect(onUnreadEnter);
-		m_unreadBox.leave_notify_event.connect(onUnreadLeave);
+		activateUnreadEventbox(true);
 
 		m_box.pack_start(m_expandBox, false, false, 0);
 		m_box.pack_start(m_label, true, true, 0);
@@ -198,6 +195,30 @@ public class FeedReader.CategoryRow : Gtk.ListBoxRow {
 				this.drag_data_received.connect(onDragDataReceived);
 			}
 		}
+	}
+
+	~CategoryRow()
+	{
+		activateUnreadEventbox(false);
+
+		m_expandBox.button_press_event.disconnect(onExpandClick);
+		m_expandBox.enter_notify_event.disconnect(onExpandEnter);
+		m_expandBox.leave_notify_event.disconnect(onExpandLeave);
+
+		m_eventBox.button_press_event.disconnect(onClick);
+
+		this.drag_begin.disconnect(onDragBegin);
+		this.drag_data_get.disconnect(onDragDataGet);
+
+		this.drag_motion.disconnect(onDragMotion);
+		this.drag_leave.disconnect(onDragLeave);
+		this.drag_drop.disconnect(onDragDrop);
+		this.drag_data_received.disconnect(onDragDataReceived);
+
+		this.drag_motion.disconnect(onDragMotion);
+		this.drag_leave.disconnect(onDragLeave);
+		this.drag_drop.disconnect(onDragDrop);
+		this.drag_data_received.disconnect(onDragDataReceived);
 	}
 
 //------------- Drag Source Functions ----------------------------------------------

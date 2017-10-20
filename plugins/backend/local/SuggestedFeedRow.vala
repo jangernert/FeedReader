@@ -70,15 +70,10 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 
 	private async void load_favicon(Gtk.Stack iconStack, Feed feed, string iconURL)
 	{
-		bool success = yield Utils.downloadFavIcon(feed, iconURL);
-
 		Gtk.Image? icon = null;
-		if(success)
-		{
-			var pixBuf = yield FavIconCache.get_default().getIcon(feed.getFeedID());
-			if(pixBuf != null)
-				icon = new Gtk.Image.from_pixbuf(pixBuf);
-		}
+		var pixBuf = yield FavIconManager.get_default().getIcon(feed);
+		if(pixBuf != null)
+			icon = new Gtk.Image.from_pixbuf(pixBuf);
 
 		if(icon == null)
 		{

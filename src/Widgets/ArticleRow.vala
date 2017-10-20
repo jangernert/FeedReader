@@ -47,17 +47,26 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
 	~ArticleRow()
 	{
-		m_unread_eventbox.enter_notify_event.disconnect(unreadIconEnter);
-		m_unread_eventbox.leave_notify_event.disconnect(unreadIconLeave);
-		m_unread_eventbox.button_press_event.disconnect(unreadIconClicked);
+		if(m_unread_eventbox != null)
+		{
+			m_unread_eventbox.enter_notify_event.disconnect(unreadIconEnter);
+			m_unread_eventbox.leave_notify_event.disconnect(unreadIconLeave);
+			m_unread_eventbox.button_press_event.disconnect(unreadIconClicked);
+		}
 
-		m_marked_eventbox.enter_notify_event.disconnect(markedIconEnter);
-		m_marked_eventbox.leave_notify_event.disconnect(markedIconLeave);
-		m_marked_eventbox.button_press_event.disconnect(markedIconClicked);
+		if(m_marked_eventbox != null)
+		{
+			m_marked_eventbox.enter_notify_event.disconnect(markedIconEnter);
+			m_marked_eventbox.leave_notify_event.disconnect(markedIconLeave);
+			m_marked_eventbox.button_press_event.disconnect(markedIconClicked);
+		}
 
-		m_eventBox.enter_notify_event.disconnect(rowEnter);
-		m_eventBox.leave_notify_event.disconnect(rowLeave);
-		m_eventBox.button_press_event.disconnect(rowClick);
+		if(m_eventBox != null)
+		{
+			m_eventBox.enter_notify_event.disconnect(rowEnter);
+			m_eventBox.leave_notify_event.disconnect(rowLeave);
+			m_eventBox.button_press_event.disconnect(rowClick);
+		}
 
 		this.drag_begin.disconnect(onDragBegin);
 		this.drag_data_get.disconnect(onDragDataGet);

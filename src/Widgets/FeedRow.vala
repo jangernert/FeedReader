@@ -125,7 +125,8 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	~FeedRow()
 	{
 		activateUnreadEventbox(false);
-		m_eventBox.button_press_event.disconnect(onClick);
+		if(m_eventBox != null)
+			m_eventBox.button_press_event.disconnect(onClick);
 		this.drag_begin.disconnect(onDragBegin);
 		this.drag_data_get.disconnect(onDragDataGet);
 	}

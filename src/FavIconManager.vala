@@ -98,7 +98,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 				{
 					return yield file.read_async();
 				}
-				catch(FileError.NOENT e)
+				catch(IOError.NOT_FOUND e)
 				{
 					return null;
 				}

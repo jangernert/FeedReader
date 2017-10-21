@@ -46,11 +46,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			m_icon = createFavIcon();
 			m_icon.margin_start = level * 24;
 
-			FavIconManager.get_default().ReloadFavIcon.connect(feed => {
-				if(m_feed.getFeedID() == feed.getFeedID())
-					reloadFavIcon.begin();
-			});
-
 			m_label = new Gtk.Label(m_feed.getTitle());
 			m_label.set_size_request (0, rowhight);
 			m_label.set_ellipsize (Pango.EllipsizeMode.END);
@@ -156,26 +151,22 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 	{
 		var icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		icon.get_style_context().add_class("fr-sidebar-symbolic");
-		reloadFavIcon.begin(icon);
+
+		var favicon = FavIcon.for_feed(m_feed);
+		favicon.get_pixbuf.begin((obj, res) => {
+			var pixbuf = favicon.get_pixbuf.end(res);
+			if(pixbuf != null)
+			{
+				icon.pixbuf = pixbuf;
+				m_icon.get_style_context().remove_class("fr-sidebar-symbolic");
+			}
+		});
+		favicon.pixbuf_changed.connect((feed, pixbuf) => {
+			icon.pixbuf = pixbuf;
+			icon.get_style_context().remove_class("fr-sidebar-symbolic");
+		});
+
 		return icon;
-	}
-
-	public async void reloadFavIcon(Gtk.Image? inIcon = null)
-	{
-		var icon = yield FavIconManager.get_default().getIcon(m_feed);
-		if(icon == null)
-			return;
-
-		if(inIcon == null)
-		{
-			m_icon.pixbuf = icon;
-			m_icon.get_style_context().remove_class("fr-sidebar-symbolic");
-		}
-		else
-		{
-			inIcon.pixbuf = icon;
-			inIcon.get_style_context().remove_class("fr-sidebar-symbolic");
-		}
 	}
 
 	private Gtk.Window getFeedIconWindow()

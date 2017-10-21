@@ -98,7 +98,7 @@ set(UI_PACKAGES
 	gio-2.0)
 
 vala_precompile(FEEDREADER ${FEEDREADER_NAME}
-	src/FavIconManager.vala
+	src/FavIcon.vala
 	src/FeedReader.vala
 	src/Widgets/AddPopover.vala
 	src/Widgets/ArticleRow.vala

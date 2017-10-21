@@ -12,134 +12,134 @@
 //
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
+public class FeedReader.FavIcon : GLib.Object
+{
+	private static string m_icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
+	private static Gee.Map<string, FavIcon> m_map = null;
 
-public class FeedReader.FavIconManager : GLib.Object {
-
-	private struct FavIconData
+	public static FavIcon for_feed(Feed feed)
 	{
-		public Gdk.Pixbuf? icon;
-		public ResourceMetadata? metadata;
+		if(m_map == null)
+			m_map = new Gee.HashMap<string, FavIcon>();
 
-		public FavIconData(Gdk.Pixbuf? icon, ResourceMetadata? meta)
+		var feed_id = feed.getFeedID();
+		var icon = m_map.get(feed_id);
+		if(icon == null)
 		{
-			this.metadata = meta;
-			this.icon = icon;
+			icon = new FavIcon(feed);
+			m_map.set(feed_id, icon);
 		}
+
+		return icon;
 	}
 
-	private Gee.Map<string, Gee.Future<FavIconData?>> m_map = new Gee.HashMap<string, Gee.Future<FavIconData?>>();
-	private static FavIconManager? m_cache = null;
+	private Feed m_feed;
+	private Gee.Promise<Gdk.Pixbuf?> m_icon = null;
+	private ResourceMetadata m_metadata;
 
-	public signal void ReloadFavIcon(Feed feed);
+	public signal void pixbuf_changed(Feed feed, Gdk.Pixbuf pixbuf);
 
-	public static FavIconManager get_default()
+	private FavIcon(Feed feed)
 	{
-		if(m_cache == null)
-			m_cache = new FavIconManager();
-
-		return m_cache;
+		m_feed = feed;
 	}
 
-	private FavIconManager()
+	public async Gdk.Pixbuf? get_pixbuf()
 	{
-	}
-
-	public async Gdk.Pixbuf? getIcon(Feed feed)
-	{
+		if(m_icon == null || m_metadata.is_expired())
+		{
+			m_icon = new Gee.Promise<Gdk.Pixbuf?>();
+			load.begin((obj, res) => {
+				load.end(res);
+			});
+		}
 		try
 		{
-			var feed_id = feed.getFeedID();
-			var future = m_map.get(feed_id);
-
-			bool download_icon = future == null || (future.ready && (future.value.metadata == null || future.value.metadata.is_expired()) );
-
-			if(download_icon)
-			{
-				var promise = new Gee.Promise<FavIconData?>();
-				try
-				{
-					future = promise.future;
-					m_map.set(feed_id, future);
-
-					ResourceMetadata metadata;
-					var stream = yield downloadFavIcon(feed, out metadata);
-					if(stream == null)
-						return null;
-
-					var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
-					stream.close();
-
-					if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
-					{
-						Logger.warning("FavIconManager: Icon for feed %s is too small".printf(feed.getTitle()));
-						return null;
-					}
-					pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
-
-					promise.set_value(FavIconData(pixbuf, metadata));
-					ReloadFavIcon(feed);
-				}
-				finally
-				{
-					if(!future.ready)
-						promise.set_value(FavIconData(null, null));
-				}
-			}
-
-			FavIconData data = yield future.wait_async();
-			return data.icon;
+			return yield m_icon.future.wait_async();
 		}
 		catch(Error e)
 		{
-			Logger.error("FavIconManager.getIcon: %s".printf(e.message));
+			Logger.error("FavIcon.get_pixbuf: " + e.message);
 			return null;
 		}
 	}
 
-	private async InputStream? downloadFavIcon(Feed feed, out ResourceMetadata metadata, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/") throws GLib.Error
+	private async void load()
 	{
-		string filename_prefix = icon_path + feed.getFeedFileName();
+		try
+		{
+			var stream = yield downloadFavIcon();
+			if(stream == null)
+				return;
+
+			var pixbuf = yield new Gdk.Pixbuf.from_stream_async(stream);
+			stream.close();
+
+			if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
+			{
+				Logger.warning("FavIcon: Icon for feed %s is too small".printf(m_feed.getTitle()));
+				return;
+			}
+			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
+
+			m_icon.set_value(pixbuf);
+			if(pixbuf != null)
+				pixbuf_changed(m_feed, pixbuf);
+		}
+		catch(Error e)
+		{
+			Logger.error("FavIcon.load: " + e.message);
+		}
+		finally
+		{
+			if(!m_icon.future.ready)
+				m_icon.set_value(null);
+		}
+	}
+
+	private async InputStream? downloadFavIcon(GLib.Cancellable? cancellable = null) throws GLib.Error
+	{
+		string filename_prefix = m_icon_path + m_feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
 		string metadata_filename = @"$filename_prefix.txt";
 
-		metadata = yield ResourceMetadata.from_file_async(metadata_filename);
-		DateTime? expires = metadata.expires;
+		if(!yield Utils.ensure_path(m_icon_path))
+			return null;
+
+		m_metadata = yield ResourceMetadata.from_file_async(metadata_filename);
+		DateTime? expires = m_metadata.expires;
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return null;
 
-		var now = new DateTime.now_utc();
-		if(expires != null)
+		if(!m_metadata.is_expired())
 		{
-			if(expires.to_unix() > now.to_unix())
+			Logger.debug("Favicon for %s is valid until %s, skipping this time".printf(m_feed.getTitle(), expires.to_string()));
+			var file = File.new_for_path(local_filename);
+			try
 			{
-				Logger.debug("Favicon for %s is valid until %s, skipping this time".printf(feed.getTitle(), expires.to_string()));
-				var file = File.new_for_path(local_filename);
-				try
-				{
-					return yield file.read_async();
-				}
-				catch(IOError.NOT_FOUND e)
-				{
-					return null;
-				}
+				return yield file.read_async();
+			}
+			catch(IOError.NOT_FOUND e)
+			{
+				return null;
 			}
 		}
 
-		var default_expires = now.add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
-		if(metadata.expires == null || metadata.expires.to_unix() < default_expires.to_unix())
+		var default_expires = new DateTime.now_utc().add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
+		if(m_metadata.expires == null || m_metadata.expires.to_unix() < default_expires.to_unix())
 		{
-			metadata.expires = default_expires;
-			yield metadata.save_to_file_async(metadata_filename);
+			m_metadata.expires = default_expires;
+			yield m_metadata.save_to_file_async(metadata_filename);
 		}
 
 		var obvious_icons = new Gee.ArrayList<string>();
 
-		if(feed.getIconURL() != null)
-			obvious_icons.add(feed.getIconURL());
+		if(m_feed.getIconURL() != null)
+			obvious_icons.add(m_feed.getIconURL());
 
 		// try domainname/favicon.ico
-		var uri = new Soup.URI(feed.getURL());
+		var uri = new Soup.URI(m_feed.getURL());
 		string? siteURL = null;
 		if(uri != null)
 		{
@@ -156,7 +156,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		// Try to find one of those icons
 		foreach(var url in obvious_icons)
 		{
-			var stream = yield downloadIcon(feed, url, cancellable, icon_path);
+			var stream = yield downloadIcon(url, cancellable);
 			if(stream != null)
 				return stream;
 
@@ -210,7 +210,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 				if(xpath != null)
 				{
 					xpath = grabberUtils.completeURL(xpath, siteURL);
-					return yield downloadIcon(feed, xpath, cancellable, icon_path);
+					return yield downloadIcon(xpath, cancellable);
 				}
 			}
 			finally
@@ -222,7 +222,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 		return null;
 	}
 
-	private async InputStream? downloadIcon(Feed feed, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/") throws GLib.Error
+	private async InputStream? downloadIcon(string? icon_url, Cancellable? cancellable) throws GLib.Error
 	{
 		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
 		{
@@ -230,16 +230,12 @@ public class FeedReader.FavIconManager : GLib.Object {
 			return null;
 		}
 
-		if(!yield Utils.ensure_path(icon_path))
-			return null;
-
-		string filename_prefix = icon_path + feed.getFeedFileName();
+		string filename_prefix = m_icon_path + m_feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
 		string metadata_filename = @"$filename_prefix.txt";
 
-		var metadata = yield ResourceMetadata.from_file_async(metadata_filename);
-		string etag = metadata.etag;
-		string last_modified = metadata.last_modified;
+		string etag = m_metadata.etag;
+		string last_modified = m_metadata.last_modified;
 
 		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
 		var message = new Soup.Message("GET", icon_url);
@@ -285,11 +281,11 @@ public class FeedReader.FavIconManager : GLib.Object {
 				return null;
 			}
 
-			metadata.etag = message.response_headers.get_one("ETag");
-			metadata.last_modified = message.response_headers.get_one("Last-Modified");
+			m_metadata.etag = message.response_headers.get_one("ETag");
+			m_metadata.last_modified = message.response_headers.get_one("Last-Modified");
 
 			var cache_control = message.response_headers.get_list("Cache-Control");
-			metadata.expires = new DateTime.now_utc().add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);;
+			m_metadata.expires = new DateTime.now_utc().add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
 			if(cache_control != null)
 			{
 				foreach(var header in message.response_headers.get_list("Cache-Control").split(","))
@@ -300,17 +296,17 @@ public class FeedReader.FavIconManager : GLib.Object {
 					var seconds = int64.parse(parts[1]);
 					var expires = new DateTime.now_utc();
 					expires.add_seconds(seconds);
-					if(expires.to_unix() > metadata.expires.to_unix())
-						metadata.expires = expires;
+					if(expires.to_unix() > m_metadata.expires.to_unix())
+						m_metadata.expires = expires;
 				}
 			}
 
-			metadata.last_modified = message.response_headers.get_one("Last-Modified");
-			yield metadata.save_to_file_async(metadata_filename);
+			m_metadata.last_modified = message.response_headers.get_one("Last-Modified");
+			yield m_metadata.save_to_file_async(metadata_filename);
 			return new MemoryInputStream.from_data(data);
 		}
 
-		Logger.warning(@"Could not download icon for feed: %s $icon_url, got response code $status".printf(feed.getFeedID()));
+		Logger.warning(@"Could not download icon for feed: %s $icon_url, got response code $status".printf(m_feed.getFeedID()));
 		return null;
 	}
 }

@@ -548,6 +548,10 @@ public class FeedReader.Utils : GLib.Object {
 			path.make_directory_with_parents();
 			return true;
 		}
+		catch(IOError.EXISTS e)
+		{
+			return true;
+		}
 		catch(Error e)
 		{
 			Logger.error(@"ensure_path: Failed to create folder $path_str: " + e.message);

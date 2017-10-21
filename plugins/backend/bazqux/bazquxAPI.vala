@@ -191,7 +191,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 						new Tag(
 							id,
 							title,
-							DataBase.readOnly().getTagColor()
+							m_db.getTagColor()
 						)
 					);
 				}
@@ -341,7 +341,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
+				else if(cat.contains("/label/") && m_db.getTagName(cat) != null)
 					tags.add(cat);
 			}
 

@@ -19,8 +19,10 @@ public class FeedReader.FeedlyAPI : Object {
 	private string m_userID;
 	private Json.Array m_unreadcounts;
 	private FeedlyUtils m_utils;
+	private DataBaseReadOnly m_db;
 
-	public FeedlyAPI() {
+	public FeedlyAPI(DataBaseReadOnly db) {
+		m_db = db;
 		m_connection = new FeedlyConnection();
 		m_utils = new FeedlyUtils();
 	}
@@ -278,7 +280,7 @@ public class FeedReader.FeedlyAPI : Object {
 				new Tag(
 					object.get_string_member("id"),
 					object.has_member("label") ? object.get_string_member("label") : "",
-					DataBase.readOnly().getTagColor()
+					m_db.getTagColor()
 				)
 			);
 		}
@@ -598,7 +600,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 			foreach(string catID in catArray)
 			{
-				string catName = DataBase.readOnly().getCategoryName(catID);
+				string catName = m_db.getCategoryName(catID);
 				Json.Object catObject = new Json.Object();
 				catObject.set_string_member("id", catID);
 				catObject.set_string_member("label", catName);
@@ -618,7 +620,7 @@ public class FeedReader.FeedlyAPI : Object {
 
 	public void moveSubscription(string feedID, string newCatID, string? oldCatID = null)
 	{
-		var Feed = DataBase.readOnly().read_feed(feedID);
+		var Feed = m_db.read_feed(feedID);
 
 		Json.Object object = new Json.Object();
 		object.set_string_member("id", feedID);
@@ -632,7 +634,7 @@ public class FeedReader.FeedlyAPI : Object {
 		{
 			if(catID != oldCatID)
 			{
-				string catName = DataBase.readOnly().getCategoryName(catID);
+				string catName = m_db.getCategoryName(catID);
 				Json.Object catObject = new Json.Object();
 				catObject.set_string_member("id", catID);
 				catObject.set_string_member("label", catName);
@@ -640,7 +642,7 @@ public class FeedReader.FeedlyAPI : Object {
 			}
 		}
 
-		string newCatName = DataBase.readOnly().getCategoryName(newCatID);
+		string newCatName = m_db.getCategoryName(newCatID);
 		Json.Object catObject = new Json.Object();
 		catObject.set_string_member("id", newCatID);
 		catObject.set_string_member("label", newCatName);

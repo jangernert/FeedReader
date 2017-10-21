@@ -19,10 +19,12 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 	private OldReaderUtils m_utils;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
+	private DataBaseReadOnly m_db;
 
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
-		m_api = new OldReaderAPI();
+		m_db = db;
+		m_api = new OldReaderAPI(db);
 		m_utils = new OldReaderUtils();
 	}
 
@@ -253,13 +255,13 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void markAllItemsRead()
 	{
-		var categories = DataBase.readOnly().read_categories();
+		var categories = m_db.read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = DataBase.readOnly().read_feeds_without_cat();
+		var feeds = m_db.read_feeds_without_cat();
 		foreach(Feed feed in feeds)
 		{
 			m_api.markAsRead(feed.getFeedID());

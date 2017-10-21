@@ -18,9 +18,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	private localUtils m_utils;
 	private Soup.Session m_session;
 	private Gtk.ListBox m_feedlist;
+	private DataBaseReadOnly m_db;
 
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_utils = new localUtils();
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
@@ -360,8 +362,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string tagID = "1";
 
-		if(!DataBase.readOnly().isTableEmpty("tags"))
-			tagID = (int.parse(DataBase.readOnly().getMaxID("tags", "tagID")) + 1).to_string();
+		if(!m_db.isTableEmpty("tags"))
+			tagID = (int.parse(m_db.getMaxID("tags", "tagID")) + 1).to_string();
 
 		Logger.info("createTag: ID = " + tagID);
 		return tagID;
@@ -400,9 +402,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		feedID = "feedID00001";
 
-		if(!DataBase.readOnly().isTableEmpty("feeds"))
+		if(!m_db.isTableEmpty("feeds"))
 		{
-			feedID = "feedID%05d".printf(int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1);
+			feedID = "feedID%05d".printf(int.parse(m_db.getMaxID("feeds", "feed_id").substring(6)) + 1);
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
@@ -410,7 +412,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(Feed != null)
 		{
-			if(!DataBase.readOnly().feed_exists(Feed.getURL())) {
+			if(!m_db.feed_exists(Feed.getURL())) {
 				var list = new Gee.LinkedList<Feed>();
 				list.add(Feed);
 				DataBase.writeAccess().write_feeds(list);
@@ -427,8 +429,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		int highestID = 0;
 
-		if(!DataBase.readOnly().isTableEmpty("feeds"))
-			highestID = int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1;
+		if(!m_db.isTableEmpty("feeds"))
+			highestID = int.parse(m_db.getMaxID("feeds", "feed_id").substring(6)) + 1;
 
 		foreach(Feed f in feeds)
 		{
@@ -478,12 +480,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string catID = "catID00001";
 
-		if(!DataBase.readOnly().isTableEmpty("categories"))
+		if(!m_db.isTableEmpty("categories"))
 		{
-			string? id = DataBase.readOnly().getCategoryID(title);
+			string? id = m_db.getCategoryID(title);
 			if(id == null)
 			{
-				catID = "catID%05d".printf(int.parse(DataBase.readOnly().getMaxID("categories", "categorieID").substring(5)) + 1);
+				catID = "catID%05d".printf(int.parse(m_db.getMaxID("categories", "categorieID").substring(5)) + 1);
 			}
 			else
 			{
@@ -533,7 +535,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
-		var f = DataBase.readOnly().read_feeds();
+		var f = m_db.read_feeds();
 		var articleArray = new Gee.LinkedList<Article>();
 		GLib.Mutex mutex = GLib.Mutex();
 

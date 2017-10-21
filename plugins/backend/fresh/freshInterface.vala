@@ -24,10 +24,12 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 	private Gtk.Entry m_authUserEntry;
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
+	private DataBaseReadOnly m_db;
 
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
-		m_api = new freshAPI();
+		m_db = db;
+		m_api = new freshAPI(db);
 		m_utils = new freshUtils();
 	}
 

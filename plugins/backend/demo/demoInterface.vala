@@ -10,7 +10,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// This method gets executed right after the plugin is loaded. Do everything
 	// you need to set up the plugin here.
 	//--------------------------------------------------------------------------------------
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
 
 	}

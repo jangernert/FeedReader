@@ -19,9 +19,11 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 	private bazquxUtils m_utils;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
+	private DataBaseReadOnly m_db;
 
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_api = new bazquxAPI();
 		m_utils = new bazquxUtils();
 	}
@@ -252,13 +254,13 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void markAllItemsRead()
 	{
-		var categories = DataBase.readOnly().read_categories();
+		var categories = m_db.read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = DataBase.readOnly().read_feeds_without_cat();
+		var feeds = m_db.read_feeds_without_cat();
 		foreach(Feed feed in feeds)
 		{
 			m_api.markAsRead(feed.getFeedID());

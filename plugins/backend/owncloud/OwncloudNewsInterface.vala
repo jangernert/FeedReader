@@ -24,10 +24,12 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 	private Gtk.Entry m_AuthPasswordEntry;
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
+	private DataBaseReadOnly m_db;
 
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
-		m_api = new OwncloudNewsAPI();
+		m_db = db;
+		m_api = new OwncloudNewsAPI(m_db);
 		m_utils = new OwncloudNewsUtils();
 	}
 
@@ -429,7 +431,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public int getUnreadCount()
 	{
-		return (int)DataBase.readOnly().get_unread_total();
+		return (int)m_db.get_unread_total();
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
@@ -462,7 +464,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		var articles = new Gee.LinkedList<Article>();
 
 		if(count == -1)
-			m_api.getNewArticles(articles, DataBase.readOnly().getLastModified(), type, id);
+			m_api.getNewArticles(articles, m_db.getLastModified(), type, id);
 		else
 			m_api.getArticles(articles, 0, -1, read, type, id);
 

@@ -24,10 +24,12 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 	private Gtk.Entry m_authUserEntry;
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
+	private DataBaseReadOnly m_db;
 
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
-		m_api = new ttrssAPI();
+		m_db = db;
+		m_api = new ttrssAPI(m_db);
 		m_utils = new ttrssUtils();
 	}
 
@@ -310,7 +312,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void markAllItemsRead()
 	{
-		var categories = DataBase.readOnly().read_categories();
+		var categories = m_db.read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.catchupFeed(cat.getCatID(), true);
@@ -356,7 +358,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		if(success)
-			feedID = (int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id")) + 1).to_string();
+			feedID = (int.parse(m_db.getMaxID("feeds", "feed_id")) + 1).to_string();
 		else
 			feedID = "-98";
 
@@ -507,7 +509,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			foreach(Article article in articles)
 			{
 				var id = article.getArticleID();
-				if(!DataBase.readOnly().article_exists(id))
+				if(!m_db.article_exists(id))
 				{
 					articleIDs += id + ",";
 				}

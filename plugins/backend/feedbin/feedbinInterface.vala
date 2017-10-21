@@ -19,9 +19,11 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	private FeedbinUtils m_utils;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
+	private DataBaseReadOnly m_db;
 
-	public void init()
+	public void init(DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_utils = new FeedbinUtils();
 		m_api = new FeedbinAPI(m_utils.getUser(), m_utils.getPassword(), Constants.USER_AGENT);
 	}
@@ -288,7 +290,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		int num_articles = 1; // set to any value > 0
 		for(var offset = 0; num_articles > 0; offset += count)
 		{
-			var articles = DataBase.readOnly().read_articles(id, type, ArticleListState.ALL, "", count, offset);
+			var articles = m_db.read_articles(id, type, ArticleListState.ALL, "", count, offset);
 			var entry_ids = new Gee.ArrayList<int64?>();
 			foreach(var article in articles)
 			{
@@ -629,7 +631,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 					since = new DateTime.now_utc().add_months(-6);
 					break;
 			}
-			if(!DataBase.readOnly().isTableEmpty("articles"))
+			if(!m_db.isTableEmpty("articles"))
 			{
 				var last_sync = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
 				if(since == null || last_sync.to_unix() > since.to_unix())
@@ -678,7 +680,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 				for(var offset = 0, c = 1000; ; offset += c)
 				{
 					var articles = new Gee.ArrayList<Article>();
-					var existing_articles = DataBase.readOnly().read_articles(search_feed_id, search_type, ArticleListState.ALL, "", c, offset);
+					var existing_articles = m_db.read_articles(search_feed_id, search_type, ArticleListState.ALL, "", c, offset);
 					if(existing_articles.size == 0)
 						break;
 

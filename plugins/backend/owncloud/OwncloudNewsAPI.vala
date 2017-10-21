@@ -29,9 +29,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	private string m_password;
 	private OwncloudNewsUtils m_utils;
 	private Soup.Session m_session;
+	private DataBaseReadOnly m_db;
 
-	public OwncloudNewsAPI()
+	public OwncloudNewsAPI(DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_parser = new Json.Parser ();
 		m_utils = new OwncloudNewsUtils();
 		m_session = new Soup.Session();
@@ -352,7 +354,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
-		message.add_int("newestItemId", int.parse(DataBase.readOnly().getNewestArticle()));
+		message.add_int("newestItemId", int.parse(m_db.getNewestArticle()));
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
@@ -366,7 +368,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		string url = "items/read";
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
-		message.add_int("newestItemId", int.parse(DataBase.readOnly().getNewestArticle()));
+		message.add_int("newestItemId", int.parse(m_db.getNewestArticle()));
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
@@ -400,7 +402,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool updateArticleMarked(string articleID, ArticleStatus marked)
 	{
-		var article = DataBase.readOnly().read_article(articleID);
+		var article = m_db.read_article(articleID);
 		string url = "items/%s/%s/".printf(article.getFeedID(), article.getHash());
 
 		if(marked == ArticleStatus.MARKED)

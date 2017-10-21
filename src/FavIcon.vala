@@ -46,7 +46,8 @@ public class FeedReader.FavIcon : GLib.Object
 
 	public async Gdk.Pixbuf? get_pixbuf()
 	{
-		if(m_pixbuf == null || m_metadata.is_expired())
+		// wait for ready + expired so we don't make a bunch of requests at once
+		if(m_pixbuf == null || (m_pixbuf.future.ready && m_metadata.is_expired()))
 		{
 			m_pixbuf = new Gee.Promise<Gdk.Pixbuf?>();
 			load.begin((obj, res) => {

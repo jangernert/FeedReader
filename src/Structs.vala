@@ -132,7 +132,7 @@ namespace FeedReader {
 			}
 		}
 
-		public bool IsExpired()
+		public bool is_expired()
 		{
 			if(expires == null)
 				return true;

@@ -17,13 +17,13 @@ public class FeedReader.FavIconManager : GLib.Object {
 
 	private struct FavIconData
 	{
-		public Gdk.Pixbuf? Icon;
-		public ResourceMetadata? Metadata;
+		public Gdk.Pixbuf? icon;
+		public ResourceMetadata? metadata;
 
 		public FavIconData(Gdk.Pixbuf? icon, ResourceMetadata? meta)
 		{
-			Metadata = meta;
-			Icon = icon;
+			this.metadata = meta;
+			this.icon = icon;
 		}
 	}
 
@@ -51,7 +51,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 			var feed_id = feed.getFeedID();
 			var future = m_map.get(feed_id);
 
-			bool download_icon = future == null || (future.ready && (future.value.Metadata == null || future.value.Metadata.IsExpired()) );
+			bool download_icon = future == null || (future.ready && (future.value.metadata == null || future.value.metadata.is_expired()) );
 
 			if(download_icon)
 			{
@@ -87,7 +87,7 @@ public class FeedReader.FavIconManager : GLib.Object {
 			}
 
 			FavIconData data = yield future.wait_async();
-			return data.Icon;
+			return data.icon;
 		}
 		catch(Error e)
 		{

@@ -15,8 +15,10 @@
 
 public class FeedReader.FavIconManager : GLib.Object {
 
-	private Gee.Map<string, Gee.Future<Gdk.Pixbuf?>> m_map = new Gee.HashMap<string, Gee.Future<Gdk.Pixbuf?>>();
+	private Gee.Map<string, Gee.Future<FavIconData?>> m_map = new Gee.HashMap<string, Gee.Future<FavIconData?>>();
 	private static FavIconManager? m_cache = null;
+
+	public signal void ReloadFavIcon(Feed feed);
 
 	public static FavIconManager get_default()
 	{
@@ -36,15 +38,19 @@ public class FeedReader.FavIconManager : GLib.Object {
 		{
 			var feed_id = feed.getFeedID();
 			var future = m_map.get(feed_id);
-			if(future == null)
+
+			bool download_icon = future == null || (future.ready && (future.value.Metadata == null || future.value.Metadata.IsExpired()) );
+
+			if(download_icon)
 			{
-				var promise = new Gee.Promise<Gdk.Pixbuf?>();
+				var promise = new Gee.Promise<FavIconData?>();
 				try
 				{
 					future = promise.future;
 					m_map.set(feed_id, future);
 
-					var stream = yield downloadFavIcon(feed);
+					ResourceMetadata metadata;
+					var stream = yield downloadFavIcon(feed, out metadata);
 					if(stream == null)
 						return null;
 
@@ -53,20 +59,23 @@ public class FeedReader.FavIconManager : GLib.Object {
 
 					if(pixbuf.get_height() <= 1 && pixbuf.get_width() <= 1)
 					{
-						Logger.warning(@"FavIconManager: Icon for feed %s is too small".printf(feed.getTitle()));
+						Logger.warning("FavIconManager: Icon for feed %s is too small".printf(feed.getTitle()));
 						return null;
 					}
 					pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
 
-					promise.set_value(pixbuf);
+					promise.set_value(FavIconData(pixbuf, metadata));
+					ReloadFavIcon(feed);
 				}
 				finally
 				{
 					if(!future.ready)
-						promise.set_value(null);
+						promise.set_value(FavIconData(null, null));
 				}
 			}
-			return yield future.wait_async();
+
+			FavIconData data = yield future.wait_async();
+			return data.Icon;
 		}
 		catch(Error e)
 		{
@@ -75,13 +84,13 @@ public class FeedReader.FavIconManager : GLib.Object {
 		}
 	}
 
-	private async InputStream? downloadFavIcon(Feed feed, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/") throws GLib.Error
+	private async InputStream? downloadFavIcon(Feed feed, out ResourceMetadata metadata, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/") throws GLib.Error
 	{
 		string filename_prefix = icon_path + feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
 		string metadata_filename = @"$filename_prefix.txt";
 
-		var metadata = yield ResourceMetadata.from_file_async(metadata_filename);
+		metadata = yield ResourceMetadata.from_file_async(metadata_filename);
 		DateTime? expires = metadata.expires;
 
 		if(cancellable != null && cancellable.is_cancelled())

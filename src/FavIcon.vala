@@ -34,7 +34,7 @@ public class FeedReader.FavIcon : GLib.Object
 	}
 
 	private Feed m_feed;
-	private Gee.Promise<Gdk.Pixbuf?> m_icon = null;
+	private Gee.Promise<Gdk.Pixbuf?> m_pixbuf = null;
 	private ResourceMetadata m_metadata;
 
 	public signal void pixbuf_changed(Feed feed, Gdk.Pixbuf pixbuf);
@@ -46,16 +46,16 @@ public class FeedReader.FavIcon : GLib.Object
 
 	public async Gdk.Pixbuf? get_pixbuf()
 	{
-		if(m_icon == null || m_metadata.is_expired())
+		if(m_pixbuf == null || m_metadata.is_expired())
 		{
-			m_icon = new Gee.Promise<Gdk.Pixbuf?>();
+			m_pixbuf = new Gee.Promise<Gdk.Pixbuf?>();
 			load.begin((obj, res) => {
 				load.end(res);
 			});
 		}
 		try
 		{
-			return yield m_icon.future.wait_async();
+			return yield m_pixbuf.future.wait_async();
 		}
 		catch(Error e)
 		{
@@ -82,7 +82,7 @@ public class FeedReader.FavIcon : GLib.Object
 			}
 			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
 
-			m_icon.set_value(pixbuf);
+			m_pixbuf.set_value(pixbuf);
 			if(pixbuf != null)
 				pixbuf_changed(m_feed, pixbuf);
 		}
@@ -92,8 +92,8 @@ public class FeedReader.FavIcon : GLib.Object
 		}
 		finally
 		{
-			if(!m_icon.future.ready)
-				m_icon.set_value(null);
+			if(!m_pixbuf.future.ready)
+				m_pixbuf.set_value(null);
 		}
 	}
 

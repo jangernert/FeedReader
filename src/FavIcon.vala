@@ -127,100 +127,105 @@ public class FeedReader.FavIcon : GLib.Object
 			}
 		}
 
-		var default_expires = new DateTime.now_utc().add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
-		if(m_metadata.expires == null || m_metadata.expires.to_unix() < default_expires.to_unix())
-		{
-			m_metadata.expires = default_expires;
-			yield m_metadata.save_to_file_async(metadata_filename);
-		}
-
-		var obvious_icons = new Gee.ArrayList<string>();
-
-		if(m_feed.getIconURL() != null)
-			obvious_icons.add(m_feed.getIconURL());
-
-		// try domainname/favicon.ico
-		var uri = new Soup.URI(m_feed.getURL());
-		string? siteURL = null;
-		if(uri != null)
-		{
-			string hostname = uri.get_host();
-			siteURL = uri.get_scheme() + "://" + hostname;
-
-			var icon_url = siteURL;
-			if(!icon_url.has_suffix("/"))
-				icon_url += "/";
-			icon_url += "favicon.ico";
-			obvious_icons.add(icon_url);
-		}
-
-		// Try to find one of those icons
-		foreach(var url in obvious_icons)
-		{
-			var stream = yield downloadIcon(url, cancellable);
-			if(stream != null)
-				return stream;
-
-			if(cancellable != null && cancellable.is_cancelled())
-				return null;
-		}
-
-		// If all else fails, download html and parse to find location of favicon
-		if(siteURL == null)
-			return null;
-
-		var message_html = new Soup.Message("GET", siteURL);
-		if(Settings.tweaks().get_boolean("do-not-track"))
-			message_html.request_headers.append("DNT", "1");
-
-		string html;
 		try
 		{
-			var bodyStream = yield Utils.getSession().send_async(message_html);
-			html = (string)yield Utils.inputStreamToArray(bodyStream, cancellable);
-		}
-		catch (Error e)
-		{
-			Logger.warning(@"Request for $siteURL failed: " + e.message);
-			return null;
-		}
-		if(html != null && message_html.status_code == 200)
-		{
-			var html_cntx = new Html.ParserCtxt();
-			html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-			Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-			if(doc == null)
+			var obvious_icons = new Gee.ArrayList<string>();
+
+			if(m_feed.getIconURL() != null)
+				obvious_icons.add(m_feed.getIconURL());
+
+			// try domainname/favicon.ico
+			var uri = new Soup.URI(m_feed.getURL());
+			string? siteURL = null;
+			if(uri != null)
 			{
-				Logger.debug(@"Utils.downloadFavIcon: parsing html on $siteURL failed");
-				return null;
+				string hostname = uri.get_host();
+				siteURL = uri.get_scheme() + "://" + hostname;
+
+				var icon_url = siteURL;
+				if(!icon_url.has_suffix("/"))
+					icon_url += "/";
+				icon_url += "favicon.ico";
+				obvious_icons.add(icon_url);
 			}
 
+			// Try to find one of those icons
+			foreach(var url in obvious_icons)
+			{
+				var stream = yield downloadIcon(url, cancellable);
+				if(stream != null)
+					return stream;
+
+				if(cancellable != null && cancellable.is_cancelled())
+					return null;
+			}
+
+			// If all else fails, download html and parse to find location of favicon
+			if(siteURL == null)
+				return null;
+
+			var message_html = new Soup.Message("GET", siteURL);
+			if(Settings.tweaks().get_boolean("do-not-track"))
+				message_html.request_headers.append("DNT", "1");
+
+			string html;
 			try
 			{
-				// check for <link rel="icon">
-				var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
-
-				if(xpath == null)
-					// check for <link rel="shortcut icon">
-					xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
-
-				if(xpath == null)
-					// check for <link rel="apple-touch-icon">
-					xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
-
-				if(xpath != null)
+				var bodyStream = yield Utils.getSession().send_async(message_html);
+				html = (string)yield Utils.inputStreamToArray(bodyStream, cancellable);
+			}
+			catch (Error e)
+			{
+				Logger.warning(@"Request for $siteURL failed: " + e.message);
+				return null;
+			}
+			if(html != null && message_html.status_code == 200)
+			{
+				var html_cntx = new Html.ParserCtxt();
+				html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+				Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
+				if(doc == null)
 				{
-					xpath = grabberUtils.completeURL(xpath, siteURL);
-					return yield downloadIcon(xpath, cancellable);
+					Logger.debug(@"Utils.downloadFavIcon: parsing html on $siteURL failed");
+					return null;
+				}
+
+				try
+				{
+					// check for <link rel="icon">
+					var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
+
+					if(xpath == null)
+						// check for <link rel="shortcut icon">
+						xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
+
+					if(xpath == null)
+						// check for <link rel="apple-touch-icon">
+						xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
+
+					if(xpath != null)
+					{
+						xpath = grabberUtils.completeURL(xpath, siteURL);
+						return yield downloadIcon(xpath, cancellable);
+					}
+				}
+				finally
+				{
+					delete doc;
 				}
 			}
-			finally
-			{
-				delete doc;
-			}
-		}
 
-		return null;
+			return null;
+		}
+		finally
+		{
+			var default_expires = new DateTime.now_utc().add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
+			if(m_metadata.expires == null || m_metadata.expires.to_unix() < default_expires.to_unix())
+			{
+				m_metadata.expires = default_expires;
+			}
+			yield m_metadata.save_to_file_async(metadata_filename);
+		}
 	}
 
 	private async InputStream? downloadIcon(string? icon_url, Cancellable? cancellable) throws GLib.Error
@@ -233,7 +238,6 @@ public class FeedReader.FavIcon : GLib.Object
 
 		string filename_prefix = m_icon_path + m_feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
-		string metadata_filename = @"$filename_prefix.txt";
 
 		string etag = m_metadata.etag;
 		string last_modified = m_metadata.last_modified;
@@ -286,7 +290,6 @@ public class FeedReader.FavIcon : GLib.Object
 			m_metadata.last_modified = message.response_headers.get_one("Last-Modified");
 
 			var cache_control = message.response_headers.get_list("Cache-Control");
-			m_metadata.expires = new DateTime.now_utc().add_days(Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS);
 			if(cache_control != null)
 			{
 				foreach(var header in message.response_headers.get_list("Cache-Control").split(","))
@@ -297,13 +300,11 @@ public class FeedReader.FavIcon : GLib.Object
 					var seconds = int64.parse(parts[1]);
 					var expires = new DateTime.now_utc();
 					expires.add_seconds(seconds);
-					if(expires.to_unix() > m_metadata.expires.to_unix())
-						m_metadata.expires = expires;
+					m_metadata.expires = expires;
 				}
 			}
 
 			m_metadata.last_modified = message.response_headers.get_one("Last-Modified");
-			yield m_metadata.save_to_file_async(metadata_filename);
 			return new MemoryInputStream.from_data(data);
 		}
 

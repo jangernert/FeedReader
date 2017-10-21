@@ -34,18 +34,6 @@ namespace FeedReader {
 		}
 	}
 
-	public struct FavIconData
-	{
-		public Gdk.Pixbuf? Icon;
-		public ResourceMetadata? Metadata;
-
-		public FavIconData(Gdk.Pixbuf? icon, ResourceMetadata? meta)
-		{
-			Metadata = meta;
-			Icon = icon;
-		}
-	}
-
 	public struct ResourceMetadata
 	{
 		private const string CACHE_GROUP = "cache";

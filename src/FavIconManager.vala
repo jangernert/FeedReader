@@ -15,6 +15,18 @@
 
 public class FeedReader.FavIconManager : GLib.Object {
 
+	private struct FavIconData
+	{
+		public Gdk.Pixbuf? Icon;
+		public ResourceMetadata? Metadata;
+
+		public FavIconData(Gdk.Pixbuf? icon, ResourceMetadata? meta)
+		{
+			Metadata = meta;
+			Icon = icon;
+		}
+	}
+
 	private Gee.Map<string, Gee.Future<FavIconData?>> m_map = new Gee.HashMap<string, Gee.Future<FavIconData?>>();
 	private static FavIconManager? m_cache = null;
 

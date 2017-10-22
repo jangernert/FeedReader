@@ -1,3 +1,4 @@
+const string host_env = "FEEDBIN_TEST_HOST";
 const string user_env = "FEEDBIN_TEST_USER";
 const string password_env = "FEEDBIN_TEST_PASSWORD";
 
@@ -13,7 +14,7 @@ void delete_subscription(FeedbinAPI api, string url)
     }
 }
 
-void add_login_tests()
+void add_login_tests(string host)
 {
     string? username = Environment.get_variable(user_env);
     string? password = Environment.get_variable(password_env);
@@ -26,10 +27,10 @@ void add_login_tests()
 
     Test.add_data_func ("/feedbinapi/login", () => {
 
-        var api = new FeedbinAPI(username, password);
+        var api = new FeedbinAPI(username, password, null, host);
         assert(api.login());
 
-        api = new FeedbinAPI("wrong", "password");
+        api = new FeedbinAPI("wrong", "password", null, host);
         assert(!api.login());
 
         api.username = username;
@@ -46,7 +47,7 @@ void add_login_tests()
             return;
         }
 
-        var api = new FeedbinAPI(username, password);
+        var api = new FeedbinAPI(username, password, null, host);
 
         var url = "https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-subscribe-$nonce";
         delete_subscription(api, url);
@@ -88,7 +89,7 @@ void add_login_tests()
             return;
         }
 
-        var api = new FeedbinAPI(username, password);
+        var api = new FeedbinAPI(username, password, null, host);
 
         var url = @"https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-taggings-$nonce";
         delete_subscription(api, url);
@@ -140,7 +141,7 @@ void add_login_tests()
             return;
         }
 
-        var api = new FeedbinAPI(username, password);
+        var api = new FeedbinAPI(username, password, null, host);
 
 		// Note: This one shouldn't be deleted or recreated, since we want the entries to be available
         var url = "https://www.brendanlong.com/feeds/all.atom.xml?feed-reader-test-entries";
@@ -195,21 +196,25 @@ void add_login_tests()
 
 void main(string[] args)
 {
-    Test.init(ref args);
+	Test.init(ref args);
+
+	string? host = Environment.get_variable(host_env);
+	if(host == null)
+		host = "https://api.feedbin.com";
 
     // Tests that don't need a login
     Test.add_data_func ("/feedbinapi/construct", () => {
-        var api = new FeedbinAPI("user", "password");
+        var api = new FeedbinAPI("user", "password", null, host);
         assert(api != null);
     });
 
     Test.add_data_func ("/feedbinapi/bad login", () => {
-        var api = new FeedbinAPI("user", "password");
+        var api = new FeedbinAPI("user", "password", null, host);
 
         assert(!api.login());
     });
 
-    add_login_tests();
+    add_login_tests(host);
 
     Test.run ();
 }

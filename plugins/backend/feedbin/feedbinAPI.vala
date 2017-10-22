@@ -24,16 +24,18 @@ public errordomain FeedbinError {
 }
 
 public class FeedbinAPI : Object {
-	private const string BASE_URI = "https://api.feedbin.com/v2/";
+	private const string BASE_URI_FORMAT = "%s/v2/";
 
 	private Soup.Session m_session;
+	private string m_base_uri;
 	public string username { get ; set; }
 	public string password { get ; set; }
 
-	public FeedbinAPI(string username, string password, string? user_agent = null)
+	public FeedbinAPI(string username, string password, string? user_agent = null, string? host = "https://api.feedbin.com")
 	{
 		this.username = username;
 		this.password = password;
+		m_base_uri = BASE_URI_FORMAT.printf(host);
 		m_session = new Soup.Session();
 
 		if(user_agent != null)
@@ -47,7 +49,7 @@ public class FeedbinAPI : Object {
 
 	private Soup.Message request(string method, string path, string? input = null) throws FeedbinError
 	{
-		var message = new Soup.Message(method, BASE_URI+path);
+		var message = new Soup.Message(method, m_base_uri + path);
 
 		if(method == "POST" || method == "PUT")
 			message.request_headers.append("Content-Type", "application/json; charset=utf-8");
@@ -65,7 +67,7 @@ public class FeedbinAPI : Object {
 			case Soup.Status.CANT_RESOLVE_PROXY:
 			case Soup.Status.CANT_CONNECT:
 			case Soup.Status.CANT_CONNECT_PROXY:
-				throw new FeedbinError.NO_CONNECTION(@"Connection to $BASE_URI failed");
+				throw new FeedbinError.NO_CONNECTION(@"Connection to $m_base_uri failed");
 			case Soup.Status.UNAUTHORIZED:
 				throw new FeedbinError.NOT_AUTHORIZED(@"Not authorized to $method $path");
 			case Soup.Status.NOT_FOUND:

@@ -161,9 +161,12 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 				m_icon.get_style_context().remove_class("fr-sidebar-symbolic");
 			}
 		});
-		favicon.pixbuf_changed.connect((feed, pixbuf) => {
+		ulong handler_id = favicon.pixbuf_changed.connect((feed, pixbuf) => {
 			icon.pixbuf = pixbuf;
 			icon.get_style_context().remove_class("fr-sidebar-symbolic");
+		});
+		icon.destroy.connect(() => {
+			favicon.disconnect(handler_id);
 		});
 
 		return icon;

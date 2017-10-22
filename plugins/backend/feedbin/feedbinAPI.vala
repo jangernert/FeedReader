@@ -39,10 +39,18 @@ public class FeedbinAPI : Object {
 		if(user_agent != null)
 			m_session.user_agent = user_agent;
 
-		m_session.authenticate.connect((msg, auth, retrying) => {
-			if(!retrying)
-				auth.authenticate(this.username, this.password);
-		});
+		m_session.authenticate.connect(authenticate);
+	}
+
+	~FeedbinAPI()
+	{
+		m_session.authenticate.disconnect(authenticate);
+	}
+
+	private void authenticate(Soup.Message msg, Soup.Auth auth, bool retrying)
+	{
+		if(!retrying)
+			auth.authenticate(this.username, this.password);
 	}
 
 	private Soup.Message request(string method, string path, string? input = null) throws FeedbinError

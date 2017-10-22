@@ -275,8 +275,11 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 			if(pixbuf != null)
 				icon.pixbuf = pixbuf;
 		});
-		favicon.pixbuf_changed.connect((feed, pixbuf) => {
+		ulong handler_id = favicon.pixbuf_changed.connect((feed, pixbuf) => {
 			icon.pixbuf = pixbuf;
+		});
+		icon.destroy.connect(() => {
+			favicon.disconnect(handler_id);
 		});
 
 		return icon;

@@ -44,7 +44,6 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 			var rowhight = 30;
 			m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
 			m_icon = createFavIcon();
-
 			m_icon.margin_start = level * 24;
 
 			m_label = new Gtk.Label(m_feed.getTitle());
@@ -153,15 +152,23 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		var icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 		icon.get_style_context().add_class("fr-sidebar-symbolic");
 
-		var manager = FavIconManager.get_default();
-		manager.getIcon.begin(m_feed, (obj, res) => {
-			var pixbuf = manager.getIcon.end(res);
+		var favicon = FavIcon.for_feed(m_feed);
+		favicon.get_pixbuf.begin((obj, res) => {
+			var pixbuf = favicon.get_pixbuf.end(res);
 			if(pixbuf != null)
 			{
 				icon.pixbuf = pixbuf;
-				icon.get_style_context().remove_class("fr-sidebar-symbolic");
+				m_icon.get_style_context().remove_class("fr-sidebar-symbolic");
 			}
 		});
+		ulong handler_id = favicon.pixbuf_changed.connect((feed, pixbuf) => {
+			icon.pixbuf = pixbuf;
+			icon.get_style_context().remove_class("fr-sidebar-symbolic");
+		});
+		icon.destroy.connect(() => {
+			favicon.disconnect(handler_id);
+		});
+
 		return icon;
 	}
 

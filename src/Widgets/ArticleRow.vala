@@ -268,19 +268,22 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	{
 		var icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 
-		var manager = FavIconManager.get_default();
 		Feed feed = DataBase.readOnly().read_feed(m_article.getFeedID());
-		manager.getIcon.begin(feed, (obj, res) => {
-			var pixbuf = manager.getIcon.end(res);
+		var favicon = FavIcon.for_feed(feed);
+		favicon.get_pixbuf.begin((obj, res) => {
+			var pixbuf = favicon.get_pixbuf.end(res);
 			if(pixbuf != null)
-			{
 				icon.pixbuf = pixbuf;
-			}
+		});
+		ulong handler_id = favicon.pixbuf_changed.connect((feed, pixbuf) => {
+			icon.pixbuf = pixbuf;
+		});
+		icon.destroy.connect(() => {
+			favicon.disconnect(handler_id);
 		});
 
 		return icon;
 	}
-
 
 	private Gtk.Window getFeedIconWindow()
 	{

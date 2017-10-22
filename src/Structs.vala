@@ -34,7 +34,7 @@ namespace FeedReader {
 		}
 	}
 
-	private struct ResourceMetadata
+	public struct ResourceMetadata
 	{
 		private const string CACHE_GROUP = "cache";
 		private const string ETAG_KEY = "etag";
@@ -130,6 +130,17 @@ namespace FeedReader {
 					Logger.warning(@"FaviconMetadata.save_to_file: Failed to save metadata file $filename,  $data:\n" + e.message);
 				}
 			}
+		}
+
+		public bool is_expired()
+		{
+			if(expires == null)
+				return true;
+
+			if(expires.compare(new DateTime.now_utc()) == 1)
+				return false;
+
+			return true;
 		}
 	}
 

@@ -113,9 +113,19 @@ public class FeedReader.FavIcon : GLib.Object
 		if(cancellable != null && cancellable.is_cancelled())
 			return null;
 
+		bool use_cached = false;
 		if(!m_metadata.is_expired())
 		{
 			Logger.debug("Favicon for %s is valid until %s, skipping this time".printf(m_feed.getTitle(), expires.to_string()));
+			use_cached = true;
+		}
+		else if(!NetworkMonitor.get_default().network_available)
+		{
+			Logger.debug("Network not available, skipping favicon download");
+			use_cached = true;
+		}
+		if(use_cached)
+		{
 			var file = File.new_for_path(local_filename);
 			try
 			{

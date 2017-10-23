@@ -176,7 +176,8 @@ public class FeedReader.FeedServer : GLib.Object {
 
 
 		syncProgress(_("Getting articles"));
-		int before = int.parse(DataBase.readOnly().getMaxID("articles", "rowid"));
+		string row_id = DataBase.readOnly().getMaxID("articles", "rowid");
+		int before = row_id != null ? int.parse(row_id) : 0;
 
 		if(unread > max && useMaxArticles())
 		{
@@ -194,7 +195,8 @@ public class FeedReader.FeedServer : GLib.Object {
 		//update fulltext table
 		DataBase.writeAccess().updateFTS();
 
-		int after = int.parse(DataBase.readOnly().getMaxID("articles", "rowid"));
+		row_id = DataBase.readOnly().getMaxID("articles", "rowid");
+		int after = row_id != null ? int.parse(row_id) : 0;
 		int newArticles = after-before;
 		if(newArticles > 0)
 		{

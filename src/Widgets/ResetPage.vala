@@ -106,6 +106,10 @@ public class FeedReader.ResetPage : Gtk.Bin {
 
 		Settings.state().set_boolean("currently-updating", false);
 		FeedReaderBackend.get_default().login("none");
+
+		// Load all available plugins, to present them on the login page
+		FeedServer.get_default().LoadAllPlugins();
+
 		reset();
 	}
 

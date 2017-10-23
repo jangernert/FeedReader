@@ -16,6 +16,7 @@
 public class FeedReader.LoginPage : Gtk.Stack {
 
 	private Gtk.Box m_layout;
+	private Gtk.ListBox m_accountList;
 	private WebLoginPage m_page;
 	private Gtk.Box? m_activeWidget = null;
 	public signal void submit_data();
@@ -45,31 +46,18 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		welcomeText2.set_lines(3);
 
 
-		var accountList = new Gtk.ListBox();
-		accountList.set_selection_mode(Gtk.SelectionMode.NONE);
-		accountList.row_activated.connect(serviceSelected);
+		m_accountList = new Gtk.ListBox();
+		m_accountList.set_selection_mode(Gtk.SelectionMode.NONE);
+		m_accountList.row_activated.connect(serviceSelected);
 
-		FeedServer.get_default().getPlugins().foreach((extSet, info, ext) => {
-			var plug = ext as FeedServerInterface;
-			if(plug != null)
-			{
-				BackendInfo pluginfo = BackendInfo()
-				{
-					ID = plug.getID(),
-					name = plug.serviceName(),
-					flags = plug.getFlags(),
-					website = plug.getWebsite(),
-					iconName = plug.iconName()
-				};
-				accountList.add(new LoginRow(pluginfo));
-			}
-		});
+		RefreshPlugins();
+		FeedServer.get_default().PluginsChanedEvent.connect(RefreshPlugins);
 
 		var scroll = new Gtk.ScrolledWindow(null, null);
 		scroll.set_size_request(450, 0);
 		scroll.set_halign(Gtk.Align.CENTER);
 		scroll.get_style_context().add_class(Gtk.STYLE_CLASS_FRAME);
-		scroll.add(accountList);
+		scroll.add(m_accountList);
 
 
 		m_layout.pack_start(welcomeText, false, true, 0);
@@ -82,6 +70,35 @@ public class FeedReader.LoginPage : Gtk.Stack {
 		this.add_named(m_layout, "selectScreen");
 		this.show_all();
 		reset();
+	}
+
+	private void RefreshPlugins()
+	{
+		var children = m_accountList.get_children();
+		foreach(Gtk.Widget row in children)
+		{
+			m_accountList.remove(row);
+			row.destroy();
+		}
+
+		FeedServer.get_default().getPlugins().foreach((extSet, info, ext) => {
+			var plug = ext as FeedServerInterface;
+			if(plug != null)
+			{
+				Logger.debug("LoginPage: add plugin " + plug.getID());
+				BackendInfo pluginfo = BackendInfo()
+				{
+					ID = plug.getID(),
+					name = plug.serviceName(),
+					flags = plug.getFlags(),
+					website = plug.getWebsite(),
+					iconName = plug.iconName()
+				};
+				m_accountList.add(new LoginRow(pluginfo));
+			}
+		});
+
+		m_accountList.show_all();
 	}
 
 	public void reset()

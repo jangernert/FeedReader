@@ -889,12 +889,7 @@ public class FeedReader.Utils : GLib.Object {
 		return icon;
 	}
 
-<<<<<<< HEAD
-
-	public static async uint8[] inputStreamToArray(InputStream stream, Cancellable? cancellable=null) throws Error
-=======
 	public static void openInGedit(string text)
->>>>>>> 59e79aa6010bc029bb5857d79f7e05fccff131d0
 	{
 		try
 		{

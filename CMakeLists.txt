@@ -100,10 +100,7 @@ set(UI_PACKAGES
 vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/FavIcon.vala
 	src/FeedReader.vala
-	src/LoginInterface.vala
 	src/ArticleTheme.vala
-	src/dbUI.vala
-	src/UtilsUI.vala
 	src/Widgets/AddPopover.vala
 	src/Widgets/ArticleRow.vala
 	src/Widgets/ArticleView.vala

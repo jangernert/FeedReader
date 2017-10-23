@@ -596,74 +596,37 @@ public class FeedReader.Utils : GLib.Object {
 	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
 	{
 		var article = new GLib.StringBuilder();
+		string theme = Settings.general().get_string("article-theme");
+
 		string author_date = "";
 		if(author != null)
 			author_date +=  _("posted by: %s, ").printf(author);
 
 		author_date += date;
 
+		string template = "";
+		string css = "";
+
 		try
 		{
-			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
-			file.load_contents(null, out contents, null);
-			article.assign((string)contents);
+			if (!ArticleTheme.exists(theme)) {
+ 				uint8[] templateContents;
+				var htmlFile = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/default/article.html");
+				htmlFile.load_contents(null, out templateContents, null);
+				template = (string)templateContents;
+ 				uint8[] cssContents;
+ 				var cssFile = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/default/style.css");
+ 				cssFile.load_contents(null, out cssContents, null);
+ 				css = (string)cssContents;
+			} else {
+				GLib.FileUtils.get_contents(theme + "/article.html", out template);
+				GLib.FileUtils.get_contents(theme + "/style.css", out css);
+			}
 		}
 		catch(GLib.Error e)
 		{
 			Logger.error("Utils.buildArticle: %s".printf(e.message));
 		}
-
-		string html_id = "$HTML";
-		int html_pos = article.str.index_of(html_id);
-		article.erase(html_pos, html_id.length);
-		article.insert(html_pos, html);
-
-		string author_id = "$AUTHOR";
-		int author_pos = article.str.index_of(author_id);
-		article.erase(author_pos, author_id.length);
-		article.insert(author_pos, author_date);
-
-		string title_id = "$TITLE";
-		int title_pos = article.str.index_of(title_id);
-		article.erase(title_pos, title_id.length);
-		article.insert(title_pos, title);
-
-		string url_id = "$URL";
-		int url_pos = article.str.index_of(url_id);
-		article.erase(url_pos, url_id.length);
-		article.insert(url_pos, url);
-
-		string feed_id = "$FEED";
-		int feed_pos = article.str.index_of(feed_id);
-		article.erase(feed_pos, feed_id.length);
-		article.insert(feed_pos, DataBase.readOnly().read_feed(feedID).getTitle());
-
-
-		string theme = "theme ";
-		switch(Settings.general().get_enum("article-theme"))
-		{
-			case ArticleTheme.DEFAULT:
-				theme += "default";
-				break;
-
-			case ArticleTheme.SPRING:
-				theme += "spring";
-				break;
-
-			case ArticleTheme.MIDNIGHT:
-				theme += "midnight";
-				break;
-
-			case ArticleTheme.PARCHMENT:
-				theme += "parchment";
-				break;
-		}
-
-		string theme_id = "$THEME";
-		int theme_pos = article.str.index_of(theme_id);
-		article.erase(theme_pos, theme_id.length);
-		article.insert(theme_pos, theme);
 
 		string select_id = "$UNSELECTABLE";
 		int select_pos = article.str.index_of(select_id);
@@ -678,6 +641,7 @@ public class FeedReader.Utils : GLib.Object {
 			article.insert(select_pos, "unselectable");
 		}
 
+		// Calculate the Large and Small font sizes
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
 		string fontfamilly = desc.get_family();
@@ -686,43 +650,21 @@ public class FeedReader.Utils : GLib.Object {
 		string large_size = (fontsize * 2).to_string();
 		string normal_size = fontsize.to_string();
 
-		string fontfamily_id = "$FONTFAMILY";
-		int fontfamilly_pos = article.str.index_of(fontfamily_id);
-		article.erase(fontfamilly_pos, fontfamily_id.length);
-		article.insert(fontfamilly_pos, fontfamilly);
+		string article_content = article.str;
 
-		string fontsize_id = "$FONTSIZE";
-		string sourcefontsize_id = "$SMALLSIZE";
-		int fontsize_pos = article.str.index_of(fontsize_id);
-		article.erase(fontsize_pos, fontsize_id.length);
-		article.insert(fontsize_pos, normal_size);
+		article_content.replace("$HTML", html);
+		article_content.replace("$AUTHOR", author_date);
+		article_content.replace("$TITLE", title);
+		article_content.replace("$URL", url);
+		article_content.replace("$FEED", DataBase.readOnly().read_feed(feedID).getTitle());
+		article_content.replace("$FONTFAMILY", fontfamilly);
+		article_content.replace("$SMALLSIZE", normal_size);
+		article_content.replace("$LARGESIZE", large_size);
+		article_content.replace("$FONTSIZE", small_size);
+		article_content.replace("$CSS", css);
 
-		string largesize_id = "$LARGESIZE";
-		int largesize_pos = article.str.index_of(largesize_id);
-		article.erase(largesize_pos, largesize_id.length);
-		article.insert(largesize_pos, large_size);
-
-		for(int i = article.str.index_of(sourcefontsize_id, 0); i != -1; i = article.str.index_of(sourcefontsize_id, i))
-		{
-			article.erase(i, sourcefontsize_id.length);
-			article.insert(i, small_size);
-		}
-
-
-		try
-		{
-			uint8[] contents;
-			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
-			file.load_contents(null, out contents, null);
-			string css_id = "$CSS";
-			int css_pos = article.str.index_of(css_id);
-			article.erase(css_pos, css_id.length);
-			article.insert(css_pos, (string)contents);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Utils.buildArticle: load CSS: " + e.message);
-		}
+		// Replace article content with the correct one
+		article.assign(article_content);
 
 		return article.str;
 	}

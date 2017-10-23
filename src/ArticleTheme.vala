@@ -61,9 +61,12 @@ public class  FeedReader.ArticleTheme {
         themeInfo.path = theme_path;
 
       } catch(GLib.FileError err){
-        Logger.error("A theme must be corrupted :" + theme_path);
+        Logger.error("[ArticleTheme] A theme must be corrupted: " + theme_path);
         corrupted_theme = true;
-      }
+      } catch (GLib.Error err) {
+		Logger.error("[ArticleTheme] Couldn't parse theme.json: " + theme_path);
+		corrupted_theme = true;
+	  }
 
       if (corrupted_theme)
         return null;

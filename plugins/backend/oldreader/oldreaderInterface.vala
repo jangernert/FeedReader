@@ -17,11 +17,127 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	private OldReaderAPI m_api;
 	private OldReaderUtils m_utils;
+	private Gtk.Entry m_userEntry;
+	private Gtk.Entry m_passwordEntry;
 
 	public void init()
 	{
 		m_api = new OldReaderAPI();
 		m_utils = new OldReaderUtils();
+	}
+
+	public string getWebsite()
+	{
+		return "https://theoldreader.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
+	public string getID()
+	{
+		return "oldreader";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-oldreader";
+	}
+
+	public string serviceName()
+	{
+		return "The Old Reader";
+	}
+
+	public bool needWebLogin()
+	{
+		return false;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		var user_label = new Gtk.Label(_("Username:"));
+		var password_label = new Gtk.Label(_("Password:"));
+
+		user_label.set_alignment(1.0f, 0.5f);
+		password_label.set_alignment(1.0f, 0.5f);
+
+		user_label.set_hexpand(true);
+		password_label.set_hexpand(true);
+
+		m_userEntry = new Gtk.Entry();
+		m_passwordEntry = new Gtk.Entry();
+
+		m_userEntry.activate.connect(() => { tryLogin(); });
+		m_passwordEntry.activate.connect(() => { tryLogin(); });
+
+		m_passwordEntry.set_invisible_char('*');
+		m_passwordEntry.set_visibility(false);
+
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+
+		grid.attach(user_label, 0, 0, 1, 1);
+		grid.attach(m_userEntry, 1, 0, 1, 1);
+		grid.attach(password_label, 0, 1, 1, 1);
+		grid.attach(m_passwordEntry, 1, 1, 1, 1);
+
+		var logo = new Gtk.Image.from_icon_name("feed-service-oldreader", Gtk.IconSize.MENU);
+
+		var loginLabel = new Gtk.Label(_("Please log in to the Old Reader and enjoy using FeedReader"));
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+
+		var loginButton = new Gtk.Button.with_label(_("Login"));
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => { tryLogin(); });
+
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.valign = Gtk.Align.CENTER;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(loginLabel, false, false, 10);
+		box.pack_start(logo, false, false, 10);
+		box.pack_start(grid, true, true, 10);
+		box.pack_end(loginButton, false, false, 20);
+
+		m_userEntry.set_text(m_utils.getUser());
+		m_passwordEntry.set_text(m_utils.getPasswd());
+
+		return box;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
+	public void writeData()
+	{
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public string buildLoginURL()
+	{
+		return "";
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		return false;
 	}
 
 	public bool supportTags()
@@ -79,6 +195,11 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return false;
 	}
 
+	public bool syncFeedsAndCategories()
+	{
+		return true;
+	}
+
 	public bool tagIDaffectedByNameChange()
 	{
 		return true;
@@ -132,16 +253,16 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void markAllItemsRead()
 	{
-		var categories = dbDaemon.get_default().read_categories();
-		foreach(category cat in categories)
+		var categories = DataBase.readOnly().read_categories();
+		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
-		foreach(feed Feed in feeds)
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
+		foreach(Feed feed in feeds)
 		{
-			m_api.markAsRead(Feed.getFeedID());
+			m_api.markAsRead(feed.getFeedID());
 		}
 		m_api.markAsRead();
 	}
@@ -176,26 +297,34 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
+		feedID = "feed/" + feedURL;
+		errmsg = "";
+		bool success = false;
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
+			success = m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
 		}
 		else
 		{
-			m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
+			success = m_api.editSubscription(OldReaderAPI.OldreaderSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
 		}
-		return "feed/" + feedURL;
+
+		if(!success)
+			errmsg = @"The old reader could not add $feedURL";
+
+		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		string cat = "";
 		string[] urls = {};
 
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			if(f.getCatIDs()[0] != cat)
 			{
@@ -257,7 +386,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{
@@ -304,11 +433,11 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 					left = 0;
 				}
 			}
-			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
+			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 		string? continuation = null;
 		int left = count;
 		string? OldReader_feedID = (isTagID) ? null : feedID;

@@ -100,7 +100,7 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 		if(ping)
 		{
-			Logger.debug("TTRSS Message: ping successfull");
+			Logger.debug("TTRSS Message: ping successful");
 			return ConnectionError.SUCCESS;
 		}
 
@@ -180,6 +180,11 @@ public class FeedReader.ttrssMessage : GLib.Object {
 			return m_root_object.get_array_member("content");
 		}
 		return null;
+	}
+
+	public uint getStatusCode()
+	{
+		return m_message_soup.status_code;
 	}
 
 	public void printMessage()

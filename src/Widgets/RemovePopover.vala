@@ -31,15 +31,15 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		switch(m_type)
 		{
 			case FeedListType.TAG:
-				m_name = dbUI.get_default().getTagName(m_id);
+				m_name = DataBase.readOnly().getTagName(m_id);
 				break;
 
 			case FeedListType.FEED:
-				m_name = dbUI.get_default().getFeedName(m_id);
+				m_name = DataBase.readOnly().read_feed(m_id).getTitle();
 				break;
 
 			case FeedListType.CATEGORY:
-				m_name = dbUI.get_default().getCategoryName(m_id);
+				m_name = DataBase.readOnly().getCategoryName(m_id);
 				break;
 		}
 
@@ -81,14 +81,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		var notification = MainWindow.get_default().showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
-			try
-			{
-				DBusConnection.get_default().deleteTag(m_id);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("RemovePopover.removeTag: %s".printf(e.message));
-			}
+			FeedReaderBackend.get_default().deleteTag(DataBase.readOnly().read_tag(m_id));
 		});
 		notification.action.connect(() => {
 			notification.disconnect(eventID);
@@ -103,14 +96,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		var notification = MainWindow.get_default().showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
-			try
-			{
-				DBusConnection.get_default().removeFeed(m_id);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("RemovePopover.removeFeed: %s".printf(e.message));
-			}
+			FeedReaderBackend.get_default().removeFeed(m_id);
 		});
 		notification.action.connect(() => {
 			notification.disconnect(eventID);
@@ -126,14 +112,7 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 		var notification = MainWindow.get_default().showNotification(text);
 
 		ulong eventID = notification.dismissed.connect(() => {
-			try
-			{
-				DBusConnection.get_default().removeCategory(m_id);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("RemovePopover.removeCategory: %s".printf(e.message));
-			}
+			FeedReaderBackend.get_default().removeCategory(m_id);
 		});
 		notification.action.connect(() => {
 			notification.disconnect(eventID);

@@ -107,7 +107,7 @@ msgstr ""
 "Sincronización en marcha. Los articulos aparecerán en cualquier momento."
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "Artículos nuevos"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

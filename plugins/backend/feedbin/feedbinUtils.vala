@@ -13,11 +13,15 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feedbinUtils : GLib.Object {
+public class FeedReader.FeedbinUtils : GLib.Object {
+	static Secret.Schema m_pwSchema =
+		new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+						   "URL", Secret.SchemaAttributeType.STRING,
+						   "Username", Secret.SchemaAttributeType.STRING);
 
 	GLib.Settings m_settings;
 
-	public feedbinUtils()
+	public FeedbinUtils()
 	{
 		m_settings = new GLib.Settings("org.gnome.feedreader.feedbin");
 	}
@@ -32,11 +36,8 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
-	public string getPasswd()
+	public string getPassword()
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-		                                  "URL", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
@@ -45,7 +46,7 @@ public class FeedReader.feedbinUtils : GLib.Object {
 		string passwd = "";
 
 		try{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
+			passwd = Secret.password_lookupv_sync(m_pwSchema, attributes, null);
 		}
 		catch(GLib.Error e){
 			Logger.error(e.message);
@@ -61,19 +62,16 @@ public class FeedReader.feedbinUtils : GLib.Object {
 
 	public void setPassword(string passwd)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-										  "URL", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd, null);
+			Secret.password_storev_sync(m_pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{
-			Logger.error("feedbinUtils: setPassword: " + e.message);
+			Logger.error("FeedbinUtils: setPassword: " + e.message);
 		}
 	}
 
@@ -100,42 +98,9 @@ public class FeedReader.feedbinUtils : GLib.Object {
 			}
 			catch(GLib.Error e)
 			{
-				Logger.error("feedbinUtils.deletePassword: %s".printf(e.message));
+				Logger.error("FeedbinUtils.deletePassword: %s".printf(e.message));
 			}
 		});
 		return removed;
-	}
-
-	public string? catExists(Gee.List<category> categories, string name)
-	{
-		foreach(category cat in categories)
-		{
-			if(cat.getTitle() == name)
-				return cat.getCatID();
-		}
-
-		return null;
-	}
-
-	public void addFeedToCat(Gee.List<feed> feeds, string feedID, string catID)
-	{
-		foreach(feed f in feeds)
-		{
-			if(f.getFeedID() == feedID)
-			{
-				f.setCats( {catID} );
-			}
-		}
-	}
-
-	public bool isIDinArray(string[] arrayID, string id)
-	{
-		foreach(string i in arrayID)
-		{
-			if(i == id)
-				return true;
-		}
-
-		return false;
 	}
 }

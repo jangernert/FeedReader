@@ -1,2 +1,0 @@
-body: //*[(@class = "content")]
-test_url: http://frankdenneman.nl/

@@ -123,7 +123,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 
 		m_saveButton = new Gtk.Button.from_icon_name("document-save-symbolic", Gtk.IconSize.BUTTON);
 		m_saveButton.clicked.connect(() => {
-			UtilsUI.saveImageDialog(m_imagePath);
+			Utils.saveImageDialog(m_imagePath);
 		});
 
 		m_image.notify["scale"].connect(onImageScrolled);
@@ -146,7 +146,7 @@ public class FeedReader.imagePopup : Gtk.Window {
 			if(!m_zoomButton.get_active())
 			{
 				GLib.Timeout.add(150, () => {
-				    m_image.notify["scale"].connect(onImageScrolled);
+					m_image.notify["scale"].connect(onImageScrolled);
 					return false;
 				});
 			}
@@ -268,9 +268,9 @@ public class FeedReader.imagePopup : Gtk.Window {
 			{
 				if(m_OngoingScrollID > 0)
 				{
-		            GLib.Source.remove(m_OngoingScrollID);
-		            m_OngoingScrollID = 0;
-		        }
+					GLib.Source.remove(m_OngoingScrollID);
+					m_OngoingScrollID = 0;
+				}
 				m_posX = evt.x;
 				m_posY = evt.y;
 				for(int i = 0; i < 10; ++i)

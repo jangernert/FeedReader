@@ -20,8 +20,7 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 	private Gtk.Image m_filesIcon;
 	private Gtk.Spinner m_spinner;
 	private Gtk.Stack m_stack;
-	private bool m_status;
-	private Gee.ArrayList<string> m_media;
+	private Gee.List<string> m_media;
 	private Gtk.Popover m_pop;
 	private ulong m_signalID = 0;
 	public signal void play(string url);
@@ -70,7 +69,12 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 
 	public void update()
 	{
-		m_media = ColumnView.get_default().getSelectedArticleMedia();
+		m_media = new Gee.ArrayList<string>();
+		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
+		if(selectedArticle != null)
+		{
+			m_media = selectedArticle.getMedia();
+		}
 
 		if(m_signalID != 0)
 		{
@@ -106,7 +110,10 @@ public class FeedReader.AttachedMediaButton : Gtk.Button {
 				popOpened();
 				m_pop.show_all();
 			});
-
+		}
+		else
+		{
+			// no media
 		}
 	}
 

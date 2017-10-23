@@ -226,8 +226,8 @@ public class FeedReader.grabberUtils : GLib.Object {
 
 	public static void onlyRemoveNode(Html.Doc* doc, string xpath)
 	{
-		var cntx = new Xml.XPath.Context(doc);
-		var res = cntx.eval_expression(xpath);
+		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
+		Xml.XPath.Object* res = cntx.eval_expression(xpath);
 
 		if(res != null
 		&& res->type == Xml.XPath.ObjectType.NODESET
@@ -469,9 +469,9 @@ public class FeedReader.grabberUtils : GLib.Object {
 	}
 
 
-	public static bool saveImages(Soup.Session session, Html.Doc* doc, string articleID, string feedID, GLib.Cancellable? cancellable = null)
+	public static bool saveImages(Soup.Session session, Html.Doc* doc, Article article, GLib.Cancellable? cancellable = null)
 	{
-		Logger.debug("GrabberUtils: save Images: %s, %s".printf(articleID, feedID));
+		Logger.debug("GrabberUtils: save Images: %s, %s".printf(article.getArticleID(), article.getFeedID()));
 		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
 		Xml.XPath.Object* res = cntx.eval_expression("//img");
 
@@ -501,7 +501,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 					|| (node->get_prop("height") == null))
 				)
 				{
-					string? original = downloadImage(session, node->get_prop("src"), articleID, feedID, i+1);
+					string? original = downloadImage(session, node->get_prop("src"), article, i+1);
 
 					if(original == null)
 						continue;
@@ -509,7 +509,7 @@ public class FeedReader.grabberUtils : GLib.Object {
 					string? parentURL = checkParent(session, node);
 					if(parentURL != null)
 					{
-						string parent = downloadImage(session, parentURL, articleID, feedID, i+1, true);
+						string parent = downloadImage(session, parentURL, article, i+1, true);
 
 						if(compareImageSize(parent, original) > 0)
 						{
@@ -545,23 +545,23 @@ public class FeedReader.grabberUtils : GLib.Object {
 	}
 
 
-	public static string? downloadImage(Soup.Session session, string? url, string articleID, string feedID, int nr, bool parent = false)
+	public static string? downloadImage(Soup.Session session, string? url, Article article, int nr, bool parent = false)
 	{
-		if(url == null)
+		if(url == null || url.down().has_prefix("data:image"))
 			return null;
 
 		string fixedURL = url;
-		string imgPath = "";
+		string imgPath = GLib.Environment.get_user_data_dir();
 
 		if(fixedURL.has_prefix("//"))
 		{
 			fixedURL = "http:" + fixedURL;
 		}
 
-		if(articleID == "" && feedID == "")
-			imgPath = GLib.Environment.get_user_data_dir() + "/debug-article/ArticleImages/";
+		if(article.getArticleID() == "" && article.getFeedID() == "")
+			imgPath += "/debug-article/ArticleImages/";
 		else
-			imgPath = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID.replace("/", "_"), articleID);
+			imgPath += "/feedreader/data/images/%s/%s/".printf(article.getFeedFileName(), article.getArticleFileName());
 
 		var path = GLib.File.new_for_path(imgPath);
 		try
@@ -633,9 +633,13 @@ public class FeedReader.grabberUtils : GLib.Object {
 	{
 		try
 		{
-			int height = 0;
-			int width = 0;
-			Gdk.Pixbuf.get_file_info(path, out width, out height);
+			int? height = 0;
+			int? width = 0;
+			Gdk.PixbufFormat? format = Gdk.Pixbuf.get_file_info(path, out width, out height);
+
+			if(format == null || height == null || width == null)
+				return null;
+
 			if(width > 2000 || height > 2000)
 			{
 				int nHeight = 1000;
@@ -751,15 +755,34 @@ public class FeedReader.grabberUtils : GLib.Object {
 
 		int pos1 = html.index_of("<iframe", 0);
 		int pos2 = -1;
+		int pos3 = -1;
 		while(pos1 != -1)
 		{
 			pos2 = html.index_of("/>", pos1);
+			pos3 = html.index_of("</iframe>", pos1);
+
+			if(pos3 == -1 && pos2 == -1)
+			{
+				Logger.error("GrabberUtils.postProcessing: could not find closing for iframe tag");
+				pos1 = html.index_of("<iframe", pos1+7);
+				continue;
+			}
+
+			if((pos2 != -1 && pos3 != -1 && pos3 < pos2) || pos2 == -1)
+			{
+				Logger.debug("GrabberUtils.postProcessing: iframe not broken");
+				pos1 = html.index_of("<iframe", pos1+7);
+				continue;
+			}
+
+
+
 			string broken_iframe = html.substring(pos1, pos2+2-pos1);
 			Logger.debug("GrabberUtils: broken = %s".printf(broken_iframe));
 			string fixed_iframe = broken_iframe.substring(0, broken_iframe.length-2) + "></iframe>";
 			Logger.debug("GrabberUtils: fixed = %s".printf(fixed_iframe));
 			html = html.replace(broken_iframe, fixed_iframe);
-			int pos3 = html.index_of("<iframe", pos1+7);
+			pos3 = html.index_of("<iframe", pos1+7);
 			if(pos3 == pos1 || pos3 > html.length)
 				break;
 			else

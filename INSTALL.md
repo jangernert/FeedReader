@@ -30,7 +30,7 @@ dnf install gtk3-devel gtk2-devel vala make automake gcc gcc-c++ cmake json-glib
 ## Compiling
 
 ```
-git clone https://github.com/jangernert/FeedReader
+git clone --recursive  https://github.com/jangernert/FeedReader
 cd ./FeedReader
 mkdir build
 cd build

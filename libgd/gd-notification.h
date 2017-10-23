@@ -57,10 +57,10 @@ GType gd_notification_get_type (void) G_GNUC_CONST;
 
 GtkWidget *gd_notification_new         (void);
 void       gd_notification_set_timeout (GdNotification *notification,
-                                        gint            timeout_sec);
+										gint            timeout_sec);
 void       gd_notification_dismiss     (GdNotification *notification);
 void       gd_notification_set_show_close_button (GdNotification *notification,
-                                                  gboolean show_close_button);
+												  gboolean show_close_button);
 
 G_END_DECLS
 

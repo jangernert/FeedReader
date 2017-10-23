@@ -32,7 +32,7 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 
 	public ArticleViewHeader(string fsIcon, string fsTooltip)
 	{
-		var share_icon = UtilsUI.checkIcon("emblem-shared-symbolic", "feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
+		var share_icon = Utils.checkIcon("emblem-shared-symbolic", "feed-share-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var tag_icon = new Gtk.Image.from_icon_name("feed-tag-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var marked_icon = new Gtk.Image.from_icon_name("feed-marked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
 		var unmarked_icon = new Gtk.Image.from_icon_name("feed-unmarked-symbolic", Gtk.IconSize.SMALL_TOOLBAR);
@@ -119,6 +119,12 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		});
 
 		m_media_button = new AttachedMediaButton();
+		m_media_button.popOpened.connect(() => {
+			popOpened();
+		});
+		m_media_button.popClosed.connect(() => {
+			popClosed();
+		});
 
 		this.pack_start(m_fullscreen_button);
 		this.pack_start(m_mark_button);
@@ -139,23 +145,25 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_share_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		m_print_button.sensitive = show;
 
-		try
+		if(FeedReaderBackend.get_default().supportTags()
+		&& Utils.canManipulateContent())
 		{
-			if(DBusConnection.get_default().supportTags()
-			&& UtilsUI.canManipulateContent())
-			{
-				m_tag_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
-			}
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ColumnViewHeader.showArticleButtons: %s".printf(e.message));
+			m_tag_button.sensitive = (show && FeedReaderApp.get_default().isOnline());
 		}
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
-		m_mark_button.setActive(marked);
+		switch(marked)
+		{
+			case ArticleStatus.MARKED:
+				m_mark_button.setActive(true);
+				break;
+			case ArticleStatus.UNMARKED:
+			default:
+				m_read_button.setActive(false);
+				break;
+		}
 	}
 
 	public void toggleMarked()
@@ -163,9 +171,18 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 		m_mark_button.toggle();
 	}
 
-	public void setRead(bool read)
+	public void setRead(ArticleStatus read)
 	{
-		m_read_button.setActive(read);
+		switch(read)
+		{
+			case ArticleStatus.UNREAD:
+				m_read_button.setActive(true);
+				break;
+			case ArticleStatus.READ:
+			default:
+				m_read_button.setActive(false);
+				break;
+		}
 	}
 
 	public void toggleRead()
@@ -175,36 +192,21 @@ public class FeedReader.ArticleViewHeader : Gtk.HeaderBar {
 
 	public void setOffline()
 	{
-		try
-		{
-			m_share_button.sensitive = false;
-			if(UtilsUI.canManipulateContent()
-			&& DBusConnection.get_default().supportTags())
-				m_tag_button.sensitive = false;
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Headerbar.setOffline: %s".printf(e.message));
-		}
+		m_share_button.sensitive = false;
+		if(Utils.canManipulateContent()
+		&& FeedReaderBackend.get_default().supportTags())
+			m_tag_button.sensitive = false;
 	}
 
 	public void setOnline()
 	{
-		try
+		if(m_mark_button.sensitive)
 		{
-			if(m_mark_button.sensitive)
-			{
-				m_share_button.sensitive = true;
-				if(UtilsUI.canManipulateContent()
-				&& DBusConnection.get_default().supportTags())
-					m_tag_button.sensitive = true;
-			}
+			m_share_button.sensitive = true;
+			if(Utils.canManipulateContent()
+			&& FeedReaderBackend.get_default().supportTags())
+				m_tag_button.sensitive = true;
 		}
-		catch(GLib.Error e)
-		{
-			Logger.error("Headerbar.setOnline: %s".printf(e.message));
-		}
-
 	}
 
 	public void showMediaButton(bool show)

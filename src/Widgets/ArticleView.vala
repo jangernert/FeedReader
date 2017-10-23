@@ -75,8 +75,8 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		crashButton.set_relief(Gtk.ReliefStyle.NONE);
 		crashButton.set_focus_on_click(false);
 		crashButton.clicked.connect(() => {
-			var Article = dbUI.get_default().read_article(m_currentArticle);
-			UtilsUI.openInGedit(Article.getHTML());
+			var Article = DataBase.readOnly().read_article(m_currentArticle);
+			Utils.openInGedit(Article.getHTML());
 		});
 		var crashView = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
 		crashView.set_halign(Gtk.Align.CENTER);
@@ -218,11 +218,11 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_OngoingScrollID = 0;
 		}
 
-		article Article = null;
+		Article article = null;
 		SourceFunc callback = fillContent.callback;
 
 		ThreadFunc<void*> run = () => {
-			Article = dbUI.get_default().read_article(articleID);
+			article = DataBase.readOnly().read_article(articleID);
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
@@ -239,22 +239,22 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			else
 				m_currentView.zoom_level = 1.0;
 
-			m_fsHead.setTitle(Article.getTitle());
-			m_fsHead.setMarked( (Article.getMarked() == ArticleStatus.MARKED) ? true : false);
-			m_fsHead.setUnread( (Article.getUnread() == ArticleStatus.UNREAD) ? true : false);
+			m_fsHead.setTitle(article.getTitle());
+			m_fsHead.setMarked(article.getMarked());
+			m_fsHead.setRead(article.getUnread());
 
 			m_progress.reset();
 			m_progress.setPercentage(0);
 			m_progress.reveal(true);
 
 			m_currentView.load_html(
-				UtilsUI.buildArticle(
-						Article.getHTML(),
-						Article.getTitle(),
-						Article.getURL(),
-						Article.getAuthor(),
-						Article.getDateNice(true),
-						Article.getFeedID()
+				Utils.buildArticle(
+						article.getHTML(),
+						article.getTitle(),
+						article.getURL(),
+						article.getAuthor(),
+						article.getDateNice(true),
+						article.getFeedID()
 					)
 				, "file://" + GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
 			this.show_all();
@@ -526,7 +526,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
-				Logger.info("ArticleView: webextension-message: " + message);
+				Logger.info(@"ArticleView: webextension-message: $message");
 			});
 			recalculate.begin((obj, res) => {
 				recalculate.end(res);
@@ -543,17 +543,17 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		SourceFunc callback = recalculate.callback;
 		ThreadFunc<void*> run = () => {
 			try
-	    	{
-	    		if(m_connected
+			{
+				if(m_connected
 				&& m_stack.get_visible_child_name() != "empty"
 				&& m_stack.get_visible_child_name() != "crash"
 				&& m_currentView != null)
-	    			m_messenger.recalculate();
-	    	}
-	    	catch(GLib.IOError e)
-	    	{
-	    		Logger.warning("ArticleView: recalculate " + e.message);
-	    	}
+					m_messenger.recalculate();
+			}
+			catch(GLib.IOError e)
+			{
+				Logger.warning("ArticleView: recalculate " + e.message);
+			}
 			Idle.add((owned) callback, GLib.Priority.HIGH_IDLE);
 			return null;
 		};
@@ -775,7 +775,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			var uri = hitTest.get_image_uri().substring("file://".length);
 			var action = new Gtk.Action("save", _("Save image as"), null, null);
 			action.activate.connect(() => {
-				UtilsUI.saveImageDialog(uri);
+				Utils.saveImageDialog(uri);
 			});
 			menu.append(new WebKit.ContextMenuItem(action));
 		}
@@ -889,14 +889,14 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			m_progress.reveal(false);
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
 		m_fsHead.setMarked(marked);
 	}
 
-	public void setUnread(bool unread)
+	public void setRead(ArticleStatus read)
 	{
-		m_fsHead.setUnread(unread);
+		m_fsHead.setRead(read);
 	}
 
 	public void nextButtonVisible(bool vis)
@@ -960,7 +960,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		if(m_currentView == null)
 			return;
 
-		string articleName = dbUI.get_default().read_article(m_currentArticle).getTitle() + ".pdf";
+		string articleName = DataBase.readOnly().read_article(m_currentArticle).getTitle() + ".pdf";
 
 		var settings = new Gtk.PrintSettings();
 		settings.set_printer("Print to File");

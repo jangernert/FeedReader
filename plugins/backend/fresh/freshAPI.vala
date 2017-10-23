@@ -34,7 +34,7 @@ public class FeedReader.freshAPI : Object {
 		return m_connection.getSID();
 	}
 
-	public bool getSubscriptionList(Gee.List<feed> feeds)
+	public bool getSubscriptionList(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.getRequest("reader/api/0/subscription/list?output=json");
 
@@ -63,28 +63,14 @@ public class FeedReader.freshAPI : Object {
 			string catID = object.get_array_member("categories").get_object_element(0).get_string_member("id");
 			string xmlURL = object.get_string_member("url");
 
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
-
-			string? icon_url = null;
-			if(object.has_member("iconUrl"))
-				icon_url = object.get_string_member("iconUrl");
-
 			feeds.add(
-				new feed(
+				new Feed(
 					id,
-					title,
+					object.get_string_member("title"),
 					url,
 					0,
-					{ catID },
-					icon_url,
+					ListUtils.single(catID),
+					object.get_string_member("iconUrl"),
 					xmlURL)
 			);
 		}
@@ -92,7 +78,7 @@ public class FeedReader.freshAPI : Object {
 		return true;
 	}
 
-	public bool getTagList(Gee.List<category> categories)
+	public bool getTagList(Gee.List<Category> categories)
 	{
 		var response = m_connection.getRequest("reader/api/0/tag/list?output=json");
 		string prefix = "user/-/label/";
@@ -123,7 +109,7 @@ public class FeedReader.freshAPI : Object {
 				continue;
 
 			categories.add(
-				new category (
+				new Category (
 					categorieID,
 					categorieID.substring(prefix.length),
 					0,
@@ -171,7 +157,7 @@ public class FeedReader.freshAPI : Object {
 	}
 
 	public string? getStreamContents(
-										Gee.LinkedList<article> articles,
+										Gee.List<Article> articles,
 										string? feedID = null,
 										string? labelID = null,
 										string? exclude = null,
@@ -242,7 +228,7 @@ public class FeedReader.freshAPI : Object {
 					read = true;
 			}
 
-			string mediaString = "";
+			var media = new Gee.ArrayList<string>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -259,20 +245,13 @@ public class FeedReader.freshAPI : Object {
 						if(attachment.get_string_member("type").contains("audio")
 						|| attachment.get_string_member("type").contains("video"))
 						{
-							mediaString = mediaString + attachment.get_string_member("href") + ",";
+							media.add(attachment.get_string_member("href"));
 						}
 					}
 				}
 			}
 
-			string? author = null;
-			if(object.has_member("author"))
-			{
-				author = (object.get_string_member("author") == "") ? null : object.get_string_member("author");
-			}
-
-
-			articles.add(new article(
+			articles.add(new Article(
 									id,
 									object.get_string_member("title"),
 									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
@@ -280,12 +259,12 @@ public class FeedReader.freshAPI : Object {
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
-									"",
-									author,
+									null,
+									object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
-									"",
-									mediaString
+									null,
+									media
 							)
 						);
 		}
@@ -332,7 +311,7 @@ public class FeedReader.freshAPI : Object {
 		var msg = new freshMessage();
 		msg.add("T", m_connection.getToken());
 		msg.add("s", streamID);
-		msg.add("ts", dbDaemon.get_default().getNewestArticle());
+		msg.add("ts", DataBase.readOnly().getNewestArticle());
 
 		var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 
@@ -343,7 +322,7 @@ public class FeedReader.freshAPI : Object {
 		}
 	}
 
-	public string editStream(
+	public Response editStream(
 							string action,
 							string[]? streamID = null,
 							string? title = null,
@@ -380,7 +359,7 @@ public class FeedReader.freshAPI : Object {
 			Logger.debug(response.status.to_string());
 		}
 
-		return response.data;
+		return response;
 	}
 
 	public string composeTagID(string title)

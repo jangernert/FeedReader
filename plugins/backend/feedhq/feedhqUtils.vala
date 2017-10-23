@@ -80,11 +80,11 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 		Utils.resetSettings(m_settings);
 	}
 
-	public bool tagIsCat(string tagID, Gee.List<feed> feeds)
+	public bool tagIsCat(string tagID, Gee.List<Feed> feeds)
 	{
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			if(Feed.hasCat(tagID))
+			if(feed.hasCat(tagID))
 			{
 				return true;
 			}
@@ -95,8 +95,8 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	public string getPasswd()
 	{
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
-		                                  "type", Secret.SchemaAttributeType.STRING,
-		                                  "Username", Secret.SchemaAttributeType.STRING);
+										  "type", Secret.SchemaAttributeType.STRING,
+										  "Username", Secret.SchemaAttributeType.STRING);
 
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["type"] = "FeedHQ";

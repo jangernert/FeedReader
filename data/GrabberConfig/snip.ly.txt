@@ -1,3 +1,0 @@
-single_page_link: //meta[@property="og:url"]/@content
-
-test_url: http://snip.ly/qa1R

@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.category : GLib.Object {
+public class FeedReader.Category : GLib.Object {
 
 	private string m_categorieID;
 	private string m_title;
@@ -22,7 +22,7 @@ public class FeedReader.category : GLib.Object {
 	private string m_parent;
 	private int m_level;
 
-	public category (string categorieID, string title, uint unread_count, int orderID, string parent, int level) {
+	public Category (string categorieID, string title, uint unread_count, int orderID, string parent, int level) {
 		m_categorieID = categorieID;
 		m_title = title;
 		m_unread_count = unread_count;
@@ -34,6 +34,11 @@ public class FeedReader.category : GLib.Object {
 	public string getCatID()
 	{
 		return m_categorieID;
+	}
+
+	public string getFileName()
+	{
+		return GLib.Base64.encode(m_categorieID.data);
 	}
 
 	public string getTitle()

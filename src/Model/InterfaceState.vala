@@ -20,7 +20,6 @@ public class FeedReader.InterfaceState : GLib.Object {
 	private int m_FeedsAndArticleWidth = 600;
 	private int m_FeedListWidth = 200;
 	private int m_ArticleListRowOffset = 15;
-	private int m_ArticleListNewRowCount = 0;
 	private int m_ArticleViewScrollPos = 0;
 	private bool m_WindowMaximized = false;
 	private double m_ArticleListScrollPos = 0.0;
@@ -37,7 +36,7 @@ public class FeedReader.InterfaceState : GLib.Object {
 
 	}
 
-	public void write()
+	public void write(bool shutdown)
 	{
 		Settings.state().set_int      ("window-width",                m_WindowWidth);
 		Settings.state().set_int      ("window-height",               m_WindowHeight);
@@ -47,15 +46,16 @@ public class FeedReader.InterfaceState : GLib.Object {
 		Settings.state().set_string   ("feedlist-selected-row",       m_FeedListSelectedRow);
 		Settings.state().set_int      ("feed-row-width",              m_FeedListWidth);
 		Settings.state().set_int      ("feeds-and-articles-width",    m_FeedsAndArticleWidth);
-		Settings.state().set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
 		Settings.state().set_double   ("articlelist-scrollpos",       m_ArticleListScrollPos);
 		Settings.state().set_string   ("articlelist-selected-row",    m_ArticleListSelectedRow);
 		Settings.state().set_string   ("articlelist-top-row",         m_ArticleListTopRow);
 		Settings.state().set_enum     ("show-articles",               m_ArticleListState);
 		Settings.state().set_string   ("search-term",                 m_SearchTerm);
 		Settings.state().set_int      ("articleview-scrollpos",       m_ArticleViewScrollPos);
-		Settings.state().set_int      ("articlelist-new-rows",        m_ArticleListNewRowCount);
-		Settings.state().set_boolean  ("no-animations",               true);
+		if(shutdown)
+		{
+			Settings.state().set_int      ("articlelist-row-offset",      m_ArticleListRowOffset);
+		}
 	}
 
 	public void setWindowSize(int height, int width)
@@ -144,24 +144,17 @@ public class FeedReader.InterfaceState : GLib.Object {
 		return m_ArticleListSelectedRow;
 	}
 
-	public void setArticleListTopRow(string? articleID)
+	public void setArticleListTopRow(Article? article)
 	{
-		m_ArticleListTopRow = articleID;
+		if(article == null)
+			m_ArticleListTopRow = null;
+
+		m_ArticleListTopRow = article.getArticleID();
 	}
 
 	public string getArticleListTopRow()
 	{
 		return m_ArticleListTopRow;
-	}
-
-	public void setArticleListNewRowCount(int count)
-	{
-		m_ArticleListNewRowCount = count;
-	}
-
-	public int getArticleListNewRowCount()
-	{
-		return m_ArticleListNewRowCount;
 	}
 
 	public void setWindowMaximized(bool max)

@@ -21,7 +21,7 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 	private string m_desc;
 	private Gtk.CheckButton m_check;
 
-	public SuggestedFeedRow(string url, string category, string name, string desc, string lang)
+	public SuggestedFeedRow(string url, string iconURL, string category, string name, string desc, string lang)
 	{
 		m_name = name;
 		m_url = url;
@@ -62,34 +62,24 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 		show_all();
 
 		var uri = new Soup.URI(url);
-		Utils.downloadIcon.begin(uri.get_host(), uri.get_scheme() + "://" + uri.get_host(), null, "/tmp/", (obj, res) => {
-			bool success = Utils.downloadIcon.end(res);
-			Gtk.Image? icon = null;
-
-			if(success)
-			{
-				try
-				{
-					string filename = "/tmp/" + uri.get_host().replace("/", "_").replace(".", "_") + ".ico";
-					Logger.debug("load icon %s".printf(filename));
-					var tmp_icon = new Gdk.Pixbuf.from_file_at_scale(filename, 24, 24, true);
-					icon = new Gtk.Image.from_pixbuf(tmp_icon);
-				}
-				catch(GLib.Error e)
-				{
-					Logger.error("SuggestedFeedRow.constructor: %s".printf(e.message));
-					icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-				}
-			}
-			else
-			{
-				icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-			}
-
-			iconStack.add_named(icon, "icon");
-   			show_all();
-   			iconStack.set_visible_child_name("icon");
+		var fakeFeed = new Feed(uri.get_host(), null, null, 0);
+		load_favicon.begin(iconStack, fakeFeed, iconURL, (obj, res) => {
+			load_favicon.end(res);
 		});
+	}
+
+	private async void load_favicon(Gtk.Stack iconStack, Feed feed, string iconURL)
+	{
+		Gtk.Image? icon = null;
+		var pixBuf = yield FavIcon.for_feed(feed).get_pixbuf();
+		if(pixBuf != null)
+			icon = new Gtk.Image.from_pixbuf(pixBuf);
+		else
+			icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+
+		iconStack.add_named(icon, "icon");
+		show_all();
+		iconStack.set_visible_child_name("icon");
 	}
 
 	public bool checked()

@@ -1,5 +1,0 @@
-title://div[@class='main-title single-title entry-title']
-body://div[@id="content-anchor-inner"]
-date://meta[@content]
-
-strip: //noscript

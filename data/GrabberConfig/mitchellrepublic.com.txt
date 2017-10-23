@@ -1,3 +1,0 @@
-body: //div[@class='section']
-strip_id_or_class: mediumtxt
-strip: //strong[contains

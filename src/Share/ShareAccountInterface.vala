@@ -19,7 +19,7 @@ public interface FeedReader.ShareAccountInterface : GLib.Object {
 
 	public signal void deleteAccount(string id);
 
-	public abstract void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts);
+	public abstract void setupSystemAccounts(Gee.List<ShareAccount> accounts);
 
 	public abstract bool useSystemAccounts();
 

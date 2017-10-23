@@ -14,9 +14,8 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Grabber : GLib.Object {
+	private Article m_article;
 	private string m_articleURL;
-	private string? m_articleID;
-	private string? m_feedID;
 	private string m_rawHtml;
 	private string m_nexPageURL;
 	private GrabberConfig m_config;
@@ -34,24 +33,22 @@ public class FeedReader.Grabber : GLib.Object {
 	public string m_date;
 	public string m_html;
 
-	public Grabber(Soup.Session session, string articleURL, string? articleID, string? feedID)
+	public Grabber(Soup.Session session, Article article)
 	{
-		m_articleURL = articleURL;
-		m_articleID = articleID;
-		m_feedID = feedID;
+		m_article = article;
+		if(m_article.getURL().has_prefix("//"))
+			m_article.setURL("http:" + m_article.getURL());
+
+		m_articleURL = m_article.getURL();
 		m_firstPage = true;
 		m_foundSomething = false;
 		m_singlePage = false;
 		m_session = session;
-
-		if(m_articleURL.has_prefix("//"))
-			m_articleURL = "http:" + m_articleURL;
 	}
 
 	~Grabber()
 	{
 		delete m_doc;
-		delete m_root;
 		delete m_ns;
 	}
 
@@ -194,13 +191,14 @@ public class FeedReader.Grabber : GLib.Object {
 	private bool download()
 	{
 		var msg = new Soup.Message("GET", m_articleURL.escape(""));
-		msg.restarted.connect(() => {
+		ulong handlerID = msg.restarted.connect(() => {
 			Logger.debug("Grabber: download redirected - " + msg.status_code.to_string());
 			if(msg.status_code == Soup.Status.MOVED_TEMPORARILY
 			|| msg.status_code == Soup.Status.MOVED_PERMANENTLY)
 			{
 				m_articleURL = msg.uri.to_string(false);
-				Logger.debug(@"Grabber: new url is: $m_articleURL");
+				m_article.setURL(m_articleURL);
+				Logger.debug("Grabber: new url is: " + m_articleURL);
 			}
 		});
 
@@ -211,6 +209,7 @@ public class FeedReader.Grabber : GLib.Object {
 			msg.request_headers.append("DNT", "1");
 
 		m_session.send_message(msg);
+		msg.disconnect(handlerID);
 
 		if(msg.response_body == null)
 		{
@@ -271,7 +270,7 @@ public class FeedReader.Grabber : GLib.Object {
 		Logger.debug("Grabber: start parsing");
 
 		// replace strings before parsing html
-		unowned Gee.ArrayList<StringPair> replace = m_config.getReplace();
+		unowned Gee.List<StringPair> replace = m_config.getReplace();
 		if(replace.size != 0)
 		{
 			foreach(StringPair pair in replace)
@@ -310,10 +309,9 @@ public class FeedReader.Grabber : GLib.Object {
 			if(url != "" && url != null)
 			{
 				if(!url.has_prefix("http"))
-		        {
-		            url = grabberUtils.completeURL(url, m_articleURL);
-		        }
-				Logger.debug("Grabber: single page url " + url);
+				{
+					url = grabberUtils.completeURL(url, m_articleURL);
+				}
 				m_singlePage = true;
 				m_articleURL = url;
 				download();
@@ -323,7 +321,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the title from the html (useful if feed doesn't provide one)
-		unowned Gee.ArrayList<string> title = m_config.getXPathTitle();
+		unowned Gee.List<string> title = m_config.getXPathTitle();
 		if(title.size != 0 && m_firstPage)
 		{
 			Logger.debug("Grabber: get title");
@@ -342,7 +340,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the author from the html (useful if feed doesn't provide one)
-		unowned Gee.ArrayList<string> author = m_config.getXPathAuthor();
+		unowned Gee.List<string> author = m_config.getXPathAuthor();
 		if(author.size != 0)
 		{
 			Logger.debug("Grabber: get author");
@@ -361,7 +359,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the date from the html (useful if feed doesn't provide one)
-		unowned Gee.ArrayList<string> date = m_config.getXPathDate();
+		unowned Gee.List<string> date = m_config.getXPathDate();
 		if(date.size != 0)
 		{
 			Logger.debug("Grabber: get date");
@@ -380,7 +378,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// strip junk
-		unowned Gee.ArrayList<string> strip = m_config.getXPathStrip();
+		unowned Gee.List<string> strip = m_config.getXPathStrip();
 		if(strip.size != 0)
 		{
 			Logger.debug("Grabber: strip junk");
@@ -398,7 +396,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// strip any element whose @id or @class contains this substring
-		unowned Gee.ArrayList<string> _stripIDorClass = m_config.getXPathStripIDorClass();
+		unowned Gee.List<string> _stripIDorClass = m_config.getXPathStripIDorClass();
 		if(_stripIDorClass.size != 0)
 		{
 			Logger.debug("Grabber: strip id's and class");
@@ -415,7 +413,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		//strip any <img> element where @src attribute contains this substring
-		unowned Gee.ArrayList<string> stripImgSrc = m_config.getXPathStripImgSrc();
+		unowned Gee.List<string> stripImgSrc = m_config.getXPathStripImgSrc();
 		if(stripImgSrc.size != 0)
 		{
 			Logger.debug("Grabber: strip img-tags");
@@ -498,7 +496,7 @@ public class FeedReader.Grabber : GLib.Object {
 		}
 
 		// get the content of the article
-		unowned Gee.ArrayList<string> bodyList = m_config.getXPathBody();
+		unowned Gee.List<string> bodyList = m_config.getXPathBody();
 		if(bodyList.size != 0)
 		{
 			Logger.debug("Grabber: get body");
@@ -539,19 +537,19 @@ public class FeedReader.Grabber : GLib.Object {
 			{
 				m_nexPageURL = grabberUtils.completeURL(m_nexPageURL, m_articleURL);
 			}
-			m_articleURL = m_nexPageURL;
-			Logger.debug("Grabber: next page url: %s".printf(m_nexPageURL));
-			download();
-			parse(cancellable);
-			return true;
+			if(m_articleURL != m_nexPageURL)
+			{
+				m_articleURL = m_nexPageURL;
+				Logger.debug("Grabber: next page url: %s".printf(m_nexPageURL));
+				download();
+				parse(cancellable);
+				return true;
+			}
 		}
 
 		if(Settings.general().get_boolean("download-images"))
 		{
-			if(m_articleID != null && m_feedID != null)
-				grabberUtils.saveImages(m_session, m_doc, m_articleID, m_feedID, cancellable);
-			else
-				grabberUtils.saveImages(m_session, m_doc, "", "", cancellable);
+				grabberUtils.saveImages(m_session, m_doc, m_article, cancellable);
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())

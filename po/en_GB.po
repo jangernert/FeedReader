@@ -59,22 +59,22 @@ msgstr ""
 #: src/Backend/FeedServer.vala:181
 #, fuzzy
 msgid "Getting articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Backend/FeedServer.vala:269
 #, fuzzy
 msgid "Getting starred articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Backend/FeedServer.vala:276
 #, fuzzy
 msgid "Getting tagged articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Backend/FeedServer.vala:294
 #, fuzzy
 msgid "Getting unread articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Share/ServiceSetup.vala:56
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:96
@@ -104,8 +104,8 @@ msgid "Sync is in progress. Articles should appear any second."
 msgstr ""
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
-msgstr "New Articles"
+msgid "New articles"
+msgstr "New articles"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567
 msgid "scroll up"
@@ -114,22 +114,22 @@ msgstr ""
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
 #, fuzzy
 msgid "No Articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
 #, fuzzy
 msgid "No unread articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
 #, fuzzy
 msgid "No starred articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
 #, fuzzy
 msgid "No articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
@@ -207,7 +207,7 @@ msgstr ""
 #: src/Widgets/ColumnViewHeader.vala:37
 #, fuzzy
 msgid "Show all articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ColumnViewHeader.vala:38
 msgid "Unread"
@@ -308,12 +308,12 @@ msgstr ""
 #: src/Widgets/ArticleViewHeader.vala:68
 #, fuzzy
 msgid "Tag article"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ArticleViewHeader.vala:82
 #, fuzzy
 msgid "Print article"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ArticleViewHeader.vala:93
 #, fuzzy
@@ -381,7 +381,7 @@ msgstr ""
 #: src/Widgets/FeedList.vala:247
 #, fuzzy
 msgid "All Articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/FeedList.vala:444
 #, fuzzy
@@ -464,7 +464,7 @@ msgstr ""
 #: src/Widgets/ShortcutsWindow.vala:54
 #, fuzzy
 msgid "Article List"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
@@ -494,7 +494,7 @@ msgstr ""
 #: src/Widgets/ShortcutsWindow.vala:79
 #, fuzzy
 msgid "Article View"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
@@ -571,12 +571,12 @@ msgstr ""
 #: src/Widgets/SettingsDialog.vala:95
 #, fuzzy
 msgid "Article List:"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/SettingsDialog.vala:97
 #, fuzzy
 msgid "Sort articles by"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
@@ -597,7 +597,7 @@ msgstr ""
 #: src/Widgets/SettingsDialog.vala:109
 #, fuzzy
 msgid "Article View:"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/SettingsDialog.vala:111
 msgid "Default"
@@ -626,7 +626,7 @@ msgstr "Sync:"
 #: src/Widgets/SettingsDialog.vala:143
 #, fuzzy
 msgid "Number of articles"
-msgstr "New Articles"
+msgstr "New articles"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
@@ -912,7 +912,7 @@ msgstr ""
 
 #, fuzzy
 #~ msgid "Article-List"
-#~ msgstr "New Articles"
+#~ msgstr "New articles"
 
 #, fuzzy
 #~ msgid "feedreader"

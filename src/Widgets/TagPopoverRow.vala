@@ -17,19 +17,19 @@ public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
 
 	private Gtk.Revealer m_revealer;
 	private Gtk.Box m_box;
-	private tag m_tag;
+	private Tag m_tag;
 	private Gtk.Image m_clear;
 	private Gtk.EventBox m_eventbox;
 	public signal void remove_tag(TagPopoverRow row);
 
-	public TagPopoverRow(tag Tag)
+	public TagPopoverRow(Tag tag)
 	{
-		m_tag = Tag;
+		m_tag = tag;
 		m_box = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
-		var circle = new ColorCircle(Tag.getColor(), false);
+		var circle = new ColorCircle(tag.getColor(), false);
 		circle.margin_start = 2;
 		circle.margin_end = 3;
-		var label = new Gtk.Label(Tag.getTitle());
+		var label = new Gtk.Label(tag.getTitle());
 		label.set_alignment(0, 0.5f);
 		m_clear = new Gtk.Image.from_icon_name("edit-clear-symbolic", Gtk.IconSize.MENU);
 		m_clear.margin_end = 5;
@@ -84,7 +84,7 @@ public class FeedReader.TagPopoverRow : Gtk.ListBoxRow {
 		return m_tag.getTagID();
 	}
 
-	public tag getTag()
+	public Tag getTag()
 	{
 		return m_tag;
 	}

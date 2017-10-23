@@ -235,6 +235,7 @@ __mrss_parser_atom_string (nxml_t * doc, nxml_data_t * cur, char **what,
 
       *what = total;
       *type = c;
+      free(c1);
       return;
     }
 

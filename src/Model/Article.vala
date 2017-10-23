@@ -13,7 +13,7 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.article : GLib.Object {
+public class FeedReader.Article : GLib.Object {
 
 	private string m_articleID;
 	private string m_title;
@@ -21,8 +21,8 @@ public class FeedReader.article : GLib.Object {
 	private string m_html;
 	private string m_preview;
 	private string m_feedID;
-	private Gee.ArrayList<string> m_tags;
-	private Gee.ArrayList<string> m_media;
+	private Gee.List<string> m_tags;
+	private Gee.List<string> m_media;
 	private string? m_author;
 	private ArticleStatus m_unread;
 	private ArticleStatus m_marked;
@@ -30,59 +30,74 @@ public class FeedReader.article : GLib.Object {
 	private GLib.DateTime m_date;
 	private string m_guidHash;
 	private int m_lastModified;
+	private int m_pos;
 
+	private static GLib.Settings? m_gnome_settings;
+	private static bool m_clock_12_hour = false;
 
+	static construct
+	{
+		// Lookup the schema in a complicated way so we don't require users
+		// to be running GNOME Shell
+		var schema_source = SettingsSchemaSource.get_default();
+		var schema = schema_source.lookup("org.gnome.desktop.interface", true);
+		if(schema != null)
+		{
+			m_gnome_settings = new GLib.Settings.full(schema, null, null);
+			m_clock_12_hour = m_gnome_settings.get_string("clock-format") == "12h";
+			m_gnome_settings.changed["clock-format"].connect(() => {
+				m_clock_12_hour = m_gnome_settings.get_string("clock-format") == "12h";
+			});
+		}
+	}
 
-	public article (	string articleID,
-						string title,
-						string url,
-						string feedID,
-						ArticleStatus unread,
-						ArticleStatus marked,
-						string html,
-						string preview,
-						string? author,
-						GLib.DateTime date,
-						int sortID,
-						string tags,
-						string media,
-						string guidHash = "",
-						int lastModified = 0)
+	public Article (string articleID,
+					string? title,
+					string? url,
+					string? feedID,
+					ArticleStatus unread,
+					ArticleStatus marked,
+					string? html,
+					string? preview,
+					string? author,
+					GLib.DateTime? date,
+					int sortID = 0,
+					Gee.List<string>? tags = null,
+					Gee.List<string>? media = null,
+					string guidHash = "",
+					int lastModified = 0)
 	{
 		m_articleID = articleID;
-		m_title = title;
-		m_url = url;
-		m_html = html;
-		m_preview = preview;
-		m_feedID = feedID;
-		m_author = author;
+		m_title = title != null ? title : "";
+		m_url = url != null ? url : "";
+		m_html = html != null ? html : "";
+		m_preview = preview != null ? preview : "";
+		m_feedID = feedID != null ? feedID : "";
+		m_author = author != "" ? author : null; // This one is actually nullable
 		m_unread = unread;
 		m_marked = marked;
 		m_sortID = sortID;
-		m_date = date;
+		m_date = date != null ? date : new DateTime.now_utc();
 		m_guidHash = guidHash;
 		m_lastModified = lastModified;
 
-		m_tags = new Gee.ArrayList<string>();
-		var tagArray = tags.split(",");
-		foreach(string tag in tagArray)
-		{
-			if(tag.strip() != "")
-				m_tags.add(tag);
-		}
-
-		m_media = new Gee.ArrayList<string>();
-		var mediaArray = media.split(",");
-		foreach(string m in mediaArray)
-		{
-			if(m.strip() != "")
-				m_media.add(m);
-		}
+		m_tags = tags == null ? Gee.List.empty<string>() : tags;
+		m_media = media == null ? Gee.List.empty<string>() : media;
 	}
 
 	public string getArticleID()
 	{
 		return m_articleID;
+	}
+
+	public string getArticleFileName()
+	{
+		return GLib.Base64.encode(m_articleID.data);
+	}
+
+	public string getFeedFileName()
+	{
+		return GLib.Base64.encode(m_articleID.data);
 	}
 
 	public string getTitle()
@@ -130,6 +145,11 @@ public class FeedReader.article : GLib.Object {
 		return m_url;
 	}
 
+	public void setURL(string url)
+	{
+		m_url = url;
+	}
+
 	public int getSortID()
 	{
 		return m_sortID;
@@ -138,6 +158,11 @@ public class FeedReader.article : GLib.Object {
 	public GLib.DateTime getDate()
 	{
 		return m_date;
+	}
+
+	public void SetDate(GLib.DateTime date)
+	{
+		m_date = date;
 	}
 
 	public string getDateNice(bool addTime = false)
@@ -151,33 +176,40 @@ public class FeedReader.article : GLib.Object {
 		var date_day = m_date.get_day_of_year();
 		var date_week = m_date.get_week_of_year();
 
-		string time = (addTime) ? ", %H:%M" : "";
-
-		if(date_year == 1900)
-		{
-			//return _("no date available");
-		}
-		else if(date_year == now_year)
+		var formats = new Gee.ArrayList<string>();
+		if(date_year == now_year)
 		{
 			if(date_day == now_day)
 			{
-				return m_date.format("%H:%M");
+				addTime = true;
 			}
-			else if(date_day == now_day-1)
+			else if(date_day == now_day -1)
 			{
-				return _("Yesterday") + m_date.format(", %H:%M");
+				formats.add(_("Yesterday").replace("%", "%%"));
+				addTime = true;
 			}
 			else if(date_week == now_week)
 			{
-				return m_date.format("%A" + time);
+				formats.add("%A");
 			}
 			else
 			{
-				return m_date.format("%B %d" + time);
+				formats.add("%B %d");
 			}
 		}
+		else
+			formats.add("%Y-%m-%d");
 
-		return m_date.format("%Y-%m-%d" + time);
+		if(addTime)
+		{
+			if(m_clock_12_hour)
+				formats.add("%l:%M %p");
+			else
+				formats.add("%H:%M");
+		}
+
+		string format = StringUtils.join(formats, ", ");
+		return m_date.format(format);
 	}
 
 	public string getFeedID()
@@ -205,48 +237,44 @@ public class FeedReader.article : GLib.Object {
 		m_marked = marked;
 	}
 
-	public unowned Gee.ArrayList<string> getTags()
+	public unowned Gee.List<string> getTagIDs()
 	{
 		return m_tags;
 	}
 
 	public string getTagString()
 	{
-		string tags = "";
-		foreach(string tag in m_tags)
-		{
-			tags += tag + ",";
-		}
-		return tags;
+		return StringUtils.join(m_tags, ",");
 	}
 
-	public void setTags(Gee.ArrayList<string> tags)
+	public void setTags(Gee.List<string> tags)
 	{
 		m_tags = tags;
 	}
 
-	public void addTag(string tag)
+	public void addTag(string tagID)
 	{
-		if(!m_tags.contains(tag))
-			m_tags.add(tag);
+		if(!m_tags.contains(tagID))
+			m_tags.add(tagID);
 	}
 
-	public unowned Gee.ArrayList<string> getMedia()
+	public void removeTag(string tagID)
+	{
+		if(m_tags.contains(tagID))
+			m_tags.remove(tagID);
+	}
+
+	public unowned Gee.List<string> getMedia()
 	{
 		return m_media;
 	}
 
 	public string getMediaString()
 	{
-		string media = "";
-		foreach(string m in m_media)
-		{
-			media += m + ",";
-		}
-		return media;
+		return StringUtils.join(m_media, ",");
 	}
 
-	public void setMedia(Gee.ArrayList<string> media)
+	public void setMedia(Gee.List<string> media)
 	{
 		m_media = media;
 	}
@@ -273,5 +301,15 @@ public class FeedReader.article : GLib.Object {
 	public int getLastModified()
 	{
 		return m_lastModified;
+	}
+
+	public int getPos()
+	{
+		return m_pos;
+	}
+
+	public void setPos(int pos)
+	{
+		m_pos = pos;
 	}
 }

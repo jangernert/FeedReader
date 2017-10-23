@@ -23,7 +23,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 	private Gtk.Entry m_catEntry;
 	private Gtk.FileChooserButton m_chooser;
 	private Gtk.EntryCompletion m_complete;
-	private Gee.ArrayList<category> m_cats;
+	private Gee.List<Category> m_cats;
 
 	public AddPopover(Gtk.Widget parent)
 	{
@@ -108,7 +108,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		GLib.Idle.add(() => {
 			Gtk.ListStore list_store = new Gtk.ListStore(1, typeof (string));
 			Gtk.TreeIter iter;
-			m_cats = dbUI.get_default().read_categories();
+			m_cats = DataBase.readOnly().read_categories();
 
 			foreach(var cat in m_cats)
 			{
@@ -125,13 +125,14 @@ public class FeedReader.AddPopover : Gtk.Popover {
 
 	private void addFeed()
 	{
-		if(m_urlEntry.text == "" || GLib.Uri.parse_scheme(m_urlEntry.text) == null)
+		if(m_urlEntry.text == ""
+		|| GLib.Uri.parse_scheme(m_urlEntry.text) == null)
 		{
 			m_urlEntry.grab_focus();
 			return;
 		}
 
-		string? catID = dbUI.get_default().getCategoryID(m_catEntry.text);
+		string? catID = DataBase.readOnly().getCategoryID(m_catEntry.text);
 		bool isID = true;
 
 		if(catID == null)
@@ -141,14 +142,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 		}
 
 		Logger.debug("addFeed: %s, %s".printf(m_urlEntry.text, (catID == "") ? "null" : catID));
-		try
-		{
-			DBusConnection.get_default().addFeed(m_urlEntry.text, catID, isID);
-		}
-		catch(Error e)
-		{
-			Logger.error("AddPopover.addFeed: %s".printf(e.message));
-		}
+		FeedReaderBackend.get_default().addFeed(m_urlEntry.text, catID, isID, true);
 
 		setBusy();
 	}
@@ -162,7 +156,7 @@ public class FeedReader.AddPopover : Gtk.Popover {
 			uint8[] contents;
 			file.load_contents (null, out contents, null);
 			Logger.debug((string)contents);
-			DBusConnection.get_default().importOPML((string)contents);
+			FeedReaderBackend.get_default().importOPML((string)contents);
 		}
 		catch(GLib.Error e)
 		{

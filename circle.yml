@@ -2,31 +2,54 @@ version: 2
 jobs:
   build:
     docker:
-      - image: fedora:latest
+      # See docker/Dockerfile
+      - image: feedreader/fedora-feedreader-devel
+        environment:
+          ELASTICSEARCH_URL: http://127.0.0.1:9200
+          # Note: The Feedbin API has to run on subdomain "api"
+          FEEDBIN_TEST_HOST: http://api.x.localhost:9292
+          POSTGRES_USERNAME: postgres
+          POSTGRES_HOST: 127.0.0.1
+          DATABASE_URL: postgres://postgres@127.0.0.1:5432/feedbin_db
+          REDIS_URL: redis://127.0.0.1:6379
+      - image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
+        environment:
+          'discovery.type': single-node
+      - image: postgres:9.6.5-alpine
+      - image: redis:3.2.11-alpine
+
     working_directory: ~/FeedReader
     steps:
-      - run: >
-          dnf -y install
-          cmake
-          gcc
-          gettext
-          git
-          gnome-online-accounts-devel
-          gstreamer1-devel
-          gstreamer1-plugins-base-devel
-          gtk3-devel
-          json-glib-devel
-          libcurl-devel
-          libgee-devel
-          libnotify-devel
-          libpeas-devel
-          libsecret-devel
-          libsoup-devel
-          libxml2-devel
-          rest-devel
-          sqlite-devel
-          vala
-          webkitgtk4-devel
+      - run:
+          name: Setup Feedbin
+          command: cd /feedbin && rake db:setup && dnf install -y nodejs
+      - run:
+          name: Run Feedbin background processes
+          command: cd /feedbin && bundle exec foreman start
+          background: true
+      - run:
+          name: Run Feedbin
+          command: cd /feedbin && rackup
+          background: true
       - checkout
-      - run: cmake .
-      - run: make
+      - run:
+          name: Build
+          command: |
+              cmake .
+              make
+      - run:
+          name: Test
+          command: make test
+      - run:
+          name: Generate JUnit XML
+          command: |
+              mkdir -p /tmp/test-results/junit/
+              for f in *.gtester.log; do
+                  xsltproc -o /tmp/test-results/junit/$(basename $f .gtester.log).xml gtester-to-junit-4.xsl $f;
+              done
+          when: always
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results/junit
+          destination: test-results

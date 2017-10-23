@@ -13,30 +13,35 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public class FeedReader.feed : GLib.Object {
+public class FeedReader.Feed : GLib.Object {
 
 	private string m_feedID;
 	private string m_title;
 	private string m_url;
 	private string? m_xmlURL;
 	private uint m_unread;
-	private string[] m_catIDs;
+	private Gee.List<string> m_catIDs;
 	private string? m_iconURL;
 
-	public feed(string feedID, string title, string url, uint unread, string[] catIDs, string? iconURL = null, string? xmlURL = null)
+	public Feed(string feedID, string? title, string? url, uint unread, Gee.List<string>? catIDs = null, string? iconURL = null, string? xmlURL = null)
 	{
 		m_feedID = feedID;
-		m_title = title;
-		m_url = url;
+		m_url = url != null ? url : "";
+		m_title = title != null ? Utils.UTF8fix(title) : Utils.URLtoFeedName(url);
 		m_unread = unread;
-		m_catIDs = catIDs;
-		m_iconURL = (iconURL == "") ? null : iconURL;
+		m_catIDs = catIDs == null ? Gee.List.empty<string>() : catIDs;
+		m_iconURL = iconURL == "" ? null : iconURL;
 		m_xmlURL = xmlURL;
 	}
 
 	public string getFeedID()
 	{
 		return m_feedID;
+	}
+
+	public string getFeedFileName()
+	{
+		return GLib.Base64.encode(m_feedID.data);
 	}
 
 	public string getTitle()
@@ -54,54 +59,60 @@ public class FeedReader.feed : GLib.Object {
 		return m_url;
 	}
 
+	public void setURL(string url)
+	{
+		m_url = url;
+	}
+
 	public uint getUnread()
 	{
 		return m_unread;
 	}
 
-	public string[] getCatIDs()
+	public void setUnread(uint unread)
+	{
+		m_unread = unread;
+	}
+
+	public Gee.List<string> getCatIDs()
 	{
 		return m_catIDs;
 	}
 
 	public string getCatString()
 	{
-		string catIDs = "";
-		foreach(string id in m_catIDs)
-		{
-			catIDs += id + ",";
-		}
-
-		return catIDs;
+		return StringUtils.join(m_catIDs, ",");
 	}
 
 	public bool hasCat(string catID)
 	{
-		foreach(string cat in m_catIDs)
-		{
-			if(cat == catID)
-				return true;
-		}
-
-		return false;
+		return m_catIDs.contains(catID);
 	}
 
 	public void addCat(string catID)
 	{
-		m_catIDs += catID;
+		m_catIDs.add(catID);
 	}
 
-	public void setCats(string[] catIDs)
+	public void setCats(Gee.Collection<string> catIDs)
 	{
-		m_catIDs = catIDs;
+		m_catIDs.clear();
+		m_catIDs.add_all(catIDs);
+	}
+
+	// Helper function for backends that only support one category per feed
+	public void setCategory(string id)
+	{
+		m_catIDs.clear();
+		m_catIDs.add(id);
 	}
 
 	public bool isUncategorized()
 	{
-		if(m_catIDs.length == 0)
+		if(m_catIDs.size == 0)
 			return true;
 
-		if(m_catIDs.length == 1 && m_catIDs[0].contains("global.must"))
+		if(m_catIDs.size == 1 && m_catIDs[0].contains("global.must"))
 			return true;
 
 		return false;
@@ -110,6 +121,11 @@ public class FeedReader.feed : GLib.Object {
 	public string? getIconURL()
 	{
 		return m_iconURL;
+	}
+
+	public void setIconURL(string? url)
+	{
+		m_iconURL = url;
 	}
 
 	public string? getXmlUrl()

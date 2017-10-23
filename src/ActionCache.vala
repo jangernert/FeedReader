@@ -22,7 +22,7 @@ public class FeedReader.ActionCache : GLib.Object {
 	// this prevents articles that were marked as read after the sync began but before the data was written to the database
 	// to suddenly become unread again after the sync (and similar issues)
 
-	private Gee.ArrayList<CachedAction> m_list;
+	private Gee.List<CachedAction> m_list;
 
 	private static ActionCache? m_cache = null;
 
@@ -124,7 +124,7 @@ public class FeedReader.ActionCache : GLib.Object {
 			if(a.getType() == CachedActions.MARK_READ
 			|| a.getType() == CachedActions.MARK_UNREAD)
 			{
-				if(feedID == dbDaemon.get_default().getFeedIDofArticle(a.getID()))
+				if(feedID == DataBase.readOnly().getFeedIDofArticle(a.getID()))
 				{
 					m_list.remove(a);
 				}
@@ -134,7 +134,7 @@ public class FeedReader.ActionCache : GLib.Object {
 
 	private void removeForCategory(string catID)
 	{
-		var feedIDs = dbDaemon.get_default().getFeedIDofCategorie(catID);
+		var feedIDs = DataBase.readOnly().getFeedIDofCategorie(catID);
 		foreach(string feedID in feedIDs)
 		{
 			foreach(CachedAction a in m_list)
@@ -191,7 +191,7 @@ public class FeedReader.ActionCache : GLib.Object {
 		return marked;
 	}
 
-	public ArticleStatus checkRead(article a)
+	public ArticleStatus checkRead(Article a)
 	{
 		if(a.getUnread() == ArticleStatus.READ)
 		{
@@ -217,7 +217,7 @@ public class FeedReader.ActionCache : GLib.Object {
 						break;
 
 					case CachedActions.MARK_READ_CATEGORY:
-						var feedIDs = dbDaemon.get_default().getFeedIDofCategorie(a.getArticleID());
+						var feedIDs = DataBase.readOnly().getFeedIDofCategorie(a.getArticleID());
 						foreach(string feedID in feedIDs)
 						{
 							if(feedID == a.getFeedID())

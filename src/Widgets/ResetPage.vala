@@ -80,6 +80,7 @@ public class FeedReader.ResetPage : Gtk.Bin {
 			m_waitingBox.show_all();
 			m_spinner.start();
 			m_newAccountButton.set_sensitive(false);
+			FeedReaderBackend.get_default().cancelSync();
 
 			while(Settings.state().get_boolean("currently-updating"))
 			{
@@ -90,29 +91,22 @@ public class FeedReader.ResetPage : Gtk.Bin {
 				return;
 		}
 
-		try
-		{
-			// set "currently-updating" ourself to prevent the daemon to start sync
-			Settings.state().set_boolean("currently-updating", true);
+		// set "currently-updating" ourself to prevent the backend to start sync
+		Settings.state().set_boolean("currently-updating", true);
 
-			// clear all data from UI
-			ColumnView.get_default().clear();
+		// clear all data from UI
+		ColumnView.get_default().clear();
 
-			Settings.general().reset("plugin");
-			Utils.resetSettings(Settings.state());
-			DBusConnection.get_default().resetDB();
-			DBusConnection.get_default().resetAccount();
+		Settings.general().reset("plugin");
+		Utils.resetSettings(Settings.state());
+		FeedReaderBackend.get_default().resetDB();
+		FeedReaderBackend.get_default().resetAccount();
 
-			Utils.remove_directory(GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
+		Utils.remove_directory(GLib.Environment.get_user_data_dir() + "/feedreader/data/images/");
 
-			Settings.state().set_boolean("currently-updating", false);
-			DBusConnection.get_default().login("none");
-			reset();
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("ResetPage.resetAllData: %s".printf(e.message));
-		}
+		Settings.state().set_boolean("currently-updating", false);
+		FeedReaderBackend.get_default().login("none");
+		reset();
 	}
 
 	private void abortReset()

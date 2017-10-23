@@ -105,7 +105,7 @@ msgid "Sync is in progress. Articles should appear any second."
 msgstr "Идёт синхронизация. Статьи скоро появятся."
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "Новые статьи"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

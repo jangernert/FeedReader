@@ -1,94 +1,107 @@
 [
-    {
-        "url": "http://planet.gnome.org/atom.xml",
-        "name": "Planet GNOME",
-        "description": "All your favorite blogs about the GNOME project in one place.",
-        "category": "Free Software",
-        "language": "English"
-    },
-    {
-        "url": "http://blog.elementary.io/rss",
-        "name": "elementary OS Blog",
-        "description": "The latest updates from the makers of the fast and open replacement for Windows and OS X.",
-        "category": "Free Software",
-        "language": "English"
-    },
-    {
-        "url": "https://feeds.feedburner.com/d0od",
-        "name": "OMG! Ubuntu!",
-        "description": "Ubuntu/Linux News",
-        "category": "Free Software",
-        "language": "English"
-    },
-    
-    {
-        "url": "http://rss.golem.de/rss.php?feed=ATOM1.0",
-        "name": "Golem.de",
-        "description": "Ständig aktuelle IT-News für Profis und Videos aus Politik, Wirtschaft und Wissenschaft über Hardware, Software, Telekommunikation, Games",
-        "category": "Technology",
-        "language": "German"
-    },
-    {
-        "url": "http://www.heise.de/newsticker/heise-atom.xml",
-        "name": "Heise.de",
-        "description": "News und Foren zu Computer, IT, Wissenschaft, Medien und Politik. Preisvergleich von Hardware und Software sowie Downloads bei Heise Medien.",
-        "category": "Technology",
-        "language": "German"
-    },
-    {
-        "url": "http://rss.sueddeutsche.de/rss/Topthemen",
-        "name": "Sueddeutsche Zeitung",
-        "description": "Nachrichten aus Politik, Kultur, Wirtschaft und Sport",
-        "category": "News",
-        "language": "German"
-    },
-    {
-        "url": "http://planetkde.org/rss20.xml",
-        "name": "Planet KDE",
-        "description": "All your favorite blogs about the KDE project in one place.",
-        "category": "Free Software",
-        "language": "English"
-    },
-    {
-    	"url": "http://www.phoronix.com/rss.php",
-    	"name": "Phoronix",
-        "description": "Phoronix is the leading technology website for Linux hardware reviews, open-source news, Linux benchmarks, open-source benchmarks, and computer hardware tests.",
-    	"category": "Free Software",
-        "language": "English"
-    },
-    {
-        "url": "http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
-    	"name": "New York Times",
-        "description": "The New York Times: Find breaking news, multimedia, reviews & opinion on Washington, business, sports, movies, travel, books, jobs, education, real estate, cars & more at nytimes.com.",
-    	"category": "News",
-        "language": "English"
-    },
-    {
-        "url": "http://feeds.bbci.co.uk/news/rss.xml",
-    	"name": "BBC News",
-        "description": "Visit BBC News for up-to-the-minute news, breaking news, video, audio and feature stories. BBC News provides trusted World and UK news as well as local and regional perspectives. Also entertainment, business, science, technology and health news.",
-    	"category": "News",
-        "language": "English"
-    },
-    {
-        "url": "http://feed.cnet.com/feed/topics/tech-industry",
-    	"name": "CNET",
-        "description": "CNET is the world's leader in tech product reviews, news, prices, videos, forums, how-tos and more.",
-    	"category": "Technology",
-        "language": "English"
-    },
-    {
-        "url": "http://feeds.gawker.com/lifehacker/full",
-    	"name": "Lifehacker",
-        "description": "Lifehacker is a weblog about life hacks and software and covers a wide range of topics including: Microsoft Windows, Mac, Linux programs, iOS and Android, as well as general life tips and tricks.",
-    	"category": "Technology",
-        "language": "English"
-    },
-    {
-        "url": "http://feeds.arstechnica.com/arstechnica/index?format=xml",
-    	"name": "Ars Technica",
-        "description": "Ars Technica is a weblog for technology news, tech policy analysis, breakdowns of the latest scientific advancements, gadget reviews, software, hardware, and nearly everything else found in between layers of silicon.",
-    	"category": "Technology",
-        "language": "English"
-    }
+	{
+		"url": "http://planet.gnome.org/atom.xml",
+		"icon": "http://planet.gnome.org/img/30/favicon.png",
+		"name": "Planet GNOME",
+		"description": "All your favorite blogs about the GNOME project in one place.",
+		"category": "Free Software",
+		"language": "English"
+	},
+	{
+		"url": "http://blog.elementary.io/rss",
+		"icon": "http://68.media.tumblr.com/avatar_edb79deb3524_128.png",
+		"name": "elementary OS Blog",
+		"description": "The latest updates from the makers of the fast and open replacement for Windows and OS X.",
+		"category": "Free Software",
+		"language": "English"
+	},
+	{
+		"url": "https://feeds.feedburner.com/d0od",
+		"icon": "http://www.omgubuntu.co.uk/wp-content/uploads/2012/07/omg-ubuntu-logo-32x32.jpg",
+		"name": "OMG! Ubuntu!",
+		"description": "Ubuntu/Linux News",
+		"category": "Free Software",
+		"language": "English"
+	},
+
+	{
+		"url": "http://rss.golem.de/rss.php?feed=ATOM1.0",
+		"icon": "https://www.golem.de/favicon.ico",
+		"name": "Golem.de",
+		"description": "Ständig aktuelle IT-News für Profis und Videos aus Politik, Wirtschaft und Wissenschaft über Hardware, Software, Telekommunikation, Games",
+		"category": "Technology",
+		"language": "German"
+	},
+	{
+		"url": "http://www.heise.de/newsticker/heise-atom.xml",
+		"icon": "https://www.heise.de/favicon.ico",
+		"name": "Heise.de",
+		"description": "News und Foren zu Computer, IT, Wissenschaft, Medien und Politik. Preisvergleich von Hardware und Software sowie Downloads bei Heise Medien.",
+		"category": "Technology",
+		"language": "German"
+	},
+	{
+		"url": "http://rss.sueddeutsche.de/rss/Topthemen",
+		"icon": "http://www.sueddeutsche.de/favicon.ico",
+		"name": "Sueddeutsche Zeitung",
+		"description": "Nachrichten aus Politik, Kultur, Wirtschaft und Sport",
+		"category": "News",
+		"language": "German"
+	},
+	{
+		"url": "http://planetkde.org/rss20.xml",
+		"icon": "https://planet.kde.org/favicon.ico",
+		"name": "Planet KDE",
+		"description": "All your favorite blogs about the KDE project in one place.",
+		"category": "Free Software",
+		"language": "English"
+	},
+	{
+		"url": "http://www.phoronix.com/rss.php",
+		"icon": "http://phoronix.com/favicon.ico",
+		"name": "Phoronix",
+		"description": "Phoronix is the leading technology website for Linux hardware reviews, open-source news, Linux benchmarks, open-source benchmarks, and computer hardware tests.",
+		"category": "Free Software",
+		"language": "English"
+	},
+	{
+		"url": "http://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml",
+		"icon": "http://www.nytimes.com/favicon.ico",
+		"name": "New York Times",
+		"description": "The New York Times: Find breaking news, multimedia, reviews & opinion on Washington, business, sports, movies, travel, books, jobs, education, real estate, cars & more at nytimes.com.",
+		"category": "News",
+		"language": "English"
+	},
+	{
+		"url": "http://feeds.bbci.co.uk/news/rss.xml",
+		"icon": "http://static.bbci.co.uk/wwhp/1.117.0/responsive/img/apple-touch/apple-touch-180.jpg",
+		"name": "BBC News",
+		"description": "Visit BBC News for up-to-the-minute news, breaking news, video, audio and feature stories. BBC News provides trusted World and UK news as well as local and regional perspectives. Also entertainment, business, science, technology and health news.",
+		"category": "News",
+		"language": "English"
+	},
+	{
+		"url": "http://feed.cnet.com/feed/topics/tech-industry",
+		"icon": "https://www.cnet.com/favicon.ico",
+		"name": "CNET",
+		"description": "CNET is the world's leader in tech product reviews, news, prices, videos, forums, how-tos and more.",
+		"category": "Technology",
+		"language": "English"
+	},
+	{
+		"url": "http://feeds.gawker.com/lifehacker/full",
+		"icon": "https://i.kinja-img.com/gawker-media/image/upload/s--N2eqEvT8--/c_fill,fl_progressive,g_center,h_80,q_80,w_80/u0939doeuioaqhspkjyc.png",
+		"name": "Lifehacker",
+		"description": "Lifehacker is a weblog about life hacks and software and covers a wide range of topics including: Microsoft Windows, Mac, Linux programs, iOS and Android, as well as general life tips and tricks.",
+		"category": "Technology",
+		"language": "English"
+	},
+	{
+		"url": "http://feeds.arstechnica.com/arstechnica/index?format=xml",
+		"icon": "https://cdn.arstechnica.net/favicon.ico",
+		"name": "Ars Technica",
+		"description": "Ars Technica is a weblog for technology news, tech policy analysis, breakdowns of the latest scientific advancements, gadget reviews, software, hardware, and nearly everything else found in between layers of silicon.",
+		"category": "Technology",
+		"language": "English"
+	}
 ]

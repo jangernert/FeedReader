@@ -1,7 +1,0 @@
-title: //meta[@name='og:title']/@content
-date: //meta[@name='created']/@content
-body: //div[contains(@class, "article-body")]
-
-replace_string(<p></p>): <br /><br />
-
-test_url: http://www.wcvb.com/news/2-teens-arrested-in-fatal-dorchester-shooting-of-16yearold-boy/33564886

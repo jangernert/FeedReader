@@ -1,3 +1,0 @@
-title://div[@class="news"]/div[@class="titre"]
-body://div[@class="news"]/div[@class="texte"]
-test_url: http://www.techno-science.net/?onglet=news&news=14808

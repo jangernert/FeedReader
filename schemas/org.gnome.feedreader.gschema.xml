@@ -42,9 +42,9 @@
 
 		<key name="max-articles" type="i">
 			<default>400</default>
-			<summary>Maximum of new Articles</summary>
+			<summary>Max new articles</summary>
 			<description>
-				The maximum of articles that are fetched from the server.
+				The maximum number of articles that are fetched from the server.
 			</description>
 		</key>
 
@@ -69,7 +69,7 @@
 		</key>
 
 		<key name='content-grabber' type="b">
-			<default>true</default>
+			<default>false</default>
 			<summary>grab full content of articles</summary>
 			<description>
 				Whether to use the content-grabber to download the full content of articles.
@@ -115,12 +115,12 @@
 				Sort articles in the ArticleList by date not by insert order.
 			</description>
 		</key>
-		
+
 		<key name="download-images" type="b">
-			<default>true</default>
+			<default>false</default>
 			<summary>Download images of articles (offline mode)</summary>
 			<description>
-				Download of images of articles. If disabled this will speed up the snyc process, 
+				Download of images of articles. If disabled this will speed up the snyc process,
 				but obviously the images will not be available when in offline-mode.
 			</description>
 		</key>

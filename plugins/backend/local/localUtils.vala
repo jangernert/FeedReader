@@ -20,59 +20,59 @@ public class FeedReader.localUtils : GLib.Object {
 
 	}
 
-	public feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, string[] catIDs)
+	public Feed? downloadFeed(Soup.Session session, string xmlURL, string feedID, Gee.List<string> catIDs, out string errmsg)
 	{
+		errmsg = "";
+
+		// download
+		//Logger.debug(@"Requesting: $xmlURL");
+		var msg = new Soup.Message("GET", xmlURL);
+		if (msg == null)
+		{
+			errmsg = @"Couldn't parse feed URL: $xmlURL";
+			Logger.warning(errmsg);
+			return null;
+		}
+		uint status = session.send_message(msg);
+		if(status != 200)
+		{
+			errmsg = "Could not download feed";
+			Logger.warning(errmsg);
+			return null;
+		}
+		string xml = (string)msg.response_body.flatten().data;
+		string url = "https://google.com";
+
+		// parse
+		Rss.Parser parser = new Rss.Parser();
+
 		try
 		{
-			// download
-			Logger.debug(@"Requesting: $xmlURL");
-			var msg = new Soup.Message("GET", xmlURL);
-			if (msg == null)
-			{
-				Logger.warning(@"Couldn't parse feed URL: $xmlURL");
-				return null;
-			}
-			session.send_message(msg);
-			string xml = (string)msg.response_body.flatten().data;
-			string url = "https://google.com";
-
-			// parse
-			Rss.Parser parser = new Rss.Parser();
 			parser.load_from_data(xml, xml.length);
-			var doc = parser.get_document();
-
-			if(doc.link != null
-			&& doc.link != "")
-				url = doc.link;
-
-			var uri = new Soup.URI(url);
-			string? icon_url = (doc.image_url != "") ? doc.image_url : null;
-			string? title = doc.title;
-			if(title == null)
-			{
-				if(uri == null)
-					title = _("unknown Feed");
-				else
-					title = uri.get_host();
-			}
-
-			var Feed = new feed(
-						feedID,
-						title,
-						url,
-						0,
-						catIDs,
-						icon_url,
-						xmlURL);
-
-			return Feed;
 		}
-		catch(GLib.Error e)
+		catch(Error e)
 		{
-			Logger.error("localInterface - addFeed " + xmlURL + " : " + e.message);
+			errmsg = "Could not parse feed";
+			Logger.warning(errmsg);
+			return null;
 		}
 
-		return null;
+		var doc = parser.get_document();
+
+		if(doc.link != null
+		&& doc.link != "")
+			url = doc.link;
+
+		var Feed = new Feed(
+					feedID,
+					doc.title,
+					url,
+					0,
+					catIDs,
+					doc.image_url,
+					xmlURL);
+
+		return Feed;
 	}
 
 	public string? convert(string? text, string? locale)
@@ -81,11 +81,13 @@ public class FeedReader.localUtils : GLib.Object {
 			return null;
 
 		if(locale == null)
-			return Utils.UTF8fix(text, false);
+			//return Utils.UTF8fix(text, false);
+			return text;
 
 		try
 		{
-			return Utils.UTF8fix(GLib.convert(text, -1, "utf-8", locale), false);
+			//return Utils.UTF8fix(GLib.convert(text, -1, "utf-8", locale), false);
+			return GLib.convert(text, -1, "utf-8", locale);
 		}
 		catch(ConvertError e)
 		{

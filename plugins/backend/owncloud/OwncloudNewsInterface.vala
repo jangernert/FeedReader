@@ -17,11 +17,185 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	private OwncloudNewsAPI m_api;
 	private OwncloudNewsUtils m_utils;
+	private Gtk.Entry m_urlEntry;
+	private Gtk.Entry m_userEntry;
+	private Gtk.Entry m_passwordEntry;
+	private Gtk.Entry m_AuthUserEntry;
+	private Gtk.Entry m_AuthPasswordEntry;
+	private Gtk.Revealer m_revealer;
+	private bool m_need_htaccess = false;
 
 	public void init()
 	{
 		m_api = new OwncloudNewsAPI();
 		m_utils = new OwncloudNewsUtils();
+	}
+
+	public string getWebsite()
+	{
+		return "https://github.com/nextcloud/news";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.SELF_HOSTED | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+	}
+
+	public string getID()
+	{
+		return "owncloud";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-owncloud";
+	}
+
+	public string serviceName()
+	{
+		return "ownCloud News";
+	}
+
+	public void writeData()
+	{
+		m_utils.setURL(m_urlEntry.get_text());
+		m_utils.setUser(m_userEntry.get_text().strip());
+		m_utils.setPassword(m_passwordEntry.get_text().strip());
+		if(m_need_htaccess)
+		{
+			m_utils.setHtaccessUser(m_AuthUserEntry.get_text().strip());
+			m_utils.setHtAccessPassword(m_AuthPasswordEntry.get_text().strip());
+		}
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public void showHtAccess()
+	{
+		m_revealer.set_reveal_child(true);
+	}
+
+	public bool needWebLogin()
+	{
+		return false;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		var urlLabel = new Gtk.Label(_("OwnCloud URL:"));
+		var userLabel = new Gtk.Label(_("Username:"));
+		var passwordLabel = new Gtk.Label(_("Password:"));
+
+		urlLabel.set_alignment(1.0f, 0.5f);
+		userLabel.set_alignment(1.0f, 0.5f);
+		passwordLabel.set_alignment(1.0f, 0.5f);
+
+		urlLabel.set_hexpand(true);
+		userLabel.set_hexpand(true);
+		passwordLabel.set_hexpand(true);
+
+		m_urlEntry = new Gtk.Entry();
+		m_userEntry = new Gtk.Entry();
+		m_passwordEntry = new Gtk.Entry();
+
+		m_urlEntry.activate.connect(writeData);
+		m_userEntry.activate.connect(writeData);
+		m_passwordEntry.activate.connect(writeData);
+
+		m_passwordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
+		m_passwordEntry.set_visibility(false);
+
+		var grid = new Gtk.Grid();
+		grid.set_column_spacing(10);
+		grid.set_row_spacing(10);
+		grid.set_valign(Gtk.Align.CENTER);
+		grid.set_halign(Gtk.Align.CENTER);
+
+		var logo = new Gtk.Image.from_icon_name("feed-service-owncloud", Gtk.IconSize.MENU);
+
+		grid.attach(urlLabel, 0, 0, 1, 1);
+		grid.attach(m_urlEntry, 1, 0, 1, 1);
+		grid.attach(userLabel, 0, 1, 1, 1);
+		grid.attach(m_userEntry, 1, 1, 1, 1);
+		grid.attach(passwordLabel, 0, 2, 1, 1);
+		grid.attach(m_passwordEntry, 1, 2, 1, 1);
+
+		// http auth stuff ----------------------------------------------------
+		var authUserLabel = new Gtk.Label(_("Username:"));
+		var authPasswordLabel = new Gtk.Label(_("Password:"));
+
+		authUserLabel.set_alignment(1.0f, 0.5f);
+		authPasswordLabel.set_alignment(1.0f, 0.5f);
+
+		authUserLabel.set_hexpand(true);
+		authPasswordLabel.set_hexpand(true);
+
+		m_AuthUserEntry = new Gtk.Entry();
+		m_AuthPasswordEntry = new Gtk.Entry();
+		m_AuthPasswordEntry.set_input_purpose(Gtk.InputPurpose.PASSWORD);
+		m_AuthPasswordEntry.set_visibility(false);
+
+		m_AuthUserEntry.activate.connect(writeData);
+		m_AuthPasswordEntry.activate.connect(writeData);
+
+		var authGrid = new Gtk.Grid();
+		authGrid.margin = 10;
+		authGrid.set_column_spacing(10);
+		authGrid.set_row_spacing(10);
+		authGrid.set_valign(Gtk.Align.CENTER);
+		authGrid.set_halign(Gtk.Align.CENTER);
+
+		authGrid.attach(authUserLabel, 0, 0, 1, 1);
+		authGrid.attach(m_AuthUserEntry, 1, 0, 1, 1);
+		authGrid.attach(authPasswordLabel, 0, 1, 1, 1);
+		authGrid.attach(m_AuthPasswordEntry, 1, 1, 1, 1);
+
+		var frame = new Gtk.Frame(_("HTTP Authorization"));
+		frame.set_halign(Gtk.Align.CENTER);
+		frame.add(authGrid);
+		m_revealer = new Gtk.Revealer();
+		m_revealer.add(frame);
+		//---------------------------------------------------------------------
+
+		var loginLabel = new Gtk.Label(_("Please log in to your ownCloud News instance and enjoy using FeedReader"));
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+
+		var loginButton = new Gtk.Button.with_label(_("Login"));
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => { tryLogin(); });
+
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 10);
+		box.valign = Gtk.Align.CENTER;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(loginLabel, false, false, 10);
+		box.pack_start(logo, false, false, 10);
+		box.pack_start(grid, true, true, 10);
+		box.pack_start(m_revealer, true, true, 10);
+		box.pack_end(loginButton, false, false, 20);
+
+
+		m_urlEntry.set_text(m_utils.getUnmodifiedURL());
+		m_userEntry.set_text(m_utils.getUser());
+		m_passwordEntry.set_text(m_utils.getPasswd());
+
+		return box;
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		return false;
+	}
+
+	public string buildLoginURL()
+	{
+		return "";
 	}
 
 	public bool supportTags()
@@ -77,6 +251,11 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 	public bool supportMultiCategoriesPerFeed()
 	{
 		return false;
+	}
+
+	public bool syncFeedsAndCategories()
+	{
+		return true;
 	}
 
 	public bool tagIDaffectedByNameChange()
@@ -159,22 +338,32 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
+		bool success = false;
+		int64 id = 0;
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.addFolder(newCatName).to_string();
-			return m_api.addFeed(feedURL, newCatID).to_string();
+			success = m_api.addFeed(feedURL, newCatID, out id, out errmsg);
+		}
+		else
+		{
+			success = m_api.addFeed(feedURL, catID, out id, out errmsg);
 		}
 
-		return m_api.addFeed(feedURL, catID).to_string();
+
+		feedID = id.to_string();
+		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
-		foreach(feed f in feeds)
+		int64 id = 0;
+		string errmsg = "";
+		foreach(Feed f in feeds)
 		{
-			m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0]);
+			m_api.addFeed(f.getXmlUrl(), f.getCatIDs()[0], out id, out errmsg);
 		}
 	}
 
@@ -224,7 +413,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{
@@ -240,7 +429,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public int getUnreadCount()
 	{
-		return (int)dbDaemon.get_default().get_unread_total();
+		return (int)DataBase.readOnly().get_unread_total();
 	}
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
@@ -270,10 +459,10 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 			type = OwncloudNewsAPI.OwnCloudType.FEED;
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 
 		if(count == -1)
-			m_api.getNewArticles(articles, dbDaemon.get_default().getLastModified(), type, id);
+			m_api.getNewArticles(articles, DataBase.readOnly().getLastModified(), type, id);
 		else
 			m_api.getArticles(articles, 0, -1, read, type, id);
 

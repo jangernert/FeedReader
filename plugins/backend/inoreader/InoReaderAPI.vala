@@ -89,7 +89,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.List<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
 		var response = m_connection.send_request("subscription/list");
 
@@ -117,34 +117,23 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 
 			string feedID = object.get_string_member("id");
 			string url = object.has_member("htmlUrl") ? object.get_string_member("htmlUrl") : object.get_string_member("url");
-			string? icon_url = object.has_member("iconUrl") ? object.get_string_member("iconUrl") : null;
-
-			string title = "No Title";
-			if(object.has_member("title"))
-			{
-				title = object.get_string_member("title");
-			}
-			else
-			{
-				title = Utils.URLtoFeedName(url);
-			}
 
 			uint catCount = object.get_array_member("categories").get_length();
-			string[] categories = {};
+			var categories = new Gee.ArrayList<string>();
 
 			for(uint j = 0; j < catCount; ++j)
 			{
-				categories += object.get_array_member("categories").get_object_element(j).get_string_member("id");
+				categories.add(object.get_array_member("categories").get_object_element(j).get_string_member("id"));
 			}
 
 			feeds.add(
-				new feed (
+				new Feed(
 						feedID,
-						title,
+						object.get_string_member("title"),
 						url,
 						0,
 						categories,
-						icon_url
+						object.get_string_member("iconUrl")
 					)
 			);
 		}
@@ -152,7 +141,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags)
 	{
 		var response = m_connection.send_request("tag/list");
 
@@ -185,7 +174,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 				if(m_utils.tagIsCat(id, feeds))
 				{
 					categories.add(
-						new category(
+						new Category(
 							id,
 							title,
 							0,
@@ -198,10 +187,10 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 				else
 				{
 					tags.add(
-						new tag(
+						new Tag(
 							id,
 							title,
-							dbDaemon.get_default().getTagColor()
+							DataBase.readOnly().getTagColor()
 						)
 					);
 				}
@@ -289,7 +278,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		return null;
 	}
 
-	public string? getArticles(Gee.List<article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
+	public string? getArticles(Gee.List<Article> articles, int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? continuation = null, string? tagID = null, string? feed_id = null)
 	{
 		var message_string = "n=" + count.to_string();
 
@@ -334,7 +323,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			Json.Object object = array.get_object_element(i);
 			string id = object.get_string_member("id");
 			id = id.substring(id.last_index_of_char('/')+1);
-			string tagString = "";
+			var tags = new Gee.ArrayList<string>();
 			bool marked = false;
 			bool read = false;
 			var cats = object.get_array_member("categories");
@@ -347,11 +336,11 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && dbDaemon.get_default().getTagName(cat) != null)
-					tagString += cat;
+				else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
+					tags.add(cat);
 			}
 
-			string mediaString = "";
+			var media = new Gee.ArrayList<string>();
 			if(object.has_member("enclosure"))
 			{
 				var attachments = object.get_array_member("enclosure");
@@ -366,12 +355,12 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					if(attachment.get_string_member("type").contains("audio")
 					|| attachment.get_string_member("type").contains("video"))
 					{
-						mediaString = mediaString + attachment.get_string_member("href") + ",";
+						media.add(attachment.get_string_member("href"));
 					}
 				}
 			}
 
-			articles.add(new article(
+			articles.add(new Article(
 									id,
 									object.get_string_member("title"),
 									object.get_array_member("alternate").get_object_element(0).get_string_member("href"),
@@ -379,12 +368,12 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 									read ? ArticleStatus.READ : ArticleStatus.UNREAD,
 									marked ? ArticleStatus.MARKED : ArticleStatus.UNMARKED,
 									object.get_object_member("summary").get_string_member("content"),
-									"",
-									(object.get_string_member("author") == "") ? null : object.get_string_member("author"),
+									null,
+									object.get_string_member("author"),
 									new DateTime.from_unix_local(object.get_int_member("published")),
 									-1,
-									tagString,
-									mediaString
+									tags,
+									media
 							)
 						);
 		}
@@ -440,7 +429,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 		m_connection.send_request("rename-tag", message_string);
 	}
 
-	public void editSubscription(InoSubscriptionAction action, string[] feedID, string? title = null, string? add = null, string? remove = null)
+	public bool editSubscription(InoSubscriptionAction action, string[] feedID, string? title, string? add, string? remove)
 	{
 		var message_string = "ac=";
 
@@ -470,6 +459,6 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 			message_string += "&r=" + remove;
 
 
-		m_connection.send_request("subscription/edit", message_string);
+		return m_connection.send_request("subscription/edit", message_string).status == 200;
 	}
 }

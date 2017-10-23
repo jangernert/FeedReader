@@ -24,6 +24,78 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_utils = new FeedlyUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "http://feedly.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
+	public string getID()
+	{
+		return "feedly";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-feedly";
+	}
+
+	public string serviceName()
+	{
+		return "feedly";
+	}
+
+	public bool needWebLogin()
+	{
+		return true;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		return null;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
+	public void writeData()
+	{
+		return;
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		if(redirectURL.has_prefix(FeedlySecret.apiRedirectUri))
+		{
+			int start = redirectURL.index_of("=")+1;
+			int end = redirectURL.index_of("&");
+			string code = redirectURL.substring(start, end-start);
+			m_utils.setApiCode(code);
+			Logger.debug("feedlyLoginWidget: set feedly-api-code: " + code);
+			GLib.Thread.usleep(500000);
+			return true;
+		}
+
+		return false;
+	}
+
+	public string buildLoginURL()
+	{
+		return FeedlySecret.base_uri + "/v3/auth/auth" + "?client_secret=" + FeedlySecret.apiClientSecret + "&client_id=" + FeedlySecret.apiClientId
+					+ "&redirect_uri=" + FeedlySecret.apiRedirectUri + "&scope=" + FeedlySecret.apiAuthScope + "&response_type=code&state=getting_code";
+	}
+
 	public bool supportTags()
 	{
 		return true;
@@ -75,6 +147,11 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 	}
 
 	public bool supportMultiCategoriesPerFeed()
+	{
+		return true;
+	}
+
+	public bool syncFeedsAndCategories()
 	{
 		return true;
 	}
@@ -136,17 +213,17 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		string catArray = "";
 		string feedArray = "";
 
-		var categories = dbDaemon.get_default().read_categories();
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
+		var categories = DataBase.readOnly().read_categories();
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
 
-		foreach(category cat in categories)
+		foreach(Category cat in categories)
 		{
 			catArray += cat.getCatID() + ",";
 		}
 
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			feedArray += Feed.getFeedID() + ",";
+			feedArray += feed.getFeedID() + ",";
 		}
 
 		m_api.mark_as_read(catArray.substring(0, catArray.length-1), "categories", ArticleStatus.READ);
@@ -183,24 +260,31 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		return Utils.ping("http://feedly.com/");
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
+		feedID = "feed/" + feedURL;
+		bool success = false;
+		errmsg = "";
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.createCatID(newCatName);
-			m_api.addSubscription(feedURL, null, newCatID);
+			success = m_api.addSubscription(feedURL, null, newCatID);
 		}
 		else
 		{
-			m_api.addSubscription(feedURL, null, catID);
+			success = m_api.addSubscription(feedURL, null, catID);
 		}
 
-		return "feed/" + feedURL;
+		if(!success)
+			errmsg = @"feedly could not add $feedURL";
+
+		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			m_api.addSubscription(f.getXmlUrl(), null, f.getCatIDs()[0]);
 		}
@@ -213,7 +297,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void renameFeed(string feedID, string title)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = DataBase.readOnly().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), title, feed.getCatString());
 	}
 
@@ -244,7 +328,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void removeCatFromFeed(string feedID, string catID)
 	{
-		var feed = dbDaemon.get_default().read_feed(feedID);
+		var feed = DataBase.readOnly().read_feed(feedID);
 		m_api.addSubscription(feed.getFeedID(), feed.getTitle(), feed.getCatString().replace(catID + ",", ""));
 	}
 
@@ -253,7 +337,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 		m_api.importOPML(opml);
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		m_api.getUnreadCounts();
 
@@ -299,7 +383,7 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 
 		int skip = count;
 		int amount = 200;
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 
 		while(skip > 0)
 		{

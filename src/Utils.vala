@@ -17,17 +17,87 @@ public class FeedReader.Utils : GLib.Object {
 
 	private static Soup.Session? m_session;
 
-	private static Soup.Session getSession()
+	public static Soup.Session getSession()
 	{
 		if(m_session == null)
 		{
 			m_session = new Soup.Session();
 			m_session.user_agent = Constants.USER_AGENT;
 			m_session.ssl_strict = false;
-			m_session.timeout = 1;
+			m_session.timeout = 5;
 		}
 
 		return m_session;
+	}
+
+	public static void generatePreviews(Gee.List<Article> articles)
+	{
+		string noPreview = _("No Preview Available");
+		foreach(var Article in articles)
+		{
+			if(!DataBase.readOnly().article_exists(Article.getArticleID()))
+			{
+				if(Article.getPreview() != null && Article.getPreview() != "")
+				{
+					continue;
+				}
+				if(!DataBase.readOnly().preview_empty(Article.getArticleID()))
+				{
+					continue;
+				}
+				else if(Article.getHTML() != "" && Article.getHTML() != null)
+				{
+					Logger.debug("Utils: generate preview for article: " + Article.getArticleID());
+					string output = libVilistextum.parse(Article.getHTML(), 1);
+					if(output != null)
+						output = output.strip();
+
+					if(output == "" || output == null)
+					{
+						Logger.info("generatePreviews: no Preview");
+						Article.setPreview(noPreview);
+						Article.setTitle(Utils.UTF8fix(Article.getTitle(), true));
+						continue;
+					}
+
+					string xml = "<?xml";
+
+					while(output.has_prefix(xml))
+					{
+						int end = output.index_of_char('>');
+						output = output.slice(end+1, output.length).chug();
+						output = output.strip();
+					}
+
+					output = output.replace("\n"," ");
+					output = output.replace("_"," ");
+
+					Article.setPreview(output.chug());
+				}
+				else
+				{
+					Logger.debug("no html to create preview from");
+					Article.setPreview(noPreview);
+				}
+				Article.setTitle(Utils.UTF8fix(Article.getTitle(), true));
+			}
+		}
+	}
+
+	public static void checkHTML(Gee.List<Article> articles)
+	{
+		foreach(var Article in articles)
+		{
+			if(!DataBase.readOnly().article_exists(Article.getArticleID()))
+			{
+				string modified_html = _("No Text available for this article :(");
+				if(Article.getHTML() != "")
+				{
+					modified_html = Article.getHTML().replace("src=\"//","src=\"http://");
+				}
+				Article.setHTML(modified_html);
+			}
+		}
 	}
 
 	public static string UTF8fix(string? old_string, bool removeHTML = false)
@@ -43,6 +113,7 @@ public class FeedReader.Utils : GLib.Object {
 			rm_html = 1;
 
 		string? output = old_string.replace("\n"," ").strip();
+
 		output = libVilistextum.parse(old_string, rm_html);
 
 		if(output != null)
@@ -214,7 +285,7 @@ public class FeedReader.Utils : GLib.Object {
 
 		if(status >= 200 && status <= 208)
 		{
-			Logger.debug("Ping successfull");
+			Logger.debug("Ping successful");
 			return true;
 		}
 
@@ -253,6 +324,9 @@ public class FeedReader.Utils : GLib.Object {
 			{
 				directory.delete();
 			}
+		}
+		catch (IOError.NOT_FOUND e)
+		{
 		}
 		catch(GLib.Error e)
 		{
@@ -380,11 +454,11 @@ public class FeedReader.Utils : GLib.Object {
 		return searchTerm;
 	}
 
-	public static bool categoryIsPopulated(string catID, Gee.ArrayList<feed> feeds)
+	public static bool categoryIsPopulated(string catID, Gee.List<Feed> feeds)
 	{
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			var ids = Feed.getCatIDs();
+			var ids = feed.getCatIDs();
 			foreach(string id in ids)
 			{
 				if(id == catID)
@@ -397,18 +471,18 @@ public class FeedReader.Utils : GLib.Object {
 		return false;
 	}
 
-	public static uint categoryGetUnread(string catID, Gee.ArrayList<feed> feeds)
+	public static uint categoryGetUnread(string catID, Gee.List<Feed> feeds)
 	{
 		uint unread = 0;
 
-		foreach(feed Feed in feeds)
+		foreach(Feed feed in feeds)
 		{
-			var ids = Feed.getCatIDs();
+			var ids = feed.getCatIDs();
 			foreach(string id in ids)
 			{
 				if(id == catID)
 				{
-					unread += Feed.getUnread();
+					unread += feed.getUnread();
 					break;
 				}
 			}
@@ -427,8 +501,11 @@ public class FeedReader.Utils : GLib.Object {
 		}
 	}
 
-	public static string URLtoFeedName(string url)
+	public static string URLtoFeedName(string? url)
 	{
+		if(url == null)
+			return "";
+
 		var feedname = new GLib.StringBuilder(url);
 
 		if(feedname.str.has_suffix("/"))
@@ -446,248 +523,40 @@ public class FeedReader.Utils : GLib.Object {
 		return feedname.str;
 	}
 
-	public static async void getFavIcons(Gee.List<feed> feeds, GLib.Cancellable? cancellable = null)
+	public static async bool file_exists(string path_str, FileType expected_type)
 	{
-		// TODO: It would be nice if we could queue these in parallel
-		foreach(feed f in feeds)
-		{
-			if(cancellable != null && cancellable.is_cancelled())
-				return;
-
-			// first check if the feed provides a valid url for the favicon
-			if(f.getIconURL() != null && yield downloadIcon(f.getFeedID(), f.getIconURL(), cancellable))
-			{
-				// download of provided url successful
-				continue;
-			}
-			// try to find favicon on the website
-			else if(yield downloadFavIcon(f.getFeedID(), f.getURL(), cancellable))
-			{
-				// found an icon on the website of the feed
-				continue;
-			}
-			else
-			{
-				Logger.warning("Couldn't find a favicon for feed " + f.getTitle());
-			}
-		}
-
-		// update last-favicon-update timestamp
-		var lastDownload = new DateTime.from_unix_local(Settings.state().get_int("last-favicon-update"));
-		var now = new DateTime.now_local();
-		var difference = now.difference(lastDownload);
-
-		if((difference/GLib.TimeSpan.DAY) >= Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
-			Settings.state().set_int("last-favicon-update", (int)now.to_unix());
-	}
-
-	public static async bool downloadFavIcon(string feed_id, string feed_url, GLib.Cancellable? cancellable = null, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
-	{
-		var uri = new Soup.URI(feed_url);
-		string hostname = uri.get_host();
-		int first = hostname.index_of_char('.', 0);
-		int second = hostname.index_of_char('.', first+1);
-		if(second != -1 && first != second)
-			hostname = hostname.substring(first+1);
-		string siteURL = uri.get_scheme() + "://" + hostname;
-
-		// download html and parse to find location of favicon
-		var message_html = new Soup.Message("GET", siteURL);
-		if(Settings.tweaks().get_boolean("do-not-track"))
-			message_html.request_headers.append("DNT", "1");
-		InputStream bodyStream;
+		var path = GLib.File.new_for_path(path_str);
 		try
 		{
-			bodyStream = yield getSession().send_async(message_html);
-		}
-		catch (Error e)
-		{
-			Logger.error(@"Request for $siteURL failed: " + e.message);
-			return false;
-		}
-		if(message_html.status_code == 200)
-		{
-			string html;
-			try
-			{
-				html = (string)yield inputStreamToArray(bodyStream, cancellable);
-			}
-			catch(Error e)
-			{
-				Logger.error(@"Failed to load body of $siteURL: " + e.message);
-				return false;
-			}
-
-			var html_cntx = new Html.ParserCtxt();
-      html_cntx.use_options(Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-      Html.Doc* doc = html_cntx.read_doc(html, siteURL, null, Html.ParserOption.NOERROR + Html.ParserOption.NOWARNING);
-      if(doc == null)
-      {
-        Logger.debug("Utils.downloadFavIcon: parsing html failed");
-    		return false;
-    	}
-
-			// check for <link rel="icon">
-			var xpath = grabberUtils.getURL(doc, "//link[@rel='icon']");
-
-			if(xpath == null)
-			// check for <link rel="shortcut icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='shortcut icon']");
-
-			if(xpath == null)
-				// check for <link rel="apple-touch-icon">
-				xpath = grabberUtils.getURL(doc, "//link[@rel='apple-touch-icon']");
-
-			if(xpath != null)
-			{
-				Logger.debug(@"Utils.downloadFavIcon: xpath success $xpath");
-				xpath = grabberUtils.completeURL(xpath, siteURL);
-				if(yield downloadIcon(feed_id, xpath, cancellable, icon_path))
-					return true;
-			}
-			else
-			{
-				Logger.debug("Utils.downloadFavIcon: xpath failed");
-			}
-
-			delete doc;
-		}
-
-		// try domainname/favicon.ico
-		var icon_url = siteURL;
-		if(!icon_url.has_suffix("/"))
-			icon_url += "/";
-		icon_url += "favicon.ico";
-		return yield downloadIcon(feed_id, icon_url, cancellable, icon_path);
-	}
-
-	public static async bool downloadIcon(string feed_id, string? icon_url, Cancellable? cancellable, string icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/")
-	{
-		if(icon_url == "" || icon_url == null || GLib.Uri.parse_scheme(icon_url) == null)
-		{
-			Logger.warning(@"Utils.downloadIcon: icon_url not valid $icon_url");
-			return false;
-		}
-
-		var path = GLib.File.new_for_path(icon_path);
-		try{path.make_directory_with_parents();}catch(GLib.Error e){}
-		string filename_prefix = icon_path + feed_id.replace("/", "_").replace(".", "_");
-		string local_filename = filename_prefix + ".ico";
-		string metadata_filename = filename_prefix + ".txt";
-		bool icon_exists = FileUtils.test(local_filename, GLib.FileTest.EXISTS);
-
-		string? etag = null;
-		// Normally, we would store a last modified time as a datetime type, but
-		// servers aren't consistent about the format so we need to treat it as a
-		// black box.
-		string? last_modified = null;
-		if(icon_exists)
-		{
-			var lastDownload = new DateTime.from_unix_local(Settings.state().get_int("last-favicon-update"));
-			var now = new DateTime.now_local();
-			var difference = now.difference(lastDownload);
-
-			// icon was already downloaded a few days ago, don't even check if it was updated
-			if((difference/GLib.TimeSpan.DAY) < Constants.REDOWNLOAD_FAVICONS_AFTER_DAYS)
-				return true;
-
-			var metadata = ResourceMetadata.from_file(metadata_filename);
-			etag = metadata.etag;
-			last_modified = metadata.last_modified;
-		}
-
-		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
-		var message = new Soup.Message("GET", icon_url);
-		if(Settings.tweaks().get_boolean("do-not-track"))
-			message.request_headers.append("DNT", "1");
-
-		if(etag != null)
-			message.request_headers.append("If-None-Match", etag);
-		if(last_modified != null)
-			message.request_headers.append("If-Modified-Since", last_modified);
-
-		InputStream bodyStream;
-		try
-		{
-			bodyStream = yield getSession().send_async(message, cancellable);
-		}
-		catch (Error e)
-		{
-			Logger.error(@"Request for $icon_url failed: " + e.message);
-			return false;
-		}
-		var status = message.status_code;
-		if(status == 304)
-		{
-			var log = "Utils.downloadIcon: ";
-			if(etag != null)
-				log += @"etag ($etag) ";
-			if(last_modified != null)
-			{
-				if(etag != null)
-					log += "and ";
-				log += @"last modified ($last_modified) ";
-			}
-			log += @"matched -> icon unchanged $feed_id";
-			Logger.debug(log);
-			return true;
-		}
-		else if(status == 200)
-		{
-			uint8[] data;
-			try
-			{
-				data = yield inputStreamToArray(bodyStream, cancellable);
-			}
-			catch (Error e)
-			{
-				Logger.error(@"Failed to read body of $icon_url: " + e.message);
-				return false;
-			}
-			if(icon_exists
-			&& (string)data == getFileContent(local_filename))
-			{
-				// file exists and is identical to remote file
-				// we already downloaded it, but there is no need to write to the disc
-				Logger.debug("Utils.downloadIcon: file identical -> icon unchanged");
-			}
-			else
-			{
-				try
-				{
-					FileUtils.set_data(local_filename, data);
-				}
-				catch(GLib.FileError e)
-				{
-					Logger.error("Error writing icon: %s".printf(e.message));
-					return false;
-				}
-			}
-
-			var metadata = ResourceMetadata();
-			metadata.etag = message.response_headers.get_one("ETag");
-			metadata.last_modified = message.response_headers.get_one("Last-Modified");
-			metadata.save_to_file(metadata_filename);
-			return true;
-		}
-		Logger.warning(@"Could not download icon for feed: $feed_id $icon_url, got response code $status");
-		return false;
-	}
-
-	private static string? getFileContent(string filename)
-	{
-		try
-		{
-			string? contents = null;
-			FileUtils.get_contents(filename, out contents);
-			return contents;
+			var info = yield path.query_info_async("standard::type", FileQueryInfoFlags.NONE);
+			return info.get_file_type () == expected_type;
 		}
 		catch(Error e)
 		{
-			Logger.warning(@"Utils.getFileContent: could not read file $filename");
+			return false;
 		}
+	}
 
-		return null;
+	public static async bool ensure_path(string path_str)
+	{
+		var path = GLib.File.new_for_path(path_str);
+		if(yield file_exists(path_str, FileType.DIRECTORY))
+			return true;
+
+		try
+		{
+			path.make_directory_with_parents();
+			return true;
+		}
+		catch(IOError.EXISTS e)
+		{
+			return true;
+		}
+		catch(Error e)
+		{
+			Logger.error(@"ensure_path: Failed to create folder $path_str: " + e.message);
+			return false;
+		}
 	}
 
 	public static string gsettingReadString(GLib.Settings setting, string key)
@@ -708,7 +577,6 @@ public class FeedReader.Utils : GLib.Object {
 			Logger.error("Utils.gsettingWriteString: writing %s %s failed".printf(setting.schema_id, key));
 	}
 
-
 	public static async uint8[] inputStreamToArray(InputStream stream, Cancellable? cancellable=null) throws Error
 	{
 		Array<uint8> result = new Array<uint8>();
@@ -723,6 +591,358 @@ public class FeedReader.Utils : GLib.Object {
 		}
 
 		return result.data;
+	}
+
+	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
+	{
+		var article = new GLib.StringBuilder();
+		string author_date = "";
+		if(author != null)
+			author_date +=  _("posted by: %s, ").printf(author);
+
+		author_date += date;
+
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/article.html");
+			file.load_contents(null, out contents, null);
+			article.assign((string)contents);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.buildArticle: %s".printf(e.message));
+		}
+
+		string html_id = "$HTML";
+		int html_pos = article.str.index_of(html_id);
+		article.erase(html_pos, html_id.length);
+		article.insert(html_pos, html);
+
+		string author_id = "$AUTHOR";
+		int author_pos = article.str.index_of(author_id);
+		article.erase(author_pos, author_id.length);
+		article.insert(author_pos, author_date);
+
+		string title_id = "$TITLE";
+		int title_pos = article.str.index_of(title_id);
+		article.erase(title_pos, title_id.length);
+		article.insert(title_pos, title);
+
+		string url_id = "$URL";
+		int url_pos = article.str.index_of(url_id);
+		article.erase(url_pos, url_id.length);
+		article.insert(url_pos, url);
+
+		string feed_id = "$FEED";
+		int feed_pos = article.str.index_of(feed_id);
+		article.erase(feed_pos, feed_id.length);
+		article.insert(feed_pos, DataBase.readOnly().read_feed(feedID).getTitle());
+
+
+		string theme = "theme ";
+		switch(Settings.general().get_enum("article-theme"))
+		{
+			case ArticleTheme.DEFAULT:
+				theme += "default";
+				break;
+
+			case ArticleTheme.SPRING:
+				theme += "spring";
+				break;
+
+			case ArticleTheme.MIDNIGHT:
+				theme += "midnight";
+				break;
+
+			case ArticleTheme.PARCHMENT:
+				theme += "parchment";
+				break;
+		}
+
+		string theme_id = "$THEME";
+		int theme_pos = article.str.index_of(theme_id);
+		article.erase(theme_pos, theme_id.length);
+		article.insert(theme_pos, theme);
+
+		string select_id = "$UNSELECTABLE";
+		int select_pos = article.str.index_of(select_id);
+
+		if(Settings.tweaks().get_boolean("article-select-text"))
+		{
+			article.erase(select_pos-1, select_id.length+1);
+		}
+		else
+		{
+			article.erase(select_pos, select_id.length);
+			article.insert(select_pos, "unselectable");
+		}
+
+		string font = Settings.general().get_string("font");
+		var desc = Pango.FontDescription.from_string(font);
+		string fontfamilly = desc.get_family();
+		uint fontsize = (uint)GLib.Math.roundf(desc.get_size()/Pango.SCALE);
+		string small_size = (fontsize - 2).to_string();
+		string large_size = (fontsize * 2).to_string();
+		string normal_size = fontsize.to_string();
+
+		string fontfamily_id = "$FONTFAMILY";
+		int fontfamilly_pos = article.str.index_of(fontfamily_id);
+		article.erase(fontfamilly_pos, fontfamily_id.length);
+		article.insert(fontfamilly_pos, fontfamilly);
+
+		string fontsize_id = "$FONTSIZE";
+		string sourcefontsize_id = "$SMALLSIZE";
+		int fontsize_pos = article.str.index_of(fontsize_id);
+		article.erase(fontsize_pos, fontsize_id.length);
+		article.insert(fontsize_pos, normal_size);
+
+		string largesize_id = "$LARGESIZE";
+		int largesize_pos = article.str.index_of(largesize_id);
+		article.erase(largesize_pos, largesize_id.length);
+		article.insert(largesize_pos, large_size);
+
+		for(int i = article.str.index_of(sourcefontsize_id, 0); i != -1; i = article.str.index_of(sourcefontsize_id, i))
+		{
+			article.erase(i, sourcefontsize_id.length);
+			article.insert(i, small_size);
+		}
+
+
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/ArticleView/style.css");
+			file.load_contents(null, out contents, null);
+			string css_id = "$CSS";
+			int css_pos = article.str.index_of(css_id);
+			article.erase(css_pos, css_id.length);
+			article.insert(css_pos, (string)contents);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.buildArticle: load CSS: " + e.message);
+		}
+
+		return article.str;
+	}
+
+	public static bool canManipulateContent(bool? online = null)
+	{
+		// if backend = local RSS -> return true;
+		if(Settings.general().get_string("plugin") == "local")
+			return true;
+
+		if(!FeedReaderBackend.get_default().supportFeedManipulation())
+			return false;
+
+		// when we already know wheather feedreader is online or offline
+		if(online != null)
+		{
+			if(online)
+				return true;
+			else
+				return false;
+		}
+
+		// otherwise check if online
+		return FeedReaderBackend.get_default().isOnline();
+	}
+
+	public static GLib.Menu getMenu()
+	{
+		var urlMenu = new GLib.Menu();
+		urlMenu.append(Menu.bugs, "win.bugs");
+		urlMenu.append(Menu.bounty, "win.bounty");
+
+		var aboutMenu = new GLib.Menu();
+		aboutMenu.append(Menu.shortcuts, "win.shortcuts");
+		aboutMenu.append(Menu.about, "win.about");
+		aboutMenu.append(Menu.quit, "app.quit");
+
+		var menu = new GLib.Menu();
+		menu.append(Menu.settings, "win.settings");
+		menu.append(Menu.reset, "win.reset");
+		menu.append_section("", urlMenu);
+
+		if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() != "pantheon")
+		{
+			menu.append_section("", aboutMenu);
+		}
+
+		return menu;
+	}
+
+	public static bool onlyShowFeeds()
+	{
+		if(Settings.general().get_boolean("only-feeds"))
+			return true;
+
+		if(!DataBase.readOnly().haveCategories()
+		&& !FeedReaderBackend.get_default().supportTags()
+		&& !DataBase.readOnly().haveFeedsWithoutCat())
+			return true;
+
+		return false;
+	}
+
+	public static void saveImageDialog(string imagePath)
+	{
+
+		try
+		{
+			string articleName = "Article.pdf";
+			string? articleID = ColumnView.get_default().displayedArticle();
+			if(articleID != null)
+				articleName = DataBase.readOnly().read_article(articleID).getTitle();
+
+			var file = GLib.File.new_for_path(imagePath);
+			var mimeType = file.query_info("standard::content-type", 0, null).get_content_type();
+			var filter = new Gtk.FileFilter();
+			filter.add_mime_type(mimeType);
+
+			var map = new Gee.HashMap<string, string>();
+			map.set("image/gif", ".gif");
+			map.set("image/jpeg", ".jpeg");
+			map.set("image/png", ".png");
+			map.set("image/x-icon", ".ico");
+
+			var save_dialog = new Gtk.FileChooserDialog("Save Image",
+														MainWindow.get_default(),
+														Gtk.FileChooserAction.SAVE,
+														_("Cancel"),
+														Gtk.ResponseType.CANCEL,
+														_("Save"),
+														Gtk.ResponseType.ACCEPT);
+			save_dialog.set_do_overwrite_confirmation(true);
+			save_dialog.set_modal(true);
+			save_dialog.set_current_folder(GLib.Environment.get_user_data_dir());
+			save_dialog.set_current_name(articleName + map.get(mimeType));
+			save_dialog.set_filter(filter);
+			save_dialog.response.connect((dialog, response_id) => {
+				switch(response_id)
+				{
+					case Gtk.ResponseType.ACCEPT:
+						try
+						{
+							var savefile = save_dialog.get_file();
+							uint8[] data;
+							string etag;
+							file.load_contents(null, out data, out etag);
+							savefile.replace_contents(data, null, false, GLib.FileCreateFlags.REPLACE_DESTINATION, null, null);
+						}
+						catch(Error e)
+						{
+							Logger.debug("imagePopup: save file: " + e.message);
+						}
+						break;
+
+					case Gtk.ResponseType.CANCEL:
+					default:
+						break;
+				}
+				save_dialog.destroy();
+			});
+			save_dialog.show();
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.saveImageDialog: %s".printf(e.message));
+		}
+	}
+
+	public static void playMedia(string[] args, string url)
+	{
+		Gtk.init(ref args);
+		Gst.init(ref args);
+		Logger.init();
+
+		var window = new Gtk.Window();
+		window.set_size_request(800, 600);
+		window.destroy.connect(Gtk.main_quit);
+		var header = new Gtk.HeaderBar();
+		header.show_close_button = true;
+
+		Gtk.CssProvider provider = new Gtk.CssProvider();
+		provider.load_from_resource("/org/gnome/FeedReader/gtk-css/basics.css");
+		weak Gdk.Display display = Gdk.Display.get_default();
+		weak Gdk.Screen screen = display.get_default_screen();
+		Gtk.StyleContext.add_provider_for_screen(screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_USER);
+
+		var player = new FeedReader.MediaPlayer(url);
+
+		window.add(player);
+		window.set_titlebar(header);
+		window.show_all();
+
+		Gtk.main();
+	}
+
+	public static Gtk.Image checkIcon(string name, string fallback, Gtk.IconSize size)
+	{
+		Gtk.Image icon = null;
+		if(Gtk.IconTheme.get_default().lookup_icon(name, 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
+			icon = new Gtk.Image.from_icon_name(name, size);
+		else
+			icon = new Gtk.Image.from_icon_name(fallback, size);
+
+		return icon;
+	}
+
+<<<<<<< HEAD
+
+	public static async uint8[] inputStreamToArray(InputStream stream, Cancellable? cancellable=null) throws Error
+=======
+	public static void openInGedit(string text)
+>>>>>>> 59e79aa6010bc029bb5857d79f7e05fccff131d0
+	{
+		try
+		{
+			string filename = "file:///tmp/FeedReader_crashed_html.txt";
+			FileUtils.set_contents(filename, text);
+			Gtk.show_uri_on_window(MainWindow.get_default(), filename, Gdk.CURRENT_TIME);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("Utils.openInGedit(): %s".printf(e.message));
+		}
+	}
+
+	public static uint getRelevantArticles()
+	{
+		var interfacestate = MainWindow.get_default().getInterfaceState();
+		string[] selectedRow = interfacestate.getFeedListSelectedRow().split(" ", 2);
+		ArticleListState state = interfacestate.getArticleListState();
+		string searchTerm = interfacestate.getSearchTerm();
+		string? topRow = interfacestate.getArticleListTopRow();
+
+		FeedListType IDtype = FeedListType.FEED;
+
+		Logger.debug("selectedRow 0: %s".printf(selectedRow[0]));
+		Logger.debug("selectedRow 1: %s".printf(selectedRow[1]));
+
+		switch(selectedRow[0])
+		{
+			case "feed":
+				IDtype = FeedListType.FEED;
+				break;
+
+			case "cat":
+				IDtype = FeedListType.CATEGORY;
+				break;
+
+			case "tag":
+				IDtype = FeedListType.TAG;
+				break;
+		}
+
+		int count = 0;
+
+		if(topRow != null)
+			count = DataBase.readOnly().getArticleCountNewerThanID(topRow, selectedRow[1], IDtype, state, searchTerm);
+
+		Logger.debug(@"getRelevantArticles: $count");
+		return count;
 	}
 
 }

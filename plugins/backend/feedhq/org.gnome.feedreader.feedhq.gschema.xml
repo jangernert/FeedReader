@@ -15,7 +15,7 @@
 		<default>""</default>
 		<description>Service Name</description>
 	</key>
-	
+
 	<key name="user-id" type="s">
 		<default>""</default>
 		<description>Interneal User ID</description>
@@ -24,7 +24,7 @@
 	<key name="post-token" type="s">
 		<default>""</default>
 	<description>Post Token</description>
-	</key>	
+	</key>
 	</schema>
 
 </schemalist>

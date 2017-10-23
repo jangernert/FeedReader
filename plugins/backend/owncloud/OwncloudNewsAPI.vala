@@ -113,7 +113,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		return false;
 	}
 
-	public bool getFeeds(Gee.List<feed> feeds)
+	public bool getFeeds(Gee.List<Feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -131,17 +131,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 					for(uint i = 0; i < feed_count; i++)
 					{
 						var feed_node = feed_array.get_object_element(i);
-						string feed_id = feed_node.get_int_member("id").to_string();
-						string? icon_url = feed_node.has_member("faviconLink") ? feed_node.get_string_member("faviconLink") : null;
 
 						feeds.add(
-							new feed (
-									feed_id,
+							new Feed(
+									feed_node.get_int_member("id").to_string(),
 									feed_node.get_string_member("title"),
 									feed_node.get_string_member("link"),
 									(int)feed_node.get_int_member("unreadCount"),
-									{ feed_node.get_int_member("folderId").to_string() },
-									icon_url
+									ListUtils.single(feed_node.get_int_member("folderId").to_string()),
+									feed_node.get_string_member("faviconLink")
 								)
 						);
 					}
@@ -163,7 +161,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-	public bool getCategories(Gee.List<category> categories, Gee.List<feed> feeds)
+	public bool getCategories(Gee.List<Category> categories, Gee.List<Feed> feeds)
 	{
 		if(isloggedin())
 		{
@@ -187,7 +185,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 						string id = folder_node.get_int_member("id").to_string();
 
 						categories.add(
-							new category (
+							new Category (
 								id,
 								folder_node.get_string_member("name"),
 								m_utils.countUnread(feeds, id),
@@ -213,9 +211,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	}
 
 
-	public void getNewArticles(Gee.List<article> articles, int lastModified, OwnCloudType type, int id)
+	public void getNewArticles(Gee.List<Article> articles, int lastModified, OwnCloudType type, int id)
 	{
-		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "/items/updated", m_username, m_password, "GET");
+		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "items/updated", m_username, m_password, "GET");
 		message.add_int("lastModified", lastModified);
 		message.add_int("type", type);
 		message.add_int("id", id);
@@ -237,31 +235,30 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
-					string media = "";
 
+					var media = new Gee.ArrayList<string>();
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
 					&& article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 					{
 						if(article_node.get_string_member("enclosureMime").contains("audio")
 						|| article_node.get_string_member("enclosureMime").contains("video"))
 						{
-							media = article_node.get_string_member("enclosureLink");
+							media.add(article_node.get_string_member("enclosureLink"));
 						}
 					}
 
-					var Article = new article(	article_node.get_int_member("id").to_string(),
+					var Article = new Article(	article_node.get_int_member("id").to_string(),
 												article_node.get_string_member("title"),
 												article_node.get_string_member("url"),
 												article_node.get_int_member("feedId").to_string(),
 												unread,
 												marked,
 												article_node.get_string_member("body"),
-												"",
-												author,
+												null,
+												article_node.get_string_member("author"),
 												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
 												-1,
-												"", // tags
+												null, // tags
 												media, // media
 												article_node.get_string_member("guidHash"),
 												(int)article_node.get_int_member("lastModified"));
@@ -282,7 +279,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 
 
-	public void getArticles(Gee.List<article> articles, int skip, int count, bool read, OwnCloudType type, int id)
+	public void getArticles(Gee.List<Article> articles, int skip, int count, bool read, OwnCloudType type, int id)
 	{
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "items", m_username, m_password, "GET");
 		message.add_bool("oldestFirst", false);
@@ -308,31 +305,30 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 					ArticleStatus unread = article_node.get_boolean_member("unread") ? ArticleStatus.UNREAD : ArticleStatus.READ;
 					ArticleStatus marked = article_node.get_boolean_member("starred") ? ArticleStatus.MARKED : ArticleStatus.UNMARKED;
-					string? author = article_node.has_member("author") ? article_node.get_string_member("author") : null;
-					string media = "";
 
+					var media = new Gee.ArrayList<string>();
 					if(article_node.has_member("enclosureLink") && article_node.get_string_member("enclosureLink") != null
 					&& article_node.has_member("enclosureMime") && article_node.get_string_member("enclosureMime") != null)
 					{
 						if(article_node.get_string_member("enclosureMime").contains("audio")
 						|| article_node.get_string_member("enclosureMime").contains("video"))
 						{
-							media = article_node.get_string_member("enclosureLink");
+							media.add(article_node.get_string_member("enclosureLink"));
 						}
 					}
 
-					var Article = new article(	article_node.get_int_member("id").to_string(),
+					var Article = new Article(	article_node.get_int_member("id").to_string(),
 												article_node.get_string_member("title"),
 												article_node.get_string_member("url"),
 												article_node.get_int_member("feedId").to_string(),
 												unread,
 												marked,
 												article_node.get_string_member("body"),
-												"",
-												author,
+												null,
+												article_node.get_string_member("author"),
 												new DateTime.from_unix_local(article_node.get_int_member("pubDate")),
 												-1,
-												"", // tags
+												null, // tags
 												media,
 												article_node.get_string_member("guidHash"),
 												(int)article_node.get_int_member("lastModified"));
@@ -356,11 +352,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		string url = "%s/%s/read".printf((isCatID) ? "folders" : "feeds", feedID);
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
-		message.add_int("newestItemId", int.parse(dbDaemon.get_default().getNewestArticle()));
+		message.add_int("newestItemId", int.parse(DataBase.readOnly().getNewestArticle()));
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.markFeedRead");
 		return false;
@@ -370,11 +366,11 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	{
 		string url = "items/read";
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
-		message.add_int("newestItemId", int.parse(dbDaemon.get_default().getNewestArticle()));
+		message.add_int("newestItemId", int.parse(DataBase.readOnly().getNewestArticle()));
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.markAllItemsRead");
 		return false;
@@ -386,16 +382,16 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		string url = "";
 
 		if(unread == ArticleStatus.UNREAD)
-			url = "/items/unread/multiple";
+			url = "items/unread/multiple";
 		else if(unread == ArticleStatus.READ)
-			url = "/items/read/multiple";
+			url = "items/read/multiple";
 
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
 		message.add_int_array("items", articleIDs);
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.updateArticleUnread");
 		return false;
@@ -404,8 +400,8 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool updateArticleMarked(string articleID, ArticleStatus marked)
 	{
-		var article = dbDaemon.get_default().read_article(articleID);
-		string url = "/items/%s/%s/".printf(article.getFeedID(), article.getHash());
+		var article = DataBase.readOnly().read_article(articleID);
+		string url = "items/%s/%s/".printf(article.getFeedID(), article.getHash());
 
 		if(marked == ArticleStatus.MARKED)
 			url += "star";
@@ -416,15 +412,15 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.updateArticleMarked");
 		return false;
 	}
 
-	public int64 addFeed(string feedURL, string? catID = null)
+	public bool addFeed(string feedURL, string? catID, out int64 feedID, out string errmsg)
 	{
-		string url = "/feeds";
+		string url = "feeds";
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "POST");
 		message.add_string("url", feedURL);
 		message.add_int("folderId", (catID != null) ? int.parse(catID) : 0);
@@ -435,7 +431,9 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			var response = message.get_response_object();
 			if(response.has_member("feeds"))
 			{
-				return response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+				errmsg = "";
+				feedID = response.get_array_member("feeds").get_object_element(0).get_int_member("id");
+				return true;
 			}
 		}
 		else
@@ -443,12 +441,26 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 			Logger.error("OwncloudNewsAPI.addFeed");
 		}
 
-		return 0;
+
+		errmsg = "ownCloud could not add the feed";
+		feedID = 0;
+
+		switch(message.getStatusCode())
+		{
+			case 409:
+				errmsg = "Feed already added (409)";
+				return true;
+			case 422:
+				errmsg = "ownCloud can't read the feed (422)";
+				break;
+		}
+
+		return false;
 	}
 
 	public void removeFeed(string feedID)
 	{
-		string url = "/feeds/%s".printf(feedID);
+		string url = "feeds/%s".printf(feedID);
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "DELETE");
 		int error = message.send();
 
@@ -460,7 +472,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public void renameFeed(string feedID, string title)
 	{
-		string url = "/feeds/%s/rename".printf(feedID);
+		string url = "feeds/%s/rename".printf(feedID);
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
 		message.add_string("feedTitle", title);
 		int error = message.send();
@@ -473,7 +485,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public void moveFeed(string feedID, string? newCatID = null)
 	{
-		string url = "/feeds/%s/move".printf(feedID);
+		string url = "feeds/%s/move".printf(feedID);
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
 		message.add_int("folderId", (newCatID != null) ? int.parse(newCatID) : 0);
 		int error = message.send();
@@ -486,7 +498,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public int64 addFolder(string title)
 	{
-		string url = "/folders";
+		string url = "folders";
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "POST");
 		message.add_string("name", title);
 		int error = message.send();
@@ -509,13 +521,13 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool removeFolder(string catID)
 	{
-		string url = "/folders/%s".printf(catID);
+		string url = "folders/%s".printf(catID);
 
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "DELETE");
 		int error = message.send();
 
 		if(error == ConnectionError.SUCCESS)
-		    return true;
+			return true;
 
 		Logger.error("OwncloudNewsAPI.removeFolder");
 		return false;
@@ -523,7 +535,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public void renameCategory(string catID, string title)
 	{
-		string url = "/folders/%s".printf(catID);
+		string url = "folders/%s".printf(catID);
 		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + url, m_username, m_password, "PUT");
 		message.add_string("name", title);
 		int error = message.send();
@@ -534,7 +546,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public bool ping()
 	{
-		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL, m_username, m_password, "PUT");
+		var message = new OwnCloudNewsMessage(m_session, m_OwnCloudURL + "version", m_username, m_password, "GET");
 		int error = message.send(true);
 
 		if(error == ConnectionError.NO_RESPONSE)

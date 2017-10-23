@@ -97,16 +97,13 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			menubutton.image = new Gtk.Image.from_icon_name("emblem-system-symbolic", Gtk.IconSize.MENU);
 			menubutton.set_size_request(32, 32);
 			menubutton.set_use_popover(true);
-			menubutton.set_menu_model(UtilsUI.getMenu());
+			menubutton.set_menu_model(Utils.getMenu());
 			menubutton.set_tooltip_text(_("Settings"));
 			m_header_left.pack_end(menubutton);
 		}
 		else if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
 		{
-			var quit_action = new SimpleAction("quit", null);
-			quit_action.activate.connect(FeedReaderApp.get_default().quit);
-			FeedReaderApp.get_default().add_action(quit_action);
-			FeedReaderApp.get_default().app_menu = UtilsUI.getMenu();
+			FeedReaderApp.get_default().app_menu = Utils.getMenu();
 		}
 
 
@@ -178,7 +175,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		return m_search.has_focus;
 	}
 
-	public void setMarked(bool marked)
+	public void setMarked(ArticleStatus marked)
 	{
 		m_header_right.setMarked(marked);
 	}
@@ -188,7 +185,7 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 		m_header_right.toggleMarked();
 	}
 
-	public void setRead(bool read)
+	public void setRead(ArticleStatus read)
 	{
 		m_header_right.setRead(read);
 	}

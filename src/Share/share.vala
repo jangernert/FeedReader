@@ -15,7 +15,7 @@
 
 public class FeedReader.Share : GLib.Object {
 
-	private Gee.ArrayList<ShareAccount> m_accounts;
+	private Gee.List<ShareAccount> m_accounts;
 	private Peas.ExtensionSet m_plugins;
 	private static Share? m_share = null;
 	private Goa.Client? m_client = null;
@@ -115,7 +115,7 @@ public class FeedReader.Share : GLib.Object {
 		return plug;
 	}
 
-	public Gee.ArrayList<ShareAccount> getAccountTypes()
+	public Gee.List<ShareAccount> getAccountTypes()
 	{
 		var accounts = new Gee.ArrayList<ShareAccount>();
 
@@ -142,7 +142,7 @@ public class FeedReader.Share : GLib.Object {
 	}
 
 
-	public Gee.ArrayList<ShareAccount> getAccounts()
+	public Gee.List<ShareAccount> getAccounts()
 	{
 		return m_accounts;
 	}

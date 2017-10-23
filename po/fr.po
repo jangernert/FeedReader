@@ -107,7 +107,7 @@ msgstr ""
 "prochainement."
 
 #: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
-msgid "New Articles"
+msgid "New articles"
 msgstr "Nouveaux articles"
 
 #: src/Widgets/ArticleList/ArticleList.vala:567

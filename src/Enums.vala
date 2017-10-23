@@ -33,8 +33,8 @@ namespace FeedReader {
 	}
 
 	public enum DragTarget {
-	    TAG,
-	    FEED,
+		TAG,
+		FEED,
 		CAT
 	}
 
@@ -72,7 +72,6 @@ namespace FeedReader {
 		UNREAD,
 		UNMARKED,
 		MARKED,
-		TOGGLE,
 		ALL;
 
 		public string to_string()
@@ -169,11 +168,8 @@ namespace FeedReader {
 
 	public enum FeedListType {
 		ALL_FEEDS,
-		SPACER,
-		SEPERATOR,
 		CATEGORY,
 		FEED,
-		HEADLINE,
 		TAG
 	}
 

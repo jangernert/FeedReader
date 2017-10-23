@@ -17,19 +17,23 @@ public class FeedReader.OPMLparser : GLib.Object {
 
 	private string m_opmlString;
 	private uint m_level = 0;
-	private Gee.List<feed> m_feeds;
+	private Gee.List<Feed> m_feeds;
 
 	public OPMLparser(string opml)
 	{
 		m_opmlString = opml;
-		m_feeds = new Gee.LinkedList<feed>();
+		m_feeds = new Gee.LinkedList<Feed>();
 	}
 
 	public bool parse()
 	{
-		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, Xml.ParserOption.NOERROR + Xml.ParserOption.NOWARNING);
+		Xml.Doc* doc = Xml.Parser.read_doc(m_opmlString, null, null, 0);
 		if(doc == null)
+		{
+			Logger.error("OPML: parsing xml failed");
 			return false;
+		}
+
 
 		Xml.Node* root = doc->get_root_element();
 		if(root->name != "opml")
@@ -116,7 +120,7 @@ public class FeedReader.OPMLparser : GLib.Object {
 			title = node->get_prop("title");
 
 		Logger.debug(space() + "Category: " + title);
-		string catID = FeedDaemonServer.get_default().addCategory(title, parentCatID, true);
+		string catID = FeedReaderBackend.get_default().addCategory(title, parentCatID, true);
 		parseTree(node, catID);
 	}
 
@@ -143,10 +147,13 @@ public class FeedReader.OPMLparser : GLib.Object {
 				Logger.debug(space() + "Feed: " + title + " feedURL: " + feedURL);
 			}
 
+			var categories = new Gee.ArrayList<string>();
 			if(catID == null)
-				m_feeds.add(new feed("", title, website, 0,  { FeedServer.get_default().uncategorizedID() }, feedURL));
+				categories.add(FeedServer.get_default().uncategorizedID());
 			else
-				m_feeds.add(new feed("", title, website, 0,  { catID }, feedURL));
+				categories.add(catID);
+
+			m_feeds.add(new Feed("", title, website, 0, categories, null, feedURL));
 		}
 	}
 

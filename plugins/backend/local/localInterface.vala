@@ -17,6 +17,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	private localUtils m_utils;
 	private Soup.Session m_session;
+	private Gtk.ListBox m_feedlist;
 
 	public void init()
 	{
@@ -24,6 +25,209 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
 		m_session.timeout = 5;
+	}
+
+	public string getWebsite()
+	{
+		return "http://jangernert.github.io/FeedReader/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.LOCAL | BackendFlags.FREE_SOFTWARE | BackendFlags.FREE);
+	}
+
+	public string getID()
+	{
+		return "local";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-local";
+	}
+
+	public string serviceName()
+	{
+		return "Local RSS";
+	}
+
+	public bool needWebLogin()
+	{
+		return false;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		var doneLabel = new Gtk.Label(_("Done"));
+		var waitingLabel = new Gtk.Label(_("Adding Feeds"));
+		var waitingSpinner = new Gtk.Spinner();
+		var waitingBox = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 5);
+		waitingBox.pack_start(waitingSpinner, false, false, 0);
+		waitingBox.pack_start(waitingLabel, true, false, 0);
+		var loginStack = new Gtk.Stack();
+		loginStack.add_named(doneLabel, "label");
+		loginStack.add_named(waitingBox, "waiting");
+		var loginButton = new Gtk.Button();
+		loginButton.add(loginStack);
+		loginButton.halign = Gtk.Align.END;
+		loginButton.set_size_request(80, 30);
+		loginButton.get_style_context().add_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+		loginButton.clicked.connect(() => {
+			tryLogin();
+			loginButton.set_sensitive(false);
+			waitingSpinner.start();
+			loginButton.get_style_context().remove_class(Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+			loginStack.set_visible_child_name("waiting");
+		});
+		loginButton.show_all();
+
+		var headlineLabel = new Gtk.Label("Recommended Feeds:");
+		headlineLabel.get_style_context().add_class("h1");
+		headlineLabel.set_justify(Gtk.Justification.CENTER);
+
+		var loginLabel = new Gtk.Label("Fill your library with feeds. Here are some recommendations.");
+		loginLabel.get_style_context().add_class("h2");
+		loginLabel.set_justify(Gtk.Justification.CENTER);
+		loginLabel.set_lines(3);
+
+		m_feedlist = new Gtk.ListBox();
+		m_feedlist.set_selection_mode(Gtk.SelectionMode.NONE);
+		m_feedlist.set_sort_func(sortFunc);
+		m_feedlist.set_header_func(headerFunc);
+
+		try
+		{
+			uint8[] contents;
+			var file = File.new_for_uri("resource:///org/gnome/FeedReader/recommendedFeeds.json");
+			file.load_contents(null, out contents, null);
+
+			var parser = new Json.Parser();
+			parser.load_from_data((string)contents);
+
+			Json.Array array = parser.get_root().get_array();
+
+			for (int i = 0; i < array.get_length (); i++)
+			{
+				Json.Object object = array.get_object_element(i);
+
+				m_feedlist.add(
+					new SuggestedFeedRow(
+						object.get_string_member("url"),
+						object.get_string_member("icon"),
+						object.get_string_member("category"),
+						object.get_string_member("name"),
+						object.get_string_member("description"),
+						object.get_string_member("language")
+						)
+				);
+			}
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("localLoginWidget: loading json filed");
+			Logger.error(e.message);
+		}
+
+		var scroll = new Gtk.ScrolledWindow(null, null);
+		scroll.set_size_request(450, 0);
+		scroll.set_halign(Gtk.Align.CENTER);
+		scroll.get_style_context().add_class(Gtk.STYLE_CLASS_FRAME);
+		scroll.add(m_feedlist);
+
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		box.margin = 50;
+		box.valign = Gtk.Align.FILL;
+		box.halign = Gtk.Align.CENTER;
+		box.pack_start(headlineLabel, false, false, 0);
+		box.pack_start(loginLabel, false, false, 2);
+		box.pack_start(scroll, true, true, 20);
+		box.pack_end(loginButton, false, false, 0);
+		return box;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
+	public void writeData()
+	{
+		return;
+	}
+
+	public async void postLoginAction()
+	{
+		SourceFunc callback = postLoginAction.callback;
+		new GLib.Thread<void*>(null, () => {
+			var children = m_feedlist.get_children();
+			foreach(var r in children)
+			{
+				var row = r as SuggestedFeedRow;
+				if(row.checked())
+				{
+					FeedReaderBackend.get_default().addFeed(row.getURL(), row.getCategory(), false, false);
+				}
+			}
+			Idle.add((owned) callback);
+			return null;
+		});
+		yield;
+	}
+
+	public string buildLoginURL()
+	{
+		return "";
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		return false;
+	}
+
+	private int sortFunc(Gtk.ListBoxRow row1, Gtk.ListBoxRow row2)
+	{
+		var r1 = row1 as SuggestedFeedRow;
+		var r2 = row2 as SuggestedFeedRow;
+
+		string cat1 = r1.getCategory();
+		string cat2 = r2.getCategory();
+
+		string name1 = r1.getName();
+		string name2 = r2.getName();
+
+		if(cat1 != cat2)
+			return cat1.collate(cat2);
+
+		return name1.collate(name2);
+	}
+
+	private void headerFunc(Gtk.ListBoxRow row, Gtk.ListBoxRow? before)
+	{
+		var r1 = row as SuggestedFeedRow;
+		string cat1 = r1.getCategory();
+
+		var label = new Gtk.Label(cat1);
+		label.get_style_context().add_class("bold");
+		label.margin_top = 20;
+		label.margin_bottom = 5;
+
+		var box = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		box.pack_start(label, true, true, 0);
+		box.pack_end(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
+		box.show_all();
+
+		if(before == null)
+		{
+			row.set_header(box);
+			return;
+		}
+
+		var r2 = before as SuggestedFeedRow;
+		string cat2 = r2.getCategory();
+
+		if(cat1 != cat2)
+			row.set_header(box);
 	}
 
 
@@ -78,6 +282,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	}
 
 	public bool supportMultiCategoriesPerFeed()
+	{
+		return false;
+	}
+
+	public bool syncFeedsAndCategories()
 	{
 		return false;
 	}
@@ -151,8 +360,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string tagID = "1";
 
-		if(!dbDaemon.get_default().isTableEmpty("tags"))
-			tagID = (int.parse(dbDaemon.get_default().getMaxID("tags", "tagID")) + 1).to_string();
+		if(!DataBase.readOnly().isTableEmpty("tags"))
+			tagID = (int.parse(DataBase.readOnly().getMaxID("tags", "tagID")) + 1).to_string();
 
 		Logger.info("createTag: ID = " + tagID);
 		return tagID;
@@ -168,65 +377,67 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return;
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
-		string[] catIDs = {};
-
+	 	var catIDs = new Gee.ArrayList<string>();
 		if(catID == null && newCatName != null)
 		{
 			string cID = createCategory(newCatName, null);
-			var cat = new category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
-			var list = new Gee.LinkedList<category>();
+			var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
+			var list = new Gee.LinkedList<Category>();
 			list.add(cat);
-			dbDaemon.get_default().write_categories(list);
-			catIDs += cID;
+			DataBase.writeAccess().write_categories(list);
+			catIDs.add(cID);
 		}
 		else if(catID != null && newCatName == null)
 		{
-			catIDs += catID;
+			catIDs.add(catID);
 		}
 		else
 		{
-			catIDs += "0";
+			catIDs.add("0");
 		}
 
-		string feedID = "feedID00001";
+		feedID = "feedID00001";
 
-		if(!dbDaemon.get_default().isTableEmpty("feeds"))
+		if(!DataBase.readOnly().isTableEmpty("feeds"))
 		{
-			feedID = "feedID%05d".printf(int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1);
+			feedID = "feedID%05d".printf(int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1);
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
-		feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs);
+		Feed? Feed = m_utils.downloadFeed(m_session, feedURL, feedID, catIDs, out errmsg);
 
 		if(Feed != null)
 		{
-			var list = new Gee.LinkedList<feed>();
-			list.add(Feed);
-			dbDaemon.get_default().write_feeds(list);
-			return feedID;
+			if(!DataBase.readOnly().feed_exists(Feed.getURL())) {
+				var list = new Gee.LinkedList<Feed>();
+				list.add(Feed);
+				DataBase.writeAccess().write_feeds(list);
+				return true;
+			}
 		}
 
-		return "";
+		return false;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
-		var finishedFeeds = new Gee.LinkedList<feed>();
+		var finishedFeeds = new Gee.LinkedList<Feed>();
 
 		int highestID = 0;
 
-		if(!dbDaemon.get_default().isTableEmpty("feeds"))
-			highestID = int.parse(dbDaemon.get_default().getHighestFeedID().substring(6)) + 1;
+		if(!DataBase.readOnly().isTableEmpty("feeds"))
+			highestID = int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1;
 
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			string feedID = "feedID" + highestID.to_string("%05d");
 			highestID++;
 
 			Logger.info(@"addFeed: ID = $feedID");
-			feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs());
+			string errmsg = "";
+			Feed? Feed = m_utils.downloadFeed(m_session, f.getXmlUrl(), feedID, f.getCatIDs(), out errmsg);
 
 			if(Feed != null)
 			{
@@ -244,7 +455,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			Logger.debug("finishedFeed: " + feed.getTitle());
 		}
 
-		dbDaemon.get_default().write_feeds(finishedFeeds);
+		DataBase.writeAccess().write_feeds(finishedFeeds);
 	}
 
 	public void removeFeed(string feedID)
@@ -267,12 +478,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string catID = "catID00001";
 
-		if(!dbDaemon.get_default().isTableEmpty("categories"))
+		if(!DataBase.readOnly().isTableEmpty("categories"))
 		{
-			string? id = dbDaemon.get_default().getCategoryID(title);
+			string? id = DataBase.readOnly().getCategoryID(title);
 			if(id == null)
 			{
-				catID = "catID%05d".printf(int.parse(dbDaemon.get_default().getMaxID("categories", "categorieID").substring(5)) + 1);
+				catID = "catID%05d".printf(int.parse(DataBase.readOnly().getMaxID("categories", "categorieID").substring(5)) + 1);
 			}
 			else
 			{
@@ -310,30 +521,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
-		var cats = dbDaemon.get_default().read_categories();
-		foreach(category cat in cats)
-		{
-			categories.add(cat);
-		}
-
-		var t = dbDaemon.get_default().read_tags();
-		foreach(tag Tag in t)
-		{
-			tags.add(Tag);
-		}
-
-		var f = dbDaemon.get_default().read_feeds();
-		foreach(feed Feed in f)
-		{
-			if(cancellable != null && cancellable.is_cancelled())
-				return false;
-
-			feed? tmpFeed = m_utils.downloadFeed(m_session, Feed.getXmlUrl(), Feed.getFeedID(), Feed.getCatIDs());
-			feeds.add((tmpFeed == null) ? Feed : tmpFeed);
-		}
-
 		return true;
 	}
 
@@ -344,111 +533,136 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
-		var f = dbDaemon.get_default().read_feeds();
-		var articleArray = new Gee.LinkedList<article>();
+		var f = DataBase.readOnly().read_feeds();
+		var articleArray = new Gee.LinkedList<Article>();
+		GLib.Mutex mutex = GLib.Mutex();
 
-		foreach(feed Feed in f)
+		try
 		{
-			if(cancellable != null && cancellable.is_cancelled())
-				return;
+			var threads = new ThreadPool<Feed>.with_owned_data((Feed) => {
+				if(cancellable != null && cancellable.is_cancelled())
+					return;
 
-			Logger.debug("getArticles for feed: " + Feed.getTitle());
-			string url = Feed.getXmlUrl().escape("");
+				Logger.debug("getArticles for feed: " + Feed.getTitle());
+				string url = Feed.getXmlUrl().escape("");
 
-			if(url == null || url == "" || GLib.Uri.parse_scheme(url) == null)
-			{
-				Logger.error("no valid URL");
-				continue;
-			}
-
-			var msg = new Soup.Message("GET", url);
-			m_session.send_message(msg);
-			string xml = (string)msg.response_body.flatten().data;
-
-			// parse
-			Rss.Parser parser = new Rss.Parser();
-			try
-			{
-				parser.load_from_data(xml, xml.length);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("localInterface.getArticles: %s".printf(e.message));
-			}
-			var doc = parser.get_document();
-			string? locale = null;
-			if(doc.encoding != null
-			&& doc.encoding != "")
-			{
-				locale = doc.encoding;
-			}
-
-			var articles = doc.get_items();
-			foreach(Rss.Item item in articles)
-			{
-				string? articleID = item.guid;
-
-				if(articleID != null)
-					articleID = articleID.replace(":", "_").replace("/", "_").replace(" ", "").replace(",", "_");
-				else
+				if(url == null || url == "" || GLib.Uri.parse_scheme(url) == null)
 				{
-					Logger.warning("no valid ID - using URL as ID");
-					if(item.link == null)
+					Logger.error("no valid URL");
+					return;
+				}
+
+				var msg = new Soup.Message("GET", url);
+				var session = new Soup.Session();
+				session.user_agent = Constants.USER_AGENT;
+				session.timeout = 5;
+				session.send_message(msg);
+				string xml = (string)msg.response_body.flatten().data;
+
+				// parse
+				Rss.Parser parser = new Rss.Parser();
+				try
+				{
+					parser.load_from_data(xml, xml.length);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("localInterface.getArticles: %s".printf(e.message));
+					return;
+				}
+				var doc = parser.get_document();
+
+				string? locale = null;
+				if(doc.encoding != null
+				&& doc.encoding != "")
+				{
+					locale = doc.encoding;
+				}
+
+				var articles = doc.get_items();
+				foreach(Rss.Item item in articles)
+				{
+					string? articleID = item.guid;
+
+					if(articleID == null)
 					{
-						Logger.warning("no valid URL as well? what the hell man? I'm giving up");
-						continue;
+						if(item.link == null)
+						{
+							Logger.warning("no valid id and no valid URL as well? what the hell man? I'm giving up");
+							continue;
+						}
+
+						articleID = item.link;
 					}
 
-					articleID = item.link;
-				}
+					var date = new GLib.DateTime.now_local();
+					if(item.pub_date != null)
+					{
+						GLib.Time time = GLib.Time();
+						time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
+						date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
 
+						if(date == null)
+							date = new GLib.DateTime.now_local();
+					}
 
-				var date = new GLib.DateTime.now_local();
-
-				if(item.pub_date != null)
-				{
-					GLib.Time time = GLib.Time();
-					time.strptime(item.pub_date, "%a, %d %b %Y %H:%M:%S %Z");
-					date = new GLib.DateTime.local(1900 + time.year, 1 + time.month, time.day, time.hour, time.minute, time.second);
-
-					if(date == null)
-						date = new GLib.DateTime.now_local();
-				}
 				string? content = m_utils.convert(item.description, locale);
-
 				if(content == null)
 					content = _("Nothing to read here.");
 
-				string media = "";
-				if(item.enclosure_url != null)
-					media = item.enclosure_url;
+					Gee.List<string>? media = null;
+					if(item.enclosure_url != null)
+					{
+						media = new Gee.ArrayList<string>();
+						media.add(item.enclosure_url);
+					}
 
-				string articleURL = item.link;
-				if(articleURL.has_prefix("/"))
-					articleURL = Feed.getURL() + articleURL.substring(1);
+					string articleURL = item.link;
+					if(articleURL.has_prefix("/"))
+						articleURL = Feed.getURL() + articleURL.substring(1);
 
-				if(item.title != null)
-					Logger.debug(item.title);
+					var Article = new Article(
+										articleID,
+										(item.title != null) ? m_utils.convert(item.title, locale) : null,
+										articleURL,
+										Feed.getFeedID(),
+										ArticleStatus.UNREAD,
+										ArticleStatus.UNMARKED,
+										content,
+										content,
+										m_utils.convert(item.author, locale),
+										date,
+										0,
+										null,
+										media
+					);
 
-				var Article = new article
-				(
-									articleID,
-									(item.title != null) ? m_utils.convert(item.title, locale) : "No Title :(",
-									articleURL,
-									Feed.getFeedID(),
-									ArticleStatus.UNREAD,
-									ArticleStatus.UNMARKED,
-									content,
-									Utils.UTF8fix(content, true),
-									m_utils.convert(item.author, locale),
-									date,
-									0,
-									"",
-									media
-				);
+					mutex.lock();
+					articleArray.add(Article);
+					mutex.unlock();
+				}
+			}, (int)GLib.get_num_processors(), true);
 
-				articleArray.add(Article);
+
+			foreach(Feed feed in f)
+			{
+				try
+				{
+					threads.add(feed);
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("Error creating thread to download Feed %s: %s".printf(feed.getTitle(), e.message));
+				}
 			}
+
+			bool immediate = false; // allow to queue up additional tasks
+			bool wait = true; // function will block until all tasks are done
+			ThreadPool.free((owned)threads, immediate, wait);
+		}
+		catch(Error e)
+		{
+			Logger.error("Error creating threads to download Feeds: " + e.message);
 		}
 
 		articleArray.sort((a, b) => {
@@ -457,9 +671,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articleArray.size > 0)
 		{
-			dbDaemon.get_default().write_articles(articleArray);
+			DataBase.writeAccess().write_articles(articleArray);
 			Logger.debug("localInterface: %i articles written".printf(articleArray.size));
-			updateFeedList();
+			refreshFeedListCounter();
 			updateArticleList();
 		}
 	}

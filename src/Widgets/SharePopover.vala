@@ -74,7 +74,7 @@ public class FeedReader.SharePopover : Gtk.Popover {
 		{
 			var seperatorBox = new Gtk.Box(Gtk.Orientation.VERTICAL, 5);
 			seperatorBox.pack_start(new Gtk.Separator(Gtk.Orientation.HORIZONTAL), false, false, 0);
-	        seperatorBox.pack_start(addBox, true, true, 0);
+			seperatorBox.pack_start(addBox, true, true, 0);
 			addRow.add(seperatorBox);
 		}
 		else
@@ -98,25 +98,28 @@ public class FeedReader.SharePopover : Gtk.Popover {
 			return;
 		}
 
-		string url = "";
 		string id = shareRow.getID();
+		Article? selectedArticle = ColumnView.get_default().getSelectedArticle();
 
-		url = ColumnView.get_default().getSelectedURL();
-		var widget = Share.get_default().shareWidget(shareRow.getType(), url);
-		if(widget == null)
-			shareURL(id, url);
-		else
+		if(selectedArticle != null)
 		{
-			m_stack.add_named(widget, "form");
-			m_stack.set_visible_child_name("form");
-			widget.share.connect_after(() => {
-				shareURL(id, url);
-			});
-			widget.goBack.connect(() => {
-				m_stack.set_visible_child_full("list", Gtk.StackTransitionType.SLIDE_RIGHT);
-				m_stack.remove(widget);
-			});
+			var widget = Share.get_default().shareWidget(shareRow.getType(), selectedArticle.getURL());
+			if(widget == null)
+				shareURL(id, selectedArticle.getURL());
+			else
+			{
+				m_stack.add_named(widget, "form");
+				m_stack.set_visible_child_name("form");
+				widget.share.connect_after(() => {
+					shareURL(id, selectedArticle.getURL());
+				});
+				widget.goBack.connect(() => {
+					m_stack.set_visible_child_full("list", Gtk.StackTransitionType.SLIDE_RIGHT);
+					m_stack.remove(widget);
+				});
+			}
 		}
+
 	}
 
 	private async void shareAsync(string id, string url)

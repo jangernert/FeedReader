@@ -1,3 +1,0 @@
-body: //div[@class='story-body']
-prune: no
-tidy: no

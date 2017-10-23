@@ -1,3 +1,0 @@
-body: //div[@class='post-entry']/p
-
-test_url: http://www.indehekken.net/you-only-sing-when-youre-rowing/

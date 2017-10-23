@@ -1,13 +1,13 @@
 <schemalist>
-    <schema id="org.gnome.feedreader.share.instapaper" path="/org/gnome/feedreader/share/instapaper/" gettext-domain="feedreader">
-    
-	<key name="account-ids" type="as">
-            <default>[]</default>
-            <summary>instapaper accounts</summary>
-            <description>
-                all the instapaper account ids
-            </description>
-        </key>
+	<schema id="org.gnome.feedreader.share.instapaper" path="/org/gnome/feedreader/share/instapaper/" gettext-domain="feedreader">
 
-    </schema>
+	<key name="account-ids" type="as">
+			<default>[]</default>
+			<summary>instapaper accounts</summary>
+			<description>
+				all the instapaper account ids
+			</description>
+		</key>
+
+	</schema>
 </schemalist>

@@ -24,6 +24,96 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		m_utils = new InoReaderUtils();
 	}
 
+	public string getWebsite()
+	{
+		return "http://www.inoreader.com/";
+	}
+
+	public BackendFlags getFlags()
+	{
+		return (BackendFlags.HOSTED | BackendFlags.PROPRIETARY | BackendFlags.PAID_PREMIUM);
+	}
+
+	public string getID()
+	{
+		return "inoreader";
+	}
+
+	public string iconName()
+	{
+		return "feed-service-inoreader";
+	}
+
+	public string serviceName()
+	{
+		return "InoReader";
+	}
+
+	public void writeData()
+	{
+		return;
+	}
+
+	public async void postLoginAction()
+	{
+		return;
+	}
+
+	public bool extractCode(string redirectURL)
+	{
+		if(redirectURL.has_prefix(InoReaderSecret.apiRedirectUri))
+		{
+			Logger.debug(redirectURL);
+			int csrf_start = redirectURL.index_of("state=")+6;
+			string csrf_code = redirectURL.substring(csrf_start);
+			Logger.debug("InoReaderLoginWidget: csrf_code: " + csrf_code);
+
+			if(csrf_code == InoReaderSecret.csrf_protection)
+			{
+				int start = redirectURL.index_of("code=")+5;
+				int end = redirectURL.index_of("&", start);
+				string code = redirectURL.substring(start, end-start);
+				m_utils.setApiCode(code);
+				Logger.debug("InoReaderLoginWidget: set inoreader-api-code: " + code);
+				GLib.Thread.usleep(500000);
+				return true;
+			}
+
+			Logger.error("InoReaderLoginWidget: csrf_code mismatch");
+		}
+		else
+		{
+			Logger.warning("InoReaderLoginWidget: wrong redirect_uri");
+		}
+
+		return false;
+	}
+
+	public string buildLoginURL()
+	{
+		return "https://www.inoreader.com/oauth2/auth"
+			+ "?client_id=" + InoReaderSecret.apiClientId
+			+ "&redirect_uri=" + InoReaderSecret.apiRedirectUri
+			+ "&response_type=code"
+			+ "&scope=read+write"
+			+ "&state=" + InoReaderSecret.csrf_protection;
+	}
+
+	public bool needWebLogin()
+	{
+		return true;
+	}
+
+	public Gtk.Box? getWidget()
+	{
+		return null;
+	}
+
+	public void showHtAccess()
+	{
+		return;
+	}
+
 	public bool supportTags()
 	{
 		return true;
@@ -75,6 +165,11 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 	}
 
 	public bool supportMultiCategoriesPerFeed()
+	{
+		return true;
+	}
+
+	public bool syncFeedsAndCategories()
 	{
 		return true;
 	}
@@ -132,16 +227,16 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void markAllItemsRead()
 	{
-		var categories = dbDaemon.get_default().read_categories();
-		foreach(category cat in categories)
+		var categories = DataBase.readOnly().read_categories();
+		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = dbDaemon.get_default().read_feeds_without_cat();
-		foreach(feed Feed in feeds)
+		var feeds = DataBase.readOnly().read_feeds_without_cat();
+		foreach(Feed feed in feeds)
 		{
-			m_api.markAsRead(Feed.getFeedID());
+			m_api.markAsRead(feed.getFeedID());
 		}
 		m_api.markAsRead();
 	}
@@ -176,30 +271,38 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		return m_api.ping();
 	}
 
-	public string addFeed(string feedURL, string? catID, string? newCatName)
+	public bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg)
 	{
+		bool success = false;
+		feedID = "feed/" + feedURL;
+		errmsg = "";
+
 		if(catID == null && newCatName != null)
 		{
 			string newCatID = m_api.composeTagID(newCatName);
-			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID);
+			success = m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, newCatID, null);
 		}
 		else
 		{
-			m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID);
+			success = m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, {"feed/"+feedURL}, null, catID, null);
 		}
-		return "feed/" + feedURL;
+
+		if(!success)
+			errmsg = "Inoreader could not add %s";
+
+		return success;
 	}
 
-	public void addFeeds(Gee.List<feed> feeds)
+	public void addFeeds(Gee.List<Feed> feeds)
 	{
 		string cat = "";
 		string[] urls = {};
 
-		foreach(feed f in feeds)
+		foreach(Feed f in feeds)
 		{
 			if(f.getCatIDs()[0] != cat)
 			{
-				m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat);
+				m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat, null);
 				urls = {};
 				cat = f.getCatIDs()[0];
 			}
@@ -207,17 +310,17 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 			urls += "feed/" + f.getXmlUrl();
 		}
 
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat);
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.SUBSCRIBE, urls, null, cat, null);
 	}
 
 	public void removeFeed(string feedID)
 	{
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.UNSUBSCRIBE, {feedID});
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.UNSUBSCRIBE, {feedID}, null, null, null);
 	}
 
 	public void renameFeed(string feedID, string title)
 	{
-		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, {feedID}, title);
+		m_api.editSubscription(InoReaderAPI.InoSubscriptionAction.EDIT, {feedID}, title, null, null);
 	}
 
 	public void moveFeed(string feedID, string newCatID, string? currentCatID)
@@ -256,7 +359,7 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 		parser.parse();
 	}
 
-	public bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null)
+	public bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null)
 	{
 		if(m_api.getFeeds(feeds))
 		{
@@ -303,11 +406,11 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 					left = 0;
 				}
 			}
-			dbDaemon.get_default().updateArticlesByID(unreadIDs, "unread");
+			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
 			updateArticleList();
 		}
 
-		var articles = new Gee.LinkedList<article>();
+		var articles = new Gee.LinkedList<Article>();
 		string? continuation = null;
 		int left = count;
 		string? inoreader_feedID = (isTagID) ? null : feedID;

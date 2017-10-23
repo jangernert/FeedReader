@@ -16,11 +16,10 @@
 public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public signal void newFeedList();
-	public signal void updateFeedList();
+	public signal void refreshFeedListCounter();
 	public signal void updateArticleList();
-	public signal void writeInterfaceState();
 	public signal void showArticleListOverlay();
-	public signal void writeArticles(Gee.List<article> articles);
+	public signal void writeArticles(Gee.List<Article> articles);
 
 	public abstract void init();
 
@@ -45,6 +44,8 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 	public abstract bool supportMultiLevelCategories();
 
 	public abstract bool supportMultiCategoriesPerFeed();
+
+	public abstract bool syncFeedsAndCategories();
 
 	// some backends (inoreader, feedly) have the tag-name as part of the ID
 	// but for some of them the tagID changes when the name was changed (inoreader)
@@ -81,9 +82,9 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract bool serverAvailable();
 
-	public abstract string addFeed(string feedURL, string? catID = null, string? newCatName = null);
+	public abstract bool addFeed(string feedURL, string? catID, string? newCatName, out string feedID, out string errmsg);
 
-	public abstract void addFeeds(Gee.List<feed> feeds);
+	public abstract void addFeeds(Gee.List<Feed> feeds);
 
 	public abstract void removeFeed(string feedID);
 
@@ -103,10 +104,37 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract void importOPML(string opml);
 
-	public abstract bool getFeedsAndCats(Gee.List<feed> feeds, Gee.List<category> categories, Gee.List<tag> tags, GLib.Cancellable? cancellable = null);
+	public abstract bool getFeedsAndCats(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags, GLib.Cancellable? cancellable = null);
 
 	public abstract int getUnreadCount();
 
 	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null);
+
+	// UI stuff
+	public signal void tryLogin();
+
+	public abstract string getWebsite();
+
+	public abstract BackendFlags getFlags();
+
+	public abstract string getID();
+
+	public abstract Gtk.Box? getWidget();
+
+	public abstract string iconName();
+
+	public abstract string serviceName();
+
+	public abstract bool needWebLogin();
+
+	public abstract void showHtAccess();
+
+	public abstract void writeData();
+
+	public abstract async void postLoginAction();
+
+	public abstract bool extractCode(string redirectURL);
+
+	public abstract string buildLoginURL();
 
 }

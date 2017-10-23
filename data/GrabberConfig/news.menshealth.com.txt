@@ -1,1 +1,0 @@
-strip: //span[@style="color: #cf1206;"]

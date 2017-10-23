@@ -31,7 +31,7 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 		return false;
 	}
 
-	public void setupSystemAccounts(Gee.ArrayList<ShareAccount> accounts)
+	public void setupSystemAccounts(Gee.List<ShareAccount> accounts)
 	{
 
 	}
@@ -42,12 +42,12 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public string getIconName()
-    {
+	{
 		if(Gtk.IconTheme.get_default().lookup_icon("applications-internet", 0, Gtk.IconLookupFlags.FORCE_SVG) != null)
 			return "applications-internet";
 
-        return "feed-share-browser";
-    }
+		return "feed-share-browser";
+	}
 
 	public string getUsername(string id)
 	{
@@ -65,14 +65,14 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public bool useSystemAccounts()
-    {
-        return false;
-    }
+	{
+		return false;
+	}
 
 	public string pluginID()
-    {
-        return "browser";
-    }
+	{
+		return "browser";
+	}
 
 	public string pluginName()
 	{
@@ -80,14 +80,14 @@ public class FeedReader.Browser : ShareAccountInterface, Peas.ExtensionBase {
 	}
 
 	public ServiceSetup? newSetup_withID(string id, string username)
-    {
-        return null;
-    }
+	{
+		return null;
+	}
 
-    public ServiceSetup? newSetup()
-    {
-        return null;
-    }
+	public ServiceSetup? newSetup()
+	{
+		return null;
+	}
 
 	public ServiceSetup? newSystemAccount(string id, string username)
 	{

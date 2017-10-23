@@ -1,5 +1,0 @@
-title: //h1[@class="heading"]
-author: //cite[@class='author']
-date: //li[contains(@class, 'date-and-time')]
-
-

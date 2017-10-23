@@ -1,84 +1,97 @@
-set (NAME feedbin)
+set (PLUGNAME feedbin)
+set (PLUGTARGET ${PLUGNAME}_target)
 
-set (UINAME ${NAME}UI)
-set (DAEMONTARGET ${NAME}_target)
-set (UITARGET ${UINAME}_target)
+set (API_NAME ${PLUGNAME}API)
+set (API_TARGET ${API_NAME}_target)
+
+set (TEST_NAME ${PLUGNAME}_test)
+set (TEST_TARGET ${TEST_NAME}_target)
 
 # ----------------------------------------------------------
-# Daemon Plugin
+# Feedbin API Library
 # ----------------------------------------------------------
 
-vala_precompile(VALA_C ${DAEMONTARGET}
-    feedbinInterface.vala
-    feedbinAPI.vala
-    feedbinConnection.vala
-    feedbinUtils.vala
+vala_precompile(VALA_C ${API_TARGET}
+	feedbinAPI.vala
+
+GENERATE_VAPI
+	feedbinAPI
 
 PACKAGES
-    libpeas-1.0
-    json-glib-1.0
-    libsoup-2.4
-    gee-0.8
-    libxml-2.0
-    sqlite3
-    libsecret-1
+	json-glib-1.0
+	libsoup-2.4
+	gee-0.8
 
 OPTIONS
-    --target-glib=2.32
-    --library ${NAME}
-
-CUSTOM_VAPIS
-    ${CMAKE_BINARY_DIR}/FeedReader.vapi
-    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
+	--target-glib=2.32
+	--library ${API_NAME}
 )
 
-add_library(${NAME} SHARED ${VALA_C})
-target_link_libraries(${NAME} FeedReaderCommon)
-
+add_library(${API_NAME} STATIC ${VALA_C})
+set_property(TARGET ${API_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 # ----------------------------------------------------------
-# UI Plugin
+# Feedbin Plugin
 # ----------------------------------------------------------
 
-
-vala_precompile(VALA_C2 ${UITARGET}
-    feedbinLoginWidget.vala
-    feedbinUtils.vala
+vala_precompile(VALA_C ${PLUGTARGET}
+	feedbinInterface.vala
+	feedbinUtils.vala
 
 PACKAGES
-    libpeas-1.0
-    gtk+-3.0
-    gee-0.8
-    libsecret-1
-    sqlite3
-    libsoup-2.4
-    WebKit2-4.0
-    libxml-2.0
+	libpeas-1.0
+	gtk+-3.0
+	json-glib-1.0
+	libsoup-2.4
+	gee-0.8
+	libxml-2.0
+	sqlite3
+	libsecret-1
 
 OPTIONS
-    --target-glib=2.32
-    --library ${NAME}
+	--target-glib=2.32
+	--library ${PLUGNAME}
 
 CUSTOM_VAPIS
-    ${CMAKE_BINARY_DIR}/FeedReaderUI.vapi
-    ${CMAKE_BINARY_DIR}/FeedReaderCommon.vapi
-    ${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
+	${CMAKE_BINARY_DIR}/FeedReader.vapi
+	${CMAKE_BINARY_DIR}/plugins/backend/feedbin/feedbinAPI.vapi
+	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
+	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 )
 
-GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${NAME}.gresource.xml)
+GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${PLUGNAME}.gresource.xml)
 
-add_library(${UINAME} SHARED ${VALA_C2} ${GRESOURCES})
-
+add_library(${PLUGNAME} SHARED ${VALA_C} ${GRESOURCES})
+target_link_libraries(${PLUGNAME} ${API_NAME})
 
 # ----------------------------------------------------------
 
-add_dependencies(${NAME} ${UI_NAME} ${DAEMON_NAME})
-add_dependencies(${UINAME} ${UI_NAME} ${DAEMON_NAME})
+add_dependencies(${PLUGNAME} ${UI_NAME} ${FEEDREADER_NAME})
+add_schema("org.gnome.feedreader.${PLUGNAME}.gschema.xml")
 
+# ----------------------------------------------------------
+# Tests
+# ----------------------------------------------------------
 
-add_schema("org.gnome.feedreader.${NAME}.gschema.xml")
+install(TARGETS ${PLUGNAME} DESTINATION ${PKGLIBDIR}/plugins)
+install(FILES ${PLUGNAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
+vala_precompile(VALA_C ${TEST_TARGET}
+	TestFeedbin.vala
 
-install(TARGETS ${NAME} DESTINATION ${PKGLIBDIR}/plugins)
-install(TARGETS ${UINAME} DESTINATION ${PKGLIBDIR}/pluginsUI)
-install(FILES ${NAME}.plugin DESTINATION ${PKGLIBDIR}/plugins)
-install(FILES ${UINAME}.plugin DESTINATION ${PKGLIBDIR}/pluginsUI)
+PACKAGES
+	json-glib-1.0
+	libsoup-2.4
+	gee-0.8
+
+OPTIONS
+	--target-glib=2.32
+	--disable-warnings # since we frequently want to not catch errors
+
+CUSTOM_VAPIS
+	${CMAKE_BINARY_DIR}/plugins/backend/feedbin/feedbinAPI.vapi
+)
+
+add_executable(${TEST_NAME} ${VALA_C})
+target_link_libraries(${TEST_NAME} ${API_NAME})
+
+add_test(${PLUGNAME} gtester -k -o ${CMAKE_BINARY_DIR}/${PLUGNAME}.gtester.log ${TEST_NAME})

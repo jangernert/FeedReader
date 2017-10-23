@@ -595,18 +595,10 @@ public class FeedReader.Utils : GLib.Object {
 
 	public static string buildArticle(string html, string title, string url, string? author, string date, string feedID)
 	{
-		var article = new GLib.StringBuilder();
 		string theme = Settings.general().get_string("article-theme");
-
-		string author_date = "";
-		if(author != null)
-			author_date +=  _("posted by: %s, ").printf(author);
-
-		author_date += date;
 
 		string template = "";
 		string css = "";
-
 		try
 		{
 			if (!ArticleTheme.exists(theme)) {
@@ -628,19 +620,6 @@ public class FeedReader.Utils : GLib.Object {
 			Logger.error("Utils.buildArticle: %s".printf(e.message));
 		}
 
-		string select_id = "$UNSELECTABLE";
-		int select_pos = article.str.index_of(select_id);
-
-		if(Settings.tweaks().get_boolean("article-select-text"))
-		{
-			article.erase(select_pos-1, select_id.length+1);
-		}
-		else
-		{
-			article.erase(select_pos, select_id.length);
-			article.insert(select_pos, "unselectable");
-		}
-
 		// Calculate the Large and Small font sizes
 		string font = Settings.general().get_string("font");
 		var desc = Pango.FontDescription.from_string(font);
@@ -650,23 +629,31 @@ public class FeedReader.Utils : GLib.Object {
 		string large_size = (fontsize * 2).to_string();
 		string normal_size = fontsize.to_string();
 
-		string article_content = article.str;
+		if (author != null) {
+			template = template.replace("$AUTHOR", author);
+		} else {
+			template = template.replace("$AUTHOR", _("Unknown"));
+		}
+		template = template.replace("$HTML", html);
+		template = template.replace("$DATE", date);
+		template = template.replace("$TITLE", title);
+		template = template.replace("$URL", url);
+		template = template.replace("$FEED", DataBase.readOnly().read_feed(feedID).getTitle());
+		template = template.replace("$FONTFAMILY", fontfamilly);
+		template = template.replace("$SMALLSIZE", normal_size);
+		template = template.replace("$LARGESIZE", large_size);
+		template = template.replace("$FONTSIZE", small_size);
+		template = template.replace("$CSS", css);
 
-		article_content.replace("$HTML", html);
-		article_content.replace("$AUTHOR", author_date);
-		article_content.replace("$TITLE", title);
-		article_content.replace("$URL", url);
-		article_content.replace("$FEED", DataBase.readOnly().read_feed(feedID).getTitle());
-		article_content.replace("$FONTFAMILY", fontfamilly);
-		article_content.replace("$SMALLSIZE", normal_size);
-		article_content.replace("$LARGESIZE", large_size);
-		article_content.replace("$FONTSIZE", small_size);
-		article_content.replace("$CSS", css);
-
-		// Replace article content with the correct one
-		article.assign(article_content);
-
-		return article.str;
+		if(Settings.tweaks().get_boolean("article-select-text"))
+		{
+			template = template.replace("$UNSELECTABLE", "");
+		}
+		else
+		{
+			template = template.replace("$UNSELECTABLE", "unselectable");
+		}
+		return template;
 	}
 
 	public static bool canManipulateContent(bool? online = null)

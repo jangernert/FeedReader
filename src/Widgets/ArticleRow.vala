@@ -270,13 +270,13 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 
 		Feed feed = DataBase.readOnly().read_feed(m_article.getFeedID());
 		var favicon = FavIcon.for_feed(feed);
-		favicon.get_pixbuf.begin((obj, res) => {
-			var pixbuf = favicon.get_pixbuf.end(res);
-			if(pixbuf != null)
-				icon.pixbuf = pixbuf;
+		favicon.get_surface.begin((obj, res) => {
+			var surface = favicon.get_surface.end(res);
+			if(surface != null)
+				icon.surface = surface;
 		});
-		ulong handler_id = favicon.pixbuf_changed.connect((feed, pixbuf) => {
-			icon.pixbuf = pixbuf;
+		ulong handler_id = favicon.surface_changed.connect((feed, surface) => {
+			icon.surface = surface;
 		});
 		icon.destroy.connect(() => {
 			favicon.disconnect(handler_id);

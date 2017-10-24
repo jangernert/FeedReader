@@ -153,16 +153,16 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 		icon.get_style_context().add_class("fr-sidebar-symbolic");
 
 		var favicon = FavIcon.for_feed(m_feed);
-		favicon.get_pixbuf.begin((obj, res) => {
-			var pixbuf = favicon.get_pixbuf.end(res);
-			if(pixbuf != null)
+		favicon.get_surface.begin((obj, res) => {
+			var surface = favicon.get_surface.end(res);
+			if(surface != null)
 			{
-				icon.pixbuf = pixbuf;
+				icon.surface = surface;
 				m_icon.get_style_context().remove_class("fr-sidebar-symbolic");
 			}
 		});
-		ulong handler_id = favicon.pixbuf_changed.connect((feed, pixbuf) => {
-			icon.pixbuf = pixbuf;
+		ulong handler_id = favicon.surface_changed.connect((feed, surface) => {
+			icon.surface = surface;
 			icon.get_style_context().remove_class("fr-sidebar-symbolic");
 		});
 		icon.destroy.connect(() => {

@@ -37,14 +37,24 @@ public class FeedReader.FavIcon : GLib.Object
 	private Gee.Promise<Gdk.Pixbuf?> m_pixbuf = null;
 	private ResourceMetadata m_metadata;
 
-	public signal void pixbuf_changed(Feed feed, Gdk.Pixbuf pixbuf);
+	public signal void surface_changed(Feed feed, Cairo.Surface surface);
 
 	private FavIcon(Feed feed)
 	{
 		m_feed = feed;
 	}
 
-	public async Gdk.Pixbuf? get_pixbuf()
+	private int GetScaleFactor()
+	{
+		return MainWindow.get_default().get_style_context().get_scale();
+	}
+
+	private Cairo.Surface CreateSurfaceFromPixbuf(Gdk.Pixbuf pixbuf)
+	{
+		return Gdk.cairo_surface_create_from_pixbuf(pixbuf, GetScaleFactor(), null);
+	}
+
+	public async Cairo.Surface? get_surface()
 	{
 		// wait for ready + expired so we don't make a bunch of requests at once
 		if(m_pixbuf == null || (m_pixbuf.future.ready && m_metadata.is_expired()))
@@ -56,7 +66,9 @@ public class FeedReader.FavIcon : GLib.Object
 		}
 		try
 		{
-			return yield m_pixbuf.future.wait_async();
+			Gdk.Pixbuf pixbuf = yield m_pixbuf.future.wait_async();
+			return CreateSurfaceFromPixbuf(pixbuf);
+
 		}
 		catch(Error e)
 		{
@@ -81,11 +93,12 @@ public class FeedReader.FavIcon : GLib.Object
 				Logger.warning("FavIcon: Icon for feed %s is too small".printf(m_feed.getTitle()));
 				return;
 			}
-			pixbuf = pixbuf.scale_simple(24, 24, Gdk.InterpType.BILINEAR);
+			int scale = GetScaleFactor();
+			pixbuf = pixbuf.scale_simple(24 * scale, 24 * scale, Gdk.InterpType.BILINEAR);
 
 			m_pixbuf.set_value(pixbuf);
 			if(pixbuf != null)
-				pixbuf_changed(m_feed, pixbuf);
+				surface_changed(m_feed, CreateSurfaceFromPixbuf(pixbuf));
 		}
 		catch(Error e)
 		{

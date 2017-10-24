@@ -44,12 +44,12 @@ public class FeedReader.FavIcon : GLib.Object
 		m_feed = feed;
 	}
 
-	private int GetScaleFactor()
+	private int get_scale_factor()
 	{
 		return MainWindow.get_default().get_style_context().get_scale();
 	}
 
-	private Cairo.Surface CreateSurfaceFromPixbuf(Gdk.Pixbuf pixbuf)
+	private Cairo.Surface create_surface_from_pixbuf(Gdk.Pixbuf pixbuf)
 	{
 		return Gdk.cairo_surface_create_from_pixbuf(pixbuf, GetScaleFactor(), null);
 	}
@@ -67,7 +67,7 @@ public class FeedReader.FavIcon : GLib.Object
 		try
 		{
 			Gdk.Pixbuf pixbuf = yield m_pixbuf.future.wait_async();
-			return CreateSurfaceFromPixbuf(pixbuf);
+			return create_surface_from_pixbuf(pixbuf);
 
 		}
 		catch(Error e)
@@ -93,12 +93,12 @@ public class FeedReader.FavIcon : GLib.Object
 				Logger.warning("FavIcon: Icon for feed %s is too small".printf(m_feed.getTitle()));
 				return;
 			}
-			int scale = GetScaleFactor();
+			int scale = get_scale_factor();
 			pixbuf = pixbuf.scale_simple(24 * scale, 24 * scale, Gdk.InterpType.BILINEAR);
 
 			m_pixbuf.set_value(pixbuf);
 			if(pixbuf != null)
-				surface_changed(m_feed, CreateSurfaceFromPixbuf(pixbuf));
+				surface_changed(m_feed, create_surface_from_pixbuf(pixbuf));
 		}
 		catch(Error e)
 		{

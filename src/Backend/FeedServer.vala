@@ -21,7 +21,10 @@ public class FeedReader.FeedServer : GLib.Object {
 	private FeedServerInterface? m_plugin;
 	private Peas.Engine m_engine;
 
+	public signal void PluginsChanedEvent();
+
 	private static FeedServer? m_server;
+
 
 	public static FeedServer get_default()
 	{
@@ -42,10 +45,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		m_extensions.extension_added.connect((info, extension) => {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
 			(extension as FeedServerInterface).init();
+			PluginsChanedEvent();
 		});
 
 		m_extensions.extension_removed.connect((info, extension) => {
 			Logger.debug("feedserver: plugin removed %s".printf(info.get_name()));
+			PluginsChanedEvent();
 		});
 
 		m_engine.load_plugin.connect((info) => {
@@ -56,10 +61,32 @@ public class FeedReader.FeedServer : GLib.Object {
 			Logger.debug("feedserver: engine unload %s".printf(info.get_name()));
 		});
 
+		if(Settings.general().get_string("plugin") == "none")
+		{
+			LoadAllPlugins();
+		}
+		else
+		{
+			LoadPlugin(Settings.general().get_string("plugin"));
+		}
+	}
+
+	public void LoadAllPlugins()
+	{
+		Logger.debug("FeedServer: load all available plugins");
 		foreach(var plugin in m_engine.get_plugin_list())
 		{
 			m_engine.try_load_plugin(plugin);
 		}
+
+		// have to readd this path, otherwise new icons won't show up
+		Gtk.IconTheme.get_default().add_resource_path("/org/gnome/FeedReader/icons");
+	}
+
+	private void LoadPlugin(string pluginID)
+	{
+		var plugin = m_engine.get_plugin_info(pluginID);
+		m_engine.try_load_plugin(plugin);
 	}
 
 	public bool pluginLoaded()

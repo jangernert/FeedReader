@@ -51,7 +51,7 @@ public class FeedReader.FavIcon : GLib.Object
 
 	private Cairo.Surface create_surface_from_pixbuf(Gdk.Pixbuf pixbuf)
 	{
-		return Gdk.cairo_surface_create_from_pixbuf(pixbuf, GetScaleFactor(), null);
+		return Gdk.cairo_surface_create_from_pixbuf(pixbuf, get_scale_factor(), null);
 	}
 
 	public async Cairo.Surface? get_surface()

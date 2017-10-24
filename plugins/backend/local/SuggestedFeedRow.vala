@@ -71,9 +71,9 @@ public class FeedReader.SuggestedFeedRow : Gtk.ListBoxRow {
 	private async void load_favicon(Gtk.Stack iconStack, Feed feed, string iconURL)
 	{
 		Gtk.Image? icon = null;
-		var pixBuf = yield FavIcon.for_feed(feed).get_pixbuf();
-		if(pixBuf != null)
-			icon = new Gtk.Image.from_pixbuf(pixBuf);
+		var surface = yield FavIcon.for_feed(feed).get_surface();
+		if(surface != null)
+			icon = new Gtk.Image.from_surface(surface);
 		else
 			icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 

@@ -67,8 +67,10 @@ public class FeedReader.FavIcon : GLib.Object
 		try
 		{
 			Gdk.Pixbuf pixbuf = yield m_pixbuf.future.wait_async();
-			return create_surface_from_pixbuf(pixbuf);
+			if(pixbuf == null)
+				return null;
 
+			return create_surface_from_pixbuf(pixbuf);
 		}
 		catch(Error e)
 		{

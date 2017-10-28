@@ -118,14 +118,14 @@ public class FeedbinAPI : Object {
 		return request("GET", path);
 	}
 
-	private Json.Node get_json(string path) throws FeedbinError
+	private static Json.Node parse_json(Soup.Message response) throws FeedbinError
 	{
-		string content;
-		var response = get_request(path);
-		content = (string)response.response_body.flatten().data;
+		var method = response.method;
+		var uri = response.uri.to_string(false);
+		string content = (string)response.response_body.flatten().data;
 		if(content == null)
 		{
-			throw new FeedbinError.INVALID_FORMAT(@"GET $path returned no content but expected JSON");
+			throw new FeedbinError.INVALID_FORMAT(@"$method $uri returned no content but expected JSON");
 		}
 
 		var parser = new Json.Parser();
@@ -135,9 +135,15 @@ public class FeedbinAPI : Object {
 		}
 		catch (Error e)
 		{
-			throw new FeedbinError.INVALID_FORMAT(@"GET $path returned invalid JSON: " + e.message + "\nContent is: $content");
+			throw new FeedbinError.INVALID_FORMAT(@"$method $uri returned invalid JSON: " + e.message + "\nContent is: $content");
 		}
 		return parser.get_root();
+	}
+
+	private Json.Node get_json(string path) throws FeedbinError
+	{
+		var response = get_request(path);
+		return parse_json(response);
 	}
 
 	private Soup.Message post_json_object(string path, Json.Object obj) throws FeedbinError
@@ -208,7 +214,7 @@ public class FeedbinAPI : Object {
 		delete_request(@"subscriptions/$subscription_id.json");
 	}
 
-	public int64 add_subscription(string url) throws FeedbinError
+	public Subscription add_subscription(string url) throws FeedbinError
 	{
 		Json.Object object = new Json.Object();
 		object.set_string_member("feed_url", url);
@@ -217,23 +223,8 @@ public class FeedbinAPI : Object {
 		if(response.status_code == 300)
 			throw new FeedbinError.MULTIPLE_CHOICES("Site $url has multiple feeds to subscribe to");
 
-		var location = response.response_headers.get_one("Location");
-		if(location == null) {
-			// Lookup the subscription ID if Feedbin doesn't return it.
-			// This seems to be a bug in the Feedbin API if a subscription already exists
-			foreach(var subscription in get_subscriptions())
-			{
-				if(subscription.feed_url == url)
-					return subscription.id;
-			}
-			throw new FeedbinError.UNKNOWN_ERROR(@"Feedbin API error adding feed $url: couldn't figure out the created subscription ID");
-		}
-
-		var last_slash = location.last_index_of_char('/');
-		location = location.substring(last_slash + 1);
-		var last_dot = location.last_index_of_char('.');
-		location = location.substring(0, last_dot);
-		return int64.parse(location);
+		var root = parse_json(response);
+		return Subscription.from_json(root.get_object());
 	}
 
 	public void rename_subscription(int64 subscription_id, string title) throws FeedbinError

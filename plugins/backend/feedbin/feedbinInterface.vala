@@ -350,8 +350,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	{
 		try
 		{
-			var subscription_id = m_api.add_subscription(feed_url);
-			var subscription = m_api.get_subscription(subscription_id);
+			var subscription = m_api.add_subscription(feed_url);
 			feed_id = subscription.feed_id.to_string();
 
 			if(category_name != null)

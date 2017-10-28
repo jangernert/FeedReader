@@ -52,33 +52,35 @@ void add_login_tests(string host)
         var url = "https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-subscribe-$nonce";
         delete_subscription(api, url);
 
-        var subscription_id = api.add_subscription(url);
-        assert(subscription_id != 0);
+        var subscription = api.add_subscription(url);
+        assert(subscription.id != 0);
 
-        var created_subscription = api.get_subscription(subscription_id);
-        assert(created_subscription.id == subscription_id);
+		{
+			var got_subscription = api.get_subscription(subscription.id);
+			assert(got_subscription.id == subscription.id);
+		}
 
         bool found_subscription = false;
-        foreach(var subscription in api.get_subscriptions())
+        foreach(var got_subscription in api.get_subscriptions())
         {
-            if(subscription.id == subscription_id)
+            if(got_subscription.id == subscription.id)
             {
-                assert(subscription.feed_url == created_subscription.feed_url);
+				assert(got_subscription == subscription);
                 found_subscription = true;
             }
         }
         assert(found_subscription);
 
         string title = "Rename test";
-        api.rename_subscription(subscription_id, title);
-        var renamed_subscription = api.get_subscription(subscription_id);
+        api.rename_subscription(subscription.id, title);
+        var renamed_subscription = api.get_subscription(subscription.id);
         assert(renamed_subscription.title == title);
 
-        api.delete_subscription(subscription_id);
-        foreach(var subscription in api.get_subscriptions())
+        api.delete_subscription(subscription.id);
+        foreach(var got_subscription in api.get_subscriptions())
         {
-            assert(subscription.id != subscription_id);
-            assert(subscription.feed_url != url);
+            assert(got_subscription.id != subscription.id);
+            assert(got_subscription.feed_url != url);
         }
     });
 
@@ -94,27 +96,23 @@ void add_login_tests(string host)
         var url = @"https://www.brendanlong.com/feeds/all.atom.xml?feedreader-test-taggings-$nonce";
         delete_subscription(api, url);
 
-        var subscription_id = api.add_subscription(url);
-        assert(subscription_id != 0);
-
-        var created_subscription = api.get_subscription(subscription_id);
-        assert(created_subscription.id == subscription_id);
+        var subscription = api.add_subscription(url);
 
         // The subscription is new so it shouldn't have any taggings
         var taggings = api.get_taggings();
         foreach(var tagging in taggings)
         {
-            assert(tagging.feed_id != created_subscription.feed_id);
+            assert(tagging.feed_id != subscription.feed_id);
         }
 
         string category = "Taggings Test";
-        api.add_tagging(created_subscription.feed_id, category);
+        api.add_tagging(subscription.feed_id, category);
 
         // Check taggings
         int64? tagging_id = null;
         foreach(var tagging in api.get_taggings())
         {
-            if(tagging.feed_id == created_subscription.feed_id)
+            if(tagging.feed_id == subscription.feed_id)
             {
                 assert(tagging.name == category);
                 tagging_id = tagging.id;
@@ -127,11 +125,11 @@ void add_login_tests(string host)
         api.delete_tagging(tagging_id);
         foreach(var tagging in api.get_taggings())
         {
-            assert(tagging.feed_id != created_subscription.feed_id);
+            assert(tagging.feed_id != subscription.feed_id);
 		}
 
 		// cleanup
-		api.delete_subscription(subscription_id);
+		api.delete_subscription(subscription.id);
     });
 
     Test.add_data_func ("/feedbinapi/entries", () => {
@@ -146,11 +144,7 @@ void add_login_tests(string host)
 		// Note: This one shouldn't be deleted or recreated, since we want the entries to be available
         var url = "https://www.brendanlong.com/feeds/all.atom.xml?feed-reader-test-entries";
 
-        var subscription_id = api.add_subscription(url);
-        assert(subscription_id != 0);
-
-        var subscription = api.get_subscription(subscription_id);
-        assert(subscription.id == subscription_id);
+        var subscription = api.add_subscription(url);
 
         /* FIXME: Figure out why this next line is failing
         var entries = api.get_entries(1, false, null, subscription.feed_id);

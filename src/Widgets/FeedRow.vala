@@ -417,6 +417,9 @@ public class FeedReader.FeedRow : Gtk.ListBoxRow {
 
 	public void activateUnreadEventbox(bool activate)
 	{
+		if(m_unreadBox == null)
+			return;
+
 		if(activate)
 		{
 			m_unreadBox.button_press_event.connect(onUnreadClick);

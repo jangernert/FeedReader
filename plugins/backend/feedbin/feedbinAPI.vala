@@ -391,20 +391,36 @@ public class FeedbinAPI : Object {
 
 	public Gee.Map<string, Bytes?> get_favicons() throws FeedbinError
 	{
-		var root = get_json("favicons.json");
-		if(root == null)
-			return Gee.Map.empty<string, Bytes?>();
-
-		var favicons = new Gee.HashMap<string, Bytes?>();
-		var array = root.get_array();
-		for(var i = 0; i < array.get_length(); ++i)
+		// The favicon API isn't public right now; make sure to handle it
+		// suddenly changing or disappearing
+		try
 		{
-			var obj = array.get_object_element(i);
-			string host = obj.get_string_member("host");
-			var favicon_encoded = obj.get_string_member("favicon");
-			var favicon = favicon_encoded == null ? null : new Bytes.take(Base64.decode(favicon_encoded));
-			favicons.set(host, favicon);
+			var root = get_json("favicons.json");
+			if(root == null)
+				return Gee.Map.empty<string, Bytes?>();
+
+			var array = root.get_array();
+			if(array == null)
+				return Gee.Map.empty<string, Bytes?>();
+
+			var favicons = new Gee.HashMap<string, Bytes?>();
+			for(var i = 0; i < array.get_length(); ++i)
+			{
+				var obj = array.get_object_element(i);
+				string host = obj.get_string_member("host");
+				if(host == null)
+					continue;
+				var favicon_encoded = obj.get_string_member("favicon");
+				if(favicon_encoded == null)
+					continue;
+				var favicon = new Bytes.take(Base64.decode(favicon_encoded));
+				favicons.set(host, favicon);
+			}
+			return favicons;
 		}
-		return favicons;
+		catch(Error e)
+		{
+			return Gee.Map.empty<string, Bytes?>();
+		}
 	}
 }

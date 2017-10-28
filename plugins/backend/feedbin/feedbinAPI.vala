@@ -389,4 +389,22 @@ public class FeedbinAPI : Object {
 		set_entries_status("starred_entries", entry_ids, starred);
 	}
 
+	public Gee.Map<string, Bytes?> get_favicons() throws FeedbinError
+	{
+		var root = get_json("favicons.json");
+		if(root == null)
+			return Gee.Map.empty<string, Bytes?>();
+
+		var favicons = new Gee.HashMap<string, Bytes?>();
+		var array = root.get_array();
+		for(var i = 0; i < array.get_length(); ++i)
+		{
+			var obj = array.get_object_element(i);
+			string host = obj.get_string_member("host");
+			var favicon_encoded = obj.get_string_member("favicon");
+			var favicon = favicon_encoded == null ? null : new Bytes.take(Base64.decode(favicon_encoded));
+			favicons.set(host, favicon);
+		}
+		return favicons;
+	}
 }

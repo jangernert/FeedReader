@@ -189,6 +189,51 @@ void add_login_tests(string host)
         assert(starred_entries.contains(entry.id));
         */
     });
+
+    Test.add_data_func ("/feedbinapi/favicons", () => {
+        if(username == null || password == null)
+        {
+            Test.skip(@"Need $user_env and $password_env set to run Feedbin tests");
+            return;
+		}
+
+		Bytes? expected_favicon;
+		{
+			var session = new Soup.Session();
+			var message = new Soup.Message("GET", "https://www.brendanlong.com/theme/favicon.ico");
+			var inputstream = session.send(message);
+			var bytearray = new ByteArray();
+			uint8[] buffer = new uint8[4096];
+			size_t bytes_read = 0;
+			do
+			{
+				inputstream.read_all(buffer, out bytes_read);
+				bytearray.append(buffer[0:bytes_read]);
+			}
+			while(bytes_read == 4096);
+			expected_favicon = ByteArray.free_to_bytes(bytearray);
+		}
+
+        var api = new FeedbinAPI(username, password, null, host);
+
+		// Note: This one shouldn't be deleted or recreated, since we want the entries to be available
+        var url = "https://www.brendanlong.com/feeds/all.atom.xml?feed-reader-test-favicons";
+
+		var subscription = api.add_subscription(url);
+		var favicons = api.get_favicons();
+		bool found_favicon = false;
+		foreach(var i in favicons.entries)
+		{
+			if(i.key != "www.brendanlong.com")
+				continue;
+			assert(i.value == expected_favicon);
+			// FIXME: We don't download icons on the test server because favicon downloading
+			// is handled by a different service
+			//found_favicon = true;
+			break;
+		}
+		assert(found_favicon);
+	});
 }
 
 void main(string[] args)

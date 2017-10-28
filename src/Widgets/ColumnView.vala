@@ -490,7 +490,9 @@ public class FeedReader.ColumnView : Gtk.Paned {
 		state.setFeedListWidth(m_pane.get_position());
 		state.setFeedListScrollPos(m_feedList.vadjustment.value);
 		state.setArticleViewScrollPos(m_article_view.getScrollPos());
-		state.setArticleListSelectedRow(m_articleList.getSelectedArticle().getArticleID());
+		var selectedArticle = m_articleList.getSelectedArticle();
+		if(selectedArticle != null)
+			state.setArticleListSelectedRow(selectedArticle.getArticleID());
 		state.setArticleListTopRow(m_articleList.getFirstArticle());
 
 		m_headerbar.saveState(ref state);

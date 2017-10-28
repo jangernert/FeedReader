@@ -261,6 +261,30 @@ public class FeedReader.FavIcon : GLib.Object
 			return null;
 		}
 
+		if(icon_url.has_prefix("data:"))
+		{
+			// LibSoup doesn't seem to handle data URI's properly, so handle them
+			// ourselves..
+			int comma = icon_url.index_of_char(',');
+			if(comma == -1)
+			{
+				Logger.warning(@"Invalid data URI: $icon_url");
+				return null;
+			}
+			int semicolon = icon_url.index_of_char(';');
+			string data_str = icon_url[comma:icon_url.length];
+			uint8[] data;
+			if(semicolon != -1 && semicolon < comma && icon_url[semicolon + 1:comma] == "base64")
+			{
+				data = Base64.decode(data_str);
+			}
+			else
+			{
+				data = data_str.data;
+			}
+			return new MemoryInputStream.from_data(data);
+		}
+
 		string filename_prefix = m_icon_path + m_feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
 
@@ -269,6 +293,11 @@ public class FeedReader.FavIcon : GLib.Object
 
 		Logger.debug(@"Utils.downloadIcon: url = $icon_url");
 		var message = new Soup.Message("GET", icon_url);
+		if(message == null)
+		{
+			Logger.warning(@"Failed to create message for icon URL $icon_url");
+			return null;
+		}
 		if(Settings.tweaks().get_boolean("do-not-track"))
 			message.request_headers.append("DNT", "1");
 

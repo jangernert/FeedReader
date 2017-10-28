@@ -530,6 +530,10 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			if(cancellable != null && cancellable.is_cancelled())
 				return false;
 
+			var favicons = m_api.get_favicons();
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
 			// It's easier to rebuild the category list than to update it
 			var category_names = new Gee.HashSet<string>();
 			foreach(var tagging in taggings)
@@ -570,10 +574,26 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 			{
 				var feed_id = subscription.feed_id.to_string();
 				Gee.List<string> feed_categories = new Gee.ArrayList<string>();
+
 				if(tag_map.contains(feed_id))
 					feed_categories.add_all(tag_map.get(feed_id));
 				else
 					feed_categories.add(uncategorizedID());
+
+				string? favicon_uri = null;
+				if(subscription.site_url != null)
+				{
+					var uri = new Soup.URI(subscription.site_url);
+					if(uri != null)
+					{
+						var favicon = favicons.get(uri.host);
+						if(favicon != null)
+						{
+							string base64 = Base64.encode(favicon.get_data());
+							favicon_uri = @"data:application/octet-stream;base64,$base64";
+						}
+					}
+				}
 
 				feeds.add(
 					new Feed(
@@ -582,7 +602,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 						subscription.site_url,
 						0,
 						feed_categories,
-						null,
+						favicon_uri,
 						subscription.feed_url)
 				);
 			}

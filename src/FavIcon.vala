@@ -113,8 +113,39 @@ public class FeedReader.FavIcon : GLib.Object
 		}
 	}
 
+	private InputStream? try_load_data_uri(string? icon_url)
+	{
+		if(icon_url == null || !icon_url.has_prefix("data"))
+			return null;
+
+		// LibSoup doesn't seem to handle data URI's properly, so handle them
+		// ourselves..
+		int comma = icon_url.index_of_char(',');
+		if(comma == -1)
+		{
+			Logger.warning(@"Invalid data URI: $icon_url");
+			return null;
+		}
+		int semicolon = icon_url.index_of_char(';');
+		string data_str = icon_url[comma:icon_url.length];
+		uint8[] data;
+		if(semicolon != -1 && semicolon < comma && icon_url[semicolon + 1:comma] == "base64")
+		{
+			data = Base64.decode(data_str);
+		}
+		else
+		{
+			data = data_str.data;
+		}
+		return new MemoryInputStream.from_data(data);
+	}
+
 	private async InputStream? downloadFavIcon(GLib.Cancellable? cancellable = null) throws GLib.Error
 	{
+		var datastream = try_load_data_uri(m_feed.getIconURL());
+		if(datastream != null)
+			return datastream;
+
 		string filename_prefix = m_icon_path + m_feed.getFeedFileName();
 		string local_filename = @"$filename_prefix.ico";
 		string metadata_filename = @"$filename_prefix.txt";
@@ -259,30 +290,6 @@ public class FeedReader.FavIcon : GLib.Object
 		{
 			Logger.warning(@"Utils.downloadIcon: icon_url not valid $icon_url");
 			return null;
-		}
-
-		if(icon_url.has_prefix("data:"))
-		{
-			// LibSoup doesn't seem to handle data URI's properly, so handle them
-			// ourselves..
-			int comma = icon_url.index_of_char(',');
-			if(comma == -1)
-			{
-				Logger.warning(@"Invalid data URI: $icon_url");
-				return null;
-			}
-			int semicolon = icon_url.index_of_char(';');
-			string data_str = icon_url[comma:icon_url.length];
-			uint8[] data;
-			if(semicolon != -1 && semicolon < comma && icon_url[semicolon + 1:comma] == "base64")
-			{
-				data = Base64.decode(data_str);
-			}
-			else
-			{
-				data = data_str.data;
-			}
-			return new MemoryInputStream.from_data(data);
 		}
 
 		string filename_prefix = m_icon_path + m_feed.getFeedFileName();

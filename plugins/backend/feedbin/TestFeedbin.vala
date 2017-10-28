@@ -65,7 +65,10 @@ void add_login_tests(string host)
         {
             if(got_subscription.id == subscription.id)
             {
-				assert(got_subscription == subscription);
+				assert(got_subscription.feed_id == subscription.feed_id);
+				assert(got_subscription.feed_url == subscription.feed_url);
+				assert(got_subscription.site_url == subscription.site_url);
+				assert(got_subscription.title == subscription.title);
                 found_subscription = true;
             }
         }

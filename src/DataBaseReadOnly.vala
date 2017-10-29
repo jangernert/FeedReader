@@ -136,27 +136,34 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return rows[0][0].to_int() == 0;
 	}
 
-	public uint get_unread_total()
+	private uint count_article_status(ArticleStatus status)
 	{
-		var query = "SELECT COUNT(*) FROM articles WHERE unread = ?";
-		var rows = m_db.execute(query, { ArticleStatus.UNREAD });
+		var query = "SELECT COUNT(*) FROM articles";
+		string status_column = status.column();
+		if(status_column != null)
+			query += @" WHERE $status_column = ?";
+		var rows = m_db.execute(query, { status });
 		assert(rows.size == 1 && rows[0].size == 1);
 		return rows[0][0].to_int();
+	}
+
+	public uint get_unread_total()
+	{
+		return count_article_status(ArticleStatus.UNREAD);
 	}
 
 	public uint get_marked_total()
 	{
-		var query = "SELECT COUNT(*) FROM articles WHERE marked = ?";
-		var rows = m_db.execute(query, { ArticleStatus.MARKED });
-		assert(rows.size == 1 && rows[0].size == 1);
-		return rows[0][0].to_int();
+		return count_article_status(ArticleStatus.MARKED);
 	}
 
-	public uint get_unread_uncategorized()
+	private uint count_status_uncategorized(ArticleStatus status)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("count(*)");
-		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+		var status_column = status.column();
+		if(status_column != null)
+			query.addEqualsCondition(status_column, status.to_string());
 		query.addCustomCondition(getUncategorizedFeedsQuery());
 		query.build();
 
@@ -170,22 +177,14 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return unread;
 	}
 
+	public uint get_unread_uncategorized()
+	{
+		return count_status_uncategorized(ArticleStatus.UNREAD);
+	}
+
 	public uint get_marked_uncategorized()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
-		query.addCustomCondition(getUncategorizedFeedsQuery());
-		query.build();
-
-		Sqlite.Statement stmt = m_db.prepare(query.get());
-
-		int marked = 0;
-		while (stmt.step() == Sqlite.ROW) {
-			marked = stmt.column_int(0);
-		}
-		stmt.reset();
-		return marked;
+		return count_status_uncategorized(ArticleStatus.MARKED);
 	}
 
 	public int getTagColor()

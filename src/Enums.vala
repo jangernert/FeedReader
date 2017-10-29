@@ -83,6 +83,20 @@ namespace FeedReader {
 		{
 			return (int)this;
 		}
+
+		public string? column()
+		{
+			switch(this) {
+			case READ:
+			case UNREAD:
+				return "unread";
+			case MARKED:
+			case UNMARKED:
+				return "marked";
+			default:
+				return null;
+			}
+		}
 	}
 
 	public enum LoginResponse {

@@ -572,7 +572,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		m_db.simple_query("DELETE FROM main.feeds WHERE \"subscribed\" = 0");
 	}
 
-
 	public void delete_nonexisting_categories()
 	{
 		Logger.warning("DataBase: Deleting nonexisting categories");
@@ -683,10 +682,8 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 	public void removeCatFromFeed(string feedID, string catID)
 	{
 		var feed = read_feed(feedID);
-		var query = new QueryBuilder(QueryType.UPDATE, "feeds");
-		query.updateValuePair("category_id", feed.getCatString().replace(catID + ",", ""), true);
-		query.addEqualsCondition("feed_id", feedID, true, true);
-		m_db.simple_query(query.build());
+		m_db.execute("UPDATE feeds SET category_id = ? WHERE feed_id = ?",
+			{ feed.getCatString().replace(catID + ",", ""), feedID });
 	}
 
 	public void delete_feed(string feedID)

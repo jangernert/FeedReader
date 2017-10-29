@@ -196,7 +196,16 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
 
-
+		var drop_articles = (DropArticles)Settings.general().get_enum("drop-articles-after");
+		DateTime? since = drop_articles.to_start_date();
+		if(!DataBase.readOnly().isTableEmpty("articles"))
+		{
+			var last_sync = new DateTime.from_unix_utc(Settings.state().get_int("last-sync"));
+			if(since == null || last_sync.to_unix() > since.to_unix())
+			{
+				since = last_sync;
+			}
+		}
 
 		int unread = getUnreadCount();
 		int max = ArticleSyncCount();
@@ -208,12 +217,12 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		if(unread > max && useMaxArticles())
 		{
-			getArticles(20, ArticleStatus.MARKED, null, false, cancellable);
-			getArticles(unread, ArticleStatus.UNREAD, null, false, cancellable);
+			getArticles(20, ArticleStatus.MARKED, since, null, false, cancellable);
+			getArticles(unread, ArticleStatus.UNREAD, since, null, false, cancellable);
 		}
 		else
 		{
-			getArticles(max, ArticleStatus.ALL, null, false, cancellable);
+			getArticles(max, ArticleStatus.ALL, since, null, false, cancellable);
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())
@@ -230,7 +239,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			Notification.send(newArticles);
 		}
 
-		var drop_weeks = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_weeks();
+		var drop_weeks = drop_articles.to_weeks();
 		if(drop_weeks != null)
 			DataBase.writeAccess().dropOldArtilces(-(int)drop_weeks);
 
@@ -277,9 +286,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
 
+		var drop_articles = (DropArticles)Settings.general().get_enum("drop-articles-after");
+		DateTime? since = drop_articles.to_start_date();
+
 		// get marked articles
 		syncProgress(_("Getting starred articles"));
-		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED, null, false, cancellable);
+		getArticles(Settings.general().get_int("max-articles"), ArticleStatus.MARKED, since, null, false, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -288,7 +300,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		syncProgress(_("Getting tagged articles"));
 		foreach(var tag_item in DataBase.readOnly().read_tags())
 		{
-			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, tag_item.getTagID(), true, cancellable);
+			getArticles((Settings.general().get_int("max-articles")/8), ArticleStatus.ALL, since, tag_item.getTagID(), true, cancellable);
 			if(cancellable != null && cancellable.is_cancelled())
 				return;
 		}
@@ -296,7 +308,7 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(useMaxArticles())
 		{
 			//get max-articls amunt like normal sync
-			getArticles(Settings.general().get_int("max-articles"), ArticleStatus.ALL, null, false, cancellable);
+			getArticles(Settings.general().get_int("max-articles"), ArticleStatus.ALL, since, null, false, cancellable);
 		}
 
 		if(cancellable != null && cancellable.is_cancelled())
@@ -304,7 +316,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		// get unread articles
 		syncProgress(_("Getting unread articles"));
-		getArticles(getUnreadCount(), ArticleStatus.UNREAD, null, false, cancellable);
+		getArticles(getUnreadCount(), ArticleStatus.UNREAD, since, null, false, cancellable);
 
 		if(cancellable != null && cancellable.is_cancelled())
 			return;
@@ -948,12 +960,12 @@ public class FeedReader.FeedServer : GLib.Object {
 		return m_plugin.getUnreadCount();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, DateTime? since = null, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
 			return;
 
-		m_plugin.getArticles(count, whatToGet, feedID, isTagID);
+		m_plugin.getArticles(count, whatToGet, since, feedID, isTagID);
 	}
 
 	private void syncProgress(string text)

@@ -108,7 +108,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 
 	public abstract int getUnreadCount();
 
-	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null);
+	public abstract void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, DateTime? since = null, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null);
 
 	// UI stuff
 	public signal void tryLogin();

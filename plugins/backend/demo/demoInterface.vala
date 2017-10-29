@@ -564,6 +564,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	//
 	// "count":		the number of articles to get
 	// "whatToGet":	the kind of articles to get (all/unread/marked/etc.)
+	// "since":     how far back to sync articles (null = no limit)
 	// "feedID":	get only articles of a secific feed or tag
 	// "isTagID":	false if "feedID" is a feed-ID, true if "feedID" is a tag-ID
 	//
@@ -574,7 +575,7 @@ public class FeedReader.demoInterface : Peas.ExtensionBase, FeedServerInterface 
 	// But if the API suggests a different approach you can everything on your
 	// own (see ttrss-backend).
 	//--------------------------------------------------------------------------------------
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 
 	}

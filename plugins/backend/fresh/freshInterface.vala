@@ -452,7 +452,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 		return m_api.getUnreadCounts();
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		if(whatToGet == ArticleStatus.READ)
 		{

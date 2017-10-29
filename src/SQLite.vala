@@ -74,7 +74,7 @@ public class SQLite : GLib.Object {
 		}
 	}
 
-	public Gee.List<Gee.List<Value?>> execute(string query, Value?[]? params = null)
+	public Gee.List<Gee.List<Sqlite.Value?>> execute(string query, Value?[]? params = null)
 	{
 		Sqlite.Statement stmt;
 		int rc = m_db.prepare_v2(query, query.length, out stmt);
@@ -118,38 +118,13 @@ public class SQLite : GLib.Object {
 			}
 		}
 
-		var rows = new Gee.ArrayList<Gee.List<Value?>>();
+		var rows = new Gee.ArrayList<Gee.List<Sqlite.Value?>>();
 		while(stmt.step() == Sqlite.ROW)
 		{
-			var row = new Gee.ArrayList<Value?>();
+			var row = new Gee.ArrayList<Sqlite.Value?>();
 			for(int i = 0; i < stmt.column_count(); ++i)
 			{
-				Value? value;
-				switch(stmt.column_type(i))
-				{
-				case Sqlite.INTEGER:
-					value = Value(typeof(int));
-					value.set_int(stmt.column_int(i));
-					break;
-				case Sqlite.FLOAT:
-					value = Value(typeof(double));
-					value.set_double(stmt.column_double(i));
-					break;
-				case Sqlite.BLOB:
-					value = Value(typeof(void*));
-					value.set_pointer(stmt.column_blob(i));
-					break;
-				case Sqlite.NULL:
-					value = null;
-					break;
-				case Sqlite.TEXT:
-					value = Value(typeof(string));
-					value.take_string(stmt.column_text(i));
-					break;
-				default:
-					throw new SQLiteError.FAIL("Unknown column return type: %d".printf(stmt.column_type(i)));
-				}
-				row.add(value);
+				row.add(stmt.column_value(i).copy());
 			}
 			rows.add(row);
 		}

@@ -84,7 +84,6 @@ set(UI_PACKAGES
 	gtk+-3.0
 	json-glib-1.0
 	libsoup-2.4
-	sqlite3
 	gee-0.8
 	libsecret-1
 	rest-0.7
@@ -200,6 +199,7 @@ CUSTOM_VAPIS
 	vapi/libvilistextum.vapi
 	vapi/gtkimageview.vapi
 	vapi/gd-1.0.vapi
+	vapi/sqlite3.vapi
 	vapi/webkit2gtk-4.0.vapi
 )
 

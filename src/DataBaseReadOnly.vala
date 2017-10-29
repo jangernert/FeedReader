@@ -117,7 +117,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		string query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='articles'";
 		var rows = m_db.execute(query);
 		assert(rows.size == 1 && rows[0].size == 1);
-		return (int)rows[0][0] == 0;
+		return rows[0][0].to_int() == 0;
 	}
 
 	public bool isEmpty()
@@ -133,7 +133,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var query = @"SELECT COUNT(*) FROM $table";
 		var rows = m_db.execute(query);
 		assert(rows.size == 1 && rows[0].size == 1);
-		return (int)rows[0][0] == 0;
+		return rows[0][0].to_int() == 0;
 	}
 
 	public uint get_unread_total()
@@ -141,7 +141,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var query = "SELECT COUNT(*) FROM articles WHERE unread = ?";
 		var rows = m_db.execute(query, { ArticleStatus.UNREAD });
 		assert(rows.size == 1 && rows[0].size == 1);
-		return (int)rows[0][0];
+		return rows[0][0].to_int();
 	}
 
 	public uint get_marked_total()
@@ -149,7 +149,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var query = "SELECT COUNT(*) FROM articles WHERE marked = ?";
 		var rows = m_db.execute(query, { ArticleStatus.MARKED });
 		assert(rows.size == 1 && rows[0].size == 1);
-		return (int)rows[0][0];
+		return rows[0][0].to_int();
 	}
 
 	public uint get_unread_uncategorized()
@@ -219,7 +219,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var rows = m_db.execute(query, { tag_id });
 		assert(rows.size == 0 || (rows.size == 1 && rows[0].size == 1));
 		if(rows.size == 1)
-			return (string)rows[0][0];
+			return rows[0][0].to_string();
 		return _("Unknown tag");
 	}
 
@@ -229,7 +229,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		var rows = m_db.execute(query);
 		assert(rows.size == 0 || (rows.size == 1 && rows[0].size == 1));
 		if(rows.size == 1 && rows[0][0] != null)
-			return (int)rows[0][0];
+			return rows[0][0].to_int();
 		else
 			return 0;
 	}
@@ -240,18 +240,12 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		if(catID == CategoryID.TAGS.to_string())
 			return "Tags";
 
-		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("title");
-		query.addEqualsCondition("categorieID", catID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt = m_db.prepare(query.get());
+		var query = "SELECT title FROM categories WHERE categorieID = ?";
+		var rows = m_db.execute(query, { catID });
 
 		string result = "";
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_text(0);
-		}
+		if(rows.size != 0)
+			result = rows[0][0].to_string();
 
 		if(result == "")
 			result = _("Uncategorized");
@@ -259,25 +253,15 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return result;
 	}
 
-
 	public string? getCategoryID(string catname)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("categorieID");
-		query.addEqualsCondition("title", catname, true, true);
-		query.build();
-
-		Sqlite.Statement stmt = m_db.prepare(query.get());
-
-		string? result = null;
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_text(0);
-		}
-
-		return result;
+		var query = "SELECT categorieID FROM categories WHERE title = ?";
+		var rows = m_db.execute(query, { catname });
+		if(rows.size == 0)
+			return null;
+		else
+			return rows[0][0].to_string();
 	}
-
 
 	public bool preview_empty(string articleID)
 	{

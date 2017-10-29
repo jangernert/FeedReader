@@ -31,19 +31,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		Logger.error(@"dbErrorLog: $code: $msg");
 	}
 
-	// Generate enough placeholders for n parameters
-	private static string n_params(int n)
-	{
-		StringBuilder s = new StringBuilder.sized(n * 2 - 1);
-		for(int i = 0; i < n; ++i)
-		{
-			if(i != 0)
-				s.append(",");
-			s.append("?");
-		}
-		return s.str;
-	}
-
 	public void init()
 	{
 		Logger.debug("init database");
@@ -152,7 +139,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public uint get_unread_total()
 	{
 		var query = "SELECT COUNT(*) FROM articles WHERE unread = ?";
-		var rows = m_db.execute(query, ArticleStatus.UNREAD.to_string());
+		var rows = m_db.execute(query, { ArticleStatus.UNREAD.to_string() });
 		assert(rows.size == 1 && rows[0].size == 1);
 		return (int)rows[0][0];
 	}
@@ -160,7 +147,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public uint get_marked_total()
 	{
 		var query = "SELECT COUNT(*) FROM articles WHERE marked = ?";
-		var rows = m_db.execute(query, ArticleStatus.MARKED.to_string());
+		var rows = m_db.execute(query, { ArticleStatus.MARKED.to_string() });
 		assert(rows.size == 1 && rows[0].size == 1);
 		return (int)rows[0][0];
 	}
@@ -222,14 +209,14 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public bool tag_still_used(Tag tag)
 	{
 		var query = "SELECT 1 FROM main.articles WHERE instr(tagID, ?) > 0 LIMIT 1";
-		var rows = m_db.execute(query, tag.getTagID());
+		var rows = m_db.execute(query, { tag.getTagID() });
 		return rows.size > 0;
 	}
 
 	public string? getTagName(string tag_id)
 	{
 		var query = "SELECT title FROM tags WHERE tagID = ?";
-		var rows = m_db.execute(query, tag_id);
+		var rows = m_db.execute(query, { tag_id });
 		assert(rows.size == 0 || (rows.size == 1 && rows[0].size == 1));
 		if(rows.size == 1)
 			return (string)rows[0][0];

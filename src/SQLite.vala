@@ -74,23 +74,7 @@ public class SQLite : GLib.Object {
 		}
 	}
 
-	public Gee.List<Gee.List<Value?>> execute(string query, ...)
-	{
-		var l = va_list();
-		Gee.List<string?> params = null;
-		while(true)
-		{
-			string? param = l.arg();
-			if(param == null)
-				break;
-			if(params == null)
-				params = new Gee.ArrayList<string?>();
-			params.add(param);
-		}
-		return executev(query, params);
-	}
-
-	public Gee.List<Gee.List<Value?>> executev(string query, Gee.List<string?>? params = null)
+	public Gee.List<Gee.List<Value?>> execute(string query, string?[]? params = null)
 	{
 		Sqlite.Statement stmt;
 		int rc = m_db.prepare_v2(query, query.length, out stmt);
@@ -101,13 +85,14 @@ public class SQLite : GLib.Object {
 
 		if(params != null)
 		{
-			for(int i = 1; i < params.size; ++i)
+			int i = 1;
+			foreach(var param in params)
 			{
-				var param = params[i];
 				if(param == null)
 					stmt.bind_null(i);
 				else
 					stmt.bind_text(i, param);
+				++i;
 			}
 		}
 

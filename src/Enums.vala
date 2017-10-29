@@ -170,7 +170,33 @@ namespace FeedReader {
 		NEVER,
 		ONE_WEEK,
 		ONE_MONTH,
-		SIX_MONTHS
+		SIX_MONTHS;
+
+		public int? to_weeks()
+		{
+			switch(this)
+			{
+			case NEVER:
+				return null;
+			case ONE_WEEK:
+				return 1;
+			case ONE_MONTH:
+				return 4;
+			case SIX_MONTHS:
+				return 24;
+			default:
+				assert_not_reached();
+			}
+		}
+
+		public DateTime? to_start_date()
+		{
+			int? weeks = to_weeks();
+			if(weeks == null)
+				return null;
+
+			return new DateTime.now_utc().add_weeks(-(int)weeks);
+		}
 	}
 
 	public enum FeedListType {

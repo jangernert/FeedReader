@@ -230,23 +230,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			Notification.send(newArticles);
 		}
 
-		switch(Settings.general().get_enum("drop-articles-after"))
-		{
-			case DropArticles.NEVER:
-				break;
-
-			case DropArticles.ONE_WEEK:
-				DataBase.writeAccess().dropOldArtilces(1);
-				break;
-
-			case DropArticles.ONE_MONTH:
-				DataBase.writeAccess().dropOldArtilces(4);
-				break;
-
-			case DropArticles.SIX_MONTHS:
-				DataBase.writeAccess().dropOldArtilces(24);
-				break;
-		}
+		var drop_weeks = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_weeks();
+		if(drop_weeks != null)
+			DataBase.writeAccess().dropOldArtilces(-(int)drop_weeks);
 
 		var now = new DateTime.now_local();
 		Settings.state().set_int("last-sync", (int)now.to_unix());

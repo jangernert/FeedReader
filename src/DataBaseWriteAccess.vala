@@ -598,24 +598,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 			if(article.getDate().compare(now) == 1)
 				article.SetDate(now);
 
-				int weeks = 0;
-				switch(Settings.general().get_enum("drop-articles-after"))
-				{
-					case DropArticles.ONE_WEEK:
-						weeks = 1;
-						break;
-					case DropArticles.ONE_MONTH:
-						weeks = 4;
-						break;
-					case DropArticles.SIX_MONTHS:
-						weeks = 24;
-						break;
-				}
-
-				if(Settings.general().get_enum("drop-articles-after") != DropArticles.NEVER
-				&& article.getDate().compare(now.add_weeks(-weeks)) == -1)
-					continue;
-
+			int? weeks = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_weeks();
+			if(weeks != null && article.getDate().compare(now.add_weeks(-(int)weeks)) == -1)
+				continue;
 
 			stmt.bind_text(articleID_position, article.getArticleID());
 			stmt.bind_text(feedID_position, article.getFeedID());

@@ -105,37 +105,26 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	private void delete_article(string articleID, string feedID)
 	{
-		Logger.info("Deleting article \"%s\"".printf(articleID));
-		m_db.simple_query("DELETE FROM main.articles WHERE articleID = \"" + articleID + "\"");
-		string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/%s/".printf(feedID, articleID);
+		Logger.info(@"Deleting article \"$articleID\"");
+		m_db.execute("DELETE FROM main.articles WHERE articleID = ?", { articleID });
+		string folder_path = GLib.Environment.get_user_data_dir() + @"/feedreader/data/images/$feedID/$articleID/";
 		Utils.remove_directory(folder_path);
 	}
 
 	public void dropTag(Tag tag)
 	{
-		var query = new QueryBuilder(QueryType.DELETE, "main.tags");
-		query.addEqualsCondition("tagID", tag.getTagID(), true, true);
-		m_db.simple_query(query.build());
+		m_db.execute("DELETE FROM main.tags WHERE tagID = ?", { tag.getTagID() });
 
-		query = new QueryBuilder(QueryType.SELECT, "main.articles");
-		query.selectField("tags");
-		query.selectField("articleID");
-		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tag.getTagID()));
-		query.build();
-
-		Sqlite.Statement stmt = m_db.prepare(query.get());
-
-		while(stmt.step () == Sqlite.ROW)
+		var rows = m_db.execute("SELECT tags, articleID FROM main.articles WHERE instr(tags, ?) > 0", { tag.getTagID() });
+		foreach(var row in rows)
 		{
-			string articleID = stmt.column_text(1);
-			Gee.List<string> tags = StringUtils.split(stmt.column_text(0), "s", true);
+			string articleID = row[1].to_string();
+			Gee.List<string> tags = StringUtils.split(row[0].to_string(), ",", true);
 			if(tags.contains(tag.getTagID()))
 				tags.remove(tag.getTagID());
 
-			query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-			query.updateValuePair("tags", "\"%s\"".printf(StringUtils.join(tags, ",")));
-			query.addEqualsCondition("articleID", articleID, true, true);
-			m_db.simple_query(query.build());
+			m_db.execute("UPDATE main.articles SET tags = ? WHERE articleID = ?",
+				{ StringUtils.join(tags, ","), articleID });
 		}
 	}
 
@@ -221,7 +210,6 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 		foreach(var tag_item in tags)
 		{
-			//Logger.debug("write_tags: %s %s %i".printf(tag_item.getTagID(), tag_item.getTitle(), tag_item.getColor()));
 			stmt.bind_text(tagID_position, tag_item.getTagID());
 			stmt.bind_text(label_position, tag_item.getTitle());
 			stmt.bind_int (color_position, tag_item.getColor());
@@ -242,17 +230,9 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		if(FeedServer.get_default().tagIDaffectedByNameChange())
 		{
 			string newID = tag.getTagID().replace(tag.getTitle(), tag.getTitle());
-			var query2 = new QueryBuilder(QueryType.UPDATE, "tags");
-			query2.updateValuePair("tagID", newID, true);
-			query2.addEqualsCondition("tagID", tag.getTagID(), true, true);
-			m_db.simple_query(query2.build());
-			query2.print();
-
-			var query3 = new QueryBuilder(QueryType.UPDATE, "articles");
-			query3.updateValuePair("tags", "replace(tags, '%s', '%s')".printf(tag.getTagID(), newID));
-			query3.addCustomCondition("instr(tags, '%s')".printf(tag.getTagID()));
-			m_db.simple_query(query3.build());
-			query3.print();
+			m_db.execute("UPDATE tags SET tagID = ? WHERE tagID = ?", { newID, tag.getTagID() });
+			m_db.execute("UPDATE articles SET tags = replace(tags, ?, ?) WHERE instr(tags,  ?)",
+				{ tag.getTagID(), newID, tag.getTagID() });
 		}
 	}
 
@@ -563,17 +543,12 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	public void markFeedRead(string feedID)
 	{
-		var query = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		query.updateValuePair("unread", ArticleStatus.READ.to_string());
-		query.addEqualsCondition("feedID", feedID, true, true);
-		m_db.simple_query(query.build());
+		m_db.execute("UPDATE main.articles SET unread = ? WHERE feedID = ?", { ArticleStatus.READ, feedID });
 	}
 
 	public void markAllRead()
 	{
-		var query1 = new QueryBuilder(QueryType.UPDATE, "main.articles");
-		query1.updateValuePair("unread", ArticleStatus.READ.to_string());
-		m_db.simple_query(query1.build());
+		m_db.execute("UPDATE main.articles SET unread = ?", { ArticleStatus.READ });
 	}
 
 	public void reset_subscribed_flag()
@@ -627,90 +602,67 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	public void delete_articles(string feedID)
 	{
-		Logger.warning("DataBase: Deleting all articles of feed \"%s\"".printf(feedID));
-		m_db.simple_query("DELETE FROM main.articles WHERE feedID = \"" + feedID + "\"");
-		string folder_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/images/%s/".printf(feedID);
+		Logger.warning(@"DataBase: Deleting all articles of feed \"$feedID\"");
+		m_db.execute("DELETE FROM main.articles WHERE feedID = ?", { feedID });
+		string folder_path = GLib.Environment.get_user_data_dir() + @"/feedreader/data/images/$feedID/";
 		Utils.remove_directory(folder_path);
 	}
 
 	public void delete_category(string catID)
 	{
-		m_db.simple_query("DELETE FROM main.categories WHERE categorieID = \"" + catID + "\"");
+		m_db.execute("DELETE FROM main.categories WHERE categorieID = ?", { catID });
 
 		if(FeedServer.get_default().supportMultiCategoriesPerFeed())
 		{
-			var query = new QueryBuilder(QueryType.SELECT, "feeds");
-			query.selectField("feed_id, category_id");
-			query.addCustomCondition("instr(category_id, \"%s\") > 0".printf(catID));
-			query.build();
-
-			Sqlite.Statement stmt = m_db.prepare(query.get());
-			while(stmt.step () == Sqlite.ROW)
+			var rows = m_db.execute("SELECT feed_id, category_id FROM feeds WHERE instr(category_id, ?) > 0", { catID });
+			foreach(var row in rows)
 			{
-				string feedID = stmt.column_text(0);
-				string catIDs = stmt.column_text(0).replace(catID + ",", "");
+				string feedID = row[0].to_string();
+				string catIDs = row[1].to_string().replace(catID + ",", "");
 
-				m_db.simple_query("UPDATE main.feeds set category_id = \"" + catIDs + "\" WHERE feed_id = \"" + feedID + "\"");
+				m_db.execute("UPDATE main.feeds set category_id = ? WHERE feed_id = ?", { catIDs, feedID });
 			}
 		}
 		else
 		{
-			m_db.simple_query("UPDATE main.feeds set category_id = \"%s\" WHERE category_id = \"%s\"".printf(FeedServer.get_default().uncategorizedID(), catID));
-
+			m_db.execute("UPDATE main.feeds set category_id = ? WHERE category_id = ?", { FeedServer.get_default().uncategorizedID(), catID });
 			if(FeedServer.get_default().supportMultiLevelCategories())
 			{
-				m_db.simple_query("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = \"" + catID + "\"");
+				m_db.execute("UPDATE main.categories set Parent = \"-2\" WHERE categorieID = ?", { catID });
 			}
 		}
 	}
 
 	public void rename_category(string catID, string newName)
 	{
-
 		if(FeedServer.get_default().tagIDaffectedByNameChange())
 		{
 			var cat = read_category(catID);
 			string newID = catID.replace(cat.getTitle(), newName);
-			var query2 = new QueryBuilder(QueryType.UPDATE, "categories");
-			query2.updateValuePair("categorieID", newID, true);
-			query2.addEqualsCondition("categorieID", catID, true, true);
-			m_db.simple_query(query2.build());
+			var query = "UPDATE categories SET categorieID = ?, title = ? WHERE categorieID = ?";
+			m_db.execute(query, {newID, newName, catID });
 
-			var query3 = new QueryBuilder(QueryType.UPDATE, "feeds");
-			query3.updateValuePair("category_id", "replace(category_id, '%s', '%s')".printf(catID, newID));
-			query3.addCustomCondition("instr(category_id, '%s')".printf(catID));
-			m_db.simple_query(query3.build());
-
-			var query = new QueryBuilder(QueryType.UPDATE, "categories");
-			query.updateValuePair("title", newName, true);
-			query.addEqualsCondition("categorieID", newID, true, true);
-			m_db.simple_query(query.build());
+			query = "UPDATE feeds SET category_id = replace(category_id, ?,  ?) WHERE instr(category_id, ?)";
+			m_db.execute(query, { catID, newID, catID });
 		}
 		else
 		{
-			var query = new QueryBuilder(QueryType.UPDATE, "categories");
-			query.updateValuePair("title", newName, true);
-			query.addEqualsCondition("categorieID", catID, true, true);
-			m_db.simple_query(query.build());
+			var query = "UPDATE categories SET title = ? WHERE categorieID = ?";
+			m_db.execute(query, { newName, catID });
 		}
 	}
 
 	public void move_category(string catID, string newParentID)
 	{
 		var parent = read_category(newParentID);
-		var query = new QueryBuilder(QueryType.UPDATE, "categories");
-		query.updateValuePair("Parent", newParentID);
-		query.updateValuePair("Level", "%i".printf(parent.getLevel()+1));
-		query.addEqualsCondition("categorieID", catID);
-		m_db.simple_query(query.build());
+		var query = "UPDATE categories SET Parent = ?,  Level = ? WHERE categorieID = ?";
+		m_db.execute(query, { newParentID, parent.getLevel() + 1, catID });
 	}
 
 	public void rename_feed(string feedID, string newName)
 	{
-		var query = new QueryBuilder(QueryType.UPDATE, "feeds");
-		query.updateValuePair("name", newName, true);
-		query.addEqualsCondition("feed_id", feedID, true, true);
-		m_db.simple_query(query.build());
+		var query = "UPDATE feeds SET name = ? WHERE feed_id = ?";
+		m_db.execute(query, { newName, feedID });
 	}
 
 	public void move_feed(string feedID, string currentCatID, string? newCatID = null)
@@ -724,10 +676,8 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 		string catString = StringUtils.join(categories, ",");
 
-		var query = new QueryBuilder(QueryType.UPDATE, "feeds");
-		query.updateValuePair("category_id", catString, true);
-		query.addEqualsCondition("feed_id", feedID, true, true);
-		m_db.simple_query(query.build());
+		var query = "UPDATE feeds SET category_id = ? WHERE feed_id = ?";
+		m_db.execute(query, { catString, feedID });
 	}
 
 	public void removeCatFromFeed(string feedID, string catID)
@@ -741,7 +691,7 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	public void delete_feed(string feedID)
 	{
-		m_db.simple_query("DELETE FROM feeds WHERE feed_id = \"%s\"".printf(feedID));
+		m_db.execute("DELETE FROM feeds WHERE feed_id = ?", { feedID });
 		delete_articles(feedID);
 	}
 
@@ -777,22 +727,19 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	public Gee.List<CachedAction> readCachedActions()
 	{
-		Gee.ArrayList<CachedAction> tmp = new Gee.ArrayList<CachedAction>();
-
-		var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
-		query.selectField("*");
-		query.build();
-
-		Sqlite.Statement stmt = m_db.prepare(query.get());
-
-		while(stmt.step () == Sqlite.ROW)
+		var query = "SELECT * FROM CachedActions";
+		var rows = m_db.execute(query);
+		var actions = new Gee.ArrayList<CachedAction>();
+		foreach(var row in rows)
 		{
-			var action = new CachedAction((CachedActions)stmt.column_int(0), stmt.column_text(1), stmt.column_text(2));
+			var action = new CachedAction(
+				(CachedActions)row[0].to_int(),
+				row[1].to_string(),
+				row[2].to_string());
 			action.print();
-			tmp.add(action);
+			actions.add(action);
 		}
-
-		return tmp;
+		return actions;
 	}
 
 	public void resetCachedActions()
@@ -803,31 +750,16 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 	public bool cachedActionNecessary(CachedAction action)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "CachedActions");
-		query.selectField("count(*)");
-		query.addEqualsCondition("argument", action.getArgument(), true, true);
-		query.addEqualsCondition("id", action.getID(), true, true);
-		query.addEqualsCondition("action", "%i".printf(action.opposite()));
-		query.build();
-
-		Sqlite.Statement stmt = m_db.prepare(query.get());
-
-		while(stmt.step () == Sqlite.ROW)
-		{
-			if(stmt.column_int(0) > 0)
-				return false;
-		}
-
-		return true;
+		var query = "SELECT COUNT(*) FROM CachedActions WHERE argument = ? AND id = ? AND action = ?";
+		var rows = m_db.execute(query, { action.getArgument(), action.getID(), action.opposite() });
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int() == 0;
 	}
 
 	public void deleteOppositeCachedAction(CachedAction action)
 	{
-		var query = new QueryBuilder(QueryType.DELETE, "CachedActions");
-		query.addEqualsCondition("argument", action.getArgument(), true, true);
-		query.addEqualsCondition("id", action.getID(), true, true);
-		query.addEqualsCondition("action", "%i".printf(action.opposite()));
-		m_db.simple_query(query.build());
+		var query = "DELETE FROM CachedActions WHERE argument = ? AND id = ? AND action = ?";
+		m_db.execute(query, { action.getArgument(), action.getID(), action.opposite() });
 	}
 
 }

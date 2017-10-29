@@ -139,7 +139,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public uint get_unread_total()
 	{
 		var query = "SELECT COUNT(*) FROM articles WHERE unread = ?";
-		var rows = m_db.execute(query, { ArticleStatus.UNREAD.to_string() });
+		var rows = m_db.execute(query, { ArticleStatus.UNREAD });
 		assert(rows.size == 1 && rows[0].size == 1);
 		return (int)rows[0][0];
 	}
@@ -147,7 +147,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public uint get_marked_total()
 	{
 		var query = "SELECT COUNT(*) FROM articles WHERE marked = ?";
-		var rows = m_db.execute(query, { ArticleStatus.MARKED.to_string() });
+		var rows = m_db.execute(query, { ArticleStatus.MARKED });
 		assert(rows.size == 1 && rows[0].size == 1);
 		return (int)rows[0][0];
 	}

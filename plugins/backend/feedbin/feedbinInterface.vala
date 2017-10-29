@@ -628,35 +628,10 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 		}
 	}
 
-	public void getArticles(int count, ArticleStatus what_to_get, string? feed_id_str, bool is_tag_id, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus what_to_get, DateTime? since, string? feed_id_str, bool is_tag_id, GLib.Cancellable? cancellable = null)
 	{
 		try
 		{
-			var settings_state = new GLib.Settings("org.gnome.feedreader.saved-state");
-			DateTime? since = null;
-			switch(Settings.general().get_enum("drop-articles-after"))
-			{
-				case DropArticles.ONE_WEEK:
-					since = new DateTime.now_utc().add_weeks(-1);
-					break;
-
-				case DropArticles.ONE_MONTH:
-					since = new DateTime.now_utc().add_months(-1);
-					break;
-
-				case DropArticles.SIX_MONTHS:
-					since = new DateTime.now_utc().add_months(-6);
-					break;
-			}
-			if(!DataBase.readOnly().isTableEmpty("articles"))
-			{
-				var last_sync = new DateTime.from_unix_utc(settings_state.get_int("last-sync"));
-				if(since == null || last_sync.to_unix() > since.to_unix())
-				{
-					since = last_sync;
-				}
-			}
-
 			int64? feed_id = null;
 			if(!is_tag_id && feed_id_str != null)
 				feed_id = int64.parse(feed_id_str);

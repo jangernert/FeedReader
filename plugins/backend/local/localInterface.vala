@@ -531,7 +531,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 		return 0;
 	}
 
-	public void getArticles(int count, ArticleStatus whatToGet, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
+	public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
 		var f = DataBase.readOnly().read_feeds();
 		var articleArray = new Gee.LinkedList<Article>();

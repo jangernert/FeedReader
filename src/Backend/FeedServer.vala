@@ -861,7 +861,13 @@ public class FeedReader.FeedServer : GLib.Object {
 			return false;
 		}
 
-		return m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg);
+		if(!m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg))
+			return false;
+
+		DateTime? since = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
+		Logger.info("Downloading %d articles for feed %s (%s), since %s".printf(ArticleSyncCount(), feedID, feedURL, since.to_string()));
+		getArticles(ArticleSyncCount(), ArticleStatus.ALL, since, feedID);
+		return true;
 	}
 
 	public void addFeeds(Gee.List<Feed> feeds)

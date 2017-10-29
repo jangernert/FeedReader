@@ -211,7 +211,7 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 
 	public bool tagIDaffectedByNameChange()
 	{
-		return false;
+		return true;
 	}
 
 	public void resetAccount()

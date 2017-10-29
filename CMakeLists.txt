@@ -161,6 +161,7 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/Structs.vala
 	src/Utils.vala
 	src/QueryBuilder.vala
+	src/SQLite.vala
 	src/ContentGrabber/grabberUtils.vala
 	src/ContentGrabber/stringPair.vala
 	src/Model/Feed.vala

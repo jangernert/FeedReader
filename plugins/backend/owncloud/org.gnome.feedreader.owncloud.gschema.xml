@@ -2,25 +2,25 @@
 	<schema id="org.gnome.feedreader.owncloud" path="/org/gnome/feedreader/owncloud/" gettext-domain="feedreader">
 		<key name="url" type="s">
 			<default>""</default>
-			<summary>Link to your owncloud instance</summary>
+			<summary>Link to your Nextcloud instance</summary>
 			<description>
-				Link to your owncloud instance
+				Link to your Nextcloud instance
 			</description>
 		</key>
 
 		<key name="username" type="s">
 			<default>""</default>
-			<summary>Username to log into owncloud</summary>
+			<summary>Username to log into Nextcloud</summary>
 			<description>
-				Username to log into owncloud
+				Username to log into Nextcloud
 			</description>
 		</key>
 
 		<key name="htaccess-username" type="s">
 			<default>""</default>
-			<summary>Username to log into owncloud</summary>
+			<summary>Username to log into Nextcloud</summary>
 			<description>
-				Username to log into owncloud
+				Username to log into Nextcloud
 			</description>
 		</key>
 	</schema>

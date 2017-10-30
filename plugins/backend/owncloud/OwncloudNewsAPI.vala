@@ -40,7 +40,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		m_session.authenticate.connect((msg, auth, retrying) => {
 			if(m_utils.getHtaccessUser() == "")
 			{
-				Logger.error("ownCloud Session: need Authentication");
+				Logger.error("Nextcloud Session: need Authentication");
 			}
 			else if(!retrying)
 			{
@@ -51,13 +51,13 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 
 	public LoginResponse login()
 	{
-		Logger.debug("OwnCloud: login");
+		Logger.debug("Nextcloud: login");
 		m_username = m_utils.getUser();
 		m_password = m_utils.getPasswd();
 		m_OwnCloudURL = m_utils.getURL();
 
 		if(m_OwnCloudURL == "" && m_username == "" && m_password == ""){
-			m_OwnCloudURL = "example-host/owncloud";
+			m_OwnCloudURL = "example-host/nextcloud";
 			return LoginResponse.ALL_EMPTY;
 		}
 		if(m_OwnCloudURL == "")
@@ -76,7 +76,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		{
 			var response = message.get_response_object();
 			m_OwnCloudVersion = response.get_string_member("version");
-			Logger.info("OwnCloud version: %s".printf(m_OwnCloudVersion));
+			Logger.info("Nextcloud version: %s".printf(m_OwnCloudVersion));
 			return LoginResponse.SUCCESS;
 		}
 		else if(error == ConnectionError.API_ERROR)
@@ -442,7 +442,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 		}
 
 
-		errmsg = "ownCloud could not add the feed";
+		errmsg = "Nextcloud could not add the feed";
 		feedID = 0;
 
 		switch(message.getStatusCode())
@@ -451,7 +451,7 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 				errmsg = "Feed already added (409)";
 				return true;
 			case 422:
-				errmsg = "ownCloud can't read the feed (422)";
+				errmsg = "Nextcloud can't read the feed (422)";
 				break;
 		}
 

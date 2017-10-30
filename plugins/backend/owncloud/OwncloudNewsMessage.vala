@@ -129,13 +129,13 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 
 		if(m_message_soup.status_code != 200)
 		{
-			Logger.error("ownCloud Message: No response - status code: %u %s".printf(m_message_soup.status_code, Soup.Status.get_phrase(m_message_soup.status_code)));
+			Logger.error("Nextcloud Message: No response - status code: %u %s".printf(m_message_soup.status_code, Soup.Status.get_phrase(m_message_soup.status_code)));
 			return ConnectionError.NO_RESPONSE;
 		}
 
 		if(ping)
 		{
-			Logger.debug("ownCloud Message: ping successful");
+			Logger.debug("Nextcloud Message: ping successful");
 			return ConnectionError.SUCCESS;
 		}
 
@@ -145,7 +145,7 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 		}
 		catch(Error e)
 		{
-			Logger.error("Could not load response from Message to owncloud");
+			Logger.error("Could not load response from Message to Nextcloud");
 			printMessage();
 			Logger.error(e.message);
 			return ConnectionError.UNKNOWN;

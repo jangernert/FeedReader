@@ -48,12 +48,12 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public string iconName()
 	{
-		return "feed-service-owncloud";
+		return "feed-service-nextcloud";
 	}
 
 	public string serviceName()
 	{
-		return "ownCloud News";
+		return "Nextcloud News";
 	}
 
 	public void writeData()
@@ -85,7 +85,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public Gtk.Box? getWidget()
 	{
-		var urlLabel = new Gtk.Label(_("OwnCloud URL:"));
+		var urlLabel = new Gtk.Label(_("Nextcloud URL:"));
 		var userLabel = new Gtk.Label(_("Username:"));
 		var passwordLabel = new Gtk.Label(_("Password:"));
 
@@ -160,7 +160,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		m_revealer.add(frame);
 		//---------------------------------------------------------------------
 
-		var loginLabel = new Gtk.Label(_("Please log in to your ownCloud News instance and enjoy using FeedReader"));
+		var loginLabel = new Gtk.Label(_("Please log in to your Nextcloud News instance and enjoy using FeedReader"));
 		loginLabel.get_style_context().add_class("h2");
 		loginLabel.set_justify(Gtk.Justification.CENTER);
 		loginLabel.set_lines(3);

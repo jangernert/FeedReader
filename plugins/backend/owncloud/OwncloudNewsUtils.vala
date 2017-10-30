@@ -36,7 +36,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 					tmp_url = "https://" + tmp_url;
 		}
 
-		Logger.debug("OwnCloud URL: " + tmp_url);
+		Logger.debug("Nextcloud URL: " + tmp_url);
 
 		return tmp_url;
 	}
@@ -110,7 +110,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 		attributes["Username"] = getUser();
 		try
 		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: ownCloud login", passwd, null);
+			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: Nextcloud login", passwd, null);
 		}
 		catch(GLib.Error e)
 		{
@@ -193,7 +193,7 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 			Secret.password_storev_sync(pwAuthSchema,
 										authAttributes,
 										Secret.COLLECTION_DEFAULT,
-										"FeedReader: ownCloud htaccess Authentication",
+										"FeedReader: Nextcloud htaccess Authentication",
 										passwd,
 										null);
 		}

@@ -19,7 +19,7 @@ public errordomain SQLiteError
 }
 
 /* A wrapper around the low-level SQLite API */
-public class SQLite : GLib.Object {
+public class FeedReader.SQLite : GLib.Object {
 	private Sqlite.Database m_db;
 
 	public SQLite(string db_path, int busy_timeout = 1000)
@@ -34,6 +34,10 @@ public class SQLite : GLib.Object {
 			}
 			catch(IOError.EXISTS e)
 			{
+			}
+			catch(GLib.Error e)
+			{
+				Logger.error("SQLite: " + e.message);
 			}
 		}
 

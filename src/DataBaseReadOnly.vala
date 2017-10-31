@@ -15,306 +15,159 @@
 
 public class FeedReader.DataBaseReadOnly : GLib.Object {
 
-	protected Sqlite.Database sqlite_db;
+	protected SQLite m_db;
 
-	public DataBaseReadOnly(string dbFile = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
+	public DataBaseReadOnly(string db_file = "feedreader-%01i.db".printf(Constants.DB_SCHEMA_VERSION))
 	{
 		Sqlite.config(Sqlite.Config.LOG, errorLogCallback);
-		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/";
-		var path = GLib.File.new_for_path(db_path);
-		if(!path.query_exists())
-		{
-			try
-			{
-				path.make_directory_with_parents();
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("Can't create directory for database: %s".printf(e.message));
-			}
-		}
+		string db_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/" + db_file;
 
-		Logger.debug(@"Opening Database: $db_path$dbFile");
-		int rc = Sqlite.Database.open_v2(db_path + dbFile, out sqlite_db);
-		if(rc != Sqlite.OK)
-			Logger.error("Can't open database: %d: %s".printf(sqlite_db.errcode(), sqlite_db.errmsg()));
-
-		sqlite_db.busy_timeout(1000);
-		sqlite_db.update_hook(watchDog);
+		Logger.debug(@"Opening Database: $db_path");
+		m_db = new SQLite(db_path);
 	}
 
-	private void watchDog(Sqlite.Action action, string dbname, string table, int64 rowID)
+	private void errorLogCallback(int code, string msg)
 	{
-		if(action == Sqlite.Action.DELETE && !table.has_prefix("fts_"))
-		{
-			Logger.warning("DELETING rowID: %s from  table: %s and db: %s".printf(rowID.to_string(), table, dbname));
-		}
-	}
-
-	private void errorLogCallback(int eCode, string msg)
-	{
-		Logger.error("dbErrorLog: " + eCode.to_string() + ": " + msg);
+		Logger.error(@"dbErrorLog: $code: $msg");
 	}
 
 	public void init()
 	{
 		Logger.debug("init database");
-		executeSQL("PRAGMA journal_mode = WAL");
-		executeSQL("PRAGMA page_size = 4096");
+		m_db.simple_query("PRAGMA journal_mode = WAL");
+		m_db.simple_query("PRAGMA page_size = 4096");
 
-		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."feeds"
-										(
-											"feed_id" TEXT PRIMARY KEY NOT NULL UNIQUE,
-											"name" TEXT NOT NULL,
-											"url" TEXT NOT NULL,
-											"category_id" TEXT,
-											"subscribed" INTEGER DEFAULT 1,
-											"xmlURL" TEXT,
-											"iconURL" TEXT
-										)""");
+		m_db.simple_query("""
+			CREATE  TABLE  IF NOT EXISTS "main"."feeds"
+			(
+				"feed_id" TEXT PRIMARY KEY NOT NULL UNIQUE,
+				"name" TEXT NOT NULL,
+				"url" TEXT NOT NULL,
+				"category_id" TEXT,
+				"subscribed" INTEGER DEFAULT 1,
+				"xmlURL" TEXT,
+				"iconURL" TEXT
+			)
+		""");
 
-		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."categories"
-										(
-											"categorieID" TEXT PRIMARY KEY NOT NULL UNIQUE,
-											"title" TEXT NOT NULL,
-											"orderID" INTEGER,
-											"exists" INTEGER,
-											"Parent" TEXT,
-											"Level" INTEGER
-											)""");
+		m_db.simple_query("""
+			CREATE  TABLE  IF NOT EXISTS "main"."categories"
+			(
+				"categorieID" TEXT PRIMARY KEY NOT NULL UNIQUE,
+				"title" TEXT NOT NULL,
+				"orderID" INTEGER,
+				"exists" INTEGER,
+				"Parent" TEXT,
+				"Level" INTEGER
+			)
+		""");
 
-		executeSQL(					"""CREATE  TABLE  IF NOT EXISTS "main"."articles"
-										(
-											"articleID" TEXT PRIMARY KEY NOT NULL UNIQUE,
-											"feedID" TEXT NOT NULL,
-											"title" TEXT NOT NULL,
-											"author" TEXT,
-											"url" TEXT NOT NULL,
-											"html" TEXT NOT NULL,
-											"preview" TEXT NOT NULL,
-											"unread" INTEGER NOT NULL,
-											"marked" INTEGER NOT NULL,
-											"tags" TEXT,
-											"date" INTEGER NOT NULL,
-											"guidHash" TEXT,
-											"lastModified" INTEGER,
-											"media" TEXT,
-											"contentFetched" INTEGER NOT NULL
-										)""");
+		m_db.simple_query("""
+			CREATE  TABLE  IF NOT EXISTS "main"."articles"
+			(
+				"articleID" TEXT PRIMARY KEY NOT NULL UNIQUE,
+				"feedID" TEXT NOT NULL,
+				"title" TEXT NOT NULL,
+				"author" TEXT,
+				"url" TEXT NOT NULL,
+				"html" TEXT NOT NULL,
+				"preview" TEXT NOT NULL,
+				"unread" INTEGER NOT NULL,
+				"marked" INTEGER NOT NULL,
+				"tags" TEXT,
+				"date" INTEGER NOT NULL,
+				"guidHash" TEXT,
+				"lastModified" INTEGER,
+				"media" TEXT,
+				"contentFetched" INTEGER NOT NULL
+			)
+		""");
 
-		executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."tags"
-										(
-											"tagID" TEXT PRIMARY KEY NOT NULL UNIQUE,
-											"title" TEXT NOT NULL,
-											"exists" INTEGER,
-											"color" INTEGER
-										)""");
+		m_db.simple_query("""
+			CREATE  TABLE  IF NOT EXISTS "main"."tags"
+			(
+				"tagID" TEXT PRIMARY KEY NOT NULL UNIQUE,
+				"title" TEXT NOT NULL,
+				"exists" INTEGER,
+				"color" INTEGER
+			)
+		""");
 
-		executeSQL(					   """CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
-										(
-											"action" INTEGER NOT NULL,
-											"id" TEXT NOT NULL,
-											"argument" INTEGER
-										)""");
+		m_db.simple_query("""
+			CREATE  TABLE  IF NOT EXISTS "main"."CachedActions"
+			(
+				"action" INTEGER NOT NULL,
+				"id" TEXT NOT NULL,
+				"argument" INTEGER
+			)
+		""");
 
-		executeSQL(			 			"""CREATE INDEX IF NOT EXISTS "index_articles" ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)""");
-		executeSQL(						"""CREATE VIRTUAL TABLE IF NOT EXISTS fts_table USING fts4 (content='articles', articleID, preview, title, author)""");
-	}
-
-	protected void executeSQL(string sql, Sqlite.Callback? callback = null)
-	{
-		string errmsg;
-		int ec = sqlite_db.exec(sql, null, out errmsg);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(sql);
-			Logger.error(errmsg);
-		}
+		m_db.simple_query("""
+			CREATE INDEX IF NOT EXISTS "index_articles"
+			ON "articles" ("feedID" DESC, "unread" ASC, "marked" ASC)
+		""");
+		m_db.simple_query("""
+			CREATE VIRTUAL TABLE IF NOT EXISTS fts_table
+			USING fts4 (content='articles', articleID, preview, title, author)
+		""");
 	}
 
 	public bool uninitialized()
 	{
 		string query = "SELECT count(*) FROM sqlite_master WHERE type='table' AND name='articles'";
-
-		int count = -1;
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query, query.length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query);
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while(stmt.step() == Sqlite.ROW)
-		{
-			count = stmt.column_int(0);
-		}
-		stmt.reset();
-
-		if(count == 0)
-		{
-			Logger.warning("database uninitialized");
-			return true;
-		}
-		else if(count == 1)
-		{
-			Logger.debug("database already initialized");
-			return false;
-		}
-
-		return true;
+		var rows = m_db.execute(query);
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int() == 0;
 	}
 
 	public bool isEmpty()
 	{
-		if(!isTableEmpty("articles"))
-		{
-			return false;
-		}
-
-		if(!isTableEmpty("categories"))
-		{
-			return false;
-		}
-
-		if(!isTableEmpty("feeds"))
-		{
-			return false;
-		}
-
-		if(!isTableEmpty("tags"))
-		{
-			return false;
-		}
-
-		return true;
+		return isTableEmpty("articles")
+			&& isTableEmpty("categories")
+			&& isTableEmpty("feeds")
+			&& isTableEmpty("tags");
 	}
 
 	public bool isTableEmpty(string table)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, table);
-		query.selectField("count(*)");
-		query.build();
-
-		int count = -1;
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while(stmt.step() == Sqlite.ROW)
-		{
-			count = stmt.column_int(0);
-		}
-		stmt.reset();
-
-		if(count > 0)
-		{
-			Logger.debug(@"Table $table is not empty");
-			return false;
-		}
-		else
-		{
-			Logger.debug(@"Table $table is empty");
-			return true;
-		}
+		var query = @"SELECT COUNT(*) FROM $table";
+		var rows = m_db.execute(query);
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int() == 0;
 	}
 
-	public int getArticelCount()
+	private uint count_article_status(ArticleStatus status)
 	{
-		int count = -1;
-
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		int cols = stmt.column_count ();
-		while(stmt.step() == Sqlite.ROW)
-		{
-			for(int i = 0; i < cols; i++)
-			{
-				count = stmt.column_int(i);
-			}
-		}
-		stmt.reset();
-
-		return count;
+		var query = "SELECT COUNT(*) FROM articles";
+		string status_column = status.column();
+		if(status_column != null)
+			query += @" WHERE $status_column = ?";
+		var rows = m_db.execute(query, { status });
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int();
 	}
 
 	public uint get_unread_total()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		uint unread = 0;
-		while (stmt.step () == Sqlite.ROW) {
-			unread = stmt.column_int(0);
-		}
-
-		stmt.reset ();
-		return unread;
+		return count_article_status(ArticleStatus.UNREAD);
 	}
 
 	public uint get_marked_total()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		uint marked = 0;
-		while (stmt.step () == Sqlite.ROW) {
-			marked = stmt.column_int(0);
-		}
-
-		stmt.reset ();
-		return marked;
+		return count_article_status(ArticleStatus.MARKED);
 	}
 
-	public uint get_unread_uncategorized()
+	private uint count_status_uncategorized(ArticleStatus status)
 	{
 		var query = new QueryBuilder(QueryType.SELECT, "articles");
 		query.selectField("count(*)");
-		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
+		var status_column = status.column();
+		if(status_column != null)
+			query.addEqualsCondition(status_column, status.to_string());
 		query.addCustomCondition(getUncategorizedFeedsQuery());
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		int unread = 0;
 		while (stmt.step() == Sqlite.ROW) {
@@ -324,152 +177,50 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return unread;
 	}
 
+	public uint get_unread_uncategorized()
+	{
+		return count_status_uncategorized(ArticleStatus.UNREAD);
+	}
+
 	public uint get_marked_uncategorized()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
-		query.addCustomCondition(getUncategorizedFeedsQuery());
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		int marked = 0;
-		while (stmt.step() == Sqlite.ROW) {
-			marked = stmt.column_int(0);
-		}
-		stmt.reset();
-		return marked;
+		return count_status_uncategorized(ArticleStatus.MARKED);
 	}
 
 	public int getTagColor()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "tags");
-		query.selectField("count(*)");
-		query.addCustomCondition("instr(tagID, \"global.\") = 0");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		int tagCount = 0;
-		while (stmt.step () == Sqlite.ROW) {
-			tagCount = stmt.column_int(0);
-		}
-		stmt.reset ();
-
-		return (tagCount % Constants.COLORS.length);
+		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, \"global.\") = 0");
+		assert(rows.size == 1 && rows[0].size == 1);
+		int tagCount = rows[0][0].to_int();
+		return tagCount % Constants.COLORS.length;
 	}
 
 	public bool tag_still_used(Tag tag)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "main.articles");
-		query.selectField("count(*)");
-		query.addCustomCondition("instr(tags, \"%s\") > 0".printf(tag.getTagID()));
-		query.limit(2);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error("tag_still_used: " + sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			if(stmt.column_int(0) > 1)
-				return true;
-		}
-
-		return false;
+		var query = "SELECT 1 FROM main.articles WHERE instr(tagID, ?) > 0 LIMIT 1";
+		var rows = m_db.execute(query, { tag.getTagID() });
+		return rows.size > 0;
 	}
 
-	public string getFeedName(string feedID)
+	public string? getTagName(string tag_id)
 	{
-		string result = _("unknown Feed");
-
-		if(feedID == "")
-			return result;
-
-		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("name");
-		query.addEqualsCondition("feed_id", feedID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while(stmt.step() == Sqlite.ROW)
-		{
-			result = stmt.column_text(0);
-		}
-
-		return result;
-	}
-
-
-	public string? getTagName(string tagID)
-	{
-		var query = new QueryBuilder(QueryType.SELECT, "tags");
-		query.selectField("title");
-		query.addEqualsCondition("tagID", tagID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		string result = null;
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_text(0);
-		}
-
-		return result;
+		var query = "SELECT title FROM tags WHERE tagID = ?";
+		var rows = m_db.execute(query, { tag_id });
+		assert(rows.size == 0 || (rows.size == 1 && rows[0].size == 1));
+		if(rows.size == 1)
+			return rows[0][0].to_string();
+		return _("Unknown tag");
 	}
 
 	public int getLastModified()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("MAX(lastModified)");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		int result = 0;
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
-		}
-
-		return result;
+		var query = "SELECT MAX(lastModified) FROM articles";
+		var rows = m_db.execute(query);
+		assert(rows.size == 0 || (rows.size == 1 && rows[0].size == 1));
+		if(rows.size == 1 && rows[0][0] != null)
+			return rows[0][0].to_int();
+		else
+			return 0;
 	}
 
 
@@ -478,24 +229,12 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		if(catID == CategoryID.TAGS.to_string())
 			return "Tags";
 
-		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("title");
-		query.addEqualsCondition("categorieID", catID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		var query = "SELECT title FROM categories WHERE categorieID = ?";
+		var rows = m_db.execute(query, { catID });
 
 		string result = "";
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_text(0);
-		}
+		if(rows.size != 0)
+			result = rows[0][0].to_string();
 
 		if(result == "")
 			result = _("Uncategorized");
@@ -503,60 +242,22 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return result;
 	}
 
-
 	public string? getCategoryID(string catname)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("categorieID");
-		query.addEqualsCondition("title", catname, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		string? result = null;
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_text(0);
-		}
-
-		return result;
+		var query = "SELECT categorieID FROM categories WHERE title = ?";
+		var rows = m_db.execute(query, { catname });
+		if(rows.size == 0)
+			return null;
+		else
+			return rows[0][0].to_string();
 	}
-
 
 	public bool preview_empty(string articleID)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addEqualsCondition("articleID", articleID, true, true);
-		query.addEqualsCondition("preview", "", false, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		int result = 1;
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
-		}
-
-		if(result == 1)
-			return false;
-		if(result == 0)
-			return true;
-
-		return true;
+		var query = "SELECT COUNT(*) FROM articles WHERE articleID = ? AND preview != ''";
+		var rows = m_db.execute(query, { articleID });
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int() != 0;
 	}
 
 	public Gee.List<Article> read_article_between(
@@ -583,13 +284,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		var articles = new Gee.ArrayList<Article>();
 		while (stmt.step () == Sqlite.ROW)
@@ -626,13 +321,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.addRangeConditionString("articleID", ids);
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		var articles = new Gee.HashMap<string, Article>();
 
@@ -649,70 +338,39 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 	public Article? read_article(string articleID)
 	{
 		Logger.debug(@"DataBaseReadOnly.read_article(): $articleID");
-		Article? tmp = null;
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("ROWID");
-		query.selectField("*");
-		query.addEqualsCondition("articleID", articleID, true, true);
-		query.build();
+		var rows = m_db.execute("SELECT ROWID, * FROM articles WHERE articleID = ?", { articleID });
+		if(rows.size == 0)
+			return null;
+		var row = rows[0];
+		string? author = row[4].to_string();
+		if(author == "")
+			author = null;
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while(stmt.step() == Sqlite.ROW)
-		{
-			string? author = (stmt.column_text(4) == "") ? null : stmt.column_text(4);
-			tmp = new Article(
-								articleID,
-								stmt.column_text(3),
-								stmt.column_text(5),
-								stmt.column_text(2),
-								(ArticleStatus)stmt.column_int(8),
-								(ArticleStatus)stmt.column_int(9),
-								stmt.column_text(6),
-								stmt.column_text(7),
-								author,
-								new GLib.DateTime.from_unix_local(stmt.column_int(11)),
-								stmt.column_int(0), // rowid (sortid)
-								StringUtils.split(stmt.column_text(10), ",", true), // tags
-								StringUtils.split(stmt.column_text(14), ",", true), // media
-								stmt.column_text(12)  // guid
-							);
-		}
-		stmt.reset();
-		return tmp;
+		return new Article(
+				articleID,
+				row[3].to_string(),
+				row[5].to_string(),
+				row[2].to_string(),
+				(ArticleStatus)row[8].to_int(),
+				(ArticleStatus)row[9].to_int(),
+				row[6].to_string(),
+				row[7].to_string(),
+				author,
+				new GLib.DateTime.from_unix_local(row[11].to_int()),
+				row[0].to_int(), // rowid (sortid)
+				StringUtils.split(row[10].to_string(), ",", true), // tags
+				StringUtils.split(row[14].to_string(), ",", true), // media
+				row[12].to_string()  // guid
+		);
 	}
 
 	public int getMaxCatLevel()
 	{
-		int maxCatLevel = 0;
-
-		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("max(Level)");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			maxCatLevel = stmt.column_int(0);
-		}
-
+		var rows = m_db.execute("SELECT MAX(Level) FROM categories");
+		assert(rows.size == 1 && rows[0].size == 1);
+		int maxCatLevel = rows[0][0].to_int();
 		if(maxCatLevel == 0)
-		{
 			maxCatLevel = 1;
-		}
-
 		return maxCatLevel;
 	}
 
@@ -723,13 +381,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.addCustomCondition(getUncategorizedQuery());
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		while (stmt.step () == Sqlite.ROW) {
 			int count = stmt.column_int(0);
@@ -742,95 +394,29 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public bool haveCategories()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("count(*)");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			int count = stmt.column_int(0);
-
-			if(count > 0)
-				return true;
-		}
-
-		return false;
+		var rows = m_db.execute("SELECT COUNT(*) FROM categories");
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int() > 0;
 	}
 
 	public bool article_exists(string articleID)
 	{
-		int result = 0;
-		string query = "SELECT EXISTS(SELECT 1 FROM articles WHERE articleID = \"" + articleID + "\" LIMIT 1)";
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query);
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
-		}
-		if(result == 1)
-			return true;
-
-		return false;
+		var rows = m_db.execute("SELECT 1 FROM articles WHERE articleID = ? LIMIT 1", { articleID });
+		return rows.size != 0;
 	}
 
 	public bool category_exists(string catID)
 	{
-		int result = 0;
-		string query = "SELECT EXISTS(SELECT 1 FROM categories WHERE categorieID = \"" + catID + "\" LIMIT 1)";
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query);
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
-		}
-		if(result == 1)
-			return true;
-
-		return false;
+		var rows = m_db.execute("SELECT 1 FROM categories WHERE categorieID = ? LIMIT 1", { catID });
+		return rows.size != 0;
 	}
-
 
 	public int getRowCountHeadlineByDate(string date)
 	{
-		int result = 0;
-
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addCustomCondition("date > \"%s\"".printf(date));
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_int(0);
-		}
-
-		return result;
+		var rows = m_db.execute("SELECT COUNT(*) FROM articles WHERE date > ?", { date });
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int();
 	}
-
 
 	public int getArticleCountNewerThanID(string articleID, string feedID, FeedListType selectedType, ArticleListState state, string searchTerm, int searchRows = 0)
 	{
@@ -911,15 +497,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		query2.orderBy(orderBy, desc);
 		query2.build();
-		query2.print();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query2.get(), query2.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query2.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query2.get());
 
 		while (stmt.step () == Sqlite.ROW) {
 			result = stmt.column_int(0);
@@ -927,7 +506,6 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		return result;
 	}
-
 
 	public Gee.List<string> getFeedIDofCategorie(string categorieID)
 	{
@@ -937,13 +515,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.selectField("feed_id, category_id");
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		while (stmt.step() == Sqlite.ROW) {
 			string catString = stmt.column_text(1);
@@ -989,150 +561,75 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	protected string getUncategorizedFeedsQuery()
 	{
-		string sql = "feedID IN (%s)";
-
 		var query = new QueryBuilder(QueryType.SELECT, "feeds");
 		query.selectField("feed_id");
 		query.addCustomCondition(getUncategorizedQuery());
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		string feedIDs = "";
 		while (stmt.step () == Sqlite.ROW) {
 			feedIDs += "\"" + stmt.column_text(0) + "\"" + ",";
 		}
 
-		return sql.printf(feedIDs.substring(0, feedIDs.length-1));
+		return "feedID IN (%s)".printf(feedIDs.substring(0, feedIDs.length-1));
 	}
-
 
 	public string getFeedIDofArticle(string articleID)
 	{
-		string query = "SELECT feedID FROM \"main\".\"articles\" WHERE \"articleID\" = " + "\"" + articleID + "\"";
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query, query.length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query);
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		string id = "";
-		while (stmt.step () == Sqlite.ROW) {
-			id = stmt.column_text(0);
-		}
+		var rows = m_db.execute("SELECT feedID FROM articles WHERE articleID = ?", { articleID });
+		string id = null;
+		if(rows.size != 0)
+			id = rows[0][0].to_string();
+		if(id == null)
+			id = "";
 		return id;
 	}
 
-
 	public string getNewestArticle()
 	{
-		string result = "";
-
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("articleID");
-		query.addEqualsCondition("rowid", "%s".printf(getMaxID("articles", "rowid")));
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			result = stmt.column_text(0);
-		}
-		return result;
+		var rows = m_db.execute("SELECT articleID FROM articles WHERE rowid = ?",  { getMaxID("articles", "rowid") });
+		if(rows.size == 0)
+			return "";
+		return rows[0][0].to_string();
 	}
 
 	public string getMaxID(string table, string field)
 	{
-		string maxID = "0";
-		var query = new QueryBuilder(QueryType.SELECT, table);
-		query.selectField("max(%s)".printf(field));
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW)
-		{
-			maxID = stmt.column_text(0);
-		}
-
-		return maxID;
+		var rows = m_db.execute(@"SELECT MAX($field) FROM $table");
+		string? id = null;
+		if(rows.size > 0)
+			id = rows[0][0].to_string();
+		if(id == null)
+			id = "";
+		return id;
 	}
 
 	public bool feed_exists(string feed_url)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "main.feeds");
-		query.selectField("count(*)");
-		query.addEqualsCondition("url", feed_url, true, true);
-		query.limit(1);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error("feed_exists: " + sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			if(stmt.column_int(0) > 1)
-				return true;
-		}
-
-		return false;
+		var rows = m_db.execute("SELECT COUNT(*) FROM main.feeds WHERE url = ? LIMIT 1", { feed_url });
+		assert(rows.size == 1 && rows[0].size == 1);
+		// Why > 1 and not > 0?
+		return rows[0][0].to_int() > 1;
 	}
 
 	public Feed? read_feed(string feedID)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "feeds");
-		query.selectField("*");
-		query.addEqualsCondition("feed_id", feedID, true, true);
-		query.build();
+		var rows = m_db.execute("SELECT * FROM feeds WHERE feed_id = ?", { feedID });
+		if(rows.size == 0)
+			return null;
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2(query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while(stmt.step () == Sqlite.ROW)
-		{
-			var feed = new Feed(
+		var row = rows[0];
+		return new Feed(
 				feedID,
-				stmt.column_text(1),
-				stmt.column_text(2),
+				row[1].to_string(),
+				row[2].to_string(),
 				getFeedUnread(feedID),
-				StringUtils.split(stmt.column_text(3), ",", true),
-				stmt.column_text(6),
-				stmt.column_text(5));
-			return feed;
-		}
-
-		return null;
+				StringUtils.split(row[3].to_string(), ",", true),
+				row[6].to_string(),
+				row[5].to_string());
 	}
-
 
 	public Gee.List<Feed> read_feeds(bool starredCount = false)
 	{
@@ -1146,13 +643,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
@@ -1176,55 +667,21 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return feeds;
 	}
 
-
 	public uint getFeedUnread(string feedID)
 	{
-		uint count = 0;
-
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addEqualsCondition("unread", ArticleStatus.UNREAD.to_string());
-		query.addEqualsCondition("feedID", feedID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			count = (uint)stmt.column_int(0);
-		}
-		return count;
+		var query = "SELECT COUNT(*) FROM articles WHERE unread = ? AND feedID = ?";
+		var rows = m_db.execute(query, { ArticleStatus.UNREAD, feedID });
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int();
 	}
 
 	public uint getFeedStarred(string feedID)
 	{
-		uint count = 0;
-
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("count(*)");
-		query.addEqualsCondition("marked", ArticleStatus.MARKED.to_string());
-		query.addEqualsCondition("feedID", feedID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			count = (uint)stmt.column_int(0);
-		}
-		return count;
+		var query = "SELECT COUNT(*) FROM articles WHERE marked = ? AND feedID = ?";
+		var rows = m_db.execute(query, { ArticleStatus.MARKED, feedID });
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int();
 	}
-
 
 	public Gee.List<Feed> read_feeds_without_cat()
 	{
@@ -1239,13 +696,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		}
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		while (stmt.step () == Sqlite.ROW) {
 			string feedID = stmt.column_text(0);
@@ -1264,83 +715,51 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public Category? read_category(string catID)
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "categories");
-		query.selectField("*");
-		query.addEqualsCondition("categorieID", catID, true, true);
-		query.build();
+		var query = "SELECT * FROM categories WHERE categorieID = ?";
+		var rows = m_db.execute(query, { catID });
+		if(rows.size == 0)
+			return null;
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			var tmpcategory = new Category(
-				catID,
-				stmt.column_text(1),
-				0,
-				stmt.column_int(3),
-				stmt.column_text(4),
-				stmt.column_int(5)
-			);
-			return tmpcategory;
-		}
-
-		return null;
+		var row = rows[0];
+		return new Category(
+			catID,
+			row[1].to_string(),
+			0,
+			row[3].to_int(),
+			row[4].to_string(),
+			row[5].to_int()
+		);
 	}
-
 
 	public Gee.List<Tag> read_tags()
 	{
-		Gee.List<Tag> tmp = new Gee.ArrayList<Tag>();
-		Tag tmpTag;
+		var rows = m_db.execute("SELECT * FROM tags WHERE instr(tagID, \"global.\") = 0");
 
-		var query = new QueryBuilder(QueryType.SELECT, "tags");
-		query.selectField("*");
-		query.addCustomCondition("instr(tagID, \"global.\") = 0");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
+		var tags = new Gee.ArrayList<Tag>();
+		foreach(var row in rows)
 		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
+			var tag = new Tag(
+					row[0].to_string(),
+					row[1].to_string(),
+					row[3].to_int());
+			tags.add(tag);
 		}
 
-		while (stmt.step () == Sqlite.ROW) {
-			tmpTag = new Tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
-			tmp.add(tmpTag);
-		}
-
-		return tmp;
+		return tags;
 	}
 
 	public Tag? read_tag(string tagID)
 	{
-		Tag tmpTag = null;
+		var query = "SELECT * FROM tags WHERE tagID = ?";
+		var rows = m_db.execute(query, { tagID });
+		if(rows.size == 0)
+			return null;
 
-		var query = new QueryBuilder(QueryType.SELECT, "tags");
-		query.selectField("*");
-		query.addEqualsCondition("tagID", tagID, true, true);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			tmpTag = new Tag(stmt.column_text(0), stmt.column_text(1), stmt.column_int(3));
-		}
-
-		return tmpTag;
+		var row = rows[0];
+		return new Tag(
+			row[0].to_string(),
+			row[1].to_string(),
+			row[3].to_int());
 	}
 
 	protected string getAllTagsCondition()
@@ -1358,25 +777,9 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public int getTagCount()
 	{
-		int count = 0;
-		var query = new QueryBuilder(QueryType.SELECT, "tags");
-		query.addCustomCondition("instr(tagID, \"global.\") = 0");
-		query.selectField("count(*)");
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
-		while (stmt.step () == Sqlite.ROW) {
-			count = stmt.column_int(0);
-		}
-
-		return count;
+		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, \"global.\") = 0");
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int();
 	}
 
 	public Gee.List<Category> read_categories_level(int level, Gee.List<Feed>? feeds = null)
@@ -1413,13 +816,7 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 		query.build();
 
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if (ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		while(stmt.step () == Sqlite.ROW)
 		{
@@ -1445,43 +842,25 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 
 	public Gee.List<Article> readUnfetchedArticles()
 	{
-		var query = new QueryBuilder(QueryType.SELECT, "articles");
-		query.selectField("articleID");
-		query.selectField("url");
-		query.selectField("preview");
-		query.selectField("html");
-		query.selectField("feedID");
+		var rows = m_db.execute("SELECT articleID, url, preview, html, feedID FROM articles WHERE contentFetched = 0");
 
-		query.addEqualsCondition("contentFetched", "0", true, false);
-		query.build();
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
+		var articles = new Gee.LinkedList<Article>();
+		foreach(var row in rows)
 		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
+			articles.add(new Article(
+					row[0].to_string(),																// articleID
+					null,																									// title
+					row[1].to_string(),																// url
+					row[4].to_string(),																// feedID
+					ArticleStatus.UNREAD,																// unread
+					ArticleStatus.UNMARKED,															// marked
+					row[3].to_string(),																// html
+					row[2].to_string(),																// preview
+					null,																									// author
+					new GLib.DateTime.now_local()												// date
+				));
 		}
-
-
-		var tmp = new Gee.LinkedList<Article>();
-		while (stmt.step () == Sqlite.ROW)
-		{
-			tmp.add(new Article(
-								stmt.column_text(0),																// articleID
-								null,																									// title
-								stmt.column_text(1),																// url
-								stmt.column_text(4),																// feedID
-								ArticleStatus.UNREAD,																// unread
-								ArticleStatus.UNMARKED,															// marked
-								stmt.column_text(3),																// html
-								stmt.column_text(2),																// preview
-								null,																									// author
-								new GLib.DateTime.now_local()												// date
-							));
-		}
-
-		return tmp;
+		return articles;
 	}
 
 	public QueryBuilder articleQuery(string id, FeedListType selectedType, ArticleListState state, string searchTerm)
@@ -1574,17 +953,8 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		query.limit(limit);
 		query.offset(offset);
 		query.build();
-		query.print();
 
-
-		Sqlite.Statement stmt;
-		int ec = sqlite_db.prepare_v2 (query.get(), query.get().length, out stmt);
-		if(ec != Sqlite.OK)
-		{
-			Logger.error(query.get());
-			Logger.error(sqlite_db.errmsg());
-		}
-
+		Sqlite.Statement stmt = m_db.prepare(query.get());
 
 		var tmp = new Gee.LinkedList<Article>();
 		while (stmt.step () == Sqlite.ROW)

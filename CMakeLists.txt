@@ -84,7 +84,6 @@ set(UI_PACKAGES
 	gtk+-3.0
 	json-glib-1.0
 	libsoup-2.4
-	sqlite3
 	gee-0.8
 	libsecret-1
 	rest-0.7
@@ -161,6 +160,7 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/Structs.vala
 	src/Utils.vala
 	src/QueryBuilder.vala
+	src/SQLite.vala
 	src/ContentGrabber/grabberUtils.vala
 	src/ContentGrabber/stringPair.vala
 	src/Model/Feed.vala
@@ -199,6 +199,7 @@ CUSTOM_VAPIS
 	vapi/libvilistextum.vapi
 	vapi/gtkimageview.vapi
 	vapi/gd-1.0.vapi
+	vapi/sqlite3.vapi
 	vapi/webkit2gtk-4.0.vapi
 )
 

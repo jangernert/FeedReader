@@ -140,7 +140,7 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 		return true;
 	}
 
-	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<tag> tags)
+	public bool getCategoriesAndTags(Gee.List<Feed> feeds, Gee.List<Category> categories, Gee.List<Tag> tags)
 	{
 		var msg = new feedhqMessage();
 		msg.add("output", "json");

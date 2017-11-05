@@ -773,11 +773,11 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		if(hitTest.context_is_image())
 		{
 			var uri = hitTest.get_image_uri().substring("file://".length);
-			var action = new Gtk.Action("save", _("Save image as"), null, null);
+			var action = new GLib.SimpleAction ("save", null);
 			action.activate.connect(() => {
 				Utils.saveImageDialog(uri);
 			});
-			menu.append(new WebKit.ContextMenuItem(action));
+			menu.append(new WebKit.ContextMenuItem.from_gaction(action, _("Save image as"), null));
 		}
 
 		if(menu.first() == null)

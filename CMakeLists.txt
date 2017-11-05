@@ -28,7 +28,7 @@ find_package(Vala REQUIRED)
 include(ValaVersion)
 include(ValaPrecompile)
 include(GResource)
-ensure_vala_version("0.30" MINIMUM)
+ensure_vala_version("0.36" MINIMUM)
 
 pkg_check_modules(LIBUNITY QUIET unity)
 
@@ -53,7 +53,7 @@ set(MODULES
 	libsecret-1
 	libxml-2.0
 	rest-0.7
-	webkit2gtk-4.0
+	webkit2gtk-4.0>=2.18
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
 	libpeas-1.0

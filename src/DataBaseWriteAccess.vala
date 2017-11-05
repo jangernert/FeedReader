@@ -39,6 +39,11 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 		base(dbFile);
 	}
 
+	public DataBase.in_memory()
+	{
+		base.in_memory();
+	}
+
 	public void checkpoint()
 	{
 		m_db.checkpoint();

@@ -21,7 +21,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	private DataBaseReadOnly m_db;
 	private DataBase m_db_write;
 
-	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write, string? host = null)
 	{
 		m_db = db;
 		m_db_write = db_write;

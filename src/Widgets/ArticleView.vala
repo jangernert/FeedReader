@@ -777,7 +777,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			action.activate.connect(() => {
 				Utils.saveImageDialog(uri);
 			});
-			menu.append(new WebKit.ContextMenuItem.from_gaction(action, _("Save image as")));
+			menu.append(new WebKit.ContextMenuItem.from_gaction(action, _("Save image as"), null));
 		}
 
 		if(menu.first() == null)

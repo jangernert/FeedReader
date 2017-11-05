@@ -28,7 +28,7 @@ find_package(Vala REQUIRED)
 include(ValaVersion)
 include(ValaPrecompile)
 include(GResource)
-ensure_vala_version("0.38" MINIMUM)
+ensure_vala_version("0.36" MINIMUM)
 
 pkg_check_modules(LIBUNITY QUIET unity)
 

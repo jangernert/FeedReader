@@ -155,6 +155,7 @@ vala_precompile(FEEDREADER ${FEEDREADER_NAME}
 	src/FuncUtils.vala
 	src/DataBaseReadOnly.vala
 	src/ListUtils.vala
+	src/Password.vala
 	src/Settings.vala
 	src/StringUtils.vala
 	src/Structs.vala
@@ -190,7 +191,7 @@ OPTIONS
 	--header=FeedReader.h
 	--vapi=FeedReader.vapi
 	--enable-experimental
-	
+
 GENERATE_VAPI
 	FeedReader
 

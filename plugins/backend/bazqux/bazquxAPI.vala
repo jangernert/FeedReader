@@ -28,7 +28,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 	public bazquxAPI(bazquxUtils utils)
 	{
 		m_utils = utils;
-		m_connection = new bazquxConnection();
+		m_connection = new bazquxConnection(utils);
 	}
 
 	public LoginResponse login()

@@ -22,8 +22,10 @@ shared_library(
     webkit2gtk,
     libxml,
     rest,
-    json_glib,
-    feedreader
+    json_glib
+  ],
+  link_with: [
+    feedreader_lib
   ],
   install: true,
   install_dir: SHARE_PLUGINS_DIR

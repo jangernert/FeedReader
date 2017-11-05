@@ -22,8 +22,10 @@ shared_library(
     sqlite3,
     libsoup,
     libxml,
-    json_glib,
-    feedreader
+    json_glib
+  ],
+  link_with: [
+    feedreader_lib
   ],
   install: true,
   install_dir: BACKEND_PLUGINS_DIR

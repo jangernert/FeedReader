@@ -23,8 +23,10 @@ shared_library(
     libxml,
     rest,
     json_glib,
-    goa,
-    feedreader
+    goa
+  ],
+  link_with: [
+    feedreader_lib
   ],
   install: true,
   install_dir: SHARE_PLUGINS_DIR

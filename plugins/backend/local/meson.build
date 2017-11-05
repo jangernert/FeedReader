@@ -37,10 +37,10 @@ shared_library(
     libxml,
     json_glib,
     libcurl,
-    lib_rss_glib,
-    feedreader
+    lib_rss_glib
   ],
   link_with: [
+    feedreader_lib,
     mrss_lib,
     nxml_lib
   ],

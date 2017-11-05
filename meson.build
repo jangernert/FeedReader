@@ -255,7 +255,14 @@ feedreader_lib = library(
   install_dir: [false, true, true]
 )
 
-feedreader = declare_dependency(
+# Build plugins and data files
+subdir('plugins')
+subdir('schemas')
+subdir('po')
+
+# Create an executable file
+executable(
+  'feedreader',
   link_with: [
     feedreader_lib
   ],
@@ -265,18 +272,6 @@ feedreader = declare_dependency(
     libvilistextum_vapi,
     webkit2gtk
   ],
-  include_directories: include_directories('.')
-)
-
-# Build plugins and data files
-subdir('plugins')
-subdir('schemas')
-subdir('po')
-
-# Create an executable file
-executable(
-  'feedreader',
-  objects: feedreader_lib.extract_all_objects(),
   install: true
 )
 

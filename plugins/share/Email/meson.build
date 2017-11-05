@@ -20,8 +20,10 @@ shared_library(
     sqlite3,
     libsoup,
     webkit2gtk,
-    libxml,
-    feedreader
+    libxml
+  ],
+  link_with: [
+    feedreader_lib
   ],
   install: true,
   install_dir: SHARE_PLUGINS_DIR

@@ -22,9 +22,11 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	private Json.Parser m_parser;
 	private string? m_iconDir = null;
 	private Soup.Session m_session;
+	private DataBaseReadOnly m_db;
 
-	public ttrssAPI (ttrssUtils utils)
+	public ttrssAPI (ttrssUtils utils, DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_parser = new Json.Parser();
 		m_utils = utils;
 		m_session = new Soup.Session();
@@ -291,7 +293,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 					new Tag(
 						tag_node.get_int_member("id").to_string(),
 						tag_node.get_string_member("caption"),
-						DataBase.readOnly().getTagColor()
+						m_db.getTagColor()
 					)
 				);
 			}

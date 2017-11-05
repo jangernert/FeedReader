@@ -24,9 +24,11 @@ public class FeedReader.bazquxAPI : GLib.Object {
 	private bazquxConnection m_connection;
 	private bazquxUtils m_utils;
 	private string m_userID;
+	private DataBaseReadOnly m_db;
 
-	public bazquxAPI(bazquxUtils utils)
+	public bazquxAPI(bazquxUtils utils, DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_utils = utils;
 		m_connection = new bazquxConnection(utils);
 	}
@@ -191,7 +193,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 						new Tag(
 							id,
 							title,
-							DataBase.readOnly().getTagColor()
+							m_db.getTagColor()
 						)
 					);
 				}
@@ -341,7 +343,7 @@ public class FeedReader.bazquxAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
+				else if(cat.contains("/label/") && m_db.getTagName(cat) != null)
 					tags.add(cat);
 			}
 

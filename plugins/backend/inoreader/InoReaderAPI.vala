@@ -24,9 +24,11 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	private InoReaderConnection m_connection;
 	private InoReaderUtils m_utils;
 	private string m_userID;
+	private DataBaseReadOnly m_db;
 
-	public InoReaderAPI (InoReaderUtils utils)
+	public InoReaderAPI (InoReaderUtils utils, DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_utils = utils;
 		m_connection = new InoReaderConnection(m_utils);
 	}
@@ -190,7 +192,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 						new Tag(
 							id,
 							title,
-							DataBase.readOnly().getTagColor()
+							m_db.getTagColor()
 						)
 					);
 				}
@@ -336,7 +338,7 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 					marked = true;
 				else if(cat.has_suffix("com.google/read"))
 					read = true;
-				else if(cat.contains("/label/") && DataBase.readOnly().getTagName(cat) != null)
+				else if(cat.contains("/label/") && m_db.getTagName(cat) != null)
 					tags.add(cat);
 			}
 

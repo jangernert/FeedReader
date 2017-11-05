@@ -19,9 +19,13 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 	private FeedHQUtils m_utils;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
+	private DataBaseReadOnly m_db;
+	private DataBase m_db_write;
 
-	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
 	{
+		m_db = db;
+		m_db_write = db_write;
 		m_utils = new FeedHQUtils(settings_backend, secrets);
 		m_api = new FeedHQAPI(m_utils);
 	}
@@ -254,13 +258,13 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void markAllItemsRead()
 	{
-		var categories = DataBase.readOnly().read_categories();
+		var categories = m_db.read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = DataBase.readOnly().read_feeds_without_cat();
+		var feeds = m_db.read_feeds_without_cat();
 		foreach(Feed feed in feeds)
 		{
 			m_api.markAsRead(feed.getFeedID());
@@ -409,7 +413,7 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 				continuation = m_api.updateArticles(unreadIDs, 1000, continuation);
 			}
 			while(continuation != null);
-			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
+			m_db_write.updateArticlesByID(unreadIDs, "unread");
 		}
 
 		var articles = new Gee.LinkedList<Article>();

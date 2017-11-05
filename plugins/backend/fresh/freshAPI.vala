@@ -17,9 +17,11 @@ public class FeedReader.freshAPI : Object {
 
 	private freshConnection m_connection;
 	private freshUtils m_utils;
+	private DataBaseReadOnly m_db;
 
-	public freshAPI(freshUtils utils)
+	public freshAPI(freshUtils utils, DataBaseReadOnly db)
 	{
+		m_db = db;
 		m_utils = utils;
 		m_connection = new freshConnection(m_utils);
 	}
@@ -311,7 +313,7 @@ public class FeedReader.freshAPI : Object {
 		var msg = new freshMessage();
 		msg.add("T", m_connection.getToken());
 		msg.add("s", streamID);
-		msg.add("ts", DataBase.readOnly().getNewestArticle());
+		msg.add("ts", m_db.getNewestArticle());
 
 		var response = m_connection.postRequest(path, msg.get(), "application/x-www-form-urlencoded");
 

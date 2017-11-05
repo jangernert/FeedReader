@@ -24,11 +24,15 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 	private Gtk.Entry m_authUserEntry;
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
+	private DataBaseReadOnly m_db;
+	private DataBase m_db_write;
 
-	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
 	{
+		m_db = db;
+		m_db_write = db_write;
 		m_utils = new freshUtils(settings_backend, secrets);
-		m_api = new freshAPI(m_utils);
+		m_api = new freshAPI(m_utils, db);
 	}
 
 	public string getWebsite()

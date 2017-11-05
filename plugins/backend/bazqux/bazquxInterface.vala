@@ -19,11 +19,15 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 	private bazquxUtils m_utils;
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
+	private DataBaseReadOnly m_db;
+	private DataBase m_db_write;
 
-	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
 	{
+		m_db = db;
+		m_db_write = db_write;
 		m_utils = new bazquxUtils(settings_backend, secrets);
-		m_api = new bazquxAPI(m_utils);
+		m_api = new bazquxAPI(m_utils, db);
 	}
 
 	public string getWebsite()
@@ -252,13 +256,13 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void markAllItemsRead()
 	{
-		var categories = DataBase.readOnly().read_categories();
+		var categories = m_db.read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.markAsRead(cat.getCatID());
 		}
 
-		var feeds = DataBase.readOnly().read_feeds_without_cat();
+		var feeds = m_db.read_feeds_without_cat();
 		foreach(Feed feed in feeds)
 		{
 			m_api.markAsRead(feed.getFeedID());
@@ -415,7 +419,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 					left = 0;
 				}
 			}
-			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
+			m_db_write.updateArticlesByID(unreadIDs, "unread");
 		}
 
 		var articles = new Gee.LinkedList<Article>();

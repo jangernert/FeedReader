@@ -24,11 +24,15 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 	private Gtk.Entry m_authUserEntry;
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
+	private DataBaseReadOnly m_db;
+	private DataBase m_db_write;
 
-	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
 	{
+		m_db = db;
+		m_db_write = db_write;
 		m_utils = new ttrssUtils(settings_backend, secrets);
-		m_api = new ttrssAPI(m_utils);
+		m_api = new ttrssAPI(m_utils, db);
 	}
 
 	public string getWebsite()
@@ -310,7 +314,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void markAllItemsRead()
 	{
-		var categories = DataBase.readOnly().read_categories();
+		var categories = m_db.read_categories();
 		foreach(Category cat in categories)
 		{
 			m_api.catchupFeed(cat.getCatID(), true);
@@ -356,7 +360,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		}
 
 		if(success)
-			feedID = (int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id")) + 1).to_string();
+			feedID = (int.parse(m_db.getMaxID("feeds", "feed_id")) + 1).to_string();
 		else
 			feedID = "-98";
 
@@ -467,8 +471,8 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 		{
 			Logger.debug("getArticles: newsplus plugin active");
 			var markedIDs = m_api.NewsPlus(ArticleStatus.MARKED, settings_general.get_int("max-articles"));
-			DataBase.writeAccess().updateArticlesByID(unreadIDs, "unread");
-			DataBase.writeAccess().updateArticlesByID(markedIDs, "marked");
+			m_db_write.updateArticlesByID(unreadIDs, "unread");
+			m_db_write.updateArticlesByID(markedIDs, "marked");
 			//updateArticleList();
 		}
 
@@ -500,14 +504,14 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 			// only update article states if they haven't been updated by the newsPlus-plugin
 			if(unreadIDs == null || whatToGet != ArticleStatus.ALL)
 			{
-				DataBase.writeAccess().update_articles(articles);
+				m_db_write.update_articles(articles);
 				updateArticleList();
 			}
 
 			foreach(Article article in articles)
 			{
 				var id = article.getArticleID();
-				if(!DataBase.readOnly().article_exists(id))
+				if(!m_db.article_exists(id))
 				{
 					articleIDs += id + ",";
 				}
@@ -531,7 +535,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articles.size > 0)
 		{
-			DataBase.writeAccess().write_articles(articles);
+			m_db_write.write_articles(articles);
 			refreshFeedListCounter();
 			updateArticleList();
 		}

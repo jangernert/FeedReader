@@ -18,9 +18,13 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	private localUtils m_utils;
 	private Soup.Session m_session;
 	private Gtk.ListBox m_feedlist;
+	private DataBaseReadOnly m_db;
+	private DataBase m_db_write;
 
-	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
 	{
+		m_db = db;
+		m_db_write = db_write;
 		m_utils = new localUtils();
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
@@ -360,8 +364,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string tagID = "1";
 
-		if(!DataBase.readOnly().isTableEmpty("tags"))
-			tagID = (int.parse(DataBase.readOnly().getMaxID("tags", "tagID")) + 1).to_string();
+		if(!m_db.isTableEmpty("tags"))
+			tagID = (int.parse(m_db.getMaxID("tags", "tagID")) + 1).to_string();
 
 		Logger.info("createTag: ID = " + tagID);
 		return tagID;
@@ -386,7 +390,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			var cat = new Category(cID, newCatName, 0, 99, CategoryID.MASTER.to_string(), 1);
 			var list = new Gee.LinkedList<Category>();
 			list.add(cat);
-			DataBase.writeAccess().write_categories(list);
+			m_db_write.write_categories(list);
 			catIDs.add(cID);
 		}
 		else if(catID != null && newCatName == null)
@@ -400,9 +404,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		feedID = "feedID00001";
 
-		if(!DataBase.readOnly().isTableEmpty("feeds"))
+		if(!m_db.isTableEmpty("feeds"))
 		{
-			feedID = "feedID%05d".printf(int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1);
+			feedID = "feedID%05d".printf(int.parse(m_db.getMaxID("feeds", "feed_id").substring(6)) + 1);
 		}
 
 		Logger.info(@"addFeed: ID = $feedID");
@@ -410,10 +414,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(Feed != null)
 		{
-			if(!DataBase.readOnly().feed_exists(Feed.getURL())) {
+			if(!m_db.feed_exists(Feed.getURL())) {
 				var list = new Gee.LinkedList<Feed>();
 				list.add(Feed);
-				DataBase.writeAccess().write_feeds(list);
+				m_db_write.write_feeds(list);
 				return true;
 			}
 		}
@@ -427,8 +431,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		int highestID = 0;
 
-		if(!DataBase.readOnly().isTableEmpty("feeds"))
-			highestID = int.parse(DataBase.readOnly().getMaxID("feeds", "feed_id").substring(6)) + 1;
+		if(!m_db.isTableEmpty("feeds"))
+			highestID = int.parse(m_db.getMaxID("feeds", "feed_id").substring(6)) + 1;
 
 		foreach(Feed f in feeds)
 		{
@@ -455,7 +459,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			Logger.debug("finishedFeed: " + feed.getTitle());
 		}
 
-		DataBase.writeAccess().write_feeds(finishedFeeds);
+		m_db_write.write_feeds(finishedFeeds);
 	}
 
 	public void removeFeed(string feedID)
@@ -478,12 +482,12 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	{
 		string catID = "catID00001";
 
-		if(!DataBase.readOnly().isTableEmpty("categories"))
+		if(!m_db.isTableEmpty("categories"))
 		{
-			string? id = DataBase.readOnly().getCategoryID(title);
+			string? id = m_db.getCategoryID(title);
 			if(id == null)
 			{
-				catID = "catID%05d".printf(int.parse(DataBase.readOnly().getMaxID("categories", "categorieID").substring(5)) + 1);
+				catID = "catID%05d".printf(int.parse(m_db.getMaxID("categories", "categorieID").substring(5)) + 1);
 			}
 			else
 			{
@@ -533,7 +537,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
-		var f = DataBase.readOnly().read_feeds();
+		var f = m_db.read_feeds();
 		var articleArray = new Gee.LinkedList<Article>();
 		GLib.Mutex mutex = GLib.Mutex();
 
@@ -671,7 +675,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articleArray.size > 0)
 		{
-			DataBase.writeAccess().write_articles(articleArray);
+			m_db_write.write_articles(articleArray);
 			Logger.debug("localInterface: %i articles written".printf(articleArray.size));
 			refreshFeedListCounter();
 			updateArticleList();

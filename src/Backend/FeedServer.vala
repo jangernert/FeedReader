@@ -48,7 +48,9 @@ public class FeedReader.FeedServer : GLib.Object {
 			{
 				var secret_service = Secret.Service.get_sync(Secret.ServiceFlags.NONE);
 				var secrets = Secret.Collection.for_alias_sync(secret_service, Secret.COLLECTION_DEFAULT, Secret.CollectionFlags.NONE);
-				(extension as FeedServerInterface).init(SettingsBackend.get_default(), secrets);
+				var db = DataBase.readOnly();
+				var db_write = DataBase.writeAccess();
+				(extension as FeedServerInterface).init(SettingsBackend.get_default(), secrets, db, db_write);
 				PluginsChanedEvent();
 			}
 			catch(Error e)

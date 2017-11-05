@@ -23,10 +23,10 @@ public class FeedReader.ttrssAPI : GLib.Object {
 	private string? m_iconDir = null;
 	private Soup.Session m_session;
 
-	public ttrssAPI ()
+	public ttrssAPI (ttrssUtils utils)
 	{
 		m_parser = new Json.Parser();
-		m_utils = new ttrssUtils();
+		m_utils = utils;
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
 		m_session.ssl_strict = false;

@@ -20,9 +20,9 @@ public class FeedReader.FeedlyAPI : Object {
 	private Json.Array m_unreadcounts;
 	private FeedlyUtils m_utils;
 
-	public FeedlyAPI() {
-		m_connection = new FeedlyConnection();
-		m_utils = new FeedlyUtils();
+	public FeedlyAPI(FeedlyUtils utils) {
+		m_utils = utils;
+		m_connection = new FeedlyConnection(m_utils);
 	}
 
 	public string createCatID(string title)

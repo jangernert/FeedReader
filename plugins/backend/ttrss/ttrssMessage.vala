@@ -21,12 +21,9 @@ public class FeedReader.ttrssMessage : GLib.Object {
 	private string m_contenttype;
 	private Json.Parser m_parser;
 	private Json.Object m_root_object;
-	private ttrssUtils m_utils;
-
 
 	public ttrssMessage(Soup.Session session, string destination)
 	{
-		m_utils = new ttrssUtils();
 		m_message_string = new GLib.StringBuilder();
 		m_session = session;
 		m_contenttype = "application/x-www-form-urlencoded";

@@ -17,9 +17,9 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 
 	GLib.Settings m_settings;
 
-	public OwncloudNewsUtils()
+	public OwncloudNewsUtils(GLib.SettingsBackend settings_backend)
 	{
-		m_settings = new GLib.Settings ("org.gnome.feedreader.owncloud");
+		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.owncloud", settings_backend);
 	}
 
 	public string getURL()

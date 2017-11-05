@@ -25,10 +25,10 @@ public class FeedReader.InoReaderAPI : GLib.Object {
 	private InoReaderUtils m_utils;
 	private string m_userID;
 
-	public InoReaderAPI ()
+	public InoReaderAPI (InoReaderUtils utils)
 	{
-		m_connection = new InoReaderConnection();
-		m_utils = new InoReaderUtils();
+		m_utils = utils;
+		m_connection = new InoReaderConnection(m_utils);
 	}
 
 

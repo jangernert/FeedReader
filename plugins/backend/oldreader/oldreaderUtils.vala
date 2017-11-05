@@ -21,9 +21,9 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
 
-	public OldReaderUtils()
+	public OldReaderUtils(GLib.SettingsBackend settings_backend)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.oldreader");
+		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.oldreader", settings_backend);
 	}
 
 	public string getUser()

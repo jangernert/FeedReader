@@ -30,10 +30,10 @@ public class FeedReader.OwncloudNewsAPI : GLib.Object {
 	private OwncloudNewsUtils m_utils;
 	private Soup.Session m_session;
 
-	public OwncloudNewsAPI()
+	public OwncloudNewsAPI(OwncloudNewsUtils utils)
 	{
 		m_parser = new Json.Parser ();
-		m_utils = new OwncloudNewsUtils();
+		m_utils = utils;
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
 		m_session.ssl_strict = false;

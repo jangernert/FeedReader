@@ -18,10 +18,10 @@ public class FeedReader.feedlyInterface : Peas.ExtensionBase, FeedServerInterfac
 	private FeedlyAPI m_api;
 	private FeedlyUtils m_utils;
 
-	public void init()
+	public void init(GLib.SettingsBackend settings_backend)
 	{
-		m_api = new FeedlyAPI();
-		m_utils = new FeedlyUtils();
+		m_utils = new FeedlyUtils(settings_backend);
+		m_api = new FeedlyAPI(m_utils);
 	}
 
 	public string getWebsite()

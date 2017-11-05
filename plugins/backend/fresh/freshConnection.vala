@@ -19,9 +19,9 @@ public class FeedReader.freshConnection {
 	private GLib.Settings m_settingsTweaks;
 	private Soup.Session m_session;
 
-	public freshConnection()
+	public freshConnection(freshUtils utils)
 	{
-		m_utils = new freshUtils();
+		m_utils = utils;
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;

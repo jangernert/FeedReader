@@ -18,10 +18,10 @@ public class FeedReader.InoReaderInterface : Peas.ExtensionBase, FeedServerInter
 	private InoReaderAPI m_api;
 	private InoReaderUtils m_utils;
 
-	public void init()
+	public void init(GLib.SettingsBackend settings_backend)
 	{
-		m_api = new InoReaderAPI();
-		m_utils = new InoReaderUtils();
+		m_utils = new InoReaderUtils(settings_backend);
+		m_api = new InoReaderAPI(m_utils);
 	}
 
 	public string getWebsite()

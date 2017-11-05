@@ -25,10 +25,10 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
 
-	public void init()
+	public void init(GLib.SettingsBackend settings_backend)
 	{
-		m_api = new freshAPI();
-		m_utils = new freshUtils();
+		m_utils = new freshUtils(settings_backend);
+		m_api = new freshAPI(m_utils);
 	}
 
 	public string getWebsite()

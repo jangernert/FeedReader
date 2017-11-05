@@ -20,9 +20,9 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 
-	public void init()
+	public void init(GLib.SettingsBackend settings_backend)
 	{
-		m_utils = new FeedbinUtils();
+		m_utils = new FeedbinUtils(settings_backend);
 		m_api = new FeedbinAPI(m_utils.getUser(), m_utils.getPassword(), Constants.USER_AGENT);
 	}
 

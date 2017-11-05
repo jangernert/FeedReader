@@ -17,9 +17,9 @@ public class FeedReader.freshUtils : GLib.Object {
 
 	GLib.Settings m_settings;
 
-	public freshUtils()
+	public freshUtils(GLib.SettingsBackend settings_backend)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.fresh");
+		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.fresh", settings_backend);
 	}
 
 	public string getURL()

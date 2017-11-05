@@ -25,10 +25,10 @@ public class FeedReader.OldReaderAPI : GLib.Object {
 	private OldReaderUtils m_utils;
 	private string m_userID;
 
-	public OldReaderAPI()
+	public OldReaderAPI(OldReaderUtils utils)
 	{
-		m_utils = new OldReaderUtils();
-		m_connection = new OldReaderConnection();
+		m_utils = utils;
+		m_connection = new OldReaderConnection(m_utils);
 	}
 
 	public LoginResponse login()

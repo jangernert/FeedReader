@@ -23,11 +23,9 @@ public class FeedReader.OwnCloudNewsMessage : GLib.Object {
 	private Json.Object m_root_object;
 	private string m_method;
 	private string m_destination;
-	private OwncloudNewsUtils m_utils;
 
 	public OwnCloudNewsMessage(Soup.Session session, string destination, string username, string password, string method)
 	{
-		m_utils = new OwncloudNewsUtils();
 		m_message_string = new GLib.StringBuilder();
 		m_method = method;
 		m_session = session;

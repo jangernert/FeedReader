@@ -44,7 +44,7 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		m_extensions.extension_added.connect((info, extension) => {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
-			(extension as FeedServerInterface).init();
+			(extension as FeedServerInterface).init(SettingsBackend.get_default());
 			PluginsChanedEvent();
 		});
 

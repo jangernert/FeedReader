@@ -26,9 +26,9 @@ public class FeedReader.ttrssUtils : GLib.Object {
 
 	GLib.Settings m_settings;
 
-	public ttrssUtils()
+	public ttrssUtils(GLib.SettingsBackend settings_backend)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.ttrss");
+		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.ttrss", settings_backend);
 	}
 
 	public string getURL()

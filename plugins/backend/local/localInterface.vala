@@ -19,7 +19,7 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 	private Soup.Session m_session;
 	private Gtk.ListBox m_feedlist;
 
-	public void init()
+	public void init(GLib.SettingsBackend settings_backend)
 	{
 		m_utils = new localUtils();
 		m_session = new Soup.Session();

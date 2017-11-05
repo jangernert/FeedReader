@@ -25,10 +25,10 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
 
-	public void init()
+	public void init(GLib.SettingsBackend settings_backend)
 	{
-		m_api = new ttrssAPI();
-		m_utils = new ttrssUtils();
+		m_utils = new ttrssUtils(settings_backend);
+		m_api = new ttrssAPI(m_utils);
 	}
 
 	public string getWebsite()

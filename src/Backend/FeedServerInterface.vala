@@ -21,7 +21,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 	public signal void showArticleListOverlay();
 	public signal void writeArticles(Gee.List<Article> articles);
 
-	public abstract void init();
+	public abstract void init(GLib.SettingsBackend settings_backend);
 
 	public abstract bool supportTags();
 

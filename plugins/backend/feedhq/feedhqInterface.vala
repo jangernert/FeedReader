@@ -20,10 +20,10 @@ public class FeedReader.FeedHQInterface : Peas.ExtensionBase, FeedServerInterfac
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 
-	public void init()
+	public void init(GLib.SettingsBackend settings_backend)
 	{
-		m_api = new FeedHQAPI();
-		m_utils = new FeedHQUtils();
+		m_utils = new FeedHQUtils(settings_backend);
+		m_api = new FeedHQAPI(m_utils);
 	}
 
 	public string getWebsite()

@@ -19,9 +19,9 @@ public class FeedReader.InoReaderConnection {
 	private InoReaderUtils m_utils;
 	private Soup.Session m_session;
 
-	public InoReaderConnection()
+	public InoReaderConnection(InoReaderUtils utils)
 	{
-		m_utils = new InoReaderUtils();
+		m_utils = utils;
 		m_api_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 		m_session = new Soup.Session();

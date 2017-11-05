@@ -18,10 +18,10 @@ public class FeedReader.freshAPI : Object {
 	private freshConnection m_connection;
 	private freshUtils m_utils;
 
-	public freshAPI()
+	public freshAPI(freshUtils utils)
 	{
-		m_connection = new freshConnection();
-		m_utils = new freshUtils();
+		m_utils = utils;
+		m_connection = new freshConnection(m_utils);
 	}
 
 	public LoginResponse login()

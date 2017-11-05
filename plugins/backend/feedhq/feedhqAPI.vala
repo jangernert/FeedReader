@@ -25,10 +25,10 @@ public class FeedReader.FeedHQAPI : GLib.Object {
 	private FeedHQUtils m_utils;
 	private string m_userID;
 
-	public FeedHQAPI ()
+	public FeedHQAPI (FeedHQUtils utils)
 	{
-		m_connection = new FeedHQConnection();
-		m_utils = new FeedHQUtils();
+		m_utils = utils;
+		m_connection = new FeedHQConnection(m_utils);
 	}
 
 

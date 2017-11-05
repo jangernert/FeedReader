@@ -21,9 +21,9 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
 
-	public FeedHQUtils()
+	public FeedHQUtils(GLib.SettingsBackend settings_backend)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.feedhq");
+		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedhq", settings_backend);
 	}
 
 	public string getUser()

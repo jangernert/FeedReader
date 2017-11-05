@@ -21,9 +21,9 @@ public class FeedReader.bazquxUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
 
-	public bazquxUtils()
+	public bazquxUtils(GLib.SettingsBackend settings_backend)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.bazqux");
+		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.bazqux", settings_backend);
 	}
 
 	public string getUser()

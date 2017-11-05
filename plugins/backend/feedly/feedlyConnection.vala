@@ -19,9 +19,9 @@ public class FeedReader.FeedlyConnection {
 	private GLib.Settings m_settingsTweaks;
 	private Soup.Session m_session;
 
-	public FeedlyConnection()
+	public FeedlyConnection(FeedlyUtils utils)
 	{
-		m_utils = new FeedlyUtils();
+		m_utils = utils;
 		m_session = new Soup.Session();
 		m_session.user_agent = Constants.USER_AGENT;
 		m_settingsTweaks = new GLib.Settings("org.gnome.feedreader.tweaks");

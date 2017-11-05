@@ -20,9 +20,9 @@ public class FeedReader.OldReaderConnection {
 	private OldReaderUtils m_utils;
 	private Soup.Session m_session;
 
-	public OldReaderConnection()
+	public OldReaderConnection(OldReaderUtils utils)
 	{
-		m_utils = new OldReaderUtils();
+		m_utils = utils;
 		m_api_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 		m_passwd = m_utils.getPasswd();

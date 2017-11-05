@@ -25,9 +25,9 @@ public class FeedReader.FeedlyUtils : Object {
 
 	private GLib.Settings m_settings;
 
-	public FeedlyUtils()
+	public FeedlyUtils(GLib.SettingsBackend settings_backend)
 	{
-		m_settings = new GLib.Settings("org.gnome.feedreader.feedly");
+		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedly", settings_backend);
 	}
 
 	public string getRefreshToken()

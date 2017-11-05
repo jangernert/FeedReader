@@ -25,9 +25,9 @@ public class FeedReader.bazquxAPI : GLib.Object {
 	private bazquxUtils m_utils;
 	private string m_userID;
 
-	public bazquxAPI()
+	public bazquxAPI(bazquxUtils utils)
 	{
-		m_utils = new bazquxUtils();
+		m_utils = utils;
 		m_connection = new bazquxConnection();
 	}
 

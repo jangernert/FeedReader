@@ -20,9 +20,9 @@ public class FeedReader.bazquxConnection {
 	private bazquxUtils m_utils;
 	private Soup.Session m_session;
 
-	public bazquxConnection()
+	public bazquxConnection(bazquxUtils utils)
 	{
-		m_utils = new bazquxUtils();
+		m_utils = utils;
 		m_username = m_utils.getUser();
 		m_api_code = m_utils.getAccessToken();
 		m_passwd = m_utils.getPasswd();

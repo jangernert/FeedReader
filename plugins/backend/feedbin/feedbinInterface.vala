@@ -22,12 +22,12 @@ public class FeedReader.FeedbinInterface : Peas.ExtensionBase, FeedServerInterfa
 	private DataBaseReadOnly m_db;
 	private DataBase m_db_write;
 
-	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write, string? api_host = "https://api.feedbin.com")
 	{
 		m_db = db;
 		m_db_write = db_write;
 		m_utils = new FeedbinUtils(settings_backend, secrets);
-		m_api = new FeedbinAPI(m_utils.getUser(), m_utils.getPassword(), Constants.USER_AGENT);
+		m_api = new FeedbinAPI(m_utils.getUser(), m_utils.getPassword(), Constants.USER_AGENT, api_host);
 	}
 
 	public string getWebsite()

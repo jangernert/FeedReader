@@ -36,38 +36,37 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		Utils.gsettingWriteString(m_settings, "username", user);
 	}
 
-	public string getPassword()
+	private HashTable<string, string> getPasswordAttributes()
 	{
-
 		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 		attributes["URL"] = "feedbin.com";
 		attributes["Username"] = getUser();
+		return attributes;
+	}
 
-		string passwd = "";
+	public string getPassword()
+	{
 
-		try{
-			passwd = Secret.password_lookupv_sync(m_pwSchema, attributes, null);
+		var attributes = getPasswordAttributes();
+		try
+		{
+			var password = Secret.password_lookupv_sync(m_pwSchema, attributes, null);
+			if(password != null)
+				return password;
 		}
-		catch(GLib.Error e){
+		catch(GLib.Error e)
+		{
 			Logger.error(e.message);
 		}
-
-		if(passwd == null)
-		{
-			return "";
-		}
-
-		return passwd;
+		return "";
 	}
 
 	public void setPassword(string passwd)
 	{
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = "feedbin.com";
-		attributes["Username"] = getUser();
+		var attributes = getPasswordAttributes();
 		try
 		{
-			Secret.password_storev_sync(m_pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd, null);
+			Secret.password_storev_sync(m_pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd);
 		}
 		catch(GLib.Error e)
 		{
@@ -83,21 +82,15 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 
 	public bool deletePassword()
 	{
-		bool removed = false;
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = "feedbin.com";
-		attributes["Username"] = getUser();
-
-		Secret.password_clearv.begin (m_pwSchema, attributes, null, (obj, async_res) => {
-			try
-			{
-				removed = Secret.password_clearv.end(async_res);
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("FeedbinUtils.deletePassword: %s".printf(e.message));
-			}
-		});
-		return removed;
+		var attributes = getPasswordAttributes();
+		try
+		{
+			return Secret.password_clearv_sync (m_pwSchema, attributes, null);
+		}
+		catch(GLib.Error e)
+		{
+			Logger.error("FeedbinUtils.deletePassword: %s".printf(e.message));
+			return false;
+		}
 	}
 }

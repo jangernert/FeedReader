@@ -20,6 +20,7 @@ MESSAGE(STATUS "Backend FEEDBIN:	" ${FEEDBIN})
 MESSAGE(STATUS "Backend FEEDHQ:	" ${FEEDHQ})
 MESSAGE(STATUS "Backend BAZQUX:	" ${FEEDHQ})
 
+add_subdirectory(test)
 
 if(TTRSS)
 	add_subdirectory(ttrss)

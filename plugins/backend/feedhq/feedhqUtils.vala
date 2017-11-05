@@ -20,10 +20,21 @@ namespace FeedReader.FeedHQSecret {
 public class FeedReader.FeedHQUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
+	private Password m_password;
 
-	public FeedHQUtils(GLib.SettingsBackend settings_backend)
+	public FeedHQUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedhq", settings_backend);
+
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
+										  "type", Secret.SchemaAttributeType.STRING,
+										  "Username", Secret.SchemaAttributeType.STRING);
+		m_password = new Password(secrets, pwSchema, "Feedserver login", () => {
+			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+			attributes["type"] = "FeedHQ";
+			attributes["Username"] = getUser();
+			return attributes;
+		});
 	}
 
 	public string getUser()
@@ -78,6 +89,7 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
+		m_password.delete_password();
 	}
 
 	public bool tagIsCat(string tagID, Gee.List<Feed> feeds)
@@ -94,49 +106,11 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 
 	public string getPasswd()
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
-										  "type", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
-
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["type"] = "FeedHQ";
-		attributes["Username"] = getUser();
-		string? passwd = "";
-
-		try
-		{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("feedhqUtils.getPasswd: " + e.message);
-		}
-
-		if(passwd == null)
-		{
-			Logger.warning("feedhqUtils.getPasswd: failed to read password");
-			return "";
-		}
-
-		return passwd;
+		return m_password.get_password();
 	}
 
 	public void setPassword(string passwd)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
-										  "type", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
-
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["type"] = "FeedHQ";
-		attributes["Username"] = getUser();
-		try
-		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("feedhqUtils: setPassword: " + e.message);
-		}
+		m_password.set_password(passwd);
 	}
 }

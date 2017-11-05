@@ -27,7 +27,7 @@ public class FeedReader.freshInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
-		m_utils = new freshUtils(settings_backend);
+		m_utils = new freshUtils(settings_backend, secrets);
 		m_api = new freshAPI(m_utils);
 	}
 

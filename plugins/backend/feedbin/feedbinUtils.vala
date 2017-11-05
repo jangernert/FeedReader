@@ -14,10 +14,6 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 class FeedReader.FeedbinUtils : GLib.Object {
-	static Secret.Schema m_pwSchema =
-		new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
-						   "URL", Secret.SchemaAttributeType.STRING,
-						   "Username", Secret.SchemaAttributeType.STRING);
 
 	GLib.Settings m_settings;
 	Password m_password;
@@ -25,7 +21,17 @@ class FeedReader.FeedbinUtils : GLib.Object {
 	public FeedbinUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedbin", settings_backend);
-		m_password = new Password(secrets, m_pwSchema, "FeedReader: feedbin login", getPasswordAttributes);
+
+		var password_schema =
+			new Secret.Schema("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
+							  "URL", Secret.SchemaAttributeType.STRING,
+							  "Username", Secret.SchemaAttributeType.STRING);
+		m_password = new Password(secrets, password_schema, "FeedReader: feedbin login", () => {
+			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+			attributes["URL"] = "feedbin.com";
+			attributes["Username"] = getUser();
+			return attributes;
+		});
 	}
 
 	public string getUser()
@@ -36,14 +42,6 @@ class FeedReader.FeedbinUtils : GLib.Object {
 	public void setUser(string user)
 	{
 		Utils.gsettingWriteString(m_settings, "username", user);
-	}
-
-	private HashTable<string, string> getPasswordAttributes()
-	{
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["URL"] = "feedbin.com";
-		attributes["Username"] = getUser();
-		return attributes;
 	}
 
 	public string getPassword(Cancellable? cancellable = null)
@@ -59,11 +57,6 @@ class FeedReader.FeedbinUtils : GLib.Object {
 	public void resetAccount(Cancellable? cancellable = null)
 	{
 		Utils.resetSettings(m_settings);
-		deletePassword(cancellable);
-	}
-
-	public bool deletePassword(Cancellable? cancellable = null)
-	{
-		return m_password.delete_password(cancellable);
+		m_password.delete_password(cancellable);
 	}
 }

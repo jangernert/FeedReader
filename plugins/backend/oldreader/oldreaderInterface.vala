@@ -22,7 +22,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 
 	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
-		m_utils = new OldReaderUtils(settings_backend);
+		m_utils = new OldReaderUtils(settings_backend, secrets);
 		m_api = new OldReaderAPI(m_utils);
 	}
 

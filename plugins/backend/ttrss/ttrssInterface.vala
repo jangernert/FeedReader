@@ -27,7 +27,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
-		m_utils = new ttrssUtils(settings_backend);
+		m_utils = new ttrssUtils(settings_backend, secrets);
 		m_api = new ttrssAPI(m_utils);
 	}
 

@@ -22,7 +22,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 
 	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
-		m_utils = new bazquxUtils(settings_backend);
+		m_utils = new bazquxUtils(settings_backend, secrets);
 		m_api = new bazquxAPI(m_utils);
 	}
 

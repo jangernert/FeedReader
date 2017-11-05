@@ -20,10 +20,21 @@ namespace FeedReader.bazquxSecret {
 public class FeedReader.bazquxUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
+	private Password m_password;
 
-	public bazquxUtils(GLib.SettingsBackend settings_backend)
+	public bazquxUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.bazqux", settings_backend);
+
+		var password_schema = new Secret.Schema ("org.gnome.feedreader.bazqux", Secret.SchemaFlags.NONE,
+							    			     "type", Secret.SchemaAttributeType.STRING,
+										         "Username", Secret.SchemaAttributeType.STRING);
+		m_password = new Password(secrets, password_schema, "Feedserver login", () => {
+			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+			attributes["type"] = "BazQux";
+			attributes["Username"] = getUser();
+			return attributes;
+		});
 	}
 
 	public string getUser()
@@ -59,53 +70,17 @@ public class FeedReader.bazquxUtils : GLib.Object {
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
+		m_password.delete_password();
 	}
 
 	public string getPasswd()
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.bazqux", Secret.SchemaFlags.NONE,
-										  "type", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
-
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["type"] = "BazQux";
-		attributes["Username"] = getUser();
-		string? passwd = "";
-
-		try
-		{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("bazquxUtils.getPasswd: " + e.message);
-		}
-
-		if(passwd == null)
-		{
-			Logger.warning("bazquxUtils.getPasswd: failed to read password");
-			return "";
-		}
-
-		return passwd;
+		return m_password.get_password();
 	}
 
 	public void setPassword(string passwd)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.bazqux", Secret.SchemaFlags.NONE,
-										  "type", Secret.SchemaAttributeType.STRING,
-										  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["type"] = "BazQux";
-		attributes["Username"] = getUser();
-		try
-		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "Feedserver login", passwd, null);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("bazquxUtils.setPassword: " + e.message);
-		}
+		m_password.set_password(passwd);
 	}
 
 	public bool tagIsCat(string tagID, Gee.List<Feed> feeds)

@@ -20,10 +20,20 @@ namespace FeedReader.OldReaderSecret {
 public class FeedReader.OldReaderUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
+	private Password m_password;
 
-	public OldReaderUtils(GLib.SettingsBackend settings_backend)
+	public OldReaderUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.oldreader", settings_backend);
+
+		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
+										  "type", "oldreader",
+										  "Username", Secret.SchemaAttributeType.STRING);
+		m_password = new Password(secrets, pwSchema, "FeedReader: oldreader login", () => {
+			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
+			attributes["Username"] = getUser();
+			return attributes;
+		});
 	}
 
 	public string getUser()
@@ -59,50 +69,16 @@ public class FeedReader.OldReaderUtils : GLib.Object {
 	public void resetAccount()
 	{
 		Utils.resetSettings(m_settings);
+		m_password.delete_password();
 	}
 
 	public string getPasswd()
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
-										  "type", "oldreader",
-										  "Username", Secret.SchemaAttributeType.STRING);
-
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Username"] = getUser();
-		string? passwd = "";
-
-		try
-		{
-			passwd = Secret.password_lookupv_sync(pwSchema, attributes, null);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("oldReaderUtils.getPassword: " + e.message);
-		}
-
-		if(passwd == null)
-		{
-			Logger.warning("oldReaderUtils.getPassword: could not load password");
-			return "";
-		}
-
-		return passwd;
+		return m_password.get_password();
 	}
 
 	public void setPassword(string passwd)
 	{
-		var pwSchema = new Secret.Schema ("org.gnome.feedreader.oldreader", Secret.SchemaFlags.NONE,
-										  "type", "oldreader",
-										  "Username", Secret.SchemaAttributeType.STRING);
-		var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
-		attributes["Username"] = getUser();
-		try
-		{
-			Secret.password_storev_sync(pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: oldreader login", passwd, null);
-		}
-		catch(GLib.Error e)
-		{
-			Logger.error("oldReaderUtils: setPassword: " + e.message);
-		}
+		m_password.set_password(passwd);
 	}
 }

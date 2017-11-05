@@ -26,6 +26,11 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		m_db = new SQLite(db_path);
 	}
 
+	public DataBaseReadOnly.in_memory()
+	{
+		m_db = new SQLite("file::memory:?cache=shared");
+	}
+
 	private void errorLogCallback(int code, string msg)
 	{
 		Logger.error(@"dbErrorLog: $code: $msg");

@@ -24,20 +24,23 @@ public class FeedReader.SQLite : GLib.Object {
 
 	public SQLite(string db_path, int busy_timeout = 1000)
 	{
-		var path = GLib.File.new_for_path(db_path);
-		var parent = path.get_parent();
-		if(!parent.query_exists())
+		if(!db_path.contains(":memory:"))
 		{
-			try
+			var path = GLib.File.new_for_path(db_path);
+			var parent = path.get_parent();
+			if(!parent.query_exists())
 			{
-				parent.make_directory_with_parents();
-			}
-			catch(IOError.EXISTS e)
-			{
-			}
-			catch(GLib.Error e)
-			{
-				Logger.error("SQLite: " + e.message);
+				try
+				{
+					parent.make_directory_with_parents();
+				}
+				catch(IOError.EXISTS e)
+				{
+				}
+				catch(GLib.Error e)
+				{
+					Logger.error("SQLite: " + e.message);
+				}
 			}
 		}
 

@@ -95,8 +95,7 @@ libvilistextum  = declare_dependency(
 # libgd
 libgd = declare_dependency(
   link_with: gd_lib,
-  include_directories: gd_inc,
-  dependencies: libgd_vapi
+  include_directories: gd_inc
 )
 
 # GtkImageView
@@ -116,6 +115,7 @@ libivy = declare_dependency(
 )
 
 vala_sources = [
+  'src/Constants.vala',
   'src/FavIconCache.vala',
   'src/FeedReader.vala',
   'src/Widgets/AddPopover.vala',
@@ -197,12 +197,7 @@ vala_sources = [
   'src/Backend/FeedServerInterface.vala',
   'src/Backend/OPMLparser.vala',
   'src/ContentGrabber/grabberConfig.vala',
-  'src/ContentGrabber/grabber.vala',
-  configure_file(
-    input: 'Constants.vala.in',
-    output: 'Constants.vala',
-    configuration: conf
-  )
+  'src/ContentGrabber/grabber.vala'
 ]
 
 
@@ -218,7 +213,9 @@ c_args = [
 ]
 vala_args = [
   '--enable-experimental',
-  '--target-glib','2.50'
+  '--target-glib','2.50',
+	'--pkg=gd-1.0',
+  '--pkg=webkit2gtk-4.0',
 ]
 
 # Creating an executable file
@@ -254,6 +251,8 @@ feedreader_lib = library(
   install: true,
   install_dir: [false, true, true]
 )
+
+c_args = c_args + ['-include','FeedReader.h',]
 
 # Build plugins and data files
 subdir('plugins')

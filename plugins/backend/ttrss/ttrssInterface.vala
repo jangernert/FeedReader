@@ -25,7 +25,7 @@ public class FeedReader.ttrssInterface : Peas.ExtensionBase, FeedServerInterface
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
 
-	public void init(GLib.SettingsBackend settings_backend)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_utils = new ttrssUtils(settings_backend);
 		m_api = new ttrssAPI(m_utils);

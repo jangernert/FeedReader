@@ -20,7 +20,7 @@ public class FeedReader.bazquxInterface : Peas.ExtensionBase, FeedServerInterfac
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 
-	public void init(GLib.SettingsBackend settings_backend)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_utils = new bazquxUtils(settings_backend);
 		m_api = new bazquxAPI(m_utils);

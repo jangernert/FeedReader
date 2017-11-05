@@ -19,11 +19,13 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 						   "URL", Secret.SchemaAttributeType.STRING,
 						   "Username", Secret.SchemaAttributeType.STRING);
 
+	Secret.Collection m_secrets;
 	GLib.Settings m_settings;
 
-	public FeedbinUtils(GLib.SettingsBackend settings_backend)
+	public FeedbinUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedbin", settings_backend);
+		m_secrets = secrets;
 	}
 
 	public string getUser()
@@ -44,15 +46,37 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		return attributes;
 	}
 
-	public string getPassword()
+	public string getPassword(Cancellable? cancellable = null)
 	{
-
 		var attributes = getPasswordAttributes();
 		try
 		{
-			var password = Secret.password_lookupv_sync(m_pwSchema, attributes, null);
-			if(password != null)
+			var secrets = m_secrets.search_sync(m_pwSchema, attributes, Secret.SearchFlags.NONE, cancellable);
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return "";
+
+			if(secrets.length() != 0)
+			{
+				var item = secrets.data;
+				item.load_secret_sync(cancellable);
+				if(cancellable != null && cancellable.is_cancelled())
+					return "";
+
+				var secret = item.get_secret();
+				if(secret == null)
+				{
+					Logger.error("FeedbinUtils.getPassword: Got NULL secret");
+					return "";
+				}
+				var password = secret.get_text();
+				if(password == null)
+				{
+					Logger.error("FeedbinUtils.getPassword: Got NULL password in non-NULL secret");
+					return "";
+				}
 				return password;
+			}
 		}
 		catch(GLib.Error e)
 		{
@@ -61,12 +85,13 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		return "";
 	}
 
-	public void setPassword(string passwd)
+	public void setPassword(string password, Cancellable? cancellable = null)
 	{
 		var attributes = getPasswordAttributes();
 		try
 		{
-			Secret.password_storev_sync(m_pwSchema, attributes, Secret.COLLECTION_DEFAULT, "FeedReader: feedbin login", passwd);
+			var value = new Secret.Value(password, password.length, "text/plain");
+			Secret.Item.create_sync(m_secrets, m_pwSchema, attributes, "FeedReader: feedbin login", value, Secret.ItemCreateFlags.REPLACE, cancellable);
 		}
 		catch(GLib.Error e)
 		{
@@ -74,18 +99,29 @@ public class FeedReader.FeedbinUtils : GLib.Object {
 		}
 	}
 
-	public void resetAccount()
+	public void resetAccount(Cancellable? cancellable = null)
 	{
 		Utils.resetSettings(m_settings);
-		deletePassword();
+		deletePassword(cancellable);
 	}
 
-	public bool deletePassword()
+	public bool deletePassword(Cancellable? cancellable = null)
 	{
 		var attributes = getPasswordAttributes();
 		try
 		{
-			return Secret.password_clearv_sync (m_pwSchema, attributes, null);
+			var secrets = m_secrets.search_sync(m_pwSchema, attributes, Secret.SearchFlags.NONE, cancellable);
+
+			if(cancellable != null && cancellable.is_cancelled())
+				return false;
+
+			if(secrets.length() != 0)
+			{
+				var item = secrets.data;
+				item.delete_sync(cancellable);
+				return true;
+			}
+			return false;
 		}
 		catch(GLib.Error e)
 		{

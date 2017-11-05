@@ -25,7 +25,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 	private Gtk.Revealer m_revealer;
 	private bool m_need_htaccess = false;
 
-	public void init(GLib.SettingsBackend settings_backend)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_utils = new OwncloudNewsUtils(settings_backend);
 		m_api = new OwncloudNewsAPI(m_utils);

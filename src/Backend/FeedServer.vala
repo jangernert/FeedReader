@@ -44,8 +44,18 @@ public class FeedReader.FeedServer : GLib.Object {
 
 		m_extensions.extension_added.connect((info, extension) => {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
-			(extension as FeedServerInterface).init(SettingsBackend.get_default());
-			PluginsChanedEvent();
+			try
+			{
+				var secret_service = Secret.Service.get_sync(Secret.ServiceFlags.NONE);
+				var secrets = Secret.Collection.for_alias_sync(secret_service, Secret.COLLECTION_DEFAULT, Secret.CollectionFlags.NONE);
+				(extension as FeedServerInterface).init(SettingsBackend.get_default(), secrets);
+				PluginsChanedEvent();
+			}
+			catch(Error e)
+			{
+				// FIXME: This error is fatal but this log message doesn't treat it that way
+				Logger.error("FeedServer: " + e.message);
+			}
 		});
 
 		m_extensions.extension_removed.connect((info, extension) => {

@@ -20,7 +20,7 @@ public class FeedReader.OldReaderInterface : Peas.ExtensionBase, FeedServerInter
 	private Gtk.Entry m_userEntry;
 	private Gtk.Entry m_passwordEntry;
 
-	public void init(GLib.SettingsBackend settings_backend)
+	public void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
 	{
 		m_utils = new OldReaderUtils(settings_backend);
 		m_api = new OldReaderAPI(m_utils);

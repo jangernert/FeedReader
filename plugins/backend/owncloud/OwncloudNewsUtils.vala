@@ -19,9 +19,12 @@ public class FeedReader.OwncloudNewsUtils : GLib.Object {
 	Password m_password;
 	Password m_htaccess_password;
 
-	public OwncloudNewsUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public OwncloudNewsUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
-		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.owncloud", settings_backend);
+		if(settings_backend != null)
+			m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.owncloud", settings_backend);
+		else
+			m_settings = new GLib.Settings("org.gnome.feedreader.owncloud");
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 										  "URL", Secret.SchemaAttributeType.STRING,

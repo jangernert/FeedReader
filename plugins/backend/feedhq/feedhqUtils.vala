@@ -22,9 +22,12 @@ public class FeedReader.FeedHQUtils : GLib.Object {
 	private GLib.Settings m_settings;
 	private Password m_password;
 
-	public FeedHQUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public FeedHQUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
-		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedhq", settings_backend);
+		if(settings_backend != null)
+			m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.feedhq", settings_backend);
+		else
+			m_settings = new GLib.Settings("org.gnome.feedreader.feedhq");
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.feedhq", Secret.SchemaFlags.NONE,
 										  "type", Secret.SchemaAttributeType.STRING,

@@ -54,7 +54,7 @@ public class FeedReader.FeedServer : GLib.Object {
 					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
 				var db = DataBase.readOnly();
 				var db_write = DataBase.writeAccess();
-				var settings_backend = GLib.SettingsBackend.get_default();
+				var settings_backend = null; // FIXME: Why does SettingsBackend.get_default() crash on Arch Linux?
 				(extension as FeedServerInterface).init(settings_backend, secrets, db, db_write);
 				PluginsChanedEvent();
 			}

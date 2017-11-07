@@ -21,7 +21,7 @@ public interface FeedReader.FeedServerInterface : GLib.Object {
 	public signal void showArticleListOverlay();
 	public signal void writeArticles(Gee.List<Article> articles);
 
-	public abstract void init(GLib.SettingsBackend settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write);
+	public abstract void init(GLib.SettingsBackend? settings_backend, Secret.Collection secrets, DataBaseReadOnly db, DataBase db_write);
 
 	public abstract bool supportTags();
 

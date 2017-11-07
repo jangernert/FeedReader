@@ -19,9 +19,12 @@ public class FeedReader.freshUtils : GLib.Object {
 	Password m_password;
 	Password m_htaccess_password;
 
-	public freshUtils(GLib.SettingsBackend settings_backend, Secret.Collection secrets)
+	public freshUtils(GLib.SettingsBackend? settings_backend, Secret.Collection secrets)
 	{
-		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.fresh", settings_backend);
+		if(settings_backend != null)
+			m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.fresh", settings_backend);
+		else
+			m_settings = new GLib.Settings("org.gnome.feedreader.fresh");
 
 		var pwSchema = new Secret.Schema ("org.gnome.feedreader.password", Secret.SchemaFlags.NONE,
 										  "URL", Secret.SchemaAttributeType.STRING,

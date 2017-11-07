@@ -25,9 +25,12 @@ public class FeedReader.InoReaderUtils : GLib.Object {
 
 	private GLib.Settings m_settings;
 
-	public InoReaderUtils(GLib.SettingsBackend settings_backend)
+	public InoReaderUtils(GLib.SettingsBackend? settings_backend)
 	{
-		m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.inoreader", settings_backend);
+		if(settings_backend != null)
+			m_settings = new GLib.Settings.with_backend("org.gnome.feedreader.inoreader", settings_backend);
+		else
+			m_settings = new GLib.Settings("org.gnome.feedreader.inoreader");
 	}
 
 	public string getUser()

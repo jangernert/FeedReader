@@ -46,11 +46,16 @@ public class FeedReader.FeedServer : GLib.Object {
 			Logger.debug("feedserver: plugin loaded %s".printf(info.get_name()));
 			try
 			{
-				var secret_service = Secret.Service.get_sync(Secret.ServiceFlags.NONE);
+				var secret_service = Secret.Service.get_sync(Secret.ServiceFlags.OPEN_SESSION);
+				// Supposedly create_sync should return an existing alias, but in practice it locks up,
+				// so lookup the alias before trying to create it.
 				var secrets = Secret.Collection.for_alias_sync(secret_service, Secret.COLLECTION_DEFAULT, Secret.CollectionFlags.NONE);
+				if(secrets == null)
+					secrets = Secret.Collection.create_sync(secret_service, "Login", Secret.COLLECTION_DEFAULT, Secret.CollectionCreateFlags.COLLECTION_CREATE_NONE);
 				var db = DataBase.readOnly();
 				var db_write = DataBase.writeAccess();
-				(extension as FeedServerInterface).init(SettingsBackend.get_default(), secrets, db, db_write);
+				var settings_backend = GLib.SettingsBackend.get_default();
+				(extension as FeedServerInterface).init(settings_backend, secrets, db, db_write);
 				PluginsChanedEvent();
 			}
 			catch(Error e)

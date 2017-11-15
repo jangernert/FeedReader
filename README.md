@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/jangernert/FeedReader.svg?style=shield)](https://circleci.com/gh/jangernert/FeedReader) [![Bountysource](https://img.shields.io/bountysource/team/jangernert-feedreader/activity.svg)](https://www.bountysource.com/teams/jangernert-feedreader/issues) [![Join the chat at https://gitter.im/Feedreader-dev/Lobby](https://badges.gitter.im/Feedreader-dev/Lobby.svg)](https://gitter.im/Feedreader-dev/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Translation status](https://hosted.weblate.org/widgets/feedreader/-/svg-badge.svg)](https://hosted.weblate.org/engage/feedreader/?utm_source=widget) [![CircleCI](https://circleci.com/gh/jangernert/FeedReader.svg?style=shield)](https://circleci.com/gh/jangernert/FeedReader) [![Bountysource](https://img.shields.io/bountysource/team/jangernert-feedreader/activity.svg)](https://www.bountysource.com/teams/jangernert-feedreader/issues) [![Join the chat at https://gitter.im/Feedreader-dev/Lobby](https://badges.gitter.im/Feedreader-dev/Lobby.svg)](https://gitter.im/Feedreader-dev/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 # [FeedReader](http://jangernert.github.io/FeedReader/)
@@ -9,7 +9,7 @@ FeedReader is a modern desktop application designed to complement existing web-b
 <div style="text-align:center"><img src ="https://raw.githubusercontent.com/jangernert/feedreader/gh-pages/images/gallery/Screenshot4.png" /></div>
 
 Website : http://jangernert.github.io/FeedReader/<br/>
-For translators : https://www.transifex.com/dev-feedreader/feedreader
+For translators : https://hosted.weblate.org/projects/feedreader/
 
 
 

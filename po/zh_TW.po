@@ -2,12 +2,20 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 10:52+0200\n"
+"PO-Revision-Date: 2017-11-16 02:55+0000\n"
+"Last-Translator: ezjerry liao <ezjerry@gmail.com>\n"
+"Language-Team: Chinese (Traditional) "
+"<https://hosted.weblate.org/projects/feedreader/translations/zh_Hant/>\n"
+"Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 2.18-dev\n"
 
 #: src/UtilsDaemon.vala:20
 msgid "No Preview Available"
-msgstr ""
+msgstr "無可用的預覽"
 
 #: src/UtilsDaemon.vala:78
 msgid "No Text available for this article :("

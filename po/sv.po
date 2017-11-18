@@ -11,15 +11,16 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2017-05-15 08:53+0000\n"
-"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: Swedish (http://www.transifex.com/dev-feedreader/feedreader/"
-"language/sv/)\n"
+"PO-Revision-Date: 2017-11-19 14:49+0000\n"
+"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
+"Language-Team: Swedish "
+"<https://hosted.weblate.org/projects/feedreader/translations/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.18-dev\n"
 
 #: src/UtilsDaemon.vala:20
 msgid "No Preview Available"
@@ -31,7 +32,7 @@ msgstr "Ingen text tillgänglig för den här artikeln :("
 
 #: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
 msgid "unknown Feed"
-msgstr ""
+msgstr "okänt flöde"
 
 #: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
 #: src/Widgets/FeedList.vala:516
@@ -41,15 +42,15 @@ msgstr "Okategoriserade"
 #: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
-msgstr "av: %s,"
+msgstr "av: %s, "
 
 #: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: src/UtilsUI.vala:290
 msgid "Save"
-msgstr ""
+msgstr "Spara"
 
 #: src/Model/Article.vala:168
 msgid "Yesterday"
@@ -57,11 +58,11 @@ msgstr "Igår"
 
 #: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
 msgid "Getting feeds and categories"
-msgstr ""
+msgstr "Hämtar flöden och kategorier"
 
 #: src/Backend/FeedServer.vala:181
 msgid "Getting articles"
-msgstr ""
+msgstr "Hämtar artiklar"
 
 #: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
@@ -69,11 +70,11 @@ msgstr ""
 
 #: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
-msgstr ""
+msgstr "Hämtar taggade artiklar"
 
 #: src/Backend/FeedServer.vala:294
 msgid "Getting unread articles"
-msgstr ""
+msgstr "Hämtar olästa artiklar"
 
 #: src/Share/ServiceSetup.vala:56
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:96
@@ -112,11 +113,11 @@ msgstr "skrolla upp"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
 msgid "No Articles"
-msgstr ""
+msgstr "Inga artiklar"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
 msgid "No unread articles"
-msgstr ""
+msgstr "Inga olästa artiklar"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
 msgid "No starred articles"
@@ -124,7 +125,7 @@ msgstr ""
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
 msgid "No articles"
-msgstr ""
+msgstr "Inga artiklar"
 
 #: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
 msgid "Add feed"
@@ -132,11 +133,11 @@ msgstr "Lägg till flöde"
 
 #: src/Widgets/FeedListFooter.vala:153
 msgid "Remove feed"
-msgstr ""
+msgstr "Ta bort flöde"
 
 #: src/Widgets/SharePopover.vala:62
 msgid "Add accounts"
-msgstr ""
+msgstr "Lägg till konton"
 
 #: src/Widgets/LoginPage.vala:55
 msgid "Where are your feeds?"
@@ -184,11 +185,11 @@ msgstr "Ingen artikel vald."
 
 #: src/Widgets/ArticleView.vala:66
 msgid "WebKit has crashed"
-msgstr ""
+msgstr "WebKit har kraschat"
 
 #: src/Widgets/ArticleView.vala:776
 msgid "Save image as"
-msgstr ""
+msgstr "Spara bild som"
 
 #: src/Widgets/ColumnViewHeader.vala:37
 msgid "All"
@@ -216,7 +217,7 @@ msgstr "Visa endast favoriserade artiklar"
 
 #: src/Widgets/ColumnViewHeader.vala:60
 msgid "Update feeds"
-msgstr ""
+msgstr "Uppdatera flöden"
 
 #: src/Widgets/ColumnViewHeader.vala:75
 msgid "Search Articles"
@@ -236,7 +237,7 @@ msgstr "FeedReader"
 
 #: src/Widgets/MainWindow.vala:354
 msgid "Ignore all TLS errors from now on"
-msgstr ""
+msgstr "Ignorera alla TLS-fel från och med nu"
 
 #: src/Widgets/MainWindow.vala:420
 msgid "Please select a service first"
@@ -264,7 +265,7 @@ msgstr "Tyvärr gick något fel."
 
 #: src/Widgets/MainWindow.vala:439
 msgid "The server reported an API-error."
-msgstr ""
+msgstr "Servern rapporterade ett API-fel."
 
 #: src/Widgets/MainWindow.vala:442
 msgid "Either your username or the password are not correct."
@@ -344,11 +345,11 @@ msgstr "Lägg till"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "OPML-fil:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "Välj OPML-fil"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -587,7 +588,7 @@ msgstr "Pergament"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "Typsnittsfamilj"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -635,7 +636,7 @@ msgstr "Artikelhämtare"
 
 #: src/Widgets/SettingsDialog.vala:166
 msgid "Download Images"
-msgstr ""
+msgstr "Hämta bilder"
 
 #: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
@@ -643,7 +644,7 @@ msgstr "Inbyggd mediaspelare"
 
 #: src/Widgets/SettingsDialog.vala:336
 msgid "System Accounts"
-msgstr ""
+msgstr "Systemkonton"
 
 #: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
@@ -718,7 +719,7 @@ msgstr ""
 #: plugins/share/Telegram/TelegramForm.vala:42
 #: plugins/share/Email/EmailForm.vala:52
 msgid "Send"
-msgstr ""
+msgstr "Skicka"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
@@ -726,7 +727,7 @@ msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
-msgstr ""
+msgstr "Klient-ID:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:75
 msgid "Client Secret:"
@@ -750,15 +751,15 @@ msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:154
 msgid "Please fill in the password."
-msgstr ""
+msgstr "Fyll i lösenordet."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:161
 msgid "Please fill in the username."
-msgstr ""
+msgstr "Fyll i användarnamnet."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:186
 msgid "Something went wrong."
-msgstr ""
+msgstr "Någonting gick fel."
 
 #: plugins/share/Email/EmailForm.vala:24
 msgid ""

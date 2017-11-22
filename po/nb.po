@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2017-11-17 05:48+0000\n"
+"PO-Revision-Date: 2017-11-23 03:48+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål "
 "<https://hosted.weblate.org/projects/feedreader/translations/nb/>\n"
@@ -291,7 +291,6 @@ msgid "No valid CA certificate available!"
 msgstr "Ingen gyldig CA-sertifikat tilgjengelig!"
 
 #: src/Widgets/MainWindow.vala:459
-#, fuzzy
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr "Installer programtillegget \"api_feedreader\" på din tt-rss -instans."
 

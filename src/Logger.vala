@@ -14,25 +14,31 @@
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
 public class FeedReader.Logger : GLib.Object {
+	const string LOG_DOMAIN = "feedreader";
+
+	private static void log(LogLevelFlags level, string message)
+	{
+		GLib.log_structured(LOG_DOMAIN, level, "MESSAGE", "%s", message);
+	}
 
 	public static void error(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_CRITICAL, "MESSAGE", "%s", message);
+		log(GLib.LogLevelFlags.LEVEL_CRITICAL, message);
 	}
 
 	public static void warning(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_WARNING, "MESSAGE", "%s", message);
+		log(GLib.LogLevelFlags.LEVEL_WARNING, message);
 	}
 
 	public static void info(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_INFO, "MESSAGE", "%s", message);
+		log(GLib.LogLevelFlags.LEVEL_INFO, message);
 	}
 
 	public static void debug(string message)
 	{
-		GLib.log_structured(null, GLib.LogLevelFlags.LEVEL_DEBUG, "MESSAGE", "%s", message);
+		log(GLib.LogLevelFlags.LEVEL_DEBUG, message);
 	}
 
 	public static void init()

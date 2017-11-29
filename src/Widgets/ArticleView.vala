@@ -526,7 +526,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
-				Logger.info(@"ArticleView: webextension-message: $message");
+				Logger.debug(@"ArticleView: webextension-message: $message");
 			});
 			recalculate.begin((obj, res) => {
 				recalculate.end(res);

@@ -48,7 +48,7 @@ namespace FeedReader {
 
 		protected override void startup()
 		{
-			Logger.init();
+			Logger.init(verbose);
 			Logger.info("FeedReader " + AboutInfo.version);
 
 			Settings.state().set_boolean("currently-updating", false);
@@ -307,7 +307,7 @@ namespace FeedReader {
 
 		if(pingURL != null)
 		{
-			Logger.init();
+			Logger.init(verbose);
 			if(!Utils.ping(pingURL))
 				Logger.error("Ping failed");
 			return 0;
@@ -315,7 +315,7 @@ namespace FeedReader {
 
 		if(feedURL != null)
 		{
-			Logger.init();
+			Logger.init(verbose);
 			Logger.debug(@"Adding feed $feedURL");
 			FeedReaderBackend.get_default().addFeed(feedURL, "", false, true);
 			return 0;
@@ -323,14 +323,14 @@ namespace FeedReader {
 
 		if(grabImages != null && articleUrl != null)
 		{
-			Logger.init();
+			Logger.init(verbose);
 			FeedServer.grabImages(grabImages, articleUrl);
 			return 0;
 		}
 
 		if(grabArticle != null)
 		{
-			Logger.init();
+			Logger.init(verbose);
 			FeedServer.grabArticle(grabArticle);
 			return 0;
 		}
@@ -339,7 +339,7 @@ namespace FeedReader {
 		{
 			var old_stdout =(owned)stdout;
 			stdout = FileStream.open("/dev/null", "w");
-			Logger.init();
+			Logger.init(verbose);
 			stdout =(owned)old_stdout;
 			stdout.printf("%u\n", DataBase.readOnly().get_unread_total());
 			return 0;
@@ -363,6 +363,7 @@ namespace FeedReader {
 	private const GLib.OptionEntry[] options = {
 		{ "version", 0, 0, OptionArg.NONE, ref version, "FeedReader version number", null },
 		{ "about", 0, 0, OptionArg.NONE, ref about, "spawn about dialog", null },
+		{ "verbose", 0, 0, OptionArg.NONE, ref verbose, "Spit out all the debug information", null },
 		{ "playMedia", 0, 0, OptionArg.STRING, ref media, "start media player with URL", "URL" },
 		{ "ping", 0, 0, OptionArg.STRING, ref pingURL, "test the ping function with given URL", "URL" },
 		{ "addFeed", 0, 0, OptionArg.STRING, ref feedURL, "add the feed to the collection", "URL" },
@@ -375,6 +376,7 @@ namespace FeedReader {
 
 	private static bool version = false;
 	private static bool about = false;
+	private static bool verbose = false;
 	private static string? media = null;
 	private static string? pingURL = null;
 	private static string? feedURL = null;

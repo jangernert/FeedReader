@@ -16,6 +16,8 @@
 public class FeedReader.Logger : GLib.Object {
 	const string LOG_DOMAIN = "feedreader";
 
+	private static bool m_log_debug_information = false;
+
 	private static void log(LogLevelFlags level, string message)
 	{
 		GLib.log_structured(LOG_DOMAIN, level, "MESSAGE", "%s", message);
@@ -38,11 +40,13 @@ public class FeedReader.Logger : GLib.Object {
 
 	public static void debug(string message)
 	{
-		log(GLib.LogLevelFlags.LEVEL_DEBUG, message);
+		if(m_log_debug_information)
+			log(GLib.LogLevelFlags.LEVEL_DEBUG, message);
 	}
 
-	public static void init()
+	public static void init(bool verbose)
 	{
+		m_log_debug_information = verbose;
 		GLib.Log.set_writer_func((LogWriterFunc)GLib.Log.writer_standard_streams);
 	}
 }

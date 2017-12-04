@@ -265,8 +265,15 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 	private void switchViews()
 	{
 		m_busy = true;
+		string? visible = m_stack.get_visible_child_name();
 
-		switch(m_stack.get_visible_child_name())
+		if(visible == null)
+		{
+			Logger.error("ArticleView: ");
+			return;
+		}
+
+		switch(visible)
 		{
 			case "empty":
 			case "crash":
@@ -281,13 +288,11 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			case "view1":
 				Logger.debug("ArticleView: view1 -> view2");
 				m_currentView = getNewView();
+				removeFromStack("view2");
 				m_stack.add_named(m_currentView, "view2");
 				m_stack.set_visible_child_name("view2");
 				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
-					var oldView = m_stack.get_child_by_name("view1");
-					if(oldView != null)
-						m_stack.remove(oldView);
-
+					removeFromStack("view1");
 					checkQueue();
 					return false;
 				}, GLib.Priority.HIGH);
@@ -296,13 +301,11 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			case "view2":
 				Logger.debug("ArticleView: view2 -> view1");
 				m_currentView = getNewView();
+				removeFromStack("view1");
 				m_stack.add_named(m_currentView, "view1");
 				m_stack.set_visible_child_name("view1");
 				GLib.Timeout.add((uint)(1.2*m_animationDuration), () => {
-					var oldView = m_stack.get_child_by_name("view2");
-					if(oldView != null)
-						m_stack.remove(oldView);
-
+					removeFromStack("view2");
 					checkQueue();
 					return false;
 				}, GLib.Priority.HIGH);
@@ -321,6 +324,13 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 			else
 				m_nextButton.reveal(true);
 		}
+	}
+
+	private void removeFromStack(string childName)
+	{
+		Gtk.Widget? widget = m_stack.get_child_by_name(childName);
+		if(widget != null)
+			m_stack.remove(widget);
 	}
 
 	private void checkQueue()
@@ -526,7 +536,7 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 				new imagePopup(path, url, window, height, width);
 			});
 			m_messenger.message.connect((message) => {
-				Logger.info(@"ArticleView: webextension-message: $message");
+				Logger.debug(@"ArticleView: webextension-message: $message");
 			});
 			recalculate.begin((obj, res) => {
 				recalculate.end(res);

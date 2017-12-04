@@ -41,8 +41,7 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		m_password = new Password(secrets, pwSchema, "FeedReader: ttrss login", () => {
 			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 			attributes["URL"] = getURL();
-			attributes["Username"] = getHtaccessUser();
-			attributes["htaccess"] = "true";
+			attributes["Username"] = getUser();
 			return attributes;
 		});
 
@@ -53,7 +52,8 @@ public class FeedReader.ttrssUtils : GLib.Object {
 		m_htaccess_password = new Password(secrets, htAccessSchema, "FeedReader: ttrss htaccess Authentication", () => {
 			var attributes = new GLib.HashTable<string,string>(str_hash, str_equal);
 			attributes["URL"] = getURL();
-			attributes["Username"] = getUser();
+			attributes["Username"] = getHtaccessUser();
+			attributes["htaccess"] = "true";
 			return attributes;
 		});
 	}

@@ -89,7 +89,13 @@ public class FeedReader.ttrssAPI : GLib.Object {
 
 			return LoginResponse.PLUGIN_NEEDED;
 		}
-		else if(error == ConnectionError.API_ERROR)
+		else
+		{
+			message.printMessage();
+			message.printResponse();
+		}
+
+		if(error == ConnectionError.API_ERROR)
 		{
 			return LoginResponse.API_ERROR;
 		}
@@ -340,6 +346,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -559,8 +566,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 		message.add_string("op", "getArticle");
 		message.add_string("article_id", articleIDs);
 		int error = message.send();
-		message.printMessage();
-		//message.printResponse();
 
 		if(error == ConnectionError.SUCCESS)
 		{
@@ -650,6 +655,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 				return_value = true;
 		}
 
+
 		return return_value;
 	}
 
@@ -673,9 +679,6 @@ public class FeedReader.ttrssAPI : GLib.Object {
 			if(response.get_string_member("status") == "OK")
 				return_value = true;
 		}
-
-		//message.printMessage();
-		//message.printResponse();
 
 		return return_value;
 	}

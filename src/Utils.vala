@@ -855,7 +855,7 @@ public class FeedReader.Utils : GLib.Object {
 	{
 		Gtk.init(ref args);
 		Gst.init(ref args);
-		Logger.init();
+		Logger.init(true);
 
 		var window = new Gtk.Window();
 		window.set_size_request(800, 600);

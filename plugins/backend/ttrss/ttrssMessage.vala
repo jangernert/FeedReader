@@ -62,6 +62,18 @@ public class FeedReader.ttrssMessage : GLib.Object {
 
 	public ConnectionError send(bool ping = false)
 	{
+		var error = send_impl(ping);
+		if(error != ConnectionError.SUCCESS)
+		{
+			printMessage();
+			printResponse();
+		}
+
+		return error;
+	}
+
+	public ConnectionError send_impl(bool ping)
+	{
 		if(m_message_soup == null)
 		{
 			Logger.error(@"ttrssMessage: can't send message");

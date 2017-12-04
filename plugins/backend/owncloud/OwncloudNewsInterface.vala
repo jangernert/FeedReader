@@ -118,7 +118,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 		grid.set_valign(Gtk.Align.CENTER);
 		grid.set_halign(Gtk.Align.CENTER);
 
-		var logo = new Gtk.Image.from_icon_name("feed-service-owncloud", Gtk.IconSize.MENU);
+		var logo = new Gtk.Image.from_icon_name("feed-service-nextcloud", Gtk.IconSize.MENU);
 
 		grid.attach(urlLabel, 0, 0, 1, 1);
 		grid.attach(m_urlEntry, 1, 0, 1, 1);
@@ -214,7 +214,7 @@ public class FeedReader.OwncloudNewsInterface : Peas.ExtensionBase, FeedServerIn
 
 	public string symbolicIcon()
 	{
-		return "feed-service-owncloud-symbolic";
+		return "feed-service-nextcloud-symbolic";
 	}
 
 	public string accountName()

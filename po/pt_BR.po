@@ -12,15 +12,16 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2017-05-15 08:53+0000\n"
-"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: Portuguese (Brazil) (http://www.transifex.com/dev-feedreader/"
-"feedreader/language/pt_BR/)\n"
+"PO-Revision-Date: 2017-12-04 09:32+0000\n"
+"Last-Translator: Iacchus Mercurius <kassivs@gmail.com>\n"
+"Language-Team: Portuguese (Brazil) "
+"<https://hosted.weblate.org/projects/feedreader/translations/pt_BR/>\n"
 "Language: pt_BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 2.18-dev\n"
 
 #: src/UtilsDaemon.vala:20
 msgid "No Preview Available"
@@ -350,11 +351,11 @@ msgstr "Adicionar"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "Arquivo OPML:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "Escolha o Arquivo OPML"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -521,7 +522,7 @@ msgstr "Mostrar somente não lidos"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Ordenar Lista de Feeds por"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -593,7 +594,7 @@ msgstr "Pergaminho"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "Fonte"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -605,7 +606,7 @@ msgstr "Número de artigos"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Intervalo em Minutos (0 = DESLIGADO)"
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -641,7 +642,7 @@ msgstr "Baixador de conteúdo"
 
 #: src/Widgets/SettingsDialog.vala:166
 msgid "Download Images"
-msgstr ""
+msgstr "Fazer Download das Imagens"
 
 #: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"

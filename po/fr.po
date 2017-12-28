@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2017-11-16 18:46+0000\n"
-"Last-Translator: J. King <jking@jkingweb.ca>\n"
+"PO-Revision-Date: 2018-01-05 12:14+0000\n"
+"Last-Translator: Florian <floflr@zaclys.net>\n"
 "Language-Team: French "
 "<https://hosted.weblate.org/projects/feedreader/translations/fr/>\n"
 "Language: fr\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 2.19-dev\n"
 
 #: src/UtilsDaemon.vala:20
 msgid "No Preview Available"
@@ -358,7 +358,7 @@ msgstr "Fichier OPML :"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "Sélectionner un fichier OPML"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -487,7 +487,7 @@ msgstr ""
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format
 msgid "Tag \"%s\" removed"
-msgstr "Étiquette « %s » supprimée "
+msgstr "Étiquette « %s » supprimée"
 
 #: src/Widgets/FeedRow.vala:203 src/Widgets/RemovePopover.vala:102
 #, c-format
@@ -645,7 +645,7 @@ msgstr "Agrippeur de contenu"
 
 #: src/Widgets/SettingsDialog.vala:166
 msgid "Download Images"
-msgstr ""
+msgstr "Télécharger les images"
 
 #: src/Widgets/SettingsDialog.vala:168
 msgid "Internal Media Player"
@@ -714,16 +714,19 @@ msgstr "Utilisateur ou mot de passe incorrect"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr ""
+msgstr "Info: Telegram doit être installé pour que ce plugin fonctionne."
 
 #: plugins/share/Telegram/Telegram.vala:81
+#, fuzzy
 msgid "Telegram"
-msgstr ""
+msgstr "Telegram"
 
 #: plugins/share/Telegram/TelegramForm.vala:23
 msgid ""
 "Hey, Check out this interesting article I just read - sent by FeedReader"
 msgstr ""
+"Salut, regarde cet article intéressant, que je viens de lire - envoyé par "
+"FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:42
 #: plugins/share/Email/EmailForm.vala:52
@@ -732,7 +735,7 @@ msgstr "Envoyer"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr ""
+msgstr "Envoyer sur Telegram"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -821,7 +824,7 @@ msgstr "Tweeter à ses Followers"
 
 #: plugins/share/Browser/Browser.vala:79
 msgid "Open in Browser"
-msgstr ""
+msgstr "Ouvrir dans le Navigateur"
 
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:91
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:91
@@ -854,7 +857,7 @@ msgstr ""
 
 #: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
-msgstr ""
+msgstr "Rien à lire ici."
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"

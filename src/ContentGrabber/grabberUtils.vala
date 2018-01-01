@@ -227,30 +227,37 @@ public class FeedReader.grabberUtils : GLib.Object {
 	public static void onlyRemoveNode(Html.Doc* doc, string xpath)
 	{
 		Xml.XPath.Context cntx = new Xml.XPath.Context(doc);
-		Xml.XPath.Object* res = cntx.eval_expression(xpath);
-
-		if(res != null
-		&& res->type == Xml.XPath.ObjectType.NODESET
-		&& res->nodesetval != null)
+		bool changed = false;
+		do
 		{
-			for(int i = 0; i < res->nodesetval->length(); i++)
+			changed = false;
+			Xml.XPath.Object* res = cntx.eval_expression(xpath);
+
+			if(res != null
+			&& res->type == Xml.XPath.ObjectType.NODESET
+			&& res->nodesetval != null)
 			{
-				Xml.Node* node = res->nodesetval->item(i);
-				if(node == null)
-					continue;
+				for(int i = 0; i < res->nodesetval->length(); i++)
+				{
+					Xml.Node* node = res->nodesetval->item(i);
+					if(node == null)
+						continue;
 
-				Xml.Node* parent = node->parent;
-				Xml.Node* children = node->children;
+					Xml.Node* parent = node->parent;
+					Xml.Node* children = node->children;
 
-				children->unlink();
-				parent->add_child(children);
+					children->unlink();
+					parent->add_child(children);
 
-				node->unlink();
-				node->free_list();
+					node->unlink();
+					node->free_list();
+					changed = true;
+					break;
+				}
 			}
-		}
 
-		delete res;
+			delete res;
+		}while(changed);
 	}
 
 	public static bool setAttributes(Html.Doc* doc, string attribute, string newValue)

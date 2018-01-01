@@ -505,7 +505,7 @@ public class FeedReader.Grabber : GLib.Object {
 				if(grabberUtils.extractBody(doc, bodyXPath, m_root))
 					m_foundSomething = true;
 				else
-					Logger.error(bodyXPath);
+					Logger.info("Failed to find: " + bodyXPath);
 			}
 
 			if(m_foundSomething)

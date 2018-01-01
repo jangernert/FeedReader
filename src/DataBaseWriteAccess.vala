@@ -494,7 +494,10 @@ public class FeedReader.DataBase : DataBaseReadOnly {
 
 			int? weeks = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_weeks();
 			if(weeks != null && article.getDate().compare(now.add_weeks(-(int)weeks)) == -1)
+			{
+				Logger.info("Ignoring old article: %s".printf(article.getTitle()));
 				continue;
+			}
 
 			stmt.bind_text(articleID_position, article.getArticleID());
 			stmt.bind_text(feedID_position, article.getFeedID());

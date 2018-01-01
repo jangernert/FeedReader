@@ -676,7 +676,10 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 		if(articles.size > 0)
 		{
-			writeArticles(articles);
+			m_db_write.write_articles(articles);
+			Logger.debug("localInterface: %i articles written".printf(articles.size));
+			refreshFeedListCounter();
+			updateArticleList();
 		}
 	}
 

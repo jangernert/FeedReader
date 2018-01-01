@@ -388,23 +388,23 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			try
 			{
-				var threads = new ThreadPool<Article>.with_owned_data((a) => {
+				var threads = new ThreadPool<Article>.with_owned_data((article) => {
 					if(cancellable != null && cancellable.is_cancelled())
 						return;
 
 						if(Settings.general().get_boolean("content-grabber"))
 						{
-							var grabber = new Grabber(session, a);
+							var grabber = new Grabber(session, article);
 							if(grabber.process(cancellable))
 							{
 								grabber.print();
-								if(a.getAuthor() != "" && grabber.getAuthor() != null)
+								if(article.getAuthor() == "" && grabber.getAuthor() != null)
 								{
-									a.setAuthor(grabber.getAuthor());
+									article.setAuthor(grabber.getAuthor());
 								}
-								if(a.getTitle() != "" && grabber.getTitle() != null)
+								if(article.getTitle() == "" && grabber.getTitle() != null)
 								{
-									a.setTitle(grabber.getTitle());
+									article.setTitle(grabber.getTitle());
 								}
 								string html = grabber.getArticle();
 								string xml = "<?xml";
@@ -415,20 +415,20 @@ public class FeedReader.FeedServer : GLib.Object {
 									html = html.slice(end+1, html.length).chug();
 								}
 
-								a.setHTML(html);
+								article.setHTML(html);
 							}
 							else
 							{
-								downloadImages(session, a, cancellable);
+								downloadImages(session, article, cancellable);
 							}
 						}
 						else
 						{
-							downloadImages(session, a, cancellable);
+							downloadImages(session, article, cancellable);
 						}
 
 						if(cancellable == null || !cancellable.is_cancelled())
-							DataBase.writeAccess().writeContent(a);
+							DataBase.writeAccess().writeContent(article);
 
 						++i;
 						syncProgress(_(@"Grabbing full content: $i / $size"));

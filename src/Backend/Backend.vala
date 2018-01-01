@@ -209,8 +209,14 @@ namespace FeedReader {
 			syncStarted();
 			Settings.state().set_boolean("currently-updating", true);
 
-			if(!checkOnline()
-			|| (cancellable != null && cancellable.is_cancelled()))
+			if(!checkOnline())
+			{
+				Logger.info("Cancelling sync because we're not online");
+				finishSync();
+				return;
+			}
+
+			if(cancellable != null && cancellable.is_cancelled())
 			{
 				finishSync();
 				return;

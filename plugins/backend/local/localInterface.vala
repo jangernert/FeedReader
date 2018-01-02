@@ -610,7 +610,9 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 							date = new GLib.DateTime.now_local();
 					}
 
+					Logger.info("Got content: " + item.description);
 					string? content = m_utils.convert(item.description, locale);
+					Logger.info("Converted to: " + item.description);
 					if(content == null)
 						content = _("Nothing to read here.");
 

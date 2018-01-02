@@ -112,20 +112,19 @@ __nxml_parse_string(nxml_t *doc, char *buffer, int size)
 				strncpy(buf, buffer + i + 2, last);
 				buf[last] = 0;
 
+				int value;
 				if (buf[0] != 'x')
-					last = atoi(buf);
+					value = atoi(buf);
 				else
-					last = __nxml_atoi(&buf[1]);
+					value = __nxml_atoi(&buf[1]);
 
-				if ((last = __nxml_int_charset(last, (unsigned char *)buf, doc->encoding)) > 0)
+				int num_bytes;
+				if ((num_bytes = __nxml_int_charset(value, (unsigned char *)buf, doc->encoding)) > 0)
 				{
-					strncpy(buf, buffer + i, k - i + 1);
-					buf[k - i + 2] = '\0';
-					__nxml_string_add(ret, buf, k - i + 1);
+					__nxml_string_add(ret, buf, num_bytes);
 				}
 				else
 					__nxml_string_add(ret, buffer + i, 1);
-
 				i += k - i;
 				q = 0;
 			}

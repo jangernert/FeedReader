@@ -104,7 +104,7 @@ public class FeedReader.FavIcon : GLib.Object
 		}
 		catch(Error e)
 		{
-			Logger.error("FavIcon.load: " + e.message);
+			Logger.error("FavIcon.load: %s - %s".printf(m_feed.getTitle(), e.message));
 		}
 		finally
 		{

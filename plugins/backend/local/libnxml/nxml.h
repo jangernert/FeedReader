@@ -1,16 +1,16 @@
-/* nXml - Copyright (C) 2005-2007 bakunin - Andrea Marchesini 
+/* nXml - Copyright (C) 2005-2007 bakunin - Andrea Marchesini
  *                                    <bakunin@autistici.org>
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
@@ -29,11 +29,11 @@
 #include <string.h>
 #include <errno.h>
 
-#define LIBNXML_VERSION_STRING	"0.18.3"
+#define LIBNXML_VERSION_STRING "0.18.3"
 
-#define LIBNXML_MAJOR_VERSION	0
-#define LIBNXML_MINOR_VERSION	18
-#define LIBNXML_MICRO_VERSION	3
+#define LIBNXML_MAJOR_VERSION 0
+#define LIBNXML_MINOR_VERSION 18
+#define LIBNXML_MICRO_VERSION 3
 
 typedef struct nxml_t nxml_t;
 typedef struct nxml_data_t nxml_data_t;
@@ -45,46 +45,42 @@ typedef struct __nxml_private_t __nxml_private_t;
 typedef struct __nxml_entity_t __nxml_entity_t;
 
 /** This enum describes the error type of libnxml */
-typedef enum
-{
-  NXML_OK = 0,			/**< No error */
-  NXML_ERR_POSIX,		/**< For the correct error, use errno */
-  NXML_ERR_PARSER,		/**< Parser error */
-  NXML_ERR_DOWNLOAD,		/**< Download error */
-  NXML_ERR_DATA			/**< The parameters are incorrect */
+typedef enum {
+	NXML_OK = 0,	   /**< No error */
+	NXML_ERR_POSIX,	/**< For the correct error, use errno */
+	NXML_ERR_PARSER,   /**< Parser error */
+	NXML_ERR_DOWNLOAD, /**< Download error */
+	NXML_ERR_DATA	  /**< The parameters are incorrect */
 } nxml_error_t;
 
 /** This enum describes the type of data element of libnxml */
-typedef enum
-{
-  NXML_TYPE_TEXT,		/**< Text element */
-  NXML_TYPE_COMMENT,		/**< Comment element */
-  NXML_TYPE_ELEMENT,		/**< Data element */
-  NXML_TYPE_PI,			/**< PI element */
-  NXML_TYPE_ELEMENT_CLOSE	/**< Data element - For internal use only */
+typedef enum {
+	NXML_TYPE_TEXT,			/**< Text element */
+	NXML_TYPE_COMMENT,		/**< Comment element */
+	NXML_TYPE_ELEMENT,		/**< Data element */
+	NXML_TYPE_PI,			/**< PI element */
+	NXML_TYPE_ELEMENT_CLOSE /**< Data element - For internal use only */
 } nxml_type_t;
 
 /** This enum describes the supported XML version */
-typedef enum
-{
-  NXML_VERSION_1_1,		/**< XML 1.1 */
-  NXML_VERSION_1_0		/**< XML 1.0 */
+typedef enum {
+	NXML_VERSION_1_1, /**< XML 1.1 */
+	NXML_VERSION_1_0  /**< XML 1.0 */
 } nxml_version_t;
 
 /** This enum describes the CharSet of XML document */
-typedef enum 
-{
-  NXML_CHARSET_UTF8,		/**< UTF8 chatset detected */
-  NXML_CHARSET_UTF16LE,		/**< UTF 16 Little Endian detected */
-  NXML_CHARSET_UTF16BE,		/**< UTF 16 Big Endian detected */
-  NXML_CHARSET_UCS4_1234,	/**< UCS 4byte order 1234 detected */
-  NXML_CHARSET_UCS4_4321,	/**< UCS 3byte order 4321 detected */
-  NXML_CHARSET_UCS4_2143,	/**< UCS 3byte order 2143 detected */
-  NXML_CHARSET_UCS4_3412,	/**< UCS 3byte order 3412 detected */
-  NXML_CHARSET_UNKNOWN		/**< Unknown format */
+typedef enum {
+	NXML_CHARSET_UTF8,		/**< UTF8 chatset detected */
+	NXML_CHARSET_UTF16LE,   /**< UTF 16 Little Endian detected */
+	NXML_CHARSET_UTF16BE,   /**< UTF 16 Big Endian detected */
+	NXML_CHARSET_UCS4_1234, /**< UCS 4byte order 1234 detected */
+	NXML_CHARSET_UCS4_4321, /**< UCS 3byte order 4321 detected */
+	NXML_CHARSET_UCS4_2143, /**< UCS 3byte order 2143 detected */
+	NXML_CHARSET_UCS4_3412, /**< UCS 3byte order 3412 detected */
+	NXML_CHARSET_UNKNOWN	/**< Unknown format */
 } nxml_charset_t;
 
-/** 
+/**
  * Data struct for any element of XML stream/files
  *
  * \brief
@@ -92,41 +88,41 @@ typedef enum
  */
 struct nxml_data_t
 {
-  nxml_type_t type;		/**< type of this nxml_data_t struct */
+	nxml_type_t type; /**< type of this nxml_data_t struct */
 
-  char *value;			/**< The value of this data struct */
+	char *value; /**< The value of this data struct */
 
-  nxml_attr_t *attributes;	/**< List of attributes of this struct. 
-	  			 This list exists only if 
+	nxml_attr_t *attributes; /**< List of attributes of this struct.
+	  			 This list exists only if
 				 type == NXML_TYPE_ELEMENT */
 
-  nxml_namespace_t *ns;         /**< Pointer to the correct namespace */
-  nxml_namespace_t *ns_list;    /**< The namespaces in this element */
+	nxml_namespace_t *ns;	  /**< Pointer to the correct namespace */
+	nxml_namespace_t *ns_list; /**< The namespaces in this element */
 
-  nxml_data_t *children;	/**< The children of this data struct */
-  nxml_data_t *next;		/**< The next element */
+	nxml_data_t *children; /**< The children of this data struct */
+	nxml_data_t *next;	 /**< The next element */
 
-  nxml_data_t *parent;		/**< The parent */
-  nxml_t *doc;			/**< The nxml_t */
+	nxml_data_t *parent; /**< The parent */
+	nxml_t *doc;		 /**< The nxml_t */
 };
 
-/** 
- * Data struct for any element of attribute of xml element 
+/**
+ * Data struct for any element of attribute of xml element
  *
  * \brief
  * Data struct for any element of attribute of xml element
  */
 struct nxml_attr_t
 {
-  char *name;
-  char *value;
+	char *name;
+	char *value;
 
-  nxml_namespace_t *ns;
+	nxml_namespace_t *ns;
 
-  nxml_attr_t *next;
+	nxml_attr_t *next;
 };
 
-/** 
+/**
  * Data struct for doctype elements
  *
  * \brief
@@ -134,14 +130,14 @@ struct nxml_attr_t
  */
 struct nxml_doctype_t
 {
-  char *value;			/**< The string no parsers */
-  char *name;			/**< The name of current doctype */
+	char *value; /**< The string no parsers */
+	char *name;  /**< The name of current doctype */
 
-  nxml_t *doc;			/**< The nxml_t */
-  nxml_doctype_t *next;
+	nxml_t *doc; /**< The nxml_t */
+	nxml_doctype_t *next;
 };
 
-/** 
+/**
  * Data struct for namespace
  *
  * \brief
@@ -149,9 +145,9 @@ struct nxml_doctype_t
  */
 struct nxml_namespace_t
 {
-  char *prefix;
-  char *ns;
-  nxml_namespace_t *next;
+	char *prefix;
+	char *ns;
+	nxml_namespace_t *next;
 };
 
 /** Data struct private about entities for internal use only
@@ -161,10 +157,10 @@ struct nxml_namespace_t
  */
 struct __nxml_entity_t
 {
-  char *name;
-  char *entity;
+	char *name;
+	char *entity;
 
-  __nxml_entity_t *next;
+	__nxml_entity_t *next;
 };
 
 /** Data struct private for internal use only
@@ -174,49 +170,49 @@ struct __nxml_entity_t
  */
 struct __nxml_private_t
 {
-  void (*func) (char *, ...);
-  int line;
-  int timeout;
-  char *proxy;
-  char *proxy_authentication;
-  char *cacert;
-  char *certfile;
-  char *password;
-  int verifypeer;
-  char *authentication;
-  char *user_agent;
-  char textindent;
+	void (*func)(char *, ...);
+	int line;
+	int timeout;
+	char *proxy;
+	char *proxy_authentication;
+	char *cacert;
+	char *certfile;
+	char *password;
+	int verifypeer;
+	char *authentication;
+	char *user_agent;
+	char textindent;
 
-  CURLcode curl_error;
+	CURLcode curl_error;
 
-  __nxml_entity_t *entities;
+	__nxml_entity_t *entities;
 };
 
-/** 
+/**
  * Principal data struct. It describes a XML document and it contains pointers
  * to any other structures.
  *
- * \brief 
+ * \brief
  * Principal data struct. It describes a XML document and it contains pointers
  * to any other structures */
 struct nxml_t
 {
 
-  char *file;	/**< XML document filename or url */
-  size_t size;	/**< Size of XML document in byte */
+	char *file;  /**< XML document filename or url */
+	size_t size; /**< Size of XML document in byte */
 
-  nxml_version_t version;	/**< XML document version */
-  int standalone;		/**< This document is standalone ? */
-  char *encoding;		/**< Encoding type */
+	nxml_version_t version; /**< XML document version */
+	int standalone;			/**< This document is standalone ? */
+	char *encoding;			/**< Encoding type */
 
-  nxml_charset_t charset_detected;	/**< charset detected when the a
+	nxml_charset_t charset_detected; /**< charset detected when the a
 					  XML document is parsed. The document
 					  will be convert to UTF-8 */
 
-  nxml_data_t *data;	/**< The data of XML document */
-  nxml_doctype_t *doctype; /**< The doctype of XML document */
+	nxml_data_t *data;		 /**< The data of XML document */
+	nxml_doctype_t *doctype; /**< The doctype of XML document */
 
-  __nxml_private_t priv;  /**< For internal use only */
+	__nxml_private_t priv; /**< For internal use only */
 };
 
 /* INIT FUNCTIONS ************************************************************/
@@ -227,10 +223,10 @@ struct nxml_t
  * \param nxml Pointer to a nxml_t data struct. It will be allocated.
  * \return the error code
  */
-nxml_error_t	nxml_new		(nxml_t ** nxml);
+nxml_error_t nxml_new(nxml_t **nxml);
 
-/** 
- * This function creates a new nxml_data_t child of a parent in the data 
+/**
+ * This function creates a new nxml_data_t child of a parent in the data
  * struct. If parent is NULL the child will be created in the root level
  * of XML document.
  *
@@ -250,15 +246,15 @@ nxml_error_t	nxml_new		(nxml_t ** nxml);
  * nxml_add(nxml, NULL, &data2);
  * \endcode
  */
-nxml_error_t	nxml_add		(nxml_t * nxml,
-					 nxml_data_t *parent,
-					 nxml_data_t **child);
+nxml_error_t nxml_add(nxml_t *nxml,
+					  nxml_data_t *parent,
+					  nxml_data_t **child);
 
-/** 
- * This function removes a nxml_data_t child from a parent in the data 
+/**
+ * This function removes a nxml_data_t child from a parent in the data
  * struct. If parent is NULL the child will be removed in the root level of
  * XML document. This function doesn't free the child. If you want you can
- * reinsert the child in another parent tree or use the nxml_free_data 
+ * reinsert the child in another parent tree or use the nxml_free_data
  * function.
  *
  * \param nxml Pointer to a nxml_t data struct.
@@ -267,12 +263,12 @@ nxml_error_t	nxml_add		(nxml_t * nxml,
  * \param child It is the pointer to the child that you want remove
  * \return the error code
  */
-nxml_error_t	nxml_remove		(nxml_t * nxml,
-					 nxml_data_t *parent,
-					 nxml_data_t *child);
+nxml_error_t nxml_remove(nxml_t *nxml,
+						 nxml_data_t *parent,
+						 nxml_data_t *child);
 
-/** 
- * This function creates a new nxml_attr_t data of a element in the data 
+/**
+ * This function creates a new nxml_attr_t data of a element in the data
  * struct.
  *
  * \param nxml Pointer to a nxml_t data struct.
@@ -281,9 +277,9 @@ nxml_error_t	nxml_remove		(nxml_t * nxml,
  * be allocated, else no.
  * \return the error code
  */
-nxml_error_t	nxml_add_attribute	(nxml_t *nxml,
-					 nxml_data_t *element,
-					 nxml_attr_t **attribute);
+nxml_error_t nxml_add_attribute(nxml_t *nxml,
+								nxml_data_t *element,
+								nxml_attr_t **attribute);
 
 /**
  * This function removes a nxml_attr_t data of a element. It does not free it
@@ -294,9 +290,9 @@ nxml_error_t	nxml_add_attribute	(nxml_t *nxml,
  * \param attribute The attribute that you want remove.
  * \return the error code
  */
-nxml_error_t	nxml_remove_attribute	(nxml_t *nxml,
-					 nxml_data_t *element,
-					 nxml_attr_t *attribute);
+nxml_error_t nxml_remove_attribute(nxml_t *nxml,
+								   nxml_data_t *element,
+								   nxml_attr_t *attribute);
 
 /**
  * This function adds a nxml_namespace_t data in a nxml document.
@@ -306,9 +302,9 @@ nxml_error_t	nxml_remove_attribute	(nxml_t *nxml,
  * \param ns The namespace that you want add
  * \return the error code
  */
-nxml_error_t	nxml_add_namespace	(nxml_t *nxml,
-		                         nxml_data_t *element,
-					 nxml_namespace_t **ns);
+nxml_error_t nxml_add_namespace(nxml_t *nxml,
+								nxml_data_t *element,
+								nxml_namespace_t **ns);
 
 /**
  * This function removes a nxml_namespace_t data from a nxml document.
@@ -318,9 +314,9 @@ nxml_error_t	nxml_add_namespace	(nxml_t *nxml,
  * \param ns The namespace that you want remove
  * \return the error code
  */
-nxml_error_t	nxml_remove_namespace	(nxml_t *nxml,
-		                         nxml_data_t *element,
-					 nxml_namespace_t *ns);
+nxml_error_t nxml_remove_namespace(nxml_t *nxml,
+								   nxml_data_t *element,
+								   nxml_namespace_t *ns);
 
 /**
  * This function sets the output function. If you set your function, the
@@ -333,58 +329,58 @@ nxml_error_t	nxml_remove_namespace	(nxml_t *nxml,
  * As default a nxml_t element has not a output function.
  * \return the error code
  */
-nxml_error_t	nxml_set_func		(nxml_t * nxml,
-					 void (*func) (char *, ...));
+nxml_error_t nxml_set_func(nxml_t *nxml,
+						   void (*func)(char *, ...));
 
-void		nxml_print_generic	(char *, ...);
+void nxml_print_generic(char *, ...);
 
 /**
  * This function sets the timeout in seconds for the download of a remote
  *  XML document. Default is 0 and 0 is no timeout.
- *  
+ *
  * \param nxml The struct create with nxml_new.
  * \param seconds the timeout in seconds
  * \return the error code
  */
-nxml_error_t	nxml_set_timeout	(nxml_t * nxml,
-					 int seconds);
+nxml_error_t nxml_set_timeout(nxml_t *nxml,
+							  int seconds);
 
 /**
  * This functions sets a proxy server for the downloading procedure.
- *  
+ *
  * \param nxml The struct create with nxml_new.
  * \param proxy the proxy as a string
  * \param userpwd the user and password in this format user:password
  * \return the error code
  */
-nxml_error_t	nxml_set_proxy		(nxml_t * nxml,
-					 char *proxy,
-					 char *userpwd);
+nxml_error_t nxml_set_proxy(nxml_t *nxml,
+							char *proxy,
+							char *userpwd);
 
 /**
  * This functions sets a user/password for a for the download procedure.
- *  
+ *
  * \param nxml The struct create with nxml_new.
  * \param userpwd the user and password in this format user:password
  * \return the error code
  */
-nxml_error_t	nxml_set_authentication	(nxml_t * nxml,
-					 char *userpwd);
+nxml_error_t nxml_set_authentication(nxml_t *nxml,
+									 char *userpwd);
 
 /**
  * This functions sets an user agent for a for the download procedure.
- *  
+ *
  * \param nxml The struct create with nxml_new.
  * \param user_agent The agent
  * \return the error code
  */
-nxml_error_t	nxml_set_user_agent	(nxml_t * nxml,
-					 char *user_agent);
+nxml_error_t nxml_set_user_agent(nxml_t *nxml,
+								 char *user_agent);
 
 /**
  * This functions sets a certificate in the http request. You can set a
  * certificate file and a password.
- *  
+ *
  * \param nxml The struct create with nxml_new.
  * \param certfile the certfile for the ssl connection (can be NULL)
  * \param password the password of your certifcate (can be NULL)
@@ -392,12 +388,11 @@ nxml_error_t	nxml_set_user_agent	(nxml_t * nxml,
  * \param verifypeer active/deactive the peer validation
  * \return the error code
  */
-nxml_error_t	nxml_set_certificate	(nxml_t * nxml,
-					 char *certfile,
-					 char *password,
-					 char *cacert,
-					 int verifypeer);
-
+nxml_error_t nxml_set_certificate(nxml_t *nxml,
+								  char *certfile,
+								  char *password,
+								  char *cacert,
+								  int verifypeer);
 
 /**
  * This function (de)actives the indent of the TEXT elements. Default it is
@@ -407,24 +402,24 @@ nxml_error_t	nxml_set_certificate	(nxml_t * nxml,
  * \param textindent If it is != 0, the indent will be activated
  * \return the error code
  */
-nxml_error_t	nxml_set_textindent	(nxml_t *nxml,
-					 char textindent);
+nxml_error_t nxml_set_textindent(nxml_t *nxml,
+								 char textindent);
 
 /* DOWNLOAD *****************************************************************/
 
 /**
  * This function downloads a stream from a http/https/ftp server.
- *  
+ *
  * \param nxml The struct create with nxml_new.
  * \param url the http file
  * \param buffer a string for the buffer
  * \param size The function sets here the length of the file if it's not NULL.
  * \return a buffer or NULL
  */
-nxml_error_t	nxml_download_file	(nxml_t *nxml,
-					 char *url,
-					 char ** buffer,
-					 size_t *size);
+nxml_error_t nxml_download_file(nxml_t *nxml,
+								char *url,
+								char **buffer,
+								size_t *size);
 
 /* PARSER FUNCTIONS *********************************************************/
 
@@ -436,31 +431,31 @@ nxml_error_t	nxml_download_file	(nxml_t *nxml,
  * \param url the url that you want parse.
  * \return the error code
  */
-nxml_error_t	nxml_parse_url		(nxml_t * nxml,
-					 char *url);
+nxml_error_t nxml_parse_url(nxml_t *nxml,
+							char *url);
 
-/** 
+/**
  * This function parses a file.
  *
  * \param nxml the struct create with nxml_new.
  * \param file the file that you want parse.
  * \return the error code
  */
-nxml_error_t	nxml_parse_file		(nxml_t * nxml,
-					 char *file);
+nxml_error_t nxml_parse_file(nxml_t *nxml,
+							 char *file);
 
-/** 
+/**
  * This function parses a buffer in memory.
  *
  * \param nxml the struct create with nxml_new.
  * \param buffer the buffer that you want parse.
- * \param size the size of buffer. If size is 0, the function checks the 
+ * \param size the size of buffer. If size is 0, the function checks the
  * length of your buffer searching a '\\0'.
  * \return the error code
  */
-nxml_error_t	nxml_parse_buffer	(nxml_t * nxml,
-					 char *buffer,
-					 size_t size);
+nxml_error_t nxml_parse_buffer(nxml_t *nxml,
+							   char *buffer,
+							   size_t size);
 
 /* WRITE FUNCTIONS **********************************************************/
 
@@ -471,8 +466,8 @@ nxml_error_t	nxml_parse_buffer	(nxml_t * nxml,
  * \param file the local file
  * \return the error code
  */
-nxml_error_t	nxml_write_file		(nxml_t *nxml,
-					 char *file);
+nxml_error_t nxml_write_file(nxml_t *nxml,
+							 char *file);
 
 /**
  * This function writes the data struct in a buffer.
@@ -489,8 +484,8 @@ nxml_error_t	nxml_write_file		(nxml_t *nxml,
  * \param buffer the memory buffer
  * \return the error code
  */
-nxml_error_t	nxml_write_buffer	(nxml_t *nxml,
-					 char **buffer);
+nxml_error_t nxml_write_buffer(nxml_t *nxml,
+							   char **buffer);
 
 /* FREE FUNCTIONS ************************************************************/
 
@@ -501,9 +496,9 @@ nxml_error_t	nxml_write_buffer	(nxml_t *nxml,
  * \param nxml the pointer to you data struct.
  * \return the error code.
  */
-nxml_error_t	nxml_empty		(nxml_t * nxml);
+nxml_error_t nxml_empty(nxml_t *nxml);
 
-/** 
+/**
  * This function frees the memory of a nxml_t *element. After the free,
  * your data struct is not useful. If you want erase the internal data, use
  * nxml_empty function
@@ -511,7 +506,7 @@ nxml_error_t	nxml_empty		(nxml_t * nxml);
  * \param nxml the pointer to your data struct.
  * \return the error code.
  */
-nxml_error_t	nxml_free		(nxml_t * nxml);
+nxml_error_t nxml_free(nxml_t *nxml);
 
 /**
  * This function frees the memory of a nxml_data_t *element and any its
@@ -520,7 +515,7 @@ nxml_error_t	nxml_free		(nxml_t * nxml);
  * \param data the pointer to you data struct.
  * \return the error code
  */
-nxml_error_t	nxml_free_data		(nxml_data_t *data);
+nxml_error_t nxml_free_data(nxml_data_t *data);
 
 /**
  * This function frees the memory of a nxml_attr_t *element.
@@ -528,7 +523,7 @@ nxml_error_t	nxml_free_data		(nxml_data_t *data);
  * \param data the pointer to you data struct.
  * \return the error code
  */
-nxml_error_t	nxml_free_attribute	(nxml_attr_t *data);
+nxml_error_t nxml_free_attribute(nxml_attr_t *data);
 
 /**
  * This function frees the memory of a nxml_namespace_t *element.
@@ -536,7 +531,7 @@ nxml_error_t	nxml_free_attribute	(nxml_attr_t *data);
  * \param data the pointer to you data struct.
  * \return the error code
  */
-nxml_error_t	nxml_free_namespace	(nxml_namespace_t *data);
+nxml_error_t nxml_free_namespace(nxml_namespace_t *data);
 
 /* EDIT FUNCTIONS ***********************************************************/
 
@@ -558,8 +553,8 @@ nxml_error_t	nxml_free_namespace	(nxml_namespace_t *data);
  * \param element the pointer to your nxml_data_t struct
  * \return the error code
  */
-nxml_error_t	nxml_root_element	(nxml_t *nxml,
-					 nxml_data_t **element);
+nxml_error_t nxml_root_element(nxml_t *nxml,
+							   nxml_data_t **element);
 
 /**
  * This function searchs the request element in the children of the data struct.
@@ -576,17 +571,17 @@ nxml_error_t	nxml_root_element	(nxml_t *nxml,
  * \endcode
  *
  * \param nxml the data struct
- * \param parent the data struct nxml_data_t of parent. If it is NULL, this 
+ * \param parent the data struct nxml_data_t of parent. If it is NULL, this
  * function searchs in the root element level.
  * \param name the name of the node that you want.
  * \param element the pointer to your nxml_data_t struct. If element will be
  * NULL, the item that you want does not exist.
  * \return the error code
  */
-nxml_error_t	nxml_find_element	(nxml_t *nxml,
-					 nxml_data_t *parent,
-					 char *name, 
-					 nxml_data_t **element);
+nxml_error_t nxml_find_element(nxml_t *nxml,
+							   nxml_data_t *parent,
+							   char *name,
+							   nxml_data_t **element);
 
 /**
  * This function searchs the first doctype element in the nxml_t document.
@@ -596,8 +591,8 @@ nxml_error_t	nxml_find_element	(nxml_t *nxml,
  * NULL, the item that you want does not exist.
  * \return the error code
  */
-nxml_error_t	nxml_doctype_element	(nxml_t *nxml,
-					 nxml_doctype_t **doctype);
+nxml_error_t nxml_doctype_element(nxml_t *nxml,
+								  nxml_doctype_t **doctype);
 
 /**
  * This function searchs the request attribute and returns its values.
@@ -626,9 +621,9 @@ nxml_error_t	nxml_doctype_element	(nxml_t *nxml,
  * does not exist.
  * \return the error code
  */
-nxml_error_t	nxml_find_attribute	(nxml_data_t *data,
-					 char *name, 
-					 nxml_attr_t **attribute);
+nxml_error_t nxml_find_attribute(nxml_data_t *data,
+								 char *name,
+								 nxml_attr_t **attribute);
 
 /**
  * This function searchs the request namespaceibute and returns its values.
@@ -640,9 +635,9 @@ nxml_error_t	nxml_find_attribute	(nxml_data_t *data,
  * does not exist.
  * \return the error code
  */
-nxml_error_t	nxml_find_namespace	(nxml_data_t *data,
-					 char *name, 
-					 nxml_namespace_t **ns);
+nxml_error_t nxml_find_namespace(nxml_data_t *data,
+								 char *name,
+								 nxml_namespace_t **ns);
 
 /**
  * This function returns the string of a XML element.
@@ -668,8 +663,8 @@ nxml_error_t	nxml_find_namespace	(nxml_data_t *data,
  * \param string the pointer to you char *. You must free it after usage.
  * \return the error code
  */
-nxml_error_t	nxml_get_string		(nxml_data_t *element,
-					 char **string);
+nxml_error_t nxml_get_string(nxml_data_t *element,
+							 char **string);
 
 /* ERROR FUNCTIONS **********************************************************/
 
@@ -680,8 +675,8 @@ nxml_error_t	nxml_get_string		(nxml_data_t *element,
  * \param err the error code that you need as string
  * \return a string. Don't free this string!
  */
-char *		nxml_strerror		(nxml_t * nxml,
-					 nxml_error_t err);
+char *nxml_strerror(nxml_t *nxml,
+					nxml_error_t err);
 
 /**
  * This function returns the CURLcode error if there was a problem about the
@@ -691,8 +686,8 @@ char *		nxml_strerror		(nxml_t * nxml,
  * \param err the error code that you need as string
  * \return the CURLcode
  */
-CURLcode	nxml_curl_error		(nxml_t * nxml,
-					 nxml_error_t err);
+CURLcode nxml_curl_error(nxml_t *nxml,
+						 nxml_error_t err);
 
 /**
  * This function return the line of a error of parse.
@@ -701,8 +696,8 @@ CURLcode	nxml_curl_error		(nxml_t * nxml,
  * \param line pointer to your integer. In this pointer will be set the line.
  * \return the error code
  */
-nxml_error_t	nxml_line_error		(nxml_t * nxml,
-					 int *line);
+nxml_error_t nxml_line_error(nxml_t *nxml,
+							 int *line);
 
 /* EASY FUNCTIONS ***********************************************************/
 
@@ -714,22 +709,22 @@ nxml_error_t	nxml_line_error		(nxml_t * nxml,
  * code. This function use nxml_set_func with nxml_print_generic so the
  * error will be write in the standard output.
  */
-nxml_t *	nxmle_new_data		(nxml_error_t *err);
+nxml_t *nxmle_new_data(nxml_error_t *err);
 
 /**
  * This function returns a new nxml_t data and parses a remote url document
- * from http or ftp protocol. This function use nxml_set_func with 
+ * from http or ftp protocol. This function use nxml_set_func with
  * nxml_print_generic so the error will be write in the standard output.
  *
  * \param url the url that you want parse.
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_t data.
  */
-nxml_t *	nxmle_new_data_from_url	(char *url,
-					 nxml_error_t *err);
+nxml_t *nxmle_new_data_from_url(char *url,
+								nxml_error_t *err);
 
 /**
- * This function returns a new nxml_t data and parses a local file. This 
+ * This function returns a new nxml_t data and parses a local file. This
  * function use nxml_set_func with nxml_print_generic so the error will be
  * write in the standard output.
  *
@@ -737,9 +732,8 @@ nxml_t *	nxmle_new_data_from_url	(char *url,
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_t data.
  */
-nxml_t *	nxmle_new_data_from_file
-					(char *file,
-					 nxml_error_t *err);
+nxml_t *nxmle_new_data_from_file(char *file,
+								 nxml_error_t *err);
 
 /**
  * This function returns a new nxml_t data and parses a buffer. This
@@ -747,17 +741,16 @@ nxml_t *	nxmle_new_data_from_file
  * write in the standard output.
  *
  * \param buffer the buffer that you want parse.
- * \param size the size of buffer. If size is 0, the function checks the 
+ * \param size the size of buffer. If size is 0, the function checks the
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_t data.
  */
-nxml_t *	nxmle_new_data_from_buffer
-					(char *buffer,
-					 size_t size,
-					 nxml_error_t *err);
+nxml_t *nxmle_new_data_from_buffer(char *buffer,
+								   size_t size,
+								   nxml_error_t *err);
 
 /**
- * This function creates and adds a child nxml_data_t to a parent in your 
+ * This function creates and adds a child nxml_data_t to a parent in your
  * nxml data struct.
  *
  * \param nxml Pointer to your nxml data.
@@ -766,9 +759,9 @@ nxml_t *	nxmle_new_data_from_buffer
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_data_t data child.
  */
-nxml_data_t *	nxmle_add_new		(nxml_t * nxml,
-					 nxml_data_t *parent,
-					 nxml_error_t *err);
+nxml_data_t *nxmle_add_new(nxml_t *nxml,
+						   nxml_data_t *parent,
+						   nxml_error_t *err);
 
 /**
  * This function adds a your nxml_data_t to a parent in your nxml
@@ -781,10 +774,10 @@ nxml_data_t *	nxmle_add_new		(nxml_t * nxml,
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_data_t data child.
  */
-nxml_data_t *	nxmle_add_data		(nxml_t * nxml,
-					 nxml_data_t *parent,
-					 nxml_data_t *child,
-					 nxml_error_t *err);
+nxml_data_t *nxmle_add_data(nxml_t *nxml,
+							nxml_data_t *parent,
+							nxml_data_t *child,
+							nxml_error_t *err);
 
 /**
  * This function creates and adds an attribute nxml_attr_t data to a
@@ -795,9 +788,9 @@ nxml_data_t *	nxmle_add_data		(nxml_t * nxml,
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_data_t data child.
  */
-nxml_attr_t *	nxmle_add_attribute_new	(nxml_t *nxml,
-					 nxml_data_t *element,
-					 nxml_error_t *err);
+nxml_attr_t *nxmle_add_attribute_new(nxml_t *nxml,
+									 nxml_data_t *element,
+									 nxml_error_t *err);
 
 /**
  * This function adds an attribute nxml_attr_t data to a
@@ -809,11 +802,10 @@ nxml_attr_t *	nxmle_add_attribute_new	(nxml_t *nxml,
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_data_t data child.
  */
-nxml_attr_t *	nxmle_add_attribute_data
-					(nxml_t *nxml,
-					 nxml_data_t *element,
-					 nxml_attr_t *attribute,
-					 nxml_error_t *err);
+nxml_attr_t *nxmle_add_attribute_data(nxml_t *nxml,
+									  nxml_data_t *element,
+									  nxml_attr_t *attribute,
+									  nxml_error_t *err);
 
 /**
  * This function creates and adds a namespace nxml_namespace_t data to a
@@ -824,10 +816,9 @@ nxml_attr_t *	nxmle_add_attribute_data
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_data_t data child.
  */
-nxml_namespace_t * nxmle_add_namespace_new
-					(nxml_t *nxml,
-					 nxml_data_t *element,
-	       				 nxml_error_t *err);
+nxml_namespace_t *nxmle_add_namespace_new(nxml_t *nxml,
+										  nxml_data_t *element,
+										  nxml_error_t *err);
 
 /**
  * This function adds an namespace nxml_namespace-t data to a nxml data struct.
@@ -838,11 +829,10 @@ nxml_namespace_t * nxmle_add_namespace_new
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the pointer to a new nxml_data_t data child.
  */
-nxml_namespace_t * nxmle_add_namespace_data
-					(nxml_t *nxml,
-					 nxml_data_t *element,
-					 nxml_namespace_t *ns,
-					 nxml_error_t *err);
+nxml_namespace_t *nxmle_add_namespace_data(nxml_t *nxml,
+										   nxml_data_t *element,
+										   nxml_namespace_t *ns,
+										   nxml_error_t *err);
 
 /**
  * This function returns the root element of a nxml_t.
@@ -852,8 +842,8 @@ nxml_namespace_t * nxmle_add_namespace_data
  * \return the pointer to the root element. If NULL the element does not
  * exist.
  */
-nxml_data_t *	nxmle_root_element	(nxml_t *nxml,
-					 nxml_error_t *err);
+nxml_data_t *nxmle_root_element(nxml_t *nxml,
+								nxml_error_t *err);
 
 /**
  * This function returns the first doctype element of a nxml_t.
@@ -863,8 +853,8 @@ nxml_data_t *	nxmle_root_element	(nxml_t *nxml,
  * \return the pointer to the doctype element. If NULL the element does not
  * exist.
  */
-nxml_doctype_t *nxmle_doctype_element	(nxml_t *nxml,
-					 nxml_error_t *err);
+nxml_doctype_t *nxmle_doctype_element(nxml_t *nxml,
+									  nxml_error_t *err);
 
 /**
  * This function returns the nxml_data_t pointer to a element by
@@ -878,10 +868,10 @@ nxml_doctype_t *nxmle_doctype_element	(nxml_t *nxml,
  * \return the pointer to the root element. If NULL the element does not
  * exist.
  */
-nxml_data_t *	nxmle_find_element	(nxml_t *nxml,
-					 nxml_data_t *parent,
-					 char *name,
-					 nxml_error_t *err);
+nxml_data_t *nxmle_find_element(nxml_t *nxml,
+								nxml_data_t *parent,
+								char *name,
+								nxml_error_t *err);
 
 /**
  * This function returns the value of a attribute by a name.
@@ -892,9 +882,9 @@ nxml_data_t *	nxmle_find_element	(nxml_t *nxml,
  * \return a pointer to a char allocated so you must free it after usage. If
  * it is NULL, the attribute does not exist.
  */
-char *		nxmle_find_attribute	(nxml_data_t *element,
-					 char *name,
-					 nxml_error_t *err);
+char *nxmle_find_attribute(nxml_data_t *element,
+						   char *name,
+						   nxml_error_t *err);
 
 /**
  * This function returns the value of a namespace by a name.
@@ -905,9 +895,9 @@ char *		nxmle_find_attribute	(nxml_data_t *element,
  * \return a pointer to a char allocated so you must free it after usage. If
  * it is NULL, the namespace does not exist.
  */
-char *		nxmle_find_namespace	(nxml_data_t *element,
-					 char *name,
-					 nxml_error_t *err);
+char *nxmle_find_namespace(nxml_data_t *element,
+						   char *name,
+						   nxml_error_t *err);
 
 /**
  * This function returns the contain of a element.
@@ -917,8 +907,8 @@ char *		nxmle_find_namespace	(nxml_data_t *element,
  * \return a pointer to a char allocated so you must free it after usage. If
  * it is NULL, the attribute does not exist.
  */
-char *		nxmle_get_string	(nxml_data_t *element,
-					 nxml_error_t *err);
+char *nxmle_get_string(nxml_data_t *element,
+					   nxml_error_t *err);
 
 /**
  * This function writes the data struct in a buffer.
@@ -927,7 +917,7 @@ char *		nxmle_get_string	(nxml_data_t *element,
  * \param err If err is not NULL, err will be set to the error flag.
  * \return a pointer to a char allocated so you must free it after usage.
  */
-char *		nxmle_write_buffer	(nxml_t *nxml, nxml_error_t *err);
+char *nxmle_write_buffer(nxml_t *nxml, nxml_error_t *err);
 
 /**
  * This function return the line of a error of parse.
@@ -935,22 +925,22 @@ char *		nxmle_write_buffer	(nxml_t *nxml, nxml_error_t *err);
  * \param err If err is not NULL, err will be set to the error flag.
  * \return the line with the error.
  */
-int		nxmle_line_error	(nxml_t * nxml, nxml_error_t *err);
+int nxmle_line_error(nxml_t *nxml, nxml_error_t *err);
 
 /* Easy functions defined: */
-#define		nxmle_remove		nxml_remove
-#define		nxmle_remove_attribute	nxml_remove_attribute
-#define		nxmle_remove_namespace	nxml_remove_namespace
-#define		nxmle_write_file	nxml_write_file
+#define nxmle_remove nxml_remove
+#define nxmle_remove_attribute nxml_remove_attribute
+#define nxmle_remove_namespace nxml_remove_namespace
+#define nxmle_write_file nxml_write_file
 
-#define		nxmle_empty		nxml_empty
-#define		nxmle_free		nxml_free
-#define		nxmle_free_data		nxml_free_data
-#define		nxmle_free_attribute	nxml_free_attribute
+#define nxmle_empty nxml_empty
+#define nxmle_free nxml_free
+#define nxmle_free_data nxml_free_data
+#define nxmle_free_attribute nxml_free_attribute
 
-#define		nxmle_strerror		nxml_strerror
+#define nxmle_strerror nxml_strerror
 
-#  include "nxml_internal.h"
+#include "nxml_internal.h"
 
 #endif
 

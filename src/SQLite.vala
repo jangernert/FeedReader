@@ -13,11 +13,6 @@
 //	You should have received a copy of the GNU General Public License
 //	along with FeedReader.  If not, see <http://www.gnu.org/licenses/>.
 
-public errordomain SQLiteError
-{
-	FAIL
-}
-
 /* A wrapper around the low-level SQLite API */
 public class FeedReader.SQLite : GLib.Object {
 	private Sqlite.Database m_db;
@@ -43,7 +38,9 @@ public class FeedReader.SQLite : GLib.Object {
 
 		int rc = Sqlite.Database.open_v2(db_path, out m_db);
 		if(rc != Sqlite.OK)
-			throw new SQLiteError.FAIL("Can't open database: %d: %s".printf(m_db.errcode(), m_db.errmsg()));
+		{
+			error("Can't open database: %d: %s".printf(m_db.errcode(), m_db.errmsg()));
+		}
 
 		m_db.busy_timeout(busy_timeout);
 	}
@@ -54,7 +51,7 @@ public class FeedReader.SQLite : GLib.Object {
 		Sqlite.Statement stmt;
 		int rc = m_db.prepare_v2(query, query.length, out stmt);
 		if(rc != Sqlite.OK)
-			throw new SQLiteError.FAIL("Can't prepare statement: %d: %s\nSQL is %s".printf(m_db.errcode(), m_db.errmsg(), query));
+			error("Can't prepare statement: %d: %s\nSQL is %s".printf(m_db.errcode(), m_db.errmsg(), query));
 		return stmt;
 	}
 
@@ -74,7 +71,7 @@ public class FeedReader.SQLite : GLib.Object {
 		int ec = m_db.exec(query, null, out errmsg);
 		if (ec != Sqlite.OK)
 		{
-			throw new SQLiteError.FAIL("Failed to execute simple query: %d: %s\nSQL is: %s".printf(ec, errmsg, query));
+			error("Failed to execute simple query: %d: %s\nSQL is: %s".printf(ec, errmsg, query));
 		}
 	}
 
@@ -84,7 +81,7 @@ public class FeedReader.SQLite : GLib.Object {
 		int rc = m_db.prepare_v2(query, query.length, out stmt);
 		if (rc != Sqlite.OK)
 		{
-			throw new SQLiteError.FAIL("Can't prepare statement: %d: %s\nSQL is: %s".printf(m_db.errcode(), m_db.errmsg(), query));
+			error("Can't prepare statement: %d: %s\nSQL is: %s".printf(m_db.errcode(), m_db.errmsg(), query));
 		}
 
 		if(params != null)

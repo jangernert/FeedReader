@@ -537,18 +537,18 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 	public void getArticles(int count, ArticleStatus whatToGet, DateTime? since, string? feedID, bool isTagID, GLib.Cancellable? cancellable = null)
 	{
-		var f = m_db.read_feeds();
-		var articleArray = new Gee.LinkedList<Article>();
+		var feeds = m_db.read_feeds();
+		var articles = new Gee.ArrayList<Article>();
 		GLib.Mutex mutex = GLib.Mutex();
 
 		try
 		{
-			var threads = new ThreadPool<Feed>.with_owned_data((Feed) => {
+			var threads = new ThreadPool<Feed>.with_owned_data((feed) => {
 				if(cancellable != null && cancellable.is_cancelled())
 					return;
 
-				Logger.debug("getArticles for feed: " + Feed.getTitle());
-				string url = Feed.getXmlUrl().escape("");
+				Logger.debug("getArticles for feed: " + feed.getTitle());
+				string url = feed.getXmlUrl().escape("");
 
 				if(url == null || url == "" || GLib.Uri.parse_scheme(url) == null)
 				{
@@ -583,8 +583,8 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 					locale = doc.encoding;
 				}
 
-				var articles = doc.get_items();
-				foreach(Rss.Item item in articles)
+				Logger.debug("Got %u articles".printf(doc.get_items().length()));
+				foreach(Rss.Item item in doc.get_items())
 				{
 					string? articleID = item.guid;
 
@@ -610,9 +610,11 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 							date = new GLib.DateTime.now_local();
 					}
 
-				string? content = m_utils.convert(item.description, locale);
-				if(content == null)
-					content = _("Nothing to read here.");
+					Logger.info("Got content: " + item.description);
+					string? content = m_utils.convert(item.description, locale);
+					Logger.info("Converted to: " + item.description);
+					if(content == null)
+						content = _("Nothing to read here.");
 
 					Gee.List<string>? media = null;
 					if(item.enclosure_url != null)
@@ -623,13 +625,13 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 
 					string articleURL = item.link;
 					if(articleURL.has_prefix("/"))
-						articleURL = Feed.getURL() + articleURL.substring(1);
+						articleURL = feed.getURL() + articleURL.substring(1);
 
-					var Article = new Article(
+					var article = new Article(
 										articleID,
 										(item.title != null) ? m_utils.convert(item.title, locale) : null,
 										articleURL,
-										Feed.getFeedID(),
+										feed.getFeedID(),
 										ArticleStatus.UNREAD,
 										ArticleStatus.UNMARKED,
 										content,
@@ -641,14 +643,15 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 										media
 					);
 
+					Logger.debug("Got new article: " + article.getTitle());
+
 					mutex.lock();
-					articleArray.add(Article);
+					articles.add(article);
 					mutex.unlock();
 				}
 			}, (int)GLib.get_num_processors(), true);
 
-
-			foreach(Feed feed in f)
+			foreach(Feed feed in feeds)
 			{
 				try
 				{
@@ -669,14 +672,14 @@ public class FeedReader.localInterface : Peas.ExtensionBase, FeedServerInterface
 			Logger.error("Error creating threads to download Feeds: " + e.message);
 		}
 
-		articleArray.sort((a, b) => {
-				return strcmp(a.getArticleID(), b.getArticleID());
+		articles.sort((a, b) => {
+			return strcmp(a.getArticleID(), b.getArticleID());
 		});
 
-		if(articleArray.size > 0)
+		if(articles.size > 0)
 		{
-			m_db_write.write_articles(articleArray);
-			Logger.debug("localInterface: %i articles written".printf(articleArray.size));
+			m_db_write.write_articles(articles);
+			Logger.debug("localInterface: %i articles written".printf(articles.size));
 			refreshFeedListCounter();
 			updateArticleList();
 		}

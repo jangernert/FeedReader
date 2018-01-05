@@ -163,7 +163,7 @@ public class FeedReader.FeedServer : GLib.Object {
 	{
 		if(!serverAvailable())
 		{
-			Logger.debug("FeedServer: can't snyc - not logged in or unreachable");
+			Logger.debug("FeedServer: can't sync - not logged in or unreachable");
 			return;
 		}
 
@@ -356,7 +356,7 @@ public class FeedReader.FeedServer : GLib.Object {
 			DataBase.writeAccess().update_articles(articles);
 
 			// Reverse the list
-			var new_articles = new Gee.LinkedList<Article>();
+			var new_articles = new Gee.ArrayList<Article>();
 			foreach(var article in articles)
 			{
 				new_articles.insert(0, article);
@@ -881,9 +881,10 @@ public class FeedReader.FeedServer : GLib.Object {
 		if(!m_plugin.addFeed(feedURL, catID, newCatName, out feedID, out errmsg))
 			return false;
 
+		int maxArticles = ArticleSyncCount();
 		DateTime? since = ((DropArticles)Settings.general().get_enum("drop-articles-after")).to_start_date();
-		Logger.info("Downloading %d articles for feed %s (%s), since %s".printf(ArticleSyncCount(), feedID, feedURL, since.to_string()));
-		getArticles(ArticleSyncCount(), ArticleStatus.ALL, since, feedID);
+		Logger.info("Downloading up to %d articles for feed %s (%s), since %s".printf(maxArticles, feedID, feedURL, since.to_string()));
+		getArticles(maxArticles, ArticleStatus.ALL, since, feedID);
 		return true;
 	}
 
@@ -986,7 +987,10 @@ public class FeedReader.FeedServer : GLib.Object {
 	public void getArticles(int count, ArticleStatus whatToGet = ArticleStatus.ALL, DateTime? since = null, string? feedID = null, bool isTagID = false, GLib.Cancellable? cancellable = null)
 	{
 		if(!m_pluginLoaded)
+		{
+			Logger.error("getArticles() called with no plugin loaded");
 			return;
+		}
 
 		m_plugin.getArticles(count, whatToGet, since, feedID, isTagID);
 	}

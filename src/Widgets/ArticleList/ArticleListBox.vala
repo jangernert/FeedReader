@@ -112,7 +112,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 			// check if row is already there
 			if(m_articles.contains(item.getArticleID()))
 			{
-				Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
+				Logger.debug(@"ArticleListbox$m_name: row with ID %s is already present".printf(item.getArticleID()));
 				checkQueue(item, balance, reverse, animate);
 				return false;
 			}
@@ -650,7 +650,7 @@ public class FeedReader.ArticleListBox : Gtk.ListBox {
 	{
 		if(m_articles.contains(a.getArticleID()))
 		{
-			Logger.warning(@"ArticleListbox$m_name: row with ID %s is already present".printf(a.getArticleID()));
+			Logger.debug(@"ArticleListbox$m_name: row with ID %s is already present".printf(a.getArticleID()));
 			return false;
 		}
 

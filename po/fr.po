@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2018-01-05 12:14+0000\n"
-"Last-Translator: Florian <floflr@zaclys.net>\n"
+"PO-Revision-Date: 2018-01-05 12:16+0000\n"
+"Last-Translator: anonymous <>\n"
 "Language-Team: French "
 "<https://hosted.weblate.org/projects/feedreader/translations/fr/>\n"
 "Language: fr\n"
@@ -434,11 +434,11 @@ msgstr "Liste des flux"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr ""
+msgstr "Choisir le prochain item"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr ""
+msgstr "Choisir l'item précédent"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
@@ -458,7 +458,7 @@ msgstr "Sélectionner l’article suivant/précédent"
 
 #: src/Widgets/ShortcutsWindow.vala:64
 msgid "Toggle the selected article un/read"
-msgstr "Marquer l’article sélectionné comme non-lu"
+msgstr "Marquer l’article sélectionné comme non lu"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 msgid "Toggle the selected article un/marked"
@@ -482,7 +482,7 @@ msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
-msgstr ""
+msgstr "Faire défiler vers le haut/bas"
 
 #: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
 #, c-format

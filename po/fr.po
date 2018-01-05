@@ -13,8 +13,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2018-01-05 12:16+0000\n"
-"Last-Translator: anonymous <>\n"
+"PO-Revision-Date: 2018-01-11 22:31+0000\n"
+"Last-Translator: Florian <floflr@zaclys.net>\n"
 "Language-Team: French "
 "<https://hosted.weblate.org/projects/feedreader/translations/fr/>\n"
 "Language: fr\n"
@@ -44,7 +44,7 @@ msgstr "Non classé"
 #: src/UtilsUI.vala:61
 #, c-format
 msgid "posted by: %s, "
-msgstr "Ecrit par : %s"
+msgstr "Écrit par : %s, "
 
 #: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
 msgid "Cancel"
@@ -251,7 +251,7 @@ msgstr "Veuillez d’abord sélectionner un service"
 
 #: src/Widgets/MainWindow.vala:423
 msgid "Please enter a valid username"
-msgstr "Veuillez saisir un nom d’utilisateur valide."
+msgstr "Veuillez saisir un nom d’utilisateur valide"
 
 #: src/Widgets/MainWindow.vala:426
 msgid "Please enter a valid password"
@@ -301,7 +301,7 @@ msgstr "Pas de certificat CA valide !"
 #: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
-"Veuillez installer l’extension « api_feedreader » sur votre instance TT-RSS"
+"Veuillez installer l’extension « api_feedreader » sur votre instance TT-RSS !"
 
 #: src/Widgets/ArticleViewHeader.vala:68
 msgid "Tag article"
@@ -466,7 +466,7 @@ msgstr "Marquer l’article sélectionné comme non-marqué"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
-msgstr "Ouvrir l’URL de l’article sélectionné "
+msgstr "Ouvrir l’URL de l’article sélectionné"
 
 #: src/Widgets/ShortcutsWindow.vala:67
 msgid "Scroll all the way up/down"
@@ -525,7 +525,7 @@ msgstr "Montrer uniquement les non lus"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Trier la Liste des flux par"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -569,7 +569,7 @@ msgstr "Le plus ancien d'abord"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
-msgstr ""
+msgstr "Affecte uniquement la colonne \"Non lu\""
 
 #: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
@@ -609,7 +609,7 @@ msgstr "Nombre d’articles"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Intervalle en Minutes (0 = OFF)"
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -789,7 +789,7 @@ msgstr ""
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
-msgstr "À:"
+msgstr "À :"
 
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
@@ -812,7 +812,7 @@ msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:47
 msgid "Limit: "
-msgstr "Limite :"
+msgstr "Limite : "
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
@@ -829,7 +829,7 @@ msgstr "Ouvrir dans le Navigateur"
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:91
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:91
 msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr ""
+msgstr "Veuillez vous connecter à FeedHQ et profiter de FeedReader"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:64
 msgid "freshRSS URL:"
@@ -853,7 +853,7 @@ msgstr "Fait"
 
 #: plugins/backend/local/localLoginWidget.vala:58
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Ajout de flux"
 
 #: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."

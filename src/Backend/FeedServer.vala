@@ -533,7 +533,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				html = html.slice(end+1, html.length).chug();
 			}
 
-			string path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.html".printf(title);
+			string path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.html".printf(title);
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
 				GLib.FileUtils.remove(path);
@@ -541,6 +541,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			try
 			{
 				var file = GLib.File.new_for_path(path);
+				var parent = file.get_parent();
+				if(!parent.query_exists())
+					parent.make_directory_with_parents();
+
 				var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 				stream.write(html.data);
@@ -557,7 +561,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				output = output.replace("\n"," ");
 				output = output.replace("_"," ");
 
-				path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.txt".printf(title);
+				path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.txt".printf(title);
 
 				if(FileUtils.test(path, GLib.FileTest.EXISTS))
 					GLib.FileUtils.remove(path);

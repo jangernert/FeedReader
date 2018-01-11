@@ -388,23 +388,23 @@ public class FeedReader.FeedServer : GLib.Object {
 
 			try
 			{
-				var threads = new ThreadPool<Article>.with_owned_data((a) => {
+				var threads = new ThreadPool<Article>.with_owned_data((article) => {
 					if(cancellable != null && cancellable.is_cancelled())
 						return;
 
 						if(Settings.general().get_boolean("content-grabber"))
 						{
-							var grabber = new Grabber(session, a);
+							var grabber = new Grabber(session, article);
 							if(grabber.process(cancellable))
 							{
 								grabber.print();
-								if(a.getAuthor() != "" && grabber.getAuthor() != null)
+								if(article.getAuthor() == "" && grabber.getAuthor() != null)
 								{
-									a.setAuthor(grabber.getAuthor());
+									article.setAuthor(grabber.getAuthor());
 								}
-								if(a.getTitle() != "" && grabber.getTitle() != null)
+								if(article.getTitle() == "" && grabber.getTitle() != null)
 								{
-									a.setTitle(grabber.getTitle());
+									article.setTitle(grabber.getTitle());
 								}
 								string html = grabber.getArticle();
 								string xml = "<?xml";
@@ -415,20 +415,20 @@ public class FeedReader.FeedServer : GLib.Object {
 									html = html.slice(end+1, html.length).chug();
 								}
 
-								a.setHTML(html);
+								article.setHTML(html);
 							}
 							else
 							{
-								downloadImages(session, a, cancellable);
+								downloadImages(session, article, cancellable);
 							}
 						}
 						else
 						{
-							downloadImages(session, a, cancellable);
+							downloadImages(session, article, cancellable);
 						}
 
 						if(cancellable == null || !cancellable.is_cancelled())
-							DataBase.writeAccess().writeContent(a);
+							DataBase.writeAccess().writeContent(article);
 
 						++i;
 						syncProgress(_(@"Grabbing full content: $i / $size"));
@@ -533,7 +533,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				html = html.slice(end+1, html.length).chug();
 			}
 
-			string path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.html".printf(title);
+			string path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.html".printf(title);
 
 			if(FileUtils.test(path, GLib.FileTest.EXISTS))
 				GLib.FileUtils.remove(path);
@@ -541,6 +541,10 @@ public class FeedReader.FeedServer : GLib.Object {
 			try
 			{
 				var file = GLib.File.new_for_path(path);
+				var parent = file.get_parent();
+				if(!parent.query_exists())
+					parent.make_directory_with_parents();
+
 				var stream = file.create(FileCreateFlags.REPLACE_DESTINATION);
 
 				stream.write(html.data);
@@ -557,7 +561,7 @@ public class FeedReader.FeedServer : GLib.Object {
 				output = output.replace("\n"," ");
 				output = output.replace("_"," ");
 
-				path = GLib.Environment.get_user_data_dir() + "/debug-article/%s.txt".printf(title);
+				path = GLib.Environment.get_user_data_dir() + "/feedreader/debug-article/%s.txt".printf(title);
 
 				if(FileUtils.test(path, GLib.FileTest.EXISTS))
 					GLib.FileUtils.remove(path);

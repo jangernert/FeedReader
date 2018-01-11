@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2017-11-19 14:49+0000\n"
-"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
+"PO-Revision-Date: 2018-01-11 22:31+0000\n"
+"Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish "
 "<https://hosted.weblate.org/projects/feedreader/translations/sv/>\n"
 "Language: sv\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2.18-dev\n"
+"X-Generator: Weblate 2.19-dev\n"
 
 #: src/UtilsDaemon.vala:20
 msgid "No Preview Available"
@@ -66,7 +66,7 @@ msgstr "Hämtar artiklar"
 
 #: src/Backend/FeedServer.vala:269
 msgid "Getting starred articles"
-msgstr ""
+msgstr "Hämtar favoritartiklar"
 
 #: src/Backend/FeedServer.vala:276
 msgid "Getting tagged articles"
@@ -121,7 +121,7 @@ msgstr "Inga olästa artiklar"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
 msgid "No starred articles"
-msgstr ""
+msgstr "Inga favoritartiklar"
 
 #: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
 msgid "No articles"
@@ -229,7 +229,7 @@ msgstr "Inställningar"
 
 #: src/Widgets/ColumnViewHeader.vala:117
 msgid "Read article fullscreen"
-msgstr ""
+msgstr "Läs artikel i helskärmsläge"
 
 #: src/Widgets/MainWindow.vala:44
 msgid "FeedReader"
@@ -293,7 +293,7 @@ msgstr "Inget giltigt CA-certifikat tillgängligt!"
 
 #: src/Widgets/MainWindow.vala:459
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr ""
+msgstr "Installera insticksmodulen ”api_feedreader” i din tt-rss-instans!"
 
 #: src/Widgets/ArticleViewHeader.vala:68
 msgid "Tag article"
@@ -405,11 +405,11 @@ msgstr "lägg till etikett"
 
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
-msgstr ""
+msgstr "Allmänt"
 
 #: src/Widgets/ShortcutsWindow.vala:27
 msgid "Refresh"
-msgstr ""
+msgstr "Uppdatera"
 
 #: src/Widgets/ShortcutsWindow.vala:28
 msgid "Search"
@@ -425,19 +425,19 @@ msgstr "Flödeslista"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr ""
+msgstr "Välj nästa objekt"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr ""
+msgstr "Välj föregående objekt"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
-msgstr ""
+msgstr "Fäll ihop/expandera kategorier"
 
 #: src/Widgets/ShortcutsWindow.vala:45
 msgid "Mark the currently selected as read"
-msgstr ""
+msgstr "Markera nuvarande val som läst"
 
 #: src/Widgets/ShortcutsWindow.vala:54
 msgid "Article List"
@@ -445,27 +445,27 @@ msgstr "Artikellista"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
-msgstr ""
+msgstr "Välj nästa/föregående artikel"
 
 #: src/Widgets/ShortcutsWindow.vala:64
 msgid "Toggle the selected article un/read"
-msgstr ""
+msgstr "Växla vald artikel som läst/oläst"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 msgid "Toggle the selected article un/marked"
-msgstr ""
+msgstr "Växla vald artikel som markerad/omarkerad"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
-msgstr ""
+msgstr "Öppna URL:en för den valda artikeln"
 
 #: src/Widgets/ShortcutsWindow.vala:67
 msgid "Scroll all the way up/down"
-msgstr ""
+msgstr "Rulla hela vägen upp/ned"
 
 #: src/Widgets/ShortcutsWindow.vala:68
 msgid "Center the currently selected article"
-msgstr ""
+msgstr "Centrera den valda artikeln"
 
 #: src/Widgets/ShortcutsWindow.vala:79
 msgid "Article View"
@@ -516,7 +516,7 @@ msgstr "Visa endast olästa"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Sorta feedlista efter"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -560,7 +560,7 @@ msgstr "Äldsta först"
 
 #: src/Widgets/SettingsDialog.vala:102
 msgid "Only affects \"Unread\" column"
-msgstr ""
+msgstr "Påverkar endast kolumnen ”Oläst”"
 
 #: src/Widgets/SettingsDialog.vala:107
 msgid "Mark read by scrolling past"
@@ -600,7 +600,7 @@ msgstr "Antal artiklar"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Intervall i minuter (0 = AV)"
 
 #: src/Widgets/SettingsDialog.vala:157
 msgid "Database:"
@@ -648,7 +648,7 @@ msgstr "Systemkonton"
 
 #: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
 msgid "FeedReader Accounts"
-msgstr ""
+msgstr "FeedReader-konton"
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
@@ -706,6 +706,8 @@ msgstr "Användarnamn eller lösenord är fel"
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."
 msgstr ""
+"Info: Telegram måste vara installerat för att denna insticksmodule ska "
+"fungera."
 
 #: plugins/share/Telegram/Telegram.vala:81
 msgid "Telegram"
@@ -715,6 +717,8 @@ msgstr "Telegram"
 msgid ""
 "Hey, Check out this interesting article I just read - sent by FeedReader"
 msgstr ""
+"Kolla på den här intressanta artikeln som jag nyss läste - skickat av "
+"FeedReader"
 
 #: plugins/share/Telegram/TelegramForm.vala:42
 #: plugins/share/Email/EmailForm.vala:52
@@ -723,7 +727,7 @@ msgstr "Skicka"
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr ""
+msgstr "Skicka Telegram"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -731,23 +735,23 @@ msgstr "Klient-ID:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:75
 msgid "Client Secret:"
-msgstr ""
+msgstr "Klienthemlighet:"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:124
 msgid "Please fill in the URL."
-msgstr ""
+msgstr "Fyll i URL:en."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:130
 msgid "URL seems to not be valid."
-msgstr ""
+msgstr "URL verkar inte vara giltig."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:140
 msgid "Please fill in the clientID."
-msgstr ""
+msgstr "Fyll i klient-ID."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:147
 msgid "Please fill in the clientSecret."
-msgstr ""
+msgstr "Fyll i klienthemlighet."
 
 #: plugins/share/Wallabag/WallabagSetup.vala:154
 msgid "Please fill in the password."
@@ -769,19 +773,24 @@ msgid ""
 "\n"
 "- sent by FeedReader"
 msgstr ""
+"Hej!\n"
+"\n"
+"Kolla på den här intressanta artikeln jag nyss läste: $URL\n"
+"\n"
+"- skickat av FeedReader"
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
-msgstr ""
+msgstr "Till:"
 
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
-msgstr ""
+msgstr "Skriv e-post"
 
 #: plugins/share/Pocket/PocketSetup.vala:52
 #: plugins/share/Twitter/TwitterSetup.vala:51
 msgid "waiting"
-msgstr ""
+msgstr "väntar"
 
 #: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
@@ -789,74 +798,82 @@ msgid ""
 "\n"
 "Check out this interesting article I just read: $URL"
 msgstr ""
+"Hej!\n"
+"\n"
+"Kolla på den här intressanta artikeln jag nyss läste: $URL"
 
 #: plugins/share/Twitter/TwitterForm.vala:47
 msgid "Limit: "
-msgstr ""
+msgstr "Gräns: "
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
-msgstr ""
+msgstr "Tweeta"
 
 #: plugins/share/Twitter/TwitterForm.vala:80
 msgid "Tweet to Followers"
-msgstr ""
+msgstr "Tweeta till följare"
 
 #: plugins/share/Browser/Browser.vala:79
 msgid "Open in Browser"
-msgstr ""
+msgstr "Öppna i webbläsare"
 
 #: plugins/backend/feedhq/feedhqLoginWidget.vala:91
 #: plugins/backend/bazqux/bazquxLoginWidget.vala:91
 msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr ""
+msgstr "Logga in på FeedHQ och ha stort nöje av att använda FeedReader"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:64
 msgid "freshRSS URL:"
-msgstr ""
+msgstr "freshRSS-URL:"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:131
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:131
 msgid "HTTP Authorization"
-msgstr ""
+msgstr "HTTP-autentisering"
 
 #: plugins/backend/fresh/freshLoginWidget.vala:140
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
 msgstr ""
+"Logga in på din freshRSS-server och ha stort nöje av att använda FeedReader"
 
 #: plugins/backend/local/localLoginWidget.vala:57
 msgid "Done"
-msgstr ""
+msgstr "Klar"
 
 #: plugins/backend/local/localLoginWidget.vala:58
 msgid "Adding Feeds"
-msgstr ""
+msgstr "Lägger till feeder"
 
 #: plugins/backend/local/localInterface.vala:420
 msgid "Nothing to read here."
-msgstr ""
+msgstr "Inget att läsa här."
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
 msgid "OwnCloud URL:"
-msgstr ""
+msgstr "OwnCloud-URL:"
 
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
 msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
 msgstr ""
+"Logga in på din ownCloud-nyhetsinstans och ha ett stort nöje av att använda "
+"FeedReader"
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:64
 msgid "Tiny Tiny RSS URL:"
-msgstr ""
+msgstr "Tiny Tiny RSS-URL:"
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:140
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
 msgstr ""
+"Logga in på din Tiny Tiny RSS-server och ha stort nöje av att använda "
+"FeedReader"
 
 #: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
 msgid "Please log in to the Old Reader and enjoy using FeedReader"
-msgstr ""
+msgstr "Logga in på Old Reader och ha ett stort nöje av att använda FeedReader"
 
 #: plugins/backend/feedbin/feedbinLoginWidget.vala:90
 msgid "Please log in to Feedbin to enjoy using FeedReader"
-msgstr ""
+msgstr "Logga in på Feedbin och ha ett stort nöje av att använda FeedReader"

@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-05-15 11:00+0200\n"
-"PO-Revision-Date: 2018-01-11 22:31+0000\n"
+"PO-Revision-Date: 2018-01-24 12:31+0000\n"
 "Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish "
 "<https://hosted.weblate.org/projects/feedreader/translations/sv/>\n"
@@ -540,7 +540,7 @@ msgstr "Mörk"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
-msgstr "elementary"
+msgstr "grundläggande"
 
 #: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
@@ -857,7 +857,7 @@ msgstr "OwnCloud-URL:"
 #: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
 msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
 msgstr ""
-"Logga in på din ownCloud-nyhetsinstans och ha ett stort nöje av att använda "
+"Logga in på din ownCloud News-instans och ha ett stort nöje av att använda "
 "FeedReader"
 
 #: plugins/backend/ttrss/ttrssLoginWidget.vala:64

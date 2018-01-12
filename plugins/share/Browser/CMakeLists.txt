@@ -15,8 +15,8 @@ PACKAGES
 	libsecret-1
 	sqlite3
 	libsoup-2.4
-	WebKit2-4.0
 	libxml-2.0
+	webkit2gtk-4.0
 
 OPTIONS
 	--target-glib=2.32
@@ -25,7 +25,6 @@ OPTIONS
 CUSTOM_VAPIS
 	${CMAKE_BINARY_DIR}/FeedReader.vapi
 	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
-	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 )
 
 GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE ${NAME}.gresource.xml)

@@ -87,7 +87,7 @@ set(UI_PACKAGES
 	gee-0.8
 	libsecret-1
 	rest-0.7
-	WebKit2-4.0
+	webkit2gtk-4.0
 	gstreamer-1.0
 	gstreamer-pbutils-1.0
 	libpeas-1.0
@@ -201,7 +201,6 @@ CUSTOM_VAPIS
 	vapi/gtkimageview.vapi
 	vapi/gd-1.0.vapi
 	vapi/sqlite3.vapi
-	vapi/webkit2gtk-4.0.vapi
 )
 
 GLIB_COMPILE_RESOURCES(GRESOURCES SOURCE data/org.gnome.FeedReader.gresource.xml)

@@ -187,6 +187,17 @@ public class FeedReader.DataBaseReadOnly : GLib.Object {
 		return count_status_uncategorized(ArticleStatus.MARKED);
 	}
 
+	public int get_new_unread_count(int row_id)
+	{
+		if(row_id == 0)
+			return 0;
+
+		string query = "SELECT count(*) FROM articles WHERE unread = ? AND rowid > ?";
+		var rows = m_db.execute(query, { ArticleStatus.UNREAD, row_id });
+		assert(rows.size == 1 && rows[0].size == 1);
+		return rows[0][0].to_int();
+	}
+
 	public int getTagColor()
 	{
 		var rows = m_db.execute("SELECT COUNT(*) FROM tags WHERE instr(tagID, \"global.\") = 0");

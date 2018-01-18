@@ -75,7 +75,7 @@ public class FeedReader.SQLite : GLib.Object {
 		}
 	}
 
-	public Gee.List<Gee.List<Sqlite.Value?>> execute(string query, Value?[]? params = null)
+	public Gee.List<Gee.List<Sqlite.Value?>> execute(string query, GLib.Value?[]? params = null)
 	{
 		Sqlite.Statement stmt;
 		int rc = m_db.prepare_v2(query, query.length, out stmt);
@@ -98,19 +98,19 @@ public class FeedReader.SQLite : GLib.Object {
 					// string
 					if(param.holds(typeof(float)) || param.holds(typeof(double)))
 					{
-						var as_double = Value(typeof(double));
+						var as_double = GLib.Value(typeof(double));
 						param.transform(ref as_double);
 						stmt.bind_double(i, (double)as_double);
 					}
-					else if(Value.type_transformable(param.type(), typeof(int64)))
+					else if(GLib.Value.type_transformable(param.type(), typeof(int64)))
 					{
-						var as_int = Value(typeof(int64));
+						var as_int = GLib.Value(typeof(int64));
 						param.transform(ref as_int);
 						stmt.bind_int64(i, (int64)as_int);
 					}
 					else
 					{
-						var as_string = Value(typeof(string));
+						var as_string = GLib.Value(typeof(string));
 						param.transform(ref as_string);
 						stmt.bind_text(i, (string)as_string);
 					}

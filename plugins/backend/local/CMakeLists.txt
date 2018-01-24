@@ -28,6 +28,7 @@ PACKAGES
 	libxml-2.0
 	sqlite3
 	libsecret-1
+	webkit2gtk-4.0
 
 OPTIONS
 	--target-glib=2.32
@@ -36,7 +37,6 @@ OPTIONS
 CUSTOM_VAPIS
 	${CMAKE_BINARY_DIR}/FeedReader.vapi
 	${CMAKE_SOURCE_DIR}/vapi/gd-1.0.vapi
-	${CMAKE_SOURCE_DIR}/vapi/webkit2gtk-4.0.vapi
 	rss-glib/rss-glib-1.0.vapi
 )
 

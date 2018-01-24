@@ -1,4 +1,4 @@
-FROM docker.io/fedora:26
+FROM docker.io/fedora:27
 
 RUN dnf -y install \
         cmake \
@@ -31,6 +31,7 @@ RUN dnf -y install \
 		gcc-c++ \
 		git \
 		libcurl-devel \
+		libidn-devel \
 		libxml2-devel \
 		libxslt-devel \
 		nodejs \

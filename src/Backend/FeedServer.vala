@@ -248,12 +248,13 @@ public class FeedReader.FeedServer : GLib.Object {
 		//update fulltext table
 		DataBase.writeAccess().updateFTS();
 
+		int new_and_unread = DataBase.readOnly().get_new_unread_count(row_id != null ? int.parse(row_id) : 0);
 		row_id = DataBase.readOnly().getMaxID("articles", "rowid");
 		int after = row_id != null ? int.parse(row_id) : 0;
 		int newArticles = after-before;
 		if(newArticles > 0)
 		{
-			Notification.send(newArticles);
+			Notification.send(newArticles, new_and_unread);
 		}
 
 		var drop_weeks = drop_articles.to_weeks();

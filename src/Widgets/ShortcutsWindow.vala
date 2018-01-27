@@ -61,8 +61,8 @@ public class FeedReader.ShortcutsWindow : Gtk.ShortcutsWindow {
 		string toggleMarked = Settings.keybindings().get_string("articlelist-toggle-marked");
 		string openUrl = Settings.keybindings().get_string("articlelist-open-url");
 		var nextprev = newShortcut(_("Select next/previous article"), nextPrev);
-		var toggleread = newShortcut(_("Toggle the selected article un/read"), toggleRead);
-		var togglemarked = newShortcut(_("Toggle the selected article un/marked"), toggleMarked);
+		var toggleread = newShortcut(_("Toggle reading status of selected article"), toggleRead);
+		var togglemarked = newShortcut(_("Toggle marking of selected article"), toggleMarked);
 		var openURL = newShortcut(_("Open the URL of the selected article"), openUrl);
 		var upDown = newShortcut(_("Scroll all the way up/down"), "Page_Up Page_Down");
 		var centerSelected = newShortcut(_("Center the currently selected article"), center);

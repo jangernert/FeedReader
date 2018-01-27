@@ -10,10 +10,10 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-01-27 13:07+0000\n"
+"PO-Revision-Date: 2018-01-28 13:39+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
-"feedreader/translations/nb/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/feedreader/translations/nb/>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -158,14 +158,12 @@ msgid "Select next/previous article"
 msgstr "Velg neste/forrige artikkel"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
 msgstr "Veksle lesetilstand for artikkelen"
 
 #: src/Widgets/ShortcutsWindow.vala:65
-#, fuzzy
 msgid "Toggle marking of selected article"
-msgstr "Veksle lesetilstand for artikkelen"
+msgstr "Veksle markering av valgt artikkel"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
@@ -467,7 +465,7 @@ msgstr "Fjern feed"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "Kopier nettadresse"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -475,9 +473,9 @@ msgid "Remove only from %s"
 msgstr "Fjern kun fra %s"
 
 #: src/Widgets/FeedRow.vala:445
-#, fuzzy, c-format
+#, c-format
 msgid "Feed removed: %s"
-msgstr "Feeden \"%s\" er fjernet"
+msgstr "Kilden \"%s\" er fjernet"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
@@ -660,7 +658,7 @@ msgstr "Feeden \"%s\" er fjernet"
 #: src/DataBaseReadOnly.vala:223
 #, fuzzy
 msgid "Unknown tag"
-msgstr "ukjent feed"
+msgstr "ukjent etikett"
 
 #: src/Utils.vala:35
 msgid "No Preview Available"
@@ -860,31 +858,29 @@ msgid "Nothing to read here."
 msgstr "Ingenting å lese her."
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
 msgid "Nextcloud URL:"
 msgstr "Nextcloud-nettadresse:"
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
-#, fuzzy
 msgid ""
 "Please log in to your Nextcloud News instance and enjoy using FeedReader"
-msgstr "Logg deg inn i Nextcloud News-instansen og kos deg med FeedReader"
+msgstr "Logg deg inn i Nextcloud News-installasjonen og kos deg med FeedReader"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:816
 msgid "Invalid URL"
-msgstr ""
+msgstr "Ugyldig nettadresse"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:819
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "Nettadresseinnholdet er HTML, ingen kilder tilgjengelig"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:822
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "Nettadresseinnholdet er HTML, hvis innhold er flere kilder."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:825
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "Kunne ikke laste ned nettadresseinnholdet."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:828
 msgid "Content is an invalid XML."
@@ -892,7 +888,7 @@ msgstr ""
 
 #: plugins/backend/ttrss/ttrssAPI.vala:841
 msgid "Error reaching tt-rss"
-msgstr ""
+msgstr "Fikk ikke kontakt med tt-rss"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"

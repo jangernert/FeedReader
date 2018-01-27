@@ -7,11 +7,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: feedreader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-15 10:52+0200\n"
+"POT-Creation-Date: 2018-01-27 14:04+0100\n"
 "PO-Revision-Date: 2017-11-18 13:45+0000\n"
 "Last-Translator: Michal Čihař <michal@cihar.com>\n"
-"Language-Team: Czech "
-"<https://hosted.weblate.org/projects/feedreader/translations/cs/>\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/feedreader/"
+"translations/cs/>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,69 +20,17 @@ msgstr ""
 "X-Generator: Weblate 2.18-dev\n"
 "X-Launchpad-Export-Date: 2016-01-13 05:53+0000\n"
 
-#: src/UtilsDaemon.vala:20
-msgid "No Preview Available"
-msgstr "Žádná ukázka není  dispozici"
+#: src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "O FeedReaderu"
 
-#: src/UtilsDaemon.vala:78
-msgid "No Text available for this article :("
-msgstr "Tento článek nemá žádný dostupný text :("
-
-#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
-msgid "unknown Feed"
-msgstr ""
-
-#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:516
-msgid "Uncategorized"
-msgstr "Nezařazeno"
-
-#: src/UtilsUI.vala:61
-#, c-format
-msgid "posted by: %s, "
-msgstr ""
-
-#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
-msgid "Cancel"
-msgstr ""
-
-#: src/UtilsUI.vala:290
-msgid "Save"
-msgstr ""
-
-#: src/Model/Article.vala:168
-msgid "Yesterday"
-msgstr ""
-
-#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
-#, fuzzy
-msgid "Getting feeds and categories"
-msgstr "Zobrazit pouze nepřečtené články"
-
-#: src/Backend/FeedServer.vala:181
-msgid "Getting articles"
-msgstr "Stahuji články"
-
-#: src/Backend/FeedServer.vala:269
-msgid "Getting starred articles"
-msgstr "Stahuji články označené hvězdičkou"
-
-#: src/Backend/FeedServer.vala:276
-msgid "Getting tagged articles"
-msgstr "Stahuji označené články"
-
-#: src/Backend/FeedServer.vala:294
-msgid "Getting unread articles"
-msgstr "Stahuji nepřečtené články"
-
-#: src/Share/ServiceSetup.vala:56
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:96
-#: plugins/backend/fresh/freshLoginWidget.vala:145
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:166
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:145
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:96
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:95
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:96
+#: src/Share/ServiceSetup.vala:56 plugins/backend/fresh/freshInterface.vala:151
+#: plugins/backend/feedhq/feedhqInterface.vala:101
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
+#: plugins/backend/ttrss/ttrssInterface.vala:151
+#: plugins/backend/oldreader/oldreaderInterface.vala:101
+#: plugins/backend/feedbin/feedbinInterface.vala:76
+#: plugins/backend/bazqux/bazquxInterface.vala:101
 msgid "Login"
 msgstr "Přihlásit"
 
@@ -90,328 +38,80 @@ msgstr "Přihlásit"
 msgid "Logout"
 msgstr "Odhlásit se"
 
-#: src/Widgets/SpringCleanPage.vala:28
-msgid ""
-"FeedReader is cleaning the database.\n"
-"This shouldn't take too long."
-msgstr ""
-"FeedReader čistí databázi.\n"
-"Nemělo by to trvat dlouho."
+#: src/Backend/FeedServer.vala:179 src/Backend/FeedServer.vala:282
+#, fuzzy
+msgid "Getting feeds and categories"
+msgstr "Zobrazit pouze nepřečtené články"
 
-#: src/Widgets/ArticleList/ArticleList.vala:48
-msgid "Sync is in progress. Articles should appear any second."
-msgstr "Probíhá synchronizace. Články se objeví každou chvíli."
+#: src/Backend/FeedServer.vala:231
+msgid "Getting articles"
+msgstr "Stahuji články"
 
-#: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
+#: src/Backend/FeedServer.vala:311
+msgid "Getting starred articles"
+msgstr "Stahuji články označené hvězdičkou"
+
+#: src/Backend/FeedServer.vala:318
+msgid "Getting tagged articles"
+msgstr "Stahuji označené články"
+
+#: src/Backend/FeedServer.vala:336
+msgid "Getting unread articles"
+msgstr "Stahuji nepřečtené články"
+
+#: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
 msgstr "Nové články"
 
-#: src/Widgets/ArticleList/ArticleList.vala:567
-msgid "scroll up"
+#: src/Notification.vala:27
+#, fuzzy, c-format
+msgid "There is 1 new article (%u unread)"
+msgstr "1 nový článek"
+
+#: src/Notification.vala:29
+#, fuzzy, c-format
+msgid "There are %u new articles (%u unread)"
+msgstr "Počet nových článků: %d"
+
+#: src/Model/Article.vala:188
+msgid "Yesterday"
 msgstr ""
 
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-msgid "No Articles"
-msgstr "Žádné články"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-msgid "No unread articles"
-msgstr "Žádné nepřečtené články"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-msgid "No starred articles"
-msgstr "Žádné články označené hvězdičkou"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-msgid "No articles"
-msgstr "Žádné články"
-
-#: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
-msgid "Add feed"
-msgstr ""
-
-#: src/Widgets/FeedListFooter.vala:153
-msgid "Remove feed"
-msgstr ""
-
-#: src/Widgets/SharePopover.vala:62
-msgid "Add accounts"
-msgstr "Přidat účty"
-
-#: src/Widgets/LoginPage.vala:55
-msgid "Where are your feeds?"
-msgstr "Vyberte lokaci zdrojů RSS"
-
-#: src/Widgets/LoginPage.vala:59
-msgid "Please select the RSS service you are using and log in to get going."
-msgstr "Vyberte prosím vámi využívanou RSS službu a přihlaste se"
-
-#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:125
+#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:111
 #, c-format
 msgid "Category \"%s\" removed"
 msgstr ""
 
-#: src/Widgets/CategorieRow.vala:459 src/Widgets/FeedRow.vala:244
+#: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
 msgid "Mark as read"
 msgstr "Označit článek jako přečtený"
 
-#: src/Widgets/CategorieRow.vala:460 src/Widgets/TagRow.vala:207
-#: src/Widgets/FeedRow.vala:245
+#: src/Widgets/CategorieRow.vala:446 src/Widgets/TagRow.vala:194
+#: src/Widgets/FeedRow.vala:235
 msgid "Rename"
 msgstr "Přejmenovat"
 
-#: src/Widgets/CategorieRow.vala:461 src/Widgets/TagRow.vala:208
-#: src/Widgets/FeedRow.vala:248 plugins/share/Telegram/TelegramSetup.vala:31
+#: src/Widgets/CategorieRow.vala:447 src/Widgets/TagRow.vala:195
+#: src/Widgets/FeedRow.vala:241 plugins/share/Telegram/TelegramSetup.vala:31
 msgid "Remove"
 msgstr ""
 
-#: src/Widgets/CategorieRow.vala:462
+#: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"
 msgstr ""
 
-#: src/Widgets/CategorieRow.vala:522 src/Widgets/TagRow.vala:310
-#: src/Widgets/FeedRow.vala:285
+#: src/Widgets/CategorieRow.vala:501 src/Widgets/TagRow.vala:272
+#: src/Widgets/FeedRow.vala:270
 msgid "rename"
 msgstr "přejmenovat"
 
-#: src/Widgets/CategorieRow.vala:524 src/Widgets/TagRow.vala:312
+#: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
 msgid "add"
 msgstr "přidat"
 
-#: src/Widgets/ArticleView.vala:62
-msgid "No Article selected."
-msgstr "Nebyl vybrán článek"
-
-#: src/Widgets/ArticleView.vala:66
-msgid "WebKit has crashed"
-msgstr ""
-
-#: src/Widgets/ArticleView.vala:776
-msgid "Save image as"
-msgstr "Uložit obrázek"
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "All"
-msgstr ""
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "Show all articles"
-msgstr "Zobrazit všechny články"
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Unread"
-msgstr ""
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Show only unread articles"
-msgstr "Zobrazit pouze nepřečtené články"
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Starred"
-msgstr ""
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Show only starred articles"
-msgstr "Zobrazit pouze články označené hvězdičkou"
-
-#: src/Widgets/ColumnViewHeader.vala:60
-msgid "Update feeds"
-msgstr "Aktualizovat zdroje"
-
-#: src/Widgets/ColumnViewHeader.vala:75
-msgid "Search Articles"
-msgstr "Vyhledat články"
-
-#: src/Widgets/ColumnViewHeader.vala:101
-msgid "Settings"
-msgstr "Nastavení"
-
-#: src/Widgets/ColumnViewHeader.vala:117
-msgid "Read article fullscreen"
-msgstr ""
-
-#: src/Widgets/MainWindow.vala:44
-msgid "FeedReader"
-msgstr "FeedReader"
-
-#: src/Widgets/MainWindow.vala:354
-msgid "Ignore all TLS errors from now on"
-msgstr "Od teď ignorovat všechny chyby TLS"
-
-#: src/Widgets/MainWindow.vala:420
-msgid "Please select a service first"
-msgstr "Nejdříve vyberte prosím službu"
-
-#: src/Widgets/MainWindow.vala:423
-msgid "Please enter a valid username"
-msgstr "Vložte prosím správné uživatelské jméno"
-
-#: src/Widgets/MainWindow.vala:426
-msgid "Please enter a valid password"
-msgstr "Vložte prosím správné heslo"
-
-#: src/Widgets/MainWindow.vala:430
-msgid "Please enter a valid URL"
-msgstr "Vložte prosím správné URL"
-
-#: src/Widgets/MainWindow.vala:433
-msgid "Please enter your Login details"
-msgstr "Vložte prosím správné přihlašovací údaje"
-
-#: src/Widgets/MainWindow.vala:436
-msgid "Sorry, something went wrong."
-msgstr "Omlouváme se, něco se pokazilo."
-
-#: src/Widgets/MainWindow.vala:439
-msgid "The server reported an API-error."
-msgstr ""
-
-#: src/Widgets/MainWindow.vala:442
-msgid "Either your username or the password are not correct."
-msgstr "Vaše jméno nebo heslo nejsou správně."
-
-#: src/Widgets/MainWindow.vala:445
-msgid ""
-"No connection to the server. Check your internet connection and the server "
-"URL!"
-msgstr ""
-"Není připojení k serveru. Zkontrolujte vaše připojení k internetu a URL "
-"serveru!"
-
-#: src/Widgets/MainWindow.vala:448
-msgid "API access is disabled on the server. Please enable it first!"
-msgstr "Přístup API ja na serveru vypnutý. Prosím, nejprve ho zapněte!"
-
-#: src/Widgets/MainWindow.vala:451
-msgid "Not authorized to access URL"
-msgstr ""
-
-#: src/Widgets/MainWindow.vala:455
-msgid "No valid CA certificate available!"
-msgstr ""
-
-#: src/Widgets/MainWindow.vala:459
-msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr ""
-
-#: src/Widgets/ArticleViewHeader.vala:68
-#, fuzzy
-msgid "Tag article"
-msgstr "Otagovat článek"
-
-#: src/Widgets/ArticleViewHeader.vala:82
-#, fuzzy
-msgid "Print article"
-msgstr "Radit články podle"
-
-#: src/Widgets/ArticleViewHeader.vala:93
-#, fuzzy
-msgid "Share article"
-msgstr "Sdílet článek"
-
-#: src/Widgets/ResetPage.vala:33
-msgid "Change Account?"
-msgstr "Odhlásit se"
-
-#: src/Widgets/ResetPage.vala:37
-msgid ""
-"You are about to change the account you want FeedReader to use.\n"
-" This means deleting all local data of your old account."
-msgstr ""
-"Chcete se právě odhlásit z účtu, který využívá FeedReader.\n"
-"Toto smaže veškerá lokální data vašeho starého účtu."
-
-#: src/Widgets/ResetPage.vala:41
-msgid "New account"
-msgstr "Nový účet"
-
-#: src/Widgets/ResetPage.vala:44
-msgid "Waiting for current sync to finish"
-msgstr "Čeká se na ukončení současné synchronizace"
-
-#: src/Widgets/ResetPage.vala:54
-msgid "I changed my mind"
-msgstr "Rozmyslel jsem si to"
-
-#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
-msgid "URL:"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:48
-#, fuzzy
-msgid "Category:"
-msgstr "Nezařazeno"
-
-#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
-#, fuzzy
-msgid "Add"
-msgstr "přidat štítek"
-
-#: src/Widgets/AddPopover.vala:65
-msgid "OPML File:"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:67
-msgid "Select OPML File"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:73
-msgid "Import"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:93
-msgid "Import OPML"
-msgstr ""
-
-#: src/Widgets/FullscreenHeader.vala:26
-msgid "Leave fullscreen mode"
-msgstr ""
-
-#: src/Widgets/FeedList.vala:247
-#, fuzzy
-msgid "All Articles"
-msgstr "Nové články"
-
-#: src/Widgets/FeedList.vala:444
-#, fuzzy
-msgid "Tags"
-msgstr "Štítky:"
-
-#: src/Widgets/FeedList.vala:492
-#, fuzzy
-msgid "Categories"
-msgstr "Nezařazeno"
-
-#: src/Widgets/FeedList.vala:497
-#, fuzzy
-msgid "Feeds"
-msgstr "Feeedly"
-
-#: src/Widgets/FeedList.vala:1011
-msgid "New Tag"
-msgstr ""
-
-#: src/Widgets/FeedList.vala:1144
-#, fuzzy
-msgid "New Category"
-msgstr "Nezařazeno"
-
-#: src/Widgets/MediaButton.vala:95
-#, fuzzy
-msgid "Attachments"
-msgstr "Pergamen"
-
-#: src/Widgets/TagPopover.vala:36
-msgid "Add Tag:"
-msgstr "Přidat štítek:"
-
-#: src/Widgets/TagPopover.vala:48
-msgid "Tags:"
-msgstr "Štítky:"
-
-#: src/Widgets/TagPopover.vala:125
-msgid "add Tag"
-msgstr "přidat štítek"
+#: src/Widgets/SharePopover.vala:62
+msgid "Add accounts"
+msgstr "Přidat účty"
 
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
@@ -461,12 +161,13 @@ msgstr ""
 
 #: src/Widgets/ShortcutsWindow.vala:64
 #, fuzzy
-msgid "Toggle the selected article un/read"
+msgid "Toggle reading status of selected article"
 msgstr "1 nový článek"
 
 #: src/Widgets/ShortcutsWindow.vala:65
-msgid "Toggle the selected article un/marked"
-msgstr ""
+#, fuzzy
+msgid "Toggle marking of selected article"
+msgstr "1 nový článek"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
@@ -489,19 +190,51 @@ msgstr "Seznam článků:"
 msgid "Scroll up/down"
 msgstr ""
 
-#: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
-#, c-format
-msgid "Tag \"%s\" removed"
+#: src/Widgets/LoginPage.vala:39
+msgid "Where are your feeds?"
+msgstr "Vyberte lokaci zdrojů RSS"
+
+#: src/Widgets/LoginPage.vala:43
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr "Vyberte prosím vámi využívanou RSS službu a přihlaste se"
+
+#: src/Widgets/AddPopover.vala:38 src/Widgets/FeedList.vala:506
+#: src/DataBaseReadOnly.vala:251
+msgid "Uncategorized"
+msgstr "Nezařazeno"
+
+#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
+msgid "URL:"
 msgstr ""
 
-#: src/Widgets/FeedRow.vala:203 src/Widgets/RemovePopover.vala:102
-#, c-format
-msgid "Feed \"%s\" removed"
+#: src/Widgets/AddPopover.vala:48
+#, fuzzy
+msgid "Category:"
+msgstr "Nezařazeno"
+
+#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
+#, fuzzy
+msgid "Add"
+msgstr "přidat štítek"
+
+#: src/Widgets/AddPopover.vala:65
+msgid "OPML File:"
 msgstr ""
 
-#: src/Widgets/FeedRow.vala:247
-#, c-format
-msgid "Remove only from %s"
+#: src/Widgets/AddPopover.vala:67
+msgid "Select OPML File"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:73
+msgid "Import"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
+msgid "Add feed"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:93
+msgid "Import OPML"
 msgstr ""
 
 #: src/Widgets/SettingsDialog.vala:48
@@ -621,103 +354,383 @@ msgstr "Počet článků"
 msgid "Interval in Minutes (0 = OFF)"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:157
+#: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
 msgstr "Databáze:"
 
-#: src/Widgets/SettingsDialog.vala:159
+#: src/Widgets/SettingsDialog.vala:152
 msgid "Delete articles after"
 msgstr "Odstranit články po"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "Never"
 msgstr "Nikdy"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Week"
 msgstr "1 týden"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Month"
 msgstr "1 měsíc"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "6 Months"
 msgstr "6 měsíců"
 
-#: src/Widgets/SettingsDialog.vala:162
+#: src/Widgets/SettingsDialog.vala:155
 msgid "Additional Functionality:"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:164
+#: src/Widgets/SettingsDialog.vala:157
 msgid "Content Grabber"
 msgstr "Sběrač obsahu"
 
-#: src/Widgets/SettingsDialog.vala:166
+#: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:168
+#: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:336
+#: src/Widgets/SettingsDialog.vala:322
 #, fuzzy
 msgid "System Accounts"
 msgstr "Změnit účet"
 
-#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
+#: src/Widgets/SettingsDialog.vala:349 src/Widgets/SettingsDialog.vala:363
 #, fuzzy
 msgid "FeedReader Accounts"
 msgstr "FeedReader"
+
+#: src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "Odhlásit se"
+
+#: src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+"Chcete se právě odhlásit z účtu, který využívá FeedReader.\n"
+"Toto smaže veškerá lokální data vašeho starého účtu."
+
+#: src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Nový účet"
+
+#: src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Čeká se na ukončení současné synchronizace"
+
+#: src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "Rozmyslel jsem si to"
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "All"
+msgstr ""
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "Show all articles"
+msgstr "Zobrazit všechny články"
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Unread"
+msgstr ""
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Show only unread articles"
+msgstr "Zobrazit pouze nepřečtené články"
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Starred"
+msgstr ""
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Show only starred articles"
+msgstr "Zobrazit pouze články označené hvězdičkou"
+
+#: src/Widgets/ColumnViewHeader.vala:60
+msgid "Update feeds"
+msgstr "Aktualizovat zdroje"
+
+#: src/Widgets/ColumnViewHeader.vala:75
+msgid "Search Articles"
+msgstr "Vyhledat články"
+
+#: src/Widgets/ColumnViewHeader.vala:101
+msgid "Settings"
+msgstr "Nastavení"
+
+#: src/Widgets/ColumnViewHeader.vala:114
+msgid "Read article fullscreen"
+msgstr ""
+
+#: src/Widgets/TagRow.vala:172 src/Widgets/RemovePopover.vala:80
+#, c-format
+msgid "Tag \"%s\" removed"
+msgstr ""
+
+#: src/Widgets/FeedListFooter.vala:142
+msgid "Remove feed"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:234
+msgid "Copy URL"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:239
+#, c-format
+msgid "Remove only from %s"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:445
+#, c-format
+msgid "Feed removed: %s"
+msgstr ""
+
+#: src/Widgets/FullscreenHeader.vala:26
+msgid "Leave fullscreen mode"
+msgstr ""
+
+#: src/Widgets/FeedList.vala:242
+#, fuzzy
+msgid "All Articles"
+msgstr "Nové články"
+
+#: src/Widgets/FeedList.vala:441
+#, fuzzy
+msgid "Tags"
+msgstr "Štítky:"
+
+#: src/Widgets/FeedList.vala:482
+#, fuzzy
+msgid "Categories"
+msgstr "Nezařazeno"
+
+#: src/Widgets/FeedList.vala:487
+#, fuzzy
+msgid "Feeds"
+msgstr "Feeedly"
+
+#: src/Widgets/FeedList.vala:1012
+msgid "New Tag"
+msgstr ""
+
+#: src/Widgets/FeedList.vala:1139
+#, fuzzy
+msgid "New Category"
+msgstr "Nezařazeno"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
+msgid "No Articles"
+msgstr "Žádné články"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
+msgid "No unread articles"
+msgstr "Žádné nepřečtené články"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
+msgid "No starred articles"
+msgstr "Žádné články označené hvězdičkou"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
+msgid "No articles"
+msgstr "Žádné články"
+
+#: src/Widgets/ArticleList/ArticleList.vala:48
+msgid "Sync is in progress. Articles should appear any second."
+msgstr "Probíhá synchronizace. Články se objeví každou chvíli."
+
+#: src/Widgets/ArticleList/ArticleList.vala:553
+msgid "scroll up"
+msgstr ""
+
+#: src/Widgets/ArticleView.vala:62
+msgid "No Article selected."
+msgstr "Nebyl vybrán článek"
+
+#: src/Widgets/ArticleView.vala:66
+msgid "WebKit has crashed"
+msgstr ""
+
+#: src/Widgets/ArticleView.vala:790
+msgid "Save image as"
+msgstr "Uložit obrázek"
+
+#: src/Widgets/UpdateButton.vala:80 src/Utils.vala:813
+msgid "Cancel"
+msgstr ""
+
+#: src/Widgets/TagPopover.vala:45
+msgid "Add Tag:"
+msgstr "Přidat štítek:"
+
+#: src/Widgets/TagPopover.vala:57
+msgid "Tags:"
+msgstr "Štítky:"
+
+#: src/Widgets/TagPopover.vala:134
+msgid "add Tag"
+msgstr "přidat štítek"
+
+#: src/Widgets/MainWindow.vala:44
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: src/Widgets/MainWindow.vala:347
+msgid "Ignore all TLS errors from now on"
+msgstr "Od teď ignorovat všechny chyby TLS"
+
+#: src/Widgets/MainWindow.vala:414
+msgid "Please select a service first"
+msgstr "Nejdříve vyberte prosím službu"
+
+#: src/Widgets/MainWindow.vala:417
+msgid "Please enter a valid username"
+msgstr "Vložte prosím správné uživatelské jméno"
+
+#: src/Widgets/MainWindow.vala:420
+msgid "Please enter a valid password"
+msgstr "Vložte prosím správné heslo"
+
+#: src/Widgets/MainWindow.vala:424
+msgid "Please enter a valid URL"
+msgstr "Vložte prosím správné URL"
+
+#: src/Widgets/MainWindow.vala:427
+msgid "Please enter your Login details"
+msgstr "Vložte prosím správné přihlašovací údaje"
+
+#: src/Widgets/MainWindow.vala:430
+msgid "Sorry, something went wrong."
+msgstr "Omlouváme se, něco se pokazilo."
+
+#: src/Widgets/MainWindow.vala:433
+msgid "The server reported an API-error."
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:436
+msgid "Either your username or the password are not correct."
+msgstr "Vaše jméno nebo heslo nejsou správně."
+
+#: src/Widgets/MainWindow.vala:439
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+"Není připojení k serveru. Zkontrolujte vaše připojení k internetu a URL "
+"serveru!"
+
+#: src/Widgets/MainWindow.vala:442
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "Přístup API ja na serveru vypnutý. Prosím, nejprve ho zapněte!"
+
+#: src/Widgets/MainWindow.vala:445
+msgid "Not authorized to access URL"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:449
+msgid "No valid CA certificate available!"
+msgstr ""
+
+#: src/Widgets/MainWindow.vala:453
+msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
+msgstr ""
+
+#: src/Widgets/MediaButton.vala:99
+#, fuzzy
+msgid "Attachments"
+msgstr "Pergamen"
+
+#: src/Widgets/SpringCleanPage.vala:28
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr ""
+"FeedReader čistí databázi.\n"
+"Nemělo by to trvat dlouho."
+
+#: src/Widgets/ArticleViewHeader.vala:68
+#, fuzzy
+msgid "Tag article"
+msgstr "Otagovat článek"
+
+#: src/Widgets/ArticleViewHeader.vala:82
+#, fuzzy
+msgid "Print article"
+msgstr "Radit články podle"
+
+#: src/Widgets/ArticleViewHeader.vala:93
+#, fuzzy
+msgid "Share article"
+msgstr "Sdílet článek"
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
 msgid "Remove \"%s\""
 msgstr ""
 
-#: src/FeedReader.vala:21
-msgid "About FeedReader"
-msgstr "O FeedReaderu"
+#: src/Widgets/RemovePopover.vala:95
+#, c-format
+msgid "Feed \"%s\" removed"
+msgstr ""
 
-#: src/Notification.vala:58
-#, fuzzy, c-format
-msgid "There is 1 new article (%u unread)"
-msgstr "1 nový článek"
+#: src/DataBaseReadOnly.vala:223
+msgid "Unknown tag"
+msgstr ""
 
-#: src/Notification.vala:60
-#, fuzzy, c-format
-msgid "There are %u new articles (%u unread)"
-msgstr "Počet nových článků: %d"
+#: src/Utils.vala:35
+msgid "No Preview Available"
+msgstr "Žádná ukázka není  dispozici"
+
+#: src/Utils.vala:93
+msgid "No Text available for this article :("
+msgstr "Tento článek nemá žádný dostupný text :("
+
+#: src/Utils.vala:601
+#, c-format
+msgid "posted by: %s, "
+msgstr ""
+
+#: src/Utils.vala:815
+msgid "Save"
+msgstr ""
+
+#: plugins/share/Browser/Browser.vala:79
+msgid "Open in Browser"
+msgstr ""
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:60
-#: plugins/backend/fresh/freshLoginWidget.vala:65
-#: plugins/backend/fresh/freshLoginWidget.vala:102
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:87
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:125
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:65
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:102
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:60
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:59
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:60
+#: plugins/backend/fresh/freshInterface.vala:71
+#: plugins/backend/fresh/freshInterface.vala:108
+#: plugins/backend/feedhq/feedhqInterface.vala:65
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:93
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:131
+#: plugins/backend/ttrss/ttrssInterface.vala:71
+#: plugins/backend/ttrss/ttrssInterface.vala:108
+#: plugins/backend/oldreader/oldreaderInterface.vala:65
+#: plugins/backend/feedbin/feedbinInterface.vala:65
+#: plugins/backend/bazqux/bazquxInterface.vala:65
 #, fuzzy
 msgid "Username:"
 msgstr "Uživatelské jméno:"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:61
-#: plugins/backend/fresh/freshLoginWidget.vala:66
-#: plugins/backend/fresh/freshLoginWidget.vala:103
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:88
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:126
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:66
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:103
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:61
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:60
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:61
+#: plugins/backend/fresh/freshInterface.vala:72
+#: plugins/backend/fresh/freshInterface.vala:109
+#: plugins/backend/feedhq/feedhqInterface.vala:66
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:94
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:132
+#: plugins/backend/ttrss/ttrssInterface.vala:72
+#: plugins/backend/ttrss/ttrssInterface.vala:109
+#: plugins/backend/oldreader/oldreaderInterface.vala:66
+#: plugins/backend/feedbin/feedbinInterface.vala:66
+#: plugins/backend/bazqux/bazquxInterface.vala:66
 msgid "Password:"
 msgstr "Heslo:"
 
@@ -725,26 +738,28 @@ msgstr "Heslo:"
 msgid "Username or Password incorrect"
 msgstr "Neplatné uživatelské jméno nebo heslo"
 
-#: plugins/share/Telegram/TelegramSetup.vala:38
-msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr ""
+#: plugins/share/Twitter/TwitterSetup.vala:51
+#: plugins/share/Pocket/PocketSetup.vala:52
+msgid "waiting"
+msgstr "čekání"
 
-#: plugins/share/Telegram/Telegram.vala:81
-msgid "Telegram"
-msgstr ""
-
-#: plugins/share/Telegram/TelegramForm.vala:23
+#: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
-"Hey, Check out this interesting article I just read - sent by FeedReader"
+"Hey,\n"
+"\n"
+"Check out this interesting article I just read: $URL"
 msgstr ""
 
-#: plugins/share/Telegram/TelegramForm.vala:42
-#: plugins/share/Email/EmailForm.vala:52
-msgid "Send"
+#: plugins/share/Twitter/TwitterForm.vala:47
+msgid "Limit: "
 msgstr ""
 
-#: plugins/share/Telegram/TelegramForm.vala:55
-msgid "Send Telegram"
+#: plugins/share/Twitter/TwitterForm.vala:63
+msgid "Tweet"
+msgstr ""
+
+#: plugins/share/Twitter/TwitterForm.vala:80
+msgid "Tweet to Followers"
 msgstr ""
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
@@ -799,91 +814,111 @@ msgstr ""
 msgid "To:"
 msgstr ""
 
+#: plugins/share/Email/EmailForm.vala:52
+#: plugins/share/Telegram/TelegramForm.vala:42
+msgid "Send"
+msgstr ""
+
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
 msgstr ""
 
-#: plugins/share/Pocket/PocketSetup.vala:52
-#: plugins/share/Twitter/TwitterSetup.vala:51
-msgid "waiting"
-msgstr "čekání"
-
-#: plugins/share/Twitter/TwitterForm.vala:29
+#: plugins/share/Telegram/TelegramForm.vala:23
 msgid ""
-"Hey,\n"
-"\n"
-"Check out this interesting article I just read: $URL"
+"Hey, Check out this interesting article I just read - sent by FeedReader"
 msgstr ""
 
-#: plugins/share/Twitter/TwitterForm.vala:47
-msgid "Limit: "
+#: plugins/share/Telegram/TelegramForm.vala:55
+msgid "Send Telegram"
 msgstr ""
 
-#: plugins/share/Twitter/TwitterForm.vala:63
-msgid "Tweet"
+#: plugins/share/Telegram/TelegramSetup.vala:38
+msgid "Info: Telegram would need to be installed for this plugin to work."
 msgstr ""
 
-#: plugins/share/Twitter/TwitterForm.vala:80
-msgid "Tweet to Followers"
+#: plugins/share/Telegram/Telegram.vala:81
+msgid "Telegram"
 msgstr ""
 
-#: plugins/share/Browser/Browser.vala:79
-msgid "Open in Browser"
-msgstr ""
-
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:91
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:91
-msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr ""
-
-#: plugins/backend/fresh/freshLoginWidget.vala:64
+#: plugins/backend/fresh/freshInterface.vala:70
 msgid "freshRSS URL:"
 msgstr ""
 
-#: plugins/backend/fresh/freshLoginWidget.vala:131
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:131
+#: plugins/backend/fresh/freshInterface.vala:137
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
+#: plugins/backend/ttrss/ttrssInterface.vala:137
 msgid "HTTP Authorization"
 msgstr ""
 
-#: plugins/backend/fresh/freshLoginWidget.vala:140
+#: plugins/backend/fresh/freshInterface.vala:146
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
 msgstr ""
 
-#: plugins/backend/local/localLoginWidget.vala:57
+#: plugins/backend/feedhq/feedhqInterface.vala:96
+#: plugins/backend/bazqux/bazquxInterface.vala:96
+msgid "Please log in to FeedHQ and enjoy using FeedReader"
+msgstr ""
+
+#: plugins/backend/local/localInterface.vala:66
 msgid "Done"
 msgstr ""
 
-#: plugins/backend/local/localLoginWidget.vala:58
+#: plugins/backend/local/localInterface.vala:67
 msgid "Adding Feeds"
 msgstr ""
 
-#: plugins/backend/local/localInterface.vala:420
+#: plugins/backend/local/localInterface.vala:617
 msgid "Nothing to read here."
 msgstr ""
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
-msgid "OwnCloud URL:"
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
+#, fuzzy
+msgid "Nextcloud URL:"
 msgstr "OwnCloud URL:"
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
-msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
+msgid ""
+"Please log in to your Nextcloud News instance and enjoy using FeedReader"
 msgstr ""
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:64
+#: plugins/backend/ttrss/ttrssAPI.vala:816
+msgid "Invalid URL"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:819
+msgid "URL content is HTML, no feeds available"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:822
+msgid "URL content is HTML which contains multiple feeds."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:825
+msgid "Couldn't download the URL content."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:828
+msgid "Content is an invalid XML."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:841
+msgid "Error reaching tt-rss"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssInterface.vala:70
 #, fuzzy
 msgid "Tiny Tiny RSS URL:"
 msgstr "URL TinyTinyRSS:"
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:140
+#: plugins/backend/ttrss/ttrssInterface.vala:146
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
 msgstr ""
 
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
+#: plugins/backend/oldreader/oldreaderInterface.vala:96
 msgid "Please log in to the Old Reader and enjoy using FeedReader"
 msgstr ""
 
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:90
+#: plugins/backend/feedbin/feedbinInterface.vala:101
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr ""
 

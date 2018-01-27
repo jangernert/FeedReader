@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"POT-Creation-Date: 2018-01-27 14:04+0100\n"
 "PO-Revision-Date: 2017-05-15 08:53+0000\n"
 "Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
 "Language-Team: Turkish (http://www.transifex.com/dev-feedreader/feedreader/"
@@ -19,68 +19,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: src/UtilsDaemon.vala:20
-msgid "No Preview Available"
-msgstr "Ön İzleme Yok"
+#: src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "FeedReader Hakkında"
 
-#: src/UtilsDaemon.vala:78
-msgid "No Text available for this article :("
-msgstr "Bu yazı için metin yok :("
-
-#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
-msgid "unknown Feed"
-msgstr "bilinmeyen Besleme"
-
-#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:516
-msgid "Uncategorized"
-msgstr "Ulamlanmamış"
-
-#: src/UtilsUI.vala:61
-#, c-format
-msgid "posted by: %s, "
-msgstr "gönderen: %s,"
-
-#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
-msgid "Cancel"
-msgstr "İptal"
-
-#: src/UtilsUI.vala:290
-msgid "Save"
-msgstr "Kaydet"
-
-#: src/Model/Article.vala:168
-msgid "Yesterday"
-msgstr "Dün"
-
-#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
-msgid "Getting feeds and categories"
-msgstr "Beslemeler ve ulamlar alınıyor"
-
-#: src/Backend/FeedServer.vala:181
-msgid "Getting articles"
-msgstr "Yazılar alınıyor"
-
-#: src/Backend/FeedServer.vala:269
-msgid "Getting starred articles"
-msgstr "Yıldızlı yazılar alınıyor"
-
-#: src/Backend/FeedServer.vala:276
-msgid "Getting tagged articles"
-msgstr "Etiketli yazılar alınıyor"
-
-#: src/Backend/FeedServer.vala:294
-msgid "Getting unread articles"
-msgstr "Okunmamış yazılar alınıyor"
-
-#: src/Share/ServiceSetup.vala:56
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:96
-#: plugins/backend/fresh/freshLoginWidget.vala:145
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:166
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:145
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:96
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:95
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:96
+#: src/Share/ServiceSetup.vala:56 plugins/backend/fresh/freshInterface.vala:151
+#: plugins/backend/feedhq/feedhqInterface.vala:101
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
+#: plugins/backend/ttrss/ttrssInterface.vala:151
+#: plugins/backend/oldreader/oldreaderInterface.vala:101
+#: plugins/backend/feedbin/feedbinInterface.vala:76
+#: plugins/backend/bazqux/bazquxInterface.vala:101
 msgid "Login"
 msgstr "Giriş"
 
@@ -88,317 +37,79 @@ msgstr "Giriş"
 msgid "Logout"
 msgstr "Çıkış"
 
-#: src/Widgets/SpringCleanPage.vala:28
-msgid ""
-"FeedReader is cleaning the database.\n"
-"This shouldn't take too long."
-msgstr ""
-"FeedReader veri tabanını temizliyor.\n"
-"Bu çok uzun sürmez."
+#: src/Backend/FeedServer.vala:179 src/Backend/FeedServer.vala:282
+msgid "Getting feeds and categories"
+msgstr "Beslemeler ve ulamlar alınıyor"
 
-#: src/Widgets/ArticleList/ArticleList.vala:48
-msgid "Sync is in progress. Articles should appear any second."
-msgstr "Eşzamanlama sürüyor. Yazılar her an görüntülenebilir."
+#: src/Backend/FeedServer.vala:231
+msgid "Getting articles"
+msgstr "Yazılar alınıyor"
 
-#: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
+#: src/Backend/FeedServer.vala:311
+msgid "Getting starred articles"
+msgstr "Yıldızlı yazılar alınıyor"
+
+#: src/Backend/FeedServer.vala:318
+msgid "Getting tagged articles"
+msgstr "Etiketli yazılar alınıyor"
+
+#: src/Backend/FeedServer.vala:336
+msgid "Getting unread articles"
+msgstr "Okunmamış yazılar alınıyor"
+
+#: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
 msgstr "Yeni Yazılar"
 
-#: src/Widgets/ArticleList/ArticleList.vala:567
-msgid "scroll up"
-msgstr "yukarı kaydır"
+#: src/Notification.vala:27
+#, c-format
+msgid "There is 1 new article (%u unread)"
+msgstr "1 yeni yazı var (%u okunmamış)"
 
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-msgid "No Articles"
-msgstr "Yazı Yok"
+#: src/Notification.vala:29
+#, c-format
+msgid "There are %u new articles (%u unread)"
+msgstr "%u yeni yazı var (%u okunmamış)"
 
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-msgid "No unread articles"
-msgstr "Okunmamış yazı yok"
+#: src/Model/Article.vala:188
+msgid "Yesterday"
+msgstr "Dün"
 
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-msgid "No starred articles"
-msgstr "Yıldızlı yazı yok"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-msgid "No articles"
-msgstr "Yazı yok"
-
-#: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
-msgid "Add feed"
-msgstr "Besleme ekle"
-
-#: src/Widgets/FeedListFooter.vala:153
-msgid "Remove feed"
-msgstr "Beslemeyi kaldır"
-
-#: src/Widgets/SharePopover.vala:62
-msgid "Add accounts"
-msgstr "Hesap ekle"
-
-#: src/Widgets/LoginPage.vala:55
-msgid "Where are your feeds?"
-msgstr "Beslemeleriniz nerede?"
-
-#: src/Widgets/LoginPage.vala:59
-msgid "Please select the RSS service you are using and log in to get going."
-msgstr ""
-"Lütfen kullandığınız RSS hizmetini seçin ve devam etmek için giriş yapın."
-
-#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:125
+#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:111
 #, c-format
 msgid "Category \"%s\" removed"
 msgstr "\"%s\" ulamı kaldırıldı"
 
-#: src/Widgets/CategorieRow.vala:459 src/Widgets/FeedRow.vala:244
+#: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
 msgid "Mark as read"
 msgstr "Okundu olarak imle"
 
-#: src/Widgets/CategorieRow.vala:460 src/Widgets/TagRow.vala:207
-#: src/Widgets/FeedRow.vala:245
+#: src/Widgets/CategorieRow.vala:446 src/Widgets/TagRow.vala:194
+#: src/Widgets/FeedRow.vala:235
 msgid "Rename"
 msgstr "Yeniden adlandır"
 
-#: src/Widgets/CategorieRow.vala:461 src/Widgets/TagRow.vala:208
-#: src/Widgets/FeedRow.vala:248 plugins/share/Telegram/TelegramSetup.vala:31
+#: src/Widgets/CategorieRow.vala:447 src/Widgets/TagRow.vala:195
+#: src/Widgets/FeedRow.vala:241 plugins/share/Telegram/TelegramSetup.vala:31
 msgid "Remove"
 msgstr "Kaldır"
 
-#: src/Widgets/CategorieRow.vala:462
+#: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"
 msgstr "Kaldır (Beslemelerle birlikte)"
 
-#: src/Widgets/CategorieRow.vala:522 src/Widgets/TagRow.vala:310
-#: src/Widgets/FeedRow.vala:285
+#: src/Widgets/CategorieRow.vala:501 src/Widgets/TagRow.vala:272
+#: src/Widgets/FeedRow.vala:270
 msgid "rename"
 msgstr "yeniden adlandır"
 
-#: src/Widgets/CategorieRow.vala:524 src/Widgets/TagRow.vala:312
+#: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
 msgid "add"
 msgstr "ekle"
 
-#: src/Widgets/ArticleView.vala:62
-msgid "No Article selected."
-msgstr "Yazı seçilmedi."
-
-#: src/Widgets/ArticleView.vala:66
-msgid "WebKit has crashed"
-msgstr "WebKit bozuldu"
-
-#: src/Widgets/ArticleView.vala:776
-msgid "Save image as"
-msgstr "Resmi şöyle kaydet"
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "All"
-msgstr "Tüm"
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "Show all articles"
-msgstr "Tüm yazıları göster"
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Unread"
-msgstr "Okunmamış"
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Show only unread articles"
-msgstr "Yalnızca okunmamış yazıları göster"
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Starred"
-msgstr "Yıldızlı"
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Show only starred articles"
-msgstr "Yalnızca yıldızlı yazıları göster"
-
-#: src/Widgets/ColumnViewHeader.vala:60
-msgid "Update feeds"
-msgstr "Beslemeleri güncelle"
-
-#: src/Widgets/ColumnViewHeader.vala:75
-msgid "Search Articles"
-msgstr "Yazı Ara"
-
-#: src/Widgets/ColumnViewHeader.vala:101
-msgid "Settings"
-msgstr "Ayarlar"
-
-#: src/Widgets/ColumnViewHeader.vala:117
-msgid "Read article fullscreen"
-msgstr "Yazıyı tam ekranda oku"
-
-#: src/Widgets/MainWindow.vala:44
-msgid "FeedReader"
-msgstr "FeedReader"
-
-#: src/Widgets/MainWindow.vala:354
-msgid "Ignore all TLS errors from now on"
-msgstr "Artık tüm TLS hatalarını görmezden gel"
-
-#: src/Widgets/MainWindow.vala:420
-msgid "Please select a service first"
-msgstr "Lütfen önce bir hizmet seçin"
-
-#: src/Widgets/MainWindow.vala:423
-msgid "Please enter a valid username"
-msgstr "Lütfen geçerli bir kullanıcı adı girin"
-
-#: src/Widgets/MainWindow.vala:426
-msgid "Please enter a valid password"
-msgstr "Lütfen geçerli bir parola girin"
-
-#: src/Widgets/MainWindow.vala:430
-msgid "Please enter a valid URL"
-msgstr "Lütfen geçerli bir adres girin"
-
-#: src/Widgets/MainWindow.vala:433
-msgid "Please enter your Login details"
-msgstr "Lütfen Giriş bilgilerinizi girin"
-
-#: src/Widgets/MainWindow.vala:436
-msgid "Sorry, something went wrong."
-msgstr "Üzgünüz, bir şeyler yanlış gitti."
-
-#: src/Widgets/MainWindow.vala:439
-msgid "The server reported an API-error."
-msgstr "Sunucu bir API hatası bildirdi."
-
-#: src/Widgets/MainWindow.vala:442
-msgid "Either your username or the password are not correct."
-msgstr "Kullanıcı adı veya parolanızdan herhangi biri yanlış."
-
-#: src/Widgets/MainWindow.vala:445
-msgid ""
-"No connection to the server. Check your internet connection and the server "
-"URL!"
-msgstr ""
-"Sunucu bağlantısı yok. İnternet bağlantınızı ve sunucu adresini denetleyin!"
-
-#: src/Widgets/MainWindow.vala:448
-msgid "API access is disabled on the server. Please enable it first!"
-msgstr "Bu sunucuda API erişimi devre dışı. Lütfen önce etkinleştirin!"
-
-#: src/Widgets/MainWindow.vala:451
-msgid "Not authorized to access URL"
-msgstr "Adrese erişim için yetkilendirilmemiş"
-
-#: src/Widgets/MainWindow.vala:455
-msgid "No valid CA certificate available!"
-msgstr "Geçerli CA sertifikası yok!"
-
-#: src/Widgets/MainWindow.vala:459
-msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr "Lütfen \"api_feedreader\" yan uygulamasını tt-rss oluşumunuza kurun."
-
-#: src/Widgets/ArticleViewHeader.vala:68
-msgid "Tag article"
-msgstr "Yazıyı etiketle"
-
-#: src/Widgets/ArticleViewHeader.vala:82
-msgid "Print article"
-msgstr "Yazıyı yazdır"
-
-#: src/Widgets/ArticleViewHeader.vala:93
-msgid "Share article"
-msgstr "Yazıyı paylaş"
-
-#: src/Widgets/ResetPage.vala:33
-msgid "Change Account?"
-msgstr "Hesabı Değiştir?"
-
-#: src/Widgets/ResetPage.vala:37
-msgid ""
-"You are about to change the account you want FeedReader to use.\n"
-" This means deleting all local data of your old account."
-msgstr ""
-"FeedReader'i kullanmak istediğiniz hesabı değiştirmek üzeresiniz.\n"
-"Bu eski hesabınızın tüm yerel verilerini silmek anlamına gelir."
-
-#: src/Widgets/ResetPage.vala:41
-msgid "New account"
-msgstr "Yeni hesap"
-
-#: src/Widgets/ResetPage.vala:44
-msgid "Waiting for current sync to finish"
-msgstr "Şu anki eşzamanlamanın bitmesi için bekleniyor"
-
-#: src/Widgets/ResetPage.vala:54
-msgid "I changed my mind"
-msgstr "Düşüncemi değiştirdim"
-
-#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
-msgid "URL:"
-msgstr "Adres:"
-
-#: src/Widgets/AddPopover.vala:48
-msgid "Category:"
-msgstr "Ulam:"
-
-#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
-msgid "Add"
-msgstr "Ekle"
-
-#: src/Widgets/AddPopover.vala:65
-msgid "OPML File:"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:67
-msgid "Select OPML File"
-msgstr ""
-
-#: src/Widgets/AddPopover.vala:73
-msgid "Import"
-msgstr "İçe Aktar"
-
-#: src/Widgets/AddPopover.vala:93
-msgid "Import OPML"
-msgstr "OPML İçe Aktar"
-
-#: src/Widgets/FullscreenHeader.vala:26
-msgid "Leave fullscreen mode"
-msgstr "Tam ekran kipinden çık"
-
-#: src/Widgets/FeedList.vala:247
-msgid "All Articles"
-msgstr "Tüm Yazılar"
-
-#: src/Widgets/FeedList.vala:444
-msgid "Tags"
-msgstr "Etiketler"
-
-#: src/Widgets/FeedList.vala:492
-msgid "Categories"
-msgstr "Ulamlar"
-
-#: src/Widgets/FeedList.vala:497
-msgid "Feeds"
-msgstr "Beslemeler"
-
-#: src/Widgets/FeedList.vala:1011
-msgid "New Tag"
-msgstr "Yeni Etiket"
-
-#: src/Widgets/FeedList.vala:1144
-msgid "New Category"
-msgstr "Yeni Ulam"
-
-#: src/Widgets/MediaButton.vala:95
-msgid "Attachments"
-msgstr "Ekler"
-
-#: src/Widgets/TagPopover.vala:36
-msgid "Add Tag:"
-msgstr "Etiket Ekle:"
-
-#: src/Widgets/TagPopover.vala:48
-msgid "Tags:"
-msgstr "Etiketler:"
-
-#: src/Widgets/TagPopover.vala:125
-msgid "add Tag"
-msgstr "Etiket ekle"
+#: src/Widgets/SharePopover.vala:62
+msgid "Add accounts"
+msgstr "Hesap ekle"
 
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
@@ -445,12 +156,14 @@ msgid "Select next/previous article"
 msgstr "Önceki/sonraki yazıyı seç"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-msgid "Toggle the selected article un/read"
+#, fuzzy
+msgid "Toggle reading status of selected article"
 msgstr "Seçilen yazıyı okunmuş/okunmamış yap"
 
 #: src/Widgets/ShortcutsWindow.vala:65
-msgid "Toggle the selected article un/marked"
-msgstr "Seçilen yazıyı imle/imini kaldır"
+#, fuzzy
+msgid "Toggle marking of selected article"
+msgstr "Seçilen yazıyı okunmuş/okunmamış yap"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
@@ -472,20 +185,51 @@ msgstr "Yazı Görünümü"
 msgid "Scroll up/down"
 msgstr "Aşağı/yukarı kaydır"
 
-#: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
-#, c-format
-msgid "Tag \"%s\" removed"
-msgstr "\"%s\" etiketi kaldırıldı"
+#: src/Widgets/LoginPage.vala:39
+msgid "Where are your feeds?"
+msgstr "Beslemeleriniz nerede?"
 
-#: src/Widgets/FeedRow.vala:203 src/Widgets/RemovePopover.vala:102
-#, c-format
-msgid "Feed \"%s\" removed"
-msgstr "\"%s\" beslemesi kaldırıldı"
+#: src/Widgets/LoginPage.vala:43
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr ""
+"Lütfen kullandığınız RSS hizmetini seçin ve devam etmek için giriş yapın."
 
-#: src/Widgets/FeedRow.vala:247
-#, c-format
-msgid "Remove only from %s"
-msgstr "Yalnızca %s'den kaldır"
+#: src/Widgets/AddPopover.vala:38 src/Widgets/FeedList.vala:506
+#: src/DataBaseReadOnly.vala:251
+msgid "Uncategorized"
+msgstr "Ulamlanmamış"
+
+#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
+msgid "URL:"
+msgstr "Adres:"
+
+#: src/Widgets/AddPopover.vala:48
+msgid "Category:"
+msgstr "Ulam:"
+
+#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
+msgid "Add"
+msgstr "Ekle"
+
+#: src/Widgets/AddPopover.vala:65
+msgid "OPML File:"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:67
+msgid "Select OPML File"
+msgstr ""
+
+#: src/Widgets/AddPopover.vala:73
+msgid "Import"
+msgstr "İçe Aktar"
+
+#: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
+msgid "Add feed"
+msgstr "Besleme ekle"
+
+#: src/Widgets/AddPopover.vala:93
+msgid "Import OPML"
+msgstr "OPML İçe Aktar"
 
 #: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
@@ -599,100 +343,371 @@ msgstr "Yazıların sayısı"
 msgid "Interval in Minutes (0 = OFF)"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:157
+#: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
 msgstr "Veri tabanı:"
 
-#: src/Widgets/SettingsDialog.vala:159
+#: src/Widgets/SettingsDialog.vala:152
 msgid "Delete articles after"
 msgstr "Yazıları şundan sonra sil"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "Never"
 msgstr "Asla"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Week"
 msgstr "1 Hafta"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Month"
 msgstr "1 Ay"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "6 Months"
 msgstr "6 Ay"
 
-#: src/Widgets/SettingsDialog.vala:162
+#: src/Widgets/SettingsDialog.vala:155
 msgid "Additional Functionality:"
 msgstr "Ek İşlevsellik:"
 
-#: src/Widgets/SettingsDialog.vala:164
+#: src/Widgets/SettingsDialog.vala:157
 msgid "Content Grabber"
 msgstr "İçerik Elde Edici"
 
-#: src/Widgets/SettingsDialog.vala:166
+#: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
 msgstr ""
 
-#: src/Widgets/SettingsDialog.vala:168
+#: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
 msgstr "İç Ortam Oynatıcı"
 
-#: src/Widgets/SettingsDialog.vala:336
+#: src/Widgets/SettingsDialog.vala:322
 msgid "System Accounts"
 msgstr "Sistem Hesapları"
 
-#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
+#: src/Widgets/SettingsDialog.vala:349 src/Widgets/SettingsDialog.vala:363
 msgid "FeedReader Accounts"
 msgstr "FeedReader Hesapları"
+
+#: src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "Hesabı Değiştir?"
+
+#: src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+"FeedReader'i kullanmak istediğiniz hesabı değiştirmek üzeresiniz.\n"
+"Bu eski hesabınızın tüm yerel verilerini silmek anlamına gelir."
+
+#: src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Yeni hesap"
+
+#: src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Şu anki eşzamanlamanın bitmesi için bekleniyor"
+
+#: src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "Düşüncemi değiştirdim"
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "All"
+msgstr "Tüm"
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "Show all articles"
+msgstr "Tüm yazıları göster"
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Unread"
+msgstr "Okunmamış"
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Show only unread articles"
+msgstr "Yalnızca okunmamış yazıları göster"
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Starred"
+msgstr "Yıldızlı"
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Show only starred articles"
+msgstr "Yalnızca yıldızlı yazıları göster"
+
+#: src/Widgets/ColumnViewHeader.vala:60
+msgid "Update feeds"
+msgstr "Beslemeleri güncelle"
+
+#: src/Widgets/ColumnViewHeader.vala:75
+msgid "Search Articles"
+msgstr "Yazı Ara"
+
+#: src/Widgets/ColumnViewHeader.vala:101
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: src/Widgets/ColumnViewHeader.vala:114
+msgid "Read article fullscreen"
+msgstr "Yazıyı tam ekranda oku"
+
+#: src/Widgets/TagRow.vala:172 src/Widgets/RemovePopover.vala:80
+#, c-format
+msgid "Tag \"%s\" removed"
+msgstr "\"%s\" etiketi kaldırıldı"
+
+#: src/Widgets/FeedListFooter.vala:142
+msgid "Remove feed"
+msgstr "Beslemeyi kaldır"
+
+#: src/Widgets/FeedRow.vala:234
+msgid "Copy URL"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:239
+#, c-format
+msgid "Remove only from %s"
+msgstr "Yalnızca %s'den kaldır"
+
+#: src/Widgets/FeedRow.vala:445
+#, fuzzy, c-format
+msgid "Feed removed: %s"
+msgstr "\"%s\" beslemesi kaldırıldı"
+
+#: src/Widgets/FullscreenHeader.vala:26
+msgid "Leave fullscreen mode"
+msgstr "Tam ekran kipinden çık"
+
+#: src/Widgets/FeedList.vala:242
+msgid "All Articles"
+msgstr "Tüm Yazılar"
+
+#: src/Widgets/FeedList.vala:441
+msgid "Tags"
+msgstr "Etiketler"
+
+#: src/Widgets/FeedList.vala:482
+msgid "Categories"
+msgstr "Ulamlar"
+
+#: src/Widgets/FeedList.vala:487
+msgid "Feeds"
+msgstr "Beslemeler"
+
+#: src/Widgets/FeedList.vala:1012
+msgid "New Tag"
+msgstr "Yeni Etiket"
+
+#: src/Widgets/FeedList.vala:1139
+msgid "New Category"
+msgstr "Yeni Ulam"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
+msgid "No Articles"
+msgstr "Yazı Yok"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
+msgid "No unread articles"
+msgstr "Okunmamış yazı yok"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
+msgid "No starred articles"
+msgstr "Yıldızlı yazı yok"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
+msgid "No articles"
+msgstr "Yazı yok"
+
+#: src/Widgets/ArticleList/ArticleList.vala:48
+msgid "Sync is in progress. Articles should appear any second."
+msgstr "Eşzamanlama sürüyor. Yazılar her an görüntülenebilir."
+
+#: src/Widgets/ArticleList/ArticleList.vala:553
+msgid "scroll up"
+msgstr "yukarı kaydır"
+
+#: src/Widgets/ArticleView.vala:62
+msgid "No Article selected."
+msgstr "Yazı seçilmedi."
+
+#: src/Widgets/ArticleView.vala:66
+msgid "WebKit has crashed"
+msgstr "WebKit bozuldu"
+
+#: src/Widgets/ArticleView.vala:790
+msgid "Save image as"
+msgstr "Resmi şöyle kaydet"
+
+#: src/Widgets/UpdateButton.vala:80 src/Utils.vala:813
+msgid "Cancel"
+msgstr "İptal"
+
+#: src/Widgets/TagPopover.vala:45
+msgid "Add Tag:"
+msgstr "Etiket Ekle:"
+
+#: src/Widgets/TagPopover.vala:57
+msgid "Tags:"
+msgstr "Etiketler:"
+
+#: src/Widgets/TagPopover.vala:134
+msgid "add Tag"
+msgstr "Etiket ekle"
+
+#: src/Widgets/MainWindow.vala:44
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: src/Widgets/MainWindow.vala:347
+msgid "Ignore all TLS errors from now on"
+msgstr "Artık tüm TLS hatalarını görmezden gel"
+
+#: src/Widgets/MainWindow.vala:414
+msgid "Please select a service first"
+msgstr "Lütfen önce bir hizmet seçin"
+
+#: src/Widgets/MainWindow.vala:417
+msgid "Please enter a valid username"
+msgstr "Lütfen geçerli bir kullanıcı adı girin"
+
+#: src/Widgets/MainWindow.vala:420
+msgid "Please enter a valid password"
+msgstr "Lütfen geçerli bir parola girin"
+
+#: src/Widgets/MainWindow.vala:424
+msgid "Please enter a valid URL"
+msgstr "Lütfen geçerli bir adres girin"
+
+#: src/Widgets/MainWindow.vala:427
+msgid "Please enter your Login details"
+msgstr "Lütfen Giriş bilgilerinizi girin"
+
+#: src/Widgets/MainWindow.vala:430
+msgid "Sorry, something went wrong."
+msgstr "Üzgünüz, bir şeyler yanlış gitti."
+
+#: src/Widgets/MainWindow.vala:433
+msgid "The server reported an API-error."
+msgstr "Sunucu bir API hatası bildirdi."
+
+#: src/Widgets/MainWindow.vala:436
+msgid "Either your username or the password are not correct."
+msgstr "Kullanıcı adı veya parolanızdan herhangi biri yanlış."
+
+#: src/Widgets/MainWindow.vala:439
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+"Sunucu bağlantısı yok. İnternet bağlantınızı ve sunucu adresini denetleyin!"
+
+#: src/Widgets/MainWindow.vala:442
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "Bu sunucuda API erişimi devre dışı. Lütfen önce etkinleştirin!"
+
+#: src/Widgets/MainWindow.vala:445
+msgid "Not authorized to access URL"
+msgstr "Adrese erişim için yetkilendirilmemiş"
+
+#: src/Widgets/MainWindow.vala:449
+msgid "No valid CA certificate available!"
+msgstr "Geçerli CA sertifikası yok!"
+
+#: src/Widgets/MainWindow.vala:453
+msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
+msgstr "Lütfen \"api_feedreader\" yan uygulamasını tt-rss oluşumunuza kurun."
+
+#: src/Widgets/MediaButton.vala:99
+msgid "Attachments"
+msgstr "Ekler"
+
+#: src/Widgets/SpringCleanPage.vala:28
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr ""
+"FeedReader veri tabanını temizliyor.\n"
+"Bu çok uzun sürmez."
+
+#: src/Widgets/ArticleViewHeader.vala:68
+msgid "Tag article"
+msgstr "Yazıyı etiketle"
+
+#: src/Widgets/ArticleViewHeader.vala:82
+msgid "Print article"
+msgstr "Yazıyı yazdır"
+
+#: src/Widgets/ArticleViewHeader.vala:93
+msgid "Share article"
+msgstr "Yazıyı paylaş"
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
 msgid "Remove \"%s\""
 msgstr "\"%s\" kaldır"
 
-#: src/FeedReader.vala:21
-msgid "About FeedReader"
-msgstr "FeedReader Hakkında"
-
-#: src/Notification.vala:58
+#: src/Widgets/RemovePopover.vala:95
 #, c-format
-msgid "There is 1 new article (%u unread)"
-msgstr "1 yeni yazı var (%u okunmamış)"
+msgid "Feed \"%s\" removed"
+msgstr "\"%s\" beslemesi kaldırıldı"
 
-#: src/Notification.vala:60
+#: src/DataBaseReadOnly.vala:223
+#, fuzzy
+msgid "Unknown tag"
+msgstr "bilinmeyen Besleme"
+
+#: src/Utils.vala:35
+msgid "No Preview Available"
+msgstr "Ön İzleme Yok"
+
+#: src/Utils.vala:93
+msgid "No Text available for this article :("
+msgstr "Bu yazı için metin yok :("
+
+#: src/Utils.vala:601
 #, c-format
-msgid "There are %u new articles (%u unread)"
-msgstr "%u yeni yazı var (%u okunmamış)"
+msgid "posted by: %s, "
+msgstr "gönderen: %s,"
+
+#: src/Utils.vala:815
+msgid "Save"
+msgstr "Kaydet"
+
+#: plugins/share/Browser/Browser.vala:79
+msgid "Open in Browser"
+msgstr "Tarayıcıda Aç"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:60
-#: plugins/backend/fresh/freshLoginWidget.vala:65
-#: plugins/backend/fresh/freshLoginWidget.vala:102
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:87
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:125
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:65
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:102
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:60
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:59
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:60
+#: plugins/backend/fresh/freshInterface.vala:71
+#: plugins/backend/fresh/freshInterface.vala:108
+#: plugins/backend/feedhq/feedhqInterface.vala:65
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:93
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:131
+#: plugins/backend/ttrss/ttrssInterface.vala:71
+#: plugins/backend/ttrss/ttrssInterface.vala:108
+#: plugins/backend/oldreader/oldreaderInterface.vala:65
+#: plugins/backend/feedbin/feedbinInterface.vala:65
+#: plugins/backend/bazqux/bazquxInterface.vala:65
 msgid "Username:"
 msgstr "Kullanıcı adı:"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:61
-#: plugins/backend/fresh/freshLoginWidget.vala:66
-#: plugins/backend/fresh/freshLoginWidget.vala:103
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:88
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:126
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:66
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:103
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:61
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:60
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:61
+#: plugins/backend/fresh/freshInterface.vala:72
+#: plugins/backend/fresh/freshInterface.vala:109
+#: plugins/backend/feedhq/feedhqInterface.vala:66
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:94
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:132
+#: plugins/backend/ttrss/ttrssInterface.vala:72
+#: plugins/backend/ttrss/ttrssInterface.vala:109
+#: plugins/backend/oldreader/oldreaderInterface.vala:66
+#: plugins/backend/feedbin/feedbinInterface.vala:66
+#: plugins/backend/bazqux/bazquxInterface.vala:66
 msgid "Password:"
 msgstr "Parola:"
 
@@ -700,27 +715,32 @@ msgstr "Parola:"
 msgid "Username or Password incorrect"
 msgstr "Kullanıcı Adı ya da Parola yanlış"
 
-#: plugins/share/Telegram/TelegramSetup.vala:38
-msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr "Bilgi: Bu eklentinin çalışması için Telegram yüklenmiş olmalıdır."
+#: plugins/share/Twitter/TwitterSetup.vala:51
+#: plugins/share/Pocket/PocketSetup.vala:52
+msgid "waiting"
+msgstr "bekliyor"
 
-#: plugins/share/Telegram/Telegram.vala:81
-msgid "Telegram"
-msgstr "Telegram"
-
-#: plugins/share/Telegram/TelegramForm.vala:23
+#: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
-"Hey, Check out this interesting article I just read - sent by FeedReader"
-msgstr "Hey, Okuduğum şu ilgi çekici yazıya göz at - FeedReader ile gönderildi"
+"Hey,\n"
+"\n"
+"Check out this interesting article I just read: $URL"
+msgstr ""
+"Hey,\n"
+"\n"
+"Okuduğum şu ilgi çekici yazıya göz at: $URL"
 
-#: plugins/share/Telegram/TelegramForm.vala:42
-#: plugins/share/Email/EmailForm.vala:52
-msgid "Send"
-msgstr "Gönder"
+#: plugins/share/Twitter/TwitterForm.vala:47
+msgid "Limit: "
+msgstr "Sınır:"
 
-#: plugins/share/Telegram/TelegramForm.vala:55
-msgid "Send Telegram"
-msgstr "Telegram'a Gönder"
+#: plugins/share/Twitter/TwitterForm.vala:63
+msgid "Tweet"
+msgstr "Tweetle"
+
+#: plugins/share/Twitter/TwitterForm.vala:80
+msgid "Tweet to Followers"
+msgstr "Takipçilere Tweetle"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -776,96 +796,117 @@ msgstr ""
 msgid "To:"
 msgstr "Kime:"
 
+#: plugins/share/Email/EmailForm.vala:52
+#: plugins/share/Telegram/TelegramForm.vala:42
+msgid "Send"
+msgstr "Gönder"
+
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
 msgstr "E-posta Yaz"
 
-#: plugins/share/Pocket/PocketSetup.vala:52
-#: plugins/share/Twitter/TwitterSetup.vala:51
-msgid "waiting"
-msgstr "bekliyor"
-
-#: plugins/share/Twitter/TwitterForm.vala:29
+#: plugins/share/Telegram/TelegramForm.vala:23
 msgid ""
-"Hey,\n"
-"\n"
-"Check out this interesting article I just read: $URL"
-msgstr ""
-"Hey,\n"
-"\n"
-"Okuduğum şu ilgi çekici yazıya göz at: $URL"
+"Hey, Check out this interesting article I just read - sent by FeedReader"
+msgstr "Hey, Okuduğum şu ilgi çekici yazıya göz at - FeedReader ile gönderildi"
 
-#: plugins/share/Twitter/TwitterForm.vala:47
-msgid "Limit: "
-msgstr "Sınır:"
+#: plugins/share/Telegram/TelegramForm.vala:55
+msgid "Send Telegram"
+msgstr "Telegram'a Gönder"
 
-#: plugins/share/Twitter/TwitterForm.vala:63
-msgid "Tweet"
-msgstr "Tweetle"
+#: plugins/share/Telegram/TelegramSetup.vala:38
+msgid "Info: Telegram would need to be installed for this plugin to work."
+msgstr "Bilgi: Bu eklentinin çalışması için Telegram yüklenmiş olmalıdır."
 
-#: plugins/share/Twitter/TwitterForm.vala:80
-msgid "Tweet to Followers"
-msgstr "Takipçilere Tweetle"
+#: plugins/share/Telegram/Telegram.vala:81
+msgid "Telegram"
+msgstr "Telegram"
 
-#: plugins/share/Browser/Browser.vala:79
-msgid "Open in Browser"
-msgstr "Tarayıcıda Aç"
-
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:91
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:91
-msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr "FeedReader'in tadını çıkarmak için lütfen FeedHQ'ya giriş yap"
-
-#: plugins/backend/fresh/freshLoginWidget.vala:64
+#: plugins/backend/fresh/freshInterface.vala:70
 msgid "freshRSS URL:"
 msgstr "freshRSS Adresi:"
 
-#: plugins/backend/fresh/freshLoginWidget.vala:131
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:131
+#: plugins/backend/fresh/freshInterface.vala:137
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
+#: plugins/backend/ttrss/ttrssInterface.vala:137
 msgid "HTTP Authorization"
 msgstr "HTTP Yetkilendirmesi"
 
-#: plugins/backend/fresh/freshLoginWidget.vala:140
+#: plugins/backend/fresh/freshInterface.vala:146
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
 msgstr ""
 "FeedReader'in tadını çıkarmak için lütfen freshRSS sunucunuza giriş yapın"
 
-#: plugins/backend/local/localLoginWidget.vala:57
+#: plugins/backend/feedhq/feedhqInterface.vala:96
+#: plugins/backend/bazqux/bazquxInterface.vala:96
+msgid "Please log in to FeedHQ and enjoy using FeedReader"
+msgstr "FeedReader'in tadını çıkarmak için lütfen FeedHQ'ya giriş yap"
+
+#: plugins/backend/local/localInterface.vala:66
 msgid "Done"
 msgstr "Bitti"
 
-#: plugins/backend/local/localLoginWidget.vala:58
+#: plugins/backend/local/localInterface.vala:67
 msgid "Adding Feeds"
 msgstr "Beslemeler Ekleniyor"
 
-#: plugins/backend/local/localInterface.vala:420
+#: plugins/backend/local/localInterface.vala:617
 msgid "Nothing to read here."
 msgstr "Burada okunacak bir şey yok."
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
-msgid "OwnCloud URL:"
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
+#, fuzzy
+msgid "Nextcloud URL:"
 msgstr "OwnCloud Adresi:"
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
-msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
+#, fuzzy
+msgid ""
+"Please log in to your Nextcloud News instance and enjoy using FeedReader"
 msgstr ""
 "FeedReader'in tadını çıkarmak için lütfen ownCloud Haberler'e giriş yap"
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:64
+#: plugins/backend/ttrss/ttrssAPI.vala:816
+msgid "Invalid URL"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:819
+msgid "URL content is HTML, no feeds available"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:822
+msgid "URL content is HTML which contains multiple feeds."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:825
+msgid "Couldn't download the URL content."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:828
+msgid "Content is an invalid XML."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:841
+msgid "Error reaching tt-rss"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"
 msgstr "Tiny Tiny RSS Adresi:"
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:140
+#: plugins/backend/ttrss/ttrssInterface.vala:146
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
 msgstr ""
 "FeedReader'in tadını çıkarmak için lütfen Tiny Tiny RSS sunucunuza giriş "
 "yapın"
 
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
+#: plugins/backend/oldreader/oldreaderInterface.vala:96
 msgid "Please log in to the Old Reader and enjoy using FeedReader"
 msgstr "FeedReader'in tadını çıkarmak için lütfen Old Reader'a giriş yap"
 
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:90
+#: plugins/backend/feedbin/feedbinInterface.vala:101
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr "FeedReader'in tadını çıkarmak için lütfen Feedbin'e giriş yap"
+
+#~ msgid "Toggle the selected article un/marked"
+#~ msgstr "Seçilen yazıyı imle/imini kaldır"

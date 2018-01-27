@@ -9,11 +9,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-15 11:00+0200\n"
+"POT-Creation-Date: 2018-01-27 14:04+0100\n"
 "PO-Revision-Date: 2018-01-27 13:07+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
-"Language-Team: Norwegian Bokmål "
-"<https://hosted.weblate.org/projects/feedreader/translations/nb/>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
+"feedreader/translations/nb/>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -21,68 +21,17 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2.19-dev\n"
 
-#: src/UtilsDaemon.vala:20
-msgid "No Preview Available"
-msgstr "Ingen forhåndsvisning tilgjengelig"
+#: src/FeedReader.vala:21
+msgid "About FeedReader"
+msgstr "Om FeedReader"
 
-#: src/UtilsDaemon.vala:78
-msgid "No Text available for this article :("
-msgstr "Ingen tekst tilgjengelig for denne artikkelen :("
-
-#: src/dbBase.vala:401 plugins/backend/local/localUtils.vala:54
-msgid "unknown Feed"
-msgstr "ukjent feed"
-
-#: src/dbBase.vala:501 src/Widgets/AddPopover.vala:38
-#: src/Widgets/FeedList.vala:516
-msgid "Uncategorized"
-msgstr "Ukategorisert"
-
-#: src/UtilsUI.vala:61
-#, c-format
-msgid "posted by: %s, "
-msgstr "publisert av: %s, "
-
-#: src/UtilsUI.vala:288 src/Widgets/UpdateButton.vala:80
-msgid "Cancel"
-msgstr "Avbryt"
-
-#: src/UtilsUI.vala:290
-msgid "Save"
-msgstr "Lagre"
-
-#: src/Model/Article.vala:168
-msgid "Yesterday"
-msgstr "I går"
-
-#: src/Backend/FeedServer.vala:139 src/Backend/FeedServer.vala:241
-msgid "Getting feeds and categories"
-msgstr "Henter feeds og kategorier"
-
-#: src/Backend/FeedServer.vala:181
-msgid "Getting articles"
-msgstr "Henter artikler"
-
-#: src/Backend/FeedServer.vala:269
-msgid "Getting starred articles"
-msgstr "Henter stjernemerkede artikler"
-
-#: src/Backend/FeedServer.vala:276
-msgid "Getting tagged articles"
-msgstr "Henter merkte artikler"
-
-#: src/Backend/FeedServer.vala:294
-msgid "Getting unread articles"
-msgstr "Henter uleste artikler"
-
-#: src/Share/ServiceSetup.vala:56
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:96
-#: plugins/backend/fresh/freshLoginWidget.vala:145
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:166
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:145
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:96
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:95
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:96
+#: src/Share/ServiceSetup.vala:56 plugins/backend/fresh/freshInterface.vala:151
+#: plugins/backend/feedhq/feedhqInterface.vala:101
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:172
+#: plugins/backend/ttrss/ttrssInterface.vala:151
+#: plugins/backend/oldreader/oldreaderInterface.vala:101
+#: plugins/backend/feedbin/feedbinInterface.vala:76
+#: plugins/backend/bazqux/bazquxInterface.vala:101
 msgid "Login"
 msgstr "Logg inn"
 
@@ -90,317 +39,79 @@ msgstr "Logg inn"
 msgid "Logout"
 msgstr "Logg ut"
 
-#: src/Widgets/SpringCleanPage.vala:28
-msgid ""
-"FeedReader is cleaning the database.\n"
-"This shouldn't take too long."
-msgstr ""
-"FeedReader rengjør databasen.\n"
-"Dette burde ikke ta for lang tid."
+#: src/Backend/FeedServer.vala:179 src/Backend/FeedServer.vala:282
+msgid "Getting feeds and categories"
+msgstr "Henter feeds og kategorier"
 
-#: src/Widgets/ArticleList/ArticleList.vala:48
-msgid "Sync is in progress. Articles should appear any second."
-msgstr "Synkronisering pågår. Artiklene bør vises ganske snart."
+#: src/Backend/FeedServer.vala:231
+msgid "Getting articles"
+msgstr "Henter artikler"
 
-#: src/Widgets/ArticleList/ArticleList.vala:565 src/Notification.vala:46
+#: src/Backend/FeedServer.vala:311
+msgid "Getting starred articles"
+msgstr "Henter stjernemerkede artikler"
+
+#: src/Backend/FeedServer.vala:318
+msgid "Getting tagged articles"
+msgstr "Henter merkte artikler"
+
+#: src/Backend/FeedServer.vala:336
+msgid "Getting unread articles"
+msgstr "Henter uleste artikler"
+
+#: src/Notification.vala:21 src/Widgets/ArticleList/ArticleList.vala:551
 msgid "New articles"
 msgstr "Nye artikler"
 
-#: src/Widgets/ArticleList/ArticleList.vala:567
-msgid "scroll up"
-msgstr "rull opp"
+#: src/Notification.vala:27
+#, c-format
+msgid "There is 1 new article (%u unread)"
+msgstr "Det er 1 ny artikkel (%u ulest)"
 
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
-msgid "No Articles"
-msgstr "Ingen artikler"
+#: src/Notification.vala:29
+#, c-format
+msgid "There are %u new articles (%u unread)"
+msgstr "Det er %u nye artikler (%u uleste)"
 
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
-msgid "No unread articles"
-msgstr "Ingen uleste artikler"
+#: src/Model/Article.vala:188
+msgid "Yesterday"
+msgstr "I går"
 
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
-msgid "No starred articles"
-msgstr "Ingen stjernemerkede artikler"
-
-#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
-msgid "No articles"
-msgstr "Ingen artikler"
-
-#: src/Widgets/FeedListFooter.vala:124 src/Widgets/AddPopover.vala:92
-msgid "Add feed"
-msgstr "Legg til feed"
-
-#: src/Widgets/FeedListFooter.vala:153
-msgid "Remove feed"
-msgstr "Fjern feed"
-
-#: src/Widgets/SharePopover.vala:62
-msgid "Add accounts"
-msgstr "Legg til kontoer"
-
-#: src/Widgets/LoginPage.vala:55
-msgid "Where are your feeds?"
-msgstr "Hvor er dine nyhetskilder?"
-
-#: src/Widgets/LoginPage.vala:59
-msgid "Please select the RSS service you are using and log in to get going."
-msgstr "Velg RSS-tjenesten du bruker og logg inn for å komme i gang."
-
-#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:125
+#: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:111
 #, c-format
 msgid "Category \"%s\" removed"
 msgstr "Kategorien \"%s\" er fjernet"
 
-#: src/Widgets/CategorieRow.vala:459 src/Widgets/FeedRow.vala:244
+#: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
 msgid "Mark as read"
 msgstr "Merk som lest"
 
-#: src/Widgets/CategorieRow.vala:460 src/Widgets/TagRow.vala:207
-#: src/Widgets/FeedRow.vala:245
+#: src/Widgets/CategorieRow.vala:446 src/Widgets/TagRow.vala:194
+#: src/Widgets/FeedRow.vala:235
 msgid "Rename"
 msgstr "Endre navn"
 
-#: src/Widgets/CategorieRow.vala:461 src/Widgets/TagRow.vala:208
-#: src/Widgets/FeedRow.vala:248 plugins/share/Telegram/TelegramSetup.vala:31
+#: src/Widgets/CategorieRow.vala:447 src/Widgets/TagRow.vala:195
+#: src/Widgets/FeedRow.vala:241 plugins/share/Telegram/TelegramSetup.vala:31
 msgid "Remove"
 msgstr "Fjern"
 
-#: src/Widgets/CategorieRow.vala:462
+#: src/Widgets/CategorieRow.vala:448
 msgid "Remove (with Feeds)"
 msgstr "Fjern (med feed)"
 
-#: src/Widgets/CategorieRow.vala:522 src/Widgets/TagRow.vala:310
-#: src/Widgets/FeedRow.vala:285
+#: src/Widgets/CategorieRow.vala:501 src/Widgets/TagRow.vala:272
+#: src/Widgets/FeedRow.vala:270
 msgid "rename"
 msgstr "endre navn"
 
-#: src/Widgets/CategorieRow.vala:524 src/Widgets/TagRow.vala:312
+#: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
 msgid "add"
 msgstr "legg til"
 
-#: src/Widgets/ArticleView.vala:62
-msgid "No Article selected."
-msgstr "Ingen artikkel valgt."
-
-#: src/Widgets/ArticleView.vala:66
-msgid "WebKit has crashed"
-msgstr "WebKit har krasjet"
-
-#: src/Widgets/ArticleView.vala:776
-msgid "Save image as"
-msgstr "Lagre bildet som"
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "All"
-msgstr "Alle"
-
-#: src/Widgets/ColumnViewHeader.vala:37
-msgid "Show all articles"
-msgstr "Vis alle artikler"
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Unread"
-msgstr "Ulest"
-
-#: src/Widgets/ColumnViewHeader.vala:38
-msgid "Show only unread articles"
-msgstr "Vis kun uleste artikler"
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Starred"
-msgstr "Stjernemerket"
-
-#: src/Widgets/ColumnViewHeader.vala:39
-msgid "Show only starred articles"
-msgstr "Vis kun stjernemerkede artikler"
-
-#: src/Widgets/ColumnViewHeader.vala:60
-msgid "Update feeds"
-msgstr "Oppdater feed"
-
-#: src/Widgets/ColumnViewHeader.vala:75
-msgid "Search Articles"
-msgstr "Søk i artikler"
-
-#: src/Widgets/ColumnViewHeader.vala:101
-msgid "Settings"
-msgstr "Innstillinger"
-
-#: src/Widgets/ColumnViewHeader.vala:117
-msgid "Read article fullscreen"
-msgstr "Les artikkelen i fullskjerm"
-
-#: src/Widgets/MainWindow.vala:44
-msgid "FeedReader"
-msgstr "FeedReader"
-
-#: src/Widgets/MainWindow.vala:354
-msgid "Ignore all TLS errors from now on"
-msgstr "Ignorer alle TLS-feil fra nå av"
-
-#: src/Widgets/MainWindow.vala:420
-msgid "Please select a service first"
-msgstr "Velg først en tjeneste"
-
-#: src/Widgets/MainWindow.vala:423
-msgid "Please enter a valid username"
-msgstr "Angi et gyldig brukernavn"
-
-#: src/Widgets/MainWindow.vala:426
-msgid "Please enter a valid password"
-msgstr "Angi et gyldig passord"
-
-#: src/Widgets/MainWindow.vala:430
-msgid "Please enter a valid URL"
-msgstr "Angi en gyldig nettadresse"
-
-#: src/Widgets/MainWindow.vala:433
-msgid "Please enter your Login details"
-msgstr "Angi dine innloggingsdetaljer"
-
-#: src/Widgets/MainWindow.vala:436
-msgid "Sorry, something went wrong."
-msgstr "Beklager, noe gikk galt."
-
-#: src/Widgets/MainWindow.vala:439
-msgid "The server reported an API-error."
-msgstr "Serveren meldte om en API-feil."
-
-#: src/Widgets/MainWindow.vala:442
-msgid "Either your username or the password are not correct."
-msgstr "Enten er ditt brukernavn eller passord feil."
-
-#: src/Widgets/MainWindow.vala:445
-msgid ""
-"No connection to the server. Check your internet connection and the server "
-"URL!"
-msgstr ""
-"Ingen forbindelse til tjeneren. Kontroller internettforbindelsen din og "
-"lenken til tjeneren."
-
-#: src/Widgets/MainWindow.vala:448
-msgid "API access is disabled on the server. Please enable it first!"
-msgstr "API-tilgang er deaktivert på tjeneren. Vennligst aktiver dette først!"
-
-#: src/Widgets/MainWindow.vala:451
-msgid "Not authorized to access URL"
-msgstr "Ikke autorisert til å besøke denne URLen"
-
-#: src/Widgets/MainWindow.vala:455
-msgid "No valid CA certificate available!"
-msgstr "Ingen gyldig CA-sertifikat tilgjengelig!"
-
-#: src/Widgets/MainWindow.vala:459
-msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr "Installer programtillegget \"api_feedreader\" på din tt-rss -instans."
-
-#: src/Widgets/ArticleViewHeader.vala:68
-msgid "Tag article"
-msgstr "Merk artikkel"
-
-#: src/Widgets/ArticleViewHeader.vala:82
-msgid "Print article"
-msgstr "Skriv ut artikkel"
-
-#: src/Widgets/ArticleViewHeader.vala:93
-msgid "Share article"
-msgstr "Del artikkel"
-
-#: src/Widgets/ResetPage.vala:33
-msgid "Change Account?"
-msgstr "Endre konto?"
-
-#: src/Widgets/ResetPage.vala:37
-msgid ""
-"You are about to change the account you want FeedReader to use.\n"
-" This means deleting all local data of your old account."
-msgstr ""
-"Du er i ferd med å endre kontoen som du vil at FeedReader skal bruke.\n"
-"Dette innebærer å slette alle lokale data fra den gamle kontoen."
-
-#: src/Widgets/ResetPage.vala:41
-msgid "New account"
-msgstr "Ny konto"
-
-#: src/Widgets/ResetPage.vala:44
-msgid "Waiting for current sync to finish"
-msgstr "Venter på at pågående synkronisering skal fullføre"
-
-#: src/Widgets/ResetPage.vala:54
-msgid "I changed my mind"
-msgstr "Jeg har ombestemt meg"
-
-#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
-msgid "URL:"
-msgstr "URL:"
-
-#: src/Widgets/AddPopover.vala:48
-msgid "Category:"
-msgstr "Kategori:"
-
-#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
-msgid "Add"
-msgstr "Legg til"
-
-#: src/Widgets/AddPopover.vala:65
-msgid "OPML File:"
-msgstr "OPML-fil:"
-
-#: src/Widgets/AddPopover.vala:67
-msgid "Select OPML File"
-msgstr "Velg OPML-fil"
-
-#: src/Widgets/AddPopover.vala:73
-msgid "Import"
-msgstr "Importer"
-
-#: src/Widgets/AddPopover.vala:93
-msgid "Import OPML"
-msgstr "Importer OPML"
-
-#: src/Widgets/FullscreenHeader.vala:26
-msgid "Leave fullscreen mode"
-msgstr "Gå ut av fullskjerm"
-
-#: src/Widgets/FeedList.vala:247
-msgid "All Articles"
-msgstr "Alle artikler"
-
-#: src/Widgets/FeedList.vala:444
-msgid "Tags"
-msgstr "Merkelapper"
-
-#: src/Widgets/FeedList.vala:492
-msgid "Categories"
-msgstr "Kategorier"
-
-#: src/Widgets/FeedList.vala:497
-msgid "Feeds"
-msgstr "Feeds"
-
-#: src/Widgets/FeedList.vala:1011
-msgid "New Tag"
-msgstr "Ny merkelapp"
-
-#: src/Widgets/FeedList.vala:1144
-msgid "New Category"
-msgstr "Ny kategori"
-
-#: src/Widgets/MediaButton.vala:95
-msgid "Attachments"
-msgstr "Vedlegg"
-
-#: src/Widgets/TagPopover.vala:36
-msgid "Add Tag:"
-msgstr "Legg til merkelapp:"
-
-#: src/Widgets/TagPopover.vala:48
-msgid "Tags:"
-msgstr "Merkelapper:"
-
-#: src/Widgets/TagPopover.vala:125
-msgid "add Tag"
-msgstr "legg til merkelapp"
+#: src/Widgets/SharePopover.vala:62
+msgid "Add accounts"
+msgstr "Legg til kontoer"
 
 #: src/Widgets/ShortcutsWindow.vala:22
 msgid "General"
@@ -447,13 +158,14 @@ msgid "Select next/previous article"
 msgstr "Velg neste/forrige artikkel"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-msgid "Toggle the selected article un/read"
+#, fuzzy
+msgid "Toggle reading status of selected article"
 msgstr "Veksle lesetilstand for artikkelen"
 
 #: src/Widgets/ShortcutsWindow.vala:65
 #, fuzzy
-msgid "Toggle the selected article un/marked"
-msgstr "Veksle merking av artikkelen"
+msgid "Toggle marking of selected article"
+msgstr "Veksle lesetilstand for artikkelen"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
@@ -475,20 +187,50 @@ msgstr "Artikkelvisning"
 msgid "Scroll up/down"
 msgstr "Rull opp/ned"
 
-#: src/Widgets/TagRow.vala:184 src/Widgets/RemovePopover.vala:80
-#, c-format
-msgid "Tag \"%s\" removed"
-msgstr "Merkelappen \"%s\" er fjernet"
+#: src/Widgets/LoginPage.vala:39
+msgid "Where are your feeds?"
+msgstr "Hvor er dine nyhetskilder?"
 
-#: src/Widgets/FeedRow.vala:203 src/Widgets/RemovePopover.vala:102
-#, c-format
-msgid "Feed \"%s\" removed"
-msgstr "Feeden \"%s\" er fjernet"
+#: src/Widgets/LoginPage.vala:43
+msgid "Please select the RSS service you are using and log in to get going."
+msgstr "Velg RSS-tjenesten du bruker og logg inn for å komme i gang."
 
-#: src/Widgets/FeedRow.vala:247
-#, c-format
-msgid "Remove only from %s"
-msgstr "Fjern kun fra %s"
+#: src/Widgets/AddPopover.vala:38 src/Widgets/FeedList.vala:506
+#: src/DataBaseReadOnly.vala:251
+msgid "Uncategorized"
+msgstr "Ukategorisert"
+
+#: src/Widgets/AddPopover.vala:47 plugins/share/Wallabag/WallabagSetup.vala:73
+msgid "URL:"
+msgstr "URL:"
+
+#: src/Widgets/AddPopover.vala:48
+msgid "Category:"
+msgstr "Kategori:"
+
+#: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
+msgid "Add"
+msgstr "Legg til"
+
+#: src/Widgets/AddPopover.vala:65
+msgid "OPML File:"
+msgstr "OPML-fil:"
+
+#: src/Widgets/AddPopover.vala:67
+msgid "Select OPML File"
+msgstr "Velg OPML-fil"
+
+#: src/Widgets/AddPopover.vala:73
+msgid "Import"
+msgstr "Importer"
+
+#: src/Widgets/AddPopover.vala:92 src/Widgets/FeedListFooter.vala:113
+msgid "Add feed"
+msgstr "Legg til feed"
+
+#: src/Widgets/AddPopover.vala:93
+msgid "Import OPML"
+msgstr "Importer OPML"
 
 #: src/Widgets/SettingsDialog.vala:48
 msgid "Interface"
@@ -602,100 +344,372 @@ msgstr "Antall artikler"
 msgid "Interval in Minutes (0 = OFF)"
 msgstr "Intervall i minutter (0 = AV)"
 
-#: src/Widgets/SettingsDialog.vala:157
+#: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
 msgstr "Database:"
 
-#: src/Widgets/SettingsDialog.vala:159
+#: src/Widgets/SettingsDialog.vala:152
 msgid "Delete articles after"
 msgstr "Slett artikler etter"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "Never"
 msgstr "Aldri"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Week"
 msgstr "1 uke"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "1 Month"
 msgstr "1 måned"
 
-#: src/Widgets/SettingsDialog.vala:160
+#: src/Widgets/SettingsDialog.vala:153
 msgid "6 Months"
 msgstr "6 måneder"
 
-#: src/Widgets/SettingsDialog.vala:162
+#: src/Widgets/SettingsDialog.vala:155
 msgid "Additional Functionality:"
 msgstr "Ytterligere funksjoner:"
 
-#: src/Widgets/SettingsDialog.vala:164
+#: src/Widgets/SettingsDialog.vala:157
 msgid "Content Grabber"
 msgstr "Innholdsskraper"
 
-#: src/Widgets/SettingsDialog.vala:166
+#: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
 msgstr "Last ned bilder"
 
-#: src/Widgets/SettingsDialog.vala:168
+#: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
 msgstr "Innebygd medieavspiller"
 
-#: src/Widgets/SettingsDialog.vala:336
+#: src/Widgets/SettingsDialog.vala:322
 msgid "System Accounts"
 msgstr "Systemkontoer"
 
-#: src/Widgets/SettingsDialog.vala:363 src/Widgets/SettingsDialog.vala:377
+#: src/Widgets/SettingsDialog.vala:349 src/Widgets/SettingsDialog.vala:363
 msgid "FeedReader Accounts"
 msgstr "FeedReader-kontoer"
+
+#: src/Widgets/ResetPage.vala:33
+msgid "Change Account?"
+msgstr "Endre konto?"
+
+#: src/Widgets/ResetPage.vala:37
+msgid ""
+"You are about to change the account you want FeedReader to use.\n"
+" This means deleting all local data of your old account."
+msgstr ""
+"Du er i ferd med å endre kontoen som du vil at FeedReader skal bruke.\n"
+"Dette innebærer å slette alle lokale data fra den gamle kontoen."
+
+#: src/Widgets/ResetPage.vala:41
+msgid "New account"
+msgstr "Ny konto"
+
+#: src/Widgets/ResetPage.vala:44
+msgid "Waiting for current sync to finish"
+msgstr "Venter på at pågående synkronisering skal fullføre"
+
+#: src/Widgets/ResetPage.vala:54
+msgid "I changed my mind"
+msgstr "Jeg har ombestemt meg"
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "All"
+msgstr "Alle"
+
+#: src/Widgets/ColumnViewHeader.vala:37
+msgid "Show all articles"
+msgstr "Vis alle artikler"
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Unread"
+msgstr "Ulest"
+
+#: src/Widgets/ColumnViewHeader.vala:38
+msgid "Show only unread articles"
+msgstr "Vis kun uleste artikler"
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Starred"
+msgstr "Stjernemerket"
+
+#: src/Widgets/ColumnViewHeader.vala:39
+msgid "Show only starred articles"
+msgstr "Vis kun stjernemerkede artikler"
+
+#: src/Widgets/ColumnViewHeader.vala:60
+msgid "Update feeds"
+msgstr "Oppdater feed"
+
+#: src/Widgets/ColumnViewHeader.vala:75
+msgid "Search Articles"
+msgstr "Søk i artikler"
+
+#: src/Widgets/ColumnViewHeader.vala:101
+msgid "Settings"
+msgstr "Innstillinger"
+
+#: src/Widgets/ColumnViewHeader.vala:114
+msgid "Read article fullscreen"
+msgstr "Les artikkelen i fullskjerm"
+
+#: src/Widgets/TagRow.vala:172 src/Widgets/RemovePopover.vala:80
+#, c-format
+msgid "Tag \"%s\" removed"
+msgstr "Merkelappen \"%s\" er fjernet"
+
+#: src/Widgets/FeedListFooter.vala:142
+msgid "Remove feed"
+msgstr "Fjern feed"
+
+#: src/Widgets/FeedRow.vala:234
+msgid "Copy URL"
+msgstr ""
+
+#: src/Widgets/FeedRow.vala:239
+#, c-format
+msgid "Remove only from %s"
+msgstr "Fjern kun fra %s"
+
+#: src/Widgets/FeedRow.vala:445
+#, fuzzy, c-format
+msgid "Feed removed: %s"
+msgstr "Feeden \"%s\" er fjernet"
+
+#: src/Widgets/FullscreenHeader.vala:26
+msgid "Leave fullscreen mode"
+msgstr "Gå ut av fullskjerm"
+
+#: src/Widgets/FeedList.vala:242
+msgid "All Articles"
+msgstr "Alle artikler"
+
+#: src/Widgets/FeedList.vala:441
+msgid "Tags"
+msgstr "Merkelapper"
+
+#: src/Widgets/FeedList.vala:482
+msgid "Categories"
+msgstr "Kategorier"
+
+#: src/Widgets/FeedList.vala:487
+msgid "Feeds"
+msgstr "Feeds"
+
+#: src/Widgets/FeedList.vala:1012
+msgid "New Tag"
+msgstr "Ny merkelapp"
+
+#: src/Widgets/FeedList.vala:1139
+msgid "New Category"
+msgstr "Ny kategori"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:20
+msgid "No Articles"
+msgstr "Ingen artikler"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:122
+msgid "No unread articles"
+msgstr "Ingen uleste artikler"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:129
+msgid "No starred articles"
+msgstr "Ingen stjernemerkede artikler"
+
+#: src/Widgets/ArticleList/ArticleListEmptyLabel.vala:136
+msgid "No articles"
+msgstr "Ingen artikler"
+
+#: src/Widgets/ArticleList/ArticleList.vala:48
+msgid "Sync is in progress. Articles should appear any second."
+msgstr "Synkronisering pågår. Artiklene bør vises ganske snart."
+
+#: src/Widgets/ArticleList/ArticleList.vala:553
+msgid "scroll up"
+msgstr "rull opp"
+
+#: src/Widgets/ArticleView.vala:62
+msgid "No Article selected."
+msgstr "Ingen artikkel valgt."
+
+#: src/Widgets/ArticleView.vala:66
+msgid "WebKit has crashed"
+msgstr "WebKit har krasjet"
+
+#: src/Widgets/ArticleView.vala:790
+msgid "Save image as"
+msgstr "Lagre bildet som"
+
+#: src/Widgets/UpdateButton.vala:80 src/Utils.vala:813
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: src/Widgets/TagPopover.vala:45
+msgid "Add Tag:"
+msgstr "Legg til merkelapp:"
+
+#: src/Widgets/TagPopover.vala:57
+msgid "Tags:"
+msgstr "Merkelapper:"
+
+#: src/Widgets/TagPopover.vala:134
+msgid "add Tag"
+msgstr "legg til merkelapp"
+
+#: src/Widgets/MainWindow.vala:44
+msgid "FeedReader"
+msgstr "FeedReader"
+
+#: src/Widgets/MainWindow.vala:347
+msgid "Ignore all TLS errors from now on"
+msgstr "Ignorer alle TLS-feil fra nå av"
+
+#: src/Widgets/MainWindow.vala:414
+msgid "Please select a service first"
+msgstr "Velg først en tjeneste"
+
+#: src/Widgets/MainWindow.vala:417
+msgid "Please enter a valid username"
+msgstr "Angi et gyldig brukernavn"
+
+#: src/Widgets/MainWindow.vala:420
+msgid "Please enter a valid password"
+msgstr "Angi et gyldig passord"
+
+#: src/Widgets/MainWindow.vala:424
+msgid "Please enter a valid URL"
+msgstr "Angi en gyldig nettadresse"
+
+#: src/Widgets/MainWindow.vala:427
+msgid "Please enter your Login details"
+msgstr "Angi dine innloggingsdetaljer"
+
+#: src/Widgets/MainWindow.vala:430
+msgid "Sorry, something went wrong."
+msgstr "Beklager, noe gikk galt."
+
+#: src/Widgets/MainWindow.vala:433
+msgid "The server reported an API-error."
+msgstr "Serveren meldte om en API-feil."
+
+#: src/Widgets/MainWindow.vala:436
+msgid "Either your username or the password are not correct."
+msgstr "Enten er ditt brukernavn eller passord feil."
+
+#: src/Widgets/MainWindow.vala:439
+msgid ""
+"No connection to the server. Check your internet connection and the server "
+"URL!"
+msgstr ""
+"Ingen forbindelse til tjeneren. Kontroller internettforbindelsen din og "
+"lenken til tjeneren."
+
+#: src/Widgets/MainWindow.vala:442
+msgid "API access is disabled on the server. Please enable it first!"
+msgstr "API-tilgang er deaktivert på tjeneren. Vennligst aktiver dette først!"
+
+#: src/Widgets/MainWindow.vala:445
+msgid "Not authorized to access URL"
+msgstr "Ikke autorisert til å besøke denne URLen"
+
+#: src/Widgets/MainWindow.vala:449
+msgid "No valid CA certificate available!"
+msgstr "Ingen gyldig CA-sertifikat tilgjengelig!"
+
+#: src/Widgets/MainWindow.vala:453
+msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
+msgstr "Installer programtillegget \"api_feedreader\" på din tt-rss -instans."
+
+#: src/Widgets/MediaButton.vala:99
+msgid "Attachments"
+msgstr "Vedlegg"
+
+#: src/Widgets/SpringCleanPage.vala:28
+msgid ""
+"FeedReader is cleaning the database.\n"
+"This shouldn't take too long."
+msgstr ""
+"FeedReader rengjør databasen.\n"
+"Dette burde ikke ta for lang tid."
+
+#: src/Widgets/ArticleViewHeader.vala:68
+msgid "Tag article"
+msgstr "Merk artikkel"
+
+#: src/Widgets/ArticleViewHeader.vala:82
+msgid "Print article"
+msgstr "Skriv ut artikkel"
+
+#: src/Widgets/ArticleViewHeader.vala:93
+msgid "Share article"
+msgstr "Del artikkel"
 
 #: src/Widgets/RemovePopover.vala:46
 #, c-format
 msgid "Remove \"%s\""
 msgstr "Fjern \"%s\""
 
-#: src/FeedReader.vala:21
-msgid "About FeedReader"
-msgstr "Om FeedReader"
-
-#: src/Notification.vala:58
+#: src/Widgets/RemovePopover.vala:95
 #, c-format
-msgid "There is 1 new article (%u unread)"
-msgstr "Det er 1 ny artikkel (%u ulest)"
+msgid "Feed \"%s\" removed"
+msgstr "Feeden \"%s\" er fjernet"
 
-#: src/Notification.vala:60
+#: src/DataBaseReadOnly.vala:223
+#, fuzzy
+msgid "Unknown tag"
+msgstr "ukjent feed"
+
+#: src/Utils.vala:35
+msgid "No Preview Available"
+msgstr "Ingen forhåndsvisning tilgjengelig"
+
+#: src/Utils.vala:93
+msgid "No Text available for this article :("
+msgstr "Ingen tekst tilgjengelig for denne artikkelen :("
+
+#: src/Utils.vala:601
 #, c-format
-msgid "There are %u new articles (%u unread)"
-msgstr "Det er %u nye artikler (%u uleste)"
+msgid "posted by: %s, "
+msgstr "publisert av: %s, "
+
+#: src/Utils.vala:815
+msgid "Save"
+msgstr "Lagre"
+
+#: plugins/share/Browser/Browser.vala:79
+msgid "Open in Browser"
+msgstr "Åpne i nettleseren"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:55
 #: plugins/share/Wallabag/WallabagSetup.vala:76
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:60
-#: plugins/backend/fresh/freshLoginWidget.vala:65
-#: plugins/backend/fresh/freshLoginWidget.vala:102
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:87
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:125
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:65
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:102
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:60
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:59
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:60
+#: plugins/backend/fresh/freshInterface.vala:71
+#: plugins/backend/fresh/freshInterface.vala:108
+#: plugins/backend/feedhq/feedhqInterface.vala:65
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:93
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:131
+#: plugins/backend/ttrss/ttrssInterface.vala:71
+#: plugins/backend/ttrss/ttrssInterface.vala:108
+#: plugins/backend/oldreader/oldreaderInterface.vala:65
+#: plugins/backend/feedbin/feedbinInterface.vala:65
+#: plugins/backend/bazqux/bazquxInterface.vala:65
 msgid "Username:"
 msgstr "Brukernavn:"
 
 #: plugins/share/Instapaper/InstapaperSetup.vala:56
 #: plugins/share/Wallabag/WallabagSetup.vala:77
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:61
-#: plugins/backend/fresh/freshLoginWidget.vala:66
-#: plugins/backend/fresh/freshLoginWidget.vala:103
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:88
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:126
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:66
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:103
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:61
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:60
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:61
+#: plugins/backend/fresh/freshInterface.vala:72
+#: plugins/backend/fresh/freshInterface.vala:109
+#: plugins/backend/feedhq/feedhqInterface.vala:66
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:94
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:132
+#: plugins/backend/ttrss/ttrssInterface.vala:72
+#: plugins/backend/ttrss/ttrssInterface.vala:109
+#: plugins/backend/oldreader/oldreaderInterface.vala:66
+#: plugins/backend/feedbin/feedbinInterface.vala:66
+#: plugins/backend/bazqux/bazquxInterface.vala:66
 msgid "Password:"
 msgstr "Passord:"
 
@@ -703,30 +717,32 @@ msgstr "Passord:"
 msgid "Username or Password incorrect"
 msgstr "Brukernavn og passord er feil"
 
-#: plugins/share/Telegram/TelegramSetup.vala:38
-msgid "Info: Telegram would need to be installed for this plugin to work."
-msgstr ""
-"Info: Telegram må være installert for at denne utvidelsen skal fungere."
+#: plugins/share/Twitter/TwitterSetup.vala:51
+#: plugins/share/Pocket/PocketSetup.vala:52
+msgid "waiting"
+msgstr "venter"
 
-#: plugins/share/Telegram/Telegram.vala:81
-msgid "Telegram"
-msgstr "Telegram"
-
-#: plugins/share/Telegram/TelegramForm.vala:23
+#: plugins/share/Twitter/TwitterForm.vala:29
 msgid ""
-"Hey, Check out this interesting article I just read - sent by FeedReader"
+"Hey,\n"
+"\n"
+"Check out this interesting article I just read: $URL"
 msgstr ""
-"Hei, sjekk ut denne interessante artikkelen jeg nettopp leste - sent av "
-"FeedReader"
+"Hei,\n"
+"\n"
+"Sjekk ut denne interessante artikkelen jeg akkurat leste: $URL"
 
-#: plugins/share/Telegram/TelegramForm.vala:42
-#: plugins/share/Email/EmailForm.vala:52
-msgid "Send"
-msgstr "Send"
+#: plugins/share/Twitter/TwitterForm.vala:47
+msgid "Limit: "
+msgstr "Grense: "
 
-#: plugins/share/Telegram/TelegramForm.vala:55
-msgid "Send Telegram"
-msgstr "Send Telegram"
+#: plugins/share/Twitter/TwitterForm.vala:63
+msgid "Tweet"
+msgstr "Tvitre"
+
+#: plugins/share/Twitter/TwitterForm.vala:80
+msgid "Tweet to Followers"
+msgstr "Tvitre til følgere"
 
 #: plugins/share/Wallabag/WallabagSetup.vala:74
 msgid "Client ID:"
@@ -783,93 +799,117 @@ msgstr ""
 msgid "To:"
 msgstr "Til:"
 
+#: plugins/share/Email/EmailForm.vala:52
+#: plugins/share/Telegram/TelegramForm.vala:42
+msgid "Send"
+msgstr "Send"
+
 #: plugins/share/Email/EmailForm.vala:65
 msgid "Write Email"
 msgstr "Skriv epost"
 
-#: plugins/share/Pocket/PocketSetup.vala:52
-#: plugins/share/Twitter/TwitterSetup.vala:51
-msgid "waiting"
-msgstr "venter"
-
-#: plugins/share/Twitter/TwitterForm.vala:29
+#: plugins/share/Telegram/TelegramForm.vala:23
 msgid ""
-"Hey,\n"
-"\n"
-"Check out this interesting article I just read: $URL"
+"Hey, Check out this interesting article I just read - sent by FeedReader"
 msgstr ""
-"Hei,\n"
-"\n"
-"Sjekk ut denne interessante artikkelen jeg akkurat leste: $URL"
+"Hei, sjekk ut denne interessante artikkelen jeg nettopp leste - sent av "
+"FeedReader"
 
-#: plugins/share/Twitter/TwitterForm.vala:47
-msgid "Limit: "
-msgstr "Grense: "
+#: plugins/share/Telegram/TelegramForm.vala:55
+msgid "Send Telegram"
+msgstr "Send Telegram"
 
-#: plugins/share/Twitter/TwitterForm.vala:63
-msgid "Tweet"
-msgstr "Tvitre"
+#: plugins/share/Telegram/TelegramSetup.vala:38
+msgid "Info: Telegram would need to be installed for this plugin to work."
+msgstr ""
+"Info: Telegram må være installert for at denne utvidelsen skal fungere."
 
-#: plugins/share/Twitter/TwitterForm.vala:80
-msgid "Tweet to Followers"
-msgstr "Tvitre til følgere"
+#: plugins/share/Telegram/Telegram.vala:81
+msgid "Telegram"
+msgstr "Telegram"
 
-#: plugins/share/Browser/Browser.vala:79
-msgid "Open in Browser"
-msgstr "Åpne i nettleseren"
-
-#: plugins/backend/feedhq/feedhqLoginWidget.vala:91
-#: plugins/backend/bazqux/bazquxLoginWidget.vala:91
-msgid "Please log in to FeedHQ and enjoy using FeedReader"
-msgstr "Logg inn i FeedHQ og kos deg med FeedReader"
-
-#: plugins/backend/fresh/freshLoginWidget.vala:64
+#: plugins/backend/fresh/freshInterface.vala:70
 msgid "freshRSS URL:"
 msgstr "freshRSS-nettadresse:"
 
-#: plugins/backend/fresh/freshLoginWidget.vala:131
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:154
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:131
+#: plugins/backend/fresh/freshInterface.vala:137
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
+#: plugins/backend/ttrss/ttrssInterface.vala:137
 msgid "HTTP Authorization"
 msgstr "HTTP-autorisering"
 
-#: plugins/backend/fresh/freshLoginWidget.vala:140
+#: plugins/backend/fresh/freshInterface.vala:146
 msgid "Please log in to your freshRSS server and enjoy using FeedReader"
 msgstr "Logg inn i din freshRSS-tjener og kos deg FeedReader"
 
-#: plugins/backend/local/localLoginWidget.vala:57
+#: plugins/backend/feedhq/feedhqInterface.vala:96
+#: plugins/backend/bazqux/bazquxInterface.vala:96
+msgid "Please log in to FeedHQ and enjoy using FeedReader"
+msgstr "Logg inn i FeedHQ og kos deg med FeedReader"
+
+#: plugins/backend/local/localInterface.vala:66
 msgid "Done"
 msgstr "Ferdig"
 
-#: plugins/backend/local/localLoginWidget.vala:58
+#: plugins/backend/local/localInterface.vala:67
 msgid "Adding Feeds"
 msgstr "Legger til feeds"
 
-#: plugins/backend/local/localInterface.vala:420
+#: plugins/backend/local/localInterface.vala:617
 msgid "Nothing to read here."
 msgstr "Ingenting å lese her."
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:86
-msgid "OwnCloud URL:"
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
+#, fuzzy
+msgid "Nextcloud URL:"
 msgstr "Nextcloud-nettadresse:"
 
-#: plugins/backend/owncloud/OwncloudNewsLoginWidget.vala:161
+#: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
 #, fuzzy
-msgid "Please log in to your ownCloud News instance and enjoy using FeedReader"
+msgid ""
+"Please log in to your Nextcloud News instance and enjoy using FeedReader"
 msgstr "Logg deg inn i Nextcloud News-instansen og kos deg med FeedReader"
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:64
+#: plugins/backend/ttrss/ttrssAPI.vala:816
+msgid "Invalid URL"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:819
+msgid "URL content is HTML, no feeds available"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:822
+msgid "URL content is HTML which contains multiple feeds."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:825
+msgid "Couldn't download the URL content."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:828
+msgid "Content is an invalid XML."
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssAPI.vala:841
+msgid "Error reaching tt-rss"
+msgstr ""
+
+#: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"
 msgstr "Tiny Tiny RSS-nettadresse:"
 
-#: plugins/backend/ttrss/ttrssLoginWidget.vala:140
+#: plugins/backend/ttrss/ttrssInterface.vala:146
 msgid "Please log in to your Tiny Tiny RSS server and enjoy using FeedReader"
 msgstr "Logg deg inn i din Tiny Tiny RSS-tjener og kos deg med FeedReader"
 
-#: plugins/backend/oldreader/oldreaderLoginWidget.vala:91
+#: plugins/backend/oldreader/oldreaderInterface.vala:96
 msgid "Please log in to the Old Reader and enjoy using FeedReader"
 msgstr "Logg deg inn i Old Reader og kos deg med FeedReader"
 
-#: plugins/backend/feedbin/feedbinLoginWidget.vala:90
+#: plugins/backend/feedbin/feedbinInterface.vala:101
 msgid "Please log in to Feedbin to enjoy using FeedReader"
 msgstr "Logg inn i Feedbin og kos deg med FeedReader"
+
+#, fuzzy
+#~ msgid "Toggle the selected article un/marked"
+#~ msgstr "Veksle merking av artikkelen"

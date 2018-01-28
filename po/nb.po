@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-01-28 19:37+0000\n"
+"PO-Revision-Date: 2018-01-29 14:58+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål "
 "<https://hosted.weblate.org/projects/feedreader/translations/nb/>\n"
@@ -811,7 +811,7 @@ msgstr ""
 
 #: plugins/share/Telegram/TelegramForm.vala:55
 msgid "Send Telegram"
-msgstr "Send Telegram"
+msgstr "Send telegram"
 
 #: plugins/share/Telegram/TelegramSetup.vala:38
 msgid "Info: Telegram would need to be installed for this plugin to work."

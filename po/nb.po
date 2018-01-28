@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-01-28 13:39+0000\n"
+"PO-Revision-Date: 2018-01-28 19:37+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål "
 "<https://hosted.weblate.org/projects/feedreader/translations/nb/>\n"
@@ -656,9 +656,8 @@ msgid "Feed \"%s\" removed"
 msgstr "Feeden \"%s\" er fjernet"
 
 #: src/DataBaseReadOnly.vala:223
-#, fuzzy
 msgid "Unknown tag"
-msgstr "ukjent etikett"
+msgstr "Ukjent etikett"
 
 #: src/Utils.vala:35
 msgid "No Preview Available"
@@ -779,7 +778,6 @@ msgid "Something went wrong."
 msgstr "Noe gikk galt."
 
 #: plugins/share/Email/EmailForm.vala:24
-#, fuzzy
 msgid ""
 "Hey,\n"
 "\n"
@@ -789,9 +787,7 @@ msgid ""
 msgstr ""
 "Hei,\n"
 "\n"
-"Sjekk ut denne interessante artikkelen jeg akkurat leste: $URL\n"
-"\n"
-"- sendt av FeedReader"
+"Sjekk ut denne interessante artikkelen jeg akkurat leste med FeedReader: $URL"
 
 #: plugins/share/Email/EmailForm.vala:27
 msgid "To:"
@@ -884,7 +880,7 @@ msgstr "Kunne ikke laste ned nettadresseinnholdet."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:828
 msgid "Content is an invalid XML."
-msgstr ""
+msgstr "Innholdet er ugyldig XML."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:841
 msgid "Error reaching tt-rss"

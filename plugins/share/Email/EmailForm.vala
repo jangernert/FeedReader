@@ -21,7 +21,7 @@ public class FeedReader.EmailForm : ShareForm {
 
 	public EmailForm(string url)
 	{
-		string body = _("Hey,\n\nCheck out this interesting article I just read: $URL\n\n- sent by FeedReader");
+		string body = _("Hey,\n\nCheck out this interesting article I used FeedReader to read: $URL");
 		string to = "john.doe@domain.com";
 
 		var labelTo = new Gtk.Label(_("To:"));

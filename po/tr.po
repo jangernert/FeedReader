@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2018-01-29 14:58+0000\n"
+"PO-Revision-Date: 2018-01-30 15:40+0000\n"
 "Last-Translator: E T <etcetin@gmail.com>\n"
 "Language-Team: Turkish "
 "<https://hosted.weblate.org/projects/feedreader/translations/tr/>\n"
@@ -618,7 +618,7 @@ msgstr "Geçerli CA sertifikası yok!"
 
 #: src/Widgets/MainWindow.vala:453
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
-msgstr "Lütfen \"api_feedreader\" yan uygulamasını tt-rss oluşumunuza kurun."
+msgstr "Lütfen \"api_feedreader\" yan uygulamasını TT-RSS oluşumunuza kurun."
 
 #: src/Widgets/MediaButton.vala:99
 msgid "Attachments"
@@ -669,7 +669,7 @@ msgstr "Bu yazı için metin yok :("
 #: src/Utils.vala:601
 #, c-format
 msgid "posted by: %s, "
-msgstr "gönderen: %s,"
+msgstr "gönderen: %s, "
 
 #: src/Utils.vala:815
 msgid "Save"
@@ -730,7 +730,7 @@ msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:47
 msgid "Limit: "
-msgstr "Sınır:"
+msgstr "Sınır: "
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
@@ -885,7 +885,7 @@ msgstr "İçerik geçersiz bir XML'den oluşuyor."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:841
 msgid "Error reaching tt-rss"
-msgstr "tt-rss'ye erişilirken hata"
+msgstr "TT-RSS'ye erişilirken hata"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"

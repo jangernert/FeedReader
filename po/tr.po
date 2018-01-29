@@ -9,15 +9,16 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2017-05-15 08:53+0000\n"
-"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: Turkish (http://www.transifex.com/dev-feedreader/feedreader/"
-"language/tr/)\n"
+"PO-Revision-Date: 2018-01-29 14:58+0000\n"
+"Last-Translator: E T <etcetin@gmail.com>\n"
+"Language-Team: Turkish "
+"<https://hosted.weblate.org/projects/feedreader/translations/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
 
 #: src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -156,14 +157,12 @@ msgid "Select next/previous article"
 msgstr "Önceki/sonraki yazıyı seç"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "Seçilen yazıyı okunmuş/okunmamış yap"
+msgstr "Seçilen yazının okunma durumunu değiştir"
 
 #: src/Widgets/ShortcutsWindow.vala:65
-#, fuzzy
 msgid "Toggle marking of selected article"
-msgstr "Seçilen yazıyı okunmuş/okunmamış yap"
+msgstr "Seçilen yazının imini değiştir"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
@@ -213,11 +212,11 @@ msgstr "Ekle"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "OPML Dosyası:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "OPML Dosyası Seç"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -257,7 +256,7 @@ msgstr "Yalnızca okunmamışları göster"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Besleme Listesini Şuna Göre Sırala"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -329,7 +328,7 @@ msgstr "Tirşe"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "Yazı Tipi Ailesi"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -341,7 +340,7 @@ msgstr "Yazıların sayısı"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Dakika Türünde Zaman Aralığı (0 = KAPALI)"
 
 #: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
@@ -377,7 +376,7 @@ msgstr "İçerik Elde Edici"
 
 #: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
-msgstr ""
+msgstr "Resimleri İndir"
 
 #: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
@@ -466,7 +465,7 @@ msgstr "Beslemeyi kaldır"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "URL'yi Kopyala"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -474,9 +473,9 @@ msgid "Remove only from %s"
 msgstr "Yalnızca %s'den kaldır"
 
 #: src/Widgets/FeedRow.vala:445
-#, fuzzy, c-format
+#, c-format
 msgid "Feed removed: %s"
-msgstr "\"%s\" beslemesi kaldırıldı"
+msgstr "Besleme kaldırıldı: %s"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
@@ -656,9 +655,8 @@ msgid "Feed \"%s\" removed"
 msgstr "\"%s\" beslemesi kaldırıldı"
 
 #: src/DataBaseReadOnly.vala:223
-#, fuzzy
 msgid "Unknown tag"
-msgstr "bilinmeyen Besleme"
+msgstr "Bilinmeyen etiket"
 
 #: src/Utils.vala:35
 msgid "No Preview Available"
@@ -855,40 +853,39 @@ msgid "Nothing to read here."
 msgstr "Burada okunacak bir şey yok."
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
 msgid "Nextcloud URL:"
-msgstr "OwnCloud Adresi:"
+msgstr "Nextcloud URL'si:"
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
-#, fuzzy
 msgid ""
 "Please log in to your Nextcloud News instance and enjoy using FeedReader"
 msgstr ""
-"FeedReader'in tadını çıkarmak için lütfen ownCloud Haberler'e giriş yap"
+"FeedReader'in tadını çıkarmak için lütfen Nextcloud Haberler oluşumuna giriş "
+"yap"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:816
 msgid "Invalid URL"
-msgstr ""
+msgstr "Geçersiz URL"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:819
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "URL içeriği HTML'den oluşuyor, kullanılabilir besleme yok"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:822
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "URL içeriği birden çok besleme içeren HTML'den oluşuyor."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:825
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "URL içeriği indirilemedi."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:828
 msgid "Content is an invalid XML."
-msgstr ""
+msgstr "İçerik geçersiz bir XML'den oluşuyor."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:841
 msgid "Error reaching tt-rss"
-msgstr ""
+msgstr "tt-rss'ye erişilirken hata"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"

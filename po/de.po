@@ -14,15 +14,16 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2017-05-15 08:53+0000\n"
-"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: German (http://www.transifex.com/dev-feedreader/feedreader/"
-"language/de/)\n"
+"PO-Revision-Date: 2018-01-31 21:11+0000\n"
+"Last-Translator: Andreas Kleinert <Andy.Kleinert@gmail.com>\n"
+"Language-Team: German "
+"<https://hosted.weblate.org/projects/feedreader/translations/de/>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 2.19-dev\n"
 
 #: src/FeedReader.vala:21
 msgid "About FeedReader"
@@ -44,7 +45,7 @@ msgstr "Abmelden"
 
 #: src/Backend/FeedServer.vala:179 src/Backend/FeedServer.vala:282
 msgid "Getting feeds and categories"
-msgstr "Hole Feeds und Kategorien "
+msgstr "Feeds und Kategorien abrufen"
 
 #: src/Backend/FeedServer.vala:231
 msgid "Getting articles"
@@ -161,14 +162,12 @@ msgid "Select next/previous article"
 msgstr "Nächsten/vorherigen Artikel auswählen"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "Markiere den ausgewählten Artikel un/gelesen"
+msgstr "Lesestatus des ausgewählten Artikels umschalten"
 
 #: src/Widgets/ShortcutsWindow.vala:65
-#, fuzzy
 msgid "Toggle marking of selected article"
-msgstr "Markiere den ausgewählten Artikel un/gelesen"
+msgstr "Markierung des ausgewählten Artikels umschalten"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
@@ -217,11 +216,11 @@ msgstr "Hinzufügen"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "OPML-Datei:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "OPML-Datei auswählen"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -261,7 +260,7 @@ msgstr "Nur ungelesene anzeigen"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Feed-Liste sortieren nach"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -285,7 +284,7 @@ msgstr "Dunkel"
 
 #: src/Widgets/SettingsDialog.vala:90
 msgid "elementary"
-msgstr "elementary"
+msgstr "Grundlegend"
 
 #: src/Widgets/SettingsDialog.vala:95
 msgid "Article List:"
@@ -333,7 +332,7 @@ msgstr "Pergament"
 
 #: src/Widgets/SettingsDialog.vala:116
 msgid "Font Familly"
-msgstr ""
+msgstr "Schriftfamilie"
 
 #: src/Widgets/SettingsDialog.vala:141
 msgid "Sync:"
@@ -345,7 +344,7 @@ msgstr "Anzahl der Artikel"
 
 #: src/Widgets/SettingsDialog.vala:145
 msgid "Interval in Minutes (0 = OFF)"
-msgstr ""
+msgstr "Intervall in Minuten (0 = AUS)"
 
 #: src/Widgets/SettingsDialog.vala:150
 msgid "Database:"
@@ -381,7 +380,7 @@ msgstr "Komplette Artikel"
 
 #: src/Widgets/SettingsDialog.vala:159
 msgid "Download Images"
-msgstr ""
+msgstr "Grafiken herunterladen"
 
 #: src/Widgets/SettingsDialog.vala:161
 msgid "Internal Media Player"
@@ -472,7 +471,7 @@ msgstr "Feed entfernen"
 
 #: src/Widgets/FeedRow.vala:234
 msgid "Copy URL"
-msgstr ""
+msgstr "URL kopieren"
 
 #: src/Widgets/FeedRow.vala:239
 #, c-format
@@ -480,9 +479,9 @@ msgid "Remove only from %s"
 msgstr "Nur von %s entfernen"
 
 #: src/Widgets/FeedRow.vala:445
-#, fuzzy, c-format
+#, c-format
 msgid "Feed removed: %s"
-msgstr "Feed \"%s\" entfernt"
+msgstr "Feed „%s” entfernt"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
@@ -630,7 +629,7 @@ msgstr "Kein gültiges CA-Zertifikat verfügbar!"
 #: src/Widgets/MainWindow.vala:453
 msgid "Please install the \"api_feedreader\"-plugin on your tt-rss instance!"
 msgstr ""
-"Bitte installiere das \"api_feedreader\"-plugin auf deinem tt-rss Server!"
+"Bitte installieren Sie das Plugin \"api_feedreader\" auf Ihrem tt-rss-Server!"
 
 #: src/Widgets/MediaButton.vala:99
 msgid "Attachments"
@@ -667,9 +666,8 @@ msgid "Feed \"%s\" removed"
 msgstr "Feed \"%s\" entfernt"
 
 #: src/DataBaseReadOnly.vala:223
-#, fuzzy
 msgid "Unknown tag"
-msgstr "unbekanntes Feed"
+msgstr "Unbekannter Feed"
 
 #: src/Utils.vala:35
 msgid "No Preview Available"
@@ -682,7 +680,7 @@ msgstr "Kein Text für diesen Artikel verfügbar :("
 #: src/Utils.vala:601
 #, c-format
 msgid "posted by: %s, "
-msgstr "gepostet von: %s,"
+msgstr "Erstellt von: %s, "
 
 #: src/Utils.vala:815
 msgid "Save"
@@ -743,7 +741,7 @@ msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:47
 msgid "Limit: "
-msgstr "Begrenzung:"
+msgstr "Beschränkung: "
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
@@ -841,7 +839,7 @@ msgstr "Telegram"
 
 #: plugins/backend/fresh/freshInterface.vala:70
 msgid "freshRSS URL:"
-msgstr "freshRSS URL:"
+msgstr "freshRSS-URL:"
 
 #: plugins/backend/fresh/freshInterface.vala:137
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:160
@@ -873,41 +871,39 @@ msgid "Nothing to read here."
 msgstr "Nichts zum Lesen hier."
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
 msgid "Nextcloud URL:"
-msgstr "OwnCloud URL:"
+msgstr "OwnCloud-URL:"
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
-#, fuzzy
 msgid ""
 "Please log in to your Nextcloud News instance and enjoy using FeedReader"
 msgstr ""
-"Bitte melde dich auf deiner ownCloud News Instanz an und vergnüge dich mit "
-"FeedReader"
+"Bitte melden Sie sich bei Ihrer Nextcloud-News-Instanz an und genießen Sie "
+"FeedReader."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:816
 msgid "Invalid URL"
-msgstr ""
+msgstr "Ungültige Adresse"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:819
 msgid "URL content is HTML, no feeds available"
-msgstr ""
+msgstr "Inhalt der URL ist HTML. Keine Feeds verfügbar"
 
 #: plugins/backend/ttrss/ttrssAPI.vala:822
 msgid "URL content is HTML which contains multiple feeds."
-msgstr ""
+msgstr "Inhalt der URL ist HTML, welches mehrere Feeds enthält."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:825
 msgid "Couldn't download the URL content."
-msgstr ""
+msgstr "Inhalt der URL konnte nicht heruntergeladen werden."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:828
 msgid "Content is an invalid XML."
-msgstr ""
+msgstr "Inhalt ist ein ungültiges XML."
 
 #: plugins/backend/ttrss/ttrssAPI.vala:841
 msgid "Error reaching tt-rss"
-msgstr ""
+msgstr "Fehler beim Erreichen von tt-rss"
 
 #: plugins/backend/ttrss/ttrssInterface.vala:70
 msgid "Tiny Tiny RSS URL:"

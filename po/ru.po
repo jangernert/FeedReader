@@ -11,21 +11,21 @@ msgstr ""
 "Project-Id-Version: FeedReader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
-"PO-Revision-Date: 2017-05-15 08:53+0000\n"
-"Last-Translator: Bilal Elmoussaoui <bil.elmoussaoui@gmail.com>\n"
-"Language-Team: Russian (http://www.transifex.com/dev-feedreader/feedreader/"
-"language/ru/)\n"
+"PO-Revision-Date: 2018-02-26 06:39+0000\n"
+"Last-Translator: Andrey <andrey@mailbox.org>\n"
+"Language-Team: Russian "
+"<https://hosted.weblate.org/projects/feedreader/translations/ru/>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
-"%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<="
+"4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 2.20-dev\n"
 
 #: src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr "О программе"
+msgstr "О FeedReader"
 
 #: src/Share/ServiceSetup.vala:56 plugins/backend/fresh/freshInterface.vala:151
 #: plugins/backend/feedhq/feedhqInterface.vala:101
@@ -35,11 +35,11 @@ msgstr "О программе"
 #: plugins/backend/feedbin/feedbinInterface.vala:76
 #: plugins/backend/bazqux/bazquxInterface.vala:101
 msgid "Login"
-msgstr "Войти"
+msgstr "Вход"
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"
-msgstr "Выйти"
+msgstr "Выход"
 
 #: src/Backend/FeedServer.vala:179 src/Backend/FeedServer.vala:282
 msgid "Getting feeds and categories"
@@ -55,7 +55,7 @@ msgstr "Получение избранных статей"
 
 #: src/Backend/FeedServer.vala:318
 msgid "Getting tagged articles"
-msgstr "Получение статей с метками"
+msgstr "Получение статей с тегами"
 
 #: src/Backend/FeedServer.vala:336
 msgid "Getting unread articles"
@@ -82,11 +82,11 @@ msgstr "Вчера"
 #: src/Widgets/CategorieRow.vala:393 src/Widgets/RemovePopover.vala:111
 #, c-format
 msgid "Category \"%s\" removed"
-msgstr "Категория «%s» удалена"
+msgstr "Категория \"%s\" удалена"
 
 #: src/Widgets/CategorieRow.vala:445 src/Widgets/FeedRow.vala:233
 msgid "Mark as read"
-msgstr "Пометить как прочтенное"
+msgstr "Отметить как прочитанное"
 
 #: src/Widgets/CategorieRow.vala:446 src/Widgets/TagRow.vala:194
 #: src/Widgets/FeedRow.vala:235
@@ -105,11 +105,11 @@ msgstr "Удалить (с лентами)"
 #: src/Widgets/CategorieRow.vala:501 src/Widgets/TagRow.vala:272
 #: src/Widgets/FeedRow.vala:270
 msgid "rename"
-msgstr "Переименовать"
+msgstr "переименовать"
 
 #: src/Widgets/CategorieRow.vala:503 src/Widgets/TagRow.vala:274
 msgid "add"
-msgstr "Добавить"
+msgstr "добавить"
 
 #: src/Widgets/SharePopover.vala:62
 msgid "Add accounts"
@@ -137,19 +137,19 @@ msgstr "Список лент"
 
 #: src/Widgets/ShortcutsWindow.vala:42
 msgid "Select next item"
-msgstr "Перейти к следующей ленте"
+msgstr "Выбрать следующий элемент"
 
 #: src/Widgets/ShortcutsWindow.vala:43
 msgid "Select previous item"
-msgstr "Перейти к предыдущей ленте"
+msgstr "Выбрать предыдущий элемент"
 
 #: src/Widgets/ShortcutsWindow.vala:44
 msgid "Collapse/Expand categories"
-msgstr "Свернуть/развернуть категории"
+msgstr "Свернуть/Развернуть категории"
 
 #: src/Widgets/ShortcutsWindow.vala:45
 msgid "Mark the currently selected as read"
-msgstr "Отметить выделенное как прочтённое"
+msgstr "Отметить выбранное как прочитанное"
 
 #: src/Widgets/ShortcutsWindow.vala:54
 msgid "Article List"
@@ -157,17 +157,15 @@ msgstr "Список статей"
 
 #: src/Widgets/ShortcutsWindow.vala:63
 msgid "Select next/previous article"
-msgstr "Перейти к следующей/предыдущей статье"
+msgstr "Выбрать следующую/предыдущую статью"
 
 #: src/Widgets/ShortcutsWindow.vala:64
-#, fuzzy
 msgid "Toggle reading status of selected article"
-msgstr "Переключить прочитанное/непрочитанное на выбранной статье "
+msgstr "Переключить статус прочтения для выбранной статьи"
 
 #: src/Widgets/ShortcutsWindow.vala:65
-#, fuzzy
 msgid "Toggle marking of selected article"
-msgstr "Переключить прочитанное/непрочитанное на выбранной статье "
+msgstr "Переключить отметку для выбранной статьи"
 
 #: src/Widgets/ShortcutsWindow.vala:66
 msgid "Open the URL of the selected article"
@@ -187,7 +185,7 @@ msgstr "Статья"
 
 #: src/Widgets/ShortcutsWindow.vala:84
 msgid "Scroll up/down"
-msgstr ""
+msgstr "Прокрутить вверх/вниз"
 
 #: src/Widgets/LoginPage.vala:39
 msgid "Where are your feeds?"
@@ -210,7 +208,7 @@ msgstr "Ссылка:"
 
 #: src/Widgets/AddPopover.vala:48
 msgid "Category:"
-msgstr "Категория"
+msgstr "Категория:"
 
 #: src/Widgets/AddPopover.vala:51 plugins/share/Telegram/TelegramSetup.vala:30
 msgid "Add"
@@ -218,11 +216,11 @@ msgstr "Добавить"
 
 #: src/Widgets/AddPopover.vala:65
 msgid "OPML File:"
-msgstr ""
+msgstr "Файл OPML:"
 
 #: src/Widgets/AddPopover.vala:67
 msgid "Select OPML File"
-msgstr ""
+msgstr "Выберите файл OPML"
 
 #: src/Widgets/AddPopover.vala:73
 msgid "Import"
@@ -262,7 +260,7 @@ msgstr "Показать только непрочтенные"
 
 #: src/Widgets/SettingsDialog.vala:85
 msgid "Sort Feed List by"
-msgstr ""
+msgstr "Сортировать список лент по"
 
 #: src/Widgets/SettingsDialog.vala:85 src/Widgets/SettingsDialog.vala:97
 msgid "Received"
@@ -294,7 +292,7 @@ msgstr "Список статей:"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Sort articles by"
-msgstr "Сортировать статьи по:"
+msgstr "Сортировать статьи по"
 
 #: src/Widgets/SettingsDialog.vala:97
 msgid "Date"
@@ -479,9 +477,9 @@ msgid "Remove only from %s"
 msgstr "Удалить только из %s"
 
 #: src/Widgets/FeedRow.vala:445
-#, fuzzy, c-format
+#, c-format
 msgid "Feed removed: %s"
-msgstr "Лента «%s» удалена"
+msgstr "Удалена лента: %s"
 
 #: src/Widgets/FullscreenHeader.vala:26
 msgid "Leave fullscreen mode"
@@ -545,7 +543,7 @@ msgstr ""
 
 #: src/Widgets/ArticleView.vala:790
 msgid "Save image as"
-msgstr "Сохранить картинку как…"
+msgstr "Сохранить изображение как"
 
 #: src/Widgets/UpdateButton.vala:80 src/Utils.vala:813
 msgid "Cancel"
@@ -675,7 +673,7 @@ msgstr "Текст статьи недоступен :("
 #: src/Utils.vala:601
 #, c-format
 msgid "posted by: %s, "
-msgstr "Опубликовано: %s,"
+msgstr "опубликовано: %s, "
 
 #: src/Utils.vala:815
 msgid "Save"
@@ -736,7 +734,7 @@ msgstr ""
 
 #: plugins/share/Twitter/TwitterForm.vala:47
 msgid "Limit: "
-msgstr "Лимит:"
+msgstr "Ограничение: "
 
 #: plugins/share/Twitter/TwitterForm.vala:63
 msgid "Tweet"
@@ -860,9 +858,8 @@ msgid "Nothing to read here."
 msgstr ""
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:92
-#, fuzzy
 msgid "Nextcloud URL:"
-msgstr "Адрес OwnCloud:"
+msgstr "URL-адрес Nextcloud:"
 
 #: plugins/backend/owncloud/OwncloudNewsInterface.vala:167
 msgid ""

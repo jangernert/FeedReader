@@ -825,7 +825,7 @@ public class FeedReader.ttrssAPI : GLib.Object {
 							errmsg = _("Couldn't download the URL content.");
 							return false;
 						case 6:
-							errmsg = _("Content is an invalid XML.");
+							errmsg = _("The content is invalid XML.");
 							return false;
 						default:
 							if(status.has_member("message"))

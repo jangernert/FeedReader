@@ -103,5 +103,13 @@
 		"description": "Ars Technica is a weblog for technology news, tech policy analysis, breakdowns of the latest scientific advancements, gadget reviews, software, hardware, and nearly everything else found in between layers of silicon.",
 		"category": "Technology",
 		"language": "English"
+	},
+	{
+		"url": "https://www.gamingonlinux.com/article_rss.php",
+		"icon": "view-source:https://www.gamingonlinux.com/templates/default/images/favicons/favicon.ico",
+		"name": "GamingOnLinux",
+		"description": "GamingOnLinux is the home of Linux and SteamOS gaming. Covering Linux Games, SteamOS, Reviews and more.",
+		"category": "Games",
+		"language": "English"
 	}
 ]

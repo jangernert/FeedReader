@@ -254,7 +254,7 @@ if get_option('libunity')
 endif
 
 # Creating an executable file
-feedreader_lib = library(
+feedreader_lib = static_library(
   'FeedReader',
   vala_sources,
   UI_RESOURCES,

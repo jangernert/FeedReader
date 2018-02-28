@@ -1,0 +1,33 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>FeedReader Article View</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            $CSS
+        </style>
+    </head>
+
+    <body style="font-size:$FONTSIZEpt;font-family:$FONTFAMILY;">
+
+        <div id="feedreader-container">
+            <article>
+                <header class="unselectable">
+                    <div id="source" style="font-size:$SMALLSIZEpt;">$FEED</div>
+                    <div id="title" target="_blank" style="font-size:$LARGESIZEpt;"><a href="$URL">$TITLE</a></div>
+                    <div id="author" style="font-size:$SMALLSIZEpt;">
+                         $AUTHOR
+                    </div>
+                </header>
+
+                <div id="content" class="$UNSELECTABLE">
+                $HTML
+               </div>
+
+            </article>
+        </div>
+
+
+    </body>
+</html>

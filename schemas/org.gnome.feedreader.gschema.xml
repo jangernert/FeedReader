@@ -1,12 +1,4 @@
 <schemalist>
-
-	<enum id="org.gnome.feedreader.article-theme">
-		<value nick="DEFAULT" value="0"/>
-		<value nick="SPRING" value="1"/>
-		<value nick="MIDNIGHT" value="2"/>
-		<value nick="PARCHMENT" value="3"/>
-	</enum>
-
 	<enum id="org.gnome.feedreader.drop-articles-duration">
 		<value nick="NEVER" value="0"/>
 		<value nick="1 Week" value="1"/>
@@ -60,8 +52,8 @@
 			<default>'none'</default>
 		</key>
 
-		<key name='article-theme' enum='org.gnome.feedreader.article-theme'>
-			<default>'DEFAULT'</default>
+		<key name='article-theme' type='s'>
+			<default>'default'</default>
 		</key>
 
 		<key name='feedlist-theme' enum='org.gnome.feedreader.feedlist-theme'>

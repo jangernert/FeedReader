@@ -1,6 +1,8 @@
 UI_RESOURCES = gnome.compile_resources(
-  'FeedReader',
-  'org.gnome.FeedReader.gresource.xml'
+  'feedreader_res',
+  'org.gnome.FeedReader.gresource.xml',
+  source_dir: '.',
+  c_name: 'res'
 )
 
 i18n.merge_file(

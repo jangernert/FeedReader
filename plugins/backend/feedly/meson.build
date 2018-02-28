@@ -1,10 +1,10 @@
 feedly_resources = gnome.compile_resources(
-  'feedly',
+  'feedly_res',
   'feedly.gresource.xml'
 )
 
 shared_library(
-  'Feedly',
+  'feedly',
   [
     'feedlyAPI.vala',
     'feedlyInterface.vala',
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.feedly.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'feedly.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

@@ -1,10 +1,10 @@
 twitter_resources = gnome.compile_resources(
-  'twitter',
+  'twitter_res',
   'twitter.gresource.xml'
 )
 
 shared_library(
-  'Twitter',
+  'twitter',
   [
     'TwitterAPI.vala',
     'TwitterForm.vala',
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.share.twitter.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'twitter.plugin'
+  ],
+  install_dir: SHARE_PLUGINS_DIR
 )

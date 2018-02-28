@@ -1,10 +1,10 @@
 pocket_resources = gnome.compile_resources(
-  'pocket',
+  'pocket_res',
   'pocket.gresource.xml'
 )
 
 shared_library(
-  'Pocket',
+  'pocket',
   [
     'PocketAPI.vala',
     'PocketSetup.vala'
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.share.pocket.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'pocket.plugin'
+  ],
+  install_dir: SHARE_PLUGINS_DIR
 )

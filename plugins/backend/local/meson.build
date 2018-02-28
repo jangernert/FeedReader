@@ -1,5 +1,5 @@
 local_resources = gnome.compile_resources(
-  'local',
+  'local_res',
   'local.gresource.xml'
 )
 
@@ -18,7 +18,7 @@ lib_rss_glib = declare_dependency(
 
 
 shared_library(
-  'Local',
+  'local',
   [
     'localInterface.vala',
     'localUtils.vala',
@@ -49,4 +49,11 @@ shared_library(
   install: true,
   install_dir: BACKEND_PLUGINS_DIR,
   include_directories: include_directories('../../..')
+)
+
+install_data(
+  [
+    'local.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

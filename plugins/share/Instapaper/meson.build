@@ -1,10 +1,10 @@
 instapaper_resources = gnome.compile_resources(
-  'instapaper',
+  'instapaper_res',
   'instapaper.gresource.xml'
 )
 
 shared_library(
-  'Instapaper',
+  'instapaper',
   [
     'InstapaperAPI.vala',
     'InstapaperSetup.vala'
@@ -38,4 +38,11 @@ install_data(
     'org.gnome.feedreader.share.instapaper.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'instapaper.plugin'
+  ],
+  install_dir: SHARE_PLUGINS_DIR
 )

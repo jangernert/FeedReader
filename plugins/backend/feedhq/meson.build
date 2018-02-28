@@ -1,10 +1,10 @@
 feedhq_resources = gnome.compile_resources(
-  'feedhq',
+  'feedhq_res',
   'feedhq.gresource.xml'
 )
 
 shared_library(
-  'Feedhq',
+  'feedhq',
   [
     'feedhqAPI.vala',
     'feedhqInterface.vala',
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.feedhq.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'feedhq.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

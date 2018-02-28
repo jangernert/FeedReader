@@ -1,10 +1,10 @@
 owncloud_resources = gnome.compile_resources(
-  'owncloud',
+  'owncloud_res',
   'owncloud.gresource.xml'
 )
 
 shared_library(
-  'Owncloud',
+  'owncloud',
   [
     'OwncloudNewsAPI.vala',
     'OwncloudNewsInterface.vala',
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.owncloud.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'owncloud.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

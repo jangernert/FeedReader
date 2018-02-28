@@ -765,16 +765,16 @@ public class FeedReader.ArticleView : Gtk.Overlay {
 		var menuItems = menu.get_items().copy();
 		foreach(var menuItem in menuItems)
 		{
-			if(menuItem.get_action() == null)
+			if(menuItem.get_gaction() == null)
 			{
 				menu.remove(menuItem);
 				continue;
 			}
 
-			if((menuItem.get_action().name != "context-menu-action-3")  // copy link location
-			&& (menuItem.get_action().name != "context-menu-action-9")  // copy text
-			&& (menuItem.get_action().name != "context-menu-action-6")  // copy image
-			&& (menuItem.get_action().name != "context-menu-action-7")) // copy image address
+			if((menuItem.get_gaction().name != "context-menu-action-3")  // copy link location
+			&& (menuItem.get_gaction().name != "context-menu-action-9")  // copy text
+			&& (menuItem.get_gaction().name != "context-menu-action-6")  // copy image
+			&& (menuItem.get_gaction().name != "context-menu-action-7")) // copy image address
 			{
 				menu.remove(menuItem);
 			}

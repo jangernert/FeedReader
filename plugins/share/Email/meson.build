@@ -1,10 +1,10 @@
 mail_resources = gnome.compile_resources(
-  'mail',
+  'mail_res',
   'mail.gresource.xml'
 )
 
 shared_library(
-  'Email',
+  'mail',
   [
     'Email.vala',
     'EmailForm.vala'
@@ -29,4 +29,11 @@ shared_library(
   install: true,
   install_dir: SHARE_PLUGINS_DIR,
   include_directories: include_directories('../../..')
+)
+
+install_data(
+  [
+    'mail.plugin'
+  ],
+  install_dir: SHARE_PLUGINS_DIR
 )

@@ -1,10 +1,10 @@
 inoreader_resources = gnome.compile_resources(
-  'inoreader',
+  'inoreader_res',
   'inoreader.gresource.xml'
 )
 
 shared_library(
-  'Inoreader',
+  'inoreader',
   [
     'InoReaderAPI.vala',
     'InoReaderInterface.vala',
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.inoreader.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'inoreader.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

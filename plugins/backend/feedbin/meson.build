@@ -1,10 +1,10 @@
 feedbin_resources = gnome.compile_resources(
-  'feedbin',
+  'feedbin_res',
   'feedbin.gresource.xml'
 )
 
 shared_library(
-  'Feedbin',
+  'feedbin',
   [
     'feedbinAPI.vala',
     'feedbinInterface.vala',
@@ -38,4 +38,11 @@ install_data(
     'org.gnome.feedreader.feedbin.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'feedbin.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

@@ -1,10 +1,10 @@
 bazqux_resources = gnome.compile_resources(
-  'bazqux',
+  'bazqux_res',
   'bazqux.gresource.xml'
 )
 
 shared_library(
-  'Bazqux',
+  'bazqux',
   [
     'bazquxAPI.vala',
     'bazquxInterface.vala',
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.bazqux.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'bazqux.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

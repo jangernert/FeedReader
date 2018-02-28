@@ -1,10 +1,10 @@
 browser_resources = gnome.compile_resources(
-  'browser',
+  'browser_res',
   'browser.gresource.xml'
 )
 
 shared_library(
-  'Browser',
+  'browser',
   [
     'Browser.vala'
   ],
@@ -28,4 +28,11 @@ shared_library(
   install: true,
   install_dir: SHARE_PLUGINS_DIR,
   include_directories: include_directories('../../..')
+)
+
+install_data(
+  [
+    'browser.plugin'
+  ],
+  install_dir: SHARE_PLUGINS_DIR
 )

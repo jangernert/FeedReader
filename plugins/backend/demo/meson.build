@@ -1,10 +1,10 @@
 demo_resources = gnome.compile_resources(
-  'demo',
+  'demo_res',
   'demo.gresource.xml'
 )
 
 shared_library(
-  'Demo',
+  'demo',
   [
     'demoInterface.vala'
   ],
@@ -31,4 +31,11 @@ install_data(
     'org.gnome.feedreader.demo.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'demo.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

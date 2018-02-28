@@ -1,10 +1,10 @@
 fresh_resources = gnome.compile_resources(
-  'fresh',
+  'fresh_res',
   'fresh.gresource.xml'
 )
 
 shared_library(
-  'Fresh',
+  'fresh',
   [
     'freshAPI.vala',
     'freshInterface.vala',
@@ -39,4 +39,11 @@ install_data(
     'org.gnome.feedreader.fresh.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'fresh.plugin'
+  ],
+  install_dir: BACKEND_PLUGINS_DIR
 )

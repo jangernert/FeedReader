@@ -1,10 +1,10 @@
 telegram_resources = gnome.compile_resources(
-  'telegram',
+  'telegram_res',
   'telegram.gresource.xml'
 )
 
 shared_library(
-  'Telegram',
+  'telegram',
   [
     'Telegram.vala',
     'TelegramForm.vala',
@@ -37,4 +37,11 @@ install_data(
     'org.gnome.feedreader.share.telegram.gschema.xml'
   ],
   install_dir: join_paths(SHARE_DIR, 'glib-2.0/schemas')
+)
+
+install_data(
+  [
+    'telegram.plugin'
+  ],
+  install_dir: SHARE_PLUGINS_DIR
 )

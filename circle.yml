@@ -35,9 +35,8 @@ jobs:
       - run:
           name: Build
           command: |
-              cmake . -DBAZQUX=ON -DFEEDHQ=ON
-              make
-# FIXME: Turn the tests back on with Meson
+              meson builddir -DBAZQUX=ON -DFEEDHQ=ON
+              ninja
 #      - run:
 #          name: Test
 #          command: make test

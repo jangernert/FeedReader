@@ -17,7 +17,7 @@ namespace FeedReader {
 
 	public class FeedReaderBackend : GLib.Object {
 
-#if WITH_LIBUNITY
+#if LIBUNITY
 		private Unity.LauncherEntry m_launcher;
 #endif
 		private LoginResponse m_loggedin;
@@ -62,7 +62,7 @@ namespace FeedReader {
 			else
 				login(plugID);
 
-#if WITH_LIBUNITY
+#if LIBUNITY
 			m_launcher = Unity.LauncherEntry.get_for_desktop_id("org.gnome.FeedReader.desktop");
 			updateBadge();
 #endif
@@ -757,7 +757,7 @@ namespace FeedReader {
 
 		public void updateBadge()
 		{
-#if WITH_LIBUNITY
+#if LIBUNITY
 			if(!Settings.state().get_boolean("spring-cleaning")
 			&& Settings.tweaks().get_boolean("show-badge"))
 			{

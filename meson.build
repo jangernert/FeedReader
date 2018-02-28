@@ -53,6 +53,7 @@ rest                = dependency('rest-0.7')
 sqlite3             = dependency('sqlite3')
 webkit2gtk          = dependency('webkit2gtk-4.0')
 webkitextension     = dependency('webkit2gtk-web-extension-4.0')
+libunity            = dependency('unity', required: false)
 
 # Configuration
 conf = configuration_data()
@@ -248,9 +249,9 @@ feedreader_deps = [
   ]
   
 
-if get_option('libunity')
+if libunity.found()
 	message('libUnity support ON')
-	feedreader_deps  += [ dependency('unity') ]
+	feedreader_deps  += [ libunity ]
 	vala_args += ['-D', 'LIBUNITY']
 else
 	message('libUnity support OFF')

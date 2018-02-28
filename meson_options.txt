@@ -10,4 +10,3 @@ option('backend-plugins',
         value : ['bazqux', 'feedbin', 'feedhq', 'feedly', 'fresh', 'inoreader', 'local', 'oldreader', 'owncloud', 'ttrss'],
         description: 'List of backend plugins to install'
 )
-option('libunity', type : 'boolean', value : false)

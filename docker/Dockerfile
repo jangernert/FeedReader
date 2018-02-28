@@ -1,7 +1,7 @@
 FROM docker.io/fedora:27
 
 RUN dnf -y install \
-        cmake \
+        meson \
         gcc \
         gettext \
         git \

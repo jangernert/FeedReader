@@ -1,13 +1,9 @@
 project('FeedReader', ['vala', 'c'],
   version: '2.2-dev',
-  meson_version: '>= 0.44.0',
+  meson_version: '>= 0.44.1',
   license: 'GPL-3.0',
   default_options: ['prefix=/usr']
 )
-
-
-# TODO:
-# Fix Constants.c in wrong subdir
 
 # Constants (paths)
 VAPI_DIR               = join_paths(meson.current_source_dir(), 'vapi')

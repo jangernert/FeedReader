@@ -21,7 +21,6 @@ i18n.merge_file(
   install_dir: DATA_DIR
 )
 
-message('TODO: Preparing appdata')
 i18n.merge_file(
   input: 'org.gnome.FeedReader.appdata.xml.in',
   output: 'org.gnome.FeedReader.appdata.xml',

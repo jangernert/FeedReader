@@ -257,7 +257,6 @@ endif
 feedreader_lib = static_library(
   'FeedReader',
   vala_sources,
-  UI_RESOURCES,
   c_args: c_args,
   vala_args: vala_args,
   vala_header: 'FeedReader.h',
@@ -277,6 +276,7 @@ subdir('po')
 # Create an executable file
 executable(
   'feedreader',
+  UI_RESOURCES,
   link_with: [
     feedreader_lib
   ],

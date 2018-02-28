@@ -55,7 +55,7 @@ namespace FeedReader {
 		public const string INSTALL_PREFIX	= "@PREFIX@";
 		public const string INSTALL_LIBDIR	= "@PKGLIBDIR@";
 		public const string LOCALE_DIR 		= "@LOCALE_DIR@";
-		public const string GIT_SHA1		= "#GIT_SHA1#";
+		public const string GIT_SHA1		= "@VCS_TAG@";
 		public const string USER_AGENT		= "FeedReader @VERSION@";
 		public const int DB_SCHEMA_VERSION  = 5;
 		public const int REDOWNLOAD_FAVICONS_AFTER_DAYS = 7;

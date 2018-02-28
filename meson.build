@@ -249,8 +249,11 @@ feedreader_deps = [
   
 
 if get_option('libunity')
+	message('libUnity support ON')
 	feedreader_deps  += [ dependency('unity') ]
 	vala_args += ['-D', 'LIBUNITY']
+else
+	message('libUnity support OFF')
 endif
 
 # Creating an executable file

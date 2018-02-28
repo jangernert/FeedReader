@@ -8,7 +8,7 @@ supported_share_plugins = [
   'Wallabag'
 ]
 
-share_plugins = get_option('share-plugins').to_lower().split(',')
+share_plugins = get_option('share-plugins')
 
 foreach share_plugin: supported_share_plugins
   if share_plugins.contains(share_plugin.to_lower())

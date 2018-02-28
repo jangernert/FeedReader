@@ -10,7 +10,7 @@ supported_backend_plugins = [
   'owncloud',
   'ttrss'
 ]
-backend_plugins = get_option('backend-plugins').to_lower().split(',')
+backend_plugins = get_option('backend-plugins')
 
 foreach backend_plugin: supported_backend_plugins
   if backend_plugins.contains(backend_plugin.to_lower())

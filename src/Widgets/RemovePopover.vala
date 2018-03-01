@@ -35,7 +35,8 @@ public class FeedReader.RemovePopover : Gtk.Popover {
 				break;
 
 			case FeedListType.FEED:
-				m_name = DataBase.readOnly().read_feed(m_id).getTitle();
+				var feed = DataBase.readOnly().read_feed(m_id);
+				m_name = feed != null ? feed.getTitle() : "";
 				break;
 
 			case FeedListType.CATEGORY:

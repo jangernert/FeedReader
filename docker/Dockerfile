@@ -44,6 +44,11 @@ RUN dnf -y install \
 		ImageMagick-devel \
 		opencv-devel \
 		which
+
+# Install the latest stable version of meson
+RUN pip3 install --user --upgrade meson
+
+
 RUN git clone https://github.com/feedbin/feedbin.git
 RUN gem install bundler
 RUN cd feedbin && bundle

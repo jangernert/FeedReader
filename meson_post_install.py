@@ -9,6 +9,10 @@ destdir = environ.get('DESTDIR', '')
 
 if not destdir:
     print('Updating icon cache...')
-    call(['gtk-update-icon-cache', '-qtf', path.join(datadir, 'icons', 'hicolor')])
+    icons_dir = path.join(datadir, 'icons', 'hicolor')
+    call(['gtk-update-icon-cache', '-qtf', icons_dir])
     print("Installing new Schemas")
-    call(['glib-compile-schemas', path.join(datadir, 'glib-2.0/schemas')])
+    schemas_dir =  path.join(datadir, 'glib-2.0/schemas')
+    call(['glib-compile-schemas', schemas_dir])
+    apps_dir =  path.join(datadir, 'applications')
+    call(['update-desktop-database', apps_dir])

@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Build
           command: |
-              meson . -DBAZQUX=ON -DFEEDHQ=ON
+              meson builddir -DBAZQUX=ON -DFEEDHQ=ON
               ninja
 #      - run:
 #          name: Test

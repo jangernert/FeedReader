@@ -15,7 +15,7 @@ For translators : https://hosted.weblate.org/projects/feedreader/
 
 ## Dependencies
 - `build-essential`
-- `cmake`
+- `meson`
 - `vala (>=0.38)`
 - `pkg-config`
 - `libgirepository1.0-dev`

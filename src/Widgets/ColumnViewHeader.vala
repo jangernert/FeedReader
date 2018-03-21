@@ -101,10 +101,6 @@ public class FeedReader.ColumnViewHeader : Gtk.Paned {
 			menubutton.set_tooltip_text(_("Settings"));
 			m_header_left.pack_end(menubutton);
 		}
-		else if(GLib.Environment.get_variable("XDG_CURRENT_DESKTOP").down() == "gnome")
-		{
-			FeedReaderApp.get_default().app_menu = Utils.getMenu();
-		}
 
 
 		m_header_left.pack_end(m_search);

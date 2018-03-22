@@ -41,7 +41,7 @@ public class FeedReader.MainWindow : Gtk.ApplicationWindow
 
 	private MainWindow()
 	{
-		Object(application: FeedReaderApp.get_default(), title: _("FeedReader"));
+		Object(application: FeedReaderApp.get_default(), title: _("FeedReader"), show_menubar: false);
 		this.window_position = WindowPosition.CENTER;
 
 		m_stack = new Gtk.Stack();

@@ -15,14 +15,14 @@
 public class FeedReader.FavIcon : GLib.Object
 {
 	private static string m_icon_path = GLib.Environment.get_user_data_dir() + "/feedreader/data/feed_icons/";
-	private static Gee.Map<string, FavIcon> m_map = null;
+	private static Gee.Map<string?, FavIcon?> m_map = null;
 
-	public static FavIcon for_feed(Feed feed)
+	public static FavIcon for_feed(Feed? feed)
 	{
 		if(m_map == null)
-			m_map = new Gee.HashMap<string, FavIcon>();
+			m_map = new Gee.HashMap<string?, FavIcon?>();
 
-		var feed_id = feed.getFeedID();
+		var feed_id = feed != null ? feed.getFeedID() : null;
 		var icon = m_map.get(feed_id);
 		if(icon == null)
 		{
@@ -33,13 +33,13 @@ public class FeedReader.FavIcon : GLib.Object
 		return icon;
 	}
 
-	private Feed m_feed;
+	private Feed? m_feed;
 	private Gee.Promise<Gdk.Pixbuf?> m_pixbuf = null;
 	private ResourceMetadata m_metadata;
 
 	public signal void surface_changed(Feed feed, Cairo.Surface surface);
 
-	private FavIcon(Feed feed)
+	private FavIcon(Feed? feed)
 	{
 		m_feed = feed;
 	}
@@ -56,6 +56,13 @@ public class FeedReader.FavIcon : GLib.Object
 
 	public async Cairo.Surface? get_surface()
 	{
+		// This can happen if an API gives us weird data by returning an article
+		// with no feed.
+		if(m_feed == null)
+		{
+			return null;
+		}
+
 		// wait for ready + expired so we don't make a bunch of requests at once
 		if(m_pixbuf == null || (m_pixbuf.future.ready && m_metadata.is_expired()))
 		{

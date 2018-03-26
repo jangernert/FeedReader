@@ -176,7 +176,8 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 		body_label.set_line_wrap(true);
 		body_label.set_lines(2);
 
-		var feedLabel = new Gtk.Label(DataBase.readOnly().read_feed(m_article.getFeedID()).getTitle());
+		var feed = DataBase.readOnly().read_feed(m_article.getFeedID());
+		var feedLabel = new Gtk.Label(feed != null ? feed.getTitle() : "");
 		feedLabel.get_style_context().add_class("preview");
 		feedLabel.opacity = 0.6;
 		feedLabel.set_alignment(0.0f, 0.5f);
@@ -268,7 +269,7 @@ public class FeedReader.ArticleRow : Gtk.ListBoxRow {
 	{
 		var icon = new Gtk.Image.from_icon_name("feed-rss-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
 
-		Feed feed = DataBase.readOnly().read_feed(m_article.getFeedID());
+		Feed? feed = DataBase.readOnly().read_feed(m_article.getFeedID());
 		var favicon = FavIcon.for_feed(feed);
 		favicon.get_surface.begin((obj, res) => {
 			var surface = favicon.get_surface.end(res);

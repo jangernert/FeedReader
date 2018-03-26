@@ -39,7 +39,8 @@ public class FeedReader.ArticleListEmptyLabel : Gtk.Label {
 			switch(type)
 			{
 				case FeedListType.FEED:
-					name = DataBase.readOnly().read_feed(selectedID).getTitle();
+					var feed = DataBase.readOnly().read_feed(selectedID);
+					name = feed != null ? feed.getTitle() : "";
 					if(state == ArticleListState.UNREAD)
 					{
 						if(searchTerm != "")

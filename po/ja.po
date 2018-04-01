@@ -2,12 +2,20 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2018-01-27 14:04+0100\n"
+"PO-Revision-Date: 2018-04-01 01:47+0000\n"
+"Last-Translator: Koji Kanao <kk2796@nyu.edu>\n"
+"Language-Team: Japanese <https://hosted.weblate.org/projects/feedreader/"
+"translations/ja/>\n"
+"Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 2.20-dev\n"
 
 #: src/FeedReader.vala:21
 msgid "About FeedReader"
-msgstr ""
+msgstr "FeedReaderについて"
 
 #: src/Share/ServiceSetup.vala:56 plugins/backend/fresh/freshInterface.vala:151
 #: plugins/backend/feedhq/feedhqInterface.vala:101
@@ -17,23 +25,23 @@ msgstr ""
 #: plugins/backend/feedbin/feedbinInterface.vala:76
 #: plugins/backend/bazqux/bazquxInterface.vala:101
 msgid "Login"
-msgstr ""
+msgstr "ログイン"
 
 #: src/Share/ServiceSetup.vala:61
 msgid "Logout"
-msgstr ""
+msgstr "ログアウト"
 
 #: src/Backend/FeedServer.vala:179 src/Backend/FeedServer.vala:282
 msgid "Getting feeds and categories"
-msgstr ""
+msgstr "フィードとカテゴリの取得"
 
 #: src/Backend/FeedServer.vala:231
 msgid "Getting articles"
-msgstr ""
+msgstr "記事の取得"
 
 #: src/Backend/FeedServer.vala:311
 msgid "Getting starred articles"
-msgstr ""
+msgstr "記事にスターをつける"
 
 #: src/Backend/FeedServer.vala:318
 msgid "Getting tagged articles"
